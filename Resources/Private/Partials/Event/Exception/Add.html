@@ -1,0 +1,6 @@
+<f:if condition="{exception.exceptionTime}">
+	<f:render partial="Event/Time" arguments="{time: exception.exceptionTime}" /><br/>
+</f:if>
+<f:if condition="{exception.exceptionDetails}">
+	{exception.exceptionDetails -> f:format.html(parseFuncTSPath: 'lib.parseFunc') -> f:format.nl2br()}
+</f:if>

@@ -1,0 +1,50 @@
+{namespace e2=JWeiland\Events2\ViewHelpers}
+
+<f:for each="{days}" as="day">
+	<f:for each="{day.events}" as="event">
+		<div class="entry">
+			<div class="left">
+				<div class="weekday">{event.eventBegin -> e2:strftime(format: '%a')}</div>
+				<div class="day">{event.eventBegin -> e2:strftime(format: '%d')}</div>
+				<div class="month">{event.eventBegin -> e2:strftime(format: '%b')}</div>
+				<f:if condition="{event.eventEnd}">
+					<div class="eventEnd">- {event.eventEnd -> e2:strftime(format: '%d.%b')}</div>
+				</f:if>
+				<f:if condition="{event.images -> f:count()}">
+					<f:for each="{event.images}" as="image" iteration="iterator">
+						<f:if condition="{iterator.isFirst}">
+							<figure><f:image image="{image}" alt="{event.title}" title="{event.title}" width="{settings.list.image.width}" height="{settings.list.image.height}" minWidth="{settings.list.image.minWidth}" maxWidth="{settings.list.image.maxWidth}" minHeight="{settings.list.image.minHeight}" maxHeight="{settings.list.image.maxHeight}" /></figure>
+						</f:if>
+					</f:for>
+				</f:if>
+			</div>
+
+			<div class="right">
+				<div class="title">
+					<f:link.action action="show" controller="Event" pageUid="{settings.pidOfDetailPage}" arguments="{event: event}" title="{f:translate(key: 'singleView')}: {event.title}">{event.title}</f:link.action>
+				</div>
+				<div class="teaser"><f:render partial="Event/Teaser" arguments="{event: event}" /></div>
+				<div class="category"><f:render partial="Event/Category" arguments="{event: event}" /></div>
+				<f:if condition="{event.multipleTimes -> f:count()}">
+					<f:then>
+						<f:link.action action="show" arguments="{event: event}" title="{f:translate(key: 'singleView')}">
+							<div class="time">{f:translate(key: 'showDetailview')}</div>
+						</f:link.action>
+					</f:then>
+					<f:else>
+						<f:if condition="{event.eventTime}">
+							<div class="time">{event.eventTime.timeBegin}</div>
+						</f:if>
+					</f:else>
+				</f:if>
+				<f:if condition="{event.location}">
+					<div class="location">
+						<f:link.action action="show" controller="Location" arguments="{location: event.location}" title="{event.location.location.location}">
+							{event.location.location.location}
+						</f:link.action>
+					</div>
+				</f:if>
+			</div>
+		</div>
+	</f:for>
+</f:for>

@@ -1,0 +1,15 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:{PRODID}
+<f:for each="{events}" as="event">
+BEGIN:VEVENT
+UID:{event.UID}
+DTSTART;TZID={TIMEZONE}:{event.DTSTART}
+<f:if condition="{event.DTEND}">DTEND;TZID={TIMEZONE}:{event.DTEND}</f:if>
+DTSTAMP:{event.DTSTAMP}
+<f:if condition="{event.LOCATION}">LOCATION:{event.LOCATION}</f:if>
+<f:if condition="{event.SUMMARY}">SUMMARY:{event.SUMMARY}</f:if>
+<f:if condition="{event.DESCRIPTION}">DESCRIPTION:{event.DESCRIPTION}</f:if>
+END:VEVENT
+</f:for>
+END:VCALENDAR

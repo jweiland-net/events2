@@ -1,0 +1,129 @@
+# search should work with get params of events plugin
+plugin.tx_events2_search.view.pluginNamespace = tx_events2_events
+# but if there was an action called which is not accessible, then call the default action
+plugin.tx_events2_search.mvc.callDefaultActionIfActionCantBeResolved = 1
+
+plugin.tx_events2 {
+	view {
+		templateRootPath = {$plugin.tx_events2.view.templateRootPath}
+		partialRootPath = {$plugin.tx_events2.view.partialRootPath}
+		layoutRootPath = {$plugin.tx_events2.view.layoutRootPath}
+	}
+	persistence {
+		storagePid = {$plugin.tx_events2.persistence.storagePid}
+		classes {
+			JWeiland\Events2\Domain\Model\FileReference {
+				mapping {
+					tableName = sys_file_reference
+				}
+			}
+    	JWeiland\Events2\Domain\Model\EventLocationMm {
+				mapping {
+    			tableName = tx_events2_event_location_mm
+    			recordType =
+    		}
+    	}
+    	JWeiland\Events2\Domain\Model\Location {
+    		newRecordStoragePid =
+    	}
+    	JWeiland\Events2\Domain\Model\Organizer {
+    		newRecordStoragePid =
+    	}
+    	JWeiland\Events2\Domain\Model\EventOrganizerMm {
+				mapping {
+    			tableName = tx_events2_event_organizer_mm
+    			recordType =
+    		}
+    	}
+    	JWeiland\Events2\Domain\Model\Category {
+				mapping {
+    			tableName = sys_category
+    			recordType =
+    		}
+    	}
+    }
+	}
+	features {
+		# uncomment the following line to enable the new Property Mapper.
+		rewrittenPropertyMapper = 1
+	}
+	settings {
+		includeJQueryLibrary = {$plugin.tx_events2.settings.includeJQueryLibrary}
+		includeJQueryUiLibrary = {$plugin.tx_events2.settings.includeJQueryUiLibrary}
+		includeJQueryUiCss = {$plugin.tx_events2.settings.includeJQueryUiCss}
+		rootCategory = {$plugin.tx_events2.settings.rootCategory}
+		pidOfDetailPage = {$plugin.tx_events2.settings.pidOfDetailPage}
+		pidOfSearchPage = {$plugin.tx_events2.settings.pidOfSearchPage}
+		pidOfLocationPage = {$plugin.tx_events2.settings.pidOfLocationPage}
+		pidOfListPage = {$plugin.tx_events2.settings.pidOfListPage}
+		userGroup =
+		mergeEvents = 0
+		list {
+			image {
+				width = 50c
+				height = 50c
+				maxWidth = 50
+				minWidth = 50
+				maxHeight = 50
+				minHeight = 50
+			}
+		}
+
+		list {
+			amountOfRecordsToShow = {$plugin.tx_events2.settings.list.amountOfRecordsToShow}
+		}
+
+		latest {
+			amountOfRecordsToShow = {$plugin.tx_events2.settings.latest.amountOfRecordsToShow}
+		}
+
+		pageBrowser {
+			itemsPerPage = {$plugin.tx_events2.settings.pageBrowser.itemsPerPage}
+			insertAbove = {$plugin.tx_events2.settings.pageBrowser.insertAbove}
+			insertBelow = {$plugin.tx_events2.settings.pageBrowser.insertBelow}
+			maximumNumberOfLinks = {$plugin.tx_events2.settings.pageBrowser.maximumNumberOfLinks}
+		}
+
+		show {
+			image {
+				width = 200c
+				height = 150c
+				maxWidth = 200
+				minWidth = 200
+				maxHeight = 150
+				minHeight = 150
+			}
+		}
+	}
+}
+
+#plugin.tx_events2_search.view.pluginNamespace = tx_events2_events
+
+module.tx_events2 {
+	view {
+		templateRootPath = {$module.tx_events2.view.templateRootPath}
+		partialRootPath = {$module.tx_events2.view.partialRootPath}
+		layoutRootPath = {$module.tx_events2.view.layoutRootPath}
+	}
+	persistence < plugin.tx_events2.persistence
+}
+
+config.tx_extbase {
+	objects {
+		Tx_Extbase_Persistence_Mapper_DataMapFactory {
+			className = Tx_Events2_Persistence_Mapper_DataMapFactory
+		}
+	}
+}
+
+plugin.tx_events2._CSS_DEFAULT_STYLE (
+	textarea.f3-form-error {
+		background-color:#FF9F9F;
+		border: 1px #FF0000 solid;
+	}
+
+	input.f3-form-error {
+		background-color:#FF9F9F;
+		border: 1px #FF0000 solid;
+	}
+)

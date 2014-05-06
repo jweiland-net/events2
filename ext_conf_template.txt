@@ -1,0 +1,5 @@
+# cat=basic; type=int+; label = LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:recurringPast
+recurringPast = 3
+
+# cat=basic; type=int+; label = LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:recurringFuture
+recurringFuture = 6

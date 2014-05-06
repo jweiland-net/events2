@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2013-03-40T10:38:40Z" product-name="events2">
+		<header/>
+		<body>
+
+			<trans-unit id="plugin.events.title">
+				<source>Events</source>
+				<target>Veranstaltungen</target>
+			</trans-unit>
+			<trans-unit id="plugin.calendar.title">
+				<source>Events: Calendar</source>
+				<target>Veranstaltungen: Kalender</target>
+			</trans-unit>
+			<trans-unit id="plugin.search.title">
+				<source>Events: Search</source>
+				<target>Veranstaltungen: Suche</target>
+			</trans-unit>
+			<trans-unit id="plugin.culture.title">
+				<source>Events: Culture</source>
+				<target>Veranstaltungen: Kultur macht Schule</target>
+			</trans-unit>
+
+			<trans-unit id="tx_events2_tab">
+				<source>Events</source>
+				<target>Veranstaltungen</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_organizer">
+				<source>Organizer</source>
+				<target>Veranstalter</target>
+			</trans-unit>
+
+			<trans-unit id="tx_events2_domain_model_event">
+				<source>Event</source>
+				<target>Veranstaltung</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.tab.recurring_event">
+				<source>Recurring Event</source>
+				<target>Wiederkehrende Veranstaltung</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.tab.exceptions">
+				<source>Exceptions</source>
+				<target>Ausnahmen</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.tab.event_details">
+				<source>Event Details</source>
+				<target>Veranstaltungsdetails</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.tab.media">
+				<source>Media</source>
+				<target>Medien</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.tab.social">
+				<source>Social</source>
+				<target>Soziale Netzwerke</target>
+			</trans-unit>
+
+			<trans-unit id="tx_events2_domain_model_event.title">
+				<source>Title</source>
+				<target>Titel</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.top_of_list">
+				<source>Top of list</source>
+				<target>Am Anfang anzeigen</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.teaser">
+				<source>Teaser</source>
+				<target>Kurzbeschreibung</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.event_begin">
+				<source>Event Begin</source>
+				<target>Erster Veranstaltungstag</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.event_time">
+				<source>Time</source>
+				<target>Uhrzeit</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.event_end">
+				<source>Last Event</source>
+				<target>Letzter Veranstaltungtag</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.recurring_event">
+				<source>Recurring Event</source>
+				<target>Veranstaltung mit Wiederholungen</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.same_day">
+				<source>Same Day</source>
+				<target>mehrmals an einem Tag</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.multiple_times">
+				<source>Multiple times on same day</source>
+				<target>mehrere Uhrzeiten an einem Tag</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.xth">
+				<source>Recurring</source>
+				<target>Wiederholung jeden ... im Monat</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.xth.first">
+				<source>1st</source>
+				<target>ersten</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.xth.second">
+				<source>2nd</source>
+				<target>zweiten</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.xth.third">
+				<source>3rd</source>
+				<target>dritten</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.xth.fourth">
+				<source>4th</source>
+				<target>vierten</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.xth.fifth">
+				<source>5th</source>
+				<target>fünften</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.weekday">
+				<source>Weekday</source>
+				<target>Wochentag</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.weekday.monday">
+				<source>Mo</source>
+				<target>Mo</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.weekday.tuesday">
+				<source>Tu</source>
+				<target>Di</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.weekday.wednesday">
+				<source>We</source>
+				<target>Mi</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.weekday.thursday">
+				<source>Th</source>
+				<target>Do</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.weekday.friday">
+				<source>Fr</source>
+				<target>Fr</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.weekday.saturday">
+				<source>Sa</source>
+				<target>Sa</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.weekday.sunday">
+				<source>Su</source>
+				<target>So</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.different_times">
+				<source>Different times for each weekday</source>
+				<target>Unterschiedliche Öffnungszeiten je Wochentag</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.each_weeks">
+				<source>Recurring weeks</source>
+				<target>Wiederholung alle x Wochen</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.each_weeks.0">
+				<source>Don't repeat in weeks. Use settings above.</source>
+				<target>Keine Wiederholung alle x Wochen. Nutze Einstellungen oben</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.each_weeks.1">
+				<source>Each week</source>
+				<target>jede Woche</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.each_weeks.2">
+				<source>Each 2 weeks</source>
+				<target>alle 2 Wochen</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.each_weeks.3">
+				<source>Each 3 weeks</source>
+				<target>alle 3 Wochen</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.each_weeks.4">
+				<source>Each 4 weeks</source>
+				<target>alle 4 Wochen</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.exceptions">
+				<source>Exceptions</source>
+				<target>Ausnahmen von der Wiederholungsregel</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.detail_informations">
+				<source>Detail Informations</source>
+				<target>Veranstaltungsdetails</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.free_entry">
+				<source>Free Entry</source>
+				<target>kostenlose Veranstaltung</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.ticket_link">
+				<source>Ticket Link</source>
+				<target>Link zum Ticketkauf</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.days">
+				<source>Days</source>
+				<target>Tage</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.location">
+				<source>Location</source>
+				<target>Veranstaltungsort</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.organizer">
+				<source>Organizer</source>
+				<target>Veranstalter</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.images">
+				<source>Images</source>
+				<target>Bilder</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.video_link">
+				<source>Video link</source>
+				<target>Videolink</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.download_links">
+				<source>Download links</source>
+				<target>Download Link</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.suitability_culture">
+				<source>Suitable for culture and school</source>
+				<target>Geeignet für "Kultur macht Schule"</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.suitability_user">
+				<source>Suitable for single User</source>
+				<target>Geeignet für Einzelnutzer</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.suitability_groups">
+				<source>Suitable for groups</source>
+				<target>Geeignet für Gruppen und Schulklassen</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.facebook">
+				<source>Release on facebook</source>
+				<target>Auf Facebook veröffentlichen</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.release_date">
+				<source>Release date</source>
+				<target>Datum der Veröffentlichung</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.social_teaser">
+				<source>Short description</source>
+				<target>Kurzbeschreibung</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.facebook_channel">
+				<source>Facebook Channel</source>
+				<target>Facebook-Kanal</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.facebook_channel.pforzheim">
+				<source>Pforzheim</source>
+				<target>Pforzheim</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.facebook_channel.theater">
+				<source>Theater Pforzheim</source>
+				<target>Theater Pforzheim</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.facebook_channel.bibliothek">
+				<source>Stadtbibliothek</source>
+				<target>Stadtbibliothek</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.facebook_channel.marketing">
+				<source>Citymarketing</source>
+				<target>Citymarketing</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.theater_details">
+				<source>Theater description</source>
+				<target>Stückdetails</target>
+			</trans-unit>
+
+			<trans-unit id="tx_events2_domain_model_day">
+				<source>Day</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_day.day">
+				<source>Day</source>
+			</trans-unit>
+
+			<trans-unit id="tx_events2_domain_model_time">
+				<source>Time</source>
+				<target>Uhrzeit</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_time.weekday">
+				<source>Weekday</source>
+				<target>Wochentag</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_time.weekday.monday">
+				<source>Monday</source>
+				<target>Montag</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_time.weekday.tuesday">
+				<source>Tuesday</source>
+				<target>Dienstag</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_time.weekday.wednesday">
+				<source>Wednesday</source>
+				<target>Mittwoch</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_time.weekday.thursday">
+				<source>Thursday</source>
+				<target>Donnerstag</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_time.weekday.friday">
+				<source>Friday</source>
+				<target>Freitag</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_time.weekday.saturday">
+				<source>Saturday</source>
+				<target>Samstag</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_time.weekday.sunday">
+				<source>Sunday</source>
+				<target>Sonntag</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_time.time_begin">
+				<source>Time Begin</source>
+				<target>Beginn</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_time.time_entry">
+				<source>Time Entry</source>
+				<target>Einlass</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_time.duration">
+				<source>Duration</source>
+				<target>Dauer</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_time.time_end">
+				<source>Time End</source>
+				<target>Ende</target>
+			</trans-unit>
+
+			<trans-unit id="tx_events2_domain_model_exception">
+				<source>Exception</source>
+				<target>Ausnahmen von der Wiederholungsregel</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_exception.exception_type">
+				<source>Type</source>
+				<target>Art der Ausnahme</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_exception.exception_type.Add">
+				<source>Add</source>
+				<target>Zusatztermin</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_exception.exception_type.Remove">
+				<source>Remove</source>
+				<target>Ausfall</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_exception.exception_type.Time">
+				<source>Time</source>
+				<target>andere Uhrzeit</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_exception.exception_type.Info">
+				<source>Info</source>
+				<target>Zusatzinformation</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_exception.exception_date">
+				<source>Date</source>
+				<target>Datum</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_exception.exception_time">
+				<source>Time</source>
+				<target>Uhrzeit</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_exception.exception_details">
+				<source>Datails</source>
+				<target>Details</target>
+			</trans-unit>
+
+			<trans-unit id="tx_events2_domain_model_location">
+				<source>Location</source>
+				<target>Veranstaltungsort</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_location.location">
+				<source>Location</source>
+				<target>Veranstaltungsort</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_location.street">
+				<source>Street</source>
+				<target>Straße</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_location.house_number">
+				<source>Number</source>
+				<target>Hausnummer</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_location.zip">
+				<source>Zip</source>
+				<target>Postleitzahl</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_location.city">
+				<source>City</source>
+				<target>Ort</target>
+			</trans-unit>
+
+			<trans-unit id="tx_events2_domain_model_organizer">
+				<source>Organizer</source>
+				<target>Veranstalter</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_organizer.organizer">
+				<source>Organizer</source>
+				<target>Veranstalter</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_organizer.link">
+				<source>Link</source>
+				<target>Homepage</target>
+			</trans-unit>
+
+			<trans-unit id="tx_events2_domain_model_link">
+				<source>Link</source>
+				<target>Link</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_link.title">
+				<source>Title</source>
+				<target>Titel</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_link.link">
+				<source>Link</source>
+				<target>Link</target>
+			</trans-unit>
+
+		</body>
+	</file>
+</xliff>

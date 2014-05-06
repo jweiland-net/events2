@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2013-03-40T10:38:40Z" product-name="events2">
+		<header/>
+		<body>
+
+			<trans-unit id="title.description">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="teaser.description">
+				<source>Teaser</source>
+			</trans-unit>
+			<trans-unit id="event_begin.description">
+				<source>Event begin</source>
+			</trans-unit>
+			<trans-unit id="duration.description">
+				<source>Duration</source>
+			</trans-unit>
+			<trans-unit id="event_end.description">
+				<source>Last event</source>
+			</trans-unit>
+			<trans-unit id="recurring_event.description">
+				<source>Recurring event</source>
+			</trans-unit>
+			<trans-unit id="same_day.description">
+				<source>Same day</source>
+			</trans-unit>
+			<trans-unit id="xth.description">
+				<source>x th</source>
+			</trans-unit>
+			<trans-unit id="weekday.description">
+				<source>Weekday</source>
+			</trans-unit>
+			<trans-unit id="each_weeks.description">
+				<source>Each weeks</source>
+			</trans-unit>
+			<trans-unit id="exceptions.description">
+				<source>Exceptions</source>
+			</trans-unit>
+			<trans-unit id="detail_informations.description">
+				<source>Detail informations</source>
+			</trans-unit>
+			<trans-unit id="free_entry.description">
+				<source>free entry</source>
+			</trans-unit>
+			<trans-unit id="ticket_link.description">
+				<source>Ticket link</source>
+			</trans-unit>
+			<trans-unit id="categories.description">
+				<source>Categories</source>
+			</trans-unit>
+			<trans-unit id="event_time.description">
+				<source>Time</source>
+			</trans-unit>
+			<trans-unit id="alternative_times.description">
+				<source>Alternative times</source>
+			</trans-unit>
+			<trans-unit id="days.description">
+				<source>Days</source>
+			</trans-unit>
+			<trans-unit id="location.description">
+				<source>Location</source>
+			</trans-unit>
+			<trans-unit id="organizer.description">
+				<source>Organizer</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

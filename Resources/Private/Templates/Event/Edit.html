@@ -1,0 +1,20 @@
+<f:layout name="Default" />
+
+<f:section name="main">
+	<f:flashMessages renderMode="div" class="info-box2" />
+
+	<f:render partial="FormErrors" arguments="{object:Event}"/>
+
+	<f:form action="update" name="event" object="{event}" class="extform withinfo">
+		<legend class="powermail_legend">
+			<f:translate key="edit"/>
+		</legend>
+		<div class="floatright clearfix marginbottom">
+			<f:cObject typoscriptObjectPath="lib.feformdocumentation"/>
+		</div>
+		<f:render partial="Event/FormFields" arguments="{event: event, locations: locations}" />
+		<div class="powermail_fieldwrap powermail_fieldwrap_submit">
+			<f:form.submit value="{f:translate(key: 'save')}" />
+		</div>
+	</f:form>
+</f:section>

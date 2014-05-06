@@ -1,0 +1,97 @@
+<f:layout name="Default" />
+
+<f:section name="main">
+	<script type="text/javascript">
+		var days;
+		var siteUrl = "{siteUrl}index.php";
+		var siteId = {siteId};
+		var setDate = "{day}.{month}.{year}";
+		var categories = "{settings.categories}";
+		var currentDate = new Date({year}, ({month} - 1), {day});
+
+		$(function() {
+
+			days = getDaysForMonth(currentDate.getMonth() + 1, currentDate.getFullYear());
+
+			jQuery( "div#events2calendar" ).datepicker({
+				dateFormat: "dd.mm.yy",
+				beforeShowDay: function(date) {
+					if (days == null) return [false, "", ""];
+					if (days.hasOwnProperty(date.getDate())) {
+						return [true, "", days[date.getDate()][0]["title"]];
+					} else {
+						if (currentDate.getDate() == date.getDate() && currentDate.getMonth() == date.getMonth()) {
+							return [true, "", ""];
+						} else return [false, "", ""];
+					}
+				},
+				onSelect: function(dateText, inst) {
+					if (days != null && days.hasOwnProperty(inst.currentDay)) {
+						window.location.href = days[inst.currentDay][0]["uri"];
+					}
+				},
+				onChangeMonthYear: function(year, month, inst) {
+					days = getDaysForMonth(month, year);
+				}
+			});
+			jQuery( "div#events2calendar" ).datepicker( "setDate", setDate);
+
+			/**
+			 * update links in calendar
+			 *
+			 * @param days
+			 * @param month
+			 * @param year
+			 */
+			function updateLinks(days, month, year) {
+				for (var property in days) {
+					if (days.hasOwnProperty(property)) {
+						jQuery( "table.ui-datepicker-calendar tbody" ).find( "td[data-month=" + month + "][data-year=" + year + "] a:contains('" + property + "')").attr( "href", days[property][0]["uri"] );
+					}
+				}
+			}
+
+			/**
+			 * get days for month
+			 * this starts an ajax call to the server and make them globally available
+			 *
+			 * @param month
+			 * @param year
+			 */
+			function getDaysForMonth(month, year) {
+				var days = null;
+
+				/* <![CDATA[ */
+				jQuery.ajax({
+					type: 'GET',
+					url: siteUrl,
+					async: false,
+					dataType: 'json',
+					data: {
+						id: siteId,
+						type: 1372255350,
+						tx_events2_events: {
+							objectName: 'FindDaysForMonth',
+							arguments: {
+								categories: categories,
+								month: month,
+								year: year
+							}
+						}
+					},
+					success: function( json ) {
+						days = json;
+					},
+					error: function( xhr, error ) {
+						console.log( error );
+					}
+				});
+				/* ]]> */
+
+				return days;
+			}
+		});
+	</script>
+
+	<div id="events2calendar"></div>
+</f:section>

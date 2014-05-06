@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2013-03-40T10:38:40Z" product-name="events2">
+		<header/>
+		<body>
+
+			<trans-unit id="recurringPast">
+				<source>x months in past: When creating a new recurring event this extension can create related day records for the last x months.</source>
+				<target>x Monate in der Vergangenheit: bei Veranstaltungen mit Wiederholungen werden Tagesdaten für die vergangenen x Monate erzeugt</target>
+			</trans-unit>
+			<trans-unit id="recurringFuture">
+				<source>x months in future: When creating a new recurring event this extension can create related day records for the next x months.</source>
+				<target>xMonate in der Zukunft: bei Veranstaltungen mit Wiederholungen werden Tagesdaten für die nächsten x Monate erzeugt</target>
+			</trans-unit>
+
+		</body>
+	</file>
+</xliff>

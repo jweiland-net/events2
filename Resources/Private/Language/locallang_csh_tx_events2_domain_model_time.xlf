@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2013-03-40T10:38:40Z" product-name="events2">
+		<header/>
+		<body>
+
+			<trans-unit id="time_begin.description">
+				<source>Time begin</source>
+			</trans-unit>
+			<trans-unit id="time_entry.description">
+				<source>Time entry</source>
+			</trans-unit>
+			<trans-unit id="time_end.description">
+				<source>Time end</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

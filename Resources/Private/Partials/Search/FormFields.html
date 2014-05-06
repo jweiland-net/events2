@@ -1,0 +1,120 @@
+<script type="text/javascript">
+	var siteUrl = "{data.siteUrl}";
+	var siteId = "{data.siteId}";
+	var subCategory = "";
+	var selected = "";
+
+	jQuery(function() {
+		/* <![CDATA[ */
+		function renderSubCategory() {
+			jQuery( "#searchSubCategory").empty().attr( "disabled", "disabled" );
+
+			if (jQuery( "#searchMainCategory" ).val() != 0) {
+				jQuery.ajax({
+					type: 'GET',
+					url: siteUrl,
+					dataType: 'json',
+					data: {
+						id: siteId,
+						type: 1372255350,
+						tx_events2_events: {
+							objectName: 'FindSubCategories',
+							arguments: {
+								category: jQuery( "#searchMainCategory" ).val()
+							}
+						}
+					},
+					success: function(categories) {
+						fillSubCategories(categories);
+					},
+					error: function( xhr, error ) {
+						console.log( error );
+					}
+				});
+			}
+		}
+
+		function fillSubCategories(categories) {
+			var count = 0;
+			jQuery( "#searchSubCategory" ).append( "<option value=\"0\"></option>" );
+			for (var property in categories) {
+				if (categories.hasOwnProperty(property)) {
+					count++;
+					if (property == subCategory) {
+						selected = "selected=\"selected\"";
+					} else selected = "";
+					jQuery( "#searchSubCategory" ).append( "<option " + selected + " value=\"" + property + "\">" + categories[property] + "</option>" );
+				}
+			}
+			if(count) {
+				jQuery( "#searchSubCategory").removeAttr( "disabled" );
+			}
+		}
+
+		jQuery( "#searchMainCategory" ).on( "change", function() {
+			renderSubCategory();
+		});
+
+		renderSubCategory();
+
+		jQuery( "#searchEventBegin, #searchEventEnd" ).datepicker({
+			dateFormat: "dd.mm.yy"
+		});
+
+		/* ]]> */
+	});
+</script>
+
+<div class="extdiv">
+	<label for="searchEvent"><f:translate key="tx_events2_domain_model_search.search" /></label>
+	<input id="searchEvent" type="text" name="tx_events2_events[search][search]" value="{search.search}" />
+</div>
+
+<div class="extdiv">
+	<label for="searchMainCategory"><f:translate key="tx_events2_domain_model_search.mainCategory" /></label>
+	<f:form.select id="searchMainCategory" property="mainCategory" options="{data.categories.main}" value="{search.mainCategory.uid}" prependOptionLabel="" prependOptionValue="0" optionLabelField="title" optionValueField="uid" sortByOptionLabel="1" />
+</div>
+
+<div class="extdiv">
+	<label for="searchSubCategory"><f:translate key="tx_events2_domain_model_search.subCategory" /></label>
+	<select id="searchSubCategory" name="tx_events2_events[search][subCategory]" disabled="disabled"></select>
+</div>
+
+<div class="extdiv">
+	<label for="searchEventBegin"><f:translate key="tx_events2_domain_model_search.eventBegin" /></label>
+	<input id="searchEventBegin" type="text" name="tx_events2_events[search][eventBegin]" value="{search.eventBegin -> f:format.date(format: 'd.m.Y')}" />
+</div>
+
+<div class="extdiv">
+	<label for="searchEventEnd"><f:translate key="tx_events2_domain_model_search.eventEnd" /></label>
+	<input id="searchEventEnd" type="text" name="tx_events2_events[search][eventEnd]" value="{search.eventEnd -> f:format.date(format: 'd.m.Y')}" />
+</div>
+
+<div class="extdiv">
+	<label for="searchLocation"><f:translate key="tx_events2_domain_model_search.location" /></label>
+	<select id="searchLocation" name="tx_events2_events[search][location]">
+		<option value="0"></option>
+		<f:for each="{data.locations}" as="location">
+			<f:if condition="{location.uid}=={search.location.uid}">
+				<f:then>
+					<option value="{location.uid}" selected="selected">{location.location}</option>
+				</f:then>
+				<f:else>
+					<option value="{location.uid}">{location.location}</option>
+				</f:else>
+			</f:if>
+		</f:for>
+	</select>
+</div>
+
+<div class="extdiv">
+	<label for="searchFreeEntry"><f:translate key="tx_events2_domain_model_search.freeEntry" /></label>
+	<f:if condition="{search.freeEntry}">
+		<f:then>
+			<input id="searchFreeEntry" type="checkbox" name="tx_events2_events[search][freeEntry]" value="1" checked="checked" />
+		</f:then>
+		<f:else>
+			<input id="searchFreeEntry" type="checkbox" name="tx_events2_events[search][freeEntry]" value="1" />
+		</f:else>
+	</f:if>
+</div>

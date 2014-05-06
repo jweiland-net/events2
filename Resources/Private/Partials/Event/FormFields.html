@@ -1,0 +1,165 @@
+{namespace event=JWeiland\Events2\ViewHelpers}
+
+<script type="text/javascript">
+	jQuery(function() {
+		/* <![CDATA[ */
+		// add datePicker to date-fields
+		jQuery( "#eventBegin, #eventEnd" ).datepicker({
+			dateFormat: "dd.mm.yy"
+		});
+
+		// initialize dialog box
+		jQuery( "#dialogHint" ).dialog({
+			autoOpen: false,
+			height: 150,
+			width: 300,
+			modal: true
+		});
+
+		// show dialog box on click
+		jQuery( "span.csh" )
+			.css( 'cursor', 'pointer' )
+			.click( function() {
+				var id = jQuery(this).nextAll(":input:not(:hidden)").attr("id");
+				jQuery( "#dialogHint p").text( jQuery( "div.hidden_" + id).text() );
+				jQuery( "#dialogHint" ).dialog( "open" );
+			});
+		/* ]]> */
+	});
+</script>
+
+<f:form.hidden property="organizer.organizer" value="{event:feuser(field: 'tx_events2_organizer')}" />
+
+<div class="extdiv">
+	<label for="title">
+		<f:translate key="tx_events2_domain_model_event.title" /> <span class="required">*</span>
+	</label>
+	<div class="hidden hidden_title">
+		<f:translate key="cshTitle"/>
+	</div>
+	<span class="csh" title="Hinweis">i</span>
+	<f:form.textfield class="powermail_input" id="title" property="title"/>
+
+</div>
+
+<div class="extdiv">
+	<label for="teaser">
+		<f:translate key="tx_events2_domain_model_event.teaser" />
+	</label>
+	<div class="hidden hidden_teaser">
+		<f:translate key="cshTeaser"/>
+	</div>
+	<span class="csh" title="Hinweis">i</span>
+	<f:form.textarea id="teaser" property="teaser" rows="5" cols="50" />
+
+</div>
+
+<div class="extdiv">
+	<label for="detailInformations">
+		<f:translate key="tx_events2_domain_model_event.detail_informations" />
+	</label>
+	<f:form.textarea id="detailInformations" property="detailInformations" rows="5" cols="50" />
+</div>
+<div class="csc-frame-rulerAfter clearer"></div>
+<div class="extdiv">
+	<label for="eventBegin">
+		<f:translate key="tx_events2_domain_model_event.event_begin" />
+		<span class="required">*</span>
+	</label>
+	<div class="hidden hidden_eventBegin">
+		<f:translate key="cshEventBegin"/>
+	</div>
+	<span class="csh" title="Hinweis">i</span>
+	<f:form.textfield class="powermail_input" placeholder="tt.mm.jjjj" id="eventBegin" property="eventBegin" />
+
+</div>
+
+<div class="extdiv">
+	<label for="eventEnd">
+		<f:translate key="tx_events2_domain_model_event.event_end" />
+	</label>
+	<div class="hidden hidden_eventEnd">
+		<f:translate key="cshEventEnd"/>
+	</div>
+	<span class="csh" title="Hinweis">i</span>
+	<f:form.textfield class="powermail_input" placeholder="tt.mm.jjjj" id="eventEnd" property="eventEnd" />
+
+</div>
+
+<div class="extdiv">
+	<label for="timeBegin">
+		<f:translate key="tx_events2_domain_model_time.time_begin" /><span class="required">*</span>
+	</label>
+	<div class="hidden hidden_timeBegin">
+		<f:translate key="cshTimeBegin"/>
+	</div>
+	<span class="csh" title="Hinweis">i</span>
+	<f:form.textfield class="powermail_input" placeholder="ss:mm" id="timeBegin" property="eventTime.timeBegin" value="{event.eventTime.timeBegin}" />
+
+</div>
+
+<div class="extdiv">
+	<label for="location">
+		<f:translate key="tx_events2_domain_model_event.location" />
+		<span class="required">*</span>
+	</label>
+	<div class="hidden hidden_location">
+		<f:translate key="cshLocation"/>
+	</div>
+	<span class="csh" title="Hinweis">i</span>
+	<f:form.select id="location" options="{locations}" property="location.location" value="{event.location.location.uid}" prependOptionValue="0" prependOptionLabel="" optionLabelField="location" optionValueField="uid" sortByOptionLabel="1" />
+
+</div>
+<div class="csc-frame-rulerAfter clearer"></div>
+<div class="extdiv">
+	<label for="video">
+		<f:translate key="tx_events2_domain_model_event.video_link" />
+	</label>
+	<div class="hidden hidden_video">
+		<f:translate key="cshVideo"/>
+	</div>
+	<span class="csh" title="Hinweis">i</span>
+	<f:form.textfield class="powermail_input" id="video" property="videoLink.link" value="{event.videoLink.link}" />
+</div>
+<div class="csc-frame-rulerAfter clearer"></div>
+<div class="extdiv powermail_fieldwrap_file">
+	<label>
+		<f:translate key="tx_events2_domain_model_event.images"/>
+	</label>
+	<div class="hidden hidden_images_0">
+		<f:translate key="cshImages"/>
+	</div>
+	<span class="csh" title="Hinweis">i</span>
+	<f:form.upload id="images_0" name="newEvent[images][0]" />
+	<div class="powermail_check_inner csc-frame-rulerAfter clearer">
+		<f:form.checkbox name="newEvent[images][0][rights]" value="1" />
+		<f:translate key="rightsMessage"/>
+	</div>
+	<f:form.upload id="images_1" name="newEvent[images][1]" />
+	<div class="powermail_check_inner csc-frame-rulerAfter clearer">
+		<f:form.checkbox name="newEvent[images][1][rights]" value="1" />
+		<f:translate key="rightsMessage"/>
+	</div>
+	<f:form.upload id="images_2" name="newEvent[images][2]" />
+	<div class="powermail_check_inner csc-frame-rulerAfter clearer">
+		<f:form.checkbox name="newEvent[images][2][rights]" value="1" />
+		<f:translate key="rightsMessage"/>
+	</div>
+
+	<f:form.upload id="images_3" name="newEvent[images][3]" />
+	<div class="powermail_check_inner csc-frame-rulerAfter clearer">
+		<f:form.checkbox name="newEvent[images][3][rights]" value="1" />
+		<f:translate key="rightsMessage"/>
+	</div>
+
+	<f:form.upload id="images_4" name="newEvent[images][4]" />
+	<div class="powermail_check_inner csc-frame-rulerAfter clearer">
+		<f:form.checkbox name="newEvent[images][4][rights]" value="1" />
+		<f:translate key="rightsMessage"/>
+	</div>
+
+</div>
+
+<div id="dialogHint" title="{f:translate(key: 'hint')}">
+	<p>{settings.textForHint}</p>
+</div>

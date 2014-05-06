@@ -1,0 +1,5 @@
+<f:translate key="tx_events2_domain_model_exception.exception_type.{exception.exceptionType}"/>:
+<br/><f:render partial="Event/Time" arguments="{time: exception.exceptionTime}" />
+<f:if condition="{exception.exceptionDetails}">
+	<br />{exception.exceptionDetails -> f:format.html(parseFuncTSPath: 'lib.parseFunc') -> f:format.nl2br()}
+</f:if>

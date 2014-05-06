@@ -1,0 +1,26 @@
+{namespace e2=JWeiland\Events2\ViewHelpers}
+
+<f:if condition="{event.eventEnd}">
+	<f:then>
+		<f:if condition="{settings.mergeEvents}">
+			<f:then>
+				{event.day.day -> e2:strftime(format: '%a')}
+				<span class="date1">{event.day.day -> e2:strftime(format: '%d')}</span>
+				{event.day.day -> e2:strftime(format: '%b')}
+				<f:if condition="{event.eventEnd}">
+					<span class="date2">-{event.eventEnd -> e2:strftime(format: '%d. %b')}</span>
+				</f:if>
+			</f:then>
+			<f:else>
+				{event.day.day -> e2:strftime(format: '%a')}
+				<span class="date1">{event.day.day -> e2:strftime(format: '%d')}</span>
+				{event.day.day -> e2:strftime(format: '%b')}
+			</f:else>
+		</f:if>
+	</f:then>
+	<f:else>
+		{event.day.day -> e2:strftime(format: '%a')}
+		<span class="date1">{event.day.day -> e2:strftime(format: '%d')}</span>
+		{event.day.day -> e2:strftime(format: '%b')}
+	</f:else>
+</f:if>

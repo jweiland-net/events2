@@ -1,0 +1,21 @@
+{namespace map=JWeiland\Maps2\ViewHelpers}
+
+<h1>{location.location}</h1>
+<div class="grid_8 floatleft">
+	<div class="gridright">
+		<f:if condition="{location.txMaps2Uid}">
+			<map:widget.poiCollection width="100%" poiCollection="{location.txMaps2Uid}" />
+		</f:if>
+		&nbsp;
+	</div>
+</div>
+	<div class="grid_4 floatleft">
+		<div class="gridleft rulerbefore4">
+			<dl class="extdl">
+				<dd>{location.location}
+					<f:if condition="{location.street}"><br/>{location.street} {location.houseNumber}</f:if>
+					<f:if condition="{location.city}"><br/>{location.zip} {location.city}</f:if>
+				</dd>
+			</dl>
+		</div>
+	</div>

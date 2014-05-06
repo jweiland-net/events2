@@ -1,0 +1,221 @@
+{namespace event=JWeiland\Events2\ViewHelpers}
+
+<div class="eventProperties extcss">
+	<h1>{event.title}</h1>
+	<div class="grid_12 clearer clearfix">
+		<div class="grid_8 floatleft">
+			<div class="gridright">
+				<f:if condition="{event.images -> f:count}">
+					<f:render partial="Event/Images" arguments="{event: event}"/>
+				</f:if>
+				<f:if condition="{event.videoLink}">
+					<div class="marginbottom2">
+						<f:link.action action="show" controller="Video" arguments="{link: event.videoLink}">
+							<span>{event.videoLink.title}</span><span aria-hidden='true' class='icon-arrowright'></span></f:link.action>
+					</div>
+				</f:if>
+				<p class="margintop"><strong><f:render partial="Event/Teaser" arguments="{event: event}"/>
+				</strong></p>
+				<f:format.html>{event.detailInformations}</f:format.html>
+
+				<f:if condition="{event.theaterDetails}">
+					<div class="margintop rulerbefore">
+						<f:format.html>{event.theaterDetails}</f:format.html>
+					</div>
+				</f:if>
+				<f:if condition="{event.downloadLinks}">
+					<dl class="rulerbefore extdl">
+						<f:for each="{event.downloadLinks}" as="link">
+							<dd><span aria-hidden="true" class="icon-download"></span>
+								<f:link.external target="_blank" uri="{event:convertFalToUrl(fal: link.link)}" title="{link.title}">{link.title}</f:link.external>
+							</dd>
+						</f:for>
+					</dl>
+				</f:if>
+			</div>
+		</div>
+
+		<aside class="grid_4 floatleft">
+
+			<div class="gridleft clearfix rulerbefore4">
+				<div class="shorten shortdiv rulerafter">
+					<f:if condition="{event.recurringEvent}">
+						<f:then>
+							<dl class="extdl shortencontent shortenalways">
+								<dt>
+									<f:translate key="tx_events2_domain_model_event.event_begin"/>
+								</dt>
+								<dd class="marginbottom2">{event.day.day-> event:strftime(format: '%A, %d.%m.%Y')}</dd>
+								<f:for each="{event.days}" as="day">
+									<f:if condition="{day.day} > {event.day.day}">
+										<dd>{day.day-> event:strftime(format: '%A, %d.%m.%Y')}</dd>
+									</f:if>
+								</f:for>
+							</dl>
+
+							<f:if condition="{event.days -> f:count()} > 1">
+								<p class="readmore">
+									<span class="more">... alle Termine</span><span aria-hidden='true' class='icon-arrowright'></span>
+								</p>
+							</f:if>
+						</f:then>
+
+						<f:else>
+							<dl>
+								<dt>
+									<f:translate key="tx_events2_domain_model_event.event_begin"/>
+								</dt>
+								<dd>
+									{event.day.day -> event:strftime(format: '%A, %d.%m.%Y')}
+									<f:if condition="{event.daysOfEventsTakingDays}">
+										-<br /> {event.eventEnd -> event:strftime(format: '%A, %d.%m.%Y')}
+									</f:if>
+								</dd>
+							</dl>
+						</f:else>
+					</f:if>
+				</div>
+
+				<f:if condition="{event.sameDay}">
+					<f:else>
+						<f:if condition="{event.eventTime}">
+							<dl class="borderbottom">
+								<dd>
+									<f:translate key="tx_events2_domain_model_time.time_begin"/>:&nbsp;{event.eventTime.timeBegin}
+									<f:if condition="{event.eventTime.timeEnd}">
+										- <f:translate key="tx_events2_domain_model_time.time_end"/>:&nbsp;{event.eventTime.timeEnd}
+									</f:if>
+								</dd>
+								<f:if condition="{event.eventTime.timeEntry}">
+									<dd>
+										<f:translate key="tx_events2_domain_model_time.time_entry"/>:&nbsp;{event.eventTime.timeEntry}
+									</dd>
+								</f:if>
+								<f:if condition="{event.eventTime.duration}">
+									<dd>
+										<f:translate key="tx_events2_domain_model_time.duration"/>:&nbsp;{event.eventTime.duration}
+									</dd>
+								</f:if>
+							</dl>
+						</f:if>
+					</f:else>
+				</f:if>
+
+				<f:if condition="{event.recurringEvent}">
+					<f:if condition="{event.sameDay}">
+						<f:if condition="{event.multipleTimes -> f:count()}">
+							<dl class="extdl">
+								<dt>
+									<f:translate key="tx_events2_domain_model_event.same_day"/>
+								</dt>
+								<f:for each="{event.multipleTimes}" as="time">
+									<dd>
+										<f:translate key="tx_events2_domain_model_time.time_begin"/>:&nbsp;{time.timeBegin}
+										<f:if condition="{event.eventTime.timeEnd}">
+											- <f:translate key="tx_events2_domain_model_time.time_end"/>:&nbsp;{time.timeEnd}
+										</f:if>
+
+										<f:if condition="{event.eventTime.timeEntry}">
+											<br>
+											<f:translate key="tx_events2_domain_model_time.time_entry"/>:&nbsp;{time.timeEntry}
+										</f:if>
+									</dd>
+								</f:for>
+							</dl>
+						</f:if>
+					</f:if>
+				</f:if>
+				<f:if condition="{event.futureExceptions}">
+					<div class="shorten shortdiv rulerafter margintop">
+						<div class="shortencontent shortenalways">
+							<h3><f:translate key="tx_events2_domain_model_event.exceptions"/></h3>
+							<f:groupedFor each="{event.futureExceptions}" as="groupedExceptions" groupBy="exceptionVisibleDate" groupKey="exceptionDate">
+								<dl class="nomargin borderbottom">
+									<dt class="nomargin">{exceptionDate -> f:format.date(format: '%A, %d.%m.%Y')}:</dt>
+									<f:for each="{groupedExceptions}" as="exception">
+										<dd>
+											<f:render partial="Event/Exception/{exception.exceptionType}" arguments="{exception: exception}"/>
+										</dd>
+									</f:for>
+								</dl>
+							</f:groupedFor>
+						</div>
+						<p class="readmore">
+							<span class="more">... alle Termine</span><span aria-hidden='true' class='icon-arrowright'></span>
+						</p>
+					</div>
+				</f:if>
+
+				<dl class="extdl marginbottom2">
+					<dt>
+						<f:translate key="tx_events2_domain_model_event.location"/>
+					</dt>
+					<dd class="grid_8 floatleft noborder">
+						<f:link.action action="show" controller="Location" pageUid="{settings.pidOfLocationPage}" arguments="{location: event.location.location}" title="{event.location.location.location}">
+							{event.location.location.location}
+						</f:link.action>
+					</dd>
+					<dd class="grid_4 floatleft noborder">
+						<f:link.action action="show" controller="Location" pageUid="{settings.pidOfLocationPage}" arguments="{location: event.location.location}" title="{f:translate(key: 'altTextMapImg')}">
+							<f:image class="floatright" src="fileadmin/templates/img/thumbmaps.png" alt="{f:translate(key: 'altTextMapImg')}"/>
+						</f:link.action>
+					</dd>
+
+					<dt>
+						<f:translate key="tx_events2_domain_model_event.organizer"/>
+					</dt>
+					<dd>
+						<f:if condition="{event.organizer.organizer.link}">
+							<f:then>
+								<f:link.external uri="{event.organizer.organizer.link.link}" target="_blank" title="{event.organizer.organizer.organizer}">
+									{event.organizer.organizer.organizer}
+									<f:if condition="{event.organizer.organizer.link.title}">({event.organizer.organizer.link.title})
+									</f:if>
+								</f:link.external>
+							</f:then>
+							<f:else>
+								{event.organizer.organizer.organizer}
+							</f:else>
+						</f:if>
+					</dd>
+				</dl>
+
+				<f:if condition="{event.freeEntry}">
+					<f:then>
+						<dl class="extdl marginbottom2">
+							<dd>
+								<f:translate key="tx_events2_domain_model_event.free_entry"/>
+							</dd>
+						</dl>
+					</f:then>
+					<f:else>
+					</f:else>
+				</f:if>
+				<dl class="extdl marginbottom2">
+					<dd><span aria-hidden="true" class="icon-download"></span>
+						<event:widget.iCalendar
+							title="{event.title}"
+							description="{event.detailInformations -> f:format.raw() -> f:format.stripTags()}"
+							day="{event.day.day}"
+							times="{f:if(condition: '{event.multipleTimes -> f:count()}', then: event.multipleTimes, else: event.eventTime)}"
+							location="{event.location.location.location}"
+							/>
+					</dd>
+				</dl>
+				<f:if condition="{event.ticketLink.link}">
+					<div class="csc-teaser iconteaser">
+						<div class="teaserticket teaserinner">
+							<div class="csc-header">
+								<h2 class="noborder">
+									<f:link.external uri="{event.ticketLink.link}" title="<f:translate key='tx_events2_domain_model_event.ticket_link'/>" target="_blank">
+										<span class="teasertext">{f:if(condition: event.ticketLink.title, then: '{event.ticketLink.title}', else:'{event.ticketLink.link}')}</span><span aria-hidden="true" class="icon-arrowright"></span>
+									</f:link.external>
+								</h2>
+							</div>
+						</div>
+					</div>
+				</f:if>
+			</div>
+		</aside>
+	</div>
+</div>

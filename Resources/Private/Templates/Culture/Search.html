@@ -1,0 +1,12 @@
+{namespace events2=JWeiland\Events2\ViewHelpers}
+
+<f:layout name="Default" />
+
+<f:section name="main">
+	<f:render partial="Culture/Search.html" arguments="{suitabilityUser: suitabilityUser, suitabilityGroups: suitabilityGroups, topic: topic, topics: topics, category: category, categories: categories}" />
+	<div class="list scroll-container">
+		<events2:widget.paginate objects="{events}" as="paginatedEvents" configuration="{itemsPerPage: settings.pageBrowser.itemsPerPage, insertAbove: settings.pageBrowser.insertAbove, insertBelow: settings.pageBrowser.insertBelow, maximumNumberOfLinks: settings.pageBrowser.maximumNumberOfLinks}">
+			<f:render partial="Event/List" arguments="{events: paginatedEvents}" />
+		</events2:widget.paginate>
+	</div>
+</f:section>

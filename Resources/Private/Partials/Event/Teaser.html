@@ -1,0 +1,4 @@
+<f:if condition="{event.teaser}">
+	<f:then>{event.teaser -> f:format.html(parseFuncTSPath: 'lib.parseFunc') -> f:format.nl2br()}</f:then>
+	<f:else>{event.detailInformations -> f:format.crop(maxCharacters: 100) -> f:format.html(parseFuncTSPath:'lib.parseFunc') -> f:format.nl2br()}</f:else>
+</f:if>

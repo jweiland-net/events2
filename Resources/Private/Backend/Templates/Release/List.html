@@ -1,0 +1,23 @@
+<f:layout name="Default" />
+
+<f:section name="content">
+	<table  class="tx_events2" >
+		<tr>
+			<th>
+				<f:translate key="tx_events2_domain_model_event.title" />
+			</th>
+			<th>
+				<f:translate key="tx_events2_domain_model_event.event_begin" />
+			</th>
+		</tr>
+
+		<f:widget.paginate objects="{events}" as="paginatedEvents" configuration="{itemsPerPage: 30, insertAbove: 1, insertBelow: 0, maximumNumberOfLinks: 10}">
+			<f:for each="{paginatedEvents}" as="event">
+				<tr>
+					<td nowrap="nowrap"><f:link.action action="show" arguments="{event: event}" title="{event.title}">{event.title}</f:link.action></td>
+					<td nowrap="nowrap">{event.eventBegin->f:format.date(format: 'd.m.Y')}</td>
+				</tr>
+			</f:for>
+		</f:widget.paginate>
+	</table>
+</f:section>

@@ -1,0 +1,33 @@
+{namespace event=JWeiland\Events2\ViewHelpers}
+
+<f:layout name="Default" />
+
+<f:section name="main">
+
+	<f:security.ifHasRole role="{settings.userGroup}">
+		<f:then>
+			<f:if condition="{event:feuser(field: 'tx_events2_organizer')}">
+				<f:then>
+					<f:flashMessages renderMode="div" class="info-box2" />
+					<f:render partial="FormErrors" arguments="{object:Event}"/>
+					<f:form action="create" name="newEvent" object="{newEvent}" enctype="multipart/form-data" class="extform withinfo">
+						<legend>
+							<f:translate key="newEntry"/>
+						</legend>
+						<div class="floatright clearfix marginbottom"><f:cObject typoscriptObjectPath="lib.feformdocumentation"/></div>
+						<f:render partial="Event/FormFields" arguments="{locations: locations}" />
+						<div class="powermail_fieldwrap powermail_fieldwrap_submit">
+							<f:form.submit class="powermail_submit" value="{f:translate(key: 'create')}"/>
+						</div>
+					</f:form>
+				</f:then>
+				<f:else>
+					<div><f:translate key="missingOrganizerForCreate" /></div>
+				</f:else>
+			</f:if>
+		</f:then>
+		<f:else>
+			<div><f:translate key="notAllowedToCreate" /></div>
+		</f:else>
+	</f:security.ifHasRole>
+</f:section>

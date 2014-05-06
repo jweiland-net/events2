@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2013-03-40T10:38:40Z" product-name="events2">
+		<header/>
+		<body>
+
+			<trans-unit id="sheetGeneral" xml:space="preserve">
+				<source>General</source>
+			</trans-unit>
+
+			<trans-unit id="chooseAction" xml:space="preserve">
+				<source>Ansicht wählen</source>
+			</trans-unit>
+
+			<trans-unit id="list">
+				<source>List events</source>
+			</trans-unit>
+			<trans-unit id="listLatest">
+				<source>List latest events</source>
+			</trans-unit>
+			<trans-unit id="listToday">
+				<source>List events of today</source>
+			</trans-unit>
+			<trans-unit id="listRange">
+				<source>List events for next 4 months</source>
+			</trans-unit>
+			<trans-unit id="mergeEvents">
+				<source>Merge events: Same events with given EventEnd-Date will be merged to one entry in listings</source>
+			</trans-unit>
+			<trans-unit id="categories">
+				<source>Categories</source>
+			</trans-unit>
+			<trans-unit id="mainCategories">
+				<source>Comma seperated list of main category uids</source>
+			</trans-unit>
+
+		</body>
+	</file>
+</xliff>

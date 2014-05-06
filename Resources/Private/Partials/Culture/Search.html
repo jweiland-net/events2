@@ -1,0 +1,48 @@
+<div class="extcss clearfix rulerafter4">
+	<f:form class="extform" name="search" action="search">
+		<dl>
+			<dt><f:translate key="topics"/></dt>
+			<dd><f:form.select name="topic" options="{topics}" optionValueField="uid" optionLabelField="title" sortByOptionLabel="1" prependOptionLabel="" prependOptionValue="0" value="{topic}" /></dd>
+
+			<dt><f:translate key="categories" /></dt>
+				<dd><f:form.select name="category" options="{categories}" optionValueField="uid" optionLabelField="title" sortByOptionLabel="1" prependOptionLabel="" prependOptionValue="0" value="{category}" /></dd>
+		</dl>
+		<f:if condition="{suitabilityUser}">
+			<f:then>
+				<div class="powermail_check_inner">
+					<f:form.checkbox name="suitabilityUser" value="1" checked="checked"/>
+					<label>
+						<f:translate key="tx_events2_domain_model_event.suitability_user"/>
+					</label>
+				</div>
+			</f:then>
+			<f:else>
+				<div class="powermail_check_inner">
+					<f:form.checkbox name="suitabilityUser" value="1"/>
+					<label>
+						<f:translate key="tx_events2_domain_model_event.suitability_user"/>
+					</label></div>
+			</f:else>
+		</f:if>
+
+		<f:if condition="{suitabilityGroups}">
+			<f:then>
+				<div class="powermail_check_inner">
+					<f:form.checkbox name="suitabilityGroups" value="1" checked="checked"/>
+					<label>
+						<f:translate key="tx_events2_domain_model_event.suitability_groups"/>
+					</label></div>
+			</f:then>
+			<f:else>
+				<div class="powermail_check_inner">
+					<f:form.checkbox name="suitabilityGroups" value="1"/>
+					<label>
+						<f:translate key="tx_events2_domain_model_event.suitability_groups"/>
+					</label></div>
+			</f:else>
+		</f:if>
+		<div class="submitwrap marginbottom">
+			<f:form.submit value="{f:translate(key: 'search')}" />
+		</div>
+	</f:form>
+</div>

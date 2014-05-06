@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2013-03-40T10:38:40Z" product-name="events2">
+		<header/>
+		<body>
+
+			<trans-unit id="sheetGeneral" xml:space="preserve">
+				<source>General</source>
+				<target>Allgemein</target>
+			</trans-unit>
+
+			<trans-unit id="chooseAction" xml:space="preserve">
+				<source>Choose view</source>
+				<target>Ansicht wählen</target>
+			</trans-unit>
+
+			<trans-unit id="list">
+				<source>List events</source>
+				<target>Auflistung der Termine</target>
+			</trans-unit>
+			<trans-unit id="listLatest">
+				<source>List latest events</source>
+				<target>Auflistung der aktuellsten Termine</target>
+			</trans-unit>
+			<trans-unit id="listToday">
+				<source>List events of today</source>
+				<target>Auflistung der heutigen Termine</target>
+			</trans-unit>
+			<trans-unit id="listRange">
+				<source>List events for next 4 months</source>
+				<target>Auflistung von Terminen der nächsten 4 Wochen</target>
+			</trans-unit>
+			<trans-unit id="mergeEvents">
+				<source>Merge events: Same events with given EventEnd-Date will be merged to one entry in listings</source>
+				<target>Veranstaltungen zusammenführen: Gleiche Veranstaltungen, bei denen ein Veranstaltungsenddatum gesetzt ist, werden als ein Eintrag in die Listenansicht übernommen.</target>
+			</trans-unit>
+			<trans-unit id="categories">
+				<source>Categories</source>
+				<target>Kategorien</target>
+			</trans-unit>
+			<trans-unit id="mainCategories">
+				<source>Comma seperated list of main category uids</source>
+				<target>Kommaseparierte Liste von Hauptkategorie UIDS</target>
+			</trans-unit>
+			<trans-unit id="ageGroup">
+				<source>Age group</source>
+				<target>Altersgruppe</target>
+			</trans-unit>
+			<trans-unit id="topic">
+				<source>Topic</source>
+				<target>Thema</target>
+			</trans-unit>
+			<trans-unit id="category">
+				<source>Category</source>
+				<target>Kategorie</target>
+			</trans-unit>
+
+		</body>
+	</file>
+</xliff>
