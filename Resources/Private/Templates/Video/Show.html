@@ -1,6 +1,8 @@
+{namespace events2=JWeiland\Events2\ViewHelpers}
+
 <header><h1>{link.title}</h1></header>
 <div class="grid_8 floatleft">
 	<div class="gridright">
-		<iframe width="560" height="315" src="//www.youtube.com/embed/{link.link}" frameborder="0" allowfullscreen></iframe>
+		<iframe width="560" height="315" src="{events2:createYoutubeUri(link: link.link)}" frameborder="0" allowfullscreen></iframe>
 	</div>
 </div>

@@ -24,6 +24,10 @@
 				<source>Organizer</source>
 			</trans-unit>
 
+			<trans-unit id="createNewRelationForTime">
+				<source>Create new time</source>
+			</trans-unit>
+
 			<trans-unit id="tx_events2_domain_model_event">
 				<source>Event</source>
 			</trans-unit>
@@ -158,7 +162,7 @@
 				<source>Images</source>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.video_link">
-				<source>Video link</source>
+				<source>Link to Youtube</source>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.download_links">
 				<source>Download links</source>
@@ -275,7 +279,7 @@
 				<source>Time</source>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_exception.exception_details">
-				<source>Datails</source>
+				<source>Details</source>
 			</trans-unit>
 
 			<trans-unit id="tx_events2_domain_model_location">

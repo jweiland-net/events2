@@ -18,30 +18,23 @@
 						</div>
 					</div>
 					<div class="entry grid_10 floatleft">
-						<h3 class="nomargin">
-							<f:link.action action="show" controller="Event" pageUid="{settings.pidOfDetailPage}" arguments="{event: event, day: event.day}" title="{f:translate(key: 'singleView')}: {event.title}">{event.title}</f:link.action>
-						</h3>
+						<h3 class="nomargin"><f:link.action action="show" controller="Event" pageUid="{settings.pidOfDetailPage}" arguments="{event: event, day: event.day}" title="{f:translate(key: 'singleView')}: {event.title}">{event.title}</f:link.action></h3>
 						<p class="teaser"><f:render partial="Event/Teaser" arguments="{event: event}" /></p>
-						<div><f:render partial="Event/Category" arguments="{event: event}" />
-							<f:if condition="{event.multipleTimes->f:count()} > 1">
+						<div>
+							<f:render partial="Event/Category" arguments="{event: event}" />
+							<f:if condition="{e2:getMergedEventTimes(event: event)->f:count()} == 1">
 								<f:then>
-									|&nbsp;<f:translate key="tx_events2_domain_model_time.time_begin"/>:&nbsp;
-									<f:link.action action="show" controller="Event" pageUid="{settings.pidOfDetailPage}" arguments="{event: event, day: event.day}" title="{f:translate(key: 'singleView')}">
-										{f:translate(key: 'showDetailview')}
-									</f:link.action>
+									<f:alias map="{time: '{e2:getMergedEventTimes(event: event, directReturn: 1)}'}">|&nbsp;<f:translate key="tx_events2_domain_model_time.time_begin"/>: {time.timeBegin}</f:alias>
 								</f:then>
 								<f:else>
-									<f:if condition="{event.eventTime}">
-										|&nbsp;<f:translate key="tx_events2_domain_model_time.time_begin"/>: {event.eventTime.timeBegin}
-									</f:if>
+									|&nbsp;<f:translate key="tx_events2_domain_model_time.time_begin"/>:&nbsp;
+									<f:link.action action="show" controller="Event" pageUid="{settings.pidOfDetailPage}" arguments="{event: event, day: event.day}" title="{f:translate(key: 'singleView')}">{f:translate(key: 'showDetailview')}</f:link.action>
 								</f:else>
 							</f:if>
 						</div>
-						<f:if condition="{event.location.location}">
+						<f:if condition="{event.location}">
 							<div class="location">
-								<f:link.action action="show" pageUid="{settings.pidOfLocationPage}" controller="Location" arguments="{location: event.location.location}" title="{event.location.location.location}">
-									{event.location.location.location}
-								</f:link.action>
+								<f:link.action action="show" pageUid="{settings.pidOfLocationPage}" controller="Location" arguments="{location: event.location}" title="{event.location.location}">{event.location.location}</f:link.action>
 							</div>
 						</f:if>
 					</div>

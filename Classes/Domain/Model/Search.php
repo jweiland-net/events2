@@ -4,7 +4,7 @@ namespace JWeiland\Events2\Domain\Model;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <sfroemken@jweiland.net>, jweiland.net
+ *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *  
  *  All rights reserved
  *
@@ -36,7 +36,7 @@ class Search extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 *
 	 * @var string
 	 */
-	protected $search;
+	protected $search = '';
 
 	/**
 	 * mainCategory
@@ -100,7 +100,7 @@ class Search extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	public function setSearch($search) {
-		$this->search = htmlspecialchars($search);
+		$this->search = htmlspecialchars((string)$search);
 	}
 
 	/**
@@ -186,7 +186,7 @@ class Search extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	/**
 	 * Sets the eventEnd
 	 *
-	 * @param \DateTime $eventEnd
+	 * @param string $eventEnd
 	 * @return void
 	 */
 	public function setEventEnd($eventEnd) {

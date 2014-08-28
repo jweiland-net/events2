@@ -1,13 +1,29 @@
+{namespace e2=JWeiland\Events2\ViewHelpers}
+
 <f:layout name="Default" />
 
 <f:section name="main">
-	<f:flashMessages renderMode="div" class="info-box2" />
-	<f:security.ifHasRole role="{settings.userGroup}">
-	<p class="align-right info-box">
-		<f:link.action action="new" title="{f:translate(key: 'newEntry')}"><span><f:translate key="newEntry"/></span><span aria-hidden="true" class="icon-arrowright"></span>
-		</f:link.action>
-	</p>
-	</f:security.ifHasRole>
-	<f:render partial="Event/Properties" arguments="{event: event}" />
-
+	<f:if condition="{0: settings.display}=={0: 'displayImages'}">
+		<f:then>
+			<f:if condition="{event.images -> f:count}">
+				<f:render partial="Event/Images" arguments="{event: event}"/>
+			</f:if>
+		</f:then>
+		<f:else>
+			<f:flashMessages renderMode="div" class="info-box2" />
+			<f:security.ifHasRole role="{settings.userGroup}">
+				<p class="align-right info-box">
+					<f:link.action action="new" title="{f:translate(key: 'newEntry')}"><span><f:translate key="newEntry"/></span><span aria-hidden="true" class="icon-arrowright"></span></f:link.action>
+				</p>
+				<p class="align-right info-box">
+					<f:if condition="{e2:feuser(field: 'tx_events2_organizer')}">
+						<f:then>
+							<f:link.action action="edit" arguments="{event: event, day: event.day}" title="{f:translate(key: 'update')}"><span><f:translate key="update"/></span><span aria-hidden="true" class="icon-arrowright"></span></f:link.action>
+						</f:then>
+					</f:if>
+				</p>
+			</f:security.ifHasRole>
+			<f:render partial="Event/Properties" arguments="{event: event}" />
+		</f:else>
+	</f:if>
 </f:section>

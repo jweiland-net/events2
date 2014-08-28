@@ -4,7 +4,7 @@ namespace JWeiland\Events2\Ajax;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <sfroemken@jweiland.net>, jweiland.net
+ *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *
  *  All rights reserved
  *
@@ -51,7 +51,7 @@ class FindSubCategories extends \JWeiland\Events2\Ajax\AbstractAjaxRequest {
 		// cast arguments
 		$parentCategory = (int) $arguments['category'];
 
-		$categories = $this->categoryRepository->getCategories($parentCategory);
+		$categories = $this->categoryRepository->getSubCategories($parentCategory);
 		return json_encode($this->convertIntoJsReadableFormat($categories), JSON_FORCE_OBJECT);
 	}
 
@@ -59,10 +59,10 @@ class FindSubCategories extends \JWeiland\Events2\Ajax\AbstractAjaxRequest {
 	 * We don't want to add a huge JSON String with all properties through AJAX-Process
 	 * It is easier and smaller to pass through only needed values like UID and Label.
 	 *
-	 * @param \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult $categories
+	 * @param \TYPO3\CMS\Extbase\Persistence\QueryResultInterface $categories
 	 * @return array
 	 */
-	protected function convertIntoJsReadableFormat(\TYPO3\CMS\Extbase\Persistence\Generic\QueryResult $categories) {
+	protected function convertIntoJsReadableFormat(\TYPO3\CMS\Extbase\Persistence\QueryResultInterface $categories) {
 		$response = array();
 		/** @var \TYPO3\CMS\Extbase\Domain\Model\Category $category */
 		foreach ($categories as $category) {

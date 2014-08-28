@@ -1,4 +1,4 @@
-{namespace events2=JWeiland\Events2\ViewHelpers}
+{namespace e2=JWeiland\Events2\ViewHelpers}
 
 <f:layout name="Default" />
 
@@ -11,6 +11,11 @@
 				<span><f:translate key="newEntry"/></span><span aria-hidden="true" class="icon-arrowright"></span>
 			</f:link.action>
 		</p>
+		<p class="align-right info-box">
+			<f:link.action action="listMyEvents" title="{f:translate(key: 'listMyEvents')}">
+				<span><f:translate key="listMyEvents"/></span><span aria-hidden="true" class="icon-arrowright"></span>
+			</f:link.action>
+		</p>
 	</f:security.ifHasRole>
 
 	<f:if condition="{eventsOnTopOfList}">
@@ -19,8 +24,8 @@
 		</div>
 	</f:if>
 	<div class="list scroll-container">
-		<events2:widget.paginate objects="{events}" as="paginatedEvents" configuration="{itemsPerPage: settings.pageBrowser.itemsPerPage, insertAbove: settings.pageBrowser.insertAbove, insertBelow: settings.pageBrowser.insertBelow, maximumNumberOfLinks: settings.pageBrowser.maximumNumberOfLinks}">
+		<e2:widget.paginate objects="{events}" as="paginatedEvents" configuration="{itemsPerPage: settings.pageBrowser.itemsPerPage, insertAbove: settings.pageBrowser.insertAbove, insertBelow: settings.pageBrowser.insertBelow, maximumNumberOfLinks: settings.pageBrowser.maximumNumberOfLinks}">
 			<f:render partial="Event/List" arguments="{events: paginatedEvents}" />
-		</events2:widget.paginate>
+		</e2:widget.paginate>
 	</div>
 </f:section>

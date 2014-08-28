@@ -4,7 +4,7 @@ namespace JWeiland\Events2\ViewHelpers;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <sfroemken@jweiland.net>, jweiland.net
+ *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *
  *  All rights reserved
  *

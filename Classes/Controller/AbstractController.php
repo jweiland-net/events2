@@ -4,7 +4,7 @@ namespace JWeiland\Events2\Controller;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <sfroemken@jweiland.net>, jweiland.net
+ *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *  
  *  All rights reserved
  *
@@ -24,6 +24,10 @@ namespace JWeiland\Events2\Controller;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use JWeiland\Events2\Domain\Model\Event;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 
 /**
  * @package events2
@@ -35,7 +39,6 @@ class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * eventRepository
 	 *
 	 * @var \JWeiland\Events2\Domain\Repository\EventRepository
-	 * @inject
 	 */
 	protected $eventRepository;
 
@@ -43,7 +46,6 @@ class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * dayRepository
 	 *
 	 * @var \JWeiland\Events2\Domain\Repository\DayRepository
-	 * @inject
 	 */
 	protected $dayRepository;
 
@@ -51,13 +53,72 @@ class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * locationRepository
 	 *
 	 * @var \JWeiland\Events2\Domain\Repository\LocationRepository
-	 * @inject
 	 */
 	protected $locationRepository;
 
+	/**
+	 * categoryRepository
+	 *
+	 * @var \JWeiland\Events2\Domain\Repository\CategoryRepository
+	 */
+	protected $categoryRepository;
 
+	/**
+	 * userRepository
+	 *
+	 * @var \JWeiland\Events2\Domain\Repository\UserRepository
+	 */
+	protected $userRepository;
 
+	/**
+	 * inject event repository
+	 *
+	 * @param \JWeiland\Events2\Domain\Repository\EventRepository $eventRepository
+	 * @return void
+	 */
+	public function injectEventRepository(\JWeiland\Events2\Domain\Repository\EventRepository $eventRepository) {
+		$this->eventRepository = $eventRepository;
+	}
 
+	/**
+	 * inject day repository
+	 *
+	 * @param \JWeiland\Events2\Domain\Repository\DayRepository $dayRepository
+	 * @return void
+	 */
+	public function injectDayRepository(\JWeiland\Events2\Domain\Repository\DayRepository $dayRepository) {
+		$this->dayRepository = $dayRepository;
+	}
+
+	/**
+	 * inject location repository
+	 *
+	 * @param \JWeiland\Events2\Domain\Repository\LocationRepository $locationRepository
+	 * @return void
+	 */
+	public function injectLocationRepository(\JWeiland\Events2\Domain\Repository\LocationRepository $locationRepository) {
+		$this->locationRepository = $locationRepository;
+	}
+
+	/**
+	 * inject category repository
+	 *
+	 * @param \JWeiland\Events2\Domain\Repository\CategoryRepository $categoryRepository
+	 * @return void
+	 */
+	public function injectCategoryRepository(\JWeiland\Events2\Domain\Repository\CategoryRepository $categoryRepository) {
+		$this->categoryRepository = $categoryRepository;
+	}
+
+	/**
+	 * inject user repository
+	 *
+	 * @param \JWeiland\Events2\Domain\Repository\UserRepository $userRepository
+	 * @return void
+	 */
+	public function injectUserRepository(\JWeiland\Events2\Domain\Repository\UserRepository $userRepository) {
+		$this->userRepository = $userRepository;
+	}
 
 	/**
 	 * preprocessing of all actions
@@ -88,81 +149,7 @@ class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 */
 	public function initializeView() {
 		$this->view->assign('eventsOnTopOfList', $this->eventRepository->findTopEvents());
-	}
-
-	/**
-	 * Converts a date like 17.01.2013 to an array with additional informations for time
-	 * DateTimeConverter of extbase can read this array and converts date into DateTime-Object with time set to midnight
-	 *
-	 * @param string $nameOfArgument
-	 * @param string $nameOfDateValue
-	 */
-	protected function convertDateToArrayInRequest($nameOfArgument, $nameOfDateValue) {
-		if ($this->request->hasArgument($nameOfArgument)) {
-			$argument = $this->request->getArgument($nameOfArgument);
-			$date = array();
-			$date['date'] = $argument[$nameOfDateValue];
-			$date['hour'] = 0;
-			$date['minute'] = 0;
-			$date['second'] = 0;
-			$argument[$nameOfDateValue] = $date;
-			$this->request->setArgument($nameOfArgument, $argument);
-		}
-	}
-
-	/**
-	 * Converts an array of date informations back to a string
-	 * This is only needed if websiteuser has entered wrong data in form and the form has to be displayed again.
-	 * Only in that case our generated array with convertDateToArrayInRequest has to be converted back to string
-	 *
-	 * @param string $nameOfArgument
-	 * @param string $nameOfDateValue
-	 */
-	protected function convertDateToStringInRequest($nameOfArgument, $nameOfDateValue) {
-		if ($this->request->getOriginalRequest()) {
-			$argument = $this->request->getOriginalRequest()->getArgument($nameOfArgument);
-			$argument[$nameOfDateValue] = $argument[$nameOfDateValue]['date'];
-			$this->request->getOriginalRequest()->setArgument($nameOfArgument, $argument);
-		}
-	}
-
-	/**
-	 * A special action which is called if the originally intended action could
-	 * not be called, for example if the arguments were not valid.
-	 *
-	 * The default implementation sets a flash message, request errors and forwards back
-	 * to the originating action. This is suitable for most actions dealing with form input.
-	 *
-	 * We clear the page cache by default on an error as well, as we need to make sure the
-	 * data is re-evaluated when the user changes something.
-	 *
-	 * @return string
-	 */
-	protected function errorAction() {
-		$this->clearCacheOnError();
-		/** @var \TYPO3\CMS\Extbase\Mvc\Controller\Argument $argument */
-		$preparedArguments = array();
-		foreach ($this->arguments as $argument) {
-			$preparedArguments[$argument->getName()] = $argument->getValue();
-		}
-		$errorFlashMessage = $this->getErrorFlashMessage();
-		if ($errorFlashMessage !== FALSE) {
-			$errorFlashMessageObject = new \TYPO3\CMS\Core\Messaging\FlashMessage(
-				$errorFlashMessage,
-				'',
-				\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
-			);
-			$this->controllerContext->getFlashMessageQueue()->enqueue($errorFlashMessageObject);
-		}
-		$referringRequest = $this->request->getReferringRequest();
-		if ($referringRequest !== NULL) {
-			$originalRequest = clone $this->request;
-			$this->request->setOriginalRequest($originalRequest);
-			$this->request->setOriginalRequestMappingResults($this->arguments->getValidationResults());
-			$this->forward($referringRequest->getControllerActionName(), $referringRequest->getControllerName(), $referringRequest->getControllerExtensionName(), $preparedArguments);
-		}
-		$message = 'An error occurred while trying to call ' . get_class($this) . '->' . $this->actionMethodName . '().' . PHP_EOL;
-		return $message;
+		$this->view->assign('siteUrl', GeneralUtility::getIndpEnv('TYPO3_SITE_URL')); // needed for ajax requests
 	}
 
 	/**
@@ -176,13 +163,93 @@ class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 		if ($this->getControllerContext()->getRequest()->hasArgument($argument)) {
 			/** @var \JWeiland\Events2\Domain\Model\Event $event */
 			$event = $this->getControllerContext()->getRequest()->getArgument($argument);
-			$images = $event->getImages();
-			if (count($images)) {
-				/** @var \JWeiland\Events2\Domain\Model\FileReference $image */
-				foreach ($images as $image) {
-					$image->getOriginalResource()->delete();
+			if ($event instanceof Event) {
+				$images = $event->getImages();
+				if (count($images)) {
+					/** @var \JWeiland\Events2\Domain\Model\FileReference $image */
+					foreach ($images as $image) {
+						$image->getOriginalResource()->delete();
+					}
 				}
 			}
+		}
+	}
+
+	/**
+	 * remove videoLink if empty
+	 * add special validation for videolink
+	 * I can't add this validation to Linkmodel, as such a validation would be also valid for organizer link
+	 *
+	 * @param string $argument
+	 * @return void
+	 */
+	protected function addValidationForVideoLink($argument) {
+		if ($this->request->hasArgument($argument)) {
+			$event = $this->request->getArgument($argument);
+			if (empty($event['videoLink']['link'])) {
+				// remove videoLink completely if empty, else extbase will create an empty link object
+				unset($event['videoLink']);
+				$this->request->setArgument($argument, $event);
+			} else {
+				// create a new RegExpValidator for property link
+				/** @var \TYPO3\CMS\Extbase\Validation\Validator\RegularExpressionValidator $regExpValidator */
+				$regExpValidator = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Validation\\Validator\\RegularExpressionValidator', array(
+					'regularExpression' => '~^(|http:|https:)//(|www.)youtube(.*?)(v=|embed/)([a-zA-Z0-9_-]+)~i'
+				));
+				/** @var \TYPO3\CMS\Extbase\Validation\Validator\GenericObjectValidator $genericObjectValidator */
+				$genericObjectValidator = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Validation\\Validator\\GenericObjectValidator');
+				$genericObjectValidator->addPropertyValidator('link', $regExpValidator);
+
+				// modify current validator of event
+				$event = $this->arguments->getArgument($argument);
+				/** @var \TYPO3\CMS\Extbase\Validation\Validator\ConjunctionValidator $eventValidator */
+				$eventValidator = $event->getValidator();
+				$validators = $eventValidator->getValidators();
+				$validators->rewind();
+				$eventValidator = $validators->current();
+				$validators = $eventValidator->getValidators();
+				$validators->rewind();
+				/** @var \TYPO3\CMS\Extbase\Validation\Validator\GenericObjectValidator $eventValidator */
+				$eventValidator = $validators->current();
+				$eventValidator->addPropertyValidator('videoLink', $genericObjectValidator);
+			}
+		}
+	}
+
+	/**
+	 * add organizer
+	 *
+	 * In a HTML-Template you can change the user uid if you want
+	 * So it's better to add the organizer here in PHP
+	 *
+	 * @param $argument
+	 * @return boolean
+	 */
+	protected function addOrganizer($argument) {
+		if ($this->request->hasArgument($argument)) {
+			$event = $this->request->getArgument($argument);
+			if (!isset($event['organizer'])) {
+				$organizerOfCurrentUser = (string)$this->userRepository->getFieldFromUser('tx_events2_organizer');
+				if (MathUtility::canBeInterpretedAsInteger($organizerOfCurrentUser)) {
+					$event['organizer'] = $organizerOfCurrentUser;
+					// per default it is not allowed to add new Arguments manually. So we have to register them.
+					// allow mapping of organizer
+					$this->arguments->getArgument($argument)->getPropertyMappingConfiguration()->allowProperties('organizer');
+					// allow creation
+					$this->arguments->getArgument($argument)->getPropertyMappingConfiguration()->forProperty('organizer')->setTypeConverterOption(
+						'TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter',
+						PersistentObjectConverter::CONFIGURATION_CREATION_ALLOWED,
+						TRUE
+					)->allowProperties('organizer');
+					$this->request->setArgument($argument, $event);
+				} else {
+					return FALSE;
+				}
+			} else {
+				return TRUE;
+			}
+		} else {
+			return FALSE;
 		}
 	}
 

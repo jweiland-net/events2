@@ -4,7 +4,7 @@ namespace JWeiland\Events2\Domain\Model;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <sfroemken@jweiland.net>, jweiland.net
+ *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *  
  *  All rights reserved
  *
@@ -36,15 +36,15 @@ class Time extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 *
 	 * @var string
 	 */
-	protected $weekday;
+	protected $weekday = '';
 
 	/**
 	 * Time begin
 	 *
 	 * @var string
-	 * @validate RegularExpression(regularExpression=/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/)
+	 * @validate NotEmpty,RegularExpression(regularExpression=/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/)
 	 */
-	protected $timeBegin;
+	protected $timeBegin = '';
 
 	/**
 	 * Time entry
@@ -52,7 +52,7 @@ class Time extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @var string
 	 * @validate RegularExpression(regularExpression=/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/)
 	 */
-	protected $timeEntry;
+	protected $timeEntry = '';
 
 	/**
 	 * Duration
@@ -60,7 +60,7 @@ class Time extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @var string
 	 * @validate RegularExpression(regularExpression=/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/)
 	 */
-	protected $duration;
+	protected $duration = '';
 
 	/**
 	 * Time end
@@ -68,7 +68,7 @@ class Time extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @var string
 	 * @validate RegularExpression(regularExpression=/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/)
 	 */
-	protected $timeEnd;
+	protected $timeEnd = '';
 
 
 
@@ -90,7 +90,7 @@ class Time extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	public function setWeekday($weekday) {
-		$this->weekday = $weekday;
+		$this->weekday = (string)$weekday;
 	}
 
 	/**
@@ -109,7 +109,7 @@ class Time extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	public function setTimeBegin($timeBegin) {
-		$this->timeBegin = $timeBegin;
+		$this->timeBegin = (string)$timeBegin;
 	}
 
 	/**
@@ -128,7 +128,7 @@ class Time extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	public function setTimeEntry($timeEntry) {
-		$this->timeEntry = $timeEntry;
+		$this->timeEntry = (string)$timeEntry;
 	}
 
 	/**
@@ -147,7 +147,7 @@ class Time extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	public function setDuration($duration) {
-		$this->duration = $duration;
+		$this->duration = (string)$duration;
 	}
 
 	/**
@@ -166,7 +166,7 @@ class Time extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	public function setTimeEnd($timeEnd) {
-		$this->timeEnd = $timeEnd;
+		$this->timeEnd = (string)$timeEnd;
 	}
 
 }

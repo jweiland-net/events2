@@ -4,7 +4,7 @@ namespace JWeiland\Events2\Ajax;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <sfroemken@jweiland.net>, jweiland.net
+ *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *
  *  All rights reserved
  *
@@ -24,12 +24,13 @@ namespace JWeiland\Events2\Ajax;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 /**
  * @package events2
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-abstract class AbstractAjaxRequest implements \JWeiland\Events2\Ajax\AjaxInterface {
+abstract class AbstractAjaxRequest implements AjaxInterface {
 
 	/**
 	 * @var \TYPO3\CMS\Extbase\Object\ObjectManager
@@ -68,7 +69,7 @@ abstract class AbstractAjaxRequest implements \JWeiland\Events2\Ajax\AjaxInterfa
 	 */
 	public function injectConfigurationManager(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager) {
 		$this->configurationManager = $configurationManager;
-		$this->settings = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS);
+		$this->settings = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS);
 	}
 
 
@@ -85,4 +86,3 @@ abstract class AbstractAjaxRequest implements \JWeiland\Events2\Ajax\AjaxInterfa
 	}
 
 }
-?>

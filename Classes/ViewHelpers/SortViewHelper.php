@@ -25,6 +25,7 @@ namespace JWeiland\Events2\ViewHelpers;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * Sorts an instance of ObjectStorage, an Iterator implementation,
@@ -39,7 +40,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package Vhs
  * @subpackage ViewHelpers\Iterator
  */
-class SortViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class SortViewHelper extends AbstractViewHelper {
 
 	/**
 	 * Initialize arguments

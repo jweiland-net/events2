@@ -4,7 +4,7 @@ namespace JWeiland\Events2\Domain\Model;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <sfroemken@jweiland.net>, jweiland.net
+ *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *  
  *  All rights reserved
  *
@@ -36,28 +36,28 @@ class Exception extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 *
 	 * @var string
 	 */
-	protected $exceptionType;
+	protected $exceptionType = '';
 
 	/**
 	 * ExceptionDate
 	 *
-	 * @var DateTime
+	 * @var \DateTime
 	 */
-	protected $exceptionDate;
+	protected $exceptionDate = NULL;
 
 	/**
 	 * ExceptionTime
 	 *
 	 * @var \JWeiland\Events2\Domain\Model\Time
 	 */
-	protected $exceptionTime;
+	protected $exceptionTime = NULL;
 
 	/**
 	 * ExceptionDetails
 	 *
 	 * @var string
 	 */
-	protected $exceptionDetails;
+	protected $exceptionDetails = '';
 
 
 
@@ -69,7 +69,7 @@ class Exception extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @param string $exceptionType
 	 */
 	public function setExceptionType($exceptionType) {
-		$this->exceptionType = $exceptionType;
+		$this->exceptionType = (string)$exceptionType;
 	}
 
 	/**
@@ -84,9 +84,9 @@ class Exception extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	/**
 	 * Setter for exceptionDate
 	 *
-	 * @param DateTime $exceptionDate
+	 * @param \DateTime $exceptionDate
 	 */
-	public function setExceptionDate(DateTime $exceptionDate) {
+	public function setExceptionDate(\DateTime $exceptionDate) {
 		$this->exceptionDate = $exceptionDate;
 	}
 
@@ -133,7 +133,7 @@ class Exception extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @param string $exceptionDetails
 	 */
 	public function setExceptionDetails($exceptionDetails) {
-		$this->exceptionDetails = $exceptionDetails;
+		$this->exceptionDetails = (string)$exceptionDetails;
 	}
 
 	/**

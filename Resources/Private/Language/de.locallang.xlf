@@ -42,7 +42,7 @@
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.same_day">
 				<source>Same day</source>
-				<target>am gleichen Tag</target>
+				<target>Uhrzeit</target>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.multiple_times">
 				<source>Multiple times on same day</source>
@@ -165,8 +165,8 @@
 				<target>Bilder</target>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.video_link">
-				<source>Video link</source>
-				<target>Videolink</target>
+				<source>Link to Youtube</source>
+				<target>Link zu Youtube</target>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.download_links">
 				<source>Download links</source>
@@ -219,6 +219,10 @@
 			<trans-unit id="tx_events2_domain_model_event.theater_details">
 				<source>Theater description</source>
 				<target>Stückdetails</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.categories">
+				<source>Categories</source>
+				<target>Kategorien</target>
 			</trans-unit>
 
 			<trans-unit id="tx_events2_domain_model_day">
@@ -403,6 +407,22 @@
 				<source>Insert new Event</source>
 				<target>Neue Veranstaltung anlegen</target>
 			</trans-unit>
+			<trans-unit id="listMyEvents">
+				<source>List my events</source>
+				<target>Zu meinen Veranstaltungen</target>
+			</trans-unit>
+			<trans-unit id="eventCreated">
+				<source>Your new Event was created.</source>
+				<target>Ihre Veranstaltung wurde eingetragen.</target>
+			</trans-unit>
+			<trans-unit id="eventUpdated">
+				<source>Your Event has been updated.</source>
+				<target>Ihre Veranstaltung wurde bearbeitet.</target>
+			</trans-unit>
+			<trans-unit id="eventDeleted">
+				<source>Your Event has been removed.</source>
+				<target>Ihre Veranstaltung wurde gelöscht.</target>
+			</trans-unit>
 			<trans-unit id="showDetailview">
 				<source>See Single View</source>
 				<target>Siehe Detailansicht</target>
@@ -492,6 +512,23 @@
 				<target>Kategorien</target>
 			</trans-unit>
 
+			<trans-unit id="error.upload">
+				<source>Something went wrong with your uploaded files. Please try again. Error: </source>
+				<target>Ein Fehler ist beim Upload der Dateien aufgetreten. Bitte versuchen Sie es zunächst erneut. Fehlermeldung: </target>
+			</trans-unit>
+			<trans-unit id="error.uploadRights">
+				<source>You don\'t have checked the box for upload rights. So upload stops here</source>
+				<target>Sie haben die Checkbox für die Uploadrechte nicht markiert. Der Upload wurde abgebrochen.</target>
+			</trans-unit>
+			<trans-unit id="error.fileExtension">
+				<source>You only can upload files with following file extensions: %1$s</source>
+				<target>Sie können nur Bilder mit folgenden Dateiendungen hochladen: %1$s</target>
+			</trans-unit>
+			<trans-unit id="error.locationFail">
+				<source>The given location does not exist in our database. Please choose another one</source>
+				<target>Dieser Veranstaltungsort existiert nicht. Bitte wählen Sie einen anderen Ort.</target>
+			</trans-unit>
+
 			<trans-unit id="cshTitle">
 				<source>The title is mandatory</source>
 				<target>Der Titel ist ein Pflichtfeld und muss angegeben werden</target>
@@ -512,9 +549,13 @@
 				<source>The time of the event has to be fill in following format: hh:mm</source>
 				<target>Die Uhrzeit muss in folgendem Format eingetragen werden: ss:mm</target>
 			</trans-unit>
+			<trans-unit id="cshCategories">
+				<source>The categories are mandatory. Please hold down STRG or CMD on your keyboard to select multiple categories.</source>
+				<target>Die Angabe mindestens einer Kategorie ist Pflicht. Sie können mit Hilfe gedrückter STRG bzw. CMD-Taste mehrere Kategorien auswählen.</target>
+			</trans-unit>
 			<trans-unit id="cshLocation">
 				<source>The location is mandatory</source>
-				<target>Der Veranstaltungsort ist ein Pflichtfeld</target>
+				<target>Der Veranstaltungsort ist ein Pflichtfeld. Geben Sie den Namen oder einen Teil des Namens des Veranstaltungsortes ein. Sie bekommen dann alle möglichen Optionen vorgeschlagen. Wählen Sie dann den gewünschten Ort in der Liste aus. Sollte  der Ort noch nicht hinterlegt sein, können Sie durch Anklicken des Links "Neuen Ort beantragen" diesen vorschlagen. </target>
 			</trans-unit>
 			<trans-unit id="cshVideo">
 				<source>Insert here the link to a video film</source>
@@ -532,6 +573,7 @@
 				<source>Map</source>
 				<target>Karte</target>
 			</trans-unit>
+
 		</body>
 	</file>
 </xliff>

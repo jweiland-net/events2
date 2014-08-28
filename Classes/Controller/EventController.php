@@ -4,7 +4,7 @@ namespace JWeiland\Events2\Controller;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <sfroemken@jweiland.net>, jweiland.net
+ *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *  
  *  All rights reserved
  *
@@ -24,14 +24,16 @@ namespace JWeiland\Events2\Controller;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use JWeiland\Events2\Domain\Model\Day;
 use TYPO3\CMS\Extbase\Property\TypeConverter\DateTimeConverter;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
  * @package events2
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class EventController extends \JWeiland\Events2\Controller\AbstractController {
+class EventController extends AbstractController {
 
 	/**
 	 * action list
@@ -120,42 +122,54 @@ class EventController extends \JWeiland\Events2\Controller\AbstractController {
 	}
 
 	/**
-	 * action show
+	 * action list my events
 	 *
-	 * @param \JWeiland\Events2\Domain\Model\Event $event
-	 * @param \JWeiland\Events2\Domain\Model\Day $day
-	 * @ignorevalidation $event
-	 * @ignorevalidation $day
-	 * @throws \Exception
 	 * @return void
 	 */
-	public function showAction(\JWeiland\Events2\Domain\Model\Event $event, \JWeiland\Events2\Domain\Model\Day $day = NULL) {
-		if ($day instanceof \JWeiland\Events2\Domain\Model\Day) {
-			$event->setDay($day);
-		} else {
-			// try to find next possible day
-			$day = $this->dayRepository->getNextDayForEvent($event);
-			if ($day instanceof \JWeiland\Events2\Domain\Model\Day) {
-				$event->setDay($day);
-			} else {
-				// try to find the last day of this event
-				$day = $this->dayRepository->getLastDayForEvent($event);
-				if ($day instanceof \JWeiland\Events2\Domain\Model\Day) {
-					$event->setDay($day);
-				} else throw new \Exception('There is no day object for this event defined in url.', 1377600007);
-			}
-		}
-		$this->view->assign('event', $event);
+	public function listMyEventsAction() {
+		$events = $this->eventRepository->findMyEvents($GLOBALS['TSFE']->fe_user->user['uid']);
+		$this->view->assign('events', $events);
 	}
 
 	/**
-	 * initialize new action
+	 * action show
 	 *
+	 * Hint: I call showAction with int instead of DomainModel
+	 * to prevent that recursive validators will be called
+	 *
+	 * @param integer $event
+	 * @param integer $day
+	 * @throws \Exception
 	 * @return void
 	 */
-	public function initializeNewAction() {
-		$this->convertDateToStringInRequest('newEvent', 'eventBegin');
-		$this->convertDateToStringInRequest('newEvent', 'eventEnd');
+	public function showAction($event, $day = 0) {
+		/** @var \JWeiland\Events2\Domain\Model\Event $eventObject */
+		$eventObject = $this->eventRepository->findByIdentifier($event);
+		if (!empty($day)) {
+			$dayObject = $this->dayRepository->findByIdentifier($day);
+		} else {
+			$dayObject = NULL;
+		}
+
+		// if a day was given by $_GET add it to the given event
+		if ($dayObject instanceof Day) {
+			$eventObject->setDay($dayObject);
+		} else {
+			// try to find next possible day
+			$dayObject = $this->dayRepository->getNextDayForEvent($eventObject);
+			if ($dayObject instanceof Day) {
+				$eventObject->setDay($dayObject);
+			} else {
+				// try to find the last day of this event
+				$dayObject = $this->dayRepository->getLastDayForEvent($eventObject);
+				if ($dayObject instanceof Day) {
+					$eventObject->setDay($dayObject);
+				} else {
+					throw new \Exception('There is no day object for this event defined in url.', 1377600007);
+				}
+			}
+		}
+		$this->view->assign('event', $eventObject);
 	}
 
 	/**
@@ -164,10 +178,11 @@ class EventController extends \JWeiland\Events2\Controller\AbstractController {
 	 * @return void
 	 */
 	public function newAction() {
-		$this->deleteUploadedFilesOnValidationErrors('newEvent');
-		$newEvent = $this->objectManager->get('JWeiland\\Events2\\Domain\\Model\\Event');
-		$this->view->assign('newEvent', $newEvent);
+		$this->deleteUploadedFilesOnValidationErrors('event');
+		$event = $this->objectManager->get('JWeiland\\Events2\\Domain\\Model\\Event');
+		$this->view->assign('event', $event);
 		$this->view->assign('locations', $this->locationRepository->findAll());
+		$this->view->assign('selectableCategories', $this->categoryRepository->getCategories($this->settings['selectableCategoriesForNewEvents']));
 	}
 
 	/**
@@ -177,48 +192,41 @@ class EventController extends \JWeiland\Events2\Controller\AbstractController {
 	 * @return void
 	 */
 	public function initializeCreateAction() {
-		$this->convertDateToArrayInRequest('newEvent', 'eventBegin');
-		$this->convertDateToArrayInRequest('newEvent', 'eventEnd');
-		$this->arguments->getArgument('newEvent')->getPropertyMappingConfiguration()->forProperty('eventBegin')->setTypeConverterOption('TYPO3\\CMS\\Extbase\\Property\\TypeConverter\\DateTimeConverter', DateTimeConverter::CONFIGURATION_DATE_FORMAT, 'd.m.Y');
-		$this->arguments->getArgument('newEvent')->getPropertyMappingConfiguration()->forProperty('eventEnd')->setTypeConverterOption('TYPO3\\CMS\\Extbase\\Property\\TypeConverter\\DateTimeConverter', DateTimeConverter::CONFIGURATION_DATE_FORMAT, 'd.m.Y');
+		$this->addValidationForVideoLink('event');
+		$this->addOrganizer('event');
+		$this->arguments->getArgument('event')->getPropertyMappingConfiguration()->forProperty('eventBegin')->setTypeConverterOption('TYPO3\\CMS\\Extbase\\Property\\TypeConverter\\DateTimeConverter', DateTimeConverter::CONFIGURATION_DATE_FORMAT, 'd.m.Y');
+		$this->arguments->getArgument('event')->getPropertyMappingConfiguration()->forProperty('eventEnd')->setTypeConverterOption('TYPO3\\CMS\\Extbase\\Property\\TypeConverter\\DateTimeConverter', DateTimeConverter::CONFIGURATION_DATE_FORMAT, 'd.m.Y');
 
 		/** @var \JWeiland\Events2\Property\TypeConverter\UploadMultipleFilesConverter $multipleFilesTypeConverter */
 		$multipleFilesTypeConverter = $this->objectManager->get('JWeiland\\Events2\\Property\\TypeConverter\\UploadMultipleFilesConverter');
-		$this->arguments->getArgument('newEvent')->getPropertyMappingConfiguration()->forProperty('images')->setTypeConverter($multipleFilesTypeConverter)->setTypeConverterOption('JWeiland\\Events2\\Property\\TypeConverter\\UploadMultipleFilesConverter', 'TABLENAME', 'tx_events2_domain_model_event');
+		$this->arguments->getArgument('event')->getPropertyMappingConfiguration()->forProperty('images')->setTypeConverter($multipleFilesTypeConverter)->setTypeConverterOption('JWeiland\\Events2\\Property\\TypeConverter\\UploadMultipleFilesConverter', 'TABLENAME', 'tx_events2_domain_model_event');
 	}
 
 	/**
 	 * action create
 	 *
-	 * @param \JWeiland\Events2\Domain\Model\Event $newEvent
+	 * @param \JWeiland\Events2\Domain\Model\Event $event
 	 * @return void
 	 */
-	public function createAction(\JWeiland\Events2\Domain\Model\Event $newEvent) {
+	public function createAction(\JWeiland\Events2\Domain\Model\Event $event) {
 		// all user created records have to be hidden
-		$newEvent->setHidden(TRUE);
-		$this->eventRepository->add($newEvent);
-		$this->flashMessageContainer->add('Your new Event was created.');
+		$event->setHidden(TRUE);
+		$this->eventRepository->add($event);
+		$this->addFlashMessage(LocalizationUtility::translate('eventCreated', 'events2'));
 		$this->redirect('list');
-	}
-
-	/**
-	 * initialize edit action
-	 *
-	 * @return void
-	 */
-	public function initializeEditAction() {
-		$this->convertDateToStringInRequest('newEvent', 'eventBegin');
-		$this->convertDateToStringInRequest('newEvent', 'eventEnd');
 	}
 
 	/**
 	 * action edit
 	 *
-	 * @param \JWeiland\Events2\Domain\Model\Event $event
+	 * @param integer $event
 	 * @return void
 	 */
-	public function editAction(\JWeiland\Events2\Domain\Model\Event $event) {
-		$this->view->assign('event', $event);
+	public function editAction($event) {
+		$eventObject = $this->eventRepository->findByIdentifier($event);
+		$this->view->assign('event', $eventObject);
+		$this->view->assign('locations', $this->locationRepository->findAll());
+		$this->view->assign('selectableCategories', $this->categoryRepository->getCategories($this->settings['selectableCategoriesForNewEvents']));
 	}
 
 	/**
@@ -228,8 +236,7 @@ class EventController extends \JWeiland\Events2\Controller\AbstractController {
 	 * @return void
 	 */
 	public function initializeUpdateAction() {
-		$this->convertDateToArrayInRequest('event', 'eventBegin');
-		$this->convertDateToArrayInRequest('event', 'eventEnd');
+		$this->addValidationForVideoLink('event');
 		$this->arguments->getArgument('event')->getPropertyMappingConfiguration()->forProperty('eventBegin')->setTypeConverterOption('TYPO3\\CMS\\Extbase\\Property\\TypeConverter\\DateTimeConverter', DateTimeConverter::CONFIGURATION_DATE_FORMAT, 'd.m.Y');
 		$this->arguments->getArgument('event')->getPropertyMappingConfiguration()->forProperty('eventEnd')->setTypeConverterOption('TYPO3\\CMS\\Extbase\\Property\\TypeConverter\\DateTimeConverter', DateTimeConverter::CONFIGURATION_DATE_FORMAT, 'd.m.Y');
 		$argument = $this->request->getArgument('event');
@@ -254,20 +261,23 @@ class EventController extends \JWeiland\Events2\Controller\AbstractController {
 	 * @return void
 	 */
 	public function updateAction(\JWeiland\Events2\Domain\Model\Event $event) {
+		// all user modified records have to be hidden
+		$event->setHidden(TRUE);
 		$this->eventRepository->update($event);
-		$this->flashMessageContainer->add('Your Event was updated.');
-		$this->redirect('list');
+		$this->addFlashMessage(LocalizationUtility::translate('eventUpdated', 'events2'));
+		$this->redirect('listMyEvents');
 	}
 
 	/**
 	 * action delete
 	 *
-	 * @param \JWeiland\Events2\Domain\Model\Event $event
+	 * @param integer $event
 	 * @return void
 	 */
-	public function deleteAction(\JWeiland\Events2\Domain\Model\Event $event) {
-		$this->eventRepository->remove($event);
-		$this->flashMessageContainer->add('Your Event was removed.');
+	public function deleteAction($event) {
+		$eventObject = $this->eventRepository->findByIdentifier($event);
+		$this->eventRepository->remove($eventObject);
+		$this->addFlashMessage(LocalizationUtility::translate('eventDeleted', 'events2'));
 		$this->redirect('list');
 	}
 

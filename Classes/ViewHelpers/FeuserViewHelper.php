@@ -4,7 +4,7 @@ namespace JWeiland\Events2\ViewHelpers;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <sfroemken@jweiland.net>, jweiland.net
+ *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *
  *  All rights reserved
  *
@@ -24,12 +24,13 @@ namespace JWeiland\Events2\ViewHelpers;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * @package events2
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class FeuserViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class FeuserViewHelper extends AbstractViewHelper {
 
 	/**
 	 * implements a vievHelper to get values from current logged in fe_user
@@ -38,9 +39,15 @@ class FeuserViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelp
 	 * @return string
 	 */
 	public function render($field = 'uid') {
+		// do not return user password for security resons
+		if ($field === 'password') return '';
+
+		// return field of user array
 		if (is_array($GLOBALS['TSFE']->fe_user->user) && (integer) $GLOBALS['TSFE']->fe_user->user['uid'] > 0) {
 			return $GLOBALS['TSFE']->fe_user->user[$field];
-		} else return '';
+		} else {
+			return '';
+		}
 	}
 
 }

@@ -4,7 +4,7 @@ namespace JWeiland\Events2\ViewHelpers\Widget\Controller;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <sfroemken@jweiland.net>, jweiland.net
+ *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *
  *  All rights reserved
  *
@@ -268,7 +268,9 @@ class PaginateController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetCont
 		$statement = str_replace('###SELECT###', $select, $this->originalStatement);
 		if ($limit) {
 			$statement = str_replace('###LIMIT###', 'ORDER BY dayDay ASC LIMIT ' . $offset . ',' . $limit, $statement);
-		} else $statement = str_replace('###LIMIT###', '', $statement);
+		} else {
+			$statement = str_replace('###LIMIT###', '', $statement);
+		}
 		$boundVariables = $this->objects->getQuery()->getStatement()->getBoundVariables();
 		$this->objects = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\QueryResult', $this->objects->getQuery()->statement($statement, $boundVariables));
 	}

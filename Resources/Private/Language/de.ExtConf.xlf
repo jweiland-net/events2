@@ -4,6 +4,14 @@
 		<header/>
 		<body>
 
+			<trans-unit id="poiCollectionPid">
+				<source>PID for poiCollections: Define a storage pid where to store records of type Point of Interest.</source>
+				<target>PID für Google Maps: Geben Sie hier die UID eines StorageFolders an, der für die Speicherung der Google Maps zuständig sein soll.</target>
+			</trans-unit>
+			<trans-unit id="rootUid">
+				<source>Category root UID: In huge environments with a lot of categories defined, it would be cool to reduce the amount of categories to a parent category.</source>
+				<target>Eltern-Kategorie: Auf großen Webseiten mit vielen Kategorien kann es sinnvoll sein, die Anzahl der Kategorien auf eine hier definierte Hauptkategorie zu beschränken.</target>
+			</trans-unit>
 			<trans-unit id="recurringPast">
 				<source>x months in past: When creating a new recurring event this extension can create related day records for the last x months.</source>
 				<target>x Monate in der Vergangenheit: bei Veranstaltungen mit Wiederholungen werden Tagesdaten für die vergangenen x Monate erzeugt</target>

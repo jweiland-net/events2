@@ -4,7 +4,7 @@ namespace JWeiland\Events2\Tca;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <sfroemken@jweiland.net>, jweiland.net
+ *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *
  *  All rights reserved
  *
@@ -33,6 +33,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class CreateUpdateDays {
 
+	protected $eventRecord = array();
+
 	/**
 	 * @var \TYPO3\CMS\Extbase\Object\ObjectManager
 	 */
@@ -43,11 +45,10 @@ class CreateUpdateDays {
 	 */
 	protected $dayGenerator;
 
-	protected $eventRecord = array();
-
-
-
-
+	/**
+	 * @var \JWeiland\Events2\Utility\DateTimeUtility
+	 */
+	protected $dateTimeUtility = NULL;
 
 	/**
 	 * initializes this object
@@ -55,31 +56,24 @@ class CreateUpdateDays {
 	public function init() {
 		$this->objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
 		$this->dayGenerator = $this->objectManager->get('JWeiland\\Events2\\Tca\\DayGenerator');
+		$this->dateTimeUtility = $this->objectManager->get('JWeiland\\Events2\\Utility\\DateTimeUtility');
 	}
 
 	/**
-	 * @param string $status "new" od something else to update the record
-	 * @param string $table The table name
-	 * @param int $uid The UID of the new or updated record. Can be prepended with NEW if record is new. Use: $this->substNEWwithIDs to convert
-	 * @param array $fieldArray The fields of the current record
 	 * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj
 	 * @return void
 	 */
-	public function processDatamap_afterDatabaseOperations($status, $table, $uid, array $fieldArray, \TYPO3\CMS\Core\DataHandling\DataHandler $pObj) {
+	public function processDatamap_afterAllOperations(\TYPO3\CMS\Core\DataHandling\DataHandler $pObj) {
 		// TODO: add something to hide/delete related records
 
 		// process this hook only on expected table
-		if ($table !== 'tx_events2_domain_model_event') {
+		if (!array_key_exists('tx_events2_domain_model_event', $pObj->datamap)) {
 			return;
 		}
 
 		$this->init();
 
-		if ($status === 'new') {
-			$uid = current($pObj->substNEWwithIDs);
-		}
-
-		$this->eventRecord = $this->getFullEventRecord($table, $uid);
+		$this->eventRecord = $this->getFullEventRecord('tx_events2_domain_model_event', $pObj);
 
 		$this->dayGenerator->initialize($this->eventRecord);
 		$days = $this->dayGenerator->getDayStorage();
@@ -120,7 +114,8 @@ class CreateUpdateDays {
 	 * @return int UID of inserted day
 	 */
 	public function addDay(\DateTime $day) {
-		// add day
+		// to prevent multiple day for ONE day we set them all to midnight 00:00:00
+		$day = $this->dateTimeUtility->standardizeDateTimeObject($day);
 		$dayUid = $this->addDayRecord($day);
 
 		// add relation in mm-table
@@ -132,7 +127,7 @@ class CreateUpdateDays {
 			'tx_events2_event_day_mm',
 			'uid_foreign = ' . $dayUid
 		);
-		if ($amount) {
+		if (!empty($amount)) {
 			$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
 				'tx_events2_domain_model_day',
 				'uid = ' . $dayUid,
@@ -149,16 +144,20 @@ class CreateUpdateDays {
 	 * While updating a record only the changed fields will be in $fieldArray
 	 *
 	 * @param string $table
-	 * @param int $uid
+	 * @param \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler
 	 * @return array
 	 */
-	public function getFullEventRecord($table, $uid) {
+	public function getFullEventRecord($table, \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler) {
+		$uid = key($dataHandler->datamap['tx_events2_domain_model_event']);
+		if (GeneralUtility::isFirstPartOfStr($uid, 'NEW')) {
+			$uid = $dataHandler->substNEWwithIDs[$uid];
+		}
 		$event = BackendUtility::getRecord($table, $uid);
 		if ($event['exceptions']) {
 			$event['exceptions'] = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 				'*',
 				'tx_events2_domain_model_exception',
-				'event = ' . (int) $uid .
+				'uid IN (' . implode(',', array_keys($dataHandler->datamap['tx_events2_domain_model_exception'])) . ')' .
 				BackendUtility::BEenableFields('tx_events2_domain_model_exception') .
 				BackendUtility::deleteClause('tx_events2_domain_model_exception')
 			);
@@ -187,17 +186,17 @@ class CreateUpdateDays {
 		} elseif ($row === FALSE) {
 			// insert
 			$fieldsArray = array();
-			$fieldsArray['day'] = $day->format('U');
+			$fieldsArray['day'] = (int)$day->format('U');
 			$fieldsArray['tstamp'] = time();
-			$fieldsArray['pid'] = $this->eventRecord['pid'];
+			$fieldsArray['pid'] = (int)$this->eventRecord['pid'];
 			$fieldsArray['crdate'] = time();
-			$fieldsArray['cruser_id'] = $GLOBALS['BE_USER']->user['uid'];
-			$fieldsArray['sys_language_uid'] = $this->eventRecord['sys_language_uid'];
+			$fieldsArray['cruser_id'] = (int)$GLOBALS['BE_USER']->user['uid'];
+			$fieldsArray['sys_language_uid'] = (int)$this->eventRecord['sys_language_uid'];
 
 			$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_events2_domain_model_day', $fieldsArray);
-			return $GLOBALS['TYPO3_DB']->sql_insert_id();
+			return (int)$GLOBALS['TYPO3_DB']->sql_insert_id();
 		} else {
-			return $row['uid'];
+			return (int)$row['uid'];
 		}
 	}
 
@@ -215,7 +214,7 @@ class CreateUpdateDays {
 		$fieldsArray = array();
 		$fieldsArray['uid_local'] = $eventUid;
 		$fieldsArray['uid_foreign'] = $dayUid;
-		$fieldsArray['sorting'] = $day->format('U');
+		$fieldsArray['sorting'] = (int)$day->format('U');
 
 		$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_events2_event_day_mm', $fieldsArray);
 	}

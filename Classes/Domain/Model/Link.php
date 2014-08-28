@@ -4,7 +4,7 @@ namespace JWeiland\Events2\Domain\Model;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <sfroemken@jweiland.net>, jweiland.net
+ *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *  
  *  All rights reserved
  *
@@ -36,14 +36,14 @@ class Link extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 *
 	 * @var string
 	 */
-	protected $link;
+	protected $link = '';
 
 	/**
 	 * Title
 	 *
 	 * @var string
 	 */
-	protected $title;
+	protected $title = 'Video';
 
 
 
@@ -65,7 +65,7 @@ class Link extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	public function setLink($link) {
-		$this->link = $link;
+		$this->link = (string)$link;
 	}
 
 	/**
@@ -84,7 +84,7 @@ class Link extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	public function setTitle($title) {
-		$this->title = $title;
+		$this->title = (string)$title;
 	}
 
 }

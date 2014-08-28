@@ -4,7 +4,7 @@ namespace JWeiland\Events2\ViewHelpers;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <sfroemken@jweiland.net>, jweiland.net
+ *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *
  *  All rights reserved
  *
@@ -24,12 +24,13 @@ namespace JWeiland\Events2\ViewHelpers;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * @package events2
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class ConvertFalToUrlViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
+class ConvertFalToUrlViewHelper extends AbstractViewHelper {
 
 	/**
 	 * inject ResourceFactory
@@ -38,10 +39,6 @@ class ConvertFalToUrlViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abstrac
 	 * @inject
 	 */
 	protected $resourceFactory;
-
-
-
-
 
 	/**
 	 * implements a vievHelper to convert seconds since 0:00 to a readable format

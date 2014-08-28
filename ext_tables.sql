@@ -105,8 +105,9 @@ CREATE TABLE tx_events2_domain_model_day (
 	PRIMARY KEY (uid),
 	KEY parent (pid),
 	KEY t3ver_oid (t3ver_oid,t3ver_wsid),
-	KEY day (day),
-	KEY language (l10n_parent,sys_language_uid)
+	KEY keyForDay (day),
+	KEY language (l10n_parent,sys_language_uid),
+	KEY uidPidDayEvents (uid,pid,day,events)
 
 );
 
@@ -152,6 +153,7 @@ CREATE TABLE tx_events2_domain_model_time (
 	KEY parent (pid),
 	KEY t3ver_oid (t3ver_oid,t3ver_wsid),
 	KEY language (l10n_parent,sys_language_uid)
+	KEY eventType (event,type)
 
 );
 
@@ -195,7 +197,8 @@ CREATE TABLE tx_events2_domain_model_exception (
 	PRIMARY KEY (uid),
 	KEY parent (pid),
 	KEY t3ver_oid (t3ver_oid,t3ver_wsid),
-	KEY language (l10n_parent,sys_language_uid)
+	KEY language (l10n_parent,sys_language_uid),
+	KEY events (event)
 
 );
 
@@ -345,24 +348,6 @@ CREATE TABLE tx_events2_domain_model_exception (
 );
 
 #
-# Table structure for table 'tx_events2_domain_model_location'
-#
-CREATE TABLE tx_events2_domain_model_location (
-
-	event int(11) unsigned DEFAULT '0' NOT NULL,
-
-);
-
-#
-# Table structure for table 'tx_events2_domain_model_organizer'
-#
-CREATE TABLE tx_events2_domain_model_organizer (
-
-	event int(11) unsigned DEFAULT '0' NOT NULL,
-
-);
-
-#
 # Table structure for table 'tx_events2_event_day_mm'
 #
 CREATE TABLE tx_events2_event_day_mm (
@@ -373,58 +358,6 @@ CREATE TABLE tx_events2_event_day_mm (
 
 	KEY uid_local (uid_local),
 	KEY uid_foreign (uid_foreign)
-);
-
-#
-# Table structure for table 'tx_events2_event_location_mm'
-#
-CREATE TABLE tx_events2_event_location_mm (
-
-	uid int(11) NOT NULL auto_increment,
-	pid int(11) DEFAULT '0' NOT NULL,
-
-	event int(11) unsigned DEFAULT '0' NOT NULL,
-	location int(11) unsigned DEFAULT '0' NOT NULL,
-	event_sort int(11) unsigned DEFAULT '0' NOT NULL,
-	location_sort int(11) unsigned DEFAULT '0' NOT NULL,
-
-	tstamp int(11) unsigned DEFAULT '0' NOT NULL,
-	crdate int(11) unsigned DEFAULT '0' NOT NULL,
-	cruser_id int(11) unsigned DEFAULT '0' NOT NULL,
-	deleted tinyint(4) unsigned DEFAULT '0' NOT NULL,
-	hidden tinyint(4) unsigned DEFAULT '0' NOT NULL,
-
-	PRIMARY KEY (uid),
-	KEY parent (pid),
-	KEY event (event),
-	KEY location (location)
-
-);
-
-#
-# Table structure for table 'tx_events2_event_organizer_mm'
-#
-CREATE TABLE tx_events2_event_organizer_mm (
-
-	uid int(11) NOT NULL auto_increment,
-	pid int(11) DEFAULT '0' NOT NULL,
-
-	event int(11) unsigned DEFAULT '0' NOT NULL,
-	organizer int(11) unsigned DEFAULT '0' NOT NULL,
-	event_sort int(11) unsigned DEFAULT '0' NOT NULL,
-	organizer_sort int(11) unsigned DEFAULT '0' NOT NULL,
-
-	tstamp int(11) unsigned DEFAULT '0' NOT NULL,
-	crdate int(11) unsigned DEFAULT '0' NOT NULL,
-	cruser_id int(11) unsigned DEFAULT '0' NOT NULL,
-	deleted tinyint(4) unsigned DEFAULT '0' NOT NULL,
-	hidden tinyint(4) unsigned DEFAULT '0' NOT NULL,
-
-	PRIMARY KEY (uid),
-	KEY parent (pid),
-	KEY event (event),
-	KEY organizer (organizer)
-
 );
 
 #

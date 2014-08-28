@@ -4,7 +4,7 @@ namespace JWeiland\Events2\ViewHelpers\Widget;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <sfroemken@jweiland.net>, jweiland.net
+ *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *
  *  All rights reserved
  *
@@ -24,12 +24,13 @@ namespace JWeiland\Events2\ViewHelpers\Widget;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetViewHelper;
 
 /**
  * @package events2
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class PaginateViewHelper extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetViewHelper {
+class PaginateViewHelper extends AbstractWidgetViewHelper {
 
 	/**
 	 * @var \JWeiland\Events2\ViewHelpers\Widget\Controller\PaginateController

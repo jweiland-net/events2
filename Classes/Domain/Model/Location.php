@@ -4,7 +4,7 @@ namespace JWeiland\Events2\Domain\Model;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <sfroemken@jweiland.net>, jweiland.net
+ *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *  
  *  All rights reserved
  *
@@ -36,42 +36,42 @@ class Location extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 *
 	 * @var string
 	 */
-	protected $location;
+	protected $location = '';
 
 	/**
 	 * Street
 	 *
 	 * @var string
 	 */
-	protected $street;
+	protected $street = '';
 
 	/**
 	 * houseNumber
 	 *
 	 * @var string
 	 */
-	protected $houseNumber;
+	protected $houseNumber = '';
 
 	/**
 	 * zip
 	 *
 	 * @var string
 	 */
-	protected $zip;
+	protected $zip = '';
 
 	/**
 	 * city
 	 *
 	 * @var string
 	 */
-	protected $city;
+	protected $city = '';
 
 	/**
 	 * txMaps2Uid
 	 *
 	 * @var \JWeiland\Maps2\Domain\Model\PoiCollection
 	 */
-	protected $txMaps2Uid;
+	protected $txMaps2Uid = NULL;
 
 
 
@@ -83,7 +83,7 @@ class Location extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @param string $location
 	 */
 	public function setLocation($location) {
-		$this->location = $location;
+		$this->location = (string)$location;
 	}
 
 	/**
@@ -101,7 +101,7 @@ class Location extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @param string $street
 	 */
 	public function setStreet($street) {
-		$this->street = $street;
+		$this->street = (string)$street;
 	}
 
 	/**
@@ -119,7 +119,7 @@ class Location extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @param string $houseNumber
 	 */
 	public function setHouseNumber($houseNumber) {
-		$this->houseNumber = $houseNumber;
+		$this->houseNumber = (string)$houseNumber;
 	}
 
 	/**
@@ -137,7 +137,7 @@ class Location extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @param string $zip
 	 */
 	public function setZip($zip) {
-		$this->zip = $zip;
+		$this->zip = (string)$zip;
 	}
 
 	/**
@@ -155,7 +155,7 @@ class Location extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @param string $city
 	 */
 	public function setCity($city) {
-		$this->city = $city;
+		$this->city = (string)$city;
 	}
 
 	/**

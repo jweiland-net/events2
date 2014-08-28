@@ -36,6 +36,29 @@
 							</config>
 						</TCEforms>
 					</switchableControllerActions>
+					<settings.display>
+						<TCEforms>
+							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:display</label>
+							<config>
+								<type>radio</type>
+								<items>
+									<numIndex index="0">
+										<numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:displayBoth</numIndex>
+										<numIndex index="1">displayBoth</numIndex>
+									</numIndex>
+									<numIndex index="1">
+										<numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:displayImages</numIndex>
+										<numIndex index="1">displayImages</numIndex>
+									</numIndex>
+									<numIndex index="2">
+										<numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:displayEvent</numIndex>
+										<numIndex index="1">displayEvent</numIndex>
+									</numIndex>
+								</items>
+								<default>displayBoth</default>
+							</config>
+						</TCEforms>
+					</settings.display>
 					<settings.categories>
 						<TCEforms>
 							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:categories</label>
@@ -69,5 +92,36 @@
 				</el>
 			</ROOT>
 		</sDEFAULT>
+		<new>
+			<ROOT>
+				<TCEforms>
+					<sheetTitle>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:sheetNew</sheetTitle>
+				</TCEforms>
+				<type>array</type>
+				<el>
+					<settings.selectableCategoriesForNewEvents>
+						<TCEforms>
+							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:selectableCategoriesForNewEvents</label>
+							<config>
+								<type>select</type>
+								<foreign_table>sys_category</foreign_table>
+								<renderMode>tree</renderMode>
+								<treeConfig>
+									<parentField>parent</parentField>
+									<rootUid>0</rootUid>
+									<appearance>
+										<showHeader>TRUE</showHeader>
+										<expandAll>FALSE</expandAll>
+									</appearance>
+								</treeConfig>
+								<size>15</size>
+								<maxitems>99</maxitems>
+								<minitems>0</minitems>
+							</config>
+						</TCEforms>
+					</settings.selectableCategoriesForNewEvents>
+				</el>
+			</ROOT>
+		</new>
 	</sheets>
 </T3DataStructure>

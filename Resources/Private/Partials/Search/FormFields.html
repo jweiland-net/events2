@@ -1,7 +1,7 @@
 <script type="text/javascript">
 	var siteUrl = "{data.siteUrl}";
 	var siteId = "{data.siteId}";
-	var subCategory = "";
+	var subCategory = "{search.subCategory.uid}";
 	var selected = "";
 
 	jQuery(function() {
@@ -72,7 +72,19 @@
 
 <div class="extdiv">
 	<label for="searchMainCategory"><f:translate key="tx_events2_domain_model_search.mainCategory" /></label>
-	<f:form.select id="searchMainCategory" property="mainCategory" options="{data.categories.main}" value="{search.mainCategory.uid}" prependOptionLabel="" prependOptionValue="0" optionLabelField="title" optionValueField="uid" sortByOptionLabel="1" />
+	<select id="searchMainCategory" name="tx_events2_events[search][mainCategory]">
+		<option value="0"></option>
+		<f:for each="{data.categories.main}" as="category">
+			<f:if condition="{category.uid}=={search.mainCategory.uid}">
+				<f:then>
+					<option value="{category.uid}" selected="selected">{category.title}</option>
+				</f:then>
+				<f:else>
+					<option value="{category.uid}">{category.title}</option>
+				</f:else>
+			</f:if>
+		</f:for>
+	</select>
 </div>
 
 <div class="extdiv">

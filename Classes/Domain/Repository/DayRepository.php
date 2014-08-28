@@ -4,7 +4,7 @@ namespace JWeiland\Events2\Domain\Repository;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <sfroemken@jweiland.net>, jweiland.net
+ *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *  
  *  All rights reserved
  *
@@ -40,76 +40,6 @@ class DayRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 	protected $configurationManager;
 
 	/**
-	 * find all days in given month
-	 *
-	 * @param integer $month
-	 * @param integer $year
-	 * @param array $categories
-	 * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
-	 */
-	public function findAllDaysInMonth($month, $year, array $categories = array()) {
-		// get start and ending of given month
-		$monthBegin = new \DateTime('1.' . $month . '.' . $year . ' 00:00:00');
-		$monthEnd = clone $monthBegin;
-		$monthEnd->modify('last day of this month')->modify('tomorrow');
-
-		// get storagePid
-		$frameworkConfiguration = $this->configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
-		$storagePid = $frameworkConfiguration['persistence']['storagePid'];
-
-		// create OR-Query for categories
-		foreach ($categories as $category) {
-			$categoryOrQuery[] = 'sys_category_record_mm.uid_local IN (\'' . (int) $category . '\')';
-		}
-		if (!empty($categoryOrQuery)) {
-			$categoryWhere = ' AND (' . implode(' OR ', $categoryOrQuery) . ') ';
-		}
-
-		$query = $this->createQuery();
-		if (count($categories)) {
-			return $query->statement('
-				SELECT DISTINCT tx_events2_domain_model_day.uid, tx_events2_domain_model_day.day, tx_events2_domain_model_event.uid as eventUid, tx_events2_domain_model_event.title as eventTitle
-				FROM tx_events2_domain_model_day
-				LEFT JOIN tx_events2_event_day_mm ON tx_events2_domain_model_day.uid=tx_events2_event_day_mm.uid_foreign
-				LEFT JOIN tx_events2_domain_model_event ON tx_events2_domain_model_event.uid=tx_events2_event_day_mm.uid_local
-				LEFT JOIN sys_category_record_mm ON tx_events2_domain_model_event.uid=sys_category_record_mm.uid_foreign
-				WHERE sys_category_record_mm.tablenames = ?
-				AND tx_events2_domain_model_day.day >= ?
-				AND tx_events2_domain_model_day.day < ?
-				AND FIND_IN_SET(tx_events2_domain_model_event.pid, ?)' .
-				$categoryWhere .
-				\t3lib_BEfunc::BEenableFields('tx_events2_domain_model_day') .
-				\t3lib_BEfunc::deleteClause('tx_events2_domain_model_day') .
-				\t3lib_BEfunc::BEenableFields('tx_events2_domain_model_event') .
-				\t3lib_BEfunc::deleteClause('tx_events2_domain_model_event') . '
-			', array(
-				'tx_events2_domain_model_event',
-				$monthBegin->format('U'),
-				$monthEnd->format('U'),
-				$storagePid
-			))->execute(TRUE);
-		} else {
-			return $query->statement('
-				SELECT DISTINCT tx_events2_domain_model_day.uid, tx_events2_domain_model_day.day, tx_events2_domain_model_event.uid as eventUid, tx_events2_domain_model_event.title as eventTitle
-				FROM tx_events2_domain_model_day
-				LEFT JOIN tx_events2_event_day_mm ON tx_events2_domain_model_day.uid=tx_events2_event_day_mm.uid_foreign
-				LEFT JOIN tx_events2_domain_model_event ON tx_events2_domain_model_event.uid=tx_events2_event_day_mm.uid_local
-				WHERE tx_events2_domain_model_day.day >= ?
-				AND tx_events2_domain_model_day.day < ?
-				AND FIND_IN_SET(tx_events2_domain_model_event.pid, ?)' .
-				\t3lib_BEfunc::BEenableFields('tx_events2_domain_model_day') .
-				\t3lib_BEfunc::deleteClause('tx_events2_domain_model_day') .
-				\t3lib_BEfunc::BEenableFields('tx_events2_domain_model_event') .
-				\t3lib_BEfunc::deleteClause('tx_events2_domain_model_event') . '
-			', array(
-				$monthBegin->format('U'),
-				$monthEnd->format('U'),
-				$storagePid
-			))->execute(TRUE);
-		}
-	}
-
-	/**
 	 * find all days
 	 *
 	 * @param integer $limit
@@ -131,10 +61,10 @@ class DayRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 			LEFT JOIN tx_events2_domain_model_event ON tx_events2_event_day_mm.uid_local=tx_events2_domain_model_event.uid
 			WHERE FIND_IN_SET(tx_events2_domain_model_event.pid, ?)
 			AND tx_events2_domain_model_day.day > ?' .
-			\t3lib_BEfunc::BEenableFields('tx_events2_domain_model_event') .
-			\t3lib_BEfunc::deleteClause('tx_events2_domain_model_event') .
-			\t3lib_BEfunc::BEenableFields('tx_events2_domain_model_day') .
-			\t3lib_BEfunc::deleteClause('tx_events2_domain_model_day') . '
+			\TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields('tx_events2_domain_model_event') .
+			\TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('tx_events2_domain_model_event') .
+			\TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields('tx_events2_domain_model_day') .
+			\TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('tx_events2_domain_model_day') . '
 			ORDER BY tx_events2_domain_model_day.day ASC
 			LIMIT ' . $limit,
 			array(
@@ -175,10 +105,10 @@ class DayRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 			AND sys_category_record_mm.tablenames = ?
 			AND FIND_IN_SET(tx_events2_domain_model_event.pid, ?)
 			AND tx_events2_domain_model_day.day > ?' .
-			\t3lib_BEfunc::BEenableFields('tx_events2_domain_model_event') .
-			\t3lib_BEfunc::deleteClause('tx_events2_domain_model_event') .
-			\t3lib_BEfunc::BEenableFields('tx_events2_domain_model_day') .
-			\t3lib_BEfunc::deleteClause('tx_events2_domain_model_day') . '
+			\TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields('tx_events2_domain_model_event') .
+			\TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('tx_events2_domain_model_event') .
+			\TYPO3\CMS\Backend\Utility\BackendUtility::BEenableFields('tx_events2_domain_model_day') .
+			\TYPO3\CMS\Backend\Utility\BackendUtility::deleteClause('tx_events2_domain_model_day') . '
 			ORDER BY tx_events2_domain_model_day.day ASC
 			LIMIT ' . $limit,
 			array(

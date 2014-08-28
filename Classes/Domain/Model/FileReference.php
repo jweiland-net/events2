@@ -5,7 +5,7 @@ namespace JWeiland\Events2\Domain\Model;
  *
  *  Copyright notice
  *
- *  (c) 2014 Stefan Frömken <froemken@gmail.com>
+ *  (c) 2014 Stefan Froemken <froemken@gmail.com>
  *
  *  All rights reserved
  *
@@ -36,7 +36,7 @@ class FileReference extends \TYPO3\CMS\Extbase\Domain\Model\FileReference {
 	 *
 	 * @var string
 	 */
-	protected $title = NULL;
+	protected $title = '';
 
 	/**
 	 * cruserId
@@ -75,7 +75,7 @@ class FileReference extends \TYPO3\CMS\Extbase\Domain\Model\FileReference {
 	 * @return void
 	 */
 	public function setTitle($title) {
-		$this->title = $title;
+		$this->title = (string)$title;
 	}
 
 	/**
@@ -94,7 +94,7 @@ class FileReference extends \TYPO3\CMS\Extbase\Domain\Model\FileReference {
 	 * @return void
 	 */
 	public function setCruserId($cruserId) {
-		$this->cruserId = $cruserId;
+		$this->cruserId = (int)$cruserId;
 	}
 
 	/**
@@ -113,7 +113,7 @@ class FileReference extends \TYPO3\CMS\Extbase\Domain\Model\FileReference {
 	 * @return void
 	 */
 	public function setUidLocal($uidLocal) {
-		$this->uidLocal = $uidLocal;
+		$this->uidLocal = (int)$uidLocal;
 	}
 
 	/**
@@ -132,7 +132,7 @@ class FileReference extends \TYPO3\CMS\Extbase\Domain\Model\FileReference {
 	 * @return void
 	 */
 	public function setTablenames($tablenames) {
-		$this->tablenames = $tablenames;
+		$this->tablenames = (string)$tablenames;
 	}
 
 }

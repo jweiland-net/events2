@@ -1,6 +1,7 @@
 <div class="extcss clearfix rulerafter4">
-	<form class="extform" method="get" name="search" action="index.php">
+	<form class="extform" method="get" name="search" action="{f:uri.page()}">
 		<input type="hidden" name="id" value="{data.siteId}" />
+		<input type="hidden" name="no_cache" value="1" />
 		<input type="hidden" name="tx_events2_events[action]" value="listSearchResults" />
 		<input type="hidden" name="tx_events2_events[controller]" value="Event" />
 		<f:render partial="Search/FormFields" arguments="{search: search, data: data}"	/>

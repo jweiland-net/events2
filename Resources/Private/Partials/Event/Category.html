@@ -1,7 +1,5 @@
-<f:if condition="{event.categories -> f:count()}">
+<f:if condition="{event.categories->f:count()}">
 	<f:for each="{event.categories}" as="category" iteration="iterator">
-		<f:if condition="{iterator.isFirst}">
-			{category.title}
-		</f:if>
+		<f:if condition="{iterator.isFirst}">{category.title}</f:if>
 	</f:for>
 </f:if>

@@ -17,23 +17,11 @@ plugin.tx_events2 {
 					tableName = sys_file_reference
 				}
 			}
-    	JWeiland\Events2\Domain\Model\EventLocationMm {
-				mapping {
-    			tableName = tx_events2_event_location_mm
-    			recordType =
-    		}
-    	}
     	JWeiland\Events2\Domain\Model\Location {
     		newRecordStoragePid =
     	}
     	JWeiland\Events2\Domain\Model\Organizer {
     		newRecordStoragePid =
-    	}
-    	JWeiland\Events2\Domain\Model\EventOrganizerMm {
-				mapping {
-    			tableName = tx_events2_event_organizer_mm
-    			recordType =
-    		}
     	}
     	JWeiland\Events2\Domain\Model\Category {
 				mapping {

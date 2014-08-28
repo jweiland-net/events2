@@ -30,6 +30,11 @@
 				<target>Veranstalter</target>
 			</trans-unit>
 
+			<trans-unit id="createNewRelationForTime">
+				<source>Create new time</source>
+				<target>Neue Uhrzeit anlegen</target>
+			</trans-unit>
+
 			<trans-unit id="tx_events2_domain_model_event">
 				<source>Event</source>
 				<target>Veranstaltung</target>
@@ -208,8 +213,8 @@
 				<target>Bilder</target>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.video_link">
-				<source>Video link</source>
-				<target>Videolink</target>
+				<source>Link to Youtube</source>
+				<target>Link zu Youtube</target>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.download_links">
 				<source>Download links</source>
@@ -357,7 +362,7 @@
 				<target>Uhrzeit</target>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_exception.exception_details">
-				<source>Datails</source>
+				<source>Details</source>
 				<target>Details</target>
 			</trans-unit>
 

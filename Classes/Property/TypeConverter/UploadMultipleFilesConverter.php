@@ -5,7 +5,7 @@ namespace JWeiland\Events2\Property\TypeConverter;
  *
  *  Copyright notice
  *
- *  (c) 2014 Stefan Frömken <froemken@gmail.com>
+ *  (c) 2014 Stefan Froemken <froemken@gmail.com>
  *
  *  All rights reserved
  *
@@ -27,6 +27,7 @@ namespace JWeiland\Events2\Property\TypeConverter;
  ***************************************************************/
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
  * Converter for uploads.
@@ -99,11 +100,16 @@ class UploadMultipleFilesConverter extends \TYPO3\CMS\Extbase\Property\TypeConve
 			}
 			// check if uploaded file returns an error
 			if (!$uploadedFile['error'] === 0) {
-				return new \TYPO3\CMS\Extbase\Error\Error('Something went wrong with your uploaded files. Please try again. Error: ' . $uploadedFile['error'], 1396957314);
+				return new \TYPO3\CMS\Extbase\Error\Error(LocalizationUtility::translate('error.upload', 'events2') . $uploadedFile['error'], 1396957314);
 			}
 			// now we have a valid uploaded file. Check if user has rights to upload this file
 			if (!isset($uploadedFile['rights']) || empty($uploadedFile['rights'])) {
-				return new \TYPO3\CMS\Extbase\Error\Error('You don\'t have checked the box for upload rights. So upload stops here', 1397464390);
+				return new \TYPO3\CMS\Extbase\Error\Error(LocalizationUtility::translate('error.uploadRights', 'events2'), 1397464390);
+			}
+			// check if file extension is allowed
+			$fileParts = GeneralUtility::split_fileref($uploadedFile['name']);
+			if (!GeneralUtility::inList($GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'], $fileParts['fileext'])) {
+				return new \TYPO3\CMS\Extbase\Error\Error(LocalizationUtility::translate('error.fileExtension', 'events2', array($GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'])), 1402981282);
 			}
 			// OK...we have a valid file and the user has the rights. It's time to check, if an old file can be deleted
 			if ($alreadyPersistedImages[$key] instanceof \JWeiland\Events2\Domain\Model\FileReference) {

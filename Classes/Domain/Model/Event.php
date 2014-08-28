@@ -4,7 +4,7 @@ namespace JWeiland\Events2\Domain\Model;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <sfroemken@jweiland.net>, jweiland.net
+ *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *  
  *  All rights reserved
  *
@@ -24,12 +24,16 @@ namespace JWeiland\Events2\Domain\Model;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use JWeiland\Events2\Utility\DateTimeUtility;
+use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
  * @package events2
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
+class Event extends AbstractEntity {
 
 	/**
 	 * Hidden
@@ -64,23 +68,24 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * Event begin
 	 *
 	 * @var \DateTime
+	 * @validate NotEmpty
 	 */
-	protected $eventBegin;
+	protected $eventBegin = NULL;
 
 	/**
 	 * EventTime
 	 *
 	 * @var \JWeiland\Events2\Domain\Model\Time
-	 * @lazy
+	 * @validate NotEmpty
 	 */
-	protected $eventTime;
+	protected $eventTime = NULL;
 
 	/**
 	 * Event end
 	 *
 	 * @var \DateTime
 	 */
-	protected $eventEnd;
+	protected $eventEnd = NULL;
 
 	/**
 	 * Recurring event
@@ -101,7 +106,7 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 *
 	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Time>
 	 */
-	protected $multipleTimes;
+	protected $multipleTimes = NULL;
 
 	/**
 	 * xTh
@@ -123,7 +128,7 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Time>
 	 * @lazy
 	 */
-	protected $differentTimes;
+	protected $differentTimes = NULL;
 
 	/**
 	 * Each weeks
@@ -138,7 +143,7 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Exception>
 	 * @lazy
 	 */
-	protected $exceptions;
+	protected $exceptions = NULL;
 
 	/**
 	 * Detail informations
@@ -160,15 +165,16 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @var \JWeiland\Events2\Domain\Model\Link
 	 * @lazy
 	 */
-	protected $ticketLink;
+	protected $ticketLink = NULL;
 
 	/**
 	 * Categories
 	 *
 	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\Category>
+	 * @validate NotEmpty
 	 * @lazy
 	 */
-	protected $categories;
+	protected $categories = NULL;
 
 	/**
 	 * Days
@@ -176,38 +182,39 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Day>
 	 * @lazy
 	 */
-	protected $days;
+	protected $days = NULL;
 
 	/**
 	 * Location
 	 *
-	 * @var \JWeiland\Events2\Domain\Model\EventLocationMm
+	 * @var \JWeiland\Events2\Domain\Model\Location
+	 * @validate NotEmpty
 	 * @lazy
 	 */
-	protected $location;
+	protected $location = NULL;
 
 	/**
 	 * Organizer
 	 *
-	 * @var \JWeiland\Events2\Domain\Model\EventOrganizerMm
+	 * @var \JWeiland\Events2\Domain\Model\Organizer
+	 * @validate NotEmpty
 	 * @lazy
 	 */
-	protected $organizer;
+	protected $organizer = NULL;
 
 	/**
 	 * Images
 	 *
 	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\FileReference>
 	 */
-	protected $images = array();
+	protected $images = NULL;
 
 	/**
 	 * VideoLink
 	 *
 	 * @var \JWeiland\Events2\Domain\Model\Link
-	 * @lazy
 	 */
-	protected $videoLink;
+	protected $videoLink = NULL;
 
 	/**
 	 * VideoLink
@@ -215,7 +222,7 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Link>
 	 * @lazy
 	 */
-	protected $downloadLinks;
+	protected $downloadLinks = NULL;
 
 	/**
 	 * SuitabilityCulture
@@ -250,7 +257,7 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 *
 	 * @var \DateTime
 	 */
-	protected $releaseDate;
+	protected $releaseDate = NULL;
 
 	/**
 	 * SocialTeaser
@@ -278,7 +285,7 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 *
 	 * @var \JWeiland\Events2\Domain\Model\Day
 	 */
-	protected $day;
+	protected $day = NULL;
 
 
 
@@ -297,12 +304,13 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	protected function initStorageObjects() {
-		$this->multipleTimes = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-		$this->differentTimes = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-		$this->exceptions = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-		$this->categories = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-		$this->days = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-		$this->downloadLinks = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+		$this->multipleTimes = new ObjectStorage();
+		$this->differentTimes = new ObjectStorage();
+		$this->exceptions = new ObjectStorage();
+		$this->categories = new ObjectStorage();
+		$this->days = new ObjectStorage();
+		$this->images = new ObjectStorage();
+		$this->downloadLinks = new ObjectStorage();
 	}
 
 	/**
@@ -321,7 +329,7 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	public function setHidden($hidden) {
-		$this->hidden = $hidden;
+		$this->hidden = (bool) $hidden;
 	}
 
 	/**
@@ -340,7 +348,7 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	public function setTitle($title) {
-		$this->title = $title;
+		$this->title = (string) $title;
 	}
 
 	/**
@@ -359,7 +367,7 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	public function setTopOfList($topOfList) {
-		$this->topOfList = $topOfList;
+		$this->topOfList = (bool) $topOfList;
 	}
 
 	/**
@@ -387,7 +395,7 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	public function setTeaser($teaser) {
-		$this->teaser = $teaser;
+		$this->teaser = (string) $teaser;
 	}
 
 	/**
@@ -405,7 +413,7 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @param \DateTime $eventBegin
 	 * @return void
 	 */
-	public function setEventBegin($eventBegin) {
+	public function setEventBegin(\DateTime $eventBegin = NULL) {
 		$this->eventBegin = $eventBegin;
 	}
 
@@ -415,36 +423,10 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return \JWeiland\Events2\Domain\Model\Time $time
 	 */
 	public function getEventTime() {
-		// Prio 1
-		// return time of exception-record if day equals day from exception
-		if ($this->getDay() instanceof \JWeiland\Events2\Domain\Model\Day) {
-			$exceptions = $this->getExceptions();
-			if (count($exceptions)) {
-				/** @var $exception \JWeiland\Events2\Domain\Model\Exception */
-				foreach ($exceptions as $exception) {
-					if ($exception->getExceptionDate() == $this->getDay()->getDay()) {
-						if ($exception->getExceptionTime() instanceof \JWeiland\Events2\Domain\Model\Time) {
-							return $exception->getExceptionTime();
-						}
-					}
-				}
-			}
-		}
-		// Prio 2
-		// return time of different times each weekday
-		if ($this->getDay() instanceof \JWeiland\Events2\Domain\Model\Day && count($this->getDifferentTimes())) {
-			/** @var \JWeiland\Events2\Domain\Model\Time $differentTime */
-			foreach ($this->getDifferentTimes() as $differentTime) {
-				if (strtolower($this->getDay()->getDay()->format('l')) === $differentTime->getWeekday()) {
-					return $differentTime;
-				}
-			}
-		}
-		// Prio 3
 		return $this->eventTime;
 	}
 
-	/**
+		/**
 	 * Sets the event_time
 	 *
 	 * @param \JWeiland\Events2\Domain\Model\Time $eventTime
@@ -460,12 +442,14 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return int $durationInDays
 	 */
 	public function getDaysOfEventsTakingDays() {
-		$eventBegin = $this->getEventBegin();
-		$eventEnd = $this->getEventEnd();
+		$dateTimeUtility = new DateTimeUtility();
+
+		$eventBegin = $dateTimeUtility->standardizeDateTimeObject($this->getEventBegin());
+		$eventEnd = $dateTimeUtility->standardizeDateTimeObject($this->getEventEnd());
 		if (!empty($eventEnd) && $eventEnd != $eventBegin) {
 			$diff = $eventBegin->diff($eventEnd);
 			// Example: 20.01.2013 - 23.01.2013 = 4 days but diff shows 3. So we have to add 1 day here
-			return $diff->format('%a') + 1;
+			return (int)$diff->format('%a') + 1;
 		} else return 0;
 	}
 
@@ -484,7 +468,7 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @param \DateTime $eventEnd
 	 * @return void
 	 */
-	public function setEventEnd($eventEnd) {
+	public function setEventEnd(\DateTime $eventEnd = NULL) {
 		$this->eventEnd = $eventEnd;
 	}
 
@@ -509,7 +493,7 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	public function setRecurringEvent($recurringEvent) {
-		$this->recurringEvent = $recurringEvent;
+		$this->recurringEvent = (bool)$recurringEvent;
 	}
 
 	/**
@@ -537,7 +521,7 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	public function setSameDay($sameDay) {
-		$this->sameDay = $sameDay;
+		$this->sameDay = (bool)$sameDay;
 	}
 
 	/**
@@ -555,29 +539,7 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage $time
 	 */
 	public function getMultipleTimes() {
-		$multipleTimes = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
-
-		// Prio 1
-		// return multiple times of exception-record if day equals day from exception
-		if ($this->getDay() instanceof \JWeiland\Events2\Domain\Model\Day) {
-			if (count($this->exceptions)) {
-				/** @var $exception \JWeiland\Events2\Domain\Model\Exception */
-				foreach ($this->exceptions as $exception) {
-					if ($exception->getExceptionDate() == $this->getDay()->getDay()) {
-						if ($exception->getExceptionTime() instanceof \JWeiland\Events2\Domain\Model\Time) {
-							$multipleTimes->attach($exception->getExceptionTime());
-						}
-					}
-				}
-			}
-		}
-
-		// Prio 2
-		if (count($multipleTimes)) {
-			return $multipleTimes;
-		} else {
-			return $this->multipleTimes;
-		}
+		return $this->multipleTimes;
 	}
 
 	/**
@@ -726,14 +688,14 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	}
 
 	/**
-	 * Returns the exceptions if future
+	 * Returns the exceptions in future
 	 *
 	 * @return array $exceptions
 	 */
 	public function getFutureExceptions() {
 		$futureExceptions = array();
 		$currentDate = new \DateTime('today');
-		/** @var $exception \JWeiland\Events2\Domain\Model\Exception */
+		/** @var \JWeiland\Events2\Domain\Model\Exception $exception */
 		foreach ($this->exceptions as $exception) {
 			if ($exception->getExceptionDate() > $currentDate) {
 				$futureExceptions[$exception->getExceptionDate()->format('U')] = $exception;
@@ -773,7 +735,7 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	public function setDetailInformations($detailInformations) {
-		$this->detailInformations = $detailInformations;
+		$this->detailInformations = (string)$detailInformations;
 	}
 
 	/**
@@ -792,7 +754,7 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	public function setFreeEntry($freeEntry) {
-		$this->freeEntry = $freeEntry;
+		$this->freeEntry = (bool)$freeEntry;
 	}
 
 	/**
@@ -904,7 +866,7 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	/**
 	 * Returns the location
 	 *
-	 * @return \JWeiland\Events2\Domain\Model\EventLocationMm $location
+	 * @return \JWeiland\Events2\Domain\Model\Location $location
 	 */
 	public function getLocation() {
 		return $this->location;
@@ -913,17 +875,17 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	/**
 	 * Sets the location
 	 *
-	 * @param \JWeiland\Events2\Domain\Model\EventLocationMm $location
+	 * @param \JWeiland\Events2\Domain\Model\Location $location
 	 * @return void
 	 */
-	public function setLocation(\JWeiland\Events2\Domain\Model\EventLocationMm $location = NULL) {
+	public function setLocation(\JWeiland\Events2\Domain\Model\Location $location = NULL) {
 		$this->location = $location;
 	}
 
 	/**
 	 * Returns the organizer
 	 *
-	 * @return \JWeiland\Events2\Domain\Model\EventOrganizerMm $organizer
+	 * @return \JWeiland\Events2\Domain\Model\Organizer $organizer
 	 */
 	public function getOrganizer() {
 		return $this->organizer;
@@ -932,10 +894,10 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	/**
 	 * Sets the organizer
 	 *
-	 * @param \JWeiland\Events2\Domain\Model\EventOrganizerMm $organizer
+	 * @param \JWeiland\Events2\Domain\Model\Organizer $organizer
 	 * @return void
 	 */
-	public function setOrganizer(\JWeiland\Events2\Domain\Model\EventOrganizerMm $organizer = NULL) {
+	public function setOrganizer(\JWeiland\Events2\Domain\Model\Organizer $organizer = NULL) {
 		$this->organizer = $organizer;
 	}
 
@@ -945,6 +907,8 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return array $images
 	 */
 	public function getImages() {
+		// ObjectStorage has SplObjectHashes as key which we don't know in Fluid
+		// so we convert ObjectStorage to array to get numbered keys
 		$references = array();
 		foreach ($this->images as $image) $references[] = $image;
 		return $references;
@@ -1014,7 +978,7 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $downloadLinks
 	 * @return void
 	 */
-	public function setDownloadLink(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $downloadLinks) {
+	public function setDownloadLinks(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $downloadLinks) {
 		$this->downloadLinks = $downloadLinks;
 	}
 
@@ -1034,7 +998,7 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	public function setSuitabilityCulture($suitabilityCulture) {
-		$this->suitabilityCulture = $suitabilityCulture;
+		$this->suitabilityCulture = (bool)$suitabilityCulture;
 	}
 
 	/**
@@ -1062,7 +1026,7 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	public function setSuitabilityUser($suitabilityUser) {
-		$this->suitabilityUser = $suitabilityUser;
+		$this->suitabilityUser = (bool)$suitabilityUser;
 	}
 
 	/**
@@ -1090,7 +1054,7 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	public function setSuitabilityGroups($suitabilityGroups) {
-		$this->suitabilityGroups = $suitabilityGroups;
+		$this->suitabilityGroups = (bool)$suitabilityGroups;
 	}
 
 	/**
@@ -1118,7 +1082,7 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	public function setFacebook($facebook) {
-		$this->facebook = $facebook;
+		$this->facebook = (bool)$facebook;
 	}
 
 	/**
@@ -1165,7 +1129,7 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	public function setSocialTeaser($socialTeaser) {
-		$this->socialTeaser = $socialTeaser;
+		$this->socialTeaser = (string)$socialTeaser;
 	}
 
 	/**
@@ -1184,7 +1148,7 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	public function setFacebookChannel($facebookChannel) {
-		$this->facebookChannel = $facebookChannel;
+		$this->facebookChannel = (int)$facebookChannel;
 	}
 
 	/**
@@ -1203,7 +1167,7 @@ class Event extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @return void
 	 */
 	public function setTheaterDetails($theaterDetails) {
-		$this->theaterDetails = $theaterDetails;
+		$this->theaterDetails = (string)$theaterDetails;
 	}
 
 	/**

@@ -4,7 +4,7 @@ namespace JWeiland\Events2\Configuration;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <sfroemken@jweiland.net>, jweiland.net
+ *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *
  *  All rights reserved
  *
@@ -30,6 +30,13 @@ namespace JWeiland\Events2\Configuration;
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
 class ExtConf implements \TYPO3\CMS\Core\SingletonInterface {
+
+	/**
+	 * root uid for categories
+	 *
+	 * @var integer
+	 */
+	protected $rootUid;
 
 	/**
 	 * recurring past
@@ -65,6 +72,29 @@ class ExtConf implements \TYPO3\CMS\Core\SingletonInterface {
 				}
 			}
 		}
+	}
+
+	/**
+	 * getter for rootUid
+	 *
+	 * @return integer
+	 */
+	public function getRootUid() {
+		if (empty($this->rootUid)) {
+			return 0;
+		} else {
+			return $this->rootUid;
+		}
+	}
+
+	/**
+	 * setter for rootUid
+	 *
+	 * @param integer $rootUid
+	 * @return void
+	 */
+	public function setRootUid($rootUid) {
+		$this->rootUid = (int)$rootUid;
 	}
 
 	/**

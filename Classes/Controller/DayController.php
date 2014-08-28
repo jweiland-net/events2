@@ -4,7 +4,7 @@ namespace JWeiland\Events2\Controller;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <sfroemken@jweiland.net>, jweiland.net
+ *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *  
  *  All rights reserved
  *
@@ -34,15 +34,20 @@ class DayController extends \JWeiland\Events2\Controller\AbstractController {
 	/**
 	 * action show
 	 *
-	 * @param \JWeiland\Events2\Domain\Model\Day $day
+	 * Hint: I call showAction with int instead of DomainModel
+	 * to prevent that recursive validators will be called
+	 *
+	 * @param integer $day
 	 * @return void
 	 */
-	public function showAction(\JWeiland\Events2\Domain\Model\Day $day) {
+	public function showAction($day) {
+		/** @var \JWeiland\Events2\Domain\Model\Day $dayObject */
+		$dayObject = $this->dayRepository->findByIdentifier($day);
 		/** @var \JWeiland\Events2\Domain\Model\Event $event */
-		foreach ($day->getEvents($this->settings['categories']) as $event) {
-			$event->setDay($day);
+		foreach ($dayObject->getEvents($this->settings['categories']) as $event) {
+			$event->setDay($dayObject);
 		}
-		$this->view->assign('day', $day);
+		$this->view->assign('day', $dayObject);
 	}
 
 }

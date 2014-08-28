@@ -1,0 +1,14 @@
+<f:for each="{days}" as="day">
+	<dl class="nomargin borderbottom {f:if(condition: day.isRemoved, then: 'markAsRemoved', else: '')}">
+		<dt class="nomargin">{day.day.day -> f:format.date(format: '%A, %d.%m.%Y')}:</dt>
+		<dd>
+			<f:render partial="Event/Time" arguments="{time: day.time}" />
+
+			<f:if condition="{day.infos}">
+				<f:for each="{day.infos}" as="info">
+					<br />{info.exceptionDetails -> f:format.html(parseFuncTSPath: 'lib.parseFunc') -> f:format.nl2br()}
+				</f:for>
+			</f:if>
+		</dd>
+	</dl>
+</f:for>

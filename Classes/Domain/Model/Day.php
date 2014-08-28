@@ -4,7 +4,7 @@ namespace JWeiland\Events2\Domain\Model;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <sfroemken@jweiland.net>, jweiland.net
+ *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *  
  *  All rights reserved
  *
@@ -24,6 +24,8 @@ namespace JWeiland\Events2\Domain\Model;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * @package events2
@@ -36,7 +38,7 @@ class Day extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 *
 	 * @var \DateTime
 	 */
-	protected $day;
+	protected $day = NULL;
 
 	/**
 	 * Events
@@ -44,18 +46,34 @@ class Day extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Event>
 	 * @lazy
 	 */
-	protected $events;
+	protected $events = NULL;
 
 	/**
 	 * Event
 	 *
 	 * @var \JWeiland\Events2\Domain\Model\Event
 	 */
-	protected $event;
+	protected $event = NULL;
 
 
 
 
+
+	/**
+	 * Constructor of this class
+	 */
+	public function __construct() {
+		$this->initStorageObjects();
+	}
+
+	/**
+	 * Initializes all \TYPO3\CMS\Extbase\Persistence\ObjectStorage properties.
+	 *
+	 * @return void
+	 */
+	protected function initStorageObjects() {
+		$this->events = new ObjectStorage();
+	}
 
 	/**
 	 * Returns the day
@@ -72,8 +90,28 @@ class Day extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @param \DateTime $day
 	 * @return void
 	 */
-	public function setDay($day) {
+	public function setDay(\DateTime $day) {
 		$this->day = $day;
+	}
+
+	/**
+	 * Adds an Event
+	 *
+	 * @param \JWeiland\Events2\Domain\Model\Event $event
+	 * @return void
+	 */
+	public function addEvent(Event $event) {
+		$this->events->attach($event);
+	}
+
+	/**
+	 * Removes an Event
+	 *
+	 * @param \JWeiland\Events2\Domain\Model\Event $event
+	 * @return void
+	 */
+	public function removeEvent(Event $event) {
+		$this->events->detach($event);
 	}
 
 	/**
@@ -82,9 +120,10 @@ class Day extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @param string $categories
 	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage $events
 	 */
-	public function getEvents($categories = NULL) {
-		if (isset($categories) && count($this->events)) {
+	public function getEvents($categories = '') {
+		if ($categories !== '' && count($this->events)) {
 			// I need a copy of events, else "invalid argument for foreach()"
+			// maybe it is because of the @lazy annotation and a loadRealInstance may help.
 			$events = clone $this->events;
 			/** @var $event \JWeiland\Events2\Domain\Model\Event */
 			foreach ($events as $event) {
@@ -92,7 +131,7 @@ class Day extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 				$eventContainsCategory = FALSE;
 				/** @var $eventCategory \JWeiland\Events2\Domain\Model\Category */
 				foreach ($event->getCategories() as $eventCategory) {
-					if (\TYPO3\CMS\Core\Utility\GeneralUtility::inList($categories, $eventCategory->getUid())) {
+					if (GeneralUtility::inList($categories, $eventCategory->getUid())) {
 						$eventContainsCategory = TRUE;
 						break;
 					}
@@ -112,7 +151,7 @@ class Day extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $events
 	 * @return void
 	 */
-	public function setEvents(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $events = NULL) {
+	public function setEvents(ObjectStorage $events = NULL) {
 		$this->events = $events;
 	}
 
@@ -131,7 +170,7 @@ class Day extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 * @param \JWeiland\Events2\Domain\Model\Event $event
 	 * @return void
 	 */
-	public function setEvent(\JWeiland\Events2\Domain\Model\Event $event = NULL) {
+	public function setEvent(Event $event = NULL) {
 		$this->event = $event;
 	}
 

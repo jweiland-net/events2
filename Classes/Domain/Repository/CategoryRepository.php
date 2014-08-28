@@ -4,7 +4,7 @@ namespace JWeiland\Events2\Domain\Repository;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <sfroemken@jweiland.net>, jweiland.net
+ *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *
  *  All rights reserved
  *
@@ -33,7 +33,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class CategoryRepository extends \TYPO3\CMS\Extbase\Domain\Repository\CategoryRepository {
 
 	/**
-	 * get all categories defined in given parent UID
+	 * get category objects from list of UIDs
 	 *
 	 * @param string $categoryUids UIDs category
 	 * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
@@ -42,6 +42,17 @@ class CategoryRepository extends \TYPO3\CMS\Extbase\Domain\Repository\CategoryRe
 		$categoryUids = GeneralUtility::intExplode(',', $categoryUids);
 		$query = $this->createQuery();
 		return $query->matching($query->in('uid', $categoryUids))->execute();
+	}
+
+	/**
+	 * get subcategories of given UID
+	 *
+	 * @param string $category UID category
+	 * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+	 */
+	public function getSubCategories($category) {
+		$query = $this->createQuery();
+		return $query->matching($query->equals('parent', $category))->execute();
 	}
 
 	/**

@@ -1,20 +1,29 @@
+{namespace e2=JWeiland\Events2\ViewHelpers}
+
 <f:layout name="Default" />
 
 <f:section name="main">
-	<f:flashMessages renderMode="div" class="info-box2" />
-
-	<f:render partial="FormErrors" arguments="{object:Event}"/>
-
-	<f:form action="update" name="event" object="{event}" class="extform withinfo">
-		<legend class="powermail_legend">
-			<f:translate key="edit"/>
-		</legend>
-		<div class="floatright clearfix marginbottom">
-			<f:cObject typoscriptObjectPath="lib.feformdocumentation"/>
-		</div>
-		<f:render partial="Event/FormFields" arguments="{event: event, locations: locations}" />
-		<div class="powermail_fieldwrap powermail_fieldwrap_submit">
-			<f:form.submit value="{f:translate(key: 'save')}" />
-		</div>
-	</f:form>
+	<f:security.ifHasRole role="{settings.userGroup}">
+		<f:then>
+			<f:if condition="{e2:feuser(field: 'tx_events2_organizer')}">
+				<f:then>
+					<f:flashMessages renderMode="div" class="info-box2" />
+					<f:render partial="FormErrors" arguments="{object:Event}"/>
+					<f:form action="update" name="event" object="{event}" enctype="multipart/form-data" class="extform withinfo">
+						<div class="floatright clearfix marginbottom"><f:cObject typoscriptObjectPath="lib.feformdocumentation"/></div>
+						<f:render partial="Event/FormFields" arguments="{_all}" />
+						<div class="powermail_fieldwrap powermail_fieldwrap_submit">
+							<f:form.submit class="powermail_submit" value="{f:translate(key: 'create')}"/>
+						</div>
+					</f:form>
+				</f:then>
+				<f:else>
+					<div><f:translate key="missingOrganizerForCreate" /></div>
+				</f:else>
+			</f:if>
+		</f:then>
+		<f:else>
+			<div><f:translate key="notAllowedToCreate" /></div>
+		</f:else>
+	</f:security.ifHasRole>
 </f:section>
