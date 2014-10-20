@@ -211,6 +211,7 @@ class EventController extends AbstractController {
 	public function createAction(\JWeiland\Events2\Domain\Model\Event $event) {
 		// all user created records have to be hidden
 		$event->setHidden(TRUE);
+		$this->deleteVideoLinkIfEmpty($event);
 		$this->eventRepository->add($event);
 		$this->addFlashMessage(LocalizationUtility::translate('eventCreated', 'events2'));
 		$this->redirect('list');
@@ -263,6 +264,7 @@ class EventController extends AbstractController {
 	public function updateAction(\JWeiland\Events2\Domain\Model\Event $event) {
 		// all user modified records have to be hidden
 		$event->setHidden(TRUE);
+		$this->deleteVideoLinkIfEmpty($event);
 		$this->eventRepository->update($event);
 		$this->addFlashMessage(LocalizationUtility::translate('eventUpdated', 'events2'));
 		$this->redirect('listMyEvents');

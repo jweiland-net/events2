@@ -24,29 +24,47 @@ namespace JWeiland\Events2\ViewHelpers\Widget\Controller;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use JWeiland\Events2\Domain\Model\Time;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetController;
 
 /**
  * @package events2
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class ICalendarController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetController {
+class ICalendarController extends AbstractWidgetController {
+
+	/**
+	 * @var \JWeiland\Events2\Utility\EventUtility
+	 */
+	protected $eventUtility;
+
+	/**
+	 * @var \JWeiland\Events2\Domain\Model\Event
+	 */
+	protected $event = NULL;
+
+	/**
+	 * inject Event Utility
+	 *
+	 * @param \JWeiland\Events2\Utility\EventUtility $eventUtility
+	 * @return void
+	 */
+	public function injectEventUtility(\JWeiland\Events2\Utility\EventUtility $eventUtility) {
+		$this->eventUtility = $eventUtility;
+	}
 
 	/**
 	 * initializes this object
-	 * and cleans-up the description
 	 *
 	 * @return void
 	 */
 	public function init() {
-		$description = $this->widgetConfiguration['description'];
-		$description = str_replace("\r\n", "\\n", $description);
-		$description = str_replace(',', '\,', $description);
-		$description = str_replace(';', '\;', $description);
-		$this->widgetConfiguration['description'] = $description;		
+		$this->event = $this->widgetConfiguration['event'];
 	}
-	
+
 	/**
 	 * This index action was called to export an event as ics file
 	 *
@@ -57,35 +75,27 @@ class ICalendarController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetCon
 	
 		// global informations
 		$this->view->assign('PRODID', GeneralUtility::getIndpEnv('TYPO3_SITE_URL'));
-		$this->view->assign('TIMEZONE', date_default_timezone_get());
 
 		// event informations
-		// loop through multiple times if possible
 		$events = array();
-		if ($this->widgetConfiguration['times'] instanceof \TYPO3\CMS\Extbase\Persistence\ObjectStorage) {
-			$times = $this->widgetConfiguration['times'];
-			/** @var \JWeiland\Events2\Domain\Model\Time $time */
+		/** @var \SplObjectStorage $times */
+		$times = $this->eventUtility->getTimesForDay($this->event, $this->event->getDay());
+		if ($times->count()) {
 			foreach ($times as $time) {
-				$this->widgetConfiguration['startTime'] = $time->getTimeBegin();
-				$this->widgetConfiguration['endTime'] = $time->getTimeEnd();
-				$events[] = $this->createEvent();
+				$events[] = $this->createEvent($time->getTimeBegin(), $time->getTimeEnd());
 			}
-		} elseif ($this->widgetConfiguration['times'] instanceof \JWeiland\Events2\Domain\Model\Time) {
-			/** @var \JWeiland\Events2\Domain\Model\Time $time */
-			$time = $this->widgetConfiguration['times'];
-			$this->widgetConfiguration['startTime'] = $time->getTimeBegin();
-			$this->widgetConfiguration['endTime'] = $time->getTimeEnd();
-			$events[] = $this->createEvent();
 		} else {
 			// no time given
 			$this->widgetConfiguration['startTime'] = FALSE;
 			$this->widgetConfiguration['endTime'] = FALSE;
+			$events[] = $this->createEvent();
 		}
 
 		$this->view->assign('events', $events);
 
 		$filePath = 'typo3temp/tx_events2/iCal/' . $this->getEventUid() . '.ics';
-		GeneralUtility::writeFileToTypo3tempDir(PATH_site . $filePath, $this->view->render());
+		$content = preg_replace('/\h+/', ' ', $this->view->render());
+		GeneralUtility::writeFileToTypo3tempDir(PATH_site . $filePath, $content);
 		return '
 			<a href="' . GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . $filePath . '" target="_blank">' .
 				LocalizationUtility::translate('export', 'events2') .
@@ -95,20 +105,22 @@ class ICalendarController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetCon
 	
 	/**
 	 * create an event array
+	 * Hint: We can't use DTSTAMP here, because this must be UTC, but we don't have UTC times here.
 	 *
+	 * @param string $startTime
+	 * @param string $endTime
 	 * @return array
 	 */
-	protected function createEvent() {
+	protected function createEvent($startTime = '', $endTime = '') {
 		$event = array();
 		$event['UID'] = $this->getEventUid();
-		$event['DTSTAMP'] = $this->convertToTstamp($this->widgetConfiguration['day'], $this->widgetConfiguration['startTime']);
-		$event['DTSTART'] = $this->convertToTstamp($this->widgetConfiguration['day'], $this->widgetConfiguration['startTime']);
-		if (!empty($this->widgetConfiguration['endTime'])) {
-			$event['DTEND'] = $this->convertToTstamp($this->widgetConfiguration['day'], $this->widgetConfiguration['endTime']);
+		$event['DTSTART'] = $this->convertToTstamp($this->event->getDay()->getDay(), $startTime);
+		if (!empty($endTime)) {
+			$event['DTEND'] = $this->convertToTstamp($this->event->getDay()->getDay(), $endTime);
 		}
-		$event['LOCATION'] = $this->widgetConfiguration['location'];
-		$event['SUMMARY'] = $this->widgetConfiguration['title'];
-		$event['DESCRIPTION'] = $this->widgetConfiguration['description'];
+		$event['LOCATION'] = $this->sanitizeString($this->event->getLocation()->getLocation());
+		$event['SUMMARY'] = $this->sanitizeString($this->event->getTitle());
+		$event['DESCRIPTION'] = $this->sanitizeString($this->event->getDetailInformations());
 		
 		return $event;
 	}
@@ -120,9 +132,7 @@ class ICalendarController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetCon
 	 * @return string
 	 */
 	public function getEventUid() {
-		/** @var \DateTime $day */
-		$day = $this->widgetConfiguration['day'];
-		return 'event' . $day->format('dmY') . $this->getFormattedTime($this->widgetConfiguration['startTime']);
+		return 'event' . uniqid($this->event->getDay()->getDay()->format('dmY'), TRUE);
 	}
 
 	/**
@@ -134,7 +144,21 @@ class ICalendarController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetCon
 	 * @return string
 	 */
 	public function convertToTstamp(\DateTime $date, $time = '') {
-		return $date->format('Ymd') . 'T' . $this->getFormattedTime($time);
+		// don't modify the original Date
+		$localDate = clone $date;
+
+		// add hours and minutes to date
+		if (!empty($time) && strlen($time) === 5) {
+			list($hours, $minutes) = explode(':', $time);
+			$diff = new \DateInterval('PT' . (int)$hours . 'H' . (int)$minutes . 'M');
+			$localDate->add($diff);
+		}
+
+		// set Date to UTC
+		$timeStamp = new \DateTimeZone('UTC');
+		$localDate->setTimezone($timeStamp);
+
+		return $localDate->format('Ymd\THis\Z');
 	}
 
 	/**
@@ -148,6 +172,23 @@ class ICalendarController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetCon
 			$time = '000000';
 		} else $time = str_replace(':', '', $time) . '00';
 		return $time;
+	}
+
+	/**
+	 * sanitize Text
+	 *
+	 * @link http://tools.ietf.org/html/rfc5545#page-45
+	 * @param string $content The text to sanitize for *.ics
+	 * @return string
+	 */
+	protected function sanitizeString($content) {
+		// remove tags from content
+		$content = htmlspecialchars(strip_tags($content));
+		// some chars have to be escaped. See link above
+		$content = preg_replace('/([\\\\,;])/', '\\\$1', $content);
+		// sanitize all enter chars (vertical white-spaces) to \n
+		$content = preg_replace('/\v+/', '\\n', $content);
+		return $content;
 	}
 
 }

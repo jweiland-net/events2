@@ -22,15 +22,14 @@
 						<p class="teaser"><f:render partial="Event/Teaser" arguments="{event: event}" /></p>
 						<div>
 							<f:render partial="Event/Category" arguments="{event: event}" />
-							<f:if condition="{e2:getMergedEventTimes(event: event)->f:count()} == 1">
-								<f:then>
-									<f:alias map="{time: '{e2:getMergedEventTimes(event: event, directReturn: 1)}'}">|&nbsp;<f:translate key="tx_events2_domain_model_time.time_begin"/>: {time.timeBegin}</f:alias>
-								</f:then>
-								<f:else>
+							<f:switch expression="{e2:getMergedEventTimes(event: event)->f:count()}">
+								<f:case value="0">&nbsp;</f:case>
+								<f:case value="1"><f:alias map="{time: '{e2:getMergedEventTimes(event: event, directReturn: 1)}'}">|&nbsp;<f:translate key="tx_events2_domain_model_time.time_begin"/>: {time.timeBegin}</f:alias></f:case>
+								<f:case default="1">
 									|&nbsp;<f:translate key="tx_events2_domain_model_time.time_begin"/>:&nbsp;
 									<f:link.action action="show" controller="Event" pageUid="{settings.pidOfDetailPage}" arguments="{event: event, day: event.day}" title="{f:translate(key: 'singleView')}">{f:translate(key: 'showDetailview')}</f:link.action>
-								</f:else>
-							</f:if>
+								</f:case>
+							</f:switch>
 						</div>
 						<f:if condition="{event.location}">
 							<div class="location">

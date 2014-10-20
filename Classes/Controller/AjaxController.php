@@ -24,27 +24,31 @@ namespace JWeiland\Events2\Controller;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /**
  * @package events2
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class AjaxController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
+class AjaxController extends ActionController {
 
 	/**
-	 * action ajax
+	 * this ajax action can only call Ajax scripts based on pageType
+	 * eID scripts has its own bootstrap
 	 *
 	 * @param string $objectName Which Ajax Object has to be called
 	 * @param array $arguments Arguments which have to be send to the Ajax Object
 	 * @return string
 	 */
 	public function callAjaxObjectAction($objectName, $arguments = array()) {
-		$className = 'JWeiland\\Events2\\Ajax\\' . $objectName;
-		if (class_exists($className)) {
-			$object = $this->objectManager->get($className);
-			if (method_exists($object, 'processAjaxRequest')) {
-				$result = $object->processAjaxRequest($arguments);
-				return $result;
+		if (is_string($objectName)) {
+			$className = 'JWeiland\\Events2\\Ajax\\' . ucfirst($objectName);
+			if (class_exists($className)) {
+				$object = $this->objectManager->get($className);
+				if (method_exists($object, 'processAjaxRequest')) {
+					$result = $object->processAjaxRequest($arguments);
+					return $result;
+				}
 			}
 		}
 		return '';

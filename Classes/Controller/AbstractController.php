@@ -184,35 +184,45 @@ class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * @return void
 	 */
 	protected function addValidationForVideoLink($argument) {
-		if ($this->request->hasArgument($argument)) {
-			$event = $this->request->getArgument($argument);
-			if (empty($event['videoLink']['link'])) {
-				// remove videoLink completely if empty, else extbase will create an empty link object
-				unset($event['videoLink']);
-				$this->request->setArgument($argument, $event);
-			} else {
-				// create a new RegExpValidator for property link
-				/** @var \TYPO3\CMS\Extbase\Validation\Validator\RegularExpressionValidator $regExpValidator */
-				$regExpValidator = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Validation\\Validator\\RegularExpressionValidator', array(
-					'regularExpression' => '~^(|http:|https:)//(|www.)youtube(.*?)(v=|embed/)([a-zA-Z0-9_-]+)~i'
-				));
-				/** @var \TYPO3\CMS\Extbase\Validation\Validator\GenericObjectValidator $genericObjectValidator */
-				$genericObjectValidator = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Validation\\Validator\\GenericObjectValidator');
-				$genericObjectValidator->addPropertyValidator('link', $regExpValidator);
+		if ($this->request->hasArgument($argument) && !empty($event['videoLink']['link'])) {
+			// create a new RegExpValidator for property link
+			/** @var \TYPO3\CMS\Extbase\Validation\Validator\RegularExpressionValidator $regExpValidator */
+			$regExpValidator = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Validation\\Validator\\RegularExpressionValidator', array(
+				'regularExpression' => '~^(|http:|https:)//(|www.)youtube(.*?)(v=|embed/)([a-zA-Z0-9_-]+)~i'
+			));
+			/** @var \TYPO3\CMS\Extbase\Validation\Validator\GenericObjectValidator $genericObjectValidator */
+			$genericObjectValidator = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Validation\\Validator\\GenericObjectValidator');
+			$genericObjectValidator->addPropertyValidator('link', $regExpValidator);
 
-				// modify current validator of event
-				$event = $this->arguments->getArgument($argument);
-				/** @var \TYPO3\CMS\Extbase\Validation\Validator\ConjunctionValidator $eventValidator */
-				$eventValidator = $event->getValidator();
-				$validators = $eventValidator->getValidators();
-				$validators->rewind();
-				$eventValidator = $validators->current();
-				$validators = $eventValidator->getValidators();
-				$validators->rewind();
-				/** @var \TYPO3\CMS\Extbase\Validation\Validator\GenericObjectValidator $eventValidator */
-				$eventValidator = $validators->current();
-				$eventValidator->addPropertyValidator('videoLink', $genericObjectValidator);
-			}
+			// modify current validator of event
+			$event = $this->arguments->getArgument($argument);
+			/** @var \TYPO3\CMS\Extbase\Validation\Validator\ConjunctionValidator $eventValidator */
+			$eventValidator = $event->getValidator();
+			$validators = $eventValidator->getValidators();
+			$validators->rewind();
+			$eventValidator = $validators->current();
+			$validators = $eventValidator->getValidators();
+			$validators->rewind();
+			/** @var \TYPO3\CMS\Extbase\Validation\Validator\GenericObjectValidator $eventValidator */
+			$eventValidator = $validators->current();
+			$eventValidator->addPropertyValidator('videoLink', $genericObjectValidator);
+		}
+	}
+
+	/**
+	 * delete videoLink if empty
+	 * Extbase can not set deleted=1 itself
+	 *
+	 * @param \JWeiland\Events2\Domain\Model\Event $event
+	 * @return void
+	 */
+	protected function deleteVideoLinkIfEmpty(Event $event) {
+		$linkText = $event->getVideoLink()->getLink();
+		if (empty($linkText)) {
+			/** @var \JWeiland\Events2\Domain\Repository\LinkRepository $linkRepository */
+			$linkRepository = $this->objectManager->get('JWeiland\\Events2\\Domain\\Repository\\LinkRepository');
+			$linkRepository->remove($event->getVideoLink());
+			$event->setVideoLink(NULL);
 		}
 	}
 

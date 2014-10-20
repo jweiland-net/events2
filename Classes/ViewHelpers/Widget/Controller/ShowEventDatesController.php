@@ -174,7 +174,7 @@ class ShowEventDatesController extends AbstractWidgetController {
 		$today = $this->dateTimeUtility->standardizeDateTimeObject(new \DateTime());
 
 		// as long as I can not change query building for sub-models in extbase (repository)
-		// I have to reduce days with help of PHP. Maybe it will work with TYPO3 6.3
+		// I have to reduce days with help of PHP. Maybe it will work with TYPO3 7.0
 
 		/** @var \JWeiland\Events2\Domain\Model\Day $day */
 		foreach ($this->event->getDays() as $day) {

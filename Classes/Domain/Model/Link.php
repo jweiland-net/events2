@@ -45,9 +45,12 @@ class Link extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	protected $title = 'Video';
 
-
-
-
+	/**
+	 * Deleted
+	 *
+	 * @var boolean
+	 */
+	protected $deleted = FALSE;
 
 	/**
 	 * Returns the link
@@ -85,6 +88,25 @@ class Link extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
 	 */
 	public function setTitle($title) {
 		$this->title = (string)$title;
+	}
+
+	/**
+	 * Returns the deleted
+	 *
+	 * @return boolean $deleted
+	 */
+	public function getDeleted() {
+		return $this->deleted;
+	}
+
+	/**
+	 * Sets the deleted
+	 *
+	 * @param boolean $deleted
+	 * @return void
+	 */
+	public function setDeleted($deleted) {
+		$this->deleted = (bool)$deleted;
 	}
 
 }

@@ -213,6 +213,7 @@ class Event extends AbstractEntity {
 	 * VideoLink
 	 *
 	 * @var \JWeiland\Events2\Domain\Model\Link
+	 * @cascade remove
 	 */
 	protected $videoLink = NULL;
 
@@ -220,6 +221,7 @@ class Event extends AbstractEntity {
 	 * VideoLink
 	 *
 	 * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Link>
+	 * @cascade remove
 	 * @lazy
 	 */
 	protected $downloadLinks = NULL;

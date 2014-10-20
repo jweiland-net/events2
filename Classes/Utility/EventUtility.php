@@ -79,7 +79,7 @@ class EventUtility {
 	}
 
 	/**
-	 * each event can have one ore more times for one day
+	 * each event can have one or more times for one day
 	 * This method looks into all time related records and fetches the times with highest priority
 	 *
 	 * @param \JWeiland\Events2\Domain\Model\Event $event

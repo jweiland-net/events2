@@ -1,5 +1,5 @@
 <?php
-namespace JWeiland\Events2\Controller;
+namespace JWeiland\Events2\Domain\Repository;
 
 /***************************************************************
  *  Copyright notice
@@ -24,22 +24,12 @@ namespace JWeiland\Events2\Controller;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
  * @package events2
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class VideoController extends ActionController {
-
-	/**
-	 * action show
-	 *
-	 * @param \JWeiland\Events2\Domain\Model\Event $event
-	 * @return void
-	 */
-	public function showAction(\JWeiland\Events2\Domain\Model\Event $event) {
-		$this->view->assign('event', $event);
-	}
+class LinkRepository extends Repository {
 
 }

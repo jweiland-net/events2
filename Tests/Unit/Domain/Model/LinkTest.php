@@ -134,4 +134,42 @@ class LinkTest extends UnitTestCase {
 		$this->assertSame('1', $this->subject->getTitle());
 	}
 
+	/**
+	 * @test
+	 */
+	public function getDeletedInitiallyReturnsFalse() {
+		$this->assertSame(
+			FALSE,
+			$this->subject->getDeleted()
+		);
+	}
+
+	/**
+	 * @test
+	 */
+	public function setDeletedSetsDeleted() {
+		$this->subject->setDeleted(TRUE);
+		$this->assertSame(
+			TRUE,
+			$this->subject->getDeleted()
+		);
+	}
+
+	/**
+	 * @test
+	 */
+	public function setDeletedWithStringReturnsTrue() {
+		$this->subject->setDeleted('foo bar');
+		$this->assertTrue($this->subject->getDeleted());
+	}
+
+	/**
+	 * @test
+	 */
+	public function setDeletedWithZeroReturnsFalse() {
+		$this->subject->setDeleted(0);
+		$this->assertFalse($this->subject->getDeleted());
+	}
+
+
 }

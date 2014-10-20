@@ -56,14 +56,10 @@ class ICalendarViewHelper extends AbstractWidgetViewHelper {
 	/**
 	 * call the index action of the controller
 	 *
-	 * @param string $title
-	 * @param string $description
-	 * @param DateTime $day
-	 * @param object $times
-	 * @param string $location
+	 * @param \JWeiland\Events2\Domain\Model\Event $event
 	 * @return string
 	 */
-	public function render($title, $description, $day, $times = NULL, $location = '') {
+	public function render($event) {
 		return $this->initiateSubRequest();
 	}
 
