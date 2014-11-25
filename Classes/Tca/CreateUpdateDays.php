@@ -51,12 +51,18 @@ class CreateUpdateDays {
 	protected $dateTimeUtility = NULL;
 
 	/**
+	 * @var \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected $databaseConnection = NULL;
+
+	/**
 	 * initializes this object
 	 */
 	public function init() {
 		$this->objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
 		$this->dayGenerator = $this->objectManager->get('JWeiland\\Events2\\Tca\\DayGenerator');
 		$this->dateTimeUtility = $this->objectManager->get('JWeiland\\Events2\\Utility\\DateTimeUtility');
+		$this->databaseConnection = $GLOBALS['TYPO3_DB'];
 	}
 
 	/**
@@ -64,9 +70,7 @@ class CreateUpdateDays {
 	 * @return void
 	 */
 	public function processDatamap_afterAllOperations(\TYPO3\CMS\Core\DataHandling\DataHandler $pObj) {
-		// TODO: add something to hide/delete related records
-
-		// process this hook only on expected table
+		// return if unexpected table
 		if (!array_key_exists('tx_events2_domain_model_event', $pObj->datamap)) {
 			return;
 		}
@@ -75,10 +79,11 @@ class CreateUpdateDays {
 
 		$this->eventRecord = $this->getFullEventRecord('tx_events2_domain_model_event', $pObj);
 
+		// add day records
 		$this->dayGenerator->initialize($this->eventRecord);
 		$days = $this->dayGenerator->getDayStorage();
 
-		// delete entries with cureent event uid from mm-table
+		// delete entries with current event uid from mm-table
 		$this->deleteAllRelatedRecords($this->eventRecord['uid']);
 
 		foreach ($days as $day) {
@@ -86,7 +91,7 @@ class CreateUpdateDays {
 		}
 
 		// add days amount to event
-		$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+		$this->databaseConnection->exec_UPDATEquery(
 			'tx_events2_domain_model_event',
 			'uid = ' . $this->eventRecord['uid'],
 			array(
@@ -108,13 +113,13 @@ class CreateUpdateDays {
 
 	/**
 	 * add day to db
-	 * Also MM-Tables will be filled
+	 * Also MM-Table will be filled
 	 *
 	 * @param \DateTime $day
 	 * @return int UID of inserted day
 	 */
 	public function addDay(\DateTime $day) {
-		// to prevent multiple day for ONE day we set them all to midnight 00:00:00
+		// to prevent multiple records for ONE day we set them all to midnight 00:00:00
 		$day = $this->dateTimeUtility->standardizeDateTimeObject($day);
 		$dayUid = $this->addDayRecord($day);
 
@@ -122,13 +127,13 @@ class CreateUpdateDays {
 		$this->addRelation($this->eventRecord['uid'], $dayUid, $day);
 
 		// add amount of events to day record
-		$amount = $GLOBALS['TYPO3_DB']->exec_SELECTcountRows(
+		$amount = $this->databaseConnection->exec_SELECTcountRows(
 			'*',
 			'tx_events2_event_day_mm',
 			'uid_foreign = ' . $dayUid
 		);
 		if (!empty($amount)) {
-			$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+			$this->databaseConnection->exec_UPDATEquery(
 				'tx_events2_domain_model_day',
 				'uid = ' . $dayUid,
 				array(
@@ -154,7 +159,7 @@ class CreateUpdateDays {
 		}
 		$event = BackendUtility::getRecord($table, $uid);
 		if ($event['exceptions']) {
-			$event['exceptions'] = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+			$event['exceptions'] = $this->databaseConnection->exec_SELECTgetRows(
 				'*',
 				'tx_events2_domain_model_exception',
 				'uid IN (' . implode(',', array_keys($dataHandler->datamap['tx_events2_domain_model_exception'])) . ')' .
@@ -172,7 +177,7 @@ class CreateUpdateDays {
 	 * @return int The affected row uid
 	 */
 	public function addDayRecord(\DateTime $day) {
-		$row = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
+		$row = $this->databaseConnection->exec_SELECTgetSingleRow(
 			'uid',
 			'tx_events2_domain_model_day',
 			'day=' . $day->format('U') .
@@ -193,8 +198,8 @@ class CreateUpdateDays {
 			$fieldsArray['cruser_id'] = (int)$GLOBALS['BE_USER']->user['uid'];
 			$fieldsArray['sys_language_uid'] = (int)$this->eventRecord['sys_language_uid'];
 
-			$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_events2_domain_model_day', $fieldsArray);
-			return (int)$GLOBALS['TYPO3_DB']->sql_insert_id();
+			$this->databaseConnection->exec_INSERTquery('tx_events2_domain_model_day', $fieldsArray);
+			return (int)$this->databaseConnection->sql_insert_id();
 		} else {
 			return (int)$row['uid'];
 		}
@@ -210,24 +215,23 @@ class CreateUpdateDays {
 	 */
 	public function addRelation($eventUid, $dayUid, \DateTime $day) {
 		// we don't need a SELECT query here, because we have deleted all related records just before
-		// create field array to insert
 		$fieldsArray = array();
-		$fieldsArray['uid_local'] = $eventUid;
-		$fieldsArray['uid_foreign'] = $dayUid;
+		$fieldsArray['uid_local'] = (int)$eventUid;
+		$fieldsArray['uid_foreign'] = (int)$dayUid;
 		$fieldsArray['sorting'] = (int)$day->format('U');
 
-		$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_events2_event_day_mm', $fieldsArray);
+		$this->databaseConnection->exec_INSERTquery('tx_events2_event_day_mm', $fieldsArray);
 	}
 
 	/**
 	 * delete all related records from mm-table
 	 *
-	 * @param $eventUid
+	 * @param int $eventUid
 	 */
 	public function deleteAllRelatedRecords($eventUid) {
-		$GLOBALS['TYPO3_DB']->exec_DELETEquery(
+		$this->databaseConnection->exec_DELETEquery(
 			'tx_events2_event_day_mm',
-			'uid_local=' . $eventUid
+			'uid_local=' . (int)$eventUid
 		);
 	}
 

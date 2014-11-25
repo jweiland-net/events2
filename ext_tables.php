@@ -46,7 +46,7 @@ $TCA['tt_content']['types']['list']['subtypes_addlist'][$pluginSignature] = 'pi_
 
 if (TYPO3_MODE === 'BE') {
 	\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-		$_EXTKEY,
+		'JWeiland.' . $_EXTKEY,
 		'web',	// Make module a submodule of 'web'
 		'events',	// Submodule key
 		'',	// Position
