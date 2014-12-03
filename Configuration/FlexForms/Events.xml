@@ -32,6 +32,10 @@
 										<numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:listRange</numIndex>
 										<numIndex index="1"><![CDATA[Event->listRange;Event->show;Day->show;Location->show;Video->show]]></numIndex>
 									</numIndex>
+									<numIndex index="3">
+										<numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:listThisWeek</numIndex>
+										<numIndex index="1"><![CDATA[Event->listThisWeek;Event->show;Day->show;Location->show;Video->show]]></numIndex>
+									</numIndex>
 								</items>
 							</config>
 						</TCEforms>

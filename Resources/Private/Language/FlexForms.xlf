@@ -27,6 +27,9 @@
 			<trans-unit id="listRange">
 				<source>List events for next 4 months</source>
 			</trans-unit>
+			<trans-unit id="listThisWeek">
+				<source>List events for this week</source>
+			</trans-unit>
 			<trans-unit id="mergeEvents">
 				<source>Merge events: Same events with given EventEnd-Date will be merged to one entry in listings</source>
 			</trans-unit>

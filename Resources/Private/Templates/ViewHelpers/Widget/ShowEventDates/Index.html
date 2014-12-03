@@ -1,32 +1,14 @@
-<dl class="extdl shortencontent shortenalways">
+<f:for each="{days}" as="day">
+	<dl class="nomargin borderbottom {f:if(condition: day.isRemoved, then: 'markAsRemoved', else: '')}">
+		<dt class="nomargin">{day.day.day -> f:format.date(format: '%A, %d.%m.%Y')}:</dt>
+		<dd>
+			<f:render partial="Event/Time" arguments="{time: day.time}" />
 
-	<f:for each="{days}" as="day">
-		<f:if condition="{day.isRemoved}">
-			<f:then>
-				<dt class="removed">
-			</f:then>
-			<f:else>
-				<dt>
-			</f:else>
-		</f:if>
-
-		{day.day.day -> f:format.date(format: '%A, %d.%m.%Y')}{f:if(condition: day.time.timeBegin, then: ':')}
-		</dt>
-		<f:if condition="{day.isRemoved}">
-			<f:then>
-				<dd class="removed">
-			</f:then>
-			<f:else>
-				<dd>
-			</f:else>
-		</f:if>
-		<f:render partial="Event/Time" arguments="{time: day.time}"/>
-
-		<f:if condition="{day.infos}">
-			<f:for each="{day.infos}" as="info">
-				<br/>{info.exceptionDetails -> f:format.html(parseFuncTSPath: 'lib.parseFunc') -> f:format.nl2br()}
-			</f:for>
-		</f:if>
+			<f:if condition="{day.infos}">
+				<f:for each="{day.infos}" as="info">
+					<br />{info.exceptionDetails -> f:format.html(parseFuncTSPath: 'lib.parseFunc') -> f:format.nl2br()}
+				</f:for>
+			</f:if>
 		</dd>
-	</f:for>
-</dl>
+	</dl>
+</f:for>

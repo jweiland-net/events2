@@ -41,13 +41,7 @@ class EventController extends AbstractController {
 	 * @return void
 	 */
 	public function listAction() {
-		if (empty($this->settings['categories'])) {
-			// find all next events incl. recurring events
-			$events = $this->eventRepository->findNextEvents();
-		} else {
-			// if category is equal to mergeEventsOnCategory, merge duplicated events to ONE event
-			$events = $this->eventRepository->getEventsForCategories('list', $this->settings['categories'], $this->settings['mergeEvents']);
-		}
+		$events = $this->eventRepository->findEvents('list', $this->settings['categories'], $this->settings['mergeEvents']);
 		$this->view->assign('events', $events);
 	}
 
@@ -57,11 +51,7 @@ class EventController extends AbstractController {
 	 * @return void
 	 */
 	public function listLatestAction() {
-		if (empty($this->settings['categories'])) {
-			$events = $this->eventRepository->findNextEvents();
-		} else {
-			$events = $this->eventRepository->getEventsForCategories('latest', $this->settings['categories'], $this->settings['mergeEvents']);
-		}
+		$events = $this->eventRepository->findEvents('latest', $this->settings['categories'], $this->settings['mergeEvents']);
 		$this->view->assign('events', $events);
 	}
 
@@ -71,11 +61,17 @@ class EventController extends AbstractController {
 	 * @return void
 	 */
 	public function listTodayAction() {
-		if (empty($this->settings['categories'])) {
-			$events = $this->eventRepository->findTodayEvents();
-		} else {
-			$events = $this->eventRepository->getEventsForCategories('today', $this->settings['categories'], $this->settings['mergeEvents']);
-		}
+		$events = $this->eventRepository->findEvents('today', $this->settings['categories'], $this->settings['mergeEvents']);
+		$this->view->assign('events', $events);
+	}
+
+	/**
+	 * action list this week
+	 *
+	 * @return void
+	 */
+	public function listThisWeekAction() {
+		$events = $this->eventRepository->findEvents('thisWeek', $this->settings['categories'], $this->settings['mergeEvents']);
 		$this->view->assign('events', $events);
 	}
 
@@ -85,11 +81,7 @@ class EventController extends AbstractController {
 	 * @return void
 	 */
 	public function listRangeAction() {
-		if (empty($this->settings['categories'])) {
-			$events = $this->eventRepository->findRangeEvents();
-		} else {
-			$events = $this->eventRepository->getEventsForCategories('range', $this->settings['categories'], $this->settings['mergeEvents']);
-		}
+		$events = $this->eventRepository->findEvents('range', $this->settings['categories'], $this->settings['mergeEvents']);
 		$this->view->assign('events', $events);
 	}
 

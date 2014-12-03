@@ -358,7 +358,7 @@ return array(
 		),
 		'days' => array(
 			'config' => array(
-				'type' => 'passthrough',
+				'type' => 'select',
 				'foreign_table' => 'tx_events2_domain_model_day',
 				'foreign_sortby' => 'sorting',
 				'MM' => 'tx_events2_event_day_mm',

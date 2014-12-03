@@ -34,6 +34,10 @@
 				<source>List events for next 4 months</source>
 				<target>Auflistung von Terminen der nächsten 4 Wochen</target>
 			</trans-unit>
+			<trans-unit id="listThisWeek">
+				<source>List events for this week</source>
+				<target>Auflistung von Terminen dieser Woche</target>
+			</trans-unit>
 			<trans-unit id="mergeEvents">
 				<source>Merge events: Same events with given EventEnd-Date will be merged to one entry in listings</source>
 				<target>Veranstaltungen zusammenführen: Gleiche Veranstaltungen, bei denen ein Veranstaltungsenddatum gesetzt ist, werden als ein Eintrag in die Listenansicht übernommen.</target>
