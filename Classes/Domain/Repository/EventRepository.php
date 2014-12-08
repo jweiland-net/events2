@@ -140,7 +140,8 @@ class EventRepository extends Repository {
 		$statement
 			->addWhere('tx_events2_domain_model_event.top_of_list', '=', 1)
 			->addWhere('tx_events2_domain_model_day.day', '>=', $today)
-			->setGroupBy('tx_events2_domain_model_event.uid');
+			->setGroupBy('tx_events2_domain_model_event.uid')
+			->setLimit('');
 
 		$records = $query->statement($statement->getStatement())->execute(TRUE);
 
