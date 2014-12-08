@@ -142,7 +142,7 @@ return array(
 			'config' => array(
 				'type' => 'inline',
 				'foreign_table' => 'tx_events2_domain_model_time',
-				'foreign_field' => 'event',
+				'foreign_field' => 'exception',
 				'foreign_match_fields' => array(
 					'	type' => 'exception_time',
 				),

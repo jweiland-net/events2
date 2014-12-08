@@ -333,18 +333,15 @@ CREATE TABLE tx_events2_domain_model_link (
 # Table structure for table 'tx_events2_domain_model_time'
 #
 CREATE TABLE tx_events2_domain_model_time (
-
 	event int(11) unsigned DEFAULT '0' NOT NULL,
-
+	exception int(11) unsigned DEFAULT '0' NOT NULL,
 );
 
 #
 # Table structure for table 'tx_events2_domain_model_exception'
 #
 CREATE TABLE tx_events2_domain_model_exception (
-
 	event int(11) unsigned DEFAULT '0' NOT NULL,
-
 );
 
 #

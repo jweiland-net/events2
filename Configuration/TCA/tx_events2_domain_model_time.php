@@ -183,6 +183,11 @@ return array(
 				'type' => 'passthrough',
 			),
 		),
+		'exception' => array(
+			'config' => array(
+				'type' => 'passthrough',
+			),
+		),
 	),
 	'types' => array(
 		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, type, time_begin;;2, duration, time_end,--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime'),
