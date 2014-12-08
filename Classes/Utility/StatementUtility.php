@@ -262,7 +262,7 @@ class StatementUtility {
 	 */
 	public function addJoinForCategoryTable() {
 		$this->join[] = 'sys_category_record_mm ON tx_events2_domain_model_event.uid=sys_category_record_mm.uid_foreign';
-		$this->join[] = 'sys_category ON sys_category_record_mm.uid_foreign=sys_category.uid';
+		$this->join[] = 'sys_category ON sys_category_record_mm.uid_local=sys_category.uid';
 		$this->where[] = 'sys_category_record_mm.tablenames = \'' . $this->getFrom() . '\'';
 		$this->tables[] = 'sys_category';
 	}
