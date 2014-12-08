@@ -196,9 +196,9 @@ class EventRepository extends Repository {
 				break;
 			case 'thisWeek':
 				$weekStart = $this->dateTimeUtility->convert('today');
-				$weekStart->modify('first day of this week');
+				$weekStart->modify('this week'); // 'first day of' does not work for 'weeks'
 				$weekEnd = $this->dateTimeUtility->convert('today');
-				$weekEnd->modify('last day of this week');
+				$weekEnd->modify('this week +6 days'); // 'last day of' does not work for 'weeks'
 				$statement
 					->addWhere('tx_events2_domain_model_day.day', '>=', $weekStart)
 					->addWhere('tx_events2_domain_model_day.day', '<=', $weekEnd);
