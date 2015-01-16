@@ -153,21 +153,37 @@ class CreateUpdateDays {
 	 * @return array
 	 */
 	public function getFullEventRecord($table, \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler) {
-		$uid = key($dataHandler->datamap['tx_events2_domain_model_event']);
-		if (GeneralUtility::isFirstPartOfStr($uid, 'NEW')) {
-			$uid = $dataHandler->substNEWwithIDs[$uid];
-		}
+		$uid = $this->getRealUid(key($dataHandler->datamap['tx_events2_domain_model_event']), $dataHandler);
 		$event = BackendUtility::getRecord($table, $uid);
 		if ($event['exceptions']) {
+			$exceptions = array();
+			foreach (array_keys($dataHandler->datamap['tx_events2_domain_model_exception']) as $exception) {
+				$exceptions[] = $this->getRealUid($exception, $dataHandler);
+			}
 			$event['exceptions'] = $this->databaseConnection->exec_SELECTgetRows(
 				'*',
 				'tx_events2_domain_model_exception',
-				'uid IN (' . implode(',', array_keys($dataHandler->datamap['tx_events2_domain_model_exception'])) . ')' .
+				'uid IN (' . implode(',', $exceptions) . ')' .
 				BackendUtility::BEenableFields('tx_events2_domain_model_exception') .
 				BackendUtility::deleteClause('tx_events2_domain_model_exception')
 			);
 		}
 		return $event;
+	}
+
+	/**
+	 * if a record was new its uid is not an int. It's a string starting with "NEW"
+	 * This method returns the real uid as int
+	 *
+	 * @param string $uid
+	 * @param \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler
+	 * @return int
+	 */
+	public function getRealUid($uid, \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler) {
+		if (GeneralUtility::isFirstPartOfStr($uid, 'NEW')) {
+			$uid = $dataHandler->substNEWwithIDs[$uid];
+		}
+		return $uid;
 	}
 
 	/**

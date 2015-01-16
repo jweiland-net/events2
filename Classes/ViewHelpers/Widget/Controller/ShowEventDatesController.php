@@ -134,7 +134,7 @@ class ShowEventDatesController extends AbstractWidgetController {
 
 	/**
 	 * This index action creates a template where all days
-	 * are listet with their time records and exceptions
+	 * are listed with their time records and exceptions
 	 *
 	 * @return void
 	 */

@@ -489,13 +489,17 @@ class ShowEventDatesControllerTest extends UnitTestCase {
 	public function sortDaysByDateAndTimeWithIntDateAndStringTimeResultsInSortedArray() {
 		$days = array();
 		$days[] = array('eventDate' => 10, 'eventTime' => '10:34');
+		$days[] = array('eventDate' => 8, 'eventTime' => '11:00');
 		$days[] = array('eventDate' => 2, 'eventTime' => '02:34');
+		$days[] = array('eventDate' => 5, 'eventTime' => '09:00');
 		$days[] = array('eventDate' => 1, 'eventTime' => '01:34');
 		$days[] = array('eventDate' => 21, 'eventTime' => '21:34');
 
 		$expectedDays = array();
 		$expectedDays[] = array('eventDate' => 1, 'eventTime' => '01:34');
 		$expectedDays[] = array('eventDate' => 2, 'eventTime' => '02:34');
+		$expectedDays[] = array('eventDate' => 5, 'eventTime' => '09:00');
+		$expectedDays[] = array('eventDate' => 8, 'eventTime' => '11:00');
 		$expectedDays[] = array('eventDate' => 10, 'eventTime' => '10:34');
 		$expectedDays[] = array('eventDate' => 21, 'eventTime' => '21:34');
 

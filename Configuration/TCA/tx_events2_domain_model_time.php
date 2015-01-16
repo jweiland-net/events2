@@ -139,7 +139,7 @@ return array(
 				'max' => 5,
 				'checkbox' => 1,
 				'default' => '8:00',
-				'eval' => 'Tx_Events2_Tca_Type_Time'
+				'eval' => 'JWeiland\\Events2\\Tca\\Type\\Time'
 			),
 		),
 		'time_entry' => array(
@@ -151,7 +151,7 @@ return array(
 				'max' => 5,
 				'checkbox' => 1,
 				'default' => '',
-				'eval' => 'Tx_Events2_Tca_Type_Time'
+				'eval' => 'JWeiland\\Events2\\Tca\\Type\\Time'
 			),
 		),
 		'duration' => array(
@@ -163,7 +163,7 @@ return array(
 				'max' => 5,
 				'checkbox' => 1,
 				'default' => '',
-				'eval' => 'Tx_Events2_Tca_Type_Time'
+				'eval' => 'JWeiland\\Events2\\Tca\\Type\\Time'
 			),
 		),
 		'time_end' => array(
@@ -175,7 +175,7 @@ return array(
 				'max' => 5,
 				'checkbox' => 1,
 				'default' => '',
-				'eval' => 'Tx_Events2_Tca_Type_Time'
+				'eval' => 'JWeiland\\Events2\\Tca\\Type\\Time'
 			),
 		),
 		'event' => array(
