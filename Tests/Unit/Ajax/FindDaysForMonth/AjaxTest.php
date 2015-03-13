@@ -4,7 +4,7 @@ namespace JWeiland\Events2\Tests\Unit\Ajax\FindDaysForMonth;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
+ *  (c) 2015 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *
  *  All rights reserved
  *
@@ -43,10 +43,20 @@ class AjaxTest extends UnitTestCase {
 	 */
 	protected $subject;
 
+	/**
+	 * set up
+	 *
+	 * @return void
+	 */
 	public function setUp() {
 		$this->subject = new FindDaysForMonth\Ajax();
 	}
 
+	/**
+	 * tear down
+	 *
+	 * @return void
+	 */
 	public function tearDown() {
 		unset($this->subject);
 	}
@@ -69,9 +79,9 @@ class AjaxTest extends UnitTestCase {
 	/**
 	 * @test
 	 *
-	 * @dataProvider dataProviderForInvalidValues
-	 * @expectedException \Exception
 	 * @param mixed $invalidValue
+	 * @dataProvider dataProviderForInvalidValues
+	 * @expectedException \PHPUnit_Framework_Error
 	 */
 	public function initializeWithInvalidValuesResultsInException($invalidValue) {
 		$this->subject->initialize($invalidValue);

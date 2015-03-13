@@ -390,6 +390,16 @@
 				<source>Categories</source>
 			</trans-unit>
 
+			<trans-unit id="email.subject.create">
+				<source>A new record was created</source>
+			</trans-unit>
+			<trans-unit id="email.subject.update">
+				<source>A record was updated</source>
+			</trans-unit>
+			<trans-unit id="email.subject.activate">
+				<source>A record was activated</source>
+			</trans-unit>
+
 			<trans-unit id="error.upload">
 				<source>Something went wrong with your uploaded files. Please try again. Error: </source>
 			</trans-unit>

@@ -4,7 +4,7 @@ namespace JWeiland\Events2\Tests\Unit\Utility;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
+ *  (c) 2015 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *
  *  All rights reserved
  *
@@ -296,8 +296,9 @@ class EventUtilityTest extends UnitTestCase {
 	/**
 	 * @test
 	 *
+	 * @param mixed $invalidValue
 	 * @dataProvider dataProviderWithInvalidValuesForGetTimesForDay
-	 * @expectedException \Exception
+	 * @expectedException \PHPUnit_Framework_Error
 	 */
 	public function getTimesForDayWithWrongParametersThrowsException($invalidValue) {
 		$this->subject->getTimesForDay($invalidValue, $invalidValue);

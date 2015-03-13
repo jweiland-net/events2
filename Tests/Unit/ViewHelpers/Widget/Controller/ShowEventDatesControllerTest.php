@@ -4,7 +4,7 @@ namespace JWeiland\Events2\Tests\Unit\ViewHelpers\Widget\Controller;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
+ *  (c) 2015 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *
  *  All rights reserved
  *
@@ -426,8 +426,9 @@ class ShowEventDatesControllerTest extends UnitTestCase {
 	/**
 	 * @test
 	 *
-	 * @expectedException \Exception
+	 * @param mixed $invalidValue
 	 * @dataProvider dataProviderForInvalidValuesInSortMethod
+	 * @expectedException \PHPUnit_Framework_Error
 	 */
 	public function sortDaysByDateAndTimeWithInvalidValuesThrowsException($invalidValue) {
 		$this->subject->sortDaysByDateAndTime($invalidValue);

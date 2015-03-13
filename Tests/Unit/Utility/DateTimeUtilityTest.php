@@ -4,7 +4,7 @@ namespace JWeiland\Events2\Tests\Unit\Utility;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
+ *  (c) 2015 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *
  *  All rights reserved
  *
@@ -82,6 +82,32 @@ class DateTimeUtilityTest extends UnitTestCase {
 			$expectedDate,
 			$this->subject->convert($emptyDate)
 		);
+	}
+
+	/**
+	 * dataProvider with invalid values for DateTime objects
+	 *
+	 * @return array
+	 */
+	public function dataProviderWithInvalidValuesForDateTimeObjects() {
+		$invalidValues = array();
+		$invalidValues['string'] = array('Hello');
+		$invalidValues['boolean'] = array(TRUE);
+		$invalidValues['object'] = array(new \stdClass());
+		$invalidValues['null'] = array(NULL);
+		$invalidValues['array'] = array(array(123));
+
+		return $invalidValues;
+	}
+
+	/**
+	 * @test
+	 *
+	 * @param mixed $invalidValue
+	 * @dataProvider dataProviderWithInvalidValuesForDateTimeObjects
+	 */
+	public function convertInvalidDates($invalidValue) {
+		$this->assertNull($this->subject->convert($invalidValue));
 	}
 
 	/**

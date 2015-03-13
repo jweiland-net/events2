@@ -512,6 +512,19 @@
 				<target>Kategorien</target>
 			</trans-unit>
 
+			<trans-unit id="email.subject.create">
+				<source>A new record was created</source>
+				<target>Veranstaltung – Ein neuer Datensatz wurde angelegt</target>
+			</trans-unit>
+			<trans-unit id="email.subject.update">
+				<source>A record was updated</source>
+				<target>Veranstaltung - Ein Datensatz wurde bearbeitet</target>
+			</trans-unit>
+			<trans-unit id="email.subject.activate">
+				<source>A record was activated</source>
+				<target>Veranstaltung - Ein Datensatz wurde aktiviert</target>
+			</trans-unit>
+
 			<trans-unit id="error.upload">
 				<source>Something went wrong with your uploaded files. Please try again. Error: </source>
 				<target>Ein Fehler ist beim Upload der Dateien aufgetreten. Bitte versuchen Sie es zunächst erneut. Fehlermeldung: </target>

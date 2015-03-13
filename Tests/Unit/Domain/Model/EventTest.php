@@ -4,7 +4,7 @@ namespace JWeiland\Events2\Tests\Unit\Domain\Model;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
+ *  (c) 2015 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *
  *  All rights reserved
  *
@@ -242,7 +242,8 @@ class EventTest extends UnitTestCase {
 
 	/**
 	 * @test
-	 * @expectedException \Exception
+	 *
+	 * @expectedException \PHPUnit_Framework_Error
 	 */
 	public function setEventBeginWithTimestampResultsInException() {
 		$this->subject->setEventBegin(1234567890);

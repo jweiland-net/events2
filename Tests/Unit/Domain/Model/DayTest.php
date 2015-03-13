@@ -4,7 +4,7 @@ namespace JWeiland\Events2\Tests\Unit\Domain\Model;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
+ *  (c) 2015 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *
  *  All rights reserved
  *
@@ -97,8 +97,9 @@ class DayTest extends UnitTestCase {
 	/**
 	 * @test
 	 *
+	 * @param mixed $argument
 	 * @dataProvider dataProviderForSetDay
-	 * @expectedException \Exception
+	 * @expectedException \PHPUnit_Framework_Error
 	 */
 	public function setDayWithInvalidValuesResultsInException($argument) {
 		$this->subject->setDay($argument);

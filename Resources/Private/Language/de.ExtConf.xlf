@@ -21,6 +21,23 @@
 				<target>xMonate in der Zukunft: bei Veranstaltungen mit Wiederholungen werden Tagesdaten für die nächsten x Monate erzeugt</target>
 			</trans-unit>
 
+			<trans-unit id="emailFromAddress" xml:space="preserve">
+				<source>email from address: The senders email address. If not given the extension tries to get one from INSTALL_TOOL.</source>
+				<target>E-Mail FROM: Die E-Mail-Adresse des Absenders. Wenn nicht angegeben, dann wird die konfigurierte E-Mail-Adresse aus dem Installtool verwendet.</target>
+			</trans-unit>
+			<trans-unit id="emailFromName" xml:space="preserve">
+				<source>email from name: The senders email name. If not given the extension tries to get one from INSTALL_TOOL.</source>
+				<target>E-Mail FROM Name: Der Name des Absenders. Wenn nicht angegeben, dann wird der konfigurierte Name aus dem Installtool verwendet.</target>
+			</trans-unit>
+			<trans-unit id="emailToAddress" xml:space="preserve">
+				<source>email to address: The recipients email address.</source>
+				<target>E-Mail TO: Die Empfänger E-Mail-Adresse</target>
+			</trans-unit>
+			<trans-unit id="emailToName" xml:space="preserve">
+				<source>email to name: The recipients email name.</source>
+				<target>E-Mail TO Name: Der Empfänger Name</target>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>

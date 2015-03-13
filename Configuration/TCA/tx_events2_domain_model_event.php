@@ -141,7 +141,7 @@ return array(
 			'config' => array(
 				'type' => 'input',
 				'size' => 7,
-				'eval' => 'date',
+				'eval' => 'date,required',
 				'default' => mktime(0, 0, 0, date('m'), date('d'), date('Y'))
 			),
 		),

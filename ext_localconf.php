@@ -7,7 +7,7 @@ if (!defined('TYPO3_MODE')) {
 	'JWeiland.' . $_EXTKEY,
 	'Events',
 	array(
-		'Event' => 'list, listLatest, listToday, listRange, listSearchResults, listMyEvents, show, new, create, edit, update, delete',
+		'Event' => 'list, listLatest, listToday, listRange, listSearchResults, listMyEvents, show, new, create, edit, update, delete, activate',
 		'Day' => 'list, show',
 		'Location' => 'show',
 		'Video' => 'show',
@@ -15,7 +15,7 @@ if (!defined('TYPO3_MODE')) {
 	),
 	// non-cacheable actions
 	array(
-		'Event' => 'listSearchResults, create, update, delete',
+		'Event' => 'listSearchResults, create, update, delete, activate',
 		'Ajax' => 'callAjaxObject',
 	)
 );
@@ -69,6 +69,14 @@ if (TYPO3_MODE === 'BE') {
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass'][] = 'JWeiland\\Events2\\Tca\\DeleteDayRelations';
 	// HOOK: Override rootUid in TCA for category trees
 	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tceforms.php']['getSingleFieldClass'][] = 'JWeiland\\Events2\\Hooks\\ModifyTcaOfCategoryTrees';
+
+	// create scheduler to create/update days with recurrency
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['JWeiland\\Events2\\Task\\ReGenerateDays'] = array(
+		'extension' => $_EXTKEY,
+		'title' => 'Create/Update Days',
+		'description' => 'Re-Generate day records for events with recurrency.',
+		'additionalFields' => 'JWeiland\\Events2\\Task\\ReGenerateDays'
+	);
 }
 
 // register eID scripts
