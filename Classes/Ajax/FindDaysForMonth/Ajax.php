@@ -4,7 +4,7 @@ namespace JWeiland\Events2\Ajax\FindDaysForMonth;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
+ *  (c) 2015 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *
  *  All rights reserved
  *
@@ -25,6 +25,7 @@ namespace JWeiland\Events2\Ajax\FindDaysForMonth;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Database\PreparedStatement;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -86,6 +87,8 @@ class Ajax {
 	 * @return void
 	 */
 	public function initialize(array $arguments) {
+		// load cached TCA. Needed for enableFields
+		Bootstrap::getInstance()->loadCachedTca();
 		$this->databaseConnection = $GLOBALS['TYPO3_DB'];
 		$this->setArguments($arguments);
 	}

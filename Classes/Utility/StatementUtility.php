@@ -320,7 +320,7 @@ class StatementUtility {
 	public function addWhereForSearch($searchWord, $fields) {
 		$where = array();
 		$searchWord = $this->databaseConnection->escapeStrForLike(
-			$this->databaseConnection->fullQuoteStr($searchWord, 'tx_events2_domain_model_event'),
+			$this->databaseConnection->quoteStr($searchWord, 'tx_events2_domain_model_event'),
 			'tx_events2_domain_model_event'
 		);
 		foreach ($fields as $field) {

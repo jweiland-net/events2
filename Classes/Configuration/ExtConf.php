@@ -4,7 +4,7 @@ namespace JWeiland\Events2\Configuration;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
+ *  (c) 2015 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *
  *  All rights reserved
  *
@@ -52,9 +52,33 @@ class ExtConf implements \TYPO3\CMS\Core\SingletonInterface {
 	 */
 	protected $recurringFuture;
 
+	/**
+	 * email from address
+	 *
+	 * @var string
+	 */
+	protected $emailFromAddress;
 
+	/**
+	 * email from name
+	 *
+	 * @var string
+	 */
+	protected $emailFromName;
 
+	/**
+	 * email to address
+	 *
+	 * @var string
+	 */
+	protected $emailToAddress;
 
+	/**
+	 * email to name
+	 *
+	 * @var string
+	 */
+	protected $emailToName;
 
 	/**
 	 * constructor of this class
@@ -141,6 +165,94 @@ class ExtConf implements \TYPO3\CMS\Core\SingletonInterface {
 	 */
 	public function setRecurringFuture($recurringFuture) {
 		$this->recurringFuture = (int) $recurringFuture;
+	}
+
+	/**
+	 * getter for email from address
+	 *
+	 * @throws \Exception
+	 * @return string
+	 */
+	public function getEmailFromAddress() {
+		if (empty($this->emailFromAddress)) {
+			$senderMail = $GLOBALS['TYPO3_CONF_VARS']['MAIL']['defaultMailFromAddress'];
+			if (empty($senderMail)) {
+				throw new \Exception('You have forgotten to set a sender email address in extension configuration or in install tool');
+			} else return $senderMail;
+		} else return $this->emailFromAddress;
+	}
+
+	/**
+	 * setter for email from address
+	 *
+	 * @param string $emailFromAddress
+	 * @return void
+	 */
+	public function setEmailFromAddress($emailFromAddress) {
+		$this->emailFromAddress = (string) $emailFromAddress;
+	}
+
+	/**
+	 * getter for email from name
+	 *
+	 * @throws \Exception
+	 * @return string
+	 */
+	public function getEmailFromName() {
+		if (empty($this->emailFromName)) {
+			$senderName = $GLOBALS['TYPO3_CONF_VARS']['MAIL']['defaultMailFromName'];
+			if (empty($senderName)) {
+				throw new \Exception('You have forgotten to set a sender name in extension configuration or in install tool');
+			} else return $senderName;
+		} else return $this->emailFromName;
+	}
+
+	/**
+	 * setter for emailFromName
+	 *
+	 * @param string $emailFromName
+	 * @return void
+	 */
+	public function setEmailFromName($emailFromName) {
+		$this->emailFromName = (string) $emailFromName;
+	}
+
+	/**
+	 * getter for email to address
+	 *
+	 * @return string
+	 */
+	public function getEmailToAddress() {
+		return $this->emailToAddress;
+	}
+
+	/**
+	 * setter for email to address
+	 *
+	 * @param string $emailToAddress
+	 * @return void
+	 */
+	public function setEmailToAddress($emailToAddress) {
+		$this->emailToAddress = (string) $emailToAddress;
+	}
+
+	/**
+	 * getter for email to name
+	 *
+	 * @return string
+	 */
+	public function getEmailToName() {
+		return $this->emailToName;
+	}
+
+	/**
+	 * setter for emailToName
+	 *
+	 * @param string $emailToName
+	 * @return void
+	 */
+	public function setEmailToName($emailToName) {
+		$this->emailToName = (string) $emailToName;
 	}
 
 }

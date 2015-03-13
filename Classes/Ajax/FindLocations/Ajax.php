@@ -4,7 +4,7 @@ namespace JWeiland\Events2\Ajax\FindLocations;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
+ *  (c) 2015 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *
  *  All rights reserved
  *
@@ -66,11 +66,15 @@ class Ajax extends AbstractAjaxRequest {
 	 * @return string
 	 */
 	public function processAjaxRequest(array $arguments) {
-		// cast arguments
-		$locationPart = (string)htmlspecialchars(strip_tags($arguments['locationPart']));
-
-		$locations = $this->findLocations($locationPart);
-		return json_encode($locations);
+		// Hint: search may fail with "&" in $locationPart
+		$locationPart = (string)trim(htmlspecialchars(strip_tags($arguments['locationPart'])));
+		// keep it synchron to minLength in JS
+		if (empty($locationPart) || strlen($locationPart) <= 2) {
+			return '';
+		} else {
+			$locations = $this->findLocations($locationPart);
+			return json_encode($locations);
+		}
 	}
 
 	/**
@@ -79,11 +83,7 @@ class Ajax extends AbstractAjaxRequest {
 	 * @param $locationPart
 	 * @return array
 	 */
-	public function findLocations($locationPart) {
-		// $locationPart is an user input, so...be careful with such strings
-		// Hint: search may fail with "&" in $locationPart
-		$locationPart = htmlspecialchars(strip_tags($locationPart));
-
+	protected function findLocations($locationPart) {
 		$locations = $this->databaseConnection->exec_SELECTgetRows(
 			'uid, location as label',
 			'tx_events2_domain_model_location',

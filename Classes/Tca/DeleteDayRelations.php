@@ -4,7 +4,7 @@ namespace JWeiland\Events2\Tca;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
+ *  (c) 2015 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *
  *  All rights reserved
  *
@@ -55,6 +55,8 @@ class DeleteDayRelations {
 	 * @param array $event
 	 * @param bool $recordWasDeleted
 	 * @param DataHandler $pObj
+	 * @throws \Exception
+	 * @return void
 	 */
 	public function processCmdmap_deleteAction($table, $id, array $event, $recordWasDeleted, DataHandler $pObj) {
 		// return if unexpected table
@@ -72,83 +74,66 @@ class DeleteDayRelations {
 		$this->init();
 
 		// get relations from event to days
-		$rows = $this->databaseConnection->exec_SELECTgetRows(
-			'uid_local, uid_foreign',
+		// this must be done before we delete the MM-Relations
+		$days = $this->databaseConnection->exec_SELECTgetRows(
+			'uid_foreign',
 			'tx_events2_event_day_mm',
 			'uid_local = ' . (int)$event['uid']
 		);
-		$this->deleteRelationsFromEventToDays($rows);
-		$this->updateAmountOfEventsInDayRecords(
-			$this->getUidsOfDayRecords($rows)
-		);
+		if ($days === NULL) {
+			throw new \Exception('SQL-Error occurs while selecting related day records in DELETEDayRelations.php', 1421671032);
+		}
+
+		// delete relations from MM-table
+		$this->deleteMMRelations($event['uid']);
+
+		// updating the new amount of relations must be the last part
+		$this->updateAmountOfEventsInDayRecords($days);
 	}
 
 	/**
 	 * update amount of related events in day record
 	 *
-	 * @param array $dayUids
+	 * @param array $days
 	 * @return void
 	 */
-	protected function updateAmountOfEventsInDayRecords($dayUids) {
-		foreach ($dayUids as $uid) {
+	protected function updateAmountOfEventsInDayRecords(array $days) {
+		foreach ($days as $day) {
+			// get amount of related day records
 			$amount = $this->databaseConnection->exec_SELECTcountRows(
 				'*',
 				'tx_events2_event_day_mm',
-				'uid_foreign = ' . (int)$uid
+				'uid_foreign = ' . (int)$day['uid_foreign']
 			);
 
 			if ($amount) {
 				// update value in day record
 				$this->databaseConnection->exec_UPDATEquery(
 					'tx_events2_domain_model_day',
-					'uid=' . (int)$uid,
+					'uid = ' . (int)$day['uid_foreign'],
 					array('events' => $amount)
 				);
 			} else {
-				// if day record has no other relations to events anymore we can savely delete day record
+				// if day record has no other relations to events anymore we can safely delete day record
 				$this->databaseConnection->exec_DELETEquery(
 					'tx_events2_domain_model_day',
-					(int)$uid
+					'uid = ' . (int)$day['uid_foreign']
 				);
 			}
 		}
 	}
 
 	/**
-	 * get UIDs of day records
+	 * delete MM-relations between event and days
 	 *
-	 * @param array|NULL $rows
-	 * @return array
-	 */
-	protected function getUidsOfDayRecords($rows) {
-		$uids = array();
-		if (!empty($rows)) {
-			foreach ($rows as $row) {
-				$uids[] = $row['uid_foreign'];
-			}
-		}
-		return $uids;
-	}
-
-	/**
-	 * delete MM-relations from event to days
-	 *
-	 * @param array|NULL $rows
+	 * @param int $eventUid
 	 * @return void
 	 */
-	protected function deleteRelationsFromEventToDays($rows) {
-		if (!empty($rows)) {
-			foreach ($rows as $row) {
-				$where = array();
-				foreach ($row as $col => $value) {
-					$where[] = $col . '=' . (int)$value;
-				}
-				$this->databaseConnection->exec_DELETEquery(
-					'tx_events2_event_day_mm',
-					implode(' AND ', $where)
-				);
-			}
-		}
+	protected function deleteMMRelations($eventUid) {
+		$this->databaseConnection->exec_DELETEquery(
+			'tx_events2_event_day_mm',
+			'uid_local = ' . (int)$eventUid
+		);
 	}
 
 }

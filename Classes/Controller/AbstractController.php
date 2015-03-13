@@ -4,7 +4,7 @@ namespace JWeiland\Events2\Controller;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
+ *  (c) 2015 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *  
  *  All rights reserved
  *
@@ -27,13 +27,24 @@ namespace JWeiland\Events2\Controller;
 use JWeiland\Events2\Domain\Model\Event;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 
 /**
  * @package events2
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
+class AbstractController extends ActionController {
+
+	/**
+	 * @var \TYPO3\CMS\Core\Mail\MailMessage
+	 */
+	protected $mail;
+
+	/**
+	 * @var \JWeiland\Events2\Configuration\ExtConf
+	 */
+	protected $extConf;
 
 	/**
 	 * eventRepository
@@ -69,6 +80,50 @@ class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * @var \JWeiland\Events2\Domain\Repository\UserRepository
 	 */
 	protected $userRepository;
+
+	/**
+	 * persistenceManager
+	 *
+	 * @var \TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface
+	 */
+	protected $persistenceManager;
+
+	/**
+	 * Persistence session
+	 *
+	 * @var \TYPO3\CMS\Extbase\Persistence\Generic\Session
+	 */
+	protected $session;
+
+	/**
+	 * inject persistenceManager
+	 *
+	 * @param \TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface $persistenceManager
+	 * @return void
+	 */
+	public function injectPersistenceManager(\TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface $persistenceManager) {
+		$this->persistenceManager = $persistenceManager;
+	}
+
+	/**
+	 * inject mail
+	 *
+	 * @param \TYPO3\CMS\Core\Mail\MailMessage $mail
+	 * @return void
+	 */
+	public function injectMail(\TYPO3\CMS\Core\Mail\MailMessage $mail) {
+		$this->mail = $mail;
+	}
+
+	/**
+	 * inject extConf
+	 *
+	 * @param \JWeiland\Events2\Configuration\ExtConf $extConf
+	 * @return void
+	 */
+	public function injectExtConf(\JWeiland\Events2\Configuration\ExtConf $extConf) {
+		$this->extConf = $extConf;
+	}
 
 	/**
 	 * inject event repository
@@ -121,6 +176,16 @@ class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	}
 
 	/**
+	 * inject session
+	 *
+	 * @param \TYPO3\CMS\Extbase\Persistence\Generic\Session $session
+	 * @return void
+	 */
+	public function injectSession(\TYPO3\CMS\Extbase\Persistence\Generic\Session $session) {
+		$this->session = $session;
+	}
+
+	/**
 	 * preprocessing of all actions
 	 *
 	 * @return void
@@ -168,7 +233,8 @@ class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 				if (count($images)) {
 					/** @var \JWeiland\Events2\Domain\Model\FileReference $image */
 					foreach ($images as $image) {
-						$image->getOriginalResource()->delete();
+						$orig = $image->getOriginalResource();
+						$orig->delete();
 					}
 				}
 			}
@@ -180,11 +246,14 @@ class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 	 * add special validation for videolink
 	 * I can't add this validation to Linkmodel, as such a validation would be also valid for organizer link
 	 *
-	 * @param string $argument
 	 * @return void
 	 */
-	protected function addValidationForVideoLink($argument) {
-		if ($this->request->hasArgument($argument) && !empty($event['videoLink']['link'])) {
+	protected function addValidationForVideoLink() {
+		if (
+			$this->request->hasArgument('event') &&
+			$eventRaw = $this->request->getArgument('event') &&
+			empty($eventRaw['videoLink']['link'])
+		) {
 			// create a new RegExpValidator for property link
 			/** @var \TYPO3\CMS\Extbase\Validation\Validator\RegularExpressionValidator $regExpValidator */
 			$regExpValidator = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Validation\\Validator\\RegularExpressionValidator', array(
@@ -195,7 +264,7 @@ class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			$genericObjectValidator->addPropertyValidator('link', $regExpValidator);
 
 			// modify current validator of event
-			$event = $this->arguments->getArgument($argument);
+			$event = $this->arguments->getArgument('event');
 			/** @var \TYPO3\CMS\Extbase\Validation\Validator\ConjunctionValidator $eventValidator */
 			$eventValidator = $event->getValidator();
 			$validators = $eventValidator->getValidators();
@@ -207,6 +276,23 @@ class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			$eventValidator = $validators->current();
 			$eventValidator->addPropertyValidator('videoLink', $genericObjectValidator);
 		}
+	}
+
+	/**
+	 * This is a workaround to help controller actions to find (hidden) events
+	 *
+	 * @return void
+	 */
+	protected function registerEventFromRequest() {
+		$eventRaw = $this->request->getArgument('event');
+		if (is_array($eventRaw)) {
+			// get event from form ($_POST)
+			$event = $this->eventRepository->findHiddenEntryByUid($eventRaw['__identity']);
+		} else {
+			// get event from UID
+			$event = $this->eventRepository->findHiddenEntryByUid($eventRaw);
+		}
+		$this->session->registerObject($event, $event->getUid());
 	}
 
 	/**
@@ -258,9 +344,8 @@ class AbstractController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControl
 			} else {
 				return TRUE;
 			}
-		} else {
-			return FALSE;
 		}
+		return FALSE;
 	}
 
 }

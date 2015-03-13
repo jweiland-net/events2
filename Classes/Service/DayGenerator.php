@@ -1,10 +1,10 @@
 <?php
-namespace JWeiland\Events2\Tca;
+namespace JWeiland\Events2\Service;
 
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
+ *  (c) 2015 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *
  *  All rights reserved
  *
@@ -24,7 +24,6 @@ namespace JWeiland\Events2\Tca;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
  * @package events2
@@ -32,7 +31,18 @@ use TYPO3\CMS\Core\Utility\MathUtility;
  */
 class DayGenerator {
 
+	/**
+	 * day storage
+	 *
+	 * @var array
+	 */
 	protected $dayStorage = array();
+
+	/**
+	 * event record
+	 *
+	 * @var array
+	 */
 	protected $eventRecord = array();
 
 	/**
@@ -66,39 +76,6 @@ class DayGenerator {
 	}
 
 	/**
-	 * initializes this object
-	 *
-	 * @param array $eventRecord
-	 * @return void
-	 */
-	public function initialize(array $eventRecord) {
-		$this->eventRecord = $eventRecord;
-
-		// check for recurring event
-		// do not add event start to recurring events. They will be generated automatically
-		// further it could be that event start is not within the generated days
-		if ($this->eventRecord['recurring_event']) {
-			$this->addRecurringEvents();
-		} elseif ($this->eventRecord['event_end']) {
-			// if we have no recurrings defined but event_end, this is also a recurring event and we have to add all days in between
-			$day = $this->getEventBegin();
-			$eventEnd = $this->getEventEnd();
-			while ($day <= $eventEnd) {
-				$this->addDayToStorage($day);
-				$day->modify('+1 day');
-			}
-		} else {
-			// add start day
-			$eventBegin = $this->getEventBegin();
-			$this->addDayToStorage($eventBegin);
-		}
-		// exclude or include further days if exceptions are activated
-		if (is_array($this->eventRecord['exceptions']) && count($this->eventRecord['exceptions'])) {
-			$this->addExceptions();
-		}
-	}
-
-	/**
 	 * Getter for event record
 	 *
 	 * @return array
@@ -118,25 +95,46 @@ class DayGenerator {
 	}
 
 	/**
-	 * add day to day storage
+	 * initializes this object
 	 *
-	 * @param \DateTime $day Day to add
-	 * @return void
+	 * @param array $eventRecord
+	 * @return bool
 	 */
-	public function addDayToStorage(\DateTime $day) {
-		// group days to make them unique
-		// I don't know why, but $day is a reference, so I clone it here to have individual dates in this array
-		$this->dayStorage[$day->format('U')] = clone $day;
-	}
+	public function initialize(array $eventRecord) {
+		// reset, for further calls
+		$this->eventRecord = array();
+		$this->setDayStorage(array());
+		$this->eventRecord = $eventRecord;
 
-	/**
-	 * remove day to day storage
-	 *
-	 * @param \DateTime $day Day to remove
-	 * @return void
-	 */
-	public function removeDayFromStorage(\DateTime $day) {
-		unset($this->dayStorage[$day->format('U')]);
+		// check for valid event record.
+		// if FALSE dayStorage is empty
+		if (!$this->isValidEvent()) {
+			return FALSE;
+		}
+
+		// check for recurring event
+		// do not add event start to recurring events. They will be generated automatically
+		// further it could be that event start is not within the generated days
+		if ($this->eventRecord['recurring_event']) {
+			$this->addRecurringEvents();
+		} elseif ($this->eventRecord['event_end']) {
+			// if we have no recurrings defined but event_end, this is also a recurring event and we have to add all days in between
+			$eventBegin = $this->getEarliestDateForGeneratedDays($this->getEventBegin());
+			$eventEnd = $this->getMaxDateForGeneratedDays($this->getEventBegin());
+			while ($eventBegin <= $eventEnd) {
+				$this->addDayToStorage($eventBegin);
+				$eventBegin->modify('+1 day');
+			}
+		} else {
+			// add start day
+			$this->addDayToStorage($this->getEventBegin());
+		}
+
+		// exclude or include further days if exceptions are activated
+		if (is_array($this->eventRecord['exceptions']) && count($this->eventRecord['exceptions'])) {
+			$this->addExceptions();
+		}
+		return TRUE;
 	}
 
 	/**
@@ -151,6 +149,7 @@ class DayGenerator {
 
 	/**
 	 * setter for day storage
+	 * Needed for UnitTests
 	 *
 	 * @param array $dayStorage
 	 * @return array
@@ -162,7 +161,7 @@ class DayGenerator {
 	/**
 	 * getter for start date of event
 	 *
-	 * @return \DateTime
+	 * @return \DateTime|NULL
 	 */
 	public function getEventBegin() {
 		return $this->dateTimeUtility->convert($this->eventRecord['event_begin']);
@@ -174,7 +173,7 @@ class DayGenerator {
 	 * @return \DateTime|NULL
 	 */
 	public function getEventEnd() {
-		if (MathUtility::canBeInterpretedAsInteger($this->eventRecord['event_end'])) {
+		if (!empty($this->eventRecord['event_end'])) {
 			return $this->dateTimeUtility->convert($this->eventRecord['event_end']);
 		} else {
 			return NULL;
@@ -182,12 +181,75 @@ class DayGenerator {
 	}
 
 	/**
+	 * check if event record is a valid event
+	 *
+	 * @return bool
+	 */
+	protected function isValidEvent() {
+		$valid = TRUE;
+
+		// we need a filled event record
+		if (empty($this->eventRecord)) {
+			$valid = FALSE;
+		}
+
+		// some special fields must be set
+		if (
+			!isset($this->eventRecord['recurring_event']) ||
+			!isset($this->eventRecord['event_begin']) ||
+			!isset($this->eventRecord['event_end']) ||
+			!isset($this->eventRecord['xth']) ||
+			!isset($this->eventRecord['weekday']) ||
+			!isset($this->eventRecord['each_weeks']) ||
+			!isset($this->eventRecord['exceptions'])
+		) {
+			$valid = FALSE;
+		}
+
+		// event_begin can not be empty
+		if (empty($this->eventRecord['event_begin'])) {
+			$valid = FALSE;
+		}
+
+		return $valid;
+	}
+
+	/**
+	 * add day to day storage
+	 *
+	 * @param \DateTime $day Day to add
+	 * @return void
+	 */
+	protected function addDayToStorage(\DateTime $day) {
+		// group days to make them unique
+		// I don't know why, but $day is a reference, so I clone it here to have individual dates in this array
+		$this->dayStorage[$day->format('U')] = clone $day;
+	}
+
+	/**
+	 * remove day to day storage
+	 *
+	 * @param \DateTime $day Day to remove
+	 * @return void
+	 */
+	protected function removeDayFromStorage(\DateTime $day) {
+		unset($this->dayStorage[$day->format('U')]);
+	}
+
+	/**
 	 * get max date for generated day records in future
 	 *
+	 * @param \DateTime $eventBegin Day to start with generation
 	 * @return \DateTime
 	 */
-	public function getMaxDateForGeneratedDays() {
-		$maxEventEnd = clone $this->dateTimeUtility->convert('today');
+	protected function getMaxDateForGeneratedDays(\DateTime $eventBegin) {
+		$today = clone $this->dateTimeUtility->convert('today');
+		$maxEventEnd = clone $eventBegin;
+
+		// check, what is more current
+		if ($today > $maxEventEnd) {
+			$maxEventEnd = $today;
+		}
 		$maxEventEnd->modify('+' . $this->extConf->getRecurringFuture() . ' months');
 		$eventEnd = $this->getEventEnd();
 		if ($eventEnd instanceof \DateTime && $eventEnd < $maxEventEnd) {
@@ -198,22 +260,39 @@ class DayGenerator {
 	}
 
 	/**
+	 * get earliest date for generated day records in past
+	 *
+	 * @param \DateTime $eventBegin Event begin
+	 * @return \DateTime
+	 */
+	protected function getEarliestDateForGeneratedDays(\DateTime $eventBegin) {
+		$earliestEventBegin = clone $this->dateTimeUtility->convert('today');
+		$earliestEventBegin->modify('-' . $this->extConf->getRecurringPast() . ' months');
+
+		if ($earliestEventBegin > $eventBegin) {
+			return $earliestEventBegin;
+		} else {
+			return $eventBegin;
+		}
+	}
+
+	/**
 	 * Getter for xth
 	 *
 	 * @return array $xth
 	 */
-	public function getXth() {
+	protected function getXth() {
 		$result = array();
 		$isXthSet = FALSE;
 		foreach ($this->getItemsFromTca('xth') as $key => $item) {
-			$value = $this->eventRecord['xth'] & pow(2, $key);
+			$value = (bool)($this->eventRecord['xth'] & pow(2, $key));
 			$result[$item[1]] = $value;
 			if ($value) $isXthSet = TRUE;
 		}
 
-		// if no xth checkbox was set, each weekday is valid
+		// if no xth checkbox was set, each xth is valid
 		if ($isXthSet === FALSE) {
-			foreach ($result as $key => $value) $result[$key] = 1;
+			foreach ($result as $key => $value) $result[$key] = TRUE;
 		}
 		return $result;
 	}
@@ -223,10 +302,18 @@ class DayGenerator {
 	 *
 	 * @return array $weekday
 	 */
-	public function getWeekday() {
+	protected function getWeekday() {
 		$result = array();
+		$isWeekdaySet = FALSE;
 		foreach ($this->getItemsFromTca('weekday') as $key => $item) {
-			$result[$item[1]] = $this->eventRecord['weekday'] & pow(2, $key);
+			$value = (bool)($this->eventRecord['weekday'] & pow(2, $key));
+			$result[$item[1]] = $value;
+			if ($value) $isWeekdaySet = TRUE;
+		}
+
+		// if no weekday checkbox was set, each weekday is valid
+		if ($isWeekdaySet === FALSE) {
+			foreach ($result as $key => $value) $result[$key] = TRUE;
 		}
 		return $result;
 	}
@@ -238,7 +325,8 @@ class DayGenerator {
 	 * @return array
 	 */
 	protected function getItemsFromTca($field) {
-		if (isset($GLOBALS['TCA']['tx_events2_domain_model_event']['columns'][$field]['config']['items']) &&
+		if (
+			isset($GLOBALS['TCA']['tx_events2_domain_model_event']['columns'][$field]['config']['items']) &&
 			is_array($GLOBALS['TCA']['tx_events2_domain_model_event']['columns'][$field]['config']['items'])
 		) {
 			return $GLOBALS['TCA']['tx_events2_domain_model_event']['columns'][$field]['config']['items'];
@@ -252,19 +340,22 @@ class DayGenerator {
 	 *
 	 * @return void
 	 */
-	public function addRecurringEvents() {
+	protected function addRecurringEvents() {
 		if ($this->eventRecord['each_weeks']) {
 			// add days for each week(s)
 			$this->addRecurringWeeks();
 		} else {
 			// add days for xth recurring event
-			$startDate = $this->getEventBegin();
-			$startDate->modify('-1 month');
+			$startDate = $this->getEarliestDateForGeneratedDays($this->getEventBegin());
+			// We need the first day, because January the 30th +1 month results in 02.03.
+			// At that point it is no problem to set the date to the first, because we only need month and year.
+			// You will find the check for the correct date in addDaysForMonth().
+			$startDate->modify('first day of this month');
 			
-			$maxDate = $this->getMaxDateForGeneratedDays();
+			$maxDate = $this->getMaxDateForGeneratedDays($this->getEventBegin());
 			while ($startDate < $maxDate) {
-				$startDate->modify('+1 month'); // that's why we subtract 1 month above
 				$this->addDaysForMonth($startDate->format('F'), $startDate->format('Y'));
+				$startDate->modify('next month');
 			}
 		}
 	}
@@ -274,13 +365,13 @@ class DayGenerator {
 	 *
 	 * @return void
 	 */
-	public function addRecurringWeeks() {
-		$day = $this->getEventBegin();
+	protected function addRecurringWeeks() {
+		$day = $this->getEarliestDateForGeneratedDays($this->getEventBegin());
 		$this->addDayToStorage($day);
 
-		$maxDate = $this->getMaxDateForGeneratedDays();
+		$maxDate = $this->getMaxDateForGeneratedDays($this->getEventBegin());
 		$interval = $day->diff($maxDate); // generates an interval object
-		$diffDays = (int) $interval->format('%a'); // returns the difference in days
+		$diffDays = (int)$interval->format('%a'); // returns the difference in days
 		$daysToGenerate = ceil($diffDays / ($this->eventRecord['each_weeks'] * 7)); // diff in days / weeks in days ==> rounded up to next integer
 		for ($week = 0; $week < $daysToGenerate; $week++) {
 			$day->modify('+' . $this->eventRecord['each_weeks'] . ' weeks');
@@ -297,21 +388,21 @@ class DayGenerator {
 	 * @param integer $year
 	 * @return void
 	 */
-	public function addDaysForMonth($month, $year) {
-		// this is only to have a date where time is set to 00:00:00
+	protected function addDaysForMonth($month, $year) {
+		// we need this to have a date where time is set to 00:00:00
 		$day = $this->dateTimeUtility->convert('today');
-		$lastDayOfMonth = $this->dateTimeUtility->convert('today'); // initialize time
+		$lastDayOfMonth = $this->dateTimeUtility->convert('today');
 		$lastDayOfMonth->modify('last day of ' . $month . ' ' . $year . '23:59:59');
-		$xths = $this->getXth();
-		$weekdays = $this->getWeekday();
+		$eventBegin = $this->getEarliestDateForGeneratedDays($this->getEventBegin()); // prevent from calling it multiple times in foreach
+		$maxDate = $this->getMaxDateForGeneratedDays($this->getEventBegin()); // prevent from calling it multiple times in foreach
 
-		foreach ($xths as $xthIndex => $xth) {
-			foreach ($weekdays as $weekdayIndex => $weekday) {
+		foreach ($this->getXth() as $xthIndex => $xth) {
+			foreach ($this->getWeekday() as $weekdayIndex => $weekday) {
 				if ($xth && $weekday) {
 					// example: 'second wednesday of March 2013'
 					$modifyString = $xthIndex . ' ' . $weekdayIndex . ' of ' . $month . ' ' . $year;
 					$day->modify($modifyString);
-					if ($day >= $this->getEventBegin() && $day < $lastDayOfMonth && $day <= $this->getMaxDateForGeneratedDays()) {
+					if ($day >= $eventBegin && $day < $lastDayOfMonth && $day <= $maxDate) {
 						$this->addDayToStorage($day);
 					}
 				}
@@ -325,7 +416,7 @@ class DayGenerator {
 	 * @return void
 	 * @throws \Exception
 	 */
-	public function addExceptions() {
+	protected function addExceptions() {
 		foreach ($this->eventRecord['exceptions'] as $exception) {
 			switch ($exception['exception_type']) {
 				case 'Add':

@@ -4,7 +4,7 @@ namespace JWeiland\Events2\Domain\Repository;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
+ *  (c) 2015 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *  
  *  All rights reserved
  *
@@ -24,9 +24,6 @@ namespace JWeiland\Events2\Domain\Repository;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -60,11 +57,6 @@ class EventRepository extends Repository {
 	protected $configurationManager;
 
 	/**
-	 * @var \TYPO3\CMS\Core\Database\DatabaseConnection
-	 */
-	protected $databaseConnection;
-
-	/**
 	 * inject DateTime Utility
 	 *
 	 * @param \JWeiland\Events2\Utility\DateTimeUtility $dateTimeUtility
@@ -95,13 +87,16 @@ class EventRepository extends Repository {
 	}
 
 	/**
-	 * set TYPO3_DB
-	 * Needed for quoteStr only
+	 * find event by uid whether it is hidden or not
 	 *
-	 * @return void
+	 * @param integer $eventUid
+	 * @return \JWeiland\Events2\Domain\Model\Event
 	 */
-	public function initializeObject() {
-		$this->databaseConnection = $GLOBALS['TYPO3_DB'];
+	public function findHiddenEntryByUid($eventUid) {
+		$query = $this->createQuery();
+		$query->getQuerySettings()->setIgnoreEnableFields(TRUE);
+		$query->getQuerySettings()->setEnableFieldsToBeIgnored(array('disabled'));
+		return $query->matching($query->equals('uid', (int)$eventUid))->execute()->getFirst();
 	}
 
 	/**
@@ -225,7 +220,9 @@ class EventRepository extends Repository {
 	public function findCultureEvents($ageGroup, $suitabilityUser = 0, $suitabilityGroups = 0, $topic = 0, $category = 0) {
 		/** @var \TYPO3\CMS\Extbase\Persistence\Generic\Query $query */
 		$query = $this->createQuery();
-		$statement = $this->createStatement()->setQuery($query);
+		$statement = $this->createStatement()
+			->setQuery($query)
+			->setCategoryRelation(TRUE);
 		$today = $this->dateTimeUtility->convert('today');
 
 		$categories = array();
@@ -315,6 +312,7 @@ class EventRepository extends Repository {
 			->setSelect('tx_events2_domain_model_event.*')
 			->setFeUsersRelation(TRUE)
 			->addWhere('fe_users.uid', '=', (int)$organizer)
+			->setGroupBy('tx_events2_domain_model_event.uid')
 			->setOrderBy('tx_events2_domain_model_event.title')
 			->setLimit('');
 

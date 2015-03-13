@@ -4,7 +4,7 @@ namespace JWeiland\Events2\Controller;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
+ *  (c) 2015 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *  
  *  All rights reserved
  *
@@ -27,6 +27,8 @@ namespace JWeiland\Events2\Controller;
 use JWeiland\Events2\Domain\Model\Day;
 use TYPO3\CMS\Extbase\Property\TypeConverter\DateTimeConverter;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
+use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
@@ -184,7 +186,7 @@ class EventController extends AbstractController {
 	 * @return void
 	 */
 	public function initializeCreateAction() {
-		$this->addValidationForVideoLink('event');
+		$this->addValidationForVideoLink();
 		$this->addOrganizer('event');
 		$this->arguments->getArgument('event')->getPropertyMappingConfiguration()->forProperty('eventBegin')->setTypeConverterOption('TYPO3\\CMS\\Extbase\\Property\\TypeConverter\\DateTimeConverter', DateTimeConverter::CONFIGURATION_DATE_FORMAT, 'd.m.Y');
 		$this->arguments->getArgument('event')->getPropertyMappingConfiguration()->forProperty('eventEnd')->setTypeConverterOption('TYPO3\\CMS\\Extbase\\Property\\TypeConverter\\DateTimeConverter', DateTimeConverter::CONFIGURATION_DATE_FORMAT, 'd.m.Y');
@@ -201,12 +203,24 @@ class EventController extends AbstractController {
 	 * @return void
 	 */
 	public function createAction(\JWeiland\Events2\Domain\Model\Event $event) {
-		// all user created records have to be hidden
 		$event->setHidden(TRUE);
 		$this->deleteVideoLinkIfEmpty($event);
 		$this->eventRepository->add($event);
+		$this->persistenceManager->persistAll();
+		$this->addDayRelations($event);
+		$this->sendMail('create', $event);
 		$this->addFlashMessage(LocalizationUtility::translate('eventCreated', 'events2'));
 		$this->redirect('list');
+	}
+
+	/**
+	 * initialize edit action
+	 * This only happens if webko clicks on edit link in mail
+	 *
+	 * @return void
+	 */
+	public function initializeEditAction() {
+		$this->registerEventFromRequest();
 	}
 
 	/**
@@ -229,7 +243,8 @@ class EventController extends AbstractController {
 	 * @return void
 	 */
 	public function initializeUpdateAction() {
-		$this->addValidationForVideoLink('event');
+		$this->registerEventFromRequest();
+		$this->addValidationForVideoLink();
 		$this->arguments->getArgument('event')->getPropertyMappingConfiguration()->forProperty('eventBegin')->setTypeConverterOption('TYPO3\\CMS\\Extbase\\Property\\TypeConverter\\DateTimeConverter', DateTimeConverter::CONFIGURATION_DATE_FORMAT, 'd.m.Y');
 		$this->arguments->getArgument('event')->getPropertyMappingConfiguration()->forProperty('eventEnd')->setTypeConverterOption('TYPO3\\CMS\\Extbase\\Property\\TypeConverter\\DateTimeConverter', DateTimeConverter::CONFIGURATION_DATE_FORMAT, 'd.m.Y');
 		$argument = $this->request->getArgument('event');
@@ -254,10 +269,17 @@ class EventController extends AbstractController {
 	 * @return void
 	 */
 	public function updateAction(\JWeiland\Events2\Domain\Model\Event $event) {
-		// all user modified records have to be hidden
+		$isHidden = $event->getHidden();
 		$event->setHidden(TRUE);
 		$this->deleteVideoLinkIfEmpty($event);
 		$this->eventRepository->update($event);
+		$this->persistenceManager->persistAll();
+		$this->addDayRelations($event);
+
+		// if webko edits this hidden record, mail should not be send
+		if (!$isHidden) {
+			$this->sendMail('update', $event);
+		}
 		$this->addFlashMessage(LocalizationUtility::translate('eventUpdated', 'events2'));
 		$this->redirect('listMyEvents');
 	}
@@ -273,6 +295,90 @@ class EventController extends AbstractController {
 		$this->eventRepository->remove($eventObject);
 		$this->addFlashMessage(LocalizationUtility::translate('eventDeleted', 'events2'));
 		$this->redirect('list');
+	}
+
+	/**
+	 * initialize activate action
+	 *
+	 * @return void
+	 */
+	public function initializeActivateAction() {
+		$this->registerEventFromRequest();
+	}
+
+	/**
+	 * action activate
+	 *
+	 * @param integer $event
+	 * @return void
+	 */
+	public function activateAction($event) {
+		/** @var \JWeiland\Events2\Domain\Model\Event $eventObject */
+		$eventObject = $this->eventRepository->findByIdentifier($event);
+		$eventObject->setHidden(FALSE);
+		$this->eventRepository->update($eventObject);
+
+		// send mail
+		$this->view->assign('event', $eventObject);
+
+		$this->mail->setFrom($this->extConf->getEmailFromAddress(), $this->extConf->getEmailFromName());
+		$this->mail->setTo($this->extConf->getEmailToAddress(), $this->extConf->getEmailToName());
+		$this->mail->setSubject(LocalizationUtility::translate('email.subject.activate', 'events2'));
+		$this->mail->setBody($this->view->render(), 'text/html');
+		$this->mail->send();
+
+		$this->redirect('list', 'Event');
+	}
+
+	/**
+	 * add relations to day records
+	 *
+	 * @param \JWeiland\Events2\Domain\Model\Event $event
+	 * @return void
+	 */
+	public function addDayRelations(\JWeiland\Events2\Domain\Model\Event $event) {
+		if ($event->getEventBegin() instanceof \DateTime) {
+			$eventBegin = $event->getEventBegin()->format('d.m.Y');
+		} else {
+			// @ToDo: Maybe we should throw an Exception, because there can't be an Event without a eventBegin
+			$eventBegin = 0;
+		}
+		if ($event->getEventEnd() instanceof \DateTime) {
+			$eventEnd = $event->getEventEnd()->format('d.m.Y');
+		} else {
+			$eventEnd = 0;
+		}
+		$simplyfiedEventArray = array(
+			'uid' => $event->getUid(),
+			'recurring_event' => 0,
+			'event_begin' => $eventBegin,
+			'event_end' => $eventEnd,
+			'xth' => 0,
+			'weekday' => 0,
+			'each_weeks' => 0,
+			'exceptions' => 0
+		);
+		/** @var \JWeiland\Events2\Service\DayRelations $dayRelations */
+		$dayRelations = $this->objectManager->get('JWeiland\\Events2\\Service\\DayRelations');
+		$dayRelations->createDayRelations($simplyfiedEventArray);
+	}
+
+	/**
+	 * send email on new/update
+	 *
+	 * @param string $subjectKey
+	 * @param \JWeiland\Events2\Domain\Model\Event $event
+	 * @return integer The amount of email receivers
+	 */
+	public function sendMail($subjectKey, \JWeiland\Events2\Domain\Model\Event $event) {
+		$this->view->assign('event', $event);
+
+		$this->mail->setFrom($this->extConf->getEmailFromAddress(), $this->extConf->getEmailFromName());
+		$this->mail->setTo($this->extConf->getEmailToAddress(), $this->extConf->getEmailToName());
+		$this->mail->setSubject(LocalizationUtility::translate('email.subject.' . $subjectKey, 'events2'));
+		$this->mail->setBody($this->view->render(), 'text/html');
+
+		return $this->mail->send();
 	}
 
 }

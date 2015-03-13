@@ -4,7 +4,7 @@ namespace JWeiland\Events2\Ajax;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
+ *  (c) 2015 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *
  *  All rights reserved
  *
@@ -31,6 +31,10 @@ $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\Obje
 
 $request = GeneralUtility::_GPmerged('tx_events2_events');
 
-/** @var \JWeiland\Events2\Ajax\FindLocations\Ajax $ajaxObject */
-$ajaxObject = $objectManager->get('JWeiland\\Events2\\Ajax\\FindLocations\\Ajax');
-echo $ajaxObject->processAjaxRequest($request['arguments']);
+if (is_array($request) && is_array($request['arguments'])) {
+	/** @var \JWeiland\Events2\Ajax\FindLocations\Ajax $ajaxObject */
+	$ajaxObject = $objectManager->get('JWeiland\\Events2\\Ajax\\FindLocations\\Ajax');
+	echo $ajaxObject->processAjaxRequest($request['arguments']);
+} else {
+	echo '';
+}

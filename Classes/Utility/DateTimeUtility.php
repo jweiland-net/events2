@@ -4,7 +4,7 @@ namespace JWeiland\Events2\Utility;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Stefan Froemken <projects@jweiland.net>, jweiland.net
+ *  (c) 2015 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *
  *  All rights reserved
  *
@@ -36,22 +36,26 @@ class DateTimeUtility {
 	 * Creates a DateTime from an unix timestamp or date/datetime value.
 	 * If the input is empty, NULL is returned.
 	 *
-	 * @param integer|string $value Unix timestamp or date/datetime value
-	 * @return \DateTime
+	 * @param int|string $value Unix timestamp or date/datetime value
+	 * @return \DateTime|NULL
 	 */
 	public function convert($value) {
-		if (empty($value) || $value === '0000-00-00' || $value === '0000-00-00 00:00:00') {
-			// 0 -> NULL !!!
-			return NULL;
-		} elseif (is_string($value) && !MathUtility::canBeInterpretedAsInteger($value)) {
-			// SF: This is my own converter for modifying the date by special formatting values like "today" OR "tomorrow"
-			$currentTimeZone = new \DateTimeZone(date_default_timezone_get());
-			$date = new \DateTime($value, $currentTimeZone);
-			return $this->standardizeDateTimeObject($date);
-		} else {
-			$date = new \DateTime(date('c', $value));
-			return $this->standardizeDateTimeObject($date);
+		try {
+			if (is_bool($value) || empty($value) || $value === '0000-00-00' || $value === '0000-00-00 00:00:00') {
+				$dateTimeObject = NULL;
+			} elseif (is_string($value) && !MathUtility::canBeInterpretedAsInteger($value)) {
+				// SF: This is my own converter for modifying the date by special formatting values like "today" OR "tomorrow"
+				$currentTimeZone = new \DateTimeZone(date_default_timezone_get());
+				$date = new \DateTime($value, $currentTimeZone);
+				$dateTimeObject = $this->standardizeDateTimeObject($date);
+			} else {
+				$date = new \DateTime(date('c', $value));
+				$dateTimeObject = $this->standardizeDateTimeObject($date);
+			}
+		} catch (\Exception $e) {
+			$dateTimeObject = NULL;
 		}
+		return $dateTimeObject;
 	}
 
 	/**
