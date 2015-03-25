@@ -284,6 +284,7 @@ class StatementUtility {
 	 */
 	public function getWhere() {
 		$this->addWhereForStoragePids();
+		$this->addWhereForSysLanguage();
 		if ($this->hasToMergeEvents()) {
 			$this->addWhereToMergeEvents();
 		}
@@ -297,6 +298,15 @@ class StatementUtility {
 	 */
 	protected function addWhereForStoragePids() {
 		$this->where[] = 'FIND_IN_SET(tx_events2_domain_model_event.pid, ' . $this->getStoragePids() . ')';
+	}
+
+	/**
+	 * add where clause for language
+	 *
+	 * @return void
+	 */
+	protected function addWhereForSysLanguage() {
+		$this->where[] = 'tx_events2_domain_model_event.sys_language_uid = ' . $GLOBALS['TSFE']->sys_language_uid;
 	}
 
 	/**

@@ -266,6 +266,8 @@ class ShowEventDatesControllerTest extends UnitTestCase {
 		$event = new Event();
 		$event->setExceptions($exceptions);
 
+		$infoExceptions = new \SplObjectStorage();
+		$infoExceptions->attach($exception);
 		$expectedDays = array();
 		$expectedDays[] = array(
 			'day' => $day,
@@ -273,7 +275,7 @@ class ShowEventDatesControllerTest extends UnitTestCase {
 			'eventDate' => $today->format('U'),
 			'eventTime' => '',
 			'isRemoved' => TRUE,
-			'infos' => new \SplObjectStorage()
+			'infos' => $infoExceptions
 		);
 
 		$eventUtility = new EventUtility();
@@ -329,20 +331,22 @@ class ShowEventDatesControllerTest extends UnitTestCase {
 		$time = new Time();
 		$time->setTimeBegin('09:25');
 
+		$exception = new Exception();
+		$exception->setExceptionType('Remove');
+		$exception->setExceptionDate($today);
+		$exceptions = new ObjectStorage();
+		$exceptions->attach($exception);
+
+		$infoExceptions = new \SplObjectStorage();
+		$infoExceptions->attach($exception);
 		$expectedDayArray = array(
 			'day' => $day,
 			'time' => $time,
 			'eventDate' => $today->format('U'),
 			'eventTime' => $time->getTimeBegin(),
 			'isRemoved' => TRUE,
-			'infos' => new \SplObjectStorage()
+			'infos' => $infoExceptions
 		);
-
-		$exception = new Exception();
-		$exception->setExceptionType('Remove');
-		$exception->setExceptionDate($today);
-		$exceptions = new ObjectStorage();
-		$exceptions->attach($exception);
 
 		$event = new Event();
 		$event->setExceptions($exceptions);
@@ -371,11 +375,15 @@ class ShowEventDatesControllerTest extends UnitTestCase {
 		$time = new Time();
 		$time->setTimeBegin('09:25');
 
+		$exception = new Exception();
+		$exception->setExceptionType('Remove');
+		$exception->setExceptionDate($today);
 		$info = new Exception();
 		$info->setExceptionType('Info');
 		$info->setExceptionDate($today);
 		$infos = new \SplObjectStorage();
 		$infos->attach($info);
+		$infos->attach($exception);
 
 		$expectedDayArray = array(
 			'day' => $day,
@@ -386,9 +394,6 @@ class ShowEventDatesControllerTest extends UnitTestCase {
 			'infos' => $infos
 		);
 
-		$exception = new Exception();
-		$exception->setExceptionType('Remove');
-		$exception->setExceptionDate($today);
 		$exceptions = new ObjectStorage();
 		$exceptions->attach($exception);
 		$exceptions->attach($info);

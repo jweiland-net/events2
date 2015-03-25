@@ -260,8 +260,6 @@ class AjaxTest extends UnitTestCase {
 				)
 			),
 			$this->logicalAnd(
-				$this->stringContains('tx_events2_domain_model_day.hidden=0'),
-				$this->stringContains('tx_events2_domain_model_day.deleted=0'),
 				$this->stringContains('tx_events2_domain_model_event.hidden=0'),
 				$this->stringContains('tx_events2_domain_model_event.deleted=0')
 			)
@@ -313,8 +311,6 @@ class AjaxTest extends UnitTestCase {
 			),
 			$this->logicalAnd(
 				$this->stringContains('sys_category_record_mm.uid_local IN (123,456)'),
-				$this->stringContains('tx_events2_domain_model_day.hidden=0'),
-				$this->stringContains('tx_events2_domain_model_day.deleted=0'),
 				$this->stringContains('tx_events2_domain_model_event.hidden=0'),
 				$this->stringContains('tx_events2_domain_model_event.deleted=0')
 			)

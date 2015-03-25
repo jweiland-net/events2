@@ -49,7 +49,9 @@ class DateTimeUtility {
 				$date = new \DateTime($value, $currentTimeZone);
 				$dateTimeObject = $this->standardizeDateTimeObject($date);
 			} else {
-				$date = new \DateTime(date('c', $value));
+				$currentTimeZone = new \DateTimeZone(date_default_timezone_get());
+				$date = new \DateTime();
+				$date->setTimestamp($value)->setTimezone($currentTimeZone);
 				$dateTimeObject = $this->standardizeDateTimeObject($date);
 			}
 		} catch (\Exception $e) {
