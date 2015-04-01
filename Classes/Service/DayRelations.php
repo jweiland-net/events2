@@ -194,7 +194,6 @@ class DayRelations {
 			$fieldsArray['pid'] = (int)$this->eventRecord['pid'];
 			$fieldsArray['crdate'] = $time;
 			$fieldsArray['cruser_id'] = (int)$GLOBALS['BE_USER']->user['uid'];
-			$fieldsArray['sys_language_uid'] = (int)$this->eventRecord['sys_language_uid'];
 
 			$this->databaseConnection->exec_INSERTquery('tx_events2_domain_model_day', $fieldsArray);
 			return (int)$this->databaseConnection->sql_insert_id();
