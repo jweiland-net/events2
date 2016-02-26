@@ -72,5 +72,6 @@ if (TYPO3_MODE === 'BE') {
 $extConf = unserialize($_EXTCONF);
 $tsConfig = array();
 $tsConfig[] = 'ext.events2.pid = ' . (int)$extConf['poiCollectionPid'];
-$tsConfig[] = 'mod.web_layout.tt_content.preview.list = EXT:events2/Resources/Private/Templates/BackendPluginItem.html';
+// nice hook, but it will render all kinds of CType==list elements.
+//$tsConfig[] = 'mod.web_layout.tt_content.preview.list = EXT:events2/Resources/Private/Templates/BackendPluginItem.html';
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig(implode(CHR(10), $tsConfig));

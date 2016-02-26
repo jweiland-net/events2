@@ -42,12 +42,16 @@ class RenderPluginItem
      */
     public function render($parameters, $pObj)
     {
-        /** @var StandaloneView $view */
-        $view = GeneralUtility::makeInstance('TYPO3\\CMS\\Fluid\\View\\StandaloneView');
-        $view->setTemplatePathAndFilename(
-            GeneralUtility::getFileAbsFileName('EXT:events2/Resources/Private/Templates/BackendPluginItem.html')
-        );
-        $view->assign('parameters', $parameters);
-        return $view->render();
+        $content = '';
+        if ($parameters['row']['list_type'] === 'events2_events') {
+            /** @var StandaloneView $view */
+            $view = GeneralUtility::makeInstance('TYPO3\\CMS\\Fluid\\View\\StandaloneView');
+            $view->setTemplatePathAndFilename(
+                GeneralUtility::getFileAbsFileName('EXT:events2/Resources/Private/Templates/BackendPluginItem.html')
+            );
+            $view->assign('parameters', $parameters);
+            $content = $view->render();
+        }
+        return $content;
     }
 }
