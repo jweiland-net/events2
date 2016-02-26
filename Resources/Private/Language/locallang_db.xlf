@@ -13,9 +13,6 @@
 			<trans-unit id="plugin.search.title">
 				<source>Events: Search</source>
 			</trans-unit>
-			<trans-unit id="plugin.culture.title">
-				<source>Events: Culture</source>
-			</trans-unit>
 
 			<trans-unit id="tx_events2_tab">
 				<source>Events</source>
@@ -166,15 +163,6 @@
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.download_links">
 				<source>Download links</source>
-			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.suitability_culture">
-				<source>Suitable for culture and school</source>
-			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.suitability_user">
-				<source>Suitable for single User</source>
-			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.suitability_groups">
-				<source>Suitable for groups</source>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.facebook">
 				<source>Release on facebook</source>

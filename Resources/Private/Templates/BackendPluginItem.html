@@ -1,0 +1,18 @@
+<ul class="list-group">
+	<li class="list-group-item">
+		<span class="badge">
+			<f:if condition="{pi_flexform_transformed.switchableControllerActions}">
+				<f:then>{pi_flexform_transformed.switchableControllerActions}</f:then>
+				<f:else>List</f:else>
+			</f:if>
+		</span>Plugin
+	</li>
+	<li class="list-group-item">
+		<span class="badge">
+			<f:if condition="{pi_flexform_transformed.settings.mergeEvents}">
+				<f:then>Yes</f:then>
+				<f:else>No</f:else>
+			</f:if>
+		</span>Merge Events
+	</li>
+</ul>

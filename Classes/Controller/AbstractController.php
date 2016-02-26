@@ -1,11 +1,12 @@
 <?php
+
 namespace JWeiland\Events2\Controller;
 
 /***************************************************************
  *  Copyright notice
  *
  *  (c) 2015 Stefan Froemken <projects@jweiland.net>, jweiland.net
- *  
+ *
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -31,321 +32,318 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 
 /**
- * @package events2
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class AbstractController extends ActionController {
+class AbstractController extends ActionController
+{
+    /**
+     * @var \TYPO3\CMS\Core\Mail\MailMessage
+     */
+    protected $mail;
 
-	/**
-	 * @var \TYPO3\CMS\Core\Mail\MailMessage
-	 */
-	protected $mail;
+    /**
+     * @var \JWeiland\Events2\Configuration\ExtConf
+     */
+    protected $extConf;
 
-	/**
-	 * @var \JWeiland\Events2\Configuration\ExtConf
-	 */
-	protected $extConf;
+    /**
+     * eventRepository.
+     *
+     * @var \JWeiland\Events2\Domain\Repository\EventRepository
+     */
+    protected $eventRepository;
 
-	/**
-	 * eventRepository
-	 *
-	 * @var \JWeiland\Events2\Domain\Repository\EventRepository
-	 */
-	protected $eventRepository;
+    /**
+     * dayRepository.
+     *
+     * @var \JWeiland\Events2\Domain\Repository\DayRepository
+     */
+    protected $dayRepository;
 
-	/**
-	 * dayRepository
-	 *
-	 * @var \JWeiland\Events2\Domain\Repository\DayRepository
-	 */
-	protected $dayRepository;
+    /**
+     * locationRepository.
+     *
+     * @var \JWeiland\Events2\Domain\Repository\LocationRepository
+     */
+    protected $locationRepository;
 
-	/**
-	 * locationRepository
-	 *
-	 * @var \JWeiland\Events2\Domain\Repository\LocationRepository
-	 */
-	protected $locationRepository;
+    /**
+     * categoryRepository.
+     *
+     * @var \JWeiland\Events2\Domain\Repository\CategoryRepository
+     */
+    protected $categoryRepository;
 
-	/**
-	 * categoryRepository
-	 *
-	 * @var \JWeiland\Events2\Domain\Repository\CategoryRepository
-	 */
-	protected $categoryRepository;
+    /**
+     * userRepository.
+     *
+     * @var \JWeiland\Events2\Domain\Repository\UserRepository
+     */
+    protected $userRepository;
 
-	/**
-	 * userRepository
-	 *
-	 * @var \JWeiland\Events2\Domain\Repository\UserRepository
-	 */
-	protected $userRepository;
+    /**
+     * persistenceManager.
+     *
+     * @var \TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface
+     */
+    protected $persistenceManager;
 
-	/**
-	 * persistenceManager
-	 *
-	 * @var \TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface
-	 */
-	protected $persistenceManager;
+    /**
+     * Persistence session.
+     *
+     * @var \TYPO3\CMS\Extbase\Persistence\Generic\Session
+     */
+    protected $session;
 
-	/**
-	 * Persistence session
-	 *
-	 * @var \TYPO3\CMS\Extbase\Persistence\Generic\Session
-	 */
-	protected $session;
+    /**
+     * inject persistenceManager.
+     *
+     * @param \TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface $persistenceManager
+     */
+    public function injectPersistenceManager(\TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface $persistenceManager)
+    {
+        $this->persistenceManager = $persistenceManager;
+    }
 
-	/**
-	 * inject persistenceManager
-	 *
-	 * @param \TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface $persistenceManager
-	 * @return void
-	 */
-	public function injectPersistenceManager(\TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface $persistenceManager) {
-		$this->persistenceManager = $persistenceManager;
-	}
+    /**
+     * inject mail.
+     *
+     * @param \TYPO3\CMS\Core\Mail\MailMessage $mail
+     */
+    public function injectMail(\TYPO3\CMS\Core\Mail\MailMessage $mail)
+    {
+        $this->mail = $mail;
+    }
 
-	/**
-	 * inject mail
-	 *
-	 * @param \TYPO3\CMS\Core\Mail\MailMessage $mail
-	 * @return void
-	 */
-	public function injectMail(\TYPO3\CMS\Core\Mail\MailMessage $mail) {
-		$this->mail = $mail;
-	}
+    /**
+     * inject extConf.
+     *
+     * @param \JWeiland\Events2\Configuration\ExtConf $extConf
+     */
+    public function injectExtConf(\JWeiland\Events2\Configuration\ExtConf $extConf)
+    {
+        $this->extConf = $extConf;
+    }
 
-	/**
-	 * inject extConf
-	 *
-	 * @param \JWeiland\Events2\Configuration\ExtConf $extConf
-	 * @return void
-	 */
-	public function injectExtConf(\JWeiland\Events2\Configuration\ExtConf $extConf) {
-		$this->extConf = $extConf;
-	}
+    /**
+     * inject event repository.
+     *
+     * @param \JWeiland\Events2\Domain\Repository\EventRepository $eventRepository
+     */
+    public function injectEventRepository(\JWeiland\Events2\Domain\Repository\EventRepository $eventRepository)
+    {
+        $this->eventRepository = $eventRepository;
+    }
 
-	/**
-	 * inject event repository
-	 *
-	 * @param \JWeiland\Events2\Domain\Repository\EventRepository $eventRepository
-	 * @return void
-	 */
-	public function injectEventRepository(\JWeiland\Events2\Domain\Repository\EventRepository $eventRepository) {
-		$this->eventRepository = $eventRepository;
-	}
+    /**
+     * inject day repository.
+     *
+     * @param \JWeiland\Events2\Domain\Repository\DayRepository $dayRepository
+     */
+    public function injectDayRepository(\JWeiland\Events2\Domain\Repository\DayRepository $dayRepository)
+    {
+        $this->dayRepository = $dayRepository;
+    }
 
-	/**
-	 * inject day repository
-	 *
-	 * @param \JWeiland\Events2\Domain\Repository\DayRepository $dayRepository
-	 * @return void
-	 */
-	public function injectDayRepository(\JWeiland\Events2\Domain\Repository\DayRepository $dayRepository) {
-		$this->dayRepository = $dayRepository;
-	}
+    /**
+     * inject location repository.
+     *
+     * @param \JWeiland\Events2\Domain\Repository\LocationRepository $locationRepository
+     */
+    public function injectLocationRepository(\JWeiland\Events2\Domain\Repository\LocationRepository $locationRepository)
+    {
+        $this->locationRepository = $locationRepository;
+    }
 
-	/**
-	 * inject location repository
-	 *
-	 * @param \JWeiland\Events2\Domain\Repository\LocationRepository $locationRepository
-	 * @return void
-	 */
-	public function injectLocationRepository(\JWeiland\Events2\Domain\Repository\LocationRepository $locationRepository) {
-		$this->locationRepository = $locationRepository;
-	}
+    /**
+     * inject category repository.
+     *
+     * @param \JWeiland\Events2\Domain\Repository\CategoryRepository $categoryRepository
+     */
+    public function injectCategoryRepository(\JWeiland\Events2\Domain\Repository\CategoryRepository $categoryRepository)
+    {
+        $this->categoryRepository = $categoryRepository;
+    }
 
-	/**
-	 * inject category repository
-	 *
-	 * @param \JWeiland\Events2\Domain\Repository\CategoryRepository $categoryRepository
-	 * @return void
-	 */
-	public function injectCategoryRepository(\JWeiland\Events2\Domain\Repository\CategoryRepository $categoryRepository) {
-		$this->categoryRepository = $categoryRepository;
-	}
+    /**
+     * inject user repository.
+     *
+     * @param \JWeiland\Events2\Domain\Repository\UserRepository $userRepository
+     */
+    public function injectUserRepository(\JWeiland\Events2\Domain\Repository\UserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
 
-	/**
-	 * inject user repository
-	 *
-	 * @param \JWeiland\Events2\Domain\Repository\UserRepository $userRepository
-	 * @return void
-	 */
-	public function injectUserRepository(\JWeiland\Events2\Domain\Repository\UserRepository $userRepository) {
-		$this->userRepository = $userRepository;
-	}
+    /**
+     * inject session.
+     *
+     * @param \TYPO3\CMS\Extbase\Persistence\Generic\Session $session
+     */
+    public function injectSession(\TYPO3\CMS\Extbase\Persistence\Generic\Session $session)
+    {
+        $this->session = $session;
+    }
 
-	/**
-	 * inject session
-	 *
-	 * @param \TYPO3\CMS\Extbase\Persistence\Generic\Session $session
-	 * @return void
-	 */
-	public function injectSession(\TYPO3\CMS\Extbase\Persistence\Generic\Session $session) {
-		$this->session = $session;
-	}
+    /**
+     * preprocessing of all actions.
+     */
+    public function initializeAction()
+    {
+        // if this value was not set, then it will be filled with 0
+        // but that is not good, because UriBuilder accepts 0 as pid, so it's better to set it to NULL
+        if (empty($this->settings['pidOfDetailPage'])) {
+            $this->settings['pidOfDetailPage'] = null;
+        }
+        if (empty($this->settings['pidOfSearchPage'])) {
+            $this->settings['pidOfSearchPage'] = null;
+        }
+        if (empty($this->settings['pidOfLocationPage'])) {
+            $this->settings['pidOfLocationPage'] = null;
+        }
+        if (empty($this->settings['pidOfListPage'])) {
+            $this->settings['pidOfListPage'] = null;
+        }
+    }
 
-	/**
-	 * preprocessing of all actions
-	 *
-	 * @return void
-	 */
-	public function initializeAction() {
-		// if this value was not set, then it will be filled with 0
-		// but that is not good, because UriBuilder accepts 0 as pid, so it's better to set it to NULL
-		if (empty($this->settings['pidOfDetailPage'])) {
-			$this->settings['pidOfDetailPage'] = NULL;
-		}
-		if (empty($this->settings['pidOfSearchPage'])) {
-			$this->settings['pidOfSearchPage'] = NULL;
-		}
-		if (empty($this->settings['pidOfLocationPage'])) {
-			$this->settings['pidOfLocationPage'] = NULL;
-		}
-		if (empty($this->settings['pidOfListPage'])) {
-			$this->settings['pidOfListPage'] = NULL;
-		}
-	}
+    /**
+     * add some global variables/objects to the views.
+     */
+    public function initializeView()
+    {
+        $this->view->assign('eventsOnTopOfList', $this->eventRepository->findTopEvents($this->settings['mergeEvents']));
+        $this->view->assign('siteUrl', GeneralUtility::getIndpEnv('TYPO3_SITE_URL')); // needed for ajax requests
+    }
 
-	/**
-	 * add some global variables/objects to the views
-	 *
-	 * @return void
-	 */
-	public function initializeView() {
-		$this->view->assign('eventsOnTopOfList', $this->eventRepository->findTopEvents($this->settings['mergeEvents']));
-		$this->view->assign('siteUrl', GeneralUtility::getIndpEnv('TYPO3_SITE_URL')); // needed for ajax requests
-	}
+    /**
+     * files will be uploaded in typeConverter automatically
+     * But, if an error occurs we have to remove them.
+     *
+     * @param string $argument
+     */
+    protected function deleteUploadedFilesOnValidationErrors($argument)
+    {
+        if ($this->getControllerContext()->getRequest()->hasArgument($argument)) {
+            /** @var \JWeiland\Events2\Domain\Model\Event $event */
+            $event = $this->getControllerContext()->getRequest()->getArgument($argument);
+            if ($event instanceof Event) {
+                $images = $event->getImages();
+                if (count($images)) {
+                    /** @var \TYPO3\CMS\Extbase\Domain\Model\FileReference $image */
+                    foreach ($images as $image) {
+                        $orig = $image->getOriginalResource();
+                        $orig->delete();
+                    }
+                }
+            }
+        }
+    }
 
-	/**
-	 * files will be uploaded in typeConverter automatically
-	 * But, if an error occurs we have to remove them
-	 *
-	 * @param string $argument
-	 * @return void
-	 */
-	protected function deleteUploadedFilesOnValidationErrors($argument) {
-		if ($this->getControllerContext()->getRequest()->hasArgument($argument)) {
-			/** @var \JWeiland\Events2\Domain\Model\Event $event */
-			$event = $this->getControllerContext()->getRequest()->getArgument($argument);
-			if ($event instanceof Event) {
-				$images = $event->getImages();
-				if (count($images)) {
-					/** @var \JWeiland\Events2\Domain\Model\FileReference $image */
-					foreach ($images as $image) {
-						$orig = $image->getOriginalResource();
-						$orig->delete();
-					}
-				}
-			}
-		}
-	}
+    /**
+     * remove videoLink if empty
+     * add special validation for videolink
+     * I can't add this validation to Linkmodel, as such a validation would be also valid for organizer link.
+     */
+    protected function addValidationForVideoLink()
+    {
+        if (
+            $this->request->hasArgument('event') &&
+            $eventRaw = $this->request->getArgument('event') &&
+            empty($eventRaw['videoLink']['link'])
+        ) {
+            // create a new RegExpValidator for property link
+            /** @var \TYPO3\CMS\Extbase\Validation\Validator\RegularExpressionValidator $regExpValidator */
+            $regExpValidator = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Validation\\Validator\\RegularExpressionValidator', array(
+                'regularExpression' => '~^(|http:|https:)//(|www.)youtube(.*?)(v=|embed/)([a-zA-Z0-9_-]+)~i',
+            ));
+            /** @var \TYPO3\CMS\Extbase\Validation\Validator\GenericObjectValidator $genericObjectValidator */
+            $genericObjectValidator = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Validation\\Validator\\GenericObjectValidator');
+            $genericObjectValidator->addPropertyValidator('link', $regExpValidator);
 
-	/**
-	 * remove videoLink if empty
-	 * add special validation for videolink
-	 * I can't add this validation to Linkmodel, as such a validation would be also valid for organizer link
-	 *
-	 * @return void
-	 */
-	protected function addValidationForVideoLink() {
-		if (
-			$this->request->hasArgument('event') &&
-			$eventRaw = $this->request->getArgument('event') &&
-			empty($eventRaw['videoLink']['link'])
-		) {
-			// create a new RegExpValidator for property link
-			/** @var \TYPO3\CMS\Extbase\Validation\Validator\RegularExpressionValidator $regExpValidator */
-			$regExpValidator = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Validation\\Validator\\RegularExpressionValidator', array(
-				'regularExpression' => '~^(|http:|https:)//(|www.)youtube(.*?)(v=|embed/)([a-zA-Z0-9_-]+)~i'
-			));
-			/** @var \TYPO3\CMS\Extbase\Validation\Validator\GenericObjectValidator $genericObjectValidator */
-			$genericObjectValidator = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Validation\\Validator\\GenericObjectValidator');
-			$genericObjectValidator->addPropertyValidator('link', $regExpValidator);
+            // modify current validator of event
+            $event = $this->arguments->getArgument('event');
+            /** @var \TYPO3\CMS\Extbase\Validation\Validator\ConjunctionValidator $eventValidator */
+            $eventValidator = $event->getValidator();
+            $validators = $eventValidator->getValidators();
+            $validators->rewind();
+            $eventValidator = $validators->current();
+            $validators = $eventValidator->getValidators();
+            $validators->rewind();
+            /** @var \TYPO3\CMS\Extbase\Validation\Validator\GenericObjectValidator $eventValidator */
+            $eventValidator = $validators->current();
+            $eventValidator->addPropertyValidator('videoLink', $genericObjectValidator);
+        }
+    }
 
-			// modify current validator of event
-			$event = $this->arguments->getArgument('event');
-			/** @var \TYPO3\CMS\Extbase\Validation\Validator\ConjunctionValidator $eventValidator */
-			$eventValidator = $event->getValidator();
-			$validators = $eventValidator->getValidators();
-			$validators->rewind();
-			$eventValidator = $validators->current();
-			$validators = $eventValidator->getValidators();
-			$validators->rewind();
-			/** @var \TYPO3\CMS\Extbase\Validation\Validator\GenericObjectValidator $eventValidator */
-			$eventValidator = $validators->current();
-			$eventValidator->addPropertyValidator('videoLink', $genericObjectValidator);
-		}
-	}
+    /**
+     * This is a workaround to help controller actions to find (hidden) events.
+     */
+    protected function registerEventFromRequest()
+    {
+        $eventRaw = $this->request->getArgument('event');
+        if (is_array($eventRaw)) {
+            // get event from form ($_POST)
+            $event = $this->eventRepository->findHiddenEntryByUid($eventRaw['__identity']);
+        } else {
+            // get event from UID
+            $event = $this->eventRepository->findHiddenEntryByUid($eventRaw);
+        }
+        $this->session->registerObject($event, $event->getUid());
+    }
 
-	/**
-	 * This is a workaround to help controller actions to find (hidden) events
-	 *
-	 * @return void
-	 */
-	protected function registerEventFromRequest() {
-		$eventRaw = $this->request->getArgument('event');
-		if (is_array($eventRaw)) {
-			// get event from form ($_POST)
-			$event = $this->eventRepository->findHiddenEntryByUid($eventRaw['__identity']);
-		} else {
-			// get event from UID
-			$event = $this->eventRepository->findHiddenEntryByUid($eventRaw);
-		}
-		$this->session->registerObject($event, $event->getUid());
-	}
+    /**
+     * delete videoLink if empty
+     * Extbase can not set deleted=1 itself.
+     *
+     * @param \JWeiland\Events2\Domain\Model\Event $event
+     */
+    protected function deleteVideoLinkIfEmpty(Event $event)
+    {
+        $linkText = $event->getVideoLink()->getLink();
+        if (empty($linkText)) {
+            /** @var \JWeiland\Events2\Domain\Repository\LinkRepository $linkRepository */
+            $linkRepository = $this->objectManager->get('JWeiland\\Events2\\Domain\\Repository\\LinkRepository');
+            $linkRepository->remove($event->getVideoLink());
+            $event->setVideoLink(null);
+        }
+    }
 
-	/**
-	 * delete videoLink if empty
-	 * Extbase can not set deleted=1 itself
-	 *
-	 * @param \JWeiland\Events2\Domain\Model\Event $event
-	 * @return void
-	 */
-	protected function deleteVideoLinkIfEmpty(Event $event) {
-		$linkText = $event->getVideoLink()->getLink();
-		if (empty($linkText)) {
-			/** @var \JWeiland\Events2\Domain\Repository\LinkRepository $linkRepository */
-			$linkRepository = $this->objectManager->get('JWeiland\\Events2\\Domain\\Repository\\LinkRepository');
-			$linkRepository->remove($event->getVideoLink());
-			$event->setVideoLink(NULL);
-		}
-	}
+    /**
+     * add organizer.
+     *
+     * In a HTML-Template you can change the user uid if you want
+     * So it's better to add the organizer here in PHP
+     *
+     * @param $argument
+     *
+     * @return bool
+     */
+    protected function addOrganizer($argument)
+    {
+        if ($this->request->hasArgument($argument)) {
+            $event = $this->request->getArgument($argument);
+            if (!isset($event['organizer'])) {
+                $organizerOfCurrentUser = (string) $this->userRepository->getFieldFromUser('tx_events2_organizer');
+                if (MathUtility::canBeInterpretedAsInteger($organizerOfCurrentUser)) {
+                    $event['organizer'] = $organizerOfCurrentUser;
+                    // per default it is not allowed to add new Arguments manually. So we have to register them.
+                    // allow mapping of organizer
+                    $this->arguments->getArgument($argument)->getPropertyMappingConfiguration()->allowProperties('organizer');
+                    // allow creation
+                    $this->arguments->getArgument($argument)->getPropertyMappingConfiguration()->forProperty('organizer')->setTypeConverterOption(
+                        'TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter',
+                        PersistentObjectConverter::CONFIGURATION_CREATION_ALLOWED,
+                        true
+                    )->allowProperties('organizer');
+                    $this->request->setArgument($argument, $event);
+                } else {
+                    return false;
+                }
+            } else {
+                return true;
+            }
+        }
 
-	/**
-	 * add organizer
-	 *
-	 * In a HTML-Template you can change the user uid if you want
-	 * So it's better to add the organizer here in PHP
-	 *
-	 * @param $argument
-	 * @return boolean
-	 */
-	protected function addOrganizer($argument) {
-		if ($this->request->hasArgument($argument)) {
-			$event = $this->request->getArgument($argument);
-			if (!isset($event['organizer'])) {
-				$organizerOfCurrentUser = (string)$this->userRepository->getFieldFromUser('tx_events2_organizer');
-				if (MathUtility::canBeInterpretedAsInteger($organizerOfCurrentUser)) {
-					$event['organizer'] = $organizerOfCurrentUser;
-					// per default it is not allowed to add new Arguments manually. So we have to register them.
-					// allow mapping of organizer
-					$this->arguments->getArgument($argument)->getPropertyMappingConfiguration()->allowProperties('organizer');
-					// allow creation
-					$this->arguments->getArgument($argument)->getPropertyMappingConfiguration()->forProperty('organizer')->setTypeConverterOption(
-						'TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter',
-						PersistentObjectConverter::CONFIGURATION_CREATION_ALLOWED,
-						TRUE
-					)->allowProperties('organizer');
-					$this->request->setArgument($argument, $event);
-				} else {
-					return FALSE;
-				}
-			} else {
-				return TRUE;
-			}
-		}
-		return FALSE;
-	}
-
+        return false;
+    }
 }

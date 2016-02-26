@@ -1,4 +1,5 @@
 <?php
+
 namespace JWeiland\Events2\Ajax;
 
 /***************************************************************
@@ -32,9 +33,9 @@ $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\Obje
 $request = GeneralUtility::_GPmerged('tx_events2_events');
 
 if (is_array($request) && is_array($request['arguments'])) {
-	/** @var \JWeiland\Events2\Ajax\FindLocations\Ajax $ajaxObject */
-	$ajaxObject = $objectManager->get('JWeiland\\Events2\\Ajax\\FindLocations\\Ajax');
-	echo $ajaxObject->processAjaxRequest($request['arguments']);
+    /** @var \JWeiland\Events2\Ajax\FindLocations\Ajax $ajaxObject */
+    $ajaxObject = $objectManager->get('JWeiland\\Events2\\Ajax\\FindLocations\\Ajax');
+    echo $ajaxObject->processAjaxRequest($request['arguments']);
 } else {
-	echo '';
+    echo '';
 }

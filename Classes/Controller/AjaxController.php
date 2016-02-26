@@ -1,4 +1,5 @@
 <?php
+
 namespace JWeiland\Events2\Controller;
 
 /***************************************************************
@@ -27,31 +28,33 @@ namespace JWeiland\Events2\Controller;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /**
- * @package events2
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class AjaxController extends ActionController {
+class AjaxController extends ActionController
+{
+    /**
+     * this ajax action can only call Ajax scripts based on pageType
+     * eID scripts has its own bootstrap.
+     *
+     * @param string $objectName Which Ajax Object has to be called
+     * @param array  $arguments  Arguments which have to be send to the Ajax Object
+     *
+     * @return string
+     */
+    public function callAjaxObjectAction($objectName, $arguments = array())
+    {
+        if (is_string($objectName)) {
+            $className = 'JWeiland\\Events2\\Ajax\\'.ucfirst($objectName);
+            if (class_exists($className)) {
+                $object = $this->objectManager->get($className);
+                if (method_exists($object, 'processAjaxRequest')) {
+                    $result = $object->processAjaxRequest($arguments);
 
-	/**
-	 * this ajax action can only call Ajax scripts based on pageType
-	 * eID scripts has its own bootstrap
-	 *
-	 * @param string $objectName Which Ajax Object has to be called
-	 * @param array $arguments Arguments which have to be send to the Ajax Object
-	 * @return string
-	 */
-	public function callAjaxObjectAction($objectName, $arguments = array()) {
-		if (is_string($objectName)) {
-			$className = 'JWeiland\\Events2\\Ajax\\' . ucfirst($objectName);
-			if (class_exists($className)) {
-				$object = $this->objectManager->get($className);
-				if (method_exists($object, 'processAjaxRequest')) {
-					$result = $object->processAjaxRequest($arguments);
-					return $result;
-				}
-			}
-		}
-		return '';
-	}
+                    return $result;
+                }
+            }
+        }
 
+        return '';
+    }
 }

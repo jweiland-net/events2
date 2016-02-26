@@ -1,4 +1,5 @@
 <?php
+
 namespace JWeiland\Events2\Tests\Unit\Domain\Model;
 
 /***************************************************************
@@ -31,90 +32,92 @@ use TYPO3\CMS\Core\Tests\UnitTestCase;
 /**
  * Test case.
  *
- * @subpackage Events
  * @author Stefan Froemken <projects@jweiland.net>
  */
-class OrganizerTest extends UnitTestCase {
+class OrganizerTest extends UnitTestCase
+{
+    /**
+     * @var \JWeiland\Events2\Domain\Model\Organizer
+     */
+    protected $subject;
 
-	/**
-	 * @var \JWeiland\Events2\Domain\Model\Organizer
-	 */
-	protected $subject;
+    /**
+     * set up.
+     */
+    public function setUp()
+    {
+        $this->subject = new Organizer();
+    }
 
-	/**
-	 * set up
-	 *
-	 * @return void
-	 */
-	public function setUp() {
-		$this->subject = new Organizer();
-	}
+    /**
+     * tear down.
+     */
+    public function tearDown()
+    {
+        unset($this->subject);
+    }
 
-	/**
-	 * tear down
-	 *
-	 * @return void
-	 */
-	public function tearDown() {
-		unset($this->subject);
-	}
+    /**
+     * @test
+     */
+    public function getOrganizerInitiallyReturnsEmptyString()
+    {
+        $this->assertSame(
+            '',
+            $this->subject->getOrganizer()
+        );
+    }
 
-	/**
-	 * @test
-	 */
-	public function getOrganizerInitiallyReturnsEmptyString() {
-		$this->assertSame(
-			'',
-			$this->subject->getOrganizer()
-		);
-	}
+    /**
+     * @test
+     */
+    public function setOrganizerSetsOrganizer()
+    {
+        $this->subject->setOrganizer('foo bar');
 
-	/**
-	 * @test
-	 */
-	public function setOrganizerSetsOrganizer() {
-		$this->subject->setOrganizer('foo bar');
+        $this->assertSame(
+            'foo bar',
+            $this->subject->getOrganizer()
+        );
+    }
 
-		$this->assertSame(
-			'foo bar',
-			$this->subject->getOrganizer()
-		);
-	}
+    /**
+     * @test
+     */
+    public function setOrganizerWithIntegerResultsInString()
+    {
+        $this->subject->setOrganizer(123);
+        $this->assertSame('123', $this->subject->getOrganizer());
+    }
 
-	/**
-	 * @test
-	 */
-	public function setOrganizerWithIntegerResultsInString() {
-		$this->subject->setOrganizer(123);
-		$this->assertSame('123', $this->subject->getOrganizer());
-	}
+    /**
+     * @test
+     */
+    public function setOrganizerWithBooleanResultsInString()
+    {
+        $this->subject->setOrganizer(true);
+        $this->assertSame('1', $this->subject->getOrganizer());
+    }
 
-	/**
-	 * @test
-	 */
-	public function setOrganizerWithBooleanResultsInString() {
-		$this->subject->setOrganizer(TRUE);
-		$this->assertSame('1', $this->subject->getOrganizer());
-	}
+    /**
+     * @test
+     */
+    public function getLinkInitiallyReturnsNull()
+    {
+        $this->assertNull($this->subject->getLink());
+    }
 
-	/**
-	 * @test
-	 */
-	public function getLinkInitiallyReturnsNull() {
-		$this->assertNull($this->subject->getLink());
-	}
+    /**
+     * @test
+     */
+    public function setLinkSetsLink()
+    {
+        $instance = new Link();
+        $this->subject->setLink($instance);
 
-	/**
-	 * @test
-	 */
-	public function setLinkSetsLink() {
-		$instance = new Link();
-		$this->subject->setLink($instance);
-
-		$this->assertSame(
-			$instance,
-			$this->subject->getLink()
-		);
-	}
-
+        $this->assertSame(
+            $instance,
+            $this->subject->getLink()
+        );
+    }
 }

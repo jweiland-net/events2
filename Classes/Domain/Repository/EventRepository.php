@@ -5,7 +5,7 @@ namespace JWeiland\Events2\Domain\Repository;
  *  Copyright notice
  *
  *  (c) 2015 Stefan Froemken <projects@jweiland.net>, jweiland.net
- *  
+ *
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -29,321 +29,300 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
- * @package events2
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class EventRepository extends Repository {
+class EventRepository extends Repository
+{
+    /**
+     * @var array
+     */
+    protected $defaultOrderings = array(
+        'eventBegin' => QueryInterface::ORDER_ASCENDING,
+    );
 
-	/**
-	 * @var array
-	 */
-	protected $defaultOrderings = array(
-		'eventBegin' => QueryInterface::ORDER_ASCENDING
-	);
+    /**
+     * @var \JWeiland\Events2\Utility\DateTimeUtility
+     */
+    protected $dateTimeUtility;
 
-	/**
-	 * @var \JWeiland\Events2\Utility\DateTimeUtility
-	 */
-	protected $dateTimeUtility;
+    /**
+     * @var \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper
+     */
+    protected $dataMapper;
 
-	/**
-	 * @var \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper
-	 */
-	protected $dataMapper;
+    /**
+     * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
+     */
+    protected $configurationManager;
 
-	/**
-	 * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
-	 */
-	protected $configurationManager;
+    /**
+     * inject DateTime Utility.
+     *
+     * @param \JWeiland\Events2\Utility\DateTimeUtility $dateTimeUtility
+     */
+    public function injectDateTimeUtility(\JWeiland\Events2\Utility\DateTimeUtility $dateTimeUtility)
+    {
+        $this->dateTimeUtility = $dateTimeUtility;
+    }
 
-	/**
-	 * inject DateTime Utility
-	 *
-	 * @param \JWeiland\Events2\Utility\DateTimeUtility $dateTimeUtility
-	 * @return void
-	 */
-	public function injectDateTimeUtility(\JWeiland\Events2\Utility\DateTimeUtility $dateTimeUtility) {
-		$this->dateTimeUtility = $dateTimeUtility;
-	}
+    /**
+     * inject DataMapper.
+     *
+     * @param \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper $dataMapper
+     */
+    public function injectDataMapper(\TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper $dataMapper)
+    {
+        $this->dataMapper = $dataMapper;
+    }
 
-	/**
-	 * inject DataMapper
-	 *
-	 * @param \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper $dataMapper
-	 * @return void
-	 */
-	public function injectDataMapper(\TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper $dataMapper) {
-		$this->dataMapper = $dataMapper;
-	}
+    /**
+     * inject Configuration Manager.
+     *
+     * @param \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager
+     */
+    public function injectConfigurationManager(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager)
+    {
+        $this->configurationManager = $configurationManager;
+    }
 
-	/**
-	 * inject Configuration Manager
-	 *
-	 * @param \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager
-	 * @return void
-	 */
-	public function injectConfigurationManager(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager) {
-		$this->configurationManager = $configurationManager;
-	}
+    /**
+     * find event by uid whether it is hidden or not.
+     *
+     * @param int $eventUid
+     *
+     * @return \JWeiland\Events2\Domain\Model\Event
+     */
+    public function findHiddenEntryByUid($eventUid)
+    {
+        $query = $this->createQuery();
+        $query->getQuerySettings()->setIgnoreEnableFields(true);
+        $query->getQuerySettings()->setEnableFieldsToBeIgnored(array('disabled'));
+        $query->getQuerySettings()->setRespectStoragePage(false);
 
-	/**
-	 * find event by uid whether it is hidden or not
-	 *
-	 * @param integer $eventUid
-	 * @return \JWeiland\Events2\Domain\Model\Event
-	 */
-	public function findHiddenEntryByUid($eventUid) {
-		$query = $this->createQuery();
-		$query->getQuerySettings()->setIgnoreEnableFields(TRUE);
-		$query->getQuerySettings()->setEnableFieldsToBeIgnored(array('disabled'));
-		return $query->matching($query->equals('uid', (int)$eventUid))->execute()->getFirst();
-	}
+        return $query->matching($query->equals('uid', (int) $eventUid))->execute()->getFirst();
+    }
 
-	/**
-	 * find all events which can be released
-	 * -> facebook must be checked
-	 * -> releaseDate can not be empty
-	 * 
-	 * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
-	 */
-	public function findUnreleasedEvents() {
-		$query = $this->createQuery();
-		$constraint = array();
-		$constraint[] = $query->equals('facebook', 1);
-		$constraint[] = $query->equals('releaseDate', 0);
-		return $query->matching($query->logicalAnd($constraint))->execute();
-	}
+    /**
+     * find all events which can be released
+     * -> facebook must be checked
+     * -> releaseDate can not be empty.
+     *
+     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     */
+    public function findUnreleasedEvents()
+    {
+        $query = $this->createQuery();
+        $constraint = array();
+        $constraint[] = $query->equals('facebook', 1);
+        $constraint[] = $query->equals('releaseDate', 0);
 
-	/**
-	 * find top events
-	 *
-	 * @param bool $mergeEvents
-	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage
-	 */
-	public function findTopEvents($mergeEvents = FALSE) {
-		/** @var \TYPO3\CMS\Extbase\Persistence\Generic\Query $query */
-		$query = $this->createQuery();
-		$today = $this->dateTimeUtility->convert('today');
-		$statement = $this->createStatement()
-			->setQuery($query)
-			->setSelect('tx_events2_domain_model_event.*, tx_events2_domain_model_day.uid as dayUid, tx_events2_domain_model_day.pid as dayPid, tx_events2_domain_model_day.day as dayDay, tx_events2_domain_model_day.events as dayEvents');
+        return $query->matching($query->logicalAnd($constraint))->execute();
+    }
 
-		if ($mergeEvents) {
-			$statement->setMergeEvents(TRUE);
-		}
+    /**
+     * find top events.
+     *
+     * @param bool $mergeEvents
+     *
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage
+     */
+    public function findTopEvents($mergeEvents = false)
+    {
+        /** @var \TYPO3\CMS\Extbase\Persistence\Generic\Query $query */
+        $query = $this->createQuery();
+        $today = $this->dateTimeUtility->convert('today');
+        $statement = $this->createStatement()
+            ->setQuery($query)
+            ->setSelect('tx_events2_domain_model_event.*, tx_events2_domain_model_day.uid as dayUid, tx_events2_domain_model_day.pid as dayPid, tx_events2_domain_model_day.day as dayDay, tx_events2_domain_model_day.events as dayEvents');
 
-		$statement
-			->addWhere('tx_events2_domain_model_event.top_of_list', '=', 1)
-			->addWhere('tx_events2_domain_model_day.day', '>=', $today)
-			->setGroupBy('tx_events2_domain_model_event.uid')
-			->setLimit('');
+        if ($mergeEvents) {
+            $statement->setMergeEvents(true);
+        }
 
-		$records = $query->statement($statement->getStatement())->execute(TRUE);
+        $statement
+            ->addWhere('tx_events2_domain_model_event.top_of_list', '=', 1)
+            ->addWhere('tx_events2_domain_model_day.day', '>=', $today)
+            ->setGroupBy('tx_events2_domain_model_event.uid')
+            ->setLimit('');
 
-		// As long as domain models will be cached by their UID, we have to create our own event storage
-		/** @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage $eventStorage */
-		$eventStorage = new ObjectStorage();
-		/** @var \JWeiland\Events2\Domain\Model\Event $event */
-		foreach ($records as $record) {
-			list($event) = $this->dataMapper->map('JWeiland\\Events2\\Domain\\Model\\Event', array($record));
-			$event->setDay($this->getDayFromEvent($record));
-			$eventStorage->attach(clone $event);
-		}
-		return $eventStorage;
-	}
+        $records = $query->statement($statement->getStatement())->execute(true);
 
-	/**
-	 * find events
-	 *
-	 * @param string $type
-	 * @param string $categories
-	 * @param bool $mergeEvents
-	 * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
-	 */
-	public function findEvents($type, $categories = '', $mergeEvents = FALSE) {
-		/** @var \TYPO3\CMS\Extbase\Persistence\Generic\Query $query */
-		$query = $this->createQuery();
-		$statement = $this->createStatement()->setQuery($query);
+        // As long as domain models will be cached by their UID, we have to create our own event storage
+        /** @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage $eventStorage */
+        $eventStorage = new ObjectStorage();
+        /* @var \JWeiland\Events2\Domain\Model\Event $event */
+        foreach ($records as $record) {
+            list($event) = $this->dataMapper->map('JWeiland\\Events2\\Domain\\Model\\Event', array($record));
+            $event->setDay($this->getDayFromEvent($record));
+            $eventStorage->attach(clone $event);
+        }
 
-		if (!empty($categories)) {
-			$statement->setCategoryRelation(TRUE)->addWhereForCategories($categories);
-		}
-		if ($mergeEvents) {
-			$statement->setMergeEvents(TRUE);
-		}
+        return $eventStorage;
+    }
 
-		switch ($type) {
-			case 'today':
-				$today = $this->dateTimeUtility->convert('today');
-				$tomorrow = $this->dateTimeUtility->convert('today');
-				$tomorrow->modify('+1 day');
-				$statement
-					->addWhere('tx_events2_domain_model_day.day', '>=', $today)
-					->addWhere('tx_events2_domain_model_day.day', '<', $tomorrow);
-				break;
-			case 'range':
-				$today = $this->dateTimeUtility->convert('today');
-				$in4months = $this->dateTimeUtility->convert('today');
-				$in4months->modify('+4 weeks');
-				$statement
-					->addWhere('tx_events2_domain_model_day.day', '>=', $today)
-					->addWhere('tx_events2_domain_model_day.day', '<=', $in4months);
-				break;
-			case 'thisWeek':
-				$weekStart = $this->dateTimeUtility->convert('today');
-				$weekStart->modify('this week'); // 'first day of' does not work for 'weeks'
-				$weekEnd = $this->dateTimeUtility->convert('today');
-				$weekEnd->modify('this week +6 days'); // 'last day of' does not work for 'weeks'
-				$statement
-					->addWhere('tx_events2_domain_model_day.day', '>=', $weekStart)
-					->addWhere('tx_events2_domain_model_day.day', '<=', $weekEnd);
-				break;
-			case 'list':
-			case 'latest':
-			default:
-				$today = $this->dateTimeUtility->convert('today');
-				$statement->addWhere('tx_events2_domain_model_day.day', '>=', $today);
-		}
-		return $query->statement($statement->getStatement())->execute();
-	}
+    /**
+     * find events.
+     *
+     * @param string $type
+     * @param string $categories
+     * @param bool   $mergeEvents
+     *
+     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     */
+    public function findEvents($type, $categories = '', $mergeEvents = false)
+    {
+        /** @var \TYPO3\CMS\Extbase\Persistence\Generic\Query $query */
+        $query = $this->createQuery();
+        $statement = $this->createStatement()->setQuery($query);
 
-	/**
-	 * find culture events
-	 *
-	 * @param int $ageGroup
-	 * @param int $suitabilityUser
-	 * @param int $suitabilityGroups
-	 * @param int $topic
-	 * @param int $category
-	 * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
-	 */
-	public function findCultureEvents($ageGroup, $suitabilityUser = 0, $suitabilityGroups = 0, $topic = 0, $category = 0) {
-		/** @var \TYPO3\CMS\Extbase\Persistence\Generic\Query $query */
-		$query = $this->createQuery();
-		$statement = $this->createStatement()
-			->setQuery($query)
-			->setCategoryRelation(TRUE);
-		$today = $this->dateTimeUtility->convert('today');
+        if (!empty($categories)) {
+            $statement->setCategoryRelation(true)->addWhereForCategories($categories);
+        }
+        if ($mergeEvents) {
+            $statement->setMergeEvents(true);
+        }
 
-		$categories = array();
-		$categories[] = $ageGroup;
-		if ($topic) $categories[] = $topic;
-		if ($category) $categories[] = $category;
+        switch ($type) {
+            case 'today':
+                $today = $this->dateTimeUtility->convert('today');
+                $tomorrow = $this->dateTimeUtility->convert('today');
+                $tomorrow->modify('+1 day');
+                $statement
+                    ->addWhere('tx_events2_domain_model_day.day', '>=', $today)
+                    ->addWhere('tx_events2_domain_model_day.day', '<', $tomorrow);
+                break;
+            case 'range':
+                $today = $this->dateTimeUtility->convert('today');
+                $in4months = $this->dateTimeUtility->convert('today');
+                $in4months->modify('+4 weeks');
+                $statement
+                    ->addWhere('tx_events2_domain_model_day.day', '>=', $today)
+                    ->addWhere('tx_events2_domain_model_day.day', '<=', $in4months);
+                break;
+            case 'thisWeek':
+                $weekStart = $this->dateTimeUtility->convert('today');
+                $weekStart->modify('this week'); // 'first day of' does not work for 'weeks'
+                $weekEnd = $this->dateTimeUtility->convert('today');
+                $weekEnd->modify('this week +6 days'); // 'last day of' does not work for 'weeks'
+                $statement
+                    ->addWhere('tx_events2_domain_model_day.day', '>=', $weekStart)
+                    ->addWhere('tx_events2_domain_model_day.day', '<=', $weekEnd);
+                break;
+            case 'list':
+            case 'latest':
+            default:
+                $today = $this->dateTimeUtility->convert('today');
+                $statement->addWhere('tx_events2_domain_model_day.day', '>=', $today);
+        }
 
-		$statement
-			->addWhere('tx_events2_domain_model_day.day', '>=', $today)
-			->addWhere('tx_events2_domain_model_event.suitability_culture', '=', 1)
-			->addWhereForCategories(implode(',', $categories));
+        return $query->statement($statement->getStatement())->execute();
+    }
 
-		// add suitable user
-		if ($suitabilityUser) {
-			$statement->addWhere('tx_events2_domain_model_event.suitability_user', '=', '1');
-		}
-		// add suitable group
-		if ($suitabilityGroups) {
-			$statement->addWhere('tx_events2_domain_model_event.suitability_groups', '=', '1');
-		}
+    /**
+     * search for events.
+     *
+     * @param \JWeiland\Events2\Domain\Model\Search $search
+     *
+     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     */
+    public function searchEvents(\JWeiland\Events2\Domain\Model\Search $search)
+    {
+        /** @var \TYPO3\CMS\Extbase\Persistence\Generic\Query $query */
+        $query = $this->createQuery();
+        $statement = $this->createStatement()->setQuery($query);
 
-		return $query->statement($statement->getStatement())->execute();
-	}
+        // add query for search string
+        if ($search->getSearch()) {
+            $statement->addWhereForSearch($search->getSearch(), array('title', 'teaser'));
+        }
 
-	/**
-	 * search for events
-	 *
-	 * @param \JWeiland\Events2\Domain\Model\Search $search
-	 * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
-	 */
-	public function searchEvents(\JWeiland\Events2\Domain\Model\Search $search) {
-		/** @var \TYPO3\CMS\Extbase\Persistence\Generic\Query $query */
-		$query = $this->createQuery();
-		$statement = $this->createStatement()->setQuery($query);
+        // add query for categories
+        if ($search->getMainCategory()) {
+            $statement->addJoinForCategoryTable();
+            if ($search->getSubCategory()) {
+                $statement->addWhereForCategories($search->getSubCategory()->getUid());
+            } else {
+                $statement->addWhereForCategories($search->getMainCategory()->getUid());
+            }
+        }
 
-		// add query for search string
-		if ($search->getSearch()) {
-			$statement->addWhereForSearch($search->getSearch(), array('title', 'teaser'));
-		}
+        // add query for event begin
+        if ($search->getEventBegin()) {
+            $statement->addWhere('tx_events2_domain_model_day.day', '>=', $search->getEventBegin()->format('U'));
+        } else {
+            $today = $this->dateTimeUtility->convert('today');
+            $statement->addWhere('tx_events2_domain_model_day.day', '>=', $today->format('U'));
+        }
 
-		// add query for categories
-		if ($search->getMainCategory()) {
-			if ($search->getSubCategory()) {
-				$statement->addWhereForCategories($search->getSubCategory()->getUid());
-			} else {
-				$statement->addWhereForCategories($search->getMainCategory()->getUid());
-			}
-		}
+        // add query for event end
+        if ($search->getEventEnd()) {
+            $statement->addWhere('tx_events2_domain_model_day.day', '<=', $search->getEventEnd()->format('U'));
+        }
 
-		// add query for event begin
-		if ($search->getEventBegin()) {
-			$statement->addWhere('tx_events2_domain_model_day.day', '>=', $search->getEventBegin()->format('U'));
-		} else {
-			$today = $this->dateTimeUtility->convert('today');
-			$statement->addWhere('tx_events2_domain_model_day.day', '>=', $today->format('U'));
-		}
+        // add query for event location
+        if ($search->getLocation()) {
+            $statement->addWhere('tx_events2_domain_model_event.location', '=', $search->getLocation()->getUid());
+        }
 
-		// add query for event end
-		if ($search->getEventEnd()) {
-			$statement->addWhere('tx_events2_domain_model_day.day', '<=', $search->getEventEnd()->format('U'));
-		}
+        // add query for free entry
+        if ($search->getFreeEntry()) {
+            $statement->addWhere('tx_events2_domain_model_event.free_entry', '=', $search->getFreeEntry());
+        }
 
-		// add query for event location
-		if ($search->getLocation()) {
-			$statement->addWhere('tx_events2_domain_model_event.location', '=', $search->getLocation()->getUid());
-		}
+        return $query->statement($statement->getStatement())->execute();
+    }
 
-		// add query for free entry
-		if ($search->getFreeEntry()) {
-			$statement->addWhere('tx_events2_domain_model_event.free_entry', '=', $search->getFreeEntry());
-		}
+    /**
+     * find events of a specified user.
+     *
+     * @param int $organizer
+     *
+     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     */
+    public function findMyEvents($organizer)
+    {
+        /** @var \TYPO3\CMS\Extbase\Persistence\Generic\Query $query */
+        $query = $this->createQuery();
+        $statement = $this->createStatement()
+            ->setQuery($query)
+            ->setSelect('tx_events2_domain_model_event.*')
+            ->setFeUsersRelation(true)
+            ->addWhere('fe_users.uid', '=', (int) $organizer)
+            ->setGroupBy('tx_events2_domain_model_event.uid')
+            ->setOrderBy('tx_events2_domain_model_event.title')
+            ->setLimit('');
 
-		return $query->statement($statement->getStatement())->execute();
-	}
+        return $query->statement($statement->getStatement())->execute();
+    }
 
-	/**
-	 * find events of a specified user
-	 *
-	 * @param int $organizer
-	 * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
-	 */
-	public function findMyEvents($organizer) {
-		/** @var \TYPO3\CMS\Extbase\Persistence\Generic\Query $query */
-		$query = $this->createQuery();
-		$statement = $this->createStatement()
-			->setQuery($query)
-			->setSelect('tx_events2_domain_model_event.*')
-			->setFeUsersRelation(TRUE)
-			->addWhere('fe_users.uid', '=', (int)$organizer)
-			->setGroupBy('tx_events2_domain_model_event.uid')
-			->setOrderBy('tx_events2_domain_model_event.title')
-			->setLimit('');
+    /**
+     * extract day from event record
+     * With this method we save one additional SQL-Query.
+     *
+     * @param array $event
+     *
+     * @return \JWeiland\Events2\Domain\Model\Day
+     */
+    public function getDayFromEvent(array $event)
+    {
+        $dayRecord = array(
+            'uid' => $event['dayUid'],
+            'pid' => $event['dayPid'],
+            'day' => $event['dayDay'],
+            'events' => $event['dayEvents'],
+        );
+        list($day) = $this->dataMapper->map('JWeiland\\Events2\\Domain\\Model\\Day', array($dayRecord));
 
-		return $query->statement($statement->getStatement())->execute();
-	}
+        return $day;
+    }
 
-	/**
-	 * extract day from event record
-	 * With this method we save one additional SQL-Query
-	 *
-	 * @param array $event
-	 * @return \JWeiland\Events2\Domain\Model\Day
-	 */
-	public function getDayFromEvent(array $event) {
-		$dayRecord = array(
-			'uid' => $event['dayUid'],
-			'pid' => $event['dayPid'],
-			'day' => $event['dayDay'],
-			'events' => $event['dayEvents']
-		);
-		list($day) = $this->dataMapper->map('JWeiland\\Events2\\Domain\\Model\\Day', array($dayRecord));
-		return $day;
-	}
-
-	/**
-	 * create a statement object
-	 *
-	 * @return \JWeiland\Events2\Utility\StatementUtility
-	 */
-	protected function createStatement() {
-		return $this->objectManager->get('JWeiland\\Events2\\Utility\\StatementUtility');
-	}
-
+    /**
+     * create a statement object.
+     *
+     * @return \JWeiland\Events2\Utility\StatementUtility
+     */
+    protected function createStatement()
+    {
+        return $this->objectManager->get('JWeiland\\Events2\\Utility\\StatementUtility');
+    }
 }

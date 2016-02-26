@@ -51,12 +51,6 @@
 			<trans-unit id="mainCategories">
 				<source>Comma seperated list of main category uids</source>
 			</trans-unit>
-			<trans-unit id="ageGroup">
-				<source>Age group</source>
-			</trans-unit>
-			<trans-unit id="topic">
-				<source>Topic</source>
-			</trans-unit>
 			<trans-unit id="category">
 				<source>Category</source>
 			</trans-unit>

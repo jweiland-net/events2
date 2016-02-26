@@ -172,18 +172,6 @@
 				<source>Download links</source>
 				<target>Download Link</target>
 			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.suitability_culture">
-				<source>Suitable for culture and school</source>
-				<target>Geeignet für "Kultur macht Schule"</target>
-			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.suitability_user">
-				<source>Suitable for single User</source>
-				<target>Geeignet für Einzelnutzer</target>
-			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.suitability_groups">
-				<source>Suitable for groups</source>
-				<target>Geeignet für Gruppen und Schulklassen</target>
-			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.facebook">
 				<source>Release on facebook</source>
 				<target>Auf Facebook veröffentlichen</target>
@@ -502,14 +490,6 @@
 			<trans-unit id="missingOrganizerForCreate">
 				<source>You're allowed to create event records, but your user record has no relation to an organizer record.</source>
 				<target>Sie haben zwar die Berechtigung Veranstaltungen anzulegen, aber Ihrem Benutzer wurde noch kein Veranstalter zugewiesen.</target>
-			</trans-unit>
-			<trans-unit id="topics">
-				<source>Topics</source>
-				<target>Themen</target>
-			</trans-unit>
-			<trans-unit id="categories">
-				<source>Categories</source>
-				<target>Kategorien</target>
 			</trans-unit>
 
 			<trans-unit id="email.subject.create">

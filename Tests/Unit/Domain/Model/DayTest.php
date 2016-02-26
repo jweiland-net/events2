@@ -1,4 +1,5 @@
 <?php
+
 namespace JWeiland\Events2\Tests\Unit\Domain\Model;
 
 /***************************************************************
@@ -32,157 +33,165 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 /**
  * Test case.
  *
- * @subpackage Events
  * @author Stefan Froemken <projects@jweiland.net>
  */
-class DayTest extends UnitTestCase {
+class DayTest extends UnitTestCase
+{
+    /**
+     * @var \JWeiland\Events2\Domain\Model\Day
+     */
+    protected $subject;
 
-	/**
-	 * @var \JWeiland\Events2\Domain\Model\Day
-	 */
-	protected $subject;
+    /**
+     * set up.
+     */
+    public function setUp()
+    {
+        $this->subject = new Day();
+    }
 
-	/**
-	 * set up
-	 *
-	 * @return void
-	 */
-	public function setUp() {
-		$this->subject = new Day();
-	}
+    /**
+     * tear down.
+     */
+    public function tearDown()
+    {
+        unset($this->subject);
+    }
 
-	/**
-	 * tear down
-	 *
-	 * @return void
-	 */
-	public function tearDown() {
-		unset($this->subject);
-	}
+    /**
+     * @test
+     */
+    public function getDayInitiallyReturnsNull()
+    {
+        $this->assertNull(
+            $this->subject->getDay()
+        );
+    }
 
-	/**
-	 * @test
-	 */
-	public function getDayInitiallyReturnsNull() {
-		$this->assertNull(
-			$this->subject->getDay()
-		);
-	}
+    /**
+     * @test
+     */
+    public function setDaySetsDay()
+    {
+        $date = new \DateTime();
+        $this->subject->setDay($date);
 
-	/**
-	 * @test
-	 */
-	public function setDaySetsDay() {
-		$date = new \DateTime();
-		$this->subject->setDay($date);
+        $this->assertSame(
+            $date,
+            $this->subject->getDay()
+        );
+    }
 
-		$this->assertSame(
-			$date,
-			$this->subject->getDay()
-		);
-	}
+    /**
+     * @return array
+     */
+    public function dataProviderForSetDay()
+    {
+        $arguments = array();
+        $arguments['set Day with Null'] = array(null);
+        $arguments['set Day with Integer'] = array(1234567890);
+        $arguments['set Day with Integer as String'] = array('1234567890');
+        $arguments['set Day with String'] = array('Hi all together');
 
-	/**
-	 * @return array
-	 */
-	public function dataProviderForSetDay() {
-		$arguments = array();
-		$arguments['set Day with Null'] = array(NULL);
-		$arguments['set Day with Integer'] = array(1234567890);
-		$arguments['set Day with Integer as String'] = array('1234567890');
-		$arguments['set Day with String'] = array('Hi all together');
-		return $arguments;
-	}
+        return $arguments;
+    }
 
-	/**
-	 * @test
-	 *
-	 * @param mixed $argument
-	 * @dataProvider dataProviderForSetDay
-	 * @expectedException \PHPUnit_Framework_Error
-	 */
-	public function setDayWithInvalidValuesResultsInException($argument) {
-		$this->subject->setDay($argument);
-	}
+    /**
+     * @test
+     *
+     * @param mixed $argument
+     * @dataProvider dataProviderForSetDay
+     * @expectedException \PHPUnit_Framework_Error
+     */
+    public function setDayWithInvalidValuesResultsInException($argument)
+    {
+        $this->subject->setDay($argument);
+    }
 
-	/**
-	 * @test
-	 */
-	public function getEventsInitiallyReturnsObjectStorage() {
-		$this->assertEquals(
-			new ObjectStorage(),
-			$this->subject->getEvents()
-		);
-	}
+    /**
+     * @test
+     */
+    public function getEventsInitiallyReturnsObjectStorage()
+    {
+        $this->assertEquals(
+            new ObjectStorage(),
+            $this->subject->getEvents()
+        );
+    }
 
-	/**
-	 * @test
-	 */
-	public function setEventsSetsEvents() {
-		$object = new Event();
-		$objectStorage = new ObjectStorage();
-		$objectStorage->attach($object);
-		$this->subject->setEvents($objectStorage);
+    /**
+     * @test
+     */
+    public function setEventsSetsEvents()
+    {
+        $object = new Event();
+        $objectStorage = new ObjectStorage();
+        $objectStorage->attach($object);
+        $this->subject->setEvents($objectStorage);
 
-		$this->assertSame(
-			$objectStorage,
-			$this->subject->getEvents()
-		);
-	}
+        $this->assertSame(
+            $objectStorage,
+            $this->subject->getEvents()
+        );
+    }
 
-	/**
-	 * @test
-	 */
-	public function addEventAddsOneEvent() {
-		$objectStorage = new ObjectStorage();
-		$this->subject->setEvents($objectStorage);
+    /**
+     * @test
+     */
+    public function addEventAddsOneEvent()
+    {
+        $objectStorage = new ObjectStorage();
+        $this->subject->setEvents($objectStorage);
 
-		$object = new Event();
-		$this->subject->addEvent($object);
+        $object = new Event();
+        $this->subject->addEvent($object);
 
-		$objectStorage->attach($object);
+        $objectStorage->attach($object);
 
-		$this->assertSame(
-			$objectStorage,
-			$this->subject->getEvents()
-		);
-	}
+        $this->assertSame(
+            $objectStorage,
+            $this->subject->getEvents()
+        );
+    }
 
-	/**
-	 * @test
-	 */
-	public function removeEventRemovesOneEvent() {
-		$object = new Event();
-		$objectStorage = new ObjectStorage();
-		$objectStorage->attach($object);
-		$this->subject->setEvents($objectStorage);
+    /**
+     * @test
+     */
+    public function removeEventRemovesOneEvent()
+    {
+        $object = new Event();
+        $objectStorage = new ObjectStorage();
+        $objectStorage->attach($object);
+        $this->subject->setEvents($objectStorage);
 
-		$this->subject->removeEvent($object);
-		$objectStorage->detach($object);
+        $this->subject->removeEvent($object);
+        $objectStorage->detach($object);
 
-		$this->assertSame(
-			$objectStorage,
-			$this->subject->getEvents()
-		);
-	}
+        $this->assertSame(
+            $objectStorage,
+            $this->subject->getEvents()
+        );
+    }
 
-	/**
-	 * @test
-	 */
-	public function getEventInitiallyReturnsNull() {
-		$this->assertNull($this->subject->getEvent());
-	}
+    /**
+     * @test
+     */
+    public function getEventInitiallyReturnsNull()
+    {
+        $this->assertNull($this->subject->getEvent());
+    }
 
-	/**
-	 * @test
-	 */
-	public function setEventSetsEvent() {
-		$instance = new Event();
-		$this->subject->setEvent($instance);
+    /**
+     * @test
+     */
+    public function setEventSetsEvent()
+    {
+        $instance = new Event();
+        $this->subject->setEvent($instance);
 
-		$this->assertSame(
-			$instance,
-			$this->subject->getEvent()
-		);
-	}
+        $this->assertSame(
+            $instance,
+            $this->subject->getEvent()
+        );
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace JWeiland\Events2\Validator;
 
 /***************************************************************
@@ -26,30 +27,30 @@ namespace JWeiland\Events2\Validator;
  ***************************************************************/
 
 /**
- * @package events2
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class ImageValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator {
-
-	/**
-	 * Checks if the given value is in list of allowed image extensions.
-	 *
-	 * @param mixed $value The value that should be validated
-	 * @return boolean TRUE if the value is valid, FALSE if an error occured
-	 */
-	public function isValid($value) {
-		$this->errors = array();
-		if ($value instanceof \DateTime) {
-			return;
-		}
-		$this->addError(
-			\TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
-				'validator.datetime.notvalid',
-				'extbase',
-				array(
-					gettype($value)
-				)
-			), 1238087674, array(gettype($value)));
-	}
-
+class ImageValidator extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator
+{
+    /**
+     * Checks if the given value is in list of allowed image extensions.
+     *
+     * @param mixed $value The value that should be validated
+     *
+     * @return bool TRUE if the value is valid, FALSE if an error occured
+     */
+    public function isValid($value)
+    {
+        $this->errors = array();
+        if ($value instanceof \DateTime) {
+            return;
+        }
+        $this->addError(
+            \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+                'validator.datetime.notvalid',
+                'extbase',
+                array(
+                    gettype($value),
+                )
+            ), 1238087674, array(gettype($value)));
+    }
 }

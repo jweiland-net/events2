@@ -1,4 +1,5 @@
 <?php
+
 namespace JWeiland\Events2\Controller;
 
 /***************************************************************
@@ -26,28 +27,26 @@ namespace JWeiland\Events2\Controller;
  ***************************************************************/
 
 /**
- * @package events2
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class DayController extends \JWeiland\Events2\Controller\AbstractController {
-
-	/**
-	 * action show
-	 *
-	 * Hint: I call showAction with int instead of DomainModel
-	 * to prevent that recursive validators will be called
-	 *
-	 * @param integer $day
-	 * @return void
-	 */
-	public function showAction($day) {
-		/** @var \JWeiland\Events2\Domain\Model\Day $dayObject */
-		$dayObject = $this->dayRepository->findByIdentifier($day);
-		/** @var \JWeiland\Events2\Domain\Model\Event $event */
-		foreach ($dayObject->getEvents($this->settings['categories']) as $event) {
-			$event->setDay($dayObject);
-		}
-		$this->view->assign('day', $dayObject);
-	}
-
+class DayController extends \JWeiland\Events2\Controller\AbstractController
+{
+    /**
+     * action show.
+     *
+     * Hint: I call showAction with int instead of DomainModel
+     * to prevent that recursive validators will be called
+     *
+     * @param int $day
+     */
+    public function showAction($day)
+    {
+        /** @var \JWeiland\Events2\Domain\Model\Day $dayObject */
+        $dayObject = $this->dayRepository->findByIdentifier($day);
+        /** @var \JWeiland\Events2\Domain\Model\Event $event */
+        foreach ($dayObject->getEvents($this->settings['categories']) as $event) {
+            $event->setDay($dayObject);
+        }
+        $this->view->assign('day', $dayObject);
+    }
 }

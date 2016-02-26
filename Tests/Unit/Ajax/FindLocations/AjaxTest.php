@@ -1,4 +1,5 @@
 <?php
+
 namespace JWeiland\Events2\Tests\Unit\Ajax\FindLocations;
 
 /***************************************************************
@@ -30,125 +31,130 @@ use TYPO3\CMS\Core\Tests\UnitTestCase;
 /**
  * Test case.
  *
- * @subpackage events2
  * @author Stefan Froemken <projects@jweiland.net>
  */
-class AjaxTest extends UnitTestCase {
+class AjaxTest extends UnitTestCase
+{
+    /**
+     * @var \JWeiland\Events2\Ajax\FindLocations\Ajax
+     */
+    protected $subject;
 
-	/**
-	 * @var \JWeiland\Events2\Ajax\FindLocations\Ajax
-	 */
-	protected $subject;
+    public function setUp()
+    {
+        $this->subject = new FindLocations\Ajax();
+    }
 
-	public function setUp() {
-		$this->subject = new FindLocations\Ajax();
-	}
+    public function tearDown()
+    {
+        unset($this->subject);
+    }
 
-	public function tearDown() {
-		unset($this->subject);
-	}
+    /**
+     * I don't see a possibility to test, if TCA was loaded correct.
+     *
+     * @test
+     */
+    public function initializeObjectInitializesFindLocationClass()
+    {
+        $this->subject->initializeObject();
+        $this->assertInstanceOf(
+            'TYPO3\\CMS\\Core\\Database\\DatabaseConnection',
+            $this->subject->getDatabaseConnection()
+        );
+    }
 
-	/**
-	 * I don't see a possibility to test, if TCA was loaded correct
-	 *
-	 * @test
-	 */
-	public function initializeObjectInitializesFindLocationClass() {
-		$this->subject->initializeObject();
-		$this->assertInstanceOf(
-			'TYPO3\\CMS\\Core\\Database\\DatabaseConnection',
-			$this->subject->getDatabaseConnection()
-		);
-	}
+    /**
+     * @test
+     */
+    public function processAjaxRequestWithNoLocationsReturnsEmptyString()
+    {
+        $arguments = array(
+            'locationPart' => '',
+        );
+        /** @var \JWeiland\Events2\Ajax\FindLocations\Ajax|\PHPUnit_Framework_MockObject_MockObject $subject */
+        $subject = $this->getMock('JWeiland\\Events2\\Ajax\\FindLocations\\Ajax', array('findLocations'));
+        $subject->expects($this->never())->method('findLocations');
+        $this->assertSame(
+            '',
+            $subject->processAjaxRequest($arguments)
+        );
+    }
 
-	/**
-	 * @test
-	 */
-	public function processAjaxRequestWithNoLocationsReturnsEmptyString() {
-		$arguments = array(
-			'locationPart' => ''
-		);
-		/** @var \JWeiland\Events2\Ajax\FindLocations\Ajax|\PHPUnit_Framework_MockObject_MockObject $subject */
-		$subject = $this->getMock('JWeiland\\Events2\\Ajax\\FindLocations\\Ajax', array('findLocations'));
-		$subject->expects($this->never())->method('findLocations');
-		$this->assertSame(
-			'',
-			$subject->processAjaxRequest($arguments)
-		);
-	}
+    /**
+     * @test
+     */
+    public function processAjaxRequestWithHtmlCallsFindLocationsWithoutHtml()
+    {
+        $arguments = array(
+            'locationPart' => 'Hello german umlauts: öäü. <b>How are you?</b>',
+        );
+        $expectedArgument = 'Hello german umlauts: öäü. How are you?';
+        /** @var \JWeiland\Events2\Ajax\FindLocations\Ajax|\PHPUnit_Framework_MockObject_MockObject $subject */
+        $subject = $this->getMock('JWeiland\\Events2\\Ajax\\FindLocations\\Ajax', array('findLocations'));
+        $subject->expects($this->once())->method('findLocations')->with($expectedArgument)->will($this->returnValue(array()));
+        $this->assertSame(
+            '[]',
+            $subject->processAjaxRequest($arguments)
+        );
+    }
 
-	/**
-	 * @test
-	 */
-	public function processAjaxRequestWithHtmlCallsFindLocationsWithoutHtml() {
-		$arguments = array(
-			'locationPart' => 'Hello german umlauts: öäü. <b>How are you?</b>'
-		);
-		$expectedArgument = 'Hello german umlauts: öäü. How are you?';
-		/** @var \JWeiland\Events2\Ajax\FindLocations\Ajax|\PHPUnit_Framework_MockObject_MockObject $subject */
-		$subject = $this->getMock('JWeiland\\Events2\\Ajax\\FindLocations\\Ajax', array('findLocations'));
-		$subject->expects($this->once())->method('findLocations')->with($expectedArgument)->will($this->returnValue(array()));
-		$this->assertSame(
-			'[]',
-			$subject->processAjaxRequest($arguments)
-		);
-	}
+    /**
+     * @test
+     */
+    public function processAjaxRequestWithTooSmallLocationsReturnsEmptyString()
+    {
+        $arguments = array(
+            'locationPart' => 'x',
+        );
+        /** @var \JWeiland\Events2\Ajax\FindLocations\Ajax|\PHPUnit_Framework_MockObject_MockObject $subject */
+        $subject = $this->getMock('JWeiland\\Events2\\Ajax\\FindLocations\\Ajax', array('findLocations'));
+        $subject->expects($this->never())->method('findLocations');
+        $this->assertSame(
+            '',
+            $subject->processAjaxRequest($arguments)
+        );
+    }
 
-	/**
-	 * @test
-	 */
-	public function processAjaxRequestWithTooSmallLocationsReturnsEmptyString() {
-		$arguments = array(
-			'locationPart' => 'x'
-		);
-		/** @var \JWeiland\Events2\Ajax\FindLocations\Ajax|\PHPUnit_Framework_MockObject_MockObject $subject */
-		$subject = $this->getMock('JWeiland\\Events2\\Ajax\\FindLocations\\Ajax', array('findLocations'));
-		$subject->expects($this->never())->method('findLocations');
-		$this->assertSame(
-			'',
-			$subject->processAjaxRequest($arguments)
-		);
-	}
-
-	/**
-	 * @test
-	 */
-	public function processAjaxRequestWithLocationsReturnsJson() {
-		$locationMap = array(
-			array(
-				'at h',
-				array(
-					array(
-						'uid' => 123,
-						'label' => 'at home'
-					)
-				)
-			),
-			array(
-				'mar',
-				array(
-					array(
-						'uid' => 234,
-						'label' => 'Marienheide'
-					),
-					array(
-						'uid' => 345,
-						'label' => 'Marienhagen'
-					)
-				)
-			)
-		);
-		/** @var \JWeiland\Events2\Ajax\FindLocations\Ajax|\PHPUnit_Framework_MockObject_MockObject $subject */
-		$subject = $this->getMock('JWeiland\\Events2\\Ajax\\FindLocations\\Ajax', array('findLocations'));
-		$subject->expects($this->exactly(2))->method('findLocations')->will($this->returnValueMap($locationMap));
-		$this->assertSame(
-			'[{"uid":123,"label":"at home"}]',
-			$subject->processAjaxRequest(array('locationPart' => 'at h'))
-		);
-		$this->assertSame(
-			'[{"uid":234,"label":"Marienheide"},{"uid":345,"label":"Marienhagen"}]',
-			$subject->processAjaxRequest(array('locationPart' => 'mar'))
-		);
-	}
-
+    /**
+     * @test
+     */
+    public function processAjaxRequestWithLocationsReturnsJson()
+    {
+        $locationMap = array(
+            array(
+                'at h',
+                array(
+                    array(
+                        'uid' => 123,
+                        'label' => 'at home',
+                    ),
+                ),
+            ),
+            array(
+                'mar',
+                array(
+                    array(
+                        'uid' => 234,
+                        'label' => 'Marienheide',
+                    ),
+                    array(
+                        'uid' => 345,
+                        'label' => 'Marienhagen',
+                    ),
+                ),
+            ),
+        );
+        /** @var \JWeiland\Events2\Ajax\FindLocations\Ajax|\PHPUnit_Framework_MockObject_MockObject $subject */
+        $subject = $this->getMock('JWeiland\\Events2\\Ajax\\FindLocations\\Ajax', array('findLocations'));
+        $subject->expects($this->exactly(2))->method('findLocations')->will($this->returnValueMap($locationMap));
+        $this->assertSame(
+            '[{"uid":123,"label":"at home"}]',
+            $subject->processAjaxRequest(array('locationPart' => 'at h'))
+        );
+        $this->assertSame(
+            '[{"uid":234,"label":"Marienheide"},{"uid":345,"label":"Marienhagen"}]',
+            $subject->processAjaxRequest(array('locationPart' => 'mar'))
+        );
+    }
 }

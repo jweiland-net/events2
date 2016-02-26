@@ -1,4 +1,5 @@
 <?php
+
 namespace JWeiland\Events2\Tca;
 
 /***************************************************************
@@ -27,30 +28,29 @@ namespace JWeiland\Events2\Tca;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
- * @package events2
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class TimeLabel {
+class TimeLabel
+{
+    /**
+     * add weekday to time records
+     * but only if record is for field different_times.
+     *
+     * @param array $ctrlArray
+     * @param $parentObject
+     */
+    public function getTitle(array &$ctrlArray, $parentObject)
+    {
+        if ($ctrlArray['table'] === 'tx_events2_domain_model_time') {
+            // add begin and end to title in general
+            $ctrlArray['title'] = $ctrlArray['row']['time_begin'];
+            $ctrlArray['title'] .= $ctrlArray['row']['time_end'] ? ' - '.$ctrlArray['row']['time_end'] : '';
 
-	/**
-	 * add weekday to time records
-	 * but only if record is for field different_times
-	 *
-	 * @param array $ctrlArray
-	 * @param $parentObject
-	 */
-	public function getTitle(array &$ctrlArray, $parentObject) {
-		if ($ctrlArray['table'] === 'tx_events2_domain_model_time') {
-			// add begin and end to title in general
-			$ctrlArray['title'] = $ctrlArray['row']['time_begin'];
-			$ctrlArray['title'] .= $ctrlArray['row']['time_end'] ? ' - ' . $ctrlArray['row']['time_end'] : '';
-
-			// if we are in different_time context, we add weekday to time
-			if ($ctrlArray['row']['type'] === 'different_times') {
-				$translationKey = 'tx_events2_domain_model_time.weekday.' . $ctrlArray['row']['weekday'];
-				$ctrlArray['title'] .= ': ' . LocalizationUtility::translate($translationKey, 'events2');
-			}
-		}
-	}
-
+            // if we are in different_time context, we add weekday to time
+            if ($ctrlArray['row']['type'] === 'different_times') {
+                $translationKey = 'tx_events2_domain_model_time.weekday.'.$ctrlArray['row']['weekday'];
+                $ctrlArray['title'] .= ': '.LocalizationUtility::translate($translationKey, 'events2');
+            }
+        }
+    }
 }

@@ -130,16 +130,7 @@
 			<trans-unit id="tx_events2_domain_model_event.download_links">
 				<source>Download links</source>
 			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.suitability_culture">
-				<source>Suitable for culture and school</source>
-			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.suitability_user">
-				<source>Suitable for single User</source>
-			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.suitability_groups">
-				<source>Suitable for groups</source>
-			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.facebook">
+>			<trans-unit id="tx_events2_domain_model_event.facebook">
 				<source>Release on facebook</source>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.release_date">
@@ -382,12 +373,6 @@
 			</trans-unit>
 			<trans-unit id="missingOrganizerForCreate">
 				<source>You're allowed to create event records, but your user record has no relation to an organizer record.</source>
-			</trans-unit>
-			<trans-unit id="topics">
-				<source>Topics</source>
-			</trans-unit>
-			<trans-unit id="categories">
-				<source>Categories</source>
 			</trans-unit>
 
 			<trans-unit id="email.subject.create">

@@ -1,4 +1,5 @@
 <?php
+
 namespace JWeiland\Events2\Domain\Repository;
 
 /***************************************************************
@@ -28,16 +29,14 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 /**
- * @package events2
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class LocationRepository extends Repository {
-
-	/**
-	 * @var array
-	 */
-	protected $defaultOrderings = array(
-		'location' => QueryInterface::ORDER_ASCENDING
-	);
-
+class LocationRepository extends Repository
+{
+    /**
+     * @var array
+     */
+    protected $defaultOrderings = array(
+        'location' => QueryInterface::ORDER_ASCENDING,
+    );
 }

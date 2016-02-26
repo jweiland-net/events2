@@ -1,4 +1,5 @@
 <?php
+
 namespace JWeiland\Events2\ViewHelpers;
 
 /***************************************************************
@@ -26,24 +27,26 @@ namespace JWeiland\Events2\ViewHelpers;
  ***************************************************************/
 
 /**
- * @package events2
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class StrftimeViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper {
-
-	/**
-	 * implements a ViewHelper to convert seconds since 0:00 to a readable format
-	 *
-	 * @param string $format How to format the date
-	 * @param string $locale set_locale
-	 * @return string
-	 */
-	public function render($format = '%d.%m.%Y', $locale = 'de_DE.UTF-8') {
-		$date = $this->renderChildren();
-		setlocale(LC_TIME, $locale);
-		if ($date instanceof \DateTime) {
-			return strftime($format, $date->format('U'));
-		} else return '';
-	}
-
+class StrftimeViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
+{
+    /**
+     * implements a ViewHelper to convert seconds since 0:00 to a readable format.
+     *
+     * @param string $format How to format the date
+     * @param string $locale set_locale
+     *
+     * @return string
+     */
+    public function render($format = '%d.%m.%Y', $locale = 'de_DE.UTF-8')
+    {
+        $date = $this->renderChildren();
+        setlocale(LC_TIME, $locale);
+        if ($date instanceof \DateTime) {
+            return strftime($format, $date->format('U'));
+        } else {
+            return '';
+        }
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace JWeiland\Events2\ViewHelpers\Widget;
 
 /***************************************************************
@@ -27,40 +28,32 @@ namespace JWeiland\Events2\ViewHelpers\Widget;
 use TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetViewHelper;
 
 /**
- * @package events2
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class ICalendarViewHelper extends AbstractWidgetViewHelper {
+class ICalendarViewHelper extends AbstractWidgetViewHelper
+{
+    /**
+     * @var \JWeiland\Events2\ViewHelpers\Widget\Controller\ICalendarController
+     */
+    protected $controller;
 
-	/**
-	 * @var \JWeiland\Events2\ViewHelpers\Widget\Controller\ICalendarController
-	 */
-	protected $controller;
+    /**
+     * @param \JWeiland\Events2\ViewHelpers\Widget\Controller\ICalendarController $controller
+     */
+    public function injectController(\JWeiland\Events2\ViewHelpers\Widget\Controller\ICalendarController $controller)
+    {
+        $this->controller = $controller;
+    }
 
-
-
-
-
-	/**
-	 * @param \JWeiland\Events2\ViewHelpers\Widget\Controller\ICalendarController $controller
-	 * @return void
-	 */
-	public function injectController(\JWeiland\Events2\ViewHelpers\Widget\Controller\ICalendarController $controller) {
-		$this->controller = $controller;
-	}
-
-
-
-
-
-	/**
-	 * call the index action of the controller
-	 *
-	 * @param \JWeiland\Events2\Domain\Model\Event $event
-	 * @return string
-	 */
-	public function render($event) {
-		return $this->initiateSubRequest();
-	}
-
+    /**
+     * call the index action of the controller.
+     *
+     * @param \JWeiland\Events2\Domain\Model\Event $event
+     *
+     * @return string
+     */
+    public function render($event)
+    {
+        return $this->initiateSubRequest();
+    }
 }

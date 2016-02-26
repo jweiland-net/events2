@@ -11,33 +11,31 @@
 ########################################################################
 
 $EM_CONF[$_EXTKEY] = array(
-	'title' => 'Events',
-	'description' => 'Events',
-	'category' => 'plugin',
-	'author' => 'Stefan Froemken',
-	'author_email' => 'projects@jweiland.net',
-	'author_company' => 'jweiland.net',
-	'shy' => '',
-	'priority' => '',
-	'module' => '',
-	'state' => 'stable',
-	'internal' => '',
-	'uploadfolder' => '1',
-	'createDirs' => '',
-	'modify_tables' => '',
-	'clearCacheOnLoad' => 0,
-	'lockType' => '',
-	'version' => '1.2.0',
-	'constraints' => array(
-		'depends' => array(
-			'extbase' => '6.2',
-			'fluid' => '6.2',
-			'typo3' => '6.2',
-			'maps2' => '1.0.0'
-		),
-		'conflicts' => array(
-		),
-		'suggests' => array(
-		),
-	),
+    'title' => 'Events',
+    'description' => 'Events',
+    'category' => 'plugin',
+    'author' => 'Stefan Froemken',
+    'author_email' => 'projects@jweiland.net',
+    'author_company' => 'jweiland.net',
+    'shy' => '',
+    'priority' => '',
+    'module' => '',
+    'state' => 'stable',
+    'internal' => '',
+    'uploadfolder' => '1',
+    'createDirs' => '',
+    'modify_tables' => '',
+    'clearCacheOnLoad' => 0,
+    'lockType' => '',
+    'version' => '1.2.1',
+    'constraints' => array(
+        'depends' => array(
+            'typo3' => '6.2.0-7.99.99',
+            'maps2' => '1.0.0',
+        ),
+        'conflicts' => array(
+        ),
+        'suggests' => array(
+        ),
+    ),
 );

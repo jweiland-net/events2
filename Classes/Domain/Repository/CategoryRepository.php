@@ -1,4 +1,5 @@
 <?php
+
 namespace JWeiland\Events2\Domain\Repository;
 
 /***************************************************************
@@ -27,53 +28,59 @@ namespace JWeiland\Events2\Domain\Repository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * @package events2
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class CategoryRepository extends \TYPO3\CMS\Extbase\Domain\Repository\CategoryRepository {
+class CategoryRepository extends \TYPO3\CMS\Extbase\Domain\Repository\CategoryRepository
+{
+    /**
+     * get category objects from list of UIDs.
+     *
+     * @param string $categoryUids UIDs category
+     *
+     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     */
+    public function getCategories($categoryUids)
+    {
+        $categoryUids = GeneralUtility::intExplode(',', $categoryUids);
+        $query = $this->createQuery();
 
-	/**
-	 * get category objects from list of UIDs
-	 *
-	 * @param string $categoryUids UIDs category
-	 * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
-	 */
-	public function getCategories($categoryUids) {
-		$categoryUids = GeneralUtility::intExplode(',', $categoryUids);
-		$query = $this->createQuery();
-		return $query->matching($query->in('uid', $categoryUids))->execute();
-	}
+        return $query->matching($query->in('uid', $categoryUids))->execute();
+    }
 
-	/**
-	 * get subcategories of given UID
-	 *
-	 * @param string $category UID category
-	 * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
-	 */
-	public function getSubCategories($category) {
-		$query = $this->createQuery();
-		return $query->matching($query->equals('parent', $category))->execute();
-	}
+    /**
+     * get subcategories of given UID.
+     *
+     * @param string $category UID category
+     *
+     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     */
+    public function getSubCategories($category)
+    {
+        $query = $this->createQuery();
 
-	/**
-	 * get all categories given by comma seperated list
-	 *
-	 * @param string $categoryUids comma seperated list of category uids
-	 * @param integer $parent parent category UID
-	 * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
-	 */
-	public function getSelectedCategories($categoryUids, $parent = NULL) {
-		$selectedCategories = GeneralUtility::intExplode(',', $categoryUids);
-		$query = $this->createQuery();
+        return $query->matching($query->equals('parent', $category))->execute();
+    }
 
-		$constraint = array();
-		$constraint[] = $query->in('uid', $selectedCategories);
+    /**
+     * get all categories given by comma seperated list.
+     *
+     * @param string $categoryUids comma seperated list of category uids
+     * @param int    $parent       parent category UID
+     *
+     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     */
+    public function getSelectedCategories($categoryUids, $parent = null)
+    {
+        $selectedCategories = GeneralUtility::intExplode(',', $categoryUids);
+        $query = $this->createQuery();
 
-		if ($parent !== NULL) {
-			$constraint[] = $query->equals('parent', $parent);
-		}
+        $constraint = array();
+        $constraint[] = $query->in('uid', $selectedCategories);
 
-		return $query->matching($query->logicalAnd($constraint))->execute();
-	}
+        if ($parent !== null) {
+            $constraint[] = $query->equals('parent', $parent);
+        }
 
+        return $query->matching($query->logicalAnd($constraint))->execute();
+    }
 }

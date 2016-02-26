@@ -1,4 +1,5 @@
 <?php
+
 namespace JWeiland\Events2\Domain\Model;
 
 /***************************************************************
@@ -26,147 +27,146 @@ namespace JWeiland\Events2\Domain\Model;
  ***************************************************************/
 
 /**
- * @package events2
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Time extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
+class Time extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+{
+    /**
+     * Weekday.
+     *
+     * @var string
+     */
+    protected $weekday = '';
 
-	/**
-	 * Weekday
-	 *
-	 * @var string
-	 */
-	protected $weekday = '';
+    /**
+     * Time begin.
+     *
+     * @var string
+     * @validate NotEmpty,RegularExpression(regularExpression=/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/)
+     */
+    protected $timeBegin = '';
 
-	/**
-	 * Time begin
-	 *
-	 * @var string
-	 * @validate NotEmpty,RegularExpression(regularExpression=/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/)
-	 */
-	protected $timeBegin = '';
+    /**
+     * Time entry.
+     *
+     * @var string
+     * @validate RegularExpression(regularExpression=/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/)
+     */
+    protected $timeEntry = '';
 
-	/**
-	 * Time entry
-	 *
-	 * @var string
-	 * @validate RegularExpression(regularExpression=/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/)
-	 */
-	protected $timeEntry = '';
+    /**
+     * Duration.
+     *
+     * @var string
+     * @validate RegularExpression(regularExpression=/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/)
+     */
+    protected $duration = '';
 
-	/**
-	 * Duration
-	 *
-	 * @var string
-	 * @validate RegularExpression(regularExpression=/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/)
-	 */
-	protected $duration = '';
+    /**
+     * Time end.
+     *
+     * @var string
+     * @validate RegularExpression(regularExpression=/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/)
+     */
+    protected $timeEnd = '';
 
-	/**
-	 * Time end
-	 *
-	 * @var string
-	 * @validate RegularExpression(regularExpression=/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/)
-	 */
-	protected $timeEnd = '';
+    /**
+     * Returns the weekday.
+     *
+     * @return string $weekday
+     */
+    public function getWeekday()
+    {
+        return $this->weekday;
+    }
 
+    /**
+     * Sets the weekday.
+     *
+     * @param string $weekday
+     */
+    public function setWeekday($weekday)
+    {
+        $this->weekday = (string) $weekday;
+    }
 
+    /**
+     * Returns the timeBegin.
+     *
+     * @return string $timeBegin
+     */
+    public function getTimeBegin()
+    {
+        return $this->timeBegin;
+    }
 
+    /**
+     * Sets the timeBegin.
+     *
+     * @param string $timeBegin
+     */
+    public function setTimeBegin($timeBegin)
+    {
+        $this->timeBegin = (string) $timeBegin;
+    }
 
+    /**
+     * Returns the timeEntry.
+     *
+     * @return string $timeEntry
+     */
+    public function getTimeEntry()
+    {
+        return $this->timeEntry;
+    }
 
-	/**
-	 * Returns the weekday
-	 *
-	 * @return string $weekday
-	 */
-	public function getWeekday() {
-		return $this->weekday;
-	}
+    /**
+     * Sets the timeEntry.
+     *
+     * @param string $timeEntry
+     */
+    public function setTimeEntry($timeEntry)
+    {
+        $this->timeEntry = (string) $timeEntry;
+    }
 
-	/**
-	 * Sets the weekday
-	 *
-	 * @param string $weekday
-	 * @return void
-	 */
-	public function setWeekday($weekday) {
-		$this->weekday = (string)$weekday;
-	}
+    /**
+     * Returns the duration.
+     *
+     * @return string $duration
+     */
+    public function getDuration()
+    {
+        return $this->duration;
+    }
 
-	/**
-	 * Returns the timeBegin
-	 *
-	 * @return string $timeBegin
-	 */
-	public function getTimeBegin() {
-		return $this->timeBegin;
-	}
+    /**
+     * Sets the duration.
+     *
+     * @param string $duration
+     */
+    public function setDuration($duration)
+    {
+        $this->duration = (string) $duration;
+    }
 
-	/**
-	 * Sets the timeBegin
-	 *
-	 * @param string $timeBegin
-	 * @return void
-	 */
-	public function setTimeBegin($timeBegin) {
-		$this->timeBegin = (string)$timeBegin;
-	}
+    /**
+     * Returns the timeEnd.
+     *
+     * @return string $timeEnd
+     */
+    public function getTimeEnd()
+    {
+        return $this->timeEnd;
+    }
 
-	/**
-	 * Returns the timeEntry
-	 *
-	 * @return string $timeEntry
-	 */
-	public function getTimeEntry() {
-		return $this->timeEntry;
-	}
-
-	/**
-	 * Sets the timeEntry
-	 *
-	 * @param string $timeEntry
-	 * @return void
-	 */
-	public function setTimeEntry($timeEntry) {
-		$this->timeEntry = (string)$timeEntry;
-	}
-
-	/**
-	 * Returns the duration
-	 *
-	 * @return string $duration
-	 */
-	public function getDuration() {
-		return $this->duration;
-	}
-
-	/**
-	 * Sets the duration
-	 *
-	 * @param string $duration
-	 * @return void
-	 */
-	public function setDuration($duration) {
-		$this->duration = (string)$duration;
-	}
-
-	/**
-	 * Returns the timeEnd
-	 *
-	 * @return string $timeEnd
-	 */
-	public function getTimeEnd() {
-		return $this->timeEnd;
-	}
-
-	/**
-	 * Sets the timeEnd
-	 *
-	 * @param string $timeEnd
-	 * @return void
-	 */
-	public function setTimeEnd($timeEnd) {
-		$this->timeEnd = (string)$timeEnd;
-	}
-
+    /**
+     * Sets the timeEnd.
+     *
+     * @param string $timeEnd
+     */
+    public function setTimeEnd($timeEnd)
+    {
+        $this->timeEnd = (string) $timeEnd;
+    }
 }

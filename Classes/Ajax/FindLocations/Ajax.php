@@ -1,4 +1,5 @@
 <?php
+
 namespace JWeiland\Events2\Ajax\FindLocations;
 
 /***************************************************************
@@ -29,76 +30,79 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Core\Bootstrap;
 
 /**
- * @package events2
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Ajax extends AbstractAjaxRequest {
+class Ajax extends AbstractAjaxRequest
+{
+    /**
+     * @var \TYPO3\CMS\Core\Database\DatabaseConnection
+     */
+    protected $databaseConnection;
 
-	/**
-	 * @var \TYPO3\CMS\Core\Database\DatabaseConnection
-	 */
-	protected $databaseConnection;
+    /**
+     * initialize this object with help of ObjectManager.
+     */
+    public function initializeObject()
+    {
+        $this->databaseConnection = $GLOBALS['TYPO3_DB'];
+        Bootstrap::getInstance()->loadCachedTca();
+    }
 
-	/**
-	 * initialize this object with help of ObjectManager
-	 *
-	 * @return void
-	 */
-	public function initializeObject() {
-		$this->databaseConnection = $GLOBALS['TYPO3_DB'];
-		Bootstrap::getInstance()->loadCachedTca();
-	}
+    /**
+     * getter for database connection
+     * Needed for UnitTests.
+     *
+     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     */
+    public function getDatabaseConnection()
+    {
+        return $this->databaseConnection;
+    }
 
-	/**
-	 * getter for database connection
-	 * Needed for UnitTests
-	 *
-	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-	 */
-	public function getDatabaseConnection() {
-		return $this->databaseConnection;
-	}
+    /**
+     * process ajax request.
+     *
+     * @param array $arguments Arguments to process
+     *
+     * @return string
+     */
+    public function processAjaxRequest(array $arguments)
+    {
+        // Hint: search may fail with "&" in $locationPart
+        $locationPart = (string) trim(htmlspecialchars(strip_tags($arguments['locationPart'])));
+        // keep it synchron to minLength in JS
+        if (empty($locationPart) || strlen($locationPart) <= 2) {
+            return '';
+        } else {
+            $locations = $this->findLocations($locationPart);
 
-	/**
-	 * process ajax request
-	 *
-	 * @param array $arguments Arguments to process
-	 * @return string
-	 */
-	public function processAjaxRequest(array $arguments) {
-		// Hint: search may fail with "&" in $locationPart
-		$locationPart = (string)trim(htmlspecialchars(strip_tags($arguments['locationPart'])));
-		// keep it synchron to minLength in JS
-		if (empty($locationPart) || strlen($locationPart) <= 2) {
-			return '';
-		} else {
-			$locations = $this->findLocations($locationPart);
-			return json_encode($locations);
-		}
-	}
+            return json_encode($locations);
+        }
+    }
 
-	/**
-	 * find locations by locationsPart
-	 *
-	 * @param $locationPart
-	 * @return array
-	 */
-	protected function findLocations($locationPart) {
-		$locations = $this->databaseConnection->exec_SELECTgetRows(
-			'uid, location as label',
-			'tx_events2_domain_model_location',
-			'location LIKE "%' . $this->databaseConnection->escapeStrForLike($locationPart, 'tx_events2_domain_model_location') . '%"' .
-			BackendUtility::BEenableFields('tx_events2_domain_model_location') .
-			BackendUtility::deleteClause('tx_events2_domain_model_location'),
-			'', 'location', ''
-		);
+    /**
+     * find locations by locationsPart.
+     *
+     * @param $locationPart
+     *
+     * @return array
+     */
+    protected function findLocations($locationPart)
+    {
+        $locations = $this->databaseConnection->exec_SELECTgetRows(
+            'uid, location as label',
+            'tx_events2_domain_model_location',
+            'location LIKE "%'.$this->databaseConnection->escapeStrForLike($locationPart, 'tx_events2_domain_model_location').'%"'.
+            BackendUtility::BEenableFields('tx_events2_domain_model_location').
+            BackendUtility::deleteClause('tx_events2_domain_model_location'),
+            '', 'location', ''
+        );
 
-		if ($locations === NULL) {
-			// SQL-Error: return empty array
-			return array();
-		} else {
-			return $locations;
-		}
-	}
-
+        if ($locations === null) {
+            // SQL-Error: return empty array
+            return array();
+        } else {
+            return $locations;
+        }
+    }
 }

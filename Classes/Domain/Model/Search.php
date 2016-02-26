@@ -1,4 +1,5 @@
 <?php
+
 namespace JWeiland\Events2\Domain\Model;
 
 /***************************************************************
@@ -26,209 +27,216 @@ namespace JWeiland\Events2\Domain\Model;
  ***************************************************************/
 
 /**
- * @package events2
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Search extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
+class Search extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+{
+    /**
+     * Searchword.
+     *
+     * @var string
+     */
+    protected $search = '';
 
-	/**
-	 * Searchword
-	 *
-	 * @var string
-	 */
-	protected $search = '';
+    /**
+     * mainCategory.
+     *
+     * @var \JWeiland\Events2\Domain\Model\Category
+     */
+    protected $mainCategory;
 
-	/**
-	 * mainCategory
-	 *
-	 * @var \JWeiland\Events2\Domain\Model\Category
-	 */
-	protected $mainCategory;
+    /**
+     * subCategory.
+     *
+     * @var \JWeiland\Events2\Domain\Model\Category
+     */
+    protected $subCategory;
 
-	/**
-	 * subCategory
-	 *
-	 * @var \JWeiland\Events2\Domain\Model\Category
-	 */
-	protected $subCategory;
+    /**
+     * eventBegin.
+     *
+     * @var string
+     */
+    protected $eventBegin;
 
-	/**
-	 * eventBegin
-	 *
-	 * @var string
-	 */
-	protected $eventBegin;
+    /**
+     * eventEnd.
+     *
+     * @var string
+     */
+    protected $eventEnd;
 
-	/**
-	 * eventEnd
-	 *
-	 * @var string
-	 */
-	protected $eventEnd;
+    /**
+     * location.
+     *
+     * @var \JWeiland\Events2\Domain\Model\Location
+     */
+    protected $location;
 
-	/**
-	 * location
-	 *
-	 * @var \JWeiland\Events2\Domain\Model\Location
-	 */
-	protected $location;
+    /**
+     * freeEntry.
+     *
+     * @var bool
+     */
+    protected $freeEntry = false;
 
-	/**
-	 * freeEntry
-	 *
-	 * @var boolean
-	 */
-	protected $freeEntry = FALSE;
+    /**
+     * Returns the search.
+     *
+     * @return string $search
+     */
+    public function getSearch()
+    {
+        return $this->search;
+    }
 
+    /**
+     * Sets the search.
+     *
+     * @param string $search
+     */
+    public function setSearch($search)
+    {
+        $this->search = htmlspecialchars((string) $search);
+    }
 
+    /**
+     * Returns the mainCategory.
+     *
+     * @return \JWeiland\Events2\Domain\Model\Category $mainCategory
+     */
+    public function getMainCategory()
+    {
+        return $this->mainCategory;
+    }
 
+    /**
+     * Sets the mainCategory.
+     *
+     * @param \JWeiland\Events2\Domain\Model\Category $mainCategory
+     */
+    public function setMainCategory(\JWeiland\Events2\Domain\Model\Category $mainCategory = null)
+    {
+        $this->mainCategory = $mainCategory;
+    }
 
+    /**
+     * Returns the subCategory.
+     *
+     * @return \JWeiland\Events2\Domain\Model\Category $subCategory
+     */
+    public function getSubCategory()
+    {
+        return $this->subCategory;
+    }
 
-	/**
-	 * Returns the search
-	 *
-	 * @return string $search
-	 */
-	public function getSearch() {
-		return $this->search;
-	}
+    /**
+     * Sets the subCategory.
+     *
+     * @param \JWeiland\Events2\Domain\Model\Category $subCategory
+     */
+    public function setSubCategory(\JWeiland\Events2\Domain\Model\Category $subCategory = null)
+    {
+        $this->subCategory = $subCategory;
+    }
 
-	/**
-	 * Sets the search
-	 *
-	 * @param string $search
-	 * @return void
-	 */
-	public function setSearch($search) {
-		$this->search = htmlspecialchars((string)$search);
-	}
+    /**
+     * Returns the eventBegin.
+     *
+     * @return \DateTime $eventBegin
+     */
+    public function getEventBegin()
+    {
+        if (empty($this->eventBegin)) {
+            return;
+        }
+        try {
+            $date = new \DateTime($this->eventBegin);
+            $date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+        } catch (\Exception $exception) {
+            $date = null;
+        }
 
-	/**
-	 * Returns the mainCategory
-	 *
-	 * @return \JWeiland\Events2\Domain\Model\Category $mainCategory
-	 */
-	public function getMainCategory() {
-		return $this->mainCategory;
-	}
+        return $date;
+    }
 
-	/**
-	 * Sets the mainCategory
-	 *
-	 * @param \JWeiland\Events2\Domain\Model\Category $mainCategory
-	 * @return void
-	 */
-	public function setMainCategory(\JWeiland\Events2\Domain\Model\Category $mainCategory = NULL) {
-		$this->mainCategory = $mainCategory;
-	}
+    /**
+     * Sets the eventBegin.
+     *
+     * @param string $eventBegin
+     */
+    public function setEventBegin($eventBegin)
+    {
+        $this->eventBegin = $eventBegin;
+    }
 
-	/**
-	 * Returns the subCategory
-	 *
-	 * @return \JWeiland\Events2\Domain\Model\Category $subCategory
-	 */
-	public function getSubCategory() {
-		return $this->subCategory;
-	}
+    /**
+     * Returns the eventEnd.
+     *
+     * @return \DateTime $eventEnd
+     */
+    public function getEventEnd()
+    {
+        if (empty($this->eventEnd)) {
+            return;
+        }
+        try {
+            $date = new \DateTime($this->eventEnd);
+            $date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+        } catch (\Exception $exception) {
+            $date = null;
+        }
 
-	/**
-	 * Sets the subCategory
-	 *
-	 * @param \JWeiland\Events2\Domain\Model\Category $subCategory
-	 * @return void
-	 */
-	public function setSubCategory(\JWeiland\Events2\Domain\Model\Category $subCategory = NULL) {
-		$this->subCategory = $subCategory;
-	}
+        return $date;
+    }
 
-	/**
-	 * Returns the eventBegin
-	 *
-	 * @return \DateTime $eventBegin
-	 */
-	public function getEventBegin() {
-		if (empty($this->eventBegin)) return NULL;
-		try {
-			$date = new \DateTime($this->eventBegin);
-			$date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
-		} catch (\Exception $exception) {
-			$date = NULL;
-		}
-		return $date;
-	}
+    /**
+     * Sets the eventEnd.
+     *
+     * @param string $eventEnd
+     */
+    public function setEventEnd($eventEnd)
+    {
+        $this->eventEnd = $eventEnd;
+    }
 
-	/**
-	 * Sets the eventBegin
-	 *
-	 * @param string $eventBegin
-	 * @return void
-	 */
-	public function setEventBegin($eventBegin) {
-		$this->eventBegin = $eventBegin;
-	}
+    /**
+     * Returns the location.
+     *
+     * @return \JWeiland\Events2\Domain\Model\Location $location
+     */
+    public function getLocation()
+    {
+        return $this->location;
+    }
 
-	/**
-	 * Returns the eventEnd
-	 *
-	 * @return \DateTime $eventEnd
-	 */
-	public function getEventEnd() {
-		if (empty($this->eventEnd)) return NULL;
-		try {
-			$date = new \DateTime($this->eventEnd);
-			$date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
-		} catch (\Exception $exception) {
-			$date = NULL;
-		}
-		return $date;
-	}
+    /**
+     * Sets the location.
+     *
+     * @param \JWeiland\Events2\Domain\Model\Location $location
+     */
+    public function setLocation(\JWeiland\Events2\Domain\Model\Location $location = null)
+    {
+        $this->location = $location;
+    }
 
-	/**
-	 * Sets the eventEnd
-	 *
-	 * @param string $eventEnd
-	 * @return void
-	 */
-	public function setEventEnd($eventEnd) {
-		$this->eventEnd = $eventEnd;
-	}
+    /**
+     * Returns the freeEntry.
+     *
+     * @return bool $freeEntry
+     */
+    public function getFreeEntry()
+    {
+        return $this->freeEntry;
+    }
 
-	/**
-	 * Returns the location
-	 *
-	 * @return \JWeiland\Events2\Domain\Model\Location $location
-	 */
-	public function getLocation() {
-		return $this->location;
-	}
-
-	/**
-	 * Sets the location
-	 *
-	 * @param \JWeiland\Events2\Domain\Model\Location $location
-	 * @return void
-	 */
-	public function setLocation(\JWeiland\Events2\Domain\Model\Location $location = NULL) {
-		$this->location = $location;
-	}
-
-	/**
-	 * Returns the freeEntry
-	 *
-	 * @return boolean $freeEntry
-	 */
-	public function getFreeEntry() {
-		return $this->freeEntry;
-	}
-
-	/**
-	 * Sets the freeEntry
-	 *
-	 * @param boolean $freeEntry
-	 * @return void
-	 */
-	public function setFreeEntry($freeEntry) {
-		$this->freeEntry = (bool) $freeEntry;
-	}
-
+    /**
+     * Sets the freeEntry.
+     *
+     * @param bool $freeEntry
+     */
+    public function setFreeEntry($freeEntry)
+    {
+        $this->freeEntry = (bool) $freeEntry;
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace JWeiland\Events2\Tests\Unit\Domain\Model;
 
 /***************************************************************
@@ -30,76 +31,76 @@ use TYPO3\CMS\Core\Tests\UnitTestCase;
 /**
  * Test case.
  *
- * @subpackage Events
  * @author Stefan Froemken <projects@jweiland.net>
  */
-class CategoryTest extends UnitTestCase {
+class CategoryTest extends UnitTestCase
+{
+    /**
+     * @var \JWeiland\Events2\Domain\Model\Category
+     */
+    protected $subject;
 
-	/**
-	 * @var \JWeiland\Events2\Domain\Model\Category
-	 */
-	protected $subject;
+    /**
+     * set up.
+     */
+    public function setUp()
+    {
+        $this->subject = new Category();
+    }
 
-	/**
-	 * set up
-	 *
-	 * @return void
-	 */
-	public function setUp() {
-		$this->subject = new Category();
-	}
+    /**
+     * tear down.
+     */
+    public function tearDown()
+    {
+        unset($this->subject);
+    }
 
-	/**
-	 * tear down
-	 *
-	 * @return void
-	 */
-	public function tearDown() {
-		unset($this->subject);
-	}
+    /**
+     * @test
+     */
+    public function getTitleInitiallyReturnsEmptyString()
+    {
+        $this->assertSame(
+            '',
+            $this->subject->getTitle()
+        );
+    }
 
-	/**
-	 * @test
-	 */
-	public function getTitleInitiallyReturnsEmptyString() {
-		$this->assertSame(
-			'',
-			$this->subject->getTitle()
-		);
-	}
+    /**
+     * @test
+     */
+    public function setTitleSetsTitle()
+    {
+        $this->subject->setTitle('foo bar');
 
-	/**
-	 * @test
-	 */
-	public function setTitleSetsTitle() {
-		$this->subject->setTitle('foo bar');
+        $this->assertSame(
+            'foo bar',
+            $this->subject->getTitle()
+        );
+    }
 
-		$this->assertSame(
-			'foo bar',
-			$this->subject->getTitle()
-		);
-	}
+    /**
+     * @test
+     */
+    public function getDescriptionInitiallyReturnsEmptyString()
+    {
+        $this->assertSame(
+            '',
+            $this->subject->getDescription()
+        );
+    }
 
-	/**
-	 * @test
-	 */
-	public function getDescriptionInitiallyReturnsEmptyString() {
-		$this->assertSame(
-			'',
-			$this->subject->getDescription()
-		);
-	}
+    /**
+     * @test
+     */
+    public function setDescriptionSetsDescription()
+    {
+        $this->subject->setDescription('foo bar');
 
-	/**
-	 * @test
-	 */
-	public function setDescriptionSetsDescription() {
-		$this->subject->setDescription('foo bar');
-
-		$this->assertSame(
-			'foo bar',
-			$this->subject->getDescription()
-		);
-	}
-
+        $this->assertSame(
+            'foo bar',
+            $this->subject->getDescription()
+        );
+    }
 }

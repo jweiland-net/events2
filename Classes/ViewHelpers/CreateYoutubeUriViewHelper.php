@@ -1,4 +1,5 @@
 <?php
+
 namespace JWeiland\Events2\ViewHelpers;
 
 /***************************************************************
@@ -27,24 +28,25 @@ namespace JWeiland\Events2\ViewHelpers;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
- * @package events2
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class CreateYoutubeUriViewHelper extends AbstractViewHelper {
+class CreateYoutubeUriViewHelper extends AbstractViewHelper
+{
+    /**
+     * extract the youtube ID from link and return the embedded youtube url.
+     *
+     * @param string $link
+     *
+     * @return string Embedded Youtube URI
+     */
+    public function render($link)
+    {
+        if (preg_match('~^(|http:|https:)//(|www.)youtu(\.be|be)(.*?)(v=|embed/|)([a-zA-Z0-9_-]+)$~i', $link, $matches)) {
+            $url = '//www.youtube.com/embed/' . $matches[6];
+        } else {
+            $url = '//www.youtube.com/embed/' . $link;
+        }
 
-	/**
-	 * extract the youtube ID from link and return the embedded youtube url
-	 *
-	 * @param string $link
-	 * @return string Embedded Youtube URI
-	 */
-	public function render($link) {
-		if (preg_match('~^(|http:|https:)//(|www.)youtube(.*?)(v=|embed/)([a-zA-Z0-9_-]+)~i', $link, $matches)) {
-			$url = '//www.youtube.com/embed/' . $matches[5];
-		} else {
-			$url = '//www.youtube.com/embed/' . $link;
-		}
-		return $url;
-	}
-
+        return $url;
+    }
 }

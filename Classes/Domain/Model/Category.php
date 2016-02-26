@@ -1,4 +1,5 @@
 <?php
+
 namespace JWeiland\Events2\Domain\Model;
 
 /***************************************************************
@@ -26,9 +27,8 @@ namespace JWeiland\Events2\Domain\Model;
  ***************************************************************/
 
 /**
- * @package events2
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Category extends \TYPO3\CMS\Extbase\Domain\Model\Category {
-
+class Category extends \TYPO3\CMS\Extbase\Domain\Model\Category
+{
 }

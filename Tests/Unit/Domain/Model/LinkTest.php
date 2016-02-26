@@ -1,4 +1,5 @@
 <?php
+
 namespace JWeiland\Events2\Tests\Unit\Domain\Model;
 
 /***************************************************************
@@ -30,146 +31,153 @@ use TYPO3\CMS\Core\Tests\UnitTestCase;
 /**
  * Test case.
  *
- * @subpackage Events
  * @author Stefan Froemken <projects@jweiland.net>
  */
-class LinkTest extends UnitTestCase {
+class LinkTest extends UnitTestCase
+{
+    /**
+     * @var \JWeiland\Events2\Domain\Model\Link
+     */
+    protected $subject;
 
-	/**
-	 * @var \JWeiland\Events2\Domain\Model\Link
-	 */
-	protected $subject;
+    /**
+     * set up.
+     */
+    public function setUp()
+    {
+        $this->subject = new Link();
+    }
 
-	/**
-	 * set up
-	 *
-	 * @return void
-	 */
-	public function setUp() {
-		$this->subject = new Link();
-	}
+    /**
+     * tear down.
+     */
+    public function tearDown()
+    {
+        unset($this->subject);
+    }
 
-	/**
-	 * tear down
-	 *
-	 * @return void
-	 */
-	public function tearDown() {
-		unset($this->subject);
-	}
+    /**
+     * @test
+     */
+    public function getLinkInitiallyReturnsEmptyString()
+    {
+        $this->assertSame(
+            '',
+            $this->subject->getLink()
+        );
+    }
 
-	/**
-	 * @test
-	 */
-	public function getLinkInitiallyReturnsEmptyString() {
-		$this->assertSame(
-			'',
-			$this->subject->getLink()
-		);
-	}
+    /**
+     * @test
+     */
+    public function setLinkSetsLink()
+    {
+        $this->subject->setLink('foo bar');
 
-	/**
-	 * @test
-	 */
-	public function setLinkSetsLink() {
-		$this->subject->setLink('foo bar');
+        $this->assertSame(
+            'foo bar',
+            $this->subject->getLink()
+        );
+    }
 
-		$this->assertSame(
-			'foo bar',
-			$this->subject->getLink()
-		);
-	}
+    /**
+     * @test
+     */
+    public function setLinkWithIntegerResultsInString()
+    {
+        $this->subject->setLink(123);
+        $this->assertSame('123', $this->subject->getLink());
+    }
 
-	/**
-	 * @test
-	 */
-	public function setLinkWithIntegerResultsInString() {
-		$this->subject->setLink(123);
-		$this->assertSame('123', $this->subject->getLink());
-	}
+    /**
+     * @test
+     */
+    public function setLinkWithBooleanResultsInString()
+    {
+        $this->subject->setLink(true);
+        $this->assertSame('1', $this->subject->getLink());
+    }
 
-	/**
-	 * @test
-	 */
-	public function setLinkWithBooleanResultsInString() {
-		$this->subject->setLink(TRUE);
-		$this->assertSame('1', $this->subject->getLink());
-	}
+    /**
+     * @test
+     */
+    public function getTitleInitiallyReturnsVideo()
+    {
+        $this->assertSame(
+            'Video',
+            $this->subject->getTitle()
+        );
+    }
 
-	/**
-	 * @test
-	 */
-	public function getTitleInitiallyReturnsVideo() {
-		$this->assertSame(
-			'Video',
-			$this->subject->getTitle()
-		);
-	}
+    /**
+     * @test
+     */
+    public function setTitleSetsTitle()
+    {
+        $this->subject->setTitle('foo bar');
 
-	/**
-	 * @test
-	 */
-	public function setTitleSetsTitle() {
-		$this->subject->setTitle('foo bar');
+        $this->assertSame(
+            'foo bar',
+            $this->subject->getTitle()
+        );
+    }
 
-		$this->assertSame(
-			'foo bar',
-			$this->subject->getTitle()
-		);
-	}
+    /**
+     * @test
+     */
+    public function setTitleWithIntegerResultsInString()
+    {
+        $this->subject->setTitle(123);
+        $this->assertSame('123', $this->subject->getTitle());
+    }
 
-	/**
-	 * @test
-	 */
-	public function setTitleWithIntegerResultsInString() {
-		$this->subject->setTitle(123);
-		$this->assertSame('123', $this->subject->getTitle());
-	}
+    /**
+     * @test
+     */
+    public function setTitleWithBooleanResultsInString()
+    {
+        $this->subject->setTitle(true);
+        $this->assertSame('1', $this->subject->getTitle());
+    }
 
-	/**
-	 * @test
-	 */
-	public function setTitleWithBooleanResultsInString() {
-		$this->subject->setTitle(TRUE);
-		$this->assertSame('1', $this->subject->getTitle());
-	}
+    /**
+     * @test
+     */
+    public function getDeletedInitiallyReturnsFalse()
+    {
+        $this->assertSame(
+            false,
+            $this->subject->getDeleted()
+        );
+    }
 
-	/**
-	 * @test
-	 */
-	public function getDeletedInitiallyReturnsFalse() {
-		$this->assertSame(
-			FALSE,
-			$this->subject->getDeleted()
-		);
-	}
+    /**
+     * @test
+     */
+    public function setDeletedSetsDeleted()
+    {
+        $this->subject->setDeleted(true);
+        $this->assertSame(
+            true,
+            $this->subject->getDeleted()
+        );
+    }
 
-	/**
-	 * @test
-	 */
-	public function setDeletedSetsDeleted() {
-		$this->subject->setDeleted(TRUE);
-		$this->assertSame(
-			TRUE,
-			$this->subject->getDeleted()
-		);
-	}
+    /**
+     * @test
+     */
+    public function setDeletedWithStringReturnsTrue()
+    {
+        $this->subject->setDeleted('foo bar');
+        $this->assertTrue($this->subject->getDeleted());
+    }
 
-	/**
-	 * @test
-	 */
-	public function setDeletedWithStringReturnsTrue() {
-		$this->subject->setDeleted('foo bar');
-		$this->assertTrue($this->subject->getDeleted());
-	}
-
-	/**
-	 * @test
-	 */
-	public function setDeletedWithZeroReturnsFalse() {
-		$this->subject->setDeleted(0);
-		$this->assertFalse($this->subject->getDeleted());
-	}
-
-
+    /**
+     * @test
+     */
+    public function setDeletedWithZeroReturnsFalse()
+    {
+        $this->subject->setDeleted(0);
+        $this->assertFalse($this->subject->getDeleted());
+    }
 }

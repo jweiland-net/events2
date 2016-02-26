@@ -1,4 +1,5 @@
 <?php
+
 namespace JWeiland\Events2\Domain\Repository;
 
 /***************************************************************
@@ -27,9 +28,8 @@ namespace JWeiland\Events2\Domain\Repository;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
- * @package events2
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class LinkRepository extends Repository {
-
+class LinkRepository extends Repository
+{
 }

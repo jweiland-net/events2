@@ -16,10 +16,6 @@
 				<source>Events: Search</source>
 				<target>Veranstaltungen: Suche</target>
 			</trans-unit>
-			<trans-unit id="plugin.culture.title">
-				<source>Events: Culture</source>
-				<target>Veranstaltungen: Kultur macht Schule</target>
-			</trans-unit>
 
 			<trans-unit id="tx_events2_tab">
 				<source>Events</source>
@@ -219,18 +215,6 @@
 			<trans-unit id="tx_events2_domain_model_event.download_links">
 				<source>Download links</source>
 				<target>Download Link</target>
-			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.suitability_culture">
-				<source>Suitable for culture and school</source>
-				<target>Geeignet für "Kultur macht Schule"</target>
-			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.suitability_user">
-				<source>Suitable for single User</source>
-				<target>Geeignet für Einzelnutzer</target>
-			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.suitability_groups">
-				<source>Suitable for groups</source>
-				<target>Geeignet für Gruppen und Schulklassen</target>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.facebook">
 				<source>Release on facebook</source>

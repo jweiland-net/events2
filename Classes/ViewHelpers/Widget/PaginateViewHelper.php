@@ -1,4 +1,5 @@
 <?php
+
 namespace JWeiland\Events2\ViewHelpers\Widget;
 
 /***************************************************************
@@ -27,27 +28,26 @@ namespace JWeiland\Events2\ViewHelpers\Widget;
 use TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetViewHelper;
 
 /**
- * @package events2
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class PaginateViewHelper extends AbstractWidgetViewHelper {
+class PaginateViewHelper extends AbstractWidgetViewHelper
+{
+    /**
+     * @var \JWeiland\Events2\ViewHelpers\Widget\Controller\PaginateController
+     * @inject
+     */
+    protected $controller;
 
-	/**
-	 * @var \JWeiland\Events2\ViewHelpers\Widget\Controller\PaginateController
-	 * @inject
-	 */
-	protected $controller;
-
-	/**
-	 *
-	 * @param \TYPO3\CMS\Extbase\Persistence\QueryResultInterface $objects
-	 * @param string $as
-	 * @param integer $maxRecords
-	 * @param array $configuration
-	 * @return string
-	 */
-	public function render(\TYPO3\CMS\Extbase\Persistence\QueryResultInterface $objects, $as, $maxRecords = 0, array $configuration = array('itemsPerPage' => 10, 'insertAbove' => FALSE, 'insertBelow' => TRUE, 'maximumNumberOfLinks' => 99)) {
-		return $this->initiateSubRequest();
-	}
-
+    /**
+     * @param \TYPO3\CMS\Extbase\Persistence\QueryResultInterface $objects
+     * @param string                                              $as
+     * @param int                                                 $maxRecords
+     * @param array                                               $configuration
+     *
+     * @return string
+     */
+    public function render(\TYPO3\CMS\Extbase\Persistence\QueryResultInterface $objects, $as, $maxRecords = 0, array $configuration = array('itemsPerPage' => 10, 'insertAbove' => false, 'insertBelow' => true, 'maximumNumberOfLinks' => 99))
+    {
+        return $this->initiateSubRequest();
+    }
 }

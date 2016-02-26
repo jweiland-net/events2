@@ -1,4 +1,5 @@
 <?php
+
 namespace JWeiland\Events2\Domain\Repository;
 
 /***************************************************************
@@ -26,16 +27,14 @@ namespace JWeiland\Events2\Domain\Repository;
  ***************************************************************/
 
 /**
- * @package events2
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class OrganizerRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
-
-	/**
-	 * @var array
-	 */
-	protected $defaultOrderings = array(
-		'organizer' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING
-	);
-
+class OrganizerRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
+{
+    /**
+     * @var array
+     */
+    protected $defaultOrderings = array(
+        'organizer' => \TYPO3\CMS\Extbase\Persistence\QueryInterface::ORDER_ASCENDING,
+    );
 }

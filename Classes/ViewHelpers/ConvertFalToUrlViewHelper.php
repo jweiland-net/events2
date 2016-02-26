@@ -1,4 +1,5 @@
 <?php
+
 namespace JWeiland\Events2\ViewHelpers;
 
 /***************************************************************
@@ -27,32 +28,33 @@ namespace JWeiland\Events2\ViewHelpers;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
- * @package events2
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class ConvertFalToUrlViewHelper extends AbstractViewHelper {
+class ConvertFalToUrlViewHelper extends AbstractViewHelper
+{
+    /**
+     * inject ResourceFactory.
+     *
+     * @var \TYPO3\CMS\Core\Resource\ResourceFactory
+     * @inject
+     */
+    protected $resourceFactory;
 
-	/**
-	 * inject ResourceFactory
-	 *
-	 * @var \TYPO3\CMS\Core\Resource\ResourceFactory
-	 * @inject
-	 */
-	protected $resourceFactory;
+    /**
+     * implements a vievHelper to convert seconds since 0:00 to a readable format.
+     *
+     * @param string $fal A value like file:34657
+     *
+     * @return string Downloadlink to file
+     */
+    public function render($fal)
+    {
+        // $fal is a value from a typolink field in BE and it can contain additional params like _blank, typeNum and some more.
+        // With this line I extract the first part
+        $linkParts = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(' ', $fal);
+        $image = $this->resourceFactory->retrieveFileOrFolderObject($linkParts[0]);
+        $path = \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_SITE_URL');
 
-	/**
-	 * implements a vievHelper to convert seconds since 0:00 to a readable format
-	 *
-	 * @param string $fal A value like file:34657
-	 * @return string Downloadlink to file
-	 */
-	public function render($fal) {
-		// $fal is a value from a typolink field in BE and it can contain additional params like _blank, typeNum and some more.
-		// With this line I extract the first part
-		$linkParts = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(' ', $fal);
-		$image = $this->resourceFactory->retrieveFileOrFolderObject($linkParts[0]);
-		$path = \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_SITE_URL');
-		return $path . $image->getPublicUrl();
-	}
-
+        return $path.$image->getPublicUrl();
+    }
 }

@@ -69,6 +69,13 @@
 							{event.location.location}
 						</f:link.action>
 					</dd>
+					<f:if condition="{event.location.street}">
+						<dd class="grid_8 floatleft noborder">
+							<f:alias map="{address: '{event.location.street} {event.location.houseNumber} {event.location.zip} {event.location.city}'}">
+								<f:link.external target="_blank" uri="https://www.google.de/maps/dir//{address->f:format.urlencode()}">Routenplaner<br /><span class="small">(Google Maps)</span></f:link.external>
+							</f:alias>
+						</dd>
+					</f:if>
 					<dd class="grid_4 floatleft noborder">
 						<figure>
 							<f:link.action action="show" controller="Location" pageUid="{settings.pidOfLocationPage}" arguments="{location: event.location}" title="{f:translate(key: 'altTextMapImg')}">

@@ -1,4 +1,5 @@
 <?php
+
 namespace JWeiland\Events2\Tests\Unit\Domain\Model;
 
 /***************************************************************
@@ -24,182 +25,192 @@ namespace JWeiland\Events2\Tests\Unit\Domain\Model;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use JWeiland\Events2\Domain\Model\FileReference;
+use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
 
 /**
  * Test case.
  *
- * @subpackage Events
  * @author Stefan Froemken <projects@jweiland.net>
  */
-class FileReferenceTest extends UnitTestCase {
+class FileReferenceTest extends UnitTestCase
+{
+    /**
+     * @var \TYPO3\CMS\Extbase\Domain\Model\FileReference
+     */
+    protected $subject;
 
-	/**
-	 * @var \JWeiland\Events2\Domain\Model\FileReference
-	 */
-	protected $subject;
+    /**
+     * set up.
+     */
+    public function setUp()
+    {
+        $this->subject = new FileReference();
+    }
 
-	/**
-	 * set up
-	 *
-	 * @return void
-	 */
-	public function setUp() {
-		$this->subject = new FileReference();
-	}
+    /**
+     * tear down.
+     */
+    public function tearDown()
+    {
+        unset($this->subject);
+    }
 
-	/**
-	 * tear down
-	 *
-	 * @return void
-	 */
-	public function tearDown() {
-		unset($this->subject);
-	}
+    /**
+     * @test
+     */
+    public function getTitleInitiallyReturnsEmptyString()
+    {
+        $this->assertSame(
+            '',
+            $this->subject->getTitle()
+        );
+    }
 
-	/**
-	 * @test
-	 */
-	public function getTitleInitiallyReturnsEmptyString() {
-		$this->assertSame(
-			'',
-			$this->subject->getTitle()
-		);
-	}
+    /**
+     * @test
+     */
+    public function setTitleSetsTitle()
+    {
+        $this->subject->setTitle('foo bar');
 
-	/**
-	 * @test
-	 */
-	public function setTitleSetsTitle() {
-		$this->subject->setTitle('foo bar');
+        $this->assertSame(
+            'foo bar',
+            $this->subject->getTitle()
+        );
+    }
 
-		$this->assertSame(
-			'foo bar',
-			$this->subject->getTitle()
-		);
-	}
+    /**
+     * @test
+     */
+    public function setTitleWithIntegerResultsInString()
+    {
+        $this->subject->setTitle(123);
+        $this->assertSame('123', $this->subject->getTitle());
+    }
 
-	/**
-	 * @test
-	 */
-	public function setTitleWithIntegerResultsInString() {
-		$this->subject->setTitle(123);
-		$this->assertSame('123', $this->subject->getTitle());
-	}
+    /**
+     * @test
+     */
+    public function setTitleWithBooleanResultsInString()
+    {
+        $this->subject->setTitle(true);
+        $this->assertSame('1', $this->subject->getTitle());
+    }
 
-	/**
-	 * @test
-	 */
-	public function setTitleWithBooleanResultsInString() {
-		$this->subject->setTitle(TRUE);
-		$this->assertSame('1', $this->subject->getTitle());
-	}
+    /**
+     * @test
+     */
+    public function getCruserIdInitiallyReturnsZero()
+    {
+        $this->assertSame(
+            0,
+            $this->subject->getCruserId()
+        );
+    }
 
-	/**
-	 * @test
-	 */
-	public function getCruserIdInitiallyReturnsZero() {
-		$this->assertSame(
-			0,
-			$this->subject->getCruserId()
-		);
-	}
+    /**
+     * @test
+     */
+    public function setCruserIdSetsCruserId()
+    {
+        $this->subject->setCruserId(123456);
 
-	/**
-	 * @test
-	 */
-	public function setCruserIdSetsCruserId() {
-		$this->subject->setCruserId(123456);
+        $this->assertSame(
+            123456,
+            $this->subject->getCruserId()
+        );
+    }
 
-		$this->assertSame(
-			123456,
-			$this->subject->getCruserId()
-		);
-	}
+    /**
+     * @test
+     */
+    public function setCruserIdWithStringResultsInInteger()
+    {
+        $this->subject->setCruserId('123Test');
 
-	/**
-	 * @test
-	 */
-	public function setCruserIdWithStringResultsInInteger() {
-		$this->subject->setCruserId('123Test');
+        $this->assertSame(
+            123,
+            $this->subject->getCruserId()
+        );
+    }
 
-		$this->assertSame(
-			123,
-			$this->subject->getCruserId()
-		);
-	}
+    /**
+     * @test
+     */
+    public function setCruserIdWithBooleanResultsInInteger()
+    {
+        $this->subject->setCruserId(true);
 
-	/**
-	 * @test
-	 */
-	public function setCruserIdWithBooleanResultsInInteger() {
-		$this->subject->setCruserId(TRUE);
+        $this->assertSame(
+            1,
+            $this->subject->getCruserId()
+        );
+    }
 
-		$this->assertSame(
-			1,
-			$this->subject->getCruserId()
-		);
-	}
+    /**
+     * @test
+     */
+    public function getUidLocalInitiallyReturnsZero()
+    {
+        $this->assertSame(
+            0,
+            $this->subject->getUidLocal()
+        );
+    }
 
-	/**
-	 * @test
-	 */
-	public function getUidLocalInitiallyReturnsZero() {
-		$this->assertSame(
-			0,
-			$this->subject->getUidLocal()
-		);
-	}
+    /**
+     * @test
+     */
+    public function setUidLocalSetsUidLocal()
+    {
+        $this->subject->setUidLocal(123456);
 
-	/**
-	 * @test
-	 */
-	public function setUidLocalSetsUidLocal() {
-		$this->subject->setUidLocal(123456);
+        $this->assertSame(
+            123456,
+            $this->subject->getUidLocal()
+        );
+    }
 
-		$this->assertSame(
-			123456,
-			$this->subject->getUidLocal()
-		);
-	}
+    /**
+     * @test
+     */
+    public function getTablenamesInitiallyReturnsEmptyString()
+    {
+        $this->assertSame(
+            '',
+            $this->subject->getTablenames()
+        );
+    }
 
-	/**
-	 * @test
-	 */
-	public function getTablenamesInitiallyReturnsEmptyString() {
-		$this->assertSame(
-			'',
-			$this->subject->getTablenames()
-		);
-	}
+    /**
+     * @test
+     */
+    public function setTablenamesSetsTablenames()
+    {
+        $this->subject->setTablenames('foo bar');
 
-	/**
-	 * @test
-	 */
-	public function setTablenamesSetsTablenames() {
-		$this->subject->setTablenames('foo bar');
+        $this->assertSame(
+            'foo bar',
+            $this->subject->getTablenames()
+        );
+    }
 
-		$this->assertSame(
-			'foo bar',
-			$this->subject->getTablenames()
-		);
-	}
+    /**
+     * @test
+     */
+    public function setTablenamesWithIntegerResultsInString()
+    {
+        $this->subject->setTablenames(123);
+        $this->assertSame('123', $this->subject->getTablenames());
+    }
 
-	/**
-	 * @test
-	 */
-	public function setTablenamesWithIntegerResultsInString() {
-		$this->subject->setTablenames(123);
-		$this->assertSame('123', $this->subject->getTablenames());
-	}
-
-	/**
-	 * @test
-	 */
-	public function setTablenamesWithBooleanResultsInString() {
-		$this->subject->setTablenames(TRUE);
-		$this->assertSame('1', $this->subject->getTablenames());
-	}
-
+    /**
+     * @test
+     */
+    public function setTablenamesWithBooleanResultsInString()
+    {
+        $this->subject->setTablenames(true);
+        $this->assertSame('1', $this->subject->getTablenames());
+    }
 }

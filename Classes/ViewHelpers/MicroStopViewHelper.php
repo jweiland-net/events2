@@ -1,4 +1,5 @@
 <?php
+
 namespace JWeiland\Events2\ViewHelpers;
 
 /***************************************************************
@@ -28,19 +29,19 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
- * @package events2
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class MicroStopViewHelper extends AbstractViewHelper {
-
-	/**
-	 * implements a vievHelper to get values from current logged in fe_user
-	 *
-	 * @param string $timer
-	 * @return string
-	 */
-	public function render($timer = 'debugStart') {
-		DebuggerUtility::var_dump(microtime(TRUE) - $GLOBALS['TSFE']->register['events2'][$timer]);
-	}
-
+class MicroStopViewHelper extends AbstractViewHelper
+{
+    /**
+     * implements a vievHelper to get values from current logged in fe_user.
+     *
+     * @param string $timer
+     *
+     * @return string
+     */
+    public function render($timer = 'debugStart')
+    {
+        DebuggerUtility::var_dump(microtime(true) - $GLOBALS['TSFE']->register['events2'][$timer]);
+    }
 }

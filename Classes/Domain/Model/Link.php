@@ -1,4 +1,5 @@
 <?php
+
 namespace JWeiland\Events2\Domain\Model;
 
 /***************************************************************
@@ -26,87 +27,88 @@ namespace JWeiland\Events2\Domain\Model;
  ***************************************************************/
 
 /**
- * @package events2
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class Link extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity {
+class Link extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+{
+    /**
+     * Link.
+     *
+     * @var string
+     */
+    protected $link = '';
 
-	/**
-	 * Link
-	 *
-	 * @var string
-	 */
-	protected $link = '';
+    /**
+     * Title.
+     *
+     * @var string
+     */
+    protected $title = 'Video';
 
-	/**
-	 * Title
-	 *
-	 * @var string
-	 */
-	protected $title = 'Video';
+    /**
+     * Deleted.
+     *
+     * @var bool
+     */
+    protected $deleted = false;
 
-	/**
-	 * Deleted
-	 *
-	 * @var boolean
-	 */
-	protected $deleted = FALSE;
+    /**
+     * Returns the link.
+     *
+     * @return string $link
+     */
+    public function getLink()
+    {
+        return $this->link;
+    }
 
-	/**
-	 * Returns the link
-	 *
-	 * @return string $link
-	 */
-	public function getLink() {
-		return $this->link;
-	}
+    /**
+     * Sets the link.
+     *
+     * @param string $link
+     */
+    public function setLink($link)
+    {
+        $this->link = (string) $link;
+    }
 
-	/**
-	 * Sets the link
-	 *
-	 * @param string $link
-	 * @return void
-	 */
-	public function setLink($link) {
-		$this->link = (string)$link;
-	}
+    /**
+     * Returns the title.
+     *
+     * @return string $title
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
 
-	/**
-	 * Returns the title
-	 *
-	 * @return string $title
-	 */
-	public function getTitle() {
-		return $this->title;
-	}
+    /**
+     * Sets the title.
+     *
+     * @param string $title
+     */
+    public function setTitle($title)
+    {
+        $this->title = (string) $title;
+    }
 
-	/**
-	 * Sets the title
-	 *
-	 * @param string $title
-	 * @return void
-	 */
-	public function setTitle($title) {
-		$this->title = (string)$title;
-	}
+    /**
+     * Returns the deleted.
+     *
+     * @return bool $deleted
+     */
+    public function getDeleted()
+    {
+        return $this->deleted;
+    }
 
-	/**
-	 * Returns the deleted
-	 *
-	 * @return boolean $deleted
-	 */
-	public function getDeleted() {
-		return $this->deleted;
-	}
-
-	/**
-	 * Sets the deleted
-	 *
-	 * @param boolean $deleted
-	 * @return void
-	 */
-	public function setDeleted($deleted) {
-		$this->deleted = (bool)$deleted;
-	}
-
+    /**
+     * Sets the deleted.
+     *
+     * @param bool $deleted
+     */
+    public function setDeleted($deleted)
+    {
+        $this->deleted = (bool) $deleted;
+    }
 }

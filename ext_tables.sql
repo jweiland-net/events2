@@ -29,9 +29,6 @@ CREATE TABLE tx_events2_domain_model_event (
 	images int(11) unsigned DEFAULT '0',
 	video_link int(11) unsigned DEFAULT '0',
 	download_links int(11) unsigned DEFAULT '0',
-	suitability_culture tinyint(1) unsigned DEFAULT '0' NOT NULL,
-	suitability_user tinyint(1) unsigned DEFAULT '0' NOT NULL,
-	suitability_groups tinyint(1) unsigned DEFAULT '0' NOT NULL,
 	facebook int(11) unsigned DEFAULT '0' NOT NULL,
 	release_date int(11) DEFAULT '0',
 	social_teaser varchar(255) DEFAULT '',
@@ -65,7 +62,6 @@ CREATE TABLE tx_events2_domain_model_event (
 	KEY parent (pid),
 	KEY t3ver_oid (t3ver_oid,t3ver_wsid),
 	KEY language (l10n_parent,sys_language_uid)
-
 );
 
 #
@@ -82,12 +78,11 @@ CREATE TABLE tx_events2_domain_model_day (
 	tstamp int(11) unsigned DEFAULT '0' NOT NULL,
 	crdate int(11) unsigned DEFAULT '0' NOT NULL,
 	cruser_id int(11) unsigned DEFAULT '0' NOT NULL,
-
+	
 	PRIMARY KEY (uid),
 	KEY parent (pid),
 	KEY keyForDay (day),
 	KEY uidPidDayEvents (uid,pid,day,events)
-
 );
 
 #
@@ -133,7 +128,6 @@ CREATE TABLE tx_events2_domain_model_time (
 	KEY t3ver_oid (t3ver_oid,t3ver_wsid),
 	KEY language (l10n_parent,sys_language_uid)
 	KEY eventType (event,type)
-
 );
 
 #
@@ -178,7 +172,6 @@ CREATE TABLE tx_events2_domain_model_exception (
 	KEY t3ver_oid (t3ver_oid,t3ver_wsid),
 	KEY language (l10n_parent,sys_language_uid),
 	KEY events (event)
-
 );
 
 #
@@ -223,7 +216,6 @@ CREATE TABLE tx_events2_domain_model_location (
 	KEY parent (pid),
 	KEY t3ver_oid (t3ver_oid,t3ver_wsid),
 	KEY language (l10n_parent,sys_language_uid)
-
 );
 
 #
@@ -264,7 +256,6 @@ CREATE TABLE tx_events2_domain_model_organizer (
 	KEY parent (pid),
 	KEY t3ver_oid (t3ver_oid,t3ver_wsid),
 	KEY language (l10n_parent,sys_language_uid)
-
 );
 
 #
@@ -305,7 +296,6 @@ CREATE TABLE tx_events2_domain_model_link (
 	KEY parent (pid),
 	KEY t3ver_oid (t3ver_oid,t3ver_wsid),
 	KEY language (l10n_parent,sys_language_uid)
-
 );
 
 #

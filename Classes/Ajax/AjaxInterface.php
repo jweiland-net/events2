@@ -1,4 +1,5 @@
 <?php
+
 namespace JWeiland\Events2\Ajax;
 
 /***************************************************************
@@ -26,17 +27,16 @@ namespace JWeiland\Events2\Ajax;
  ***************************************************************/
 
 /**
- * @package events2
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-interface AjaxInterface {
-
-	/**
-	 * process ajax request
-	 *
-	 * @param array $arguments Arguments to process
-	 * @return string
-	 */
-	public function processAjaxRequest(array $arguments);
-
+interface AjaxInterface
+{
+    /**
+     * process ajax request.
+     *
+     * @param array $arguments Arguments to process
+     *
+     * @return string
+     */
+    public function processAjaxRequest(array $arguments);
 }

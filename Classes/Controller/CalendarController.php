@@ -1,4 +1,5 @@
 <?php
+
 namespace JWeiland\Events2\Controller;
 
 /***************************************************************
@@ -32,129 +33,129 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /**
- * @package events2
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class CalendarController extends ActionController {
+class CalendarController extends ActionController
+{
+    /**
+     * @var \TYPO3\CMS\Core\Page\PageRenderer
+     */
+    protected $pageRenderer;
 
-	/**
-	 * @var \TYPO3\CMS\Core\Page\PageRenderer
-	 */
-	protected $pageRenderer;
+    /**
+     * @var \JWeiland\Events2\Domain\Repository\DayRepository
+     */
+    protected $dayRepository;
 
-	/**
-	 * @var \JWeiland\Events2\Domain\Repository\DayRepository
-	 */
-	protected $dayRepository;
+    /**
+     * inject page renderer.
+     *
+     * @param \TYPO3\CMS\Core\Page\PageRenderer $pageRenderer
+     */
+    public function injectPageRenderer(\TYPO3\CMS\Core\Page\PageRenderer $pageRenderer)
+    {
+        $this->pageRenderer = $pageRenderer;
+    }
 
-	/**
-	 * inject page renderer
-	 *
-	 * @param \TYPO3\CMS\Core\Page\PageRenderer $pageRenderer
-	 * @return void
-	 */
-	public function injectPageRenderer(\TYPO3\CMS\Core\Page\PageRenderer $pageRenderer) {
-		$this->pageRenderer = $pageRenderer;
-	}
+    /**
+     * inject day repository.
+     *
+     * @param \JWeiland\Events2\Domain\Repository\DayRepository $dayRepository
+     */
+    public function injectDayRepository(\JWeiland\Events2\Domain\Repository\DayRepository $dayRepository)
+    {
+        $this->dayRepository = $dayRepository;
+    }
 
-	/**
-	 * inject day repository
-	 *
-	 * @param \JWeiland\Events2\Domain\Repository\DayRepository $dayRepository
-	 * @return void
-	 */
-	public function injectDayRepository(\JWeiland\Events2\Domain\Repository\DayRepository $dayRepository) {
-		$this->dayRepository = $dayRepository;
-	}
+    /**
+     * initialize show action.
+     */
+    public function initializeAction()
+    {
+        // forceOnTop makes $newScriptTag . LF . $jsFiles. So we have to add JS files in reverse order
+        //$this->pageRenderer->addJsLibrary('maps2JQuery40', ExtensionManagementUtility::siteRelPath('events2') . 'Resources/Public/JavaScript/Calendar.js', 'text/javascript', FALSE, TRUE, '', TRUE);
+        if ($this->settings['includeJQueryUiLibrary']) {
+            $this->pageRenderer->addJsLibrary('maps2JQuery30', ExtensionManagementUtility::siteRelPath('events2').'Resources/Public/JavaScript/jquery.ui.datepicker-de.js', 'text/javascript', false, true, '', true);
+            $this->pageRenderer->addJsLibrary('maps2JQuery20', '//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js', 'text/javascript', false, true, '', true);
+        }
+        if ($this->settings['includeJQueryLibrary']) {
+            $this->pageRenderer->addJsLibrary('maps2JQuery10', '//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js', 'text/javascript', false, true, '', true);
+        }
+        if ($this->settings['includeJQueryUiCss']) {
+            $this->pageRenderer->addCssFile(ExtensionManagementUtility::siteRelPath('events2').'Resources/Public/Css/pforzheim/jquery-ui-1.10.3.custom.css', 'stylesheet', 'all', false);
+        }
+    }
 
-	/**
-	 * initialize show action
-	 *
-	 * @return void
-	 */
-	public function initializeAction() {
-		// forceOnTop makes $newScriptTag . LF . $jsFiles. So we have to add JS files in reverse order
-		//$this->pageRenderer->addJsLibrary('maps2JQuery40', ExtensionManagementUtility::siteRelPath('events2') . 'Resources/Public/JavaScript/Calendar.js', 'text/javascript', FALSE, TRUE, '', TRUE);
-		if ($this->settings['includeJQueryUiLibrary']) {
-			$this->pageRenderer->addJsLibrary('maps2JQuery30', ExtensionManagementUtility::siteRelPath('events2') . 'Resources/Public/JavaScript/jquery.ui.datepicker-de.js', 'text/javascript', FALSE, TRUE, '', TRUE);
-			$this->pageRenderer->addJsLibrary('maps2JQuery20', '//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js', 'text/javascript', FALSE, TRUE, '', TRUE);
-		}
-		if ($this->settings['includeJQueryLibrary']) {
-			$this->pageRenderer->addJsLibrary('maps2JQuery10', '//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js', 'text/javascript', FALSE, TRUE, '', TRUE);
-		}
-		if ($this->settings['includeJQueryUiCss']) {
-			$this->pageRenderer->addCssFile(ExtensionManagementUtility::siteRelPath('events2') . 'Resources/Public/Css/pforzheim/jquery-ui-1.10.3.custom.css', 'stylesheet', 'all', FALSE);
-		}
-	}
+    /**
+     * action show.
+     */
+    public function showAction()
+    {
+        $frameworkConfiguration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+        $this->view->assign('storagePids', $frameworkConfiguration['persistence']['storagePid']);
+        $this->view->assign('pidOfListPage', $this->settings['pidOfListPage'] ?: $GLOBALS['TSFE']->id);
+        $this->view->assign('siteUrl', GeneralUtility::getIndpEnv('TYPO3_SITE_URL'));
+        $this->view->assign('siteId', $GLOBALS['TSFE']->id);
 
-	/**
-	 * action show
-	 *
-	 * @return void
-	 */
-	public function showAction() {
-		$frameworkConfiguration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
-		$this->view->assign('storagePids', $frameworkConfiguration['persistence']['storagePid']);
-		$this->view->assign('pidOfListPage', $this->settings['pidOfListPage'] ?: $GLOBALS['TSFE']->id);
-		$this->view->assign('siteUrl', GeneralUtility::getIndpEnv('TYPO3_SITE_URL'));
-		$this->view->assign('siteId', $GLOBALS['TSFE']->id);
+        // get month and year from session
+        $monthAndYear = $this->getMonthAndYearFromUserSession();
+        $day = $this->getDayFromUrl();
 
-		// get month and year from session
-		$monthAndYear = $this->getMonthAndYearFromUserSession();
-		$day = $this->getDayFromUrl();
+        // move calendar to month and year if given
+        if ($day instanceof Day) {
+            // if there is a day given in URL
+            $this->view->assign('day', $day->getDay()->format('d'));
+            $this->view->assign('month', $day->getDay()->format('m'));
+            $this->view->assign('year', $day->getDay()->format('Y'));
+        } elseif (is_array($monthAndYear) && count($monthAndYear)) {
+            // if there is a session found with given month and year
+            $this->view->assign('day', '01');
+            $this->view->assign('month', $monthAndYear['month']);
+            $this->view->assign('year', $monthAndYear['year']);
+        } else {
+            // if nothing found, set to current day
+            $this->view->assign('day', date('d'));
+            $this->view->assign('month', date('m'));
+            $this->view->assign('year', date('Y'));
+        }
+    }
 
-		// move calendar to month and year if given
-		if ($day instanceof Day) {
-			// if there is a day given in URL
-			$this->view->assign('day', $day->getDay()->format('d'));
-			$this->view->assign('month', $day->getDay()->format('m'));
-			$this->view->assign('year', $day->getDay()->format('Y'));
-		} elseif (is_array($monthAndYear) && count($monthAndYear)) {
-			// if there is a session found with given month and year
-			$this->view->assign('day', '01');
-			$this->view->assign('month', $monthAndYear['month']);
-			$this->view->assign('year', $monthAndYear['year']);
-		} else {
-			// if nothing found, set to current day
-			$this->view->assign('day', date('d'));
-			$this->view->assign('month', date('m'));
-			$this->view->assign('year', date('Y'));
-		}
-	}
+    /**
+     * selected month and year was saved in user session by eID script
+     * this method returns these values to set calendar to this date
+     * Further we need this method for UnitTests (getMock).
+     *
+     * @return array contains month and year OR empty array
+     */
+    protected function getMonthAndYearFromUserSession()
+    {
+        $monthAndYear = $GLOBALS['TSFE']->fe_user->getKey('ses', 'events2MonthAndYearForCalendar');
+        if (!is_array($monthAndYear)) {
+            $monthAndYear = array();
+        }
 
-	/**
-	 * selected month and year was saved in user session by eID script
-	 * this method returns these values to set calendar to this date
-	 * Further we need this method for UnitTests (getMock)
-	 *
-	 * @return array contains month and year OR empty array
-	 */
-	protected function getMonthAndYearFromUserSession() {
-		$monthAndYear = $GLOBALS['TSFE']->fe_user->getKey('ses', 'events2MonthAndYearForCalendar');
-		if (!is_array($monthAndYear)) {
-			$monthAndYear = array();
-		}
-		return $monthAndYear;
-	}
+        return $monthAndYear;
+    }
 
-	/**
-	 * get day from url
-	 * we can't set $day as parameter in showAction($day), because this action is of controller Calendar and not Event
-	 *
-	 * @return \JWeiland\Events2\Domain\Model\Day|NULL
-	 */
-	protected function getDayFromUrl() {
-		$day = NULL;
-		// get parameters of event-plugin-namespace
-		$pluginParameters = GeneralUtility::_GPmerged('tx_events2_events');
-		if (
-			is_array($pluginParameters) &&
-			array_key_exists('day', $pluginParameters) &&
-			MathUtility::canBeInterpretedAsInteger($pluginParameters['day'])
-		) {
-			$day = $this->dayRepository->findByIdentifier((int)$pluginParameters['day']);
-		}
-		return $day;
-	}
+    /**
+     * get day from url
+     * we can't set $day as parameter in showAction($day), because this action is of controller Calendar and not Event.
+     *
+     * @return \JWeiland\Events2\Domain\Model\Day|null
+     */
+    protected function getDayFromUrl()
+    {
+        $day = null;
+        // get parameters of event-plugin-namespace
+        $pluginParameters = GeneralUtility::_GPmerged('tx_events2_events');
+        if (
+            is_array($pluginParameters) &&
+            array_key_exists('day', $pluginParameters) &&
+            MathUtility::canBeInterpretedAsInteger($pluginParameters['day'])
+        ) {
+            $day = $this->dayRepository->findByIdentifier((int) $pluginParameters['day']);
+        }
 
+        return $day;
+    }
 }

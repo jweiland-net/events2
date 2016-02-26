@@ -1,4 +1,5 @@
 <?php
+
 namespace JWeiland\Events2\Controller;
 
 /***************************************************************
@@ -26,31 +27,24 @@ namespace JWeiland\Events2\Controller;
  ***************************************************************/
 
 /**
- * @package events2
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class ReleaseController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
+class ReleaseController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
+{
+    /**
+     * eventRepository.
+     *
+     * @var \JWeiland\Events2\Domain\Repository\EventRepository
+     * @inject
+     */
+    protected $eventRepository;
 
-	/**
-	 * eventRepository
-	 *
-	 * @var \JWeiland\Events2\Domain\Repository\EventRepository
-	 * @inject
-	 */
-	protected $eventRepository;
-
-
-
-
-
-	/**
-	 * action list
-	 *
-	 * @return void
-	 */
-	public function listAction() {
-		$events = $this->eventRepository->findUnreleasedEvents();
-		$this->view->assign('events', $events);
-	}
-
+    /**
+     * action list.
+     */
+    public function listAction()
+    {
+        $events = $this->eventRepository->findUnreleasedEvents();
+        $this->view->assign('events', $events);
+    }
 }

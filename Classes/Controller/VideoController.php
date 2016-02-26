@@ -1,11 +1,12 @@
 <?php
+
 namespace JWeiland\Events2\Controller;
 
 /***************************************************************
  *  Copyright notice
  *
  *  (c) 2015 Stefan Froemken <projects@jweiland.net>, jweiland.net
- *  
+ *
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -30,16 +31,37 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
  * @package events2
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class VideoController extends ActionController {
+class VideoController extends ActionController
+{
 
-	/**
-	 * action show
-	 *
-	 * @param \JWeiland\Events2\Domain\Model\Event $event
-	 * @return void
-	 */
-	public function showAction(\JWeiland\Events2\Domain\Model\Event $event) {
-		$this->view->assign('event', $event);
-	}
+    /**
+     * eventRepository
+     *
+     * @var \JWeiland\Events2\Domain\Repository\EventRepository
+     */
+    protected $eventRepository;
+
+    /**
+     * inject event repository
+     *
+     * @param \JWeiland\Events2\Domain\Repository\EventRepository $eventRepository
+     * @return void
+     */
+    public function injectEventRepository(\JWeiland\Events2\Domain\Repository\EventRepository $eventRepository)
+    {
+        $this->eventRepository = $eventRepository;
+    }
+
+    /**
+     * action show
+     *
+     * @param int $event
+     * @return void
+     */
+    public function showAction($event)
+    {
+        $event = $this->eventRepository->findByIdentifier((int) $event);
+        $this->view->assign('event', $event);
+    }
 
 }
