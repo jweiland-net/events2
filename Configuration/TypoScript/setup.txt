@@ -5,9 +5,9 @@ plugin.tx_events2_search.mvc.callDefaultActionIfActionCantBeResolved = 1
 
 plugin.tx_events2 {
   view {
-    templateRootPath = {$plugin.tx_events2.view.templateRootPath}
-    partialRootPath = {$plugin.tx_events2.view.partialRootPath}
-    layoutRootPath = {$plugin.tx_events2.view.layoutRootPath}
+    templateRootPaths.0 = {$plugin.tx_events2.view.templateRootPaths}
+    partialRootPaths.0 = {$plugin.tx_events2.view.partialRootPaths}
+    layoutRootPaths.0 = {$plugin.tx_events2.view.layoutRootPaths}
   }
   persistence {
     storagePid = {$plugin.tx_events2.persistence.storagePid}
