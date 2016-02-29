@@ -213,6 +213,7 @@ class AbstractController extends ActionController
     {
         $this->view->assign('eventsOnTopOfList', $this->eventRepository->findTopEvents($this->settings['mergeEvents']));
         $this->view->assign('siteUrl', GeneralUtility::getIndpEnv('TYPO3_SITE_URL')); // needed for ajax requests
+        $this->view->assign('data', $this->configurationManager->getContentObject()->data);
     }
 
     /**
