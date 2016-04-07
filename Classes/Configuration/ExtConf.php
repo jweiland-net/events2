@@ -36,49 +36,49 @@ class ExtConf implements \TYPO3\CMS\Core\SingletonInterface
      *
      * @var int
      */
-    protected $rootUid;
+    protected $rootUid = 0;
 
     /**
      * recurring past.
      *
      * @var int
      */
-    protected $recurringPast;
+    protected $recurringPast = 0;
 
     /**
      * recurring future.
      *
      * @var int
      */
-    protected $recurringFuture;
+    protected $recurringFuture = 0;
 
     /**
      * email from address.
      *
      * @var string
      */
-    protected $emailFromAddress;
+    protected $emailFromAddress = '';
 
     /**
      * email from name.
      *
      * @var string
      */
-    protected $emailFromName;
+    protected $emailFromName = '';
 
     /**
      * email to address.
      *
      * @var string
      */
-    protected $emailToAddress;
+    protected $emailToAddress = '';
 
     /**
      * email to name.
      *
      * @var string
      */
-    protected $emailToName;
+    protected $emailToName = '';
 
     /**
      * constructor of this class
@@ -91,7 +91,7 @@ class ExtConf implements \TYPO3\CMS\Core\SingletonInterface
         if (is_array($extConf) && count($extConf)) {
             // call setter method foreach configuration entry
             foreach ($extConf as $key => $value) {
-                $methodName = 'set'.ucfirst($key);
+                $methodName = 'set' . ucfirst($key);
                 if (method_exists($this, $methodName)) {
                     $this->$methodName($value);
                 }
@@ -120,7 +120,7 @@ class ExtConf implements \TYPO3\CMS\Core\SingletonInterface
      */
     public function setRootUid($rootUid)
     {
-        $this->rootUid = (int) $rootUid;
+        $this->rootUid = (int)$rootUid;
     }
 
     /**
@@ -144,7 +144,7 @@ class ExtConf implements \TYPO3\CMS\Core\SingletonInterface
      */
     public function setRecurringPast($recurringPast)
     {
-        $this->recurringPast = (int) $recurringPast;
+        $this->recurringPast = (int)$recurringPast;
     }
 
     /**
@@ -168,7 +168,7 @@ class ExtConf implements \TYPO3\CMS\Core\SingletonInterface
      */
     public function setRecurringFuture($recurringFuture)
     {
-        $this->recurringFuture = (int) $recurringFuture;
+        $this->recurringFuture = (int)$recurringFuture;
     }
 
     /**
@@ -199,7 +199,7 @@ class ExtConf implements \TYPO3\CMS\Core\SingletonInterface
      */
     public function setEmailFromAddress($emailFromAddress)
     {
-        $this->emailFromAddress = (string) $emailFromAddress;
+        $this->emailFromAddress = (string)$emailFromAddress;
     }
 
     /**
@@ -230,7 +230,7 @@ class ExtConf implements \TYPO3\CMS\Core\SingletonInterface
      */
     public function setEmailFromName($emailFromName)
     {
-        $this->emailFromName = (string) $emailFromName;
+        $this->emailFromName = (string)$emailFromName;
     }
 
     /**
@@ -250,7 +250,7 @@ class ExtConf implements \TYPO3\CMS\Core\SingletonInterface
      */
     public function setEmailToAddress($emailToAddress)
     {
-        $this->emailToAddress = (string) $emailToAddress;
+        $this->emailToAddress = (string)$emailToAddress;
     }
 
     /**
@@ -270,6 +270,6 @@ class ExtConf implements \TYPO3\CMS\Core\SingletonInterface
      */
     public function setEmailToName($emailToName)
     {
-        $this->emailToName = (string) $emailToName;
+        $this->emailToName = (string)$emailToName;
     }
 }

@@ -482,6 +482,14 @@ class EventTest extends UnitTestCase
      */
     public function getXthInitiallyResultsInArrayWhereAllValuesAreZero()
     {
+        $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['xth']['config']['items'] = array(
+            array('first', 'first'),
+            array('second', 'second'),
+            array('third', 'third'),
+            array('fourth', 'fourth'),
+            array('fifth', 'fifth'),
+        );
+
         $expectedArray = array(
             'first' => 0,
             'second' => 0,
@@ -501,6 +509,14 @@ class EventTest extends UnitTestCase
      */
     public function setXthWithZwentyThreeResultsInArrayWithDifferentValues()
     {
+        $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['xth']['config']['items'] = array(
+            array('first', 'first'),
+            array('second', 'second'),
+            array('third', 'third'),
+            array('fourth', 'fourth'),
+            array('fifth', 'fifth'),
+        );
+
         $expectedArray = array(
             'first' => 1,
             'second' => 2,
@@ -521,6 +537,16 @@ class EventTest extends UnitTestCase
      */
     public function getWeekdayInitiallyResultsInArrayWhereAllValuesAreZero()
     {
+        $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['weekday']['config']['items'] = array(
+            array('monday', 'monday'),
+            array('tuesday', 'tuesday'),
+            array('wednesday', 'wednesday'),
+            array('thursday', 'thursday'),
+            array('friday', 'friday'),
+            array('saturday', 'saturday'),
+            array('sunday', 'sunday'),
+        );
+
         $expectedArray = array(
             'monday' => 0,
             'tuesday' => 0,
@@ -542,6 +568,16 @@ class EventTest extends UnitTestCase
      */
     public function setWeekdayWithEightySevenResultsInArrayWithDifferentValues()
     {
+        $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['weekday']['config']['items'] = array(
+            array('monday', 'monday'),
+            array('tuesday', 'tuesday'),
+            array('wednesday', 'wednesday'),
+            array('thursday', 'thursday'),
+            array('friday', 'friday'),
+            array('saturday', 'saturday'),
+            array('sunday', 'sunday'),
+        );
+
         $expectedArray = array(
             'monday' => 1,
             'tuesday' => 2,

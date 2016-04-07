@@ -27,6 +27,8 @@ namespace JWeiland\Events2\Tests\Unit\Ajax\FindDaysForMonth;
  ***************************************************************/
 use JWeiland\Events2\Ajax\FindDaysForMonth;
 use JWeiland\Events2\Utility\DateTimeUtility;
+use Prophecy\Argument;
+use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Database\PreparedStatement;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
 use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
@@ -44,11 +46,21 @@ class AjaxTest extends UnitTestCase
     protected $subject;
 
     /**
+     * @var DatabaseConnection
+     */
+    protected $dbProphecy;
+
+    /**
      * set up.
      */
     public function setUp()
     {
         $this->subject = new FindDaysForMonth\Ajax();
+        $this->dbProphecy = $this->prophesize(DatabaseConnection::class);
+        $GLOBALS['TYPO3_DB'] = $this->dbProphecy->reveal();
+        $GLOBALS['TYPO3_LOADED_EXT'] = array(
+            'events2' => array()
+        );
     }
 
     /**
@@ -93,12 +105,13 @@ class AjaxTest extends UnitTestCase
     public function initializeInitializesFindDaysForMonthClass()
     {
         $arguments = array('Hello');
-        $expectedArguments = array();
-        $expectedArguments['categories'] = '';
-        $expectedArguments['month'] = 0;
-        $expectedArguments['year'] = 0;
-        $expectedArguments['pidOfListPage'] = 0;
-        $expectedArguments['storagePids'] = '';
+        $expectedArguments = array(
+            'categories' => '',
+            'month' => 0,
+            'year' => 0,
+            'pidOfListPage' => 0,
+            'storagePids' => ''
+        );
         $this->subject->initialize($arguments);
         $this->assertSame(
             $expectedArguments,
@@ -233,11 +246,14 @@ class AjaxTest extends UnitTestCase
      */
     public function findAllDaysInMonthCallsStatementWithoutCategories()
     {
+        $GLOBALS['TCA']['tx_events2_domain_model_event']['ctrl']['enablecolumns']['disabled'] = 'hidden';
+        $GLOBALS['TCA']['tx_events2_domain_model_event']['ctrl']['delete'] = 'deleted';
+
         $rows = array(
             array('Test123'),
             array('Test321'),
         );
-        /* @var \TYPO3\CMS\Core\Database\PreparedStatement|\PHPUnit_Framework_MockObject_MockObject $databaseConnection */
+        /* @var \TYPO3\CMS\Core\Database\PreparedStatement|\PHPUnit_Framework_MockObject_MockObject $preparedStatement */
         $preparedStatement = $this->getMock('TYPO3\\CMS\\Core\\Database\\PreparedStatement', array('execute', 'fetchAll', 'free'), array(), '', false);
         $preparedStatement->expects($this->once())->method('execute')->with($this->logicalAnd(
             $this->arrayHasKey(':monthBegin'),
@@ -249,6 +265,7 @@ class AjaxTest extends UnitTestCase
         ));
         $preparedStatement->expects($this->once())->method('fetchAll')->with($this->equalTo(PreparedStatement::FETCH_ASSOC))->will($this->returnValue($rows));
         $preparedStatement->expects($this->once())->method('free');
+
         /** @var \TYPO3\CMS\Core\Database\DatabaseConnection|\PHPUnit_Framework_MockObject_MockObject $databaseConnection */
         $databaseConnection = $this->getMock('TYPO3\\CMS\\Core\\Database\\DatabaseConnection');
         $databaseConnection->expects($this->once())->method('prepare_SELECTquery')->with(
@@ -266,17 +283,16 @@ class AjaxTest extends UnitTestCase
                 )
             ),
             $this->logicalAnd(
-                $this->stringContains('tx_events2_domain_model_day.hidden=0'),
-                $this->stringContains('tx_events2_domain_model_day.deleted=0'),
                 $this->stringContains('tx_events2_domain_model_event.hidden=0'),
                 $this->stringContains('tx_events2_domain_model_event.deleted=0')
             )
         )->will($this->returnValue($preparedStatement));
-        /** @var \JWeiland\Events2\Ajax\FindDaysForMonth\Ajax|\PHPUnit_Framework_MockObject_MockObject|\TYPO3\CMS\Core\Tests\AccessibleObjectInterface $subject */
-        $subject = $this->getAccessibleMock('JWeiland\\Events2\\Ajax\\FindDaysForMonth\\Ajax', array('getArgument'));
+        $GLOBALS['TYPO3_DB'] = $databaseConnection;
+
+        /** @var \JWeiland\Events2\Ajax\FindDaysForMonth\Ajax|\PHPUnit_Framework_MockObject_MockObject $subject */
+        $subject = $this->getMock('JWeiland\\Events2\\Ajax\\FindDaysForMonth\\Ajax', array('getArgument'));
         $subject->expects($this->at(0))->method('getArgument')->with($this->equalTo('categories'))->will($this->returnValue(''));
         $subject->expects($this->at(1))->method('getArgument')->with($this->equalTo('storagePids'))->will($this->returnValue('321,654'));
-        $subject->_set('databaseConnection', $databaseConnection);
         $subject->injectDateTimeUtility(new DateTimeUtility());
 
         $this->assertSame(
@@ -290,6 +306,9 @@ class AjaxTest extends UnitTestCase
      */
     public function findAllDaysInMonthCallsStatementWithCategories()
     {
+        $GLOBALS['TCA']['tx_events2_domain_model_event']['ctrl']['enablecolumns']['disabled'] = 'hidden';
+        $GLOBALS['TCA']['tx_events2_domain_model_event']['ctrl']['delete'] = 'deleted';
+
         $rows = array(
             array('Test123'),
             array('Test321'),
@@ -320,17 +339,16 @@ class AjaxTest extends UnitTestCase
             ),
             $this->logicalAnd(
                 $this->stringContains('sys_category_record_mm.uid_local IN (123,456)'),
-                $this->stringContains('tx_events2_domain_model_day.hidden=0'),
-                $this->stringContains('tx_events2_domain_model_day.deleted=0'),
                 $this->stringContains('tx_events2_domain_model_event.hidden=0'),
                 $this->stringContains('tx_events2_domain_model_event.deleted=0')
             )
         )->will($this->returnValue($preparedStatement));
-        /** @var \JWeiland\Events2\Ajax\FindDaysForMonth\Ajax|\PHPUnit_Framework_MockObject_MockObject|\TYPO3\CMS\Core\Tests\AccessibleObjectInterface $subject */
-        $subject = $this->getAccessibleMock('JWeiland\\Events2\\Ajax\\FindDaysForMonth\\Ajax', array('getArgument'));
+        $GLOBALS['TYPO3_DB'] = $databaseConnection;
+
+        /** @var \JWeiland\Events2\Ajax\FindDaysForMonth\Ajax|\PHPUnit_Framework_MockObject_MockObject $subject */
+        $subject = $this->getMock('JWeiland\\Events2\\Ajax\\FindDaysForMonth\\Ajax', array('getArgument'));
         $subject->expects($this->at(0))->method('getArgument')->with($this->equalTo('categories'))->will($this->returnValue('123,456'));
         $subject->expects($this->at(1))->method('getArgument')->with($this->equalTo('storagePids'))->will($this->returnValue('321,654'));
-        $subject->_set('databaseConnection', $databaseConnection);
         $subject->injectDateTimeUtility(new DateTimeUtility());
 
         $this->assertSame(

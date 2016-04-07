@@ -79,9 +79,7 @@ class EventControllerTest extends UnitTestCase
         /** @var \JWeiland\Events2\Domain\Repository\EventRepository|\PHPUnit_Framework_MockObject_MockObject $eventRepository */
         $eventRepository = $this->getMock('JWeiland\\Events2\\Domain\\Repository\\EventRepository', array(), array(), '', false);
         $eventRepository->expects($this->once())->method('findEvents')->with(
-            $this->identicalTo('list'),
-            $this->identicalTo($categories),
-            $this->identicalTo($mergeEvents)
+            $this->identicalTo('list')
         )->willReturn($events);
         /** @var \TYPO3\CMS\Fluid\View\TemplateView|\PHPUnit_Framework_MockObject_MockObject $view */
         $view = $this->getMock('TYPO3\\CMS\\Fluid\\View\\TemplateView');
@@ -115,9 +113,7 @@ class EventControllerTest extends UnitTestCase
         /** @var \JWeiland\Events2\Domain\Repository\EventRepository|\PHPUnit_Framework_MockObject_MockObject $eventRepository */
         $eventRepository = $this->getMock('JWeiland\\Events2\\Domain\\Repository\\EventRepository', array(), array(), '', false);
         $eventRepository->expects($this->once())->method('findEvents')->with(
-            $this->identicalTo('latest'),
-            $this->identicalTo($categories),
-            $this->identicalTo($mergeEvents)
+            $this->identicalTo('latest')
         )->willReturn($events);
         /** @var \TYPO3\CMS\Fluid\View\TemplateView|\PHPUnit_Framework_MockObject_MockObject $view */
         $view = $this->getMock('TYPO3\\CMS\\Fluid\\View\\TemplateView');
@@ -151,9 +147,7 @@ class EventControllerTest extends UnitTestCase
         /** @var \JWeiland\Events2\Domain\Repository\EventRepository|\PHPUnit_Framework_MockObject_MockObject $eventRepository */
         $eventRepository = $this->getMock('JWeiland\\Events2\\Domain\\Repository\\EventRepository', array(), array(), '', false);
         $eventRepository->expects($this->once())->method('findEvents')->with(
-            $this->identicalTo('today'),
-            $this->identicalTo($categories),
-            $this->identicalTo($mergeEvents)
+            $this->identicalTo('today')
         )->willReturn($events);
         /** @var \TYPO3\CMS\Fluid\View\TemplateView|\PHPUnit_Framework_MockObject_MockObject $view */
         $view = $this->getMock('TYPO3\\CMS\\Fluid\\View\\TemplateView');
@@ -187,9 +181,7 @@ class EventControllerTest extends UnitTestCase
         /** @var \JWeiland\Events2\Domain\Repository\EventRepository|\PHPUnit_Framework_MockObject_MockObject $eventRepository */
         $eventRepository = $this->getMock('JWeiland\\Events2\\Domain\\Repository\\EventRepository', array(), array(), '', false);
         $eventRepository->expects($this->once())->method('findEvents')->with(
-            $this->identicalTo('thisWeek'),
-            $this->identicalTo($categories),
-            $this->identicalTo($mergeEvents)
+            $this->identicalTo('thisWeek')
         )->willReturn($events);
         /** @var \TYPO3\CMS\Fluid\View\TemplateView|\PHPUnit_Framework_MockObject_MockObject $view */
         $view = $this->getMock('TYPO3\\CMS\\Fluid\\View\\TemplateView');
@@ -223,9 +215,7 @@ class EventControllerTest extends UnitTestCase
         /** @var \JWeiland\Events2\Domain\Repository\EventRepository|\PHPUnit_Framework_MockObject_MockObject $eventRepository */
         $eventRepository = $this->getMock('JWeiland\\Events2\\Domain\\Repository\\EventRepository', array(), array(), '', false);
         $eventRepository->expects($this->once())->method('findEvents')->with(
-            $this->identicalTo('range'),
-            $this->identicalTo($categories),
-            $this->identicalTo($mergeEvents)
+            $this->identicalTo('range')
         )->willReturn($events);
         /** @var \TYPO3\CMS\Fluid\View\TemplateView|\PHPUnit_Framework_MockObject_MockObject $view */
         $view = $this->getMock('TYPO3\\CMS\\Fluid\\View\\TemplateView');
@@ -475,12 +465,12 @@ class EventControllerTest extends UnitTestCase
         /** @var \TYPO3\CMS\Core\Resource\FileReference|\PHPUnit_Framework_MockObject_MockObject $fileReference */
         $fileReference = $this->getMock('TYPO3\\CMS\\Core\\Resource\\FileReference', array(), array(), '', false);
         $fileReference->expects($this->exactly(2))->method('delete');
-        /** @var \TYPO3\CMS\Extbase\Domain\Model\FileReference|\PHPUnit_Framework_MockObject_MockObject $image1 */
-        $image1 = $this->getMock('TYPO3\\CMS\\Extbase\\Domain\\Model\\FileReference', array('getOriginalResource'));
+        /** @var \JWeiland\Events2\Domain\Model\FileReference|\PHPUnit_Framework_MockObject_MockObject $image1 */
+        $image1 = $this->getMock('JWeiland\\Events2\\Domain\\Model\\FileReference', array('getOriginalResource'));
         $image1->expects($this->once())->method('getOriginalResource')->willReturn($fileReference);
         $image1->setTitle('Image1');
-        /** @var \TYPO3\CMS\Extbase\Domain\Model\FileReference|\PHPUnit_Framework_MockObject_MockObject $image2 */
-        $image2 = $this->getMock('TYPO3\\CMS\\Extbase\\Domain\\Model\\FileReference', array('getOriginalResource'));
+        /** @var \JWeiland\Events2\Domain\Model\FileReference|\PHPUnit_Framework_MockObject_MockObject $image2 */
+        $image2 = $this->getMock('JWeiland\\Events2\\Domain\\Model\\FileReference', array('getOriginalResource'));
         $image2->expects($this->once())->method('getOriginalResource')->willReturn($fileReference);
         $image2->setTitle('Image2');
         $images = new ObjectStorage();

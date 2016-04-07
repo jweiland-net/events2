@@ -271,6 +271,9 @@ class ShowEventDatesControllerTest extends UnitTestCase
         $exception->setExceptionDate($today);
         $exceptions->attach($exception);
 
+        $infoExceptions = new \SplObjectStorage();
+        $infoExceptions->attach($exception);
+
         $event = new Event();
         $event->setExceptions($exceptions);
 
@@ -281,7 +284,7 @@ class ShowEventDatesControllerTest extends UnitTestCase
             'eventDate' => $today->format('U'),
             'eventTime' => '',
             'isRemoved' => true,
-            'infos' => new \SplObjectStorage(),
+            'infos' => $infoExceptions,
         );
 
         $eventUtility = new EventUtility();
@@ -339,20 +342,23 @@ class ShowEventDatesControllerTest extends UnitTestCase
         $time = new Time();
         $time->setTimeBegin('09:25');
 
+        $exception = new Exception();
+        $exception->setExceptionType('Remove');
+        $exception->setExceptionDate($today);
+        $exceptions = new ObjectStorage();
+        $exceptions->attach($exception);
+
+        $infoExceptions = new \SplObjectStorage();
+        $infoExceptions->attach($exception);
+
         $expectedDayArray = array(
             'day' => $day,
             'time' => $time,
             'eventDate' => $today->format('U'),
             'eventTime' => $time->getTimeBegin(),
             'isRemoved' => true,
-            'infos' => new \SplObjectStorage(),
+            'infos' => $infoExceptions,
         );
-
-        $exception = new Exception();
-        $exception->setExceptionType('Remove');
-        $exception->setExceptionDate($today);
-        $exceptions = new ObjectStorage();
-        $exceptions->attach($exception);
 
         $event = new Event();
         $event->setExceptions($exceptions);
@@ -382,11 +388,21 @@ class ShowEventDatesControllerTest extends UnitTestCase
         $time = new Time();
         $time->setTimeBegin('09:25');
 
-        $info = new Exception();
-        $info->setExceptionType('Info');
-        $info->setExceptionDate($today);
-        $infos = new \SplObjectStorage();
-        $infos->attach($info);
+        $infoException = new Exception();
+        $infoException->setExceptionType('Info');
+        $infoException->setExceptionDate($today);
+
+        $removeException = new Exception();
+        $removeException->setExceptionType('Remove');
+        $removeException->setExceptionDate($today);
+
+        $infoExceptions = new \SplObjectStorage();
+        $infoExceptions->attach($infoException);
+        $infoExceptions->attach($removeException);
+
+        $exceptions = new ObjectStorage();
+        $exceptions->attach($removeException);
+        $exceptions->attach($infoException);
 
         $expectedDayArray = array(
             'day' => $day,
@@ -394,15 +410,8 @@ class ShowEventDatesControllerTest extends UnitTestCase
             'eventDate' => $today->format('U'),
             'eventTime' => $time->getTimeBegin(),
             'isRemoved' => true,
-            'infos' => $infos,
+            'infos' => $infoExceptions,
         );
-
-        $exception = new Exception();
-        $exception->setExceptionType('Remove');
-        $exception->setExceptionDate($today);
-        $exceptions = new ObjectStorage();
-        $exceptions->attach($exception);
-        $exceptions->attach($info);
 
         $event = new Event();
         $event->setExceptions($exceptions);

@@ -40,7 +40,7 @@ class EventController extends AbstractController
      */
     public function listAction()
     {
-        $events = $this->eventRepository->findEvents('list', $this->settings['categories'], $this->settings['mergeEvents']);
+        $events = $this->eventRepository->findEvents('list');
         $this->view->assign('events', $events);
     }
 
@@ -49,7 +49,7 @@ class EventController extends AbstractController
      */
     public function listLatestAction()
     {
-        $events = $this->eventRepository->findEvents('latest', $this->settings['categories'], $this->settings['mergeEvents']);
+        $events = $this->eventRepository->findEvents('latest');
         $this->view->assign('events', $events);
     }
 
@@ -58,7 +58,7 @@ class EventController extends AbstractController
      */
     public function listTodayAction()
     {
-        $events = $this->eventRepository->findEvents('today', $this->settings['categories'], $this->settings['mergeEvents']);
+        $events = $this->eventRepository->findEvents('today');
         $this->view->assign('events', $events);
     }
 
@@ -67,7 +67,7 @@ class EventController extends AbstractController
      */
     public function listThisWeekAction()
     {
-        $events = $this->eventRepository->findEvents('thisWeek', $this->settings['categories'], $this->settings['mergeEvents']);
+        $events = $this->eventRepository->findEvents('thisWeek');
         $this->view->assign('events', $events);
     }
 
@@ -76,7 +76,7 @@ class EventController extends AbstractController
      */
     public function listRangeAction()
     {
-        $events = $this->eventRepository->findEvents('range', $this->settings['categories'], $this->settings['mergeEvents']);
+        $events = $this->eventRepository->findEvents('range');
         $this->view->assign('events', $events);
     }
 
@@ -160,6 +160,8 @@ class EventController extends AbstractController
 
     /**
      * action new.
+     *
+     * @return void
      */
     public function newAction()
     {
@@ -173,6 +175,8 @@ class EventController extends AbstractController
     /**
      * initialize create action
      * We need this to create a DateTime-Object with time of midnight.
+     *
+     * @return void
      */
     public function initializeCreateAction()
     {
@@ -209,6 +213,7 @@ class EventController extends AbstractController
      * action create.
      *
      * @param \JWeiland\Events2\Domain\Model\Event $event
+     * @return void
      */
     public function createAction(\JWeiland\Events2\Domain\Model\Event $event)
     {
@@ -225,6 +230,8 @@ class EventController extends AbstractController
     /**
      * initialize edit action
      * This only happens if webko clicks on edit link in mail.
+     *
+     * @return void
      */
     public function initializeEditAction()
     {
@@ -235,6 +242,7 @@ class EventController extends AbstractController
      * action edit.
      *
      * @param int $event
+     * @return void
      */
     public function editAction($event)
     {
@@ -247,6 +255,8 @@ class EventController extends AbstractController
     /**
      * initialize update action
      * We need this to create a DateTime-Object with time of midnight.
+     *
+     * @return void
      */
     public function initializeUpdateAction()
     {
@@ -290,6 +300,7 @@ class EventController extends AbstractController
      * action update.
      *
      * @param \JWeiland\Events2\Domain\Model\Event $event
+     * @return void
      */
     public function updateAction(\JWeiland\Events2\Domain\Model\Event $event)
     {
@@ -312,6 +323,7 @@ class EventController extends AbstractController
      * action delete.
      *
      * @param int $event
+     * @return void
      */
     public function deleteAction($event)
     {
@@ -323,6 +335,8 @@ class EventController extends AbstractController
 
     /**
      * initialize activate action.
+     *
+     * @return void
      */
     public function initializeActivateAction()
     {
@@ -333,6 +347,7 @@ class EventController extends AbstractController
      * action activate.
      *
      * @param int $event
+     * @return void
      */
     public function activateAction($event)
     {
@@ -357,6 +372,7 @@ class EventController extends AbstractController
      * add relations to day records.
      *
      * @param \JWeiland\Events2\Domain\Model\Event $event
+     * @return void
      */
     public function addDayRelations(\JWeiland\Events2\Domain\Model\Event $event)
     {

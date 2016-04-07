@@ -225,7 +225,7 @@ class ShowEventDatesController extends AbstractWidgetController
             foreach ($removedExceptions as $removedException) {
                 // only add days of today and in future
                 if ($removedException->getExceptionDate() >= $today) {
-                    // Exceptions does not have a relation to day domain models. So we create a temporary one
+                    // Exceptions does not have a relation to day domain model. So we create a temporary one
                     $day = new Day();
                     $day->setDay($removedException->getExceptionDate());
 

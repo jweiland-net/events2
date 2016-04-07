@@ -30,6 +30,7 @@ use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Database\PreparedStatement;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
@@ -89,19 +90,7 @@ class Ajax
     {
         // load cached TCA. Needed for enableFields
         Bootstrap::getInstance()->loadCachedTca();
-        $this->databaseConnection = $GLOBALS['TYPO3_DB'];
         $this->setArguments($arguments);
-    }
-
-    /**
-     * gettter for database connection
-     * needed for UnitTests.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     */
-    public function getDatabaseConnection()
-    {
-        return $this->databaseConnection;
     }
 
     /**
@@ -245,8 +234,7 @@ class Ajax
      */
     protected function saveMonthAndYearInSession($month, $year)
     {
-        /** @var \TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication $userAuthentication */
-        $userAuthentication = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Authentication\\FrontendUserAuthentication');
+        $userAuthentication = $this->getFrontendUserAuthentication();
         $userAuthentication->start();
         $userAuthentication->setAndSaveSessionData(
             'events2MonthAndYearForCalendar',
@@ -276,7 +264,7 @@ class Ajax
         $categories = $this->getArgument('categories');
 
         if ($categories !== '') {
-            $statement = $this->databaseConnection->prepare_SELECTquery(
+            $statement = $this->getDatabaseConnection()->prepare_SELECTquery(
                 'tx_events2_domain_model_day.uid, tx_events2_domain_model_day.day, tx_events2_domain_model_event.uid as eventUid, tx_events2_domain_model_event.title as eventTitle',
                 'tx_events2_domain_model_day
 				LEFT JOIN tx_events2_event_day_mm ON tx_events2_domain_model_day.uid=tx_events2_event_day_mm.uid_foreign
@@ -296,14 +284,14 @@ class Ajax
                 ':storagePids' => $this->getArgument('storagePids'),
             ));
         } else {
-            $statement = $this->databaseConnection->prepare_SELECTquery(
+            $statement = $this->getDatabaseConnection()->prepare_SELECTquery(
                 'tx_events2_domain_model_day.uid, tx_events2_domain_model_day.day, tx_events2_domain_model_event.uid as eventUid, tx_events2_domain_model_event.title as eventTitle',
                 'tx_events2_domain_model_day
 				LEFT JOIN tx_events2_event_day_mm ON tx_events2_domain_model_day.uid=tx_events2_event_day_mm.uid_foreign
 				LEFT JOIN tx_events2_domain_model_event ON tx_events2_domain_model_event.uid=tx_events2_event_day_mm.uid_local',
                 'tx_events2_domain_model_day.day >= :monthBegin
 				AND tx_events2_domain_model_day.day < :monthEnd
-				AND FIND_IN_SET(tx_events2_domain_model_event.pid, :storagePids)'.
+				AND FIND_IN_SET(tx_events2_domain_model_event.pid, :storagePids)' .
                 $this->addWhereForEnableFields()
             );
             $statement->execute(array(
@@ -325,11 +313,29 @@ class Ajax
      */
     protected function addWhereForEnableFields()
     {
-        $additionalWhere = BackendUtility::BEenableFields('tx_events2_domain_model_day');
-        $additionalWhere .= BackendUtility::deleteClause('tx_events2_domain_model_day');
-        $additionalWhere .= BackendUtility::BEenableFields('tx_events2_domain_model_event');
+        $additionalWhere = BackendUtility::BEenableFields('tx_events2_domain_model_event');
         $additionalWhere .= BackendUtility::deleteClause('tx_events2_domain_model_event');
 
         return $additionalWhere;
+    }
+
+    /**
+     * Get Frontend User Authentication
+     *
+     * @return FrontendUserAuthentication
+     */
+    protected function getFrontendUserAuthentication()
+    {
+        return GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Authentication\\FrontendUserAuthentication');
+    }
+
+    /**
+     * Get TYPO3 Database Connection
+     *
+     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     */
+    public function getDatabaseConnection()
+    {
+        return $GLOBALS['TYPO3_DB'];
     }
 }

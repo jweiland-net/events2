@@ -104,7 +104,7 @@ class DayGenerator
      */
     public function initialize(array $eventRecord)
     {
-        // reset, for further calls
+        // reset, for previous calls
         $this->eventRecord = array();
         $this->setDayStorage(array());
         $this->eventRecord = $eventRecord;
@@ -381,7 +381,7 @@ class DayGenerator
             $startDate->modify('first day of this month');
 
             $maxDate = $this->getMaxDateForGeneratedDays($this->getEventBegin());
-            while ($startDate < $maxDate) {
+            while ($startDate <= $maxDate) {
                 $this->addDaysForMonth($startDate->format('F'), $startDate->format('Y'));
                 $startDate->modify('next month');
             }

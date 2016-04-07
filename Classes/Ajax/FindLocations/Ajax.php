@@ -44,19 +44,7 @@ class Ajax extends AbstractAjaxRequest
      */
     public function initializeObject()
     {
-        $this->databaseConnection = $GLOBALS['TYPO3_DB'];
         Bootstrap::getInstance()->loadCachedTca();
-    }
-
-    /**
-     * getter for database connection
-     * Needed for UnitTests.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     */
-    public function getDatabaseConnection()
-    {
-        return $this->databaseConnection;
     }
 
     /**
@@ -89,10 +77,10 @@ class Ajax extends AbstractAjaxRequest
      */
     protected function findLocations($locationPart)
     {
-        $locations = $this->databaseConnection->exec_SELECTgetRows(
+        $locations = $this->getDatabaseConnection()->exec_SELECTgetRows(
             'uid, location as label',
             'tx_events2_domain_model_location',
-            'location LIKE "%'.$this->databaseConnection->escapeStrForLike($locationPart, 'tx_events2_domain_model_location').'%"'.
+            'location LIKE "%'.$this->getDatabaseConnection()->escapeStrForLike($locationPart, 'tx_events2_domain_model_location').'%"'.
             BackendUtility::BEenableFields('tx_events2_domain_model_location').
             BackendUtility::deleteClause('tx_events2_domain_model_location'),
             '', 'location', ''
@@ -104,5 +92,15 @@ class Ajax extends AbstractAjaxRequest
         } else {
             return $locations;
         }
+    }
+
+    /**
+     * Get TYPO3 Database Connection
+     *
+     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     */
+    public function getDatabaseConnection()
+    {
+        return $GLOBALS['TYPO3_DB'];
     }
 }

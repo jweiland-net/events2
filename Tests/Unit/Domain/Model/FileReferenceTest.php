@@ -25,7 +25,7 @@ namespace JWeiland\Events2\Tests\Unit\Domain\Model;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use TYPO3\CMS\Extbase\Domain\Model\FileReference;
+use JWeiland\Events2\Domain\Model\FileReference;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
 
 /**
@@ -36,7 +36,7 @@ use TYPO3\CMS\Core\Tests\UnitTestCase;
 class FileReferenceTest extends UnitTestCase
 {
     /**
-     * @var \TYPO3\CMS\Extbase\Domain\Model\FileReference
+     * @var FileReference
      */
     protected $subject;
 

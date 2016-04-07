@@ -26,6 +26,7 @@ namespace JWeiland\Events2\Tests\Unit\Ajax\FindLocations;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 use JWeiland\Events2\Ajax\FindLocations;
+use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
 
 /**
@@ -40,9 +41,19 @@ class AjaxTest extends UnitTestCase
      */
     protected $subject;
 
+    /**
+     * @var DatabaseConnection
+     */
+    protected $dbProphecy;
+
     public function setUp()
     {
         $this->subject = new FindLocations\Ajax();
+        $this->dbProphecy = $this->prophesize(DatabaseConnection::class);
+        $GLOBALS['TYPO3_DB'] = $this->dbProphecy->reveal();
+        $GLOBALS['TYPO3_LOADED_EXT'] = array(
+            'events2' => array()
+        );
     }
 
     public function tearDown()

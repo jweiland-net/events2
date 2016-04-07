@@ -459,7 +459,6 @@ class DayRelationsTest extends UnitTestcase
             'pid' => 23,
             'crdate' => $time,
             'cruser_id' => (int) $GLOBALS['BE_USER']->user['uid'],
-            'sys_language_uid' => 12,
         );
 
         /** @var \JWeiland\Events2\Utility\DateTimeUtility|\PHPUnit_Framework_MockObject_MockObject $dateTimeUtility */

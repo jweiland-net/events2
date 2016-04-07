@@ -43,17 +43,22 @@ class EventRepository extends Repository
     /**
      * @var \JWeiland\Events2\Utility\DateTimeUtility
      */
-    protected $dateTimeUtility;
+    protected $dateTimeUtility = null;
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper
      */
-    protected $dataMapper;
+    protected $dataMapper = null;
 
     /**
      * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
      */
-    protected $configurationManager;
+    protected $configurationManager = null;
+
+    /**
+     * @var array
+     */
+    protected $settings = array();
 
     /**
      * inject DateTime Utility.
@@ -83,6 +88,27 @@ class EventRepository extends Repository
     public function injectConfigurationManager(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager)
     {
         $this->configurationManager = $configurationManager;
+    }
+
+    /**
+     * Returns the settings
+     *
+     * @return array $settings
+     */
+    public function getSettings()
+    {
+        return $this->settings;
+    }
+
+    /**
+     * Sets the settings
+     *
+     * @param array $settings
+     * @return void
+     */
+    public function setSettings(array $settings)
+    {
+        $this->settings = $settings;
     }
 
     /**
@@ -164,21 +190,19 @@ class EventRepository extends Repository
      * find events.
      *
      * @param string $type
-     * @param string $categories
-     * @param bool   $mergeEvents
      *
      * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
-    public function findEvents($type, $categories = '', $mergeEvents = false)
+    public function findEvents($type)
     {
         /** @var \TYPO3\CMS\Extbase\Persistence\Generic\Query $query */
         $query = $this->createQuery();
         $statement = $this->createStatement()->setQuery($query);
 
-        if (!empty($categories)) {
-            $statement->setCategoryRelation(true)->addWhereForCategories($categories);
+        if (!empty($this->settings['categories'])) {
+            $statement->setCategoryRelation(true)->addWhereForCategories($this->settings['categories']);
         }
-        if ($mergeEvents) {
+        if ($this->settings['mergeEvents']) {
             $statement->setMergeEvents(true);
         }
 

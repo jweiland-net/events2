@@ -51,6 +51,24 @@ class DayGeneratorTest extends UnitTestcase
         $this->subject = new DayGenerator();
         $this->subject->injectExtConf(new ExtConf());
         $this->subject->injectDateTimeUtility(new DateTimeUtility());
+
+        $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['xth']['config']['items'] = array(
+            array('first', 'first'),
+            array('second', 'second'),
+            array('third', 'third'),
+            array('fourth', 'fourth'),
+            array('fifth', 'fifth'),
+        );
+
+        $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['weekday']['config']['items'] = array(
+            array('monday', 'monday'),
+            array('tuesday', 'tuesday'),
+            array('wednesday', 'wednesday'),
+            array('thursday', 'thursday'),
+            array('friday', 'friday'),
+            array('saturday', 'saturday'),
+            array('sunday', 'sunday'),
+        );
     }
 
     /**
@@ -364,8 +382,9 @@ class DayGeneratorTest extends UnitTestcase
      */
     public function initializeWithGivenWeekdaysResultsInAddedDaysInStorage()
     {
-        $eventBegin = new \DateTime('17.01.2015');
+        $eventBegin = new \DateTime();
         $eventBegin->modify('midnight');
+        $eventBegin->modify('next saturday');
         $eventEnd = clone $eventBegin;
         $eventEnd->modify('+8 days');
 
@@ -408,7 +427,9 @@ class DayGeneratorTest extends UnitTestcase
      */
     public function initializeWithGivenXthsResultsInAddedDaysInStorage()
     {
-        $eventBegin = new \DateTime('17.01.2015');
+        // this date has to be updated each 6 month.
+        // Set it to a month which starts with a thursday
+        $eventBegin = new \DateTime('17.09.2016');
         $eventBegin->modify('midnight');
         $eventEnd = clone $eventBegin;
         $eventEnd->modify('+20 days'); // 06.02.1015

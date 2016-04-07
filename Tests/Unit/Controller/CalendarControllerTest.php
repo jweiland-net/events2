@@ -26,6 +26,7 @@ namespace JWeiland\Events2\Tests\Unit\Controller;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 use JWeiland\Events2\Controller\CalendarController;
+use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
 
 /**
@@ -40,9 +41,16 @@ class CalendarControllerTest extends UnitTestCase
      */
     protected $subject;
 
+    /**
+     * @var DatabaseConnection
+     */
+    protected $dbProphecy;
+
     public function setUp()
     {
         $this->subject = new CalendarController();
+        $this->dbProphecy = $this->prophesize(DatabaseConnection::class);
+        $GLOBALS['TYPO3_DB'] = $this->dbProphecy->reveal();
     }
 
     public function tearDown()
