@@ -5,7 +5,7 @@ namespace JWeiland\Events2\Controller;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2015 Stefan Froemken <projects@jweiland.net>, jweiland.net
+ *  (c) 2016 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *
  *  All rights reserved
  *
@@ -66,6 +66,13 @@ class AbstractController extends ActionController
      * @var \JWeiland\Events2\Domain\Repository\LocationRepository
      */
     protected $locationRepository;
+
+    /**
+     * organizerRepository
+     *
+     * @var \JWeiland\Events2\Domain\Repository\OrganizerRepository
+     */
+    protected $organizerRepository;
 
     /**
      * categoryRepository.
@@ -156,6 +163,17 @@ class AbstractController extends ActionController
     }
 
     /**
+     * inject organizerRepository
+     *
+     * @param \JWeiland\Events2\Domain\Repository\OrganizerRepository $organizerRepository
+     * @return void
+     */
+    public function injectOrganizerRepository(\JWeiland\Events2\Domain\Repository\OrganizerRepository $organizerRepository)
+    {
+        $this->organizerRepository = $organizerRepository;
+    }
+
+    /**
      * inject category repository.
      *
      * @param \JWeiland\Events2\Domain\Repository\CategoryRepository $categoryRepository
@@ -191,7 +209,7 @@ class AbstractController extends ActionController
     public function initializeAction()
     {
         $this->eventRepository->setSettings($this->settings);
-        
+
         // if this value was not set, then it will be filled with 0
         // but that is not good, because UriBuilder accepts 0 as pid, so it's better to set it to NULL
         if (empty($this->settings['pidOfDetailPage'])) {
@@ -216,6 +234,9 @@ class AbstractController extends ActionController
         $this->view->assign('eventsOnTopOfList', $this->eventRepository->findTopEvents($this->settings['mergeEvents']));
         $this->view->assign('siteUrl', GeneralUtility::getIndpEnv('TYPO3_SITE_URL')); // needed for ajax requests
         $this->view->assign('data', $this->configurationManager->getContentObject()->data);
+        if ($this->settings['showFilterForOrganizerInFrontend']) {
+            $this->view->assign('organizers', $this->organizerRepository->findAll());
+        }
     }
 
     /**

@@ -4,7 +4,7 @@ namespace JWeiland\Events2\Domain\Repository;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2015 Stefan Froemken <projects@jweiland.net>, jweiland.net
+ *  (c) 2016 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *
  *  All rights reserved
  *
@@ -24,6 +24,7 @@ namespace JWeiland\Events2\Domain\Repository;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use JWeiland\Events2\Domain\Model\Filter;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -190,10 +191,11 @@ class EventRepository extends Repository
      * find events.
      *
      * @param string $type
+     * @param Filter $filter
      *
      * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
-    public function findEvents($type)
+    public function findEvents($type, Filter $filter = null)
     {
         /** @var \TYPO3\CMS\Extbase\Persistence\Generic\Query $query */
         $query = $this->createQuery();
@@ -204,6 +206,21 @@ class EventRepository extends Repository
         }
         if ($this->settings['mergeEvents']) {
             $statement->setMergeEvents(true);
+        }
+
+        // add filter for organizer
+        if ($filter instanceof Filter && $filter->getOrganizer()) {
+            $statement->addWhere(
+                'tx_events2_domain_model_event.organizer',
+                '=',
+                $filter->getOrganizer()
+            );
+        } elseif ($this->settings['preFilterByOrganizer']) {
+            $statement->addWhere(
+                'tx_events2_domain_model_event.organizer',
+                '=',
+                $this->settings['preFilterByOrganizer']
+            );
         }
 
         switch ($type) {

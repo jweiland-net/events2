@@ -8,6 +8,14 @@
 				<source>General</source>
 				<target>Allgemein</target>
 			</trans-unit>
+			<trans-unit id="sheetList" xml:space="preserve">
+				<source>Listview</source>
+				<target>Listenansicht</target>
+			</trans-unit>
+			<trans-unit id="sheetDetail" xml:space="preserve">
+				<source>Detailview</source>
+				<target>Detailansicht</target>
+			</trans-unit>
 			<trans-unit id="sheetNew" xml:space="preserve">
 				<source>New Events</source>
 				<target>Neue Veranstaltungen</target>
@@ -38,9 +46,21 @@
 				<source>List events for this week</source>
 				<target>Auflistung von Terminen dieser Woche</target>
 			</trans-unit>
+			<trans-unit id="categories">
+				<source>Categories</source>
+				<target>Kategorien</target>
+			</trans-unit>
 			<trans-unit id="mergeEvents">
 				<source>Merge events: Same events with given EventEnd-Date will be merged to one entry in listings</source>
 				<target>Veranstaltungen zusammenführen: Gleiche Veranstaltungen, bei denen ein Veranstaltungsenddatum gesetzt ist, werden als ein Eintrag in die Listenansicht übernommen.</target>
+			</trans-unit>
+			<trans-unit id="preFilterByOrganizer">
+				<source>Pre filter events by organizer</source>
+				<target>Veranstaltungen auf Veranstalter beschränken</target>
+			</trans-unit>
+			<trans-unit id="showFilterForOrganizerInFrontend">
+				<source>Show a filter selection for organizers in Frontend</source>
+				<target>Füge eine Selectbox für Veranstalter in die Webseite ein</target>
 			</trans-unit>
 			<trans-unit id="display">
 				<source>Display</source>
@@ -57,18 +77,6 @@
 			<trans-unit id="displayEvent">
 				<source>Show Event only</source>
 				<target>Zeige nur die Veranstaltung</target>
-			</trans-unit>
-			<trans-unit id="categories">
-				<source>Categories</source>
-				<target>Kategorien</target>
-			</trans-unit>
-			<trans-unit id="mainCategories">
-				<source>Comma seperated list of main category uids</source>
-				<target>Kommaseparierte Liste von Hauptkategorie UIDS</target>
-			</trans-unit>
-			<trans-unit id="category">
-				<source>Category</source>
-				<target>Kategorie</target>
 			</trans-unit>
 			<trans-unit id="selectableCategoriesForNewEvents">
 				<source>Selectable categories for new events in Frontend</source>

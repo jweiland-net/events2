@@ -5,7 +5,7 @@ namespace JWeiland\Events2\Controller;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2015 Stefan Froemken <projects@jweiland.net>, jweiland.net
+ *  (c) 2016 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *
  *  All rights reserved
  *

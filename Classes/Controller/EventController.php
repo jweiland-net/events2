@@ -5,7 +5,7 @@ namespace JWeiland\Events2\Controller;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2015 Stefan Froemken <projects@jweiland.net>, jweiland.net
+ *  (c) 2016 Stefan Froemken <projects@jweiland.net>, jweiland.net
  *
  *  All rights reserved
  *
@@ -26,6 +26,7 @@ namespace JWeiland\Events2\Controller;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 use JWeiland\Events2\Domain\Model\Day;
+use JWeiland\Events2\Domain\Model\Filter;
 use TYPO3\CMS\Extbase\Property\TypeConverter\DateTimeConverter;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -37,46 +38,61 @@ class EventController extends AbstractController
 {
     /**
      * action list.
+     *
+     * @param Filter $filter
+     * @return void
      */
-    public function listAction()
+    public function listAction(Filter $filter = null)
     {
-        $events = $this->eventRepository->findEvents('list');
+        $events = $this->eventRepository->findEvents('list', $filter);
         $this->view->assign('events', $events);
     }
 
     /**
      * action list latest.
+     *
+     * @param Filter $filter
+     * @return void
      */
-    public function listLatestAction()
+    public function listLatestAction(Filter $filter = null)
     {
-        $events = $this->eventRepository->findEvents('latest');
+        $events = $this->eventRepository->findEvents('latest', $filter);
         $this->view->assign('events', $events);
     }
 
     /**
      * action list today.
+     *
+     * @param Filter $filter
+     * @return void
      */
-    public function listTodayAction()
+    public function listTodayAction(Filter $filter = null)
     {
-        $events = $this->eventRepository->findEvents('today');
+        $events = $this->eventRepository->findEvents('today', $filter);
         $this->view->assign('events', $events);
     }
 
     /**
      * action list this week.
+     *
+     * @param Filter $filter
+     * @return void
      */
-    public function listThisWeekAction()
+    public function listThisWeekAction(Filter $filter = null)
     {
-        $events = $this->eventRepository->findEvents('thisWeek');
+        $events = $this->eventRepository->findEvents('thisWeek', $filter);
         $this->view->assign('events', $events);
     }
 
     /**
      * action list range.
+     *
+     * @param Filter $filter
+     * @return void
      */
-    public function listRangeAction()
+    public function listRangeAction(Filter $filter = null)
     {
-        $events = $this->eventRepository->findEvents('range');
+        $events = $this->eventRepository->findEvents('range', $filter);
         $this->view->assign('events', $events);
     }
 

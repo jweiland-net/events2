@@ -1,6 +1,6 @@
 <?php
 
-namespace JWeiland\Events2\Controller;
+namespace JWeiland\Events2\Domain\Model;
 
 /***************************************************************
  *  Copyright notice
@@ -25,36 +25,38 @@ namespace JWeiland\Events2\Controller;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class AjaxController extends ActionController
+class Filter extends AbstractEntity
 {
     /**
-     * this ajax action can only call Ajax scripts based on pageType
-     * eID scripts has its own bootstrap.
+     * Organizer.
      *
-     * @param string $objectName Which Ajax Object has to be called
-     * @param array  $arguments  Arguments which have to be send to the Ajax Object
-     *
-     * @return string
+     * @var int
      */
-    public function callAjaxObjectAction($objectName, $arguments = array())
+    protected $organizer = 0;
+
+    /**
+     * Returns the organizer
+     *
+     * @return int $organizer
+     */
+    public function getOrganizer()
     {
-        if (is_string($objectName)) {
-            $className = 'JWeiland\\Events2\\Ajax\\'.ucfirst($objectName);
-            if (class_exists($className)) {
-                $object = $this->objectManager->get($className);
-                if (method_exists($object, 'processAjaxRequest')) {
-                    $result = $object->processAjaxRequest($arguments);
+        return $this->organizer;
+    }
 
-                    return $result;
-                }
-            }
-        }
-
-        return '';
+    /**
+     * Sets the organizer
+     *
+     * @param int $organizer
+     * @return void
+     */
+    public function setOrganizer($organizer)
+    {
+        $this->organizer = (int)$organizer;
     }
 }

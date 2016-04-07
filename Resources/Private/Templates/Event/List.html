@@ -18,6 +18,12 @@
 		</p>
 	</f:security.ifHasRole>
 
+	<f:if condition="{settings.showFilterForOrganizerInFrontend}">
+		<f:form action="list" id="eventFilter" name="filter">
+			<f:form.select id="organizers" additionalAttributes="{onchange: 'this.form.submit()'}" options="{organizers}" property="organizer" size="1" optionLabelField="organizer" optionValueField="uid" sortByOptionLabel="1" prependOptionLabel="" prependOptionValue="" />
+		</f:form>
+	</f:if>
+
 	<f:if condition="{eventsOnTopOfList}">
 		<div class="topOfList">
 			<f:render partial="Event/List" arguments="{events: eventsOnTopOfList}" />

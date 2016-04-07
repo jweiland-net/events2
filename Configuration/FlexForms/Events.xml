@@ -18,7 +18,7 @@
 								<items>
 									<numIndex index="0">
 										<numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:list</numIndex>
-										<numIndex index="1"></numIndex>
+										<numIndex index="1" />
 									</numIndex>
 									<numIndex index="1">
 										<numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:listLatest</numIndex>
@@ -40,6 +40,83 @@
 							</config>
 						</TCEforms>
 					</switchableControllerActions>
+					<settings.categories>
+						<TCEforms>
+							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:categories</label>
+							<config>
+								<type>select</type>
+								<foreign_table>sys_category</foreign_table>
+								<renderMode>tree</renderMode>
+								<treeConfig>
+									<parentField>parent</parentField>
+									<rootUid>0</rootUid>
+									<appearance>
+										<showHeader>TRUE</showHeader>
+										<expandAll>FALSE</expandAll>
+									</appearance>
+								</treeConfig>
+								<size>15</size>
+								<maxitems>99</maxitems>
+								<minitems>0</minitems>
+							</config>
+						</TCEforms>
+					</settings.categories>
+				</el>
+			</ROOT>
+		</sDEFAULT>
+		<list>
+			<ROOT>
+				<TCEforms>
+					<sheetTitle>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:sheetList</sheetTitle>
+				</TCEforms>
+				<type>array</type>
+				<el>
+					<settings.mergeEvents>
+						<TCEforms>
+							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:mergeEvents</label>
+							<config>
+								<type>check</type>
+								<default>0</default>
+							</config>
+						</TCEforms>
+					</settings.mergeEvents>
+					<settings.preFilterByOrganizer>
+						<TCEforms>
+							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:preFilterByOrganizer</label>
+							<config>
+								<type>select</type>
+								<foreign_table>tx_events2_domain_model_organizer</foreign_table>
+								<foreign_table_where>AND tx_events2_domain_model_organizer.pid=###PAGE_TSCONFIG_ID### ORDER BY title</foreign_table_where>
+								<items>
+									<numIndex index="0">
+										<numIndex index="0" />
+										<numIndex index="1" />
+									</numIndex>
+								</items>
+								<size>1</size>
+								<maxitems>1</maxitems>
+								<minitems>0</minitems>
+							</config>
+						</TCEforms>
+					</settings.preFilterByOrganizer>
+					<settings.showFilterForOrganizerInFrontend>
+						<TCEforms>
+							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:showFilterForOrganizerInFrontend</label>
+							<config>
+								<type>check</type>
+							</config>
+						</TCEforms>
+					</settings.showFilterForOrganizerInFrontend>
+				</el>
+			</ROOT>
+		</list>
+		<detail>
+			<ROOT>
+				<TCEforms>
+					<sheetTitle>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:sheetDetail</sheetTitle>
+				</TCEforms>
+				<type>array</type>
+				<el>
 					<settings.display>
 						<TCEforms>
 							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:display</label>
@@ -63,39 +140,9 @@
 							</config>
 						</TCEforms>
 					</settings.display>
-					<settings.categories>
-						<TCEforms>
-							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:categories</label>
-							<config>
-								<type>select</type>
-								<foreign_table>sys_category</foreign_table>
-								<renderMode>tree</renderMode>
-								<treeConfig>
-									<parentField>parent</parentField>
-									<rootUid>0</rootUid>
-									<appearance>
-										<showHeader>TRUE</showHeader>
-										<expandAll>FALSE</expandAll>
-									</appearance>
-								</treeConfig>
-								<size>15</size>
-								<maxitems>99</maxitems>
-								<minitems>0</minitems>
-							</config>
-						</TCEforms>
-					</settings.categories>
-					<settings.mergeEvents>
-						<TCEforms>
-							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:mergeEvents</label>
-							<config>
-								<type>check</type>
-								<default>0</default>
-							</config>
-						</TCEforms>
-					</settings.mergeEvents>
 				</el>
 			</ROOT>
-		</sDEFAULT>
+		</detail>
 		<new>
 			<ROOT>
 				<TCEforms>
