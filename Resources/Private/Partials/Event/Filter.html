@@ -1,5 +1,6 @@
+<f:debug>{organizers}</f:debug>
 <f:if condition="{settings.showFilterForOrganizerInFrontend}">
-	<f:if condition="{organizers->f:count()>1}">
+	<f:if condition="{organizers->f:count()}>1">
 		<f:form action="{action}" id="eventFilter" name="filter">
 			<f:form.select id="organizers" additionalAttributes="{onchange: 'this.form.submit()'}" options="{organizers}" property="organizer" size="1" optionLabelField="organizer" optionValueField="uid" sortByOptionLabel="1" prependOptionLabel="" prependOptionValue="" />
 		</f:form>
