@@ -7,6 +7,19 @@
 			</f:if>
 		</span>Plugin
 	</li>
+	<f:if condition="{pi_flexform_transformed.settings.preFilterByOrganizer}">
+		<li class="list-group-item {classNameForWarnings}">
+			<span class="badge">{titleOfOrganizer}</span>Filter by organizer
+		</li>
+	</f:if>
+	<li class="list-group-item {classNameForWarnings}">
+		<span class="badge">
+			<f:if condition="{pi_flexform_transformed.settings.showFilterForOrganizerInFrontend}">
+				<f:then>Yes</f:then>
+				<f:else>No</f:else>
+			</f:if>
+		</span>Show Filters in FE
+	</li>
 	<li class="list-group-item">
 		<span class="badge">
 			<f:if condition="{pi_flexform_transformed.settings.mergeEvents}">

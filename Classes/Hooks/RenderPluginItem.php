@@ -25,7 +25,10 @@ namespace JWeiland\Events2\Hooks;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Service\FlexFormService;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 
 /**
@@ -44,14 +47,106 @@ class RenderPluginItem
     {
         $content = '';
         if ($parameters['row']['list_type'] === 'events2_events') {
-            /** @var StandaloneView $view */
-            $view = GeneralUtility::makeInstance('TYPO3\\CMS\\Fluid\\View\\StandaloneView');
-            $view->setTemplatePathAndFilename(
-                GeneralUtility::getFileAbsFileName('EXT:events2/Resources/Private/Templates/BackendPluginItem.html')
-            );
+            $flexFormValues = $this->getFlexFormSettings($parameters['row']);
+            $view = $this->getView();
             $view->assign('parameters', $parameters);
+            $view->assign('pi_flexform_transformed', $flexFormValues);
+            $view->assign('titleOfOrganizer', $this->getTitleOfOrganizer($flexFormValues));
+            $view->assign('classNameForWarnings', $this->getWarningClassOnMissConfiguration($flexFormValues));
             $content = $view->render();
         }
         return $content;
+    }
+
+    /**
+     * Returns a warning class name on miss configuration
+     *
+     * @param array $flexFormSettings
+     * @return string
+     */
+    protected function getWarningClassOnMissConfiguration(array $flexFormSettings)
+    {
+        $class= '';
+        if (
+            !empty($flexFormSettings['settings']['preFilterByOrganizer'])
+            && !empty($flexFormSettings['settings']['showFilterForOrganizerInFrontend'])
+        ) {
+            $class = 'message-warning';
+        }
+        return $class;
+    }
+
+    /**
+     * Get Fluid Standalone View
+     *
+     * @return StandaloneView
+     */
+    protected function getView()
+    {
+        /** @var StandaloneView $view */
+        $view = GeneralUtility::makeInstance('TYPO3\\CMS\\Fluid\\View\\StandaloneView');
+        $view->setTemplatePathAndFilename(
+            GeneralUtility::getFileAbsFileName('EXT:events2/Resources/Private/Templates/BackendPluginItem.html')
+        );
+        return $view;
+    }
+
+    /**
+     * Get Title of Organizer
+     *
+     * @param array $flexFormSettings
+     * @return string
+     */
+    protected function getTitleOfOrganizer(array $flexFormSettings)
+    {
+        $title = '';
+        if (empty($flexFormSettings['settings']['preFilterByOrganizer'])) {
+            return $title;
+        }
+        $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+            '*',
+            'tx_events2_domain_model_organizer',
+            'uid=' . (int)$flexFormSettings['settings']['preFilterByOrganizer']
+        );
+        if (empty($row)) {
+            return $title;
+        }
+        return BackendUtility::getRecordTitle(
+            'tx_events2_domain_model_organizer',
+            $row,
+            true
+        );
+    }
+
+    /**
+     * Get Settings from FlexForm
+     *
+     * @param array $row
+     * @return array
+     */
+    protected function getFlexFormSettings(array $row)
+    {
+        $settings = array();
+        if (!empty($row['pi_flexform'])) {
+            /** @var FlexFormService $flexFormService */
+            $flexFormService = GeneralUtility::makeInstance(FlexFormService::class);
+            $settings = $flexFormService->convertFlexFormContentToArray($row['pi_flexform']);
+        }
+        return $settings;
+    }
+
+    protected function assignOrganizerToView()
+    {
+
+    }
+
+    /**
+     * Get TYPO3s Database Connection
+     *
+     * @return DatabaseConnection
+     */
+    protected function getDatabaseConnection()
+    {
+        return $GLOBALS['TYPO3_DB'];
     }
 }

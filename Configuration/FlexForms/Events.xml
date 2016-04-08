@@ -86,7 +86,7 @@
 							<config>
 								<type>select</type>
 								<foreign_table>tx_events2_domain_model_organizer</foreign_table>
-								<foreign_table_where>AND tx_events2_domain_model_organizer.pid=###PAGE_TSCONFIG_ID### ORDER BY title</foreign_table_where>
+								<foreign_table_where>AND CASE ###PAGE_TSCONFIG_ID### WHEN 0 THEN tx_events2_domain_model_organizer.pid>0 ELSE tx_events2_domain_model_organizer.pid=###PAGE_TSCONFIG_ID### END ORDER BY title</foreign_table_where>
 								<items>
 									<numIndex index="0">
 										<numIndex index="0" />
