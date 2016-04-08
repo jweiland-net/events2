@@ -135,11 +135,6 @@ class RenderPluginItem
         return $settings;
     }
 
-    protected function assignOrganizerToView()
-    {
-
-    }
-
     /**
      * Get TYPO3s Database Connection
      *

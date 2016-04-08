@@ -16,6 +16,8 @@
 		</p>
 	</f:security.ifHasRole>
 
+	<f:render partial="Event/Filter" arguments="{action: 'listLatest', organizers: organizers}" />
+
 	<f:if condition="{eventsOnTopOfList}">
 		<div class="topOfList">
 			<f:render partial="Event/List" arguments="{events: eventsOnTopOfList}" />
