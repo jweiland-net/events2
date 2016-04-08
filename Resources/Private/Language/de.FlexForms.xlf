@@ -60,7 +60,7 @@
 			</trans-unit>
 			<trans-unit id="showFilterForOrganizerInFrontend">
 				<source>Show a filter selection for organizers in Frontend</source>
-				<target>Füge eine Selectbox für Veranstalter in die Webseite ein</target>
+				<target>Füge eine Filteroption für Veranstalter in die Webseite ein</target>
 			</trans-unit>
 			<trans-unit id="display">
 				<source>Display</source>
