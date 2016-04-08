@@ -164,16 +164,17 @@ class Ajax
         $dayArray = array();
         $days = $this->findAllDaysInMonth($month, $year);
         foreach ($days as $day) {
-            $dayOfMonth = $this->dateTimeUtility->convert($day['day'])->format('j');
-            $uri = $this->getUriForDay($day['uid']);
-            $dayArray[$dayOfMonth][] = array(
+            $addDay = array(
                 'uid' => $day['eventUid'],
-                'title' => $day['eventTitle'],
-                'uri' => $uri,
+                'title' => $day['eventTitle']
             );
+            $addDay['uri'] = $this->getUriForDay($day['uid']);
+            $dayOfMonth = $this->dateTimeUtility->convert($day['day'])->format('j');
+            $dayArray[$dayOfMonth][] = $addDay;
         }
+        $this->addHolidays($dayArray);
 
-        return json_encode($dayArray, JSON_FORCE_OBJECT);
+        return json_encode($dayArray);
     }
 
     /**
@@ -216,14 +217,40 @@ class Ajax
             'tx_events2_events' => array(
                 'controller' => 'Day',
                 'action' => 'show',
-                'day' => (int) $dayUid,
+                'day' => (int)$dayUid,
             ),
         );
         $cacheHashArray = $this->cacheHashCalculator->getRelevantParameters(GeneralUtility::implodeArrayForUrl('', $query));
         $query['cHash'] = $this->cacheHashCalculator->calculateCacheHash($cacheHashArray);
-        $uri = $siteUrl.http_build_query($query);
+        $uri = $siteUrl . http_build_query($query);
 
         return $uri;
+    }
+
+    /**
+     * Add Holidays
+     *
+     * @param array $days
+     */
+    protected function addHolidays(array &$days)
+    {
+        $monthOfYear = $this->getDatabaseConnection()->fullQuoteStr(
+            $this->getArgument('month'),
+            'tx_events2_domain_model_holiday'
+        );
+        $holidays = $this->getDatabaseConnection()->exec_SELECTgetRows(
+            'day',
+            'tx_events2_domain_model_holiday',
+            'month=' . $monthOfYear
+        );
+        if (!empty($holidays)) {
+            foreach ($holidays as $holiday) {
+                $days[$holiday['day']][] = array(
+                    'uid' => $holiday['day'],
+                    'class' => 'holiday'
+                );
+            }
+        }
     }
 
     /**
@@ -267,14 +294,14 @@ class Ajax
             $statement = $this->getDatabaseConnection()->prepare_SELECTquery(
                 'tx_events2_domain_model_day.uid, tx_events2_domain_model_day.day, tx_events2_domain_model_event.uid as eventUid, tx_events2_domain_model_event.title as eventTitle',
                 'tx_events2_domain_model_day
-				LEFT JOIN tx_events2_event_day_mm ON tx_events2_domain_model_day.uid=tx_events2_event_day_mm.uid_foreign
-				LEFT JOIN tx_events2_domain_model_event ON tx_events2_domain_model_event.uid=tx_events2_event_day_mm.uid_local
-				LEFT JOIN sys_category_record_mm ON tx_events2_domain_model_event.uid=sys_category_record_mm.uid_foreign',
+                LEFT JOIN tx_events2_event_day_mm ON tx_events2_domain_model_day.uid=tx_events2_event_day_mm.uid_foreign
+                LEFT JOIN tx_events2_domain_model_event ON tx_events2_domain_model_event.uid=tx_events2_event_day_mm.uid_local
+                LEFT JOIN sys_category_record_mm ON tx_events2_domain_model_event.uid=sys_category_record_mm.uid_foreign',
                 'sys_category_record_mm.tablenames = :tablename
-				AND tx_events2_domain_model_day.day >= :monthBegin
-				AND tx_events2_domain_model_day.day < :monthEnd
-				AND FIND_IN_SET(tx_events2_domain_model_event.pid, :storagePids)
-				AND sys_category_record_mm.uid_local IN ('.$categories.')'.
+                AND tx_events2_domain_model_day.day >= :monthBegin
+                AND tx_events2_domain_model_day.day < :monthEnd
+                AND FIND_IN_SET(tx_events2_domain_model_event.pid, :storagePids)
+                AND sys_category_record_mm.uid_local IN ('.$categories.')'.
                 $this->addWhereForEnableFields()
             );
             $statement->execute(array(
@@ -287,11 +314,11 @@ class Ajax
             $statement = $this->getDatabaseConnection()->prepare_SELECTquery(
                 'tx_events2_domain_model_day.uid, tx_events2_domain_model_day.day, tx_events2_domain_model_event.uid as eventUid, tx_events2_domain_model_event.title as eventTitle',
                 'tx_events2_domain_model_day
-				LEFT JOIN tx_events2_event_day_mm ON tx_events2_domain_model_day.uid=tx_events2_event_day_mm.uid_foreign
-				LEFT JOIN tx_events2_domain_model_event ON tx_events2_domain_model_event.uid=tx_events2_event_day_mm.uid_local',
+                LEFT JOIN tx_events2_event_day_mm ON tx_events2_domain_model_day.uid=tx_events2_event_day_mm.uid_foreign
+                LEFT JOIN tx_events2_domain_model_event ON tx_events2_domain_model_event.uid=tx_events2_event_day_mm.uid_local',
                 'tx_events2_domain_model_day.day >= :monthBegin
-				AND tx_events2_domain_model_day.day < :monthEnd
-				AND FIND_IN_SET(tx_events2_domain_model_event.pid, :storagePids)' .
+                AND tx_events2_domain_model_day.day < :monthEnd
+                AND FIND_IN_SET(tx_events2_domain_model_event.pid, :storagePids)' .
                 $this->addWhereForEnableFields()
             );
             $statement->execute(array(

@@ -309,12 +309,17 @@
 				<source>Link</source>
 			</trans-unit>
 
-			<trans-unit id="tx_events2_event_location_mm">
-				<source>MM table for event REL location</source>
+			<trans-unit id="tx_events2_domain_model_holiday">
+				<source>Holiday</source>
 			</trans-unit>
-
-			<trans-unit id="tx_events2_event_organizer_mm">
-				<source>MM table for event REL organizer</source>
+			<trans-unit id="tx_events2_domain_model_holiday.title">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_holiday.day">
+				<source>Day</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_holiday.month">
+				<source>Month</source>
 			</trans-unit>
 
 		</body>

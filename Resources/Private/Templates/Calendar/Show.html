@@ -20,11 +20,18 @@
 				beforeShowDay: function(date) {
 					if (days == null) return [false, "", ""];
 					if (days.hasOwnProperty(date.getDate())) {
-						return [true, "", days[date.getDate()][0]["title"]];
+						var title = getTitle(days, date);
+						if (title) {
+							return [true, getClass(days, date), title];
+						} else {
+							return [false, getClass(days, date), ""];
+						}
 					} else {
 						if (currentDate.getDate() == date.getDate() && currentDate.getMonth() == date.getMonth()) {
 							return [true, "", ""];
-						} else return [false, "", ""];
+						} else {
+							return [false, "", ""];
+						}
 					}
 				},
 				onSelect: function(dateText, inst) {
@@ -36,7 +43,33 @@
 					days = getDaysForMonth(month, year, storagePids, pidOfListPage);
 				}
 			});
-			jQuery( "div#events2calendar" ).datepicker( "setDate", setDate);
+			jQuery( "div#events2calendar" ).datepicker("setDate", setDate);
+
+			// Get className for day
+			function getClass(days, date) {
+				var className = '';
+				for (var i = 0; i < days[date.getDate()].length; i++) {
+					if (days[date.getDate()][i].hasOwnProperty("class")) {
+						className = days[date.getDate()][i]["class"];
+						break;
+					}
+				}
+				return className;
+			}
+
+			// Get title for day
+			function getTitle(days, date) {
+				var title = '';
+				var day = date.getDate();
+				var temp = date.getDay();
+				for (var i = 0; i < days[date.getDate()].length; i++) {
+					if (days[date.getDate()][i].hasOwnProperty("title")) {
+						title = days[date.getDate()][i]["title"];
+						break;
+					}
+				}
+				return title;
+			}
 
 			/**
 			 * update links in calendar
