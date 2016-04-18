@@ -27,9 +27,12 @@ namespace JWeiland\Events2\Hooks;
  ***************************************************************/
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Service\FlexFormService;
 use TYPO3\CMS\Fluid\View\StandaloneView;
+use TYPO3\CMS\Lang\LanguageService;
 
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
@@ -56,6 +59,31 @@ class RenderPluginItem
             $content = $view->render();
         }
         return $content;
+    }
+
+    /**
+     * Get Label for action Value
+     * f.e. Event->listLatest;Event->show;Day->show;Location->show;Video->show -> List Latest
+     *
+     * @param array $flexFormValues
+     * @return string
+     */
+    protected function getLabelForActionValue(array $flexFormValues)
+    {
+        $label = 'List';
+        $items = ArrayUtility::getValueByPath(
+            GeneralUtility::xml2array(
+                file_get_contents(ExtensionManagementUtility::extPath('events2') . 'Configuration/FlexForms/Events.xml')
+            ),
+            'sheets/sDEFAULT/ROOT/el/switchableControllerActions/TCEforms/config/items'
+        );
+        foreach ($items as $item) {
+            if ($flexFormValues['switchableControllerActions'] === $item[1]) {
+                $label = $this->getLanguageService()->sL($item[0]);
+                break;
+            }
+        }
+        return $label;
     }
 
     /**
@@ -131,6 +159,11 @@ class RenderPluginItem
             /** @var FlexFormService $flexFormService */
             $flexFormService = GeneralUtility::makeInstance(FlexFormService::class);
             $settings = $flexFormService->convertFlexFormContentToArray($row['pi_flexform']);
+            $settings = ArrayUtility::setValueByPath(
+                $settings,
+                'switchableControllerActions',
+                $this->getLabelForActionValue($settings)
+            );
         }
         return $settings;
     }
@@ -143,5 +176,15 @@ class RenderPluginItem
     protected function getDatabaseConnection()
     {
         return $GLOBALS['TYPO3_DB'];
+    }
+
+    /**
+     * Get TYPO3s Language Service
+     *
+     * @return LanguageService
+     */
+    protected function getLanguageService()
+    {
+        return $GLOBALS['LANG'];
     }
 }
