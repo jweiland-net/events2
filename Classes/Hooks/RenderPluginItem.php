@@ -157,7 +157,7 @@ class RenderPluginItem
         $settings = array();
         if (!empty($row['pi_flexform'])) {
             /** @var FlexFormService $flexFormService */
-            $flexFormService = GeneralUtility::makeInstance(FlexFormService::class);
+            $flexFormService = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Service\\FlexFormService');
             $settings = $flexFormService->convertFlexFormContentToArray($row['pi_flexform']);
             $settings = ArrayUtility::setValueByPath(
                 $settings,
