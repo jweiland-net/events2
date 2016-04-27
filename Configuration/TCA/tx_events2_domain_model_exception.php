@@ -8,7 +8,6 @@ return array(
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
-        'dividers2tabs' => true,
         'hideTable' => true,
         'type' => 'exception_type',
         'versioningWS' => 2,

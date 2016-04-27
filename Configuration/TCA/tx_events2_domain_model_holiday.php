@@ -7,7 +7,6 @@ return array(
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
         'rootLevel' => 1,
-        'dividers2tabs' => true,
         'searchFields' => 'title',
         'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('events2') . 'Resources/Public/Icons/tx_events2_domain_model_holiday.svg',
     ),
