@@ -203,7 +203,7 @@ class RepairCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandC
 
         // get all day records
         $rows = $this->databaseConnection->exec_SELECTgetRows(
-            'uid, pid, day, cruser_id, sys_language_uid',
+            'uid, pid, day, cruser_id',
             'tx_events2_domain_model_day',
             '1=1'
         );
@@ -227,7 +227,6 @@ class RepairCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandC
                     $fieldsArray['pid'] = (int) $row['pid'];
                     $fieldsArray['crdate'] = time();
                     $fieldsArray['cruser_id'] = (int) $row['cruser_id'];
-                    $fieldsArray['sys_language_uid'] = (int) $row['sys_language_uid'];
                     $this->databaseConnection->exec_INSERTquery('tx_events2_domain_model_day', $fieldsArray);
                     $dayUid = (int) $this->databaseConnection->sql_insert_id();
                 } else {
