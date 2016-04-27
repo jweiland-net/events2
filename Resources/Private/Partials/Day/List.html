@@ -4,11 +4,11 @@
 	<f:for each="{day.events}" as="event">
 		<div class="entry">
 			<div class="left">
-				<div class="weekday">{event.eventBegin -> e2:strftime(format: '%a')}</div>
-				<div class="day">{event.eventBegin -> e2:strftime(format: '%d')}</div>
-				<div class="month">{event.eventBegin -> e2:strftime(format: '%b')}</div>
+				<div class="weekday">{event.eventBegin -> f:format.date(format: '%a')}</div>
+				<div class="day">{event.eventBegin -> f:format.date(format: '%d')}</div>
+				<div class="month">{event.eventBegin -> f:format.date(format: '%b')}</div>
 				<f:if condition="{event.eventEnd}">
-					<div class="eventEnd">- {event.eventEnd -> e2:strftime(format: '%d.%b')}</div>
+					<div class="eventEnd">- {event.eventEnd -> f:format.date(format: '%d.%b')}</div>
 				</f:if>
 				<f:if condition="{event.images -> f:count()}">
 					<f:for each="{event.images}" as="image" iteration="iterator">
