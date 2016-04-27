@@ -67,7 +67,6 @@ class RepairCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandC
     {
         $this->outputLine('Start repairing day records of events');
         $counter = array(
-            'deleted' => 0,
             'duplicated' => 0,
             'daysWithoutMm' => 0,
             'mmWithoutRelation' => 0,
@@ -75,36 +74,6 @@ class RepairCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandC
             'eventCols' => 0,
             'refIndex' => 0,
         );
-
-        $this->outputLine('Search for deleted or hidden day records and remove them.');
-
-        // get all deleted and/or hidden days of event records
-        $rows = $this->databaseConnection->exec_SELECTgetRows(
-            'uid',
-            'tx_events2_domain_model_day',
-            '1=1 AND (deleted=1 OR hidden=1)'
-        );
-        // delete rows which are deleted or hidden
-        // the user don't have the possibility to delete or deactivate days
-        // so this action should do normally nothing
-        if (!empty($rows)) {
-            foreach ($rows as $row) {
-                // delete day
-                $this->databaseConnection->exec_DELETEquery(
-                    'tx_events2_domain_model_day',
-                    'uid='.(int) $row['uid']
-                );
-                // delete relation
-                $this->databaseConnection->exec_DELETEquery(
-                    'tx_events2_event_day_mm',
-                    'uid_foreign='.(int) $row['uid']
-                );
-                // @ToDo Update count in event-record
-                ++$counter['deleted'];
-            }
-        }
-        $this->outputLine('I have deleted '.$counter['deleted'].' records which are marked as deleted and/or hidden.');
-        $this->outputLine('');
 
         $this->outputLine('Search for duplicate day records. This script removes them and reassign events to the not deleted one.');
 
