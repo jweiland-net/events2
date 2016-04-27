@@ -113,9 +113,15 @@ class RenderPluginItem
     {
         /** @var StandaloneView $view */
         $view = GeneralUtility::makeInstance('TYPO3\\CMS\\Fluid\\View\\StandaloneView');
-        $view->setTemplatePathAndFilename(
-            GeneralUtility::getFileAbsFileName('EXT:events2/Resources/Private/Templates/BackendPluginItem.html')
-        );
+        if (GeneralUtility::compat_version('7.6')) {
+            $view->setTemplatePathAndFilename(
+                GeneralUtility::getFileAbsFileName('EXT:events2/Resources/Private/Templates/BackendPluginItem.html')
+            );
+        } else {
+            $view->setTemplatePathAndFilename(
+                GeneralUtility::getFileAbsFileName('EXT:events2/Resources/Private/Templates/BackendPluginItem62.html')
+            );
+        }
         return $view;
     }
 
