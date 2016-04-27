@@ -7,7 +7,7 @@
 		<f:then>
 			<f:if condition="{e2:feuser(field: 'tx_events2_organizer')}">
 				<f:then>
-					<f:flashMessages renderMode="div" class="info-box2" />
+					<f:flashMessages class="info-box2" />
 					<f:render partial="FormErrors" arguments="{object:Event}"/>
 					<f:form action="update" name="event" object="{event}" enctype="multipart/form-data" class="extform withinfo">
 						<div class="floatright clearfix marginbottom"><f:cObject typoscriptObjectPath="lib.feformdocumentation"/></div>
