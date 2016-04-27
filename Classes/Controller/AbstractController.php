@@ -29,6 +29,7 @@ use JWeiland\Events2\Domain\Model\Event;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 
 /**
@@ -227,9 +228,17 @@ class AbstractController extends ActionController
     }
 
     /**
-     * add some global variables/objects to the views.
+     * Initializes the view before invoking an action method.
+     *
+     * Override this method to solve assign variables common for all actions
+     * or prepare the view in another way before the action is called.
+     *
+     * @param ViewInterface $view The view to be initialized
+     *
+     * @return void
+     * @api
      */
-    public function initializeView()
+    protected function initializeView(ViewInterface $view)
     {
         $this->view->assign('eventsOnTopOfList', $this->eventRepository->findTopEvents($this->settings['mergeEvents']));
         $this->view->assign('siteUrl', GeneralUtility::getIndpEnv('TYPO3_SITE_URL')); // needed for ajax requests
