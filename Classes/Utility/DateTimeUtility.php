@@ -79,4 +79,25 @@ class DateTimeUtility
 
         return $date;
     }
+
+    /**
+     * Add diff of eventStart and eventEnd to a specific day
+     *
+     * @param \DateTime $day  The Day to add the difference to
+     * @param \DateTime $from The date FROM
+     * @param \DateTime $to   The date TO
+     *
+     * @return \DateTime
+     */
+    public function addDiffToDay(\DateTime $day, \DateTime $from, \DateTime $to)
+    {
+        // then and else parts will be parsed before if condition was called. This is in my kind of view a bug: http://forge.typo3.org/issues/49292
+        // But eventEnd is not a required event property, but it is a required property here
+        // So, if this viewHelper was called within an if-part, that is not true, it could be that $to is null.
+        // That's why we have to check this here before further processing
+        $clonedDay = clone $day;
+        $diff = $from->diff($to);
+
+        return $clonedDay->add($diff);
+    }
 }
