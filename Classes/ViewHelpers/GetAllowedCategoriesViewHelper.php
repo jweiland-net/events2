@@ -25,6 +25,7 @@ namespace JWeiland\Events2\ViewHelpers;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use JWeiland\Events2\Domain\Model\Category;
 use JWeiland\Events2\Domain\Model\Event;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
@@ -48,8 +49,9 @@ class GetAllowedCategoriesViewHelper extends AbstractViewHelper
         $allowedCategories = array();
         $pluginCategories = GeneralUtility::intExplode(',', trim($pluginCategories), true);
         foreach ($pluginCategories as $pluginCategory) {
+            /** @var Category $eventCategory */
             foreach ($event->getCategories() as $eventCategory) {
-                if ($pluginCategory == $eventCategory) {
+                if ($pluginCategory === $eventCategory->getUid()) {
                     $allowedCategories[] = $eventCategory;
                 }
             }
