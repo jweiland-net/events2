@@ -1,11 +1,11 @@
 plugin.tx_events2 {
   view {
     # cat=plugin.tx_events2/file; type=string; label=Path to template root (FE)
-    templateRootPaths = EXT:events2/Resources/Private/Templates/
+    templateRootPath = EXT:events2/Resources/Private/Templates/
     # cat=plugin.tx_events2/file; type=string; label=Path to template partials (FE)
-    partialRootPaths = EXT:events2/Resources/Private/Partials/
+    partialRootPath = EXT:events2/Resources/Private/Partials/
     # cat=plugin.tx_events2/file; type=string; label=Path to template layouts (FE)
-    layoutRootPaths = EXT:events2/Resources/Private/Layouts/
+    layoutRootPath = EXT:events2/Resources/Private/Layouts/
   }
   persistence {
     # cat=plugin.tx_events2//a; type=string; label=Default storage PID

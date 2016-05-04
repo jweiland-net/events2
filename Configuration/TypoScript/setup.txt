@@ -5,9 +5,18 @@ plugin.tx_events2_search.mvc.callDefaultActionIfActionCantBeResolved = 1
 
 plugin.tx_events2 {
   view {
-    templateRootPaths.0 = {$plugin.tx_events2.view.templateRootPaths}
-    partialRootPaths.0 = {$plugin.tx_events2.view.partialRootPaths}
-    layoutRootPaths.0 = {$plugin.tx_events2.view.layoutRootPaths}
+    templateRootPaths {
+      0 = EXT:events2/Resources/Private/Templates/
+      1 = {$plugin.tx_events2.view.templateRootPath}
+    }
+    partialRootPaths {
+      0 = EXT:events2/Resources/Private/Partials/
+      1 = {$plugin.tx_events2.view.partialRootPath}
+    }
+    layoutRootPaths {
+      0 = EXT:events2/Resources/Private/Layouts/
+      1 = {$plugin.tx_events2.view.layoutRootPath}
+    }
   }
   persistence {
     storagePid = {$plugin.tx_events2.persistence.storagePid}
@@ -80,13 +89,20 @@ plugin.tx_events2 {
   }
 }
 
-#plugin.tx_events2_search.view.pluginNamespace = tx_events2_events
-
 module.tx_events2 {
   view {
-    templateRootPath = {$module.tx_events2.view.templateRootPath}
-    partialRootPath = {$module.tx_events2.view.partialRootPath}
-    layoutRootPath = {$module.tx_events2.view.layoutRootPath}
+    templateRootPaths {
+      0 = EXT:events2/Resources/Private/Backend/Templates/
+      1 = {$module.tx_events2.view.templateRootPath}
+    }
+    partialRootPaths {
+      0 = EXT:events2/Resources/Private/Backend/Partials/
+      1 = {$module.tx_events2.view.partialRootPath}
+    }
+    layoutRootPaths {
+      0 = EXT:events2/Resources/Private/Backend/Layouts/
+      1 = {$module.tx_events2.view.layoutRootPath}
+    }
   }
   persistence < plugin.tx_events2.persistence
 }
