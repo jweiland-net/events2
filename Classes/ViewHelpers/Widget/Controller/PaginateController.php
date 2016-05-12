@@ -26,15 +26,59 @@ namespace JWeiland\Events2\ViewHelpers\Widget\Controller;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 use TYPO3\CMS\Core\Utility\ArrayUtility;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
+use TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetController;
 
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class PaginateController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetController
+class PaginateController extends AbstractWidgetController
 {
     /**
+     * @var array
+     */
+    protected $configuration = array(
+        'itemsPerPage' => 15,
+        'insertAbove' => false,
+        'insertBelow' => true,
+        'maximumNumberOfLinks' => 99,
+        'addQueryStringMethod' => 'POST,GET',
+        'section' => ''
+    );
+
+    /**
+     * @var QueryResultInterface|ObjectStorage|array
+     */
+    protected $objects;
+
+    /**
+     * @var int
+     */
+    protected $currentPage = 1;
+
+    /**
+     * @var int
+     */
+    protected $maximumNumberOfLinks = 99;
+
+    /**
+     * @var int
+     */
+    protected $numberOfPages = 1;
+
+    /**
+     * @var int
+     */
+    protected $displayRangeStart = null;
+
+    /**
+     * @var int
+     */
+    protected $displayRangeEnd = null;
+
+    /**
      * @var \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper
-     * @inject
      */
     protected $dataMapper;
 
@@ -51,44 +95,20 @@ class PaginateController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetCont
     protected $settings;
 
     /**
-     * @var array
-     */
-    protected $configuration = array('itemsPerPage' => 15, 'insertAbove' => true, 'insertBelow' => false, 'maximumNumberOfLinks' => 5);
-
-    /**
-     * @var \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
-     */
-    protected $objects;
-
-    /**
-     * @var int
-     */
-    protected $currentPage = 1;
-
-    /**
-     * @var int
-     */
-    protected $maximumNumberOfLinks = 99;
-
-    /**
      * @var string
      */
     protected $originalStatement = '';
 
     /**
-     * @var int
+     * inject dataMapper
+     *
+     * @param \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper $dataMapper
+     * @return void
      */
-    protected $numberOfPages = 0;
-
-    /**
-     * @var int
-     */
-    protected $displayRangeStart = 0;
-
-    /**
-     * @var int
-     */
-    protected $displayRangeEnd = 0;
+    public function injectDataMapper(\TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper $dataMapper)
+    {
+        $this->dataMapper = $dataMapper;
+    }
 
     /**
      * @param \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager
@@ -100,45 +120,42 @@ class PaginateController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetCont
     }
 
     /**
+     * @return void
      */
     public function initializeAction()
     {
         $this->objects = $this->widgetConfiguration['objects'];
         $this->originalStatement = $this->objects->getQuery()->getStatement()->getStatement();
-        ArrayUtility::mergeRecursiveWithOverrule($this->configuration, $this->widgetConfiguration['configuration'], true);
-        $this->numberOfPages = ceil($this->getCount() / (integer) $this->configuration['itemsPerPage']);
-        $this->maximumNumberOfLinks = (integer) $this->configuration['maximumNumberOfLinks'];
+        ArrayUtility::mergeRecursiveWithOverrule($this->configuration, $this->widgetConfiguration['configuration'], false);
+        $this->numberOfPages = ceil($this->getCount() / (int)$this->configuration['itemsPerPage']);
+        $this->maximumNumberOfLinks = (int)$this->configuration['maximumNumberOfLinks'];
     }
 
     /**
      * @param int $currentPage
+     * @return void
      */
     public function indexAction($currentPage = 1)
     {
         // set current page
-        $this->currentPage = (integer) $currentPage;
+        $this->currentPage = (int)$currentPage;
         if ($this->currentPage < 1) {
             $this->currentPage = 1;
         }
-
         if ($this->currentPage > $this->numberOfPages) {
             // set $modifiedObjects to NULL if the page does not exist
             $modifiedObjects = null;
         } else {
             // modify query
-            $limit = (integer) $this->configuration['itemsPerPage'];
-            if (!empty($this->widgetConfiguration['maxRecords']) && $this->widgetConfiguration['maxRecords'] < $limit) {
-                $limit = $this->widgetConfiguration['maxRecords'];
-            }
+            $itemsPerPage = (int)$this->configuration['itemsPerPage'];
             $offset = 0;
             if ($this->currentPage > 1) {
-                $offset = (integer) ($limit * ($this->currentPage - 1));
+                $offset = ((int)($itemsPerPage * ($this->currentPage - 1)));
             }
-            $modifiedObjects = $this->getModifiedObjects($limit, $offset);
+            $modifiedObjects = $this->prepareObjectsSlice($itemsPerPage, $offset);
         }
-
         $this->view->assign('contentArguments', array(
-            $this->widgetConfiguration['as'] => $modifiedObjects,
+            $this->widgetConfiguration['as'] => $modifiedObjects
         ));
         $this->view->assign('configuration', $this->configuration);
         $this->view->assign('pagination', $this->buildPagination());
@@ -147,6 +164,8 @@ class PaginateController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetCont
     /**
      * If a certain number of links should be displayed, adjust before and after
      * amounts accordingly.
+     *
+     * @return void
      */
     protected function calculateDisplayRange()
     {
@@ -156,19 +175,20 @@ class PaginateController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetCont
         }
         $delta = floor($maximumNumberOfLinks / 2);
         $this->displayRangeStart = $this->currentPage - $delta;
-        $this->displayRangeEnd = $this->currentPage + $delta + ($maximumNumberOfLinks % 2 === 0 ? 1 : 0);
+        $this->displayRangeEnd = $this->currentPage + $delta - ($maximumNumberOfLinks % 2 === 0 ? 1 : 0);
         if ($this->displayRangeStart < 1) {
             $this->displayRangeEnd -= $this->displayRangeStart - 1;
         }
         if ($this->displayRangeEnd > $this->numberOfPages) {
-            $this->displayRangeStart -= ($this->displayRangeEnd - $this->numberOfPages);
+            $this->displayRangeStart -= $this->displayRangeEnd - $this->numberOfPages;
         }
-        $this->displayRangeStart = (integer) max($this->displayRangeStart, 1);
-        $this->displayRangeEnd = (integer) min($this->displayRangeEnd, $this->numberOfPages);
+        $this->displayRangeStart = (int)max($this->displayRangeStart, 1);
+        $this->displayRangeEnd = (int)min($this->displayRangeEnd, $this->numberOfPages);
     }
 
     /**
-     * Returns an array with the keys "pages", "current", "numberOfPages", "nextPage" & "previousPage".
+     * Returns an array with the keys "pages", "current", "numberOfPages",
+     * "nextPage" & "previousPage"
      *
      * @return array
      */
@@ -176,8 +196,8 @@ class PaginateController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetCont
     {
         $this->calculateDisplayRange();
         $pages = array();
-        for ($i = $this->displayRangeStart; $i <= $this->displayRangeEnd; ++$i) {
-            $pages[] = array('number' => $i, 'isCurrent' => ($i === $this->currentPage));
+        for ($i = $this->displayRangeStart; $i <= $this->displayRangeEnd; $i++) {
+            $pages[] = array('number' => $i, 'isCurrent' => $i === $this->currentPage);
         }
         $pagination = array(
             'pages' => $pages,
@@ -186,7 +206,7 @@ class PaginateController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetCont
             'displayRangeStart' => $this->displayRangeStart,
             'displayRangeEnd' => $this->displayRangeEnd,
             'hasLessPages' => $this->displayRangeStart > 2,
-            'hasMorePages' => $this->displayRangeEnd + 1 < $this->numberOfPages,
+            'hasMorePages' => $this->displayRangeEnd + 1 < $this->numberOfPages
         );
         if ($this->currentPage < $this->numberOfPages) {
             $pagination['nextPage'] = $this->currentPage + 1;
@@ -194,8 +214,33 @@ class PaginateController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetCont
         if ($this->currentPage > 1) {
             $pagination['previousPage'] = $this->currentPage - 1;
         }
-
         return $pagination;
+    }
+
+    /**
+     * get modified objects.
+     *
+     * @param int $itemsPerPage
+     * @param int $offset
+     *
+     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage
+     */
+    protected function prepareObjectsSlice($itemsPerPage = 0, $offset = 0)
+    {
+        $this->modifyStatementToSelect($itemsPerPage, $offset);
+        $records = $this->objects->getQuery()->execute(true);
+
+        // As long as domain models will be cached by their UID, we have to create our own event storage
+        /** @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage $eventStorage */
+        $eventStorage = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\ObjectStorage');
+        /* @var \JWeiland\Events2\Domain\Model\Event $event */
+        foreach ($records as $record) {
+            list($event) = $this->dataMapper->map('JWeiland\\Events2\\Domain\\Model\\Event', array($record));
+            $event->setDay($this->getDayFromEvent($record));
+            $eventStorage->attach(clone $event);
+        }
+
+        return $eventStorage;
     }
 
     /**
@@ -217,32 +262,6 @@ class PaginateController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetCont
 
             return $amountOfRows;
         }
-    }
-
-    /**
-     * get modified objects.
-     *
-     * @param int $limit
-     * @param int $offset
-     *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage
-     */
-    protected function getModifiedObjects($limit = 0, $offset = 0)
-    {
-        $this->modifyStatementToSelect($limit, $offset);
-        $records = $this->objects->getQuery()->execute(true);
-
-        // As long as domain models will be cached by their UID, we have to create our own event storage
-        /** @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage $eventStorage */
-        $eventStorage = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\ObjectStorage');
-        /* @var \JWeiland\Events2\Domain\Model\Event $event */
-        foreach ($records as $record) {
-            list($event) = $this->dataMapper->map('JWeiland\\Events2\\Domain\\Model\\Event', array($record));
-            $event->setDay($this->getDayFromEvent($record));
-            $eventStorage->attach(clone $event);
-        }
-
-        return $eventStorage;
     }
 
     /**

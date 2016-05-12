@@ -42,9 +42,9 @@ plugin.tx_events2 {
       # cat=plugin.tx_events2/basic/dims; type=int+; label=Items per page: How many items should be displayed on one page
       itemsPerPage = 15
       # cat=plugin.tx_events2/basic/enable; type=boolean; label=insert above: Should pagebrowser be displayed on top of the list
-      insertAbove = 1
+      insertAbove = 0
       # cat=plugin.tx_events2/basic/enable; type=boolean; label=insert below: Should pagebrowser be displayed at bottom of the list
-      insertBelow = 0
+      insertBelow = 1
       # cat=plugin.tx_events2/basic/dims; type=int+; label=max number of links: Define maximum amount of pages which should be displayed
       maximumNumberOfLinks = 5
     }

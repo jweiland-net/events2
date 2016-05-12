@@ -165,7 +165,7 @@ class AjaxTest extends UnitTestCase
         $subject->expects($this->once())->method('saveMonthAndYearInSession')->with($this->equalTo(123), $this->equalTo(1234));
         $subject->expects($this->once())->method('findAllDaysInMonth')->with($this->equalTo(123), $this->equalTo(1234))->will($this->returnValue(array()));
         $this->assertSame(
-            '{}',
+            '[]',
             $subject->processAjaxRequest($arguments)
         );
     }
@@ -206,7 +206,7 @@ class AjaxTest extends UnitTestCase
 
         // check if day 14 and 17 exists in json
         $this->assertRegExp(
-            '~^\{"14":{"0":(.*?)"17":\{"0":(.*?)\}$~',
+            '~^\{"14":\[\{"uid":(.*?)"17":\[\{"uid":(.*?)\]\}$~',
             $json
         );
         // check if uid 456 and 654 exists in json
