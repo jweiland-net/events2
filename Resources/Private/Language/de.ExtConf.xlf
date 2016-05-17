@@ -6,7 +6,7 @@
 
 			<trans-unit id="poiCollectionPid">
 				<source>PID for poiCollections: Define a storage pid where to store records of type Point of Interest.</source>
-				<target>PID für Google Maps: Geben Sie hier die UID eines StorageFolders an, der für die Speicherung der Google Maps zuständig sein soll.</target>
+				<target>PID für Google Maps: Beim Speichern von Veranstaltungsorten werden automatisch GoogleMaps-Datensätze erzeugt. Geben Sie hier an, in welchem StorageFolder diese angelegt werden sollen.</target>
 			</trans-unit>
 			<trans-unit id="rootUid">
 				<source>Category root UID: In huge environments with a lot of categories defined, it would be cool to reduce the amount of categories to a parent category.</source>

@@ -40,6 +40,46 @@
 							</config>
 						</TCEforms>
 					</switchableControllerActions>
+					<settings.pidOfDetailPage>
+						<TCEforms>
+							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:pidOfDetailPage</label>
+							<config>
+								<type>input</type>
+								<eval>int</eval>
+								<default>0</default>
+							</config>
+						</TCEforms>
+					</settings.pidOfDetailPage>
+					<settings.pidOfListPage>
+						<TCEforms>
+							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:pidOfListPage</label>
+							<config>
+								<type>input</type>
+								<eval>int</eval>
+								<default>0</default>
+							</config>
+						</TCEforms>
+					</settings.pidOfListPage>
+					<settings.pidOfLocationPage>
+						<TCEforms>
+							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:pidOfLocationPage</label>
+							<config>
+								<type>input</type>
+								<eval>int</eval>
+								<default>0</default>
+							</config>
+						</TCEforms>
+					</settings.pidOfLocationPage>
+					<settings.pidOfSearchPage>
+						<TCEforms>
+							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:pidOfSearchPage</label>
+							<config>
+								<type>input</type>
+								<eval>int</eval>
+								<default>0</default>
+							</config>
+						</TCEforms>
+					</settings.pidOfSearchPage>
 					<settings.categories>
 						<TCEforms>
 							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:categories</label>

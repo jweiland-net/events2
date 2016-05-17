@@ -39,6 +39,18 @@
 			<trans-unit id="categories">
 				<source>Categories</source>
 			</trans-unit>
+			<trans-unit id="pidOfDetailPage">
+				<source>PID of detail page</source>
+			</trans-unit>
+			<trans-unit id="pidOfListPage">
+				<source>PID of list page</source>
+			</trans-unit>
+			<trans-unit id="pidOfLocationPage">
+				<source>PID of location page</source>
+			</trans-unit>
+			<trans-unit id="pidOfSearchPage">
+				<source>PID of search page</source>
+			</trans-unit>
 			<trans-unit id="mergeEvents">
 				<source>Merge events: Same events with given EventEnd-Date will be merged to one entry in listings</source>
 			</trans-unit>

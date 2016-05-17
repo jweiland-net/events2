@@ -46,6 +46,22 @@
 				<source>List events for this week</source>
 				<target>Auflistung von Terminen dieser Woche</target>
 			</trans-unit>
+			<trans-unit id="pidOfDetailPage">
+				<source>PID of detail page</source>
+				<target>PID der Detailansicht</target>
+			</trans-unit>
+			<trans-unit id="pidOfListPage">
+				<source>PID of list page</source>
+				<target>PID der Listenansicht. Sinnvoll, wenn auch eine Deteilansicht definiert wurde</target>
+			</trans-unit>
+			<trans-unit id="pidOfLocationPage">
+				<source>PID of location page</source>
+				<target>PID der Seite, auf der die GoogleMaps Karte angezeigt werden soll</target>
+			</trans-unit>
+			<trans-unit id="pidOfSearchPage">
+				<source>PID of search page</source>
+				<target>PID der Suchseite</target>
+			</trans-unit>
 			<trans-unit id="categories">
 				<source>Categories</source>
 				<target>Kategorien</target>
