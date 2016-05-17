@@ -32,6 +32,13 @@ namespace JWeiland\Events2\Configuration;
 class ExtConf implements \TYPO3\CMS\Core\SingletonInterface
 {
     /**
+     * poi collection PID
+     *
+     * @var int
+     */
+    protected $poiCollectionPid = 0;
+
+    /**
      * root uid for categories.
      *
      * @var int
@@ -97,6 +104,27 @@ class ExtConf implements \TYPO3\CMS\Core\SingletonInterface
                 }
             }
         }
+    }
+
+    /**
+     * Returns the poiCollectionPid
+     *
+     * @return int $poiCollectionPid
+     */
+    public function getPoiCollectionPid()
+    {
+        return $this->poiCollectionPid;
+    }
+
+    /**
+     * Sets the poiCollectionPid
+     *
+     * @param int $poiCollectionPid
+     * @return void
+     */
+    public function setPoiCollectionPid($poiCollectionPid)
+    {
+        $this->poiCollectionPid = (int)$poiCollectionPid;
     }
 
     /**
