@@ -148,6 +148,12 @@ class PaginateController extends AbstractWidgetController
         } else {
             // modify query
             $itemsPerPage = (int)$this->configuration['itemsPerPage'];
+            if (
+                !empty($this->widgetConfiguration['maxRecords']) &&
+                $this->widgetConfiguration['maxRecords'] < (int)$this->configuration['itemsPerPage']
+            ) {
+                $itemsPerPage = $this->widgetConfiguration['maxRecords'];
+            }
             $offset = 0;
             if ($this->currentPage > 1) {
                 $offset = ((int)($itemsPerPage * ($this->currentPage - 1)));
