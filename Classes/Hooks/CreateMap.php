@@ -38,6 +38,11 @@ class CreateMap
      */
     protected $objectManager;
 
+    /**
+     * Current location record
+     *
+     * @var array
+     */
     protected $currentRecord = array();
 
     /**
@@ -76,8 +81,8 @@ class CreateMap
             // sync categories
             $this->updateMmEntries();
         } else {
-            // create new map-record and set them in relation
-            $jSon = GeneralUtility::getUrl('http://maps.googleapis.com/maps/api/geocode/json?address='.$this->getAddress().'&sensor=false');
+            // create new map-record and set it in relation
+            $jSon = GeneralUtility::getUrl('http://maps.googleapis.com/maps/api/geocode/json?address=' . $this->getAddress() . '&sensor=false');
             $response = json_decode($jSon, true);
             if (is_array($response) && $response['status'] === 'OK') {
                 $location = $response['results'][0]['geometry']['location'];
@@ -92,8 +97,8 @@ class CreateMap
     }
 
     /**
-     * get full events2 record
-     * While updating a record only the changed fields will be in $fieldArray.
+     * get full location record
+     * While updating a record, only the changed fields will be in $fieldArray.
      *
      * @param string $table
      * @param int    $uid
@@ -203,7 +208,7 @@ class CreateMap
      */
     public function getTsConfig()
     {
-        $tsConfig = BackendUtility::getModTSconfig($this->currentRecord['uid'], 'ext.events2');
+        $tsConfig = BackendUtility::getModTSconfig($this->currentRecord['pid'], 'ext.events2');
         if (is_array($tsConfig) && !empty($tsConfig['properties']['pid'])) {
             return $tsConfig['properties'];
         } else {
