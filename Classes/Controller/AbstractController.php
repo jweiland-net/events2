@@ -26,6 +26,7 @@ namespace JWeiland\Events2\Controller;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 use JWeiland\Events2\Domain\Model\Event;
+use JWeiland\Events2\Domain\Model\Filter;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -246,6 +247,25 @@ class AbstractController extends ActionController
         if ($this->settings['showFilterForOrganizerInFrontend']) {
             $this->view->assign('organizers', $this->organizerRepository->findAll());
         }
+    }
+
+    /**
+     * Validate filter
+     * Create empty filter if not valid
+     * Assign filter to view
+     *
+     * @param Filter|null $filter
+     * @return Filter
+     */
+    protected function validateAndAssignFilter($filter)
+    {
+        if (!$filter instanceof Filter ||
+            $filter === null
+        ) {
+            $filter = $this->objectManager->get(Filter::class);
+        }
+        $this->view->assign('filter', $filter);
+        return $filter;
     }
 
     /**

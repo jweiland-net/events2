@@ -195,7 +195,7 @@ class EventRepository extends Repository
      *
      * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
-    public function findEvents($type, Filter $filter = null)
+    public function findEvents($type, Filter $filter)
     {
         /** @var \TYPO3\CMS\Extbase\Persistence\Generic\Query $query */
         $query = $this->createQuery();
@@ -209,7 +209,7 @@ class EventRepository extends Repository
         }
 
         // add filter for organizer
-        if ($filter instanceof Filter && $filter->getOrganizer()) {
+        if ($filter->getOrganizer()) {
             $statement->addWhere(
                 'tx_events2_domain_model_event.organizer',
                 '=',

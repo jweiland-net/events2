@@ -44,7 +44,7 @@ class EventController extends AbstractController
      */
     public function listAction(Filter $filter = null)
     {
-        $events = $this->eventRepository->findEvents('list', $filter);
+        $events = $this->eventRepository->findEvents('list', $this->validateAndAssignFilter($filter));
         $this->view->assign('events', $events);
     }
 
@@ -56,7 +56,7 @@ class EventController extends AbstractController
      */
     public function listLatestAction(Filter $filter = null)
     {
-        $events = $this->eventRepository->findEvents('latest', $filter);
+        $events = $this->eventRepository->findEvents('latest', $this->validateAndAssignFilter($filter));
         $this->view->assign('events', $events);
     }
 
@@ -68,7 +68,7 @@ class EventController extends AbstractController
      */
     public function listTodayAction(Filter $filter = null)
     {
-        $events = $this->eventRepository->findEvents('today', $filter);
+        $events = $this->eventRepository->findEvents('today', $this->validateAndAssignFilter($filter));
         $this->view->assign('events', $events);
     }
 
@@ -80,7 +80,7 @@ class EventController extends AbstractController
      */
     public function listThisWeekAction(Filter $filter = null)
     {
-        $events = $this->eventRepository->findEvents('thisWeek', $filter);
+        $events = $this->eventRepository->findEvents('thisWeek', $this->validateAndAssignFilter($filter));
         $this->view->assign('events', $events);
     }
 
@@ -92,7 +92,7 @@ class EventController extends AbstractController
      */
     public function listRangeAction(Filter $filter = null)
     {
-        $events = $this->eventRepository->findEvents('range', $filter);
+        $events = $this->eventRepository->findEvents('range', $this->validateAndAssignFilter($filter));
         $this->view->assign('events', $events);
     }
 
@@ -185,7 +185,12 @@ class EventController extends AbstractController
         $event = $this->objectManager->get('JWeiland\\Events2\\Domain\\Model\\Event');
         $this->view->assign('event', $event);
         $this->view->assign('locations', $this->locationRepository->findAll());
-        $this->view->assign('selectableCategories', $this->categoryRepository->getCategories($this->settings['selectableCategoriesForNewEvents']));
+        $this->view->assign(
+            'selectableCategories',
+            $this->categoryRepository->getCategories(
+                $this->settings['selectableCategoriesForNewEvents']
+            )
+        );
     }
 
     /**
@@ -265,7 +270,12 @@ class EventController extends AbstractController
         $eventObject = $this->eventRepository->findByIdentifier($event);
         $this->view->assign('event', $eventObject);
         $this->view->assign('locations', $this->locationRepository->findAll());
-        $this->view->assign('selectableCategories', $this->categoryRepository->getCategories($this->settings['selectableCategoriesForNewEvents']));
+        $this->view->assign(
+            'selectableCategories',
+            $this->categoryRepository->getCategories(
+                $this->settings['selectableCategoriesForNewEvents']
+            )
+        );
     }
 
     /**
