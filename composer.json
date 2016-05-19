@@ -2,7 +2,7 @@
     "name": "jweiland/events2",
     "type": "typo3-cms-extension",
     "description": "Events",
-    "version": "1.3.5",
+    "version": "1.4.0",
     "autoload": {
         "psr-4": {
             "JWeiland\\Events2\\": "Classes"
