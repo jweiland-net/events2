@@ -41,7 +41,7 @@
 					<dl class="rulerbefore extdl">
 						<f:for each="{event.downloadLinks}" as="link">
 							<dd><span aria-hidden="true" class="icon-download"></span>
-								<f:link.external target="_blank" uri="{e2:convertFalToUrl(fal: link.link)}" title="{link.title}">{link.title}</f:link.external>
+								<e2:link.typolink parameter="{link.link}" title="{link.title}">{link.title}</e2:link.typolink>
 							</dd>
 						</f:for>
 					</dl>

@@ -459,7 +459,7 @@ return array(
             'config' => array(
                 'type' => 'inline',
                 'foreign_table' => 'tx_events2_domain_model_link',
-                'maxitems' => 10,
+                'maxitems' => 1,
                 'minitems' => 0,
                 'appearance' => array(
                     'levelLinksPosition' => 'both',
