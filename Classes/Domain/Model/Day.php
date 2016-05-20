@@ -131,6 +131,8 @@ class Day extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 
         /** @var Event $event */
         foreach ($this->events as $event) {
+            // assign current day to event
+            $event->setDay($this);
             // check against storagePid
             if (in_array($event->getPid(), $storagePids) || empty($storagePids)) {
                 if ($isEmptyCategories) {
@@ -143,7 +145,8 @@ class Day extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
             }
         }
 
-        return $eventStorage;
+        // override and return reduced set of events
+        return $this->events = $eventStorage;
     }
 
     /**

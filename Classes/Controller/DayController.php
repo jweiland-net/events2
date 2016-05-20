@@ -61,14 +61,10 @@ class DayController extends AbstractController
     {
         /** @var \JWeiland\Events2\Domain\Model\Day $dayObject */
         $dayObject = $this->dayRepository->findByIdentifier($day);
-        $events = $dayObject->getEvents(
+        $dayObject->getEvents(
             GeneralUtility::trimExplode(',', $this->settings['categories'], true),
             $this->getStoragePids()
         );
-        /** @var \JWeiland\Events2\Domain\Model\Event $event */
-        foreach ($events as $event) {
-            $event->setDay($dayObject);
-        }
         $this->view->assign('day', $dayObject);
     }
     
