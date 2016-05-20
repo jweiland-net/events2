@@ -892,7 +892,7 @@ class EventTest extends UnitTestCase
     /**
      * @test
      */
-    public function addCategoryAddsOneDifferentTime()
+    public function addCategoryAddsOneCategory()
     {
         $objectStorage = new ObjectStorage();
         $this->subject->setCategories($objectStorage);
@@ -924,6 +924,23 @@ class EventTest extends UnitTestCase
         $this->assertSame(
             $objectStorage,
             $this->subject->getCategories()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function getCategoryListReturnsCommaSeparatedList()
+    {
+        for ($i = 1; $i < 4; $i++) {
+            /* @var Category|\PHPUnit_Framework_MockObject_MockObject|\TYPO3\CMS\Core\Tests\AccessibleObjectInterface $category */
+            $category = $this->getAccessibleMock(Category::class, array('dummy'));
+            $category->_set('uid', $i);
+            $this->subject->addCategory($category);
+        }
+        $this->assertSame(
+            array(1,2,3),
+            $this->subject->getCategoryUids()
         );
     }
 

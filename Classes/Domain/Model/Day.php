@@ -6,7 +6,7 @@ namespace JWeiland\Events2\Domain\Model;
  *  Copyright notice
  *
  *  (c) 2016 Stefan Froemken <projects@jweiland.net>, jweiland.net
- *  
+ *
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -51,7 +51,7 @@ class Day extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Event.
      *
-     * @var \JWeiland\Events2\Domain\Model\Event
+     * @var Event
      */
     protected $event = null;
 
@@ -94,7 +94,7 @@ class Day extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Adds an Event.
      *
-     * @param \JWeiland\Events2\Domain\Model\Event $event
+     * @param Event $event
      */
     public function addEvent(Event $event)
     {
@@ -104,7 +104,7 @@ class Day extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Removes an Event.
      *
-     * @param \JWeiland\Events2\Domain\Model\Event $event
+     * @param Event $event
      */
     public function removeEvent(Event $event)
     {
@@ -114,41 +114,42 @@ class Day extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Returns the events.
      *
-     * @param string $categories
+     * @param array $categories
+     * @param array $storagePids
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage $events
+     * @return ObjectStorage $events
      */
-    public function getEvents($categories = '')
+    public function getEvents(array $categories = array(), array $storagePids = array())
     {
-        if ($categories !== '' && count($this->events)) {
-            // I need a copy of events, else "invalid argument for foreach()"
-            // maybe it is because of the @lazy annotation and a loadRealInstance may help.
-            $events = clone $this->events;
-            /** @var $event \JWeiland\Events2\Domain\Model\Event */
-            foreach ($events as $event) {
-                // check for each event if it contains given categories
-                $eventContainsCategory = false;
-                /** @var $eventCategory \JWeiland\Events2\Domain\Model\Category */
-                foreach ($event->getCategories() as $eventCategory) {
-                    if (GeneralUtility::inList($categories, $eventCategory->getUid())) {
-                        $eventContainsCategory = true;
-                        break;
-                    }
-                }
-                // remove event from ObjectStorage
-                if (!$eventContainsCategory) {
-                    $this->events->detach($event);
+        if (empty($this->events)) {
+            return $this->events;
+        }
+        $isEmptyCategories = empty($categories);
+
+        /** @var ObjectStorage $eventStorage */
+        $eventStorage = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Persistence\\ObjectStorage');
+
+        /** @var Event $event */
+        foreach ($this->events as $event) {
+            // check against storagePid
+            if (in_array($event->getPid(), $storagePids) || empty($storagePids)) {
+                if ($isEmptyCategories) {
+                    // there is no category defined, so we can add the category without further checks
+                    $eventStorage->attach($event);
+                } elseif (!$isEmptyCategories && array_intersect($event->getCategoryUids(), $categories)) {
+                    // a category is set. Check, if event has defined category. If yes, add it to the storageObject
+                    $eventStorage->attach($event);
                 }
             }
         }
 
-        return $this->events;
+        return $eventStorage;
     }
 
     /**
      * Sets the events.
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $events
+     * @param ObjectStorage $events
      */
     public function setEvents(ObjectStorage $events = null)
     {
@@ -158,7 +159,7 @@ class Day extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Returns the event.
      *
-     * @return \JWeiland\Events2\Domain\Model\Event $event
+     * @return Event $event
      */
     public function getEvent()
     {
@@ -168,7 +169,7 @@ class Day extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * Sets the event.
      *
-     * @param \JWeiland\Events2\Domain\Model\Event $event
+     * @param Event $event
      */
     public function setEvent(Event $event = null)
     {

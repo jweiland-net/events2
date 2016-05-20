@@ -825,6 +825,22 @@ class Event extends AbstractEntity
     }
 
     /**
+     * Returns the category UIDs as array
+     * This is a helper method
+     *
+     * @return array
+     */
+    public function getCategoryUids()
+    {
+        $categoryUids = array();
+        /** @var Category $category */
+        foreach ($this->categories as $category) {
+            $categoryUids[] = $category->getUid();
+        }
+        return $categoryUids;
+    }
+
+    /**
      * Sets the categories.
      *
      * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $categories

@@ -6,7 +6,7 @@ namespace JWeiland\Events2\Controller;
  *  Copyright notice
  *
  *  (c) 2016 Stefan Froemken <projects@jweiland.net>, jweiland.net
- *  
+ *
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,12 +25,29 @@ namespace JWeiland\Events2\Controller;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class DayController extends \JWeiland\Events2\Controller\AbstractController
+class DayController extends AbstractController
 {
+    /**
+     * @var \JWeiland\Events2\Domain\Repository\DayRepository
+     */
+    protected $dayRepository = null;
+    
+    /**
+     * inject dayRepository
+     *
+     * @param \JWeiland\Events2\Domain\Repository\DayRepository $dayRepository
+     * @return void
+     */
+    public function injectDayRepository(\JWeiland\Events2\Domain\Repository\DayRepository $dayRepository)
+    {
+        $this->dayRepository = $dayRepository;
+    }
+    
     /**
      * action show.
      *
@@ -38,15 +55,31 @@ class DayController extends \JWeiland\Events2\Controller\AbstractController
      * to prevent that recursive validators will be called
      *
      * @param int $day
+     * @return void
      */
     public function showAction($day)
     {
         /** @var \JWeiland\Events2\Domain\Model\Day $dayObject */
         $dayObject = $this->dayRepository->findByIdentifier($day);
+        $events = $dayObject->getEvents(
+            GeneralUtility::trimExplode(',', $this->settings['categories'], true),
+            $this->getStoragePids()
+        );
         /** @var \JWeiland\Events2\Domain\Model\Event $event */
-        foreach ($dayObject->getEvents($this->settings['categories']) as $event) {
+        foreach ($events as $event) {
             $event->setDay($dayObject);
         }
         $this->view->assign('day', $dayObject);
+    }
+    
+    /**
+     * Get configured Storage PIDs
+     * 
+     * @return array
+     */
+    protected function getStoragePids()
+    {
+        $query = $this->dayRepository->createQuery();
+        return $query->getQuerySettings()->getStoragePageIds();
     }
 }

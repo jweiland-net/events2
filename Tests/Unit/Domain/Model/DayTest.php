@@ -25,6 +25,7 @@ namespace JWeiland\Events2\Tests\Unit\Domain\Model;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use JWeiland\Events2\Domain\Model\Category;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
@@ -122,6 +123,49 @@ class DayTest extends UnitTestCase
     /**
      * @test
      */
+    public function getEventsWithSpecifiedCategoriesReturnsReducedResult()
+    {
+        /* @var Category|\PHPUnit_Framework_MockObject_MockObject|\TYPO3\CMS\Core\Tests\AccessibleObjectInterface $category */
+        $category = $this->getAccessibleMock(Category::class, array('dummy'));
+        $category->_set('uid', 1);
+        $eventWithCategory = new Event();
+        $eventWithCategory->addCategory($category);
+        $eventWithoutCategory = new Event();
+        $this->subject->addEvent($eventWithCategory);
+        $this->subject->addEvent($eventWithoutCategory);
+
+        $expectedResult = new ObjectStorage();
+        $expectedResult->attach($eventWithCategory);
+
+        $this->assertEquals(
+            $expectedResult,
+            $this->subject->getEvents(array(1))
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function getEventsWithSpecifiedStoragePidsReturnsReducedResult()
+    {
+        for ($i = 1; $i < 4; $i++) {
+            $event = new Event();
+            $event->setPid($i);
+            $this->subject->addEvent($event);
+        }
+
+        $expectedResult = new ObjectStorage();
+        $expectedResult->attach($event);
+
+        $this->assertEquals(
+            $expectedResult,
+            $this->subject->getEvents(array(), array(3))
+        );
+    }
+
+    /**
+     * @test
+     */
     public function setEventsSetsEvents()
     {
         $object = new Event();
@@ -129,7 +173,7 @@ class DayTest extends UnitTestCase
         $objectStorage->attach($object);
         $this->subject->setEvents($objectStorage);
 
-        $this->assertSame(
+        $this->assertEquals(
             $objectStorage,
             $this->subject->getEvents()
         );
@@ -140,15 +184,13 @@ class DayTest extends UnitTestCase
      */
     public function addEventAddsOneEvent()
     {
+        $event = new Event();
+        $this->subject->addEvent($event);
+
         $objectStorage = new ObjectStorage();
-        $this->subject->setEvents($objectStorage);
+        $objectStorage->attach($event);
 
-        $object = new Event();
-        $this->subject->addEvent($object);
-
-        $objectStorage->attach($object);
-
-        $this->assertSame(
+        $this->assertEquals(
             $objectStorage,
             $this->subject->getEvents()
         );
@@ -159,16 +201,16 @@ class DayTest extends UnitTestCase
      */
     public function removeEventRemovesOneEvent()
     {
-        $object = new Event();
+        $event = new Event();
         $objectStorage = new ObjectStorage();
-        $objectStorage->attach($object);
+        $objectStorage->attach($event);
+
         $this->subject->setEvents($objectStorage);
 
-        $this->subject->removeEvent($object);
-        $objectStorage->detach($object);
+        $this->subject->removeEvent($event);
 
-        $this->assertSame(
-            $objectStorage,
+        $this->assertEquals(
+            new ObjectStorage(),
             $this->subject->getEvents()
         );
     }
