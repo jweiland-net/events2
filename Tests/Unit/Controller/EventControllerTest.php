@@ -33,6 +33,7 @@ use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Model\Location;
 use JWeiland\Events2\Domain\Model\Search;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Fluid\View\TemplateView;
@@ -63,6 +64,59 @@ class EventControllerTest extends UnitTestCase
     public function tearDown()
     {
         unset($this->subject);
+    }
+
+    /**
+     * @test
+     */
+    public function injectConfigurationManagerOverridesFlexFormSettingsIfEmpty()
+    {
+        $typoScript = array(
+            'settings' => array(
+                'pidOfDetailPage' => '217',
+                'pidOfListPage' => '217',
+                'pidOfSearchPage' => '217',
+                'pidOfLocationPage' => '217',
+                'rootCategory' => '12'
+            )
+        );
+        $flexFormSettings = array(
+            'settings' => array(
+                'pidOfDetailPage' => '0',
+                'pidOfListPage' => '363',
+                'rootCategory' => '12'
+            )
+        );
+
+        /** @var ConfigurationManager|\PHPUnit_Framework_MockObject_MockObject $configurationManager */
+        $configurationManager = $this->getMock(ConfigurationManager::class, array('getConfiguration'), array(), '', false);
+        $configurationManager->expects($this->at(0))->method('getConfiguration')->with(
+            $this->identicalTo(ConfigurationManager::CONFIGURATION_TYPE_FRAMEWORK),
+            $this->identicalTo('events2'),
+            $this->identicalTo('events2_event')
+        )->willReturn($typoScript);
+        $configurationManager->expects($this->at(1))->method('getConfiguration')->with(
+            $this->identicalTo(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS)
+        )->willReturn($flexFormSettings);
+
+        /** @var EventController|\PHPUnit_Framework_MockObject_MockObject|\TYPO3\CMS\Core\Tests\AccessibleObjectInterface $subject */
+        $subject = $this->getAccessibleMock(EventController::class, array('dummy'), array(), '', false);
+        $subject->injectConfigurationManager($configurationManager);
+
+        $expectedResult = array(
+            'settings' => array(
+                'pidOfDetailPage' => '217',
+                'pidOfListPage' => '363',
+                'rootCategory' => '12',
+                'pidOfSearchPage' => '217',
+                'pidOfLocationPage' => '217'
+            )
+        );
+
+        $this->assertSame(
+            $expectedResult,
+            $subject->_get('settings')
+        );
     }
 
     /**

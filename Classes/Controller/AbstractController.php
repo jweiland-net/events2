@@ -29,6 +29,7 @@ use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Filter;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
@@ -206,7 +207,42 @@ class AbstractController extends ActionController
     }
 
     /**
-     * preprocessing of all actions.
+     * @param ConfigurationManagerInterface $configurationManager
+     * @return void
+     */
+    public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager)
+    {
+        $this->configurationManager = $configurationManager;
+
+        $typoScriptSettings = $this->configurationManager->getConfiguration(
+            ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK,
+            'events2',
+            'events2_event'
+        );
+        $mergedFlexFormSettings = $this->configurationManager->getConfiguration(
+            ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS
+        );
+
+        // if FlexForm setting is empty and value is available in TS
+        foreach ($typoScriptSettings['settings'] as $fieldName => $value) {
+            if (
+                !isset($mergedFlexFormSettings['settings'][$fieldName]) ||
+                $mergedFlexFormSettings['settings'][$fieldName] === '0' ||
+                (
+                    is_string($mergedFlexFormSettings['settings'][$fieldName]) &&
+                    strlen($mergedFlexFormSettings['settings'][$fieldName]) === 0
+                )
+            ) {
+                $mergedFlexFormSettings['settings'][$fieldName] = $value;
+            }
+        }
+        $this->settings = $mergedFlexFormSettings;
+    }
+
+    /**
+     * PreProcessing of all actions.
+     *
+     * @return void
      */
     public function initializeAction()
     {
