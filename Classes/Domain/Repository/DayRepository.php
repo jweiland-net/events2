@@ -39,6 +39,21 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
 class DayRepository extends Repository
 {
     /**
+     * @var \JWeiland\Events2\Utility\DateTimeUtility
+     */
+    protected $dateTimeUtility = null;
+
+    /**
+     * inject DateTime Utility.
+     *
+     * @param \JWeiland\Events2\Utility\DateTimeUtility $dateTimeUtility
+     */
+    public function injectDateTimeUtility(\JWeiland\Events2\Utility\DateTimeUtility $dateTimeUtility)
+    {
+        $this->dateTimeUtility = $dateTimeUtility;
+    }
+
+    /**
      * find all days.
      *
      * @param int $limit
@@ -47,7 +62,7 @@ class DayRepository extends Repository
      */
     public function findAll($limit = 15)
     {
-        $today = $this->createDateTime('today');
+        $today = $this->dateTimeUtility->convert('today');
 
         // create query and return results
         $query = $this->createQuery();
@@ -73,9 +88,9 @@ class DayRepository extends Repository
     }
 
     /**
-     * find all days with given categories.
+     * find all days where their related events are assigned to given categories.
      *
-     * @param string $categories comma seperated list of categories
+     * @param string $categories comma separated list of categories
      * @param int    $limit
      *
      * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
@@ -87,7 +102,7 @@ class DayRepository extends Repository
             $categoryOrQuery[] = 'sys_category_record_mm.uid_local IN (\''.(int) $category.'\')';
         }
 
-        $today = $this->createDateTime('today');
+        $today = $this->dateTimeUtility->convert('today');
 
         // create query and return results
         $query = $this->createQuery();
@@ -117,33 +132,6 @@ class DayRepository extends Repository
     }
 
     /**
-     * Creates a DateTime from an unix timestamp or date/datetime value.
-     * If the input is empty, NULL is returned.
-     *
-     * @param int|string $value Unix timestamp or date/datetime value
-     *
-     * @return \DateTime|null
-     */
-    public function createDateTime($value)
-    {
-        if (empty($value)) {
-            return null;
-        }
-        if (MathUtility::canBeInterpretedAsInteger($value)) {
-            $day = new \DateTime(date('c', $value));
-
-            return $day->modify('midnight');
-        } else {
-            // native date/datetime values are stored in UTC
-            $utcTimeZone = new \DateTimeZone('UTC');
-            $utcDateTime = new \DateTime($value, $utcTimeZone);
-            $currentTimeZone = new \DateTimeZone(date_default_timezone_get());
-
-            return $utcDateTime->setTimezone($currentTimeZone);
-        }
-    }
-
-    /**
      * If no day was given for an event
      * we have to try to find the next day for this event.
      *
@@ -154,6 +142,7 @@ class DayRepository extends Repository
     public function getNextDayForEvent(Event $event)
     {
         $query = $this->createQuery();
+        $query->getQuerySettings()->setRespectStoragePage(false);
         $today = new \DateTime('today');
 
         $constraints = array();
@@ -174,6 +163,7 @@ class DayRepository extends Repository
     public function getLastDayForEvent(Event $event)
     {
         $query = $this->createQuery();
+        $query->getQuerySettings()->setRespectStoragePage(false);
         $query->setOrderings(array(
             'day' => QueryInterface::ORDER_DESCENDING,
         ));
