@@ -226,14 +226,13 @@ class AbstractController extends ActionController
         // if FlexForm setting is empty and value is available in TS
         foreach ($typoScriptSettings['settings'] as $fieldName => $value) {
             if (
-                !isset($mergedFlexFormSettings['settings'][$fieldName]) ||
-                $mergedFlexFormSettings['settings'][$fieldName] === '0' ||
+                $mergedFlexFormSettings[$fieldName] === '0' ||
                 (
-                    is_string($mergedFlexFormSettings['settings'][$fieldName]) &&
-                    strlen($mergedFlexFormSettings['settings'][$fieldName]) === 0
+                    is_string($mergedFlexFormSettings[$fieldName]) &&
+                    strlen($mergedFlexFormSettings[$fieldName]) === 0
                 )
             ) {
-                $mergedFlexFormSettings['settings'][$fieldName] = $value;
+                $mergedFlexFormSettings[$fieldName] = $value;
             }
         }
         $this->settings = $mergedFlexFormSettings;

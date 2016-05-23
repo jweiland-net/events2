@@ -81,11 +81,11 @@ class EventControllerTest extends UnitTestCase
             )
         );
         $flexFormSettings = array(
-            'settings' => array(
-                'pidOfDetailPage' => '0',
-                'pidOfListPage' => '363',
-                'rootCategory' => '12'
-            )
+            'pidOfDetailPage' => '0',
+            'pidOfListPage' => '363',
+            'pidOfSearchPage' => '217',
+            'pidOfLocationPage' => '217',
+            'rootCategory' => '12'
         );
 
         /** @var ConfigurationManager|\PHPUnit_Framework_MockObject_MockObject $configurationManager */
@@ -104,13 +104,11 @@ class EventControllerTest extends UnitTestCase
         $subject->injectConfigurationManager($configurationManager);
 
         $expectedResult = array(
-            'settings' => array(
-                'pidOfDetailPage' => '217',
-                'pidOfListPage' => '363',
-                'rootCategory' => '12',
-                'pidOfSearchPage' => '217',
-                'pidOfLocationPage' => '217'
-            )
+            'pidOfDetailPage' => '217',
+            'pidOfListPage' => '363',
+            'pidOfSearchPage' => '217',
+            'pidOfLocationPage' => '217',
+            'rootCategory' => '12'
         );
 
         $this->assertSame(
