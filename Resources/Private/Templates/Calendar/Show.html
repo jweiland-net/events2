@@ -27,11 +27,7 @@
 							return [false, getClass(days, date), ""];
 						}
 					} else {
-						if (currentDate.getDate() == date.getDate() && currentDate.getMonth() == date.getMonth()) {
-							return [true, "", ""];
-						} else {
-							return [false, "", ""];
-						}
+						return [false, "", ""];
 					}
 				},
 				onSelect: function(dateText, inst) {
