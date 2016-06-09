@@ -297,7 +297,7 @@ class AbstractController extends ActionController
         if (!$filter instanceof Filter ||
             $filter === null
         ) {
-            $filter = $this->objectManager->get(Filter::class);
+            $filter = $this->objectManager->get('JWeiland\\Events2\\Domain\\Model\\Filter');
         }
         $this->view->assign('filter', $filter);
         return $filter;
