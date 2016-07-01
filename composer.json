@@ -2,7 +2,7 @@
     "name": "jweiland/events2",
     "type": "typo3-cms-extension",
     "description": "Organize your single and recurring events",
-    "version": "1.4.1",
+    "version": "1.4.2",
     "license": "GPL-2.0+",
     "keywords": ["typo3", "TYPO3 CMS", "event", "events2"],
     "homepage": "http://www.jweiland.net",

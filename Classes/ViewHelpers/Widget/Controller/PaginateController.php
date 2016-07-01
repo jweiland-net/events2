@@ -83,6 +83,11 @@ class PaginateController extends AbstractWidgetController
     protected $dataMapper;
 
     /**
+     * @var \TYPO3\CMS\Extbase\Persistence\Generic\Session
+     */
+    protected $persistenceSession;
+
+    /**
      * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
      */
     protected $configurationManager;
@@ -111,7 +116,21 @@ class PaginateController extends AbstractWidgetController
     }
 
     /**
+     * inject persistenceSession
+     *
+     * @param \TYPO3\CMS\Extbase\Persistence\Generic\Session $persistenceSession
+     * @return void
+     */
+    public function injectPersistenceSession(\TYPO3\CMS\Extbase\Persistence\Generic\Session $persistenceSession)
+    {
+        $this->persistenceSession = $persistenceSession;
+    }
+
+    /**
+     * inject configurationManager
+     *
      * @param \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager
+     * @return void
      */
     public function injectConfigurationManager(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager)
     {
@@ -234,19 +253,16 @@ class PaginateController extends AbstractWidgetController
     protected function prepareObjectsSlice($itemsPerPage = 0, $offset = 0)
     {
         $this->modifyStatementToSelect($itemsPerPage, $offset);
-        $records = $this->objects->getQuery()->execute(true);
+        $rows = $this->objects->getQuery()->execute(true);
 
-        // As long as domain models will be cached by their UID, we have to create our own event storage
-        /** @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage $eventStorage */
-        $eventStorage = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\ObjectStorage');
-        /* @var \JWeiland\Events2\Domain\Model\Event $event */
-        foreach ($records as $record) {
-            list($event) = $this->dataMapper->map('JWeiland\\Events2\\Domain\\Model\\Event', array($record));
-            $event->setDay($this->getDayFromEvent($record));
-            $eventStorage->attach(clone $event);
+        foreach ($rows as $key => $row) {
+            $rows[$key] = current($this->dataMapper->map('JWeiland\\Events2\\Domain\\Model\\Event', array($row)));
+            // as this query returns multiple events with same uid but different days and times, we have to delete
+            // the just fetched object from persistence
+            $this->persistenceSession->unregisterObject($rows[$key]);
         }
 
-        return $eventStorage;
+        return $rows;
     }
 
     /**
@@ -289,35 +305,14 @@ class PaginateController extends AbstractWidgetController
      */
     protected function modifyStatementToSelect($limit = 0, $offset = 0)
     {
-        $select = 'DISTINCT tx_events2_domain_model_event.*, tx_events2_domain_model_day.uid as dayUid, tx_events2_domain_model_day.pid as dayPid, tx_events2_domain_model_day.day as dayDay, tx_events2_domain_model_day.events as dayEvents';
+        $select = 'DISTINCT tx_events2_domain_model_event.*, tx_events2_domain_model_day.uid as day, tx_events2_domain_model_day.day as dayDay';
         $statement = str_replace('###SELECT###', $select, $this->originalStatement);
         if ($limit) {
-            $statement = str_replace('###LIMIT###', 'ORDER BY dayDay ASC LIMIT '.$offset.','.$limit, $statement);
+            $statement = str_replace('###LIMIT###', 'ORDER BY dayDay ASC LIMIT ' . $offset . ',' . $limit, $statement);
         } else {
             $statement = str_replace('###LIMIT###', '', $statement);
         }
         $boundVariables = $this->objects->getQuery()->getStatement()->getBoundVariables();
         $this->objects = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\QueryResult', $this->objects->getQuery()->statement($statement, $boundVariables));
-    }
-
-    /**
-     * extract day from event record
-     * With this method we save one additional SQL-Query.
-     *
-     * @param array $event
-     *
-     * @return \JWeiland\Events2\Domain\Model\Day
-     */
-    public function getDayFromEvent(array $event)
-    {
-        $dayRecord = array(
-            'uid' => $event['dayUid'],
-            'pid' => $event['dayPid'],
-            'day' => $event['dayDay'],
-            'events' => $event['dayEvents'],
-        );
-        list($day) = $this->dataMapper->map('JWeiland\\Events2\\Domain\\Model\\Day', array($dayRecord));
-
-        return $day;
     }
 }

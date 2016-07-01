@@ -52,6 +52,11 @@ class EventRepository extends Repository
     protected $dataMapper = null;
 
     /**
+     * @var \TYPO3\CMS\Extbase\Persistence\Generic\Session
+     */
+    protected $persistenceSession;
+
+    /**
      * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
      */
     protected $configurationManager = null;
@@ -79,6 +84,17 @@ class EventRepository extends Repository
     public function injectDataMapper(\TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper $dataMapper)
     {
         $this->dataMapper = $dataMapper;
+    }
+
+    /**
+     * inject persistenceSession
+     *
+     * @param \TYPO3\CMS\Extbase\Persistence\Generic\Session $persistenceSession
+     * @return void
+     */
+    public function injectPersistenceSession(\TYPO3\CMS\Extbase\Persistence\Generic\Session $persistenceSession)
+    {
+        $this->persistenceSession = $persistenceSession;
     }
 
     /**
@@ -160,7 +176,7 @@ class EventRepository extends Repository
         $today = $this->dateTimeUtility->convert('today');
         $statement = $this->createStatement()
             ->setQuery($query)
-            ->setSelect('tx_events2_domain_model_event.*, tx_events2_domain_model_day.uid as dayUid, tx_events2_domain_model_day.pid as dayPid, tx_events2_domain_model_day.day as dayDay, tx_events2_domain_model_day.events as dayEvents');
+            ->setSelect('tx_events2_domain_model_event.*, tx_events2_domain_model_day.uid as day, tx_events2_domain_model_day.day as dayDay');
 
         if ($mergeEvents) {
             $statement->setMergeEvents(true);
@@ -172,19 +188,16 @@ class EventRepository extends Repository
             ->setGroupBy('tx_events2_domain_model_event.uid')
             ->setLimit('');
 
-        $records = $query->statement($statement->getStatement())->execute(true);
+        $rows = $query->statement($statement->getStatement())->execute(true);
 
-        // As long as domain models will be cached by their UID, we have to create our own event storage
-        /** @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage $eventStorage */
-        $eventStorage = new ObjectStorage();
-        /* @var \JWeiland\Events2\Domain\Model\Event $event */
-        foreach ($records as $record) {
-            list($event) = $this->dataMapper->map('JWeiland\\Events2\\Domain\\Model\\Event', array($record));
-            $event->setDay($this->getDayFromEvent($record));
-            $eventStorage->attach(clone $event);
+        foreach ($rows as $key => $row) {
+            $rows[$key] = current($this->dataMapper->map('JWeiland\\Events2\\Domain\\Model\\Event', array($row)));
+            // as this query returns multiple events with same uid but different days and times, we have to delete
+            // the just fetched object from persistence
+            $this->persistenceSession->unregisterObject($rows[$key]);
         }
 
-        return $eventStorage;
+        return $rows;
     }
 
     /**
@@ -334,27 +347,6 @@ class EventRepository extends Repository
             ->setLimit('');
 
         return $query->statement($statement->getStatement())->execute();
-    }
-
-    /**
-     * extract day from event record
-     * With this method we save one additional SQL-Query.
-     *
-     * @param array $event
-     *
-     * @return \JWeiland\Events2\Domain\Model\Day
-     */
-    public function getDayFromEvent(array $event)
-    {
-        $dayRecord = array(
-            'uid' => $event['dayUid'],
-            'pid' => $event['dayPid'],
-            'day' => $event['dayDay'],
-            'events' => $event['dayEvents'],
-        );
-        list($day) = $this->dataMapper->map('JWeiland\\Events2\\Domain\\Model\\Day', array($dayRecord));
-
-        return $day;
     }
 
     /**

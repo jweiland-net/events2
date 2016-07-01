@@ -265,7 +265,7 @@ class Event extends AbstractEntity
      *
      * @var \JWeiland\Events2\Domain\Model\Day
      */
-    protected $day = null;
+    protected $day;
 
     /**
      * Constructor of this class.
