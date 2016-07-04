@@ -26,6 +26,7 @@ namespace JWeiland\Events2\Domain\Repository;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
@@ -62,23 +63,27 @@ class CategoryRepository extends \TYPO3\CMS\Extbase\Domain\Repository\CategoryRe
     }
 
     /**
-     * get all categories given by comma seperated list.
+     * get all categories given by comma separated list.
      *
-     * @param string $categoryUids comma seperated list of category uids
-     * @param int    $parent       parent category UID
+     * @param string $categoryUids comma separated list of category uids
+     * @param string $parent       parent category UID. This value comes from TS, so it's a string
      *
      * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
-    public function getSelectedCategories($categoryUids, $parent = null)
+    public function getSelectedCategories($categoryUids, $parent = '')
     {
-        $selectedCategories = GeneralUtility::intExplode(',', $categoryUids);
+        // remove empty values
+        // convert them to integers
+        // remove values with 0 (array_filter)
+        // correct keys for unit tests (array_values)
+        $selectedCategories = array_values(array_filter(GeneralUtility::intExplode(',', $categoryUids, true)));
         $query = $this->createQuery();
 
         $constraint = array();
         $constraint[] = $query->in('uid', $selectedCategories);
 
-        if ($parent !== null) {
-            $constraint[] = $query->equals('parent', $parent);
+        if (MathUtility::canBeInterpretedAsInteger($parent)) {
+            $constraint[] = $query->equals('parent', (int)$parent);
         }
 
         return $query->matching($query->logicalAnd($constraint))->execute();
