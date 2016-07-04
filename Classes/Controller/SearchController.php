@@ -6,7 +6,7 @@ namespace JWeiland\Events2\Controller;
  *  Copyright notice
  *
  *  (c) 2016 Stefan Froemken <projects@jweiland.net>, jweiland.net
- *  
+ *
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -80,10 +80,6 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      */
     protected function initializeView()
     {
-        if (empty($this->settings['rootCategory'])) {
-            throw new \Exception('You have forgotten to set a root category in constants editor', 1369388423);
-        }
-
         $allowedMainCategories = $this->categoryRepository->getSelectedCategories($this->settings['mainCategories'], $this->settings['rootCategory']);
 
         $data = array();
