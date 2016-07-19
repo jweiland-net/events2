@@ -2,7 +2,7 @@
     "name": "jweiland/events2",
     "type": "typo3-cms-extension",
     "description": "Organize your single and recurring events",
-    "version": "1.4.3",
+    "version": "1.4.4",
     "license": "GPL-2.0+",
     "keywords": ["typo3", "TYPO3 CMS", "event", "events2"],
     "homepage": "http://www.jweiland.net",
@@ -19,7 +19,7 @@
       "source": "https://github.com/jweiland-net/events2"
     },
     "require": {
-      "php": ">=5.3.7 <6.0",
+      "php": ">=5.3.7 <8.0",
       "typo3/cms-core": ">=6.2.14,<8.0"
     },
     "require-dev": {
