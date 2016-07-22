@@ -277,8 +277,13 @@ class DayGeneratorTest extends UnitTestcase
         $this->assertTrue($dayGenerator->initialize($event));
         $this->assertEquals(
             $expectedDays,
-            $dayGenerator->getDayStorage()
+            $days = $dayGenerator->getDayStorage()
         );
+        // test for correct TimezoneType, else times are not DST save
+        /** @var \DateTime $day */
+        foreach ($days as $day) {
+            $this->assertSame(3, $day->timezone_type);
+        }
     }
 
     /**

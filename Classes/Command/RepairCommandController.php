@@ -25,22 +25,33 @@ namespace JWeiland\Events2\Command;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Extbase\Mvc\Controller\CommandController;
+use JWeiland\Events2\Service\DayRelations;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class RepairCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandController
+class RepairCommandController extends CommandController
 {
     /**
      * @var \TYPO3\CMS\Core\Database\DatabaseConnection
      */
-    protected $databaseConnection = null;
+    protected $databaseConnection;
 
     /**
      * @var \JWeiland\Events2\Utility\DateTimeUtility
      */
-    protected $dateTimeUtility = null;
+    protected $dateTimeUtility;
+    
+    /**
+     * Needed to wrap activity bar:
+     * ...........F.......
+     * ....N....S.........
+     *
+     * @var int
+     */
+    protected $rowCounter = 0;
 
     /**
      * inject DateTime Utility.
@@ -66,17 +77,33 @@ class RepairCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandC
     public function eventsCommand()
     {
         $this->outputLine('Start repairing day records of events');
-        $counter = array(
-            'duplicated' => 0,
-            'daysWithoutMm' => 0,
-            'mmWithoutRelation' => 0,
-            'wrongTime' => 0,
-            'eventCols' => 0,
-            'refIndex' => 0,
-        );
 
+        $this->removeDuplicatedDayRecords();
+        $this->outputLine('');
+        $this->removeDaysWithoutEventRelation();
+        $this->outputLine('');
+        $this->removeRecordsWithoutRelationToEventDay();
+        $this->outputLine('');
+        $this->removeDuplicateDaysWithDifferentTimes();
+        $this->outputLine('');
+        $this->updateAmountOfRelatedRecords();
+        $this->outputLine('');
+        $this->reGenerateDayRelations();
+        $this->outputLine('');
+        $this->updateReferenceIndex();
+    }
+    
+    /**
+     * In previous versions we had no check to prevent inserting duplicate records.
+     *
+     * @return void
+     */
+    protected function removeDuplicatedDayRecords()
+    {
+        $counter = 0;
+        $this->rowCounter = 0;
         $this->outputLine('Search for duplicate day records. This script removes them and reassign events to the not deleted one.');
-
+    
         // get all duplicated day records
         $rows = $this->databaseConnection->exec_SELECTgetRows(
             'uid, day, COUNT(*) as Anzahl',
@@ -116,18 +143,27 @@ class RepairCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandC
                                 'tx_events2_domain_model_day',
                                 'uid='.(int) $duplicateDay['uid']
                             );
-                            ++$counter['duplicated'];
+                            $this->echoValue();
+                            ++$counter;
                         }
                     }
                 }
             }
         }
-
-        $this->outputLine('I have deleted '.$counter['duplicated'].' duplicate records and reassigned them.');
-        $this->outputLine('');
-
+        $this->outputLine(PHP_EOL . 'I have deleted ' . $counter . ' duplicate day records and reassigned events to new once.');
+    }
+    
+    /**
+     * If an event was deleted, the relation to the day records will not be deleted in earlier versions
+     *
+     * @return void
+     */
+    protected function removeDaysWithoutEventRelation()
+    {
+        $counter = 0;
+        $this->rowCounter = 0;
         $this->outputLine('Search for days which do not have a relation to an event anymore and remove entry from day table.');
-
+    
         // get all day records
         // @ToDo: Maybe it's easier to check it with help of JOIN and NULL
         $rows = $this->databaseConnection->exec_SELECTgetRows(
@@ -149,16 +185,25 @@ class RepairCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandC
                         'tx_events2_domain_model_day',
                         'uid='.(int) $row['uid']
                     );
-                    ++$counter['daysWithoutMm'];
+                    $this->echoValue();
+                    ++$counter;
                 }
             }
         }
-
-        $this->outputLine('I have deleted '.$counter['daysWithoutMm'].' day records which do not have a mm relation.');
-        $this->outputLine('');
-
-        $this->outputLine('Search for MM-relations which do not have a relation to an event or a day anymore and remove entry from MM.');
-
+        $this->outputLine(PHP_EOL . 'I have deleted ' . $counter . ' day records which do not have a mm relation anymore.');
+    }
+    
+    /**
+     * Remove all MM records with no relation to event and/or day
+     *
+     * @return void
+     */
+    protected function removeRecordsWithoutRelationToEventDay()
+    {
+        $counter = 0;
+        $this->rowCounter = 0;
+        $this->outputLine('Search for MM-relations which do not have a relation to an event or a day anymore and remove entry from MM table.');
+    
         // get all MM records
         $rows = $this->databaseConnection->exec_SELECTgetRows(
             'uid_local, uid_foreign',
@@ -178,7 +223,8 @@ class RepairCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandC
                         'tx_events2_event_day_mm',
                         'uid_local='.(int) $row['uid_local'].' AND uid_foreign='.(int) $row['uid_foreign']
                     );
-                    ++$counter['mmWithoutRelation'];
+                    $this->echoValue();
+                    ++$counter;
                 }
                 // remove MM Relation if event record does not exists
                 $eventRecord = $this->databaseConnection->exec_SELECTgetSingleRow(
@@ -191,16 +237,27 @@ class RepairCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandC
                         'tx_events2_event_day_mm',
                         'uid_local='.(int) $row['uid_local'].' AND uid_foreign='.(int) $row['uid_foreign']
                     );
-                    ++$counter['mmWithoutRelation'];
+                    $this->echoValue();
+                    ++$counter;
                 }
             }
         }
-
-        $this->outputLine('I have deleted '.$counter['mmWithoutRelation'].' mm records which do not have a relation to an event or a day.');
-        $this->outputLine('');
-
+        $this->outputLine(PHP_EOL . 'I have deleted ' . $counter . ' MM records which do not have a relation to an event or a day.');
+    }
+    
+    /**
+     * In previous versions we have generated day records that way: new \DateTime('15.03.2015')
+     * But PHP adds current time to that date. So it results in multiple day records with same day, but different times
+     * Now solved with sanitizing dates with ->modify('midnight')
+     *
+     * @return void
+     */
+    protected function removeDuplicateDaysWithDifferentTimes()
+    {
+        $counter = 0;
+        $this->rowCounter = 0;
         $this->outputLine('Search for multiple days for one day. This is the case, if time is not 00:00:00. This script removes them and reassign events to the correct one.');
-
+    
         // get all day records
         $rows = $this->databaseConnection->exec_SELECTgetRows(
             'uid, pid, day, cruser_id',
@@ -211,7 +268,7 @@ class RepairCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandC
             // Check if time of day is always 00:00:00
             $correctDate = $this->dateTimeUtility->standardizeDateTimeObject(new \DateTime(date('c', $row['day'])));
             $eventDate = new \DateTime(date('c', $row['day']));
-
+        
             if ($correctDate != $eventDate) {
                 // the times are different. Try to find a day with correct timestamp or create a new correct one
                 $day = $this->databaseConnection->exec_SELECTgetSingleRow(
@@ -246,45 +303,97 @@ class RepairCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandC
                     'tx_events2_domain_model_day',
                     'uid='.(int) $row
                 );
-                ++$counter['wrongTime'];
+                $this->echoValue();
+                ++$counter;
             }
         }
-
-        $this->outputLine('I have updated '.$counter['wrongTime'].' mm records and deleted its day records which have a wrong time.');
-        $this->outputLine('');
-
+        $this->outputLine(PHP_EOL . 'I have updated ' . $counter . ' MM records and deleted its day records which have a wrong time.');
+    }
+    
+    /**
+     * TYPO3 saves the amount of records in 1:N relations.
+     * This script updates this value, if not set
+     *
+     * @return void
+     */
+    protected function updateAmountOfRelatedRecords()
+    {
+        $counter = 0;
+        $this->rowCounter = 0;
         $this->outputLine('Update amount of related day records in events col "days".');
-
+    
         // get all event records
         $rows = $this->databaseConnection->exec_SELECTgetRows(
             'uid, days',
             'tx_events2_domain_model_event',
             '1=1'
         );
-
+    
         if (!empty($rows)) {
             foreach ($rows as $row) {
                 $amount = $this->databaseConnection->exec_SELECTcountRows(
                     '*',
                     'tx_events2_event_day_mm',
-                    'uid_local='.(int) $row['uid']
+                    'uid_local=' . (int)$row['uid']
                 );
                 $this->databaseConnection->exec_UPDATEquery(
                     'tx_events2_domain_model_event',
-                    'uid='.(int) $row['uid'],
+                    'uid=' . (int)$row['uid'],
                     array(
-                        'days' => (int) $amount,
+                        'days' => (int)$amount,
                     )
                 );
-                ++$counter['eventCols'];
+                $this->echoValue();
+                ++$counter;
             }
         }
-
-        $this->outputLine('I have updated '.$counter['eventCols'].' event records and set the correct amount of related day records.');
-        $this->outputLine('');
-
+        $this->outputLine(PHP_EOL . 'I have updated ' . $counter . ' event records and set the correct amount of related day records.');
+    }
+    
+    /**
+     * After solving bugs in DayGenerator it would be good to recreate all days for events
+     *
+     * @return void
+     */
+    protected function reGenerateDayRelations()
+    {
+        $counter = 0;
+        $this->rowCounter = 0;
+        $this->outputLine('Delete all event-day relations and recreate them.');
+    
+        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+        $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+        /** @var DayRelations $dayRelations */
+        $dayRelations = $objectManager->get('JWeiland\\Events2\\Service\\DayRelations');
+    
+        // get all event records
+        $rows = $this->databaseConnection->exec_SELECTgetRows(
+            '*',
+            'tx_events2_domain_model_event',
+            '1=1'
+        );
+    
+        if (!empty($rows)) {
+            foreach ($rows as $row) {
+                $dayRelations->createDayRelations($row);
+                $this->echoValue();
+                ++$counter;
+            }
+        }
+        $this->outputLine(PHP_EOL . 'We have recreated the day records for ' . $counter . ' event records.');
+    }
+    
+    /**
+     * Update TYPO3s Reference index
+     *
+     * @return void
+     */
+    protected function updateReferenceIndex()
+    {
+        $counter = 0;
+        $this->rowCounter = 0;
         $this->outputLine('Update reference index.');
-
+    
         // get all event records
         $rows = $this->databaseConnection->exec_SELECTgetRows(
             'uid',
@@ -294,13 +403,32 @@ class RepairCommandController extends \TYPO3\CMS\Extbase\Mvc\Controller\CommandC
         if (!empty($rows)) {
             /** @var \TYPO3\CMS\Core\Database\ReferenceIndex $refObject */
             $refObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Database\\ReferenceIndex');
-
+        
             foreach ($rows as $row) {
                 $refObject->updateRefIndexTable('tx_events2_domain_model_event', $row['uid']);
-                ++$counter['refIndex'];
+                $this->echoValue();
+                ++$counter;
             }
         }
-        $this->outputLine('I have updated '.$counter['refIndex'].' ref indexes for events.');
-        $this->outputLine('');
+        $this->outputLine(PHP_EOL . 'I have updated ' . $counter . ' reference indexes for events.');
+    }
+    
+    /**
+     * echo "whatEver"
+     *
+     * @param string $value
+     * @param boolean $reset
+     * @return void
+     */
+    protected function echoValue($value = '.', $reset = FALSE) {
+        if ($reset) $this->rowCounter = 0;
+        if ($this->rowCounter < 40) {
+            echo $value;
+            $this->rowCounter++;
+        } else {
+            echo PHP_EOL . $value;
+            $this->rowCounter = 1;
+        }
     }
 }
+
