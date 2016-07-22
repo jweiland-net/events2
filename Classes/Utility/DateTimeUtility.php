@@ -51,7 +51,7 @@ class DateTimeUtility
                 $date = new \DateTime($value, $currentTimeZone);
                 $dateTimeObject = $this->standardizeDateTimeObject($date);
             } else {
-                $date = new \DateTime(date('c', $value));
+                $date = new \DateTime(date('Y-m-d H:i:s', $value));
                 $dateTimeObject = $this->standardizeDateTimeObject($date);
             }
         } catch (\Exception $e) {
