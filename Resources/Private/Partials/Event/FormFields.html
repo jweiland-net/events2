@@ -3,6 +3,8 @@
 <script type="text/javascript">
 	var siteUrl = "{siteUrl}index.php";
 	var locationFail = "{f:translate(key: 'error.locationFail')}";
+	var remainingText = "{f:translate(key: 'remainingLetters')}";
+
 	jQuery(function() {
 		/* <![CDATA[ */
 		// add datePicker to date-fields
@@ -28,6 +30,19 @@
 				jQuery( "#dialogHint" ).dialog( "open" );
 			}
 		);
+
+		// get remaining letters for teaser
+		var $teaser = jQuery("#teaser");
+		var $remainingChars = $("#remainingChars");
+		$remainingChars.text(remainingText + ": 250");
+		$teaser.on("keyup", function() {
+			var value = $(this).val();
+			var len = value.length;
+			var maxLength = 250;
+
+			$(this).val(value.substring(0, maxLength));
+			$remainingChars.text(remainingText + ": " + (maxLength - len));
+		});
 
 		// create autocomplete for location selector
 		jQuery("#autocompleteLocation").autocomplete({
@@ -89,6 +104,7 @@
 	</div>
 	<span class="csh" title="Hinweis">i</span>
 	<f:form.textarea id="teaser" property="teaser" rows="5" cols="50" />
+	<div id="remainingChars"></div>
 </div>
 
 <div class="extdiv">

@@ -483,6 +483,10 @@
 				<source>Save</source>
 				<target>Speichern</target>
 			</trans-unit>
+			<trans-unit id="remainingLetters">
+				<source>Remaining letters</source>
+				<target>Verbleibende Zeichen</target>
+			</trans-unit>
 			<trans-unit id="notAllowedToCreate">
 				<source>You're not allowed to create event records.</source>
 				<target>Sie haben nicht die benötigten Rechte Veranstaltungen anzulegen.</target>
