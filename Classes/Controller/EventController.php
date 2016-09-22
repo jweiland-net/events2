@@ -415,7 +415,7 @@ class EventController extends AbstractController
         }
         $simplyfiedEventArray = array(
             'uid' => $event->getUid(),
-            'recurring_event' => 0,
+            'event_type' => 'single',
             'event_begin' => $eventBegin,
             'event_end' => $eventEnd,
             'xth' => 0,

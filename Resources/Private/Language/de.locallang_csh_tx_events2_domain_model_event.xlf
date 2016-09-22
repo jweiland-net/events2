@@ -24,10 +24,6 @@
 				<source>Last event</source>
 				<target>Letzter Veranstaltungstag</target>
 			</trans-unit>
-			<trans-unit id="recurring_event.description">
-				<source>Recurring event</source>
-				<target>Veranstaltung mit Wiederholungen</target>
-			</trans-unit>
 			<trans-unit id="same_day.description">
 				<source>Same day</source>
 				<target>mehrmals an einem Tag</target>

@@ -7,11 +7,11 @@
 			<trans-unit id="tx_events2_domain_model_event">
 				<source>Event</source>
 			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.title">
-				<source>Title</source>
-			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.top_of_list">
 				<source>Top of list</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.title">
+				<source>Title</source>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.teaser">
 				<source>Teaser</source>
@@ -27,9 +27,6 @@
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.event_end">
 				<source>Last event</source>
-			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.recurring_event">
-				<source>Recurring event</source>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.same_day">
 				<source>Same day</source>

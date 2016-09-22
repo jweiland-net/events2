@@ -343,14 +343,15 @@ class StatementUtility
      */
     public function addWhereToMergeEvents()
     {
-        $this->where[] = 'tx_events2_domain_model_day.day = (SELECT day
-			FROM tx_events2_domain_model_day LEFT JOIN tx_events2_event_day_mm
-			ON tx_events2_domain_model_day.uid=tx_events2_event_day_mm.uid_foreign
-			WHERE tx_events2_event_day_mm.uid_local = tx_events2_domain_model_event.uid
-			AND '.implode(' AND ', $this->whereToMergeEvents).'
-			ORDER BY tx_events2_domain_model_day.day ASC
-			LIMIT 1)
-		';
+        $this->where[] = 'tx_events2_domain_model_day.day = (
+            SELECT day
+            FROM tx_events2_domain_model_day LEFT JOIN tx_events2_event_day_mm
+            ON tx_events2_domain_model_day.uid=tx_events2_event_day_mm.uid_foreign
+            WHERE tx_events2_event_day_mm.uid_local = tx_events2_domain_model_event.uid
+            AND ' . implode(' AND ', $this->whereToMergeEvents) . '
+            ORDER BY tx_events2_domain_model_day.day ASC
+            LIMIT 1
+        )';
     }
 
     /**

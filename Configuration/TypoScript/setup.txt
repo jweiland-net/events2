@@ -1,3 +1,24 @@
+page.includeJSLibs {
+  jQueryForEvents2 = //ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js
+  jQueryForEvents2.external = 1
+  jQueryForEvents2.excludeFromConcatenation = 1
+  jQueryForEvents2.disableCompression = 1
+  jQueryForEvents2.if.isTrue = {$plugin.tx_events2.settings.includeJQueryLibrary}
+  jQueryUiForEvents2 = //ajax.googleapis.com/ajax/libs/jqueryui/1.12.0/jquery-ui.min.js
+  jQueryUiForEvents2.external = 1
+  jQueryUiForEvents2.excludeFromConcatenation = 1
+  jQueryUiForEvents2.disableCompression = 1
+  jQueryUiForEvents2.if.isTrue = {$plugin.tx_events2.settings.includeJQueryUiLibrary}
+}
+
+page.includeCSS {
+  jQueryCssForEvents2 = //ajax.googleapis.com/ajax/libs/jqueryui/1.12.0/themes/smoothness/jquery-ui.css
+  jQueryCssForEvents2.external = 1
+  jQueryCssForEvents2.excludeFromConcatenation = 1
+  jQueryCssForEvents2.disableCompression = 1
+  jQueryCssForEvents2.if.isTrue = {$plugin.tx_events2.settings.includeJQueryUiCss}
+}
+
 # search should work with get params of events plugin
 plugin.tx_events2_search.view.pluginNamespace = tx_events2_events
 # but if there was an action called which is not accessible, then call the default action
@@ -40,9 +61,6 @@ plugin.tx_events2 {
     rewrittenPropertyMapper = 1
   }
   settings {
-    includeJQueryLibrary = {$plugin.tx_events2.settings.includeJQueryLibrary}
-    includeJQueryUiLibrary = {$plugin.tx_events2.settings.includeJQueryUiLibrary}
-    includeJQueryUiCss = {$plugin.tx_events2.settings.includeJQueryUiCss}
     rootCategory = {$plugin.tx_events2.settings.rootCategory}
     pidOfDetailPage = {$plugin.tx_events2.settings.pidOfDetailPage}
     pidOfSearchPage = {$plugin.tx_events2.settings.pidOfSearchPage}

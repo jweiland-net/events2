@@ -56,13 +56,29 @@
 				<target>Soziale Netzwerke</target>
 			</trans-unit>
 
-			<trans-unit id="tx_events2_domain_model_event.title">
-				<source>Title</source>
-				<target>Titel</target>
+			<trans-unit id="tx_events2_domain_model_event.event_type">
+				<source>Event type</source>
+				<target>Veranstaltungsart</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.event_type.single">
+				<source>Single</source>
+				<target>Einfach</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.event_type.recurring">
+				<source>Recurring</source>
+				<target>Wiederholungen</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.event_type.duration">
+				<source>Duration</source>
+				<target>Durchgängig</target>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.top_of_list">
 				<source>Top of list</source>
 				<target>Am Anfang anzeigen</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.title">
+				<source>Title</source>
+				<target>Titel</target>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.teaser">
 				<source>Teaser</source>
@@ -72,17 +88,13 @@
 				<source>Event Begin</source>
 				<target>Erster Veranstaltungstag</target>
 			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.event_time">
-				<source>Time</source>
-				<target>Uhrzeit</target>
-			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.event_end">
 				<source>Last Event</source>
 				<target>Letzter Veranstaltungtag</target>
 			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.recurring_event">
-				<source>Recurring Event</source>
-				<target>Veranstaltung mit Wiederholungen</target>
+			<trans-unit id="tx_events2_domain_model_event.event_time">
+				<source>Time</source>
+				<target>Uhrzeit</target>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.same_day">
 				<source>Same Day</source>
@@ -175,6 +187,10 @@
 			<trans-unit id="tx_events2_domain_model_event.each_weeks.4">
 				<source>Each 4 weeks</source>
 				<target>alle 4 Wochen</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.recurring_end">
+				<source>End of recurring</source>
+				<target>Ende der Wiederholung</target>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.exceptions">
 				<source>Exceptions</source>

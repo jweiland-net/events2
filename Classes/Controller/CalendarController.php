@@ -68,25 +68,6 @@ class CalendarController extends ActionController
     }
 
     /**
-     * initialize show action.
-     */
-    public function initializeAction()
-    {
-        // forceOnTop makes $newScriptTag . LF . $jsFiles. So we have to add JS files in reverse order
-        //$this->pageRenderer->addJsLibrary('maps2JQuery40', ExtensionManagementUtility::siteRelPath('events2') . 'Resources/Public/JavaScript/Calendar.js', 'text/javascript', FALSE, TRUE, '', TRUE);
-        if ($this->settings['includeJQueryUiLibrary']) {
-            $this->pageRenderer->addJsLibrary('maps2JQuery30', ExtensionManagementUtility::siteRelPath('events2').'Resources/Public/JavaScript/jquery.ui.datepicker-de.js', 'text/javascript', false, true, '', true);
-            $this->pageRenderer->addJsLibrary('maps2JQuery20', '//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js', 'text/javascript', false, true, '', true);
-        }
-        if ($this->settings['includeJQueryLibrary']) {
-            $this->pageRenderer->addJsLibrary('maps2JQuery10', '//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js', 'text/javascript', false, true, '', true);
-        }
-        if ($this->settings['includeJQueryUiCss']) {
-            $this->pageRenderer->addCssFile(ExtensionManagementUtility::siteRelPath('events2').'Resources/Public/Css/pforzheim/jquery-ui-1.10.3.custom.css', 'stylesheet', 'all', false);
-        }
-    }
-
-    /**
      * action show.
      */
     public function showAction()

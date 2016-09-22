@@ -118,10 +118,13 @@ class DayGenerator
         // check for recurring event
         // do not add event start to recurring events. They will be generated automatically
         // further it could be that event start is not within the generated days
-        if ($this->eventRecord['recurring_event']) {
+        if ($this->eventRecord['event_type'] === 'recurring') {
             $this->addRecurringEvents();
-        } elseif ($this->eventRecord['event_end']) {
-            // if we have no recurrings defined but event_end, this is also a recurring event and we have to add all days in between
+        } elseif (
+            $this->eventRecord['event_type'] === 'duration' &&
+            $this->eventRecord['event_end']
+        ) {
+            // if we have no recurring defined but event_end, this is also a recurring event and we have to add all days in between
             $eventBegin = $this->getEarliestDateForGeneratedDays($this->getEventBegin());
             $eventEnd = $this->getMaxDateForGeneratedDays($this->getEventBegin());
             while ($eventBegin <= $eventEnd) {
@@ -175,9 +178,24 @@ class DayGenerator
     {
         return $this->dateTimeUtility->convert($this->eventRecord['event_begin']);
     }
-
+    
     /**
-     * getter for end date of event.
+     * getter for end of recurring.
+     *
+     * @return \DateTime|null
+     */
+    public function getRecurringEnd()
+    {
+        if (!empty($this->eventRecord['recurring_end'])) {
+            return $this->dateTimeUtility->convert($this->eventRecord['recurring_end']);
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+     * getter for end of event.
+     * Needed for event wof type duration
      *
      * @return \DateTime|null
      */
@@ -186,10 +204,10 @@ class DayGenerator
         if (!empty($this->eventRecord['event_end'])) {
             return $this->dateTimeUtility->convert($this->eventRecord['event_end']);
         } else {
-            return;
+            return null;
         }
     }
-
+    
     /**
      * check if event record is a valid event.
      *
@@ -206,7 +224,7 @@ class DayGenerator
 
         // some special fields must be set
         if (
-            !isset($this->eventRecord['recurring_event']) ||
+            !isset($this->eventRecord['event_type']) ||
             !isset($this->eventRecord['event_begin']) ||
             !isset($this->eventRecord['event_end']) ||
             !isset($this->eventRecord['xth']) ||
@@ -263,10 +281,19 @@ class DayGenerator
         if ($today > $maxEventEnd) {
             $maxEventEnd = $today;
         }
-        $maxEventEnd->modify('+'.$this->extConf->getRecurringFuture().' months');
-        $eventEnd = $this->getEventEnd();
-        if ($eventEnd instanceof \DateTime && $eventEnd < $maxEventEnd) {
-            return $eventEnd;
+        $maxEventEnd->modify(sprintf(
+            '+%d months',
+            $this->extConf->getRecurringFuture()
+        ));
+        
+        if ($this->eventRecord['event_type'] === 'duration') {
+            $recurringEnd = $this->getEventEnd();
+        } else {
+            $recurringEnd = $this->getRecurringEnd();
+        }
+        
+        if ($recurringEnd instanceof \DateTime && $recurringEnd < $maxEventEnd) {
+            return $recurringEnd;
         } else {
             return $maxEventEnd;
         }

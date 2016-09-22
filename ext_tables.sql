@@ -6,19 +6,20 @@ CREATE TABLE tx_events2_domain_model_event (
 	uid int(11) NOT NULL auto_increment,
 	pid int(11) DEFAULT '0' NOT NULL,
 
-	title varchar(255) DEFAULT '' NOT NULL,
+	event_type varchar(255) DEFAULT '' NOT NULL,
 	top_of_list tinyint(1) unsigned DEFAULT '0' NOT NULL,
+	title varchar(255) DEFAULT '' NOT NULL,
 	teaser varchar(255) DEFAULT '' NOT NULL,
 	event_begin int(11) DEFAULT '0' NOT NULL,
-	event_time int(11) unsigned DEFAULT '0',
 	event_end int(11) DEFAULT '0' NOT NULL,
-	recurring_event tinyint(1) unsigned DEFAULT '0' NOT NULL,
+	event_time int(11) unsigned DEFAULT '0',
 	same_day tinyint(1) unsigned DEFAULT '0' NOT NULL,
 	multiple_times int(11) unsigned DEFAULT '0' NOT NULL,
 	xth int(11) DEFAULT '0' NOT NULL,
 	weekday int(11) DEFAULT '0' NOT NULL,
 	different_times int(11) unsigned DEFAULT '0' NOT NULL,
 	each_weeks int(11) DEFAULT '0' NOT NULL,
+	recurring_end int(11) DEFAULT '0' NOT NULL,
 	exceptions int(11) DEFAULT '0' NOT NULL,
 	detail_informations text NOT NULL,
 	free_entry tinyint(1) unsigned DEFAULT '0' NOT NULL,
@@ -126,7 +127,7 @@ CREATE TABLE tx_events2_domain_model_time (
 	PRIMARY KEY (uid),
 	KEY parent (pid),
 	KEY t3ver_oid (t3ver_oid,t3ver_wsid),
-	KEY language (l10n_parent,sys_language_uid)
+	KEY language (l10n_parent,sys_language_uid),
 	KEY eventType (event,type)
 );
 

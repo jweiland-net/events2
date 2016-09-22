@@ -19,9 +19,6 @@
 			<trans-unit id="event_end.description">
 				<source>Last event</source>
 			</trans-unit>
-			<trans-unit id="recurring_event.description">
-				<source>Recurring event</source>
-			</trans-unit>
 			<trans-unit id="same_day.description">
 				<source>Same day</source>
 			</trans-unit>

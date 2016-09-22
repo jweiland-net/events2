@@ -207,8 +207,13 @@ class AbstractController extends ActionController
     }
 
     /**
+     * Pre configure configuration
+     *
      * @param ConfigurationManagerInterface $configurationManager
+     *
      * @return void
+     *
+     * @throws \Exception
      */
     public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager)
     {
@@ -219,6 +224,9 @@ class AbstractController extends ActionController
             'events2',
             'events2_event'
         );
+        if (empty($typoScriptSettings['settings'])) {
+            throw new \Exception('You have forgotten to add TS-Template of events2', 1474533307);
+        }
         $mergedFlexFormSettings = $this->configurationManager->getConfiguration(
             ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS
         );

@@ -115,7 +115,7 @@ class DayRelations
             $days = $this->dayGenerator->getDayStorage();
 
             // delete entries with current event uid from mm-table
-            $this->deleteAllRelatedRecords((int) $this->eventRecord['uid']);
+            $this->deleteAllRelatedRecords((int)$this->eventRecord['uid']);
 
             foreach ($days as $day) {
                 $this->addDay($day);
@@ -124,7 +124,7 @@ class DayRelations
             // add days amount to event
             $this->databaseConnection->exec_UPDATEquery(
                 'tx_events2_domain_model_event',
-                'uid='.(int) $this->eventRecord['uid'],
+                'uid=' . (int)$this->eventRecord['uid'],
                 array(
                     'days' => count($days),
                 )
@@ -144,7 +144,7 @@ class DayRelations
     {
         // to prevent adding multiple days for ONE day we set them all to midnight 00:00:00
         $day = $this->dateTimeUtility->standardizeDateTimeObject($day);
-        $dayUid = (int) $this->addDayRecord($day);
+        $dayUid = (int)$this->addDayRecord($day);
 
         // if $dayUid == 0 an error in query appears. So, do not update anything
         if ($dayUid > 0) {
@@ -152,17 +152,17 @@ class DayRelations
             $this->addRelation($this->eventRecord['uid'], $dayUid, $day);
 
             // add amount of events to day record
-            $amount = (int) $this->databaseConnection->exec_SELECTcountRows(
+            $amount = $this->databaseConnection->exec_SELECTcountRows(
                 '*',
                 'tx_events2_event_day_mm',
-                'uid_foreign='.$dayUid
+                'uid_foreign=' . $dayUid
             );
             if ($amount) {
                 $this->databaseConnection->exec_UPDATEquery(
                     'tx_events2_domain_model_day',
-                    'uid='.$dayUid,
+                    'uid=' . $dayUid,
                     array(
-                        'events' => $amount,
+                        'events' => (int)$amount,
                     )
                 );
             }
@@ -183,9 +183,12 @@ class DayRelations
         $row = $this->databaseConnection->exec_SELECTgetSingleRow(
             'uid',
             'tx_events2_domain_model_day',
-            'day='.$day->format('U').
-                BackendUtility::BEenableFields('tx_events2_domain_model_day').
+            sprintf(
+                'day=%d %s %s',
+                (int)$day->format('U'),
+                BackendUtility::BEenableFields('tx_events2_domain_model_day'),
                 BackendUtility::deleteClause('tx_events2_domain_model_day')
+            )
         );
 
         if ($row === null) {
@@ -194,17 +197,17 @@ class DayRelations
         } elseif ($row === false) {
             $time = time();
             $fieldsArray = array();
-            $fieldsArray['day'] = (int) $day->format('U');
+            $fieldsArray['day'] = (int)$day->format('U');
             $fieldsArray['tstamp'] = $time;
-            $fieldsArray['pid'] = (int) $this->eventRecord['pid'];
+            $fieldsArray['pid'] = (int)$this->eventRecord['pid'];
             $fieldsArray['crdate'] = $time;
-            $fieldsArray['cruser_id'] = (int) $GLOBALS['BE_USER']->user['uid'];
+            $fieldsArray['cruser_id'] = (int)$GLOBALS['BE_USER']->user['uid'];
 
             $this->databaseConnection->exec_INSERTquery('tx_events2_domain_model_day', $fieldsArray);
 
-            return (int) $this->databaseConnection->sql_insert_id();
+            return (int)$this->databaseConnection->sql_insert_id();
         } else {
-            return (int) $row['uid'];
+            return (int)$row['uid'];
         }
     }
 
@@ -219,23 +222,26 @@ class DayRelations
     {
         // we don't need a SELECT query here, because we have deleted all related records just before
         $fieldsArray = array();
-        $fieldsArray['uid_local'] = $eventUid;
-        $fieldsArray['uid_foreign'] = $dayUid;
-        $fieldsArray['sorting'] = (int) $day->format('U');
+        $fieldsArray['uid_local'] = (int)$eventUid;
+        $fieldsArray['uid_foreign'] = (int)$dayUid;
+        $fieldsArray['sorting'] = (int)$day->format('U');
 
-        $this->databaseConnection->exec_INSERTquery('tx_events2_event_day_mm', $fieldsArray);
+        $this->databaseConnection->exec_INSERTquery(
+            'tx_events2_event_day_mm',
+            $fieldsArray
+        );
     }
 
     /**
      * delete all related records from mm-table.
      *
-     * @param $eventUid
+     * @param int $eventUid
      */
     protected function deleteAllRelatedRecords($eventUid)
     {
         $this->databaseConnection->exec_DELETEquery(
             'tx_events2_event_day_mm',
-            'uid_local='.$eventUid
+            'uid_local=' . (int)$eventUid
         );
     }
 }

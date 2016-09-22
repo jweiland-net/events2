@@ -35,12 +35,26 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 class Event extends AbstractEntity
 {
     /**
+     * EventType.
+     *
+     * @var string
+     */
+    protected $eventType = 'single';
+    
+    /**
      * Hidden.
      *
      * @var bool
      */
     protected $hidden = false;
-
+    
+    /**
+     * TopOfList.
+     *
+     * @var bool
+     */
+    protected $topOfList = false;
+    
     /**
      * Title.
      *
@@ -48,20 +62,6 @@ class Event extends AbstractEntity
      * @validate NotEmpty
      */
     protected $title = '';
-
-    /**
-     * TopOfList.
-     *
-     * @var bool
-     */
-    protected $topOfList = false;
-
-    /**
-     * Teaser.
-     *
-     * @var string
-     */
-    protected $teaser = '';
 
     /**
      * Event begin.
@@ -105,7 +105,7 @@ class Event extends AbstractEntity
      *
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Time>
      */
-    protected $multipleTimes = null;
+    protected $multipleTimes;
 
     /**
      * xTh.
@@ -127,7 +127,7 @@ class Event extends AbstractEntity
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Time>
      * @lazy
      */
-    protected $differentTimes = null;
+    protected $differentTimes;
 
     /**
      * Each weeks.
@@ -135,15 +135,30 @@ class Event extends AbstractEntity
      * @var int
      */
     protected $eachWeeks = 0;
-
+    
+    /**
+     * RecurringEnd.
+     *
+     * @var \DateTime
+     * @validate NotEmpty
+     */
+    protected $recurringEnd = null;
+    
     /**
      * Exceptions.
      *
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Exception>
      * @lazy
      */
-    protected $exceptions = null;
-
+    protected $exceptions;
+    
+    /**
+     * Teaser.
+     *
+     * @var string
+     */
+    protected $teaser = '';
+    
     /**
      * Detail informations.
      *
@@ -173,7 +188,7 @@ class Event extends AbstractEntity
      * @validate NotEmpty
      * @lazy
      */
-    protected $categories = null;
+    protected $categories;
 
     /**
      * Days.
@@ -181,7 +196,7 @@ class Event extends AbstractEntity
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Day>
      * @lazy
      */
-    protected $days = null;
+    protected $days;
 
     /**
      * Location.
@@ -206,7 +221,7 @@ class Event extends AbstractEntity
      *
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference>
      */
-    protected $images = null;
+    protected $images;
 
     /**
      * VideoLink.
@@ -223,7 +238,7 @@ class Event extends AbstractEntity
      * @cascade remove
      * @lazy
      */
-    protected $downloadLinks = null;
+    protected $downloadLinks;
 
     /**
      * Facebook.
@@ -288,6 +303,27 @@ class Event extends AbstractEntity
         $this->images = new ObjectStorage();
         $this->downloadLinks = new ObjectStorage();
     }
+    
+    /**
+     * Returns the eventType
+     *
+     * @return string $eventType
+     */
+    public function getEventType()
+    {
+        return $this->eventType;
+    }
+    
+    /**
+     * Sets the eventType
+     *
+     * @param string $eventType
+     * @return void
+     */
+    public function setEventType($eventType)
+    {
+        $this->eventType = (string)$eventType;
+    }
 
     /**
      * Returns the hidden.
@@ -308,7 +344,27 @@ class Event extends AbstractEntity
     {
         $this->hidden = (bool) $hidden;
     }
-
+    
+    /**
+     * Returns the topOfList.
+     *
+     * @return bool $topOfList
+     */
+    public function getTopOfList()
+    {
+        return $this->topOfList;
+    }
+    
+    /**
+     * Sets the topOfList.
+     *
+     * @param bool $topOfList
+     */
+    public function setTopOfList($topOfList)
+    {
+        $this->topOfList = (bool) $topOfList;
+    }
+    
     /**
      * Returns the title.
      *
@@ -330,26 +386,6 @@ class Event extends AbstractEntity
     }
 
     /**
-     * Returns the topOfList.
-     *
-     * @return bool $topOfList
-     */
-    public function getTopOfList()
-    {
-        return $this->topOfList;
-    }
-
-    /**
-     * Sets the topOfList.
-     *
-     * @param bool $topOfList
-     */
-    public function setTopOfList($topOfList)
-    {
-        $this->topOfList = (bool) $topOfList;
-    }
-
-    /**
      * Returns the boolean state of topOfList.
      *
      * @return bool
@@ -357,26 +393,6 @@ class Event extends AbstractEntity
     public function isTopOfList()
     {
         return $this->getTopOfList();
-    }
-
-    /**
-     * Returns the teaser.
-     *
-     * @return string $teaser
-     */
-    public function getTeaser()
-    {
-        return $this->teaser;
-    }
-
-    /**
-     * Sets the teaser.
-     *
-     * @param string $teaser
-     */
-    public function setTeaser($teaser)
-    {
-        $this->teaser = (string) $teaser;
     }
 
     /**
@@ -659,6 +675,27 @@ class Event extends AbstractEntity
     {
         $this->eachWeeks = $eachWeeks;
     }
+    
+    /**
+     * Returns the recurringEnd
+     *
+     * @return \DateTime $recurringEnd
+     */
+    public function getRecurringEnd()
+    {
+        return $this->recurringEnd;
+    }
+    
+    /**
+     * Sets the recurringEnd
+     *
+     * @param \DateTime $recurringEnd
+     * @return void
+     */
+    public function setRecurringEnd(\DateTime $recurringEnd = null)
+    {
+        $this->recurringEnd = $recurringEnd;
+    }
 
     /**
      * Adds an Exception.
@@ -723,7 +760,27 @@ class Event extends AbstractEntity
     {
         $this->exceptions = $exceptions;
     }
-
+    
+    /**
+     * Returns the teaser.
+     *
+     * @return string $teaser
+     */
+    public function getTeaser()
+    {
+        return $this->teaser;
+    }
+    
+    /**
+     * Sets the teaser.
+     *
+     * @param string $teaser
+     */
+    public function setTeaser($teaser)
+    {
+        $this->teaser = (string) $teaser;
+    }
+    
     /**
      * Returns the detailInformations.
      *

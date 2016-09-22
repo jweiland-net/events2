@@ -167,7 +167,7 @@ class DayGeneratorTest extends UnitTestcase
     public function initializeWithRecurringEventCallsAddRecurringEvents()
     {
         $event = array(
-            'recurring_event' => 1,
+            'event_type' => 'recurring',
             'event_begin' => 123456789,
             'event_end' => 0,
             'xth' => 0,
@@ -189,7 +189,7 @@ class DayGeneratorTest extends UnitTestcase
     public function initializeWithRecurringWeeksCallsAddRecurringWeeks()
     {
         $event = array(
-            'recurring_event' => 1,
+            'event_type' => 'recurring',
             'event_begin' => 123456789,
             'event_end' => 0,
             'xth' => 0,
@@ -217,7 +217,7 @@ class DayGeneratorTest extends UnitTestcase
         $eventEnd->modify('tomorrow');
 
         $event = array(
-            'recurring_event' => 1,
+            'event_type' => 'recurring',
             'event_begin' => $eventBegin->format('U'),
             'event_end' => $eventEnd->format('U'),
             'xth' => 0,
@@ -254,7 +254,7 @@ class DayGeneratorTest extends UnitTestcase
         $eventEnd->modify('+14 days');
 
         $event = array(
-            'recurring_event' => 1,
+            'event_type' => 'recurring',
             'event_begin' => $eventBegin->format('U'),
             'event_end' => $eventEnd->format('U'),
             'xth' => 0,
@@ -297,7 +297,7 @@ class DayGeneratorTest extends UnitTestcase
         $eventEnd->modify('+14 days');
 
         $event = array(
-            'recurring_event' => 1,
+            'event_type' => 'recurring',
             'event_begin' => $eventBegin->format('U'),
             'event_end' => $eventEnd->format('U'),
             'xth' => 0,
@@ -333,7 +333,7 @@ class DayGeneratorTest extends UnitTestcase
         $eventEnd = clone $eventBegin;
 
         $event = array(
-            'recurring_event' => 1,
+            'event_type' => 'recurring',
             'event_begin' => $eventBegin->format('U'),
             'event_end' => $eventEnd->format('U'),
             'xth' => 0,
@@ -360,7 +360,7 @@ class DayGeneratorTest extends UnitTestcase
         $eventEnd->modify('+14 days');
 
         $event = array(
-            'recurring_event' => 1,
+            'event_type' => 'recurring',
             'event_begin' => $eventBegin->format('U'),
             'event_end' => $eventEnd->format('U'),
             'xth' => 0,
@@ -394,7 +394,7 @@ class DayGeneratorTest extends UnitTestcase
         $eventEnd->modify('+8 days');
 
         $event = array(
-            'recurring_event' => 1,
+            'event_type' => 'recurring',
             'event_begin' => $eventBegin->format('U'),
             'event_end' => $eventEnd->format('U'),
             'xth' => 0, // all
@@ -440,7 +440,7 @@ class DayGeneratorTest extends UnitTestcase
         $eventEnd->modify('+20 days'); // 06.02.1015
 
         $event = array(
-            'recurring_event' => 1,
+            'event_type' => 'recurring',
             'event_begin' => $eventBegin->format('U'),
             'event_end' => $eventEnd->format('U'),
             'xth' => 21, // 1st, 3rd, 5th
@@ -479,7 +479,7 @@ class DayGeneratorTest extends UnitTestcase
         $eventEnd->modify('+4 days');
 
         $event = array(
-            'recurring_event' => 0,
+            'event_type' => 'recurring',
             'event_begin' => $eventBegin->format('U'),
             'event_end' => $eventEnd->format('U'),
             'xth' => 0,
@@ -510,7 +510,7 @@ class DayGeneratorTest extends UnitTestcase
         $eventBegin->modify('midnight');
 
         $event = array(
-            'recurring_event' => 0,
+            'event_type' => 'recurring',
             'event_begin' => $eventBegin->format('U'),
             'event_end' => 0,
             'xth' => 0,
@@ -537,7 +537,7 @@ class DayGeneratorTest extends UnitTestcase
         $eventBegin->modify('midnight');
 
         $event = array(
-            'recurring_event' => 0,
+            'event_type' => 'recurring',
             'event_begin' => $eventBegin->format('U'),
             'event_end' => 0,
             'xth' => 0,
@@ -568,7 +568,7 @@ class DayGeneratorTest extends UnitTestcase
         $tomorrow->modify('tomorrow');
 
         $event = array(
-            'recurring_event' => 0,
+            'event_type' => 'recurring',
             'event_begin' => $eventBegin->format('U'),
             'event_end' => 0,
             'xth' => 0,
@@ -604,7 +604,7 @@ class DayGeneratorTest extends UnitTestcase
         $tomorrow->modify('tomorrow');
 
         $event = array(
-            'recurring_event' => 0,
+            'event_type' => 'recurring',
             'event_begin' => $eventBegin->format('U'),
             'event_end' => $tomorrow->format('U'),
             'xth' => 0,
@@ -639,7 +639,7 @@ class DayGeneratorTest extends UnitTestcase
         $tomorrow->modify('tomorrow');
 
         $event = array(
-            'recurring_event' => 0,
+            'event_type' => 'recurring',
             'event_begin' => $eventBegin->format('U'),
             'event_end' => $tomorrow->format('U'),
             'xth' => 0,
@@ -674,7 +674,7 @@ class DayGeneratorTest extends UnitTestcase
         $tomorrow->modify('tomorrow');
 
         $event = array(
-            'recurring_event' => 0,
+            'event_type' => 'recurring',
             'event_begin' => $eventBegin->format('U'),
             'event_end' => $tomorrow->format('U'),
             'xth' => 0,
@@ -711,7 +711,7 @@ class DayGeneratorTest extends UnitTestcase
         $tomorrow->modify('tomorrow');
 
         $event = array(
-            'recurring_event' => 0,
+            'event_type' => 'recurring',
             'event_begin' => $eventBegin->format('U'),
             'event_end' => $tomorrow->format('U'),
             'xth' => 0,

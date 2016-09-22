@@ -44,11 +44,23 @@
 				<source>Social</source>
 			</trans-unit>
 
-			<trans-unit id="tx_events2_domain_model_event.title">
-				<source>Title</source>
+			<trans-unit id="tx_events2_domain_model_event.event_type">
+				<source>Event type</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.event_type.single">
+				<source>Single</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.event_type.recurring">
+				<source>Recurring</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.event_type.duration">
+				<source>Duration</source>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.top_of_list">
 				<source>Top of list</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.title">
+				<source>Title</source>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.teaser">
 				<source>Teaser</source>
@@ -56,14 +68,11 @@
 			<trans-unit id="tx_events2_domain_model_event.event_begin">
 				<source>Event Begin</source>
 			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.event_time">
-				<source>Time</source>
-			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.event_end">
 				<source>Last Event</source>
 			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.recurring_event">
-				<source>Recurring Event</source>
+			<trans-unit id="tx_events2_domain_model_event.event_time">
+				<source>Time</source>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.same_day">
 				<source>Same Day</source>
@@ -133,6 +142,9 @@
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.each_weeks.4">
 				<source>Each 4 weeks</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.recurring_end">
+				<source>End of recurring</source>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.exceptions">
 				<source>Exceptions</source>

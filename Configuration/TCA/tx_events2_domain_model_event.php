@@ -12,6 +12,13 @@ return array(
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
         'dividers2tabs' => true,
+        'type' => 'event_type',
+        'typeicon_column' => 'event_type',
+        'typeicon_classes' => array(
+            'single' => 'events2-calendar-single',
+            'recurring' => 'events2-calendar-recurring',
+            'duration' => 'events2-calendar-duration',
+        ),
         'requestUpdate' => 'same_day,each_weeks',
         'default_sortby' => 'ORDER BY title',
         'versioningWS' => 2,
@@ -27,10 +34,10 @@ return array(
             'endtime' => 'endtime',
         ),
         'searchFields' => 'title,teaser,event_begin,event_end,detail_informations,',
-        'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('events2') . 'Resources/Public/Icons/tx_events2_domain_model_event.gif',
+        'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('events2') . 'Resources/Public/Icons/tx_events2_domain_model_event.png',
     ),
     'interface' => array(
-        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, title, top_of_list, teaser, event_begin, event_time, event_end, recurring_event, same_day, multiple_times, xth, weekday, different_times, each_weeks, exceptions, detail_informations, free_entry, ticket_link, alternative_times, location, organizer, images, video_link, download_links, theater_details, facebook, release_date, social_teaser, facebook_channel',
+        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, event_type, top_of_list, title, teaser, event_begin, event_end, event_time, same_day, multiple_times, xth, weekday, different_times, each_weeks, recurring_end, exceptions, detail_informations, free_entry, ticket_link, alternative_times, location, organizer, images, video_link, download_links, theater_details, facebook, release_date, social_teaser, facebook_channel',
     ),
     'columns' => array(
         'sys_language_uid' => array(
@@ -115,14 +122,19 @@ return array(
                 ),
             ),
         ),
-        'title' => array(
+        'event_type' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.title',
+            'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_type',
             'config' => array(
-                'type' => 'input',
-                'size' => 30,
-                'eval' => 'trim,required',
-            ),
+                'type' => 'select',
+                'renderType' => 'selectSingle',
+                'items' => array(
+                    array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_type.single', 'single', 'events2-calendar-single'),
+                    array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_type.recurring', 'recurring', 'events2-calendar-recurring'),
+                    array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_type.duration', 'duration', 'events2-calendar-duration'),
+                ),
+                'default' => 'single',
+            )
         ),
         'top_of_list' => array(
             'exclude' => 1,
@@ -130,6 +142,15 @@ return array(
             'config' => array(
                 'type' => 'check',
                 'default' => 0,
+            ),
+        ),
+        'title' => array(
+            'exclude' => 1,
+            'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.title',
+            'config' => array(
+                'type' => 'input',
+                'size' => 30,
+                'eval' => 'trim,required',
             ),
         ),
         'teaser' => array(
@@ -152,6 +173,15 @@ return array(
                 'default' => mktime(0, 0, 0, date('m'), date('d'), date('Y')),
             ),
         ),
+        'event_end' => array(
+            'exclude' => 1,
+            'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_end',
+            'config' => array(
+                'type' => 'input',
+                'size' => 7,
+                'eval' => 'date',
+            ),
+        ),
         'event_time' => array(
             'exclude' => 1,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_time',
@@ -172,23 +202,6 @@ return array(
                     'showPossibleLocalizationRecords' => 1,
                     'showAllLocalizationLink' => 1,
                 ),
-            ),
-        ),
-        'event_end' => array(
-            'exclude' => 1,
-            'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_end',
-            'config' => array(
-                'type' => 'input',
-                'size' => 7,
-                'eval' => 'date',
-            ),
-        ),
-        'recurring_event' => array(
-            'exclude' => 1,
-            'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.recurring_event',
-            'config' => array(
-                'type' => 'check',
-                'default' => 0,
             ),
         ),
         'same_day' => array(
@@ -297,6 +310,15 @@ return array(
                     array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.each_weeks.4', 4),
                 ),
                 'default' => 0,
+            ),
+        ),
+        'recurring_end' => array(
+            'exclude' => 1,
+            'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.recurring_end',
+            'config' => array(
+                'type' => 'input',
+                'size' => 7,
+                'eval' => 'date',
             ),
         ),
         'exceptions' => array(
@@ -538,10 +560,14 @@ return array(
         ),
     ),
     'types' => array(
-        '1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, title, top_of_list, teaser, event_begin, event_time, event_end, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.recurring_event, recurring_event, same_day, multiple_times, xth, weekday, different_times, each_weeks, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.exceptions, exceptions, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.event_details, detail_informations, free_entry, ticket_link, alternative_times, location, organizer, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.media;newline, images, video_link, download_links, theater_details,--div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.social, facebook, release_date, social_teaser, facebook_channel,--div--;' . $ttContentLanguageFile . ':tabs.access,starttime, endtime'),
+        'single' => array('showitem' => '--palette--;;typeAndOnTop, --palette--;;titleLanguage, event_begin, event_time, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.exceptions, exceptions, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.event_details, teaser, detail_informations, free_entry, ticket_link, alternative_times, location, organizer, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.media;newline, images, video_link, download_links, theater_details,--div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.social, facebook, release_date, social_teaser, facebook_channel,--div--;' . $ttContentLanguageFile . ':tabs.access,starttime, endtime'),
+        'recurring' => array('showitem' => '--palette--;;typeAndOnTop, --palette--;;titleLanguage, event_time, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.recurring_event, --palette--;;recurringBeginEnd, same_day, multiple_times, xth, weekday, different_times, each_weeks, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.exceptions, exceptions, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.event_details, teaser, detail_informations, free_entry, ticket_link, alternative_times, location, organizer, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.media;newline, images, video_link, download_links, theater_details,--div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.social, facebook, release_date, social_teaser, facebook_channel,--div--;' . $ttContentLanguageFile . ':tabs.access,starttime, endtime'),
+        'duration' => array('showitem' => '--palette--;;typeAndOnTop, --palette--;;titleLanguage, --palette--;;eventBeginEnd, event_time, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.exceptions, exceptions, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.event_details, teaser, detail_informations, free_entry, ticket_link, alternative_times, location, organizer, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.media;newline, images, video_link, download_links, theater_details,--div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.social, facebook, release_date, social_teaser, facebook_channel,--div--;' . $ttContentLanguageFile . ':tabs.access,starttime, endtime'),
     ),
     'palettes' => array(
-        '1' => array('showitem' => ''),
+        'titleLanguage' => array('showitem' => 'title, sys_language_uid, l10n_parent'),
+        'eventBeginEnd' => array('showitem' => 'event_begin, event_end'),
+        'typeAndOnTop' => array('showitem' => 'event_type, hidden, top_of_list'),
+        'recurringBeginEnd' => array('showitem' => 'event_begin, recurring_end'),
     ),
 );
-unset($ttContentLanguageFile);

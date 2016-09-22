@@ -82,6 +82,7 @@ class ShowEventDatesController extends AbstractWidgetController
      */
     public function __construct()
     {
+        parent::__construct();
         $this->exceptions = new ObjectStorage();
     }
 

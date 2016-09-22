@@ -20,7 +20,7 @@ return array(
             'starttime' => 'starttime',
             'endtime' => 'endtime',
         ),
-        'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('events2') . 'Resources/Public/Icons/tx_events2_domain_model_time.gif',
+        'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('events2') . 'Resources/Public/Icons/tx_events2_domain_model_time.png',
     ),
     'interface' => array(
         'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, type, weekday, time_begin, time_entry, duration, time_end',
@@ -188,10 +188,10 @@ return array(
         ),
     ),
     'types' => array(
-        '1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, type, time_begin;;2, duration, time_end,--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime'),
+        '1' => array('showitem' => '--palette--;;language, type, --palette--;;times,--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime'),
     ),
     'palettes' => array(
-        '1' => array('showitem' => ''),
-        '2' => array('showitem' => 'time_entry'),
+        'language' => array('showitem' => 'sys_language_uid, l10n_parent, hidden'),
+        'times' => array('showitem' => 'time_begin, duration, time_entry, time_end'),
     ),
 );
