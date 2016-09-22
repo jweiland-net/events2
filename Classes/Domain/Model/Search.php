@@ -87,7 +87,7 @@ class Search extends AbstractEntity
      */
     public function setSearch($search)
     {
-        $this->search = htmlspecialchars((string) $search);
+        $this->search = htmlspecialchars((string)$search);
     }
 
     /**
@@ -227,6 +227,6 @@ class Search extends AbstractEntity
      */
     public function setFreeEntry($freeEntry)
     {
-        $this->freeEntry = (bool) $freeEntry;
+        $this->freeEntry = (bool)$freeEntry;
     }
 }

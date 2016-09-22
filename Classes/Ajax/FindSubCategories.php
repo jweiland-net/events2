@@ -45,7 +45,7 @@ class FindSubCategories extends \JWeiland\Events2\Ajax\AbstractAjaxRequest
      */
     public function processAjaxRequest(array $arguments)
     {
-        $parentCategory = (int) $arguments['category'];
+        $parentCategory = (int)$arguments['category'];
         $categories = $this->categoryRepository->getSubCategories($parentCategory);
 
         return json_encode($this->reduceCategoryData($categories), JSON_FORCE_OBJECT);

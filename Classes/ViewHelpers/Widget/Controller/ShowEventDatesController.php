@@ -287,7 +287,7 @@ class ShowEventDatesController extends AbstractWidgetController
             $eventDate = array();
             $eventTime = array();
             foreach ($days as $key => $day) {
-                $eventDate[$key] = $day['eventDate']; // integer
+                $eventDate[$key] = $day['eventDate']; // int
                 $eventTime[$key] = $day['EventTime']; // string
             }
             array_multisort($eventDate, SORT_ASC, SORT_NUMERIC, $eventTime, SORT_ASC, SORT_STRING, $days);

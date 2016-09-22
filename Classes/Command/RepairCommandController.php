@@ -106,7 +106,7 @@ class RepairCommandController extends CommandController
                 $duplicateDays = $this->databaseConnection->exec_SELECTgetRows(
                     'uid',
                     'tx_events2_domain_model_day',
-                    'day='.$row['day'].' AND uid<>'.(int) $row['uid']
+                    'day='.$row['day'].' AND uid<>'.(int)$row['uid']
                 );
                 if (!empty($duplicateDays)) {
                     foreach ($duplicateDays as $duplicateDay) {
@@ -114,23 +114,23 @@ class RepairCommandController extends CommandController
                         $eventDayRelations = $this->databaseConnection->exec_SELECTgetRows(
                             'uid_local, uid_foreign',
                             'tx_events2_event_day_mm',
-                            'uid_foreign='.(int) $duplicateDay['uid']
+                            'uid_foreign='.(int)$duplicateDay['uid']
                         );
                         if ($eventDayRelations) {
                             foreach ($eventDayRelations as $eventDayRelation) {
                                 // each relation has to be updated to the one and only valid day record
                                 $this->databaseConnection->exec_UPDATEquery(
                                     'tx_events2_event_day_mm',
-                                    'uid_local='.(int) $eventDayRelation['uid_local'].' AND uid_foreign='.(int) $eventDayRelation['uid_foreign'],
+                                    'uid_local='.(int)$eventDayRelation['uid_local'].' AND uid_foreign='.(int)$eventDayRelation['uid_foreign'],
                                     array(
-                                        'uid_foreign' => (int) $row['uid'],
+                                        'uid_foreign' => (int)$row['uid'],
                                     )
                                 );
                             }
                             // now we can delete the duplicate day
                             $this->databaseConnection->exec_DELETEquery(
                                 'tx_events2_domain_model_day',
-                                'uid='.(int) $duplicateDay['uid']
+                                'uid='.(int)$duplicateDay['uid']
                             );
                             $this->echoValue();
                             ++$counter;
@@ -166,13 +166,13 @@ class RepairCommandController extends CommandController
                 $mmRelation = $this->databaseConnection->exec_SELECTgetSingleRow(
                     'uid_local, uid_foreign',
                     'tx_events2_event_day_mm',
-                    'uid_foreign='.(int) $row['uid']
+                    'uid_foreign='.(int)$row['uid']
                 );
                 // if there is no relation, the day record can be deleted
                 if (empty($mmRelation)) {
                     $this->databaseConnection->exec_DELETEquery(
                         'tx_events2_domain_model_day',
-                        'uid='.(int) $row['uid']
+                        'uid='.(int)$row['uid']
                     );
                     $this->echoValue();
                     ++$counter;
@@ -205,12 +205,12 @@ class RepairCommandController extends CommandController
                 $dayRecord = $this->databaseConnection->exec_SELECTgetSingleRow(
                     'uid',
                     'tx_events2_domain_model_day',
-                    'uid='.(int) $row['uid_foreign']
+                    'uid='.(int)$row['uid_foreign']
                 );
                 if (empty($dayRecord)) {
                     $this->databaseConnection->exec_DELETEquery(
                         'tx_events2_event_day_mm',
-                        'uid_local='.(int) $row['uid_local'].' AND uid_foreign='.(int) $row['uid_foreign']
+                        'uid_local='.(int)$row['uid_local'].' AND uid_foreign='.(int)$row['uid_foreign']
                     );
                     $this->echoValue();
                     ++$counter;
@@ -219,12 +219,12 @@ class RepairCommandController extends CommandController
                 $eventRecord = $this->databaseConnection->exec_SELECTgetSingleRow(
                     'uid',
                     'tx_events2_domain_model_event',
-                    'uid='.(int) $row['uid_local']
+                    'uid='.(int)$row['uid_local']
                 );
                 if (empty($eventRecord)) {
                     $this->databaseConnection->exec_DELETEquery(
                         'tx_events2_event_day_mm',
-                        'uid_local='.(int) $row['uid_local'].' AND uid_foreign='.(int) $row['uid_foreign']
+                        'uid_local='.(int)$row['uid_local'].' AND uid_foreign='.(int)$row['uid_foreign']
                     );
                     $this->echoValue();
                     ++$counter;
@@ -263,18 +263,18 @@ class RepairCommandController extends CommandController
                 $day = $this->databaseConnection->exec_SELECTgetSingleRow(
                     'uid',
                     'tx_events2_domain_model_day',
-                    'day='.(int) $correctDate->format('U')
+                    'day='.(int)$correctDate->format('U')
                 );
                 if (empty($day)) {
                     // we have to create a new day record
                     $fieldsArray = array();
-                    $fieldsArray['day'] = (int) $correctDate->format('U');
+                    $fieldsArray['day'] = (int)$correctDate->format('U');
                     $fieldsArray['tstamp'] = time();
-                    $fieldsArray['pid'] = (int) $row['pid'];
+                    $fieldsArray['pid'] = (int)$row['pid'];
                     $fieldsArray['crdate'] = time();
-                    $fieldsArray['cruser_id'] = (int) $row['cruser_id'];
+                    $fieldsArray['cruser_id'] = (int)$row['cruser_id'];
                     $this->databaseConnection->exec_INSERTquery('tx_events2_domain_model_day', $fieldsArray);
-                    $dayUid = (int) $this->databaseConnection->sql_insert_id();
+                    $dayUid = (int)$this->databaseConnection->sql_insert_id();
                 } else {
                     // we can use the found record as new relation
                     $dayUid = $day['uid'];
@@ -282,15 +282,15 @@ class RepairCommandController extends CommandController
                 // update MM-Relation
                 $this->databaseConnection->exec_UPDATEquery(
                     'tx_events2_event_day_mm',
-                    'uid_foreign='.(int) $row['uid'],
+                    'uid_foreign=' . (int)$row['uid'],
                     array(
-                        'uid_foreign' => (int) $dayUid,
+                        'uid_foreign' => (int)$dayUid,
                     )
                 );
                 // delete wrong day record
                 $this->databaseConnection->exec_DELETEquery(
                     'tx_events2_domain_model_day',
-                    'uid='.(int) $row
+                    'uid=' . (int)$row
                 );
                 $this->echoValue();
                 ++$counter;

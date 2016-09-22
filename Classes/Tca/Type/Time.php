@@ -43,7 +43,7 @@ class Time
     public function evaluateFieldValue($value)
     {
         if (MathUtility::canBeInterpretedAsInteger($value)) {
-            // this is only for backwards compatibility. In earlier versions we calculated these values with integers
+            // this is only for backwards compatibility. In earlier versions we calculated these values with int
             /** @var \JWeiland\Events2\Converter\TimeToStringConverter $converter */
             $converter = GeneralUtility::makeInstance('JWeiland\\Events2\\Converter\\TimeToStringConverter');
 

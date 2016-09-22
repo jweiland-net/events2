@@ -181,7 +181,7 @@ class CreateMap
         $tsConfig = $this->getTsConfig();
 
         $fieldValues = array();
-        $fieldValues['pid'] = (int) $tsConfig['pid'];
+        $fieldValues['pid'] = (int)$tsConfig['pid'];
         $fieldValues['tstamp'] = time();
         $fieldValues['crdate'] = time();
         $fieldValues['cruser_id'] = $GLOBALS['BE_USER']->user['uid'];

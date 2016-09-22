@@ -31,7 +31,7 @@ class TimeToStringConverter
     public function convert($timestamp)
     {
         $time = '';
-        if (is_integer($timestamp)) {
+        if (is_int($timestamp)) {
             if ($timestamp >= (60 * 60 * 24)) {
                 // return highest allowed value: 23:59 if timestamp is too high
                 $time = '23:59';
@@ -58,7 +58,7 @@ class TimeToStringConverter
      */
     protected function getHours($time)
     {
-        return floor((int) $time / 3600);
+        return floor((int)$time / 3600);
     }
 
     /**

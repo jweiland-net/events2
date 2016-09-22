@@ -198,7 +198,7 @@ class StatementUtility
      */
     public function setSelect($select)
     {
-        $this->select = (string) $select;
+        $this->select = (string)$select;
 
         return $this;
     }
@@ -304,7 +304,7 @@ class StatementUtility
     public function addWhereForCategories($categories)
     {
         $categories = $this->databaseConnection->quoteStr($categories, $this->getFrom());
-        $this->where[] = 'sys_category_record_mm.uid_local IN ('.(string) $categories.')';
+        $this->where[] = 'sys_category_record_mm.uid_local IN ('.(string)$categories.')';
     }
 
     /**
@@ -371,10 +371,10 @@ class StatementUtility
     public function addWhere($property, $operator, $value)
     {
         if (MathUtility::canBeInterpretedAsInteger($value)) {
-            $parsedValue = (int) $value;
+            $parsedValue = (int)$value;
         } elseif ($value instanceof \DateTime) {
             /* @var \DateTime $value */
-            $parsedValue = (int) $value->format('U');
+            $parsedValue = (int)$value->format('U');
         } else {
             $parsedValue = $this->databaseConnection->fullQuoteStr($value, $this->getFrom());
         }
@@ -406,7 +406,7 @@ class StatementUtility
      */
     public function setLimit($limit)
     {
-        $this->limit = (string) $limit;
+        $this->limit = (string)$limit;
 
         return $this;
     }

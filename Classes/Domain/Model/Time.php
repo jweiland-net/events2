@@ -77,7 +77,7 @@ class Time extends AbstractEntity
      */
     public function setWeekday($weekday)
     {
-        $this->weekday = (string) $weekday;
+        $this->weekday = (string)$weekday;
     }
 
     /**
@@ -97,7 +97,7 @@ class Time extends AbstractEntity
      */
     public function setTimeBegin($timeBegin)
     {
-        $this->timeBegin = (string) $timeBegin;
+        $this->timeBegin = (string)$timeBegin;
     }
 
     /**
@@ -117,7 +117,7 @@ class Time extends AbstractEntity
      */
     public function setTimeEntry($timeEntry)
     {
-        $this->timeEntry = (string) $timeEntry;
+        $this->timeEntry = (string)$timeEntry;
     }
 
     /**
@@ -137,7 +137,7 @@ class Time extends AbstractEntity
      */
     public function setDuration($duration)
     {
-        $this->duration = (string) $duration;
+        $this->duration = (string)$duration;
     }
 
     /**
@@ -157,6 +157,6 @@ class Time extends AbstractEntity
      */
     public function setTimeEnd($timeEnd)
     {
-        $this->timeEnd = (string) $timeEnd;
+        $this->timeEnd = (string)$timeEnd;
     }
 }

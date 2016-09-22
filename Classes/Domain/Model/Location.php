@@ -70,7 +70,7 @@ class Location extends AbstractEntity
      */
     public function setLocation($location)
     {
-        $this->location = (string) $location;
+        $this->location = (string)$location;
     }
 
     /**
@@ -90,7 +90,7 @@ class Location extends AbstractEntity
      */
     public function setStreet($street)
     {
-        $this->street = (string) $street;
+        $this->street = (string)$street;
     }
 
     /**
@@ -110,7 +110,7 @@ class Location extends AbstractEntity
      */
     public function setHouseNumber($houseNumber)
     {
-        $this->houseNumber = (string) $houseNumber;
+        $this->houseNumber = (string)$houseNumber;
     }
 
     /**
@@ -130,7 +130,7 @@ class Location extends AbstractEntity
      */
     public function setZip($zip)
     {
-        $this->zip = (string) $zip;
+        $this->zip = (string)$zip;
     }
 
     /**
@@ -150,7 +150,7 @@ class Location extends AbstractEntity
      */
     public function setCity($city)
     {
-        $this->city = (string) $city;
+        $this->city = (string)$city;
     }
 
     /**

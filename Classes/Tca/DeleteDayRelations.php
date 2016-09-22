@@ -67,7 +67,7 @@ class DeleteDayRelations
         $days = $this->databaseConnection->exec_SELECTgetRows(
             'uid_foreign',
             'tx_events2_event_day_mm',
-            'uid_local = '.(int) $event['uid']
+            'uid_local = '.(int)$event['uid']
         );
         if ($days === null) {
             throw new \Exception('SQL-Error occurs while selecting related day records in DELETEDayRelations.php', 1421671032);
@@ -92,21 +92,21 @@ class DeleteDayRelations
             $amount = $this->databaseConnection->exec_SELECTcountRows(
                 '*',
                 'tx_events2_event_day_mm',
-                'uid_foreign = '.(int) $day['uid_foreign']
+                'uid_foreign = '.(int)$day['uid_foreign']
             );
 
             if ($amount) {
                 // update value in day record
                 $this->databaseConnection->exec_UPDATEquery(
                     'tx_events2_domain_model_day',
-                    'uid = '.(int) $day['uid_foreign'],
+                    'uid = '.(int)$day['uid_foreign'],
                     array('events' => $amount)
                 );
             } else {
                 // if day record has no other relations to events anymore we can safely delete day record
                 $this->databaseConnection->exec_DELETEquery(
                     'tx_events2_domain_model_day',
-                    'uid = '.(int) $day['uid_foreign']
+                    'uid = '.(int)$day['uid_foreign']
                 );
             }
         }
@@ -121,7 +121,7 @@ class DeleteDayRelations
     {
         $this->databaseConnection->exec_DELETEquery(
             'tx_events2_event_day_mm',
-            'uid_local = '.(int) $eventUid
+            'uid_local = '.(int)$eventUid
         );
     }
 }

@@ -30,7 +30,7 @@ class UserRepository
      */
     public function getUser()
     {
-        if (is_array($GLOBALS['TSFE']->fe_user->user) && (int) $GLOBALS['TSFE']->fe_user->user['uid'] > 0) {
+        if (is_array($GLOBALS['TSFE']->fe_user->user) && (int)$GLOBALS['TSFE']->fe_user->user['uid'] > 0) {
             // remove password for security reasons
             unset($GLOBALS['TSFE']->fe_user->user['password']);
 
@@ -51,7 +51,7 @@ class UserRepository
     {
         $user = $this->getUser();
         if (isset($user[$field])) {
-            return (string) $user[$field];
+            return (string)$user[$field];
         } else {
             return '';
         }

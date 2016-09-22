@@ -90,11 +90,11 @@ class Ajax
     public function setArguments(array $arguments)
     {
         // sanitize categories
-        $sanitizedArguments['categories'] = $this->sanitizeCommaSeparatedIntValues((string) $arguments['categories']);
-        $sanitizedArguments['month'] = (int) $arguments['month'];
-        $sanitizedArguments['year'] = (int) $arguments['year'];
-        $sanitizedArguments['pidOfListPage'] = (int) $arguments['pidOfListPage'];
-        $sanitizedArguments['storagePids'] = $this->sanitizeCommaSeparatedIntValues((string) $arguments['storagePids']);
+        $sanitizedArguments['categories'] = $this->sanitizeCommaSeparatedIntValues((string)$arguments['categories']);
+        $sanitizedArguments['month'] = (int)$arguments['month'];
+        $sanitizedArguments['year'] = (int)$arguments['year'];
+        $sanitizedArguments['pidOfListPage'] = (int)$arguments['pidOfListPage'];
+        $sanitizedArguments['storagePids'] = $this->sanitizeCommaSeparatedIntValues((string)$arguments['storagePids']);
 
         $this->arguments = $sanitizedArguments;
     }
@@ -102,8 +102,8 @@ class Ajax
     /**
      * sanitize comma separated values
      * remove empty values
-     * remove values which can't be interpreted as integer
-     * cast each valid value to integer.
+     * remove values which can't be interpreted as int
+     * cast each valid value to int
      *
      * @param string $list
      *
@@ -114,7 +114,7 @@ class Ajax
         $values = GeneralUtility::trimExplode(',', $list, true);
         foreach ($values as $key => $value) {
             if (MathUtility::canBeInterpretedAsInteger($value)) {
-                $values[$key] = (int) $value;
+                $values[$key] = (int)$value;
             } else {
                 unset($values[$key]);
             }

@@ -36,7 +36,7 @@ class FeuserViewHelper extends AbstractViewHelper
         }
 
         // return field of user array
-        if (is_array($GLOBALS['TSFE']->fe_user->user) && (integer) $GLOBALS['TSFE']->fe_user->user['uid'] > 0) {
+        if (is_array($GLOBALS['TSFE']->fe_user->user) && (int)$GLOBALS['TSFE']->fe_user->user['uid'] > 0) {
             return $GLOBALS['TSFE']->fe_user->user[$field];
         } else {
             return '';

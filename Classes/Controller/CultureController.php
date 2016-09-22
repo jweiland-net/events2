@@ -78,10 +78,10 @@ class CultureController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControll
 	/**
 	 * action search
 	 *
-	 * @param integer $suitabilityUser
-	 * @param integer $suitabilityGroups
-	 * @param integer $topic
-	 * @param integer $category
+	 * @param int $suitabilityUser
+	 * @param int $suitabilityGroups
+	 * @param int $topic
+	 * @param int $category
 	 * @return void
 	 */
 	public function searchAction($suitabilityUser = 0, $suitabilityGroups = 0, $topic = 0, $category = 0) {

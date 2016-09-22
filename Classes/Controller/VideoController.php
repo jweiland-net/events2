@@ -49,7 +49,7 @@ class VideoController extends ActionController
      */
     public function showAction($event)
     {
-        $event = $this->eventRepository->findByIdentifier((int) $event);
+        $event = $this->eventRepository->findByIdentifier((int)$event);
         $this->view->assign('event', $event);
     }
 

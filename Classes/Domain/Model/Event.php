@@ -331,7 +331,7 @@ class Event extends AbstractEntity
      */
     public function setHidden($hidden)
     {
-        $this->hidden = (bool) $hidden;
+        $this->hidden = (bool)$hidden;
     }
     
     /**
@@ -351,7 +351,7 @@ class Event extends AbstractEntity
      */
     public function setTopOfList($topOfList)
     {
-        $this->topOfList = (bool) $topOfList;
+        $this->topOfList = (bool)$topOfList;
     }
     
     /**
@@ -371,7 +371,7 @@ class Event extends AbstractEntity
      */
     public function setTitle($title)
     {
-        $this->title = (string) $title;
+        $this->title = (string)$title;
     }
 
     /**
@@ -438,7 +438,7 @@ class Event extends AbstractEntity
         if (!empty($eventEnd) && $eventEnd != $eventBegin) {
             $diff = $eventBegin->diff($eventEnd);
             // Example: 20.01.2013 - 23.01.2013 = 4 days but diff shows 3. So we have to add 1 day here
-            return (int) $diff->format('%a') + 1;
+            return (int)$diff->format('%a') + 1;
         } else {
             return 0;
         }
@@ -490,7 +490,7 @@ class Event extends AbstractEntity
      */
     public function setRecurringEvent($recurringEvent)
     {
-        $this->recurringEvent = (bool) $recurringEvent;
+        $this->recurringEvent = (bool)$recurringEvent;
     }
 
     /**
@@ -520,7 +520,7 @@ class Event extends AbstractEntity
      */
     public function setSameDay($sameDay)
     {
-        $this->sameDay = (bool) $sameDay;
+        $this->sameDay = (bool)$sameDay;
     }
 
     /**
@@ -767,7 +767,7 @@ class Event extends AbstractEntity
      */
     public function setTeaser($teaser)
     {
-        $this->teaser = (string) $teaser;
+        $this->teaser = (string)$teaser;
     }
     
     /**
@@ -787,7 +787,7 @@ class Event extends AbstractEntity
      */
     public function setDetailInformations($detailInformations)
     {
-        $this->detailInformations = (string) $detailInformations;
+        $this->detailInformations = (string)$detailInformations;
     }
 
     /**
@@ -807,7 +807,7 @@ class Event extends AbstractEntity
      */
     public function setFreeEntry($freeEntry)
     {
-        $this->freeEntry = (bool) $freeEntry;
+        $this->freeEntry = (bool)$freeEntry;
     }
 
     /**
@@ -1080,7 +1080,7 @@ class Event extends AbstractEntity
      */
     public function setFacebook($facebook)
     {
-        $this->facebook = (bool) $facebook;
+        $this->facebook = (bool)$facebook;
     }
 
     /**
@@ -1130,7 +1130,7 @@ class Event extends AbstractEntity
      */
     public function setSocialTeaser($socialTeaser)
     {
-        $this->socialTeaser = (string) $socialTeaser;
+        $this->socialTeaser = (string)$socialTeaser;
     }
 
     /**
@@ -1150,7 +1150,7 @@ class Event extends AbstractEntity
      */
     public function setFacebookChannel($facebookChannel)
     {
-        $this->facebookChannel = (int) $facebookChannel;
+        $this->facebookChannel = (int)$facebookChannel;
     }
 
     /**
@@ -1170,7 +1170,7 @@ class Event extends AbstractEntity
      */
     public function setTheaterDetails($theaterDetails)
     {
-        $this->theaterDetails = (string) $theaterDetails;
+        $this->theaterDetails = (string)$theaterDetails;
     }
 
     /**

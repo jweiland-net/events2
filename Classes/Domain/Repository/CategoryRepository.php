@@ -62,7 +62,7 @@ class CategoryRepository extends \TYPO3\CMS\Extbase\Domain\Repository\CategoryRe
     public function getSelectedCategories($categoryUids, $parent = '')
     {
         // remove empty values
-        // convert them to integers
+        // convert them to int
         // remove values with 0 (array_filter)
         // correct keys for unit tests (array_values)
         $selectedCategories = array_values(array_filter(GeneralUtility::intExplode(',', $categoryUids, true)));

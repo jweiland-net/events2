@@ -263,7 +263,7 @@ class PaginateController extends AbstractWidgetController
     {
         $amountOfRows = 0;
         if ($this->widgetConfiguration['maxRecords']) {
-            return (int) $this->widgetConfiguration['maxRecords'];
+            return (int)$this->widgetConfiguration['maxRecords'];
         } else {
             $this->modifyStatementToCount();
             $rows = $this->objects->getQuery()->execute(true);

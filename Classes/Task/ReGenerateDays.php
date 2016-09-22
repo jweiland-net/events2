@@ -84,7 +84,7 @@ class ReGenerateDays extends AbstractTask
      */
     protected function getFullEventRecord($uid)
     {
-        $event = BackendUtility::getRecord('tx_events2_domain_model_event', (int) $uid);
+        $event = BackendUtility::getRecord('tx_events2_domain_model_event', (int)$uid);
         if ($event['exceptions']) {
             $event['exceptions'] = $this->getExceptions($uid);
         }
@@ -104,7 +104,7 @@ class ReGenerateDays extends AbstractTask
         $exceptions = $this->databaseConnection->exec_SELECTgetRows(
             'uid, exception_type, exception_date',
             'tx_events2_domain_model_exception',
-            'event='.(int) $eventUid.
+            'event='.(int)$eventUid.
             BackendUtility::BEenableFields('tx_events2_domain_model_exception').
             BackendUtility::deleteClause('tx_events2_domain_model_exception')
 

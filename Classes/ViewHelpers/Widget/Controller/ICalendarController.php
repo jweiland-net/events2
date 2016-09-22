@@ -144,7 +144,7 @@ class ICalendarController extends AbstractWidgetController
         // add hours and minutes to date
         if (!empty($time) && strlen($time) === 5) {
             list($hours, $minutes) = explode(':', $time);
-            $diff = new \DateInterval('PT'.(int) $hours.'H'.(int) $minutes.'M');
+            $diff = new \DateInterval('PT'.(int)$hours.'H'.(int)$minutes.'M');
             $localDate->add($diff);
         }
 

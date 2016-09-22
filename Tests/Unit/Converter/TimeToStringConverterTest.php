@@ -69,7 +69,7 @@ class TimeToStringConverterTest extends UnitTestCase
     }
 
     /**
-     * dataProvider for too high integer values.
+     * dataProvider for too high int values.
      *
      * @return array
      */
@@ -98,7 +98,7 @@ class TimeToStringConverterTest extends UnitTestCase
     }
 
     /**
-     * dataProvider for too low integer values.
+     * dataProvider for too low int values.
      *
      * @return array
      */

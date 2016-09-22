@@ -61,7 +61,7 @@ class ModifyTcaOfCategoryTrees
             if (isset($PA['fieldConf']) && is_array($PA['fieldConf']) && isset($PA['fieldConf']['config']) && is_array($PA['fieldConf']['config'])) {
                 // check, if we have TCA-type "select" defined and it is configured as "tree"
                 if (isset($PA['fieldConf']['config']['type']) && $PA['fieldConf']['config']['type'] === 'select' && isset($PA['fieldConf']['config']['renderMode']) && $PA['fieldConf']['config']['renderMode'] === 'tree') {
-                    $PA['fieldConf']['config']['treeConfig']['rootUid'] = (int) $this->extConf->getRootUid();
+                    $PA['fieldConf']['config']['treeConfig']['rootUid'] = (int)$this->extConf->getRootUid();
                 }
             }
         }

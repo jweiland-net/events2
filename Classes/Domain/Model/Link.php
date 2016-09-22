@@ -59,7 +59,7 @@ class Link extends AbstractEntity
      */
     public function setLink($link)
     {
-        $this->link = (string) $link;
+        $this->link = (string)$link;
     }
 
     /**
@@ -79,7 +79,7 @@ class Link extends AbstractEntity
      */
     public function setTitle($title)
     {
-        $this->title = (string) $title;
+        $this->title = (string)$title;
     }
 
     /**
@@ -99,6 +99,6 @@ class Link extends AbstractEntity
      */
     public function setDeleted($deleted)
     {
-        $this->deleted = (bool) $deleted;
+        $this->deleted = (bool)$deleted;
     }
 }

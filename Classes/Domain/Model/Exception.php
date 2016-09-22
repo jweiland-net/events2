@@ -56,7 +56,7 @@ class Exception extends AbstractEntity
      */
     public function setExceptionType($exceptionType)
     {
-        $this->exceptionType = (string) $exceptionType;
+        $this->exceptionType = (string)$exceptionType;
     }
 
     /**
@@ -126,7 +126,7 @@ class Exception extends AbstractEntity
      */
     public function setExceptionDetails($exceptionDetails)
     {
-        $this->exceptionDetails = (string) $exceptionDetails;
+        $this->exceptionDetails = (string)$exceptionDetails;
     }
 
     /**

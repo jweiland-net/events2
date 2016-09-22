@@ -317,7 +317,7 @@ class DayGenerator
         $result = array();
         $isXthSet = false;
         foreach ($this->getItemsFromTca('xth') as $key => $item) {
-            $value = (bool) ($this->eventRecord['xth'] & pow(2, $key));
+            $value = (bool)($this->eventRecord['xth'] & pow(2, $key));
             $result[$item[1]] = $value;
             if ($value) {
                 $isXthSet = true;
@@ -344,7 +344,7 @@ class DayGenerator
         $result = array();
         $isWeekdaySet = false;
         foreach ($this->getItemsFromTca('weekday') as $key => $item) {
-            $value = (bool) ($this->eventRecord['weekday'] & pow(2, $key));
+            $value = (bool)($this->eventRecord['weekday'] & pow(2, $key));
             $result[$item[1]] = $value;
             if ($value) {
                 $isWeekdaySet = true;
@@ -414,8 +414,8 @@ class DayGenerator
 
         $maxDate = $this->getMaxDateForGeneratedDays($this->getEventBegin());
         $interval = $day->diff($maxDate); // generates an interval object
-        $diffDays = (int) $interval->format('%a'); // returns the difference in days
-        $daysToGenerate = ceil($diffDays / ($this->eventRecord['each_weeks'] * 7)); // diff in days / weeks in days ==> rounded up to next integer
+        $diffDays = (int)$interval->format('%a'); // returns the difference in days
+        $daysToGenerate = ceil($diffDays / ($this->eventRecord['each_weeks'] * 7)); // diff in days / weeks in days ==> rounded up to next int
         for ($week = 0; $week < $daysToGenerate; ++$week) {
             $day->modify('+'.$this->eventRecord['each_weeks'].' weeks');
             if ($day <= $maxDate) {

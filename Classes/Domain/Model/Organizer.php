@@ -52,7 +52,7 @@ class Organizer extends AbstractEntity
      */
     public function setOrganizer($organizer)
     {
-        $this->organizer = (string) $organizer;
+        $this->organizer = (string)$organizer;
     }
 
     /**

@@ -443,11 +443,11 @@ class DayRelationsTest extends UnitTestcase
 
         $time = time();
         $fieldsWrittenToDatabase = array(
-            'day' => (int) $midnight->format('U'),
+            'day' => (int)$midnight->format('U'),
             'tstamp' => $time,
             'pid' => 23,
             'crdate' => $time,
-            'cruser_id' => (int) $GLOBALS['BE_USER']->user['uid'],
+            'cruser_id' => (int)$GLOBALS['BE_USER']->user['uid'],
         );
 
         /** @var \JWeiland\Events2\Utility\DateTimeUtility|\PHPUnit_Framework_MockObject_MockObject $dateTimeUtility */
@@ -488,7 +488,7 @@ class DayRelationsTest extends UnitTestcase
         $fieldsWrittenToDatabase = array(
             'uid_local' => 12,
             'uid_foreign' => 123,
-            'sorting' => (int) $midnight->format('U'),
+            'sorting' => (int)$midnight->format('U'),
         );
 
         /** @var \JWeiland\Events2\Utility\DateTimeUtility|\PHPUnit_Framework_MockObject_MockObject $dateTimeUtility */

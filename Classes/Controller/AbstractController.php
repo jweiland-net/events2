@@ -408,7 +408,7 @@ class AbstractController extends ActionController
         if ($this->request->hasArgument($argument)) {
             $event = $this->request->getArgument($argument);
             if (!isset($event['organizer'])) {
-                $organizerOfCurrentUser = (string) $this->userRepository->getFieldFromUser('tx_events2_organizer');
+                $organizerOfCurrentUser = (string)$this->userRepository->getFieldFromUser('tx_events2_organizer');
                 if (MathUtility::canBeInterpretedAsInteger($organizerOfCurrentUser)) {
                     $event['organizer'] = $organizerOfCurrentUser;
                     // per default it is not allowed to add new Arguments manually. So we have to register them.

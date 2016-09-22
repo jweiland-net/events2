@@ -88,7 +88,7 @@ class DayRepository extends Repository
     {
         // create OR-Query for categories
         foreach (GeneralUtility::trimExplode(',', $categories) as $category) {
-            $categoryOrQuery[] = 'sys_category_record_mm.uid_local IN (\''.(int) $category.'\')';
+            $categoryOrQuery[] = 'sys_category_record_mm.uid_local IN (\''.(int)$category.'\')';
         }
 
         $today = $this->dateTimeUtility->convert('today');

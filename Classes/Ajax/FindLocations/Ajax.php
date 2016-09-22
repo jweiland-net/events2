@@ -46,7 +46,7 @@ class Ajax extends AbstractAjaxRequest
     public function processAjaxRequest(array $arguments)
     {
         // Hint: search may fail with "&" in $locationPart
-        $locationPart = (string) trim(htmlspecialchars(strip_tags($arguments['locationPart'])));
+        $locationPart = (string)trim(htmlspecialchars(strip_tags($arguments['locationPart'])));
         // keep it synchron to minLength in JS
         if (empty($locationPart) || strlen($locationPart) <= 2) {
             return '';

@@ -131,7 +131,7 @@ class EventRepository extends Repository
         $query->getQuerySettings()->setEnableFieldsToBeIgnored(array('disabled'));
         $query->getQuerySettings()->setRespectStoragePage(false);
 
-        return $query->matching($query->equals('uid', (int) $eventUid))->execute()->getFirst();
+        return $query->matching($query->equals('uid', (int)$eventUid))->execute()->getFirst();
     }
 
     /**
@@ -330,7 +330,7 @@ class EventRepository extends Repository
             ->setQuery($query)
             ->setSelect('tx_events2_domain_model_event.*')
             ->setFeUsersRelation(true)
-            ->addWhere('fe_users.uid', '=', (int) $organizer)
+            ->addWhere('fe_users.uid', '=', (int)$organizer)
             ->setGroupBy('tx_events2_domain_model_event.uid')
             ->setOrderBy('tx_events2_domain_model_event.title')
             ->setLimit('');
