@@ -3,9 +3,8 @@
 <div class="grid_8 floatleft">
 	<div class="gridright">
 		<f:if condition="{location.txMaps2Uid}">
-			<maps2:widget.poiCollection width="100%" poiCollection="{location.txMaps2Uid}" />
+			<maps2:widget.poiCollection poiCollection="{location.txMaps2Uid}" override="{settings: {mapWidth: '100%', mapHeight: '300'}}" />
 		</f:if>
-		&nbsp;
 	</div>
 </div>
 <div class="grid_4 floatleft">
