@@ -3,22 +3,24 @@
 <f:if condition="{events}">
 	<f:then>
 		<f:for each="{events}" as="event">
-			<div class="row">
-				<div class="media-left">
-					<f:render partial="Event/Date" arguments="{event: event}" />
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title"><f:render partial="Event/Date" arguments="{event: event}" /></h3>
 				</div>
-				<div class="media-body">
-					<f:render section="title" arguments="{event: event}" />
-					<f:render partial="Event/Teaser" arguments="{event: event}" />
-					<f:render partial="Event/Category" arguments="{event: event}" />
-					<f:render section="time" arguments="{event: event}" />
+				<div class="panel-body">
+					<div class="media-body">
+						<f:render section="title" arguments="{event: event}" />
+						<f:render partial="Event/Teaser" arguments="{event: event}" />
+					</div>
+					<div class="media-right">
+						<f:render section="firstImage" arguments="{event: event}" />
+					</div>
+				</div>
+				<ul class="list-group">
+					<f:render section="category" arguments="{event: event}" />
 					<f:render section="location" arguments="{event: event}" />
-				</div>
-				<div class="media-right">
-					<f:render section="firstImage" arguments="{event: event}" />
-				</div>
+				</ul>
 			</div>
-			<hr />
 		</f:for>
 	</f:then>
 	<f:else>
@@ -40,26 +42,32 @@
 	</h3>
 </f:section>
 
-<f:section name="time">
-	<f:alias map="{times: '{e2:getMergedEventTimes(event: event)->f:count()}'}">
-		<f:if condition="{times}">
-			<f:switch expression="{times}">
-				<f:case value="0">&nbsp;</f:case>
-				<f:case value="1"><f:alias map="{time: '{e2:getMergedEventTimes(event: event, directReturn: 1)}'}">|&nbsp;<f:translate key="tx_events2_domain_model_time.time_begin"/>: {time.timeBegin}</f:alias></f:case>
-				<f:case default="1">
-					|&nbsp;<f:translate key="tx_events2_domain_model_time.time_begin"/>:&nbsp;
-					<f:link.action action="show" controller="Event" pageUid="{settings.pidOfDetailPage}" arguments="{event: event, day: event.day}" title="{f:translate(key: 'singleView')}">{f:translate(key: 'showDetailview')}</f:link.action>
-				</f:case>
-			</f:switch>
-		</f:if>
-	</f:alias>
+<f:section name="location">
+	<li class="list-group-item">
+		<f:link.action
+			action="show"
+			pageUid="{settings.pidOfLocationPage}"
+			controller="Location"
+			arguments="{location: event.location}"
+			title="{event.location.location}"
+		>{event.location.location}</f:link.action>
+	</li>
 </f:section>
 
-<f:section name="location">
-	<f:if condition="{event.location}">
-		<div class="location">
-			<f:link.action action="show" pageUid="{settings.pidOfLocationPage}" controller="Location" arguments="{location: event.location}" title="{event.location.location}">{event.location.location}</f:link.action>
-		</div>
+<f:section name="category">
+	<f:if condition="{settings.categories}">
+		<f:then>
+			<f:for each="{e2:getAllowedCategories(event: event, pluginCategories: settings.categories)}" as="category" iteration="iterator">
+				<f:if condition="{iterator.isFirst}"><li class="list-group-item">{category.title}</li></f:if>
+			</f:for>
+		</f:then>
+		<f:else>
+			<f:if condition="{event.categories->f:count()}">
+				<f:for each="{event.categories}" as="category" iteration="iterator">
+					<f:if condition="{iterator.isFirst}"><li class="list-group-item">{category.title}</li></f:if>
+				</f:for>
+			</f:if>
+		</f:else>
 	</f:if>
 </f:section>
 
