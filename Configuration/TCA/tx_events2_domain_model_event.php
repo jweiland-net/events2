@@ -280,7 +280,7 @@ return array(
                 'foreign_table' => 'tx_events2_domain_model_time',
                 'foreign_field' => 'event',
                 'foreign_types' => array(
-                    '1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, weekday, time_begin;;2, time_end,--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime'),
+                    '1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, weekday, --palette--;;times,--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime'),
                 ),
                 'foreign_match_fields' => array(
                     'type' => 'different_times',

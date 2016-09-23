@@ -1,138 +1,168 @@
 {namespace e2=JWeiland\Events2\ViewHelpers}
 
-<div class="eventProperties extcss">
-	<h1>{event.title}</h1>
-	<div class="grid_12 clearer clearfix">
-		<div class="grid_8 floatleft">
-			<div class="gridright">
-				<f:if condition="{0: settings.display}=={0: 'displayEvent'}">
-					<f:then></f:then>
-					<f:else>
-						<f:if condition="{event.images -> f:count}">
-							<f:render partial="Event/Images" arguments="{event: event}"/>
-						</f:if>
-					</f:else>
-				</f:if>
-				<f:if condition="{event.videoLink}">
-					<div class="marginbottom2">
-						<f:link.action action="show" controller="Video" arguments="{event: event}">
-							<f:if condition="{event.videoLink.title}">
-								<f:then>
-									<span>{event.videoLink.title}</span>
-								</f:then>
-								<f:else>
-									<span>Video</span>
-								</f:else>
-							</f:if>
-							<span aria-hidden='true' class='icon-arrowright'></span>
-						</f:link.action>
-					</div>
-				</f:if>
-				<p class="margintop"><strong><f:render partial="Event/Teaser" arguments="{event: event}"/>
-				</strong></p>
-				<f:format.html>{event.detailInformations}</f:format.html>
-
-				<f:if condition="{event.theaterDetails}">
-					<div class="margintop rulerbefore">
-						<f:format.html>{event.theaterDetails}</f:format.html>
-					</div>
-				</f:if>
-				<f:if condition="{event.downloadLinks}">
-					<dl class="rulerbefore extdl">
-						<f:for each="{event.downloadLinks}" as="link">
-							<dd><span aria-hidden="true" class="icon-download"></span>
-								<e2:link.typolink parameter="{link.link}" title="{link.title}">{link.title}</e2:link.typolink>
-							</dd>
-						</f:for>
-					</dl>
-				</f:if>
-			</div>
-		</div>
-
-		<aside class="grid_4 floatleft">
-			<div class="gridleft clearfix rulerbefore4">
-				<div class="shorten shortdiv rulerafter">
-					<e2:widget.showEventDates event="{event}" />
-					<f:if condition="{event.days -> f:count()} > 1">
-						<p class="readmore">
-							<span class="more">... alle Termine</span><span aria-hidden='true' class='icon-arrowright'></span>
-						</p>
-					</f:if>
-				</div>
-
-				<dl class="extdl marginbottom2">
-					<dt>
-						<f:translate key="tx_events2_domain_model_event.location"/>
-					</dt>
-					<dd class="grid_8 floatleft noborder">
-						<f:link.action action="show" controller="Location" pageUid="{settings.pidOfLocationPage}" arguments="{location: event.location}" title="{event.location.location}">
-							{event.location.location}
-						</f:link.action>
-					</dd>
-					<f:if condition="{event.location.street}">
-						<dd class="grid_8 floatleft noborder">
-							<f:alias map="{address: '{event.location.street} {event.location.houseNumber} {event.location.zip} {event.location.city}'}">
-								<f:link.external target="_blank" uri="https://www.google.de/maps/dir//{address->f:format.urlencode()}">Routenplaner<br /><span class="small">(Google Maps)</span></f:link.external>
-							</f:alias>
-						</dd>
-					</f:if>
-					<dd class="grid_4 floatleft noborder">
-						<figure>
-							<f:link.action action="show" controller="Location" pageUid="{settings.pidOfLocationPage}" arguments="{location: event.location}" title="{f:translate(key: 'altTextMapImg')}">
-								<f:image class="floatright" src="{f:uri.resource(path: 'Icons/thumbmaps.png')}" alt="{f:translate(key: 'altTextMapImg')}"/>
-							</f:link.action>
-						</figure>
-					</dd>
-
-					<dt>
-						<f:translate key="tx_events2_domain_model_event.organizer"/>
-					</dt>
-					<dd>
-						<f:if condition="{event.organizer.link}">
-							<f:then>
-								<f:link.external uri="{event.organizer.link.link}" target="_blank" title="{event.organizer.organizer}">
-									{event.organizer.organizer}
-									<f:if condition="{event.organizer.link.title}">({event.organizer.link.title})
-									</f:if>
-								</f:link.external>
-							</f:then>
-							<f:else>
-								{event.organizer.organizer}
-							</f:else>
-						</f:if>
-					</dd>
-				</dl>
-
-				<f:if condition="{event.freeEntry}">
-					<f:then>
-						<dl class="extdl marginbottom2">
-							<dd>
-								<f:translate key="tx_events2_domain_model_event.free_entry"/>
-							</dd>
-						</dl>
-					</f:then>
-					<f:else>
-					</f:else>
-				</f:if>
-				<dl class="extdl marginbottom2">
-					<dd><span aria-hidden="true" class="icon-download"></span>
-						<e2:widget.iCalendar event="{event}" />
-					</dd>
-				</dl>
-				<f:if condition="{event.ticketLink.link}">
-					<div class="csc-teaser iconteaser">
-						<div class="teaserticket teaserinner">
-							<div class="csc-header">
-								<h2 class="noborder">
-									<f:link.external uri="{event.ticketLink.link}" title="<f:translate key='tx_events2_domain_model_event.ticket_link'/>" target="_blank">
-										<span class="teasertext">{f:if(condition: event.ticketLink.title, then: '{event.ticketLink.title}', else:'{event.ticketLink.link}')}</span><span aria-hidden="true" class="icon-arrowright"></span>
-									</f:link.external>
-								</h2>
-							</div>
-						</div>
-					</div>
-				</f:if>
-			</div>
-		</aside>
+<div class="row">
+	<div class="col-md-9">
+		<h1>{event.title}</h1>
+		<f:render section="renderImages" arguments="{event: event}" />
+		<f:render section="videoLink" arguments="{event: event}" />
+		<p class="lead">{event.teaser}</p>
+		<f:format.html>{event.detailInformations}</f:format.html>
+		<f:format.html>{event.theaterDetails}</f:format.html>
+		<f:render section="downloadLinks" arguments="{event: event}" />
+		<f:render section="showDatesAndTimes" arguments="{days: '{e2:getEventDates(event: event)}'}" />
+	</div>
+	<div class="col-md-3">
+		<f:render section="location" arguments="{event: event}" />
+		<f:render section="googleRoute" arguments="{event: event}" />
+		<f:render section="organizer" arguments="{event: event}" />
+		<f:render section="freeEntry" arguments="{event: event}" />
+		<f:render section="iCalendar" arguments="{event: event}" />
 	</div>
 </div>
+
+<f:section name="renderImages">
+	<f:if condition="{0: settings.display}=={0: 'displayEvent'}">
+		<f:then></f:then>
+		<f:else>
+			<f:if condition="{event.images -> f:count}">
+				<f:render partial="Event/Images" arguments="{event: event}"/>
+			</f:if>
+		</f:else>
+	</f:if>
+</f:section>
+
+<f:section name="videoLink">
+	<f:if condition="{event.videoLink}">
+		<f:link.action action="show" controller="Video" arguments="{event: event}">
+			<span class="glyphicon glyphicon-film" aria-hidden="true"></span>
+			{f:if(condition: event.videoLink.title, then: event.videoLink.title, else: 'Video')}
+		</f:link.action>
+	</f:if>
+</f:section>
+
+<f:section name="downloadLinks">
+	<f:if condition="{event.downloadLinks}">
+		<f:for each="{event.downloadLinks}" as="link">
+			<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+			<e2:link.typolink parameter="{link.link}" title="{link.title}">{link.title}</e2:link.typolink>
+		</f:for>
+	</f:if>
+</f:section>
+
+<f:section name="showDatesAndTimes">
+	<h3>Alternative Veranstaltungstage</h3>
+	<div class="row">
+		<f:for each="{days}" as="day" iteration="iterator">
+			<f:if condition="{iterator.index} > 0">
+				<f:if condition="{iterator.index} % 3">
+					<f:then> </f:then><f:else></div><div class="row"></f:else>
+				</f:if>
+			</f:if>
+			<div class="col-md-4">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<strong>{day.day.day -> f:format.date(format: '%A, %d.%m.%Y')}</strong>
+					</div>
+					<div class="panel-body">
+						<f:render partial="Event/Time" arguments="{time: day.time}" />
+						<f:if condition="{day.infos}">
+							<f:for each="{day.infos}" as="info">
+								<br/>{info.exceptionDetails -> f:format.html(parseFuncTSPath: 'lib.parseFunc') -> f:format.nl2br()}
+							</f:for>
+						</f:if>
+					</div>
+				</div>
+			</div>
+		</f:for>
+	</div>
+</f:section>
+
+<f:section name="location">
+	<dl>
+		<dt><f:translate key="tx_events2_domain_model_event.location"/></dt>
+		<dd>
+			<f:link.action
+			action="show"
+			controller="Location"
+			pageUid="{settings.pidOfLocationPage}"
+			arguments="{location: event.location}"
+			title="{event.location.location}"
+			>{event.location.location}</f:link.action>
+		</dd>
+		<dd>
+			<figure>
+				<f:link.action action="show" controller="Location" pageUid="{settings.pidOfLocationPage}" arguments="{location: event.location}" title="{f:translate(key: 'altTextMapImg')}">
+					<f:image src="{f:uri.resource(path: 'Icons/thumbmaps.png')}" alt="{f:translate(key: 'altTextMapImg')}"/>
+				</f:link.action>
+			</figure>
+		</dd>
+	</dl>
+</f:section>
+
+<f:section name="googleRoute">
+	<f:if condition="{event.location.street}">
+		<dl>
+			<dt>Routenplaner</dt>
+			<dd>
+				<f:alias map="{address: '{event.location.street} {event.location.houseNumber} {event.location.zip} {event.location.city}'}">
+					<span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>
+					<f:link.external target="_blank" uri="https://www.google.de/maps/dir//{address->f:format.urlencode()}">Google Maps</f:link.external>
+				</f:alias>
+			</dd>
+		</dl>
+	</f:if>
+</f:section>
+
+<f:section name="organizer">
+	<dl>
+		<dt><f:translate key="tx_events2_domain_model_event.organizer" /></dt>
+		<dd>
+			<f:if condition="{event.organizer.link}">
+				<f:then>
+					<f:link.external uri="{event.organizer.link.link}" target="_blank" title="{event.organizer.organizer}">
+						{event.organizer.organizer}
+						<f:if condition="{event.organizer.link.title}"><br />({event.organizer.link.title})</f:if>
+					</f:link.external>
+				</f:then>
+				<f:else>
+					{event.organizer.organizer}
+				</f:else>
+			</f:if>
+		</dd>
+	</dl>
+</f:section>
+
+<f:section name="freeEntry">
+	<f:if condition="{event.freeEntry}">
+		<dl class="extdl marginbottom2">
+			<dt><f:translate key="tx_events2_domain_model_event.free_entry" /></dt>
+			<dd><f:translate key="tx_events2_domain_model_event.yes" /></dd>
+		</dl>
+	</f:if>
+</f:section>
+
+<f:section name="iCalendar">
+	<dl>
+		<dt>iCalendar</dt>
+		<dd>
+			<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+			<e2:widget.iCalendar event="{event}" />
+		</dd>
+	</dl>
+</f:section>
+
+<f:section name="ticketLink">
+	<f:if condition="{event.ticketLink.link}">
+		<dl>
+			<dt>Ticketlink</dt>
+			<dd>
+				<h2>
+					<f:link.external uri="{event.ticketLink.link}" title="{f:translate(key: 'tx_events2_domain_model_event.ticket_link')}" target="_blank">
+						{f:if(condition: event.ticketLink.title, then: '{event.ticketLink.title}', else:'{event.ticketLink.link}')}
+						<span aria-hidden="true" class="icon-arrowright"></span>
+					</f:link.external>
+				</h2>
+			</dd>
+		</dl>
+	</f:if>
+</f:section>
