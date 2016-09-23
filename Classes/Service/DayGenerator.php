@@ -215,7 +215,6 @@ class DayGenerator
         if (
             !isset($this->eventRecord['event_type']) ||
             !isset($this->eventRecord['event_begin']) ||
-            !isset($this->eventRecord['event_end']) ||
             !isset($this->eventRecord['xth']) ||
             !isset($this->eventRecord['weekday']) ||
             !isset($this->eventRecord['each_weeks']) ||
