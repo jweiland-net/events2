@@ -13,6 +13,7 @@ namespace JWeiland\Events2\Domain\Repository;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Filter;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
@@ -131,7 +132,9 @@ class EventRepository extends Repository
         $query->getQuerySettings()->setEnableFieldsToBeIgnored(array('disabled'));
         $query->getQuerySettings()->setRespectStoragePage(false);
 
-        return $query->matching($query->equals('uid', (int)$eventUid))->execute()->getFirst();
+        /** @var Event $event */
+        $event = $query->matching($query->equals('uid', (int)$eventUid))->execute()->getFirst();
+        return $event;
     }
 
     /**
@@ -154,11 +157,9 @@ class EventRepository extends Repository
     /**
      * find top events.
      *
-     * @param bool $mergeEvents
-     *
      * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage
      */
-    public function findTopEvents($mergeEvents = false)
+    public function findTopEvents()
     {
         /** @var \TYPO3\CMS\Extbase\Persistence\Generic\Query $query */
         $query = $this->createQuery();
@@ -166,10 +167,6 @@ class EventRepository extends Repository
         $statement = $this->createStatement()
             ->setQuery($query)
             ->setSelect('tx_events2_domain_model_event.*, tx_events2_domain_model_day.uid as day, tx_events2_domain_model_day.day as dayDay');
-
-        if ($mergeEvents) {
-            $statement->setMergeEvents(true);
-        }
 
         $statement
             ->addWhere('tx_events2_domain_model_event.top_of_list', '=', 1)
@@ -205,9 +202,6 @@ class EventRepository extends Repository
 
         if (!empty($this->settings['categories'])) {
             $statement->setCategoryRelation(true)->addWhereForCategories($this->settings['categories']);
-        }
-        if ($this->settings['mergeEvents']) {
-            $statement->setMergeEvents(true);
         }
 
         // add filter for organizer
@@ -257,6 +251,7 @@ class EventRepository extends Repository
                 $today = $this->dateTimeUtility->convert('today');
                 $statement->addWhere('tx_events2_domain_model_day.day', '>=', $today);
         }
+        $statement->setGroupBy('grouping');
 
         return $query->statement($statement->getStatement())->execute();
     }

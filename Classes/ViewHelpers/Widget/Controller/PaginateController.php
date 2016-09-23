@@ -261,17 +261,11 @@ class PaginateController extends AbstractWidgetController
      */
     protected function getCount()
     {
-        $amountOfRows = 0;
         if ($this->widgetConfiguration['maxRecords']) {
             return (int)$this->widgetConfiguration['maxRecords'];
         } else {
             $this->modifyStatementToCount();
-            $rows = $this->objects->getQuery()->execute(true);
-            foreach ($rows as $row) {
-                $amountOfRows += current($row);
-            }
-
-            return $amountOfRows;
+            return count($this->objects->getQuery()->execute(true));
         }
     }
 
@@ -280,7 +274,11 @@ class PaginateController extends AbstractWidgetController
      */
     protected function modifyStatementToCount()
     {
-        $statement = str_replace('###SELECT###', 'COUNT(*)', $this->originalStatement);
+        $statement = str_replace(
+            '###SELECT###',
+            'COUNT(*), ' . $this->getSpecialFieldForGrouping(),
+            $this->originalStatement
+        );
         $statement = str_replace('###LIMIT###', '', $statement);
         $boundVariables = $this->objects->getQuery()->getStatement()->getBoundVariables();
         $this->objects = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\QueryResult', $this->objects->getQuery()->statement($statement, $boundVariables));
@@ -294,7 +292,14 @@ class PaginateController extends AbstractWidgetController
      */
     protected function modifyStatementToSelect($limit = 0, $offset = 0)
     {
-        $select = 'DISTINCT tx_events2_domain_model_event.*, tx_events2_domain_model_day.uid as day, tx_events2_domain_model_day.day as dayDay';
+        $select = sprintf(
+            '%s, %s, %s, %s',
+            'tx_events2_domain_model_event.*',
+            'tx_events2_domain_model_day.uid as day',
+            'tx_events2_domain_model_day.day as dayDay',
+            $this->getSpecialFieldForGrouping()
+        );
+        
         $statement = str_replace('###SELECT###', $select, $this->originalStatement);
         if ($limit) {
             $statement = str_replace('###LIMIT###', 'ORDER BY dayDay ASC LIMIT ' . $offset . ',' . $limit, $statement);
@@ -303,5 +308,45 @@ class PaginateController extends AbstractWidgetController
         }
         $boundVariables = $this->objects->getQuery()->getStatement()->getBoundVariables();
         $this->objects = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\QueryResult', $this->objects->getQuery()->statement($statement, $boundVariables));
+    }
+    
+    /**
+     * This is a special field for grouping
+     * The problem is, that we have to group events of type 'duration'
+     * but we must not group all other types
+     *
+     * Example: [event.uid]_[day.uid]
+     * In case of 'duration' day.uid will stay 0. So we have that result
+     * 1_1
+     * 1_2
+     * 1_3
+     * 2_0 <-- will be grouped
+     * 2_0 <-- will be grouped
+     * 4_3
+     *
+     * @return string
+     */
+    protected function getSpecialFieldForGrouping()
+    {
+        return sprintf(
+            'IF (
+                tx_events2_domain_model_event.event_type = %s,
+                CONCAT(tx_events2_domain_model_event.uid, %s),
+                CONCAT(tx_events2_domain_model_event.uid, %s, tx_events2_domain_model_day.uid)
+            ) as grouping',
+            $this->getDatabaseConnection()->fullQuoteStr('duration', 'tx_events2_domain_model_event'),
+            $this->getDatabaseConnection()->fullQuoteStr('_0', 'tx_events2_domain_model_event'),
+            $this->getDatabaseConnection()->fullQuoteStr('_', 'tx_events2_domain_model_event')
+        );
+    }
+    
+    /**
+     * Get TYPO3s Database Connection
+     *
+     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     */
+    protected function getDatabaseConnection()
+    {
+        return $GLOBALS['TYPO3_DB'];
     }
 }
