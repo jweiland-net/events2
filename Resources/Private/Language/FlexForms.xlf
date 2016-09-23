@@ -51,9 +51,6 @@
 			<trans-unit id="pidOfSearchPage">
 				<source>PID of search page</source>
 			</trans-unit>
-			<trans-unit id="mergeEvents">
-				<source>Merge events: Same events with given EventEnd-Date will be merged to one entry in listings</source>
-			</trans-unit>
 			<trans-unit id="preFilterByOrganizer">
 				<source>Pre filter events by organizer</source>
 			</trans-unit>

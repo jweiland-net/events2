@@ -67,7 +67,6 @@ plugin.tx_events2 {
     pidOfLocationPage = {$plugin.tx_events2.settings.pidOfLocationPage}
     pidOfListPage = {$plugin.tx_events2.settings.pidOfListPage}
     userGroup =
-    mergeEvents = 0
     list {
       image {
         width = 50c

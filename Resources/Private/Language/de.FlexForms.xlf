@@ -66,10 +66,6 @@
 				<source>Categories</source>
 				<target>Kategorien</target>
 			</trans-unit>
-			<trans-unit id="mergeEvents">
-				<source>Merge events: Same events with given EventEnd-Date will be merged to one entry in listings</source>
-				<target>Veranstaltungen zusammenführen: Gleiche Veranstaltungen, bei denen ein Veranstaltungsenddatum gesetzt ist, werden als ein Eintrag in die Listenansicht übernommen.</target>
-			</trans-unit>
 			<trans-unit id="preFilterByOrganizer">
 				<source>Pre filter events by organizer</source>
 				<target>Veranstaltungen auf Veranstalter beschränken</target>

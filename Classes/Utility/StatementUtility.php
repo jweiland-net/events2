@@ -79,13 +79,6 @@ class StatementUtility
     protected $where = array();
 
     /**
-     * a collection of AND connected WHERE clauses to merge events.
-     *
-     * @var array
-     */
-    protected $whereToMergeEvents = array();
-
-    /**
      * group by.
      *
      * @var string
@@ -127,13 +120,6 @@ class StatementUtility
      * @var bool
      */
     protected $hasFeUsersRelation = false;
-
-    /**
-     * indicator to check, if events should be merged.
-     *
-     * @var bool
-     */
-    protected $hasToMergeEvents = false;
 
     /**
      * inject page repository.
@@ -281,9 +267,6 @@ class StatementUtility
     public function getWhere()
     {
         $this->addWhereForStoragePids();
-        if ($this->hasToMergeEvents()) {
-            $this->addWhereToMergeEvents();
-        }
 
         return implode(' AND ', $this->where);
     }
@@ -328,22 +311,6 @@ class StatementUtility
     }
 
     /**
-     * add where clause to merge events.
-     */
-    public function addWhereToMergeEvents()
-    {
-        $this->where[] = 'tx_events2_domain_model_day.day = (
-            SELECT day
-            FROM tx_events2_domain_model_day LEFT JOIN tx_events2_event_day_mm
-            ON tx_events2_domain_model_day.uid=tx_events2_event_day_mm.uid_foreign
-            WHERE tx_events2_event_day_mm.uid_local = tx_events2_domain_model_event.uid
-            AND ' . implode(' AND ', $this->whereToMergeEvents) . '
-            ORDER BY tx_events2_domain_model_day.day ASC
-            LIMIT 1
-        )';
-    }
-
-    /**
      * getWhere clause for enableFields.
      *
      * @return string
@@ -378,11 +345,7 @@ class StatementUtility
         } else {
             $parsedValue = $this->databaseConnection->fullQuoteStr($value, $this->getFrom());
         }
-        if ($this->hasToMergeEvents() && $value instanceof \DateTime) {
-            $this->whereToMergeEvents[] = 'day'.' '.$operator.' '.$parsedValue;
-        } else {
-            $this->where[] = $property.' '.$operator.' '.$parsedValue;
-        }
+        $this->where[] = $property.' '.$operator.' '.$parsedValue;
 
         return $this;
     }
@@ -527,30 +490,6 @@ class StatementUtility
     public function setFeUsersRelation($feUsersRelation)
     {
         $this->hasFeUsersRelation = $feUsersRelation;
-
-        return $this;
-    }
-
-    /**
-     * Returns the merge events indicator.
-     *
-     * @return bool $hasToMergeEvents
-     */
-    public function hasToMergeEvents()
-    {
-        return $this->hasToMergeEvents;
-    }
-
-    /**
-     * Sets the hasToMergeEvents indicator.
-     *
-     * @param bool $mergeEvents
-     *
-     * @return \JWeiland\Events2\Utility\StatementUtility
-     */
-    public function setMergeEvents($mergeEvents)
-    {
-        $this->hasToMergeEvents = $mergeEvents;
 
         return $this;
     }
