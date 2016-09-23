@@ -13,11 +13,6 @@
 		</p>
 	</f:security.ifHasRole>
 
-	<f:if condition="{eventsOnTopOfList}">
-		<div class="topOfList">
-			<f:render partial="Event/List" arguments="{events: eventsOnTopOfList}" />
-		</div>
-	</f:if>
 	<div class="list scroll-container">
 		<ul>
 			<f:for each="{events}" as="event">

@@ -3,7 +3,7 @@
 <f:if condition="{events}">
 	<f:then>
 		<f:for each="{events}" as="event">
-			<div class="panel panel-default">
+			<div class="panel panel-{f:if(condition: event.topOfList, then: 'info', else: 'default')}">
 				<div class="panel-heading">
 					<h3 class="panel-title"><f:render partial="Event/Date" arguments="{event: event}" /></h3>
 				</div>
@@ -43,32 +43,36 @@
 </f:section>
 
 <f:section name="location">
-	<li class="list-group-item">
-		<f:link.action
-			action="show"
-			pageUid="{settings.pidOfLocationPage}"
-			controller="Location"
-			arguments="{location: event.location}"
-			title="{event.location.location}"
-		>{event.location.location}</f:link.action>
-	</li>
+	<f:alias map="{class: '{f:if(condition: event.topOfList, then: \'list-group-item list-group-item-info\', else: \'list-group-item\')}'}">
+		<li class="{class}">
+			<f:link.action
+				action="show"
+				pageUid="{settings.pidOfLocationPage}"
+				controller="Location"
+				arguments="{location: event.location}"
+				title="{event.location.location}"
+			>{event.location.location}</f:link.action>
+		</li>
+	</f:alias>
 </f:section>
 
 <f:section name="category">
-	<f:if condition="{settings.categories}">
-		<f:then>
-			<f:for each="{e2:getAllowedCategories(event: event, pluginCategories: settings.categories)}" as="category" iteration="iterator">
-				<f:if condition="{iterator.isFirst}"><li class="list-group-item">{category.title}</li></f:if>
-			</f:for>
-		</f:then>
-		<f:else>
-			<f:if condition="{event.categories->f:count()}">
-				<f:for each="{event.categories}" as="category" iteration="iterator">
-					<f:if condition="{iterator.isFirst}"><li class="list-group-item">{category.title}</li></f:if>
+	<f:alias map="{class: '{f:if(condition: event.topOfList, then: \'list-group-item list-group-item-info\', else: \'list-group-item\')}'}">
+		<f:if condition="{settings.categories}">
+			<f:then>
+				<f:for each="{e2:getAllowedCategories(event: event, pluginCategories: settings.categories)}" as="category" iteration="iterator">
+					<f:if condition="{iterator.isFirst}"><li class="{class}">{category.title}</li></f:if>
 				</f:for>
-			</f:if>
-		</f:else>
-	</f:if>
+			</f:then>
+			<f:else>
+				<f:if condition="{event.categories->f:count()}">
+					<f:for each="{event.categories}" as="category" iteration="iterator">
+						<f:if condition="{iterator.isFirst}"><li class="{class}">{category.title}</li></f:if>
+					</f:for>
+				</f:if>
+			</f:else>
+		</f:if>
+	</f:alias>
 </f:section>
 
 <f:section name="firstImage">

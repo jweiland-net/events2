@@ -302,7 +302,7 @@ class PaginateController extends AbstractWidgetController
         
         $statement = str_replace('###SELECT###', $select, $this->originalStatement);
         if ($limit) {
-            $statement = str_replace('###LIMIT###', 'ORDER BY dayDay ASC LIMIT ' . $offset . ',' . $limit, $statement);
+            $statement = str_replace('###LIMIT###', 'ORDER BY top_of_list DESC, dayDay ASC LIMIT ' . $offset . ',' . $limit, $statement);
         } else {
             $statement = str_replace('###LIMIT###', '', $statement);
         }

@@ -155,38 +155,6 @@ class EventRepository extends Repository
     }
 
     /**
-     * find top events.
-     *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage
-     */
-    public function findTopEvents()
-    {
-        /** @var \TYPO3\CMS\Extbase\Persistence\Generic\Query $query */
-        $query = $this->createQuery();
-        $today = $this->dateTimeUtility->convert('today');
-        $statement = $this->createStatement()
-            ->setQuery($query)
-            ->setSelect('tx_events2_domain_model_event.*, tx_events2_domain_model_day.uid as day, tx_events2_domain_model_day.day as dayDay');
-
-        $statement
-            ->addWhere('tx_events2_domain_model_event.top_of_list', '=', 1)
-            ->addWhere('tx_events2_domain_model_day.day', '>=', $today)
-            ->setGroupBy('tx_events2_domain_model_event.uid')
-            ->setLimit('');
-
-        $rows = $query->statement($statement->getStatement())->execute(true);
-
-        foreach ($rows as $key => $row) {
-            $rows[$key] = current($this->dataMapper->map('JWeiland\\Events2\\Domain\\Model\\Event', array($row)));
-            // as this query returns multiple events with same uid but different days and times, we have to delete
-            // the just fetched object from persistence
-            $this->persistenceSession->unregisterObject($rows[$key]);
-        }
-
-        return $rows;
-    }
-
-    /**
      * find events.
      *
      * @param string $type

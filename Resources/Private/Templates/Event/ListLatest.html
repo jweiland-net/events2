@@ -6,12 +6,6 @@
 	<f:render partial="Event/UserEditLinks" />
 	<f:render partial="Event/Filter" arguments="{action: 'listLatest', organizers: organizers, filter: filter}" />
 
-	<f:if condition="{eventsOnTopOfList}">
-		<div class="topOfList">
-			<f:render partial="Event/List" arguments="{events: eventsOnTopOfList}" />
-		</div>
-	</f:if>
-
 	<div class="list scroll-container nopaginator">
 		<e2:widget.paginate objects="{events}" as="paginatedEvents" maxRecords="{settings.latest.amountOfRecordsToShow}" configuration="{itemsPerPage: settings.pageBrowser.itemsPerPage, insertAbove: settings.pageBrowser.insertAbove, insertBelow: settings.pageBrowser.insertBelow, maximumNumberOfLinks: settings.pageBrowser.maximumNumberOfLinks}">
 			<f:render partial="Event/List" arguments="{events: paginatedEvents}"/>
