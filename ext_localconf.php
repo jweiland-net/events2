@@ -68,43 +68,45 @@ if (TYPO3_MODE === 'BE') {
         'additionalFields' => 'JWeiland\\Events2\\Task\\ReGenerateDays',
     );
     
-    /** @var \TYPO3\CMS\Core\Imaging\IconRegistry $iconRegistry */
-    $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
-    $iconRegistry->registerIcon(
-        'events2-calendar-single',
-        'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider',
-        array('source' => 'EXT:events2/Resources/Public/Icons/calendar_single.png')
-    );
-    $iconRegistry->registerIcon(
-        'events2-calendar-recurring',
-        'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider',
-        array('source' => 'EXT:events2/Resources/Public/Icons/calendar_recurring.png')
-    );
-    $iconRegistry->registerIcon(
-        'events2-calendar-duration',
-        'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider',
-        array('source' => 'EXT:events2/Resources/Public/Icons/calendar_duration.png')
-    );
-    $iconRegistry->registerIcon(
-        'events2-exception-add',
-        'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider',
-        array('source' => 'EXT:events2/Resources/Public/Icons/exception_add.png')
-    );
-    $iconRegistry->registerIcon(
-        'events2-exception-remove',
-        'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider',
-        array('source' => 'EXT:events2/Resources/Public/Icons/exception_remove.png')
-    );
-    $iconRegistry->registerIcon(
-        'events2-exception-info',
-        'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider',
-        array('source' => 'EXT:events2/Resources/Public/Icons/exception_info.png')
-    );
-    $iconRegistry->registerIcon(
-        'events2-exception-time',
-        'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider',
-        array('source' => 'EXT:events2/Resources/Public/Icons/exception_time.png')
-    );
+    if (\TYPO3\CMS\Core\Utility\GeneralUtility::compat_version('7.0')) {
+        /** @var \TYPO3\CMS\Core\Imaging\IconRegistry $iconRegistry */
+        $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
+        $iconRegistry->registerIcon(
+            'extensions-events2-calendar-single',
+            'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider',
+            array('source' => 'EXT:events2/Resources/Public/Icons/calendar_single.png')
+        );
+        $iconRegistry->registerIcon(
+            'extensions-events2-calendar-recurring',
+            'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider',
+            array('source' => 'EXT:events2/Resources/Public/Icons/calendar_recurring.png')
+        );
+        $iconRegistry->registerIcon(
+            'extensions-events2-calendar-duration',
+            'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider',
+            array('source' => 'EXT:events2/Resources/Public/Icons/calendar_duration.png')
+        );
+        $iconRegistry->registerIcon(
+            'extensions-events2-exception-add',
+            'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider',
+            array('source' => 'EXT:events2/Resources/Public/Icons/exception_add.png')
+        );
+        $iconRegistry->registerIcon(
+            'extensions-events2-exception-remove',
+            'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider',
+            array('source' => 'EXT:events2/Resources/Public/Icons/exception_remove.png')
+        );
+        $iconRegistry->registerIcon(
+            'extensions-events2-exception-info',
+            'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider',
+            array('source' => 'EXT:events2/Resources/Public/Icons/exception_info.png')
+        );
+        $iconRegistry->registerIcon(
+            'extensions-events2-exception-time',
+            'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider',
+            array('source' => 'EXT:events2/Resources/Public/Icons/exception_time.png')
+        );
+    }
 }
 // register eID scripts
 $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['events2findDaysForMonth'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('events2') . 'Classes/Ajax/FindDaysForMonth.php';

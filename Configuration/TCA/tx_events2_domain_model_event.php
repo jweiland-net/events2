@@ -15,9 +15,9 @@ return array(
         'type' => 'event_type',
         'typeicon_column' => 'event_type',
         'typeicon_classes' => array(
-            'single' => 'events2-calendar-single',
-            'recurring' => 'events2-calendar-recurring',
-            'duration' => 'events2-calendar-duration',
+            'single' => 'extensions-events2-calendar-single',
+            'recurring' => 'extensions-events2-calendar-recurring',
+            'duration' => 'extensions-events2-calendar-duration',
         ),
         'requestUpdate' => 'same_day,each_weeks',
         'default_sortby' => 'ORDER BY title',
@@ -129,9 +129,9 @@ return array(
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => array(
-                    array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_type.single', 'single', 'events2-calendar-single'),
-                    array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_type.recurring', 'recurring', 'events2-calendar-recurring'),
-                    array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_type.duration', 'duration', 'events2-calendar-duration'),
+                    array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_type.single', 'single', 'extensions-events2-calendar-single'),
+                    array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_type.recurring', 'recurring', 'extensions-events2-calendar-recurring'),
+                    array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_type.duration', 'duration', 'extensions-events2-calendar-duration'),
                 ),
                 'default' => 'single',
             )

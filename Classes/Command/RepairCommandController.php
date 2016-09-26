@@ -66,7 +66,9 @@ class RepairCommandController extends CommandController
     public function eventsCommand()
     {
         $this->outputLine('Start repairing day records of events');
-
+    
+        $this->migrateToVersion200();
+        $this->outputLine('');
         $this->removeDuplicatedDayRecords();
         $this->outputLine('');
         $this->removeDaysWithoutEventRelation();
@@ -80,6 +82,36 @@ class RepairCommandController extends CommandController
         $this->reGenerateDayRelations();
         $this->outputLine('');
         $this->updateReferenceIndex();
+    }
+    
+    /**
+     * migrate to version 2.0.0
+     *
+     * @return void
+     */
+    protected function migrateToVersion200()
+    {
+        // checkbox recurring has been removed
+        $rows = $this->databaseConnection->exec_SELECTgetRows(
+            'uid, recurring_event, event_end',
+            'tx_events2_domain_model_event',
+            'event_type=' . $this->databaseConnection->fullQuoteStr('', 'tx_events2_domain_model_event')
+        );
+        if (empty($rows)) {
+            // everything migrated or error, because recurring was already deleted
+            return null;
+        }
+        foreach ($rows as $key => $row) {
+            $this->databaseConnection->exec_UPDATEquery(
+                'tx_events2_domain_model_event',
+                'uid=' . (int)$row['uid'],
+                array(
+                    'event_type' => $row['recurring_event'] ? 'recurring' : 'single',
+                    'recurring_end' => $row['event_end'],
+                    'event_end' => $row['recurring_event'] ? 0 : $row['event_end']
+                )
+            );
+        }
     }
     
     /**
