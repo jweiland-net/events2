@@ -77,7 +77,7 @@ class DayGenerator
     /**
      * Setter for event record.
      *
-     * @param $eventRecord
+     * @param array|null $eventRecord
      */
     public function setEventRecord($eventRecord)
     {
