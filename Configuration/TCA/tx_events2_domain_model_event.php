@@ -15,6 +15,7 @@ return array(
         'type' => 'event_type',
         'typeicon_column' => 'event_type',
         'typeicon_classes' => array(
+            'default' => 'extensions-events2-calendar-single',
             'single' => 'extensions-events2-calendar-single',
             'recurring' => 'extensions-events2-calendar-recurring',
             'duration' => 'extensions-events2-calendar-duration',
@@ -34,7 +35,6 @@ return array(
             'endtime' => 'endtime',
         ),
         'searchFields' => 'title,teaser,event_begin,event_end,detail_informations,',
-        'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('events2') . 'Resources/Public/Icons/tx_events2_domain_model_event.png',
     ),
     'interface' => array(
         'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, event_type, top_of_list, title, teaser, event_begin, event_end, event_time, same_day, multiple_times, xth, weekday, different_times, each_weeks, recurring_end, exceptions, detail_informations, free_entry, ticket_link, alternative_times, location, organizer, images, video_link, download_links, theater_details, facebook, release_date, social_teaser, facebook_channel',

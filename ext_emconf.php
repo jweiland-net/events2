@@ -11,8 +11,8 @@
 ########################################################################
 
 $EM_CONF[$_EXTKEY] = array(
-    'title' => 'Events',
-    'description' => 'Events',
+    'title' => 'Events 2',
+    'description' => 'Create single and recurring events',
     'category' => 'plugin',
     'author' => 'Stefan Froemken',
     'author_email' => 'projects@jweiland.net',
@@ -31,7 +31,7 @@ $EM_CONF[$_EXTKEY] = array(
     'constraints' => array(
         'depends' => array(
             'typo3' => '6.2.0-8.99.99',
-            'maps2' => '1.0.0',
+            'maps2' => '2.6.2',
         ),
         'conflicts' => array(
         ),

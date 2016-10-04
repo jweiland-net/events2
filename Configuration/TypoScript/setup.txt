@@ -56,10 +56,6 @@ plugin.tx_events2 {
       }
     }
   }
-  features {
-    # uncomment the following line to enable the new Property Mapper.
-    rewrittenPropertyMapper = 1
-  }
   settings {
     rootCategory = {$plugin.tx_events2.settings.rootCategory}
     pidOfDetailPage = {$plugin.tx_events2.settings.pidOfDetailPage}
