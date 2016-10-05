@@ -34,7 +34,7 @@ Properties
   emailToName_            basic
   ====================== ======== =========
 
-.. _extensionManager_googleMapsLibrary:
+.. _extensionManager_pidForPoiCollections_:
 
 pidForPoiCollections
 """"""""""""""""""""

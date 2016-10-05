@@ -32,5 +32,4 @@ The content of this document is related to TYPO3, a GNU/GPL CMS/Framework availa
   Introduction/Index
   UserManual/Index
   AdministratorManual/Index
-  DeveloperManual/Index
 

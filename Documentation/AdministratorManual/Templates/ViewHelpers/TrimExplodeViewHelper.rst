@@ -34,5 +34,5 @@ Basic example
 
 Code: ::
 
-  <f:for each="{poiCollection.address -> maps2:TrimExplode()}" as="address" iteration="iterator">
+  <f:for each="{poiCollection.address -> events2:TrimExplode()}" as="address" iteration="iterator">
   </f:for>

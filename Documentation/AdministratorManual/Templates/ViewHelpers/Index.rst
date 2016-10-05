@@ -19,7 +19,7 @@ To be able to use a ViewHelper in your template, you need to follow always the s
 
 This would call the ViewHelper fo of the namespace **f** which stands for fluid.
 If you want to use ViewHelpers from other extensions you need to add the namespace
-declaration at the beginning of the template. The namespace declaration for the maps2 extension is:
+declaration at the beginning of the template. The namespace declaration for the |extension_key| extension is:
 
 .. code-block:: html
 
