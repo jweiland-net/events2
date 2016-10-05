@@ -15,7 +15,6 @@ namespace JWeiland\Events2\Tests\Unit\Domain\Model;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Domain\Model\Location;
-use JWeiland\Maps2\Domain\Model\PoiCollection;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
 
 /**
@@ -262,19 +261,5 @@ class LocationTest extends UnitTestCase
     public function getTxMaps2UidInitiallyReturnsNull()
     {
         $this->assertNull($this->subject->getTxMaps2Uid());
-    }
-
-    /**
-     * @test
-     */
-    public function setTxMaps2UidSetsTxMaps2Uid()
-    {
-        $instance = new PoiCollection();
-        $this->subject->setTxMaps2Uid($instance);
-
-        $this->assertSame(
-            $instance,
-            $this->subject->getTxMaps2Uid()
-        );
     }
 }
