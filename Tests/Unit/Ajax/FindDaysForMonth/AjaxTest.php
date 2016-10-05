@@ -172,27 +172,20 @@ class AjaxTest extends UnitTestCase
         $subject->injectCacheHashCalculator(new CacheHashCalculator());
 
         $json = $subject->processAjaxRequest($arguments);
+        $result = json_decode($json, true);
 
         // check if day 14 and 17 exists in json
-        $this->assertRegExp(
-            '~^\{"14":\[\{"uid":(.*?)"17":\[\{"uid":(.*?)\]\}$~',
-            $json
-        );
+        $this->assertArrayHasKey(14, $result);
+        $this->assertArrayHasKey(17, $result);
         // check if uid 456 and 654 exists in json
-        $this->assertRegExp(
-            '~^\{(.*?)"uid":456(.*?)"uid":654(.*?)\}$~',
-            $json
-        );
+        $this->assertSame(456, $result[14][0]['uid']);
+        $this->assertSame(654, $result[17][0]['uid']);
         // check if title Test123 and Test321 exists in json
-        $this->assertRegExp(
-            '~^\{(.*?)"title":"Test123"(.*?)"title":"Test321"(.*?)\}$~',
-            $json
-        );
+        $this->assertSame('Test123', $result[14][0]['title']);
+        $this->assertSame('Test321', $result[17][0]['title']);
         // check if cHashes exists in json
-        $this->assertRegExp(
-            '~^\{(.*?)cHash=[0-9a-f]{32}(.*?)cHash=[0-9a-f]{32}(.*?)\}$~',
-            $json
-        );
+        $this->assertContains('cHash', $result[14][0]['uri']);
+        $this->assertContains('cHash', $result[17][0]['uri']);
     }
 
     /**
