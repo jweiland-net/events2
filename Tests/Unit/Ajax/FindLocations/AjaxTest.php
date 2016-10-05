@@ -51,20 +51,6 @@ class AjaxTest extends UnitTestCase
     }
 
     /**
-     * I don't see a possibility to test, if TCA was loaded correct.
-     *
-     * @test
-     */
-    public function initializeObjectInitializesFindLocationClass()
-    {
-        $this->subject->initializeObject();
-        $this->assertInstanceOf(
-            'TYPO3\\CMS\\Core\\Database\\DatabaseConnection',
-            $this->subject->getDatabaseConnection()
-        );
-    }
-
-    /**
      * @test
      */
     public function processAjaxRequestWithNoLocationsReturnsEmptyString()

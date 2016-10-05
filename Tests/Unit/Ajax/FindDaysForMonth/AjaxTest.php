@@ -91,30 +91,6 @@ class AjaxTest extends UnitTestCase
     /**
      * @test
      */
-    public function initializeInitializesFindDaysForMonthClass()
-    {
-        $arguments = array('Hello');
-        $expectedArguments = array(
-            'categories' => '',
-            'month' => 0,
-            'year' => 0,
-            'pidOfListPage' => 0,
-            'storagePids' => ''
-        );
-        $this->subject->initialize($arguments);
-        $this->assertSame(
-            $expectedArguments,
-            $this->subject->getArguments()
-        );
-        $this->assertInstanceOf(
-            'TYPO3\\CMS\\Core\\Database\\DatabaseConnection',
-            $this->subject->getDatabaseConnection()
-        );
-    }
-
-    /**
-     * @test
-     */
     public function setArgumentsSanitizesAndSetsArguments()
     {
         $arguments = array(
@@ -150,7 +126,9 @@ class AjaxTest extends UnitTestCase
             'year' => '1234',
         );
         /** @var \JWeiland\Events2\Ajax\FindDaysForMonth\Ajax|\PHPUnit_Framework_MockObject_MockObject $subject */
-        $subject = $this->getMock('JWeiland\\Events2\\Ajax\\FindDaysForMonth\\Ajax', array('saveMonthAndYearInSession', 'findAllDaysInMonth'));
+        $subject = $this->getMock('JWeiland\\Events2\\Ajax\\FindDaysForMonth\\Ajax', array('initialize', 'saveMonthAndYearInSession', 'findAllDaysInMonth'));
+        $subject->setArguments($arguments);
+        $subject->expects($this->once())->method('initialize')->with($this->equalTo($arguments));
         $subject->expects($this->once())->method('saveMonthAndYearInSession')->with($this->equalTo(123), $this->equalTo(1234));
         $subject->expects($this->once())->method('findAllDaysInMonth')->with($this->equalTo(123), $this->equalTo(1234))->will($this->returnValue(array()));
         $this->assertSame(
@@ -185,7 +163,9 @@ class AjaxTest extends UnitTestCase
             ),
         );
         /** @var \JWeiland\Events2\Ajax\FindDaysForMonth\Ajax|\PHPUnit_Framework_MockObject_MockObject $subject */
-        $subject = $this->getMock('JWeiland\\Events2\\Ajax\\FindDaysForMonth\\Ajax', array('saveMonthAndYearInSession', 'findAllDaysInMonth'));
+        $subject = $this->getMock('JWeiland\\Events2\\Ajax\\FindDaysForMonth\\Ajax', array('initialize', 'saveMonthAndYearInSession', 'findAllDaysInMonth'));
+        $subject->setArguments($arguments);
+        $subject->expects($this->once())->method('initialize')->with($this->equalTo($arguments));
         $subject->expects($this->once())->method('saveMonthAndYearInSession')->with($this->equalTo(123), $this->equalTo(1234));
         $subject->expects($this->once())->method('findAllDaysInMonth')->with($this->equalTo(123), $this->equalTo(1234))->will($this->returnValue($days));
         $subject->injectDateTimeUtility(new DateTimeUtility());
