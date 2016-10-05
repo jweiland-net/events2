@@ -91,7 +91,7 @@ class GetEventDatesViewHelper extends AbstractViewHelper
      *
      * @return array
      */
-    public function getCollectedDays()
+    protected function getCollectedDays()
     {
         $days = array();
         $this->addFutureDaysFromEventRecord($days);
@@ -193,7 +193,7 @@ class GetEventDatesViewHelper extends AbstractViewHelper
      *
      * @return array
      */
-    public function buildDayArray(Day $day, Time $time)
+    protected function buildDayArray(Day $day, Time $time)
     {
         $dayArray = array();
         
@@ -229,14 +229,14 @@ class GetEventDatesViewHelper extends AbstractViewHelper
      *
      * @return array
      */
-    public function sortDaysByDateAndTime(array $days)
+    protected function sortDaysByDateAndTime(array $days)
     {
         if (count($days)) {
             $eventDate = array();
             $eventTime = array();
             foreach ($days as $key => $day) {
                 $eventDate[$key] = $day['eventDate']; // int
-                $eventTime[$key] = $day['EventTime']; // string
+                $eventTime[$key] = $day['eventTime']; // string
             }
             array_multisort($eventDate, SORT_ASC, SORT_NUMERIC, $eventTime, SORT_ASC, SORT_STRING, $days);
         }

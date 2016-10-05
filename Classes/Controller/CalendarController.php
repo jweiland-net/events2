@@ -15,7 +15,6 @@ namespace JWeiland\Events2\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Domain\Model\Day;
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
@@ -61,12 +60,8 @@ class CalendarController extends ActionController
      */
     public function showAction()
     {
-        $frameworkConfiguration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
-        $this->view->assign('storagePids', $frameworkConfiguration['persistence']['storagePid']);
-        $this->view->assign('pidOfListPage', $this->settings['pidOfListPage'] ?: $GLOBALS['TSFE']->id);
-        $this->view->assign('siteUrl', GeneralUtility::getIndpEnv('TYPO3_SITE_URL'));
-        $this->view->assign('siteId', $GLOBALS['TSFE']->id);
-
+        $placeHolders = $this->getEnvironmentPlaceholders();
+        
         // get month and year from session
         $monthAndYear = $this->getMonthAndYearFromUserSession();
         $day = $this->getDayFromUrl();
@@ -74,20 +69,50 @@ class CalendarController extends ActionController
         // move calendar to month and year if given
         if ($day instanceof Day) {
             // if there is a day given in URL
-            $this->view->assign('day', $day->getDay()->format('d'));
-            $this->view->assign('month', $day->getDay()->format('m'));
-            $this->view->assign('year', $day->getDay()->format('Y'));
+            $placeHolders['environment']['day'] = $day->getDay()->format('d');
+            $placeHolders['environment']['month'] = $day->getDay()->format('m');
+            $placeHolders['environment']['year'] = $day->getDay()->format('Y');
         } elseif (is_array($monthAndYear) && count($monthAndYear)) {
             // if there is a session found with given month and year
-            $this->view->assign('day', '01');
-            $this->view->assign('month', $monthAndYear['month']);
-            $this->view->assign('year', $monthAndYear['year']);
+            $placeHolders['environment']['day'] = '01';
+            $placeHolders['environment']['month'] = $monthAndYear['month'];
+            $placeHolders['environment']['year'] = $monthAndYear['year'];
         } else {
             // if nothing found, set to current day
-            $this->view->assign('day', date('d'));
-            $this->view->assign('month', date('m'));
-            $this->view->assign('year', date('Y'));
+            $placeHolders['environment']['day'] = date('d');
+            $placeHolders['environment']['month'] = date('m');
+            $placeHolders['environment']['year'] = date('Y');
         }
+        $this->view->assignMultiple($placeHolders);
+    }
+    
+    /**
+     * Get environment placeholders
+     *
+     * @return array
+     */
+    protected function getEnvironmentPlaceholders()
+    {
+        $placeHolders = array();
+        $placeHolders['environment'] = array();
+        $placeHolders['environment']['settings'] = $this->settings;
+        $frameworkConfiguration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
+        $placeHolders['environment']['storagePids'] = $frameworkConfiguration['persistence']['storagePid'];
+        $placeHolders['environment']['pidOfListPage'] = $this->settings['pidOfListPage'] ?: $GLOBALS['TSFE']->id;
+        $placeHolders['environment']['siteUrl'] = $this->getTypo3SiteUrl();
+        $placeHolders['environment']['siteId'] = $GLOBALS['TSFE']->id;
+        
+        return $placeHolders;
+    }
+    
+    /**
+     * Get TYPO3 SiteUrl
+     *
+     * @return string
+     */
+    protected function getTypo3SiteUrl()
+    {
+        return GeneralUtility::getIndpEnv('TYPO3_SITE_URL');
     }
 
     /**
@@ -123,6 +148,7 @@ class CalendarController extends ActionController
             array_key_exists('day', $pluginParameters) &&
             MathUtility::canBeInterpretedAsInteger($pluginParameters['day'])
         ) {
+            /** @var Day $day */
             $day = $this->dayRepository->findByIdentifier((int)$pluginParameters['day']);
         }
 

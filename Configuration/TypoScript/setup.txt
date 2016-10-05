@@ -1,4 +1,4 @@
-page.includeJSLibs {
+page.includeJSFooterlibs {
   jQueryForEvents2 = //ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js
   jQueryForEvents2.external = 1
   jQueryForEvents2.excludeFromConcatenation = 1
@@ -9,6 +9,9 @@ page.includeJSLibs {
   jQueryUiForEvents2.excludeFromConcatenation = 1
   jQueryUiForEvents2.disableCompression = 1
   jQueryUiForEvents2.if.isTrue = {$plugin.tx_events2.settings.includeJQueryUiLibrary}
+  events2Calendar = EXT:events2/Resources/Public/JavaScript/Calendar.js
+  events2Calendar.excludeFromConcatenation = 1
+  events2Calendar.disableCompression = 1
 }
 
 page.includeCSS {
