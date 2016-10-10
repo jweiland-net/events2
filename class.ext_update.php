@@ -86,6 +86,11 @@ class ext_update
         );
         if (empty($rows)) {
             // everything migrated or error, because recurring was already deleted
+            $this->messageArray[] = array(
+                FlashMessage::WARNING,
+                'Update warning',
+                'An error occurred while migration'
+            );
             return null;
         }
         foreach ($rows as $key => $row) {
@@ -99,6 +104,14 @@ class ext_update
                 )
             );
         }
+        $this->messageArray[] = array(
+            FlashMessage::OK,
+            'Update successful',
+            sprintf(
+                'We have updated %d event records',
+                count($rows)
+            )
+        );
     }
     
     /**
