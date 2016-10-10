@@ -88,8 +88,8 @@ class ext_update
             // everything migrated or error, because recurring was already deleted
             $this->messageArray[] = array(
                 FlashMessage::WARNING,
-                'Update warning',
-                'An error occurred while migration'
+                'Error while migration',
+                'It seems that you have compared all cols against TCA in Installtool already. Please add new cols only, than migrate the old records and then you can delete unneeded cols in Installtool.'
             );
             return null;
         }

@@ -21,3 +21,4 @@ Administrator manual
   Installation/Index
   Configuration/Index
   Templates/Index
+  Update/Index
