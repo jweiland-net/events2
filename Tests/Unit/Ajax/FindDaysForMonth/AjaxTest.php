@@ -167,7 +167,7 @@ class AjaxTest extends UnitTestCase
         $subject->setArguments($arguments);
         $subject->expects($this->once())->method('initialize')->with($this->equalTo($arguments));
         $subject->expects($this->once())->method('saveMonthAndYearInSession')->with($this->equalTo(123), $this->equalTo(1234));
-        $subject->expects($this->once())->method('findAllDaysInMonth')->with($this->equalTo(123), $this->equalTo(1234))->will($this->returnValue($days));
+        $subject->expects($this->once())->method('findAllDaysInMonth')->with($this->equalTo(123), $this->equalTo(1234))->willReturn($days);
         $subject->injectDateTimeUtility(new DateTimeUtility());
         $subject->injectCacheHashCalculator(new CacheHashCalculator());
 
