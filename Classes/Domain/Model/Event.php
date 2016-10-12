@@ -76,13 +76,6 @@ class Event extends AbstractEntity
     protected $eventEnd = null;
 
     /**
-     * Recurring event.
-     *
-     * @var bool
-     */
-    protected $recurringEvent = false;
-
-    /**
      * Same day.
      *
      * @var bool
@@ -129,7 +122,6 @@ class Event extends AbstractEntity
      * RecurringEnd.
      *
      * @var \DateTime
-     * @validate NotEmpty
      */
     protected $recurringEnd = null;
     
@@ -462,45 +454,6 @@ class Event extends AbstractEntity
     public function setEventEnd(\DateTime $eventEnd = null)
     {
         $this->eventEnd = $eventEnd;
-    }
-
-    /**
-     * Returns the recurringEvent.
-     *
-     * @return bool $recurringEvent
-     */
-    public function getRecurringEvent()
-    {
-        if (!$this->recurringEvent) {
-            // if an event has an EventEnd-Date set, then it is automatically an recurring event
-            if ($this->getEventEnd()) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return $this->recurringEvent;
-        }
-    }
-
-    /**
-     * Sets the recurringEvent.
-     *
-     * @param bool $recurringEvent
-     */
-    public function setRecurringEvent($recurringEvent)
-    {
-        $this->recurringEvent = (bool)$recurringEvent;
-    }
-
-    /**
-     * Returns the boolean state of recurringEvent.
-     *
-     * @return bool
-     */
-    public function isRecurringEvent()
-    {
-        return $this->getRecurringEvent();
     }
 
     /**
