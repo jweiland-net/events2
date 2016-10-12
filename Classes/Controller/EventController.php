@@ -228,6 +228,7 @@ class EventController extends AbstractController
     public function createAction(\JWeiland\Events2\Domain\Model\Event $event)
     {
         $event->setHidden(true);
+        $event->setEventType($event->getEventEnd() ? 'duration' : 'single');
         $this->deleteVideoLinkIfEmpty($event);
         $this->eventRepository->add($event);
         $this->persistenceManager->persistAll();
@@ -402,9 +403,9 @@ class EventController extends AbstractController
         } else {
             $eventEnd = 0;
         }
-        $simplyfiedEventArray = array(
+        $simplifiedEventArray = array(
             'uid' => $event->getUid(),
-            'event_type' => 'single',
+            'event_type' => $event->getEventType(),
             'event_begin' => $eventBegin,
             'event_end' => $eventEnd,
             'xth' => 0,
@@ -414,7 +415,7 @@ class EventController extends AbstractController
         );
         /** @var \JWeiland\Events2\Service\DayRelations $dayRelations */
         $dayRelations = $this->objectManager->get('JWeiland\\Events2\\Service\\DayRelations');
-        $dayRelations->createDayRelations($simplyfiedEventArray);
+        $dayRelations->createDayRelations($simplifiedEventArray);
     }
 
     /**
