@@ -84,166 +84,179 @@
 	});
 </script>
 
-<div class="extdiv">
-	<label for="title">
-		<f:translate key="tx_events2_domain_model_event.title" /> <span class="required">*</span>
+<div class="form-group">
+	<label for="title" class="col-sm-3 control-label">
+		<f:translate key="tx_events2_domain_model_event.title" />
+		<span class="required">*</span>
+		<span class="hidden hidden_title"><f:translate key="cshTitle" /></span>
+		<span class="csh" title="Hinweis">i</span>
 	</label>
-	<div class="hidden hidden_title">
-		<f:translate key="cshTitle"/>
+	<div class="col-sm-9">
+		<f:form.textfield class="form-control" id="title" property="title" />
 	</div>
-	<span class="csh" title="Hinweis">i</span>
-	<f:form.textfield class="powermail_input" id="title" property="title"/>
 </div>
 
-<div class="extdiv">
-	<label for="teaser">
+<div class="form-group">
+	<label for="teaser" class="col-sm-3 control-label">
 		<f:translate key="tx_events2_domain_model_event.teaser" />
+		<span class="required">*</span>
+		<span class="hidden hidden_teaser"><f:translate key="cshTeaser" /></span>
+		<span class="csh" title="Hinweis">i</span>
 	</label>
-	<div class="hidden hidden_teaser">
-		<f:translate key="cshTeaser"/>
+	<div class="col-sm-9">
+		<f:form.textarea class="form-control" id="teaser" property="teaser" rows="5" cols="50" />
+		<div id="remainingChars"></div>
 	</div>
-	<span class="csh" title="Hinweis">i</span>
-	<f:form.textarea id="teaser" property="teaser" rows="5" cols="50" />
-	<div id="remainingChars"></div>
 </div>
 
-<div class="extdiv">
-	<label for="detailInformations">
+<div class="form-group">
+	<label for="detailInformations" class="col-sm-3 control-label">
 		<f:translate key="tx_events2_domain_model_event.detail_informations" />
 	</label>
-	<f:form.textarea id="detailInformations" property="detailInformations" rows="5" cols="50" />
+	<div class="col-sm-9">
+		<f:form.textarea class="form-control" id="detailInformations" property="detailInformations" rows="5" cols="50" />
+	</div>
 </div>
 
-<div class="csc-frame-rulerAfter clearer"></div>
-
-<div class="extdiv">
-	<label for="eventBegin">
+<div class="form-group">
+	<label for="eventBegin" class="col-sm-3 control-label">
 		<f:translate key="tx_events2_domain_model_event.event_begin" />
 		<span class="required">*</span>
+		<span class="hidden hidden_eventBegin"><f:translate key="cshEventBegin" /></span>
+		<span class="csh" title="Hinweis">i</span>
 	</label>
-	<div class="hidden hidden_eventBegin">
-		<f:translate key="cshEventBegin"/>
+	<div class="col-sm-9">
+		<f:if condition="{event.eventBegin}">
+			<f:then>
+				<f:form.textfield class="form-control" placeholder="tt.mm.jjjj" id="eventBegin" property="eventBegin" value="{event.eventBegin -> f:format.date(format: 'd.m.Y')}" />
+			</f:then>
+			<f:else>
+				<f:form.textfield class="form-control" placeholder="tt.mm.jjjj" id="eventBegin" property="eventBegin" />
+			</f:else>
+		</f:if>
 	</div>
-	<span class="csh" title="Hinweis">i</span>
-	<f:if condition="{event.eventBegin}">
-		<f:then>
-			<f:form.textfield class="powermail_input" placeholder="tt.mm.jjjj" id="eventBegin" property="eventBegin" value="{event.eventBegin -> f:format.date(format: 'd.m.Y')}" />
-		</f:then>
-		<f:else>
-			<f:form.textfield class="powermail_input" placeholder="tt.mm.jjjj" id="eventBegin" property="eventBegin" />
-		</f:else>
-	</f:if>
 </div>
 
-<div class="extdiv">
-	<label for="eventEnd">
+<div class="form-group">
+	<label for="eventEnd" class="col-sm-3 control-label">
 		<f:translate key="tx_events2_domain_model_event.event_end" />
+		<span class="required">*</span>
+		<span class="hidden hidden_eventEnd"><f:translate key="cshEventEnd" /></span>
+		<span class="csh" title="Hinweis">i</span>
 	</label>
-	<div class="hidden hidden_eventEnd">
-		<f:translate key="cshEventEnd"/>
+	<div class="col-sm-9">
+		<f:if condition="{event.eventEnd}">
+			<f:then>
+				<f:form.textfield class="form-control" placeholder="tt.mm.jjjj" id="eventEnd" property="eventEnd" value="{event.eventEnd -> f:format.date(format: 'd.m.Y')}" />
+			</f:then>
+			<f:else>
+				<f:form.textfield class="form-control" placeholder="tt.mm.jjjj" id="eventEnd" property="eventEnd" />
+			</f:else>
+		</f:if>
 	</div>
-	<span class="csh" title="Hinweis">i</span>
-	<f:if condition="{event.eventEnd}">
-		<f:then>
-			<f:form.textfield class="powermail_input" placeholder="tt.mm.jjjj" id="eventEnd" property="eventEnd" value="{event.eventEnd -> f:format.date(format: 'd.m.Y')}" />
-		</f:then>
-		<f:else>
-			<f:form.textfield class="powermail_input" placeholder="tt.mm.jjjj" id="eventEnd" property="eventEnd" />
-		</f:else>
-	</f:if>
 </div>
 
-<div class="extdiv">
-	<label for="timeBegin">
-		<f:translate key="tx_events2_domain_model_time.time_begin" /><span class="required">*</span>
+<div class="form-group">
+	<label for="timeBegin" class="col-sm-3 control-label">
+		<f:translate key="tx_events2_domain_model_time.time_begin" />
+		<span class="required">*</span>
+		<span class="hidden hidden_timeBegin"><f:translate key="cshTimeBegin" /></span>
+		<span class="csh" title="Hinweis">i</span>
 	</label>
-	<div class="hidden hidden_timeBegin">
-		<f:translate key="cshTimeBegin"/>
+	<div class="col-sm-9">
+		<f:form.textfield class="form-control" placeholder="ss:mm" id="timeBegin" property="eventTime.timeBegin" />
 	</div>
-	<span class="csh" title="Hinweis">i</span>
-	<f:form.textfield class="powermail_input" placeholder="ss:mm" id="timeBegin" property="eventTime.timeBegin" />
 </div>
 
-<div class="extdiv clearfix">
-	<label for="categories">
+<div class="form-group">
+	<label for="categories" class="col-sm-3 control-label">
 		<f:translate key="tx_events2_domain_model_event.categories" />
-		<span class="required">*</span><br />
+		<span class="required">*</span>
+		<span class="hidden hidden_categories"><f:translate key="cshCategories" /></span>
+		<span class="csh" title="Hinweis">i</span>
 	</label>
-	<div class="hidden hidden_categories">
-		<f:translate key="cshCategories"/>
+	<div class="col-sm-9">
+		<f:form.select id="categories" class="form-control" options="{selectableCategories}" property="categories" size="7" multiple="1" optionLabelField="title" optionValueField="uid" sortByOptionLabel="1" />
 	</div>
-	<span class="csh" title="Hinweis">i</span>
-	<f:form.select id="categories" class="multiple-select" options="{selectableCategories}" property="categories" size="7" multiple="1" optionLabelField="title" optionValueField="uid" sortByOptionLabel="1" />
 </div>
 
-<div class="csc-frame-rulerAfter clearer"></div>
-
-<div class="extdiv clearfix">
-	<label for="location">
+<div class="form-group">
+	<label for="location" class="col-sm-3 control-label">
 		<f:translate key="tx_events2_domain_model_event.location" />
-		<span class="required">*</span><br/>
-		<f:link.page pageUid="8460" title="Neuen Veranstaltungsort beantragen">Neuen Ort beantragen</f:link.page>
+		<span class="required">*</span>
+		<span class="hidden hidden_location"><f:translate key="cshLocation" /></span>
+		<span class="csh" title="Hinweis">i</span>
 	</label>
-	<div class="hidden hidden_location">
-		<f:translate key="cshLocation"/>
+	<div class="col-sm-9">
+		<f:form.hidden id="location" property="location" />
+		<f:form.textfield class="powermail_input" id="autocompleteLocation" value="{f:if(condition: event.location, then: event.location.location, else: '')}" />
+		<span id="locationStatus"></span>
+		<div><f:link.page pageUid="8460" title="Neuen Veranstaltungsort beantragen">Neuen Ort beantragen</f:link.page></div>
 	</div>
-	<span class="csh" title="Hinweis">i</span>
-	<f:form.hidden id="location" property="location" />
-	<f:form.textfield class="powermail_input" id="autocompleteLocation" value="{f:if(condition: event.location, then: event.location.location, else: '')}" /><span id="locationStatus"></span>
 </div>
 
-<div class="csc-frame-rulerAfter clearer"></div>
-
-<div class="extdiv">
-	<label for="video">
+<div class="form-group">
+	<label for="video" class="col-sm-3 control-label">
 		<f:translate key="tx_events2_domain_model_event.video_link" />
+		<span class="hidden hidden_video"><f:translate key="cshVideo" /></span>
+		<span class="csh" title="Hinweis">i</span>
 	</label>
-	<div class="hidden hidden_video">
-		<f:translate key="cshVideo"/>
+	<div class="col-sm-9">
+		<f:form.textfield class="form-control" id="video" property="videoLink.link" />
 	</div>
-	<span class="csh" title="Hinweis">i</span>
-	<f:form.textfield class="powermail_input" id="video" property="videoLink.link" />
 </div>
 
-<div class="csc-frame-rulerAfter clearer"></div>
-
-<div class="extdiv powermail_fieldwrap_file">
-	<label>
-		<f:translate key="tx_events2_domain_model_event.images"/>
+<div class="form-group">
+	<label class="col-sm-3 control-label">
+		<f:translate key="tx_events2_domain_model_event.images" />
+		<span class="hidden hidden_images_0"><f:translate key="cshImages" /></span>
+		<span class="csh" title="Hinweis">i</span>
 	</label>
-	<div class="hidden hidden_images_0">
-		<f:translate key="cshImages"/>
-	</div>
-	<span class="csh" title="Hinweis">i</span>
-	<f:if condition="{event.images.0}"><f:image image="{event.images.0}" alt="Bild0" /></f:if>
-	<f:form.upload id="images_0" name="event[images][0]" />
-	<div class="powermail_check_inner csc-frame-rulerAfter clearer margintop">
-		<f:form.checkbox name="event[images][0][rights]" value="1" />
-		<f:translate key="rightsMessage"/>
-	</div>
-	<f:if condition="{event.images.1}"><f:image image="{event.images.1}" alt="Bild1" /></f:if>
-	<f:form.upload id="images_1" name="event[images][1]" />
-	<div class="powermail_check_inner csc-frame-rulerAfter clearer margintop">
-		<f:form.checkbox name="event[images][1][rights]" value="1" />
-		<f:translate key="rightsMessage"/>
-	</div>
-	<f:if condition="{event.images.2}"><f:image image="{event.images.2}" alt="Bild2" /></f:if>
-	<f:form.upload id="images_2" name="event[images][2]" />
-	<div class="powermail_check_inner csc-frame-rulerAfter clearer margintop">
-		<f:form.checkbox name="event[images][2][rights]" value="1" />
-		<f:translate key="rightsMessage"/>
-	</div>
-	<f:if condition="{event.images.3}"><f:image image="{event.images.3}" alt="Bild3" /></f:if>
-	<f:form.upload id="images_3" name="event[images][3]" />
-	<div class="powermail_check_inner csc-frame-rulerAfter clearer margintop">
-		<f:form.checkbox name="event[images][3][rights]" value="1" />
-		<f:translate key="rightsMessage"/>
-	</div>
-	<f:if condition="{event.images.4}"><f:image image="{event.images.4}" alt="Bild4" /></f:if>
-	<f:form.upload id="images_4" name="event[images][4]" />
-	<div class="powermail_check_inner csc-frame-rulerAfter clearer margintop">
-		<f:form.checkbox name="event[images][4][rights]" value="1" />
-		<f:translate key="rightsMessage"/>
+	<div class="col-sm-9">
+		<f:if condition="{event.images.0}"><f:image image="{event.images.0}" alt="Bild1" /></f:if>
+		<f:form.upload id="images_0" class="form-control" name="event[images][0]" />
+		<div class="checkbox">
+			<label>
+				<f:form.checkbox name="event[images][0][rights]" value="1" />
+				<f:translate key="rightsMessage" />
+			</label>
+		</div>
+
+		<f:if condition="{event.images.1}"><f:image image="{event.images.1}" alt="Bild2" /></f:if>
+		<f:form.upload id="images_1" name="event[images][1]" />
+		<div class="checkbox">
+			<label>
+				<f:form.checkbox name="event[images][1][rights]" value="1" />
+				<f:translate key="rightsMessage" />
+			</label>
+		</div>
+
+		<f:if condition="{event.images.2}"><f:image image="{event.images.2}" alt="Bild3" /></f:if>
+		<f:form.upload id="images_2" name="event[images][2]" />
+		<div class="checkbox">
+			<label>
+				<f:form.checkbox name="event[images][2][rights]" value="1" />
+				<f:translate key="rightsMessage" />
+			</label>
+		</div>
+
+		<f:if condition="{event.images.3}"><f:image image="{event.images.3}" alt="Bild4" /></f:if>
+		<f:form.upload id="images_3" name="event[images][3]" />
+		<div class="checkbox">
+			<label>
+				<f:form.checkbox name="event[images][3][rights]" value="1" />
+				<f:translate key="rightsMessage" />
+			</label>
+		</div>
+
+		<f:if condition="{event.images.4}"><f:image image="{event.images.4}" alt="Bild5" /></f:if>
+		<f:form.upload id="images_4" name="event[images][4]" />
+		<div class="checkbox">
+			<label>
+				<f:form.checkbox name="event[images][4][rights]" value="1" />
+				<f:translate key="rightsMessage" />
+			</label>
+		</div>
 	</div>
 </div>
 
