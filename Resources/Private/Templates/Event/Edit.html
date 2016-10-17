@@ -7,13 +7,14 @@
 		<f:then>
 			<f:if condition="{e2:feuser(field: 'tx_events2_organizer')}">
 				<f:then>
-					<f:flashMessages class="info-box2" />
-					<f:render partial="FormErrors" arguments="{object:Event}"/>
-					<f:form action="update" name="event" object="{event}" enctype="multipart/form-data" class="extform withinfo">
-						<div class="floatright clearfix marginbottom"><f:cObject typoscriptObjectPath="lib.feformdocumentation"/></div>
+					<f:flashMessages />
+					<f:render partial="FormErrors" arguments="{object:Event}" />
+					<f:form action="update" name="event" object="{event}" enctype="multipart/form-data" class="form-horizontal">
 						<f:render partial="Event/FormFields" arguments="{_all}" />
-						<div class="powermail_fieldwrap powermail_fieldwrap_submit">
-							<f:form.submit class="powermail_submit" value="{f:translate(key: 'create')}"/>
+						<div class="form-group">
+							<div class="col-sm-offset-3 col-sm-9">
+								<f:form.submit class="btn btn-default" value="{f:translate(key: 'create')}" />
+							</div>
 						</div>
 					</f:form>
 				</f:then>

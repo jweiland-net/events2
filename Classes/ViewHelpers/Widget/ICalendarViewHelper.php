@@ -14,6 +14,7 @@ namespace JWeiland\Events2\ViewHelpers\Widget;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use JWeiland\Events2\ViewHelpers\Widget\Controller\ICalendarController;
 use TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetViewHelper;
 
 /**
@@ -22,14 +23,14 @@ use TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetViewHelper;
 class ICalendarViewHelper extends AbstractWidgetViewHelper
 {
     /**
-     * @var \JWeiland\Events2\ViewHelpers\Widget\Controller\ICalendarController
+     * @var ICalendarController
      */
     protected $controller;
 
     /**
-     * @param \JWeiland\Events2\ViewHelpers\Widget\Controller\ICalendarController $controller
+     * @param ICalendarController $controller
      */
-    public function injectController(\JWeiland\Events2\ViewHelpers\Widget\Controller\ICalendarController $controller)
+    public function injectController(ICalendarController $controller)
     {
         $this->controller = $controller;
     }
@@ -37,11 +38,11 @@ class ICalendarViewHelper extends AbstractWidgetViewHelper
     /**
      * call the index action of the controller.
      *
-     * @param \JWeiland\Events2\Domain\Model\Event $event
+     * @param \JWeiland\Events2\Domain\Model\Day $day
      *
      * @return string
      */
-    public function render($event)
+    public function render($day)
     {
         return $this->initiateSubRequest();
     }

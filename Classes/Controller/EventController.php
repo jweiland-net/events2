@@ -33,8 +33,8 @@ class EventController extends AbstractController
      */
     public function listAction(Filter $filter = null)
     {
-        $events = $this->eventRepository->findEvents('list', $this->validateAndAssignFilter($filter));
-        $this->view->assign('events', $events);
+        $days = $this->dayRepository->findEvents('list', $this->validateAndAssignFilter($filter));
+        $this->view->assign('days', $days);
     }
 
     /**
@@ -45,8 +45,8 @@ class EventController extends AbstractController
      */
     public function listLatestAction(Filter $filter = null)
     {
-        $events = $this->eventRepository->findEvents('latest', $this->validateAndAssignFilter($filter));
-        $this->view->assign('events', $events);
+        $days = $this->dayRepository->findEvents('latest', $this->validateAndAssignFilter($filter));
+        $this->view->assign('days', $days);
     }
 
     /**
@@ -57,8 +57,8 @@ class EventController extends AbstractController
      */
     public function listTodayAction(Filter $filter = null)
     {
-        $events = $this->eventRepository->findEvents('today', $this->validateAndAssignFilter($filter));
-        $this->view->assign('events', $events);
+        $days = $this->dayRepository->findEvents('today', $this->validateAndAssignFilter($filter));
+        $this->view->assign('days', $days);
     }
 
     /**
@@ -69,8 +69,8 @@ class EventController extends AbstractController
      */
     public function listThisWeekAction(Filter $filter = null)
     {
-        $events = $this->eventRepository->findEvents('thisWeek', $this->validateAndAssignFilter($filter));
-        $this->view->assign('events', $events);
+        $days = $this->dayRepository->findEvents('thisWeek', $this->validateAndAssignFilter($filter));
+        $this->view->assign('days', $days);
     }
 
     /**
@@ -81,8 +81,8 @@ class EventController extends AbstractController
      */
     public function listRangeAction(Filter $filter = null)
     {
-        $events = $this->eventRepository->findEvents('range', $this->validateAndAssignFilter($filter));
-        $this->view->assign('events', $events);
+        $days = $this->dayRepository->findEvents('range', $this->validateAndAssignFilter($filter));
+        $this->view->assign('days', $days);
     }
 
     /**
@@ -119,48 +119,6 @@ class EventController extends AbstractController
     {
         $events = $this->eventRepository->findMyEvents($GLOBALS['TSFE']->fe_user->user['uid']);
         $this->view->assign('events', $events);
-    }
-
-    /**
-     * action show.
-     *
-     * Hint: I call showAction with int instead of DomainModel
-     * to prevent that recursive validators will be called
-     *
-     * @param int $event
-     * @param int $day
-     *
-     * @throws \Exception
-     */
-    public function showAction($event, $day = 0)
-    {
-        /** @var \JWeiland\Events2\Domain\Model\Event $eventObject */
-        $eventObject = $this->eventRepository->findByIdentifier($event);
-        if (!empty($day)) {
-            $dayObject = $this->dayRepository->findByIdentifier($day);
-        } else {
-            $dayObject = null;
-        }
-
-        // if a day was given by $_GET add it to the given event
-        if ($dayObject instanceof Day) {
-            $eventObject->setDay($dayObject);
-        } else {
-            // try to find next possible day
-            $dayObject = $this->dayRepository->getNextDayForEvent($eventObject);
-            if ($dayObject instanceof Day) {
-                $eventObject->setDay($dayObject);
-            } else {
-                // try to find the last day of this event
-                $dayObject = $this->dayRepository->getLastDayForEvent($eventObject);
-                if ($dayObject instanceof Day) {
-                    $eventObject->setDay($dayObject);
-                } else {
-                    throw new \Exception('There is no day object for this event defined in url.', 1377600007);
-                }
-            }
-        }
-        $this->view->assign('event', $eventObject);
     }
 
     /**

@@ -94,12 +94,11 @@ class DayGenerator
     public function initialize(array $eventRecord)
     {
         // reset, for previous calls
-        $this->eventRecord = array();
         $this->setDayStorage(array());
         $this->eventRecord = $eventRecord;
 
         // check for valid event record.
-        // if FALSE dayStorage is empty
+        // if false dayStorage is empty
         if (!$this->isValidEvent()) {
             return false;
         }

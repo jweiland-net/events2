@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Ajax\FindDaysForMonth;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use JWeiland\Events2\Domain\Model\Day;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Database\PreparedStatement;
@@ -38,13 +39,18 @@ class Ajax
      *
      * @var \TYPO3\CMS\Core\Database\DatabaseConnection
      */
-    protected $databaseConnection = null;
-
+    protected $databaseConnection;
+    
     /**
      * @var \JWeiland\Events2\Utility\DateTimeUtility
      */
-    protected $dateTimeUtility = null;
-
+    protected $dateTimeUtility;
+    
+    /**
+     * @var \JWeiland\Events2\Domain\Repository\DayRepository
+     */
+    protected $dayRepository;
+    
     /**
      * @var \TYPO3\CMS\Frontend\Page\CacheHashCalculator
      */
@@ -59,7 +65,18 @@ class Ajax
     {
         $this->dateTimeUtility = $dateTimeUtility;
     }
-
+    
+    /**
+     * inject dayRepository
+     *
+     * @param \JWeiland\Events2\Domain\Repository\DayRepository $dayRepository
+     * @return void
+     */
+    public function injectDayRepository(\JWeiland\Events2\Domain\Repository\DayRepository $dayRepository)
+    {
+        $this->dayRepository = $dayRepository;
+    }
+    
     /**
      * inject CacheHash Calculator.
      *
@@ -69,7 +86,7 @@ class Ajax
     {
         $this->cacheHashCalculator = $cacheHashCalculator;
     }
-
+    
     /**
      * initializes this class.
      *
@@ -152,13 +169,14 @@ class Ajax
 
         $dayArray = array();
         $days = $this->findAllDaysInMonth($month, $year);
+        /** @var Day $day */
         foreach ($days as $day) {
             $addDay = array(
-                'uid' => $day['eventUid'],
-                'title' => $day['eventTitle']
+                'uid' => $day->getEvent()->getUid(),
+                'title' => $day->getEvent()->getTitle()
             );
-            $addDay['uri'] = $this->getUriForDay($day['uid']);
-            $dayOfMonth = $this->dateTimeUtility->convert($day['day'])->format('j');
+            $addDay['uri'] = $this->getUriForDay($day->getDay()->format('U'));
+            $dayOfMonth = $day->getDay()->format('j');
             $dayArray[$dayOfMonth][] = $addDay;
         }
         $this->addHolidays($dayArray);
@@ -187,11 +205,11 @@ class Ajax
      * This way we also have realurl functionality
      * We need the current day for calendar and day controller.
      *
-     * @param int $dayUid
+     * @param int $timestamp
      *
-     * @return mixed
+     * @return string
      */
-    public function getUriForDay($dayUid)
+    public function getUriForDay($timestamp)
     {
         // uriBuilder is very slow: 223ms for 31 links */
         /*$uri = $this->uriBuilder
@@ -200,13 +218,13 @@ class Ajax
             ->uriFor('show', array('day' => $dayUid), 'Day', 'events2', 'events');*/
 
         // create uri manually instead of uriBuilder
-        $siteUrl = GeneralUtility::getIndpEnv('TYPO3_SITE_URL').'index.php?';
+        $siteUrl = GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . 'index.php?';
         $query = array(
             'id' => $this->getArgument('pidOfListPage'),
             'tx_events2_events' => array(
                 'controller' => 'Day',
-                'action' => 'show',
-                'day' => (int)$dayUid,
+                'action' => 'showByTimestamp',
+                'timestamp' => (int)$timestamp,
             ),
         );
         $cacheHashArray = $this->cacheHashCalculator->getRelevantParameters(GeneralUtility::implodeArrayForUrl('', $query));
@@ -276,63 +294,21 @@ class Ajax
         $monthBegin = $this->dateTimeUtility->standardizeDateTimeObject(\DateTime::createFromFormat('j.n.Y', '1.'.$month.'.'.$year));
         $monthEnd = clone $monthBegin;
         $monthEnd->modify('last day of this month')->modify('tomorrow');
-
-        $categories = $this->getArgument('categories');
-
-        if ($categories !== '') {
-            $statement = $this->getDatabaseConnection()->prepare_SELECTquery(
-                'tx_events2_domain_model_day.uid, tx_events2_domain_model_day.day, tx_events2_domain_model_event.uid as eventUid, tx_events2_domain_model_event.title as eventTitle',
-                'tx_events2_domain_model_day
-                LEFT JOIN tx_events2_event_day_mm ON tx_events2_domain_model_day.uid=tx_events2_event_day_mm.uid_foreign
-                LEFT JOIN tx_events2_domain_model_event ON tx_events2_domain_model_event.uid=tx_events2_event_day_mm.uid_local
-                LEFT JOIN sys_category_record_mm ON tx_events2_domain_model_event.uid=sys_category_record_mm.uid_foreign',
-                'sys_category_record_mm.tablenames = :tablename
-                AND tx_events2_domain_model_day.day >= :monthBegin
-                AND tx_events2_domain_model_day.day < :monthEnd
-                AND FIND_IN_SET(tx_events2_domain_model_event.pid, :storagePids)
-                AND sys_category_record_mm.uid_local IN ('.$categories.')'.
-                $this->addWhereForEnableFields()
-            );
-            $statement->execute(array(
-                ':tablename' => 'tx_events2_domain_model_event',
-                ':monthBegin' => $monthBegin->format('U'),
-                ':monthEnd' => $monthEnd->format('U'),
-                ':storagePids' => $this->getArgument('storagePids'),
-            ));
-        } else {
-            $statement = $this->getDatabaseConnection()->prepare_SELECTquery(
-                'tx_events2_domain_model_day.uid, tx_events2_domain_model_day.day, tx_events2_domain_model_event.uid as eventUid, tx_events2_domain_model_event.title as eventTitle',
-                'tx_events2_domain_model_day
-                LEFT JOIN tx_events2_event_day_mm ON tx_events2_domain_model_day.uid=tx_events2_event_day_mm.uid_foreign
-                LEFT JOIN tx_events2_domain_model_event ON tx_events2_domain_model_event.uid=tx_events2_event_day_mm.uid_local',
-                'tx_events2_domain_model_day.day >= :monthBegin
-                AND tx_events2_domain_model_day.day < :monthEnd
-                AND FIND_IN_SET(tx_events2_domain_model_event.pid, :storagePids)' .
-                $this->addWhereForEnableFields()
-            );
-            $statement->execute(array(
-                ':monthBegin' => $monthBegin->format('U'),
-                ':monthEnd' => $monthEnd->format('U'),
-                ':storagePids' => $this->getArgument('storagePids'),
-            ));
+        $constraint = array();
+        
+        $query = $this->dayRepository->createQuery();
+        $query->getQuerySettings()->setStoragePageIds(explode(',', $this->getArgument('storagePids')));
+        if (!empty($this->getArgument('categories'))) {
+            $orConstraint = array();
+            foreach (explode(',', $this->getArgument('categories')) as $category) {
+                $orConstraint[] = $query->contains('event.categories', $category);
+            }
+            $constraint[] = $query->logicalOr($orConstraint);
         }
-        $rows = $statement->fetchAll(PreparedStatement::FETCH_ASSOC);
-        $statement->free();
-
-        return $rows;
-    }
-
-    /**
-     * add where clause for enableFields.
-     *
-     * @return string
-     */
-    protected function addWhereForEnableFields()
-    {
-        $additionalWhere = BackendUtility::BEenableFields('tx_events2_domain_model_event');
-        $additionalWhere .= BackendUtility::deleteClause('tx_events2_domain_model_event');
-
-        return $additionalWhere;
+        $constraint[] = $query->greaterThanOrEqual('day', $monthBegin);
+        $constraint[] = $query->lessThan('day', $monthEnd);
+        
+        return $query->matching($query->logicalAnd($constraint))->execute();
     }
 
     /**

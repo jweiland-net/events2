@@ -74,16 +74,18 @@ CREATE TABLE tx_events2_domain_model_day (
 	pid int(11) DEFAULT '0' NOT NULL,
 
 	day int(11) DEFAULT '0' NOT NULL,
-	events int(11) unsigned DEFAULT '0' NOT NULL,
+	event int(11) unsigned DEFAULT '0' NOT NULL,
 
 	tstamp int(11) unsigned DEFAULT '0' NOT NULL,
 	crdate int(11) unsigned DEFAULT '0' NOT NULL,
 	cruser_id int(11) unsigned DEFAULT '0' NOT NULL,
+	deleted tinyint(4) unsigned DEFAULT '0' NOT NULL,
+	hidden tinyint(4) unsigned DEFAULT '0' NOT NULL,
 
 	PRIMARY KEY (uid),
 	KEY parent (pid),
 	KEY keyForDay (day),
-	KEY uidPidDayEvents (uid,pid,day,events)
+	KEY uidPidDayEvents (uid,pid,day,event)
 );
 
 #

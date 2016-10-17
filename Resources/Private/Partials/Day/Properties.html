@@ -3,20 +3,20 @@
 <div class="row">
 	<div class="col-md-9">
 		<h1>{event.title}</h1>
-		<f:render section="renderImages" arguments="{event: event}" />
-		<f:render section="videoLink" arguments="{event: event}" />
-		<p class="lead">{event.teaser}</p>
-		<f:format.html>{event.detailInformations}</f:format.html>
-		<f:format.html>{event.theaterDetails}</f:format.html>
-		<f:render section="downloadLinks" arguments="{event: event}" />
-		<f:render section="showDatesAndTimes" arguments="{days: '{e2:getEventDates(event: event)}'}" />
+		<f:render section="renderImages" arguments="{event: day.event}" />
+		<f:render section="videoLink" arguments="{event: day.event}" />
+		<p class="lead">{day.event.teaser}</p>
+		<f:format.html>{day.event.detailInformations}</f:format.html>
+		<f:format.html>{day.event.theaterDetails}</f:format.html>
+		<f:render section="downloadLinks" arguments="{event: day.event}" />
+		<f:render section="showDatesAndTimes" arguments="{days: '{e2:getEventDates(event: day.event)}'}" />
 	</div>
 	<div class="col-md-3">
-		<f:render section="location" arguments="{event: event}" />
-		<f:render section="googleRoute" arguments="{event: event}" />
-		<f:render section="organizer" arguments="{event: event}" />
-		<f:render section="freeEntry" arguments="{event: event}" />
-		<f:render section="iCalendar" arguments="{event: event}" />
+		<f:render section="location" arguments="{event: day.event}" />
+		<f:render section="googleRoute" arguments="{event: day.event}" />
+		<f:render section="organizer" arguments="{event: day.event}" />
+		<f:render section="freeEntry" arguments="{event: day.event}" />
+		<f:render section="iCalendar" arguments="{day: day}" />
 	</div>
 </div>
 
@@ -146,7 +146,7 @@
 		<dt>iCalendar</dt>
 		<dd>
 			<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
-			<e2:widget.iCalendar event="{event}" />
+			<e2:widget.iCalendar day="{day}" />
 		</dd>
 	</dl>
 </f:section>

@@ -16,9 +16,12 @@ namespace JWeiland\Events2\Domain\Repository;
  */
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
+use JWeiland\Events2\Domain\Model\Filter;
+use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
@@ -28,135 +31,142 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
 class DayRepository extends Repository
 {
     /**
-     * @var \JWeiland\Events2\Utility\DateTimeUtility
+     * @var DateTimeUtility
      */
-    protected $dateTimeUtility = null;
-
+    protected $dateTimeUtility;
+    
+    /**
+     * @var array
+     */
+    protected $settings = array();
+    
+    /**
+     * @var array
+     */
+    protected $defaultOrderings = array(
+        'event.topOfList' => QueryInterface::ORDER_DESCENDING,
+        'day' => QueryInterface::ORDER_ASCENDING,
+    );
+    
     /**
      * inject DateTime Utility.
      *
-     * @param \JWeiland\Events2\Utility\DateTimeUtility $dateTimeUtility
+     * @param DateTimeUtility $dateTimeUtility
      */
-    public function injectDateTimeUtility(\JWeiland\Events2\Utility\DateTimeUtility $dateTimeUtility)
+    public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
     {
         $this->dateTimeUtility = $dateTimeUtility;
     }
-
+    
     /**
-     * find all days.
+     * Returns the settings
      *
-     * @param int $limit
-     *
-     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return array $settings
      */
-    public function findAll($limit = 15)
+    public function getSettings()
     {
-        $today = $this->dateTimeUtility->convert('today');
-
-        // create query and return results
-        $query = $this->createQuery();
-
-        return $query->statement('
-			SELECT DISTINCT tx_events2_domain_model_day.*
-			FROM tx_events2_domain_model_day
-			LEFT JOIN tx_events2_event_day_mm ON tx_events2_domain_model_day.uid=tx_events2_event_day_mm.uid_foreign
-			LEFT JOIN tx_events2_domain_model_event ON tx_events2_event_day_mm.uid_local=tx_events2_domain_model_event.uid
-			WHERE FIND_IN_SET(tx_events2_domain_model_event.pid, ?)
-			AND tx_events2_domain_model_day.day > ?'.
-            BackendUtility::BEenableFields('tx_events2_domain_model_event').
-            BackendUtility::deleteClause('tx_events2_domain_model_event').
-            BackendUtility::BEenableFields('tx_events2_domain_model_day').
-            BackendUtility::deleteClause('tx_events2_domain_model_day').'
-			ORDER BY tx_events2_domain_model_day.day ASC
-			LIMIT '.$limit,
-            array(
-                $query->getQuerySettings()->getStoragePageIds(),
-                $today->format('U'),
-            )
-        )->execute();
+        return $this->settings;
     }
-
+    
     /**
-     * find all days where their related events are assigned to given categories.
+     * Sets the settings
      *
-     * @param string $categories comma separated list of categories
-     * @param int    $limit
+     * @param array $settings
+     *
+     * @return void
+     */
+    public function setSettings(array $settings)
+    {
+        $this->settings = $settings;
+    }
+    
+    /**
+     * find events.
+     *
+     * @param string $type
+     * @param Filter $filter
      *
      * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
-    public function findAllByCategories($categories, $limit = 15)
+    public function findEvents($type, Filter $filter)
     {
-        // create OR-Query for categories
-        foreach (GeneralUtility::trimExplode(',', $categories) as $category) {
-            $categoryOrQuery[] = 'sys_category_record_mm.uid_local IN (\''.(int)$category.'\')';
+        /** @var \TYPO3\CMS\Extbase\Persistence\Generic\Query $query */
+        $query = $this->createQuery();
+        $constraint = array();
+        
+        if (!empty($this->settings['categories'])) {
+            $orConstraint = array();
+            foreach (GeneralUtility::intExplode(',', $this->settings['categories']) as $category) {
+                $orConstraint[] = $query->contains('event.categories', $category);
+            }
+            $constraint[] = $query->logicalOr($orConstraint);
         }
-
-        $today = $this->dateTimeUtility->convert('today');
-
-        // create query and return results
-        $query = $this->createQuery();
-
-        return $query->statement('
-			SELECT DISTINCT tx_events2_domain_model_day.*
-			FROM tx_events2_domain_model_day
-			LEFT JOIN tx_events2_event_day_mm ON tx_events2_domain_model_day.uid=tx_events2_event_day_mm.uid_foreign
-			LEFT JOIN tx_events2_domain_model_event ON tx_events2_event_day_mm.uid_local=tx_events2_domain_model_event.uid
-			LEFT JOIN sys_category_record_mm ON tx_events2_domain_model_event.uid=sys_category_record_mm.uid_foreign
-			WHERE ('.implode(' OR ', $categoryOrQuery).')
-			AND sys_category_record_mm.tablenames = ?
-			AND FIND_IN_SET(tx_events2_domain_model_event.pid, ?)
-			AND tx_events2_domain_model_day.day > ?'.
-            BackendUtility::BEenableFields('tx_events2_domain_model_event').
-            BackendUtility::deleteClause('tx_events2_domain_model_event').
-            BackendUtility::BEenableFields('tx_events2_domain_model_day').
-            BackendUtility::deleteClause('tx_events2_domain_model_day').'
-			ORDER BY tx_events2_domain_model_day.day ASC
-			LIMIT '.$limit,
-            array(
-                'tx_events2_domain_model_event',
-                $query->getQuerySettings()->getStoragePageIds(),
-                $today->format('U'),
-            )
-        )->execute();
+        
+        // add filter for organizer
+        if ($filter->getOrganizer()) {
+            $constraint[] = $query->equals('event.organizer', $filter->getOrganizer());
+        } elseif ($this->settings['preFilterByOrganizer']) {
+            $constraint[] = $query->equals('event.organizer', $this->settings['preFilterByOrganizer']);
+        }
+        
+        switch ($type) {
+            case 'today':
+                $today = $this->dateTimeUtility->convert('today');
+                $tomorrow = $this->dateTimeUtility->convert('today');
+                $tomorrow->modify('+1 day');
+                $constraint[] = $query->greaterThanOrEqual('day', $today);
+                $constraint[] = $query->lessThan('day', $tomorrow);
+                break;
+            case 'range':
+                $today = $this->dateTimeUtility->convert('today');
+                $in4months = $this->dateTimeUtility->convert('today');
+                $in4months->modify('+4 weeks');
+                $constraint[] = $query->greaterThanOrEqual('day', $today);
+                $constraint[] = $query->lessThanOrEqual('day', $in4months);
+                break;
+            case 'thisWeek':
+                $weekStart = $this->dateTimeUtility->convert('today');
+                $weekStart->modify('this week'); // 'first day of' does not work for 'weeks'
+                $weekEnd = $this->dateTimeUtility->convert('today');
+                $weekEnd->modify('this week +6 days'); // 'last day of' does not work for 'weeks'
+                $constraint[] = $query->greaterThanOrEqual('day', $weekStart);
+                $constraint[] = $query->lessThanOrEqual('day', $weekEnd);
+                break;
+            case 'list':
+            case 'latest':
+            default:
+                $today = $this->dateTimeUtility->convert('today');
+            $constraint[] = $query->greaterThanOrEqual('day', $today);
+        }
+        
+        /** @var QueryResult $result */
+        $result = $query->matching($query->logicalAnd($constraint))->execute();
+        
+        return $result;
     }
-
+    
     /**
-     * If no day was given for an event
-     * we have to try to find the next day for this event.
+     * Find days/events by timestamp
      *
-     * @param Event $event
+     * @param int $timestamp
      *
-     * @return Day
+     * @return QueryResult
      */
-    public function getNextDayForEvent(Event $event)
+    public function findByTimestamp($timestamp)
     {
+        $constraint = array();
         $query = $this->createQuery();
-        $query->getQuerySettings()->setRespectStoragePage(false);
-        $today = new \DateTime('today');
-
-        $constraints = array();
-        $constraints[] = $query->equals('events.uid', $event);
-        $constraints[] = $query->greaterThanOrEqual('day', $today);
-
-        return $query->matching($query->logicalAnd($constraints))->execute()->getFirst();
-    }
-
-    /**
-     * If no day was given for an event
-     * we have to try to find the last day for this event.
-     *
-     * @param Event $event
-     *
-     * @return Day
-     */
-    public function getLastDayForEvent(Event $event)
-    {
-        $query = $this->createQuery();
-        $query->getQuerySettings()->setRespectStoragePage(false);
-        $query->setOrderings(array(
-            'day' => QueryInterface::ORDER_DESCENDING,
-        ));
-
-        return $query->matching($query->equals('events.uid', $event))->execute()->getFirst();
+        if (!empty($this->settings['categories'])) {
+            $orConstraint = array();
+            foreach (GeneralUtility::intExplode(',', $this->settings['categories']) as $category) {
+                $orConstraint[] = $query->contains('event.categories', $category);
+            }
+            $constraint[] = $query->logicalOr($orConstraint);
+        }
+        $constraint[] = $query->equals('day', $timestamp);
+        /** @var QueryResult $result */
+        $result = $query->matching($query->logicalAnd($constraint))->execute();
+        
+        return $result;
     }
 }

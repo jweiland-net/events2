@@ -15,6 +15,7 @@ namespace JWeiland\Events2\ViewHelpers\Widget\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Domain\Model\Time;
+use JWeiland\Events2\Utility\EventUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetController;
@@ -30,16 +31,16 @@ class ICalendarController extends AbstractWidgetController
     protected $eventUtility;
 
     /**
-     * @var \JWeiland\Events2\Domain\Model\Event
+     * @var \JWeiland\Events2\Domain\Model\Day
      */
-    protected $event = null;
+    protected $day;
 
     /**
      * inject Event Utility.
      *
-     * @param \JWeiland\Events2\Utility\EventUtility $eventUtility
+     * @param EventUtility $eventUtility
      */
-    public function injectEventUtility(\JWeiland\Events2\Utility\EventUtility $eventUtility)
+    public function injectEventUtility(EventUtility $eventUtility)
     {
         $this->eventUtility = $eventUtility;
     }
@@ -49,7 +50,7 @@ class ICalendarController extends AbstractWidgetController
      */
     public function init()
     {
-        $this->event = $this->widgetConfiguration['event'];
+        $this->day = $this->widgetConfiguration['day'];
     }
 
     /**
@@ -67,8 +68,9 @@ class ICalendarController extends AbstractWidgetController
         // event informations
         $events = array();
         /** @var \SplObjectStorage $times */
-        $times = $this->eventUtility->getTimesForDay($this->event, $this->event->getDay());
+        $times = $this->eventUtility->getTimesForDay($this->day->getEvent(), $this->day);
         if ($times->count()) {
+            /** @var Time $time */
             foreach ($times as $time) {
                 $events[] = $this->createEvent($time->getTimeBegin(), $time->getTimeEnd());
             }
@@ -84,12 +86,12 @@ class ICalendarController extends AbstractWidgetController
         $filePath = 'typo3temp/tx_events2/iCal/'.$this->getEventUid().'.ics';
         $content = preg_replace('/\h+/', ' ', $this->view->render());
         GeneralUtility::writeFileToTypo3tempDir(PATH_site.$filePath, $content);
-
-        return '
-			<a href="'.GeneralUtility::getIndpEnv('TYPO3_SITE_URL').$filePath.'" target="_blank">'.
-                LocalizationUtility::translate('export', 'events2').
-            '</a>
-		';
+        
+        return sprintf(
+            '<a href="%s" target="_blank">%s</a>',
+            GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . $filePath,
+            LocalizationUtility::translate('export', 'events2')
+        );
     }
 
     /**
@@ -105,13 +107,13 @@ class ICalendarController extends AbstractWidgetController
     {
         $event = array();
         $event['UID'] = $this->getEventUid();
-        $event['DTSTART'] = $this->convertToTstamp($this->event->getDay()->getDay(), $startTime);
+        $event['DTSTART'] = $this->convertToTstamp($this->day->getDay(), $startTime);
         if (!empty($endTime)) {
-            $event['DTEND'] = $this->convertToTstamp($this->event->getDay()->getDay(), $endTime);
+            $event['DTEND'] = $this->convertToTstamp($this->day->getDay(), $endTime);
         }
-        $event['LOCATION'] = $this->sanitizeString($this->event->getLocation()->getLocation());
-        $event['SUMMARY'] = $this->sanitizeString($this->event->getTitle());
-        $event['DESCRIPTION'] = $this->sanitizeString($this->event->getDetailInformations());
+        $event['LOCATION'] = $this->sanitizeString($this->day->getEvent()->getLocation()->getLocation());
+        $event['SUMMARY'] = $this->sanitizeString($this->day->getEvent()->getTitle());
+        $event['DESCRIPTION'] = $this->sanitizeString($this->day->getEvent()->getDetailInformations());
 
         return $event;
     }
@@ -124,7 +126,7 @@ class ICalendarController extends AbstractWidgetController
      */
     public function getEventUid()
     {
-        return 'event'.uniqid($this->event->getDay()->getDay()->format('dmY'), true);
+        return 'event' . uniqid($this->day->getDay()->format('dmY'), true);
     }
 
     /**

@@ -7,8 +7,8 @@
 	<f:render partial="Event/Filter" arguments="{action: 'listThisWeek', organizers: organizers, filter: filter}" />
 
 	<div class="list scroll-container nopaginator">
-		<e2:widget.paginate objects="{events}" as="paginatedEvents" configuration="{itemsPerPage: settings.pageBrowser.itemsPerPage, insertAbove: settings.pageBrowser.insertAbove, insertBelow: settings.pageBrowser.insertBelow, maximumNumberOfLinks: settings.pageBrowser.maximumNumberOfLinks}">
-			<f:render partial="Event/List" arguments="{events: paginatedEvents}" />
-		</e2:widget.paginate>
+		<f:widget.paginate objects="{days}" as="paginatedDays" configuration="{itemsPerPage: settings.pageBrowser.itemsPerPage, insertAbove: settings.pageBrowser.insertAbove, insertBelow: settings.pageBrowser.insertBelow, maximumNumberOfLinks: settings.pageBrowser.maximumNumberOfLinks}">
+			<f:render partial="Event/List" arguments="{days: paginatedDays}" />
+		</f:widget.paginate>
 	</div>
 </f:section>

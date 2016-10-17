@@ -7,7 +7,10 @@ return array(
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
         'hideTable' => true,
-        'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('events2') . 'Resources/Public/Icons/tx_events2_domain_model_day.gif',
+        'delete' => 'deleted',
+        'enablecolumns' => array(
+            'disabled' => 'hidden',
+        ),
     ),
     'interface' => array(
         'showRecordFieldList' => 'day',
@@ -24,17 +27,10 @@ return array(
                 'default' => time(),
             ),
         ),
-        'events' => array(
-            'config' => array(
-                'type' => 'passthrough',
-                'foreign_table' => 'tx_events2_domain_model_event',
-                'MM' => 'tx_events2_event_day_mm',
-                'MM_opposite_field' => 'days',
-            ),
-        ),
         'event' => array(
             'config' => array(
-                'type' => 'passthrough',
+                'type' => 'select',
+                'foreign_table' => 'tx_events2_domain_model_event',
             ),
         ),
     ),

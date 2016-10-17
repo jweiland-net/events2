@@ -58,7 +58,7 @@ class Event extends AbstractEntity
      * @var \DateTime
      * @validate NotEmpty
      */
-    protected $eventBegin = null;
+    protected $eventBegin;
 
     /**
      * EventTime.
@@ -66,14 +66,14 @@ class Event extends AbstractEntity
      * @var \JWeiland\Events2\Domain\Model\Time
      * @validate NotEmpty
      */
-    protected $eventTime = null;
+    protected $eventTime;
 
     /**
      * Event end.
      *
      * @var \DateTime
      */
-    protected $eventEnd = null;
+    protected $eventEnd;
 
     /**
      * Same day.
@@ -123,7 +123,7 @@ class Event extends AbstractEntity
      *
      * @var \DateTime
      */
-    protected $recurringEnd = null;
+    protected $recurringEnd;
     
     /**
      * Exceptions.
@@ -160,7 +160,7 @@ class Event extends AbstractEntity
      * @var \JWeiland\Events2\Domain\Model\Link
      * @lazy
      */
-    protected $ticketLink = null;
+    protected $ticketLink;
 
     /**
      * Categories.
@@ -186,7 +186,7 @@ class Event extends AbstractEntity
      * @validate NotEmpty
      * @lazy
      */
-    protected $location = null;
+    protected $location;
 
     /**
      * Organizer.
@@ -195,7 +195,7 @@ class Event extends AbstractEntity
      * @validate NotEmpty
      * @lazy
      */
-    protected $organizer = null;
+    protected $organizer;
 
     /**
      * Images.
@@ -210,7 +210,7 @@ class Event extends AbstractEntity
      * @var \JWeiland\Events2\Domain\Model\Link
      * @cascade remove
      */
-    protected $videoLink = null;
+    protected $videoLink;
 
     /**
      * VideoLink.
@@ -233,7 +233,7 @@ class Event extends AbstractEntity
      *
      * @var \DateTime
      */
-    protected $releaseDate = null;
+    protected $releaseDate;
 
     /**
      * SocialTeaser.
@@ -255,13 +255,6 @@ class Event extends AbstractEntity
      * @var string
      */
     protected $theaterDetails = '';
-
-    /**
-     * Day.
-     *
-     * @var \JWeiland\Events2\Domain\Model\Day
-     */
-    protected $day;
 
     /**
      * Constructor of this class.
@@ -1049,7 +1042,7 @@ class Event extends AbstractEntity
     /**
      * Returns the releaseDate.
      *
-     * @return \JWeiland\Events2\Domain\Model\Day $releaseDate
+     * @return \DateTime $releaseDate
      */
     public function getReleaseDate()
     {
@@ -1059,9 +1052,9 @@ class Event extends AbstractEntity
     /**
      * Sets the releaseDate.
      *
-     * @param \JWeiland\Events2\Domain\Model\Day $releaseDate
+     * @param \DateTime $releaseDate
      */
-    public function setReleaseDate(\JWeiland\Events2\Domain\Model\Day $releaseDate)
+    public function setReleaseDate(\DateTime $releaseDate = null)
     {
         $this->releaseDate = $releaseDate;
     }
@@ -1124,25 +1117,5 @@ class Event extends AbstractEntity
     public function setTheaterDetails($theaterDetails)
     {
         $this->theaterDetails = (string)$theaterDetails;
-    }
-
-    /**
-     * Returns the day.
-     *
-     * @return \JWeiland\Events2\Domain\Model\Day $day
-     */
-    public function getDay()
-    {
-        return $this->day;
-    }
-
-    /**
-     * Sets the day.
-     *
-     * @param \JWeiland\Events2\Domain\Model\Day $day
-     */
-    public function setDay(\JWeiland\Events2\Domain\Model\Day $day)
-    {
-        $this->day = $day;
     }
 }

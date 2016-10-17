@@ -243,6 +243,7 @@ class AbstractController extends ActionController
     public function initializeAction()
     {
         $this->eventRepository->setSettings($this->settings);
+        $this->dayRepository->setSettings($this->settings);
 
         // if this value was not set, then it will be filled with 0
         // but that is not good, because UriBuilder accepts 0 as pid, so it's better to set it to NULL

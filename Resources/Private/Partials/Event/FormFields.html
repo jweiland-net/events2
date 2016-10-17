@@ -213,53 +213,25 @@
 		<span class="csh" title="Hinweis">i</span>
 	</label>
 	<div class="col-sm-9">
-		<f:if condition="{event.images.0}"><f:image image="{event.images.0}" alt="Bild1" /></f:if>
-		<f:form.upload id="images_0" class="form-control" name="event[images][0]" />
-		<div class="checkbox">
-			<label>
-				<f:form.checkbox name="event[images][0][rights]" value="1" />
-				<f:translate key="rightsMessage" />
-			</label>
-		</div>
-
-		<f:if condition="{event.images.1}"><f:image image="{event.images.1}" alt="Bild2" /></f:if>
-		<f:form.upload id="images_1" name="event[images][1]" />
-		<div class="checkbox">
-			<label>
-				<f:form.checkbox name="event[images][1][rights]" value="1" />
-				<f:translate key="rightsMessage" />
-			</label>
-		</div>
-
-		<f:if condition="{event.images.2}"><f:image image="{event.images.2}" alt="Bild3" /></f:if>
-		<f:form.upload id="images_2" name="event[images][2]" />
-		<div class="checkbox">
-			<label>
-				<f:form.checkbox name="event[images][2][rights]" value="1" />
-				<f:translate key="rightsMessage" />
-			</label>
-		</div>
-
-		<f:if condition="{event.images.3}"><f:image image="{event.images.3}" alt="Bild4" /></f:if>
-		<f:form.upload id="images_3" name="event[images][3]" />
-		<div class="checkbox">
-			<label>
-				<f:form.checkbox name="event[images][3][rights]" value="1" />
-				<f:translate key="rightsMessage" />
-			</label>
-		</div>
-
-		<f:if condition="{event.images.4}"><f:image image="{event.images.4}" alt="Bild5" /></f:if>
-		<f:form.upload id="images_4" name="event[images][4]" />
-		<div class="checkbox">
-			<label>
-				<f:form.checkbox name="event[images][4][rights]" value="1" />
-				<f:translate key="rightsMessage" />
-			</label>
-		</div>
+		<f:render section="uploadImage" arguments="{image: event.images.0, index: '0', position: '1'}" />
+		<f:render section="uploadImage" arguments="{image: event.images.1, index: '1', position: '2'}" />
+		<f:render section="uploadImage" arguments="{image: event.images.2, index: '2', position: '3'}" />
+		<f:render section="uploadImage" arguments="{image: event.images.3, index: '3', position: '4'}" />
+		<f:render section="uploadImage" arguments="{image: event.images.4, index: '4', position: '5'}" />
 	</div>
 </div>
 
 <div id="dialogHint" title="{f:translate(key: 'hint')}">
 	<p>{settings.textForHint}</p>
 </div>
+
+<f:section name="uploadImage">
+	<f:if condition="{image}"><f:image image="{image}" alt="Bild{position}" width="{settings.show.image.width}" height="{settings.show.image.height}" minWidth="{settings.show.image.minWidth}" maxWidth="{settings.show.image.maxWidth}" minHeight="{settings.show.image.minHeight}" maxHeight="{settings.show.image.maxHeight}" /></f:if>
+	<f:form.upload id="images_{index}" name="event[images][{index}]" />
+	<div class="checkbox">
+		<label>
+			<f:form.checkbox name="event[images][{index}][rights]" value="1" />
+			<f:translate key="rightsMessage" />
+		</label>
+	</div>
+</f:section>

@@ -7,8 +7,8 @@ if (!defined('TYPO3_MODE')) {
     'JWeiland.' . $_EXTKEY,
     'Events',
     array(
-        'Event' => 'list, listLatest, listToday, listRange, listSearchResults, listMyEvents, show, new, create, edit, update, delete, activate',
-        'Day' => 'list, show',
+        'Event' => 'list, listLatest, listToday, listRange, listSearchResults, listMyEvents, new, create, edit, update, delete, activate',
+        'Day' => 'list, show, showByTimestamp',
         'Location' => 'show',
         'Video' => 'show',
         'Ajax' => 'callAjaxObject',

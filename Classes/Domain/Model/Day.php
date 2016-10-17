@@ -14,9 +14,7 @@ namespace JWeiland\Events2\Domain\Model;
  *
  * The TYPO3 project - inspiring people to share!
  */
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
-use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
@@ -28,38 +26,15 @@ class Day extends AbstractEntity
      *
      * @var \DateTime
      */
-    protected $day = null;
-
-    /**
-     * Events.
-     *
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Event>
-     * @lazy
-     */
-    protected $events = null;
+    protected $day;
 
     /**
      * Event.
      *
-     * @var Event
+     * @var \JWeiland\Events2\Domain\Model\Event
+     * @lazy
      */
-    protected $event = null;
-
-    /**
-     * Constructor of this class.
-     */
-    public function __construct()
-    {
-        $this->initStorageObjects();
-    }
-
-    /**
-     * Initializes all \TYPO3\CMS\Extbase\Persistence\ObjectStorage properties.
-     */
-    protected function initStorageObjects()
-    {
-        $this->events = new ObjectStorage();
-    }
+    protected $event;
 
     /**
      * Returns the day.
@@ -82,74 +57,6 @@ class Day extends AbstractEntity
     }
 
     /**
-     * Adds an Event.
-     *
-     * @param Event $event
-     */
-    public function addEvent(Event $event)
-    {
-        $this->events->attach($event);
-    }
-
-    /**
-     * Removes an Event.
-     *
-     * @param Event $event
-     */
-    public function removeEvent(Event $event)
-    {
-        $this->events->detach($event);
-    }
-
-    /**
-     * Returns the events.
-     *
-     * @param array $categories
-     * @param array $storagePids
-     *
-     * @return ObjectStorage $events
-     */
-    public function getEvents(array $categories = array(), array $storagePids = array())
-    {
-        if (empty($this->events)) {
-            return $this->events;
-        }
-        $isEmptyCategories = empty($categories);
-
-        /** @var ObjectStorage $eventStorage */
-        $eventStorage = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Persistence\\ObjectStorage');
-
-        /** @var Event $event */
-        foreach ($this->events as $event) {
-            // assign current day to event
-            $event->setDay($this);
-            // check against storagePid
-            if (in_array($event->getPid(), $storagePids) || empty($storagePids)) {
-                if ($isEmptyCategories) {
-                    // there is no category defined, so we can add the category without further checks
-                    $eventStorage->attach($event);
-                } elseif (!$isEmptyCategories && array_intersect($event->getCategoryUids(), $categories)) {
-                    // a category is set. Check, if event has defined category. If yes, add it to the storageObject
-                    $eventStorage->attach($event);
-                }
-            }
-        }
-
-        // override and return reduced set of events
-        return $this->events = $eventStorage;
-    }
-
-    /**
-     * Sets the events.
-     *
-     * @param ObjectStorage $events
-     */
-    public function setEvents(ObjectStorage $events = null)
-    {
-        $this->events = $events;
-    }
-
-    /**
      * Returns the event.
      *
      * @return Event $event
@@ -164,7 +71,7 @@ class Day extends AbstractEntity
      *
      * @param Event $event
      */
-    public function setEvent(Event $event = null)
+    public function setEvent(Event $event)
     {
         $this->event = $event;
     }

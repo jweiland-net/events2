@@ -27,7 +27,7 @@ class DayRelations
     /**
      * @var \TYPO3\CMS\Core\Database\DatabaseConnection
      */
-    protected $databaseConnection = null;
+    protected $databaseConnection;
 
     /**
      * @var \JWeiland\Events2\Service\DayGenerator
@@ -37,7 +37,7 @@ class DayRelations
     /**
      * @var \JWeiland\Events2\Utility\DateTimeUtility
      */
-    protected $dateTimeUtility = null;
+    protected $dateTimeUtility;
 
     /**
      * inject dayGenerator.
@@ -66,26 +66,6 @@ class DayRelations
     public function initializeObject()
     {
         $this->databaseConnection = $GLOBALS['TYPO3_DB'];
-    }
-
-    /**
-     * get event record.
-     *
-     * @return array
-     */
-    public function getEventRecord()
-    {
-        return $this->eventRecord;
-    }
-
-    /**
-     * set event record.
-     *
-     * @param array $eventRecord
-     */
-    public function setEventRecord(array $eventRecord)
-    {
-        $this->eventRecord = $eventRecord;
     }
 
     /**
@@ -139,29 +119,13 @@ class DayRelations
         if ($dayUid > 0) {
             // add relation in mm-table
             $this->addRelation($this->eventRecord['uid'], $dayUid, $day);
-
-            // add amount of events to day record
-            $amount = $this->databaseConnection->exec_SELECTcountRows(
-                '*',
-                'tx_events2_event_day_mm',
-                'uid_foreign=' . $dayUid
-            );
-            if ($amount) {
-                $this->databaseConnection->exec_UPDATEquery(
-                    'tx_events2_domain_model_day',
-                    'uid=' . $dayUid,
-                    array(
-                        'events' => (int)$amount,
-                    )
-                );
-            }
         }
 
         return $dayUid;
     }
 
     /**
-     * add day record if not already exists.
+     * Add day record.
      *
      * @param \DateTime $day
      *
@@ -169,35 +133,20 @@ class DayRelations
      */
     protected function addDayRecord(\DateTime $day)
     {
-        $row = $this->databaseConnection->exec_SELECTgetSingleRow(
-            'uid',
-            'tx_events2_domain_model_day',
-            sprintf(
-                'day=%d %s %s',
-                (int)$day->format('U'),
-                BackendUtility::BEenableFields('tx_events2_domain_model_day'),
-                BackendUtility::deleteClause('tx_events2_domain_model_day')
-            )
-        );
+        $time = time();
+        $fieldsArray = array();
+        $fieldsArray['day'] = (int)$day->format('U');
+        $fieldsArray['event'] = (int)$this->eventRecord['uid'];
+        $fieldsArray['deleted'] = (int)$this->eventRecord['deleted'];
+        $fieldsArray['hidden'] = (int)$this->eventRecord['hidden'];
+        $fieldsArray['tstamp'] = $time;
+        $fieldsArray['pid'] = (int)$this->eventRecord['pid'];
+        $fieldsArray['crdate'] = $time;
+        $fieldsArray['cruser_id'] = (int)$GLOBALS['BE_USER']->user['uid'];
 
-        if ($row === null) {
-            // TODO: Errorhandling
-            return 0;
-        } elseif ($row === false) {
-            $time = time();
-            $fieldsArray = array();
-            $fieldsArray['day'] = (int)$day->format('U');
-            $fieldsArray['tstamp'] = $time;
-            $fieldsArray['pid'] = (int)$this->eventRecord['pid'];
-            $fieldsArray['crdate'] = $time;
-            $fieldsArray['cruser_id'] = (int)$GLOBALS['BE_USER']->user['uid'];
+        $this->databaseConnection->exec_INSERTquery('tx_events2_domain_model_day', $fieldsArray);
 
-            $this->databaseConnection->exec_INSERTquery('tx_events2_domain_model_day', $fieldsArray);
-
-            return (int)$this->databaseConnection->sql_insert_id();
-        } else {
-            return (int)$row['uid'];
-        }
+        return (int)$this->databaseConnection->sql_insert_id();
     }
 
     /**
@@ -224,13 +173,21 @@ class DayRelations
     /**
      * delete all related records from mm-table.
      *
-     * @param int $eventUid
+     * @param int $event
+     *
+     * @return void
      */
-    protected function deleteAllRelatedRecords($eventUid)
+    protected function deleteAllRelatedRecords($event)
     {
+        // delete MM entries
         $this->databaseConnection->exec_DELETEquery(
             'tx_events2_event_day_mm',
-            'uid_local=' . (int)$eventUid
+            'uid_local=' . (int)$event
+        );
+        // delete day records
+        $this->databaseConnection->exec_DELETEquery(
+            'tx_events2_domain_model_day',
+            'event=' . (int)$event
         );
     }
 }

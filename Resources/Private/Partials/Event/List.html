@@ -1,24 +1,24 @@
 {namespace e2=JWeiland\Events2\ViewHelpers}
 
-<f:if condition="{events}">
+<f:if condition="{days}">
 	<f:then>
-		<f:for each="{events}" as="event">
-			<div class="panel panel-{f:if(condition: event.topOfList, then: 'info', else: 'default')}">
+		<f:for each="{days}" as="day">
+			<div class="panel panel-{f:if(condition: day.event.topOfList, then: 'info', else: 'default')}">
 				<div class="panel-heading">
-					<h3 class="panel-title"><f:render partial="Event/Date" arguments="{event: event}" /></h3>
+					<h3 class="panel-title"><f:render partial="Event/Date" arguments="{day: day}" /></h3>
 				</div>
 				<div class="panel-body">
 					<div class="media-body">
-						<f:render section="title" arguments="{event: event}" />
-						<f:render partial="Event/Teaser" arguments="{event: event}" />
+						<f:render section="title" arguments="{day: day}" />
+						<f:render partial="Event/Teaser" arguments="{event: day.event}" />
 					</div>
 					<div class="media-right">
-						<f:render section="firstImage" arguments="{event: event}" />
+						<f:render section="firstImage" arguments="{event: day.event}" />
 					</div>
 				</div>
 				<ul class="list-group">
-					<f:render section="category" arguments="{event: event}" />
-					<f:render section="location" arguments="{event: event}" />
+					<f:render section="category" arguments="{event: day.event}" />
+					<f:render section="location" arguments="{event: day.event}" />
 				</ul>
 			</div>
 		</f:for>
@@ -34,11 +34,11 @@
 	<h3 class="media-heading">
 		<f:link.action
 			action="show"
-			controller="Event"
+			controller="Day"
 			pageUid="{settings.pidOfDetailPage}"
-			arguments="{event: event, day: event.day}"
-			title="{f:translate(key: 'singleView')}: {event.title}"
-		>{event.title}</f:link.action>
+			arguments="{event: day.event, day: day}"
+			title="{f:translate(key: 'singleView')}: {day.event.title}"
+		>{day.event.title}</f:link.action>
 	</h3>
 </f:section>
 

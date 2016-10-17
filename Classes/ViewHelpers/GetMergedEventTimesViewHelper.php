@@ -14,6 +14,7 @@ namespace JWeiland\Events2\ViewHelpers;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use JWeiland\Events2\Domain\Model\Time;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -24,7 +25,7 @@ class GetMergedEventTimesViewHelper extends AbstractViewHelper
     /**
      * @var \JWeiland\Events2\Utility\EventUtility
      */
-    protected $eventUtility = null;
+    protected $eventUtility;
 
     /**
      * inject Event Utility.
@@ -40,18 +41,19 @@ class GetMergedEventTimesViewHelper extends AbstractViewHelper
      * One event can have until 4 relations to time records.
      * This ViewHelpers helps you to find the times with highest priority and merge them into one collection.
      *
-     * @param \JWeiland\Events2\Domain\Model\Event $event
+     * @param \JWeiland\Events2\Domain\Model\Day $day
      * @param bool                                 $directReturn If event has only ONE time record defined, you can set this value to TRUE to direct return this time record instead of a SplObjectStorage
      *
      * @return \SplObjectStorage|\JWeiland\Events2\Domain\Model\Time
      */
-    public function render(\JWeiland\Events2\Domain\Model\Event $event, $directReturn = false)
+    public function render(\JWeiland\Events2\Domain\Model\Day $day, $directReturn = false)
     {
-        $times = $this->eventUtility->getTimesForDay($event, $event->getDay());
+        $times = $this->eventUtility->getTimesForDay($day->getEvent(), $day);
         if ($times->count() === 1 && $directReturn) {
             $times->rewind();
-
-            return $times->current();
+            /** @var Time $time */
+            $time = $times->current();
+            return $time;
         }
 
         return $times;

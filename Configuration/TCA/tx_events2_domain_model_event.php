@@ -395,11 +395,6 @@ return array(
                 'MM' => 'tx_events2_event_day_mm',
             ),
         ),
-        'day' => array(
-            'config' => array(
-                'type' => 'passthrough',
-            ),
-        ),
         'location' => array(
             'exclude' => 1,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.location',
