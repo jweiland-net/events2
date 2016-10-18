@@ -7,9 +7,9 @@
 	jQuery(function() {
 		/* <![CDATA[ */
 		function renderSubCategory() {
-			jQuery( "#searchSubCategory").empty().attr( "disabled", "disabled" );
+			jQuery("#searchSubCategory").empty().attr( "disabled", "disabled" );
 
-			if (jQuery( "#searchMainCategory" ).val() != 0) {
+			if (jQuery("#searchMainCategory").val() != 0) {
 				jQuery.ajax({
 					type: 'GET',
 					url: siteUrl,
@@ -20,7 +20,7 @@
 						tx_events2_events: {
 							objectName: 'FindSubCategories',
 							arguments: {
-								category: jQuery( "#searchMainCategory" ).val()
+								category: jQuery("#searchMainCategory").val()
 							}
 						}
 					},

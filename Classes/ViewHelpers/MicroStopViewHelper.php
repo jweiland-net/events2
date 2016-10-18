@@ -27,7 +27,7 @@ class MicroStopViewHelper extends AbstractViewHelper
      *
      * @param string $timer
      *
-     * @return string
+     * @return void
      */
     public function render($timer = 'debugStart')
     {

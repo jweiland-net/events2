@@ -14,8 +14,9 @@ namespace JWeiland\Events2\Controller;
  *
  * The TYPO3 project - inspiring people to share!
  */
-use JWeiland\Events2\Domain\Model\Day;
+use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Filter;
+use JWeiland\Events2\Domain\Model\Search;
 use TYPO3\CMS\Extbase\Property\TypeConverter\DateTimeConverter;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -103,9 +104,9 @@ class EventController extends AbstractController
     /**
      * action list search results.
      *
-     * @param \JWeiland\Events2\Domain\Model\Search $search
+     * @param Search $search
      */
-    public function listSearchResultsAction(\JWeiland\Events2\Domain\Model\Search $search)
+    public function listSearchResultsAction(Search $search)
     {
         $events = $this->eventRepository->searchEvents($search);
 
@@ -180,10 +181,10 @@ class EventController extends AbstractController
     /**
      * action create.
      *
-     * @param \JWeiland\Events2\Domain\Model\Event $event
+     * @param Event $event
      * @return void
      */
-    public function createAction(\JWeiland\Events2\Domain\Model\Event $event)
+    public function createAction(Event $event)
     {
         $event->setHidden(true);
         $event->setEventType($event->getEventEnd() ? 'duration' : 'single');
@@ -273,10 +274,10 @@ class EventController extends AbstractController
     /**
      * action update.
      *
-     * @param \JWeiland\Events2\Domain\Model\Event $event
+     * @param Event $event
      * @return void
      */
-    public function updateAction(\JWeiland\Events2\Domain\Model\Event $event)
+    public function updateAction(Event $event)
     {
         $isHidden = $event->getHidden();
         $event->setHidden(true);
@@ -345,10 +346,10 @@ class EventController extends AbstractController
     /**
      * add relations to day records.
      *
-     * @param \JWeiland\Events2\Domain\Model\Event $event
+     * @param Event $event
      * @return void
      */
-    public function addDayRelations(\JWeiland\Events2\Domain\Model\Event $event)
+    public function addDayRelations(Event $event)
     {
         if ($event->getEventBegin() instanceof \DateTime) {
             $eventBegin = $event->getEventBegin()->format('d.m.Y');
@@ -380,11 +381,11 @@ class EventController extends AbstractController
      * send email on new/update.
      *
      * @param string                               $subjectKey
-     * @param \JWeiland\Events2\Domain\Model\Event $event
+     * @param Event $event
      *
      * @return int The amount of email receivers
      */
-    public function sendMail($subjectKey, \JWeiland\Events2\Domain\Model\Event $event)
+    public function sendMail($subjectKey, Event $event)
     {
         /* @var \JWeiland\Events2\Domain\Model\Day $day */
         //$day = $this->objectManager->get('JWeiland\\Events2\\Domain\\Model\\Day');

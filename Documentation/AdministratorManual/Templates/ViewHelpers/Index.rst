@@ -66,4 +66,3 @@ All ViewHelpers
    Link/TypolinkViewHelper
 
    Widget/ICalendarViewHelper
-   Widget/PaginateViewHelper

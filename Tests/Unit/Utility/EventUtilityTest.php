@@ -90,6 +90,9 @@ class EventUtilityTest extends UnitTestCase
      * @test
      *
      * @dataProvider dataProviderForGetExceptionsForDayWithTypesOfToday
+     *
+     * @param mixed $eventExceptions
+     * @param mixed $expectedExceptions
      */
     public function getExceptionsForDayWithDateOfTodayReturnsAllExceptionsDefinedToEventRecord($eventExceptions, $expectedExceptions)
     {
@@ -135,6 +138,8 @@ class EventUtilityTest extends UnitTestCase
      * @test
      *
      * @dataProvider dataProviderForGetExceptionsForDayWithTypesOfYesterday
+     *
+     * @param mixed $eventExceptions
      */
     public function getExceptionsForDayWithDateOfYesterdayReturnsEmptySplObjectStorage($eventExceptions)
     {
@@ -221,6 +226,10 @@ class EventUtilityTest extends UnitTestCase
      * @test
      *
      * @dataProvider dataProviderForGetExceptionsForDayWithDifferentTypes
+     *
+     * @param mixed $eventExceptions
+     * @param mixed $type
+     * @param mixed $expectedException
      */
     public function getExceptionsForDayWithDifferentTypesResultsInEmptySplObjectStorage($eventExceptions, $type, $expectedException)
     {

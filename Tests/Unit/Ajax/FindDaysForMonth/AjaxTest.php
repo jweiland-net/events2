@@ -15,8 +15,10 @@ namespace JWeiland\Events2\Tests\Unit\Ajax\FindDaysForMonth;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Ajax\FindDaysForMonth;
+use JWeiland\Events2\Domain\Model\Day;
+use JWeiland\Events2\Domain\Model\Event;
+use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Utility\DateTimeUtility;
-use Prophecy\Argument;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Database\PreparedStatement;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
@@ -145,29 +147,30 @@ class AjaxTest extends UnitTestCase
     public function processAjaxRequestWithArgumentsAndTwoDaysResultsInJson()
     {
         $arguments = array(
-            'month' => '123',
-            'year' => '1234',
+            'month' => '9',
+            'year' => '2015',
         );
-        $days = array(
-            array(
-                'day' => 1234567890, // 14th
-                'uid' => 123,
-                'eventUid' => 456,
-                'eventTitle' => 'Test123',
-            ),
-            array(
-                'day' => 1234890123, // 17th
-                'uid' => 321,
-                'eventUid' => 654,
-                'eventTitle' => 'Test321',
-            ),
-        );
+        
+        $event1 = new Event();
+        $event1->_setProperty('uid', 456);
+        $event1->setTitle('Test123');
+        $event2 = new Event();
+        $event2->_setProperty('uid', 654);
+        $event2->setTitle('Test321');
+        $day1 = new Day();
+        $day1->setDay(new \DateTime('14.09.2015'));
+        $day1->setEvent($event1);
+        $day2 = new Day();
+        $day2->setDay(new \DateTime('17.09.2015'));
+        $day2->setEvent($event2);
+        $days = array($day1, $day2);
+        
         /** @var \JWeiland\Events2\Ajax\FindDaysForMonth\Ajax|\PHPUnit_Framework_MockObject_MockObject $subject */
         $subject = $this->getMock('JWeiland\\Events2\\Ajax\\FindDaysForMonth\\Ajax', array('initialize', 'saveMonthAndYearInSession', 'findAllDaysInMonth'));
         $subject->setArguments($arguments);
         $subject->expects($this->once())->method('initialize')->with($this->equalTo($arguments));
-        $subject->expects($this->once())->method('saveMonthAndYearInSession')->with($this->equalTo(123), $this->equalTo(1234));
-        $subject->expects($this->once())->method('findAllDaysInMonth')->with($this->equalTo(123), $this->equalTo(1234))->willReturn($days);
+        $subject->expects($this->once())->method('saveMonthAndYearInSession')->with($this->equalTo(9), $this->equalTo(2015));
+        $subject->expects($this->once())->method('findAllDaysInMonth')->with($this->equalTo(9), $this->equalTo(2015))->willReturn($days);
         $subject->injectDateTimeUtility(new DateTimeUtility());
         $subject->injectCacheHashCalculator(new CacheHashCalculator());
 
@@ -193,13 +196,13 @@ class AjaxTest extends UnitTestCase
      */
     public function getUriForDayWithDayUidAsArgumentResultsInUriWithGeneratedCHash()
     {
-        $day = 456;
+        $timestamp = 1234567890;
         $pageUid = 123;
         $this->subject->setArguments(array('pidOfListPage' => $pageUid));
         $this->subject->injectCacheHashCalculator(new CacheHashCalculator());
         $this->assertRegExp(
-            '~^(http|https)://(.*?)id='.$pageUid.'&tx_events2_events%5Bcontroller%5D=Day&tx_events2_events%5Baction%5D=show&tx_events2_events%5Bday%5D='.$day.'&cHash=[0-9a-f]{32}$~',
-            $this->subject->getUriForDay($day)
+            '~^(http|https)://(.*?)id='.$pageUid.'&tx_events2_events%5Bcontroller%5D=Day&tx_events2_events%5Baction%5D=showByTimestamp&tx_events2_events%5Btimestamp%5D=' . $timestamp . '&cHash=[0-9a-f]{32}$~',
+            $this->subject->getUriForDay($timestamp)
         );
     }
 
@@ -208,58 +211,18 @@ class AjaxTest extends UnitTestCase
      */
     public function findAllDaysInMonthCallsStatementWithoutCategories()
     {
-        $GLOBALS['TCA']['tx_events2_domain_model_event']['ctrl']['enablecolumns']['disabled'] = 'hidden';
-        $GLOBALS['TCA']['tx_events2_domain_model_event']['ctrl']['delete'] = 'deleted';
-
         $rows = array(
             array('Test123'),
             array('Test321'),
         );
-        /* @var \TYPO3\CMS\Core\Database\PreparedStatement|\PHPUnit_Framework_MockObject_MockObject $preparedStatement */
-        $preparedStatement = $this->getMock('TYPO3\\CMS\\Core\\Database\\PreparedStatement', array('execute', 'fetchAll', 'free'), array(), '', false);
-        $preparedStatement->expects($this->once())->method('execute')->with($this->logicalAnd(
-            $this->arrayHasKey(':monthBegin'),
-            $this->arrayHasKey(':monthEnd'),
-            $this->arrayHasKey(':storagePids'),
-            $this->logicalNot(
-                $this->arrayHasKey(':tablename')
-            )
-        ));
-        $preparedStatement->expects($this->once())->method('fetchAll')->with($this->equalTo(PreparedStatement::FETCH_ASSOC))->will($this->returnValue($rows));
-        $preparedStatement->expects($this->once())->method('free');
 
-        /** @var \TYPO3\CMS\Core\Database\DatabaseConnection|\PHPUnit_Framework_MockObject_MockObject $databaseConnection */
-        $databaseConnection = $this->getMock('TYPO3\\CMS\\Core\\Database\\DatabaseConnection');
-        $databaseConnection->expects($this->once())->method('prepare_SELECTquery')->with(
-            $this->logicalAnd(
-                $this->stringContains('day.uid'),
-                $this->stringContains('day.day'),
-                $this->stringContains('eventUid'),
-                $this->stringContains('eventTitle')
-            ),
-            $this->logicalAnd(
-                $this->stringContains('LEFT JOIN tx_events2_event_day_mm'),
-                $this->stringContains('LEFT JOIN tx_events2_domain_model_event'),
-                $this->logicalNot(
-                    $this->stringContains('category')
-                )
-            ),
-            $this->logicalAnd(
-                $this->stringContains('tx_events2_domain_model_event.hidden=0'),
-                $this->stringContains('tx_events2_domain_model_event.deleted=0')
-            )
-        )->will($this->returnValue($preparedStatement));
-        $GLOBALS['TYPO3_DB'] = $databaseConnection;
-
-        /** @var \JWeiland\Events2\Ajax\FindDaysForMonth\Ajax|\PHPUnit_Framework_MockObject_MockObject $subject */
-        $subject = $this->getMock('JWeiland\\Events2\\Ajax\\FindDaysForMonth\\Ajax', array('getArgument'));
-        $subject->expects($this->at(0))->method('getArgument')->with($this->equalTo('categories'))->will($this->returnValue(''));
-        $subject->expects($this->at(1))->method('getArgument')->with($this->equalTo('storagePids'))->will($this->returnValue('321,654'));
-        $subject->injectDateTimeUtility(new DateTimeUtility());
-
+        /** @var DayRepository|\PHPUnit_Framework_MockObject_MockObject $dayRepository */
+        $dayRepository = $this->getMock('JWeiland\\Events2\\Domain\\Repository\\DayRepository');
+        $this->subject->injectDayRepository($dayRepository);
+        
         $this->assertSame(
             $rows,
-            $subject->findAllDaysInMonth(8, 2014)
+            $this->subject->findAllDaysInMonth(8, 2014)
         );
     }
 

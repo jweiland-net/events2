@@ -15,6 +15,8 @@ namespace JWeiland\Events2\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Domain\Model\Day;
+use JWeiland\Events2\Domain\Repository\DayRepository;
+use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
@@ -38,9 +40,9 @@ class CalendarController extends ActionController
     /**
      * inject page renderer.
      *
-     * @param \TYPO3\CMS\Core\Page\PageRenderer $pageRenderer
+     * @param PageRenderer $pageRenderer
      */
-    public function injectPageRenderer(\TYPO3\CMS\Core\Page\PageRenderer $pageRenderer)
+    public function injectPageRenderer(PageRenderer $pageRenderer)
     {
         $this->pageRenderer = $pageRenderer;
     }
@@ -48,9 +50,9 @@ class CalendarController extends ActionController
     /**
      * inject day repository.
      *
-     * @param \JWeiland\Events2\Domain\Repository\DayRepository $dayRepository
+     * @param DayRepository $dayRepository
      */
-    public function injectDayRepository(\JWeiland\Events2\Domain\Repository\DayRepository $dayRepository)
+    public function injectDayRepository(DayRepository $dayRepository)
     {
         $this->dayRepository = $dayRepository;
     }

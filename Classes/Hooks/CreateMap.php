@@ -18,6 +18,7 @@ use JWeiland\Maps2\Domain\Model\Location;
 use JWeiland\Maps2\Domain\Model\RadiusResult;
 use JWeiland\Maps2\Utility\GeocodeUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
@@ -59,9 +60,9 @@ class CreateMap
      * @param string                                   $table      The table name
      * @param int                                      $uid        The UID of the new or updated record. Can be prepended with NEW if record is new. Use: $this->substNEWwithIDs to convert
      * @param array                                    $fieldArray The fields of the current record
-     * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj
+     * @param DataHandler $pObj
      */
-    public function processDatamap_afterDatabaseOperations($status, $table, $uid, array $fieldArray, \TYPO3\CMS\Core\DataHandling\DataHandler $pObj)
+    public function processDatamap_afterDatabaseOperations($status, $table, $uid, array $fieldArray, DataHandler $pObj)
     {
         // process this hook only on expected table
         if ($table !== 'tx_events2_domain_model_location') {

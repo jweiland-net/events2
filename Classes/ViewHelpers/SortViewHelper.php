@@ -15,6 +15,10 @@ namespace JWeiland\Events2\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\Generic\LazyObjectStorage;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
+use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -66,13 +70,13 @@ class SortViewHelper extends AbstractViewHelper
         if (is_array($subject) === true) {
             $sorted = $this->sortArray($subject);
         } else {
-            if ($subject instanceof \TYPO3\CMS\Extbase\Persistence\ObjectStorage || $subject instanceof \TYPO3\CMS\Extbase\Persistence\Generic\LazyObjectStorage) {
+            if ($subject instanceof ObjectStorage || $subject instanceof LazyObjectStorage) {
                 $sorted = $this->sortObjectStorage($subject);
-            } elseif ($subject instanceof Iterator) {
+            } elseif ($subject instanceof \Iterator) {
                 /* @var \Iterator $subject */
                 $array = iterator_to_array($subject, true);
                 $sorted = $this->sortArray($array);
-            } elseif ($subject instanceof \TYPO3\CMS\Extbase\Persistence\QueryResultInterface) {
+            } elseif ($subject instanceof QueryResultInterface) {
                 /* @var \TYPO3\CMS\Extbase\Persistence\QueryResultInterface $subject */
                 $sorted = $this->sortArray($subject->toArray());
             } elseif ($subject !== null) {
@@ -80,7 +84,7 @@ class SortViewHelper extends AbstractViewHelper
                 // unrecognized value other than this is considered a
                 // fatal error.
                 throw new \Exception('Unsortable variable type passed to Iterator/SortViewHelper. Expected any of Array, QueryResult, '.
-                    ' ObjectStorage or Iterator implementation but got '.gettype($subject), 1351958941);
+                    ' ObjectStorage or Iterator implementation but got ' . gettype($subject), 1351958941);
             }
         }
 
@@ -184,10 +188,10 @@ class SortViewHelper extends AbstractViewHelper
     protected function getSortValue($object)
     {
         $field = $this->arguments['sortBy'];
-        $value = \TYPO3\CMS\Extbase\Reflection\ObjectAccess::getPropertyPath($object, $field);
+        $value = ObjectAccess::getPropertyPath($object, $field);
         if ($value instanceof \DateTime) {
             $value = intval($value->format('U'));
-        } elseif ($value instanceof \TYPO3\CMS\Extbase\Persistence\ObjectStorage || $value instanceof \TYPO3\CMS\Extbase\Persistence\Generic\LazyObjectStorage) {
+        } elseif ($value instanceof ObjectStorage || $value instanceof LazyObjectStorage) {
             $value = $value->count();
         } elseif (is_array($value)) {
             $value = count($value);

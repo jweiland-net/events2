@@ -68,9 +68,9 @@ class Organizer extends AbstractEntity
     /**
      * Sets the link.
      *
-     * @param \JWeiland\Events2\Domain\Model\Link $link
+     * @param Link $link
      */
-    public function setLink(\JWeiland\Events2\Domain\Model\Link $link)
+    public function setLink(Link $link)
     {
         $this->link = $link;
     }

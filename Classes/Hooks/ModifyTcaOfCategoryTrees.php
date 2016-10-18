@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Hooks;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use JWeiland\Events2\Configuration\ExtConf;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -30,9 +31,9 @@ class ModifyTcaOfCategoryTrees
      * inject extConf
      * It will not be auto-loaded as in extbase, but it is good to have this method for testing.
      *
-     * @param \JWeiland\Events2\Configuration\ExtConf $extConf
+     * @param ExtConf $extConf
      */
-    public function injectExtConf(\JWeiland\Events2\Configuration\ExtConf $extConf)
+    public function injectExtConf(ExtConf $extConf)
     {
         $this->extConf = $extConf;
     }

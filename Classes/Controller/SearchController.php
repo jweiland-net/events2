@@ -14,13 +14,15 @@ namespace JWeiland\Events2\Controller;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use JWeiland\Events2\Domain\Model\Search;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
+class SearchController extends ActionController
 {
     /**
      * eventRepository.
@@ -99,9 +101,9 @@ class SearchController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
     /**
      * action show.
      *
-     * @param \JWeiland\Events2\Domain\Model\Search $search
+     * @param Search $search
      */
-    public function showAction(\JWeiland\Events2\Domain\Model\Search $search = null)
+    public function showAction(Search $search = null)
     {
         // Because of the checkbox we have to create a new empty domain model
         if ($search === null) {

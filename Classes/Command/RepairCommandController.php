@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Command;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\CommandController;
 use JWeiland\Events2\Service\DayRelations;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -45,9 +46,9 @@ class RepairCommandController extends CommandController
     /**
      * inject DateTime Utility.
      *
-     * @param \JWeiland\Events2\Utility\DateTimeUtility $dateTimeUtility
+     * @param DateTimeUtility $dateTimeUtility
      */
-    public function injectDateTimeUtility(\JWeiland\Events2\Utility\DateTimeUtility $dateTimeUtility)
+    public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
     {
         $this->dateTimeUtility = $dateTimeUtility;
     }

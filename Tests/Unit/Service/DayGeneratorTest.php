@@ -17,7 +17,7 @@ namespace JWeiland\Events2\Tests\Unit\Service;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Service\DayGenerator;
 use JWeiland\Events2\Utility\DateTimeUtility;
-use TYPO3\CMS\Core\Tests\UnitTestcase;
+use TYPO3\CMS\Core\Tests\UnitTestCase;
 
 /**
  * Test case for class \JWeiland\Events2\Service\DayGenerator.
@@ -25,7 +25,7 @@ use TYPO3\CMS\Core\Tests\UnitTestcase;
  *
  * @author Stefan Froemken <projects@jweiland.net>
  */
-class DayGeneratorTest extends UnitTestcase
+class DayGeneratorTest extends UnitTestCase
 {
     /**
      * @var \JWeiland\Events2\Service\DayGenerator

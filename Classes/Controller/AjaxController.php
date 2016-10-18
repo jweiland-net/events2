@@ -33,7 +33,7 @@ class AjaxController extends ActionController
     public function callAjaxObjectAction($objectName, $arguments = array())
     {
         if (is_string($objectName)) {
-            $className = 'JWeiland\\Events2\\Ajax\\'.ucfirst($objectName);
+            $className = 'JWeiland\\Events2\\Ajax\\' . ucfirst($objectName);
             if (class_exists($className)) {
                 $object = $this->objectManager->get($className);
                 if (method_exists($object, 'processAjaxRequest')) {

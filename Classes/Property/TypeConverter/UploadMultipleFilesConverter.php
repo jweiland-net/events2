@@ -14,6 +14,9 @@ namespace JWeiland\Events2\Property\TypeConverter;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use TYPO3\CMS\Extbase\Domain\Model\FileReference;
+use TYPO3\CMS\Extbase\Error\Error;
+use TYPO3\CMS\Extbase\Property\PropertyMappingConfigurationInterface;
 use TYPO3\CMS\Extbase\Property\TypeConverter\AbstractTypeConverter;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -72,22 +75,18 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
      * Actually convert from $source to $targetType, taking into account the fully
      * built $convertedChildProperties and $configuration.
      *
-     * @param array                                                             $source
-     * @param string                                                            $targetType
-     * @param array                                                             $convertedChildProperties
-     * @param \TYPO3\CMS\Extbase\Property\PropertyMappingConfigurationInterface $configuration
-     *
-     * @throws \TYPO3\CMS\Extbase\Property\Exception
-     *
-     * @return \TYPO3\CMS\Extbase\Domain\Model\AbstractFileFolder
-     *
-     * @api
+     * @param mixed $source
+     * @param string $targetType
+     * @param array $convertedChildProperties
+     * @param PropertyMappingConfigurationInterface $configuration
+     * @return mixed|Error the target type, or an error object if a user-error occurred
+     * @throws Exception\TypeConverterException thrown in case a developer error occurred
      */
     public function convertFrom(
         $source,
         $targetType,
         array $convertedChildProperties = array(),
-        \TYPO3\CMS\Extbase\Property\PropertyMappingConfigurationInterface $configuration = null
+        PropertyMappingConfigurationInterface $configuration = null
     ) {
         $alreadyPersistedImages = $configuration->getConfigurationValue(
             'JWeiland\\Events2\\Property\\TypeConverter\\UploadMultipleFilesConverter',
@@ -113,14 +112,14 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
             }
             // check if uploaded file returns an error
             if (!$uploadedFile['error'] === 0) {
-                return new \TYPO3\CMS\Extbase\Error\Error(
+                return new Error(
                     LocalizationUtility::translate('error.upload', 'events2') . $uploadedFile['error'],
                     1396957314
                 );
             }
             // now we have a valid uploaded file. Check if user has rights to upload this file
             if (!isset($uploadedFile['rights']) || empty($uploadedFile['rights'])) {
-                return new \TYPO3\CMS\Extbase\Error\Error(
+                return new Error(
                     LocalizationUtility::translate('error.uploadRights', 'events2'),
                     1397464390
                 );
@@ -128,7 +127,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
             // check if file extension is allowed
             $fileParts = GeneralUtility::split_fileref($uploadedFile['name']);
             if (!GeneralUtility::inList($GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'], $fileParts['fileext'])) {
-                return new \TYPO3\CMS\Extbase\Error\Error(
+                return new Error(
                     LocalizationUtility::translate(
                         'error.fileExtension',
                         'events2',
@@ -140,8 +139,8 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
                 );
             }
             // OK...we have a valid file and the user has the rights. It's time to check, if an old file can be deleted
-            if ($alreadyPersistedImages[$key] instanceof \TYPO3\CMS\Extbase\Domain\Model\FileReference) {
-                /** @var \TYPO3\CMS\Extbase\Domain\Model\FileReference $oldFile */
+            if ($alreadyPersistedImages[$key] instanceof FileReference) {
+                /** @var FileReference $oldFile */
                 $oldFile = $alreadyPersistedImages[$key];
                 $oldFile->getOriginalResource()->getOriginalFile()->delete();
             }
@@ -153,7 +152,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
         /** @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage $references */
         $references = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\ObjectStorage');
         foreach ($source as $uploadedFile) {
-            if ($uploadedFile instanceof \TYPO3\CMS\Extbase\Domain\Model\FileReference) {
+            if ($uploadedFile instanceof FileReference) {
                 $references->attach($uploadedFile);
             } else {
                 $references->attach($this->getExtbaseFileReference($uploadedFile));

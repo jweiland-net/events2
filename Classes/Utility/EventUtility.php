@@ -14,6 +14,8 @@ namespace JWeiland\Events2\Utility;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use JWeiland\Events2\Domain\Model\Day;
+use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Time;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -36,7 +38,7 @@ class EventUtility
      *
      * @param DateTimeUtility $dateTimeUtility
      */
-    public function injectDateTimeUtility(\JWeiland\Events2\Utility\DateTimeUtility $dateTimeUtility)
+    public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
     {
         $this->dateTimeUtility = $dateTimeUtility;
     }
@@ -45,13 +47,13 @@ class EventUtility
      * get exceptions for given day
      * you can limit the result by a given type.
      *
-     * @param \JWeiland\Events2\Domain\Model\Event $event
-     * @param \JWeiland\Events2\Domain\Model\Day   $day
-     * @param string                               $type  There are different exception types like Add, Remove, Time or Info. If empty add all exceptions
+     * @param Event  $event
+     * @param Day    $day
+     * @param string $type  There are different exception types like Add, Remove, Time or Info. If empty add all exceptions
      *
      * @return \SplObjectStorage
      */
-    public function getExceptionsForDay(\JWeiland\Events2\Domain\Model\Event $event, \JWeiland\Events2\Domain\Model\Day $day, $type = '')
+    public function getExceptionsForDay(Event $event, Day $day, $type = '')
     {
         $type = GeneralUtility::trimExplode(',', strtolower($type), true);
         $exceptions = new \SplObjectStorage();
@@ -74,12 +76,12 @@ class EventUtility
      * each event can have one or more times for one day
      * This method looks into all time related records and fetches the times with highest priority.
      *
-     * @param \JWeiland\Events2\Domain\Model\Event $event
-     * @param \JWeiland\Events2\Domain\Model\Day   $day
+     * @param Event $event
+     * @param Day   $day
      *
      * @return \SplObjectStorage
      */
-    public function getTimesForDay(\JWeiland\Events2\Domain\Model\Event $event, \JWeiland\Events2\Domain\Model\Day $day)
+    public function getTimesForDay(Event $event, Day $day)
     {
         // times from exceptions have priority 1
         // The exceptions of type "Add" were already moved to event->getDays (DayGenerator), but not their time records
@@ -116,12 +118,12 @@ class EventUtility
      * you can override the times in an event for a special weekday
      * so this method checks and returns times, if there are times defined for given day.
      *
-     * @param \JWeiland\Events2\Domain\Model\Event $event
-     * @param \JWeiland\Events2\Domain\Model\Day   $day
+     * @param Event $event
+     * @param Day   $day
      *
      * @return \SplObjectStorage
      */
-    protected function getDifferentTimesForDay(\JWeiland\Events2\Domain\Model\Event $event, \JWeiland\Events2\Domain\Model\Day $day)
+    protected function getDifferentTimesForDay(Event $event, Day $day)
     {
         $times = new \SplObjectStorage();
         /** @var \JWeiland\Events2\Domain\Model\Time $time */
@@ -138,11 +140,11 @@ class EventUtility
      * Each event has ONE time record, but if checkbox "same day" was checked, you can add additional times
      * This method checks both parts, merges them to one SplObjectStorage and returns the result.
      *
-     * @param \JWeiland\Events2\Domain\Model\Event $event
+     * @param Event $event
      *
      * @return \SplObjectStorage
      */
-    protected function getTimesFromEvent(\JWeiland\Events2\Domain\Model\Event $event)
+    protected function getTimesFromEvent(Event $event)
     {
         $times = new \SplObjectStorage();
         // add normal event time

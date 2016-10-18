@@ -81,9 +81,11 @@ class TypolinkViewHelper extends AbstractViewHelper implements CompilableInterfa
 
     /**
      * @param array $arguments
-     * @param callable $renderChildrenClosure
+     * @param \Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
+     *
      * @return mixed|string
+     *
      * @throws \InvalidArgumentException
      * @throws \UnexpectedValueException
      */

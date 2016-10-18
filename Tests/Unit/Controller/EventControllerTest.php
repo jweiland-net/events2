@@ -365,7 +365,6 @@ class EventControllerTest extends UnitTestCase
      */
     public function listMyEventsActionFindEventsAndAssignsThemToView()
     {
-        $filter = new Filter();
         $tsfeBackup = $GLOBALS['TSFE'];
         $feUser = new \stdClass();
         $feUser->user = $user = array(

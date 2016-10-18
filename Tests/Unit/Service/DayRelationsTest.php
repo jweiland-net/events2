@@ -15,7 +15,7 @@ namespace JWeiland\Events2\Tests\Unit\Service;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Service\DayRelations;
-use TYPO3\CMS\Core\Tests\UnitTestcase;
+use TYPO3\CMS\Core\Tests\UnitTestCase;
 
 /**
  * Test case for class \JWeiland\Events2\Service\DayRelations.
@@ -23,7 +23,7 @@ use TYPO3\CMS\Core\Tests\UnitTestcase;
  *
  * @author Stefan Froemken <projects@jweiland.net>
  */
-class DayRelationsTest extends UnitTestcase
+class DayRelationsTest extends UnitTestCase
 {
     /**
      * @var \JWeiland\Events2\Service\DayRelations

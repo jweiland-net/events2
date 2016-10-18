@@ -14,11 +14,12 @@ namespace JWeiland\Events2\Configuration;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use TYPO3\CMS\Core\SingletonInterface;
 
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class ExtConf implements \TYPO3\CMS\Core\SingletonInterface
+class ExtConf implements SingletonInterface
 {
     /**
      * poi collection PID

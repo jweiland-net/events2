@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Domain\Model;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use JWeiland\Maps2\Domain\Model\PoiCollection;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /**
@@ -166,9 +167,9 @@ class Location extends AbstractEntity
     /**
      * Setter for txMaps2Uid.
      *
-     * @param \JWeiland\Maps2\Domain\Model\PoiCollection $txMaps2Uid
+     * @param PoiCollection $txMaps2Uid
      */
-    public function setTxMaps2Uid(\JWeiland\Maps2\Domain\Model\PoiCollection $txMaps2Uid)
+    public function setTxMaps2Uid(PoiCollection $txMaps2Uid)
     {
         $this->txMaps2Uid = $txMaps2Uid;
     }

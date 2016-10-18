@@ -15,12 +15,13 @@ namespace JWeiland\Events2\Ajax\FindDaysForMonth;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Domain\Model\Day;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
+use JWeiland\Events2\Domain\Repository\DayRepository;
+use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Core\Bootstrap;
-use TYPO3\CMS\Core\Database\PreparedStatement;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
+use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
 
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
@@ -59,9 +60,9 @@ class Ajax
     /**
      * inject DateTime Utility.
      *
-     * @param \JWeiland\Events2\Utility\DateTimeUtility $dateTimeUtility
+     * @param DateTimeUtility $dateTimeUtility
      */
-    public function injectDateTimeUtility(\JWeiland\Events2\Utility\DateTimeUtility $dateTimeUtility)
+    public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
     {
         $this->dateTimeUtility = $dateTimeUtility;
     }
@@ -69,10 +70,10 @@ class Ajax
     /**
      * inject dayRepository
      *
-     * @param \JWeiland\Events2\Domain\Repository\DayRepository $dayRepository
+     * @param DayRepository $dayRepository
      * @return void
      */
-    public function injectDayRepository(\JWeiland\Events2\Domain\Repository\DayRepository $dayRepository)
+    public function injectDayRepository(DayRepository $dayRepository)
     {
         $this->dayRepository = $dayRepository;
     }
@@ -80,9 +81,9 @@ class Ajax
     /**
      * inject CacheHash Calculator.
      *
-     * @param \TYPO3\CMS\Frontend\Page\CacheHashCalculator $cacheHashCalculator
+     * @param CacheHashCalculator $cacheHashCalculator
      */
-    public function injectCacheHashCalculator(\TYPO3\CMS\Frontend\Page\CacheHashCalculator $cacheHashCalculator)
+    public function injectCacheHashCalculator(CacheHashCalculator $cacheHashCalculator)
     {
         $this->cacheHashCalculator = $cacheHashCalculator;
     }

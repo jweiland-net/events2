@@ -14,13 +14,23 @@ namespace JWeiland\Events2\Controller;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Filter;
+use JWeiland\Events2\Domain\Repository\CategoryRepository;
+use JWeiland\Events2\Domain\Repository\DayRepository;
+use JWeiland\Events2\Domain\Repository\EventRepository;
+use JWeiland\Events2\Domain\Repository\LocationRepository;
+use JWeiland\Events2\Domain\Repository\OrganizerRepository;
+use JWeiland\Events2\Domain\Repository\UserRepository;
+use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\Session;
+use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 
 /**
@@ -97,9 +107,9 @@ class AbstractController extends ActionController
     /**
      * inject persistenceManager.
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface $persistenceManager
+     * @param PersistenceManagerInterface $persistenceManager
      */
-    public function injectPersistenceManager(\TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface $persistenceManager)
+    public function injectPersistenceManager(PersistenceManagerInterface $persistenceManager)
     {
         $this->persistenceManager = $persistenceManager;
     }
@@ -107,9 +117,9 @@ class AbstractController extends ActionController
     /**
      * inject mail.
      *
-     * @param \TYPO3\CMS\Core\Mail\MailMessage $mail
+     * @param MailMessage $mail
      */
-    public function injectMail(\TYPO3\CMS\Core\Mail\MailMessage $mail)
+    public function injectMail(MailMessage $mail)
     {
         $this->mail = $mail;
     }
@@ -117,9 +127,9 @@ class AbstractController extends ActionController
     /**
      * inject extConf.
      *
-     * @param \JWeiland\Events2\Configuration\ExtConf $extConf
+     * @param ExtConf $extConf
      */
-    public function injectExtConf(\JWeiland\Events2\Configuration\ExtConf $extConf)
+    public function injectExtConf(ExtConf $extConf)
     {
         $this->extConf = $extConf;
     }
@@ -127,9 +137,9 @@ class AbstractController extends ActionController
     /**
      * inject event repository.
      *
-     * @param \JWeiland\Events2\Domain\Repository\EventRepository $eventRepository
+     * @param EventRepository $eventRepository
      */
-    public function injectEventRepository(\JWeiland\Events2\Domain\Repository\EventRepository $eventRepository)
+    public function injectEventRepository(EventRepository $eventRepository)
     {
         $this->eventRepository = $eventRepository;
     }
@@ -137,9 +147,9 @@ class AbstractController extends ActionController
     /**
      * inject day repository.
      *
-     * @param \JWeiland\Events2\Domain\Repository\DayRepository $dayRepository
+     * @param DayRepository $dayRepository
      */
-    public function injectDayRepository(\JWeiland\Events2\Domain\Repository\DayRepository $dayRepository)
+    public function injectDayRepository(DayRepository $dayRepository)
     {
         $this->dayRepository = $dayRepository;
     }
@@ -147,9 +157,9 @@ class AbstractController extends ActionController
     /**
      * inject location repository.
      *
-     * @param \JWeiland\Events2\Domain\Repository\LocationRepository $locationRepository
+     * @param LocationRepository $locationRepository
      */
-    public function injectLocationRepository(\JWeiland\Events2\Domain\Repository\LocationRepository $locationRepository)
+    public function injectLocationRepository(LocationRepository $locationRepository)
     {
         $this->locationRepository = $locationRepository;
     }
@@ -157,10 +167,10 @@ class AbstractController extends ActionController
     /**
      * inject organizerRepository
      *
-     * @param \JWeiland\Events2\Domain\Repository\OrganizerRepository $organizerRepository
+     * @param OrganizerRepository $organizerRepository
      * @return void
      */
-    public function injectOrganizerRepository(\JWeiland\Events2\Domain\Repository\OrganizerRepository $organizerRepository)
+    public function injectOrganizerRepository(OrganizerRepository $organizerRepository)
     {
         $this->organizerRepository = $organizerRepository;
     }
@@ -168,9 +178,9 @@ class AbstractController extends ActionController
     /**
      * inject category repository.
      *
-     * @param \JWeiland\Events2\Domain\Repository\CategoryRepository $categoryRepository
+     * @param CategoryRepository $categoryRepository
      */
-    public function injectCategoryRepository(\JWeiland\Events2\Domain\Repository\CategoryRepository $categoryRepository)
+    public function injectCategoryRepository(CategoryRepository $categoryRepository)
     {
         $this->categoryRepository = $categoryRepository;
     }
@@ -178,9 +188,9 @@ class AbstractController extends ActionController
     /**
      * inject user repository.
      *
-     * @param \JWeiland\Events2\Domain\Repository\UserRepository $userRepository
+     * @param UserRepository $userRepository
      */
-    public function injectUserRepository(\JWeiland\Events2\Domain\Repository\UserRepository $userRepository)
+    public function injectUserRepository(UserRepository $userRepository)
     {
         $this->userRepository = $userRepository;
     }
@@ -188,9 +198,9 @@ class AbstractController extends ActionController
     /**
      * inject session.
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\Generic\Session $session
+     * @param Session $session
      */
-    public function injectSession(\TYPO3\CMS\Extbase\Persistence\Generic\Session $session)
+    public function injectSession(Session $session)
     {
         $this->session = $session;
     }

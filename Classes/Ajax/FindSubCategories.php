@@ -14,12 +14,13 @@ namespace JWeiland\Events2\Ajax;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class FindSubCategories extends \JWeiland\Events2\Ajax\AbstractAjaxRequest
+class FindSubCategories extends AbstractAjaxRequest
 {
     /**
      * @var \JWeiland\Events2\Domain\Repository\CategoryRepository
@@ -29,9 +30,9 @@ class FindSubCategories extends \JWeiland\Events2\Ajax\AbstractAjaxRequest
     /**
      * inject category repository.
      *
-     * @param \JWeiland\Events2\Domain\Repository\CategoryRepository $categoryRepository
+     * @param CategoryRepository $categoryRepository
      */
-    public function injectCategoryRepository(\JWeiland\Events2\Domain\Repository\CategoryRepository $categoryRepository)
+    public function injectCategoryRepository(CategoryRepository $categoryRepository)
     {
         $this->categoryRepository = $categoryRepository;
     }

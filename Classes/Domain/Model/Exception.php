@@ -112,9 +112,9 @@ class Exception extends AbstractEntity
     /**
      * Sets the exceptionTime.
      *
-     * @param \JWeiland\Events2\Domain\Model\Time $exceptionTime
+     * @param Time $exceptionTime
      */
-    public function setExceptionTime(\JWeiland\Events2\Domain\Model\Time $exceptionTime)
+    public function setExceptionTime(Time $exceptionTime)
     {
         $this->exceptionTime = $exceptionTime;
     }

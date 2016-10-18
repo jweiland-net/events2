@@ -14,18 +14,20 @@ namespace JWeiland\Events2\Controller;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use JWeiland\Events2\Domain\Model\Location;
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class LocationController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
+class LocationController extends ActionController
 {
     /**
      * action show.
      *
-     * @param \JWeiland\Events2\Domain\Model\Location $location
+     * @param Location $location
      */
-    public function showAction(\JWeiland\Events2\Domain\Model\Location $location)
+    public function showAction(Location $location)
     {
         $this->view->assign('location', $location);
     }

@@ -14,6 +14,8 @@ namespace JWeiland\Events2\Service;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use JWeiland\Events2\Configuration\ExtConf;
+use JWeiland\Events2\Utility\DateTimeUtility;
 
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
@@ -47,9 +49,9 @@ class DayGenerator
     /**
      * injects extConf.
      *
-     * @param \JWeiland\Events2\Configuration\ExtConf $extConf
+     * @param ExtConf $extConf
      */
-    public function injectExtConf(\JWeiland\Events2\Configuration\ExtConf $extConf)
+    public function injectExtConf(ExtConf $extConf)
     {
         $this->extConf = $extConf;
     }
@@ -57,9 +59,9 @@ class DayGenerator
     /**
      * inject DateTime Utility.
      *
-     * @param \JWeiland\Events2\Utility\DateTimeUtility $dateTimeUtility
+     * @param DateTimeUtility $dateTimeUtility
      */
-    public function injectDateTimeUtility(\JWeiland\Events2\Utility\DateTimeUtility $dateTimeUtility)
+    public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
     {
         $this->dateTimeUtility = $dateTimeUtility;
     }
@@ -150,7 +152,7 @@ class DayGenerator
      *
      * @param array $dayStorage
      *
-     * @return array
+     * @return void
      */
     public function setDayStorage(array $dayStorage)
     {

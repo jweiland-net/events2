@@ -402,9 +402,9 @@ class Event extends AbstractEntity
     /**
      * Sets the event_time.
      *
-     * @param \JWeiland\Events2\Domain\Model\Time $eventTime
+     * @param Time $eventTime
      */
-    public function setEventTime(\JWeiland\Events2\Domain\Model\Time $eventTime = null)
+    public function setEventTime(Time $eventTime = null)
     {
         $this->eventTime = $eventTime;
     }
@@ -472,7 +472,7 @@ class Event extends AbstractEntity
     /**
      * Returns the boolean state of sameDay.
      *
-     * @return bool
+     * @return void
      */
     public function isSameDay()
     {
@@ -492,9 +492,9 @@ class Event extends AbstractEntity
     /**
      * Sets the multipleTimes.
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $multipleTimes
+     * @param ObjectStorage $multipleTimes
      */
-    public function setMultipleTimes(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $multipleTimes = null)
+    public function setMultipleTimes(ObjectStorage $multipleTimes = null)
     {
         $this->multipleTimes = $multipleTimes;
     }
@@ -554,9 +554,9 @@ class Event extends AbstractEntity
     /**
      * Adds a Times.
      *
-     * @param \JWeiland\Events2\Domain\Model\Time $differentTime
+     * @param Time $differentTime
      */
-    public function addDifferentTime(\JWeiland\Events2\Domain\Model\Time $differentTime = null)
+    public function addDifferentTime(Time $differentTime = null)
     {
         $this->differentTimes->attach($differentTime);
     }
@@ -564,9 +564,9 @@ class Event extends AbstractEntity
     /**
      * Removes a Times.
      *
-     * @param \JWeiland\Events2\Domain\Model\Time $differentTime The Time to be removed
+     * @param Time $differentTime The Time to be removed
      */
-    public function removeDifferentTime(\JWeiland\Events2\Domain\Model\Time $differentTime)
+    public function removeDifferentTime(Time $differentTime)
     {
         $this->differentTimes->detach($differentTime);
     }
@@ -574,7 +574,7 @@ class Event extends AbstractEntity
     /**
      * Returns the differentTimes.
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage $differentTimes
+     * @return ObjectStorage $differentTimes
      */
     public function getDifferentTimes()
     {
@@ -584,9 +584,9 @@ class Event extends AbstractEntity
     /**
      * Sets the differentTimes.
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $differentTimes
+     * @param ObjectStorage $differentTimes
      */
-    public function setDifferentTimes(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $differentTimes = null)
+    public function setDifferentTimes(ObjectStorage $differentTimes = null)
     {
         $this->differentTimes = $differentTimes;
     }
@@ -635,9 +635,9 @@ class Event extends AbstractEntity
     /**
      * Adds an Exception.
      *
-     * @param \JWeiland\Events2\Domain\Model\Exception $exception
+     * @param Exception $exception
      */
-    public function addException(\JWeiland\Events2\Domain\Model\Exception $exception)
+    public function addException(Exception $exception)
     {
         $this->exceptions->attach($exception);
     }
@@ -645,9 +645,9 @@ class Event extends AbstractEntity
     /**
      * Removes an Exception.
      *
-     * @param \JWeiland\Events2\Domain\Model\Exception $exception
+     * @param Exception $exception
      */
-    public function removeException(\JWeiland\Events2\Domain\Model\Exception $exception)
+    public function removeException(Exception $exception)
     {
         $this->exceptions->detach($exception);
     }
@@ -655,7 +655,7 @@ class Event extends AbstractEntity
     /**
      * Returns the exceptions.
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage $exceptions
+     * @return ObjectStorage $exceptions
      */
     public function getExceptions()
     {
@@ -671,7 +671,7 @@ class Event extends AbstractEntity
     {
         $futureExceptions = array();
         $currentDate = new \DateTime('today');
-        /** @var \JWeiland\Events2\Domain\Model\Exception $exception */
+        /** @var Exception $exception */
         foreach ($this->exceptions as $exception) {
             if ($exception->getExceptionDate() > $currentDate) {
                 $futureExceptions[$exception->getExceptionDate()->format('U')] = $exception;
@@ -689,9 +689,9 @@ class Event extends AbstractEntity
     /**
      * Sets the Exceptions.
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $exceptions
+     * @param ObjectStorage $exceptions
      */
-    public function setExceptions(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $exceptions)
+    public function setExceptions(ObjectStorage $exceptions)
     {
         $this->exceptions = $exceptions;
     }
@@ -779,9 +779,9 @@ class Event extends AbstractEntity
     /**
      * Sets the ticketLink.
      *
-     * @param \JWeiland\Events2\Domain\Model\Link $ticketLink
+     * @param Link $ticketLink
      */
-    public function setTicketLink(\JWeiland\Events2\Domain\Model\Link $ticketLink = null)
+    public function setTicketLink(Link $ticketLink = null)
     {
         $this->ticketLink = $ticketLink;
     }
@@ -789,9 +789,9 @@ class Event extends AbstractEntity
     /**
      * Adds a Category.
      *
-     * @param \TYPO3\CMS\Extbase\Domain\Model\Category $category
+     * @param Category $category
      */
-    public function addCategory(\TYPO3\CMS\Extbase\Domain\Model\Category $category)
+    public function addCategory(Category $category)
     {
         $this->categories->attach($category);
     }
@@ -799,9 +799,9 @@ class Event extends AbstractEntity
     /**
      * Removes a Category.
      *
-     * @param \TYPO3\CMS\Extbase\Domain\Model\Category $categoryToRemove The Category to be removed
+     * @param Category $categoryToRemove The Category to be removed
      */
-    public function removeCategory(\TYPO3\CMS\Extbase\Domain\Model\Category $categoryToRemove)
+    public function removeCategory(Category $categoryToRemove)
     {
         $this->categories->detach($categoryToRemove);
     }
@@ -809,7 +809,7 @@ class Event extends AbstractEntity
     /**
      * Returns the categories.
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage $categories
+     * @return ObjectStorage $categories
      */
     public function getCategories()
     {
@@ -835,9 +835,9 @@ class Event extends AbstractEntity
     /**
      * Sets the categories.
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $categories
+     * @param ObjectStorage $categories
      */
-    public function setCategories(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $categories)
+    public function setCategories(ObjectStorage $categories)
     {
         $this->categories = $categories;
     }
@@ -845,9 +845,9 @@ class Event extends AbstractEntity
     /**
      * Adds a Day.
      *
-     * @param \JWeiland\Events2\Domain\Model\Day $day
+     * @param Day $day
      */
-    public function addDay(\JWeiland\Events2\Domain\Model\Day $day)
+    public function addDay(Day $day)
     {
         $this->days->attach($day);
     }
@@ -855,9 +855,9 @@ class Event extends AbstractEntity
     /**
      * Removes a Day.
      *
-     * @param \JWeiland\Events2\Domain\Model\Day $dayToRemove The Day to be removed
+     * @param Day $dayToRemove The Day to be removed
      */
-    public function removeDay(\JWeiland\Events2\Domain\Model\Day $dayToRemove)
+    public function removeDay(Day $dayToRemove)
     {
         $this->days->detach($dayToRemove);
     }
@@ -865,7 +865,7 @@ class Event extends AbstractEntity
     /**
      * Returns the days.
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage $days
+     * @return ObjectStorage $days
      */
     public function getDays()
     {
@@ -875,9 +875,9 @@ class Event extends AbstractEntity
     /**
      * Sets the days.
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $days
+     * @param ObjectStorage $days
      */
-    public function setDays(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $days)
+    public function setDays(ObjectStorage $days)
     {
         $this->days = $days;
     }
@@ -885,7 +885,7 @@ class Event extends AbstractEntity
     /**
      * Returns the location.
      *
-     * @return \JWeiland\Events2\Domain\Model\Location $location
+     * @return Location $location
      */
     public function getLocation()
     {
@@ -895,9 +895,9 @@ class Event extends AbstractEntity
     /**
      * Sets the location.
      *
-     * @param \JWeiland\Events2\Domain\Model\Location $location
+     * @param Location $location
      */
-    public function setLocation(\JWeiland\Events2\Domain\Model\Location $location = null)
+    public function setLocation(Location $location = null)
     {
         $this->location = $location;
     }
@@ -905,7 +905,7 @@ class Event extends AbstractEntity
     /**
      * Returns the organizer.
      *
-     * @return \JWeiland\Events2\Domain\Model\Organizer $organizer
+     * @return Organizer $organizer
      */
     public function getOrganizer()
     {
@@ -915,9 +915,9 @@ class Event extends AbstractEntity
     /**
      * Sets the organizer.
      *
-     * @param \JWeiland\Events2\Domain\Model\Organizer $organizer
+     * @param Organizer $organizer
      */
-    public function setOrganizer(\JWeiland\Events2\Domain\Model\Organizer $organizer = null)
+    public function setOrganizer(Organizer $organizer = null)
     {
         $this->organizer = $organizer;
     }
@@ -942,9 +942,9 @@ class Event extends AbstractEntity
     /**
      * Sets the images.
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $images
+     * @param ObjectStorage $images
      */
-    public function setImages(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $images)
+    public function setImages(ObjectStorage $images)
     {
         $this->images = $images;
     }
@@ -952,7 +952,7 @@ class Event extends AbstractEntity
     /**
      * Returns the videoLink.
      *
-     * @return \JWeiland\Events2\Domain\Model\Link $videoLink
+     * @return Link $videoLink
      */
     public function getVideoLink()
     {
@@ -962,9 +962,9 @@ class Event extends AbstractEntity
     /**
      * Sets the videoLink.
      *
-     * @param \JWeiland\Events2\Domain\Model\Link $videoLink
+     * @param Link $videoLink
      */
-    public function setVideoLink(\JWeiland\Events2\Domain\Model\Link $videoLink = null)
+    public function setVideoLink(Link $videoLink = null)
     {
         $this->videoLink = $videoLink;
     }
@@ -972,9 +972,9 @@ class Event extends AbstractEntity
     /**
      * Adds a DownloadLink.
      *
-     * @param \JWeiland\Events2\Domain\Model\Link $downloadLink
+     * @param Link $downloadLink
      */
-    public function addDownloadLink(\JWeiland\Events2\Domain\Model\Link $downloadLink)
+    public function addDownloadLink(Link $downloadLink)
     {
         $this->days->attach($downloadLink);
     }
@@ -982,9 +982,9 @@ class Event extends AbstractEntity
     /**
      * Removes a VideoLink.
      *
-     * @param \JWeiland\Events2\Domain\Model\Link $downloadLink The VideoLink to be removed
+     * @param Link $downloadLink The VideoLink to be removed
      */
-    public function removeDownloadLink(\JWeiland\Events2\Domain\Model\Link $downloadLink)
+    public function removeDownloadLink(Link $downloadLink)
     {
         $this->days->detach($downloadLink);
     }
@@ -992,7 +992,7 @@ class Event extends AbstractEntity
     /**
      * Returns the DownloadLinks.
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage $videoLinks
+     * @return ObjectStorage $videoLinks
      */
     public function getDownloadLinks()
     {
@@ -1002,9 +1002,9 @@ class Event extends AbstractEntity
     /**
      * Sets the DownloadLinks.
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $downloadLinks
+     * @param ObjectStorage $downloadLinks
      */
-    public function setDownloadLinks(\TYPO3\CMS\Extbase\Persistence\ObjectStorage $downloadLinks)
+    public function setDownloadLinks(ObjectStorage $downloadLinks)
     {
         $this->downloadLinks = $downloadLinks;
     }

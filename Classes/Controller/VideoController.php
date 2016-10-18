@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Controller;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use JWeiland\Events2\Domain\Repository\EventRepository;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /**
@@ -33,10 +34,11 @@ class VideoController extends ActionController
     /**
      * inject event repository
      *
-     * @param \JWeiland\Events2\Domain\Repository\EventRepository $eventRepository
+     * @param EventRepository $eventRepository
+     *
      * @return void
      */
-    public function injectEventRepository(\JWeiland\Events2\Domain\Repository\EventRepository $eventRepository)
+    public function injectEventRepository(EventRepository $eventRepository)
     {
         $this->eventRepository = $eventRepository;
     }

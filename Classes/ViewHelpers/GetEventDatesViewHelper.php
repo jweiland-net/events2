@@ -17,6 +17,8 @@ namespace JWeiland\Events2\ViewHelpers;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Time;
+use JWeiland\Events2\Utility\DateTimeUtility;
+use JWeiland\Events2\Utility\EventUtility;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
@@ -50,9 +52,9 @@ class GetEventDatesViewHelper extends AbstractViewHelper
     /**
      * inject DateTime Utility.
      *
-     * @param \JWeiland\Events2\Utility\DateTimeUtility $dateTimeUtility
+     * @param DateTimeUtility $dateTimeUtility
      */
-    public function injectDateTimeUtility(\JWeiland\Events2\Utility\DateTimeUtility $dateTimeUtility)
+    public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
     {
         $this->dateTimeUtility = $dateTimeUtility;
     }
@@ -60,9 +62,9 @@ class GetEventDatesViewHelper extends AbstractViewHelper
     /**
      * inject Event Utility.
      *
-     * @param \JWeiland\Events2\Utility\EventUtility $eventUtility
+     * @param EventUtility $eventUtility
      */
-    public function injectEventUtility(\JWeiland\Events2\Utility\EventUtility $eventUtility)
+    public function injectEventUtility(EventUtility $eventUtility)
     {
         $this->eventUtility = $eventUtility;
     }

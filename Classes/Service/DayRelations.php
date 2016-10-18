@@ -14,7 +14,7 @@ namespace JWeiland\Events2\Service;
  *
  * The TYPO3 project - inspiring people to share!
  */
-use TYPO3\CMS\Backend\Utility\BackendUtility;
+use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -42,9 +42,9 @@ class DayRelations
     /**
      * inject dayGenerator.
      *
-     * @param \JWeiland\Events2\Service\DayGenerator $dayGenerator
+     * @param DayGenerator $dayGenerator
      */
-    public function injectDayGenerator(\JWeiland\Events2\Service\DayGenerator $dayGenerator)
+    public function injectDayGenerator(DayGenerator $dayGenerator)
     {
         $this->dayGenerator = $dayGenerator;
     }
@@ -52,9 +52,9 @@ class DayRelations
     /**
      * inject dateTimeUtility.
      *
-     * @param \JWeiland\Events2\Utility\DateTimeUtility $dateTimeUtility
+     * @param DateTimeUtility $dateTimeUtility
      */
-    public function injectDateTimeUtility(\JWeiland\Events2\Utility\DateTimeUtility $dateTimeUtility)
+    public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
     {
         $this->dateTimeUtility = $dateTimeUtility;
     }

@@ -15,7 +15,11 @@ namespace JWeiland\Events2\Domain\Repository;
  */
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Filter;
-use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+use JWeiland\Events2\Domain\Model\Search;
+use JWeiland\Events2\Utility\DateTimeUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
+use TYPO3\CMS\Extbase\Persistence\Generic\Session;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
@@ -59,9 +63,9 @@ class EventRepository extends Repository
     /**
      * inject DateTime Utility.
      *
-     * @param \JWeiland\Events2\Utility\DateTimeUtility $dateTimeUtility
+     * @param DateTimeUtility $dateTimeUtility
      */
-    public function injectDateTimeUtility(\JWeiland\Events2\Utility\DateTimeUtility $dateTimeUtility)
+    public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
     {
         $this->dateTimeUtility = $dateTimeUtility;
     }
@@ -69,9 +73,9 @@ class EventRepository extends Repository
     /**
      * inject DataMapper.
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper $dataMapper
+     * @param DataMapper $dataMapper
      */
-    public function injectDataMapper(\TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper $dataMapper)
+    public function injectDataMapper(DataMapper $dataMapper)
     {
         $this->dataMapper = $dataMapper;
     }
@@ -79,10 +83,10 @@ class EventRepository extends Repository
     /**
      * inject persistenceSession
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\Generic\Session $persistenceSession
+     * @param Session $persistenceSession
      * @return void
      */
-    public function injectPersistenceSession(\TYPO3\CMS\Extbase\Persistence\Generic\Session $persistenceSession)
+    public function injectPersistenceSession(Session $persistenceSession)
     {
         $this->persistenceSession = $persistenceSession;
     }
@@ -90,9 +94,9 @@ class EventRepository extends Repository
     /**
      * inject Configuration Manager.
      *
-     * @param \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager
+     * @param ConfigurationManagerInterface $configurationManager
      */
-    public function injectConfigurationManager(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager)
+    public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager)
     {
         $this->configurationManager = $configurationManager;
     }
@@ -227,11 +231,11 @@ class EventRepository extends Repository
     /**
      * search for events.
      *
-     * @param \JWeiland\Events2\Domain\Model\Search $search
+     * @param Search $search
      *
      * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
-    public function searchEvents(\JWeiland\Events2\Domain\Model\Search $search)
+    public function searchEvents(Search $search)
     {
         /** @var \TYPO3\CMS\Extbase\Persistence\Generic\Query $query */
         $query = $this->createQuery();
@@ -299,15 +303,5 @@ class EventRepository extends Repository
             ->setLimit('');
 
         return $query->statement($statement->getStatement())->execute();
-    }
-
-    /**
-     * create a statement object.
-     *
-     * @return \JWeiland\Events2\Utility\StatementUtility
-     */
-    protected function createStatement()
-    {
-        return $this->objectManager->get('JWeiland\\Events2\\Utility\\StatementUtility');
     }
 }

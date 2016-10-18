@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Validator;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
 
 /**
@@ -22,20 +23,20 @@ use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
 class ImageValidator extends AbstractValidator
 {
     /**
-     * Checks if the given value is in list of allowed image extensions.
+     * Check if $value is valid. If it is not valid, needs to add an error
+     * to result.
      *
-     * @param mixed $value The value that should be validated
-     *
-     * @return bool TRUE if the value is valid, FALSE if an error occured
+     * @param mixed $value
+     * @return void
      */
     public function isValid($value)
     {
-        $this->errors = array();
         if ($value instanceof \DateTime) {
             return;
         }
+
         $this->addError(
-            \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate(
+            LocalizationUtility::translate(
                 'validator.datetime.notvalid',
                 'extbase',
                 array(

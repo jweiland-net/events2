@@ -103,9 +103,9 @@ class Search extends AbstractEntity
     /**
      * Sets the mainCategory.
      *
-     * @param \JWeiland\Events2\Domain\Model\Category $mainCategory
+     * @param Category $mainCategory
      */
-    public function setMainCategory(\JWeiland\Events2\Domain\Model\Category $mainCategory = null)
+    public function setMainCategory(Category $mainCategory = null)
     {
         $this->mainCategory = $mainCategory;
     }
@@ -113,7 +113,7 @@ class Search extends AbstractEntity
     /**
      * Returns the subCategory.
      *
-     * @return \JWeiland\Events2\Domain\Model\Category $subCategory
+     * @return Category $subCategory
      */
     public function getSubCategory()
     {
@@ -123,9 +123,9 @@ class Search extends AbstractEntity
     /**
      * Sets the subCategory.
      *
-     * @param \JWeiland\Events2\Domain\Model\Category $subCategory
+     * @param Category $subCategory
      */
-    public function setSubCategory(\JWeiland\Events2\Domain\Model\Category $subCategory = null)
+    public function setSubCategory(Category $subCategory = null)
     {
         $this->subCategory = $subCategory;
     }
@@ -133,12 +133,12 @@ class Search extends AbstractEntity
     /**
      * Returns the eventBegin.
      *
-     * @return \DateTime $eventBegin
+     * @return \DateTime|null $eventBegin
      */
     public function getEventBegin()
     {
         if (empty($this->eventBegin)) {
-            return;
+            return null;
         }
         try {
             $date = new \DateTime($this->eventBegin);
@@ -163,12 +163,12 @@ class Search extends AbstractEntity
     /**
      * Returns the eventEnd.
      *
-     * @return \DateTime $eventEnd
+     * @return \DateTime|null $eventEnd
      */
     public function getEventEnd()
     {
         if (empty($this->eventEnd)) {
-            return;
+            return null;
         }
         try {
             $date = new \DateTime($this->eventEnd);
@@ -203,9 +203,9 @@ class Search extends AbstractEntity
     /**
      * Sets the location.
      *
-     * @param \JWeiland\Events2\Domain\Model\Location $location
+     * @param Location $location
      */
-    public function setLocation(\JWeiland\Events2\Domain\Model\Location $location = null)
+    public function setLocation(Location $location = null)
     {
         $this->location = $location;
     }

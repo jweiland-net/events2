@@ -15,6 +15,7 @@ namespace JWeiland\Events2\Ajax;
  * The TYPO3 project - inspiring people to share!
  */
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
@@ -39,9 +40,9 @@ abstract class AbstractAjaxRequest implements AjaxInterface
     /**
      * inject object manager.
      *
-     * @param \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager
+     * @param ObjectManager $objectManager
      */
-    public function injectObjectManager(\TYPO3\CMS\Extbase\Object\ObjectManager $objectManager)
+    public function injectObjectManager(ObjectManager $objectManager)
     {
         $this->objectManager = $objectManager;
     }
@@ -49,9 +50,9 @@ abstract class AbstractAjaxRequest implements AjaxInterface
     /**
      * inject configuration manager.
      *
-     * @param \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager
+     * @param ConfigurationManagerInterface $configurationManager
      */
-    public function injectConfigurationManager(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager)
+    public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager)
     {
         $this->configurationManager = $configurationManager;
         $this->settings = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS);
@@ -64,7 +65,5 @@ abstract class AbstractAjaxRequest implements AjaxInterface
      *
      * @return string
      */
-    public function processAjaxRequest(array $arguments)
-    {
-    }
+    abstract public function processAjaxRequest(array $arguments);
 }
