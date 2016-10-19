@@ -15,6 +15,7 @@ namespace JWeiland\Events2\Domain\Repository;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Domain\Model\Filter;
+use JWeiland\Events2\Domain\Model\Search;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
@@ -139,6 +140,66 @@ class DayRepository extends Repository
         $result = $query->matching($query->logicalAnd($constraint))->execute();
         
         return $result;
+    }
+    
+    /**
+     * search for events.
+     *
+     * @param Search $search
+     *
+     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     */
+    public function searchEvents(Search $search)
+    {
+        /** @var \TYPO3\CMS\Extbase\Persistence\Generic\Query $query */
+        $query = $this->createQuery();
+        $constraint = array();
+        
+        // add query for search string
+        if ($search->getSearch()) {
+            $orConstraint = array();
+            $orConstraint[] = $query->like('event.title', '%' . $search->getSearch() . '%');
+            $orConstraint[] = $query->like('event.teaser', '%' . $search->getSearch() . '%');
+            $constraint[] = $query->logicalOr($orConstraint);
+        }
+        
+        // add query for categories
+        if ($search->getMainCategory()) {
+            if ($search->getSubCategory()) {
+                $constraint[] = $query->contains('event.categories', $search->getSubCategory()->getUid());
+            } else {
+                $constraint[] = $query->contains('event.categories', $search->getMainCategory()->getUid());
+            }
+        }
+        
+        // add query for event begin
+        if ($search->getEventBegin()) {
+            $constraint[] = $query->greaterThanOrEqual('day', $search->getEventBegin());
+        } else {
+            $today = $this->dateTimeUtility->convert('today');
+            $constraint[] = $query->greaterThanOrEqual('day', $today);
+        }
+        
+        // add query for event end
+        if ($search->getEventEnd()) {
+            $constraint[] = $query->lessThanOrEqual('day', $search->getEventEnd());
+        }
+        
+        // add query for event location
+        if ($search->getLocation()) {
+            $constraint[] = $query->equals('event.location', $search->getLocation()->getUid());
+        }
+        
+        // add query for free entry
+        if ($search->getFreeEntry()) {
+            $constraint[] = $query->equals('event.freeEntry', $search->getFreeEntry());
+        }
+        
+        if (count($constraint)) {
+            return $query->matching($query->logicalAnd($constraint))->execute();
+        } else {
+            return $query->execute();
+        }
     }
     
     /**

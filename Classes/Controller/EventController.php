@@ -108,9 +108,9 @@ class EventController extends AbstractController
      */
     public function listSearchResultsAction(Search $search)
     {
-        $events = $this->eventRepository->searchEvents($search);
+        $days = $this->dayRepository->searchEvents($search);
 
-        $this->view->assign('events', $events);
+        $this->view->assign('days', $days);
     }
 
     /**
