@@ -362,47 +362,6 @@ class EventTest extends UnitTestCase
     /**
      * @test
      */
-    public function getRecurringEventInitiallyReturnsFalse()
-    {
-        $this->assertSame(
-            false,
-            $this->subject->getRecurringEvent()
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function setRecurringEventSetsRecurringEvent()
-    {
-        $this->subject->setRecurringEvent(true);
-        $this->assertSame(
-            true,
-            $this->subject->getRecurringEvent()
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function setRecurringEventWithStringReturnsTrue()
-    {
-        $this->subject->setRecurringEvent('foo bar');
-        $this->assertTrue($this->subject->getRecurringEvent());
-    }
-
-    /**
-     * @test
-     */
-    public function setRecurringEventWithZeroReturnsFalse()
-    {
-        $this->subject->setRecurringEvent(0);
-        $this->assertFalse($this->subject->getRecurringEvent());
-    }
-
-    /**
-     * @test
-     */
     public function getSameDayInitiallyReturnsFalse()
     {
         $this->assertSame(
@@ -1210,7 +1169,7 @@ class EventTest extends UnitTestCase
      */
     public function setReleaseDateSetsReleaseDate()
     {
-        $instance = new Day();
+        $instance = new \DateTime();
         $this->subject->setReleaseDate($instance);
 
         $this->assertSame(
@@ -1325,27 +1284,5 @@ class EventTest extends UnitTestCase
     {
         $this->subject->setTheaterDetails(true);
         $this->assertSame('1', $this->subject->getTheaterDetails());
-    }
-
-    /**
-     * @test
-     */
-    public function getDayInitiallyReturnsNull()
-    {
-        $this->assertNull($this->subject->getDay());
-    }
-
-    /**
-     * @test
-     */
-    public function setDaySetsDay()
-    {
-        $instance = new Day();
-        $this->subject->setDay($instance);
-
-        $this->assertSame(
-            $instance,
-            $this->subject->getDay()
-        );
     }
 }

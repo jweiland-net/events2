@@ -292,7 +292,7 @@ class Ajax
     {
         // get start and ending of given month
         // j => day without leading 0, n => month without leading 0
-        $monthBegin = $this->dateTimeUtility->standardizeDateTimeObject(\DateTime::createFromFormat('j.n.Y', '1.'.$month.'.'.$year));
+        $monthBegin = $this->dateTimeUtility->standardizeDateTimeObject(\DateTime::createFromFormat('j.n.Y', '1.' . $month . '.' . $year));
         $monthEnd = clone $monthBegin;
         $monthEnd->modify('last day of this month')->modify('tomorrow');
         $constraint = array();

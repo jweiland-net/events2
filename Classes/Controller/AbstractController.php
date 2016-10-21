@@ -301,7 +301,8 @@ class AbstractController extends ActionController
      */
     protected function validateAndAssignFilter($filter)
     {
-        if (!$filter instanceof Filter ||
+        if (
+            !$filter instanceof Filter ||
             $filter === null
         ) {
             $filter = $this->objectManager->get('JWeiland\\Events2\\Domain\\Model\\Filter');

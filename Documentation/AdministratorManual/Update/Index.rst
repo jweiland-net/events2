@@ -28,3 +28,7 @@ Partials/Event/Properties.html.
 In case of our new database structure we can have removed our e2:widget.paginate ViewHelper.
 Please update all templates to use the original f:widget.paginate ViewHelper of fluid and maybe remove
 the maxRecords attribute.
+
+The labels of the show action selectbox in Plugin (switchableControllerActions) has changed. We
+have added the new action showByTimestamp for DayController. So you have to open each plugin
+and set show action again.

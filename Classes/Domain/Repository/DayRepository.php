@@ -133,7 +133,7 @@ class DayRepository extends Repository
             case 'latest':
             default:
                 $today = $this->dateTimeUtility->convert('today');
-            $constraint[] = $query->greaterThanOrEqual('day', $today);
+                $constraint[] = $query->greaterThanOrEqual('day', $today);
         }
         
         /** @var QueryResult $result */

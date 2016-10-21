@@ -32,7 +32,7 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 class ShowEventDatesControllerTest extends UnitTestCase
 {
     /**
-     * @var \JWeiland\Events2\ViewHelpers\GetEventDatesViewHelper
+     * @var GetEventDatesViewHelper
      */
     protected $subject;
     

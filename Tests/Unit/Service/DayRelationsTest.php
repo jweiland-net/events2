@@ -14,28 +14,53 @@ namespace JWeiland\Events2\Tests\Unit\Service;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use JWeiland\Events2\Service\DayGenerator;
 use JWeiland\Events2\Service\DayRelations;
+use JWeiland\Events2\Utility\DateTimeUtility;
+use TYPO3\CMS\Core\Database\DatabaseConnection;
+use TYPO3\CMS\Core\Tests\AccessibleObjectInterface;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
 
 /**
  * Test case for class \JWeiland\Events2\Service\DayRelations.
- *
  *
  * @author Stefan Froemken <projects@jweiland.net>
  */
 class DayRelationsTest extends UnitTestCase
 {
     /**
-     * @var \JWeiland\Events2\Service\DayRelations
+     * @var DayRelations|\PHPUnit_Framework_MockObject_MockObject|AccessibleObjectInterface
      */
     protected $subject;
-
+    
+    /**
+     * @var DayGenerator|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $dayGenerator;
+    
+    /**
+     * @var DatabaseConnection|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $databaseConnection;
+    
+    /**
+     * @var DateTimeUtility|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $dateTimeUtility;
+    
     /**
      * set up.
      */
     public function setUp()
     {
-        $this->subject = new DayRelations();
+        $this->databaseConnection = $this->getMock(DatabaseConnection::class);
+        $this->dayGenerator = $this->getMock(DayGenerator::class);
+        $this->dateTimeUtility = new DateTimeUtility();
+
+        $this->subject = $this->getAccessibleMock(DayRelations::class, array('dummy'));
+        $this->subject->_set('databaseConnection', $this->databaseConnection);
+        $this->subject->injectDayGenerator($this->dayGenerator);
+        $this->subject->injectDateTimeUtility($this->dateTimeUtility);
     }
 
     /**
@@ -44,74 +69,8 @@ class DayRelationsTest extends UnitTestCase
     public function tearDown()
     {
         unset($this->subject);
-    }
-
-    /**
-     * dataProvider with invalid values for array arguments.
-     *
-     * @return array
-     */
-    public function dataProviderWithInvalidValuesForArrayArguments()
-    {
-        $invalidValues = array();
-        $invalidValues['string'] = array('Hello');
-        $invalidValues['integer'] = array(123);
-        $invalidValues['boolean'] = array(true);
-        $invalidValues['object'] = array(new \stdClass());
-        $invalidValues['null'] = array(null);
-
-        return $invalidValues;
-    }
-
-    /**
-     * @test
-     */
-    public function getEventRecordInitiallyReturnsEmptyArray()
-    {
-        $this->assertSame(
-            array(),
-            $this->subject->getEventRecord()
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function setEventRecordSetsEventRecord()
-    {
-        $array = array(
-            0 => 'TestValue',
-        );
-        $this->subject->setEventRecord($array);
-
-        $this->assertSame(
-            $array,
-            $this->subject->getEventRecord()
-        );
-    }
-
-    /**
-     * @test
-     *
-     * @param mixed $invalidArgument
-     * @dataProvider dataProviderWithInvalidValuesForArrayArguments
-     * @expectedException \PHPUnit_Framework_Error
-     */
-    public function setEventRecordWithInvalidArgumentsResultsInException($invalidArgument)
-    {
-        $this->subject->setEventRecord($invalidArgument);
-    }
-
-    /**
-     * @test
-     *
-     * @param mixed $invalidArgument
-     * @dataProvider dataProviderWithInvalidValuesForArrayArguments
-     * @expectedException \PHPUnit_Framework_Error
-     */
-    public function createDayRelationsWithInvalidArgumentsResultsInException($invalidArgument)
-    {
-        $this->subject->setEventRecord($invalidArgument);
+        unset($this->dayGenerator);
+        unset($this->databaseConnection);
     }
 
     /**
@@ -119,11 +78,14 @@ class DayRelationsTest extends UnitTestCase
      */
     public function createDayRelationsWithEmptyEventDoesNotCallAnything()
     {
-        /** @var \JWeiland\Events2\Service\DayRelations|\PHPUnit_Framework_MockObject_MockObject $dayRelations */
-        $dayRelations = $this->getMock('JWeiland\\Events2\\Service\\DayRelations');
-        $dayRelations->expects($this->never())->method('deleteAllRelatedRecords');
-        $dayRelations->expects($this->never())->method('addDay');
-        $dayRelations->createDayRelations(array());
+        $this->subject
+            ->expects($this->never())
+            ->method('deleteAllRelatedRecords');
+        $this->subject
+            ->expects($this->never())
+            ->method('addDay');
+        
+        $this->subject->createDayRelations(array());
     }
 
     /**
@@ -131,11 +93,14 @@ class DayRelationsTest extends UnitTestCase
      */
     public function createDayRelationsWithEmptyEventUidDoesNotCallAnything()
     {
-        /** @var \JWeiland\Events2\Service\DayRelations|\PHPUnit_Framework_MockObject_MockObject $dayRelations */
-        $dayRelations = $this->getMock('JWeiland\\Events2\\Service\\DayRelations');
-        $dayRelations->expects($this->never())->method('deleteAllRelatedRecords');
-        $dayRelations->expects($this->never())->method('addDay');
-        $dayRelations->createDayRelations(array());
+        $this->subject
+            ->expects($this->never())
+            ->method('deleteAllRelatedRecords');
+        $this->subject
+            ->expects($this->never())
+            ->method('addDay');
+        
+        $this->subject->createDayRelations(array());
     }
 
     /**
@@ -145,7 +110,6 @@ class DayRelationsTest extends UnitTestCase
     {
         $event = array(
             'uid' => 123,
-            'title' => 'Test',
             'firstName' => 'Max',
             'last_name' => 'Mustermann',
             'whatALongKeyForAnArray' => 123,
@@ -153,24 +117,22 @@ class DayRelationsTest extends UnitTestCase
         );
         $expectedEvent = array(
             'uid' => 123,
-            'title' => 'Test',
             'first_name' => 'Max',
             'last_name' => 'Mustermann',
             'what_a_long_key_for_an_array' => 123,
             'upper_case_at_the_beginning' => 'Moin',
         );
-
-        /** @var \JWeiland\Events2\Service\DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
-        $dayGenerator = $this->getMock('JWeiland\\Events2\\Service\\DayGenerator', array('initialize'));
-        $dayGenerator->expects($this->once())->method('initialize')->with($this->equalTo($expectedEvent));
-        /** @var \TYPO3\CMS\Core\Database\DatabaseConnection|\PHPUnit_Framework_MockObject_MockObject $databaseConnection */
-        $databaseConnection = $this->getMock('TYPO3\\CMS\\Core\\Database\\DatabaseConnection');
-        /** @var \JWeiland\Events2\Service\DayRelations|\PHPUnit_Framework_MockObject_MockObject|\TYPO3\CMS\Core\Tests\AccessibleObjectInterface $dayRelations */
-        $dayRelations = $this->getAccessibleMock('JWeiland\\Events2\\Service\\DayRelations', array('dummy'));
-        $dayRelations->injectDayGenerator($dayGenerator);
-        $dayRelations->_set('databaseConnection', $databaseConnection);
-
-        $dayRelations->createDayRelations($event);
+    
+        $this->dayGenerator
+            ->expects($this->once())
+            ->method('initialize')
+            ->with($this->equalTo($expectedEvent));
+        $this->dayGenerator
+            ->expects($this->once())
+            ->method('getDayStorage')
+            ->willReturn(array());
+        
+        $this->subject->createDayRelations($event);
     }
 
     /**
@@ -182,18 +144,27 @@ class DayRelationsTest extends UnitTestCase
             'uid' => '123',
         );
 
-        /** @var \JWeiland\Events2\Service\DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
-        $dayGenerator = $this->getMock('JWeiland\\Events2\\Service\\DayGenerator');
-        $dayGenerator->expects($this->once())->method('getDayStorage')->willReturn(array());
-        /** @var \TYPO3\CMS\Core\Database\DatabaseConnection|\PHPUnit_Framework_MockObject_MockObject $databaseConnection */
-        $databaseConnection = $this->getMock('TYPO3\\CMS\\Core\\Database\\DatabaseConnection');
-        /** @var \JWeiland\Events2\Service\DayRelations|\PHPUnit_Framework_MockObject_MockObject|\TYPO3\CMS\Core\Tests\AccessibleObjectInterface $dayRelations */
-        $dayRelations = $this->getAccessibleMock('JWeiland\\Events2\\Service\\DayRelations', array('deleteAllRelatedRecords'));
-        $dayRelations->injectDayGenerator($dayGenerator);
-        $dayRelations->_set('databaseConnection', $databaseConnection);
-        $dayRelations->expects($this->once())->method('deleteAllRelatedRecords')->with($this->identicalTo(123));
+        $this->dayGenerator
+            ->expects($this->once())
+            ->method('getDayStorage')
+            ->willReturn(array());
+    
+        $this->databaseConnection
+            ->expects($this->at(0))
+            ->method('exec_DELETEquery')
+            ->with(
+                $this->equalTo('tx_events2_event_day_mm'),
+                $this->equalTo('uid_local=123')
+            );
+        $this->databaseConnection
+            ->expects($this->at(1))
+            ->method('exec_DELETEquery')
+            ->with(
+                $this->equalTo('tx_events2_domain_model_day'),
+                $this->equalTo('event=123')
+            );
 
-        $dayRelations->createDayRelations($event);
+        $this->subject->createDayRelations($event);
     }
 
     /**
@@ -205,18 +176,27 @@ class DayRelationsTest extends UnitTestCase
             'uid' => 123,
         );
 
-        /** @var \JWeiland\Events2\Service\DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
-        $dayGenerator = $this->getMock('JWeiland\\Events2\\Service\\DayGenerator');
-        $dayGenerator->expects($this->once())->method('getDayStorage')->willReturn(array());
-        /** @var \TYPO3\CMS\Core\Database\DatabaseConnection|\PHPUnit_Framework_MockObject_MockObject $databaseConnection */
-        $databaseConnection = $this->getMock('TYPO3\\CMS\\Core\\Database\\DatabaseConnection');
-        $databaseConnection->expects($this->once())->method('exec_DELETEquery')->with($this->equalTo('tx_events2_event_day_mm'), $this->equalTo('uid_local=123'));
-        /** @var \JWeiland\Events2\Service\DayRelations|\PHPUnit_Framework_MockObject_MockObject|\TYPO3\CMS\Core\Tests\AccessibleObjectInterface $dayRelations */
-        $dayRelations = $this->getAccessibleMock('JWeiland\\Events2\\Service\\DayRelations', array('dummy'));
-        $dayRelations->injectDayGenerator($dayGenerator);
-        $dayRelations->_set('databaseConnection', $databaseConnection);
-
-        $dayRelations->createDayRelations($event);
+        $this->dayGenerator
+            ->expects($this->once())
+            ->method('getDayStorage')
+            ->willReturn(array());
+        
+        $this->databaseConnection
+            ->expects($this->at(0))
+            ->method('exec_DELETEquery')
+            ->with(
+                $this->equalTo('tx_events2_event_day_mm'),
+                $this->equalTo('uid_local=123')
+            );
+        $this->databaseConnection
+            ->expects($this->at(1))
+            ->method('exec_DELETEquery')
+            ->with(
+                $this->equalTo('tx_events2_domain_model_day'),
+                $this->equalTo('event=123')
+            );
+        
+        $this->subject->createDayRelations($event);
     }
 
     /**
@@ -233,19 +213,16 @@ class DayRelationsTest extends UnitTestCase
             'UpperCaseAtTheBeginning' => 'Moin',
         );
 
-        /** @var \JWeiland\Events2\Service\DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
-        $dayGenerator = $this->getMock('JWeiland\\Events2\\Service\\DayGenerator');
-        $dayGenerator->expects($this->once())->method('getDayStorage')->willReturn(array());
-        /** @var \TYPO3\CMS\Core\Database\DatabaseConnection|\PHPUnit_Framework_MockObject_MockObject $databaseConnection */
-        $databaseConnection = $this->getMock('TYPO3\\CMS\\Core\\Database\\DatabaseConnection');
-        /** @var \JWeiland\Events2\Service\DayRelations|\PHPUnit_Framework_MockObject_MockObject|\TYPO3\CMS\Core\Tests\AccessibleObjectInterface $dayRelations */
-        $dayRelations = $this->getAccessibleMock('JWeiland\\Events2\\Service\\DayRelations', array('deleteAllRelatedRecords'));
-        $dayRelations->injectDayGenerator($dayGenerator);
-        $dayRelations->_set('databaseConnection', $databaseConnection);
-        $dayRelations->expects($this->once())->method('deleteAllRelatedRecords')->with($this->equalTo($event['uid']));
-        $dayRelations->expects($this->never())->method('addDay');
+        $this->dayGenerator
+            ->expects($this->once())
+            ->method('getDayStorage')
+            ->willReturn(array());
 
-        $dayRelations->createDayRelations($event);
+        $this->subject
+            ->expects($this->never())
+            ->method('addDay');
+
+        $this->subject->createDayRelations($event);
     }
 
     /**
@@ -272,21 +249,34 @@ class DayRelationsTest extends UnitTestCase
         $days[$today->format('U')] = $today;
         $days[$tomorrow->format('U')] = $tomorrow;
 
-        /** @var \JWeiland\Events2\Service\DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
-        $dayGenerator = $this->getMock('JWeiland\\Events2\\Service\\DayGenerator');
-        $dayGenerator->expects($this->once())->method('getDayStorage')->willReturn($days);
-        /** @var \TYPO3\CMS\Core\Database\DatabaseConnection|\PHPUnit_Framework_MockObject_MockObject $databaseConnection */
-        $databaseConnection = $this->getMock('TYPO3\\CMS\\Core\\Database\\DatabaseConnection');
-        /** @var \JWeiland\Events2\Service\DayRelations|\PHPUnit_Framework_MockObject_MockObject|\TYPO3\CMS\Core\Tests\AccessibleObjectInterface $dayRelations */
-        $dayRelations = $this->getAccessibleMock('JWeiland\\Events2\\Service\\DayRelations', array('deleteAllRelatedRecords', 'addDay'));
-        $dayRelations->injectDayGenerator($dayGenerator);
-        $dayRelations->_set('databaseConnection', $databaseConnection);
-        $dayRelations->expects($this->once())->method('deleteAllRelatedRecords')->with($this->equalTo($event['uid']));
-        $dayRelations->expects($this->at(1))->method('addDay')->with($this->equalTo($yesterday));
-        $dayRelations->expects($this->at(2))->method('addDay')->with($this->equalTo($today));
-        $dayRelations->expects($this->at(3))->method('addDay')->with($this->equalTo($tomorrow));
+        $this->dayGenerator
+            ->expects($this->once())
+            ->method('getDayStorage')
+            ->willReturn($days);
+    
+        $this->databaseConnection
+            ->expects($this->at(2))
+            ->method('exec_INSERTquery')
+            ->with(
+                $this->equalTo('tx_events2_domain_model_day'),
+                $this->contains($yesterday->format('U'))
+            );
+        $this->databaseConnection
+            ->expects($this->at(4))
+            ->method('exec_INSERTquery')
+            ->with(
+                $this->equalTo('tx_events2_domain_model_day'),
+                $this->contains($today->format('U'))
+            );
+        $this->databaseConnection
+            ->expects($this->at(6))
+            ->method('exec_INSERTquery')
+            ->with(
+                $this->equalTo('tx_events2_domain_model_day'),
+                $this->contains($tomorrow->format('U'))
+            );
 
-        $dayRelations->createDayRelations($event);
+        $this->subject->createDayRelations($event);
     }
 
     /**
@@ -313,22 +303,21 @@ class DayRelationsTest extends UnitTestCase
         $days[$today->format('U')] = $today;
         $days[$tomorrow->format('U')] = $tomorrow;
 
-        /** @var \JWeiland\Events2\Service\DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
-        $dayGenerator = $this->getMock('JWeiland\\Events2\\Service\\DayGenerator');
-        $dayGenerator->expects($this->once())->method('getDayStorage')->willReturn($days);
-        /** @var \TYPO3\CMS\Core\Database\DatabaseConnection|\PHPUnit_Framework_MockObject_MockObject $databaseConnection */
-        $databaseConnection = $this->getMock('TYPO3\\CMS\\Core\\Database\\DatabaseConnection');
-        $databaseConnection->expects($this->once())->method('exec_UPDATEquery')->with(
-            $this->identicalTo('tx_events2_domain_model_event'),
-            $this->identicalTo('uid=123'),
-            $this->identicalTo(array('days' => 3))
-        );
-        /** @var \JWeiland\Events2\Service\DayRelations|\PHPUnit_Framework_MockObject_MockObject|\TYPO3\CMS\Core\Tests\AccessibleObjectInterface $dayRelations */
-        $dayRelations = $this->getAccessibleMock('JWeiland\\Events2\\Service\\DayRelations', array('addDay', 'deleteAllRelatedRecords'));
-        $dayRelations->injectDayGenerator($dayGenerator);
-        $dayRelations->_set('databaseConnection', $databaseConnection);
+        $this->dayGenerator
+            ->expects($this->once())
+            ->method('getDayStorage')
+            ->willReturn($days);
 
-        $dayRelations->createDayRelations($event);
+        $this->databaseConnection
+            ->expects($this->once())
+            ->method('exec_UPDATEquery')
+            ->with(
+                $this->identicalTo('tx_events2_domain_model_event'),
+                $this->identicalTo('uid=123'),
+                $this->identicalTo(array('days' => 3))
+            );
+        
+        $this->subject->createDayRelations($event);
     }
 
     /**
@@ -364,217 +353,36 @@ class DayRelationsTest extends UnitTestCase
     /**
      * @test
      */
-    public function addDayConvertsDateTimeToMidnight()
-    {
-        $today = new \DateTime();
-        $midnight = new \DateTime();
-        $midnight->modify('midnight');
-
-        /** @var \JWeiland\Events2\Utility\DateTimeUtility|\PHPUnit_Framework_MockObject_MockObject $dateTimeUtility */
-        $dateTimeUtility = $this->getMock('JWeiland\\Events2\\Utility\\DateTimeUtility', array('dummy'));
-        /** @var \TYPO3\CMS\Core\Database\DatabaseConnection|\PHPUnit_Framework_MockObject_MockObject $databaseConnection */
-        $databaseConnection = $this->getMock('TYPO3\\CMS\\Core\\Database\\DatabaseConnection');
-        /** @var \JWeiland\Events2\Service\DayRelations|\PHPUnit_Framework_MockObject_MockObject|\TYPO3\CMS\Core\Tests\AccessibleObjectInterface $dayRelations */
-        $dayRelations = $this->getAccessibleMock('JWeiland\\Events2\\Service\\DayRelations', array('addDayRecord', 'addRelation'));
-        $dayRelations->injectDateTimeUtility($dateTimeUtility);
-        $dayRelations->_set('databaseConnection', $databaseConnection);
-        $dayRelations->expects($this->once())->method('addDayRecord')->with($this->equalTo($midnight));
-
-        $dayRelations->addDay($today);
-    }
-
-    /**
-     * @test
-     */
-    public function addDayWithBrokenQueryReturns0()
-    {
-        $today = new \DateTime();
-        /** @var \JWeiland\Events2\Utility\DateTimeUtility|\PHPUnit_Framework_MockObject_MockObject $dateTimeUtility */
-        $dateTimeUtility = $this->getMock('JWeiland\\Events2\\Utility\\DateTimeUtility', array('dummy'));
-        /** @var \TYPO3\CMS\Core\Database\DatabaseConnection|\PHPUnit_Framework_MockObject_MockObject $databaseConnection */
-        $databaseConnection = $this->getMock('TYPO3\\CMS\\Core\\Database\\DatabaseConnection');
-        $databaseConnection->expects($this->once())->method('exec_SELECTgetSingleRow')->willReturn(null);
-        /** @var \JWeiland\Events2\Service\DayRelations|\PHPUnit_Framework_MockObject_MockObject|\TYPO3\CMS\Core\Tests\AccessibleObjectInterface $dayRelations */
-        $dayRelations = $this->getAccessibleMock('JWeiland\\Events2\\Service\\DayRelations', array('addRelation'));
-        $dayRelations->injectDateTimeUtility($dateTimeUtility);
-        $dayRelations->_set('databaseConnection', $databaseConnection);
-
-        $this->assertSame(
-            0,
-            $dayRelations->addDay($today)
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function addDayWithDayInDatabaseReturnsDayUid()
-    {
-        $today = new \DateTime();
-        /** @var \JWeiland\Events2\Utility\DateTimeUtility|\PHPUnit_Framework_MockObject_MockObject $dateTimeUtility */
-        $dateTimeUtility = $this->getMock('JWeiland\\Events2\\Utility\\DateTimeUtility', array('dummy'));
-        /** @var \TYPO3\CMS\Core\Database\DatabaseConnection|\PHPUnit_Framework_MockObject_MockObject $databaseConnection */
-        $databaseConnection = $this->getMock('TYPO3\\CMS\\Core\\Database\\DatabaseConnection');
-        $databaseConnection->expects($this->once())->method('exec_SELECTgetSingleRow')->willReturn(array('uid' => '123'));
-        /** @var \JWeiland\Events2\Service\DayRelations|\PHPUnit_Framework_MockObject_MockObject|\TYPO3\CMS\Core\Tests\AccessibleObjectInterface $dayRelations */
-        $dayRelations = $this->getAccessibleMock('JWeiland\\Events2\\Service\\DayRelations', array('addRelation'));
-        $dayRelations->injectDateTimeUtility($dateTimeUtility);
-        $dayRelations->_set('databaseConnection', $databaseConnection);
-
-        $this->assertSame(
-            123,
-            $dayRelations->addDay($today)
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function addDayWithDayNotInDatabaseReturnsNewInsertedDayUid()
-    {
-        $today = new \DateTime();
-        $midnight = new \DateTime();
-        $midnight->modify('midnight');
-
-        $event = array(
-            'pid' => 23,
-            'sys_language_uid' => 12,
-        );
-
-        $time = time();
-        $fieldsWrittenToDatabase = array(
-            'day' => (int)$midnight->format('U'),
-            'tstamp' => $time,
-            'pid' => 23,
-            'crdate' => $time,
-            'cruser_id' => (int)$GLOBALS['BE_USER']->user['uid'],
-        );
-
-        /** @var \JWeiland\Events2\Utility\DateTimeUtility|\PHPUnit_Framework_MockObject_MockObject $dateTimeUtility */
-        $dateTimeUtility = $this->getMock('JWeiland\\Events2\\Utility\\DateTimeUtility', array('dummy'));
-        /** @var \TYPO3\CMS\Core\Database\DatabaseConnection|\PHPUnit_Framework_MockObject_MockObject $databaseConnection */
-        $databaseConnection = $this->getMock('TYPO3\\CMS\\Core\\Database\\DatabaseConnection');
-        $databaseConnection->expects($this->once())->method('exec_SELECTgetSingleRow')->willReturn(false);
-        $databaseConnection->expects($this->once())->method('exec_INSERTquery')->with(
-            $this->identicalTo('tx_events2_domain_model_day'),
-            $this->identicalTo($fieldsWrittenToDatabase)
-        );
-        $databaseConnection->expects($this->once())->method('sql_insert_id')->willReturn('123');
-        /** @var \JWeiland\Events2\Service\DayRelations|\PHPUnit_Framework_MockObject_MockObject|\TYPO3\CMS\Core\Tests\AccessibleObjectInterface $dayRelations */
-        $dayRelations = $this->getAccessibleMock('JWeiland\\Events2\\Service\\DayRelations', array('addRelation'));
-        $dayRelations->injectDateTimeUtility($dateTimeUtility);
-        $dayRelations->_set('databaseConnection', $databaseConnection);
-        $dayRelations->setEventRecord($event);
-
-        $this->assertSame(
-            123,
-            $dayRelations->addDay($today)
-        );
-    }
-
-    /**
-     * @test
-     */
     public function addDayAddsRelationAndReturnsNewDayUid()
     {
         $today = new \DateTime();
-        $midnight = new \DateTime();
-        $midnight->modify('midnight');
-
-        $event = array(
-            'uid' => 12,
-        );
+        $todayMidnight = new \DateTime();
+        $todayMidnight->modify('midnight');
 
         $fieldsWrittenToDatabase = array(
             'uid_local' => 12,
             'uid_foreign' => 123,
-            'sorting' => (int)$midnight->format('U'),
+            'sorting' => (int)$todayMidnight->format('U'),
         );
+        
+        $this->databaseConnection
+            ->expects($this->once())
+            ->method('sql_insert_id')
+            ->willReturn(123);
 
-        /** @var \JWeiland\Events2\Utility\DateTimeUtility|\PHPUnit_Framework_MockObject_MockObject $dateTimeUtility */
-        $dateTimeUtility = $this->getMock('JWeiland\\Events2\\Utility\\DateTimeUtility', array('dummy'));
-        /** @var \TYPO3\CMS\Core\Database\DatabaseConnection|\PHPUnit_Framework_MockObject_MockObject $databaseConnection */
-        $databaseConnection = $this->getMock('TYPO3\\CMS\\Core\\Database\\DatabaseConnection');
-        $databaseConnection->expects($this->once())->method('exec_INSERTquery')->with(
-            $this->identicalTo('tx_events2_event_day_mm'),
-            $this->identicalTo($fieldsWrittenToDatabase)
-        );
-        /** @var \JWeiland\Events2\Service\DayRelations|\PHPUnit_Framework_MockObject_MockObject|\TYPO3\CMS\Core\Tests\AccessibleObjectInterface $dayRelations */
-        $dayRelations = $this->getAccessibleMock('JWeiland\\Events2\\Service\\DayRelations', array('addDayRecord'));
-        $dayRelations->injectDateTimeUtility($dateTimeUtility);
-        $dayRelations->_set('databaseConnection', $databaseConnection);
-        $dayRelations->setEventRecord($event);
-        $dayRelations->expects($this->once())->method('addDayRecord')->willReturn(123);
+        $this->databaseConnection
+            ->expects($this->at(2))
+            ->method('exec_INSERTquery')
+            ->with(
+                $this->identicalTo('tx_events2_event_day_mm'),
+                $this->identicalTo($fieldsWrittenToDatabase)
+            );
+        
+        $this->subject->_set('eventRecord', array('uid' => 12));
 
         $this->assertSame(
             123,
-            $dayRelations->addDay($today)
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function addDayDoesNotAddAmountOfRelatedEventsToDayRecord()
-    {
-        $today = new \DateTime();
-        $midnight = new \DateTime();
-        $midnight->modify('midnight');
-
-        /** @var \JWeiland\Events2\Utility\DateTimeUtility|\PHPUnit_Framework_MockObject_MockObject $dateTimeUtility */
-        $dateTimeUtility = $this->getMock('JWeiland\\Events2\\Utility\\DateTimeUtility', array('dummy'));
-        /** @var \TYPO3\CMS\Core\Database\DatabaseConnection|\PHPUnit_Framework_MockObject_MockObject $databaseConnection */
-        $databaseConnection = $this->getMock('TYPO3\\CMS\\Core\\Database\\DatabaseConnection');
-        $databaseConnection->expects($this->once())->method('exec_SELECTcountRows')->with(
-            $this->identicalTo('*'),
-            $this->identicalTo('tx_events2_event_day_mm'),
-            $this->identicalTo('uid_foreign=123')
-        )->willReturn(0);
-        $databaseConnection->expects($this->never())->method('exec_UPDATEquery');
-        /** @var \JWeiland\Events2\Service\DayRelations|\PHPUnit_Framework_MockObject_MockObject|\TYPO3\CMS\Core\Tests\AccessibleObjectInterface $dayRelations */
-        $dayRelations = $this->getAccessibleMock('JWeiland\\Events2\\Service\\DayRelations', array('addDayRecord', 'addRelation'));
-        $dayRelations->injectDateTimeUtility($dateTimeUtility);
-        $dayRelations->_set('databaseConnection', $databaseConnection);
-        $dayRelations->expects($this->once())->method('addDayRecord')->willReturn(123);
-
-        $this->assertSame(
-            123,
-            $dayRelations->addDay($today)
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function addDayAddsAmountOfRelatedEventsToDayRecord()
-    {
-        $today = new \DateTime();
-        $midnight = new \DateTime();
-        $midnight->modify('midnight');
-
-        /** @var \JWeiland\Events2\Utility\DateTimeUtility|\PHPUnit_Framework_MockObject_MockObject $dateTimeUtility */
-        $dateTimeUtility = $this->getMock('JWeiland\\Events2\\Utility\\DateTimeUtility', array('dummy'));
-        /** @var \TYPO3\CMS\Core\Database\DatabaseConnection|\PHPUnit_Framework_MockObject_MockObject $databaseConnection */
-        $databaseConnection = $this->getMock('TYPO3\\CMS\\Core\\Database\\DatabaseConnection');
-        $databaseConnection->expects($this->once())->method('exec_SELECTcountRows')->with(
-            $this->identicalTo('*'),
-            $this->identicalTo('tx_events2_event_day_mm'),
-            $this->identicalTo('uid_foreign=123')
-        )->willReturn(7);
-        $databaseConnection->expects($this->once())->method('exec_UPDATEquery')->with(
-            $this->identicalTo('tx_events2_domain_model_day'),
-            $this->identicalTo('uid=123'),
-            $this->identicalTo(array('events' => 7))
-        );
-        /** @var \JWeiland\Events2\Service\DayRelations|\PHPUnit_Framework_MockObject_MockObject|\TYPO3\CMS\Core\Tests\AccessibleObjectInterface $dayRelations */
-        $dayRelations = $this->getAccessibleMock('JWeiland\\Events2\\Service\\DayRelations', array('addDayRecord', 'addRelation'));
-        $dayRelations->injectDateTimeUtility($dateTimeUtility);
-        $dayRelations->_set('databaseConnection', $databaseConnection);
-        $dayRelations->expects($this->once())->method('addDayRecord')->willReturn(123);
-
-        $this->assertSame(
-            123,
-            $dayRelations->addDay($today)
+            $this->subject->addDay($today)
         );
     }
 }

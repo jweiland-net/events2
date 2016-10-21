@@ -22,6 +22,8 @@ use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Database\PreparedStatement;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
+use TYPO3\CMS\Extbase\Persistence\Generic\Query;
+use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
 
 /**
@@ -35,7 +37,17 @@ class AjaxTest extends UnitTestCase
      * @var \JWeiland\Events2\Ajax\FindDaysForMonth\Ajax
      */
     protected $subject;
-
+    
+    /**
+     * @var \JWeiland\Events2\Domain\Repository\DayRepository|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $dayRepository;
+    
+    /**
+     * @var Query|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $query;
+    
     /**
      * @var DatabaseConnection
      */
@@ -47,6 +59,8 @@ class AjaxTest extends UnitTestCase
     public function setUp()
     {
         $this->subject = new FindDaysForMonth\Ajax();
+        $this->dayRepository = $this->getMock(DayRepository::class, array(), array(), '', false);
+        $this->query = $this->getMock(Query::class, array(), array(), '', false);
         $this->dbProphecy = $this->prophesize(DatabaseConnection::class);
         $GLOBALS['TYPO3_DB'] = $this->dbProphecy->reveal();
         $GLOBALS['TYPO3_LOADED_EXT'] = array(
@@ -60,6 +74,9 @@ class AjaxTest extends UnitTestCase
     public function tearDown()
     {
         unset($this->subject);
+        unset($this->dayRepository);
+        unset($this->query);
+        unset($this->dbProphecy);
     }
 
     /**
@@ -211,19 +228,49 @@ class AjaxTest extends UnitTestCase
      */
     public function findAllDaysInMonthCallsStatementWithoutCategories()
     {
-        $rows = array(
-            array('Test123'),
-            array('Test321'),
-        );
+        $firstDayOfMonth = new \DateTime('01.08.2014 00:00:00');
+        $lastDayOfMonth = new \DateTime('01.09.2014 00:00:00');
+        $this->query
+            ->expects($this->once())
+            ->method('getQuerySettings')
+            ->willReturn(new Typo3QuerySettings());
+        $this->query
+            ->expects($this->never())
+            ->method('contains');
+        $this->query
+            ->expects($this->never())
+            ->method('logicalOr');
+        $this->query
+            ->expects($this->once())
+            ->method('greaterThanOrEqual')
+            ->with(
+                $this->equalTo('day'),
+                $this->equalTo($firstDayOfMonth)
+            );
+        $this->query
+            ->expects($this->once())
+            ->method('lessThan')
+            ->with(
+                $this->equalTo('day'),
+                $this->equalTo($lastDayOfMonth)
+            );
+        $this->query
+            ->expects($this->once())
+            ->method('logicalAnd');
+        $this->query
+            ->expects($this->once())
+            ->method('matching')
+            ->willReturn($this->query);
 
-        /** @var DayRepository|\PHPUnit_Framework_MockObject_MockObject $dayRepository */
-        $dayRepository = $this->getMock('JWeiland\\Events2\\Domain\\Repository\\DayRepository');
-        $this->subject->injectDayRepository($dayRepository);
+        $this->dayRepository
+            ->expects($this->once())
+            ->method('createQuery')
+            ->willReturn($this->query);
         
-        $this->assertSame(
-            $rows,
-            $this->subject->findAllDaysInMonth(8, 2014)
-        );
+        $this->subject->injectDateTimeUtility(new DateTimeUtility());
+        $this->subject->injectDayRepository($this->dayRepository);
+        
+        $this->subject->findAllDaysInMonth(8, 2014);
     }
 
     /**
@@ -231,54 +278,51 @@ class AjaxTest extends UnitTestCase
      */
     public function findAllDaysInMonthCallsStatementWithCategories()
     {
-        $GLOBALS['TCA']['tx_events2_domain_model_event']['ctrl']['enablecolumns']['disabled'] = 'hidden';
-        $GLOBALS['TCA']['tx_events2_domain_model_event']['ctrl']['delete'] = 'deleted';
-
-        $rows = array(
-            array('Test123'),
-            array('Test321'),
-        );
-        /* @var \TYPO3\CMS\Core\Database\PreparedStatement|\PHPUnit_Framework_MockObject_MockObject $databaseConnection */
-        $preparedStatement = $this->getMock('TYPO3\\CMS\\Core\\Database\\PreparedStatement', array('execute', 'fetchAll', 'free'), array(), '', false);
-        $preparedStatement->expects($this->once())->method('execute')->with($this->logicalAnd(
-            $this->arrayHasKey(':monthBegin'),
-            $this->arrayHasKey(':monthEnd'),
-            $this->arrayHasKey(':storagePids'),
-            $this->arrayHasKey(':tablename')
+        $firstDayOfMonth = new \DateTime('01.08.2014 00:00:00');
+        $lastDayOfMonth = new \DateTime('01.09.2014 00:00:00');
+        $this->query
+            ->expects($this->once())
+            ->method('getQuerySettings')
+            ->willReturn(new Typo3QuerySettings());
+        $this->query
+            ->expects($this->exactly(2))
+            ->method('contains');
+        $this->query
+            ->expects($this->once())
+            ->method('logicalOr');
+        $this->query
+            ->expects($this->once())
+            ->method('greaterThanOrEqual')
+            ->with(
+                $this->equalTo('day'),
+                $this->equalTo($firstDayOfMonth)
+            );
+        $this->query
+            ->expects($this->once())
+            ->method('lessThan')
+            ->with(
+                $this->equalTo('day'),
+                $this->equalTo($lastDayOfMonth)
+            );
+        $this->query
+            ->expects($this->once())
+            ->method('logicalAnd');
+        $this->query
+            ->expects($this->once())
+            ->method('matching')
+            ->willReturn($this->query);
+    
+        $this->dayRepository
+            ->expects($this->once())
+            ->method('createQuery')
+            ->willReturn($this->query);
+    
+        $this->subject->injectDateTimeUtility(new DateTimeUtility());
+        $this->subject->injectDayRepository($this->dayRepository);
+        $this->subject->setArguments(array(
+            'categories' => '123,321'
         ));
-        $preparedStatement->expects($this->once())->method('fetchAll')->with($this->equalTo(PreparedStatement::FETCH_ASSOC))->will($this->returnValue($rows));
-        $preparedStatement->expects($this->once())->method('free');
-        /** @var \TYPO3\CMS\Core\Database\DatabaseConnection|\PHPUnit_Framework_MockObject_MockObject $databaseConnection */
-        $databaseConnection = $this->getMock('TYPO3\\CMS\\Core\\Database\\DatabaseConnection');
-        $databaseConnection->expects($this->once())->method('prepare_SELECTquery')->with(
-            $this->logicalAnd(
-                $this->stringContains('day.uid'),
-                $this->stringContains('day.day'),
-                $this->stringContains('eventUid'),
-                $this->stringContains('eventTitle')
-            ),
-            $this->logicalAnd(
-                $this->stringContains('LEFT JOIN tx_events2_event_day_mm'),
-                $this->stringContains('LEFT JOIN tx_events2_domain_model_event'),
-                $this->stringContains('LEFT JOIN sys_category_record_mm')
-            ),
-            $this->logicalAnd(
-                $this->stringContains('sys_category_record_mm.uid_local IN (123,456)'),
-                $this->stringContains('tx_events2_domain_model_event.hidden=0'),
-                $this->stringContains('tx_events2_domain_model_event.deleted=0')
-            )
-        )->will($this->returnValue($preparedStatement));
-        $GLOBALS['TYPO3_DB'] = $databaseConnection;
-
-        /** @var \JWeiland\Events2\Ajax\FindDaysForMonth\Ajax|\PHPUnit_Framework_MockObject_MockObject $subject */
-        $subject = $this->getMock('JWeiland\\Events2\\Ajax\\FindDaysForMonth\\Ajax', array('getArgument'));
-        $subject->expects($this->at(0))->method('getArgument')->with($this->equalTo('categories'))->will($this->returnValue('123,456'));
-        $subject->expects($this->at(1))->method('getArgument')->with($this->equalTo('storagePids'))->will($this->returnValue('321,654'));
-        $subject->injectDateTimeUtility(new DateTimeUtility());
-
-        $this->assertSame(
-            $rows,
-            $subject->findAllDaysInMonth(8, 2014)
-        );
+    
+        $this->subject->findAllDaysInMonth(8, 2014);
     }
 }
