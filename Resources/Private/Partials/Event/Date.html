@@ -3,7 +3,7 @@
 <f:if condition="{0: day.event.eventType}=={0: 'duration'}">
 	<f:then>
 		<f:render section="date" arguments="{day: day.event.eventBegin}" />
-		- {day.event.eventEnd -> f:format.date(format: '%a %d. %b %Y')}
+		- {day.event.eventEnd->f:format.date(format: '%a %d. %b %Y')}
 	</f:then>
 	<f:else>
 		<f:render section="date" arguments="{day: day.day}" />
@@ -12,7 +12,7 @@
 <f:render section="time" arguments="{day: day}" />
 
 <f:section name="date">
-	{day -> f:format.date(format: '%a %d. %b %Y')}
+	{day->f:format.date(format: '%a %d. %b %Y')}
 </f:section>
 
 <f:section name="time">
