@@ -77,6 +77,13 @@ class GetEventDatesViewHelper extends AbstractViewHelper
         $this->exceptions = new ObjectStorage();
     }
     
+    /**
+     * Get all related dates for specified event
+     *
+     * @param Event $event
+     *
+     * @return array
+     */
     public function render(Event $event)
     {
         $this->event = $event;
