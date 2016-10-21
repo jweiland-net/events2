@@ -8,7 +8,7 @@ if (!defined('TYPO3_MODE')) {
     'Events',
     array(
         'Event' => 'list, listLatest, listToday, listRange, listSearchResults, listMyEvents, new, create, edit, update, delete, activate',
-        'Day' => 'showByTimestamp',
+        'Day' => 'show, showByTimestamp',
         'Location' => 'show',
         'Video' => 'show',
         'Ajax' => 'callAjaxObject',

@@ -21,6 +21,22 @@ namespace JWeiland\Events2\Controller;
 class DayController extends AbstractController
 {
     /**
+     * action show.
+     *
+     * Hint: I call showAction with int instead of DomainModel
+     * to prevent that recursive validators will be called
+     *
+     * @param int $day
+     *
+     * @return void
+     */
+    public function showAction($day)
+    {
+        $dayObject = $this->dayRepository->findByIdentifier($day);
+        $this->view->assign('day', $dayObject);
+    }
+
+    /**
      * action showByTimestamp.
      *
      * @param int $timestamp
