@@ -23,7 +23,7 @@
 				<f:case value="1"><f:alias map="{time: '{e2:getMergedEventTimes(day: day, directReturn: 1)}'}">|&nbsp;<f:translate key="tx_events2_domain_model_time.time_begin" />: {time.timeBegin}</f:alias></f:case>
 				<f:case default="1">
 					|&nbsp;<f:translate key="tx_events2_domain_model_time.time_begin" />:&nbsp;
-					<f:link.action action="show" controller="Event" pageUid="{settings.pidOfDetailPage}" arguments="{event: day.event, day: day}" title="{f:translate(key: 'singleView')}">{f:translate(key: 'showDetailview')}</f:link.action>
+					<f:link.action action="show" controller="Day" pageUid="{settings.pidOfDetailPage}" arguments="{day: day}" title="{f:translate(key: 'singleView')}">{f:translate(key: 'showDetailview')}</f:link.action>
 				</f:case>
 			</f:switch>
 		</f:if>
