@@ -22,19 +22,19 @@
 									</numIndex>
 									<numIndex index="1">
 										<numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:listLatest</numIndex>
-										<numIndex index="1"><![CDATA[Day->listLatest;Day->showByTimestamp;Location->show;Video->show]]></numIndex>
+										<numIndex index="1"><![CDATA[Day->listLatest;Day->show;Day->showByTimestamp;Location->show;Video->show]]></numIndex>
 									</numIndex>
 									<numIndex index="2">
 										<numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:listToday</numIndex>
-										<numIndex index="1"><![CDATA[Day->listToday;Day->showByTimestamp;Location->show;Video->show]]></numIndex>
+										<numIndex index="1"><![CDATA[Day->listToday;Day->show;Day->showByTimestamp;Location->show;Video->show]]></numIndex>
 									</numIndex>
 									<numIndex index="3">
 										<numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:listThisWeek</numIndex>
-										<numIndex index="1"><![CDATA[Day->listThisWeek;Day->showByTimestamp;Location->show;Video->show]]></numIndex>
+										<numIndex index="1"><![CDATA[Day->listThisWeek;Day->show;Day->showByTimestamp;Location->show;Video->show]]></numIndex>
 									</numIndex>
 									<numIndex index="4">
 										<numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:listRange</numIndex>
-										<numIndex index="1"><![CDATA[Day->listRange;Day->showByTimestamp;Location->show;Video->show]]></numIndex>
+										<numIndex index="1"><![CDATA[Day->listRange;Day->show;Day->showByTimestamp;Location->show;Video->show]]></numIndex>
 									</numIndex>
 								</items>
 							</config>

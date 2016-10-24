@@ -33,6 +33,19 @@ class ext_update
      * @var FlexFormTools
      */
     protected $flexFormTools;
+    
+    /**
+     * Mapping for switchable controller actions
+     * in FlexForms
+     *
+     * @var array
+     */
+    protected $scaMapping = array(
+        'Event->listLatest;Event->show;Day->show;Location->show;Video->show' => 'Day->listLatest;Day->show;Day->showByTimestamp;Location->show;Video->show',
+        'Event->listToday;Event->show;Day->show;Location->show;Video->show' => 'Day->listToday;Day->show;Day->showByTimestamp;Location->show;Video->show',
+        'Event->listRange;Event->show;Day->show;Location->show;Video->show' => 'Day->listThisWeek;Day->show;Day->showByTimestamp;Location->show;Video->show',
+        'Event->listThisWeek;Event->show;Day->show;Location->show;Video->show' => 'Day->listRange;Day->show;Day->showByTimestamp;Location->show;Video->show'
+    );
 
     /**
      * Main update function called by the extension manager.
@@ -53,12 +66,32 @@ class ext_update
      */
     public function access()
     {
+        // check for old column "recurring"
         $amountOfRecords = $this->getDatabaseConnection()->exec_SELECTcountRows(
             '*',
             'tx_events2_domain_model_event',
             'event_type=' . $this->getDatabaseConnection()->fullQuoteStr('', 'tx_events2_domain_model_event')
         );
-        return (bool)$amountOfRecords;
+        if ($amountOfRecords > 0) {
+            return true;
+        }
+        
+        // Check for changed SCA in FlexForms
+        foreach ($this->scaMapping as $oldValue => $newValue) {
+            $where = sprintf(
+                'pi_flexform LIKE %s',
+                $this->getDatabaseConnection()->fullQuoteStr('%' . htmlspecialchars($oldValue) . '%', 'tt_content')
+            );
+            $amountOfRecords = $this->getDatabaseConnection()->exec_SELECTcountRows(
+                '*',
+                'tt_content',
+                $where
+            );
+            if ($amountOfRecords > 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -68,15 +101,16 @@ class ext_update
      */
     protected function processUpdates()
     {
-        $this->migrateToVersion200();
+        $this->migrateColRecurringToEventType();
+        $this->migrateToNewSwitchableControllerActionsInFlexForms();
     }
     
     /**
-     * migrate to version 2.0.0
+     * migrate column recurring to one of event_type
      *
      * @return void
      */
-    protected function migrateToVersion200()
+    protected function migrateColRecurringToEventType()
     {
         // checkbox recurring has been removed
         $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
@@ -106,11 +140,43 @@ class ext_update
         }
         $this->messageArray[] = array(
             FlashMessage::OK,
-            'Update successful',
+            'Migrating "recurring" col was successful',
             sprintf(
                 'We have updated %d event records',
                 count($rows)
             )
+        );
+    }
+    
+    /**
+     * Migrate old FlexForm values for Switchable Controller Actions to the new one
+     *
+     * @return void
+     */
+    protected function migrateToNewSwitchableControllerActionsInFlexForms()
+    {
+        foreach ($this->scaMapping as $oldValue => $newValue) {
+            $where = sprintf(
+                'pi_flexform LIKE %s',
+                $this->getDatabaseConnection()->fullQuoteStr('%' . htmlspecialchars($oldValue) . '%', 'tt_content')
+            );
+            $replace = sprintf(
+                'REPLACE(pi_flexform, %s, %s)',
+                $this->getDatabaseConnection()->fullQuoteStr(htmlspecialchars($oldValue), 'tt_content'),
+                $this->getDatabaseConnection()->fullQuoteStr(htmlspecialchars($newValue), 'tt_content')
+            );
+            $this->getDatabaseConnection()->exec_UPDATEquery(
+                'tt_content',
+                $where,
+                array(
+                    'pi_flexform' => $replace
+                )
+            );
+        }
+        $this->messageArray[] = array(
+            FlashMessage::OK,
+            'Migrating SCA successful',
+            'We have updated all related tt_content records'
         );
     }
     

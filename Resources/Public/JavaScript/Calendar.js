@@ -29,7 +29,7 @@ Events2Calendar.prototype.activateDatePicker = function($element, days) {
 	var getProperty = this.getProperty;
 
 	if (environment.settings.includeDeTranslationForCalendar) {
-		$element.datepicker(jQuery.datepicker.regional["de"]);
+		jQuery.datepicker.setDefaults(jQuery.datepicker.regional["de"]);
 	}
 
 	$element.datepicker({
