@@ -29,12 +29,12 @@
 										<numIndex index="1"><![CDATA[Event->listToday;Day->showByTimestamp;Location->show;Video->show]]></numIndex>
 									</numIndex>
 									<numIndex index="3">
-										<numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:listRange</numIndex>
-										<numIndex index="1"><![CDATA[Event->listRange;Day->showByTimestamp;Location->show;Video->show]]></numIndex>
-									</numIndex>
-									<numIndex index="4">
 										<numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:listThisWeek</numIndex>
 										<numIndex index="1"><![CDATA[Event->listThisWeek;Day->showByTimestamp;Location->show;Video->show]]></numIndex>
+									</numIndex>
+									<numIndex index="4">
+										<numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:listRange</numIndex>
+										<numIndex index="1"><![CDATA[Event->listRange;Day->showByTimestamp;Location->show;Video->show]]></numIndex>
 									</numIndex>
 								</items>
 							</config>

@@ -32,6 +32,7 @@ use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Session;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
@@ -312,10 +313,13 @@ class AbstractController extends ActionController
     }
 
     /**
-     * files will be uploaded in typeConverter automatically
-     * But, if an error occurs we have to remove them.
+     * Files will be uploaded in typeConverter
+     * If newAction was called with a valid request something went wrong
+     * In that case all uploaded files have to be deleted
      *
      * @param string $argument
+     *
+     * @return void
      */
     protected function deleteUploadedFilesOnValidationErrors($argument)
     {
@@ -441,5 +445,15 @@ class AbstractController extends ActionController
         }
 
         return false;
+    }
+    
+    /**
+     * Get TSFE
+     *
+     * @return TypoScriptFrontendController
+     */
+    protected function getTypoScriptFrontendController()
+    {
+        return $GLOBALS['TSFE'];
     }
 }

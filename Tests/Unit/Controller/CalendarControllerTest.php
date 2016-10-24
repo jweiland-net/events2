@@ -14,9 +14,18 @@ namespace JWeiland\Events2\Tests\Unit\Controller;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use JWeiland\Events2\Controller\CalendarController;
 use JWeiland\Events2\Domain\Model\Day;
+use JWeiland\Events2\Domain\Repository\DayRepository;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
+use TYPO3\CMS\Core\Page\PageRenderer;
+use TYPO3\CMS\Core\Tests\AccessibleObjectInterface;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Fluid\View\TemplateView;
+use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Test case.
@@ -26,28 +35,95 @@ use TYPO3\CMS\Core\Tests\UnitTestCase;
 class CalendarControllerTest extends UnitTestCase
 {
     /**
-     * @var DatabaseConnection
+     * @var CalendarController|\PHPUnit_Framework_MockObject_MockObject|AccessibleObjectInterface
+     */
+    protected $subject;
+    
+    /**
+     * @var PageRenderer|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $pageRenderer;
+    
+    /**
+     * @var DayRepository|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $dayRepository;
+    
+    /**
+     * @var ConfigurationManager|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $configurationManager;
+    
+    /**
+     * @var TypoScriptFrontendController|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $typoScriptFrontendController;
+    
+    /**
+     * @var FrontendUserAuthentication|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $frontendUserAuthentication;
+    
+    /**
+     * @var TemplateView|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $view;
+    
+    /**
+     * @var DatabaseConnection|\Prophecy\Prophecy\ObjectProphecy
      */
     protected $dbProphecy;
-
+    
+    /**
+     * @var array
+     */
+    protected $settings = array(
+        'pidOfListPage' => 123
+    );
+    
     public function setUp()
     {
         $this->dbProphecy = $this->prophesize(DatabaseConnection::class);
         $GLOBALS['TYPO3_DB'] = $this->dbProphecy->reveal();
+    
+        $this->pageRenderer = $this->getMock(PageRenderer::class);
+        $this->dayRepository = $this->getMock(DayRepository::class, array(), array(), '', false);
+        $this->configurationManager = $this->getMock(ConfigurationManager::class);
+        $this->typoScriptFrontendController = $this->getMock(TypoScriptFrontendController::class, array(), array(), '', false);
+        $this->frontendUserAuthentication = $this->getMock(FrontendUserAuthentication::class, array(), array(), '', false);
+        $this->view = $this->getMock(TemplateView::class);
+        
+        $this->typoScriptFrontendController->fe_user = $this->frontendUserAuthentication;
+    
+        $this->subject = $this->getAccessibleMock(
+            CalendarController::class,
+            array(
+                'getTypo3SiteUrl',
+                'getTypoScriptFrontendController',
+                'getDayFromUrl'
+            )
+        );
+        $this->subject->injectPageRenderer($this->pageRenderer);
+        $this->subject->injectDayRepository($this->dayRepository);
+        $this->subject->injectConfigurationManager($this->configurationManager);
+        $this->subject->_set('view', $this->view);
+        $this->subject->_set('settings', $this->settings);
     }
 
     public function tearDown()
     {
+        unset($this->dbProphecy);
+        unset($this->pageRenderer);
+        unset($this->dayRepository);
+        unset($this->configurationManager);
+        unset($this->view);
     }
 
     /**
      * @test
      */
-    public function showActionWithNoDayInformationWillCreateCalendarWithCurrentDate()
+    public function showActionWithoutDayInformationWillCreateCalendarWithCurrentDate()
     {
-        $settings = array(
-            'pidOfListPage' => 123
-        );
         $persistenceSettings = array(
             'persistence' => array(
                 'storagePid' => 321
@@ -55,10 +131,10 @@ class CalendarControllerTest extends UnitTestCase
         );
         $expectedParameter = array(
             'environment' => array(
-                'settings' => $settings,
+                'settings' => $this->settings,
                 'storagePids' => 321,
                 'pidOfListPage' => 123,
-                'siteUrl' => '',
+                'siteUrl' => 'http://www.example.com',
                 'siteId' => null,
                 'day' => date('d'),
                 'month' => date('m'),
@@ -66,26 +142,37 @@ class CalendarControllerTest extends UnitTestCase
             )
         );
         
-        /** @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface|\PHPUnit_Framework_MockObject_MockObject $configurationManager */
-        $configurationManager = $this->getMock('TYPO3\\CMS\\Extbase\\Configuration\\ConfigurationManager');
-        $configurationManager->expects($this->at(0))->method('getConfiguration')->willReturn($settings);
-        $configurationManager->expects($this->at(1))->method('getConfiguration')->willReturn($persistenceSettings);
+        $this->configurationManager
+            ->expects($this->once())
+            ->method('getConfiguration')
+            ->with(
+                $this->equalTo(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK))
+            ->willReturn($persistenceSettings);
+        
+        $this->frontendUserAuthentication
+            ->expects($this->once())
+            ->method('getKey')
+            ->with(
+                $this->equalTo('ses'),
+                $this->equalTo('events2MonthAndYearForCalendar')
+            )
+            ->willReturn(null);
 
-        /** @var \TYPO3\CMS\Fluid\View\TemplateView|\PHPUnit_Framework_MockObject_MockObject $view */
-        $view = $this->getMock('TYPO3\\CMS\\Fluid\\View\\TemplateView');
-        $view
+        $this->view
             ->expects($this->once())
             ->method('assignMultiple')
             ->with($expectedParameter);
+    
+        $this->subject
+            ->expects($this->once())
+            ->method('getTypo3SiteUrl')
+            ->willReturn('http://www.example.com');
+        $this->subject
+            ->expects($this->once())
+            ->method('getTypoScriptFrontendController')
+            ->willReturn($this->typoScriptFrontendController);
 
-        /** @var \JWeiland\Events2\Controller\CalendarController|\PHPUnit_Framework_MockObject_MockObject|\TYPO3\CMS\Core\Tests\AccessibleObjectInterface $subject */
-        $subject = $this->getAccessibleMock('JWeiland\\Events2\\Controller\\CalendarController', array('getMonthAndYearFromUserSession', 'getDayFromUrl', 'getTypo3SiteUrl'));
-        $subject->expects($this->once())->method('getMonthAndYearFromUserSession')->willReturn(array());
-        $subject->expects($this->once())->method('getDayFromUrl')->willReturn(null);
-        $subject->expects($this->once())->method('getTypo3SiteUrl')->willReturn('');
-        $subject->_set('view', $view);
-        $subject->injectConfigurationManager($configurationManager);
-        $subject->showAction();
+        $this->subject->showAction();
     }
     
     /**
@@ -93,9 +180,9 @@ class CalendarControllerTest extends UnitTestCase
      */
     public function showActionWithDayFromUrlWillCreateCalendar()
     {
-        $settings = array(
-            'pidOfListPage' => 123
-        );
+        $day = new Day();
+        $day->setDay(\DateTime::createFromFormat('d.m.Y H:i:s', '06.10.2016 00:00:00'));
+
         $persistenceSettings = array(
             'persistence' => array(
                 'storagePid' => 321
@@ -103,50 +190,50 @@ class CalendarControllerTest extends UnitTestCase
         );
         $expectedParameter = array(
             'environment' => array(
-                'settings' => $settings,
+                'settings' => $this->settings,
                 'storagePids' => 321,
                 'pidOfListPage' => 123,
-                'siteUrl' => '',
+                'siteUrl' => 'http://www.example.com',
                 'siteId' => null,
-                'day' => '26',
-                'month' => '05',
-                'year' => '2014'
+                'day' => '06',
+                'month' => '10',
+                'year' => '2016'
             )
         );
-        
-        /** @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface|\PHPUnit_Framework_MockObject_MockObject $configurationManager */
-        $configurationManager = $this->getMock('TYPO3\\CMS\\Extbase\\Configuration\\ConfigurationManager');
-        $configurationManager->expects($this->at(0))->method('getConfiguration')->willReturn($settings);
-        $configurationManager->expects($this->at(1))->method('getConfiguration')->willReturn($persistenceSettings);
-        
-        /** @var \TYPO3\CMS\Fluid\View\TemplateView|\PHPUnit_Framework_MockObject_MockObject $view */
-        $view = $this->getMock('TYPO3\\CMS\\Fluid\\View\\TemplateView');
-        $view
+    
+        $this->configurationManager
+            ->expects($this->once())
+            ->method('getConfiguration')
+            ->with(
+                $this->equalTo(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK))
+            ->willReturn($persistenceSettings);
+    
+        $this->view
             ->expects($this->once())
             ->method('assignMultiple')
             ->with($expectedParameter);
-        
-        $day = new Day();
-        $day->setDay(\DateTime::createFromFormat('d.m.Y', '26.05.2014'));
-        
-        /** @var \JWeiland\Events2\Controller\CalendarController|\PHPUnit_Framework_MockObject_MockObject|\TYPO3\CMS\Core\Tests\AccessibleObjectInterface $subject */
-        $subject = $this->getAccessibleMock('JWeiland\\Events2\\Controller\\CalendarController', array('getMonthAndYearFromUserSession', 'getDayFromUrl', 'getTypo3SiteUrl'));
-        $subject->expects($this->once())->method('getMonthAndYearFromUserSession')->willReturn(array());
-        $subject->expects($this->once())->method('getDayFromUrl')->willReturn($day);
-        $subject->expects($this->once())->method('getTypo3SiteUrl')->willReturn('');
-        $subject->_set('view', $view);
-        $subject->injectConfigurationManager($configurationManager);
-        $subject->showAction();
+    
+        $this->subject
+            ->expects($this->once())
+            ->method('getTypo3SiteUrl')
+            ->willReturn('http://www.example.com');
+        $this->subject
+            ->expects($this->once())
+            ->method('getTypoScriptFrontendController')
+            ->willReturn($this->typoScriptFrontendController);
+        $this->subject
+            ->expects($this->once())
+            ->method('getDayFromUrl')
+            ->willReturn($day);
+    
+        $this->subject->showAction();
     }
     
     /**
      * @test
      */
-    public function showActionDayFromSessionWillCreateCalendar()
+    public function showActionWithDayFromSessionWillCreateCalendar()
     {
-        $settings = array(
-            'pidOfListPage' => 123
-        );
         $persistenceSettings = array(
             'persistence' => array(
                 'storagePid' => 321
@@ -154,39 +241,50 @@ class CalendarControllerTest extends UnitTestCase
         );
         $expectedParameter = array(
             'environment' => array(
-                'settings' => $settings,
+                'settings' => $this->settings,
                 'storagePids' => 321,
                 'pidOfListPage' => 123,
-                'siteUrl' => '',
+                'siteUrl' => 'http://www.example.com',
                 'siteId' => null,
                 'day' => '01',
-                'month' => '04',
-                'year' => '2015'
+                'month' => '03',
+                'year' => '2016'
             )
         );
-        
-        /** @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface|\PHPUnit_Framework_MockObject_MockObject $configurationManager */
-        $configurationManager = $this->getMock('TYPO3\\CMS\\Extbase\\Configuration\\ConfigurationManager');
-        $configurationManager->expects($this->at(0))->method('getConfiguration')->willReturn($settings);
-        $configurationManager->expects($this->at(1))->method('getConfiguration')->willReturn($persistenceSettings);
-        
-        /** @var \TYPO3\CMS\Fluid\View\TemplateView|\PHPUnit_Framework_MockObject_MockObject $view */
-        $view = $this->getMock('TYPO3\\CMS\\Fluid\\View\\TemplateView');
-        $view
+    
+        $this->configurationManager
+            ->expects($this->once())
+            ->method('getConfiguration')
+            ->with(
+                $this->equalTo(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK))
+            ->willReturn($persistenceSettings);
+    
+        $this->frontendUserAuthentication
+            ->expects($this->once())
+            ->method('getKey')
+            ->with(
+                $this->equalTo('ses'),
+                $this->equalTo('events2MonthAndYearForCalendar')
+            )
+            ->willReturn(array(
+                'month' => '03',
+                'year' => '2016'
+            ));
+    
+        $this->view
             ->expects($this->once())
             ->method('assignMultiple')
             ->with($expectedParameter);
-        
-        /** @var \JWeiland\Events2\Controller\CalendarController|\PHPUnit_Framework_MockObject_MockObject|\TYPO3\CMS\Core\Tests\AccessibleObjectInterface $subject */
-        $subject = $this->getAccessibleMock('JWeiland\\Events2\\Controller\\CalendarController', array('getMonthAndYearFromUserSession', 'getDayFromUrl', 'getTypo3SiteUrl'));
-        $subject->expects($this->once())->method('getMonthAndYearFromUserSession')->willReturn(array(
-            'month' => 4,
-            'year' => 2015
-        ));
-        $subject->expects($this->once())->method('getDayFromUrl')->willReturn(null);
-        $subject->expects($this->once())->method('getTypo3SiteUrl')->willReturn('');
-        $subject->_set('view', $view);
-        $subject->injectConfigurationManager($configurationManager);
-        $subject->showAction();
+    
+        $this->subject
+            ->expects($this->once())
+            ->method('getTypo3SiteUrl')
+            ->willReturn('http://www.example.com');
+        $this->subject
+            ->expects($this->once())
+            ->method('getTypoScriptFrontendController')
+            ->willReturn($this->typoScriptFrontendController);
+    
+        $this->subject->showAction();
     }
 }

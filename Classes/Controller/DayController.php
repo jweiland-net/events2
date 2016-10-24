@@ -14,12 +14,73 @@ namespace JWeiland\Events2\Controller;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use JWeiland\Events2\Domain\Model\Filter;
 
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
 class DayController extends AbstractController
 {
+    /**
+     * action list.
+     *
+     * @param Filter $filter
+     * @return void
+     */
+    public function listAction(Filter $filter = null)
+    {
+        $days = $this->dayRepository->findEvents('list', $this->validateAndAssignFilter($filter));
+        $this->view->assign('days', $days);
+    }
+    
+    /**
+     * action list latest.
+     *
+     * @param Filter $filter
+     * @return void
+     */
+    public function listLatestAction(Filter $filter = null)
+    {
+        $days = $this->dayRepository->findEvents('latest', $this->validateAndAssignFilter($filter));
+        $this->view->assign('days', $days);
+    }
+    
+    /**
+     * action list today.
+     *
+     * @param Filter $filter
+     * @return void
+     */
+    public function listTodayAction(Filter $filter = null)
+    {
+        $days = $this->dayRepository->findEvents('today', $this->validateAndAssignFilter($filter));
+        $this->view->assign('days', $days);
+    }
+    
+    /**
+     * action list this week.
+     *
+     * @param Filter $filter
+     * @return void
+     */
+    public function listThisWeekAction(Filter $filter = null)
+    {
+        $days = $this->dayRepository->findEvents('thisWeek', $this->validateAndAssignFilter($filter));
+        $this->view->assign('days', $days);
+    }
+    
+    /**
+     * action list range.
+     *
+     * @param Filter $filter
+     * @return void
+     */
+    public function listRangeAction(Filter $filter = null)
+    {
+        $days = $this->dayRepository->findEvents('range', $this->validateAndAssignFilter($filter));
+        $this->view->assign('days', $days);
+    }
+    
     /**
      * action show.
      *

@@ -17,6 +17,7 @@ namespace JWeiland\Events2\Tests\Unit\Controller;
 use JWeiland\Events2\Controller\DayController;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
+use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
 use TYPO3\CMS\Fluid\View\TemplateView;
@@ -59,6 +60,186 @@ class DayControllerTest extends UnitTestCase
     public function tearDown()
     {
         unset($this->subject);
+    }
+    
+    /**
+     * @test
+     */
+    public function listActionFindEventsAndAssignsThemToView()
+    {
+        $filter = new Filter();
+        
+        $this->dayRepository
+            ->expects($this->once())
+            ->method('findEvents')
+            ->with(
+                $this->equalTo('list'),
+                $this->equalTo($filter)
+            )
+            ->willReturn(array());
+        $this->view
+            ->expects($this->at(0))
+            ->method('assign')
+            ->with(
+                $this->equalTo('filter'),
+                $this->equalTo($filter)
+            );
+        $this->view
+            ->expects($this->at(1))
+            ->method('assign')
+            ->with(
+                $this->equalTo('days'),
+                $this->equalTo(array())
+            );
+        
+        $this->subject->injectDayRepository($this->dayRepository);
+        $this->subject->_set('view', $this->view);
+        
+        $this->subject->listAction($filter);
+    }
+    
+    /**
+     * @test
+     */
+    public function listLatestActionFindEventsAndAssignsThemToView()
+    {
+        $filter = new Filter();
+        
+        $this->dayRepository
+            ->expects($this->once())
+            ->method('findEvents')
+            ->with(
+                $this->equalTo('latest'),
+                $this->equalTo($filter)
+            )
+            ->willReturn(array());
+        $this->view
+            ->expects($this->at(0))
+            ->method('assign')
+            ->with(
+                $this->equalTo('filter'),
+                $this->equalTo($filter)
+            );
+        $this->view
+            ->expects($this->at(1))
+            ->method('assign')
+            ->with(
+                $this->equalTo('days'),
+                $this->equalTo(array())
+            );
+        
+        $this->subject->injectDayRepository($this->dayRepository);
+        $this->subject->_set('view', $this->view);
+        
+        $this->subject->listLatestAction($filter);
+    }
+    
+    /**
+     * @test
+     */
+    public function listTodayActionFindEventsAndAssignsThemToView()
+    {
+        $filter = new Filter();
+        
+        $this->dayRepository
+            ->expects($this->once())
+            ->method('findEvents')
+            ->with(
+                $this->equalTo('today'),
+                $this->equalTo($filter)
+            )
+            ->willReturn(array());
+        $this->view
+            ->expects($this->at(0))
+            ->method('assign')
+            ->with(
+                $this->equalTo('filter'),
+                $this->equalTo($filter)
+            );
+        $this->view
+            ->expects($this->at(1))
+            ->method('assign')
+            ->with(
+                $this->equalTo('days'),
+                $this->equalTo(array())
+            );
+        
+        $this->subject->injectDayRepository($this->dayRepository);
+        $this->subject->_set('view', $this->view);
+        
+        $this->subject->listTodayAction($filter);
+    }
+    
+    /**
+     * @test
+     */
+    public function listThisWeekActionFindEventsAndAssignsThemToView()
+    {
+        $filter = new Filter();
+        
+        $this->dayRepository
+            ->expects($this->once())
+            ->method('findEvents')
+            ->with(
+                $this->equalTo('thisWeek'),
+                $this->equalTo($filter)
+            )
+            ->willReturn(array());
+        $this->view
+            ->expects($this->at(0))
+            ->method('assign')
+            ->with(
+                $this->equalTo('filter'),
+                $this->equalTo($filter)
+            );
+        $this->view
+            ->expects($this->at(1))
+            ->method('assign')
+            ->with(
+                $this->equalTo('days'),
+                $this->equalTo(array())
+            );
+        
+        $this->subject->injectDayRepository($this->dayRepository);
+        $this->subject->_set('view', $this->view);
+        
+        $this->subject->listThisWeekAction($filter);
+    }
+    
+    /**
+     * @test
+     */
+    public function listRangeActionFindEventsAndAssignsThemToView()
+    {
+        $filter = new Filter();
+        
+        $this->dayRepository
+            ->expects($this->once())
+            ->method('findEvents')
+            ->with(
+                $this->equalTo('range'),
+                $this->equalTo($filter)
+            )
+            ->willReturn(array());
+        $this->view
+            ->expects($this->at(0))
+            ->method('assign')
+            ->with(
+                $this->equalTo('filter'),
+                $this->equalTo($filter)
+            );
+        $this->view
+            ->expects($this->at(1))
+            ->method('assign')
+            ->with(
+                $this->equalTo('days'),
+                $this->equalTo(array())
+            );
+        
+        $this->subject->injectDayRepository($this->dayRepository);
+        $this->subject->_set('view', $this->view);
+        
+        $this->subject->listRangeAction($filter);
     }
     
     /**

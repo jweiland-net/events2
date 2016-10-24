@@ -27,66 +27,6 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 class EventController extends AbstractController
 {
     /**
-     * action list.
-     *
-     * @param Filter $filter
-     * @return void
-     */
-    public function listAction(Filter $filter = null)
-    {
-        $days = $this->dayRepository->findEvents('list', $this->validateAndAssignFilter($filter));
-        $this->view->assign('days', $days);
-    }
-
-    /**
-     * action list latest.
-     *
-     * @param Filter $filter
-     * @return void
-     */
-    public function listLatestAction(Filter $filter = null)
-    {
-        $days = $this->dayRepository->findEvents('latest', $this->validateAndAssignFilter($filter));
-        $this->view->assign('days', $days);
-    }
-
-    /**
-     * action list today.
-     *
-     * @param Filter $filter
-     * @return void
-     */
-    public function listTodayAction(Filter $filter = null)
-    {
-        $days = $this->dayRepository->findEvents('today', $this->validateAndAssignFilter($filter));
-        $this->view->assign('days', $days);
-    }
-
-    /**
-     * action list this week.
-     *
-     * @param Filter $filter
-     * @return void
-     */
-    public function listThisWeekAction(Filter $filter = null)
-    {
-        $days = $this->dayRepository->findEvents('thisWeek', $this->validateAndAssignFilter($filter));
-        $this->view->assign('days', $days);
-    }
-
-    /**
-     * action list range.
-     *
-     * @param Filter $filter
-     * @return void
-     */
-    public function listRangeAction(Filter $filter = null)
-    {
-        $days = $this->dayRepository->findEvents('range', $this->validateAndAssignFilter($filter));
-        $this->view->assign('days', $days);
-    }
-
-    /**
      * we have a self-build form based on method GET.
      * That's why we have to manually allow some form-elements.
      */
@@ -118,7 +58,7 @@ class EventController extends AbstractController
      */
     public function listMyEventsAction()
     {
-        $events = $this->eventRepository->findMyEvents($GLOBALS['TSFE']->fe_user->user['uid']);
+        $events = $this->eventRepository->findMyEvents($this->getTypoScriptFrontendController()->fe_user->user['uid']);
         $this->view->assign('events', $events);
     }
 

@@ -21,6 +21,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
@@ -31,12 +32,12 @@ class CalendarController extends ActionController
      * @var \TYPO3\CMS\Core\Page\PageRenderer
      */
     protected $pageRenderer;
-
+    
     /**
      * @var \JWeiland\Events2\Domain\Repository\DayRepository
      */
     protected $dayRepository;
-
+    
     /**
      * inject page renderer.
      *
@@ -46,7 +47,7 @@ class CalendarController extends ActionController
     {
         $this->pageRenderer = $pageRenderer;
     }
-
+    
     /**
      * inject day repository.
      *
@@ -56,7 +57,7 @@ class CalendarController extends ActionController
     {
         $this->dayRepository = $dayRepository;
     }
-
+    
     /**
      * action show.
      */
@@ -126,14 +127,17 @@ class CalendarController extends ActionController
      */
     protected function getMonthAndYearFromUserSession()
     {
-        $monthAndYear = $GLOBALS['TSFE']->fe_user->getKey('ses', 'events2MonthAndYearForCalendar');
+        $monthAndYear = $this->getTypoScriptFrontendController()->fe_user->getKey(
+            'ses',
+            'events2MonthAndYearForCalendar'
+        );
         if (!is_array($monthAndYear)) {
             $monthAndYear = array();
         }
 
         return $monthAndYear;
     }
-
+    
     /**
      * get day from url
      * we can't set $day as parameter in showAction($day), because this action is of controller Calendar and not Event.
@@ -155,5 +159,15 @@ class CalendarController extends ActionController
         }
 
         return $day;
+    }
+    
+    /**
+     * Get TSFE
+     *
+     * @return TypoScriptFrontendController
+     */
+    protected function getTypoScriptFrontendController()
+    {
+        return $GLOBALS['TSFE'];
     }
 }
