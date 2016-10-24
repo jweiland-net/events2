@@ -6,13 +6,11 @@
  * @constructor
  */
 function Events2Calendar($element, environment) {
+	this.environment = environment;
 	this.currentDate = new Date(environment.year, (environment.month - 1), environment.day);
 	this.setDate = environment.day + "." + environment.month + "." + environment.year;
 	this.siteUrl = environment.siteUrl + "index.php";
 	this.categories = environment.settings.categories;
-
-	// we can't use this.getProperty within beforeShowDay
-	var getProperty = this.getProperty;
 
 	var days = this.getDaysForMonth(
 		this.currentDate.getMonth() + 1,
@@ -20,6 +18,14 @@ function Events2Calendar($element, environment) {
 		environment.storagePids,
 		environment.pidOfListPage
 	);
+
+	this.activateDatePicker($element, days);
+}
+
+Events2Calendar.prototype.activateDatePicker = function($element, days) {
+	var environment = this.environment;
+	var getDaysForMonth = this.getDaysForMonth;
+	var getProperty = this.getProperty;
 
 	$element.datepicker({
 		dateFormat: "dd.mm.yy",
@@ -46,10 +52,15 @@ function Events2Calendar($element, environment) {
 			}
 		},
 		onChangeMonthYear: function(year, month, inst) {
-			days = Events2Calendar.getDaysForMonth(month, year, storagePids, pidOfListPage);
+			days = getDaysForMonth(
+				month,
+				year,
+				environment.storagePids,
+				environment.pidOfListPage
+			);
 		}
 	});
-}
+};
 
 /**
  * Get property of event record of a given date
