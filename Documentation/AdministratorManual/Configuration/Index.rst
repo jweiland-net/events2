@@ -17,4 +17,5 @@ Configuration
 	:titlesonly:
 
   TypoScript/Index
+  TypoScript/DynamicPageTitle
   ExtensionManager/Index
