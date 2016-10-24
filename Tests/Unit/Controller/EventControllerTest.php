@@ -23,6 +23,7 @@ use JWeiland\Events2\Domain\Model\Location;
 use JWeiland\Events2\Domain\Model\Search;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
+use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
@@ -371,17 +372,15 @@ class EventControllerTest extends UnitTestCase
      */
     public function newActionDeletesUploadedFilesOnValidationErrors()
     {
-        /** @var \TYPO3\CMS\Core\Resource\FileReference|\PHPUnit_Framework_MockObject_MockObject $fileReference */
+        /** @var FileReference|\PHPUnit_Framework_MockObject_MockObject $fileReference */
         $fileReference = $this->getMock('TYPO3\\CMS\\Core\\Resource\\FileReference', array(), array(), '', false);
         $fileReference->expects($this->exactly(2))->method('delete');
-        /** @var \JWeiland\Events2\Domain\Model\FileReference|\PHPUnit_Framework_MockObject_MockObject $image1 */
+        /** @var FileReference|\PHPUnit_Framework_MockObject_MockObject $image1 */
         $image1 = $this->getMock('JWeiland\\Events2\\Domain\\Model\\FileReference', array('getOriginalResource'));
         $image1->expects($this->once())->method('getOriginalResource')->willReturn($fileReference);
-        $image1->setTitle('Image1');
-        /** @var \JWeiland\Events2\Domain\Model\FileReference|\PHPUnit_Framework_MockObject_MockObject $image2 */
+        /** @var FileReference|\PHPUnit_Framework_MockObject_MockObject $image2 */
         $image2 = $this->getMock('JWeiland\\Events2\\Domain\\Model\\FileReference', array('getOriginalResource'));
         $image2->expects($this->once())->method('getOriginalResource')->willReturn($fileReference);
-        $image2->setTitle('Image2');
         $images = new ObjectStorage();
         $images->attach($image1);
         $images->attach($image2);

@@ -6,12 +6,13 @@
  * @constructor
  */
 function Events2Calendar($element, environment) {
+	// 2016-10-24 will be 23.10.2016T22:00:00Z. getDate() returns: 24
+	this.currentDate = new Date(environment.year + "-" + environment.month + "-" + environment.day + "T00:00:00");
 	this.environment = environment;
-	this.currentDate = new Date(environment.year, (environment.month - 1), environment.day);
-	this.setDate = environment.day + "." + environment.month + "." + environment.year;
 	this.siteUrl = environment.siteUrl + "index.php";
 	this.categories = environment.settings.categories;
 
+	// getMonth (0-11)
 	var days = this.getDaysForMonth(
 		this.currentDate.getMonth() + 1,
 		this.currentDate.getFullYear(),
@@ -29,7 +30,7 @@ Events2Calendar.prototype.activateDatePicker = function($element, days) {
 
 	$element.datepicker({
 		dateFormat: "dd.mm.yy",
-		setDate: this.setDate,
+		defaultDate: environment.day + "." + environment.month + "." + environment.year,
 		beforeShowDay: function(date) {
 			if (days == null) {
 				return [false, "", ""];
@@ -52,6 +53,7 @@ Events2Calendar.prototype.activateDatePicker = function($element, days) {
 			}
 		},
 		onChangeMonthYear: function(year, month, inst) {
+			// month (1-12)
 			days = getDaysForMonth(
 				month,
 				year,

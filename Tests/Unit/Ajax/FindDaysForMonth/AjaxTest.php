@@ -24,6 +24,7 @@ use TYPO3\CMS\Core\Database\PreparedStatement;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
+use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
 
 /**
@@ -117,14 +118,14 @@ class AjaxTest extends UnitTestCase
             'month' => '231',
             'year' => '5431',
             'pidOfListPage' => '4321',
-            'storagePids' => '543,-3245, , 0, Hello,123Test',
+            'storagePids' => '543,-3245, , 0, Hello,123Test'
         );
         $expectedArguments = array(
             'categories' => '123,-321,0',
             'month' => 231,
             'year' => 5431,
             'pidOfListPage' => 4321,
-            'storagePids' => '543,-3245,0',
+            'storagePids' => '543,-3245,0'
         );
         $this->subject->setArguments($arguments);
         $this->assertSame(
@@ -132,17 +133,15 @@ class AjaxTest extends UnitTestCase
             $this->subject->getArguments()
         );
     }
-
+    
     /**
-     * This test also tests protected function getArgument.
-     *
      * @test
      */
     public function processAjaxRequestWithArgumentsAndZeroDaysResultsInEmptyJson()
     {
         $arguments = array(
             'month' => '123',
-            'year' => '1234',
+            'year' => '1234'
         );
         /** @var \JWeiland\Events2\Ajax\FindDaysForMonth\Ajax|\PHPUnit_Framework_MockObject_MockObject $subject */
         $subject = $this->getMock('JWeiland\\Events2\\Ajax\\FindDaysForMonth\\Ajax', array('initialize', 'saveMonthAndYearInSession', 'findAllDaysInMonth'));
@@ -155,7 +154,56 @@ class AjaxTest extends UnitTestCase
             $subject->processAjaxRequest($arguments)
         );
     }
-
+    
+    /**
+     * @test
+     */
+    public function processAjaxRequestSavesMonthAndYearAsString()
+    {
+        $arguments = array(
+            'month' => 9,
+            'year' => 2016
+        );
+    
+        /** @var FrontendUserAuthentication|\PHPUnit_Framework_MockObject_MockObject $frontendUserAuthentication */
+        $frontendUserAuthentication = $this->getMock(FrontendUserAuthentication::class);
+        $frontendUserAuthentication
+            ->expects($this->once())
+            ->method('start');
+        $frontendUserAuthentication
+            ->expects($this->once())
+            ->method('setAndSaveSessionData')
+            ->with(
+                $this->equalTo('events2MonthAndYearForCalendar'),
+                $this->equalTo(array(
+                    'month' => '09',
+                    'year' => '2016'
+                ))
+            );
+        
+        /** @var \JWeiland\Events2\Ajax\FindDaysForMonth\Ajax|\PHPUnit_Framework_MockObject_MockObject $subject */
+        $subject = $this->getMock('JWeiland\\Events2\\Ajax\\FindDaysForMonth\\Ajax', array('initialize', 'getFrontendUserAuthentication', 'findAllDaysInMonth'));
+        $subject->setArguments($arguments);
+        $subject
+            ->expects($this->once())
+            ->method('initialize')
+            ->with($this->equalTo($arguments));
+        $subject
+            ->expects($this->once())
+            ->method('getFrontendUserAuthentication')
+            ->willReturn($frontendUserAuthentication);
+        $subject
+            ->expects($this->once())
+            ->method('findAllDaysInMonth')
+            ->with($this->equalTo(9), $this->equalTo(2016))
+            ->willReturn(array());
+        
+        $this->assertSame(
+            '[]',
+            $subject->processAjaxRequest($arguments)
+        );
+    }
+    
     /**
      * This test also tests protected function getArgument.
      *
@@ -165,7 +213,7 @@ class AjaxTest extends UnitTestCase
     {
         $arguments = array(
             'month' => '9',
-            'year' => '2015',
+            'year' => '2015'
         );
         
         $event1 = new Event();

@@ -86,6 +86,7 @@ class Event extends AbstractEntity
      * MultipleTimes.
      *
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Time>
+     * @lazy
      */
     protected $multipleTimes;
 
@@ -201,6 +202,7 @@ class Event extends AbstractEntity
      * Images.
      *
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference>
+     * @lazy
      */
     protected $images;
 
@@ -209,6 +211,7 @@ class Event extends AbstractEntity
      *
      * @var \JWeiland\Events2\Domain\Model\Link
      * @cascade remove
+     * @lazy
      */
     protected $videoLink;
 

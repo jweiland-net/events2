@@ -77,8 +77,8 @@ class CalendarController extends ActionController
         } elseif (is_array($monthAndYear) && count($monthAndYear)) {
             // if there is a session found with given month and year
             $placeHolders['environment']['day'] = '01';
-            $placeHolders['environment']['month'] = $monthAndYear['month'];
-            $placeHolders['environment']['year'] = $monthAndYear['year'];
+            $placeHolders['environment']['month'] = (string)$monthAndYear['month'];
+            $placeHolders['environment']['year'] = (string)$monthAndYear['year'];
         } else {
             // if nothing found, set to current day
             $placeHolders['environment']['day'] = date('d');

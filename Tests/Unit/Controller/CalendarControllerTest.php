@@ -180,8 +180,8 @@ class CalendarControllerTest extends UnitTestCase
         /** @var \JWeiland\Events2\Controller\CalendarController|\PHPUnit_Framework_MockObject_MockObject|\TYPO3\CMS\Core\Tests\AccessibleObjectInterface $subject */
         $subject = $this->getAccessibleMock('JWeiland\\Events2\\Controller\\CalendarController', array('getMonthAndYearFromUserSession', 'getDayFromUrl', 'getTypo3SiteUrl'));
         $subject->expects($this->once())->method('getMonthAndYearFromUserSession')->willReturn(array(
-            'month' => '04',
-            'year' => '2015'
+            'month' => 4,
+            'year' => 2015
         ));
         $subject->expects($this->once())->method('getDayFromUrl')->willReturn(null);
         $subject->expects($this->once())->method('getTypo3SiteUrl')->willReturn('');
