@@ -9,6 +9,8 @@ page.includeJSFooterlibs {
   jQueryUiForEvents2.excludeFromConcatenation = 1
   jQueryUiForEvents2.disableCompression = 1
   jQueryUiForEvents2.if.isTrue = {$plugin.tx_events2.settings.includeJQueryUiLibrary}
+  jQueryUiCalendarDe = EXT:events2/Resources/Public/JavaScript/jquery.ui.datepicker-de.js
+  jQueryUiCalendarDe.if.isTrue = {$plugin.tx_events2.settings.includeDeTranslationForCalendar}
   events2Calendar = EXT:events2/Resources/Public/JavaScript/Calendar.js
   events2Calendar.excludeFromConcatenation = 1
   events2Calendar.disableCompression = 1
@@ -65,6 +67,7 @@ plugin.tx_events2 {
     pidOfSearchPage = {$plugin.tx_events2.settings.pidOfSearchPage}
     pidOfLocationPage = {$plugin.tx_events2.settings.pidOfLocationPage}
     pidOfListPage = {$plugin.tx_events2.settings.pidOfListPage}
+    includeDeTranslationForCalendar = {$plugin.tx_events2.settings.includeDeTranslationForCalendar}
     userGroup =
     list {
       image {

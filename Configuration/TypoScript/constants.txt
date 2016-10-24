@@ -16,17 +16,19 @@ plugin.tx_events2 {
     includeJQueryLibrary = 1
     # cat=plugin.tx_events2//c; type=boolean; label=Include jQuery UI
     includeJQueryUiLibrary = 1
-    # cat=plugin.tx_events2//d; type=boolean; label=Include jQuery UI CSS
+    # cat=plugin.tx_events2//d; type=boolean; label=Include german translation for jquery UI Calendar
+    includeDeTranslationForCalendar = 0
+    # cat=plugin.tx_events2//e; type=boolean; label=Include jQuery UI CSS
     includeJQueryUiCss = 1
-    # cat=plugin.tx_events2//e; type=int+; label=UID of root category
+    # cat=plugin.tx_events2//f; type=int+; label=UID of root category
     rootCategory =
-    # cat=plugin.tx_events2//f; type=int+; label=PID of Detail page: Leave empty to show details on current page.
+    # cat=plugin.tx_events2//g; type=int+; label=PID of Detail page: Leave empty to show details on current page.
     pidOfDetailPage =
-    # cat=plugin.tx_events2//g; type=int+; label=PID of Search page.
+    # cat=plugin.tx_events2//h; type=int+; label=PID of Search page.
     pidOfSearchPage =
-    # cat=plugin.tx_events2//h; type=int+; label=PID of Location page: Leave empty to show location on current page.
+    # cat=plugin.tx_events2//i; type=int+; label=PID of Location page: Leave empty to show location on current page.
     pidOfLocationPage =
-    # cat=plugin.tx_events2//i; type=int+; label=PID of List page
+    # cat=plugin.tx_events2//j; type=int+; label=PID of List page
     pidOfListPage =
 
     list {

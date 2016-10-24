@@ -28,6 +28,10 @@ Events2Calendar.prototype.activateDatePicker = function($element, days) {
 	var getDaysForMonth = this.getDaysForMonth;
 	var getProperty = this.getProperty;
 
+	if (environment.settings.includeDeTranslationForCalendar) {
+		$element.datepicker(jQuery.datepicker.regional["de"]);
+	}
+
 	$element.datepicker({
 		dateFormat: "dd.mm.yy",
 		defaultDate: environment.day + "." + environment.month + "." + environment.year,
