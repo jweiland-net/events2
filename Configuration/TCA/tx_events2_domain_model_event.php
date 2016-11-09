@@ -249,7 +249,7 @@ return array(
                     array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.xth.fourth', 'fourth'),
                     array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.xth.fifth', 'fifth'),
                 ),
-                'default' => 31,
+                'default' => 0,
             ),
         ),
         'weekday' => array(
@@ -268,7 +268,7 @@ return array(
                     array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.weekday.saturday', 'saturday'),
                     array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.weekday.sunday', 'sunday'),
                 ),
-                'default' => 127,
+                'default' => 0,
             ),
         ),
         'different_times' => array(
