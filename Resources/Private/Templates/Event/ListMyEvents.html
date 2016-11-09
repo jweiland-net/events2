@@ -7,7 +7,7 @@
 
 	<f:security.ifHasRole role="{settings.userGroup}">
 		<p class="align-right info-box">
-			<f:link.action action="new" pageUid="{settings.pidOfDetailPage}" title="{f:translate(key: 'newEntry')}">
+			<f:link.action action="new" controller="Event" pageUid="{settings.pidOfDetailPage}" title="{f:translate(key: 'newEntry')}">
 				<span><f:translate key="newEntry"/></span><span aria-hidden="true" class="icon-arrowright"></span>
 			</f:link.action>
 		</p>
@@ -16,7 +16,7 @@
 	<div class="list scroll-container">
 		<ul>
 			<f:for each="{events}" as="event">
-				<li><f:link.action action="edit" arguments="{event: event}">{event.title}</f:link.action></li>
+				<li><f:link.action action="edit" controller="Event" arguments="{event: event}">{event.title}</f:link.action></li>
 			</f:for>
 		</ul>
 	</div>
