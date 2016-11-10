@@ -161,23 +161,16 @@ class EventRepository extends Repository
     /**
      * find events of a specified user.
      *
-     * @param int $organizer
-     *
      * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
-    public function findMyEvents($organizer)
+    public function findMyEvents()
     {
+        /** @var UserRepository $userRepository */
+        $userRepository = $this->objectManager->get('JWeiland\\Events2\\Domain\\Repository\\UserRepository');
+        $organizer = (int)$userRepository->getFieldFromUser('tx_events2_organizer');
+        
         /** @var \TYPO3\CMS\Extbase\Persistence\Generic\Query $query */
         $query = $this->createQuery();
-        $statement = $this->createStatement()
-            ->setQuery($query)
-            ->setSelect('tx_events2_domain_model_event.*')
-            ->setFeUsersRelation(true)
-            ->addWhere('fe_users.uid', '=', (int)$organizer)
-            ->setGroupBy('tx_events2_domain_model_event.uid')
-            ->setOrderBy('tx_events2_domain_model_event.title')
-            ->setLimit('');
-
-        return $query->statement($statement->getStatement())->execute();
+        return $query->matching($query->equals('organizer.uid', $organizer))->execute();
     }
 }

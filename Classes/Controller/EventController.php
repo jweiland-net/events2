@@ -58,7 +58,7 @@ class EventController extends AbstractController
      */
     public function listMyEventsAction()
     {
-        $events = $this->eventRepository->findMyEvents($this->getTypoScriptFrontendController()->fe_user->user['uid']);
+        $events = $this->eventRepository->findMyEvents();
         $this->view->assign('events', $events);
     }
 

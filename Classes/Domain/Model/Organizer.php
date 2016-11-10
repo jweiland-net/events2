@@ -27,14 +27,14 @@ class Organizer extends AbstractEntity
      * @var string
      */
     protected $organizer = '';
-
+    
     /**
      * Link.
      *
      * @var \JWeiland\Events2\Domain\Model\Link
      */
-    protected $link = null;
-
+    protected $link;
+    
     /**
      * Returns the organizer.
      *
@@ -58,7 +58,7 @@ class Organizer extends AbstractEntity
     /**
      * Returns the link.
      *
-     * @return \JWeiland\Events2\Domain\Model\Link $link
+     * @return Link $link
      */
     public function getLink()
     {

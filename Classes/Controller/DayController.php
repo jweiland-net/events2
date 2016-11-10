@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Controller;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Filter;
 
 /**
@@ -93,6 +94,7 @@ class DayController extends AbstractController
      */
     public function showAction($day)
     {
+        /** @var Day $dayObject */
         $dayObject = $this->dayRepository->findByIdentifier($day);
         $this->view->assign('day', $dayObject);
     }

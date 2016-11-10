@@ -446,14 +446,4 @@ class AbstractController extends ActionController
 
         return false;
     }
-    
-    /**
-     * Get TSFE
-     *
-     * @return TypoScriptFrontendController
-     */
-    protected function getTypoScriptFrontendController()
-    {
-        return $GLOBALS['TSFE'];
-    }
 }
