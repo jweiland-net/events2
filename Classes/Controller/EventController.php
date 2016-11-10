@@ -134,7 +134,7 @@ class EventController extends AbstractController
         $this->addDayRelations($event);
         $this->sendMail('create', $event);
         $this->addFlashMessage(LocalizationUtility::translate('eventCreated', 'events2'));
-        $this->redirect('list');
+        $this->redirect('list', 'Day');
     }
 
     /**
@@ -231,7 +231,7 @@ class EventController extends AbstractController
             $this->sendMail('update', $event);
         }
         $this->addFlashMessage(LocalizationUtility::translate('eventUpdated', 'events2'));
-        $this->redirect('listMyEvents');
+        $this->redirect('listMyEvents', 'Events');
     }
 
     /**
@@ -245,7 +245,7 @@ class EventController extends AbstractController
         $eventObject = $this->eventRepository->findByIdentifier($event);
         $this->eventRepository->remove($eventObject);
         $this->addFlashMessage(LocalizationUtility::translate('eventDeleted', 'events2'));
-        $this->redirect('list');
+        $this->redirect('list', 'Day');
     }
 
     /**
@@ -280,7 +280,7 @@ class EventController extends AbstractController
         $this->mail->setBody($this->view->render(), 'text/html');
         $this->mail->send();
 
-        $this->redirect('list', 'Event');
+        $this->redirect('list', 'Day');
     }
 
     /**
