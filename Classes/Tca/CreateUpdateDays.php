@@ -31,7 +31,7 @@ class CreateUpdateDays
     /**
      * @var \TYPO3\CMS\Core\Database\DatabaseConnection
      */
-    protected $databaseConnection = null;
+    protected $databaseConnection;
 
     /**
      * initializes this object.
@@ -73,21 +73,84 @@ class CreateUpdateDays
     {
         $uid = $this->getRealUid(key($dataHandler->datamap['tx_events2_domain_model_event']), $dataHandler);
         $event = BackendUtility::getRecord($table, $uid);
+        $this->addExceptionsToEvent($event, $dataHandler);
+
+        // as we don't get the relation to which col the time record belongs in DataHandler,
+        // we have to select them again from DB
+        $this->addTimeRecordsForColumn($event, 'event', 'event_time');
+        $this->addTimeRecordsForColumn($event, 'event', 'multiple_times');
+        $this->addTimeRecordsForColumn($event, 'event', 'different_times');
+
+        return $event;
+    }
+    
+    /**
+     * Add Exceptions for Event
+     *
+     * @param array $event
+     * @param DataHandler $dataHandler
+     *
+     * @return void
+     */
+    protected function addExceptionsToEvent(array &$event, $dataHandler)
+    {
         if ($event['exceptions']) {
             $exceptions = array();
             foreach (array_keys($dataHandler->datamap['tx_events2_domain_model_exception']) as $exception) {
                 $exceptions[] = $this->getRealUid($exception, $dataHandler);
             }
-            $event['exceptions'] = $this->databaseConnection->exec_SELECTgetRows(
-                '*',
-                'tx_events2_domain_model_exception',
-                'uid IN ('.implode(',', $exceptions).')'.
-                BackendUtility::BEenableFields('tx_events2_domain_model_exception').
+            $where = sprintf(
+                'uid IN (%s) AND exception_type IN (%s, %s) %s %s',
+                implode(',', $exceptions),
+                $this->getDatabaseConnection()->fullQuoteStr('Add', 'tx_events2_domain_model_exception'),
+                $this->getDatabaseConnection()->fullQuoteStr('Time', 'tx_events2_domain_model_exception'),
+                BackendUtility::BEenableFields('tx_events2_domain_model_exception'),
                 BackendUtility::deleteClause('tx_events2_domain_model_exception')
             );
+            $event['exceptions'] = $this->databaseConnection->exec_SELECTgetRows(
+                'uid, event, exception_date, exception_time, exception_type',
+                'tx_events2_domain_model_exception',
+                $where
+            );
+            if (!empty($event['exceptions'])) {
+                foreach ($event['exceptions'] as &$exception) {
+                    $this->addTimeRecordsForColumn($exception, 'exception', 'exception_time');
+                }
+            }
+        } else {
+            $event['exceptions'] = array();
         }
-
-        return $event;
+    }
+    
+    /**
+     * Add time records for specified columns
+     *
+     * @param array $record
+     * @param string $recordType 'event' or 'exception'
+     * @param string $column
+     *
+     * @return void
+     */
+    protected function addTimeRecordsForColumn(&$record, $recordType, $column)
+    {
+        $where = sprintf(
+            '%s=%d AND type=%s %s %s',
+            $recordType,
+            (int)$record['uid'],
+            $this->getDatabaseConnection()->fullQuoteStr($column, 'tx_events2_domain_model_time'),
+            BackendUtility::BEenableFields('tx_events2_domain_model_time'),
+            BackendUtility::deleteClause('tx_events2_domain_model_time')
+        );
+        $rows = $this->databaseConnection->exec_SELECTgetRows(
+            'uid, time_begin, time_end, time_entry, duration, type',
+            'tx_events2_domain_model_time',
+            $where
+        );
+        if (empty($rows)) {
+            // @ToDo: ErrorHandling
+            $rows = array();
+        }
+        $record[$column] = $rows;
     }
 
     /**
@@ -99,12 +162,22 @@ class CreateUpdateDays
      *
      * @return int
      */
-    public function getRealUid($uid, DataHandler $dataHandler)
+    protected function getRealUid($uid, DataHandler $dataHandler)
     {
         if (GeneralUtility::isFirstPartOfStr($uid, 'NEW')) {
             $uid = $dataHandler->substNEWwithIDs[$uid];
         }
 
         return $uid;
+    }
+    
+    /**
+     * Get TYPO3s Database Connection
+     *
+     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     */
+    protected function getDatabaseConnection()
+    {
+        return $GLOBALS['TYPO3_DB'];
     }
 }

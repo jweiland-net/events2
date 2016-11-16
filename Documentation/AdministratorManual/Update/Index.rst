@@ -30,5 +30,5 @@ Please update all templates to use the original f:widget.paginate ViewHelper of 
 the maxRecords attribute.
 
 The labels of the show action selectbox in Plugin (switchableControllerActions) has changed. We
-have added the new action showByTimestamp for DayController. So you have to open each plugin
+have added the new action showByDate for DayController. So you have to open each plugin
 and set show action again.

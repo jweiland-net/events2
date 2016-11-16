@@ -176,7 +176,7 @@ class Ajax
                 'uid' => $day->getEvent()->getUid(),
                 'title' => $day->getEvent()->getTitle()
             );
-            $addDay['uri'] = $this->getUriForDay($day->getDay()->format('U'));
+            $addDay['uri'] = $this->getUriForDay($day->getDay());
             $dayOfMonth = $day->getDay()->format('j');
             $dayArray[$dayOfMonth][] = $addDay;
         }
@@ -206,11 +206,11 @@ class Ajax
      * This way we also have realurl functionality
      * We need the current day for calendar and day controller.
      *
-     * @param int $timestamp
+     * @param \DateTime $date
      *
      * @return string
      */
-    public function getUriForDay($timestamp)
+    public function getUriForDay(\DateTime $date)
     {
         // uriBuilder is very slow: 223ms for 31 links */
         /*$uri = $this->uriBuilder
@@ -224,8 +224,8 @@ class Ajax
             'id' => $this->getArgument('pidOfListPage'),
             'tx_events2_events' => array(
                 'controller' => 'Day',
-                'action' => 'showByTimestamp',
-                'timestamp' => (int)$timestamp,
+                'action' => 'showByDate',
+                'date' => $date->format('Y-m-d'),
             ),
         );
         $cacheHashArray = $this->cacheHashCalculator->getRelevantParameters(GeneralUtility::implodeArrayForUrl('', $query));
@@ -306,8 +306,8 @@ class Ajax
             }
             $constraint[] = $query->logicalOr($orConstraint);
         }
-        $constraint[] = $query->greaterThanOrEqual('day', $monthBegin);
-        $constraint[] = $query->lessThan('day', $monthEnd);
+        $constraint[] = $query->greaterThanOrEqual('day', $monthBegin->format('Y-m-d'));
+        $constraint[] = $query->lessThan('day', $monthEnd->format('Y-m-d'));
         
         return $query->matching($query->logicalAnd($constraint))->execute();
     }

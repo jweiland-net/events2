@@ -136,7 +136,7 @@ return array(
                 'size' => 5,
                 'max' => 5,
                 'checkbox' => 1,
-                'default' => '8:00',
+                'default' => '08:00',
                 'eval' => 'JWeiland\\Events2\\Tca\\Type\\Time',
             ),
         ),

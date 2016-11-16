@@ -18,13 +18,20 @@ return array(
     'columns' => array(
         'day' => array(
             'exclude' => 1,
-            'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_day.day',
+            'label' => 'Day',
             'config' => array(
                 'type' => 'input',
-                'size' => 7,
                 'eval' => 'date',
-                'checkbox' => 1,
-                'default' => time(),
+                'dbType' => 'date'
+            ),
+        ),
+        'dayTime' => array(
+            'exclude' => 1,
+            'label' => 'DayTime',
+            'config' => array(
+                'type' => 'input',
+                'eval' => 'datetime',
+                'dbType' => 'datetime'
             ),
         ),
         'event' => array(

@@ -107,46 +107,144 @@ class DayRelations
      *
      * @param \DateTime $day
      *
-     * @return int UID of inserted day
+     * @return void
      */
     public function addDay(\DateTime $day)
     {
         // to prevent adding multiple days for ONE day we set them all to midnight 00:00:00
         $day = $this->dateTimeUtility->standardizeDateTimeObject($day);
-        $dayUid = (int)$this->addDayRecord($day);
-
-        // if $dayUid == 0 an error in query appears. So, do not update anything
-        if ($dayUid > 0) {
-            // add relation in mm-table
-            $this->addRelation($this->eventRecord['uid'], $dayUid, $day);
+        $times = $this->getTimesForDay($day);
+        if (!empty($times)) {
+            foreach ($times as $time) {
+                $this->addDayRecord($day, $time);
+            }
+        } else {
+            $this->addDayRecord($day);
         }
-
-        return $dayUid;
     }
-
+    
+    /**
+     * each event can have one or more times for one day
+     * This method looks into all time related records and fetches the times with highest priority.
+     *
+     * @param \DateTime $day
+     *
+     * @return array
+     */
+    public function getTimesForDay(\DateTime $day)
+    {
+        // times from exceptions have priority 1
+        $timesFromExceptions = $this->eventRecord['exceptions'];
+        if (!empty($timesFromExceptions)) {
+            $times = array();
+            foreach ($timesFromExceptions as $exception) {
+                if ($exception['exception_type'] == 'Add' || $exception['exception_type'] == 'Time') {
+                    foreach ($exception['exception_time'] as $time) {
+                        $times[] = $time;
+                    }
+                }
+            }
+            return $times;
+        }
+        // times from event->differentTimes have priority 2
+        $differentTimes = $this->getDifferentTimesForDay($day);
+        if (!empty($differentTimes)) {
+            return $differentTimes;
+        }
+        // times from event have priority 3
+        $eventTimes = $this->getTimesFromEvent();
+        if (!empty($eventTimes)) {
+            return $eventTimes;
+        }
+        
+        // if there are no times available return empty array
+        return array();
+    }
+    
+    /**
+     * you can override the times in an event for a special weekday
+     * so this method checks and returns times, if there are times defined for given day.
+     *
+     * @param \DateTime $day
+     *
+     * @return array
+     */
+    protected function getDifferentTimesForDay(\DateTime $day)
+    {
+        $times = array();
+        foreach ($this->eventRecord['different_times'] as $time) {
+            if (strtolower($time['weekday']) === strtolower($day->format('l'))) {
+                $times[] = $time;
+            }
+        }
+        
+        return $times;
+    }
+    
+    /**
+     * Each event has ONE time record, but if checkbox "same day" was checked, you can add additional times
+     * This method checks both parts, merges them to one SplObjectStorage and returns the result.
+     *
+     * @return array
+     */
+    protected function getTimesFromEvent()
+    {
+        $times = array();
+        // add normal event time
+        $eventTime = $this->eventRecord['event_time'];
+        $times[] = $eventTime;
+        
+        // add value of multiple times
+        // but only if checkbox "same day" is set
+        if ($this->eventRecord['same_day']) {
+            $multipleTimes = $this->eventRecord['multiple_times'];
+            foreach ($multipleTimes as $multipleTime) {
+                $times[] = $multipleTime;
+            }
+        }
+        
+        return $times;
+    }
+    
     /**
      * Add day record.
      *
      * @param \DateTime $day
+     * @param array $time
      *
      * @return int The affected row uid
      */
-    protected function addDayRecord(\DateTime $day)
+    protected function addDayRecord(\DateTime $day, array $time = array())
     {
-        $time = time();
+        $hour = $minute = '00';
+        if (array_key_exists('time_begin', $time) && strpos($time['time_begin'], ':')) {
+            list($hour, $minute) = explode(':', $time['time_begin']);
+        }
+        
+        $date = $day->format('Y-m-d');
+        
         $fieldsArray = array();
-        $fieldsArray['day'] = (int)$day->format('U');
+        $fieldsArray['day'] = $date;
+        $fieldsArray['day_time'] = sprintf('%s %s:%s:00', $date, $hour, $minute);
         $fieldsArray['event'] = (int)$this->eventRecord['uid'];
         $fieldsArray['deleted'] = (int)$this->eventRecord['deleted'];
         $fieldsArray['hidden'] = (int)$this->eventRecord['hidden'];
-        $fieldsArray['tstamp'] = $time;
+        $fieldsArray['tstamp'] = time();
         $fieldsArray['pid'] = (int)$this->eventRecord['pid'];
-        $fieldsArray['crdate'] = $time;
+        $fieldsArray['crdate'] = time();
         $fieldsArray['cruser_id'] = (int)$GLOBALS['BE_USER']->user['uid'];
 
         $this->databaseConnection->exec_INSERTquery('tx_events2_domain_model_day', $fieldsArray);
 
-        return (int)$this->databaseConnection->sql_insert_id();
+        $insertId = (int)$this->databaseConnection->sql_insert_id();
+        
+        // if $dayUid == 0 an error in query appears. So, do not update anything
+        if ($insertId > 0) {
+            // add relation in mm-table
+            $this->addRelation($this->eventRecord['uid'], $insertId, $day);
+        }
+        
+        return $insertId;
     }
 
     /**

@@ -84,6 +84,7 @@ class RepairCommandController extends CommandController
     protected function truncateDayTable()
     {
         $this->databaseConnection->exec_TRUNCATEquery('tx_events2_domain_model_day');
+        $this->databaseConnection->exec_TRUNCATEquery('tx_events2_event_day_mm');
         $this->outputLine(PHP_EOL . 'I have truncated the day table');
     }
     

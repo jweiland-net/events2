@@ -73,7 +73,8 @@ CREATE TABLE tx_events2_domain_model_day (
 	uid int(11) NOT NULL auto_increment,
 	pid int(11) DEFAULT '0' NOT NULL,
 
-	day int(11) DEFAULT '0' NOT NULL,
+	day date default NULL,
+	day_time datetime default NULL,
 	event int(11) unsigned DEFAULT '0' NOT NULL,
 
 	tstamp int(11) unsigned DEFAULT '0' NOT NULL,

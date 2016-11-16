@@ -100,15 +100,19 @@ class DayController extends AbstractController
     }
 
     /**
-     * action showByTimestamp.
+     * action showByDate.
      *
-     * @param int $timestamp
+     * @param string $date
      *
      * @return void
      */
-    public function showByTimestampAction($timestamp)
+    public function showByDateAction($date)
     {
-        $days = $this->dayRepository->findByTimestamp((int)$timestamp);
+        $days = array();
+        $date = \DateTime::createFromFormat('Y-m-d', $date);
+        if ($date instanceof \DateTime) {
+            $days = $this->dayRepository->findByDate($date);
+        }
         $this->view->assign('days', $days);
     }
 }

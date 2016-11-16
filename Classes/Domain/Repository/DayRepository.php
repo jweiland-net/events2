@@ -42,7 +42,7 @@ class DayRepository extends Repository
      */
     protected $defaultOrderings = array(
         'event.topOfList' => QueryInterface::ORDER_DESCENDING,
-        'day' => QueryInterface::ORDER_ASCENDING,
+        'dayTime' => QueryInterface::ORDER_ASCENDING,
     );
     
     /**
@@ -111,29 +111,29 @@ class DayRepository extends Repository
                 $today = $this->dateTimeUtility->convert('today');
                 $tomorrow = $this->dateTimeUtility->convert('today');
                 $tomorrow->modify('+1 day');
-                $constraint[] = $query->greaterThanOrEqual('day', $today);
-                $constraint[] = $query->lessThan('day', $tomorrow);
+                $constraint[] = $query->greaterThanOrEqual('day', $today->format('Y-m-d'));
+                $constraint[] = $query->lessThan('day', $tomorrow->format('Y-m-d'));
                 break;
             case 'range':
                 $today = $this->dateTimeUtility->convert('today');
                 $in4months = $this->dateTimeUtility->convert('today');
                 $in4months->modify('+4 weeks');
-                $constraint[] = $query->greaterThanOrEqual('day', $today);
-                $constraint[] = $query->lessThanOrEqual('day', $in4months);
+                $constraint[] = $query->greaterThanOrEqual('day', $today->format('Y-m-d'));
+                $constraint[] = $query->lessThanOrEqual('day', $in4months->format('Y-m-d'));
                 break;
             case 'thisWeek':
                 $weekStart = $this->dateTimeUtility->convert('today');
                 $weekStart->modify('this week'); // 'first day of' does not work for 'weeks'
                 $weekEnd = $this->dateTimeUtility->convert('today');
                 $weekEnd->modify('this week +6 days'); // 'last day of' does not work for 'weeks'
-                $constraint[] = $query->greaterThanOrEqual('day', $weekStart);
-                $constraint[] = $query->lessThanOrEqual('day', $weekEnd);
+                $constraint[] = $query->greaterThanOrEqual('day', $weekStart->format('Y-m-d'));
+                $constraint[] = $query->lessThanOrEqual('day', $weekEnd->format('Y-m-d'));
                 break;
             case 'list':
             case 'latest':
             default:
                 $today = $this->dateTimeUtility->convert('today');
-                $constraint[] = $query->greaterThanOrEqual('day', $today);
+                $constraint[] = $query->greaterThanOrEqual('day', $today->format('Y-m-d'));
         }
         
         /** @var QueryResult $result */
@@ -205,11 +205,11 @@ class DayRepository extends Repository
     /**
      * Find days/events by timestamp
      *
-     * @param int $timestamp
+     * @param \DateTime $date
      *
      * @return QueryResult
      */
-    public function findByTimestamp($timestamp)
+    public function findByDate(\DateTime $date)
     {
         $constraint = array();
         $query = $this->createQuery();
@@ -220,7 +220,7 @@ class DayRepository extends Repository
             }
             $constraint[] = $query->logicalOr($orConstraint);
         }
-        $constraint[] = $query->equals('day', $timestamp);
+        $constraint[] = $query->equals('day', $date->format('Y-m-d'));
         /** @var QueryResult $result */
         $result = $query->matching($query->logicalAnd($constraint))->execute();
         
