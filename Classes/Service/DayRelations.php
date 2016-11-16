@@ -138,13 +138,18 @@ class DayRelations
         if (!empty($timesFromExceptions)) {
             $times = array();
             foreach ($timesFromExceptions as $exception) {
-                if ($exception['exception_type'] == 'Add' || $exception['exception_type'] == 'Time') {
+                if (
+                    $exception['exception_date'] == $day->format('U') &&
+                    $exception['exception_type'] == 'Add' || $exception['exception_type'] == 'Time'
+                ) {
                     foreach ($exception['exception_time'] as $time) {
                         $times[] = $time;
                     }
                 }
             }
-            return $times;
+            if (!empty($times)) {
+                return $times;
+            }
         }
         // times from event->differentTimes have priority 2
         $differentTimes = $this->getDifferentTimesForDay($day);
@@ -172,9 +177,11 @@ class DayRelations
     protected function getDifferentTimesForDay(\DateTime $day)
     {
         $times = array();
-        foreach ($this->eventRecord['different_times'] as $time) {
-            if (strtolower($time['weekday']) === strtolower($day->format('l'))) {
-                $times[] = $time;
+        if (!empty($this->eventRecord['different_times'])) {
+            foreach ($this->eventRecord['different_times'] as $time) {
+                if (strtolower($time['weekday']) === strtolower($day->format('l'))) {
+                    $times[] = $time;
+                }
             }
         }
         
@@ -191,14 +198,19 @@ class DayRelations
     {
         $times = array();
         // add normal event time
-        $eventTime = $this->eventRecord['event_time'];
-        $times[] = $eventTime;
+        if (!empty($this->eventRecord['event_time'])) {
+            foreach ($this->eventRecord['event_time'] as $time) {
+                $times[] = $time;
+            }
+        }
         
         // add value of multiple times
         // but only if checkbox "same day" is set
-        if ($this->eventRecord['same_day']) {
-            $multipleTimes = $this->eventRecord['multiple_times'];
-            foreach ($multipleTimes as $multipleTime) {
+        if (
+            $this->eventRecord['same_day'] &&
+            !empty($this->eventRecord['multiple_times'])
+        ) {
+            foreach ($this->eventRecord['multiple_times'] as $multipleTime) {
                 $times[] = $multipleTime;
             }
         }
@@ -221,11 +233,13 @@ class DayRelations
             list($hour, $minute) = explode(':', $time['time_begin']);
         }
         
-        $date = $day->format('Y-m-d');
+        $dayTime = clone $day;
+        $dayTime->modify($hour . ':' . $minute . ':00');
+        $dayTime->setTimezone(new \DateTimeZone('UTC'));
         
         $fieldsArray = array();
-        $fieldsArray['day'] = $date;
-        $fieldsArray['day_time'] = sprintf('%s %s:%s:00', $date, $hour, $minute);
+        $fieldsArray['day'] = $day->format('Y-m-d');
+        $fieldsArray['day_time'] = $dayTime->format('Y-m-d H:i:s');
         $fieldsArray['event'] = (int)$this->eventRecord['uid'];
         $fieldsArray['deleted'] = (int)$this->eventRecord['deleted'];
         $fieldsArray['hidden'] = (int)$this->eventRecord['hidden'];

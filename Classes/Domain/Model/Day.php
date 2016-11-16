@@ -27,7 +27,14 @@ class Day extends AbstractEntity
      * @var \DateTime
      */
     protected $day;
-
+    
+    /**
+     * DayTime.
+     *
+     * @var \DateTime
+     */
+    protected $dayTime;
+    
     /**
      * Event.
      *
@@ -54,6 +61,27 @@ class Day extends AbstractEntity
     public function setDay(\DateTime $day)
     {
         $this->day = $day;
+    }
+    
+    /**
+     * Returns the dayTime
+     *
+     * @return \DateTime $dayTime
+     */
+    public function getDayTime()
+    {
+        return $this->dayTime;
+    }
+    
+    /**
+     * Sets the dayTime
+     *
+     * @param \DateTime $dayTime
+     * @return void
+     */
+    public function setDayTime($dayTime)
+    {
+        $this->dayTime = $dayTime;
     }
 
     /**

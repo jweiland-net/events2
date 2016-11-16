@@ -25,7 +25,7 @@ return array(
                 'dbType' => 'date'
             ),
         ),
-        'dayTime' => array(
+        'day_time' => array(
             'exclude' => 1,
             'label' => 'DayTime',
             'config' => array(

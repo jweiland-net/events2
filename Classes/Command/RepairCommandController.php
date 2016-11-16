@@ -15,6 +15,7 @@ namespace JWeiland\Events2\Command;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Utility\DateTimeUtility;
+use JWeiland\Events2\Utility\EventUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\CommandController;
 use JWeiland\Events2\Service\DayRelations;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -102,17 +103,20 @@ class RepairCommandController extends CommandController
         $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
         /** @var DayRelations $dayRelations */
         $dayRelations = $objectManager->get('JWeiland\\Events2\\Service\\DayRelations');
+        /** @var EventUtility $eventUtility */
+        $eventUtility = $objectManager->get('JWeiland\\Events2\\Utility\\EventUtility');
     
         // get all event records
         $rows = $this->databaseConnection->exec_SELECTgetRows(
-            '*',
+            'uid',
             'tx_events2_domain_model_event',
             '1=1'
         );
     
         if (!empty($rows)) {
             foreach ($rows as $row) {
-                $dayRelations->createDayRelations($row);
+                $event = $eventUtility->getFullEventRecord($row['uid']);
+                $dayRelations->createDayRelations($event);
                 $this->echoValue();
                 ++$counter;
             }
