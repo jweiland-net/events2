@@ -16,6 +16,7 @@ namespace JWeiland\Events2\Domain\Repository;
  */
 use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Model\Search;
+use JWeiland\Events2\Persistence\Generic\Query;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
@@ -87,7 +88,7 @@ class DayRepository extends Repository
      */
     public function findEvents($type, Filter $filter)
     {
-        /** @var \TYPO3\CMS\Extbase\Persistence\Generic\Query $query */
+        /** @var Query $query */
         $query = $this->createQuery();
         $constraint = array();
         
@@ -129,11 +130,21 @@ class DayRepository extends Repository
                 $constraint[] = $query->greaterThanOrEqual('day', $weekStart->format('Y-m-d'));
                 $constraint[] = $query->lessThanOrEqual('day', $weekEnd->format('Y-m-d'));
                 break;
-            case 'list':
             case 'latest':
+            case 'list':
             default:
                 $today = $this->dateTimeUtility->convert('today');
                 $constraint[] = $query->greaterThanOrEqual('day', $today->format('Y-m-d'));
+                if (
+                    $type === 'latest' &&
+                    !empty($this->settings['latest']['amountOfRecordsToShow'])
+                ) {
+                    $query->setLimit((int)$this->settings['latest']['amountOfRecordsToShow']);
+                }
+        }
+        if ($this->settings['mergeEvents']) {
+            // grouping is a special feature of events2
+            $query->setGroupings(array('event'));
         }
         
         /** @var QueryResult $result */

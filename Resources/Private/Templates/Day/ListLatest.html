@@ -7,9 +7,7 @@
 	<f:render partial="Event/Filter" arguments="{action: 'listLatest', organizers: organizers, filter: filter}" />
 
 	<div class="list scroll-container nopaginator">
-		<f:widget.paginate objects="{days}" as="paginatedDays" configuration="{itemsPerPage: settings.pageBrowser.itemsPerPage, insertAbove: settings.pageBrowser.insertAbove, insertBelow: settings.pageBrowser.insertBelow, maximumNumberOfLinks: settings.pageBrowser.maximumNumberOfLinks}">
-			<f:render partial="Event/List" arguments="{days: paginatedDays}"/>
-		</f:widget.paginate>
+		<f:render partial="Event/List" arguments="{days: days}" />
 		<f:if condition="{settings.pidOfListPage}">
 			<div class="morelink clearfix">
 				<f:link.action pageUid="{settings.pidOfListPage}" action="list" title="{f:translate(key: 'link.listEvents')}"><span><f:translate key="link.listEvents" /></span><span aria-hidden="true" class="icon-arrowright"></span></f:link.action>

@@ -51,6 +51,9 @@
 			<trans-unit id="pidOfSearchPage">
 				<source>PID of search page</source>
 			</trans-unit>
+			<trans-unit id="mergeEvents">
+				<source>This setting will merge events with multiple days to one record in listing</source>
+			</trans-unit>
 			<trans-unit id="preFilterByOrganizer">
 				<source>Pre filter events by organizer</source>
 			</trans-unit>

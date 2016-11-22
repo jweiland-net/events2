@@ -31,12 +31,8 @@ plugin.tx_events2 {
     # cat=plugin.tx_events2//j; type=int+; label=PID of List page
     pidOfListPage =
 
-    list {
-      # cat=plugin.tx_events2//g; type=int+; label=Show records: How many records should be displayed for list view?
-      amountOfRecordsToShow = 15
-    }
     latest {
-      # cat=plugin.tx_events2//h; type=int+; label=Show records: How many records should be displayed for latest view?
+      # cat=plugin.tx_events2//k; type=int+; label=Show records: How many records should be displayed for latest view?
       amountOfRecordsToShow = 7
     }
 
