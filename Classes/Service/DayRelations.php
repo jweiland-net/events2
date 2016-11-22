@@ -229,7 +229,10 @@ class DayRelations
     protected function addDayRecord(\DateTime $day, array $time = array())
     {
         $hour = $minute = '00';
-        if (array_key_exists('time_begin', $time) && strpos($time['time_begin'], ':')) {
+        if (
+            array_key_exists('time_begin', $time) &&
+            preg_match('@^([0-1][0-9]|2[0-3]):[0-5][0-9]$@', $time['time_begin'])
+        ) {
             list($hour, $minute) = explode(':', $time['time_begin']);
         }
         

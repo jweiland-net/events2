@@ -178,7 +178,8 @@ class EventUtility
      */
     public function getFullEventRecord($uid)
     {
-        $event = BackendUtility::getRecord('tx_events2_domain_model_event', $uid);
+        // Yes we repair deleted event records, too. As someone can restore a record from pastebin.
+        $event = BackendUtility::getRecord('tx_events2_domain_model_event', $uid, '*', '', false);
         $this->addExceptionsToEvent($event);
         $this->addTimeRecordsForColumn($event, 'event', 'event_time');
         $this->addTimeRecordsForColumn($event, 'event', 'multiple_times');
