@@ -1,7 +1,7 @@
 <?php
-namespace JWeiland\Events2\Persistence\Generic\Storage;
+namespace JWeiland\Events2\Persistence\Typo362\Generic\Storage;
 
-/*
+/**
  * This file is part of the TYPO3 CMS project.
  *
  * It is free software; you can redistribute it and/or modify it under
@@ -14,8 +14,8 @@ namespace JWeiland\Events2\Persistence\Generic\Storage;
  * The TYPO3 project - inspiring people to share!
  */
 
-use TYPO3\CMS\Extbase\Persistence\Generic\Qom;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\Qom;
 
 /**
  * Overwritten QueryParser with a little implementation of GROUP BY
@@ -30,6 +30,7 @@ class Typo3DbQueryParser extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\
      */
     public function preparseQuery(QueryInterface $query)
     {
+        /** @var \JWeiland\Events2\Persistence\Generic\Query $query */
         list($parameters, $operators) = $this->preparseComparison($query->getConstraint());
         $hashPartials = [
             $query->getQuerySettings(),
@@ -40,10 +41,10 @@ class Typo3DbQueryParser extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\
             $query->getGroupings(),
         ];
         $hash = md5(serialize($hashPartials));
-
+        
         return [$hash, $parameters];
     }
-
+    
     /**
      * Parses the query and returns the SQL statement parts.
      *
@@ -52,16 +53,16 @@ class Typo3DbQueryParser extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\
      */
     public function parseQuery(QueryInterface $query)
     {
-        $this->tablePropertyMap = [];
-        $sql = [];
-        $sql['keywords'] = [];
-        $sql['tables'] = [];
-        $sql['unions'] = [];
-        $sql['fields'] = [];
-        $sql['where'] = [];
-        $sql['additionalWhereClause'] = [];
-        $sql['groupings'] = [];
-        $sql['orderings'] = [];
+        /** @var \JWeiland\Events2\Persistence\Typo362\Generic\Query $query */
+        $sql = array();
+        $sql['keywords'] = array();
+        $sql['tables'] = array();
+        $sql['unions'] = array();
+        $sql['fields'] = array();
+        $sql['where'] = array();
+        $sql['additionalWhereClause'] = array();
+        $sql['groupings'] = array();
+        $sql['orderings'] = array();
         $sql['limit'] = ((int)$query->getLimit() ?: null);
         $sql['offset'] = ((int)$query->getOffset() ?: null);
         $sql['tableAliasMap'] = [];
@@ -70,15 +71,14 @@ class Typo3DbQueryParser extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\
         $this->parseConstraint($query->getConstraint(), $source, $sql);
         $this->parseGroupings($query->getGroupings(), $source, $sql);
         $this->parseOrderings($query->getOrderings(), $source, $sql);
-
-        foreach ($sql['tableAliasMap'] as $tableAlias => $tableName) {
-            $additionalWhereClause = $this->getAdditionalWhereClause($query->getQuerySettings(), $tableName, $tableAlias);
-            if ($additionalWhereClause !== '') {
-                $additionalWhereClause = $this->addNullConditionToStatementIfRequired($sql, $additionalWhereClause, $tableAlias);
-                $sql['additionalWhereClause'][] = $additionalWhereClause;
+    
+        $tableNames = array_unique(array_keys($sql['tables'] + $sql['unions']));
+        foreach ($tableNames as $tableName) {
+            if (is_string($tableName) && !empty($tableName)) {
+                $this->addAdditionalWhereClause($query->getQuerySettings(), $tableName, $sql);
             }
         }
-
+        
         return $sql;
     }
     
@@ -99,9 +99,8 @@ class Typo3DbQueryParser extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\
             if ($source instanceof Qom\SelectorInterface) {
                 $className = $source->getNodeTypeName();
                 $tableName = $this->dataMapper->convertClassNameToTableName($className);
-                $fullPropertyPath = '';
-                while (strpos($propertyName, '.') !== false) {
-                    $this->addUnionStatement($className, $tableName, $propertyName, $sql, $fullPropertyPath);
+                while (strpos($propertyName, '.') !== FALSE) {
+                    $this->addUnionStatement($className, $tableName, $propertyName, $sql);
                 }
             } elseif ($source instanceof Qom\JoinInterface) {
                 $tableName = $source->getLeft()->getSelectorName();
@@ -111,50 +110,6 @@ class Typo3DbQueryParser extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\
                 $sql['groupings'][] = $tableName . '.' . $columnName;
             } else {
                 $sql['groupings'][] = $columnName;
-            }
-    
-        }
-    }
-    
-    /**
-     * Transforms orderings into SQL.
-     *
-     * @param array $orderings An array of orderings (Qom\Ordering)
-     * @param Qom\SourceInterface $source The source
-     * @param array &$sql The query parts
-     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnsupportedOrderException
-     * @return void
-     */
-    protected function parseOrderings(array $orderings, Qom\SourceInterface $source, array &$sql)
-    {
-        foreach ($orderings as $propertyName => $order) {
-            switch ($order) {
-                case QueryInterface::ORDER_ASCENDING:
-                    $order = 'ASC';
-                    break;
-                case QueryInterface::ORDER_DESCENDING:
-                    $order = 'DESC';
-                    break;
-                default:
-                    throw new \TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnsupportedOrderException('Unsupported order encountered.', 1242816074);
-            }
-            $className = '';
-            $tableName = '';
-            if ($source instanceof Qom\SelectorInterface) {
-                $className = $source->getNodeTypeName();
-                $tableName = $this->dataMapper->convertClassNameToTableName($className);
-                $fullPropertyPath = '';
-                while (strpos($propertyName, '.') !== false) {
-                    $this->addUnionStatement($className, $tableName, $propertyName, $sql, $fullPropertyPath);
-                }
-            } elseif ($source instanceof Qom\JoinInterface) {
-                $tableName = $source->getLeft()->getSelectorName();
-            }
-            $columnName = $this->dataMapper->convertPropertyNameToColumnName($propertyName, $className);
-            if ($tableName !== '') {
-                $sql['orderings'][] = $tableName . '.' . $columnName . ' ' . $order;
-            } else {
-                $sql['orderings'][] = $columnName . ' ' . $order;
             }
         }
     }

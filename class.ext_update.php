@@ -14,8 +14,10 @@ namespace JWeiland\Events2;
  * The TYPO3 project - inspiring people to share!
  */
 use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Configuration\FlexForm\FlexFormTools;
+use TYPO3\CMS\Fluid\View\StandaloneView;
 
 /**
  * Update class for the extension manager.
@@ -72,7 +74,13 @@ class ext_update
             'tx_events2_domain_model_event',
             'event_type=' . $this->getDatabaseConnection()->fullQuoteStr('', 'tx_events2_domain_model_event')
         );
-        if ($amountOfRecords > 0) {
+        $fields = $this->getDatabaseConnection()->admin_get_fields('tx_events2_domain_model_event');
+
+        if (
+            array_key_exists('recurring_event', $fields) &&
+            $amountOfRecords > 0
+        ) {
+            // if recurring_event was already deleted in InstallTool, we can not update
             return true;
         }
         
@@ -187,17 +195,27 @@ class ext_update
      */
     protected function generateOutput()
     {
-        $output = '';
+        /** @var FlashMessageService $flashMessageService */
+        $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
+        $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
+
+        /** @var StandaloneView $view */
+        $view = GeneralUtility::makeInstance('TYPO3\\CMS\\Fluid\\View\\StandaloneView');
+        $view->setTemplatePathAndFilename(
+            GeneralUtility::getFileAbsFileName('EXT:events2/Resources/Private/Templates/ExtUpdate.html')
+        );
         foreach ($this->messageArray as $messageItem) {
             /** @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage */
             $flashMessage = GeneralUtility::makeInstance(
                 'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
                 $messageItem[2],
                 $messageItem[1],
-                $messageItem[0]);
-            $output .= $flashMessage->render();
+                $messageItem[0]
+            );
+            
+            $flashMessageQueue->enqueue($flashMessage);
         }
-        return $output;
+        return $view->render();
     }
 
     /**

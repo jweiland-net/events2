@@ -1,7 +1,7 @@
 <?php
-namespace JWeiland\Events2\Persistence\Generic\Storage;
+namespace JWeiland\Events2\Persistence\Typo362\Generic\Storage;
 
-/*
+/**
  * This file is part of the TYPO3 CMS project.
  *
  * It is free software; you can redistribute it and/or modify it under
@@ -24,32 +24,24 @@ class Typo3DbBackend extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo
      * that came from a parsed query.
      *
      * @param array $statementParts
-     * @throws \InvalidArgumentException
      * @return array
      */
-    protected function createQueryCommandParametersFromStatementParts(array $statementParts)
-    {
-        if (isset($statementParts['offset']) && !isset($statementParts['limit'])) {
-            throw new \InvalidArgumentException(
-                'Trying to make query with offset and no limit, the offset would become a limit. You have to set a limit to use offset. To retrieve all rows from a certain offset up to the end of the result set, you can use some large number for the limit.',
-                1465223252
-            );
-        }
-        return [
+    protected function createQueryCommandParametersFromStatementParts(array $statementParts) {
+        return array(
             'selectFields' => implode(' ', $statementParts['keywords']) . ' ' . implode(',', $statementParts['fields']),
             'fromTable'    => implode(' ', $statementParts['tables']) . ' ' . implode(' ', $statementParts['unions']),
             'whereClause'  => (!empty($statementParts['where']) ? implode('', $statementParts['where']) : '1=1')
                 . (!empty($statementParts['additionalWhereClause'])
                     ? ' AND ' . implode(' AND ', $statementParts['additionalWhereClause'])
                     : ''
-            ),
+                ),
             'groupBy'      => (!empty($statementParts['groupings']) ? implode(', ', $statementParts['groupings']) : ''),
             'orderBy'      => (!empty($statementParts['orderings']) ? implode(', ', $statementParts['orderings']) : ''),
             'limit'        => ($statementParts['offset'] ? $statementParts['offset'] . ', ' : '')
                 . ($statementParts['limit'] ? $statementParts['limit'] : '')
-        ];
+        );
     }
-
+    
     /**
      * Fetches the rows directly from the database, not using prepared statement
      *
@@ -68,10 +60,10 @@ class Typo3DbBackend extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo
             $queryCommandParameters['limit']
         );
         $this->checkSqlErrors();
-
+        
         return $rows;
     }
-
+    
     /**
      * Fetches the rows from the database, using prepared statement
      *
@@ -90,10 +82,10 @@ class Typo3DbBackend extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo
             $queryCommandParameters['orderBy'],
             $queryCommandParameters['limit']
         );
-
+        
         $preparedStatement->execute($parameters);
         $rows = $preparedStatement->fetchAll();
-
+        
         $preparedStatement->free();
         return $rows;
     }

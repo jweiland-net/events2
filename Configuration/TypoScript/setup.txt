@@ -44,12 +44,6 @@ plugin.tx_events2 {
       1 = {$plugin.tx_events2.view.layoutRootPath}
     }
   }
-  objects {
-    # We need that to implement a very light version of GROUP BY
-    TYPO3\CMS\Extbase\Persistence\QueryInterface.className = JWeiland\Events2\Persistence\Generic\Query
-    TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo3DbQueryParser.className = JWeiland\Events2\Persistence\Generic\Storage\Typo3DbQueryParser
-    TYPO3\CMS\Extbase\Persistence\Generic\Storage\BackendInterface.className = JWeiland\Events2\Persistence\Generic\Storage\Typo3DbBackend
-  }
   persistence {
     storagePid = {$plugin.tx_events2.persistence.storagePid}
     classes {

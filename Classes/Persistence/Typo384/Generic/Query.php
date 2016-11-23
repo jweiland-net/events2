@@ -1,5 +1,5 @@
 <?php
-namespace JWeiland\Events2\Persistence\Generic;
+namespace JWeiland\Events2\Persistence\Typo384\Generic;
 
 /*
  * This file is part of the TYPO3 CMS project.
