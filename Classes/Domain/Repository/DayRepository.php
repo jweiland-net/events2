@@ -16,7 +16,7 @@ namespace JWeiland\Events2\Domain\Repository;
  */
 use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Model\Search;
-use JWeiland\Events2\Persistence\Generic\Query;
+use JWeiland\Events2\Persistence\Typo362\Generic\Query;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
@@ -112,29 +112,29 @@ class DayRepository extends Repository
                 $today = $this->dateTimeUtility->convert('today');
                 $tomorrow = $this->dateTimeUtility->convert('today');
                 $tomorrow->modify('+1 day');
-                $constraint[] = $query->greaterThanOrEqual('day', $today->format('Y-m-d'));
-                $constraint[] = $query->lessThan('day', $tomorrow->format('Y-m-d'));
+                $constraint[] = $query->greaterThanOrEqual('day', $today);
+                $constraint[] = $query->lessThan('day', $tomorrow);
                 break;
             case 'range':
                 $today = $this->dateTimeUtility->convert('today');
                 $in4months = $this->dateTimeUtility->convert('today');
                 $in4months->modify('+4 weeks');
-                $constraint[] = $query->greaterThanOrEqual('day', $today->format('Y-m-d'));
-                $constraint[] = $query->lessThanOrEqual('day', $in4months->format('Y-m-d'));
+                $constraint[] = $query->greaterThanOrEqual('day', $today);
+                $constraint[] = $query->lessThanOrEqual('day', $in4months);
                 break;
             case 'thisWeek':
                 $weekStart = $this->dateTimeUtility->convert('today');
                 $weekStart->modify('this week'); // 'first day of' does not work for 'weeks'
                 $weekEnd = $this->dateTimeUtility->convert('today');
                 $weekEnd->modify('this week +6 days'); // 'last day of' does not work for 'weeks'
-                $constraint[] = $query->greaterThanOrEqual('day', $weekStart->format('Y-m-d'));
-                $constraint[] = $query->lessThanOrEqual('day', $weekEnd->format('Y-m-d'));
+                $constraint[] = $query->greaterThanOrEqual('day', $weekStart);
+                $constraint[] = $query->lessThanOrEqual('day', $weekEnd);
                 break;
             case 'latest':
             case 'list':
             default:
                 $today = $this->dateTimeUtility->convert('today');
-                $constraint[] = $query->greaterThanOrEqual('day', $today->format('Y-m-d'));
+                $constraint[] = $query->greaterThanOrEqual('day', $today);
                 if (
                     $type === 'latest' &&
                     !empty($this->settings['latest']['amountOfRecordsToShow'])
