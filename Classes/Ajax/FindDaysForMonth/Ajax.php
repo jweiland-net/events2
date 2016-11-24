@@ -177,7 +177,7 @@ class Ajax
                 'uid' => $day->getEvent()->getUid(),
                 'title' => $day->getEvent()->getTitle()
             );
-            $addDay['uri'] = $this->getUriForDay($day->getDay());
+            $addDay['uri'] = $this->getUriForDay($day->getDay()->format('U'));
             $dayOfMonth = $day->getDay()->format('j');
             $dayArray[$dayOfMonth][] = $addDay;
         }
