@@ -43,10 +43,10 @@ class ext_update
      * @var array
      */
     protected $scaMapping = array(
-        'Event->listLatest;Event->show;Day->show;Location->show;Video->show' => 'Day->listLatest;Day->show;Day->showByDate;Location->show;Video->show',
-        'Event->listToday;Event->show;Day->show;Location->show;Video->show' => 'Day->listToday;Day->show;Day->showByDate;Location->show;Video->show',
-        'Event->listRange;Event->show;Day->show;Location->show;Video->show' => 'Day->listThisWeek;Day->show;Day->showByDate;Location->show;Video->show',
-        'Event->listThisWeek;Event->show;Day->show;Location->show;Video->show' => 'Day->listRange;Day->show;Day->showByDate;Location->show;Video->show'
+        'Event->listLatest;Event->show;Day->show;Location->show;Video->show' => 'Day->listLatest;Day->show;Day->showByTimestamp;Location->show;Video->show',
+        'Event->listToday;Event->show;Day->show;Location->show;Video->show' => 'Day->listToday;Day->show;Day->showByTimestamp;Location->show;Video->show',
+        'Event->listRange;Event->show;Day->show;Location->show;Video->show' => 'Day->listThisWeek;Day->show;Day->showByTimestamp;Location->show;Video->show',
+        'Event->listThisWeek;Event->show;Day->show;Location->show;Video->show' => 'Day->listRange;Day->show;Day->showByTimestamp;Location->show;Video->show'
     );
 
     /**
