@@ -216,11 +216,11 @@ class DayRepository extends Repository
     /**
      * Find days/events by timestamp
      *
-     * @param \DateTime $date
+     * @param int $timestamp
      *
      * @return QueryResult
      */
-    public function findByDate(\DateTime $date)
+    public function findByTimestamp($timestamp)
     {
         $constraint = array();
         $query = $this->createQuery();
@@ -231,7 +231,7 @@ class DayRepository extends Repository
             }
             $constraint[] = $query->logicalOr($orConstraint);
         }
-        $constraint[] = $query->equals('day', $date->format('Y-m-d'));
+        $constraint[] = $query->equals('day', $timestamp);
         /** @var QueryResult $result */
         $result = $query->matching($query->logicalAnd($constraint))->execute();
         

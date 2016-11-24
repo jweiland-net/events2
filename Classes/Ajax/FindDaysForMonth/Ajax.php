@@ -201,38 +201,38 @@ class Ajax
             return '';
         }
     }
-
+    
     /**
      * We can't create the uri within a JavaScript for-loop.
      * This way we also have realurl functionality
      * We need the current day for calendar and day controller.
      *
-     * @param \DateTime $date
+     * @param int $timestamp
      *
      * @return string
      */
-    public function getUriForDay(\DateTime $date)
+    public function getUriForDay($timestamp)
     {
         // uriBuilder is very slow: 223ms for 31 links */
         /*$uri = $this->uriBuilder
             ->reset()
             ->setTargetPageUid($pid)
             ->uriFor('show', array('day' => $dayUid), 'Day', 'events2', 'events');*/
-
+        
         // create uri manually instead of uriBuilder
         $siteUrl = GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . 'index.php?';
         $query = array(
             'id' => $this->getArgument('pidOfListPage'),
             'tx_events2_events' => array(
                 'controller' => 'Day',
-                'action' => 'showByDate',
-                'date' => $date->format('Y-m-d'),
+                'action' => 'showByTimestamp',
+                'timestamp' => (int)$timestamp,
             ),
         );
         $cacheHashArray = $this->cacheHashCalculator->getRelevantParameters(GeneralUtility::implodeArrayForUrl('', $query));
         $query['cHash'] = $this->cacheHashCalculator->calculateCacheHash($cacheHashArray);
         $uri = $siteUrl . http_build_query($query);
-
+        
         return $uri;
     }
 
