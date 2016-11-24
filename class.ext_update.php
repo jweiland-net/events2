@@ -127,11 +127,11 @@ class ext_update
             'event_type=' . $this->getDatabaseConnection()->fullQuoteStr('', 'tx_events2_domain_model_event')
         );
         if (empty($rows)) {
-            // everything migrated or error, because recurring was already deleted
+            // everything migrated
             $this->messageArray[] = array(
-                FlashMessage::WARNING,
-                'Error while migration',
-                'It seems that you have compared all cols against TCA in Installtool already. Please add new cols only, than migrate the old records and then you can delete unneeded cols in Installtool.'
+                FlashMessage::INFO,
+                'Event records already migrated',
+                'I have not found any event records for migration. Maybe you have started this script a second time.'
             );
             return null;
         }
@@ -178,7 +178,8 @@ class ext_update
                 $where,
                 array(
                     'pi_flexform' => $replace
-                )
+                ),
+                array('pi_flexform')
             );
         }
         $this->messageArray[] = array(

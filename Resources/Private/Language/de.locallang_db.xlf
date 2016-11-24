@@ -70,7 +70,7 @@
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.event_type.duration">
 				<source>Duration</source>
-				<target>Durchgängig</target>
+				<target>Mehrtägig</target>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.top_of_list">
 				<source>Top of list</source>
