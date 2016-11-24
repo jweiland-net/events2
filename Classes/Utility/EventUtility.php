@@ -127,10 +127,12 @@ class EventUtility
     protected function getDifferentTimesForDay(Event $event, Day $day)
     {
         $times = new \SplObjectStorage();
-        /** @var \JWeiland\Events2\Domain\Model\Time $time */
-        foreach ($event->getDifferentTimes() as $time) {
-            if (strtolower($time->getWeekday()) === strtolower($day->getDay()->format('l'))) {
-                $times->attach($time);
+        if ($event->getEventType() !== 'single') {
+            /** @var \JWeiland\Events2\Domain\Model\Time $time */
+            foreach ($event->getDifferentTimes() as $time) {
+                if (strtolower($time->getWeekday()) === strtolower($day->getDay()->format('l'))) {
+                    $times->attach($time);
+                }
             }
         }
 
@@ -156,7 +158,10 @@ class EventUtility
 
         // add value of multiple times
         // but only if checkbox "same day" is set
-        if ($event->getSameDay()) {
+        if (
+            $event->getSameDay() &&
+            $event->getEventType() !== 'single'
+        ) {
             $multipleTimes = $event->getMultipleTimes();
             /* @var \JWeiland\Events2\Domain\Model\Time $time */
             foreach ($multipleTimes as $multipleTime) {

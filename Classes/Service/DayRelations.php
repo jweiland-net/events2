@@ -177,7 +177,11 @@ class DayRelations
     protected function getDifferentTimesForDay(\DateTime $day)
     {
         $times = array();
-        if (!empty($this->eventRecord['different_times'])) {
+        if (
+            $this->eventRecord['event_type'] !== 'single' &&
+            !empty($this->eventRecord['different_times'])
+        ) {
+            // you only can set different times in case of type "duration" and "recurring". But not: single
             foreach ($this->eventRecord['different_times'] as $time) {
                 if (strtolower($time['weekday']) === strtolower($day->format('l'))) {
                     $times[] = $time;
@@ -206,7 +210,9 @@ class DayRelations
         
         // add value of multiple times
         // but only if checkbox "same day" is set
+        // and event type is NOT single
         if (
+            $this->eventRecord['event_type'] !== 'single' &&
             $this->eventRecord['same_day'] &&
             !empty($this->eventRecord['multiple_times'])
         ) {
@@ -228,7 +234,7 @@ class DayRelations
      */
     protected function addDayRecord(\DateTime $day, array $time = array())
     {
-        $hour = $minute = '00';
+        $hour = $minute = 0;
         if (
             array_key_exists('time_begin', $time) &&
             preg_match('@^([0-1][0-9]|2[0-3]):[0-5][0-9]$@', $time['time_begin'])
@@ -237,12 +243,15 @@ class DayRelations
         }
         
         $dayTime = clone $day;
-        $dayTime->modify($hour . ':' . $minute . ':00');
-        $dayTime->setTimezone(new \DateTimeZone('UTC'));
+        $dayTime->modify(sprintf(
+            '+%d hour +%d minute',
+            (int)$hour,
+            (int)$minute
+        ));
         
         $fieldsArray = array();
-        $fieldsArray['day'] = $day->format('Y-m-d');
-        $fieldsArray['day_time'] = $dayTime->format('Y-m-d H:i:s');
+        $fieldsArray['day'] = $day->format('U');
+        $fieldsArray['day_time'] = $dayTime->format('U');
         $fieldsArray['event'] = (int)$this->eventRecord['uid'];
         $fieldsArray['deleted'] = (int)$this->eventRecord['deleted'];
         $fieldsArray['hidden'] = (int)$this->eventRecord['hidden'];

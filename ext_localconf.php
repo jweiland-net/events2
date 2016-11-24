@@ -109,23 +109,6 @@ if (TYPO3_MODE === 'BE') {
     }
 }
 
-// We overwrite some extbase classes to add a little group by implementation
-/** @var $extbaseObjectContainer \TYPO3\CMS\Extbase\Object\Container\Container */
-$extbaseObjectContainer = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\Container\\Container');
-if (\TYPO3\CMS\Core\Utility\VersionNumberUtility::convertVersionNumberToInteger(TYPO3_branch) >= 8004000) {
-    $extbaseObjectContainer->registerImplementation('TYPO3\\CMS\\Extbase\\Persistence\\QueryInterface', 'JWeiland\\Events2\\Persistence\\Typo384\\Generic\\Query');
-    $extbaseObjectContainer->registerImplementation('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\Storage\\Typo3DbQueryParser', 'JWeiland\\Events2\\Persistence\\Typo384\\Generic\\Storage\\Typo3DbQueryParser');
-} elseif (\TYPO3\CMS\Core\Utility\VersionNumberUtility::convertVersionNumberToInteger(TYPO3_branch) >= 7006000) {
-    $extbaseObjectContainer->registerImplementation('TYPO3\\CMS\\Extbase\\Persistence\\QueryInterface', 'JWeiland\\Events2\\Persistence\\Typo376\\Generic\\Query');
-    $extbaseObjectContainer->registerImplementation('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\Storage\\BackendInterface', 'JWeiland\\Events2\\Persistence\\Typo376\\Generic\\Storage\\Typo3DbBackend');
-    $extbaseObjectContainer->registerImplementation('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\Storage\\Typo3DbQueryParser', 'JWeiland\\Events2\\Persistence\\Typo376\\Generic\\Storage\\Typo3DbQueryParser');
-} else {
-    $extbaseObjectContainer->registerImplementation('TYPO3\\CMS\\Extbase\\Persistence\\QueryInterface', 'JWeiland\\Events2\\Persistence\\Typo362\\Generic\\Query');
-    $extbaseObjectContainer->registerImplementation('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\Storage\\BackendInterface', 'JWeiland\\Events2\\Persistence\\Typo362\\Generic\\Storage\\Typo3DbBackend');
-    $extbaseObjectContainer->registerImplementation('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\Storage\\Typo3DbQueryParser', 'JWeiland\\Events2\\Persistence\\Typo362\\Generic\\Storage\\Typo3DbQueryParser');
-}
-unset($extbaseObjectContainer);
-
 // register eID scripts
 $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['events2findDaysForMonth'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('events2') . 'Classes/Ajax/FindDaysForMonth.php';
 $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['events2findLocations'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('events2') . 'Classes/Ajax/FindLocations.php';

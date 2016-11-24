@@ -22,7 +22,6 @@ return array(
             'config' => array(
                 'type' => 'input',
                 'eval' => 'date',
-                'dbType' => 'date'
             ),
         ),
         'day_time' => array(
@@ -31,7 +30,6 @@ return array(
             'config' => array(
                 'type' => 'input',
                 'eval' => 'datetime',
-                'dbType' => 'datetime'
             ),
         ),
         'event' => array(

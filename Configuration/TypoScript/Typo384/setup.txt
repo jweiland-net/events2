@@ -1,0 +1,8 @@
+<INCLUDE_TYPOSCRIPT: source="FILE:../General/setup.txt">
+
+plugin.tx_events2_events {
+  objects {
+    TYPO3\CMS\Extbase\Persistence\QueryInterface.className = JWeiland\Events2\Persistence\Typo384\Generic\Query
+    TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo3DbQueryParser.className = JWeiland\Events2\Persistence\Typo384\Generic\Storage\Typo3DbQueryParser
+  }
+}

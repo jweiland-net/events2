@@ -52,7 +52,13 @@ if (TYPO3_MODE === 'BE') {
     );
 }
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'Events');
+if (\TYPO3\CMS\Core\Utility\VersionNumberUtility::convertVersionNumberToInteger(TYPO3_branch) >= 8004000) {
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript/Typo384', 'Events (>=8.4)');
+} elseif (\TYPO3\CMS\Core\Utility\VersionNumberUtility::convertVersionNumberToInteger(TYPO3_branch) >= 7006000) {
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript/Typo376', 'Events (>=7.6)');
+} else {
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript/Typo362', 'Events (>=6.2)');
+}
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr('tx_events2_domain_model_event', 'EXT:events2/Resources/Private/Language/locallang_csh_tx_events2_domain_model_event.xlf');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('tx_events2_domain_model_event');
@@ -71,7 +77,7 @@ if (TYPO3_MODE === 'BE') {
 
 if (
     TYPO3_MODE === 'BE' &&
-    !\TYPO3\CMS\Core\Utility\GeneralUtility::compat_version('7.0')
+    \TYPO3\CMS\Core\Utility\VersionNumberUtility::convertVersionNumberToInteger(TYPO3_branch) < 7000000
 ) {
     $extRelPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('events2');
     \TYPO3\CMS\Backend\Sprite\SpriteManager::addSingleIcons(

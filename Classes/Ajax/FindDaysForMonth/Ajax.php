@@ -96,7 +96,7 @@ class Ajax
     public function initialize(array $arguments)
     {
         // load cached TCA. Needed for enableFields
-        Bootstrap::getInstance()->loadCachedTca();
+        Bootstrap::getInstance()->loadExtensionTables();
         $this->setArguments($arguments);
     }
 
