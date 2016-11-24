@@ -20,6 +20,7 @@ use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
 
@@ -306,8 +307,8 @@ class Ajax
             }
             $constraint[] = $query->logicalOr($orConstraint);
         }
-        $constraint[] = $query->greaterThanOrEqual('day', $monthBegin->format('Y-m-d'));
-        $constraint[] = $query->lessThan('day', $monthEnd->format('Y-m-d'));
+        $constraint[] = $query->greaterThanOrEqual('day', $monthBegin);
+        $constraint[] = $query->lessThan('day', $monthEnd);
         
         return $query->matching($query->logicalAnd($constraint))->execute();
     }
