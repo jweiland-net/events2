@@ -10,7 +10,7 @@
 				<div class="panel-body">
 					<div class="media-body">
 						<f:render section="title" arguments="{day: day}" />
-						<f:render partial="Event/Teaser" arguments="{event: day.event}" />
+						<p>{day.event.teaser}</p>
 					</div>
 					<div class="media-right">
 						<f:render section="firstImage" arguments="{event: day.event}" />

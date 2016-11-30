@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Persistence\Typo376\Generic\Storage;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
@@ -30,7 +31,7 @@ class Typo3DbQueryParser extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\
      */
     public function preparseQuery(QueryInterface $query)
     {
-        /** @var \JWeiland\Events2\Persistence\Generic\Query $query */
+        /** @var \JWeiland\Events2\Persistence\Typo376\Generic\Query $query */
         list($parameters, $operators) = $this->preparseComparison($query->getConstraint());
         $hashPartials = [
             $query->getQuerySettings(),
@@ -98,23 +99,27 @@ class Typo3DbQueryParser extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\
         foreach ($groupings as $propertyName) {
             $className = '';
             $tableName = '';
-            if ($source instanceof Qom\SelectorInterface) {
+            $columnName = '';
+            if (!preg_match('@^[a-zA-Z0-9\.]+$@', $propertyName)) {
+                // a special MySQL part
+                $columnName = $propertyName;
+            } elseif ($source instanceof Qom\SelectorInterface) {
                 $className = $source->getNodeTypeName();
                 $tableName = $this->dataMapper->convertClassNameToTableName($className);
                 $fullPropertyPath = '';
                 while (strpos($propertyName, '.') !== false) {
                     $this->addUnionStatement($className, $tableName, $propertyName, $sql, $fullPropertyPath);
                 }
+                $columnName = $this->dataMapper->convertPropertyNameToColumnName($propertyName, $className);
             } elseif ($source instanceof Qom\JoinInterface) {
                 $tableName = $source->getLeft()->getSelectorName();
+                $columnName = $this->dataMapper->convertPropertyNameToColumnName($propertyName, $className);
             }
-            $columnName = $this->dataMapper->convertPropertyNameToColumnName($propertyName, $className);
             if ($tableName !== '') {
                 $sql['groupings'][] = $tableName . '.' . $columnName;
             } else {
                 $sql['groupings'][] = $columnName;
             }
-    
         }
     }
 }

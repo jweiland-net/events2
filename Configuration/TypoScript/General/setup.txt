@@ -122,14 +122,6 @@ module.tx_events2 {
   persistence < plugin.tx_events2.persistence
 }
 
-config.tx_extbase {
-  objects {
-    Tx_Extbase_Persistence_Mapper_DataMapFactory {
-      className = Tx_Events2_Persistence_Mapper_DataMapFactory
-    }
-  }
-}
-
 plugin.tx_events2._CSS_DEFAULT_STYLE (
   textarea.f3-form-error {
     background-color:#FF9F9F;

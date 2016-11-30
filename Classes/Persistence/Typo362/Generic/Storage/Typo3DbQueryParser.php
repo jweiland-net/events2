@@ -96,16 +96,21 @@ class Typo3DbQueryParser extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\
         foreach ($groupings as $propertyName) {
             $className = '';
             $tableName = '';
-            if ($source instanceof Qom\SelectorInterface) {
+            $columnName = '';
+            if (!preg_match('@^[a-zA-Z0-9\.]+$@', $propertyName)) {
+                // a special MySQL part
+                $columnName = $propertyName;
+            } elseif ($source instanceof Qom\SelectorInterface) {
                 $className = $source->getNodeTypeName();
                 $tableName = $this->dataMapper->convertClassNameToTableName($className);
                 while (strpos($propertyName, '.') !== FALSE) {
                     $this->addUnionStatement($className, $tableName, $propertyName, $sql);
                 }
+                $columnName = $this->dataMapper->convertPropertyNameToColumnName($propertyName, $className);
             } elseif ($source instanceof Qom\JoinInterface) {
                 $tableName = $source->getLeft()->getSelectorName();
+                $columnName = $this->dataMapper->convertPropertyNameToColumnName($propertyName, $className);
             }
-            $columnName = $this->dataMapper->convertPropertyNameToColumnName($propertyName, $className);
             if ($tableName !== '') {
                 $sql['groupings'][] = $tableName . '.' . $columnName;
             } else {
