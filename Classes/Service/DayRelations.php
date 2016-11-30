@@ -140,7 +140,10 @@ class DayRelations
             foreach ($timesFromExceptions as $exception) {
                 if (
                     $exception['exception_date'] == $day->format('U') &&
-                    $exception['exception_type'] == 'Add' || $exception['exception_type'] == 'Time'
+                    (
+                        $exception['exception_type'] == 'Add' ||
+                        $exception['exception_type'] == 'Time'
+                    )
                 ) {
                     foreach ($exception['exception_time'] as $time) {
                         $times[] = $time;
