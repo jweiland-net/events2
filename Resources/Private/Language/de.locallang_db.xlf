@@ -313,20 +313,20 @@
 				<target>Sonntag</target>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_time.time_begin">
-				<source>Time Begin</source>
-				<target>Beginn</target>
+				<source>Time Begin (Format: hh:mm)</source>
+				<target>Beginn (Format: hh:mm)</target>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_time.time_entry">
-				<source>Time Entry</source>
-				<target>Einlass</target>
+				<source>Time Entry (Format: hh:mm)</source>
+				<target>Einlass (Format: hh:mm)</target>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_time.duration">
-				<source>Duration</source>
-				<target>Dauer</target>
+				<source>Duration (Format: hh:mm)</source>
+				<target>Dauer (Format: hh:mm)</target>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_time.time_end">
-				<source>Time End</source>
-				<target>Ende</target>
+				<source>Time End (Format: hh:mm)</source>
+				<target>Ende (Format: hh:mm)</target>
 			</trans-unit>
 
 			<trans-unit id="tx_events2_domain_model_exception">

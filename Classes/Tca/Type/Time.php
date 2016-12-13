@@ -30,7 +30,7 @@ class Time
      */
     public function returnFieldJS()
     {
-        return 'return value;';
+        return 'alert(value);return value;';
     }
 
     /**

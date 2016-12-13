@@ -242,16 +242,16 @@
 				<source>Sunday</source>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_time.time_begin">
-				<source>Time Begin</source>
+				<source>Time Begin (Format: hh:mm)</source>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_time.time_entry">
-				<source>Time Entry</source>
+				<source>Time Entry (Format: hh:mm)</source>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_time.duration">
-				<source>Duration</source>
+				<source>Duration (Format: hh:mm)</source>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_time.time_end">
-				<source>Time End</source>
+				<source>Time End (Format: hh:mm)</source>
 			</trans-unit>
 
 			<trans-unit id="tx_events2_domain_model_exception">
