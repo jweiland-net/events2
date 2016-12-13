@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Domain\Repository;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Model\Search;
 use JWeiland\Events2\Persistence\Typo362\Generic\Query;
@@ -90,6 +91,7 @@ class DayRepository extends Repository
     {
         /** @var Query $query */
         $query = $this->createQuery();
+        $this->addGroupingToQuery($query);
         $constraint = array();
         
         if (!empty($this->settings['categories'])) {
@@ -141,14 +143,6 @@ class DayRepository extends Repository
                 ) {
                     $query->setLimit((int)$this->settings['latest']['amountOfRecordsToShow']);
                 }
-        }
-        if ($this->settings['mergeEvents']) {
-            // grouping is a special feature of events2
-            // and only valid for MySQL
-            $query->setGroupings(array(
-                'event',
-                'CASE WHEN tx_events2_domain_model_event.event_type != "duration" THEN day ELSE 0 END'
-            ));
         }
         
         /** @var QueryResult $result */
@@ -218,6 +212,24 @@ class DayRepository extends Repository
     }
     
     /**
+     * Find day by UID
+     *
+     * @param int $day
+     *
+     * @return Day
+     */
+    public function findByDay($day)
+    {
+        /** @var \JWeiland\Events2\Persistence\Typo376\Generic\Query $query */
+        $query = $this->createQuery();
+        $this->addGroupingToQuery($query);
+        $query->matching($query->equals('uid', (int)$day));
+        /** @var Day $day */
+        $day = $query->execute()->getFirst();
+        return $day;
+    }
+    
+    /**
      * Find days/events by timestamp
      *
      * @param int $timestamp
@@ -228,6 +240,7 @@ class DayRepository extends Repository
     {
         $constraint = array();
         $query = $this->createQuery();
+        $this->addGroupingToQuery($query);
         if (!empty($this->settings['categories'])) {
             $orConstraint = array();
             foreach (GeneralUtility::intExplode(',', $this->settings['categories']) as $category) {
@@ -240,5 +253,25 @@ class DayRepository extends Repository
         $result = $query->matching($query->logicalAnd($constraint))->execute();
         
         return $result;
+    }
+    
+    /**
+     * Add special grouping if set in settings
+     *
+     * @param QueryInterface $query
+     *
+     * @return void
+     */
+    protected function addGroupingToQuery(QueryInterface $query)
+    {
+        /** @var \JWeiland\Events2\Persistence\Typo376\Generic\Query $query */
+        if ($this->settings['mergeEvents']) {
+            // grouping is a special feature of events2
+            // and only valid for MySQL
+            $query->setGroupings(array(
+                'event',
+                'CASE WHEN tx_events2_domain_model_event.event_type != "duration" THEN day ELSE 0 END'
+            ));
+        }
     }
 }
