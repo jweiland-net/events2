@@ -204,9 +204,10 @@ class EventUtility
     {
         if ($event['exceptions']) {
             $where = sprintf(
-                'event=%d AND exception_type IN (%s, %s) %s %s',
+                'event=%d AND exception_type IN (%s, %s, %s) %s %s',
                 $event['uid'],
                 $this->getDatabaseConnection()->fullQuoteStr('Add', 'tx_events2_domain_model_exception'),
+                $this->getDatabaseConnection()->fullQuoteStr('Remove', 'tx_events2_domain_model_exception'),
                 $this->getDatabaseConnection()->fullQuoteStr('Time', 'tx_events2_domain_model_exception'),
                 BackendUtility::BEenableFields('tx_events2_domain_model_exception'),
                 BackendUtility::deleteClause('tx_events2_domain_model_exception')
