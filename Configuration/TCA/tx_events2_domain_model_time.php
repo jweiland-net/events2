@@ -8,6 +8,7 @@ return array(
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
         'hideTable' => true,
+        'default_sortby' => 'ORDER BY time_begin',
         'versioningWS' => 2,
         'versioning_followPages' => true,
         'origUid' => 't3_origuid',
