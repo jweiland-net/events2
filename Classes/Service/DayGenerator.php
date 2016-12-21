@@ -298,7 +298,7 @@ class DayGenerator
     protected function getEarliestDateForGeneratedDays(\DateTime $eventBegin)
     {
         $earliestEventBegin = clone $this->dateTimeUtility->convert('today');
-        $earliestEventBegin->modify('-'.$this->extConf->getRecurringPast().' months');
+        $earliestEventBegin->modify('-' . $this->extConf->getRecurringPast() . ' months');
 
         if ($earliestEventBegin > $eventBegin) {
             return $earliestEventBegin;
@@ -315,22 +315,11 @@ class DayGenerator
     protected function getXth()
     {
         $result = array();
-        $isXthSet = false;
         foreach ($this->getItemsFromTca('xth') as $key => $item) {
             $value = (bool)($this->eventRecord['xth'] & pow(2, $key));
             $result[$item[1]] = $value;
-            if ($value) {
-                $isXthSet = true;
-            }
         }
-
-        // if no xth checkbox was set, each xth is valid
-        if ($isXthSet === false) {
-            foreach ($result as $key => $value) {
-                $result[$key] = true;
-            }
-        }
-
+        
         return $result;
     }
 
@@ -342,20 +331,9 @@ class DayGenerator
     protected function getWeekday()
     {
         $result = array();
-        $isWeekdaySet = false;
         foreach ($this->getItemsFromTca('weekday') as $key => $item) {
             $value = (bool)($this->eventRecord['weekday'] & pow(2, $key));
             $result[$item[1]] = $value;
-            if ($value) {
-                $isWeekdaySet = true;
-            }
-        }
-
-        // if no weekday checkbox was set, each weekday is valid
-        if ($isWeekdaySet === false) {
-            foreach ($result as $key => $value) {
-                $result[$key] = true;
-            }
         }
 
         return $result;
@@ -435,7 +413,7 @@ class DayGenerator
         // we need this to have a date where time is set to 00:00:00
         $day = $this->dateTimeUtility->convert('today');
         $lastDayOfMonth = $this->dateTimeUtility->convert('today');
-        $lastDayOfMonth->modify('last day of '.$month.' '.$year.'23:59:59');
+        $lastDayOfMonth->modify('last day of ' . $month . ' ' . $year . '23:59:59');
         $eventBegin = $this->getEarliestDateForGeneratedDays($this->getEventBegin()); // prevent from calling it multiple times in foreach
         $maxDate = $this->getMaxDateForGeneratedDays($this->getEventBegin()); // prevent from calling it multiple times in foreach
 
@@ -443,7 +421,7 @@ class DayGenerator
             foreach ($this->getWeekday() as $weekdayIndex => $weekday) {
                 if ($xth && $weekday) {
                     // example: 'second wednesday of March 2013'
-                    $modifyString = $xthIndex.' '.$weekdayIndex.' of '.$month.' '.$year;
+                    $modifyString = $xthIndex . ' ' . $weekdayIndex . ' of ' . $month . ' ' . $year;
                     $day->modify($modifyString);
                     if ($day >= $eventBegin && $day < $lastDayOfMonth && $day <= $maxDate) {
                         $this->addDayToStorage($day);
