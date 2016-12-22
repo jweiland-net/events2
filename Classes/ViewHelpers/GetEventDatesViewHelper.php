@@ -129,7 +129,7 @@ class GetEventDatesViewHelper extends AbstractViewHelper
         // I have to reduce days with help of PHP. Maybe it will work with TYPO3 7.0
         
         /** @var \JWeiland\Events2\Domain\Model\Day $day */
-        foreach ($this->event->getDays() as $day) {
+        foreach ($this->getGroupedDays() as $day) {
             // only add days of today and in future
             if ($day->getDay() >= $today) {
                 // some days can start multiple times each day
@@ -146,6 +146,23 @@ class GetEventDatesViewHelper extends AbstractViewHelper
                 }
             }
         }
+    }
+    
+    /**
+     * return grouped days
+     *
+     * @return array
+     */
+    protected function getGroupedDays()
+    {
+        $days = array();
+        
+        /** @var \JWeiland\Events2\Domain\Model\Day $day */
+        foreach ($this->event->getDays() as $day) {
+            $days[$day->getDay()->format('U')] = $day;
+        }
+        
+        return $days;
     }
     
     /**
