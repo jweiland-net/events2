@@ -50,7 +50,7 @@ class GetMergedEventTimesViewHelper extends AbstractViewHelper
      */
     public function render(Day $day, $directReturn = false)
     {
-        $times = $this->eventUtility->getTimesForDay($day->getEvent(), $day);
+        $times = $this->eventUtility->getSortedTimesForDay($day->getEvent(), $day);
         if ($times->count() === 1 && $directReturn) {
             $times->rewind();
             /** @var Time $time */
