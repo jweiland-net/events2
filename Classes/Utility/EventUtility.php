@@ -114,6 +114,34 @@ class EventUtility
         // if there are no times available return empty SplObjectStorage
         return new \SplObjectStorage();
     }
+    
+    /**
+     * get sorted times for specified day
+     *
+     * @param Event $event
+     * @param Day   $day
+     *
+     * @return \SplObjectStorage
+     */
+    public function getSortedTimesForDay(Event $event, Day $day)
+    {
+        // @ToDo: I'm sure there are better ways to do this:
+        $sortedTimes = array();
+        $sortedStorage = new \SplObjectStorage();
+        
+        $times = $this->getTimesForDay($event, $day);
+        /** @var Time $time */
+        foreach ($times as $time) {
+            $sortedTimes[$time->getTimeBegin()] = $time;
+        }
+        
+        ksort($sortedTimes);
+        
+        foreach ($sortedTimes as $time) {
+            $sortedStorage->attach($time);
+        }
+        return $sortedStorage;
+    }
 
     /**
      * you can override the times in an event for a special weekday

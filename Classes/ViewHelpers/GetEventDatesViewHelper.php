@@ -133,7 +133,7 @@ class GetEventDatesViewHelper extends AbstractViewHelper
             // only add days of today and in future
             if ($day->getDay() >= $today) {
                 // some days can start multiple times each day
-                $times = $this->eventUtility->getTimesForDay($this->event, $day);
+                $times = $this->eventUtility->getSortedTimesForDay($this->event, $day);
                 if ($times->count()) {
                     foreach ($times as $time) {
                         $days[] = $this->buildDayArray($day, $time);
