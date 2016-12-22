@@ -75,6 +75,7 @@ CREATE TABLE tx_events2_domain_model_day (
 
 	day int(11) unsigned DEFAULT '0' NOT NULL,
 	day_time int(11) unsigned DEFAULT '0' NOT NULL,
+	sort_day_time int(11) unsigned DEFAULT '0' NOT NULL,
 	event int(11) unsigned DEFAULT '0' NOT NULL,
 
 	tstamp int(11) unsigned DEFAULT '0' NOT NULL,

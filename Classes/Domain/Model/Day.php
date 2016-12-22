@@ -36,6 +36,13 @@ class Day extends AbstractEntity
     protected $dayTime;
     
     /**
+     * SortDayTime.
+     *
+     * @var \DateTime
+     */
+    protected $sortDayTime;
+    
+    /**
      * Event.
      *
      * @var \JWeiland\Events2\Domain\Model\Event
@@ -82,6 +89,27 @@ class Day extends AbstractEntity
     public function setDayTime($dayTime)
     {
         $this->dayTime = $dayTime;
+    }
+    
+    /**
+     * Returns the sortDayTime
+     *
+     * @return \DateTime $sortDayTime
+     */
+    public function getSortDayTime()
+    {
+        return $this->sortDayTime;
+    }
+    
+    /**
+     * Sets the sortDayTime
+     *
+     * @param \DateTime $sortDayTime
+     * @return void
+     */
+    public function setSortDayTime($sortDayTime)
+    {
+        $this->sortDayTime = $sortDayTime;
     }
 
     /**

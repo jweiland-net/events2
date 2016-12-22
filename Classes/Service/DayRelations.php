@@ -252,9 +252,20 @@ class DayRelations
             (int)$minute
         ));
         
+        if (
+            $this->eventRecord['event_type'] === 'duration' ||
+            $this->eventRecord['event_type'] === 'single'
+        ) {
+            $sortDayTime = $this->eventRecord['event_begin'];
+            $sortDayTime += ($hour * 60 * 60) + $minute * 60;
+        } else {
+            $sortDayTime = $dayTime->format('U');
+        }
+        
         $fieldsArray = array();
         $fieldsArray['day'] = $day->format('U');
         $fieldsArray['day_time'] = $dayTime->format('U');
+        $fieldsArray['sort_day_time'] = $sortDayTime;
         $fieldsArray['event'] = (int)$this->eventRecord['uid'];
         $fieldsArray['deleted'] = (int)$this->eventRecord['deleted'];
         $fieldsArray['hidden'] = (int)$this->eventRecord['hidden'];
