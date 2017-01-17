@@ -45,6 +45,7 @@ class DayRepository extends Repository
     protected $defaultOrderings = array(
         'event.topOfList' => QueryInterface::ORDER_DESCENDING,
         'sortDayTime' => QueryInterface::ORDER_ASCENDING,
+        'dayTime' => QueryInterface::ORDER_ASCENDING
     );
     
     /**
