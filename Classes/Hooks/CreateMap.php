@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Hooks;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Maps2\Domain\Model\Location;
 use JWeiland\Maps2\Domain\Model\RadiusResult;
 use JWeiland\Maps2\Utility\GeocodeUtility;
@@ -38,6 +39,11 @@ class CreateMap
     protected $geocodeUtility;
     
     /**
+     * @var ExtConf
+     */
+    protected $extConf;
+    
+    /**
      * Current location record
      *
      * @var array
@@ -50,16 +56,17 @@ class CreateMap
     public function init()
     {
         $this->objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+        $this->extConf = GeneralUtility::makeInstance('JWeiland\\Events2\\Configuration\\ExtConf');
         $this->geocodeUtility = $this->objectManager->get('JWeiland\\Maps2\\Utility\\GeocodeUtility');
     }
 
     /**
      * try to find a similar poiCollection. If found connect it with current record.
      *
-     * @param string                                   $status     "new" od something else to update the record
-     * @param string                                   $table      The table name
-     * @param int                                      $uid        The UID of the new or updated record. Can be prepended with NEW if record is new. Use: $this->substNEWwithIDs to convert
-     * @param array                                    $fieldArray The fields of the current record
+     * @param string      $status     "new" od something else to update the record
+     * @param string      $table      The table name
+     * @param int         $uid        The UID of the new or updated record. Can be prepended with NEW if record is new. Use: $this->substNEWwithIDs to convert
+     * @param array       $fieldArray The fields of the current record
      * @param DataHandler $pObj
      */
     public function processDatamap_afterDatabaseOperations($status, $table, $uid, array $fieldArray, DataHandler $pObj)
@@ -123,7 +130,9 @@ class CreateMap
         $address[] = $this->currentRecord['house_number'];
         $address[] = $this->currentRecord['zip'];
         $address[] = $this->currentRecord['city'];
-        $address[] = 'Deutschland';
+        if ($this->extConf->getDefaultCountry()) {
+            $address[] = $this->extConf->getDefaultCountry();
+        }
 
         return implode(' ', $address);
     }

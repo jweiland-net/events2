@@ -16,6 +16,9 @@
 			<trans-unit id="recurringFuture">
 				<source>x months in future: When creating a new recurring event this extension can create related day records for the next x months.</source>
 			</trans-unit>
+			<trans-unit id="defaultCountry">
+				<source>Default country: If you're only working for one specified country while creating/editing POIs in backend it would be cool to set a country by default. So you only need to add street and city to find a POI. If you need POIs from all over the world, please keep this field empty</source>
+			</trans-unit>
 
 			<trans-unit id="emailFromAddress" xml:space="preserve">
 				<source>email from address: The senders email address. If not given the extension tries to get one from INSTALL_TOOL.</source>

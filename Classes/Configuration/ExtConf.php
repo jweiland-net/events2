@@ -42,14 +42,21 @@ class ExtConf implements SingletonInterface
      * @var int
      */
     protected $recurringPast = 0;
-
+    
     /**
      * recurring future.
      *
      * @var int
      */
     protected $recurringFuture = 0;
-
+    
+    /**
+     * default country.
+     *
+     * @var string
+     */
+    protected $defaultCountry = '';
+    
     /**
      * email from address.
      *
@@ -149,10 +156,7 @@ class ExtConf implements SingletonInterface
      */
     public function getRecurringPast()
     {
-        if (
-            MathUtility::canBeInterpretedAsInteger($this->recurringPast) &&
-            $this->recurringPast >= 0
-        ) {
+        if ($this->recurringPast >= 0) {
             return $this->recurringPast;
         } else {
             return 3;
@@ -192,6 +196,27 @@ class ExtConf implements SingletonInterface
     {
         $this->recurringFuture = (int)$recurringFuture;
     }
+    
+    /**
+     * Returns the defaultCountry
+     *
+     * @return string $defaultCountry
+     */
+    public function getDefaultCountry()
+    {
+        return $this->defaultCountry;
+    }
+    
+    /**
+     * Sets the defaultCountry
+     *
+     * @param string $defaultCountry
+     * @return void
+     */
+    public function setDefaultCountry($defaultCountry)
+    {
+        $this->defaultCountry = (string)$defaultCountry;
+    }
 
     /**
      * getter for email from address.
@@ -205,7 +230,7 @@ class ExtConf implements SingletonInterface
         if (empty($this->emailFromAddress)) {
             $senderMail = $GLOBALS['TYPO3_CONF_VARS']['MAIL']['defaultMailFromAddress'];
             if (empty($senderMail)) {
-                throw new \Exception('You have forgotten to set a sender email address in extension configuration or in install tool');
+                throw new \Exception('You have forgotten to set a sender email address in extension configuration or in install tool', 1484823422);
             } else {
                 return $senderMail;
             }
@@ -236,7 +261,7 @@ class ExtConf implements SingletonInterface
         if (empty($this->emailFromName)) {
             $senderName = $GLOBALS['TYPO3_CONF_VARS']['MAIL']['defaultMailFromName'];
             if (empty($senderName)) {
-                throw new \Exception('You have forgotten to set a sender name in extension configuration or in install tool');
+                throw new \Exception('You have forgotten to set a sender name in extension configuration or in install tool', 1484823661);
             } else {
                 return $senderName;
             }

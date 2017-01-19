@@ -28,7 +28,10 @@ class ExtConfTest extends UnitTestCase
      * @var \JWeiland\Events2\Configuration\ExtConf
      */
     protected $subject;
-
+    
+    /**
+     * @var string
+     */
     protected $backupExtConfOfEvents = '';
 
     /**
@@ -52,6 +55,98 @@ class ExtConfTest extends UnitTestCase
     {
         $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['events2'] = $this->backupExtConfOfEvents;
         unset($this->subject);
+    }
+    
+    /**
+     * @test
+     */
+    public function getPoiCollectionPidInitiallyReturnsZero() {
+        $this->assertSame(
+            0,
+            $this->subject->getPoiCollectionPid()
+        );
+    }
+    
+    /**
+     * @test
+     */
+    public function setPoiCollectionPidSetsPoiCollectionPid() {
+        $this->subject->setPoiCollectionPid(123456);
+    
+        $this->assertSame(
+            123456,
+            $this->subject->getPoiCollectionPid()
+        );
+    }
+    
+    /**
+     * @test
+     */
+    public function setPoiCollectionPidWithStringResultsInInteger() {
+        $this->subject->setPoiCollectionPid('123Test');
+    
+        $this->assertSame(
+            123,
+            $this->subject->getPoiCollectionPid()
+        );
+    }
+    
+    /**
+     * @test
+     */
+    public function setPoiCollectionPidWithBooleanResultsInInteger() {
+        $this->subject->setPoiCollectionPid(TRUE);
+    
+        $this->assertSame(
+            1,
+            $this->subject->getPoiCollectionPid()
+        );
+    }
+    
+    /**
+     * @test
+     */
+    public function getRootUidInitiallyReturnsZero() {
+        $this->assertSame(
+            0,
+            $this->subject->getRootUid()
+        );
+    }
+    
+    /**
+     * @test
+     */
+    public function setRootUidSetsRootUid() {
+        $this->subject->setRootUid(123456);
+    
+        $this->assertSame(
+            123456,
+            $this->subject->getRootUid()
+        );
+    }
+    
+    /**
+     * @test
+     */
+    public function setRootUidWithStringResultsInInteger() {
+        $this->subject->setRootUid('123Test');
+    
+        $this->assertSame(
+            123,
+            $this->subject->getRootUid()
+        );
+    }
+    
+    /**
+     * @test
+     */
+    public function setRootUidWithBooleanResultsInInteger() {
+        $this->subject->setRootUid(TRUE);
+    
+        $this->assertSame(
+            1,
+            $this->subject->getRootUid()
+        );
     }
 
     /**
@@ -92,11 +187,11 @@ class ExtConfTest extends UnitTestCase
     /**
      * @test
      */
-    public function setRecurringPastWithInvalidValueWillReturnDefaultValueInGetter()
+    public function setRecurringPastWithInvalidValueWillReturnIntCastedValueInGetter()
     {
         $this->subject->setRecurringPast('invalidValue');
         $this->assertSame(
-            3,
+            0,
             $this->subject->getRecurringPast()
         );
     }
@@ -146,5 +241,201 @@ class ExtConfTest extends UnitTestCase
             6,
             $this->subject->getRecurringFuture()
         );
+    }
+    
+    /**
+     * @test
+     */
+    public function getDefaultCountryInitiallyReturnsEmptyString() {
+        $this->assertSame(
+            '',
+            $this->subject->getDefaultCountry()
+        );
+    }
+    
+    /**
+     * @test
+     */
+    public function setDefaultCountrySetsDefaultCountry() {
+        $this->subject->setDefaultCountry('foo bar');
+    
+        $this->assertSame(
+            'foo bar',
+            $this->subject->getDefaultCountry()
+        );
+    }
+    
+    /**
+     * @test
+     */
+    public function setDefaultCountryWithIntegerResultsInString() {
+        $this->subject->setDefaultCountry(123);
+        $this->assertSame('123', $this->subject->getDefaultCountry());
+    }
+    
+    /**
+     * @test
+     */
+    public function setDefaultCountryWithBooleanResultsInString() {
+        $this->subject->setDefaultCountry(TRUE);
+        $this->assertSame('1', $this->subject->getDefaultCountry());
+    }
+    
+    /**
+     * @test
+     *
+     * @expectedException \Exception
+     * @expectedExceptionCode 1484823422
+     */
+    public function getEmailFromAddressInitiallyReturnsEmptyString() {
+        $this->assertSame(
+            '',
+            $this->subject->getEmailFromAddress()
+        );
+    }
+    
+    /**
+     * @test
+     */
+    public function setEmailFromAddressSetsEmailFromAddress() {
+        $this->subject->setEmailFromAddress('foo bar');
+    
+        $this->assertSame(
+            'foo bar',
+            $this->subject->getEmailFromAddress()
+        );
+    }
+    
+    /**
+     * @test
+     */
+    public function setEmailFromAddressWithIntegerResultsInString() {
+        $this->subject->setEmailFromAddress(123);
+        $this->assertSame('123', $this->subject->getEmailFromAddress());
+    }
+    
+    /**
+     * @test
+     */
+    public function setEmailFromAddressWithBooleanResultsInString() {
+        $this->subject->setEmailFromAddress(TRUE);
+        $this->assertSame('1', $this->subject->getEmailFromAddress());
+    }
+    
+    /**
+     * @test
+     *
+     * @expectedException \Exception
+     * @expectedExceptionCode 1484823661
+     */
+    public function getEmailFromNameInitiallyReturnsEmptyString() {
+        $this->assertSame(
+            '',
+            $this->subject->getEmailFromName()
+        );
+    }
+    
+    /**
+     * @test
+     */
+    public function setEmailFromNameSetsEmailFromName() {
+        $this->subject->setEmailFromName('foo bar');
+    
+        $this->assertSame(
+            'foo bar',
+            $this->subject->getEmailFromName()
+        );
+    }
+    
+    /**
+     * @test
+     */
+    public function setEmailFromNameWithIntegerResultsInString() {
+        $this->subject->setEmailFromName(123);
+        $this->assertSame('123', $this->subject->getEmailFromName());
+    }
+    
+    /**
+     * @test
+     */
+    public function setEmailFromNameWithBooleanResultsInString() {
+        $this->subject->setEmailFromName(TRUE);
+        $this->assertSame('1', $this->subject->getEmailFromName());
+    }
+    
+    /**
+     * @test
+     */
+    public function getEmailToAddressInitiallyReturnsEmptyString() {
+        $this->assertSame(
+            '',
+            $this->subject->getEmailToAddress()
+        );
+    }
+    
+    /**
+     * @test
+     */
+    public function setEmailToAddressSetsEmailToAddress() {
+        $this->subject->setEmailToAddress('foo bar');
+    
+        $this->assertSame(
+            'foo bar',
+            $this->subject->getEmailToAddress()
+        );
+    }
+    
+    /**
+     * @test
+     */
+    public function setEmailToAddressWithIntegerResultsInString() {
+        $this->subject->setEmailToAddress(123);
+        $this->assertSame('123', $this->subject->getEmailToAddress());
+    }
+    
+    /**
+     * @test
+     */
+    public function setEmailToAddressWithBooleanResultsInString() {
+        $this->subject->setEmailToAddress(TRUE);
+        $this->assertSame('1', $this->subject->getEmailToAddress());
+    }
+    
+    /**
+     * @test
+     */
+    public function getEmailToNameInitiallyReturnsEmptyString() {
+        $this->assertSame(
+            '',
+            $this->subject->getEmailToName()
+        );
+    }
+    
+    /**
+     * @test
+     */
+    public function setEmailToNameSetsEmailToName() {
+        $this->subject->setEmailToName('foo bar');
+    
+        $this->assertSame(
+            'foo bar',
+            $this->subject->getEmailToName()
+        );
+    }
+    
+    /**
+     * @test
+     */
+    public function setEmailToNameWithIntegerResultsInString() {
+        $this->subject->setEmailToName(123);
+        $this->assertSame('123', $this->subject->getEmailToName());
+    }
+    
+    /**
+     * @test
+     */
+    public function setEmailToNameWithBooleanResultsInString() {
+        $this->subject->setEmailToName(TRUE);
+        $this->assertSame('1', $this->subject->getEmailToName());
     }
 }

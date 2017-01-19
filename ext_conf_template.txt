@@ -1,16 +1,18 @@
-# cat=basic; type=int+; label = LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:poiCollectionPid
+# cat=basic; type=int+; label=LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:poiCollectionPid
 poiCollectionPid = 0
-# cat=basic; type=int+; label = LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:rootUid
+# cat=basic; type=int+; label=LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:rootUid
 rootUid = 0
-# cat=basic; type=int+; label = LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:recurringPast
+# cat=basic; type=int+; label=LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:recurringPast
 recurringPast = 3
-# cat=basic; type=int+; label = LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:recurringFuture
+# cat=basic; type=int+; label=LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:recurringFuture
 recurringFuture = 6
-# cat=basic; type=string; label = LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:emailFromAddress
+# cat=basic; type=string; label=LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:defaultCountry
+defaultCountry =
+# cat=basic; type=string; label=LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:emailFromAddress
 emailFromAddress =
-# cat=basic; type=string; label = LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:emailFromName
+# cat=basic; type=string; label=LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:emailFromName
 emailFromName =
-# cat=basic; type=string; label = LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:emailToAddress
+# cat=basic; type=string; label=LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:emailToAddress
 emailToAddress =
-# cat=basic; type=string; label = LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:emailToName
+# cat=basic; type=string; label=LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:emailToName
 emailToName =
