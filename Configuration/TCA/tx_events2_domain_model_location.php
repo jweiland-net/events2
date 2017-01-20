@@ -1,4 +1,6 @@
 <?php
+/** @var \JWeiland\Events2\Configuration\ExtConf $extConf */
+$extConf = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('JWeiland\\Events2\\Configuration\\ExtConf');
 return array(
     'ctrl' => array(
         'title' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_location',
@@ -23,7 +25,7 @@ return array(
         'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('events2') . 'Resources/Public/Icons/tx_events2_domain_model_location.png',
     ),
     'interface' => array(
-        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, location, street, house_number, zip, city, tx_maps2_uid',
+        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, location, street, house_number, zip, city, country, tx_maps2_uid',
     ),
     'columns' => array(
         'sys_language_uid' => array(
@@ -150,6 +152,31 @@ return array(
                 'eval' => 'trim',
             ),
         ),
+        'country' => array(
+            'exclude' => 1,
+            'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_location.country',
+            'config' => array(
+                'type' => 'select',
+                'items' => array(
+                    array('', 0),
+                ),
+                'foreign_table' => 'static_countries',
+                'foreign_table_where' => 'ORDER BY static_countries.cn_short_en',
+                'itemsProcFunc' => 'SJBR\\StaticInfoTables\\Hook\\Backend\\Form\\FormDataProvider\\TcaSelectItemsProcessor->translateCountriesSelector',
+                'size' => 1,
+                'minitems' => 0,
+                'maxitems' => 1,
+                'default' => $extConf->getDefaultCountry(),
+                'wizards' => array(
+                    'suggest' => array(
+                        'type' => 'suggest',
+                        'default' => array(
+                            'receiverClass' => 'SJBR\\StaticInfoTables\\Hook\\Backend\\Form\\Wizard\\SuggestReceiver'
+                        ),
+                    ),
+                ),
+            ),
+        ),
         'tx_maps2_uid' => array(
             'exclude' => 1,
             'label' => 'LLL:EXT:maps2/Resources/Private/Language/locallang_db.xlf:tx_maps2_uid',
@@ -178,7 +205,7 @@ return array(
         ),
     ),
     'types' => array(
-        '1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, location, street, house_number, zip, city, tx_maps2_uid, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime'),
+        '1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, location, street, house_number, zip, city, country, tx_maps2_uid, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime'),
     ),
     'palettes' => array(
         '1' => array('showitem' => ''),

@@ -300,6 +300,9 @@
 			<trans-unit id="tx_events2_domain_model_location.city">
 				<source>City</source>
 			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_location.country">
+				<source>Country</source>
+			</trans-unit>
 
 			<trans-unit id="tx_events2_domain_model_organizer">
 				<source>Organizer</source>

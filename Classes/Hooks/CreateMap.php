@@ -39,11 +39,6 @@ class CreateMap
     protected $geocodeUtility;
     
     /**
-     * @var ExtConf
-     */
-    protected $extConf;
-    
-    /**
      * Current location record
      *
      * @var array
@@ -56,7 +51,6 @@ class CreateMap
     public function init()
     {
         $this->objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        $this->extConf = GeneralUtility::makeInstance('JWeiland\\Events2\\Configuration\\ExtConf');
         $this->geocodeUtility = $this->objectManager->get('JWeiland\\Maps2\\Utility\\GeocodeUtility');
     }
 
@@ -130,9 +124,7 @@ class CreateMap
         $address[] = $this->currentRecord['house_number'];
         $address[] = $this->currentRecord['zip'];
         $address[] = $this->currentRecord['city'];
-        if ($this->extConf->getDefaultCountry()) {
-            $address[] = $this->extConf->getDefaultCountry();
-        }
+        $address[] = $this->currentRecord['country'];
 
         return implode(' ', $address);
     }
