@@ -7,6 +7,7 @@ return array(
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
+        'dividers2tabs' => true,
         'hideTable' => true,
         'default_sortby' => 'ORDER BY time_begin',
         'versioningWS' => 2,

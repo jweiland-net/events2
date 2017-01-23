@@ -6,6 +6,7 @@ return array(
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
+        'dividers2tabs' => true,
         'default_sortby' => 'ORDER BY organizer',
         'versioningWS' => 2,
         'versioning_followPages' => true,

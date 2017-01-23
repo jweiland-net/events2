@@ -1,6 +1,14 @@
 <?php
 /** @var \JWeiland\Events2\Configuration\ExtConf $extConf */
 $extConf = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('JWeiland\\Events2\\Configuration\\ExtConf');
+if (version_compare(TYPO3_branch, '7.0', '>=')) {
+    $staticInfoItemProcessor = 'SJBR\\StaticInfoTables\\Hook\\Backend\\Form\\FormDataProvider\\TcaSelectItemsProcessor->translateCountriesSelector';
+    $staticInfoSuggestReceiver = 'SJBR\\StaticInfoTables\\Hook\\Backend\\Form\\Wizard\\SuggestReceiver';
+} else {
+    $staticInfoItemProcessor = 'SJBR\\StaticInfoTables\\Hook\\Backend\\Form\\ElementRenderingHelper->translateCountriesSelector';
+    $staticInfoSuggestReceiver = 'SJBR\\StaticInfoTables\\Hook\\Backend\\Form\\SuggestReceiver';
+}
+
 return array(
     'ctrl' => array(
         'title' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_location',
@@ -8,6 +16,7 @@ return array(
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
+        'dividers2tabs' => true,
         'default_sortby' => 'ORDER BY location',
         'versioningWS' => 2,
         'versioning_followPages' => true,
@@ -162,7 +171,7 @@ return array(
                 ),
                 'foreign_table' => 'static_countries',
                 'foreign_table_where' => 'ORDER BY static_countries.cn_short_en',
-                'itemsProcFunc' => 'SJBR\\StaticInfoTables\\Hook\\Backend\\Form\\FormDataProvider\\TcaSelectItemsProcessor->translateCountriesSelector',
+                'itemsProcFunc' => $staticInfoItemProcessor,
                 'size' => 1,
                 'minitems' => 0,
                 'maxitems' => 1,
@@ -171,7 +180,7 @@ return array(
                     'suggest' => array(
                         'type' => 'suggest',
                         'default' => array(
-                            'receiverClass' => 'SJBR\\StaticInfoTables\\Hook\\Backend\\Form\\Wizard\\SuggestReceiver'
+                            'receiverClass' => $staticInfoSuggestReceiver
                         ),
                     ),
                 ),
