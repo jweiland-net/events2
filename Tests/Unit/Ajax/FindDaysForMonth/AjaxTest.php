@@ -266,7 +266,7 @@ class AjaxTest extends UnitTestCase
         $this->subject->setArguments(array('pidOfListPage' => $pageUid));
         $this->subject->injectCacheHashCalculator(new CacheHashCalculator());
         $this->assertRegExp(
-            '~^(http|https)://(.*?)id='.$pageUid.'&tx_events2_events%5Bcontroller%5D=Day&tx_events2_events%5Baction%5D=showByDate&tx_events2_events%5Btimestamp%5D=' . $timestamp . '&cHash=[0-9a-f]{32}$~',
+            '~^(http|https)://(.*?)id='.$pageUid.'&tx_events2_events%5Bcontroller%5D=Day&tx_events2_events%5Baction%5D=showByTimestamp&tx_events2_events%5Btimestamp%5D=' . $timestamp . '&cHash=[0-9a-f]{32}$~',
             $this->subject->getUriForDay($timestamp)
         );
     }

@@ -401,6 +401,7 @@ class EventUtilityTest extends UnitTestCase
         $differentTimes->attach($time);
 
         $event = new Event();
+        $event->setEventType('recurring');
         $event->setDifferentTimes($differentTimes);
         $day = new Day();
         $day->setDay($today);
@@ -482,6 +483,7 @@ class EventUtilityTest extends UnitTestCase
         $multipleTimes->attach($multipleTime);
 
         $event = new Event();
+        $event->setEventType('recurring');
         $event->setEventTime($time);
         $event->setMultipleTimes($multipleTimes);
         // with following we also test protected function getTimesFromEvent

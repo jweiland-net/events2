@@ -159,8 +159,8 @@ class DayGeneratorTest extends UnitTestCase
             'event_type' => 'recurring',
             'event_begin' => 123456789,
             'event_end' => 0,
-            'xth' => 0,
-            'weekday' => 0,
+            'xth' => 31,
+            'weekday' => 127,
             'each_weeks' => 0,
             'exceptions' => 0,
         );
@@ -181,8 +181,8 @@ class DayGeneratorTest extends UnitTestCase
             'event_type' => 'recurring',
             'event_begin' => 123456789,
             'event_end' => 0,
-            'xth' => 0,
-            'weekday' => 0,
+            'xth' => 31,
+            'weekday' => 127,
             'each_weeks' => 1,
             'exceptions' => 0,
         );
@@ -209,8 +209,8 @@ class DayGeneratorTest extends UnitTestCase
             'event_type' => 'recurring',
             'event_begin' => $eventBegin->format('U'),
             'event_end' => $eventEnd->format('U'),
-            'xth' => 0,
-            'weekday' => 0,
+            'xth' => 31,
+            'weekday' => 127,
             'each_weeks' => 1,
             'exceptions' => 0,
         );
@@ -246,8 +246,8 @@ class DayGeneratorTest extends UnitTestCase
             'event_type' => 'recurring',
             'event_begin' => $eventBegin->format('U'),
             'event_end' => $eventEnd->format('U'),
-            'xth' => 0,
-            'weekday' => 0,
+            'xth' => 31,
+            'weekday' => 127,
             'each_weeks' => 1,
             'exceptions' => 0,
         );
@@ -289,8 +289,8 @@ class DayGeneratorTest extends UnitTestCase
             'event_type' => 'recurring',
             'event_begin' => $eventBegin->format('U'),
             'event_end' => $eventEnd->format('U'),
-            'xth' => 0,
-            'weekday' => 0,
+            'xth' => 31,
+            'weekday' => 127,
             'each_weeks' => 2,
             'exceptions' => 0,
         );
@@ -325,8 +325,8 @@ class DayGeneratorTest extends UnitTestCase
             'event_type' => 'recurring',
             'event_begin' => $eventBegin->format('U'),
             'recurring_end' => $recurringEnd->format('U'),
-            'xth' => 0,
-            'weekday' => 0,
+            'xth' => 31,
+            'weekday' => 127,
             'each_weeks' => 0,
             'exceptions' => 0,
         );
@@ -352,8 +352,8 @@ class DayGeneratorTest extends UnitTestCase
             'event_type' => 'recurring',
             'event_begin' => $eventBegin->format('U'),
             'recurring_end' => $recurringEnd->format('U'),
-            'xth' => 0,
-            'weekday' => 0,
+            'xth' => 31,
+            'weekday' => 127,
             'each_weeks' => 0,
             'exceptions' => 0,
         );
@@ -386,7 +386,7 @@ class DayGeneratorTest extends UnitTestCase
             'event_type' => 'recurring',
             'event_begin' => $eventBegin->format('U'),
             'recurring_end' => $recurringEnd->format('U'),
-            'xth' => 0, // all
+            'xth' => 31, // all
             'weekday' => 87, // mo, tu, we, fr, su
             'each_weeks' => 0,
             'exceptions' => 0,
@@ -423,7 +423,7 @@ class DayGeneratorTest extends UnitTestCase
     {
         // this date has to be updated each 6 month.
         // Set it to a month which starts with a thursday
-        $eventBegin = new \DateTime('17.09.2016');
+        $eventBegin = new \DateTime('17.06.2017');
         $eventBegin->modify('midnight');
         $recurringEnd = clone $eventBegin;
         $recurringEnd->modify('+20 days'); // 06.02.1015
@@ -471,8 +471,8 @@ class DayGeneratorTest extends UnitTestCase
             'event_type' => 'recurring',
             'event_begin' => $eventBegin->format('U'),
             'recurring_end' => $recurringEnd->format('U'),
-            'xth' => 0,
-            'weekday' => 0,
+            'xth' => 31,
+            'weekday' => 127,
             'each_weeks' => 0,
             'exceptions' => 0,
         );
@@ -501,8 +501,8 @@ class DayGeneratorTest extends UnitTestCase
         $event = array(
             'event_type' => 'single',
             'event_begin' => $eventBegin->format('U'),
-            'xth' => 0,
-            'weekday' => 0,
+            'xth' => 31,
+            'weekday' => 127,
             'each_weeks' => 0,
             'exceptions' => 0,
         );
@@ -528,8 +528,8 @@ class DayGeneratorTest extends UnitTestCase
             'event_type' => 'single',
             'event_begin' => $eventBegin->format('U'),
             'event_end' => 0,
-            'xth' => 0,
-            'weekday' => 0,
+            'xth' => 31,
+            'weekday' => 127,
             'each_weeks' => 0,
             'exceptions' => array(
                 0 => 'TestValue',
@@ -559,8 +559,8 @@ class DayGeneratorTest extends UnitTestCase
             'event_type' => 'single',
             'event_begin' => $eventBegin->format('U'),
             'event_end' => 0,
-            'xth' => 0,
-            'weekday' => 0,
+            'xth' => 31,
+            'weekday' => 127,
             'each_weeks' => 0,
             'exceptions' => array(
                 0 => array(
@@ -595,8 +595,8 @@ class DayGeneratorTest extends UnitTestCase
             'event_type' => 'duration',
             'event_begin' => $eventBegin->format('U'),
             'event_end' => $tomorrow->format('U'),
-            'xth' => 0,
-            'weekday' => 0,
+            'xth' => 31,
+            'weekday' => 127,
             'each_weeks' => 0,
             'exceptions' => array(
                 0 => array(
@@ -630,8 +630,8 @@ class DayGeneratorTest extends UnitTestCase
             'event_type' => 'duration',
             'event_begin' => $eventBegin->format('U'),
             'event_end' => $tomorrow->format('U'),
-            'xth' => 0,
-            'weekday' => 0,
+            'xth' => 31,
+            'weekday' => 127,
             'each_weeks' => 0,
             'exceptions' => array(
                 0 => array(
@@ -665,8 +665,8 @@ class DayGeneratorTest extends UnitTestCase
             'event_type' => 'duration',
             'event_begin' => $eventBegin->format('U'),
             'event_end' => $tomorrow->format('U'),
-            'xth' => 0,
-            'weekday' => 0,
+            'xth' => 31,
+            'weekday' => 127,
             'each_weeks' => 0,
             'exceptions' => array(
                 0 => array(
@@ -702,8 +702,8 @@ class DayGeneratorTest extends UnitTestCase
             'event_type' => 'duration',
             'event_begin' => $eventBegin->format('U'),
             'event_end' => $tomorrow->format('U'),
-            'xth' => 0,
-            'weekday' => 0,
+            'xth' => 31,
+            'weekday' => 127,
             'each_weeks' => 0,
             'exceptions' => array(
                 0 => array(

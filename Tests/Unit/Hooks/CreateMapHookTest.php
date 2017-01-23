@@ -31,31 +31,43 @@ class CreateMapTest extends UnitTestCase
      */
     protected $subject;
     
-    /**
-     * @var ExtConf|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $extConf;
-    
     public function setUp()
     {
-        $this->extConf = $this->getMock(ExtConf::class, array(), array(), '', false);
         $this->subject = $this->getAccessibleMock(
             CreateMap::class,
             array('dummy')
         );
-        $this->subject->_set('extConf', $this->extConf);
     }
     
     public function tearDown()
     {
         unset($this->subject);
-        unset($this->extConf);
     }
     
     /**
      * @test
      */
-    public function getAddressDoesNotAddCountryByDefault()
+    public function getAddressWithAllValues()
+    {
+        $this->subject->_set('currentRecord', array(
+            'uid' => 123,
+            'street' => 'Echterdinger Straße',
+            'house_number' => '57',
+            'zip' => 70794,
+            'city' => 'Filderstadt',
+            'country' => 'Deutschland'
+        
+        ));
+        $this->assertSame(
+            'Echterdinger Straße 57 70794 Filderstadt Deutschland',
+            $this->subject->getAddress()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function getAddressWithNonGivenCountry()
     {
         $this->subject->_set('currentRecord', array(
             'uid' => 123,
@@ -74,23 +86,17 @@ class CreateMapTest extends UnitTestCase
     /**
      * @test
      */
-    public function getAddressRespectsCountryFromExtConf()
+    public function getAddressWithHouseNumberInStreet()
     {
-        $this->extConf
-            ->expects($this->exactly(2))
-            ->method('getDefaultCountry')
-            ->willReturn('Deutschland');
-        
         $this->subject->_set('currentRecord', array(
             'uid' => 123,
-            'street' => 'Echterdinger Straße',
-            'house_number' => '57',
+            'street' => 'Echterdinger Straße 57',
             'zip' => 70794,
             'city' => 'Filderstadt'
         
         ));
         $this->assertSame(
-            'Echterdinger Straße 57 70794 Filderstadt Deutschland',
+            'Echterdinger Straße 57 70794 Filderstadt',
             $this->subject->getAddress()
         );
     }

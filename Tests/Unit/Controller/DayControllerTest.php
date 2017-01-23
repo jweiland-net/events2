@@ -245,7 +245,7 @@ class DayControllerTest extends UnitTestCase
     /**
      * @test
      */
-    public function showByDateWithTimestampCallsAssign()
+    public function showByTimestampWithTimestampCallsAssign()
     {
         $timestamp = 1234567890;
         
@@ -266,7 +266,7 @@ class DayControllerTest extends UnitTestCase
         $this->subject->injectDayRepository($this->dayRepository);
         $this->subject->_set('view', $this->view);
 
-        $this->subject->showByDateAction($timestamp);
+        $this->subject->showByTimestampAction($timestamp);
     }
     
     /**
@@ -274,15 +274,15 @@ class DayControllerTest extends UnitTestCase
      *
      * @expectedException \PHPUnit_Framework_Error_Warning
      */
-    public function showByDateWithoutTimestampThrowsException()
+    public function showByTimestampWithoutTimestampThrowsException()
     {
-        $this->subject->showByDateAction();
+        $this->subject->showByTimestampAction();
     }
     
     /**
      * @test
      */
-    public function showByDateWithoutTimestampCallsFindByTimestampWith0()
+    public function showByTimestampWithoutTimestampCallsFindByTimestampWith0()
     {
         $this->dayRepository
             ->expects($this->once())
@@ -301,6 +301,6 @@ class DayControllerTest extends UnitTestCase
         $this->subject->injectDayRepository($this->dayRepository);
         $this->subject->_set('view', $this->view);
     
-        $this->subject->showByDateAction('abc');
+        $this->subject->showByTimestampAction('abc');
     }
 }

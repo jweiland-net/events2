@@ -380,9 +380,6 @@ class DayRelationsTest extends UnitTestCase
         
         $this->subject->_set('eventRecord', array('uid' => 12));
 
-        $this->assertSame(
-            123,
-            $this->subject->addDay($today)
-        );
+        $this->subject->addDay($today);
     }
 }

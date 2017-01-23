@@ -221,7 +221,6 @@ class EventControllerTest extends UnitTestCase
         $this->eventRepository
             ->expects($this->once())
             ->method('findMyEvents')
-            ->with($this->equalTo(123))
             ->willReturn(array());
         
         $this->view

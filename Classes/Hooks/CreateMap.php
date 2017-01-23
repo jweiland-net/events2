@@ -120,11 +120,14 @@ class CreateMap
     public function getAddress()
     {
         $address = array();
-        $address[] = $this->currentRecord['street'];
-        $address[] = $this->currentRecord['house_number'];
-        $address[] = $this->currentRecord['zip'];
-        $address[] = $this->currentRecord['city'];
-        $address[] = $this->currentRecord['country'];
+        $addressParts = array('street', 'house_number', 'zip', 'city', 'country');
+        
+        foreach ($addressParts as $addressPart) {
+            $value = trim($this->currentRecord[$addressPart]);
+            if (!empty($value)) {
+                $address[] = $this->currentRecord[$addressPart];
+            }
+        }
 
         return implode(' ', $address);
     }
