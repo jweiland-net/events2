@@ -124,7 +124,16 @@ class CreateMap
         
         foreach ($addressParts as $addressPart) {
             $value = trim($this->currentRecord[$addressPart]);
-            if (!empty($value)) {
+            if ($addressPart === 'country') {
+                $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+                    'cn_short_en',
+                    'static_countries',
+                    'uid=' . (int)$this->currentRecord[$addressPart]
+                );
+                if (!empty($row)) {
+                    $address[] = $row['cn_short_en'];
+                }
+            } elseif(!empty($value)) {
                 $address[] = $this->currentRecord[$addressPart];
             }
         }
