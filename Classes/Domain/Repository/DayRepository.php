@@ -269,9 +269,12 @@ class DayRepository extends Repository
         if ($this->settings['mergeEvents']) {
             // grouping is a special feature of events2
             // and only valid for MySQL
-            $query->setGroupings(array(
+            /*$query->setGroupings(array(
                 'event',
-                'CASE WHEN tx_events2_domain_model_event.event_type != "duration" THEN day ELSE 0 END'
+                'CASE WHEN `tx_events2_domain_model_event`.`event_type` != "duration" THEN day ELSE 0 END'
+            ));*/
+            $query->setGroupings(array(
+                'event'
             ));
         }
     }
