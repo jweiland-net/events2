@@ -22,6 +22,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class DayRelations
 {
+    /**
+     * @var array
+     */
     protected $eventRecord = array();
 
     /**
@@ -38,6 +41,11 @@ class DayRelations
      * @var \JWeiland\Events2\Utility\DateTimeUtility
      */
     protected $dateTimeUtility;
+    
+    /**
+     * @var array
+     */
+    protected $cachedSortDayTime = array();
 
     /**
      * inject dayGenerator.
@@ -245,27 +253,10 @@ class DayRelations
             list($hour, $minute) = explode(':', $time['time_begin']);
         }
         
-        $dayTime = clone $day;
-        $dayTime->modify(sprintf(
-            '+%d hour +%d minute',
-            (int)$hour,
-            (int)$minute
-        ));
-        
-        if (
-            $this->eventRecord['event_type'] === 'duration' ||
-            $this->eventRecord['event_type'] === 'single'
-        ) {
-            $sortDayTime = $this->eventRecord['event_begin'];
-            $sortDayTime += ($hour * 60 * 60) + $minute * 60;
-        } else {
-            $sortDayTime = $dayTime->format('U');
-        }
-        
         $fieldsArray = array();
         $fieldsArray['day'] = $day->format('U');
-        $fieldsArray['day_time'] = $dayTime->format('U');
-        $fieldsArray['sort_day_time'] = $sortDayTime;
+        $fieldsArray['day_time'] = $this->getDayTime($day, $hour, $minute)->format('U');
+        $fieldsArray['sort_day_time'] = $this->getSortDayTime($day, $hour, $minute);
         $fieldsArray['event'] = (int)$this->eventRecord['uid'];
         $fieldsArray['deleted'] = (int)$this->eventRecord['deleted'];
         $fieldsArray['hidden'] = (int)$this->eventRecord['hidden'];
@@ -285,6 +276,68 @@ class DayRelations
         }
         
         return $insertId;
+    }
+    
+    /**
+     * Get day time
+     * Each day individual hour and minute will be added to day
+     *
+     * Day: 17.01.2017 00:00:00 + 8h + 30m
+     * Day: 18.01.2017 00:00:00 + 10h + 15m
+     * Day: 19.01.2017 00:00:00 + 9h + 25m
+     * Day: 20.01.2017 00:00:00 + 14h + 45m
+     *
+     * @param \DateTime $day
+     * @param int $hour
+     * @param int $minute
+     *
+     * @return \DateTime
+     */
+    protected function getDayTime(\DateTime $day, $hour, $minute)
+    {
+        // Don't modify original day
+        $dayTime = clone $day;
+        $dayTime->modify(sprintf(
+            '+%d hour +%d minute',
+            (int)$hour,
+            (int)$minute
+        ));
+        return $dayTime;
+    }
+    
+    /**
+     * Get timestamp which is the same for all event days of type duration
+     * Instead of getDayTime this method will return the same timestamp for all days in event
+     *
+     * Day: 17.01.2017 00:00:00 + 8h + 30m  = 17.01.2017 08:30:00
+     * Day: 18.01.2017 00:00:00 + 10h + 15m = 17.01.2017 08:30:00
+     * Day: 19.01.2017 00:00:00 + 9h + 25m  = 17.01.2017 08:30:00
+     * Day: 20.01.2017 00:00:00 + 14h + 45m = 17.01.2017 08:30:00
+     *
+     * @param \DateTime $day
+     * @param int $hour
+     * @param int $minute
+     *
+     * @return int
+     */
+    protected function getSortDayTime(\DateTime $day, $hour, $minute)
+    {
+        if (array_key_exists($this->eventRecord['uid'], $this->cachedSortDayTime)) {
+            return (int)$this->cachedSortDayTime[$this->eventRecord['uid']];
+        }
+        
+        if (in_array($this->eventRecord['event_type'], array('duration', 'single'))) {
+            $sortDayTime = $this->eventRecord['event_begin'];
+            $sortDayTime += ($hour * 60 * 60) + $minute * 60;
+            
+            $this->cachedSortDayTime = array(
+                $this->eventRecord['uid'] => $sortDayTime
+            );
+        } else {
+            $sortDayTime = $this->getDayTime($day, $hour, $minute)->format('U');
+            $this->cachedSortDayTime = array();
+        }
+        return (int)$sortDayTime;
     }
 
     /**
