@@ -32,6 +32,14 @@ return array(
                 'eval' => 'datetime',
             ),
         ),
+        'sort_day_time' => array(
+            'exclude' => 1,
+            'label' => 'DayTime',
+            'config' => array(
+                'type' => 'input',
+                'eval' => 'datetime',
+            ),
+        ),
         'event' => array(
             'config' => array(
                 'type' => 'select',
