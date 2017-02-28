@@ -230,7 +230,10 @@ class EventUtility
      */
     protected function addExceptionsToEvent(array &$event)
     {
-        if ($event['exceptions']) {
+        if (
+            in_array($event['event_type'], array('recurring', 'duration')) &&
+            $event['exceptions']
+        ) {
             $where = sprintf(
                 'event=%d AND exception_type IN (%s, %s, %s) %s %s',
                 $event['uid'],

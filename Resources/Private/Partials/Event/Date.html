@@ -17,7 +17,8 @@
 </f:section>
 
 <f:section name="time">
-	<f:if condition="{e2:getMergedEventTimes(day: day)->f:count()}">
+	<f:comment>If sortDayTime is higher than eventBegin (day without time) we can be sure that a time record was created</f:comment>
+	<f:if condition="{day.sortDayTime} > {day.event.eventBegin}">
 		|&nbsp;<f:translate key="tx_events2_domain_model_time.time_begin" />: {f:format.date(date: dayTime, format: 'H:i')}
 	</f:if>
 </f:section>
