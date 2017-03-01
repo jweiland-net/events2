@@ -14,6 +14,8 @@ namespace JWeiland\Events2\ViewHelpers\Widget\Controller;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use JWeiland\Events2\Domain\Model\Day;
+use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Utility\EventUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -31,11 +33,6 @@ class ICalendarController extends AbstractWidgetController
     protected $eventUtility;
 
     /**
-     * @var \JWeiland\Events2\Domain\Model\Day
-     */
-    protected $day;
-
-    /**
      * inject Event Utility.
      *
      * @param EventUtility $eventUtility
@@ -46,46 +43,28 @@ class ICalendarController extends AbstractWidgetController
     }
 
     /**
-     * initializes this object.
-     */
-    public function init()
-    {
-        $this->day = $this->widgetConfiguration['day'];
-    }
-
-    /**
      * This index action was called to export an event as ics file.
      *
      * @return string
      */
     public function indexAction()
     {
-        $this->init();
-
-        // global informations
+        // global information
+        $day = $this->widgetConfiguration['day'];
         $this->view->assign('PRODID', GeneralUtility::getIndpEnv('TYPO3_SITE_URL'));
 
-        // event informations
-        $events = array();
-        /** @var \SplObjectStorage $times */
-        $times = $this->eventUtility->getTimesForDay($this->day->getEvent(), $this->day);
-        if ($times->count()) {
-            /** @var Time $time */
-            foreach ($times as $time) {
-                $events[] = $this->createEvent($time->getTimeBegin(), $time->getTimeEnd());
-            }
-        } else {
-            // no time given
-            $this->widgetConfiguration['startTime'] = false;
-            $this->widgetConfiguration['endTime'] = false;
-            $events[] = $this->createEvent();
-        }
+        // event information
+        $events = $this->getEvents($day);
 
         $this->view->assign('events', $events);
 
-        $filePath = 'typo3temp/tx_events2/iCal/'.$this->getEventUid().'.ics';
+        $filePath = sprintf(
+            'typo3temp/tx_events2/iCal/%s.ics',
+            $this->getUniqueIdForDay($day)
+        );
+        
         $content = preg_replace('/\h+/', ' ', $this->view->render());
-        GeneralUtility::writeFileToTypo3tempDir(PATH_site.$filePath, $content);
+        GeneralUtility::writeFileToTypo3tempDir(PATH_site . $filePath, $content);
         
         return sprintf(
             '<a href="%s" target="_blank">%s</a>',
@@ -93,40 +72,132 @@ class ICalendarController extends AbstractWidgetController
             LocalizationUtility::translate('export', 'events2')
         );
     }
-
+    
+    /**
+     * Get Events by day
+     *
+     * @param Day $day
+     *
+     * @return array
+     */
+    protected function getEvents(Day $day)
+    {
+        $events = array();
+        switch ($day->getEvent()->getEventType()) {
+            case 'duration':
+                $firstDay = $this->getFirstDayOfEvent($day->getEvent());
+                $lastDay = $this->getLastDayOfEvent($day->getEvent());
+                $startTimes = $this->eventUtility->getTimesForDay($firstDay->getEvent(), $firstDay);
+                $endTimes = $this->eventUtility->getTimesForDay($lastDay->getEvent(), $lastDay);
+                $startTimes->rewind();
+                $startTime = $startTimes->current();
+                $endTimes->rewind();
+                $endTime = $endTimes->current();
+                
+                $events[] = $this->createEvent(
+                    $firstDay,
+                    $lastDay,
+                    $startTime instanceof Time ? $startTime->getTimeBegin() : '',
+                    $endTime instanceof Time ? $endTime->getTimeEnd() : ''
+                );
+                break;
+            case 'recurring':
+            case 'single':
+            default:
+                $times = $this->eventUtility->getTimesForDay($day->getEvent(), $day);
+                if ($times->count()) {
+                    /** @var Time $time */
+                    foreach ($times as $time) {
+                        $events[] = $this->createEvent($day, $day, $time->getTimeBegin(), $time->getTimeEnd());
+                    }
+                } else {
+                    // no time given
+                    $events[] = $this->createEvent($day);
+                }
+                break;
+        }
+        return $events;
+    }
+    
+    /**
+     * Get first day of event
+     * This is needed for events of type "duration"
+     *
+     * @param Event $event
+     *
+     * @return Day
+     */
+    protected function getFirstDayOfEvent(Event $event)
+    {
+        $days = array();
+        /** @var Day $day */
+        foreach ($event->getDays() as $day) {
+            $days[$day->getDay()->format('U')] = $day;
+        }
+        ksort($days);
+        return reset($days);
+    }
+    
+    /**
+     * Get last day of event
+     * This is needed for events of type "duration"
+     *
+     * @param Event $event
+     *
+     * @return Day
+     */
+    protected function getLastDayOfEvent(Event $event)
+    {
+        $days = array();
+        /** @var Day $day */
+        foreach ($event->getDays() as $day) {
+            $days[$day->getDay()->format('U')] = $day;
+        }
+        ksort($days);
+        return end($days);
+    }
+    
     /**
      * create an event array
      * Hint: We can't use DTSTAMP here, because this must be UTC, but we don't have UTC times here.
      *
+     * @param Day $day          current Day. In case of duration it will be the first day
+     * @param Day $lastDay      current Day. In case of duration it will be the last day
      * @param string $startTime
      * @param string $endTime
      *
      * @return array
      */
-    protected function createEvent($startTime = '', $endTime = '')
+    protected function createEvent(Day $day, Day $lastDay = null, $startTime = '', $endTime = '')
     {
-        $event = array();
-        $event['UID'] = $this->getEventUid();
-        $event['DTSTART'] = $this->convertToTstamp($this->day->getDay(), $startTime);
-        if (!empty($endTime)) {
-            $event['DTEND'] = $this->convertToTstamp($this->day->getDay(), $endTime);
+        if ($lastDay === null) {
+            $lastDay = $day;
         }
-        $event['LOCATION'] = $this->sanitizeString($this->day->getEvent()->getLocation()->getLocation());
-        $event['SUMMARY'] = $this->sanitizeString($this->day->getEvent()->getTitle());
-        $event['DESCRIPTION'] = $this->sanitizeString($this->day->getEvent()->getDetailInformations());
+        
+        $event = array();
+        $event['UID'] = $this->getUniqueIdForDay($day);
+        $event['DTSTART'] = $this->convertToTstamp($day->getDay(), $startTime);
+        if (!empty($endTime)) {
+            $event['DTEND'] = $this->convertToTstamp($lastDay->getDay(), $endTime);
+        }
+        $event['LOCATION'] = $this->sanitizeString($day->getEvent()->getLocation()->getLocation());
+        $event['SUMMARY'] = $this->sanitizeString($day->getEvent()->getTitle());
+        $event['DESCRIPTION'] = $this->sanitizeString($day->getEvent()->getDetailInformations());
 
         return $event;
     }
 
     /**
-     * The uid for ical is not equal to the uid of events2
+     * The uid for ical is not equal to the uid of day
      * It's more a unique string.
+     *
+     * @param Day $day
      *
      * @return string
      */
-    public function getEventUid()
+    public function getUniqueIdForDay(Day $day)
     {
-        return 'event' . uniqid($this->day->getDay()->format('dmY'), true);
+        return 'event' . uniqid($day->getDay()->format('dmY'), true);
     }
 
     /**
