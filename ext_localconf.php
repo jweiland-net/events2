@@ -70,7 +70,7 @@ if (TYPO3_MODE === 'BE') {
     
     if (\TYPO3\CMS\Core\Utility\GeneralUtility::compat_version('7.0')) {
         /** @var \TYPO3\CMS\Core\Imaging\IconRegistry $iconRegistry */
-        $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
+        $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Imaging\\IconRegistry');
         $iconRegistry->registerIcon(
             'extensions-events2-calendar-single',
             'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider',

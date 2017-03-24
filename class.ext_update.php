@@ -197,7 +197,7 @@ class ext_update
     protected function generateOutput()
     {
         /** @var FlashMessageService $flashMessageService */
-        $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
+        $flashMessageService = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessageService');
         $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
 
         /** @var StandaloneView $view */
