@@ -17,6 +17,7 @@ use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Configuration\FlexForm\FlexFormTools;
+use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 
 /**
@@ -202,9 +203,11 @@ class ext_update
 
         /** @var StandaloneView $view */
         $view = GeneralUtility::makeInstance('TYPO3\\CMS\\Fluid\\View\\StandaloneView');
-        $view->setTemplatePathAndFilename(
-            GeneralUtility::getFileAbsFileName('EXT:events2/Resources/Private/Templates/ExtUpdate.html')
-        );
+        if (VersionNumberUtility::convertVersionNumberToInteger(TYPO3_branch) <= 6002000) {
+            $view->setTemplateSource('<f:flashMessages />');
+        } else {
+            $view->setTemplateSource('<f:flashMessages queueIdentifier="core.template.flashMessages" />');
+        }
         foreach ($this->messageArray as $messageItem) {
             /** @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage */
             $flashMessage = GeneralUtility::makeInstance(
