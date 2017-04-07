@@ -403,6 +403,10 @@
 				<source>Organizer</source>
 				<target>Veranstalter</target>
 			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_organizer.hide_in_filter">
+				<source>Hide in filter</source>
+				<target>Nicht im Filter (FE) anzeigen</target>
+			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_organizer.link">
 				<source>Link</source>
 				<target>Homepage</target>

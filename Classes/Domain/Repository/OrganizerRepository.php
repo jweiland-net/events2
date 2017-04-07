@@ -28,4 +28,15 @@ class OrganizerRepository extends Repository
     protected $defaultOrderings = array(
         'organizer' => QueryInterface::ORDER_ASCENDING,
     );
+    
+    /**
+     * Get aöllowed organizers for filter
+     *
+     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     */
+    public function getOrganizersForFilter()
+    {
+        $query = $this->createQuery();
+        return $query->matching($query->equals('hide_in_filter', 0))->execute();
+    }
 }

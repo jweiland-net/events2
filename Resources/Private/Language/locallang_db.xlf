@@ -310,6 +310,9 @@
 			<trans-unit id="tx_events2_domain_model_organizer.organizer">
 				<source>Organizer</source>
 			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_organizer.hide_in_filter">
+				<source>Hide in filter</source>
+			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_organizer.link">
 				<source>Link</source>
 			</trans-unit>

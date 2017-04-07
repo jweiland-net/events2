@@ -24,7 +24,7 @@ return array(
         'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('events2') . 'Resources/Public/Icons/tx_events2_domain_model_organizer.png',
     ),
     'interface' => array(
-        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, organizer, link',
+        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, organizer, hide_in_filter, link',
     ),
     'columns' => array(
         'sys_language_uid' => array(
@@ -115,6 +115,13 @@ return array(
                 'eval' => 'trim',
             ),
         ),
+        'hide_in_filter' => array(
+            'exclude' => 1,
+            'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_organizer.hide_in_filter',
+            'config' => array(
+                'type' => 'check',
+            ),
+        ),
         'link' => array(
             'exclude' => 1,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_organizer.link',
@@ -139,9 +146,9 @@ return array(
         ),
     ),
     'types' => array(
-        '1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, organizer, link, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime'),
+        '1' => array('showitem' => '--palette--;;l10nHideFilter, l10n_parent, l10n_diffsource, organizer, link, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime'),
     ),
     'palettes' => array(
-        '1' => array('showitem' => ''),
+        'l10nHideFilter' => array('showitem' => 'sys_language_uid, hidden, hide_in_filter'),
     ),
 );
