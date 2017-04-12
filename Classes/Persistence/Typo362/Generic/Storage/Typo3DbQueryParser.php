@@ -30,7 +30,7 @@ class Typo3DbQueryParser extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\
      */
     public function preparseQuery(QueryInterface $query)
     {
-        /** @var \JWeiland\Events2\Persistence\Generic\Query $query */
+        /** @var \JWeiland\Events2\Persistence\Typo362\Generic\Query $query */
         list($parameters, $operators) = $this->preparseComparison($query->getConstraint());
         $hashPartials = [
             $query->getQuerySettings(),

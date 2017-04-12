@@ -13,8 +13,6 @@ namespace JWeiland\Events2\Persistence\Typo376\Generic\Storage;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
@@ -54,7 +52,7 @@ class Typo3DbQueryParser extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\
      */
     public function parseQuery(QueryInterface $query)
     {
-        /** @var \JWeiland\Events2\Persistence\Generic\Query $query */
+        /** @var \JWeiland\Events2\Persistence\Typo376\Generic\Query $query */
         $this->tablePropertyMap = [];
         $sql = [];
         $sql['keywords'] = [];

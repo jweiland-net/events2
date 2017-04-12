@@ -14,16 +14,6 @@ namespace JWeiland\Events2\Hooks;
  *
  * The TYPO3 project - inspiring people to share!
  */
-use JWeiland\Events2\Configuration\ExtConf;
-use JWeiland\Maps2\Domain\Model\Location;
-use JWeiland\Maps2\Domain\Model\RadiusResult;
-use JWeiland\Maps2\Utility\GeocodeUtility;
-use SJBR\StaticInfoTables\Utility\ModelUtility;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\DataHandling\DataHandler;
-use TYPO3\CMS\Core\Utility\DebugUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later

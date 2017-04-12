@@ -666,30 +666,6 @@ class Event extends AbstractEntity
     }
 
     /**
-     * Returns the exceptions in future.
-     *
-     * @return array $exceptions
-     */
-    public function getFutureExceptions()
-    {
-        $futureExceptions = array();
-        $currentDate = new \DateTime('today');
-        /** @var Exception $exception */
-        foreach ($this->exceptions as $exception) {
-            if ($exception->getExceptionDate() > $currentDate) {
-                $futureExceptions[$exception->getExceptionDate()->format('U')] = $exception;
-            }
-        }
-        if (count($futureExceptions) === 1 && current($futureExceptions)->getExceptionDate() == $this->day->getDay()) {
-            $futureExceptions = array();
-        } else {
-            ksort($futureExceptions, SORT_NUMERIC);
-        }
-
-        return $futureExceptions;
-    }
-
-    /**
      * Sets the Exceptions.
      *
      * @param ObjectStorage $exceptions

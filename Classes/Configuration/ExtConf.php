@@ -1,7 +1,7 @@
 <?php
 
 namespace JWeiland\Events2\Configuration;
-    
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,7 +15,6 @@ namespace JWeiland\Events2\Configuration;
  * The TYPO3 project - inspiring people to share!
  */
 use TYPO3\CMS\Core\SingletonInterface;
-use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later

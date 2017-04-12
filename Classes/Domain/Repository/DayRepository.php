@@ -250,10 +250,32 @@ class DayRepository extends Repository
             $constraint[] = $query->logicalOr($orConstraint);
         }
         $constraint[] = $query->equals('day', $timestamp);
+        
         /** @var QueryResult $result */
         $result = $query->matching($query->logicalAnd($constraint))->execute();
         
         return $result;
+    }
+    
+    /**
+     * Find a day by event and timestamp
+     *
+     * @param int $event
+     * @param int $timestamp
+     *
+     * @return Day|null
+     */
+    public function findOneByTimestamp($event, $timestamp)
+    {
+        $query = $this->createQuery();
+        $constraints = array();
+        $constraints[] = $query->equals('dayTime', $timestamp);
+        $constraints[] = $query->equals('event', $event);
+        
+        /** @var Day $day */
+        $day = $query->matching($query->logicalAnd($constraints))->execute()->getFirst();
+        
+        return $day;
     }
     
     /**

@@ -25,7 +25,7 @@
 	</f:then>
 	<f:else>
 		<div>
-			<f:translate key="no_event_today"/>
+			<f:translate key="no_event_today" />
 		</div>
 	</f:else>
 </f:if>
@@ -36,7 +36,7 @@
 			action="show"
 			controller="Day"
 			pageUid="{settings.pidOfDetailPage}"
-			arguments="{day: day}"
+			arguments="{timestamp: '{day.dayTime->f:format.date(format: \'U\')}', event: day.event}"
 			title="{f:translate(key: 'singleView')}: {day.event.title}"
 		>{day.event.title}</f:link.action>
 	</h3>

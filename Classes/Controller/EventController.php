@@ -15,7 +15,6 @@ namespace JWeiland\Events2\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Domain\Model\Event;
-use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Model\Search;
 use TYPO3\CMS\Extbase\Property\TypeConverter\DateTimeConverter;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;

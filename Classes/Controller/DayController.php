@@ -14,7 +14,6 @@ namespace JWeiland\Events2\Controller;
  *
  * The TYPO3 project - inspiring people to share!
  */
-use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Filter;
 
 /**
@@ -26,6 +25,7 @@ class DayController extends AbstractController
      * action list.
      *
      * @param Filter $filter
+     *
      * @return void
      */
     public function listAction(Filter $filter = null)
@@ -38,6 +38,7 @@ class DayController extends AbstractController
      * action list latest.
      *
      * @param Filter $filter
+     *
      * @return void
      */
     public function listLatestAction(Filter $filter = null)
@@ -50,6 +51,7 @@ class DayController extends AbstractController
      * action list today.
      *
      * @param Filter $filter
+     *
      * @return void
      */
     public function listTodayAction(Filter $filter = null)
@@ -62,6 +64,7 @@ class DayController extends AbstractController
      * action list this week.
      *
      * @param Filter $filter
+     *
      * @return void
      */
     public function listThisWeekAction(Filter $filter = null)
@@ -74,6 +77,7 @@ class DayController extends AbstractController
      * action list range.
      *
      * @param Filter $filter
+     *
      * @return void
      */
     public function listRangeAction(Filter $filter = null)
@@ -88,15 +92,14 @@ class DayController extends AbstractController
      * Hint: I call showAction with int instead of DomainModel
      * to prevent that recursive validators will be called
      *
-     * @param int $day
+     * @param int $event
+     * @param int $timestamp
      *
      * @return void
      */
-    public function showAction($day)
+    public function showAction($event, $timestamp)
     {
-        /** @var Day $dayObject */
-        $dayObject = $this->dayRepository->findByIdentifier($day);
-        $this->view->assign('day', $dayObject);
+        $this->view->assign('day', $this->dayRepository->findOneByTimestamp($event, $timestamp));
     }
     
     /**

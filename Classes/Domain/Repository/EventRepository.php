@@ -14,8 +14,6 @@ namespace JWeiland\Events2\Domain\Repository;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Domain\Model\Event;
-use JWeiland\Events2\Domain\Model\Filter;
-use JWeiland\Events2\Domain\Model\Search;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;

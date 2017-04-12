@@ -14,7 +14,6 @@ namespace JWeiland\Events2\Hooks;
  *
  * The TYPO3 project - inspiring people to share!
  */
-use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Maps2\Domain\Model\Location;
 use JWeiland\Maps2\Domain\Model\RadiusResult;
 use JWeiland\Maps2\Utility\GeocodeUtility;
