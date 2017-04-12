@@ -78,7 +78,7 @@ class RealUrlAutoConfiguration
                         0 => array(
                             'GETvar' => 'tx_events2_events[timestamp]',
                             'userFunc' => 'JWeiland\\Events2\\RealUrl\\TimestampMapping->main',
-                            'dateFormat' => 'Ymd',
+                            'dateFormat' => 'Y-m-d',
                             'timeFormat' => 'Hi',
                         ),
                         1 => array(

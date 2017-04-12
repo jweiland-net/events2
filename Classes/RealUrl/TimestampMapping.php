@@ -61,7 +61,7 @@ class TimestampMapping
      *
      * @param array $parameters
      *
-     * @return mixed
+     * @return string
      */
     protected function alias2id(array $parameters) {
         $date = \DateTime::createFromFormat(
@@ -71,5 +71,6 @@ class TimestampMapping
         if ($date instanceof \DateTime) {
             return $date->format('U');
         }
+        return $parameters['value'];
     }
 }
