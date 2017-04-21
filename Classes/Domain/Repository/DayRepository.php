@@ -288,16 +288,15 @@ class DayRepository extends Repository
     protected function addGroupingToQuery(QueryInterface $query)
     {
         /** @var \JWeiland\Events2\Persistence\Typo376\Generic\Query $query */
-        if ($this->settings['mergeEvents']) {
-            // grouping is a special feature of events2
-            // and only valid for MySQL
-            /*$query->setGroupings(array(
-                'event',
-                'CASE WHEN `tx_events2_domain_model_event`.`event_type` != "duration" THEN day ELSE 0 END'
-            ));*/
-            $query->setGroupings(array(
-                'event'
-            ));
-        }
+        // grouping is a special feature of events2
+        // and only valid for MySQL
+        /*$query->setGroupings(array(
+            'event',
+            'CASE WHEN `tx_events2_domain_model_event`.`event_type` != "duration" THEN day ELSE 0 END'
+        ));*/
+        $query->setGroupings(array(
+            'event',
+            'sortDayTime'
+        ));
     }
 }
