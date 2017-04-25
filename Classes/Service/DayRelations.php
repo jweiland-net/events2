@@ -334,8 +334,14 @@ class DayRelations
                 $this->eventRecord['uid'] => $sortDayTime
             );
         } else {
+            // @ToDo: Maybe this is a good place to implement merging again
+            // If a day has multiple times for ONE day, we want to merge these days to ONE day in list.
+            // $sortDayTime = $this->getDayTime($day, $hour, $minute)->format('U');
+            // $this->cachedSortDayTime = array();
             $sortDayTime = $this->getDayTime($day, $hour, $minute)->format('U');
-            $this->cachedSortDayTime = array();
+            $this->cachedSortDayTime = array(
+                $this->eventRecord['uid'] => $sortDayTime
+            );
         }
         return (int)$sortDayTime;
     }
