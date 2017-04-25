@@ -46,7 +46,6 @@ class Day extends AbstractEntity
      * Event.
      *
      * @var \JWeiland\Events2\Domain\Model\Event
-     * @lazy
      */
     protected $event;
 
