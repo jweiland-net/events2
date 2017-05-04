@@ -73,7 +73,12 @@ return array(
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.hidden',
             'config' => array(
                 'type' => 'check',
-            ),
+                'items' => array(
+                    '1' => array(
+                        '0' => 'LLL:EXT:cms/locallang_ttc.xlf:hidden.I.0'
+                    )
+                )
+            )
         ),
         'starttime' => array(
             'exclude' => 1,
