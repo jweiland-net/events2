@@ -168,6 +168,7 @@ class AbstractController extends ActionController
      * inject organizerRepository
      *
      * @param OrganizerRepository $organizerRepository
+     *
      * @return void
      */
     public function injectOrganizerRepository(OrganizerRepository $organizerRepository)
@@ -280,7 +281,6 @@ class AbstractController extends ActionController
      * @param ViewInterface $view The view to be initialized
      *
      * @return void
-     * @api
      */
     protected function initializeView(ViewInterface $view)
     {
@@ -297,6 +297,7 @@ class AbstractController extends ActionController
      * Assign filter to view
      *
      * @param Filter|null $filter
+     *
      * @return Filter
      */
     protected function validateAndAssignFilter($filter)

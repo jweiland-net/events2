@@ -121,6 +121,7 @@ class EventController extends AbstractController
      * action create.
      *
      * @param Event $event
+     *
      * @return void
      */
     public function createAction(Event $event)
@@ -137,25 +138,15 @@ class EventController extends AbstractController
     }
 
     /**
-     * initialize edit action
-     * This only happens if webko clicks on edit link in mail.
-     *
-     * @return void
-     */
-    public function initializeEditAction()
-    {
-        $this->registerEventFromRequest();
-    }
-
-    /**
      * action edit.
      *
      * @param int $event
+     *
      * @return void
      */
     public function editAction($event)
     {
-        $eventObject = $this->eventRepository->findByIdentifier($event);
+        $eventObject = $this->eventRepository->findHiddenEntryByUid((int)$event);
         $this->view->assign('event', $eventObject);
         $this->view->assign('locations', $this->locationRepository->findAll());
         $this->view->assign(
@@ -214,6 +205,7 @@ class EventController extends AbstractController
      * action update.
      *
      * @param Event $event
+     *
      * @return void
      */
     public function updateAction(Event $event)
@@ -225,7 +217,7 @@ class EventController extends AbstractController
         $this->persistenceManager->persistAll();
         $this->addDayRelations($event);
 
-        // if webko edits this hidden record, mail should not be send
+        // if editor edits this hidden record, mail should not be send
         if (!$isHidden) {
             $this->sendMail('update', $event);
         }
@@ -237,6 +229,7 @@ class EventController extends AbstractController
      * action delete.
      *
      * @param int $event
+     *
      * @return void
      */
     public function deleteAction($event)
@@ -248,19 +241,10 @@ class EventController extends AbstractController
     }
 
     /**
-     * initialize activate action.
-     *
-     * @return void
-     */
-    public function initializeActivateAction()
-    {
-        $this->registerEventFromRequest();
-    }
-
-    /**
      * action activate.
      *
      * @param int $event
+     *
      * @return void
      */
     public function activateAction($event)
@@ -286,6 +270,7 @@ class EventController extends AbstractController
      * add relations to day records.
      *
      * @param Event $event
+     *
      * @return void
      */
     public function addDayRelations(Event $event)
@@ -319,7 +304,7 @@ class EventController extends AbstractController
     /**
      * send email on new/update.
      *
-     * @param string                               $subjectKey
+     * @param string $subjectKey
      * @param Event $event
      *
      * @return int The amount of email receivers
@@ -327,14 +312,11 @@ class EventController extends AbstractController
     public function sendMail($subjectKey, Event $event)
     {
         /* @var \JWeiland\Events2\Domain\Model\Day $day */
-        //$day = $this->objectManager->get('JWeiland\\Events2\\Domain\\Model\\Day');
-        //$day->setDay($event->getEventBegin());
         $this->view->assign('event', $event);
-        $this->view->assign('day', 0);
 
         $this->mail->setFrom($this->extConf->getEmailFromAddress(), $this->extConf->getEmailFromName());
         $this->mail->setTo($this->extConf->getEmailToAddress(), $this->extConf->getEmailToName());
-        $this->mail->setSubject(LocalizationUtility::translate('email.subject.'.$subjectKey, 'events2'));
+        $this->mail->setSubject(LocalizationUtility::translate('email.subject.' . $subjectKey, 'events2'));
         $this->mail->setBody($this->view->render(), 'text/html');
 
         return $this->mail->send();
