@@ -16,7 +16,7 @@
 	<div class="list scroll-container">
 		<ul>
 			<f:for each="{events}" as="event">
-				<li><f:link.action action="edit" controller="Event" arguments="{event: event}">{event.title}</f:link.action></li>
+				<li><f:link.action action="edit" controller="Event" arguments="{event: event, timestamp: '0'}">{event.title}</f:link.action></li>
 			</f:for>
 		</ul>
 	</div>

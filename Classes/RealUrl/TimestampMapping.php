@@ -58,12 +58,19 @@ class TimestampMapping
     
     /**
      * Map alias back to ID
+     * This method will only be called if there is no cache entry for this URI
+     * In case of titles with spaces this reverse call will fail.
      *
      * @param array $parameters
      *
      * @return string
      */
     protected function alias2id(array $parameters) {
+        // when this method was called, we must have at lease 2 parts: time/title-id[.html]
+        // Current date exists in $parameters['value'] already
+        if (count($parameters['pathParts']) < 2) {
+            return 0;
+        }
         $date = \DateTime::createFromFormat(
             $parameters['setup']['dateFormat'] . $parameters['setup']['timeFormat'],
             $parameters['value'] . array_shift($parameters['pathParts'])

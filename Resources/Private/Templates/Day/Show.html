@@ -27,7 +27,7 @@
 		</p>
 		<p class="align-right info-box">
 			<f:if condition="{e2:feuser(field: 'tx_events2_organizer')}">
-				<f:link.action action="edit" controller="Event" arguments="{event: day.event, day: day}" title="{f:translate(key: 'update')}">
+				<f:link.action action="edit" controller="Event" arguments="{event: day.event, timestamp: '0'}" title="{f:translate(key: 'update')}">
 					<f:translate key="update" />
 					<span aria-hidden="true" class="icon-arrowright"></span>
 				</f:link.action>
