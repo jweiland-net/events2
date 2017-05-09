@@ -338,7 +338,7 @@ class DayRelations
             // If a day has multiple times for ONE day, we want to merge these days to ONE day in list.
             // $sortDayTime = $this->getDayTime($day, $hour, $minute)->format('U');
             // $this->cachedSortDayTime = array();
-            $sortDayTime = $this->getDayTime($day, 0, 0)->format('U');
+            $sortDayTime = $this->getDayTime($day, $hour, $minute)->format('U');
         }
         return (int)$sortDayTime;
     }

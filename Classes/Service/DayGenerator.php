@@ -1,7 +1,7 @@
 <?php
 
 namespace JWeiland\Events2\Service;
-    
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -50,6 +50,8 @@ class DayGenerator
      * injects extConf.
      *
      * @param ExtConf $extConf
+     *
+     * @return void
      */
     public function injectExtConf(ExtConf $extConf)
     {
@@ -60,6 +62,8 @@ class DayGenerator
      * inject DateTime Utility.
      *
      * @param DateTimeUtility $dateTimeUtility
+     *
+     * @return void
      */
     public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
     {
@@ -80,6 +84,8 @@ class DayGenerator
      * Setter for event record.
      *
      * @param $eventRecord
+     *
+     * @return void
      */
     public function setEventRecord($eventRecord)
     {
@@ -236,6 +242,8 @@ class DayGenerator
      * add day to day storage.
      *
      * @param \DateTime $day Day to add
+     *
+     * @return void
      */
     protected function addDayToStorage(\DateTime $day)
     {
@@ -248,6 +256,8 @@ class DayGenerator
      * remove day to day storage.
      *
      * @param \DateTime $day Day to remove
+     *
+     * @return void
      */
     protected function removeDayFromStorage(\DateTime $day)
     {
@@ -360,6 +370,8 @@ class DayGenerator
 
     /**
      * add days for recurring events.
+     *
+     * @return void
      */
     protected function addRecurringEvents()
     {
@@ -384,20 +396,34 @@ class DayGenerator
 
     /**
      * add days for recurring weeks.
+     *
+     * @return void
      */
     protected function addRecurringWeeks()
     {
-        $day = $this->getEarliestDateForGeneratedDays($this->getEventBegin());
-        $this->addDayToStorage($day);
+        // start with today midnight
+        $startCalculatingDaysAtDate = clone $this->dateTimeUtility->convert('today');
+        // subtract configured amount of month
+        $startCalculatingDaysAtDate->modify('-' . $this->extConf->getRecurringPast() . ' months');
+
+        // Can be somewhere in past
+        $earliestDay = clone $this->getEventBegin();
+        while ($earliestDay <= $startCalculatingDaysAtDate) {
+            // add interval as long $earliest day is less than $startCalculatingDaysAtDate
+            $earliestDay->modify('+' . $this->eventRecord['each_weeks'] . ' weeks');
+        }
+        
+        // now we can be sure that $earliestDay is in sync with $this->getEventBegin()
+        $this->addDayToStorage($earliestDay);
 
         $maxDate = $this->getMaxDateForGeneratedDays($this->getEventBegin());
-        $interval = $day->diff($maxDate); // generates an interval object
+        $interval = $earliestDay->diff($maxDate); // generates an interval object
         $diffDays = (int)$interval->format('%a'); // returns the difference in days
         $daysToGenerate = ceil($diffDays / ($this->eventRecord['each_weeks'] * 7)); // diff in days / weeks in days ==> rounded up to next int
         for ($week = 0; $week < $daysToGenerate; ++$week) {
-            $day->modify('+'.$this->eventRecord['each_weeks'].' weeks');
-            if ($day <= $maxDate) {
-                $this->addDayToStorage($day);
+            $earliestDay->modify('+' . $this->eventRecord['each_weeks'] . ' weeks');
+            if ($earliestDay <= $maxDate) {
+                $this->addDayToStorage($earliestDay);
             }
         }
     }
@@ -406,7 +432,9 @@ class DayGenerator
      * add days for given month.
      *
      * @param string $month
-     * @param int    $year
+     * @param int $year
+     *
+     * @return void
      */
     protected function addDaysForMonth($month, $year)
     {
@@ -433,6 +461,8 @@ class DayGenerator
 
     /**
      * add event exceptions.
+     *
+     * @return void
      *
      * @throws \Exception
      */
