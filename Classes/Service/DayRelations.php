@@ -96,6 +96,10 @@ class DayRelations
 
             foreach ($days as $day) {
                 $this->addDay($day);
+                // in case of recurring event, cached sort_day_time is only valid for one day (same_day-checkbox)
+                if ($this->eventRecord['event_type'] === 'recurring') {
+                    unset($this->cachedSortDayTime[$this->eventRecord['uid']]);
+                }
             }
 
             // add days amount to event
@@ -254,15 +258,15 @@ class DayRelations
         }
         
         $fieldsArray = array();
-        $fieldsArray['day'] = $day->format('U');
-        $fieldsArray['day_time'] = $this->getDayTime($day, $hour, $minute)->format('U');
-        $fieldsArray['sort_day_time'] = $this->getSortDayTime($day, $hour, $minute);
+        $fieldsArray['day'] = (int)$day->format('U');
+        $fieldsArray['day_time'] = (int)$this->getDayTime($day, $hour, $minute)->format('U');
+        $fieldsArray['sort_day_time'] = (int)$this->getSortDayTime($day, $hour, $minute);
         $fieldsArray['event'] = (int)$this->eventRecord['uid'];
         $fieldsArray['deleted'] = (int)$this->eventRecord['deleted'];
         $fieldsArray['hidden'] = (int)$this->eventRecord['hidden'];
-        $fieldsArray['tstamp'] = time();
+        $fieldsArray['tstamp'] = $GLOBALS['EXEC_TIME'];
         $fieldsArray['pid'] = (int)$this->eventRecord['pid'];
-        $fieldsArray['crdate'] = time();
+        $fieldsArray['crdate'] = $GLOBALS['EXEC_TIME'];
         $fieldsArray['cruser_id'] = (int)$GLOBALS['BE_USER']->user['uid'];
 
         $this->databaseConnection->exec_INSERTquery('tx_events2_domain_model_day', $fieldsArray);
@@ -280,7 +284,7 @@ class DayRelations
     
     /**
      * Get day time
-     * Each day individual hour and minute will be added to day
+     * Each individual hour and minute will be added to day
      *
      * Day: 17.01.2017 00:00:00 + 8h + 30m
      * Day: 18.01.2017 00:00:00 + 10h + 15m
@@ -325,22 +329,15 @@ class DayRelations
         if (array_key_exists($this->eventRecord['uid'], $this->cachedSortDayTime)) {
             return (int)$this->cachedSortDayTime[$this->eventRecord['uid']];
         }
-        
-        if (in_array($this->eventRecord['event_type'], array('duration', 'single'))) {
-            $sortDayTime = $this->eventRecord['event_begin'];
-            $sortDayTime += ($hour * 60 * 60) + $minute * 60;
-            
+    
+        $sortDayTime = (int)$this->getDayTime($day, $hour, $minute)->format('U');
+        if (in_array($this->eventRecord['event_type'], array('duration', 'recurring'))) {
             $this->cachedSortDayTime = array(
                 $this->eventRecord['uid'] => $sortDayTime
             );
-        } else {
-            // @ToDo: Maybe this is a good place to implement merging again
-            // If a day has multiple times for ONE day, we want to merge these days to ONE day in list.
-            // $sortDayTime = $this->getDayTime($day, $hour, $minute)->format('U');
-            // $this->cachedSortDayTime = array();
-            $sortDayTime = $this->getDayTime($day, $hour, $minute)->format('U');
         }
-        return (int)$sortDayTime;
+        
+        return $sortDayTime;
     }
 
     /**
