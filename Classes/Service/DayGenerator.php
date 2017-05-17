@@ -408,7 +408,7 @@ class DayGenerator
 
         // Can be somewhere in past
         $earliestDay = clone $this->getEventBegin();
-        while ($earliestDay <= $startCalculatingDaysAtDate) {
+        while ($earliestDay < $startCalculatingDaysAtDate) {
             // add interval as long $earliest day is less than $startCalculatingDaysAtDate
             $earliestDay->modify('+' . $this->eventRecord['each_weeks'] . ' weeks');
         }

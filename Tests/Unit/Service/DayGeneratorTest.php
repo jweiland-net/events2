@@ -197,42 +197,6 @@ class DayGeneratorTest extends UnitTestCase
     /**
      * @test
      */
-    public function initializeWithRecurringWeeksAddsEventBeginToDayStorage()
-    {
-        $eventBegin = new \DateTime();
-        $eventBegin->modify('midnight');
-        $eventEnd = new \DateTime();
-        $eventEnd->modify('midnight');
-        $eventEnd->modify('tomorrow');
-
-        $event = array(
-            'event_type' => 'recurring',
-            'event_begin' => $eventBegin->format('U'),
-            'event_end' => $eventEnd->format('U'),
-            'xth' => 31,
-            'weekday' => 127,
-            'each_weeks' => 1,
-            'exceptions' => 0,
-        );
-
-        $expectedDays = array($eventBegin->format('U') => $eventBegin);
-
-        /** @var \JWeiland\Events2\Service\DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
-        $dayGenerator = $this->getMock('JWeiland\\Events2\\Service\\DayGenerator', array('addException', 'getMaxDateForGeneratedDays'));
-        $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
-        $dayGenerator->injectExtConf(new ExtConf());
-        $dayGenerator->expects($this->never())->method('addException');
-        $dayGenerator->expects($this->once())->method('getMaxDateForGeneratedDays')->willReturn($eventEnd);
-        $this->assertTrue($dayGenerator->initialize($event));
-        $this->assertEquals(
-            $expectedDays,
-            $dayGenerator->getDayStorage()
-        );
-    }
-
-    /**
-     * @test
-     */
     public function initializeWithRecurringOverEachWeekAddsThreeDaysToStorage()
     {
         $eventBegin = new \DateTime();

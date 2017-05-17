@@ -16,6 +16,8 @@ namespace JWeiland\Events2\Tests\Unit\Hooks;
  */
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Hooks\CreateMap;
+use Prophecy\Prophecy\ObjectProphecy;
+use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Tests\AccessibleObjectInterface;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
 
@@ -31,8 +33,15 @@ class CreateMapTest extends UnitTestCase
      */
     protected $subject;
     
+    /**
+     * @var DatabaseConnection|ObjectProphecy
+     */
+    protected $dbProphecy;
+    
     public function setUp()
     {
+        $this->dbProphecy = $this->prophesize(DatabaseConnection::class);
+        $GLOBALS['TYPO3_DB'] = $this->dbProphecy->reveal();
         $this->subject = $this->getAccessibleMock(
             CreateMap::class,
             array('dummy')
@@ -49,17 +58,22 @@ class CreateMapTest extends UnitTestCase
      */
     public function getAddressWithAllValues()
     {
+        $this->dbProphecy->exec_SELECTgetSingleRow('cn_short_en', 'static_countries', 'uid=85')
+            ->shouldBeCalled()
+            ->willReturn([
+                'cn_short_en' => 'Germany'
+            ]);
         $this->subject->_set('currentRecord', array(
             'uid' => 123,
             'street' => 'Echterdinger Straße',
             'house_number' => '57',
             'zip' => 70794,
             'city' => 'Filderstadt',
-            'country' => 'Deutschland'
+            'country' => 85
         
         ));
         $this->assertSame(
-            'Echterdinger Straße 57 70794 Filderstadt Deutschland',
+            'Echterdinger Straße 57 70794 Filderstadt Germany',
             $this->subject->getAddress()
         );
     }

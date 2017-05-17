@@ -17,9 +17,9 @@ namespace JWeiland\Events2\Tests\Unit\Domain\Repository;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Repository\DayRepository;
+use JWeiland\Events2\Persistence\Typo376\Generic\Query;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
-use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 
