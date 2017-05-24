@@ -40,9 +40,6 @@
 			<trans-unit id="tx_events2_domain_model_event.tab.media">
 				<source>Media</source>
 			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.tab.social">
-				<source>Social</source>
-			</trans-unit>
 
 			<trans-unit id="tx_events2_domain_model_event.event_type">
 				<source>Event type</source>
@@ -175,33 +172,6 @@
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.download_links">
 				<source>Download links</source>
-			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.facebook">
-				<source>Release on facebook</source>
-			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.release_date">
-				<source>Release date</source>
-			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.social_teaser">
-				<source>Short description</source>
-			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.facebook_channel">
-				<source>Facebook Channel</source>
-			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.facebook_channel.pforzheim">
-				<source>Pforzheim</source>
-			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.facebook_channel.theater">
-				<source>Theater Pforzheim</source>
-			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.facebook_channel.bibliothek">
-				<source>Stadtbibliothek</source>
-			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.facebook_channel.marketing">
-				<source>Citymarketing</source>
-			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.theater_details">
-				<source>Theater description</source>
 			</trans-unit>
 
 			<trans-unit id="tx_events2_domain_model_day">

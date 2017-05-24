@@ -51,10 +51,6 @@
 				<source>Media</source>
 				<target>Medien</target>
 			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.tab.social">
-				<source>Social</source>
-				<target>Soziale Netzwerke</target>
-			</trans-unit>
 
 			<trans-unit id="tx_events2_domain_model_event.event_type">
 				<source>Event type</source>
@@ -231,42 +227,6 @@
 			<trans-unit id="tx_events2_domain_model_event.download_links">
 				<source>Download links</source>
 				<target>Download Link</target>
-			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.facebook">
-				<source>Release on facebook</source>
-				<target>Auf Facebook veröffentlichen</target>
-			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.release_date">
-				<source>Release date</source>
-				<target>Datum der Veröffentlichung</target>
-			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.social_teaser">
-				<source>Short description</source>
-				<target>Kurzbeschreibung</target>
-			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.facebook_channel">
-				<source>Facebook Channel</source>
-				<target>Facebook-Kanal</target>
-			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.facebook_channel.pforzheim">
-				<source>Pforzheim</source>
-				<target>Pforzheim</target>
-			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.facebook_channel.theater">
-				<source>Theater Pforzheim</source>
-				<target>Theater Pforzheim</target>
-			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.facebook_channel.bibliothek">
-				<source>Stadtbibliothek</source>
-				<target>Stadtbibliothek</target>
-			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.facebook_channel.marketing">
-				<source>Citymarketing</source>
-				<target>Citymarketing</target>
-			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.theater_details">
-				<source>Theater description</source>
-				<target>Stückdetails</target>
 			</trans-unit>
 
 			<trans-unit id="tx_events2_domain_model_day">

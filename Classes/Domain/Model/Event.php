@@ -29,21 +29,21 @@ class Event extends AbstractEntity
      * @var string
      */
     protected $eventType = 'single';
-    
+
     /**
      * Hidden.
      *
      * @var bool
      */
     protected $hidden = false;
-    
+
     /**
      * TopOfList.
      *
      * @var bool
      */
     protected $topOfList = false;
-    
+
     /**
      * Title.
      *
@@ -118,14 +118,14 @@ class Event extends AbstractEntity
      * @var int
      */
     protected $eachWeeks = 0;
-    
+
     /**
      * RecurringEnd.
      *
      * @var \DateTime
      */
     protected $recurringEnd;
-    
+
     /**
      * Exceptions.
      *
@@ -133,14 +133,14 @@ class Event extends AbstractEntity
      * @lazy
      */
     protected $exceptions;
-    
+
     /**
      * Teaser.
      *
      * @var string
      */
     protected $teaser = '';
-    
+
     /**
      * Detail informations.
      *
@@ -225,41 +225,6 @@ class Event extends AbstractEntity
     protected $downloadLinks;
 
     /**
-     * Facebook.
-     *
-     * @var bool
-     */
-    protected $facebook = false;
-
-    /**
-     * ReleaseDate.
-     *
-     * @var \DateTime
-     */
-    protected $releaseDate;
-
-    /**
-     * SocialTeaser.
-     *
-     * @var string
-     */
-    protected $socialTeaser = '';
-
-    /**
-     * facebookChannel.
-     *
-     * @var int
-     */
-    protected $facebookChannel = 0;
-
-    /**
-     * Theater Details.
-     *
-     * @var string
-     */
-    protected $theaterDetails = '';
-
-    /**
      * Constructor of this class.
      */
     public function __construct()
@@ -280,7 +245,7 @@ class Event extends AbstractEntity
         $this->images = new ObjectStorage();
         $this->downloadLinks = new ObjectStorage();
     }
-    
+
     /**
      * Returns the eventType
      *
@@ -290,7 +255,7 @@ class Event extends AbstractEntity
     {
         return $this->eventType;
     }
-    
+
     /**
      * Sets the eventType
      *
@@ -321,7 +286,7 @@ class Event extends AbstractEntity
     {
         $this->hidden = (bool)$hidden;
     }
-    
+
     /**
      * Returns the topOfList.
      *
@@ -331,7 +296,7 @@ class Event extends AbstractEntity
     {
         return $this->topOfList;
     }
-    
+
     /**
      * Sets the topOfList.
      *
@@ -341,7 +306,7 @@ class Event extends AbstractEntity
     {
         $this->topOfList = (bool)$topOfList;
     }
-    
+
     /**
      * Returns the title.
      *
@@ -613,7 +578,7 @@ class Event extends AbstractEntity
     {
         $this->eachWeeks = $eachWeeks;
     }
-    
+
     /**
      * Returns the recurringEnd
      *
@@ -623,7 +588,7 @@ class Event extends AbstractEntity
     {
         return $this->recurringEnd;
     }
-    
+
     /**
      * Sets the recurringEnd
      *
@@ -674,7 +639,7 @@ class Event extends AbstractEntity
     {
         $this->exceptions = $exceptions;
     }
-    
+
     /**
      * Returns the teaser.
      *
@@ -684,7 +649,7 @@ class Event extends AbstractEntity
     {
         return $this->teaser;
     }
-    
+
     /**
      * Sets the teaser.
      *
@@ -694,7 +659,7 @@ class Event extends AbstractEntity
     {
         $this->teaser = (string)$teaser;
     }
-    
+
     /**
      * Returns the detailInformations.
      *
@@ -986,115 +951,5 @@ class Event extends AbstractEntity
     public function setDownloadLinks(ObjectStorage $downloadLinks)
     {
         $this->downloadLinks = $downloadLinks;
-    }
-
-    /**
-     * Returns the facebook.
-     *
-     * @return bool $facebook
-     */
-    public function getFacebook()
-    {
-        return $this->facebook;
-    }
-
-    /**
-     * Sets the facebook.
-     *
-     * @param bool $facebook
-     */
-    public function setFacebook($facebook)
-    {
-        $this->facebook = (bool)$facebook;
-    }
-
-    /**
-     * Returns the boolean state of facebook.
-     *
-     * @return bool
-     */
-    public function isFacebook()
-    {
-        return $this->getFacebook();
-    }
-
-    /**
-     * Returns the releaseDate.
-     *
-     * @return \DateTime $releaseDate
-     */
-    public function getReleaseDate()
-    {
-        return $this->releaseDate;
-    }
-
-    /**
-     * Sets the releaseDate.
-     *
-     * @param \DateTime $releaseDate
-     */
-    public function setReleaseDate(\DateTime $releaseDate = null)
-    {
-        $this->releaseDate = $releaseDate;
-    }
-
-    /**
-     * Returns the socialTeaser.
-     *
-     * @return string $socialTeaser
-     */
-    public function getSocialTeaser()
-    {
-        return $this->socialTeaser;
-    }
-
-    /**
-     * Sets the socialTeaser.
-     *
-     * @param string $socialTeaser
-     */
-    public function setSocialTeaser($socialTeaser)
-    {
-        $this->socialTeaser = (string)$socialTeaser;
-    }
-
-    /**
-     * Returns the facebookChannel.
-     *
-     * @return int $facebookChannel
-     */
-    public function getFacebookChannel()
-    {
-        return $this->facebookChannel;
-    }
-
-    /**
-     * Sets the facebookChannel.
-     *
-     * @param int $facebookChannel
-     */
-    public function setFacebookChannel($facebookChannel)
-    {
-        $this->facebookChannel = (int)$facebookChannel;
-    }
-
-    /**
-     * Returns the theaterDetails.
-     *
-     * @return string $theaterDetails
-     */
-    public function getTheaterDetails()
-    {
-        return $this->theaterDetails;
-    }
-
-    /**
-     * Sets the theaterDetails.
-     *
-     * @param string $theaterDetails
-     */
-    public function setTheaterDetails($theaterDetails)
-    {
-        $this->theaterDetails = (string)$theaterDetails;
     }
 }

@@ -140,23 +140,6 @@ class EventRepository extends Repository
     }
 
     /**
-     * find all events which can be released
-     * -> facebook must be checked
-     * -> releaseDate can not be empty.
-     *
-     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
-     */
-    public function findUnreleasedEvents()
-    {
-        $query = $this->createQuery();
-        $constraint = array();
-        $constraint[] = $query->equals('facebook', 1);
-        $constraint[] = $query->equals('releaseDate', 0);
-
-        return $query->matching($query->logicalAnd($constraint))->execute();
-    }
-
-    /**
      * find events of a specified user.
      *
      * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
@@ -166,7 +149,7 @@ class EventRepository extends Repository
         /** @var UserRepository $userRepository */
         $userRepository = $this->objectManager->get('JWeiland\\Events2\\Domain\\Repository\\UserRepository');
         $organizer = (int)$userRepository->getFieldFromUser('tx_events2_organizer');
-        
+
         /** @var \TYPO3\CMS\Extbase\Persistence\Generic\Query $query */
         $query = $this->createQuery();
         return $query->matching($query->equals('organizer.uid', $organizer))->execute();

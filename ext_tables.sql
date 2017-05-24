@@ -30,11 +30,6 @@ CREATE TABLE tx_events2_domain_model_event (
 	images int(11) unsigned DEFAULT '0',
 	video_link int(11) unsigned DEFAULT '0',
 	download_links int(11) unsigned DEFAULT '0',
-	facebook int(11) unsigned DEFAULT '0' NOT NULL,
-	release_date int(11) DEFAULT '0',
-	social_teaser varchar(255) DEFAULT '',
-	facebook_channel varchar(255) DEFAULT '',
-	theater_details text NOT NULL,
 
 	tstamp int(11) unsigned DEFAULT '0' NOT NULL,
 	crdate int(11) unsigned DEFAULT '0' NOT NULL,

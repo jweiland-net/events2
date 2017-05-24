@@ -14,7 +14,9 @@ namespace JWeiland\Events2\Service;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Utility\DateTimeUtility;
+use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -28,29 +30,48 @@ class DayRelations
     protected $eventRecord = array();
 
     /**
-     * @var \TYPO3\CMS\Core\Database\DatabaseConnection
+     * @var ExtConf
+     */
+    protected $extConf;
+
+    /**
+     * @var DatabaseConnection
      */
     protected $databaseConnection;
 
     /**
-     * @var \JWeiland\Events2\Service\DayGenerator
+     * @var DayGenerator
      */
     protected $dayGenerator;
 
     /**
-     * @var \JWeiland\Events2\Utility\DateTimeUtility
+     * @var DateTimeUtility
      */
     protected $dateTimeUtility;
-    
+
     /**
      * @var array
      */
     protected $cachedSortDayTime = array();
 
     /**
+     * inject extConf
+     *
+     * @param ExtConf $extConf
+     *
+     * @return void
+     */
+    public function injectExtConf(ExtConf $extConf)
+    {
+        $this->extConf = $extConf;
+    }
+
+    /**
      * inject dayGenerator.
      *
      * @param DayGenerator $dayGenerator
+     *
+     * @return void
      */
     public function injectDayGenerator(DayGenerator $dayGenerator)
     {
@@ -61,6 +82,8 @@ class DayRelations
      * inject dateTimeUtility.
      *
      * @param DateTimeUtility $dateTimeUtility
+     *
+     * @return void
      */
     public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
     {
@@ -70,6 +93,8 @@ class DayRelations
     /**
      * initialize object
      * set database connection.
+     *
+     * @return void
      */
     public function initializeObject()
     {
@@ -77,7 +102,11 @@ class DayRelations
     }
 
     /**
+     * Create day relations for given event
+     *
      * @param array $event
+     *
+     * @return void
      */
     public function createDayRelations(array $event)
     {
@@ -114,7 +143,7 @@ class DayRelations
     }
 
     /**
-     * add day to db
+     * Add day to db
      * Also MM-Tables will be filled.
      *
      * @param \DateTime $day
@@ -134,9 +163,9 @@ class DayRelations
             $this->addDayRecord($day);
         }
     }
-    
+
     /**
-     * each event can have one or more times for one day
+     * Each event can have one or more times for one day
      * This method looks into all time related records and fetches the times with highest priority.
      *
      * @param \DateTime $day
@@ -176,13 +205,13 @@ class DayRelations
         if (!empty($eventTimes)) {
             return $eventTimes;
         }
-        
+
         // if there are no times available return empty array
         return array();
     }
-    
+
     /**
-     * you can override the times in an event for a special weekday
+     * You can override the times in an event for a special weekday
      * so this method checks and returns times, if there are times defined for given day.
      *
      * @param \DateTime $day
@@ -203,13 +232,13 @@ class DayRelations
                 }
             }
         }
-        
+
         return $times;
     }
-    
+
     /**
      * Each event has ONE time record, but if checkbox "same day" was checked, you can add additional times
-     * This method checks both parts, merges them to one SplObjectStorage and returns the result.
+     * This method checks both parts, merges them into an array and returns the result.
      *
      * @return array
      */
@@ -222,7 +251,7 @@ class DayRelations
                 $times[] = $time;
             }
         }
-        
+
         // add value of multiple times
         // but only if checkbox "same day" is set
         // and event type is NOT single
@@ -235,10 +264,10 @@ class DayRelations
                 $times[] = $multipleTime;
             }
         }
-        
+
         return $times;
     }
-    
+
     /**
      * Add day record.
      *
@@ -256,7 +285,7 @@ class DayRelations
         ) {
             list($hour, $minute) = explode(':', $time['time_begin']);
         }
-        
+
         $fieldsArray = array();
         $fieldsArray['day'] = (int)$day->format('U');
         $fieldsArray['day_time'] = (int)$this->getDayTime($day, $hour, $minute)->format('U');
@@ -272,16 +301,16 @@ class DayRelations
         $this->databaseConnection->exec_INSERTquery('tx_events2_domain_model_day', $fieldsArray);
 
         $insertId = (int)$this->databaseConnection->sql_insert_id();
-        
+
         // if $dayUid == 0 an error in query appears. So, do not update anything
         if ($insertId > 0) {
             // add relation in mm-table
             $this->addRelation($this->eventRecord['uid'], $insertId, $day);
         }
-        
+
         return $insertId;
     }
-    
+
     /**
      * Get day time
      * Each individual hour and minute will be added to day
@@ -308,7 +337,7 @@ class DayRelations
         ));
         return $dayTime;
     }
-    
+
     /**
      * Get timestamp which is the same for all event days of type duration
      * Instead of getDayTime this method will return the same timestamp for all days in event
@@ -329,14 +358,15 @@ class DayRelations
         if (array_key_exists($this->eventRecord['uid'], $this->cachedSortDayTime)) {
             return (int)$this->cachedSortDayTime[$this->eventRecord['uid']];
         }
-    
+
         $sortDayTime = (int)$this->getDayTime($day, $hour, $minute)->format('U');
+
         if (in_array($this->eventRecord['event_type'], array('duration', 'recurring'))) {
-            $this->cachedSortDayTime = array(
-                $this->eventRecord['uid'] => $sortDayTime
-            );
+            if ($this->eventRecord['event_type'] === 'duration' || $this->extConf->getMergeEvents()) {
+                $this->cachedSortDayTime[$this->eventRecord['uid']] = $sortDayTime;
+            }
         }
-        
+
         return $sortDayTime;
     }
 

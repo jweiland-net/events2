@@ -1,38 +1,41 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" datatype="plaintext" original="messages" date="2013-03-40T10:38:40Z" product-name="events2">
-		<header/>
-		<body>
+  <file source-language="en" datatype="plaintext" original="messages" date="2013-03-40T10:38:40Z" product-name="events2">
+    <header/>
+    <body>
 
-			<trans-unit id="poiCollectionPid">
-				<source>PID for poiCollections: Define a storage pid where to store records of type Point of Interest.</source>
-			</trans-unit>
-			<trans-unit id="rootUid">
-				<source>Category root UID: In huge environments with a lot of categories defined, it would be cool to reduce the amount of categories to a parent category.</source>
-			</trans-unit>
-			<trans-unit id="recurringPast">
-				<source>x months in past: When creating a new recurring event this extension can create related day records for the last x months.</source>
-			</trans-unit>
-			<trans-unit id="recurringFuture">
-				<source>x months in future: When creating a new recurring event this extension can create related day records for the next x months.</source>
-			</trans-unit>
-			<trans-unit id="defaultCountry">
-				<source>Default country: If you're only working for one specified country while creating/editing POIs in backend it would be cool to set a country by default. So you only need to add street and city to find a POI. If you need POIs from all over the world, please keep this field empty</source>
-			</trans-unit>
+      <trans-unit id="poiCollectionPid">
+        <source>PID for poiCollections: Define a storage pid where to store records of type Point of Interest.</source>
+      </trans-unit>
+      <trans-unit id="rootUid">
+        <source>Category root UID: In huge environments with a lot of categories defined, it would be cool to reduce the amount of categories to a parent category.</source>
+      </trans-unit>
+      <trans-unit id="recurringPast">
+        <source>x months in past: When creating a new recurring event this extension can create related day records for the last x months.</source>
+      </trans-unit>
+      <trans-unit id="recurringFuture">
+        <source>x months in future: When creating a new recurring event this extension can create related day records for the next x months.</source>
+      </trans-unit>
+      <trans-unit id="mergeEvents">
+        <source>Merge events: When an event has multiple performances on one day you can decide, if this event should be displayed as one day with multiple times or as multiple individual events in list.</source>
+      </trans-unit>
+      <trans-unit id="defaultCountry">
+        <source>Default country: If you're only working for one specified country while creating/editing POIs in backend it would be cool to set a country by default. So you only need to add street and city to find a POI. If you need POIs from all over the world, please keep this field empty</source>
+      </trans-unit>
 
-			<trans-unit id="emailFromAddress" xml:space="preserve">
-				<source>email from address: The senders email address. If not given the extension tries to get one from INSTALL_TOOL.</source>
-			</trans-unit>
-			<trans-unit id="emailFromName" xml:space="preserve">
-				<source>email from name: The senders email name. If not given the extension tries to get one from INSTALL_TOOL.</source>
-			</trans-unit>
-			<trans-unit id="emailToAddress" xml:space="preserve">
-				<source>email to address: The recipients email address.</source>
-			</trans-unit>
-			<trans-unit id="emailToName" xml:space="preserve">
-				<source>email to name: The recipients email name.</source>
-			</trans-unit>
+      <trans-unit id="emailFromAddress" xml:space="preserve">
+        <source>email from address: The senders email address. If not given the extension tries to get one from INSTALL_TOOL.</source>
+      </trans-unit>
+      <trans-unit id="emailFromName" xml:space="preserve">
+        <source>email from name: The senders email name. If not given the extension tries to get one from INSTALL_TOOL.</source>
+      </trans-unit>
+      <trans-unit id="emailToAddress" xml:space="preserve">
+        <source>email to address: The recipients email address.</source>
+      </trans-unit>
+      <trans-unit id="emailToName" xml:space="preserve">
+        <source>email to name: The recipients email name.</source>
+      </trans-unit>
 
-		</body>
-	</file>
+    </body>
+  </file>
 </xliff>

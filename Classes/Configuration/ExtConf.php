@@ -41,21 +41,28 @@ class ExtConf implements SingletonInterface
      * @var int
      */
     protected $recurringPast = 0;
-    
+
     /**
      * recurring future.
      *
      * @var int
      */
     protected $recurringFuture = 0;
-    
+
+    /**
+     * merge events
+     *
+     * @var bool
+     */
+    protected $mergeEvents = true;
+
     /**
      * default country.
      *
      * @var string
      */
     protected $defaultCountry = '';
-    
+
     /**
      * email from address.
      *
@@ -195,7 +202,29 @@ class ExtConf implements SingletonInterface
     {
         $this->recurringFuture = (int)$recurringFuture;
     }
-    
+
+    /**
+     * Returns the mergeEvents
+     *
+     * @return bool $mergeEvents
+     */
+    public function getMergeEvents()
+    {
+        return $this->mergeEvents;
+    }
+
+    /**
+     * Sets the mergeEvents
+     *
+     * @param bool $mergeEvents
+     *
+     * @return void
+     */
+    public function setMergeEvents($mergeEvents)
+    {
+        $this->mergeEvents = (bool)$mergeEvents;
+    }
+
     /**
      * Returns the defaultCountry
      *
@@ -205,7 +234,7 @@ class ExtConf implements SingletonInterface
     {
         return $this->defaultCountry;
     }
-    
+
     /**
      * Sets the defaultCountry
      *

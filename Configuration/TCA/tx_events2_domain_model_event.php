@@ -37,7 +37,7 @@ return array(
         'searchFields' => 'title,teaser,event_begin,event_end,detail_informations,',
     ),
     'interface' => array(
-        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, event_type, top_of_list, title, teaser, event_begin, event_end, event_time, same_day, multiple_times, xth, weekday, different_times, each_weeks, recurring_end, exceptions, detail_informations, free_entry, ticket_link, alternative_times, location, organizer, images, video_link, download_links, theater_details, facebook, release_date, social_teaser, facebook_channel',
+        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, event_type, top_of_list, title, teaser, event_begin, event_end, event_time, same_day, multiple_times, xth, weekday, different_times, each_weeks, recurring_end, exceptions, detail_informations, free_entry, ticket_link, alternative_times, location, organizer, images, video_link, download_links',
     ),
     'columns' => array(
         'sys_language_uid' => array(
@@ -525,77 +525,12 @@ return array(
                 ),
             ),
         ),
-        'facebook' => array(
-            'exclude' => 1,
-            'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.facebook',
-            'config' => array(
-                'type' => 'check',
-                'default' => false,
-            ),
-        ),
-        'release_date' => array(
-            'exclude' => 1,
-            'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.release_date',
-            'config' => array(
-                'type' => 'input',
-                'size' => 7,
-                'eval' => 'date',
-                'checkbox' => 1,
-                'default' => 0,
-            ),
-        ),
-        'social_teaser' => array(
-            'exclude' => 1,
-            'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.social_teaser',
-            'config' => array(
-                'type' => 'text',
-                'cols' => 30,
-                'rows' => 4,
-                'eval' => 'trim',
-            ),
-        ),
-        'facebook_channel' => array(
-            'exclude' => 1,
-            'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.facebook_channel',
-            'config' => array(
-                'type' => 'check',
-                'items' => array(
-                    array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.facebook_channel.pforzheim', 'pforzheim.de'),
-                    array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.facebook_channel.theater', 'theater-pforzheim'),
-                    array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.facebook_channel.bibliothek', 'stadtbibliothek'),
-                    array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.facebook_channel.marketing', 'citymarketing'),
-                ),
-                'default' => '',
-            ),
-        ),
-        'theater_details' => array(
-            'exclude' => 1,
-            'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.theater_details',
-            'config' => array(
-                'type' => 'text',
-                'cols' => 40,
-                'rows' => 15,
-                'eval' => 'trim',
-                'wizards' => array(
-                    'RTE' => array(
-                        'icon' => 'EXT:backend/Resources/Public/Images/FormFieldWizard/wizard_rte.gif',
-                        'module' => array(
-                            'name' => 'wizard_rte',
-                        ),
-                        'notNewRecords' => 1,
-                        'RTEonly' => 1,
-                        'title' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:bodytext.W.RTE',
-                        'type' => 'script',
-                    ),
-                ),
-            ),
-            'defaultExtras' => 'richtext:rte_transform[flag=rte_enabled|mode=ts]',
-        ),
+
     ),
     'types' => array(
-        'single' => array('showitem' => '--palette--;;typeAndOnTop, --palette--;;titleLanguage, event_begin, event_time, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.event_details, teaser, detail_informations, free_entry, ticket_link, alternative_times, location, organizer, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.media;newline, images, video_link, download_links, theater_details,--div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.social, facebook, release_date, social_teaser, facebook_channel,--div--;' . $ttContentLanguageFile . ':tabs.access,starttime, endtime'),
-        'recurring' => array('showitem' => 'event_type, hidden, --palette--;;titleLanguage, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.recurring_event, --palette--;;recurringBeginEnd, event_time, same_day, multiple_times, xth, weekday, different_times, each_weeks, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.exceptions, exceptions, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.event_details, teaser, detail_informations, free_entry, ticket_link, alternative_times, location, organizer, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.media;newline, images, video_link, download_links, theater_details,--div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.social, facebook, release_date, social_teaser, facebook_channel,--div--;' . $ttContentLanguageFile . ':tabs.access,starttime, endtime'),
-        'duration' => array('showitem' => '--palette--;;typeAndOnTop, --palette--;;titleLanguage, --palette--;;eventBeginEnd, event_time, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.exceptions, exceptions, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.event_details, teaser, detail_informations, free_entry, ticket_link, alternative_times, location, organizer, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.media;newline, images, video_link, download_links, theater_details,--div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.social, facebook, release_date, social_teaser, facebook_channel,--div--;' . $ttContentLanguageFile . ':tabs.access,starttime, endtime'),
+        'single' => array('showitem' => '--palette--;;typeAndOnTop, --palette--;;titleLanguage, event_begin, event_time, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.event_details, teaser, detail_informations, free_entry, ticket_link, alternative_times, location, organizer, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.media;newline, images, video_link, download_links,--div--;' . $ttContentLanguageFile . ':tabs.access,starttime, endtime'),
+        'recurring' => array('showitem' => 'event_type, hidden, --palette--;;titleLanguage, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.recurring_event, --palette--;;recurringBeginEnd, event_time, same_day, multiple_times, xth, weekday, different_times, each_weeks, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.exceptions, exceptions, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.event_details, teaser, detail_informations, free_entry, ticket_link, alternative_times, location, organizer, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.media;newline, images, video_link, download_links,--div--;' . $ttContentLanguageFile . ':tabs.access,starttime, endtime'),
+        'duration' => array('showitem' => '--palette--;;typeAndOnTop, --palette--;;titleLanguage, --palette--;;eventBeginEnd, event_time, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.exceptions, exceptions, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.event_details, teaser, detail_informations, free_entry, ticket_link, alternative_times, location, organizer, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.media;newline, images, video_link, download_links,--div--;' . $ttContentLanguageFile . ':tabs.access,starttime, endtime'),
     ),
     'palettes' => array(
         'titleLanguage' => array('showitem' => 'title, sys_language_uid, l10n_parent'),

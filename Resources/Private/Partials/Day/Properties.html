@@ -7,7 +7,6 @@
 		<f:render section="videoLink" arguments="{event: day.event}" />
 		<p class="lead">{day.event.teaser}</p>
 		<f:format.html>{day.event.detailInformations}</f:format.html>
-		<f:format.html>{day.event.theaterDetails}</f:format.html>
 		<f:render section="downloadLinks" arguments="{event: day.event}" />
 		<f:render section="showDatesAndTimes" arguments="{days: '{e2:getEventDates(event: day.event)}'}" />
 	</div>

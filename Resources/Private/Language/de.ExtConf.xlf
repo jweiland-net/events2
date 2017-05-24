@@ -1,47 +1,51 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" datatype="plaintext" original="messages" date="2013-03-40T10:38:40Z" product-name="events2">
-		<header/>
-		<body>
+  <file source-language="en" datatype="plaintext" original="messages" date="2013-03-40T10:38:40Z" product-name="events2">
+    <header/>
+    <body>
 
-			<trans-unit id="poiCollectionPid">
-				<source>PID for poiCollections: Define a storage pid where to store records of type Point of Interest.</source>
-				<target>PID für Google Maps: Beim Speichern von Veranstaltungsorten werden automatisch GoogleMaps-Datensätze erzeugt. Geben Sie hier an, in welchem StorageFolder diese angelegt werden sollen.</target>
-			</trans-unit>
-			<trans-unit id="rootUid">
-				<source>Category root UID: In huge environments with a lot of categories defined, it would be cool to reduce the amount of categories to a parent category.</source>
-				<target>Eltern-Kategorie: Auf großen Webseiten mit vielen Kategorien kann es sinnvoll sein, die Anzahl der Kategorien auf eine hier definierte Hauptkategorie zu beschränken.</target>
-			</trans-unit>
-			<trans-unit id="recurringPast">
-				<source>x months in past: When creating a new recurring event this extension can create related day records for the last x months.</source>
-				<target>x Monate in der Vergangenheit: bei Veranstaltungen mit Wiederholungen werden Tagesdaten für die vergangenen x Monate erzeugt</target>
-			</trans-unit>
-			<trans-unit id="recurringFuture">
-				<source>x months in future: When creating a new recurring event this extension can create related day records for the next x months.</source>
-				<target>xMonate in der Zukunft: bei Veranstaltungen mit Wiederholungen werden Tagesdaten für die nächsten x Monate erzeugt</target>
-			</trans-unit>
-			<trans-unit id="defaultCountry">
-				<source>Default country: If you're only working for one specified country while creating/editing POIs in backend it would be cool to set a country by default. So you only need to add street and city to find a POI. If you need POIs from all over the world, please keep this field empty</source>
-				<target>Standard Land: Wenn es in Ihrem Projekt nur POIs aus einem ganz bestimmten Land gibt, dann können Sie dieses Land hier eintragen und brauchen beim Anlegen/Bearbeiten von POIS im Backend das Land nicht explizit anzugeben. Sollten Sie jedoch POIs auf der ganzen Welt benötigen, dann lassen Sie dieses Feld bitte leer.</target>
-			</trans-unit>
+      <trans-unit id="poiCollectionPid">
+        <source>PID for poiCollections: Define a storage pid where to store records of type Point of Interest.</source>
+        <target>PID für Google Maps: Beim Speichern von Veranstaltungsorten werden automatisch GoogleMaps-Datensätze erzeugt. Geben Sie hier an, in welchem StorageFolder diese angelegt werden sollen.</target>
+      </trans-unit>
+      <trans-unit id="rootUid">
+        <source>Category root UID: In huge environments with a lot of categories defined, it would be cool to reduce the amount of categories to a parent category.</source>
+        <target>Eltern-Kategorie: Auf großen Webseiten mit vielen Kategorien kann es sinnvoll sein, die Anzahl der Kategorien auf eine hier definierte Hauptkategorie zu beschränken.</target>
+      </trans-unit>
+      <trans-unit id="recurringPast">
+        <source>x months in past: When creating a new recurring event this extension can create related day records for the last x months.</source>
+        <target>x Monate in der Vergangenheit: bei Veranstaltungen mit Wiederholungen werden Tagesdaten für die vergangenen x Monate erzeugt</target>
+      </trans-unit>
+      <trans-unit id="recurringFuture">
+        <source>x months in future: When creating a new recurring event this extension can create related day records for the next x months.</source>
+        <target>xMonate in der Zukunft: bei Veranstaltungen mit Wiederholungen werden Tagesdaten für die nächsten x Monate erzeugt</target>
+      </trans-unit>
+      <trans-unit id="mergeEvents">
+        <source>Merge events: When an event has multiple performances on one day you can decide, if this event should be displayed as one day with multiple times or as multiple individual events in list.</source>
+        <target>Veranstaltungen zusammenführen: Wenn eine Veranstaltung mehrmals an einem Tag stattfindet, könnt Ihr mit dieser Einstellung entscheiden, ob die Veranstaltung nur einmal mit mehreren Uhrzeiten oder mehrmals mit der jeweils individuellen Uhrzeit in der Liste erscheint.</target>
+      </trans-unit>
+      <trans-unit id="defaultCountry">
+        <source>Default country: If you're only working for one specified country while creating/editing POIs in backend it would be cool to set a country by default. So you only need to add street and city to find a POI. If you need POIs from all over the world, please keep this field empty</source>
+        <target>Standard Land: Wenn es in Ihrem Projekt nur POIs aus einem ganz bestimmten Land gibt, dann können Sie dieses Land hier eintragen und brauchen beim Anlegen/Bearbeiten von POIS im Backend das Land nicht explizit anzugeben. Sollten Sie jedoch POIs auf der ganzen Welt benötigen, dann lassen Sie dieses Feld bitte leer.</target>
+      </trans-unit>
 
-			<trans-unit id="emailFromAddress" xml:space="preserve">
-				<source>email from address: The senders email address. If not given the extension tries to get one from INSTALL_TOOL.</source>
-				<target>E-Mail FROM: Die E-Mail-Adresse des Absenders. Wenn nicht angegeben, dann wird die konfigurierte E-Mail-Adresse aus dem Installtool verwendet.</target>
-			</trans-unit>
-			<trans-unit id="emailFromName" xml:space="preserve">
-				<source>email from name: The senders email name. If not given the extension tries to get one from INSTALL_TOOL.</source>
-				<target>E-Mail FROM Name: Der Name des Absenders. Wenn nicht angegeben, dann wird der konfigurierte Name aus dem Installtool verwendet.</target>
-			</trans-unit>
-			<trans-unit id="emailToAddress" xml:space="preserve">
-				<source>email to address: The recipients email address.</source>
-				<target>E-Mail TO: Die Empfänger E-Mail-Adresse</target>
-			</trans-unit>
-			<trans-unit id="emailToName" xml:space="preserve">
-				<source>email to name: The recipients email name.</source>
-				<target>E-Mail TO Name: Der Empfänger Name</target>
-			</trans-unit>
+      <trans-unit id="emailFromAddress" xml:space="preserve">
+        <source>email from address: The senders email address. If not given the extension tries to get one from INSTALL_TOOL.</source>
+        <target>E-Mail FROM: Die E-Mail-Adresse des Absenders. Wenn nicht angegeben, dann wird die konfigurierte E-Mail-Adresse aus dem Installtool verwendet.</target>
+      </trans-unit>
+      <trans-unit id="emailFromName" xml:space="preserve">
+        <source>email from name: The senders email name. If not given the extension tries to get one from INSTALL_TOOL.</source>
+        <target>E-Mail FROM Name: Der Name des Absenders. Wenn nicht angegeben, dann wird der konfigurierte Name aus dem Installtool verwendet.</target>
+      </trans-unit>
+      <trans-unit id="emailToAddress" xml:space="preserve">
+        <source>email to address: The recipients email address.</source>
+        <target>E-Mail TO: Die Empfänger E-Mail-Adresse</target>
+      </trans-unit>
+      <trans-unit id="emailToName" xml:space="preserve">
+        <source>email to name: The recipients email name.</source>
+        <target>E-Mail TO Name: Der Empfänger Name</target>
+      </trans-unit>
 
-		</body>
-	</file>
+    </body>
+  </file>
 </xliff>
