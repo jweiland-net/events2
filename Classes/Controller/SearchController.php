@@ -17,6 +17,7 @@ namespace JWeiland\Events2\Controller;
 use JWeiland\Events2\Domain\Model\Search;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 
 /**
@@ -49,7 +50,9 @@ class SearchController extends ActionController
     protected $categoryRepository;
 
     /**
-     * preprocessing for all actions.
+     * PreProcessing for all actions.
+     *
+     * @return void
      */
     protected function initializeAction()
     {
@@ -65,11 +68,13 @@ class SearchController extends ActionController
     }
 
     /**
-     * preprocessing of view for all actions.
+     * PreProcessing of view for all actions.
+     *
+     * @param ViewInterface $view
      *
      * @throws \Exception
      */
-    protected function initializeView()
+    protected function initializeView(ViewInterface $view)
     {
         $allowedMainCategories = $this->categoryRepository->getSelectedCategories($this->settings['mainCategories'], $this->settings['rootCategory']);
 

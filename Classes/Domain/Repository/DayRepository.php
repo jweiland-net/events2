@@ -33,12 +33,12 @@ class DayRepository extends Repository
      * @var DateTimeUtility
      */
     protected $dateTimeUtility;
-    
+
     /**
      * @var array
      */
     protected $settings = array();
-    
+
     /**
      * @var array
      */
@@ -47,7 +47,7 @@ class DayRepository extends Repository
         'sortDayTime' => QueryInterface::ORDER_ASCENDING,
         'dayTime' => QueryInterface::ORDER_ASCENDING
     );
-    
+
     /**
      * inject DateTime Utility.
      *
@@ -57,7 +57,7 @@ class DayRepository extends Repository
     {
         $this->dateTimeUtility = $dateTimeUtility;
     }
-    
+
     /**
      * Returns the settings
      *
@@ -67,7 +67,7 @@ class DayRepository extends Repository
     {
         return $this->settings;
     }
-    
+
     /**
      * Sets the settings
      *
@@ -79,7 +79,7 @@ class DayRepository extends Repository
     {
         $this->settings = $settings;
     }
-    
+
     /**
      * find events.
      *
@@ -94,7 +94,7 @@ class DayRepository extends Repository
         $query = $this->createQuery();
         $this->addGroupingToQuery($query);
         $constraint = array();
-        
+
         if (!empty($this->settings['categories'])) {
             $orConstraint = array();
             foreach (GeneralUtility::intExplode(',', $this->settings['categories']) as $category) {
@@ -102,14 +102,14 @@ class DayRepository extends Repository
             }
             $constraint[] = $query->logicalOr($orConstraint);
         }
-        
+
         // add filter for organizer
         if ($filter->getOrganizer()) {
             $constraint[] = $query->equals('event.organizer', $filter->getOrganizer());
         } elseif ($this->settings['preFilterByOrganizer']) {
             $constraint[] = $query->equals('event.organizer', $this->settings['preFilterByOrganizer']);
         }
-        
+
         switch ($type) {
             case 'today':
                 $today = $this->dateTimeUtility->convert('today');
@@ -145,13 +145,13 @@ class DayRepository extends Repository
                     $query->setLimit((int)$this->settings['latest']['amountOfRecordsToShow']);
                 }
         }
-        
+
         /** @var QueryResult $result */
         $result = $query->matching($query->logicalAnd($constraint))->execute();
-        
+
         return $result;
     }
-    
+
     /**
      * search for events.
      *
@@ -164,7 +164,7 @@ class DayRepository extends Repository
         /** @var \TYPO3\CMS\Extbase\Persistence\Generic\Query $query */
         $query = $this->createQuery();
         $constraint = array();
-        
+
         // add query for search string
         if ($search->getSearch()) {
             $orConstraint = array();
@@ -172,7 +172,7 @@ class DayRepository extends Repository
             $orConstraint[] = $query->like('event.teaser', '%' . $search->getSearch() . '%');
             $constraint[] = $query->logicalOr($orConstraint);
         }
-        
+
         // add query for categories
         if ($search->getMainCategory()) {
             if ($search->getSubCategory()) {
@@ -180,8 +180,11 @@ class DayRepository extends Repository
             } else {
                 $constraint[] = $query->contains('event.categories', $search->getMainCategory()->getUid());
             }
+        } else {
+            // visitor has not selected any category. Search within allowed categories in plugin configuration
+            $constraint[] = $query->in('event.categories.uid', GeneralUtility::trimExplode(',', $this->settings['categories']));
         }
-        
+
         // add query for event begin
         if ($search->getEventBegin()) {
             $constraint[] = $query->greaterThanOrEqual('day', $search->getEventBegin());
@@ -189,29 +192,29 @@ class DayRepository extends Repository
             $today = $this->dateTimeUtility->convert('today');
             $constraint[] = $query->greaterThanOrEqual('day', $today);
         }
-        
+
         // add query for event end
         if ($search->getEventEnd()) {
             $constraint[] = $query->lessThanOrEqual('day', $search->getEventEnd());
         }
-        
+
         // add query for event location
         if ($search->getLocation()) {
             $constraint[] = $query->equals('event.location', $search->getLocation()->getUid());
         }
-        
+
         // add query for free entry
         if ($search->getFreeEntry()) {
             $constraint[] = $query->equals('event.freeEntry', $search->getFreeEntry());
         }
-        
+
         if (count($constraint)) {
             return $query->matching($query->logicalAnd($constraint))->execute();
         } else {
             return $query->execute();
         }
     }
-    
+
     /**
      * Find day by UID
      *
@@ -229,7 +232,7 @@ class DayRepository extends Repository
         $day = $query->execute()->getFirst();
         return $day;
     }
-    
+
     /**
      * Find days/events by timestamp
      *
@@ -250,13 +253,13 @@ class DayRepository extends Repository
             $constraint[] = $query->logicalOr($orConstraint);
         }
         $constraint[] = $query->equals('day', $timestamp);
-        
+
         /** @var QueryResult $result */
         $result = $query->matching($query->logicalAnd($constraint))->execute();
-        
+
         return $result;
     }
-    
+
     /**
      * Find a day by event and timestamp
      *
@@ -271,13 +274,13 @@ class DayRepository extends Repository
         $constraints = array();
         $constraints[] = $query->equals('dayTime', $timestamp);
         $constraints[] = $query->equals('event', $event);
-        
+
         /** @var Day $day */
         $day = $query->matching($query->logicalAnd($constraints))->execute()->getFirst();
-        
+
         return $day;
     }
-    
+
     /**
      * Add special grouping if set in settings
      *
