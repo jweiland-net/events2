@@ -222,7 +222,7 @@ class EventController extends AbstractController
             $this->sendMail('update', $event);
         }
         $this->addFlashMessage(LocalizationUtility::translate('eventUpdated', 'events2'));
-        $this->redirect('listMyEvents', 'Events');
+        $this->redirect('listMyEvents', 'Event');
     }
 
     /**
