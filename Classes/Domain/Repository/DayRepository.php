@@ -96,11 +96,7 @@ class DayRepository extends Repository
         $constraint = array();
 
         if (!empty($this->settings['categories'])) {
-            $orConstraint = array();
-            foreach (GeneralUtility::intExplode(',', $this->settings['categories']) as $category) {
-                $orConstraint[] = $query->contains('event.categories', $category);
-            }
-            $constraint[] = $query->logicalOr($orConstraint);
+            $constraint[] = $query->in('event.categories.uid', GeneralUtility::intExplode(',', $this->settings['categories'], true));
         }
 
         // add filter for organizer
@@ -246,11 +242,7 @@ class DayRepository extends Repository
         $query = $this->createQuery();
         $this->addGroupingToQuery($query);
         if (!empty($this->settings['categories'])) {
-            $orConstraint = array();
-            foreach (GeneralUtility::intExplode(',', $this->settings['categories']) as $category) {
-                $orConstraint[] = $query->contains('event.categories', $category);
-            }
-            $constraint[] = $query->logicalOr($orConstraint);
+            $constraint[] = $query->in('event.categories.uid', GeneralUtility::intExplode(',', $this->settings['categories']));
         }
         $constraint[] = $query->equals('day', $timestamp);
 

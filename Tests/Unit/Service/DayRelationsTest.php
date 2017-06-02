@@ -111,10 +111,41 @@ class DayRelationsTest extends UnitTestCase
     /**
      * @test
      */
+    public function createDayRelationsWithNonUidWillNeverCallAnyQuery()
+    {
+        $this->dbProphecy->exec_INSERTquery(Argument::cetera())->shouldNotBeCalled();
+        $this->dbProphecy->exec_DELETEquery(Argument::cetera())->shouldNotBeCalled();
+        $this->dbProphecy->exec_UPDATEquery(Argument::cetera())->shouldNotBeCalled();
+
+        $this->subject->createDayRelations(array(
+            'title' => 'Test',
+            'pid' => '123'
+        ));
+    }
+
+    /**
+     * @test
+     */
+    public function createDayRelationsWithNonPidWillNeverCallAnyQuery()
+    {
+        $this->dbProphecy->exec_INSERTquery(Argument::cetera())->shouldNotBeCalled();
+        $this->dbProphecy->exec_DELETEquery(Argument::cetera())->shouldNotBeCalled();
+        $this->dbProphecy->exec_UPDATEquery(Argument::cetera())->shouldNotBeCalled();
+
+        $this->subject->createDayRelations(array(
+            'title' => 'Test',
+            'uid' => '123'
+        ));
+    }
+
+    /**
+     * @test
+     */
     public function createDayRelationsWithEventConvertsCamelCaseToUnderscore()
     {
         $event = array(
             'uid' => 123,
+            'pid' => 321,
             'firstName' => 'Max',
             'last_name' => 'Mustermann',
             'whatALongKeyForAnArray' => 123,
@@ -122,6 +153,7 @@ class DayRelationsTest extends UnitTestCase
         );
         $expectedEvent = array(
             'uid' => 123,
+            'pid' => 321,
             'first_name' => 'Max',
             'last_name' => 'Mustermann',
             'what_a_long_key_for_an_array' => 123,
@@ -148,6 +180,7 @@ class DayRelationsTest extends UnitTestCase
     {
         $event = array(
             'uid' => 123,
+            'pid' => 321,
         );
 
         $this->dbProphecy->exec_DELETEquery('tx_events2_event_day_mm', 'uid_local=123')->shouldBeCalled();
@@ -175,6 +208,7 @@ class DayRelationsTest extends UnitTestCase
 
         $event = array(
             'uid' => 123,
+            'pid' => 321,
             'event_type' => 'recurring',
             'event_begin' => $yesterday->format('U'),
             'recurring_end' => $tomorrow->format('U'),
@@ -230,6 +264,7 @@ class DayRelationsTest extends UnitTestCase
 
         $event = array(
             'uid' => 123,
+            'pid' => 321,
             'event_type' => 'recurring',
             'event_begin' => $yesterday->format('U'),
             'recurring_end' => $tomorrow->format('U'),
@@ -295,6 +330,7 @@ class DayRelationsTest extends UnitTestCase
 
         $event = array(
             'uid' => 123,
+            'pid' => 321,
             'event_type' => 'recurring',
             'event_begin' => $yesterday->format('U'),
             'recurring_end' => $tomorrow->format('U'),
@@ -382,6 +418,7 @@ class DayRelationsTest extends UnitTestCase
 
         $event = array(
             'uid' => 123,
+            'pid' => 321,
             'event_type' => 'recurring',
             'event_begin' => $yesterday->format('U'),
             'recurring_end' => $tomorrow->format('U'),
@@ -467,6 +504,7 @@ class DayRelationsTest extends UnitTestCase
 
         $event = array(
             'uid' => 123,
+            'pid' => 321,
             'event_type' => 'recurring',
             'event_begin' => $yesterday->format('U'),
             'recurring_end' => $tomorrow->format('U'),
@@ -545,6 +583,7 @@ class DayRelationsTest extends UnitTestCase
 
         $event = array(
             'uid' => 123,
+            'pid' => 321,
             'event_type' => 'recurring',
             'event_begin' => $yesterday->format('U'),
             'recurring_end' => $tomorrow->format('U'),
@@ -612,6 +651,7 @@ class DayRelationsTest extends UnitTestCase
 
         $event = array(
             'uid' => 123,
+            'pid' => 321,
             'event_type' => 'recurring',
             'event_begin' => $tuesday->format('U'),
             'recurring_end' => $thursday->format('U'),
@@ -677,6 +717,7 @@ class DayRelationsTest extends UnitTestCase
 
         $event = array(
             'uid' => 123,
+            'pid' => 321,
             'event_type' => 'recurring',
             'event_begin' => $tuesday->format('U'),
             'recurring_end' => $thursday->format('U'),
@@ -756,6 +797,7 @@ class DayRelationsTest extends UnitTestCase
 
         $event = array(
             'uid' => 123,
+            'pid' => 321,
             'event_type' => 'recurring',
             'event_begin' => $tuesday->format('U'),
             'recurring_end' => $thursday->format('U'),
@@ -851,6 +893,7 @@ class DayRelationsTest extends UnitTestCase
 
         $event = array(
             'uid' => 123,
+            'pid' => 321,
             'event_type' => 'recurring',
             'event_begin' => $tuesday->format('U'),
             'recurring_end' => $thursday->format('U'),
@@ -925,6 +968,7 @@ class DayRelationsTest extends UnitTestCase
 
         $event = array(
             'uid' => 123,
+            'pid' => 321,
             'event_type' => 'single',
             'event_begin' => $nextWeek->format('U'),
             'xth' => 0,
@@ -957,6 +1001,7 @@ class DayRelationsTest extends UnitTestCase
 
         $event = array(
             'uid' => 123,
+            'pid' => 321,
             'event_type' => 'single',
             'event_begin' => $nextWeek->format('U'),
             'event_time' => [
@@ -994,6 +1039,7 @@ class DayRelationsTest extends UnitTestCase
 
         $event = array(
             'uid' => 123,
+            'pid' => 321,
             'event_type' => 'duration',
             'event_begin' => $today->format('U'),
             'event_end' => $in2days->format('U'),
@@ -1045,6 +1091,7 @@ class DayRelationsTest extends UnitTestCase
 
         $event = array(
             'uid' => 123,
+            'pid' => 321,
             'event_type' => 'duration',
             'event_begin' => $today->format('U'),
             'event_end' => $in2days->format('U'),

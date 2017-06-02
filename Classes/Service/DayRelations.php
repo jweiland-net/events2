@@ -110,9 +110,9 @@ class DayRelations
      */
     public function createDayRelations(array $event)
     {
-        if (empty($event) || empty($event['uid'])) {
+        if (empty($event) || empty($event['uid']) || empty($event['pid'])) {
             // write a warning (2) to sys_log
-            GeneralUtility::sysLog('Related days could not be created, because of an empty event or a non given event uid', 'events2', 2);
+            GeneralUtility::sysLog('Related days could not be created, because of an empty event or a non given event uid or pid', 'events2', 2);
         } else {
             foreach ($event as $key => $value) {
                 $this->eventRecord[GeneralUtility::camelCaseToLowerCaseUnderscored($key)] = $value;
