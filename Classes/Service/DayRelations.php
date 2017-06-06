@@ -176,7 +176,7 @@ class DayRelations
     {
         // times from exceptions have priority 1
         $timesFromExceptions = $this->eventRecord['exceptions'];
-        if (!empty($timesFromExceptions)) {
+        if (is_array($timesFromExceptions)) {
             $times = array();
             foreach ($timesFromExceptions as $exception) {
                 if (
@@ -223,7 +223,7 @@ class DayRelations
         $times = array();
         if (
             $this->eventRecord['event_type'] !== 'single' &&
-            !empty($this->eventRecord['different_times'])
+            is_array($this->eventRecord['different_times'])
         ) {
             // you only can set different times in case of type "duration" and "recurring". But not: single
             foreach ($this->eventRecord['different_times'] as $time) {
@@ -246,7 +246,7 @@ class DayRelations
     {
         $times = array();
         // add normal event time
-        if (!empty($this->eventRecord['event_time'])) {
+        if (is_array($this->eventRecord['event_time'])) {
             foreach ($this->eventRecord['event_time'] as $time) {
                 $times[] = $time;
             }
@@ -258,7 +258,7 @@ class DayRelations
         if (
             $this->eventRecord['event_type'] !== 'single' &&
             $this->eventRecord['same_day'] &&
-            !empty($this->eventRecord['multiple_times'])
+            is_array($this->eventRecord['multiple_times'])
         ) {
             foreach ($this->eventRecord['multiple_times'] as $multipleTime) {
                 $times[] = $multipleTime;
