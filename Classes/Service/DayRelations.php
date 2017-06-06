@@ -181,6 +181,7 @@ class DayRelations
             foreach ($timesFromExceptions as $exception) {
                 if (
                     $exception['exception_date'] == $day->format('U') &&
+                    is_array($exception['exception_time']) &&
                     (
                         $exception['exception_type'] == 'Add' ||
                         $exception['exception_type'] == 'Time'
