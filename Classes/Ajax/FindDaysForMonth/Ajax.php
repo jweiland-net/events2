@@ -14,10 +14,12 @@ namespace JWeiland\Events2\Ajax\FindDaysForMonth;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Core\Bootstrap;
+use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
@@ -38,56 +40,78 @@ class Ajax
     /**
      * database.
      *
-     * @var \TYPO3\CMS\Core\Database\DatabaseConnection
+     * @var DatabaseConnection
      */
     protected $databaseConnection;
-    
+
     /**
-     * @var \JWeiland\Events2\Utility\DateTimeUtility
+     * @var ExtConf
+     */
+    protected $extConf;
+
+    /**
+     * @var DateTimeUtility
      */
     protected $dateTimeUtility;
-    
+
     /**
-     * @var \JWeiland\Events2\Domain\Repository\DayRepository
+     * @var DayRepository
      */
     protected $dayRepository;
-    
+
     /**
-     * @var \TYPO3\CMS\Frontend\Page\CacheHashCalculator
+     * @var CacheHashCalculator
      */
     protected $cacheHashCalculator;
+
+    /**
+     * inject extConf
+     *
+     * @param ExtConf $extConf
+     *
+     * @return void
+     */
+    public function injectExtConf(ExtConf $extConf)
+    {
+        $this->extConf = $extConf;
+    }
 
     /**
      * inject DateTime Utility.
      *
      * @param DateTimeUtility $dateTimeUtility
+     *
+     * @return void
      */
     public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
     {
         $this->dateTimeUtility = $dateTimeUtility;
     }
-    
+
     /**
      * inject dayRepository
      *
      * @param DayRepository $dayRepository
+     *
      * @return void
      */
     public function injectDayRepository(DayRepository $dayRepository)
     {
         $this->dayRepository = $dayRepository;
     }
-    
+
     /**
      * inject CacheHash Calculator.
      *
      * @param CacheHashCalculator $cacheHashCalculator
+     *
+     * @return void
      */
     public function injectCacheHashCalculator(CacheHashCalculator $cacheHashCalculator)
     {
         $this->cacheHashCalculator = $cacheHashCalculator;
     }
-    
+
     /**
      * initializes this class.
      *
@@ -200,7 +224,7 @@ class Ajax
             return '';
         }
     }
-    
+
     /**
      * We can't create the uri within a JavaScript for-loop.
      * This way we also have realurl functionality
@@ -217,7 +241,7 @@ class Ajax
             ->reset()
             ->setTargetPageUid($pid)
             ->uriFor('show', array('day' => $dayUid), 'Day', 'events2', 'events');*/
-        
+
         // create uri manually instead of uriBuilder
         $siteUrl = GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . 'index.php?';
         $query = array(
@@ -231,7 +255,7 @@ class Ajax
         $cacheHashArray = $this->cacheHashCalculator->getRelevantParameters(GeneralUtility::implodeArrayForUrl('', $query));
         $query['cHash'] = $this->cacheHashCalculator->calculateCacheHash($cacheHashArray);
         $uri = $siteUrl . http_build_query($query);
-        
+
         return $uri;
     }
 
@@ -290,13 +314,28 @@ class Ajax
      */
     public function findAllDaysInMonth($month, $year)
     {
+        $earliestAllowedDate = new \DateTime("now midnight");
+        $earliestAllowedDate->modify(sprintf('-%d months', $this->extConf->getRecurringPast()));
+        $latestAllowedDate = new \DateTime("now midnight");
+        $latestAllowedDate->modify(sprintf('+%d months', $this->extConf->getRecurringFuture()));
+
         // get start and ending of given month
         // j => day without leading 0, n => month without leading 0
-        $monthBegin = $this->dateTimeUtility->standardizeDateTimeObject(\DateTime::createFromFormat('j.n.Y', '1.' . $month . '.' . $year));
-        $monthEnd = clone $monthBegin;
-        $monthEnd->modify('last day of this month')->modify('tomorrow');
+        $firstDayOfMonth = $this->dateTimeUtility->standardizeDateTimeObject(
+            \DateTime::createFromFormat('j.n.Y', '1.' . $month . '.' . $year)
+        );
+        $lastDayOfMonth = $firstDayOfMonth;
+        $lastDayOfMonth->modify('last day of this month')->modify('tomorrow');
+
+        if (
+            $earliestAllowedDate > $firstDayOfMonth ||
+            $latestAllowedDate < $lastDayOfMonth
+        ) {
+            return array();
+        }
+
         $constraint = array();
-        
+
         $query = $this->dayRepository->createQuery();
         $query->getQuerySettings()->setStoragePageIds(explode(',', $this->getArgument('storagePids')));
         if (!empty($this->getArgument('categories'))) {
@@ -306,10 +345,10 @@ class Ajax
             }
             $constraint[] = $query->logicalOr($orConstraint);
         }
-        $constraint[] = $query->greaterThanOrEqual('day', $monthBegin);
-        $constraint[] = $query->lessThan('day', $monthEnd);
-        
-        return $query->matching($query->logicalAnd($constraint))->execute();
+        $constraint[] = $query->greaterThanOrEqual('day', $firstDayOfMonth);
+        $constraint[] = $query->lessThan('day', $lastDayOfMonth);
+
+        return $query->matching($query->logicalAnd($constraint))->execute(true);
     }
 
     /**
@@ -319,7 +358,9 @@ class Ajax
      */
     protected function getFrontendUserAuthentication()
     {
-        return GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Authentication\\FrontendUserAuthentication');
+        /** @var FrontendUserAuthentication $feAuthentication */
+        $feAuthentication = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Authentication\\FrontendUserAuthentication');
+        return $feAuthentication;
     }
 
     /**
