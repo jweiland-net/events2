@@ -328,9 +328,22 @@ class Ajax
         $lastDayOfMonth->modify('last day of this month')->modify('tomorrow');
 
         if (
+            $earliestAllowedDate > $firstDayOfMonth &&
+            $earliestAllowedDate->format('mY') === $firstDayOfMonth->format('mY')
+        ) {
+            // if both dates are in same month and year, set to highest value
+            $firstDayOfMonth = $earliestAllowedDate;
+        } elseif (
+            $latestAllowedDate < $lastDayOfMonth &&
+            $latestAllowedDate->format('mY') === $lastDayOfMonth->format('mY')
+        ) {
+            // if both dates are in same month and year, set to lowest value
+            $lastDayOfMonth = $latestAllowedDate;
+        } elseif (
             $earliestAllowedDate > $firstDayOfMonth ||
             $latestAllowedDate < $lastDayOfMonth
         ) {
+            // if both values are out of range, do not return any date
             return array();
         }
 
