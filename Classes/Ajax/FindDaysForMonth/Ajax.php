@@ -324,7 +324,7 @@ class Ajax
         $firstDayOfMonth = $this->dateTimeUtility->standardizeDateTimeObject(
             \DateTime::createFromFormat('j.n.Y', '1.' . $month . '.' . $year)
         );
-        $lastDayOfMonth = $firstDayOfMonth;
+        $lastDayOfMonth = clone $firstDayOfMonth;
         $lastDayOfMonth->modify('last day of this month')->modify('tomorrow');
 
         if (
@@ -361,7 +361,7 @@ class Ajax
         $constraint[] = $query->greaterThanOrEqual('day', $firstDayOfMonth);
         $constraint[] = $query->lessThan('day', $lastDayOfMonth);
 
-        return $query->matching($query->logicalAnd($constraint))->execute(true);
+        return $query->matching($query->logicalAnd($constraint))->execute();
     }
 
     /**
