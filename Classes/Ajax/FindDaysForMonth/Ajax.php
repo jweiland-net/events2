@@ -38,13 +38,6 @@ class Ajax
     protected $arguments = array();
 
     /**
-     * database.
-     *
-     * @var DatabaseConnection
-     */
-    protected $databaseConnection;
-
-    /**
      * @var ExtConf
      */
     protected $extConf;
@@ -116,64 +109,14 @@ class Ajax
      * initializes this class.
      *
      * @param array $arguments
+     *
+     * @return void
      */
-    public function initialize(array $arguments)
+    protected function initialize(array $arguments)
     {
         // load cached TCA. Needed for enableFields
         Bootstrap::getInstance()->loadExtensionTables();
         $this->setArguments($arguments);
-    }
-
-    /**
-     * set and check GET Arguments.
-     *
-     * @param array $arguments
-     */
-    public function setArguments(array $arguments)
-    {
-        // sanitize categories
-        $sanitizedArguments['categories'] = $this->sanitizeCommaSeparatedIntValues((string)$arguments['categories']);
-        $sanitizedArguments['month'] = (int)$arguments['month'];
-        $sanitizedArguments['year'] = (int)$arguments['year'];
-        $sanitizedArguments['pidOfListPage'] = (int)$arguments['pidOfListPage'];
-        $sanitizedArguments['storagePids'] = $this->sanitizeCommaSeparatedIntValues((string)$arguments['storagePids']);
-
-        $this->arguments = $sanitizedArguments;
-    }
-
-    /**
-     * sanitize comma separated values
-     * remove empty values
-     * remove values which can't be interpreted as int
-     * cast each valid value to int
-     *
-     * @param string $list
-     *
-     * @return string The sanitized int list
-     */
-    protected function sanitizeCommaSeparatedIntValues($list)
-    {
-        $values = GeneralUtility::trimExplode(',', $list, true);
-        foreach ($values as $key => $value) {
-            if (MathUtility::canBeInterpretedAsInteger($value)) {
-                $values[$key] = (int)$value;
-            } else {
-                unset($values[$key]);
-            }
-        }
-
-        return implode(',', array_unique($values));
-    }
-
-    /**
-     * getter for arguments
-     * needed for unitTests.
-     *
-     * @return array
-     */
-    public function getArguments()
-    {
-        return $this->arguments;
     }
 
     /**
@@ -210,6 +153,49 @@ class Ajax
     }
 
     /**
+     * set and check GET Arguments.
+     *
+     * @param array $arguments
+     *
+     * @return void
+     */
+    protected function setArguments(array $arguments)
+    {
+        // sanitize categories
+        $sanitizedArguments['categories'] = $this->sanitizeCommaSeparatedIntValues((string)$arguments['categories']);
+        $sanitizedArguments['month'] = MathUtility::forceIntegerInRange($arguments['month'], 1, 12);
+        $sanitizedArguments['year'] = MathUtility::forceIntegerInRange($arguments['year'], 1500, 2500);
+        $sanitizedArguments['pidOfListPage'] = (int)$arguments['pidOfListPage'];
+        $sanitizedArguments['storagePids'] = $this->sanitizeCommaSeparatedIntValues((string)$arguments['storagePids']);
+
+        $this->arguments = $sanitizedArguments;
+    }
+
+    /**
+     * sanitize comma separated values
+     * remove empty values
+     * remove values which can't be interpreted as int
+     * cast each valid value to int
+     *
+     * @param string $list
+     *
+     * @return string The sanitized int list
+     */
+    protected function sanitizeCommaSeparatedIntValues($list)
+    {
+        $values = GeneralUtility::trimExplode(',', $list, true);
+        foreach ($values as $key => $value) {
+            if (MathUtility::canBeInterpretedAsInteger($value)) {
+                $values[$key] = (int)$value;
+            } else {
+                unset($values[$key]);
+            }
+        }
+
+        return implode(',', array_unique($values));
+    }
+
+    /**
      * get an argument from GET.
      *
      * @param string $argumentName
@@ -234,7 +220,7 @@ class Ajax
      *
      * @return string
      */
-    public function getUriForDay($timestamp)
+    protected function getUriForDay($timestamp)
     {
         // uriBuilder is very slow: 223ms for 31 links */
         /*$uri = $this->uriBuilder
@@ -354,7 +340,7 @@ class Ajax
         if (!empty($this->getArgument('categories'))) {
             $orConstraint = array();
             foreach (explode(',', $this->getArgument('categories')) as $category) {
-                $orConstraint[] = $query->contains('event.categories', $category);
+                $orConstraint[] = $query->contains('event.categories', (int)$category);
             }
             $constraint[] = $query->logicalOr($orConstraint);
         }

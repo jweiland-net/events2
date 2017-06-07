@@ -15,14 +15,19 @@ namespace JWeiland\Events2\Tests\Unit\Ajax\FindDaysForMonth;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Ajax\FindDaysForMonth;
+use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Utility\DateTimeUtility;
+use PhpParser\Node\Arg;
+use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Database\PreparedStatement;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
+use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
@@ -35,20 +40,35 @@ use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
 class AjaxTest extends UnitTestCase
 {
     /**
-     * @var \JWeiland\Events2\Ajax\FindDaysForMonth\Ajax
+     * @var \JWeiland\Events2\Ajax\FindDaysForMonth\Ajax|\PHPUnit_Framework_MockObject_MockObject|\TYPO3\CMS\Core\Tests\AccessibleObjectInterface
      */
     protected $subject;
-    
+
     /**
-     * @var \JWeiland\Events2\Domain\Repository\DayRepository|\PHPUnit_Framework_MockObject_MockObject
+     * @var ExtConf|ObjectProphecy
      */
-    protected $dayRepository;
-    
+    protected $extConfProphecy;
+
     /**
-     * @var Query|\PHPUnit_Framework_MockObject_MockObject
+     * @var DayRepository|ObjectProphecy
      */
-    protected $query;
-    
+    protected $dayRepositoryProphecy;
+
+    /**
+     * @var FrontendUserAuthentication|ObjectProphecy
+     */
+    protected $frontendUserAuthenticationProphecy;
+
+    /**
+     * @var QuerySettingsInterface|ObjectProphecy
+     */
+    protected $querySettingsProphecy;
+
+    /**
+     * @var Query|ObjectProphecy
+     */
+    protected $queryProphecy;
+
     /**
      * @var DatabaseConnection
      */
@@ -59,14 +79,32 @@ class AjaxTest extends UnitTestCase
      */
     public function setUp()
     {
-        $this->subject = new FindDaysForMonth\Ajax();
-        $this->dayRepository = $this->getMock(DayRepository::class, array(), array(), '', false);
-        $this->query = $this->getMock(Query::class, array(), array(), '', false);
-        $this->dbProphecy = $this->prophesize(DatabaseConnection::class);
-        $GLOBALS['TYPO3_DB'] = $this->dbProphecy->reveal();
         $GLOBALS['TYPO3_LOADED_EXT'] = array(
             'events2' => array()
         );
+
+        $this->extConfProphecy = $this->prophesize(ExtConf::class);
+        $this->extConfProphecy->getRecurringPast()->willReturn(3);
+        $this->extConfProphecy->getRecurringFuture()->willReturn(6);
+
+        // $this->frontendUser = $this->getMock(FrontendUserAuthentication::class, ['dummy']);
+        $this->frontendUserAuthenticationProphecy = $this->prophesize(FrontendUserAuthentication::class);
+        $this->dayRepositoryProphecy = $this->prophesize(DayRepository::class);
+        $this->querySettingsProphecy = $this->prophesize(QuerySettingsInterface::class);
+        $this->queryProphecy = $this->prophesize(Query::class);
+
+        $this->dbProphecy = $this->prophesize(DatabaseConnection::class);
+        $GLOBALS['TYPO3_DB'] = $this->dbProphecy->reveal();
+
+        $this->subject = $this->getAccessibleMock(FindDaysForMonth\Ajax::class, ['getFrontendUserAuthentication']);
+        $this->subject->_set('extConf', $this->extConfProphecy->reveal());
+        $this->subject->_set('dateTimeUtility', new DateTimeUtility());
+        $this->subject->_set('dayRepository', $this->dayRepositoryProphecy->reveal());
+        $this->subject->_set('cacheHashCalculator', new CacheHashCalculator());
+        $this->subject
+            ->expects($this->any())
+            ->method('getFrontendUserAuthentication')
+            ->willReturn($this->frontendUserAuthenticationProphecy->reveal());
     }
 
     /**
@@ -100,122 +138,125 @@ class AjaxTest extends UnitTestCase
      * @test
      *
      * @param mixed $invalidValue
+     *
      * @dataProvider dataProviderForInvalidValues
+     *
      * @expectedException \PHPUnit_Framework_Error
      */
     public function initializeWithInvalidValuesResultsInException($invalidValue)
     {
-        $this->subject->initialize($invalidValue);
+        $this->subject->processAjaxRequest($invalidValue);
     }
 
     /**
      * @test
      */
-    public function setArgumentsSanitizesAndSetsArguments()
+    public function processAjaxRequestSanitizesArguments()
     {
         $arguments = array(
             'categories' => '123,-321 , , 0, Hallo,123Test',
-            'month' => '231',
-            'year' => '5431',
+            'month' => '11',
+            'year' => '2024',
             'pidOfListPage' => '4321',
-            'storagePids' => '543,-3245, , 0, Hello,123Test'
+            'storagePids' => '543,-3245, ,  123Test'
         );
         $expectedArguments = array(
             'categories' => '123,-321,0',
-            'month' => 231,
-            'year' => 5431,
+            'month' => 11,
+            'year' => 2024,
             'pidOfListPage' => 4321,
-            'storagePids' => '543,-3245,0'
+            'storagePids' => '543,-3245'
         );
-        $this->subject->setArguments($arguments);
-        $this->assertSame(
-            $expectedArguments,
-            $this->subject->getArguments()
-        );
+        $this->subject->processAjaxRequest($arguments);
+        $this->assertSame($expectedArguments, $this->subject->_get('arguments'));
     }
-    
+
     /**
      * @test
      */
-    public function processAjaxRequestWithArgumentsAndZeroDaysResultsInEmptyJson()
+    public function processAjaxRequestForcesTooHighMonthAndYearInRange()
     {
         $arguments = array(
-            'month' => '123',
-            'year' => '1234'
+            'categories' => '10,11,12',
+            'month' => '243',
+            'year' => '23412',
+            'pidOfListPage' => 4321,
+            'storagePids' => '21,22,23'
         );
-        /** @var \JWeiland\Events2\Ajax\FindDaysForMonth\Ajax|\PHPUnit_Framework_MockObject_MockObject $subject */
-        $subject = $this->getMock('JWeiland\\Events2\\Ajax\\FindDaysForMonth\\Ajax', array('initialize', 'saveMonthAndYearInSession', 'findAllDaysInMonth'));
-        $subject->setArguments($arguments);
-        $subject->expects($this->once())->method('initialize')->with($this->equalTo($arguments));
-        $subject->expects($this->once())->method('saveMonthAndYearInSession')->with($this->equalTo(123), $this->equalTo(1234));
-        $subject->expects($this->once())->method('findAllDaysInMonth')->with($this->equalTo(123), $this->equalTo(1234))->will($this->returnValue(array()));
-        $this->assertSame(
-            '[]',
-            $subject->processAjaxRequest($arguments)
+        $expectedArguments = array(
+            'categories' => '10,11,12',
+            'month' => 12,
+            'year' => 2500,
+            'pidOfListPage' => 4321,
+            'storagePids' => '21,22,23'
         );
+        $this->subject->processAjaxRequest($arguments);
+        $this->assertSame($expectedArguments, $this->subject->_get('arguments'));
     }
-    
+
     /**
      * @test
      */
-    public function processAjaxRequestSavesMonthAndYearAsString()
+    public function processAjaxRequestForcesTooLowMonthAndYearInRange()
     {
         $arguments = array(
-            'month' => 9,
-            'year' => 2016
+            'categories' => '10,11,12',
+            'month' => '-12',
+            'year' => '324',
+            'pidOfListPage' => 4321,
+            'storagePids' => '21,22,23'
         );
-    
-        /** @var FrontendUserAuthentication|\PHPUnit_Framework_MockObject_MockObject $frontendUserAuthentication */
-        $frontendUserAuthentication = $this->getMock(FrontendUserAuthentication::class);
-        $frontendUserAuthentication
-            ->expects($this->once())
-            ->method('start');
-        $frontendUserAuthentication
-            ->expects($this->once())
-            ->method('setAndSaveSessionData')
-            ->with(
-                $this->equalTo('events2MonthAndYearForCalendar'),
-                $this->equalTo(array(
-                    'month' => '09',
-                    'year' => '2016'
-                ))
-            );
-        
-        /** @var \JWeiland\Events2\Ajax\FindDaysForMonth\Ajax|\PHPUnit_Framework_MockObject_MockObject $subject */
-        $subject = $this->getMock('JWeiland\\Events2\\Ajax\\FindDaysForMonth\\Ajax', array('initialize', 'getFrontendUserAuthentication', 'findAllDaysInMonth'));
-        $subject->setArguments($arguments);
-        $subject
-            ->expects($this->once())
-            ->method('initialize')
-            ->with($this->equalTo($arguments));
-        $subject
-            ->expects($this->once())
-            ->method('getFrontendUserAuthentication')
-            ->willReturn($frontendUserAuthentication);
-        $subject
-            ->expects($this->once())
-            ->method('findAllDaysInMonth')
-            ->with($this->equalTo(9), $this->equalTo(2016))
-            ->willReturn(array());
-        
-        $this->assertSame(
-            '[]',
-            $subject->processAjaxRequest($arguments)
+        $expectedArguments = array(
+            'categories' => '10,11,12',
+            'month' => 1,
+            'year' => 1500,
+            'pidOfListPage' => 4321,
+            'storagePids' => '21,22,23'
         );
+        $this->subject->processAjaxRequest($arguments);
+        $this->assertSame($expectedArguments, $this->subject->_get('arguments'));
     }
-    
+
     /**
-     * This test also tests protected function getArgument.
-     *
      * @test
      */
-    public function processAjaxRequestWithArgumentsAndTwoDaysResultsInJson()
+    public function processAjaxRequestPrependsZerosToMonthValuesAndCastsThemToString()
     {
         $arguments = array(
-            'month' => '9',
-            'year' => '2015'
+            'categories' => '10,11,12',
+            'month' => '7',
+            'year' => '2499',
+            'pidOfListPage' => 4321,
+            'storagePids' => '21,22,23'
         );
-        
+        $this->frontendUserAuthenticationProphecy->start()->shouldBeCalled();
+        $this->frontendUserAuthenticationProphecy->setAndSaveSessionData(
+            Argument::exact('events2MonthAndYearForCalendar'),
+            Argument::exact(array(
+                'month' => '07',
+                'year' => '2499'
+            ))
+        )->shouldBeCalled();
+
+        $this->subject->processAjaxRequest($arguments);
+    }
+
+    /**
+     * @test
+     */
+    public function processAjaxRequestWillGenerateTwoDayRecordsAsJson()
+    {
+        $currentDate = new \DateTime('now');
+        $day = (int)$currentDate->format('d');
+        $tomorrow = $day + 1;
+        $arguments = array(
+            'categories' => '10,11,12',
+            'month' => $currentDate->format('n'),
+            'year' => $currentDate->format('Y'),
+            'pidOfListPage' => 4321,
+            'storagePids' => '21,22,23'
+        );
+
         $event1 = new Event();
         $event1->_setProperty('uid', 456);
         $event1->setTitle('Test123');
@@ -223,154 +264,170 @@ class AjaxTest extends UnitTestCase
         $event2->_setProperty('uid', 654);
         $event2->setTitle('Test321');
         $day1 = new Day();
-        $day1->setDay(new \DateTime('14.09.2015'));
+        $day1->setDay(new \DateTime('now'));
         $day1->setEvent($event1);
         $day2 = new Day();
-        $day2->setDay(new \DateTime('17.09.2015'));
+        $day2->setDay(new \DateTime('tomorrow'));
         $day2->setEvent($event2);
         $days = array($day1, $day2);
-        
-        /** @var \JWeiland\Events2\Ajax\FindDaysForMonth\Ajax|\PHPUnit_Framework_MockObject_MockObject $subject */
-        $subject = $this->getMock('JWeiland\\Events2\\Ajax\\FindDaysForMonth\\Ajax', array('initialize', 'saveMonthAndYearInSession', 'findAllDaysInMonth'));
-        $subject->setArguments($arguments);
-        $subject->expects($this->once())->method('initialize')->with($this->equalTo($arguments));
-        $subject->expects($this->once())->method('saveMonthAndYearInSession')->with($this->equalTo(9), $this->equalTo(2015));
-        $subject->expects($this->once())->method('findAllDaysInMonth')->with($this->equalTo(9), $this->equalTo(2015))->willReturn($days);
-        $subject->injectDateTimeUtility(new DateTimeUtility());
-        $subject->injectCacheHashCalculator(new CacheHashCalculator());
 
-        $json = $subject->processAjaxRequest($arguments);
+        $this->queryProphecy->getQuerySettings()->willReturn($this->querySettingsProphecy->reveal());
+        $this->queryProphecy->getQuerySettings()->shouldBeCalled();
+        $this->queryProphecy->contains(Argument::exact('event.categories'), Argument::type('integer'))->shouldBeCalledTimes(3);
+        $this->queryProphecy->logicalOr(Argument::any())->shouldBeCalled();
+        $this->queryProphecy->greaterThanOrEqual(Argument::exact('day'), Argument::any())->shouldBeCalled();
+        $this->queryProphecy->lessThan(Argument::exact('day'), Argument::any())->shouldBeCalled();
+        $this->queryProphecy->logicalAnd(Argument::any())->shouldBeCalled();
+        $this->queryProphecy->matching(Argument::any())->willReturn($this->queryProphecy->reveal());
+        $this->queryProphecy->execute()->willReturn($days);
+
+        $this->dayRepositoryProphecy->createQuery()->willReturn($this->queryProphecy);
+
+        $json = $this->subject->processAjaxRequest($arguments);
         $result = json_decode($json, true);
 
-        // check if day 14 and 17 exists in json
-        $this->assertArrayHasKey(14, $result);
-        $this->assertArrayHasKey(17, $result);
+        // check if days exists in json
+        $this->assertArrayHasKey($day, $result);
+        $this->assertArrayHasKey($tomorrow, $result);
         // check if uid 456 and 654 exists in json
-        $this->assertSame(456, $result[14][0]['uid']);
-        $this->assertSame(654, $result[17][0]['uid']);
+        $this->assertSame(456, $result[$day][0]['uid']);
+        $this->assertSame(654, $result[$tomorrow][0]['uid']);
         // check if title Test123 and Test321 exists in json
-        $this->assertSame('Test123', $result[14][0]['title']);
-        $this->assertSame('Test321', $result[17][0]['title']);
+        $this->assertSame('Test123', $result[$day][0]['title']);
+        $this->assertSame('Test321', $result[$tomorrow][0]['title']);
         // check if cHashes exists in json
-        $this->assertContains('cHash', $result[14][0]['uri']);
-        $this->assertContains('cHash', $result[17][0]['uri']);
+        $this->assertContains('cHash', $result[$day][0]['uri']);
+        $this->assertContains('cHash', $result[$tomorrow][0]['uri']);
     }
 
     /**
      * @test
      */
-    public function getUriForDayWithDayUidAsArgumentResultsInUriWithGeneratedCHash()
+    public function processAjaxRequestWillGenerateUrisForTwoDayRecords()
     {
-        $timestamp = 1234567890;
-        $pageUid = 123;
-        $this->subject->setArguments(array('pidOfListPage' => $pageUid));
-        $this->subject->injectCacheHashCalculator(new CacheHashCalculator());
+        $today = new \DateTime('now midnight');
+        $tomorrow = new \DateTime('tomorrow midnight');
+        $arguments = array(
+            'categories' => '10,11,12',
+            'month' => $today->format('n'),
+            'year' => $today->format('Y'),
+            'pidOfListPage' => 4321,
+            'storagePids' => '21,22,23'
+        );
+
+        $event1 = new Event();
+        $event1->_setProperty('uid', 456);
+        $event1->setTitle('Test123');
+        $event2 = new Event();
+        $event2->_setProperty('uid', 654);
+        $event2->setTitle('Test321');
+        $day1 = new Day();
+        $day1->setDay($today);
+        $day1->setEvent($event1);
+        $day2 = new Day();
+        $day2->setDay($tomorrow);
+        $day2->setEvent($event2);
+        $days = array($day1, $day2);
+
+        $this->queryProphecy->getQuerySettings()->willReturn($this->querySettingsProphecy->reveal());
+        $this->queryProphecy->getQuerySettings()->shouldBeCalled();
+        $this->queryProphecy->contains(Argument::exact('event.categories'), Argument::type('integer'))->shouldBeCalledTimes(3);
+        $this->queryProphecy->logicalOr(Argument::any())->shouldBeCalled();
+        $this->queryProphecy->greaterThanOrEqual(Argument::exact('day'), Argument::any())->shouldBeCalled();
+        $this->queryProphecy->lessThan(Argument::exact('day'), Argument::any())->shouldBeCalled();
+        $this->queryProphecy->logicalAnd(Argument::any())->shouldBeCalled();
+        $this->queryProphecy->matching(Argument::any())->willReturn($this->queryProphecy->reveal());
+        $this->queryProphecy->execute()->willReturn($days);
+
+        $this->dayRepositoryProphecy->createQuery()->willReturn($this->queryProphecy);
+
+        $json = $this->subject->processAjaxRequest($arguments);
+        $result = json_decode($json, true);
+
         $this->assertRegExp(
-            '~^(http|https)://(.*?)id='.$pageUid.'&tx_events2_events%5Bcontroller%5D=Day&tx_events2_events%5Baction%5D=showByTimestamp&tx_events2_events%5Btimestamp%5D=' . $timestamp . '&cHash=[0-9a-f]{32}$~',
-            $this->subject->getUriForDay($timestamp)
+            '~^(http|https)://(.*?)id=' . $arguments['pidOfListPage'] . '&tx_events2_events%5Bcontroller%5D=Day&tx_events2_events%5Baction%5D=showByTimestamp&tx_events2_events%5Btimestamp%5D=' . $today->format('U') . '&cHash=[0-9a-f]{32}$~',
+            $result[(int)$today->format('d')][0]['uri']
+        );
+        $this->assertRegExp(
+            '~^(http|https)://(.*?)id=' . $arguments['pidOfListPage'] . '&tx_events2_events%5Bcontroller%5D=Day&tx_events2_events%5Baction%5D=showByTimestamp&tx_events2_events%5Btimestamp%5D=' . $tomorrow->format('U') . '&cHash=[0-9a-f]{32}$~',
+            $result[(int)$tomorrow->format('d')][0]['uri']
         );
     }
 
     /**
      * @test
      */
-    public function findAllDaysInMonthCallsStatementWithoutCategories()
+    public function processAjaxRequestWillNotAddCategoryStatements()
     {
-        $firstDayOfMonth = new \DateTime('01.08.2014 00:00:00');
-        $lastDayOfMonth = new \DateTime('01.09.2014 00:00:00');
-        $this->query
-            ->expects($this->once())
-            ->method('getQuerySettings')
-            ->willReturn(new Typo3QuerySettings());
-        $this->query
-            ->expects($this->never())
-            ->method('contains');
-        $this->query
-            ->expects($this->never())
-            ->method('logicalOr');
-        $this->query
-            ->expects($this->once())
-            ->method('greaterThanOrEqual')
-            ->with(
-                $this->equalTo('day'),
-                $this->equalTo($firstDayOfMonth)
-            );
-        $this->query
-            ->expects($this->once())
-            ->method('lessThan')
-            ->with(
-                $this->equalTo('day'),
-                $this->equalTo($lastDayOfMonth)
-            );
-        $this->query
-            ->expects($this->once())
-            ->method('logicalAnd');
-        $this->query
-            ->expects($this->once())
-            ->method('matching')
-            ->willReturn($this->query);
+        $currentDate = new \DateTime('now');
+        $arguments = array(
+            'month' => $currentDate->format('n'),
+            'year' => $currentDate->format('Y'),
+            'pidOfListPage' => 4321,
+            'storagePids' => '21,22,23'
+        );
 
-        $this->dayRepository
-            ->expects($this->once())
-            ->method('createQuery')
-            ->willReturn($this->query);
-        
-        $this->subject->injectDateTimeUtility(new DateTimeUtility());
-        $this->subject->injectDayRepository($this->dayRepository);
-        
-        $this->subject->findAllDaysInMonth(8, 2014);
+        $this->queryProphecy->getQuerySettings()->willReturn($this->querySettingsProphecy->reveal());
+        $this->queryProphecy->getQuerySettings()->shouldBeCalled();
+        $this->queryProphecy->contains()->shouldNotBeCalled();
+        $this->queryProphecy->logicalOr()->shouldNotBeCalled();
+        $this->queryProphecy->greaterThanOrEqual(Argument::exact('day'), Argument::any())->shouldBeCalled();
+        $this->queryProphecy->lessThan(Argument::exact('day'), Argument::any())->shouldBeCalled();
+        $this->queryProphecy->logicalAnd(Argument::any())->shouldBeCalled();
+        $this->queryProphecy->matching(Argument::any())->willReturn($this->queryProphecy->reveal());
+        $this->queryProphecy->execute()->willReturn(array());
+        $this->dayRepositoryProphecy->createQuery()->willReturn($this->queryProphecy);
+
+        $this->subject->processAjaxRequest($arguments);
     }
 
     /**
      * @test
      */
-    public function findAllDaysInMonthCallsStatementWithCategories()
+    public function processAjaxRequestSetsFirstDayOfMonthToEarliestAllowedDate()
     {
-        $firstDayOfMonth = new \DateTime('01.08.2014 00:00:00');
-        $lastDayOfMonth = new \DateTime('01.09.2014 00:00:00');
-        $this->query
-            ->expects($this->once())
-            ->method('getQuerySettings')
-            ->willReturn(new Typo3QuerySettings());
-        $this->query
-            ->expects($this->exactly(2))
-            ->method('contains');
-        $this->query
-            ->expects($this->once())
-            ->method('logicalOr');
-        $this->query
-            ->expects($this->once())
-            ->method('greaterThanOrEqual')
-            ->with(
-                $this->equalTo('day'),
-                $this->equalTo($firstDayOfMonth)
-            );
-        $this->query
-            ->expects($this->once())
-            ->method('lessThan')
-            ->with(
-                $this->equalTo('day'),
-                $this->equalTo($lastDayOfMonth)
-            );
-        $this->query
-            ->expects($this->once())
-            ->method('logicalAnd');
-        $this->query
-            ->expects($this->once())
-            ->method('matching')
-            ->willReturn($this->query);
-    
-        $this->dayRepository
-            ->expects($this->once())
-            ->method('createQuery')
-            ->willReturn($this->query);
-    
-        $this->subject->injectDateTimeUtility(new DateTimeUtility());
-        $this->subject->injectDayRepository($this->dayRepository);
-        $this->subject->setArguments(array(
-            'categories' => '123,321'
-        ));
-    
-        $this->subject->findAllDaysInMonth(8, 2014);
+        $this->extConfProphecy->getRecurringPast()->willReturn(0);
+        $today = new \DateTime('now midnight');
+        $arguments = array(
+            'month' => $today->format('n'),
+            'year' => $today->format('Y'),
+            'pidOfListPage' => 4321,
+            'storagePids' => '21,22,23'
+        );
+
+        $this->queryProphecy->getQuerySettings()->willReturn($this->querySettingsProphecy->reveal());
+        $this->queryProphecy->getQuerySettings()->shouldBeCalled();
+        $this->queryProphecy->contains()->shouldNotBeCalled();
+        $this->queryProphecy->logicalOr()->shouldNotBeCalled();
+        $this->queryProphecy->greaterThanOrEqual(Argument::exact('day'), Argument::exact($today))->shouldBeCalled();
+        $this->queryProphecy->lessThan(Argument::exact('day'), Argument::any())->shouldBeCalled();
+        $this->queryProphecy->logicalAnd(Argument::any())->shouldBeCalled();
+        $this->queryProphecy->matching(Argument::any())->willReturn($this->queryProphecy->reveal());
+        $this->queryProphecy->execute()->willReturn(array());
+        $this->dayRepositoryProphecy->createQuery()->willReturn($this->queryProphecy);
+
+        $this->subject->processAjaxRequest($arguments);
+    }
+
+    /**
+     * @test
+     */
+    public function processAjaxRequestWillReturnEmptyArrayIfMonthAndYearIsOutOfRange()
+    {
+        $this->extConfProphecy->getRecurringPast()->willReturn(2);
+        $threeMonthAgo = new \DateTime('now midnight');
+        $threeMonthAgo->modify('-3 months');
+
+        $arguments = array(
+            'month' => $threeMonthAgo->format('n'),
+            'year' => $threeMonthAgo->format('Y'),
+            'pidOfListPage' => 4321,
+            'storagePids' => '21,22,23'
+        );
+
+        $this->assertSame(
+            '[]',
+            $this->subject->processAjaxRequest($arguments)
+        );
     }
 }
