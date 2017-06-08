@@ -36,12 +36,12 @@ class EventRepository extends Repository
     /**
      * @var \JWeiland\Events2\Utility\DateTimeUtility
      */
-    protected $dateTimeUtility = null;
+    protected $dateTimeUtility;
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper
      */
-    protected $dataMapper = null;
+    protected $dataMapper;
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\Generic\Session
@@ -51,7 +51,7 @@ class EventRepository extends Repository
     /**
      * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
      */
-    protected $configurationManager = null;
+    protected $configurationManager;
 
     /**
      * @var array
@@ -62,6 +62,8 @@ class EventRepository extends Repository
      * inject DateTime Utility.
      *
      * @param DateTimeUtility $dateTimeUtility
+     *
+     * @return void
      */
     public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
     {
@@ -72,6 +74,8 @@ class EventRepository extends Repository
      * inject DataMapper.
      *
      * @param DataMapper $dataMapper
+     *
+     * @return void
      */
     public function injectDataMapper(DataMapper $dataMapper)
     {
@@ -82,6 +86,7 @@ class EventRepository extends Repository
      * inject persistenceSession
      *
      * @param Session $persistenceSession
+     *
      * @return void
      */
     public function injectPersistenceSession(Session $persistenceSession)
@@ -93,6 +98,8 @@ class EventRepository extends Repository
      * inject Configuration Manager.
      *
      * @param ConfigurationManagerInterface $configurationManager
+     *
+     * @return void
      */
     public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager)
     {
@@ -113,6 +120,7 @@ class EventRepository extends Repository
      * Sets the settings
      *
      * @param array $settings
+     *
      * @return void
      */
     public function setSettings(array $settings)

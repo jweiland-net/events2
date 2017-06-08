@@ -14,15 +14,33 @@ namespace JWeiland\Events2\ViewHelpers;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use JWeiland\Events2\Domain\Repository\UserRepository;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class FeuserViewHelper extends AbstractViewHelper
+class FeUserViewHelper extends AbstractViewHelper
 {
     /**
-     * implements a vievHelper to get values from current logged in fe_user.
+     * @var UserRepository
+     */
+    protected $userRepository;
+
+    /**
+     * inject userRepository
+     *
+     * @param UserRepository $userRepository
+     *
+     * @return void
+     */
+    public function injectUserRepository(UserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+
+    /**
+     * Implements a ViewHelper to get values from current logged in fe_user.
      *
      * @param string $field Field to retrieve value from
      *
@@ -30,16 +48,6 @@ class FeuserViewHelper extends AbstractViewHelper
      */
     public function render($field = 'uid')
     {
-        // do not return user password for security resons
-        if ($field === 'password') {
-            return '';
-        }
-
-        // return field of user array
-        if (is_array($GLOBALS['TSFE']->fe_user->user) && (int)$GLOBALS['TSFE']->fe_user->user['uid'] > 0) {
-            return $GLOBALS['TSFE']->fe_user->user[$field];
-        } else {
-            return '';
-        }
+        return $this->userRepository->getFieldFromUser($field);
     }
 }
