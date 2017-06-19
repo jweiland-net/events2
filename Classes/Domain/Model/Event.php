@@ -468,6 +468,26 @@ class Event extends AbstractEntity
     }
 
     /**
+     * Adds a Times.
+     *
+     * @param Time $multipleTime
+     */
+    public function addMultipleTime(Time $multipleTime = null)
+    {
+        $this->multipleTimes->attach($multipleTime);
+    }
+
+    /**
+     * Removes a Times.
+     *
+     * @param Time $multipleTime The Time to be removed
+     */
+    public function removeMultipleTime(Time $multipleTime)
+    {
+        $this->multipleTimes->detach($multipleTime);
+    }
+
+    /**
      * Returns the xth.
      *
      * @return array $xth
@@ -520,26 +540,6 @@ class Event extends AbstractEntity
     }
 
     /**
-     * Adds a Times.
-     *
-     * @param Time $differentTime
-     */
-    public function addDifferentTime(Time $differentTime = null)
-    {
-        $this->differentTimes->attach($differentTime);
-    }
-
-    /**
-     * Removes a Times.
-     *
-     * @param Time $differentTime The Time to be removed
-     */
-    public function removeDifferentTime(Time $differentTime)
-    {
-        $this->differentTimes->detach($differentTime);
-    }
-
-    /**
      * Returns the differentTimes.
      *
      * @return ObjectStorage $differentTimes
@@ -557,6 +557,26 @@ class Event extends AbstractEntity
     public function setDifferentTimes(ObjectStorage $differentTimes = null)
     {
         $this->differentTimes = $differentTimes;
+    }
+
+    /**
+     * Adds a Times.
+     *
+     * @param Time $differentTime
+     */
+    public function addDifferentTime(Time $differentTime = null)
+    {
+        $this->differentTimes->attach($differentTime);
+    }
+
+    /**
+     * Removes a Times.
+     *
+     * @param Time $differentTime The Time to be removed
+     */
+    public function removeDifferentTime(Time $differentTime)
+    {
+        $this->differentTimes->detach($differentTime);
     }
 
     /**
@@ -914,26 +934,6 @@ class Event extends AbstractEntity
     }
 
     /**
-     * Adds a DownloadLink.
-     *
-     * @param Link $downloadLink
-     */
-    public function addDownloadLink(Link $downloadLink)
-    {
-        $this->days->attach($downloadLink);
-    }
-
-    /**
-     * Removes a VideoLink.
-     *
-     * @param Link $downloadLink The VideoLink to be removed
-     */
-    public function removeDownloadLink(Link $downloadLink)
-    {
-        $this->days->detach($downloadLink);
-    }
-
-    /**
      * Returns the DownloadLinks.
      *
      * @return ObjectStorage $videoLinks
@@ -951,5 +951,25 @@ class Event extends AbstractEntity
     public function setDownloadLinks(ObjectStorage $downloadLinks)
     {
         $this->downloadLinks = $downloadLinks;
+    }
+
+    /**
+     * Adds a DownloadLink.
+     *
+     * @param Link $downloadLink
+     */
+    public function addDownloadLink(Link $downloadLink)
+    {
+        $this->downloadLinks->attach($downloadLink);
+    }
+
+    /**
+     * Removes a VideoLink.
+     *
+     * @param Link $downloadLink The VideoLink to be removed
+     */
+    public function removeDownloadLink(Link $downloadLink)
+    {
+        $this->downloadLinks->detach($downloadLink);
     }
 }

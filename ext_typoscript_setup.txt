@@ -1,26 +1,38 @@
 events2AjaxResponse = PAGE
 events2AjaxResponse {
-	typeNum = 1372255350
-	headerData >
-	config {
-		additionalHeaders = Cache-Control: no-cache, must-revalidate, max-age=0|Pragma: no-cache|Content-type:application/json
-		admPanel = 0
-		disableAllHeaderCode = 1
-		no_cache = 1
-		xhtml_cleaning = 0
-	}
-	10 = USER_INT
-	10 {
-		vendorName = JWeiland
-		extensionName = Events2
-		pluginName = Events
-		switchableControllerActions {
-			Ajax {
-				1 = callAjaxObject
-			}
-		}
-		settings =< plugin.tx_events2.settings
-		persistence =< plugin.tx_events2.persistence
-		userFunc = tx_extbase_core_bootstrap->run
-	}
+  typeNum = 1372255350
+  headerData >
+  config {
+    additionalHeaders = Cache-Control: no-cache, must-revalidate, max-age=0|Pragma: no-cache|Content-type:application/json
+    admPanel = 0
+    disableAllHeaderCode = 1
+    no_cache = 1
+    xhtml_cleaning = 0
+  }
+  10 = USER_INT
+  10 {
+    vendorName = JWeiland
+    extensionName = Events2
+    pluginName = Events
+    switchableControllerActions {
+      Ajax {
+        1 = callAjaxObject
+      }
+    }
+    settings =< plugin.tx_events2.settings
+    persistence =< plugin.tx_events2.persistence
+    userFunc = tx_extbase_core_bootstrap->run
+  }
+}
+
+config.tx_extbase {
+  persistence{
+    classes {
+      JWeiland\Events2\Domain\Model\Category {
+        mapping {
+          tableName = sys_category
+        }
+      }
+    }
+  }
 }

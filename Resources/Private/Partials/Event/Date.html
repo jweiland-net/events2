@@ -1,24 +1,24 @@
 {namespace e2=JWeiland\Events2\ViewHelpers}
 
 <f:if condition="{0: day.event.eventType}=={0: 'duration'}">
-	<f:then>
-		<f:render section="date" arguments="{day: day.event.eventBegin}" />
-		- {day.event.eventEnd->f:format.date(format: '%a %d. %b %Y')}
-	</f:then>
-	<f:else>
-		<f:render section="date" arguments="{day: day.day}" />
-	</f:else>
+  <f:then>
+    <f:render section="date" arguments="{day: day.event.eventBegin}" />
+    - {day.event.eventEnd->f:format.date(format: '%a %d. %b %Y')}
+  </f:then>
+  <f:else>
+    <f:render section="date" arguments="{day: day.day}" />
+  </f:else>
 </f:if>
 
 <f:render section="time" arguments="{day: day}" />
 
 <f:section name="date">
-	{day->f:format.date(format: '%a %d. %b %Y')}
+  {day->f:format.date(format: '%a %d. %b %Y')}
 </f:section>
 
 <f:section name="time">
-	<f:comment>If sortDayTime is higher than eventBegin (day without time) we can be sure that a time record was created</f:comment>
-	<f:if condition="{day.sortDayTime} > {day.event.eventBegin}">
-		|&nbsp;<f:translate key="tx_events2_domain_model_time.time_begin" />: {f:format.date(date: day.sortDayTime, format: 'H:i')}
-	</f:if>
+  <f:comment>If sortDayTime is higher than eventBegin (day without time) we can be sure that a time record was created</f:comment>
+  <f:if condition="{day.sortDayTime} > {day.event.eventBegin}">
+    |&nbsp;<f:translate key="tx_events2_domain_model_time.time_begin" />: {f:format.date(date: day.sortDayTime, format: 'H:i')}
+  </f:if>
 </f:section>
