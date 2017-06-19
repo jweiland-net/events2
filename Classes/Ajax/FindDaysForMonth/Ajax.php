@@ -337,7 +337,7 @@ class Ajax
 
         $query = $this->dayRepository->createQuery();
         $query->getQuerySettings()->setStoragePageIds(explode(',', $this->getArgument('storagePids')));
-        if (!empty($this->getArgument('categories'))) {
+        if (strlen(trim($this->getArgument('categories')))) {
             $orConstraint = array();
             foreach (explode(',', $this->getArgument('categories')) as $category) {
                 $orConstraint[] = $query->contains('event.categories', (int)$category);
