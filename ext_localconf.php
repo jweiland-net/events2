@@ -59,7 +59,7 @@ if (TYPO3_MODE === 'BE') {
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tceforms.php']['getSingleFieldClass'][] = 'JWeiland\\Events2\\Hooks\\ModifyTcaOfCategoryTrees';
     // Hook: Render Plugin preview item
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['list_type_Info']['events2_events'][] = 'JWeiland\\Events2\\Hooks\\RenderPluginItem->render';
-    
+
     // create scheduler to create/update days with recurrency
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['JWeiland\\Events2\\Task\\ReGenerateDays'] = array(
         'extension' => $_EXTKEY,
@@ -67,7 +67,15 @@ if (TYPO3_MODE === 'BE') {
         'description' => 'Re-Generate day records for events with recurrency.',
         'additionalFields' => 'JWeiland\\Events2\\Task\\ReGenerateDays',
     );
-    
+
+    // create scheduler to import events from different sources
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['JWeiland\\Events2\\Task\\Import'] = array(
+        'extension' => $_EXTKEY,
+        'title' => 'Import events',
+        'description' => 'Import events over a XML interface or by mail into events2.',
+        'additionalFields' => 'JWeiland\\Events2\\Task\\AdditionalFieldsForImport',
+    );
+
     if (\TYPO3\CMS\Core\Utility\GeneralUtility::compat_version('7.0')) {
         /** @var \TYPO3\CMS\Core\Imaging\IconRegistry $iconRegistry */
         $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Imaging\\IconRegistry');

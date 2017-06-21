@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+  <file source-language="en" datatype="plaintext" original="messages" date="2017-04-28T13:38:40Z" product-name="events2">
+    <header/>
+    <body>
+      <trans-unit id="path.alttitle" xml:space="preserve">
+        <source>Path to file to import</source>
+      </trans-unit>
+      <trans-unit id="path.description" xml:space="preserve">
+        <source>Path to file to import. Please use following format: [UID to storage]:[path to file]. F.e. 1:event/Import.xml</source>
+      </trans-unit>
+      <trans-unit id="path.details" xml:space="preserve">
+        <source>Path to file to import. Please use following format: [UID to storage]:[path to file]. F.e. 1:event/Import.xml</source>
+      </trans-unit>
+
+      <trans-unit id="storagePid.alttitle" xml:space="preserve">
+        <source>Storage PID</source>
+      </trans-unit>
+      <trans-unit id="storagePid.description" xml:space="preserve">
+        <source>Storage PID where to save the imported recored</source>
+      </trans-unit>
+      <trans-unit id="storagePid.details" xml:space="preserve">
+        <source>Storage PID where to save the imported recored</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

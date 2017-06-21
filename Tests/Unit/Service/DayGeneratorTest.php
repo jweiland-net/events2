@@ -37,8 +37,11 @@ class DayGeneratorTest extends UnitTestCase
      */
     public function setUp()
     {
+        $extConf = new ExtConf();
+        $extConf->setRecurringFuture(12);
+
         $this->subject = new DayGenerator();
-        $this->subject->injectExtConf(new ExtConf());
+        $this->subject->injectExtConf($extConf);
         $this->subject->injectDateTimeUtility(new DateTimeUtility());
 
         $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['xth']['config']['items'] = array(
@@ -387,10 +390,10 @@ class DayGeneratorTest extends UnitTestCase
     {
         // this date has to be updated each 6 month.
         // Set it to a month which starts with a thursday
-        $eventBegin = new \DateTime('17.06.2017');
+        $eventBegin = new \DateTime('17.02.2018');
         $eventBegin->modify('midnight');
         $recurringEnd = clone $eventBegin;
-        $recurringEnd->modify('+20 days'); // 06.02.1015
+        $recurringEnd->modify('+22 days'); // 08.03.2017
 
         $event = array(
             'event_type' => 'recurring',
@@ -409,8 +412,8 @@ class DayGeneratorTest extends UnitTestCase
         $expectedDays[$eventBegin->format('U')] = clone $eventBegin; // add 5th fr 30.01
         $eventBegin->modify('+4 day');
         $expectedDays[$eventBegin->format('U')] = clone $eventBegin; // add 1st tu 03.02
-        $eventBegin->modify('+3 day');
-        $expectedDays[$eventBegin->format('U')] = clone $eventBegin; // add 1st fr 06.03
+        //$eventBegin->modify('+3 day');
+        //$expectedDays[$eventBegin->format('U')] = clone $eventBegin; // add 1st fr 06.03
         ksort($expectedDays);
 
         $this->assertTrue($this->subject->initialize($event));
