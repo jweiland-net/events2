@@ -8,14 +8,18 @@
     <p class="lead">{day.event.teaser}</p>
     <f:format.html>{day.event.detailInformations}</f:format.html>
     <f:render section="downloadLinks" arguments="{event: day.event}" />
-    <f:render section="showDatesAndTimes" arguments="{days: '{e2:getEventDates(event: day.event)}'}" />
+    <f:if condition="{day.day}">
+      <f:render section="showDatesAndTimes" arguments="{days: '{e2:getEventDates(event: day.event)}'}" />
+    </f:if>
   </div>
   <div class="col-md-3">
     <f:render section="location" arguments="{event: day.event}" />
     <f:render section="googleRoute" arguments="{event: day.event}" />
     <f:render section="organizer" arguments="{event: day.event}" />
     <f:render section="freeEntry" arguments="{event: day.event}" />
-    <f:render section="iCalendar" arguments="{day: day}" />
+    <f:if condition="{day.day}">
+      <f:render section="iCalendar" arguments="{day: day}" />
+    </f:if>
   </div>
 </div>
 

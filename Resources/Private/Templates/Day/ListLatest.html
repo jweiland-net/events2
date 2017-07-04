@@ -3,14 +3,14 @@
 <f:layout name="Default" />
 
 <f:section name="main">
-	<f:render partial="Event/Filter" arguments="{action: 'listLatest', organizers: organizers, filter: filter}" />
+  <f:render partial="Event/Filter" arguments="{action: 'listLatest', organizers: organizers, filter: filter}" />
 
-	<div class="list scroll-container nopaginator">
-		<f:render partial="Event/List" arguments="{days: days}" />
-		<f:if condition="{settings.pidOfListPage}">
-			<div class="morelink clearfix">
-				<f:link.action pageUid="{settings.pidOfListPage}" action="list" title="{f:translate(key: 'link.listEvents')}"><span><f:translate key="link.listEvents" /></span><span aria-hidden="true" class="icon-arrowright"></span></f:link.action>
-			</div>
-		</f:if>
-	</div>
+  <div class="list scroll-container nopaginator">
+    <f:render partial="Event/List" arguments="{days: days}" />
+    <f:if condition="{settings.pidOfListPage}">
+      <div class="morelink clearfix">
+        <f:link.action pageUid="{settings.pidOfListPage}" action="list" title="{f:translate(key: 'link.listEvents')}"><span><f:translate key="link.listEvents" /></span><span aria-hidden="true" class="icon-arrowright"></span></f:link.action>
+      </div>
+    </f:if>
+  </div>
 </f:section>

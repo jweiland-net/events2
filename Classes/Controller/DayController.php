@@ -14,6 +14,8 @@ namespace JWeiland\Events2\Controller;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use JWeiland\Events2\Domain\Model\Day;
+use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Filter;
 
 /**
@@ -33,7 +35,7 @@ class DayController extends AbstractController
         $days = $this->dayRepository->findEvents('list', $this->validateAndAssignFilter($filter));
         $this->view->assign('days', $days);
     }
-    
+
     /**
      * action list latest.
      *
@@ -46,7 +48,7 @@ class DayController extends AbstractController
         $days = $this->dayRepository->findEvents('latest', $this->validateAndAssignFilter($filter));
         $this->view->assign('days', $days);
     }
-    
+
     /**
      * action list today.
      *
@@ -59,7 +61,7 @@ class DayController extends AbstractController
         $days = $this->dayRepository->findEvents('today', $this->validateAndAssignFilter($filter));
         $this->view->assign('days', $days);
     }
-    
+
     /**
      * action list this week.
      *
@@ -72,7 +74,7 @@ class DayController extends AbstractController
         $days = $this->dayRepository->findEvents('thisWeek', $this->validateAndAssignFilter($filter));
         $this->view->assign('days', $days);
     }
-    
+
     /**
      * action list range.
      *
@@ -85,7 +87,7 @@ class DayController extends AbstractController
         $days = $this->dayRepository->findEvents('range', $this->validateAndAssignFilter($filter));
         $this->view->assign('days', $days);
     }
-    
+
     /**
      * action show.
      *
@@ -97,11 +99,20 @@ class DayController extends AbstractController
      *
      * @return void
      */
-    public function showAction($event, $timestamp)
+    public function showAction($event, $timestamp = 0)
     {
-        $this->view->assign('day', $this->dayRepository->findOneByTimestamp($event, $timestamp));
+        $day = $this->dayRepository->findOneByTimestamp($event, $timestamp);
+        if (!$day instanceof Day) {
+            /** @var Event $eventObject */
+            $eventObject = $this->eventRepository->findByIdentifier($event);
+
+            /** @var Day $day */
+            $day = $this->objectManager->get('JWeiland\\Events2\\Domain\\Model\\Day');
+            $day->setEvent($eventObject);
+        }
+        $this->view->assign('day', $day);
     }
-    
+
     /**
      * action showByTimestamp.
      *

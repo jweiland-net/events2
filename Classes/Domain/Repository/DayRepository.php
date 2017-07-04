@@ -260,12 +260,23 @@ class DayRepository extends Repository
      *
      * @return Day|null
      */
-    public function findOneByTimestamp($event, $timestamp)
+    public function findOneByTimestamp($event, $timestamp = 0)
     {
         $query = $this->createQuery();
+
         $constraints = array();
-        $constraints[] = $query->equals('dayTime', $timestamp);
         $constraints[] = $query->equals('event', $event);
+
+        if (empty($timestamp)) {
+            $today = new \DateTime('now');
+            $constraints[] = $query->greaterThanOrEqual('dayTime', $today);
+
+            $query->setOrderings(array(
+                'dayTime' => QueryInterface::ORDER_ASCENDING
+            ));
+        } else {
+            $constraints[] = $query->equals('dayTime', $timestamp);
+        }
 
         /** @var Day $day */
         $day = $query->matching($query->logicalAnd($constraints))->execute()->getFirst();

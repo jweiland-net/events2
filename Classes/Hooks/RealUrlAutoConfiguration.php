@@ -74,14 +74,16 @@ class RealUrlAutoConfiguration
                             'noMatch' => 'bypass'
                         ),
                     ),
-                    'eventDetail' => array(
+                    'd' => array(
                         0 => array(
                             'GETvar' => 'tx_events2_events[timestamp]',
                             'userFunc' => 'JWeiland\\Events2\\RealUrl\\TimestampMapping->main',
                             'dateFormat' => 'Y-m-d',
                             'timeFormat' => 'Hi',
-                        ),
-                        1 => array(
+                        )
+                    ),
+                    't' => array(
+                        0 => array(
                             'GETvar' => 'tx_events2_events[event]',
                             'lookUpTable' => array(
                                 'table' => 'tx_events2_domain_model_event',

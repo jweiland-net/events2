@@ -28,6 +28,8 @@ class EventController extends AbstractController
     /**
      * we have a self-build form based on method GET.
      * That's why we have to manually allow some form-elements.
+     *
+     * @return void
      */
     public function initializeListSearchResultsAction()
     {
@@ -44,6 +46,8 @@ class EventController extends AbstractController
      * action list search results.
      *
      * @param Search $search
+     *
+     * @return void
      */
     public function listSearchResultsAction(Search $search)
     {
@@ -54,6 +58,8 @@ class EventController extends AbstractController
 
     /**
      * action list my events.
+     *
+     * @return void
      */
     public function listMyEventsAction()
     {
