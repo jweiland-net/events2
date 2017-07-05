@@ -13,6 +13,9 @@ namespace JWeiland\Events2\Persistence\Typo376\Generic\Storage;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use TYPO3\CMS\Extbase\Persistence\Generic\Qom\Statement;
+use TYPO3\CMS\Extbase\Persistence\Generic\Storage\Exception\BadConstraintException;
+use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 /**
  * Overwritten storage with a little implementation of GROUP BY
@@ -96,5 +99,49 @@ class Typo3DbBackend extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo
 
         $preparedStatement->free();
         return $rows;
+    }
+
+    /**
+     * Returns the number of tuples matching the query.
+     *
+     * @param QueryInterface $query
+     *
+     * @return int The number of matching tuples
+     *
+     * @throws BadConstraintException
+     */
+    public function getObjectCountByQuery(QueryInterface $query)
+    {
+        if ($query->getConstraint() instanceof Statement) {
+            throw new BadConstraintException('Could not execute count on queries with a constraint of type TYPO3\\CMS\\Extbase\\Persistence\\Generic\\Qom\\Statement', 1256661045);
+        }
+
+        list($statementParts) = $this->getStatementParts($query);
+
+        $fields = '*';
+        if (isset($statementParts['keywords']['distinct'])) {
+            $fields = 'DISTINCT ' . reset($statementParts['tables']) . '.uid';
+        }
+        if (isset($statementParts['groupings'])) {
+            $fields = 'DISTINCT ' . reset($statementParts['groupings']);
+        }
+
+        $queryCommandParameters = $this->createQueryCommandParametersFromStatementParts($statementParts);
+        $count = $this->databaseHandle->exec_SELECTcountRows(
+            $fields,
+            $queryCommandParameters['fromTable'],
+            $queryCommandParameters['whereClause']
+        );
+        $this->checkSqlErrors();
+
+        if ($statementParts['offset']) {
+            $count -= $statementParts['offset'];
+        }
+
+        if ($statementParts['limit']) {
+            $count = min($count, $statementParts['limit']);
+        }
+
+        return (int)max(0, $count);
     }
 }

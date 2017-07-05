@@ -13,6 +13,9 @@ namespace JWeiland\Events2\Persistence\Typo362\Generic\Storage;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use TYPO3\CMS\Extbase\Persistence\Generic\Qom\Statement;
+use TYPO3\CMS\Extbase\Persistence\Generic\Storage\Exception\BadConstraintException;
+use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 /**
  * Overwritten storage with a little implementation of GROUP BY
@@ -41,7 +44,7 @@ class Typo3DbBackend extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo
                 . ($statementParts['limit'] ? $statementParts['limit'] : '')
         );
     }
-    
+
     /**
      * Fetches the rows directly from the database, not using prepared statement
      *
@@ -60,10 +63,10 @@ class Typo3DbBackend extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo
             $queryCommandParameters['limit']
         );
         $this->checkSqlErrors();
-        
+
         return $rows;
     }
-    
+
     /**
      * Fetches the rows from the database, using prepared statement
      *
@@ -82,11 +85,55 @@ class Typo3DbBackend extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo
             $queryCommandParameters['orderBy'],
             $queryCommandParameters['limit']
         );
-        
+
         $preparedStatement->execute($parameters);
         $rows = $preparedStatement->fetchAll();
-        
+
         $preparedStatement->free();
         return $rows;
+    }
+
+    /**
+     * Returns the number of tuples matching the query.
+     *
+     * @param QueryInterface $query
+     *
+     * @return integer The number of matching tuples
+     *
+     * @throws BadConstraintException
+     */
+    public function getObjectCountByQuery(QueryInterface $query) {
+        if ($query->getConstraint() instanceof Statement) {
+            throw new BadConstraintException('Could not execute count on queries with a constraint of type TYPO3\\CMS\\Extbase\\Persistence\\Generic\\Qom\\Statement', 1256661045);
+        }
+
+        list($statementParts) = $this->getStatementParts($query);
+        $queryCommandParameters = $this->createQueryCommandParametersFromStatementParts($statementParts);
+
+        $fields = '*';
+        if (isset($statementParts['keywords']['distinct'])) {
+            $fields = 'DISTINCT ' . reset($statementParts['tables']) . '.uid';
+        }
+        if (isset($statementParts['groupings'])) {
+            $separator = ',' . $this->databaseHandle->fullQuoteStr('-', $queryCommandParameters['fromTable']) . ',';
+            $fields = 'DISTINCT CONCAT(' . implode($separator, $statementParts['groupings']) . ')';
+        }
+
+        $count = $this->databaseHandle->exec_SELECTcountRows(
+            $fields,
+            $queryCommandParameters['fromTable'],
+            $queryCommandParameters['whereClause']
+        );
+        $this->checkSqlErrors();
+
+        if ($statementParts['offset']) {
+            $count -= $statementParts['offset'];
+        }
+
+        if ($statementParts['limit']) {
+            $count = min($count, $statementParts['limit']);
+        }
+
+        return (int)max(0, $count);
     }
 }

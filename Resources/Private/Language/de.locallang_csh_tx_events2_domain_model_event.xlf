@@ -1,85 +1,85 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-	<file source-language="en" datatype="plaintext" original="messages" date="2013-03-40T10:38:40Z" product-name="events2">
-		<header/>
-		<body>
+  <file source-language="en" datatype="plaintext" original="messages" date="2013-03-40T10:38:40Z" product-name="events2">
+    <header/>
+    <body>
 
-			<trans-unit id="title.description">
-				<source>Title</source>
-				<target>Titel</target>
-			</trans-unit>
-			<trans-unit id="teaser.description">
-				<source>Teaser</source>
-				<target>Kurzbeschreibung</target>
-			</trans-unit>
-			<trans-unit id="event_begin.description">
-				<source>Event begin</source>
-				<target>Erster Veranstaltungstag</target>
-			</trans-unit>
-			<trans-unit id="duration.description">
-				<source>Duration</source>
-				<target>Dauer in Stunden</target>
-			</trans-unit>
-			<trans-unit id="event_end.description">
-				<source>Last event</source>
-				<target>Letzter Veranstaltungstag</target>
-			</trans-unit>
-			<trans-unit id="same_day.description">
-				<source>Same day</source>
-				<target>mehrmals an einem Tag</target>
-			</trans-unit>
-			<trans-unit id="xth.description">
-				<source>x th</source>
-				<target>Wiederholung jeden x-ten</target>
-			</trans-unit>
-			<trans-unit id="weekday.description">
-				<source>Weekday</source>
-				<target>Wochentag</target>
-			</trans-unit>
-			<trans-unit id="each_weeks.description">
-				<source>Each weeks</source>
-				<target>alle x Wochen</target>
-			</trans-unit>
-			<trans-unit id="exceptions.description">
-				<source>Exceptions</source>
-				<target>Ausnahmen</target>
-			</trans-unit>
-			<trans-unit id="detail_informations.description">
-				<source>Detail informations</source>
-				<target>Veranstaltungsdetails</target>
-			</trans-unit>
-			<trans-unit id="free_entry.description">
-				<source>free entry</source>
-				<target>kostenlose Veranstaltung</target>
-			</trans-unit>
-			<trans-unit id="ticket_link.description">
-				<source>Ticket link</source>
-				<target>Link zum Ticketverkauf</target>
-			</trans-unit>
-			<trans-unit id="categories.description">
-				<source>Categories</source>
-				<target>Kategorien</target>
-			</trans-unit>
-			<trans-unit id="event_time.description">
-				<source>Time</source>
-				<target>Uhrzeiten</target>
-			</trans-unit>
-			<trans-unit id="alternative_times.description">
-				<source>Alternative times</source>
-				<target>abweichende Zeiten</target>
-			</trans-unit>
-			<trans-unit id="days.description">
-				<source>Days</source>
-				<target>Tage</target>
-			</trans-unit>
-			<trans-unit id="location.description">
-				<source>Location</source>
-				<target>Veranstaltungsort</target>
-			</trans-unit>
-			<trans-unit id="organizer.description">
-				<source>Organizer</source>
-				<target>Veranstalter</target>
-			</trans-unit>
-		</body>
-	</file>
+      <trans-unit id="title.description">
+        <source>Title</source>
+        <target>Titel</target>
+      </trans-unit>
+      <trans-unit id="teaser.description">
+        <source>Teaser</source>
+        <target>Kurzbeschreibung</target>
+      </trans-unit>
+      <trans-unit id="event_begin.description">
+        <source>Event begin</source>
+        <target>Erster Veranstaltungstag</target>
+      </trans-unit>
+      <trans-unit id="duration.description">
+        <source>Duration</source>
+        <target>Dauer in Stunden</target>
+      </trans-unit>
+      <trans-unit id="event_end.description">
+        <source>Last event</source>
+        <target>Letzter Veranstaltungstag</target>
+      </trans-unit>
+      <trans-unit id="same_day.description">
+        <source>Same day</source>
+        <target>mehrmals an einem Tag</target>
+      </trans-unit>
+      <trans-unit id="xth.description">
+        <source>x th</source>
+        <target>Wiederholung jeden x-ten</target>
+      </trans-unit>
+      <trans-unit id="weekday.description">
+        <source>Weekday</source>
+        <target>Wochentag</target>
+      </trans-unit>
+      <trans-unit id="each_weeks.description">
+        <source>Each weeks</source>
+        <target>alle x Wochen</target>
+      </trans-unit>
+      <trans-unit id="exceptions.description">
+        <source>Exceptions</source>
+        <target>Ausnahmen</target>
+      </trans-unit>
+      <trans-unit id="detail_informations.description">
+        <source>Detail informations</source>
+        <target>Veranstaltungsdetails</target>
+      </trans-unit>
+      <trans-unit id="free_entry.description">
+        <source>free entry</source>
+        <target>kostenlose Veranstaltung</target>
+      </trans-unit>
+      <trans-unit id="ticket_link.description">
+        <source>Ticket link</source>
+        <target>Link zum Ticketverkauf</target>
+      </trans-unit>
+      <trans-unit id="categories.description">
+        <source>Categories</source>
+        <target>Kategorien</target>
+      </trans-unit>
+      <trans-unit id="event_time.description">
+        <source>Time</source>
+        <target>Uhrzeiten</target>
+      </trans-unit>
+      <trans-unit id="alternative_times.description">
+        <source>Alternative times</source>
+        <target>abweichende Zeiten</target>
+      </trans-unit>
+      <trans-unit id="days.description">
+        <source>Days</source>
+        <target>Tage</target>
+      </trans-unit>
+      <trans-unit id="location.description">
+        <source>Location</source>
+        <target>Veranstaltungsort</target>
+      </trans-unit>
+      <trans-unit id="organizer.description">
+        <source>Organizer</source>
+        <target>Veranstalter</target>
+      </trans-unit>
+    </body>
+  </file>
 </xliff>

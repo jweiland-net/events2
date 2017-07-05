@@ -24,20 +24,22 @@ Properties
   ====================== ======== =========
   Property                Tab      Default
   ====================== ======== =========
-  pidForPoiCollections_   basic    0
+  poiCollectionPid_       basic    0
   rootUid_                basic    0
   recurringPast_          basic    3
   recurringFuture_        basic    6
+  mergeEvents_            basic    false
+  defaultCountry_         basic
   emailFromAddress_       basic
   emailFromName_          basic
   emailToAddress_         basic
   emailToName_            basic
   ====================== ======== =========
 
-.. _extensionManager_pidForPoiCollections_:
+.. _extensionManager_poiCollectionPid_:
 
-pidForPoiCollections
-""""""""""""""""""""
+poiCollectionPid
+""""""""""""""""
 
 While creating organizers we catch the address and create a maps2 record
 automatically for you. Define a storage PID where we should store these records.
@@ -67,6 +69,35 @@ recurringFuture
 We can't create the day records for a recurring event for an unlimited
 time. This would cost too much performance and will create too much day records.
 With this setting you can reduce the generation to a specified amount of month.
+
+.. _extensionManager_mergeEvents:
+
+mergeEvents
+"""""""""""
+
+For a better overview in list views you can merge events with multiple
+performances on one day as one single event.
+
+This is a global setting as this affect the day generator directly
+and can not be set for each plugin or as TypoScript.
+
+Yes, there is also a mergeEvents option in TypoScript and plugin, but
+that option will merge all days and times of an event as one single event in
+list view.
+
+After changing this option you have to start the update task of events in
+scheduler again.
+
+.. _extensionManager_defaultCountry:
+
+defaultCountry
+""""""""""""""
+
+While creating event locations we also create a record for EXT:maps2 while saving.
+If you're only working for one specified country while creating/editing locations
+in backend it would be cool to set a country by default. So you only need
+to add street and city to find a POI. If you need POIs from all over the world,
+please keep this field empty.
 
 .. _extensionManager_emailFromAddress:
 
