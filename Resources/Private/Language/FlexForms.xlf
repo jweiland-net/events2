@@ -52,7 +52,7 @@
         <source>PID of search page</source>
       </trans-unit>
       <trans-unit id="mergeEvents">
-        <source>Merge all days and times of an events into one event.</source>
+        <source>If you have recurring events, this option will only show the next date of the events instead of all following dates.</source>
       </trans-unit>
       <trans-unit id="preFilterByOrganizer">
         <source>Pre filter events by organizer</source>

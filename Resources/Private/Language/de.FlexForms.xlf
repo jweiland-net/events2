@@ -67,8 +67,8 @@
         <target>Kategorien</target>
       </trans-unit>
       <trans-unit id="mergeEvents">
-        <source>Merge all days and times of an events into one event.</source>
-        <target>Fasse alle Tage und Uhrzeiten von Veranstaltungen in einer Veranstaltung zusammen.</target>
+        <source>If you have recurring events, this option will only show the next date of the events instead of all following dates.</source>
+        <target>Bei mehrtägigen Veranstaltungen wird nach Aktivierung nur der nächste Termin statt alle nachfolgenden Termine angezeigt.</target>
       </trans-unit>
       <trans-unit id="preFilterByOrganizer">
         <source>Pre filter events by organizer</source>
