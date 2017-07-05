@@ -122,7 +122,7 @@ class Typo3DbBackend extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo
         if (isset($statementParts['keywords']['distinct'])) {
             $fields = 'DISTINCT ' . reset($statementParts['tables']) . '.uid';
         }
-        if (isset($statementParts['groupings'])) {
+        if (!empty($statementParts['groupings'])) {
             $fields = 'DISTINCT ' . reset($statementParts['groupings']);
         }
 
