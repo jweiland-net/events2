@@ -303,11 +303,11 @@ class DayRepository extends Repository
             $select = array(
                 'tx_events2_domain_model_day.uid',
                 'tx_events2_domain_model_day.pid',
-                'tx_events2_domain_model_day.day',
+                'MIN(tx_events2_domain_model_day.day) as day',
                 'tx_events2_domain_model_day.tstamp',
                 'tx_events2_domain_model_day.crdate',
                 'tx_events2_domain_model_day.cruser_id',
-                'tx_events2_domain_model_day.day_time',
+                'MIN(tx_events2_domain_model_day.day_time) as day_time',
                 'MIN(tx_events2_domain_model_day.sort_day_time) as sort_day_time',
                 'tx_events2_domain_model_day.event',
                 'tx_events2_domain_model_day.deleted',
