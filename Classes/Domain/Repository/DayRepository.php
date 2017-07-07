@@ -22,6 +22,7 @@ use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
@@ -134,18 +135,88 @@ class DayRepository extends Repository
             default:
                 $today = $this->dateTimeUtility->convert('today');
                 $constraint[] = $query->greaterThanOrEqual('day', $today);
-                if (
-                    $type === 'latest' &&
-                    !empty($this->settings['latest']['amountOfRecordsToShow'])
-                ) {
-                    $query->setLimit((int)$this->settings['latest']['amountOfRecordsToShow']);
-                }
         }
 
         /** @var QueryResult $result */
         $result = $query->matching($query->logicalAnd($constraint))->execute();
 
         return $result;
+    }
+
+    /**
+     * Special method for latest view
+     * It groups day records by event and keeps the event with earliest date in array
+     *
+     * That way we prevent the problem with SQL, where GROUP BY was executed before ORDER BY and we get a
+     * random value for day, day_time and sort_day_time
+     *
+     * @param QueryResultInterface $queryResult
+     * @param int $maxRecords
+     *
+     * @return Day[]
+     */
+    public function groupDaysByEventAndSort(QueryResultInterface $queryResult, $maxRecords)
+    {
+        $days = array();
+        $limit = 15;
+        $offset = 0;
+        $query = $queryResult->getQuery();
+        do {
+            $records = $query
+                ->setLimit($limit)
+                ->setOffset($offset)
+                ->execute();
+
+            if (!$records->count()) {
+                break;
+            }
+
+            /** @var Day $record */
+            foreach ($records as $record) {
+                if (!array_key_exists($record->getEvent()->getUid(), $days)) {
+                    $days[$record->getEvent()->getUid()] = $record;
+                } else {
+                    /** @var Day $day */
+                    $day = $days[$record->getEvent()->getUid()];
+                    if ($record->getSortDayTime() < $day->getSortDayTime()) {
+                        $days[$record->getEvent()->getUid()] = $record;
+                    }
+                }
+                if (count($days) === (int)$maxRecords) {
+                    break;
+                }
+            }
+            $offset += 15;
+
+        } while (1 == 1);
+
+        return $this->sortDays($days);
+    }
+
+    /**
+     * This method belongs to groupDaysByEventAndSort
+     * and is only valid for latest view
+     *
+     * @param Day[] $records
+     * @param string $sortBy
+     *
+     * @return Day[]
+     *
+     * @throws \Exception
+     */
+    protected function sortDays($records, $sortBy = 'day')
+    {
+        $days = array();
+        $getter = 'get' . ucfirst($sortBy);
+        if (!method_exists('JWeiland\\Events2\\Domain\\Model\\Day', $getter)) {
+            throw new \Exception('Method "' . $getter . '" does not exists in Day', 1499429014);
+        }
+        foreach ($records as $record) {
+            $days[$record->{$getter}()->format('U')] = $record;
+        }
+        ksort($days);
+
+        return $days;
     }
 
     /**
@@ -294,28 +365,6 @@ class DayRepository extends Repository
     protected function addGroupingToQuery(QueryInterface $query)
     {
         /** @var Query $query */
-        $groupings = array('event');
-        if (empty($this->settings['mergeEvents'])) {
-            $groupings[] = 'sortDayTime';
-        } else {
-            // if we only group by event, the field sort_day_time will result in a random
-            // value of this event. As we want an ASC ordering, we fetch the MIN value
-            $select = array(
-                'tx_events2_domain_model_day.uid',
-                'tx_events2_domain_model_day.pid',
-                'MIN(tx_events2_domain_model_day.day) as day',
-                'tx_events2_domain_model_day.tstamp',
-                'tx_events2_domain_model_day.crdate',
-                'tx_events2_domain_model_day.cruser_id',
-                'MIN(tx_events2_domain_model_day.day_time) as day_time',
-                'MIN(tx_events2_domain_model_day.sort_day_time) as sort_day_time',
-                'tx_events2_domain_model_day.event',
-                'tx_events2_domain_model_day.deleted',
-                'tx_events2_domain_model_day.hidden'
-            );
-
-            $query->setSelect($select);
-        }
-        $query->setGroupings($groupings);
+        $query->setGroupings(array('event', 'sortDayTime'));
     }
 }

@@ -105,6 +105,7 @@ class DayRepositoryTest extends UnitTestCase
 
         $this->query->equals(Argument::exact('uid'), Argument::exact($day))->shouldBeCalled();
         $this->query->matching(Argument::cetera())->shouldBeCalled()->willReturn($this->query->reveal());
+        $this->query->setSelect(Argument::containing('MIN(tx_events2_domain_model_day.day) as day'))->shouldBeCalled();
         $this->query->setGroupings(Argument::exact(['event']))->shouldBeCalled();
         $this->query->execute(Argument::cetera())->shouldBeCalled()->willReturn($this->queryResult->reveal());
 
@@ -184,6 +185,7 @@ class DayRepositoryTest extends UnitTestCase
         $this->query->equals(Argument::exact('day'), Argument::exact($timestamp))->shouldBeCalled();
         $this->query->logicalAnd(Argument::cetera())->shouldBeCalled();
         $this->query->matching(Argument::cetera())->shouldBeCalled()->willReturn($this->query->reveal());
+        $this->query->setSelect(Argument::containing('MIN(tx_events2_domain_model_day.day) as day'))->shouldBeCalled();
         $this->query->setGroupings(Argument::exact(['event']))->shouldBeCalled();
         $this->query->execute(Argument::cetera())->shouldBeCalled();
 
