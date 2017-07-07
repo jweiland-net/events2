@@ -80,9 +80,14 @@ class Typo3DbQueryParser extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\
             }
         }
 
+        // override select fields, if we have set them manually
+        if (count($query->getSelect())) {
+            $sql['fields'] = $query->getSelect();
+        }
+
         return $sql;
     }
-    
+
     /**
      * Transforms groupings into SQL.
      *

@@ -41,10 +41,10 @@ class Typo3DbQueryParser extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\
             $query->getGroupings(),
         ];
         $hash = md5(serialize($hashPartials));
-        
+
         return [$hash, $parameters];
     }
-    
+
     /**
      * Parses the query and returns the SQL statement parts.
      *
@@ -71,17 +71,22 @@ class Typo3DbQueryParser extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\
         $this->parseConstraint($query->getConstraint(), $source, $sql);
         $this->parseGroupings($query->getGroupings(), $source, $sql);
         $this->parseOrderings($query->getOrderings(), $source, $sql);
-    
+
         $tableNames = array_unique(array_keys($sql['tables'] + $sql['unions']));
         foreach ($tableNames as $tableName) {
             if (is_string($tableName) && !empty($tableName)) {
                 $this->addAdditionalWhereClause($query->getQuerySettings(), $tableName, $sql);
             }
         }
-        
+
+        // override select fields, if we have set them manually
+        if (count($query->getSelect())) {
+            $sql['fields'] = $query->getSelect();
+        }
+
         return $sql;
     }
-    
+
     /**
      * Transforms groupings into SQL.
      *

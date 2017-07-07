@@ -297,6 +297,24 @@ class DayRepository extends Repository
         $groupings = array('event');
         if (empty($this->settings['mergeEvents'])) {
             $groupings[] = 'sortDayTime';
+        } else {
+            // if we only group by event, the field sort_day_time will result in a random
+            // value of this event. As we want an ASC ordering, we fetch the MIN value
+            $select = array(
+                'tx_events2_domain_model_day.uid',
+                'tx_events2_domain_model_day.pid',
+                'tx_events2_domain_model_day.day',
+                'tx_events2_domain_model_day.tstamp',
+                'tx_events2_domain_model_day.crdate',
+                'tx_events2_domain_model_day.cruser_id',
+                'tx_events2_domain_model_day.day_time',
+                'MIN(tx_events2_domain_model_day.sort_day_time) as sort_day_time',
+                'tx_events2_domain_model_day.event',
+                'tx_events2_domain_model_day.deleted',
+                'tx_events2_domain_model_day.hidden'
+            );
+
+            $query->setSelect($select);
         }
         $query->setGroupings($groupings);
     }

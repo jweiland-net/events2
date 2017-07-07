@@ -40,7 +40,7 @@ class Typo3DbQueryParser extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\
         // Find the right table name
         $source = $query->getSource();
         $this->initializeQueryBuilder($source);
-        
+
         $constraint = $query->getConstraint();
         if ($constraint instanceof Qom\ConstraintInterface) {
             $wherePredicates = $this->parseConstraint($constraint, $source);
@@ -48,14 +48,17 @@ class Typo3DbQueryParser extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\
                 $this->queryBuilder->andWhere($wherePredicates);
             }
         }
-    
+
         $this->parseGroupings($query->getGroupings(), $source);
         $this->parseOrderings($query->getOrderings(), $source);
         $this->addTypo3Constraints($query);
-        
+
+        // override select fields, if we have set them manually
+        $this->queryBuilder->select($query->getSelect());
+
         return $this->queryBuilder;
     }
-    
+
     /**
      * Transforms groupings into SQL.
      *
