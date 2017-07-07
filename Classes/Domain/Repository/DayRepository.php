@@ -158,9 +158,11 @@ class DayRepository extends Repository
     public function groupDaysByEventAndSort(QueryResultInterface $queryResult, $maxRecords)
     {
         $days = array();
+        $events = array();
         $limit = 15;
         $offset = 0;
         $query = $queryResult->getQuery();
+
         do {
             $records = $query
                 ->setLimit($limit)
@@ -188,8 +190,22 @@ class DayRepository extends Repository
                 }
                 // we can not break out of this foreach/do loop as we have to find ALL related day records
             }
-            $offset += 15;
 
+            $offset += 15;
+            if (count($days) === (int)$maxRecords && empty($events)) {
+                // as some customers may have thousands of day records we reduce the records to the just known events,
+                // if count() matches $maxRecords and reset the offset
+                foreach ($days as $day) {
+                    $events[] = $day->getEvent()->getUid();
+                }
+                $query->matching($query->logicalAnd(array(
+                    $query->getConstraint(),
+                    $query->in('event.uid', $events)
+                )));
+                if ($offset >= 15) {
+                    $offset = 0;
+                }
+            }
         } while (1 == 1);
 
         return $this->sortDays($days);
