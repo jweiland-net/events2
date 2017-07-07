@@ -173,18 +173,20 @@ class DayRepository extends Repository
 
             /** @var Day $record */
             foreach ($records as $record) {
-                if (!array_key_exists($record->getEvent()->getUid(), $days)) {
+                // add new record to day array as long as maxRecords has not been reached
+                if (count($days) < (int)$maxRecords && !array_key_exists($record->getEvent()->getUid(), $days)) {
                     $days[$record->getEvent()->getUid()] = $record;
-                } else {
+                }
+
+                // replace older with earlier record, if event exists in day array
+                if (array_key_exists($record->getEvent()->getUid(), $days)) {
                     /** @var Day $day */
                     $day = $days[$record->getEvent()->getUid()];
                     if ($record->getSortDayTime() < $day->getSortDayTime()) {
                         $days[$record->getEvent()->getUid()] = $record;
                     }
                 }
-                if (count($days) === (int)$maxRecords) {
-                    break;
-                }
+                // we can not break out of this foreach/do loop as we have to find ALL related day records
             }
             $offset += 15;
 
@@ -206,17 +208,19 @@ class DayRepository extends Repository
      */
     protected function sortDays($records, $sortBy = 'day')
     {
-        $days = array();
+        $dates = array();
+
         $getter = 'get' . ucfirst($sortBy);
         if (!method_exists('JWeiland\\Events2\\Domain\\Model\\Day', $getter)) {
             throw new \Exception('Method "' . $getter . '" does not exists in Day', 1499429014);
         }
-        foreach ($records as $record) {
-            $days[$record->{$getter}()->format('U')] = $record;
-        }
-        ksort($days);
 
-        return $days;
+        foreach ($records as $key => $record) {
+            $dates[$key] = $record->{$getter}()->format('U');
+        }
+        array_multisort($dates, SORT_ASC, SORT_NUMERIC, $records);
+
+        return $records;
     }
 
     /**
