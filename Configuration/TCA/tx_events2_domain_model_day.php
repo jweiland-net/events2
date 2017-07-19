@@ -17,7 +17,6 @@ return array(
     ),
     'columns' => array(
         'day' => array(
-            'exclude' => 1,
             'label' => 'Day',
             'config' => array(
                 'type' => 'input',
@@ -25,7 +24,6 @@ return array(
             ),
         ),
         'day_time' => array(
-            'exclude' => 1,
             'label' => 'DayTime',
             'config' => array(
                 'type' => 'input',
@@ -33,7 +31,6 @@ return array(
             ),
         ),
         'sort_day_time' => array(
-            'exclude' => 1,
             'label' => 'DayTime',
             'config' => array(
                 'type' => 'input',

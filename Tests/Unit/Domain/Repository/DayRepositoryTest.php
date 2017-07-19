@@ -14,14 +14,18 @@ namespace JWeiland\Events2\Tests\Unit\Domain\Repository;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Persistence\Typo376\Generic\Query;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Prophecy\Argument;
+use Prophecy\Promise\ReturnPromise;
 use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
+use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 
@@ -53,6 +57,16 @@ class DayRepositoryTest extends UnitTestCase
     protected $queryResult;
 
     /**
+     * @var DataMapper|ObjectProphecy
+     */
+    protected $dataMapper;
+
+    /**
+     * @var PersistenceManager|ObjectProphecy
+     */
+    protected $persistenceManager;
+
+    /**
      * set up.
      */
     public function setUp()
@@ -60,11 +74,14 @@ class DayRepositoryTest extends UnitTestCase
         $this->dateTimeUtility = new DateTimeUtility();
         $this->query = $this->prophesize(Query::class);
         $this->queryResult = $this->prophesize(QueryResult::class);
+        $this->dataMapper = $this->prophesize(DataMapper::class);
+        $this->persistenceManager = $this->prophesize(PersistenceManager::class);
+
+        $this->queryResult->getQuery()->willReturn($this->query->reveal());
 
         $this->subject = $this->getMock(DayRepository::class, ['createQuery'], [], '', false);
         $this->subject->injectDateTimeUtility($this->dateTimeUtility);
         $this->subject
-            ->expects($this->once())
             ->method('createQuery')
             ->willReturn($this->query->reveal());
     }
@@ -94,35 +111,38 @@ class DayRepositoryTest extends UnitTestCase
     /**
      * @test
      */
-    public function findByDayWillMergeEvents()
+    public function groupDaysByEventAndSortReturnsEmptyArray()
     {
-        $day = 32415;
-        $settings = [
-            'mergeEvents' => true
-        ];
+        $this->query
+            ->setLimit(Argument::exact(15))
+            ->shouldBeCalled()
+            ->willReturn($this->query->reveal());
+        $this->query
+            ->setOffset(Argument::exact(0))
+            ->shouldBeCalled()
+            ->willReturn($this->query->reveal());
+        $this->query
+            ->execute()
+            ->shouldBeCalled()
+            ->willReturn($this->queryResult->reveal());
 
-        $this->queryResult->getFirst()->shouldBeCalled();
+        $this->queryResult
+            ->count()
+            ->shouldBeCalled()
+            ->willReturn(0);
 
-        $this->query->equals(Argument::exact('uid'), Argument::exact($day))->shouldBeCalled();
-        $this->query->matching(Argument::cetera())->shouldBeCalled()->willReturn($this->query->reveal());
-        $this->query->setSelect(Argument::containing('MIN(tx_events2_domain_model_day.day) as day'))->shouldBeCalled();
-        $this->query->setGroupings(Argument::exact(['event']))->shouldBeCalled();
-        $this->query->execute(Argument::cetera())->shouldBeCalled()->willReturn($this->queryResult->reveal());
-
-        $this->subject->setSettings($settings);
-        $this->subject->findByDay($day);
+        $this->assertSame(
+            [],
+            $this->subject->groupDaysByEventAndSort($this->queryResult->reveal(), 7)
+        );
     }
 
     /**
      * @test
      */
-    public function findByDayWillNotMergeEvents()
+    public function findByDayWillMergeEvents()
     {
         $day = 32415;
-        $settings = [
-            'mergeEvents' => false
-        ];
-
         $this->queryResult->getFirst()->shouldBeCalled();
 
         $this->query->equals(Argument::exact('uid'), Argument::exact($day))->shouldBeCalled();
@@ -130,7 +150,6 @@ class DayRepositoryTest extends UnitTestCase
         $this->query->setGroupings(Argument::exact(['event', 'sortDayTime']))->shouldBeCalled();
         $this->query->execute(Argument::cetera())->shouldBeCalled()->willReturn($this->queryResult->reveal());
 
-        $this->subject->setSettings($settings);
         $this->subject->findByDay($day);
     }
 
@@ -178,30 +197,6 @@ class DayRepositoryTest extends UnitTestCase
     public function findByTimestampWillMergeEvents()
     {
         $timestamp = 12345678;
-        $settings = [
-            'mergeEvents' => true
-        ];
-
-        $this->query->equals(Argument::exact('day'), Argument::exact($timestamp))->shouldBeCalled();
-        $this->query->logicalAnd(Argument::cetera())->shouldBeCalled();
-        $this->query->matching(Argument::cetera())->shouldBeCalled()->willReturn($this->query->reveal());
-        $this->query->setSelect(Argument::containing('MIN(tx_events2_domain_model_day.day) as day'))->shouldBeCalled();
-        $this->query->setGroupings(Argument::exact(['event']))->shouldBeCalled();
-        $this->query->execute(Argument::cetera())->shouldBeCalled();
-
-        $this->subject->setSettings($settings);
-        $this->subject->findByTimestamp($timestamp);
-    }
-
-    /**
-     * @test
-     */
-    public function findByTimestampWillNotMergeEvents()
-    {
-        $timestamp = 12345678;
-        $settings = [
-            'mergeEvents' => false
-        ];
 
         $this->query->equals(Argument::exact('day'), Argument::exact($timestamp))->shouldBeCalled();
         $this->query->logicalAnd(Argument::cetera())->shouldBeCalled();
@@ -209,7 +204,6 @@ class DayRepositoryTest extends UnitTestCase
         $this->query->setGroupings(Argument::exact(['event', 'sortDayTime']))->shouldBeCalled();
         $this->query->execute(Argument::cetera())->shouldBeCalled();
 
-        $this->subject->setSettings($settings);
         $this->subject->findByTimestamp($timestamp);
     }
 

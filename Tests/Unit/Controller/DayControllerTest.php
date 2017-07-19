@@ -20,8 +20,12 @@ use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
+use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\Generic\Query;
+use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use TYPO3\CMS\Fluid\View\TemplateView;
 
 /**
@@ -37,17 +41,22 @@ class DayControllerTest extends UnitTestCase
     protected $subject;
 
     /**
-     * @var DayRepository|\PHPUnit_Framework_MockObject_MockObject
+     * @var DayRepository|ObjectProphecy
      */
     protected $dayRepository;
 
     /**
-     * @var EventRepository|\PHPUnit_Framework_MockObject_MockObject
+     * @var EventRepository|ObjectProphecy
      */
     protected $eventRepository;
 
     /**
-     * @var TemplateView|\PHPUnit_Framework_MockObject_MockObject
+     * @var ObjectManager|ObjectProphecy
+     */
+    protected $objectManager;
+
+    /**
+     * @var TemplateView|ObjectProphecy
      */
     protected $view;
 
@@ -56,10 +65,23 @@ class DayControllerTest extends UnitTestCase
      */
     public function setUp()
     {
+        $this->objectManager = $this->prophesize(ObjectManager::class);
+        $this->view = $this->prophesize(TemplateView::class);
+        $this->dayRepository = $this->prophesize(DayRepository::class);
+        $this->eventRepository = $this->prophesize(EventRepository::class);
+
+        $settings = [
+            'latest' => [
+                'amountOfRecordsToShow' => 7
+            ]
+        ];
+
         $this->subject = $this->getAccessibleMock(DayController::class, ['dummy']);
-        $this->dayRepository = $this->getMock(DayRepository::class, [], [], '', false);
-        $this->eventRepository = $this->getMock(EventRepository::class, [], [], '', false);
-        $this->view = $this->getMock(TemplateView::class, [], [], '', false);
+        $this->subject->_set('settings', $settings);
+        $this->subject->_set('objectManager', $this->objectManager->reveal());
+        $this->subject->_set('view', $this->view->reveal());
+        $this->subject->_set('dayRepository', $this->dayRepository->reveal());
+        $this->subject->_set('eventRepository', $this->eventRepository->reveal());
     }
 
     /**
@@ -77,31 +99,18 @@ class DayControllerTest extends UnitTestCase
     {
         $filter = new Filter();
 
-        $this->dayRepository
-            ->expects($this->once())
-            ->method('findEvents')
-            ->with(
-                $this->equalTo('list'),
-                $this->equalTo($filter)
-            )
-            ->willReturn(array());
-        $this->view
-            ->expects($this->at(0))
-            ->method('assign')
-            ->with(
-                $this->equalTo('filter'),
-                $this->equalTo($filter)
-            );
-        $this->view
-            ->expects($this->at(1))
-            ->method('assign')
-            ->with(
-                $this->equalTo('days'),
-                $this->equalTo(array())
-            );
-
-        $this->subject->injectDayRepository($this->dayRepository);
-        $this->subject->_set('view', $this->view);
+        $this->dayRepository->findEvents(
+            Argument::exact('list'),
+            Argument::exact($filter)
+        )->shouldBeCalled()->willReturn([]);
+        $this->view->assign(
+            Argument::exact('filter'),
+            Argument::exact($filter)
+        )->shouldBeCalled();
+        $this->view->assign(
+            Argument::exact('days'),
+            Argument::exact([])
+        )->shouldBeCalled();
 
         $this->subject->listAction($filter);
     }
@@ -112,34 +121,27 @@ class DayControllerTest extends UnitTestCase
     public function listLatestActionFindEventsAndAssignsThemToView()
     {
         $filter = new Filter();
+        $queryResult = new QueryResult(new Query(Day::class));
 
-        $this->dayRepository
-            ->expects($this->once())
-            ->method('findEvents')
-            ->with(
-                $this->equalTo('latest'),
-                $this->equalTo($filter)
-            )
-            ->willReturn(array());
-        $this->view
-            ->expects($this->at(0))
-            ->method('assign')
-            ->with(
-                $this->equalTo('filter'),
-                $this->equalTo($filter)
-            );
-        $this->view
-            ->expects($this->at(1))
-            ->method('assign')
-            ->with(
-                $this->equalTo('days'),
-                $this->equalTo(array())
-            );
-
-        $this->subject->injectDayRepository($this->dayRepository);
-        $this->subject->_set('view', $this->view);
+        $this->dayRepository->findEvents(
+            Argument::exact('latest'),
+            Argument::exact($filter)
+        )->shouldBeCalled()->willReturn($queryResult);
+        $this->dayRepository->groupDaysByEventAndSort(
+            Argument::exact($queryResult),
+            Argument::exact(7)
+        )->shouldBeCalled()->willReturn([]);
+        $this->view->assign(
+            Argument::exact('filter'),
+            Argument::exact($filter)
+        )->shouldBeCalled();
+        $this->view->assign(
+            Argument::exact('days'),
+            Argument::exact([])
+        )->shouldBeCalled();
 
         $this->subject->listLatestAction($filter);
+
     }
 
     /**
@@ -149,31 +151,18 @@ class DayControllerTest extends UnitTestCase
     {
         $filter = new Filter();
 
-        $this->dayRepository
-            ->expects($this->once())
-            ->method('findEvents')
-            ->with(
-                $this->equalTo('today'),
-                $this->equalTo($filter)
-            )
-            ->willReturn(array());
-        $this->view
-            ->expects($this->at(0))
-            ->method('assign')
-            ->with(
-                $this->equalTo('filter'),
-                $this->equalTo($filter)
-            );
-        $this->view
-            ->expects($this->at(1))
-            ->method('assign')
-            ->with(
-                $this->equalTo('days'),
-                $this->equalTo(array())
-            );
-
-        $this->subject->injectDayRepository($this->dayRepository);
-        $this->subject->_set('view', $this->view);
+        $this->dayRepository->findEvents(
+            Argument::exact('today'),
+            Argument::exact($filter)
+        )->shouldBeCalled()->willReturn([]);
+        $this->view->assign(
+            Argument::exact('filter'),
+            Argument::exact($filter)
+        )->shouldBeCalled();
+        $this->view->assign(
+            Argument::exact('days'),
+            Argument::exact([])
+        )->shouldBeCalled();
 
         $this->subject->listTodayAction($filter);
     }
@@ -185,33 +174,21 @@ class DayControllerTest extends UnitTestCase
     {
         $filter = new Filter();
 
-        $this->dayRepository
-            ->expects($this->once())
-            ->method('findEvents')
-            ->with(
-                $this->equalTo('thisWeek'),
-                $this->equalTo($filter)
-            )
-            ->willReturn(array());
-        $this->view
-            ->expects($this->at(0))
-            ->method('assign')
-            ->with(
-                $this->equalTo('filter'),
-                $this->equalTo($filter)
-            );
-        $this->view
-            ->expects($this->at(1))
-            ->method('assign')
-            ->with(
-                $this->equalTo('days'),
-                $this->equalTo(array())
-            );
-
-        $this->subject->injectDayRepository($this->dayRepository);
-        $this->subject->_set('view', $this->view);
+        $this->dayRepository->findEvents(
+            Argument::exact('thisWeek'),
+            Argument::exact($filter)
+        )->shouldBeCalled()->willReturn([]);
+        $this->view->assign(
+            Argument::exact('filter'),
+            Argument::exact($filter)
+        )->shouldBeCalled();
+        $this->view->assign(
+            Argument::exact('days'),
+            Argument::exact([])
+        )->shouldBeCalled();
 
         $this->subject->listThisWeekAction($filter);
+
     }
 
     /**
@@ -221,33 +198,21 @@ class DayControllerTest extends UnitTestCase
     {
         $filter = new Filter();
 
-        $this->dayRepository
-            ->expects($this->once())
-            ->method('findEvents')
-            ->with(
-                $this->equalTo('range'),
-                $this->equalTo($filter)
-            )
-            ->willReturn(array());
-        $this->view
-            ->expects($this->at(0))
-            ->method('assign')
-            ->with(
-                $this->equalTo('filter'),
-                $this->equalTo($filter)
-            );
-        $this->view
-            ->expects($this->at(1))
-            ->method('assign')
-            ->with(
-                $this->equalTo('days'),
-                $this->equalTo(array())
-            );
-
-        $this->subject->injectDayRepository($this->dayRepository);
-        $this->subject->_set('view', $this->view);
+        $this->dayRepository->findEvents(
+            Argument::exact('range'),
+            Argument::exact($filter)
+        )->shouldBeCalled()->willReturn([]);
+        $this->view->assign(
+            Argument::exact('filter'),
+            Argument::exact($filter)
+        )->shouldBeCalled();
+        $this->view->assign(
+            Argument::exact('days'),
+            Argument::exact([])
+        )->shouldBeCalled();
 
         $this->subject->listRangeAction($filter);
+
     }
 
     /**
@@ -257,32 +222,19 @@ class DayControllerTest extends UnitTestCase
     {
         $event = 32415;
         $timestamp = 1234567890;
+        $day = new Day();
 
-        /** @var Day|\PHPUnit_Framework_MockObject_MockObject $day */
-        $day = $this->getMock(Day::class, ['setEvent']);
-        $day
-            ->expects($this->never())
-            ->method('setEvent');
-
-        $this->dayRepository
-            ->expects($this->once())
-            ->method('findOneByTimestamp')
-            ->with(
-                $this->equalTo($event),
-                $this->equalTo($timestamp)
-            )
-            ->willReturn($day);
-
-        $this->view
-            ->expects($this->once())
-            ->method('assign')
-            ->with(
-                $this->equalTo('day'),
-                $this->equalTo($day)
-            );
-
-        $this->subject->injectDayRepository($this->dayRepository);
-        $this->subject->_set('view', $this->view);
+        $this->dayRepository->findOneByTimestamp(
+            Argument::exact($event),
+            Argument::exact($timestamp)
+        )->shouldBeCalled()->willReturn($day);
+        $this->eventRepository
+            ->findByIdentifier(Argument::cetera())
+            ->shouldNotBeCalled();
+        $this->view->assign(
+            Argument::exact('day'),
+            Argument::exact($day)
+        )->shouldBeCalled();
 
         $this->subject->showAction($event, $timestamp);
     }
@@ -292,56 +244,32 @@ class DayControllerTest extends UnitTestCase
      */
     public function showActionWithoutTimestampGeneratesEmptyDay()
     {
-        $event = 32415;
-
-        /** @var Event|\PHPUnit_Framework_MockObject_MockObject $day */
-        $eventObject = $this->getMock(Event::class);
-
-        /** @var Day|\PHPUnit_Framework_MockObject_MockObject $day */
-        $day = $this->getMock(Day::class, ['setEvent']);
-        $day
-            ->expects($this->once())
-            ->method('setEvent')
-            ->with($this->equalTo($eventObject))
-            ->willReturn(null);
-
-        /** @var ObjectManager|\PHPUnit_Framework_MockObject_MockObject $objectManager */
-        $objectManager = $this->getMock(ObjectManager::class, ['get'], [], '', false);
-        $objectManager
-            ->expects($this->at(1))
-            ->method('get')
-            ->with('JWeiland\\Events2\\Domain\\Model\\Day')
-            ->willReturn($day);
-
-        $this->eventRepository
-            ->expects($this->once())
-            ->method('findByIdentifier')
-            ->with($this->equalTo($event))
-            ->willReturn($eventObject);
+        $eventUid = 32415;
+        $event = new Event();
+        $day = new Day();
+        $day->setEvent($event);
 
         $this->dayRepository
-            ->expects($this->once())
-            ->method('findOneByTimestamp')
-            ->with(
-                $this->equalTo($event),
-                $this->equalTo(0)
+            ->findOneByTimestamp(
+                Argument::exact($eventUid),
+                Argument::exact(0)
             )
+            ->shouldBeCalled()
             ->willReturn(null);
+        $this->eventRepository
+            ->findByIdentifier(Argument::exact($eventUid))
+            ->shouldBeCalled()
+            ->willReturn($event);
+        $this->objectManager
+            ->get(Day::class)
+            ->shouldBeCalled()
+            ->willReturn($day);
+        $this->view->assign(
+            Argument::exact('day'),
+            Argument::exact($day)
+        )->shouldBeCalled();
 
-        $this->view
-            ->expects($this->once())
-            ->method('assign')
-            ->with(
-                $this->equalTo('day'),
-                $this->equalTo($day)
-            );
-
-        $this->subject->injectObjectManager($objectManager);
-        $this->subject->injectDayRepository($this->dayRepository);
-        $this->subject->injectEventRepository($this->eventRepository);
-        $this->subject->_set('view', $this->view);
-
-        $this->subject->showAction($event);
+        $this->subject->showAction($eventUid);
     }
 
     /**
@@ -362,21 +290,14 @@ class DayControllerTest extends UnitTestCase
         $timestamp = 1234567890;
 
         $this->dayRepository
-            ->expects($this->once())
-            ->method('findByTimestamp')
-            ->with($this->equalTo($timestamp))
-            ->willReturn(array());
+            ->findByTimestamp(Argument::exact($timestamp))
+            ->shouldBeCalled()
+            ->willReturn([]);
 
-        $this->view
-            ->expects($this->once())
-            ->method('assign')
-            ->with(
-                $this->equalTo('days'),
-                $this->equalTo(array())
-            );
-
-        $this->subject->injectDayRepository($this->dayRepository);
-        $this->subject->_set('view', $this->view);
+        $this->view->assign(
+            Argument::exact('days'),
+            Argument::exact([])
+        );
 
         $this->subject->showByTimestampAction($timestamp);
     }
@@ -384,24 +305,17 @@ class DayControllerTest extends UnitTestCase
     /**
      * @test
      */
-    public function showByTimestampWithoutTimestampCallsFindByTimestampWith0()
+    public function showByTimestampWithInvalidTimestampCallsFindByTimestampWithZero()
     {
         $this->dayRepository
-            ->expects($this->once())
-            ->method('findByTimestamp')
-            ->with($this->equalTo(0))
-            ->willReturn(array());
+            ->findByTimestamp(Argument::exact(0))
+            ->shouldBeCalled()
+            ->willReturn([]);
 
-        $this->view
-            ->expects($this->once())
-            ->method('assign')
-            ->with(
-                $this->equalTo('days'),
-                $this->equalTo(array())
-            );
-
-        $this->subject->injectDayRepository($this->dayRepository);
-        $this->subject->_set('view', $this->view);
+        $this->view->assign(
+            Argument::exact('days'),
+            Argument::exact([])
+        );
 
         $this->subject->showByTimestampAction('abc');
     }

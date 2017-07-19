@@ -356,6 +356,7 @@ class DayRelations
      */
     protected function getSortDayTime(\DateTime $day, $hour, $minute)
     {
+        // cachedSortDayTime will be unset for type "recurring" after processing one day
         if (array_key_exists($this->eventRecord['uid'], $this->cachedSortDayTime)) {
             return (int)$this->cachedSortDayTime[$this->eventRecord['uid']];
         }
@@ -363,6 +364,7 @@ class DayRelations
         $sortDayTime = (int)$this->getDayTime($day, $hour, $minute)->format('U');
 
         if (in_array($this->eventRecord['event_type'], array('duration', 'recurring'))) {
+            // Group multiple days for duration or group multiple times for one day
             if ($this->eventRecord['event_type'] === 'duration' || $this->extConf->getMergeEvents()) {
                 $this->cachedSortDayTime[$this->eventRecord['uid']] = $sortDayTime;
             }
