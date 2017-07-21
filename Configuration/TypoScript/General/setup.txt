@@ -1,23 +1,17 @@
-page.includeJSFooterlibs {
-  jQueryForEvents2 = //ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js
+page.includeJSFooter {
+  jQueryForEvents2 = https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js
   jQueryForEvents2.external = 1
-  jQueryForEvents2.excludeFromConcatenation = 1
-  jQueryForEvents2.disableCompression = 1
   jQueryForEvents2.if.isTrue = {$plugin.tx_events2.settings.includeJQueryLibrary}
-  jQueryUiForEvents2 = //ajax.googleapis.com/ajax/libs/jqueryui/1.12.0/jquery-ui.min.js
+  jQueryUiForEvents2 = https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js
   jQueryUiForEvents2.external = 1
-  jQueryUiForEvents2.excludeFromConcatenation = 1
-  jQueryUiForEvents2.disableCompression = 1
   jQueryUiForEvents2.if.isTrue = {$plugin.tx_events2.settings.includeJQueryUiLibrary}
   jQueryUiCalendarDe = EXT:events2/Resources/Public/JavaScript/jquery.ui.datepicker-de.js
   jQueryUiCalendarDe.if.isTrue = {$plugin.tx_events2.settings.includeDeTranslationForCalendar}
   events2Calendar = EXT:events2/Resources/Public/JavaScript/Calendar.js
-  events2Calendar.excludeFromConcatenation = 1
-  events2Calendar.disableCompression = 1
 }
 
 page.includeCSS {
-  jQueryCssForEvents2 = //ajax.googleapis.com/ajax/libs/jqueryui/1.12.0/themes/smoothness/jquery-ui.css
+  jQueryCssForEvents2 = https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css
   jQueryCssForEvents2.external = 1
   jQueryCssForEvents2.excludeFromConcatenation = 1
   jQueryCssForEvents2.disableCompression = 1

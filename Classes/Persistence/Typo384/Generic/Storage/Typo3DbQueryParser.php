@@ -54,7 +54,7 @@ class Typo3DbQueryParser extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\
         $this->addTypo3Constraints($query);
 
         // override select fields, if we have set them manually
-        $this->queryBuilder->select($query->getSelect());
+        call_user_func_array([$this->queryBuilder, 'select'], $query->getSelect());
 
         return $this->queryBuilder;
     }
