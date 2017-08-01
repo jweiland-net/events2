@@ -22,7 +22,7 @@ TYPO3 site. The installation is covered :ref:`here <installation>`.
 
 Create the records
 ------------------
-Before any |extension_key| record can be shown in the frontend those need to be
+Before any |extension_key| record can be shown in the frontend, those need to be
 created.
 
 #. Create a new sysfolder and switch to the list module. (Of

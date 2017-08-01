@@ -114,7 +114,7 @@ class EventUtility
         // if there are no times available return empty SplObjectStorage
         return new \SplObjectStorage();
     }
-    
+
     /**
      * get sorted times for specified day
      *
@@ -128,15 +128,15 @@ class EventUtility
         // @ToDo: I'm sure there are better ways to do this:
         $sortedTimes = array();
         $sortedStorage = new \SplObjectStorage();
-        
+
         $times = $this->getTimesForDay($event, $day);
         /** @var Time $time */
         foreach ($times as $time) {
             $sortedTimes[$time->getTimeBegin()] = $time;
         }
-        
+
         ksort($sortedTimes);
-        
+
         foreach ($sortedTimes as $time) {
             $sortedStorage->attach($time);
         }
@@ -199,7 +199,7 @@ class EventUtility
 
         return $times;
     }
-    
+
     /**
      * get full event record
      * While updating a record only the changed fields will be in $fieldArray.
@@ -217,10 +217,10 @@ class EventUtility
         $this->addTimeRecordsForColumn($event, 'event', 'event_time');
         $this->addTimeRecordsForColumn($event, 'event', 'multiple_times');
         $this->addTimeRecordsForColumn($event, 'event', 'different_times');
-        
+
         return $event;
     }
-    
+
     /**
      * Add Exceptions for Event
      *
@@ -257,7 +257,7 @@ class EventUtility
             $event['exceptions'] = array();
         }
     }
-    
+
     /**
      * Add time records for specified columns
      *
@@ -278,7 +278,7 @@ class EventUtility
             BackendUtility::deleteClause('tx_events2_domain_model_time')
         );
         $rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'uid, time_begin, time_end, time_entry, duration, type',
+            'uid, weekday, time_begin, time_end, time_entry, duration, type',
             'tx_events2_domain_model_time',
             $where
         );
@@ -288,7 +288,7 @@ class EventUtility
         }
         $record[$column] = $rows;
     }
-    
+
     /**
      * Get TYPO3s Database Connection
      *
