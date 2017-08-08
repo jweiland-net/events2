@@ -74,8 +74,6 @@ class RepairCommandController extends CommandController
         $this->truncateDayTable();
         $this->outputLine('');
         $this->reGenerateDayRelations();
-        $this->outputLine('');
-        $this->updateReferenceIndex();
     }
 
     /**
@@ -129,36 +127,6 @@ class RepairCommandController extends CommandController
             }
         }
         $this->outputLine(PHP_EOL . 'We have recreated the day records for ' . $counter . ' event records.');
-    }
-
-    /**
-     * Update TYPO3s Reference index
-     *
-     * @return void
-     */
-    protected function updateReferenceIndex()
-    {
-        $counter = 0;
-        $this->rowCounter = 0;
-        $this->outputLine('Update reference index.');
-
-        // get all event records
-        $rows = $this->databaseConnection->exec_SELECTgetRows(
-            'uid',
-            'tx_events2_domain_model_event',
-            '1=1'
-        );
-        if (!empty($rows)) {
-            /** @var \TYPO3\CMS\Core\Database\ReferenceIndex $refObject */
-            $refObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Database\\ReferenceIndex');
-
-            foreach ($rows as $row) {
-                $refObject->updateRefIndexTable('tx_events2_domain_model_event', $row['uid']);
-                $this->echoValue();
-                ++$counter;
-            }
-        }
-        $this->outputLine(PHP_EOL . 'I have updated ' . $counter . ' reference indexes for events.');
     }
 
     /**
