@@ -159,17 +159,21 @@ class RepairCommandController extends CommandController
         );
 
         if (!empty($rows)) {
-            $dataHandler->start(array(), array()); // keep it empty, everything will be done by a dataHandler hook
             foreach ($rows as $row) {
+                $start = microtime(true);
+                $dataHandler->start(array(), array()); // keep it empty, everything will be done by a dataHandler hook
+
                 $dayRelations->createDayRelations($row['uid'], $dataHandler);
                 $this->echoValue();
                 ++$counter;
-            }
-            $this->echoValue(PHP_EOL . 'Starting the DataHandler. This may take some minutes');
-            $dataHandler->process_datamap();
-            $dataHandler->process_cmdmap();
-            if ($dataHandler->errorLog) {
-                throw new \Exception(implode(PHP_EOL, $dataHandler->errorLog));
+
+                $this->echoValue(PHP_EOL . 'Starting the DataHandler. This may take some minutes');
+                $dataHandler->process_datamap();
+                $dataHandler->process_cmdmap();
+                if ($dataHandler->errorLog) {
+                    throw new \Exception(implode(PHP_EOL, $dataHandler->errorLog));
+                }
+                $this->echoValue($row['uid'] . ': ' . (microtime(true) - $start));
             }
         }
 
