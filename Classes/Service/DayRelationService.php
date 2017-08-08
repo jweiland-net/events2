@@ -286,7 +286,7 @@ class DayRelationService
         }
 
         $fieldsArray = array();
-        $fieldsArray['uid'] = uniqid('NEW', true);
+        $fieldsArray['uid'] = str_replace('.', '', uniqid('NEW', true));
         $fieldsArray['day'] = (int)$day->format('U');
         $fieldsArray['day_time'] = (int)$this->getDayTime($day, $hour, $minute)->format('U');
         $fieldsArray['sort_day_time'] = (int)$this->getSortDayTime($day, $hour, $minute);
