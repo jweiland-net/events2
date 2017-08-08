@@ -16,7 +16,7 @@ namespace JWeiland\Events2\Tests\Unit\Service;
  */
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Service\DayGenerator;
-use JWeiland\Events2\Service\DayRelations;
+use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -32,7 +32,7 @@ use TYPO3\CMS\Core\Tests\UnitTestCase;
 class DayRelationsTest extends UnitTestCase
 {
     /**
-     * @var DayRelations|\PHPUnit_Framework_MockObject_MockObject|AccessibleObjectInterface
+     * @var DayRelationService|\PHPUnit_Framework_MockObject_MockObject|AccessibleObjectInterface
      */
     protected $subject;
 
@@ -81,8 +81,7 @@ class DayRelationsTest extends UnitTestCase
         $dayGenerator->injectExtConf($this->extConfProphecy->reveal());
         $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
 
-        $this->subject = new DayRelations();
-        $this->subject->initializeObject(); // sets TYPO3_DB
+        $this->subject = new DayRelationService();
         $this->subject->injectExtConf($this->extConfProphecy->reveal());
         $this->subject->injectDayGenerator($dayGenerator);
         $this->subject->injectDateTimeUtility(new DateTimeUtility());

@@ -16,6 +16,8 @@ namespace JWeiland\Events2\Controller;
  */
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Search;
+use JWeiland\Events2\Service\DayRelationService;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Extbase\Property\TypeConverter\DateTimeConverter;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -279,32 +281,18 @@ class EventController extends AbstractController
      *
      * @return void
      */
-    public function addDayRelations(Event $event)
+    protected function addDayRelations(Event $event)
     {
-        if ($event->getEventBegin() instanceof \DateTime) {
-            $eventBegin = $event->getEventBegin()->format('d.m.Y');
-        } else {
-            // @ToDo: Maybe we should throw an Exception, because there can't be an Event without a eventBegin
-            $eventBegin = 0;
-        }
-        if ($event->getEventEnd() instanceof \DateTime) {
-            $eventEnd = $event->getEventEnd()->format('d.m.Y');
-        } else {
-            $eventEnd = 0;
-        }
-        $simplifiedEventArray = array(
-            'uid' => $event->getUid(),
-            'event_type' => $event->getEventType(),
-            'event_begin' => $eventBegin,
-            'event_end' => $eventEnd,
-            'xth' => 0,
-            'weekday' => 0,
-            'each_weeks' => 0,
-            'exceptions' => 0,
-        );
-        /** @var \JWeiland\Events2\Service\DayRelations $dayRelations */
-        $dayRelations = $this->objectManager->get('JWeiland\\Events2\\Service\\DayRelations');
-        $dayRelations->createDayRelations($simplifiedEventArray);
+        /** @var DataHandler $dataHandler */
+        $dataHandler = $this->objectManager->get('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
+        $dataHandler->start(array(), array()); // keep it empty, everything will be done by a dataHandler hook
+
+        /** @var DayRelationService $dayRelations */
+        $dayRelations = $this->objectManager->get('JWeiland\\Events2\\Service\\DayRelationService');
+        $dayRelations->createDayRelations($event->getUid(), $dataHandler);
+
+        $dataHandler->process_datamap();
+        $dataHandler->process_cmdmap();
     }
 
     /**

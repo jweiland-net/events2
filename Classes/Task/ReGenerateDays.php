@@ -15,6 +15,7 @@ namespace JWeiland\Events2\Task;
  * The TYPO3 project - inspiring people to share!
  */
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
@@ -29,7 +30,7 @@ class ReGenerateDays extends AbstractTask
     protected $databaseConnection = null;
 
     /**
-     * @var \JWeiland\Events2\Service\DayRelations
+     * @var \JWeiland\Events2\Service\DayRelationService
      */
     protected $dayRelations = null;
 
@@ -40,7 +41,7 @@ class ReGenerateDays extends AbstractTask
     {
         /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
         $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        $this->dayRelations = $objectManager->get('JWeiland\\Events2\\Service\\DayRelations');
+        $this->dayRelations = $objectManager->get('JWeiland\\Events2\\Service\\DayRelationService');
         $this->databaseConnection = $GLOBALS['TYPO3_DB'];
         parent::__construct();
     }
@@ -55,6 +56,8 @@ class ReGenerateDays extends AbstractTask
      */
     public function execute()
     {
+        /** @var DataHandler $dataHandler */
+        $dataHandler = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
         // get all uids which we have to update
         $eventUids = $this->databaseConnection->exec_SELECTgetRows(
             'uid',
@@ -66,9 +69,10 @@ class ReGenerateDays extends AbstractTask
 
         // create/update days for each event
         foreach ($eventUids as $eventUid) {
-            $this->dayRelations->createDayRelations(
-                $this->getFullEventRecord($eventUid['uid'])
-            );
+            $dataHandler->start(array(), array()); // keep it empty, everything will be done by a dataHandler hook
+            $this->dayRelations->createDayRelations($eventUid['uid'], $dataHandler);
+            $dataHandler->process_datamap();
+            $dataHandler->process_cmdmap();
         }
 
         return true;

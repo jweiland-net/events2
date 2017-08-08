@@ -16,13 +16,14 @@ namespace JWeiland\Events2\Service;
  */
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Utility\DateTimeUtility;
-use TYPO3\CMS\Core\Database\DatabaseConnection;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class DayRelations
+class DayRelationService
 {
     /**
      * @var array
@@ -30,19 +31,24 @@ class DayRelations
     protected $eventRecord = array();
 
     /**
+     * @var DataHandler
+     */
+    protected $dataHandler;
+
+    /**
      * @var ExtConf
      */
     protected $extConf;
 
     /**
-     * @var DatabaseConnection
-     */
-    protected $databaseConnection;
-
-    /**
      * @var DayGenerator
      */
     protected $dayGenerator;
+
+    /**
+     * @var EventService
+     */
+    protected $eventService;
 
     /**
      * @var DateTimeUtility
@@ -79,6 +85,18 @@ class DayRelations
     }
 
     /**
+     * inject eventService
+     *
+     * @param EventService $eventService
+     *
+     * @return void
+     */
+    public function injectEventService(EventService $eventService)
+    {
+        $this->eventService = $eventService;
+    }
+
+    /**
      * inject dateTimeUtility.
      *
      * @param DateTimeUtility $dateTimeUtility
@@ -91,54 +109,32 @@ class DayRelations
     }
 
     /**
-     * initialize object
-     * set database connection.
-     *
-     * @return void
-     */
-    public function initializeObject()
-    {
-        $this->databaseConnection = $GLOBALS['TYPO3_DB'];
-    }
-
-    /**
      * Create day relations for given event
      *
-     * @param array $event
+     * @param int|string $eventUid Maybe starting with NEW
+     * @param DataHandler $dataHandler
      *
      * @return void
      */
-    public function createDayRelations(array $event)
+    public function createDayRelations($eventUid, $dataHandler)
     {
-        if (empty($event) || empty($event['uid']) || empty($event['pid'])) {
+        $this->dataHandler = $dataHandler;
+        $this->eventRecord = $this->eventService->getFullEventRecord($eventUid, $this->dataHandler);
+        if (empty($this->eventRecord) || empty($this->eventRecord['uid']) || empty($this->eventRecord['pid'])) {
             // write a warning (2) to sys_log
             GeneralUtility::sysLog('Related days could not be created, because of an empty event or a non given event uid or pid', 'events2', 2);
         } else {
-            foreach ($event as $key => $value) {
-                $this->eventRecord[GeneralUtility::camelCaseToLowerCaseUnderscored($key)] = $value;
-            }
+            $dayUids = array();
             $this->dayGenerator->initialize($this->eventRecord);
             $days = $this->dayGenerator->getDayStorage();
-
-            // delete entries with current event uid from mm-table
-            $this->deleteAllRelatedRecords((int)$this->eventRecord['uid']);
-
             foreach ($days as $day) {
-                $this->addDay($day);
+                $dayUids = array_merge($dayUids, $this->addDay($day));
                 // in case of recurring event, cached sort_day_time is only valid for one day (same_day-checkbox)
                 if ($this->eventRecord['event_type'] === 'recurring') {
                     unset($this->cachedSortDayTime[$this->eventRecord['uid']]);
                 }
             }
-
-            // add days amount to event
-            $this->databaseConnection->exec_UPDATEquery(
-                'tx_events2_domain_model_event',
-                'uid=' . (int)$this->eventRecord['uid'],
-                array(
-                    'days' => count($days),
-                )
-            );
+            $this->dataHandler->datamap['tx_events2_domain_model_event'][$eventUid]['days'] = implode(',', $dayUids);
         }
     }
 
@@ -148,20 +144,22 @@ class DayRelations
      *
      * @param \DateTime $day
      *
-     * @return void
+     * @return array UIDs of new day records
      */
     public function addDay(\DateTime $day)
     {
+        $uids = array();
         // to prevent adding multiple days for ONE day we set them all to midnight 00:00:00
         $day = $this->dateTimeUtility->standardizeDateTimeObject($day);
         $times = $this->getTimesForDay($day);
         if (!empty($times)) {
             foreach ($times as $time) {
-                $this->addDayRecord($day, $time);
+                $uids[] = $this->addDayRecord($day, $time);
             }
         } else {
-            $this->addDayRecord($day);
+            $uids[] = $this->addDayRecord($day);
         }
+        return $uids;
     }
 
     /**
@@ -275,7 +273,7 @@ class DayRelations
      * @param \DateTime $day
      * @param array $time
      *
-     * @return int The affected row uid
+     * @return int|string The affected row uid. Maybe starting with NEW
      */
     protected function addDayRecord(\DateTime $day, array $time = array())
     {
@@ -288,6 +286,7 @@ class DayRelations
         }
 
         $fieldsArray = array();
+        $fieldsArray['uid'] = uniqid('NEW', true);
         $fieldsArray['day'] = (int)$day->format('U');
         $fieldsArray['day_time'] = (int)$this->getDayTime($day, $hour, $minute)->format('U');
         $fieldsArray['sort_day_time'] = (int)$this->getSortDayTime($day, $hour, $minute);
@@ -299,17 +298,9 @@ class DayRelations
         $fieldsArray['crdate'] = $GLOBALS['EXEC_TIME'];
         $fieldsArray['cruser_id'] = (int)$GLOBALS['BE_USER']->user['uid'];
 
-        $this->databaseConnection->exec_INSERTquery('tx_events2_domain_model_day', $fieldsArray);
+        $this->dataHandler->datamap['tx_events2_domain_model_day'][$fieldsArray['uid']] = $fieldsArray;
 
-        $insertId = (int)$this->databaseConnection->sql_insert_id();
-
-        // if $dayUid == 0 an error in query appears. So, do not update anything
-        if ($insertId > 0) {
-            // add relation in mm-table
-            $this->addRelation($this->eventRecord['uid'], $insertId, $day);
-        }
-
-        return $insertId;
+        return $fieldsArray['uid'];
     }
 
     /**
@@ -371,47 +362,5 @@ class DayRelations
         }
 
         return $sortDayTime;
-    }
-
-    /**
-     * add relation to day record in mm table.
-     *
-     * @param int       $eventUid
-     * @param int       $dayUid
-     * @param \DateTime $day
-     */
-    protected function addRelation($eventUid, $dayUid, \DateTime $day)
-    {
-        // we don't need a SELECT query here, because we have deleted all related records just before
-        $fieldsArray = array();
-        $fieldsArray['uid_local'] = (int)$eventUid;
-        $fieldsArray['uid_foreign'] = (int)$dayUid;
-        $fieldsArray['sorting'] = (int)$day->format('U');
-
-        $this->databaseConnection->exec_INSERTquery(
-            'tx_events2_event_day_mm',
-            $fieldsArray
-        );
-    }
-
-    /**
-     * delete all related records from mm-table.
-     *
-     * @param int $event
-     *
-     * @return void
-     */
-    protected function deleteAllRelatedRecords($event)
-    {
-        // delete MM entries
-        $this->databaseConnection->exec_DELETEquery(
-            'tx_events2_event_day_mm',
-            'uid_local=' . (int)$event
-        );
-        // delete day records
-        $this->databaseConnection->exec_DELETEquery(
-            'tx_events2_domain_model_day',
-            'event=' . (int)$event
-        );
     }
 }

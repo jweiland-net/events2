@@ -17,7 +17,7 @@ namespace JWeiland\Events2\ViewHelpers\Widget\Controller;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Time;
-use JWeiland\Events2\Utility\EventUtility;
+use JWeiland\Events2\Service\EventService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetController;
@@ -28,18 +28,18 @@ use TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetController;
 class ICalendarController extends AbstractWidgetController
 {
     /**
-     * @var \JWeiland\Events2\Utility\EventUtility
+     * @var \JWeiland\Events2\Service\EventService
      */
-    protected $eventUtility;
+    protected $eventService;
 
     /**
-     * inject Event Utility.
+     * inject Event Service.
      *
-     * @param EventUtility $eventUtility
+     * @param EventService $eventService
      */
-    public function injectEventUtility(EventUtility $eventUtility)
+    public function injectEventService(EventService $eventService)
     {
-        $this->eventUtility = $eventUtility;
+        $this->eventService = $eventService;
     }
 
     /**
@@ -62,17 +62,17 @@ class ICalendarController extends AbstractWidgetController
             'typo3temp/tx_events2/iCal/%s.ics',
             $this->getUniqueIdForDay($day)
         );
-        
+
         $content = preg_replace('/\h+/', ' ', $this->view->render());
         GeneralUtility::writeFileToTypo3tempDir(PATH_site . $filePath, $content);
-        
+
         return sprintf(
             '<a href="%s" target="_blank">%s</a>',
             GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . $filePath,
             LocalizationUtility::translate('export', 'events2')
         );
     }
-    
+
     /**
      * Get Events by day
      *
@@ -87,13 +87,13 @@ class ICalendarController extends AbstractWidgetController
             case 'duration':
                 $firstDay = $this->getFirstDayOfEvent($day->getEvent());
                 $lastDay = $this->getLastDayOfEvent($day->getEvent());
-                $startTimes = $this->eventUtility->getTimesForDay($firstDay->getEvent(), $firstDay);
-                $endTimes = $this->eventUtility->getTimesForDay($lastDay->getEvent(), $lastDay);
+                $startTimes = $this->eventService->getTimesForDay($firstDay->getEvent(), $firstDay);
+                $endTimes = $this->eventService->getTimesForDay($lastDay->getEvent(), $lastDay);
                 $startTimes->rewind();
                 $startTime = $startTimes->current();
                 $endTimes->rewind();
                 $endTime = $endTimes->current();
-                
+
                 $events[] = $this->createEvent(
                     $firstDay,
                     $lastDay,
@@ -104,7 +104,7 @@ class ICalendarController extends AbstractWidgetController
             case 'recurring':
             case 'single':
             default:
-                $times = $this->eventUtility->getTimesForDay($day->getEvent(), $day);
+                $times = $this->eventService->getTimesForDay($day->getEvent(), $day);
                 if ($times->count()) {
                     /** @var Time $time */
                     foreach ($times as $time) {
@@ -118,7 +118,7 @@ class ICalendarController extends AbstractWidgetController
         }
         return $events;
     }
-    
+
     /**
      * Get first day of event
      * This is needed for events of type "duration"
@@ -137,7 +137,7 @@ class ICalendarController extends AbstractWidgetController
         ksort($days);
         return reset($days);
     }
-    
+
     /**
      * Get last day of event
      * This is needed for events of type "duration"
@@ -156,7 +156,7 @@ class ICalendarController extends AbstractWidgetController
         ksort($days);
         return end($days);
     }
-    
+
     /**
      * create an event array
      * Hint: We can't use DTSTAMP here, because this must be UTC, but we don't have UTC times here.
@@ -173,7 +173,7 @@ class ICalendarController extends AbstractWidgetController
         if ($lastDay === null) {
             $lastDay = $day;
         }
-        
+
         $event = array();
         $event['UID'] = $this->getUniqueIdForDay($day);
         $event['DTSTART'] = $this->convertToTstamp($day->getDay(), $startTime);

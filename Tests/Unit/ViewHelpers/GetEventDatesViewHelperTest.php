@@ -19,7 +19,7 @@ use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Exception;
 use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Utility\DateTimeUtility;
-use JWeiland\Events2\Utility\EventUtility;
+use JWeiland\Events2\Service\EventService;
 use JWeiland\Events2\ViewHelpers\GetEventDatesViewHelper;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
@@ -29,13 +29,13 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  *
  * @author Stefan Froemken <projects@jweiland.net>
  */
-class ShowEventDatesControllerTest extends UnitTestCase
+class ShowEventDatesViewHelperTest extends UnitTestCase
 {
     /**
      * @var GetEventDatesViewHelper
      */
     protected $subject;
-    
+
     /**
      * set up.
      */
@@ -43,7 +43,7 @@ class ShowEventDatesControllerTest extends UnitTestCase
     {
         $this->subject = new GetEventDatesViewHelper();
     }
-    
+
     /**
      * tear down.
      */
@@ -51,7 +51,7 @@ class ShowEventDatesControllerTest extends UnitTestCase
     {
         unset($this->subject);
     }
-    
+
     /**
      * @test
      */
@@ -63,7 +63,7 @@ class ShowEventDatesControllerTest extends UnitTestCase
             $this->subject->render(new Event())
         );
     }
-    
+
     /**
      * @test
      */
@@ -80,7 +80,7 @@ class ShowEventDatesControllerTest extends UnitTestCase
         $time = new Time();
         $time->setTimeBegin('09:25');
         $event->setEventTime($time);
-        
+
         $expectedDays = array();
         $expectedDays[] = array(
             'day' => $day,
@@ -90,15 +90,15 @@ class ShowEventDatesControllerTest extends UnitTestCase
             'isRemoved' => false,
             'infos' => new \SplObjectStorage(),
         );
-        
+
         $this->subject->injectDateTimeUtility(new DateTimeUtility());
-        $this->subject->injectEventUtility(new EventUtility());
+        $this->subject->injectEventService(new EventService());
         $this->assertEquals(
             $expectedDays,
             $this->subject->render($event)
         );
     }
-    
+
     /**
      * @test
      */
@@ -115,15 +115,15 @@ class ShowEventDatesControllerTest extends UnitTestCase
         $time = new Time();
         $time->setTimeBegin('09:25');
         $event->setEventTime($time);
-        
+
         $this->subject->injectDateTimeUtility(new DateTimeUtility());
-        $this->subject->injectEventUtility(new EventUtility());
+        $this->subject->injectEventService(new EventService());
         $this->assertEquals(
             array(),
             $this->subject->render($event)
         );
     }
-    
+
     /**
      * this test also tests the else-part in protected addFutureDaysFromEventRecord.
      *
@@ -139,7 +139,7 @@ class ShowEventDatesControllerTest extends UnitTestCase
         $days->attach($day);
         $event = new Event();
         $event->setDays($days);
-        
+
         $expectedDays = array();
         $expectedDays[] = array(
             'day' => $day,
@@ -149,15 +149,15 @@ class ShowEventDatesControllerTest extends UnitTestCase
             'isRemoved' => false,
             'infos' => new \SplObjectStorage(),
         );
-        
+
         $this->subject->injectDateTimeUtility(new DateTimeUtility());
-        $this->subject->injectEventUtility(new EventUtility());
+        $this->subject->injectEventService(new EventService());
         $this->assertEquals(
             $expectedDays,
             $this->subject->render($event)
         );
     }
-    
+
     /**
      * this test also tests the else-part in protected addFutureDaysFromRemovedEventExceptions.
      *
@@ -169,19 +169,19 @@ class ShowEventDatesControllerTest extends UnitTestCase
         $today->modify('midnight');
         $day = new Day();
         $day->setDay($today);
-        
+
         $exceptions = new ObjectStorage();
         $exception = new Exception();
         $exception->setExceptionType('Remove');
         $exception->setExceptionDate($today);
         $exceptions->attach($exception);
-        
+
         $infoExceptions = new \SplObjectStorage();
         $infoExceptions->attach($exception);
-        
+
         $event = new Event();
         $event->setExceptions($exceptions);
-        
+
         $expectedDays = array();
         $expectedDays[] = array(
             'day' => $day,
@@ -191,18 +191,18 @@ class ShowEventDatesControllerTest extends UnitTestCase
             'isRemoved' => true,
             'infos' => $infoExceptions,
         );
-        
-        $eventUtility = new EventUtility();
-        $eventUtility->injectDateTimeUtility(new DateTimeUtility());
-        
+
+        $eventService = new EventService();
+        $eventService->injectDateTimeUtility(new DateTimeUtility());
+
         $this->subject->injectDateTimeUtility(new DateTimeUtility());
-        $this->subject->injectEventUtility($eventUtility);
+        $this->subject->injectEventService($eventService);
         $this->assertEquals(
             $expectedDays,
             $this->subject->render($event)
         );
     }
-    
+
     /**
      * @test
      */
@@ -218,7 +218,7 @@ class ShowEventDatesControllerTest extends UnitTestCase
         $event->addDay($day);
         $event->setEventBegin($tomorrow);
         $event->setEventTime($time);
-        
+
         $expectedDayArray = array(
             0 => array(
                 'day' => $day,
@@ -229,15 +229,15 @@ class ShowEventDatesControllerTest extends UnitTestCase
                 'infos' => new \SplObjectStorage()
             )
         );
-        
+
         $this->subject->injectDateTimeUtility(new DateTimeUtility());
-        $this->subject->injectEventUtility(new EventUtility());
+        $this->subject->injectEventService(new EventService());
         $this->assertEquals(
             $expectedDayArray,
             $this->subject->render($event)
         );
     }
-    
+
     /**
      * @test
      */
@@ -249,16 +249,16 @@ class ShowEventDatesControllerTest extends UnitTestCase
         $day->setDay($tomorrow);
         $time = new Time();
         $time->setTimeBegin('09:25');
-    
+
         $exception = new Exception();
         $exception->setExceptionType('Remove');
         $exception->setExceptionDate($tomorrow);
         $exceptions = new ObjectStorage();
         $exceptions->attach($exception);
-        
+
         $infoExceptions = new \SplObjectStorage();
         $infoExceptions->attach($exception);
-        
+
         $expectedDayArray = array(
             0 => array(
                 'day' => $day,
@@ -269,23 +269,23 @@ class ShowEventDatesControllerTest extends UnitTestCase
                 'infos' => $infoExceptions
             )
         );
-        
+
         $event = new Event();
         $event->setEventBegin($tomorrow);
         $event->setEventTime($time);
         $event->setExceptions($exceptions);
-        
-        $eventUtility = new EventUtility();
-        $eventUtility->injectDateTimeUtility(new DateTimeUtility());
-        
+
+        $eventService = new EventService();
+        $eventService->injectDateTimeUtility(new DateTimeUtility());
+
         $this->subject->injectDateTimeUtility(new DateTimeUtility());
-        $this->subject->injectEventUtility($eventUtility);
+        $this->subject->injectEventService($eventService);
         $this->assertEquals(
             $expectedDayArray,
             $this->subject->render($event)
         );
     }
-    
+
     /**
      * @test
      */
@@ -295,26 +295,26 @@ class ShowEventDatesControllerTest extends UnitTestCase
         $tomorrow->modify('tomorrow midnight');
         $day = new Day();
         $day->setDay($tomorrow);
-        
+
         $time = new Time();
         $time->setTimeBegin('09:25');
-        
+
         $infoException = new Exception();
         $infoException->setExceptionType('Info');
         $infoException->setExceptionDate($tomorrow);
-        
+
         $removeException = new Exception();
         $removeException->setExceptionType('Remove');
         $removeException->setExceptionDate($tomorrow);
-        
+
         $infoExceptions = new \SplObjectStorage();
         $infoExceptions->attach($infoException);
         $infoExceptions->attach($removeException);
-        
+
         $exceptions = new ObjectStorage();
         $exceptions->attach($removeException);
         $exceptions->attach($infoException);
-        
+
         $expectedDayArray = array(
             0 => array(
                 'day' => $day,
@@ -325,23 +325,23 @@ class ShowEventDatesControllerTest extends UnitTestCase
                 'infos' => $infoExceptions
             )
         );
-        
+
         $event = new Event();
         $event->setEventBegin($tomorrow);
         $event->setEventTime($time);
         $event->setExceptions($exceptions);
-        
-        $eventUtility = new EventUtility();
-        $eventUtility->injectDateTimeUtility(new DateTimeUtility());
-        
+
+        $eventService = new EventService();
+        $eventService->injectDateTimeUtility(new DateTimeUtility());
+
         $this->subject->injectDateTimeUtility(new DateTimeUtility());
-        $this->subject->injectEventUtility($eventUtility);
+        $this->subject->injectEventService($eventService);
         $this->assertEquals(
             $expectedDayArray,
             $this->subject->render($event)
         );
     }
-    
+
     /**
      * @test
      */
@@ -351,24 +351,24 @@ class ShowEventDatesControllerTest extends UnitTestCase
         $tomorrow->modify('tomorrow midnight');
         $dayTomorrow = new Day();
         $dayTomorrow->setDay($tomorrow);
-        
+
         $inOneWeek = new \DateTime();
         $inOneWeek->modify('+1 week midnight');
         $dayInOneWeek = new Day();
         $dayInOneWeek->setDay($inOneWeek);
-        
+
         $days = new ObjectStorage();
         $days->attach($dayTomorrow);
         $days->attach($dayInOneWeek);
-    
+
         $timeBegin = new Time();
         $timeBegin->setTimeBegin('10:34');
         $multipleTime = new Time();
         $multipleTime->setTimeBegin('08:12');
-        
+
         $multipleTimes = new ObjectStorage();
         $multipleTimes->attach($multipleTime);
-    
+
         $exceptionTime = new Time();
         $exceptionTime->setTimeBegin('12:30');
 
@@ -376,13 +376,13 @@ class ShowEventDatesControllerTest extends UnitTestCase
         $exception->setExceptionType('Time');
         $exception->setExceptionDate($inOneWeek);
         $exception->setExceptionTime($exceptionTime);
-    
+
         $exceptions = new ObjectStorage();
         $exceptions->attach($exception);
-    
+
         $splExceptions = new \SplObjectStorage();
         $splExceptions->attach($exception);
-    
+
         $event = new Event();
         $event->setDays($days);
         $event->setEventBegin($tomorrow);
@@ -390,7 +390,7 @@ class ShowEventDatesControllerTest extends UnitTestCase
         $event->setSameDay(true);
         $event->setMultipleTimes($multipleTimes);
         $event->setExceptions($exceptions);
-    
+
         $expectedDayArray = array(
             0 => array(
                 'day' => $dayTomorrow,
@@ -417,12 +417,12 @@ class ShowEventDatesControllerTest extends UnitTestCase
                 'infos' => $splExceptions
             )
         );
-    
-        $eventUtility = new EventUtility();
-        $eventUtility->injectDateTimeUtility(new DateTimeUtility());
-    
+
+        $eventService = new EventService();
+        $eventService->injectDateTimeUtility(new DateTimeUtility());
+
         $this->subject->injectDateTimeUtility(new DateTimeUtility());
-        $this->subject->injectEventUtility($eventUtility);
+        $this->subject->injectEventService($eventService);
 
         // we have a different SplObjectStorage in infos. So we can't make use of assertSame
         $this->assertEquals(

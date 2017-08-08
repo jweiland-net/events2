@@ -14,10 +14,11 @@ namespace JWeiland\Events2\Command;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use JWeiland\Events2\Service\EventService;
 use JWeiland\Events2\Utility\DateTimeUtility;
-use JWeiland\Events2\Utility\EventUtility;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Extbase\Mvc\Controller\CommandController;
-use JWeiland\Events2\Service\DayRelations;
+use JWeiland\Events2\Service\DayRelationService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -34,7 +35,7 @@ class RepairCommandController extends CommandController
      * @var \JWeiland\Events2\Utility\DateTimeUtility
      */
     protected $dateTimeUtility;
-    
+
     /**
      * Needed to wrap activity bar:
      * ...........F.......
@@ -68,7 +69,7 @@ class RepairCommandController extends CommandController
     public function eventsCommand()
     {
         $this->outputLine('Start repairing day records of events');
-    
+
         $this->outputLine('');
         $this->truncateDayTable();
         $this->outputLine('');
@@ -76,7 +77,7 @@ class RepairCommandController extends CommandController
         $this->outputLine('');
         $this->updateReferenceIndex();
     }
-    
+
     /**
      * Truncate day table. We will build them up again within the next steps
      *
@@ -88,42 +89,48 @@ class RepairCommandController extends CommandController
         $this->databaseConnection->exec_TRUNCATEquery('tx_events2_event_day_mm');
         $this->outputLine(PHP_EOL . 'I have truncated the day table');
     }
-    
+
     /**
      * After solving bugs in DayGenerator it would be good to recreate all days for events
      *
      * @return void
+     *
+     * @throws \Exception
      */
     protected function reGenerateDayRelations()
     {
         $counter = 0;
         $this->rowCounter = 0;
-    
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        /** @var DayRelations $dayRelations */
-        $dayRelations = $objectManager->get('JWeiland\\Events2\\Service\\DayRelations');
-        /** @var EventUtility $eventUtility */
-        $eventUtility = $objectManager->get('JWeiland\\Events2\\Utility\\EventUtility');
-    
+
+        /** @var DayRelationService $dayRelations */
+        $dayRelations = $this->objectManager->get('JWeiland\\Events2\\Service\\DayRelationService');
+        /** @var DataHandler $dataHandler */
+        $dataHandler = $this->objectManager->get('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
+
         // get all event records
         $rows = $this->databaseConnection->exec_SELECTgetRows(
             'uid',
             'tx_events2_domain_model_event',
-            '1=1'
+            'pid <> -1'
         );
-    
+
         if (!empty($rows)) {
+            $dataHandler->start(array(), array()); // keep it empty, everything will be done by a dataHandler hook
             foreach ($rows as $row) {
-                $event = $eventUtility->getFullEventRecord($row['uid']);
-                $dayRelations->createDayRelations($event);
+                $dayRelations->createDayRelations($row['uid'], $dataHandler);
                 $this->echoValue();
                 ++$counter;
+            }
+            $this->echoValue('Starting the DataHandler. This may take some minutes');
+            $dataHandler->process_datamap();
+            $dataHandler->process_cmdmap();
+            if ($dataHandler->errorLog) {
+                throw new \Exception(implode(PHP_EOL, $dataHandler->errorLog));
             }
         }
         $this->outputLine(PHP_EOL . 'We have recreated the day records for ' . $counter . ' event records.');
     }
-    
+
     /**
      * Update TYPO3s Reference index
      *
@@ -134,7 +141,7 @@ class RepairCommandController extends CommandController
         $counter = 0;
         $this->rowCounter = 0;
         $this->outputLine('Update reference index.');
-    
+
         // get all event records
         $rows = $this->databaseConnection->exec_SELECTgetRows(
             'uid',
@@ -144,7 +151,7 @@ class RepairCommandController extends CommandController
         if (!empty($rows)) {
             /** @var \TYPO3\CMS\Core\Database\ReferenceIndex $refObject */
             $refObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Database\\ReferenceIndex');
-        
+
             foreach ($rows as $row) {
                 $refObject->updateRefIndexTable('tx_events2_domain_model_event', $row['uid']);
                 $this->echoValue();
@@ -153,7 +160,7 @@ class RepairCommandController extends CommandController
         }
         $this->outputLine(PHP_EOL . 'I have updated ' . $counter . ' reference indexes for events.');
     }
-    
+
     /**
      * echo "whatEver"
      *

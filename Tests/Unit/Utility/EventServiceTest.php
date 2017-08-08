@@ -19,7 +19,7 @@ use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Exception;
 use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Utility\DateTimeUtility;
-use JWeiland\Events2\Utility\EventUtility;
+use JWeiland\Events2\Service\EventService;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
@@ -28,10 +28,10 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  *
  * @author Stefan Froemken <projects@jweiland.net>
  */
-class EventUtilityTest extends UnitTestCase
+class EventServiceTest extends UnitTestCase
 {
     /**
-     * @var \JWeiland\Events2\Utility\EventUtility
+     * @var \JWeiland\Events2\Service\EventService
      */
     protected $subject;
 
@@ -40,7 +40,7 @@ class EventUtilityTest extends UnitTestCase
      */
     public function setUp()
     {
-        $this->subject = new EventUtility();
+        $this->subject = new EventService();
     }
 
     /**

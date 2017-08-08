@@ -16,7 +16,7 @@ namespace JWeiland\Events2\ViewHelpers;
  */
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Time;
-use JWeiland\Events2\Utility\EventUtility;
+use JWeiland\Events2\Service\EventService;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -25,18 +25,18 @@ use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 class GetMergedEventTimesViewHelper extends AbstractViewHelper
 {
     /**
-     * @var \JWeiland\Events2\Utility\EventUtility
+     * @var \JWeiland\Events2\Service\EventService
      */
-    protected $eventUtility;
+    protected $eventService;
 
     /**
-     * inject Event Utility.
+     * inject Event Service.
      *
-     * @param EventUtility $eventUtility
+     * @param EventService $eventService
      */
-    public function injectEventUtility(EventUtility $eventUtility)
+    public function injectEventService(EventService $eventService)
     {
-        $this->eventUtility = $eventUtility;
+        $this->eventService = $eventService;
     }
 
     /**
@@ -50,7 +50,7 @@ class GetMergedEventTimesViewHelper extends AbstractViewHelper
      */
     public function render(Day $day, $directReturn = false)
     {
-        $times = $this->eventUtility->getSortedTimesForDay($day->getEvent(), $day);
+        $times = $this->eventService->getSortedTimesForDay($day->getEvent(), $day);
         if ($times->count() === 1 && $directReturn) {
             $times->rewind();
             /** @var Time $time */

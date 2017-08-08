@@ -18,7 +18,7 @@ use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Utility\DateTimeUtility;
-use JWeiland\Events2\Utility\EventUtility;
+use JWeiland\Events2\Service\EventService;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
@@ -31,24 +31,24 @@ class GetEventDatesViewHelper extends AbstractViewHelper
      * @var \JWeiland\Events2\Utility\DateTimeUtility
      */
     protected $dateTimeUtility;
-    
+
     /**
-     * @var \JWeiland\Events2\Utility\EventUtility
+     * @var \JWeiland\Events2\Service\EventService
      */
-    protected $eventUtility;
-    
+    protected $eventService;
+
     /**
      * @var \JWeiland\Events2\Domain\Model\Event
      */
     protected $event;
-    
+
     /**
      * make exceptions of event global available for this class.
      *
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage
      */
     protected $exceptions;
-    
+
     /**
      * inject DateTime Utility.
      *
@@ -58,17 +58,17 @@ class GetEventDatesViewHelper extends AbstractViewHelper
     {
         $this->dateTimeUtility = $dateTimeUtility;
     }
-    
+
     /**
-     * inject Event Utility.
+     * inject Event Service.
      *
-     * @param EventUtility $eventUtility
+     * @param EventService $eventService
      */
-    public function injectEventUtility(EventUtility $eventUtility)
+    public function injectEventService(EventService $eventService)
     {
-        $this->eventUtility = $eventUtility;
+        $this->eventService = $eventService;
     }
-    
+
     /**
      * constructor of this class.
      */
@@ -76,7 +76,7 @@ class GetEventDatesViewHelper extends AbstractViewHelper
     {
         $this->exceptions = new ObjectStorage();
     }
-    
+
     /**
      * Get all related dates for specified event
      *
@@ -93,7 +93,7 @@ class GetEventDatesViewHelper extends AbstractViewHelper
         );
         return $days;
     }
-    
+
     /**
      * get all days related to current event
      * already merged with all kinds of exceptions.
@@ -104,16 +104,16 @@ class GetEventDatesViewHelper extends AbstractViewHelper
     {
         $days = array();
         $this->addFutureDaysFromEventRecord($days);
-        
+
         // event->getDays already contains all Exceptions of type "Add"
         // above we have added all exceptions of type "Time"
         // while generating the day array we have added all exceptions of type "Info"
         // so only exceptions of type "Remove" are missing
         $this->addFutureDaysFromRemovedEventExceptions($days);
-        
+
         return $days;
     }
-    
+
     /**
      * add all visible and future days from event to days array.
      *
@@ -124,16 +124,16 @@ class GetEventDatesViewHelper extends AbstractViewHelper
     protected function addFutureDaysFromEventRecord(array &$days)
     {
         $today = $this->dateTimeUtility->standardizeDateTimeObject(new \DateTime());
-        
+
         // as long as I can not change query building for sub-models in extbase (repository)
         // I have to reduce days with help of PHP. Maybe it will work with TYPO3 7.0
-        
+
         /** @var \JWeiland\Events2\Domain\Model\Day $day */
         foreach ($this->getGroupedDays() as $day) {
             // only add days of today and in future
             if ($day->getDay() >= $today) {
                 // some days can start multiple times each day
-                $times = $this->eventUtility->getSortedTimesForDay($this->event, $day);
+                $times = $this->eventService->getSortedTimesForDay($this->event, $day);
                 if ($times->count()) {
                     foreach ($times as $time) {
                         $days[] = $this->buildDayArray($day, $time);
@@ -147,7 +147,7 @@ class GetEventDatesViewHelper extends AbstractViewHelper
             }
         }
     }
-    
+
     /**
      * return grouped days
      *
@@ -156,15 +156,15 @@ class GetEventDatesViewHelper extends AbstractViewHelper
     protected function getGroupedDays()
     {
         $days = array();
-        
+
         /** @var \JWeiland\Events2\Domain\Model\Day $day */
         foreach ($this->event->getDays() as $day) {
             $days[$day->getDay()->format('U')] = $day;
         }
-        
+
         return $days;
     }
-    
+
     /**
      * We don't want to add removed days to calender, but in detail view we
      * want to show them. So we need them here to add a special CSS-Class in template.
@@ -174,7 +174,7 @@ class GetEventDatesViewHelper extends AbstractViewHelper
     protected function addFutureDaysFromRemovedEventExceptions(array &$days)
     {
         $today = $this->dateTimeUtility->standardizeDateTimeObject(new \DateTime());
-        
+
         // get all Exceptions of type "Remove" regardless of day
         $removedExceptions = new \SplObjectStorage();
         /** @var \JWeiland\Events2\Domain\Model\Exception $exception */
@@ -183,7 +183,7 @@ class GetEventDatesViewHelper extends AbstractViewHelper
                 $removedExceptions->attach($exception);
             }
         }
-        
+
         if ($removedExceptions->count()) {
             /** @var \JWeiland\Events2\Domain\Model\Exception $removedException */
             foreach ($removedExceptions as $removedException) {
@@ -192,9 +192,9 @@ class GetEventDatesViewHelper extends AbstractViewHelper
                     // Exceptions does not have a relation to day domain model. So we create a temporary one
                     $day = new Day();
                     $day->setDay($removedException->getExceptionDate());
-                    
+
                     // some days can start multiple times each day
-                    $times = $this->eventUtility->getTimesForDay($this->event, $day);
+                    $times = $this->eventService->getTimesForDay($this->event, $day);
                     if ($times->count()) {
                         foreach ($times as $time) {
                             $days[] = $this->buildDayArray($day, $time);
@@ -209,7 +209,7 @@ class GetEventDatesViewHelper extends AbstractViewHelper
             }
         }
     }
-    
+
     /**
      * build day array
      * this must be an array, because we will sort with array_multisort later.
@@ -222,32 +222,32 @@ class GetEventDatesViewHelper extends AbstractViewHelper
     protected function buildDayArray(Day $day, Time $time)
     {
         $dayArray = array();
-        
+
         // add original day and time object
         $dayArray['day'] = $day;
         $dayArray['time'] = $time;
-        
+
         // add event date as timestamp (for sorting)
         $eventDate = $this->dateTimeUtility->standardizeDateTimeObject($day->getDay());
         $dayArray['eventDate'] = $eventDate->format('U');
-        
+
         // add event time as string (for sorting)
         $dayArray['eventTime'] = $time->getTimeBegin();
-        
+
         // add flag to mark removed days
-        $removedExceptions = $this->eventUtility->getExceptionsForDay($this->event, $day, 'remove');
+        $removedExceptions = $this->eventService->getExceptionsForDay($this->event, $day, 'remove');
         if ($removedExceptions->count()) {
             $dayArray['isRemoved'] = true;
         } else {
             $dayArray['isRemoved'] = false;
         }
-        
+
         // add exceptions
-        $dayArray['infos'] = $this->eventUtility->getExceptionsForDay($this->event, $day);
-        
+        $dayArray['infos'] = $this->eventService->getExceptionsForDay($this->event, $day);
+
         return $dayArray;
     }
-    
+
     /**
      * multisort days by date and time.
      *
@@ -266,7 +266,7 @@ class GetEventDatesViewHelper extends AbstractViewHelper
             }
             array_multisort($eventDate, SORT_ASC, SORT_NUMERIC, $eventTime, SORT_ASC, SORT_STRING, $days);
         }
-        
+
         return $days;
     }
 }
