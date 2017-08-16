@@ -126,8 +126,15 @@ if (TYPO3_MODE === 'BE') {
 $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['events2findDaysForMonth'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('events2') . 'Classes/Ajax/FindDaysForMonth.php';
 $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['events2findLocations'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('events2') . 'Classes/Ajax/FindLocations.php';
 
-// RealUrl auto configuration
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/realurl/class.tx_realurl_autoconfgen.php']['extensionConfiguration']['events2'] = 'JWeiland\\Events2\\Hooks\\RealUrlAutoConfiguration->addEvents2Config';
+if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('realurl')) {
+    // RealUrl auto configuration
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/realurl/class.tx_realurl_autoconfgen.php']['extensionConfiguration']['events2'] = 'JWeiland\\Events2\\Hooks\\RealUrlAutoConfiguration->addEvents2Config';
+}
 
-// Change Solr results, if type is events2
-$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument'][] = 'JWeiland\\Events2\\Hooks\\ResultsCommandHook';
+if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('solr')) {
+    // Change Solr results, if type is events2
+    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument'][] = 'JWeiland\\Events2\\Hooks\\Solr\\ResultsCommandHook';
+
+    // As we can't create a SQL Query with JOIN in Solr configuration, we have to remove invalid documents on our own
+    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments'][] = 'JWeiland\\Events2\\Hooks\\Solr\\IndexerHook';
+}

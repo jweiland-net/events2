@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Service;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Time;
@@ -34,6 +35,11 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 class EventService
 {
     /**
+     * @var \JWeiland\Events2\Configuration\ExtConf
+     */
+    protected $extConf;
+
+    /**
      * @var DateTimeUtility
      */
     protected $dateTimeUtility;
@@ -42,6 +48,18 @@ class EventService
      * @var EventRepository
      */
     protected $eventRepository;
+
+    /**
+     * injects extConf
+     *
+     * @param ExtConf $extConf
+     *
+     * @return void
+     */
+    public function injectExtConf(ExtConf $extConf)
+    {
+        $this->extConf = $extConf;
+    }
 
     /**
      * inject DateTime Utility.
@@ -389,6 +407,38 @@ class EventService
         reset($days);
 
         return current($days);
+    }
+
+    /**
+     * Get last day for event
+     * Useful to check, if an event is over.
+     * Needed by SolrIndexer, as we can't create JOIN Queries in Solr configuration
+     *
+     * @param int $eventUid
+     *
+     * @return Day|false
+     */
+    public function getLastDayForEvent($eventUid)
+    {
+        /** @var Event $event */
+        $event = $this->eventRepository->findByIdentifier((int)$eventUid);
+        if ($event->getDays()->count()) {
+            $days = array();
+
+            /** @var Day $day */
+            foreach ($event->getDays() as $day) {
+                $dayTime = $day->getSortDayTime()->format('U');
+                if ($dayTime > time()) {
+                    $days[$day->getSortDayTime()->format('U')] = $day;
+                }
+            }
+            krsort($days);
+            reset($days);
+
+            return current($days);
+        } else {
+            return false;
+        }
     }
 
     /**

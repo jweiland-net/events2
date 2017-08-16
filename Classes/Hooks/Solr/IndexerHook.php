@@ -1,6 +1,6 @@
 <?php
 
-namespace JWeiland\Events2\Hooks;
+namespace JWeiland\Events2\Hooks\Solr;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,17 +14,16 @@ namespace JWeiland\Events2\Hooks;
  *
  * The TYPO3 project - inspiring people to share!
  */
-use ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand;
-use ApacheSolrForTypo3\Solr\ResultDocumentModifier\ResultDocumentModifier;
+use ApacheSolrForTypo3\Solr\IndexQueue\Item;
+use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerDocumentsModifier;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Service\EventService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class ResultsCommandHook implements ResultDocumentModifier
+class IndexerHook implements PageIndexerDocumentsModifier
 {
     /**
      * @var EventService
@@ -41,21 +40,23 @@ class ResultsCommandHook implements ResultDocumentModifier
     }
 
     /**
-     * Modifies the given document and returns the modified document as result.
+     * Modifies the given documents
      *
-     * @param ResultsCommand $resultCommand The search result command
-     * @param array $resultDocument Result document as array
+     * @param Item $item The currently being indexed item.
+     * @param int $language The language uid of the documents
+     * @param array $documents An array of documents to be indexed
      *
-     * @return array The document with fields as array
+     * @return array An array of modified documents
      */
-    public function modifyResultDocument(ResultsCommand $resultCommand, array $resultDocument)
+    public function modifyDocuments(Item $item, $language, array $documents)
     {
-        if ($resultDocument['type'] === 'tx_events2_domain_model_event') {
-            $day = $this->eventService->getNextDayForEvent((int)$resultDocument['uid']);
-            if ($day instanceof Day) {
-                $resultDocument['next_day'] = $day->getSortDayTime()->format('U');
+        if ($item->getType() === 'tx_events2_domain_model_event') {
+            $day = $this->eventService->getNextDayForEvent((int)$item->getRecordUid());
+            if ($day === false || !$day instanceof Day) {
+                // clear document array, if there are no further day records in future
+                $documents = array();
             }
         }
-        return $resultDocument;
+        return $documents;
     }
 }
