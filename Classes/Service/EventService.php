@@ -369,7 +369,7 @@ class EventService
      *
      * @param int $eventUid
      *
-     * @return Day
+     * @return Day|false
      */
     public function getNextDayForEvent($eventUid)
     {

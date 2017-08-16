@@ -16,6 +16,7 @@ namespace JWeiland\Events2\Hooks;
  */
 use ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand;
 use ApacheSolrForTypo3\Solr\ResultDocumentModifier\ResultDocumentModifier;
+use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Service\EventService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -51,7 +52,9 @@ class ResultsCommandHook implements ResultDocumentModifier
     {
         if ($resultDocument['type'] === 'tx_events2_domain_model_event') {
             $day = $this->eventService->getNextDayForEvent((int)$resultDocument['uid']);
-            $resultDocument['next_day'] = $day->getSortDayTime()->format('U');
+            if ($day instanceof Day) {
+                $resultDocument['next_day'] = $day->getSortDayTime()->format('U');
+            }
         }
         return $resultDocument;
     }
