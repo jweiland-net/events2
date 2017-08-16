@@ -17,6 +17,7 @@ namespace JWeiland\Events2\Service;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Time;
+use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
@@ -38,13 +39,32 @@ class EventService
     protected $dateTimeUtility;
 
     /**
+     * @var EventRepository
+     */
+    protected $eventRepository;
+
+    /**
      * inject DateTime Utility.
      *
      * @param DateTimeUtility $dateTimeUtility
+     *
+     * @return void
      */
     public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
     {
         $this->dateTimeUtility = $dateTimeUtility;
+    }
+
+    /**
+     * inject eventRepository
+     *
+     * @param EventRepository $eventRepository
+     *
+     * @return void
+     */
+    public function injectEventRepository(EventRepository $eventRepository)
+    {
+        $this->eventRepository = $eventRepository;
     }
 
     /**
@@ -342,6 +362,33 @@ class EventService
         } else {
             $record[$column] = array();
         }
+    }
+
+    /**
+     * Get next day for event
+     *
+     * @param int $eventUid
+     *
+     * @return Day
+     */
+    public function getNextDayForEvent($eventUid)
+    {
+        /** @var Event $event */
+        $event = $this->eventRepository->findByIdentifier((int)$eventUid);
+
+        $days = array();
+
+        /** @var Day $day */
+        foreach ($event->getDays() as $day) {
+            $dayTime = $day->getSortDayTime()->format('U');
+            if ($dayTime > time()) {
+                $days[$day->getSortDayTime()->format('U')] = $day;
+            }
+        }
+        ksort($days);
+        reset($days);
+
+        return current($days);
     }
 
     /**

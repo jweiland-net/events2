@@ -68,7 +68,7 @@ class DataHandlerHook
      */
     protected function registerDaysAsDeletedForEvent($dataHandler, $eventUid)
     {
-        // days would normally a comma seperated list of day UIDs. With setting this value to an empty string, we will delete day relations
+        // days would normally a comma separated list of day UIDs. With setting this value to an empty string, we will delete day relations
         $dataHandler->datamap['tx_events2_domain_model_event'][(int)$eventUid]['days'] = '';
 
         // Delete day records with DataHandler, so that Solr and other extensions will be informed about that

@@ -14,25 +14,34 @@ namespace JWeiland\Events2\Task;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use JWeiland\Events2\Service\DayRelationService;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Scheduler\ProgressProviderInterface;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class ReGenerateDays extends AbstractTask
+class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
 {
     /**
-     * @var \TYPO3\CMS\Core\Database\DatabaseConnection
+     * @var DatabaseConnection
      */
-    protected $databaseConnection = null;
+    protected $databaseConnection;
 
     /**
-     * @var \JWeiland\Events2\Service\DayRelationService
+     * @var DayRelationService
      */
-    protected $dayRelations = null;
+    protected $dayRelations;
+
+    /**
+     * @var Registry
+     */
+    protected $registry;
 
     /**
      * constructor of this class.
@@ -42,6 +51,7 @@ class ReGenerateDays extends AbstractTask
         /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
         $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
         $this->dayRelations = $objectManager->get('JWeiland\\Events2\\Service\\DayRelationService');
+        $this->registry = $objectManager->get('TYPO3\\CMS\\Core\\Registry');
         $this->databaseConnection = $GLOBALS['TYPO3_DB'];
         parent::__construct();
     }
@@ -58,67 +68,78 @@ class ReGenerateDays extends AbstractTask
     {
         /** @var DataHandler $dataHandler */
         $dataHandler = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
-        // get all uids which we have to update
-        $eventUids = $this->databaseConnection->exec_SELECTgetRows(
-            'uid',
+        $this->registry->removeAllByNamespace('events2TaskCreateUpdate');
+
+        $events = BackendUtility::getRecordsByField(
             'tx_events2_domain_model_event',
-            '1=1'.
-            BackendUtility::BEenableFields('tx_events2_domain_model_event').
-            BackendUtility::deleteClause('tx_events2_domain_model_event')
+            'hidden',
+            0,
+            'AND pid <> -1
+            AND ((event_type=\'single\' AND event_begin > ' . time() . ') OR event_type <> \'single\')'
         );
 
-        // create/update days for each event
-        foreach ($eventUids as $eventUid) {
-            $dataHandler->start(array(), array()); // keep it empty, everything will be done by a dataHandler hook
-            $this->dayRelations->createDayRelations($eventUid['uid'], $dataHandler);
-            $dataHandler->process_datamap();
-            $dataHandler->process_cmdmap();
+        if (!empty($events)) {
+            $counter = 0;
+            foreach ($events as $event) {
+                $counter++;
+                $this->registry->set('events2TaskCreateUpdate', 'info', array(
+                    'uid' => $event['uid'],
+                    'pid' => $event['pid'],
+                    'type' => $event['event_type']
+                ));
+                $dataHandler->start(array(), array()); // keep it empty, everything will be done by a dataHandler hook
+                $this->dayRelations->createDayRelations($event['uid'], $dataHandler);
+                $dataHandler->process_datamap();
+                $dataHandler->process_cmdmap();
+                $this->registry->set('events2TaskCreateUpdate', 'progress', array(
+                    'records' => count($events),
+                    'counter' => $counter
+                ));
+            }
         }
+
+        $this->registry->remove('events2TaskCreateUpdate', 'info');
 
         return true;
     }
 
     /**
-     * get full event record
-     * While updating a record only the changed fields will be in $fieldArray.
+     * This method is designed to return some additional information about the task,
+     * that may help to set it apart from other tasks from the same class
+     * This additional information is used - for example - in the Scheduler's BE module
+     * This method should be implemented in most task classes
      *
-     * @param int $uid
-     *
-     * @return array
+     * @return string Information to display
      */
-    protected function getFullEventRecord($uid)
+    public function getAdditionalInformation()
     {
-        $event = BackendUtility::getRecord('tx_events2_domain_model_event', (int)$uid);
-        if ($event['exceptions']) {
-            $event['exceptions'] = $this->getExceptions($uid);
+        $content = '';
+        $info = $this->registry->get('events2TaskCreateUpdate', 'info');
+        if ($info) {
+            $content = sprintf(
+                'Current event: uid: %d, pid: %d, type: %s.',
+                $info['uid'],
+                $info['pid'],
+                $info['type']
+            );
+            if ($info['type'] === 'recurring') {
+                $content .= ' Events of type recurring needs much longer to process as they can have hundreds of day records';
+            }
         }
-
-        return $event;
+        return $content;
     }
 
     /**
-     * get Exceptions of specified event uid.
+     * Gets the progress of a task.
      *
-     * @param $eventUid
-     *
-     * @return array
+     * @return float Progress of the task as a two decimal precision float. f.e. 44.87
      */
-    protected function getExceptions($eventUid)
-    {
-        $exceptions = $this->databaseConnection->exec_SELECTgetRows(
-            'uid, exception_type, exception_date',
-            'tx_events2_domain_model_exception',
-            'event='.(int)$eventUid.
-            BackendUtility::BEenableFields('tx_events2_domain_model_exception').
-            BackendUtility::deleteClause('tx_events2_domain_model_exception')
-
-        );
-
-        // check, if error occurs
-        if (!is_array($exceptions)) {
-            return array();
+    public function getProgress() {
+        $progress = $this->registry->get('events2TaskCreateUpdate', 'progress');
+        if ($progress) {
+            return 100 / $progress['records'] * $progress['counter'];
         } else {
-            return $exceptions;
+            return 0.0;
         }
     }
 }
