@@ -273,7 +273,7 @@ class EventService
      */
     protected function addExceptionsToEvent(array &$event, $dataHandler)
     {
-        if (isset($event['exceptions'])) {
+        if (in_array($event['type'], array('recurring', 'duration')) && isset($event['exceptions'])) {
             $exceptions = array();
             if (MathUtility::canBeInterpretedAsInteger($event['exceptions'])) {
                 // event comes from DB

@@ -123,7 +123,7 @@ class Typo3DbBackend extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo
             $fields = 'DISTINCT ' . reset($statementParts['tables']) . '.uid';
         }
         if (!empty($statementParts['groupings'])) {
-            $fields = 'DISTINCT ' . reset($statementParts['groupings']);
+            $fields = 'DISTINCT ' . implode(',', $statementParts['groupings']);
         }
 
         $queryCommandParameters = $this->createQueryCommandParametersFromStatementParts($statementParts);

@@ -342,18 +342,19 @@ class DayRepository extends Repository
 
     /**
      * Find a day by event and timestamp
+     * If timestamp is empty, we try to find next possible day in future
      *
-     * @param int $event
+     * @param int $eventUid
      * @param int $timestamp
-     *
+     * 
      * @return Day|null
      */
-    public function findOneByTimestamp($event, $timestamp = 0)
+    public function findOneByTimestamp($eventUid, $timestamp = 0)
     {
         $query = $this->createQuery();
 
         $constraints = array();
-        $constraints[] = $query->equals('event', $event);
+        $constraints[] = $query->equals('event', (int)$eventUid);
 
         if (empty($timestamp)) {
             $today = new \DateTime('now');

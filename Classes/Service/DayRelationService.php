@@ -270,12 +270,12 @@ class DayRelationService
     /**
      * Add day record.
      *
-     * @param \DateTime $day
+     * @param \DateTime $dateTime
      * @param array $time
      *
      * @return int|string The affected row uid. Maybe starting with NEW
      */
-    protected function addDayRecord(\DateTime $day, array $time = array())
+    protected function addDayRecord(\DateTime $dateTime, array $time = array())
     {
         $hour = $minute = 0;
         if (
@@ -285,11 +285,21 @@ class DayRelationService
             list($hour, $minute) = explode(':', $time['time_begin']);
         }
 
+        // I work with UTC values, but DataHandler will subtract the difference of the TimeZone for date values while saving.
+        // So, to have correct UTC values in DB I have to add the TimeZone difference here like it was done in
+        // FormEngine InputTextElement
+        $day = (int)$dateTime->format('U');
+        $day += date('Z', $day);
+        $dayTime = (int)$this->getDayTime($dateTime, $hour, $minute)->format('U');
+        $dayTime += date('Z', $day);
+        $sortDayTime = (int)$this->getSortDayTime($dateTime, $hour, $minute);
+        $sortDayTime += date('Z', $sortDayTime);
+
         $fieldsArray = array();
         $fieldsArray['uid'] = str_replace('.', '', uniqid('NEW', true));
-        $fieldsArray['day'] = (int)$day->format('U');
-        $fieldsArray['day_time'] = (int)$this->getDayTime($day, $hour, $minute)->format('U');
-        $fieldsArray['sort_day_time'] = (int)$this->getSortDayTime($day, $hour, $minute);
+        $fieldsArray['day'] = $day;
+        $fieldsArray['day_time'] = $dayTime;
+        $fieldsArray['sort_day_time'] = $sortDayTime;
         $fieldsArray['event'] = (int)$this->eventRecord['uid'];
         $fieldsArray['deleted'] = (int)$this->eventRecord['deleted'];
         $fieldsArray['hidden'] = (int)$this->eventRecord['hidden'];
