@@ -45,21 +45,12 @@ if (!defined('TYPO3_MODE')) {
 );
 
 if (TYPO3_MODE === 'BE') {
-    // repair records of events2
+    // Add command to truncate day table and recreate day records from scratch
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['extbase']['commandControllers'][] = 'JWeiland\\Events2\\Command\\RepairCommandController';
-    // here we register an eval function to check for time
+    // register an eval function to check for time
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tce']['formevals']['JWeiland\\Events2\\Tca\\Type\\Time'] = 'EXT:events2/Classes/Tca/Type/Time.php';
-    // use hook to automatically add a map record to event
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'JWeiland\\Events2\\Hooks\\CreateMap';
-
-    // delete and create day relations.
-    // We have to update some values before any other hook will be called.
-    // F.E. Without updated day records from our side, solr will not update its index
-    array_unshift(
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'],
-        'JWeiland\\Events2\\Hooks\\DataHandlerHook'
-    );
-
+    // delete and recreate day relations for an event
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'JWeiland\\Events2\\Hooks\\DataHandlerHook';
     // HOOK: Override rootUid in TCA for category trees
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tceforms.php']['getSingleFieldClass'][] = 'JWeiland\\Events2\\Hooks\\ModifyTcaOfCategoryTrees';
     // Hook: Render Plugin preview item

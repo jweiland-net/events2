@@ -392,8 +392,7 @@ return array(
             'config' => array(
                 'type' => 'select',
                 'foreign_table' => 'tx_events2_domain_model_day',
-                'foreign_sortby' => 'sorting',
-                'MM' => 'tx_events2_event_day_mm',
+                'foreign_field' => 'event',
             ),
         ),
         'location' => array(

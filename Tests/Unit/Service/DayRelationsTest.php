@@ -182,7 +182,6 @@ class DayRelationsTest extends UnitTestCase
             'pid' => 321,
         );
 
-        $this->dbProphecy->exec_DELETEquery('tx_events2_event_day_mm', 'uid_local=123')->shouldBeCalled();
         $this->dbProphecy->exec_DELETEquery('tx_events2_domain_model_day', 'event=123')->shouldBeCalled();
         $this->dbProphecy->exec_UPDATEquery('tx_events2_domain_model_event', 'uid=123', ['days' => 0])->shouldBeCalled();
         $this->dbProphecy->exec_INSERTquery(Argument::cetera())->shouldNotBeCalled();

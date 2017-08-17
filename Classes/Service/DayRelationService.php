@@ -15,10 +15,16 @@ namespace JWeiland\Events2\Service;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Configuration\ExtConf;
+use JWeiland\Events2\Domain\Model\Day;
+use JWeiland\Events2\Domain\Model\Event;
+use JWeiland\Events2\Domain\Model\Exception;
+use JWeiland\Events2\Domain\Model\Time;
+use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
@@ -31,11 +37,6 @@ class DayRelationService
     protected $eventRecord = array();
 
     /**
-     * @var DataHandler
-     */
-    protected $dataHandler;
-
-    /**
      * @var ExtConf
      */
     protected $extConf;
@@ -44,6 +45,11 @@ class DayRelationService
      * @var DayGenerator
      */
     protected $dayGenerator;
+
+    /**
+     * @var EventRepository
+     */
+    protected $eventRepository;
 
     /**
      * @var EventService
@@ -85,6 +91,18 @@ class DayRelationService
     }
 
     /**
+     * inject eventRepository
+     *
+     * @param EventRepository $eventRepository
+     *
+     * @return void
+     */
+    public function injectEventRepository(EventRepository $eventRepository)
+    {
+        $this->eventRepository = $eventRepository;
+    }
+
+    /**
      * inject eventService
      *
      * @param EventService $eventService
@@ -112,29 +130,37 @@ class DayRelationService
      * Create day relations for given event
      *
      * @param int|string $eventUid Maybe starting with NEW
-     * @param DataHandler $dataHandler
      *
-     * @return void
+     * @return Event
      */
-    public function createDayRelations($eventUid, $dataHandler)
+    public function createDayRelations($eventUid)
     {
-        $this->dataHandler = $dataHandler;
-        $this->eventRecord = $this->eventService->getFullEventRecord($eventUid, $this->dataHandler);
-        if (empty($this->eventRecord) || empty($this->eventRecord['uid']) || empty($this->eventRecord['pid'])) {
+        $event = $this->eventRepository->findByIdentifier((int)$eventUid);
+        if (!$event instanceof Event) {
             // write a warning (2) to sys_log
             GeneralUtility::sysLog('Related days could not be created, because of an empty event or a non given event uid or pid', 'events2', 2);
         } else {
-            $dayUids = array();
-            $this->dayGenerator->initialize($this->eventRecord);
-            $days = $this->dayGenerator->getDayStorage();
-            foreach ($days as $day) {
-                $dayUids = array_merge($dayUids, $this->addDay($day));
+            // Heavy: Without clone removeAll will remove only the half of objects in storage
+            // I don't exactly know why, but maybe next() was called twice. isValid() returns false too early
+            $event->getDays()->removeAll(clone $event->getDays());
+
+            $this->dayGenerator->initialize($event);
+            $dateTimeStorage = $this->dayGenerator->getDateTimeStorage();
+            foreach ($dateTimeStorage as $dateTime) {
+                $this->addDay($event, $dateTime);
                 // in case of recurring event, cached sort_day_time is only valid for one day (same_day-checkbox)
-                if ($this->eventRecord['event_type'] === 'recurring') {
-                    unset($this->cachedSortDayTime[$this->eventRecord['uid']]);
+                if ($event->getEventType() === 'recurring') {
+                    unset($this->cachedSortDayTime[$event->getUid()]);
                 }
             }
-            $this->dataHandler->datamap['tx_events2_domain_model_event'][$eventUid]['days'] = implode(',', $dayUids);
+            /** @var ObjectManager $objectManager */
+            $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+            /** @var PersistenceManager $persistenceManager */
+            $persistenceManager = $objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
+            $persistenceManager->update($event);
+            $persistenceManager->persistAll();
+
+            return $event;
         }
     }
 
@@ -142,24 +168,23 @@ class DayRelationService
      * Add day to db
      * Also MM-Tables will be filled.
      *
-     * @param \DateTime $day
+     * @param Event $event
+     * @param \DateTime $dateTime
      *
-     * @return array UIDs of new day records
+     * @return void
      */
-    public function addDay(\DateTime $day)
+    public function addDay(Event $event, \DateTime $dateTime)
     {
-        $uids = array();
         // to prevent adding multiple days for ONE day we set them all to midnight 00:00:00
-        $day = $this->dateTimeUtility->standardizeDateTimeObject($day);
-        $times = $this->getTimesForDay($day);
+        $dateTime = $this->dateTimeUtility->standardizeDateTimeObject($dateTime);
+        $times = $this->getTimesForDateTime($dateTime, $event);
         if (!empty($times)) {
             foreach ($times as $time) {
-                $uids[] = $this->addDayRecord($day, $time);
+                $this->addGeneratedDayToEvent($dateTime, $time, $event);
             }
         } else {
-            $uids[] = $this->addDayRecord($day);
+            $this->addGeneratedDayToEvent($dateTime, null, $event);
         }
-        return $uids;
     }
 
     /**
@@ -167,27 +192,26 @@ class DayRelationService
      * This method looks into all time related records and fetches the times with highest priority.
      *
      * @param \DateTime $day
+     * @param Event $event
      *
      * @return array
      */
-    public function getTimesForDay(\DateTime $day)
+    public function getTimesForDateTime(\DateTime $day, Event $event)
     {
         // times from exceptions have priority 1
-        $timesFromExceptions = $this->eventRecord['exceptions'];
-        if (is_array($timesFromExceptions)) {
+        if ($event->getExceptions()->count()) {
             $times = array();
-            foreach ($timesFromExceptions as $exception) {
+            /** @var Exception $exception */
+            foreach ($event->getExceptions() as $exception) {
                 if (
-                    $exception['exception_date'] == $day->format('U') &&
-                    is_array($exception['exception_time']) &&
+                    $exception->getExceptionDate() == $day &&
+                    $exception->getExceptionTime() instanceof Time &&
                     (
-                        $exception['exception_type'] == 'Add' ||
-                        $exception['exception_type'] == 'Time'
+                        $exception->getExceptionType() === 'Add' ||
+                        $exception->getExceptionType() === 'Time'
                     )
                 ) {
-                    foreach ($exception['exception_time'] as $time) {
-                        $times[] = $time;
-                    }
+                    $times[] = $exception->getExceptionTime();
                 }
             }
             if (!empty($times)) {
@@ -195,12 +219,12 @@ class DayRelationService
             }
         }
         // times from event->differentTimes have priority 2
-        $differentTimes = $this->getDifferentTimesForDay($day);
+        $differentTimes = $this->getDifferentTimesForDay($day, $event);
         if (!empty($differentTimes)) {
             return $differentTimes;
         }
         // times from event have priority 3
-        $eventTimes = $this->getTimesFromEvent();
+        $eventTimes = $this->getTimesFromEvent($event);
         if (!empty($eventTimes)) {
             return $eventTimes;
         }
@@ -214,19 +238,21 @@ class DayRelationService
      * so this method checks and returns times, if there are times defined for given day.
      *
      * @param \DateTime $day
+     * @param Event $event
      *
      * @return array
      */
-    protected function getDifferentTimesForDay(\DateTime $day)
+    protected function getDifferentTimesForDay(\DateTime $day, Event $event)
     {
         $times = array();
         if (
-            $this->eventRecord['event_type'] !== 'single' &&
-            is_array($this->eventRecord['different_times'])
+            $event->getEventType() !== 'single' &&
+            $event->getDifferentTimes()->count()
         ) {
             // you only can set different times in case of type "duration" and "recurring". But not: single
-            foreach ($this->eventRecord['different_times'] as $time) {
-                if (strtolower($time['weekday']) === strtolower($day->format('l'))) {
+            /** @var Time $time */
+            foreach ($event->getDifferentTimes() as $time) {
+                if (strtolower($time->getWeekday()) === strtolower($day->format('l'))) {
                     $times[] = $time;
                 }
             }
@@ -239,27 +265,28 @@ class DayRelationService
      * Each event has ONE time record, but if checkbox "same day" was checked, you can add additional times
      * This method checks both parts, merges them into an array and returns the result.
      *
+     * @param Event $event
+     *
      * @return array
      */
-    protected function getTimesFromEvent()
+    protected function getTimesFromEvent(Event $event)
     {
         $times = array();
         // add normal event time
-        if (is_array($this->eventRecord['event_time'])) {
-            foreach ($this->eventRecord['event_time'] as $time) {
-                $times[] = $time;
-            }
+        if ($event->getEventTime() instanceof Time) {
+            $times[] = $event->getEventTime();
         }
 
         // add value of multiple times
         // but only if checkbox "same day" is set
         // and event type is NOT single
         if (
-            $this->eventRecord['event_type'] !== 'single' &&
-            $this->eventRecord['same_day'] &&
-            is_array($this->eventRecord['multiple_times'])
+            $event->getEventType() !== 'single' &&
+            $event->getSameDay() &&
+            $event->getMultipleTimes()->count()
         ) {
-            foreach ($this->eventRecord['multiple_times'] as $multipleTime) {
+            /** @var Time $multipleTime */
+            foreach ($event->getMultipleTimes() as $multipleTime) {
                 $times[] = $multipleTime;
             }
         }
@@ -268,49 +295,32 @@ class DayRelationService
     }
 
     /**
-     * Add day record.
+     * Add day record
      *
      * @param \DateTime $dateTime
-     * @param array $time
+     * @param Time|null $time
+     * @param Event $event
      *
-     * @return int|string The affected row uid. Maybe starting with NEW
+     * @return void
      */
-    protected function addDayRecord(\DateTime $dateTime, array $time = array())
+    protected function addGeneratedDayToEvent(\DateTime $dateTime, $time = null, Event $event)
     {
         $hour = $minute = 0;
         if (
-            array_key_exists('time_begin', $time) &&
-            preg_match('@^([0-1][0-9]|2[0-3]):[0-5][0-9]$@', $time['time_begin'])
+            $time instanceof Time &&
+            preg_match('@^([0-1][0-9]|2[0-3]):[0-5][0-9]$@', $time->getTimeBegin())
         ) {
-            list($hour, $minute) = explode(':', $time['time_begin']);
+            list($hour, $minute) = explode(':', $time->getTimeBegin());
         }
 
-        // I work with UTC values, but DataHandler will subtract the difference of the TimeZone for date values while saving.
-        // So, to have correct UTC values in DB I have to add the TimeZone difference here like it was done in
-        // FormEngine InputTextElement
-        $day = (int)$dateTime->format('U');
-        $day += date('Z', $day);
-        $dayTime = (int)$this->getDayTime($dateTime, $hour, $minute)->format('U');
-        $dayTime += date('Z', $day);
-        $sortDayTime = (int)$this->getSortDayTime($dateTime, $hour, $minute);
-        $sortDayTime += date('Z', $sortDayTime);
-
-        $fieldsArray = array();
-        $fieldsArray['uid'] = str_replace('.', '', uniqid('NEW', true));
-        $fieldsArray['day'] = $day;
-        $fieldsArray['day_time'] = $dayTime;
-        $fieldsArray['sort_day_time'] = $sortDayTime;
-        $fieldsArray['event'] = (int)$this->eventRecord['uid'];
-        $fieldsArray['deleted'] = (int)$this->eventRecord['deleted'];
-        $fieldsArray['hidden'] = (int)$this->eventRecord['hidden'];
-        $fieldsArray['tstamp'] = $GLOBALS['EXEC_TIME'];
-        $fieldsArray['pid'] = (int)$this->eventRecord['pid'];
-        $fieldsArray['crdate'] = $GLOBALS['EXEC_TIME'];
-        $fieldsArray['cruser_id'] = (int)$GLOBALS['BE_USER']->user['uid'];
-
-        $this->dataHandler->datamap['tx_events2_domain_model_day'][$fieldsArray['uid']] = $fieldsArray;
-
-        return $fieldsArray['uid'];
+        /** @var Day $day */
+        $day = GeneralUtility::makeInstance('JWeiland\\Events2\\Domain\\Model\\Day');
+        $day->setPid($event->getPid());
+        $day->setDay($dateTime);
+        $day->setDayTime($this->getDayTime($dateTime, $hour, $minute));
+        $day->setSortDayTime($this->getSortDayTime($dateTime, $hour, $minute));
+        $day->setEvent($event);
+        $event->addDay($day);
     }
 
     /**
@@ -353,16 +363,16 @@ class DayRelationService
      * @param int $hour
      * @param int $minute
      *
-     * @return int
+     * @return \DateTime
      */
     protected function getSortDayTime(\DateTime $day, $hour, $minute)
     {
         // cachedSortDayTime will be unset for type "recurring" after processing one day
         if (array_key_exists($this->eventRecord['uid'], $this->cachedSortDayTime)) {
-            return (int)$this->cachedSortDayTime[$this->eventRecord['uid']];
+            return $this->cachedSortDayTime[$this->eventRecord['uid']];
         }
 
-        $sortDayTime = (int)$this->getDayTime($day, $hour, $minute)->format('U');
+        $sortDayTime = $this->getDayTime($day, $hour, $minute);
 
         if (in_array($this->eventRecord['event_type'], array('duration', 'recurring'))) {
             // Group multiple days for duration or group multiple times for one day

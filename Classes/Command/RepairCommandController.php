@@ -17,7 +17,6 @@ namespace JWeiland\Events2\Command;
 use JWeiland\Events2\Service\EventService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Extbase\Mvc\Controller\CommandController;
 use JWeiland\Events2\Service\DayRelationService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -75,6 +74,7 @@ class RepairCommandController extends CommandController
         $this->truncateDayTable();
         $this->outputLine('');
         $this->reGenerateDayRelations();
+        $this->outputLine('');
     }
 
     /**
@@ -85,7 +85,6 @@ class RepairCommandController extends CommandController
     protected function truncateDayTable()
     {
         $this->databaseConnection->exec_TRUNCATEquery('tx_events2_domain_model_day');
-        $this->databaseConnection->exec_TRUNCATEquery('tx_events2_event_day_mm');
         $this->outputLine(PHP_EOL . 'I have truncated the day table');
     }
 
@@ -98,82 +97,43 @@ class RepairCommandController extends CommandController
      */
     protected function reGenerateDayRelations()
     {
-        $counter = 0;
-        $this->rowCounter = 0;
+        $eventCounter = 0;
+        $dayCounter = 0;
 
         /** @var DayRelationService $dayRelations */
         $dayRelations = $this->objectManager->get('JWeiland\\Events2\\Service\\DayRelationService');
-        /** @var DataHandler $dataHandler */
-        $dataHandler = $this->objectManager->get('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
 
-        $this->echoValue(PHP_EOL . 'Process simple event records first');
+        $this->echoValue(PHP_EOL . 'Process each event record');
         $rows = BackendUtility::getRecordsByField(
             'tx_events2_domain_model_event',
-            'event_type',
-            'single',
-            'AND event_begin >=' . time()
+            'deleted',
+            '0',
+            'AND (
+              (event_type = \'single\' AND event_begin > UNIX_TIMESTAMP())
+              OR (event_type = \'duration\' AND (event_end = 0 OR event_end > UNIX_TIMESTAMP()))
+              OR (event_type = \'recurring\' AND (recurring_end = 0 OR recurring_end > UNIX_TIMESTAMP()))
+            )'
         );
 
         if (!empty($rows)) {
-            $dataHandler->start(array(), array()); // keep it empty, everything will be done by a dataHandler hook
             foreach ($rows as $row) {
-                $dayRelations->createDayRelations($row['uid'], $dataHandler);
-                $this->echoValue();
-                ++$counter;
-            }
-            $this->echoValue(PHP_EOL . 'Starting the DataHandler. This may take some minutes');
-            $dataHandler->process_datamap();
-            $dataHandler->process_cmdmap();
-            if ($dataHandler->errorLog) {
-                throw new \Exception(implode(PHP_EOL, $dataHandler->errorLog));
+                $event = $dayRelations->createDayRelations((int)$row['uid']);
+                $this->echoValue(sprintf(
+                    PHP_EOL . 'Process event UID: %09d, PID: %05d, created: %04d day records',
+                    $event->getUid(),
+                    $event->getPid(),
+                    $event->getDays()->count()
+                ));
+                $eventCounter++;
+                $dayCounter += $event->getDays()->count();
             }
         }
 
-        $this->echoValue(PHP_EOL . 'Process duration events');
-        $rows = BackendUtility::getRecordsByField(
-            'tx_events2_domain_model_event',
-            'event_type',
-            'duration'
-        );
-
-        if (!empty($rows)) {
-            $dataHandler->start(array(), array()); // keep it empty, everything will be done by a dataHandler hook
-            foreach ($rows as $row) {
-                $dayRelations->createDayRelations($row['uid'], $dataHandler);
-                $this->echoValue();
-                ++$counter;
-            }
-            $this->echoValue(PHP_EOL . 'Starting the DataHandler. This may take some minutes');
-            $dataHandler->process_datamap();
-            $dataHandler->process_cmdmap();
-            if ($dataHandler->errorLog) {
-                throw new \Exception(implode(PHP_EOL, $dataHandler->errorLog));
-            }
-        }
-
-        $this->echoValue(PHP_EOL . 'Process recurring events');
-        $rows = BackendUtility::getRecordsByField(
-            'tx_events2_domain_model_event',
-            'event_type',
-            'recurring'
-        );
-
-        if (!empty($rows)) {
-            $dataHandler->start(array(), array()); // keep it empty, everything will be done by a dataHandler hook
-            foreach ($rows as $row) {
-                $dayRelations->createDayRelations($row['uid'], $dataHandler);
-                $this->echoValue();
-                ++$counter;
-            }
-            $this->echoValue(PHP_EOL . 'Starting the DataHandler. This may take some minutes');
-            $dataHandler->process_datamap();
-            $dataHandler->process_cmdmap();
-            if ($dataHandler->errorLog) {
-                throw new \Exception(implode(PHP_EOL, $dataHandler->errorLog));
-            }
-        }
-
-        $this->outputLine(PHP_EOL . 'We have recreated the day records for ' . $counter . ' event records.');
+        $this->outputLine(sprintf(
+            PHP_EOL . 'We have recreated the day records for %d event records and %d day records',
+            $eventCounter,
+            $dayCounter
+        ));
     }
 
     /**

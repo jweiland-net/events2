@@ -17,7 +17,6 @@ namespace JWeiland\Events2\Controller;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Search;
 use JWeiland\Events2\Service\DayRelationService;
-use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Extbase\Property\TypeConverter\DateTimeConverter;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -283,16 +282,9 @@ class EventController extends AbstractController
      */
     protected function addDayRelations(Event $event)
     {
-        /** @var DataHandler $dataHandler */
-        $dataHandler = $this->objectManager->get('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
-        $dataHandler->start(array(), array()); // keep it empty, everything will be done by a dataHandler hook
-
         /** @var DayRelationService $dayRelations */
         $dayRelations = $this->objectManager->get('JWeiland\\Events2\\Service\\DayRelationService');
-        $dayRelations->createDayRelations($event->getUid(), $dataHandler);
-
-        $dataHandler->process_datamap();
-        $dataHandler->process_cmdmap();
+        $dayRelations->createDayRelations($event->getUid());
     }
 
     /**

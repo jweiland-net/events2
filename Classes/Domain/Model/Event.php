@@ -64,6 +64,7 @@ class Event extends AbstractEntity
      * EventTime.
      *
      * @var \JWeiland\Events2\Domain\Model\Time
+     * @cascade remove
      * @validate NotEmpty
      */
     protected $eventTime;
@@ -86,6 +87,7 @@ class Event extends AbstractEntity
      * MultipleTimes.
      *
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Time>
+     * @cascade remove
      * @lazy
      */
     protected $multipleTimes;
@@ -108,6 +110,7 @@ class Event extends AbstractEntity
      * differentTimes.
      *
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Time>
+     * @cascade remove
      * @lazy
      */
     protected $differentTimes;
@@ -130,6 +133,7 @@ class Event extends AbstractEntity
      * Exceptions.
      *
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Exception>
+     * @cascade remove
      * @lazy
      */
     protected $exceptions;
@@ -159,6 +163,7 @@ class Event extends AbstractEntity
      * Ticket link.
      *
      * @var \JWeiland\Events2\Domain\Model\Link
+     * @cascade remove
      * @lazy
      */
     protected $ticketLink;
@@ -176,6 +181,7 @@ class Event extends AbstractEntity
      * Days.
      *
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Day>
+     * @cascade remove
      * @lazy
      */
     protected $days;
@@ -202,6 +208,7 @@ class Event extends AbstractEntity
      * Images.
      *
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference>
+     * @cascade remove
      * @lazy
      */
     protected $images;

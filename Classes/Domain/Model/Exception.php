@@ -1,7 +1,7 @@
 <?php
 
 namespace JWeiland\Events2\Domain\Model;
-    
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -33,14 +33,14 @@ class Exception extends AbstractEntity
      *
      * @var \DateTime
      */
-    protected $exceptionDate = null;
+    protected $exceptionDate;
 
     /**
      * ExceptionTime.
      *
      * @var \JWeiland\Events2\Domain\Model\Time
      */
-    protected $exceptionTime = null;
+    protected $exceptionTime;
 
     /**
      * ExceptionDetails.

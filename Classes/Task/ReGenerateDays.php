@@ -17,7 +17,6 @@ namespace JWeiland\Events2\Task;
 use JWeiland\Events2\Service\DayRelationService;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
-use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\ProgressProviderInterface;
@@ -66,16 +65,17 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
      */
     public function execute()
     {
-        /** @var DataHandler $dataHandler */
-        $dataHandler = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\DataHandling\\DataHandler');
         $this->registry->removeAllByNamespace('events2TaskCreateUpdate');
 
         $events = BackendUtility::getRecordsByField(
             'tx_events2_domain_model_event',
-            'hidden',
-            0,
-            'AND pid <> -1
-            AND ((event_type=\'single\' AND event_begin > ' . time() . ') OR event_type <> \'single\')'
+            'deleted',
+            '0',
+            'AND (
+              (event_type = \'single\' AND event_begin > UNIX_TIMESTAMP())
+              OR (event_type = \'duration\' AND (event_end = 0 OR event_end > UNIX_TIMESTAMP()))
+              OR (event_type = \'recurring\' AND (recurring_end = 0 OR recurring_end > UNIX_TIMESTAMP()))
+            )'
         );
 
         if (!empty($events)) {
@@ -87,10 +87,7 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
                     'pid' => $event['pid'],
                     'type' => $event['event_type']
                 ));
-                $dataHandler->start(array(), array()); // keep it empty, everything will be done by a dataHandler hook
-                $this->dayRelations->createDayRelations($event['uid'], $dataHandler);
-                $dataHandler->process_datamap();
-                $dataHandler->process_cmdmap();
+                $this->dayRelations->createDayRelations($event['uid']);
                 $this->registry->set('events2TaskCreateUpdate', 'progress', array(
                     'records' => count($events),
                     'counter' => $counter
