@@ -350,7 +350,7 @@ class Event extends AbstractEntity
      */
     public function getEventBegin()
     {
-        return $this->eventBegin;
+        return clone $this->eventBegin;
     }
 
     /**
@@ -410,7 +410,7 @@ class Event extends AbstractEntity
      */
     public function getEventEnd()
     {
-        return $this->eventEnd;
+        return clone $this->eventEnd;
     }
 
     /**
@@ -612,7 +612,7 @@ class Event extends AbstractEntity
      */
     public function getRecurringEnd()
     {
-        return $this->recurringEnd;
+        return clone $this->recurringEnd;
     }
 
     /**
