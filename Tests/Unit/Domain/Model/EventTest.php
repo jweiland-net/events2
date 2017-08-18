@@ -237,7 +237,7 @@ class EventTest extends UnitTestCase
         $date = new \DateTime();
         $this->subject->setEventBegin($date);
 
-        $this->assertSame(
+        $this->assertEquals(
             $date,
             $this->subject->getEventBegin()
         );
@@ -353,7 +353,7 @@ class EventTest extends UnitTestCase
         $instance = new \DateTime();
         $this->subject->setEventEnd($instance);
 
-        $this->assertSame(
+        $this->assertEquals(
             $instance,
             $this->subject->getEventEnd()
         );
@@ -630,6 +630,38 @@ class EventTest extends UnitTestCase
             123456,
             $this->subject->getEachWeeks()
         );
+    }
+
+    /**
+     * @test
+     */
+    public function getRecurringEndInitiallyReturnsNull() {
+        $this->assertNull(
+            $this->subject->getRecurringEnd()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function setRecurringEndSetsRecurringEnd() {
+        $date = new \DateTime();
+        $this->subject->setRecurringEnd($date);
+
+        $this->assertEquals(
+            $date,
+            $this->subject->getRecurringEnd()
+        );
+    }
+
+    /**
+     * @test
+     *
+     * @expectedException \PHPUnit_Framework_Error
+     */
+    public function setRecurringEndWithTimestampResultsInException()
+    {
+        $this->subject->setRecurringEnd(1234567890);
     }
 
     /**

@@ -62,6 +62,11 @@ class DayRelationService
     protected $dateTimeUtility;
 
     /**
+     * @var PersistenceManager
+     */
+    protected $persistenceManager;
+
+    /**
      * @var array
      */
     protected $cachedSortDayTime = array();
@@ -127,6 +132,18 @@ class DayRelationService
     }
 
     /**
+     * inject persistenceManager
+     *
+     * @param PersistenceManager $persistenceManager
+     *
+     * @return void
+     */
+    public function injectPersistenceManager(PersistenceManager $persistenceManager)
+    {
+        $this->persistenceManager = $persistenceManager;
+    }
+
+    /**
      * Create day relations for given event
      *
      * @param int|string $eventUid Maybe starting with NEW
@@ -153,15 +170,11 @@ class DayRelationService
                     unset($this->cachedSortDayTime[$event->getUid()]);
                 }
             }
-            /** @var ObjectManager $objectManager */
-            $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-            /** @var PersistenceManager $persistenceManager */
-            $persistenceManager = $objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
-            $persistenceManager->update($event);
-            $persistenceManager->persistAll();
-
-            return $event;
+            $this->persistenceManager->update($event);
+            $this->persistenceManager->persistAll();
         }
+
+        return $event;
     }
 
     /**

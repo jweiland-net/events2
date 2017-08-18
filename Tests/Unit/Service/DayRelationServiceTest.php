@@ -15,6 +15,8 @@ namespace JWeiland\Events2\Tests\Unit\Service;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Configuration\ExtConf;
+use JWeiland\Events2\Domain\Model\Event;
+use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Service\DayGenerator;
 use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Utility\DateTimeUtility;
@@ -23,13 +25,14 @@ use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Tests\AccessibleObjectInterface;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 /**
- * Test case for class \JWeiland\Events2\Service\DayRelations.
+ * Test case for class \JWeiland\Events2\Service\DayRelationService
  *
  * @author Stefan Froemken <projects@jweiland.net>
  */
-class DayRelationsTest extends UnitTestCase
+class DayRelationServiceTest extends UnitTestCase
 {
     /**
      * @var DayRelationService|\PHPUnit_Framework_MockObject_MockObject|AccessibleObjectInterface
@@ -40,6 +43,16 @@ class DayRelationsTest extends UnitTestCase
      * @var ExtConf|ObjectProphecy
      */
     protected $extConfProphecy;
+
+    /**
+     * @var EventRepository|ObjectProphecy
+     */
+    protected $eventRepositoryProphecy;
+
+    /**
+     * @var PersistenceManager|ObjectProphecy
+     */
+    protected $persistenceManagerProphecy;
 
     /**
      * @var DatabaseConnection|ObjectProphecy
@@ -77,6 +90,9 @@ class DayRelationsTest extends UnitTestCase
             ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.weekday.sunday', 'sunday'],
         ];
 
+        $this->eventRepositoryProphecy = $this->prophesize(EventRepository::class);
+        $this->persistenceManagerProphecy = $this->prophesize(PersistenceManager::class);
+
         $dayGenerator = new DayGenerator();
         $dayGenerator->injectExtConf($this->extConfProphecy->reveal());
         $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
@@ -84,6 +100,8 @@ class DayRelationsTest extends UnitTestCase
         $this->subject = new DayRelationService();
         $this->subject->injectExtConf($this->extConfProphecy->reveal());
         $this->subject->injectDayGenerator($dayGenerator);
+        $this->subject->injectEventRepository($this->eventRepositoryProphecy->reveal());
+        $this->subject->injectPersistenceManager($this->persistenceManagerProphecy->reveal());
         $this->subject->injectDateTimeUtility(new DateTimeUtility());
     }
 
@@ -104,68 +122,9 @@ class DayRelationsTest extends UnitTestCase
         $this->dbProphecy->exec_DELETEquery(Argument::cetera())->shouldNotBeCalled();
         $this->dbProphecy->exec_UPDATEquery(Argument::cetera())->shouldNotBeCalled();
 
-        $this->subject->createDayRelations(array());
-    }
+        $this->eventRepositoryProphecy->findByIdentifier(123)->willReturn(null);
 
-    /**
-     * @test
-     */
-    public function createDayRelationsWithNonUidWillNeverCallAnyQuery()
-    {
-        $this->dbProphecy->exec_INSERTquery(Argument::cetera())->shouldNotBeCalled();
-        $this->dbProphecy->exec_DELETEquery(Argument::cetera())->shouldNotBeCalled();
-        $this->dbProphecy->exec_UPDATEquery(Argument::cetera())->shouldNotBeCalled();
-
-        $this->subject->createDayRelations(array(
-            'title' => 'Test',
-            'pid' => '123'
-        ));
-    }
-
-    /**
-     * @test
-     */
-    public function createDayRelationsWithNonPidWillNeverCallAnyQuery()
-    {
-        $this->dbProphecy->exec_INSERTquery(Argument::cetera())->shouldNotBeCalled();
-        $this->dbProphecy->exec_DELETEquery(Argument::cetera())->shouldNotBeCalled();
-        $this->dbProphecy->exec_UPDATEquery(Argument::cetera())->shouldNotBeCalled();
-
-        $this->subject->createDayRelations(array(
-            'title' => 'Test',
-            'uid' => '123'
-        ));
-    }
-
-    /**
-     * @test
-     */
-    public function createDayRelationsWithEventConvertsCamelCaseToUnderscore()
-    {
-        $event = array(
-            'uid' => 123,
-            'pid' => 321,
-            'firstName' => 'Max',
-            'last_name' => 'Mustermann',
-            'whatALongKeyForAnArray' => 123,
-            'UpperCaseAtTheBeginning' => 'Moin',
-        );
-        $expectedEvent = array(
-            'uid' => 123,
-            'pid' => 321,
-            'first_name' => 'Max',
-            'last_name' => 'Mustermann',
-            'what_a_long_key_for_an_array' => 123,
-            'upper_case_at_the_beginning' => 'Moin',
-        );
-
-        /** @var DayGenerator|ObjectProphecy $dayGenerator */
-        $dayGenerator = $this->prophesize(DayGenerator::class);
-        $dayGenerator->initialize($expectedEvent)->shouldBeCalled();
-        $dayGenerator->getDayStorage()->shouldBeCalled()->willReturn([]);
-        $this->subject->injectDayGenerator($dayGenerator->reveal());
-
-        $this->subject->createDayRelations($event);
+        $this->subject->createDayRelations(123);
     }
 
     /**
@@ -177,16 +136,17 @@ class DayRelationsTest extends UnitTestCase
      */
     public function createDayRelationsWithNonConfiguredEventDoesNotCallAddDay()
     {
-        $event = array(
-            'uid' => 123,
-            'pid' => 321,
-        );
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setPid(321);
 
         $this->dbProphecy->exec_DELETEquery('tx_events2_domain_model_day', 'event=123')->shouldBeCalled();
         $this->dbProphecy->exec_UPDATEquery('tx_events2_domain_model_event', 'uid=123', ['days' => 0])->shouldBeCalled();
         $this->dbProphecy->exec_INSERTquery(Argument::cetera())->shouldNotBeCalled();
 
-        $this->subject->createDayRelations($event);
+        $this->eventRepositoryProphecy->findByIdentifier(123)->willReturn($event);
+
+        $this->subject->createDayRelations(123);
     }
 
     /**

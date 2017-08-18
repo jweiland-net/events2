@@ -15,9 +15,12 @@ namespace JWeiland\Events2\Tests\Unit\Service;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Configuration\ExtConf;
+use JWeiland\Events2\Domain\Model\Event;
+use JWeiland\Events2\Domain\Model\Exception;
 use JWeiland\Events2\Service\DayGenerator;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Test case for class \JWeiland\Events2\Service\DayGenerator.
@@ -91,22 +94,6 @@ class DayGeneratorTest extends UnitTestCase
     /**
      * @test
      *
-     * @param $event
-     * @param $expectedEvent
-     * @dataProvider dataProviderWithInvalidValuesForArrayArguments
-     */
-    public function setEventRecordSetsEvent($event, $expectedEvent = array())
-    {
-        $this->subject->setEventRecord($event);
-        $this->assertSame(
-            $expectedEvent,
-            $this->subject->getEventRecord()
-        );
-    }
-
-    /**
-     * @test
-     *
      * @param mixed $invalidArgument
      * @dataProvider dataProviderWithInvalidValuesForArrayArguments
      * @expectedException \PHPUnit_Framework_Error
@@ -119,26 +106,10 @@ class DayGeneratorTest extends UnitTestCase
     /**
      * @test
      */
-    public function initializeWithEventRecordSetEventRecord()
-    {
-        $event = array(
-            'uid' => 123,
-        );
-        $this->subject->initialize($event);
-        $this->assertSame(
-            $event,
-            $this->subject->getEventRecord()
-        );
-    }
-
-    /**
-     * @test
-     */
     public function initializeWithEmptyEventRecordResultsInFalse()
     {
-        $event = array(
-            'uid' => 123,
-        );
+        $event = new Event();
+        $event->_setProperty('uid', 123);
         $this->assertFalse($this->subject->initialize($event));
     }
 
@@ -147,9 +118,8 @@ class DayGeneratorTest extends UnitTestCase
      */
     public function initializeWithInvalidEventRecordResultsInFalse()
     {
-        $event = array(
-            'uid' => 123,
-        );
+        $event = new Event();
+        $event->_setProperty('uid', 123);
         $this->assertFalse($this->subject->initialize($event));
     }
 
@@ -158,15 +128,15 @@ class DayGeneratorTest extends UnitTestCase
      */
     public function initializeWithRecurringEventCallsAddRecurringEvents()
     {
-        $event = array(
-            'event_type' => 'recurring',
-            'event_begin' => 123456789,
-            'event_end' => 0,
-            'xth' => 31,
-            'weekday' => 127,
-            'each_weeks' => 0,
-            'exceptions' => 0,
-        );
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setEventType('recurring');
+        $event->setEventBegin(new \DateTime('now'));
+        $event->setEventEnd(null);
+        $event->setXth(31);
+        $event->setWeekday(127);
+        $event->setEachWeeks(0);
+
         /** @var \JWeiland\Events2\Service\DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
         $dayGenerator = $this->getMock('JWeiland\\Events2\\Service\\DayGenerator', array('addRecurringEvents', 'addException', 'getEventBegin'));
         $dayGenerator->expects($this->once())->method('addRecurringEvents');
@@ -180,15 +150,15 @@ class DayGeneratorTest extends UnitTestCase
      */
     public function initializeWithRecurringWeeksCallsAddRecurringWeeks()
     {
-        $event = array(
-            'event_type' => 'recurring',
-            'event_begin' => 123456789,
-            'event_end' => 0,
-            'xth' => 31,
-            'weekday' => 127,
-            'each_weeks' => 1,
-            'exceptions' => 0,
-        );
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setEventType('recurring');
+        $event->setEventBegin(new \DateTime('now'));
+        $event->setEventEnd(null);
+        $event->setXth(31);
+        $event->setWeekday(127);
+        $event->setEachWeeks(1);
+
         /** @var \JWeiland\Events2\Service\DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
         $dayGenerator = $this->getMock('JWeiland\\Events2\\Service\\DayGenerator', array('addRecurringWeeks', 'addException', 'getEventBegin'));
         $dayGenerator->expects($this->once())->method('addRecurringWeeks');
@@ -209,15 +179,14 @@ class DayGeneratorTest extends UnitTestCase
         $eventEnd = clone $eventBegin;
         $eventEnd->modify('+14 days');
 
-        $event = array(
-            'event_type' => 'recurring',
-            'event_begin' => $eventBegin->format('U'),
-            'event_end' => $eventEnd->format('U'),
-            'xth' => 31,
-            'weekday' => 127,
-            'each_weeks' => 1,
-            'exceptions' => 0,
-        );
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setEventType('recurring');
+        $event->setEventBegin($eventBegin);
+        $event->setEventEnd($eventEnd);
+        $event->setXth(31);
+        $event->setWeekday(127);
+        $event->setEachWeeks(1);
 
         $expectedDays = array();
         $expectedDays[$eventBegin->format('U')] = $eventBegin;
@@ -233,7 +202,7 @@ class DayGeneratorTest extends UnitTestCase
         $this->assertTrue($dayGenerator->initialize($event));
         $this->assertEquals(
             $expectedDays,
-            $days = $dayGenerator->getDayStorage()
+            $days = $dayGenerator->getDateTimeStorage()
         );
         // test for correct TimezoneType, else times are not DST save
         /** @var \DateTime $day */
@@ -252,15 +221,14 @@ class DayGeneratorTest extends UnitTestCase
         $eventEnd = clone $eventBegin;
         $eventEnd->modify('+14 days');
 
-        $event = array(
-            'event_type' => 'recurring',
-            'event_begin' => $eventBegin->format('U'),
-            'event_end' => $eventEnd->format('U'),
-            'xth' => 31,
-            'weekday' => 127,
-            'each_weeks' => 2,
-            'exceptions' => 0,
-        );
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setEventType('recurring');
+        $event->setEventBegin($eventBegin);
+        $event->setEventEnd($eventEnd);
+        $event->setXth(31);
+        $event->setWeekday(127);
+        $event->setEachWeeks(2);
 
         $expectedDays = array();
         $expectedDays[$eventBegin->format('U')] = $eventBegin;
@@ -275,7 +243,7 @@ class DayGeneratorTest extends UnitTestCase
         $this->assertTrue($dayGenerator->initialize($event));
         $this->assertEquals(
             $expectedDays,
-            $dayGenerator->getDayStorage()
+            $dayGenerator->getDateTimeStorage()
         );
     }
 
@@ -288,20 +256,19 @@ class DayGeneratorTest extends UnitTestCase
         $eventBegin->modify('midnight');
         $recurringEnd = clone $eventBegin;
 
-        $event = array(
-            'event_type' => 'recurring',
-            'event_begin' => $eventBegin->format('U'),
-            'recurring_end' => $recurringEnd->format('U'),
-            'xth' => 31,
-            'weekday' => 127,
-            'each_weeks' => 0,
-            'exceptions' => 0,
-        );
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setEventType('recurring');
+        $event->setEventBegin($eventBegin);
+        $event->setRecurringEnd($recurringEnd);
+        $event->setXth(31);
+        $event->setWeekday(127);
+        $event->setEachWeeks(0);
 
         $this->assertTrue($this->subject->initialize($event));
         $this->assertEquals(
             array($eventBegin->format('U') => $eventBegin),
-            $this->subject->getDayStorage()
+            $this->subject->getDateTimeStorage()
         );
     }
 
@@ -315,26 +282,26 @@ class DayGeneratorTest extends UnitTestCase
         $recurringEnd = clone $eventBegin;
         $recurringEnd->modify('+14 days');
 
-        $event = array(
-            'event_type' => 'recurring',
-            'event_begin' => $eventBegin->format('U'),
-            'recurring_end' => $recurringEnd->format('U'),
-            'xth' => 31,
-            'weekday' => 127,
-            'each_weeks' => 0,
-            'exceptions' => 0,
-        );
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setEventType('recurring');
+        $event->setEventBegin($eventBegin);
+        $event->setRecurringEnd($recurringEnd);
+        $event->setXth(31);
+        $event->setWeekday(127);
+        $event->setEachWeeks(0);
 
         $expectedDays = array();
+        $tempDate = clone $eventBegin;
         for ($i = 0; $i < 15; ++$i) {
-            $expectedDays[$eventBegin->format('U')] = clone $eventBegin;
-            $eventBegin->modify('+1 day');
+            $expectedDays[$tempDate->format('U')] = clone $tempDate;
+            $tempDate->modify('+1 day');
         }
 
         $this->assertTrue($this->subject->initialize($event));
         $this->assertEquals(
             $expectedDays,
-            $this->subject->getDayStorage()
+            $this->subject->getDateTimeStorage()
         );
     }
 
@@ -349,35 +316,35 @@ class DayGeneratorTest extends UnitTestCase
         $recurringEnd = clone $eventBegin;
         $recurringEnd->modify('+8 days');
 
-        $event = array(
-            'event_type' => 'recurring',
-            'event_begin' => $eventBegin->format('U'),
-            'recurring_end' => $recurringEnd->format('U'),
-            'xth' => 31, // all
-            'weekday' => 87, // mo, tu, we, fr, su
-            'each_weeks' => 0,
-            'exceptions' => 0,
-        );
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setEventType('recurring');
+        $event->setEventBegin($eventBegin);
+        $event->setRecurringEnd($recurringEnd);
+        $event->setXth(31); // all
+        $event->setWeekday(87); // mo, tu, we, fr, su
+        $event->setEachWeeks(0);
 
+        $tempDate = clone $eventBegin;
         $expectedDays = array();
-        $eventBegin->modify('+1 day');
-        $expectedDays[$eventBegin->format('U')] = clone $eventBegin; // add sunday
-        $eventBegin->modify('+1 day');
-        $expectedDays[$eventBegin->format('U')] = clone $eventBegin; // add monday
-        $eventBegin->modify('+1 day');
-        $expectedDays[$eventBegin->format('U')] = clone $eventBegin; // add tuesday
-        $eventBegin->modify('+1 day');
-        $expectedDays[$eventBegin->format('U')] = clone $eventBegin; // add wednesday
-        $eventBegin->modify('+2 day');
-        $expectedDays[$eventBegin->format('U')] = clone $eventBegin; // add friday
-        $eventBegin->modify('+2 day');
-        $expectedDays[$eventBegin->format('U')] = clone $eventBegin; // add sunday
+        $tempDate->modify('+1 day');
+        $expectedDays[$tempDate->format('U')] = clone $tempDate; // add sunday
+        $tempDate->modify('+1 day');
+        $expectedDays[$tempDate->format('U')] = clone $tempDate; // add monday
+        $tempDate->modify('+1 day');
+        $expectedDays[$tempDate->format('U')] = clone $tempDate; // add tuesday
+        $tempDate->modify('+1 day');
+        $expectedDays[$tempDate->format('U')] = clone $tempDate; // add wednesday
+        $tempDate->modify('+2 day');
+        $expectedDays[$tempDate->format('U')] = clone $tempDate; // add friday
+        $tempDate->modify('+2 day');
+        $expectedDays[$tempDate->format('U')] = clone $tempDate; // add sunday
         ksort($expectedDays);
 
         $this->assertTrue($this->subject->initialize($event));
         $this->assertEquals(
             $expectedDays,
-            $this->subject->getDayStorage()
+            $this->subject->getDateTimeStorage()
         );
     }
 
@@ -395,23 +362,23 @@ class DayGeneratorTest extends UnitTestCase
         $recurringEnd = clone $eventBegin;
         $recurringEnd->modify('+22 days'); // 08.03.2017
 
-        $event = array(
-            'event_type' => 'recurring',
-            'event_begin' => $eventBegin->format('U'),
-            'recurring_end' => $recurringEnd->format('U'),
-            'xth' => 21, // 1st, 3rd, 5th
-            'weekday' => 18, // tu, fr
-            'each_weeks' => 0,
-            'exceptions' => 0,
-        );
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setEventType('recurring');
+        $event->setEventBegin($eventBegin);
+        $event->setRecurringEnd($recurringEnd);
+        $event->setXth(21); // 1st, 3rd, 5th
+        $event->setWeekday(18); // tu, fr
+        $event->setEachWeeks(0);
 
+        $tempDate = clone $eventBegin;
         $expectedDays = array();
-        $eventBegin->modify('+3 day'); // start with sa
-        $expectedDays[$eventBegin->format('U')] = clone $eventBegin; // add 3rd tu 20.01
-        $eventBegin->modify('+10 day');
-        $expectedDays[$eventBegin->format('U')] = clone $eventBegin; // add 5th fr 30.01
-        $eventBegin->modify('+4 day');
-        $expectedDays[$eventBegin->format('U')] = clone $eventBegin; // add 1st tu 03.02
+        $tempDate->modify('+3 day'); // start with sa
+        $expectedDays[$tempDate->format('U')] = clone $tempDate; // add 3rd tu 20.01
+        $tempDate->modify('+10 day');
+        $expectedDays[$tempDate->format('U')] = clone $tempDate; // add 5th fr 30.01
+        $tempDate->modify('+4 day');
+        $expectedDays[$tempDate->format('U')] = clone $tempDate; // add 1st tu 03.02
         //$eventBegin->modify('+3 day');
         //$expectedDays[$eventBegin->format('U')] = clone $eventBegin; // add 1st fr 06.03
         ksort($expectedDays);
@@ -419,7 +386,7 @@ class DayGeneratorTest extends UnitTestCase
         $this->assertTrue($this->subject->initialize($event));
         $this->assertEquals(
             $expectedDays,
-            $this->subject->getDayStorage()
+            $this->subject->getDateTimeStorage()
         );
     }
 
@@ -434,26 +401,26 @@ class DayGeneratorTest extends UnitTestCase
         $recurringEnd->modify('midnight');
         $recurringEnd->modify('+4 days');
 
-        $event = array(
-            'event_type' => 'recurring',
-            'event_begin' => $eventBegin->format('U'),
-            'recurring_end' => $recurringEnd->format('U'),
-            'xth' => 31,
-            'weekday' => 127,
-            'each_weeks' => 0,
-            'exceptions' => 0,
-        );
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setEventType('recurring');
+        $event->setEventBegin($eventBegin);
+        $event->setRecurringEnd($recurringEnd);
+        $event->setXth(31);
+        $event->setWeekday(127);
+        $event->setEachWeeks(0);
 
+        $tempDate = clone $eventBegin;
         $expectedDays = array();
         for ($i = 0; $i < 5; ++$i) {
-            $expectedDays[$eventBegin->format('U')] = clone $eventBegin;
-            $eventBegin->modify('+1 day');
+            $expectedDays[$tempDate->format('U')] = clone $tempDate;
+            $tempDate->modify('+1 day');
         }
 
         $this->assertTrue($this->subject->initialize($event));
         $this->assertEquals(
             $expectedDays,
-            $this->subject->getDayStorage()
+            $this->subject->getDateTimeStorage()
         );
     }
 
@@ -465,21 +432,20 @@ class DayGeneratorTest extends UnitTestCase
         $eventBegin = new \DateTime();
         $eventBegin->modify('midnight');
 
-        $event = array(
-            'event_type' => 'single',
-            'event_begin' => $eventBegin->format('U'),
-            'xth' => 31,
-            'weekday' => 127,
-            'each_weeks' => 0,
-            'exceptions' => 0,
-        );
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setEventType('single');
+        $event->setEventBegin($eventBegin);
+        $event->setXth(31);
+        $event->setWeekday(127);
+        $event->setEachWeeks(0);
 
         $expectedDays = array($eventBegin->format('U') => $eventBegin);
 
         $this->assertTrue($this->subject->initialize($event));
         $this->assertEquals(
             $expectedDays,
-            $this->subject->getDayStorage()
+            $this->subject->getDateTimeStorage()
         );
     }
 
@@ -491,17 +457,18 @@ class DayGeneratorTest extends UnitTestCase
         $eventBegin = new \DateTime();
         $eventBegin->modify('midnight');
 
-        $event = array(
-            'event_type' => 'single',
-            'event_begin' => $eventBegin->format('U'),
-            'event_end' => 0,
-            'xth' => 31,
-            'weekday' => 127,
-            'each_weeks' => 0,
-            'exceptions' => array(
-                0 => 'TestValue',
-            ),
-        );
+        $exception = new Exception();
+        $exceptions = new ObjectStorage();
+        $exceptions->attach($exception);
+
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setEventType('single');
+        $event->setEventBegin($eventBegin);
+        $event->setXth(31);
+        $event->setWeekday(127);
+        $event->setEachWeeks(0);
+        $event->setExceptions($exceptions);
 
         /** @var \JWeiland\Events2\Service\DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
         $dayGenerator = $this->getMock('JWeiland\\Events2\\Service\\DayGenerator', array('addRecurringEvents', 'addDayToStorage', 'addExceptions'));
@@ -522,20 +489,20 @@ class DayGeneratorTest extends UnitTestCase
         $tomorrow = clone $eventBegin;
         $tomorrow->modify('tomorrow');
 
-        $event = array(
-            'event_type' => 'single',
-            'event_begin' => $eventBegin->format('U'),
-            'event_end' => 0,
-            'xth' => 31,
-            'weekday' => 127,
-            'each_weeks' => 0,
-            'exceptions' => array(
-                0 => array(
-                    'exception_type' => 'Add',
-                    'exception_date' => $tomorrow->format('U'),
-                ),
-            ),
-        );
+        $exception = new Exception();
+        $exception->setExceptionType('Add');
+        $exception->setExceptionDate($tomorrow);
+        $exceptions = new ObjectStorage();
+        $exceptions->attach($exception);
+
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setEventType('single');
+        $event->setEventBegin($eventBegin);
+        $event->setXth(31);
+        $event->setWeekday(127);
+        $event->setEachWeeks(0);
+        $event->setExceptions($exceptions);
 
         $expectedDays = array();
         $expectedDays[$eventBegin->format('U')] = $eventBegin;
@@ -544,7 +511,7 @@ class DayGeneratorTest extends UnitTestCase
         $this->assertTrue($this->subject->initialize($event));
         $this->assertEquals(
             $expectedDays,
-            $this->subject->getDayStorage()
+            $this->subject->getDateTimeStorage()
         );
     }
 
@@ -558,20 +525,21 @@ class DayGeneratorTest extends UnitTestCase
         $tomorrow = clone $eventBegin;
         $tomorrow->modify('tomorrow');
 
-        $event = array(
-            'event_type' => 'duration',
-            'event_begin' => $eventBegin->format('U'),
-            'event_end' => $tomorrow->format('U'),
-            'xth' => 31,
-            'weekday' => 127,
-            'each_weeks' => 0,
-            'exceptions' => array(
-                0 => array(
-                    'exception_type' => 'Remove',
-                    'exception_date' => $eventBegin->format('U'),
-                ),
-            ),
-        );
+        $exception = new Exception();
+        $exception->setExceptionType('Remove');
+        $exception->setExceptionDate($eventBegin);
+        $exceptions = new ObjectStorage();
+        $exceptions->attach($exception);
+
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setEventType('duration');
+        $event->setEventBegin($eventBegin);
+        $event->setEventEnd($tomorrow);
+        $event->setXth(31);
+        $event->setWeekday(127);
+        $event->setEachWeeks(0);
+        $event->setExceptions($exceptions);
 
         $expectedDays = array();
         $expectedDays[$tomorrow->format('U')] = $tomorrow;
@@ -579,7 +547,7 @@ class DayGeneratorTest extends UnitTestCase
         $this->assertTrue($this->subject->initialize($event));
         $this->assertEquals(
             $expectedDays,
-            $this->subject->getDayStorage()
+            $this->subject->getDateTimeStorage()
         );
     }
 
@@ -593,19 +561,20 @@ class DayGeneratorTest extends UnitTestCase
         $tomorrow = clone $eventBegin;
         $tomorrow->modify('tomorrow');
 
-        $event = array(
-            'event_type' => 'duration',
-            'event_begin' => $eventBegin->format('U'),
-            'event_end' => $tomorrow->format('U'),
-            'xth' => 31,
-            'weekday' => 127,
-            'each_weeks' => 0,
-            'exceptions' => array(
-                0 => array(
-                    'exception_type' => 'Time',
-                ),
-            ),
-        );
+        $exception = new Exception();
+        $exception->setExceptionType('Time');
+        $exceptions = new ObjectStorage();
+        $exceptions->attach($exception);
+
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setEventType('duration');
+        $event->setEventBegin($eventBegin);
+        $event->setEventEnd($tomorrow);
+        $event->setXth(31);
+        $event->setWeekday(127);
+        $event->setEachWeeks(0);
+        $event->setExceptions($exceptions);
 
         $expectedDays = array();
         $expectedDays[$eventBegin->format('U')] = $eventBegin;
@@ -614,7 +583,7 @@ class DayGeneratorTest extends UnitTestCase
         $this->assertTrue($this->subject->initialize($event));
         $this->assertEquals(
             $expectedDays,
-            $this->subject->getDayStorage()
+            $this->subject->getDateTimeStorage()
         );
     }
 
@@ -628,19 +597,20 @@ class DayGeneratorTest extends UnitTestCase
         $tomorrow = clone $eventBegin;
         $tomorrow->modify('tomorrow');
 
-        $event = array(
-            'event_type' => 'duration',
-            'event_begin' => $eventBegin->format('U'),
-            'event_end' => $tomorrow->format('U'),
-            'xth' => 31,
-            'weekday' => 127,
-            'each_weeks' => 0,
-            'exceptions' => array(
-                0 => array(
-                    'exception_type' => 'Info',
-                ),
-            ),
-        );
+        $exception = new Exception();
+        $exception->setExceptionType('Info');
+        $exceptions = new ObjectStorage();
+        $exceptions->attach($exception);
+
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setEventType('duration');
+        $event->setEventBegin($eventBegin);
+        $event->setEventEnd($tomorrow);
+        $event->setXth(31);
+        $event->setWeekday(127);
+        $event->setEachWeeks(0);
+        $event->setExceptions($exceptions);
 
         $expectedDays = array();
         $expectedDays[$eventBegin->format('U')] = $eventBegin;
@@ -649,7 +619,7 @@ class DayGeneratorTest extends UnitTestCase
         $this->assertTrue($this->subject->initialize($event));
         $this->assertEquals(
             $expectedDays,
-            $this->subject->getDayStorage()
+            $this->subject->getDateTimeStorage()
         );
     }
 
@@ -665,19 +635,20 @@ class DayGeneratorTest extends UnitTestCase
         $tomorrow = clone $eventBegin;
         $tomorrow->modify('tomorrow');
 
-        $event = array(
-            'event_type' => 'duration',
-            'event_begin' => $eventBegin->format('U'),
-            'event_end' => $tomorrow->format('U'),
-            'xth' => 31,
-            'weekday' => 127,
-            'each_weeks' => 0,
-            'exceptions' => array(
-                0 => array(
-                    'exception_type' => 'invalid value',
-                ),
-            ),
-        );
+        $exception = new Exception();
+        $exception->setExceptionType('Invalid Value');
+        $exceptions = new ObjectStorage();
+        $exceptions->attach($exception);
+
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setEventType('duration');
+        $event->setEventBegin($eventBegin);
+        $event->setEventEnd($tomorrow);
+        $event->setXth(31);
+        $event->setWeekday(127);
+        $event->setEachWeeks(0);
+        $event->setExceptions($exceptions);
 
         $expectedDays = array();
         $expectedDays[$eventBegin->format('U')] = $eventBegin;
@@ -686,7 +657,7 @@ class DayGeneratorTest extends UnitTestCase
         $this->assertTrue($this->subject->initialize($event));
         $this->assertEquals(
             $expectedDays,
-            $this->subject->getDayStorage()
+            $this->subject->getDateTimeStorage()
         );
     }
 
@@ -711,7 +682,7 @@ class DayGeneratorTest extends UnitTestCase
         );
         $this->assertSame(
             $expectedArray,
-            $this->subject->getDayStorage()
+            $this->subject->getDateTimeStorage()
         );
     }
 }
