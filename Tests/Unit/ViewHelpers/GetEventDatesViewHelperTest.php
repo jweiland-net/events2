@@ -385,6 +385,7 @@ class ShowEventDatesViewHelperTest extends UnitTestCase
 
         $event = new Event();
         $event->setDays($days);
+        $event->setEventType('recurring');
         $event->setEventBegin($tomorrow);
         $event->setEventTime($timeBegin);
         $event->setSameDay(true);

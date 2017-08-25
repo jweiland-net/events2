@@ -15,7 +15,10 @@ namespace JWeiland\Events2\Tests\Unit\Service;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Configuration\ExtConf;
+use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
+use JWeiland\Events2\Domain\Model\Exception;
+use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Service\DayGenerator;
 use JWeiland\Events2\Service\DayRelationService;
@@ -26,6 +29,7 @@ use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Tests\AccessibleObjectInterface;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Test case for class \JWeiland\Events2\Service\DayRelationService
@@ -118,9 +122,8 @@ class DayRelationServiceTest extends UnitTestCase
      */
     public function createDayRelationsWithEmptyEventWillNeverCallAnyQuery()
     {
-        $this->dbProphecy->exec_INSERTquery(Argument::cetera())->shouldNotBeCalled();
-        $this->dbProphecy->exec_DELETEquery(Argument::cetera())->shouldNotBeCalled();
-        $this->dbProphecy->exec_UPDATEquery(Argument::cetera())->shouldNotBeCalled();
+        $this->persistenceManagerProphecy->update(Argument::cetera())->shouldNotBeCalled();
+        $this->persistenceManagerProphecy->persistAll(Argument::cetera())->shouldNotBeCalled();
 
         $this->eventRepositoryProphecy->findByIdentifier(123)->willReturn(null);
 
@@ -130,7 +133,7 @@ class DayRelationServiceTest extends UnitTestCase
     /**
      * An event with none configured start/end dates will result in zero days
      * So all related days have to be deleted
-     * But addDay/INSERT will not be called
+     * But addDay will not be called
      *
      * @test
      */
@@ -139,14 +142,14 @@ class DayRelationServiceTest extends UnitTestCase
         $event = new Event();
         $event->_setProperty('uid', 123);
         $event->setPid(321);
-
-        $this->dbProphecy->exec_DELETEquery('tx_events2_domain_model_day', 'event=123')->shouldBeCalled();
-        $this->dbProphecy->exec_UPDATEquery('tx_events2_domain_model_event', 'uid=123', ['days' => 0])->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery(Argument::cetera())->shouldNotBeCalled();
+        $event->addDay(new Day());
 
         $this->eventRepositoryProphecy->findByIdentifier(123)->willReturn($event);
-
         $this->subject->createDayRelations(123);
+
+        $event->setDays(new ObjectStorage());
+        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
+        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
     }
 
     /**
@@ -164,38 +167,29 @@ class DayRelationServiceTest extends UnitTestCase
         $tomorrow = new \DateTime();
         $tomorrow->modify('tomorrow midnight');
 
-        $event = array(
-            'uid' => 123,
-            'pid' => 321,
-            'event_type' => 'recurring',
-            'event_begin' => $yesterday->format('U'),
-            'recurring_end' => $tomorrow->format('U'),
-            'xth' => 31,
-            'weekday' => 127,
-            'each_weeks' => 0,
-            'exceptions' => 0,
-        );
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setPid(321);
+        $event->setEventType('recurring');
+        $event->setEventBegin($yesterday);
+        $event->setRecurringEnd($tomorrow);
+        $event->setXth(31);
+        $event->setWeekday(127);
 
-        $this->dbProphecy->sql_insert_id()->shouldBeCalled();
-        $this->dbProphecy->exec_DELETEquery(Argument::cetera())->shouldBeCalled();
-        $this->dbProphecy->exec_UPDATEquery(Argument::cetera())->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$yesterday->format('U')),
-            Argument::withEntry('day_time', (int)$yesterday->format('U')),
-            Argument::withEntry('sort_day_time', (int)$yesterday->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$today->format('U')),
-            Argument::withEntry('day_time', (int)$today->format('U')),
-            Argument::withEntry('sort_day_time', (int)$today->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$tomorrow->format('U')),
-            Argument::withEntry('day_time', (int)$tomorrow->format('U')),
-            Argument::withEntry('sort_day_time', (int)$tomorrow->format('U'))
-        ))->shouldBeCalled();
+        $this->eventRepositoryProphecy->findByIdentifier(123)->willReturn($event);
+        $this->subject->createDayRelations(123);
 
-        $this->subject->createDayRelations($event);
+        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
+        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
+        $this->assertCount(3, $event->getDays());
+
+        /** @var Day $day */
+        $days = ['yesterday', 'today', 'tomorrow'];
+        foreach ($event->getDays()->toArray() as $key => $day) {
+            $this->assertEquals($$days[$key], $day->getDay());
+            $this->assertEquals($$days[$key], $day->getDayTime());
+            $this->assertEquals($$days[$key], $day->getSortDayTime());
+        }
     }
 
     /**
@@ -220,41 +214,33 @@ class DayRelationServiceTest extends UnitTestCase
         $tomorrowLaunch = new \DateTime();
         $tomorrowLaunch->modify('tomorrow 12:30');
 
-        $event = array(
-            'uid' => 123,
-            'pid' => 321,
-            'event_type' => 'recurring',
-            'event_begin' => $yesterday->format('U'),
-            'recurring_end' => $tomorrow->format('U'),
-            'event_time' => [
-                ['time_begin' => '12:30']
-            ],
-            'xth' => 31,
-            'weekday' => 127,
-            'each_weeks' => 0,
-            'exceptions' => 0,
-        );
+        $time = new Time();
+        $time->setTimeBegin('12:30');
 
-        $this->dbProphecy->sql_insert_id()->shouldBeCalled();
-        $this->dbProphecy->exec_DELETEquery(Argument::cetera())->shouldBeCalled();
-        $this->dbProphecy->exec_UPDATEquery(Argument::cetera())->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$yesterday->format('U')),
-            Argument::withEntry('day_time', (int)$yesterdayLaunch->format('U')),
-            Argument::withEntry('sort_day_time', (int)$yesterdayLaunch->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$today->format('U')),
-            Argument::withEntry('day_time', (int)$todayLaunch->format('U')),
-            Argument::withEntry('sort_day_time', (int)$todayLaunch->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$tomorrow->format('U')),
-            Argument::withEntry('day_time', (int)$tomorrowLaunch->format('U')),
-            Argument::withEntry('sort_day_time', (int)$tomorrowLaunch->format('U'))
-        ))->shouldBeCalled();
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setPid(321);
+        $event->setEventType('recurring');
+        $event->setEventBegin($yesterday);
+        $event->setRecurringEnd($tomorrow);
+        $event->setEventTime($time);
+        $event->setXth(31);
+        $event->setWeekday(127);
 
-        $this->subject->createDayRelations($event);
+        $this->eventRepositoryProphecy->findByIdentifier(123)->willReturn($event);
+        $this->subject->createDayRelations(123);
+
+        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
+        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
+        $this->assertCount(3, $event->getDays());
+
+        /** @var Day $day */
+        $days = ['yesterday', 'today', 'tomorrow'];
+        foreach ($event->getDays()->toArray() as $key => $day) {
+            $this->assertEquals($$days[$key], $day->getDay());
+            $this->assertEquals(${$days[$key] . 'Launch'}, $day->getDayTime());
+            $this->assertEquals(${$days[$key] . 'Launch'}, $day->getSortDayTime());
+        }
     }
 
     /**
@@ -286,60 +272,41 @@ class DayRelationServiceTest extends UnitTestCase
         $tomorrowEvening = new \DateTime();
         $tomorrowEvening->modify('tomorrow 20:15');
 
-        $event = array(
-            'uid' => 123,
-            'pid' => 321,
-            'event_type' => 'recurring',
-            'event_begin' => $yesterday->format('U'),
-            'recurring_end' => $tomorrow->format('U'),
-            'event_time' => [
-                ['time_begin' => '08:00']
-            ],
-            'multiple_times' => [
-                ['time_begin' => '20:15']
-            ],
-            'same_day' => 1,
-            'xth' => 31,
-            'weekday' => 127,
-            'each_weeks' => 0,
-            'exceptions' => 0,
-        );
+        $timeBegin = new Time();
+        $timeBegin->setTimeBegin('08:00');
+        $timeEvening = new Time();
+        $timeEvening->setTimeBegin('20:15');
 
-        $this->dbProphecy->sql_insert_id()->shouldBeCalled();
-        $this->dbProphecy->exec_DELETEquery(Argument::cetera())->shouldBeCalled();
-        $this->dbProphecy->exec_UPDATEquery(Argument::cetera())->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$yesterday->format('U')),
-            Argument::withEntry('day_time', (int)$yesterdayMorning->format('U')),
-            Argument::withEntry('sort_day_time', (int)$yesterdayMorning->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$yesterday->format('U')),
-            Argument::withEntry('day_time', (int)$yesterdayEvening->format('U')),
-            Argument::withEntry('sort_day_time', (int)$yesterdayEvening->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$today->format('U')),
-            Argument::withEntry('day_time', (int)$todayMorning->format('U')),
-            Argument::withEntry('sort_day_time', (int)$todayMorning->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$today->format('U')),
-            Argument::withEntry('day_time', (int)$todayEvening->format('U')),
-            Argument::withEntry('sort_day_time', (int)$todayEvening->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$tomorrow->format('U')),
-            Argument::withEntry('day_time', (int)$tomorrowMorning->format('U')),
-            Argument::withEntry('sort_day_time', (int)$tomorrowMorning->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$tomorrow->format('U')),
-            Argument::withEntry('day_time', (int)$tomorrowEvening->format('U')),
-            Argument::withEntry('sort_day_time', (int)$tomorrowEvening->format('U'))
-        ))->shouldBeCalled();
+        $multipleTimes = new ObjectStorage();
+        $multipleTimes->attach($timeEvening);
 
-        $this->subject->createDayRelations($event);
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setPid(321);
+        $event->setEventType('recurring');
+        $event->setEventBegin($yesterday);
+        $event->setRecurringEnd($tomorrow);
+        $event->setEventTime($timeBegin);
+        $event->setSameDay(true);
+        $event->setMultipleTimes($multipleTimes);
+        $event->setXth(31);
+        $event->setWeekday(127);
+
+        $this->eventRepositoryProphecy->findByIdentifier(123)->willReturn($event);
+        $this->subject->createDayRelations(123);
+
+        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
+        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
+        $this->assertCount(6, $event->getDays());
+
+        /** @var Day $day */
+        $days = ['yesterday', 'yesterday', 'today', 'today', 'tomorrow', 'tomorrow'];
+        foreach ($event->getDays()->toArray() as $key => $day) {
+            $methodName = $key % 2 ? 'Evening' : 'Morning';
+            $this->assertEquals($$days[$key], $day->getDay());
+            $this->assertEquals(${$days[$key] . $methodName}, $day->getDayTime());
+            $this->assertEquals(${$days[$key] . $methodName}, $day->getSortDayTime());
+        }
     }
 
     /**
@@ -374,60 +341,41 @@ class DayRelationServiceTest extends UnitTestCase
         $tomorrowEvening = new \DateTime();
         $tomorrowEvening->modify('tomorrow 20:15');
 
-        $event = array(
-            'uid' => 123,
-            'pid' => 321,
-            'event_type' => 'recurring',
-            'event_begin' => $yesterday->format('U'),
-            'recurring_end' => $tomorrow->format('U'),
-            'event_time' => [
-                ['time_begin' => '08:00']
-            ],
-            'multiple_times' => [
-                ['time_begin' => '20:15']
-            ],
-            'same_day' => 1,
-            'xth' => 31,
-            'weekday' => 127,
-            'each_weeks' => 0,
-            'exceptions' => 0,
-        );
+        $timeBegin = new Time();
+        $timeBegin->setTimeBegin('08:00');
+        $timeEvening = new Time();
+        $timeEvening->setTimeBegin('20:15');
 
-        $this->dbProphecy->sql_insert_id()->shouldBeCalled();
-        $this->dbProphecy->exec_DELETEquery(Argument::cetera())->shouldBeCalled();
-        $this->dbProphecy->exec_UPDATEquery(Argument::cetera())->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$yesterday->format('U')),
-            Argument::withEntry('day_time', (int)$yesterdayMorning->format('U')),
-            Argument::withEntry('sort_day_time', (int)$yesterdayMorning->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$yesterday->format('U')),
-            Argument::withEntry('day_time', (int)$yesterdayEvening->format('U')),
-            Argument::withEntry('sort_day_time', (int)$yesterdayMorning->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$today->format('U')),
-            Argument::withEntry('day_time', (int)$todayMorning->format('U')),
-            Argument::withEntry('sort_day_time', (int)$todayMorning->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$today->format('U')),
-            Argument::withEntry('day_time', (int)$todayEvening->format('U')),
-            Argument::withEntry('sort_day_time', (int)$todayMorning->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$tomorrow->format('U')),
-            Argument::withEntry('day_time', (int)$tomorrowMorning->format('U')),
-            Argument::withEntry('sort_day_time', (int)$tomorrowMorning->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$tomorrow->format('U')),
-            Argument::withEntry('day_time', (int)$tomorrowEvening->format('U')),
-            Argument::withEntry('sort_day_time', (int)$tomorrowMorning->format('U'))
-        ))->shouldBeCalled();
+        $multipleTimes = new ObjectStorage();
+        $multipleTimes->attach($timeEvening);
 
-        $this->subject->createDayRelations($event);
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setPid(321);
+        $event->setEventType('recurring');
+        $event->setEventBegin($yesterday);
+        $event->setRecurringEnd($tomorrow);
+        $event->setEventTime($timeBegin);
+        $event->setSameDay(true);
+        $event->setMultipleTimes($multipleTimes);
+        $event->setXth(31);
+        $event->setWeekday(127);
+
+        $this->eventRepositoryProphecy->findByIdentifier(123)->willReturn($event);
+        $this->subject->createDayRelations(123);
+
+        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
+        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
+        $this->assertCount(6, $event->getDays());
+
+        /** @var Day $day */
+        $days = ['yesterday', 'yesterday', 'today', 'today', 'tomorrow', 'tomorrow'];
+        foreach ($event->getDays()->toArray() as $key => $day) {
+            $methodName = $key % 2 ? 'Evening' : 'Morning';
+            $this->assertEquals($$days[$key], $day->getDay());
+            $this->assertEquals(${$days[$key] . $methodName}, $day->getDayTime());
+            $this->assertEquals(${$days[$key] . 'Morning'}, $day->getSortDayTime());
+        }
     }
 
     /**
@@ -460,50 +408,41 @@ class DayRelationServiceTest extends UnitTestCase
         $tomorrowEvening = new \DateTime();
         $tomorrowEvening->modify('tomorrow 20:15');
 
-        $event = array(
-            'uid' => 123,
-            'pid' => 321,
-            'event_type' => 'recurring',
-            'event_begin' => $yesterday->format('U'),
-            'recurring_end' => $tomorrow->format('U'),
-            'event_time' => [
-                ['time_begin' => '08:00']
-            ],
-            'multiple_times' => [
-                ['time_begin' => '20:15']
-            ],
-            'same_day' => 1,
-            'xth' => 31,
-            'weekday' => 127,
-            'each_weeks' => 0,
-            'exceptions' => 0,
-        );
+        $timeBegin = new Time();
+        $timeBegin->setTimeBegin('08:00');
+        $timeEvening = new Time();
+        $timeEvening->setTimeBegin('20:15');
 
-        $this->dbProphecy->sql_insert_id()->shouldBeCalled();
-        $this->dbProphecy->exec_DELETEquery(Argument::cetera())->shouldBeCalled();
-        $this->dbProphecy->exec_UPDATEquery(Argument::cetera())->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$today->format('U')),
-            Argument::withEntry('day_time', (int)$todayMorning->format('U')),
-            Argument::withEntry('sort_day_time', (int)$todayMorning->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$today->format('U')),
-            Argument::withEntry('day_time', (int)$todayEvening->format('U')),
-            Argument::withEntry('sort_day_time', (int)$todayEvening->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$tomorrow->format('U')),
-            Argument::withEntry('day_time', (int)$tomorrowMorning->format('U')),
-            Argument::withEntry('sort_day_time', (int)$tomorrowMorning->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$tomorrow->format('U')),
-            Argument::withEntry('day_time', (int)$tomorrowEvening->format('U')),
-            Argument::withEntry('sort_day_time', (int)$tomorrowEvening->format('U'))
-        ))->shouldBeCalled();
+        $multipleTimes = new ObjectStorage();
+        $multipleTimes->attach($timeEvening);
 
-        $this->subject->createDayRelations($event);
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setPid(321);
+        $event->setEventType('recurring');
+        $event->setEventBegin($yesterday);
+        $event->setRecurringEnd($tomorrow);
+        $event->setEventTime($timeBegin);
+        $event->setSameDay(true);
+        $event->setMultipleTimes($multipleTimes);
+        $event->setXth(31);
+        $event->setWeekday(127);
+
+        $this->eventRepositoryProphecy->findByIdentifier(123)->willReturn($event);
+        $this->subject->createDayRelations(123);
+
+        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
+        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
+        $this->assertCount(4, $event->getDays());
+
+        /** @var Day $day */
+        $days = ['today', 'today', 'tomorrow', 'tomorrow'];
+        foreach ($event->getDays()->toArray() as $key => $day) {
+            $methodName = $key % 2 ? 'Evening' : 'Morning';
+            $this->assertEquals($$days[$key], $day->getDay());
+            $this->assertEquals(${$days[$key] . $methodName}, $day->getDayTime());
+            $this->assertEquals(${$days[$key] . $methodName}, $day->getSortDayTime());
+        }
     }
 
     /**
@@ -539,50 +478,41 @@ class DayRelationServiceTest extends UnitTestCase
         $tomorrowEvening = new \DateTime();
         $tomorrowEvening->modify('tomorrow 20:15');
 
-        $event = array(
-            'uid' => 123,
-            'pid' => 321,
-            'event_type' => 'recurring',
-            'event_begin' => $yesterday->format('U'),
-            'recurring_end' => $tomorrow->format('U'),
-            'event_time' => [
-                ['time_begin' => '08:00']
-            ],
-            'multiple_times' => [
-                ['time_begin' => '20:15']
-            ],
-            'same_day' => 1,
-            'xth' => 31,
-            'weekday' => 127,
-            'each_weeks' => 0,
-            'exceptions' => 0,
-        );
+        $timeBegin = new Time();
+        $timeBegin->setTimeBegin('08:00');
+        $timeEvening = new Time();
+        $timeEvening->setTimeBegin('20:15');
 
-        $this->dbProphecy->sql_insert_id()->shouldBeCalled();
-        $this->dbProphecy->exec_DELETEquery(Argument::cetera())->shouldBeCalled();
-        $this->dbProphecy->exec_UPDATEquery(Argument::cetera())->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$today->format('U')),
-            Argument::withEntry('day_time', (int)$todayMorning->format('U')),
-            Argument::withEntry('sort_day_time', (int)$todayMorning->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$today->format('U')),
-            Argument::withEntry('day_time', (int)$todayEvening->format('U')),
-            Argument::withEntry('sort_day_time', (int)$todayMorning->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$tomorrow->format('U')),
-            Argument::withEntry('day_time', (int)$tomorrowMorning->format('U')),
-            Argument::withEntry('sort_day_time', (int)$tomorrowMorning->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$tomorrow->format('U')),
-            Argument::withEntry('day_time', (int)$tomorrowEvening->format('U')),
-            Argument::withEntry('sort_day_time', (int)$tomorrowMorning->format('U'))
-        ))->shouldBeCalled();
+        $multipleTimes = new ObjectStorage();
+        $multipleTimes->attach($timeEvening);
 
-        $this->subject->createDayRelations($event);
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setPid(321);
+        $event->setEventType('recurring');
+        $event->setEventBegin($yesterday);
+        $event->setRecurringEnd($tomorrow);
+        $event->setEventTime($timeBegin);
+        $event->setSameDay(true);
+        $event->setMultipleTimes($multipleTimes);
+        $event->setXth(31);
+        $event->setWeekday(127);
+
+        $this->eventRepositoryProphecy->findByIdentifier(123)->willReturn($event);
+        $this->subject->createDayRelations(123);
+
+        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
+        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
+        $this->assertCount(4, $event->getDays());
+
+        /** @var Day $day */
+        $days = ['today', 'today', 'tomorrow', 'tomorrow'];
+        foreach ($event->getDays()->toArray() as $key => $day) {
+            $methodName = $key % 2 ? 'Evening' : 'Morning';
+            $this->assertEquals($$days[$key], $day->getDay());
+            $this->assertEquals(${$days[$key] . $methodName}, $day->getDayTime());
+            $this->assertEquals(${$days[$key] . 'Morning'}, $day->getSortDayTime());
+        }
     }
 
     /**
@@ -607,48 +537,42 @@ class DayRelationServiceTest extends UnitTestCase
         $thursdayMorning = clone $thursday;
         $thursdayMorning->modify('08:00');
 
-        $event = array(
-            'uid' => 123,
-            'pid' => 321,
-            'event_type' => 'recurring',
-            'event_begin' => $tuesday->format('U'),
-            'recurring_end' => $thursday->format('U'),
-            'event_time' => [
-                ['time_begin' => '08:00']
-            ],
-            'different_times' => [
-                [
-                    'weekday' => 'wednesday',
-                    'time_begin' => '20:15'
-                ]
-            ],
-            'same_day' => 1,
-            'xth' => 31,
-            'weekday' => 127,
-            'each_weeks' => 0,
-            'exceptions' => 0,
-        );
+        $timeBegin = new Time();
+        $timeBegin->setTimeBegin('08:00');
+        $timeEvening = new Time();
+        $timeEvening->setTimeBegin('20:15');
+        $timeEvening->setWeekday('wednesday');
 
-        $this->dbProphecy->sql_insert_id()->shouldBeCalled();
-        $this->dbProphecy->exec_DELETEquery(Argument::cetera())->shouldBeCalled();
-        $this->dbProphecy->exec_UPDATEquery(Argument::cetera())->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$tuesday->format('U')),
-            Argument::withEntry('day_time', (int)$tuesdayMorning->format('U')),
-            Argument::withEntry('sort_day_time', (int)$tuesdayMorning->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$wednesday->format('U')),
-            Argument::withEntry('day_time', (int)$wednesdayEvening->format('U')),
-            Argument::withEntry('sort_day_time', (int)$wednesdayEvening->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$thursday->format('U')),
-            Argument::withEntry('day_time', (int)$thursdayMorning->format('U')),
-            Argument::withEntry('sort_day_time', (int)$thursdayMorning->format('U'))
-        ))->shouldBeCalled();
+        $multipleTimes = new ObjectStorage();
+        $multipleTimes->attach($timeEvening);
 
-        $this->subject->createDayRelations($event);
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setPid(321);
+        $event->setEventType('recurring');
+        $event->setEventBegin($tuesday);
+        $event->setRecurringEnd($thursday);
+        $event->setEventTime($timeBegin);
+        $event->setSameDay(true);
+        $event->setDifferentTimes($multipleTimes);
+        $event->setXth(31);
+        $event->setWeekday(127);
+
+        $this->eventRepositoryProphecy->findByIdentifier(123)->willReturn($event);
+        $this->subject->createDayRelations(123);
+
+        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
+        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
+        $this->assertCount(3, $event->getDays());
+
+        /** @var Day $day */
+        $days = ['tuesday', 'wednesday', 'thursday'];
+        foreach ($event->getDays()->toArray() as $key => $day) {
+            $methodName = $key === 1 ? 'Evening' : 'Morning';
+            $this->assertEquals($$days[$key], $day->getDay());
+            $this->assertEquals(${$days[$key] . $methodName}, $day->getDayTime());
+            $this->assertEquals(${$days[$key] . $methodName}, $day->getSortDayTime());
+        }
     }
 
     /**
@@ -673,59 +597,60 @@ class DayRelationServiceTest extends UnitTestCase
         $fridayLaunch = clone $friday;
         $fridayLaunch->modify('12:30');
 
-        $event = array(
-            'uid' => 123,
-            'pid' => 321,
-            'event_type' => 'recurring',
-            'event_begin' => $tuesday->format('U'),
-            'recurring_end' => $thursday->format('U'),
-            'exceptions' => [
-                [
-                    'exception_type' => 'Time',
-                    'exception_date' => $wednesday->format('U'),
-                    'exception_time' => [
-                        ['time_begin' => '20:15']
-                    ]
-                ],
-                [
-                    'exception_type' => 'Add',
-                    'exception_date' => $friday->format('U'),
-                    'exception_time' => [
-                        ['time_begin' => '12:30']
-                    ]
-                ],
-            ],
-            'same_day' => 1,
-            'xth' => 31,
-            'weekday' => 127,
-            'each_weeks' => 0,
-        );
+        $timeLaunch = new Time();
+        $timeLaunch->setTimeBegin('12:30');
+        $timeEvening = new Time();
+        $timeEvening->setTimeBegin('20:15');
+        $timeEvening->setWeekday('wednesday');
 
-        $this->dbProphecy->sql_insert_id()->shouldBeCalled();
-        $this->dbProphecy->exec_DELETEquery(Argument::cetera())->shouldBeCalled();
-        $this->dbProphecy->exec_UPDATEquery(Argument::cetera())->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$tuesday->format('U')),
-            Argument::withEntry('day_time', (int)$tuesday->format('U')),
-            Argument::withEntry('sort_day_time', (int)$tuesday->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$wednesday->format('U')),
-            Argument::withEntry('day_time', (int)$wednesdayEvening->format('U')),
-            Argument::withEntry('sort_day_time', (int)$wednesdayEvening->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$thursday->format('U')),
-            Argument::withEntry('day_time', (int)$thursday->format('U')),
-            Argument::withEntry('sort_day_time', (int)$thursday->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$friday->format('U')),
-            Argument::withEntry('day_time', (int)$fridayLaunch->format('U')),
-            Argument::withEntry('sort_day_time', (int)$fridayLaunch->format('U'))
-        ))->shouldBeCalled();
+        $exception1 = new Exception();
+        $exception1->setExceptionType('Time');
+        $exception1->setExceptionDate($wednesday);
+        $exception1->setExceptionTime($timeEvening);
+        $exception2 = new Exception();
+        $exception2->setExceptionType('Add');
+        $exception2->setExceptionDate($friday);
+        $exception2->setExceptionTime($timeLaunch);
 
-        $this->subject->createDayRelations($event);
+        $exceptions = new ObjectStorage();
+        $exceptions->attach($exception1);
+        $exceptions->attach($exception2);
+
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setPid(321);
+        $event->setEventType('recurring');
+        $event->setEventBegin($tuesday);
+        $event->setRecurringEnd($thursday);
+        $event->setSameDay(true);
+        $event->setXth(31);
+        $event->setWeekday(127);
+        $event->setExceptions($exceptions);
+
+        $this->eventRepositoryProphecy->findByIdentifier(123)->willReturn($event);
+        $this->subject->createDayRelations(123);
+
+        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
+        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
+        $this->assertCount(4, $event->getDays());
+
+        /** @var Day $day */
+        $days = ['tuesday', 'wednesday', 'thursday', 'friday'];
+        foreach ($event->getDays()->toArray() as $key => $day) {
+            switch ($key) {
+                case 1:
+                    $methodName = 'Evening';
+                    break;
+                case 3:
+                    $methodName = 'Launch';
+                    break;
+                default:
+                    $methodName = '';
+            }
+            $this->assertEquals($$days[$key], $day->getDay());
+            $this->assertEquals(${$days[$key] . $methodName}, $day->getDayTime());
+            $this->assertEquals(${$days[$key] . $methodName}, $day->getSortDayTime());
+        }
     }
 
     /**
@@ -753,71 +678,69 @@ class DayRelationServiceTest extends UnitTestCase
         $fridayLaunch = clone $friday;
         $fridayLaunch->modify('12:30');
 
-        $event = array(
-            'uid' => 123,
-            'pid' => 321,
-            'event_type' => 'recurring',
-            'event_begin' => $tuesday->format('U'),
-            'recurring_end' => $thursday->format('U'),
-            'exceptions' => [
-                [
-                    'exception_type' => 'Add',
-                    'exception_date' => $wednesday->format('U'),
-                    'exception_time' => [
-                        ['time_begin' => '08:00']
-                    ]
-                ],
-                [
-                    'exception_type' => 'Time',
-                    'exception_date' => $wednesday->format('U'),
-                    'exception_time' => [
-                        ['time_begin' => '20:15']
-                    ]
-                ],
-                [
-                    'exception_type' => 'Add',
-                    'exception_date' => $friday->format('U'),
-                    'exception_time' => [
-                        ['time_begin' => '12:30']
-                    ]
-                ],
-            ],
-            'same_day' => 1,
-            'xth' => 31,
-            'weekday' => 127,
-            'each_weeks' => 0,
-        );
+        $timeMorning = new Time();
+        $timeMorning->setTimeBegin('08:00');
+        $timeLaunch = new Time();
+        $timeLaunch->setTimeBegin('12:30');
+        $timeEvening = new Time();
+        $timeEvening->setTimeBegin('20:15');
 
-        $this->dbProphecy->sql_insert_id()->shouldBeCalled();
-        $this->dbProphecy->exec_DELETEquery(Argument::cetera())->shouldBeCalled();
-        $this->dbProphecy->exec_UPDATEquery(Argument::cetera())->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$tuesday->format('U')),
-            Argument::withEntry('day_time', (int)$tuesday->format('U')),
-            Argument::withEntry('sort_day_time', (int)$tuesday->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$wednesday->format('U')),
-            Argument::withEntry('day_time', (int)$wednesdayMorning->format('U')),
-            Argument::withEntry('sort_day_time', (int)$wednesdayMorning->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$wednesday->format('U')),
-            Argument::withEntry('day_time', (int)$wednesdayEvening->format('U')),
-            Argument::withEntry('sort_day_time', (int)$wednesdayEvening->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$thursday->format('U')),
-            Argument::withEntry('day_time', (int)$thursday->format('U')),
-            Argument::withEntry('sort_day_time', (int)$thursday->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$friday->format('U')),
-            Argument::withEntry('day_time', (int)$fridayLaunch->format('U')),
-            Argument::withEntry('sort_day_time', (int)$fridayLaunch->format('U'))
-        ))->shouldBeCalled();
+        $exception1 = new Exception();
+        $exception1->setExceptionType('Add');
+        $exception1->setExceptionDate($wednesday);
+        $exception1->setExceptionTime($timeMorning);
+        $exception2 = new Exception();
+        $exception2->setExceptionType('Time');
+        $exception2->setExceptionDate($wednesday);
+        $exception2->setExceptionTime($timeEvening);
+        $exception3 = new Exception();
+        $exception3->setExceptionType('Add');
+        $exception3->setExceptionDate($friday);
+        $exception3->setExceptionTime($timeLaunch);
 
-        $this->subject->createDayRelations($event);
+        $exceptions = new ObjectStorage();
+        $exceptions->attach($exception1);
+        $exceptions->attach($exception2);
+        $exceptions->attach($exception3);
+
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setPid(321);
+        $event->setEventType('recurring');
+        $event->setEventBegin($tuesday);
+        $event->setRecurringEnd($thursday);
+        $event->setSameDay(true);
+        $event->setXth(31);
+        $event->setWeekday(127);
+        $event->setExceptions($exceptions);
+
+        $this->eventRepositoryProphecy->findByIdentifier(123)->willReturn($event);
+        $this->subject->createDayRelations(123);
+
+        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
+        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
+        $this->assertCount(5, $event->getDays());
+
+        /** @var Day $day */
+        $days = ['tuesday', 'wednesday', 'wednesday', 'thursday', 'friday'];
+        foreach ($event->getDays()->toArray() as $key => $day) {
+            switch ($key) {
+                case 1:
+                    $methodName = 'Morning';
+                    break;
+                case 2:
+                    $methodName = 'Evening';
+                    break;
+                case 4:
+                    $methodName = 'Launch';
+                    break;
+                default:
+                    $methodName = '';
+            }
+            $this->assertEquals($$days[$key], $day->getDay());
+            $this->assertEquals(${$days[$key] . $methodName}, $day->getDayTime());
+            $this->assertEquals(${$days[$key] . $methodName}, $day->getSortDayTime());
+        }
     }
 
     /**
@@ -849,71 +772,73 @@ class DayRelationServiceTest extends UnitTestCase
         $fridayLaunch = clone $friday;
         $fridayLaunch->modify('12:30');
 
-        $event = array(
-            'uid' => 123,
-            'pid' => 321,
-            'event_type' => 'recurring',
-            'event_begin' => $tuesday->format('U'),
-            'recurring_end' => $thursday->format('U'),
-            'exceptions' => [
-                [
-                    'exception_type' => 'Add',
-                    'exception_date' => $wednesday->format('U'),
-                    'exception_time' => [
-                        ['time_begin' => '08:00']
-                    ]
-                ],
-                [
-                    'exception_type' => 'Time',
-                    'exception_date' => $wednesday->format('U'),
-                    'exception_time' => [
-                        ['time_begin' => '20:15']
-                    ]
-                ],
-                [
-                    'exception_type' => 'Add',
-                    'exception_date' => $friday->format('U'),
-                    'exception_time' => [
-                        ['time_begin' => '12:30']
-                    ]
-                ],
-            ],
-            'same_day' => 1,
-            'xth' => 31,
-            'weekday' => 127,
-            'each_weeks' => 0,
-        );
+        $timeMorning = new Time();
+        $timeMorning->setTimeBegin('08:00');
+        $timeLaunch = new Time();
+        $timeLaunch->setTimeBegin('12:30');
+        $timeEvening = new Time();
+        $timeEvening->setTimeBegin('20:15');
 
-        $this->dbProphecy->sql_insert_id()->shouldBeCalled();
-        $this->dbProphecy->exec_DELETEquery(Argument::cetera())->shouldBeCalled();
-        $this->dbProphecy->exec_UPDATEquery(Argument::cetera())->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$tuesday->format('U')),
-            Argument::withEntry('day_time', (int)$tuesday->format('U')),
-            Argument::withEntry('sort_day_time', (int)$tuesday->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$wednesday->format('U')),
-            Argument::withEntry('day_time', (int)$wednesdayMorning->format('U')),
-            Argument::withEntry('sort_day_time', (int)$wednesdayMorning->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$wednesday->format('U')),
-            Argument::withEntry('day_time', (int)$wednesdayEvening->format('U')),
-            Argument::withEntry('sort_day_time', (int)$wednesdayMorning->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$thursday->format('U')),
-            Argument::withEntry('day_time', (int)$thursday->format('U')),
-            Argument::withEntry('sort_day_time', (int)$thursday->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$friday->format('U')),
-            Argument::withEntry('day_time', (int)$fridayLaunch->format('U')),
-            Argument::withEntry('sort_day_time', (int)$fridayLaunch->format('U'))
-        ))->shouldBeCalled();
+        $exception1 = new Exception();
+        $exception1->setExceptionType('Add');
+        $exception1->setExceptionDate($wednesday);
+        $exception1->setExceptionTime($timeMorning);
+        $exception2 = new Exception();
+        $exception2->setExceptionType('Time');
+        $exception2->setExceptionDate($wednesday);
+        $exception2->setExceptionTime($timeEvening);
+        $exception3 = new Exception();
+        $exception3->setExceptionType('Add');
+        $exception3->setExceptionDate($friday);
+        $exception3->setExceptionTime($timeLaunch);
 
-        $this->subject->createDayRelations($event);
+        $exceptions = new ObjectStorage();
+        $exceptions->attach($exception1);
+        $exceptions->attach($exception2);
+        $exceptions->attach($exception3);
+
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setPid(321);
+        $event->setEventType('recurring');
+        $event->setEventBegin($tuesday);
+        $event->setRecurringEnd($thursday);
+        $event->setSameDay(true);
+        $event->setXth(31);
+        $event->setWeekday(127);
+        $event->setExceptions($exceptions);
+
+        $this->eventRepositoryProphecy->findByIdentifier(123)->willReturn($event);
+        $this->subject->createDayRelations(123);
+
+        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
+        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
+        $this->assertCount(5, $event->getDays());
+
+        /** @var Day $day */
+        $days = ['tuesday', 'wednesday', 'wednesday', 'thursday', 'friday'];
+        foreach ($event->getDays()->toArray() as $key => $day) {
+            switch ($key) {
+                case 1:
+                    $methodName1 = 'Morning';
+                    $methodName2 = 'Morning';
+                    break;
+                case 2:
+                    $methodName1 = 'Evening';
+                    $methodName2 = 'Morning';
+                    break;
+                case 4:
+                    $methodName1 = 'Launch';
+                    $methodName2 = 'Launch';
+                    break;
+                default:
+                    $methodName1 = '';
+                    $methodName2 = '';
+            }
+            $this->assertEquals($$days[$key], $day->getDay());
+            $this->assertEquals(${$days[$key] . $methodName1}, $day->getDayTime());
+            $this->assertEquals(${$days[$key] . $methodName2}, $day->getSortDayTime());
+        }
     }
 
     /**
@@ -924,27 +849,26 @@ class DayRelationServiceTest extends UnitTestCase
         $nextWeek = new \DateTime();
         $nextWeek->modify('+1 week midnight');
 
-        $event = array(
-            'uid' => 123,
-            'pid' => 321,
-            'event_type' => 'single',
-            'event_begin' => $nextWeek->format('U'),
-            'xth' => 0,
-            'weekday' => 0,
-            'each_weeks' => 0,
-            'exceptions' => 0,
-        );
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setPid(321);
+        $event->setEventType('single');
+        $event->setEventBegin($nextWeek);
 
-        $this->dbProphecy->sql_insert_id()->shouldBeCalled();
-        $this->dbProphecy->exec_DELETEquery(Argument::cetera())->shouldBeCalled();
-        $this->dbProphecy->exec_UPDATEquery(Argument::cetera())->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$nextWeek->format('U')),
-            Argument::withEntry('day_time', (int)$nextWeek->format('U')),
-            Argument::withEntry('sort_day_time', (int)$nextWeek->format('U'))
-        ))->shouldBeCalled();
+        $this->eventRepositoryProphecy->findByIdentifier(123)->willReturn($event);
+        $this->subject->createDayRelations(123);
 
-        $this->subject->createDayRelations($event);
+        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
+        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
+        $this->assertCount(1, $event->getDays());
+
+        /** @var Day $day */
+        $days = ['nextWeek'];
+        foreach ($event->getDays()->toArray() as $key => $day) {
+            $this->assertEquals($$days[$key], $day->getDay());
+            $this->assertEquals($$days[$key], $day->getDayTime());
+            $this->assertEquals($$days[$key], $day->getSortDayTime());
+        }
     }
 
     /**
@@ -957,30 +881,30 @@ class DayRelationServiceTest extends UnitTestCase
         $nextWeekMidnight = clone $nextWeek;
         $nextWeekMidnight->modify('23:59');
 
-        $event = array(
-            'uid' => 123,
-            'pid' => 321,
-            'event_type' => 'single',
-            'event_begin' => $nextWeek->format('U'),
-            'event_time' => [
-                ['time_begin' => '23:59']
-            ],
-            'xth' => 0,
-            'weekday' => 0,
-            'each_weeks' => 0,
-            'exceptions' => 0,
-        );
+        $time = new Time();
+        $time->setTimeBegin('23:59');
 
-        $this->dbProphecy->sql_insert_id()->shouldBeCalled();
-        $this->dbProphecy->exec_DELETEquery(Argument::cetera())->shouldBeCalled();
-        $this->dbProphecy->exec_UPDATEquery(Argument::cetera())->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$nextWeek->format('U')),
-            Argument::withEntry('day_time', (int)$nextWeekMidnight->format('U')),
-            Argument::withEntry('sort_day_time', (int)$nextWeekMidnight->format('U'))
-        ))->shouldBeCalled();
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setPid(321);
+        $event->setEventType('single');
+        $event->setEventBegin($nextWeek);
+        $event->setEventTime($time);
 
-        $this->subject->createDayRelations($event);
+        $this->eventRepositoryProphecy->findByIdentifier(123)->willReturn($event);
+        $this->subject->createDayRelations(123);
+
+        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
+        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
+        $this->assertCount(1, $event->getDays());
+
+        /** @var Day $day */
+        $days = ['nextWeek'];
+        foreach ($event->getDays()->toArray() as $key => $day) {
+            $this->assertEquals($$days[$key], $day->getDay());
+            $this->assertEquals(${$days[$key] . 'Midnight'}, $day->getDayTime());
+            $this->assertEquals(${$days[$key] . 'Midnight'}, $day->getSortDayTime());
+        }
     }
 
     /**
@@ -995,38 +919,27 @@ class DayRelationServiceTest extends UnitTestCase
         $in2days = clone $today;
         $in2days->modify('+2 days');
 
-        $event = array(
-            'uid' => 123,
-            'pid' => 321,
-            'event_type' => 'duration',
-            'event_begin' => $today->format('U'),
-            'event_end' => $in2days->format('U'),
-            'xth' => 0,
-            'weekday' => 0,
-            'each_weeks' => 0,
-            'exceptions' => 0,
-        );
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setPid(321);
+        $event->setEventType('duration');
+        $event->setEventBegin($today);
+        $event->setEventEnd($in2days);
 
-        $this->dbProphecy->sql_insert_id()->shouldBeCalled();
-        $this->dbProphecy->exec_DELETEquery(Argument::cetera())->shouldBeCalled();
-        $this->dbProphecy->exec_UPDATEquery(Argument::cetera())->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$today->format('U')),
-            Argument::withEntry('day_time', (int)$today->format('U')),
-            Argument::withEntry('sort_day_time', (int)$today->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$tomorrow->format('U')),
-            Argument::withEntry('day_time', (int)$tomorrow->format('U')),
-            Argument::withEntry('sort_day_time', (int)$today->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$in2days->format('U')),
-            Argument::withEntry('day_time', (int)$in2days->format('U')),
-            Argument::withEntry('sort_day_time', (int)$today->format('U'))
-        ))->shouldBeCalled();
+        $this->eventRepositoryProphecy->findByIdentifier(123)->willReturn($event);
+        $this->subject->createDayRelations(123);
 
-        $this->subject->createDayRelations($event);
+        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
+        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
+        $this->assertCount(3, $event->getDays());
+
+        /** @var Day $day */
+        $days = ['today', 'tomorrow', 'in2days'];
+        foreach ($event->getDays()->toArray() as $key => $day) {
+            $this->assertEquals($$days[$key], $day->getDay());
+            $this->assertEquals($$days[$key], $day->getDayTime());
+            $this->assertEquals($today, $day->getSortDayTime());
+        }
     }
 
     /**
@@ -1047,40 +960,30 @@ class DayRelationServiceTest extends UnitTestCase
         $in2daysMorning = clone $tomorrowMorning;
         $in2daysMorning->modify('+1 day');
 
-        $event = array(
-            'uid' => 123,
-            'pid' => 321,
-            'event_type' => 'duration',
-            'event_begin' => $today->format('U'),
-            'event_end' => $in2days->format('U'),
-            'event_time' => [
-                ['time_begin' => '08:12']
-            ],
-            'xth' => 0,
-            'weekday' => 0,
-            'each_weeks' => 0,
-            'exceptions' => 0,
-        );
+        $time = new Time();
+        $time->setTimeBegin('08:12');
 
-        $this->dbProphecy->sql_insert_id()->shouldBeCalled();
-        $this->dbProphecy->exec_DELETEquery(Argument::cetera())->shouldBeCalled();
-        $this->dbProphecy->exec_UPDATEquery(Argument::cetera())->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$today->format('U')),
-            Argument::withEntry('day_time', (int)$todayMorning->format('U')),
-            Argument::withEntry('sort_day_time', (int)$todayMorning->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$tomorrow->format('U')),
-            Argument::withEntry('day_time', (int)$tomorrowMorning->format('U')),
-            Argument::withEntry('sort_day_time', (int)$todayMorning->format('U'))
-        ))->shouldBeCalled();
-        $this->dbProphecy->exec_INSERTquery('tx_events2_domain_model_day', Argument::allOf(
-            Argument::withEntry('day', (int)$in2days->format('U')),
-            Argument::withEntry('day_time', (int)$in2daysMorning->format('U')),
-            Argument::withEntry('sort_day_time', (int)$todayMorning->format('U'))
-        ))->shouldBeCalled();
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setPid(321);
+        $event->setEventType('duration');
+        $event->setEventBegin($today);
+        $event->setEventEnd($in2days);
+        $event->setEventTime($time);
 
-        $this->subject->createDayRelations($event);
+        $this->eventRepositoryProphecy->findByIdentifier(123)->willReturn($event);
+        $this->subject->createDayRelations(123);
+
+        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
+        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
+        $this->assertCount(3, $event->getDays());
+
+        /** @var Day $day */
+        $days = ['today', 'tomorrow', 'in2days'];
+        foreach ($event->getDays()->toArray() as $key => $day) {
+            $this->assertEquals($$days[$key], $day->getDay());
+            $this->assertEquals(${$days[$key] . 'Morning'}, $day->getDayTime());
+            $this->assertEquals($todayMorning, $day->getSortDayTime());
+        }
     }
 }

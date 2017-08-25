@@ -135,6 +135,7 @@ class GetEventDatesViewHelper extends AbstractViewHelper
                 // some days can start multiple times each day
                 $times = $this->eventService->getSortedTimesForDay($this->event, $day);
                 if ($times->count()) {
+                    /** @var Time $time */
                     foreach ($times as $time) {
                         $days[] = $this->buildDayArray($day, $time);
                     }
