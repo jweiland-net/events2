@@ -172,4 +172,22 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
         $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
         $defaultFlashMessageQueue->enqueue($flashMessage);
     }
+
+    /**
+     * This object will be serialized in tx_scheduler_task.
+     * While executing this task, it seems that __construct will not be called again and
+     * all properties will be reconstructed by the information in serialized value.
+     * These properties will be created again with new() instead of GeneralUtility::makeInstance()
+     * which leads to the problem, that object of type SingletonInterface were created twice.
+     *
+     * @return void
+     */
+    public function __wakeup()
+    {
+        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+        $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+        $this->dayRelations = $objectManager->get('JWeiland\\Events2\\Service\\DayRelationService');
+        $this->registry = $objectManager->get('TYPO3\\CMS\\Core\\Registry');
+        $this->databaseConnection = $GLOBALS['TYPO3_DB'];
+    }
 }
