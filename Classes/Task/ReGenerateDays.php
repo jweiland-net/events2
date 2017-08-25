@@ -93,11 +93,13 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
                     $this->dayRelations->createDayRelations($event['uid']);
                 } catch (\Exception $e) {
                     $this->addMessage(sprintf(
-                        'Event UID: %d, PID: %d, Error: %s',
+                        'Event UID: %d, PID: %d, Error: %s, File: %s, Line: %d',
                         $event['uid'],
                         $event['pid'],
-                        $e->getMessage(), FlashMessage::ERROR
-                    ));
+                        $e->getMessage(),
+                        $e->getFile(),
+                        $e->getLine()
+                    ), FlashMessage::ERROR);
                     return false;
                 }
 
