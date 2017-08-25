@@ -45,10 +45,16 @@ class DayController extends AbstractController
      */
     public function listLatestAction(Filter $filter = null)
     {
-        $days = $this->dayRepository->groupDaysByEventAndSort(
-            $this->dayRepository->findEvents('latest', $this->validateAndAssignFilter($filter)),
-            (int)$this->settings['latest']['amountOfRecordsToShow']
-        );
+        $limit = (bool)$this->settings['mergeEvents'] ? 0 : (int)$this->settings['latest']['amountOfRecordsToShow'];
+        $days = $days = $this->dayRepository->findEvents('latest', $this->validateAndAssignFilter($filter), $limit);
+
+        if ($this->settings['mergeEvents']) {
+            $days = $this->dayRepository->groupDaysByEventAndSort(
+                $days,
+                (int)$this->settings['latest']['amountOfRecordsToShow']
+            );
+        }
+
         $this->view->assign('days', $days);
     }
 

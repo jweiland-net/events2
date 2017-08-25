@@ -122,10 +122,45 @@ class DayControllerTest extends UnitTestCase
     {
         $filter = new Filter();
         $queryResult = new QueryResult(new Query(Day::class));
+        $settings = $this->subject->_get('settings');
+        $settings['mergeEvents'] = 0;
+        $this->subject->_set('settings', $settings);
 
         $this->dayRepository->findEvents(
             Argument::exact('latest'),
+            Argument::exact($filter),
+            Argument::exact(7)
+        )->shouldBeCalled()->willReturn($queryResult);
+        $this->dayRepository->groupDaysByEventAndSort(
+            Argument::cetera()
+        )->shouldNotBeCalled();
+        $this->view->assign(
+            Argument::exact('filter'),
             Argument::exact($filter)
+        )->shouldBeCalled();
+        $this->view->assign(
+            Argument::exact('days'),
+            Argument::exact($queryResult)
+        )->shouldBeCalled();
+
+        $this->subject->listLatestAction($filter);
+    }
+
+    /**
+     * @test
+     */
+    public function listLatestActionFindEventsGroupAndSortAndAssignsThemToView()
+    {
+        $filter = new Filter();
+        $queryResult = new QueryResult(new Query(Day::class));
+        $settings = $this->subject->_get('settings');
+        $settings['mergeEvents'] = 1;
+        $this->subject->_set('settings', $settings);
+
+        $this->dayRepository->findEvents(
+            Argument::exact('latest'),
+            Argument::exact($filter),
+            Argument::exact(0)
         )->shouldBeCalled()->willReturn($queryResult);
         $this->dayRepository->groupDaysByEventAndSort(
             Argument::exact($queryResult),
@@ -141,7 +176,6 @@ class DayControllerTest extends UnitTestCase
         )->shouldBeCalled();
 
         $this->subject->listLatestAction($filter);
-
     }
 
     /**

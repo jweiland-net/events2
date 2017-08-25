@@ -86,10 +86,11 @@ class DayRepository extends Repository
      *
      * @param string $type
      * @param Filter $filter
+     * @param int $limit
      *
      * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */
-    public function findEvents($type, Filter $filter)
+    public function findEvents($type, Filter $filter, $limit = 0)
     {
         /** @var Query $query */
         $query = $this->createQuery();
@@ -135,6 +136,10 @@ class DayRepository extends Repository
             default:
                 $today = $this->dateTimeUtility->convert('today');
                 $constraint[] = $query->greaterThanOrEqual('day', $today);
+        }
+
+        if (!empty($limit)) {
+            $query->setLimit((int)$limit);
         }
 
         /** @var QueryResult $result */
@@ -346,7 +351,7 @@ class DayRepository extends Repository
      *
      * @param int $eventUid
      * @param int $timestamp
-     * 
+     *
      * @return Day|null
      */
     public function findOneByTimestamp($eventUid, $timestamp = 0)
