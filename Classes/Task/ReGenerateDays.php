@@ -17,6 +17,7 @@ namespace JWeiland\Events2\Task;
 use JWeiland\Events2\Service\DayRelationService;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
+use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\ProgressProviderInterface;
@@ -87,7 +88,19 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
                     'pid' => $event['pid'],
                     'type' => $event['event_type']
                 ));
-                $this->dayRelations->createDayRelations($event['uid']);
+
+                try {
+                    $this->dayRelations->createDayRelations($event['uid']);
+                } catch (\Exception $e) {
+                    $this->addMessage(sprintf(
+                        'Event UID: %d, PID: %d, Error: %s',
+                        $event['uid'],
+                        $event['pid'],
+                        $e->getMessage(), FlashMessage::ERROR
+                    ));
+                    return false;
+                }
+
                 $this->registry->set('events2TaskCreateUpdate', 'progress', array(
                     'records' => count($events),
                     'counter' => $counter
@@ -138,5 +151,23 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
         } else {
             return 0.0;
         }
+    }
+
+    /**
+     * This method is used to add a message to the internal queue
+     *
+     * @param string $message The message itself
+     * @param int $severity Message level (according to \TYPO3\CMS\Core\Messaging\FlashMessage class constants)
+     *
+     * @return void
+     */
+    public function addMessage($message, $severity = FlashMessage::OK) {
+        /** @var FlashMessage $flashMessage */
+        $flashMessage = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessage', $message, '', $severity);
+        /** @var $flashMessageService \TYPO3\CMS\Core\Messaging\FlashMessageService */
+        $flashMessageService = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessageService');
+        /** @var $defaultFlashMessageQueue \TYPO3\CMS\Core\Messaging\FlashMessageQueue */
+        $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
+        $defaultFlashMessageQueue->enqueue($flashMessage);
     }
 }
