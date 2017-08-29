@@ -41,6 +41,9 @@ class IndexerHook implements PageIndexerDocumentsModifier
 
     /**
      * Modifies the given documents
+     * I don't know when an event ends, as the user can leave this field empty.
+     * So I don't see any chance to set Solr field "expires" correctly.
+     * My idea for now is: Check for each event, if a next day record can be created. If so: keep it in Solr, else remove it.
      *
      * @param Item $item The currently being indexed item.
      * @param int $language The language uid of the documents
