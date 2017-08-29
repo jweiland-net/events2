@@ -251,6 +251,9 @@ class EventService
     {
         /** @var Event $event */
         $event = $this->eventRepository->findByIdentifier((int)$eventUid);
+        if (!$event instanceof Event) {
+            return false;
+        }
 
         $days = array();
 
