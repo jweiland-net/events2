@@ -3,82 +3,240 @@
   <file source-language="en" datatype="plaintext" original="messages" date="2013-03-40T10:38:40Z" product-name="events2">
     <header/>
     <body>
+      <trans-unit id="event_type.description">
+        <source>Choose type of event</source>
+        <target>Wählen Sie eine Veranstaltungsart aus</target>
+      </trans-unit>
+      <trans-unit id="event_type.details">
+        <source>
+          Currently we have 3 event types:
+          1. simple: The event will only be shown at one date.
+          2. recurring: The most complex event. You have the possibility to configure nearly everything of this event.
+          3. duration: The event has a fixed start and end. Good for trips/travelling tours.
+        </source>
+        <target>
+          Aktuell gibt es 3 Veranstaltungstypen:
+          1. einfach: Die Veranstaltung finden an genau einem Tag statt.
+          2. wiederholung: Die Veranstaltung findet an unterschiedlichen Tagen oder wöchentlich statt.
+          3. durchgängig: Es geht auf Reisen. Feste Startzeit, feste Endzeit.
+        </target>
+      </trans-unit>
+
+      <trans-unit id="top_of_list.description">
+        <source>Move event on top of list</source>
+        <target>Lasse diese Veranstaltung vor allen anderen Veranstaltungen anzeigen</target>
+      </trans-unit>
 
       <trans-unit id="title.description">
-        <source>Title</source>
-        <target>Titel</target>
+        <source>This is the title of the event</source>
+        <target>Der Titel der Veranstaltung</target>
       </trans-unit>
+      <trans-unit id="title.details">
+        <source>This is the title of the event. It will be displayed as header for each event in frontend.</source>
+        <target>Der Titel der Veranstaltung. Er wird im Frontend als Überschrift für diese Veranstaltung angezeigt.</target>
+      </trans-unit>
+
       <trans-unit id="teaser.description">
-        <source>Teaser</source>
-        <target>Kurzbeschreibung</target>
+        <source>A short teaser for this event</source>
+        <target>Ein kurzer Anreißertext für diese Veranstaltung</target>
       </trans-unit>
+      <trans-unit id="teaser.details">
+        <source>
+          A little teaser for this event.
+          It will be used to show just 1 or 2 sentences in list view instead of a cropped text of full description.</source>
+        <target>
+          Ein kleiner Anreißertext.
+          Er sollte nur 1 bis 2 Sätze beinhalten und die Veranstaltung kurz, knapp, kernig erläutern.
+          Er wird in der Listenausgabe angezeigt.
+          Wenn der Anreißertext nicht gesetzt wird, wird stattdessen eine gekürzte Fassung der Detailbeschreibung der Veranstaltung angezeigt.
+        </target>
+      </trans-unit>
+
       <trans-unit id="event_begin.description">
-        <source>Event begin</source>
-        <target>Erster Veranstaltungstag</target>
+        <source>When does the event begin?</source>
+        <target>Wann fängt die Veranstaltung an?</target>
       </trans-unit>
-      <trans-unit id="duration.description">
-        <source>Duration</source>
-        <target>Dauer in Stunden</target>
+      <trans-unit id="event_begin.details">
+        <source>
+          Please choose an event date in the near future or in the early past.
+          That's because of a configuration in ExtensionManager for this extension.
+          There you can configure an amount of months for calculating day records in past and future.
+          Default: 3 month past. 6 month future. It's up to the admin to change these values.
+          If you enter a date with 6 month in past, no day record will be created. So this date will not be displayed in frontend.
+        </source>
+        <target>
+          Bitte wählen Sie ein Datum in naher Zukunft oder Vergangenheit.
+          Auf Grund einer speziellen Konfiguration im ExtensionManager sollten Sie keine Datumwerte in weiter Ferne eintragen.
+          Im ExtensionManager gibt es eine Option an vergangenen und zukünftigen Monate zu konfigurieren.
+          Standard: 3 Monate in die Vergangenheit. 6 Monate in die Zukunft. Es ist Aufgabe eines Admins diese Werte zu ändern.
+          Wenn Sie ein Datum wählen, dass 6 Monate in der Vergangenheit liegt, kann es also passieren, dass dieses Datum nicht im Frontend erscheint.
+        </target>
       </trans-unit>
+
       <trans-unit id="event_end.description">
-        <source>Last event</source>
-        <target>Letzter Veranstaltungstag</target>
+        <source>When does the event end?</source>
+        <target>Wann hört die Veranstaltung auf?</target>
       </trans-unit>
-      <trans-unit id="same_day.description">
-        <source>Same day</source>
-        <target>mehrmals an einem Tag</target>
+      <trans-unit id="event_end.details">
+        <source>
+          This is a special date for events of type "duration" and defines, when an event ends.
+          It is a required field.
+        </source>
+        <target>
+          Hierbei handelt es sich um ein spezielles Datumsfeld, dass es so nur für den Veranstaltungstyp "Durchgängig" gibt.
+          Dieses Feld ist ein Pflichfeld
+        </target>
       </trans-unit>
-      <trans-unit id="xth.description">
-        <source>x th</source>
-        <target>Wiederholung jeden x-ten</target>
-      </trans-unit>
-      <trans-unit id="weekday.description">
-        <source>Weekday</source>
-        <target>Wochentag</target>
-      </trans-unit>
-      <trans-unit id="each_weeks.description">
-        <source>Each weeks</source>
-        <target>alle x Wochen</target>
-      </trans-unit>
-      <trans-unit id="exceptions.description">
-        <source>Exceptions</source>
-        <target>Ausnahmen</target>
-      </trans-unit>
-      <trans-unit id="detail_informations.description">
-        <source>Detail informations</source>
-        <target>Veranstaltungsdetails</target>
-      </trans-unit>
-      <trans-unit id="free_entry.description">
-        <source>free entry</source>
-        <target>kostenlose Veranstaltung</target>
-      </trans-unit>
-      <trans-unit id="ticket_link.description">
-        <source>Ticket link</source>
-        <target>Link zum Ticketverkauf</target>
-      </trans-unit>
-      <trans-unit id="categories.description">
-        <source>Categories</source>
-        <target>Kategorien</target>
-      </trans-unit>
+
       <trans-unit id="event_time.description">
-        <source>Time</source>
-        <target>Uhrzeiten</target>
+        <source>When does the event starts?</source>
+        <target>Um wie viel Uhr fängt die Veranstaltung an?</target>
       </trans-unit>
-      <trans-unit id="alternative_times.description">
-        <source>Alternative times</source>
-        <target>abweichende Zeiten</target>
+      <trans-unit id="event_time.details">
+        <source>
+          This is the basic time for all generated day records.
+          It can be overridden with individual times defined here in this record.
+        </source>
+        <target>
+          Hierbei handelt es sich um eine grundsätzliche Uhrzeit zu der die Veranstaltung anfängt.
+          Diese Uhrzeit kann jedoch durch die Angabe anderer Uhrzeiten in den anderen Feldern diesen Datensatzes individuell überschrieben werden.
+        </target>
       </trans-unit>
-      <trans-unit id="days.description">
-        <source>Days</source>
-        <target>Tage</target>
+
+      <trans-unit id="same_day.description">
+        <source>This event starts multiple times at one day.</source>
+        <target>Die Veranstaltung findet mehrmals an einem Tag statt</target>
       </trans-unit>
+      <trans-unit id="same_day.details">
+        <source>Activate this option to add further time records for this event.</source>
+        <target>Nach Aktivierung dieser Option steht Ihnen die Möglichkeit zur Verfügung weitere Uhrzeiten für diese Veranstaltung hinzuzufügen.</target>
+      </trans-unit>
+
+      <trans-unit id="multiple_times.description">
+        <source>Add further time records</source>
+        <target>Fügen Sie weitere Uhrzeiten hinzu</target>
+      </trans-unit>
+      <trans-unit id="multiple_times.details">
+        <source>
+          The added time records will be appended to basic event time record.
+          In frontend you will see all time records for this event.
+        </source>
+        <target>
+          Die Uhrzeit der Veranstaltung wird diesen hier hinzugefügten Uhrzeiten hinzugefügt.
+          Im Frontend sehen Sie alle Uhrzeiten pro Veranstaltung.
+        </target>
+      </trans-unit>
+
+      <trans-unit id="xth.description">
+        <source>Repeat each x th week of month</source>
+        <target>Wiederhole jede x-te Woche im Monat</target>
+      </trans-unit>
+      <trans-unit id="xth.details">
+        <source>
+          This option is always a combination between the fields xth and weekday.
+          If you keep xth and/or weekday empty NO day record will be generated. The frondend will not display this event.
+        </source>
+        <target>
+          Diese Option ist immer eine Kombination aus Woche und Wochentag.
+          Wenn eins dieser beiden Felder leer bleibt werden keine Tagesdatensätze generiert. Das Frontend bleibt also leer.
+        </target>
+      </trans-unit>
+
+      <trans-unit id="weekday.description">
+        <source>Repeat each defined weekday</source>
+        <target>Wiederhole zu jedem angehakten Wochentag</target>
+      </trans-unit>
+      <trans-unit id="weekday.details">
+        <source>
+          This option is always a combination between the fields xth and weekday.
+          If you keep xth and/or weekday empty NO day record will be generated. The frondend will not display this event.
+        </source>
+        <target>
+          Diese Option ist immer eine Kombination aus Woche und Wochentag.
+          Wenn eins dieser beiden Felder leer bleibt werden keine Tagesdatensätze generiert. Das Frontend bleibt also leer.
+        </target>
+      </trans-unit>
+
+      <trans-unit id="different_times.description">
+        <source>Create time records for a special weekday</source>
+        <target>Erstelle eine Uhrzeit für einen bestimmten Wochentag</target>
+      </trans-unit>
+      <trans-unit id="different_times.details">
+        <source>This option will override multiple_times for one day and event_time completely.</source>
+        <target>Diese Option überschreibt die mehreren Uhrzeiten pro Tag und die Uhrzeit für die Veranstaltung komplett.</target>
+      </trans-unit>
+
+      <trans-unit id="each_weeks.description">
+        <source>Let event repeat each, seconds, third or forth week</source>
+        <target>Lasse die Veranstaltung jede 1., 2., 3. oder 4. Woche wiederholen</target>
+      </trans-unit>
+
+      <trans-unit id="recurring_end.description">
+        <source>A special date when repeating an event should end.</source>
+        <target>Ein spezielles Datum, um anzugeben, wann die Wiederholung für eine Veranstaltung enden soll.</target>
+      </trans-unit>
+      <trans-unit id="recurring_end.details">
+        <source>If you do not enter a date, a date from ExtensionManager configuration will be used. Default +12 month.</source>
+        <target>Wenn kein Datum angegeben wird, dann wird ein Datum aus der ExtensionManager Konfiguration genommen. Standard: +12 Monate.</target>
+      </trans-unit>
+
+      <trans-unit id="exceptions.description">
+        <source>Special definitions for a defined date</source>
+        <target>Spezielle Angaben, für ein spezielles Datum</target>
+      </trans-unit>
+      <trans-unit id="exceptions.details">
+        <source>
+          Add an additional date.
+          Add another time record for a special date.
+          Mark a date as removed.
+          Add further information for a special date.
+        </source>
+        <target>
+          Ein zusätzliches Datum hinzufügen.
+          Eine andere Uhrzeit für ein bestimmtes Datum vorgeben.
+          Ein Datum als gelöscht markieren.
+          Zusätzliche Informationen einem speziellen Datum hinzufügen.
+        </target>
+      </trans-unit>
+
+      <trans-unit id="detail_informations.description">
+        <source>Explain on detail what happens at that event</source>
+        <target>Beschreibe möglichst genau, was an dieser Veranstaltung passiert</target>
+      </trans-unit>
+
+      <trans-unit id="free_entry.description">
+        <source>Activate, if this is a cost free event</source>
+        <target>Aktivieren, wenn es sich um eine kostenfreie Veranstaltung handelt</target>
+      </trans-unit>
+
+      <trans-unit id="ticket_link.description">
+        <source>Create a ticket link record</source>
+        <target>Hier können Sie einen Link zum Ticketsystem hinterlegen</target>
+      </trans-unit>
+
       <trans-unit id="location.description">
-        <source>Location</source>
-        <target>Veranstaltungsort</target>
+        <source>Create a location record. This is a requirement.</source>
+        <target>Erstellen Sie einen Veranstaltungsort. Dies ist ein Pflichtfeld.</target>
       </trans-unit>
+
       <trans-unit id="organizer.description">
-        <source>Organizer</source>
-        <target>Veranstalter</target>
+        <source>Create an organizer record. This is a requirement.</source>
+        <target>Erstellen Sie einen Veranstalter. Dies ist ein Pflichtfeld.</target>
+      </trans-unit>
+
+      <trans-unit id="images.description">
+        <source>You can define some images here, which you can see in detail view of your event</source>
+        <target>Hier können Sie ein Bilder hinzufügen. Diese werden dann in der Detailansicht angezeigt.</target>
+      </trans-unit>
+
+      <trans-unit id="video_link.description">
+        <source>Do you have a YouTube video link, which will describe this event. Add it here.</source>
+        <target>Haben Sie ein YouTube Video zur Hand, das diese Veranstaltung weiter beschreibt? Fügen Sie es hier hinzu.</target>
+      </trans-unit>
+
+      <trans-unit id="download_links.description">
+        <source>Do you have some information as PDF? Add them here.</source>
+        <target>Haben Sie weitere Veranstaltungsdaten als PDF zur Hand? Dann fügen Sie diese hier hinzu.</target>
       </trans-unit>
     </body>
   </file>

@@ -1,12 +1,21 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-  <file source-language="en" datatype="plaintext" original="messages" date="2013-03-40T10:38:40Z" product-name="events2">
+  <file source-language="en" datatype="plaintext" original="messages" date="2017-08-25T10:38:40Z" product-name="events2">
     <header/>
     <body>
-
       <trans-unit id="organizer.description">
-        <source>Organizer</source>
-        <target>Veranstalter</target>
+        <source>Name of the organizer</source>
+        <target>Name des Veranstalters</target>
+      </trans-unit>
+
+      <trans-unit id="hide_in_filter.description">
+        <source>In plugin configuration you have the possibility to show all organizers als selectbox in frontend. If you don't want this organizer in that list you have to activate that option</source>
+        <target>In der Plugin Konfiguration gibt es die Möglichkeit alle Veranstalter als Selektbox im Frontend anzeigen zu lassen. Wenn Sie das für diesen Veranstalter nicht möchten, dann aktivieren Sie bitte diese Option</target>
+      </trans-unit>
+
+      <trans-unit id="link.description">
+        <source>Create a link to the organizers website</source>
+        <target>Erstellen Sie einen Link zu der Webseite des Veranstalters</target>
       </trans-unit>
     </body>
   </file>

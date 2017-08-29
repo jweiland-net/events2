@@ -180,7 +180,7 @@ return array(
             'config' => array(
                 'type' => 'input',
                 'size' => 7,
-                'eval' => 'date',
+                'eval' => 'date,required',
             ),
         ),
         'event_time' => array(

@@ -28,6 +28,7 @@ return array(
             'config' => array(
                 'type' => 'input',
                 'size' => 2,
+                'eval' => 'int,required'
             ),
         ),
         'month' => array(
@@ -36,6 +37,7 @@ return array(
             'config' => array(
                 'type' => 'input',
                 'size' => 2,
+                'eval' => 'int,required'
             ),
         ),
     ),

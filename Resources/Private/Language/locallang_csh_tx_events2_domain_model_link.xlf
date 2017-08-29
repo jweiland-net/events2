@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-  <file source-language="en" datatype="plaintext" original="messages" date="2013-03-40T10:38:40Z" product-name="events2">
+  <file source-language="en" datatype="plaintext" original="messages" date="2017-08-25T10:38:40Z" product-name="events2">
     <header/>
     <body>
+      <trans-unit id="title.description">
+        <source>A title for the link</source>
+      </trans-unit>
 
       <trans-unit id="link.description">
-        <source>Link</source>
+        <source>The link to the website</source>
       </trans-unit>
     </body>
   </file>

@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-  <file source-language="en" datatype="plaintext" original="messages" date="2013-03-40T10:38:40Z" product-name="events2">
+  <file source-language="en" datatype="plaintext" original="messages" date="2017-08-25T10:38:40Z" product-name="events2">
     <header/>
     <body>
+      <trans-unit id="weekday.description">
+        <source>This value is only available in case of time records for a specified weekday. Choose weekday for which this time record should be valid.</source>
+      </trans-unit>
       <trans-unit id="time_begin.description">
-        <source>Time begin</source>
+        <source>When does the event starts?</source>
       </trans-unit>
       <trans-unit id="time_entry.description">
-        <source>Time entry</source>
+        <source>When does you open the doors for visitors?</source>
+      </trans-unit>
+      <trans-unit id="duration.description">
+        <source>How long does this event takes?</source>
       </trans-unit>
       <trans-unit id="time_end.description">
-        <source>Time end</source>
+        <source>When does the event end?</source>
       </trans-unit>
     </body>
   </file>
