@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Command;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Service\EventService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -118,14 +119,22 @@ class RepairCommandController extends CommandController
         if (!empty($rows)) {
             foreach ($rows as $row) {
                 $event = $dayRelations->createDayRelations((int)$row['uid']);
-                $this->echoValue(sprintf(
-                    PHP_EOL . 'Process event UID: %09d, PID: %05d, created: %04d day records',
-                    $event->getUid(),
-                    $event->getPid(),
-                    $event->getDays()->count()
-                ));
-                $eventCounter++;
-                $dayCounter += $event->getDays()->count();
+                if (!$event instanceof Event) {
+                    $this->echoValue(sprintf(
+                        PHP_EOL . 'Process event UID: %09d, PID: %05d, created: %04d day records',
+                        $event->getUid(),
+                        $event->getPid(),
+                        $event->getDays()->count()
+                    ));
+                    $eventCounter++;
+                    $dayCounter += $event->getDays()->count();
+                } else {
+                    $this->echoValue(sprintf(
+                        PHP_EOL . 'ERROR event UID: %09d, PID: %05d',
+                        $row['uid'],
+                        $row['pid']
+                    ));
+                }
             }
         }
 
