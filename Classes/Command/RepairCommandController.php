@@ -105,9 +105,12 @@ class RepairCommandController extends CommandController
         $dayRelations = $this->objectManager->get('JWeiland\\Events2\\Service\\DayRelationService');
 
         $this->echoValue(PHP_EOL . 'Process each event record');
+
+        // select only current and future events
+        // do not select hidden records as eventRepository->findByIdentifier will not find them
         $rows = BackendUtility::getRecordsByField(
             'tx_events2_domain_model_event',
-            'deleted',
+            'hidden',
             '0',
             'AND (
               (event_type = \'single\' AND event_begin > UNIX_TIMESTAMP())
@@ -119,7 +122,7 @@ class RepairCommandController extends CommandController
         if (!empty($rows)) {
             foreach ($rows as $row) {
                 $event = $dayRelations->createDayRelations((int)$row['uid']);
-                if (!$event instanceof Event) {
+                if ($event instanceof Event) {
                     $this->echoValue(sprintf(
                         PHP_EOL . 'Process event UID: %09d, PID: %05d, created: %04d day records',
                         $event->getUid(),
