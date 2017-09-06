@@ -3,7 +3,7 @@
 namespace JWeiland\Events2\Importer;
 
 /*
- * This file is part of the TYPO3 CMS project.
+ * This file is part of the events2 project.
  *
  * It is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License, either version 2
@@ -19,7 +19,8 @@ use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Domain\Repository\OrganizerRepository;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
-use TYPO3\CMS\Core\Resource\FileInterface;
+use TYPO3\CMS\Core\Registry;
+use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
@@ -65,6 +66,11 @@ abstract class AbstractImporter implements ImporterInterface
     protected $dateTimeUtility;
 
     /**
+     * @var Registry
+     */
+    protected $registry;
+
+    /**
      * @var \DateTime
      */
     protected $today;
@@ -74,25 +80,41 @@ abstract class AbstractImporter implements ImporterInterface
      *
      * @return void
      */
-    protected function initialize()
+    public function initialize()
     {
         $this->objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
         $this->organizerRepository = $this->objectManager->get('JWeiland\\Events2\\Domain\\Repository\\OrganizerRepository');
         $this->locationRepository = $this->objectManager->get('JWeiland\\Events2\\Domain\\Repository\\LocationRepository');
         $this->categoryRepository = $this->objectManager->get('JWeiland\\Events2\\Domain\\Repository\\CategoryRepository');
         $this->dateTimeUtility = $this->objectManager->get('JWeiland\\Events2\\Utility\\DateTimeUtility');
+        $this->registry = $this->objectManager->get('TYPO3\\CMS\\Core\\Registry');
         $this->today = new \DateTime('now');
     }
 
     /**
      * Check, if File is valid for this importer
      *
-     * @param FileInterface $file
+     * @param File $file
      *
      * @return bool
      */
-    public function isValid(FileInterface $file) {
-        return in_array($file->getMimeType(), $this->allowedMimeType);
+    public function isValid(File $file) {
+        $isValid = true;
+
+        $modificationTime = $this->registry->get('events2', 'import-task-file-' . $file->getProperty('uid'));
+        if ($modificationTime && $file->getModificationTime() <= $modificationTime) {
+            $isValid = false;
+            $this->addMessage('Modification time of file has not changed. Stop importing');
+        }
+
+        if (!in_array($file->getMimeType(), $this->allowedMimeType)) {
+            $isValid = false;
+            $this->addMessage('MimeType of file is not allowed');
+        }
+
+        $this->registry->set('events2', 'import-task-file-' . $file->getProperty('uid'), $file->getModificationTime());
+
+        return $isValid;
     }
 
     /**

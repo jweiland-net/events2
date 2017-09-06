@@ -23,6 +23,7 @@ use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Task\Import;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
@@ -42,15 +43,15 @@ class XmlImporter extends AbstractImporter
     /**
      * Import XML file
      *
-     * @param FileInterface $file
+     * @param File $file
      * @param AbstractTask $task
      *
      * @return bool
      */
-    public function import(FileInterface $file, AbstractTask $task)
+    public function import(File $file, AbstractTask $task)
     {
-        $this->initialize();
         if (!$this->validateXml($file)) {
+            $this->addMessage('XML file does not match XSD file');
             return false;
         }
         $events = GeneralUtility::xml2array($file->getContents());

@@ -3,7 +3,7 @@
 namespace JWeiland\Events2\Task;
 
 /*
- * This file is part of the TYPO3 CMS project.
+ * This file is part of the events2 project.
  *
  * It is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License, either version 2
@@ -16,11 +16,10 @@ namespace JWeiland\Events2\Task;
  */
 use JWeiland\Events2\Importer\ImporterInterface;
 use JWeiland\Events2\Service\DayRelationService;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Resource\File;
-use TYPO3\CMS\Core\Resource\FileInterface;
+use TYPO3\CMS\Core\Resource\Index\Indexer;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
@@ -34,12 +33,12 @@ class Import extends AbstractTask
      * @var string
      */
     public $path = '';
-    
+
     /**
      * @var int
      */
     public $storagePid = 0;
-    
+
     /**
      * @var DatabaseConnection
      */
@@ -55,10 +54,11 @@ class Import extends AbstractTask
      */
     public function __construct()
     {
+        $this->databaseConnection = $GLOBALS['TYPO3_DB'];
+
         /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
         $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
         $this->dayRelations = $objectManager->get('JWeiland\\Events2\\Service\\DayRelationService');
-        $this->databaseConnection = $GLOBALS['TYPO3_DB'];
         parent::__construct();
     }
 
@@ -73,24 +73,38 @@ class Import extends AbstractTask
     public function execute()
     {
         try {
-            /** @var FileInterface $file */
+            /** @var File $file */
             $file = ResourceFactory::getInstance()->retrieveFileOrFolderObject($this->path);
+            if ($file instanceof File) {
+                if ($file->isMissing()) {
+                    $this->addMessage('The defined file seems to be missing. Please check, if file is still at its place', FlashMessage::ERROR);
+                    return false;
+                } else {
+                    // File can be updated by (S)FTP. So we have to update its properties first.
+                    /** @var Indexer $indexer */
+                    $indexer = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\Index\\Indexer', $file->getStorage());
+                    $indexer->updateIndexEntry($file);
+                }
+            } else {
+                $this->addMessage('The defined file is not a valid file. Maybe you have defined a folder. Please re-check file path', FlashMessage::ERROR);
+                return false;
+            }
         } catch (\Exception $e) {
             $this->addMessage('Please check path. Import file could not be found.', FlashMessage::ERROR);
             return false;
         }
-        
+
         return $this->importFile($file);
     }
-    
+
     /**
      * Import file
      *
-     * @param FileInterface $file
+     * @param File $file
      *
      * @return bool
      */
-    protected function importFile(FileInterface $file)
+    protected function importFile(File $file)
     {
         $className = sprintf(
             'JWeiland\\Events2\\Importer\\%sImporter',
@@ -105,13 +119,13 @@ class Import extends AbstractTask
             $this->addMessage('Importer has to implement ImporterInterface');
             return false;
         }
+        $importer->initialize();
         if (!$importer->isValid($file)) {
-            $this->addMessage('Importer is not valid for this mime type' . $file->getMimeType());
             return false;
         }
         return $importer->import($file, $this);
     }
-    
+
     /**
      * This method is used to add a message to the internal queue
      *
@@ -128,5 +142,21 @@ class Import extends AbstractTask
         /** @var $defaultFlashMessageQueue \TYPO3\CMS\Core\Messaging\FlashMessageQueue */
         $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
         $defaultFlashMessageQueue->enqueue($flashMessage);
+    }
+
+    /**
+     * This object will be saved serialized in database
+     * SingletonInterface objects may be different while recreating the objects,
+     * that's why I recreate them on my own
+     *
+     * @return void
+     */
+    public function __wakeup()
+    {
+        $this->databaseConnection = $GLOBALS['TYPO3_DB'];
+
+        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+        $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+        $this->dayRelations = $objectManager->get('JWeiland\\Events2\\Service\\DayRelationService');
     }
 }
