@@ -3,7 +3,7 @@
 namespace JWeiland\Events2\Command;
 
 /*
- * This file is part of the TYPO3 CMS project.
+ * This file is part of the events2 project.
  *
  * It is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License, either version 2
@@ -21,6 +21,7 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\CommandController;
 use JWeiland\Events2\Service\DayRelationService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
@@ -120,6 +121,8 @@ class RepairCommandController extends CommandController
         );
 
         if (!empty($rows)) {
+            /** @var PersistenceManager $persistenceManager */
+            $persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
             foreach ($rows as $row) {
                 $event = $dayRelations->createDayRelations((int)$row['uid']);
                 if ($event instanceof Event) {
@@ -138,6 +141,9 @@ class RepairCommandController extends CommandController
                         $row['pid']
                     ));
                 }
+
+                // clean up persistence manager to reduce in-memory
+                $persistenceManager->clearState();
             }
         }
 

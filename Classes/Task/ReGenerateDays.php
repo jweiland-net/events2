@@ -20,6 +20,7 @@ use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Scheduler\ProgressProviderInterface;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
@@ -28,11 +29,6 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
  */
 class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
 {
-    /**
-     * @var DatabaseConnection
-     */
-    protected $databaseConnection;
-
     /**
      * @var DayRelationService
      */
@@ -44,6 +40,16 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
     protected $registry;
 
     /**
+     * @var PersistenceManager
+     */
+    protected $persistenceManager;
+
+    /**
+     * @var DatabaseConnection
+     */
+    protected $databaseConnection;
+
+    /**
      * constructor of this class.
      */
     public function __construct()
@@ -52,6 +58,7 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
         $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
         $this->dayRelations = $objectManager->get('JWeiland\\Events2\\Service\\DayRelationService');
         $this->registry = $objectManager->get('TYPO3\\CMS\\Core\\Registry');
+        $this->persistenceManager = $objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
         $this->databaseConnection = $GLOBALS['TYPO3_DB'];
         parent::__construct();
     }
@@ -70,7 +77,7 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
 
         $events = BackendUtility::getRecordsByField(
             'tx_events2_domain_model_event',
-            'deleted',
+            'hidden',
             '0',
             'AND (
               (event_type = \'single\' AND event_begin > UNIX_TIMESTAMP())
@@ -102,6 +109,9 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
                     ), FlashMessage::ERROR);
                     return false;
                 }
+
+                // clean up persistence manager to reduce in-memory
+                $this->persistenceManager->clearState();
 
                 $this->registry->set('events2TaskCreateUpdate', 'progress', array(
                     'records' => count($events),
@@ -188,6 +198,7 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
         $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
         $this->dayRelations = $objectManager->get('JWeiland\\Events2\\Service\\DayRelationService');
         $this->registry = $objectManager->get('TYPO3\\CMS\\Core\\Registry');
+        $this->persistenceManager = $objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
         $this->databaseConnection = $GLOBALS['TYPO3_DB'];
     }
 }
