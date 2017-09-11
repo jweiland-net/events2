@@ -358,6 +358,7 @@ class Event extends AbstractEntity
     public function getEventBegin()
     {
         if ($this->eventBegin instanceof \DateTime) {
+            $this->eventBegin->setTimezone(new \DateTimeZone(date_default_timezone_get()));
             return clone $this->eventBegin;
         } else {
             return null;
@@ -426,6 +427,7 @@ class Event extends AbstractEntity
     public function getEventEnd()
     {
         if ($this->eventEnd instanceof \DateTime) {
+            $this->eventEnd->setTimezone(new \DateTimeZone(date_default_timezone_get()));
             return clone $this->eventEnd;
         } else {
             return null;
@@ -654,6 +656,7 @@ class Event extends AbstractEntity
     public function getRecurringEnd()
     {
         if ($this->recurringEnd instanceof \DateTime) {
+            $this->recurringEnd->setTimezone(new \DateTimeZone(date_default_timezone_get()));
             return clone $this->recurringEnd;
         } else {
             return null;

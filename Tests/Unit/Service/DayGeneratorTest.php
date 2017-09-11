@@ -248,6 +248,52 @@ class DayGeneratorTest extends UnitTestCase
     }
 
     /**
+     * The earliest switch to wintertime for the next 30 years is 25. october
+     *
+     * @test
+     */
+    public function initializeWithRecurringWeeksWillKeepDaylightSavingTime()
+    {
+        $timestamp = mktime(0, 0, 0, 10, 20, 2017);
+
+        // These dates will be created with timezone_type = 1, which does know the timezone (+02:00) only from the current date
+        $eventBegin = new \DateTime(date('c', $timestamp));
+        $eventEnd = clone $eventBegin;
+        $eventEnd->modify('+14 days');
+
+        // adding a correct timezone (Europe/Berlin) will know the timezone from now on until forever
+        $expectedBegin = clone $eventBegin;
+        $expectedBegin->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+        $expectedEnd = clone $expectedBegin;
+        $expectedEnd->modify('+14 days');
+
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setEventType('recurring');
+        $event->setEventBegin($eventBegin);
+        $event->setEventEnd($eventEnd);
+        $event->setXth(31);
+        $event->setWeekday(127);
+        $event->setEachWeeks(2);
+
+        $expectedDays = array();
+        $expectedDays[$expectedBegin->format('U')] = $expectedBegin;
+        $expectedDays[$expectedEnd->format('U')] = $expectedEnd;
+
+        /** @var \JWeiland\Events2\Service\DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
+        $dayGenerator = $this->getMock('JWeiland\\Events2\\Service\\DayGenerator', array('addException', 'getMaxDateForGeneratedDays'));
+        $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
+        $dayGenerator->injectExtConf(new ExtConf());
+        $dayGenerator->expects($this->never())->method('addException');
+        $dayGenerator->expects($this->once())->method('getMaxDateForGeneratedDays')->willReturn($expectedEnd);
+        $this->assertTrue($dayGenerator->initialize($event));
+        $this->assertEquals(
+            $expectedDays,
+            $dayGenerator->getDateTimeStorage()
+        );
+    }
+
+    /**
      * @test
      */
     public function initializeWithRecurringAndEqualEventBeginAndEventEndResultsInOneDayInStorage()
