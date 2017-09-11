@@ -109,11 +109,10 @@ class RepairCommandController extends CommandController
 
         // select only current and future events
         // do not select hidden records as eventRepository->findByIdentifier will not find them
-        $rows = BackendUtility::getRecordsByField(
+        $rows = $this->databaseConnection->exec_SELECTgetRows(
+            'uid,pid',
             'tx_events2_domain_model_event',
-            'hidden',
-            '0',
-            'AND (
+            'hidden=0 AND deleted=0 AND (
               (event_type = \'single\' AND event_begin > UNIX_TIMESTAMP())
               OR (event_type = \'duration\' AND (event_end = 0 OR event_end > UNIX_TIMESTAMP()))
               OR (event_type = \'recurring\' AND (recurring_end = 0 OR recurring_end > UNIX_TIMESTAMP()))
@@ -127,10 +126,11 @@ class RepairCommandController extends CommandController
                 $event = $dayRelations->createDayRelations((int)$row['uid']);
                 if ($event instanceof Event) {
                     $this->echoValue(sprintf(
-                        PHP_EOL . 'Process event UID: %09d, PID: %05d, created: %04d day records',
+                        PHP_EOL . 'Process event UID: %09d, PID: %05d, created: %04d day records, RAM: %d',
                         $event->getUid(),
                         $event->getPid(),
-                        $event->getDays()->count()
+                        $event->getDays()->count(),
+                        memory_get_usage(true)
                     ));
                     $eventCounter++;
                     $dayCounter += $event->getDays()->count();

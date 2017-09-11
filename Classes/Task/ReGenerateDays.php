@@ -3,7 +3,7 @@
 namespace JWeiland\Events2\Task;
 
 /*
- * This file is part of the TYPO3 CMS project.
+ * This file is part of the events2 project.
  *
  * It is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License, either version 2
@@ -15,7 +15,6 @@ namespace JWeiland\Events2\Task;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Service\DayRelationService;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Registry;
@@ -75,11 +74,10 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
     {
         $this->registry->removeAllByNamespace('events2TaskCreateUpdate');
 
-        $events = BackendUtility::getRecordsByField(
+        $events = $this->databaseConnection->exec_SELECTgetRows(
+            'uid,pid',
             'tx_events2_domain_model_event',
-            'hidden',
-            '0',
-            'AND (
+            'hidden=0 AND deleted=0 AND (
               (event_type = \'single\' AND event_begin > UNIX_TIMESTAMP())
               OR (event_type = \'duration\' AND (event_end = 0 OR event_end > UNIX_TIMESTAMP()))
               OR (event_type = \'recurring\' AND (recurring_end = 0 OR recurring_end > UNIX_TIMESTAMP()))
