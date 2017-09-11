@@ -21,6 +21,7 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\CommandController;
 use JWeiland\Events2\Service\DayRelationService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\Container\Container;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 /**
@@ -122,6 +123,14 @@ class RepairCommandController extends CommandController
         if (!empty($rows)) {
             /** @var PersistenceManager $persistenceManager */
             $persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
+
+            /** @var Container $objectContainer */
+            $objectContainer = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\Container\\Container');
+
+            $reflectedObjectContainer = new \ReflectionClass($objectContainer);
+            $reflectedCacheProperty = $reflectedObjectContainer->getProperty('cache');
+            $reflectedCacheProperty->setAccessible(true);
+
             foreach ($rows as $row) {
                 $event = $dayRelations->createDayRelations((int)$row['uid']);
                 if ($event instanceof Event) {
@@ -144,6 +153,7 @@ class RepairCommandController extends CommandController
 
                 // clean up persistence manager to reduce in-memory
                 $persistenceManager->clearState();
+                $reflectedCacheProperty->setValue($objectContainer, null);
             }
         }
 
