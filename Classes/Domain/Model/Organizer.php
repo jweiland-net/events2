@@ -1,7 +1,7 @@
 <?php
 
 namespace JWeiland\Events2\Domain\Model;
-    
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -27,14 +27,14 @@ class Organizer extends AbstractEntity
      * @var string
      */
     protected $organizer = '';
-    
+
     /**
      * Link.
      *
      * @var \JWeiland\Events2\Domain\Model\Link
      */
     protected $link;
-    
+
     /**
      * Returns the organizer.
      *

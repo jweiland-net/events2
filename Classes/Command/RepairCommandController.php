@@ -15,14 +15,11 @@ namespace JWeiland\Events2\Command;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Domain\Model\Event;
-use JWeiland\Events2\Service\EventService;
 use JWeiland\Events2\Utility\DateTimeUtility;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\CommandController;
 use JWeiland\Events2\Service\DayRelationService;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\Container\Container;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
+use TYPO3\CMS\Extbase\Persistence\Generic\Storage\BackendInterface;
 
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
@@ -88,7 +85,7 @@ class RepairCommandController extends CommandController
     protected function truncateDayTable()
     {
         $this->databaseConnection->exec_TRUNCATEquery('tx_events2_domain_model_day');
-        $this->outputLine(PHP_EOL . 'I have truncated the day table');
+        $this->outputLine('I have truncated the day table' . PHP_EOL);
     }
 
     /**
@@ -106,7 +103,7 @@ class RepairCommandController extends CommandController
         /** @var DayRelationService $dayRelations */
         $dayRelations = $this->objectManager->get('JWeiland\\Events2\\Service\\DayRelationService');
 
-        $this->echoValue(PHP_EOL . 'Process each event record');
+        $this->echoValue('Process each event record' . PHP_EOL);
 
         // select only current and future events
         // do not select hidden records as eventRepository->findByIdentifier will not find them
@@ -124,41 +121,45 @@ class RepairCommandController extends CommandController
             /** @var PersistenceManager $persistenceManager */
             $persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
 
-            /** @var Container $objectContainer */
-            $objectContainer = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\Container\\Container');
+            // with each changing PID pageTSConfigCache will grow by roundabout 200KB
+            // we need a possibility to reset this level 1 cache
+            /** @var BackendInterface $extbaseDbBackend */
+            $extbaseDbBackend = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\Storage\\BackendInterface');
+            $reflectedExtbaseDbBackend = new \ReflectionClass($extbaseDbBackend);
+            $reflectedPageTSConfigCache = $reflectedExtbaseDbBackend->getProperty('pageTSConfigCache');
+            $reflectedPageTSConfigCache->setAccessible(true);
 
-            $reflectedObjectContainer = new \ReflectionClass($objectContainer);
-            $reflectedCacheProperty = $reflectedObjectContainer->getProperty('cache');
-            $reflectedCacheProperty->setAccessible(true);
-
-            foreach ($rows as $row) {
+            foreach ($rows as $key => $row) {
                 $event = $dayRelations->createDayRelations((int)$row['uid']);
                 if ($event instanceof Event) {
                     $this->echoValue(sprintf(
-                        PHP_EOL . 'Process event UID: %09d, PID: %05d, created: %04d day records, RAM: %d',
+                        'Process event UID: %09d, PID: %05d, created: %04d day records, RAM: %d' . PHP_EOL,
                         $event->getUid(),
                         $event->getPid(),
                         $event->getDays()->count(),
-                        memory_get_usage(true)
+                        memory_get_usage()
                     ));
                     $eventCounter++;
                     $dayCounter += $event->getDays()->count();
                 } else {
                     $this->echoValue(sprintf(
-                        PHP_EOL . 'ERROR event UID: %09d, PID: %05d',
+                        'ERROR event UID: %09d, PID: %05d' . PHP_EOL,
                         $row['uid'],
                         $row['pid']
                     ));
                 }
 
-                // clean up persistence manager to reduce in-memory
+                // clean up persistence manager to reduce memory usage
+                // it also clears persistence session
                 $persistenceManager->clearState();
-                $reflectedCacheProperty->setValue($objectContainer, null);
+                // reset pageTsConfigCache with help of reflections
+                $reflectedPageTSConfigCache->setValue($extbaseDbBackend, array());
+                gc_collect_cycles();
             }
         }
 
         $this->outputLine(sprintf(
-            PHP_EOL . 'We have recreated the day records for %d event records and %d day records',
+            'We have recreated the day records for %d event records and %d day records' . PHP_EOL,
             $eventCounter,
             $dayCounter
         ));

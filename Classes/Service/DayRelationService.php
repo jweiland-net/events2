@@ -22,9 +22,13 @@ use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Cache\Frontend\VariableFrontend;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
+use TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo3DbBackend;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
@@ -157,9 +161,7 @@ class DayRelationService
             // write a warning (2) to sys_log
             GeneralUtility::sysLog('Related days could not be created, because of an empty event or a non given event uid or pid', 'events2', 2);
         } else {
-            // Heavy: Without clone removeAll will remove only the half of objects in storage
-            // I don't exactly know why, but maybe next() was called twice. isValid() returns false too early
-            $event->getDays()->removeAll(clone $event->getDays());
+            $event->setDays(new ObjectStorage());
 
             $this->dayGenerator->initialize($event);
             $dateTimeStorage = $this->dayGenerator->getDateTimeStorage();
@@ -170,6 +172,7 @@ class DayRelationService
                     unset($this->cachedSortDayTime[$event->getUid()]);
                 }
             }
+            $this->cachedSortDayTime = array();
             $this->persistenceManager->update($event);
             $this->persistenceManager->persistAll();
         }
@@ -333,6 +336,7 @@ class DayRelationService
         $day->setDayTime($this->getDayTime($dateTime, $hour, $minute));
         $day->setSortDayTime($this->getSortDayTime($dateTime, $hour, $minute, $event));
         $day->setEvent($event);
+
         $event->addDay($day);
     }
 

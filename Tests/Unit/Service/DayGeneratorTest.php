@@ -712,7 +712,7 @@ class DayGeneratorTest extends UnitTestCase
      */
     public function getDayStorageResultsInSortedArray()
     {
-        $this->subject->setDayStorage(array(
+        $this->subject->setDateTimeStorage(array(
             4 => 'TestValue',
             2 => 'TestValue',
             0 => 'TestValue',

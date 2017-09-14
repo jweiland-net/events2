@@ -7,7 +7,6 @@ return array(
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
         'hideTable' => true,
-        'delete' => 'deleted',
         'enablecolumns' => array(
             'disabled' => 'hidden',
         ),

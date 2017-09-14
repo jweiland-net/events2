@@ -29,7 +29,7 @@ class DayGenerator
      *
      * @var array
      */
-    protected $dayStorage = array();
+    protected $dateTimeStorage = array();
 
     /**
      * @var \JWeiland\Events2\Configuration\ExtConf
@@ -74,11 +74,11 @@ class DayGenerator
      */
     public function initialize(Event $event)
     {
-        // reset, for previous calls
-        $this->setDayStorage(array());
+        // reset, because of previous calls
+        $this->reset();
 
         // check for valid event record.
-        // if false dayStorage is empty
+        // if false dateTimeStorage is empty
         if (!$this->isValidEvent($event)) {
             return false;
         }
@@ -113,28 +113,37 @@ class DayGenerator
     }
 
     /**
+     * Reset dateTimeStorage
+     *
+     * @return void
+     */
+    protected function reset()
+    {
+        $this->dateTimeStorage = array();
+    }
+
+    /**
      * Getter for DateTime Storage
      *
      * @return \DateTime[]
      */
     public function getDateTimeStorage()
     {
-        ksort($this->dayStorage);
+        ksort($this->dateTimeStorage);
 
-        return $this->dayStorage;
+        return $this->dateTimeStorage;
     }
 
     /**
      * setter for day storage
      * Needed for UnitTests.
      *
-     * @param array $dayStorage
-     *
+     * @param array $dateTimeStorage
      * @return void
      */
-    public function setDayStorage(array $dayStorage)
+    public function setDateTimeStorage(array $dateTimeStorage)
     {
-        $this->dayStorage = $dayStorage;
+        $this->dateTimeStorage = $dateTimeStorage;
     }
 
     /**
@@ -170,7 +179,7 @@ class DayGenerator
     {
         // group days to make them unique
         // I don't know why, but $day is a reference, so I clone it here to have individual dates in this array
-        $this->dayStorage[$day->format('U')] = clone $day;
+        $this->dateTimeStorage[$day->format('U')] = clone $day;
     }
 
     /**
@@ -182,7 +191,7 @@ class DayGenerator
      */
     protected function removeDayFromStorage(\DateTime $day)
     {
-        unset($this->dayStorage[$day->format('U')]);
+        unset($this->dateTimeStorage[$day->format('U')]);
     }
 
     /**

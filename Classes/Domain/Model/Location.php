@@ -1,7 +1,7 @@
 <?php
 
 namespace JWeiland\Events2\Domain\Model;
-    
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -62,7 +62,7 @@ class Location extends AbstractEntity
      *
      * @var \JWeiland\Maps2\Domain\Model\PoiCollection
      */
-    protected $txMaps2Uid = null;
+    protected $txMaps2Uid;
 
     /**
      * Setter for location.

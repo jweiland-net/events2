@@ -27,21 +27,21 @@ class Day extends AbstractEntity
      * @var \DateTime
      */
     protected $day;
-    
+
     /**
      * DayTime.
      *
      * @var \DateTime
      */
     protected $dayTime;
-    
+
     /**
      * SortDayTime.
      *
      * @var \DateTime
      */
     protected $sortDayTime;
-    
+
     /**
      * Event.
      *
@@ -68,7 +68,7 @@ class Day extends AbstractEntity
     {
         $this->day = $day;
     }
-    
+
     /**
      * Returns the dayTime
      *
@@ -78,7 +78,7 @@ class Day extends AbstractEntity
     {
         return $this->dayTime;
     }
-    
+
     /**
      * Sets the dayTime
      *
@@ -89,7 +89,7 @@ class Day extends AbstractEntity
     {
         $this->dayTime = $dayTime;
     }
-    
+
     /**
      * Returns the sortDayTime
      *
@@ -99,7 +99,7 @@ class Day extends AbstractEntity
     {
         return $this->sortDayTime;
     }
-    
+
     /**
      * Sets the sortDayTime
      *
@@ -114,7 +114,7 @@ class Day extends AbstractEntity
     /**
      * Returns the event.
      *
-     * @return Event $event
+     * @return Event|null $event
      */
     public function getEvent()
     {
@@ -124,9 +124,9 @@ class Day extends AbstractEntity
     /**
      * Sets the event.
      *
-     * @param Event $event
+     * @param Event|null $event
      */
-    public function setEvent(Event $event)
+    public function setEvent(Event $event = null)
     {
         $this->event = $event;
     }
