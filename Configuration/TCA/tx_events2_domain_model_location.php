@@ -9,7 +9,7 @@ if (version_compare(TYPO3_branch, '7.0', '>=')) {
     $staticInfoSuggestReceiver = 'SJBR\\StaticInfoTables\\Hook\\Backend\\Form\\SuggestReceiver';
 }
 
-return array(
+$tx_events2_domain_model_event = array(
     'ctrl' => array(
         'title' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_location',
         'label' => 'location',
@@ -225,3 +225,5 @@ return array(
         '1' => array('showitem' => ''),
     ),
 );
+unset($extConf, $staticInfoItemProcessor, $staticInfoSuggestReceiver);
+return $tx_events2_domain_model_event;
