@@ -106,7 +106,7 @@ class ExceptionTest extends UnitTestCase
         $date = new \DateTime();
         $this->subject->setExceptionDate($date);
 
-        $this->assertSame(
+        $this->assertEquals(
             $date,
             $this->subject->getExceptionDate()
         );

@@ -204,7 +204,7 @@ class DayGenerator
     protected function getMaxDateForGeneratedDays(Event $event)
     {
         $today = clone $this->dateTimeUtility->convert('today');
-        $maxEventEnd = clone $event->getEventBegin();
+        $maxEventEnd = $event->getEventBegin();
 
         // check, what is more current
         if ($today > $maxEventEnd) {

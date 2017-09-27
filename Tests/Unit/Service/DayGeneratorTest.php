@@ -17,6 +17,7 @@ namespace JWeiland\Events2\Tests\Unit\Service;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Exception;
+use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Service\DayGenerator;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
@@ -530,14 +531,20 @@ class DayGeneratorTest extends UnitTestCase
      */
     public function initializeWithAddExceptionAddsOneDayInStorage()
     {
-        $eventBegin = new \DateTime();
-        $eventBegin->modify('midnight');
+        $timestamp = mktime(0, 0, 0);
+
+        // These dates will be created with timezone_type = 1, which does know the timezone (+02:00) only from the current date
+        $eventBegin = new \DateTime(date('c', $timestamp));
         $tomorrow = clone $eventBegin;
         $tomorrow->modify('tomorrow');
+
+        $exceptionTime = new Time();
+        $exceptionTime->setTimeBegin('18:00');
 
         $exception = new Exception();
         $exception->setExceptionType('Add');
         $exception->setExceptionDate($tomorrow);
+        $exception->setExceptionTime($exceptionTime);
         $exceptions = new ObjectStorage();
         $exceptions->attach($exception);
 
@@ -555,10 +562,18 @@ class DayGeneratorTest extends UnitTestCase
         $expectedDays[$tomorrow->format('U')] = $tomorrow;
 
         $this->assertTrue($this->subject->initialize($event));
+        $dateTimeStorage = $this->subject->getDateTimeStorage();
+
+        // assertEquals will only check for correct dates, but not for different timezoneTypes
         $this->assertEquals(
             $expectedDays,
-            $this->subject->getDateTimeStorage()
+            $dateTimeStorage
         );
+
+        /** @var \DateTime $dateTime */
+        foreach ($dateTimeStorage as $dateTime) {
+            $this->assertSame(3, $dateTime->timezone_type);
+        }
     }
 
     /**

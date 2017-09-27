@@ -86,7 +86,12 @@ class Exception extends AbstractEntity
      */
     public function getExceptionDate()
     {
-        return $this->exceptionDate;
+        if ($this->exceptionDate instanceof \DateTime) {
+            $this->exceptionDate->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+            return clone $this->exceptionDate;
+        } else {
+            return null;
+        }
     }
 
     /**
