@@ -74,7 +74,7 @@ class RealUrlAutoConfiguration
                             'noMatch' => 'bypass'
                         ),
                     ),
-                    'd' => array(
+                    'ts' => array(
                         0 => array(
                             'GETvar' => 'tx_events2_events[timestamp]',
                             'userFunc' => 'JWeiland\\Events2\\RealUrl\\TimestampMapping->main',

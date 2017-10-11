@@ -37,7 +37,7 @@ class TimestampMapping
             return $this->id2alias($parameters);
         }
     }
-    
+
     /**
      * Map ID to Alias name
      *
@@ -55,7 +55,7 @@ class TimestampMapping
         }
         return $parameters['value'];
     }
-    
+
     /**
      * Map alias back to ID
      * This method will only be called if there is no cache entry for this URI
@@ -66,9 +66,9 @@ class TimestampMapping
      * @return string
      */
     protected function alias2id(array $parameters) {
-        // when this method was called, we must have at lease 2 parts: time/title-id[.html]
-        // Current date exists in $parameters['value'] already
-        if (count($parameters['pathParts']) < 2) {
+        // when this method was called, we must have at lease 3 parts: time/t/title-id[.html]
+        // Current date exists in $parameters['value'] already.
+        if (count($parameters['pathParts']) < 3 || empty($parameters['value'])) {
             return 0;
         }
         $date = \DateTime::createFromFormat(
