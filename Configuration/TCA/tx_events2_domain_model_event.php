@@ -4,8 +4,8 @@ if (\TYPO3\CMS\Core\Utility\GeneralUtility::compat_version('7.6')) {
 } else {
     $ttContentLanguageFile = 'LLL:EXT:cms/locallang_ttc.xlf';
 }
-return array(
-    'ctrl' => array(
+return [
+    'ctrl' => [
         'title' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event',
         'label' => 'title',
         'tstamp' => 'tstamp',
@@ -14,12 +14,12 @@ return array(
         'dividers2tabs' => true,
         'type' => 'event_type',
         'typeicon_column' => 'event_type',
-        'typeicon_classes' => array(
+        'typeicon_classes' => [
             'default' => 'extensions-events2-calendar-single',
             'single' => 'extensions-events2-calendar-single',
             'recurring' => 'extensions-events2-calendar-recurring',
             'duration' => 'extensions-events2-calendar-duration',
-        ),
+        ],
         'requestUpdate' => 'same_day,each_weeks',
         'default_sortby' => 'ORDER BY title',
         'versioningWS' => 2,
@@ -29,376 +29,382 @@ return array(
         'transOrigPointerField' => 'l10n_parent',
         'transOrigDiffSourceField' => 'l10n_diffsource',
         'delete' => 'deleted',
-        'enablecolumns' => array(
+        'enablecolumns' => [
             'disabled' => 'hidden',
             'starttime' => 'starttime',
             'endtime' => 'endtime',
-        ),
+        ],
         'searchFields' => 'title,teaser,event_begin,event_end,detail_informations,',
-    ),
-    'interface' => array(
+    ],
+    'interface' => [
         'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, event_type, top_of_list, title, teaser, event_begin, event_end, event_time, same_day, multiple_times, xth, weekday, different_times, each_weeks, recurring_end, exceptions, detail_informations, free_entry, ticket_link, alternative_times, location, organizer, images, video_link, download_links',
-    ),
-    'columns' => array(
-        'sys_language_uid' => array(
+    ],
+    'columns' => [
+        'sys_language_uid' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.language',
-            'config' => array(
+            'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'special' => 'languages',
-                'items' => array(
-                    array(
+                'items' => [
+                    [
                         'LLL:EXT:lang/locallang_general.xlf:LGL.allLanguages',
                         -1,
                         'flags-multiple'
-                    ),
-                ),
+                    ],
+                ],
                 'default' => 0,
-            )
-        ),
-        'l10n_parent' => array(
+            ]
+        ],
+        'l10n_parent' => [
+            'exclude' => 1,
             'displayCond' => 'FIELD:sys_language_uid:>:0',
-            'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.l18n_parent',
-            'config' => array(
-                'type' => 'select',
-                'items' => array(
-                    array('', 0),
-                ),
-                'foreign_table' => 'tx_events2_domain_model_event',
-                'foreign_table_where' => 'AND tx_events2_domain_model_event.pid=###CURRENT_PID### AND tx_events2_domain_model_event.sys_language_uid IN (-1,0)',
-            ),
-        ),
-        'l10n_diffsource' => array(
-            'config' => array(
-                'type' => 'passthrough',
-            ),
-        ),
-        't3ver_label' => array(
-            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.versionLabel',
-            'config' => array(
-                'type' => 'input',
-                'size' => 30,
-                'max' => 255,
-            ),
-        ),
-        'hidden' => array(
-            'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.hidden',
-            'config' => array(
-                'type' => 'check',
-            ),
-        ),
-        'starttime' => array(
-            'exclude' => 1,
-            'l10n_mode' => 'mergeIfNotBlank',
-            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.starttime',
-            'config' => array(
-                'type' => 'input',
-                'size' => 13,
-                'max' => 20,
-                'eval' => 'datetime',
-                'checkbox' => 0,
-                'default' => 0,
-                'range' => array(
-                    'lower' => mktime(0, 0, 0, date('m'), date('d'), date('Y')),
-                ),
-            ),
-        ),
-        'endtime' => array(
-            'exclude' => 1,
-            'l10n_mode' => 'mergeIfNotBlank',
-            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.endtime',
-            'config' => array(
-                'type' => 'input',
-                'size' => 13,
-                'max' => 20,
-                'eval' => 'datetime',
-                'checkbox' => 0,
-                'default' => 0,
-                'range' => array(
-                    'lower' => mktime(0, 0, 0, date('m'), date('d'), date('Y')),
-                ),
-            ),
-        ),
-        'event_type' => array(
-            'exclude' => 1,
-            'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_type',
-            'config' => array(
+            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.l10n_parent',
+            'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
-                'items' => array(
-                    array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_type.single', 'single', 'extensions-events2-calendar-single'),
-                    array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_type.recurring', 'recurring', 'extensions-events2-calendar-recurring'),
-                    array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_type.duration', 'duration', 'extensions-events2-calendar-duration'),
-                ),
+                'items' => [
+                    [
+                        '',
+                        0
+                    ]
+                ],
+                'foreign_table' => 'tt_content',
+                'foreign_table_where' => 'AND tt_content.pid=###CURRENT_PID### AND tt_content.sys_language_uid IN (-1,0)',
+                'default' => 0
+            ]
+        ],
+        'l18n_diffsource' => [
+            'config' => [
+                'type' => 'passthrough',
+                'default' => ''
+            ]
+        ],
+        't3ver_label' => [
+            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.versionLabel',
+            'config' => [
+                'type' => 'input',
+                'size' => '30',
+                'max' => '255'
+            ]
+        ],
+        'hidden' => [
+            'exclude' => 1,
+            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.hidden',
+            'config' => [
+                'type' => 'check',
+                'items' => [
+                    '1' => [
+                        '0' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:hidden.I.0'
+                    ]
+                ]
+            ]
+        ],
+        'starttime' => [
+            'exclude' => 1,
+            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.starttime',
+            'config' => [
+                'type' => 'input',
+                'size' => '13',
+                'eval' => 'datetime',
+                'default' => 0
+            ],
+            'l10n_mode' => 'exclude',
+            'l10n_display' => 'defaultAsReadonly'
+        ],
+        'endtime' => [
+            'exclude' => 1,
+            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.endtime',
+            'config' => [
+                'type' => 'input',
+                'size' => '13',
+                'eval' => 'datetime',
+                'default' => 0,
+                'range' => [
+                    'upper' => mktime(0, 0, 0, 1, 1, 2038)
+                ]
+            ],
+            'l10n_mode' => 'exclude',
+            'l10n_display' => 'defaultAsReadonly'
+        ],
+        'event_type' => [
+            'exclude' => 1,
+            'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_type',
+            'config' => [
+                'type' => 'select',
+                'renderType' => 'selectSingle',
+                'items' => [
+                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_type.single', 'single', 'extensions-events2-calendar-single'],
+                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_type.recurring', 'recurring', 'extensions-events2-calendar-recurring'],
+                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_type.duration', 'duration', 'extensions-events2-calendar-duration'],
+                ],
                 'default' => 'single',
-            )
-        ),
-        'top_of_list' => array(
+            ]
+        ],
+        'top_of_list' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.top_of_list',
-            'config' => array(
+            'config' => [
                 'type' => 'check',
                 'default' => 0,
-            ),
-        ),
-        'title' => array(
+            ],
+        ],
+        'title' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.title',
-            'config' => array(
+            'config' => [
                 'type' => 'input',
                 'size' => 30,
                 'eval' => 'trim,required',
-            ),
-        ),
-        'teaser' => array(
+            ],
+        ],
+        'teaser' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.teaser',
-            'config' => array(
+            'config' => [
                 'type' => 'text',
                 'cols' => 30,
                 'rows' => 4,
                 'max' => '255',
                 'eval' => 'trim',
-            ),
-        ),
-        'event_begin' => array(
+            ],
+        ],
+        'event_begin' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_begin',
-            'config' => array(
+            'config' => [
                 'type' => 'input',
                 'size' => 7,
                 'eval' => 'date,required',
                 'default' => mktime(0, 0, 0, date('m'), date('d'), date('Y')),
-            ),
-        ),
-        'event_end' => array(
+            ],
+        ],
+        'event_end' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_end',
-            'config' => array(
+            'config' => [
                 'type' => 'input',
                 'size' => 7,
                 'eval' => 'date,required',
-            ),
-        ),
-        'event_time' => array(
+            ],
+        ],
+        'event_time' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_time',
-            'config' => array(
+            'config' => [
                 'type' => 'inline',
                 'foreign_table' => 'tx_events2_domain_model_time',
                 'foreign_field' => 'event',
-                'foreign_match_fields' => array(
+                'foreign_match_fields' => [
                     'type' => 'event_time',
-                ),
+                ],
                 'minitems' => 0,
                 'maxitems' => 1,
-                'appearance' => array(
+                'appearance' => [
                     'collapseAll' => true,
                     'newRecordLinkTitle' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:createNewRelationForTime',
                     'levelLinksPosition' => 'top',
                     'showSynchronizationLink' => 1,
                     'showPossibleLocalizationRecords' => 1,
                     'showAllLocalizationLink' => 1,
-                ),
-            ),
-        ),
-        'same_day' => array(
+                ],
+            ],
+        ],
+        'same_day' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.same_day',
-            'config' => array(
+            'config' => [
                 'type' => 'check',
                 'default' => 0,
-            ),
-        ),
-        'multiple_times' => array(
+            ],
+        ],
+        'multiple_times' => [
             'exclude' => 1,
             'displayCond' => 'FIELD:same_day:REQ:true',
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.multiple_times',
-            'config' => array(
+            'config' => [
                 'type' => 'inline',
                 'foreign_table' => 'tx_events2_domain_model_time',
                 'foreign_field' => 'event',
-                'foreign_match_fields' => array(
+                'foreign_match_fields' => [
                     'type' => 'multiple_times',
-                ),
+                ],
                 'minitems' => 0,
                 'maxitems' => 10,
-                'appearance' => array(
+                'appearance' => [
                     'collapseAll' => true,
                     'newRecordLinkAddTitle' => true,
                     'levelLinksPosition' => 'top',
                     'showSynchronizationLink' => 1,
                     'showPossibleLocalizationRecords' => 1,
                     'showAllLocalizationLink' => 1,
-                ),
-            ),
-        ),
-        'xth' => array(
+                ],
+            ],
+        ],
+        'xth' => [
             'exclude' => 1,
             'displayCond' => 'FIELD:each_weeks:=:0',
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.xth',
-            'config' => array(
+            'config' => [
                 'type' => 'check',
                 'cols' => 5,
-                'items' => array(
-                    array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.xth.first', 'first'),
-                    array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.xth.second', 'second'),
-                    array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.xth.third', 'third'),
-                    array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.xth.fourth', 'fourth'),
-                    array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.xth.fifth', 'fifth'),
-                ),
+                'items' => [
+                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.xth.first', 'first'],
+                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.xth.second', 'second'],
+                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.xth.third', 'third'],
+                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.xth.fourth', 'fourth'],
+                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.xth.fifth', 'fifth'],
+                ],
                 'default' => 0,
-            ),
-        ),
-        'weekday' => array(
+            ],
+        ],
+        'weekday' => [
             'exclude' => 1,
             'displayCond' => 'FIELD:each_weeks:=:0',
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.weekday',
-            'config' => array(
+            'config' => [
                 'type' => 'check',
                 'cols' => 7,
-                'items' => array(
-                    array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.weekday.monday', 'monday'),
-                    array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.weekday.tuesday', 'tuesday'),
-                    array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.weekday.wednesday', 'wednesday'),
-                    array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.weekday.thursday', 'thursday'),
-                    array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.weekday.friday', 'friday'),
-                    array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.weekday.saturday', 'saturday'),
-                    array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.weekday.sunday', 'sunday'),
-                ),
+                'items' => [
+                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.weekday.monday', 'monday'],
+                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.weekday.tuesday', 'tuesday'],
+                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.weekday.wednesday', 'wednesday'],
+                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.weekday.thursday', 'thursday'],
+                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.weekday.friday', 'friday'],
+                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.weekday.saturday', 'saturday'],
+                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.weekday.sunday', 'sunday'],
+                ],
                 'default' => 0,
-            ),
-        ),
-        'different_times' => array(
+            ],
+        ],
+        'different_times' => [
             'exclude' => 1,
             'displayCond' => 'FIELD:each_weeks:=:0',
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.different_times',
-            'config' => array(
+            'config' => [
                 'type' => 'inline',
                 'foreign_table' => 'tx_events2_domain_model_time',
                 'foreign_field' => 'event',
-                'foreign_types' => array(
-                    '1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, weekday, --palette--;;times,--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime'),
-                ),
-                'foreign_match_fields' => array(
+                'foreign_types' => [
+                    '1' => ['showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, weekday, --palette--;;times,--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime'],
+                ],
+                'foreign_match_fields' => [
                     'type' => 'different_times',
-                ),
+                ],
                 'minitems' => 0,
                 'maxitems' => 7,
-                'appearance' => array(
+                'appearance' => [
                     'collapseAll' => true,
                     'newRecordLinkAddTitle' => true,
                     'levelLinksPosition' => 'both',
                     'showSynchronizationLink' => 1,
                     'showPossibleLocalizationRecords' => 1,
                     'showAllLocalizationLink' => 1,
-                ),
-            ),
-        ),
-        'each_weeks' => array(
+                ],
+            ],
+        ],
+        'each_weeks' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.each_weeks',
-            'config' => array(
+            'config' => [
                 'type' => 'radio',
-                'items' => array(
-                    array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.each_weeks.0', 0),
-                    array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.each_weeks.1', 1),
-                    array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.each_weeks.2', 2),
-                    array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.each_weeks.3', 3),
-                    array('LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.each_weeks.4', 4),
-                ),
+                'items' => [
+                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.each_weeks.0', 0],
+                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.each_weeks.1', 1],
+                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.each_weeks.2', 2],
+                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.each_weeks.3', 3],
+                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.each_weeks.4', 4],
+                ],
                 'default' => 0,
-            ),
-        ),
-        'recurring_end' => array(
+            ],
+        ],
+        'recurring_end' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.recurring_end',
-            'config' => array(
+            'config' => [
                 'type' => 'input',
                 'size' => 7,
                 'eval' => 'date',
-            ),
-        ),
-        'exceptions' => array(
+            ],
+        ],
+        'exceptions' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.exceptions',
-            'config' => array(
+            'config' => [
                 'type' => 'inline',
                 'foreign_table' => 'tx_events2_domain_model_exception',
                 'foreign_field' => 'event',
                 'foreign_default_sortby' => 'tx_events2_domain_model_exception.exception_date ASC',
                 'maxitems' => 9999,
-                'appearance' => array(
+                'appearance' => [
                     'collapseAll' => true,
                     'levelLinksPosition' => 'both',
                     'showSynchronizationLink' => 1,
                     'showPossibleLocalizationRecords' => 1,
                     'showAllLocalizationLink' => 1,
-                ),
-            ),
-        ),
-        'detail_informations' => array(
+                ],
+            ],
+        ],
+        'detail_informations' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.detail_informations',
-            'config' => array(
+            'config' => [
                 'type' => 'text',
                 'cols' => 40,
                 'rows' => 15,
                 'eval' => 'trim',
-                'wizards' => array(
-                    'RTE' => array(
+                'wizards' => [
+                    'RTE' => [
                         'icon' => 'EXT:backend/Resources/Public/Images/FormFieldWizard/wizard_rte.gif',
-                        'module' => array(
+                        'module' => [
                             'name' => 'wizard_rte',
-                        ),
+                        ],
                         'notNewRecords' => 1,
                         'RTEonly' => 1,
                         'title' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:bodytext.W.RTE',
                         'type' => 'script',
-                    ),
-                ),
-            ),
+                    ],
+                ],
+            ],
             'defaultExtras' => 'richtext:rte_transform[flag=rte_enabled|mode=ts]',
-        ),
-        'free_entry' => array(
+        ],
+        'free_entry' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.free_entry',
-            'config' => array(
+            'config' => [
                 'type' => 'check',
                 'default' => 0,
-            ),
-        ),
-        'ticket_link' => array(
+            ],
+        ],
+        'ticket_link' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.ticket_link',
-            'config' => array(
+            'config' => [
                 'type' => 'inline',
                 'foreign_table' => 'tx_events2_domain_model_link',
                 'maxitems' => 1,
                 'minitems' => 0,
-                'appearance' => array(
+                'appearance' => [
                     'levelLinksPosition' => 'top',
                     'newRecordLinkAddTitle' => true,
                     'showSynchronizationLink' => 1,
                     'showPossibleLocalizationRecords' => 1,
                     'showAllLocalizationLink' => 1,
-                ),
-            ),
-        ),
-        'days' => array(
-            'config' => array(
+                ],
+            ],
+        ],
+        'days' => [
+            'config' => [
                 'type' => 'select',
                 'foreign_table' => 'tx_events2_domain_model_day',
                 'foreign_field' => 'event',
-            ),
-        ),
-        'location' => array(
+            ],
+        ],
+        'location' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.location',
-            'config' => array(
+            'config' => [
                 'type' => 'group',
                 'internal_type' => 'db',
                 'allowed' => 'tx_events2_domain_model_location',
@@ -406,20 +412,20 @@ return array(
                 'size' => 1,
                 'maxitems' => 1,
                 'minitems' => 1,
-                'wizards' => array(
-                    'suggest' => array(
+                'wizards' => [
+                    'suggest' => [
                         'type' => 'suggest',
-                        'default' => array(
+                        'default' => [
                             'searchWholePhrase' => true,
-                        ),
-                    ),
-                ),
-            ),
-        ),
-        'organizer' => array(
+                        ],
+                    ],
+                ],
+            ],
+        ],
+        'organizer' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.organizer',
-            'config' => array(
+            'config' => [
                 'type' => 'group',
                 'internal_type' => 'db',
                 'allowed' => 'tx_events2_domain_model_organizer',
@@ -427,114 +433,114 @@ return array(
                 'size' => 1,
                 'maxitems' => 1,
                 'minitems' => 1,
-                'wizards' => array(
-                    'suggest' => array(
+                'wizards' => [
+                    'suggest' => [
                         'type' => 'suggest',
-                        'default' => array(
+                        'default' => [
                             'searchWholePhrase' => true,
-                        ),
-                    ),
-                ),
-            ),
-        ),
-        'images' => array(
+                        ],
+                    ],
+                ],
+            ],
+        ],
+        'images' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.images',
             'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
                 'images',
-                array(
+                [
                     'minitems' => 0,
                     'maxitems' => 5,
-                    'foreign_match_fields' => array(
+                    'foreign_match_fields' => [
                         'fieldname' => 'images',
                         'tablenames' => 'tx_events2_domain_model_event',
                         'table_local' => 'sys_file',
-                    ),
-                    'appearance' => array(
+                    ],
+                    'appearance' => [
                         'createNewRelationLinkTitle' => $ttContentLanguageFile . ':images.addFileReference'
-                    ),
+                    ],
                     // custom configuration for displaying fields in the overlay/reference table
                     // to use the imageoverlayPalette instead of the basicoverlayPalette
-                    'foreign_types' => array(
-                        '0' => array(
+                    'foreign_types' => [
+                        '0' => [
                             'showitem' => '
                             --palette--;LLL:EXT:lang/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,
                             --palette--;;filePalette'
-                        ),
-                        \TYPO3\CMS\Core\Resource\File::FILETYPE_TEXT => array(
+                        ],
+                        \TYPO3\CMS\Core\Resource\File::FILETYPE_TEXT => [
                             'showitem' => '
                             --palette--;LLL:EXT:lang/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,
                             --palette--;;filePalette'
-                        ),
-                        \TYPO3\CMS\Core\Resource\File::FILETYPE_IMAGE => array(
+                        ],
+                        \TYPO3\CMS\Core\Resource\File::FILETYPE_IMAGE => [
                             'showitem' => '
                             --palette--;LLL:EXT:lang/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,
                             --palette--;;filePalette'
-                        ),
-                        \TYPO3\CMS\Core\Resource\File::FILETYPE_AUDIO => array(
+                        ],
+                        \TYPO3\CMS\Core\Resource\File::FILETYPE_AUDIO => [
                             'showitem' => '
                             --palette--;LLL:EXT:lang/locallang_tca.xlf:sys_file_reference.audioOverlayPalette;audioOverlayPalette,
                             --palette--;;filePalette'
-                        ),
-                        \TYPO3\CMS\Core\Resource\File::FILETYPE_VIDEO => array(
+                        ],
+                        \TYPO3\CMS\Core\Resource\File::FILETYPE_VIDEO => [
                             'showitem' => '
                             --palette--;LLL:EXT:lang/locallang_tca.xlf:sys_file_reference.videoOverlayPalette;videoOverlayPalette,
                             --palette--;;filePalette'
-                        ),
-                        \TYPO3\CMS\Core\Resource\File::FILETYPE_APPLICATION => array(
+                        ],
+                        \TYPO3\CMS\Core\Resource\File::FILETYPE_APPLICATION => [
                             'showitem' => '
                             --palette--;LLL:EXT:lang/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,
                             --palette--;;filePalette'
-                        )
-                    )
-                )
+                        ]
+                    ]
+                ]
             ),
-        ),
-        'video_link' => array(
+        ],
+        'video_link' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.video_link',
-            'config' => array(
+            'config' => [
                 'type' => 'inline',
                 'foreign_table' => 'tx_events2_domain_model_link',
                 'maxitems' => 1,
                 'minitems' => 0,
-                'appearance' => array(
+                'appearance' => [
                     'levelLinksPosition' => 'top',
                     'newRecordLinkAddTitle' => true,
                     'showSynchronizationLink' => 1,
                     'showPossibleLocalizationRecords' => 1,
                     'showAllLocalizationLink' => 1,
-                ),
-            ),
-        ),
-        'download_links' => array(
+                ],
+            ],
+        ],
+        'download_links' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.download_links',
-            'config' => array(
+            'config' => [
                 'type' => 'inline',
                 'foreign_table' => 'tx_events2_domain_model_link',
                 'maxitems' => 1,
                 'minitems' => 0,
-                'appearance' => array(
+                'appearance' => [
                     'levelLinksPosition' => 'both',
                     'newRecordLinkAddTitle' => true,
                     'showSynchronizationLink' => 1,
                     'showPossibleLocalizationRecords' => 1,
                     'showAllLocalizationLink' => 1,
-                ),
-            ),
-        ),
+                ],
+            ],
+        ],
 
-    ),
-    'types' => array(
-        'single' => array('showitem' => '--palette--;;typeAndOnTop, --palette--;;titleLanguage, event_begin, event_time, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.event_details, teaser, detail_informations, free_entry, ticket_link, alternative_times, location, organizer, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.media, images, video_link, download_links,--div--;' . $ttContentLanguageFile . ':tabs.access,starttime, endtime'),
-        'recurring' => array('showitem' => 'event_type, hidden, --palette--;;titleLanguage, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.recurring_event, --palette--;;recurringBeginEnd, event_time, same_day, multiple_times, xth, weekday, different_times, each_weeks, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.exceptions, exceptions, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.event_details, teaser, detail_informations, free_entry, ticket_link, alternative_times, location, organizer, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.media;newline, images, video_link, download_links,--div--;' . $ttContentLanguageFile . ':tabs.access,starttime, endtime'),
-        'duration' => array('showitem' => '--palette--;;typeAndOnTop, --palette--;;titleLanguage, --palette--;;eventBeginEnd, event_time, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.exceptions, exceptions, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.event_details, teaser, detail_informations, free_entry, ticket_link, alternative_times, location, organizer, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.media;newline, images, video_link, download_links,--div--;' . $ttContentLanguageFile . ':tabs.access,starttime, endtime'),
-    ),
-    'palettes' => array(
-        'titleLanguage' => array('showitem' => 'title, sys_language_uid, l10n_parent'),
-        'eventBeginEnd' => array('showitem' => 'event_begin, event_end'),
-        'typeAndOnTop' => array('showitem' => 'event_type, hidden, top_of_list'),
-        'recurringBeginEnd' => array('showitem' => 'event_begin, recurring_end'),
-    ),
-);
+    ],
+    'types' => [
+        'single' => ['showitem' => '--palette--;;typeAndOnTop, --palette--;;titleLanguage, event_begin, event_time, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.event_details, teaser, detail_informations, free_entry, ticket_link, alternative_times, location, organizer, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.media, images, video_link, download_links,--div--;' . $ttContentLanguageFile . ':tabs.access,starttime, endtime'],
+        'recurring' => ['showitem' => 'event_type, hidden, --palette--;;titleLanguage, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.recurring_event, --palette--;;recurringBeginEnd, event_time, same_day, multiple_times, xth, weekday, different_times, each_weeks, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.exceptions, exceptions, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.event_details, teaser, detail_informations, free_entry, ticket_link, alternative_times, location, organizer, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.media;newline, images, video_link, download_links,--div--;' . $ttContentLanguageFile . ':tabs.access,starttime, endtime'],
+        'duration' => ['showitem' => '--palette--;;typeAndOnTop, --palette--;;titleLanguage, --palette--;;eventBeginEnd, event_time, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.exceptions, exceptions, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.event_details, teaser, detail_informations, free_entry, ticket_link, alternative_times, location, organizer, --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.media;newline, images, video_link, download_links,--div--;' . $ttContentLanguageFile . ':tabs.access,starttime, endtime'],
+    ],
+    'palettes' => [
+        'titleLanguage' => ['showitem' => 'title, sys_language_uid, l10n_parent'],
+        'eventBeginEnd' => ['showitem' => 'event_begin, event_end'],
+        'typeAndOnTop' => ['showitem' => 'event_type, hidden, top_of_list'],
+        'recurringBeginEnd' => ['showitem' => 'event_begin, recurring_end'],
+    ],
+];

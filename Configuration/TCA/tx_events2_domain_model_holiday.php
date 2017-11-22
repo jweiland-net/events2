@@ -1,6 +1,6 @@
 <?php
-return array(
-    'ctrl' => array(
+return [
+    'ctrl' => [
         'title' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_holiday',
         'label' => 'title',
         'tstamp' => 'tstamp',
@@ -9,42 +9,42 @@ return array(
         'rootLevel' => 1,
         'searchFields' => 'title',
         'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('events2') . 'Resources/Public/Icons/tx_events2_domain_model_holiday.svg',
-    ),
-    'interface' => array(
+    ],
+    'interface' => [
         'showRecordFieldList' => 'title, day, month',
-    ),
-    'columns' => array(
-        'title' => array(
+    ],
+    'columns' => [
+        'title' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_holiday.title',
-            'config' => array(
+            'config' => [
                 'type' => 'input',
                 'size' => 30,
-            ),
-        ),
-        'day' => array(
+            ],
+        ],
+        'day' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_holiday.day',
-            'config' => array(
+            'config' => [
                 'type' => 'input',
                 'size' => 2,
                 'eval' => 'int,required'
-            ),
-        ),
-        'month' => array(
+            ],
+        ],
+        'month' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_holiday.month',
-            'config' => array(
+            'config' => [
                 'type' => 'input',
                 'size' => 2,
                 'eval' => 'int,required'
-            ),
-        ),
-    ),
-    'types' => array(
-        '1' => array('showitem' => 'title, day, month'),
-    ),
-    'palettes' => array(
-        '1' => array('showitem' => ''),
-    ),
-);
+            ],
+        ],
+    ],
+    'types' => [
+        '1' => ['showitem' => 'title, day, month'],
+    ],
+    'palettes' => [
+        '1' => ['showitem' => ''],
+    ],
+];

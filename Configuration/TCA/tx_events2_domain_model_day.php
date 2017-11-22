@@ -1,52 +1,53 @@
 <?php
-return array(
-    'ctrl' => array(
+return [
+    'ctrl' => [
         'title' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_day',
         'label' => 'day',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
         'hideTable' => true,
-        'enablecolumns' => array(
+        'enablecolumns' => [
             'disabled' => 'hidden',
-        ),
-    ),
-    'interface' => array(
+        ],
+    ],
+    'interface' => [
         'showRecordFieldList' => 'day',
-    ),
-    'columns' => array(
-        'day' => array(
+    ],
+    'columns' => [
+        'day' => [
             'label' => 'Day',
-            'config' => array(
+            'config' => [
                 'type' => 'input',
                 'eval' => 'date',
-            ),
-        ),
-        'day_time' => array(
+            ],
+        ],
+        'day_time' => [
             'label' => 'DayTime',
-            'config' => array(
+            'config' => [
                 'type' => 'input',
                 'eval' => 'datetime',
-            ),
-        ),
-        'sort_day_time' => array(
+            ],
+        ],
+        'sort_day_time' => [
             'label' => 'DayTime',
-            'config' => array(
+            'config' => [
                 'type' => 'input',
                 'eval' => 'datetime',
-            ),
-        ),
-        'event' => array(
-            'config' => array(
+            ],
+        ],
+        'event' => [
+            'config' => [
                 'type' => 'select',
+                'renderType' => 'selectSingle',
                 'foreign_table' => 'tx_events2_domain_model_event',
-            ),
-        ),
-    ),
-    'types' => array(
-        '1' => array('showitem' => 'day,'),
-    ),
-    'palettes' => array(
-        '1' => array('showitem' => ''),
-    ),
-);
+            ],
+        ],
+    ],
+    'types' => [
+        '1' => ['showitem' => 'day,'],
+    ],
+    'palettes' => [
+        '1' => ['showitem' => ''],
+    ],
+];
