@@ -256,6 +256,10 @@ class DayGeneratorTest extends UnitTestCase
     public function initializeWithRecurringWeeksWillKeepDaylightSavingTime()
     {
         $timestamp = mktime(0, 0, 0, 10, 20, 2017);
+        // this test has to build days in past. To allow this we have to set recurring past to a high value
+        // Maybe you have to update this value or the year above in future
+        $extConf = new ExtConf();
+        $extConf->setRecurringPast(60);
 
         // These dates will be created with timezone_type = 1, which does know the timezone (+02:00) only from the current date
         $eventBegin = new \DateTime(date('c', $timestamp));
@@ -284,7 +288,7 @@ class DayGeneratorTest extends UnitTestCase
         /** @var \JWeiland\Events2\Service\DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
         $dayGenerator = $this->getMock('JWeiland\\Events2\\Service\\DayGenerator', array('addException', 'getMaxDateForGeneratedDays'));
         $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
-        $dayGenerator->injectExtConf(new ExtConf());
+        $dayGenerator->injectExtConf($extConf);
         $dayGenerator->expects($this->never())->method('addException');
         $dayGenerator->expects($this->once())->method('getMaxDateForGeneratedDays')->willReturn($expectedEnd);
         $this->assertTrue($dayGenerator->initialize($event));

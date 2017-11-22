@@ -352,9 +352,12 @@ class DayGenerator
         }
 
         // now we can be sure that $earliestDay is in sync with $this->getEventBegin()
-        $this->addDayToStorage($earliestDay);
-
         $maxDate = $this->getMaxDateForGeneratedDays($event);
+        if ($earliestDay <= $maxDate) {
+            // add earliest day, if date is not already over
+            $this->addDayToStorage($earliestDay);
+        }
+
         $interval = $earliestDay->diff($maxDate); // generates an interval object
         $diffDays = (int)$interval->format('%a'); // returns the difference in days
         $daysToGenerate = ceil($diffDays / ($event->getEachWeeks() * 7)); // diff in days / weeks in days ==> rounded up to next int
