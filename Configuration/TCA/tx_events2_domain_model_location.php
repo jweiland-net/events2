@@ -72,7 +72,7 @@ $tx_events2_domain_model_event = [
                 'default' => 0
             ]
         ],
-        'l18n_diffsource' => [
+        'l10n_diffsource' => [
             'config' => [
                 'type' => 'passthrough',
                 'default' => ''

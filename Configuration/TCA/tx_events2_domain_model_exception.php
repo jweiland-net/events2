@@ -72,7 +72,7 @@ return [
                 'default' => 0
             ]
         ],
-        'l18n_diffsource' => [
+        'l10n_diffsource' => [
             'config' => [
                 'type' => 'passthrough',
                 'default' => ''
