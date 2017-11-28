@@ -15,7 +15,6 @@ namespace JWeiland\Events2\Task;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Importer\ImporterInterface;
-use JWeiland\Events2\Service\DayRelationService;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Resource\File;
@@ -45,20 +44,12 @@ class Import extends AbstractTask
     protected $databaseConnection;
 
     /**
-     * @var DayRelationService
-     */
-    protected $dayRelations;
-
-    /**
      * constructor of this class.
      */
     public function __construct()
     {
         $this->databaseConnection = $GLOBALS['TYPO3_DB'];
 
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        $this->dayRelations = $objectManager->get('JWeiland\\Events2\\Service\\DayRelationService');
         parent::__construct();
     }
 
@@ -154,9 +145,5 @@ class Import extends AbstractTask
     public function __wakeup()
     {
         $this->databaseConnection = $GLOBALS['TYPO3_DB'];
-
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        $this->dayRelations = $objectManager->get('JWeiland\\Events2\\Service\\DayRelationService');
     }
 }

@@ -34,7 +34,7 @@ $tx_events2_domain_model_event = [
         'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('events2') . 'Resources/Public/Icons/tx_events2_domain_model_location.png',
     ],
     'interface' => [
-        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, location, street, house_number, zip, city, country, tx_maps2_uid',
+        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, location, street, house_number, zip, city, country',
     ],
     'columns' => [
         'sys_language_uid' => [
@@ -196,27 +196,6 @@ $tx_events2_domain_model_event = [
                 ],
             ],
         ],
-        'tx_maps2_uid' => [
-            'exclude' => 1,
-            'label' => 'LLL:EXT:maps2/Resources/Private/Language/locallang_db.xlf:tx_maps2_uid',
-            'config' => [
-                'type' => 'group',
-                'internal_type' => 'db',
-                'allowed' => 'tx_maps2_domain_model_poicollection',
-                'prepend_tname' => false,
-                'show_thumbs' => false,
-                'size' => 1,
-                'maxitems' => 1,
-                'wizards' => [
-                    'suggest' => [
-                        'type' => 'suggest',
-                        'default' => [
-                            'searchWholePhrase' => true,
-                        ],
-                    ],
-                ],
-            ],
-        ],
         'event' => [
             'config' => [
                 'type' => 'passthrough',
@@ -224,7 +203,7 @@ $tx_events2_domain_model_event = [
         ],
     ],
     'types' => [
-        '1' => ['showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, location, street, house_number, zip, city, country, tx_maps2_uid, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime'],
+        '1' => ['showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, location, street, house_number, zip, city, country, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime'],
     ],
     'palettes' => [
         '1' => ['showitem' => ''],
