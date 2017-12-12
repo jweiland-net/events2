@@ -53,6 +53,8 @@ class SearchController extends ActionController
      * PreProcessing for all actions.
      *
      * @return void
+     *
+     * @throws \Exception
      */
     protected function initializeAction()
     {
@@ -91,6 +93,10 @@ class SearchController extends ActionController
     /**
      * we have a self-build form.
      * That's why we have to manually allow some form-elements.
+     *
+     * @return void
+     *
+     * @throws \Exception
      */
     public function initializeShowAction()
     {
@@ -107,6 +113,8 @@ class SearchController extends ActionController
      * action show.
      *
      * @param Search $search
+     *
+     * @return void
      */
     public function showAction(Search $search = null)
     {

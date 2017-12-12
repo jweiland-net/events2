@@ -31,6 +31,8 @@ class EventController extends AbstractController
      * That's why we have to manually allow some form-elements.
      *
      * @return void
+     *
+     * @throws \Exception
      */
     public function initializeListSearchResultsAction()
     {
@@ -49,6 +51,8 @@ class EventController extends AbstractController
      * @param Search $search
      *
      * @return void
+     *
+     * @throws \Exception
      */
     public function listSearchResultsAction(Search $search)
     {
@@ -92,6 +96,8 @@ class EventController extends AbstractController
      * We need this to create a DateTime-Object with time of midnight.
      *
      * @return void
+     *
+     * @throws \Exception
      */
     public function initializeCreateAction()
     {
@@ -130,6 +136,8 @@ class EventController extends AbstractController
      * @param Event $event
      *
      * @return void
+     *
+     * @throws \Exception
      */
     public function createAction(Event $event)
     {
@@ -169,6 +177,8 @@ class EventController extends AbstractController
      * We need this to create a DateTime-Object with time of midnight.
      *
      * @return void
+     *
+     * @throws \Exception
      */
     public function initializeUpdateAction()
     {
@@ -214,6 +224,8 @@ class EventController extends AbstractController
      * @param Event $event
      *
      * @return void
+     *
+     * @throws \Exception
      */
     public function updateAction(Event $event)
     {
@@ -238,6 +250,8 @@ class EventController extends AbstractController
      * @param int $event
      *
      * @return void
+     *
+     * @throws \Exception
      */
     public function deleteAction($event)
     {
@@ -253,6 +267,8 @@ class EventController extends AbstractController
      * @param int $event
      *
      * @return void
+     *
+     * @throws \Exception
      */
     public function activateAction($event)
     {
@@ -294,6 +310,8 @@ class EventController extends AbstractController
      * @param Event $event
      *
      * @return int The amount of email receivers
+     *
+     * @throws \Exception
      */
     public function sendMail($subjectKey, Event $event)
     {

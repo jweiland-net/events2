@@ -29,6 +29,8 @@ class DayController extends AbstractController
      * @param Filter $filter
      *
      * @return void
+     *
+     * @throws \Exception
      */
     public function listAction(Filter $filter = null)
     {
@@ -42,6 +44,8 @@ class DayController extends AbstractController
      * @param Filter $filter
      *
      * @return void
+     *
+     * @throws \Exception
      */
     public function listLatestAction(Filter $filter = null)
     {
@@ -64,6 +68,8 @@ class DayController extends AbstractController
      * @param Filter $filter
      *
      * @return void
+     *
+     * @throws \Exception
      */
     public function listTodayAction(Filter $filter = null)
     {
@@ -77,6 +83,8 @@ class DayController extends AbstractController
      * @param Filter $filter
      *
      * @return void
+     *
+     * @throws \Exception
      */
     public function listThisWeekAction(Filter $filter = null)
     {
@@ -90,6 +98,8 @@ class DayController extends AbstractController
      * @param Filter $filter
      *
      * @return void
+     *
+     * @throws \Exception
      */
     public function listRangeAction(Filter $filter = null)
     {
@@ -107,6 +117,8 @@ class DayController extends AbstractController
      * @param int $timestamp
      *
      * @return void
+     *
+     * @throws \Exception
      */
     public function showAction($event, $timestamp = 0)
     {
@@ -128,6 +140,8 @@ class DayController extends AbstractController
      * @param int $timestamp
      *
      * @return void
+     *
+     * @throws \Exception
      */
     public function showByTimestampAction($timestamp)
     {

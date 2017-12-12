@@ -89,6 +89,8 @@ class DayRepository extends Repository
      * @param int $limit
      *
      * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     *
+     * @throws \Exception
      */
     public function findEvents($type, Filter $filter, $limit = 0)
     {
@@ -97,9 +99,16 @@ class DayRepository extends Repository
         $this->addGroupingToQuery($query);
         $constraint = array();
 
+        // add categories
         if (!empty($this->settings['categories'])) {
             $constraint[] = $query->in('event.categories.uid', GeneralUtility::intExplode(',', $this->settings['categories'], true));
         }
+
+        // add storage PIDs. But not for sys_category
+        // @link: https://forge.typo3.org/issues/83296
+        $query->getQuerySettings()->setRespectStoragePage(false);
+        $constraints[] = $query->in('pid', $query->getQuerySettings()->getStoragePageIds());
+        $constraints[] = $query->in('event.pid', $query->getQuerySettings()->getStoragePageIds());
 
         // add filter for organizer
         if ($filter->getOrganizer()) {
@@ -159,6 +168,8 @@ class DayRepository extends Repository
      * @param int $maxRecords
      *
      * @return Day[]
+     *
+     * @throws \Exception
      */
     public function groupDaysByEventAndSort(QueryResultInterface $queryResult, $maxRecords)
     {
@@ -247,6 +258,8 @@ class DayRepository extends Repository
      * @param Search $search
      *
      * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     *
+     * @throws \Exception
      */
     public function searchEvents(Search $search)
     {
@@ -273,6 +286,12 @@ class DayRepository extends Repository
             // visitor has not selected any category. Search within allowed categories in plugin configuration
             $constraint[] = $query->in('event.categories.uid', GeneralUtility::trimExplode(',', $this->settings['categories']));
         }
+
+        // add storage PIDs. But not for sys_category
+        // @link: https://forge.typo3.org/issues/83296
+        $query->getQuerySettings()->setRespectStoragePage(false);
+        $constraints[] = $query->in('pid', $query->getQuerySettings()->getStoragePageIds());
+        $constraints[] = $query->in('event.pid', $query->getQuerySettings()->getStoragePageIds());
 
         // add query for event begin
         if ($search->getEventBegin()) {
@@ -328,6 +347,8 @@ class DayRepository extends Repository
      * @param int $timestamp
      *
      * @return QueryResult
+     *
+     * @throws \Exception
      */
     public function findByTimestamp($timestamp)
     {
@@ -353,6 +374,8 @@ class DayRepository extends Repository
      * @param int $timestamp
      *
      * @return Day|null
+     *
+     * @throws \Exception
      */
     public function findOneByTimestamp($eventUid, $timestamp = 0)
     {

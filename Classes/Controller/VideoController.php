@@ -23,7 +23,6 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
  */
 class VideoController extends ActionController
 {
-
     /**
      * eventRepository
      *
@@ -47,6 +46,7 @@ class VideoController extends ActionController
      * action show
      *
      * @param int $event
+     *
      * @return void
      */
     public function showAction($event)
@@ -54,5 +54,4 @@ class VideoController extends ActionController
         $event = $this->eventRepository->findByIdentifier((int)$event);
         $this->view->assign('event', $event);
     }
-
 }
