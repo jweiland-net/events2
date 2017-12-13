@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Persistence\Typo362\Generic\Storage;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnsupportedOrderException;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom;
 
@@ -96,8 +97,10 @@ class Typo3DbQueryParser extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\
      * @param array $groupings An array of groupings
      * @param Qom\SourceInterface $source The source
      * @param array &$sql The query parts
-     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnsupportedOrderException
+     *
      * @return void
+     *
+     * @throws \Exception
      */
     protected function parseGroupings(array $groupings, Qom\SourceInterface $source, array &$sql)
     {

@@ -83,12 +83,12 @@ class AdditionalFieldsForImport implements AdditionalFieldProviderInterface
      * Gets additional fields to render in the form to add/edit a task
      *
      * @param array $taskInfo Values of the fields from the add/edit task form
-     * @param \TYPO3\CMS\Scheduler\Task\AbstractTask $task The task object being eddited. Null when adding a task!
-     * @param \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule Reference to the scheduler backend module
+     * @param AbstractTask $task The task object being eddited. Null when adding a task!
+     * @param SchedulerModuleController $schedulerModule Reference to the scheduler backend module
      *
      * @return array A two dimensional array, ['Identifier' => ['fieldId' => ['code' => '', 'label' => '', 'cshKey' => '', 'cshLabel' => '']]]
      */
-    public function getAdditionalFields(array &$taskInfo, $task, \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule)
+    public function getAdditionalFields(array &$taskInfo, $task, SchedulerModuleController $schedulerModule)
     {
         // make variables available for all methods in this class
         $this->initialize($taskInfo, $task, $schedulerModule);
@@ -106,10 +106,12 @@ class AdditionalFieldsForImport implements AdditionalFieldProviderInterface
      * and set some value available for all methods in this class
      *
      * @param array $taskInfo
-     * @param \TYPO3\CMS\Scheduler\Task\AbstractTask $task
-     * @param \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule
+     * @param AbstractTask $task
+     * @param SchedulerModuleController $schedulerModule
+     *
+     * @return void
      */
-    protected function initialize(array &$taskInfo, $task, \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule)
+    protected function initialize(array &$taskInfo, $task, SchedulerModuleController $schedulerModule)
     {
         $this->taskInfo = $taskInfo;
         $this->task = $task;
@@ -180,11 +182,11 @@ class AdditionalFieldsForImport implements AdditionalFieldProviderInterface
      * Validates the additional fields' values
      *
      * @param array $submittedData An array containing the data submitted by the add/edit task form
-     * @param \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule Reference to the scheduler backend module
+     * @param SchedulerModuleController $schedulerModule Reference to the scheduler backend module
      *
      * @return boolean true if validation was ok (or selected class is not relevant), FALSE otherwise
      */
-    public function validateAdditionalFields(array &$submittedData, \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule)
+    public function validateAdditionalFields(array &$submittedData, SchedulerModuleController $schedulerModule)
     {
         $errorExists = false;
         foreach (array_keys($this->createFieldsFor) as $fieldName) {
@@ -192,7 +194,7 @@ class AdditionalFieldsForImport implements AdditionalFieldProviderInterface
             if (empty($value)) {
                 // Issue error message
                 $errorExists = true;
-                $schedulerModule->addMessage('Field: ' . $fieldName . ' can not be empty', \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR);
+                $schedulerModule->addMessage('Field: ' . $fieldName . ' can not be empty', FlashMessage::ERROR);
             } else {
                 $submittedData[$fieldName] = $value;
             }
@@ -204,11 +206,11 @@ class AdditionalFieldsForImport implements AdditionalFieldProviderInterface
      * Takes care of saving the additional fields' values in the task's object
      *
      * @param array $submittedData An array containing the data submitted by the add/edit task form
-     * @param \TYPO3\CMS\Scheduler\Task\AbstractTask $task Reference to the scheduler backend module
+     * @param AbstractTask $task Reference to the scheduler backend module
      *
      * @return void
      */
-    public function saveAdditionalFields(array $submittedData, \TYPO3\CMS\Scheduler\Task\AbstractTask $task)
+    public function saveAdditionalFields(array $submittedData, AbstractTask $task)
     {
         foreach (array_keys($this->createFieldsFor) as $fieldName) {
             $task->$fieldName = $submittedData[$fieldName];

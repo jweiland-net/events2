@@ -101,6 +101,8 @@ abstract class AbstractImporter implements ImporterInterface
      * @param File $file
      *
      * @return bool
+     *
+     * @throws \Exception
      */
     public function isValid(File $file) {
         $isValid = true;

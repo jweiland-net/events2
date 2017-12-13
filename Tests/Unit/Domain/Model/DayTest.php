@@ -93,7 +93,7 @@ class DayTest extends UnitTestCase
      *
      * @param mixed $argument
      * @dataProvider dataProviderForSetDay
-     * @expectedException \PHPUnit_Framework_Error
+     * @expectedException \TypeError
      */
     public function setDayWithInvalidValuesResultsInException($argument)
     {

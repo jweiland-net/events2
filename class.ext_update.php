@@ -54,10 +54,13 @@ class ext_update
      * Main update function called by the extension manager.
      *
      * @return string
+     *
+     * @throws \Exception
      */
     public function main()
     {
         $this->processUpdates();
+
         return $this->generateOutput();
     }
 

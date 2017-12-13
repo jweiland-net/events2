@@ -28,6 +28,8 @@ class CategoryRepository extends \TYPO3\CMS\Extbase\Domain\Repository\CategoryRe
      * @param string $categoryUids UIDs category
      *
      * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     *
+     * @throws \Exception
      */
     public function getCategories($categoryUids)
     {

@@ -62,6 +62,8 @@ class Import extends AbstractTask
      * Should return TRUE on successful execution, FALSE on error.
      *
      * @return bool Returns TRUE on successful execution, FALSE on error
+     *
+     * @throws \Exception
      */
     public function execute()
     {
@@ -96,6 +98,8 @@ class Import extends AbstractTask
      * @param File $file
      *
      * @return bool
+     *
+     * @throws \Exception
      */
     protected function importFile(File $file)
     {

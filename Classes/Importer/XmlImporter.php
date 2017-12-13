@@ -47,6 +47,8 @@ class XmlImporter extends AbstractImporter
      * @param AbstractTask $task
      *
      * @return bool
+     *
+     * @throws \Exception
      */
     public function import(File $file, AbstractTask $task)
     {
@@ -82,6 +84,8 @@ class XmlImporter extends AbstractImporter
      * @param FileInterface $file
      *
      * @return bool
+     *
+     * @throws \Exception
      */
     protected function validateXml(FileInterface $file)
     {
@@ -103,6 +107,8 @@ class XmlImporter extends AbstractImporter
      * @param array $event
      *
      * @return bool
+     *
+     * @throws \Exception
      */
     protected function isValidEvent(array $event)
     {

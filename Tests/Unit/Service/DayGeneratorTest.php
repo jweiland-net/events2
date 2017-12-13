@@ -96,8 +96,12 @@ class DayGeneratorTest extends UnitTestCase
      * @test
      *
      * @param mixed $invalidArgument
+     *
+     * @throws \Exception
+     *
      * @dataProvider dataProviderWithInvalidValuesForArrayArguments
-     * @expectedException \PHPUnit_Framework_Error
+     *
+     * @expectedException \TypeError
      */
     public function initializeWithInvalidArguments($invalidArgument)
     {
@@ -106,6 +110,8 @@ class DayGeneratorTest extends UnitTestCase
 
     /**
      * @test
+     *
+     * @throws \Exception
      */
     public function initializeWithEmptyEventRecordResultsInFalse()
     {
@@ -116,6 +122,8 @@ class DayGeneratorTest extends UnitTestCase
 
     /**
      * @test
+     *
+     * @throws \Exception
      */
     public function initializeWithInvalidEventRecordResultsInFalse()
     {
@@ -126,6 +134,8 @@ class DayGeneratorTest extends UnitTestCase
 
     /**
      * @test
+     *
+     * @throws \Exception
      */
     public function initializeWithRecurringEventCallsAddRecurringEvents()
     {
@@ -148,6 +158,8 @@ class DayGeneratorTest extends UnitTestCase
 
     /**
      * @test
+     *
+     * @throws \Exception
      */
     public function initializeWithRecurringWeeksCallsAddRecurringWeeks()
     {
@@ -170,6 +182,8 @@ class DayGeneratorTest extends UnitTestCase
 
     /**
      * @test
+     *
+     * @throws \Exception
      */
     public function initializeWithRecurringOverEachWeekAddsThreeDaysToStorage()
     {
@@ -214,6 +228,8 @@ class DayGeneratorTest extends UnitTestCase
 
     /**
      * @test
+     *
+     * @throws \Exception
      */
     public function initializeWithRecurringOverTwoWeeksAddsDaysToStorage()
     {
@@ -252,6 +268,8 @@ class DayGeneratorTest extends UnitTestCase
      * The earliest switch to wintertime for the next 30 years is 25. october
      *
      * @test
+     *
+     * @throws \Exception
      */
     public function initializeWithRecurringWeeksWillKeepDaylightSavingTime()
     {
@@ -300,6 +318,8 @@ class DayGeneratorTest extends UnitTestCase
 
     /**
      * @test
+     *
+     * @throws \Exception
      */
     public function initializeWithRecurringAndEqualEventBeginAndEventEndResultsInOneDayInStorage()
     {
@@ -325,6 +345,8 @@ class DayGeneratorTest extends UnitTestCase
 
     /**
      * @test
+     *
+     * @throws \Exception
      */
     public function initializeWithAnEmptySettingForRecurringsResultsInAddDaysForEachDay()
     {
@@ -358,6 +380,8 @@ class DayGeneratorTest extends UnitTestCase
 
     /**
      * @test
+     *
+     * @throws \Exception
      */
     public function initializeWithGivenWeekdaysResultsInAddedDaysInStorage()
     {
@@ -403,6 +427,8 @@ class DayGeneratorTest extends UnitTestCase
      * This test also checks for leap years.
      *
      * @test
+     *
+     * @throws \Exception
      */
     public function initializeWithGivenXthsResultsInAddedDaysInStorage()
     {
@@ -443,6 +469,8 @@ class DayGeneratorTest extends UnitTestCase
 
     /**
      * @test
+     *
+     * @throws \Exception
      */
     public function initializeWithEventEndAddsDaysToStorage()
     {
@@ -477,6 +505,8 @@ class DayGeneratorTest extends UnitTestCase
 
     /**
      * @test
+     *
+     * @throws \Exception
      */
     public function initializeWithEventBeginAddsOneDayToStorage()
     {
@@ -502,6 +532,8 @@ class DayGeneratorTest extends UnitTestCase
 
     /**
      * @test
+     *
+     * @throws \Exception
      */
     public function initializeWithExceptionsInEventCallsAddExceptions()
     {
@@ -532,6 +564,8 @@ class DayGeneratorTest extends UnitTestCase
 
     /**
      * @test
+     *
+     * @throws \Exception
      */
     public function initializeWithAddExceptionAddsOneDayInStorage()
     {
@@ -582,6 +616,8 @@ class DayGeneratorTest extends UnitTestCase
 
     /**
      * @test
+     *
+     * @throws \Exception
      */
     public function initializeWithRemoveExceptionRemovesOneDayFromStorage()
     {
@@ -618,6 +654,8 @@ class DayGeneratorTest extends UnitTestCase
 
     /**
      * @test
+     *
+     * @throws \Exception
      */
     public function initializeWithTimeExceptionDoNotAddDayToStorage()
     {
@@ -654,6 +692,8 @@ class DayGeneratorTest extends UnitTestCase
 
     /**
      * @test
+     *
+     * @throws \Exception
      */
     public function initializeWithInfoExceptionDoNotAddDayToStorage()
     {
@@ -690,6 +730,8 @@ class DayGeneratorTest extends UnitTestCase
 
     /**
      * @test
+     *
+     * @throws \Exception
      *
      * @expectedException \Exception
      */

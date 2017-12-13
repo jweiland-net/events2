@@ -80,8 +80,8 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
      * @param string $targetType
      * @param array $convertedChildProperties
      * @param PropertyMappingConfigurationInterface $configuration
+     *
      * @return mixed|Error the target type, or an error object if a user-error occurred
-     * @throws Exception\TypeConverterException thrown in case a developer error occurred
      */
     public function convertFrom(
         $source,

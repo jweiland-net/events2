@@ -20,11 +20,11 @@ use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Utility\DateTimeUtility;
-use PhpParser\Node\Arg;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Database\PreparedStatement;
+use TYPO3\CMS\Core\Tests\AccessibleObjectInterface;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
@@ -40,7 +40,7 @@ use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
 class AjaxTest extends UnitTestCase
 {
     /**
-     * @var \JWeiland\Events2\Ajax\FindDaysForMonth\Ajax|\PHPUnit_Framework_MockObject_MockObject|\TYPO3\CMS\Core\Tests\AccessibleObjectInterface
+     * @var FindDaysForMonth\Ajax|\PHPUnit_Framework_MockObject_MockObject|AccessibleObjectInterface
      */
     protected $subject;
 
@@ -139,9 +139,11 @@ class AjaxTest extends UnitTestCase
      *
      * @param mixed $invalidValue
      *
+     * @throws \Exception
+     *
      * @dataProvider dataProviderForInvalidValues
      *
-     * @expectedException \PHPUnit_Framework_Error
+     * @expectedException \TypeError
      */
     public function initializeWithInvalidValuesResultsInException($invalidValue)
     {

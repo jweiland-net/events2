@@ -53,6 +53,10 @@ class DataHandlerHook
 
     /**
      * @param \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler
+     *
+     * @return void
+     *
+     * @throws \Exception
      */
     public function processDatamap_afterAllOperations($dataHandler)
     {

@@ -309,7 +309,7 @@ class DayControllerTest extends UnitTestCase
     /**
      * @test
      *
-     * @expectedException \PHPUnit_Framework_Error_Warning
+     * @expectedException \ArgumentCountError
      */
     public function showByTimestampWithoutTimestampThrowsException()
     {

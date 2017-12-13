@@ -77,6 +77,7 @@ class DayRepositoryTest extends UnitTestCase
         $this->dataMapper = $this->prophesize(DataMapper::class);
         $this->persistenceManager = $this->prophesize(PersistenceManager::class);
 
+        $this->query->setQuerySettings(new Typo3QuerySettings());
         $this->queryResult->getQuery()->willReturn($this->query->reveal());
 
         $this->subject = $this->getMock(DayRepository::class, ['createQuery'], [], '', false);
@@ -101,6 +102,7 @@ class DayRepositoryTest extends UnitTestCase
     {
         $this->query->logicalAnd(Argument::cetera())->shouldBeCalled()->willReturn([]);
         $this->query->greaterThanOrEqual(Argument::cetera())->shouldBeCalled();
+        $this->query->getQuerySettings(Argument::cetera())->shouldBeCalled();
         $this->query->matching(Argument::exact([]))->shouldBeCalled()->willReturn($this->query->reveal());
         $this->query->setGroupings(Argument::cetera())->shouldBeCalled();
         $this->query->execute(Argument::cetera())->shouldBeCalled();

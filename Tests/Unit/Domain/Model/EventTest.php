@@ -246,7 +246,7 @@ class EventTest extends UnitTestCase
     /**
      * @test
      *
-     * @expectedException \PHPUnit_Framework_Error
+     * @expectedException \TypeError
      */
     public function setEventBeginWithTimestampResultsInException()
     {
@@ -657,7 +657,7 @@ class EventTest extends UnitTestCase
     /**
      * @test
      *
-     * @expectedException \PHPUnit_Framework_Error
+     * @expectedException \TypeError
      */
     public function setRecurringEndWithTimestampResultsInException()
     {

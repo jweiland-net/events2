@@ -125,6 +125,8 @@ class Ajax
      * @param array $arguments Arguments to process
      *
      * @return string
+     *
+     * @throws \Exception
      */
     public function processAjaxRequest(array $arguments)
     {

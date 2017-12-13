@@ -48,7 +48,10 @@ class Typo3DbQueryParser extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\
      * Parses the query and returns the SQL statement parts.
      *
      * @param QueryInterface $query The query
+     *
      * @return array The SQL statement parts
+     *
+     * @throws \Exception
      */
     public function parseQuery(QueryInterface $query)
     {
@@ -94,8 +97,10 @@ class Typo3DbQueryParser extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\
      * @param array $groupings An array of groupings
      * @param Qom\SourceInterface $source The source
      * @param array &$sql The query parts
-     * @throws \TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnsupportedOrderException
+     *
      * @return void
+     *
+     * @throws \Exception
      */
     protected function parseGroupings(array $groupings, Qom\SourceInterface $source, array &$sql)
     {

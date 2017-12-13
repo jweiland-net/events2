@@ -131,7 +131,7 @@ class ExceptionTest extends UnitTestCase
      *
      * @param mixed $argument
      * @dataProvider dataProviderForSetExceptionDate
-     * @expectedException \PHPUnit_Framework_Error
+     * @expectedException \TypeError
      */
     public function setExceptionDateWithInvalidValuesResultsInException($argument)
     {

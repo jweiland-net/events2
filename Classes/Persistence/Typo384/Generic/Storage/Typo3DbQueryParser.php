@@ -27,7 +27,10 @@ class Typo3DbQueryParser extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\
      * Returns a ready to be executed QueryBuilder object, based on the query
      *
      * @param QueryInterface $query
+     *
      * @return QueryBuilder
+     *
+     * @throws \Exception
      */
     public function convertQueryToDoctrineQueryBuilder(QueryInterface $query)
     {
@@ -66,6 +69,8 @@ class Typo3DbQueryParser extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\
      * @param Qom\SourceInterface $source The source
      *
      * @return void
+     *
+     * @throws \Exception
      */
     protected function parseGroupings(array $groupings, Qom\SourceInterface $source)
     {

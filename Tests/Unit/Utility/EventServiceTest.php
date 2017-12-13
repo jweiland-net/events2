@@ -307,7 +307,7 @@ class EventServiceTest extends UnitTestCase
      *
      * @param mixed $invalidValue
      * @dataProvider dataProviderWithInvalidValuesForGetTimesForDay
-     * @expectedException \PHPUnit_Framework_Error
+     * @expectedException \TypeError
      */
     public function getTimesForDayWithWrongParametersThrowsException($invalidValue)
     {

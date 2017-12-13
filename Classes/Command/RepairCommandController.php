@@ -65,6 +65,8 @@ class RepairCommandController extends CommandController
 
     /**
      * Repair events.
+     *
+     * @throws \Exception
      */
     public function eventsCommand()
     {

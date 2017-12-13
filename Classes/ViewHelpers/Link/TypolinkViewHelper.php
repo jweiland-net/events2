@@ -13,6 +13,7 @@ namespace JWeiland\Events2\ViewHelpers\Link;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use JWeiland\Events2\Service\TypoLinkCodecService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContextInterface;
