@@ -32,12 +32,12 @@ class CalendarController extends ActionController
      * @var \TYPO3\CMS\Core\Page\PageRenderer
      */
     protected $pageRenderer;
-    
+
     /**
      * @var \JWeiland\Events2\Domain\Repository\DayRepository
      */
     protected $dayRepository;
-    
+
     /**
      * inject page renderer.
      *
@@ -47,7 +47,7 @@ class CalendarController extends ActionController
     {
         $this->pageRenderer = $pageRenderer;
     }
-    
+
     /**
      * inject day repository.
      *
@@ -57,14 +57,14 @@ class CalendarController extends ActionController
     {
         $this->dayRepository = $dayRepository;
     }
-    
+
     /**
      * action show.
      */
     public function showAction()
     {
         $placeHolders = $this->getEnvironmentPlaceholders();
-        
+
         // get month and year from session
         $monthAndYear = $this->getMonthAndYearFromUserSession();
         $day = $this->getDayFromUrl();
@@ -88,7 +88,7 @@ class CalendarController extends ActionController
         }
         $this->view->assignMultiple($placeHolders);
     }
-    
+
     /**
      * Get environment placeholders
      *
@@ -96,18 +96,18 @@ class CalendarController extends ActionController
      */
     protected function getEnvironmentPlaceholders()
     {
-        $placeHolders = array();
-        $placeHolders['environment'] = array();
+        $placeHolders = [];
+        $placeHolders['environment'] = [];
         $placeHolders['environment']['settings'] = $this->settings;
         $frameworkConfiguration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
         $placeHolders['environment']['storagePids'] = $frameworkConfiguration['persistence']['storagePid'];
         $placeHolders['environment']['pidOfListPage'] = $this->settings['pidOfListPage'] ?: $GLOBALS['TSFE']->id;
         $placeHolders['environment']['siteUrl'] = $this->getTypo3SiteUrl();
         $placeHolders['environment']['siteId'] = $GLOBALS['TSFE']->id;
-        
+
         return $placeHolders;
     }
-    
+
     /**
      * Get TYPO3 SiteUrl
      *
@@ -132,12 +132,12 @@ class CalendarController extends ActionController
             'events2MonthAndYearForCalendar'
         );
         if (!is_array($monthAndYear)) {
-            $monthAndYear = array();
+            $monthAndYear = [];
         }
 
         return $monthAndYear;
     }
-    
+
     /**
      * get day from url
      * we can't set $day as parameter in showAction($day), because this action is of controller Calendar and not Event.
@@ -160,7 +160,7 @@ class CalendarController extends ActionController
 
         return $day;
     }
-    
+
     /**
      * Get TSFE
      *

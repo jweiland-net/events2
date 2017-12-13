@@ -79,11 +79,11 @@ class DayTest extends UnitTestCase
      */
     public function dataProviderForSetDay()
     {
-        $arguments = array();
-        $arguments['set Day with Null'] = array(null);
-        $arguments['set Day with Integer'] = array(1234567890);
-        $arguments['set Day with Integer as String'] = array('1234567890');
-        $arguments['set Day with String'] = array('Hi all together');
+        $arguments = [];
+        $arguments['set Day with Null'] = [null];
+        $arguments['set Day with Integer'] = [1234567890];
+        $arguments['set Day with Integer as String'] = ['1234567890'];
+        $arguments['set Day with String'] = ['Hi all together'];
 
         return $arguments;
     }

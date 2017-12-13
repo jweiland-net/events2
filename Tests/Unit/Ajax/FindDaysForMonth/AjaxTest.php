@@ -79,9 +79,9 @@ class AjaxTest extends UnitTestCase
      */
     public function setUp()
     {
-        $GLOBALS['TYPO3_LOADED_EXT'] = array(
-            'events2' => array()
-        );
+        $GLOBALS['TYPO3_LOADED_EXT'] = [
+            'events2' => []
+        ];
 
         $this->extConfProphecy = $this->prophesize(ExtConf::class);
         $this->extConfProphecy->getRecurringPast()->willReturn(3);
@@ -125,11 +125,11 @@ class AjaxTest extends UnitTestCase
      */
     public function dataProviderForInvalidValues()
     {
-        $invalidValues = array();
-        $invalidValues['string'] = array('Hello');
-        $invalidValues['integer'] = array(123);
-        $invalidValues['boolean'] = array(true);
-        $invalidValues['object'] = array(new \stdClass());
+        $invalidValues = [];
+        $invalidValues['string'] = ['Hello'];
+        $invalidValues['integer'] = [123];
+        $invalidValues['boolean'] = [true];
+        $invalidValues['object'] = [new \stdClass()];
 
         return $invalidValues;
     }
@@ -153,20 +153,20 @@ class AjaxTest extends UnitTestCase
      */
     public function processAjaxRequestSanitizesArguments()
     {
-        $arguments = array(
+        $arguments = [
             'categories' => '123,-321 , , 0, Hallo,123Test',
             'month' => '11',
             'year' => '2024',
             'pidOfListPage' => '4321',
             'storagePids' => '543,-3245, ,  123Test'
-        );
-        $expectedArguments = array(
+        ];
+        $expectedArguments = [
             'categories' => '123,-321,0',
             'month' => 11,
             'year' => 2024,
             'pidOfListPage' => 4321,
             'storagePids' => '543,-3245'
-        );
+        ];
         $this->subject->processAjaxRequest($arguments);
         $this->assertSame($expectedArguments, $this->subject->_get('arguments'));
     }
@@ -176,20 +176,20 @@ class AjaxTest extends UnitTestCase
      */
     public function processAjaxRequestForcesTooHighMonthAndYearInRange()
     {
-        $arguments = array(
+        $arguments = [
             'categories' => '10,11,12',
             'month' => '243',
             'year' => '23412',
             'pidOfListPage' => 4321,
             'storagePids' => '21,22,23'
-        );
-        $expectedArguments = array(
+        ];
+        $expectedArguments = [
             'categories' => '10,11,12',
             'month' => 12,
             'year' => 2500,
             'pidOfListPage' => 4321,
             'storagePids' => '21,22,23'
-        );
+        ];
         $this->subject->processAjaxRequest($arguments);
         $this->assertSame($expectedArguments, $this->subject->_get('arguments'));
     }
@@ -199,20 +199,20 @@ class AjaxTest extends UnitTestCase
      */
     public function processAjaxRequestForcesTooLowMonthAndYearInRange()
     {
-        $arguments = array(
+        $arguments = [
             'categories' => '10,11,12',
             'month' => '-12',
             'year' => '324',
             'pidOfListPage' => 4321,
             'storagePids' => '21,22,23'
-        );
-        $expectedArguments = array(
+        ];
+        $expectedArguments = [
             'categories' => '10,11,12',
             'month' => 1,
             'year' => 1500,
             'pidOfListPage' => 4321,
             'storagePids' => '21,22,23'
-        );
+        ];
         $this->subject->processAjaxRequest($arguments);
         $this->assertSame($expectedArguments, $this->subject->_get('arguments'));
     }
@@ -222,20 +222,20 @@ class AjaxTest extends UnitTestCase
      */
     public function processAjaxRequestPrependsZerosToMonthValuesAndCastsThemToString()
     {
-        $arguments = array(
+        $arguments = [
             'categories' => '10,11,12',
             'month' => '7',
             'year' => '2499',
             'pidOfListPage' => 4321,
             'storagePids' => '21,22,23'
-        );
+        ];
         $this->frontendUserAuthenticationProphecy->start()->shouldBeCalled();
         $this->frontendUserAuthenticationProphecy->setAndSaveSessionData(
             Argument::exact('events2MonthAndYearForCalendar'),
-            Argument::exact(array(
+            Argument::exact([
                 'month' => '07',
                 'year' => '2499'
-            ))
+            ])
         )->shouldBeCalled();
 
         $this->subject->processAjaxRequest($arguments);
@@ -249,13 +249,13 @@ class AjaxTest extends UnitTestCase
         $currentDate = new \DateTime('now');
         $day = (int)$currentDate->format('d');
         $tomorrow = $day + 1;
-        $arguments = array(
+        $arguments = [
             'categories' => '10,11,12',
             'month' => $currentDate->format('n'),
             'year' => $currentDate->format('Y'),
             'pidOfListPage' => 4321,
             'storagePids' => '21,22,23'
-        );
+        ];
 
         $event1 = new Event();
         $event1->_setProperty('uid', 456);
@@ -269,7 +269,7 @@ class AjaxTest extends UnitTestCase
         $day2 = new Day();
         $day2->setDay(new \DateTime('tomorrow'));
         $day2->setEvent($event2);
-        $days = array($day1, $day2);
+        $days = [$day1, $day2];
 
         $this->queryProphecy->getQuerySettings()->willReturn($this->querySettingsProphecy->reveal());
         $this->queryProphecy->getQuerySettings()->shouldBeCalled();
@@ -307,13 +307,13 @@ class AjaxTest extends UnitTestCase
     {
         $today = new \DateTime('now midnight');
         $tomorrow = new \DateTime('tomorrow midnight');
-        $arguments = array(
+        $arguments = [
             'categories' => '10,11,12',
             'month' => $today->format('n'),
             'year' => $today->format('Y'),
             'pidOfListPage' => 4321,
             'storagePids' => '21,22,23'
-        );
+        ];
 
         $event1 = new Event();
         $event1->_setProperty('uid', 456);
@@ -327,7 +327,7 @@ class AjaxTest extends UnitTestCase
         $day2 = new Day();
         $day2->setDay($tomorrow);
         $day2->setEvent($event2);
-        $days = array($day1, $day2);
+        $days = [$day1, $day2];
 
         $this->queryProphecy->getQuerySettings()->willReturn($this->querySettingsProphecy->reveal());
         $this->queryProphecy->getQuerySettings()->shouldBeCalled();
@@ -360,12 +360,12 @@ class AjaxTest extends UnitTestCase
     public function processAjaxRequestWillNotAddCategoryStatements()
     {
         $currentDate = new \DateTime('now');
-        $arguments = array(
+        $arguments = [
             'month' => $currentDate->format('n'),
             'year' => $currentDate->format('Y'),
             'pidOfListPage' => 4321,
             'storagePids' => '21,22,23'
-        );
+        ];
 
         $this->queryProphecy->getQuerySettings()->willReturn($this->querySettingsProphecy->reveal());
         $this->queryProphecy->getQuerySettings()->shouldBeCalled();
@@ -375,7 +375,7 @@ class AjaxTest extends UnitTestCase
         $this->queryProphecy->lessThan(Argument::exact('day'), Argument::any())->shouldBeCalled();
         $this->queryProphecy->logicalAnd(Argument::any())->shouldBeCalled();
         $this->queryProphecy->matching(Argument::any())->willReturn($this->queryProphecy->reveal());
-        $this->queryProphecy->execute()->willReturn(array());
+        $this->queryProphecy->execute()->willReturn([]);
         $this->dayRepositoryProphecy->createQuery()->willReturn($this->queryProphecy);
 
         $this->subject->processAjaxRequest($arguments);
@@ -388,12 +388,12 @@ class AjaxTest extends UnitTestCase
     {
         $this->extConfProphecy->getRecurringPast()->willReturn(0);
         $today = new \DateTime('now midnight');
-        $arguments = array(
+        $arguments = [
             'month' => $today->format('n'),
             'year' => $today->format('Y'),
             'pidOfListPage' => 4321,
             'storagePids' => '21,22,23'
-        );
+        ];
 
         $this->queryProphecy->getQuerySettings()->willReturn($this->querySettingsProphecy->reveal());
         $this->queryProphecy->getQuerySettings()->shouldBeCalled();
@@ -403,7 +403,7 @@ class AjaxTest extends UnitTestCase
         $this->queryProphecy->lessThan(Argument::exact('day'), Argument::any())->shouldBeCalled();
         $this->queryProphecy->logicalAnd(Argument::any())->shouldBeCalled();
         $this->queryProphecy->matching(Argument::any())->willReturn($this->queryProphecy->reveal());
-        $this->queryProphecy->execute()->willReturn(array());
+        $this->queryProphecy->execute()->willReturn([]);
         $this->dayRepositoryProphecy->createQuery()->willReturn($this->queryProphecy);
 
         $this->subject->processAjaxRequest($arguments);
@@ -418,12 +418,12 @@ class AjaxTest extends UnitTestCase
         $threeMonthAgo = new \DateTime('now midnight');
         $threeMonthAgo->modify('-3 months');
 
-        $arguments = array(
+        $arguments = [
             'month' => $threeMonthAgo->format('n'),
             'year' => $threeMonthAgo->format('Y'),
             'pidOfListPage' => 4321,
             'storagePids' => '21,22,23'
-        );
+        ];
 
         $this->assertSame(
             '[]',

@@ -31,7 +31,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
     /**
      * @var array<string>
      */
-    protected $sourceTypes = array('array');
+    protected $sourceTypes = ['array'];
 
     /**
      * @var string
@@ -85,7 +85,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
     public function convertFrom(
         $source,
         $targetType,
-        array $convertedChildProperties = array(),
+        array $convertedChildProperties = [],
         PropertyMappingConfigurationInterface $configuration = null
     ) {
         $alreadyPersistedImages = $configuration->getConfigurationValue(
@@ -131,9 +131,9 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
                     LocalizationUtility::translate(
                         'error.fileExtension',
                         'events2',
-                        array(
+                        [
                             $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']
-                        )
+                        ]
                     ),
                     1402981282
                 );
@@ -171,7 +171,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
      */
     protected function getExtbaseFileReference($source)
     {
-        /** @var $reference \TYPO3\CMS\Extbase\Domain\Model\FileReference */
+        /** @var \TYPO3\CMS\Extbase\Domain\Model\FileReference $extbaseFileReference */
         $extbaseFileReference = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Domain\\Model\\FileReference');
         $extbaseFileReference->setOriginalResource($this->getCoreFileReference($source));
 
@@ -192,11 +192,11 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
         $uploadedFile = $uploadFolder->addUploadedFile($source, 'changeName');
         // create Core FileReference
         return ResourceFactory::getInstance()->createFileReferenceObject(
-            array(
+            [
                 'uid_local' => $uploadedFile->getUid(),
                 'uid_foreign' => uniqid('NEW_'),
                 'uid' => uniqid('NEW_'),
-            )
+            ]
         );
     }
 }

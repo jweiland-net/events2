@@ -49,20 +49,23 @@ class Typo3DbQueryParser extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\
      * Parses the query and returns the SQL statement parts.
      *
      * @param QueryInterface $query The query
+     *
      * @return array The SQL statement parts
+     *
+     * @throws \Exception
      */
     public function parseQuery(QueryInterface $query)
     {
         /** @var \JWeiland\Events2\Persistence\Typo362\Generic\Query $query */
-        $sql = array();
-        $sql['keywords'] = array();
-        $sql['tables'] = array();
-        $sql['unions'] = array();
-        $sql['fields'] = array();
-        $sql['where'] = array();
-        $sql['additionalWhereClause'] = array();
-        $sql['groupings'] = array();
-        $sql['orderings'] = array();
+        $sql = [];
+        $sql['keywords'] = [];
+        $sql['tables'] = [];
+        $sql['unions'] = [];
+        $sql['fields'] = [];
+        $sql['where'] = [];
+        $sql['additionalWhereClause'] = [];
+        $sql['groupings'] = [];
+        $sql['orderings'] = [];
         $sql['limit'] = ((int)$query->getLimit() ?: null);
         $sql['offset'] = ((int)$query->getOffset() ?: null);
         $sql['tableAliasMap'] = [];

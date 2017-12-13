@@ -102,7 +102,7 @@ class GetEventDatesViewHelper extends AbstractViewHelper
      */
     protected function getCollectedDays()
     {
-        $days = array();
+        $days = [];
         $this->addFutureDaysFromEventRecord($days);
 
         // event->getDays already contains all Exceptions of type "Add"
@@ -156,7 +156,7 @@ class GetEventDatesViewHelper extends AbstractViewHelper
      */
     protected function getGroupedDays()
     {
-        $days = array();
+        $days = [];
 
         /** @var \JWeiland\Events2\Domain\Model\Day $day */
         foreach ($this->event->getDays() as $day) {
@@ -222,7 +222,7 @@ class GetEventDatesViewHelper extends AbstractViewHelper
      */
     protected function buildDayArray(Day $day, Time $time)
     {
-        $dayArray = array();
+        $dayArray = [];
 
         // add original day and time object
         $dayArray['day'] = $day;
@@ -259,8 +259,8 @@ class GetEventDatesViewHelper extends AbstractViewHelper
     protected function sortDaysByDateAndTime(array $days)
     {
         if (count($days)) {
-            $eventDate = array();
-            $eventTime = array();
+            $eventDate = [];
+            $eventTime = [];
             foreach ($days as $key => $day) {
                 $eventDate[$key] = $day['eventDate']; // int
                 $eventTime[$key] = $day['eventTime']; // string

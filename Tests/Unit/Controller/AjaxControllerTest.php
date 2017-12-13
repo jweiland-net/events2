@@ -46,11 +46,11 @@ class AjaxControllerTest extends UnitTestCase
      */
     public function dataProviderForInvalidObjectNames()
     {
-        $objectNames = array();
-        $objectNames['integer'] = array(123);
-        $objectNames['object'] = array(new \stdClass());
-        $objectNames['array'] = array(array('foo', 'bar'));
-        $objectNames['non existing Class'] = array('fooBar');
+        $objectNames = [];
+        $objectNames['integer'] = [123];
+        $objectNames['object'] = [new \stdClass()];
+        $objectNames['array'] = [['foo', 'bar']];
+        $objectNames['non existing Class'] = ['fooBar'];
 
         return $objectNames;
     }
@@ -64,7 +64,7 @@ class AjaxControllerTest extends UnitTestCase
      */
     public function callAjaxObjectActionWithInvalidObjectNameResultsInEmptyString($objectName)
     {
-        $this->assertEmpty($this->subject->callAjaxObjectAction($objectName, array()));
+        $this->assertEmpty($this->subject->callAjaxObjectAction($objectName, []));
     }
 
     /**
@@ -80,7 +80,7 @@ class AjaxControllerTest extends UnitTestCase
         $objectManager->expects($this->at(1))->method('get')->with($this->equalTo('JWeiland\\Events2\\Ajax\\FindSubCategories'))->will($this->returnValue(new \stdClass()));
 
         $this->subject->injectObjectManager($objectManager);
-        $this->assertEmpty($this->subject->callAjaxObjectAction('findSubCategories', array()));
+        $this->assertEmpty($this->subject->callAjaxObjectAction('findSubCategories', []));
     }
 
     /**
@@ -88,11 +88,11 @@ class AjaxControllerTest extends UnitTestCase
      */
     public function callAjaxObjectActionWithValidObjectNameAndArgumentsResultsWithJsonOutput()
     {
-        $arguments = array('foo', 'bar');
+        $arguments = ['foo', 'bar'];
         $expectedResult = '[{"123":"foo"}]';
 
         /** @var \JWeiland\Events2\Ajax\FindSubCategories|\PHPUnit_Framework_MockObject_MockObject $findSubCategories */
-        $findSubCategories = $this->getMock('JWeiland\\Events2\\Ajax\\FindSubCategories', array('processAjaxRequest'));
+        $findSubCategories = $this->getMock('JWeiland\\Events2\\Ajax\\FindSubCategories', ['processAjaxRequest']);
         $findSubCategories->expects($this->once())->method('processAjaxRequest')->with($arguments)->will($this->returnValue($expectedResult));
 
         /** @var \TYPO3\CMS\Extbase\Object\ObjectManager|\PHPUnit_Framework_MockObject_MockObject $objectManager */

@@ -104,7 +104,7 @@ class EventService
             $currentDate = $this->dateTimeUtility->standardizeDateTimeObject($day->getDay());
             // we compare objects here so no === possible
             if ($exceptionDate == $currentDate) {
-                if ($type === array() || in_array(strtolower($exception->getExceptionType()), $type)) {
+                if ($type === [] || in_array(strtolower($exception->getExceptionType()), $type)) {
                     $exceptions->attach($exception);
                 }
             }
@@ -166,7 +166,7 @@ class EventService
     public function getSortedTimesForDay(Event $event, Day $day)
     {
         // @ToDo: I'm sure there are better ways to do this:
-        $sortedTimes = array();
+        $sortedTimes = [];
         $sortedStorage = new \SplObjectStorage();
 
         $times = $this->getTimesForDay($event, $day);
@@ -255,7 +255,7 @@ class EventService
             return false;
         }
 
-        $days = array();
+        $days = [];
 
         /** @var Day $day */
         foreach ($event->getDays() as $day) {
@@ -284,7 +284,7 @@ class EventService
         /** @var Event $event */
         $event = $this->eventRepository->findByIdentifier((int)$eventUid);
         if ($event->getDays()->count()) {
-            $days = array();
+            $days = [];
 
             /** @var Day $day */
             foreach ($event->getDays() as $day) {

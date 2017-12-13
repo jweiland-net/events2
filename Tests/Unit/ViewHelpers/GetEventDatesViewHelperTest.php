@@ -59,7 +59,7 @@ class ShowEventDatesViewHelperTest extends UnitTestCase
     {
         $this->subject->injectDateTimeUtility(new DateTimeUtility());
         $this->assertSame(
-            array(),
+            [],
             $this->subject->render(new Event())
         );
     }
@@ -81,15 +81,15 @@ class ShowEventDatesViewHelperTest extends UnitTestCase
         $time->setTimeBegin('09:25');
         $event->setEventTime($time);
 
-        $expectedDays = array();
-        $expectedDays[] = array(
+        $expectedDays = [];
+        $expectedDays[] = [
             'day' => $day,
             'time' => $time,
             'eventDate' => $today->format('U'),
             'eventTime' => $time->getTimeBegin(),
             'isRemoved' => false,
             'infos' => new \SplObjectStorage(),
-        );
+        ];
 
         $this->subject->injectDateTimeUtility(new DateTimeUtility());
         $this->subject->injectEventService(new EventService());
@@ -119,7 +119,7 @@ class ShowEventDatesViewHelperTest extends UnitTestCase
         $this->subject->injectDateTimeUtility(new DateTimeUtility());
         $this->subject->injectEventService(new EventService());
         $this->assertEquals(
-            array(),
+            [],
             $this->subject->render($event)
         );
     }
@@ -140,15 +140,15 @@ class ShowEventDatesViewHelperTest extends UnitTestCase
         $event = new Event();
         $event->setDays($days);
 
-        $expectedDays = array();
-        $expectedDays[] = array(
+        $expectedDays = [];
+        $expectedDays[] = [
             'day' => $day,
             'time' => new Time(),
             'eventDate' => $today->format('U'),
             'eventTime' => '',
             'isRemoved' => false,
             'infos' => new \SplObjectStorage(),
-        );
+        ];
 
         $this->subject->injectDateTimeUtility(new DateTimeUtility());
         $this->subject->injectEventService(new EventService());
@@ -182,15 +182,15 @@ class ShowEventDatesViewHelperTest extends UnitTestCase
         $event = new Event();
         $event->setExceptions($exceptions);
 
-        $expectedDays = array();
-        $expectedDays[] = array(
+        $expectedDays = [];
+        $expectedDays[] = [
             'day' => $day,
             'time' => new Time(),
             'eventDate' => $today->format('U'),
             'eventTime' => '',
             'isRemoved' => true,
             'infos' => $infoExceptions,
-        );
+        ];
 
         $eventService = new EventService();
         $eventService->injectDateTimeUtility(new DateTimeUtility());
@@ -219,16 +219,16 @@ class ShowEventDatesViewHelperTest extends UnitTestCase
         $event->setEventBegin($tomorrow);
         $event->setEventTime($time);
 
-        $expectedDayArray = array(
-            0 => array(
+        $expectedDayArray = [
+            0 => [
                 'day' => $day,
                 'time' => $time,
                 'eventDate' => $tomorrow->format('U'),
                 'eventTime' => $time->getTimeBegin(),
                 'isRemoved' => false,
                 'infos' => new \SplObjectStorage()
-            )
-        );
+            ]
+        ];
 
         $this->subject->injectDateTimeUtility(new DateTimeUtility());
         $this->subject->injectEventService(new EventService());
@@ -259,16 +259,16 @@ class ShowEventDatesViewHelperTest extends UnitTestCase
         $infoExceptions = new \SplObjectStorage();
         $infoExceptions->attach($exception);
 
-        $expectedDayArray = array(
-            0 => array(
+        $expectedDayArray = [
+            0 => [
                 'day' => $day,
                 'time' => $time,
                 'eventDate' => $tomorrow->format('U'),
                 'eventTime' => $time->getTimeBegin(),
                 'isRemoved' => true,
                 'infos' => $infoExceptions
-            )
-        );
+            ]
+        ];
 
         $event = new Event();
         $event->setEventBegin($tomorrow);
@@ -315,16 +315,16 @@ class ShowEventDatesViewHelperTest extends UnitTestCase
         $exceptions->attach($removeException);
         $exceptions->attach($infoException);
 
-        $expectedDayArray = array(
-            0 => array(
+        $expectedDayArray = [
+            0 => [
                 'day' => $day,
                 'time' => $time,
                 'eventDate' => $tomorrow->format('U'),
                 'eventTime' => $time->getTimeBegin(),
                 'isRemoved' => true,
                 'infos' => $infoExceptions
-            )
-        );
+            ]
+        ];
 
         $event = new Event();
         $event->setEventBegin($tomorrow);
@@ -392,32 +392,32 @@ class ShowEventDatesViewHelperTest extends UnitTestCase
         $event->setMultipleTimes($multipleTimes);
         $event->setExceptions($exceptions);
 
-        $expectedDayArray = array(
-            0 => array(
+        $expectedDayArray = [
+            0 => [
                 'day' => $dayTomorrow,
                 'time' => $multipleTime,
                 'eventDate' => $tomorrow->format('U'),
                 'eventTime' => $multipleTime->getTimeBegin(),
                 'isRemoved' => false,
                 'infos' => new \SplObjectStorage()
-            ),
-            1 => array(
+            ],
+            1 => [
                 'day' => $dayTomorrow,
                 'time' => $timeBegin,
                 'eventDate' => $tomorrow->format('U'),
                 'eventTime' => $timeBegin->getTimeBegin(),
                 'isRemoved' => false,
                 'infos' => new \SplObjectStorage()
-            ),
-            2 => array(
+            ],
+            2 => [
                 'day' => $dayInOneWeek,
                 'time' => $exceptionTime,
                 'eventDate' => $inOneWeek->format('U'),
                 'eventTime' => $exceptionTime->getTimeBegin(),
                 'isRemoved' => false,
                 'infos' => $splExceptions
-            )
-        );
+            ]
+        ];
 
         $eventService = new EventService();
         $eventService->injectDateTimeUtility(new DateTimeUtility());

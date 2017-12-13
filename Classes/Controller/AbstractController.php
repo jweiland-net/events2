@@ -359,9 +359,9 @@ class AbstractController extends ActionController
         ) {
             // create a new RegExpValidator for property link
             /** @var \TYPO3\CMS\Extbase\Validation\Validator\RegularExpressionValidator $regExpValidator */
-            $regExpValidator = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Validation\\Validator\\RegularExpressionValidator', array(
+            $regExpValidator = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Validation\\Validator\\RegularExpressionValidator', [
                 'regularExpression' => '~^(|http:|https:)//(|www.)youtube(.*?)(v=|embed/)([a-zA-Z0-9_-]+)~i',
-            ));
+            ]);
             /** @var \TYPO3\CMS\Extbase\Validation\Validator\GenericObjectValidator $genericObjectValidator */
             $genericObjectValidator = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Validation\\Validator\\GenericObjectValidator');
             $genericObjectValidator->addPropertyValidator('link', $regExpValidator);

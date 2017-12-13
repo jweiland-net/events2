@@ -6,42 +6,42 @@ if (!defined('TYPO3_MODE')) {
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
     'JWeiland.' . $_EXTKEY,
     'Events',
-    array(
+    [
         'Day' => 'list, listLatest, listToday, listWeek, listRange, show, showByTimestamp',
         'Event' => 'listSearchResults, listMyEvents, new, create, edit, update, delete, activate',
         'Location' => 'show',
         'Video' => 'show',
         'Ajax' => 'callAjaxObject',
-    ),
+    ],
     // non-cacheable actions
-    array(
+    [
         'Event' => 'listSearchResults, create, update, delete, activate',
         'Ajax' => 'callAjaxObject',
-    )
+    ]
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
     'JWeiland.' . $_EXTKEY,
     'Calendar',
-    array(
+    [
         'Calendar' => 'show',
-    ),
+    ],
     // non-cacheable actions
-    array(
+    [
         'Calendar' => 'show',
-    )
+    ]
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
     'JWeiland.' . $_EXTKEY,
     'Search',
-    array(
+    [
         'Search' => 'show',
-    ),
+    ],
     // non-cacheable actions
-    array(
+    [
         'Search' => 'show',
-    )
+    ]
 );
 
 if (TYPO3_MODE === 'BE') {
@@ -57,20 +57,20 @@ if (TYPO3_MODE === 'BE') {
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['list_type_Info']['events2_events'][] = 'JWeiland\\Events2\\Hooks\\RenderPluginItem->render';
 
     // create scheduler to create/update days with recurrency
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['JWeiland\\Events2\\Task\\ReGenerateDays'] = array(
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['JWeiland\\Events2\\Task\\ReGenerateDays'] = [
         'extension' => $_EXTKEY,
         'title' => 'Create/Update Days',
         'description' => 'Re-Generate day records for events with recurrency.',
         'additionalFields' => 'JWeiland\\Events2\\Task\\ReGenerateDays',
-    );
+    ];
 
     // create scheduler to import events from different sources
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['JWeiland\\Events2\\Task\\Import'] = array(
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['JWeiland\\Events2\\Task\\Import'] = [
         'extension' => $_EXTKEY,
         'title' => 'Import events',
         'description' => 'Import events over a XML interface or by mail into events2.',
         'additionalFields' => 'JWeiland\\Events2\\Task\\AdditionalFieldsForImport',
-    );
+    ];
 
     if (\TYPO3\CMS\Core\Utility\GeneralUtility::compat_version('7.0')) {
         /** @var \TYPO3\CMS\Core\Imaging\IconRegistry $iconRegistry */
@@ -78,37 +78,37 @@ if (TYPO3_MODE === 'BE') {
         $iconRegistry->registerIcon(
             'extensions-events2-calendar-single',
             'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider',
-            array('source' => 'EXT:events2/Resources/Public/Icons/calendar_single.png')
+            ['source' => 'EXT:events2/Resources/Public/Icons/calendar_single.png']
         );
         $iconRegistry->registerIcon(
             'extensions-events2-calendar-recurring',
             'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider',
-            array('source' => 'EXT:events2/Resources/Public/Icons/calendar_recurring.png')
+            ['source' => 'EXT:events2/Resources/Public/Icons/calendar_recurring.png']
         );
         $iconRegistry->registerIcon(
             'extensions-events2-calendar-duration',
             'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider',
-            array('source' => 'EXT:events2/Resources/Public/Icons/calendar_duration.png')
+            ['source' => 'EXT:events2/Resources/Public/Icons/calendar_duration.png']
         );
         $iconRegistry->registerIcon(
             'extensions-events2-exception-add',
             'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider',
-            array('source' => 'EXT:events2/Resources/Public/Icons/exception_add.png')
+            ['source' => 'EXT:events2/Resources/Public/Icons/exception_add.png']
         );
         $iconRegistry->registerIcon(
             'extensions-events2-exception-remove',
             'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider',
-            array('source' => 'EXT:events2/Resources/Public/Icons/exception_remove.png')
+            ['source' => 'EXT:events2/Resources/Public/Icons/exception_remove.png']
         );
         $iconRegistry->registerIcon(
             'extensions-events2-exception-info',
             'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider',
-            array('source' => 'EXT:events2/Resources/Public/Icons/exception_info.png')
+            ['source' => 'EXT:events2/Resources/Public/Icons/exception_info.png']
         );
         $iconRegistry->registerIcon(
             'extensions-events2-exception-time',
             'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider',
-            array('source' => 'EXT:events2/Resources/Public/Icons/exception_time.png')
+            ['source' => 'EXT:events2/Resources/Public/Icons/exception_time.png']
         );
     }
 }

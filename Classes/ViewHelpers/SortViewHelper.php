@@ -100,7 +100,7 @@ class SortViewHelper extends AbstractViewHelper
      */
     protected function sortArray($array)
     {
-        $sorted = array();
+        $sorted = [];
         foreach ($array as $index => $object) {
             if ($this->arguments['sortBy']) {
                 $index = $this->getSortValue($object);
@@ -116,7 +116,7 @@ class SortViewHelper extends AbstractViewHelper
             $sortedKeys = array_keys($sorted);
             shuffle($sortedKeys);
             $backup = $sorted;
-            $sorted = array();
+            $sorted = [];
             foreach ($sortedKeys as $sortedKey) {
                 $sorted[$sortedKey] = $backup[$sortedKey];
             }
@@ -145,7 +145,7 @@ class SortViewHelper extends AbstractViewHelper
         foreach ($storage as $item) {
             $temp->attach($item);
         }
-        $sorted = array();
+        $sorted = [];
         foreach ($storage as $index => $item) {
             if ($this->arguments['sortBy']) {
                 $index = $this->getSortValue($item);
@@ -161,7 +161,7 @@ class SortViewHelper extends AbstractViewHelper
             $sortedKeys = array_keys($sorted);
             shuffle($sortedKeys);
             $backup = $sorted;
-            $sorted = array();
+            $sorted = [];
             foreach ($sortedKeys as $sortedKey) {
                 $sorted[$sortedKey] = $backup[$sortedKey];
             }
@@ -170,6 +170,7 @@ class SortViewHelper extends AbstractViewHelper
         } else {
             krsort($sorted, constant($this->arguments['sortFlags']));
         }
+        /** @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage $storage */
         $storage = $objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\ObjectStorage');
         foreach ($sorted as $item) {
             $storage->attach($item);

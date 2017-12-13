@@ -1,7 +1,7 @@
 <?php
 
 namespace JWeiland\Events2\Validator;
-    
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -27,6 +27,7 @@ class ImageValidator extends AbstractValidator
      * to result.
      *
      * @param mixed $value
+     *
      * @return void
      */
     public function isValid($value)
@@ -39,9 +40,9 @@ class ImageValidator extends AbstractValidator
             LocalizationUtility::translate(
                 'validator.datetime.notvalid',
                 'extbase',
-                array(
+                [
                     gettype($value),
-                )
-            ), 1238087674, array(gettype($value)));
+                ]
+            ), 1238087674, [gettype($value)]);
     }
 }

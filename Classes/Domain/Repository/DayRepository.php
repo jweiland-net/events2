@@ -38,16 +38,16 @@ class DayRepository extends Repository
     /**
      * @var array
      */
-    protected $settings = array();
+    protected $settings = [];
 
     /**
      * @var array
      */
-    protected $defaultOrderings = array(
+    protected $defaultOrderings = [
         'event.topOfList' => QueryInterface::ORDER_DESCENDING,
         'sortDayTime' => QueryInterface::ORDER_ASCENDING,
         'dayTime' => QueryInterface::ORDER_ASCENDING
-    );
+    ];
 
     /**
      * inject DateTime Utility.
@@ -97,7 +97,7 @@ class DayRepository extends Repository
         /** @var Query $query */
         $query = $this->createQuery();
         $this->addGroupingToQuery($query);
-        $constraint = array();
+        $constraint = [];
 
         // add categories
         if (!empty($this->settings['categories'])) {
@@ -173,7 +173,7 @@ class DayRepository extends Repository
      */
     public function groupDaysByEventAndSort(QueryResultInterface $queryResult, $maxRecords)
     {
-        $days = array();
+        $days = [];
         $reset = true;
         $limit = 15;
         $offset = 0;
@@ -212,10 +212,10 @@ class DayRepository extends Repository
             if (count($days) === (int)$maxRecords && $reset) {
                 // as some customers may have thousands of day records we reduce the records to the just known events,
                 // if count() matches $maxRecords and resets the offset
-                $query->matching($query->logicalAnd(array(
+                $query->matching($query->logicalAnd([
                     $query->getConstraint(),
                     $query->in('event.uid', array_keys($days))
-                )));
+                ]));
                 $offset = 0;
                 $reset = false;
             }
@@ -237,7 +237,7 @@ class DayRepository extends Repository
      */
     protected function sortDays($records, $sortBy = 'day')
     {
-        $dates = array();
+        $dates = [];
 
         $getter = 'get' . ucfirst($sortBy);
         if (!method_exists('JWeiland\\Events2\\Domain\\Model\\Day', $getter)) {
@@ -265,11 +265,11 @@ class DayRepository extends Repository
     {
         /** @var \TYPO3\CMS\Extbase\Persistence\Generic\Query $query */
         $query = $this->createQuery();
-        $constraint = array();
+        $constraint = [];
 
         // add query for search string
         if ($search->getSearch()) {
-            $orConstraint = array();
+            $orConstraint = [];
             $orConstraint[] = $query->like('event.title', '%' . $search->getSearch() . '%');
             $orConstraint[] = $query->like('event.teaser', '%' . $search->getSearch() . '%');
             $constraint[] = $query->logicalOr($orConstraint);
@@ -352,7 +352,7 @@ class DayRepository extends Repository
      */
     public function findByTimestamp($timestamp)
     {
-        $constraint = array();
+        $constraint = [];
         $query = $this->createQuery();
         $this->addGroupingToQuery($query);
         if (!empty($this->settings['categories'])) {
@@ -381,16 +381,16 @@ class DayRepository extends Repository
     {
         $query = $this->createQuery();
 
-        $constraints = array();
+        $constraints = [];
         $constraints[] = $query->equals('event', (int)$eventUid);
 
         if (empty($timestamp)) {
             $today = new \DateTime('now');
             $constraints[] = $query->greaterThanOrEqual('dayTime', $today);
 
-            $query->setOrderings(array(
+            $query->setOrderings([
                 'dayTime' => QueryInterface::ORDER_ASCENDING
-            ));
+            ]);
         } else {
             $constraints[] = $query->equals('dayTime', $timestamp);
         }
@@ -411,6 +411,6 @@ class DayRepository extends Repository
     protected function addGroupingToQuery(QueryInterface $query)
     {
         /** @var Query $query */
-        $query->setGroupings(array('event', 'sortDayTime'));
+        $query->setGroupings(['event', 'sortDayTime']);
     }
 }

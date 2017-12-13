@@ -35,7 +35,7 @@ class GetAllowedCategoriesViewHelper extends AbstractViewHelper
      */
     public function render(Event $event, $pluginCategories = '')
     {
-        $allowedCategories = array();
+        $allowedCategories = [];
         $pluginCategories = GeneralUtility::intExplode(',', trim($pluginCategories), true);
         foreach ($pluginCategories as $pluginCategory) {
             /** @var Category $eventCategory */

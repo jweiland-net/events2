@@ -25,10 +25,10 @@ class OrganizerRepository extends Repository
     /**
      * @var array
      */
-    protected $defaultOrderings = array(
+    protected $defaultOrderings = [
         'organizer' => QueryInterface::ORDER_ASCENDING,
-    );
-    
+    ];
+
     /**
      * Get aöllowed organizers for filter
      *

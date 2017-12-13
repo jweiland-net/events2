@@ -62,7 +62,7 @@ class FindSubCategories extends AbstractAjaxRequest
      */
     protected function reduceCategoryData(QueryResultInterface $categories)
     {
-        $response = array();
+        $response = [];
         /** @var \TYPO3\CMS\Extbase\Domain\Model\Category $category */
         foreach ($categories as $category) {
             $response[$category->getUid()] = $category->getTitle();

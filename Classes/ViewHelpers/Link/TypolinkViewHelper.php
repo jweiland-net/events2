@@ -63,17 +63,17 @@ class TypolinkViewHelper extends AbstractViewHelper implements CompilableInterfa
      *
      * @return string
      */
-    public function render($parameter, $target = '', $class = '', $title = '', $additionalParams = '', $additionalAttributes = array())
+    public function render($parameter, $target = '', $class = '', $title = '', $additionalParams = '', $additionalAttributes = [])
     {
         return static::renderStatic(
-            array(
+            [
                 'parameter' => $parameter,
                 'target' => $target,
                 'class' => $class,
                 'title' => $title,
                 'additionalParams' => $additionalParams,
                 'additionalAttributes' => $additionalAttributes
-            ),
+            ],
             $this->buildRenderChildrenClosure(),
             $this->renderingContext
         );
@@ -101,8 +101,8 @@ class TypolinkViewHelper extends AbstractViewHelper implements CompilableInterfa
         // Merge the $parameter with other arguments
         $typolinkParameter = self::createTypolinkParameterArrayFromArguments($parameter, $target, $class, $title, $additionalParams);
 
-        // array(param1 -> value1, param2 -> value2) --> param1="value1" param2="value2" for typolink.ATagParams
-        $extraAttributes = array();
+        // [param1 -> value1, param2 -> value2] --> param1="value1" param2="value2" for typolink.ATagParams
+        $extraAttributes = [];
         foreach ($additionalAttributes as $attributeName => $attributeValue) {
             $extraAttributes[] = $attributeName . '="' . htmlspecialchars($attributeValue) . '"';
         }
@@ -114,15 +114,15 @@ class TypolinkViewHelper extends AbstractViewHelper implements CompilableInterfa
         if ($parameter) {
             /** @var ContentObjectRenderer $contentObject */
             $contentObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
-            $contentObject->start(array(), '');
+            $contentObject->start([], '');
             $content = $contentObject->stdWrap(
                 $content,
-                array(
-                    'typolink.' => array(
+                [
+                    'typolink.' => [
                         'parameter' => $typolinkParameter,
                         'ATagParams' => $aTagParams,
-                    )
-                )
+                    ]
+                ]
             );
         }
 

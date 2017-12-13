@@ -69,9 +69,9 @@ class EventServiceTest extends UnitTestCase
     {
         $today = new \DateTime();
         $today->modify('midnight');
-        $types = array('Add', 'Remove', 'Time', 'Info');
+        $types = ['Add', 'Remove', 'Time', 'Info'];
 
-        $data = array();
+        $data = [];
         foreach ($types as $type) {
             $exceptions = new ObjectStorage();
             $exception = new Exception();
@@ -80,7 +80,7 @@ class EventServiceTest extends UnitTestCase
             $exceptions->attach($exception);
             $expectedExceptions = new \SplObjectStorage();
             $expectedExceptions->attach($exception);
-            $data['exception of type '.$type.' of today'] = array($exceptions, $expectedExceptions);
+            $data['exception of type ' . $type . ' of today'] = [$exceptions, $expectedExceptions];
         }
 
         return $data;
@@ -118,9 +118,9 @@ class EventServiceTest extends UnitTestCase
     {
         $yesterday = new \DateTime();
         $yesterday->modify('yesterday midnight');
-        $types = array('Add', 'Remove', 'Time', 'Info');
+        $types = ['Add', 'Remove', 'Time', 'Info'];
 
-        $data = array();
+        $data = [];
         foreach ($types as $type) {
             $exceptions = new ObjectStorage();
             $exception = new Exception();
@@ -128,7 +128,7 @@ class EventServiceTest extends UnitTestCase
             $exception->setExceptionDate($yesterday);
             $exceptions->attach($exception);
             $expectedException = new \SplObjectStorage();
-            $data['exception of type '.$type.' of yesterday'] = array($exceptions, $expectedException);
+            $data['exception of type '.$type.' of yesterday'] = [$exceptions, $expectedException];
         }
 
         return $data;
@@ -199,9 +199,9 @@ class EventServiceTest extends UnitTestCase
     {
         $today = new \DateTime();
         $today->modify('midnight');
-        $types = array('Add', 'Time', 'Info');
+        $types = ['Add', 'Time', 'Info'];
 
-        $data = array();
+        $data = [];
         foreach ($types as $type) {
             $expectedException = new \SplObjectStorage();
             $exceptions = new ObjectStorage();
@@ -216,7 +216,7 @@ class EventServiceTest extends UnitTestCase
             $exception->setExceptionType('Remove');
             $exception->setExceptionDate($today);
             $exceptions->attach($exception);
-            $data['exception of type '.$type.' of today'] = array($exceptions, $type, $expectedException);
+            $data['exception of type '.$type.' of today'] = [$exceptions, $type, $expectedException];
         }
 
         return $data;
@@ -292,12 +292,12 @@ class EventServiceTest extends UnitTestCase
      */
     public function dataProviderWithInvalidValuesForGetTimesForDay()
     {
-        $invalidValue = array();
-        $invalidValue['null'] = array(null, null);
-        $invalidValue['strings'] = array('Test123', 'Hello');
-        $invalidValue['integer'] = array(123, -532);
-        $invalidValue['array'] = array(array(123), array('Hello'));
-        $invalidValue['wrong object'] = array(new \stdClass(), new \stdClass());
+        $invalidValue = [];
+        $invalidValue['null'] = [null, null];
+        $invalidValue['strings'] = ['Test123', 'Hello'];
+        $invalidValue['integer'] = [123, -532];
+        $invalidValue['array'] = [[123], ['Hello']];
+        $invalidValue['wrong object'] = [new \stdClass(), new \stdClass()];
 
         return $invalidValue;
     }

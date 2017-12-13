@@ -38,7 +38,7 @@ class DayRelationService
     /**
      * @var array
      */
-    protected $eventRecord = array();
+    protected $eventRecord = [];
 
     /**
      * @var ExtConf
@@ -73,7 +73,7 @@ class DayRelationService
     /**
      * @var array
      */
-    protected $cachedSortDayTime = array();
+    protected $cachedSortDayTime = [];
 
     /**
      * inject extConf
@@ -153,6 +153,8 @@ class DayRelationService
      * @param int|string $eventUid Maybe starting with NEW
      *
      * @return Event
+     *
+     * @throws \Exception
      */
     public function createDayRelations($eventUid)
     {
@@ -172,7 +174,7 @@ class DayRelationService
                     unset($this->cachedSortDayTime[$event->getUid()]);
                 }
             }
-            $this->cachedSortDayTime = array();
+            $this->cachedSortDayTime = [];
             $this->persistenceManager->update($event);
             $this->persistenceManager->persistAll();
         }
@@ -216,7 +218,7 @@ class DayRelationService
     {
         // times from exceptions have priority 1
         if ($event->getExceptions()->count()) {
-            $times = array();
+            $times = [];
             /** @var Exception $exception */
             foreach ($event->getExceptions() as $exception) {
                 if (
@@ -246,7 +248,7 @@ class DayRelationService
         }
 
         // if there are no times available return empty array
-        return array();
+        return [];
     }
 
     /**
@@ -260,7 +262,7 @@ class DayRelationService
      */
     protected function getDifferentTimesForDay(\DateTime $day, Event $event)
     {
-        $times = array();
+        $times = [];
         if (
             $event->getEventType() !== 'single' &&
             $event->getDifferentTimes()->count()
@@ -287,7 +289,7 @@ class DayRelationService
      */
     protected function getTimesFromEvent(Event $event)
     {
-        $times = array();
+        $times = [];
         // add normal event time
         if ($event->getEventTime() instanceof Time) {
             $times[] = $event->getEventTime();
@@ -392,7 +394,7 @@ class DayRelationService
 
         $sortDayTime = $this->getDayTime($day, $hour, $minute);
 
-        if (in_array($event->getEventType(), array('duration', 'recurring'))) {
+        if (in_array($event->getEventType(), ['duration', 'recurring'])) {
             // Group multiple days for duration or group multiple times for one day
             if ($event->getEventType() === 'duration' || $this->extConf->getMergeEvents()) {
                 $this->cachedSortDayTime[$event->getUid()] = $sortDayTime;

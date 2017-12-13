@@ -82,7 +82,7 @@ class ICalendarController extends AbstractWidgetController
      */
     protected function getEvents(Day $day)
     {
-        $events = array();
+        $events = [];
         switch ($day->getEvent()->getEventType()) {
             case 'duration':
                 $firstDay = $this->getFirstDayOfEvent($day->getEvent());
@@ -129,12 +129,13 @@ class ICalendarController extends AbstractWidgetController
      */
     protected function getFirstDayOfEvent(Event $event)
     {
-        $days = array();
+        $days = [];
         /** @var Day $day */
         foreach ($event->getDays() as $day) {
             $days[$day->getDay()->format('U')] = $day;
         }
         ksort($days);
+
         return reset($days);
     }
 
@@ -148,12 +149,13 @@ class ICalendarController extends AbstractWidgetController
      */
     protected function getLastDayOfEvent(Event $event)
     {
-        $days = array();
+        $days = [];
         /** @var Day $day */
         foreach ($event->getDays() as $day) {
             $days[$day->getDay()->format('U')] = $day;
         }
         ksort($days);
+
         return end($days);
     }
 
@@ -174,7 +176,7 @@ class ICalendarController extends AbstractWidgetController
             $lastDay = $day;
         }
 
-        $event = array();
+        $event = [];
         $event['UID'] = $this->getUniqueIdForDay($day);
         $event['DTSTART'] = $this->convertToTstamp($day->getDay(), $startTime);
         if (!empty($endTime)) {

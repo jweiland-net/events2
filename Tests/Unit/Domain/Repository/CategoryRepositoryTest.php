@@ -35,7 +35,7 @@ class CategoryRepositoryTest extends UnitTestCase
      */
     public function setUp()
     {
-        $this->subject = $this->getMock(CategoryRepository::class, array('createQuery'), array(), '', false);
+        $this->subject = $this->getMock(CategoryRepository::class, ['createQuery'], [], '', false);
     }
 
     /**
@@ -52,11 +52,11 @@ class CategoryRepositoryTest extends UnitTestCase
     public function getSelectedCategoriesConvertsWrongCategoriesToInteger()
     {
         /** @var Query|\PHPUnit_Framework_MockObject_MockObject $query */
-        $query = $this->getMock(Query::class, array(), array(), '', false);
+        $query = $this->getMock(Query::class, [], [], '', false);
         $query->expects($this->once())->method('matching')->willReturn($query);
         $query->expects($this->once())->method('in')->with(
             $this->equalTo('uid'),
-            $this->equalTo(array(1,2,4))
+            $this->equalTo([1, 2, 4])
         );
 
         $this->subject->expects($this->once())->method('createQuery')->willReturn($query);
@@ -70,7 +70,7 @@ class CategoryRepositoryTest extends UnitTestCase
     public function getSelectedCategoriesWithNonParentWillNotCallEquals()
     {
         /** @var Query|\PHPUnit_Framework_MockObject_MockObject $query */
-        $query = $this->getMock(Query::class, array(), array(), '', false);
+        $query = $this->getMock(Query::class, [], [], '', false);
         $query->expects($this->never())->method('equals');
         $query->expects($this->once())->method('matching')->willReturn($query);
 
@@ -85,7 +85,7 @@ class CategoryRepositoryTest extends UnitTestCase
     public function getSelectedCategoriesWithGivenParentWillCallEquals()
     {
         /** @var Query|\PHPUnit_Framework_MockObject_MockObject $query */
-        $query = $this->getMock(Query::class, array(), array(), '', false);
+        $query = $this->getMock(Query::class, [], [], '', false);
         $query->expects($this->once())->method('equals')->with(
             $this->equalTo('parent'),
             $this->equalTo(5)

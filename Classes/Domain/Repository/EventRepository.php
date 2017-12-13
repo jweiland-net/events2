@@ -29,9 +29,9 @@ class EventRepository extends Repository
     /**
      * @var array
      */
-    protected $defaultOrderings = array(
+    protected $defaultOrderings = [
         'eventBegin' => QueryInterface::ORDER_ASCENDING,
-    );
+    ];
 
     /**
      * @var \JWeiland\Events2\Utility\DateTimeUtility
@@ -56,7 +56,7 @@ class EventRepository extends Repository
     /**
      * @var array
      */
-    protected $settings = array();
+    protected $settings = [];
 
     /**
      * inject DateTime Utility.
@@ -139,7 +139,7 @@ class EventRepository extends Repository
     {
         $query = $this->createQuery();
         $query->getQuerySettings()->setIgnoreEnableFields(true);
-        $query->getQuerySettings()->setEnableFieldsToBeIgnored(array('disabled'));
+        $query->getQuerySettings()->setEnableFieldsToBeIgnored(['disabled']);
         $query->getQuerySettings()->setRespectStoragePage(false);
 
         /** @var Event $event */

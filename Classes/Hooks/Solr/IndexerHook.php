@@ -57,7 +57,7 @@ class IndexerHook implements PageIndexerDocumentsModifier
             $day = $this->eventService->getNextDayForEvent((int)$item->getRecordUid());
             if ($day === false || !$day instanceof Day) {
                 // clear document array, if there are no further day records in future
-                $documents = array();
+                $documents = [];
             }
         }
         return $documents;

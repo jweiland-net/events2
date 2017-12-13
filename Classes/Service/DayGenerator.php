@@ -29,7 +29,7 @@ class DayGenerator
      *
      * @var array
      */
-    protected $dateTimeStorage = array();
+    protected $dateTimeStorage = [];
 
     /**
      * @var \JWeiland\Events2\Configuration\ExtConf
@@ -71,6 +71,8 @@ class DayGenerator
      * @param Event $event
      *
      * @return bool
+     *
+     * @throws \Exception
      */
     public function initialize(Event $event)
     {
@@ -119,7 +121,7 @@ class DayGenerator
      */
     protected function reset()
     {
-        $this->dateTimeStorage = array();
+        $this->dateTimeStorage = [];
     }
 
     /**
@@ -256,7 +258,7 @@ class DayGenerator
      */
     protected function getXth(Event $event)
     {
-        $result = array();
+        $result = [];
         foreach ($this->getItemsFromTca('xth') as $key => $item) {
             $value = (bool)($event->getXth() & pow(2, $key));
             $result[$item[1]] = $value;
@@ -274,7 +276,7 @@ class DayGenerator
      */
     protected function getWeekday(Event $event)
     {
-        $result = array();
+        $result = [];
         foreach ($this->getItemsFromTca('weekday') as $key => $item) {
             $value = (bool)($event->getWeekday() & pow(2, $key));
             $result[$item[1]] = $value;
@@ -298,7 +300,7 @@ class DayGenerator
         ) {
             return $GLOBALS['TCA']['tx_events2_domain_model_event']['columns'][$field]['config']['items'];
         } else {
-            return array();
+            return [];
         }
     }
 

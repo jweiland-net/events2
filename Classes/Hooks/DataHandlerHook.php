@@ -141,8 +141,8 @@ class DataHandlerHook
      */
     public function getAddress(array $eventLocation)
     {
-        $address = array();
-        $addressParts = array('street', 'house_number', 'zip', 'city', 'country');
+        $address = [];
+        $addressParts = ['street', 'house_number', 'zip', 'city', 'country'];
 
         foreach ($addressParts as $addressPart) {
             $value = trim($eventLocation[$addressPart]);
@@ -155,7 +155,7 @@ class DataHandlerHook
                 if (!empty($row)) {
                     $address[] = $row['cn_short_en'];
                 }
-            } elseif(!empty($value)) {
+            } elseif (!empty($value)) {
                 $address[] = $eventLocation[$addressPart];
             }
         }
@@ -200,9 +200,9 @@ class DataHandlerHook
         $this->getDatabaseConnection()->exec_UPDATEquery(
             'tx_events2_domain_model_location',
             'uid=' . (int)$eventLocation['uid'],
-            array(
+            [
                 'tx_maps2_uid' => (int)$poi
-            )
+            ]
         );
         $eventLocation['tx_maps2_uid'] = (int)$poi;
     }
@@ -215,12 +215,14 @@ class DataHandlerHook
      * @param array $eventLocation
      *
      * @return int insert UID
+     *
+     * @throws \Exception
      */
     public function createNewPoiCollection(Location $location, $address, array $eventLocation)
     {
         $tsConfig = $this->getTsConfig($eventLocation);
 
-        $fieldValues = array();
+        $fieldValues = [];
         $fieldValues['pid'] = (int)$tsConfig['pid'];
         $fieldValues['tstamp'] = time();
         $fieldValues['crdate'] = time();
@@ -297,7 +299,7 @@ class DataHandlerHook
         );
 
         if (count($rows)) {
-            $row = array();
+            $row = [];
             // overwrite all rows as new data for poiCollection
             foreach ($rows as $key => $row) {
                 $row['uid_foreign'] = (int)$eventLocation['tx_maps2_uid'];
@@ -317,9 +319,9 @@ class DataHandlerHook
         $this->getDatabaseConnection()->exec_UPDATEquery(
             'tx_maps2_domain_model_poicollection',
             'uid=' . (int)$eventLocation['tx_maps2_uid'],
-            array(
+            [
                 'categories' => count($rows)
-            )
+            ]
         );
     }
 

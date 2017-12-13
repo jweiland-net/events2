@@ -63,6 +63,8 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
      * Should return TRUE on successful execution, FALSE on error.
      *
      * @return bool Returns TRUE on successful execution, FALSE on error
+     *
+     * @throws \Exception
      */
     public function execute()
     {
@@ -95,10 +97,10 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
             $counter = 0;
             foreach ($events as $event) {
                 $counter++;
-                $this->registry->set('events2TaskCreateUpdate', 'info', array(
+                $this->registry->set('events2TaskCreateUpdate', 'info', [
                     'uid' => $event['uid'],
                     'pid' => $event['pid']
-                ));
+                ]);
 
                 try {
                     $dayRelations->createDayRelations($event['uid']);
@@ -117,10 +119,10 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
                 // clean up persistence manager to reduce in-memory
                 $persistenceManager->clearState();
 
-                $this->registry->set('events2TaskCreateUpdate', 'progress', array(
+                $this->registry->set('events2TaskCreateUpdate', 'progress', [
                     'records' => count($events),
                     'counter' => $counter
-                ));
+                ]);
             }
         }
 

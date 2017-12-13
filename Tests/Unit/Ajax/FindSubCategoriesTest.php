@@ -48,7 +48,7 @@ class FindSubCategoriesTest extends UnitTestCase
      */
     public function processAjaxRequest()
     {
-        $categories = array();
+        $categories = [];
         $category1 = new Category();
         $category1->_setProperty('uid', 123);
         $category1->setTitle('BMW');
@@ -63,18 +63,18 @@ class FindSubCategoriesTest extends UnitTestCase
         $categories[] = $category2;
 
         /* @var \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult|\PHPUnit_Framework_MockObject_MockObject|\TYPO3\CMS\Core\Tests\AccessibleObjectInterface $categories */
-        $queryResult = $this->getAccessibleMock('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\QueryResult', array('dummy'), array(new Query('fooBarType')));
+        $queryResult = $this->getAccessibleMock('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\QueryResult', ['dummy'], array(new Query('fooBarType')));
         $queryResult->_set('queryResult', $categories);
 
         /** @var \JWeiland\Events2\Domain\Repository\CategoryRepository|\PHPUnit_Framework_MockObject_MockObject $categoryRepository */
-        $categoryRepository = $this->getMock('JWeiland\\Events2\\Domain\\Repository\\CategoryRepository', array('getSubCategories'), array(), '', false);
+        $categoryRepository = $this->getMock('JWeiland\\Events2\\Domain\\Repository\\CategoryRepository', ['getSubCategories'], [], '', false);
         $categoryRepository->expects($this->once())->method('getSubCategories')->with(284)->will($this->returnValue($queryResult));
 
         $this->subject->injectCategoryRepository($categoryRepository);
 
         $this->assertSame(
             '{"123":"BMW","456":"Audi"}',
-            $this->subject->processAjaxRequest(array('category' => '284')) // test if case to int works
+            $this->subject->processAjaxRequest(['category' => '284']) // test if case to int works
         );
     }
 }

@@ -22,12 +22,12 @@ class Query extends \TYPO3\CMS\Extbase\Persistence\Generic\Query
     /**
      * @var array
      */
-    protected $select = array();
+    protected $select = [];
 
     /**
      * @var array
      */
-    protected $groupings = array();
+    protected $groupings = [];
 
     /**
      * Returns the select

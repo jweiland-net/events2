@@ -36,13 +36,13 @@ class EmStaticInfo
             'deleted=0',
             '', 'static_countries.cn_short_en', ''
         );
-        
-        $options = array();
+
+        $options = [];
         $options[] = '<option value=""></option>';
         foreach ($countries as $country) {
             $options[] = $this->wrapOption((int)$country['uid'], $country['cn_short_en'], $params['fieldValue'] == $country['uid']);
         }
-        
+
         return sprintf(
             '<select id="%s" class="%s" name="%s">%s</select>',
             'em-' . $params['propertyName'],
@@ -51,7 +51,7 @@ class EmStaticInfo
             implode(LF, $options)
         );
     }
-    
+
     /**
      * Wrap option tag
      *
@@ -70,7 +70,7 @@ class EmStaticInfo
             $label
         );
     }
-    
+
     /**
      * Get TYPO3s Database Connection
      *

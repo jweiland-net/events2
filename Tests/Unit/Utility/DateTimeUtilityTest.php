@@ -50,10 +50,10 @@ class DateTimeUtilityTest extends UnitTestCase
      */
     public function emptyDatesDataProvider()
     {
-        $emptyDate = array();
-        $emptyDate['empty value: null'] = array(null, null);
-        $emptyDate['empty value: 0000-00-00'] = array('0000-00-00', null);
-        $emptyDate['empty value: 0000-00-00 00:00:00'] = array('0000-00-00 00:00:00', null);
+        $emptyDate = [];
+        $emptyDate['empty value: null'] = [null, null];
+        $emptyDate['empty value: 0000-00-00'] = ['0000-00-00', null];
+        $emptyDate['empty value: 0000-00-00 00:00:00'] = ['0000-00-00 00:00:00', null];
 
         return $emptyDate;
     }
@@ -80,12 +80,12 @@ class DateTimeUtilityTest extends UnitTestCase
      */
     public function dataProviderWithInvalidValuesForDateTimeObjects()
     {
-        $invalidValues = array();
-        $invalidValues['string'] = array('Hello');
-        $invalidValues['boolean'] = array(true);
-        $invalidValues['object'] = array(new \stdClass());
-        $invalidValues['null'] = array(null);
-        $invalidValues['array'] = array(array(123));
+        $invalidValues = [];
+        $invalidValues['string'] = ['Hello'];
+        $invalidValues['boolean'] = [true];
+        $invalidValues['object'] = [new \stdClass()];
+        $invalidValues['null'] = [null];
+        $invalidValues['array'] = [[123]];
 
         return $invalidValues;
     }
@@ -106,19 +106,19 @@ class DateTimeUtilityTest extends UnitTestCase
      */
     public function stringDatesDataProvider()
     {
-        $dateStrings = array();
+        $dateStrings = [];
 
         $midnight = new \DateTime();
         $midnight->modify('midnight');
-        $dateStrings['midnight'] = array('midnight', $midnight);
+        $dateStrings['midnight'] = ['midnight', $midnight];
 
         $tomorrow = new \DateTime();
         $tomorrow->modify('tomorrow')->modify('midnight');
-        $dateStrings['tomorrow'] = array('tomorrow', $tomorrow);
+        $dateStrings['tomorrow'] = ['tomorrow', $tomorrow];
 
         $lastDayOfMonth = new \DateTime();
         $lastDayOfMonth->modify('last day of this month')->modify('midnight');
-        $dateStrings['last day of this month'] = array('last day of this month', $lastDayOfMonth);
+        $dateStrings['last day of this month'] = ['last day of this month', $lastDayOfMonth];
 
         return $dateStrings;
     }
@@ -143,16 +143,16 @@ class DateTimeUtilityTest extends UnitTestCase
      */
     public function timestampDataProvider()
     {
-        $timestamps = array();
-        $timestamps['timestamp: 0'] = array(0, null);
-        $timestamps['timestamp: 1'] = array(1, \DateTime::createFromFormat('d.m.Y H:i:s', '01.01.1970 00:00:00'));
-        $timestamps['timestamp: 12345'] = array(12345, \DateTime::createFromFormat('d.m.Y H:i:s', '01.01.1970 00:00:00'));
-        $timestamps['timestamp: 123456789'] = array(123456789, \DateTime::createFromFormat('d.m.Y H:i:s', '29.11.1973 00:00:00'));
-        $timestamps['timestamp: 1234567890'] = array(1234567890, \DateTime::createFromFormat('d.m.Y H:i:s', '14.02.2009 00:00:00'));
+        $timestamps = [];
+        $timestamps['timestamp: 0'] = [0, null];
+        $timestamps['timestamp: 1'] = [1, \DateTime::createFromFormat('d.m.Y H:i:s', '01.01.1970 00:00:00')];
+        $timestamps['timestamp: 12345'] = [12345, \DateTime::createFromFormat('d.m.Y H:i:s', '01.01.1970 00:00:00')];
+        $timestamps['timestamp: 123456789'] = [123456789, \DateTime::createFromFormat('d.m.Y H:i:s', '29.11.1973 00:00:00')];
+        $timestamps['timestamp: 1234567890'] = [1234567890, \DateTime::createFromFormat('d.m.Y H:i:s', '14.02.2009 00:00:00')];
         if (strlen(decbin(~0)) === 64) {
             // this is only for 64bit OS
-            $timestamps['timestamp: 13000000000'] = array(13000000000, \DateTime::createFromFormat('d.m.Y H:i:s', '15.12.2381 00:00:00'));
-            $timestamps['timestamp: 15000000000'] = array(15000000000, \DateTime::createFromFormat('d.m.Y H:i:s', '01.05.2445 00:00:00'));
+            $timestamps['timestamp: 13000000000'] = [13000000000, \DateTime::createFromFormat('d.m.Y H:i:s', '15.12.2381 00:00:00')];
+            $timestamps['timestamp: 15000000000'] = [15000000000, \DateTime::createFromFormat('d.m.Y H:i:s', '01.05.2445 00:00:00')];
         }
 
         return $timestamps;

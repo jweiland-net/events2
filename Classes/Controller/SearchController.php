@@ -80,9 +80,9 @@ class SearchController extends ActionController
     {
         $allowedMainCategories = $this->categoryRepository->getSelectedCategories($this->settings['mainCategories'], $this->settings['rootCategory']);
 
-        $data = array();
+        $data = [];
         $data['categories']['main'] = $allowedMainCategories;
-        $data['categories']['sub'] = array();
+        $data['categories']['sub'] = [];
         $data['locations'] = $this->locationRepository->findAll();
         $data['siteUrl'] = GeneralUtility::getIndpEnv('TYPO3_SITE_URL');
         $data['siteId'] = $GLOBALS['TSFE']->id;
@@ -102,9 +102,9 @@ class SearchController extends ActionController
     {
         $this->arguments->getArgument('search')->getPropertyMappingConfiguration()->setTypeConverterOptions(
             'TYPO3\\CMS\\Extbase\\Property\\TypeConverter\\PersistentObjectConverter',
-            array(
+            [
                 PersistentObjectConverter::CONFIGURATION_CREATION_ALLOWED => true,
-            )
+            ]
         );
         $this->arguments->getArgument('search')->getPropertyMappingConfiguration()->allowAllProperties();
     }

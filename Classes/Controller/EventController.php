@@ -38,9 +38,9 @@ class EventController extends AbstractController
     {
         $this->arguments->getArgument('search')->getPropertyMappingConfiguration()->setTypeConverterOptions(
             'TYPO3\\CMS\\Extbase\\Property\\TypeConverter\\PersistentObjectConverter',
-            array(
+            [
                 PersistentObjectConverter::CONFIGURATION_CREATION_ALLOWED => true,
-            )
+            ]
         );
         $this->arguments->getArgument('search')->getPropertyMappingConfiguration()->allowAllProperties();
     }
@@ -212,9 +212,9 @@ class EventController extends AbstractController
             ->forProperty('images')
             ->setTypeConverter($multipleFilesTypeConverter)
             ->setTypeConverterOptions('JWeiland\\Events2\\Property\\TypeConverter\\UploadMultipleFilesConverter',
-                array(
+                [
                     'IMAGES' => $event->getImages()
-                )
+                ]
             );
     }
 

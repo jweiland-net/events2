@@ -46,10 +46,10 @@ class TimeToStringConverterTest extends UnitTestCase
      */
     public function dataProviderForInvalidTimestamps()
     {
-        $timestamps = array();
-        $timestamps['array'] = array(array('Test', 'Test'));
-        $timestamps['string'] = array('Hello');
-        $timestamps['object'] = array(new \stdClass());
+        $timestamps = [];
+        $timestamps['array'] = [['Test', 'Test']];
+        $timestamps['string'] = ['Hello'];
+        $timestamps['object'] = [new \stdClass()];
 
         return $timestamps;
     }
@@ -75,10 +75,10 @@ class TimeToStringConverterTest extends UnitTestCase
      */
     public function dataProviderForTooHighIntegerValues()
     {
-        $timestamps = array();
-        $timestamps['one second too high'] = array(60 * 60 * 24);
-        $timestamps['some seconds too high'] = array(60 * 60 * 24 * 7);
-        $timestamps['one year too high'] = array(60 * 60 * 24 * 365);
+        $timestamps = [];
+        $timestamps['one second too high'] = [60 * 60 * 24];
+        $timestamps['some seconds too high'] = [60 * 60 * 24 * 7];
+        $timestamps['one year too high'] = [60 * 60 * 24 * 365];
 
         return $timestamps;
     }
@@ -104,10 +104,10 @@ class TimeToStringConverterTest extends UnitTestCase
      */
     public function dataProviderForTooLowIntegerValues()
     {
-        $timestamps = array();
-        $timestamps['edge case with zero'] = array(0);
-        $timestamps['edge case with -1'] = array(-1);
-        $timestamps['higher negative value'] = array(-123);
+        $timestamps = [];
+        $timestamps['edge case with zero'] = [0];
+        $timestamps['edge case with -1'] = [-1];
+        $timestamps['higher negative value'] = [-123];
 
         return $timestamps;
     }
@@ -133,16 +133,16 @@ class TimeToStringConverterTest extends UnitTestCase
      */
     public function dataProviderForTimestampsInAllowedRange()
     {
-        $timestamps = array();
-        $timestamps['edge case with zero'] = array(0, '00:00');
-        $timestamps['edge case with one second'] = array(1, '00:00');
-        $timestamps['edge case with one minute'] = array(60, '00:01');
-        $timestamps['edge case with midnight'] = array(60 * 60 * 24, '23:59');
-        $timestamps['edge case with midnight - 1 second'] = array((60 * 60 * 24) - 1, '23:59');
-        $timestamps['timestamp with padded zero in front'] = array(60 * 60 * 5 + 60 * 7, '05:07');
-        $timestamps['timestamp in the morning'] = array(60 * 60 * 10 + 60 * 43, '10:43');
-        $timestamps['timestamp at launch'] = array(60 * 60 * 12, '12:00');
-        $timestamps['timestamp in the afternoon'] = array(60 * 60 * 17 + 60 * 52, '17:52');
+        $timestamps = [];
+        $timestamps['edge case with zero'] = [0, '00:00'];
+        $timestamps['edge case with one second'] = [1, '00:00'];
+        $timestamps['edge case with one minute'] = [60, '00:01'];
+        $timestamps['edge case with midnight'] = [60 * 60 * 24, '23:59'];
+        $timestamps['edge case with midnight - 1 second'] = [(60 * 60 * 24) - 1, '23:59'];
+        $timestamps['timestamp with padded zero in front'] = [60 * 60 * 5 + 60 * 7, '05:07'];
+        $timestamps['timestamp in the morning'] = [60 * 60 * 10 + 60 * 43, '10:43'];
+        $timestamps['timestamp at launch'] = [60 * 60 * 12, '12:00'];
+        $timestamps['timestamp in the afternoon'] = [60 * 60 * 17 + 60 * 52, '17:52'];
 
         return $timestamps;
     }

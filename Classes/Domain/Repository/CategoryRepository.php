@@ -58,6 +58,8 @@ class CategoryRepository extends \TYPO3\CMS\Extbase\Domain\Repository\CategoryRe
      * @param string $parent       parent category UID. This value comes from TS, so it's a string
      *
      * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     *
+     * @throws \Exception
      */
     public function getSelectedCategories($categoryUids, $parent = '')
     {
@@ -68,7 +70,7 @@ class CategoryRepository extends \TYPO3\CMS\Extbase\Domain\Repository\CategoryRe
         $selectedCategories = array_values(array_filter(GeneralUtility::intExplode(',', $categoryUids, true)));
         $query = $this->createQuery();
 
-        $constraint = array();
+        $constraint = [];
         $constraint[] = $query->in('uid', $selectedCategories);
 
         if (MathUtility::canBeInterpretedAsInteger($parent)) {

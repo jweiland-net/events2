@@ -36,9 +36,9 @@ class XmlImporter extends AbstractImporter
     /**
      * @var array
      */
-    protected $allowedMimeType = array(
+    protected $allowedMimeType = [
         'application/xml'
-    );
+    ];
 
     /**
      * Import XML file
@@ -148,7 +148,7 @@ class XmlImporter extends AbstractImporter
      */
     protected function addRootProperties(Event $event, array $data)
     {
-        $allowedRootProperties = array(
+        $allowedRootProperties = [
             'event_type',
             'top_of_list',
             'title',
@@ -159,7 +159,7 @@ class XmlImporter extends AbstractImporter
             'each_weeks',
             'detail_informations',
             'free_entry',
-        );
+        ];
         foreach ($allowedRootProperties as $property) {
             if (isset($data[$property])) {
                 $setter = 'set' . GeneralUtility::underscoredToUpperCamelCase($property);
@@ -178,11 +178,11 @@ class XmlImporter extends AbstractImporter
      */
     protected function addDateProperties(Event $event, array $data)
     {
-        $allowedDateProperties = array(
+        $allowedDateProperties = [
             'event_begin',
             'event_end',
             'recurring_end',
-        );
+        ];
         foreach ($allowedDateProperties as $property) {
             if (!isset($data[$property])) {
                 continue;
@@ -327,7 +327,7 @@ class XmlImporter extends AbstractImporter
      */
     protected function addLinks(Event $event, array $data)
     {
-        $properties = array('ticket_link', 'video_link', 'download_links');
+        $properties = ['ticket_link', 'video_link', 'download_links'];
         foreach ($properties as $property) {
             if (isset($data[$property]) && filter_var($data[$property]['uri'], FILTER_VALIDATE_URL)) {
                 /** @var Link $link */

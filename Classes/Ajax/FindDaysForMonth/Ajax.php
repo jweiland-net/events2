@@ -35,7 +35,7 @@ class Ajax
      *
      * @var array
      */
-    protected $arguments = array();
+    protected $arguments = [];
 
     /**
      * @var ExtConf
@@ -135,14 +135,14 @@ class Ajax
         // save a session for selected month
         $this->saveMonthAndYearInSession($month, $year);
 
-        $dayArray = array();
+        $dayArray = [];
         $days = $this->findAllDaysInMonth($month, $year);
         /** @var Day $day */
         foreach ($days as $day) {
-            $addDay = array(
+            $addDay = [
                 'uid' => $day->getEvent()->getUid(),
                 'title' => $day->getEvent()->getTitle()
-            );
+            ];
             $addDay['uri'] = $this->getUriForDay($day->getDay()->format('U'));
             $dayOfMonth = $day->getDay()->format('j');
             $dayArray[$dayOfMonth][] = $addDay;
@@ -226,18 +226,18 @@ class Ajax
         /*$uri = $this->uriBuilder
             ->reset()
             ->setTargetPageUid($pid)
-            ->uriFor('show', array('day' => $dayUid), 'Day', 'events2', 'events');*/
+            ->uriFor('show', ['day' => $dayUid), 'Day', 'events2', 'events'];*/
 
         // create uri manually instead of uriBuilder
         $siteUrl = GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . 'index.php?';
-        $query = array(
+        $query = [
             'id' => $this->getArgument('pidOfListPage'),
-            'tx_events2_events' => array(
+            'tx_events2_events' => [
                 'controller' => 'Day',
                 'action' => 'showByTimestamp',
                 'timestamp' => (int)$timestamp,
-            ),
-        );
+            ],
+        ];
         $cacheHashArray = $this->cacheHashCalculator->getRelevantParameters(GeneralUtility::implodeArrayForUrl('', $query));
         $query['cHash'] = $this->cacheHashCalculator->calculateCacheHash($cacheHashArray);
         $uri = $siteUrl . http_build_query($query);
@@ -263,10 +263,10 @@ class Ajax
         );
         if (!empty($holidays)) {
             foreach ($holidays as $holiday) {
-                $days[$holiday['day']][] = array(
+                $days[$holiday['day']][] = [
                     'uid' => $holiday['day'],
                     'class' => 'holiday'
-                );
+                ];
             }
         }
     }
@@ -283,10 +283,10 @@ class Ajax
         $userAuthentication->start();
         $userAuthentication->setAndSaveSessionData(
             'events2MonthAndYearForCalendar',
-            array(
+            [
                 'month' => str_pad((string)$month, 2, '0', STR_PAD_LEFT),
                 'year' => (string)$year
-            )
+            ]
         );
     }
 
@@ -297,6 +297,8 @@ class Ajax
      * @param int $year
      *
      * @return array
+     *
+     * @throws \Exception
      */
     public function findAllDaysInMonth($month, $year)
     {
@@ -330,15 +332,15 @@ class Ajax
             $latestAllowedDate < $lastDayOfMonth
         ) {
             // if both values are out of range, do not return any date
-            return array();
+            return [];
         }
 
-        $constraint = array();
+        $constraint = [];
 
         $query = $this->dayRepository->createQuery();
         $query->getQuerySettings()->setStoragePageIds(explode(',', $this->getArgument('storagePids')));
         if (strlen(trim($this->getArgument('categories')))) {
-            $orConstraint = array();
+            $orConstraint = [];
             foreach (explode(',', $this->getArgument('categories')) as $category) {
                 $orConstraint[] = $query->contains('event.categories', (int)$category);
             }

@@ -30,7 +30,7 @@ class AjaxController extends ActionController
      *
      * @return string
      */
-    public function callAjaxObjectAction($objectName, $arguments = array())
+    public function callAjaxObjectAction($objectName, $arguments = [])
     {
         if (is_string($objectName)) {
             $className = 'JWeiland\\Events2\\Ajax\\' . ucfirst($objectName);

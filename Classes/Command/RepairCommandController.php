@@ -153,7 +153,7 @@ class RepairCommandController extends CommandController
                 // it also clears persistence session
                 $persistenceManager->clearState();
                 // reset pageTsConfigCache with help of reflections
-                $reflectedPageTSConfigCache->setValue($extbaseDbBackend, array());
+                $reflectedPageTSConfigCache->setValue($extbaseDbBackend, []);
                 gc_collect_cycles();
             }
         }

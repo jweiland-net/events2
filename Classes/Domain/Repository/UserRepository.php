@@ -1,7 +1,7 @@
 <?php
 
 namespace JWeiland\Events2\Domain\Repository;
-    
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -36,7 +36,7 @@ class UserRepository
 
             return $GLOBALS['TSFE']->fe_user->user;
         } else {
-            return array();
+            return [];
         }
     }
 

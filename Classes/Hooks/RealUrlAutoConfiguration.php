@@ -33,27 +33,27 @@ class RealUrlAutoConfiguration
      */
     public function addEvents2Config(array $parameters, AutomaticConfigurator $parentObject)
     {
-        return array_merge_recursive($parameters['config'], array(
-            'fileName' => array(
+        return array_merge_recursive($parameters['config'], [
+            'fileName' => [
                 'defaultToHTMLsuffixOnPrev' => true,
-            ),
-            'postVarSets' => array(
-                '_DEFAULT' => array(
-                    'event' => array(
-                        0 => array(
+            ],
+            'postVarSets' => [
+                '_DEFAULT' => [
+                    'event' => [
+                        0 => [
                             'GETvar' => 'tx_events2_events[controller]',
-                            'valueMap' => array(
+                            'valueMap' => [
                                 'd' => 'Day',
                                 'e' => 'Event',
                                 'l' => 'Location',
                                 'v' => 'Video',
                                 'a' => 'Ajax',
-                            ),
+                            ],
                             'noMatch' => 'bypass'
-                        ),
-                        1 => array(
+                        ],
+                        1 => [
                             'GETvar' => 'tx_events2_events[action]',
-                            'valueMap' => array(
+                            'valueMap' => [
                                 'l' => 'list',
                                 'll' => 'listLatest',
                                 'lt' => 'listToday',
@@ -70,50 +70,50 @@ class RealUrlAutoConfiguration
                                 's' => 'show',
                                 'st' => 'showByTimestamp',
                                 'cao' => 'callAjaxObject',
-                            ),
+                            ],
                             'noMatch' => 'bypass'
-                        ),
-                    ),
-                    'ts' => array(
-                        0 => array(
+                        ],
+                    ],
+                    'ts' => [
+                        0 => [
                             'GETvar' => 'tx_events2_events[timestamp]',
                             'userFunc' => 'JWeiland\\Events2\\RealUrl\\TimestampMapping->main',
                             'dateFormat' => 'Y-m-d',
                             'timeFormat' => 'Hi',
-                        )
-                    ),
-                    't' => array(
-                        0 => array(
+                        ]
+                    ],
+                    't' => [
+                        0 => [
                             'GETvar' => 'tx_events2_events[event]',
-                            'lookUpTable' => array(
+                            'lookUpTable' => [
                                 'table' => 'tx_events2_domain_model_event',
                                 'id_field' => 'uid',
                                 'alias_field' => 'CONCAT(title, \'-\', uid)',
                                 'useUniqueCache' => 1,
-                                'useUniqueCache_conf' => array(
+                                'useUniqueCache_conf' => [
                                     'strtolower' => 1,
                                     'spaceCharacter' => '-',
-                                ),
-                            ),
-                        ),
-                    ),
-                    'eventLocation' => array(
-                        0 => array(
+                                ],
+                            ],
+                        ],
+                    ],
+                    'eventLocation' => [
+                        0 => [
                             'GETvar' => 'tx_events2_events[location]',
-                            'lookUpTable' => array(
+                            'lookUpTable' => [
                                 'table' => 'tx_events2_domain_model_location',
                                 'id_field' => 'uid',
                                 'alias_field' => 'CONCAT(location, \'-\', uid)',
                                 'useUniqueCache' => 1,
-                                'useUniqueCache_conf' => array(
+                                'useUniqueCache_conf' => [
                                     'strtolower' => 1,
                                     'spaceCharacter' => '-',
-                                ),
-                            ),
-                        ),
-                    ),
-                ),
-            ),
-        ));
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
     }
 }

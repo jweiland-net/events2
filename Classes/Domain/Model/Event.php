@@ -531,7 +531,7 @@ class Event extends AbstractEntity
      */
     public function getXth()
     {
-        $result = array();
+        $result = [];
         $items = $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['xth']['config']['items'];
         foreach ($items as $key => $item) {
             $result[$item[1]] = $this->xth & pow(2, $key);
@@ -559,7 +559,7 @@ class Event extends AbstractEntity
      */
     public function getWeekday()
     {
-        $result = array();
+        $result = [];
         $items = $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['weekday']['config']['items'];
         foreach ($items as $key => $item) {
             $result[$item[1]] = $this->weekday & pow(2, $key);
@@ -861,7 +861,7 @@ class Event extends AbstractEntity
      */
     public function getCategoryUids()
     {
-        $categoryUids = array();
+        $categoryUids = [];
         /** @var Category $category */
         foreach ($this->categories as $category) {
             $categoryUids[] = $category->getUid();
@@ -980,7 +980,7 @@ class Event extends AbstractEntity
     {
         // ObjectStorage has SplObjectHashes as key which we don't know in Fluid
         // so we convert ObjectStorage to array to get numbered keys
-        $references = array();
+        $references = [];
         foreach ($this->images as $image) {
             $references[] = $image;
         }

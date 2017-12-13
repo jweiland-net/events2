@@ -99,7 +99,7 @@ class DayRepositoryTest extends UnitTestCase
      */
     public function findEventsWithEmptyTypeJumpsInListCase()
     {
-        $this->query->logicalAnd(Argument::cetera())->shouldBeCalled()->willReturn(array());
+        $this->query->logicalAnd(Argument::cetera())->shouldBeCalled()->willReturn([]);
         $this->query->greaterThanOrEqual(Argument::cetera())->shouldBeCalled();
         $this->query->matching(Argument::exact([]))->shouldBeCalled()->willReturn($this->query->reveal());
         $this->query->setGroupings(Argument::cetera())->shouldBeCalled();

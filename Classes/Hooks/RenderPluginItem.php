@@ -149,7 +149,7 @@ class RenderPluginItem
      */
     protected function getFlexFormSettings(array $row)
     {
-        $settings = array();
+        $settings = [];
         if (!empty($row['pi_flexform'])) {
             /** @var FlexFormService $flexFormService */
             $flexFormService = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Service\\FlexFormService');

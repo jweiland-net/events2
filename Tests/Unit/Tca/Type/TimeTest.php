@@ -46,11 +46,11 @@ class TimeTest extends UnitTestCase
      */
     public function unmodifiedTimesDataProvider()
     {
-        $times = array();
-        $times['empty values'] = array('');
-        $times['erliest two digit time'] = array('00:00');
-        $times['latest two digit time'] = array('23:59');
-        $times['random two digit time'] = array('21:34');
+        $times = [];
+        $times['empty values'] = [''];
+        $times['erliest two digit time'] = ['00:00'];
+        $times['latest two digit time'] = ['23:59'];
+        $times['random two digit time'] = ['21:34'];
 
         return $times;
     }
@@ -74,11 +74,11 @@ class TimeTest extends UnitTestCase
      */
     public function unpaddedTimesDataProvider()
     {
-        $times = array();
-        $times['zero values'] = array('0:0', '00:00');
-        $times['one digit hour'] = array('5:32', '05:32');
-        $times['one digit minute'] = array('12:8', '12:08');
-        $times['one digit for both'] = array('4:9', '04:09');
+        $times = [];
+        $times['zero values'] = ['0:0', '00:00'];
+        $times['one digit hour'] = ['5:32', '05:32'];
+        $times['one digit minute'] = ['12:8', '12:08'];
+        $times['one digit for both'] = ['4:9', '04:09'];
 
         return $times;
     }
@@ -103,13 +103,13 @@ class TimeTest extends UnitTestCase
      */
     public function tooHighTimesDataProvider()
     {
-        $times = array();
-        $times['edge case midnight'] = array('24:00', '24:00');
-        $times['edge case one minute after midnight'] = array('24:01', '23:01');
-        $times['edge case with 60 minutes'] = array('15:60', '15:59');
-        $times['too high hour'] = array('67:43', '23:43');
-        $times['too high minute'] = array('19:543', '19:59');
-        $times['everything is too high'] = array('63:754', '23:59');
+        $times = [];
+        $times['edge case midnight'] = ['24:00', '24:00'];
+        $times['edge case one minute after midnight'] = ['24:01', '23:01'];
+        $times['edge case with 60 minutes'] = ['15:60', '15:59'];
+        $times['too high hour'] = ['67:43', '23:43'];
+        $times['too high minute'] = ['19:543', '19:59'];
+        $times['everything is too high'] = ['63:754', '23:59'];
 
         return $times;
     }
@@ -134,9 +134,9 @@ class TimeTest extends UnitTestCase
      */
     public function invalidTimesDataProvider()
     {
-        $times = array();
-        $times['invalid value: Stefan'] = array('Stefan', '');
-        $times['invalid value: 123Test'] = array('123Test', '');
+        $times = [];
+        $times['invalid value: Stefan'] = ['Stefan', ''];
+        $times['invalid value: 123Test'] = ['123Test', ''];
 
         return $times;
     }
@@ -161,16 +161,16 @@ class TimeTest extends UnitTestCase
      */
     public function dateProviderForVariousIntegerValues()
     {
-        $timestamps = array();
-        $timestamps['edge case with zero'] = array(0, '00:00');
-        $timestamps['edge case with one second'] = array(1, '00:00');
-        $timestamps['edge case with one minute'] = array(60, '00:01');
-        $timestamps['edge case with midnight'] = array(60 * 60 * 24, '23:59');
-        $timestamps['edge case with midnight - 1 second'] = array((60 * 60 * 24) - 1, '23:59');
-        $timestamps['timestamp with padded zero in front'] = array(60 * 60 * 7 + 60 * 3, '07:03');
-        $timestamps['timestamp in the morning'] = array(60 * 60 * 8 + 60 * 27, '08:27');
-        $timestamps['timestamp at launch'] = array(60 * 60 * 12 + 60 * 12, '12:12');
-        $timestamps['timestamp in the afternoon'] = array(60 * 60 * 19 + 60 * 13, '19:13');
+        $timestamps = [];
+        $timestamps['edge case with zero'] = [0, '00:00'];
+        $timestamps['edge case with one second'] = [1, '00:00'];
+        $timestamps['edge case with one minute'] = [60, '00:01'];
+        $timestamps['edge case with midnight'] = [60 * 60 * 24, '23:59'];
+        $timestamps['edge case with midnight - 1 second'] = [(60 * 60 * 24) - 1, '23:59'];
+        $timestamps['timestamp with padded zero in front'] = [60 * 60 * 7 + 60 * 3, '07:03'];
+        $timestamps['timestamp in the morning'] = [60 * 60 * 8 + 60 * 27, '08:27'];
+        $timestamps['timestamp at launch'] = [60 * 60 * 12 + 60 * 12, '12:12'];
+        $timestamps['timestamp in the afternoon'] = [60 * 60 * 19 + 60 * 13, '19:13'];
 
         return $timestamps;
     }

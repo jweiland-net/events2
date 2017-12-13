@@ -30,25 +30,25 @@ class ext_update
      *
      * @var array
      */
-    protected $messageArray = array();
+    protected $messageArray = [];
 
     /**
      * @var FlexFormTools
      */
     protected $flexFormTools;
-    
+
     /**
      * Mapping for switchable controller actions
      * in FlexForms
      *
      * @var array
      */
-    protected $scaMapping = array(
+    protected $scaMapping = [
         'Event->listLatest;Event->show;Day->show;Location->show;Video->show' => 'Day->listLatest;Day->show;Day->showByTimestamp;Location->show;Video->show',
         'Event->listToday;Event->show;Day->show;Location->show;Video->show' => 'Day->listToday;Day->show;Day->showByTimestamp;Location->show;Video->show',
         'Event->listRange;Event->show;Day->show;Location->show;Video->show' => 'Day->listThisWeek;Day->show;Day->showByTimestamp;Location->show;Video->show',
         'Event->listThisWeek;Event->show;Day->show;Location->show;Video->show' => 'Day->listRange;Day->show;Day->showByTimestamp;Location->show;Video->show'
-    );
+    ];
 
     /**
      * Main update function called by the extension manager.
@@ -84,7 +84,7 @@ class ext_update
             // if recurring_event was already deleted in InstallTool, we can not update
             return true;
         }
-        
+
         // Check for changed SCA in FlexForms
         foreach ($this->scaMapping as $oldValue => $newValue) {
             $where = sprintf(
@@ -113,7 +113,7 @@ class ext_update
         $this->migrateColRecurringToEventType();
         $this->migrateToNewSwitchableControllerActionsInFlexForms();
     }
-    
+
     /**
      * migrate column recurring to one of event_type
      *
@@ -129,34 +129,34 @@ class ext_update
         );
         if (empty($rows)) {
             // everything migrated
-            $this->messageArray[] = array(
+            $this->messageArray[] = [
                 FlashMessage::INFO,
                 'Event records already migrated',
                 'I have not found any event records for migration. Maybe you have started this script a second time.'
-            );
+            ];
             return null;
         }
         foreach ($rows as $key => $row) {
             $this->getDatabaseConnection()->exec_UPDATEquery(
                 'tx_events2_domain_model_event',
                 'uid=' . (int)$row['uid'],
-                array(
+                [
                     'event_type' => $row['recurring_event'] ? 'recurring' : 'single',
                     'recurring_end' => $row['event_end'],
                     'event_end' => $row['recurring_event'] ? 0 : $row['event_end']
-                )
+                ]
             );
         }
-        $this->messageArray[] = array(
+        $this->messageArray[] = [
             FlashMessage::OK,
             'Migrating "recurring" col was successful',
             sprintf(
                 'We have updated %d event records',
                 count($rows)
             )
-        );
+        ];
     }
-    
+
     /**
      * Migrate old FlexForm values for Switchable Controller Actions to the new one
      *
@@ -177,23 +177,25 @@ class ext_update
             $this->getDatabaseConnection()->exec_UPDATEquery(
                 'tt_content',
                 $where,
-                array(
+                [
                     'pi_flexform' => $replace
-                ),
-                array('pi_flexform')
+                ],
+                ['pi_flexform']
             );
         }
-        $this->messageArray[] = array(
+        $this->messageArray[] = [
             FlashMessage::OK,
             'Migrating SCA successful',
             'We have updated all related tt_content records'
-        );
+        ];
     }
-    
+
     /**
      * Generates output by using flash messages
      *
      * @return string
+     *
+     * @throws \Exception
      */
     protected function generateOutput()
     {
@@ -216,7 +218,7 @@ class ext_update
                 $messageItem[1],
                 $messageItem[0]
             );
-            
+
             $flashMessageQueue->enqueue($flashMessage);
         }
         return $view->render();

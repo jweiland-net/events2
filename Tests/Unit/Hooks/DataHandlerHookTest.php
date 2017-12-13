@@ -44,7 +44,7 @@ class DataHandlerHookTest extends UnitTestCase
         $GLOBALS['TYPO3_DB'] = $this->dbProphecy->reveal();
         $this->subject = $this->getAccessibleMock(
             DataHandlerHook::class,
-            array('dummy')
+            ['dummy']
         );
     }
 
@@ -63,7 +63,7 @@ class DataHandlerHookTest extends UnitTestCase
             ->willReturn([
                 'cn_short_en' => 'Germany'
             ]);
-        $location = array(
+        $location = [
             'uid' => 123,
             'street' => 'Echterdinger Straße',
             'house_number' => '57',
@@ -71,7 +71,7 @@ class DataHandlerHookTest extends UnitTestCase
             'city' => 'Filderstadt',
             'country' => 85
 
-        );
+        ];
         $this->assertSame(
             'Echterdinger Straße 57 70794 Filderstadt Germany',
             $this->subject->getAddress($location)
@@ -83,14 +83,14 @@ class DataHandlerHookTest extends UnitTestCase
      */
     public function getAddressWithNonGivenCountry()
     {
-        $location = array(
+        $location = [
             'uid' => 123,
             'street' => 'Echterdinger Straße',
             'house_number' => '57',
             'zip' => 70794,
             'city' => 'Filderstadt'
 
-        );
+        ];
         $this->assertSame(
             'Echterdinger Straße 57 70794 Filderstadt',
             $this->subject->getAddress($location)
@@ -102,13 +102,13 @@ class DataHandlerHookTest extends UnitTestCase
      */
     public function getAddressWithHouseNumberInStreet()
     {
-        $location = array(
+        $location = [
             'uid' => 123,
             'street' => 'Echterdinger Straße 57',
             'zip' => 70794,
             'city' => 'Filderstadt'
 
-        );
+        ];
         $this->assertSame(
             'Echterdinger Straße 57 70794 Filderstadt',
             $this->subject->getAddress($location)

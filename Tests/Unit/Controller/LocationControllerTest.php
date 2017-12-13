@@ -31,20 +31,20 @@ class LocationControllerTest extends UnitTestCase
      * @var LocationController|\PHPUnit_Framework_MockObject_MockObject|\TYPO3\CMS\Core\Tests\AccessibleObjectInterface
      */
     protected $subject;
-    
+
     /**
      * @var TemplateView|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $view;
-    
+
     /**
      * set up.
      */
     public function setUp()
     {
-        $this->view = $this->getMock(TemplateView::class, array(), array(), '', false);
+        $this->view = $this->getMock(TemplateView::class, [], [], '', false);
 
-        $this->subject = $this->getAccessibleMock(LocationController::class, array('dummy'));
+        $this->subject = $this->getAccessibleMock(LocationController::class, ['dummy']);
         $this->subject->_set('view', $this->view);
     }
 
@@ -63,7 +63,7 @@ class LocationControllerTest extends UnitTestCase
     public function showActionAssignsLocationToView()
     {
         $location = new Location();
-        
+
         $this->view
             ->expects($this->once())
             ->method('assign')

@@ -33,7 +33,7 @@ abstract class AbstractImporter implements ImporterInterface
     /**
      * @var array
      */
-    protected $allowedMimeType = array();
+    protected $allowedMimeType = [];
 
     /**
      * @var ObjectManager

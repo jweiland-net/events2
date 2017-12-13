@@ -77,7 +77,7 @@ class Ajax extends AbstractAjaxRequest
 
         if ($locations === null) {
             // SQL-Error: return empty array
-            return array();
+            return [];
         } else {
             return $locations;
         }

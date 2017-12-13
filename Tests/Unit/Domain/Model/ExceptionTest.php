@@ -117,11 +117,11 @@ class ExceptionTest extends UnitTestCase
      */
     public function dataProviderForSetExceptionDate()
     {
-        $arguments = array();
-        $arguments['set ExceptionDate with Null'] = array(null);
-        $arguments['set ExceptionDate with Integer'] = array(1234567890);
-        $arguments['set ExceptionDate with Integer as String'] = array('1234567890');
-        $arguments['set ExceptionDate with String'] = array('Hi all together');
+        $arguments = [];
+        $arguments['set ExceptionDate with Null'] = [null];
+        $arguments['set ExceptionDate with Integer'] = [1234567890];
+        $arguments['set ExceptionDate with Integer as String'] = ['1234567890'];
+        $arguments['set ExceptionDate with String'] = ['Hi all together'];
 
         return $arguments;
     }

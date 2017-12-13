@@ -430,21 +430,21 @@ class EventTest extends UnitTestCase
      */
     public function getXthInitiallyResultsInArrayWhereAllValuesAreZero()
     {
-        $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['xth']['config']['items'] = array(
-            array('first', 'first'),
-            array('second', 'second'),
-            array('third', 'third'),
-            array('fourth', 'fourth'),
-            array('fifth', 'fifth'),
-        );
+        $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['xth']['config']['items'] = [
+            ['first', 'first'],
+            ['second', 'second'],
+            ['third', 'third'],
+            ['fourth', 'fourth'],
+            ['fifth', 'fifth'],
+        ];
 
-        $expectedArray = array(
+        $expectedArray = [
             'first' => 0,
             'second' => 0,
             'third' => 0,
             'fourth' => 0,
             'fifth' => 0,
-        );
+        ];
 
         $this->assertSame(
             $expectedArray,
@@ -457,21 +457,21 @@ class EventTest extends UnitTestCase
      */
     public function setXthWithZwentyThreeResultsInArrayWithDifferentValues()
     {
-        $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['xth']['config']['items'] = array(
-            array('first', 'first'),
-            array('second', 'second'),
-            array('third', 'third'),
-            array('fourth', 'fourth'),
-            array('fifth', 'fifth'),
-        );
+        $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['xth']['config']['items'] = [
+            ['first', 'first'],
+            ['second', 'second'],
+            ['third', 'third'],
+            ['fourth', 'fourth'],
+            ['fifth', 'fifth'],
+        ];
 
-        $expectedArray = array(
+        $expectedArray = [
             'first' => 1,
             'second' => 2,
             'third' => 4,
             'fourth' => 0,
             'fifth' => 16,
-        );
+        ];
         $this->subject->setXth(23);
 
         $this->assertSame(
@@ -485,17 +485,17 @@ class EventTest extends UnitTestCase
      */
     public function getWeekdayInitiallyResultsInArrayWhereAllValuesAreZero()
     {
-        $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['weekday']['config']['items'] = array(
-            array('monday', 'monday'),
-            array('tuesday', 'tuesday'),
-            array('wednesday', 'wednesday'),
-            array('thursday', 'thursday'),
-            array('friday', 'friday'),
-            array('saturday', 'saturday'),
-            array('sunday', 'sunday'),
-        );
+        $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['weekday']['config']['items'] = [
+            ['monday', 'monday'],
+            ['tuesday', 'tuesday'],
+            ['wednesday', 'wednesday'],
+            ['thursday', 'thursday'],
+            ['friday', 'friday'],
+            ['saturday', 'saturday'],
+            ['sunday', 'sunday'],
+        ];
 
-        $expectedArray = array(
+        $expectedArray = [
             'monday' => 0,
             'tuesday' => 0,
             'wednesday' => 0,
@@ -503,7 +503,7 @@ class EventTest extends UnitTestCase
             'friday' => 0,
             'saturday' => 0,
             'sunday' => 0,
-        );
+        ];
 
         $this->assertSame(
             $expectedArray,
@@ -516,17 +516,17 @@ class EventTest extends UnitTestCase
      */
     public function setWeekdayWithEightySevenResultsInArrayWithDifferentValues()
     {
-        $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['weekday']['config']['items'] = array(
-            array('monday', 'monday'),
-            array('tuesday', 'tuesday'),
-            array('wednesday', 'wednesday'),
-            array('thursday', 'thursday'),
-            array('friday', 'friday'),
-            array('saturday', 'saturday'),
-            array('sunday', 'sunday'),
-        );
+        $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['weekday']['config']['items'] = [
+            ['monday', 'monday'],
+            ['tuesday', 'tuesday'],
+            ['wednesday', 'wednesday'],
+            ['thursday', 'thursday'],
+            ['friday', 'friday'],
+            ['saturday', 'saturday'],
+            ['sunday', 'sunday'],
+        ];
 
-        $expectedArray = array(
+        $expectedArray = [
             'monday' => 1,
             'tuesday' => 2,
             'wednesday' => 4,
@@ -534,7 +534,7 @@ class EventTest extends UnitTestCase
             'friday' => 16,
             'saturday' => 0,
             'sunday' => 64,
-        );
+        ];
         $this->subject->setWeekday(87);
 
         $this->assertSame(
@@ -914,12 +914,12 @@ class EventTest extends UnitTestCase
     {
         for ($i = 1; $i < 4; $i++) {
             /* @var Category|\PHPUnit_Framework_MockObject_MockObject|\TYPO3\CMS\Core\Tests\AccessibleObjectInterface $category */
-            $category = $this->getAccessibleMock(Category::class, array('dummy'));
+            $category = $this->getAccessibleMock(Category::class, ['dummy']);
             $category->_set('uid', $i);
             $this->subject->addCategory($category);
         }
         $this->assertSame(
-            array(1,2,3),
+            [1,2,3],
             $this->subject->getCategoryUids()
         );
     }
@@ -1039,7 +1039,7 @@ class EventTest extends UnitTestCase
     public function getImagesInitiallyReturnsArray()
     {
         $this->assertEquals(
-            array(),
+            [],
             $this->subject->getImages()
         );
     }
@@ -1055,7 +1055,7 @@ class EventTest extends UnitTestCase
         $this->subject->setImages($objectStorage);
 
         $this->assertSame(
-            array(0 => $object),
+            [0 => $object],
             $this->subject->getImages()
         );
     }

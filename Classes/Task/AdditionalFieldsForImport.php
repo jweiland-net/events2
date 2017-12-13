@@ -32,53 +32,53 @@ class AdditionalFieldsForImport implements AdditionalFieldProviderInterface
     /**
      * @var array
      */
-    protected $taskInfo = array();
-    
+    protected $taskInfo = [];
+
     /**
      * @var AbstractTask|Import
      */
     protected $task;
-    
+
     /**
      * @var SchedulerModuleController
      */
     protected $schedulerModule;
-    
+
     /**
      * @var array
      */
-    protected $defaultAttributes = array(
+    protected $defaultAttributes = [
         'type' => 'text',
         'size' => 30,
-    );
-    
+    ];
+
     /**
      * list of fields to create input fields for
      *
      * @var array
      */
-    protected $createFieldsFor = array(
-        'path' => array(
+    protected $createFieldsFor = [
+        'path' => [
             'default' => '',
-            'attr' => array(
+            'attr' => [
                 'placeholder' => 'fileadmin/'
-            ),
-        ),
-        'storagePid' => array(
+            ],
+        ],
+        'storagePid' => [
             'default' => '0',
-            'attr' => array(
+            'attr' => [
                 'placeholder' => '123'
-            ),
-        ),
-    );
-    
+            ],
+        ],
+    ];
+
     /**
      * little template for an input field
      *
      * @var string
      */
     protected $htmlForInputField = '<input type="text" name="tx_scheduler[%s]" id="%s" value="%s" size="%s" />';
-    
+
     /**
      * Gets additional fields to render in the form to add/edit a task
      *
@@ -86,21 +86,21 @@ class AdditionalFieldsForImport implements AdditionalFieldProviderInterface
      * @param \TYPO3\CMS\Scheduler\Task\AbstractTask $task The task object being eddited. Null when adding a task!
      * @param \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule Reference to the scheduler backend module
      *
-     * @return array A two dimensional array, array('Identifier' => array('fieldId' => array('code' => '', 'label' => '', 'cshKey' => '', 'cshLabel' => ''))
+     * @return array A two dimensional array, ['Identifier' => ['fieldId' => ['code' => '', 'label' => '', 'cshKey' => '', 'cshLabel' => '']]]
      */
     public function getAdditionalFields(array &$taskInfo, $task, \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule)
     {
         // make variables available for all methods in this class
         $this->initialize($taskInfo, $task, $schedulerModule);
-        
-        $additionalFields = array();
+
+        $additionalFields = [];
         foreach ($this->createFieldsFor as $fieldName => $configuration) {
             $this->createInputField($fieldName, (array)$configuration, $additionalFields);
         }
-        
+
         return $additionalFields;
     }
-    
+
     /**
      * initializes this object
      * and set some value available for all methods in this class
@@ -115,7 +115,7 @@ class AdditionalFieldsForImport implements AdditionalFieldProviderInterface
         $this->task = $task;
         $this->schedulerModule = $schedulerModule;
     }
-    
+
     /**
      * create new input field
      *
@@ -134,20 +134,20 @@ class AdditionalFieldsForImport implements AdditionalFieldProviderInterface
         if (isset($configuration['attr']) && is_array($configuration['attr'])) {
             $attributes = array_merge($attributes, $configuration['attr']);
         }
-        
+
         /** @var TagBuilder $tagBuilder */
         $tagBuilder = GeneralUtility::makeInstance('TYPO3\\CMS\\Fluid\\Core\\ViewHelper\\TagBuilder');
         $tagBuilder->setTagName('input');
         $tagBuilder->addAttributes($attributes);
 
-        $additionalFields[$attributes['id']] = array(
+        $additionalFields[$attributes['id']] = [
             'code'     => $tagBuilder->render(),
             'label'    => LocalizationUtility::translate('scheduler.' . $fieldName, 'Events2'),
             'cshKey'   => '_MOD_events2_scheduler',
             'cshLabel' => $fieldName
-        );
+        ];
     }
-    
+
     /**
      * get value for input field
      *
@@ -172,10 +172,10 @@ class AdditionalFieldsForImport implements AdditionalFieldProviderInterface
         } else {
             $value = $this->taskInfo[$fieldName];
         }
-        
+
         return $value;
     }
-    
+
     /**
      * Validates the additional fields' values
      *
@@ -199,7 +199,7 @@ class AdditionalFieldsForImport implements AdditionalFieldProviderInterface
         }
         return !$errorExists;
     }
-    
+
     /**
      * Takes care of saving the additional fields' values in the task's object
      *

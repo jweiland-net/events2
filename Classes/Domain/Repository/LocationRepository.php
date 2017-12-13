@@ -25,7 +25,7 @@ class LocationRepository extends Repository
     /**
      * @var array
      */
-    protected $defaultOrderings = array(
+    protected $defaultOrderings = [
         'location' => QueryInterface::ORDER_ASCENDING,
-    );
+    ];
 }

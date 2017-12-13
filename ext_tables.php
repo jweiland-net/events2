@@ -45,7 +45,7 @@ $boot = function ($extensionKey, $extensionConfiguration) {
     }
 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr('_MOD_events2_scheduler', 'EXT:events2/Resources/Private/Language/locallang_csh_scheduler.xlf');
-    foreach (array('event', 'exception', 'holiday', 'link', 'location', 'organizer', 'time') as $value) {
+    foreach (['event', 'exception', 'holiday', 'link', 'location', 'organizer', 'time'] as $value) {
         $tableName = 'tx_events2_domain_model_' . $value;
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr($tableName, 'EXT:events2/Resources/Private/Language/locallang_csh_' . $tableName . '.xlf');
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages($tableName);
@@ -57,7 +57,7 @@ $boot = function ($extensionKey, $extensionConfiguration) {
     ) {
         $extRelPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('events2');
         \TYPO3\CMS\Backend\Sprite\SpriteManager::addSingleIcons(
-            array(
+            [
                 'calendar-single' => $extRelPath . 'Resources/Public/Icons/calendar_single.png',
                 'calendar-recurring' => $extRelPath . 'Resources/Public/Icons/calendar_recurring.png',
                 'calendar-duration' => $extRelPath . 'Resources/Public/Icons/calendar_duration.png',
@@ -65,13 +65,13 @@ $boot = function ($extensionKey, $extensionConfiguration) {
                 'exception-remove' => $extRelPath . 'Resources/Public/Icons/exception_remove.png',
                 'exception-info' => $extRelPath . 'Resources/Public/Icons/exception_info.png',
                 'exception-time' => $extRelPath . 'Resources/Public/Icons/exception_time.png',
-            ),
+            ],
             'events2'
         );
     }
 
     $extConf = unserialize($extensionConfiguration);
-    $tsConfig = array();
+    $tsConfig = [];
     $tsConfig[] = 'ext.events2.pid = ' . (int)$extConf['poiCollectionPid'];
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig(implode(chr(10), $tsConfig));
 };

@@ -38,70 +38,70 @@ class CalendarControllerTest extends UnitTestCase
      * @var CalendarController|\PHPUnit_Framework_MockObject_MockObject|AccessibleObjectInterface
      */
     protected $subject;
-    
+
     /**
      * @var PageRenderer|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $pageRenderer;
-    
+
     /**
      * @var DayRepository|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $dayRepository;
-    
+
     /**
      * @var ConfigurationManager|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $configurationManager;
-    
+
     /**
      * @var TypoScriptFrontendController|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $typoScriptFrontendController;
-    
+
     /**
      * @var FrontendUserAuthentication|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $frontendUserAuthentication;
-    
+
     /**
      * @var TemplateView|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $view;
-    
+
     /**
      * @var DatabaseConnection|\Prophecy\Prophecy\ObjectProphecy
      */
     protected $dbProphecy;
-    
+
     /**
      * @var array
      */
-    protected $settings = array(
+    protected $settings = [
         'pidOfListPage' => 123
-    );
-    
+    ];
+
     public function setUp()
     {
         $this->dbProphecy = $this->prophesize(DatabaseConnection::class);
         $GLOBALS['TYPO3_DB'] = $this->dbProphecy->reveal();
-    
+
         $this->pageRenderer = $this->getMock(PageRenderer::class);
-        $this->dayRepository = $this->getMock(DayRepository::class, array(), array(), '', false);
+        $this->dayRepository = $this->getMock(DayRepository::class, [], [], '', false);
         $this->configurationManager = $this->getMock(ConfigurationManager::class);
-        $this->typoScriptFrontendController = $this->getMock(TypoScriptFrontendController::class, array(), array(), '', false);
-        $this->frontendUserAuthentication = $this->getMock(FrontendUserAuthentication::class, array(), array(), '', false);
+        $this->typoScriptFrontendController = $this->getMock(TypoScriptFrontendController::class, [], [], '', false);
+        $this->frontendUserAuthentication = $this->getMock(FrontendUserAuthentication::class, [], [], '', false);
         $this->view = $this->getMock(TemplateView::class);
-        
+
         $this->typoScriptFrontendController->fe_user = $this->frontendUserAuthentication;
-    
+
         $this->subject = $this->getAccessibleMock(
             CalendarController::class,
-            array(
+            [
                 'getTypo3SiteUrl',
                 'getTypoScriptFrontendController',
                 'getDayFromUrl'
-            )
+            ]
         );
         $this->subject->injectPageRenderer($this->pageRenderer);
         $this->subject->injectDayRepository($this->dayRepository);
@@ -124,13 +124,13 @@ class CalendarControllerTest extends UnitTestCase
      */
     public function showActionWithoutDayInformationWillCreateCalendarWithCurrentDate()
     {
-        $persistenceSettings = array(
-            'persistence' => array(
+        $persistenceSettings = [
+            'persistence' => [
                 'storagePid' => 321
-            )
-        );
-        $expectedParameter = array(
-            'environment' => array(
+            ]
+        ];
+        $expectedParameter = [
+            'environment' => [
                 'settings' => $this->settings,
                 'storagePids' => 321,
                 'pidOfListPage' => 123,
@@ -139,16 +139,16 @@ class CalendarControllerTest extends UnitTestCase
                 'day' => date('d'),
                 'month' => date('m'),
                 'year' => date('Y')
-            )
-        );
-        
+            ]
+        ];
+
         $this->configurationManager
             ->expects($this->once())
             ->method('getConfiguration')
             ->with(
                 $this->equalTo(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK))
             ->willReturn($persistenceSettings);
-        
+
         $this->frontendUserAuthentication
             ->expects($this->once())
             ->method('getKey')
@@ -162,7 +162,7 @@ class CalendarControllerTest extends UnitTestCase
             ->expects($this->once())
             ->method('assignMultiple')
             ->with($expectedParameter);
-    
+
         $this->subject
             ->expects($this->once())
             ->method('getTypo3SiteUrl')
@@ -174,7 +174,7 @@ class CalendarControllerTest extends UnitTestCase
 
         $this->subject->showAction();
     }
-    
+
     /**
      * @test
      */
@@ -183,13 +183,13 @@ class CalendarControllerTest extends UnitTestCase
         $day = new Day();
         $day->setDay(\DateTime::createFromFormat('d.m.Y H:i:s', '06.10.2016 00:00:00'));
 
-        $persistenceSettings = array(
-            'persistence' => array(
+        $persistenceSettings = [
+            'persistence' => [
                 'storagePid' => 321
-            )
-        );
-        $expectedParameter = array(
-            'environment' => array(
+            ]
+        ];
+        $expectedParameter = [
+            'environment' => [
                 'settings' => $this->settings,
                 'storagePids' => 321,
                 'pidOfListPage' => 123,
@@ -198,21 +198,21 @@ class CalendarControllerTest extends UnitTestCase
                 'day' => '06',
                 'month' => '10',
                 'year' => '2016'
-            )
-        );
-    
+            ]
+        ];
+
         $this->configurationManager
             ->expects($this->once())
             ->method('getConfiguration')
             ->with(
                 $this->equalTo(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK))
             ->willReturn($persistenceSettings);
-    
+
         $this->view
             ->expects($this->once())
             ->method('assignMultiple')
             ->with($expectedParameter);
-    
+
         $this->subject
             ->expects($this->once())
             ->method('getTypo3SiteUrl')
@@ -225,22 +225,22 @@ class CalendarControllerTest extends UnitTestCase
             ->expects($this->once())
             ->method('getDayFromUrl')
             ->willReturn($day);
-    
+
         $this->subject->showAction();
     }
-    
+
     /**
      * @test
      */
     public function showActionWithDayFromSessionWillCreateCalendar()
     {
-        $persistenceSettings = array(
-            'persistence' => array(
+        $persistenceSettings = [
+            'persistence' => [
                 'storagePid' => 321
-            )
-        );
-        $expectedParameter = array(
-            'environment' => array(
+            ]
+        ];
+        $expectedParameter = [
+            'environment' => [
                 'settings' => $this->settings,
                 'storagePids' => 321,
                 'pidOfListPage' => 123,
@@ -249,16 +249,16 @@ class CalendarControllerTest extends UnitTestCase
                 'day' => '01',
                 'month' => '03',
                 'year' => '2016'
-            )
-        );
-    
+            ]
+        ];
+
         $this->configurationManager
             ->expects($this->once())
             ->method('getConfiguration')
             ->with(
                 $this->equalTo(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK))
             ->willReturn($persistenceSettings);
-    
+
         $this->frontendUserAuthentication
             ->expects($this->once())
             ->method('getKey')
@@ -266,16 +266,16 @@ class CalendarControllerTest extends UnitTestCase
                 $this->equalTo('ses'),
                 $this->equalTo('events2MonthAndYearForCalendar')
             )
-            ->willReturn(array(
+            ->willReturn([
                 'month' => '03',
                 'year' => '2016'
-            ));
-    
+            ]);
+
         $this->view
             ->expects($this->once())
             ->method('assignMultiple')
             ->with($expectedParameter);
-    
+
         $this->subject
             ->expects($this->once())
             ->method('getTypo3SiteUrl')
@@ -284,7 +284,7 @@ class CalendarControllerTest extends UnitTestCase
             ->expects($this->once())
             ->method('getTypoScriptFrontendController')
             ->willReturn($this->typoScriptFrontendController);
-    
+
         $this->subject->showAction();
     }
 }
