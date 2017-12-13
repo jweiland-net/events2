@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Tca\Type;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use JWeiland\Events2\Converter\TimeToStringConverter;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
@@ -44,8 +45,8 @@ class Time
     {
         if (MathUtility::canBeInterpretedAsInteger($value)) {
             // this is only for backwards compatibility. In earlier versions we calculated these values with int
-            /** @var \JWeiland\Events2\Converter\TimeToStringConverter $converter */
-            $converter = GeneralUtility::makeInstance('JWeiland\\Events2\\Converter\\TimeToStringConverter');
+            /** @var TimeToStringConverter $converter */
+            $converter = GeneralUtility::makeInstance(TimeToStringConverter::class);
 
             return $converter->convert($value);
         } elseif ($value === '24:00') {

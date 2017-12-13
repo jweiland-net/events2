@@ -17,6 +17,8 @@ namespace JWeiland\Events2\Task;
 use JWeiland\Events2\Importer\ImporterInterface;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
+use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\Index\Indexer;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
@@ -73,7 +75,7 @@ class Import extends AbstractTask
                 } else {
                     // File can be updated by (S)FTP. So we have to update its properties first.
                     /** @var Indexer $indexer */
-                    $indexer = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\Index\\Indexer', $file->getStorage());
+                    $indexer = GeneralUtility::makeInstance(Indexer::class, $file->getStorage());
                     $indexer->updateIndexEntry($file);
                 }
             } else {
@@ -124,13 +126,15 @@ class Import extends AbstractTask
      * @param int $severity Message level (according to \TYPO3\CMS\Core\Messaging\FlashMessage class constants)
      *
      * @return void
+     *
+     * @throws \Exception
      */
     public function addMessage($message, $severity = FlashMessage::OK) {
         /** @var FlashMessage $flashMessage */
-        $flashMessage = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessage', $message, '', $severity);
-        /** @var $flashMessageService \TYPO3\CMS\Core\Messaging\FlashMessageService */
-        $flashMessageService = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessageService');
-        /** @var $defaultFlashMessageQueue \TYPO3\CMS\Core\Messaging\FlashMessageQueue */
+        $flashMessage = GeneralUtility::makeInstance(FlashMessage::class, $message, '', $severity);
+        /** @var $flashMessageService FlashMessageService */
+        $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
+        /** @var $defaultFlashMessageQueue FlashMessageQueue */
         $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
         $defaultFlashMessageQueue->enqueue($flashMessage);
     }

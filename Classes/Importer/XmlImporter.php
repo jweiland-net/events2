@@ -121,11 +121,13 @@ class XmlImporter extends AbstractImporter
      * @param array $data
      *
      * @return Event
+     *
+     * @throws \Exception
      */
     protected function createEvent(array $data)
     {
         /** @var Event $event */
-        $event = $this->objectManager->get('JWeiland\\Events2\\Domain\\Model\\Event');
+        $event = $this->objectManager->get(Event::class);
         $this->addRootProperties($event, $data);
         $this->addDateProperties($event, $data);
         $this->addTimeProperties($event, $data);
@@ -208,7 +210,7 @@ class XmlImporter extends AbstractImporter
     {
         // add event time
         if (isset($data['event_time'])) {
-            $eventTime = $this->objectManager->get('JWeiland\\Events2\\Domain\\Model\\Time');
+            $eventTime = $this->objectManager->get(Time::class);
             $eventTime->setTimeBegin($data['event_time']['time_begin']);
             $eventTime->setTimeEntry($data['event_time']['time_entry']);
             $eventTime->setTimeEnd($data['event_time']['time_end']);
@@ -224,7 +226,7 @@ class XmlImporter extends AbstractImporter
             is_array($data['multiple_times'])
         ) {
             foreach ($data['multiple_times'] as $multipleTime) {
-                $newTime = $this->objectManager->get('JWeiland\\Events2\\Domain\\Model\\Time');
+                $newTime = $this->objectManager->get(Time::class);
                 $newTime->setTimeBegin($multipleTime['time_begin']);
                 $newTime->setTimeEntry($multipleTime['time_entry']);
                 $newTime->setTimeEnd($multipleTime['time_end']);
@@ -239,7 +241,7 @@ class XmlImporter extends AbstractImporter
             is_array($data['different_times'])
         ) {
             foreach ($data['different_times'] as $differentTime) {
-                $newTime = $this->objectManager->get('JWeiland\\Events2\\Domain\\Model\\Time');
+                $newTime = $this->objectManager->get(Time::class);
                 $newTime->setWeekday($differentTime['weekday']);
                 $newTime->setTimeBegin($differentTime['time_begin']);
                 $newTime->setTimeEntry($differentTime['time_entry']);
@@ -331,7 +333,7 @@ class XmlImporter extends AbstractImporter
         foreach ($properties as $property) {
             if (isset($data[$property]) && filter_var($data[$property]['uri'], FILTER_VALIDATE_URL)) {
                 /** @var Link $link */
-                $link = $this->objectManager->get('JWeiland\\Events2\\Domain\\Model\\Link');
+                $link = $this->objectManager->get(Link::class);
                 $link->setTitle($data[$property]['title']);
                 $link->setLink($data[$property]['uri']);
                 $methodName = 'set' . GeneralUtility::underscoredToUpperCamelCase($property);
@@ -358,7 +360,7 @@ class XmlImporter extends AbstractImporter
 
         foreach ($data['exceptions'] as $exception) {
             /** @var Exception $newException */
-            $newException = $this->objectManager->get('JWeiland\\Events2\\Domain\\Model\\Exception');
+            $newException = $this->objectManager->get(Exception::class);
             $newException->setExceptionType($exception['exception_type']);
 
             $exceptionDate = \DateTime::createFromFormat('Y-m-d', $exception['exception_date']);
@@ -369,7 +371,7 @@ class XmlImporter extends AbstractImporter
 
             if (isset($exception['exception_time'])) {
                 /** @var Time $newTime */
-                $newTime = $this->objectManager->get('JWeiland\\Events2\\Domain\\Model\\Time');
+                $newTime = $this->objectManager->get(Time::class);
                 $newTime->setTimeBegin($exception['exception_time']['time_begin']);
                 $newTime->setTimeEntry($exception['exception_time']['time_entry']);
                 $newTime->setTimeEnd($exception['exception_time']['time_end']);

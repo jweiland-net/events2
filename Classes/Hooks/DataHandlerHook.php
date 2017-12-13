@@ -47,8 +47,8 @@ class DataHandlerHook
      */
     public function __construct()
     {
-        $this->objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        $this->geocodeUtility = $this->objectManager->get('JWeiland\\Maps2\\Utility\\GeocodeUtility');
+        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $this->geocodeUtility = $this->objectManager->get(GeocodeUtility::class);
     }
 
     /**
@@ -71,6 +71,8 @@ class DataHandlerHook
      * @param int $uid The UID of the new or updated record. Can be prepended with NEW if record is new. Use: $this->substNEWwithIDs to convert
      * @param array $fieldArray The fields of the current record
      * @param DataHandler $dataHandler
+     *
+     * @throws \Exception
      */
     public function processDatamap_afterDatabaseOperations($status, $table, $uid, array $fieldArray, $dataHandler)
     {
@@ -107,11 +109,13 @@ class DataHandlerHook
      * @param int $eventUid
      *
      * @return void
+     *
+     * @throws \Exception
      */
     protected function addDayRelationsForEvent($eventUid)
     {
         /** @var DayRelationService $dayRelationService */
-        $dayRelationService = $this->objectManager->get('JWeiland\\Events2\\Service\\DayRelationService');
+        $dayRelationService = $this->objectManager->get(DayRelationService::class);
         $dayRelationService->createDayRelations($eventUid);
     }
 

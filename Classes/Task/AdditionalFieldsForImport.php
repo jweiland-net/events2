@@ -136,7 +136,7 @@ class AdditionalFieldsForImport implements AdditionalFieldProviderInterface
         }
 
         /** @var TagBuilder $tagBuilder */
-        $tagBuilder = GeneralUtility::makeInstance('TYPO3\\CMS\\Fluid\\Core\\ViewHelper\\TagBuilder');
+        $tagBuilder = GeneralUtility::makeInstance(TagBuilder::class);
         $tagBuilder->setTagName('input');
         $tagBuilder->addAttributes($attributes);
 

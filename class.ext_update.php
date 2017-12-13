@@ -200,11 +200,11 @@ class ext_update
     protected function generateOutput()
     {
         /** @var FlashMessageService $flashMessageService */
-        $flashMessageService = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessageService');
+        $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $flashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
 
         /** @var StandaloneView $view */
-        $view = GeneralUtility::makeInstance('TYPO3\\CMS\\Fluid\\View\\StandaloneView');
+        $view = GeneralUtility::makeInstance(StandaloneView::class);
         if (VersionNumberUtility::convertVersionNumberToInteger(TYPO3_branch) <= 6002000) {
             $view->setTemplateSource('<f:flashMessages />');
         } else {
@@ -213,7 +213,7 @@ class ext_update
         foreach ($this->messageArray as $messageItem) {
             /** @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage */
             $flashMessage = GeneralUtility::makeInstance(
-                'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                FlashMessage::class,
                 $messageItem[2],
                 $messageItem[1],
                 $messageItem[0]
@@ -243,7 +243,7 @@ class ext_update
     {
         if (!$this->flexFormTools instanceof FlexFormTools) {
             $this->flexFormTools = GeneralUtility::makeInstance(
-                'TYPO3\\CMS\\Core\\Configuration\\FlexForm\\FlexFormTools'
+                FlexFormTools::class
             );
         }
         return $this->flexFormTools;

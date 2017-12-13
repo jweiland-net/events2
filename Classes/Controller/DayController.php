@@ -128,7 +128,7 @@ class DayController extends AbstractController
             $eventObject = $this->eventRepository->findByIdentifier($event);
 
             /** @var Day $day */
-            $day = $this->objectManager->get('JWeiland\\Events2\\Domain\\Model\\Day');
+            $day = $this->objectManager->get(Day::class);
             $day->setEvent($eventObject);
         }
         $this->view->assign('day', $day);

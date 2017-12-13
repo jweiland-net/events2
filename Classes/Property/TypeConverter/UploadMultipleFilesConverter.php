@@ -16,6 +16,7 @@ namespace JWeiland\Events2\Property\TypeConverter;
  */
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Extbase\Error\Error;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Extbase\Property\PropertyMappingConfigurationInterface;
 use TYPO3\CMS\Extbase\Property\TypeConverter\AbstractTypeConverter;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
@@ -36,7 +37,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
     /**
      * @var string
      */
-    protected $targetType = 'TYPO3\\CMS\\Extbase\\Persistence\\ObjectStorage';
+    protected $targetType = ObjectStorage::class;
 
     /**
      * @var int
@@ -89,7 +90,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
         PropertyMappingConfigurationInterface $configuration = null
     ) {
         $alreadyPersistedImages = $configuration->getConfigurationValue(
-            'JWeiland\\Events2\\Property\\TypeConverter\\UploadMultipleFilesConverter',
+            UploadMultipleFilesConverter::class,
             'IMAGES'
         );
         $originalSource = $source;
@@ -149,8 +150,8 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
         // I will do two foreach here. First: everything must be OK, before files will be uploaded
 
         // upload file and add it to ObjectStorage
-        /** @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage $references */
-        $references = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\ObjectStorage');
+        /** @var ObjectStorage $references */
+        $references = $this->objectManager->get(ObjectStorage::class);
         foreach ($source as $uploadedFile) {
             if ($uploadedFile instanceof FileReference) {
                 $references->attach($uploadedFile);
@@ -167,12 +168,12 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
      *
      * @param array  $source
      *
-     * @return \TYPO3\CMS\Extbase\Domain\Model\FileReference
+     * @return FileReference
      */
     protected function getExtbaseFileReference($source)
     {
-        /** @var \TYPO3\CMS\Extbase\Domain\Model\FileReference $extbaseFileReference */
-        $extbaseFileReference = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Domain\\Model\\FileReference');
+        /** @var FileReference $extbaseFileReference */
+        $extbaseFileReference = $this->objectManager->get(FileReference::class);
         $extbaseFileReference->setOriginalResource($this->getCoreFileReference($source));
 
         return $extbaseFileReference;

@@ -240,7 +240,7 @@ class DayRepository extends Repository
         $dates = [];
 
         $getter = 'get' . ucfirst($sortBy);
-        if (!method_exists('JWeiland\\Events2\\Domain\\Model\\Day', $getter)) {
+        if (!method_exists(Day::class, $getter)) {
             throw new \Exception('Method "' . $getter . '" does not exists in Day', 1499429014);
         }
 

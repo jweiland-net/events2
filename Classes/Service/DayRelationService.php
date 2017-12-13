@@ -332,7 +332,7 @@ class DayRelationService
         }
 
         /** @var Day $day */
-        $day = GeneralUtility::makeInstance('JWeiland\\Events2\\Domain\\Model\\Day');
+        $day = GeneralUtility::makeInstance(Day::class);
         $day->setPid($event->getPid());
         $day->setDay($dateTime);
         $day->setDayTime($this->getDayTime($dateTime, $hour, $minute));

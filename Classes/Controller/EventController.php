@@ -16,6 +16,7 @@ namespace JWeiland\Events2\Controller;
  */
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Search;
+use JWeiland\Events2\Property\TypeConverter\UploadMultipleFilesConverter;
 use JWeiland\Events2\Service\DayRelationService;
 use TYPO3\CMS\Extbase\Property\TypeConverter\DateTimeConverter;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
@@ -37,7 +38,7 @@ class EventController extends AbstractController
     public function initializeListSearchResultsAction()
     {
         $this->arguments->getArgument('search')->getPropertyMappingConfiguration()->setTypeConverterOptions(
-            'TYPO3\\CMS\\Extbase\\Property\\TypeConverter\\PersistentObjectConverter',
+            PersistentObjectConverter::class,
             [
                 PersistentObjectConverter::CONFIGURATION_CREATION_ALLOWED => true,
             ]
@@ -76,11 +77,13 @@ class EventController extends AbstractController
      * action new.
      *
      * @return void
+     *
+     * @throws \Exception
      */
     public function newAction()
     {
         $this->deleteUploadedFilesOnValidationErrors('event');
-        $event = $this->objectManager->get('JWeiland\\Events2\\Domain\\Model\\Event');
+        $event = $this->objectManager->get(Event::class);
         $this->view->assign('event', $event);
         $this->view->assign('locations', $this->locationRepository->findAll());
         $this->view->assign(
@@ -107,7 +110,7 @@ class EventController extends AbstractController
             ->getPropertyMappingConfiguration()
             ->forProperty('eventBegin')
             ->setTypeConverterOption(
-                'TYPO3\\CMS\\Extbase\\Property\\TypeConverter\\DateTimeConverter',
+                DateTimeConverter::class,
                 DateTimeConverter::CONFIGURATION_DATE_FORMAT,
                 'd.m.Y'
             );
@@ -115,14 +118,14 @@ class EventController extends AbstractController
             ->getPropertyMappingConfiguration()
             ->forProperty('eventEnd')
             ->setTypeConverterOption(
-                'TYPO3\\CMS\\Extbase\\Property\\TypeConverter\\DateTimeConverter',
+                DateTimeConverter::class,
                 DateTimeConverter::CONFIGURATION_DATE_FORMAT,
                 'd.m.Y'
             );
 
-        /** @var \JWeiland\Events2\Property\TypeConverter\UploadMultipleFilesConverter $multipleFilesTypeConverter */
+        /** @var UploadMultipleFilesConverter $multipleFilesTypeConverter */
         $multipleFilesTypeConverter = $this->objectManager->get(
-            'JWeiland\\Events2\\Property\\TypeConverter\\UploadMultipleFilesConverter'
+            UploadMultipleFilesConverter::class
         );
         $this->arguments->getArgument('event')
             ->getPropertyMappingConfiguration()
@@ -188,7 +191,7 @@ class EventController extends AbstractController
             ->getPropertyMappingConfiguration()
             ->forProperty('eventBegin')
             ->setTypeConverterOption(
-                'TYPO3\\CMS\\Extbase\\Property\\TypeConverter\\DateTimeConverter',
+                DateTimeConverter::class,
                 DateTimeConverter::CONFIGURATION_DATE_FORMAT,
                 'd.m.Y'
             );
@@ -196,22 +199,20 @@ class EventController extends AbstractController
             ->getPropertyMappingConfiguration()
             ->forProperty('eventEnd')
             ->setTypeConverterOption(
-                'TYPO3\\CMS\\Extbase\\Property\\TypeConverter\\DateTimeConverter',
+                DateTimeConverter::class,
                 DateTimeConverter::CONFIGURATION_DATE_FORMAT,
                 'd.m.Y'
             );
         $argument = $this->request->getArgument('event');
-        /** @var \JWeiland\Events2\Domain\Model\Event $event */
+        /** @var Event $event */
         $event = $this->eventRepository->findByIdentifier($argument['__identity']);
-        /** @var \JWeiland\Events2\Property\TypeConverter\UploadMultipleFilesConverter $multipleFilesTypeConverter */
-        $multipleFilesTypeConverter = $this->objectManager->get(
-            'JWeiland\\Events2\\Property\\TypeConverter\\UploadMultipleFilesConverter'
-        );
+        /** @var UploadMultipleFilesConverter $multipleFilesTypeConverter */
+        $multipleFilesTypeConverter = $this->objectManager->get(UploadMultipleFilesConverter::class);
         $this->arguments->getArgument('event')
             ->getPropertyMappingConfiguration()
             ->forProperty('images')
             ->setTypeConverter($multipleFilesTypeConverter)
-            ->setTypeConverterOptions('JWeiland\\Events2\\Property\\TypeConverter\\UploadMultipleFilesConverter',
+            ->setTypeConverterOptions(UploadMultipleFilesConverter::class,
                 [
                     'IMAGES' => $event->getImages()
                 ]
@@ -295,11 +296,13 @@ class EventController extends AbstractController
      * @param Event $event
      *
      * @return void
+     *
+     * @throws \Exception
      */
     protected function addDayRelations(Event $event)
     {
         /** @var DayRelationService $dayRelations */
-        $dayRelations = $this->objectManager->get('JWeiland\\Events2\\Service\\DayRelationService');
+        $dayRelations = $this->objectManager->get(DayRelationService::class);
         $dayRelations->createDayRelations($event->getUid());
     }
 

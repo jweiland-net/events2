@@ -43,7 +43,7 @@ class ModifyTcaOfCategoryTrees
      */
     public function __construct()
     {
-        $this->extConf = GeneralUtility::makeInstance('JWeiland\\Events2\\Configuration\\ExtConf');
+        $this->extConf = GeneralUtility::makeInstance(ExtConf::class);
     }
 
     /**
@@ -53,6 +53,8 @@ class ModifyTcaOfCategoryTrees
      * @param string $field
      * @param array  $row
      * @param array  $PA
+     *
+     * @return void
      */
     public function getSingleField_beforeRender($table, $field, $row, &$PA)
     {

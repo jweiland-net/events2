@@ -15,6 +15,7 @@ namespace JWeiland\Events2\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\LazyObjectStorage;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
@@ -130,18 +131,18 @@ class SortViewHelper extends AbstractViewHelper
     }
 
     /**
-     * Sort a \TYPO3\CMS\Extbase\Persistence\ObjectStorage instance.
+     * Sort a ObjectStorage instance.
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\ObjectStorage $storage
+     * @param ObjectStorage $storage
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage
+     * @return ObjectStorage
      */
     protected function sortObjectStorage($storage)
     {
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        /** @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage $temp */
-        $temp = $objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\ObjectStorage');
+        /** @var ObjectManager $objectManager */
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        /** @var ObjectStorage $temp */
+        $temp = $objectManager->get(ObjectStorage::class);
         foreach ($storage as $item) {
             $temp->attach($item);
         }
@@ -170,8 +171,8 @@ class SortViewHelper extends AbstractViewHelper
         } else {
             krsort($sorted, constant($this->arguments['sortFlags']));
         }
-        /** @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage $storage */
-        $storage = $objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\ObjectStorage');
+        /** @var ObjectStorage $storage */
+        $storage = $objectManager->get(ObjectStorage::class);
         foreach ($sorted as $item) {
             $storage->attach($item);
         }

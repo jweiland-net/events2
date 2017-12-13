@@ -19,6 +19,7 @@ use ApacheSolrForTypo3\Solr\ResultDocumentModifier\ResultDocumentModifier;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Service\EventService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
@@ -35,8 +36,8 @@ class ResultsCommandHook implements ResultDocumentModifier
      */
     public function __construct()
     {
-        $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        $this->eventService = $objectManager->get('JWeiland\\Events2\\Service\\EventService');
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $this->eventService = $objectManager->get(EventService::class);
     }
 
     /**

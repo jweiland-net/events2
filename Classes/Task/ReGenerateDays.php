@@ -17,6 +17,8 @@ namespace JWeiland\Events2\Task;
 use JWeiland\Events2\Service\DayRelationService;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
+use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -50,8 +52,8 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
      */
     public function __construct()
     {
-        $this->objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        $this->registry = $this->objectManager->get('TYPO3\\CMS\\Core\\Registry');
+        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $this->registry = $this->objectManager->get(Registry::class);
         $this->databaseConnection = $GLOBALS['TYPO3_DB'];
         parent::__construct();
     }
@@ -69,14 +71,14 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
     public function execute()
     {
         /** @var DayRelationService $dayRelations */
-        $dayRelations = $this->objectManager->get('JWeiland\\Events2\\Service\\DayRelationService');
+        $dayRelations = $this->objectManager->get(DayRelationService::class);
         /** @var PersistenceManager $persistenceManager */
-        $persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
+        $persistenceManager = $this->objectManager->get(PersistenceManager::class);
 
         // with each changing PID pageTSConfigCache will grow by roundabout 200KB
         // we need a possibility to reset this level 1 cache
         /** @var BackendInterface $extbaseDbBackend */
-        $extbaseDbBackend = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\Storage\\BackendInterface');
+        $extbaseDbBackend = $this->objectManager->get(BackendInterface::class);
         $reflectedExtbaseDbBackend = new \ReflectionClass($extbaseDbBackend);
         $reflectedPageTSConfigCache = $reflectedExtbaseDbBackend->getProperty('pageTSConfigCache');
         $reflectedPageTSConfigCache->setAccessible(true);
@@ -175,13 +177,15 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
      * @param int $severity Message level (according to \TYPO3\CMS\Core\Messaging\FlashMessage class constants)
      *
      * @return void
+     *
+     * @throws \Exception
      */
     public function addMessage($message, $severity = FlashMessage::OK) {
         /** @var FlashMessage $flashMessage */
-        $flashMessage = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessage', $message, '', $severity);
-        /** @var $flashMessageService \TYPO3\CMS\Core\Messaging\FlashMessageService */
-        $flashMessageService = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessageService');
-        /** @var $defaultFlashMessageQueue \TYPO3\CMS\Core\Messaging\FlashMessageQueue */
+        $flashMessage = GeneralUtility::makeInstance(FlashMessage::class, $message, '', $severity);
+        /** @var $flashMessageService FlashMessageService */
+        $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
+        /** @var $defaultFlashMessageQueue FlashMessageQueue */
         $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
         $defaultFlashMessageQueue->enqueue($flashMessage);
     }
@@ -197,8 +201,8 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
      */
     public function __wakeup()
     {
-        $this->objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        $this->registry = $this->objectManager->get('TYPO3\\CMS\\Core\\Registry');
+        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $this->registry = $this->objectManager->get(Registry::class);
         $this->databaseConnection = $GLOBALS['TYPO3_DB'];
     }
 }

@@ -360,7 +360,7 @@ class Ajax
     protected function getFrontendUserAuthentication()
     {
         /** @var FrontendUserAuthentication $feAuthentication */
-        $feAuthentication = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Authentication\\FrontendUserAuthentication');
+        $feAuthentication = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
         return $feAuthentication;
     }
 

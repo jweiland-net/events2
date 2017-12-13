@@ -101,7 +101,7 @@ class RepairCommandController extends CommandController
         $dayCounter = 0;
 
         /** @var DayRelationService $dayRelations */
-        $dayRelations = $this->objectManager->get('JWeiland\\Events2\\Service\\DayRelationService');
+        $dayRelations = $this->objectManager->get(DayRelationService::class);
 
         $this->echoValue('Process each event record' . PHP_EOL);
 
@@ -119,12 +119,12 @@ class RepairCommandController extends CommandController
 
         if (!empty($rows)) {
             /** @var PersistenceManager $persistenceManager */
-            $persistenceManager = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
+            $persistenceManager = $this->objectManager->get(PersistenceManager::class);
 
             // with each changing PID pageTSConfigCache will grow by roundabout 200KB
             // we need a possibility to reset this level 1 cache
             /** @var BackendInterface $extbaseDbBackend */
-            $extbaseDbBackend = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\Storage\\BackendInterface');
+            $extbaseDbBackend = $this->objectManager->get(BackendInterface::class);
             $reflectedExtbaseDbBackend = new \ReflectionClass($extbaseDbBackend);
             $reflectedPageTSConfigCache = $reflectedExtbaseDbBackend->getProperty('pageTSConfigCache');
             $reflectedPageTSConfigCache->setAccessible(true);

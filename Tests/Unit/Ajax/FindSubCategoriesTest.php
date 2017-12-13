@@ -16,8 +16,11 @@ namespace JWeiland\Events2\Tests\Unit\Ajax;
  */
 use JWeiland\Events2\Ajax\FindSubCategories;
 use JWeiland\Events2\Domain\Model\Category;
+use JWeiland\Events2\Domain\Repository\CategoryRepository;
+use TYPO3\CMS\Core\Tests\AccessibleObjectInterface;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
+use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 
 /**
  * Test case.
@@ -62,12 +65,12 @@ class FindSubCategoriesTest extends UnitTestCase
         $category1->setIcon('fileadmin/img2.jpg');
         $categories[] = $category2;
 
-        /* @var \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult|\PHPUnit_Framework_MockObject_MockObject|\TYPO3\CMS\Core\Tests\AccessibleObjectInterface $categories */
-        $queryResult = $this->getAccessibleMock('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\QueryResult', ['dummy'], array(new Query('fooBarType')));
+        /* @var QueryResult|\PHPUnit_Framework_MockObject_MockObject|AccessibleObjectInterface $categories */
+        $queryResult = $this->getAccessibleMock(QueryResult::class, ['dummy'], array(new Query('fooBarType')));
         $queryResult->_set('queryResult', $categories);
 
-        /** @var \JWeiland\Events2\Domain\Repository\CategoryRepository|\PHPUnit_Framework_MockObject_MockObject $categoryRepository */
-        $categoryRepository = $this->getMock('JWeiland\\Events2\\Domain\\Repository\\CategoryRepository', ['getSubCategories'], [], '', false);
+        /** @var CategoryRepository|\PHPUnit_Framework_MockObject_MockObject $categoryRepository */
+        $categoryRepository = $this->getMock(CategoryRepository::class, ['getSubCategories'], [], '', false);
         $categoryRepository->expects($this->once())->method('getSubCategories')->with(284)->will($this->returnValue($queryResult));
 
         $this->subject->injectCategoryRepository($categoryRepository);

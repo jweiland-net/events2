@@ -58,8 +58,8 @@ class AjaxTest extends UnitTestCase
         $arguments = [
             'locationPart' => '',
         ];
-        /** @var \JWeiland\Events2\Ajax\FindLocations\Ajax|\PHPUnit_Framework_MockObject_MockObject $subject */
-        $subject = $this->getMock('JWeiland\\Events2\\Ajax\\FindLocations\\Ajax', ['findLocations']);
+        /** @var FindLocations\Ajax|\PHPUnit_Framework_MockObject_MockObject $subject */
+        $subject = $this->getMock(FindLocations\Ajax::class, ['findLocations']);
         $subject->expects($this->never())->method('findLocations');
         $this->assertSame(
             '',
@@ -76,8 +76,8 @@ class AjaxTest extends UnitTestCase
             'locationPart' => 'Hello german umlauts: öäü. <b>How are you?</b>',
         ];
         $expectedArgument = 'Hello german umlauts: öäü. How are you?';
-        /** @var \JWeiland\Events2\Ajax\FindLocations\Ajax|\PHPUnit_Framework_MockObject_MockObject $subject */
-        $subject = $this->getMock('JWeiland\\Events2\\Ajax\\FindLocations\\Ajax', ['findLocations']);
+        /** @var FindLocations\Ajax|\PHPUnit_Framework_MockObject_MockObject $subject */
+        $subject = $this->getMock(FindLocations\Ajax::class, ['findLocations']);
         $subject->expects($this->once())->method('findLocations')->with($expectedArgument)->will($this->returnValue([]));
         $this->assertSame(
             '[]',
@@ -93,8 +93,8 @@ class AjaxTest extends UnitTestCase
         $arguments = [
             'locationPart' => 'x',
         ];
-        /** @var \JWeiland\Events2\Ajax\FindLocations\Ajax|\PHPUnit_Framework_MockObject_MockObject $subject */
-        $subject = $this->getMock('JWeiland\\Events2\\Ajax\\FindLocations\\Ajax', ['findLocations']);
+        /** @var FindLocations\Ajax|\PHPUnit_Framework_MockObject_MockObject $subject */
+        $subject = $this->getMock(FindLocations\Ajax::class, ['findLocations']);
         $subject->expects($this->never())->method('findLocations');
         $this->assertSame(
             '',
@@ -131,8 +131,8 @@ class AjaxTest extends UnitTestCase
                 ],
             ],
         ];
-        /** @var \JWeiland\Events2\Ajax\FindLocations\Ajax|\PHPUnit_Framework_MockObject_MockObject $subject */
-        $subject = $this->getMock('JWeiland\\Events2\\Ajax\\FindLocations\\Ajax', ['findLocations']);
+        /** @var FindLocations\Ajax|\PHPUnit_Framework_MockObject_MockObject $subject */
+        $subject = $this->getMock(FindLocations\Ajax::class, ['findLocations']);
         $subject->expects($this->exactly(2))->method('findLocations')->will($this->returnValueMap($locationMap));
         $this->assertSame(
             '[{"uid":123,"label":"at home"}]',

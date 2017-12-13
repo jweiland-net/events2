@@ -101,16 +101,10 @@ class RenderPluginItem
     protected function getView()
     {
         /** @var StandaloneView $view */
-        $view = GeneralUtility::makeInstance('TYPO3\\CMS\\Fluid\\View\\StandaloneView');
-        if (GeneralUtility::compat_version('7.6')) {
-            $view->setTemplatePathAndFilename(
-                GeneralUtility::getFileAbsFileName('EXT:events2/Resources/Private/Templates/BackendPluginItem.html')
-            );
-        } else {
-            $view->setTemplatePathAndFilename(
-                GeneralUtility::getFileAbsFileName('EXT:events2/Resources/Private/Templates/BackendPluginItem62.html')
-            );
-        }
+        $view = GeneralUtility::makeInstance(StandaloneView::class);
+        $view->setTemplatePathAndFilename(
+            GeneralUtility::getFileAbsFileName('EXT:events2/Resources/Private/Templates/BackendPluginItem.html')
+        );
         return $view;
     }
 
@@ -118,6 +112,7 @@ class RenderPluginItem
      * Get Title of Organizer
      *
      * @param array $flexFormSettings
+     *
      * @return string
      */
     protected function getTitleOfOrganizer(array $flexFormSettings)
@@ -152,7 +147,7 @@ class RenderPluginItem
         $settings = [];
         if (!empty($row['pi_flexform'])) {
             /** @var FlexFormService $flexFormService */
-            $flexFormService = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Service\\FlexFormService');
+            $flexFormService = GeneralUtility::makeInstance(FlexFormService::class);
             $settings = $flexFormService->convertFlexFormContentToArray($row['pi_flexform']);
             $settings = ArrayUtility::setValueByPath(
                 $settings,

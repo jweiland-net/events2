@@ -20,6 +20,7 @@ use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
+use JWeiland\Events2\Domain\Repository\LinkRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Domain\Repository\OrganizerRepository;
 use JWeiland\Events2\Domain\Repository\UserRepository;
@@ -32,6 +33,9 @@ use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Session;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
+use TYPO3\CMS\Extbase\Validation\Validator\ConjunctionValidator;
+use TYPO3\CMS\Extbase\Validation\Validator\GenericObjectValidator;
+use TYPO3\CMS\Extbase\Validation\Validator\RegularExpressionValidator;
 
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
@@ -306,7 +310,7 @@ class AbstractController extends ActionController
             !$filter instanceof Filter ||
             $filter === null
         ) {
-            $filter = $this->objectManager->get('JWeiland\\Events2\\Domain\\Model\\Filter');
+            $filter = $this->objectManager->get(Filter::class);
         }
         $this->view->assign('filter', $filter);
         return $filter;
@@ -358,24 +362,24 @@ class AbstractController extends ActionController
             empty($eventRaw['videoLink']['link'])
         ) {
             // create a new RegExpValidator for property link
-            /** @var \TYPO3\CMS\Extbase\Validation\Validator\RegularExpressionValidator $regExpValidator */
-            $regExpValidator = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Validation\\Validator\\RegularExpressionValidator', [
+            /** @var RegularExpressionValidator $regExpValidator */
+            $regExpValidator = $this->objectManager->get(RegularExpressionValidator::class, [
                 'regularExpression' => '~^(|http:|https:)//(|www.)youtube(.*?)(v=|embed/)([a-zA-Z0-9_-]+)~i',
             ]);
-            /** @var \TYPO3\CMS\Extbase\Validation\Validator\GenericObjectValidator $genericObjectValidator */
-            $genericObjectValidator = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Validation\\Validator\\GenericObjectValidator');
+            /** @var GenericObjectValidator $genericObjectValidator */
+            $genericObjectValidator = $this->objectManager->get(GenericObjectValidator::class);
             $genericObjectValidator->addPropertyValidator('link', $regExpValidator);
 
             // modify current validator of event
             $event = $this->arguments->getArgument('event');
-            /** @var \TYPO3\CMS\Extbase\Validation\Validator\ConjunctionValidator $eventValidator */
+            /** @var ConjunctionValidator $eventValidator */
             $eventValidator = $event->getValidator();
             $validators = $eventValidator->getValidators();
             $validators->rewind();
             $eventValidator = $validators->current();
             $validators = $eventValidator->getValidators();
             $validators->rewind();
-            /** @var \TYPO3\CMS\Extbase\Validation\Validator\GenericObjectValidator $eventValidator */
+            /** @var GenericObjectValidator $eventValidator */
             $eventValidator = $validators->current();
             $eventValidator->addPropertyValidator('videoLink', $genericObjectValidator);
         }
@@ -415,8 +419,8 @@ class AbstractController extends ActionController
     {
         $linkText = $event->getVideoLink()->getLink();
         if (empty($linkText)) {
-            /** @var \JWeiland\Events2\Domain\Repository\LinkRepository $linkRepository */
-            $linkRepository = $this->objectManager->get('JWeiland\\Events2\\Domain\\Repository\\LinkRepository');
+            /** @var LinkRepository $linkRepository */
+            $linkRepository = $this->objectManager->get(LinkRepository::class);
             $linkRepository->remove($event->getVideoLink());
             $event->setVideoLink(null);
         }

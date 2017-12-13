@@ -14,16 +14,19 @@ namespace JWeiland\Events2\Ajax;
  *
  * The TYPO3 project - inspiring people to share!
  */
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-$objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+use JWeiland\Events2\Ajax\FindLocations\Ajax;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+
+/** @var ObjectManager $objectManager */
+$objectManager = GeneralUtility::makeInstance(ObjectManager::class);
 
 $request = GeneralUtility::_GPmerged('tx_events2_events');
 
 if (is_array($request) && is_array($request['arguments'])) {
-    /** @var \JWeiland\Events2\Ajax\FindLocations\Ajax $ajaxObject */
-    $ajaxObject = $objectManager->get('JWeiland\\Events2\\Ajax\\FindLocations\\Ajax');
+    /** @var Ajax $ajaxObject */
+    $ajaxObject = $objectManager->get(Ajax::class);
     echo $ajaxObject->processAjaxRequest($request['arguments']);
 } else {
     echo '';

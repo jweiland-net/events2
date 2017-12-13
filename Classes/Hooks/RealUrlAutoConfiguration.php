@@ -15,6 +15,7 @@ namespace JWeiland\Events2\Hooks;
  * The TYPO3 project - inspiring people to share!
  */
 use DmitryDulepov\Realurl\Configuration\AutomaticConfigurator;
+use JWeiland\Events2\RealUrl\TimestampMapping;
 
 /**
  * Class RealUrl
@@ -77,7 +78,7 @@ class RealUrlAutoConfiguration
                     'ts' => [
                         0 => [
                             'GETvar' => 'tx_events2_events[timestamp]',
-                            'userFunc' => 'JWeiland\\Events2\\RealUrl\\TimestampMapping->main',
+                            'userFunc' => TimestampMapping::class . '->main',
                             'dateFormat' => 'Y-m-d',
                             'timeFormat' => 'Hi',
                         ]

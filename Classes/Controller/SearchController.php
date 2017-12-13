@@ -101,7 +101,7 @@ class SearchController extends ActionController
     public function initializeShowAction()
     {
         $this->arguments->getArgument('search')->getPropertyMappingConfiguration()->setTypeConverterOptions(
-            'TYPO3\\CMS\\Extbase\\Property\\TypeConverter\\PersistentObjectConverter',
+            PersistentObjectConverter::class,
             [
                 PersistentObjectConverter::CONFIGURATION_CREATION_ALLOWED => true,
             ]
@@ -120,7 +120,7 @@ class SearchController extends ActionController
     {
         // Because of the checkbox we have to create a new empty domain model
         if ($search === null) {
-            $search = $this->objectManager->get('JWeiland\\Events2\\Domain\\Model\\Search');
+            $search = $this->objectManager->get(Search::class);
         }
         $this->view->assign('search', $search);
     }

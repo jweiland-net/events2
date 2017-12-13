@@ -3,7 +3,7 @@ return [
     'ctrl' => [
         'title' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_time',
         'label' => 'time_begin',
-        'label_userFunc' => 'JWeiland\\Events2\\Tca\\TimeLabel->getTitle',
+        'label_userFunc' => \JWeiland\Events2\Tca\TimeLabel::class . '->getTitle',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
@@ -149,7 +149,7 @@ return [
                 'max' => 5,
                 'checkbox' => 1,
                 'default' => '08:00',
-                'eval' => 'JWeiland\\Events2\\Tca\\Type\\Time',
+                'eval' => \JWeiland\Events2\Tca\Type\Time::class,
             ],
         ],
         'time_entry' => [
@@ -162,7 +162,7 @@ return [
                 'checkbox' => 1,
                 'default' => '',
                 'placeholder' => '07:30',
-                'eval' => 'JWeiland\\Events2\\Tca\\Type\\Time',
+                'eval' => \JWeiland\Events2\Tca\Type\Time::class,
             ],
         ],
         'duration' => [
@@ -175,7 +175,7 @@ return [
                 'checkbox' => 1,
                 'default' => '',
                 'placeholder' => '02:30',
-                'eval' => 'JWeiland\\Events2\\Tca\\Type\\Time',
+                'eval' => \JWeiland\Events2\Tca\Type\Time::class,
             ],
         ],
         'time_end' => [
@@ -188,7 +188,7 @@ return [
                 'checkbox' => 1,
                 'default' => '',
                 'placeholder' => '14:00',
-                'eval' => 'JWeiland\\Events2\\Tca\\Type\\Time',
+                'eval' => \JWeiland\Events2\Tca\Type\Time::class,
             ],
         ],
         'event' => [

@@ -1,13 +1,8 @@
 <?php
 /** @var \JWeiland\Events2\Configuration\ExtConf $extConf */
-$extConf = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('JWeiland\\Events2\\Configuration\\ExtConf');
-if (version_compare(TYPO3_branch, '7.0', '>=')) {
-    $staticInfoItemProcessor = 'SJBR\\StaticInfoTables\\Hook\\Backend\\Form\\FormDataProvider\\TcaSelectItemsProcessor->translateCountriesSelector';
-    $staticInfoSuggestReceiver = 'SJBR\\StaticInfoTables\\Hook\\Backend\\Form\\Wizard\\SuggestReceiver';
-} else {
-    $staticInfoItemProcessor = 'SJBR\\StaticInfoTables\\Hook\\Backend\\Form\\ElementRenderingHelper->translateCountriesSelector';
-    $staticInfoSuggestReceiver = 'SJBR\\StaticInfoTables\\Hook\\Backend\\Form\\SuggestReceiver';
-}
+$extConf = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\JWeiland\Events2\Configuration\ExtConf::class);
+$staticInfoItemProcessor = \SJBR\StaticInfoTables\Hook\Backend\Form\FormDataProvider\TcaSelectItemsProcessor::class . '->translateCountriesSelector';
+$staticInfoSuggestReceiver = \SJBR\StaticInfoTables\Hook\Backend\Form\Wizard\SuggestReceiver::class;
 
 $tx_events2_domain_model_event = [
     'ctrl' => [

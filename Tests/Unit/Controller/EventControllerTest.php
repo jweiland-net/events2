@@ -89,9 +89,9 @@ class EventControllerTest extends UnitTestCase
      */
     public function setUp()
     {
-        $this->request = $this->getMock('TYPO3\\CMS\\Extbase\\Mvc\\Request');
+        $this->request = $this->getMock(Request::class);
 
-        $this->controllerContext = $this->getMock('TYPO3\\CMS\\Extbase\\Mvc\\Controller\\ControllerContext', ['dummy']);
+        $this->controllerContext = $this->getMock(ControllerContext::class, ['dummy']);
         $this->controllerContext->setRequest($this->request);
 
         $this->dayRepository = $this->getMock(DayRepository::class, [], [], '', false);

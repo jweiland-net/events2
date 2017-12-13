@@ -138,8 +138,8 @@ class DayGeneratorTest extends UnitTestCase
         $event->setWeekday(127);
         $event->setEachWeeks(0);
 
-        /** @var \JWeiland\Events2\Service\DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
-        $dayGenerator = $this->getMock('JWeiland\\Events2\\Service\\DayGenerator', ['addRecurringEvents', 'addException', 'getEventBegin']);
+        /** @var DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
+        $dayGenerator = $this->getMock(DayGenerator::class, ['addRecurringEvents', 'addException', 'getEventBegin']);
         $dayGenerator->expects($this->once())->method('addRecurringEvents');
         $dayGenerator->expects($this->never())->method('addException');
         $dayGenerator->expects($this->never())->method('getEventBegin');
@@ -160,8 +160,8 @@ class DayGeneratorTest extends UnitTestCase
         $event->setWeekday(127);
         $event->setEachWeeks(1);
 
-        /** @var \JWeiland\Events2\Service\DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
-        $dayGenerator = $this->getMock('JWeiland\\Events2\\Service\\DayGenerator', ['addRecurringWeeks', 'addException', 'getEventBegin']);
+        /** @var DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
+        $dayGenerator = $this->getMock(DayGenerator::class, ['addRecurringWeeks', 'addException', 'getEventBegin']);
         $dayGenerator->expects($this->once())->method('addRecurringWeeks');
         $dayGenerator->expects($this->never())->method('addException');
         $dayGenerator->expects($this->never())->method('getEventBegin');
@@ -194,8 +194,8 @@ class DayGeneratorTest extends UnitTestCase
         $expectedDays[$nextWeek->format('U')] = $nextWeek;
         $expectedDays[$eventEnd->format('U')] = $eventEnd;
 
-        /** @var \JWeiland\Events2\Service\DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
-        $dayGenerator = $this->getMock('JWeiland\\Events2\\Service\\DayGenerator', ['addException', 'getMaxDateForGeneratedDays']);
+        /** @var DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
+        $dayGenerator = $this->getMock(DayGenerator::class, ['addException', 'getMaxDateForGeneratedDays']);
         $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
         $dayGenerator->injectExtConf(new ExtConf());
         $dayGenerator->expects($this->never())->method('addException');
@@ -235,8 +235,8 @@ class DayGeneratorTest extends UnitTestCase
         $expectedDays[$eventBegin->format('U')] = $eventBegin;
         $expectedDays[$eventEnd->format('U')] = $eventEnd;
 
-        /** @var \JWeiland\Events2\Service\DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
-        $dayGenerator = $this->getMock('JWeiland\\Events2\\Service\\DayGenerator', ['addException', 'getMaxDateForGeneratedDays']);
+        /** @var DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
+        $dayGenerator = $this->getMock(DayGenerator::class, ['addException', 'getMaxDateForGeneratedDays']);
         $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
         $dayGenerator->injectExtConf(new ExtConf());
         $dayGenerator->expects($this->never())->method('addException');
@@ -285,8 +285,8 @@ class DayGeneratorTest extends UnitTestCase
         $expectedDays[$expectedBegin->format('U')] = $expectedBegin;
         $expectedDays[$expectedEnd->format('U')] = $expectedEnd;
 
-        /** @var \JWeiland\Events2\Service\DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
-        $dayGenerator = $this->getMock('JWeiland\\Events2\\Service\\DayGenerator', ['addException', 'getMaxDateForGeneratedDays']);
+        /** @var DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
+        $dayGenerator = $this->getMock(DayGenerator::class, ['addException', 'getMaxDateForGeneratedDays']);
         $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
         $dayGenerator->injectExtConf($extConf);
         $dayGenerator->expects($this->never())->method('addException');
@@ -521,8 +521,8 @@ class DayGeneratorTest extends UnitTestCase
         $event->setEachWeeks(0);
         $event->setExceptions($exceptions);
 
-        /** @var \JWeiland\Events2\Service\DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
-        $dayGenerator = $this->getMock('JWeiland\\Events2\\Service\\DayGenerator', ['addRecurringEvents', 'addDayToStorage', 'addExceptions']);
+        /** @var DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
+        $dayGenerator = $this->getMock(DayGenerator::class, ['addRecurringEvents', 'addDayToStorage', 'addExceptions']);
         $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
         $dayGenerator->expects($this->never())->method('addRecurringEvents');
         $dayGenerator->expects($this->once())->method('addDayToStorage')->with($eventBegin);

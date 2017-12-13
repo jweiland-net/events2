@@ -13,6 +13,7 @@ namespace JWeiland\Events2\Domain\Repository;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
@@ -155,11 +156,10 @@ class EventRepository extends Repository
     public function findMyEvents()
     {
         /** @var UserRepository $userRepository */
-        $userRepository = $this->objectManager->get('JWeiland\\Events2\\Domain\\Repository\\UserRepository');
+        $userRepository = $this->objectManager->get(UserRepository::class);
         $organizer = (int)$userRepository->getFieldFromUser('tx_events2_organizer');
-
-        /** @var \TYPO3\CMS\Extbase\Persistence\Generic\Query $query */
         $query = $this->createQuery();
+
         return $query->matching($query->equals('organizer.uid', $organizer))->execute();
     }
 }

@@ -18,11 +18,15 @@ use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Domain\Repository\OrganizerRepository;
 use JWeiland\Events2\Utility\DateTimeUtility;
+use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
+use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 
 /**
@@ -82,12 +86,12 @@ abstract class AbstractImporter implements ImporterInterface
      */
     public function initialize()
     {
-        $this->objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        $this->organizerRepository = $this->objectManager->get('JWeiland\\Events2\\Domain\\Repository\\OrganizerRepository');
-        $this->locationRepository = $this->objectManager->get('JWeiland\\Events2\\Domain\\Repository\\LocationRepository');
-        $this->categoryRepository = $this->objectManager->get('JWeiland\\Events2\\Domain\\Repository\\CategoryRepository');
-        $this->dateTimeUtility = $this->objectManager->get('JWeiland\\Events2\\Utility\\DateTimeUtility');
-        $this->registry = $this->objectManager->get('TYPO3\\CMS\\Core\\Registry');
+        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $this->organizerRepository = $this->objectManager->get(OrganizerRepository::class);
+        $this->locationRepository = $this->objectManager->get(LocationRepository::class);
+        $this->categoryRepository = $this->objectManager->get(CategoryRepository::class);
+        $this->dateTimeUtility = $this->objectManager->get(DateTimeUtility::class);
+        $this->registry = $this->objectManager->get(Registry::class);
         $this->today = new \DateTime('now');
     }
 
@@ -124,13 +128,15 @@ abstract class AbstractImporter implements ImporterInterface
      * @param int $severity Message level (according to \TYPO3\CMS\Core\Messaging\FlashMessage class constants)
      *
      * @return void
+     *
+     * @throws \Exception
      */
     protected function addMessage($message, $severity = FlashMessage::OK) {
         /** @var FlashMessage $flashMessage */
-        $flashMessage = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessage', $message, '', $severity);
-        /** @var $flashMessageService \TYPO3\CMS\Core\Messaging\FlashMessageService */
-        $flashMessageService = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessageService');
-        /** @var $defaultFlashMessageQueue \TYPO3\CMS\Core\Messaging\FlashMessageQueue */
+        $flashMessage = GeneralUtility::makeInstance(FlashMessage::class, $message, '', $severity);
+        /** @var FlashMessageService $flashMessageService */
+        $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
+        /** @var FlashMessageQueue $defaultFlashMessageQueue */
         $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
         $defaultFlashMessageQueue->enqueue($flashMessage);
     }
@@ -144,9 +150,9 @@ abstract class AbstractImporter implements ImporterInterface
     {
         if ($this->persistenceManager === null) {
             /** @var ObjectManager $objectManager */
-            $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
             /** @var PersistenceManagerInterface $persistenceManager */
-            $this->persistenceManager = $objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\Generic\\PersistenceManager');
+            $this->persistenceManager = $objectManager->get(PersistenceManager::class);
         }
         return $this->persistenceManager;
     }
@@ -154,7 +160,7 @@ abstract class AbstractImporter implements ImporterInterface
     /**
      * Get TYPO3s Database Connection
      *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     * @return DatabaseConnection
      */
     protected function getDatabaseConnection()
     {
