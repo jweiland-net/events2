@@ -97,11 +97,11 @@ class DayRepository extends Repository
         /** @var Query $query */
         $query = $this->createQuery();
         $this->addGroupingToQuery($query);
-        $constraint = [];
+        $constraints = [];
 
         // add categories
         if (!empty($this->settings['categories'])) {
-            $constraint[] = $query->in('event.categories.uid', GeneralUtility::intExplode(',', $this->settings['categories'], true));
+            $constraints[] = $query->in('event.categories.uid', GeneralUtility::intExplode(',', $this->settings['categories'], true));
         }
 
         // add storage PIDs. But not for sys_category
@@ -112,9 +112,9 @@ class DayRepository extends Repository
 
         // add filter for organizer
         if ($filter->getOrganizer()) {
-            $constraint[] = $query->equals('event.organizer', $filter->getOrganizer());
+            $constraints[] = $query->equals('event.organizer', $filter->getOrganizer());
         } elseif ($this->settings['preFilterByOrganizer']) {
-            $constraint[] = $query->equals('event.organizer', $this->settings['preFilterByOrganizer']);
+            $constraints[] = $query->equals('event.organizer', $this->settings['preFilterByOrganizer']);
         }
 
         switch ($type) {
@@ -122,29 +122,29 @@ class DayRepository extends Repository
                 $today = $this->dateTimeUtility->convert('today');
                 $tomorrow = $this->dateTimeUtility->convert('today');
                 $tomorrow->modify('+1 day');
-                $constraint[] = $query->greaterThanOrEqual('day', $today);
-                $constraint[] = $query->lessThan('day', $tomorrow);
+                $constraints[] = $query->greaterThanOrEqual('day', $today);
+                $constraints[] = $query->lessThan('day', $tomorrow);
                 break;
             case 'range':
                 $today = $this->dateTimeUtility->convert('today');
                 $in4months = $this->dateTimeUtility->convert('today');
                 $in4months->modify('+4 weeks');
-                $constraint[] = $query->greaterThanOrEqual('day', $today);
-                $constraint[] = $query->lessThanOrEqual('day', $in4months);
+                $constraints[] = $query->greaterThanOrEqual('day', $today);
+                $constraints[] = $query->lessThanOrEqual('day', $in4months);
                 break;
             case 'thisWeek':
                 $weekStart = $this->dateTimeUtility->convert('today');
                 $weekStart->modify('this week'); // 'first day of' does not work for 'weeks'
                 $weekEnd = $this->dateTimeUtility->convert('today');
                 $weekEnd->modify('this week +6 days'); // 'last day of' does not work for 'weeks'
-                $constraint[] = $query->greaterThanOrEqual('day', $weekStart);
-                $constraint[] = $query->lessThanOrEqual('day', $weekEnd);
+                $constraints[] = $query->greaterThanOrEqual('day', $weekStart);
+                $constraints[] = $query->lessThanOrEqual('day', $weekEnd);
                 break;
             case 'latest':
             case 'list':
             default:
                 $today = $this->dateTimeUtility->convert('today');
-                $constraint[] = $query->greaterThanOrEqual('day', $today);
+                $constraints[] = $query->greaterThanOrEqual('day', $today);
         }
 
         if (!empty($limit)) {
@@ -152,7 +152,7 @@ class DayRepository extends Repository
         }
 
         /** @var QueryResult $result */
-        $result = $query->matching($query->logicalAnd($constraint))->execute();
+        $result = $query->matching($query->logicalAnd($constraints))->execute();
 
         return $result;
     }
@@ -354,6 +354,13 @@ class DayRepository extends Repository
     {
         $constraint = [];
         $query = $this->createQuery();
+
+        // add storage PIDs. But not for sys_category
+        // @link: https://forge.typo3.org/issues/83296
+        $query->getQuerySettings()->setRespectStoragePage(false);
+        $constraint[] = $query->in('pid', $query->getQuerySettings()->getStoragePageIds());
+        $constraint[] = $query->in('event.pid', $query->getQuerySettings()->getStoragePageIds());
+
         $this->addGroupingToQuery($query);
         if (!empty($this->settings['categories'])) {
             $constraint[] = $query->in('event.categories.uid', GeneralUtility::intExplode(',', $this->settings['categories']));
@@ -382,6 +389,11 @@ class DayRepository extends Repository
         $query = $this->createQuery();
 
         $constraints = [];
+        // add storage PIDs. But not for sys_category
+        // @link: https://forge.typo3.org/issues/83296
+        $query->getQuerySettings()->setRespectStoragePage(false);
+        $constraints[] = $query->in('pid', $query->getQuerySettings()->getStoragePageIds());
+        $constraints[] = $query->in('event.pid', $query->getQuerySettings()->getStoragePageIds());
         $constraints[] = $query->equals('event', (int)$eventUid);
 
         if (empty($timestamp)) {
