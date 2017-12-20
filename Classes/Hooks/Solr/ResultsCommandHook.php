@@ -17,6 +17,7 @@ namespace JWeiland\Events2\Hooks\Solr;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
 use ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand;
 use ApacheSolrForTypo3\Solr\ResultDocumentModifier\ResultDocumentModifier;
+use ApacheSolrForTypo3\Solr\ResultsetModifier\ResultSetModifier;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Service\EventService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -25,7 +26,7 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class ResultsCommandHook implements ResultDocumentModifier
+class ResultsCommandHook implements ResultDocumentModifier, ResultSetModifier
 {
     /**
      * @var EventService
