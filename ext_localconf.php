@@ -123,9 +123,10 @@ if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('realurl')) {
 }
 
 if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('solr')) {
-    // Change Solr results, if type is events2
+    // remove non current events from resultSet
+    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultSet'][] = 'JWeiland\\Events2\\Hooks\\Solr\\ResultsCommandHook';
+    // Add next_day to result array
     $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument'][] = 'JWeiland\\Events2\\Hooks\\Solr\\ResultsCommandHook';
-
     // As we can't create a SQL Query with JOIN in Solr configuration, we have to remove invalid documents on our own
     $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments'][] = 'JWeiland\\Events2\\Hooks\\Solr\\IndexerHook';
 }

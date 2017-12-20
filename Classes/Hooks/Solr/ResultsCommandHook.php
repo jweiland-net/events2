@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Hooks\Solr;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use ApacheSolrForTypo3\Solr\GarbageCollector;
 use ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand;
 use ApacheSolrForTypo3\Solr\ResultDocumentModifier\ResultDocumentModifier;
 use JWeiland\Events2\Domain\Model\Day;
@@ -41,14 +42,38 @@ class ResultsCommandHook implements ResultDocumentModifier
     }
 
     /**
+     * Remove event records from result set, if they are not current anymore.
+     *
+     * @param ResultsCommand $resultsCommand
+     * @param array $responseDocuments
+     *
+     * @return void
+     */
+    public function modifyResultSet(ResultsCommand $resultsCommand, array $responseDocuments)
+    {
+        /** @var \Apache_Solr_Document $responseDocument */
+        foreach ($responseDocuments as $key => $responseDocument) {
+            if ($responseDocument->getField('type') === 'tx_events2_domain_model_event') {
+                $day = $this->eventService->getNextDayForEvent((int)$responseDocument->getField('uid'));
+                if (!$day instanceof Day) {
+                    /** @var GarbageCollector $garbageCollector */
+                    $garbageCollector = GeneralUtility::makeInstance(\ApacheSolrForTypo3\Solr\GarbageCollector::class);
+                    $garbageCollector->collectGarbage('tx_events2_domain_model_event', $responseDocument->getField('uid'));
+                    unset($responseDocuments[$key]);
+                }
+            }
+        }
+    }
+
+    /**
      * Modifies the given document and returns the modified document as result.
      *
-     * @param ResultsCommand $resultCommand The search result command
+     * @param ResultsCommand $resultsCommand The search result command
      * @param array $resultDocument Result document as array
      *
      * @return array The document with fields as array
      */
-    public function modifyResultDocument(ResultsCommand $resultCommand, array $resultDocument)
+    public function modifyResultDocument(ResultsCommand $resultsCommand, array $resultDocument)
     {
         if ($resultDocument['type'] === 'tx_events2_domain_model_event') {
             $day = $this->eventService->getNextDayForEvent((int)$resultDocument['uid']);
