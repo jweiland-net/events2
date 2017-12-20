@@ -54,12 +54,14 @@ class ResultsCommandHook implements ResultDocumentModifier, ResultSetModifier
     {
         /** @var \Apache_Solr_Document $responseDocument */
         foreach ($responseDocuments as $key => $responseDocument) {
-            if ($responseDocument->getField('type') === 'tx_events2_domain_model_event') {
-                $day = $this->eventService->getNextDayForEvent((int)$responseDocument->getField('uid'));
+            $uidField = $responseDocument->getField('uid');
+            $typeField = $responseDocument->getField('type');
+            if ($typeField['value'] === 'tx_events2_domain_model_event') {
+                $day = $this->eventService->getNextDayForEvent((int)$uidField['value']);
                 if (!$day instanceof Day) {
                     /** @var GarbageCollector $garbageCollector */
                     $garbageCollector = GeneralUtility::makeInstance(\ApacheSolrForTypo3\Solr\GarbageCollector::class);
-                    $garbageCollector->collectGarbage('tx_events2_domain_model_event', $responseDocument->getField('uid'));
+                    $garbageCollector->collectGarbage('tx_events2_domain_model_event', (int)$uidField['value']);
                     unset($responseDocuments[$key]);
                 }
             }
