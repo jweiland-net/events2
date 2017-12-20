@@ -63,7 +63,7 @@ class ResultsCommandHook implements ResultDocumentModifier
                 }
             }
         }
-        return $$responseDocuments;
+        return $responseDocuments;
     }
 
     /**
