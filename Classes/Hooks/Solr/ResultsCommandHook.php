@@ -47,7 +47,7 @@ class ResultsCommandHook implements ResultDocumentModifier
      * @param ResultsCommand $resultsCommand
      * @param array $responseDocuments
      *
-     * @return void
+     * @return array
      */
     public function modifyResultSet(ResultsCommand $resultsCommand, array $responseDocuments)
     {
@@ -63,6 +63,7 @@ class ResultsCommandHook implements ResultDocumentModifier
                 }
             }
         }
+        return $$responseDocuments;
     }
 
     /**
