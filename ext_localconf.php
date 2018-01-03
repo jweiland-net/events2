@@ -60,7 +60,7 @@ if (TYPO3_MODE === 'BE') {
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['JWeiland\\Events2\\Task\\ReGenerateDays'] = [
         'extension' => $_EXTKEY,
         'title' => 'Create/Update Days',
-        'description' => 'Re-Generate day records for events with recurrency.',
+        'description' => 'Re-Generate day records for events with recurrency. It also deletes old iCAL downloads.',
         'additionalFields' => 'JWeiland\\Events2\\Task\\ReGenerateDays',
     ];
 

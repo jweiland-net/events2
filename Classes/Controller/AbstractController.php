@@ -290,6 +290,7 @@ class AbstractController extends ActionController
     {
         $this->view->assign('siteUrl', GeneralUtility::getIndpEnv('TYPO3_SITE_URL')); // needed for ajax requests
         $this->view->assign('data', $this->configurationManager->getContentObject()->data);
+        $this->view->assign('extConf', $this->extConf);
         if ($this->settings['showFilterForOrganizerInFrontend']) {
             $this->view->assign('organizers', $this->organizerRepository->getOrganizersForFilter());
         }

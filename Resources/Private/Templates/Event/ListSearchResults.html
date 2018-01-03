@@ -3,11 +3,11 @@
 <f:layout name="Default" />
 
 <f:section name="main">
-	<f:render partial="Event/UserEditLinks" />
+  <f:render partial="Event/UserEditLinks" />
 
-	<div class="list scroll-container">
-		<f:widget.paginate objects="{days}" as="paginatedDays" configuration="{itemsPerPage: settings.pageBrowser.itemsPerPage, insertAbove: settings.pageBrowser.insertAbove, insertBelow: settings.pageBrowser.insertBelow, maximumNumberOfLinks: settings.pageBrowser.maximumNumberOfLinks, addQueryStringMethod: 'GET,POST'}">
-			<f:render partial="Event/List" arguments="{days: paginatedDays}" />
-		</f:widget.paginate>
-	</div>
+  <div class="list scroll-container">
+    <f:widget.paginate objects="{days}" as="paginatedDays" configuration="{itemsPerPage: settings.pageBrowser.itemsPerPage, insertAbove: settings.pageBrowser.insertAbove, insertBelow: settings.pageBrowser.insertBelow, maximumNumberOfLinks: settings.pageBrowser.maximumNumberOfLinks, addQueryStringMethod: 'GET,POST'}">
+      <f:render partial="Event/List" arguments="{days: paginatedDays, extConf: extConf}" />
+    </f:widget.paginate>
+  </div>
 </f:section>

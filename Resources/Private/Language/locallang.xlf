@@ -287,6 +287,9 @@
       <trans-unit id="showDetailview">
         <source>See Single View</source>
       </trans-unit>
+      <trans-unit id="multipleTimesAssigned">
+        <source>Multiple times assigned</source>
+      </trans-unit>
       <trans-unit id="singleView">
         <source>Single View</source>
       </trans-unit>

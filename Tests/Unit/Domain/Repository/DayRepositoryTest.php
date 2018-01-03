@@ -28,6 +28,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
+use TYPO3\CMS\Fluid\Core\ViewHelper\Arguments;
 
 /**
  * Test case.
@@ -77,7 +78,6 @@ class DayRepositoryTest extends UnitTestCase
         $this->dataMapper = $this->prophesize(DataMapper::class);
         $this->persistenceManager = $this->prophesize(PersistenceManager::class);
 
-        $this->query->setQuerySettings(new Typo3QuerySettings());
         $this->queryResult->getQuery()->willReturn($this->query->reveal());
 
         $this->subject = $this->getMock(DayRepository::class, ['createQuery'], [], '', false);
@@ -102,7 +102,9 @@ class DayRepositoryTest extends UnitTestCase
     {
         $this->query->logicalAnd(Argument::cetera())->shouldBeCalled()->willReturn([]);
         $this->query->greaterThanOrEqual(Argument::cetera())->shouldBeCalled();
-        $this->query->getQuerySettings(Argument::cetera())->shouldBeCalled();
+        $this->query->getQuerySettings(Argument::cetera())->shouldBeCalled()->willReturn(new Typo3QuerySettings());
+        $this->query->in(Argument::exact('pid'), Argument::any())->shouldBeCalled();
+        $this->query->in(Argument::exact('event.pid'), Argument::any())->shouldBeCalled();
         $this->query->matching(Argument::exact([]))->shouldBeCalled()->willReturn($this->query->reveal());
         $this->query->setGroupings(Argument::cetera())->shouldBeCalled();
         $this->query->execute(Argument::cetera())->shouldBeCalled();
@@ -162,7 +164,10 @@ class DayRepositoryTest extends UnitTestCase
     {
         $timestamp = 12345678;
 
-        $this->query->in(Argument::cetera())->shouldNotBeCalled();
+        $this->query->getQuerySettings(Argument::cetera())->shouldBeCalled()->willReturn(new Typo3QuerySettings());
+        $this->query->in(Argument::exact('pid'), Argument::any())->shouldBeCalled();
+        $this->query->in(Argument::exact('event.pid'), Argument::any())->shouldBeCalled();
+        $this->query->in('event.categories.uid')->shouldNotBeCalled();
         $this->query->equals(Argument::exact('day'), Argument::exact($timestamp))->shouldBeCalled();
         $this->query->logicalAnd(Argument::cetera())->shouldBeCalled();
         $this->query->matching(Argument::cetera())->shouldBeCalled()->willReturn($this->query->reveal());
@@ -182,6 +187,9 @@ class DayRepositoryTest extends UnitTestCase
             'categories' => '12 ,654 ,  2435'
         ];
 
+        $this->query->getQuerySettings(Argument::cetera())->shouldBeCalled()->willReturn(new Typo3QuerySettings());
+        $this->query->in(Argument::exact('pid'), Argument::any())->shouldBeCalled();
+        $this->query->in(Argument::exact('event.pid'), Argument::any())->shouldBeCalled();
         $this->query->in('event.categories.uid', Argument::exact([12, 654, 2435]))->shouldBeCalled();
         $this->query->equals(Argument::exact('day'), Argument::exact($timestamp))->shouldBeCalled();
         $this->query->logicalAnd(Argument::cetera())->shouldBeCalled();
@@ -200,6 +208,9 @@ class DayRepositoryTest extends UnitTestCase
     {
         $timestamp = 12345678;
 
+        $this->query->getQuerySettings(Argument::cetera())->shouldBeCalled()->willReturn(new Typo3QuerySettings());
+        $this->query->in(Argument::exact('pid'), Argument::any())->shouldBeCalled();
+        $this->query->in(Argument::exact('event.pid'), Argument::any())->shouldBeCalled();
         $this->query->equals(Argument::exact('day'), Argument::exact($timestamp))->shouldBeCalled();
         $this->query->logicalAnd(Argument::cetera())->shouldBeCalled();
         $this->query->matching(Argument::cetera())->shouldBeCalled()->willReturn($this->query->reveal());
@@ -219,6 +230,9 @@ class DayRepositoryTest extends UnitTestCase
 
         $this->queryResult->getFirst()->shouldBeCalled();
 
+        $this->query->getQuerySettings(Argument::cetera())->shouldBeCalled()->willReturn(new Typo3QuerySettings());
+        $this->query->in(Argument::exact('pid'), Argument::any())->shouldBeCalled();
+        $this->query->in(Argument::exact('event.pid'), Argument::any())->shouldBeCalled();
         $this->query->equals(Argument::exact('event'), Argument::exact($event))->shouldBeCalled();
         $this->query->equals(Argument::exact('dayTime'), Argument::exact($timestamp))->shouldBeCalled();
         $this->query->logicalAnd(Argument::cetera())->shouldBeCalled();
@@ -238,6 +252,9 @@ class DayRepositoryTest extends UnitTestCase
 
         $this->queryResult->getFirst()->shouldBeCalled();
 
+        $this->query->getQuerySettings(Argument::cetera())->shouldBeCalled()->willReturn(new Typo3QuerySettings());
+        $this->query->in(Argument::exact('pid'), Argument::any())->shouldBeCalled();
+        $this->query->in(Argument::exact('event.pid'), Argument::any())->shouldBeCalled();
         $this->query->equals(Argument::exact('event'), Argument::exact($event))->shouldBeCalled();
         $this->query->greaterThanOrEqual(Argument::exact('dayTime'), Argument::any())->shouldBeCalled();
         $this->query->setOrderings(Argument::exact(['dayTime' => 'ASC']))->shouldBeCalled();

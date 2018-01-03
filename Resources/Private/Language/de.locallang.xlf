@@ -375,6 +375,10 @@
         <source>See Single View</source>
         <target>Siehe Detailansicht</target>
       </trans-unit>
+      <trans-unit id="multipleTimesAssigned">
+        <source>Multiple times assigned</source>
+        <target>Mehrere Uhrzeiten vorhanden</target>
+      </trans-unit>
       <trans-unit id="singleView">
         <source>Single View</source>
         <target>Ansicht</target>

@@ -10,13 +10,37 @@
   </f:else>
 </f:if>
 
-<f:render section="time" arguments="{day: day}" />
+<f:render section="time" arguments="{day: day, extConf: extConf}" />
 
 <f:section name="date">
   {day->f:format.date(format: '%a %d. %b %Y')}
 </f:section>
 
 <f:section name="time">
+  <f:if condition="{extConf.mergeEvents}">
+    <f:then>
+      <f:if condition="{e2:getMergedEventTimes(day: day)->f:count()} > 1">
+        <f:then>
+          <f:link.action
+            action="show"
+            controller="Day"
+            pageUid="{settings.pidOfDetailPage}"
+            arguments="{timestamp: '{day.dayTime->f:format.date(format: \'U\')}', event: day.event}"
+            title="{f:translate(key: 'singleView')}: {day.event.title}"
+          ><small><f:translate key="multipleTimesAssigned" /></small></f:link.action>
+        </f:then>
+        <f:else>
+          <f:render section="singleTime" arguments="{day: day}" />
+        </f:else>
+      </f:if>
+    </f:then>
+    <f:else>
+      <f:render section="singleTime" arguments="{day: day}" />
+    </f:else>
+  </f:if>
+</f:section>
+
+<f:section name="singleTime">
   <f:comment>If sortDayTime is higher than eventBegin (day without time) we can be sure that a time record was created</f:comment>
   <f:if condition="{day.sortDayTime} > {day.event.eventBegin}">
     |&nbsp;<f:translate key="tx_events2_domain_model_time.time_begin" />: {f:format.date(date: day.sortDayTime, format: 'H:i')}

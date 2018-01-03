@@ -5,7 +5,7 @@
     <f:for each="{days}" as="day">
       <div class="panel panel-{f:if(condition: day.event.topOfList, then: 'info', else: 'default')}">
         <div class="panel-heading">
-          <h3 class="panel-title"><f:render partial="Event/Date" arguments="{day: day}" /></h3>
+          <h3 class="panel-title"><f:render partial="Event/Date" arguments="{day: day, extConf: extConf}" /></h3>
         </div>
         <div class="panel-body">
           <div class="media-body">
