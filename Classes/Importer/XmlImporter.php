@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Importer;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use JWeiland\Events2\Domain\Model\Category;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Exception;
@@ -23,9 +24,11 @@ use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Task\Import;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
-use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
+use TYPO3\CMS\Core\Resource\Folder;
+use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
 /**
@@ -43,14 +46,14 @@ class XmlImporter extends AbstractImporter
     /**
      * Import XML file
      *
-     * @param File $file
+     * @param FileInterface $file
      * @param AbstractTask $task
      *
      * @return bool
      *
      * @throws \Exception
      */
-    public function import(File $file, AbstractTask $task)
+    public function import(FileInterface $file, AbstractTask $task)
     {
         if (!$this->validateXml($file)) {
             $this->addMessage('XML file does not match XSD file');
@@ -142,6 +145,7 @@ class XmlImporter extends AbstractImporter
         $this->addLinks($event, $data);
         $this->addExceptions($event, $data);
         $this->addCategories($event, $data);
+        $this->addImages($event, $data);
 
         return $event;
     }
@@ -421,6 +425,75 @@ class XmlImporter extends AbstractImporter
             /** @var Category $category */
             $category = $this->categoryRepository->findByIdentifier($dbCategory['uid']);
             $event->addCategory($category);
+        }
+    }
+
+    /**
+     * Add images
+     *
+     * @param Event $event
+     * @param array $data
+     *
+     * @return void
+     *
+     * @throws \Exception
+     */
+    protected function addImages(Event $event, array $data)
+    {
+        if (isset($data['images']) && is_array($data['images'])) {
+            $images = new ObjectStorage();
+            foreach ($data['images'] as $image) {
+                // error handling
+                if (!is_array($image)) {
+                    $this->addMessage('Image must be of type array', FlashMessage::WARNING);
+                    continue;
+                }
+                if (!isset($image['url']) || empty(trim($image['url']))) {
+                    $this->addMessage('Array key "url" of image must be set and can not be empty', FlashMessage::WARNING);
+                    continue;
+                }
+                if (!filter_var($image['url'], FILTER_VALIDATE_URL)) {
+                    $this->addMessage('Image path has to be a valid URL', FlashMessage::WARNING);
+                    continue;
+                }
+
+                // we try to keep the original structure from origin server to prevent duplicate filenames
+                $filePath = parse_url($image['url'], PHP_URL_PATH);
+                $fileParts = GeneralUtility::split_fileref($filePath);
+                $filename = $fileParts['file'];
+
+                /** @var Folder $rootFolder */
+                $rootFolder = $this->file->getParentFolder();
+                $relativeTargetDirectoryPath = 'Images/' . $fileParts['path'];
+                $targetDirectoryPath = PATH_site . $rootFolder->getPublicUrl() . $relativeTargetDirectoryPath;
+                GeneralUtility::mkdir_deep($targetDirectoryPath);
+
+                /** @var Folder $targetFolder */
+                $targetFolder = ResourceFactory::getInstance()->getFolderObjectFromCombinedIdentifier(
+                    $rootFolder->getCombinedIdentifier() . $relativeTargetDirectoryPath
+                );
+                if ($targetFolder->hasFile($filename)) {
+                    $file = ResourceFactory::getInstance()->retrieveFileOrFolderObject(
+                        $rootFolder->getCombinedIdentifier() . $relativeTargetDirectoryPath . $filename
+                    );
+                } else {
+                    $file = $targetFolder->createFile($filename);
+                    $file->setContents(GeneralUtility::getUrl($image['url']));
+                }
+
+                // Create new FileReference
+                /** @var \TYPO3\CMS\Extbase\Domain\Model\FileReference $extbaseFileReference */
+                $extbaseFileReference = $this->objectManager->get(\TYPO3\CMS\Extbase\Domain\Model\FileReference::class);
+                $extbaseFileReference->setOriginalResource(ResourceFactory::getInstance()->createFileReferenceObject(
+                    [
+                        'uid_local' => $file->getUid(),
+                        'uid_foreign' => uniqid('NEW_'),
+                        'uid' => uniqid('NEW_'),
+                    ]
+                ));
+                $images->attach($extbaseFileReference);
+            }
+            $event->setImages($images);
         }
     }
 

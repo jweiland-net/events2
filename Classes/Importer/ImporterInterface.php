@@ -14,7 +14,6 @@ namespace JWeiland\Events2\Importer;
  *
  * The TYPO3 project - inspiring people to share!
  */
-use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
@@ -35,19 +34,19 @@ interface ImporterInterface
     /**
      * Check, if File is valid for this importer
      *
-     * @param File $file
+     * @param FileInterface $file
      *
      * @return bool
      */
-    public function isValid(File $file);
+    public function isValid(FileInterface $file);
 
     /**
      * Import XML file
      *
-     * @param File $file
+     * @param FileInterface $file
      * @param AbstractTask $task
      *
      * @return bool
      */
-    public function import(File $file, AbstractTask $task);
+    public function import(FileInterface $file, AbstractTask $task);
 }

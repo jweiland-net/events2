@@ -19,6 +19,7 @@ use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
+use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\Index\Indexer;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
@@ -31,6 +32,8 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
 class Import extends AbstractTask
 {
     /**
+     * Full path from document root. F.e. /fileadmin/events_import/Import.xml
+     *
      * @var string
      */
     public $path = '';
@@ -89,7 +92,14 @@ class Import extends AbstractTask
             return false;
         }
 
-        return $this->importFile($file);
+        if ($this->importFile($file)) {
+            return true;
+        } else {
+            /** @var Registry $registry */
+            $registry = GeneralUtility::makeInstance(Registry::class);
+            $registry->set('events2', 'import-task-file-' . $file->getProperty('uid'), null);
+            return false;
+        }
     }
 
     /**
@@ -111,7 +121,8 @@ class Import extends AbstractTask
             $this->addMessage('There is no class to handler files of type: ' . $file->getExtension());
             return false;
         }
-        $importer = GeneralUtility::makeInstance($className);
+        /** @var ImporterInterface $importer */
+        $importer = GeneralUtility::makeInstance($className, $file);
         if (!$importer instanceof ImporterInterface) {
             $this->addMessage('Importer has to implement ImporterInterface');
             return false;

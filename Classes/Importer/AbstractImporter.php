@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Importer;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Domain\Repository\OrganizerRepository;
@@ -24,6 +25,9 @@ use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Resource\File;
+use TYPO3\CMS\Core\Resource\FileInterface;
+use TYPO3\CMS\Core\Resource\Folder;
+use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
@@ -34,6 +38,11 @@ use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
  */
 abstract class AbstractImporter implements ImporterInterface
 {
+    /**
+     * @var FileInterface
+     */
+    protected $file;
+
     /**
      * @var array
      */
@@ -80,6 +89,16 @@ abstract class AbstractImporter implements ImporterInterface
     protected $today;
 
     /**
+     * XmlImporter constructor.
+     *
+     * @param FileInterface $file
+     */
+    public function __construct(FileInterface $file)
+    {
+        $this->file = $file;
+    }
+
+    /**
      * Initialize this object
      *
      * @return void
@@ -98,24 +117,24 @@ abstract class AbstractImporter implements ImporterInterface
     /**
      * Check, if File is valid for this importer
      *
-     * @param File $file
+     * @param FileInterface $file
      *
      * @return bool
      *
      * @throws \Exception
      */
-    public function isValid(File $file) {
+    public function isValid(FileInterface $file) {
         $isValid = true;
 
         $modificationTime = $this->registry->get('events2', 'import-task-file-' . $file->getProperty('uid'));
         if ($modificationTime && $file->getModificationTime() <= $modificationTime) {
             $isValid = false;
-            $this->addMessage('Modification time of file has not changed. Stop importing');
+            $this->addMessage('Modification time of file has not changed. Stop importing', FlashMessage::ERROR);
         }
 
         if (!in_array($file->getMimeType(), $this->allowedMimeType)) {
             $isValid = false;
-            $this->addMessage('MimeType of file is not allowed');
+            $this->addMessage('MimeType of file is not allowed', FlashMessage::ERROR);
         }
 
         $this->registry->set('events2', 'import-task-file-' . $file->getProperty('uid'), $file->getModificationTime());
@@ -134,6 +153,33 @@ abstract class AbstractImporter implements ImporterInterface
      * @throws \Exception
      */
     protected function addMessage($message, $severity = FlashMessage::OK) {
+        static $firstMessage = true;
+
+        // log messages into file
+        $filename = 'Messages.txt';
+
+        try {
+            /** @var Folder $folder */
+            $folder = $this->file->getParentFolder();
+            if (!$folder->hasFile($filename)) {
+                $file = $folder->createFile($filename);
+            } else {
+                $file = ResourceFactory::getInstance()->retrieveFileOrFolderObject($folder->getCombinedIdentifier() . 'Messages.txt');
+            }
+
+            if ($firstMessage) {
+                $content = $message;
+                $firstMessage = false;
+            } else {
+                $content = $file->getContents() . LF . $message;
+            }
+            $file->setContents($content);
+        } catch (\Exception $e) {
+            $message = $e->getMessage();
+            $severity = FlashMessage::ERROR;
+        }
+
+        // show messages in TYPO3 BE when started manually
         /** @var FlashMessage $flashMessage */
         $flashMessage = GeneralUtility::makeInstance(FlashMessage::class, $message, '', $severity);
         /** @var FlashMessageService $flashMessageService */
