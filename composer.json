@@ -1,34 +1,31 @@
 {
-    "name": "jweiland/events2",
-    "type": "typo3-cms-extension",
-    "description": "Organize your single and recurring events",
-    "version": "2.0.0",
-    "license": "GPL-2.0+",
-    "keywords": ["typo3", "TYPO3 CMS", "event", "events2"],
-    "homepage": "http://www.jweiland.net",
-    "authors": [
-      {
-        "name": "Stefan Froemken",
-        "email": "sfroemken@jweiland.net",
-        "role": "Lead Developer"
-      }
-    ],
-    "support": {
-      "email": "projects@jweiland.net",
-      "issues": "https://github.com/jweiland-net/events2/issues",
-      "source": "https://github.com/jweiland-net/events2"
-    },
-    "require": {
-      "php": ">=5.5 <8.0",
-      "typo3/cms-core": ">=7.6.0,<9.0",
-      "jweiland/maps2": ">=3.0.0"
-    },
-    "require-dev": {
-      "phpunit/phpunit": "~4.8.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "JWeiland\\Events2\\": "Classes"
-        }
+  "name": "jweiland/events2",
+  "type": "typo3-cms-extension",
+  "description": "Organize your single and recurring events",
+  "version": "2.0.0",
+  "license": "GPL-2.0+",
+  "keywords": ["typo3", "TYPO3 CMS", "event", "events2"],
+  "homepage": "http://www.jweiland.net",
+  "authors": [
+    {
+      "name": "Stefan Froemken",
+      "email": "sfroemken@jweiland.net",
+      "role": "Lead Developer"
     }
+  ],
+  "support": {
+    "email": "projects@jweiland.net",
+    "issues": "https://github.com/jweiland-net/events2/issues",
+    "source": "https://github.com/jweiland-net/events2"
+  },
+  "require": {
+    "typo3/cms-core": ">=7.6.0,<9.0",
+    "sjbr/static-info-tables": ">=6.3.9",
+    "jweiland/maps2": ">=3.0.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "JWeiland\\Events2\\": "Classes"
+    }
+  }
 }
