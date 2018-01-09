@@ -219,7 +219,8 @@ class XmlImporter extends AbstractImporter
     protected function addTimeProperties(Event $event, array $data)
     {
         // add event time
-        if (isset($data['event_time'])) {
+        if (isset($data['event_time']) && is_array($data['event_time'])) {
+            /** @var Time $eventTime */
             $eventTime = $this->objectManager->get(Time::class);
             $eventTime->setTimeBegin($data['event_time']['time_begin']);
             $eventTime->setTimeEntry($data['event_time']['time_entry']);
@@ -288,6 +289,7 @@ class XmlImporter extends AbstractImporter
             $where
         );
         if (empty($dbOrganizer)) {
+            $this->addMessage('No equivalent organizer found', FlashMessage::WARNING);
             throw new \Exception('No equivalent organizer found');
         }
         $organizer = $this->organizerRepository->findByIdentifier($dbOrganizer['uid']);
@@ -321,6 +323,7 @@ class XmlImporter extends AbstractImporter
             $where
         );
         if (empty($dbLocation)) {
+            $this->addMessage('No equivalent location found', FlashMessage::WARNING);
             throw new \Exception('No equivalent location found');
         }
         $location = $this->locationRepository->findByIdentifier($dbLocation['uid']);
@@ -420,6 +423,7 @@ class XmlImporter extends AbstractImporter
                 $where
             );
             if (empty($dbCategory)) {
+                $this->addMessage('No equivalent category found', FlashMessage::WARNING);
                 throw new \Exception('No equivalent category found');
             }
             /** @var Category $category */
