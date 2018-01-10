@@ -308,16 +308,6 @@ class DayControllerTest extends UnitTestCase
 
     /**
      * @test
-     *
-     * @expectedException \ArgumentCountError
-     */
-    public function showByTimestampWithoutTimestampThrowsException()
-    {
-        $this->subject->showByTimestampAction();
-    }
-
-    /**
-     * @test
      */
     public function showByTimestampWithTimestampCallsAssign()
     {
