@@ -19,13 +19,39 @@
     "source": "https://github.com/jweiland-net/events2"
   },
   "require": {
-    "typo3/cms-core": ">=7.6.0,<9.0",
+    "typo3/cms-core": "^7.6.13 || >=8.5.0 <9",
     "sjbr/static-info-tables": ">=6.3.9",
     "jweiland/maps2": ">=3.0.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~4.8.0",
+    "friendsofphp/php-cs-fixer": "^2.0",
+    "nimut/testing-framework": "^1.0"
   },
   "autoload": {
     "psr-4": {
       "JWeiland\\Events2\\": "Classes"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "JWeiland\\Events2\\Tests\\": "Tests"
+    }
+  },
+  "config": {
+    "vendor-dir": ".Build/vendor",
+    "bin-dir": ".Build/bin"
+  },
+  "scripts": {
+    "post-autoload-dump": [
+      "mkdir -p .Build/Web/typo3conf/ext/",
+      "[ -L .Build/Web/typo3conf/ext/events2 ] || ln -snvf ../../../../. .Build/Web/typo3conf/ext/events2"
+    ]
+  },
+  "extra": {
+    "typo3/cms": {
+      "cms-package-dir": "{$vendor-dir}/typo3/cms",
+      "web-dir": ".Build/Web"
     }
   }
 }
