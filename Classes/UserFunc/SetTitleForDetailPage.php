@@ -27,7 +27,7 @@ class SetTitleForDetailPage
      * @var ContentObjectRenderer
      */
     public $cObj;
-    
+
     /**
      * Render page title for detail page
      *
@@ -56,7 +56,7 @@ class SetTitleForDetailPage
 
         return $content;
     }
-    
+
     /**
      * Check, if current request is valid
      *
@@ -69,7 +69,7 @@ class SetTitleForDetailPage
         if (!is_array($gp)) {
             return false;
         }
-        
+
         if (
             !isset($gp['controller']) ||
             !isset($gp['action']) ||
@@ -77,17 +77,17 @@ class SetTitleForDetailPage
         ) {
             return false;
         }
-        
+
         if (
             !MathUtility::canBeInterpretedAsInteger($gp['day']) ||
             (int)$gp['day'] <= 0
         ) {
             return false;
         }
-        
+
         return true;
     }
-    
+
     /**
      * Get day record
      *
@@ -108,7 +108,7 @@ class SetTitleForDetailPage
         }
         return $row;
     }
-    
+
     /**
      * Get event record
      *
@@ -129,7 +129,7 @@ class SetTitleForDetailPage
         }
         return $row;
     }
-    
+
     /**
      * Get TYPO3s Database Connection
      *

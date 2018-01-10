@@ -17,8 +17,8 @@ namespace JWeiland\Events2\ViewHelpers;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Time;
-use JWeiland\Events2\Utility\DateTimeUtility;
 use JWeiland\Events2\Service\EventService;
+use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 

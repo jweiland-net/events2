@@ -19,7 +19,6 @@ use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
  * Class ConvertToJsonViewHelper
  *
  * @category ViewHelpers
- * @package  Events2
  * @author   Stefan Froemken <projects@jweiland.net>
  * @license  http://www.gnu.org/licenses/gpl.html GNU General Public License
  * @link     https://github.com/jweiland-net/events2
@@ -27,15 +26,15 @@ use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 class ConvertToJsonViewHelper extends AbstractViewHelper
 {
     /**
-     * @var boolean
+     * @var bool
      */
     protected $escapeChildren = false;
-    
+
     /**
-     * @var boolean
+     * @var bool
      */
     protected $escapeOutput = false;
-    
+
     /**
      * implements a ViewHelper to convert an array into JSON format
      *

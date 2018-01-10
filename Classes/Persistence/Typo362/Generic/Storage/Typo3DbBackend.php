@@ -29,7 +29,8 @@ class Typo3DbBackend extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo
      * @param array $statementParts
      * @return array
      */
-    protected function createQueryCommandParametersFromStatementParts(array $statementParts) {
+    protected function createQueryCommandParametersFromStatementParts(array $statementParts)
+    {
         return [
             'selectFields' => implode(' ', $statementParts['keywords']) . ' ' . implode(',', $statementParts['fields']),
             'fromTable'    => implode(' ', $statementParts['tables']) . ' ' . implode(' ', $statementParts['unions']),
@@ -98,11 +99,12 @@ class Typo3DbBackend extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo
      *
      * @param QueryInterface $query
      *
-     * @return integer The number of matching tuples
+     * @return int The number of matching tuples
      *
      * @throws BadConstraintException
      */
-    public function getObjectCountByQuery(QueryInterface $query) {
+    public function getObjectCountByQuery(QueryInterface $query)
+    {
         if ($query->getConstraint() instanceof Statement) {
             throw new BadConstraintException('Could not execute count on queries with a constraint of type TYPO3\\CMS\\Extbase\\Persistence\\Generic\\Qom\\Statement', 1256661045);
         }

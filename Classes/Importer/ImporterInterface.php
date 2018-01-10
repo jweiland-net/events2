@@ -20,7 +20,6 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
 /**
  * Class Import
  *
- * @package JWeiland\Events2\Importer
  */
 interface ImporterInterface
 {

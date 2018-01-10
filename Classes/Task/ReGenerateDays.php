@@ -174,7 +174,8 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
      *
      * @return float Progress of the task as a two decimal precision float. f.e. 44.87
      */
-    public function getProgress() {
+    public function getProgress()
+    {
         $progress = $this->registry->get('events2TaskCreateUpdate', 'progress');
         if ($progress) {
             return 100 / $progress['records'] * $progress['counter'];
@@ -193,7 +194,8 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
      *
      * @throws \Exception
      */
-    public function addMessage($message, $severity = FlashMessage::OK) {
+    public function addMessage($message, $severity = FlashMessage::OK)
+    {
         /** @var FlashMessage $flashMessage */
         $flashMessage = GeneralUtility::makeInstance(FlashMessage::class, $message, '', $severity);
         /** @var $flashMessageService FlashMessageService */

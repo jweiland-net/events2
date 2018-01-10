@@ -19,7 +19,6 @@ use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Core\Bootstrap;
-use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
@@ -304,9 +303,9 @@ class Ajax
      */
     public function findAllDaysInMonth($month, $year)
     {
-        $earliestAllowedDate = new \DateTime("now midnight");
+        $earliestAllowedDate = new \DateTime('now midnight');
         $earliestAllowedDate->modify(sprintf('-%d months', $this->extConf->getRecurringPast()));
-        $latestAllowedDate = new \DateTime("now midnight");
+        $latestAllowedDate = new \DateTime('now midnight');
         $latestAllowedDate->modify(sprintf('+%d months', $this->extConf->getRecurringFuture()));
 
         // get start and ending of given month

@@ -69,8 +69,8 @@ class Ajax extends AbstractAjaxRequest
         $locations = $this->getDatabaseConnection()->exec_SELECTgetRows(
             'uid, location as label',
             'tx_events2_domain_model_location',
-            'location LIKE "%'.$this->getDatabaseConnection()->escapeStrForLike($locationPart, 'tx_events2_domain_model_location').'%"'.
-            BackendUtility::BEenableFields('tx_events2_domain_model_location').
+            'location LIKE "%' . $this->getDatabaseConnection()->escapeStrForLike($locationPart, 'tx_events2_domain_model_location') . '%"' .
+            BackendUtility::BEenableFields('tx_events2_domain_model_location') .
             BackendUtility::deleteClause('tx_events2_domain_model_location'),
             '', 'location', ''
         );

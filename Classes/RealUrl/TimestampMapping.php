@@ -18,7 +18,6 @@ namespace JWeiland\Events2\RealUrl;
 /**
  * Class TimestampMapping
  *
- * @package JWeiland\Events2\RealUrl
  */
 class TimestampMapping
 {
@@ -30,8 +29,9 @@ class TimestampMapping
      *
      * @return string
      */
-    public function main(array $parameters, $ref)    {
-        if ($parameters['decodeAlias'])     {
+    public function main(array $parameters, $ref)
+    {
+        if ($parameters['decodeAlias']) {
             return $this->alias2id($parameters);
         } else {
             return $this->id2alias($parameters);
@@ -45,7 +45,8 @@ class TimestampMapping
      *
      * @return string
      */
-    protected function id2alias(array $parameters) {
+    protected function id2alias(array $parameters)
+    {
         if (preg_match('/[0-9]{9,10}/', $parameters['value'])) {
             $date = new \DateTime(date('Y-m-d H:i:s', $parameters['value']));
             if ($date instanceof \DateTime) {
@@ -65,7 +66,8 @@ class TimestampMapping
      *
      * @return string
      */
-    protected function alias2id(array $parameters) {
+    protected function alias2id(array $parameters)
+    {
         // when this method was called, we must have at lease 3 parts: time/t/title-id[.html]
         // Current date exists in $parameters['value'] already.
         if (count($parameters['pathParts']) < 3 || empty($parameters['value'])) {

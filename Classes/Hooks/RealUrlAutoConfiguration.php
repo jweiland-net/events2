@@ -20,7 +20,6 @@ use JWeiland\Events2\RealUrl\TimestampMapping;
 /**
  * Class RealUrl
  *
- * @package JWeiland\Events2\Hooks
  */
 class RealUrlAutoConfiguration
 {

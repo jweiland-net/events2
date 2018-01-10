@@ -1,6 +1,6 @@
 <?php
 namespace JWeiland\Events2\Service;
-    
+
 /*
  * This file is part of the TYPO3 CMS project.
  *

@@ -84,7 +84,7 @@ class SortViewHelper extends AbstractViewHelper
                 // a NULL value is respected and ignored, but any
                 // unrecognized value other than this is considered a
                 // fatal error.
-                throw new \Exception('Unsortable variable type passed to Iterator/SortViewHelper. Expected any of Array, QueryResult, '.
+                throw new \Exception('Unsortable variable type passed to Iterator/SortViewHelper. Expected any of Array, QueryResult, ' .
                     ' ObjectStorage or Iterator implementation but got ' . gettype($subject), 1351958941);
             }
         }

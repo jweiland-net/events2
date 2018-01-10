@@ -13,10 +13,8 @@ namespace JWeiland\Events2\Persistence\Typo362\Generic\Storage;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
-use TYPO3\CMS\Extbase\Persistence\Generic\Exception\UnsupportedOrderException;
-use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Qom;
+use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 /**
  * Overwritten QueryParser with a little implementation of GROUP BY
@@ -114,7 +112,7 @@ class Typo3DbQueryParser extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\
             } elseif ($source instanceof Qom\SelectorInterface) {
                 $className = $source->getNodeTypeName();
                 $tableName = $this->dataMapper->convertClassNameToTableName($className);
-                while (strpos($propertyName, '.') !== FALSE) {
+                while (strpos($propertyName, '.') !== false) {
                     $this->addUnionStatement($className, $tableName, $propertyName, $sql);
                 }
                 $columnName = $this->dataMapper->convertPropertyNameToColumnName($propertyName, $className);

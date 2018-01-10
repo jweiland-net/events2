@@ -144,7 +144,8 @@ class Import extends AbstractTask
      *
      * @throws \Exception
      */
-    public function addMessage($message, $severity = FlashMessage::OK) {
+    public function addMessage($message, $severity = FlashMessage::OK)
+    {
         /** @var FlashMessage $flashMessage */
         $flashMessage = GeneralUtility::makeInstance(FlashMessage::class, $message, '', $severity);
         /** @var $flashMessageService FlashMessageService */

@@ -15,9 +15,9 @@ namespace JWeiland\Events2\Command;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Domain\Model\Event;
+use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\CommandController;
-use JWeiland\Events2\Service\DayRelationService;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Storage\BackendInterface;
 
@@ -171,12 +171,14 @@ class RepairCommandController extends CommandController
      * echo "whatEver"
      *
      * @param string $value
-     * @param boolean $reset
+     * @param bool $reset
      * @return void
      */
     protected function echoValue($value = '.', $reset = false)
     {
-        if ($reset) $this->rowCounter = 0;
+        if ($reset) {
+            $this->rowCounter = 0;
+        }
         if ($this->rowCounter < 40) {
             echo $value;
             $this->rowCounter++;
@@ -186,4 +188,3 @@ class RepairCommandController extends CommandController
         }
     }
 }
-

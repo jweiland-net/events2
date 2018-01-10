@@ -1,7 +1,7 @@
 <?php
 
 namespace JWeiland\Events2\Domain\Model;
-    
+
 /*
  * This file is part of the TYPO3 CMS project.
  *

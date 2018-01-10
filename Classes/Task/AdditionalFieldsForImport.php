@@ -14,7 +14,6 @@ namespace JWeiland\Events2\Task;
  * The TYPO3 project - inspiring people to share!
  */
 use TYPO3\CMS\Core\Messaging\FlashMessage;
-use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\TagBuilder;
@@ -25,7 +24,6 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
 /**
  * Class AdditionalFieldsForImport
  *
- * @package JWeiland\Events2\Task
  */
 class AdditionalFieldsForImport implements AdditionalFieldProviderInterface
 {
@@ -184,7 +182,7 @@ class AdditionalFieldsForImport implements AdditionalFieldProviderInterface
      * @param array $submittedData An array containing the data submitted by the add/edit task form
      * @param SchedulerModuleController $schedulerModule Reference to the scheduler backend module
      *
-     * @return boolean true if validation was ok (or selected class is not relevant), FALSE otherwise
+     * @return bool true if validation was ok (or selected class is not relevant), FALSE otherwise
      */
     public function validateAdditionalFields(array &$submittedData, SchedulerModuleController $schedulerModule)
     {

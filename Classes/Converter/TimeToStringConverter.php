@@ -1,7 +1,7 @@
 <?php
 
 namespace JWeiland\Events2\Converter;
-    
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -41,7 +41,7 @@ class TimeToStringConverter
             } else {
                 $hours = $this->getHours($timestamp);
                 $minutes = $this->getRemainingMinutes($timestamp, $hours);
-                $time = str_pad($hours, 2, '0', STR_PAD_LEFT).':'.str_pad($minutes, 2, '0', STR_PAD_LEFT);
+                $time = str_pad($hours, 2, '0', STR_PAD_LEFT) . ':' . str_pad($minutes, 2, '0', STR_PAD_LEFT);
             }
         }
 

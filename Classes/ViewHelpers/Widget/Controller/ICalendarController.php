@@ -219,7 +219,7 @@ class ICalendarController extends AbstractWidgetController
         // add hours and minutes to date
         if (!empty($time) && strlen($time) === 5) {
             list($hours, $minutes) = explode(':', $time);
-            $diff = new \DateInterval('PT'.(int)$hours.'H'.(int)$minutes.'M');
+            $diff = new \DateInterval('PT' . (int)$hours . 'H' . (int)$minutes . 'M');
             $localDate->add($diff);
         }
 
@@ -242,7 +242,7 @@ class ICalendarController extends AbstractWidgetController
         if (empty($time)) {
             $time = '000000';
         } else {
-            $time = str_replace(':', '', $time).'00';
+            $time = str_replace(':', '', $time) . '00';
         }
 
         return $time;

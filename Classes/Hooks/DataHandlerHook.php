@@ -21,14 +21,12 @@ use JWeiland\Maps2\Utility\GeocodeUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Class DataHandlerHook
  *
- * @package JWeiland\Events2\Hooks
  */
 class DataHandlerHook
 {
@@ -183,9 +181,9 @@ class DataHandlerHook
         $poi = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
             'uid',
             'tx_maps2_domain_model_poicollection',
-            'latitude='.$location['lat'].
-            ' AND longitude='.$location['lng'].
-            BackendUtility::BEenableFields('tx_maps2_domain_model_poicollection').
+            'latitude=' . $location['lat'] .
+            ' AND longitude=' . $location['lng'] .
+            BackendUtility::BEenableFields('tx_maps2_domain_model_poicollection') .
             BackendUtility::deleteClause('tx_maps2_domain_model_poicollection')
         );
         if ($poi) {

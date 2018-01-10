@@ -123,7 +123,8 @@ abstract class AbstractImporter implements ImporterInterface
      *
      * @throws \Exception
      */
-    public function isValid(FileInterface $file) {
+    public function isValid(FileInterface $file)
+    {
         $isValid = true;
 
         $modificationTime = $this->registry->get('events2', 'import-task-file-' . $file->getProperty('uid'));
@@ -152,7 +153,8 @@ abstract class AbstractImporter implements ImporterInterface
      *
      * @throws \Exception
      */
-    protected function addMessage($message, $severity = FlashMessage::OK) {
+    protected function addMessage($message, $severity = FlashMessage::OK)
+    {
         static $firstMessage = true;
 
         // log messages into file
