@@ -29,20 +29,21 @@ cache:
 
 notifications:
   slack:
-    secure: IU5+A5ULp63E2O3jbAKIgGiONs6oiKa3qbj92xA1cx04Fv2d9K5mA5WXb3xdROeVOhfqfS28fQB0qGDgkQBu2dsWuzU/fIhRxuez+TCvsObo31Gg33zrngCsZUwPjzqfP1kyST6esQq+mAoyxBeXpm1pQysDGH/GPq46n+M98hA0oWNG7s52uJhrTlUo9qx4MF2kXEeqqsmSTwJaACedXzaEwTREarc3suYh/Fg6+wzvqSlTlYt6KqkPNXgzwjAM9XdPj7ZeZjcNwKRqjLbG629uQ3qLo8cYr0kenwc1KJ43dh4IP0M9eMeo1AIQBuGAZzmCjXoaf3t/0x3AtqPFAD9WoJ+uGZsEJ8oqGV3Szzwe+j3uK4AmXbVTuKdh+yiRrDq01U6vy9A+EcDIqXmQPRT1f6xJsiXjBGSyU3MWsbw1cYXDpwIobcaHh6WyBLvnrhJSws3RgNrTMWgWewvOSqYi128ydzFgi7SI1XbhcJ3gQ9WFQ2gLGZBlTv6IlB6xnLnPDoxcSP8Y+3zPfrUNwdCmOfTeFqclkWNukoA842TNfIH+Zhu5S9S7kfIRamItjxjpcrf/a/LeMq5QiWDLOfnd9R578M0kcMNKV2zHttMQBF0++6AOj3bRMqTM/i0/PmbaNubkl4+VRZmUWSbyxFad8NFhdVR0TGgUP2ElDMA=
     on_success: change
     on_failure: always
+    rooms:
+      - secure: "kL/JYOhoCmInyZYfY7xof/UMaah0jwVZno5ZfKHSHFViCRahGuT5wmLHTVpuUwB0WwJEYXKXH7hJIh+ByLUchoR/46cN9NH/KC1ESR2bXrqpNflCozKwfrC12/UgG58Nz9DD/4hOL0QbQA/x7kuR+Z+pMukE5maX03zUPEF2a45YSookbkqRoZq0XbTphsgaDutVNR99GNNJAfBNcGXG8AI7x35lsv1fgU4+cuv/wrdoWUHHKhif33wEImyuJi43jtKOYLXKwRHczplUJB0fEhexAsuk/T+Af+7pdQCc2Ll51/OqIA9agRmlxgonPFLCsSIfNb76BrTrmf9BezN187X7Qf9mh0kV7PvMru1R6syKfhzm+J9ix9ZxojRe7O/QDxseOIlCTsftf2QJ/9eyvJpNB84HXbWQQcrT4IbLMVFHzykkBZaKYn81EdaVAV5g7Yw+MXcfUH/kr6FhRHecyv6V3C64iIVzuWHucgWeAT97MS7r2c5jksWL8Rhac2vkcQjn92PHXmn5csxXmuT5wn7yUZ+yXQKtXgujvDH6nw8gnIwXK+SqztWksh+d0s6l1sXAlgQHPcpilAmhfJZ2lCVZNRwzA2XQuoFQTV9B0qQNcCsL8m//YkhNMQyZ43oSa7LMKZooeRtBPtuGzg9zKuQopjNL41hB0suHvLWHn9Y="
 
 before_install:
   - composer self-update
+  - phpenv config-rm xdebug.ini
 
 before_script:
-  - phpenv config-rm xdebug.ini
-  - composer require typo3/cms=$TYPO3_VERSION
+  - composer require typo3/cms=$TYPO3_VERSION --prefer-source
   - git checkout composer.json
   - export TYPO3_PATH_WEB=$PWD/.Build/Web
 
 script:
-  - 'echo; echo "Running unit tests"; .Build/bin/phpunit --colors -c .Build/vendor/nimut/testing-framework/res/Configuration/UnitTests.xml Tests/Unit/'
-  - 'echo; echo "Running php lint"; find . -name \*.php ! -path "./.Build/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;'
-  - 'echo; echo "Running PHP Coding Standards Fixer checks"; .Build/bin/php-cs-fixer fix --config=Build/.php_cs -v --dry-run --using-cache=no --path-mode=intersection `git diff --name-only --diff-filter=ACMRTUXB $COMMIT_RANGE`'
+  - echo; echo "Running unit tests"; .Build/bin/phpunit --colors -c .Build/vendor/nimut/testing-framework/res/Configuration/UnitTests.xml Tests/Unit/
+  - echo; echo "Running php lint"; find . -name \*.php ! -path "./.Build/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;
+  - echo; echo "Running PHP Coding Standards Fixer checks"; .Build/bin/php-cs-fixer fix --config=Build/.php_cs -v --dry-run --using-cache=no --path-mode=intersection `git diff --name-only --diff-filter=ACMRTUXB $COMMIT_RANGE`
