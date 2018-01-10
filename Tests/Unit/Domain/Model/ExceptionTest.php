@@ -113,32 +113,6 @@ class ExceptionTest extends UnitTestCase
     }
 
     /**
-     * @return array
-     */
-    public function dataProviderForSetExceptionDate()
-    {
-        $arguments = [];
-        $arguments['set ExceptionDate with Null'] = [null];
-        $arguments['set ExceptionDate with Integer'] = [1234567890];
-        $arguments['set ExceptionDate with Integer as String'] = ['1234567890'];
-        $arguments['set ExceptionDate with String'] = ['Hi all together'];
-
-        return $arguments;
-    }
-
-    /**
-     * @test
-     *
-     * @param mixed $argument
-     * @dataProvider dataProviderForSetExceptionDate
-     * @expectedException \TypeError
-     */
-    public function setExceptionDateWithInvalidValuesResultsInException($argument)
-    {
-        $this->subject->setExceptionDate($argument);
-    }
-
-    /**
      * @test
      */
     public function getExceptionTimeInitiallyReturnsNull()

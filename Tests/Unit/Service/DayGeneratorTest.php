@@ -76,39 +76,6 @@ class DayGeneratorTest extends UnitTestCase
     }
 
     /**
-     * dataProvider with invalid values for array arguments.
-     *
-     * @return array
-     */
-    public function dataProviderWithInvalidValuesForArrayArguments()
-    {
-        $invalidValues = [];
-        $invalidValues['string'] = ['Hello', ['Hello']];
-        $invalidValues['integer'] = [123, [123]];
-        $invalidValues['boolean'] = [true, [true]];
-        $invalidValues['object'] = [new \stdClass()];
-        $invalidValues['null'] = [null];
-
-        return $invalidValues;
-    }
-
-    /**
-     * @test
-     *
-     * @param mixed $invalidArgument
-     *
-     * @throws \Exception
-     *
-     * @dataProvider dataProviderWithInvalidValuesForArrayArguments
-     *
-     * @expectedException \TypeError
-     */
-    public function initializeWithInvalidArguments($invalidArgument)
-    {
-        $this->subject->initialize($invalidArgument);
-    }
-
-    /**
      * @test
      *
      * @throws \Exception

@@ -119,38 +119,6 @@ class AjaxTest extends UnitTestCase
     }
 
     /**
-     * dataProvider for initializeWithInvalidValuesResultsInException.
-     *
-     * @return array
-     */
-    public function dataProviderForInvalidValues()
-    {
-        $invalidValues = [];
-        $invalidValues['string'] = ['Hello'];
-        $invalidValues['integer'] = [123];
-        $invalidValues['boolean'] = [true];
-        $invalidValues['object'] = [new \stdClass()];
-
-        return $invalidValues;
-    }
-
-    /**
-     * @test
-     *
-     * @param mixed $invalidValue
-     *
-     * @throws \Exception
-     *
-     * @dataProvider dataProviderForInvalidValues
-     *
-     * @expectedException \TypeError
-     */
-    public function initializeWithInvalidValuesResultsInException($invalidValue)
-    {
-        $this->subject->processAjaxRequest($invalidValue);
-    }
-
-    /**
      * @test
      */
     public function processAjaxRequestSanitizesArguments()

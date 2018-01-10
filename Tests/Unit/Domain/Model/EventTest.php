@@ -245,16 +245,6 @@ class EventTest extends UnitTestCase
 
     /**
      * @test
-     *
-     * @expectedException \TypeError
-     */
-    public function setEventBeginWithTimestampResultsInException()
-    {
-        $this->subject->setEventBegin(1234567890);
-    }
-
-    /**
-     * @test
      */
     public function getEventTimeInitiallyReturnsNull()
     {
@@ -652,16 +642,6 @@ class EventTest extends UnitTestCase
             $date,
             $this->subject->getRecurringEnd()
         );
-    }
-
-    /**
-     * @test
-     *
-     * @expectedException \TypeError
-     */
-    public function setRecurringEndWithTimestampResultsInException()
-    {
-        $this->subject->setRecurringEnd(1234567890);
     }
 
     /**

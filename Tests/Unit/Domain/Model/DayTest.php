@@ -75,32 +75,6 @@ class DayTest extends UnitTestCase
     }
 
     /**
-     * @return array
-     */
-    public function dataProviderForSetDay()
-    {
-        $arguments = [];
-        $arguments['set Day with Null'] = [null];
-        $arguments['set Day with Integer'] = [1234567890];
-        $arguments['set Day with Integer as String'] = ['1234567890'];
-        $arguments['set Day with String'] = ['Hi all together'];
-
-        return $arguments;
-    }
-
-    /**
-     * @test
-     *
-     * @param mixed $argument
-     * @dataProvider dataProviderForSetDay
-     * @expectedException \TypeError
-     */
-    public function setDayWithInvalidValuesResultsInException($argument)
-    {
-        $this->subject->setDay($argument);
-    }
-
-    /**
      * @test
      */
     public function getEventInitiallyReturnsNull()

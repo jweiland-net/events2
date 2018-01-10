@@ -288,33 +288,6 @@ class EventServiceTest extends UnitTestCase
     }
 
     /**
-     * Data Provider with invalid values for get times for day.
-     */
-    public function dataProviderWithInvalidValuesForGetTimesForDay()
-    {
-        $invalidValue = [];
-        $invalidValue['null'] = [null, null];
-        $invalidValue['strings'] = ['Test123', 'Hello'];
-        $invalidValue['integer'] = [123, -532];
-        $invalidValue['array'] = [[123], ['Hello']];
-        $invalidValue['wrong object'] = [new \stdClass(), new \stdClass()];
-
-        return $invalidValue;
-    }
-
-    /**
-     * @test
-     *
-     * @param mixed $invalidValue
-     * @dataProvider dataProviderWithInvalidValuesForGetTimesForDay
-     * @expectedException \TypeError
-     */
-    public function getTimesForDayWithWrongParametersThrowsException($invalidValue)
-    {
-        $this->subject->getTimesForDay($invalidValue, $invalidValue);
-    }
-
-    /**
      * @test
      */
     public function getTimesForDayWithEventIncludingOneExceptionReturnsOneTimeObject()
