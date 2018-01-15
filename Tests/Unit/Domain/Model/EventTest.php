@@ -16,13 +16,13 @@ namespace JWeiland\Events2\Tests\Unit\Domain\Model;
  */
 use JWeiland\Events2\Domain\Model\Category;
 use JWeiland\Events2\Domain\Model\Day;
+use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Exception;
 use JWeiland\Events2\Domain\Model\Link;
-use JWeiland\Events2\Domain\Model\Organizer;
 use JWeiland\Events2\Domain\Model\Location;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
-use JWeiland\Events2\Domain\Model\Event;
+use JWeiland\Events2\Domain\Model\Organizer;
 use JWeiland\Events2\Domain\Model\Time;
+use Nimut\TestingFramework\TestCase\UnitTestCase;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
@@ -625,7 +625,8 @@ class EventTest extends UnitTestCase
     /**
      * @test
      */
-    public function getRecurringEndInitiallyReturnsNull() {
+    public function getRecurringEndInitiallyReturnsNull()
+    {
         $this->assertNull(
             $this->subject->getRecurringEnd()
         );
@@ -634,7 +635,8 @@ class EventTest extends UnitTestCase
     /**
      * @test
      */
-    public function setRecurringEndSetsRecurringEnd() {
+    public function setRecurringEndSetsRecurringEnd()
+    {
         $date = new \DateTime();
         $this->subject->setRecurringEnd($date);
 
@@ -899,7 +901,7 @@ class EventTest extends UnitTestCase
             $this->subject->addCategory($category);
         }
         $this->assertSame(
-            [1,2,3],
+            [1, 2, 3],
             $this->subject->getCategoryUids()
         );
     }
@@ -1065,14 +1067,16 @@ class EventTest extends UnitTestCase
     /**
      * @test
      */
-    public function getDownloadLinksInitiallyReturnsNull() {
+    public function getDownloadLinksInitiallyReturnsNull()
+    {
         $this->assertNull($this->subject->getDownloadLinks());
     }
 
     /**
      * @test
      */
-    public function setDownloadLinksSetsDownloadLinks() {
+    public function setDownloadLinksSetsDownloadLinks()
+    {
         $instance = new Link();
         $this->subject->setDownloadLinks($instance);
 

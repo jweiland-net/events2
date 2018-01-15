@@ -15,8 +15,8 @@ namespace JWeiland\Events2\Tests\Unit\Ajax\FindLocations;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Ajax\FindLocations;
-use TYPO3\CMS\Core\Database\DatabaseConnection;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
+use TYPO3\CMS\Core\Database\DatabaseConnection;
 
 /**
  * Test case.

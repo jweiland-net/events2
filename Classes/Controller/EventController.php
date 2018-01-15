@@ -161,6 +161,8 @@ class EventController extends AbstractController
      * @param int $event
      *
      * @return void
+     *
+     * @throws \Exception
      */
     public function editAction($event)
     {
@@ -212,7 +214,8 @@ class EventController extends AbstractController
             ->getPropertyMappingConfiguration()
             ->forProperty('images')
             ->setTypeConverter($multipleFilesTypeConverter)
-            ->setTypeConverterOptions(UploadMultipleFilesConverter::class,
+            ->setTypeConverterOptions(
+                UploadMultipleFilesConverter::class,
                 [
                     'IMAGES' => $event->getImages()
                 ]

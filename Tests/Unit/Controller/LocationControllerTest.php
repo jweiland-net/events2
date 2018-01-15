@@ -14,7 +14,6 @@ namespace JWeiland\Events2\Tests\Unit\Controller;
  *
  * The TYPO3 project - inspiring people to share!
  */
-use JWeiland\Events2\Controller\EventController;
 use JWeiland\Events2\Controller\LocationController;
 use JWeiland\Events2\Domain\Model\Location;
 use Nimut\TestingFramework\TestCase\UnitTestCase;

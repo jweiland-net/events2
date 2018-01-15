@@ -17,10 +17,10 @@ namespace JWeiland\Events2\Tests\Unit\Controller;
 use JWeiland\Events2\Controller\CalendarController;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Repository\DayRepository;
+use Nimut\TestingFramework\TestCase\UnitTestCase;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Tests\AccessibleObjectInterface;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Fluid\View\TemplateView;
@@ -155,7 +155,8 @@ class CalendarControllerTest extends UnitTestCase
             ->expects($this->once())
             ->method('getConfiguration')
             ->with(
-                $this->equalTo(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK))
+                $this->equalTo(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK)
+            )
             ->willReturn($persistenceSettings);
 
         $this->frontendUserAuthentication
@@ -214,7 +215,8 @@ class CalendarControllerTest extends UnitTestCase
             ->expects($this->once())
             ->method('getConfiguration')
             ->with(
-                $this->equalTo(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK))
+                $this->equalTo(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK)
+            )
             ->willReturn($persistenceSettings);
 
         $this->view
@@ -265,7 +267,8 @@ class CalendarControllerTest extends UnitTestCase
             ->expects($this->once())
             ->method('getConfiguration')
             ->with(
-                $this->equalTo(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK))
+                $this->equalTo(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK)
+            )
             ->willReturn($persistenceSettings);
 
         $this->frontendUserAuthentication

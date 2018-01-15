@@ -14,8 +14,8 @@ namespace JWeiland\Events2\Tests\Unit\Configuration;
  *
  * The TYPO3 project - inspiring people to share!
  */
-use Nimut\TestingFramework\TestCase\UnitTestCase;
 use JWeiland\Events2\Configuration\ExtConf;
+use Nimut\TestingFramework\TestCase\UnitTestCase;
 
 /**
  * Test case.
@@ -60,7 +60,8 @@ class ExtConfTest extends UnitTestCase
     /**
      * @test
      */
-    public function getPoiCollectionPidInitiallyReturnsZero() {
+    public function getPoiCollectionPidInitiallyReturnsZero()
+    {
         $this->assertSame(
             0,
             $this->subject->getPoiCollectionPid()
@@ -70,7 +71,8 @@ class ExtConfTest extends UnitTestCase
     /**
      * @test
      */
-    public function setPoiCollectionPidSetsPoiCollectionPid() {
+    public function setPoiCollectionPidSetsPoiCollectionPid()
+    {
         $this->subject->setPoiCollectionPid(123456);
 
         $this->assertSame(
@@ -82,7 +84,8 @@ class ExtConfTest extends UnitTestCase
     /**
      * @test
      */
-    public function setPoiCollectionPidWithStringResultsInInteger() {
+    public function setPoiCollectionPidWithStringResultsInInteger()
+    {
         $this->subject->setPoiCollectionPid('123Test');
 
         $this->assertSame(
@@ -94,8 +97,9 @@ class ExtConfTest extends UnitTestCase
     /**
      * @test
      */
-    public function setPoiCollectionPidWithBooleanResultsInInteger() {
-        $this->subject->setPoiCollectionPid(TRUE);
+    public function setPoiCollectionPidWithBooleanResultsInInteger()
+    {
+        $this->subject->setPoiCollectionPid(true);
 
         $this->assertSame(
             1,
@@ -106,7 +110,8 @@ class ExtConfTest extends UnitTestCase
     /**
      * @test
      */
-    public function getRootUidInitiallyReturnsZero() {
+    public function getRootUidInitiallyReturnsZero()
+    {
         $this->assertSame(
             0,
             $this->subject->getRootUid()
@@ -116,7 +121,8 @@ class ExtConfTest extends UnitTestCase
     /**
      * @test
      */
-    public function setRootUidSetsRootUid() {
+    public function setRootUidSetsRootUid()
+    {
         $this->subject->setRootUid(123456);
 
         $this->assertSame(
@@ -128,7 +134,8 @@ class ExtConfTest extends UnitTestCase
     /**
      * @test
      */
-    public function setRootUidWithStringResultsInInteger() {
+    public function setRootUidWithStringResultsInInteger()
+    {
         $this->subject->setRootUid('123Test');
 
         $this->assertSame(
@@ -140,8 +147,9 @@ class ExtConfTest extends UnitTestCase
     /**
      * @test
      */
-    public function setRootUidWithBooleanResultsInInteger() {
-        $this->subject->setRootUid(TRUE);
+    public function setRootUidWithBooleanResultsInInteger()
+    {
+        $this->subject->setRootUid(true);
 
         $this->assertSame(
             1,
@@ -246,7 +254,8 @@ class ExtConfTest extends UnitTestCase
     /**
      * @test
      */
-    public function getDefaultCountryInitiallyReturnsEmptyString() {
+    public function getDefaultCountryInitiallyReturnsEmptyString()
+    {
         $this->assertSame(
             '',
             $this->subject->getDefaultCountry()
@@ -256,7 +265,8 @@ class ExtConfTest extends UnitTestCase
     /**
      * @test
      */
-    public function setDefaultCountrySetsDefaultCountry() {
+    public function setDefaultCountrySetsDefaultCountry()
+    {
         $this->subject->setDefaultCountry('foo bar');
 
         $this->assertSame(
@@ -268,7 +278,8 @@ class ExtConfTest extends UnitTestCase
     /**
      * @test
      */
-    public function setDefaultCountryWithIntegerResultsInString() {
+    public function setDefaultCountryWithIntegerResultsInString()
+    {
         $this->subject->setDefaultCountry(123);
         $this->assertSame('123', $this->subject->getDefaultCountry());
     }
@@ -276,8 +287,9 @@ class ExtConfTest extends UnitTestCase
     /**
      * @test
      */
-    public function setDefaultCountryWithBooleanResultsInString() {
-        $this->subject->setDefaultCountry(TRUE);
+    public function setDefaultCountryWithBooleanResultsInString()
+    {
+        $this->subject->setDefaultCountry(true);
         $this->assertSame('1', $this->subject->getDefaultCountry());
     }
 
@@ -287,7 +299,8 @@ class ExtConfTest extends UnitTestCase
      * @expectedException \Exception
      * @expectedExceptionCode 1484823422
      */
-    public function getEmailFromAddressInitiallyReturnsEmptyString() {
+    public function getEmailFromAddressInitiallyReturnsEmptyString()
+    {
         $this->assertSame(
             '',
             $this->subject->getEmailFromAddress()
@@ -297,7 +310,8 @@ class ExtConfTest extends UnitTestCase
     /**
      * @test
      */
-    public function setEmailFromAddressSetsEmailFromAddress() {
+    public function setEmailFromAddressSetsEmailFromAddress()
+    {
         $this->subject->setEmailFromAddress('foo bar');
 
         $this->assertSame(
@@ -309,7 +323,8 @@ class ExtConfTest extends UnitTestCase
     /**
      * @test
      */
-    public function setEmailFromAddressWithIntegerResultsInString() {
+    public function setEmailFromAddressWithIntegerResultsInString()
+    {
         $this->subject->setEmailFromAddress(123);
         $this->assertSame('123', $this->subject->getEmailFromAddress());
     }
@@ -317,8 +332,9 @@ class ExtConfTest extends UnitTestCase
     /**
      * @test
      */
-    public function setEmailFromAddressWithBooleanResultsInString() {
-        $this->subject->setEmailFromAddress(TRUE);
+    public function setEmailFromAddressWithBooleanResultsInString()
+    {
+        $this->subject->setEmailFromAddress(true);
         $this->assertSame('1', $this->subject->getEmailFromAddress());
     }
 
@@ -328,7 +344,8 @@ class ExtConfTest extends UnitTestCase
      * @expectedException \Exception
      * @expectedExceptionCode 1484823661
      */
-    public function getEmailFromNameInitiallyReturnsEmptyString() {
+    public function getEmailFromNameInitiallyReturnsEmptyString()
+    {
         $this->assertSame(
             '',
             $this->subject->getEmailFromName()
@@ -338,7 +355,8 @@ class ExtConfTest extends UnitTestCase
     /**
      * @test
      */
-    public function setEmailFromNameSetsEmailFromName() {
+    public function setEmailFromNameSetsEmailFromName()
+    {
         $this->subject->setEmailFromName('foo bar');
 
         $this->assertSame(
@@ -350,7 +368,8 @@ class ExtConfTest extends UnitTestCase
     /**
      * @test
      */
-    public function setEmailFromNameWithIntegerResultsInString() {
+    public function setEmailFromNameWithIntegerResultsInString()
+    {
         $this->subject->setEmailFromName(123);
         $this->assertSame('123', $this->subject->getEmailFromName());
     }
@@ -358,15 +377,17 @@ class ExtConfTest extends UnitTestCase
     /**
      * @test
      */
-    public function setEmailFromNameWithBooleanResultsInString() {
-        $this->subject->setEmailFromName(TRUE);
+    public function setEmailFromNameWithBooleanResultsInString()
+    {
+        $this->subject->setEmailFromName(true);
         $this->assertSame('1', $this->subject->getEmailFromName());
     }
 
     /**
      * @test
      */
-    public function getEmailToAddressInitiallyReturnsEmptyString() {
+    public function getEmailToAddressInitiallyReturnsEmptyString()
+    {
         $this->assertSame(
             '',
             $this->subject->getEmailToAddress()
@@ -376,7 +397,8 @@ class ExtConfTest extends UnitTestCase
     /**
      * @test
      */
-    public function setEmailToAddressSetsEmailToAddress() {
+    public function setEmailToAddressSetsEmailToAddress()
+    {
         $this->subject->setEmailToAddress('foo bar');
 
         $this->assertSame(
@@ -388,7 +410,8 @@ class ExtConfTest extends UnitTestCase
     /**
      * @test
      */
-    public function setEmailToAddressWithIntegerResultsInString() {
+    public function setEmailToAddressWithIntegerResultsInString()
+    {
         $this->subject->setEmailToAddress(123);
         $this->assertSame('123', $this->subject->getEmailToAddress());
     }
@@ -396,15 +419,17 @@ class ExtConfTest extends UnitTestCase
     /**
      * @test
      */
-    public function setEmailToAddressWithBooleanResultsInString() {
-        $this->subject->setEmailToAddress(TRUE);
+    public function setEmailToAddressWithBooleanResultsInString()
+    {
+        $this->subject->setEmailToAddress(true);
         $this->assertSame('1', $this->subject->getEmailToAddress());
     }
 
     /**
      * @test
      */
-    public function getEmailToNameInitiallyReturnsEmptyString() {
+    public function getEmailToNameInitiallyReturnsEmptyString()
+    {
         $this->assertSame(
             '',
             $this->subject->getEmailToName()
@@ -414,7 +439,8 @@ class ExtConfTest extends UnitTestCase
     /**
      * @test
      */
-    public function setEmailToNameSetsEmailToName() {
+    public function setEmailToNameSetsEmailToName()
+    {
         $this->subject->setEmailToName('foo bar');
 
         $this->assertSame(
@@ -426,7 +452,8 @@ class ExtConfTest extends UnitTestCase
     /**
      * @test
      */
-    public function setEmailToNameWithIntegerResultsInString() {
+    public function setEmailToNameWithIntegerResultsInString()
+    {
         $this->subject->setEmailToName(123);
         $this->assertSame('123', $this->subject->getEmailToName());
     }
@@ -434,8 +461,9 @@ class ExtConfTest extends UnitTestCase
     /**
      * @test
      */
-    public function setEmailToNameWithBooleanResultsInString() {
-        $this->subject->setEmailToName(TRUE);
+    public function setEmailToNameWithBooleanResultsInString()
+    {
+        $this->subject->setEmailToName(true);
         $this->assertSame('1', $this->subject->getEmailToName());
     }
 }

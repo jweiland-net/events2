@@ -14,12 +14,11 @@ namespace JWeiland\Events2\Tests\Unit\Hooks;
  *
  * The TYPO3 project - inspiring people to share!
  */
-use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Hooks\DataHandlerHook;
+use Nimut\TestingFramework\TestCase\UnitTestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Tests\AccessibleObjectInterface;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
 
 /**
  * Test case.

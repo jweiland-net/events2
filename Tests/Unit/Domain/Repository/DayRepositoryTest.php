@@ -20,15 +20,13 @@ use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Persistence\Typo376\Generic\Query;
 use JWeiland\Events2\Utility\DateTimeUtility;
-use Prophecy\Argument;
-use Prophecy\Promise\ReturnPromise;
-use Prophecy\Prophecy\ObjectProphecy;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
+use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
-use TYPO3\CMS\Fluid\Core\ViewHelper\Arguments;
 
 /**
  * Test case.

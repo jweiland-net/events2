@@ -14,8 +14,8 @@ namespace JWeiland\Events2\Tests\Unit\Utility;
  *
  * The TYPO3 project - inspiring people to share!
  */
-use Nimut\TestingFramework\TestCase\UnitTestCase;
 use JWeiland\Events2\Utility\DateTimeUtility;
+use Nimut\TestingFramework\TestCase\UnitTestCase;
 
 /**
  * Test case.

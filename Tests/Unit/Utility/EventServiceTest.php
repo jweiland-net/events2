@@ -18,8 +18,8 @@ use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Exception;
 use JWeiland\Events2\Domain\Model\Time;
-use JWeiland\Events2\Utility\DateTimeUtility;
 use JWeiland\Events2\Service\EventService;
+use JWeiland\Events2\Utility\DateTimeUtility;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
@@ -128,7 +128,7 @@ class EventServiceTest extends UnitTestCase
             $exception->setExceptionDate($yesterday);
             $exceptions->attach($exception);
             $expectedException = new \SplObjectStorage();
-            $data['exception of type '.$type.' of yesterday'] = [$exceptions, $expectedException];
+            $data['exception of type ' . $type . ' of yesterday'] = [$exceptions, $expectedException];
         }
 
         return $data;
@@ -216,7 +216,7 @@ class EventServiceTest extends UnitTestCase
             $exception->setExceptionType('Remove');
             $exception->setExceptionDate($today);
             $exceptions->attach($exception);
-            $data['exception of type '.$type.' of today'] = [$exceptions, $type, $expectedException];
+            $data['exception of type ' . $type . ' of today'] = [$exceptions, $type, $expectedException];
         }
 
         return $data;

@@ -14,8 +14,8 @@ namespace JWeiland\Events2\Tests\Unit\Tca\Type;
  *
  * The TYPO3 project - inspiring people to share!
  */
-use Nimut\TestingFramework\TestCase\UnitTestCase;
 use JWeiland\Events2\Tca\Type\Time;
+use Nimut\TestingFramework\TestCase\UnitTestCase;
 
 /**
  * Test case.

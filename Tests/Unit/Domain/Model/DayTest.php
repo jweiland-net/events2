@@ -14,11 +14,9 @@ namespace JWeiland\Events2\Tests\Unit\Domain\Model;
  *
  * The TYPO3 project - inspiring people to share!
  */
-use JWeiland\Events2\Domain\Model\Category;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
-use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Test case.

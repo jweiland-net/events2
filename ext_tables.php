@@ -77,4 +77,3 @@ $boot = function ($extensionKey, $extensionConfiguration) {
 };
 $boot($_EXTKEY, $_EXTCONF);
 unset($boot);
-

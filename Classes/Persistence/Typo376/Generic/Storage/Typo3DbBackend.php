@@ -41,8 +41,10 @@ class Typo3DbBackend extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo
         return [
             'selectFields' => implode(' ', $statementParts['keywords']) . ' ' . implode(',', $statementParts['fields']),
             'fromTable'    => implode(' ', $statementParts['tables']) . ' ' . implode(' ', $statementParts['unions']),
-            'whereClause'  => (!empty($statementParts['where']) ? implode('', $statementParts['where']) : '1=1')
-                . (!empty($statementParts['additionalWhereClause'])
+            'whereClause'  => (
+                    !empty($statementParts['where']) ? implode('', $statementParts['where']) : '1=1'
+                ) . (
+                    !empty($statementParts['additionalWhereClause'])
                     ? ' AND ' . implode(' AND ', $statementParts['additionalWhereClause'])
                     : ''
             ),

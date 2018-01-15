@@ -34,7 +34,8 @@ class EmStaticInfo
             'uid, cn_short_en',
             'static_countries',
             'deleted=0',
-            '', 'static_countries.cn_short_en', ''
+            '',
+            'static_countries.cn_short_en'
         );
 
         $options = [];

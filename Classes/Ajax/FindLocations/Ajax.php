@@ -72,7 +72,9 @@ class Ajax extends AbstractAjaxRequest
             'location LIKE "%' . $this->getDatabaseConnection()->escapeStrForLike($locationPart, 'tx_events2_domain_model_location') . '%"' .
             BackendUtility::BEenableFields('tx_events2_domain_model_location') .
             BackendUtility::deleteClause('tx_events2_domain_model_location'),
-            '', 'location', ''
+            '',
+            'location',
+            ''
         );
 
         if ($locations === null) {

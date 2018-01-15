@@ -20,9 +20,9 @@ use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
+use Nimut\TestingFramework\TestCase\UnitTestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
@@ -222,7 +222,6 @@ class DayControllerTest extends UnitTestCase
         )->shouldBeCalled();
 
         $this->subject->listThisWeekAction($filter);
-
     }
 
     /**
@@ -246,7 +245,6 @@ class DayControllerTest extends UnitTestCase
         )->shouldBeCalled();
 
         $this->subject->listRangeAction($filter);
-
     }
 
     /**

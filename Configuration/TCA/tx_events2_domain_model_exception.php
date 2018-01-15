@@ -31,7 +31,7 @@ return [
             'endtime' => 'endtime',
         ],
         'searchFields' => 'exception_details',
-        'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('events2').'Resources/Public/Icons/tx_events2_domain_model_exception.png',
+        'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('events2') . 'Resources/Public/Icons/tx_events2_domain_model_exception.png',
     ],
     'interface' => [
         'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, exception_type, exception_date, exception_time, exception_details',
