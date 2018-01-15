@@ -18,7 +18,7 @@ use JWeiland\Events2\Ajax\FindSubCategories;
 use JWeiland\Events2\Domain\Model\Category;
 use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use TYPO3\CMS\Core\Tests\AccessibleObjectInterface;
-use TYPO3\CMS\Core\Tests\UnitTestCase;
+use Nimut\TestingFramework\TestCase\UnitTestCase;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 

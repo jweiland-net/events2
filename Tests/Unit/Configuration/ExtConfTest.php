@@ -14,7 +14,7 @@ namespace JWeiland\Events2\Tests\Unit\Configuration;
  *
  * The TYPO3 project - inspiring people to share!
  */
-use TYPO3\CMS\Core\Tests\UnitTestCase;
+use Nimut\TestingFramework\TestCase\UnitTestCase;
 use JWeiland\Events2\Configuration\ExtConf;
 
 /**

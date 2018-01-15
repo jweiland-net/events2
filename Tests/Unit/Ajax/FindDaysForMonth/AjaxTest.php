@@ -22,10 +22,11 @@ use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Database\PreparedStatement;
 use TYPO3\CMS\Core\Tests\AccessibleObjectInterface;
-use TYPO3\CMS\Core\Tests\UnitTestCase;
+use Nimut\TestingFramework\TestCase\UnitTestCase;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
@@ -95,7 +96,12 @@ class AjaxTest extends UnitTestCase
         $this->dbProphecy = $this->prophesize(DatabaseConnection::class);
         $GLOBALS['TYPO3_DB'] = $this->dbProphecy->reveal();
 
-        $this->subject = $this->getAccessibleMock(FindDaysForMonth\Ajax::class, ['getFrontendUserAuthentication']);
+        $boostrap = $this
+            ->getMockBuilder(Bootstrap::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->subject = $this->getAccessibleMock(FindDaysForMonth\Ajax::class, ['getFrontendUserAuthentication', 'getBootstrap']);
+        $this->subject->expects($this->once())->method('getBootstrap')->willReturn($boostrap);
         $this->subject->_set('extConf', $this->extConfProphecy->reveal());
         $this->subject->_set('dateTimeUtility', new DateTimeUtility());
         $this->subject->_set('dayRepository', $this->dayRepositoryProphecy->reveal());

@@ -16,7 +16,7 @@ namespace JWeiland\Events2\Tests\Unit\Controller;
  */
 use JWeiland\Events2\Ajax\FindSubCategories;
 use JWeiland\Events2\Controller\AjaxController;
-use TYPO3\CMS\Core\Tests\UnitTestCase;
+use Nimut\TestingFramework\TestCase\UnitTestCase;
 use TYPO3\CMS\Extbase\Mvc\Controller\Arguments;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 

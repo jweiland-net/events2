@@ -23,7 +23,7 @@ use JWeiland\Events2\Utility\DateTimeUtility;
 use Prophecy\Argument;
 use Prophecy\Promise\ReturnPromise;
 use Prophecy\Prophecy\ObjectProphecy;
-use TYPO3\CMS\Core\Tests\UnitTestCase;
+use Nimut\TestingFramework\TestCase\UnitTestCase;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;

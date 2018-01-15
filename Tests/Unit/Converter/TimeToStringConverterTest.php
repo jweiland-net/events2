@@ -15,7 +15,7 @@ namespace JWeiland\Events2\Tests\Unit\Converter;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Converter\TimeToStringConverter;
-use TYPO3\CMS\Core\Tests\UnitTestCase;
+use Nimut\TestingFramework\TestCase\UnitTestCase;
 
 /**
  * Test case.

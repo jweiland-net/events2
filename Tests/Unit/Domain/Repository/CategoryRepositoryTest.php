@@ -15,7 +15,7 @@ namespace JWeiland\Events2\Tests\Unit\Domain\Repository;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Domain\Repository\CategoryRepository;
-use TYPO3\CMS\Core\Tests\UnitTestCase;
+use Nimut\TestingFramework\TestCase\UnitTestCase;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 
 /**

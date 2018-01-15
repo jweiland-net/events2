@@ -21,7 +21,7 @@ use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use JWeiland\Events2\Service\EventService;
 use JWeiland\Events2\ViewHelpers\GetEventDatesViewHelper;
-use TYPO3\CMS\Core\Tests\UnitTestCase;
+use Nimut\TestingFramework\TestCase\UnitTestCase;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**

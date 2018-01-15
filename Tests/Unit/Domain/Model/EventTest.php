@@ -20,7 +20,7 @@ use JWeiland\Events2\Domain\Model\Exception;
 use JWeiland\Events2\Domain\Model\Link;
 use JWeiland\Events2\Domain\Model\Organizer;
 use JWeiland\Events2\Domain\Model\Location;
-use TYPO3\CMS\Core\Tests\UnitTestCase;
+use Nimut\TestingFramework\TestCase\UnitTestCase;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Time;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;

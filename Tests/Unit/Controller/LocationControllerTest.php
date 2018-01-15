@@ -17,7 +17,7 @@ namespace JWeiland\Events2\Tests\Unit\Controller;
 use JWeiland\Events2\Controller\EventController;
 use JWeiland\Events2\Controller\LocationController;
 use JWeiland\Events2\Domain\Model\Location;
-use TYPO3\CMS\Core\Tests\UnitTestCase;
+use Nimut\TestingFramework\TestCase\UnitTestCase;
 use TYPO3\CMS\Fluid\View\TemplateView;
 
 /**

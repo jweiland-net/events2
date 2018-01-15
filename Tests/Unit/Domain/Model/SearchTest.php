@@ -17,7 +17,7 @@ namespace JWeiland\Events2\Tests\Unit\Domain\Model;
 use JWeiland\Events2\Domain\Model\Category;
 use JWeiland\Events2\Domain\Model\Location;
 use JWeiland\Events2\Domain\Model\Search;
-use TYPO3\CMS\Core\Tests\UnitTestCase;
+use Nimut\TestingFramework\TestCase\UnitTestCase;
 
 /**
  * Test case.

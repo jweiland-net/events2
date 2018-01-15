@@ -16,7 +16,7 @@ namespace JWeiland\Events2\Tests\Unit\Domain\Model;
  */
 use JWeiland\Events2\Domain\Model\Exception;
 use JWeiland\Events2\Domain\Model\Time;
-use TYPO3\CMS\Core\Tests\UnitTestCase;
+use Nimut\TestingFramework\TestCase\UnitTestCase;
 
 /**
  * Test case.

@@ -114,7 +114,7 @@ class Ajax
     protected function initialize(array $arguments)
     {
         // load cached TCA. Needed for enableFields
-        Bootstrap::getInstance()->loadExtensionTables();
+        $this->getBootstrap()->loadExtensionTables();
         $this->setArguments($arguments);
     }
 
@@ -363,6 +363,16 @@ class Ajax
         /** @var FrontendUserAuthentication $feAuthentication */
         $feAuthentication = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
         return $feAuthentication;
+    }
+
+    /**
+     * Get TYPO3 Bootstrap
+     *
+     * @return Bootstrap
+     */
+    protected function getBootstrap()
+    {
+        return Bootstrap::getInstance();
     }
 
     /**

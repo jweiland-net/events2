@@ -16,7 +16,7 @@ namespace JWeiland\Events2\Tests\Unit\Ajax\FindLocations;
  */
 use JWeiland\Events2\Ajax\FindLocations;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
-use TYPO3\CMS\Core\Tests\UnitTestCase;
+use Nimut\TestingFramework\TestCase\UnitTestCase;
 
 /**
  * Test case.

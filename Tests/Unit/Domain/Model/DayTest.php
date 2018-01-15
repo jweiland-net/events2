@@ -17,7 +17,7 @@ namespace JWeiland\Events2\Tests\Unit\Domain\Model;
 use JWeiland\Events2\Domain\Model\Category;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
-use TYPO3\CMS\Core\Tests\UnitTestCase;
+use Nimut\TestingFramework\TestCase\UnitTestCase;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
