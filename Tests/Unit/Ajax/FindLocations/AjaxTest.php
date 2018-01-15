@@ -59,7 +59,10 @@ class AjaxTest extends UnitTestCase
             'locationPart' => '',
         ];
         /** @var FindLocations\Ajax|\PHPUnit_Framework_MockObject_MockObject $subject */
-        $subject = $this->getMock(FindLocations\Ajax::class, ['findLocations']);
+        $subject = $this
+            ->getMockBuilder(FindLocations\Ajax::class)
+            ->setMethods(['findLocations'])
+            ->getMock();
         $subject->expects($this->never())->method('findLocations');
         $this->assertSame(
             '',
@@ -77,7 +80,10 @@ class AjaxTest extends UnitTestCase
         ];
         $expectedArgument = 'Hello german umlauts: öäü. How are you?';
         /** @var FindLocations\Ajax|\PHPUnit_Framework_MockObject_MockObject $subject */
-        $subject = $this->getMock(FindLocations\Ajax::class, ['findLocations']);
+        $subject = $this
+            ->getMockBuilder(FindLocations\Ajax::class)
+            ->setMethods(['findLocations'])
+            ->getMock();
         $subject->expects($this->once())->method('findLocations')->with($expectedArgument)->will($this->returnValue([]));
         $this->assertSame(
             '[]',
@@ -94,7 +100,10 @@ class AjaxTest extends UnitTestCase
             'locationPart' => 'x',
         ];
         /** @var FindLocations\Ajax|\PHPUnit_Framework_MockObject_MockObject $subject */
-        $subject = $this->getMock(FindLocations\Ajax::class, ['findLocations']);
+        $subject = $this
+            ->getMockBuilder(FindLocations\Ajax::class)
+            ->setMethods(['findLocations'])
+            ->getMock();
         $subject->expects($this->never())->method('findLocations');
         $this->assertSame(
             '',
@@ -132,7 +141,10 @@ class AjaxTest extends UnitTestCase
             ],
         ];
         /** @var FindLocations\Ajax|\PHPUnit_Framework_MockObject_MockObject $subject */
-        $subject = $this->getMock(FindLocations\Ajax::class, ['findLocations']);
+        $subject = $this
+            ->getMockBuilder(FindLocations\Ajax::class)
+            ->setMethods(['findLocations'])
+            ->getMock();
         $subject->expects($this->exactly(2))->method('findLocations')->will($this->returnValueMap($locationMap));
         $this->assertSame(
             '[{"uid":123,"label":"at home"}]',

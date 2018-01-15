@@ -89,17 +89,35 @@ class EventControllerTest extends UnitTestCase
      */
     public function setUp()
     {
-        $this->request = $this->getMock(Request::class);
+        $this->request = $this->getMockBuilder(Request::class)->getMock();
 
-        $this->controllerContext = $this->getMock(ControllerContext::class, ['dummy']);
+        $this->controllerContext = $this->getMockBuilder(ControllerContext::class)->setMethods(['dummy'])->getMock();
         $this->controllerContext->setRequest($this->request);
 
-        $this->dayRepository = $this->getMock(DayRepository::class, [], [], '', false);
-        $this->eventRepository = $this->getMock(EventRepository::class, [], [], '', false);
-        $this->locationRepository = $this->getMock(LocationRepository::class, [], [], '', false);
-        $this->categoryRepository = $this->getMock(CategoryRepository::class, [], [], '', false);
-        $this->objectManager = $this->getMock(ObjectManager::class, [], [], '', false);
-        $this->view = $this->getMock(TemplateView::class, [], [], '', false);
+        $this->dayRepository = $this
+            ->getMockBuilder(DayRepository::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->eventRepository = $this
+            ->getMockBuilder(EventRepository::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->locationRepository = $this
+            ->getMockBuilder(LocationRepository::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->categoryRepository = $this
+            ->getMockBuilder(CategoryRepository::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->objectManager = $this
+            ->getMockBuilder(ObjectManager::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->view = $this
+            ->getMockBuilder(TemplateView::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->subject = $this->getAccessibleMock(EventController::class, ['dummy']);
         $this->subject->injectDayRepository($this->dayRepository);
@@ -152,7 +170,7 @@ class EventControllerTest extends UnitTestCase
             'rootCategory' => '12'
         ];
 
-        $configurationManager = $this->getMock(ConfigurationManager::class);
+        $configurationManager = $this->getMockBuilder(ConfigurationManager::class)->getMock();
         $configurationManager
             ->expects($this->at(0))
             ->method('getConfiguration')
@@ -307,7 +325,7 @@ class EventControllerTest extends UnitTestCase
     public function newActionWithoutImagesCallsDeleteUploadedFiles()
     {
         /** @var ObjectStorage|\PHPUnit_Framework_MockObject_MockObject $images */
-        $images = $this->getMock(ObjectStorage::class);
+        $images = $this->getMockBuilder(ObjectStorage::class)->getMock();
         $images
             ->expects($this->once())
             ->method('count')
@@ -323,7 +341,7 @@ class EventControllerTest extends UnitTestCase
             ->method('current');
 
         /** @var Event|\PHPUnit_Framework_MockObject_MockObject $event */
-        $event = $this->getMock(Event::class);
+        $event = $this->getMockBuilder(Event::class)->getMock();
         $event
             ->expects($this->once())
             ->method('getImages')
@@ -349,13 +367,16 @@ class EventControllerTest extends UnitTestCase
     public function newActionWithImagesCallsDeleteUploadedFiles()
     {
         /** @var FileReference|\PHPUnit_Framework_MockObject_MockObject $originalResource */
-        $originalResource = $this->getMock(FileReference::class, [], [], '', false);
+        $originalResource = $this
+            ->getMockBuilder(FileReference::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $originalResource
             ->expects($this->once())
             ->method('delete');
 
         /** @var \TYPO3\CMS\Extbase\Domain\Model\FileReference|\PHPUnit_Framework_MockObject_MockObject $uploadedFile */
-        $uploadedFile = $this->getMock(\TYPO3\CMS\Extbase\Domain\Model\FileReference::class);
+        $uploadedFile = $this->getMockBuilder(\TYPO3\CMS\Extbase\Domain\Model\FileReference::class)->getMock();
         $uploadedFile
             ->expects($this->once())
             ->method('getOriginalResource')

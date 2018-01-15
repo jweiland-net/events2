@@ -116,7 +116,10 @@ class DayGeneratorTest extends UnitTestCase
         $event->setEachWeeks(0);
 
         /** @var DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
-        $dayGenerator = $this->getMock(DayGenerator::class, ['addRecurringEvents', 'addException', 'getEventBegin']);
+        $dayGenerator = $this
+            ->getMockBuilder(DayGenerator::class)
+            ->setMethods(['addRecurringEvents', 'addException', 'getEventBegin'])
+            ->getMock();
         $dayGenerator->expects($this->once())->method('addRecurringEvents');
         $dayGenerator->expects($this->never())->method('addException');
         $dayGenerator->expects($this->never())->method('getEventBegin');
@@ -140,7 +143,10 @@ class DayGeneratorTest extends UnitTestCase
         $event->setEachWeeks(1);
 
         /** @var DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
-        $dayGenerator = $this->getMock(DayGenerator::class, ['addRecurringWeeks', 'addException', 'getEventBegin']);
+        $dayGenerator = $this
+            ->getMockBuilder(DayGenerator::class)
+            ->setMethods(['addRecurringWeeks', 'addException', 'getEventBegin'])
+            ->getMock();
         $dayGenerator->expects($this->once())->method('addRecurringWeeks');
         $dayGenerator->expects($this->never())->method('addException');
         $dayGenerator->expects($this->never())->method('getEventBegin');
@@ -176,7 +182,10 @@ class DayGeneratorTest extends UnitTestCase
         $expectedDays[$eventEnd->format('U')] = $eventEnd;
 
         /** @var DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
-        $dayGenerator = $this->getMock(DayGenerator::class, ['addException', 'getMaxDateForGeneratedDays']);
+        $dayGenerator = $this
+            ->getMockBuilder(DayGenerator::class)
+            ->setMethods(['addException', 'getMaxDateForGeneratedDays'])
+            ->getMock();
         $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
         $dayGenerator->injectExtConf(new ExtConf());
         $dayGenerator->expects($this->never())->method('addException');
@@ -219,7 +228,10 @@ class DayGeneratorTest extends UnitTestCase
         $expectedDays[$eventEnd->format('U')] = $eventEnd;
 
         /** @var DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
-        $dayGenerator = $this->getMock(DayGenerator::class, ['addException', 'getMaxDateForGeneratedDays']);
+        $dayGenerator = $this
+            ->getMockBuilder(DayGenerator::class)
+            ->setMethods(['addException', 'getMaxDateForGeneratedDays'])
+            ->getMock();
         $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
         $dayGenerator->injectExtConf(new ExtConf());
         $dayGenerator->expects($this->never())->method('addException');
@@ -271,7 +283,10 @@ class DayGeneratorTest extends UnitTestCase
         $expectedDays[$expectedEnd->format('U')] = $expectedEnd;
 
         /** @var DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
-        $dayGenerator = $this->getMock(DayGenerator::class, ['addException', 'getMaxDateForGeneratedDays']);
+        $dayGenerator = $this
+            ->getMockBuilder(DayGenerator::class)
+            ->setMethods(['addException', 'getMaxDateForGeneratedDays'])
+            ->getMock();
         $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
         $dayGenerator->injectExtConf($extConf);
         $dayGenerator->expects($this->never())->method('addException');
@@ -521,7 +536,10 @@ class DayGeneratorTest extends UnitTestCase
         $event->setExceptions($exceptions);
 
         /** @var DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
-        $dayGenerator = $this->getMock(DayGenerator::class, ['addRecurringEvents', 'addDayToStorage', 'addExceptions']);
+        $dayGenerator = $this
+            ->getMockBuilder(DayGenerator::class)
+            ->setMethods(['addRecurringEvents', 'addDayToStorage', 'addExceptions'])
+            ->getMock();
         $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
         $dayGenerator->expects($this->never())->method('addRecurringEvents');
         $dayGenerator->expects($this->once())->method('addDayToStorage')->with($eventBegin);

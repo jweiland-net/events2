@@ -70,7 +70,10 @@ class FindSubCategoriesTest extends UnitTestCase
         $queryResult->_set('queryResult', $categories);
 
         /** @var CategoryRepository|\PHPUnit_Framework_MockObject_MockObject $categoryRepository */
-        $categoryRepository = $this->getMock(CategoryRepository::class, ['getSubCategories'], [], '', false);
+        $categoryRepository = $this
+            ->getMockBuilder(CategoryRepository::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $categoryRepository->expects($this->once())->method('getSubCategories')->with(284)->will($this->returnValue($queryResult));
 
         $this->subject->injectCategoryRepository($categoryRepository);

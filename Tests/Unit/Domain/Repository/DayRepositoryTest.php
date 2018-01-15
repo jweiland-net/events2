@@ -80,7 +80,11 @@ class DayRepositoryTest extends UnitTestCase
 
         $this->queryResult->getQuery()->willReturn($this->query->reveal());
 
-        $this->subject = $this->getMock(DayRepository::class, ['createQuery'], [], '', false);
+        $this->subject = $this
+            ->getMockBuilder(DayRepository::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['createQuery'])
+            ->getMock();
         $this->subject->injectDateTimeUtility($this->dateTimeUtility);
         $this->subject
             ->method('createQuery')

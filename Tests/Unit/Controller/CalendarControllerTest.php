@@ -86,12 +86,21 @@ class CalendarControllerTest extends UnitTestCase
         $this->dbProphecy = $this->prophesize(DatabaseConnection::class);
         $GLOBALS['TYPO3_DB'] = $this->dbProphecy->reveal();
 
-        $this->pageRenderer = $this->getMock(PageRenderer::class);
-        $this->dayRepository = $this->getMock(DayRepository::class, [], [], '', false);
-        $this->configurationManager = $this->getMock(ConfigurationManager::class);
-        $this->typoScriptFrontendController = $this->getMock(TypoScriptFrontendController::class, [], [], '', false);
-        $this->frontendUserAuthentication = $this->getMock(FrontendUserAuthentication::class, [], [], '', false);
-        $this->view = $this->getMock(TemplateView::class);
+        $this->pageRenderer = $this->getMockBuilder(PageRenderer::class)->getMock();
+        $this->dayRepository = $this
+            ->getMockBuilder(DayRepository::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->configurationManager = $this->getMockBuilder(ConfigurationManager::class)->getMock();
+        $this->typoScriptFrontendController = $this
+            ->getMockBuilder(TypoScriptFrontendController::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->frontendUserAuthentication = $this->getMockBuilder(FrontendUserAuthentication::class)->getMock();
+        $this->view = $this
+            ->getMockBuilder(TemplateView::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->typoScriptFrontendController->fe_user = $this->frontendUserAuthentication;
 

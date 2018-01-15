@@ -76,7 +76,7 @@ class AjaxControllerTest extends UnitTestCase
     public function callAjaxObjectActionWithLowerCasedObjectNameWillBeConvertedToUcFirst()
     {
         /** @var ObjectManager|\PHPUnit_Framework_MockObject_MockObject $objectManager */
-        $objectManager = $this->getMock(ObjectManager::class);
+        $objectManager = $this->getMockBuilder(ObjectManager::class)->getMock();
         // ->get will be called within injectObjectManager the first time
         $objectManager->expects($this->at(0))->method('get')->with($this->equalTo(Arguments::class))->will($this->returnValue(new \stdClass()));
         // now we can configure method get for FindSubCategories
@@ -95,11 +95,11 @@ class AjaxControllerTest extends UnitTestCase
         $expectedResult = '[{"123":"foo"}]';
 
         /** @var FindSubCategories|\PHPUnit_Framework_MockObject_MockObject $findSubCategories */
-        $findSubCategories = $this->getMock(FindSubCategories::class, ['processAjaxRequest']);
+        $findSubCategories = $this->getMockBuilder(FindSubCategories::class)->setMethods(['processAjaxRequest'])->getMock();
         $findSubCategories->expects($this->once())->method('processAjaxRequest')->with($arguments)->will($this->returnValue($expectedResult));
 
         /** @var ObjectManager|\PHPUnit_Framework_MockObject_MockObject $objectManager */
-        $objectManager = $this->getMock(ObjectManager::class);
+        $objectManager = $this->getMockBuilder(ObjectManager::class)->getMock();
         // ->get will be called within injectObjectManager the first time
         $objectManager->expects($this->at(0))->method('get')->with($this->equalTo(Arguments::class))->will($this->returnValue(new \stdClass()));
         // now we can configure method get for FindSubCategories

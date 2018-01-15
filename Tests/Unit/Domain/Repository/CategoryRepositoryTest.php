@@ -35,7 +35,11 @@ class CategoryRepositoryTest extends UnitTestCase
      */
     public function setUp()
     {
-        $this->subject = $this->getMock(CategoryRepository::class, ['createQuery'], [], '', false);
+        $this->subject = $this
+            ->getMockBuilder(CategoryRepository::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['createQuery'])
+            ->getMock();
     }
 
     /**
@@ -52,7 +56,10 @@ class CategoryRepositoryTest extends UnitTestCase
     public function getSelectedCategoriesConvertsWrongCategoriesToInteger()
     {
         /** @var Query|\PHPUnit_Framework_MockObject_MockObject $query */
-        $query = $this->getMock(Query::class, [], [], '', false);
+        $query = $this
+            ->getMockBuilder(Query::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $query->expects($this->once())->method('matching')->willReturn($query);
         $query->expects($this->once())->method('in')->with(
             $this->equalTo('uid'),
@@ -70,7 +77,10 @@ class CategoryRepositoryTest extends UnitTestCase
     public function getSelectedCategoriesWithNonParentWillNotCallEquals()
     {
         /** @var Query|\PHPUnit_Framework_MockObject_MockObject $query */
-        $query = $this->getMock(Query::class, [], [], '', false);
+        $query = $this
+            ->getMockBuilder(Query::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $query->expects($this->never())->method('equals');
         $query->expects($this->once())->method('matching')->willReturn($query);
 
@@ -85,7 +95,10 @@ class CategoryRepositoryTest extends UnitTestCase
     public function getSelectedCategoriesWithGivenParentWillCallEquals()
     {
         /** @var Query|\PHPUnit_Framework_MockObject_MockObject $query */
-        $query = $this->getMock(Query::class, [], [], '', false);
+        $query = $this
+            ->getMockBuilder(Query::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $query->expects($this->once())->method('equals')->with(
             $this->equalTo('parent'),
             $this->equalTo(5)

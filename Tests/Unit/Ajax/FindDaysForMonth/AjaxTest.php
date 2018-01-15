@@ -87,7 +87,6 @@ class AjaxTest extends UnitTestCase
         $this->extConfProphecy->getRecurringPast()->willReturn(3);
         $this->extConfProphecy->getRecurringFuture()->willReturn(6);
 
-        // $this->frontendUser = $this->getMock(FrontendUserAuthentication::class, ['dummy']);
         $this->frontendUserAuthenticationProphecy = $this->prophesize(FrontendUserAuthentication::class);
         $this->dayRepositoryProphecy = $this->prophesize(DayRepository::class);
         $this->querySettingsProphecy = $this->prophesize(QuerySettingsInterface::class);

@@ -42,7 +42,10 @@ class LocationControllerTest extends UnitTestCase
      */
     public function setUp()
     {
-        $this->view = $this->getMock(TemplateView::class, [], [], '', false);
+        $this->view = $this
+            ->getMockBuilder(TemplateView::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->subject = $this->getAccessibleMock(LocationController::class, ['dummy']);
         $this->subject->_set('view', $this->view);

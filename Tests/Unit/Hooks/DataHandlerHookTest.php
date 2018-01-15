@@ -42,10 +42,7 @@ class DataHandlerHookTest extends UnitTestCase
     {
         $this->dbProphecy = $this->prophesize(DatabaseConnection::class);
         $GLOBALS['TYPO3_DB'] = $this->dbProphecy->reveal();
-        $this->subject = $this->getAccessibleMock(
-            DataHandlerHook::class,
-            ['dummy']
-        );
+        $this->subject = $this->getAccessibleMock(DataHandlerHook::class, ['dummy'], [], '', false);
     }
 
     public function tearDown()
