@@ -3,7 +3,7 @@
 namespace JWeiland\Events2\Ajax\FindLocations;
 
 /*
- * This file is part of the TYPO3 CMS project.
+ * This file is part of the events2 project.
  *
  * It is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License, either version 2
@@ -16,7 +16,7 @@ namespace JWeiland\Events2\Ajax\FindLocations;
  */
 use JWeiland\Events2\Ajax\AbstractAjaxRequest;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Core\Bootstrap;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
@@ -33,7 +33,7 @@ class Ajax extends AbstractAjaxRequest
      */
     public function initializeObject()
     {
-        Bootstrap::getInstance()->loadCachedTca();
+        $this->loadBaseTca();
     }
 
     /**
@@ -83,6 +83,17 @@ class Ajax extends AbstractAjaxRequest
         } else {
             return $locations;
         }
+    }
+
+    /**
+     * Load global TCA
+     * Needed for enableFields
+     *
+     * @return void
+     */
+    protected function loadBaseTca()
+    {
+        ExtensionManagementUtility::loadBaseTca(false);
     }
 
     /**

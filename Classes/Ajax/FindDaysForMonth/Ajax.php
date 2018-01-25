@@ -3,7 +3,7 @@
 namespace JWeiland\Events2\Ajax\FindDaysForMonth;
 
 /*
- * This file is part of the TYPO3 CMS project.
+ * This file is part of the events2 project.
  *
  * It is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License, either version 2
@@ -18,7 +18,7 @@ use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Utility\DateTimeUtility;
-use TYPO3\CMS\Core\Core\Bootstrap;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
@@ -113,8 +113,7 @@ class Ajax
      */
     protected function initialize(array $arguments)
     {
-        // load cached TCA. Needed for enableFields
-        $this->getBootstrap()->loadExtensionTables();
+        $this->loadBaseTca();
         $this->setArguments($arguments);
     }
 
@@ -366,13 +365,14 @@ class Ajax
     }
 
     /**
-     * Get TYPO3 Bootstrap
+     * Load global TCA
+     * Needed for enableFields
      *
-     * @return Bootstrap
+     * @return void
      */
-    protected function getBootstrap()
+    protected function loadBaseTca()
     {
-        return Bootstrap::getInstance();
+        ExtensionManagementUtility::loadBaseTca(false);
     }
 
     /**
