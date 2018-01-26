@@ -12,12 +12,10 @@ $boot = function($extKey) {
             'Event' => 'listSearchResults, listMyEvents, new, create, edit, update, delete, activate',
             'Location' => 'show',
             'Video' => 'show',
-            'Ajax' => 'callAjaxObject',
         ],
         // non-cacheable actions
         [
             'Event' => 'listSearchResults, create, update, delete, activate',
-            'Ajax' => 'callAjaxObject',
         ]
     );
 
@@ -38,10 +36,12 @@ $boot = function($extKey) {
         'Search',
         [
             'Search' => 'show',
+            'Ajax' => 'callAjaxObject',
         ],
         // non-cacheable actions
         [
             'Search' => 'show',
+            'Ajax' => 'callAjaxObject',
         ]
     );
 

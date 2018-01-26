@@ -7,6 +7,7 @@ page.includeJSFooter {
   jQueryUiForEvents2.if.isTrue = {$plugin.tx_events2.settings.includeJQueryUiLibrary}
   jQueryUiCalendarDe = EXT:events2/Resources/Public/JavaScript/jquery.ui.datepicker-de.js
   jQueryUiCalendarDe.if.isTrue = {$plugin.tx_events2.settings.includeDeTranslationForCalendar}
+  events2 = EXT:events2/Resources/Public/JavaScript/Events2.js
   events2Calendar = EXT:events2/Resources/Public/JavaScript/Calendar.js
 }
 
@@ -62,7 +63,8 @@ plugin.tx_events2 {
     pidOfLocationPage = {$plugin.tx_events2.settings.pidOfLocationPage}
     pidOfListPage = {$plugin.tx_events2.settings.pidOfListPage}
     includeDeTranslationForCalendar = {$plugin.tx_events2.settings.includeDeTranslationForCalendar}
-    userGroup =
+    userGroup = {$plugin.tx_events2.settings.userGroup}
+    remainingLetters = {$plugin.tx_events2.settings.remainingLetters}
     list {
       image {
         width = 50c
@@ -97,6 +99,15 @@ plugin.tx_events2 {
     }
   }
 }
+
+# TYPO3 8 comes with a new security feature which requires a cHash for all URLs
+# I call this request from JavaScript where I don't have a cHash. So I disable that feature for that individual actions
+[globalString = GP:tx_events2_events|action = listSearchResults]
+  plugin.tx_events2_events.features.requireCHashArgumentForActionArguments = 0
+  plugin.tx_events2_search.features.requireCHashArgumentForActionArguments = 0
+[globalString = GP:tx_events2_events|objectName = FindSubCategories]
+  plugin.tx_events2_search.features.requireCHashArgumentForActionArguments = 0
+[end]
 
 module.tx_events2 {
   view {

@@ -69,7 +69,6 @@ class RealUrlAutoConfiguration
                                 'a' => 'activate',
                                 's' => 'show',
                                 'st' => 'showByTimestamp',
-                                'cao' => 'callAjaxObject',
                             ],
                             'noMatch' => 'bypass'
                         ],

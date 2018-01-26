@@ -1,131 +1,22 @@
 {namespace e2=JWeiland\Events2\ViewHelpers}
 
-<script type="text/javascript">
-	var siteUrl = "{siteUrl}index.php";
-	var locationFail = "{f:translate(key: 'error.locationFail')}";
-	var remainingText = "{f:translate(key: 'remainingLetters')}";
+<f:render section="renderTextfield" arguments="{property: 'title', transKey: 'cshTitle', required: 1}" />
 
-	jQuery(function() {
-		/* <![CDATA[ */
-		// add datePicker to date-fields
-		jQuery("#eventBegin, #eventEnd").datepicker({
-			dateFormat: "dd.mm.yy"
-		});
-
-		// initialize dialog box
-		jQuery("#dialogHint").dialog({
-			autoOpen: false,
-			height: 150,
-			width: 300,
-			modal: true
-		});
-
-		// show dialog box on click
-		jQuery("span.csh")
-			.css("cursor", "pointer")
-			.click( function() {
-				//var id = jQuery(this).nextAll(":input:not(:hidden)").attr("id");
-				var id = jQuery(this).nextAll(":input").attr("id");
-				jQuery("#dialogHint p").text(jQuery("div.hidden_" + id).text());
-				jQuery("#dialogHint").dialog("open");
-			}
-		);
-
-		// get remaining letters for teaser
-		var $teaser = jQuery("#teaser");
-		var $remainingChars = $("#remainingChars");
-		$remainingChars.text(remainingText + ": 250");
-		$teaser.on("keyup", function() {
-			var value = $(this).val();
-			var len = value.length;
-			var maxLength = 250;
-
-			$(this).val(value.substring(0, maxLength));
-			$remainingChars.text(remainingText + ": " + (maxLength - len));
-		});
-
-		// create autocomplete for location selector
-		jQuery("#autocompleteLocation").autocomplete({
-			source: function(request, response) {
-				$.ajax({
-					url: siteUrl + "?eID=events2findLocations",
-					dataType: "json",
-					data: {
-						tx_events2_events: {
-							arguments: {
-								locationPart: request.term
-							}
-						}
-					},
-					success: function(data) {
-						response(data);
-					}
-				});
-			},
-			minLength: 2,
-			response: function(event, ui) {
-				if (ui.content.length == 0) {
-					jQuery("#locationStatus").text(locationFail).removeClass("locationOk locationFail").addClass("locationFail");
-				}
-			},
-			select: function(event, ui) {
-				if (ui.item) {
-					jQuery("#locationStatus").text("").removeClass("locationOk locationFail").addClass("locationOk");
-					jQuery("#location").val(ui.item.uid);
-				}
-			}
-		}).focusout(function() {
-			if (jQuery("#autocompleteLocation").val() == "") {
-				jQuery("#locationStatus").text("").removeClass("locationOk locationFail");
-				jQuery("#location").val("");
-			}
-		});
-		/* ]]> */
-	});
-</script>
-
-<div class="form-group">
-	<label for="title" class="col-sm-3 control-label">
-		<f:translate key="tx_events2_domain_model_event.title" />
-		<span class="required">*</span>
-		<span class="hidden hidden_title"><f:translate key="cshTitle" /></span>
-		<span class="csh" title="Hinweis">i</span>
-	</label>
-	<div class="col-sm-9">
-		<f:form.textfield class="form-control" id="title" property="title" />
-	</div>
-</div>
-
-<div class="form-group">
-	<label for="teaser" class="col-sm-3 control-label">
-		<f:translate key="tx_events2_domain_model_event.teaser" />
-		<span class="required">*</span>
-		<span class="hidden hidden_teaser"><f:translate key="cshTeaser" /></span>
-		<span class="csh" title="Hinweis">i</span>
-	</label>
-	<div class="col-sm-9">
+<div class="form-group row">
+	<f:render section="renderLabel" arguments="{property: 'teaser', required: required}" />
+	<f:render section="renderCsh" arguments="{property: 'teaser', transKey: 'cshTeaser'}" />
+	<div class="col-sm-8">
 		<f:form.textarea class="form-control" id="teaser" property="teaser" rows="5" cols="50" />
 		<div id="remainingChars"></div>
 	</div>
 </div>
 
-<div class="form-group">
-	<label for="detailInformations" class="col-sm-3 control-label">
-		<f:translate key="tx_events2_domain_model_event.detail_informations" />
-	</label>
-	<div class="col-sm-9">
-		<f:form.textarea class="form-control" id="detailInformations" property="detailInformations" rows="5" cols="50" />
-	</div>
-</div>
+<f:render section="renderTextarea" arguments="{property: 'detailInformations', transKeyLabel: 'detail_informations'}" />
 
-<div class="form-group">
-	<label for="eventBegin" class="col-sm-3 control-label">
-		<f:translate key="tx_events2_domain_model_event.event_begin" />
-		<span class="required">*</span>
-		<span class="hidden hidden_eventBegin"><f:translate key="cshEventBegin" /></span>
-		<span class="csh" title="Hinweis">i</span>
-	</label>
-	<div class="col-sm-9">
+<div class="form-group row">
+	<f:render section="renderLabel" arguments="{property: 'eventBegin', transKey: 'event_begin', required: 1}" />
+	<f:render section="renderCsh" arguments="{property: 'eventBegin', transKey: 'cshEventBegin'}" />
+	<div class="col-sm-8">
 		<f:if condition="{event.eventBegin}">
 			<f:then>
 				<f:form.textfield class="form-control" placeholder="tt.mm.jjjj" id="eventBegin" property="eventBegin" value="{event.eventBegin -> f:format.date(format: 'd.m.Y')}" />
@@ -137,14 +28,10 @@
 	</div>
 </div>
 
-<div class="form-group">
-	<label for="eventEnd" class="col-sm-3 control-label">
-		<f:translate key="tx_events2_domain_model_event.event_end" />
-		<span class="required">*</span>
-		<span class="hidden hidden_eventEnd"><f:translate key="cshEventEnd" /></span>
-		<span class="csh" title="Hinweis">i</span>
-	</label>
-	<div class="col-sm-9">
+<div class="form-group row">
+	<f:render section="renderLabel" arguments="{property: 'eventEnd', transKey: 'event_end'}" />
+	<f:render section="renderCsh" arguments="{property: 'eventEnd', transKey: 'cshEventEnd'}" />
+	<div class="col-sm-8">
 		<f:if condition="{event.eventEnd}">
 			<f:then>
 				<f:form.textfield class="form-control" placeholder="tt.mm.jjjj" id="eventEnd" property="eventEnd" value="{event.eventEnd -> f:format.date(format: 'd.m.Y')}" />
@@ -156,38 +43,26 @@
 	</div>
 </div>
 
-<div class="form-group">
-	<label for="timeBegin" class="col-sm-3 control-label">
-		<f:translate key="tx_events2_domain_model_time.time_begin" />
-		<span class="required">*</span>
-		<span class="hidden hidden_timeBegin"><f:translate key="cshTimeBegin" /></span>
-		<span class="csh" title="Hinweis">i</span>
-	</label>
-	<div class="col-sm-9">
+<div class="form-group row">
+	<f:render section="renderLabel" arguments="{property: 'timeBegin', transKey: 'time_begin', table: 'tx_events2_domain_model_time', required: 1}" />
+	<f:render section="renderCsh" arguments="{property: 'timeBegin', transKey: 'cshTimeBegin'}" />
+	<div class="col-sm-8">
 		<f:form.textfield class="form-control" placeholder="ss:mm" id="timeBegin" property="eventTime.timeBegin" />
 	</div>
 </div>
 
-<div class="form-group">
-	<label for="categories" class="col-sm-3 control-label">
-		<f:translate key="tx_events2_domain_model_event.categories" />
-		<span class="required">*</span>
-		<span class="hidden hidden_categories"><f:translate key="cshCategories" /></span>
-		<span class="csh" title="Hinweis">i</span>
-	</label>
-	<div class="col-sm-9">
+<div class="form-group row">
+	<f:render section="renderLabel" arguments="{property: 'categories', required: 1}" />
+	<f:render section="renderCsh" arguments="{property: 'categories', transKey: 'cshCategories'}" />
+	<div class="col-sm-8">
 		<f:form.select id="categories" class="form-control" options="{selectableCategories}" property="categories" size="7" multiple="1" optionLabelField="title" optionValueField="uid" sortByOptionLabel="1" />
 	</div>
 </div>
 
-<div class="form-group">
-	<label for="location" class="col-sm-3 control-label">
-		<f:translate key="tx_events2_domain_model_event.location" />
-		<span class="required">*</span>
-		<span class="hidden hidden_location"><f:translate key="cshLocation" /></span>
-		<span class="csh" title="Hinweis">i</span>
-	</label>
-	<div class="col-sm-9">
+<div class="form-group row">
+	<f:render section="renderLabel" arguments="{property: 'location', required: 1}" />
+	<f:render section="renderCsh" arguments="{property: 'location', transKey: 'cshLocation'}" />
+	<div class="col-sm-8">
 		<f:form.hidden id="location" property="location" />
 		<f:form.textfield class="powermail_input" id="autocompleteLocation" value="{f:if(condition: event.location, then: event.location.location, else: '')}" />
 		<span id="locationStatus"></span>
@@ -195,24 +70,18 @@
 	</div>
 </div>
 
-<div class="form-group">
-	<label for="video" class="col-sm-3 control-label">
-		<f:translate key="tx_events2_domain_model_event.video_link" />
-		<span class="hidden hidden_video"><f:translate key="cshVideo" /></span>
-		<span class="csh" title="Hinweis">i</span>
-	</label>
-	<div class="col-sm-9">
+<div class="form-group row">
+	<f:render section="renderLabel" arguments="{property: 'video', transKey: 'video_link'}" />
+	<f:render section="renderCsh" arguments="{property: 'video', transKey: 'cshVideo'}" />
+	<div class="col-sm-8">
 		<f:form.textfield class="form-control" id="video" property="videoLink.link" />
 	</div>
 </div>
 
-<div class="form-group">
-	<label class="col-sm-3 control-label">
-		<f:translate key="tx_events2_domain_model_event.images" />
-		<span class="hidden hidden_images_0"><f:translate key="cshImages" /></span>
-		<span class="csh" title="Hinweis">i</span>
-	</label>
-	<div class="col-sm-9">
+<div class="form-group row">
+	<f:render section="renderLabel" arguments="{property: 'images'}" />
+	<f:render section="renderCsh" arguments="{property: 'images', transKey: 'cshImages'}" />
+	<div class="col-sm-8">
 		<f:render section="uploadImage" arguments="{image: event.images.0, index: '0', position: '1'}" />
 		<f:render section="uploadImage" arguments="{image: event.images.1, index: '1', position: '2'}" />
 		<f:render section="uploadImage" arguments="{image: event.images.2, index: '2', position: '3'}" />
@@ -233,5 +102,47 @@
 			<f:form.checkbox name="event[images][{index}][rights]" value="1" />
 			<f:translate key="rightsMessage" />
 		</label>
+	</div>
+</f:section>
+
+<f:section name="renderTextfield">
+	<div class="form-group row">
+		<f:render section="renderLabel" arguments="{property: property, required: required, transKey: transKeyLabel}" />
+		<f:render section="renderCsh" arguments="{property: property, transKey: transKey}" />
+		<div class="col-sm-8">
+			<f:form.textfield class="form-control" id="{property}" property="{property}" />
+		</div>
+	</div>
+</f:section>
+
+<f:section name="renderTextarea">
+	<div class="form-group row">
+		<f:render section="renderLabel" arguments="{property: property, required: required, transKey: transKeyLabel}" />
+		<f:render section="renderCsh" arguments="{property: property, transKey: transKeyCsh}" />
+		<div class="col-sm-8">
+			<f:form.textfield class="form-control" id="{property}" property="{property}" />
+		</div>
+	</div>
+</f:section>
+
+<f:section name="renderLabel">
+	<f:alias map="{table: '{f:if(condition: table, then: table, else: \'tx_events2_domain_model_event\')}'}">
+		<div class="col-sm-3 text-right">
+			<label for="{property}" class="control-label">
+				<f:translate key="tx_events2_domain_model_event.{property}" default="{f:translate(key: '{table}.{transKey}')}" />
+				<f:if condition="{required}">
+					<span class="required">*</span>
+				</f:if>
+			</label>
+		</div>
+	</f:alias>
+</f:section>
+
+<f:section name="renderCsh">
+	<div class="col-sm-1 text-right">
+		<f:if condition="{transKey}">
+			<span id="hidden_{property}" class="hidden">{f:translate(key: transKey)}</span>
+			<span class="badge csh" title="Hinweis" data-property="{property}">i</span>
+		</f:if>
 	</div>
 </f:section>

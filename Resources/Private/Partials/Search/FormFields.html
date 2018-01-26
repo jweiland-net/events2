@@ -1,83 +1,18 @@
-<script type="text/javascript">
-	var siteUrl = "{data.siteUrl}";
-	var siteId = "{data.siteId}";
-	var subCategory = "{search.subCategory.uid}";
-	var selected = "";
-
-	jQuery(function() {
-		/* <![CDATA[ */
-		function renderSubCategory() {
-			jQuery("#searchSubCategory").empty().attr("disabled", "disabled");
-			var $searchMainCategory = jQuery("#searchMainCategory");
-
-			if ($searchMainCategory.val() != 0) {
-				jQuery.ajax({
-					type: 'GET',
-					url: siteUrl,
-					dataType: 'json',
-					data: {
-						id: siteId,
-						type: 1372255350,
-						tx_events2_events: {
-							objectName: 'FindSubCategories',
-							arguments: {
-								category: $searchMainCategory.val()
-							}
-						}
-					},
-					success: function(categories) {
-						fillSubCategories(categories);
-					},
-					error: function( xhr, error ) {
-						console.log( error );
-					}
-				});
-			}
-		}
-
-		function fillSubCategories(categories) {
-			var count = 0;
-			var $searchSubCategory = jQuery("#searchSubCategory");
-			$searchSubCategory.append( "<option value=\"0\"></option>" );
-			for (var property in categories) {
-				if (categories.hasOwnProperty(property)) {
-					count++;
-					if (property == subCategory) {
-						selected = "selected=\"selected\"";
-					} else selected = "";
-					$searchSubCategory.append( "<option " + selected + " value=\"" + property + "\">" + categories[property] + "</option>" );
-				}
-			}
-			if(count) {
-				$searchSubCategory.removeAttr( "disabled" );
-			}
-		}
-
-		jQuery("#searchMainCategory").on( "change", function() {
-			renderSubCategory();
-		});
-
-		renderSubCategory();
-
-		jQuery("#searchEventBegin, #searchEventEnd").datepicker({
-			dateFormat: "dd.mm.yy"
-		});
-		/* ]]> */
-	});
-</script>
+<div id="events2SearchDataElement" class="hidden" data-variables="{jsSearchVariables}" style="display: none;"></div>
 
 <div class="form-group">
 	<label for="searchEvent" class="col-sm-3 control-label">
-		<f:translate key="tx_events2_domain_model_search.search" />
+		<f:translate key="tx_events2_domain_model_search.search"/>
 	</label>
 	<div class="col-sm-9">
-		<input id="searchEvent" class="form-control" type="text" name="tx_events2_events[search][search]" value="{search.search}" />
+		<input id="searchEvent" class="form-control" type="text" name="tx_events2_events[search][search]"
+					 value="{search.search}"/>
 	</div>
 </div>
 
 <div class="form-group">
 	<label for="searchMainCategory" class="col-sm-3 control-label">
-		<f:translate key="tx_events2_domain_model_search.mainCategory" />
+		<f:translate key="tx_events2_domain_model_search.mainCategory"/>
 	</label>
 	<div class="col-sm-9">
 		<select id="searchMainCategory" class="form-control" name="tx_events2_events[search][mainCategory]">
@@ -98,34 +33,37 @@
 
 <div class="form-group">
 	<label for="searchSubCategory" class="col-sm-3 control-label">
-		<f:translate key="tx_events2_domain_model_search.subCategory" />
+		<f:translate key="tx_events2_domain_model_search.subCategory"/>
 	</label>
 	<div class="col-sm-9">
-		<select id="searchSubCategory" class="form-control" name="tx_events2_events[search][subCategory]" disabled="disabled"></select>
+		<select id="searchSubCategory" class="form-control" name="tx_events2_events[search][subCategory]"
+						disabled="disabled"></select>
 	</div>
 </div>
 
 <div class="form-group">
 	<label for="searchEventBegin" class="col-sm-3 control-label">
-		<f:translate key="tx_events2_domain_model_search.eventBegin" />
+		<f:translate key="tx_events2_domain_model_search.eventBegin"/>
 	</label>
 	<div class="col-sm-9">
-		<input id="searchEventBegin" class="form-control" type="text" name="tx_events2_events[search][eventBegin]" value="{search.eventBegin -> f:format.date(format: 'd.m.Y')}" />
+		<input id="searchEventBegin" class="form-control" type="text" name="tx_events2_events[search][eventBegin]"
+					 value="{search.eventBegin -> f:format.date(format: 'd.m.Y')}"/>
 	</div>
 </div>
 
 <div class="form-group">
 	<label for="searchEventEnd" class="col-sm-3 control-label">
-		<f:translate key="tx_events2_domain_model_search.eventEnd" />
+		<f:translate key="tx_events2_domain_model_search.eventEnd"/>
 	</label>
 	<div class="col-sm-9">
-		<input id="searchEventEnd" class="form-control" type="text" name="tx_events2_events[search][eventEnd]" value="{search.eventEnd -> f:format.date(format: 'd.m.Y')}" />
+		<input id="searchEventEnd" class="form-control" type="text" name="tx_events2_events[search][eventEnd]"
+					 value="{search.eventEnd -> f:format.date(format: 'd.m.Y')}"/>
 	</div>
 </div>
 
 <div class="form-group">
 	<label for="searchLocation" class="col-sm-3 control-label">
-		<f:translate key="tx_events2_domain_model_search.location" />
+		<f:translate key="tx_events2_domain_model_search.location"/>
 	</label>
 	<div class="col-sm-9">
 		<select id="searchLocation" class="form-control" name="tx_events2_events[search][location]">
@@ -146,15 +84,16 @@
 
 <div class="form-group">
 	<label for="searchFreeEntry" class="col-sm-3 control-label">
-		<f:translate key="tx_events2_domain_model_search.freeEntry" />
+		<f:translate key="tx_events2_domain_model_search.freeEntry"/>
 	</label>
 	<div class="col-sm-9">
 		<f:if condition="{search.freeEntry}">
 			<f:then>
-				<input id="searchFreeEntry" type="checkbox" name="tx_events2_events[search][freeEntry]" value="1" checked="checked" />
+				<input id="searchFreeEntry" type="checkbox" name="tx_events2_events[search][freeEntry]" value="1"
+							 checked="checked"/>
 			</f:then>
 			<f:else>
-				<input id="searchFreeEntry" type="checkbox" name="tx_events2_events[search][freeEntry]" value="1" />
+				<input id="searchFreeEntry" type="checkbox" name="tx_events2_events[search][freeEntry]" value="1"/>
 			</f:else>
 		</f:if>
 	</div>

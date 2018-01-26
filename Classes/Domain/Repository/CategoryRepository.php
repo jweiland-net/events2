@@ -63,7 +63,7 @@ class CategoryRepository extends \TYPO3\CMS\Extbase\Domain\Repository\CategoryRe
      *
      * @throws \Exception
      */
-    public function getSelectedCategories($categoryUids, $parent = '')
+    public function getSelectedCategories($categoryUids, $parent = '0')
     {
         // remove empty values
         // convert them to int
@@ -75,7 +75,7 @@ class CategoryRepository extends \TYPO3\CMS\Extbase\Domain\Repository\CategoryRe
         $constraint = [];
         $constraint[] = $query->in('uid', $selectedCategories);
 
-        if (MathUtility::canBeInterpretedAsInteger($parent)) {
+        if (!empty($parent) && MathUtility::canBeInterpretedAsInteger($parent)) {
             $constraint[] = $query->equals('parent', (int)$parent);
         }
 

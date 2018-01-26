@@ -13,7 +13,7 @@ events2AjaxResponse {
   10 {
     vendorName = JWeiland
     extensionName = Events2
-    pluginName = Events
+    pluginName = Search
     switchableControllerActions {
       Ajax {
         1 = callAjaxObject
@@ -21,7 +21,7 @@ events2AjaxResponse {
     }
     settings =< plugin.tx_events2.settings
     persistence =< plugin.tx_events2.persistence
-    userFunc = tx_extbase_core_bootstrap->run
+    userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
   }
 }
 

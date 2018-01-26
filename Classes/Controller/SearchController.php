@@ -19,6 +19,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
+use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
@@ -78,14 +79,20 @@ class SearchController extends ActionController
      */
     protected function initializeView(ViewInterface $view)
     {
-        $allowedMainCategories = $this->categoryRepository->getSelectedCategories($this->settings['mainCategories'], $this->settings['rootCategory']);
+        if (!$this->settings['mainCategories']) {
+            throw new \Exception('You have forgotten to define some allowed categories in plugin configuration');
+        }
+
+        $allowedMainCategories = $this->categoryRepository->getSelectedCategories(
+            $this->settings['mainCategories'],
+            $this->settings['rootCategory']
+        );
 
         $data = [];
+        $data['siteId'] = $GLOBALS['TSFE']->id;
         $data['categories']['main'] = $allowedMainCategories;
         $data['categories']['sub'] = [];
         $data['locations'] = $this->locationRepository->findAll();
-        $data['siteUrl'] = GeneralUtility::getIndpEnv('TYPO3_SITE_URL');
-        $data['siteId'] = $GLOBALS['TSFE']->id;
 
         $this->view->assign('data', $data);
     }
@@ -122,6 +129,15 @@ class SearchController extends ActionController
         if ($search === null) {
             $search = $this->objectManager->get(Search::class);
         }
+
+        $gettableSearchProperties = ObjectAccess::getGettableProperties($search);
+        $gettableSearchProperties['mainCategory'] = ObjectAccess::getGettableProperties($search->getMainCategory());
+        $gettableSearchProperties['subCategory'] = ObjectAccess::getGettableProperties($search->getSubCategory());
+
         $this->view->assign('search', $search);
+        $this->view->assign('jsSearchVariables', json_encode([
+            'siteId' => $GLOBALS['TSFE']->id,
+            'search' => $gettableSearchProperties
+        ]));
     }
 }

@@ -15,10 +15,10 @@ return [
         'type' => 'event_type',
         'typeicon_column' => 'event_type',
         'typeicon_classes' => [
-            'default' => 'extensions-events2-calendar-single',
-            'single' => 'extensions-events2-calendar-single',
-            'recurring' => 'extensions-events2-calendar-recurring',
-            'duration' => 'extensions-events2-calendar-duration',
+            'default' => 'ext-events2-calendar-single',
+            'single' => 'ext-events2-calendar-single',
+            'recurring' => 'ext-events2-calendar-recurring',
+            'duration' => 'ext-events2-calendar-duration',
         ],
         'requestUpdate' => 'same_day,each_weeks',
         'default_sortby' => 'ORDER BY title',
@@ -135,9 +135,9 @@ return [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_type.single', 'single', 'extensions-events2-calendar-single'],
-                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_type.recurring', 'recurring', 'extensions-events2-calendar-recurring'],
-                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_type.duration', 'duration', 'extensions-events2-calendar-duration'],
+                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_type.single', 'single', 'ext-events2-calendar-single'],
+                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_type.recurring', 'recurring', 'ext-events2-calendar-recurring'],
+                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_type.duration', 'duration', 'ext-events2-calendar-duration'],
                 ],
                 'default' => 'single',
             ]

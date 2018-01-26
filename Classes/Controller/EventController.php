@@ -84,14 +84,17 @@ class EventController extends AbstractController
     {
         $this->deleteUploadedFilesOnValidationErrors('event');
         $event = $this->objectManager->get(Event::class);
+        $categories = $this->categoryRepository->getCategories(
+            $this->settings['selectableCategoriesForNewEvents']
+        );
+
+        if (!$categories->count()) {
+            throw new \Exception('You have forgotten to define some allowed categories in plugin configuration');
+        }
+
         $this->view->assign('event', $event);
         $this->view->assign('locations', $this->locationRepository->findAll());
-        $this->view->assign(
-            'selectableCategories',
-            $this->categoryRepository->getCategories(
-                $this->settings['selectableCategoriesForNewEvents']
-            )
-        );
+        $this->view->assign('selectableCategories', $categories);
     }
 
     /**
@@ -167,14 +170,17 @@ class EventController extends AbstractController
     public function editAction($event)
     {
         $eventObject = $this->eventRepository->findHiddenEntryByUid((int)$event);
+        $categories = $this->categoryRepository->getCategories(
+            $this->settings['selectableCategoriesForNewEvents']
+        );
+
+        if (!$categories->count()) {
+            throw new \Exception('You have forgotten to define some allowed categories in plugin configuration');
+        }
+
         $this->view->assign('event', $eventObject);
         $this->view->assign('locations', $this->locationRepository->findAll());
-        $this->view->assign(
-            'selectableCategories',
-            $this->categoryRepository->getCategories(
-                $this->settings['selectableCategoriesForNewEvents']
-            )
-        );
+        $this->view->assign('selectableCategories', $categories);
     }
 
     /**

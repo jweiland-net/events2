@@ -33,6 +33,7 @@ use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Session;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Extbase\Validation\Validator\ConjunctionValidator;
 use TYPO3\CMS\Extbase\Validation\Validator\GenericObjectValidator;
 use TYPO3\CMS\Extbase\Validation\Validator\RegularExpressionValidator;
@@ -288,9 +289,15 @@ class AbstractController extends ActionController
      */
     protected function initializeView(ViewInterface $view)
     {
-        $this->view->assign('siteUrl', GeneralUtility::getIndpEnv('TYPO3_SITE_URL')); // needed for ajax requests
         $this->view->assign('data', $this->configurationManager->getContentObject()->data);
         $this->view->assign('extConf', $this->extConf);
+        $this->view->assign('jsVariables', json_encode([
+            'settings' => $this->settings,
+            'localization' => [
+                'locationFail' => LocalizationUtility::translate('error.locationFail', 'events2'),
+                'remainingText' => LocalizationUtility::translate('remainingLetters', 'events2')
+            ]
+        ]));
         if ($this->settings['showFilterForOrganizerInFrontend']) {
             $this->view->assign('organizers', $this->organizerRepository->getOrganizersForFilter());
         }
