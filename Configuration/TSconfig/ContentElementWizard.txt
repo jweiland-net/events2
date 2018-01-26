@@ -1,0 +1,31 @@
+mod.wizards.newContentElement.wizardItems.plugins {
+  elements {
+    events {
+      iconIdentifier = ext-events2-wizard-icon
+      title = LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.events.title
+      description = LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.events.description
+      tt_content_defValues {
+        CType = list
+        list_type = events2_events
+      }
+    }
+    events2calendar {
+      iconIdentifier = ext-events2-wizard-icon
+      title = LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.calendar.title
+      description = LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.calendar.description
+      tt_content_defValues {
+        CType = list
+        list_type = events2_calendar
+      }
+    }
+    events2search {
+      iconIdentifier = ext-events2-wizard-icon
+      title = LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.search.title
+      description = LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.search.description
+      tt_content_defValues {
+        CType = list
+        list_type = events2_search
+      }
+    }
+  }
+}
