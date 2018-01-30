@@ -257,10 +257,52 @@ class EventControllerTest extends UnitTestCase
 
     /**
      * @test
+     *
+     * @expectedException \Exception
+     * @expectedExceptionMessage You have forgotten to define some allowed categories in plugin configuration
+     */
+    public function newActionThrowsExceptionWhenCategoriesAreEmpty()
+    {
+        $event = new Event();
+        $categories = new \ArrayObject();
+
+        $this->request
+            ->expects($this->once())
+            ->method('hasArgument')
+            ->with('event');
+        $this->request
+            ->expects($this->never())
+            ->method('getArgument');
+
+        $this->objectManager
+            ->expects($this->once())
+            ->method('get')
+            ->with($this->equalTo(Event::class))
+            ->willReturn($event);
+
+        $this->categoryRepository
+            ->expects($this->once())
+            ->method('getCategories')
+            ->with(
+                $this->equalTo('23,24')
+            )
+            ->willReturn($categories);
+
+        $this->subject->_set('settings', [
+            'selectableCategoriesForNewEvents' => '23,24'
+        ]);
+
+        $this->subject->newAction();
+    }
+
+    /**
+     * @test
      */
     public function newActionFillsTemplateVariables()
     {
         $event = new Event();
+        $categories = new \ArrayObject();
+        $categories->append('TestValue');
 
         $this->request
             ->expects($this->once())
@@ -287,7 +329,7 @@ class EventControllerTest extends UnitTestCase
             ->with(
                 $this->equalTo('23,24')
             )
-            ->willReturn([]);
+            ->willReturn($categories);
 
         $this->view
             ->expects($this->at(0))
@@ -308,7 +350,7 @@ class EventControllerTest extends UnitTestCase
             ->method('assign')
             ->with(
                 $this->equalTo('selectableCategories'),
-                $this->equalTo([])
+                $this->equalTo($categories)
             );
 
         $this->subject->_set('settings', [
@@ -323,6 +365,9 @@ class EventControllerTest extends UnitTestCase
      */
     public function newActionWithoutImagesCallsDeleteUploadedFiles()
     {
+        $categories = new \ArrayObject();
+        $categories->append('TestValue');
+
         /** @var ObjectStorage|\PHPUnit_Framework_MockObject_MockObject $images */
         $images = $this->getMockBuilder(ObjectStorage::class)->getMock();
         $images
@@ -346,6 +391,11 @@ class EventControllerTest extends UnitTestCase
             ->method('getImages')
             ->willReturn($images);
 
+        $this->categoryRepository
+            ->expects($this->once())
+            ->method('getCategories')
+            ->willReturn($categories);
+
         $this->request
             ->expects($this->once())
             ->method('hasArgument')
@@ -365,6 +415,9 @@ class EventControllerTest extends UnitTestCase
      */
     public function newActionWithImagesCallsDeleteUploadedFiles()
     {
+        $categories = new \ArrayObject();
+        $categories->append('TestValue');
+
         /** @var FileReference|\PHPUnit_Framework_MockObject_MockObject $originalResource */
         $originalResource = $this
             ->getMockBuilder(FileReference::class)
@@ -386,6 +439,11 @@ class EventControllerTest extends UnitTestCase
 
         $event = new Event();
         $event->setImages($images);
+
+        $this->categoryRepository
+            ->expects($this->once())
+            ->method('getCategories')
+            ->willReturn($categories);
 
         $this->request
             ->expects($this->once())

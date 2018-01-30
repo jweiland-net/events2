@@ -74,24 +74,6 @@ class CategoryRepositoryTest extends UnitTestCase
     /**
      * @test
      */
-    public function getSelectedCategoriesWithNonParentWillNotCallEquals()
-    {
-        /** @var Query|\PHPUnit_Framework_MockObject_MockObject $query */
-        $query = $this
-            ->getMockBuilder(Query::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $query->expects($this->never())->method('equals');
-        $query->expects($this->once())->method('matching')->willReturn($query);
-
-        $this->subject->expects($this->once())->method('createQuery')->willReturn($query);
-
-        $this->subject->getSelectedCategories('1,2,3,4');
-    }
-
-    /**
-     * @test
-     */
     public function getSelectedCategoriesWithGivenParentWillCallEquals()
     {
         /** @var Query|\PHPUnit_Framework_MockObject_MockObject $query */
