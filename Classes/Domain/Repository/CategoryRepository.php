@@ -15,7 +15,6 @@ namespace JWeiland\Events2\Domain\Repository;
  * The TYPO3 project - inspiring people to share!
  */
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later

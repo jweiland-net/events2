@@ -25,7 +25,6 @@ use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Domain\Repository\OrganizerRepository;
 use JWeiland\Events2\Domain\Repository\UserRepository;
 use TYPO3\CMS\Core\Mail\MailMessage;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
