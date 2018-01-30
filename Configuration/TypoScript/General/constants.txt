@@ -20,7 +20,7 @@ plugin.tx_events2 {
     includeDeTranslationForCalendar = 0
     # cat=plugin.tx_events2; type=boolean; label=Include jQuery UI CSS
     includeJQueryUiCss = 1
-    # cat=plugin.tx_events2; type=int+; label=UID of root category
+    # cat=plugin.tx_events2; type=int+; label=UID of root category: Please set rootCategory to a category UID. The editor can select various categories in plugin, but only categories which are direct children of rootCategory are allowed and listed in frontend.
     rootCategory =
     # cat=plugin.tx_events2; type=int+; label=PID of Detail page: Leave empty to show details on current page.
     pidOfDetailPage =

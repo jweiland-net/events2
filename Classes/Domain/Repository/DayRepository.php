@@ -267,6 +267,12 @@ class DayRepository extends Repository
         $query = $this->createQuery();
         $constraint = [];
 
+        // add storage PIDs. But not for sys_category
+        // @link: https://forge.typo3.org/issues/83296
+        $query->getQuerySettings()->setRespectStoragePage(false);
+        $constraints[] = $query->in('pid', $query->getQuerySettings()->getStoragePageIds());
+        $constraints[] = $query->in('event.pid', $query->getQuerySettings()->getStoragePageIds());
+
         // add query for search string
         if ($search->getSearch()) {
             $orConstraint = [];
@@ -282,16 +288,10 @@ class DayRepository extends Repository
             } else {
                 $constraint[] = $query->contains('event.categories', $search->getMainCategory()->getUid());
             }
-        } else {
+        } elseif ($this->settings['categories']) {
             // visitor has not selected any category. Search within allowed categories in plugin configuration
             $constraint[] = $query->in('event.categories.uid', GeneralUtility::trimExplode(',', $this->settings['categories']));
         }
-
-        // add storage PIDs. But not for sys_category
-        // @link: https://forge.typo3.org/issues/83296
-        $query->getQuerySettings()->setRespectStoragePage(false);
-        $constraints[] = $query->in('pid', $query->getQuerySettings()->getStoragePageIds());
-        $constraints[] = $query->in('event.pid', $query->getQuerySettings()->getStoragePageIds());
 
         // add query for event begin
         if ($search->getEventBegin()) {

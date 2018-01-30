@@ -16,6 +16,7 @@ namespace JWeiland\Events2\Controller;
  */
 use JWeiland\Events2\Domain\Model\Search;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Domain\Model\Category;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
@@ -88,6 +89,10 @@ class SearchController extends ActionController
             $this->settings['rootCategory']
         );
 
+        if (!$allowedMainCategories->count()) {
+            throw new \Exception('Please check if you have set rootCategory correctly as parent of your defined mainCategories.');
+        }
+
         $data = [];
         $data['siteId'] = $GLOBALS['TSFE']->id;
         $data['categories']['main'] = $allowedMainCategories;
@@ -131,8 +136,12 @@ class SearchController extends ActionController
         }
 
         $gettableSearchProperties = ObjectAccess::getGettableProperties($search);
-        $gettableSearchProperties['mainCategory'] = ObjectAccess::getGettableProperties($search->getMainCategory());
-        $gettableSearchProperties['subCategory'] = ObjectAccess::getGettableProperties($search->getSubCategory());
+        if ($search->getMainCategory() instanceof Category) {
+            $gettableSearchProperties['mainCategory'] = ObjectAccess::getGettableProperties($search->getMainCategory());
+        }
+        if ($search->getSubCategory() instanceof Category) {
+            $gettableSearchProperties['subCategory'] = ObjectAccess::getGettableProperties($search->getSubCategory());
+        }
 
         $this->view->assign('search', $search);
         $this->view->assign('jsSearchVariables', json_encode([

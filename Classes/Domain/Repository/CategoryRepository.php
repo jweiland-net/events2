@@ -75,9 +75,7 @@ class CategoryRepository extends \TYPO3\CMS\Extbase\Domain\Repository\CategoryRe
         $constraint = [];
         $constraint[] = $query->in('uid', $selectedCategories);
 
-        if (!empty($parent) && MathUtility::canBeInterpretedAsInteger($parent)) {
-            $constraint[] = $query->equals('parent', (int)$parent);
-        }
+        $constraint[] = $query->equals('parent', (int)$parent);
 
         return $query->matching($query->logicalAnd($constraint))->execute();
     }

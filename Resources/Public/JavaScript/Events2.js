@@ -69,7 +69,7 @@ function renderSubCategory() {
     jQuery("#searchSubCategory").empty().attr("disabled", "disabled");
     var $searchMainCategory = jQuery("#searchMainCategory");
 
-    if ($searchMainCategory.val() != 0) {
+    if ($searchMainCategory.val() !== "0") {
         var siteUrl = location.protocol + "//" + location.hostname + (location.port ? ":" + location.port : "");
         jQuery.ajax({
             type: 'GET',
@@ -101,7 +101,7 @@ function fillSubCategories(categories) {
     for (var property in categories) {
         if (categories.hasOwnProperty(property)) {
             count++;
-            if (property == jsSearchVariables.search.subCategory.uid) {
+            if (jsSearchVariables.search.subCategory !== null && property === jsSearchVariables.search.subCategory.uid) {
                 selected = "selected=\"selected\"";
             } else {
                 selected = "";
