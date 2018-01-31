@@ -215,8 +215,9 @@ class AjaxTest extends UnitTestCase
     public function processAjaxRequestWillGenerateTwoDayRecordsAsJson()
     {
         $currentDate = new \DateTime('now');
-        $day = (int)$currentDate->format('d');
-        $tomorrow = $day + 1;
+        $day = (int)$currentDate->format('j');
+        $tomorrow = clone $currentDate;
+        $tomorrow = $tomorrow->modify('+1 day')->format('j');
         $arguments = [
             'categories' => '10,11,12',
             'month' => $currentDate->format('n'),
