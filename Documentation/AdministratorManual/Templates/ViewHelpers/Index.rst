@@ -63,6 +63,4 @@ All ViewHelpers
    MicroStopViewHelper
    SortViewHelper
 
-   Link/TypolinkViewHelper
-
    Widget/ICalendarViewHelper
