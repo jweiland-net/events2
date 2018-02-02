@@ -14,6 +14,12 @@ return [
     'interface' => [
         'showRecordFieldList' => 'day',
     ],
+    'types' => [
+        '1' => ['showitem' => 'day'],
+    ],
+    'palettes' => [
+        '1' => ['showitem' => ''],
+    ],
     'columns' => [
         'day' => [
             'label' => 'Day',
@@ -41,13 +47,7 @@ return [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'foreign_table' => 'tx_events2_domain_model_event',
-            ],
-        ],
-    ],
-    'types' => [
-        '1' => ['showitem' => 'day,'],
-    ],
-    'palettes' => [
-        '1' => ['showitem' => ''],
-    ],
+            ]
+        ]
+    ]
 ];

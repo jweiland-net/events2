@@ -31,9 +31,22 @@ $tx_events2_domain_model_event = [
     'interface' => [
         'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, location, street, house_number, zip, city, country',
     ],
+    'types' => [
+        '1' => [
+            'showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, location,
+            street, house_number, zip, city, country,
+            --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access, 
+            --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access'
+        ],
+    ],
+    'palettes' => [
+        'access' => [
+            'showitem' => 'starttime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:starttime_formlabel,endtime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:endtime_formlabel',
+        ]
+    ],
     'columns' => [
         'sys_language_uid' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.language',
             'config' => [
                 'type' => 'select',
@@ -50,21 +63,19 @@ $tx_events2_domain_model_event = [
             ]
         ],
         'l10n_parent' => [
-            'exclude' => 1,
             'displayCond' => 'FIELD:sys_language_uid:>:0',
+            'exclude' => true,
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.l18n_parent',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    [
-                        '',
-                        0
-                    ]
+                    ['', 0],
                 ],
-                'foreign_table' => 'tt_content',
-                'foreign_table_where' => 'AND tt_content.pid=###CURRENT_PID### AND tt_content.sys_language_uid IN (-1,0)',
-                'default' => 0
+                'foreign_table' => 'tx_ceheaderimage_domain_model_slider',
+                'foreign_table_where' => 'AND tx_ceheaderimage_domain_model_slider.pid=###CURRENT_PID### AND tx_ceheaderimage_domain_model_slider.sys_language_uid IN (-1,0)',
+                'showIconTable' => false,
+                'default' => 0,
             ]
         ],
         'l10n_diffsource' => [
@@ -82,7 +93,7 @@ $tx_events2_domain_model_event = [
             ]
         ],
         'hidden' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.hidden',
             'config' => [
                 'type' => 'check',
@@ -94,7 +105,7 @@ $tx_events2_domain_model_event = [
             ]
         ],
         'starttime' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.starttime',
             'config' => [
                 'type' => 'input',
@@ -106,7 +117,7 @@ $tx_events2_domain_model_event = [
             'l10n_display' => 'defaultAsReadonly'
         ],
         'endtime' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.endtime',
             'config' => [
                 'type' => 'input',
@@ -121,7 +132,7 @@ $tx_events2_domain_model_event = [
             'l10n_display' => 'defaultAsReadonly'
         ],
         'location' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_location.location',
             'config' => [
                 'type' => 'input',
@@ -130,7 +141,7 @@ $tx_events2_domain_model_event = [
             ],
         ],
         'street' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_location.street',
             'config' => [
                 'type' => 'input',
@@ -139,7 +150,7 @@ $tx_events2_domain_model_event = [
             ],
         ],
         'house_number' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_location.house_number',
             'config' => [
                 'type' => 'input',
@@ -148,7 +159,7 @@ $tx_events2_domain_model_event = [
             ],
         ],
         'zip' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_location.zip',
             'config' => [
                 'type' => 'input',
@@ -157,7 +168,7 @@ $tx_events2_domain_model_event = [
             ],
         ],
         'city' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_location.city',
             'config' => [
                 'type' => 'input',
@@ -166,7 +177,7 @@ $tx_events2_domain_model_event = [
             ],
         ],
         'country' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_location.country',
             'config' => [
                 'type' => 'select',
@@ -194,15 +205,9 @@ $tx_events2_domain_model_event = [
         'event' => [
             'config' => [
                 'type' => 'passthrough',
-            ],
-        ],
-    ],
-    'types' => [
-        '1' => ['showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, location, street, house_number, zip, city, country, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime'],
-    ],
-    'palettes' => [
-        '1' => ['showitem' => ''],
-    ],
+            ]
+        ]
+    ]
 ];
 unset($extConf, $staticInfoItemProcessor, $staticInfoSuggestReceiver);
 return $tx_events2_domain_model_event;

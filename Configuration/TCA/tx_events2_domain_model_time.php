@@ -27,9 +27,23 @@ return [
     'interface' => [
         'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, type, weekday, time_begin, time_entry, duration, time_end',
     ],
+    'types' => [
+        '1' => [
+            'showitem' => '--palette--;;language, type, --palette--;;times,
+            --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access, 
+            --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access'
+        ],
+    ],
+    'palettes' => [
+        'language' => ['showitem' => 'sys_language_uid, l10n_parent, hidden'],
+        'times' => ['showitem' => 'time_begin, duration, time_entry, time_end'],
+        'access' => [
+            'showitem' => 'starttime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:starttime_formlabel,endtime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:endtime_formlabel',
+        ]
+    ],
     'columns' => [
         'sys_language_uid' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.language',
             'config' => [
                 'type' => 'select',
@@ -46,21 +60,19 @@ return [
             ]
         ],
         'l10n_parent' => [
-            'exclude' => 1,
             'displayCond' => 'FIELD:sys_language_uid:>:0',
+            'exclude' => true,
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.l18n_parent',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    [
-                        '',
-                        0
-                    ]
+                    ['', 0],
                 ],
-                'foreign_table' => 'tt_content',
-                'foreign_table_where' => 'AND tt_content.pid=###CURRENT_PID### AND tt_content.sys_language_uid IN (-1,0)',
-                'default' => 0
+                'foreign_table' => 'tx_ceheaderimage_domain_model_slider',
+                'foreign_table_where' => 'AND tx_ceheaderimage_domain_model_slider.pid=###CURRENT_PID### AND tx_ceheaderimage_domain_model_slider.sys_language_uid IN (-1,0)',
+                'showIconTable' => false,
+                'default' => 0,
             ]
         ],
         'l10n_diffsource' => [
@@ -78,7 +90,7 @@ return [
             ]
         ],
         'hidden' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.hidden',
             'config' => [
                 'type' => 'check',
@@ -90,7 +102,7 @@ return [
             ]
         ],
         'starttime' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.starttime',
             'config' => [
                 'type' => 'input',
@@ -102,7 +114,7 @@ return [
             'l10n_display' => 'defaultAsReadonly'
         ],
         'endtime' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.endtime',
             'config' => [
                 'type' => 'input',
@@ -122,7 +134,7 @@ return [
             ],
         ],
         'weekday' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_time.weekday',
             'config' => [
                 'type' => 'select',
@@ -141,7 +153,7 @@ return [
             ],
         ],
         'time_begin' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_time.time_begin',
             'config' => [
                 'type' => 'input',
@@ -153,7 +165,7 @@ return [
             ],
         ],
         'time_entry' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_time.time_entry',
             'config' => [
                 'type' => 'input',
@@ -166,7 +178,7 @@ return [
             ],
         ],
         'duration' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_time.duration',
             'config' => [
                 'type' => 'input',
@@ -179,7 +191,7 @@ return [
             ],
         ],
         'time_end' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_time.time_end',
             'config' => [
                 'type' => 'input',
@@ -199,14 +211,7 @@ return [
         'exception' => [
             'config' => [
                 'type' => 'passthrough',
-            ],
-        ],
-    ],
-    'types' => [
-        '1' => ['showitem' => '--palette--;;language, type, --palette--;;times,--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime'],
-    ],
-    'palettes' => [
-        'language' => ['showitem' => 'sys_language_uid, l10n_parent, hidden'],
-        'times' => ['showitem' => 'time_begin, duration, time_entry, time_end'],
-    ],
+            ]
+        ]
+    ]
 ];

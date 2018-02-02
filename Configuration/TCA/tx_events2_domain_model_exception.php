@@ -36,9 +36,37 @@ return [
     'interface' => [
         'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, exception_type, exception_date, exception_time, exception_details',
     ],
+    'types' => [
+        'Add' => [
+            'showitem' => '--palette--;;exception, sys_language_uid, l10n_parent, l10n_diffsource, exception_time, exception_details,
+            --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access, 
+            --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access'
+        ],
+        'Remove' => [
+            'showitem' => '--palette--;;exception, sys_language_uid, l10n_parent, l10n_diffsource,
+            --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access, 
+            --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access'
+        ],
+        'Time' => [
+            'showitem' => '--palette--;;exception, sys_language_uid, l10n_parent, l10n_diffsource, exception_time, exception_details,
+            --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access, 
+            --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access'
+        ],
+        'Info' => [
+            'showitem' => '--palette--;;exception, sys_language_uid, l10n_parent, l10n_diffsource, exception_details,
+            --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access, 
+            --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access'
+        ],
+    ],
+    'palettes' => [
+        'exception' => ['showitem' => 'exception_type, exception_date, hidden'],
+        'access' => [
+            'showitem' => 'starttime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:starttime_formlabel,endtime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:endtime_formlabel',
+        ]
+    ],
     'columns' => [
         'sys_language_uid' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.language',
             'config' => [
                 'type' => 'select',
@@ -55,21 +83,19 @@ return [
             ]
         ],
         'l10n_parent' => [
-            'exclude' => 1,
             'displayCond' => 'FIELD:sys_language_uid:>:0',
+            'exclude' => true,
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.l18n_parent',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    [
-                        '',
-                        0
-                    ]
+                    ['', 0],
                 ],
-                'foreign_table' => 'tt_content',
-                'foreign_table_where' => 'AND tt_content.pid=###CURRENT_PID### AND tt_content.sys_language_uid IN (-1,0)',
-                'default' => 0
+                'foreign_table' => 'tx_ceheaderimage_domain_model_slider',
+                'foreign_table_where' => 'AND tx_ceheaderimage_domain_model_slider.pid=###CURRENT_PID### AND tx_ceheaderimage_domain_model_slider.sys_language_uid IN (-1,0)',
+                'showIconTable' => false,
+                'default' => 0,
             ]
         ],
         'l10n_diffsource' => [
@@ -87,7 +113,7 @@ return [
             ]
         ],
         'hidden' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.hidden',
             'config' => [
                 'type' => 'check',
@@ -99,7 +125,7 @@ return [
             ]
         ],
         'starttime' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.starttime',
             'config' => [
                 'type' => 'input',
@@ -111,7 +137,7 @@ return [
             'l10n_display' => 'defaultAsReadonly'
         ],
         'endtime' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.endtime',
             'config' => [
                 'type' => 'input',
@@ -126,7 +152,7 @@ return [
             'l10n_display' => 'defaultAsReadonly'
         ],
         'exception_type' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_exception.exception_type',
             'config' => [
                 'type' => 'select',
@@ -142,7 +168,7 @@ return [
             ],
         ],
         'exception_date' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_exception.exception_date',
             'config' => [
                 'type' => 'input',
@@ -153,7 +179,7 @@ return [
             ],
         ],
         'exception_time' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_exception.exception_time',
             'config' => [
                 'type' => 'inline',
@@ -175,7 +201,7 @@ return [
             ],
         ],
         'exception_details' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_exception.exception_details',
             'config' => [
                 'type' => 'text',
@@ -187,16 +213,7 @@ return [
         'event' => [
             'config' => [
                 'type' => 'passthrough',
-            ],
-        ],
-    ],
-    'types' => [
-        'Add' => ['showitem' => '--palette--;;exception, sys_language_uid, l10n_parent, l10n_diffsource, exception_time, exception_details,--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime'],
-        'Remove' => ['showitem' => '--palette--;;exception, sys_language_uid, l10n_parent, l10n_diffsource, --div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime'],
-        'Time' => ['showitem' => '--palette--;;exception, sys_language_uid, l10n_parent, l10n_diffsource, exception_time, exception_details,--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime'],
-        'Info' => ['showitem' => '--palette--;;exception, sys_language_uid, l10n_parent, l10n_diffsource, exception_details,--div--;LLL:EXT:cms/locallang_ttc.xlf:tabs.access,starttime, endtime'],
-    ],
-    'palettes' => [
-        'exception' => ['showitem' => 'exception_type, exception_date, hidden'],
-    ],
+            ]
+        ]
+    ]
 ];

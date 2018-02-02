@@ -13,9 +13,15 @@ return [
     'interface' => [
         'showRecordFieldList' => 'title, day, month',
     ],
+    'types' => [
+        '1' => ['showitem' => 'title, day, month'],
+    ],
+    'palettes' => [
+        '1' => ['showitem' => ''],
+    ],
     'columns' => [
         'title' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_holiday.title',
             'config' => [
                 'type' => 'input',
@@ -23,7 +29,7 @@ return [
             ],
         ],
         'day' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_holiday.day',
             'config' => [
                 'type' => 'input',
@@ -32,19 +38,13 @@ return [
             ],
         ],
         'month' => [
-            'exclude' => 1,
+            'exclude' => true,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_holiday.month',
             'config' => [
                 'type' => 'input',
                 'size' => 2,
                 'eval' => 'int,required'
-            ],
-        ],
-    ],
-    'types' => [
-        '1' => ['showitem' => 'title, day, month'],
-    ],
-    'palettes' => [
-        '1' => ['showitem' => ''],
-    ],
+            ]
+        ]
+    ]
 ];
