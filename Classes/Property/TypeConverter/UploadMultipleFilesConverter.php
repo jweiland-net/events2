@@ -189,7 +189,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
     {
         // upload file
         $uploadFolder = ResourceFactory::getInstance()->retrieveFileOrFolderObject('uploads/tx_events2/');
-        $uploadedFile = $uploadFolder->addUploadedFile($source, 'changeName');
+        $uploadedFile = $uploadFolder->addUploadedFile($source, \TYPO3\CMS\Core\Resource\DuplicationBehavior::RENAME);
         // create Core FileReference
         return ResourceFactory::getInstance()->createFileReferenceObject(
             [
