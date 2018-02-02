@@ -69,8 +69,8 @@ return [
                 'items' => [
                     ['', 0],
                 ],
-                'foreign_table' => 'tx_ceheaderimage_domain_model_slider',
-                'foreign_table_where' => 'AND tx_ceheaderimage_domain_model_slider.pid=###CURRENT_PID### AND tx_ceheaderimage_domain_model_slider.sys_language_uid IN (-1,0)',
+                'foreign_table' => 'tx_events2_domain_model_time',
+                'foreign_table_where' => 'AND tx_events2_domain_model_time.pid=###CURRENT_PID### AND tx_events2_domain_model_time.sys_language_uid IN (-1,0)',
                 'showIconTable' => false,
                 'default' => 0,
             ]
