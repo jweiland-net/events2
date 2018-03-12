@@ -414,12 +414,16 @@ class DayGeneratorTest extends UnitTestCase
      */
     public function initializeWithGivenXthsResultsInAddedDaysInStorage()
     {
-        // this date has to be updated each 6 month.
-        // Set it to a month which starts with a thursday
-        $eventBegin = new \DateTime('17.02.2018');
+        // $eventBegin has to start with a month beginning with a thursday
+        $eventBegin = new \DateTime('now');
+        $eventBegin->modify('first day of this month');
+        while ((int)$eventBegin->format('N') !== 4) {
+            $eventBegin->modify('next month');
+        }
         $eventBegin->modify('midnight');
+        $eventBegin->modify('+16 days'); // first day of month (1) + 16 = 17. of month. Must be saturday
         $recurringEnd = clone $eventBegin;
-        $recurringEnd->modify('+22 days'); // 08.03.2017
+        $recurringEnd->modify('+22 days'); // 06th or 07th of next month. Regarding, if month has 30 or 31 days
 
         $event = new Event();
         $event->_setProperty('uid', 123);
@@ -427,19 +431,19 @@ class DayGeneratorTest extends UnitTestCase
         $event->setEventBegin($eventBegin);
         $event->setRecurringEnd($recurringEnd);
         $event->setXth(21); // 1st, 3rd, 5th
-        $event->setWeekday(18); // tu, fr
+        $event->setWeekday(18); // tuesday, friday
         $event->setEachWeeks(0);
 
         $tempDate = clone $eventBegin;
         $expectedDays = [];
-        $tempDate->modify('+3 day'); // start with sa
-        $expectedDays[$tempDate->format('U')] = clone $tempDate; // add 3rd tu 20.01
+        $tempDate->modify('+3 day');
+        $expectedDays[$tempDate->format('U')] = clone $tempDate; // add 3rd tuesday 20th of month
         $tempDate->modify('+10 day');
-        $expectedDays[$tempDate->format('U')] = clone $tempDate; // add 5th fr 30.01
+        $expectedDays[$tempDate->format('U')] = clone $tempDate; // add 5th friday 30th of month
         $tempDate->modify('+4 day');
-        $expectedDays[$tempDate->format('U')] = clone $tempDate; // add 1st tu 03.02
-        //$eventBegin->modify('+3 day');
-        //$expectedDays[$eventBegin->format('U')] = clone $eventBegin; // add 1st fr 06.03
+        $expectedDays[$tempDate->format('U')] = clone $tempDate; // add 1st tuesday 3rd of next month
+        $tempDate->modify('+3 day');
+        $expectedDays[$tempDate->format('U')] = clone $tempDate; // add 1st friday 6th of next month
         ksort($expectedDays);
 
         $this->assertTrue($this->subject->initialize($event));
