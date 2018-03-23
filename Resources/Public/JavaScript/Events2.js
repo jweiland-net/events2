@@ -114,8 +114,9 @@ function fillSubCategories(categories) {
     }
 }
 
-jQuery("#searchMainCategory").on("change", function () {
+if (jQuery("#events2SearchForm").length) {
+    jQuery("#searchMainCategory").on("change", function () {
+        renderSubCategory();
+    });
     renderSubCategory();
-});
-
-renderSubCategory();
+}
