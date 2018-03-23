@@ -284,8 +284,8 @@ class EventTest extends UnitTestCase
      */
     public function getDaysOfEventsTakingDaysWithEqualDaysReturnsZero()
     {
-        $eventBegin = new \DateTime();
-        $eventEnd = new \DateTime();
+        $eventBegin = new \DateTime('midnight');
+        $eventEnd = new \DateTime('midnight');
         $eventEnd->modify('+20 seconds');
         $this->subject->setEventBegin($eventBegin);
         $this->subject->setEventEnd($eventEnd);

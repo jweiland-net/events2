@@ -416,14 +416,14 @@ class DayGeneratorTest extends UnitTestCase
     {
         // $eventBegin has to start with a month beginning with a thursday
         $eventBegin = new \DateTime('now');
-        $eventBegin->modify('first day of this month');
+        $eventBegin->modify('first day of next month');
         while ((int)$eventBegin->format('N') !== 4) {
             $eventBegin->modify('next month');
         }
         $eventBegin->modify('midnight');
         $eventBegin->modify('+16 days'); // first day of month (1) + 16 = 17. of month. Must be saturday
         $recurringEnd = clone $eventBegin;
-        $recurringEnd->modify('+22 days'); // 06th or 07th of next month. Regarding, if month has 30 or 31 days
+        $recurringEnd->modify('+22 days'); // 07th or 08th of next month. Regarding, if month has 30 or 31 days
 
         $event = new Event();
         $event->_setProperty('uid', 123);
