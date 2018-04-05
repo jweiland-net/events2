@@ -32,17 +32,17 @@ class Typo3DbQueryParser extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\
     {
         /** @var \JWeiland\Events2\Persistence\Typo362\Generic\Query $query */
         list($parameters, $operators) = $this->preparseComparison($query->getConstraint());
-        $hashPartials = [
+        $hashPartials = array(
             $query->getQuerySettings(),
             $query->getSource(),
             array_keys($parameters),
             $operators,
             $query->getOrderings(),
             $query->getGroupings(),
-        ];
+        );
         $hash = md5(serialize($hashPartials));
 
-        return [$hash, $parameters];
+        return array($hash, $parameters);
     }
 
     /**
