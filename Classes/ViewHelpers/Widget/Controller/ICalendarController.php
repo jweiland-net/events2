@@ -16,6 +16,7 @@ namespace JWeiland\Events2\ViewHelpers\Widget\Controller;
  */
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
+use JWeiland\Events2\Domain\Model\Location;
 use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Service\EventService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -182,7 +183,15 @@ class ICalendarController extends AbstractWidgetController
         if (!empty($endTime)) {
             $event['DTEND'] = $this->convertToTstamp($lastDay->getDay(), $endTime);
         }
-        $event['LOCATION'] = $this->sanitizeString($day->getEvent()->getLocation()->getLocation());
+        // in case of sys_language_mode=strict, location can be empty
+        if ($day->getEvent()->getLocation() instanceof Location) {
+            $location = $this->sanitizeString(
+                $day->getEvent()->getLocation()->getLocation()
+            );
+        } else {
+            $location = '';
+        }
+        $event['LOCATION'] = $location;
         $event['SUMMARY'] = $this->sanitizeString($day->getEvent()->getTitle());
         $event['DESCRIPTION'] = $this->sanitizeString($day->getEvent()->getDetailInformations());
 
