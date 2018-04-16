@@ -474,6 +474,7 @@ return [
         ],
         'images' => [
             'exclude' => true,
+            'l10n_mode' => 'mergeIfNotBlank',
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.images',
             'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
                 'images',
@@ -485,8 +486,15 @@ return [
                         'tablenames' => 'tx_events2_domain_model_event',
                         'table_local' => 'sys_file',
                     ],
+                    'behaviour' => [
+                        'allowLanguageSynchronization' => true,
+                    ],
                     'appearance' => [
-                        'createNewRelationLinkTitle' => $ttContentLanguageFile . ':images.addFileReference'
+                        'createNewRelationLinkTitle' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.image.add',
+                        'showPossibleLocalizationRecords' => true,
+                        'showRemovedLocalizationRecords' => true,
+                        'showAllLocalizationLink' => true,
+                        'showSynchronizationLink' => true
                     ],
                     // custom configuration for displaying fields in the overlay/reference table
                     // to use the imageoverlayPalette instead of the basicoverlayPalette

@@ -70,6 +70,8 @@ class CategoryRepository extends \TYPO3\CMS\Extbase\Domain\Repository\CategoryRe
         // correct keys for unit tests (array_values)
         $selectedCategories = array_values(array_filter(GeneralUtility::intExplode(',', $categoryUids, true)));
         $query = $this->createQuery();
+        // we have to disable language restrictions as TYPO3 BE saves category relations in default language only
+        $query->getQuerySettings()->setRespectSysLanguage(false);
 
         $constraint = [];
         $constraint[] = $query->in('uid', $selectedCategories);

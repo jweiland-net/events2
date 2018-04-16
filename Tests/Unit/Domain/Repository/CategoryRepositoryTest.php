@@ -17,6 +17,8 @@ namespace JWeiland\Events2\Tests\Unit\Domain\Repository;
 use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
+use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 
 /**
  * Test case.
@@ -55,11 +57,20 @@ class CategoryRepositoryTest extends UnitTestCase
      */
     public function getSelectedCategoriesConvertsWrongCategoriesToInteger()
     {
+        /** @var QuerySettingsInterface|\PHPUnit_Framework_MockObject_MockObject $querySettings */
+        $querySettings = $this
+            ->getMockBuilder(Typo3QuerySettings::class)
+            ->getMock();
+        $querySettings->expects($this->once())->method('setRespectSysLanguage')->with(
+            $this->equalTo(false)
+        );
+
         /** @var Query|\PHPUnit_Framework_MockObject_MockObject $query */
         $query = $this
             ->getMockBuilder(Query::class)
             ->disableOriginalConstructor()
             ->getMock();
+        $query->expects($this->once())->method('getQuerySettings')->willReturn($querySettings);
         $query->expects($this->once())->method('matching')->willReturn($query);
         $query->expects($this->once())->method('in')->with(
             $this->equalTo('uid'),
@@ -76,11 +87,20 @@ class CategoryRepositoryTest extends UnitTestCase
      */
     public function getSelectedCategoriesWithGivenParentWillCallEquals()
     {
+        /** @var QuerySettingsInterface|\PHPUnit_Framework_MockObject_MockObject $querySettings */
+        $querySettings = $this
+            ->getMockBuilder(Typo3QuerySettings::class)
+            ->getMock();
+        $querySettings->expects($this->once())->method('setRespectSysLanguage')->with(
+            $this->equalTo(false)
+        );
+
         /** @var Query|\PHPUnit_Framework_MockObject_MockObject $query */
         $query = $this
             ->getMockBuilder(Query::class)
             ->disableOriginalConstructor()
             ->getMock();
+        $query->expects($this->once())->method('getQuerySettings')->willReturn($querySettings);
         $query->expects($this->once())->method('equals')->with(
             $this->equalTo('parent'),
             $this->equalTo(5)

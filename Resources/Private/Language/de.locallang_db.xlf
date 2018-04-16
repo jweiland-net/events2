@@ -46,6 +46,10 @@
 				<source>Event</source>
 				<target>Veranstaltung</target>
 			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.image.add">
+				<source>Add image</source>
+				<target>Bild hinzufügen</target>
+			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.tab.recurring_event">
 				<source>Recurring Event</source>
 				<target>Wiederkehrende Veranstaltung</target>
