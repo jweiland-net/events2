@@ -46,6 +46,9 @@
 			<trans-unit id="tx_events2_domain_model_event">
 				<source>Event</source>
 			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.image.add">
+				<source>Add image</source>
+			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.tab.recurring_event">
 				<source>Recurring Event</source>
 			</trans-unit>
