@@ -93,6 +93,7 @@
 									<appearance>
 										<showHeader>TRUE</showHeader>
 										<expandAll>FALSE</expandAll>
+										<maxLevels>10</maxLevels>
 									</appearance>
 								</treeConfig>
 								<size>15</size>
