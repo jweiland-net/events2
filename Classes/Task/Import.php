@@ -92,9 +92,16 @@ class Import extends AbstractTask
             return false;
         }
 
-        if ($this->importFile($file)) {
-            return true;
-        } else {
+        try {
+            if ($this->importFile($file)) {
+                return true;
+            } else {
+                /** @var Registry $registry */
+                $registry = GeneralUtility::makeInstance(Registry::class);
+                $registry->set('events2', 'import-task-file-' . $file->getProperty('uid'), null);
+                return false;
+            }
+        } catch (\Exception $e) {
             /** @var Registry $registry */
             $registry = GeneralUtility::makeInstance(Registry::class);
             $registry->set('events2', 'import-task-file-' . $file->getProperty('uid'), null);

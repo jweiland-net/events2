@@ -388,7 +388,14 @@ class XmlImporter extends AbstractImporter
 
                 /** @var Folder $rootFolder */
                 $rootFolder = $this->file->getParentFolder();
-                $relativeTargetDirectoryPath = 'Images/' . $fileParts['path'];
+                $relativeTargetDirectoryPath = sprintf(
+                    'Images/%d/%d/%d/%s',
+                    $this->today->format('Y'),
+                    $this->today->format('m'),
+                    $this->today->format('d'),
+                    $this->today->format('His')
+
+                );
                 $targetDirectoryPath = PATH_site . $rootFolder->getPublicUrl() . $relativeTargetDirectoryPath;
                 GeneralUtility::mkdir_deep($targetDirectoryPath);
 
@@ -398,7 +405,7 @@ class XmlImporter extends AbstractImporter
                 );
                 if ($targetFolder->hasFile($filename)) {
                     $file = ResourceFactory::getInstance()->retrieveFileOrFolderObject(
-                        $rootFolder->getCombinedIdentifier() . $relativeTargetDirectoryPath . $filename
+                        $targetFolder->getCombinedIdentifier() . $filename
                     );
                 } else {
                     $file = $targetFolder->createFile($filename);
