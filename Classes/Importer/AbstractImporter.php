@@ -15,6 +15,7 @@ namespace JWeiland\Events2\Importer;
  * The TYPO3 project - inspiring people to share!
  */
 
+use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Domain\Repository\OrganizerRepository;
@@ -24,7 +25,7 @@ use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Registry;
-use TYPO3\CMS\Core\Resource\File;
+use TYPO3\CMS\Core\Resource\AbstractFile;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
@@ -42,6 +43,11 @@ abstract class AbstractImporter implements ImporterInterface
      * @var FileInterface
      */
     protected $file;
+
+    /**
+     * @var string
+     */
+    protected $logFileName = 'Messages.txt';
 
     /**
      * @var array
@@ -144,6 +150,170 @@ abstract class AbstractImporter implements ImporterInterface
     }
 
     /**
+     * Check, if we have invalid events in our array
+     *
+     * @param array $events
+     * @return bool
+     */
+    protected function hasInvalidEvents(array $events)
+    {
+        $hasInvalidEvents = false;
+        foreach ($events as $event) {
+            if (!$this->isValidEvent($event)) {
+                $hasInvalidEvents = true;
+                break;
+            }
+        }
+
+        return $hasInvalidEvents;
+    }
+
+    /**
+     * Is valid event
+     * It also checks, if given relations exists in DB
+     *
+     * @param array $event
+     * @return bool
+     * @throws \Exception
+     */
+    protected function isValidEvent(array $event)
+    {
+        // is future event?
+        $eventBegin = \DateTime::createFromFormat('Y-m-d', $event['event_begin']);
+        if ($eventBegin < $this->today) {
+            $this->addMessage(
+                sprintf(
+                    'Event: %s - Date: %s - Error: %s',
+                    $event['title'],
+                    $eventBegin->format('d.m.Y'),
+                    'event_begin can not be in past'
+                ),
+                FlashMessage::ERROR
+            );
+            return false;
+        }
+
+        // specified organizer exists?
+        $organizer = $this->getOrganizer($event['organizer']);
+        if (empty($organizer)) {
+            $this->addMessage(
+                sprintf(
+                    'Event: %s - Date: %s - Error: %s',
+                    $event['title'],
+                    $eventBegin->format('d.m.Y'),
+                    'Given organizer does not exist in our database'
+                ),
+                FlashMessage::ERROR
+            );
+            return false;
+        }
+
+        // specified location exists?
+        $location = $this->getLocation($event['location']);
+        if (empty($location)) {
+            $this->addMessage(
+                sprintf(
+                    'Event: %s - Date: %s - Error: %s',
+                    $event['title'],
+                    $eventBegin->format('d.m.Y'),
+                    'Given location does not exist in our database'
+                ),
+                FlashMessage::ERROR
+            );
+            return false;
+        }
+
+        // specified categories exists?
+        foreach ($event['categories'] as $title) {
+            $category = $this->getCategory($title);
+            if (empty($category)) {
+                $this->addMessage(
+                    sprintf(
+                        'Event: %s - Date: %s - Error: %s',
+                        $event['title'],
+                        $eventBegin->format('d.m.Y'),
+                        'Given category does not exist in our database'
+                    ),
+                    FlashMessage::ERROR
+                );
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Get organizer from DB
+     *
+     * @param string $title
+     * @return array|false|null
+     */
+    protected function getOrganizer($title)
+    {
+        $where = sprintf(
+            'organizer=%s',
+            $this->getDatabaseConnection()->fullQuoteStr(
+                (string)$title,
+                'tx_events2_domain_model_organizer'
+            )
+        );
+        return $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+            'uid',
+            'tx_events2_domain_model_organizer',
+            $where
+        );
+    }
+
+    /**
+     * Get location from DB
+     *
+     * @param $title
+     * @return array|false|null
+     */
+    protected function getLocation($title)
+    {
+        $where = sprintf(
+            'location=%s',
+            $this->getDatabaseConnection()->fullQuoteStr(
+                $title,
+                'tx_events2_domain_model_location'
+            )
+        );
+
+        // I don't have the TypoScript or Plugin storage PID. That's why I don't use the repository directly
+        return $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+            'uid',
+            'tx_events2_domain_model_location',
+            $where
+        );
+    }
+
+    /**
+     * Get category from DB
+     *
+     * @param string $title
+     * @return array|false|null
+     */
+    protected function getCategory($title)
+    {
+        $where = sprintf(
+            'title=%s',
+            $this->getDatabaseConnection()->fullQuoteStr(
+                $title,
+                'sys_category'
+            )
+        );
+
+        // I don't have the TypoScript or Plugin storage PID. That's why I don't use the repository directly
+        return $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
+            'uid',
+            'sys_category',
+            $where
+        );
+    }
+
+    /**
      * This method is used to add a message to the internal queue
      *
      * @param string $message The message itself
@@ -156,26 +326,21 @@ abstract class AbstractImporter implements ImporterInterface
     protected function addMessage($message, $severity = FlashMessage::OK)
     {
         static $firstMessage = true;
-
-        // log messages into file
-        $filename = 'Messages.txt';
+        /** @var AbstractFile $logFile */
+        static $logFile = null;
 
         try {
-            /** @var Folder $folder */
-            $folder = $this->file->getParentFolder();
-            if (!$folder->hasFile($filename)) {
-                $file = $folder->createFile($filename);
-            } else {
-                $file = ResourceFactory::getInstance()->retrieveFileOrFolderObject($folder->getCombinedIdentifier() . 'Messages.txt');
-            }
-
+            $content = '';
             if ($firstMessage) {
-                $content = $message;
+                // truncate LogFile
+                $logFile = $this->getLogFile();
+                $logFile->setContents($content);
                 $firstMessage = false;
             } else {
-                $content = $file->getContents() . LF . $message;
+                $content = $logFile->getContents();
             }
-            $file->setContents($content);
+
+            $logFile->setContents($content . $message . LF);
         } catch (\Exception $e) {
             $message = $e->getMessage();
             $severity = FlashMessage::ERROR;
@@ -189,6 +354,49 @@ abstract class AbstractImporter implements ImporterInterface
         /** @var FlashMessageQueue $defaultFlashMessageQueue */
         $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
         $defaultFlashMessageQueue->enqueue($flashMessage);
+    }
+
+    /**
+     * Get LogFile
+     * If it does not exists, we create a new one in same directory of import file
+     *
+     * @return AbstractFile
+     * @throws \Exception
+     */
+    protected function getLogFile()
+    {
+        try {
+            /** @var Folder $folder */
+            $folder = $this->file->getParentFolder();
+            if (!$folder->hasFile($this->logFileName)) {
+                $logFile = $folder->createFile($this->logFileName);
+            } else {
+                $logFile = ResourceFactory::getInstance()->retrieveFileOrFolderObject(
+                    $folder->getCombinedIdentifier() . $this->logFileName
+                );
+            }
+        } catch (\Exception $e) {
+            throw new \Exception('Error while retrieving the LogFile. FAL error: ' . $e->getMessage(), 1525416333);
+        }
+
+        return $logFile;
+    }
+
+    /**
+     * Set property of event object
+     *
+     * @param Event $event
+     * @param string $column
+     * @param mixed $value
+     *
+     * @return void
+     */
+    protected function setEventProperty(Event $event, $column, $value)
+    {
+        $setter = 'set' . GeneralUtility::underscoredToUpperCamelCase($column);
+        if (method_exists($event, $setter)) {
+            $event->{$setter}($value);
+        }
     }
 
     /**

@@ -59,25 +59,20 @@ class XmlImporter extends AbstractImporter
             return false;
         }
         $events = GeneralUtility::xml2array($file->getContents());
+        if ($this->hasInvalidEvents($events)) {
+            return false;
+        }
 
-        $runSuccessful = true;
-        $amountOfValidEvents = 0;
         foreach ($events as $event) {
-            if ($this->isValidEvent($event)) {
-                $this->saveEvent(
-                    $this->createEvent($event),
-                    $task
-                );
-                $amountOfValidEvents++;
-            } else {
-                $runSuccessful = false;
-                break;
-            }
+            $this->saveEvent(
+                $this->createEvent($event),
+                $task
+            );
         }
         $this->getPersistenceManager()->persistAll();
-        $this->addMessage('We have imported ' . $amountOfValidEvents . ' valid events');
+        $this->addMessage('We have imported ' . count($events) . ' events');
 
-        return $runSuccessful;
+        return true;
     }
 
     /**
@@ -100,26 +95,6 @@ class XmlImporter extends AbstractImporter
             $this->addMessage($e->getMessage(), FlashMessage::ERROR);
             return false;
         }
-        return true;
-    }
-
-    /**
-     * Is valid event data
-     *
-     * @param array $event
-     *
-     * @return bool
-     *
-     * @throws \Exception
-     */
-    protected function isValidEvent(array $event)
-    {
-        $eventBegin = \DateTime::createFromFormat('Y-m-d', $event['event_begin']);
-        if ($eventBegin < $this->today) {
-            $this->addMessage('event_begin can not be in past', FlashMessage::ERROR);
-            return false;
-        }
-
         return true;
     }
 
@@ -173,8 +148,7 @@ class XmlImporter extends AbstractImporter
         ];
         foreach ($allowedRootProperties as $property) {
             if (isset($data[$property])) {
-                $setter = 'set' . GeneralUtility::underscoredToUpperCamelCase($property);
-                $event->{$setter}($data[$property]);
+                $this->setEventProperty($event, $property, $data[$property]);
             }
         }
     }
@@ -202,8 +176,7 @@ class XmlImporter extends AbstractImporter
             if (!$date instanceof \DateTime) {
                 continue;
             }
-            $setter = 'set' . GeneralUtility::underscoredToUpperCamelCase($property);
-            $event->{$setter}($this->dateTimeUtility->standardizeDateTimeObject($date));
+            $this->setEventProperty($event, $property, $this->dateTimeUtility->standardizeDateTimeObject($date));
         }
     }
 
@@ -269,30 +242,11 @@ class XmlImporter extends AbstractImporter
      * @param array $data
      *
      * @return void
-     *
-     * @throws \Exception
      */
     protected function addOrganizer(Event $event, array $data)
     {
-        $where = sprintf(
-            'organizer=%s',
-            $this->getDatabaseConnection()->fullQuoteStr(
-                $data['organizer'],
-                'tx_events2_domain_model_organizer'
-            )
-        );
-        // I don't have the TypoScript or Plugin storage PID. That's why I don't use the repository directly
-        $dbOrganizer = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'uid',
-            'tx_events2_domain_model_organizer',
-            $where
-        );
-        if (empty($dbOrganizer)) {
-            $this->addMessage('No equivalent organizer found', FlashMessage::WARNING);
-            throw new \Exception('No equivalent organizer found');
-        }
-        $organizer = $this->organizerRepository->findByIdentifier($dbOrganizer['uid']);
-        $event->setOrganizer($organizer);
+        $organizer = $this->getOrganizer($data['organizer']);
+        $event->setOrganizer($this->organizerRepository->findByIdentifier($organizer['uid']));
     }
 
     /**
@@ -307,26 +261,8 @@ class XmlImporter extends AbstractImporter
      */
     protected function addLocation(Event $event, array $data)
     {
-        $where = sprintf(
-            'location=%s',
-            $this->getDatabaseConnection()->fullQuoteStr(
-                $data['location'],
-                'tx_events2_domain_model_location'
-            )
-        );
-
-        // I don't have the TypoScript or Plugin storage PID. That's why I don't use the repository directly
-        $dbLocation = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'uid',
-            'tx_events2_domain_model_location',
-            $where
-        );
-        if (empty($dbLocation)) {
-            $this->addMessage('No equivalent location found', FlashMessage::WARNING);
-            throw new \Exception('No equivalent location found');
-        }
-        $location = $this->locationRepository->findByIdentifier($dbLocation['uid']);
-        $event->setLocation($location);
+        $location = $this->getLocation($data['location']);
+        $event->setLocation($this->locationRepository->findByIdentifier($location['uid']));
     }
 
     /**
@@ -348,8 +284,7 @@ class XmlImporter extends AbstractImporter
                 $link = $this->objectManager->get(Link::class);
                 $link->setTitle($data[$property]['title']);
                 $link->setLink($data[$property]['uri']);
-                $methodName = 'set' . GeneralUtility::underscoredToUpperCamelCase($property);
-                $event->{$methodName}($link);
+                $this->setEventProperty($event, $property, $link);
             }
         }
     }
@@ -410,21 +345,7 @@ class XmlImporter extends AbstractImporter
     protected function addCategories(Event $event, array $data)
     {
         foreach ($data['categories'] as $title) {
-            $where = sprintf(
-                'title=%s',
-                $this->getDatabaseConnection()->fullQuoteStr($title, 'sys_category')
-            );
-
-            // I don't have the TypoScript or Plugin storage PID. That's why I don't use the repository directly
-            $dbCategory = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-                'uid',
-                'sys_category',
-                $where
-            );
-            if (empty($dbCategory)) {
-                $this->addMessage('No equivalent category found', FlashMessage::WARNING);
-                throw new \Exception('No equivalent category found');
-            }
+            $dbCategory = $this->getCategory($title);
             /** @var Category $category */
             $category = $this->categoryRepository->findByIdentifier($dbCategory['uid']);
             $event->addCategory($category);
