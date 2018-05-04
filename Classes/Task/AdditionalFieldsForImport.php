@@ -59,7 +59,7 @@ class AdditionalFieldsForImport implements AdditionalFieldProviderInterface
         'path' => [
             'default' => '',
             'attr' => [
-                'placeholder' => 'fileadmin/'
+                'placeholder' => '1:/event_import/Import.xml'
             ],
         ],
         'storagePid' => [
