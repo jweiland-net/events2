@@ -55,7 +55,6 @@ class XmlImporter extends AbstractImporter
     public function import(FileInterface $file, AbstractTask $task)
     {
         if (!$this->validateXml($file)) {
-            $this->addMessage('XML file does not match XSD file');
             return false;
         }
         $events = GeneralUtility::xml2array($file->getContents());
@@ -87,12 +86,31 @@ class XmlImporter extends AbstractImporter
     protected function validateXml(FileInterface $file)
     {
         try {
-            $domDocument = new \DOMDocument();
-            $domDocument->loadXML($file->getContents());
-            $domDocument->schemaValidate(PATH_site . 'typo3conf/ext/events2/Resources/Public/XmlImportValidator.xsd');
+            libxml_use_internal_errors(true);
+            $domDoc = new \DOMDocument();
+            $domDoc->loadXML($file->getContents());
+            if (!$domDoc->schemaValidate(PATH_site . 'typo3conf/ext/events2/Resources/Public/XmlImportValidator.xsd')) {
+                foreach (libxml_get_errors() as $error) {
+                    $this->addMessage(
+                        sprintf(
+                            'Error: %s - Line: %d',
+                            $error->message,
+                            $error->line
+                        ),
+                        FlashMessage::ERROR
+                    );
+                }
+                return false;
+            }
         } catch (\Exception $e) {
-            $this->addMessage('XML does not comply with XmlImportValidator.xml.', FlashMessage::ERROR);
-            $this->addMessage($e->getMessage(), FlashMessage::ERROR);
+            $this->addMessage(
+                'XML does not comply with XmlImportValidator.xml.',
+                FlashMessage::ERROR
+            );
+            $this->addMessage(
+                $e->getMessage(),
+                FlashMessage::ERROR
+            );
             return false;
         }
         return true;
@@ -367,20 +385,6 @@ class XmlImporter extends AbstractImporter
         if (isset($data['images']) && is_array($data['images'])) {
             $images = new ObjectStorage();
             foreach ($data['images'] as $image) {
-                // error handling
-                if (!is_array($image)) {
-                    $this->addMessage('Image must be of type array', FlashMessage::WARNING);
-                    continue;
-                }
-                if (!isset($image['url']) || empty(trim($image['url']))) {
-                    $this->addMessage('Array key "url" of image must be set and can not be empty', FlashMessage::WARNING);
-                    continue;
-                }
-                if (!filter_var($image['url'], FILTER_VALIDATE_URL)) {
-                    $this->addMessage('Image path has to be a valid URL', FlashMessage::WARNING);
-                    continue;
-                }
-
                 // we try to keep the original structure from origin server to prevent duplicate filenames
                 $filePath = parse_url($image['url'], PHP_URL_PATH);
                 $fileParts = GeneralUtility::split_fileref($filePath);
