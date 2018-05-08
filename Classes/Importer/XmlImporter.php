@@ -367,20 +367,6 @@ class XmlImporter extends AbstractImporter
         if (isset($data['images']) && is_array($data['images'])) {
             $images = new ObjectStorage();
             foreach ($data['images'] as $image) {
-                // error handling
-                if (!is_array($image)) {
-                    $this->addMessage('Image must be of type array', FlashMessage::WARNING);
-                    continue;
-                }
-                if (!isset($image['url']) || empty(trim($image['url']))) {
-                    $this->addMessage('Array key "url" of image must be set and can not be empty', FlashMessage::WARNING);
-                    continue;
-                }
-                if (!filter_var($image['url'], FILTER_VALIDATE_URL)) {
-                    $this->addMessage('Image path has to be a valid URL', FlashMessage::WARNING);
-                    continue;
-                }
-
                 // we try to keep the original structure from origin server to prevent duplicate filenames
                 $filePath = parse_url($image['url'], PHP_URL_PATH);
                 $fileParts = GeneralUtility::split_fileref($filePath);

@@ -240,6 +240,46 @@ abstract class AbstractImporter implements ImporterInterface
             }
         }
 
+        // check for valid image paths
+        foreach ($event['images'] as $image) {
+            if (!is_array($image)) {
+                $this->addMessage(
+                    sprintf(
+                        'Event: %s - Date: %s - Error: %s',
+                        $event['title'],
+                        $eventBegin->format('d.m.Y'),
+                        'Image must be of type array'
+                    ),
+                    FlashMessage::ERROR
+                );
+                return false;
+            }
+            if (!isset($image['url']) || empty(trim($image['url']))) {
+                $this->addMessage(
+                    sprintf(
+                        'Event: %s - Date: %s - Error: %s',
+                        $event['title'],
+                        $eventBegin->format('d.m.Y'),
+                        'Array key "url" of image must be set and can not be empty'
+                    ),
+                    FlashMessage::ERROR
+                );
+                return false;
+            }
+            if (!filter_var($image['url'], FILTER_VALIDATE_URL)) {
+                $this->addMessage(
+                    sprintf(
+                        'Event: %s - Date: %s - Error: %s',
+                        $event['title'],
+                        $eventBegin->format('d.m.Y'),
+                        'Image path has to be a valid URL'
+                    ),
+                    FlashMessage::ERROR
+                );
+                return false;
+            }
+        }
+
         return true;
     }
 
