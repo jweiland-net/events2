@@ -17,9 +17,9 @@ database with TCA definition after upgrading.
 
 .. important::
 
-   Please do **not** delete cols in installtool after installing the new version! Only add the new fields,
-   than go into extensionmanager, select events2 and start the upgrade script. Delete the old cols in installtool
-   only, if the upgrade script symbol will not appear in extensionmanager anymore.
+   Please do **not** delete cols in InstallTool after installing the new version! Only add the new fields,
+   than go into Extensionmanager, select events2 and start the upgrade script. Delete the old cols in InstallTool
+   only, if the upgrade script symbol will not appear in Extensionmanager anymore.
 
 We have removed ShowEventDatesViewHelper, because it was sometimes too hard to change that template. So we have
 moved that widget into a normal ViewHelper. Please use GetEventDatesViewHelper instead, you can find an example in
@@ -32,3 +32,7 @@ the maxRecords attribute.
 The labels of the show action selectbox in Plugin (switchableControllerActions) has changed. We
 have added the new action showByDate for DayController. So you have to open each plugin
 and set show action again.
+
+After all these changes you have to re-create all day records. The easiest way to do so is:
+Create scheduler task of type "Create/Update Days" if not already exists.
+Execute that task.
