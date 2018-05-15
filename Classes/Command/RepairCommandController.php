@@ -17,6 +17,8 @@ namespace JWeiland\Events2\Command;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Utility\DateTimeUtility;
+use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\CommandController;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Storage\BackendInterface;
@@ -124,12 +126,10 @@ class RepairCommandController extends CommandController
             $persistenceManager = $this->objectManager->get(PersistenceManager::class);
 
             // with each changing PID pageTSConfigCache will grow by roundabout 200KB
-            // we need a possibility to reset this level 1 cache
-            /** @var BackendInterface $extbaseDbBackend */
-            $extbaseDbBackend = $this->objectManager->get(BackendInterface::class);
-            $reflectedExtbaseDbBackend = new \ReflectionClass($extbaseDbBackend);
-            $reflectedPageTSConfigCache = $reflectedExtbaseDbBackend->getProperty('pageTSConfigCache');
-            $reflectedPageTSConfigCache->setAccessible(true);
+            // which may exceed memory_limit
+            /** @var $runtimeCache \TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend */
+            $runtimeCache = GeneralUtility::makeInstance(CacheManager::class)
+                ->getCache('cache_runtime');
 
             foreach ($rows as $key => $row) {
                 $event = $dayRelations->createDayRelations((int)$row['uid']);
@@ -154,8 +154,7 @@ class RepairCommandController extends CommandController
                 // clean up persistence manager to reduce memory usage
                 // it also clears persistence session
                 $persistenceManager->clearState();
-                // reset pageTsConfigCache with help of reflections
-                $reflectedPageTSConfigCache->setValue($extbaseDbBackend, []);
+                $runtimeCache->flush();
                 gc_collect_cycles();
             }
         }

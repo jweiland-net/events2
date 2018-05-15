@@ -15,6 +15,7 @@ namespace JWeiland\Events2\Task;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Service\DayRelationService;
+use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
@@ -76,12 +77,10 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
         $persistenceManager = $this->objectManager->get(PersistenceManager::class);
 
         // with each changing PID pageTSConfigCache will grow by roundabout 200KB
-        // we need a possibility to reset this level 1 cache
-        /** @var BackendInterface $extbaseDbBackend */
-        $extbaseDbBackend = $this->objectManager->get(BackendInterface::class);
-        $reflectedExtbaseDbBackend = new \ReflectionClass($extbaseDbBackend);
-        $reflectedPageTSConfigCache = $reflectedExtbaseDbBackend->getProperty('pageTSConfigCache');
-        $reflectedPageTSConfigCache->setAccessible(true);
+        // which may exceed memory_limit
+        /** @var $runtimeCache \TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend */
+        $runtimeCache = GeneralUtility::makeInstance(CacheManager::class)
+            ->getCache('cache_runtime');
 
         $this->registry->removeAllByNamespace('events2TaskCreateUpdate');
 
@@ -125,6 +124,12 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
                     'records' => count($events),
                     'counter' => $counter
                 ]);
+
+                // clean up persistence manager to reduce memory usage
+                // it also clears persistence session
+                $persistenceManager->clearState();
+                $runtimeCache->flush();
+                gc_collect_cycles();
             }
         }
 
