@@ -102,6 +102,7 @@ class Import extends AbstractTask
                 return false;
             }
         } catch (\Exception $e) {
+            $this->addMessage('Something went wrong while importing the file. Exception: ' . $e->getMessage(), FlashMessage::ERROR);
             /** @var Registry $registry */
             $registry = GeneralUtility::makeInstance(Registry::class);
             $registry->set('events2', 'import-task-file-' . $file->getProperty('uid'), null);

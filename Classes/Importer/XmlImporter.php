@@ -19,9 +19,9 @@ use JWeiland\Events2\Domain\Model\Category;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Exception;
 use JWeiland\Events2\Domain\Model\Link;
-use JWeiland\Events2\Domain\Model\Organizer;
 use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Task\Import;
+use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\Folder;
@@ -384,11 +384,16 @@ class XmlImporter extends AbstractImporter
     {
         if (isset($data['images']) && is_array($data['images'])) {
             $images = new ObjectStorage();
+            /** @var \TYPO3\CMS\Core\Charset\CharsetConverter $csConverter */
+            $csConverter = GeneralUtility::makeInstance(CharsetConverter::class);
             foreach ($data['images'] as $image) {
                 // we try to keep the original structure from origin server to prevent duplicate filenames
                 $filePath = parse_url($image['url'], PHP_URL_PATH);
                 $fileParts = GeneralUtility::split_fileref($filePath);
-                $filename = $fileParts['file'];
+                $filename = $csConverter->specCharsToASCII(
+                    'utf-8',
+                    rawurldecode($fileParts['file'])
+                );
 
                 /** @var Folder $rootFolder */
                 $rootFolder = $this->file->getParentFolder();
