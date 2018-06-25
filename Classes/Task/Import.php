@@ -19,7 +19,6 @@ use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
-use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\Index\Indexer;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
@@ -94,18 +93,12 @@ class Import extends AbstractTask
 
         try {
             if ($this->importFile($file)) {
+                $file->delete();
                 return true;
             } else {
-                /** @var Registry $registry */
-                $registry = GeneralUtility::makeInstance(Registry::class);
-                $registry->set('events2', 'import-task-file-' . $file->getProperty('uid'), null);
                 return false;
             }
         } catch (\Exception $e) {
-            $this->addMessage('Something went wrong while importing the file. Exception: ' . $e->getMessage(), FlashMessage::ERROR);
-            /** @var Registry $registry */
-            $registry = GeneralUtility::makeInstance(Registry::class);
-            $registry->set('events2', 'import-task-file-' . $file->getProperty('uid'), null);
             return false;
         }
     }

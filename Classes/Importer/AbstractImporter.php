@@ -24,7 +24,6 @@ use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
-use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Resource\AbstractFile;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\Folder;
@@ -85,11 +84,6 @@ abstract class AbstractImporter implements ImporterInterface
     protected $dateTimeUtility;
 
     /**
-     * @var Registry
-     */
-    protected $registry;
-
-    /**
      * @var \DateTime
      */
     protected $today;
@@ -116,7 +110,6 @@ abstract class AbstractImporter implements ImporterInterface
         $this->locationRepository = $this->objectManager->get(LocationRepository::class);
         $this->categoryRepository = $this->objectManager->get(CategoryRepository::class);
         $this->dateTimeUtility = $this->objectManager->get(DateTimeUtility::class);
-        $this->registry = $this->objectManager->get(Registry::class);
         $this->today = new \DateTime('now');
     }
 
@@ -133,18 +126,10 @@ abstract class AbstractImporter implements ImporterInterface
     {
         $isValid = true;
 
-        $modificationTime = $this->registry->get('events2', 'import-task-file-' . $file->getProperty('uid'));
-        if ($modificationTime && $file->getModificationTime() <= $modificationTime) {
-            $isValid = false;
-            $this->addMessage('Modification time of file has not changed. Stop importing', FlashMessage::ERROR);
-        }
-
         if (!in_array($file->getMimeType(), $this->allowedMimeType)) {
             $isValid = false;
             $this->addMessage('MimeType of file is not allowed', FlashMessage::ERROR);
         }
-
-        $this->registry->set('events2', 'import-task-file-' . $file->getProperty('uid'), $file->getModificationTime());
 
         return $isValid;
     }
@@ -154,6 +139,7 @@ abstract class AbstractImporter implements ImporterInterface
      *
      * @param array $events
      * @return bool
+     * @throws \Exception
      */
     protected function hasInvalidEvents(array $events)
     {
