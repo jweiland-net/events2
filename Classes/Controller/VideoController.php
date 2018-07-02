@@ -15,32 +15,12 @@ namespace JWeiland\Events2\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Domain\Repository\EventRepository;
-use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class VideoController extends ActionController
+class VideoController extends AbstractController
 {
-    /**
-     * eventRepository
-     *
-     * @var \JWeiland\Events2\Domain\Repository\EventRepository
-     */
-    protected $eventRepository;
-
-    /**
-     * inject event repository
-     *
-     * @param EventRepository $eventRepository
-     *
-     * @return void
-     */
-    public function injectEventRepository(EventRepository $eventRepository)
-    {
-        $this->eventRepository = $eventRepository;
-    }
-
     /**
      * action show
      *

@@ -20,23 +20,17 @@ use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
-use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class CalendarController extends ActionController
+class CalendarController extends AbstractController
 {
     /**
      * @var \TYPO3\CMS\Core\Page\PageRenderer
      */
     protected $pageRenderer;
-
-    /**
-     * @var \JWeiland\Events2\Domain\Repository\DayRepository
-     */
-    protected $dayRepository;
 
     /**
      * inject page renderer.
@@ -46,16 +40,6 @@ class CalendarController extends ActionController
     public function injectPageRenderer(PageRenderer $pageRenderer)
     {
         $this->pageRenderer = $pageRenderer;
-    }
-
-    /**
-     * inject day repository.
-     *
-     * @param DayRepository $dayRepository
-     */
-    public function injectDayRepository(DayRepository $dayRepository)
-    {
-        $this->dayRepository = $dayRepository;
     }
 
     /**

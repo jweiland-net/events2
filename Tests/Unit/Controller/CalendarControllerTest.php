@@ -50,7 +50,7 @@ class CalendarControllerTest extends UnitTestCase
     protected $dayRepository;
 
     /**
-     * @var ConfigurationManager|\PHPUnit_Framework_MockObject_MockObject
+     * @var ConfigurationManager|\Prophecy\Prophecy\ObjectProphecy
      */
     protected $configurationManager;
 
@@ -91,7 +91,21 @@ class CalendarControllerTest extends UnitTestCase
             ->getMockBuilder(DayRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->configurationManager = $this->getMockBuilder(ConfigurationManager::class)->getMock();
+        $this->configurationManager = $this->prophesize(ConfigurationManager::class);
+        $this->configurationManager
+            ->getConfiguration(
+                ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK,
+                'events2',
+                'events2_event'
+            )
+            ->shouldBeCalled()
+            ->willReturn([
+                'settings' => $this->settings
+            ]);
+        $this->configurationManager
+            ->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS)
+            ->shouldBeCalled()
+            ->willReturn($this->settings);
         $this->typoScriptFrontendController = $this
             ->getMockBuilder(TypoScriptFrontendController::class)
             ->disableOriginalConstructor()
@@ -112,11 +126,11 @@ class CalendarControllerTest extends UnitTestCase
                 'getDayFromUrl'
             ]
         );
-        $this->subject->injectPageRenderer($this->pageRenderer);
-        $this->subject->injectDayRepository($this->dayRepository);
-        $this->subject->injectConfigurationManager($this->configurationManager);
         $this->subject->_set('view', $this->view);
         $this->subject->_set('settings', $this->settings);
+        $this->subject->injectPageRenderer($this->pageRenderer);
+        $this->subject->injectDayRepository($this->dayRepository);
+        $this->subject->injectConfigurationManager($this->configurationManager->reveal());
     }
 
     public function tearDown()
@@ -152,11 +166,8 @@ class CalendarControllerTest extends UnitTestCase
         ];
 
         $this->configurationManager
-            ->expects($this->once())
-            ->method('getConfiguration')
-            ->with(
-                $this->equalTo(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK)
-            )
+            ->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK)
+            ->shouldBeCalled()
             ->willReturn($persistenceSettings);
 
         $this->frontendUserAuthentication
@@ -212,11 +223,8 @@ class CalendarControllerTest extends UnitTestCase
         ];
 
         $this->configurationManager
-            ->expects($this->once())
-            ->method('getConfiguration')
-            ->with(
-                $this->equalTo(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK)
-            )
+            ->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK)
+            ->shouldBeCalled($persistenceSettings)
             ->willReturn($persistenceSettings);
 
         $this->view
@@ -264,11 +272,8 @@ class CalendarControllerTest extends UnitTestCase
         ];
 
         $this->configurationManager
-            ->expects($this->once())
-            ->method('getConfiguration')
-            ->with(
-                $this->equalTo(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK)
-            )
+            ->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK)
+            ->shouldBeCalled()
             ->willReturn($persistenceSettings);
 
         $this->frontendUserAuthentication
