@@ -92,9 +92,9 @@ class DataHandlerHook
                     $this->googleMapsService->createNewPoiCollection(
                         (int)$tsConfig['pid'],
                         $radiusResult,
-                        array(
+                        [
                             'title' => $eventLocation['location']
-                        )
+                        ]
                     ),
                     $eventLocation,
                     'tx_events2_domain_model_location',
