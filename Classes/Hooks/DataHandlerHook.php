@@ -15,14 +15,12 @@ namespace JWeiland\Events2\Hooks;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Service\DayRelationService;
-use JWeiland\Maps2\Domain\Model\Location;
 use JWeiland\Maps2\Domain\Model\RadiusResult;
-use JWeiland\Maps2\Utility\GeocodeUtility;
+use JWeiland\Maps2\Service\GoogleMapsService;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Class DataHandlerHook
@@ -36,9 +34,9 @@ class DataHandlerHook
     protected $objectManager;
 
     /**
-     * @var GeocodeUtility
+     * @var GoogleMapsService
      */
-    protected $geocodeUtility;
+    protected $googleMapsService;
 
     /**
      * DataHandlerHook constructor.
@@ -46,14 +44,12 @@ class DataHandlerHook
     public function __construct()
     {
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->geocodeUtility = $this->objectManager->get(GeocodeUtility::class);
+        $this->googleMapsService = $this->objectManager->get(GoogleMapsService::class);
     }
 
     /**
      * @param \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler
-     *
      * @return void
-     *
      * @throws \Exception
      */
     public function processDatamap_afterAllOperations($dataHandler)
@@ -73,7 +69,6 @@ class DataHandlerHook
      * @param int $uid The UID of the new or updated record. Can be prepended with NEW if record is new. Use: $this->substNEWwithIDs to convert
      * @param array $fieldArray The fields of the current record
      * @param DataHandler $dataHandler
-     *
      * @throws \Exception
      */
     public function processDatamap_afterDatabaseOperations($status, $table, $uid, array $fieldArray, $dataHandler)
@@ -90,17 +85,21 @@ class DataHandlerHook
             $this->updateMmEntries($eventLocation);
         } else {
             // create new map-record and set it in relation
-            $response = $this->geocodeUtility->findPositionByAddress($this->getAddress($eventLocation));
-            if ($response instanceof ObjectStorage && $response->count()) {
-                /** @var RadiusResult $firstResult */
-                $firstResult = $response->current();
-                $location = $firstResult->getGeometry()->getLocation();
-                $address = $firstResult->getFormattedAddress();
-                $poiUid = $this->createNewPoiCollection($location, $address, $eventLocation);
-                $this->updateCurrentRecord($poiUid, $eventLocation);
-
-                // sync categories
-                $this->updateMmEntries($eventLocation);
+            $radiusResult = $this->googleMapsService->getFirstFoundPositionByAddress($this->getAddress($eventLocation));
+            if ($radiusResult instanceof RadiusResult) {
+                $tsConfig = $this->getTsConfig($eventLocation);
+                $this->googleMapsService->assignPoiCollectionToForeignRecord(
+                    $this->googleMapsService->createNewPoiCollection(
+                        (int)$tsConfig['pid'],
+                        $radiusResult,
+                        [
+                            'title' => $eventLocation['location']
+                        ]
+                    ),
+                    $eventLocation,
+                    'tx_events2_domain_model_location',
+                    'tx_maps2_uid'
+                );
             }
         }
     }
@@ -109,9 +108,7 @@ class DataHandlerHook
      * Add day relations to event
      *
      * @param int $eventUid
-     *
      * @return void
-     *
      * @throws \Exception
      */
     protected function addDayRelationsForEvent($eventUid)
@@ -127,7 +124,6 @@ class DataHandlerHook
      *
      * @param string $uid
      * @param DataHandler $dataHandler
-     *
      * @return int
      */
     protected function getRealUid($uid, $dataHandler)
@@ -142,7 +138,6 @@ class DataHandlerHook
      * get address for google search.
      *
      * @param array $eventLocation
-     *
      * @return string Prepared address for URI
      */
     public function getAddress(array $eventLocation)
@@ -173,7 +168,6 @@ class DataHandlerHook
      * try to find a similar poiCollection.
      *
      * @param array $location
-     *
      * @return int The UID of the PoiCollection. 0 if not found
      */
     public function findPoiByLocation(array $location)
@@ -194,68 +188,10 @@ class DataHandlerHook
     }
 
     /**
-     * update address record.
-     *
-     * @param int $poi
-     * @param array $eventLocation
-     *
-     * @return void
-     */
-    public function updateCurrentRecord($poi, array $eventLocation)
-    {
-        $this->getDatabaseConnection()->exec_UPDATEquery(
-            'tx_events2_domain_model_location',
-            'uid=' . (int)$eventLocation['uid'],
-            [
-                'tx_maps2_uid' => (int)$poi
-            ]
-        );
-        $eventLocation['tx_maps2_uid'] = (int)$poi;
-    }
-
-    /**
-     * creates a new poiCollection before updating the current address record.
-     *
-     * @param Location $location
-     * @param string $address Formatted Address returned from Google
-     * @param array $eventLocation
-     *
-     * @return int insert UID
-     *
-     * @throws \Exception
-     */
-    public function createNewPoiCollection(Location $location, $address, array $eventLocation)
-    {
-        $tsConfig = $this->getTsConfig($eventLocation);
-
-        $fieldValues = [];
-        $fieldValues['pid'] = (int)$tsConfig['pid'];
-        $fieldValues['tstamp'] = time();
-        $fieldValues['crdate'] = time();
-        $fieldValues['cruser_id'] = $GLOBALS['BE_USER']->user['uid'];
-        $fieldValues['hidden'] = 0;
-        $fieldValues['deleted'] = 0;
-        $fieldValues['latitude'] = $location->getLat();
-        $fieldValues['longitude'] = $location->getLng();
-        $fieldValues['collection_type'] = 'Point';
-        $fieldValues['title'] = $eventLocation['location'];
-        $fieldValues['address'] = $address;
-
-        $this->getDatabaseConnection()->exec_INSERTquery(
-            'tx_maps2_domain_model_poicollection',
-            $fieldValues
-        );
-
-        return $this->getDatabaseConnection()->sql_insert_id();
-    }
-
-    /**
      * get TSconfig.
      *
      * @param array $eventLocation
-     *
      * @return array
-     *
      * @throws \Exception
      */
     public function getTsConfig(array $eventLocation)
@@ -272,7 +208,6 @@ class DataHandlerHook
      * Define all asserted categories of this event also to the related poiCollections.
      *
      * @param array $eventLocation
-     *
      * @return void
      */
     public function updateMmEntries(array $eventLocation)
