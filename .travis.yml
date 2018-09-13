@@ -1,7 +1,6 @@
 language: php
 
 jobs:
-  fast_finish: true
   include:
     - stage: test
       php: 5.6
@@ -52,7 +51,7 @@ install:
     composer config minimum-stability dev;
     composer config prefer-stable true;
   - while true; do echo "..."; sleep 60; done &
-  - composer require typo3/cms=$TYPO3_VERSION
+  - composer require typo3/minimal=$TYPO3_VERSION
   - kill %1
   - mkdir -p .Build/public/typo3conf/ext/
   - if [ ! -L .Build/public/typo3conf/ext/events2 ]; then ln -snvf ../../../../. .Build/public/typo3conf/ext/events2; fi
