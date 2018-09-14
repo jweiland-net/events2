@@ -1,24 +1,130 @@
+var Events2 = {
+    selectorPlugin: ".tx-events2",
+    selectorCreatePlugin: ".tx-events2-create",
+    selectorSearchPlugin: ".tx-events2-search",
+    selectorPluginVariables: "#events2DataElement",
+    selectorSearchPluginVariables: "#events2SearchDataElement",
+    selectorCshDialog: "#dialogHint",
+    selectorCshButton: "span.csh",
+
+    dateFormat: "dd.mm.yy"
+};
+
+Events2.initialize = function() {
+    Events2.$events2Plugins = jQuery(Events2.selectorPlugin);
+    Events2.$events2CreatePlugins = jQuery(Events2.selectorCreatePlugin);
+    Events2.$events2SearchPlugins = jQuery(Events2.selectorSearchPlugin);
+    Events2.$cshDialog = Events2.$events2CreatePlugins.find(Events2.selectorCshDialog);
+    Events2.$cshButtons = Events2.$events2CreatePlugins.find(Events2.selectorCshButton);
+
+    Events2.initializeDialogBoxForContextSensitiveHelp();
+    Events2.initializeDatePicker();
+};
+
+/**
+ * Test, if there are events2 plugins defined in DOM
+ *
+ * @returns {boolean}
+ */
+Events2.hasEvents2Plugins = function() {
+    return !!Events2.$events2Plugins.length;
+};
+
+/**
+ * Test, if there are events2 create plugins defined in DOM
+ *
+ * @returns {boolean}
+ */
+Events2.hasEvents2CreatePlugins = function() {
+    return !!Events2.$events2CreatePlugins.length;
+};
+
+/**
+ * Test, if there are events2 search plugins defined in DOM
+ *
+ * @returns {boolean}
+ */
+Events2.hasEvents2SearchPlugins = function() {
+    return !!Events2.$events2SearchPlugins.length;
+};
+
+/**
+ * Test, if all CSH related elements are defined in DOM
+ *
+ * @returns {boolean}
+ */
+Events2.hasCshElements = function() {
+    if (Events2.hasEvents2CreatePlugins()) {
+        if (!!Events2.$cshDialog.length && !!Events2.$cshButtons.length) {
+            return true;
+        } else {
+            console.log("We are on the create form, but we can not find any CSH buttons or dialogs. Feature deactivated.");
+            return false;
+        }
+    } else {
+        return false;
+    }
+};
+
+/**
+ * Initialize dialog box for CSH
+ * Currently used in create form for new events
+ */
+Events2.initializeDialogBoxForContextSensitiveHelp = function() {
+    if (!Events2.hasCshElements()) {
+        return;
+    }
+
+    Events2.$cshDialog.dialog({
+        autoOpen: false,
+        height: 150,
+        width: 300,
+        modal: true
+    });
+    Events2.$cshButtons.css("cursor", "pointer").on("click", Events2.attachClickEventToCsh);
+};
+
+/**
+ * Initialize DatePicker for elements with class: addDatePicker
+ */
+Events2.initializeDatePicker = function() {
+    if (Events2.hasEvents2CreatePlugins() || Events2.hasEvents2SearchPlugins()) {
+        jQuery(".addDatePicker").datepicker({
+            dateFormat: Events2.dateFormat
+        });
+    }
+};
+
+/**
+ * Initialize remaining letters for teaser in create form
+ */
+Events2.initializeRemainingLetters = function() {
+    if (Events2.hasEvents2CreatePlugins()) {
+        jQuery(".addDatePicker").datepicker({
+            dateFormat: Events2.dateFormat
+        });
+    }
+};
+
+/**
+ * Attach click event to CSH buttons
+ * It updates the text of the dialog box before it pops up.
+ */
+Events2.attachClickEventToCsh = function(event) {
+    var property = jQuery(event.target).data("property");
+    Events2.$cshDialog.find("p").text(jQuery("#hidden_" + property).text());
+    Events2.$cshDialog.dialog("open");
+};
+
+Events2.initialize();
+
+
+
+
+
+
 var jsVariables = jQuery("#events2DataElement").data("variables");
 var jsSearchVariables = jQuery("#events2SearchDataElement").data("variables");
-
-// add datePicker to date-fields
-jQuery("#eventBegin, #eventEnd, #searchEventBegin, #searchEventEnd").datepicker({
-    dateFormat: "dd.mm.yy"
-});
-
-// initialize dialog box
-jQuery("#dialogHint").dialog({
-    autoOpen: false, height: 150, width: 300, modal: true
-});
-
-// show dialog box on click
-jQuery("span.csh")
-    .css("cursor", "pointer")
-    .click(function () {
-        var property = jQuery(this).data("property");
-        jQuery("#dialogHint p").text(jQuery("#hidden_" + property).text());
-        jQuery("#dialogHint").dialog("open");
-    });
 
 // get remaining letters for teaser
 var $teaser = jQuery("#teaser"); // that's the textarea
