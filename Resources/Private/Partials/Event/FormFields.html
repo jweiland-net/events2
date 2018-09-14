@@ -19,10 +19,10 @@
 	<div class="col-sm-8">
 		<f:if condition="{event.eventBegin}">
 			<f:then>
-				<f:form.textfield class="form-control" placeholder="tt.mm.jjjj" id="eventBegin" property="eventBegin" value="{event.eventBegin -> f:format.date(format: 'd.m.Y')}" />
+				<f:form.textfield class="form-control addDatePicker" placeholder="tt.mm.jjjj" id="eventBegin" property="eventBegin" value="{event.eventBegin -> f:format.date(format: 'd.m.Y')}" />
 			</f:then>
 			<f:else>
-				<f:form.textfield class="form-control" placeholder="tt.mm.jjjj" id="eventBegin" property="eventBegin" />
+				<f:form.textfield class="form-control addDatePicker" placeholder="tt.mm.jjjj" id="eventBegin" property="eventBegin" />
 			</f:else>
 		</f:if>
 	</div>
@@ -34,10 +34,10 @@
 	<div class="col-sm-8">
 		<f:if condition="{event.eventEnd}">
 			<f:then>
-				<f:form.textfield class="form-control" placeholder="tt.mm.jjjj" id="eventEnd" property="eventEnd" value="{event.eventEnd -> f:format.date(format: 'd.m.Y')}" />
+				<f:form.textfield class="form-control addDatePicker" placeholder="tt.mm.jjjj" id="eventEnd" property="eventEnd" value="{event.eventEnd -> f:format.date(format: 'd.m.Y')}" />
 			</f:then>
 			<f:else>
-				<f:form.textfield class="form-control" placeholder="tt.mm.jjjj" id="eventEnd" property="eventEnd" />
+				<f:form.textfield class="form-control addDatePicker" placeholder="tt.mm.jjjj" id="eventEnd" property="eventEnd" />
 			</f:else>
 		</f:if>
 	</div>
