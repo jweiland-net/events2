@@ -43,17 +43,19 @@
 </f:section>
 
 <f:section name="location">
-  <f:alias map="{class: '{f:if(condition: event.topOfList, then: \'list-group-item list-group-item-info\', else: \'list-group-item\')}'}">
-    <li class="{class}">
-      <f:link.action
-        action="show"
-        pageUid="{settings.pidOfLocationPage}"
-        controller="Location"
-        arguments="{location: event.location}"
-        title="{event.location.location}"
-      >{event.location.location}</f:link.action>
-    </li>
-  </f:alias>
+	<f:if condition="{event.location}">
+		<f:alias map="{class: '{f:if(condition: event.topOfList, then: \'list-group-item list-group-item-info\', else: \'list-group-item\')}'}">
+			<li class="{class}">
+				<f:link.action
+					action="show"
+					pageUid="{settings.pidOfLocationPage}"
+					controller="Location"
+					arguments="{location: event.location}"
+					title="{event.location.location}"
+				>{event.location.location}</f:link.action>
+			</li>
+		</f:alias>
+	</f:if>
 </f:section>
 
 <f:section name="category">

@@ -64,6 +64,20 @@ class ExtConf implements SingletonInterface
     protected $defaultCountry = '';
 
     /**
+     * Organizer is required
+     *
+     * @var bool
+     */
+    protected $organizerIsRequired = false;
+
+    /**
+     * Location is required
+     *
+     * @var bool
+     */
+    protected $locationIsRequired = false;
+
+    /**
      * email from address.
      *
      * @var string
@@ -244,6 +258,50 @@ class ExtConf implements SingletonInterface
     public function setDefaultCountry($defaultCountry)
     {
         $this->defaultCountry = (string)$defaultCountry;
+    }
+
+    /**
+     * Returns the organizerIsRequired
+     *
+     * @return bool $organizerIsRequired
+     */
+    public function getOrganizerIsRequired()
+    {
+        return $this->organizerIsRequired;
+    }
+
+    /**
+     * Sets the organizerIsRequired
+     *
+     * @param bool $organizerIsRequired
+     *
+     * @return void
+     */
+    public function setOrganizerIsRequired($organizerIsRequired)
+    {
+        $this->organizerIsRequired = (bool)$organizerIsRequired;
+    }
+
+    /**
+     * Returns the locationIsRequired
+     *
+     * @return bool $locationIsRequired
+     */
+    public function getLocationIsRequired()
+    {
+        return $this->locationIsRequired;
+    }
+
+    /**
+     * Sets the locationIsRequired
+     *
+     * @param bool $locationIsRequired
+     *
+     * @return void
+     */
+    public function setLocationIsRequired($locationIsRequired)
+    {
+        $this->locationIsRequired = (bool)$locationIsRequired;
     }
 
     /**

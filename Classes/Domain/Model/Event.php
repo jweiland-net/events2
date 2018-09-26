@@ -190,7 +190,6 @@ class Event extends AbstractEntity
      * Location.
      *
      * @var \JWeiland\Events2\Domain\Model\Location
-     * @validate NotEmpty
      * @lazy
      */
     protected $location;
@@ -199,7 +198,6 @@ class Event extends AbstractEntity
      * Organizer.
      *
      * @var \JWeiland\Events2\Domain\Model\Organizer
-     * @validate NotEmpty
      * @lazy
      */
     protected $organizer;

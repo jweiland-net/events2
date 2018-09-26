@@ -10,11 +10,16 @@ recurringFuture = 6
 mergeEvents = 1
 # cat=basic; type=user[JWeiland\Events2\Hooks\EmStaticInfo->renderDefaultCountry]; label=LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:defaultCountry
 defaultCountry =
-# cat=basic; type=string; label=LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:emailFromAddress
+# cat=basic; type=boolean; label=LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:organizerIsRequired
+organizerIsRequired =
+# cat=basic; type=boolean; label=LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:locationIsRequired
+locationIsRequired =
+
+# cat=email; type=string; label=LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:emailFromAddress
 emailFromAddress =
-# cat=basic; type=string; label=LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:emailFromName
+# cat=email; type=string; label=LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:emailFromName
 emailFromName =
-# cat=basic; type=string; label=LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:emailToAddress
+# cat=email; type=string; label=LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:emailToAddress
 emailToAddress =
-# cat=basic; type=string; label=LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:emailToName
+# cat=email; type=string; label=LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:emailToName
 emailToName =

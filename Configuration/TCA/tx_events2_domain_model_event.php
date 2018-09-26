@@ -440,7 +440,7 @@ return [
                 'foreign_table' => 'tx_events2_domain_model_location',
                 'size' => 1,
                 'maxitems' => 1,
-                'minitems' => 1,
+                'minitems' => 0,
                 'wizards' => [
                     'suggest' => [
                         'type' => 'suggest',
@@ -461,7 +461,7 @@ return [
                 'foreign_table' => 'tx_events2_domain_model_organizer',
                 'size' => 1,
                 'maxitems' => 1,
-                'minitems' => 1,
+                'minitems' => 0,
                 'wizards' => [
                     'suggest' => [
                         'type' => 'suggest',

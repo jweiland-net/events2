@@ -30,7 +30,7 @@ class OrganizerRepository extends Repository
     ];
 
     /**
-     * Get aöllowed organizers for filter
+     * Get allowed organizers for filter
      *
      * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
      */

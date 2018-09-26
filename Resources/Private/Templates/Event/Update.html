@@ -41,16 +41,20 @@
       </ul>
     </td>
   </tr>
-  <tr>
-    <td><f:translate key="tx_events2_domain_model_event.location" /></td>
-    <td>{event.location.location}</td>
-  </tr>
+	<f:if condition="{event.location}">
+		<tr>
+			<td><f:translate key="tx_events2_domain_model_event.location" /></td>
+			<td>{event.location.location}</td>
+		</tr>
+	</f:if>
   <tr>
     <td><f:translate key="tx_events2_domain_model_event.video_link" /></td>
     <td>{event.videoLink.link}</td>
   </tr>
-  <tr>
-    <td><f:translate key="tx_events2_domain_model_event.organizer" /></td>
-    <td>{event.organizer.organizer}</td>
-  </tr>
+	<f:if condition="{event.organizer}">
+		<tr>
+			<td><f:translate key="tx_events2_domain_model_event.organizer" /></td>
+			<td>{event.organizer.organizer}</td>
+		</tr>
+	</f:if>
 </table>
