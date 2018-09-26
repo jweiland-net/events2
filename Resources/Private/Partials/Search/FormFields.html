@@ -3,8 +3,13 @@
 		<f:translate key="tx_events2_domain_model_search.search"/>
 	</label>
 	<div class="col-sm-9">
-		<input id="searchEvent" class="form-control" type="text" name="tx_events2_events[search][search]"
-					 value="{search.search}"/>
+		<input
+			id="searchEvent"
+			class="form-control"
+			type="text"
+			name="tx_events2_events[search][search]"
+			value="{search.search}"
+		/>
 	</div>
 </div>
 
@@ -15,7 +20,7 @@
 	<div class="col-sm-9">
 		<select id="searchMainCategory" class="form-control" name="tx_events2_events[search][mainCategory]">
 			<option value="0"></option>
-			<f:for each="{data.categories.main}" as="category">
+			<f:for each="{selectorData.categories.main}" as="category">
 				<f:if condition="{category.uid}=={search.mainCategory.uid}">
 					<f:then>
 						<option value="{category.uid}" selected="selected">{category.title}</option>
@@ -34,8 +39,12 @@
 		<f:translate key="tx_events2_domain_model_search.subCategory"/>
 	</label>
 	<div class="col-sm-9">
-		<select id="searchSubCategory" class="form-control" name="tx_events2_events[search][subCategory]"
-						disabled="disabled"></select>
+		<select
+			id="searchSubCategory"
+			class="form-control"
+			name="tx_events2_events[search][subCategory]"
+			disabled="disabled"
+		></select>
 	</div>
 </div>
 
@@ -44,8 +53,13 @@
 		<f:translate key="tx_events2_domain_model_search.eventBegin"/>
 	</label>
 	<div class="col-sm-9">
-		<input id="searchEventBegin" class="form-control" type="text" name="tx_events2_events[search][eventBegin]"
-					 value="{search.eventBegin -> f:format.date(format: 'd.m.Y')}"/>
+		<input
+			id="searchEventBegin"
+			class="form-control"
+			type="text"
+			name="tx_events2_events[search][eventBegin]"
+			value="{search.eventBegin -> f:format.date(format: 'd.m.Y')}"
+		/>
 	</div>
 </div>
 
@@ -54,8 +68,13 @@
 		<f:translate key="tx_events2_domain_model_search.eventEnd"/>
 	</label>
 	<div class="col-sm-9">
-		<input id="searchEventEnd" class="form-control" type="text" name="tx_events2_events[search][eventEnd]"
-					 value="{search.eventEnd -> f:format.date(format: 'd.m.Y')}"/>
+		<input
+			id="searchEventEnd"
+			class="form-control"
+			type="text"
+			name="tx_events2_events[search][eventEnd]"
+			value="{search.eventEnd -> f:format.date(format: 'd.m.Y')}"
+		/>
 	</div>
 </div>
 
@@ -66,7 +85,7 @@
 	<div class="col-sm-9">
 		<select id="searchLocation" class="form-control" name="tx_events2_events[search][location]">
 			<option value="0"></option>
-			<f:for each="{data.locations}" as="location">
+			<f:for each="{selectorData.locations}" as="location">
 				<f:if condition="{location.uid}=={search.location.uid}">
 					<f:then>
 						<option value="{location.uid}" selected="selected">{location.location}</option>
@@ -87,11 +106,21 @@
 	<div class="col-sm-9">
 		<f:if condition="{search.freeEntry}">
 			<f:then>
-				<input id="searchFreeEntry" type="checkbox" name="tx_events2_events[search][freeEntry]" value="1"
-							 checked="checked"/>
+				<input
+					id="searchFreeEntry"
+					type="checkbox"
+					name="tx_events2_events[search][freeEntry]"
+					value="1"
+					checked="checked"
+				/>
 			</f:then>
 			<f:else>
-				<input id="searchFreeEntry" type="checkbox" name="tx_events2_events[search][freeEntry]" value="1"/>
+				<input
+					id="searchFreeEntry"
+					type="checkbox"
+					name="tx_events2_events[search][freeEntry]"
+					value="1"
+				/>
 			</f:else>
 		</f:if>
 	</div>

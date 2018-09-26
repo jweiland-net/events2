@@ -25,6 +25,7 @@ use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Domain\Repository\OrganizerRepository;
 use JWeiland\Events2\Domain\Repository\UserRepository;
 use TYPO3\CMS\Core\Mail\MailMessage;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -290,16 +291,34 @@ class AbstractController extends ActionController
     {
         $this->view->assign('data', $this->configurationManager->getContentObject()->data);
         $this->view->assign('extConf', $this->extConf);
-        $this->view->assign('jsVariables', json_encode([
+        $this->view->assign('jsVariables', json_encode($this->getJsVariables()));
+        if ($this->settings['showFilterForOrganizerInFrontend']) {
+            $this->view->assign('organizers', $this->organizerRepository->getOrganizersForFilter());
+        }
+    }
+
+    /**
+     * Create an array with mostly needed variables for JavaScript.
+     * That way we don't need JavaScript parts in our templates.
+     * I have separated this method to its own method as we have to override these variables
+     * in SearchController and I can read them from View after variables are already assigned.
+     *
+     * @param array $override
+     * @return array
+     */
+    protected function getJsVariables(array $override = [])
+    {
+        $jsVariables = [
             'settings' => $this->settings,
+            'data' => $this->configurationManager->getContentObject()->data,
             'localization' => [
                 'locationFail' => LocalizationUtility::translate('error.locationFail', 'events2'),
                 'remainingText' => LocalizationUtility::translate('remainingLetters', 'events2')
             ]
-        ]));
-        if ($this->settings['showFilterForOrganizerInFrontend']) {
-            $this->view->assign('organizers', $this->organizerRepository->getOrganizersForFilter());
-        }
+        ];
+        ArrayUtility::mergeRecursiveWithOverrule($jsVariables, $override);
+
+        return $jsVariables;
     }
 
     /**

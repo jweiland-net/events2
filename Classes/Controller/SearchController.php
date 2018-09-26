@@ -66,13 +66,12 @@ class SearchController extends AbstractController
             throw new \Exception('Please check if you have set rootCategory correctly as parent of your defined mainCategories.');
         }
 
-        $data = [];
-        $data['siteId'] = $GLOBALS['TSFE']->id;
-        $data['categories']['main'] = $allowedMainCategories;
-        $data['categories']['sub'] = [];
-        $data['locations'] = $this->locationRepository->findAll();
+        $selectorData = [];
+        $selectorData['categories']['main'] = $allowedMainCategories;
+        $selectorData['categories']['sub'] = [];
+        $selectorData['locations'] = $this->locationRepository->findAll();
 
-        $this->view->assign('data', $data);
+        $view->assign('selectorData', $selectorData);
         parent::initializeView($view);
     }
 
@@ -116,9 +115,11 @@ class SearchController extends AbstractController
         }
 
         $this->view->assign('search', $search);
-        $this->view->assign('jsSearchVariables', json_encode([
-            'siteId' => $GLOBALS['TSFE']->id,
-            'search' => $gettableSearchProperties
-        ]));
+        $this->view->assign('jsVariables', json_encode(
+            $this->getJsVariables([
+                'siteId' => $GLOBALS['TSFE']->id,
+                'search' => $gettableSearchProperties
+            ])
+        ));
     }
 }

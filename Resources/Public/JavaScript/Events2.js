@@ -3,22 +3,37 @@ var Events2 = {
     selectorCreatePlugin: ".tx-events2-create",
     selectorSearchPlugin: ".tx-events2-search",
     selectorPluginVariables: "#events2DataElement",
-    selectorSearchPluginVariables: "#events2SearchDataElement",
     selectorCshDialog: "#dialogHint",
     selectorCshButton: "span.csh",
+    selectorRemainingCharsTextarea: ".addRemainingCharsCheck",
+    selectorAutoCompleteLocation: "#autoCompleteLocation",
+    selectorAutoCompleteLocationHelper: "#autoCompleteLocationHelper",
+    selectorSearchMainCategory: "#searchMainCategory",
 
     dateFormat: "dd.mm.yy"
 };
 
 Events2.initialize = function() {
+    // initializing jQuery elements
     Events2.$events2Plugins = jQuery(Events2.selectorPlugin);
     Events2.$events2CreatePlugins = jQuery(Events2.selectorCreatePlugin);
     Events2.$events2SearchPlugins = jQuery(Events2.selectorSearchPlugin);
     Events2.$cshDialog = Events2.$events2CreatePlugins.find(Events2.selectorCshDialog);
     Events2.$cshButtons = Events2.$events2CreatePlugins.find(Events2.selectorCshButton);
+    Events2.$textareasWithRemainingChars = jQuery(Events2.selectorRemainingCharsTextarea);
+    Events2.$autoCompleteLocation = jQuery(Events2.selectorAutoCompleteLocation);
+    Events2.$autoCompleteLocationHelper = jQuery(Events2.selectorAutoCompleteLocationHelper);
+    Events2.$searchMainCategory = jQuery(Events2.selectorSearchMainCategory);
 
+    // initializing variables
+    Events2.pluginVariables = jQuery(Events2.selectorPluginVariables).data("variables");
+
+    // initializing features
     Events2.initializeDialogBoxForContextSensitiveHelp();
+    Events2.initializeRemainingLetters();
     Events2.initializeDatePicker();
+    Events2.initializeAutoCompleteForLocation();
+    Events2.initializeSubCategoriesForSearch();
 };
 
 /**
@@ -46,6 +61,51 @@ Events2.hasEvents2CreatePlugins = function() {
  */
 Events2.hasEvents2SearchPlugins = function() {
     return !!Events2.$events2SearchPlugins.length;
+};
+
+/**
+ * Test, if there are some textareas in form with remaining chars feature
+ *
+ * @returns {boolean}
+ */
+Events2.hasRemainingCharsTextareas = function() {
+    return !!Events2.$textareasWithRemainingChars.length;
+};
+
+/**
+ * Test, if there is an AutoComplete for location available in template
+ *
+ * @returns {boolean}
+ */
+Events2.hasAutoCompleteLocation = function() {
+    return !!Events2.$autoCompleteLocation.length;
+};
+
+/**
+ * Test, if localization of pluginVariables is initialized
+ *
+ * @returns {boolean}
+ */
+Events2.isLocalizationInitialized = function() {
+    return Events2.pluginVariables.hasOwnProperty("localization");
+};
+
+/**
+ * Test, if settings of pluginVariables are initialized
+ *
+ * @returns {boolean}
+ */
+Events2.isSettingsInitialized = function() {
+    return Events2.pluginVariables.hasOwnProperty("settings");
+};
+
+/**
+ * Test, if main category is available in search template
+ *
+ * @returns {boolean}
+ */
+Events2.hasSearchMainCategory = function() {
+    return !!Events2.$searchMainCategory.length;
 };
 
 /**
@@ -99,9 +159,89 @@ Events2.initializeDatePicker = function() {
  * Initialize remaining letters for teaser in create form
  */
 Events2.initializeRemainingLetters = function() {
-    if (Events2.hasEvents2CreatePlugins()) {
-        jQuery(".addDatePicker").datepicker({
-            dateFormat: Events2.dateFormat
+    if (Events2.hasRemainingCharsTextareas()) {
+        if (!Events2.isLocalizationInitialized()) {
+            console.log("Variable localization of pluginVariables is not available. Please check your templates");
+        } else if (!Events2.isSettingsInitialized()) {
+            console.log("Variable settings of pluginVariables is not available. Please check your templates");
+        } else {
+            $remainingCharsContainer = jQuery("<div />")
+                .text(Events2.pluginVariables.localization.remainingText + ": " + Events2.pluginVariables.settings.remainingLetters)
+                .attr("class", "remainingChars");
+
+            Events2.$textareasWithRemainingChars.each(function() {
+                var $textarea = jQuery(this);
+                $textarea.after($remainingCharsContainer);
+
+                $textarea.on("keyup", function() {
+                    var value = $(this).val();
+                    var len = value.length;
+                    var maxLength = Events2.pluginVariables.settings.remainingLetters;
+
+                    $(this).val(value.substring(0, maxLength));
+                    $textarea.siblings(".remainingChars").eq(0).text(
+                        Events2.pluginVariables.localization.remainingText + ": " + (maxLength - len)
+                    );
+                });
+            });
+        }
+    }
+};
+
+/**
+ * Initialize AutoComplete for location
+ */
+Events2.initializeAutoCompleteForLocation = function() {
+    if (Events2.hasEvents2CreatePlugins() && Events2.hasAutoCompleteLocation()) {
+        $locationStatus = jQuery("<span />").attr("class", "locationStatus");
+        Events2.$autoCompleteLocation.after($locationStatus);
+
+        Events2.$autoCompleteLocation.autocomplete({
+            source: function(request, response) {
+                var siteUrl = location.protocol + "//" + location.hostname + (location.port ? ":" + location.port : "");
+                $.ajax({
+                    url: siteUrl + "?eID=events2findLocations",
+                    dataType: "json",
+                    data: {
+                        tx_events2_events: {
+                            arguments: {
+                                locationPart: request.term
+                            }
+                        }
+                    },
+                    success: function (data) {
+                        response(data);
+                    }
+                });
+            }, minLength: 2, response: function (event, ui) {
+                if (ui.content.length === 0) {
+                    Events2.$autoCompleteLocation
+                        .siblings(".locationStatus")
+                        .eq(0)
+                        .text(Events2.pluginVariables.localization.locationFail)
+                        .removeClass("locationOk locationFail")
+                        .addClass("locationFail");
+                }
+            }, select: function (event, ui) {
+                if (ui.item) {
+                    Events2.$autoCompleteLocation
+                        .siblings(".locationStatus")
+                        .eq(0)
+                        .text("")
+                        .removeClass("locationOk locationFail")
+                        .addClass("locationOk");
+                    Events2.$autoCompleteLocationHelper.val(ui.item.uid);
+                }
+            }
+        }).focusout(function () {
+            if (Events2.$autoCompleteLocation.val() === "") {
+                Events2.$autoCompleteLocation
+                    .sibilings(".locationStatus")
+                    .eq(0)
+                    .text("")
+                    .removeClass("locationOk locationFail");
+                Events2.$autoCompleteLocationHelper.val("");
+            }
         });
     }
 };
@@ -116,90 +256,58 @@ Events2.attachClickEventToCsh = function(event) {
     Events2.$cshDialog.dialog("open");
 };
 
-Events2.initialize();
-
-
-
-
-
-
-var jsVariables = jQuery("#events2DataElement").data("variables");
-var jsSearchVariables = jQuery("#events2SearchDataElement").data("variables");
-
-// get remaining letters for teaser
-var $teaser = jQuery("#teaser"); // that's the textarea
-var $remainingChars = $("#remainingChars"); // that's the text element below the textarea
-$remainingChars.text(jsVariables.localization.remainingText + ": " + jsVariables.settings.remainingLetters);
-$teaser.on("keyup", function () {
-    var value = $(this).val();
-    var len = value.length;
-    var maxLength = jsVariables.settings.remainingLetters;
-
-    $(this).val(value.substring(0, maxLength));
-    $remainingChars.text(jsVariables.localization.remainingText + ": " + (maxLength - len));
-});
-
-// create autocomplete for location selector
-jQuery("#autocompleteLocation").autocomplete({
-    source: function (request, response) {
-        var siteUrl = location.protocol + "//" + location.hostname + (location.port ? ":" + location.port : "");
-        $.ajax({
-            url: siteUrl + "?eID=events2findLocations", dataType: "json", data: {
-                tx_events2_events: {
-                    arguments: {
-                        locationPart: request.term
-                    }
-                }
-            }, success: function (data) {
-                response(data);
-            }
+/**
+ * Initialize sub-categories of search plugin
+ */
+Events2.initializeSubCategoriesForSearch = function() {
+    if (Events2.hasEvents2SearchPlugins() && Events2.hasSearchMainCategory()) {
+        Events2.$searchMainCategory.on("change", function () {
+            Events2.renderSubCategory();
         });
-    }, minLength: 2, response: function (event, ui) {
-        if (ui.content.length === 0) {
-            jQuery("#locationStatus").text(jsVariables.localization.locationFail).removeClass("locationOk locationFail").addClass("locationFail");
-        }
-    }, select: function (event, ui) {
-        if (ui.item) {
-            jQuery("#locationStatus").text("").removeClass("locationOk locationFail").addClass("locationOk");
-            jQuery("#location").val(ui.item.uid);
-        }
+        Events2.renderSubCategory();
     }
-}).focusout(function () {
-    if (jQuery("#autocompleteLocation").val() == "") {
-        jQuery("#locationStatus").text("").removeClass("locationOk locationFail");
-        jQuery("#location").val("");
-    }
-});
+};
 
-function renderSubCategory() {
+/**
+ * Search for sub-categories, if a main category was selected
+ */
+Events2.renderSubCategory = function() {
     jQuery("#searchSubCategory").empty().attr("disabled", "disabled");
-    var $searchMainCategory = jQuery("#searchMainCategory");
 
-    if ($searchMainCategory.val() !== "0") {
+    if (Events2.$searchMainCategory.val() !== "0") {
         var siteUrl = location.protocol + "//" + location.hostname + (location.port ? ":" + location.port : "");
         jQuery.ajax({
             type: 'GET',
             url: siteUrl,
             dataType: 'json',
             data: {
-                id: jsSearchVariables.siteId,
+                id: Events2.pluginVariables.data.pid,
                 type: 1372255350,
                 tx_events2_events: {
                     objectName: 'FindSubCategories',
                     arguments: {
-                        category: $searchMainCategory.val()
+                        category: Events2.$searchMainCategory.val()
                     }
                 }
             }, success: function (categories) {
-                fillSubCategories(categories);
+                Events2.fillSubCategories(categories);
             }, error: function (xhr, error) {
-                console.log(error);
+                if (error === "parsererror") {
+                    console.log("It seems that you have activated Debugging mode in TYPO3. Please deactivate it to remove ParseTime from request");
+                } else {
+                    console.log(error);
+                }
             }
         });
     }
-}
+};
 
-function fillSubCategories(categories) {
+/**
+ * Use categories to fill selector for sub-categories
+ *
+ * @param categories
+ */
+Events2.fillSubCategories = function(categories) {
     var count = 0;
     var selected = "";
     var $searchSubCategory = jQuery("#searchSubCategory");
@@ -207,7 +315,7 @@ function fillSubCategories(categories) {
     for (var property in categories) {
         if (categories.hasOwnProperty(property)) {
             count++;
-            if (jsSearchVariables.search.subCategory !== null && property === jsSearchVariables.search.subCategory.uid) {
+            if (Events2.pluginVariables.search.subCategory !== null && Events2.pluginVariables.search.subCategory.uid === parseInt(property)) {
                 selected = "selected=\"selected\"";
             } else {
                 selected = "";
@@ -218,11 +326,6 @@ function fillSubCategories(categories) {
     if (count) {
         $searchSubCategory.removeAttr("disabled");
     }
-}
+};
 
-if (jQuery("#events2SearchForm").length) {
-    jQuery("#searchMainCategory").on("change", function () {
-        renderSubCategory();
-    });
-    renderSubCategory();
-}
+Events2.initialize();
