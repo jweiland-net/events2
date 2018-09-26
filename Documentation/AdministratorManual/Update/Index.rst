@@ -9,6 +9,23 @@ Updating
 --------
 If you update EXT:events2 to a newer version, please read this section carefully!
 
+Update to Version 2.3.0
+^^^^^^^^^^^^^^^^^^^^^^^
+
+With version 2.3.0 we have rewritten the frontend Events2.js completely. Now it it much more readable and
+it prevents executing JavaScript, if it is not valid for current view. That's why we have some changes in our
+templates:
+
+* Remove all siteId variables. Please use {data.pid} instead
+* Remove all jsSearchVariables. They are now all available in just jsVariables
+* All jsVariables are removed from Templates and Partials and has to be in all Layout file now
+* The <div> for remainingChars has been removed as it will be created dynamically with JS now
+* CSS class addRemainingCharsCheck activates max chars feature for textareas automatically
+* The <span> for locationStatus has been removed as it will be created dynamically with JS now
+* Change CSS class powermail_input to form-control in Event/FormFields Partial
+* Move records for selectboxes in search plugin from {data} to {selectorData}
+* Make data with current tt_content record available in jsVariables, too.
+
 Update to Version 2.0.0
 ^^^^^^^^^^^^^^^^^^^^^^^
 

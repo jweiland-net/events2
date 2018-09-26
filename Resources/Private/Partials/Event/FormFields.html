@@ -6,8 +6,7 @@
 	<f:render section="renderLabel" arguments="{property: 'teaser', required: required}" />
 	<f:render section="renderCsh" arguments="{property: 'teaser', transKey: 'cshTeaser'}" />
 	<div class="col-sm-8">
-		<f:form.textarea class="form-control" id="teaser" property="teaser" rows="5" cols="50" />
-		<div id="remainingChars"></div>
+		<f:form.textarea class="form-control addRemainingCharsCheck" id="teaser" property="teaser" rows="5" cols="50" />
 	</div>
 </div>
 
@@ -63,9 +62,8 @@
 	<f:render section="renderLabel" arguments="{property: 'location', required: 1}" />
 	<f:render section="renderCsh" arguments="{property: 'location', transKey: 'cshLocation'}" />
 	<div class="col-sm-8">
-		<f:form.hidden id="location" property="location" />
-		<f:form.textfield class="powermail_input" id="autocompleteLocation" value="{f:if(condition: event.location, then: event.location.location, else: '')}" />
-		<span id="locationStatus"></span>
+		<f:form.hidden id="autoCompleteLocationHelper" property="location" />
+		<f:form.textfield class="form-control" id="autoCompleteLocation" value="{f:if(condition: event.location, then: event.location.location, else: '')}" />
 		<div><f:link.page pageUid="8460" title="Neuen Veranstaltungsort beantragen">Neuen Ort beantragen</f:link.page></div>
 	</div>
 </div>
