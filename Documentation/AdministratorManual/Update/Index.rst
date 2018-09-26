@@ -25,6 +25,10 @@ templates:
 * Change CSS class powermail_input to form-control in Event/FormFields Partial
 * Move records for selectboxes in search plugin from {data} to {selectorData}
 * Make data with current tt_content record available in jsVariables, too.
+* We have added two more Layouts. Please adjust the new path in your templates.
+
+We have removed TypoLinkCodecService as it was only needed by our own TypoLink VH and is part of TYPO3
+since TYPO3 7.*.
 
 Update to Version 2.0.0
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -53,3 +57,7 @@ and set show action again.
 After all these changes you have to re-create all day records. The easiest way to do so is:
 Create scheduler task of type "Create/Update Days" if not already exists.
 Execute that task.
+
+We have removed our own TypoLink ViewHelper as it is not needed anymore since
+TYPO3 7.6. Please change all e2:link.typolink VHs of your templates into
+f:link.typolink.
