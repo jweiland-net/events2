@@ -30,6 +30,22 @@ templates:
 We have removed TypoLinkCodecService as it was only needed by our own TypoLink VH and is part of TYPO3
 since TYPO3 7.*.
 
+Organizer and Location are not required anymore by default. If you still need them required
+go into ExtensionManager and set them as required. This change results into some further changes
+to our templates:
+
+* Add if to render section "location" only if a location is available
+* Add if to render section "googleRoute" only if a location is available
+* Add if to render section "organizer" only if a organizer is available
+* Add if to location to prevent rendering footer for each event in list
+* Move <p>-Tag, for editing your own records in FE, inside of the if
+* Add if to organizer and location in Create.html
+* Add if to organizer and location in Update.html
+
+We have moved all email settings in ExtConf to new tab "Email"
+
+EXT maps2 is not a hard-coded dependency to events2 anymore, but we still suggest it in ext_emconf.php.
+
 Update to Version 2.0.0
 ^^^^^^^^^^^^^^^^^^^^^^^
 

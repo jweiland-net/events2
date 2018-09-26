@@ -3,7 +3,6 @@
   <file source-language="en" datatype="plaintext" original="messages" date="2013-03-40T10:38:40Z" product-name="events2">
     <header/>
     <body>
-
       <trans-unit id="poiCollectionPid">
         <source>PID for poiCollections: Define a storage pid where to store records of type Point of Interest.</source>
         <target>PID für Google Maps: Beim Speichern von Veranstaltungsorten werden automatisch GoogleMaps-Datensätze erzeugt. Geben Sie hier an, in welchem StorageFolder diese angelegt werden sollen.</target>
@@ -24,10 +23,18 @@
         <source>Merge events: When an event has multiple performances on one day you can decide, if this event should be displayed as one day with multiple times or as multiple individual events in list. You have to start the scheduler again after changing this option.</source>
         <target>Veranstaltungen zusammenführen: Wenn eine Veranstaltung mehrmals an einem Tag stattfindet, könnt Ihr mit dieser Einstellung entscheiden, ob die Veranstaltung nur einmal mit mehreren Uhrzeiten oder mehrmals mit der jeweils individuellen Uhrzeit in der Liste erscheint. Nach einer Änderung dieser Option muss der Update Task der events2 im scheduler neu gestartet werden.</target>
       </trans-unit>
-      <trans-unit id="defaultCountry">
-        <source>Default country: If you're only working for one specified country while creating/editing POIs in backend it would be cool to set a country by default. So you only need to add street and city to find a POI. If you need POIs from all over the world, please keep this field empty</source>
-        <target>Standard Land: Wenn es in Ihrem Projekt nur POIs aus einem ganz bestimmten Land gibt, dann können Sie dieses Land hier eintragen und brauchen beim Anlegen/Bearbeiten von POIS im Backend das Land nicht explizit anzugeben. Sollten Sie jedoch POIs auf der ganzen Welt benötigen, dann lassen Sie dieses Feld bitte leer.</target>
-      </trans-unit>
+			<trans-unit id="defaultCountry">
+				<source>Default country: If you're only working for one specified country while creating/editing POIs in backend it would be cool to set a country by default. So you only need to add street and city to find a POI. If you need POIs from all over the world, please keep this field empty</source>
+				<target>Standard Land: Wenn es in Ihrem Projekt nur POIs aus einem ganz bestimmten Land gibt, dann können Sie dieses Land hier eintragen und brauchen beim Anlegen/Bearbeiten von POIS im Backend das Land nicht explizit anzugeben. Sollten Sie jedoch POIs auf der ganzen Welt benötigen, dann lassen Sie dieses Feld bitte leer.</target>
+			</trans-unit>
+			<trans-unit id="organizerIsRequired">
+				<source>Is organizer required: By default it is not needed to explicit set an organizer. But, if you want, you can set organizer as a required property with activating this checkbox</source>
+				<target>Veranstalter als Pflichtfeld: Standardmäßig ist der Veranstalter kein Pflichtfeld. Aber wenn alle Veranstaltungen zwingend einen Veranstalter benötigen, dann kannst Du dies mit dieser Option aktivieren.</target>
+			</trans-unit>
+			<trans-unit id="locationIsRequired">
+				<source>Is location required: By default it is not needed to explicit set a location. But, if you want, you can set location as a required property with activating this checkbox</source>
+				<target>Veranstaltungsort als Pflichtfeld: Standardmäßig ist der Veranstaltungsort kein Pflichtfeld. Aber wenn alle Veranstaltungen zwingend einen Veranstaltungsort benötigen, dann kannst Du dies mit dieser Option aktivieren.</target>
+			</trans-unit>
 
       <trans-unit id="emailFromAddress" xml:space="preserve">
         <source>email from address: The senders email address. If not given the extension tries to get one from INSTALL_TOOL.</source>
@@ -45,7 +52,6 @@
         <source>email to name: The recipients email name.</source>
         <target>E-Mail TO Name: Der Empfänger Name</target>
       </trans-unit>
-
     </body>
   </file>
 </xliff>

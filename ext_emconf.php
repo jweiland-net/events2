@@ -32,11 +32,11 @@ $EM_CONF[$_EXTKEY] = [
         'depends' => [
             'typo3' => '7.6.0-8.99.99',
             'static_info_tables' => '6.3.9',
-            'maps2' => '3.0.0',
         ],
         'conflicts' => [
         ],
         'suggests' => [
+            'maps2' => '3.0.0',
         ],
     ],
 ];

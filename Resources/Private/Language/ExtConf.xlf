@@ -3,7 +3,6 @@
   <file source-language="en" datatype="plaintext" original="messages" date="2013-03-40T10:38:40Z" product-name="events2">
     <header/>
     <body>
-
       <trans-unit id="poiCollectionPid">
         <source>PID for poiCollections: Define a storage pid where to store records of type Point of Interest.</source>
       </trans-unit>
@@ -22,6 +21,12 @@
       <trans-unit id="defaultCountry">
         <source>Default country: If you're only working for one specified country while creating/editing POIs in backend it would be cool to set a country by default. So you only need to add street and city to find a POI. If you need POIs from all over the world, please keep this field empty</source>
       </trans-unit>
+			<trans-unit id="organizerIsRequired">
+				<source>Is organizer required: By default it is not needed to explicit set an organizer. But, if you want, you can set organizer as a required property with activating this checkbox</source>
+			</trans-unit>
+			<trans-unit id="locationIsRequired">
+				<source>Is location required: By default it is not needed to explicit set a location. But, if you want, you can set location as a required property with activating this checkbox</source>
+			</trans-unit>
 
       <trans-unit id="emailFromAddress" xml:space="preserve">
         <source>email from address: The senders email address. If not given the extension tries to get one from INSTALL_TOOL.</source>
@@ -35,7 +40,6 @@
       <trans-unit id="emailToName" xml:space="preserve">
         <source>email to name: The recipients email name.</source>
       </trans-unit>
-
     </body>
   </file>
 </xliff>

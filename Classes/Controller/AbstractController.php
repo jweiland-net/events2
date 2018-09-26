@@ -458,29 +458,36 @@ class AbstractController extends ActionController
      * In a HTML-Template you can change the user uid if you want
      * So it's better to add the organizer here in PHP
      *
-     * @param $argument
-     *
+     * @param string $argument
      * @return bool
-     *
      * @throws \Exception
      */
     protected function addOrganizer($argument)
     {
         if ($this->request->hasArgument($argument)) {
+            /** @var array $event */
             $event = $this->request->getArgument($argument);
             if (!isset($event['organizer'])) {
-                $organizerOfCurrentUser = (string)$this->userRepository->getFieldFromUser('tx_events2_organizer');
+                $organizerOfCurrentUser = $this->userRepository->getFieldFromUser('tx_events2_organizer');
                 if (MathUtility::canBeInterpretedAsInteger($organizerOfCurrentUser)) {
                     $event['organizer'] = $organizerOfCurrentUser;
                     // per default it is not allowed to add new Arguments manually. So we have to register them.
                     // allow mapping of organizer
-                    $this->arguments->getArgument($argument)->getPropertyMappingConfiguration()->allowProperties('organizer');
+                    $this->arguments
+                        ->getArgument($argument)
+                        ->getPropertyMappingConfiguration()
+                        ->allowProperties('organizer');
                     // allow creation
-                    $this->arguments->getArgument($argument)->getPropertyMappingConfiguration()->forProperty('organizer')->setTypeConverterOption(
-                        'TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter',
-                        PersistentObjectConverter::CONFIGURATION_CREATION_ALLOWED,
-                        true
-                    )->allowProperties('organizer');
+                    $this->arguments
+                        ->getArgument($argument)
+                        ->getPropertyMappingConfiguration()
+                        ->forProperty('organizer')
+                        ->setTypeConverterOption(
+                            'TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter',
+                            PersistentObjectConverter::CONFIGURATION_CREATION_ALLOWED,
+                            true
+                        )
+                        ->allowProperties('organizer');
                     $this->request->setArgument($argument, $event);
                 } else {
                     return false;
@@ -489,7 +496,6 @@ class AbstractController extends ActionController
                 return true;
             }
         }
-
         return false;
     }
 }

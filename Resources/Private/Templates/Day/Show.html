@@ -3,35 +3,35 @@
 <f:layout name="Default" />
 
 <f:section name="main">
-  <f:if condition="{0: settings.display}=={0: 'displayImages'}">
-    <f:then>
-      <f:if condition="{day.event.images->f:count}">
-        <f:render partial="Event/Images" arguments="{event: day.event}"/>
-      </f:if>
-    </f:then>
-    <f:else>
-      <f:flashMessages />
-      <f:render section="newEdit" arguments="{event: day.event}" />
-      <f:render partial="Day/Properties" arguments="{day: day}" />
-    </f:else>
-  </f:if>
+	<f:if condition="{0: settings.display}=={0: 'displayImages'}">
+		<f:then>
+			<f:if condition="{day.event.images->f:count}">
+				<f:render partial="Event/Images" arguments="{event: day.event}"/>
+			</f:if>
+		</f:then>
+		<f:else>
+			<f:flashMessages />
+			<f:render section="newEdit" arguments="{event: day.event}" />
+			<f:render partial="Day/Properties" arguments="{day: day}" />
+		</f:else>
+	</f:if>
 </f:section>
 
 <f:section name="newEdit">
-  <f:security.ifHasRole role="{settings.userGroup}">
-    <p class="align-right info-box">
-      <f:link.action action="new" controller="Event" title="{f:translate(key: 'newEntry')}">
-        <f:translate key="newEntry"/>
-        <span aria-hidden="true" class="icon-arrowright"></span>
-      </f:link.action>
-    </p>
-    <p class="align-right info-box">
-      <f:if condition="{e2:feUser(field: 'tx_events2_organizer')} == {day.event.organizer.uid}">
-        <f:link.action action="edit" controller="Event" arguments="{event: day.event, timestamp: '0'}" title="{f:translate(key: 'update')}">
-          <f:translate key="update" />
-          <span aria-hidden="true" class="icon-arrowright"></span>
-        </f:link.action>
-      </f:if>
-    </p>
-  </f:security.ifHasRole>
+	<f:security.ifHasRole role="{settings.userGroup}">
+		<p class="align-right info-box">
+			<f:link.action action="new" controller="Event" title="{f:translate(key: 'newEntry')}">
+				<f:translate key="newEntry"/>
+				<span aria-hidden="true" class="icon-arrowright"></span>
+			</f:link.action>
+		</p>
+		<f:if condition="{e2:feUser(field: 'tx_events2_organizer')} == {day.event.organizer.uid}">
+			<p class="align-right info-box">
+				<f:link.action action="edit" controller="Event" arguments="{event: day.event, timestamp: '0'}" title="{f:translate(key: 'update')}">
+					<f:translate key="update" />
+					<span aria-hidden="true" class="icon-arrowright"></span>
+				</f:link.action>
+			</p>
+		</f:if>
+	</f:security.ifHasRole>
 </f:section>
