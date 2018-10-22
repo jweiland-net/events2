@@ -123,6 +123,13 @@ class Event extends AbstractEntity
     protected $eachWeeks = 0;
 
     /**
+     * Each months.
+     *
+     * @var int
+     */
+    protected $eachMonths = 0;
+
+    /**
      * RecurringEnd.
      *
      * @var \DateTime
@@ -643,7 +650,29 @@ class Event extends AbstractEntity
      */
     public function setEachWeeks($eachWeeks)
     {
-        $this->eachWeeks = $eachWeeks;
+        $this->eachWeeks = (int)$eachWeeks;
+    }
+
+    /**
+     * Returns the eachMonths.
+     *
+     * @return int $eachMonths
+     */
+    public function getEachMonths()
+    {
+        return $this->eachMonths;
+    }
+
+    /**
+     * Sets the eachMonths.
+     *
+     * @param int $eachMonths
+     *
+     * @return void
+     */
+    public function setEachMonths($eachMonths)
+    {
+        $this->eachMonths = (int)$eachMonths;
     }
 
     /**

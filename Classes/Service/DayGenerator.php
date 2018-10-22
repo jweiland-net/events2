@@ -45,7 +45,6 @@ class DayGenerator
      * injects extConf.
      *
      * @param ExtConf $extConf
-     *
      * @return void
      */
     public function injectExtConf(ExtConf $extConf)
@@ -57,7 +56,6 @@ class DayGenerator
      * inject DateTime Utility.
      *
      * @param DateTimeUtility $dateTimeUtility
-     *
      * @return void
      */
     public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
@@ -69,9 +67,7 @@ class DayGenerator
      * initializes this object.
      *
      * @param Event $event
-     *
      * @return bool
-     *
      * @throws \Exception
      */
     public function initialize(Event $event)
@@ -95,11 +91,11 @@ class DayGenerator
             $event->getEventEnd() instanceof \DateTime
         ) {
             // if we have no recurring defined but event_end, this is also a recurring event and we have to add all days in between
-            $eventBegin = $this->getEarliestDateForGeneratedDays($event->getEventBegin());
-            $eventEnd = $this->getMaxDateForGeneratedDays($event);
-            while ($eventBegin <= $eventEnd) {
-                $this->addDayToStorage($eventBegin);
-                $eventBegin->modify('+1 day');
+            $dateToStartCalculatingFrom = $this->getDateToStartCalculatingFrom($event);
+            $dateToStopCalculatingTo = $this->getDateToStopCalculatingTo($event);
+            while ($dateToStartCalculatingFrom <= $dateToStopCalculatingTo) {
+                $this->addDayToStorage($dateToStartCalculatingFrom);
+                $dateToStartCalculatingFrom->modify('+1 day');
             }
         } else {
             // add start day
@@ -152,7 +148,6 @@ class DayGenerator
      * check if event record is a valid event.
      *
      * @param Event $event
-     *
      * @return bool
      */
     protected function isValidEvent(Event $event)
@@ -174,7 +169,6 @@ class DayGenerator
      * add day to day storage.
      *
      * @param \DateTime $day Day to add
-     *
      * @return void
      */
     protected function addDayToStorage(\DateTime $day)
@@ -188,7 +182,6 @@ class DayGenerator
      * remove day to day storage.
      *
      * @param \DateTime $day Day to remove
-     *
      * @return void
      */
     protected function removeDayFromStorage(\DateTime $day)
@@ -197,13 +190,14 @@ class DayGenerator
     }
 
     /**
-     * get max date for generated day records in future.
+     * Returns current date added with configured "recurring future" configuration in ExtensionManager.
+     * If calculated date is older than eventEnd, it does not make sense to use that date and we
+     * will return eventEnd instead.
      *
      * @param Event $event
-     *
      * @return \DateTime
      */
-    protected function getMaxDateForGeneratedDays(Event $event)
+    protected function getDateToStopCalculatingTo(Event $event)
     {
         $today = clone $this->dateTimeUtility->convert('today');
         $maxEventEnd = $event->getEventBegin();
@@ -231,29 +225,44 @@ class DayGenerator
     }
 
     /**
-     * get earliest date for generated day records in past.
+     * Returns current date subtracted with configured "recurring past" configuration in ExtensionManager.
+     * If calculated date is older than eventBegin, it does not make sense to use that date and we
+     * will return eventBegin instead.
      *
-     * @param \DateTime $eventBegin Event begin
-     *
+     * @param Event $event
      * @return \DateTime
      */
-    protected function getEarliestDateForGeneratedDays(\DateTime $eventBegin)
+    protected function getDateToStartCalculatingFrom(Event $event)
     {
-        $earliestEventBegin = clone $this->dateTimeUtility->convert('today');
-        $earliestEventBegin->modify('-' . $this->extConf->getRecurringPast() . ' months');
-
-        if ($earliestEventBegin > $eventBegin) {
-            return $earliestEventBegin;
+        $earliestDateToStartCalculatingFrom = clone $this->dateTimeUtility->convert('today');
+        $earliestDateToStartCalculatingFrom->modify('-' . $this->extConf->getRecurringPast() . ' months');
+        if (
+            $event->getEventBegin() instanceof \DateTime
+            && $earliestDateToStartCalculatingFrom > $event->getEventBegin()
+        ) {
+            $dateToStartCalculatingFrom = $earliestDateToStartCalculatingFrom;
         } else {
-            return $eventBegin;
+            $dateToStartCalculatingFrom = $event->getEventBegin();
         }
+
+        // In case of eachWeeks and eachMonth $dateToStartCalculatingFrom has to be
+        // exactly in sync with eventBegin
+        if ($event->getEachWeeks() || $event->getEachMonths()) {
+            $eventBegin = clone $event->getEventBegin();
+            while ($eventBegin < $dateToStartCalculatingFrom) {
+                $eventBegin->modify('+' . $event->getEachWeeks() . ' months');
+                $eventBegin->modify('+' . $event->getEachWeeks() . ' weeks');
+            }
+            $dateToStartCalculatingFrom = $eventBegin;
+        }
+
+        return $dateToStartCalculatingFrom;
     }
 
     /**
      * Getter for xth.
      *
      * @param Event $event
-     *
      * @return array $xth
      */
     protected function getXth(Event $event)
@@ -271,7 +280,6 @@ class DayGenerator
      * Getter for weekday.
      *
      * @param Event $event
-     *
      * @return array $weekday
      */
     protected function getWeekday(Event $event)
@@ -286,10 +294,9 @@ class DayGenerator
     }
 
     /**
-     * get items from TCA.
+     * Get items from TCA.
      *
      * @param string $field
-     *
      * @return array
      */
     protected function getItemsFromTca($field)
@@ -305,79 +312,59 @@ class DayGenerator
     }
 
     /**
-     * add days for recurring events.
+     * Add days for recurring events.
      *
      * @param Event $event
-     *
      * @return void
      */
     protected function addRecurringEvents(Event $event)
     {
-        if ($event->getEachWeeks()) {
-            // add days for each week(s)
-            $this->addRecurringWeeks($event);
+        if ($event->getEachWeeks() || $event->getEachMonths()) {
+            // add days for each week(s) and/or months
+            $this->addRecurrings($event);
         } else {
             // add days for xth recurring event
-            $startDate = $this->getEarliestDateForGeneratedDays($event->getEventBegin());
+            $dateToStartCalculatingFrom = $this->getDateToStartCalculatingFrom($event);
             // We need the first day, because January the 30th +1 month results in 02.03.
             // At that point it is no problem to set the date to the first, because we only need month and year.
             // You will find the check for the correct date in addDaysForMonth().
-            $startDate->modify('first day of this month');
+            $dateToStartCalculatingFrom->modify('first day of this month');
 
-            $maxDate = $this->getMaxDateForGeneratedDays($event);
-            while ($startDate <= $maxDate) {
-                $this->addDaysForMonth($startDate->format('F'), $startDate->format('Y'), $event);
-                $startDate->modify('next month');
+            $dateToStopCalculatingTo = $this->getDateToStopCalculatingTo($event);
+            while ($dateToStartCalculatingFrom <= $dateToStopCalculatingTo) {
+                $this->addDaysForMonth(
+                    $dateToStartCalculatingFrom->format('F'),
+                    $dateToStartCalculatingFrom->format('Y'),
+                    $event
+                );
+                $dateToStartCalculatingFrom->modify('next month');
             }
         }
     }
 
     /**
-     * add days for recurring weeks.
+     * Add days for recurring weeks and/or months.
      *
      * @param Event $event
-     *
      * @return void
      */
-    protected function addRecurringWeeks(Event $event)
+    protected function addRecurrings(Event $event)
     {
-        // start with today midnight
-        $startCalculatingDaysAtDate = clone $this->dateTimeUtility->convert('today');
-        // subtract configured amount of month
-        $startCalculatingDaysAtDate->modify('-' . $this->extConf->getRecurringPast() . ' months');
-
-        // Can be somewhere in past
-        $earliestDay = clone $event->getEventBegin();
-        while ($earliestDay < $startCalculatingDaysAtDate) {
-            // add interval as long $earliest day is less than $startCalculatingDaysAtDate
-            $earliestDay->modify('+' . $event->getEachWeeks() . ' weeks');
-        }
-
-        // now we can be sure that $earliestDay is in sync with $this->getEventBegin()
-        $maxDate = $this->getMaxDateForGeneratedDays($event);
-        if ($earliestDay <= $maxDate) {
-            // add earliest day, if date is not already over
-            $this->addDayToStorage($earliestDay);
-        }
-
-        $interval = $earliestDay->diff($maxDate); // generates an interval object
-        $diffDays = (int)$interval->format('%a'); // returns the difference in days
-        $daysToGenerate = ceil($diffDays / ($event->getEachWeeks() * 7)); // diff in days / weeks in days ==> rounded up to next int
-        for ($week = 0; $week < $daysToGenerate; ++$week) {
-            $earliestDay->modify('+' . $event->getEachWeeks() . ' weeks');
-            if ($earliestDay <= $maxDate) {
-                $this->addDayToStorage($earliestDay);
-            }
+        $dateToStartCalculatingFrom = $this->getDateToStartCalculatingFrom($event);
+        $dateToStopCalculatingTo = $this->getDateToStopCalculatingTo($event);
+        while ($dateToStartCalculatingFrom <= $dateToStopCalculatingTo) {
+            $this->addDayToStorage($dateToStartCalculatingFrom);
+            $dateToStartCalculatingFrom->modify('+' . $event->getEachMonths() . ' months');
+            $dateToStartCalculatingFrom->modify('+' . $event->getEachWeeks() . ' weeks');
         }
     }
 
     /**
-     * add days for given month.
+     * Add days for given month.
      *
      * @param string $month
      * @param int $year
      * @param Event $event
-     *
      * @return void
      */
     protected function addDaysForMonth($month, $year, Event $event)
@@ -386,8 +373,8 @@ class DayGenerator
         $day = $this->dateTimeUtility->convert('today');
         $lastDayOfMonth = $this->dateTimeUtility->convert('today');
         $lastDayOfMonth->modify('last day of ' . $month . ' ' . $year . '23:59:59');
-        $eventBegin = $this->getEarliestDateForGeneratedDays($event->getEventBegin()); // prevent from calling it multiple times in foreach
-        $maxDate = $this->getMaxDateForGeneratedDays($event); // prevent from calling it multiple times in foreach
+        $dateToStartCalculatingFrom = $this->getDateToStartCalculatingFrom($event); // prevent from calling it multiple times in foreach
+        $dateToStopCalculatingTo = $this->getDateToStopCalculatingTo($event); // prevent from calling it multiple times in foreach
 
         foreach ($event->getXth() as $xthIndex => $xth) {
             foreach ($event->getWeekday() as $weekdayIndex => $weekday) {
@@ -395,7 +382,7 @@ class DayGenerator
                     // example: 'second wednesday of March 2013'
                     $modifyString = $xthIndex . ' ' . $weekdayIndex . ' of ' . $month . ' ' . $year;
                     $day->modify($modifyString);
-                    if ($day >= $eventBegin && $day < $lastDayOfMonth && $day <= $maxDate) {
+                    if ($day >= $dateToStartCalculatingFrom && $day < $lastDayOfMonth && $day <= $dateToStopCalculatingTo) {
                         $this->addDayToStorage($day);
                     }
                 }
@@ -404,12 +391,10 @@ class DayGenerator
     }
 
     /**
-     * add event exceptions.
+     * Add event exceptions.
      *
      * @param Event $event
-     *
      * @return void
-     *
      * @throws \Exception
      */
     protected function addExceptions(Event $event)

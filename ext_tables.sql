@@ -19,6 +19,7 @@ CREATE TABLE tx_events2_domain_model_event (
   weekday int(11) DEFAULT '0' NOT NULL,
   different_times int(11) unsigned DEFAULT '0' NOT NULL,
   each_weeks int(11) DEFAULT '0' NOT NULL,
+  each_months int(11) DEFAULT '0' NOT NULL,
   recurring_end int(11) DEFAULT '0' NOT NULL,
   exceptions int(11) DEFAULT '0' NOT NULL,
   detail_informations text NOT NULL,
