@@ -19,8 +19,7 @@
 	},
 	"require": {
 		"typo3/cms-core": "^7.6.13 || ^8.5",
-		"sjbr/static-info-tables": "^6.4",
-		"jweiland/maps2": "^3.0 || ^4.0"
+		"sjbr/static-info-tables": "^6.4"
 	},
 	"require-dev": {
 		"friendsofphp/php-cs-fixer": "^2.0",
