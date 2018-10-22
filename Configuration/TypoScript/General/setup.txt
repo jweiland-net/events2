@@ -100,16 +100,11 @@ plugin.tx_events2 {
   }
 }
 
-# TYPO3 8 comes with a new security feature which requires a cHash for all URLs
-# I call this request from JavaScript where I don't have a cHash. So I disable that feature for that individual actions
-[globalString = GP:tx_events2_events|action = listSearchResults]
-  plugin.tx_events2_events.features.requireCHashArgumentForActionArguments = 0
-  plugin.tx_events2_search.features.requireCHashArgumentForActionArguments = 0
-[globalString = GP:tx_events2_events|objectName = FindSubCategories]
-  plugin.tx_events2_search.features.requireCHashArgumentForActionArguments = 0
-[globalString = GP:no_cache = 1]
-  plugin.tx_events2_events.features.requireCHashArgumentForActionArguments = 0
-[end]
+# TYPO3 8 comes with a new security feature which requires a cHash for all URLs.
+# As we have some individual forms and AjaxCalls, where we can not create an individual cHash
+# we have to disable that feature
+plugin.tx_events2_events.features.requireCHashArgumentForActionArguments = 0
+plugin.tx_events2_search.features.requireCHashArgumentForActionArguments = 0
 
 module.tx_events2 {
   view {
