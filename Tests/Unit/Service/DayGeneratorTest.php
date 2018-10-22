@@ -114,6 +114,7 @@ class DayGeneratorTest extends UnitTestCase
         $event->setXth(31);
         $event->setWeekday(127);
         $event->setEachWeeks(0);
+        $event->setEachMonths(0);
 
         /** @var DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
         $dayGenerator = $this
@@ -131,7 +132,7 @@ class DayGeneratorTest extends UnitTestCase
      *
      * @throws \Exception
      */
-    public function initializeWithRecurringWeeksCallsAddRecurringWeeks()
+    public function initializeWithRecurringWeeksCallsAddRecurrings()
     {
         $event = new Event();
         $event->_setProperty('uid', 123);
@@ -141,13 +142,16 @@ class DayGeneratorTest extends UnitTestCase
         $event->setXth(31);
         $event->setWeekday(127);
         $event->setEachWeeks(1);
+        $event->setEachMonths(0);
 
         /** @var DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
         $dayGenerator = $this
             ->getMockBuilder(DayGenerator::class)
-            ->setMethods(['addRecurringWeeks', 'addException', 'getEventBegin'])
+            ->setMethods(['addRecurrings', 'addException', 'getEventBegin'])
             ->getMock();
-        $dayGenerator->expects($this->once())->method('addRecurringWeeks');
+        $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
+        $dayGenerator->injectExtConf(new ExtConf());
+        $dayGenerator->expects($this->once())->method('addRecurrings');
         $dayGenerator->expects($this->never())->method('addException');
         $dayGenerator->expects($this->never())->method('getEventBegin');
         $this->assertTrue($dayGenerator->initialize($event));
@@ -175,6 +179,7 @@ class DayGeneratorTest extends UnitTestCase
         $event->setXth(31);
         $event->setWeekday(127);
         $event->setEachWeeks(1);
+        $event->setEachMonths(0);
 
         $expectedDays = [];
         $expectedDays[$eventBegin->format('U')] = $eventBegin;
@@ -184,12 +189,12 @@ class DayGeneratorTest extends UnitTestCase
         /** @var DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
         $dayGenerator = $this
             ->getMockBuilder(DayGenerator::class)
-            ->setMethods(['addException', 'getMaxDateForGeneratedDays'])
+            ->setMethods(['addException', 'getDateToStopCalculatingTo'])
             ->getMock();
         $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
         $dayGenerator->injectExtConf(new ExtConf());
         $dayGenerator->expects($this->never())->method('addException');
-        $dayGenerator->expects($this->once())->method('getMaxDateForGeneratedDays')->willReturn($eventEnd);
+        $dayGenerator->expects($this->once())->method('getDateToStopCalculatingTo')->willReturn($eventEnd);
         $this->assertTrue($dayGenerator->initialize($event));
         $this->assertEquals(
             $expectedDays,
@@ -222,6 +227,7 @@ class DayGeneratorTest extends UnitTestCase
         $event->setXth(31);
         $event->setWeekday(127);
         $event->setEachWeeks(2);
+        $event->setEachMonths(0);
 
         $expectedDays = [];
         $expectedDays[$eventBegin->format('U')] = $eventBegin;
@@ -230,12 +236,12 @@ class DayGeneratorTest extends UnitTestCase
         /** @var DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
         $dayGenerator = $this
             ->getMockBuilder(DayGenerator::class)
-            ->setMethods(['addException', 'getMaxDateForGeneratedDays'])
+            ->setMethods(['addException', 'getDateToStopCalculatingTo'])
             ->getMock();
         $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
         $dayGenerator->injectExtConf(new ExtConf());
         $dayGenerator->expects($this->never())->method('addException');
-        $dayGenerator->expects($this->once())->method('getMaxDateForGeneratedDays')->willReturn($eventEnd);
+        $dayGenerator->expects($this->once())->method('getDateToStopCalculatingTo')->willReturn($eventEnd);
         $this->assertTrue($dayGenerator->initialize($event));
         $this->assertEquals(
             $expectedDays,
@@ -277,6 +283,7 @@ class DayGeneratorTest extends UnitTestCase
         $event->setXth(31);
         $event->setWeekday(127);
         $event->setEachWeeks(2);
+        $event->setEachMonths(0);
 
         $expectedDays = [];
         $expectedDays[$expectedBegin->format('U')] = $expectedBegin;
@@ -285,12 +292,153 @@ class DayGeneratorTest extends UnitTestCase
         /** @var DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
         $dayGenerator = $this
             ->getMockBuilder(DayGenerator::class)
-            ->setMethods(['addException', 'getMaxDateForGeneratedDays'])
+            ->setMethods(['addException', 'getDateToStopCalculatingTo'])
             ->getMock();
         $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
         $dayGenerator->injectExtConf($extConf);
         $dayGenerator->expects($this->never())->method('addException');
-        $dayGenerator->expects($this->once())->method('getMaxDateForGeneratedDays')->willReturn($expectedEnd);
+        $dayGenerator->expects($this->once())->method('getDateToStopCalculatingTo')->willReturn($expectedEnd);
+        $this->assertTrue($dayGenerator->initialize($event));
+        $this->assertEquals(
+            $expectedDays,
+            $dayGenerator->getDateTimeStorage()
+        );
+    }
+
+    /**
+     * @test
+     *
+     * @throws \Exception
+     */
+    public function initializeWithRecurringOverEachMonthAddsThreeDaysToStorage()
+    {
+        $eventBegin = new \DateTime();
+        $eventBegin->modify('midnight');
+        $nextMonth = clone $eventBegin;
+        $nextMonth->modify('+1 months');
+        $eventEnd = clone $eventBegin;
+        $eventEnd->modify('+2 months');
+
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setEventType('recurring');
+        $event->setEventBegin($eventBegin);
+        $event->setEventEnd($eventEnd);
+        $event->setXth(31);
+        $event->setWeekday(127);
+        $event->setEachWeeks(0);
+        $event->setEachMonths(1);
+
+        $expectedDays = [];
+        $expectedDays[$eventBegin->format('U')] = $eventBegin;
+        $expectedDays[$nextMonth->format('U')] = $nextMonth;
+        $expectedDays[$eventEnd->format('U')] = $eventEnd;
+
+        /** @var DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
+        $dayGenerator = $this
+            ->getMockBuilder(DayGenerator::class)
+            ->setMethods(['addException', 'getDateToStopCalculatingTo'])
+            ->getMock();
+        $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
+        $dayGenerator->injectExtConf(new ExtConf());
+        $dayGenerator->expects($this->never())->method('addException');
+        $dayGenerator->expects($this->once())->method('getDateToStopCalculatingTo')->willReturn($eventEnd);
+        $this->assertTrue($dayGenerator->initialize($event));
+        $this->assertEquals(
+            $expectedDays,
+            $days = $dayGenerator->getDateTimeStorage()
+        );
+        // test for correct TimezoneType, else times are not DST save
+        /** @var \DateTime $day */
+        foreach ($days as $day) {
+            $this->assertSame(3, $day->timezone_type);
+        }
+    }
+
+    /**
+     * @test
+     *
+     * @throws \Exception
+     */
+    public function initializeWithRecurringOverTwoMonthsAddsDaysToStorage()
+    {
+        $eventBegin = new \DateTime();
+        $eventBegin->modify('midnight');
+        $eventEnd = clone $eventBegin;
+        $eventEnd->modify('+2 months');
+
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setEventType('recurring');
+        $event->setEventBegin($eventBegin);
+        $event->setEventEnd($eventEnd);
+        $event->setXth(31);
+        $event->setWeekday(127);
+        $event->setEachWeeks(0);
+        $event->setEachMonths(2);
+
+        $expectedDays = [];
+        $expectedDays[$eventBegin->format('U')] = $eventBegin;
+        $expectedDays[$eventEnd->format('U')] = $eventEnd;
+
+        /** @var DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
+        $dayGenerator = $this
+            ->getMockBuilder(DayGenerator::class)
+            ->setMethods(['addException', 'getDateToStopCalculatingTo'])
+            ->getMock();
+        $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
+        $dayGenerator->injectExtConf(new ExtConf());
+        $dayGenerator->expects($this->never())->method('addException');
+        $dayGenerator->expects($this->once())->method('getDateToStopCalculatingTo')->willReturn($eventEnd);
+        $this->assertTrue($dayGenerator->initialize($event));
+        $this->assertEquals(
+            $expectedDays,
+            $dayGenerator->getDateTimeStorage()
+        );
+    }
+
+    /**
+     * @test
+     *
+     * @throws \Exception
+     */
+    public function initializeWithRecurringOverEachMonthAndTwoWeeksAddsDaysToStorage()
+    {
+        $eventBegin = new \DateTime();
+        $eventBegin->modify('midnight');
+        $nextEvent = clone $eventBegin;
+        $nextEvent->modify('+1 months');
+        $nextEvent->modify('+2 weeks');
+        $lastEvent = clone $nextEvent;
+        $lastEvent->modify('+1 months');
+        $lastEvent->modify('+2 weeks');
+        $eventEnd = clone $eventBegin;
+        $eventEnd->modify('+3 months');
+
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setEventType('recurring');
+        $event->setEventBegin($eventBegin);
+        $event->setEventEnd($eventEnd);
+        $event->setXth(31);
+        $event->setWeekday(127);
+        $event->setEachWeeks(2);
+        $event->setEachMonths(1);
+
+        $expectedDays = [];
+        $expectedDays[$eventBegin->format('U')] = $eventBegin;
+        $expectedDays[$nextEvent->format('U')] = $nextEvent;
+        $expectedDays[$lastEvent->format('U')] = $lastEvent;
+
+        /** @var DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
+        $dayGenerator = $this
+            ->getMockBuilder(DayGenerator::class)
+            ->setMethods(['addException', 'getDateToStopCalculatingTo'])
+            ->getMock();
+        $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
+        $dayGenerator->injectExtConf(new ExtConf());
+        $dayGenerator->expects($this->never())->method('addException');
+        $dayGenerator->expects($this->once())->method('getDateToStopCalculatingTo')->willReturn($eventEnd);
         $this->assertTrue($dayGenerator->initialize($event));
         $this->assertEquals(
             $expectedDays,
@@ -317,6 +465,7 @@ class DayGeneratorTest extends UnitTestCase
         $event->setXth(31);
         $event->setWeekday(127);
         $event->setEachWeeks(0);
+        $event->setEachMonths(0);
 
         $this->assertTrue($this->subject->initialize($event));
         $this->assertEquals(
@@ -345,6 +494,7 @@ class DayGeneratorTest extends UnitTestCase
         $event->setXth(31);
         $event->setWeekday(127);
         $event->setEachWeeks(0);
+        $event->setEachMonths(0);
 
         $expectedDays = [];
         $tempDate = clone $eventBegin;
@@ -381,6 +531,7 @@ class DayGeneratorTest extends UnitTestCase
         $event->setXth(31); // all
         $event->setWeekday(87); // mo, tu, we, fr, su
         $event->setEachWeeks(0);
+        $event->setEachMonths(0);
 
         $tempDate = clone $eventBegin;
         $expectedDays = [];
@@ -433,6 +584,7 @@ class DayGeneratorTest extends UnitTestCase
         $event->setXth(21); // 1st, 3rd, 5th
         $event->setWeekday(18); // tuesday, friday
         $event->setEachWeeks(0);
+        $event->setEachMonths(0);
 
         $tempDate = clone $eventBegin;
         $expectedDays = [];
@@ -474,6 +626,7 @@ class DayGeneratorTest extends UnitTestCase
         $event->setXth(31);
         $event->setWeekday(127);
         $event->setEachWeeks(0);
+        $event->setEachMonths(0);
 
         $tempDate = clone $eventBegin;
         $expectedDays = [];
@@ -506,6 +659,7 @@ class DayGeneratorTest extends UnitTestCase
         $event->setXth(31);
         $event->setWeekday(127);
         $event->setEachWeeks(0);
+        $event->setEachMonths(0);
 
         $expectedDays = [$eventBegin->format('U') => $eventBegin];
 
@@ -537,6 +691,7 @@ class DayGeneratorTest extends UnitTestCase
         $event->setXth(31);
         $event->setWeekday(127);
         $event->setEachWeeks(0);
+        $event->setEachMonths(0);
         $event->setExceptions($exceptions);
 
         /** @var DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
@@ -582,6 +737,7 @@ class DayGeneratorTest extends UnitTestCase
         $event->setXth(31);
         $event->setWeekday(127);
         $event->setEachWeeks(0);
+        $event->setEachMonths(0);
         $event->setExceptions($exceptions);
 
         $expectedDays = [];
@@ -629,6 +785,7 @@ class DayGeneratorTest extends UnitTestCase
         $event->setXth(31);
         $event->setWeekday(127);
         $event->setEachWeeks(0);
+        $event->setEachMonths(0);
         $event->setExceptions($exceptions);
 
         $expectedDays = [];
@@ -666,6 +823,7 @@ class DayGeneratorTest extends UnitTestCase
         $event->setXth(31);
         $event->setWeekday(127);
         $event->setEachWeeks(0);
+        $event->setEachMonths(0);
         $event->setExceptions($exceptions);
 
         $expectedDays = [];
@@ -704,6 +862,7 @@ class DayGeneratorTest extends UnitTestCase
         $event->setXth(31);
         $event->setWeekday(127);
         $event->setEachWeeks(0);
+        $event->setEachMonths(0);
         $event->setExceptions($exceptions);
 
         $expectedDays = [];
@@ -744,6 +903,7 @@ class DayGeneratorTest extends UnitTestCase
         $event->setXth(31);
         $event->setWeekday(127);
         $event->setEachWeeks(0);
+        $event->setEachMonths(0);
         $event->setExceptions($exceptions);
 
         $expectedDays = [];

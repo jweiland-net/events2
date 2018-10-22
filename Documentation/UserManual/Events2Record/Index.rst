@@ -81,8 +81,11 @@ The Event record is the most important record in this extension.
  - :Field:
          Recurring weeks
    :Description:
-         After activating this checkbox, the form will reload and you can set
-         a recurring over weeks.
+         If you change that value the complete form will reload and you can set a recurring over weeks.
+ - :Field:
+         Recurring months
+   :Description:
+         If you change that value the complete form will reload and you can set a recurring over months.
  - :Field:
          Exceptions
    :Description:

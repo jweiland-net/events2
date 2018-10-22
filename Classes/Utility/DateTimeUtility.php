@@ -26,7 +26,6 @@ class DateTimeUtility
      * If the input is empty, NULL is returned.
      *
      * @param int|string $value Unix timestamp or date/datetime value
-     *
      * @return \DateTime|null
      */
     public function convert($value)
@@ -57,7 +56,6 @@ class DateTimeUtility
      * Hint: This function can also be called with NULL.
      *
      * @param \DateTime $date
-     *
      * @return \DateTime
      */
     public function standardizeDateTimeObject($date)
@@ -75,7 +73,6 @@ class DateTimeUtility
      * @param \DateTime $day  The Day to add the difference to
      * @param \DateTime $from The date FROM
      * @param \DateTime $to   The date TO
-     *
      * @return \DateTime
      */
     public function addDiffToDay(\DateTime $day, \DateTime $from, \DateTime $to)

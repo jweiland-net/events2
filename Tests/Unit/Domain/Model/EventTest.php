@@ -601,8 +601,7 @@ class EventTest extends UnitTestCase
     /**
      * @test
      */
-    public function getEachWeeksInitiallyReturnsZero()
-    {
+    public function getEachWeeksInitiallyReturnsZero() {
         $this->assertSame(
             0,
             $this->subject->getEachWeeks()
@@ -612,13 +611,82 @@ class EventTest extends UnitTestCase
     /**
      * @test
      */
-    public function setEachWeeksSetsEachWeeks()
-    {
+    public function setEachWeeksSetsEachWeeks() {
         $this->subject->setEachWeeks(123456);
 
         $this->assertSame(
             123456,
             $this->subject->getEachWeeks()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function setEachWeeksWithStringResultsInInteger() {
+        $this->subject->setEachWeeks('123Test');
+
+        $this->assertSame(
+            123,
+            $this->subject->getEachWeeks()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function setEachWeeksWithBooleanResultsInInteger() {
+        $this->subject->setEachWeeks(TRUE);
+
+        $this->assertSame(
+            1,
+            $this->subject->getEachWeeks()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function getEachMonthsInitiallyReturnsZero() {
+        $this->assertSame(
+            0,
+            $this->subject->getEachMonths()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function setEachMonthsSetsEachMonths() {
+        $this->subject->setEachMonths(123456);
+
+        $this->assertSame(
+            123456,
+            $this->subject->getEachMonths()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function setEachMonthsWithStringResultsInInteger() {
+        $this->subject->setEachMonths('123Test');
+
+        $this->assertSame(
+            123,
+            $this->subject->getEachMonths()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function setEachMonthsWithBooleanResultsInInteger() {
+        $this->subject->setEachMonths(TRUE);
+
+        $this->assertSame(
+            1,
+            $this->subject->getEachMonths()
         );
     }
 

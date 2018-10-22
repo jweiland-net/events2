@@ -185,19 +185,51 @@
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.each_weeks.1">
 				<source>Each week</source>
-				<target>jede Woche</target>
+				<target>Jede Woche</target>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.each_weeks.2">
 				<source>Each 2 weeks</source>
-				<target>alle 2 Wochen</target>
+				<target>Alle 2 Wochen</target>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.each_weeks.3">
 				<source>Each 3 weeks</source>
-				<target>alle 3 Wochen</target>
+				<target>Alle 3 Wochen</target>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.each_weeks.4">
 				<source>Each 4 weeks</source>
-				<target>alle 4 Wochen</target>
+				<target>Alle 4 Wochen</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.each_months">
+				<source>Recurring months</source>
+				<target>Wiederholung alle x Monate</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.each_months.0">
+				<source>Don't repeat in months. Use settings above.</source>
+				<target>Keine Wiederholung alle x Monate. Nutze Einstellungen oben</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.each_months.1">
+				<source>Each month</source>
+				<target>Jeden Monat</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.each_months.2">
+				<source>Each 2 months</source>
+				<target>Alle 2 Monate</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.each_months.3">
+				<source>Each 3 months</source>
+				<target>Alle 3 Monate</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.each_months.4">
+				<source>Each 4 months</source>
+				<target>Alle 4 Monate</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.each_months.5">
+				<source>Each 5 months</source>
+				<target>Alle 5 Monate</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.each_months.6">
+				<source>Each 6 months</source>
+				<target>Alle 6 Monate</target>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.recurring_end">
 				<source>End of recurring</source>
