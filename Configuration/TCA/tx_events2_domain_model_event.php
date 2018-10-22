@@ -15,7 +15,7 @@ return [
             'recurring' => 'ext-events2-calendar-recurring',
             'duration' => 'ext-events2-calendar-duration',
         ],
-        'requestUpdate' => 'same_day,each_weeks',
+        'requestUpdate' => 'same_day,each_weeks,each_months',
         'default_sortby' => 'ORDER BY title',
         'versioningWS' => 2,
         'versioning_followPages' => true,
@@ -32,7 +32,7 @@ return [
         'searchFields' => 'title,teaser,event_begin,event_end,detail_informations,',
     ],
     'interface' => [
-        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, event_type, top_of_list, title, teaser, event_begin, event_end, event_time, same_day, multiple_times, xth, weekday, different_times, each_weeks, recurring_end, exceptions, detail_informations, free_entry, ticket_link, alternative_times, location, organizer, images, video_link, download_links',
+        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, event_type, top_of_list, title, teaser, event_begin, event_end, event_time, same_day, multiple_times, xth, weekday, different_times, each_weeks, each_months, recurring_end, exceptions, detail_informations, free_entry, ticket_link, alternative_times, location, organizer, images, video_link, download_links',
     ],
     'types' => [
         'single' => [
@@ -45,7 +45,7 @@ return [
         'recurring' => [
             'showitem' => 'event_type, hidden, --palette--;;titleLanguage,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.recurring_event,
-            --palette--;;recurringBeginEnd, event_time, same_day, multiple_times, xth, weekday, different_times, each_weeks,
+            --palette--;;recurringBeginEnd, event_time, same_day, multiple_times, xth, weekday, different_times, --palette--;;recurringWeekMonth,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.exceptions, exceptions,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.event_details, teaser, detail_informations, free_entry, ticket_link, alternative_times, location, organizer,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.media;newline, images, video_link, download_links,
@@ -66,6 +66,7 @@ return [
         'eventBeginEnd' => ['showitem' => 'event_begin, event_end'],
         'typeAndOnTop' => ['showitem' => 'event_type, hidden, top_of_list'],
         'recurringBeginEnd' => ['showitem' => 'event_begin, recurring_end'],
+        'recurringWeekMonth' => ['showitem' => 'each_weeks, each_months'],
         'access' => [
             'showitem' => 'starttime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:starttime_formlabel,endtime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:endtime_formlabel',
         ]
@@ -114,8 +115,8 @@ return [
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.versionLabel',
             'config' => [
                 'type' => 'input',
-                'size' => '30',
-                'max' => '255'
+                'size' => 30,
+                'max' => 255
             ]
         ],
         'hidden' => [
@@ -135,7 +136,7 @@ return [
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.starttime',
             'config' => [
                 'type' => 'input',
-                'size' => '13',
+                'size' => 13,
                 'eval' => 'datetime',
                 'default' => 0
             ],
@@ -147,7 +148,7 @@ return [
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.endtime',
             'config' => [
                 'type' => 'input',
-                'size' => '13',
+                'size' => 13,
                 'eval' => 'datetime',
                 'default' => 0,
                 'range' => [
@@ -195,7 +196,7 @@ return [
                 'type' => 'text',
                 'cols' => 30,
                 'rows' => 4,
-                'max' => '255',
+                'max' => 255,
                 'eval' => 'trim',
             ],
         ],
@@ -273,7 +274,12 @@ return [
         ],
         'xth' => [
             'exclude' => true,
-            'displayCond' => 'FIELD:each_weeks:=:0',
+            'displayCond' => [
+                'AND' => [
+                    'FIELD:each_weeks:=:0',
+                    'FIELD:each_months:=:0',
+                ]
+            ],
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.xth',
             'config' => [
                 'type' => 'check',
@@ -290,7 +296,12 @@ return [
         ],
         'weekday' => [
             'exclude' => true,
-            'displayCond' => 'FIELD:each_weeks:=:0',
+            'displayCond' => [
+                'AND' => [
+                    'FIELD:each_weeks:=:0',
+                    'FIELD:each_months:=:0',
+                ]
+            ],
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.weekday',
             'config' => [
                 'type' => 'check',
@@ -309,7 +320,12 @@ return [
         ],
         'different_times' => [
             'exclude' => true,
-            'displayCond' => 'FIELD:each_weeks:=:0',
+            'displayCond' => [
+                'AND' => [
+                    'FIELD:each_weeks:=:0',
+                    'FIELD:each_months:=:0',
+                ]
+            ],
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.different_times',
             'config' => [
                 'type' => 'inline',
@@ -337,13 +353,30 @@ return [
             'exclude' => true,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.each_weeks',
             'config' => [
-                'type' => 'radio',
+                'type' => 'select',
                 'items' => [
                     ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.each_weeks.0', 0],
                     ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.each_weeks.1', 1],
                     ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.each_weeks.2', 2],
                     ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.each_weeks.3', 3],
                     ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.each_weeks.4', 4],
+                ],
+                'default' => 0,
+            ],
+        ],
+        'each_months' => [
+            'exclude' => true,
+            'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.each_months',
+            'config' => [
+                'type' => 'select',
+                'items' => [
+                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.each_months.0', 0],
+                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.each_months.1', 1],
+                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.each_months.2', 2],
+                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.each_months.3', 3],
+                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.each_months.4', 4],
+                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.each_months.5', 5],
+                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.each_months.6', 6],
                 ],
                 'default' => 0,
             ],
