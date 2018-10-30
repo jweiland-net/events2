@@ -14,7 +14,6 @@ namespace JWeiland\Events2\Hooks;
  *
  * The TYPO3 project - inspiring people to share!
  */
-use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Maps2\Domain\Model\RadiusResult;
 use JWeiland\Maps2\Service\GoogleMapsService;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
