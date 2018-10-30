@@ -14,7 +14,8 @@ namespace JWeiland\Events2\Tests\Unit\Hooks;
  *
  * The TYPO3 project - inspiring people to share!
  */
-use JWeiland\Events2\Hooks\DataHandlerHook;
+
+use JWeiland\Events2\Hooks\CreateMaps2RecordHook;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
@@ -25,10 +26,10 @@ use TYPO3\CMS\Core\Tests\AccessibleObjectInterface;
  *
  * @author Stefan Froemken <projects@jweiland.net>
  */
-class DataHandlerHookTest extends UnitTestCase
+class CreateMaps2RecordHookTest extends UnitTestCase
 {
     /**
-     * @var DataHandlerHook|\PHPUnit_Framework_MockObject_MockObject|AccessibleObjectInterface
+     * @var CreateMaps2RecordHook|\PHPUnit_Framework_MockObject_MockObject|AccessibleObjectInterface
      */
     protected $subject;
 
@@ -41,7 +42,7 @@ class DataHandlerHookTest extends UnitTestCase
     {
         $this->dbProphecy = $this->prophesize(DatabaseConnection::class);
         $GLOBALS['TYPO3_DB'] = $this->dbProphecy->reveal();
-        $this->subject = $this->getAccessibleMock(DataHandlerHook::class, ['dummy'], [], '', false);
+        $this->subject = $this->getAccessibleMock(CreateMaps2RecordHook::class, ['dummy'], [], '', false);
     }
 
     public function tearDown()

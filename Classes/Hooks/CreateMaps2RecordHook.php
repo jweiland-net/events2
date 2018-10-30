@@ -23,10 +23,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
- * Class DataHandlerHook
+ * This hook class should only be loaded, if EXT:maps2 was activated
+ * Please check ext_localconf.php for correct settings
  *
  */
-class DataHandlerHook
+class CreateMaps2RecordHook
 {
     /**
      * @var ObjectManager
@@ -45,20 +46,6 @@ class DataHandlerHook
     {
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->googleMapsService = $this->objectManager->get(GoogleMapsService::class);
-    }
-
-    /**
-     * @param \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler
-     * @return void
-     * @throws \Exception
-     */
-    public function processDatamap_afterAllOperations($dataHandler)
-    {
-        if (array_key_exists('tx_events2_domain_model_event', $dataHandler->datamap)) {
-            foreach ($dataHandler->datamap['tx_events2_domain_model_event'] as $eventUid => $eventRecord) {
-                $this->addDayRelationsForEvent($this->getRealUid($eventUid, $dataHandler));
-            }
-        }
     }
 
     /**
@@ -81,7 +68,7 @@ class DataHandlerHook
         $eventLocation = BackendUtility::getRecord($table, $this->getRealUid($uid, $dataHandler));
 
         if ($eventLocation['tx_maps2_uid']) {
-            // sync categories
+            // sync events2 with POI categories
             $this->updateMmEntries($eventLocation);
         } else {
             // create new map-record and set it in relation
@@ -102,20 +89,6 @@ class DataHandlerHook
                 );
             }
         }
-    }
-
-    /**
-     * Add day relations to event
-     *
-     * @param int $eventUid
-     * @return void
-     * @throws \Exception
-     */
-    protected function addDayRelationsForEvent($eventUid)
-    {
-        /** @var DayRelationService $dayRelationService */
-        $dayRelationService = $this->objectManager->get(DayRelationService::class);
-        $dayRelationService->createDayRelations($eventUid);
     }
 
     /**
@@ -162,29 +135,6 @@ class DataHandlerHook
         }
 
         return implode(' ', $address);
-    }
-
-    /**
-     * try to find a similar poiCollection.
-     *
-     * @param array $location
-     * @return int The UID of the PoiCollection. 0 if not found
-     */
-    public function findPoiByLocation(array $location)
-    {
-        $poi = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'uid',
-            'tx_maps2_domain_model_poicollection',
-            'latitude=' . $location['lat'] .
-            ' AND longitude=' . $location['lng'] .
-            BackendUtility::BEenableFields('tx_maps2_domain_model_poicollection') .
-            BackendUtility::deleteClause('tx_maps2_domain_model_poicollection')
-        );
-        if ($poi) {
-            return $poi['uid'];
-        }
-
-        return 0;
     }
 
     /**
