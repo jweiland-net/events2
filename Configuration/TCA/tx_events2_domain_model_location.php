@@ -13,8 +13,7 @@ $tx_events2_domain_model_event = [
         'cruser_id' => 'cruser_id',
         'dividers2tabs' => true,
         'default_sortby' => 'ORDER BY location',
-        'versioningWS' => 2,
-        'versioning_followPages' => true,
+        'versioningWS' => true,
         'origUid' => 't3_origuid',
         'languageField' => 'sys_language_uid',
         'transOrigPointerField' => 'l10n_parent',
@@ -26,14 +25,14 @@ $tx_events2_domain_model_event = [
             'endtime' => 'endtime',
         ],
         'searchFields' => 'location',
-        'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('events2') . 'Resources/Public/Icons/tx_events2_domain_model_location.png',
+        'iconfile' => 'EXT:events2/Resources/Public/Icons/tx_events2_domain_model_location.png',
     ],
     'interface' => [
         'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, location, street, house_number, zip, city, country',
     ],
     'types' => [
         '1' => [
-            'showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, location,
+            'showitem' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, location,
             street, house_number, zip, city, country,
             --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access, 
             --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access'
@@ -74,7 +73,6 @@ $tx_events2_domain_model_event = [
                 ],
                 'foreign_table' => 'tx_events2_domain_model_location',
                 'foreign_table_where' => 'AND tx_events2_domain_model_location.pid=###CURRENT_PID### AND tx_events2_domain_model_location.sys_language_uid IN (-1,0)',
-                'showIconTable' => false,
                 'default' => 0,
             ]
         ],
@@ -109,6 +107,7 @@ $tx_events2_domain_model_event = [
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.starttime',
             'config' => [
                 'type' => 'input',
+                'renderType' => 'inputDateTime',
                 'size' => 13,
                 'eval' => 'datetime',
                 'default' => 0
@@ -121,6 +120,7 @@ $tx_events2_domain_model_event = [
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.endtime',
             'config' => [
                 'type' => 'input',
+                'renderType' => 'inputDateTime',
                 'size' => 13,
                 'eval' => 'datetime',
                 'default' => 0,
@@ -192,12 +192,9 @@ $tx_events2_domain_model_event = [
                 'minitems' => 0,
                 'maxitems' => 1,
                 'default' => $extConf->getDefaultCountry(),
-                'wizards' => [
-                    'suggest' => [
-                        'type' => 'suggest',
-                        'default' => [
-                            'receiverClass' => $staticInfoSuggestReceiver
-                        ],
+                'suggestOptions' => [
+                    'default' => [
+                        'receiverClass' => $staticInfoSuggestReceiver
                     ],
                 ],
             ],

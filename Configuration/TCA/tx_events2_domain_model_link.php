@@ -9,8 +9,7 @@ return [
         'dividers2tabs' => true,
         'hideTable' => true,
         'default_sortby' => 'ORDER BY title',
-        'versioningWS' => 2,
-        'versioning_followPages' => true,
+        'versioningWS' => true,
         'origUid' => 't3_origuid',
         'languageField' => 'sys_language_uid',
         'transOrigPointerField' => 'l10n_parent',
@@ -22,14 +21,14 @@ return [
             'endtime' => 'endtime',
         ],
         'searchFields' => 'title',
-        'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('events2') . 'Resources/Public/Icons/tx_events2_domain_model_link.png',
+        'iconfile' => 'EXT:events2/Resources/Public/Icons/tx_events2_domain_model_link.png',
     ],
     'interface' => [
         'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, title, link',
     ],
     'types' => [
         '1' => [
-            'showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, title, link,
+            'showitem' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, title, link,
             --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access, 
             --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access'
         ],
@@ -69,7 +68,6 @@ return [
                 ],
                 'foreign_table' => 'tx_events2_domain_model_link',
                 'foreign_table_where' => 'AND tx_events2_domain_model_link.pid=###CURRENT_PID### AND tx_events2_domain_model_link.sys_language_uid IN (-1,0)',
-                'showIconTable' => false,
                 'default' => 0,
             ]
         ],
@@ -104,6 +102,7 @@ return [
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.starttime',
             'config' => [
                 'type' => 'input',
+                'renderType' => 'inputDateTime',
                 'size' => 13,
                 'eval' => 'datetime',
                 'default' => 0
@@ -116,6 +115,7 @@ return [
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.endtime',
             'config' => [
                 'type' => 'input',
+                'renderType' => 'inputDateTime',
                 'size' => 13,
                 'eval' => 'datetime',
                 'default' => 0,
@@ -140,24 +140,10 @@ return [
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_link.link',
             'config' => [
                 'type' => 'input',
+                'renderType' => 'inputLink',
                 'size' => 50,
                 'max' => 1024,
                 'eval' => 'trim',
-                'wizards' => [
-                    'link' => [
-                        'icon' => 'link_popup.gif',
-                        'JSopenParams' => 'height=600,width=800,status=0,menubar=0,scrollbars=1',
-                        'module' => [
-                            'name' => 'wizard_element_browser',
-                            'urlParameters' => [
-                                'mode' => 'wizard'
-                            ]
-                        ],
-                        'title' => 'LLL:EXT:cms/locallang_ttc.xlf:header_link_formlabel',
-                        'type' => 'popup',
-                    ],
-                ],
-                'softref' => 'typolink'
             ]
         ]
     ]

@@ -8,7 +8,7 @@ return [
         'cruser_id' => 'cruser_id',
         'rootLevel' => 1,
         'searchFields' => 'title',
-        'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('events2') . 'Resources/Public/Icons/tx_events2_domain_model_holiday.svg',
+        'iconfile' => 'EXT:events2/Resources/Public/Icons/tx_events2_domain_model_holiday.svg',
     ],
     'interface' => [
         'showRecordFieldList' => 'title, day, month',

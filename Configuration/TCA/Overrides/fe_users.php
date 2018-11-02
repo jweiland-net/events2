@@ -9,16 +9,12 @@ call_user_func(function() {
                 'internal_type' => 'db',
                 'allowed' => 'tx_events2_domain_model_organizer',
                 'prepend_tname' => false,
-                'show_thumbs' => false,
                 'size' => 1,
                 'maxitems' => 1,
-                'wizards' => [
-                    'suggest' => [
-                        'type' => 'suggest',
-                        'default' => [
-                            'searchWholePhrase' => true,
-                            'searchCondition' => 'tx_events2_domain_model_organizer.sys_language_uid IN (-1,0)'
-                        ],
+                'suggestOptions' => [
+                    'default' => [
+                        'searchWholePhrase' => true,
+                        'searchCondition' => 'tx_events2_domain_model_organizer.sys_language_uid IN (-1,0)'
                     ],
                 ],
             ],

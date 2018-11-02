@@ -25,6 +25,7 @@ return [
             'label' => 'Day',
             'config' => [
                 'type' => 'input',
+                'renderType' => 'inputDateTime',
                 'eval' => 'date',
             ],
         ],
@@ -32,6 +33,7 @@ return [
             'label' => 'DayTime',
             'config' => [
                 'type' => 'input',
+                'renderType' => 'inputDateTime',
                 'eval' => 'datetime',
             ],
         ],
@@ -39,6 +41,7 @@ return [
             'label' => 'DayTime',
             'config' => [
                 'type' => 'input',
+                'renderType' => 'inputDateTime',
                 'eval' => 'datetime',
             ],
         ],
