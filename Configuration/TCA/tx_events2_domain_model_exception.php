@@ -18,8 +18,7 @@ return [
             'Info' => 'ext-events2-exception-info',
             'Time' => 'ext-events2-exception-time',
         ],
-        'versioningWS' => 2,
-        'versioning_followPages' => true,
+        'versioningWS' => true,
         'origUid' => 't3_origuid',
         'languageField' => 'sys_language_uid',
         'transOrigPointerField' => 'l10n_parent',
@@ -31,7 +30,7 @@ return [
             'endtime' => 'endtime',
         ],
         'searchFields' => 'exception_details',
-        'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('events2') . 'Resources/Public/Icons/tx_events2_domain_model_exception.png',
+        'iconfile' => 'EXT:events2/Resources/Public/Icons/tx_events2_domain_model_exception.png',
     ],
     'interface' => [
         'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, exception_type, exception_date, exception_time, exception_details',
@@ -94,7 +93,6 @@ return [
                 ],
                 'foreign_table' => 'tx_events2_domain_model_exception',
                 'foreign_table_where' => 'AND tx_events2_domain_model_exception.pid=###CURRENT_PID### AND tx_events2_domain_model_exception.sys_language_uid IN (-1,0)',
-                'showIconTable' => false,
                 'default' => 0,
             ]
         ],
@@ -129,6 +127,7 @@ return [
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.starttime',
             'config' => [
                 'type' => 'input',
+                'renderType' => 'inputDateTime',
                 'size' => 13,
                 'eval' => 'datetime',
                 'default' => 0
@@ -141,6 +140,7 @@ return [
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.endtime',
             'config' => [
                 'type' => 'input',
+                'renderType' => 'inputDateTime',
                 'size' => 13,
                 'eval' => 'datetime',
                 'default' => 0,
@@ -172,6 +172,7 @@ return [
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_exception.exception_date',
             'config' => [
                 'type' => 'input',
+                'renderType' => 'inputDateTime',
                 'size' => 7,
                 'eval' => 'date, required',
                 'checkbox' => 1,
