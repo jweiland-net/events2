@@ -28,7 +28,7 @@ class DatabaseUtility
      * @param string $tableName
      * @return array
      */
-    static public function getColumnsFromTable($tableName): array
+    public static function getColumnsFromTable($tableName): array
     {
         $output = [];
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($tableName);
@@ -45,7 +45,7 @@ class DatabaseUtility
      *
      * @return array
      */
-    static public function getCurrentAndFutureEvents()
+    public static function getCurrentAndFutureEvents()
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_events2_domain_model_event');
