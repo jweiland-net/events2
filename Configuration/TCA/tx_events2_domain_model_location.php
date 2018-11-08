@@ -199,11 +199,6 @@ $tx_events2_domain_model_event = [
                 ],
             ],
         ],
-        'event' => [
-            'config' => [
-                'type' => 'passthrough',
-            ]
-        ]
     ]
 ];
 unset($extConf, $staticInfoItemProcessor, $staticInfoSuggestReceiver);
