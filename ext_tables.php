@@ -3,7 +3,7 @@ if (!defined('TYPO3_MODE')) {
     die('Access denied.');
 }
 
-$boot = function ($extensionKey, $extensionConfiguration) {
+call_user_func(function ($extensionKey, $extensionConfiguration) {
     $extensionName = \TYPO3\CMS\Core\Utility\GeneralUtility::underscoredToUpperCamelCase($extensionKey);
 
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
@@ -51,29 +51,7 @@ $boot = function ($extensionKey, $extensionConfiguration) {
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages($tableName);
     }
 
-    if (
-        TYPO3_MODE === 'BE' &&
-        \TYPO3\CMS\Core\Utility\VersionNumberUtility::convertVersionNumberToInteger(TYPO3_branch) < 7000000
-    ) {
-        $extRelPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('events2');
-        \TYPO3\CMS\Backend\Sprite\SpriteManager::addSingleIcons(
-            [
-                'calendar-single' => $extRelPath . 'Resources/Public/Icons/calendar_single.png',
-                'calendar-recurring' => $extRelPath . 'Resources/Public/Icons/calendar_recurring.png',
-                'calendar-duration' => $extRelPath . 'Resources/Public/Icons/calendar_duration.png',
-                'exception-add' => $extRelPath . 'Resources/Public/Icons/exception_add.png',
-                'exception-remove' => $extRelPath . 'Resources/Public/Icons/exception_remove.png',
-                'exception-info' => $extRelPath . 'Resources/Public/Icons/exception_info.png',
-                'exception-time' => $extRelPath . 'Resources/Public/Icons/exception_time.png',
-            ],
-            'events2'
-        );
-    }
-
-    $extConf = unserialize($extensionConfiguration);
     $tsConfig = [];
-    $tsConfig[] = 'ext.events2.pid = ' . (int)$extConf['poiCollectionPid'];
+    $tsConfig[] = 'ext.events2.pid = ' . (int)$extensionConfiguration['poiCollectionPid'];
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig(implode(chr(10), $tsConfig));
-};
-$boot($_EXTKEY, $_EXTCONF);
-unset($boot);
+}, $_EXTKEY, unserialize($_EXTCONF));
