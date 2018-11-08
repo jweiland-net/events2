@@ -51,10 +51,6 @@ $boot = function($extKey) {
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tce']['formevals'][\JWeiland\Events2\Tca\Type\Time::class] = 'EXT:events2/Classes/Tca/Type/Time.php';
     // delete and recreate day relations for an event while saving
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = \JWeiland\Events2\Hooks\RecreateDayRelationsHook::class;
-    if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('maps2')) {
-        // Create maps2 records while saving events2 records
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = \JWeiland\Events2\Hooks\CreateMaps2RecordHook::class;
-    }
     // HOOK: Override rootUid in TCA for category trees
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tceforms.php']['getSingleFieldClass'][] = \JWeiland\Events2\Hooks\ModifyTcaOfCategoryTrees::class;
     // Hook: Render Plugin preview item
