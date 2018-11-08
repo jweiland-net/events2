@@ -14,12 +14,14 @@ namespace JWeiland\Events2\UserFunc;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * UserFunc to show event and date in title of detail page
  */
 class SetTitleForDetailPage
 {
@@ -33,7 +35,6 @@ class SetTitleForDetailPage
      *
      * @param string $content
      * @param array $conf
-     *
      * @return string
      */
     public function render($content, $conf)
@@ -61,7 +62,6 @@ class SetTitleForDetailPage
      * Check, if current request is valid
      *
      * @param array $gp
-     *
      * @return bool
      */
     protected function isValidRequest($gp)
@@ -89,54 +89,66 @@ class SetTitleForDetailPage
     }
 
     /**
-     * Get day record
+     * Get day record by UID
      *
      * @param int $uid
-     *
      * @return array|false
      */
     protected function getDayRecord($uid)
     {
-        $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'uid, event, day',
-            'tx_events2_domain_model_day',
-            'uid=' . (int)$uid .
-            $this->cObj->enableFields('tx_events2_domain_model_day')
-        );
-        if (is_null($row)) {
-            $row = false;
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_day');
+        $day = $queryBuilder
+            ->select('uid', 'event', 'day')
+            ->from('tx_events2_domain_model_day')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid',
+                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetch();
+
+        if (empty($day)) {
+            $day = [];
         }
-        return $row;
+        return $day;
     }
 
     /**
-     * Get event record
+     * Get event record by UID
      *
      * @param int $uid
-     *
-     * @return array|false
+     * @return array
      */
     protected function getEventRecord($uid)
     {
-        $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'uid, title',
-            'tx_events2_domain_model_event',
-            'uid=' . (int)$uid .
-            $this->cObj->enableFields('tx_events2_domain_model_event')
-        );
-        if (is_null($row)) {
-            $row = false;
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_event');
+        $event = $queryBuilder
+            ->select('uid', 'title')
+            ->from('tx_events2_domain_model_event')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid',
+                    $queryBuilder->createNamedParameter((int)$uid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetch();
+
+        if (empty($event)) {
+            $event = [];
         }
-        return $row;
+        return $event;
     }
 
     /**
-     * Get TYPO3s Database Connection
+     * Get TYPO3s Connection Pool
      *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     * @return ConnectionPool
      */
-    protected function getDatabaseConnection()
+    protected function getConnectionPool()
     {
-        return $GLOBALS['TYPO3_DB'];
+        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 }

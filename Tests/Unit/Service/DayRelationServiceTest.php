@@ -26,8 +26,6 @@ use JWeiland\Events2\Utility\DateTimeUtility;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
-use TYPO3\CMS\Core\Database\DatabaseConnection;
-use TYPO3\CMS\Core\Tests\AccessibleObjectInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
@@ -39,7 +37,7 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 class DayRelationServiceTest extends UnitTestCase
 {
     /**
-     * @var DayRelationService|\PHPUnit_Framework_MockObject_MockObject|AccessibleObjectInterface
+     * @var DayRelationService
      */
     protected $subject;
 
@@ -59,11 +57,6 @@ class DayRelationServiceTest extends UnitTestCase
     protected $persistenceManagerProphecy;
 
     /**
-     * @var DatabaseConnection|ObjectProphecy
-     */
-    protected $dbProphecy;
-
-    /**
      * set up.
      */
     public function setUp()
@@ -72,9 +65,6 @@ class DayRelationServiceTest extends UnitTestCase
         $this->extConfProphecy->getRecurringPast()->willReturn(3);
         $this->extConfProphecy->getRecurringFuture()->willReturn(6);
         $this->extConfProphecy->getMergeEvents()->willReturn(false);
-
-        $this->dbProphecy = $this->prophesize(DatabaseConnection::class);
-        $GLOBALS['TYPO3_DB'] = $this->dbProphecy->reveal();
 
         // needed for getItemsFromTca in DayGenerator
         $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['xth']['config']['items'] = [
@@ -114,7 +104,10 @@ class DayRelationServiceTest extends UnitTestCase
      */
     public function tearDown()
     {
-        $this->dbProphecy->checkProphecyMethodsPredictions();
+        unset($this->extConfProphecy);
+        unset($this->eventRepositoryProphecy);
+        unset($this->persistenceManagerProphecy);
+        unset($this->subject);
     }
 
     /**

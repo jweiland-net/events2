@@ -15,7 +15,6 @@ namespace JWeiland\Events2\Task;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Importer\ImporterInterface;
-use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
@@ -43,28 +42,12 @@ class Import extends AbstractTask
     public $storagePid = 0;
 
     /**
-     * @var DatabaseConnection
-     */
-    protected $databaseConnection;
-
-    /**
-     * constructor of this class.
-     */
-    public function __construct()
-    {
-        $this->databaseConnection = $GLOBALS['TYPO3_DB'];
-
-        parent::__construct();
-    }
-
-    /**
      * This is the main method that is called when a task is executed
      * Note that there is no error handling, errors and failures are expected
      * to be handled and logged by the client implementations.
      * Should return TRUE on successful execution, FALSE on error.
      *
      * @return bool Returns TRUE on successful execution, FALSE on error
-     *
      * @throws \Exception
      */
     public function execute()
@@ -107,9 +90,7 @@ class Import extends AbstractTask
      * Import file
      *
      * @param File $file
-     *
      * @return bool
-     *
      * @throws \Exception
      */
     protected function importFile(File $file)
@@ -140,9 +121,7 @@ class Import extends AbstractTask
      *
      * @param string $message The message itself
      * @param int $severity Message level (according to \TYPO3\CMS\Core\Messaging\FlashMessage class constants)
-     *
      * @return void
-     *
      * @throws \Exception
      */
     public function addMessage($message, $severity = FlashMessage::OK)
@@ -154,17 +133,5 @@ class Import extends AbstractTask
         /** @var $defaultFlashMessageQueue FlashMessageQueue */
         $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
         $defaultFlashMessageQueue->enqueue($flashMessage);
-    }
-
-    /**
-     * This object will be saved serialized in database
-     * SingletonInterface objects may be different while recreating the objects,
-     * that's why I recreate them on my own
-     *
-     * @return void
-     */
-    public function __wakeup()
-    {
-        $this->databaseConnection = $GLOBALS['TYPO3_DB'];
     }
 }

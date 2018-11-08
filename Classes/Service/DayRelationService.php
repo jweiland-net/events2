@@ -193,10 +193,10 @@ class DayRelationService
         $times = $this->getTimesForDateTime($dateTime, $event);
         if (!empty($times)) {
             foreach ($times as $time) {
-                $this->addGeneratedDayToEvent($dateTime, $time, $event);
+                $this->addGeneratedDayToEvent($dateTime, $event, $time);
             }
         } else {
-            $this->addGeneratedDayToEvent($dateTime, null, $event);
+            $this->addGeneratedDayToEvent($dateTime, $event, null);
         }
     }
 
@@ -311,12 +311,11 @@ class DayRelationService
      * Add day record
      *
      * @param \DateTime $dateTime
-     * @param Time|null $time
      * @param Event $event
-     *
+     * @param Time|null $time
      * @return void
      */
-    protected function addGeneratedDayToEvent(\DateTime $dateTime, $time = null, Event $event)
+    protected function addGeneratedDayToEvent(\DateTime $dateTime, Event $event, $time = null)
     {
         $hour = $minute = 0;
         if (

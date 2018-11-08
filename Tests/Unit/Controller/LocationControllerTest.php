@@ -16,6 +16,7 @@ namespace JWeiland\Events2\Tests\Unit\Controller;
  */
 use JWeiland\Events2\Controller\LocationController;
 use JWeiland\Events2\Domain\Model\Location;
+use Nimut\TestingFramework\MockObject\AccessibleMockObjectInterface;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 use TYPO3\CMS\Fluid\View\TemplateView;
 
@@ -27,7 +28,7 @@ use TYPO3\CMS\Fluid\View\TemplateView;
 class LocationControllerTest extends UnitTestCase
 {
     /**
-     * @var LocationController|\PHPUnit_Framework_MockObject_MockObject|\TYPO3\CMS\Core\Tests\AccessibleObjectInterface
+     * @var LocationController|\PHPUnit_Framework_MockObject_MockObject|AccessibleMockObjectInterface
      */
     protected $subject;
 

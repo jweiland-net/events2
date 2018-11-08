@@ -18,14 +18,16 @@ use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Utility\DateTimeUtility;
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
 
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * This class is needed for jQuery calendar. If you flip to next month, this
+ * class will be called and returns the events valid for selected month.
  */
 class Ajax
 {
@@ -57,10 +59,9 @@ class Ajax
     protected $cacheHashCalculator;
 
     /**
-     * inject extConf
+     * Inject extConf
      *
      * @param ExtConf $extConf
-     *
      * @return void
      */
     public function injectExtConf(ExtConf $extConf)
@@ -69,10 +70,9 @@ class Ajax
     }
 
     /**
-     * inject DateTime Utility.
+     * Inject DateTime Utility.
      *
      * @param DateTimeUtility $dateTimeUtility
-     *
      * @return void
      */
     public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
@@ -81,10 +81,9 @@ class Ajax
     }
 
     /**
-     * inject dayRepository
+     * Inject dayRepository
      *
      * @param DayRepository $dayRepository
-     *
      * @return void
      */
     public function injectDayRepository(DayRepository $dayRepository)
@@ -93,10 +92,9 @@ class Ajax
     }
 
     /**
-     * inject CacheHash Calculator.
+     * Inject CacheHash Calculator.
      *
      * @param CacheHashCalculator $cacheHashCalculator
-     *
      * @return void
      */
     public function injectCacheHashCalculator(CacheHashCalculator $cacheHashCalculator)
@@ -105,25 +103,21 @@ class Ajax
     }
 
     /**
-     * initializes this class.
+     * Initializes this class.
      *
      * @param array $arguments
-     *
      * @return void
      */
     protected function initialize(array $arguments)
     {
-        $this->loadBaseTca();
         $this->setArguments($arguments);
     }
 
     /**
-     * process ajax request.
+     * Process ajax request.
      *
      * @param array $arguments Arguments to process
-     *
      * @return string
-     *
      * @throws \Exception
      */
     public function processAjaxRequest(array $arguments)
@@ -137,7 +131,6 @@ class Ajax
 
         $dayArray = [];
         $days = $this->findAllDaysInMonth($month, $year);
-        /** @var Day $day */
         foreach ($days as $day) {
             $addDay = [
                 'uid' => $day->getEvent()->getUid(),
@@ -153,10 +146,9 @@ class Ajax
     }
 
     /**
-     * set and check GET Arguments.
+     * Set and check GET Arguments.
      *
      * @param array $arguments
-     *
      * @return void
      */
     protected function setArguments(array $arguments)
@@ -172,16 +164,15 @@ class Ajax
     }
 
     /**
-     * sanitize comma separated values
-     * remove empty values
-     * remove values which can't be interpreted as int
-     * cast each valid value to int
+     * Sanitize comma separated values
+     * Remove empty values
+     * Remove values which can't be interpreted as int
+     * Cast each valid value to int
      *
      * @param string $list
-     *
      * @return string The sanitized int list
      */
-    protected function sanitizeCommaSeparatedIntValues($list)
+    protected function sanitizeCommaSeparatedIntValues(string $list): string
     {
         $values = GeneralUtility::trimExplode(',', $list, true);
         foreach ($values as $key => $value) {
@@ -196,13 +187,12 @@ class Ajax
     }
 
     /**
-     * get an argument from GET.
+     * Get an argument from GET.
      *
      * @param string $argumentName
-     *
-     * @return string
+     * @return string|array
      */
-    protected function getArgument($argumentName)
+    protected function getArgument(string $argumentName)
     {
         if (isset($this->arguments[$argumentName])) {
             return $this->arguments[$argumentName];
@@ -217,10 +207,9 @@ class Ajax
      * We need the current day for calendar and day controller.
      *
      * @param int $timestamp
-     *
      * @return string
      */
-    protected function getUriForDay($timestamp)
+    protected function getUriForDay(int $timestamp): string
     {
         // uriBuilder is very slow: 223ms for 31 links */
         /*$uri = $this->uriBuilder
@@ -249,18 +238,23 @@ class Ajax
      * Add Holidays
      *
      * @param array $days
+     * @return void
      */
     protected function addHolidays(array &$days)
     {
-        $monthOfYear = $this->getDatabaseConnection()->fullQuoteStr(
-            $this->getArgument('month'),
-            'tx_events2_domain_model_holiday'
-        );
-        $holidays = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'day',
-            'tx_events2_domain_model_holiday',
-            'month=' . $monthOfYear
-        );
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_holiday');
+        $holidays = $queryBuilder
+            ->select('day')
+            ->from('tx_events2_domain_model_holiday')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'month',
+                    $queryBuilder->createNamedParameter($this->getArgument('month'), \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetchAll();
+
         if (!empty($holidays)) {
             foreach ($holidays as $holiday) {
                 $days[$holiday['day']][] = [
@@ -276,8 +270,9 @@ class Ajax
      *
      * @param int $month
      * @param int $year
+     * @return void
      */
-    protected function saveMonthAndYearInSession($month, $year)
+    protected function saveMonthAndYearInSession(int $month, int $year)
     {
         $userAuthentication = $this->getFrontendUserAuthentication();
         $userAuthentication->start();
@@ -291,16 +286,14 @@ class Ajax
     }
 
     /**
-     * find all days in given month.
+     * Find all days in given month.
      *
      * @param int $month
      * @param int $year
-     *
-     * @return array
-     *
+     * @return QueryResultInterface|array|Day[]
      * @throws \Exception
      */
-    public function findAllDaysInMonth($month, $year)
+    public function findAllDaysInMonth(int $month, int $year)
     {
         $earliestAllowedDate = new \DateTime('now midnight');
         $earliestAllowedDate->modify(sprintf('-%d months', $this->extConf->getRecurringPast()));
@@ -357,31 +350,18 @@ class Ajax
      *
      * @return FrontendUserAuthentication
      */
-    protected function getFrontendUserAuthentication()
+    protected function getFrontendUserAuthentication(): FrontendUserAuthentication
     {
-        /** @var FrontendUserAuthentication $feAuthentication */
-        $feAuthentication = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
-        return $feAuthentication;
+        return GeneralUtility::makeInstance(FrontendUserAuthentication::class);
     }
 
     /**
-     * Load global TCA
-     * Needed for enableFields
+     * Get TYPO3s Connection Pool
      *
-     * @return void
+     * @return ConnectionPool
      */
-    protected function loadBaseTca()
+    protected function getConnectionPool(): ConnectionPool
     {
-        ExtensionManagementUtility::loadBaseTca(false);
-    }
-
-    /**
-     * Get TYPO3 Database Connection
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     */
-    public function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
+        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 }

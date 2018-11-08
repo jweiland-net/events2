@@ -20,7 +20,7 @@ use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Domain\Repository\OrganizerRepository;
 use JWeiland\Events2\Utility\DateTimeUtility;
-use TYPO3\CMS\Core\Database\DatabaseConnection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
@@ -279,42 +279,42 @@ abstract class AbstractImporter implements ImporterInterface
      */
     protected function getOrganizer($title)
     {
-        $where = sprintf(
-            'organizer=%s',
-            $this->getDatabaseConnection()->fullQuoteStr(
-                (string)$title,
-                'tx_events2_domain_model_organizer'
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_organizer');
+        return $queryBuilder
+            ->select(['uid'])
+            ->from('tx_events2_domain_model_organizer')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'organizer',
+                    $queryBuilder->createNamedParameter($title, \PDO::PARAM_STR)
+                )
             )
-        );
-        return $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'uid',
-            'tx_events2_domain_model_organizer',
-            $where
-        );
+            ->execute()
+            ->fetch();
     }
 
     /**
      * Get location from DB
      *
      * @param $title
-     * @return array|false|null
+     * @return array|null
      */
     protected function getLocation($title)
     {
-        $where = sprintf(
-            'location=%s',
-            $this->getDatabaseConnection()->fullQuoteStr(
-                $title,
-                'tx_events2_domain_model_location'
-            )
-        );
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_location');
 
         // I don't have the TypoScript or Plugin storage PID. That's why I don't use the repository directly
-        return $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'uid',
-            'tx_events2_domain_model_location',
-            $where
-        );
+        return $queryBuilder
+            ->select(['uid'])
+            ->from('tx_events2_domain_model_location')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'location',
+                    $queryBuilder->createNamedParameter($title, \PDO::PARAM_STR)
+                )
+            )
+            ->execute()
+            ->fetch();
     }
 
     /**
@@ -444,12 +444,12 @@ abstract class AbstractImporter implements ImporterInterface
     }
 
     /**
-     * Get TYPO3s Database Connection
+     * Get TYPO3s Connection Pool
      *
-     * @return DatabaseConnection
+     * @return ConnectionPool
      */
-    protected function getDatabaseConnection()
+    protected function getConnectionPool()
     {
-        return $GLOBALS['TYPO3_DB'];
+        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 }

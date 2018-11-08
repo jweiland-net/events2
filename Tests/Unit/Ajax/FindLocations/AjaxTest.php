@@ -16,12 +16,9 @@ namespace JWeiland\Events2\Tests\Unit\Ajax\FindLocations;
  */
 use JWeiland\Events2\Ajax\FindLocations;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
-use TYPO3\CMS\Core\Database\DatabaseConnection;
 
 /**
  * Test case.
- *
- * @author Stefan Froemken <projects@jweiland.net>
  */
 class AjaxTest extends UnitTestCase
 {
@@ -30,16 +27,9 @@ class AjaxTest extends UnitTestCase
      */
     protected $subject;
 
-    /**
-     * @var DatabaseConnection
-     */
-    protected $dbProphecy;
-
     public function setUp()
     {
         $this->subject = new FindLocations\Ajax();
-        $this->dbProphecy = $this->prophesize(DatabaseConnection::class);
-        $GLOBALS['TYPO3_DB'] = $this->dbProphecy->reveal();
         $GLOBALS['TYPO3_LOADED_EXT'] = [
             'events2' => []
         ];

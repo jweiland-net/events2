@@ -14,11 +14,9 @@ namespace JWeiland\Events2\Tests\Unit\Domain\Repository;
  *
  * The TYPO3 project - inspiring people to share!
  */
-use JWeiland\Events2\Domain\Model\Day;
-use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Repository\DayRepository;
-use JWeiland\Events2\Persistence\Typo376\Generic\Query;
+use JWeiland\Events2\Persistence\Typo384\Generic\Query;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 use Prophecy\Argument;

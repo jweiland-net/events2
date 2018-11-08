@@ -15,8 +15,9 @@ namespace JWeiland\Events2\Task;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Service\DayRelationService;
+use JWeiland\Events2\Utility\DatabaseUtility;
 use TYPO3\CMS\Core\Cache\CacheManager;
-use TYPO3\CMS\Core\Database\DatabaseConnection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
@@ -28,7 +29,8 @@ use TYPO3\CMS\Scheduler\ProgressProviderInterface;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * This class loops through all events and re-creates the day records.
+ * Instead of the RepairCommand, this class does NOT truncate the whole day table.
  */
 class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
 {
@@ -43,18 +45,12 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
     protected $registry;
 
     /**
-     * @var DatabaseConnection
-     */
-    protected $databaseConnection;
-
-    /**
      * constructor of this class.
      */
     public function __construct()
     {
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->registry = $this->objectManager->get(Registry::class);
-        $this->databaseConnection = $GLOBALS['TYPO3_DB'];
         parent::__construct();
     }
 
@@ -65,14 +61,11 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
      * Should return TRUE on successful execution, FALSE on error.
      *
      * @return bool Returns TRUE on successful execution, FALSE on error
-     *
      * @throws \Exception
      */
     public function execute()
     {
-        /** @var DayRelationService $dayRelations */
         $dayRelations = $this->objectManager->get(DayRelationService::class);
-        /** @var PersistenceManager $persistenceManager */
         $persistenceManager = $this->objectManager->get(PersistenceManager::class);
 
         // with each changing PID pageTSConfigCache will grow by roundabout 200KB
@@ -83,16 +76,7 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
 
         $this->registry->removeAllByNamespace('events2TaskCreateUpdate');
 
-        $events = $this->databaseConnection->exec_SELECTgetRows(
-            'uid,pid',
-            'tx_events2_domain_model_event',
-            'hidden=0 AND deleted=0 AND (
-              (event_type = \'single\' AND event_begin > UNIX_TIMESTAMP())
-              OR (event_type = \'duration\' AND (event_end = 0 OR event_end > UNIX_TIMESTAMP()))
-              OR (event_type = \'recurring\' AND (recurring_end = 0 OR recurring_end > UNIX_TIMESTAMP()))
-            )'
-        );
-
+        $events = DatabaseUtility::getCurrentAndFutureEvents();
         if (!empty($events)) {
             $counter = 0;
             foreach ($events as $event) {
@@ -210,6 +194,16 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
     }
 
     /**
+     * Get TYPO3s Connection Pool
+     *
+     * @return ConnectionPool
+     */
+    protected function getConnectionPool()
+    {
+        return GeneralUtility::makeInstance(ConnectionPool::class);
+    }
+
+    /**
      * This object will be serialized in tx_scheduler_task.
      * While executing this task, it seems that __construct will not be called again and
      * all properties will be reconstructed by the information in serialized value.
@@ -222,6 +216,5 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
     {
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->registry = $this->objectManager->get(Registry::class);
-        $this->databaseConnection = $GLOBALS['TYPO3_DB'];
     }
 }

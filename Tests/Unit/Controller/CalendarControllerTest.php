@@ -17,10 +17,9 @@ namespace JWeiland\Events2\Tests\Unit\Controller;
 use JWeiland\Events2\Controller\CalendarController;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Repository\DayRepository;
+use Nimut\TestingFramework\MockObject\AccessibleMockObjectInterface;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
-use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Page\PageRenderer;
-use TYPO3\CMS\Core\Tests\AccessibleObjectInterface;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Fluid\View\TemplateView;
@@ -35,7 +34,7 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 class CalendarControllerTest extends UnitTestCase
 {
     /**
-     * @var CalendarController|\PHPUnit_Framework_MockObject_MockObject|AccessibleObjectInterface
+     * @var CalendarController|\PHPUnit_Framework_MockObject_MockObject|AccessibleMockObjectInterface
      */
     protected $subject;
 
@@ -70,11 +69,6 @@ class CalendarControllerTest extends UnitTestCase
     protected $view;
 
     /**
-     * @var DatabaseConnection|\Prophecy\Prophecy\ObjectProphecy
-     */
-    protected $dbProphecy;
-
-    /**
      * @var array
      */
     protected $settings = [
@@ -83,9 +77,6 @@ class CalendarControllerTest extends UnitTestCase
 
     public function setUp()
     {
-        $this->dbProphecy = $this->prophesize(DatabaseConnection::class);
-        $GLOBALS['TYPO3_DB'] = $this->dbProphecy->reveal();
-
         $this->pageRenderer = $this->getMockBuilder(PageRenderer::class)->getMock();
         $this->dayRepository = $this
             ->getMockBuilder(DayRepository::class)

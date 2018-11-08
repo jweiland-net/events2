@@ -62,7 +62,7 @@ We have removed ShowEventDatesViewHelper, because it was sometimes too hard to c
 moved that widget into a normal ViewHelper. Please use GetEventDatesViewHelper instead, you can find an example in
 Partials/Event/Properties.html.
 
-In case of our new database structure we can have removed our e2:widget.paginate ViewHelper.
+In case of our new database structure we have removed our e2:widget.paginate ViewHelper.
 Please update all templates to use the original f:widget.paginate ViewHelper of fluid and maybe remove
 the maxRecords attribute.
 
