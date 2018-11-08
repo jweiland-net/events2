@@ -17,8 +17,8 @@ namespace JWeiland\Events2\Tests\Unit\Ajax;
 use JWeiland\Events2\Ajax\FindSubCategories;
 use JWeiland\Events2\Domain\Model\Category;
 use JWeiland\Events2\Domain\Repository\CategoryRepository;
+use Nimut\TestingFramework\MockObject\AccessibleMockObjectInterface;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
-use TYPO3\CMS\Core\Tests\AccessibleObjectInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 
@@ -56,16 +56,14 @@ class FindSubCategoriesTest extends UnitTestCase
         $category1->_setProperty('uid', 123);
         $category1->setTitle('BMW');
         $category1->setDescription('foo');
-        $category1->setIcon('fileadmin/img1.jpg');
         $categories[] = $category1;
         $category2 = new Category();
         $category2->_setProperty('uid', 456);
         $category2->setTitle('Audi');
         $category1->setDescription('bar');
-        $category1->setIcon('fileadmin/img2.jpg');
         $categories[] = $category2;
 
-        /* @var QueryResult|\PHPUnit_Framework_MockObject_MockObject|AccessibleObjectInterface $categories */
+        /* @var QueryResult|\PHPUnit_Framework_MockObject_MockObject|AccessibleMockObjectInterface $categories */
         $queryResult = $this->getAccessibleMock(QueryResult::class, ['dummy'], [new Query('fooBarType')]);
         $queryResult->_set('queryResult', $categories);
 

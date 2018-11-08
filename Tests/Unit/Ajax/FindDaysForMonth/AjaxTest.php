@@ -14,17 +14,17 @@ namespace JWeiland\Events2\Tests\Unit\Ajax\FindDaysForMonth;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use JWeiland\Events2\Ajax\FindDaysForMonth;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Repository\DayRepository;
+use JWeiland\Events2\Tests\Unit\AbstractUnitTestCase;
 use JWeiland\Events2\Utility\DateTimeUtility;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
-use TYPO3\CMS\Core\Database\DatabaseConnection;
-use TYPO3\CMS\Core\Tests\AccessibleObjectInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
@@ -32,13 +32,11 @@ use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
 
 /**
  * Test case.
- *
- * @author Stefan Froemken <projects@jweiland.net>
  */
-class AjaxTest extends UnitTestCase
+class AjaxTest extends AbstractUnitTestCase
 {
     /**
-     * @var FindDaysForMonth\Ajax|\PHPUnit_Framework_MockObject_MockObject|AccessibleObjectInterface
+     * @var FindDaysForMonth\Ajax
      */
     protected $subject;
 
@@ -68,11 +66,6 @@ class AjaxTest extends UnitTestCase
     protected $queryProphecy;
 
     /**
-     * @var DatabaseConnection
-     */
-    protected $dbProphecy;
-
-    /**
      * set up.
      */
     public function setUp()
@@ -90,19 +83,11 @@ class AjaxTest extends UnitTestCase
         $this->querySettingsProphecy = $this->prophesize(QuerySettingsInterface::class);
         $this->queryProphecy = $this->prophesize(Query::class);
 
-        $this->dbProphecy = $this->prophesize(DatabaseConnection::class);
-        $GLOBALS['TYPO3_DB'] = $this->dbProphecy->reveal();
-
-        $this->subject = $this->getAccessibleMock(FindDaysForMonth\Ajax::class, ['getFrontendUserAuthentication', 'loadBaseTca']);
-        $this->subject->expects($this->once())->method('loadBaseTca');
-        $this->subject->_set('extConf', $this->extConfProphecy->reveal());
-        $this->subject->_set('dateTimeUtility', new DateTimeUtility());
-        $this->subject->_set('dayRepository', $this->dayRepositoryProphecy->reveal());
-        $this->subject->_set('cacheHashCalculator', new CacheHashCalculator());
-        $this->subject
-            ->expects($this->any())
-            ->method('getFrontendUserAuthentication')
-            ->willReturn($this->frontendUserAuthenticationProphecy->reveal());
+        $this->subject = new FindDaysForMonth\Ajax();
+        $this->subject->injectExtConf($this->extConfProphecy->reveal());
+        $this->subject->injectDateTimeUtility(new DateTimeUtility());
+        $this->subject->injectDayRepository($this->dayRepositoryProphecy->reveal());
+        $this->subject->injectCacheHashCalculator(new CacheHashCalculator());
     }
 
     /**
@@ -117,94 +102,52 @@ class AjaxTest extends UnitTestCase
     }
 
     /**
-     * @test
+     * DataProvider for arguments
+     *
+     * @return array
      */
-    public function processAjaxRequestSanitizesArguments()
+    public function dataProviderForProcessAjaxRequestForcesTooHighMonthAndYearInRange()
     {
-        $arguments = [
-            'categories' => '123,-321 , , 0, Hallo,123Test',
-            'month' => '11',
-            'year' => '2024',
-            'pidOfListPage' => '4321',
-            'storagePids' => '543,-3245, ,  123Test'
-        ];
-        $expectedArguments = [
-            'categories' => '123,-321,0',
-            'month' => 11,
-            'year' => 2024,
-            'pidOfListPage' => 4321,
-            'storagePids' => '543,-3245'
-        ];
-        $this->subject->processAjaxRequest($arguments);
-        $this->assertSame($expectedArguments, $this->subject->_get('arguments'));
+        $arguments = [];
+        $arguments['negative values'] = [['month' => -50, 'year' => -2400], ['month' => '01', 'year' => '1500'], 1];
+        $arguments['valid int values'] = [['month' => 10, 'year' => 2100], ['month' => '10', 'year' => '2100'], 10];
+        $arguments['string values'] = [['month' => '10', 'year' => '2100'], ['month' => '10', 'year' => '2100'], 10];
+        $arguments['too huge values'] = [['month' => 250, 'year' => 12050], ['month' => '12', 'year' => '2500'], 12];
+        $arguments['add 0 to small numbers'] = [['month' => 3, 'year' => 2145], ['month' => '03', 'year' => '2145'], 3];
+
+        return $arguments;
     }
 
     /**
      * @test
+     * @dataProvider dataProviderForProcessAjaxRequestForcesTooHighMonthAndYearInRange
      */
-    public function processAjaxRequestForcesTooHighMonthAndYearInRange()
+    public function processAjaxRequestForcesTooHighMonthAndYearInRange($arguments, $expectedArguments, $expectedMonth)
     {
-        $arguments = [
-            'categories' => '10,11,12',
-            'month' => '243',
-            'year' => '23412',
-            'pidOfListPage' => 4321,
-            'storagePids' => '21,22,23'
-        ];
-        $expectedArguments = [
-            'categories' => '10,11,12',
-            'month' => 12,
-            'year' => 2500,
-            'pidOfListPage' => 4321,
-            'storagePids' => '21,22,23'
-        ];
-        $this->subject->processAjaxRequest($arguments);
-        $this->assertSame($expectedArguments, $this->subject->_get('arguments'));
-    }
-
-    /**
-     * @test
-     */
-    public function processAjaxRequestForcesTooLowMonthAndYearInRange()
-    {
-        $arguments = [
-            'categories' => '10,11,12',
-            'month' => '-12',
-            'year' => '324',
-            'pidOfListPage' => 4321,
-            'storagePids' => '21,22,23'
-        ];
-        $expectedArguments = [
-            'categories' => '10,11,12',
-            'month' => 1,
-            'year' => 1500,
-            'pidOfListPage' => 4321,
-            'storagePids' => '21,22,23'
-        ];
-        $this->subject->processAjaxRequest($arguments);
-        $this->assertSame($expectedArguments, $this->subject->_get('arguments'));
-    }
-
-    /**
-     * @test
-     */
-    public function processAjaxRequestPrependsZerosToMonthValuesAndCastsThemToString()
-    {
-        $arguments = [
-            'categories' => '10,11,12',
-            'month' => '7',
-            'year' => '2499',
-            'pidOfListPage' => 4321,
-            'storagePids' => '21,22,23'
-        ];
-        $this->frontendUserAuthenticationProphecy->start()->shouldBeCalled();
-        $this->frontendUserAuthenticationProphecy->setAndSaveSessionData(
-            Argument::exact('events2MonthAndYearForCalendar'),
-            Argument::exact([
-                'month' => '07',
-                'year' => '2499'
-            ])
+        /** @var FrontendUserAuthentication|ObjectProphecy $frontendUserAuthentication */
+        $frontendUserAuthentication = $this->prophesize(FrontendUserAuthentication::class);
+        $frontendUserAuthentication->start()->shouldBeCalled();
+        $frontendUserAuthentication->setAndSaveSessionData(
+            'events2MonthAndYearForCalendar',
+            [
+                'month' => $expectedArguments['month'],
+                'year' => $expectedArguments['year']
+            ]
         )->shouldBeCalled();
+
+        GeneralUtility::addInstance(FrontendUserAuthentication::class, $frontendUserAuthentication->reveal());
+
+        $this->buildAssertionForDatabaseWithReturnValue(
+            'tx_events2_domain_model_holiday',
+            [],
+            [
+                [
+                    'expr' => 'eq',
+                    'field' => 'month',
+                    'value' => $expectedMonth
+                ]
+            ]
+        );
 
         $this->subject->processAjaxRequest($arguments);
     }
@@ -240,6 +183,12 @@ class AjaxTest extends UnitTestCase
         $day2->setEvent($event2);
         $days = [$day1, $day2];
 
+        /** @var FrontendUserAuthentication|ObjectProphecy $frontendUserAuthentication */
+        $frontendUserAuthentication = $this->prophesize(FrontendUserAuthentication::class);
+        $frontendUserAuthentication->start()->shouldBeCalled();
+        $frontendUserAuthentication->setAndSaveSessionData(Argument::cetera())->shouldBeCalled();
+        GeneralUtility::addInstance(FrontendUserAuthentication::class, $frontendUserAuthentication->reveal());
+
         $this->queryProphecy->getQuerySettings()->willReturn($this->querySettingsProphecy->reveal());
         $this->queryProphecy->getQuerySettings()->shouldBeCalled();
         $this->queryProphecy->contains(Argument::exact('event.categories'), Argument::type('integer'))->shouldBeCalledTimes(3);
@@ -251,6 +200,18 @@ class AjaxTest extends UnitTestCase
         $this->queryProphecy->execute()->willReturn($days);
 
         $this->dayRepositoryProphecy->createQuery()->willReturn($this->queryProphecy);
+
+        $this->buildAssertionForDatabaseWithReturnValue(
+            'tx_events2_domain_model_holiday',
+            [],
+            [
+                [
+                    'expr' => 'eq',
+                    'field' => 'month',
+                    'value' => (int)$arguments['month']
+                ]
+            ]
+        );
 
         $json = $this->subject->processAjaxRequest($arguments);
         $result = json_decode($json, true);
@@ -298,6 +259,12 @@ class AjaxTest extends UnitTestCase
         $day2->setEvent($event2);
         $days = [$day1, $day2];
 
+        /** @var FrontendUserAuthentication|ObjectProphecy $frontendUserAuthentication */
+        $frontendUserAuthentication = $this->prophesize(FrontendUserAuthentication::class);
+        $frontendUserAuthentication->start()->shouldBeCalled();
+        $frontendUserAuthentication->setAndSaveSessionData(Argument::cetera())->shouldBeCalled();
+        GeneralUtility::addInstance(FrontendUserAuthentication::class, $frontendUserAuthentication->reveal());
+
         $this->queryProphecy->getQuerySettings()->willReturn($this->querySettingsProphecy->reveal());
         $this->queryProphecy->getQuerySettings()->shouldBeCalled();
         $this->queryProphecy->contains(Argument::exact('event.categories'), Argument::type('integer'))->shouldBeCalledTimes(3);
@@ -309,6 +276,18 @@ class AjaxTest extends UnitTestCase
         $this->queryProphecy->execute()->willReturn($days);
 
         $this->dayRepositoryProphecy->createQuery()->willReturn($this->queryProphecy);
+
+        $this->buildAssertionForDatabaseWithReturnValue(
+            'tx_events2_domain_model_holiday',
+            [],
+            [
+                [
+                    'expr' => 'eq',
+                    'field' => 'month',
+                    'value' => (int)$arguments['month']
+                ]
+            ]
+        );
 
         $json = $this->subject->processAjaxRequest($arguments);
         $result = json_decode($json, true);
@@ -336,6 +315,12 @@ class AjaxTest extends UnitTestCase
             'storagePids' => '21,22,23'
         ];
 
+        /** @var FrontendUserAuthentication|ObjectProphecy $frontendUserAuthentication */
+        $frontendUserAuthentication = $this->prophesize(FrontendUserAuthentication::class);
+        $frontendUserAuthentication->start()->shouldBeCalled();
+        $frontendUserAuthentication->setAndSaveSessionData(Argument::cetera())->shouldBeCalled();
+        GeneralUtility::addInstance(FrontendUserAuthentication::class, $frontendUserAuthentication->reveal());
+
         $this->queryProphecy->getQuerySettings()->willReturn($this->querySettingsProphecy->reveal());
         $this->queryProphecy->getQuerySettings()->shouldBeCalled();
         $this->queryProphecy->contains()->shouldNotBeCalled();
@@ -346,6 +331,18 @@ class AjaxTest extends UnitTestCase
         $this->queryProphecy->matching(Argument::any())->willReturn($this->queryProphecy->reveal());
         $this->queryProphecy->execute()->willReturn([]);
         $this->dayRepositoryProphecy->createQuery()->willReturn($this->queryProphecy);
+
+        $this->buildAssertionForDatabaseWithReturnValue(
+            'tx_events2_domain_model_holiday',
+            [],
+            [
+                [
+                    'expr' => 'eq',
+                    'field' => 'month',
+                    'value' => (int)$arguments['month']
+                ]
+            ]
+        );
 
         $this->subject->processAjaxRequest($arguments);
     }
@@ -364,6 +361,12 @@ class AjaxTest extends UnitTestCase
             'storagePids' => '21,22,23'
         ];
 
+        /** @var FrontendUserAuthentication|ObjectProphecy $frontendUserAuthentication */
+        $frontendUserAuthentication = $this->prophesize(FrontendUserAuthentication::class);
+        $frontendUserAuthentication->start()->shouldBeCalled();
+        $frontendUserAuthentication->setAndSaveSessionData(Argument::cetera())->shouldBeCalled();
+        GeneralUtility::addInstance(FrontendUserAuthentication::class, $frontendUserAuthentication->reveal());
+
         $this->queryProphecy->getQuerySettings()->willReturn($this->querySettingsProphecy->reveal());
         $this->queryProphecy->getQuerySettings()->shouldBeCalled();
         $this->queryProphecy->contains()->shouldNotBeCalled();
@@ -375,28 +378,18 @@ class AjaxTest extends UnitTestCase
         $this->queryProphecy->execute()->willReturn([]);
         $this->dayRepositoryProphecy->createQuery()->willReturn($this->queryProphecy);
 
-        $this->subject->processAjaxRequest($arguments);
-    }
-
-    /**
-     * @test
-     */
-    public function processAjaxRequestWillReturnEmptyArrayIfMonthAndYearIsOutOfRange()
-    {
-        $this->extConfProphecy->getRecurringPast()->willReturn(2);
-        $threeMonthAgo = new \DateTime('now midnight');
-        $threeMonthAgo->modify('-3 months');
-
-        $arguments = [
-            'month' => $threeMonthAgo->format('n'),
-            'year' => $threeMonthAgo->format('Y'),
-            'pidOfListPage' => 4321,
-            'storagePids' => '21,22,23'
-        ];
-
-        $this->assertSame(
-            '[]',
-            $this->subject->processAjaxRequest($arguments)
+        $this->buildAssertionForDatabaseWithReturnValue(
+            'tx_events2_domain_model_holiday',
+            [],
+            [
+                [
+                    'expr' => 'eq',
+                    'field' => 'month',
+                    'value' => (int)$arguments['month']
+                ]
+            ]
         );
+
+        $this->subject->processAjaxRequest($arguments);
     }
 }

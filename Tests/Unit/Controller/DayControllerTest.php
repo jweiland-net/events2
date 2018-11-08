@@ -20,6 +20,7 @@ use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
+use Nimut\TestingFramework\MockObject\AccessibleMockObjectInterface;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -36,7 +37,7 @@ use TYPO3\CMS\Fluid\View\TemplateView;
 class DayControllerTest extends UnitTestCase
 {
     /**
-     * @var DayController|\PHPUnit_Framework_MockObject_MockObject|\TYPO3\CMS\Core\Tests\AccessibleObjectInterface
+     * @var DayController|\PHPUnit_Framework_MockObject_MockObject|AccessibleMockObjectInterface
      */
     protected $subject;
 

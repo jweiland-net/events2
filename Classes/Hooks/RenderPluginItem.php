@@ -15,7 +15,8 @@ namespace JWeiland\Events2\Hooks;
  * The TYPO3 project - inspiring people to share!
  */
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Database\DatabaseConnection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -24,7 +25,7 @@ use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Lang\LanguageService;
 
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * Render a little table with information from FlexForm into
  */
 class RenderPluginItem
 {
@@ -112,7 +113,6 @@ class RenderPluginItem
      * Get Title of Organizer
      *
      * @param array $flexFormSettings
-     *
      * @return string
      */
     protected function getTitleOfOrganizer(array $flexFormSettings)
@@ -121,11 +121,23 @@ class RenderPluginItem
         if (empty($flexFormSettings['settings']['preFilterByOrganizer'])) {
             return $title;
         }
-        $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            '*',
-            'tx_events2_domain_model_organizer',
-            'uid=' . (int)$flexFormSettings['settings']['preFilterByOrganizer']
+
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_organizer');
+        $queryBuilder->getRestrictions()->removeAll()->add(
+            GeneralUtility::makeInstance(DeletedRestriction::class)
         );
+        $row = $queryBuilder
+            ->select('*')
+            ->from('tx_events2_domain_model_organizer')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid',
+                    $queryBuilder->createNamedParameter($flexFormSettings['settings']['preFilterByOrganizer'], \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetch();
+
         if (empty($row)) {
             return $title;
         }
@@ -159,13 +171,13 @@ class RenderPluginItem
     }
 
     /**
-     * Get TYPO3s Database Connection
+     * Get TYPO3s Connection Pool
      *
-     * @return DatabaseConnection
+     * @return ConnectionPool
      */
-    protected function getDatabaseConnection()
+    protected function getConnectionPool()
     {
-        return $GLOBALS['TYPO3_DB'];
+        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 
     /**

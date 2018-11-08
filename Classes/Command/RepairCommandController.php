@@ -16,6 +16,7 @@ namespace JWeiland\Events2\Command;
  */
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Service\DayRelationService;
+use JWeiland\Events2\Utility\DatabaseUtility;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -23,17 +24,14 @@ use TYPO3\CMS\Extbase\Mvc\Controller\CommandController;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * The naming is a little bit miss-understandable. It comes from the early days of development where I had many
+ * problems with all these day records.
+ * Today this class deletes ALL day records and creates them from scratch.
  */
 class RepairCommandController extends CommandController
 {
     /**
-     * @var \TYPO3\CMS\Core\Database\DatabaseConnection
-     */
-    protected $databaseConnection;
-
-    /**
-     * @var \JWeiland\Events2\Utility\DateTimeUtility
+     * @var DateTimeUtility
      */
     protected $dateTimeUtility;
 
@@ -54,14 +52,6 @@ class RepairCommandController extends CommandController
     public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
     {
         $this->dateTimeUtility = $dateTimeUtility;
-    }
-
-    /**
-     * initializes this object.
-     */
-    public function initializeObject()
-    {
-        $this->databaseConnection = $GLOBALS['TYPO3_DB'];
     }
 
     /**
@@ -87,7 +77,6 @@ class RepairCommandController extends CommandController
      */
     protected function truncateDayTable()
     {
-        $this->databaseConnection->exec_TRUNCATEquery('tx_events2_domain_model_day');
         $this->outputLine('I have truncated the day table' . PHP_EOL);
     }
 
@@ -102,26 +91,12 @@ class RepairCommandController extends CommandController
     {
         $eventCounter = 0;
         $dayCounter = 0;
-
-        /** @var DayRelationService $dayRelations */
         $dayRelations = $this->objectManager->get(DayRelationService::class);
 
         $this->echoValue('Process each event record' . PHP_EOL);
 
-        // select only current and future events
-        // do not select hidden records as eventRepository->findByIdentifier will not find them
-        $rows = $this->databaseConnection->exec_SELECTgetRows(
-            'uid,pid',
-            'tx_events2_domain_model_event',
-            'hidden=0 AND deleted=0 AND (
-              (event_type = \'single\' AND event_begin > UNIX_TIMESTAMP())
-              OR (event_type = \'duration\' AND (event_end = 0 OR event_end > UNIX_TIMESTAMP()))
-              OR (event_type = \'recurring\' AND (recurring_end = 0 OR recurring_end > UNIX_TIMESTAMP()))
-            )'
-        );
-
+        $rows = DatabaseUtility::getCurrentAndFutureEvents();
         if (!empty($rows)) {
-            /** @var PersistenceManager $persistenceManager */
             $persistenceManager = $this->objectManager->get(PersistenceManager::class);
 
             // with each changing PID pageTSConfigCache will grow by roundabout 200KB
@@ -166,10 +141,10 @@ class RepairCommandController extends CommandController
     }
 
     /**
-     * echo "whatEver"
+     * Echo $value to CLI
      *
-     * @param string $value
-     * @param bool $reset
+     * @param string $value In most cases you should use only ONE letter
+     * @param bool $reset If true, we insert a line break
      * @return void
      */
     protected function echoValue($value = '.', $reset = false)

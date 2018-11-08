@@ -15,8 +15,12 @@ namespace JWeiland\Events2\Hooks;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * Render a selectbox with countries from static_info_tables within ExtensionManager configuration for events2
  */
 class EmStaticInfo
 {
@@ -30,18 +34,16 @@ class EmStaticInfo
      */
     public function renderDefaultCountry(array $params, $configurationForm)
     {
-        $countries = $this->getDatabaseConnection()->exec_SELECTgetRows(
-            'uid, cn_short_en',
-            'static_countries',
-            'deleted=0',
-            '',
-            'static_countries.cn_short_en'
-        );
-
         $options = [];
         $options[] = '<option value=""></option>';
+
+        $countries = $this->getCountries();
         foreach ($countries as $country) {
-            $options[] = $this->wrapOption((int)$country['uid'], $country['cn_short_en'], $params['fieldValue'] == $country['uid']);
+            $options[] = $this->wrapOption(
+                (int)$country['uid'],
+                $country['cn_short_en'],
+                $params['fieldValue'] == $country['uid']
+            );
         }
 
         return sprintf(
@@ -51,6 +53,30 @@ class EmStaticInfo
             $params['fieldName'],
             implode(LF, $options)
         );
+    }
+
+    /**
+     * Get Countries from static_info_table: static_countries
+     *
+     * @return array
+     */
+    protected function getCountries()
+    {
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('static_countries');
+        $queryBuilder->getRestrictions()->removeAll()->add(
+            GeneralUtility::makeInstance(DeletedRestriction::class)
+        );
+        $countries = $queryBuilder
+            ->select('uid', 'cn_short_en')
+            ->from('static_countries')
+            ->orderBy('cn_short_en', 'ASC')
+            ->execute()
+            ->fetchAll();
+
+        if (empty($countries)) {
+            $countries = [];
+        }
+        return $countries;
     }
 
     /**
@@ -73,12 +99,12 @@ class EmStaticInfo
     }
 
     /**
-     * Get TYPO3s Database Connection
+     * Get TYPO3s Connection Pool
      *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     * @return ConnectionPool
      */
-    protected function getDatabaseConnection()
+    protected function getConnectionPool()
     {
-        return $GLOBALS['TYPO3_DB'];
+        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 }

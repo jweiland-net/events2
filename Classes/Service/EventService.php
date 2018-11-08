@@ -25,14 +25,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * f.e. the time domain model can be connected 4 times with an event (exceptionTimes, differentTimes, MultipleTimes and eventTime)
  * So which time has priority, which time has to be merged
- * This Utility tries to help you/me to make live easier with events2.
- *
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * This Utility tries to help you/me to make life easier with events2.
  */
 class EventService
 {
     /**
-     * @var \JWeiland\Events2\Configuration\ExtConf
+     * @var ExtConf
      */
     protected $extConf;
 
@@ -47,10 +45,9 @@ class EventService
     protected $eventRepository;
 
     /**
-     * injects extConf
+     * Injects extConf
      *
      * @param ExtConf $extConf
-     *
      * @return void
      */
     public function injectExtConf(ExtConf $extConf)
@@ -59,10 +56,9 @@ class EventService
     }
 
     /**
-     * inject DateTime Utility.
+     * Inject DateTime Utility.
      *
      * @param DateTimeUtility $dateTimeUtility
-     *
      * @return void
      */
     public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
@@ -71,10 +67,9 @@ class EventService
     }
 
     /**
-     * inject eventRepository
+     * Inject eventRepository
      *
      * @param EventRepository $eventRepository
-     *
      * @return void
      */
     public function injectEventRepository(EventRepository $eventRepository)
@@ -83,13 +78,12 @@ class EventService
     }
 
     /**
-     * get exceptions for given day
-     * you can limit the result by a given type.
+     * Get exceptions for given day
+     * You can limit the result by a given type.
      *
      * @param Event  $event
      * @param Day    $day
      * @param string $type  There are different exception types like Add, Remove, Time or Info. If empty add all exceptions
-     *
      * @return \SplObjectStorage
      */
     public function getExceptionsForDay(Event $event, Day $day, $type = '')
@@ -112,13 +106,12 @@ class EventService
     }
 
     /**
-     * each event can have one or more times for one day
+     * Each event can have one or more times for one day
      * This method looks into all time related records and fetches the times with highest priority.
      *
      * @param Event $event
-     * @param Day   $day
-     *
-     * @return \SplObjectStorage
+     * @param Day $day
+     * @return \SplObjectStorage|Time[]
      */
     public function getTimesForDay(Event $event, Day $day)
     {
@@ -154,11 +147,10 @@ class EventService
     }
 
     /**
-     * get sorted times for specified day
+     * Get sorted times for specified day
      *
      * @param Event $event
      * @param Day   $day
-     *
      * @return \SplObjectStorage
      */
     public function getSortedTimesForDay(Event $event, Day $day)
@@ -182,12 +174,11 @@ class EventService
     }
 
     /**
-     * you can override the times in an event for a special weekday
+     * You can override the times in an event for a special weekday,
      * so this method checks and returns times, if there are times defined for given day.
      *
      * @param Event $event
      * @param Day   $day
-     *
      * @return \SplObjectStorage
      */
     protected function getDifferentTimesForDay(Event $event, Day $day)
@@ -210,7 +201,6 @@ class EventService
      * This method checks both parts, merges them to one SplObjectStorage and returns the result.
      *
      * @param Event $event
-     *
      * @return \SplObjectStorage
      */
     protected function getTimesFromEvent(Event $event)
@@ -242,7 +232,6 @@ class EventService
      * Get next day for event
      *
      * @param int $eventUid
-     *
      * @return Day|false
      */
     public function getNextDayForEvent($eventUid)
@@ -274,7 +263,6 @@ class EventService
      * Needed by SolrIndexer, as we can't create JOIN Queries in Solr configuration
      *
      * @param int $eventUid
-     *
      * @return Day|false
      */
     public function getLastDayForEvent($eventUid)
@@ -298,15 +286,5 @@ class EventService
         } else {
             return false;
         }
-    }
-
-    /**
-     * Get TYPO3s Database Connection
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     */
-    protected function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
     }
 }

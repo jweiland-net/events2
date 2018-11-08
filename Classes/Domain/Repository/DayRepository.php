@@ -14,10 +14,11 @@ namespace JWeiland\Events2\Domain\Repository;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Model\Search;
-use JWeiland\Events2\Persistence\Typo362\Generic\Query;
+use JWeiland\Events2\Persistence\Typo384\Generic\Query;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
@@ -26,7 +27,7 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * Repository to retrieve days from
  */
 class DayRepository extends Repository
 {
@@ -73,7 +74,6 @@ class DayRepository extends Repository
      * Sets the settings
      *
      * @param array $settings
-     *
      * @return void
      */
     public function setSettings(array $settings)
@@ -87,9 +87,7 @@ class DayRepository extends Repository
      * @param string $type
      * @param Filter $filter
      * @param int $limit
-     *
      * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
-     *
      * @throws \Exception
      */
     public function findEvents($type, Filter $filter, $limit = 0)
@@ -166,9 +164,7 @@ class DayRepository extends Repository
      *
      * @param QueryResultInterface $queryResult
      * @param int $maxRecords
-     *
      * @return Day[]
-     *
      * @throws \Exception
      */
     public function groupDaysByEventAndSort(QueryResultInterface $queryResult, $maxRecords)
@@ -230,9 +226,7 @@ class DayRepository extends Repository
      *
      * @param Day[] $records
      * @param string $sortBy
-     *
      * @return Day[]
-     *
      * @throws \Exception
      */
     protected function sortDays($records, $sortBy = 'day')
@@ -256,9 +250,7 @@ class DayRepository extends Repository
      * search for events.
      *
      * @param Search $search
-     *
      * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
-     *
      * @throws \Exception
      */
     public function searchEvents(Search $search)
@@ -327,12 +319,11 @@ class DayRepository extends Repository
      * Find day by UID
      *
      * @param int $day
-     *
      * @return Day
      */
     public function findByDay($day)
     {
-        /** @var \JWeiland\Events2\Persistence\Typo376\Generic\Query $query */
+        /** @var \JWeiland\Events2\Persistence\Typo384\Generic\Query $query */
         $query = $this->createQuery();
         $this->addGroupingToQuery($query);
         $query->matching($query->equals('uid', (int)$day));
@@ -345,9 +336,7 @@ class DayRepository extends Repository
      * Find days/events by timestamp
      *
      * @param int $timestamp
-     *
      * @return QueryResult
-     *
      * @throws \Exception
      */
     public function findByTimestamp($timestamp)
@@ -379,9 +368,7 @@ class DayRepository extends Repository
      *
      * @param int $eventUid
      * @param int $timestamp
-     *
      * @return Day|null
-     *
      * @throws \Exception
      */
     public function findOneByTimestamp($eventUid, $timestamp = 0)
@@ -417,7 +404,6 @@ class DayRepository extends Repository
      * Add special grouping
      *
      * @param QueryInterface $query
-     *
      * @return void
      */
     protected function addGroupingToQuery(QueryInterface $query)

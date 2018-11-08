@@ -22,6 +22,7 @@ use JWeiland\Events2\Domain\Model\Link;
 use JWeiland\Events2\Domain\Model\Location;
 use JWeiland\Events2\Domain\Model\Organizer;
 use JWeiland\Events2\Domain\Model\Time;
+use Nimut\TestingFramework\MockObject\AccessibleMockObjectInterface;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
@@ -963,7 +964,7 @@ class EventTest extends UnitTestCase
     public function getCategoryListReturnsCommaSeparatedList()
     {
         for ($i = 1; $i < 4; $i++) {
-            /* @var Category|\PHPUnit_Framework_MockObject_MockObject|\TYPO3\CMS\Core\Tests\AccessibleObjectInterface $category */
+            /* @var Category|\PHPUnit_Framework_MockObject_MockObject|AccessibleMockObjectInterface $category */
             $category = $this->getAccessibleMock(Category::class, ['dummy']);
             $category->_set('uid', $i);
             $this->subject->addCategory($category);
