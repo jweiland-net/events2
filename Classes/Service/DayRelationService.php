@@ -21,6 +21,8 @@ use JWeiland\Events2\Domain\Model\Exception;
 use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Utility\DateTimeUtility;
+use TYPO3\CMS\Core\Log\Logger;
+use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
@@ -156,7 +158,7 @@ class DayRelationService
         $event = $this->eventRepository->findByIdentifier((int)$eventUid);
         if (!$event instanceof Event) {
             // write a warning (2) to sys_log
-            GeneralUtility::sysLog('Related days could not be created, because of an empty event or a non given event uid or pid', 'events2', 2);
+            $this->getLogger()->warning('Related days could not be created, because of an empty event or a non given event uid or pid.');
         } else {
             $event->setDays(new ObjectStorage());
 
@@ -396,5 +398,13 @@ class DayRelationService
         }
 
         return $sortDayTime;
+    }
+
+    /**
+     * @return Logger
+     */
+    protected function getLogger()
+    {
+        return GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
     }
 }
