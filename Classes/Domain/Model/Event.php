@@ -14,12 +14,13 @@ namespace JWeiland\Events2\Domain\Model;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * This class contains all getter and setters for an Event.
  */
 class Event extends AbstractEntity
 {
@@ -245,7 +246,7 @@ class Event extends AbstractEntity
     }
 
     /**
-     * Initializes all \TYPO3\CMS\Extbase\Persistence\ObjectStorage properties.
+     * Initializes all ObjectStorage properties.
      */
     protected function initStorageObjects()
     {
@@ -259,10 +260,8 @@ class Event extends AbstractEntity
 
     /**
      * Returns the eventType
-     *
-     * @return string $eventType
      */
-    public function getEventType()
+    public function getEventType(): string
     {
         return $this->eventType;
     }
@@ -271,20 +270,16 @@ class Event extends AbstractEntity
      * Sets the eventType
      *
      * @param string $eventType
-     *
-     * @return void
      */
-    public function setEventType($eventType)
+    public function setEventType(string $eventType)
     {
-        $this->eventType = (string)$eventType;
+        $this->eventType = $eventType;
     }
 
     /**
      * Returns the hidden.
-     *
-     * @return bool $hidden
      */
-    public function getHidden()
+    public function getHidden(): bool
     {
         return $this->hidden;
     }
@@ -293,42 +288,44 @@ class Event extends AbstractEntity
      * Sets the hidden.
      *
      * @param bool $hidden
-     *
-     * @return void
      */
-    public function setHidden($hidden)
+    public function setHidden(bool $hidden)
     {
-        $this->hidden = (bool)$hidden;
+        $this->hidden = $hidden;
     }
 
     /**
      * Returns the topOfList.
-     *
-     * @return bool $topOfList
      */
-    public function getTopOfList()
+    public function getTopOfList(): bool
     {
         return $this->topOfList;
+    }
+
+    /**
+     * Returns the boolean state of topOfList.
+     *
+     * @return bool
+     */
+    public function isTopOfList(): bool
+    {
+        return (bool)$this->getTopOfList();
     }
 
     /**
      * Sets the topOfList.
      *
      * @param bool $topOfList
-     *
-     * @return void
      */
-    public function setTopOfList($topOfList)
+    public function setTopOfList(bool $topOfList)
     {
-        $this->topOfList = (bool)$topOfList;
+        $this->topOfList = $topOfList;
     }
 
     /**
      * Returns the title.
-     *
-     * @return string $title
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -337,33 +334,23 @@ class Event extends AbstractEntity
      * Sets the title.
      *
      * @param string $title
-     *
-     * @return void
      */
-    public function setTitle($title)
+    public function setTitle(string $title)
     {
-        $this->title = (string)$title;
-    }
-
-    /**
-     * Returns the boolean state of topOfList.
-     *
-     * @return bool
-     */
-    public function isTopOfList()
-    {
-        return $this->getTopOfList();
+        $this->title = $title;
     }
 
     /**
      * Returns the eventBegin.
      *
-     * @return \DateTime|null $eventBegin
+     * @return \DateTime|null
      */
     public function getEventBegin()
     {
         if ($this->eventBegin instanceof \DateTime) {
-            $this->eventBegin->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+            if ($this->eventBegin->timezone_type !== 3) {
+                $this->eventBegin->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+            }
             return clone $this->eventBegin;
         } else {
             return null;
@@ -373,9 +360,7 @@ class Event extends AbstractEntity
     /**
      * Sets the eventBegin.
      *
-     * @param \DateTime $eventBegin
-     *
-     * @return void
+     * @param \DateTime|null $eventBegin
      */
     public function setEventBegin(\DateTime $eventBegin = null)
     {
@@ -385,7 +370,7 @@ class Event extends AbstractEntity
     /**
      * Returns the event_time.
      *
-     * @return \JWeiland\Events2\Domain\Model\Time $time
+     * @return Time|null
      */
     public function getEventTime()
     {
@@ -395,9 +380,7 @@ class Event extends AbstractEntity
     /**
      * Sets the event_time.
      *
-     * @param Time $eventTime
-     *
-     * @return void
+     * @param Time|null $eventTime
      */
     public function setEventTime(Time $eventTime = null)
     {
@@ -406,10 +389,8 @@ class Event extends AbstractEntity
 
     /**
      * Returns the days of an event if it takes several days.
-     *
-     * @return int $durationInDays
      */
-    public function getDaysOfEventsTakingDays()
+    public function getDaysOfEventsTakingDays(): int
     {
         $dateTimeUtility = new DateTimeUtility();
 
@@ -432,7 +413,9 @@ class Event extends AbstractEntity
     public function getEventEnd()
     {
         if ($this->eventEnd instanceof \DateTime) {
-            $this->eventEnd->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+            if ($this->eventEnd->timezone_type !== 3) {
+                $this->eventEnd->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+            }
             return clone $this->eventEnd;
         } else {
             return null;
@@ -442,9 +425,7 @@ class Event extends AbstractEntity
     /**
      * Sets the eventEnd.
      *
-     * @param \DateTime $eventEnd
-     *
-     * @return void
+     * @param \DateTime|null $eventEnd
      */
     public function setEventEnd(\DateTime $eventEnd = null)
     {
@@ -453,10 +434,8 @@ class Event extends AbstractEntity
 
     /**
      * Returns the sameDay.
-     *
-     * @return bool $sameDay
      */
-    public function getSameDay()
+    public function getSameDay(): bool
     {
         return $this->sameDay;
     }
@@ -465,30 +444,24 @@ class Event extends AbstractEntity
      * Sets the sameDay.
      *
      * @param bool $sameDay
-     *
-     * @return void
      */
-    public function setSameDay($sameDay)
+    public function setSameDay(bool $sameDay)
     {
-        $this->sameDay = (bool)$sameDay;
+        $this->sameDay = $sameDay;
     }
 
     /**
      * Returns the boolean state of sameDay.
-     *
-     * @return void
      */
-    public function isSameDay()
+    public function isSameDay(): bool
     {
-        $this->getSameDay();
+        return (bool)$this->getSameDay();
     }
 
     /**
      * Returns the multipleTimes.
-     *
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage $time
      */
-    public function getMultipleTimes()
+    public function getMultipleTimes(): ObjectStorage
     {
         return $this->multipleTimes;
     }
@@ -497,10 +470,8 @@ class Event extends AbstractEntity
      * Sets the multipleTimes.
      *
      * @param ObjectStorage $multipleTimes
-     *
-     * @return void
      */
-    public function setMultipleTimes(ObjectStorage $multipleTimes = null)
+    public function setMultipleTimes(ObjectStorage $multipleTimes)
     {
         $this->multipleTimes = $multipleTimes;
     }
@@ -509,10 +480,8 @@ class Event extends AbstractEntity
      * Adds a Times.
      *
      * @param Time $multipleTime
-     *
-     * @return void
      */
-    public function addMultipleTime(Time $multipleTime = null)
+    public function addMultipleTime(Time $multipleTime)
     {
         $this->multipleTimes->attach($multipleTime);
     }
@@ -521,8 +490,6 @@ class Event extends AbstractEntity
      * Removes a Times.
      *
      * @param Time $multipleTime The Time to be removed
-     *
-     * @return void
      */
     public function removeMultipleTime(Time $multipleTime)
     {
@@ -531,10 +498,8 @@ class Event extends AbstractEntity
 
     /**
      * Returns the xth.
-     *
-     * @return array $xth
      */
-    public function getXth()
+    public function getXth(): array
     {
         $result = [];
         $items = $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['xth']['config']['items'];
@@ -549,20 +514,16 @@ class Event extends AbstractEntity
      * Sets the xth.
      *
      * @param int $xth
-     *
-     * @return void
      */
-    public function setXth($xth)
+    public function setXth(int $xth)
     {
         $this->xth = $xth;
     }
 
     /**
      * Returns the weekday.
-     *
-     * @return array $weekday
      */
-    public function getWeekday()
+    public function getWeekday(): array
     {
         $result = [];
         $items = $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['weekday']['config']['items'];
@@ -577,20 +538,16 @@ class Event extends AbstractEntity
      * Sets the weekday.
      *
      * @param int $weekday
-     *
-     * @return void
      */
-    public function setWeekday($weekday)
+    public function setWeekday(int $weekday)
     {
         $this->weekday = $weekday;
     }
 
     /**
      * Returns the differentTimes.
-     *
-     * @return ObjectStorage $differentTimes
      */
-    public function getDifferentTimes()
+    public function getDifferentTimes(): ObjectStorage
     {
         return $this->differentTimes;
     }
@@ -599,10 +556,8 @@ class Event extends AbstractEntity
      * Sets the differentTimes.
      *
      * @param ObjectStorage $differentTimes
-     *
-     * @return void
      */
-    public function setDifferentTimes(ObjectStorage $differentTimes = null)
+    public function setDifferentTimes(ObjectStorage $differentTimes)
     {
         $this->differentTimes = $differentTimes;
     }
@@ -611,10 +566,8 @@ class Event extends AbstractEntity
      * Adds a Times.
      *
      * @param Time $differentTime
-     *
-     * @return void
      */
-    public function addDifferentTime(Time $differentTime = null)
+    public function addDifferentTime(Time $differentTime)
     {
         $this->differentTimes->attach($differentTime);
     }
@@ -623,8 +576,6 @@ class Event extends AbstractEntity
      * Removes a Times.
      *
      * @param Time $differentTime The Time to be removed
-     *
-     * @return void
      */
     public function removeDifferentTime(Time $differentTime)
     {
@@ -633,10 +584,8 @@ class Event extends AbstractEntity
 
     /**
      * Returns the eachWeeks.
-     *
-     * @return int $eachWeeks
      */
-    public function getEachWeeks()
+    public function getEachWeeks(): int
     {
         return $this->eachWeeks;
     }
@@ -645,20 +594,16 @@ class Event extends AbstractEntity
      * Sets the eachWeeks.
      *
      * @param int $eachWeeks
-     *
-     * @return void
      */
-    public function setEachWeeks($eachWeeks)
+    public function setEachWeeks(int $eachWeeks)
     {
-        $this->eachWeeks = (int)$eachWeeks;
+        $this->eachWeeks = $eachWeeks;
     }
 
     /**
      * Returns the eachMonths.
-     *
-     * @return int $eachMonths
      */
-    public function getEachMonths()
+    public function getEachMonths(): int
     {
         return $this->eachMonths;
     }
@@ -667,12 +612,10 @@ class Event extends AbstractEntity
      * Sets the eachMonths.
      *
      * @param int $eachMonths
-     *
-     * @return void
      */
-    public function setEachMonths($eachMonths)
+    public function setEachMonths(int $eachMonths)
     {
-        $this->eachMonths = (int)$eachMonths;
+        $this->eachMonths = $eachMonths;
     }
 
     /**
@@ -683,7 +626,9 @@ class Event extends AbstractEntity
     public function getRecurringEnd()
     {
         if ($this->recurringEnd instanceof \DateTime) {
-            $this->recurringEnd->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+            if ($this->recurringEnd->timezone_type !== 3) {
+                $this->recurringEnd->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+            }
             return clone $this->recurringEnd;
         } else {
             return null;
@@ -693,9 +638,7 @@ class Event extends AbstractEntity
     /**
      * Sets the recurringEnd
      *
-     * @param \DateTime $recurringEnd
-     *
-     * @return void
+     * @param \DateTime|null $recurringEnd
      */
     public function setRecurringEnd(\DateTime $recurringEnd = null)
     {
@@ -706,8 +649,6 @@ class Event extends AbstractEntity
      * Adds an Exception.
      *
      * @param Exception $exception
-     *
-     * @return void
      */
     public function addException(Exception $exception)
     {
@@ -718,8 +659,6 @@ class Event extends AbstractEntity
      * Removes an Exception.
      *
      * @param Exception $exception
-     *
-     * @return void
      */
     public function removeException(Exception $exception)
     {
@@ -728,10 +667,8 @@ class Event extends AbstractEntity
 
     /**
      * Returns the exceptions.
-     *
-     * @return ObjectStorage $exceptions
      */
-    public function getExceptions()
+    public function getExceptions(): ObjectStorage
     {
         return $this->exceptions;
     }
@@ -740,8 +677,6 @@ class Event extends AbstractEntity
      * Sets the Exceptions.
      *
      * @param ObjectStorage $exceptions
-     *
-     * @return void
      */
     public function setExceptions(ObjectStorage $exceptions)
     {
@@ -753,7 +688,7 @@ class Event extends AbstractEntity
      *
      * @return string $teaser
      */
-    public function getTeaser()
+    public function getTeaser(): string
     {
         return $this->teaser;
     }
@@ -762,20 +697,16 @@ class Event extends AbstractEntity
      * Sets the teaser.
      *
      * @param string $teaser
-     *
-     * @return void
      */
-    public function setTeaser($teaser)
+    public function setTeaser(string $teaser)
     {
-        $this->teaser = (string)$teaser;
+        $this->teaser = $teaser;
     }
 
     /**
      * Returns the detailInformations.
-     *
-     * @return string $detailInformations
      */
-    public function getDetailInformations()
+    public function getDetailInformations(): string
     {
         return $this->detailInformations;
     }
@@ -784,20 +715,16 @@ class Event extends AbstractEntity
      * Sets the detailInformations.
      *
      * @param string $detailInformations
-     *
-     * @return void
      */
-    public function setDetailInformations($detailInformations)
+    public function setDetailInformations(string $detailInformations)
     {
-        $this->detailInformations = (string)$detailInformations;
+        $this->detailInformations = $detailInformations;
     }
 
     /**
      * Returns the freeEntry.
-     *
-     * @return bool $freeEntry
      */
-    public function getFreeEntry()
+    public function getFreeEntry(): bool
     {
         return $this->freeEntry;
     }
@@ -806,20 +733,16 @@ class Event extends AbstractEntity
      * Sets the freeEntry.
      *
      * @param bool $freeEntry
-     *
-     * @return void
      */
-    public function setFreeEntry($freeEntry)
+    public function setFreeEntry(bool $freeEntry)
     {
-        $this->freeEntry = (bool)$freeEntry;
+        $this->freeEntry = $freeEntry;
     }
 
     /**
      * Returns the boolean state of freeEntry.
-     *
-     * @return bool
      */
-    public function isFreeEntry()
+    public function isFreeEntry(): bool
     {
         return $this->getFreeEntry();
     }
@@ -827,7 +750,7 @@ class Event extends AbstractEntity
     /**
      * Returns the ticketLink.
      *
-     * @return \JWeiland\Events2\Domain\Model\Link $ticketLink
+     * @return Link|null $ticketLink
      */
     public function getTicketLink()
     {
@@ -838,8 +761,6 @@ class Event extends AbstractEntity
      * Sets the ticketLink.
      *
      * @param Link $ticketLink
-     *
-     * @return void
      */
     public function setTicketLink(Link $ticketLink = null)
     {
@@ -850,8 +771,6 @@ class Event extends AbstractEntity
      * Adds a Category.
      *
      * @param Category $category
-     *
-     * @return void
      */
     public function addCategory(Category $category)
     {
@@ -862,8 +781,6 @@ class Event extends AbstractEntity
      * Removes a Category.
      *
      * @param Category $categoryToRemove The Category to be removed
-     *
-     * @return void
      */
     public function removeCategory(Category $categoryToRemove)
     {
@@ -872,10 +789,8 @@ class Event extends AbstractEntity
 
     /**
      * Returns the categories.
-     *
-     * @return ObjectStorage $categories
      */
-    public function getCategories()
+    public function getCategories(): ObjectStorage
     {
         return $this->categories;
     }
@@ -883,10 +798,8 @@ class Event extends AbstractEntity
     /**
      * Returns the category UIDs as array
      * This is a helper method
-     *
-     * @return array
      */
-    public function getCategoryUids()
+    public function getCategoryUids(): array
     {
         $categoryUids = [];
         /** @var Category $category */
@@ -900,8 +813,6 @@ class Event extends AbstractEntity
      * Sets the categories.
      *
      * @param ObjectStorage $categories
-     *
-     * @return void
      */
     public function setCategories(ObjectStorage $categories)
     {
@@ -912,8 +823,6 @@ class Event extends AbstractEntity
      * Adds a Day.
      *
      * @param Day $day
-     *
-     * @return void
      */
     public function addDay(Day $day)
     {
@@ -924,8 +833,6 @@ class Event extends AbstractEntity
      * Removes a Day.
      *
      * @param Day $dayToRemove The Day to be removed
-     *
-     * @return void
      */
     public function removeDay(Day $dayToRemove)
     {
@@ -937,7 +844,7 @@ class Event extends AbstractEntity
      *
      * @return ObjectStorage $days
      */
-    public function getDays()
+    public function getDays(): ObjectStorage
     {
         return $this->days;
     }
@@ -946,8 +853,6 @@ class Event extends AbstractEntity
      * Sets the days.
      *
      * @param ObjectStorage $days
-     *
-     * @return void
      */
     public function setDays(ObjectStorage $days)
     {
@@ -956,8 +861,9 @@ class Event extends AbstractEntity
 
     /**
      * Returns the location.
+     * Since version 2.3.1 this property can be (not must be) required
      *
-     * @return Location $location
+     * @return Location|null $location
      */
     public function getLocation()
     {
@@ -967,9 +873,7 @@ class Event extends AbstractEntity
     /**
      * Sets the location.
      *
-     * @param Location $location
-     *
-     * @return void
+     * @param Location|null $location
      */
     public function setLocation(Location $location = null)
     {
@@ -978,8 +882,9 @@ class Event extends AbstractEntity
 
     /**
      * Returns the organizer.
+     * Since version 2.3.1 this property can be (not must be) required
      *
-     * @return Organizer $organizer
+     * @return Organizer|null
      */
     public function getOrganizer()
     {
@@ -989,9 +894,7 @@ class Event extends AbstractEntity
     /**
      * Sets the organizer.
      *
-     * @param Organizer $organizer
-     *
-     * @return void
+     * @param Organizer|null $organizer
      */
     public function setOrganizer(Organizer $organizer = null)
     {
@@ -1000,10 +903,8 @@ class Event extends AbstractEntity
 
     /**
      * Returns the images.
-     *
-     * @return array $images
      */
-    public function getImages()
+    public function getImages(): array
     {
         // ObjectStorage has SplObjectHashes as key which we don't know in Fluid
         // so we convert ObjectStorage to array to get numbered keys
@@ -1019,8 +920,6 @@ class Event extends AbstractEntity
      * Sets the images.
      *
      * @param ObjectStorage $images
-     *
-     * @return void
      */
     public function setImages(ObjectStorage $images)
     {
@@ -1030,7 +929,7 @@ class Event extends AbstractEntity
     /**
      * Returns the videoLink.
      *
-     * @return Link $videoLink
+     * @return Link|null $videoLink
      */
     public function getVideoLink()
     {
@@ -1041,8 +940,6 @@ class Event extends AbstractEntity
      * Sets the videoLink.
      *
      * @param Link $videoLink
-     *
-     * @return void
      */
     public function setVideoLink(Link $videoLink = null)
     {
@@ -1052,7 +949,7 @@ class Event extends AbstractEntity
     /**
      * Returns the DownloadLinks.
      *
-     * @return Link
+     * @return Link|null
      */
     public function getDownloadLinks()
     {
@@ -1063,8 +960,6 @@ class Event extends AbstractEntity
      * Sets the DownloadLinks.
      *
      * @param Link $downloadLinks
-     *
-     * @return void
      */
     public function setDownloadLinks(Link $downloadLinks)
     {
