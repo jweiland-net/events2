@@ -14,10 +14,11 @@ namespace JWeiland\Events2\Domain\Model;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * This class contains all getter and setters for an Event.
  */
 class Day extends AbstractEntity
 {
@@ -51,12 +52,13 @@ class Day extends AbstractEntity
 
     /**
      * Returns the day.
-     *
-     * @return \DateTime $day
      */
-    public function getDay()
+    public function getDay(): \DateTime
     {
-        return $this->day;
+        if ($this->day->timezone_type !== 3) {
+            $this->day->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+        }
+        return clone $this->day;
     }
 
     /**
@@ -71,42 +73,42 @@ class Day extends AbstractEntity
 
     /**
      * Returns the dayTime
-     *
-     * @return \DateTime $dayTime
      */
-    public function getDayTime()
+    public function getDayTime(): \DateTime
     {
-        return $this->dayTime;
+        if ($this->dayTime->timezone_type !== 3) {
+            $this->dayTime->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+        }
+        return clone $this->dayTime;
     }
 
     /**
      * Sets the dayTime
      *
      * @param \DateTime $dayTime
-     * @return void
      */
-    public function setDayTime($dayTime)
+    public function setDayTime(\DateTime $dayTime)
     {
         $this->dayTime = $dayTime;
     }
 
     /**
      * Returns the sortDayTime
-     *
-     * @return \DateTime $sortDayTime
      */
-    public function getSortDayTime()
+    public function getSortDayTime(): \DateTime
     {
-        return $this->sortDayTime;
+        if ($this->sortDayTime->timezone_type !== 3) {
+            $this->sortDayTime->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+        }
+        return clone $this->sortDayTime;
     }
 
     /**
      * Sets the sortDayTime
      *
      * @param \DateTime $sortDayTime
-     * @return void
      */
-    public function setSortDayTime($sortDayTime)
+    public function setSortDayTime(\DateTime $sortDayTime)
     {
         $this->sortDayTime = $sortDayTime;
     }
