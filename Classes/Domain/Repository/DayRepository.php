@@ -87,7 +87,7 @@ class DayRepository extends Repository
      * @param string $type
      * @param Filter $filter
      * @param int $limit
-     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return QueryResultInterface
      * @throws \Exception
      */
     public function findEvents($type, Filter $filter, $limit = 0)
