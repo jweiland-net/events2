@@ -53,7 +53,7 @@ class DatabaseUtility
         $orConstraints = [];
 
         // add where clause for single events
-        $orConstraints[] = $queryBuilder->expr()->andX([
+        $orConstraints[] = $queryBuilder->expr()->andX(
             $queryBuilder->expr()->eq(
                 'event_type',
                 $queryBuilder->createNamedParameter('single', \PDO::PARAM_STR)
@@ -62,10 +62,10 @@ class DatabaseUtility
                 'event_begin',
                 $queryBuilder->createNamedParameter(time(), \PDO::PARAM_INT)
             )
-        ]);
+        );
 
         // add where clause for duration events
-        $orConstraints[] = $queryBuilder->expr()->andX([
+        $orConstraints[] = $queryBuilder->expr()->andX(
             $queryBuilder->expr()->eq(
                 'event_type',
                 $queryBuilder->createNamedParameter('duration', \PDO::PARAM_STR)
@@ -79,11 +79,11 @@ class DatabaseUtility
                     'event_end',
                     $queryBuilder->createNamedParameter(time(), \PDO::PARAM_INT)
                 )
-            ),
-        ]);
+            )
+        );
 
         // add where clause for recurring events
-        $orConstraints[] = $queryBuilder->expr()->andX([
+        $orConstraints[] = $queryBuilder->expr()->andX(
             $queryBuilder->expr()->eq(
                 'event_type',
                 $queryBuilder->createNamedParameter('recurring', \PDO::PARAM_STR)
@@ -97,16 +97,14 @@ class DatabaseUtility
                     'recurring_end',
                     $queryBuilder->createNamedParameter(time(), \PDO::PARAM_INT)
                 )
-            ),
-        ]);
+            )
+        );
 
         $events = $queryBuilder
             ->select('uid', 'pid')
             ->from('tx_events2_domain_model_event')
             ->where(
-                $queryBuilder->expr()->orX(
-                    $orConstraints
-                )
+                $queryBuilder->expr()->orX(...$orConstraints)
             )
             ->execute()
             ->fetchAll();
