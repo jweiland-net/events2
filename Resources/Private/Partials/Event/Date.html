@@ -41,8 +41,8 @@
 </f:section>
 
 <f:section name="singleTime">
-  <f:comment>If sortDayTime is higher than eventBegin (day without time) we can be sure that a time record was created</f:comment>
-  <f:if condition="{day.sortDayTime} > {day.event.eventBegin}">
+  <f:comment>If sortDayTime is higher than current day 00:00:00 we can be sure that a time record was created</f:comment>
+  <f:if condition="{day.sortDayTime} > {day.day}">
     |&nbsp;<f:translate key="tx_events2_domain_model_time.time_begin" />: {f:format.date(date: day.sortDayTime, format: 'H:i')}
   </f:if>
 </f:section>
