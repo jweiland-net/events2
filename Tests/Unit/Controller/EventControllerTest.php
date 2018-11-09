@@ -369,28 +369,12 @@ class EventControllerTest extends UnitTestCase
         $categories = new \ArrayObject();
         $categories->append('TestValue');
 
-        /** @var ObjectStorage|\PHPUnit_Framework_MockObject_MockObject $images */
-        $images = $this->getMockBuilder(ObjectStorage::class)->getMock();
-        $images
-            ->expects($this->once())
-            ->method('count')
-            ->willReturn(0);
-        $images
-            ->expects($this->never())
-            ->method('rewind');
-        $images
-            ->expects($this->never())
-            ->method('valid');
-        $images
-            ->expects($this->never())
-            ->method('current');
-
         /** @var Event|\PHPUnit_Framework_MockObject_MockObject $event */
         $event = $this->getMockBuilder(Event::class)->getMock();
         $event
             ->expects($this->once())
             ->method('getImages')
-            ->willReturn($images);
+            ->willReturn([]);
 
         $this->categoryRepository
             ->expects($this->once())

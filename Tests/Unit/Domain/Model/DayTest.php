@@ -50,23 +50,12 @@ class DayTest extends UnitTestCase
     /**
      * @test
      */
-    public function getDayInitiallyReturnsNull()
-    {
-        $day = new Day();
-        $this->assertNull(
-            $day->getDay()
-        );
-    }
-
-    /**
-     * @test
-     */
     public function setDaySetsDay()
     {
         $date = new \DateTime();
         $this->subject->setDay($date);
 
-        $this->assertSame(
+        $this->assertEquals(
             $date,
             $this->subject->getDay()
         );
