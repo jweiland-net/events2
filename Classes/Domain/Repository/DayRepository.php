@@ -257,7 +257,7 @@ class DayRepository extends Repository
     {
         /** @var \TYPO3\CMS\Extbase\Persistence\Generic\Query $query */
         $query = $this->createQuery();
-        $constraint = [];
+        $constraints = [];
 
         // add storage PIDs. But not for sys_category
         // @link: https://forge.typo3.org/issues/83296
@@ -267,49 +267,49 @@ class DayRepository extends Repository
 
         // add query for search string
         if ($search->getSearch()) {
-            $orConstraint = [];
-            $orConstraint[] = $query->like('event.title', '%' . $search->getSearch() . '%');
-            $orConstraint[] = $query->like('event.teaser', '%' . $search->getSearch() . '%');
-            $constraint[] = $query->logicalOr($orConstraint);
+            $orConstraints = [];
+            $orConstraints[] = $query->like('event.title', '%' . $search->getSearch() . '%');
+            $orConstraints[] = $query->like('event.teaser', '%' . $search->getSearch() . '%');
+            $constraints[] = $query->logicalOr($orConstraints);
         }
 
         // add query for categories
         if ($search->getMainCategory()) {
             if ($search->getSubCategory()) {
-                $constraint[] = $query->contains('event.categories', $search->getSubCategory()->getUid());
+                $constraints[] = $query->contains('event.categories', $search->getSubCategory()->getUid());
             } else {
-                $constraint[] = $query->contains('event.categories', $search->getMainCategory()->getUid());
+                $constraints[] = $query->contains('event.categories', $search->getMainCategory()->getUid());
             }
         } elseif ($this->settings['categories']) {
             // visitor has not selected any category. Search within allowed categories in plugin configuration
-            $constraint[] = $query->in('event.categories.uid', GeneralUtility::trimExplode(',', $this->settings['categories']));
+            $constraints[] = $query->in('event.categories.uid', GeneralUtility::trimExplode(',', $this->settings['categories']));
         }
 
         // add query for event begin
         if ($search->getEventBegin()) {
-            $constraint[] = $query->greaterThanOrEqual('day', $search->getEventBegin());
+            $constraints[] = $query->greaterThanOrEqual('day', $search->getEventBegin());
         } else {
             $today = $this->dateTimeUtility->convert('today');
-            $constraint[] = $query->greaterThanOrEqual('day', $today);
+            $constraints[] = $query->greaterThanOrEqual('day', $today);
         }
 
         // add query for event end
         if ($search->getEventEnd()) {
-            $constraint[] = $query->lessThanOrEqual('day', $search->getEventEnd());
+            $constraints[] = $query->lessThanOrEqual('day', $search->getEventEnd());
         }
 
         // add query for event location
         if ($search->getLocation()) {
-            $constraint[] = $query->equals('event.location', $search->getLocation()->getUid());
+            $constraints[] = $query->equals('event.location', $search->getLocation()->getUid());
         }
 
         // add query for free entry
         if ($search->getFreeEntry()) {
-            $constraint[] = $query->equals('event.freeEntry', $search->getFreeEntry());
+            $constraints[] = $query->equals('event.freeEntry', $search->getFreeEntry());
         }
 
-        if (count($constraint)) {
-            return $query->matching($query->logicalAnd($constraint))->execute();
+        if (count($constraints)) {
+            return $query->matching($query->logicalAnd($constraints))->execute();
         } else {
             return $query->execute();
         }
@@ -341,23 +341,23 @@ class DayRepository extends Repository
      */
     public function findByTimestamp($timestamp)
     {
-        $constraint = [];
+        $constraints = [];
         $query = $this->createQuery();
 
         // add storage PIDs. But not for sys_category
         // @link: https://forge.typo3.org/issues/83296
         $query->getQuerySettings()->setRespectStoragePage(false);
-        $constraint[] = $query->in('pid', $query->getQuerySettings()->getStoragePageIds());
-        $constraint[] = $query->in('event.pid', $query->getQuerySettings()->getStoragePageIds());
+        $constraints[] = $query->in('pid', $query->getQuerySettings()->getStoragePageIds());
+        $constraints[] = $query->in('event.pid', $query->getQuerySettings()->getStoragePageIds());
 
         $this->addGroupingToQuery($query);
         if (!empty($this->settings['categories'])) {
-            $constraint[] = $query->in('event.categories.uid', GeneralUtility::intExplode(',', $this->settings['categories']));
+            $constraints[] = $query->in('event.categories.uid', GeneralUtility::intExplode(',', $this->settings['categories']));
         }
-        $constraint[] = $query->equals('day', $timestamp);
+        $constraints[] = $query->equals('day', $timestamp);
 
         /** @var QueryResult $result */
-        $result = $query->matching($query->logicalAnd($constraint))->execute();
+        $result = $query->matching($query->logicalAnd($constraints))->execute();
 
         return $result;
     }
