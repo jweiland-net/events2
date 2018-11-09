@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Controller;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Search;
 use JWeiland\Events2\Property\TypeConverter\UploadMultipleFilesConverter;
@@ -23,16 +24,16 @@ use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * The EventController contains actions to search, create, activate, update and delete events.
+ * For plain listing of events please visit DayController
  */
 class EventController extends AbstractController
 {
     /**
-     * we have a self-build form based on method GET.
+     * We have a self-build form based on method GET.
      * That's why we have to manually allow some form-elements.
      *
      * @return void
-     *
      * @throws \Exception
      */
     public function initializeListSearchResultsAction()
@@ -47,23 +48,20 @@ class EventController extends AbstractController
     }
 
     /**
-     * action list search results.
+     * Action list search results.
      *
      * @param Search $search
-     *
      * @return void
-     *
      * @throws \Exception
      */
     public function listSearchResultsAction(Search $search)
     {
         $days = $this->dayRepository->searchEvents($search);
-
         $this->view->assign('days', $days);
     }
 
     /**
-     * action list my events.
+     * Action list my events.
      *
      * @return void
      */
@@ -74,10 +72,9 @@ class EventController extends AbstractController
     }
 
     /**
-     * action new.
+     * Action new.
      *
      * @return void
-     *
      * @throws \Exception
      */
     public function newAction()
@@ -98,11 +95,10 @@ class EventController extends AbstractController
     }
 
     /**
-     * initialize create action
+     * Initialize create action.
      * We need this to create a DateTime-Object with time of midnight.
      *
      * @return void
-     *
      * @throws \Exception
      */
     public function initializeCreateAction()
@@ -137,12 +133,10 @@ class EventController extends AbstractController
     }
 
     /**
-     * action create.
+     * Action create.
      *
      * @param Event $event
-     *
      * @return void
-     *
      * @throws \Exception
      */
     public function createAction(Event $event)
@@ -159,12 +153,10 @@ class EventController extends AbstractController
     }
 
     /**
-     * action edit.
+     * Action edit.
      *
      * @param int $event
-     *
      * @return void
-     *
      * @throws \Exception
      */
     public function editAction($event)
@@ -184,11 +176,10 @@ class EventController extends AbstractController
     }
 
     /**
-     * initialize update action
+     * Initialize update action
      * We need this to create a DateTime-Object with time of midnight.
      *
      * @return void
-     *
      * @throws \Exception
      */
     public function initializeUpdateAction()
@@ -229,12 +220,10 @@ class EventController extends AbstractController
     }
 
     /**
-     * action update.
+     * Action update.
      *
      * @param Event $event
-     *
      * @return void
-     *
      * @throws \Exception
      */
     public function updateAction(Event $event)
@@ -255,12 +244,10 @@ class EventController extends AbstractController
     }
 
     /**
-     * action delete.
+     * Action delete.
      *
      * @param int $event
-     *
      * @return void
-     *
      * @throws \Exception
      */
     public function deleteAction($event)
@@ -272,12 +259,10 @@ class EventController extends AbstractController
     }
 
     /**
-     * action activate.
+     * Action activate.
      *
      * @param int $event
-     *
      * @return void
-     *
      * @throws \Exception
      */
     public function activateAction($event)
@@ -300,12 +285,10 @@ class EventController extends AbstractController
     }
 
     /**
-     * add relations to day records.
+     * Add relations to day records.
      *
      * @param Event $event
-     *
      * @return void
-     *
      * @throws \Exception
      */
     protected function addDayRelations(Event $event)
@@ -316,13 +299,11 @@ class EventController extends AbstractController
     }
 
     /**
-     * send email on new/update.
+     * Send email on new/update.
      *
      * @param string $subjectKey
      * @param Event $event
-     *
      * @return int The amount of email receivers
-     *
      * @throws \Exception
      */
     public function sendMail($subjectKey, Event $event)

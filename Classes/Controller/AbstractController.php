@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Controller;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Filter;
@@ -39,7 +40,8 @@ use TYPO3\CMS\Extbase\Validation\Validator\GenericObjectValidator;
 use TYPO3\CMS\Extbase\Validation\Validator\RegularExpressionValidator;
 
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * A collection of various helper methods and inject methods to keep
+ * our Action Controllers small and clean
  */
 class AbstractController extends ActionController
 {
@@ -173,8 +175,6 @@ class AbstractController extends ActionController
      * inject organizerRepository
      *
      * @param OrganizerRepository $organizerRepository
-     *
-     * @return void
      */
     public function injectOrganizerRepository(OrganizerRepository $organizerRepository)
     {
@@ -215,9 +215,7 @@ class AbstractController extends ActionController
      * Pre configure configuration
      *
      * @param ConfigurationManagerInterface $configurationManager
-     *
      * @return void
-     *
      * @throws \Exception
      */
     public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager)
@@ -284,7 +282,6 @@ class AbstractController extends ActionController
      * or prepare the view in another way before the action is called.
      *
      * @param ViewInterface $view The view to be initialized
-     *
      * @return void
      */
     protected function initializeView(ViewInterface $view)
@@ -327,7 +324,6 @@ class AbstractController extends ActionController
      * Assign filter to view
      *
      * @param Filter|null $filter
-     *
      * @return Filter
      */
     protected function validateAndAssignFilter($filter)
@@ -348,9 +344,7 @@ class AbstractController extends ActionController
      * In that case all uploaded files have to be deleted
      *
      * @param string $argument
-     *
      * @return void
-     *
      * @throws \Exception
      */
     protected function deleteUploadedFilesOnValidationErrors($argument)
@@ -372,12 +366,11 @@ class AbstractController extends ActionController
     }
 
     /**
-     * remove videoLink if empty
-     * add special validation for videolink
+     * Remove videoLink if empty
+     * Add special validation for videolink
      * I can't add this validation to Linkmodel, as such a validation would be also valid for organizer link.
      *
      * @return void
-     *
      * @throws \Exception
      */
     protected function addValidationForVideoLink()
@@ -413,7 +406,6 @@ class AbstractController extends ActionController
      * This is a workaround to help controller actions to find (hidden) events.
      *
      * @return void
-     *
      * @throws \Exception
      */
     protected function registerEventFromRequest()
@@ -434,16 +426,13 @@ class AbstractController extends ActionController
      * Extbase can not set deleted=1 itself.
      *
      * @param \JWeiland\Events2\Domain\Model\Event $event
-     *
      * @return void
-     *
      * @throws \Exception
      */
     protected function deleteVideoLinkIfEmpty(Event $event)
     {
         $linkText = $event->getVideoLink()->getLink();
         if (empty($linkText)) {
-            /** @var LinkRepository $linkRepository */
             $linkRepository = $this->objectManager->get(LinkRepository::class);
             $linkRepository->remove($event->getVideoLink());
             $event->setVideoLink(null);
