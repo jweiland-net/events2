@@ -36,13 +36,7 @@ call_user_func(function ($extensionKey, $extensionConfiguration) {
     $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$pluginSignature] = 'pi_flexform';
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue($pluginSignature, 'FILE:EXT:' . $extensionKey . '/Configuration/FlexForms/Search.xml');
 
-    if (\TYPO3\CMS\Core\Utility\VersionNumberUtility::convertVersionNumberToInteger(TYPO3_branch) >= 8004000) {
-        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($extensionKey, 'Configuration/TypoScript/Typo384', 'Events (>=8.4)');
-    } elseif (\TYPO3\CMS\Core\Utility\VersionNumberUtility::convertVersionNumberToInteger(TYPO3_branch) >= 7006000) {
-        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($extensionKey, 'Configuration/TypoScript/Typo376', 'Events (>=7.6)');
-    } else {
-        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($extensionKey, 'Configuration/TypoScript/Typo362', 'Events (>=6.2)');
-    }
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($extensionKey, 'Configuration/TypoScript/Typo384', 'Events (>=8.4)');
 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr('_MOD_events2_scheduler', 'EXT:events2/Resources/Private/Language/locallang_csh_scheduler.xlf');
     foreach (['event', 'exception', 'holiday', 'link', 'location', 'organizer', 'time'] as $value) {
