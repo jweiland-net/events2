@@ -81,10 +81,10 @@ $boot = function($extKey) {
         'ext-events2-calendar-single' => 'calendar_single.png',
         'ext-events2-calendar-recurring' => 'calendar_recurring.png',
         'ext-events2-calendar-duration' => 'calendar_duration.png',
-        'ext-events2-calendar-add' => 'exception_add.png',
-        'ext-events2-calendar-remove' => 'exception_remove.png',
-        'ext-events2-calendar-info' => 'exception_info.png',
-        'ext-events2-calendar-time' => 'exception_time.png',
+        'ext-events2-exception-add' => 'exception_add.png',
+        'ext-events2-exception-remove' => 'exception_remove.png',
+        'ext-events2-exception-info' => 'exception_info.png',
+        'ext-events2-exception-time' => 'exception_time.png',
     ];
     $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
     foreach ($svgIcons as $identifier => $fileName) {
