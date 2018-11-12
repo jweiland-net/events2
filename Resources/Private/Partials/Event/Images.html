@@ -1,36 +1,14 @@
-<f:if condition="{event.images->f:count()}==1">
+<ul>
 	<f:for each="{event.images}" as="image" iteration="iterator">
-		<div class="marginbottom">
-			<ul class="slides">
-				<li>
-					<f:if condition="{settings.displayImages}">
-						<f:then>
-							<f:image image="{image}" alt="{f:if(condition: image.title, then: '{image.title}', else: 'event.title')}" width="1016c" height="448c" minWidth="1016" maxWidth="1016" minHeight="448" maxHeight="448" />
-						</f:then>
-						<f:else>
-							<f:image image="{image}" alt="{f:if(condition: image.title, then: '{image.title}', else: 'event.title')}" width="{settings.show.image.width}" height="{settings.show.image.height}" minWidth="{settings.show.image.minWidth}" maxWidth="{settings.show.image.maxWidth}" minHeight="{settings.show.image.minHeight}" maxHeight="{settings.show.image.maxHeight}" />
-						</f:else>
-					</f:if>
-				</li>
-			</ul>
-		</div>
+		<li>
+			<f:if condition="{settings.displayImages}">
+				<f:then>
+					<f:image image="{image}" class="img-responsive img-thumbnail" alt="{f:if(condition: image.title, then: '{image.title}', else: '{event.title}-{iterator.cycle}')}" width="1016c" height="448c" minWidth="1016" maxWidth="1016" minHeight="448" maxHeight="448" />
+				</f:then>
+				<f:else>
+					<f:image image="{image}" class="img-responsive img-thumbnail" alt="{f:if(condition: image.title, then: '{image.title}', else: '{event.title}-{iterator.cycle}')}" width="{settings.show.image.width}" height="{settings.show.image.height}" minWidth="{settings.show.image.minWidth}" maxWidth="{settings.show.image.maxWidth}" minHeight="{settings.show.image.minHeight}" maxHeight="{settings.show.image.maxHeight}" />
+				</f:else>
+			</f:if>
+		</li>
 	</f:for>
-</f:if>
-<f:if condition="{event.images->f:count()}>1">
-	<div class="flexslider">
-		<ul class="slides">
-			<f:for each="{event.images}" as="image" iteration="iterator">
-				<li>
-					<f:if condition="{settings.displayImages}">
-						<f:then>
-							<f:image image="{image}" alt="{f:if(condition: image.title, then: '{image.title}', else: '{event.title}-{iterator.cycle}')}" width="1016c" height="448c" minWidth="1016" maxWidth="1016" minHeight="448" maxHeight="448" />
-						</f:then>
-						<f:else>
-							<f:image image="{image}" alt="{f:if(condition: image.title, then: '{image.title}', else: '{event.title}-{iterator.cycle}')}" width="{settings.show.image.width}" height="{settings.show.image.height}" minWidth="{settings.show.image.minWidth}" maxWidth="{settings.show.image.maxWidth}" minHeight="{settings.show.image.minHeight}" maxHeight="{settings.show.image.maxHeight}" />
-						</f:else>
-					</f:if>
-				</li>
-			</f:for>
-		</ul>
-	</div>
-</f:if>
+</ul>

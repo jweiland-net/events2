@@ -30,7 +30,7 @@ CREATE TABLE tx_events2_domain_model_event (
   organizer int(11) unsigned DEFAULT '0',
   images int(11) unsigned DEFAULT '0',
   video_link int(11) unsigned DEFAULT '0',
-  download_links int(11) unsigned DEFAULT '0',
+  download_links varchar(255) DEFAULT '' NOT NULL,
 
   tstamp int(11) unsigned DEFAULT '0' NOT NULL,
   crdate int(11) unsigned DEFAULT '0' NOT NULL,
