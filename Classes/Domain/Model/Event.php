@@ -229,9 +229,9 @@ class Event extends AbstractEntity
     protected $videoLink;
 
     /**
-     * DownloadLink.
+     * DownloadLinks.
      *
-     * @var \JWeiland\Events2\Domain\Model\Link
+     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Link>
      * @cascade remove
      * @lazy
      */
@@ -256,6 +256,7 @@ class Event extends AbstractEntity
         $this->categories = new ObjectStorage();
         $this->days = new ObjectStorage();
         $this->images = new ObjectStorage();
+        $this->downloadLinks = new ObjectStorage();
     }
 
     /**
@@ -949,9 +950,9 @@ class Event extends AbstractEntity
     /**
      * Returns the DownloadLinks.
      *
-     * @return Link|null
+     * @return ObjectStorage
      */
-    public function getDownloadLinks()
+    public function getDownloadLinks(): ObjectStorage
     {
         return $this->downloadLinks;
     }
@@ -959,9 +960,9 @@ class Event extends AbstractEntity
     /**
      * Sets the DownloadLinks.
      *
-     * @param Link $downloadLinks
+     * @param ObjectStorage $downloadLinks
      */
-    public function setDownloadLinks(Link $downloadLinks)
+    public function setDownloadLinks(ObjectStorage $downloadLinks)
     {
         $this->downloadLinks = $downloadLinks;
     }

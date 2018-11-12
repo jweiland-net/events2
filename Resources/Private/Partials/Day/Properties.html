@@ -8,9 +8,6 @@
 		<p class="lead">{day.event.teaser}</p>
 		<f:format.html>{day.event.detailInformations}</f:format.html>
 		<f:render section="downloadLinks" arguments="{event: day.event}" />
-		<f:if condition="{day.day}">
-			<f:render section="showDatesAndTimes" arguments="{days: '{e2:getEventDates(event: day.event)}'}" />
-		</f:if>
 	</div>
 	<div class="col-md-3">
 		<f:if condition="{day.event.location}">
@@ -23,6 +20,9 @@
 		<f:render section="freeEntry" arguments="{event: day.event}" />
 		<f:if condition="{day.day}">
 			<f:render section="iCalendar" arguments="{day: day}" />
+		</f:if>
+		<f:if condition="{day.day}">
+			<f:render section="showDatesAndTimes" arguments="{days: '{e2:getEventDates(event: day.event)}'}" />
 		</f:if>
 	</div>
 </div>
@@ -49,44 +49,42 @@
 
 <f:section name="downloadLinks">
 	<f:if condition="{event.downloadLinks}">
-		<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
-		<f:link.typolink parameter="{event.downloadLinks.link}" title="{event.downloadLinks.title}">{link.event.downloadLinks.title}</f:link.typolink>
+		<ul>
+			<f:for each="{event.downloadLinks}" as="downloadLink">
+				<li>
+					<f:link.typolink parameter="{downloadLink.link}" title="{downloadLink.title}">
+						<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>&nbsp;{downloadLink.title}
+					</f:link.typolink>
+				</li>
+			</f:for>
+		</ul>
 	</f:if>
 </f:section>
 
 <f:section name="showDatesAndTimes">
-	<h3>Alternative Veranstaltungstage</h3>
-	<div class="row">
-		<f:for each="{days}" as="day" iteration="iterator">
-			<f:if condition="{iterator.index} > 0">
-				<f:if condition="{iterator.index} % 3">
-					<f:then> </f:then><f:else></div><div class="row"></f:else>
+	<p class="lead">Alternative Veranstaltungstage</p>
+	<f:for each="{days}" as="day" iteration="iterator">
+		<dl>
+			<dt>
+				<f:if condition="{day.isRemoved}">
+					<f:then>
+						<strong><s>{day.day.day -> f:format.date(format: '%A, %d.%m.%Y')}</s></strong>
+					</f:then>
+					<f:else>
+						<strong>{day.day.day -> f:format.date(format: '%A, %d.%m.%Y')}</strong>
+					</f:else>
 				</f:if>
-			</f:if>
-			<div class="col-md-4">
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						<f:if condition="{day.isRemoved}">
-							<f:then>
-								<strong><s>{day.day.day -> f:format.date(format: '%A, %d.%m.%Y')}</s></strong>
-							</f:then>
-							<f:else>
-								<strong>{day.day.day -> f:format.date(format: '%A, %d.%m.%Y')}</strong>
-							</f:else>
-						</f:if>
-					</div>
-					<div class="panel-body">
-						<f:render partial="Event/Time" arguments="{time: day.time}" />
-						<f:if condition="{day.infos}">
-							<f:for each="{day.infos}" as="info">
-								<br/>{info.exceptionDetails -> f:format.html(parseFuncTSPath: 'lib.parseFunc') -> f:format.nl2br()}
-							</f:for>
-						</f:if>
-					</div>
-				</div>
-			</div>
-		</f:for>
-	</div>
+			</dt>
+			<dd>
+				<f:render partial="Event/Time" arguments="{time: day.time}" />
+				<f:if condition="{day.infos}">
+					<f:for each="{day.infos}" as="info">
+						<br><em>{info.exceptionDetails -> f:format.html(parseFuncTSPath: 'lib.parseFunc') -> f:format.nl2br()}</em>
+					</f:for>
+				</f:if>
+			</dd>
+		</dl>
+	</f:for>
 </f:section>
 
 <f:section name="location">

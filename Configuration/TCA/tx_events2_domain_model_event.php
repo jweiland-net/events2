@@ -581,7 +581,7 @@ return [
             'config' => [
                 'type' => 'inline',
                 'foreign_table' => 'tx_events2_domain_model_link',
-                'maxitems' => 1,
+                'maxitems' => 3,
                 'minitems' => 0,
                 'appearance' => [
                     'levelLinksPosition' => 'both',
