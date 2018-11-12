@@ -45,7 +45,6 @@ class RenderPluginItem
             $view->assign('parameters', $parameters);
             $view->assign('pi_flexform_transformed', $flexFormValues);
             $view->assign('titleOfOrganizer', $this->getTitleOfOrganizer($flexFormValues));
-            $view->assign('classNameForErrors', $this->getErrorClassOnMissConfiguration($flexFormValues));
             $content = $view->render();
         }
         return $content;
@@ -74,24 +73,6 @@ class RenderPluginItem
             }
         }
         return $label;
-    }
-
-    /**
-     * Returns an error class name on miss configuration
-     *
-     * @param array $flexFormSettings
-     * @return string
-     */
-    protected function getErrorClassOnMissConfiguration(array $flexFormSettings)
-    {
-        $class= '';
-        if (
-            !empty($flexFormSettings['settings']['preFilterByOrganizer'])
-            && !empty($flexFormSettings['settings']['showFilterForOrganizerInFrontend'])
-        ) {
-            $class = 'message-error';
-        }
-        return $class;
     }
 
     /**
