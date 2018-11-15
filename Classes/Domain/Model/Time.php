@@ -17,7 +17,7 @@ namespace JWeiland\Events2\Domain\Model;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * This class contains all getter and setters for a Time.
  */
 class Time extends AbstractEntity
 {

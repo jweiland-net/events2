@@ -18,7 +18,7 @@ use JWeiland\Maps2\Domain\Model\PoiCollection;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * This class contains all getter and setters for a Location.
  */
 class Location extends AbstractEntity
 {

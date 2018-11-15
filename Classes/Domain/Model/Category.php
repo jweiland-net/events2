@@ -16,7 +16,7 @@ namespace JWeiland\Events2\Domain\Model;
  */
 
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * This class contains all getter and setters for a Category.
  */
 class Category extends \TYPO3\CMS\Extbase\Domain\Model\Category
 {
