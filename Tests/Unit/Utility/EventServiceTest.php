@@ -54,18 +54,18 @@ class EventServiceTest extends UnitTestCase
     /**
      * @test
      */
-    public function getExceptionsForDayInitiallyReturnsEmptySplObjectStorage()
+    public function getExceptionsForDateInitiallyReturnsEmptySplObjectStorage()
     {
         $this->assertEquals(
             new \SplObjectStorage(),
-            $this->subject->getExceptionsForDay(new Event(), new Day())
+            $this->subject->getExceptionsForDate(new Event(), new \DateTime('now'))
         );
     }
 
     /**
-     * dataProvider for getExceptionsForDayWithDateOfTodayReturnsAllExceptionsDefinedToEventRecord.
+     * dataProvider for getExceptionsForDateWithDateOfTodayReturnsAllExceptionsDefinedToEventRecord.
      */
-    public function dataProviderForGetExceptionsForDayWithTypesOfToday()
+    public function dataProviderForGetExceptionsForDateWithTypesOfToday()
     {
         $today = new \DateTime();
         $today->modify('midnight');
@@ -89,32 +89,30 @@ class EventServiceTest extends UnitTestCase
     /**
      * @test
      *
-     * @dataProvider dataProviderForGetExceptionsForDayWithTypesOfToday
+     * @dataProvider dataProviderForGetExceptionsForDateWithTypesOfToday
      *
      * @param mixed $eventExceptions
      * @param mixed $expectedExceptions
      */
-    public function getExceptionsForDayWithDateOfTodayReturnsAllExceptionsDefinedToEventRecord($eventExceptions, $expectedExceptions)
+    public function getExceptionsForDateWithDateOfTodayReturnsAllExceptionsDefinedToEventRecord($eventExceptions, $expectedExceptions)
     {
         $this->subject->injectDateTimeUtility(new DateTimeUtility());
 
         $currentDay = new \DateTime();
         $currentDay->modify('midnight');
-        $day = new Day();
-        $day->setDay($currentDay);
         $event = new Event();
         $event->setExceptions($eventExceptions);
 
         $this->assertEquals(
             $expectedExceptions,
-            $this->subject->getExceptionsForDay($event, $day)
+            $this->subject->getExceptionsForDate($event, $currentDay)
         );
     }
 
     /**
-     * dataProvider for getExceptionsForDayWithDateOfYesterdayReturnsEmptySplObjectStorage.
+     * dataProvider for getExceptionsForDateWithDateOfYesterdayReturnsEmptySplObjectStorage.
      */
-    public function dataProviderForGetExceptionsForDayWithTypesOfYesterday()
+    public function dataProviderForGetExceptionsForDateWithTypesOfYesterday()
     {
         $yesterday = new \DateTime();
         $yesterday->modify('yesterday midnight');
@@ -137,36 +135,32 @@ class EventServiceTest extends UnitTestCase
     /**
      * @test
      *
-     * @dataProvider dataProviderForGetExceptionsForDayWithTypesOfYesterday
+     * @dataProvider dataProviderForGetExceptionsForDateWithTypesOfYesterday
      *
      * @param mixed $eventExceptions
      */
-    public function getExceptionsForDayWithDateOfYesterdayReturnsEmptySplObjectStorage($eventExceptions)
+    public function getExceptionsForDateWithDateOfYesterdayReturnsEmptySplObjectStorage($eventExceptions)
     {
         $this->subject->injectDateTimeUtility(new DateTimeUtility());
 
         $currentDay = new \DateTime();
         $currentDay->modify('midnight');
-        $day = new Day();
-        $day->setDay($currentDay);
         $event = new Event();
         $event->setExceptions($eventExceptions);
 
         $this->assertEquals(
             new \SplObjectStorage(),
-            $this->subject->getExceptionsForDay($event, $day)
+            $this->subject->getExceptionsForDate($event, $currentDay)
         );
     }
 
     /**
      * @test
      */
-    public function getExceptionsForDayWithRemoveAsTypeResultsInException()
+    public function getExceptionsForDateWithRemoveAsTypeResultsInException()
     {
         $currentDay = new \DateTime();
         $currentDay->modify('midnight');
-        $day = new Day();
-        $day->setDay($currentDay);
 
         $exceptions = new ObjectStorage();
         $removeException = new Exception();
@@ -188,14 +182,14 @@ class EventServiceTest extends UnitTestCase
         // here we also test with lower cased type "remove"
         $this->assertEquals(
             $expectedExceptions,
-            $this->subject->getExceptionsForDay($event, $day, 'remove')
+            $this->subject->getExceptionsForDate($event, $currentDay, 'remove')
         );
     }
 
     /**
-     * dataProvider for getExceptionsForDayWithDifferentTypesResultsInEmptySplObjectStorage.
+     * dataProvider for getExceptionsForDateWithDifferentTypesResultsInEmptySplObjectStorage.
      */
-    public function dataProviderForGetExceptionsForDayWithDifferentTypes()
+    public function dataProviderForGetExceptionsForDateWithDifferentTypes()
     {
         $today = new \DateTime();
         $today->modify('midnight');
@@ -225,18 +219,16 @@ class EventServiceTest extends UnitTestCase
     /**
      * @test
      *
-     * @dataProvider dataProviderForGetExceptionsForDayWithDifferentTypes
+     * @dataProvider dataProviderForGetExceptionsForDateWithDifferentTypes
      *
      * @param mixed $eventExceptions
      * @param mixed $type
      * @param mixed $expectedException
      */
-    public function getExceptionsForDayWithDifferentTypesResultsInEmptySplObjectStorage($eventExceptions, $type, $expectedException)
+    public function getExceptionsForDateWithDifferentTypesResultsInEmptySplObjectStorage($eventExceptions, $type, $expectedException)
     {
         $currentDay = new \DateTime();
         $currentDay->modify('midnight');
-        $day = new Day();
-        $day->setDay($currentDay);
         $event = new Event();
         $event->setExceptions($eventExceptions);
 
@@ -244,14 +236,14 @@ class EventServiceTest extends UnitTestCase
 
         $this->assertEquals(
             $expectedException,
-            $this->subject->getExceptionsForDay($event, $day, $type)
+            $this->subject->getExceptionsForDate($event, $currentDay, $type)
         );
     }
 
     /**
      * @test
      */
-    public function getExceptionsForDayWithMultipleTypesResultsInExceptionsWithAddAndRemove()
+    public function getExceptionsForDateWithMultipleTypesResultsInExceptionsWithAddAndRemove()
     {
         $today = new \DateTime();
         $today->modify('midnight');
@@ -277,20 +269,18 @@ class EventServiceTest extends UnitTestCase
 
         $event = new Event();
         $event->setExceptions($exceptions);
-        $day = new Day();
-        $day->setDay($today);
 
         $this->subject->injectDateTimeUtility(new DateTimeUtility());
         $this->assertEquals(
             $expectedException,
-            $this->subject->getExceptionsForDay($event, $day, 'add, remove')
+            $this->subject->getExceptionsForDate($event, $today, 'add, remove')
         );
     }
 
     /**
      * @test
      */
-    public function getTimesForDayWithEventIncludingOneExceptionReturnsOneTimeObject()
+    public function getTimesForDateWithEventIncludingOneExceptionReturnsOneTimeObject()
     {
         $today = new \DateTime();
         $today->modify('midnight');
@@ -306,20 +296,18 @@ class EventServiceTest extends UnitTestCase
         $expectedTimes->attach($time);
         $event = new Event();
         $event->setExceptions($exceptions);
-        $day = new Day();
-        $day->setDay($today);
 
         $this->subject->injectDateTimeUtility(new DateTimeUtility());
         $this->assertEquals(
             $expectedTimes,
-            $this->subject->getTimesForDay($event, $day)
+            $this->subject->getTimesForDate($event, $today)
         );
     }
 
     /**
      * @test
      */
-    public function getTimesForDayWithEventIncludingOneExceptionWithoutTimeReturnsEmptySplObjectStorage()
+    public function getTimesForDateWithEventIncludingOneExceptionWithoutTimeReturnsEmptySplObjectStorage()
     {
         $today = new \DateTime();
         $today->modify('midnight');
@@ -331,20 +319,18 @@ class EventServiceTest extends UnitTestCase
         $expectedTimes = new \SplObjectStorage();
         $event = new Event();
         $event->setExceptions($exceptions);
-        $day = new Day();
-        $day->setDay($today);
 
         $this->subject->injectDateTimeUtility(new DateTimeUtility());
         $this->assertEquals(
             $expectedTimes,
-            $this->subject->getTimesForDay($event, $day)
+            $this->subject->getTimesForDate($event, $today)
         );
     }
 
     /**
      * @test
      */
-    public function getTimesForDayWithEventIncludingDifferentTimesReturnsTwoTimeObjects()
+    public function getTimesForDateWithEventIncludingDifferentTimesReturnsTwoTimeObjects()
     {
         $today = new \DateTime();
         $today->modify('midnight');
@@ -365,7 +351,7 @@ class EventServiceTest extends UnitTestCase
         $differentTimes->attach($time);
         $expectedTimes->attach($time);
 
-        // add time record with wrong weekday to test if protected function getDifferentTimesForDay works correctly
+        // add time record with wrong weekday to test if protected function getDifferentTimesForDate works correctly
         $tomorrow = clone $today;
         $tomorrow->modify('tomorrow');
         $time = new Time();
@@ -376,20 +362,18 @@ class EventServiceTest extends UnitTestCase
         $event = new Event();
         $event->setEventType('recurring');
         $event->setDifferentTimes($differentTimes);
-        $day = new Day();
-        $day->setDay($today);
 
         $this->subject->injectDateTimeUtility(new DateTimeUtility());
         $this->assertEquals(
             $expectedTimes,
-            $this->subject->getTimesForDay($event, $day)
+            $this->subject->getTimesForDate($event, $today)
         );
     }
 
     /**
      * @test
      */
-    public function getTimesForDayWithEventTimeReturnsOneTimeObject()
+    public function getTimesForDateWithEventTimeReturnsOneTimeObject()
     {
         $today = new \DateTime();
         $today->modify('midnight');
@@ -399,13 +383,11 @@ class EventServiceTest extends UnitTestCase
         $expectedTimes->attach($time);
         $event = new Event();
         $event->setEventTime($time);
-        $day = new Day();
-        $day->setDay($today);
 
         $this->subject->injectDateTimeUtility(new DateTimeUtility());
         $this->assertEquals(
             $expectedTimes,
-            $this->subject->getTimesForDay($event, $day)
+            $this->subject->getTimesForDate($event, $today)
         );
     }
 
@@ -415,25 +397,23 @@ class EventServiceTest extends UnitTestCase
      *
      * @test
      */
-    public function getTimesForDayWithoutEventTimeReturnsEmptySplObjectStorage()
+    public function getTimesForDateWithoutEventTimeReturnsEmptySplObjectStorage()
     {
         $today = new \DateTime();
         $today->modify('midnight');
         $event = new Event();
-        $day = new Day();
-        $day->setDay($today);
 
         $this->subject->injectDateTimeUtility(new DateTimeUtility());
         $this->assertEquals(
             new \SplObjectStorage(),
-            $this->subject->getTimesForDay($event, $day)
+            $this->subject->getTimesForDate($event, $today)
         );
     }
 
     /**
      * @test
      */
-    public function getTimesForDayWithEventTimeAndMultipleTimesReturnsCollectionOfTimes()
+    public function getTimesForDateWithEventTimeAndMultipleTimesReturnsCollectionOfTimes()
     {
         $today = new \DateTime();
         $today->modify('midnight');
@@ -461,20 +441,18 @@ class EventServiceTest extends UnitTestCase
         $event->setMultipleTimes($multipleTimes);
         // with following we also test protected function getTimesFromEvent
         $event->setSameDay(true); // only if this is true the times will be merged
-        $day = new Day();
-        $day->setDay($today);
 
         $this->subject->injectDateTimeUtility(new DateTimeUtility());
         $this->assertEquals(
             $expectedTimes,
-            $this->subject->getTimesForDay($event, $day)
+            $this->subject->getTimesForDate($event, $today)
         );
     }
 
     /**
      * @test
      */
-    public function getTimesForDayWithEventTimeAndMultipleTimesReturnsTimeOfEventOnly()
+    public function getTimesForDateWithEventTimeAndMultipleTimesReturnsTimeOfEventOnly()
     {
         $today = new \DateTime();
         $today->modify('midnight');
@@ -498,13 +476,11 @@ class EventServiceTest extends UnitTestCase
         $event->setEventTime($time);
         $event->setMultipleTimes($multipleTimes);
         $event->setSameDay(false); // if FALSE, only the time from event will be returned
-        $day = new Day();
-        $day->setDay($today);
 
         $this->subject->injectDateTimeUtility(new DateTimeUtility());
         $this->assertEquals(
             $expectedTimes,
-            $this->subject->getTimesForDay($event, $day)
+            $this->subject->getTimesForDate($event, $today)
         );
     }
 }
