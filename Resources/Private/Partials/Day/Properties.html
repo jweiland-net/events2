@@ -60,23 +60,36 @@
 </f:section>
 
 <f:section name="showDateAndTimes">
-	<f:for each="{e2:getMergedEventTimes(event: day.event, date: date)}" as="time">
-		<dl>
-			<dt>
-				<strong>
-					{f:if(condition: '{e2:isDateMarkedAsCanceled(event: day.event, date: date)}', then: '<s>')}
-					{date->f:format.date(format: '%A, %d.%m.%Y')}
-					{f:if(condition: '{e2:isDateMarkedAsCanceled(event: day.event, date: date)}', then: '</s>')}
-				</strong>
-			</dt>
-			<dd>
-				<f:render partial="Event/Time" arguments="{time: time}" />
-				<f:for each="{e2:getExceptionsFromEventForSpecificDate(event: day.event, date: date, type: 'add,time,info')}" as="exception">
-					<br><em>{exception.exceptionDetails -> f:format.html(parseFuncTSPath: 'lib.parseFunc') -> f:format.nl2br()}</em>
+	<f:alias map="{times: '{e2:getMergedEventTimes(event: day.event, date: date)}'}">
+		<f:if condition="{times->f:count()}">
+			<f:then>
+				<f:for each="{times}" as="time">
+					<f:render section="showDateAndTime" arguments="{day: day, date: date, time: time}" />
 				</f:for>
-			</dd>
-		</dl>
-	</f:for>
+			</f:then>
+			<f:else>
+				<f:render section="showDateAndTime" arguments="{day: day, date: date}" />
+			</f:else>
+		</f:if>
+	</f:alias>
+</f:section>
+
+<f:section name="showDateAndTimes">
+	<dl>
+		<dt>
+			<strong>
+				{f:if(condition: '{e2:isDateMarkedAsCanceled(event: day.event, date: date)}', then: '<s>')}
+				{date->f:format.date(format: '%A, %d.%m.%Y')}
+				{f:if(condition: '{e2:isDateMarkedAsCanceled(event: day.event, date: date)}', then: '</s>')}
+			</strong>
+		</dt>
+		<dd>
+			<f:render partial="Event/Time" arguments="{time: time}" />
+			<f:for each="{e2:getExceptionsFromEventForSpecificDate(event: day.event, date: date, type: 'add,time,info')}" as="exception">
+				<br><em>{exception.exceptionDetails -> f:format.html(parseFuncTSPath: 'lib.parseFunc') -> f:format.nl2br()}</em>
+			</f:for>
+		</dd>
+	</dl>
 </f:section>
 
 <f:section name="location">
