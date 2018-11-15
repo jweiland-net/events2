@@ -24,8 +24,6 @@ use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 
 /**
  * Test case.
- *
- * @author Stefan Froemken <projects@jweiland.net>
  */
 class FindSubCategoriesTest extends UnitTestCase
 {

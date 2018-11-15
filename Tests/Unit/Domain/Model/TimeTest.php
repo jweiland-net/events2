@@ -19,8 +19,6 @@ use Nimut\TestingFramework\TestCase\UnitTestCase;
 
 /**
  * Test case.
- *
- * @author Stefan Froemken <projects@jweiland.net>
  */
 class TimeTest extends UnitTestCase
 {

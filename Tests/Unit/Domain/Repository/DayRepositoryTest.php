@@ -30,8 +30,6 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 
 /**
  * Test case.
- *
- * @author Stefan Froemken <projects@jweiland.net>
  */
 class DayRepositoryTest extends UnitTestCase
 {
