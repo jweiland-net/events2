@@ -11,8 +11,10 @@
 		</f:then>
 		<f:else>
 			<f:flashMessages />
-			<f:render section="newEdit" arguments="{event: day.event}" />
-			<f:render partial="Day/Properties" arguments="{day: day}" />
+			<f:if condition="{day}">
+				<f:render section="newEdit" arguments="{event: day.event}" />
+				<f:render partial="Day/Properties" arguments="{day: day}" />
+			</f:if>
 		</f:else>
 	</f:if>
 </f:section>
