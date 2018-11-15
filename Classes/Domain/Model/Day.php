@@ -18,7 +18,7 @@ namespace JWeiland\Events2\Domain\Model;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /**
- * This class contains all getter and setters for an Event.
+ * This class contains all getter and setters for a Day.
  */
 class Day extends AbstractEntity
 {

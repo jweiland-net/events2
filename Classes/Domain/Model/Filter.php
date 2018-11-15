@@ -17,7 +17,7 @@ namespace JWeiland\Events2\Domain\Model;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * This class will not be persisted. It's a helper to filter organizers by selectbox in frontend.
  */
 class Filter extends AbstractEntity
 {

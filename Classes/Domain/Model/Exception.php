@@ -17,7 +17,7 @@ namespace JWeiland\Events2\Domain\Model;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * This class contains all getter and setters for an Exception.
  */
 class Exception extends AbstractEntity
 {
@@ -81,17 +81,11 @@ class Exception extends AbstractEntity
 
     /**
      * Getter for exceptionDate.
-     *
-     * @return \DateTime
      */
-    public function getExceptionDate()
+    public function getExceptionDate(): \DateTime
     {
-        if ($this->exceptionDate instanceof \DateTime) {
-            $this->exceptionDate->setTimezone(new \DateTimeZone(date_default_timezone_get()));
-            return clone $this->exceptionDate;
-        } else {
-            return null;
-        }
+        $this->exceptionDate->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+        return clone $this->exceptionDate;
     }
 
     /**

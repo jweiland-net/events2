@@ -19,7 +19,7 @@ use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Filter;
 
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * The DayController contains actions for various list actions and detail view.
  */
 class DayController extends AbstractController
 {
@@ -27,9 +27,6 @@ class DayController extends AbstractController
      * action list.
      *
      * @param Filter $filter
-     *
-     * @return void
-     *
      * @throws \Exception
      */
     public function listAction(Filter $filter = null)
@@ -42,9 +39,6 @@ class DayController extends AbstractController
      * action list latest.
      *
      * @param Filter $filter
-     *
-     * @return void
-     *
      * @throws \Exception
      */
     public function listLatestAction(Filter $filter = null)
@@ -66,9 +60,6 @@ class DayController extends AbstractController
      * action list today.
      *
      * @param Filter $filter
-     *
-     * @return void
-     *
      * @throws \Exception
      */
     public function listTodayAction(Filter $filter = null)
@@ -81,9 +72,6 @@ class DayController extends AbstractController
      * action list this week.
      *
      * @param Filter $filter
-     *
-     * @return void
-     *
      * @throws \Exception
      */
     public function listThisWeekAction(Filter $filter = null)
@@ -96,9 +84,6 @@ class DayController extends AbstractController
      * action list range.
      *
      * @param Filter $filter
-     *
-     * @return void
-     *
      * @throws \Exception
      */
     public function listRangeAction(Filter $filter = null)
@@ -115,9 +100,6 @@ class DayController extends AbstractController
      *
      * @param int $event
      * @param int $timestamp
-     *
-     * @return void
-     *
      * @throws \Exception
      */
     public function showAction($event, $timestamp = 0)
@@ -138,9 +120,6 @@ class DayController extends AbstractController
      * action showByTimestamp.
      *
      * @param int $timestamp
-     *
-     * @return void
-     *
      * @throws \Exception
      */
     public function showByTimestampAction($timestamp)
