@@ -34,8 +34,6 @@ use TYPO3\CMS\Fluid\View\TemplateView;
 
 /**
  * Test case.
- *
- * @author Stefan Froemken <projects@jweiland.net>
  */
 class EventControllerTest extends UnitTestCase
 {

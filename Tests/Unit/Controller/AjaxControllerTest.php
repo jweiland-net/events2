@@ -22,8 +22,6 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Test case.
- *
- * @author Stefan Froemken <projects@jweiland.net>
  */
 class AjaxControllerTest extends UnitTestCase
 {

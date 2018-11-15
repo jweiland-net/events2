@@ -28,8 +28,6 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Test case.
- *
- * @author Stefan Froemken <projects@jweiland.net>
  */
 class CalendarControllerTest extends UnitTestCase
 {

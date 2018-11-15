@@ -28,8 +28,6 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Test case.
- *
- * @author Stefan Froemken <projects@jweiland.net>
  */
 class EventTest extends UnitTestCase
 {

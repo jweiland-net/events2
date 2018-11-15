@@ -25,9 +25,6 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Test case for class \JWeiland\Events2\Service\DayGenerator.
- *
- *
- * @author Stefan Froemken <projects@jweiland.net>
  */
 class DayGeneratorTest extends UnitTestCase
 {

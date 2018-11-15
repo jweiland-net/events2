@@ -32,8 +32,6 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Test case for class \JWeiland\Events2\Service\DayRelationService
- *
- * @author Stefan Froemken <projects@jweiland.net>
  */
 class DayRelationServiceTest extends UnitTestCase
 {
