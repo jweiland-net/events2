@@ -16,7 +16,9 @@ namespace JWeiland\Events2\Domain\Model;
  */
 
 use JWeiland\Events2\Utility\DateTimeUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
@@ -547,6 +549,8 @@ class Event extends AbstractEntity
 
     /**
      * Returns the differentTimes.
+     *
+     * @return ObjectStorage|Time[]
      */
     public function getDifferentTimes(): ObjectStorage
     {
@@ -668,10 +672,28 @@ class Event extends AbstractEntity
 
     /**
      * Returns the exceptions.
+     * Additionally you can filter exceptions by type
+     * Types: add, remove, time, info
+     *
+     * @param string $filterByType
+     * @return ObjectStorage|Exception[]
      */
-    public function getExceptions(): ObjectStorage
+    public function getExceptions($filterByType = ''): ObjectStorage
     {
-        return $this->exceptions;
+        $exceptions = new ObjectStorage();
+        $filterByType = strtolower($filterByType);
+
+        if (empty($filterByType)) {
+            $exceptions = $this->exceptions;
+        } else {
+            foreach ($this->exceptions as $exception) {
+                $exceptionType = strtolower($exception->getExceptionType());
+                if ($exceptionType === $filterByType) {
+                    $exceptions->attach($exception);
+                }
+            }
+        }
+        return $exceptions;
     }
 
     /**
@@ -843,11 +865,55 @@ class Event extends AbstractEntity
     /**
      * Returns the days.
      *
-     * @return ObjectStorage $days
+     * @return ObjectStorage|Day[] $days
      */
     public function getDays(): ObjectStorage
     {
         return $this->days;
+    }
+
+    /**
+     * Returns grouped and sorted days of today and future.
+     *
+     * @return array|\DateTime[] $days
+     */
+    public function getFutureDatesGroupedAndSorted(): array
+    {
+        $dateTimeUtility = GeneralUtility::makeInstance(DateTimeUtility::class);
+        $today = $dateTimeUtility->standardizeDateTimeObject(new \DateTime());
+
+        $futureDates = [];
+        foreach ($this->getDays() as $day) {
+            if ($day->getDayTime() > $today) {
+                $futureDay = clone $day;
+                $futureDates[$futureDay->getDay()->format('U')] = $futureDay->getDay();
+            }
+        }
+        ksort($futureDates);
+        return $futureDates;
+    }
+
+    /**
+     * Returns grouped and sorted days of today and future.
+     * This method also returns days which are marked as removed (is_removed=1).
+     *
+     * @return array|\DateTime[] $days
+     */
+    public function getFutureDatesIncludingRemovedGroupedAndSorted(): array
+    {
+        $dateTimeUtility = GeneralUtility::makeInstance(DateTimeUtility::class);
+        $today = $dateTimeUtility->standardizeDateTimeObject(new \DateTime());
+
+        $futureDates = $this->getFutureDatesGroupedAndSorted();
+        foreach ($this->getExceptions('remove') as $exception) {
+            if ($exception->getExceptionDate() > $today) {
+                $exceptionDate = clone $exception->getExceptionDate();
+                $futureDates[$exceptionDate->format('U')] = $exceptionDate;
+            }
+        }
+
+        ksort($futureDates);
+        return $futureDates;
     }
 
     /**
