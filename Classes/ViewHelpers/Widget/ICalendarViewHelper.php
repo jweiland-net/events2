@@ -14,11 +14,13 @@ namespace JWeiland\Events2\ViewHelpers\Widget;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\ViewHelpers\Widget\Controller\ICalendarController;
 use TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetViewHelper;
 
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * A Fluid widget to create a link for downloading an iCal file
  */
 class ICalendarViewHelper extends AbstractWidgetViewHelper
 {
@@ -36,13 +38,21 @@ class ICalendarViewHelper extends AbstractWidgetViewHelper
     }
 
     /**
-     * call the index action of the controller.
+     * Initialize arguments.
      *
-     * @param \JWeiland\Events2\Domain\Model\Day $day
-     *
-     * @return string
+     * @api
+     * @throws \TYPO3Fluid\Fluid\Core\ViewHelper\Exception
      */
-    public function render($day)
+    public function initializeArguments()
+    {
+        parent::initializeArguments();
+        $this->registerArgument('day', Day::class, 'The day object to create the download iCal file for', true);
+    }
+
+    /**
+     * Renders a link to download an iCal file
+     */
+    public function render(): string
     {
         return $this->initiateSubRequest();
     }
