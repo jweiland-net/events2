@@ -14,10 +14,10 @@ namespace JWeiland\Events2\Service;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
-use JWeiland\Events2\Domain\Model\Exception;
 use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Utility\DateTimeUtility;
@@ -28,7 +28,8 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * While saving an event in backend, this class generates all the day records
+ * and sets them in relation to the event record.
  */
 class DayRelationService
 {
@@ -76,8 +77,6 @@ class DayRelationService
      * inject extConf
      *
      * @param ExtConf $extConf
-     *
-     * @return void
      */
     public function injectExtConf(ExtConf $extConf)
     {
@@ -88,8 +87,6 @@ class DayRelationService
      * inject dayGenerator.
      *
      * @param DayGenerator $dayGenerator
-     *
-     * @return void
      */
     public function injectDayGenerator(DayGenerator $dayGenerator)
     {
@@ -100,8 +97,6 @@ class DayRelationService
      * inject eventRepository
      *
      * @param EventRepository $eventRepository
-     *
-     * @return void
      */
     public function injectEventRepository(EventRepository $eventRepository)
     {
@@ -112,8 +107,6 @@ class DayRelationService
      * inject eventService
      *
      * @param EventService $eventService
-     *
-     * @return void
      */
     public function injectEventService(EventService $eventService)
     {
@@ -124,8 +117,6 @@ class DayRelationService
      * inject dateTimeUtility.
      *
      * @param DateTimeUtility $dateTimeUtility
-     *
-     * @return void
      */
     public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
     {
@@ -136,8 +127,6 @@ class DayRelationService
      * inject persistenceManager
      *
      * @param PersistenceManager $persistenceManager
-     *
-     * @return void
      */
     public function injectPersistenceManager(PersistenceManager $persistenceManager)
     {
@@ -148,9 +137,7 @@ class DayRelationService
      * Create day relations for given event
      *
      * @param int|string $eventUid Maybe starting with NEW
-     *
      * @return Event
-     *
      * @throws \Exception
      */
     public function createDayRelations($eventUid)
@@ -185,15 +172,13 @@ class DayRelationService
      *
      * @param Event $event
      * @param \DateTime $dateTime
-     *
-     * @return void
      */
     public function addDay(Event $event, \DateTime $dateTime)
     {
         // to prevent adding multiple days for ONE day we set them all to midnight 00:00:00
         $dateTime = $this->dateTimeUtility->standardizeDateTimeObject($dateTime);
-        $times = $this->getTimesForDateTime($dateTime, $event);
-        if (!empty($times)) {
+        $times = $this->eventService->getTimesForDate($event, $dateTime);
+        if ($times->count()) {
             foreach ($times as $time) {
                 $this->addGeneratedDayToEvent($dateTime, $event, $time);
             }
@@ -203,119 +188,11 @@ class DayRelationService
     }
 
     /**
-     * Each event can have one or more times for one day
-     * This method looks into all time related records and fetches the times with highest priority.
-     *
-     * @param \DateTime $day
-     * @param Event $event
-     *
-     * @return array
-     */
-    public function getTimesForDateTime(\DateTime $day, Event $event)
-    {
-        // times from exceptions have priority 1
-        if ($event->getExceptions()->count()) {
-            $times = [];
-            /** @var Exception $exception */
-            foreach ($event->getExceptions() as $exception) {
-                if (
-                    $exception->getExceptionDate() == $day &&
-                    $exception->getExceptionTime() instanceof Time &&
-                    (
-                        $exception->getExceptionType() === 'Add' ||
-                        $exception->getExceptionType() === 'Time'
-                    )
-                ) {
-                    $times[] = $exception->getExceptionTime();
-                }
-            }
-            if (!empty($times)) {
-                return $times;
-            }
-        }
-        // times from event->differentTimes have priority 2
-        $differentTimes = $this->getDifferentTimesForDay($day, $event);
-        if (!empty($differentTimes)) {
-            return $differentTimes;
-        }
-        // times from event have priority 3
-        $eventTimes = $this->getTimesFromEvent($event);
-        if (!empty($eventTimes)) {
-            return $eventTimes;
-        }
-
-        // if there are no times available return empty array
-        return [];
-    }
-
-    /**
-     * You can override the times in an event for a special weekday
-     * so this method checks and returns times, if there are times defined for given day.
-     *
-     * @param \DateTime $day
-     * @param Event $event
-     *
-     * @return array
-     */
-    protected function getDifferentTimesForDay(\DateTime $day, Event $event)
-    {
-        $times = [];
-        if (
-            $event->getEventType() !== 'single' &&
-            $event->getDifferentTimes()->count()
-        ) {
-            // you only can set different times in case of type "duration" and "recurring". But not: single
-            /** @var Time $time */
-            foreach ($event->getDifferentTimes() as $time) {
-                if (strtolower($time->getWeekday()) === strtolower($day->format('l'))) {
-                    $times[] = $time;
-                }
-            }
-        }
-
-        return $times;
-    }
-
-    /**
-     * Each event has ONE time record, but if checkbox "same day" was checked, you can add additional times
-     * This method checks both parts, merges them into an array and returns the result.
-     *
-     * @param Event $event
-     *
-     * @return array
-     */
-    protected function getTimesFromEvent(Event $event)
-    {
-        $times = [];
-        // add normal event time
-        if ($event->getEventTime() instanceof Time) {
-            $times[] = $event->getEventTime();
-        }
-
-        // add value of multiple times
-        // but only if checkbox "same day" is set
-        // and event type is NOT single
-        if (
-            $event->getEventType() !== 'single' &&
-            $event->getSameDay() &&
-            $event->getMultipleTimes()->count()
-        ) {
-            /** @var Time $multipleTime */
-            foreach ($event->getMultipleTimes() as $multipleTime) {
-                $times[] = $multipleTime;
-            }
-        }
-
-        return $times;
-    }
-
-    /**
      * Add day record
      *
      * @param \DateTime $dateTime
      * @param Event $event
      * @param Time|null $time
-     * @return void
      */
     protected function addGeneratedDayToEvent(\DateTime $dateTime, Event $event, $time = null)
     {
@@ -350,10 +227,9 @@ class DayRelationService
      * @param \DateTime $day
      * @param int $hour
      * @param int $minute
-     *
      * @return \DateTime
      */
-    protected function getDayTime(\DateTime $day, $hour, $minute)
+    protected function getDayTime(\DateTime $day, $hour, $minute): \DateTime
     {
         // Don't modify original day
         $dayTime = clone $day;
@@ -378,7 +254,6 @@ class DayRelationService
      * @param int $hour
      * @param int $minute
      * @param Event $event
-     *
      * @return \DateTime
      */
     protected function getSortDayTime(\DateTime $day, $hour, $minute, Event $event)
