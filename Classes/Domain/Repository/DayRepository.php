@@ -15,6 +15,7 @@ namespace JWeiland\Events2\Domain\Repository;
  * The TYPO3 project - inspiring people to share!
  */
 
+use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Model\Search;
@@ -35,6 +36,11 @@ class DayRepository extends Repository
      * @var DateTimeUtility
      */
     protected $dateTimeUtility;
+
+    /**
+     * @var ExtConf
+     */
+    protected $extConf;
 
     /**
      * @var array
@@ -58,6 +64,16 @@ class DayRepository extends Repository
     public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
     {
         $this->dateTimeUtility = $dateTimeUtility;
+    }
+
+    /**
+     * inject extConf
+     *
+     * @param ExtConf $extConf
+     */
+    public function injectExtConf(ExtConf $extConf)
+    {
+        $this->extConf = $extConf;
     }
 
     /**
@@ -141,8 +157,14 @@ class DayRepository extends Repository
             case 'latest':
             case 'list':
             default:
-                $today = $this->dateTimeUtility->convert('today');
-                $constraints[] = $query->greaterThanOrEqual('day', $today);
+                if ($this->extConf->getRecurringPast() === 0) {
+                    // including current time as events in past are not allowed to be displayed
+                    $today = new \DateTime('now');
+                } else {
+                    // exclude current time. Start with 00:00:00
+                    $today = $this->dateTimeUtility->convert('today');
+                }
+                $constraints[] = $query->greaterThanOrEqual('dayTime', $today);
         }
 
         if (!empty($limit)) {
