@@ -17,6 +17,7 @@ namespace JWeiland\Events2\Controller;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Filter;
+use TYPO3\CMS\Core\Messaging\FlashMessage;
 
 /**
  * The DayController contains actions for various list actions and detail view.
@@ -106,14 +107,27 @@ class DayController extends AbstractController
     {
         $day = $this->dayRepository->findOneByTimestamp($event, $timestamp);
         if (!$day instanceof Day) {
-            /** @var Event $eventObject */
-            $eventObject = $this->eventRepository->findByIdentifier($event);
+            // something went wrong. Inform user how to solve this problem.
 
-            /** @var Day $day */
-            $day = $this->objectManager->get(Day::class);
-            $day->setEvent($eventObject);
+            // This is a very seldom problem. It appears, when you save tt_content by a hook and cast value of pages to int before save.
+            $data = $this->configurationManager->getContentObject()->data;
+            if ($data['pages'] === '0') {
+                $this->addFlashMessage(
+                    'Please check content record with UID "' . $data['records'] . '". Column "pages" can not be 0. It must be empty or higher than 0.',
+                    'tt_content column pages can not be 0',
+                    FlashMessage::WARNING
+                );
+            } else {
+                // If a time record was added or changed, the timestamp in URI will not match any timestamps in DB anymore
+                $this->addFlashMessage(
+                    'It seems that event record was updated in the meantime. Please go back to list view, reload and try to open the detail view again',
+                    'Event record has changed',
+                    FlashMessage::WARNING
+                );
+            }
+        } else {
+            $this->view->assign('day', $day);
         }
-        $this->view->assign('day', $day);
     }
 
     /**
