@@ -24,6 +24,9 @@ use Nimut\TestingFramework\MockObject\AccessibleMockObjectInterface;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
+use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
@@ -57,6 +60,16 @@ class DayControllerTest extends UnitTestCase
     protected $objectManager;
 
     /**
+     * @var ConfigurationManager|ObjectProphecy
+     */
+    protected $configurationManagerProphecy;
+
+    /**
+     * @var ControllerContext|ObjectProphecy
+     */
+    protected $controllerContextProphecy;
+
+    /**
      * @var TemplateView|ObjectProphecy
      */
     protected $view;
@@ -70,6 +83,8 @@ class DayControllerTest extends UnitTestCase
         $this->view = $this->prophesize(TemplateView::class);
         $this->dayRepository = $this->prophesize(DayRepository::class);
         $this->eventRepository = $this->prophesize(EventRepository::class);
+        $this->configurationManagerProphecy = $this->prophesize(ConfigurationManager::class);
+        $this->controllerContextProphecy = $this->prophesize(ControllerContext::class);
 
         $settings = [
             'latest' => [
@@ -83,6 +98,8 @@ class DayControllerTest extends UnitTestCase
         $this->subject->_set('view', $this->view->reveal());
         $this->subject->_set('dayRepository', $this->dayRepository->reveal());
         $this->subject->_set('eventRepository', $this->eventRepository->reveal());
+        $this->subject->_set('configurationManager', $this->configurationManagerProphecy->reveal());
+        $this->subject->_set('controllerContext', $this->controllerContextProphecy->reveal());
     }
 
     /**
@@ -288,19 +305,48 @@ class DayControllerTest extends UnitTestCase
                 Argument::exact(0)
             )
             ->shouldBeCalled()
-            ->willReturn(null);
-        $this->eventRepository
-            ->findByIdentifier(Argument::exact($eventUid))
-            ->shouldBeCalled()
-            ->willReturn($event);
-        $this->objectManager
-            ->get(Day::class)
-            ->shouldBeCalled()
             ->willReturn($day);
         $this->view->assign(
             Argument::exact('day'),
             Argument::exact($day)
         )->shouldBeCalled();
+
+        $this->subject->showAction($eventUid);
+    }
+
+    /**
+     * @test
+     */
+    public function showActionWithEmptyDayObjectWillNotCallAssign()
+    {
+        $contentObject = new \stdClass();
+        $contentObject->data = [
+            'pages' => 0
+        ];
+        $this->configurationManagerProphecy
+            ->getContentObject()
+            ->shouldBeCalled()
+            ->willReturn($contentObject);
+
+        /** @var FlashMessageQueue|ObjectProphecy $flashMessageQueue */
+        $flashMessageQueue = $this->prophesize(FlashMessageQueue::class);
+        $flashMessageQueue->enqueue(Argument::cetera())->shouldBeCalled();
+
+        $this->controllerContextProphecy
+            ->getFlashMessageQueue()
+            ->shouldBeCalled()
+            ->willReturn($flashMessageQueue->reveal());
+
+        $eventUid = 32415;
+
+        $this->dayRepository
+            ->findOneByTimestamp(
+                Argument::exact($eventUid),
+                Argument::exact(0)
+            )
+            ->shouldBeCalled()
+            ->willReturn(null);
+        $this->view->assign(Argument::cetera())->shouldNotBeCalled();
 
         $this->subject->showAction($eventUid);
     }
