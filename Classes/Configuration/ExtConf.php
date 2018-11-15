@@ -17,7 +17,7 @@ namespace JWeiland\Events2\Configuration;
 use TYPO3\CMS\Core\SingletonInterface;
 
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * This class streamlines all settings from extension manager
  */
 class ExtConf implements SingletonInterface
 {
@@ -126,10 +126,8 @@ class ExtConf implements SingletonInterface
 
     /**
      * Returns the poiCollectionPid
-     *
-     * @return int $poiCollectionPid
      */
-    public function getPoiCollectionPid()
+    public function getPoiCollectionPid(): int
     {
         return $this->poiCollectionPid;
     }
@@ -138,7 +136,6 @@ class ExtConf implements SingletonInterface
      * Sets the poiCollectionPid
      *
      * @param int $poiCollectionPid
-     * @return void
      */
     public function setPoiCollectionPid($poiCollectionPid)
     {
@@ -147,10 +144,8 @@ class ExtConf implements SingletonInterface
 
     /**
      * getter for rootUid.
-     *
-     * @return int
      */
-    public function getRootUid()
+    public function getRootUid(): int
     {
         if (empty($this->rootUid)) {
             return 0;
@@ -171,10 +166,8 @@ class ExtConf implements SingletonInterface
 
     /**
      * getter for recurringPast.
-     *
-     * @return int
      */
-    public function getRecurringPast()
+    public function getRecurringPast(): int
     {
         if ($this->recurringPast >= 0) {
             return $this->recurringPast;
@@ -195,10 +188,8 @@ class ExtConf implements SingletonInterface
 
     /**
      * getter for recurringFuture.
-     *
-     * @return int
      */
-    public function getRecurringFuture()
+    public function getRecurringFuture(): int
     {
         if (empty($this->recurringFuture)) {
             return 6;
@@ -219,10 +210,8 @@ class ExtConf implements SingletonInterface
 
     /**
      * Returns the mergeEvents
-     *
-     * @return bool $mergeEvents
      */
-    public function getMergeEvents()
+    public function getMergeEvents(): bool
     {
         return $this->mergeEvents;
     }
@@ -241,10 +230,8 @@ class ExtConf implements SingletonInterface
 
     /**
      * Returns the defaultCountry
-     *
-     * @return string $defaultCountry
      */
-    public function getDefaultCountry()
+    public function getDefaultCountry(): string
     {
         return $this->defaultCountry;
     }
@@ -253,7 +240,6 @@ class ExtConf implements SingletonInterface
      * Sets the defaultCountry
      *
      * @param string $defaultCountry
-     * @return void
      */
     public function setDefaultCountry($defaultCountry)
     {
@@ -262,10 +248,8 @@ class ExtConf implements SingletonInterface
 
     /**
      * Returns the organizerIsRequired
-     *
-     * @return bool $organizerIsRequired
      */
-    public function getOrganizerIsRequired()
+    public function getOrganizerIsRequired(): bool
     {
         return $this->organizerIsRequired;
     }
@@ -274,8 +258,6 @@ class ExtConf implements SingletonInterface
      * Sets the organizerIsRequired
      *
      * @param bool $organizerIsRequired
-     *
-     * @return void
      */
     public function setOrganizerIsRequired($organizerIsRequired)
     {
@@ -284,10 +266,8 @@ class ExtConf implements SingletonInterface
 
     /**
      * Returns the locationIsRequired
-     *
-     * @return bool $locationIsRequired
      */
-    public function getLocationIsRequired()
+    public function getLocationIsRequired(): bool
     {
         return $this->locationIsRequired;
     }
@@ -296,8 +276,6 @@ class ExtConf implements SingletonInterface
      * Sets the locationIsRequired
      *
      * @param bool $locationIsRequired
-     *
-     * @return void
      */
     public function setLocationIsRequired($locationIsRequired)
     {
@@ -308,10 +286,8 @@ class ExtConf implements SingletonInterface
      * getter for email from address.
      *
      * @throws \Exception
-     *
-     * @return string
      */
-    public function getEmailFromAddress()
+    public function getEmailFromAddress(): string
     {
         if (empty($this->emailFromAddress)) {
             $senderMail = $GLOBALS['TYPO3_CONF_VARS']['MAIL']['defaultMailFromAddress'];
@@ -339,10 +315,8 @@ class ExtConf implements SingletonInterface
      * getter for email from name.
      *
      * @throws \Exception
-     *
-     * @return string
      */
-    public function getEmailFromName()
+    public function getEmailFromName(): string
     {
         if (empty($this->emailFromName)) {
             $senderName = $GLOBALS['TYPO3_CONF_VARS']['MAIL']['defaultMailFromName'];
@@ -368,10 +342,8 @@ class ExtConf implements SingletonInterface
 
     /**
      * getter for email to address.
-     *
-     * @return string
      */
-    public function getEmailToAddress()
+    public function getEmailToAddress(): string
     {
         return $this->emailToAddress;
     }
@@ -388,10 +360,8 @@ class ExtConf implements SingletonInterface
 
     /**
      * getter for email to name.
-     *
-     * @return string
      */
-    public function getEmailToName()
+    public function getEmailToName(): string
     {
         return $this->emailToName;
     }

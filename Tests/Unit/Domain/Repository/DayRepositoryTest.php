@@ -14,6 +14,8 @@ namespace JWeiland\Events2\Tests\Unit\Domain\Repository;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Persistence\Typo384\Generic\Query;
@@ -64,6 +66,11 @@ class DayRepositoryTest extends UnitTestCase
     protected $persistenceManager;
 
     /**
+     * @var ExtConf|ObjectProphecy
+     */
+    protected $extConfProphecy;
+
+    /**
      * set up.
      */
     public function setUp()
@@ -73,6 +80,7 @@ class DayRepositoryTest extends UnitTestCase
         $this->queryResult = $this->prophesize(QueryResult::class);
         $this->dataMapper = $this->prophesize(DataMapper::class);
         $this->persistenceManager = $this->prophesize(PersistenceManager::class);
+        $this->extConfProphecy = $this->prophesize(ExtConf::class);
 
         $this->queryResult->getQuery()->willReturn($this->query->reveal());
 
@@ -82,6 +90,7 @@ class DayRepositoryTest extends UnitTestCase
             ->setMethods(['createQuery'])
             ->getMock();
         $this->subject->injectDateTimeUtility($this->dateTimeUtility);
+        $this->subject->injectExtConf($this->extConfProphecy->reveal());
         $this->subject
             ->method('createQuery')
             ->willReturn($this->query->reveal());
@@ -100,6 +109,8 @@ class DayRepositoryTest extends UnitTestCase
      */
     public function findEventsWithEmptyTypeJumpsInListCase()
     {
+        $this->extConfProphecy->getRecurringPast()->shouldBeCalled()->willReturn(3);
+
         $this->query->logicalAnd(Argument::cetera())->shouldBeCalled()->willReturn([]);
         $this->query->greaterThanOrEqual(Argument::cetera())->shouldBeCalled();
         $this->query->getQuerySettings(Argument::cetera())->shouldBeCalled()->willReturn(new Typo3QuerySettings());
