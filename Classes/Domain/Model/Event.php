@@ -1032,4 +1032,24 @@ class Event extends AbstractEntity
     {
         $this->downloadLinks = $downloadLinks;
     }
+
+    /**
+     * Add download link
+     *
+     * @param Link $downloadLink
+     */
+    public function addDownloadLink(Link $downloadLink)
+    {
+        $this->downloadLinks->attach($downloadLink);
+    }
+
+    /**
+     * Remove download link
+     *
+     * @param Link $downloadLink
+     */
+    public function removeDownloadLink(Link $downloadLink)
+    {
+        $this->downloadLinks->detach($downloadLink);
+    }
 }

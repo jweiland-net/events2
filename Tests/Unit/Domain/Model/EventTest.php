@@ -1136,21 +1136,60 @@ class EventTest extends UnitTestCase
     /**
      * @test
      */
-    public function getDownloadLinksInitiallyReturnsNull()
-    {
-        $this->assertNull($this->subject->getDownloadLinks());
+    public function getDownloadLinksInitiallyReturnsObjectStorage() {
+        $this->assertEquals(
+            new ObjectStorage(),
+            $this->subject->getDownloadLinks()
+        );
     }
 
     /**
      * @test
      */
-    public function setDownloadLinksSetsDownloadLinks()
-    {
-        $instance = new Link();
-        $this->subject->setDownloadLinks($instance);
+    public function setDownloadLinksSetsDownloadLinks() {
+        $object = new Link();
+        $objectStorage = new ObjectStorage();
+        $objectStorage->attach($object);
+        $this->subject->setDownloadLinks($objectStorage);
 
         $this->assertSame(
-            $instance,
+            $objectStorage,
+            $this->subject->getDownloadLinks()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function addDownloadLinkAddsOneDownloadLink() {
+        $objectStorage = new ObjectStorage();
+        $this->subject->setDownloadLinks($objectStorage);
+
+        $object = new Link();
+        $this->subject->addDownloadLink($object);
+
+        $objectStorage->attach($object);
+
+        $this->assertSame(
+            $objectStorage,
+            $this->subject->getDownloadLinks()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function removeDownloadLinkRemovesOneDownloadLink() {
+        $object = new Link();
+        $objectStorage = new ObjectStorage();
+        $objectStorage->attach($object);
+        $this->subject->setDownloadLinks($objectStorage);
+
+        $this->subject->removeDownloadLink($object);
+        $objectStorage->detach($object);
+
+        $this->assertSame(
+            $objectStorage,
             $this->subject->getDownloadLinks()
         );
     }

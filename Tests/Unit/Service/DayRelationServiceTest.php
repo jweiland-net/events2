@@ -22,6 +22,7 @@ use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Service\DayGenerator;
 use JWeiland\Events2\Service\DayRelationService;
+use JWeiland\Events2\Service\EventService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 use Prophecy\Argument;
@@ -91,11 +92,15 @@ class DayRelationServiceTest extends UnitTestCase
         $dayGenerator->injectExtConf($this->extConfProphecy->reveal());
         $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
 
+        $eventService = new EventService();
+        $eventService->injectDateTimeUtility(new DateTimeUtility());
+
         $this->subject = new DayRelationService();
         $this->subject->injectExtConf($this->extConfProphecy->reveal());
         $this->subject->injectDayGenerator($dayGenerator);
         $this->subject->injectEventRepository($this->eventRepositoryProphecy->reveal());
         $this->subject->injectPersistenceManager($this->persistenceManagerProphecy->reveal());
+        $this->subject->injectEventService($eventService);
         $this->subject->injectDateTimeUtility(new DateTimeUtility());
     }
 

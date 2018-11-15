@@ -91,16 +91,6 @@ class ExceptionTest extends UnitTestCase
     /**
      * @test
      */
-    public function getExceptionDateInitiallyReturnsNull()
-    {
-        $this->assertNull(
-            $this->subject->getExceptionDate()
-        );
-    }
-
-    /**
-     * @test
-     */
     public function setExceptionDateSetsExceptionDate()
     {
         $date = new \DateTime();
