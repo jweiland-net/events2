@@ -9,6 +9,45 @@ Updating
 --------
 If you update EXT:events2 to a newer version, please read this section carefully!
 
+Update to Version 2.4.0
+^^^^^^^^^^^^^^^^^^^^^^^
+
+Version 2.4.0 is now TYPO3 9 compatible. We also have removed compatibility to TYPO3 6 and 7. Please check your
+installation for following events2 changes:
+
+* We have removed GetEventDates VH and implemented a completely new way to get future event dates.
+* We have removed MicroStart VH
+* We have removed MicroStop VH
+* We have removed Sort VH, as sorting in VH is always a bad idea.
+
+In previous versions we had the problem, that an added day as exception will never be of type Day. It is of
+type Exception with different properties then a Day, which made us many headaches in Fluid-Templates. In
+GetDateTime VH we had streamlined Day and Exception records into an array which contains all needed
+information. You can't control and you may not understand how this array was build. With version 2.4.0 we have
+solved this problem and simplified Fluid template a lot. Instead of modifying the DB tables and models we have
+reduced some method-calls down to the DateTime representation of Day and Exception records:
+
+* Renamed EventService::getSortedTimesForDay to EventService::getSortedTimesForDate
+*** Property $day changed from type Day to \DateTime
+* Renamed EventService::getDifferentTimesForDay to EventService::getDifferentTimesForDate
+*** Property $day changed from type Day to \DateTime
+* Renamed EventService::getTimesForDay to EventService::getTimesForDate
+*** Property $day changed from type Day to \DateTime
+* Renamed EventService::getExceptionsForDay to EventService::getExceptionsForDate
+*** Property $day changed from type Day to \DateTime
+
+So, please check your own extensions, if you make use of these methods. To solve the problem from above, we have
+implemented two new ViewHelpers. Please have a look into our new templates and update your own templates
+to the new structure:
+
+* New VH: GetExceptionsFromEventForSpecificDate
+* New VH: IsDateMarkedAsCanceled
+
+Event property `download_links` can now collect more then one link. Please update DB in installtool and clear
+system caches.
+
+Now you can create events with a recurring of one or more months.
+
 Update to Version 2.3.0
 ^^^^^^^^^^^^^^^^^^^^^^^
 
