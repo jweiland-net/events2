@@ -14,26 +14,44 @@ namespace JWeiland\Events2\ViewHelpers;
  *
  * The TYPO3 project - inspiring people to share!
  */
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * This VH checks if given URI is a valid YouTube-Link
+ * and returns a special YouTube embed URI.
  */
 class CreateYoutubeUriViewHelper extends AbstractViewHelper
 {
+    use CompileWithRenderStatic;
+
     /**
-     * extract the youtube ID from link and return the embedded youtube url.
+     * Initialize all arguments. You need to override this method and call
+     * $this->registerArgument(...) inside this method, to register all your arguments.
      *
-     * @param string $link
-     *
-     * @return string Embedded Youtube URI
+     * @return void
      */
-    public function render($link)
+    public function initializeArguments()
     {
-        if (preg_match('~^(|http:|https:)//(|www.)youtu(\.be|be)(.*?)(v=|embed/|)([a-zA-Z0-9_-]+)$~i', $link, $matches)) {
+        $this->registerArgument('link', 'string', 'Insert the YouTube-Link', true);
+    }
+
+    /**
+     * Extract the youtube ID from link and return the embedded youtube url.
+     *
+     * @param array $arguments
+     * @param \Closure $childClosure
+     * @param RenderingContextInterface $renderingContext
+     * @return string
+     */
+    public static function renderStatic(array $arguments, \Closure $childClosure, RenderingContextInterface $renderingContext)
+    {
+        if (preg_match('~^(|http:|https:)//(|www.)youtu(\.be|be)(.*?)(v=|embed/|)([a-zA-Z0-9_-]+)$~i', $arguments['link'], $matches)) {
             $url = '//www.youtube.com/embed/' . $matches[6];
         } else {
-            $url = '//www.youtube.com/embed/' . $link;
+            $url = '//www.youtube.com/embed/' . $arguments['link'];
         }
 
         return $url;

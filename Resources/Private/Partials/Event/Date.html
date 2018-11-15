@@ -19,7 +19,7 @@
 <f:section name="time">
   <f:if condition="{extConf.mergeEvents}">
     <f:then>
-      <f:if condition="{e2:getMergedEventTimes(day: day)->f:count()} > 1">
+      <f:if condition="{e2:getMergedEventTimes(event: day.event, date: day.day)->f:count()} > 1">
         <f:then>
           <f:link.action
             action="show"

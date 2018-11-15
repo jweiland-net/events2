@@ -88,8 +88,8 @@ class ICalendarController extends AbstractWidgetController
             case 'duration':
                 $firstDay = $this->getFirstDayOfEvent($day->getEvent());
                 $lastDay = $this->getLastDayOfEvent($day->getEvent());
-                $startTimes = $this->eventService->getTimesForDay($firstDay->getEvent(), $firstDay);
-                $endTimes = $this->eventService->getTimesForDay($lastDay->getEvent(), $lastDay);
+                $startTimes = $this->eventService->getTimesForDate($firstDay->getEvent(), $firstDay->getDay());
+                $endTimes = $this->eventService->getTimesForDate($lastDay->getEvent(), $lastDay->getDay());
                 $startTimes->rewind();
                 $startTime = $startTimes->current();
                 $endTimes->rewind();
@@ -105,9 +105,8 @@ class ICalendarController extends AbstractWidgetController
             case 'recurring':
             case 'single':
             default:
-                $times = $this->eventService->getTimesForDay($day->getEvent(), $day);
+                $times = $this->eventService->getTimesForDate($day->getEvent(), $day->getDay());
                 if ($times->count()) {
-                    /** @var Time $time */
                     foreach ($times as $time) {
                         $events[] = $this->createEvent($day, $day, $time->getTimeBegin(), $time->getTimeEnd());
                     }

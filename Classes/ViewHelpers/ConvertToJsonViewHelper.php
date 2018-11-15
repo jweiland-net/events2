@@ -13,18 +13,19 @@ namespace JWeiland\Events2\ViewHelpers;
  *
  * The TYPO3 project - inspiring people to share!
  */
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
- * Class ConvertToJsonViewHelper
- *
- * @category ViewHelpers
- * @author   Stefan Froemken <projects@jweiland.net>
- * @license  http://www.gnu.org/licenses/gpl.html GNU General Public License
- * @link     https://github.com/jweiland-net/events2
+ * This VH is designed to convert PoiCollection record into JSON.
+ * But, of cause, you can use it for all other arrays, too.
  */
 class ConvertToJsonViewHelper extends AbstractViewHelper
 {
+    use CompileWithRenderStatic;
+
     /**
      * @var bool
      */
@@ -36,13 +37,16 @@ class ConvertToJsonViewHelper extends AbstractViewHelper
     protected $escapeOutput = false;
 
     /**
-     * implements a ViewHelper to convert an array into JSON format
+     * Implements a ViewHelper to convert an array into JSON format
      *
-     * @return array
+     * @param array $arguments
+     * @param \Closure $childClosure
+     * @param RenderingContextInterface $renderingContext
+     * @return string
      */
-    public function render()
+    public static function renderStatic(array $arguments, \Closure $childClosure, RenderingContextInterface $renderingContext)
     {
-        $value = $this->renderChildren();
+        $value = $childClosure();
         if (empty($value)) {
             $json = '{}';
         } else {

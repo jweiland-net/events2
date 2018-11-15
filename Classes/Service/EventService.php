@@ -14,9 +14,11 @@ namespace JWeiland\Events2\Service;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
+use JWeiland\Events2\Domain\Model\Exception;
 use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Utility\DateTimeUtility;
@@ -48,7 +50,6 @@ class EventService
      * Injects extConf
      *
      * @param ExtConf $extConf
-     * @return void
      */
     public function injectExtConf(ExtConf $extConf)
     {
@@ -59,7 +60,6 @@ class EventService
      * Inject DateTime Utility.
      *
      * @param DateTimeUtility $dateTimeUtility
-     * @return void
      */
     public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
     {
@@ -70,7 +70,6 @@ class EventService
      * Inject eventRepository
      *
      * @param EventRepository $eventRepository
-     * @return void
      */
     public function injectEventRepository(EventRepository $eventRepository)
     {
@@ -81,19 +80,18 @@ class EventService
      * Get exceptions for given day
      * You can limit the result by a given type.
      *
-     * @param Event  $event
-     * @param Day    $day
-     * @param string $type  There are different exception types like Add, Remove, Time or Info. If empty add all exceptions
-     * @return \SplObjectStorage
+     * @param Event $event
+     * @param \DateTime $date
+     * @param string $type There are different exception types like Add, Remove, Time or Info. If empty add all exceptions
+     * @return \SplObjectStorage|Exception[]
      */
-    public function getExceptionsForDay(Event $event, Day $day, $type = '')
+    public function getExceptionsForDate(Event $event, \DateTime $date, $type = '')
     {
         $type = GeneralUtility::trimExplode(',', strtolower($type), true);
         $exceptions = new \SplObjectStorage();
-        /** @var \JWeiland\Events2\Domain\Model\Exception $exception */
         foreach ($event->getExceptions() as $exception) {
             $exceptionDate = $this->dateTimeUtility->standardizeDateTimeObject($exception->getExceptionDate());
-            $currentDate = $this->dateTimeUtility->standardizeDateTimeObject($day->getDay());
+            $currentDate = $this->dateTimeUtility->standardizeDateTimeObject($date);
             // we compare objects here so no === possible
             if ($exceptionDate == $currentDate) {
                 if ($type === [] || in_array(strtolower($exception->getExceptionType()), $type)) {
@@ -110,15 +108,15 @@ class EventService
      * This method looks into all time related records and fetches the times with highest priority.
      *
      * @param Event $event
-     * @param Day $day
+     * @param \DateTime $date
      * @return \SplObjectStorage|Time[]
      */
-    public function getTimesForDay(Event $event, Day $day)
+    public function getTimesForDate(Event $event, \DateTime $date)
     {
         // times from exceptions have priority 1
         // The exceptions of type "Add" were already moved to event->getDays (DayGenerator), but not their time records
         // that's why we collect exceptions of type "Add" and "Time" here
-        $timesFromExceptions = $this->getExceptionsForDay($event, $day, 'add, time');
+        $timesFromExceptions = $this->getExceptionsForDate($event, $date, 'add, time');
         if ($timesFromExceptions->count()) {
             $times = new \SplObjectStorage();
             /** @var \JWeiland\Events2\Domain\Model\Exception $exception */
@@ -132,7 +130,7 @@ class EventService
             return $times;
         }
         // times from event->differentTimes have priority 2
-        $differentTimes = $this->getDifferentTimesForDay($event, $day);
+        $differentTimes = $this->getDifferentTimesForDate($event, $date);
         if ($differentTimes->count()) {
             return $differentTimes;
         }
@@ -147,20 +145,19 @@ class EventService
     }
 
     /**
-     * Get sorted times for specified day
+     * Get sorted times for specified date
      *
      * @param Event $event
-     * @param Day   $day
+     * @param \DateTime $date
      * @return \SplObjectStorage
      */
-    public function getSortedTimesForDay(Event $event, Day $day)
+    public function getSortedTimesForDate(Event $event, \DateTime $date)
     {
         // @ToDo: I'm sure there are better ways to do this:
         $sortedTimes = [];
         $sortedStorage = new \SplObjectStorage();
 
-        $times = $this->getTimesForDay($event, $day);
-        /** @var Time $time */
+        $times = $this->getTimesForDate($event, $date);
         foreach ($times as $time) {
             $sortedTimes[$time->getTimeBegin()] = $time;
         }
@@ -175,19 +172,18 @@ class EventService
 
     /**
      * You can override the times in an event for a special weekday,
-     * so this method checks and returns times, if there are times defined for given day.
+     * so this method checks and returns times, if there are times defined for given date.
      *
      * @param Event $event
-     * @param Day   $day
+     * @param \DateTime $date
      * @return \SplObjectStorage
      */
-    protected function getDifferentTimesForDay(Event $event, Day $day)
+    protected function getDifferentTimesForDate(Event $event, \DateTime $date)
     {
         $times = new \SplObjectStorage();
         if ($event->getEventType() !== 'single') {
-            /** @var \JWeiland\Events2\Domain\Model\Time $time */
             foreach ($event->getDifferentTimes() as $time) {
-                if (strtolower($time->getWeekday()) === strtolower($day->getDay()->format('l'))) {
+                if (strtolower($time->getWeekday()) === strtolower($date->format('l'))) {
                     $times->attach($time);
                 }
             }
@@ -203,7 +199,7 @@ class EventService
      * @param Event $event
      * @return \SplObjectStorage
      */
-    protected function getTimesFromEvent(Event $event)
+    protected function getTimesFromEvent(Event $event): \SplObjectStorage
     {
         $times = new \SplObjectStorage();
         // add normal event time
@@ -234,17 +230,16 @@ class EventService
      * @param int $eventUid
      * @return Day|false
      */
-    public function getNextDayForEvent($eventUid)
+    public function getNextDayForEvent(int $eventUid)
     {
         /** @var Event $event */
-        $event = $this->eventRepository->findByIdentifier((int)$eventUid);
+        $event = $this->eventRepository->findByIdentifier($eventUid);
         if (!$event instanceof Event) {
             return false;
         }
 
         $days = [];
 
-        /** @var Day $day */
         foreach ($event->getDays() as $day) {
             $dayTime = $day->getSortDayTime()->format('U');
             if ($dayTime > time()) {
@@ -265,10 +260,10 @@ class EventService
      * @param int $eventUid
      * @return Day|false
      */
-    public function getLastDayForEvent($eventUid)
+    public function getLastDayForEvent(int $eventUid)
     {
         /** @var Event $event */
-        $event = $this->eventRepository->findByIdentifier((int)$eventUid);
+        $event = $this->eventRepository->findByIdentifier($eventUid);
         if ($event->getDays()->count()) {
             $days = [];
 
