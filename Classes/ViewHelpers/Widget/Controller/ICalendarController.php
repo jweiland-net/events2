@@ -24,7 +24,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetController;
 
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * A Fluid widget to create a link for downloading an iCal file
  */
 class ICalendarController extends AbstractWidgetController
 {
