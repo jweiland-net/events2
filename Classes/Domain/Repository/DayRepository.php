@@ -333,7 +333,7 @@ class DayRepository extends Repository
     }
 
     /**
-     * Find days/events by timestamp
+     * Find all Days for a given Day (Timestamp with time set to 00:00:00).
      *
      * @param int $timestamp
      * @return QueryResult
@@ -363,8 +363,10 @@ class DayRepository extends Repository
     }
 
     /**
-     * Find a day by event and timestamp
-     * If timestamp is empty, we try to find next possible day in future
+     * Find one Day by Event and Timestamp.
+     * Instead of findByTimestamp this Timestamp must include the exact time.
+     *
+     * If timestamp is empty, we try to find next possible day in future.
      *
      * @param int $eventUid
      * @param int $timestamp
