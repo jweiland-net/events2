@@ -290,6 +290,12 @@
       <trans-unit id="multipleTimesAssigned">
         <source>Multiple times assigned</source>
       </trans-unit>
+			<trans-unit id="routePlanner">
+				<source>Routeplanner</source>
+			</trans-unit>
+			<trans-unit id="alternativeEventDates">
+				<source>Alternative event dates</source>
+			</trans-unit>
       <trans-unit id="singleView">
         <source>Single View</source>
       </trans-unit>

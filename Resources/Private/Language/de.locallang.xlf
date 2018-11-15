@@ -351,6 +351,7 @@
         <source>Free entry</source>
         <target>Freier Eintritt</target>
       </trans-unit>
+
       <trans-unit id="newEntry">
         <source>Insert new Event</source>
         <target>Neue Veranstaltung anlegen</target>
@@ -375,10 +376,18 @@
         <source>See Single View</source>
         <target>Siehe Detailansicht</target>
       </trans-unit>
-      <trans-unit id="multipleTimesAssigned">
-        <source>Multiple times assigned</source>
-        <target>Mehrere Uhrzeiten vorhanden</target>
-      </trans-unit>
+			<trans-unit id="multipleTimesAssigned">
+				<source>Multiple times assigned</source>
+				<target>Mehrere Uhrzeiten vorhanden</target>
+			</trans-unit>
+			<trans-unit id="routePlanner">
+				<source>Routeplanner</source>
+				<target>Routenplaner</target>
+			</trans-unit>
+			<trans-unit id="alternativeEventDates">
+				<source>Alternative event dates</source>
+				<target>Alternative Veranstaltungstage</target>
+			</trans-unit>
       <trans-unit id="singleView">
         <source>Single View</source>
         <target>Ansicht</target>
