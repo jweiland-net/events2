@@ -15,17 +15,18 @@ namespace JWeiland\Events2\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 
-use JWeiland\Events2\Domain\Model\Category;
 use JWeiland\Events2\Domain\Model\Event;
+use JWeiland\Events2\Service\EventService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
- * Reduce categories of an event to the allowed ones configured in Plugin FlexForm.
+ * Get exceptions from an event to a specific date
  */
-class GetAllowedCategoriesViewHelper extends AbstractViewHelper
+class GetExceptionsFromEventForSpecificDateViewHelper extends AbstractViewHelper
 {
     use CompileWithRenderStatic;
 
@@ -37,31 +38,28 @@ class GetAllowedCategoriesViewHelper extends AbstractViewHelper
      */
     public function initializeArguments()
     {
-        $this->registerArgument('event', Event::class, 'The Event from where we should extract the categories', true);
-        $this->registerArgument('pluginCategories', 'string', 'A comma separated list of categories. Normally we use the categories from plugin FlexForm', false, '');
+        $this->registerArgument('event', Event::class, 'Get the exceptions from event', true);
+        $this->registerArgument('date', \DateTime::class, 'Get the exceptions from event to this specific date', true);
+        $this->registerArgument('type', 'string', 'Get exceptions of specified type. remove, add, time or info. You can combine them with comma', false, '');
     }
 
     /**
-     * Get only categories from event which are allowed by plugin configuration
-     * This is the case, if an event has multiple assigned categories
+     * Get exception from an event to a specific date
      *
      * @param array $arguments
      * @param \Closure $childClosure
      * @param RenderingContextInterface $renderingContext
-     * @return array
+     * @return string
      */
     public static function renderStatic(array $arguments, \Closure $childClosure, RenderingContextInterface $renderingContext)
     {
-        $allowedCategories = [];
-        $pluginCategories = GeneralUtility::intExplode(',', trim($arguments['pluginCategories']), true);
-        foreach ($pluginCategories as $pluginCategory) {
-            /** @var Category $eventCategory */
-            foreach ($arguments['event']->getCategories() as $eventCategory) {
-                if ($pluginCategory === $eventCategory->getUid()) {
-                    $allowedCategories[] = $eventCategory;
-                }
-            }
-        }
-        return $allowedCategories;
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $eventService = $objectManager->get(EventService::class);
+
+        return $eventService->getExceptionsForDate(
+            $arguments['event'],
+            $arguments['date'],
+            $arguments['type']
+        );
     }
 }

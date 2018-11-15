@@ -15,39 +15,42 @@ namespace JWeiland\Events2\ViewHelpers;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Domain\Repository\UserRepository;
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * This VH returns values from current logged in frontend user array
  */
 class FeUserViewHelper extends AbstractViewHelper
 {
-    /**
-     * @var UserRepository
-     */
-    protected $userRepository;
+    use CompileWithRenderStatic;
 
     /**
-     * inject userRepository
-     *
-     * @param UserRepository $userRepository
+     * Initialize all arguments. You need to override this method and call
+     * $this->registerArgument(...) inside this method, to register all your arguments.
      *
      * @return void
      */
-    public function injectUserRepository(UserRepository $userRepository)
+    public function initializeArguments()
     {
-        $this->userRepository = $userRepository;
+        $this->registerArgument('field', 'string', 'The field/ArrayKey from currently logged in frontend user', false, 'uid');
     }
 
     /**
      * Implements a ViewHelper to get values from current logged in fe_user.
      *
-     * @param string $field Field to retrieve value from
-     *
+     * @param array $arguments
+     * @param \Closure $childClosure
+     * @param RenderingContextInterface $renderingContext
      * @return string
      */
-    public function render($field = 'uid')
+    public static function renderStatic(array $arguments, \Closure $childClosure, RenderingContextInterface $renderingContext)
     {
-        return $this->userRepository->getFieldFromUser($field);
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $userRepository = $objectManager->get(UserRepository::class);
+        return $userRepository->getFieldFromUser($arguments['field']);
     }
 }

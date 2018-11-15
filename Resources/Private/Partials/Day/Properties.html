@@ -10,6 +10,7 @@
 		<f:render section="downloadLinks" arguments="{event: day.event}" />
 	</div>
 	<div class="col-md-3">
+		<f:render section="showDateAndTimes" arguments="{day: day, date: day.day}" />
 		<f:if condition="{day.event.location}">
 			<f:render section="location" arguments="{event: day.event}" />
 			<f:render section="googleRoute" arguments="{event: day.event}" />
@@ -18,23 +19,20 @@
 			<f:render section="organizer" arguments="{event: day.event}" />
 		</f:if>
 		<f:render section="freeEntry" arguments="{event: day.event}" />
-		<f:if condition="{day.day}">
-			<f:render section="iCalendar" arguments="{day: day}" />
-		</f:if>
-		<f:if condition="{day.day}">
-			<f:render section="showDatesAndTimes" arguments="{days: '{e2:getEventDates(event: day.event)}'}" />
-		</f:if>
+		<f:render section="iCalendar" arguments="{day: day}" />
+
+		<p class="lead"><f:translate key="alternativeEventDates" /></p>
+		<f:for each="{day.event.futureDatesIncludingRemovedGroupedAndSorted}" as="futureDate">
+			<f:render section="showDateAndTimes" arguments="{day: day, date: futureDate}" />
+		</f:for>
 	</div>
 </div>
 
 <f:section name="renderImages">
-	<f:if condition="{0: settings.display}=={0: 'displayEvent'}">
-		<f:then></f:then>
-		<f:else>
-			<f:if condition="{event.images -> f:count}">
-				<f:render partial="Event/Images" arguments="{event: event}"/>
-			</f:if>
-		</f:else>
+	<f:if condition="{0: settings.display}!={0: 'displayEvent'}">
+		<f:if condition="{event.images}">
+			<f:render partial="Event/Images" arguments="{event: event}"/>
+		</f:if>
 	</f:if>
 </f:section>
 
@@ -61,27 +59,21 @@
 	</f:if>
 </f:section>
 
-<f:section name="showDatesAndTimes">
-	<p class="lead">Alternative Veranstaltungstage</p>
-	<f:for each="{days}" as="day" iteration="iterator">
+<f:section name="showDateAndTimes">
+	<f:for each="{e2:getMergedEventTimes(event: day.event, date: date)}" as="time">
 		<dl>
 			<dt>
-				<f:if condition="{day.isRemoved}">
-					<f:then>
-						<strong><s>{day.day.day -> f:format.date(format: '%A, %d.%m.%Y')}</s></strong>
-					</f:then>
-					<f:else>
-						<strong>{day.day.day -> f:format.date(format: '%A, %d.%m.%Y')}</strong>
-					</f:else>
-				</f:if>
+				<strong>
+					{f:if(condition: '{e2:isDateMarkedAsCanceled(event: day.event, date: date)}', then: '<s>')}
+					{date->f:format.date(format: '%A, %d.%m.%Y')}
+					{f:if(condition: '{e2:isDateMarkedAsCanceled(event: day.event, date: date)}', then: '</s>')}
+				</strong>
 			</dt>
 			<dd>
-				<f:render partial="Event/Time" arguments="{time: day.time}" />
-				<f:if condition="{day.infos}">
-					<f:for each="{day.infos}" as="info">
-						<br><em>{info.exceptionDetails -> f:format.html(parseFuncTSPath: 'lib.parseFunc') -> f:format.nl2br()}</em>
-					</f:for>
-				</f:if>
+				<f:render partial="Event/Time" arguments="{time: time}" />
+				<f:for each="{e2:getExceptionsFromEventForSpecificDate(event: day.event, date: date, type: 'add,time,info')}" as="exception">
+					<br><em>{exception.exceptionDetails -> f:format.html(parseFuncTSPath: 'lib.parseFunc') -> f:format.nl2br()}</em>
+				</f:for>
 			</dd>
 		</dl>
 	</f:for>
@@ -112,7 +104,7 @@
 <f:section name="googleRoute">
 	<f:if condition="{event.location.street}">
 		<dl>
-			<dt>Routenplaner</dt>
+			<dt><f:translate key="routePlanner"/></dt>
 			<dd>
 				<f:alias map="{address: '{event.location.street} {event.location.houseNumber} {event.location.zip} {event.location.city}'}">
 					<span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>

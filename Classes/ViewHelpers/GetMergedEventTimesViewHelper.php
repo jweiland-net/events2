@@ -14,50 +14,50 @@ namespace JWeiland\Events2\ViewHelpers;
  *
  * The TYPO3 project - inspiring people to share!
  */
-use JWeiland\Events2\Domain\Model\Day;
-use JWeiland\Events2\Domain\Model\Time;
+
+use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Service\EventService;
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * Returns sorted time records for a given event and date
  */
 class GetMergedEventTimesViewHelper extends AbstractViewHelper
 {
-    /**
-     * @var \JWeiland\Events2\Service\EventService
-     */
-    protected $eventService;
+    use CompileWithRenderStatic;
 
     /**
-     * inject Event Service.
+     * Initialize all arguments. You need to override this method and call
+     * $this->registerArgument(...) inside this method, to register all your arguments.
      *
-     * @param EventService $eventService
+     * @return void
      */
-    public function injectEventService(EventService $eventService)
+    public function initializeArguments()
     {
-        $this->eventService = $eventService;
+        $this->registerArgument('event', Event::class, 'The event to get the times from', true);
+        $this->registerArgument('date', \DateTime::class, 'The date to get the times from', true);
     }
 
     /**
      * One event can have until 4 relations to time records.
      * This ViewHelpers helps you to find the times with highest priority and merge them into one collection.
      *
-     * @param Day  $day
-     * @param bool $directReturn If event has only ONE time record defined, you can set this value to TRUE to direct return this time record instead of a SplObjectStorage
-     *
-     * @return \SplObjectStorage|\JWeiland\Events2\Domain\Model\Time
+     * @param array $arguments
+     * @param \Closure $childClosure
+     * @param RenderingContextInterface $renderingContext
+     * @return string
      */
-    public function render(Day $day, $directReturn = false)
+    public static function renderStatic(array $arguments, \Closure $childClosure, RenderingContextInterface $renderingContext)
     {
-        $times = $this->eventService->getSortedTimesForDay($day->getEvent(), $day);
-        if ($times->count() === 1 && $directReturn) {
-            $times->rewind();
-            /** @var Time $time */
-            $time = $times->current();
-            return $time;
-        }
-
-        return $times;
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $eventService = $objectManager->get(EventService::class);
+        return $eventService->getSortedTimesForDate(
+            $arguments['event'],
+            $arguments['date']
+        );
     }
 }
