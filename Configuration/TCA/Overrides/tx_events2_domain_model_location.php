@@ -5,8 +5,12 @@ if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('maps2')) {
         'events2',
         'tx_events2_domain_model_location',
         [
-            'addressColumns' => ['street', 'house_number', 'zip', 'city', 'country'],
+            'addressColumns' => ['street', 'house_number', 'zip', 'city'],
             'countryColumn' => 'country',
+            'defaultStoragePid' => [
+                'extKey' => 'events2',
+                'property' => 'poiCollectionPid'
+            ],
             'synchronizeColumns' => [
                 [
                     'foreignColumnName' => 'location',
