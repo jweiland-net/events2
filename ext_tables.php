@@ -44,8 +44,4 @@ call_user_func(function ($extensionKey, $extensionConfiguration) {
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr($tableName, 'EXT:events2/Resources/Private/Language/locallang_csh_' . $tableName . '.xlf');
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages($tableName);
     }
-
-    $tsConfig = [];
-    $tsConfig[] = 'ext.events2.pid = ' . (int)$extensionConfiguration['poiCollectionPid'];
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig(implode(chr(10), $tsConfig));
 }, $_EXTKEY, unserialize($_EXTCONF));
