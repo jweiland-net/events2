@@ -1,6 +1,11 @@
 <?php
-call_user_func(function() {
-    $feUserOrganizer = [
+if (!defined('TYPO3_MODE')) {
+    die('Access denied.');
+}
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns(
+    'fe_users',
+    [
         'tx_events2_organizer' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_organizer',
@@ -19,8 +24,10 @@ call_user_func(function() {
                 ],
             ],
         ],
-    ];
+    ]
+);
 
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('fe_users', $feUserOrganizer);
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('fe_users', '--div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_tab,tx_events2_organizer');
-});
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
+    'fe_users',
+    '--div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_tab,tx_events2_organizer'
+);
