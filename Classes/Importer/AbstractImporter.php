@@ -34,7 +34,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * Abstract Importer which will keep most methods for all importer scripts
  */
 abstract class AbstractImporter implements ImporterInterface
 {
@@ -187,7 +187,7 @@ abstract class AbstractImporter implements ImporterInterface
                     'Event: %s - Date: %s - Error: %s',
                     $event['title'],
                     $eventBegin->format('d.m.Y'),
-                    'Given organizer does not exist in our database'
+                    'Given organizer "' . $event['organizer'] . '" does not exist in our database'
                 ),
                 FlashMessage::ERROR
             );
@@ -202,7 +202,7 @@ abstract class AbstractImporter implements ImporterInterface
                     'Event: %s - Date: %s - Error: %s',
                     $event['title'],
                     $eventBegin->format('d.m.Y'),
-                    'Given location does not exist in our database'
+                    'Given location "' . $event['location'] . '" does not exist in our database'
                 ),
                 FlashMessage::ERROR
             );
@@ -218,7 +218,7 @@ abstract class AbstractImporter implements ImporterInterface
                         'Event: %s - Date: %s - Error: %s',
                         $event['title'],
                         $eventBegin->format('d.m.Y'),
-                        'Given category does not exist in our database'
+                        'Given category "' . $title . '" does not exist in our database'
                     ),
                     FlashMessage::ERROR
                 );
@@ -281,7 +281,7 @@ abstract class AbstractImporter implements ImporterInterface
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_organizer');
         return $queryBuilder
-            ->select(['uid'])
+            ->select('uid')
             ->from('tx_events2_domain_model_organizer')
             ->where(
                 $queryBuilder->expr()->eq(
@@ -305,7 +305,7 @@ abstract class AbstractImporter implements ImporterInterface
 
         // I don't have the TypoScript or Plugin storage PID. That's why I don't use the repository directly
         return $queryBuilder
-            ->select(['uid'])
+            ->select('uid')
             ->from('tx_events2_domain_model_location')
             ->where(
                 $queryBuilder->expr()->eq(
@@ -325,20 +325,18 @@ abstract class AbstractImporter implements ImporterInterface
      */
     protected function getCategory($title)
     {
-        $where = sprintf(
-            'title=%s',
-            $this->getDatabaseConnection()->fullQuoteStr(
-                $title,
-                'sys_category'
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('sys_category');
+        return $queryBuilder
+            ->select('uid')
+            ->from('sys_category')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'title',
+                    $queryBuilder->createNamedParameter($title, \PDO::PARAM_STR)
+                )
             )
-        );
-
-        // I don't have the TypoScript or Plugin storage PID. That's why I don't use the repository directly
-        return $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            'uid',
-            'sys_category',
-            $where
-        );
+            ->execute()
+            ->fetch();
     }
 
     /**

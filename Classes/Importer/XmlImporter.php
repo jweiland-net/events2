@@ -31,7 +31,7 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * Imports event records by a XML file
  */
 class XmlImporter extends AbstractImporter
 {
@@ -47,9 +47,7 @@ class XmlImporter extends AbstractImporter
      *
      * @param FileInterface $file
      * @param AbstractTask $task
-     *
      * @return bool
-     *
      * @throws \Exception
      */
     public function import(FileInterface $file, AbstractTask $task)
@@ -302,7 +300,14 @@ class XmlImporter extends AbstractImporter
                 $link = $this->objectManager->get(Link::class);
                 $link->setTitle($data[$property]['title']);
                 $link->setLink($data[$property]['uri']);
-                $this->setEventProperty($event, $property, $link);
+
+                if ($property === 'download_links') {
+                    $objectStorage = new ObjectStorage();
+                    $objectStorage->attach($link);
+                    $this->setEventProperty($event, $property, $objectStorage);
+                } else {
+                    $this->setEventProperty($event, $property, $link);
+                }
             }
         }
     }
