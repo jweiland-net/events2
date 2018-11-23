@@ -15,6 +15,8 @@ namespace JWeiland\Events2\Utility;
  */
 
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
+use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -49,6 +51,11 @@ class DatabaseUtility
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_events2_domain_model_event');
+
+        $queryBuilder->getRestrictions()
+            ->removeAll()
+            ->add(GeneralUtility::makeInstance(HiddenRestriction::class))
+            ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
 
         $orConstraints = [];
 
