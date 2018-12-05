@@ -15,6 +15,7 @@ namespace JWeiland\Events2\Tests\Unit\Ajax\FindDaysForMonth;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Doctrine\DBAL\Driver\Statement;
 use JWeiland\Events2\Ajax\FindDaysForMonth;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Day;
@@ -24,9 +25,11 @@ use JWeiland\Events2\Tests\Unit\AbstractUnitTestCase;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\Expression\CompositeExpression;
+use TYPO3\CMS\Core\Database\Query\Expression\ExpressionBuilder;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Persistence\Generic\Query;
-use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
 
@@ -61,11 +64,6 @@ class AjaxTest extends AbstractUnitTestCase
     protected $querySettingsProphecy;
 
     /**
-     * @var Query|ObjectProphecy
-     */
-    protected $queryProphecy;
-
-    /**
      * set up.
      */
     public function setUp()
@@ -79,15 +77,13 @@ class AjaxTest extends AbstractUnitTestCase
         $this->extConfProphecy->getRecurringFuture()->willReturn(6);
 
         $this->frontendUserAuthenticationProphecy = $this->prophesize(FrontendUserAuthentication::class);
-        $this->dayRepositoryProphecy = $this->prophesize(DayRepository::class);
         $this->querySettingsProphecy = $this->prophesize(QuerySettingsInterface::class);
-        $this->queryProphecy = $this->prophesize(Query::class);
 
-        $this->subject = new FindDaysForMonth\Ajax();
-        $this->subject->injectExtConf($this->extConfProphecy->reveal());
-        $this->subject->injectDateTimeUtility(new DateTimeUtility());
-        $this->subject->injectDayRepository($this->dayRepositoryProphecy->reveal());
-        $this->subject->injectCacheHashCalculator(new CacheHashCalculator());
+        $this->subject = new FindDaysForMonth\Ajax(
+            $this->extConfProphecy->reveal(),
+            new DateTimeUtility(),
+            new CacheHashCalculator()
+        );
     }
 
     /**
@@ -96,7 +92,6 @@ class AjaxTest extends AbstractUnitTestCase
     public function tearDown()
     {
         unset($this->subject);
-        unset($this->dayRepository);
         unset($this->query);
         unset($this->dbProphecy);
     }
@@ -169,19 +164,22 @@ class AjaxTest extends AbstractUnitTestCase
             'storagePids' => '21,22,23'
         ];
 
-        $event1 = new Event();
-        $event1->_setProperty('uid', 456);
-        $event1->setTitle('Test123');
-        $event2 = new Event();
-        $event2->_setProperty('uid', 654);
-        $event2->setTitle('Test321');
-        $day1 = new Day();
-        $day1->setDay(new \DateTime('now'));
-        $day1->setEvent($event1);
-        $day2 = new Day();
-        $day2->setDay(new \DateTime('tomorrow'));
-        $day2->setEvent($event2);
-        $days = [$day1, $day2];
+        $day1 = new \DateTime('now');
+        $day1 = $day1->format('U');
+        $day2 = new \DateTime('tomorrow');
+        $day2 = $day2->format('U');
+        $days = [
+            [
+                'uid' => 456,
+                'title' => 'Test123',
+                'day' => $day1
+            ],
+            [
+                'uid' => 654,
+                'title' => 'Test321',
+                'day' => $day2
+            ]
+        ];
 
         /** @var FrontendUserAuthentication|ObjectProphecy $frontendUserAuthentication */
         $frontendUserAuthentication = $this->prophesize(FrontendUserAuthentication::class);
@@ -189,17 +187,64 @@ class AjaxTest extends AbstractUnitTestCase
         $frontendUserAuthentication->setAndSaveSessionData(Argument::cetera())->shouldBeCalled();
         GeneralUtility::addInstance(FrontendUserAuthentication::class, $frontendUserAuthentication->reveal());
 
-        $this->queryProphecy->getQuerySettings()->willReturn($this->querySettingsProphecy->reveal());
-        $this->queryProphecy->getQuerySettings()->shouldBeCalled();
-        $this->queryProphecy->contains(Argument::exact('event.categories'), Argument::type('integer'))->shouldBeCalledTimes(3);
-        $this->queryProphecy->logicalOr(Argument::any())->shouldBeCalled();
-        $this->queryProphecy->greaterThanOrEqual(Argument::exact('day'), Argument::any())->shouldBeCalled();
-        $this->queryProphecy->lessThan(Argument::exact('day'), Argument::any())->shouldBeCalled();
-        $this->queryProphecy->logicalAnd(Argument::any())->shouldBeCalled();
-        $this->queryProphecy->matching(Argument::any())->willReturn($this->queryProphecy->reveal());
-        $this->queryProphecy->execute()->willReturn($days);
+        /** @var Statement|ObjectProphecy $statement */
+        $statement = $this->prophesize(Statement::class);
+        /** @var ExpressionBuilder|ObjectProphecy $expressionBuilder */
+        $expressionBuilder = $this->prophesize(ExpressionBuilder::class);
+        /** @var QueryBuilder|ObjectProphecy $queryBuilder */
+        $queryBuilder = $this->prophesize(QueryBuilder::class);
+        /** @var ConnectionPool|ObjectProphecy $connectionPool */
+        $connectionPool = $this->prophesize(ConnectionPool::class);
 
-        $this->dayRepositoryProphecy->createQuery()->willReturn($this->queryProphecy);
+        $statement->fetchAll()->willReturn($days);
+
+        $expressionBuilder->eq('day.event', Argument::cetera())->shouldBeCalled();
+        $expressionBuilder->eq('event.uid', Argument::cetera())->shouldBeCalled();
+        $expressionBuilder->eq('category_mm.tablenames', Argument::cetera())->shouldBeCalled();
+        $expressionBuilder->eq('category_mm.fieldname', Argument::cetera())->shouldBeCalled();
+        $expressionBuilder->andX(Argument::cetera())->shouldBeCalled()->willReturn(new CompositeExpression('AND'));
+
+        $expressionBuilder->in('category_mm.uid_local', Argument::cetera())->shouldBeCalled();
+        $expressionBuilder->in('event.pid', Argument::cetera())->shouldBeCalled();
+        $expressionBuilder->gte('day.day', Argument::cetera())->shouldBeCalled();
+        $expressionBuilder->lt('day.day', Argument::cetera())->shouldBeCalled();
+
+        $queryBuilder->select('event.uid', 'event.title', 'day.day')->willReturn($queryBuilder->reveal());
+        $queryBuilder->from('tx_events2_domain_model_day', 'day')->willReturn($queryBuilder->reveal());
+        $queryBuilder->expr()->willReturn($expressionBuilder->reveal());
+        $queryBuilder->quoteIdentifier('event.uid');
+        $queryBuilder
+            ->leftJoin(
+                'day',
+                'tx_events2_domain_model_event',
+                'event',
+                Argument::cetera()
+            )
+            ->willReturn($queryBuilder->reveal());
+
+        $queryBuilder->quoteIdentifier('category_mm.uid_foreign');
+        $queryBuilder->createNamedParameter('tx_events2_domain_model_event', 2);
+        $queryBuilder->createNamedParameter('categories', 2);
+
+        $queryBuilder
+            ->leftJoin(
+                'event',
+                'sys_category_record_mm',
+                'category_mm',
+                Argument::cetera()
+            )
+            ->willReturn($queryBuilder->reveal());
+        $queryBuilder->createNamedParameter([10, 11, 12], 101);
+        $queryBuilder->createNamedParameter([21, 22, 23], 101);
+        $queryBuilder->createNamedParameter(Argument::any(), 1);
+
+        $queryBuilder->where(Argument::cetera())->willReturn($queryBuilder->reveal());
+        $queryBuilder->expr(Argument::cetera())->willReturn($expressionBuilder->reveal());
+        $queryBuilder->execute(Argument::cetera())->willReturn($statement->reveal());
+
+        $connectionPool->getQueryBuilderForTable('tx_events2_domain_model_day')->shouldBeCalled()->willReturn($queryBuilder);
+
+        GeneralUtility::addInstance(ConnectionPool::class, $connectionPool->reveal());
 
         $this->buildAssertionForDatabaseWithReturnValue(
             'tx_events2_domain_model_holiday',
@@ -245,19 +290,18 @@ class AjaxTest extends AbstractUnitTestCase
             'storagePids' => '21,22,23'
         ];
 
-        $event1 = new Event();
-        $event1->_setProperty('uid', 456);
-        $event1->setTitle('Test123');
-        $event2 = new Event();
-        $event2->_setProperty('uid', 654);
-        $event2->setTitle('Test321');
-        $day1 = new Day();
-        $day1->setDay($today);
-        $day1->setEvent($event1);
-        $day2 = new Day();
-        $day2->setDay($tomorrow);
-        $day2->setEvent($event2);
-        $days = [$day1, $day2];
+        $days = [
+            [
+                'uid' => 456,
+                'title' => 'Test123',
+                'day' => $today->format('U')
+            ],
+            [
+                'uid' => 654,
+                'title' => 'Test321',
+                'day' => $tomorrow->format('U')
+            ]
+        ];
 
         /** @var FrontendUserAuthentication|ObjectProphecy $frontendUserAuthentication */
         $frontendUserAuthentication = $this->prophesize(FrontendUserAuthentication::class);
@@ -265,17 +309,64 @@ class AjaxTest extends AbstractUnitTestCase
         $frontendUserAuthentication->setAndSaveSessionData(Argument::cetera())->shouldBeCalled();
         GeneralUtility::addInstance(FrontendUserAuthentication::class, $frontendUserAuthentication->reveal());
 
-        $this->queryProphecy->getQuerySettings()->willReturn($this->querySettingsProphecy->reveal());
-        $this->queryProphecy->getQuerySettings()->shouldBeCalled();
-        $this->queryProphecy->contains(Argument::exact('event.categories'), Argument::type('integer'))->shouldBeCalledTimes(3);
-        $this->queryProphecy->logicalOr(Argument::any())->shouldBeCalled();
-        $this->queryProphecy->greaterThanOrEqual(Argument::exact('day'), Argument::any())->shouldBeCalled();
-        $this->queryProphecy->lessThan(Argument::exact('day'), Argument::any())->shouldBeCalled();
-        $this->queryProphecy->logicalAnd(Argument::any())->shouldBeCalled();
-        $this->queryProphecy->matching(Argument::any())->willReturn($this->queryProphecy->reveal());
-        $this->queryProphecy->execute()->willReturn($days);
+        /** @var Statement|ObjectProphecy $statement */
+        $statement = $this->prophesize(Statement::class);
+        /** @var ExpressionBuilder|ObjectProphecy $expressionBuilder */
+        $expressionBuilder = $this->prophesize(ExpressionBuilder::class);
+        /** @var QueryBuilder|ObjectProphecy $queryBuilder */
+        $queryBuilder = $this->prophesize(QueryBuilder::class);
+        /** @var ConnectionPool|ObjectProphecy $connectionPool */
+        $connectionPool = $this->prophesize(ConnectionPool::class);
 
-        $this->dayRepositoryProphecy->createQuery()->willReturn($this->queryProphecy);
+        $statement->fetchAll()->willReturn($days);
+
+        $expressionBuilder->eq('day.event', Argument::cetera())->shouldBeCalled();
+        $expressionBuilder->eq('event.uid', Argument::cetera())->shouldBeCalled();
+        $expressionBuilder->eq('category_mm.tablenames', Argument::cetera())->shouldBeCalled();
+        $expressionBuilder->eq('category_mm.fieldname', Argument::cetera())->shouldBeCalled();
+        $expressionBuilder->andX(Argument::cetera())->shouldBeCalled()->willReturn(new CompositeExpression('AND'));
+
+        $expressionBuilder->in('category_mm.uid_local', Argument::cetera())->shouldBeCalled();
+        $expressionBuilder->in('event.pid', Argument::cetera())->shouldBeCalled();
+        $expressionBuilder->gte('day.day', Argument::cetera())->shouldBeCalled();
+        $expressionBuilder->lt('day.day', Argument::cetera())->shouldBeCalled();
+
+        $queryBuilder->select('event.uid', 'event.title', 'day.day')->willReturn($queryBuilder->reveal());
+        $queryBuilder->from('tx_events2_domain_model_day', 'day')->willReturn($queryBuilder->reveal());
+        $queryBuilder->expr()->willReturn($expressionBuilder->reveal());
+        $queryBuilder->quoteIdentifier('event.uid');
+        $queryBuilder
+            ->leftJoin(
+                'day',
+                'tx_events2_domain_model_event',
+                'event',
+                Argument::cetera()
+            )
+            ->willReturn($queryBuilder->reveal());
+
+        $queryBuilder->quoteIdentifier('category_mm.uid_foreign');
+        $queryBuilder->createNamedParameter('tx_events2_domain_model_event', 2);
+        $queryBuilder->createNamedParameter('categories', 2);
+
+        $queryBuilder
+            ->leftJoin(
+                'event',
+                'sys_category_record_mm',
+                'category_mm',
+                Argument::cetera()
+            )
+            ->willReturn($queryBuilder->reveal());
+        $queryBuilder->createNamedParameter([10, 11, 12], 101);
+        $queryBuilder->createNamedParameter([21, 22, 23], 101);
+        $queryBuilder->createNamedParameter(Argument::any(), 1);
+
+        $queryBuilder->where(Argument::cetera())->willReturn($queryBuilder->reveal());
+        $queryBuilder->expr(Argument::cetera())->willReturn($expressionBuilder->reveal());
+        $queryBuilder->execute(Argument::cetera())->willReturn($statement->reveal());
+
+        $connectionPool->getQueryBuilderForTable('tx_events2_domain_model_day')->shouldBeCalled()->willReturn($queryBuilder);
+
+        GeneralUtility::addInstance(ConnectionPool::class, $connectionPool->reveal());
 
         $this->buildAssertionForDatabaseWithReturnValue(
             'tx_events2_domain_model_holiday',
@@ -321,16 +412,50 @@ class AjaxTest extends AbstractUnitTestCase
         $frontendUserAuthentication->setAndSaveSessionData(Argument::cetera())->shouldBeCalled();
         GeneralUtility::addInstance(FrontendUserAuthentication::class, $frontendUserAuthentication->reveal());
 
-        $this->queryProphecy->getQuerySettings()->willReturn($this->querySettingsProphecy->reveal());
-        $this->queryProphecy->getQuerySettings()->shouldBeCalled();
-        $this->queryProphecy->contains()->shouldNotBeCalled();
-        $this->queryProphecy->logicalOr()->shouldNotBeCalled();
-        $this->queryProphecy->greaterThanOrEqual(Argument::exact('day'), Argument::any())->shouldBeCalled();
-        $this->queryProphecy->lessThan(Argument::exact('day'), Argument::any())->shouldBeCalled();
-        $this->queryProphecy->logicalAnd(Argument::any())->shouldBeCalled();
-        $this->queryProphecy->matching(Argument::any())->willReturn($this->queryProphecy->reveal());
-        $this->queryProphecy->execute()->willReturn([]);
-        $this->dayRepositoryProphecy->createQuery()->willReturn($this->queryProphecy);
+        /** @var Statement|ObjectProphecy $statement */
+        $statement = $this->prophesize(Statement::class);
+        /** @var ExpressionBuilder|ObjectProphecy $expressionBuilder */
+        $expressionBuilder = $this->prophesize(ExpressionBuilder::class);
+        /** @var QueryBuilder|ObjectProphecy $queryBuilder */
+        $queryBuilder = $this->prophesize(QueryBuilder::class);
+        /** @var ConnectionPool|ObjectProphecy $connectionPool */
+        $connectionPool = $this->prophesize(ConnectionPool::class);
+
+        $statement->fetchAll()->willReturn([]);
+
+        $expressionBuilder->eq('day.event', Argument::cetera())->shouldBeCalled();
+
+        $expressionBuilder->in('event.pid', Argument::cetera())->shouldBeCalled();
+        $expressionBuilder->gte('day.day', Argument::cetera())->shouldBeCalled();
+        $expressionBuilder->lt('day.day', Argument::cetera())->shouldBeCalled();
+
+        $queryBuilder->select('event.uid', 'event.title', 'day.day')->willReturn($queryBuilder->reveal());
+        $queryBuilder->from('tx_events2_domain_model_day', 'day')->willReturn($queryBuilder->reveal());
+        $queryBuilder->expr()->willReturn($expressionBuilder->reveal());
+        $queryBuilder->quoteIdentifier('event.uid');
+        $queryBuilder
+            ->leftJoin(
+                'day',
+                'tx_events2_domain_model_event',
+                'event',
+                Argument::cetera()
+            )
+            ->willReturn($queryBuilder->reveal());
+
+        $queryBuilder->quoteIdentifier('category_mm.uid_foreign');
+        $queryBuilder->createNamedParameter('tx_events2_domain_model_event', 2);
+        $queryBuilder->createNamedParameter('categories', 2);
+
+        $queryBuilder->createNamedParameter([21, 22, 23], 101);
+        $queryBuilder->createNamedParameter(Argument::any(), 1);
+
+        $queryBuilder->where(Argument::cetera())->willReturn($queryBuilder->reveal());
+        $queryBuilder->expr(Argument::cetera())->willReturn($expressionBuilder->reveal());
+        $queryBuilder->execute(Argument::cetera())->willReturn($statement->reveal());
+
+        $connectionPool->getQueryBuilderForTable('tx_events2_domain_model_day')->shouldBeCalled()->willReturn($queryBuilder);
+
+        GeneralUtility::addInstance(ConnectionPool::class, $connectionPool->reveal());
 
         $this->buildAssertionForDatabaseWithReturnValue(
             'tx_events2_domain_model_holiday',
@@ -367,17 +492,50 @@ class AjaxTest extends AbstractUnitTestCase
         $frontendUserAuthentication->setAndSaveSessionData(Argument::cetera())->shouldBeCalled();
         GeneralUtility::addInstance(FrontendUserAuthentication::class, $frontendUserAuthentication->reveal());
 
-        $this->queryProphecy->getQuerySettings()->willReturn($this->querySettingsProphecy->reveal());
-        $this->queryProphecy->getQuerySettings()->shouldBeCalled();
-        $this->queryProphecy->contains()->shouldNotBeCalled();
-        $this->queryProphecy->logicalOr()->shouldNotBeCalled();
-        $this->queryProphecy->greaterThanOrEqual(Argument::exact('day'), Argument::exact($today))->shouldBeCalled();
-        $this->queryProphecy->lessThan(Argument::exact('day'), Argument::any())->shouldBeCalled();
-        $this->queryProphecy->logicalAnd(Argument::any())->shouldBeCalled();
-        $this->queryProphecy->matching(Argument::any())->willReturn($this->queryProphecy->reveal());
-        $this->queryProphecy->execute()->willReturn([]);
-        $this->dayRepositoryProphecy->createQuery()->willReturn($this->queryProphecy);
+        /** @var Statement|ObjectProphecy $statement */
+        $statement = $this->prophesize(Statement::class);
+        /** @var ExpressionBuilder|ObjectProphecy $expressionBuilder */
+        $expressionBuilder = $this->prophesize(ExpressionBuilder::class);
+        /** @var QueryBuilder|ObjectProphecy $queryBuilder */
+        $queryBuilder = $this->prophesize(QueryBuilder::class);
+        /** @var ConnectionPool|ObjectProphecy $connectionPool */
+        $connectionPool = $this->prophesize(ConnectionPool::class);
 
+        $statement->fetchAll()->willReturn([]);
+
+        $expressionBuilder->eq('day.event', Argument::cetera())->shouldBeCalled();
+
+        $expressionBuilder->in('event.pid', Argument::cetera())->shouldBeCalled();
+        $expressionBuilder->gte('day.day', Argument::cetera())->shouldBeCalled();
+        $expressionBuilder->lt('day.day', Argument::cetera())->shouldBeCalled();
+
+        $queryBuilder->select('event.uid', 'event.title', 'day.day')->willReturn($queryBuilder->reveal());
+        $queryBuilder->from('tx_events2_domain_model_day', 'day')->willReturn($queryBuilder->reveal());
+        $queryBuilder->expr()->willReturn($expressionBuilder->reveal());
+        $queryBuilder->quoteIdentifier('event.uid');
+        $queryBuilder
+            ->leftJoin(
+                'day',
+                'tx_events2_domain_model_event',
+                'event',
+                Argument::cetera()
+            )
+            ->willReturn($queryBuilder->reveal());
+
+        $queryBuilder->quoteIdentifier('category_mm.uid_foreign');
+        $queryBuilder->createNamedParameter('tx_events2_domain_model_event', 2);
+        $queryBuilder->createNamedParameter('categories', 2);
+
+        $queryBuilder->createNamedParameter([21, 22, 23], 101);
+        $queryBuilder->createNamedParameter(Argument::any(), 1);
+
+        $queryBuilder->where(Argument::cetera())->willReturn($queryBuilder->reveal());
+        $queryBuilder->expr(Argument::cetera())->willReturn($expressionBuilder->reveal());
+        $queryBuilder->execute(Argument::cetera())->willReturn($statement->reveal());
+
+        $connectionPool->getQueryBuilderForTable('tx_events2_domain_model_day')->shouldBeCalled()->willReturn($queryBuilder);
+
+        GeneralUtility::addInstance(ConnectionPool::class, $connectionPool->reveal());
         $this->buildAssertionForDatabaseWithReturnValue(
             'tx_events2_domain_model_holiday',
             [],
