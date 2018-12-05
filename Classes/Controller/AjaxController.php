@@ -17,7 +17,8 @@ namespace JWeiland\Events2\Controller;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * Controller for Ajax Requests. Currently only for FindSubCategories
+ * @ToDo: Maybe we can convert this script to eID
  */
 class AjaxController extends ActionController
 {

@@ -15,13 +15,11 @@ namespace JWeiland\Events2\Ajax\FindDaysForMonth;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Configuration\ExtConf;
-use JWeiland\Events2\Domain\Model\Day;
-use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Utility\DateTimeUtility;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
 
@@ -49,57 +47,28 @@ class Ajax
     protected $dateTimeUtility;
 
     /**
-     * @var DayRepository
-     */
-    protected $dayRepository;
-
-    /**
      * @var CacheHashCalculator
      */
     protected $cacheHashCalculator;
 
     /**
-     * Inject extConf
+     * Ajax constructor.
      *
-     * @param ExtConf $extConf
-     * @return void
+     * @param ExtConf|null $extConf
+     * @param DateTimeUtility|null $dateTimeUtility
+     * @param CacheHashCalculator|null $cacheHashCalculator
      */
-    public function injectExtConf(ExtConf $extConf)
+    public function __construct(ExtConf $extConf = null, DateTimeUtility $dateTimeUtility = null, CacheHashCalculator $cacheHashCalculator = null)
     {
-        $this->extConf = $extConf;
-    }
-
-    /**
-     * Inject DateTime Utility.
-     *
-     * @param DateTimeUtility $dateTimeUtility
-     * @return void
-     */
-    public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
-    {
-        $this->dateTimeUtility = $dateTimeUtility;
-    }
-
-    /**
-     * Inject dayRepository
-     *
-     * @param DayRepository $dayRepository
-     * @return void
-     */
-    public function injectDayRepository(DayRepository $dayRepository)
-    {
-        $this->dayRepository = $dayRepository;
-    }
-
-    /**
-     * Inject CacheHash Calculator.
-     *
-     * @param CacheHashCalculator $cacheHashCalculator
-     * @return void
-     */
-    public function injectCacheHashCalculator(CacheHashCalculator $cacheHashCalculator)
-    {
-        $this->cacheHashCalculator = $cacheHashCalculator;
+        if ($extConf === null) {
+            $this->extConf = GeneralUtility::makeInstance(ExtConf::class);
+        }
+        if ($dateTimeUtility === null) {
+            $this->dateTimeUtility = GeneralUtility::makeInstance(DateTimeUtility::class);
+        }
+        if ($cacheHashCalculator === null) {
+            $this->cacheHashCalculator = GeneralUtility::makeInstance(CacheHashCalculator::class);
+        }
     }
 
     /**
@@ -133,11 +102,19 @@ class Ajax
         $days = $this->findAllDaysInMonth($month, $year);
         foreach ($days as $day) {
             $addDay = [
-                'uid' => $day->getEvent()->getUid(),
-                'title' => $day->getEvent()->getTitle()
+                'uid' => $day['uid'],
+                'title' => $day['title']
             ];
-            $addDay['uri'] = $this->getUriForDay($day->getDay()->format('U'));
-            $dayOfMonth = $day->getDay()->format('j');
+            $addDay['uri'] = $this->getUriForDay((int)$day['day']);
+
+            // generate day of month.
+            // Convert int to DateTime like extbase does and set TimezoneType to something like Europe/Berlin
+            $date = new \DateTime(date('c', (int)$day['day']));
+            if ($date->timezone_type !== 3) {
+                $date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+            }
+            $dayOfMonth = $date->format('j');
+
             $dayArray[$dayOfMonth][] = $addDay;
         }
         $this->addHolidays($dayArray);
@@ -290,7 +267,7 @@ class Ajax
      *
      * @param int $month
      * @param int $year
-     * @return QueryResultInterface|array|Day[]
+     * @return array
      * @throws \Exception
      */
     public function findAllDaysInMonth(int $month, int $year)
@@ -312,13 +289,15 @@ class Ajax
             $earliestAllowedDate > $firstDayOfMonth &&
             $earliestAllowedDate->format('mY') === $firstDayOfMonth->format('mY')
         ) {
-            // if both dates are in same month and year, set to highest value
+            // if $earliestAllowedDate 17.01.2008 is greater than $firstDayOfMonth (01.01.2008)
+            // and both dates are in same month, then set date to $earliestAllowedDate 17.01.2008
             $firstDayOfMonth = $earliestAllowedDate;
         } elseif (
             $latestAllowedDate < $lastDayOfMonth &&
             $latestAllowedDate->format('mY') === $lastDayOfMonth->format('mY')
         ) {
-            // if both dates are in same month and year, set to lowest value
+            // if $latestAllowedDate 23.09.2008 is lower than $lastDayOfMonth (30.09.2008)
+            // and both dates are in same month, then set date to $latestAllowedDate 23.09.2008
             $lastDayOfMonth = $latestAllowedDate;
         } elseif (
             $earliestAllowedDate > $firstDayOfMonth ||
@@ -330,19 +309,95 @@ class Ajax
 
         $constraint = [];
 
-        $query = $this->dayRepository->createQuery();
-        $query->getQuerySettings()->setStoragePageIds(explode(',', $this->getArgument('storagePids')));
-        if (strlen(trim($this->getArgument('categories')))) {
-            $orConstraint = [];
-            foreach (explode(',', $this->getArgument('categories')) as $category) {
-                $orConstraint[] = $query->contains('event.categories', (int)$category);
-            }
-            $constraint[] = $query->logicalOr($orConstraint);
-        }
-        $constraint[] = $query->greaterThanOrEqual('day', $firstDayOfMonth);
-        $constraint[] = $query->lessThan('day', $lastDayOfMonth);
+        // Create basic query with QueryBuilder. Where-clause will be added dynamically
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_day');
+        $queryBuilder = $queryBuilder
+            ->select('event.uid', 'event.title', 'day.day')
+            ->from('tx_events2_domain_model_day', 'day')
+            ->leftJoin(
+                'day',
+                'tx_events2_domain_model_event',
+                'event',
+                $queryBuilder->expr()->eq(
+                    'day.event',
+                    $queryBuilder->quoteIdentifier('event.uid')
+                )
+            );
 
-        return $query->matching($query->logicalAnd($constraint))->execute();
+        // Add relation to sys_category_record_mm only if categories were set
+        if (strlen(trim($this->getArgument('categories')))) {
+            $queryBuilder = $queryBuilder
+                ->leftJoin(
+                    'event',
+                    'sys_category_record_mm',
+                    'category_mm',
+                    $queryBuilder->expr()->andX(
+                        $queryBuilder->expr()->eq(
+                            'event.uid',
+                            $queryBuilder->quoteIdentifier('category_mm.uid_foreign')
+                        ),
+                        $queryBuilder->expr()->eq(
+                            'category_mm.tablenames',
+                            $queryBuilder->createNamedParameter(
+                                'tx_events2_domain_model_event',
+                                \PDO::PARAM_STR
+                            )
+                        ),
+                        $queryBuilder->expr()->eq(
+                            'category_mm.fieldname',
+                            $queryBuilder->createNamedParameter(
+                                'categories',
+                                \PDO::PARAM_STR
+                            )
+                        )
+                    )
+                );
+
+            $constraint[] = $queryBuilder->expr()->in(
+                'category_mm.uid_local',
+                $queryBuilder->createNamedParameter(
+                    GeneralUtility::intExplode(',', $this->getArgument('categories')),
+                    Connection::PARAM_INT_ARRAY
+                )
+            );
+        }
+
+        // Reduce ResultSet to configured StoragePids
+        $constraint[] = $queryBuilder->expr()->in(
+            'event.pid',
+            $queryBuilder->createNamedParameter(
+                GeneralUtility::intExplode(',', $this->getArgument('storagePids')),
+                Connection::PARAM_INT_ARRAY
+            )
+        );
+
+        // Get days greater than first date of month
+        $constraint[] = $queryBuilder->expr()->gte(
+            'day.day',
+            $queryBuilder->createNamedParameter(
+                $firstDayOfMonth->format('U'),
+                \PDO::PARAM_INT
+            )
+        );
+
+        // Get days lower than last date of month
+        $constraint[] = $queryBuilder->expr()->lt(
+            'day.day',
+            $queryBuilder->createNamedParameter(
+                $lastDayOfMonth->format('U'),
+                \PDO::PARAM_INT
+            )
+        );
+
+        $queryBuilder = $queryBuilder->where(...$constraint);
+        /*var_dump($queryBuilder->getSQL());
+        var_dump($queryBuilder->getParameters());die();*/
+
+        $daysInMonth = $queryBuilder
+            ->execute()
+            ->fetchAll();
+
+        return $daysInMonth;
     }
 
     /**
