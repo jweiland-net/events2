@@ -61,14 +61,19 @@ class Ajax
     public function __construct(ExtConf $extConf = null, DateTimeUtility $dateTimeUtility = null, CacheHashCalculator $cacheHashCalculator = null)
     {
         if ($extConf === null) {
-            $this->extConf = GeneralUtility::makeInstance(ExtConf::class);
+            $extConf = GeneralUtility::makeInstance(ExtConf::class);
         }
+        $this->extConf = $extConf;
+
         if ($dateTimeUtility === null) {
-            $this->dateTimeUtility = GeneralUtility::makeInstance(DateTimeUtility::class);
+            $dateTimeUtility = GeneralUtility::makeInstance(DateTimeUtility::class);
         }
+        $this->dateTimeUtility = $dateTimeUtility;
+
         if ($cacheHashCalculator === null) {
-            $this->cacheHashCalculator = GeneralUtility::makeInstance(CacheHashCalculator::class);
+            $cacheHashCalculator = GeneralUtility::makeInstance(CacheHashCalculator::class);
         }
+        $this->cacheHashCalculator = $cacheHashCalculator;
     }
 
     /**
@@ -389,11 +394,8 @@ class Ajax
             )
         );
 
-        $queryBuilder = $queryBuilder->where(...$constraint);
-        /*var_dump($queryBuilder->getSQL());
-        var_dump($queryBuilder->getParameters());die();*/
-
         $daysInMonth = $queryBuilder
+            ->where(...$constraint)
             ->execute()
             ->fetchAll();
 
