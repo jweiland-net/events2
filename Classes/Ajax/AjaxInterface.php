@@ -16,7 +16,7 @@ namespace JWeiland\Events2\Ajax;
  */
 
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * Interface for all eID requests
  */
 interface AjaxInterface
 {
