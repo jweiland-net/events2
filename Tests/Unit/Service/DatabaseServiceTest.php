@@ -148,7 +148,6 @@ class DatabaseServiceTest extends UnitTestCase
             ->shouldBeCalled()
             ->willReturn($queryBuilder->reveal());
 
-
         $queryBuilder->where(Argument::cetera())->shouldBeCalled()->willReturn($queryBuilder->reveal());
         $queryBuilder->expr(Argument::cetera())->shouldBeCalled()->willReturn($expressionBuilder->reveal());
         $queryBuilder->execute(Argument::cetera())->shouldBeCalled()->willReturn($statement->reveal());
