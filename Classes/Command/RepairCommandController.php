@@ -15,8 +15,8 @@ namespace JWeiland\Events2\Command;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Domain\Model\Event;
-use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Service\DatabaseService;
+use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
