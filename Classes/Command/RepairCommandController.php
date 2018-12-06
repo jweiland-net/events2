@@ -16,7 +16,7 @@ namespace JWeiland\Events2\Command;
  */
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Service\DayRelationService;
-use JWeiland\Events2\Utility\DatabaseUtility;
+use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -95,7 +95,9 @@ class RepairCommandController extends CommandController
 
         $this->echoValue('Process each event record' . PHP_EOL);
 
-        $rows = DatabaseUtility::getCurrentAndFutureEvents();
+        /** @var DatabaseService $databaseService */
+        $databaseService = GeneralUtility::makeInstance(DatabaseService::class);
+        $rows = $databaseService->getCurrentAndFutureEvents();
         if (!empty($rows)) {
             $persistenceManager = $this->objectManager->get(PersistenceManager::class);
 

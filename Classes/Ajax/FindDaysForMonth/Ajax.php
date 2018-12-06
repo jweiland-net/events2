@@ -15,8 +15,8 @@ namespace JWeiland\Events2\Ajax\FindDaysForMonth;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Configuration\ExtConf;
+use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Utility\DateTimeUtility;
-use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -58,8 +58,11 @@ class Ajax
      * @param DateTimeUtility|null $dateTimeUtility
      * @param CacheHashCalculator|null $cacheHashCalculator
      */
-    public function __construct(ExtConf $extConf = null, DateTimeUtility $dateTimeUtility = null, CacheHashCalculator $cacheHashCalculator = null)
-    {
+    public function __construct(
+        ExtConf $extConf = null,
+        DateTimeUtility $dateTimeUtility = null,
+        CacheHashCalculator $cacheHashCalculator = null
+    ) {
         if ($extConf === null) {
             $extConf = GeneralUtility::makeInstance(ExtConf::class);
         }
@@ -275,7 +278,7 @@ class Ajax
      * @return array
      * @throws \Exception
      */
-    public function findAllDaysInMonth(int $month, int $year)
+    protected function findAllDaysInMonth(int $month, int $year)
     {
         $earliestAllowedDate = new \DateTime('now midnight');
         $earliestAllowedDate->modify(sprintf('-%d months', $this->extConf->getRecurringPast()));
@@ -288,7 +291,7 @@ class Ajax
             \DateTime::createFromFormat('j.n.Y', '1.' . $month . '.' . $year)
         );
         $lastDayOfMonth = clone $firstDayOfMonth;
-        $lastDayOfMonth->modify('last day of this month')->modify('tomorrow');
+        $lastDayOfMonth->modify('last day of this month');
 
         if (
             $earliestAllowedDate > $firstDayOfMonth &&
@@ -312,94 +315,14 @@ class Ajax
             return [];
         }
 
-        $constraint = [];
-
-        // Create basic query with QueryBuilder. Where-clause will be added dynamically
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_day');
-        $queryBuilder = $queryBuilder
-            ->select('event.uid', 'event.title', 'day.day')
-            ->from('tx_events2_domain_model_day', 'day')
-            ->leftJoin(
-                'day',
-                'tx_events2_domain_model_event',
-                'event',
-                $queryBuilder->expr()->eq(
-                    'day.event',
-                    $queryBuilder->quoteIdentifier('event.uid')
-                )
-            );
-
-        // Add relation to sys_category_record_mm only if categories were set
-        if (strlen(trim($this->getArgument('categories')))) {
-            $queryBuilder = $queryBuilder
-                ->leftJoin(
-                    'event',
-                    'sys_category_record_mm',
-                    'category_mm',
-                    $queryBuilder->expr()->andX(
-                        $queryBuilder->expr()->eq(
-                            'event.uid',
-                            $queryBuilder->quoteIdentifier('category_mm.uid_foreign')
-                        ),
-                        $queryBuilder->expr()->eq(
-                            'category_mm.tablenames',
-                            $queryBuilder->createNamedParameter(
-                                'tx_events2_domain_model_event',
-                                \PDO::PARAM_STR
-                            )
-                        ),
-                        $queryBuilder->expr()->eq(
-                            'category_mm.fieldname',
-                            $queryBuilder->createNamedParameter(
-                                'categories',
-                                \PDO::PARAM_STR
-                            )
-                        )
-                    )
-                );
-
-            $constraint[] = $queryBuilder->expr()->in(
-                'category_mm.uid_local',
-                $queryBuilder->createNamedParameter(
-                    GeneralUtility::intExplode(',', $this->getArgument('categories')),
-                    Connection::PARAM_INT_ARRAY
-                )
-            );
-        }
-
-        // Reduce ResultSet to configured StoragePids
-        $constraint[] = $queryBuilder->expr()->in(
-            'event.pid',
-            $queryBuilder->createNamedParameter(
-                GeneralUtility::intExplode(',', $this->getArgument('storagePids')),
-                Connection::PARAM_INT_ARRAY
-            )
+        /** @var DatabaseService $databaseService */
+        $databaseService = GeneralUtility::makeInstance(DatabaseService::class);
+        return $databaseService->getDaysInRange(
+            $firstDayOfMonth,
+            $lastDayOfMonth->modify('tomorrow'),
+            GeneralUtility::intExplode(',', $this->getArgument('storagePids'), true),
+            GeneralUtility::intExplode(',', $this->getArgument('categories'), true)
         );
-
-        // Get days greater than first date of month
-        $constraint[] = $queryBuilder->expr()->gte(
-            'day.day',
-            $queryBuilder->createNamedParameter(
-                $firstDayOfMonth->format('U'),
-                \PDO::PARAM_INT
-            )
-        );
-
-        // Get days lower than last date of month
-        $constraint[] = $queryBuilder->expr()->lt(
-            'day.day',
-            $queryBuilder->createNamedParameter(
-                $lastDayOfMonth->format('U'),
-                \PDO::PARAM_INT
-            )
-        );
-
-        $daysInMonth = $queryBuilder
-            ->where(...$constraint)
-            ->execute()
-            ->fetchAll();
-
-        return $daysInMonth;
     }
 
     /**
