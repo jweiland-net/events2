@@ -14,8 +14,8 @@ namespace JWeiland\Events2\Task;
  *
  * The TYPO3 project - inspiring people to share!
  */
-use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Service\DatabaseService;
+use JWeiland\Events2\Service\DayRelationService;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
