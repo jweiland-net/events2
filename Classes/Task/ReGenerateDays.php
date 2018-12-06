@@ -15,7 +15,7 @@ namespace JWeiland\Events2\Task;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Service\DayRelationService;
-use JWeiland\Events2\Utility\DatabaseUtility;
+use JWeiland\Events2\Service\DatabaseService;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
@@ -76,7 +76,9 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
 
         $this->registry->removeAllByNamespace('events2TaskCreateUpdate');
 
-        $events = DatabaseUtility::getCurrentAndFutureEvents();
+        /** @var DatabaseService $databaseService */
+        $databaseService = GeneralUtility::makeInstance(DatabaseService::class);
+        $events = $databaseService->getCurrentAndFutureEvents();
         if (!empty($events)) {
             $counter = 0;
             foreach ($events as $event) {
