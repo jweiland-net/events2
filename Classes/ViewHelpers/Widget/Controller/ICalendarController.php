@@ -163,11 +163,10 @@ class ICalendarController extends AbstractWidgetController
      * create an event array
      * Hint: We can't use DTSTAMP here, because this must be UTC, but we don't have UTC times here.
      *
-     * @param Day $day          current Day. In case of duration it will be the first day
-     * @param Day $lastDay      current Day. In case of duration it will be the last day
-     * @param string $startTime
-     * @param string $endTime
-     *
+     * @param Day $day current Day. In case of duration it will be the first day
+     * @param Day $lastDay current Day. In case of duration it will be the last day
+     * @param string $startTime Something like 15:30
+     * @param string $endTime Something like 17:30
      * @return array
      */
     protected function createEvent(Day $day, Day $lastDay = null, $startTime = '', $endTime = '')
@@ -179,7 +178,10 @@ class ICalendarController extends AbstractWidgetController
         $event = [];
         $event['UID'] = $this->getUniqueIdForDay($day);
         $event['DTSTART'] = $this->convertToTstamp($day->getDay(), $startTime);
-        if (!empty($endTime)) {
+        if ($day !== $lastDay) {
+            if (empty($endTime)) {
+                $endTime = '23:59';
+            }
             $event['DTEND'] = $this->convertToTstamp($lastDay->getDay(), $endTime);
         }
         // in case of sys_language_mode=strict, location can be empty
