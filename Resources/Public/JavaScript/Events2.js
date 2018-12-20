@@ -236,7 +236,7 @@ Events2.initializeAutoCompleteForLocation = function() {
         }).focusout(function () {
             if (Events2.$autoCompleteLocation.val() === "") {
                 Events2.$autoCompleteLocation
-                    .sibilings(".locationStatus")
+                    .siblings(".locationStatus")
                     .eq(0)
                     .text("")
                     .removeClass("locationOk locationFail");
