@@ -56,7 +56,7 @@ class Ajax extends AbstractAjaxRequest
             ->getQueryBuilderForTable('tx_events2_domain_model_location');
 
         $locations = $queryBuilder
-            ->select('uid', 'location')
+            ->select('uid', 'location as label')
             ->from('tx_events2_domain_model_location')
             ->where(
                 $queryBuilder->expr()->like(
