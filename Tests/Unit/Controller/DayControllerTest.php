@@ -114,18 +114,19 @@ class DayControllerTest extends UnitTestCase
     public function listActionFindEventsAndAssignsThemToView()
     {
         $filter = new Filter();
+        $queryResultProphecy = $this->prophesize(QueryResult::class);
 
         $this->dayRepository->findEvents(
             Argument::exact('list'),
             Argument::exact($filter)
-        )->shouldBeCalled()->willReturn([]);
+        )->shouldBeCalled()->willReturn($queryResultProphecy->reveal());
         $this->view->assign(
             Argument::exact('filter'),
             Argument::exact($filter)
         )->shouldBeCalled();
         $this->view->assign(
             Argument::exact('days'),
-            Argument::exact([])
+            Argument::exact($queryResultProphecy->reveal())
         )->shouldBeCalled();
 
         $this->subject->listAction($filter);
@@ -200,18 +201,19 @@ class DayControllerTest extends UnitTestCase
     public function listTodayActionFindEventsAndAssignsThemToView()
     {
         $filter = new Filter();
+        $queryResultProphecy = $this->prophesize(QueryResult::class);
 
         $this->dayRepository->findEvents(
             Argument::exact('today'),
             Argument::exact($filter)
-        )->shouldBeCalled()->willReturn([]);
+        )->shouldBeCalled()->willReturn($queryResultProphecy->reveal());
         $this->view->assign(
             Argument::exact('filter'),
             Argument::exact($filter)
         )->shouldBeCalled();
         $this->view->assign(
             Argument::exact('days'),
-            Argument::exact([])
+            Argument::exact($queryResultProphecy->reveal())
         )->shouldBeCalled();
 
         $this->subject->listTodayAction($filter);
@@ -223,18 +225,19 @@ class DayControllerTest extends UnitTestCase
     public function listThisWeekActionFindEventsAndAssignsThemToView()
     {
         $filter = new Filter();
+        $queryResultProphecy = $this->prophesize(QueryResult::class);
 
         $this->dayRepository->findEvents(
             Argument::exact('thisWeek'),
             Argument::exact($filter)
-        )->shouldBeCalled()->willReturn([]);
+        )->shouldBeCalled()->willReturn($queryResultProphecy->reveal());
         $this->view->assign(
             Argument::exact('filter'),
             Argument::exact($filter)
         )->shouldBeCalled();
         $this->view->assign(
             Argument::exact('days'),
-            Argument::exact([])
+            Argument::exact($queryResultProphecy->reveal())
         )->shouldBeCalled();
 
         $this->subject->listThisWeekAction($filter);
@@ -246,18 +249,19 @@ class DayControllerTest extends UnitTestCase
     public function listRangeActionFindEventsAndAssignsThemToView()
     {
         $filter = new Filter();
+        $queryResultProphecy = $this->prophesize(QueryResult::class);
 
         $this->dayRepository->findEvents(
             Argument::exact('range'),
             Argument::exact($filter)
-        )->shouldBeCalled()->willReturn([]);
+        )->shouldBeCalled()->willReturn($queryResultProphecy->reveal());
         $this->view->assign(
             Argument::exact('filter'),
             Argument::exact($filter)
         )->shouldBeCalled();
         $this->view->assign(
             Argument::exact('days'),
-            Argument::exact([])
+            Argument::exact($queryResultProphecy->reveal())
         )->shouldBeCalled();
 
         $this->subject->listRangeAction($filter);
@@ -355,15 +359,16 @@ class DayControllerTest extends UnitTestCase
     public function showByTimestampWithTimestampCallsAssign()
     {
         $timestamp = 1234567890;
+        $queryResultProphecy = $this->prophesize(QueryResult::class);
 
         $this->dayRepository
             ->findByTimestamp(Argument::exact($timestamp))
             ->shouldBeCalled()
-            ->willReturn([]);
+            ->willReturn($queryResultProphecy->reveal());
 
         $this->view->assign(
             Argument::exact('days'),
-            Argument::exact([])
+            Argument::exact($queryResultProphecy->reveal())
         );
 
         $this->subject->showByTimestampAction($timestamp);
@@ -374,14 +379,15 @@ class DayControllerTest extends UnitTestCase
      */
     public function showByTimestampWithInvalidTimestampCallsFindByTimestampWithZero()
     {
+        $queryResultProphecy = $this->prophesize(QueryResult::class);
         $this->dayRepository
             ->findByTimestamp(Argument::exact(0))
             ->shouldBeCalled()
-            ->willReturn([]);
+            ->willReturn($queryResultProphecy->reveal());
 
         $this->view->assign(
             Argument::exact('days'),
-            Argument::exact([])
+            Argument::exact($queryResultProphecy->reveal())
         );
 
         $this->subject->showByTimestampAction('abc');

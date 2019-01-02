@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace JWeiland\Events2\Domain\Repository;
 
 /*
@@ -13,17 +14,17 @@ namespace JWeiland\Events2\Domain\Repository;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Extbase\Persistence\Generic\Session;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * Repository to get and find event records
  */
 class EventRepository extends Repository
 {
@@ -60,11 +61,7 @@ class EventRepository extends Repository
     protected $settings = [];
 
     /**
-     * inject DateTime Utility.
-     *
      * @param DateTimeUtility $dateTimeUtility
-     *
-     * @return void
      */
     public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
     {
@@ -72,11 +69,7 @@ class EventRepository extends Repository
     }
 
     /**
-     * inject DataMapper.
-     *
      * @param DataMapper $dataMapper
-     *
-     * @return void
      */
     public function injectDataMapper(DataMapper $dataMapper)
     {
@@ -84,11 +77,7 @@ class EventRepository extends Repository
     }
 
     /**
-     * inject persistenceSession
-     *
      * @param Session $persistenceSession
-     *
-     * @return void
      */
     public function injectPersistenceSession(Session $persistenceSession)
     {
@@ -96,11 +85,7 @@ class EventRepository extends Repository
     }
 
     /**
-     * inject Configuration Manager.
-     *
      * @param ConfigurationManagerInterface $configurationManager
-     *
-     * @return void
      */
     public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager)
     {
@@ -108,21 +93,9 @@ class EventRepository extends Repository
     }
 
     /**
-     * Returns the settings
-     *
-     * @return array $settings
-     */
-    public function getSettings()
-    {
-        return $this->settings;
-    }
-
-    /**
      * Sets the settings
      *
      * @param array $settings
-     *
-     * @return void
      */
     public function setSettings(array $settings)
     {
@@ -130,13 +103,14 @@ class EventRepository extends Repository
     }
 
     /**
-     * find event by uid whether it is hidden or not.
+     * Find event by uid whether it is hidden or not.
+     * Do not add Event as strict_type as this method can also return null
+     * @ToDo: Add ?Event type after removing compatibility for TYPO3 8.
      *
      * @param int $eventUid
-     *
-     * @return \JWeiland\Events2\Domain\Model\Event
+     * @return Event
      */
-    public function findHiddenEntryByUid($eventUid)
+    public function findHiddenEntryByUid(int $eventUid)
     {
         $query = $this->createQuery();
         $query->getQuerySettings()->setIgnoreEnableFields(true);
@@ -149,11 +123,11 @@ class EventRepository extends Repository
     }
 
     /**
-     * find events of a specified user.
+     * Find events of a specified user.
      *
-     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return QueryResultInterface
      */
-    public function findMyEvents()
+    public function findMyEvents(): QueryResultInterface
     {
         /** @var UserRepository $userRepository */
         $userRepository = $this->objectManager->get(UserRepository::class);

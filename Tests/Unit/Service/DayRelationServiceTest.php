@@ -121,7 +121,7 @@ class DayRelationServiceTest extends UnitTestCase
         $this->persistenceManagerProphecy->update(Argument::cetera())->shouldNotBeCalled();
         $this->persistenceManagerProphecy->persistAll(Argument::cetera())->shouldNotBeCalled();
 
-        $this->eventRepositoryProphecy->findByIdentifier(123)->willReturn(null);
+        $this->eventRepositoryProphecy->findHiddenEntryByUid(123)->shouldBeCalled()->willReturn(null);
 
         $this->subject->createDayRelations(123);
     }
@@ -140,7 +140,7 @@ class DayRelationServiceTest extends UnitTestCase
         $event->setPid(321);
         $event->addDay(new Day());
 
-        $this->eventRepositoryProphecy->findByIdentifier(123)->willReturn($event);
+        $this->eventRepositoryProphecy->findHiddenEntryByUid(123)->willReturn($event);
         $this->subject->createDayRelations(123);
 
         $event->setDays(new ObjectStorage());
@@ -172,7 +172,7 @@ class DayRelationServiceTest extends UnitTestCase
         $event->setXth(31);
         $event->setWeekday(127);
 
-        $this->eventRepositoryProphecy->findByIdentifier(123)->willReturn($event);
+        $this->eventRepositoryProphecy->findHiddenEntryByUid(123)->willReturn($event);
         $this->subject->createDayRelations(123);
 
         $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
@@ -223,7 +223,7 @@ class DayRelationServiceTest extends UnitTestCase
         $event->setXth(31);
         $event->setWeekday(127);
 
-        $this->eventRepositoryProphecy->findByIdentifier(123)->willReturn($event);
+        $this->eventRepositoryProphecy->findHiddenEntryByUid(123)->willReturn($event);
         $this->subject->createDayRelations(123);
 
         $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
@@ -288,7 +288,7 @@ class DayRelationServiceTest extends UnitTestCase
         $event->setXth(31);
         $event->setWeekday(127);
 
-        $this->eventRepositoryProphecy->findByIdentifier(123)->willReturn($event);
+        $this->eventRepositoryProphecy->findHiddenEntryByUid(123)->willReturn($event);
         $this->subject->createDayRelations(123);
 
         $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
@@ -357,7 +357,7 @@ class DayRelationServiceTest extends UnitTestCase
         $event->setXth(31);
         $event->setWeekday(127);
 
-        $this->eventRepositoryProphecy->findByIdentifier(123)->willReturn($event);
+        $this->eventRepositoryProphecy->findHiddenEntryByUid(123)->willReturn($event);
         $this->subject->createDayRelations(123);
 
         $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
@@ -424,7 +424,7 @@ class DayRelationServiceTest extends UnitTestCase
         $event->setXth(31);
         $event->setWeekday(127);
 
-        $this->eventRepositoryProphecy->findByIdentifier(123)->willReturn($event);
+        $this->eventRepositoryProphecy->findHiddenEntryByUid(123)->willReturn($event);
         $this->subject->createDayRelations(123);
 
         $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
@@ -494,7 +494,7 @@ class DayRelationServiceTest extends UnitTestCase
         $event->setXth(31);
         $event->setWeekday(127);
 
-        $this->eventRepositoryProphecy->findByIdentifier(123)->willReturn($event);
+        $this->eventRepositoryProphecy->findHiddenEntryByUid(123)->willReturn($event);
         $this->subject->createDayRelations(123);
 
         $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
@@ -554,7 +554,7 @@ class DayRelationServiceTest extends UnitTestCase
         $event->setXth(31);
         $event->setWeekday(127);
 
-        $this->eventRepositoryProphecy->findByIdentifier(123)->willReturn($event);
+        $this->eventRepositoryProphecy->findHiddenEntryByUid(123)->willReturn($event);
         $this->subject->createDayRelations(123);
 
         $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
@@ -623,7 +623,7 @@ class DayRelationServiceTest extends UnitTestCase
         $event->setWeekday(127);
         $event->setExceptions($exceptions);
 
-        $this->eventRepositoryProphecy->findByIdentifier(123)->willReturn($event);
+        $this->eventRepositoryProphecy->findHiddenEntryByUid(123)->willReturn($event);
         $this->subject->createDayRelations(123);
 
         $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
@@ -710,7 +710,7 @@ class DayRelationServiceTest extends UnitTestCase
         $event->setWeekday(127);
         $event->setExceptions($exceptions);
 
-        $this->eventRepositoryProphecy->findByIdentifier(123)->willReturn($event);
+        $this->eventRepositoryProphecy->findHiddenEntryByUid(123)->willReturn($event);
         $this->subject->createDayRelations(123);
 
         $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
@@ -804,7 +804,7 @@ class DayRelationServiceTest extends UnitTestCase
         $event->setWeekday(127);
         $event->setExceptions($exceptions);
 
-        $this->eventRepositoryProphecy->findByIdentifier(123)->willReturn($event);
+        $this->eventRepositoryProphecy->findHiddenEntryByUid(123)->willReturn($event);
         $this->subject->createDayRelations(123);
 
         $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
@@ -851,7 +851,7 @@ class DayRelationServiceTest extends UnitTestCase
         $event->setEventType('single');
         $event->setEventBegin($nextWeek);
 
-        $this->eventRepositoryProphecy->findByIdentifier(123)->willReturn($event);
+        $this->eventRepositoryProphecy->findHiddenEntryByUid(123)->willReturn($event);
         $this->subject->createDayRelations(123);
 
         $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
@@ -887,7 +887,7 @@ class DayRelationServiceTest extends UnitTestCase
         $event->setEventBegin($nextWeek);
         $event->setEventTime($time);
 
-        $this->eventRepositoryProphecy->findByIdentifier(123)->willReturn($event);
+        $this->eventRepositoryProphecy->findHiddenEntryByUid(123)->willReturn($event);
         $this->subject->createDayRelations(123);
 
         $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
@@ -922,7 +922,7 @@ class DayRelationServiceTest extends UnitTestCase
         $event->setEventBegin($today);
         $event->setEventEnd($in2days);
 
-        $this->eventRepositoryProphecy->findByIdentifier(123)->willReturn($event);
+        $this->eventRepositoryProphecy->findHiddenEntryByUid(123)->willReturn($event);
         $this->subject->createDayRelations(123);
 
         $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
@@ -967,7 +967,7 @@ class DayRelationServiceTest extends UnitTestCase
         $event->setEventEnd($in2days);
         $event->setEventTime($time);
 
-        $this->eventRepositoryProphecy->findByIdentifier(123)->willReturn($event);
+        $this->eventRepositoryProphecy->findHiddenEntryByUid(123)->willReturn($event);
         $this->subject->createDayRelations(123);
 
         $this->persistenceManagerProphecy->update($event)->shouldBeCalled();

@@ -29,6 +29,7 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
 use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Fluid\View\TemplateView;
 
@@ -200,19 +201,20 @@ class EventControllerTest extends UnitTestCase
     public function listSearchResultsActionSearchesForEventsAndAssignsThemToView()
     {
         $search = new Search();
+        $queryResultProphecy = $this->prophesize(QueryResult::class);
 
         $this->dayRepository
             ->expects($this->once())
             ->method('searchEvents')
             ->with($this->equalTo($search))
-            ->willReturn([]);
+            ->willReturn($queryResultProphecy->reveal());
 
         $this->view
             ->expects($this->once())
             ->method('assign')
             ->with(
                 $this->equalTo('days'),
-                $this->equalTo([])
+                $this->equalTo($queryResultProphecy->reveal())
             );
 
         $this->subject->injectDayRepository($this->dayRepository);
@@ -226,6 +228,7 @@ class EventControllerTest extends UnitTestCase
      */
     public function listMyEventsActionFindEventsAndAssignsThemToView()
     {
+        $queryResultProphecy = $this->prophesize(QueryResult::class);
         $tsfeBackup = $GLOBALS['TSFE'];
         $feUser = new \stdClass();
         $feUser->user = $user = [
@@ -237,14 +240,14 @@ class EventControllerTest extends UnitTestCase
         $this->eventRepository
             ->expects($this->once())
             ->method('findMyEvents')
-            ->willReturn([]);
+            ->willReturn($queryResultProphecy->reveal());
 
         $this->view
             ->expects($this->once())
             ->method('assign')
             ->with(
                 $this->equalTo('events'),
-                $this->equalTo([])
+                $this->equalTo($queryResultProphecy->reveal())
             );
 
         $this->subject->injectEventRepository($this->eventRepository);

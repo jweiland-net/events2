@@ -16,6 +16,7 @@ namespace JWeiland\Events2\Tests\Unit\Domain\Repository;
  */
 
 use JWeiland\Events2\Configuration\ExtConf;
+use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Persistence\Typo384\Generic\Query;
@@ -23,10 +24,12 @@ use JWeiland\Events2\Utility\DateTimeUtility;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
+use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 /**
  * Test case.
@@ -34,7 +37,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 class DayRepositoryTest extends UnitTestCase
 {
     /**
-     * @var DayRepository|\PHPUnit_Framework_MockObject_MockObject
+     * @var DayRepository
      */
     protected $subject;
 
@@ -44,24 +47,29 @@ class DayRepositoryTest extends UnitTestCase
     protected $dateTimeUtility;
 
     /**
+     * @var ObjectManager|ObjectProphecy
+     */
+    protected $objectManagerProphecy;
+
+    /**
      * @var Query|ObjectProphecy
      */
-    protected $query;
+    protected $queryProphecy;
 
     /**
      * @var QueryResult|ObjectProphecy
      */
-    protected $queryResult;
+    protected $queryResultProphecy;
 
     /**
      * @var DataMapper|ObjectProphecy
      */
-    protected $dataMapper;
+    protected $dataMapperProphecy;
 
     /**
      * @var PersistenceManager|ObjectProphecy
      */
-    protected $persistenceManager;
+    protected $persistenceManagerProphecy;
 
     /**
      * @var ExtConf|ObjectProphecy
@@ -74,24 +82,26 @@ class DayRepositoryTest extends UnitTestCase
     public function setUp()
     {
         $this->dateTimeUtility = new DateTimeUtility();
-        $this->query = $this->prophesize(Query::class);
-        $this->queryResult = $this->prophesize(QueryResult::class);
-        $this->dataMapper = $this->prophesize(DataMapper::class);
-        $this->persistenceManager = $this->prophesize(PersistenceManager::class);
+        $this->objectManagerProphecy = $this->prophesize(ObjectManager::class);
+        $this->queryResultProphecy = $this->prophesize(QueryResult::class);
+        $this->dataMapperProphecy = $this->prophesize(DataMapper::class);
         $this->extConfProphecy = $this->prophesize(ExtConf::class);
 
-        $this->queryResult->getQuery()->willReturn($this->query->reveal());
+        $this->queryProphecy = $this->prophesize(Query::class);
+        $this->queryProphecy
+            ->setOrderings([
+                'event.topOfList' => QueryInterface::ORDER_DESCENDING,
+                'sortDayTime' => QueryInterface::ORDER_ASCENDING,
+                'dayTime' => QueryInterface::ORDER_ASCENDING
+            ])->willReturn(null);
 
-        $this->subject = $this
-            ->getMockBuilder(DayRepository::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['createQuery'])
-            ->getMock();
+        $this->persistenceManagerProphecy = $this->prophesize(PersistenceManager::class);
+        $this->persistenceManagerProphecy->createQueryForType(Day::class)->willReturn($this->queryProphecy->reveal());
+
+        $this->subject = new DayRepository($this->objectManagerProphecy->reveal());
         $this->subject->injectDateTimeUtility($this->dateTimeUtility);
         $this->subject->injectExtConf($this->extConfProphecy->reveal());
-        $this->subject
-            ->method('createQuery')
-            ->willReturn($this->query->reveal());
+        $this->subject->injectPersistenceManager($this->persistenceManagerProphecy->reveal());
     }
 
     /**
@@ -100,6 +110,15 @@ class DayRepositoryTest extends UnitTestCase
     public function tearDown()
     {
         unset($this->subject);
+        unset(
+            $this->dateTimeUtility,
+            $this->objectManagerProphecy,
+            $this->queryProphecy,
+            $this->queryResultProphecy,
+            $this->dataMapperProphecy,
+            $this->persistenceManagerProphecy,
+            $this->extConfProphecy
+        );
     }
 
     /**
@@ -109,14 +128,14 @@ class DayRepositoryTest extends UnitTestCase
     {
         $this->extConfProphecy->getRecurringPast()->shouldBeCalled()->willReturn(3);
 
-        $this->query->logicalAnd(Argument::cetera())->shouldBeCalled()->willReturn([]);
-        $this->query->greaterThanOrEqual(Argument::cetera())->shouldBeCalled();
-        $this->query->getQuerySettings(Argument::cetera())->shouldBeCalled()->willReturn(new Typo3QuerySettings());
-        $this->query->in(Argument::exact('pid'), Argument::any())->shouldBeCalled();
-        $this->query->in(Argument::exact('event.pid'), Argument::any())->shouldBeCalled();
-        $this->query->matching(Argument::exact([]))->shouldBeCalled()->willReturn($this->query->reveal());
-        $this->query->setGroupings(Argument::cetera())->shouldBeCalled();
-        $this->query->execute(Argument::cetera())->shouldBeCalled();
+        $this->queryProphecy->logicalAnd(Argument::cetera())->shouldBeCalled()->willReturn([]);
+        $this->queryProphecy->greaterThanOrEqual(Argument::cetera())->shouldBeCalled();
+        $this->queryProphecy->getQuerySettings(Argument::cetera())->shouldBeCalled()->willReturn(new Typo3QuerySettings());
+        $this->queryProphecy->in(Argument::exact('pid'), Argument::any())->shouldBeCalled();
+        $this->queryProphecy->in(Argument::exact('event.pid'), Argument::any())->shouldBeCalled();
+        $this->queryProphecy->matching(Argument::exact([]))->shouldBeCalled()->willReturn($this->queryProphecy->reveal());
+        $this->queryProphecy->setGroupings(Argument::cetera())->shouldBeCalled();
+        $this->queryProphecy->execute(Argument::cetera())->shouldBeCalled()->willReturn($this->queryResultProphecy->reveal());
 
         $this->subject->findEvents('', new Filter());
     }
@@ -126,27 +145,29 @@ class DayRepositoryTest extends UnitTestCase
      */
     public function groupDaysByEventAndSortReturnsEmptyArray()
     {
-        $this->query
+        $this->queryResultProphecy->getQuery()->shouldBeCalled()->willReturn($this->queryProphecy->reveal());
+
+        $this->queryProphecy
             ->setLimit(Argument::exact(15))
             ->shouldBeCalled()
-            ->willReturn($this->query->reveal());
-        $this->query
+            ->willReturn($this->queryProphecy->reveal());
+        $this->queryProphecy
             ->setOffset(Argument::exact(0))
             ->shouldBeCalled()
-            ->willReturn($this->query->reveal());
-        $this->query
+            ->willReturn($this->queryProphecy->reveal());
+        $this->queryProphecy
             ->execute()
             ->shouldBeCalled()
-            ->willReturn($this->queryResult->reveal());
+            ->willReturn($this->queryResultProphecy->reveal());
 
-        $this->queryResult
+        $this->queryResultProphecy
             ->count()
             ->shouldBeCalled()
             ->willReturn(0);
 
         $this->assertSame(
             [],
-            $this->subject->groupDaysByEventAndSort($this->queryResult->reveal(), 7)
+            $this->subject->groupDaysByEventAndSort($this->queryResultProphecy->reveal(), 7)
         );
     }
 
@@ -156,12 +177,12 @@ class DayRepositoryTest extends UnitTestCase
     public function findByDayWillMergeEvents()
     {
         $day = 32415;
-        $this->queryResult->getFirst()->shouldBeCalled();
+        $this->queryResultProphecy->getFirst()->shouldBeCalled()->willReturn(new Day());
 
-        $this->query->equals(Argument::exact('uid'), Argument::exact($day))->shouldBeCalled();
-        $this->query->matching(Argument::cetera())->shouldBeCalled()->willReturn($this->query->reveal());
-        $this->query->setGroupings(Argument::exact(['event', 'sortDayTime']))->shouldBeCalled();
-        $this->query->execute(Argument::cetera())->shouldBeCalled()->willReturn($this->queryResult->reveal());
+        $this->queryProphecy->equals(Argument::exact('uid'), Argument::exact($day))->shouldBeCalled();
+        $this->queryProphecy->matching(Argument::cetera())->shouldBeCalled()->willReturn($this->queryProphecy->reveal());
+        $this->queryProphecy->setGroupings(Argument::exact(['event', 'sortDayTime']))->shouldBeCalled();
+        $this->queryProphecy->execute(Argument::cetera())->shouldBeCalled()->willReturn($this->queryResultProphecy->reveal());
 
         $this->subject->findByDay($day);
     }
@@ -173,15 +194,15 @@ class DayRepositoryTest extends UnitTestCase
     {
         $timestamp = 12345678;
 
-        $this->query->getQuerySettings(Argument::cetera())->shouldBeCalled()->willReturn(new Typo3QuerySettings());
-        $this->query->in(Argument::exact('pid'), Argument::any())->shouldBeCalled();
-        $this->query->in(Argument::exact('event.pid'), Argument::any())->shouldBeCalled();
-        $this->query->in('event.categories.uid')->shouldNotBeCalled();
-        $this->query->equals(Argument::exact('day'), Argument::exact($timestamp))->shouldBeCalled();
-        $this->query->logicalAnd(Argument::cetera())->shouldBeCalled();
-        $this->query->matching(Argument::cetera())->shouldBeCalled()->willReturn($this->query->reveal());
-        $this->query->setGroupings(Argument::cetera())->shouldBeCalled();
-        $this->query->execute(Argument::cetera())->shouldBeCalled();
+        $this->queryProphecy->getQuerySettings(Argument::cetera())->shouldBeCalled()->willReturn(new Typo3QuerySettings());
+        $this->queryProphecy->in(Argument::exact('pid'), Argument::any())->shouldBeCalled();
+        $this->queryProphecy->in(Argument::exact('event.pid'), Argument::any())->shouldBeCalled();
+        $this->queryProphecy->in('event.categories.uid')->shouldNotBeCalled();
+        $this->queryProphecy->equals(Argument::exact('day'), Argument::exact($timestamp))->shouldBeCalled();
+        $this->queryProphecy->logicalAnd(Argument::cetera())->shouldBeCalled();
+        $this->queryProphecy->matching(Argument::cetera())->shouldBeCalled()->willReturn($this->queryProphecy->reveal());
+        $this->queryProphecy->setGroupings(Argument::cetera())->shouldBeCalled();
+        $this->queryProphecy->execute(Argument::cetera())->shouldBeCalled()->willReturn($this->queryResultProphecy->reveal());
 
         $this->subject->findByTimestamp($timestamp);
     }
@@ -196,15 +217,15 @@ class DayRepositoryTest extends UnitTestCase
             'categories' => '12 ,654 ,  2435'
         ];
 
-        $this->query->getQuerySettings(Argument::cetera())->shouldBeCalled()->willReturn(new Typo3QuerySettings());
-        $this->query->in(Argument::exact('pid'), Argument::any())->shouldBeCalled();
-        $this->query->in(Argument::exact('event.pid'), Argument::any())->shouldBeCalled();
-        $this->query->in('event.categories.uid', Argument::exact([12, 654, 2435]))->shouldBeCalled();
-        $this->query->equals(Argument::exact('day'), Argument::exact($timestamp))->shouldBeCalled();
-        $this->query->logicalAnd(Argument::cetera())->shouldBeCalled();
-        $this->query->matching(Argument::cetera())->shouldBeCalled()->willReturn($this->query->reveal());
-        $this->query->setGroupings(Argument::cetera())->shouldBeCalled();
-        $this->query->execute(Argument::cetera())->shouldBeCalled();
+        $this->queryProphecy->getQuerySettings(Argument::cetera())->shouldBeCalled()->willReturn(new Typo3QuerySettings());
+        $this->queryProphecy->in(Argument::exact('pid'), Argument::any())->shouldBeCalled();
+        $this->queryProphecy->in(Argument::exact('event.pid'), Argument::any())->shouldBeCalled();
+        $this->queryProphecy->in('event.categories.uid', Argument::exact([12, 654, 2435]))->shouldBeCalled();
+        $this->queryProphecy->equals(Argument::exact('day'), Argument::exact($timestamp))->shouldBeCalled();
+        $this->queryProphecy->logicalAnd(Argument::cetera())->shouldBeCalled();
+        $this->queryProphecy->matching(Argument::cetera())->shouldBeCalled()->willReturn($this->queryProphecy->reveal());
+        $this->queryProphecy->setGroupings(Argument::cetera())->shouldBeCalled();
+        $this->queryProphecy->execute(Argument::cetera())->shouldBeCalled()->willReturn($this->queryResultProphecy->reveal());
 
         $this->subject->setSettings($settings);
         $this->subject->findByTimestamp($timestamp);
@@ -217,14 +238,14 @@ class DayRepositoryTest extends UnitTestCase
     {
         $timestamp = 12345678;
 
-        $this->query->getQuerySettings(Argument::cetera())->shouldBeCalled()->willReturn(new Typo3QuerySettings());
-        $this->query->in(Argument::exact('pid'), Argument::any())->shouldBeCalled();
-        $this->query->in(Argument::exact('event.pid'), Argument::any())->shouldBeCalled();
-        $this->query->equals(Argument::exact('day'), Argument::exact($timestamp))->shouldBeCalled();
-        $this->query->logicalAnd(Argument::cetera())->shouldBeCalled();
-        $this->query->matching(Argument::cetera())->shouldBeCalled()->willReturn($this->query->reveal());
-        $this->query->setGroupings(Argument::exact(['event', 'sortDayTime']))->shouldBeCalled();
-        $this->query->execute(Argument::cetera())->shouldBeCalled();
+        $this->queryProphecy->getQuerySettings(Argument::cetera())->shouldBeCalled()->willReturn(new Typo3QuerySettings());
+        $this->queryProphecy->in(Argument::exact('pid'), Argument::any())->shouldBeCalled();
+        $this->queryProphecy->in(Argument::exact('event.pid'), Argument::any())->shouldBeCalled();
+        $this->queryProphecy->equals(Argument::exact('day'), Argument::exact($timestamp))->shouldBeCalled();
+        $this->queryProphecy->logicalAnd(Argument::cetera())->shouldBeCalled();
+        $this->queryProphecy->matching(Argument::cetera())->shouldBeCalled()->willReturn($this->queryProphecy->reveal());
+        $this->queryProphecy->setGroupings(Argument::exact(['event', 'sortDayTime']))->shouldBeCalled();
+        $this->queryProphecy->execute(Argument::cetera())->shouldBeCalled()->willReturn($this->queryResultProphecy->reveal());
 
         $this->subject->findByTimestamp($timestamp);
     }
@@ -237,16 +258,16 @@ class DayRepositoryTest extends UnitTestCase
         $event = 24;
         $timestamp = 12345678;
 
-        $this->queryResult->getFirst()->shouldBeCalled();
+        $this->queryResultProphecy->getFirst()->shouldBeCalled();
 
-        $this->query->getQuerySettings(Argument::cetera())->shouldBeCalled()->willReturn(new Typo3QuerySettings());
-        $this->query->in(Argument::exact('pid'), Argument::any())->shouldBeCalled();
-        $this->query->in(Argument::exact('event.pid'), Argument::any())->shouldBeCalled();
-        $this->query->equals(Argument::exact('event'), Argument::exact($event))->shouldBeCalled();
-        $this->query->equals(Argument::exact('dayTime'), Argument::exact($timestamp))->shouldBeCalled();
-        $this->query->logicalAnd(Argument::cetera())->shouldBeCalled();
-        $this->query->matching(Argument::cetera())->shouldBeCalled()->willReturn($this->query->reveal());
-        $this->query->execute(Argument::cetera())->shouldBeCalled()->willReturn($this->queryResult->reveal());
+        $this->queryProphecy->getQuerySettings(Argument::cetera())->shouldBeCalled()->willReturn(new Typo3QuerySettings());
+        $this->queryProphecy->in(Argument::exact('pid'), Argument::any())->shouldBeCalled();
+        $this->queryProphecy->in(Argument::exact('event.pid'), Argument::any())->shouldBeCalled();
+        $this->queryProphecy->equals(Argument::exact('event'), Argument::exact($event))->shouldBeCalled();
+        $this->queryProphecy->equals(Argument::exact('dayTime'), Argument::exact($timestamp))->shouldBeCalled();
+        $this->queryProphecy->logicalAnd(Argument::cetera())->shouldBeCalled();
+        $this->queryProphecy->matching(Argument::cetera())->shouldBeCalled()->willReturn($this->queryProphecy->reveal());
+        $this->queryProphecy->execute(Argument::cetera())->shouldBeCalled()->willReturn($this->queryResultProphecy->reveal());
 
         $this->subject->findOneByTimestamp($event, $timestamp);
     }
@@ -259,17 +280,17 @@ class DayRepositoryTest extends UnitTestCase
         $event = 24;
         $timestamp = 0;
 
-        $this->queryResult->getFirst()->shouldBeCalled();
+        $this->queryResultProphecy->getFirst()->shouldBeCalled();
 
-        $this->query->getQuerySettings(Argument::cetera())->shouldBeCalled()->willReturn(new Typo3QuerySettings());
-        $this->query->in(Argument::exact('pid'), Argument::any())->shouldBeCalled();
-        $this->query->in(Argument::exact('event.pid'), Argument::any())->shouldBeCalled();
-        $this->query->equals(Argument::exact('event'), Argument::exact($event))->shouldBeCalled();
-        $this->query->greaterThanOrEqual(Argument::exact('dayTime'), Argument::any())->shouldBeCalled();
-        $this->query->setOrderings(Argument::exact(['dayTime' => 'ASC']))->shouldBeCalled();
-        $this->query->logicalAnd(Argument::cetera())->shouldBeCalled();
-        $this->query->matching(Argument::cetera())->shouldBeCalled()->willReturn($this->query->reveal());
-        $this->query->execute(Argument::cetera())->shouldBeCalled()->willReturn($this->queryResult->reveal());
+        $this->queryProphecy->getQuerySettings(Argument::cetera())->shouldBeCalled()->willReturn(new Typo3QuerySettings());
+        $this->queryProphecy->in(Argument::exact('pid'), Argument::any())->shouldBeCalled();
+        $this->queryProphecy->in(Argument::exact('event.pid'), Argument::any())->shouldBeCalled();
+        $this->queryProphecy->equals(Argument::exact('event'), Argument::exact($event))->shouldBeCalled();
+        $this->queryProphecy->greaterThanOrEqual(Argument::exact('dayTime'), Argument::any())->shouldBeCalled();
+        $this->queryProphecy->setOrderings(Argument::exact(['dayTime' => 'ASC']))->shouldBeCalled();
+        $this->queryProphecy->logicalAnd(Argument::cetera())->shouldBeCalled();
+        $this->queryProphecy->matching(Argument::cetera())->shouldBeCalled()->willReturn($this->queryProphecy->reveal());
+        $this->queryProphecy->execute(Argument::cetera())->shouldBeCalled()->willReturn($this->queryResultProphecy->reveal());
 
         $this->subject->findOneByTimestamp($event, $timestamp);
     }

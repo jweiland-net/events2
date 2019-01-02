@@ -33,7 +33,6 @@ class EventController extends AbstractController
      * We have a self-build form based on method GET.
      * That's why we have to manually allow some form-elements.
      *
-     * @return void
      * @throws \Exception
      */
     public function initializeListSearchResultsAction()
@@ -51,7 +50,6 @@ class EventController extends AbstractController
      * Action list search results.
      *
      * @param Search $search
-     * @return void
      * @throws \Exception
      */
     public function listSearchResultsAction(Search $search)
@@ -62,8 +60,6 @@ class EventController extends AbstractController
 
     /**
      * Action list my events.
-     *
-     * @return void
      */
     public function listMyEventsAction()
     {
@@ -74,7 +70,6 @@ class EventController extends AbstractController
     /**
      * Action new.
      *
-     * @return void
      * @throws \Exception
      */
     public function newAction()
@@ -98,7 +93,6 @@ class EventController extends AbstractController
      * Initialize create action.
      * We need this to create a DateTime-Object with time of midnight.
      *
-     * @return void
      * @throws \Exception
      */
     public function initializeCreateAction()
@@ -136,7 +130,6 @@ class EventController extends AbstractController
      * Action create.
      *
      * @param Event $event
-     * @return void
      * @throws \Exception
      */
     public function createAction(Event $event)
@@ -156,7 +149,6 @@ class EventController extends AbstractController
      * Action edit.
      *
      * @param int $event
-     * @return void
      * @throws \Exception
      */
     public function editAction($event)
@@ -179,7 +171,6 @@ class EventController extends AbstractController
      * Initialize update action
      * We need this to create a DateTime-Object with time of midnight.
      *
-     * @return void
      * @throws \Exception
      */
     public function initializeUpdateAction()
@@ -223,7 +214,6 @@ class EventController extends AbstractController
      * Action update.
      *
      * @param Event $event
-     * @return void
      * @throws \Exception
      */
     public function updateAction(Event $event)
@@ -247,7 +237,6 @@ class EventController extends AbstractController
      * Action delete.
      *
      * @param int $event
-     * @return void
      * @throws \Exception
      */
     public function deleteAction($event)
@@ -262,7 +251,6 @@ class EventController extends AbstractController
      * Action activate.
      *
      * @param int $event
-     * @return void
      * @throws \Exception
      */
     public function activateAction($event)
@@ -285,10 +273,9 @@ class EventController extends AbstractController
     }
 
     /**
-     * Add relations to day records.
+     * Add day relations to event record.
      *
      * @param Event $event
-     * @return void
      * @throws \Exception
      */
     protected function addDayRelations(Event $event)

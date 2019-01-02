@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 namespace JWeiland\Events2\Hooks;
 
 /*
@@ -20,8 +20,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
- * Class DataHandlerHook
- *
+ * Hook to add day relations to an event record
  */
 class RecreateDayRelationsHook
 {
@@ -39,8 +38,9 @@ class RecreateDayRelationsHook
     }
 
     /**
-     * @param \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler
-     * @return void
+     * Add day relations to event record(s) while creating or saving them in backend.
+     *
+     * @param DataHandler $dataHandler
      * @throws \Exception
      */
     public function processDatamap_afterAllOperations($dataHandler)
@@ -53,15 +53,13 @@ class RecreateDayRelationsHook
     }
 
     /**
-     * Add day relations to event
+     * Add day relations to event record
      *
      * @param int $eventUid
-     * @return void
      * @throws \Exception
      */
-    protected function addDayRelationsForEvent($eventUid)
+    protected function addDayRelationsForEvent(int $eventUid)
     {
-        /** @var DayRelationService $dayRelationService */
         $dayRelationService = $this->objectManager->get(DayRelationService::class);
         $dayRelationService->createDayRelations($eventUid);
     }
@@ -70,11 +68,11 @@ class RecreateDayRelationsHook
      * If a record was new, its uid is not an int. It's a string starting with "NEW"
      * This method returns the real uid as int.
      *
-     * @param string $uid
+     * @param int|string $uid
      * @param DataHandler $dataHandler
      * @return int
      */
-    protected function getRealUid($uid, $dataHandler)
+    protected function getRealUid($uid, $dataHandler): int
     {
         if (GeneralUtility::isFirstPartOfStr($uid, 'NEW')) {
             $uid = $dataHandler->substNEWwithIDs[$uid];

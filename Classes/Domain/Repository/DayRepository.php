@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 namespace JWeiland\Events2\Domain\Repository;
 
 /*
@@ -14,7 +14,6 @@ namespace JWeiland\Events2\Domain\Repository;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Filter;
@@ -28,7 +27,7 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
- * Repository to retrieve days from
+ * Repository to get and find day records from storage
  */
 class DayRepository extends Repository
 {
@@ -57,8 +56,6 @@ class DayRepository extends Repository
     ];
 
     /**
-     * inject DateTime Utility.
-     *
      * @param DateTimeUtility $dateTimeUtility
      */
     public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
@@ -67,23 +64,11 @@ class DayRepository extends Repository
     }
 
     /**
-     * inject extConf
-     *
      * @param ExtConf $extConf
      */
     public function injectExtConf(ExtConf $extConf)
     {
         $this->extConf = $extConf;
-    }
-
-    /**
-     * Returns the settings
-     *
-     * @return array $settings
-     */
-    public function getSettings()
-    {
-        return $this->settings;
     }
 
     /**
@@ -98,7 +83,7 @@ class DayRepository extends Repository
     }
 
     /**
-     * find events.
+     * Find events
      *
      * @param string $type
      * @param Filter $filter
@@ -106,7 +91,7 @@ class DayRepository extends Repository
      * @return QueryResultInterface
      * @throws \Exception
      */
-    public function findEvents($type, Filter $filter, $limit = 0)
+    public function findEvents(string $type, Filter $filter, int $limit = 0): QueryResultInterface
     {
         /** @var Query $query */
         $query = $this->createQuery();
@@ -171,10 +156,7 @@ class DayRepository extends Repository
             $query->setLimit((int)$limit);
         }
 
-        /** @var QueryResult $result */
-        $result = $query->matching($query->logicalAnd($constraints))->execute();
-
-        return $result;
+        return $query->matching($query->logicalAnd($constraints))->execute();
     }
 
     /**
@@ -251,7 +233,7 @@ class DayRepository extends Repository
      * @return Day[]
      * @throws \Exception
      */
-    protected function sortDays($records, $sortBy = 'day')
+    protected function sortDays(array $records, string $sortBy = 'day'): array
     {
         $dates = [];
 
@@ -269,13 +251,13 @@ class DayRepository extends Repository
     }
 
     /**
-     * search for events.
+     * Search for events.
      *
      * @param Search $search
-     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return QueryResultInterface
      * @throws \Exception
      */
-    public function searchEvents(Search $search)
+    public function searchEvents(Search $search): QueryResultInterface
     {
         /** @var \TYPO3\CMS\Extbase\Persistence\Generic\Query $query */
         $query = $this->createQuery();
@@ -343,7 +325,7 @@ class DayRepository extends Repository
      * @param int $day
      * @return Day
      */
-    public function findByDay($day)
+    public function findByDay(int $day): Day
     {
         /** @var \JWeiland\Events2\Persistence\Typo384\Generic\Query $query */
         $query = $this->createQuery();
@@ -358,10 +340,10 @@ class DayRepository extends Repository
      * Find all Days for a given Day (Timestamp with time set to 00:00:00).
      *
      * @param int $timestamp
-     * @return QueryResult
+     * @return QueryResultInterface
      * @throws \Exception
      */
-    public function findByTimestamp($timestamp)
+    public function findByTimestamp(int $timestamp): QueryResultInterface
     {
         $constraints = [];
         $query = $this->createQuery();
@@ -395,7 +377,7 @@ class DayRepository extends Repository
      * @return Day|null
      * @throws \Exception
      */
-    public function findOneByTimestamp($eventUid, $timestamp = 0)
+    public function findOneByTimestamp(int $eventUid, int $timestamp = 0)
     {
         $query = $this->createQuery();
 
@@ -428,7 +410,6 @@ class DayRepository extends Repository
      * Add special grouping
      *
      * @param QueryInterface $query
-     * @return void
      */
     protected function addGroupingToQuery(QueryInterface $query)
     {

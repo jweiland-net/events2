@@ -136,13 +136,14 @@ class DayRelationService
     /**
      * Create day relations for given event
      *
-     * @param int|string $eventUid Maybe starting with NEW
+     * @param int $eventUid Event UID. This also can be a hidden event.
      * @return Event
      * @throws \Exception
      */
-    public function createDayRelations($eventUid)
+    public function createDayRelations(int $eventUid)
     {
-        $event = $this->eventRepository->findByIdentifier((int)$eventUid);
+        // As create/update action will set event as hidden, we have to search for them, too.
+        $event = $this->eventRepository->findHiddenEntryByUid($eventUid);
         if (!$event instanceof Event) {
             // write a warning (2) to sys_log
             $this->getLogger()->warning('Related days could not be created, because of an empty event or a non given event uid or pid.');
