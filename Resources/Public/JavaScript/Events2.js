@@ -5,7 +5,7 @@ var Events2 = {
     selectorPluginVariables: "#events2DataElement",
     selectorCshDialog: "#dialogHint",
     selectorCshButton: "span.csh",
-    selectorRemainingCharsTextarea: ".addRemainingCharsCheck",
+    selectorRemainingChars: ".remainingChars",
     selectorAutoCompleteLocation: "#autoCompleteLocation",
     selectorAutoCompleteLocationHelper: "#autoCompleteLocationHelper",
     selectorSearchMainCategory: "#searchMainCategory",
@@ -20,7 +20,7 @@ Events2.initialize = function() {
     Events2.$events2SearchPlugins = jQuery(Events2.selectorSearchPlugin);
     Events2.$cshDialog = Events2.$events2CreatePlugins.find(Events2.selectorCshDialog);
     Events2.$cshButtons = Events2.$events2CreatePlugins.find(Events2.selectorCshButton);
-    Events2.$textareasWithRemainingChars = jQuery(Events2.selectorRemainingCharsTextarea);
+    Events2.$remainingCharsContainer = jQuery(Events2.selectorRemainingChars);
     Events2.$autoCompleteLocation = jQuery(Events2.selectorAutoCompleteLocation);
     Events2.$autoCompleteLocationHelper = jQuery(Events2.selectorAutoCompleteLocationHelper);
     Events2.$searchMainCategory = jQuery(Events2.selectorSearchMainCategory);
@@ -68,8 +68,8 @@ Events2.hasEvents2SearchPlugins = function() {
  *
  * @returns {boolean}
  */
-Events2.hasRemainingCharsTextareas = function() {
-    return !!Events2.$textareasWithRemainingChars.length;
+Events2.hasRemainingCharsContainer = function() {
+    return !!Events2.$remainingCharsContainer.length;
 };
 
 /**
@@ -159,19 +159,16 @@ Events2.initializeDatePicker = function() {
  * Initialize remaining letters for teaser in create form
  */
 Events2.initializeRemainingLetters = function() {
-    if (Events2.hasRemainingCharsTextareas()) {
+    if (Events2.hasRemainingCharsContainer()) {
         if (!Events2.isLocalizationInitialized()) {
             console.log("Variable localization of pluginVariables is not available. Please check your templates");
         } else if (!Events2.isSettingsInitialized()) {
             console.log("Variable settings of pluginVariables is not available. Please check your templates");
         } else {
-            $remainingCharsContainer = jQuery("<div />")
-                .text(Events2.pluginVariables.localization.remainingText + ": " + Events2.pluginVariables.settings.remainingLetters)
-                .attr("class", "remainingChars");
-
-            Events2.$textareasWithRemainingChars.each(function() {
-                var $textarea = jQuery(this);
-                $textarea.after($remainingCharsContainer);
+            Events2.$remainingCharsContainer.each(function() {
+                var $remainingCharsContainer = jQuery(this);
+                var $textarea = jQuery("#" + $remainingCharsContainer.data('id'));
+                $remainingCharsContainer.text(Events2.pluginVariables.localization.remainingText + ": " + Events2.pluginVariables.settings.remainingLetters);
 
                 $textarea.on("keyup", function() {
                     var value = $(this).val();
@@ -179,7 +176,7 @@ Events2.initializeRemainingLetters = function() {
                     var maxLength = Events2.pluginVariables.settings.remainingLetters;
 
                     $(this).val(value.substring(0, maxLength));
-                    $textarea.siblings(".remainingChars").eq(0).text(
+                    $remainingCharsContainer.text(
                         Events2.pluginVariables.localization.remainingText + ": " + (maxLength - len)
                     );
                 });

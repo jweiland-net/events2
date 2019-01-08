@@ -9,11 +9,29 @@ Updating
 --------
 If you update EXT:events2 to a newer version, please read this section carefully!
 
-Update to Version 2.4.0
+Update to Version 3.1.0
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-Version 2.4.0 is now TYPO3 9 compatible. We also have removed compatibility to TYPO3 6 and 7. Please check your
-installation for following events2 changes:
+With version 3.1.0 we have made a little but breaking change:
+
+In earlier versions you may have done:
+
+<f:form.textarea class="form-control addRemainingCharsCheck" id="teaser" property="teaser" rows="5" cols="50" />
+
+This will not work anymore, as it would be very hard for integrator to place the container for remaining chars
+correctly. Please change this part to:
+
+<div class="form-group row">
+	<div class="col-sm-4"></div>
+	<div class="col-sm-8">
+		<span class="remainingChars" data-id="teaser"></span>
+	</div>
+</div>
+
+Use data-id to relate it to a textarea id-attribute.
+
+Update to Version 3.0.0
+^^^^^^^^^^^^^^^^^^^^^^^
 
 * We have removed GetEventDates VH and implemented a completely new way to get future event dates.
 * We have removed MicroStart VH
@@ -47,6 +65,14 @@ Event property `download_links` can now collect more then one link. Please updat
 system caches.
 
 Now you can create events with a recurring of one or more months.
+
+We have removed all methods to get time records for an event from DayRelationService as we have all these
+methods in EventService already.
+
+Update to Version 2.4.0
+^^^^^^^^^^^^^^^^^^^^^^^
+
+Version 2.4.0 is now TYPO3 9 compatible. We also have removed compatibility to TYPO3 6 and 7.
 
 Update to Version 2.3.0
 ^^^^^^^^^^^^^^^^^^^^^^^
