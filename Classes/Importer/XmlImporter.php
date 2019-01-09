@@ -36,6 +36,11 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
 class XmlImporter extends AbstractImporter
 {
     /**
+     * @var int
+     */
+    protected $storagePid = 0;
+
+    /**
      * @var array
      */
     protected $allowedMimeType = [
@@ -55,6 +60,9 @@ class XmlImporter extends AbstractImporter
         if (!$this->validateXml($file)) {
             return false;
         }
+
+        $this->storagePid = (int)$task->storagePid;
+
         $events = GeneralUtility::xml2array($file->getContents());
         if ($this->hasInvalidEvents($events)) {
             return false;
@@ -62,8 +70,7 @@ class XmlImporter extends AbstractImporter
 
         foreach ($events as $event) {
             $this->saveEvent(
-                $this->createEvent($event),
-                $task
+                $this->createEvent($event)
             );
         }
         $this->getPersistenceManager()->persistAll();
@@ -76,9 +83,7 @@ class XmlImporter extends AbstractImporter
      * Validate XML for import
      *
      * @param FileInterface $file
-     *
      * @return bool
-     *
      * @throws \Exception
      */
     protected function validateXml(FileInterface $file)
@@ -118,9 +123,7 @@ class XmlImporter extends AbstractImporter
      * Create new event
      *
      * @param array $data
-     *
      * @return Event
-     *
      * @throws \Exception
      */
     protected function createEvent(array $data)
@@ -145,7 +148,6 @@ class XmlImporter extends AbstractImporter
      *
      * @param Event $event
      * @param array $data
-     *
      * @return void
      */
     protected function addRootProperties(Event $event, array $data)
@@ -174,7 +176,6 @@ class XmlImporter extends AbstractImporter
      *
      * @param Event $event
      * @param array $data
-     *
      * @return void
      */
     protected function addDateProperties(Event $event, array $data)
@@ -201,7 +202,6 @@ class XmlImporter extends AbstractImporter
      *
      * @param Event $event
      * @param array $data
-     *
      * @return void
      */
     protected function addTimeProperties(Event $event, array $data)
@@ -210,6 +210,7 @@ class XmlImporter extends AbstractImporter
         if (isset($data['event_time']) && is_array($data['event_time'])) {
             /** @var Time $eventTime */
             $eventTime = $this->objectManager->get(Time::class);
+            $eventTime->setPid($this->storagePid);
             $eventTime->setTimeBegin($data['event_time']['time_begin']);
             $eventTime->setTimeEntry($data['event_time']['time_entry']);
             $eventTime->setTimeEnd($data['event_time']['time_end']);
@@ -226,6 +227,7 @@ class XmlImporter extends AbstractImporter
         ) {
             foreach ($data['multiple_times'] as $multipleTime) {
                 $newTime = $this->objectManager->get(Time::class);
+                $newTime->setPid($this->storagePid);
                 $newTime->setTimeBegin($multipleTime['time_begin']);
                 $newTime->setTimeEntry($multipleTime['time_entry']);
                 $newTime->setTimeEnd($multipleTime['time_end']);
@@ -241,6 +243,7 @@ class XmlImporter extends AbstractImporter
         ) {
             foreach ($data['different_times'] as $differentTime) {
                 $newTime = $this->objectManager->get(Time::class);
+                $newTime->setPid($this->storagePid);
                 $newTime->setWeekday($differentTime['weekday']);
                 $newTime->setTimeBegin($differentTime['time_begin']);
                 $newTime->setTimeEntry($differentTime['time_entry']);
@@ -256,7 +259,6 @@ class XmlImporter extends AbstractImporter
      *
      * @param Event $event
      * @param array $data
-     *
      * @return void
      */
     protected function addOrganizer(Event $event, array $data)
@@ -270,9 +272,7 @@ class XmlImporter extends AbstractImporter
      *
      * @param Event $event
      * @param array $data
-     *
      * @return void
-     *
      * @throws \Exception
      */
     protected function addLocation(Event $event, array $data)
@@ -286,9 +286,7 @@ class XmlImporter extends AbstractImporter
      *
      * @param Event $event
      * @param array $data
-     *
      * @return void
-     *
      * @throws \Exception
      */
     protected function addLinks(Event $event, array $data)
@@ -298,6 +296,7 @@ class XmlImporter extends AbstractImporter
             if (isset($data[$property]) && filter_var($data[$property]['uri'], FILTER_VALIDATE_URL)) {
                 /** @var Link $link */
                 $link = $this->objectManager->get(Link::class);
+                $link->setPid($this->storagePid);
                 $link->setTitle($data[$property]['title']);
                 $link->setLink($data[$property]['uri']);
 
@@ -317,9 +316,7 @@ class XmlImporter extends AbstractImporter
      *
      * @param Event $event
      * @param array $data
-     *
      * @return void
-     *
      * @throws \Exception
      */
     protected function addExceptions(Event $event, array $data)
@@ -331,6 +328,7 @@ class XmlImporter extends AbstractImporter
         foreach ($data['exceptions'] as $exception) {
             /** @var Exception $newException */
             $newException = $this->objectManager->get(Exception::class);
+            $newException->setPid($this->storagePid);
             $newException->setExceptionType($exception['exception_type']);
 
             $exceptionDate = \DateTime::createFromFormat('Y-m-d', $exception['exception_date']);
@@ -342,6 +340,7 @@ class XmlImporter extends AbstractImporter
             if (isset($exception['exception_time'])) {
                 /** @var Time $newTime */
                 $newTime = $this->objectManager->get(Time::class);
+                $newTime->setPid($this->storagePid);
                 $newTime->setTimeBegin($exception['exception_time']['time_begin']);
                 $newTime->setTimeEntry($exception['exception_time']['time_entry']);
                 $newTime->setTimeEnd($exception['exception_time']['time_end']);
@@ -360,9 +359,7 @@ class XmlImporter extends AbstractImporter
      *
      * @param Event $event
      * @param array $data
-     *
      * @return void
-     *
      * @throws \Exception
      */
     protected function addCategories(Event $event, array $data)
@@ -380,9 +377,7 @@ class XmlImporter extends AbstractImporter
      *
      * @param Event $event
      * @param array $data
-     *
      * @return void
-     *
      * @throws \Exception
      */
     protected function addImages(Event $event, array $data)
@@ -429,11 +424,12 @@ class XmlImporter extends AbstractImporter
                 // Create new FileReference
                 /** @var \TYPO3\CMS\Extbase\Domain\Model\FileReference $extbaseFileReference */
                 $extbaseFileReference = $this->objectManager->get(\TYPO3\CMS\Extbase\Domain\Model\FileReference::class);
+                $extbaseFileReference->setPid($this->storagePid);
                 $extbaseFileReference->setOriginalResource(ResourceFactory::getInstance()->createFileReferenceObject(
                     [
                         'uid_local' => $file->getUid(),
                         'uid_foreign' => uniqid('NEW_'),
-                        'uid' => uniqid('NEW_'),
+                        'uid' => uniqid('NEW_')
                     ]
                 ));
                 $images->attach($extbaseFileReference);
@@ -446,15 +442,13 @@ class XmlImporter extends AbstractImporter
      * Save event
      *
      * @param Event $event
-     * @param AbstractTask $task
-     *
      * @return void
      */
-    protected function saveEvent(Event $event, AbstractTask $task)
+    protected function saveEvent(Event $event)
     {
         /** @var Import $task */
         $event->setHidden(true);
-        $event->setPid($task->storagePid);
+        $event->setPid($this->storagePid);
         $this->getPersistenceManager()->add($event);
     }
 }

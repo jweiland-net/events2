@@ -117,9 +117,7 @@ abstract class AbstractImporter implements ImporterInterface
      * Check, if File is valid for this importer
      *
      * @param FileInterface $file
-     *
      * @return bool
-     *
      * @throws \Exception
      */
     public function isValid(FileInterface $file)
@@ -344,9 +342,7 @@ abstract class AbstractImporter implements ImporterInterface
      *
      * @param string $message The message itself
      * @param int $severity Message level (according to \TYPO3\CMS\Core\Messaging\FlashMessage class constants)
-     *
      * @return void
-     *
      * @throws \Exception
      */
     protected function addMessage($message, $severity = FlashMessage::OK)
