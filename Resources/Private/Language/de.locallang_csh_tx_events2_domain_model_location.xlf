@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-  <file source-language="en" datatype="plaintext" original="messages" date="2017-08-25T10:38:40Z" product-name="events2">
-    <header/>
-    <body>
-      <trans-unit id="location.description">
-        <source>Name of the location</source>
-        <target>Name des Veranstaltungsortes</target>
-      </trans-unit>
+	<file source-language="en" datatype="plaintext" original="messages" date="2017-08-25T10:38:40Z" product-name="events2">
+		<header/>
+		<body>
+			<trans-unit id="location.description">
+				<source>Name of the location</source>
+				<target>Name des Veranstaltungsortes</target>
+			</trans-unit>
 
-      <trans-unit id="street.description">
-        <source>Add the street of the location</source>
-        <target>Geben Sie die Straße des Ortes an.</target>
-      </trans-unit>
+			<trans-unit id="street.description">
+				<source>Add the street of the location</source>
+				<target>Geben Sie die Straße des Ortes an.</target>
+			</trans-unit>
 
-      <trans-unit id="house_number.description">
-        <source>Add the house number of the location</source>
-        <target>Geben Sie die Hausnummer des Ortes an.</target>
-      </trans-unit>
+			<trans-unit id="house_number.description">
+				<source>Add the house number of the location</source>
+				<target>Geben Sie die Hausnummer des Ortes an.</target>
+			</trans-unit>
 
-      <trans-unit id="zip.description">
-        <source>Add the zip of the location</source>
-        <target>Geben Sie die Postleitzahl des Ortes an.</target>
-      </trans-unit>
+			<trans-unit id="zip.description">
+				<source>Add the zip of the location</source>
+				<target>Geben Sie die Postleitzahl des Ortes an.</target>
+			</trans-unit>
 
-      <trans-unit id="city.description">
-        <source>Add the city of the location</source>
-        <target>Geben Sie die Stadt des Ortes an.</target>
-      </trans-unit>
+			<trans-unit id="city.description">
+				<source>Add the city of the location</source>
+				<target>Geben Sie die Stadt des Ortes an.</target>
+			</trans-unit>
 
-      <trans-unit id="country.description">
-        <source>Add the country of the location</source>
-        <target>Geben Sie die Land des Ortes an.</target>
-      </trans-unit>
+			<trans-unit id="country.description">
+				<source>Add the country of the location</source>
+				<target>Geben Sie die Land des Ortes an.</target>
+			</trans-unit>
 
-      <trans-unit id="tx_maps2_uid.description">
-        <source>Relate a maps2 record with this location. Or save this record and a new maps2 record will be created automatically</source>
-        <target>Verknüpfen Sie den Ort mit einem maps2 Datensatz. Sie können diesen Datensatz auch einfach speichern, dann wird automatisch ein neuer maps2 Datensatz erzeugt</target>
-      </trans-unit>
-    </body>
-  </file>
+			<trans-unit id="tx_maps2_uid.description">
+				<source>Relate a maps2 record with this location. Or save this record and a new maps2 record will be created automatically</source>
+				<target>Verknüpfen Sie den Ort mit einem maps2 Datensatz. Sie können diesen Datensatz auch einfach speichern, dann wird automatisch ein neuer maps2 Datensatz erzeugt</target>
+			</trans-unit>
+		</body>
+	</file>
 </xliff>

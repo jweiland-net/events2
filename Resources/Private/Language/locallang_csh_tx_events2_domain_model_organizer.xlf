@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-  <file source-language="en" datatype="plaintext" original="messages" date="2017-08-25T10:38:40Z" product-name="events2">
-    <header/>
-    <body>
-      <trans-unit id="organizer.description">
-        <source>Name of the organizer</source>
-      </trans-unit>
+	<file source-language="en" datatype="plaintext" original="messages" date="2017-08-25T10:38:40Z" product-name="events2">
+		<header/>
+		<body>
+			<trans-unit id="organizer.description">
+				<source>Name of the organizer</source>
+			</trans-unit>
 
-      <trans-unit id="hide_in_filter.description">
-        <source>In plugin configuration you have the possibility to show all organizers als selectbox in frontend. If you don't want this organizer in that list you have to activate that option</source>
-      </trans-unit>
+			<trans-unit id="hide_in_filter.description">
+				<source>In plugin configuration you have the possibility to show all organizers als selectbox in frontend. If you don't want this organizer in that list you have to activate that option</source>
+			</trans-unit>
 
-      <trans-unit id="link.description">
-        <source>Create a link to the organizers website</source>
-      </trans-unit>
-    </body>
-  </file>
+			<trans-unit id="link.description">
+				<source>Create a link to the organizers website</source>
+			</trans-unit>
+		</body>
+	</file>
 </xliff>
