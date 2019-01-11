@@ -1,426 +1,426 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-  <file source-language="en" datatype="plaintext" original="messages" date="2013-03-40T10:38:40Z" product-name="events2">
-    <header/>
-    <body>
+	<file source-language="en" datatype="plaintext" original="messages" date="2013-03-40T10:38:40Z" product-name="events2">
+		<header/>
+		<body>
 
-      <trans-unit id="tx_events2_domain_model_event">
-        <source>Event</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.top_of_list">
-        <source>Top of list</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.title">
-        <source>Title</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.teaser">
-        <source>Teaser</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.event_begin">
-        <source>Event begin</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.event_begin2">
-        <source>Date of Events</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.event_time">
-        <source>Time</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.event_end">
-        <source>Last event</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.same_day">
-        <source>Same day</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.multiple_times">
-        <source>Multiple times on same day</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.xth">
-        <source>Recurring</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.xth.first">
-        <source>1st</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.xth.second">
-        <source>2nd</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.xth.third">
-        <source>3rd</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.xth.fourth">
-        <source>4th</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.xth.fifth">
-        <source>5th</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.weekday">
-        <source>Weekday</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.weekday.monday">
-        <source>Mo</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.weekday.tuesday">
-        <source>Tu</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.weekday.wednesday">
-        <source>We</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.weekday.thursday">
-        <source>Th</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.weekday.friday">
-        <source>Fr</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.weekday.saturday">
-        <source>Sa</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.weekday.sunday">
-        <source>Su</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.different_times">
-        <source>Different times for each weekday</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.each_weeks">
-        <source>Recurring weeks</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.each_weeks.0">
-        <source>Don't repeat in weeks. Use settings above.</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.each_weeks.1">
-        <source>Each week</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.each_weeks.2">
-        <source>Each 2 weeks</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.each_weeks.3">
-        <source>Each 3 weeks</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.each_weeks.4">
-        <source>Each 4 weeks</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.exceptions">
-        <source>Exceptions</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.detail_informations">
-        <source>Detail informations</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.free_entry">
-        <source>free entry</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.ticket_link">
-        <source>Ticket link</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.days">
-        <source>Days</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.location">
-        <source>Location</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.organizer">
-        <source>Organizer</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.images">
-        <source>Images</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.video_link">
-        <source>Link to Youtube</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.download_links">
-        <source>Download links</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.categories">
-        <source>Categories</source>
-      </trans-unit>
+			<trans-unit id="tx_events2_domain_model_event">
+				<source>Event</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.top_of_list">
+				<source>Top of list</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.title">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.teaser">
+				<source>Teaser</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.event_begin">
+				<source>Event begin</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.event_begin2">
+				<source>Date of Events</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.event_time">
+				<source>Time</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.event_end">
+				<source>Last event</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.same_day">
+				<source>Same day</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.multiple_times">
+				<source>Multiple times on same day</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.xth">
+				<source>Recurring</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.xth.first">
+				<source>1st</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.xth.second">
+				<source>2nd</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.xth.third">
+				<source>3rd</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.xth.fourth">
+				<source>4th</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.xth.fifth">
+				<source>5th</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.weekday">
+				<source>Weekday</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.weekday.monday">
+				<source>Mo</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.weekday.tuesday">
+				<source>Tu</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.weekday.wednesday">
+				<source>We</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.weekday.thursday">
+				<source>Th</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.weekday.friday">
+				<source>Fr</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.weekday.saturday">
+				<source>Sa</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.weekday.sunday">
+				<source>Su</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.different_times">
+				<source>Different times for each weekday</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.each_weeks">
+				<source>Recurring weeks</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.each_weeks.0">
+				<source>Don't repeat in weeks. Use settings above.</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.each_weeks.1">
+				<source>Each week</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.each_weeks.2">
+				<source>Each 2 weeks</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.each_weeks.3">
+				<source>Each 3 weeks</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.each_weeks.4">
+				<source>Each 4 weeks</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.exceptions">
+				<source>Exceptions</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.detail_informations">
+				<source>Detail informations</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.free_entry">
+				<source>free entry</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.ticket_link">
+				<source>Ticket link</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.days">
+				<source>Days</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.location">
+				<source>Location</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.organizer">
+				<source>Organizer</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.images">
+				<source>Images</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.video_link">
+				<source>Link to Youtube</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.download_links">
+				<source>Download links</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.categories">
+				<source>Categories</source>
+			</trans-unit>
 
-      <trans-unit id="tx_events2_domain_model_day">
-        <source>Day</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_day.day">
-        <source>Day</source>
-      </trans-unit>
+			<trans-unit id="tx_events2_domain_model_day">
+				<source>Day</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_day.day">
+				<source>Day</source>
+			</trans-unit>
 
-      <trans-unit id="tx_events2_domain_model_time">
-        <source>Time</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_time.type">
-        <source>Type</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_time.weekday">
-        <source>Weekday</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_time.weekday.monday">
-        <source>Monday</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_time.weekday.tuesday">
-        <source>Tuesday</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_time.weekday.wednesday">
-        <source>Wednesday</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_time.weekday.thursday">
-        <source>Thursday</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_time.weekday.friday">
-        <source>Friday</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_time.weekday.saturday">
-        <source>Saturday</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_time.weekday.sunday">
-        <source>Sunday</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_time.time_begin">
-        <source>Time Begin</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_time.time_entry">
-        <source>Time Entry</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_time.duration">
-        <source>Duration</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_time.time_end">
-        <source>Time End</source>
-      </trans-unit>
+			<trans-unit id="tx_events2_domain_model_time">
+				<source>Time</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_time.type">
+				<source>Type</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_time.weekday">
+				<source>Weekday</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_time.weekday.monday">
+				<source>Monday</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_time.weekday.tuesday">
+				<source>Tuesday</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_time.weekday.wednesday">
+				<source>Wednesday</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_time.weekday.thursday">
+				<source>Thursday</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_time.weekday.friday">
+				<source>Friday</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_time.weekday.saturday">
+				<source>Saturday</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_time.weekday.sunday">
+				<source>Sunday</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_time.time_begin">
+				<source>Time Begin</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_time.time_entry">
+				<source>Time Entry</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_time.duration">
+				<source>Duration</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_time.time_end">
+				<source>Time End</source>
+			</trans-unit>
 
-      <trans-unit id="tx_events2_domain_model_exception">
-        <source>Exception</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_exception.exception_type">
-        <source>Type</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_exception.exception_type.Add">
-        <source>Add</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_exception.exception_type.Remove">
-        <source>Remove</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_exception.exception_type.Time">
-        <source>Time</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_exception.exception_type.Info">
-        <source>Info</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_exception.exception_date">
-        <source>Date</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_exception.exception_time">
-        <source>Time</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_exception.exception_details">
-        <source>Details</source>
-      </trans-unit>
+			<trans-unit id="tx_events2_domain_model_exception">
+				<source>Exception</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_exception.exception_type">
+				<source>Type</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_exception.exception_type.Add">
+				<source>Add</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_exception.exception_type.Remove">
+				<source>Remove</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_exception.exception_type.Time">
+				<source>Time</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_exception.exception_type.Info">
+				<source>Info</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_exception.exception_date">
+				<source>Date</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_exception.exception_time">
+				<source>Time</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_exception.exception_details">
+				<source>Details</source>
+			</trans-unit>
 
-      <trans-unit id="tx_events2_domain_model_location">
-        <source>Location</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_location.location">
-        <source>Location</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_location.street">
-        <source>Street</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_location.house_number">
-        <source>Number</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_location.zip">
-        <source>Zip</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_location.city">
-        <source>City</source>
-      </trans-unit>
+			<trans-unit id="tx_events2_domain_model_location">
+				<source>Location</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_location.location">
+				<source>Location</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_location.street">
+				<source>Street</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_location.house_number">
+				<source>Number</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_location.zip">
+				<source>Zip</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_location.city">
+				<source>City</source>
+			</trans-unit>
 
-      <trans-unit id="tx_events2_domain_model_organizer">
-        <source>Organizer</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_organizer.organizer">
-        <source>Organizer</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_organizer.link">
-        <source>Link</source>
-      </trans-unit>
+			<trans-unit id="tx_events2_domain_model_organizer">
+				<source>Organizer</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_organizer.organizer">
+				<source>Organizer</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_organizer.link">
+				<source>Link</source>
+			</trans-unit>
 
-      <trans-unit id="tx_events2_domain_model_link">
-        <source>Link</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_link.title">
-        <source>Title</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_link.link">
-        <source>Link</source>
-      </trans-unit>
+			<trans-unit id="tx_events2_domain_model_link">
+				<source>Link</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_link.title">
+				<source>Title</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_link.link">
+				<source>Link</source>
+			</trans-unit>
 
-      <trans-unit id="tx_events2_domain_model_search.search">
-        <source>Searchword</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_search.mainCategory">
-        <source>Main category</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_search.subCategory">
-        <source>Sub category</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_search.eventBegin">
-        <source>Event begin</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_search.eventEnd">
-        <source>Event end</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_search.location">
-        <source>Location</source>
-      </trans-unit>
-      <trans-unit id="tx_events2_domain_model_search.freeEntry">
-        <source>Free entry</source>
-      </trans-unit>
-      <trans-unit id="newEntry">
-        <source>Insert new Event</source>
-      </trans-unit>
-      <trans-unit id="listMyEvents">
-        <source>List my events</source>
-      </trans-unit>
-      <trans-unit id="eventCreated">
-        <source>Your new Event was created.</source>
-      </trans-unit>
-      <trans-unit id="eventUpdated">
-        <source>Your Event has been updated.</source>
-      </trans-unit>
-      <trans-unit id="eventDeleted">
-        <source>Your Event has been removed.</source>
-      </trans-unit>
-      <trans-unit id="showDetailview">
-        <source>See Single View</source>
-      </trans-unit>
-      <trans-unit id="multipleTimesAssigned">
-        <source>Multiple times assigned</source>
-      </trans-unit>
+			<trans-unit id="tx_events2_domain_model_search.search">
+				<source>Searchword</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_search.mainCategory">
+				<source>Main category</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_search.subCategory">
+				<source>Sub category</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_search.eventBegin">
+				<source>Event begin</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_search.eventEnd">
+				<source>Event end</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_search.location">
+				<source>Location</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_search.freeEntry">
+				<source>Free entry</source>
+			</trans-unit>
+			<trans-unit id="newEntry">
+				<source>Insert new Event</source>
+			</trans-unit>
+			<trans-unit id="listMyEvents">
+				<source>List my events</source>
+			</trans-unit>
+			<trans-unit id="eventCreated">
+				<source>Your new Event was created.</source>
+			</trans-unit>
+			<trans-unit id="eventUpdated">
+				<source>Your Event has been updated.</source>
+			</trans-unit>
+			<trans-unit id="eventDeleted">
+				<source>Your Event has been removed.</source>
+			</trans-unit>
+			<trans-unit id="showDetailview">
+				<source>See Single View</source>
+			</trans-unit>
+			<trans-unit id="multipleTimesAssigned">
+				<source>Multiple times assigned</source>
+			</trans-unit>
 			<trans-unit id="routePlanner">
 				<source>Routeplanner</source>
 			</trans-unit>
 			<trans-unit id="alternativeEventDates">
 				<source>Alternative event dates</source>
 			</trans-unit>
-      <trans-unit id="singleView">
-        <source>Single View</source>
-      </trans-unit>
-      <trans-unit id="search">
-        <source>Search</source>
-      </trans-unit>
-      <trans-unit id="yes">
-        <source>yes</source>
-      </trans-unit>
-      <trans-unit id="no">
-        <source>no</source>
-      </trans-unit>
-      <trans-unit id="noResults">
-        <source>Today there are no events</source>
-      </trans-unit>
-      <trans-unit id="export">
-        <source>Export date</source>
-      </trans-unit>
-      <trans-unit id="widget.pagination.previous">
-        <source>previous</source>
-      </trans-unit>
-      <trans-unit id="widget.pagination.next">
-        <source>next</source>
-      </trans-unit>
-      <trans-unit id="event_schedule">
-        <source>Event Schedule</source>
-      </trans-unit>
-      <trans-unit id="event_topic">
-        <source>Event List by Topics</source>
-      </trans-unit>
-      <trans-unit id="no_event_today">
-        <source>No events today.</source>
-      </trans-unit>
-      <trans-unit id="link.listEvents">
-        <source>Show all events</source>
-      </trans-unit>
-      <trans-unit id="required">
-        <source>required</source>
-      </trans-unit>
-      <trans-unit id="hint">
-        <source>Hint</source>
-      </trans-unit>
-      <trans-unit id="create">
-        <source>Create</source>
-      </trans-unit>
-      <trans-unit id="update">
-        <source>Edit</source>
-      </trans-unit>
-      <trans-unit id="save">
-        <source>Save</source>
-      </trans-unit>
-      <trans-unit id="remainingLetters">
-        <source>Remaining letters</source>
-      </trans-unit>
-      <trans-unit id="notAllowedToCreate">
-        <source>You're not allowed to create event records.</source>
-      </trans-unit>
-      <trans-unit id="missingOrganizerForCreate">
-        <source>You're allowed to create event records, but your user record has no relation to an organizer record.</source>
-      </trans-unit>
+			<trans-unit id="singleView">
+				<source>Single View</source>
+			</trans-unit>
+			<trans-unit id="search">
+				<source>Search</source>
+			</trans-unit>
+			<trans-unit id="yes">
+				<source>yes</source>
+			</trans-unit>
+			<trans-unit id="no">
+				<source>no</source>
+			</trans-unit>
+			<trans-unit id="noResults">
+				<source>Today there are no events</source>
+			</trans-unit>
+			<trans-unit id="export">
+				<source>Export date</source>
+			</trans-unit>
+			<trans-unit id="widget.pagination.previous">
+				<source>previous</source>
+			</trans-unit>
+			<trans-unit id="widget.pagination.next">
+				<source>next</source>
+			</trans-unit>
+			<trans-unit id="event_schedule">
+				<source>Event Schedule</source>
+			</trans-unit>
+			<trans-unit id="event_topic">
+				<source>Event List by Topics</source>
+			</trans-unit>
+			<trans-unit id="no_event_today">
+				<source>No events today.</source>
+			</trans-unit>
+			<trans-unit id="link.listEvents">
+				<source>Show all events</source>
+			</trans-unit>
+			<trans-unit id="required">
+				<source>required</source>
+			</trans-unit>
+			<trans-unit id="hint">
+				<source>Hint</source>
+			</trans-unit>
+			<trans-unit id="create">
+				<source>Create</source>
+			</trans-unit>
+			<trans-unit id="update">
+				<source>Edit</source>
+			</trans-unit>
+			<trans-unit id="save">
+				<source>Save</source>
+			</trans-unit>
+			<trans-unit id="remainingLetters">
+				<source>Remaining letters</source>
+			</trans-unit>
+			<trans-unit id="notAllowedToCreate">
+				<source>You're not allowed to create event records.</source>
+			</trans-unit>
+			<trans-unit id="missingOrganizerForCreate">
+				<source>You're allowed to create event records, but your user record has no relation to an organizer record.</source>
+			</trans-unit>
 
-      <trans-unit id="email.subject.create">
-        <source>A new record was created</source>
-      </trans-unit>
-      <trans-unit id="email.subject.update">
-        <source>A record was updated</source>
-      </trans-unit>
-      <trans-unit id="email.subject.activate">
-        <source>A record was activated</source>
-      </trans-unit>
+			<trans-unit id="email.subject.create">
+				<source>A new record was created</source>
+			</trans-unit>
+			<trans-unit id="email.subject.update">
+				<source>A record was updated</source>
+			</trans-unit>
+			<trans-unit id="email.subject.activate">
+				<source>A record was activated</source>
+			</trans-unit>
 
-      <trans-unit id="error.upload">
-        <source>Something went wrong with your uploaded files. Please try again. Error: </source>
-      </trans-unit>
-      <trans-unit id="error.uploadRights">
-        <source>You don\'t have checked the box for upload rights. So upload stops here</source>
-      </trans-unit>
-      <trans-unit id="error.fileExtension">
-        <source>You only can upload files with following file extensions: %1$s</source>
-      </trans-unit>
-      <trans-unit id="error.locationFail">
-        <source>The given location does not exist in our database. Please choose another one</source>
-      </trans-unit>
+			<trans-unit id="error.upload">
+				<source>Something went wrong with your uploaded files. Please try again. Error: </source>
+			</trans-unit>
+			<trans-unit id="error.uploadRights">
+				<source>You don\'t have checked the box for upload rights. So upload stops here</source>
+			</trans-unit>
+			<trans-unit id="error.fileExtension">
+				<source>You only can upload files with following file extensions: %1$s</source>
+			</trans-unit>
+			<trans-unit id="error.locationFail">
+				<source>The given location does not exist in our database. Please choose another one</source>
+			</trans-unit>
 
-      <trans-unit id="cshTitle">
-        <source>The title is mandatory</source>
-      </trans-unit>
-      <trans-unit id="cshTeaser">
-        <source>The teaser is a short description and will be displayed on list views</source>
-      </trans-unit>
-      <trans-unit id="cshEventBegin">
-        <source>This date must be filled in following format: dd.mm.yyyy</source>
-      </trans-unit>
-      <trans-unit id="cshEventEnd">
-        <source>This date must be filled in following format: dd.mm.yyyy</source>
-      </trans-unit>
-      <trans-unit id="cshTimeBegin">
-        <source>The time of the event has to be fill in following format: hh:mm</source>
-      </trans-unit>
-      <trans-unit id="cshCategories">
-        <source>The categories are mandatory. Please hold down STRG or CMD on your keyboard to select multiple categories.</source>
-      </trans-unit>
-      <trans-unit id="cshLocation">
-        <source>The location is mandatory</source>
-      </trans-unit>
-      <trans-unit id="cshVideo">
-        <source>Insert here the link to a video film</source>
-      </trans-unit>
-      <trans-unit id="cshImages">
-        <source>Upload max. 5 image files (jpg,gif,png). Please use the same image dimensions (i.e. 3:2, 3:4) if uploading more than one image.Be sure to set the image rights. Otherwise the image will not be uploaded.</source>
-      </trans-unit>
-      <trans-unit id="rightsMessage">
-        <source>I give all rights of this image to city Pforzheim</source>
-      </trans-unit>
-      <trans-unit id="altTextMapImg">
-        <source>Map</source>
-      </trans-unit>
+			<trans-unit id="cshTitle">
+				<source>The title is mandatory</source>
+			</trans-unit>
+			<trans-unit id="cshTeaser">
+				<source>The teaser is a short description and will be displayed on list views</source>
+			</trans-unit>
+			<trans-unit id="cshEventBegin">
+				<source>This date must be filled in following format: dd.mm.yyyy</source>
+			</trans-unit>
+			<trans-unit id="cshEventEnd">
+				<source>This date must be filled in following format: dd.mm.yyyy</source>
+			</trans-unit>
+			<trans-unit id="cshTimeBegin">
+				<source>The time of the event has to be fill in following format: hh:mm</source>
+			</trans-unit>
+			<trans-unit id="cshCategories">
+				<source>The categories are mandatory. Please hold down STRG or CMD on your keyboard to select multiple categories.</source>
+			</trans-unit>
+			<trans-unit id="cshLocation">
+				<source>The location is mandatory</source>
+			</trans-unit>
+			<trans-unit id="cshVideo">
+				<source>Insert here the link to a video film</source>
+			</trans-unit>
+			<trans-unit id="cshImages">
+				<source>Upload max. 5 image files (jpg,gif,png). Please use the same image dimensions (i.e. 3:2, 3:4) if uploading more than one image.Be sure to set the image rights. Otherwise the image will not be uploaded.</source>
+			</trans-unit>
+			<trans-unit id="rightsMessage">
+				<source>I give all rights of this image to city Pforzheim</source>
+			</trans-unit>
+			<trans-unit id="altTextMapImg">
+				<source>Map</source>
+			</trans-unit>
 
-      <trans-unit id="scheduler.path">
-        <source>Path of file to import</source>
-      </trans-unit>
-      <trans-unit id="scheduler.storagePid">
-        <source>Storage PID</source>
-      </trans-unit>
+			<trans-unit id="scheduler.path">
+				<source>Path of file to import</source>
+			</trans-unit>
+			<trans-unit id="scheduler.storagePid">
+				<source>Storage PID</source>
+			</trans-unit>
 
-    </body>
-  </file>
+		</body>
+	</file>
 </xliff>

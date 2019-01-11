@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-  <file source-language="en" datatype="plaintext" original="messages" date="2017-08-25T10:38:40Z" product-name="events2">
-    <header/>
-    <body>
-      <trans-unit id="exception_type.description">
-        <source>Special definitions for a defined date</source>
-      </trans-unit>
-      <trans-unit id="exception_type.details">
-        <source>
-          Add an additional date.
-          Add another time record for a special date.
-          Mark a date as removed.
-          Add further information for a special date.
-        </source>
-      </trans-unit>
+	<file source-language="en" datatype="plaintext" original="messages" date="2017-08-25T10:38:40Z" product-name="events2">
+		<header/>
+		<body>
+			<trans-unit id="exception_type.description">
+				<source>Special definitions for a defined date</source>
+			</trans-unit>
+			<trans-unit id="exception_type.details">
+				<source>
+					Add an additional date.
+					Add another time record for a special date.
+					Mark a date as removed.
+					Add further information for a special date.
+				</source>
+			</trans-unit>
 
-      <trans-unit id="exception_date.description">
-        <source>Create special definition for this date</source>
-      </trans-unit>
+			<trans-unit id="exception_date.description">
+				<source>Create special definition for this date</source>
+			</trans-unit>
 
-      <trans-unit id="exception_time.description">
-        <source>Override all previously created time records for a defined date with this time record</source>
-      </trans-unit>
+			<trans-unit id="exception_time.description">
+				<source>Override all previously created time records for a defined date with this time record</source>
+			</trans-unit>
 
-      <trans-unit id="exception_details.description">
-        <source>Create an additional information for a defined date</source>
-      </trans-unit>
-    </body>
-  </file>
+			<trans-unit id="exception_details.description">
+				<source>Create an additional information for a defined date</source>
+			</trans-unit>
+		</body>
+	</file>
 </xliff>

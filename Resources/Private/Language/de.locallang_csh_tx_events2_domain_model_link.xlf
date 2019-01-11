@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-  <file source-language="en" datatype="plaintext" original="messages" date="2017-08-25T10:38:40Z" product-name="events2">
-    <header/>
-    <body>
-      <trans-unit id="title.description">
-        <source>A title for the link</source>
-        <target>Geben Sie dem Link einen Namen</target>
-      </trans-unit>
+	<file source-language="en" datatype="plaintext" original="messages" date="2017-08-25T10:38:40Z" product-name="events2">
+		<header/>
+		<body>
+			<trans-unit id="title.description">
+				<source>A title for the link</source>
+				<target>Geben Sie dem Link einen Namen</target>
+			</trans-unit>
 
-      <trans-unit id="link.description">
-        <source>The link to the website</source>
-        <target>Der Link zu der Webseite</target>
-      </trans-unit>
-    </body>
-  </file>
+			<trans-unit id="link.description">
+				<source>The link to the website</source>
+				<target>Der Link zu der Webseite</target>
+			</trans-unit>
+		</body>
+	</file>
 </xliff>
