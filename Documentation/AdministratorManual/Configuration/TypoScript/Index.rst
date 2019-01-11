@@ -38,7 +38,7 @@ Properties
   pidOfSearchPage_                integer
   pidOfLocationPage_              integer
   pidOfListPage_                  integer
-  mergeEvents_                    false
+  showOnlyNextEvent_              false
   userGroup_                      false
   list_                           array
   latest_                         array
@@ -85,13 +85,12 @@ pidOfListPage
 If you have defined a detail page, you should also set pidOfListPage to have
 proper links back to the list view of event records.
 
-.. _mergeEvents:
+.. _showOnlyNextEvent:
 
-mergeEvents
-"""""""""""
-Merge all days and times of one event into one event. If you have many recurring
-events this option can help you to clean up your list views a little bit.
-BUT: In this special view you will not see the date directly.
+showOnlyNextEvent
+"""""""""""""""""
+If you have recurring events, this option will only show the next date of the
+events instead of all following dates.
 
 .. _userGroup:
 

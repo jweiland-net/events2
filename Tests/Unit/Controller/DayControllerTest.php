@@ -140,7 +140,7 @@ class DayControllerTest extends UnitTestCase
         $filter = new Filter();
         $queryResult = new QueryResult(new Query(Day::class));
         $settings = $this->subject->_get('settings');
-        $settings['mergeEvents'] = 0;
+        $settings['showOnlyNextEvent'] = 0;
         $this->subject->_set('settings', $settings);
 
         $this->dayRepository->findEvents(
@@ -171,7 +171,7 @@ class DayControllerTest extends UnitTestCase
         $filter = new Filter();
         $queryResult = new QueryResult(new Query(Day::class));
         $settings = $this->subject->_get('settings');
-        $settings['mergeEvents'] = 1;
+        $settings['showOnlyNextEvent'] = 1;
         $this->subject->_set('settings', $settings);
 
         $this->dayRepository->findEvents(
