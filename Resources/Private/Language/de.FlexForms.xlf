@@ -9,8 +9,8 @@
 				<target>Allgemein</target>
 			</trans-unit>
 			<trans-unit id="sheetList" xml:space="preserve">
-				<source>Listview</source>
-				<target>Listenansicht</target>
+				<source>Listview general</source>
+				<target>Listenansicht allgemein</target>
 			</trans-unit>
 			<trans-unit id="sheetListLatest" xml:space="preserve">
 				<source>Listview for latest</source>
@@ -69,6 +69,10 @@
 			<trans-unit id="categories">
 				<source>Categories</source>
 				<target>Kategorien</target>
+			</trans-unit>
+			<trans-unit id="mergeEvents">
+				<source>Merge recurring events</source>
+				<target>Vereine wiederkehrende Veranstaltungen</target>
 			</trans-unit>
 			<trans-unit id="showOnlyNextEvent">
 				<source>If you have recurring events, this option will only show the next date of the events instead of all following dates.</source>

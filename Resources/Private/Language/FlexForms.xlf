@@ -8,7 +8,7 @@
 				<source>General</source>
 			</trans-unit>
 			<trans-unit id="sheetList" xml:space="preserve">
-				<source>Listview</source>
+				<source>Listview general</source>
 			</trans-unit>
 			<trans-unit id="sheetListLatest" xml:space="preserve">
 				<source>Listview for latest</source>
@@ -53,6 +53,9 @@
 			</trans-unit>
 			<trans-unit id="pidOfSearchPage">
 				<source>PID of search page</source>
+			</trans-unit>
+			<trans-unit id="mergeEvents">
+				<source>Merge recurring events</source>
 			</trans-unit>
 			<trans-unit id="showOnlyNextEvent">
 				<source>If you have recurring events, this option will only show the next date of the events instead of all following dates.</source>

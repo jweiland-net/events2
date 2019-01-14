@@ -125,15 +125,15 @@ class DayRepository extends Repository
         }
 
         $subQueryBuilder
-            ->selectLiteral('MIN(sub_d.day_time) as next_day_time', 'MIN(sub_d.sort_day_time) as next_sort_day_time', 'sub_d.day', 'sub_d.day_time', 'sub_d.event')
+            ->selectLiteral('sub_d.day', 'sub_d.day_time', 'sub_d.event')
             ->from('tx_events2_domain_model_day', 'sub_d')
             ->where($this->getConstraintsForDate($subQueryBuilder, $type, 'sub_d'));
 
         // @ToDo: merge events
-        if ($this->settings['showOnlyNextEvent']) {
+        if ($this->settings['mergeEvents']) {
             $subQueryBuilder->groupBy('sub_d.event');
         } else {
-            $subQueryBuilder->groupBy('sub_d.event', 'sub_d.sort_day_time');
+            $subQueryBuilder->groupBy('sub_d.event', 'sub_d.day_time');
         }
 
         $constraints[] = $this->getConstraintsForDate($queryBuilder, $type);
@@ -144,11 +144,7 @@ class DayRepository extends Repository
             ),
             $queryBuilder->expr()->eq(
                 'd.day_time',
-                $queryBuilder->quoteIdentifier('dg.next_day_time')
-            ),
-            $queryBuilder->expr()->eq(
-                'd.sort_day_time',
-                $queryBuilder->quoteIdentifier('dg.next_sort_day_time')
+                $queryBuilder->quoteIdentifier('dg.day_time')
             )
         );
 
@@ -175,7 +171,7 @@ class DayRepository extends Repository
             )
             ->where(...$constraints)
             ->orderBy('e.top_of_list', 'DESC')
-            ->addOrderBy('d.sort_day_time', 'ASC')
+            //->addOrderBy('d.sort_day_time', 'ASC')
             ->addOrderBy('d.day_time', 'ASC');
 
         $extbaseQuery->statement($queryBuilder);
@@ -222,7 +218,7 @@ class DayRepository extends Repository
             'e',
             'sys_category_record_mm',
             'cmm',
-            $queryBuilder->expr()->andX(
+            (string)$queryBuilder->expr()->andX(
                 $queryBuilder->expr()->eq(
                     'e.uid',
                     $queryBuilder->quoteIdentifier('cmm.uid_foreign')
