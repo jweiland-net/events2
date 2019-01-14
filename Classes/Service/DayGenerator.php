@@ -250,7 +250,7 @@ class DayGenerator
         if ($event->getEachWeeks() || $event->getEachMonths()) {
             $eventBegin = clone $event->getEventBegin();
             while ($eventBegin < $dateToStartCalculatingFrom) {
-                $eventBegin->modify('+' . $event->getEachWeeks() . ' months');
+                $eventBegin->modify('+' . $event->getEachMonths() . ' months');
                 $eventBegin->modify('+' . $event->getEachWeeks() . ' weeks');
             }
             $dateToStartCalculatingFrom = $eventBegin;
