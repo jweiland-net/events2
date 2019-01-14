@@ -3,7 +3,6 @@
 	<file source-language="en" datatype="plaintext" original="messages" date="2013-03-40T10:38:40Z" product-name="events2">
 		<header/>
 		<body>
-
 			<trans-unit id="sheetGeneral" xml:space="preserve">
 				<source>General</source>
 			</trans-unit>
@@ -81,7 +80,6 @@
 			<trans-unit id="selectableCategoriesForNewEvents">
 				<source>Selectable categories for new events in Frontend</source>
 			</trans-unit>
-
 		</body>
 	</file>
 </xliff>
