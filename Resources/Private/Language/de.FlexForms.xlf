@@ -70,7 +70,7 @@
 				<source>Categories</source>
 				<target>Kategorien</target>
 			</trans-unit>
-			<trans-unit id="mergeEvents">
+			<trans-unit id="mergeRecurringEvents">
 				<source>Merge recurring events</source>
 				<target>Vereine wiederkehrende Veranstaltungen</target>
 			</trans-unit>
