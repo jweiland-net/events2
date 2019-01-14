@@ -395,6 +395,47 @@ class DayGeneratorTest extends UnitTestCase
     }
 
     /**
+     * There is a special condition in DayGenerator::getDateToStartCalculatingFrom why we have to do this test
+     *
+     * @test
+     *
+     * @throws \Exception
+     */
+    public function initializeWithRecurringOverTwoMonthsAndVeryEarlyEventDateAddsDayToStorage()
+    {
+        $extConf = new ExtConf();
+        $extConf->setRecurringPast(3);
+
+        $eventBegin = new \DateTime();
+        $eventBegin->modify('-4 months');
+        $eventBegin->modify('midnight');
+        $eventEnd = clone $eventBegin;
+        $eventEnd->modify('+2 months');
+
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setEventType('recurring');
+        $event->setEventBegin($eventBegin);
+        $event->setRecurringEnd($eventEnd);
+        $event->setXth(31);
+        $event->setWeekday(127);
+        $event->setEachWeeks(0);
+        $event->setEachMonths(2);
+
+        $expectedDays = [];
+        $expectedDays[$eventEnd->format('U')] = $eventEnd;
+
+        $dayGenerator = new DayGenerator();
+        $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
+        $dayGenerator->injectExtConf($extConf);
+        $this->assertTrue($dayGenerator->initialize($event));
+        $this->assertEquals(
+            $expectedDays,
+            $dayGenerator->getDateTimeStorage()
+        );
+    }
+
+    /**
      * @test
      *
      * @throws \Exception
