@@ -3,15 +3,15 @@
 <f:layout name="Default" />
 
 <f:section name="main">
-  <h1>{location.location}</h1>
+	<h1>{location.location}</h1>
 
-  <f:if condition="{location.txMaps2Uid}">
-    <maps2:widget.poiCollection poiCollection="{location.txMaps2Uid}" override="{settings: {mapWidth: '100%', mapHeight: '300', zoom: '14'}}" />
-  </f:if>
+	<f:if condition="{location.txMaps2Uid}">
+		<maps2:widget.poiCollection poiCollection="{location.txMaps2Uid}" override="{settings: {mapWidth: '100%', mapHeight: '300', zoom: '14'}}" />
+	</f:if>
 
-  <address>
-    <strong>{location.location}</strong>
-    <f:if condition="{location.street}"><br />{location.street} {location.houseNumber}</f:if>
-    <f:if condition="{location.city}"><br />{location.zip} {location.city}</f:if>
-  </address>
+	<address>
+		<strong>{location.location}</strong>
+		<f:if condition="{location.street}"><br />{location.street} {location.houseNumber}</f:if>
+		<f:if condition="{location.city}"><br />{location.zip} {location.city}</f:if>
+	</address>
 </f:section>
