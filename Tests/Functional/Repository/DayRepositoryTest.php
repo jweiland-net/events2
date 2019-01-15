@@ -67,8 +67,6 @@ class DayRepositoryTest extends FunctionalTestCase
     {
         parent::setUp();
 
-        $this->importDataSet(__DIR__ . '/../Fixtures/sys_registry.xml');
-
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->dayRepository = $this->objectManager->get(DayRepository::class);
         $this->querySettings = $this->objectManager->get(QuerySettingsInterface::class);
