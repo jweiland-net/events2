@@ -58,7 +58,10 @@ class DayRepositoryTest extends FunctionalTestCase
     /**
      * @var array
      */
-    protected $testExtensionsToLoad = ['typo3conf/ext/events2'];
+    protected $testExtensionsToLoad = [
+        'typo3conf/ext/events2',
+        'typo3conf/ext/maps2'
+    ];
 
     public function setUp()
     {
