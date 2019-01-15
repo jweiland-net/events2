@@ -1,45 +1,45 @@
 {namespace e2=JWeiland\Events2\ViewHelpers}
 
 <f:if condition="{days}">
-  <f:then>
-    <f:for each="{days}" as="day">
-      <div class="panel panel-{f:if(condition: day.event.topOfList, then: 'info', else: 'default')}">
-        <div class="panel-heading">
-          <h3 class="panel-title"><f:render partial="Event/Date" arguments="{day: day, extConf: extConf}" /></h3>
-        </div>
-        <div class="panel-body">
-          <div class="media-body">
-            <f:render section="title" arguments="{day: day}" />
-            <p>{day.event.teaser}</p>
-          </div>
-          <div class="media-right">
-            <f:render section="firstImage" arguments="{event: day.event}" />
-          </div>
-        </div>
-        <ul class="list-group">
-          <f:render section="category" arguments="{event: day.event}" />
-          <f:render section="location" arguments="{event: day.event}" />
-        </ul>
-      </div>
-    </f:for>
-  </f:then>
-  <f:else>
-    <div>
-      <f:translate key="no_event_today" />
-    </div>
-  </f:else>
+	<f:then>
+		<f:for each="{days}" as="day">
+			<div class="panel panel-{f:if(condition: day.event.topOfList, then: 'info', else: 'default')}">
+				<div class="panel-heading">
+					<h3 class="panel-title"><f:render partial="Event/Date" arguments="{day: day, extConf: extConf}" /></h3>
+				</div>
+				<div class="panel-body">
+					<div class="media-body">
+						<f:render section="title" arguments="{day: day}" />
+						<p>{day.event.teaser}</p>
+					</div>
+					<div class="media-right">
+						<f:render section="firstImage" arguments="{event: day.event}" />
+					</div>
+				</div>
+				<ul class="list-group">
+					<f:render section="category" arguments="{event: day.event}" />
+					<f:render section="location" arguments="{event: day.event}" />
+				</ul>
+			</div>
+		</f:for>
+	</f:then>
+	<f:else>
+		<div>
+			<f:translate key="no_event_today" />
+		</div>
+	</f:else>
 </f:if>
 
 <f:section name="title">
-  <h3 class="media-heading">
-    <f:link.action
-      action="show"
-      controller="Day"
-      pageUid="{settings.pidOfDetailPage}"
-      arguments="{timestamp: '{day.dayTime->f:format.date(format: \'U\')}', event: day.event}"
-      title="{f:translate(key: 'singleView')}: {day.event.title}"
-    >{day.event.title}</f:link.action>
-  </h3>
+	<h3 class="media-heading">
+		<f:link.action
+			action="show"
+			controller="Day"
+			pageUid="{settings.pidOfDetailPage}"
+			arguments="{timestamp: '{day.dayTime->f:format.date(format: \'U\')}', event: day.event}"
+			title="{f:translate(key: 'singleView')}: {day.event.title}"
+		>{day.event.title}</f:link.action>
+	</h3>
 </f:section>
 
 <f:section name="location">
@@ -59,42 +59,42 @@
 </f:section>
 
 <f:section name="category">
-  <f:alias map="{class: '{f:if(condition: event.topOfList, then: \'list-group-item list-group-item-info\', else: \'list-group-item\')}'}">
-    <f:if condition="{settings.categories}">
-      <f:then>
-        <f:for each="{e2:getAllowedCategories(event: event, pluginCategories: settings.categories)}" as="category" iteration="iterator">
-          <f:if condition="{iterator.isFirst}"><li class="{class}">{category.title}</li></f:if>
-        </f:for>
-      </f:then>
-      <f:else>
-        <f:if condition="{event.categories->f:count()}">
-          <f:for each="{event.categories}" as="category" iteration="iterator">
-            <f:if condition="{iterator.isFirst}"><li class="{class}">{category.title}</li></f:if>
-          </f:for>
-        </f:if>
-      </f:else>
-    </f:if>
-  </f:alias>
+	<f:alias map="{class: '{f:if(condition: event.topOfList, then: \'list-group-item list-group-item-info\', else: \'list-group-item\')}'}">
+		<f:if condition="{settings.categories}">
+			<f:then>
+				<f:for each="{e2:getAllowedCategories(event: event, pluginCategories: settings.categories)}" as="category" iteration="iterator">
+					<f:if condition="{iterator.isFirst}"><li class="{class}">{category.title}</li></f:if>
+				</f:for>
+			</f:then>
+			<f:else>
+				<f:if condition="{event.categories->f:count()}">
+					<f:for each="{event.categories}" as="category" iteration="iterator">
+						<f:if condition="{iterator.isFirst}"><li class="{class}">{category.title}</li></f:if>
+					</f:for>
+				</f:if>
+			</f:else>
+		</f:if>
+	</f:alias>
 </f:section>
 
 <f:section name="firstImage">
-  <f:if condition="{event.images -> f:count()}">
-    <f:for each="{event.images}" as="image" iteration="iterator">
-      <f:if condition="{iterator.isFirst}">
-        <figure>
-          <f:image
-            image="{image}"
-            alt="{event.title}"
-            title="{event.title}"
-            width="{settings.list.image.width}"
-            height="{settings.list.image.height}"
-            minWidth="{settings.list.image.minWidth}"
-            maxWidth="{settings.list.image.maxWidth}"
-            minHeight="{settings.list.image.minHeight}"
-            maxHeight="{settings.list.image.maxHeight}"
-          />
-        </figure>
-      </f:if>
-    </f:for>
-  </f:if>
+	<f:if condition="{event.images -> f:count()}">
+		<f:for each="{event.images}" as="image" iteration="iterator">
+			<f:if condition="{iterator.isFirst}">
+				<figure>
+					<f:image
+						image="{image}"
+						alt="{event.title}"
+						title="{event.title}"
+						width="{settings.list.image.width}"
+						height="{settings.list.image.height}"
+						minWidth="{settings.list.image.minWidth}"
+						maxWidth="{settings.list.image.maxWidth}"
+						minHeight="{settings.list.image.minHeight}"
+						maxHeight="{settings.list.image.maxHeight}"
+					/>
+				</figure>
+			</f:if>
+		</f:for>
+	</f:if>
 </f:section>

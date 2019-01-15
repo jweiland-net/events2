@@ -18,10 +18,11 @@ use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Model\Search;
-use JWeiland\Events2\Persistence\Typo384\Generic\Query;
+use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Utility\DateTimeUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
+use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -40,6 +41,11 @@ class DayRepository extends Repository
      * @var ExtConf
      */
     protected $extConf;
+
+    /**
+     * @var DatabaseService
+     */
+    protected $databaseService;
 
     /**
      * @var array
@@ -72,10 +78,17 @@ class DayRepository extends Repository
     }
 
     /**
+     * @param DatabaseService $databaseService
+     */
+    public function injectDatabaseService(DatabaseService $databaseService)
+    {
+        $this->databaseService = $databaseService;
+    }
+
+    /**
      * Sets the settings
      *
      * @param array $settings
-     * @return void
      */
     public function setSettings(array $settings)
     {
@@ -87,167 +100,73 @@ class DayRepository extends Repository
      *
      * @param string $type
      * @param Filter $filter
-     * @param int $limit
+     * @param int $limit As Paginator will override $limit, this will only work within LatestView
      * @return QueryResultInterface
      * @throws \Exception
      */
     public function findEvents(string $type, Filter $filter, int $limit = 0): QueryResultInterface
     {
-        /** @var Query $query */
-        $query = $this->createQuery();
-        $this->addGroupingToQuery($query);
+        /** @var Query $extbaseQuery */
+        $extbaseQuery = $this->createQuery();
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_day');
+        $subQueryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_day');
+
         $constraints = [];
+
+        // add storage PID for event and day, but not for sys_category
+        $constraints[] = $this->databaseService->getConstraintForPid(
+            $queryBuilder,
+            $extbaseQuery->getQuerySettings()->getStoragePageIds()
+        );
 
         // add categories
         if (!empty($this->settings['categories'])) {
-            $constraints[] = $query->in('event.categories.uid', GeneralUtility::intExplode(',', $this->settings['categories'], true));
+            $constraints[] = $this->databaseService->getConstraintForCategories(
+                $queryBuilder,
+                GeneralUtility::trimExplode(',', $this->settings['categories'], true)
+            );
         }
-
-        // add storage PIDs. But not for sys_category
-        // @link: https://forge.typo3.org/issues/83296
-        $query->getQuerySettings()->setRespectStoragePage(false);
-        $constraints[] = $query->in('pid', $query->getQuerySettings()->getStoragePageIds());
-        $constraints[] = $query->in('event.pid', $query->getQuerySettings()->getStoragePageIds());
 
         // add filter for organizer
-        if ($filter->getOrganizer()) {
-            $constraints[] = $query->equals('event.organizer', $filter->getOrganizer());
-        } elseif ($this->settings['preFilterByOrganizer']) {
-            $constraints[] = $query->equals('event.organizer', $this->settings['preFilterByOrganizer']);
+        if ($filter->getOrganizer() || $this->settings['preFilterByOrganizer']) {
+            $constraints[] = $this->databaseService->getConstraintForOrganizer(
+                $queryBuilder,
+                (int)$filter->getOrganizer() ?: (int)$this->settings['preFilterByOrganizer']
+            );
         }
 
-        switch ($type) {
-            case 'today':
-                $today = $this->dateTimeUtility->convert('today');
-                $tomorrow = $this->dateTimeUtility->convert('today');
-                $tomorrow->modify('+1 day');
-                $constraints[] = $query->greaterThanOrEqual('day', $today);
-                $constraints[] = $query->lessThan('day', $tomorrow);
-                break;
-            case 'range':
-                $today = $this->dateTimeUtility->convert('today');
-                $in4months = $this->dateTimeUtility->convert('today');
-                $in4months->modify('+4 weeks');
-                $constraints[] = $query->greaterThanOrEqual('day', $today);
-                $constraints[] = $query->lessThanOrEqual('day', $in4months);
-                break;
-            case 'thisWeek':
-                $weekStart = $this->dateTimeUtility->convert('today');
-                $weekStart->modify('this week'); // 'first day of' does not work for 'weeks'
-                $weekEnd = $this->dateTimeUtility->convert('today');
-                $weekEnd->modify('this week +6 days'); // 'last day of' does not work for 'weeks'
-                $constraints[] = $query->greaterThanOrEqual('day', $weekStart);
-                $constraints[] = $query->lessThanOrEqual('day', $weekEnd);
-                break;
-            case 'latest':
-            case 'list':
-            default:
-                if ($this->extConf->getRecurringPast() === 0) {
-                    // including current time as events in past are not allowed to be displayed
-                    $today = new \DateTime('now');
-                } else {
-                    // exclude current time. Start with 00:00:00
-                    $today = $this->dateTimeUtility->convert('today');
-                }
-                $constraints[] = $query->greaterThanOrEqual('dayTime', $today);
-        }
+        $constraints[] = $this->databaseService->getConstraintForDate($queryBuilder, $type);
+        $this->databaseService->initializeSubQueryBuilder(
+            $queryBuilder,
+            $subQueryBuilder,
+            $this->databaseService->getConstraintForDate($subQueryBuilder, $type, 'day_sub_query'),
+            (bool)$this->settings['mergeRecurringEvents']
+        );
+
+        $queryBuilder
+            ->select('day.*')
+            ->from('tx_events2_domain_model_day', 'day')
+            ->leftJoin(
+                'day',
+                'tx_events2_domain_model_event',
+                'event',
+                $queryBuilder->expr()->eq(
+                    'day.event',
+                    $queryBuilder->quoteIdentifier('event.uid')
+                )
+            )
+            ->where(...$constraints)
+            ->orderBy('event.top_of_list', 'DESC')
+            ->addOrderBy('day.sort_day_time', 'ASC')
+            ->addOrderBy('day.day_time', 'ASC');
 
         if (!empty($limit)) {
-            $query->setLimit((int)$limit);
+            $queryBuilder->setMaxResults((int)$limit);
         }
 
-        return $query->matching($query->logicalAnd($constraints))->execute();
-    }
+        $extbaseQuery->statement($queryBuilder);
 
-    /**
-     * Special method for latest view
-     * It groups day records by event and keeps the event with earliest date in array
-     *
-     * That way we prevent the problem with SQL, where GROUP BY was executed before ORDER BY and we get a
-     * random value for day, day_time and sort_day_time
-     *
-     * @param QueryResultInterface $queryResult
-     * @param int $maxRecords
-     * @return Day[]
-     * @throws \Exception
-     */
-    public function groupDaysByEventAndSort(QueryResultInterface $queryResult, $maxRecords)
-    {
-        $days = [];
-        $reset = true;
-        $limit = 15;
-        $offset = 0;
-        $query = $queryResult->getQuery();
-
-        do {
-            $records = $query
-                ->setLimit($limit)
-                ->setOffset($offset)
-                ->execute();
-
-            if (!$records->count()) {
-                break;
-            }
-
-            /** @var Day $record */
-            foreach ($records as $record) {
-                // add new record to day array as long as maxRecords has not been reached
-                if (count($days) < (int)$maxRecords && !array_key_exists($record->getEvent()->getUid(), $days)) {
-                    $days[$record->getEvent()->getUid()] = $record;
-                }
-
-                // replace older with earlier record, if event exists in day array
-                if (array_key_exists($record->getEvent()->getUid(), $days)) {
-                    /** @var Day $day */
-                    $day = $days[$record->getEvent()->getUid()];
-                    if ($record->getSortDayTime() < $day->getSortDayTime()) {
-                        $days[$record->getEvent()->getUid()] = $record;
-                    }
-                }
-                // we can not break out of this foreach/do loop as we have to find ALL related day records
-                // maybe there are some more days with an earlier date
-            }
-
-            $offset += 15;
-            if (count($days) === (int)$maxRecords && $reset) {
-                // as some customers may have thousands of day records we reduce the records to the just known events,
-                // if count() matches $maxRecords and resets the offset
-                $query->matching($query->logicalAnd([
-                    $query->getConstraint(),
-                    $query->in('event.uid', array_keys($days))
-                ]));
-                $offset = 0;
-                $reset = false;
-            }
-        } while (1 == 1);
-
-        return $this->sortDays($days);
-    }
-
-    /**
-     * This method belongs to groupDaysByEventAndSort
-     * and is only valid for latest view
-     *
-     * @param Day[] $records
-     * @param string $sortBy
-     * @return Day[]
-     * @throws \Exception
-     */
-    protected function sortDays(array $records, string $sortBy = 'day'): array
-    {
-        $dates = [];
-
-        $getter = 'get' . ucfirst($sortBy);
-        if (!method_exists(Day::class, $getter)) {
-            throw new \Exception('Method "' . $getter . '" does not exists in Day', 1499429014);
-        }
-
-        foreach ($records as $key => $record) {
-            $dates[$key] = $record->{$getter}()->format('U');
-        }
-        array_multisort($dates, SORT_ASC, SORT_NUMERIC, $records);
-
-        return $records;
+        return $extbaseQuery->execute();
     }
 
     /**
@@ -259,81 +178,114 @@ class DayRepository extends Repository
      */
     public function searchEvents(Search $search): QueryResultInterface
     {
-        /** @var \TYPO3\CMS\Extbase\Persistence\Generic\Query $query */
-        $query = $this->createQuery();
+        /** @var Query $extbaseQuery */
+        $extbaseQuery = $this->createQuery();
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_day');
+        $subQueryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_day');
+
         $constraints = [];
 
-        // add storage PIDs. But not for sys_category
-        // @link: https://forge.typo3.org/issues/83296
-        $query->getQuerySettings()->setRespectStoragePage(false);
-        $constraints[] = $query->in('pid', $query->getQuerySettings()->getStoragePageIds());
-        $constraints[] = $query->in('event.pid', $query->getQuerySettings()->getStoragePageIds());
+        // add storage PID for event and day, but not for sys_category
+        $constraints[] = $this->databaseService->getConstraintForPid(
+            $queryBuilder,
+            $extbaseQuery->getQuerySettings()->getStoragePageIds()
+        );
 
         // add query for search string
         if ($search->getSearch()) {
-            $orConstraints = [];
-            $orConstraints[] = $query->like('event.title', '%' . $search->getSearch() . '%');
-            $orConstraints[] = $query->like('event.teaser', '%' . $search->getSearch() . '%');
-            $constraints[] = $query->logicalOr($orConstraints);
+            $constraints[] = (string)$queryBuilder->expr()->orX(
+                $queryBuilder->expr()->like(
+                    'event.title',
+                    $queryBuilder->quote('%' . $search->getSearch() . '%')
+                ),
+                $queryBuilder->expr()->like(
+                    'event.teaser',
+                    $queryBuilder->quote('%' . $search->getSearch() . '%')
+                )
+            );
         }
 
         // add query for categories
         if ($search->getMainCategory()) {
             if ($search->getSubCategory()) {
-                $constraints[] = $query->contains('event.categories', $search->getSubCategory()->getUid());
+                $constraints[] = $this->databaseService->getConstraintForCategories(
+                    $queryBuilder,
+                    [$search->getSubCategory()->getUid()]
+                );
             } else {
-                $constraints[] = $query->contains('event.categories', $search->getMainCategory()->getUid());
+                $constraints[] = $this->databaseService->getConstraintForCategories(
+                    $queryBuilder,
+                    [$search->getMainCategory()->getUid()]
+                );
             }
         } elseif ($this->settings['categories']) {
             // visitor has not selected any category. Search within allowed categories in plugin configuration
-            $constraints[] = $query->in('event.categories.uid', GeneralUtility::trimExplode(',', $this->settings['categories']));
+            $constraints[] = $this->databaseService->getConstraintForCategories(
+                $queryBuilder,
+                GeneralUtility::trimExplode(',', $this->settings['categories'])
+            );
         }
 
-        // add query for event begin
-        if ($search->getEventBegin()) {
-            $constraints[] = $query->greaterThanOrEqual('day', $search->getEventBegin());
-        } else {
-            $today = $this->dateTimeUtility->convert('today');
-            $constraints[] = $query->greaterThanOrEqual('day', $today);
-        }
+        $today = $this->dateTimeUtility->convert('today');
+        $startDateTime = $search->getEventBegin() ?: $today;
+        $endDateTime = $search->getEventEnd();
 
-        // add query for event end
-        if ($search->getEventEnd()) {
-            $constraints[] = $query->lessThanOrEqual('day', $search->getEventEnd());
-        }
+        // add startDate and endDate to QueryBuilder
+        $constraints[] = $this->databaseService->getConstraintForDateRange(
+            $queryBuilder,
+            $startDateTime,
+            $endDateTime
+        );
+        // add startDate and endDate to SubQueryBuilder
+        $this->databaseService->initializeSubQueryBuilder(
+            $queryBuilder,
+            $subQueryBuilder,
+            $this->databaseService->getConstraintForDateRange(
+                $subQueryBuilder,
+                $startDateTime,
+                $endDateTime,
+                'day_sub_query'
+            ),
+            (bool)$this->settings['mergeRecurringEvents']
+        );
 
         // add query for event location
         if ($search->getLocation()) {
-            $constraints[] = $query->equals('event.location', $search->getLocation()->getUid());
+            $constraints[] = $this->databaseService->getConstraintForLocation(
+                $queryBuilder,
+                $search->getLocation()->getUid()
+            );
         }
 
         // add query for free entry
         if ($search->getFreeEntry()) {
-            $constraints[] = $query->equals('event.freeEntry', $search->getFreeEntry());
+            $constraints[] = $this->databaseService->getConstraintForEventColumn(
+                $queryBuilder,
+                'free_entry',
+                \PDO::PARAM_INT
+            );
         }
 
-        if (count($constraints)) {
-            return $query->matching($query->logicalAnd($constraints))->execute();
-        } else {
-            return $query->execute();
-        }
-    }
+        $queryBuilder
+            ->select('day.*')
+            ->from('tx_events2_domain_model_day', 'day')
+            ->leftJoin(
+                'day',
+                'tx_events2_domain_model_event',
+                'event',
+                $queryBuilder->expr()->eq(
+                    'day.event',
+                    $queryBuilder->quoteIdentifier('event.uid')
+                )
+            )
+            ->where(...$constraints)
+            ->orderBy('event.top_of_list', 'DESC')
+            ->addOrderBy('day.sort_day_time', 'ASC')
+            ->addOrderBy('day.day_time', 'ASC');
 
-    /**
-     * Find day by UID
-     *
-     * @param int $day
-     * @return Day
-     */
-    public function findByDay(int $day): Day
-    {
-        /** @var \JWeiland\Events2\Persistence\Typo384\Generic\Query $query */
-        $query = $this->createQuery();
-        $this->addGroupingToQuery($query);
-        $query->matching($query->equals('uid', (int)$day));
-        /** @var Day $day */
-        $day = $query->execute()->getFirst();
-        return $day;
+        $extbaseQuery->statement($queryBuilder);
+
+        return $extbaseQuery->execute();
     }
 
     /**
@@ -345,30 +297,64 @@ class DayRepository extends Repository
      */
     public function findByTimestamp(int $timestamp): QueryResultInterface
     {
+        /** @var Query $extbaseQuery */
+        $extbaseQuery = $this->createQuery();
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_day');
+        $subQueryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_day');
+
         $constraints = [];
-        $query = $this->createQuery();
 
-        // add storage PIDs. But not for sys_category
-        // @link: https://forge.typo3.org/issues/83296
-        $query->getQuerySettings()->setRespectStoragePage(false);
-        $constraints[] = $query->in('pid', $query->getQuerySettings()->getStoragePageIds());
-        $constraints[] = $query->in('event.pid', $query->getQuerySettings()->getStoragePageIds());
+        // add storage PID for event and day, but not for sys_category
+        $constraints[] = $this->databaseService->getConstraintForPid(
+            $queryBuilder,
+            $extbaseQuery->getQuerySettings()->getStoragePageIds()
+        );
 
-        $this->addGroupingToQuery($query);
+        $this->databaseService->initializeSubQueryBuilder(
+            $queryBuilder,
+            $subQueryBuilder,
+            '',
+            (bool)$this->settings['mergeRecurringEvents']
+        );
+
+        // add categories
         if (!empty($this->settings['categories'])) {
-            $constraints[] = $query->in('event.categories.uid', GeneralUtility::intExplode(',', $this->settings['categories']));
+            $constraints[] = $this->databaseService->getConstraintForCategories(
+                $queryBuilder,
+                GeneralUtility::trimExplode(',', $this->settings['categories'], true)
+            );
         }
-        $constraints[] = $query->equals('day', $timestamp);
 
-        /** @var QueryResult $result */
-        $result = $query->matching($query->logicalAnd($constraints))->execute();
+        $constraints[] = $queryBuilder->expr()->eq(
+            'day.day',
+            $queryBuilder->createNamedParameter($timestamp, \PDO::PARAM_INT)
+        );
 
-        return $result;
+        $queryBuilder
+            ->select('day.*')
+            ->from('tx_events2_domain_model_day', 'day')
+            ->leftJoin(
+                'day',
+                'tx_events2_domain_model_event',
+                'event',
+                $queryBuilder->expr()->eq(
+                    'day.event',
+                    $queryBuilder->quoteIdentifier('event.uid')
+                )
+            )
+            ->where(...$constraints)
+            ->orderBy('event.top_of_list', 'DESC')
+            ->addOrderBy('day.sort_day_time', 'ASC')
+            ->addOrderBy('day.day_time', 'ASC');
+
+        $extbaseQuery->statement($queryBuilder);
+
+        return $extbaseQuery->execute();
     }
 
     /**
      * Find one Day by Event and Timestamp.
-     * Instead of findByTimestamp this Timestamp must include the exact time.
+     * Instead of findByTimestamp this Timestamp must include the exact time (hours/minutes after 00:00).
      *
      * If timestamp is empty, we try to find next possible day in future.
      *
@@ -379,41 +365,68 @@ class DayRepository extends Repository
      */
     public function findOneByTimestamp(int $eventUid, int $timestamp = 0)
     {
-        $query = $this->createQuery();
+        /** @var Query $extbaseQuery */
+        $extbaseQuery = $this->createQuery();
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_day');
 
         $constraints = [];
-        // add storage PIDs. But not for sys_category
-        // @link: https://forge.typo3.org/issues/83296
-        $query->getQuerySettings()->setRespectStoragePage(false);
-        $constraints[] = $query->in('pid', $query->getQuerySettings()->getStoragePageIds());
-        $constraints[] = $query->in('event.pid', $query->getQuerySettings()->getStoragePageIds());
-        $constraints[] = $query->equals('event', (int)$eventUid);
+
+        // add storage PID for event and day, but not for sys_category
+        $constraints[] = $this->databaseService->getConstraintForPid(
+            $queryBuilder,
+            $extbaseQuery->getQuerySettings()->getStoragePageIds()
+        );
+
+        $constraints[] = $queryBuilder->expr()->eq(
+            'day.event',
+            $queryBuilder->createNamedParameter($eventUid, \PDO::PARAM_INT)
+        );
 
         if (empty($timestamp)) {
-            $today = new \DateTime('now');
-            $constraints[] = $query->greaterThanOrEqual('dayTime', $today);
-
-            $query->setOrderings([
-                'dayTime' => QueryInterface::ORDER_ASCENDING
-            ]);
+            $constraints[] = $this->databaseService->getConstraintForDateRange(
+                $queryBuilder,
+                new \DateTime('now')
+            );
+            $queryBuilder->orderBy('day.day_time', 'ASC');
         } else {
-            $constraints[] = $query->equals('dayTime', $timestamp);
+            $constraints[] = $queryBuilder->expr()->eq(
+                'day.day_time',
+                $queryBuilder->createNamedParameter($timestamp, \PDO::PARAM_INT)
+            );
         }
 
+        $queryBuilder
+            ->select('day.*')
+            ->from('tx_events2_domain_model_day', 'day')
+            ->leftJoin(
+                'day',
+                'tx_events2_domain_model_event',
+                'event',
+                $queryBuilder->expr()->eq(
+                    'day.event',
+                    $queryBuilder->quoteIdentifier('event.uid')
+                )
+            )
+            ->where(...$constraints)
+            ->orderBy('event.top_of_list', 'DESC')
+            ->addOrderBy('day.sort_day_time', 'ASC')
+            ->addOrderBy('day.day_time', 'ASC');
+
+        $extbaseQuery->statement($queryBuilder);
+
         /** @var Day $day */
-        $day = $query->matching($query->logicalAnd($constraints))->execute()->getFirst();
+        $day = $extbaseQuery->execute()->getFirst();
 
         return $day;
     }
 
     /**
-     * Add special grouping
+     * Get TYPO3s Connection Pool
      *
-     * @param QueryInterface $query
+     * @return ConnectionPool
      */
-    protected function addGroupingToQuery(QueryInterface $query)
+    protected function getConnectionPool(): ConnectionPool
     {
-        /** @var Query $query */
-        $query->setGroupings(['event', 'sortDayTime']);
+        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 }

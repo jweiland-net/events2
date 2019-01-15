@@ -140,7 +140,7 @@ class DayControllerTest extends UnitTestCase
         $filter = new Filter();
         $queryResult = new QueryResult(new Query(Day::class));
         $settings = $this->subject->_get('settings');
-        $settings['showOnlyNextEvent'] = 0;
+        $settings['mergeRecurringEvents'] = 0;
         $this->subject->_set('settings', $settings);
 
         $this->dayRepository->findEvents(
@@ -148,9 +148,6 @@ class DayControllerTest extends UnitTestCase
             Argument::exact($filter),
             Argument::exact(7)
         )->shouldBeCalled()->willReturn($queryResult);
-        $this->dayRepository->groupDaysByEventAndSort(
-            Argument::cetera()
-        )->shouldNotBeCalled();
         $this->view->assign(
             Argument::exact('filter'),
             Argument::exact($filter)
@@ -158,38 +155,6 @@ class DayControllerTest extends UnitTestCase
         $this->view->assign(
             Argument::exact('days'),
             Argument::exact($queryResult)
-        )->shouldBeCalled();
-
-        $this->subject->listLatestAction($filter);
-    }
-
-    /**
-     * @test
-     */
-    public function listLatestActionFindEventsGroupAndSortAndAssignsThemToView()
-    {
-        $filter = new Filter();
-        $queryResult = new QueryResult(new Query(Day::class));
-        $settings = $this->subject->_get('settings');
-        $settings['showOnlyNextEvent'] = 1;
-        $this->subject->_set('settings', $settings);
-
-        $this->dayRepository->findEvents(
-            Argument::exact('latest'),
-            Argument::exact($filter),
-            Argument::exact(0)
-        )->shouldBeCalled()->willReturn($queryResult);
-        $this->dayRepository->groupDaysByEventAndSort(
-            Argument::exact($queryResult),
-            Argument::exact(7)
-        )->shouldBeCalled()->willReturn([]);
-        $this->view->assign(
-            Argument::exact('filter'),
-            Argument::exact($filter)
-        )->shouldBeCalled();
-        $this->view->assign(
-            Argument::exact('days'),
-            Argument::exact([])
         )->shouldBeCalled();
 
         $this->subject->listLatestAction($filter);

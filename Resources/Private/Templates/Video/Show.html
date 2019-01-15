@@ -3,19 +3,19 @@
 <f:layout name="Default" />
 
 <f:section name="main">
-  <f:if condition="{0: settings.display}=={0: 'displayImages'}">
-    <f:then>
-      <f:if condition="{event.images -> f:count()}">
-        <f:render partial="Event/Images" arguments="{event: event}"/>
-      </f:if>
-    </f:then>
-    <f:else>
-      <header><h1>{link.title}</h1></header>
-      <div class="grid_8 floatleft">
-        <div class="gridright">
-          <iframe width="560" height="315" src="{events2:createYoutubeUri(link: event.videoLink.link)}" frameborder="0" allowfullscreen></iframe>
-        </div>
-      </div>
-    </f:else>
-  </f:if>
+	<f:if condition="{0: settings.display}=={0: 'displayImages'}">
+		<f:then>
+			<f:if condition="{event.images -> f:count()}">
+				<f:render partial="Event/Images" arguments="{event: event}"/>
+			</f:if>
+		</f:then>
+		<f:else>
+			<header><h1>{link.title}</h1></header>
+			<div class="grid_8 floatleft">
+				<div class="gridright">
+					<iframe width="560" height="315" src="{events2:createYoutubeUri(link: event.videoLink.link)}" frameborder="0" allowfullscreen></iframe>
+				</div>
+			</div>
+		</f:else>
+	</f:if>
 </f:section>
