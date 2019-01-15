@@ -56,9 +56,6 @@
 			<trans-unit id="mergeRecurringEvents">
 				<source>Merge recurring events</source>
 			</trans-unit>
-			<trans-unit id="showOnlyNextEvent">
-				<source>If you have recurring events, this option will only show the next date of the events instead of all following dates.</source>
-			</trans-unit>
 			<trans-unit id="preFilterByOrganizer">
 				<source>Pre filter events by organizer</source>
 			</trans-unit>

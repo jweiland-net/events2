@@ -152,25 +152,6 @@
 				</el>
 			</ROOT>
 		</list>
-		<listLatest>
-			<ROOT>
-				<TCEforms>
-					<sheetTitle>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:sheetListLatest</sheetTitle>
-				</TCEforms>
-				<type>array</type>
-				<el>
-					<settings.showOnlyNextEvent>
-						<TCEforms>
-							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:showOnlyNextEvent</label>
-							<config>
-								<type>check</type>
-								<default>0</default>
-							</config>
-						</TCEforms>
-					</settings.showOnlyNextEvent>
-				</el>
-			</ROOT>
-		</listLatest>
 		<detail>
 			<ROOT>
 				<TCEforms>

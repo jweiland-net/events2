@@ -74,10 +74,6 @@
 				<source>Merge recurring events</source>
 				<target>Vereine wiederkehrende Veranstaltungen</target>
 			</trans-unit>
-			<trans-unit id="showOnlyNextEvent">
-				<source>If you have recurring events, this option will only show the next date of the events instead of all following dates.</source>
-				<target>Bei mehrtägigen Veranstaltungen wird nach Aktivierung nur der nächste Termin statt alle nachfolgenden Termine angezeigt.</target>
-			</trans-unit>
 			<trans-unit id="preFilterByOrganizer">
 				<source>Pre filter events by organizer</source>
 				<target>Veranstaltungen auf Veranstalter beschränken</target>
