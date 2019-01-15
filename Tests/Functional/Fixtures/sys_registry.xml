@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <dataset>
-	<sys_registry />
+	<sys_registry>
+		<uid>1</uid>
+		<entry_namespace>maps2_registry</entry_namespace>
+		<entry_key>fields</entry_key>
+		<entry_value>{}</entry_value>
+	</sys_registry>
 </dataset>
