@@ -105,7 +105,6 @@ class EventRepository extends Repository
     /**
      * Find event by uid whether it is hidden or not.
      * Do not add Event as strict_type as this method can also return null
-     * @ToDo: Add ?Event type after removing compatibility for TYPO3 8.
      *
      * @param int $eventUid
      * @return Event
