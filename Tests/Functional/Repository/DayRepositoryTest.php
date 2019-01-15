@@ -66,6 +66,9 @@ class DayRepositoryTest extends FunctionalTestCase
     public function setUp()
     {
         parent::setUp();
+
+        $this->importDataSet(__DIR__ . '/../Fixtures/sys_registry.xml');
+
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->dayRepository = $this->objectManager->get(DayRepository::class);
         $this->querySettings = $this->objectManager->get(QuerySettingsInterface::class);
@@ -75,8 +78,6 @@ class DayRepositoryTest extends FunctionalTestCase
         $dayRelationService = $this->objectManager->get(DayRelationService::class);
         $eventRepository = $this->objectManager->get(EventRepository::class);
         $eventRepository->setDefaultQuerySettings($this->querySettings);
-
-        $this->importDataSet(__DIR__ . '/../Fixtures/sys_registry.xml');
 
         // As we need day related records, we can not use XML import functionality
         $organizer1 = new Organizer();
