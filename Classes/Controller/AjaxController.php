@@ -18,7 +18,6 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /**
  * Controller for Ajax Requests. Currently only for FindSubCategories
- * @ToDo: Maybe we can convert this script to eID
  */
 class AjaxController extends ActionController
 {

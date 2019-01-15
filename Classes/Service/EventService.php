@@ -153,7 +153,6 @@ class EventService
      */
     public function getSortedTimesForDate(Event $event, \DateTime $date)
     {
-        // @ToDo: I'm sure there are better ways to do this:
         $sortedTimes = [];
         $sortedStorage = new \SplObjectStorage();
 
