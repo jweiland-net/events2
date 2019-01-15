@@ -21,6 +21,7 @@
 		"ext-dom": "*",
 		"ext-libxml": "*",
 		"typo3/cms-core": "^8.7 || ^9.5",
+		"jweiland/maps2": "^4.2",
 		"sjbr/static-info-tables": "^6.4"
 	},
 	"require-dev": {
