@@ -273,7 +273,7 @@ class DatabaseService
     public function initializeSubQueryBuilder(QueryBuilder $queryBuilder, QueryBuilder $subQueryBuilder, string $constraint, bool $mergeRecurringEvents)
     {
         $subQueryBuilder
-            ->selectLiteral('MIN(day_sub_query.day_time) as next_day_time', 'day_sub_query.day', 'day_sub_query.day_time', 'day_sub_query.event')
+            ->selectLiteral('MIN(day_sub_query.day_time) as next_day_time', 'day_sub_query.event')
             ->from('tx_events2_domain_model_day', 'day_sub_query')
             ->where($constraint);
 

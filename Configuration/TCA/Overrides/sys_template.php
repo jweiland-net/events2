@@ -5,6 +5,6 @@ if (!defined('TYPO3_MODE')) {
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
     'events2',
-    'Configuration/TypoScript/Typo384',
-    'Events (>=8.4)'
+    'Configuration/TypoScript',
+    'Events'
 );

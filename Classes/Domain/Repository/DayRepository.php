@@ -18,11 +18,11 @@ use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Model\Search;
-use JWeiland\Events2\Persistence\Typo384\Generic\Query;
 use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -100,7 +100,7 @@ class DayRepository extends Repository
      *
      * @param string $type
      * @param Filter $filter
-     * @param int $limit
+     * @param int $limit As Paginator will override $limit, this will only work within LatestView
      * @return QueryResultInterface
      * @throws \Exception
      */
@@ -135,10 +135,6 @@ class DayRepository extends Repository
             );
         }
 
-        if (!empty($limit)) {
-            $queryBuilder->setMaxResults((int)$limit);
-        }
-
         $constraints[] = $this->databaseService->getConstraintForDate($queryBuilder, $type);
         $this->databaseService->initializeSubQueryBuilder(
             $queryBuilder,
@@ -163,6 +159,10 @@ class DayRepository extends Repository
             ->orderBy('event.top_of_list', 'DESC')
             ->addOrderBy('day.sort_day_time', 'ASC')
             ->addOrderBy('day.day_time', 'ASC');
+
+        if (!empty($limit)) {
+            $queryBuilder->setMaxResults((int)$limit);
+        }
 
         $extbaseQuery->statement($queryBuilder);
 
