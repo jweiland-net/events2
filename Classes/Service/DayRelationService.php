@@ -266,9 +266,9 @@ class DayRelationService
 
         $sortDayTime = $this->getDayTime($day, $hour, $minute);
 
-        if (in_array($event->getEventType(), ['duration', 'recurring'])) {
-            // Group multiple days for duration or group multiple times for one day
-            if ($event->getEventType() === 'duration' || $this->extConf->getMergeEvents()) {
+        if ($event->getEventType() === 'duration') {
+            // Group multiple days for duration to one record
+            if ($event->getEventType() === 'duration') {
                 $this->cachedSortDayTime[$event->getUid()] = $sortDayTime;
             }
         }

@@ -63,7 +63,6 @@ class DayRelationServiceTest extends UnitTestCase
         $this->extConfProphecy = $this->prophesize(ExtConf::class);
         $this->extConfProphecy->getRecurringPast()->willReturn(3);
         $this->extConfProphecy->getRecurringFuture()->willReturn(6);
-        $this->extConfProphecy->getMergeEvents()->willReturn(false);
 
         // needed for getItemsFromTca in DayGenerator
         $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['xth']['config']['items'] = [
@@ -316,8 +315,6 @@ class DayRelationServiceTest extends UnitTestCase
      */
     public function createDayRelationsWithRecurringEventAndMultipleTimesAtSameDayMerge()
     {
-        $this->extConfProphecy->getMergeEvents()->willReturn(true);
-
         $yesterday = new \DateTime();
         $yesterday->modify('yesterday midnight');
         $yesterdayMorning = new \DateTime();
@@ -452,7 +449,6 @@ class DayRelationServiceTest extends UnitTestCase
      */
     public function createDayRelationsWithRecurringEventAndMultipleTimesAtSameDayFutureMerge()
     {
-        $this->extConfProphecy->getMergeEvents()->willReturn(true);
         $this->extConfProphecy->getRecurringPast()->willReturn(0);
 
         $yesterday = new \DateTime();
@@ -751,8 +747,6 @@ class DayRelationServiceTest extends UnitTestCase
      */
     public function createDayRelationsWithRecurringEventAndMultipleExceptionTimesMerge()
     {
-        $this->extConfProphecy->getMergeEvents()->willReturn(true);
-
         $tuesday = new \DateTime();
         $tuesday->modify('last tuesday midnight');
         $wednesday = clone $tuesday;

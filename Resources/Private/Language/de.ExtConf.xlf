@@ -19,10 +19,6 @@
 				<source>x months in future: When creating a new recurring event this extension can create related day records for the next x months.</source>
 				<target>xMonate in der Zukunft: bei Veranstaltungen mit Wiederholungen werden Tagesdaten für die nächsten x Monate erzeugt</target>
 			</trans-unit>
-			<trans-unit id="mergeEvents">
-				<source>Merge events: When an event has multiple performances on one day you can decide, if this event should be displayed as one day with multiple times or as multiple individual events in list. You have to start the scheduler again after changing this option.</source>
-				<target>Veranstaltungen zusammenführen: Wenn eine Veranstaltung mehrmals an einem Tag stattfindet, könnt Ihr mit dieser Einstellung entscheiden, ob die Veranstaltung nur einmal mit mehreren Uhrzeiten oder mehrmals mit der jeweils individuellen Uhrzeit in der Liste erscheint. Nach einer Änderung dieser Option muss der Update Task der events2 im scheduler neu gestartet werden.</target>
-			</trans-unit>
 			<trans-unit id="defaultCountry">
 				<source>Default country: If you're only working for one specified country while creating/editing POIs in backend it would be cool to set a country by default. So you only need to add street and city to find a POI. If you need POIs from all over the world, please keep this field empty</source>
 				<target>Standard Land: Wenn es in Ihrem Projekt nur POIs aus einem ganz bestimmten Land gibt, dann können Sie dieses Land hier eintragen und brauchen beim Anlegen/Bearbeiten von POIS im Backend das Land nicht explizit anzugeben. Sollten Sie jedoch POIs auf der ganzen Welt benötigen, dann lassen Sie dieses Feld bitte leer.</target>
