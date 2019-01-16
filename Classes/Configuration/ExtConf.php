@@ -50,13 +50,6 @@ class ExtConf implements SingletonInterface
     protected $recurringFuture = 0;
 
     /**
-     * merge events
-     *
-     * @var bool
-     */
-    protected $mergeEvents = true;
-
-    /**
      * default country.
      *
      * @var string
@@ -206,26 +199,6 @@ class ExtConf implements SingletonInterface
     public function setRecurringFuture($recurringFuture)
     {
         $this->recurringFuture = (int)$recurringFuture;
-    }
-
-    /**
-     * Returns the mergeEvents
-     */
-    public function getMergeEvents(): bool
-    {
-        return $this->mergeEvents;
-    }
-
-    /**
-     * Sets the mergeEvents
-     *
-     * @param bool $mergeEvents
-     *
-     * @return void
-     */
-    public function setMergeEvents($mergeEvents)
-    {
-        $this->mergeEvents = (bool)$mergeEvents;
     }
 
     /**

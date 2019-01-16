@@ -28,7 +28,6 @@ Properties
   rootUid_                basic    0
   recurringPast_          basic    3
   recurringFuture_        basic    6
-  mergeEvents_            basic    false
   defaultCountry_         basic
   emailFromAddress_       basic
   emailFromName_          basic
@@ -69,24 +68,6 @@ recurringFuture
 We can't create the day records for a recurring event for an unlimited
 time. This would cost too much performance and will create too much day records.
 With this setting you can reduce the generation to a specified amount of month.
-
-.. _extensionManager_mergeEvents:
-
-mergeEvents
-"""""""""""
-
-For a better overview in list views you can merge events with multiple
-performances on one day as one single event.
-
-This is a global setting as this affect the day generator directly
-and can not be set for each plugin or as TypoScript.
-
-Yes, there is also a mergeEvents option in TypoScript and plugin, but
-that option will merge all days and times of an event as one single event in
-list view.
-
-After changing this option you have to start the update task of events in
-scheduler again.
 
 .. _extensionManager_defaultCountry:
 

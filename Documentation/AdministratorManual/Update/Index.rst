@@ -24,6 +24,9 @@ have to manual activate mergeRecurringEvents to group them.
 
 We have moved static TypoScript to another location. Please use update wizard in ExtensionManager to update paths.
 
+We have removed mergeEvents option from ExtensionManager. If you have set this option please
+re-create your records with CLI or scheduler task.
+
 Update to Version 3.1.0
 ^^^^^^^^^^^^^^^^^^^^^^^
 
