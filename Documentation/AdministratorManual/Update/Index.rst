@@ -9,6 +9,21 @@ Updating
 --------
 If you update EXT:events2 to a newer version, please read this section carefully!
 
+Update to Version 3.2.0
+^^^^^^^^^^^^^^^^^^^^^^^
+
+With version 3.2.0 we have completely rewritten DayRepository to work with
+Doctrine/Core QueryBuilder now. We have added functional tests to be sure
+to have same results as in previous versions.
+
+We have renamed mergeEvents checkbox in FlexForm to mergeRecurringEvents. Maybe you
+have to reactivate that checkbox.
+
+In previous versions we have grouped events in ListLatest view automatically for you. Now you
+have to manual activate mergeRecurringEvents to group them.
+
+We have moved static TypoScript to another location. Please use update wizard in ExtensionManager to update paths.
+
 Update to Version 3.1.0
 ^^^^^^^^^^^^^^^^^^^^^^^
 
