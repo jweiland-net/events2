@@ -39,12 +39,15 @@ In earlier versions you may have done:
 This will not work anymore, as it would be very hard for integrator to place the container for remaining chars
 correctly. Please change this part to:
 
-<div class="form-group row">
-	<div class="col-sm-4"></div>
-	<div class="col-sm-8">
-		<span class="remainingChars" data-id="teaser"></span>
-	</div>
-</div>
+Code: ::
+
+ <div class="form-group row">
+   <div class="col-sm-4"></div>
+   <div class="col-sm-8">
+     <span class="remainingChars" data-id="teaser"></span>
+   </div>
+ </div>
+
 
 Use data-id to relate it to a textarea id-attribute.
 
@@ -64,13 +67,13 @@ solved this problem and simplified Fluid template a lot. Instead of modifying th
 reduced some method-calls down to the DateTime representation of Day and Exception records:
 
 * Renamed EventService::getSortedTimesForDay to EventService::getSortedTimesForDate
-*** Property $day changed from type Day to \DateTime
+  * Property $day changed from type Day to \DateTime
 * Renamed EventService::getDifferentTimesForDay to EventService::getDifferentTimesForDate
-*** Property $day changed from type Day to \DateTime
+  * Property $day changed from type Day to \DateTime
 * Renamed EventService::getTimesForDay to EventService::getTimesForDate
-*** Property $day changed from type Day to \DateTime
+  * Property $day changed from type Day to \DateTime
 * Renamed EventService::getExceptionsForDay to EventService::getExceptionsForDate
-*** Property $day changed from type Day to \DateTime
+  * Property $day changed from type Day to \DateTime
 
 So, please check your own extensions, if you make use of these methods. To solve the problem from above, we have
 implemented two new ViewHelpers. Please have a look into our new templates and update your own templates
@@ -79,7 +82,7 @@ to the new structure:
 * New VH: GetExceptionsFromEventForSpecificDate
 * New VH: IsDateMarkedAsCanceled
 
-Event property `download_links` can now collect more then one link. Please update DB in installtool and clear
+Event property `download_links` can now collect more then one link. Please update DB in Installtool and clear
 system caches.
 
 Now you can create events with a recurring of one or more months.
@@ -158,5 +161,4 @@ Create scheduler task of type "Create/Update Days" if not already exists.
 Execute that task.
 
 We have removed our own TypoLink ViewHelper as it is not needed anymore since
-TYPO3 7.6. Please change all e2:link.typolink VHs of your templates into
-f:link.typolink.
+TYPO3 7.6. Please change all e2:link.typolink VHs of your templates into f:link.typolink.
