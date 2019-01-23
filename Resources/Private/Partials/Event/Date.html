@@ -16,9 +16,9 @@
 			</f:else>
 		</f:if>
 	</f:case>
-	<f:case default="1">
+	<f:defaultCase>
 		<f:render section="date" arguments="{day: day.day}" />
-	</f:case>
+	</f:defaultCase>
 </f:switch>
 
 <f:comment>If sortDayTime is higher than current day 00:00:00 we can be sure that a time record was created</f:comment>
