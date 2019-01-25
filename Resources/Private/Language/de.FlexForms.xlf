@@ -70,9 +70,13 @@
 				<source>Categories</source>
 				<target>Kategorien</target>
 			</trans-unit>
+			<trans-unit id="mergeEventsAtSameDay">
+				<source>Merge events with multiple times at same day to one entry</source>
+				<target>Vereine Veranstaltungen mit mehreren Uhrzeiten zu einer Veranstaltung zusammen</target>
+			</trans-unit>
 			<trans-unit id="mergeRecurringEvents">
-				<source>Merge recurring events</source>
-				<target>Vereine wiederkehrende Veranstaltungen</target>
+				<source>Merge recurring events to one entry</source>
+				<target>Vereine wiederkehrende Veranstaltungen zu einer Veranstaltung zusammen</target>
 			</trans-unit>
 			<trans-unit id="preFilterByOrganizer">
 				<source>Pre filter events by organizer</source>

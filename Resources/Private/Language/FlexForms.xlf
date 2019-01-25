@@ -53,8 +53,11 @@
 			<trans-unit id="pidOfSearchPage">
 				<source>PID of search page</source>
 			</trans-unit>
+			<trans-unit id="mergeEventsAtSameDay">
+				<source>Merge events with multiple times at same day to one entry</source>
+			</trans-unit>
 			<trans-unit id="mergeRecurringEvents">
-				<source>Merge recurring events</source>
+				<source>Merge recurring events to one entry</source>
 			</trans-unit>
 			<trans-unit id="preFilterByOrganizer">
 				<source>Pre filter events by organizer</source>
