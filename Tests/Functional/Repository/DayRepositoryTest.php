@@ -113,12 +113,6 @@ class DayRepositoryTest extends FunctionalTestCase
         $category2->setParent($mainCategory);
         $category2->setTitle('BMW');
 
-        $multipleTime = new Time();
-        $multipleTime->setPid(11);
-        $multipleTime->setTimeBegin('12:00');
-        $multipleTimes = new ObjectStorage();
-        $multipleTimes->attach($multipleTime);
-
         $event = new Event();
         $event->setPid(11);
         $event->setEventType('recurring');
@@ -127,12 +121,58 @@ class DayRepositoryTest extends FunctionalTestCase
         $event->setTeaser('');
         $event->setEventBegin($eventBegin);
         $event->setEventTime($eventTime);
-        $event->setMultipleTimes($multipleTimes);
         $event->setXth(31);
         $event->setWeekday(16);
         $event->setEachWeeks(0);
         $event->setEachMonths(0);
         $event->setRecurringEnd(null);
+        $event->setFreeEntry(false);
+        $event->setOrganizer($organizer1);
+        $event->setLocation($location1);
+        $persistenceManager->add($event);
+
+        $multipleTime1 = new Time();
+        $multipleTime1->setPid(11);
+        $multipleTime1->setTimeBegin('12:00');
+        $multipleTime2 = new Time();
+        $multipleTime2->setPid(11);
+        $multipleTime2->setTimeBegin('20:00');
+        $multipleTimes = new ObjectStorage();
+        $multipleTimes->attach($multipleTime1);
+        $multipleTimes->attach($multipleTime2);
+
+        $recurringEnd = new \DateTime('midnight');
+        $recurringEnd->modify('+1 month');
+
+        $event = new Event();
+        $event->setPid(11);
+        $event->setEventType('recurring');
+        $event->setTopOfList(false);
+        $event->setTitle('Multiple times same day');
+        $event->setTeaser('');
+        $event->setEventBegin($eventBegin);
+        $event->setEventTime($eventTime);
+        $event->setSameDay(true);
+        $event->setMultipleTimes($multipleTimes);
+        $event->setXth(31);
+        $event->setWeekday(16);
+        $event->setEachWeeks(0);
+        $event->setEachMonths(0);
+        $event->setRecurringEnd($recurringEnd);
+        $event->setFreeEntry(false);
+        $event->setOrganizer($organizer1);
+        $event->setLocation($location1);
+        $persistenceManager->add($event);
+
+        $eventBegin = new \DateTime('tomorrow midnight');
+
+        $event = new Event();
+        $event->setPid(11);
+        $event->setEventType('single');
+        $event->setTopOfList(false);
+        $event->setTitle('Morgen');
+        $event->setTeaser('Test for findOneByTimestamp');
+        $event->setEventBegin($eventBegin);
         $event->setFreeEntry(false);
         $event->setOrganizer($organizer1);
         $event->setLocation($location1);
@@ -316,6 +356,26 @@ class DayRepositoryTest extends FunctionalTestCase
     /**
      * @test
      */
+    public function findEventsWillFindLessRecordsIfMergeEventsAtSameDayIsActivated()
+    {
+        // Compare merged and un-merged event records with multiple times at same day
+        $allDaysByOrganizer = $this->dayRepository->findEvents('list', new Filter());
+
+        $this->dayRepository->setSettings([
+            'mergeEventsAtSameDay' => 1
+        ]);
+        $allDaysMergedByTimeAndOrganizer = $this->dayRepository->findEvents('list', new Filter());
+
+        // if merge has worked we MUST have less records now
+        $this->assertLessThan(
+            $allDaysByOrganizer->count(),
+            $allDaysMergedByTimeAndOrganizer->count()
+        );
+    }
+
+    /**
+     * @test
+     */
     public function findEventsByStoragePids()
     {
         $this->dayRepository->setSettings([
@@ -325,7 +385,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $this->querySettings->setStoragePageIds([11]);
         $days = $this->dayRepository->findEvents('list', new Filter());
         $this->assertSame(
-            6,
+            8,
             $days->count()
         );
 
@@ -388,13 +448,14 @@ class DayRepositoryTest extends FunctionalTestCase
      */
     public function findEventsByOrganizer()
     {
+        // Organizer 1 in Filter and Plugin
         $this->dayRepository->setSettings([
             'mergeRecurringEvents' => 1,
             'preFilterByOrganizer' => '1'
         ]);
         $days = $this->dayRepository->findEvents('list', new Filter());
         $this->assertSame(
-            5,
+            7,
             $days->count()
         );
 
@@ -405,10 +466,11 @@ class DayRepositoryTest extends FunctionalTestCase
         ]);
         $days = $this->dayRepository->findEvents('list', $filter);
         $this->assertSame(
-            5,
+            7,
             $days->count()
         );
 
+        // Organizer 2 in Filter and Plugin
         $this->dayRepository->setSettings([
             'mergeRecurringEvents' => 1,
             'preFilterByOrganizer' => '2'
@@ -444,7 +506,7 @@ class DayRepositoryTest extends FunctionalTestCase
         ]);
         $days = $this->dayRepository->findEvents('list', $filter);
         $this->assertSame(
-            5,
+            7,
             $days->count()
         );
     }
@@ -603,7 +665,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $this->querySettings->setStoragePageIds([11]);
         $days = $this->dayRepository->searchEvents(new Search());
         $this->assertSame(
-            6,
+            8,
             count($days->toArray())
         );
 
@@ -774,7 +836,7 @@ class DayRepositoryTest extends FunctionalTestCase
 
         $days = $this->dayRepository->searchEvents($search);
         $this->assertSame(
-            5,
+            7,
             count($days->toArray())
         );
     }
@@ -845,13 +907,13 @@ class DayRepositoryTest extends FunctionalTestCase
         $tomorrow = new \DateTime('tomorrow midnight');
 
         // EventUid 4 => Holiday duration
-        $day = $this->dayRepository->findOneByTimestamp(4, $tomorrow->format('U'));
+        $day = $this->dayRepository->findOneByTimestamp(3, $tomorrow->format('U'));
         $this->assertInstanceOf(
             Day::class,
             $day
         );
         $this->assertSame(
-            'Holiday',
+            'Morgen',
             $day->getEvent()->getTitle()
         );
     }

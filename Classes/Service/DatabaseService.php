@@ -269,9 +269,15 @@ class DatabaseService
      * @param QueryBuilder $subQueryBuilder
      * @param string $constraint
      * @param bool $mergeRecurringEvents
+     * @param bool $mergeEventsAtSameDay
      */
-    public function initializeSubQueryBuilder(QueryBuilder $queryBuilder, QueryBuilder $subQueryBuilder, string $constraint, bool $mergeRecurringEvents)
-    {
+    public function initializeSubQueryBuilder(
+        QueryBuilder $queryBuilder,
+        QueryBuilder $subQueryBuilder,
+        string $constraint,
+        bool $mergeRecurringEvents,
+        bool $mergeEventsAtSameDay
+    ) {
         $subQueryBuilder
             ->selectLiteral('MIN(day_sub_query.day_time) as next_day_time', 'day_sub_query.event')
             ->from('tx_events2_domain_model_day', 'day_sub_query')
@@ -279,6 +285,8 @@ class DatabaseService
 
         if ($mergeRecurringEvents) {
             $subQueryBuilder->groupBy('day_sub_query.event');
+        } elseif ($mergeEventsAtSameDay) {
+            $subQueryBuilder->groupBy('day_sub_query.event', 'day_sub_query.day');
         } else {
             $subQueryBuilder->groupBy('day_sub_query.event', 'day_sub_query.sort_day_time');
         }

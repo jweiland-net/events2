@@ -140,7 +140,8 @@ class DayRepository extends Repository
             $queryBuilder,
             $subQueryBuilder,
             $this->databaseService->getConstraintForDate($subQueryBuilder, $type, 'day_sub_query'),
-            (bool)$this->settings['mergeRecurringEvents']
+            (bool)$this->settings['mergeRecurringEvents'],
+            (bool)$this->settings['mergeEventsAtSameDay']
         );
 
         $queryBuilder
@@ -246,7 +247,8 @@ class DayRepository extends Repository
                 $endDateTime,
                 'day_sub_query'
             ),
-            (bool)$this->settings['mergeRecurringEvents']
+            (bool)$this->settings['mergeRecurringEvents'],
+            (bool)$this->settings['mergeEventsAtSameDay']
         );
 
         // add query for event location
@@ -314,7 +316,8 @@ class DayRepository extends Repository
             $queryBuilder,
             $subQueryBuilder,
             '',
-            (bool)$this->settings['mergeRecurringEvents']
+            (bool)$this->settings['mergeRecurringEvents'],
+            (bool)$this->settings['mergeEventsAtSameDay']
         );
 
         // add categories
