@@ -59,6 +59,31 @@ class DatabaseService
     }
 
     /**
+     * Truncate table by TableName
+     *
+     * It's not a really TRUNCATE, it a DELETE FROM.
+     * Set $really to true, to do a really TRUNCATE, which also sets starting increment back to 1.
+     *
+     * @link: https://stackoverflow.com/questions/9686888/how-to-truncate-a-table-using-doctrine-2
+     * @param string $tableName
+     * @param bool $really
+     */
+    public function truncateTable($tableName, $really = false)
+    {
+        if ($really) {
+            $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($tableName);
+            $connection->truncate($tableName);
+        } else {
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($tableName);
+            $queryBuilder->getRestrictions()->removeAll();
+            $queryBuilder
+                ->delete($tableName)
+                ->from($tableName)
+                ->execute();
+        }
+    }
+
+    /**
      * With this method you get all current and future events of all event types.
      * It does not select hidden records as eventRepository->findByIdentifier will not find them.
      *
