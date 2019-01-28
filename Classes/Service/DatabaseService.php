@@ -286,7 +286,7 @@ class DatabaseService
         if ($mergeRecurringEvents) {
             $subQueryBuilder->groupBy('day_sub_query.event');
         } elseif ($mergeEventsAtSameDay) {
-            $subQueryBuilder->groupBy('day_sub_query.event', 'day_sub_query.day');
+            $subQueryBuilder->groupBy('day_sub_query.event', 'day_sub_query.same_day_time');
         } else {
             $subQueryBuilder->groupBy('day_sub_query.event', 'day_sub_query.sort_day_time');
         }

@@ -9,6 +9,14 @@ Updating
 --------
 If you update EXT:events2 to a newer version, please read this section carefully!
 
+Update to Version 3.3.1
+^^^^^^^^^^^^^^^^^^^^^^^
+
+With version 3.3.1 we have added a new column ``same_day_time`` to day table. It helps us to GROUP BY days with
+multiple time records for one day, if mergeEventsAtSameDate is set in plugin.
+
+Please update DB in Installtool and start scheduler task to re-generate all day records.
+
 Update to Version 3.2.0
 ^^^^^^^^^^^^^^^^^^^^^^^
 

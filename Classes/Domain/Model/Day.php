@@ -44,6 +44,13 @@ class Day extends AbstractEntity
     protected $sortDayTime;
 
     /**
+     * SameDayTime.
+     *
+     * @var \DateTime
+     */
+    protected $sameDayTime;
+
+    /**
      * Event.
      *
      * @var \JWeiland\Events2\Domain\Model\Event
@@ -111,6 +118,29 @@ class Day extends AbstractEntity
     public function setSortDayTime(\DateTime $sortDayTime)
     {
         $this->sortDayTime = $sortDayTime;
+    }
+
+    /**
+     * Returns the sameDayTime
+     *
+     * @return \DateTime $sameDayTime
+     */
+    public function getSameDayTime(): \DateTime
+    {
+        if ($this->sameDayTime->timezone_type !== 3) {
+            $this->sameDayTime->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+        }
+        return clone $this->sameDayTime;
+    }
+
+    /**
+     * Sets the sameDayTime
+     *
+     * @param \DateTime $sameDayTime
+     */
+    public function setSameDayTime(\DateTime $sameDayTime)
+    {
+        $this->sameDayTime = $sameDayTime;
     }
 
     /**

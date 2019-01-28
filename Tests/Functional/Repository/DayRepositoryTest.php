@@ -358,18 +358,53 @@ class DayRepositoryTest extends FunctionalTestCase
      */
     public function findEventsWillFindLessRecordsIfMergeEventsAtSameDayIsActivated()
     {
-        // Compare merged and un-merged event records with multiple times at same day
-        $allDaysByOrganizer = $this->dayRepository->findEvents('list', new Filter());
+        $allDays = $this->dayRepository->findEvents('list', new Filter());
 
         $this->dayRepository->setSettings([
             'mergeEventsAtSameDay' => 1
         ]);
-        $allDaysMergedByTimeAndOrganizer = $this->dayRepository->findEvents('list', new Filter());
+        $allDaysMergedByTime = $this->dayRepository->findEvents('list', new Filter());
 
         // if merge has worked we MUST have less records now
         $this->assertLessThan(
-            $allDaysByOrganizer->count(),
-            $allDaysMergedByTimeAndOrganizer->count()
+            $allDays->count(),
+            $allDaysMergedByTime->count()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function findEventsWillFindLessRecordsIfMergeRecurringEventsIsActivatedAbutMoreIfMergeEventsAtSameDayIsActivated()
+    {
+        // This is the maximum
+        $allDays = $this->dayRepository->findEvents('list', new Filter());
+
+        // These are the days in between
+        $this->dayRepository->setSettings([
+            'mergeEventsAtSameDay' => 1
+        ]);
+        $allDaysMergedByTime = $this->dayRepository->findEvents('list', new Filter());
+
+        // This is the minimum
+        $this->dayRepository->setSettings([
+            'mergeRecurringEvents' => 1
+        ]);
+        $allDaysMergedByEvent = $this->dayRepository->findEvents('list', new Filter());
+
+        $this->assertLessThan(
+            $allDays->count(),
+            $allDaysMergedByTime->count()
+        );
+
+        $this->assertLessThan(
+            $allDays->count(),
+            $allDaysMergedByEvent->count()
+        );
+
+        $this->assertGreaterThan(
+            $allDaysMergedByEvent->count(),
+            $allDaysMergedByTime->count()
         );
     }
 

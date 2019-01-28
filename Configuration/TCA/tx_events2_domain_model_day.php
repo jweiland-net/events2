@@ -45,6 +45,14 @@ return [
                 'eval' => 'datetime',
             ],
         ],
+        'same_day_time' => [
+            'label' => 'DayTime',
+            'config' => [
+                'type' => 'input',
+                'renderType' => 'inputDateTime',
+                'eval' => 'datetime',
+            ],
+        ],
         'event' => [
             'config' => [
                 'type' => 'select',
