@@ -121,7 +121,7 @@ class DayGenerator
     }
 
     /**
-     * Getter for DateTime Storage
+     * Return sorted Storage of DateTime objects
      *
      * @return \DateTime[]
      */

@@ -184,6 +184,7 @@ class DayRelationServiceTest extends UnitTestCase
             $this->assertEquals(${$days[$key]}, $day->getDay());
             $this->assertEquals(${$days[$key]}, $day->getDayTime());
             $this->assertEquals(${$days[$key]}, $day->getSortDayTime());
+            $this->assertEquals(${$days[$key]}, $day->getSameDayTime());
         }
     }
 
@@ -235,6 +236,7 @@ class DayRelationServiceTest extends UnitTestCase
             $this->assertEquals(${$days[$key]}, $day->getDay());
             $this->assertEquals(${$days[$key] . 'Launch'}, $day->getDayTime());
             $this->assertEquals(${$days[$key] . 'Launch'}, $day->getSortDayTime());
+            $this->assertEquals(${$days[$key] . 'Launch'}, $day->getSameDayTime());
         }
     }
 
@@ -301,6 +303,7 @@ class DayRelationServiceTest extends UnitTestCase
             $this->assertEquals(${$days[$key]}, $day->getDay());
             $this->assertEquals(${$days[$key] . $methodName}, $day->getDayTime());
             $this->assertEquals(${$days[$key] . $methodName}, $day->getSortDayTime());
+            $this->assertEquals(${$days[$key] . 'Morning'}, $day->getSameDayTime());
         }
     }
 
@@ -368,6 +371,7 @@ class DayRelationServiceTest extends UnitTestCase
             $this->assertEquals(${$days[$key]}, $day->getDay());
             $this->assertEquals(${$days[$key] . $methodName}, $day->getDayTime());
             $this->assertEquals(${$days[$key] . $methodName}, $day->getSortDayTime());
+            $this->assertEquals(${$days[$key] . 'Morning'}, $day->getSameDayTime());
         }
     }
 
@@ -428,6 +432,7 @@ class DayRelationServiceTest extends UnitTestCase
             $this->assertEquals(${$days[$key]}, $day->getDay());
             $this->assertEquals(${$days[$key] . $methodName}, $day->getDayTime());
             $this->assertEquals(${$days[$key] . $methodName}, $day->getSortDayTime());
+            $this->assertEquals(${$days[$key] . $methodName}, $day->getSameDayTime());
         }
     }
 
@@ -506,6 +511,7 @@ class DayRelationServiceTest extends UnitTestCase
             $this->assertEquals(${$days[$key]}, $day->getDay());
             $this->assertEquals(${$days[$key] . $methodName}, $day->getDayTime());
             $this->assertEquals(${$days[$key] . $methodName}, $day->getSortDayTime());
+            $this->assertEquals(${$days[$key] . $methodName}, $day->getSameDayTime());
         }
     }
 
@@ -579,6 +585,7 @@ class DayRelationServiceTest extends UnitTestCase
 
         /** @var Day $day */
         $days = ['tuesday', 'wednesday', 'wednesday', 'thursday', 'friday'];
+        $sameDayMethods = ['tuesday', 'wednesdayMorning', 'wednesdayMorning', 'thursday', 'fridayLaunch'];
         foreach ($event->getDays()->toArray() as $key => $day) {
             switch ($key) {
                 case 1:
@@ -596,6 +603,7 @@ class DayRelationServiceTest extends UnitTestCase
             $this->assertEquals(${$days[$key]}, $day->getDay());
             $this->assertEquals(${$days[$key] . $methodName}, $day->getDayTime());
             $this->assertEquals(${$days[$key] . $methodName}, $day->getSortDayTime());
+            $this->assertEquals(${$sameDayMethods[$key]}, $day->getSameDayTime());
         }
     }
 
@@ -626,6 +634,7 @@ class DayRelationServiceTest extends UnitTestCase
             $this->assertEquals(${$days[$key]}, $day->getDay());
             $this->assertEquals(${$days[$key]}, $day->getDayTime());
             $this->assertEquals(${$days[$key]}, $day->getSortDayTime());
+            $this->assertEquals(${$days[$key]}, $day->getSameDayTime());
         }
     }
 
@@ -662,6 +671,7 @@ class DayRelationServiceTest extends UnitTestCase
             $this->assertEquals(${$days[$key]}, $day->getDay());
             $this->assertEquals(${$days[$key] . 'Midnight'}, $day->getDayTime());
             $this->assertEquals(${$days[$key] . 'Midnight'}, $day->getSortDayTime());
+            $this->assertEquals(${$days[$key] . 'Midnight'}, $day->getSameDayTime());
         }
     }
 
@@ -697,6 +707,7 @@ class DayRelationServiceTest extends UnitTestCase
             $this->assertEquals(${$days[$key]}, $day->getDay());
             $this->assertEquals(${$days[$key]}, $day->getDayTime());
             $this->assertEquals($today, $day->getSortDayTime());
+            $this->assertEquals($today, $day->getSameDayTime());
         }
     }
 
@@ -742,6 +753,7 @@ class DayRelationServiceTest extends UnitTestCase
             $this->assertEquals(${$days[$key]}, $day->getDay());
             $this->assertEquals(${$days[$key] . 'Morning'}, $day->getDayTime());
             $this->assertEquals($todayMorning, $day->getSortDayTime());
+            $this->assertEquals($todayMorning, $day->getSameDayTime());
         }
     }
 }
