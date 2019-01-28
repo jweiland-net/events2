@@ -153,8 +153,12 @@ class DayRelationService
             // write a warning (2) to sys_log
             $this->getLogger()->warning('Related days could not be created, because of an empty event or a non given event uid or pid.');
         } else {
+            // Delete all days from Repo and DB
             $event->setDays(new ObjectStorage());
+            $this->persistenceManager->update($event);
+            $this->persistenceManager->persistAll();
 
+            // Create days from scratch and store to DB
             $this->dayGenerator->initialize($event);
             $dateTimeStorage = $this->dayGenerator->getDateTimeStorage();
             foreach ($dateTimeStorage as $dateTime) {
