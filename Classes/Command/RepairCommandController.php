@@ -77,6 +77,10 @@ class RepairCommandController extends CommandController
      */
     protected function truncateDayTable()
     {
+        /** @var DatabaseService $databaseService */
+        $databaseService = GeneralUtility::makeInstance(DatabaseService::class);
+        $databaseService->truncateTable('tx_events2_domain_model_day', true);
+
         $this->outputLine('I have truncated the day table' . PHP_EOL);
     }
 
@@ -84,7 +88,6 @@ class RepairCommandController extends CommandController
      * After solving bugs in DayGenerator it would be good to recreate all days for events
      *
      * @return void
-     *
      * @throws \Exception
      */
     protected function reGenerateDayRelations()
