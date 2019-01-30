@@ -310,17 +310,17 @@ class DayGeneratorTest extends UnitTestCase
     public function initializeWithRecurringOverEachMonthAddsThreeDaysToStorage()
     {
         $eventBegin = new \DateTime();
-        $eventBegin->modify('midnight');
+        $eventBegin->modify('midnight')->modify('first day of this month')->modify('+25 days');
         $nextMonth = clone $eventBegin;
         $nextMonth->modify('+1 months');
-        $eventEnd = clone $eventBegin;
-        $eventEnd->modify('+2 months');
+        $recurringEnd = clone $eventBegin;
+        $recurringEnd->modify('+2 months');
 
         $event = new Event();
         $event->_setProperty('uid', 123);
         $event->setEventType('recurring');
         $event->setEventBegin($eventBegin);
-        $event->setEventEnd($eventEnd);
+        $event->setRecurringEnd($recurringEnd);
         $event->setXth(31);
         $event->setWeekday(127);
         $event->setEachWeeks(0);
@@ -329,7 +329,10 @@ class DayGeneratorTest extends UnitTestCase
         $expectedDays = [];
         $expectedDays[$eventBegin->format('U')] = $eventBegin;
         $expectedDays[$nextMonth->format('U')] = $nextMonth;
-        $expectedDays[$eventEnd->format('U')] = $eventEnd;
+        $expectedDays[$recurringEnd->format('U')] = $recurringEnd;
+
+        $extConf = new ExtConf();
+        $extConf->setRecurringPast(1);
 
         /** @var DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
         $dayGenerator = $this
@@ -337,9 +340,9 @@ class DayGeneratorTest extends UnitTestCase
             ->setMethods(['addException', 'getDateToStopCalculatingTo'])
             ->getMock();
         $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
-        $dayGenerator->injectExtConf(new ExtConf());
+        $dayGenerator->injectExtConf($extConf);
         $dayGenerator->expects($this->never())->method('addException');
-        $dayGenerator->expects($this->once())->method('getDateToStopCalculatingTo')->willReturn($eventEnd);
+        $dayGenerator->expects($this->once())->method('getDateToStopCalculatingTo')->willReturn($recurringEnd);
         $this->assertTrue($dayGenerator->initialize($event));
         $this->assertEquals(
             $expectedDays,
