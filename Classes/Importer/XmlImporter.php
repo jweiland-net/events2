@@ -417,8 +417,18 @@ class XmlImporter extends AbstractImporter
                         $targetFolder->getCombinedIdentifier() . $filename
                     );
                 } else {
-                    $file = $targetFolder->createFile($filename);
-                    $file->setContents(GeneralUtility::getUrl($image['url']));
+                    $report = [];
+                    $content = GeneralUtility::getUrl($image['url'], 0, null, $report);
+                    if (!empty($report['error'])) {
+                        $this->addMessage(sprintf(
+                            'Given image was NOT added to event. Error: %s',
+                            $report['message']
+                        ), FlashMessage::NOTICE);
+                        continue;
+                    } else {
+                        $file = $targetFolder->createFile($filename);
+                        $file->setContents($content);
+                    }
                 }
 
                 // Create new FileReference

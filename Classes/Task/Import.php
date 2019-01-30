@@ -70,8 +70,8 @@ class Import extends AbstractTask
                 return false;
             }
         } catch (\Exception $e) {
-            $this->addMessage('Please check path. Import file could not be found.', FlashMessage::ERROR);
-            return false;
+            $this->addMessage('Currently no file for import found.', FlashMessage::INFO);
+            return true;
         }
 
         try {
