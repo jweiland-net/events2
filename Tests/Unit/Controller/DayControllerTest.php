@@ -24,7 +24,6 @@ use Nimut\TestingFramework\MockObject\AccessibleMockObjectInterface;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
-use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -241,7 +240,7 @@ class DayControllerTest extends UnitTestCase
         $timestamp = 1234567890;
         $day = new Day();
 
-        $this->dayRepository->findOneByTimestamp(
+        $this->dayRepository->findDayByEventAndTimestamp(
             Argument::exact($event),
             Argument::exact($timestamp)
         )->shouldBeCalled()->willReturn($day);
@@ -267,7 +266,7 @@ class DayControllerTest extends UnitTestCase
         $day->setEvent($event);
 
         $this->dayRepository
-            ->findOneByTimestamp(
+            ->findDayByEventAndTimestamp(
                 Argument::exact($eventUid),
                 Argument::exact(0)
             )
@@ -277,43 +276,6 @@ class DayControllerTest extends UnitTestCase
             Argument::exact('day'),
             Argument::exact($day)
         )->shouldBeCalled();
-
-        $this->subject->showAction($eventUid);
-    }
-
-    /**
-     * @test
-     */
-    public function showActionWithEmptyDayObjectWillNotCallAssign()
-    {
-        $contentObject = new \stdClass();
-        $contentObject->data = [
-            'pages' => 0
-        ];
-        $this->configurationManagerProphecy
-            ->getContentObject()
-            ->shouldBeCalled()
-            ->willReturn($contentObject);
-
-        /** @var FlashMessageQueue|ObjectProphecy $flashMessageQueue */
-        $flashMessageQueue = $this->prophesize(FlashMessageQueue::class);
-        $flashMessageQueue->enqueue(Argument::cetera())->shouldBeCalled();
-
-        $this->controllerContextProphecy
-            ->getFlashMessageQueue()
-            ->shouldBeCalled()
-            ->willReturn($flashMessageQueue->reveal());
-
-        $eventUid = 32415;
-
-        $this->dayRepository
-            ->findOneByTimestamp(
-                Argument::exact($eventUid),
-                Argument::exact(0)
-            )
-            ->shouldBeCalled()
-            ->willReturn(null);
-        $this->view->assign(Argument::cetera())->shouldNotBeCalled();
 
         $this->subject->showAction($eventUid);
     }

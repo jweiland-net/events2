@@ -15,7 +15,6 @@ namespace JWeiland\Events2\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Domain\Model\Day;
-use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Filter;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 
@@ -101,29 +100,19 @@ class DayController extends AbstractController
      */
     public function showAction($event, $timestamp = 0)
     {
-        $day = $this->dayRepository->findOneByTimestamp($event, $timestamp);
-        if (!$day instanceof Day) {
-            // something went wrong. Inform user how to solve this problem.
+        $day = $this->dayRepository->findDayByEventAndTimestamp($event, $timestamp);
 
-            // This is a very seldom problem. It appears, when you save tt_content by a hook and cast value of pages to int before save.
-            $data = $this->configurationManager->getContentObject()->data;
-            if ($data['pages'] === '0') {
-                $this->addFlashMessage(
-                    'Please check content record with UID "' . $data['records'] . '". Column "pages" can not be 0. It must be empty or higher than 0.',
-                    'tt_content column pages can not be 0',
-                    FlashMessage::WARNING
-                );
-            } else {
-                // If a time record was added or changed, the timestamp in URI will not match any timestamps in DB anymore
-                $this->addFlashMessage(
-                    'It seems that event record was updated in the meantime. Please go back to list view, reload and try to open the detail view again',
-                    'Event record has changed',
-                    FlashMessage::WARNING
-                );
-            }
-        } else {
-            $this->view->assign('day', $day);
+        // This is a very seldom problem. It appears, when you save tt_content by a hook and cast value of pages to int before save.
+        $data = $this->configurationManager->getContentObject()->data;
+        if ($data['pages'] === '0') {
+            $this->addFlashMessage(
+                'Please check content record with UID "' . $data['records'] . '". Column "pages" can not be 0. It must be empty or higher than 0.',
+                'tt_content column pages can not be 0',
+                FlashMessage::WARNING
+            );
         }
+
+        $this->view->assign('day', $day);
     }
 
     /**

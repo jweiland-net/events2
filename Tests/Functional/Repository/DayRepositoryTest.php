@@ -171,7 +171,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $event->setEventType('single');
         $event->setTopOfList(false);
         $event->setTitle('Morgen');
-        $event->setTeaser('Test for findOneByTimestamp');
+        $event->setTeaser('Test for findDayByEventAndTimestamp');
         $event->setEventBegin($eventBegin);
         $event->setFreeEntry(false);
         $event->setOrganizer($organizer1);
@@ -937,12 +937,12 @@ class DayRepositoryTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function findOneByTimestamp()
+    public function findDayByEventAndTimestamp()
     {
         $tomorrow = new \DateTime('tomorrow midnight');
 
         // EventUid 4 => Holiday duration
-        $day = $this->dayRepository->findOneByTimestamp(3, $tomorrow->format('U'));
+        $day = $this->dayRepository->findDayByEventAndTimestamp(3, $tomorrow->format('U'));
         $this->assertInstanceOf(
             Day::class,
             $day
