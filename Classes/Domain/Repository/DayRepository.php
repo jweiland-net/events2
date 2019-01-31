@@ -15,6 +15,7 @@ namespace JWeiland\Events2\Domain\Repository;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Configuration\ExtConf;
+use JWeiland\Events2\Domain\Factory\DayFactory;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Model\Search;
@@ -23,7 +24,6 @@ use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
-use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
@@ -51,15 +51,6 @@ class DayRepository extends Repository
      * @var array
      */
     protected $settings = [];
-
-    /**
-     * @var array
-     */
-    protected $defaultOrderings = [
-        'event.topOfList' => QueryInterface::ORDER_DESCENDING,
-        'sortDayTime' => QueryInterface::ORDER_ASCENDING,
-        'dayTime' => QueryInterface::ORDER_ASCENDING
-    ];
 
     /**
      * @param DateTimeUtility $dateTimeUtility
@@ -357,70 +348,17 @@ class DayRepository extends Repository
 
     /**
      * Find one Day by Event and Timestamp.
-     * Instead of findByTimestamp this Timestamp must include the exact time (hours/minutes after 00:00).
-     *
-     * If timestamp is empty, we try to find next possible day in future.
+     * If timestamp is empty, we try to find next possible day in future/past or build our own one.
      *
      * @param int $eventUid
      * @param int $timestamp
-     * @return Day|null
+     * @return Day
      * @throws \Exception
      */
-    public function findOneByTimestamp(int $eventUid, int $timestamp = 0)
+    public function findDayByEventAndTimestamp(int $eventUid, int $timestamp = 0): Day
     {
-        /** @var Query $extbaseQuery */
-        $extbaseQuery = $this->createQuery();
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_day');
-
-        $constraints = [];
-
-        // add storage PID for event and day, but not for sys_category
-        $constraints[] = $this->databaseService->getConstraintForPid(
-            $queryBuilder,
-            $extbaseQuery->getQuerySettings()->getStoragePageIds()
-        );
-
-        $constraints[] = $queryBuilder->expr()->eq(
-            'day.event',
-            $queryBuilder->createNamedParameter($eventUid, \PDO::PARAM_INT)
-        );
-
-        if (empty($timestamp)) {
-            $constraints[] = $this->databaseService->getConstraintForDateRange(
-                $queryBuilder,
-                new \DateTime('now')
-            );
-            $queryBuilder->orderBy('day.day_time', 'ASC');
-        } else {
-            $constraints[] = $queryBuilder->expr()->eq(
-                'day.day_time',
-                $queryBuilder->createNamedParameter($timestamp, \PDO::PARAM_INT)
-            );
-        }
-
-        $queryBuilder
-            ->select('day.*')
-            ->from('tx_events2_domain_model_day', 'day')
-            ->leftJoin(
-                'day',
-                'tx_events2_domain_model_event',
-                'event',
-                $queryBuilder->expr()->eq(
-                    'day.event',
-                    $queryBuilder->quoteIdentifier('event.uid')
-                )
-            )
-            ->where(...$constraints)
-            ->orderBy('event.top_of_list', 'DESC')
-            ->addOrderBy('day.sort_day_time', 'ASC')
-            ->addOrderBy('day.day_time', 'ASC');
-
-        $extbaseQuery->statement($queryBuilder);
-
-        /** @var Day $day */
-        $day = $extbaseQuery->execute()->getFirst();
-
-        return $day;
+        $dayFactory = $this->objectManager->get(DayFactory::class);
+        return $dayFactory->findDayByEventAndTimestamp($eventUid, $timestamp, $this->createQuery());
     }
 
     /**
