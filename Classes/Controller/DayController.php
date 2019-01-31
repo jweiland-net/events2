@@ -14,7 +14,6 @@ namespace JWeiland\Events2\Controller;
  *
  * The TYPO3 project - inspiring people to share!
  */
-use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Filter;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 

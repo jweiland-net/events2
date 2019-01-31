@@ -112,7 +112,8 @@ class DayFactory
                         \PDO::PARAM_INT
                     )
                 )
-            ]);
+            ]
+        );
     }
 
     /**
@@ -135,7 +136,8 @@ class DayFactory
                     $queryBuilder,
                     new \DateTime('now')
                 )
-            ]);
+            ]
+        );
     }
 
     /**
@@ -158,7 +160,8 @@ class DayFactory
                     $queryBuilder,
                     new \DateTime('now')
                 )
-            ]);
+            ]
+        );
     }
 
     /**
