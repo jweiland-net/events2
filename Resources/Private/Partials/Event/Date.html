@@ -21,7 +21,7 @@
 	</f:defaultCase>
 </f:switch>
 
-<f:if condition="{settings.mergeEventsAtSameDay} && {e2:getMergedEventTimes(date: day.day, event: day.event)->f:count()} > 1">
+<f:if condition="({settings.mergeEventsAtSameDay} || {settings.mergeRecurringEvents}) && {e2:getMergedEventTimes(date: day.day, event: day.event)->f:count()} > 1">
 	<f:then>
 		|&nbsp;<f:link.action
 			action="show"
