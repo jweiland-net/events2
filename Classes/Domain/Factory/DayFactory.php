@@ -173,7 +173,7 @@ class DayFactory
      * @return Day
      * @throws \Exception
      */
-    protected function buildDay(array $searchValues, QueryInterface $query)
+    protected function buildDay(array $searchValues, QueryInterface $query): Day
     {
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $eventRepository = $objectManager->get(EventRepository::class);
@@ -275,7 +275,7 @@ class DayFactory
      * @param int $eventUid
      * @return array
      */
-    protected function buildBaseConstraint(QueryBuilder $queryBuilder, QueryInterface $query, int $eventUid)
+    protected function buildBaseConstraint(QueryBuilder $queryBuilder, QueryInterface $query, int $eventUid): array
     {
         $baseConstraints = [];
 
