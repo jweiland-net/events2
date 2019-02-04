@@ -403,10 +403,18 @@ class DayGenerator
         foreach ($event->getExceptions() as $exception) {
             switch ($exception->getExceptionType()) {
                 case 'Add':
-                    $this->addDayToStorage($exception->getExceptionDate());
+                    $this->addDayToStorage(
+                        $this->dateTimeUtility->standardizeDateTimeObject(
+                            $exception->getExceptionDate()
+                        )
+                    );
                     break;
                 case 'Remove':
-                    $this->removeDayFromStorage($exception->getExceptionDate());
+                    $this->removeDayFromStorage(
+                        $this->dateTimeUtility->standardizeDateTimeObject(
+                            $exception->getExceptionDate()
+                        )
+                    );
                     break;
                 case 'Time':
                     break;
