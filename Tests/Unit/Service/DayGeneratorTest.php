@@ -159,6 +159,40 @@ class DayGeneratorTest extends UnitTestCase
      *
      * @throws \Exception
      */
+    public function initializeWithRecurringWeeksResetsDayToMidnight()
+    {
+        $eventBegin = new \DateTime('yesterday 15:38:24');
+        $recurringEnd = new \DateTime('+6 weeks 15:38:24');
+
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setEventType('recurring');
+        $event->setEventBegin($eventBegin);
+        $event->setRecurringEnd($recurringEnd);
+        $event->setXth(31);
+        $event->setWeekday(127);
+        $event->setEachWeeks(1);
+        $event->setEachMonths(0);
+
+        /** @var DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
+        $dayGenerator = new DayGenerator();
+        $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
+        $dayGenerator->injectExtConf(new ExtConf());
+        $this->assertTrue($dayGenerator->initialize($event));
+        $days = $dayGenerator->getDateTimeStorage();
+        foreach ($days as $day) {
+            $this->assertSame(
+                '00:00:00',
+                $day->format('H:i:s')
+            );
+        }
+    }
+
+    /**
+     * @test
+     *
+     * @throws \Exception
+     */
     public function initializeWithRecurringOverEachWeekAddsThreeDaysToStorage()
     {
         $eventBegin = new \DateTime();

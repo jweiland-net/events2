@@ -218,9 +218,9 @@ class DayGenerator
         }
 
         if ($recurringEnd instanceof \DateTime && $recurringEnd < $maxEventEnd) {
-            return $recurringEnd;
+            return $this->dateTimeUtility->standardizeDateTimeObject($recurringEnd);
         } else {
-            return $maxEventEnd;
+            return $this->dateTimeUtility->standardizeDateTimeObject($maxEventEnd);
         }
     }
 
@@ -256,7 +256,7 @@ class DayGenerator
             $dateToStartCalculatingFrom = $eventBegin;
         }
 
-        return $dateToStartCalculatingFrom;
+        return $this->dateTimeUtility->standardizeDateTimeObject($dateToStartCalculatingFrom);
     }
 
     /**
