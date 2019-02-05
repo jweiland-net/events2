@@ -113,6 +113,9 @@ class DayRepositoryTest extends FunctionalTestCase
         $category2->setParent($mainCategory);
         $category2->setTitle('BMW');
 
+        $categories = new ObjectStorage();
+        $categories->attach($category1);
+
         $event = new Event();
         $event->setPid(11);
         $event->setEventType('recurring');
@@ -129,6 +132,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $event->setFreeEntry(false);
         $event->setOrganizer($organizer1);
         $event->setLocation($location1);
+        $event->setCategories($categories);
         $persistenceManager->add($event);
 
         $multipleTime1 = new Time();
@@ -143,6 +147,9 @@ class DayRepositoryTest extends FunctionalTestCase
 
         $recurringEnd = new \DateTime('midnight');
         $recurringEnd->modify('first day of this month')->modify('+4 days')->modify('+1 month');
+
+        $categories = new ObjectStorage();
+        $categories->attach($category1);
 
         $event = new Event();
         $event->setPid(11);
@@ -162,9 +169,13 @@ class DayRepositoryTest extends FunctionalTestCase
         $event->setFreeEntry(false);
         $event->setOrganizer($organizer1);
         $event->setLocation($location1);
+        $event->setCategories($categories);
         $persistenceManager->add($event);
 
         $eventBegin = new \DateTime('tomorrow midnight');
+
+        $categories = new ObjectStorage();
+        $categories->attach($category1);
 
         $event = new Event();
         $event->setPid(11);
@@ -176,6 +187,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $event->setFreeEntry(false);
         $event->setOrganizer($organizer1);
         $event->setLocation($location1);
+        $event->setCategories($categories);
         $persistenceManager->add($event);
 
         $eventBegin = new \DateTime('midnight');
@@ -186,6 +198,7 @@ class DayRepositoryTest extends FunctionalTestCase
 
         $categories = new ObjectStorage();
         $categories->attach($category1);
+        $categories->attach($category2);
 
         $event = new Event();
         $event->setPid(11);
@@ -222,6 +235,9 @@ class DayRepositoryTest extends FunctionalTestCase
         $eventEnd = new \DateTime('midnight');
         $eventEnd->modify('+3 days');
 
+        $categories = new ObjectStorage();
+        $categories->attach($mainCategory);
+
         $event = new Event();
         $event->setPid(11);
         $event->setEventType('duration');
@@ -233,6 +249,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $event->setFreeEntry(false);
         $event->setOrganizer($organizer2);
         $event->setLocation($location1);
+        $event->setCategories($categories);
         $persistenceManager->add($event);
 
         $eventBegin = new \DateTime('midnight');
@@ -270,7 +287,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $recurringEnd->modify('first day of this month')->modify('+4 days')->modify('+3 months');
 
         $categories = new ObjectStorage();
-        $categories->attach($category2);
+        $categories->attach($category1);
 
         $event = new Event();
         $event->setPid(40);
@@ -289,9 +306,6 @@ class DayRepositoryTest extends FunctionalTestCase
         $event->setCategories($categories);
         $persistenceManager->add($event);
 
-        $categories = new ObjectStorage();
-        $categories->attach($mainCategory);
-
         $event = new Event();
         $event->setPid(40);
         $event->setEventType('recurring');
@@ -306,8 +320,10 @@ class DayRepositoryTest extends FunctionalTestCase
         $event->setRecurringEnd($recurringEnd);
         $event->setFreeEntry(false);
         $event->setOrganizer($organizer1);
-        $event->setCategories($categories);
         $persistenceManager->add($event);
+
+        $categories = new ObjectStorage();
+        $categories->attach($category2);
 
         $event = new Event();
         $event->setPid(11);
@@ -324,6 +340,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $event->setFreeEntry(false);
         $event->setOrganizer($organizer2);
         $event->setLocation($location1);
+        $event->setCategories($categories);
         $persistenceManager->add($event);
 
         $persistenceManager->persistAll();
@@ -442,9 +459,10 @@ class DayRepositoryTest extends FunctionalTestCase
             'categories' => '1'
         ]);
         $days = $this->dayRepository->findEvents('list', new Filter());
+
         $this->assertSame(
-            3,
-            $days->count()
+            7,
+            count($days->toArray())
         );
 
         $this->dayRepository->setSettings([
@@ -463,7 +481,7 @@ class DayRepositoryTest extends FunctionalTestCase
         ]);
         $days = $this->dayRepository->findEvents('list', new Filter());
         $this->assertSame(
-            2,
+            3,
             $days->count()
         );
 
@@ -473,8 +491,8 @@ class DayRepositoryTest extends FunctionalTestCase
         ]);
         $days = $this->dayRepository->findEvents('list', new Filter());
         $this->assertSame(
-            6,
-            $days->count()
+            9,
+            count($days->toArray())
         );
     }
 
@@ -782,7 +800,7 @@ class DayRepositoryTest extends FunctionalTestCase
 
         $days = $this->dayRepository->searchEvents($search);
         $this->assertSame(
-            3,
+            7,
             count($days->toArray())
         );
 
@@ -792,7 +810,7 @@ class DayRepositoryTest extends FunctionalTestCase
         ]);
         $days = $this->dayRepository->searchEvents(new Search());
         $this->assertSame(
-            3,
+            4,
             count($days->toArray())
         );
     }

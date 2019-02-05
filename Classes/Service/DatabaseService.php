@@ -288,63 +288,14 @@ class DatabaseService
     }
 
     /**
-     * Initialize QueryBuilder as SubQuery for day table
-     *
-     * @param QueryBuilder $queryBuilder
-     * @param QueryBuilder $subQueryBuilder
-     * @param string $constraint
-     * @param bool $mergeRecurringEvents
-     * @param bool $mergeEventsAtSameDay
-     */
-    public function initializeSubQueryBuilder(
-        QueryBuilder $queryBuilder,
-        QueryBuilder $subQueryBuilder,
-        string $constraint,
-        bool $mergeRecurringEvents,
-        bool $mergeEventsAtSameDay
-    ) {
-        $subQueryBuilder
-            ->selectLiteral('MIN(day_sub_query.day_time) as next_day_time', 'day_sub_query.event')
-            ->from('tx_events2_domain_model_day', 'day_sub_query')
-            ->where($constraint);
-
-        if ($mergeRecurringEvents) {
-            $subQueryBuilder->groupBy('day_sub_query.event');
-        } elseif ($mergeEventsAtSameDay) {
-            $subQueryBuilder->groupBy('day_sub_query.event', 'day_sub_query.same_day_time');
-        } else {
-            $subQueryBuilder->groupBy('day_sub_query.event', 'day_sub_query.sort_day_time');
-        }
-
-        $queryBuilder->getConcreteQueryBuilder()->join(
-            $queryBuilder->quoteIdentifier('day'),
-            sprintf(
-                '(%s)',
-                $subQueryBuilder->getSQL()
-            ),
-            $queryBuilder->quoteIdentifier('day_sub_group'),
-            $queryBuilder->expr()->andX(
-                $queryBuilder->expr()->eq(
-                    'day.event',
-                    $queryBuilder->quoteIdentifier('day_sub_group.event')
-                ),
-                $queryBuilder->expr()->eq(
-                    'day.day_time',
-                    $queryBuilder->quoteIdentifier('day_sub_group.next_day_time')
-                )
-            )
-        );
-    }
-
-    /**
-     * Get Constraints for Date
+     * Add Constraints for Date
      *
      * @param QueryBuilder $queryBuilder
      * @param string $type
      * @param string $alias
-     * @return string
+     * @param QueryBuilder $parentQueryBuilder
      */
-    public function getConstraintForDate(QueryBuilder $queryBuilder, string $type, string $alias = 'day')
+    public function addConstraintForDate(QueryBuilder $queryBuilder, string $type, QueryBuilder $parentQueryBuilder = null, string $alias = 'day')
     {
         $dateTimeUtility = GeneralUtility::makeInstance(DateTimeUtility::class);
         $startDateTime = null;
@@ -379,155 +330,209 @@ class DatabaseService
                 }
         }
 
-        return $this->getConstraintForDateRange($queryBuilder, $startDateTime, $endDateTime, $alias);
+        $this->addConstraintForDateRange($queryBuilder, $startDateTime, $endDateTime, $parentQueryBuilder, $alias);
     }
 
     /**
-     * Get constraint for Date within a given range
+     * Add constraint for Date within a given range
      *
      * @param QueryBuilder $queryBuilder
      * @param \DateTime $startDateTime
      * @param \DateTime|null $endDateTime
+     * @param QueryBuilder $parentQueryBuilder
      * @param string $alias
-     * @return string
      */
-    public function getConstraintForDateRange(QueryBuilder $queryBuilder, \DateTime $startDateTime, \DateTime $endDateTime = null, string $alias = 'day'): string
+    public function addConstraintForDateRange(QueryBuilder $queryBuilder, \DateTime $startDateTime, \DateTime $endDateTime = null, QueryBuilder $parentQueryBuilder = null, string $alias = 'day')
     {
-        $constraintForStartDateTime = $queryBuilder->expr()->gte(
+        if ($parentQueryBuilder === null) {
+            $parentQueryBuilder = $queryBuilder;
+        }
+
+        $constraintForDateTime = $queryBuilder->expr()->gte(
             $alias . '.day_time',
-            $queryBuilder->createNamedParameter(
+            $parentQueryBuilder->createNamedParameter(
                 $startDateTime->format('U'),
                 \PDO::PARAM_INT,
                 ':eventStartDate'
             )
         );
 
-        if (!$endDateTime) {
-            return $constraintForStartDateTime;
+        if ($endDateTime) {
+            $constraintForDateTime = (string)$queryBuilder->expr()->andX(
+                $constraintForDateTime,
+                $queryBuilder->expr()->lt(
+                    $alias . '.day_time',
+                    $parentQueryBuilder->createNamedParameter(
+                        $endDateTime->format('U'),
+                        \PDO::PARAM_INT,
+                        ':eventEndDate'
+                    )
+                )
+            );
         }
 
-        return (string)$queryBuilder->expr()->andX(
-            $constraintForStartDateTime,
-            $queryBuilder->expr()->lt(
-                $alias . '.day_time',
-                $queryBuilder->createNamedParameter(
-                    $endDateTime->format('U'),
-                    \PDO::PARAM_INT,
-                    ':eventEndDate'
-                )
-            )
-        );
+        $queryBuilder->andWhere($constraintForDateTime);
     }
 
     /**
-     * Get Constraint for storage page UIDs
+     * Add Constraint for storage page UIDs
      *
      * @param QueryBuilder $queryBuilder
      * @param array $storagePageIds
-     * @return string
+     * @param QueryBuilder $parentQueryBuilder
+     * @param string $postAlias
      */
-    public function getConstraintForPid(QueryBuilder $queryBuilder, array $storagePageIds): string
+    public function addConstraintForPid(QueryBuilder $queryBuilder, array $storagePageIds, QueryBuilder $parentQueryBuilder = null, string $postAlias = '')
     {
-        return (string)$queryBuilder->expr()->andX(
-            $queryBuilder->expr()->in(
-                'day.pid',
-                $queryBuilder->createNamedParameter(
-                    $storagePageIds,
-                    Connection::PARAM_INT_ARRAY
-                )
-            ),
-            $queryBuilder->expr()->in(
-                'event.pid',
-                $queryBuilder->createNamedParameter(
-                    $storagePageIds,
-                    Connection::PARAM_INT_ARRAY
+        if ($parentQueryBuilder === null) {
+            $parentQueryBuilder = $queryBuilder;
+        }
+
+        $queryBuilder->andWhere(
+            (string)$queryBuilder->expr()->andX(
+                $queryBuilder->expr()->in(
+                    'day' . $postAlias . '.pid',
+                    $parentQueryBuilder->createNamedParameter(
+                        $storagePageIds,
+                        Connection::PARAM_INT_ARRAY
+                    )
+                ),
+                $queryBuilder->expr()->in(
+                    'event' . $postAlias . '.pid',
+                    $parentQueryBuilder->createNamedParameter(
+                        $storagePageIds,
+                        Connection::PARAM_INT_ARRAY
+                    )
                 )
             )
         );
     }
 
     /**
-     * Get Constraint for Categories
+     * Add Constraint for Categories
      *
      * @param QueryBuilder $queryBuilder
      * @param array $categories
-     * @return string
+     * @param QueryBuilder $parentQueryBuilder
+     * @param string $alias
      */
-    public function getConstraintForCategories(QueryBuilder $queryBuilder, array $categories): string
+    public function addConstraintForCategories(QueryBuilder $queryBuilder, array $categories, QueryBuilder $parentQueryBuilder = null, string $alias = 'event')
     {
+        if ($parentQueryBuilder === null) {
+            $parentQueryBuilder = $queryBuilder;
+        }
+
         $queryBuilder->leftJoin(
-            'event',
+            $alias,
             'sys_category_record_mm',
             'category_mm',
             (string)$queryBuilder->expr()->andX(
                 $queryBuilder->expr()->eq(
-                    'event.uid',
+                    'event_sub_query.uid',
                     $queryBuilder->quoteIdentifier('category_mm.uid_foreign')
                 ),
                 $queryBuilder->expr()->eq(
                     'category_mm.tablenames',
-                    $queryBuilder->createNamedParameter('tx_events2_domain_model_event', \PDO::PARAM_STR)
+                    $parentQueryBuilder->createNamedParameter(
+                        'tx_events2_domain_model_event',
+                        \PDO::PARAM_STR
+                    )
                 ),
                 $queryBuilder->expr()->eq(
                     'category_mm.fieldname',
-                    $queryBuilder->createNamedParameter('categories', \PDO::PARAM_STR)
+                    $parentQueryBuilder->createNamedParameter(
+                        'categories',
+                        \PDO::PARAM_STR
+                    )
                 )
             )
         );
 
-        return $queryBuilder->expr()->in(
-            'category_mm.uid_local',
-            $queryBuilder->createNamedParameter(
-                $categories,
-                Connection::PARAM_INT_ARRAY
+        $queryBuilder->andWhere(
+            $queryBuilder->expr()->in(
+                'category_mm.uid_local',
+                $parentQueryBuilder->createNamedParameter(
+                    $categories,
+                    Connection::PARAM_INT_ARRAY
+                )
             )
         );
     }
 
     /**
-     * Get Constraint for Organizer
+     * Add Constraint for Organizer
      *
      * @param QueryBuilder $queryBuilder
      * @param int $organizer
-     * @return string
+     * @param QueryBuilder $parentQueryBuilder
+     * @param string $alias
      */
-    public function getConstraintForOrganizer(QueryBuilder $queryBuilder, int $organizer): string
+    public function addConstraintForOrganizer(QueryBuilder $queryBuilder, int $organizer, QueryBuilder $parentQueryBuilder = null, string $alias = 'event')
     {
-        return $queryBuilder->expr()->eq(
-            'event.organizer',
-            $queryBuilder->createNamedParameter($organizer, \PDO::PARAM_INT)
+        if ($parentQueryBuilder === null) {
+            $parentQueryBuilder = $queryBuilder;
+        }
+
+        $queryBuilder->andWhere(
+            $queryBuilder->expr()->eq(
+                $alias . '.organizer',
+                $parentQueryBuilder->createNamedParameter(
+                    $organizer,
+                    \PDO::PARAM_INT
+                )
+            )
         );
     }
 
     /**
-     * Get Constraint for Location
+     * Add Constraint for Location
      *
      * @param QueryBuilder $queryBuilder
      * @param int $location
-     * @return string
+     * @param QueryBuilder $parentQueryBuilder
+     * @param string $alias
      */
-    public function getConstraintForLocation(QueryBuilder $queryBuilder, int $location): string
+    public function addConstraintForLocation(QueryBuilder $queryBuilder, int $location, QueryBuilder $parentQueryBuilder = null, string $alias = 'event')
     {
-        return $queryBuilder->expr()->eq(
-            'event.location',
-            $queryBuilder->createNamedParameter($location, \PDO::PARAM_INT)
+        if ($parentQueryBuilder === null) {
+            $parentQueryBuilder = $queryBuilder;
+        }
+
+        $queryBuilder->andWhere(
+            $queryBuilder->expr()->eq(
+                $alias . '.location',
+                $parentQueryBuilder->createNamedParameter(
+                    $location,
+                    \PDO::PARAM_INT
+                )
+            )
         );
     }
 
     /**
-     * Get Constraint for various columns of event table
+     * Add Constraint for various columns of event table
      *
      * @param QueryBuilder $queryBuilder
      * @param string $column
      * @param string $value
      * @param int $dataType
-     * @return string
+     * @param QueryBuilder $parentQueryBuilder
+     * @param string $alias
      */
-    public function getConstraintForEventColumn(QueryBuilder $queryBuilder, string $column, $value, int $dataType = \PDO::PARAM_STR): string
+    public function addConstraintForEventColumn(QueryBuilder $queryBuilder, string $column, $value, int $dataType = \PDO::PARAM_STR, QueryBuilder $parentQueryBuilder = null, string $alias = 'event')
     {
-        return $queryBuilder->expr()->eq(
-            'event.' . $column,
-            $queryBuilder->createNamedParameter($value, $dataType)
+        if ($parentQueryBuilder === null) {
+            $parentQueryBuilder = $queryBuilder;
+        }
+
+        $queryBuilder->andWhere(
+            $queryBuilder->expr()->eq(
+                $alias . '.' . $column,
+                $parentQueryBuilder->createNamedParameter(
+                    $value,
+                    $dataType
+                )
+            )
         );
     }
 }
