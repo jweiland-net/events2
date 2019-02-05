@@ -99,20 +99,20 @@ class DayFactory
     protected function findExactDay(array $searchValues, QueryInterface $query)
     {
         $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->andWhere(
+            $queryBuilder->expr()->eq(
+                'day.day_time',
+                $queryBuilder->createNamedParameter(
+                    $searchValues['timestamp'],
+                    \PDO::PARAM_INT
+                )
+            )
+        );
 
         return $this->findDayByEvent(
             $searchValues['event'],
             $queryBuilder,
-            $query,
-            [
-                $queryBuilder->expr()->eq(
-                    'day.day_time',
-                    $queryBuilder->createNamedParameter(
-                        $searchValues['timestamp'],
-                        \PDO::PARAM_INT
-                    )
-                )
-            ]
+            $query
         );
     }
 
@@ -126,17 +126,15 @@ class DayFactory
     protected function findNextDay(array $searchValues, QueryInterface $query)
     {
         $queryBuilder = $this->getQueryBuilder();
+        $this->databaseService->addConstraintForDateRange(
+            $queryBuilder,
+            new \DateTime('now')
+        );
 
         return $this->findDayByEvent(
             $searchValues['event'],
             $queryBuilder,
-            $query,
-            [
-                $this->databaseService->getConstraintForDateRange(
-                    $queryBuilder,
-                    new \DateTime('now')
-                )
-            ]
+            $query
         );
     }
 
@@ -150,17 +148,15 @@ class DayFactory
     protected function findPreviousDay(array $searchValues, QueryInterface $query)
     {
         $queryBuilder = $this->getQueryBuilder(QueryInterface::ORDER_DESCENDING);
+        $this->databaseService->addConstraintForDateRange(
+            $queryBuilder,
+            new \DateTime('now')
+        );
 
         return $this->findDayByEvent(
             $searchValues['event'],
             $queryBuilder,
-            $query,
-            [
-                $this->databaseService->getConstraintForDateRange(
-                    $queryBuilder,
-                    new \DateTime('now')
-                )
-            ]
+            $query
         );
     }
 
@@ -222,15 +218,11 @@ class DayFactory
      * @param int $eventUid
      * @param QueryBuilder $queryBuilder
      * @param QueryInterface|Query $query
-     * @param array $additionalConstraints
      * @return Day|null
      */
-    protected function findDayByEvent(int $eventUid, QueryBuilder $queryBuilder, QueryInterface $query, array $additionalConstraints)
+    protected function findDayByEvent(int $eventUid, QueryBuilder $queryBuilder, QueryInterface $query)
     {
-        $queryBuilder->where(...array_merge(
-            $this->buildBaseConstraint($queryBuilder, $query, $eventUid),
-            $additionalConstraints
-        ));
+        $this->addBaseConstraint($queryBuilder, $query, $eventUid);
 
         $query->statement($queryBuilder);
 
@@ -268,29 +260,26 @@ class DayFactory
     }
 
     /**
-     * Build base constraints (pid and event) which are valid for all queries in this class.
+     * Add base constraints (pid and event) which are valid for all queries in this class.
      *
      * @param QueryBuilder $queryBuilder
      * @param QueryInterface $query
      * @param int $eventUid
-     * @return array
      */
-    protected function buildBaseConstraint(QueryBuilder $queryBuilder, QueryInterface $query, int $eventUid): array
+    protected function addBaseConstraint(QueryBuilder $queryBuilder, QueryInterface $query, int $eventUid)
     {
-        $baseConstraints = [];
-
         // add storage PID for event and day, but not for sys_category
-        $baseConstraints[] = $this->databaseService->getConstraintForPid(
+        $this->databaseService->addConstraintForPid(
             $queryBuilder,
             $query->getQuerySettings()->getStoragePageIds()
         );
 
-        $baseConstraints[] = $queryBuilder->expr()->eq(
-            'day.event',
-            $queryBuilder->createNamedParameter($eventUid, \PDO::PARAM_INT)
+        $queryBuilder->andWhere(
+            $queryBuilder->expr()->eq(
+                'day.event',
+                $queryBuilder->createNamedParameter($eventUid, \PDO::PARAM_INT)
+            )
         );
-
-        return $baseConstraints;
     }
 
     /**
