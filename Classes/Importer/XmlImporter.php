@@ -44,6 +44,7 @@ class XmlImporter extends AbstractImporter
      * @var array
      */
     protected $allowedMimeType = [
+        'text/xml',
         'application/xml'
     ];
 
