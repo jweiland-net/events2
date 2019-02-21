@@ -159,7 +159,8 @@ class ext_update
                 FlashMessage::class,
                 $messageItem[2],
                 $messageItem[1],
-                $messageItem[0]);
+                $messageItem[0]
+            );
 
             $output .= GeneralUtility::makeInstance(FlashMessageRendererResolver::class)
                 ->resolve()

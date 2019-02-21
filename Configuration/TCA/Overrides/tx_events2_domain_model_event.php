@@ -3,7 +3,7 @@ if (!defined('TYPO3_MODE')) {
     die('Access denied.');
 }
 
-call_user_func(function() {
+call_user_func(function () {
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::makeCategorizable(
         'events2',
         'tx_events2_domain_model_event',
