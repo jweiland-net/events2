@@ -36,7 +36,7 @@ if (PHP_SAPI !== 'cli') {
 
 if (version_compare(PHP_VERSION, '7.1', '<')) {
     $finder = PhpCsFixer\Finder::create()
-        ->exclude(__DIR__ . '/../Classes/Routing/')
+        ->exclude('Classes/Routing/')
         ->in(__DIR__ . '/../');
 } else {
     $finder = PhpCsFixer\Finder::create()
