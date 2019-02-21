@@ -35,6 +35,11 @@ if (PHP_SAPI !== 'cli') {
 // Exclude some directories that are excluded by Git anyways to speed up the sniffing
 $finder = PhpCsFixer\Finder::create()
     ->in(__DIR__ . '/../');
+
+if (version_compare(PHP_VERSION, '7.1', '<')) {
+    $finder->exclude(__DIR__ . '/../Classes/Routing/');
+}
+
 // Return a Code Sniffing configuration using
 // all sniffers needed for PSR-2
 // and additionally:
@@ -74,9 +79,3 @@ $phpCsFixer = PhpCsFixer\Config::create()
         'no_unneeded_control_parentheses' => true
     ])
     ->setFinder($finder);
-
-if (version_compare(PHP_VERSION, '7.1', '<')) {
-    $phpCsFixer->exclude(__DIR__ . '/../Classes/Routing/');
-}
-
-return $phpCsFixer;
