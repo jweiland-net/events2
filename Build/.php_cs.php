@@ -49,7 +49,7 @@ if (version_compare(PHP_VERSION, '7.1', '<')) {
 //  - Remove unused use statements in the PHP source code
 //  - Ensure Concatenation to have at least one whitespace around
 //  - Remove trailing whitespace at the end of blank lines.
-$phpCsFixer = PhpCsFixer\Config::create()
+return PhpCsFixer\Config::create()
     ->setRiskyAllowed(true)
     ->setRules([
         '@PSR2' => true,
