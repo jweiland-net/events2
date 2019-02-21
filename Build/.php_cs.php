@@ -33,10 +33,9 @@ if (PHP_SAPI !== 'cli') {
 }
 // Define in which folders to search and which folders to exclude
 // Exclude some directories that are excluded by Git anyways to speed up the sniffing
-
-if (version_compare(PHP_VERSION, '7.1', '<')) {
+if (version_compare(PHP_VERSION, '7.1.0', '<')) {
     $finder = PhpCsFixer\Finder::create()
-        ->exclude('Classes/Routing/')
+        ->exclude('Classes/Routing')
         ->in(__DIR__ . '/../');
 } else {
     $finder = PhpCsFixer\Finder::create()
