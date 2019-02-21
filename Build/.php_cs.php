@@ -44,7 +44,7 @@ $finder = PhpCsFixer\Finder::create()
 //  - Remove unused use statements in the PHP source code
 //  - Ensure Concatenation to have at least one whitespace around
 //  - Remove trailing whitespace at the end of blank lines.
-return PhpCsFixer\Config::create()
+$phpCsFixer = PhpCsFixer\Config::create()
     ->setRiskyAllowed(true)
     ->setRules([
         '@PSR2' => true,
@@ -74,3 +74,9 @@ return PhpCsFixer\Config::create()
         'no_unneeded_control_parentheses' => true
     ])
     ->setFinder($finder);
+
+if (version_compare(PHP_VERSION, '7.1', '<')) {
+    $phpCsFixer->exclude(__DIR__ . '/../Classes/Routing/');
+}
+
+return $phpCsFixer;
