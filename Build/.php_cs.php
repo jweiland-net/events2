@@ -33,11 +33,14 @@ if (PHP_SAPI !== 'cli') {
 }
 // Define in which folders to search and which folders to exclude
 // Exclude some directories that are excluded by Git anyways to speed up the sniffing
-$finder = PhpCsFixer\Finder::create()
-    ->in(__DIR__ . '/../');
 
 if (version_compare(PHP_VERSION, '7.1', '<')) {
-    $finder->exclude(__DIR__ . '/../Classes/Routing/');
+    $finder = PhpCsFixer\Finder::create()
+        ->exclude(__DIR__ . '/../Classes/Routing/')
+        ->in(__DIR__ . '/../');
+} else {
+    $finder = PhpCsFixer\Finder::create()
+        ->in(__DIR__ . '/../');
 }
 
 // Return a Code Sniffing configuration using
