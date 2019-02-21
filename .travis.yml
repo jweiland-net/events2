@@ -6,7 +6,7 @@ jobs:
       php: 7.0
       env:
         - TYPO3_VERSION=^8
-        - EXCLUDE_DIR="! -path './Classes/Routing/*'"
+        - EXCLUDE_DIR="./Classes/Routing/*"
     - stage: test
       php: 7.1
       env:
@@ -73,7 +73,7 @@ script:
     echo "Running parallel";
     echo;
     echo;
-    find . -name \*.php ! -path "./.Build/*" $EXCLUDE_DIR | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;;
+    find . -name \*.php ! -path "./.Build/*" ! -path "$EXCLUDE_DIR" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;;
 
   - >
     echo;
