@@ -80,7 +80,7 @@ script:
     echo "Running PHP Coding Standards Fixer checks";
     echo;
     echo;
-    .Build/bin/php-cs-fixer fix Classes --config=Build/.php_cs.php --dry-run --using-cache=no -v --diff;
+    .Build/bin/php-cs-fixer fix --config=Build/.php_cs.php --dry-run --using-cache=no -v --diff;
 
   - >
     echo;
