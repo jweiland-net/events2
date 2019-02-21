@@ -600,7 +600,8 @@ class EventTest extends UnitTestCase
     /**
      * @test
      */
-    public function getEachWeeksInitiallyReturnsZero() {
+    public function getEachWeeksInitiallyReturnsZero()
+    {
         $this->assertSame(
             0,
             $this->subject->getEachWeeks()
@@ -610,7 +611,8 @@ class EventTest extends UnitTestCase
     /**
      * @test
      */
-    public function setEachWeeksSetsEachWeeks() {
+    public function setEachWeeksSetsEachWeeks()
+    {
         $this->subject->setEachWeeks(123456);
 
         $this->assertSame(
@@ -622,7 +624,8 @@ class EventTest extends UnitTestCase
     /**
      * @test
      */
-    public function setEachWeeksWithStringResultsInInteger() {
+    public function setEachWeeksWithStringResultsInInteger()
+    {
         $this->subject->setEachWeeks('123Test');
 
         $this->assertSame(
@@ -634,7 +637,8 @@ class EventTest extends UnitTestCase
     /**
      * @test
      */
-    public function setEachWeeksWithBooleanResultsInInteger() {
+    public function setEachWeeksWithBooleanResultsInInteger()
+    {
         $this->subject->setEachWeeks(TRUE);
 
         $this->assertSame(
@@ -646,7 +650,8 @@ class EventTest extends UnitTestCase
     /**
      * @test
      */
-    public function getEachMonthsInitiallyReturnsZero() {
+    public function getEachMonthsInitiallyReturnsZero()
+    {
         $this->assertSame(
             0,
             $this->subject->getEachMonths()
@@ -656,7 +661,8 @@ class EventTest extends UnitTestCase
     /**
      * @test
      */
-    public function setEachMonthsSetsEachMonths() {
+    public function setEachMonthsSetsEachMonths()
+    {
         $this->subject->setEachMonths(123456);
 
         $this->assertSame(
@@ -668,7 +674,8 @@ class EventTest extends UnitTestCase
     /**
      * @test
      */
-    public function setEachMonthsWithStringResultsInInteger() {
+    public function setEachMonthsWithStringResultsInInteger()
+    {
         $this->subject->setEachMonths('123Test');
 
         $this->assertSame(
@@ -680,7 +687,8 @@ class EventTest extends UnitTestCase
     /**
      * @test
      */
-    public function setEachMonthsWithBooleanResultsInInteger() {
+    public function setEachMonthsWithBooleanResultsInInteger()
+    {
         $this->subject->setEachMonths(TRUE);
 
         $this->assertSame(
@@ -1134,7 +1142,8 @@ class EventTest extends UnitTestCase
     /**
      * @test
      */
-    public function getDownloadLinksInitiallyReturnsObjectStorage() {
+    public function getDownloadLinksInitiallyReturnsObjectStorage()
+    {
         $this->assertEquals(
             new ObjectStorage(),
             $this->subject->getDownloadLinks()
@@ -1144,7 +1153,8 @@ class EventTest extends UnitTestCase
     /**
      * @test
      */
-    public function setDownloadLinksSetsDownloadLinks() {
+    public function setDownloadLinksSetsDownloadLinks()
+    {
         $object = new Link();
         $objectStorage = new ObjectStorage();
         $objectStorage->attach($object);
@@ -1159,7 +1169,8 @@ class EventTest extends UnitTestCase
     /**
      * @test
      */
-    public function addDownloadLinkAddsOneDownloadLink() {
+    public function addDownloadLinkAddsOneDownloadLink()
+    {
         $objectStorage = new ObjectStorage();
         $this->subject->setDownloadLinks($objectStorage);
 
@@ -1177,7 +1188,8 @@ class EventTest extends UnitTestCase
     /**
      * @test
      */
-    public function removeDownloadLinkRemovesOneDownloadLink() {
+    public function removeDownloadLinkRemovesOneDownloadLink()
+    {
         $object = new Link();
         $objectStorage = new ObjectStorage();
         $objectStorage->attach($object);
