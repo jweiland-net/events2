@@ -639,7 +639,7 @@ class EventTest extends UnitTestCase
      */
     public function setEachWeeksWithBooleanResultsInInteger()
     {
-        $this->subject->setEachWeeks(TRUE);
+        $this->subject->setEachWeeks(true);
 
         $this->assertSame(
             1,
@@ -689,7 +689,7 @@ class EventTest extends UnitTestCase
      */
     public function setEachMonthsWithBooleanResultsInInteger()
     {
-        $this->subject->setEachMonths(TRUE);
+        $this->subject->setEachMonths(true);
 
         $this->assertSame(
             1,
