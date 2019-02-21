@@ -122,6 +122,8 @@ $boot = function($extKey) {
         // As we can't create a SQL Query with JOIN in Solr configuration, we have to remove invalid documents on our own
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments'][] = 'JWeiland\\Events2\\Hooks\\Solr\\IndexerHook';
     }
+
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['aspects']['TimestampMapper'] = \JWeiland\Events2\Routing\Aspect\TimestampMapper::class;
 };
 $boot($_EXTKEY);
 unset($boot);
