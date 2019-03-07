@@ -18,6 +18,7 @@ use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
@@ -88,6 +89,7 @@ class Ajax
     protected function initialize(array $arguments)
     {
         $this->setArguments($arguments);
+        ExtensionManagementUtility::loadBaseTca(true);
     }
 
     /**

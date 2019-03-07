@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+	<be_users>
+		<uid>1</uid>
+		<pid>0</pid>
+		<tstamp>1551266318</tstamp>
+		<username>admin</username>
+		<password>admin</password>
+		<admin>1</admin>
+		<disable>0</disable>
+		<cruser_id>0</cruser_id>
+		<workspace_perms>1</workspace_perms>
+		<workspace_preview>1</workspace_preview>
+	</be_users>
+	<be_users>
+		<uid>2</uid>
+		<pid>0</pid>
+		<tstamp>1551969830</tstamp>
+		<username>editor</username>
+		<password>editor</password>
+		<admin>0</admin>
+		<usergroup>1</usergroup>
+		<disable>0</disable>
+		<options>3</options>
+		<cruser_id>1</cruser_id>
+		<workspace_perms>1</workspace_perms>
+		<workspace_preview>1</workspace_preview>
+	</be_users>
+</dataset>

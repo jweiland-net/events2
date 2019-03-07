@@ -17,6 +17,7 @@ namespace JWeiland\Events2\Ajax\FindLocations;
 
 use JWeiland\Events2\Ajax\AbstractAjaxRequest;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -40,6 +41,7 @@ class Ajax extends AbstractAjaxRequest
         if (empty($locationPart) || strlen($locationPart) <= 2) {
             return '';
         } else {
+            ExtensionManagementUtility::loadBaseTca(true);
             return json_encode($this->findLocations($locationPart));
         }
     }
