@@ -472,8 +472,7 @@ return [
         ],
         'days' => [
             'config' => [
-                'type' => 'select',
-                'renderType' => 'selectSingle',
+                'type' => 'inline',
                 'foreign_table' => 'tx_events2_domain_model_day',
                 'foreign_field' => 'event',
             ],
@@ -489,6 +488,7 @@ return [
                 'size' => 1,
                 'maxitems' => 1,
                 'minitems' => 0,
+                'default' => 0,
                 'suggestOptions' => [
                     'default' => [
                         'searchWholePhrase' => true,
@@ -507,6 +507,7 @@ return [
                 'size' => 1,
                 'maxitems' => 1,
                 'minitems' => 0,
+                'default' => 0,
                 'suggestOptions' => [
                     'default' => [
                         'searchWholePhrase' => true,
