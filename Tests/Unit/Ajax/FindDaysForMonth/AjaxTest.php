@@ -25,6 +25,7 @@ use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Frontend\PhpFrontend;
+use TYPO3\CMS\Core\Category\CategoryRegistry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
@@ -74,9 +75,13 @@ class AjaxTest extends AbstractUnitTestCase
 
         $this->frontendUserAuthenticationProphecy = $this->prophesize(FrontendUserAuthentication::class);
 
+        $cacheData = [
+            'categoryRegistry' => serialize(new CategoryRegistry())
+        ];
+
         $this->phpFrontendProphecy = $this->prophesize(PhpFrontend::class);
         if (version_compare(TYPO3_branch, '9.0', '>=')) {
-            $this->phpFrontendProphecy->require(Argument::any())->shouldBeCalled()->willReturn(true);
+            $this->phpFrontendProphecy->require(Argument::any())->shouldBeCalled()->willReturn($cacheData);
         } else {
             $this->phpFrontendProphecy->requireOnce(Argument::any())->shouldBeCalled()->willReturn(true);
         }
