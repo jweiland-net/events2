@@ -19,9 +19,12 @@ use JWeiland\Events2\Ajax\FindDaysForMonth;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Tests\Unit\AbstractUnitTestCase;
+use JWeiland\Events2\Tests\Unit\Utility\AccessibleProxies\ExtensionManagementUtilityAccessibleProxy;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Cache\Frontend\PhpFrontend;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
@@ -47,6 +50,16 @@ class AjaxTest extends AbstractUnitTestCase
     protected $frontendUserAuthenticationProphecy;
 
     /**
+     * @var PhpFrontend|ObjectProphecy
+     */
+    protected $phpFrontendProphecy;
+
+    /**
+     * @var CacheManager|ObjectProphecy
+     */
+    protected $cacheManagerProphecy;
+
+    /**
      * set up.
      */
     public function setUp()
@@ -61,6 +74,17 @@ class AjaxTest extends AbstractUnitTestCase
 
         $this->frontendUserAuthenticationProphecy = $this->prophesize(FrontendUserAuthentication::class);
 
+        $this->phpFrontendProphecy = $this->prophesize(PhpFrontend::class);
+        $this->phpFrontendProphecy->requireOnce(Argument::any())->shouldBeCalled()->willReturn(true);
+
+        /** @var CacheManager|ObjectProphecy $cacheManagerProphecy */
+        $this->cacheManagerProphecy = $this->prophesize(CacheManager::class);
+        $this->cacheManagerProphecy
+            ->getCache('cache_core')
+            ->shouldBeCalled()
+            ->willReturn($this->phpFrontendProphecy->reveal());
+        GeneralUtility::setSingletonInstance(CacheManager::class, $this->cacheManagerProphecy->reveal());
+
         $this->subject = new FindDaysForMonth\Ajax(
             $this->extConfProphecy->reveal(),
             new DateTimeUtility(),
@@ -73,6 +97,8 @@ class AjaxTest extends AbstractUnitTestCase
      */
     public function tearDown()
     {
+        parent::tearDown();
+        ExtensionManagementUtilityAccessibleProxy::setCacheManager(null);
         unset($this->subject);
     }
 
