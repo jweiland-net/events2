@@ -15,7 +15,13 @@ namespace JWeiland\Events2\Tests\Unit\Ajax\FindLocations;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Ajax\FindLocations;
+use JWeiland\Events2\Tests\Unit\Utility\AccessibleProxies\ExtensionManagementUtilityAccessibleProxy;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
+use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
+use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Cache\Frontend\PhpFrontend;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Test case.
@@ -27,16 +33,45 @@ class AjaxTest extends UnitTestCase
      */
     protected $subject;
 
+    /**
+     * @var PhpFrontend|ObjectProphecy
+     */
+    protected $phpFrontendProphecy;
+
+    /**
+     * @var CacheManager|ObjectProphecy
+     */
+    protected $cacheManagerProphecy;
+
+    /**
+     * set up.
+     */
     public function setUp()
     {
+        $this->phpFrontendProphecy = $this->prophesize(PhpFrontend::class);
+        $this->phpFrontendProphecy->requireOnce(Argument::any())->shouldBeCalled()->willReturn(true);
+
+        /** @var CacheManager|ObjectProphecy $cacheManagerProphecy */
+        $this->cacheManagerProphecy = $this->prophesize(CacheManager::class);
+        $this->cacheManagerProphecy
+            ->getCache('cache_core')
+            ->shouldBeCalled()
+            ->willReturn($this->phpFrontendProphecy->reveal());
+        GeneralUtility::setSingletonInstance(CacheManager::class, $this->cacheManagerProphecy->reveal());
+
         $this->subject = new FindLocations\Ajax();
         $GLOBALS['TYPO3_LOADED_EXT'] = [
             'events2' => []
         ];
     }
 
+    /**
+     * tear down.
+     */
     public function tearDown()
     {
+        parent::tearDown();
+        ExtensionManagementUtilityAccessibleProxy::setCacheManager(null);
         unset($this->subject);
     }
 

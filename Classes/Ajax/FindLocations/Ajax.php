@@ -35,13 +35,14 @@ class Ajax extends AbstractAjaxRequest
      */
     public function processAjaxRequest(array $arguments): string
     {
+        ExtensionManagementUtility::loadBaseTca(true);
+
         // Hint: search may fail with "&" in $locationPart
         $locationPart = (string)trim(htmlspecialchars(strip_tags($arguments['locationPart'])));
         // keep it in sync to minLength in JS
         if (empty($locationPart) || strlen($locationPart) <= 2) {
             return '';
         } else {
-            ExtensionManagementUtility::loadBaseTca(true);
             return json_encode($this->findLocations($locationPart));
         }
     }
