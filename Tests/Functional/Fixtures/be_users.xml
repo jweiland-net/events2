@@ -9,8 +9,6 @@
 		<admin>1</admin>
 		<disable>0</disable>
 		<cruser_id>0</cruser_id>
-		<workspace_perms>1</workspace_perms>
-		<workspace_preview>1</workspace_preview>
 	</be_users>
 	<be_users>
 		<uid>2</uid>
@@ -23,7 +21,5 @@
 		<disable>0</disable>
 		<options>3</options>
 		<cruser_id>1</cruser_id>
-		<workspace_perms>1</workspace_perms>
-		<workspace_preview>1</workspace_preview>
 	</be_users>
 </dataset>
