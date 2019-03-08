@@ -75,7 +75,11 @@ class AjaxTest extends AbstractUnitTestCase
         $this->frontendUserAuthenticationProphecy = $this->prophesize(FrontendUserAuthentication::class);
 
         $this->phpFrontendProphecy = $this->prophesize(PhpFrontend::class);
-        $this->phpFrontendProphecy->requireOnce(Argument::any())->shouldBeCalled()->willReturn(true);
+        if (version_compare(TYPO3_branch, '9.0', '>=')) {
+            $this->phpFrontendProphecy->require(Argument::any())->shouldBeCalled()->willReturn(true);
+        } else {
+            $this->phpFrontendProphecy->requireOnce(Argument::any())->shouldBeCalled()->willReturn(true);
+        }
 
         /** @var CacheManager|ObjectProphecy $cacheManagerProphecy */
         $this->cacheManagerProphecy = $this->prophesize(CacheManager::class);
