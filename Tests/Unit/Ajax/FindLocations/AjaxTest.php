@@ -21,6 +21,7 @@ use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Frontend\PhpFrontend;
+use TYPO3\CMS\Core\Category\CategoryRegistry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -48,8 +49,16 @@ class AjaxTest extends UnitTestCase
      */
     public function setUp()
     {
+        $cacheData = [
+            'categoryRegistry' => serialize(new CategoryRegistry())
+        ];
+
         $this->phpFrontendProphecy = $this->prophesize(PhpFrontend::class);
-        $this->phpFrontendProphecy->requireOnce(Argument::any())->shouldBeCalled()->willReturn(true);
+        if (version_compare(TYPO3_branch, '9.0', '>=')) {
+            $this->phpFrontendProphecy->require(Argument::any())->shouldBeCalled()->willReturn($cacheData);
+        } else {
+            $this->phpFrontendProphecy->requireOnce(Argument::any())->shouldBeCalled()->willReturn(true);
+        }
 
         /** @var CacheManager|ObjectProphecy $cacheManagerProphecy */
         $this->cacheManagerProphecy = $this->prophesize(CacheManager::class);
