@@ -98,6 +98,8 @@ plugin.tx_events2 {
       }
     }
   }
+  _LOCAL_LANG.de.rightsMessage = Hiermit räume ich ... ein einfaches, unbeschränktes Nutzungsrecht an dem hochgeladenen Werk ein. Mit der Nutzung werden keine Rechte von Dritten verletzt.
+  _LOCAL_LANG.default.rightsMessage = I give all rights of this image to...
 }
 
 # TYPO3 8 comes with a new security feature which requires a cHash for all URLs.
