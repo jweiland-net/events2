@@ -408,7 +408,7 @@
 				<source>Upload max. 5 image files (jpg,gif,png). Please use the same image dimensions (i.e. 3:2, 3:4) if uploading more than one image.Be sure to set the image rights. Otherwise the image will not be uploaded.</source>
 			</trans-unit>
 			<trans-unit id="rightsMessage">
-				<source>I give all rights of this image to city Pforzheim</source>
+				<source>Dear Admin: Please override this label with help of TypoScript</source>
 			</trans-unit>
 			<trans-unit id="altTextMapImg">
 				<source>Map</source>

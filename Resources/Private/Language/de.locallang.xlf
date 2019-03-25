@@ -536,8 +536,8 @@
 				<target>Laden Sie max. 5 Bilddateien (jpg, gif, png) hoch. Bitte benutzen Sie bei mehreren Bildern immer das gleiche Bildformat (z.B. 3:2, 4:3) um eine ruckelfrei Ausgabe der Bildergalerie zu gewährleisten. Bestätigen Sie, dass Sie über die Bilderrechte verfügen. Ansonsten wird das Bild nicht hochgeladen werden.</target>
 			</trans-unit>
 			<trans-unit id="rightsMessage">
-				<source>I give all rights of this image to city Pforzheim</source>
-				<target>Hiermit räume ich der Stadt Pforzheim ein einfaches, unbeschränktes Nutzungsrecht an dem hochgeladenen Werk ein. Mit der Nutzung werden keine Rechte von Dritten verletzt.</target>
+				<source>Dear Admin: Please override this label with help of TypoScript</source>
+				<target>Hallo Admin: Bitte ändere diesen Text mit Hilfe von TypoScript</target>
 			</trans-unit>
 			<trans-unit id="altTextMapImg">
 				<source>Map</source>
