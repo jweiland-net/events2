@@ -49,12 +49,11 @@ class SearchController extends AbstractController
      * PreProcessing of view for all actions.
      *
      * @param ViewInterface $view
-     * @throws \Exception
      */
     protected function initializeView(ViewInterface $view)
     {
         if (!$this->settings['mainCategories']) {
-            throw new \Exception('You have forgotten to define some allowed categories in plugin configuration');
+            $this->addFlashMessage('Dear Admin: You have forgotten to define some allowed categories in plugin configuration');
         }
 
         $allowedMainCategories = $this->categoryRepository->getSelectedCategories(
@@ -63,7 +62,7 @@ class SearchController extends AbstractController
         );
 
         if (!$allowedMainCategories->count()) {
-            throw new \Exception('Please check if you have set rootCategory correctly as parent of your defined mainCategories.');
+            $this->addFlashMessage('Dear Admin: Please check if you have set rootCategory correctly as parent of your defined mainCategories.');
         }
 
         $selectorData = [];
