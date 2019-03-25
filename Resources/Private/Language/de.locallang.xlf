@@ -537,7 +537,7 @@
 			</trans-unit>
 			<trans-unit id="rightsMessage">
 				<source>I give all rights of this image to city Pforzheim</source>
-				<target>Hiermit räume ich der Stadt Pforzheim ein einfaches, unbeschränktes Nutzungsrecht an dem hochgeladenen Werk ein. Mit der Nutzung werden keine Rechte von Dritten verletzt.</target>
+				<target>Hiermit räume ich ein einfaches, unbeschränktes Nutzungsrecht an dem hochgeladenen Werk ein. Mit der Nutzung werden keine Rechte von Dritten verletzt.</target>
 			</trans-unit>
 			<trans-unit id="altTextMapImg">
 				<source>Map</source>
