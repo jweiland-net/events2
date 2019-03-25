@@ -69,8 +69,6 @@ class EventController extends AbstractController
 
     /**
      * Action new.
-     *
-     * @throws \Exception
      */
     public function newAction()
     {
@@ -81,7 +79,7 @@ class EventController extends AbstractController
         );
 
         if (!$categories->count()) {
-            throw new \Exception('You have forgotten to define some allowed categories in plugin configuration');
+            $this->addFlashMessage('Dear Admin: You have forgotten to define some allowed categories in plugin configuration');
         }
 
         $this->view->assign('event', $event);
@@ -149,7 +147,6 @@ class EventController extends AbstractController
      * Action edit.
      *
      * @param int $event
-     * @throws \Exception
      */
     public function editAction($event)
     {
@@ -159,7 +156,7 @@ class EventController extends AbstractController
         );
 
         if (!$categories->count()) {
-            throw new \Exception('You have forgotten to define some allowed categories in plugin configuration');
+            $this->addFlashMessage('Dear Admin: You have forgotten to define some allowed categories in plugin configuration');
         }
 
         $this->view->assign('event', $eventObject);

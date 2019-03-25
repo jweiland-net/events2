@@ -74,7 +74,11 @@ class CategoryRepository extends \TYPO3\CMS\Extbase\Domain\Repository\CategoryRe
         $query->getQuerySettings()->setRespectSysLanguage(false);
 
         $constraint = [];
-        $constraint[] = $query->in('uid', $selectedCategories);
+
+
+        if (!empty($selectedCategories)) {
+            $constraint[] = $query->in('uid', $selectedCategories);
+        }
 
         $constraint[] = $query->equals('parent', (int)$parent);
 

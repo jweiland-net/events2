@@ -118,7 +118,7 @@ class EventControllerTest extends UnitTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->subject = $this->getAccessibleMock(EventController::class, ['dummy']);
+        $this->subject = $this->getAccessibleMock(EventController::class, ['addFlashMessage']);
         $this->subject->injectDayRepository($this->dayRepository);
         $this->subject->injectEventRepository($this->eventRepository);
         $this->subject->injectLocationRepository($this->locationRepository);
@@ -259,11 +259,8 @@ class EventControllerTest extends UnitTestCase
 
     /**
      * @test
-     *
-     * @expectedException \Exception
-     * @expectedExceptionMessage You have forgotten to define some allowed categories in plugin configuration
      */
-    public function newActionThrowsExceptionWhenCategoriesAreEmpty()
+    public function newActionAddFlashMessageWhenCategoriesAreEmpty()
     {
         $event = new Event();
         $categories = new \ArrayObject();
@@ -289,6 +286,11 @@ class EventControllerTest extends UnitTestCase
                 $this->equalTo('23,24')
             )
             ->willReturn($categories);
+
+        $this->subject
+            ->expects($this->once())
+            ->method('addFlashMessage')
+            ->with($this->equalTo('Dear Admin: You have forgotten to define some allowed categories in plugin configuration'));
 
         $this->subject->_set('settings', [
             'selectableCategoriesForNewEvents' => '23,24'
