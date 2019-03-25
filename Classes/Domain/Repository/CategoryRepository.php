@@ -75,7 +75,6 @@ class CategoryRepository extends \TYPO3\CMS\Extbase\Domain\Repository\CategoryRe
 
         $constraint = [];
 
-
         if (!empty($selectedCategories)) {
             $constraint[] = $query->in('uid', $selectedCategories);
         }
