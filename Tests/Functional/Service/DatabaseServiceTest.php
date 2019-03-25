@@ -15,6 +15,7 @@ namespace JWeiland\Events2\Tests\Functional\Service;
  * The TYPO3 project - inspiring people to share!
  */
 
+use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Location;
 use JWeiland\Events2\Domain\Model\Organizer;
@@ -100,6 +101,9 @@ class DatabaseServiceTest extends FunctionalTestCase
 
         $persistenceManager->persistAll();
 
+        $extConf = GeneralUtility::makeInstance(ExtConf::class);
+        $extConf->setRecurringPast(3);
+        $extConf->setRecurringFuture(6);
         $events = $eventRepository->findAll();
         foreach ($events as $event) {
             $dayRelationService->createDayRelations($event->getUid());
@@ -123,6 +127,8 @@ class DatabaseServiceTest extends FunctionalTestCase
         $eventEnd->modify('last day of this month');
 
         $databaseService = $this->objectManager->get(DatabaseService::class);
+        var_dump($eventBegin->format('U'));
+        var_dump($eventEnd->format('U'));
         $days = $databaseService->getDaysInRange($eventBegin, $eventEnd, [11]);
 
         $this->assertGreaterThanOrEqual(
