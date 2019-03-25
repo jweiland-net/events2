@@ -15,6 +15,7 @@ if (!defined('TYPO3_MODE')) {
                 'allowed' => 'tx_events2_domain_model_organizer',
                 'prepend_tname' => false,
                 'size' => 1,
+                'default' => 0,
                 'maxitems' => 1,
                 'suggestOptions' => [
                     'default' => [
