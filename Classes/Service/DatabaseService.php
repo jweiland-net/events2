@@ -567,6 +567,9 @@ class DatabaseService
      */
     protected function getTypoScriptFrontendController(): TypoScriptFrontendController
     {
+        if ($GLOBALS['TSFE'] === null) {
+            $GLOBALS['TSFE'] = GeneralUtility::makeInstance(TypoScriptFrontendController::class);
+        }
         return $GLOBALS['TSFE'];
     }
 }
