@@ -29,11 +29,14 @@ use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Service\DayRelationService;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Context\VisibilityAspect;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Functional test for DayRepository
@@ -71,6 +74,8 @@ class DayRepositoryTest extends FunctionalTestCase
         $this->dayRepository = $this->objectManager->get(DayRepository::class);
         $this->querySettings = $this->objectManager->get(QuerySettingsInterface::class);
         $this->querySettings->setStoragePageIds([11, 40]);
+        $this->querySettings->setIgnoreEnableFields(true);
+        $this->querySettings->setEnableFieldsToBeIgnored(['disabled']); // needed to create hidden events, too
         $this->dayRepository->setDefaultQuerySettings($this->querySettings);
         $persistenceManager = $this->objectManager->get(PersistenceManager::class);
         $dayRelationService = $this->objectManager->get(DayRelationService::class);
@@ -343,6 +348,23 @@ class DayRepositoryTest extends FunctionalTestCase
         $event->setCategories($categories);
         $persistenceManager->add($event);
 
+        $eventBegin = new \DateTime('midnight');
+        $eventBegin->modify('+2 days');
+
+        $event = new Event();
+        $event->setPid(11);
+        $event->setHidden(true);
+        $event->setEventType('single');
+        $event->setTopOfList(false);
+        $event->setTitle('Hidden Event');
+        $event->setTeaser('');
+        $event->setEventBegin($eventBegin);
+        $event->setFreeEntry(true);
+        $event->setOrganizer($organizer1);
+        $event->setLocation($location1);
+        $event->setCategories($categories);
+        $persistenceManager->add($event);
+
         $persistenceManager->persistAll();
 
         $events = $eventRepository->findAll();
@@ -355,6 +377,20 @@ class DayRepositoryTest extends FunctionalTestCase
     {
         unset($this->dayRepository);
         parent::tearDown();
+    }
+
+    protected function setShowHiddenRecords()
+    {
+        if (version_compare(TYPO3_branch, '9.4', '>=')) {
+            $context = GeneralUtility::makeInstance(Context::class);
+            $context->setAspect(
+                'visibility',
+                GeneralUtility::makeInstance(VisibilityAspect::class, false, true)
+            );
+        } else {
+            $GLOBALS['TSFE'] = GeneralUtility::makeInstance(TypoScriptFrontendController::class);
+            $GLOBALS['TSFE']->showHiddenRecords = 1;
+        }
     }
 
     /**
@@ -445,6 +481,25 @@ class DayRepositoryTest extends FunctionalTestCase
         $days = $this->dayRepository->findEvents('list', new Filter());
         $this->assertSame(
             2,
+            $days->count()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function findHiddenEventsByStoragePids()
+    {
+        $this->setShowHiddenRecords();
+
+        $this->dayRepository->setSettings([
+            'mergeRecurringEvents' => 1
+        ]);
+
+        $this->querySettings->setStoragePageIds([11]);
+        $days = $this->dayRepository->findEvents('list', new Filter());
+        $this->assertSame(
+            9,
             $days->count()
         );
     }

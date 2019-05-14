@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Domain\Repository;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Factory\DayFactory;
 use JWeiland\Events2\Domain\Model\Day;
@@ -101,6 +102,7 @@ class DayRepository extends Repository
         /** @var Query $extbaseQuery */
         $extbaseQuery = $this->createQuery();
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_day');
+        $this->databaseService->addVisibilityConstraintToQuery($queryBuilder);
         $subQueryBuilder = $this->getSubQueryBuilder($queryBuilder);
 
         // add storage PID for event and day, but not for sys_category
@@ -178,6 +180,7 @@ class DayRepository extends Repository
         /** @var Query $extbaseQuery */
         $extbaseQuery = $this->createQuery();
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_day');
+        $this->databaseService->addVisibilityConstraintToQuery($queryBuilder);
         $subQueryBuilder = $this->getSubQueryBuilder($queryBuilder);
 
         // add storage PID for event and day, but not for sys_category
@@ -301,6 +304,7 @@ class DayRepository extends Repository
         /** @var Query $extbaseQuery */
         $extbaseQuery = $this->createQuery();
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_day');
+        $this->databaseService->addVisibilityConstraintToQuery($queryBuilder);
         $subQueryBuilder = $this->getSubQueryBuilder($queryBuilder);
 
         // add storage PID for event and day, but not for sys_category
@@ -397,6 +401,7 @@ class DayRepository extends Repository
     protected function getSubQueryBuilder(QueryBuilder $queryBuilder): QueryBuilder
     {
         $subQueryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_day');
+        $this->databaseService->addVisibilityConstraintToQuery($subQueryBuilder);
         $subQueryBuilder
             ->selectLiteral('MIN(day_sub_query.day_time) as next_day_time', 'day_sub_query.event')
             ->from('tx_events2_domain_model_day', 'day_sub_query')

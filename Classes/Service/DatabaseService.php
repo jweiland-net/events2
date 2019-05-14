@@ -16,12 +16,14 @@ namespace JWeiland\Events2\Service;
 
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Utility\DateTimeUtility;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * A little helper to organize our DB queries
@@ -534,5 +536,37 @@ class DatabaseService
                 )
             )
         );
+    }
+
+    /**
+     * Working with own QueryBuilder queries does not respect showHiddenContent settings of TYPO3, that's why
+     * we have to manually remove Hidden constraint from restriction container.
+     *
+     * @param QueryBuilder $queryBuilder
+     */
+    public function addVisibilityConstraintToQuery(QueryBuilder $queryBuilder)
+    {
+        if (version_compare(TYPO3_branch, '9.4', '>=')) {
+            $context = GeneralUtility::makeInstance(Context::class);
+            $showHiddenRecords = (bool)$context->getPropertyFromAspect(
+                'visibility',
+                'includeHiddenContent',
+                false
+            );
+        } else {
+            $showHiddenRecords = (bool)$this->getTypoScriptFrontendController()->showHiddenRecords;
+        }
+
+        if ($showHiddenRecords) {
+            $queryBuilder->getRestrictions()->removeByType(HiddenRestriction::class);
+        }
+    }
+
+    /**
+     * @return TypoScriptFrontendController
+     */
+    protected function getTypoScriptFrontendController(): TypoScriptFrontendController
+    {
+        return $GLOBALS['TSFE'];
     }
 }

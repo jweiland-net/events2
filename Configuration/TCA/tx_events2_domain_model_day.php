@@ -21,6 +21,11 @@ return [
         '1' => ['showitem' => ''],
     ],
     'columns' => [
+        'hidden' => [
+            'config' => [
+                'type' => 'passthrough',
+            ]
+        ],
         'day' => [
             'label' => 'Day',
             'config' => [
