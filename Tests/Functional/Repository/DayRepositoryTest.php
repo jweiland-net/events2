@@ -388,7 +388,12 @@ class DayRepositoryTest extends FunctionalTestCase
                 GeneralUtility::makeInstance(VisibilityAspect::class, false, true)
             );
         } else {
-            $GLOBALS['TSFE'] = GeneralUtility::makeInstance(TypoScriptFrontendController::class);
+            $GLOBALS['TSFE'] = GeneralUtility::makeInstance(
+                TypoScriptFrontendController::class,
+                [],
+                1,
+                0
+            );
             $GLOBALS['TSFE']->showHiddenRecords = 1;
         }
     }
