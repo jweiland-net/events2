@@ -888,6 +888,8 @@ class Event extends AbstractEntity
             }
         }
         ksort($futureDates);
+        reset($futureDates);
+
         return $futureDates;
     }
 
@@ -911,6 +913,8 @@ class Event extends AbstractEntity
         }
 
         ksort($futureDates);
+        reset($futureDates);
+
         return $futureDates;
     }
 
