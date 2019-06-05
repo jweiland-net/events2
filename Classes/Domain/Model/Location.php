@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types = 1);
 namespace JWeiland\Events2\Domain\Model;
 
 /*
@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Domain\Model;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use JWeiland\Maps2\Domain\Model\PoiCollection;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
@@ -23,161 +24,110 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 class Location extends AbstractEntity
 {
     /**
-     * Location.
-     *
      * @var string
      */
     protected $location = '';
 
     /**
-     * Street.
-     *
      * @var string
      */
     protected $street = '';
 
     /**
-     * houseNumber.
-     *
      * @var string
      */
     protected $houseNumber = '';
 
     /**
-     * zip.
-     *
      * @var string
      */
     protected $zip = '';
 
     /**
-     * city.
-     *
      * @var string
      */
     protected $city = '';
 
     /**
-     * txMaps2Uid.
-     *
+     * @var \JWeiland\Events2\Domain\Model\Link
+     */
+    protected $link;
+
+    /**
      * @var \JWeiland\Maps2\Domain\Model\PoiCollection
      */
     protected $txMaps2Uid;
 
-    /**
-     * Setter for location.
-     *
-     * @param string $location
-     */
-    public function setLocation($location)
+    public function setLocation(string $location)
     {
-        $this->location = (string)$location;
+        $this->location = $location;
     }
 
-    /**
-     * Getter for location.
-     *
-     * @return string
-     */
-    public function getLocation()
+    public function getLocation(): string
     {
         return $this->location;
     }
 
-    /**
-     * Setter for street.
-     *
-     * @param string $street
-     */
-    public function setStreet($street)
+    public function setStreet(string $street)
     {
-        $this->street = (string)$street;
+        $this->street = $street;
     }
 
-    /**
-     * Getter for street.
-     *
-     * @return string
-     */
-    public function getStreet()
+    public function getStreet(): string
     {
         return $this->street;
     }
 
-    /**
-     * Setter for houseNumber.
-     *
-     * @param string $houseNumber
-     */
-    public function setHouseNumber($houseNumber)
+    public function setHouseNumber(string $houseNumber)
     {
-        $this->houseNumber = (string)$houseNumber;
+        $this->houseNumber = $houseNumber;
     }
 
-    /**
-     * Getter for houseNumber.
-     *
-     * @return string
-     */
-    public function getHouseNumber()
+    public function getHouseNumber(): string
     {
         return $this->houseNumber;
     }
 
-    /**
-     * Setter for zip.
-     *
-     * @param string $zip
-     */
-    public function setZip($zip)
+    public function setZip(string $zip)
     {
-        $this->zip = (string)$zip;
+        $this->zip = $zip;
     }
 
-    /**
-     * Getter for zip.
-     *
-     * @return string
-     */
-    public function getZip()
+    public function getZip(): string
     {
         return $this->zip;
     }
 
-    /**
-     * Setter for City.
-     *
-     * @param string $city
-     */
-    public function setCity($city)
+    public function setCity(string $city)
     {
-        $this->city = (string)$city;
+        $this->city = $city;
     }
 
-    /**
-     * Getter for City.
-     *
-     * @return string
-     */
-    public function getCity()
+    public function getCity(): string
     {
         return $this->city;
     }
 
     /**
-     * Setter for txMaps2Uid.
-     *
-     * @param PoiCollection $txMaps2Uid
+     * @return Link|null
      */
-    public function setTxMaps2Uid(PoiCollection $txMaps2Uid)
+    public function getLink()
+    {
+        return $this->link;
+    }
+
+    public function setLink(Link $link = null)
+    {
+        $this->link = $link;
+    }
+
+    public function setTxMaps2Uid(PoiCollection $txMaps2Uid = null)
     {
         $this->txMaps2Uid = $txMaps2Uid;
     }
 
     /**
-     * Getter for TxMaps2Uid.
-     *
-     * @return \JWeiland\Maps2\Domain\Model\PoiCollection
+     * @return PoiCollection|null
      */
     public function getTxMaps2Uid()
     {

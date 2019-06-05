@@ -28,12 +28,12 @@ $tx_events2_domain_model_event = [
         'iconfile' => 'EXT:events2/Resources/Public/Icons/tx_events2_domain_model_location.png',
     ],
     'interface' => [
-        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, location, street, house_number, zip, city, country',
+        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, location, street, house_number, zip, city, country, link',
     ],
     'types' => [
         '1' => [
             'showitem' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, location,
-            street, house_number, zip, city, country,
+            street, house_number, zip, city, country, link,
             --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access, 
             --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access'
         ],
@@ -215,6 +215,23 @@ $tx_events2_domain_model_event = [
                 ],
             ],
         ],
+        'link' => [
+            'exclude' => true,
+            'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_location.link',
+            'config' => [
+                'type' => 'inline',
+                'foreign_table' => 'tx_events2_domain_model_link',
+                'maxitems' => 1,
+                'minitems' => 0,
+                'appearance' => [
+                    'levelLinksPosition' => 'top',
+                    'newRecordLinkAddTitle' => true,
+                    'showSynchronizationLink' => 1,
+                    'showPossibleLocalizationRecords' => 1,
+                    'showAllLocalizationLink' => 1,
+                ],
+            ],
+        ]
     ]
 ];
 unset($extConf, $staticInfoItemProcessor, $staticInfoSuggestReceiver);

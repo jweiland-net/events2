@@ -401,6 +401,10 @@
 				<source>Country</source>
 				<target>Land</target>
 			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_location.link">
+				<source>Link</source>
+				<target>Link</target>
+			</trans-unit>
 
 			<trans-unit id="tx_events2_domain_model_organizer">
 				<source>Organizer</source>
