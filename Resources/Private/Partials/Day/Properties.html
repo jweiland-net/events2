@@ -1,5 +1,8 @@
-{namespace e2=JWeiland\Events2\ViewHelpers}
-
+<html
+	xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+	xmlns:e2="http://typo3.org/ns/JWeiland/Events2/ViewHelpers"
+	data-namespace-typo3-fluid="true"
+>
 <div class="row">
 	<div class="col-md-9">
 		<h1>{day.event.title}</h1>
@@ -135,10 +138,10 @@
 		<dd>
 			<f:if condition="{event.organizer.link}">
 				<f:then>
-					<f:link.external uri="{event.organizer.link.link}" target="_blank" title="{event.organizer.organizer}">
+					<f:link.typolink parameter="{event.organizer.link.link}" target="_blank" title="{event.organizer.organizer}">
 						{event.organizer.organizer}
 						<f:if condition="{event.organizer.link.title}"><br />({event.organizer.link.title})</f:if>
-					</f:link.external>
+					</f:link.typolink>
 				</f:then>
 				<f:else>
 					{event.organizer.organizer}
@@ -179,3 +182,4 @@
 		</dl>
 	</f:if>
 </f:section>
+</html>

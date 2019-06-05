@@ -1,5 +1,8 @@
-{namespace events2=JWeiland\Events2\ViewHelpers}
-
+<html
+	xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+	xmlns:e2="http://typo3.org/ns/JWeiland/Events2/ViewHelpers"
+	data-namespace-typo3-fluid="true"
+>
 <f:layout name="Default" />
 
 <f:section name="main">
@@ -13,9 +16,10 @@
 			<header><h1>{link.title}</h1></header>
 			<div class="grid_8 floatleft">
 				<div class="gridright">
-					<iframe width="560" height="315" src="{events2:createYoutubeUri(link: event.videoLink.link)}" frameborder="0" allowfullscreen></iframe>
+					<iframe width="560" height="315" src="{e2:createYoutubeUri(link: event.videoLink.link)}" frameborder="0" allowfullscreen></iframe>
 				</div>
 			</div>
 		</f:else>
 	</f:if>
 </f:section>
+</html>
