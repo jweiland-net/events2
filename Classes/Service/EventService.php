@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types = 1);
 namespace JWeiland\Events2\Service;
 
 /*
@@ -82,19 +82,19 @@ class EventService
      *
      * @param Event $event
      * @param \DateTime $date
-     * @param string $type There are different exception types like Add, Remove, Time or Info. If empty add all exceptions
+     * @param string $commaSeparatedExtensionTypes Type like Add, Remove, Time or Info. If empty add all exceptions
      * @return \SplObjectStorage|Exception[]
      */
-    public function getExceptionsForDate(Event $event, \DateTime $date, $type = '')
+    public function getExceptionsForDate(Event $event, \DateTime $date, string $commaSeparatedExtensionTypes = ''): \SplObjectStorage
     {
-        $type = GeneralUtility::trimExplode(',', strtolower($type), true);
+        $exceptionTypes = GeneralUtility::trimExplode(',', strtolower($commaSeparatedExtensionTypes), true);
         $exceptions = new \SplObjectStorage();
         foreach ($event->getExceptions() as $exception) {
             $exceptionDate = $this->dateTimeUtility->standardizeDateTimeObject($exception->getExceptionDate());
             $currentDate = $this->dateTimeUtility->standardizeDateTimeObject($date);
             // we compare objects here so no === possible
             if ($exceptionDate == $currentDate) {
-                if ($type === [] || in_array(strtolower($exception->getExceptionType()), $type)) {
+                if (empty($exceptionTypes) || in_array(strtolower($exception->getExceptionType()), $exceptionTypes)) {
                     $exceptions->attach($exception);
                 }
             }
@@ -119,7 +119,7 @@ class EventService
         $timesFromExceptions = $this->getExceptionsForDate($event, $date, 'add, time');
         if ($timesFromExceptions->count()) {
             $times = new \SplObjectStorage();
-            /** @var \JWeiland\Events2\Domain\Model\Exception $exception */
+            /** @var Exception $exception */
             foreach ($timesFromExceptions as $exception) {
                 $time = $exception->getExceptionTime();
                 if ($time instanceof Time) {
@@ -127,13 +127,17 @@ class EventService
                 }
             }
 
-            return $times;
+            if ($times->count()) {
+                return $times;
+            }
         }
+
         // times from event->differentTimes have priority 2
         $differentTimes = $this->getDifferentTimesForDate($event, $date);
         if ($differentTimes->count()) {
             return $differentTimes;
         }
+
         // times from event have priority 3
         $eventTimes = $this->getTimesFromEvent($event);
         if ($eventTimes->count()) {
@@ -154,7 +158,7 @@ class EventService
     public function getSortedTimesForDate(Event $event, \DateTime $date)
     {
         $sortedTimes = [];
-        $sortedStorage = new \SplObjectStorage();
+        $sortedTimeStorage = new \SplObjectStorage();
 
         $times = $this->getTimesForDate($event, $date);
         foreach ($times as $time) {
@@ -164,9 +168,9 @@ class EventService
         ksort($sortedTimes);
 
         foreach ($sortedTimes as $time) {
-            $sortedStorage->attach($time);
+            $sortedTimeStorage->attach($time);
         }
-        return $sortedStorage;
+        return $sortedTimeStorage;
     }
 
     /**
@@ -214,7 +218,7 @@ class EventService
             $event->getEventType() !== 'single'
         ) {
             $multipleTimes = $event->getMultipleTimes();
-            /* @var \JWeiland\Events2\Domain\Model\Time $time */
+            /* @var Time $time */
             foreach ($multipleTimes as $multipleTime) {
                 $times->attach($multipleTime);
             }
@@ -237,16 +241,7 @@ class EventService
             return false;
         }
 
-        $days = [];
-
-        foreach ($event->getDays() as $day) {
-            $dayTime = $day->getSortDayTime()->format('U');
-            if ($dayTime > time()) {
-                $days[$day->getSortDayTime()->format('U')] = $day;
-            }
-        }
-        ksort($days);
-        reset($days);
+        $days = $event->getFutureDatesGroupedAndSorted();
 
         return current($days);
     }
@@ -263,22 +258,10 @@ class EventService
     {
         /** @var Event $event */
         $event = $this->eventRepository->findByIdentifier($eventUid);
-        if ($event->getDays()->count()) {
-            $days = [];
+        $days = $event->getFutureDatesGroupedAndSorted();
+        krsort($days);
+        reset($days);
 
-            /** @var Day $day */
-            foreach ($event->getDays() as $day) {
-                $dayTime = $day->getSortDayTime()->format('U');
-                if ($dayTime > time()) {
-                    $days[$day->getSortDayTime()->format('U')] = $day;
-                }
-            }
-            krsort($days);
-            reset($days);
-
-            return current($days);
-        } else {
-            return false;
-        }
+        return current($days);
     }
 }
