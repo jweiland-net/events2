@@ -99,22 +99,38 @@
 <f:section name="location">
 	<dl>
 		<dt><f:translate key="tx_events2_domain_model_event.location"/></dt>
-		<dd>
-			<f:link.action
-				action="show"
-				controller="Location"
-				pageUid="{settings.pidOfLocationPage}"
-				arguments="{location: event.location}"
-				title="{event.location.location}"
-			>{event.location.location}</f:link.action>
-		</dd>
-		<dd>
-			<figure>
-				<f:link.action action="show" controller="Location" pageUid="{settings.pidOfLocationPage}" arguments="{location: event.location}" title="{f:translate(key: 'altTextMapImg')}">
-					<f:image src="{f:uri.resource(path: 'Icons/thumbmaps.png')}" alt="{f:translate(key: 'altTextMapImg')}"/>
-				</f:link.action>
-			</figure>
-		</dd>
+			<f:if condition="{event.location.link}">
+				<f:then>
+					<dd>
+						<f:if condition="{event.location.link.title}">
+							<f:then>
+								<f:link.typolink parameter="{event.location.link.link}" title="{event.location.link.title}">{event.location.link.title}</f:link.typolink>
+							</f:then>
+							<f:else>
+								<f:link.typolink parameter="{event.location.link.link}" title="{event.location.location}">{event.location.location}</f:link.typolink>
+							</f:else>
+						</f:if>
+					</dd>
+				</f:then>
+				<f:else>
+					<dd>
+						<f:link.action
+							action="show"
+							controller="Location"
+							pageUid="{settings.pidOfLocationPage}"
+							arguments="{location: event.location}"
+							title="{event.location.location}"
+						>{event.location.location}</f:link.action>
+					</dd>
+					<dd>
+						<figure>
+							<f:link.action action="show" controller="Location" pageUid="{settings.pidOfLocationPage}" arguments="{location: event.location}" title="{f:translate(key: 'altTextMapImg')}">
+								<f:image src="{f:uri.resource(path: 'Icons/thumbmaps.png')}" alt="{f:translate(key: 'altTextMapImg')}"/>
+							</f:link.action>
+						</figure>
+					</dd>
+				</f:else>
+			</f:if>
 	</dl>
 </f:section>
 

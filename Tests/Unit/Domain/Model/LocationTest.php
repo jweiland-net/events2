@@ -14,6 +14,8 @@ namespace JWeiland\Events2\Tests\Unit\Domain\Model;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+use JWeiland\Events2\Domain\Model\Link;
 use JWeiland\Events2\Domain\Model\Location;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 
@@ -251,6 +253,26 @@ class LocationTest extends UnitTestCase
     {
         $this->subject->setCity(true);
         $this->assertSame('1', $this->subject->getCity());
+    }
+
+    /**
+     * @test
+     */
+    public function getLinkInitiallyReturnsNull() {
+        $this->assertNull($this->subject->getLink());
+    }
+
+    /**
+     * @test
+     */
+    public function setLinkSetsLink() {
+        $instance = new Link();
+        $this->subject->setLink($instance);
+
+        $this->assertSame(
+            $instance,
+            $this->subject->getLink()
+        );
     }
 
     /**
