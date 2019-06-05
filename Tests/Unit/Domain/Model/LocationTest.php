@@ -258,14 +258,16 @@ class LocationTest extends UnitTestCase
     /**
      * @test
      */
-    public function getLinkInitiallyReturnsNull() {
+    public function getLinkInitiallyReturnsNull()
+    {
         $this->assertNull($this->subject->getLink());
     }
 
     /**
      * @test
      */
-    public function setLinkSetsLink() {
+    public function setLinkSetsLink()
+    {
         $instance = new Link();
         $this->subject->setLink($instance);
 
