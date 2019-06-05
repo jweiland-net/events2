@@ -101,7 +101,7 @@ class Exception extends AbstractEntity
     /**
      * Returns the exceptionTime.
      *
-     * @return \JWeiland\Events2\Domain\Model\Time $time
+     * @return \JWeiland\Events2\Domain\Model\Time|null
      */
     public function getExceptionTime()
     {
