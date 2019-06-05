@@ -172,7 +172,6 @@ class Event extends AbstractEntity
      *
      * @var \JWeiland\Events2\Domain\Model\Link
      * @cascade remove
-     * @lazy
      */
     protected $ticketLink;
 
@@ -198,7 +197,6 @@ class Event extends AbstractEntity
      * Location.
      *
      * @var \JWeiland\Events2\Domain\Model\Location
-     * @lazy
      */
     protected $location;
 
@@ -206,7 +204,6 @@ class Event extends AbstractEntity
      * Organizer.
      *
      * @var \JWeiland\Events2\Domain\Model\Organizer
-     * @lazy
      */
     protected $organizer;
 
@@ -224,7 +221,6 @@ class Event extends AbstractEntity
      *
      * @var \JWeiland\Events2\Domain\Model\Link
      * @cascade remove
-     * @lazy
      */
     protected $videoLink;
 
