@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types = 1);
 namespace JWeiland\Events2\Domain\Model;
 
 /*
@@ -22,141 +22,184 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 class Time extends AbstractEntity
 {
     /**
-     * Weekday.
-     *
      * @var string
      */
     protected $weekday = '';
 
     /**
-     * Time begin.
-     *
      * @var string
      * @validate NotEmpty,RegularExpression(regularExpression=/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/)
      */
     protected $timeBegin = '';
 
     /**
-     * Time entry.
-     *
      * @var string
      * @validate RegularExpression(regularExpression=/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/)
      */
     protected $timeEntry = '';
 
     /**
-     * Duration.
-     *
      * @var string
      * @validate RegularExpression(regularExpression=/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/)
      */
     protected $duration = '';
 
     /**
-     * Time end.
-     *
      * @var string
      * @validate RegularExpression(regularExpression=/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/)
      */
     protected $timeEnd = '';
 
-    /**
-     * Returns the weekday.
-     *
-     * @return string $weekday
+    /*
+     * Helper variables for Fluid
+     * Helpful to use f:format.date()
      */
-    public function getWeekday()
+
+    /**
+     * @var \DateTime
+     */
+    protected $timeBeginAsDateTime;
+
+    /**
+     * @var \DateTime
+     */
+    protected $timeEntryAsDateTime;
+
+    /**
+     * @var \DateTime
+     */
+    protected $timeEndAsDateTime;
+
+    /**
+     * @return string
+     */
+    public function getWeekday(): string
     {
         return $this->weekday;
     }
 
     /**
-     * Sets the weekday.
-     *
      * @param string $weekday
      */
-    public function setWeekday($weekday)
+    public function setWeekday(string $weekday)
     {
-        $this->weekday = (string)$weekday;
+        $this->weekday = $weekday;
     }
 
     /**
-     * Returns the timeBegin.
-     *
-     * @return string $timeBegin
+     * @return string
      */
-    public function getTimeBegin()
+    public function getTimeBegin(): string
     {
         return $this->timeBegin;
     }
 
     /**
-     * Sets the timeBegin.
-     *
      * @param string $timeBegin
      */
-    public function setTimeBegin($timeBegin)
+    public function setTimeBegin(string $timeBegin)
     {
-        $this->timeBegin = (string)$timeBegin;
+        $this->timeBegin = $timeBegin;
     }
 
     /**
-     * Returns the timeEntry.
-     *
-     * @return string $timeEntry
+     * @return string
      */
-    public function getTimeEntry()
+    public function getTimeEntry(): string
     {
         return $this->timeEntry;
     }
 
     /**
-     * Sets the timeEntry.
-     *
      * @param string $timeEntry
      */
-    public function setTimeEntry($timeEntry)
+    public function setTimeEntry(string $timeEntry)
     {
-        $this->timeEntry = (string)$timeEntry;
+        $this->timeEntry = $timeEntry;
     }
 
     /**
-     * Returns the duration.
-     *
-     * @return string $duration
+     * @return string
      */
-    public function getDuration()
+    public function getDuration(): string
     {
         return $this->duration;
     }
 
     /**
-     * Sets the duration.
-     *
      * @param string $duration
      */
-    public function setDuration($duration)
+    public function setDuration(string $duration)
     {
-        $this->duration = (string)$duration;
+        $this->duration = $duration;
     }
 
     /**
-     * Returns the timeEnd.
-     *
-     * @return string $timeEnd
+     * @return string
      */
-    public function getTimeEnd()
+    public function getTimeEnd(): string
     {
         return $this->timeEnd;
     }
 
     /**
-     * Sets the timeEnd.
-     *
      * @param string $timeEnd
      */
-    public function setTimeEnd($timeEnd)
+    public function setTimeEnd(string $timeEnd)
     {
-        $this->timeEnd = (string)$timeEnd;
+        $this->timeEnd = $timeEnd;
+    }
+
+    /*
+     * Helper methods for Fluid
+     * Helpful to use f:format.date()
+     */
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getTimeBeginAsDateTime()
+    {
+        return $this->timeBeginAsDateTime;
+    }
+
+    /**
+     * @param \DateTime $timeBegin
+     */
+    public function setTimeBeginAsDateTime(\DateTime $timeBegin = null)
+    {
+        $this->timeBeginAsDateTime = $timeBegin;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getTimeEntryAsDateTime()
+    {
+        return $this->timeEntryAsDateTime;
+    }
+
+    /**
+     * @param \DateTime $timeEntry
+     */
+    public function setTimeEntryAsDateTime(\DateTime $timeEntry = null)
+    {
+        $this->timeEntryAsDateTime = $timeEntry;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getTimeEndAsDateTime()
+    {
+        return $this->timeEndAsDateTime;
+    }
+
+    /**
+     * @param \DateTime $timeEnd
+     */
+    public function setTimeEndAsDateTime(\DateTime $timeEnd = null)
+    {
+        $this->timeEndAsDateTime = $timeEnd;
     }
 }
