@@ -252,4 +252,76 @@ class TimeTest extends UnitTestCase
         $this->subject->setTimeEnd(true);
         $this->assertSame('1', $this->subject->getTimeEnd());
     }
+
+    /**
+     * @test
+     */
+    public function getTimeEntryAsDateTimeInitiallyReturnsNull()
+    {
+        $this->assertNull(
+            $this->subject->getTimeEntryAsDateTime()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function setTimeEntryAsDateTimeSetsTimeEntryAsDateTime()
+    {
+        $date = new \DateTime();
+        $this->subject->setTimeEntryAsDateTime($date);
+
+        $this->assertSame(
+            $date,
+            $this->subject->getTimeEntryAsDateTime()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function getTimeBeginAsDateTimeInitiallyReturnsNull()
+    {
+        $this->assertNull(
+            $this->subject->getTimeBeginAsDateTime()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function setTimeBeginAsDateTimeSetsTimeBeginAsDateTime()
+    {
+        $date = new \DateTime();
+        $this->subject->setTimeBeginAsDateTime($date);
+
+        $this->assertSame(
+            $date,
+            $this->subject->getTimeBeginAsDateTime()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function getTimeEndAsDateTimeInitiallyReturnsNull()
+    {
+        $this->assertNull(
+            $this->subject->getTimeEndAsDateTime()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function setTimeEndAsDateTimeSetsTimeEndAsDateTime()
+    {
+        $date = new \DateTime();
+        $this->subject->setTimeEndAsDateTime($date);
+
+        $this->assertSame(
+            $date,
+            $this->subject->getTimeEndAsDateTime()
+        );
+    }
 }

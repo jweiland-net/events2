@@ -113,11 +113,27 @@ class EventService
      */
     public function getTimesForDate(Event $event, \DateTime $date)
     {
+        /** @var \SplObjectStorage|Time[] $timesForDate */
+        $timesForDate = new \SplObjectStorage();
+
+        // times from event have priority 3
+        $eventTimes = $this->getTimesFromEvent($event);
+        if ($eventTimes->count()) {
+            $timesForDate = $eventTimes;
+        }
+
+        // times from event->differentTimes have priority 2
+        $differentTimes = $this->getDifferentTimesForDate($event, $date);
+        if ($differentTimes->count()) {
+            $timesForDate = $differentTimes;
+        }
+
         // times from exceptions have priority 1
         // The exceptions of type "Add" were already moved to event->getDays (DayGenerator), but not their time records
         // that's why we collect exceptions of type "Add" and "Time" here
         $timesFromExceptions = $this->getExceptionsForDate($event, $date, 'add, time');
         if ($timesFromExceptions->count()) {
+            /** @var \SplObjectStorage|Time[] $times */
             $times = new \SplObjectStorage();
             /** @var Exception $exception */
             foreach ($timesFromExceptions as $exception) {
@@ -126,26 +142,16 @@ class EventService
                     $times->attach($exception->getExceptionTime());
                 }
             }
-
             if ($times->count()) {
-                return $times;
+                $timesForDate = $times;
             }
         }
 
-        // times from event->differentTimes have priority 2
-        $differentTimes = $this->getDifferentTimesForDate($event, $date);
-        if ($differentTimes->count()) {
-            return $differentTimes;
+        foreach ($timesForDate as $timeForDate) {
+            $this->addDateTimeObjectsToTime($date, $timeForDate);
         }
 
-        // times from event have priority 3
-        $eventTimes = $this->getTimesFromEvent($event);
-        if ($eventTimes->count()) {
-            return $eventTimes;
-        }
-
-        // if there are no times available return empty SplObjectStorage
-        return new \SplObjectStorage();
+        return $timesForDate;
     }
 
     /**
@@ -153,7 +159,7 @@ class EventService
      *
      * @param Event $event
      * @param \DateTime $date
-     * @return \SplObjectStorage
+     * @return \SplObjectStorage|Time[]
      */
     public function getSortedTimesForDate(Event $event, \DateTime $date)
     {
@@ -168,9 +174,42 @@ class EventService
         ksort($sortedTimes);
 
         foreach ($sortedTimes as $time) {
+            $this->addDateTimeObjectsToTime($date, $time);
             $sortedTimeStorage->attach($time);
         }
         return $sortedTimeStorage;
+    }
+
+    /**
+     * This method merges given date (midnight) with hour and minute.
+     * Useful for fluid f:format.date()
+     *
+     * @param \DateTime $date
+     * @param Time $time
+     */
+    protected function addDateTimeObjectsToTime(\DateTime $date, Time $time)
+    {
+        $format = 'd.m.Y H:i:s';
+        foreach (['TimeEntry', 'TimeBegin', 'TimeEnd'] as $property) {
+            $setter = 'set' . $property . 'AsDateTime';
+            $getter = 'get' . $property;
+            if ($time->{$getter}() === '') {
+                continue;
+            }
+            $timeString = sprintf(
+                '%s.%s.%s %s:00',
+                $date->format('d'),
+                $date->format('m'),
+                $date->format('Y'),
+                $time->{$getter}()
+            );
+            $time->{$setter}(
+                \DateTime::createFromFormat(
+                    $format,
+                    $timeString
+                )
+            );
+        }
     }
 
     /**
@@ -179,7 +218,7 @@ class EventService
      *
      * @param Event $event
      * @param \DateTime $date
-     * @return \SplObjectStorage
+     * @return \SplObjectStorage|Time[]
      */
     protected function getDifferentTimesForDate(Event $event, \DateTime $date)
     {
@@ -200,7 +239,7 @@ class EventService
      * This method checks both parts, merges them to one SplObjectStorage and returns the result.
      *
      * @param Event $event
-     * @return \SplObjectStorage
+     * @return \SplObjectStorage|Time[]
      */
     protected function getTimesFromEvent(Event $event): \SplObjectStorage
     {

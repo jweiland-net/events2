@@ -9,6 +9,17 @@ Updating
 --------
 If you update EXT:events2 to a newer version, please read this section carefully!
 
+Update to Version 3.7.0
+^^^^^^^^^^^^^^^^^^^^^^^
+
+New Feature:
+We have added 3 new getters to Time object:
+-> getTimeEntryAsDateTime
+-> getTimeBeginAsDateTime
+-> getTimeEndAsDateTime
+
+These are very helpful as you now can format them with f:format.date() VH
+
 Update to Version 3.3.1
 ^^^^^^^^^^^^^^^^^^^^^^^
 
