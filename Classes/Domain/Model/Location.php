@@ -121,7 +121,14 @@ class Location extends AbstractEntity
         $this->link = $link;
     }
 
-    public function setTxMaps2Uid(PoiCollection $txMaps2Uid = null)
+    /**
+     * SF: Do not add PoiCollection as strict_type to $txMaps2Uid
+     * as this will break DataMap in Extbase when maps2 is not installed
+     * @link https://github.com/jweiland-net/events2/issues/114
+     *
+     * @param PoiCollection|null $txMaps2Uid
+     */
+    public function setTxMaps2Uid($txMaps2Uid = null)
     {
         $this->txMaps2Uid = $txMaps2Uid;
     }
