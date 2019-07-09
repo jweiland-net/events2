@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types = 1);
 namespace JWeiland\Events2\ViewHelpers\Widget\Controller;
 
 /*
@@ -34,8 +34,6 @@ class ICalendarController extends AbstractWidgetController
     protected $eventService;
 
     /**
-     * inject Event Service.
-     *
      * @param EventService $eventService
      */
     public function injectEventService(EventService $eventService)
@@ -48,11 +46,15 @@ class ICalendarController extends AbstractWidgetController
      *
      * @return string
      */
-    public function indexAction()
+    public function indexAction(): string
     {
         // global information
-        $day = $this->widgetConfiguration['day'];
         $this->view->assign('PRODID', GeneralUtility::getIndpEnv('TYPO3_SITE_URL'));
+        $day = $this->widgetConfiguration['day'];
+        if (!$day instanceof Day) {
+            // never try to generate an iCal export for an event without a day record
+            return '';
+        }
 
         // event information
         $events = $this->getEvents($day);
@@ -78,10 +80,9 @@ class ICalendarController extends AbstractWidgetController
      * Get Events by day
      *
      * @param Day $day
-     *
      * @return array
      */
-    protected function getEvents(Day $day)
+    protected function getEvents(Day $day): array
     {
         $events = [];
         switch ($day->getEvent()->getEventType()) {
@@ -124,13 +125,11 @@ class ICalendarController extends AbstractWidgetController
      * This is needed for events of type "duration"
      *
      * @param Event $event
-     *
-     * @return Day
+     * @return Day|null
      */
     protected function getFirstDayOfEvent(Event $event)
     {
         $days = [];
-        /** @var Day $day */
         foreach ($event->getDays() as $day) {
             $days[$day->getDay()->format('U')] = $day;
         }
@@ -144,13 +143,11 @@ class ICalendarController extends AbstractWidgetController
      * This is needed for events of type "duration"
      *
      * @param Event $event
-     *
-     * @return Day
+     * @return Day|null
      */
     protected function getLastDayOfEvent(Event $event)
     {
         $days = [];
-        /** @var Day $day */
         foreach ($event->getDays() as $day) {
             $days[$day->getDay()->format('U')] = $day;
         }
@@ -160,7 +157,7 @@ class ICalendarController extends AbstractWidgetController
     }
 
     /**
-     * create an event array
+     * Create an event array
      * Hint: We can't use DTSTAMP here, because this must be UTC, but we don't have UTC times here.
      *
      * @param Day $day current Day. In case of duration it will be the first day
@@ -169,7 +166,7 @@ class ICalendarController extends AbstractWidgetController
      * @param string $endTime Something like 17:30
      * @return array
      */
-    protected function createEvent(Day $day, Day $lastDay = null, $startTime = '', $endTime = '')
+    protected function createEvent(Day $day, Day $lastDay = null, string $startTime = '', string $endTime = ''): array
     {
         if ($lastDay === null) {
             $lastDay = $day;
@@ -178,7 +175,7 @@ class ICalendarController extends AbstractWidgetController
         $event = [];
         $event['UID'] = $this->getUniqueIdForDay($day);
         $event['DTSTART'] = $this->convertToTstamp($day->getDay(), $startTime);
-        if ($day !== $lastDay) {
+        if ($lastDay instanceof Day) {
             if (empty($endTime)) {
                 $endTime = '23:59';
             }
@@ -204,10 +201,9 @@ class ICalendarController extends AbstractWidgetController
      * It's more a unique string.
      *
      * @param Day $day
-     *
      * @return string
      */
-    public function getUniqueIdForDay(Day $day)
+    protected function getUniqueIdForDay(Day $day): string
     {
         return 'event' . uniqid($day->getDay()->format('dmY'), true);
     }
@@ -215,13 +211,13 @@ class ICalendarController extends AbstractWidgetController
     /**
      * iCal needs a special format for timestamps
      * This method converts a DateTime and a given time string to this format.
+     * iCal supports 3 different formats. Please keep current format, as this is the only one Outlook supports.
      *
      * @param \DateTime $date
-     * @param string    $time
-     *
+     * @param string $time
      * @return string
      */
-    public function convertToTstamp(\DateTime $date, $time = '')
+    protected function convertToTstamp(\DateTime $date, string $time = ''): string
     {
         // don't modify the original Date
         $localDate = clone $date;
@@ -241,13 +237,12 @@ class ICalendarController extends AbstractWidgetController
     }
 
     /**
-     * get formatted time string.
+     * Get formatted time string.
      *
      * @param string $time
-     *
      * @return string
      */
-    public function getFormattedTime($time = '')
+    protected function getFormattedTime(string $time = ''): string
     {
         if (empty($time)) {
             $time = '000000';
@@ -259,15 +254,14 @@ class ICalendarController extends AbstractWidgetController
     }
 
     /**
-     * sanitize Text.
+     * Sanitize Text.
      *
      * @link http://tools.ietf.org/html/rfc5545#page-45
      *
      * @param string $content The text to sanitize for *.ics
-     *
      * @return string
      */
-    protected function sanitizeString($content)
+    protected function sanitizeString(string $content): string
     {
         // remove tags from content
         $content = htmlspecialchars(strip_tags($content));
