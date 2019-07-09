@@ -223,7 +223,6 @@ return [
                 'renderType' => 'inputDateTime',
                 'size' => 7,
                 'eval' => 'date,required',
-                'default' => mktime(0, 0, 0, date('m'), date('d'), date('Y')),
             ],
         ],
         'event_end' => [
