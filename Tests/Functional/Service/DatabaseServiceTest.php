@@ -127,8 +127,6 @@ class DatabaseServiceTest extends FunctionalTestCase
         $eventEnd->modify('last day of this month');
 
         $databaseService = $this->objectManager->get(DatabaseService::class);
-        var_dump($eventBegin->format('U'));
-        var_dump($eventEnd->format('U'));
         $days = $databaseService->getDaysInRange($eventBegin, $eventEnd, [11]);
 
         $this->assertGreaterThanOrEqual(
