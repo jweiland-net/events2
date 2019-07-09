@@ -836,6 +836,56 @@ class DayGeneratorTest extends UnitTestCase
 
     /**
      * @test
+     */
+    public function initializeWithAddExceptionOutOfAllowedRangeDoesNotAddDayInStorage()
+    {
+        $timestamp = mktime(0, 0, 0);
+
+        // These dates will be created with timezone_type = 1, which does know the timezone (+02:00) only from the current date
+        $eventBegin = new \DateTime(date('c', $timestamp));
+        $lastYear = clone $eventBegin;
+        $lastYear->modify('-1 year');
+
+        $exceptionTime = new Time();
+        $exceptionTime->setTimeBegin('18:00');
+
+        $exception = new Exception();
+        $exception->setExceptionType('Add');
+        $exception->setExceptionDate($lastYear);
+        $exception->setExceptionTime($exceptionTime);
+        $exceptions = new ObjectStorage();
+        $exceptions->attach($exception);
+
+        $event = new Event();
+        $event->_setProperty('uid', 123);
+        $event->setEventType('single');
+        $event->setEventBegin($eventBegin);
+        $event->setXth(31);
+        $event->setWeekday(127);
+        $event->setEachWeeks(0);
+        $event->setEachMonths(0);
+        $event->setExceptions($exceptions);
+
+        $expectedDays = [];
+        $expectedDays[$eventBegin->format('U')] = $eventBegin;
+
+        $this->assertTrue($this->subject->initialize($event));
+        $dateTimeStorage = $this->subject->getDateTimeStorage();
+
+        // assertEquals will only check for correct dates, but not for different timezoneTypes
+        $this->assertEquals(
+            $expectedDays,
+            $dateTimeStorage
+        );
+
+        /** @var \DateTime $dateTime */
+        foreach ($dateTimeStorage as $dateTime) {
+            $this->assertSame(3, $dateTime->timezone_type);
+        }
+    }
+
+    /**
+     * @test
      *
      * @throws \Exception
      */
