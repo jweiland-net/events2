@@ -268,6 +268,7 @@ class ICalendarControllerTest extends FunctionalTestCase
 
         $dateTimeZone = new \DateTimeZone('UTC');
         $expectedDate = $day->getEvent()->getEventBegin();
+        $expectedDate->modify('+8 hours');
         $expectedDate->setTimezone($dateTimeZone);
 
         $this->assertContains(
