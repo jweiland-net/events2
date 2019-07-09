@@ -301,7 +301,6 @@ class ICalendarControllerTest extends FunctionalTestCase
 
         $files = array_slice(scandir($this->tempDirectory), 2, 1);
         $content = file_get_contents($this->tempDirectory . $files[0]);
-        var_dump($content);
 
         $dateTimeZone = new \DateTimeZone('UTC');
         $expectedDate = $day->getEvent()->getEventBegin();

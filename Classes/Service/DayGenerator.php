@@ -418,10 +418,6 @@ class DayGenerator
         $dateToStopCalculatingTo = $this->getDateToStopCalculatingTo($event);
         $day = $this->dateTimeUtility->standardizeDateTimeObject($exception->getExceptionDate());
 
-        var_dump($dateToStartCalculatingFrom);
-        var_dump($dateToStopCalculatingTo);
-        var_dump($day);
-
         if ($day >= $dateToStartCalculatingFrom && $day <= $dateToStopCalculatingTo) {
             $this->addDayToStorage($day);
         }
