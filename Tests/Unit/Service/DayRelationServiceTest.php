@@ -482,7 +482,7 @@ class DayRelationServiceTest extends UnitTestCase
         $event->setPid(321);
         $event->setEventType('recurring');
         $event->setEventBegin($tuesday);
-        $event->setRecurringEnd($thursday);
+        $event->setRecurringEnd($friday);
         $event->setSameDay(true);
         $event->setXth(31);
         $event->setWeekday(127);
@@ -570,7 +570,7 @@ class DayRelationServiceTest extends UnitTestCase
         $event->setPid(321);
         $event->setEventType('recurring');
         $event->setEventBegin($tuesday);
-        $event->setRecurringEnd($thursday);
+        $event->setRecurringEnd($friday);
         $event->setSameDay(true);
         $event->setXth(31);
         $event->setWeekday(127);
