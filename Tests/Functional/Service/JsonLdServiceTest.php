@@ -224,7 +224,6 @@ class JsonLdServiceTest extends FunctionalTestCase
         $jsonLdService = GeneralUtility::makeInstance(JsonLdService::class);
         $jsonLdService->addJsonLdToPageHeader($day);
 
-
         list($hours, $minutes) = GeneralUtility::trimExplode(
             ':',
             $day->getEvent()->getEventTime()->getDuration()
