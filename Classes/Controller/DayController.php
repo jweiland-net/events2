@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types = 1);
 namespace JWeiland\Events2\Controller;
 
 /*
@@ -23,10 +23,7 @@ use TYPO3\CMS\Core\Messaging\FlashMessage;
 class DayController extends AbstractController
 {
     /**
-     * action list.
-     *
-     * @param Filter $filter
-     * @throws \Exception
+     * @param Filter|null $filter
      */
     public function listAction(Filter $filter = null)
     {
@@ -35,10 +32,7 @@ class DayController extends AbstractController
     }
 
     /**
-     * action list latest.
-     *
-     * @param Filter $filter
-     * @throws \Exception
+     * @param Filter|null $filter
      */
     public function listLatestAction(Filter $filter = null)
     {
@@ -52,10 +46,7 @@ class DayController extends AbstractController
     }
 
     /**
-     * action list today.
-     *
-     * @param Filter $filter
-     * @throws \Exception
+     * @param Filter|null $filter
      */
     public function listTodayAction(Filter $filter = null)
     {
@@ -64,10 +55,7 @@ class DayController extends AbstractController
     }
 
     /**
-     * action list this week.
-     *
-     * @param Filter $filter
-     * @throws \Exception
+     * @param Filter|null $filter
      */
     public function listThisWeekAction(Filter $filter = null)
     {
@@ -76,10 +64,7 @@ class DayController extends AbstractController
     }
 
     /**
-     * action list range.
-     *
-     * @param Filter $filter
-     * @throws \Exception
+     * @param Filter|null $filter
      */
     public function listRangeAction(Filter $filter = null)
     {
@@ -88,16 +73,12 @@ class DayController extends AbstractController
     }
 
     /**
-     * action show.
-     *
-     * Hint: I call showAction with int instead of DomainModel
-     * to prevent that recursive validators will be called
+     * I call showAction with int instead of DomainModel to prevent that recursive validators will be called.
      *
      * @param int $event
      * @param int $timestamp
-     * @throws \Exception
      */
-    public function showAction($event, $timestamp = 0)
+    public function showAction(int $event, int $timestamp = 0)
     {
         $day = $this->dayRepository->findDayByEventAndTimestamp($event, $timestamp);
 
@@ -115,12 +96,9 @@ class DayController extends AbstractController
     }
 
     /**
-     * action showByTimestamp.
-     *
      * @param int $timestamp
-     * @throws \Exception
      */
-    public function showByTimestampAction($timestamp)
+    public function showByTimestampAction(int $timestamp)
     {
         $days = $this->dayRepository->findByTimestamp((int)$timestamp);
         $this->view->assign('days', $days);
