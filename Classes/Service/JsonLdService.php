@@ -15,16 +15,12 @@ namespace JWeiland\Events2\Service;
  * The TYPO3 project - inspiring people to share!
  */
 
-use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
-use JWeiland\Events2\Domain\Model\Exception;
 use JWeiland\Events2\Domain\Model\Link;
 use JWeiland\Events2\Domain\Model\Location;
 use JWeiland\Events2\Domain\Model\Organizer;
 use JWeiland\Events2\Domain\Model\Time;
-use JWeiland\Events2\Domain\Repository\EventRepository;
-use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
