@@ -15,7 +15,9 @@ namespace JWeiland\Events2\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Domain\Model\Filter;
+use JWeiland\Events2\Service\JsonLdService;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * The DayController contains actions for various list actions and detail view.
@@ -81,6 +83,8 @@ class DayController extends AbstractController
     public function showAction(int $event, int $timestamp = 0)
     {
         $day = $this->dayRepository->findDayByEventAndTimestamp($event, $timestamp);
+        $jsonLdService = GeneralUtility::makeInstance(JsonLdService::class);
+        $jsonLdService->addJsonLdToPageHeader($day);
 
         // This is a very seldom problem. It appears, when you save tt_content by a hook and cast value of pages to int before save.
         $data = $this->configurationManager->getContentObject()->data;

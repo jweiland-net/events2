@@ -181,6 +181,25 @@ class EventService
     }
 
     /**
+     * Get Time object for a given day record, if exists
+     *
+     * @param Day $day
+     * @return Time|null
+     */
+    public function getTimeForDay(Day $day)
+    {
+        $times = $this->getTimesForDate($day->getEvent(), $day->getDay());
+        if ($times->count()) {
+            foreach ($times as $time) {
+                if ($time->getTimeBeginAsDateTime() == $day->getDayTime()) {
+                    return $time;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * This method merges given date (midnight) with hour and minute.
      * Useful for fluid f:format.date()
      *
