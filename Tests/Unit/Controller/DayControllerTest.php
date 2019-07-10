@@ -20,10 +20,12 @@ use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
+use JWeiland\Events2\Service\JsonLdService;
 use Nimut\TestingFramework\MockObject\AccessibleMockObjectInterface;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -252,6 +254,10 @@ class DayControllerTest extends UnitTestCase
             Argument::exact($day)
         )->shouldBeCalled();
 
+        /** @var JsonLdService|ObjectProphecy $jsonLdServiceProphecy */
+        $jsonLdServiceProphecy = $this->prophesize(JsonLdService::class);
+        GeneralUtility::addInstance(JsonLdService::class, $jsonLdServiceProphecy->reveal());
+
         $this->subject->showAction($event, $timestamp);
     }
 
@@ -277,6 +283,10 @@ class DayControllerTest extends UnitTestCase
             Argument::exact($day)
         )->shouldBeCalled();
 
+        /** @var JsonLdService|ObjectProphecy $jsonLdServiceProphecy */
+        $jsonLdServiceProphecy = $this->prophesize(JsonLdService::class);
+        GeneralUtility::addInstance(JsonLdService::class, $jsonLdServiceProphecy->reveal());
+
         $this->subject->showAction($eventUid);
     }
 
@@ -299,24 +309,5 @@ class DayControllerTest extends UnitTestCase
         );
 
         $this->subject->showByTimestampAction($timestamp);
-    }
-
-    /**
-     * @test
-     */
-    public function showByTimestampWithInvalidTimestampCallsFindByTimestampWithZero()
-    {
-        $queryResultProphecy = $this->prophesize(QueryResult::class);
-        $this->dayRepository
-            ->findByTimestamp(Argument::exact(0))
-            ->shouldBeCalled()
-            ->willReturn($queryResultProphecy->reveal());
-
-        $this->view->assign(
-            Argument::exact('days'),
-            Argument::exact($queryResultProphecy->reveal())
-        );
-
-        $this->subject->showByTimestampAction('abc');
     }
 }
