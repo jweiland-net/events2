@@ -359,7 +359,8 @@ class DatabaseService
             )
         );
 
-        if ($endDateTime) {
+        if ($endDateTime instanceof \DateTime) {
+            $endDateTime->modify('23:59:59');
             $constraintForDateTime = (string)$queryBuilder->expr()->andX(
                 $constraintForDateTime,
                 $queryBuilder->expr()->lt(
