@@ -306,8 +306,8 @@ class DatabaseService
         switch ($type) {
             case 'today':
                 $startDateTime = $dateTimeUtility->convert('today');
-                $endDateTime = $dateTimeUtility->convert('today');
-                $endDateTime->modify('+1 day');
+                $endDateTime = clone $startDateTime;
+                $endDateTime->modify('23:59:59');
                 break;
             case 'range':
                 $startDateTime = $dateTimeUtility->convert('today');
