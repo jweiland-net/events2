@@ -3,22 +3,22 @@ language: php
 jobs:
   include:
     - stage: test
-      php: 7.0
+      php: "7.0"
       env:
         - TYPO3_VERSION=^8
         - EXCLUDE_DIR="./Classes/Routing/*"
     - stage: test
-      php: 7.1
+      php: "7.1"
       env:
         - TYPO3_VERSION=^8
         - EXCLUDE_DIR=""
     - stage: test
-      php: 7.2
+      php: "7.2"
       env:
         - TYPO3_VERSION=^8
         - EXCLUDE_DIR=""
     - stage: test
-      php: 7.2
+      php: "7.2"
       env:
         - TYPO3_VERSION=^9
         - EXCLUDE_DIR=""
@@ -29,6 +29,9 @@ addons:
   apt:
     packages:
       - parallel
+
+services:
+  - mysql
 
 cache:
   directories:
