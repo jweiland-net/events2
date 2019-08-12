@@ -194,7 +194,11 @@ class DayRelationService
                 }
                 $this->addGeneratedDayToEvent($dateTime, $event, $time);
             }
-            $this->firstTime = null;
+
+            // sort_day_time of all duration days have to be the same value, so do not reset this value in that case.
+            if ($event->getEventType() !== 'duration') {
+                $this->firstTime = null;
+            }
         } else {
             $this->addGeneratedDayToEvent($dateTime, $event, null);
         }
@@ -285,6 +289,7 @@ class DayRelationService
     protected function getSortDayTime(\DateTime $day, $hour, $minute, Event $event)
     {
         if ($event->getEventType() === 'duration') {
+            list($hour, $minute) = $this->getHourAndMinuteFromTime($this->firstTime);
             $sortDayTime = $this->getDayTime($this->firstDateTime, $hour, $minute);
         } else {
             $sortDayTime = $this->getDayTime($day, $hour, $minute);
