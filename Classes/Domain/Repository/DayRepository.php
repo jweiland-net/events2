@@ -94,7 +94,7 @@ class DayRepository extends Repository
      * @param string $type
      * @param Filter $filter
      * @param int $limit As Paginator will override $limit, this will only work within LatestView
-     * @return QueryResultInterface
+     * @return QueryResultInterface|Day[]
      * @throws \Exception
      */
     public function findEvents(string $type, Filter $filter, int $limit = 0): QueryResultInterface

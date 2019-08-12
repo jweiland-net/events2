@@ -18,6 +18,7 @@ namespace JWeiland\Events2\Tests\Functional\Repository;
 use JWeiland\Events2\Domain\Model\Category;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
+use JWeiland\Events2\Domain\Model\Exception;
 use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Model\Location;
 use JWeiland\Events2\Domain\Model\Organizer;
@@ -365,6 +366,49 @@ class DayRepositoryTest extends FunctionalTestCase
         $event->setCategories($categories);
         $persistenceManager->add($event);
 
+        $eventBegin = new \DateTime('midnight');
+        $eventBegin->modify('+3 days');
+        $eventEnd = new \DateTime('midnight');
+        $eventEnd->modify('+5 days');
+        $exceptionDate1 = new \DateTime('midnight');
+        $exceptionDate1->modify('+4 days');
+        $exceptionDate2 = new \DateTime('midnight');
+        $exceptionDate2->modify('+5 days');
+        $eventTime = new Time();
+        $eventTime->setTimeBegin('18:00');
+        $eventTime->setTimeEnd('22:00');
+        $exceptionTime1 = new Time();
+        $exceptionTime1->setTimeBegin('09:00');
+        $exceptionTime1->setTimeEnd('18:30');
+        $exceptionTime2 = new Time();
+        $exceptionTime2->setTimeBegin('09:00');
+        $exceptionTime2->setTimeEnd('12:30');
+        $exception1 = new Exception();
+        $exception1->setExceptionType('Time');
+        $exception1->setExceptionDate($exceptionDate1);
+        $exception1->setExceptionTime($exceptionTime1);
+        $exception2 = new Exception();
+        $exception2->setExceptionType('Time');
+        $exception2->setExceptionDate($exceptionDate2);
+        $exception2->setExceptionTime($exceptionTime2);
+        $exceptions = new ObjectStorage();
+        $exceptions->attach($exception1);
+        $exceptions->attach($exception2);
+
+        $event = new Event();
+        $event->setPid(11);
+        $event->setEventType('duration');
+        $event->setEventTime($eventTime);
+        $event->setTopOfList(true);
+        $event->setTitle('Cool trip');
+        $event->setTeaser('Duration with time exceptions. sort_day_time has to be the same for all days');
+        $event->setEventBegin($eventBegin);
+        $event->setEventEnd($eventEnd);
+        $event->setOrganizer($organizer2);
+        $event->setLocation($location1);
+        $event->setExceptions($exceptions);
+        $persistenceManager->add($event);
+
         $persistenceManager->persistAll();
 
         $events = $eventRepository->findAll();
@@ -478,7 +522,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $this->querySettings->setStoragePageIds([11]);
         $days = $this->dayRepository->findEvents('list', new Filter());
         $this->assertSame(
-            8,
+            9,
             $days->count()
         );
 
@@ -504,7 +548,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $this->querySettings->setStoragePageIds([11]);
         $days = $this->dayRepository->findEvents('list', new Filter());
         $this->assertSame(
-            9,
+            10,
             $days->count()
         );
     }
@@ -590,7 +634,7 @@ class DayRepositoryTest extends FunctionalTestCase
         ]);
         $days = $this->dayRepository->findEvents('list', new Filter());
         $this->assertSame(
-            2,
+            3,
             $days->count()
         );
 
@@ -601,7 +645,7 @@ class DayRepositoryTest extends FunctionalTestCase
         ]);
         $days = $this->dayRepository->findEvents('list', $filter);
         $this->assertSame(
-            2,
+            3,
             $days->count()
         );
     }
@@ -778,7 +822,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $this->querySettings->setStoragePageIds([11]);
         $days = $this->dayRepository->searchEvents(new Search());
         $this->assertSame(
-            8,
+            9,
             count($days->toArray())
         );
 
@@ -949,7 +993,7 @@ class DayRepositoryTest extends FunctionalTestCase
 
         $days = $this->dayRepository->searchEvents($search);
         $this->assertSame(
-            7,
+            8,
             count($days->toArray())
         );
     }
@@ -1028,6 +1072,28 @@ class DayRepositoryTest extends FunctionalTestCase
         $this->assertSame(
             'Morgen',
             $day->getEvent()->getTitle()
+        );
+    }
+
+    /**
+     * In case of duration events, the column sort_day_time has to be the same for all generated day records.
+     *
+     * @test
+     */
+    public function additionalTimeExceptionsForDurationEventsWillNotCreateNewEntryInListView()
+    {
+        $this->querySettings->setStoragePageIds([11]);
+        $days = $this->dayRepository->findEvents('list', new Filter());
+        $counter = 0;
+        foreach ($days as $day) {
+            if ($day->getEvent()->getEventType() === 'duration') {
+                var_dump($day->getEvent()->getUid() . '-');
+                $counter++;
+            }
+        }
+        $this->assertSame(
+            2,
+            $counter
         );
     }
 }
