@@ -320,7 +320,12 @@ class JsonLdService
                 return;
             }
 
-            $url = GeneralUtility::locationHeaderUrl(PathUtility::getAbsoluteWebPath(Environment::getPublicPath()));
+            if (version_compare(TYPO3_branch, '9.2', '<')) {
+                $url = GeneralUtility::locationHeaderUrl(PathUtility::getAbsoluteWebPath(PATH_site));
+            } else {
+                $url = GeneralUtility::locationHeaderUrl(PathUtility::getAbsoluteWebPath(Environment::getPublicPath()));
+            }
+
             $url .= $resource->getPublicUrl(false);
 
             $this->data['image'] = [
