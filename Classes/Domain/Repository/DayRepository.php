@@ -161,7 +161,8 @@ class DayRepository extends Repository
             $queryBuilder->setMaxResults((int)$limit);
         }
 
-        $this->addJoinForSubQuery($queryBuilder, $subQueryBuilder);
+        $this->addMergeFeatureToQuery($subQueryBuilder);
+        $this->joinSubQueryIntoQueryBuilder($queryBuilder, $subQueryBuilder);
 
         $extbaseQuery->statement($queryBuilder);
 
@@ -285,7 +286,8 @@ class DayRepository extends Repository
             ->addOrderBy('day.sort_day_time', 'ASC')
             ->addOrderBy('day.day_time', 'ASC');
 
-        $this->addJoinForSubQuery($queryBuilder, $subQueryBuilder);
+        $this->addMergeFeatureToQuery($subQueryBuilder);
+        $this->joinSubQueryIntoQueryBuilder($queryBuilder, $subQueryBuilder);
 
         $extbaseQuery->statement($queryBuilder);
 
@@ -296,7 +298,7 @@ class DayRepository extends Repository
      * Find all Days for a given Day (Timestamp with time set to 00:00:00).
      *
      * @param int $timestamp
-     * @return QueryResultInterface
+     * @return QueryResultInterface|Day[]
      * @throws \Exception
      */
     public function findByTimestamp(int $timestamp): QueryResultInterface
@@ -305,23 +307,18 @@ class DayRepository extends Repository
         $extbaseQuery = $this->createQuery();
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_day');
         $this->databaseService->addVisibilityConstraintToQuery($queryBuilder);
-        $subQueryBuilder = $this->getSubQueryBuilder($queryBuilder);
 
         // add storage PID for event and day, but not for sys_category
         $this->databaseService->addConstraintForPid(
-            $subQueryBuilder,
-            $extbaseQuery->getQuerySettings()->getStoragePageIds(),
             $queryBuilder,
-            '_sub_query'
+            $extbaseQuery->getQuerySettings()->getStoragePageIds()
         );
 
         // add categories
         if (!empty($this->settings['categories'])) {
             $this->databaseService->addConstraintForCategories(
-                $subQueryBuilder,
-                GeneralUtility::trimExplode(',', $this->settings['categories'], true),
                 $queryBuilder,
-                'event_sub_query'
+                GeneralUtility::trimExplode(',', $this->settings['categories'], true)
             );
         }
 
@@ -348,20 +345,17 @@ class DayRepository extends Repository
             ->addOrderBy('day.sort_day_time', 'ASC')
             ->addOrderBy('day.day_time', 'ASC');
 
-        $this->addJoinForSubQuery($queryBuilder, $subQueryBuilder);
-
         $extbaseQuery->statement($queryBuilder);
 
         return $extbaseQuery->execute();
     }
 
     /**
-     * Add join to Sub-Query
+     * Apply various merge features to query
      *
-     * @param QueryBuilder $queryBuilder
      * @param QueryBuilder $subQueryBuilder
      */
-    protected function addJoinForSubQuery(QueryBuilder $queryBuilder, QueryBuilder $subQueryBuilder)
+    protected function addMergeFeatureToQuery(QueryBuilder $subQueryBuilder)
     {
         if ((bool)$this->settings['mergeRecurringEvents']) {
             // $queryBuilder->groupBy('day.uid');
@@ -371,7 +365,16 @@ class DayRepository extends Repository
         } else {
             $subQueryBuilder->groupBy('day_sub_query.event', 'day_sub_query.sort_day_time');
         }
+    }
 
+    /**
+     * Join SubQuery as SQL-Part into parent QueryBuilder
+     *
+     * @param QueryBuilder $queryBuilder
+     * @param QueryBuilder $subQueryBuilder
+     */
+    protected function joinSubQueryIntoQueryBuilder(QueryBuilder $queryBuilder, QueryBuilder $subQueryBuilder)
+    {
         $queryBuilder->getConcreteQueryBuilder()->join(
             $queryBuilder->quoteIdentifier('day'),
             sprintf(

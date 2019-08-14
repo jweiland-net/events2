@@ -431,7 +431,7 @@ class DatabaseService
             'category_mm',
             (string)$queryBuilder->expr()->andX(
                 $queryBuilder->expr()->eq(
-                    'event_sub_query.uid',
+                    $alias . '.uid',
                     $queryBuilder->quoteIdentifier('category_mm.uid_foreign')
                 ),
                 $queryBuilder->expr()->eq(
