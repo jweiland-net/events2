@@ -344,7 +344,7 @@ class DayRepository extends Repository
             ->orderBy('event.top_of_list', 'DESC')
             ->addOrderBy('day.sort_day_time', 'ASC')
             ->addOrderBy('day.day_time', 'ASC')
-            ->groupBy('day.event'); // keep that because of category relation
+            ->groupBy('day.uid'); // keep that because of category relation
 
         $extbaseQuery->statement($queryBuilder);
 
