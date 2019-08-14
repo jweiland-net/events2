@@ -1039,6 +1039,30 @@ class DayRepositoryTest extends FunctionalTestCase
     /**
      * @test
      */
+    public function findByTimestampWillFindMergedRecurringEvent()
+    {
+        $this->dayRepository->setSettings([
+            'mergeRecurringEvents' => 1
+        ]);
+
+        // Event "Week market" is on friday
+        $friday = new \DateTime('midnight');
+        if ($friday->format('N') !== 5) {
+            $friday->modify('next friday');
+        }
+
+        $days = $this->dayRepository->findByTimestamp($friday->format('U'));
+        $events = [];
+        foreach ($days as $day) {
+            $events[$day->getEvent()->getUid()] = 1;
+        }
+        // 1 = week market
+        $this->assertArrayHasKey(1, $events);
+    }
+
+    /**
+     * @test
+     */
     public function findByTimestampAndCategory()
     {
         $this->dayRepository->setSettings([
@@ -1087,7 +1111,6 @@ class DayRepositoryTest extends FunctionalTestCase
         $counter = 0;
         foreach ($days as $day) {
             if ($day->getEvent()->getEventType() === 'duration') {
-                var_dump($day->getEvent()->getUid() . '-');
                 $counter++;
             }
         }
