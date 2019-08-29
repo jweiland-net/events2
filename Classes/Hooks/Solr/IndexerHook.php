@@ -22,7 +22,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * As we can't create a SQL Query with JOIN in Solr configuration,
+ * we have to remove invalid documents on our own here
  */
 class IndexerHook implements PageIndexerDocumentsModifier
 {
@@ -49,15 +50,14 @@ class IndexerHook implements PageIndexerDocumentsModifier
      * @param Item $item The currently being indexed item.
      * @param int $language The language uid of the documents
      * @param array $documents An array of documents to be indexed
-     *
      * @return array An array of modified documents
      */
     public function modifyDocuments(Item $item, $language, array $documents)
     {
         if ($item->getType() === 'tx_events2_domain_model_event') {
-            $day = $this->eventService->getNextDayForEvent((int)$item->getRecordUid());
-            if ($day === false || !$day instanceof Day) {
-                // clear document array, if there are no further day records in future
+            $nextDate = $this->eventService->getNextDayForEvent((int)$item->getRecordUid());
+            if ($nextDate === false || !$nextDate instanceof \DateTime) {
+                // clear document array, if there are no further dates in future
                 $documents = [];
             }
         }

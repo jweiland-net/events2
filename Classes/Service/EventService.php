@@ -289,7 +289,7 @@ class EventService
      * Get next day for event
      *
      * @param int $eventUid
-     * @return Day|false
+     * @return \DateTime|false
      */
     public function getNextDayForEvent(int $eventUid)
     {
@@ -300,8 +300,11 @@ class EventService
         }
 
         $days = $event->getFutureDatesGroupedAndSorted();
+        if (!empty($days)) {
+            return current($days);
+        }
 
-        return current($days);
+        return false;
     }
 
     /**
