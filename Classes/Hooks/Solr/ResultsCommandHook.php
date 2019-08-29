@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types = 1);
 namespace JWeiland\Events2\Hooks\Solr;
 
 /*
@@ -14,19 +14,19 @@ namespace JWeiland\Events2\Hooks\Solr;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetProcessor;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
-use ApacheSolrForTypo3\Solr\Plugin\Results\ResultsCommand;
-use ApacheSolrForTypo3\Solr\ResultDocumentModifier\ResultDocumentModifier;
-use ApacheSolrForTypo3\Solr\ResultsetModifier\ResultSetModifier;
-use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Service\EventService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * Remove event records from result set, if they are not current anymore.
  */
-class ResultsCommandHook implements ResultDocumentModifier, ResultSetModifier
+class ResultsCommandHook implements SearchResultSetProcessor
 {
     /**
      * @var EventService
@@ -44,47 +44,37 @@ class ResultsCommandHook implements ResultDocumentModifier, ResultSetModifier
 
     /**
      * Remove event records from result set, if they are not current anymore.
+     * Modifies the given document and returns the modified document as result.
      *
-     * @param ResultsCommand $resultsCommand
-     * @param array $responseDocuments
-     *
-     * @return array
+     * @param SearchResultSet $resultSet
+     * @return SearchResultSet
      */
-    public function modifyResultSet(ResultsCommand $resultsCommand, array $responseDocuments)
+    public function process(SearchResultSet $resultSet): SearchResultSet
     {
-        /** @var \Apache_Solr_Document $responseDocument */
-        foreach ($responseDocuments as $key => $responseDocument) {
-            $uidField = $responseDocument->getField('uid');
-            $typeField = $responseDocument->getField('type');
+        if ($resultSet->getAllResultCount() === 0) {
+            // when the search does not produce a ResultSet, do nothing
+            return $resultSet;
+        }
+
+        /** @var SearchResult $searchResult */
+        $searchResults = $resultSet->getSearchResults()->getArrayCopy();
+        foreach ($searchResults as $key => $searchResult) {
+            $uidField = $searchResult->getField('uid');
+            $typeField = $searchResult->getField('type');
             if ($typeField['value'] === 'tx_events2_domain_model_event') {
-                $day = $this->eventService->getNextDayForEvent((int)$uidField['value']);
-                if (!$day instanceof Day) {
+                $nextDate = $this->eventService->getNextDayForEvent((int)$uidField['value']);
+                if (!$nextDate instanceof \DateTime) {
                     /** @var GarbageCollector $garbageCollector */
-                    $garbageCollector = GeneralUtility::makeInstance(\ApacheSolrForTypo3\Solr\GarbageCollector::class);
+                    $garbageCollector = GeneralUtility::makeInstance(GarbageCollector::class);
                     $garbageCollector->collectGarbage('tx_events2_domain_model_event', (int)$uidField['value']);
-                    unset($responseDocuments[$key]);
+                    $resultSet->getSearchResults()->offsetUnset($key);
+                } else {
+                    $searchResult->setField('nextDay', (int)$nextDate->format('U'));
+                    $resultSet->getSearchResults()->offsetSet($key, $searchResult);
                 }
             }
         }
-        return $responseDocuments;
-    }
 
-    /**
-     * Modifies the given document and returns the modified document as result.
-     *
-     * @param ResultsCommand $resultsCommand The search result command
-     * @param array $resultDocument Result document as array
-     *
-     * @return array The document with fields as array
-     */
-    public function modifyResultDocument(ResultsCommand $resultsCommand, array $resultDocument)
-    {
-        if ($resultDocument['type'] === 'tx_events2_domain_model_event') {
-            $day = $this->eventService->getNextDayForEvent((int)$resultDocument['uid']);
-            if ($day instanceof Day) {
-                $resultDocument['next_day'] = $day->getSortDayTime()->format('U');
-            }
-        }
-        return $resultDocument;
+        return $resultSet;
     }
 }
