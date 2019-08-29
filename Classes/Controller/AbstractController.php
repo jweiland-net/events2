@@ -305,9 +305,13 @@ class AbstractController extends ActionController
      */
     protected function getJsVariables(array $override = [])
     {
+        // remove pi_flexform from data, as it contains XML/HTML which can be indexed through Solr
+        $data = $this->configurationManager->getContentObject()->data;
+        unset($data['pi_flexform']);
+
         $jsVariables = [
             'settings' => $this->settings,
-            'data' => $this->configurationManager->getContentObject()->data,
+            'data' => $data,
             'localization' => [
                 'locationFail' => LocalizationUtility::translate('error.locationFail', 'events2'),
                 'remainingText' => LocalizationUtility::translate('remainingLetters', 'events2')
