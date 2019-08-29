@@ -404,7 +404,6 @@ class XmlImporter extends AbstractImporter
                     $this->today->format('m'),
                     $this->today->format('d'),
                     $this->today->format('His')
-
                 );
                 $targetDirectoryPath = PATH_site . $rootFolder->getPublicUrl() . $relativeTargetDirectoryPath;
                 GeneralUtility::mkdir_deep($targetDirectoryPath);
