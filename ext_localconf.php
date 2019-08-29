@@ -1,7 +1,4 @@
 <?php
-
-use JWeiland\Events2\Hooks\Solr\IndexerHook;
-
 if (!defined('TYPO3_MODE')) {
     die('Access denied.');
 }
@@ -118,12 +115,11 @@ $boot = function ($extKey) {
     }
 
     if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('solr')) {
-        // remove non current events from resultSet
-        // $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultSet'][] = 'JWeiland\\Events2\\Hooks\\Solr\\ResultsCommandHook';
-        // Add next_day to result array
-        // $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['modifyResultDocument'][] = 'JWeiland\\Events2\\Hooks\\Solr\\ResultsCommandHook';
+        // Remove non current events from resultSet
+        // Add nextDay field to SearchResult object
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch'][] = \JWeiland\Events2\Hooks\Solr\ResultsCommandHook::class;
         // As we can't create a SQL Query with JOIN in Solr configuration, we have to remove invalid documents on our own
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments'][] = IndexerHook::class;
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments'][] = \JWeiland\Events2\Hooks\Solr\IndexerHook::class;
     }
 
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['aspects']['TimestampMapper'] = \JWeiland\Events2\Routing\Aspect\TimestampMapper::class;
