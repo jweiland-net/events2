@@ -212,10 +212,10 @@ class XmlImporter extends AbstractImporter
             /** @var Time $eventTime */
             $eventTime = $this->objectManager->get(Time::class);
             $eventTime->setPid($this->storagePid);
-            $eventTime->setTimeBegin($data['event_time']['time_begin']);
-            $eventTime->setTimeEntry($data['event_time']['time_entry']);
-            $eventTime->setTimeEnd($data['event_time']['time_end']);
-            $eventTime->setDuration($data['event_time']['duration']);
+            $eventTime->setTimeBegin($data['event_time']['time_begin'] ?: '');
+            $eventTime->setTimeEntry($data['event_time']['time_entry'] ?: '');
+            $eventTime->setTimeEnd($data['event_time']['time_end'] ?: '');
+            $eventTime->setDuration($data['event_time']['duration'] ?: '');
             $event->setEventTime($eventTime);
         }
 
@@ -229,10 +229,10 @@ class XmlImporter extends AbstractImporter
             foreach ($data['multiple_times'] as $multipleTime) {
                 $newTime = $this->objectManager->get(Time::class);
                 $newTime->setPid($this->storagePid);
-                $newTime->setTimeBegin($multipleTime['time_begin']);
-                $newTime->setTimeEntry($multipleTime['time_entry']);
-                $newTime->setTimeEnd($multipleTime['time_end']);
-                $newTime->setDuration($multipleTime['duration']);
+                $newTime->setTimeBegin($multipleTime['time_begin'] ?: '');
+                $newTime->setTimeEntry($multipleTime['time_entry'] ?: '');
+                $newTime->setTimeEnd($multipleTime['time_end'] ?: '');
+                $newTime->setDuration($multipleTime['duration'] ?: '');
                 $event->addMultipleTime($newTime);
             }
         }
@@ -246,10 +246,10 @@ class XmlImporter extends AbstractImporter
                 $newTime = $this->objectManager->get(Time::class);
                 $newTime->setPid($this->storagePid);
                 $newTime->setWeekday($differentTime['weekday']);
-                $newTime->setTimeBegin($differentTime['time_begin']);
-                $newTime->setTimeEntry($differentTime['time_entry']);
-                $newTime->setTimeEnd($differentTime['time_end']);
-                $newTime->setDuration($differentTime['duration']);
+                $newTime->setTimeBegin($differentTime['time_begin'] ?: '');
+                $newTime->setTimeEntry($differentTime['time_entry'] ?: '');
+                $newTime->setTimeEnd($differentTime['time_end'] ?: '');
+                $newTime->setDuration($differentTime['duration'] ?: '');
                 $event->addDifferentTime($newTime);
             }
         }
@@ -342,10 +342,10 @@ class XmlImporter extends AbstractImporter
                 /** @var Time $newTime */
                 $newTime = $this->objectManager->get(Time::class);
                 $newTime->setPid($this->storagePid);
-                $newTime->setTimeBegin($exception['exception_time']['time_begin']);
-                $newTime->setTimeEntry($exception['exception_time']['time_entry']);
-                $newTime->setTimeEnd($exception['exception_time']['time_end']);
-                $newTime->setDuration($exception['exception_time']['duration']);
+                $newTime->setTimeBegin($exception['exception_time']['time_begin'] ?: '');
+                $newTime->setTimeEntry($exception['exception_time']['time_entry'] ?: '');
+                $newTime->setTimeEnd($exception['exception_time']['time_end'] ?: '');
+                $newTime->setDuration($exception['exception_time']['duration'] ?: '');
                 $newException->setExceptionTime($newTime);
             }
 
