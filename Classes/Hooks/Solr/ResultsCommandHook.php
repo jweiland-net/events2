@@ -15,11 +15,13 @@ namespace JWeiland\Events2\Hooks\Solr;
  * The TYPO3 project - inspiring people to share!
  */
 
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult as SearchResult80;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResult as SearchResult70;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetProcessor;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
 use JWeiland\Events2\Service\EventService;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
@@ -56,8 +58,14 @@ class ResultsCommandHook implements SearchResultSetProcessor
             return $resultSet;
         }
 
-        /** @var SearchResult $searchResult */
-        $searchResults = $resultSet->getSearchResults()->getArrayCopy();
+        if (version_compare(ExtensionManagementUtility::getExtensionVersion('solr'), '8.0.0', '>=')) {
+            /** @var SearchResult80 $searchResult */
+            $searchResults = $resultSet->getSearchResults()->getArrayCopy();
+        } else {
+            /** @var SearchResult70 $searchResult */
+            $searchResults = $resultSet->getSearchResults();
+        }
+
         foreach ($searchResults as $key => $searchResult) {
             $uidField = $searchResult->getField('uid');
             $typeField = $searchResult->getField('type');
@@ -67,10 +75,18 @@ class ResultsCommandHook implements SearchResultSetProcessor
                     /** @var GarbageCollector $garbageCollector */
                     $garbageCollector = GeneralUtility::makeInstance(GarbageCollector::class);
                     $garbageCollector->collectGarbage('tx_events2_domain_model_event', (int)$uidField['value']);
-                    $resultSet->getSearchResults()->offsetUnset($key);
+                    if (version_compare(ExtensionManagementUtility::getExtensionVersion('solr'), '8.0.0', '>=')) {
+                        $resultSet->getSearchResults()->offsetUnset($key);
+                    } else {
+                        unset($resultSet->getSearchResults()[$key]);
+                    }
                 } else {
                     $searchResult->setField('nextDay', (int)$nextDate->format('U'));
-                    $resultSet->getSearchResults()->offsetSet($key, $searchResult);
+                    if (version_compare(ExtensionManagementUtility::getExtensionVersion('solr'), '8.0.0', '>=')) {
+                        $resultSet->getSearchResults()->offsetSet($key, $searchResult);
+                    } else {
+                        $resultSet->getSearchResults()[$key] = $searchResult;
+                    }
                 }
             }
         }
