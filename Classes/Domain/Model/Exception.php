@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types = 1);
 namespace JWeiland\Events2\Domain\Model;
 
 /*
@@ -22,119 +22,66 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 class Exception extends AbstractEntity
 {
     /**
-     * ExceptionType.
-     *
      * @var string
      */
     protected $exceptionType = '';
 
     /**
-     * ExceptionDate.
-     *
      * @var \DateTime
      */
     protected $exceptionDate;
 
     /**
-     * ExceptionTime.
-     *
      * @var \JWeiland\Events2\Domain\Model\Time
      */
     protected $exceptionTime;
 
     /**
-     * ExceptionDetails.
-     *
      * @var string
      */
     protected $exceptionDetails = '';
 
-    /**
-     * Setter for exceptionType.
-     *
-     * @param string $exceptionType
-     */
-    public function setExceptionType($exceptionType)
-    {
-        $this->exceptionType = (string)$exceptionType;
-    }
-
-    /**
-     * Getter for exceptionType.
-     *
-     * @return string
-     */
-    public function getExceptionType()
+    public function getExceptionType(): string
     {
         return $this->exceptionType;
     }
 
-    /**
-     * Setter for exceptionDate.
-     *
-     * @param \DateTime $exceptionDate
-     */
-    public function setExceptionDate(\DateTime $exceptionDate)
+    public function setExceptionType(string $exceptionType)
     {
-        $this->exceptionDate = $exceptionDate;
+        $this->exceptionType = $exceptionType;
     }
 
-    /**
-     * Getter for exceptionDate.
-     */
     public function getExceptionDate(): \DateTime
     {
         $this->exceptionDate->setTimezone(new \DateTimeZone(date_default_timezone_get()));
         return clone $this->exceptionDate;
     }
 
-    /**
-     * Getter for exceptionVisibleDate.
-     *
-     * @return string
-     */
-    public function getExceptionVisibleDate()
+    public function setExceptionDate(\DateTime $exceptionDate)
     {
-        return $this->exceptionDate->format('d.m.Y');
+        $this->exceptionDate = $exceptionDate;
     }
 
     /**
-     * Returns the exceptionTime.
-     *
-     * @return \JWeiland\Events2\Domain\Model\Time|null
+     * @return Time|null
      */
     public function getExceptionTime()
     {
         return $this->exceptionTime;
     }
 
-    /**
-     * Sets the exceptionTime.
-     *
-     * @param Time $exceptionTime
-     */
-    public function setExceptionTime(Time $exceptionTime)
+    public function setExceptionTime(Time $exceptionTime = null)
     {
         $this->exceptionTime = $exceptionTime;
     }
 
-    /**
-     * Setter for exceptionDetails.
-     *
-     * @param string $exceptionDetails
-     */
-    public function setExceptionDetails($exceptionDetails)
-    {
-        $this->exceptionDetails = (string)$exceptionDetails;
-    }
-
-    /**
-     * Getter for exceptionDetails.
-     *
-     * @return string
-     */
-    public function getExceptionDetails()
+    public function getExceptionDetails(): string
     {
         return $this->exceptionDetails;
+    }
+
+    public function setExceptionDetails(string $exceptionDetails)
+    {
+        $this->exceptionDetails = $exceptionDetails;
     }
 }

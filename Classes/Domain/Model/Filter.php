@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types = 1);
 namespace JWeiland\Events2\Domain\Model;
 
 /*
@@ -22,30 +22,17 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 class Filter extends AbstractEntity
 {
     /**
-     * Organizer.
-     *
      * @var int
      */
     protected $organizer = 0;
 
-    /**
-     * Returns the organizer
-     *
-     * @return int $organizer
-     */
-    public function getOrganizer()
+    public function getOrganizer(): int
     {
         return $this->organizer;
     }
 
-    /**
-     * Sets the organizer
-     *
-     * @param int $organizer
-     * @return void
-     */
-    public function setOrganizer($organizer)
+    public function setOrganizer(int $organizer)
     {
-        $this->organizer = (int)$organizer;
+        $this->organizer = $organizer;
     }
 }

@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types = 1);
 namespace JWeiland\Events2\Domain\Model;
 
 /*
@@ -22,55 +22,34 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 class Organizer extends AbstractEntity
 {
     /**
-     * Organizer.
-     *
      * @var string
      */
     protected $organizer = '';
 
     /**
-     * Link.
-     *
      * @var \JWeiland\Events2\Domain\Model\Link
      */
     protected $link;
 
-    /**
-     * Returns the organizer.
-     *
-     * @return string $organizer
-     */
-    public function getOrganizer()
+    public function getOrganizer(): string
     {
         return $this->organizer;
     }
 
-    /**
-     * Sets the organizer.
-     *
-     * @param string $organizer
-     */
-    public function setOrganizer($organizer)
+    public function setOrganizer(string $organizer)
     {
-        $this->organizer = (string)$organizer;
+        $this->organizer = $organizer;
     }
 
     /**
-     * Returns the link.
-     *
-     * @return Link $link
+     * @return Link|null $link
      */
     public function getLink()
     {
         return $this->link;
     }
 
-    /**
-     * Sets the link.
-     *
-     * @param Link $link
-     */
-    public function setLink(Link $link)
+    public function setLink(Link $link = null)
     {
         $this->link = $link;
     }

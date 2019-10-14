@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types = 1);
 namespace JWeiland\Events2\Domain\Model;
 
 /*
@@ -23,43 +23,30 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 class Day extends AbstractEntity
 {
     /**
-     * Day.
-     *
      * @var \DateTime
      */
     protected $day;
 
     /**
-     * DayTime.
-     *
      * @var \DateTime
      */
     protected $dayTime;
 
     /**
-     * SortDayTime.
-     *
      * @var \DateTime
      */
     protected $sortDayTime;
 
     /**
-     * SameDayTime.
-     *
      * @var \DateTime
      */
     protected $sameDayTime;
 
     /**
-     * Event.
-     *
      * @var \JWeiland\Events2\Domain\Model\Event
      */
     protected $event;
 
-    /**
-     * Returns the day.
-     */
     public function getDay(): \DateTime
     {
         if ($this->day->timezone_type !== 3) {
@@ -68,19 +55,11 @@ class Day extends AbstractEntity
         return clone $this->day;
     }
 
-    /**
-     * Sets the day.
-     *
-     * @param \DateTime $day
-     */
     public function setDay(\DateTime $day)
     {
         $this->day = $day;
     }
 
-    /**
-     * Returns the dayTime
-     */
     public function getDayTime(): \DateTime
     {
         if ($this->dayTime->timezone_type !== 3) {
@@ -89,19 +68,11 @@ class Day extends AbstractEntity
         return clone $this->dayTime;
     }
 
-    /**
-     * Sets the dayTime
-     *
-     * @param \DateTime $dayTime
-     */
     public function setDayTime(\DateTime $dayTime)
     {
         $this->dayTime = $dayTime;
     }
 
-    /**
-     * Returns the sortDayTime
-     */
     public function getSortDayTime(): \DateTime
     {
         if ($this->sortDayTime->timezone_type !== 3) {
@@ -110,21 +81,11 @@ class Day extends AbstractEntity
         return clone $this->sortDayTime;
     }
 
-    /**
-     * Sets the sortDayTime
-     *
-     * @param \DateTime $sortDayTime
-     */
     public function setSortDayTime(\DateTime $sortDayTime)
     {
         $this->sortDayTime = $sortDayTime;
     }
 
-    /**
-     * Returns the sameDayTime
-     *
-     * @return \DateTime $sameDayTime
-     */
     public function getSameDayTime(): \DateTime
     {
         if ($this->sameDayTime->timezone_type !== 3) {
@@ -133,31 +94,19 @@ class Day extends AbstractEntity
         return clone $this->sameDayTime;
     }
 
-    /**
-     * Sets the sameDayTime
-     *
-     * @param \DateTime $sameDayTime
-     */
     public function setSameDayTime(\DateTime $sameDayTime)
     {
         $this->sameDayTime = $sameDayTime;
     }
 
     /**
-     * Returns the event.
-     *
-     * @return Event|null $event
+     * @return Event|null
      */
     public function getEvent()
     {
         return $this->event;
     }
 
-    /**
-     * Sets the event.
-     *
-     * @param Event|null $event
-     */
     public function setEvent(Event $event = null)
     {
         $this->event = $event;
