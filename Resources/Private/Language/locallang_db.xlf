@@ -218,6 +218,9 @@
 			<trans-unit id="tx_events2_domain_model_event.download_links">
 				<source>Download links</source>
 			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.import_id">
+				<source>Import ID</source>
+			</trans-unit>
 
 			<trans-unit id="tx_events2_domain_model_day">
 				<source>Day</source>

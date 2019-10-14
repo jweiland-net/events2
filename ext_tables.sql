@@ -2,7 +2,6 @@
 # Table structure for table 'tx_events2_domain_model_event'
 #
 CREATE TABLE tx_events2_domain_model_event (
-
   uid int(11) NOT NULL auto_increment,
   pid int(11) DEFAULT '0' NOT NULL,
 
@@ -31,6 +30,7 @@ CREATE TABLE tx_events2_domain_model_event (
   images int(11) unsigned DEFAULT '0',
   video_link int(11) unsigned DEFAULT '0',
   download_links varchar(255) DEFAULT '' NOT NULL,
+  import_id varchar(255) DEFAULT '' NOT NULL,
 
   tstamp int(11) unsigned DEFAULT '0' NOT NULL,
   crdate int(11) unsigned DEFAULT '0' NOT NULL,
@@ -65,7 +65,6 @@ CREATE TABLE tx_events2_domain_model_event (
 # Table structure for table 'tx_events2_domain_model_day'
 #
 CREATE TABLE tx_events2_domain_model_day (
-
   uid int(11) NOT NULL auto_increment,
   pid int(11) DEFAULT '0' NOT NULL,
 
@@ -90,7 +89,6 @@ CREATE TABLE tx_events2_domain_model_day (
 # Table structure for table 'tx_events2_domain_model_time'
 #
 CREATE TABLE tx_events2_domain_model_time (
-
   uid int(11) NOT NULL auto_increment,
   pid int(11) DEFAULT '0' NOT NULL,
 
@@ -135,7 +133,6 @@ CREATE TABLE tx_events2_domain_model_time (
 # Table structure for table 'tx_events2_domain_model_exception'
 #
 CREATE TABLE tx_events2_domain_model_exception (
-
   uid int(11) NOT NULL auto_increment,
   pid int(11) DEFAULT '0' NOT NULL,
 
@@ -179,7 +176,6 @@ CREATE TABLE tx_events2_domain_model_exception (
 # Table structure for table 'tx_events2_domain_model_location'
 #
 CREATE TABLE tx_events2_domain_model_location (
-
   uid int(11) NOT NULL auto_increment,
   pid int(11) DEFAULT '0' NOT NULL,
 
@@ -224,7 +220,6 @@ CREATE TABLE tx_events2_domain_model_location (
 # Table structure for table 'tx_events2_domain_model_organizer'
 #
 CREATE TABLE tx_events2_domain_model_organizer (
-
   uid int(11) NOT NULL auto_increment,
   pid int(11) DEFAULT '0' NOT NULL,
 
@@ -265,7 +260,6 @@ CREATE TABLE tx_events2_domain_model_organizer (
 # Table structure for table 'tx_events2_domain_model_link'
 #
 CREATE TABLE tx_events2_domain_model_link (
-
   uid int(11) NOT NULL auto_increment,
   pid int(11) DEFAULT '0' NOT NULL,
 
@@ -305,7 +299,6 @@ CREATE TABLE tx_events2_domain_model_link (
 # Table structure for table 'tx_events2_domain_model_holiday'
 #
 CREATE TABLE tx_events2_domain_model_holiday (
-
   uid int(11) NOT NULL auto_increment,
   pid int(11) DEFAULT '0' NOT NULL,
 
