@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 namespace JWeiland\Events2\Hooks;
 
 /*
@@ -15,35 +15,45 @@ namespace JWeiland\Events2\Hooks;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Service\DayRelationService;
-use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
- * Hook to add day relations to an event record
+ * Hook into DataHandler and clear special caches or re-generate day records after saving an event.
  */
-class RecreateDayRelationsHook
+class DataHandler
 {
     /**
-     * @var ObjectManager
+     * Flushes the cache if an event record was edited.
+     * This happens on two levels: by UID and by PID.
+     *
+     * @param array $params
      */
-    protected $objectManager;
-
-    /**
-     * DataHandlerHook constructor.
-     */
-    public function __construct()
+    public function clearCachePostProc(array $params)
     {
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        if (isset($params['table']) && $params['table'] === 'tx_events2_domain_model_event') {
+            $cacheTagsToFlush = ['tx_events2_domain_model_event'];
+            if (isset($params['uid'])) {
+                $cacheTagsToFlush[] = 'tx_events2_uid_' . $params['uid'];
+            }
+            if (isset($params['uid_page'])) {
+                $cacheTagsToFlush[] = 'tx_events2_pid_' . $params['uid_page'];
+            }
+
+            $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
+            foreach ($cacheTagsToFlush as $cacheTag) {
+                $cacheManager->flushCachesInGroupByTag('pages', $cacheTag);
+            }
+        }
     }
 
     /**
      * Add day relations to event record(s) while creating or saving them in backend.
      *
-     * @param DataHandler $dataHandler
-     * @throws \Exception
+     * @param \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler
      */
-    public function processDatamap_afterAllOperations($dataHandler)
+    public function processDatamap_afterAllOperations(\TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler)
     {
         if (array_key_exists('tx_events2_domain_model_event', $dataHandler->datamap)) {
             foreach ($dataHandler->datamap['tx_events2_domain_model_event'] as $eventUid => $eventRecord) {
@@ -56,11 +66,11 @@ class RecreateDayRelationsHook
      * Add day relations to event record
      *
      * @param int $eventUid
-     * @throws \Exception
      */
     protected function addDayRelationsForEvent(int $eventUid)
     {
-        $dayRelationService = $this->objectManager->get(DayRelationService::class);
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $dayRelationService = $objectManager->get(DayRelationService::class);
         $dayRelationService->createDayRelations($eventUid);
     }
 
@@ -69,10 +79,10 @@ class RecreateDayRelationsHook
      * This method returns the real uid as int.
      *
      * @param int|string $uid
-     * @param DataHandler $dataHandler
+     * @param \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler
      * @return int
      */
-    protected function getRealUid($uid, $dataHandler): int
+    protected function getRealUid($uid, \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): int
     {
         if (GeneralUtility::isFirstPartOfStr($uid, 'NEW')) {
             $uid = $dataHandler->substNEWwithIDs[$uid];

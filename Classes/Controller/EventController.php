@@ -14,11 +14,11 @@ namespace JWeiland\Events2\Controller;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Search;
 use JWeiland\Events2\Property\TypeConverter\UploadMultipleFilesConverter;
 use JWeiland\Events2\Service\DayRelationService;
+use JWeiland\Events2\Utility\CacheUtility;
 use TYPO3\CMS\Extbase\Property\TypeConverter\DateTimeConverter;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -56,6 +56,7 @@ class EventController extends AbstractController
     {
         $days = $this->dayRepository->searchEvents($search);
         $this->view->assign('days', $days);
+        CacheUtility::addPageCacheTagsByQuery($days->getQuery());
     }
 
     /**
@@ -65,6 +66,7 @@ class EventController extends AbstractController
     {
         $events = $this->eventRepository->findMyEvents();
         $this->view->assign('events', $events);
+        CacheUtility::addPageCacheTagsByQuery($events->getQuery());
     }
 
     /**
