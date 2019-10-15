@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types = 1);
 namespace JWeiland\Events2\Hooks;
 
 /*
@@ -20,7 +20,6 @@ use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Service\FlexFormService;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Lang\LanguageService;
 
@@ -30,7 +29,7 @@ use TYPO3\CMS\Lang\LanguageService;
 class RenderPluginItem
 {
     /**
-     * change rootUid to a value defined in EXT_CONF.
+     * Change rootUid to a value defined in EXT_CONF.
      *
      * @param array $parameters
      * @param object $pObj
@@ -57,7 +56,7 @@ class RenderPluginItem
      * @param array $flexFormValues
      * @return string
      */
-    protected function getLabelForActionValue(array $flexFormValues)
+    protected function getLabelForActionValue(array $flexFormValues): string
     {
         $label = 'List';
         $items = ArrayUtility::getValueByPath(
@@ -80,7 +79,7 @@ class RenderPluginItem
      *
      * @return StandaloneView
      */
-    protected function getView()
+    protected function getView(): StandaloneView
     {
         /** @var StandaloneView $view */
         $view = GeneralUtility::makeInstance(StandaloneView::class);
@@ -96,7 +95,7 @@ class RenderPluginItem
      * @param array $flexFormSettings
      * @return string
      */
-    protected function getTitleOfOrganizer(array $flexFormSettings)
+    protected function getTitleOfOrganizer(array $flexFormSettings): string
     {
         $title = '';
         if (empty($flexFormSettings['settings']['preFilterByOrganizer'])) {
@@ -135,12 +134,18 @@ class RenderPluginItem
      * @param array $row
      * @return array
      */
-    protected function getFlexFormSettings(array $row)
+    protected function getFlexFormSettings(array $row): array
     {
         $settings = [];
         if (!empty($row['pi_flexform'])) {
-            /** @var FlexFormService $flexFormService */
-            $flexFormService = GeneralUtility::makeInstance(FlexFormService::class);
+            if (version_compare(TYPO3_branch, '9.5', '<')) {
+                /** @var \TYPO3\CMS\Extbase\Service\FlexFormService $flexFormService */
+                $flexFormService = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Service\FlexFormService::class);
+            } else {
+                /** @var \TYPO3\CMS\Core\Service\FlexFormService $flexFormService */
+                $flexFormService = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Service\FlexFormService::class);
+
+            }
             $settings = $flexFormService->convertFlexFormContentToArray($row['pi_flexform']);
             $settings = ArrayUtility::setValueByPath(
                 $settings,
@@ -156,7 +161,7 @@ class RenderPluginItem
      *
      * @return ConnectionPool
      */
-    protected function getConnectionPool()
+    protected function getConnectionPool(): ConnectionPool
     {
         return GeneralUtility::makeInstance(ConnectionPool::class);
     }
@@ -166,7 +171,7 @@ class RenderPluginItem
      *
      * @return LanguageService
      */
-    protected function getLanguageService()
+    protected function getLanguageService(): LanguageService
     {
         return $GLOBALS['LANG'];
     }
