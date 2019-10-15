@@ -47,6 +47,7 @@ class DayController extends AbstractController
         );
 
         $this->view->assign('days', $days);
+        CacheUtility::addPageCacheTagsByQuery($days->getQuery());
     }
 
     /**
