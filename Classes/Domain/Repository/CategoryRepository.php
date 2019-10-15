@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types = 1);
 namespace JWeiland\Events2\Domain\Repository;
 
 /*
@@ -15,22 +15,21 @@ namespace JWeiland\Events2\Domain\Repository;
  * The TYPO3 project - inspiring people to share!
  */
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * Category Repository to find records for our search form
  */
 class CategoryRepository extends \TYPO3\CMS\Extbase\Domain\Repository\CategoryRepository
 {
     /**
-     * get category objects from list of UIDs.
+     * Get category objects from list of UIDs.
      *
      * @param string $categoryUids UIDs category
-     *
-     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
-     *
+     * @return QueryResultInterface
      * @throws \Exception
      */
-    public function getCategories($categoryUids)
+    public function getCategories($categoryUids): QueryResultInterface
     {
         $categoryUids = GeneralUtility::intExplode(',', $categoryUids);
         $query = $this->createQuery();
@@ -39,13 +38,12 @@ class CategoryRepository extends \TYPO3\CMS\Extbase\Domain\Repository\CategoryRe
     }
 
     /**
-     * get subcategories of given UID.
+     * Get subcategories of given UID.
      *
      * @param string $category UID category
-     *
-     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return QueryResultInterface
      */
-    public function getSubCategories($category)
+    public function getSubCategories($category): QueryResultInterface
     {
         $query = $this->createQuery();
 
@@ -53,16 +51,14 @@ class CategoryRepository extends \TYPO3\CMS\Extbase\Domain\Repository\CategoryRe
     }
 
     /**
-     * get all categories given by comma separated list.
+     * Get all categories given by comma separated list.
      *
      * @param string $categoryUids comma separated list of category uids
-     * @param string $parent       parent category UID. This value comes from TS, so it's a string
-     *
-     * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface
-     *
+     * @param string $parent parent category UID. This value comes from TS, so it's a string
+     * @return QueryResultInterface
      * @throws \Exception
      */
-    public function getSelectedCategories($categoryUids, $parent = '0')
+    public function getSelectedCategories($categoryUids, $parent = '0'): QueryResultInterface
     {
         // remove empty values
         // convert them to int

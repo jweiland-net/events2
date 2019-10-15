@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 namespace JWeiland\Events2\Domain\Repository;
 
 /*
@@ -36,22 +36,22 @@ class EventRepository extends Repository
     ];
 
     /**
-     * @var \JWeiland\Events2\Utility\DateTimeUtility
+     * @var DateTimeUtility
      */
     protected $dateTimeUtility;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper
+     * @var DataMapper
      */
     protected $dataMapper;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\Generic\Session
+     * @var Session
      */
     protected $persistenceSession;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
+     * @var ConfigurationManagerInterface
      */
     protected $configurationManager;
 
@@ -103,13 +103,13 @@ class EventRepository extends Repository
     }
 
     /**
-     * Find event by uid whether it is hidden or not.
-     * Do not add Event as strict_type as this method can also return null
+     * Find event by a given property value whether it is hidden or not.
      *
-     * @param int $eventUid
-     * @return Event
+     * @param mixed $value
+     * @param string $property
+     * @return Event|null
      */
-    public function findHiddenEntryByUid(int $eventUid)
+    public function findHiddenEntry($value, string $property = 'uid')
     {
         $query = $this->createQuery();
         $query->getQuerySettings()->setIgnoreEnableFields(true);
@@ -117,7 +117,7 @@ class EventRepository extends Repository
         $query->getQuerySettings()->setRespectStoragePage(false);
 
         /** @var Event $event */
-        $event = $query->matching($query->equals('uid', (int)$eventUid))->execute()->getFirst();
+        $event = $query->matching($query->equals($property, $value))->execute()->getFirst();
         return $event;
     }
 

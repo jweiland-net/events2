@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types = 1);
 namespace JWeiland\Events2\Domain\Repository;
 
 /*
@@ -14,11 +14,14 @@ namespace JWeiland\Events2\Domain\Repository;
  *
  * The TYPO3 project - inspiring people to share!
  */
+use JWeiland\Events2\Domain\Model\Organizer;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * The organizer repository is used to sort the organizers in our create-new-form. Further it will be used in
+ * our event importer
  */
 class OrganizerRepository extends Repository
 {
@@ -32,7 +35,7 @@ class OrganizerRepository extends Repository
     /**
      * Get allowed organizers for filter
      *
-     * @return array|\TYPO3\CMS\Extbase\Persistence\QueryResultInterface
+     * @return QueryResultInterface|Organizer[]
      */
     public function getOrganizersForFilter()
     {

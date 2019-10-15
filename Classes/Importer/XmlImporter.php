@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types = 1);
 namespace JWeiland\Events2\Importer;
 
 /*
@@ -14,11 +14,12 @@ namespace JWeiland\Events2\Importer;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
 use JWeiland\Events2\Domain\Model\Category;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Exception;
 use JWeiland\Events2\Domain\Model\Link;
+use JWeiland\Events2\Domain\Model\Location;
+use JWeiland\Events2\Domain\Model\Organizer;
 use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Task\Import;
 use TYPO3\CMS\Core\Charset\CharsetConverter;
@@ -56,7 +57,7 @@ class XmlImporter extends AbstractImporter
      * @return bool
      * @throws \Exception
      */
-    public function import(FileInterface $file, AbstractTask $task)
+    public function import(FileInterface $file, AbstractTask $task): bool
     {
         if (!$this->validateXml($file)) {
             return false;
@@ -69,10 +70,14 @@ class XmlImporter extends AbstractImporter
             return false;
         }
 
-        foreach ($events as $event) {
-            $this->saveEvent(
-                $this->createEvent($event)
+        try {
+            array_map([$this, 'processEvent'], $events);
+        } catch (\Exception $e) {
+            $this->addMessage(
+                $e->getMessage(),
+                FlashMessage::ERROR
             );
+            return false;
         }
         $this->getPersistenceManager()->persistAll();
         $this->addMessage('We have imported ' . count($events) . ' events');
@@ -87,7 +92,7 @@ class XmlImporter extends AbstractImporter
      * @return bool
      * @throws \Exception
      */
-    protected function validateXml(FileInterface $file)
+    protected function validateXml(FileInterface $file): bool
     {
         try {
             libxml_use_internal_errors(true);
@@ -121,13 +126,99 @@ class XmlImporter extends AbstractImporter
     }
 
     /**
-     * Create new event
+     * Check, if an event has to be created/updated/deleted
      *
+     * @param array $data
+     * @throws \Exception
+     */
+    protected function processEvent(array $data)
+    {
+        $event = $this->eventRepository->findHiddenEntry($data['import_id'], 'importId');
+        switch ($this->getProcessAs($data)) {
+            case 'delete':
+                if ($event instanceof Event) {
+                    $this->eventRepository->remove($event);
+                } else {
+                    throw new \Exception(sprintf(
+                        'Can not delete event with import-ID %s, as it does not exist in our database.',
+                        $data['import_id']
+                    ));
+                }
+                break;
+            case 'edit':
+                if ($event instanceof Event) {
+                    // reset all properties and set them again
+                    $this->addRootProperties($event, $data);
+
+                    $event->setEventBegin(null);
+                    $event->setEventEnd(null);
+                    $event->setRecurringEnd(null);
+                    $this->addDateProperties($event, $data);
+
+                    $event->setEventTime(null);
+                    $event->setMultipleTimes(new ObjectStorage());
+                    $event->setDifferentTimes(new ObjectStorage());
+                    $this->addTimeProperties($event, $data);
+
+                    $event->setOrganizer(null);
+                    $this->addOrganizer($event, $data);
+
+                    $event->setLocation(null);
+                    $this->addLocation($event, $data);
+
+                    $event->setTicketLink(null);
+                    $event->setvideoLink(null);
+                    $event->setDownloadLinks(new ObjectStorage());
+                    $this->addLinks($event, $data);
+
+                    $event->setExceptions(new ObjectStorage());
+                    $this->addExceptions($event, $data);
+
+                    $event->setCategories(new ObjectStorage());
+                    $this->addCategories($event, $data);
+
+                    $event->setImages(new ObjectStorage());
+                    $this->addImages($event, $data);
+
+                    $event->setDays(new ObjectStorage());
+                } else {
+                    throw new \Exception(sprintf(
+                        'Can not edit event with import-ID %s, as it does not exist in our database.',
+                        $data['import_id']
+                    ));
+                }
+                break;
+            case 'new':
+            default:
+                $event = $this->createEvent($data);
+                $event->setImportId($data['import_id'] ?: '');
+                break;
+        }
+        $this->saveEvent($event);
+    }
+
+    /**
+     * Get information how to process a given event
+     *
+     * @param array $data
+     * @return string
+     */
+    protected function getProcessAs(array $data): string
+    {
+        $processAs = $data['process_as'] ?: 'new';
+        $processAs = strtolower($processAs);
+        if (!in_array($processAs, ['new', 'edit', 'delete'], true)) {
+            $processAs = 'new';
+        }
+        return $processAs;
+    }
+
+    /**
      * @param array $data
      * @return Event
      * @throws \Exception
      */
-    protected function createEvent(array $data)
+    protected function createEvent(array $data): Event
     {
         /** @var Event $event */
         $event = $this->objectManager->get(Event::class);
@@ -145,11 +236,8 @@ class XmlImporter extends AbstractImporter
     }
 
     /**
-     * Add root properties
-     *
      * @param Event $event
      * @param array $data
-     * @return void
      */
     protected function addRootProperties(Event $event, array $data)
     {
@@ -173,11 +261,8 @@ class XmlImporter extends AbstractImporter
     }
 
     /**
-     * Add date properties
-     *
      * @param Event $event
      * @param array $data
-     * @return void
      */
     protected function addDateProperties(Event $event, array $data)
     {
@@ -199,11 +284,8 @@ class XmlImporter extends AbstractImporter
     }
 
     /**
-     * Add time properties
-     *
      * @param Event $event
      * @param array $data
-     * @return void
      */
     protected function addTimeProperties(Event $event, array $data)
     {
@@ -256,38 +338,35 @@ class XmlImporter extends AbstractImporter
     }
 
     /**
-     * Add organizer
-     *
      * @param Event $event
      * @param array $data
-     * @return void
      */
     protected function addOrganizer(Event $event, array $data)
     {
-        $organizer = $this->getOrganizer($data['organizer']);
-        $event->setOrganizer($this->organizerRepository->findByIdentifier($organizer['uid']));
+        $organizerFromDatabase = $this->getOrganizer($data['organizer']);
+
+        /** @var Organizer $organizerObject */
+        $organizerObject = $this->organizerRepository->findByIdentifier($organizerFromDatabase['uid']);
+        $event->setOrganizer($organizerObject);
     }
 
     /**
-     * Add location
-     *
      * @param Event $event
      * @param array $data
-     * @return void
      * @throws \Exception
      */
     protected function addLocation(Event $event, array $data)
     {
-        $location = $this->getLocation($data['location']);
-        $event->setLocation($this->locationRepository->findByIdentifier($location['uid']));
+        $locationFromDatabase = $this->getLocation($data['location']);
+
+        /** @var Location $locationObject */
+        $locationObject = $this->locationRepository->findByIdentifier($locationFromDatabase['uid']);
+        $event->setLocation($locationObject);
     }
 
     /**
-     * Add links
-     *
      * @param Event $event
      * @param array $data
-     * @return void
      * @throws \Exception
      */
     protected function addLinks(Event $event, array $data)
@@ -313,11 +392,8 @@ class XmlImporter extends AbstractImporter
     }
 
     /**
-     * Add exceptions
-     *
      * @param Event $event
      * @param array $data
-     * @return void
      * @throws \Exception
      */
     protected function addExceptions(Event $event, array $data)
@@ -356,11 +432,8 @@ class XmlImporter extends AbstractImporter
     }
 
     /**
-     * Add categories
-     *
      * @param Event $event
      * @param array $data
-     * @return void
      * @throws \Exception
      */
     protected function addCategories(Event $event, array $data)
@@ -374,18 +447,15 @@ class XmlImporter extends AbstractImporter
     }
 
     /**
-     * Add images
-     *
      * @param Event $event
      * @param array $data
-     * @return void
      * @throws \Exception
      */
     protected function addImages(Event $event, array $data)
     {
         if (isset($data['images']) && is_array($data['images'])) {
             $images = new ObjectStorage();
-            /** @var \TYPO3\CMS\Core\Charset\CharsetConverter $csConverter */
+            /** @var CharsetConverter $csConverter */
             $csConverter = GeneralUtility::makeInstance(CharsetConverter::class);
             foreach ($data['images'] as $image) {
                 // we try to keep the original structure from origin server to prevent duplicate filenames
@@ -449,10 +519,7 @@ class XmlImporter extends AbstractImporter
     }
 
     /**
-     * Save event
-     *
      * @param Event $event
-     * @return void
      */
     protected function saveEvent(Event $event)
     {

@@ -17,6 +17,7 @@ namespace JWeiland\Events2\Importer;
 
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Repository\CategoryRepository;
+use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Domain\Repository\OrganizerRepository;
 use JWeiland\Events2\Utility\DateTimeUtility;
@@ -64,6 +65,11 @@ abstract class AbstractImporter implements ImporterInterface
     protected $persistenceManager;
 
     /**
+     * @var EventRepository
+     */
+    protected $eventRepository;
+
+    /**
      * @var OrganizerRepository
      */
     protected $organizerRepository;
@@ -88,24 +94,15 @@ abstract class AbstractImporter implements ImporterInterface
      */
     protected $today;
 
-    /**
-     * XmlImporter constructor.
-     *
-     * @param FileInterface $file
-     */
     public function __construct(FileInterface $file)
     {
         $this->file = $file;
     }
 
-    /**
-     * Initialize this object
-     *
-     * @return void
-     */
     public function initialize()
     {
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $this->eventRepository = $this->objectManager->get(EventRepository::class);
         $this->organizerRepository = $this->objectManager->get(OrganizerRepository::class);
         $this->locationRepository = $this->objectManager->get(LocationRepository::class);
         $this->categoryRepository = $this->objectManager->get(CategoryRepository::class);
@@ -141,15 +138,12 @@ abstract class AbstractImporter implements ImporterInterface
      */
     protected function hasInvalidEvents(array $events)
     {
-        $hasInvalidEvents = false;
         foreach ($events as $event) {
             if (!$this->isValidEvent($event)) {
-                $hasInvalidEvents = true;
-                break;
+                return true;
             }
         }
-
-        return $hasInvalidEvents;
+        return false;
     }
 
     /**

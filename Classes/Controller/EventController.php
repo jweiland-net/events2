@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types = 1);
 namespace JWeiland\Events2\Controller;
 
 /*
@@ -14,7 +14,6 @@ namespace JWeiland\Events2\Controller;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Search;
 use JWeiland\Events2\Property\TypeConverter\UploadMultipleFilesConverter;
@@ -32,8 +31,6 @@ class EventController extends AbstractController
     /**
      * We have a self-build form based on method GET.
      * That's why we have to manually allow some form-elements.
-     *
-     * @throws \Exception
      */
     public function initializeListSearchResultsAction()
     {
@@ -47,10 +44,7 @@ class EventController extends AbstractController
     }
 
     /**
-     * Action list search results.
-     *
      * @param Search $search
-     * @throws \Exception
      */
     public function listSearchResultsAction(Search $search)
     {
@@ -58,18 +52,12 @@ class EventController extends AbstractController
         $this->view->assign('days', $days);
     }
 
-    /**
-     * Action list my events.
-     */
     public function listMyEventsAction()
     {
         $events = $this->eventRepository->findMyEvents();
         $this->view->assign('events', $events);
     }
 
-    /**
-     * Action new.
-     */
     public function newAction()
     {
         $this->deleteUploadedFilesOnValidationErrors('event');
@@ -90,8 +78,6 @@ class EventController extends AbstractController
     /**
      * Initialize create action.
      * We need this to create a DateTime-Object with time of midnight.
-     *
-     * @throws \Exception
      */
     public function initializeCreateAction()
     {
@@ -125,10 +111,7 @@ class EventController extends AbstractController
     }
 
     /**
-     * Action create.
-     *
      * @param Event $event
-     * @throws \Exception
      */
     public function createAction(Event $event)
     {
@@ -144,13 +127,11 @@ class EventController extends AbstractController
     }
 
     /**
-     * Action edit.
-     *
      * @param int $event
      */
-    public function editAction($event)
+    public function editAction(int $event)
     {
-        $eventObject = $this->eventRepository->findHiddenEntryByUid((int)$event);
+        $eventObject = $this->eventRepository->findHiddenEntry($event);
         $categories = $this->categoryRepository->getCategories(
             $this->settings['selectableCategoriesForNewEvents']
         );
@@ -167,8 +148,6 @@ class EventController extends AbstractController
     /**
      * Initialize update action
      * We need this to create a DateTime-Object with time of midnight.
-     *
-     * @throws \Exception
      */
     public function initializeUpdateAction()
     {
@@ -208,10 +187,7 @@ class EventController extends AbstractController
     }
 
     /**
-     * Action update.
-     *
      * @param Event $event
-     * @throws \Exception
      */
     public function updateAction(Event $event)
     {
@@ -231,12 +207,9 @@ class EventController extends AbstractController
     }
 
     /**
-     * Action delete.
-     *
      * @param int $event
-     * @throws \Exception
      */
-    public function deleteAction($event)
+    public function deleteAction(int $event)
     {
         $eventObject = $this->eventRepository->findByIdentifier($event);
         $this->eventRepository->remove($eventObject);
@@ -245,15 +218,11 @@ class EventController extends AbstractController
     }
 
     /**
-     * Action activate.
-     *
      * @param int $event
-     * @throws \Exception
      */
-    public function activateAction($event)
+    public function activateAction(int $event)
     {
-        /** @var \JWeiland\Events2\Domain\Model\Event $eventObject */
-        $eventObject = $this->eventRepository->findHiddenEntryByUid((int)$event);
+        $eventObject = $this->eventRepository->findHiddenEntry($event);
         $eventObject->setHidden(false);
         $this->eventRepository->update($eventObject);
 
@@ -273,7 +242,6 @@ class EventController extends AbstractController
      * Add day relations to event record.
      *
      * @param Event $event
-     * @throws \Exception
      */
     protected function addDayRelations(Event $event)
     {
@@ -288,9 +256,8 @@ class EventController extends AbstractController
      * @param string $subjectKey
      * @param Event $event
      * @return int The amount of email receivers
-     * @throws \Exception
      */
-    public function sendMail($subjectKey, Event $event)
+    public function sendMail(string $subjectKey, Event $event): int
     {
         /* @var \JWeiland\Events2\Domain\Model\Day $day */
         $this->view->assign('event', $event);
