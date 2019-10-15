@@ -160,7 +160,21 @@ class DayControllerTest extends UnitTestCase
     public function listLatestActionFindEventsAndAssignsThemToView()
     {
         $filter = new Filter();
-        $queryResult = new QueryResult(new Query(Day::class));
+        /** @var QuerySettingsInterface|ObjectProphecy $querySettingsProphecy */
+        $querySettingsProphecy = $this->prophesize(Typo3QuerySettings::class);
+        /** @var QueryInterface|ObjectProphecy $queryProphecy */
+        $queryProphecy = $this->prophesize(Query::class);
+        $queryProphecy
+            ->getQuerySettings()
+            ->shouldBeCalled()
+            ->willReturn($querySettingsProphecy->reveal());
+        /** @var QueryResultInterface|ObjectProphecy $queryResultProphecy */
+        $queryResultProphecy = $this->prophesize(QueryResult::class);
+        $queryResultProphecy
+            ->getQuery()
+            ->shouldBeCalled()
+            ->willReturn($queryProphecy->reveal());
+
         $settings = $this->subject->_get('settings');
         $settings['mergeRecurringEvents'] = 0;
         $this->subject->_set('settings', $settings);
@@ -169,14 +183,14 @@ class DayControllerTest extends UnitTestCase
             Argument::exact('latest'),
             Argument::exact($filter),
             Argument::exact(7)
-        )->shouldBeCalled()->willReturn($queryResult);
+        )->shouldBeCalled()->willReturn($queryResultProphecy->reveal());
         $this->view->assign(
             Argument::exact('filter'),
             Argument::exact($filter)
         )->shouldBeCalled();
         $this->view->assign(
             Argument::exact('days'),
-            Argument::exact($queryResult)
+            Argument::exact($queryResultProphecy->reveal())
         )->shouldBeCalled();
 
         $this->subject->listLatestAction($filter);
