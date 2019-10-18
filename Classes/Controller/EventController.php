@@ -99,6 +99,7 @@ class EventController extends AbstractController
     {
         $this->addValidationForVideoLink();
         $this->addOrganizer('event');
+        $this->applyLocationAsMandatoryIfNeeded();
         $this->arguments->getArgument('event')
             ->getPropertyMappingConfiguration()
             ->forProperty('eventBegin')
@@ -176,6 +177,7 @@ class EventController extends AbstractController
     {
         $this->registerEventFromRequest();
         $this->addValidationForVideoLink();
+        $this->applyLocationAsMandatoryIfNeeded();
         $this->arguments->getArgument('event')
             ->getPropertyMappingConfiguration()
             ->forProperty('eventBegin')
