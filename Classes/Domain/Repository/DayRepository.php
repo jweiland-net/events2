@@ -163,7 +163,7 @@ class DayRepository extends Repository
         }
 
         $this->addMergeFeatureToQuery($subQueryBuilder);
-        $this->emitModifyQueriesOfFindEventsSignal($queryBuilder, $subQueryBuilder, $type, $filter, $limit);
+        $this->emitModifyQueriesOfFindEventsSignal($queryBuilder, $subQueryBuilder, $type, $filter, $this->settings);
         $this->joinSubQueryIntoQueryBuilder($queryBuilder, $subQueryBuilder);
         $extbaseQuery->statement($queryBuilder);
 
@@ -288,7 +288,7 @@ class DayRepository extends Repository
             ->addOrderBy('day.day_time', 'ASC');
 
         $this->addMergeFeatureToQuery($subQueryBuilder);
-        $this->emitModifyQueriesOfSearchEventsSignal($queryBuilder, $subQueryBuilder, $search);
+        $this->emitModifyQueriesOfSearchEventsSignal($queryBuilder, $subQueryBuilder, $search, $this->settings);
         $this->joinSubQueryIntoQueryBuilder($queryBuilder, $subQueryBuilder);
         $extbaseQuery->statement($queryBuilder);
 
@@ -347,7 +347,7 @@ class DayRepository extends Repository
             ->addOrderBy('day.day_time', 'ASC')
             ->groupBy('day.uid'); // keep that because of category relation
 
-        $this->emitModifyQueriesOfFindByTimestampSignal($queryBuilder, $timestamp);
+        $this->emitModifyQueriesOfFindByTimestampSignal($queryBuilder, $timestamp, $this->settings);
         $extbaseQuery->statement($queryBuilder);
 
         return $extbaseQuery->execute();
@@ -446,20 +446,20 @@ class DayRepository extends Repository
      * @param QueryBuilder $subQueryBuilder
      * @param string $type
      * @param Filter $filter
-     * @param int $limit
+     * @param array $settings
      */
     protected function emitModifyQueriesOfFindEventsSignal(
         QueryBuilder $queryBuilder,
         QueryBuilder $subQueryBuilder,
         string $type,
         Filter $filter,
-        int $limit
+        array $settings
     ) {
         $signalSlotDispatcher = GeneralUtility::makeInstance(ObjectManager::class)->get(Dispatcher::class);
         $signalSlotDispatcher->dispatch(
             self::class,
             'modifyQueriesOfFindEvents',
-            [$queryBuilder, $subQueryBuilder, $type, $filter, $limit]
+            [$queryBuilder, $subQueryBuilder, $type, $filter, $settings]
         );
     }
 
@@ -469,17 +469,19 @@ class DayRepository extends Repository
      * @param QueryBuilder $queryBuilder
      * @param QueryBuilder $subQueryBuilder
      * @param Search $search
+     * @param array $settings
      */
     protected function emitModifyQueriesOfSearchEventsSignal(
         QueryBuilder $queryBuilder,
         QueryBuilder $subQueryBuilder,
-        Search $search
+        Search $search,
+        array $settings
     ) {
         $signalSlotDispatcher = GeneralUtility::makeInstance(ObjectManager::class)->get(Dispatcher::class);
         $signalSlotDispatcher->dispatch(
             self::class,
             'modifyQueriesOfSearchEvents',
-            [$queryBuilder, $subQueryBuilder, $search]
+            [$queryBuilder, $subQueryBuilder, $search, $settings]
         );
     }
 
@@ -488,16 +490,18 @@ class DayRepository extends Repository
      *
      * @param QueryBuilder $queryBuilder
      * @param int $timestamp
+     * @param array $settings
      */
     protected function emitModifyQueriesOfFindByTimestampSignal(
         QueryBuilder $queryBuilder,
-        int $timestamp
+        int $timestamp,
+        array $settings
     ) {
         $signalSlotDispatcher = GeneralUtility::makeInstance(ObjectManager::class)->get(Dispatcher::class);
         $signalSlotDispatcher->dispatch(
             self::class,
             'modifyQueriesOfFindByTimestamp',
-            [$queryBuilder, $timestamp]
+            [$queryBuilder, $timestamp, $settings]
         );
     }
 
