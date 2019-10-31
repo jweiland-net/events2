@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 namespace JWeiland\Events2\Domain\Repository;
 
 /*
@@ -14,7 +14,6 @@ namespace JWeiland\Events2\Domain\Repository;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Factory\DayFactory;
 use JWeiland\Events2\Domain\Model\Day;
@@ -25,9 +24,11 @@ use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
+use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /**
  * Repository to get and find day records from storage
@@ -162,8 +163,8 @@ class DayRepository extends Repository
         }
 
         $this->addMergeFeatureToQuery($subQueryBuilder);
+        $this->emitModifyQueriesOfFindEventsSignal($queryBuilder, $subQueryBuilder, $type, $filter, $limit);
         $this->joinSubQueryIntoQueryBuilder($queryBuilder, $subQueryBuilder);
-
         $extbaseQuery->statement($queryBuilder);
 
         return $extbaseQuery->execute();
@@ -287,8 +288,8 @@ class DayRepository extends Repository
             ->addOrderBy('day.day_time', 'ASC');
 
         $this->addMergeFeatureToQuery($subQueryBuilder);
+        $this->emitModifyQueriesOfSearchEventsSignal($queryBuilder, $subQueryBuilder, $search);
         $this->joinSubQueryIntoQueryBuilder($queryBuilder, $subQueryBuilder);
-
         $extbaseQuery->statement($queryBuilder);
 
         return $extbaseQuery->execute();
@@ -346,6 +347,7 @@ class DayRepository extends Repository
             ->addOrderBy('day.day_time', 'ASC')
             ->groupBy('day.uid'); // keep that because of category relation
 
+        $this->emitModifyQueriesOfFindByTimestampSignal($queryBuilder, $timestamp);
         $extbaseQuery->statement($queryBuilder);
 
         return $extbaseQuery->execute();
@@ -435,6 +437,68 @@ class DayRepository extends Repository
     {
         $dayFactory = $this->objectManager->get(DayFactory::class);
         return $dayFactory->findDayByEventAndTimestamp($eventUid, $timestamp, $this->createQuery());
+    }
+
+    /**
+     * Use this signal, if you want to modify the queries of method findEvents.
+     *
+     * @param QueryBuilder $queryBuilder
+     * @param QueryBuilder $subQueryBuilder
+     * @param string $type
+     * @param Filter $filter
+     * @param int $limit
+     */
+    protected function emitModifyQueriesOfFindEventsSignal(
+        QueryBuilder $queryBuilder,
+        QueryBuilder $subQueryBuilder,
+        string $type,
+        Filter $filter,
+        int $limit
+    ) {
+        $signalSlotDispatcher = GeneralUtility::makeInstance(ObjectManager::class)->get(Dispatcher::class);
+        $signalSlotDispatcher->dispatch(
+            self::class,
+            'modifyQueriesOfFindEvents',
+            [$queryBuilder, $subQueryBuilder, $type, $filter, $limit]
+        );
+    }
+
+    /**
+     * Use this signal, if you want to modify the queries of method searchEvents.
+     *
+     * @param QueryBuilder $queryBuilder
+     * @param QueryBuilder $subQueryBuilder
+     * @param Search $search
+     */
+    protected function emitModifyQueriesOfSearchEventsSignal(
+        QueryBuilder $queryBuilder,
+        QueryBuilder $subQueryBuilder,
+        Search $search
+    ) {
+        $signalSlotDispatcher = GeneralUtility::makeInstance(ObjectManager::class)->get(Dispatcher::class);
+        $signalSlotDispatcher->dispatch(
+            self::class,
+            'modifyQueriesOfSearchEvents',
+            [$queryBuilder, $subQueryBuilder, $search]
+        );
+    }
+
+    /**
+     * Use this signal, if you want to modify the query of method findByTimestamp.
+     *
+     * @param QueryBuilder $queryBuilder
+     * @param int $timestamp
+     */
+    protected function emitModifyQueriesOfFindByTimestampSignal(
+        QueryBuilder $queryBuilder,
+        int $timestamp
+    ) {
+        $signalSlotDispatcher = GeneralUtility::makeInstance(ObjectManager::class)->get(Dispatcher::class);
+        $signalSlotDispatcher->dispatch(
+            self::class,
+            'modifyQueriesOfFindByTimestamp',
+            [$queryBuilder, $timestamp]
+        );
     }
 
     /**
