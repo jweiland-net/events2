@@ -36,7 +36,7 @@ $EM_CONF[$_EXTKEY] = [
         'conflicts' => [
         ],
         'suggests' => [
-            'maps2' => '5.0.0',
+            'maps2' => '5.0.0-7.99.99',
         ],
     ],
 ];
