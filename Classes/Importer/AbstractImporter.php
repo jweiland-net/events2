@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types = 1);
 namespace JWeiland\Events2\Importer;
 
 /*
@@ -14,7 +14,6 @@ namespace JWeiland\Events2\Importer;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
@@ -33,6 +32,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
+use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
 /**
  * Abstract Importer which will keep most methods for all importer scripts
@@ -40,9 +40,18 @@ use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 abstract class AbstractImporter implements ImporterInterface
 {
     /**
+     * The file to import
+     *
      * @var FileInterface
      */
     protected $file;
+
+    /**
+     * Needed to retrieve the storagePid
+     *
+     * @var AbstractTask
+     */
+    protected $task;
 
     /**
      * @var string
@@ -94,13 +103,11 @@ abstract class AbstractImporter implements ImporterInterface
      */
     protected $today;
 
-    public function __construct(FileInterface $file)
+    public function __construct(FileInterface $file, AbstractTask $task)
     {
         $this->file = $file;
-    }
+        $this->task = $task;
 
-    public function initialize()
-    {
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->eventRepository = $this->objectManager->get(EventRepository::class);
         $this->organizerRepository = $this->objectManager->get(OrganizerRepository::class);
@@ -117,7 +124,7 @@ abstract class AbstractImporter implements ImporterInterface
      * @return bool
      * @throws \Exception
      */
-    public function isValid(FileInterface $file)
+    public function isValid(FileInterface $file): bool
     {
         $isValid = true;
 

@@ -29,7 +29,6 @@ use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
-use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
 /**
  * Imports event records by a XML file
@@ -52,20 +51,18 @@ class XmlImporter extends AbstractImporter
     /**
      * Import XML file
      *
-     * @param FileInterface $file
-     * @param AbstractTask $task
      * @return bool
      * @throws \Exception
      */
-    public function import(FileInterface $file, AbstractTask $task): bool
+    public function import(): bool
     {
-        if (!$this->validateXml($file)) {
+        if (!$this->validateXml($this->file)) {
             return false;
         }
 
-        $this->storagePid = (int)$task->storagePid;
+        $this->storagePid = (int)$this->task->storagePid;
 
-        $events = GeneralUtility::xml2array($file->getContents());
+        $events = GeneralUtility::xml2array($this->file->getContents());
         if ($this->hasInvalidEvents($events)) {
             return false;
         }
@@ -80,7 +77,7 @@ class XmlImporter extends AbstractImporter
             return false;
         }
         $this->getPersistenceManager()->persistAll();
-        $this->addMessage('We have imported ' . count($events) . ' events');
+        $this->addMessage('We have processed ' . count($events) . ' events');
 
         return true;
     }
@@ -98,7 +95,11 @@ class XmlImporter extends AbstractImporter
             libxml_use_internal_errors(true);
             $domDoc = new \DOMDocument();
             $domDoc->loadXML($file->getContents());
-            if (!$domDoc->schemaValidate(PATH_site . 'typo3conf/ext/events2/Resources/Public/XmlImportValidator.xsd')) {
+            if (
+                !$domDoc->schemaValidate(
+                    GeneralUtility::getFileAbsFileName('EXT:events2/Resources/Public/XmlImportValidator.xsd')
+                )
+            ) {
                 foreach (libxml_get_errors() as $error) {
                     $this->addMessage(
                         sprintf(
@@ -137,7 +138,7 @@ class XmlImporter extends AbstractImporter
         switch ($this->getProcessAs($data)) {
             case 'delete':
                 if ($event instanceof Event) {
-                    $this->eventRepository->remove($event);
+                    $this->getPersistenceManager()->remove($event);
                 } else {
                     throw new \Exception(sprintf(
                         'Can not delete event with import-ID %s, as it does not exist in our database.',
@@ -181,6 +182,8 @@ class XmlImporter extends AbstractImporter
                     $this->addImages($event, $data);
 
                     $event->setDays(new ObjectStorage());
+
+                    $this->getPersistenceManager()->update($event);
                 } else {
                     throw new \Exception(sprintf(
                         'Can not edit event with import-ID %s, as it does not exist in our database.',
@@ -192,9 +195,11 @@ class XmlImporter extends AbstractImporter
             default:
                 $event = $this->createEvent($data);
                 $event->setImportId($data['import_id'] ?: '');
+                $event->setHidden(true);
+                $event->setPid($this->storagePid);
+                $this->getPersistenceManager()->add($event);
                 break;
         }
-        $this->saveEvent($event);
     }
 
     /**
@@ -242,20 +247,31 @@ class XmlImporter extends AbstractImporter
     protected function addRootProperties(Event $event, array $data)
     {
         $allowedRootProperties = [
-            'event_type',
-            'top_of_list',
-            'title',
-            'teaser',
-            'same_day',
-            'xth',
-            'weekday',
-            'each_weeks',
-            'detail_informations',
-            'free_entry',
+            'event_type' => 'string',
+            'top_of_list' => 'string',
+            'title' => 'string',
+            'teaser' => 'string',
+            'same_day' => 'bool',
+            'xth' => 'int',
+            'weekday' => 'int',
+            'each_weeks' => 'int',
+            'detail_informations' => 'string',
+            'free_entry' => 'bool',
         ];
-        foreach ($allowedRootProperties as $property) {
+        foreach ($allowedRootProperties as $property => $dataType) {
             if (isset($data[$property])) {
-                $this->setEventProperty($event, $property, $data[$property]);
+                switch ($dataType) {
+                    case 'int':
+                        $this->setEventProperty($event, $property, (int)$data[$property]);
+                        break;
+                    case 'bool':
+                        $this->setEventProperty($event, $property, (bool)$data[$property]);
+                        break;
+                    case 'string':
+                    default:
+                        $this->setEventProperty($event, $property, (string)$data[$property]);
+                        break;
+                }
             }
         }
     }
@@ -516,16 +532,5 @@ class XmlImporter extends AbstractImporter
             }
             $event->setImages($images);
         }
-    }
-
-    /**
-     * @param Event $event
-     */
-    protected function saveEvent(Event $event)
-    {
-        /** @var Import $task */
-        $event->setHidden(true);
-        $event->setPid($this->storagePid);
-        $this->getPersistenceManager()->add($event);
     }
 }

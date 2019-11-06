@@ -23,14 +23,17 @@ use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
 use Nimut\TestingFramework\MockObject\AccessibleMockObjectInterface;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
 use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Fluid\View\TemplateView;
 
 /**
@@ -263,7 +266,13 @@ class EventControllerTest extends UnitTestCase
     public function newActionAddFlashMessageWhenCategoriesAreEmpty()
     {
         $event = new Event();
-        $categories = new \ArrayObject();
+        /** @var QueryResultInterface|ObjectProphecy $queryResultProphecy */
+        $queryResultProphecy = $this->prophesize(QueryResult::class);
+        $queryResultProphecy
+            ->count()
+            ->shouldBeCalled()
+            ->willReturn(0);
+        $categories = $queryResultProphecy->reveal();
 
         $this->request
             ->expects($this->once())
@@ -305,8 +314,13 @@ class EventControllerTest extends UnitTestCase
     public function newActionFillsTemplateVariables()
     {
         $event = new Event();
-        $categories = new \ArrayObject();
-        $categories->append('TestValue');
+        /** @var QueryResultInterface|ObjectProphecy $queryResultProphecy */
+        $queryResultProphecy = $this->prophesize(QueryResult::class);
+        $queryResultProphecy
+            ->count()
+            ->shouldBeCalled()
+            ->willReturn(2);
+        $categories = $queryResultProphecy->reveal();
 
         $this->request
             ->expects($this->once())
@@ -369,8 +383,13 @@ class EventControllerTest extends UnitTestCase
      */
     public function newActionWithoutImagesCallsDeleteUploadedFiles()
     {
-        $categories = new \ArrayObject();
-        $categories->append('TestValue');
+        /** @var QueryResultInterface|ObjectProphecy $queryResultProphecy */
+        $queryResultProphecy = $this->prophesize(QueryResult::class);
+        $queryResultProphecy
+            ->count()
+            ->shouldBeCalled()
+            ->willReturn(2);
+        $categories = $queryResultProphecy->reveal();
 
         /** @var Event|\PHPUnit_Framework_MockObject_MockObject $event */
         $event = $this->getMockBuilder(Event::class)->getMock();
@@ -403,8 +422,13 @@ class EventControllerTest extends UnitTestCase
      */
     public function newActionWithImagesCallsDeleteUploadedFiles()
     {
-        $categories = new \ArrayObject();
-        $categories->append('TestValue');
+        /** @var QueryResultInterface|ObjectProphecy $queryResultProphecy */
+        $queryResultProphecy = $this->prophesize(QueryResult::class);
+        $queryResultProphecy
+            ->count()
+            ->shouldBeCalled()
+            ->willReturn(2);
+        $categories = $queryResultProphecy->reveal();
 
         /** @var FileReference|\PHPUnit_Framework_MockObject_MockObject $originalResource */
         $originalResource = $this

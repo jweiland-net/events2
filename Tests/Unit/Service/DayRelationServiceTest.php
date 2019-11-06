@@ -289,7 +289,7 @@ class DayRelationServiceTest extends UnitTestCase
         $event->setXth(31);
         $event->setWeekday(127);
 
-        $this->eventRepositoryProphecy->findHiddenEntryd(123)->willReturn($event);
+        $this->eventRepositoryProphecy->findHiddenEntry(123)->willReturn($event);
         $this->subject->createDayRelations(123);
 
         $this->persistenceManagerProphecy->update($event)->shouldBeCalled();

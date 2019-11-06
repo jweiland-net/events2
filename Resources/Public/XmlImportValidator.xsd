@@ -10,12 +10,15 @@
 
   <xs:complexType name="event">
     <xs:sequence>
+      <xs:element type="processAs" name="process_as" minOccurs="0" />
+      <xs:element type="xs:string" name="import_id" minOccurs="0" />
       <xs:element type="eventType" name="event_type" />
       <xs:element type="xs:boolean" name="top_of_list" minOccurs="0" />
       <xs:element type="requiredString" name="title" />
       <xs:element type="xs:string" name="teaser" minOccurs="0" />
       <xs:element type="xs:date" name="event_begin" />
       <xs:element type="xs:date" name="event_end" minOccurs="0" />
+      <xs:element type="xs:date" name="recurring_end" minOccurs="0" />
       <xs:element type="event_time" name="event_time" />
       <xs:element type="xs:boolean" name="same_day" minOccurs="0" />
       <xs:element type="multiple_times" name="multiple_times" minOccurs="0" />
@@ -23,7 +26,6 @@
       <xs:element type="xs:integer" name="weekday" minOccurs="0" />
       <xs:element type="different_times" name="different_times" minOccurs="0" />
       <xs:element type="xs:integer" name="each_weeks" minOccurs="0" />
-      <xs:element type="xs:date" name="recurring_end" minOccurs="0" />
       <xs:element type="exceptions" name="exceptions" minOccurs="0" />
       <xs:element type="xs:string" name="detail_informations" />
       <xs:element type="nonRequiredLink" name="video_link" minOccurs="0" />
@@ -38,13 +40,19 @@
     <xs:attribute name="index" type="xs:integer" use="required" />
   </xs:complexType>
 
-  <xs:simpleType name="eventType">
-    <xs:restriction base="xs:string">
-      <xs:pattern value="single|recurring|duration" />
-    </xs:restriction>
-  </xs:simpleType>
+	<xs:simpleType name="processAs">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="new|edit|delete" />
+		</xs:restriction>
+	</xs:simpleType>
 
-  <xs:complexType name="event_time_array">
+	<xs:simpleType name="eventType">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="single|recurring|duration" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="event_time_array">
     <xs:sequence>
       <xs:element type="weekday" name="weekday" minOccurs="0" />
       <xs:element type="time" name="time_begin" />

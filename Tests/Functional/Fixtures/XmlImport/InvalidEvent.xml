@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?><events>
+	<event index="0">
+		<process_as>new</process_as>
+		<import_id>387</import_id>
+		<event_type>single</event_type>
+		<title>Invalid Event</title>
+		<teaser>Invalid Event because of missing categories</teaser>
+		<event_begin>2025-11-11</event_begin>
+		<event_time>
+			<time_begin>16:30</time_begin>
+			<duration>60</duration>
+		</event_time>
+		<detail_informations />
+		<ticket_link>
+			<title>Tickets</title>
+			<uri>https://www.jweiland.net</uri>
+		</ticket_link>
+		<organizer>Kino</organizer>
+		<location>Kino</location>
+		<images />
+	</event>
+</events>
