@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+	<tx_events2_domain_model_organizer>
+		<uid>1</uid>
+		<pid>12</pid>
+		<tstamp>1551266318</tstamp>
+		<hidden>0</hidden>
+		<cruser_id>1</cruser_id>
+		<organizer>Kino</organizer>
+	</tx_events2_domain_model_organizer>
+</dataset>

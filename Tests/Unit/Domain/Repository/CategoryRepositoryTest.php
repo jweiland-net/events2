@@ -14,9 +14,12 @@ namespace JWeiland\Events2\Tests\Unit\Domain\Repository;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
+use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 
@@ -74,6 +77,9 @@ class CategoryRepositoryTest extends UnitTestCase
             $this->equalTo('uid'),
             $this->equalTo([1, 2, 4])
         );
+        $query->expects($this->once())->method('execute')->willReturn(
+            new QueryResult(new Query(Event::class))
+        );
 
         $this->subject->expects($this->once())->method('createQuery')->willReturn($query);
 
@@ -104,6 +110,9 @@ class CategoryRepositoryTest extends UnitTestCase
             $this->equalTo(5)
         );
         $query->expects($this->once())->method('matching')->willReturn($query);
+        $query->expects($this->once())->method('execute')->willReturn(
+            new QueryResult(new Query(Event::class))
+        );
 
         $this->subject->expects($this->once())->method('createQuery')->willReturn($query);
 

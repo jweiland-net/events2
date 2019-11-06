@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types = 1);
 namespace JWeiland\Events2\Task;
 
 /*
@@ -16,7 +16,6 @@ namespace JWeiland\Events2\Task;
  */
 use JWeiland\Events2\Importer\ImporterInterface;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
-use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\Index\Indexer;
@@ -25,7 +24,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * Task to import events by various file formats like XML
  */
 class Import extends AbstractTask
 {
@@ -50,7 +49,7 @@ class Import extends AbstractTask
      * @return bool Returns TRUE on successful execution, FALSE on error
      * @throws \Exception
      */
-    public function execute()
+    public function execute(): bool
     {
         try {
             /** @var File $file */
@@ -93,7 +92,7 @@ class Import extends AbstractTask
      * @return bool
      * @throws \Exception
      */
-    protected function importFile(File $file)
+    protected function importFile(File $file): bool
     {
         $className = sprintf(
             'JWeiland\\Events2\\Importer\\%sImporter',
@@ -103,17 +102,15 @@ class Import extends AbstractTask
             $this->addMessage('There is no class to handler files of type: ' . $file->getExtension());
             return false;
         }
-        /** @var ImporterInterface $importer */
-        $importer = GeneralUtility::makeInstance($className, $file);
+        $importer = GeneralUtility::makeInstance($className, $file, $this);
         if (!$importer instanceof ImporterInterface) {
             $this->addMessage('Importer has to implement ImporterInterface');
             return false;
         }
-        $importer->initialize();
         if (!$importer->isValid($file)) {
             return false;
         }
-        return $importer->import($file, $this);
+        return $importer->import();
     }
 
     /**
@@ -121,16 +118,12 @@ class Import extends AbstractTask
      *
      * @param string $message The message itself
      * @param int $severity Message level (according to \TYPO3\CMS\Core\Messaging\FlashMessage class constants)
-     * @return void
      * @throws \Exception
      */
-    public function addMessage($message, $severity = FlashMessage::OK)
+    public function addMessage(string $message, int $severity = FlashMessage::OK)
     {
-        /** @var FlashMessage $flashMessage */
         $flashMessage = GeneralUtility::makeInstance(FlashMessage::class, $message, '', $severity);
-        /** @var $flashMessageService FlashMessageService */
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
-        /** @var $defaultFlashMessageQueue FlashMessageQueue */
         $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
         $defaultFlashMessageQueue->enqueue($flashMessage);
     }

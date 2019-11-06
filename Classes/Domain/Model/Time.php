@@ -70,81 +70,51 @@ class Time extends AbstractEntity
      */
     protected $timeEndAsDateTime;
 
-    /**
-     * @return string
-     */
     public function getWeekday(): string
     {
         return $this->weekday;
     }
 
-    /**
-     * @param string $weekday
-     */
     public function setWeekday(string $weekday)
     {
         $this->weekday = $weekday;
     }
 
-    /**
-     * @return string
-     */
     public function getTimeBegin(): string
     {
         return $this->timeBegin;
     }
 
-    /**
-     * @param string $timeBegin
-     */
     public function setTimeBegin(string $timeBegin)
     {
         $this->timeBegin = $timeBegin;
     }
 
-    /**
-     * @return string
-     */
     public function getTimeEntry(): string
     {
         return $this->timeEntry;
     }
 
-    /**
-     * @param string $timeEntry
-     */
     public function setTimeEntry(string $timeEntry)
     {
         $this->timeEntry = $timeEntry;
     }
 
-    /**
-     * @return string
-     */
     public function getDuration(): string
     {
         return $this->duration;
     }
 
-    /**
-     * @param string $duration
-     */
     public function setDuration(string $duration)
     {
         $this->duration = $duration;
     }
 
-    /**
-     * @return string
-     */
     public function getTimeEnd(): string
     {
         return $this->timeEnd;
     }
 
-    /**
-     * @param string $timeEnd
-     */
     public function setTimeEnd(string $timeEnd)
     {
         $this->timeEnd = $timeEnd;
@@ -163,9 +133,6 @@ class Time extends AbstractEntity
         return $this->timeBeginAsDateTime;
     }
 
-    /**
-     * @param \DateTime $timeBegin
-     */
     public function setTimeBeginAsDateTime(\DateTime $timeBegin = null)
     {
         $this->timeBeginAsDateTime = $timeBegin;
@@ -179,9 +146,6 @@ class Time extends AbstractEntity
         return $this->timeEntryAsDateTime;
     }
 
-    /**
-     * @param \DateTime $timeEntry
-     */
     public function setTimeEntryAsDateTime(\DateTime $timeEntry = null)
     {
         $this->timeEntryAsDateTime = $timeEntry;
@@ -195,9 +159,6 @@ class Time extends AbstractEntity
         return $this->timeEndAsDateTime;
     }
 
-    /**
-     * @param \DateTime $timeEnd
-     */
     public function setTimeEndAsDateTime(\DateTime $timeEnd = null)
     {
         $this->timeEndAsDateTime = $timeEnd;

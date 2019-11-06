@@ -419,10 +419,10 @@ class AbstractController extends ActionController
         $eventRaw = $this->request->getArgument('event');
         if (is_array($eventRaw)) {
             // get event from form ($_POST)
-            $event = $this->eventRepository->findHiddenEntryByUid($eventRaw['__identity']);
+            $event = $this->eventRepository->findHiddenEntry($eventRaw['__identity']);
         } else {
             // get event from UID
-            $event = $this->eventRepository->findHiddenEntryByUid($eventRaw);
+            $event = $this->eventRepository->findHiddenEntry($eventRaw);
         }
         $this->session->registerObject($event, $event->getUid());
     }

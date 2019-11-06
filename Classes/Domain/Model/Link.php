@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types = 1);
 namespace JWeiland\Events2\Domain\Model;
 
 /*
@@ -22,83 +22,47 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 class Link extends AbstractEntity
 {
     /**
-     * Link.
-     *
      * @var string
      */
     protected $link = '';
 
     /**
-     * Title.
-     *
      * @var string
      */
     protected $title = 'Video';
 
     /**
-     * Deleted.
-     *
      * @var bool
      */
     protected $deleted = false;
 
-    /**
-     * Returns the link.
-     *
-     * @return string $link
-     */
-    public function getLink()
+    public function getLink(): string
     {
         return $this->link;
     }
 
-    /**
-     * Sets the link.
-     *
-     * @param string $link
-     */
-    public function setLink($link)
+    public function setLink(string $link)
     {
-        $this->link = (string)$link;
+        $this->link = $link;
     }
 
-    /**
-     * Returns the title.
-     *
-     * @return string $title
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * Sets the title.
-     *
-     * @param string $title
-     */
-    public function setTitle($title)
+    public function setTitle(string $title)
     {
-        $this->title = (string)$title;
+        $this->title = $title;
     }
 
-    /**
-     * Returns the deleted.
-     *
-     * @return bool $deleted
-     */
-    public function getDeleted()
+    public function getDeleted(): bool
     {
         return $this->deleted;
     }
 
-    /**
-     * Sets the deleted.
-     *
-     * @param bool $deleted
-     */
-    public function setDeleted($deleted)
+    public function setDeleted(bool $deleted)
     {
-        $this->deleted = (bool)$deleted;
+        $this->deleted = $deleted;
     }
 }

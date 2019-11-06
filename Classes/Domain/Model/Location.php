@@ -14,7 +14,6 @@ namespace JWeiland\Events2\Domain\Model;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
 use JWeiland\Maps2\Domain\Model\PoiCollection;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
@@ -58,19 +57,14 @@ class Location extends AbstractEntity
      */
     protected $txMaps2Uid;
 
-    public function setLocation(string $location)
-    {
-        $this->location = $location;
-    }
-
     public function getLocation(): string
     {
         return $this->location;
     }
 
-    public function setStreet(string $street)
+    public function setLocation(string $location)
     {
-        $this->street = $street;
+        $this->location = $location;
     }
 
     public function getStreet(): string
@@ -78,9 +72,9 @@ class Location extends AbstractEntity
         return $this->street;
     }
 
-    public function setHouseNumber(string $houseNumber)
+    public function setStreet(string $street)
     {
-        $this->houseNumber = $houseNumber;
+        $this->street = $street;
     }
 
     public function getHouseNumber(): string
@@ -88,9 +82,9 @@ class Location extends AbstractEntity
         return $this->houseNumber;
     }
 
-    public function setZip(string $zip)
+    public function setHouseNumber(string $houseNumber)
     {
-        $this->zip = $zip;
+        $this->houseNumber = $houseNumber;
     }
 
     public function getZip(): string
@@ -98,14 +92,19 @@ class Location extends AbstractEntity
         return $this->zip;
     }
 
-    public function setCity(string $city)
+    public function setZip(string $zip)
     {
-        $this->city = $city;
+        $this->zip = $zip;
     }
 
     public function getCity(): string
     {
         return $this->city;
+    }
+
+    public function setCity(string $city)
+    {
+        $this->city = $city;
     }
 
     /**

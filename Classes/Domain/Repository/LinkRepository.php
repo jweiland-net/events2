@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types = 1);
 namespace JWeiland\Events2\Domain\Repository;
 
 /*
@@ -17,7 +17,7 @@ namespace JWeiland\Events2\Domain\Repository;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * We need the link repository in AbstractController to remove video link objects, if link itself is empty.
  */
 class LinkRepository extends Repository
 {

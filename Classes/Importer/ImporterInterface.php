@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types = 1);
 namespace JWeiland\Events2\Importer;
 
 /*
@@ -15,7 +15,6 @@ namespace JWeiland\Events2\Importer;
  * The TYPO3 project - inspiring people to share!
  */
 use TYPO3\CMS\Core\Resource\FileInterface;
-use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
 /**
  * Class Import
@@ -24,28 +23,17 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
 interface ImporterInterface
 {
     /**
-     * Initialize the object
-     *
-     * @return void
-     */
-    public function initialize();
-
-    /**
      * Check, if File is valid for this importer
      *
      * @param FileInterface $file
-     *
      * @return bool
      */
-    public function isValid(FileInterface $file);
+    public function isValid(FileInterface $file): bool;
 
     /**
      * Import XML file
      *
-     * @param FileInterface $file
-     * @param AbstractTask $task
-     *
      * @return bool
      */
-    public function import(FileInterface $file, AbstractTask $task);
+    public function import(): bool;
 }
