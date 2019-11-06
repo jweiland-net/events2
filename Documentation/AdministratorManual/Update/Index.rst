@@ -7,7 +7,25 @@
 
 Updating
 --------
+
 If you update EXT:events2 to a newer version, please read this section carefully!
+
+Update to Version 4.0.0
+^^^^^^^^^^^^^^^^^^^^^^^
+
+If you don't use the event2 API or you don't use your own XmlImporter an Update shouldn't be a problem
+for you.
+
+We have modified ``findHiddenEntryByUid`` to ``findHiddenEntry`` in AbstractController. With the new argument
+you can now select hidden records by any property you want.
+
+We have added a lot of strict_types. Please check your extension code accordingly, if you have modified events2.
+
+We have added Task object as second argument to constructor of AbstractImporter. Therefor we have removed
+all arguments of ``importer`` method of XmlImporter.
+
+Method ``initialize`` is not required by ImporterInterface and will not be called anymore. Please move initialization
+process into Constructor directly.
 
 Update to Version 3.7.0
 ^^^^^^^^^^^^^^^^^^^^^^^

@@ -46,6 +46,13 @@ class XmlImporterTest extends FunctionalTestCase
     /**
      * @var array
      */
+    protected $coreExtensionsToLoad = [
+        'scheduler'
+    ];
+
+    /**
+     * @var array
+     */
     protected $testExtensionsToLoad = [
         'typo3conf/ext/events2'
     ];
