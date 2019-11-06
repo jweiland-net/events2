@@ -31,7 +31,12 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
+use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
+use TYPO3\CMS\Extbase\Persistence\QueryInterface;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Fluid\View\TemplateView;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Test case.
@@ -78,6 +83,8 @@ class DayControllerTest extends UnitTestCase
      */
     public function setUp()
     {
+        $tsfeProphecy = $this->prophesize(TypoScriptFrontendController::class);
+        $GLOBALS['TSFE'] = $tsfeProphecy->reveal();
         $this->objectManager = $this->prophesize(ObjectManager::class);
         $this->view = $this->prophesize(TemplateView::class);
         $this->dayRepository = $this->prophesize(DayRepository::class);
@@ -107,6 +114,7 @@ class DayControllerTest extends UnitTestCase
     public function tearDown()
     {
         unset($this->subject);
+        unset($GLOBALS['TSFE']);
     }
 
     /**
@@ -115,7 +123,20 @@ class DayControllerTest extends UnitTestCase
     public function listActionFindEventsAndAssignsThemToView()
     {
         $filter = new Filter();
+        /** @var QuerySettingsInterface|ObjectProphecy $querySettingsProphecy */
+        $querySettingsProphecy = $this->prophesize(Typo3QuerySettings::class);
+        /** @var QueryInterface|ObjectProphecy $queryProphecy */
+        $queryProphecy = $this->prophesize(Query::class);
+        $queryProphecy
+            ->getQuerySettings()
+            ->shouldBeCalled()
+            ->willReturn($querySettingsProphecy->reveal());
+        /** @var QueryResultInterface|ObjectProphecy $queryResultProphecy */
         $queryResultProphecy = $this->prophesize(QueryResult::class);
+        $queryResultProphecy
+            ->getQuery()
+            ->shouldBeCalled()
+            ->willReturn($queryProphecy->reveal());
 
         $this->dayRepository->findEvents(
             Argument::exact('list'),
@@ -139,7 +160,21 @@ class DayControllerTest extends UnitTestCase
     public function listLatestActionFindEventsAndAssignsThemToView()
     {
         $filter = new Filter();
-        $queryResult = new QueryResult(new Query(Day::class));
+        /** @var QuerySettingsInterface|ObjectProphecy $querySettingsProphecy */
+        $querySettingsProphecy = $this->prophesize(Typo3QuerySettings::class);
+        /** @var QueryInterface|ObjectProphecy $queryProphecy */
+        $queryProphecy = $this->prophesize(Query::class);
+        $queryProphecy
+            ->getQuerySettings()
+            ->shouldBeCalled()
+            ->willReturn($querySettingsProphecy->reveal());
+        /** @var QueryResultInterface|ObjectProphecy $queryResultProphecy */
+        $queryResultProphecy = $this->prophesize(QueryResult::class);
+        $queryResultProphecy
+            ->getQuery()
+            ->shouldBeCalled()
+            ->willReturn($queryProphecy->reveal());
+
         $settings = $this->subject->_get('settings');
         $settings['mergeRecurringEvents'] = 0;
         $this->subject->_set('settings', $settings);
@@ -148,14 +183,14 @@ class DayControllerTest extends UnitTestCase
             Argument::exact('latest'),
             Argument::exact($filter),
             Argument::exact(7)
-        )->shouldBeCalled()->willReturn($queryResult);
+        )->shouldBeCalled()->willReturn($queryResultProphecy->reveal());
         $this->view->assign(
             Argument::exact('filter'),
             Argument::exact($filter)
         )->shouldBeCalled();
         $this->view->assign(
             Argument::exact('days'),
-            Argument::exact($queryResult)
+            Argument::exact($queryResultProphecy->reveal())
         )->shouldBeCalled();
 
         $this->subject->listLatestAction($filter);
@@ -167,7 +202,20 @@ class DayControllerTest extends UnitTestCase
     public function listTodayActionFindEventsAndAssignsThemToView()
     {
         $filter = new Filter();
+        /** @var QuerySettingsInterface|ObjectProphecy $querySettingsProphecy */
+        $querySettingsProphecy = $this->prophesize(Typo3QuerySettings::class);
+        /** @var QueryInterface|ObjectProphecy $queryProphecy */
+        $queryProphecy = $this->prophesize(Query::class);
+        $queryProphecy
+            ->getQuerySettings()
+            ->shouldBeCalled()
+            ->willReturn($querySettingsProphecy->reveal());
+        /** @var QueryResultInterface|ObjectProphecy $queryResultProphecy */
         $queryResultProphecy = $this->prophesize(QueryResult::class);
+        $queryResultProphecy
+            ->getQuery()
+            ->shouldBeCalled()
+            ->willReturn($queryProphecy->reveal());
 
         $this->dayRepository->findEvents(
             Argument::exact('today'),
@@ -191,7 +239,20 @@ class DayControllerTest extends UnitTestCase
     public function listThisWeekActionFindEventsAndAssignsThemToView()
     {
         $filter = new Filter();
+        /** @var QuerySettingsInterface|ObjectProphecy $querySettingsProphecy */
+        $querySettingsProphecy = $this->prophesize(Typo3QuerySettings::class);
+        /** @var QueryInterface|ObjectProphecy $queryProphecy */
+        $queryProphecy = $this->prophesize(Query::class);
+        $queryProphecy
+            ->getQuerySettings()
+            ->shouldBeCalled()
+            ->willReturn($querySettingsProphecy->reveal());
+        /** @var QueryResultInterface|ObjectProphecy $queryResultProphecy */
         $queryResultProphecy = $this->prophesize(QueryResult::class);
+        $queryResultProphecy
+            ->getQuery()
+            ->shouldBeCalled()
+            ->willReturn($queryProphecy->reveal());
 
         $this->dayRepository->findEvents(
             Argument::exact('thisWeek'),
@@ -215,7 +276,20 @@ class DayControllerTest extends UnitTestCase
     public function listRangeActionFindEventsAndAssignsThemToView()
     {
         $filter = new Filter();
+        /** @var QuerySettingsInterface|ObjectProphecy $querySettingsProphecy */
+        $querySettingsProphecy = $this->prophesize(Typo3QuerySettings::class);
+        /** @var QueryInterface|ObjectProphecy $queryProphecy */
+        $queryProphecy = $this->prophesize(Query::class);
+        $queryProphecy
+            ->getQuerySettings()
+            ->shouldBeCalled()
+            ->willReturn($querySettingsProphecy->reveal());
+        /** @var QueryResultInterface|ObjectProphecy $queryResultProphecy */
         $queryResultProphecy = $this->prophesize(QueryResult::class);
+        $queryResultProphecy
+            ->getQuery()
+            ->shouldBeCalled()
+            ->willReturn($queryProphecy->reveal());
 
         $this->dayRepository->findEvents(
             Argument::exact('range'),
@@ -241,6 +315,7 @@ class DayControllerTest extends UnitTestCase
         $event = 32415;
         $timestamp = 1234567890;
         $day = new Day();
+        $day->setEvent(new Event());
 
         $this->dayRepository->findDayByEventAndTimestamp(
             Argument::exact($event),
@@ -296,7 +371,20 @@ class DayControllerTest extends UnitTestCase
     public function showByTimestampWithTimestampCallsAssign()
     {
         $timestamp = 1234567890;
+        /** @var QuerySettingsInterface|ObjectProphecy $querySettingsProphecy */
+        $querySettingsProphecy = $this->prophesize(Typo3QuerySettings::class);
+        /** @var QueryInterface|ObjectProphecy $queryProphecy */
+        $queryProphecy = $this->prophesize(Query::class);
+        $queryProphecy
+            ->getQuerySettings()
+            ->shouldBeCalled()
+            ->willReturn($querySettingsProphecy->reveal());
+        /** @var QueryResultInterface|ObjectProphecy $queryResultProphecy */
         $queryResultProphecy = $this->prophesize(QueryResult::class);
+        $queryResultProphecy
+            ->getQuery()
+            ->shouldBeCalled()
+            ->willReturn($queryProphecy->reveal());
 
         $this->dayRepository
             ->findByTimestamp(Argument::exact($timestamp))

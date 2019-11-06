@@ -37,7 +37,9 @@ use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Extbase\Validation\Validator\ConjunctionValidator;
 use TYPO3\CMS\Extbase\Validation\Validator\GenericObjectValidator;
+use TYPO3\CMS\Extbase\Validation\Validator\NotEmptyValidator;
 use TYPO3\CMS\Extbase\Validation\Validator\RegularExpressionValidator;
+use TYPO3\CMS\Extbase\Validation\ValidatorResolver;
 
 /**
  * A collection of various helper methods and inject methods to keep
@@ -440,6 +442,29 @@ class AbstractController extends ActionController
             $linkRepository = $this->objectManager->get(LinkRepository::class);
             $linkRepository->remove($event->getVideoLink());
             $event->setVideoLink(null);
+        }
+    }
+
+    /**
+     * Frontend insertion of events also has to respect location, if configured in ExtConf
+     */
+    protected function applyLocationAsMandatoryIfNeeded()
+    {
+        if ($this->extConf->getLocationIsRequired()) {
+            /** @var ValidatorResolver $validatorResolver */
+            $validatorResolver = $this->objectManager->get(ValidatorResolver::class);
+            $notEmptyValidator = $validatorResolver->createValidator(NotEmptyValidator::class);
+
+            /** @var ConjunctionValidator $eventValidator */
+            $eventValidator = $this->arguments->getArgument('event')->getValidator();
+            /** @var ConjunctionValidator $conjunctionValidator */
+            $conjunctionValidator = $eventValidator->getValidators()->current();
+            /** @var GenericObjectValidator $genericEventValidator */
+            $genericEventValidator = $conjunctionValidator->getValidators()->current();
+            $genericEventValidator->addPropertyValidator(
+                'location',
+                $notEmptyValidator
+            );
         }
     }
 

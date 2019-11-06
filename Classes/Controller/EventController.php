@@ -18,6 +18,7 @@ use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Search;
 use JWeiland\Events2\Property\TypeConverter\UploadMultipleFilesConverter;
 use JWeiland\Events2\Service\DayRelationService;
+use JWeiland\Events2\Utility\CacheUtility;
 use TYPO3\CMS\Extbase\Property\TypeConverter\DateTimeConverter;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -50,12 +51,14 @@ class EventController extends AbstractController
     {
         $days = $this->dayRepository->searchEvents($search);
         $this->view->assign('days', $days);
+        CacheUtility::addPageCacheTagsByQuery($days->getQuery());
     }
 
     public function listMyEventsAction()
     {
         $events = $this->eventRepository->findMyEvents();
         $this->view->assign('events', $events);
+        CacheUtility::addPageCacheTagsByQuery($events->getQuery());
     }
 
     public function newAction()
@@ -83,6 +86,7 @@ class EventController extends AbstractController
     {
         $this->addValidationForVideoLink();
         $this->addOrganizer('event');
+        $this->applyLocationAsMandatoryIfNeeded();
         $this->arguments->getArgument('event')
             ->getPropertyMappingConfiguration()
             ->forProperty('eventBegin')
@@ -153,6 +157,7 @@ class EventController extends AbstractController
     {
         $this->registerEventFromRequest();
         $this->addValidationForVideoLink();
+        $this->applyLocationAsMandatoryIfNeeded();
         $this->arguments->getArgument('event')
             ->getPropertyMappingConfiguration()
             ->forProperty('eventBegin')

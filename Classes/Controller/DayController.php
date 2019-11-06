@@ -16,6 +16,7 @@ namespace JWeiland\Events2\Controller;
  */
 use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Service\JsonLdService;
+use JWeiland\Events2\Utility\CacheUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -31,6 +32,7 @@ class DayController extends AbstractController
     {
         $days = $this->dayRepository->findEvents('list', $this->validateAndAssignFilter($filter));
         $this->view->assign('days', $days);
+        CacheUtility::addPageCacheTagsByQuery($days->getQuery());
     }
 
     /**
@@ -45,6 +47,7 @@ class DayController extends AbstractController
         );
 
         $this->view->assign('days', $days);
+        CacheUtility::addPageCacheTagsByQuery($days->getQuery());
     }
 
     /**
@@ -54,6 +57,7 @@ class DayController extends AbstractController
     {
         $days = $this->dayRepository->findEvents('today', $this->validateAndAssignFilter($filter));
         $this->view->assign('days', $days);
+        CacheUtility::addPageCacheTagsByQuery($days->getQuery());
     }
 
     /**
@@ -63,6 +67,7 @@ class DayController extends AbstractController
     {
         $days = $this->dayRepository->findEvents('thisWeek', $this->validateAndAssignFilter($filter));
         $this->view->assign('days', $days);
+        CacheUtility::addPageCacheTagsByQuery($days->getQuery());
     }
 
     /**
@@ -72,6 +77,7 @@ class DayController extends AbstractController
     {
         $days = $this->dayRepository->findEvents('range', $this->validateAndAssignFilter($filter));
         $this->view->assign('days', $days);
+        CacheUtility::addPageCacheTagsByQuery($days->getQuery());
     }
 
     /**
@@ -97,6 +103,7 @@ class DayController extends AbstractController
         }
 
         $this->view->assign('day', $day);
+        CacheUtility::addCacheTagsByEventRecords([$day->getEvent()]);
     }
 
     /**
@@ -106,5 +113,6 @@ class DayController extends AbstractController
     {
         $days = $this->dayRepository->findByTimestamp((int)$timestamp);
         $this->view->assign('days', $days);
+        CacheUtility::addPageCacheTagsByQuery($days->getQuery());
     }
 }

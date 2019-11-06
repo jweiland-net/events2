@@ -3,7 +3,7 @@ if (!defined('TYPO3_MODE')) {
     die('Access denied.');
 }
 
-$boot = function ($extKey) {
+call_user_func(function ($extKey) {
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
         'JWeiland.' . $extKey,
         'Events',
@@ -50,9 +50,9 @@ $boot = function ($extKey) {
     // register an eval function to check for time
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tce']['formevals'][\JWeiland\Events2\Tca\Type\Time::class] = 'EXT:events2/Classes/Tca/Type/Time.php';
     // delete and recreate day relations for an event while saving
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = \JWeiland\Events2\Hooks\RecreateDayRelationsHook::class;
-    // HOOK: Override rootUid in TCA for category trees
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tceforms.php']['getSingleFieldClass'][] = \JWeiland\Events2\Hooks\ModifyTcaOfCategoryTrees::class;
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = \JWeiland\Events2\Hooks\DataHandler::class;
+    // Clear cache of pages with events, if event was edited/created/deleted in BE
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['clearCachePostProc']['events2_clearcache'] = \JWeiland\Events2\Hooks\DataHandler::class . '->clearCachePostProc';
     // Hook: Render Plugin preview item
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['list_type_Info']['events2_events'][] = \JWeiland\Events2\Hooks\RenderPluginItem::class . '->render';
 
@@ -109,9 +109,9 @@ $boot = function ($extKey) {
     $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['events2findDaysForMonth'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('events2') . 'Classes/Ajax/FindDaysForMonth.php';
     $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['events2findLocations'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('events2') . 'Classes/Ajax/FindLocations.php';
 
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['aspects']['TimestampMapper'] = \JWeiland\Events2\Routing\Aspect\TimestampMapper::class;
     if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('realurl')) {
-        // RealUrl auto configuration
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/realurl/class.tx_realurl_autoconfgen.php']['extensionConfiguration']['events2'] = 'JWeiland\\Events2\\Hooks\\RealUrlAutoConfiguration->addEvents2Config';
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/realurl/class.tx_realurl_autoconfgen.php']['extensionConfiguration']['events2'] = \JWeiland\Events2\Hooks\RealUrlAutoConfiguration::class . '->addEvents2Config';
     }
 
     if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('solr')) {
@@ -122,13 +122,16 @@ $boot = function ($extKey) {
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments'][] = \JWeiland\Events2\Hooks\Solr\IndexerHook::class;
     }
 
-    $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['aspects']['TimestampMapper'] = \JWeiland\Events2\Routing\Aspect\TimestampMapper::class;
-
+    // Prefill event_begin with current Timestamp
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['formDataGroup']['tcaDatabaseRecord'][\JWeiland\Events2\Backend\FormDataProvider\InitializeNewEventRecord::class] = [
         'depends' => [
             \TYPO3\CMS\Backend\Form\FormDataProvider\DatabaseRowInitializeNew::class,
         ]
     ];
-};
-$boot($_EXTKEY);
-unset($boot);
+    // Set rootUid of category trees in FlexForms to values of extension configuration
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['formDataGroup']['flexFormSegment'][\JWeiland\Events2\Backend\FormDataProvider\ModifyRootUidOfTreeSelectElements::class] = [
+        'depends' => [
+            \TYPO3\CMS\Backend\Form\FormDataProvider\TcaSelectItems::class,
+        ]
+    ];
+}, $_EXTKEY);

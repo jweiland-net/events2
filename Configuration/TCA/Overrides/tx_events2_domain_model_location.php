@@ -19,6 +19,10 @@ if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('maps2')) {
                 [
                     'foreignColumnName' => 'location',
                     'poiCollectionColumnName' => 'title'
+                ],
+                [
+                    'foreignColumnName' => 'hidden',
+                    'poiCollectionColumnName' => 'hidden'
                 ]
             ]
         ]

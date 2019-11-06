@@ -32,9 +32,13 @@ use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
+use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Fluid\View\TemplateView;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Test case.
@@ -91,6 +95,8 @@ class EventControllerTest extends UnitTestCase
      */
     public function setUp()
     {
+        $tsfeProphecy = $this->prophesize(TypoScriptFrontendController::class);
+        $GLOBALS['TSFE'] = $tsfeProphecy->reveal();
         $this->request = $this->getMockBuilder(Request::class)->getMock();
 
         $this->controllerContext = $this->getMockBuilder(ControllerContext::class)->setMethods(['dummy'])->getMock();
@@ -140,6 +146,7 @@ class EventControllerTest extends UnitTestCase
         unset($this->dayRepository);
         unset($this->eventRepository);
         unset($this->view);
+        unset($GLOBALS['TSFE']);
     }
 
     /**
@@ -204,7 +211,20 @@ class EventControllerTest extends UnitTestCase
     public function listSearchResultsActionSearchesForEventsAndAssignsThemToView()
     {
         $search = new Search();
+        /** @var QuerySettingsInterface|ObjectProphecy $querySettingsProphecy */
+        $querySettingsProphecy = $this->prophesize(Typo3QuerySettings::class);
+        /** @var QueryInterface|ObjectProphecy $queryProphecy */
+        $queryProphecy = $this->prophesize(Query::class);
+        $queryProphecy
+            ->getQuerySettings()
+            ->shouldBeCalled()
+            ->willReturn($querySettingsProphecy->reveal());
+        /** @var QueryResultInterface|ObjectProphecy $queryResultProphecy */
         $queryResultProphecy = $this->prophesize(QueryResult::class);
+        $queryResultProphecy
+            ->getQuery()
+            ->shouldBeCalled()
+            ->willReturn($queryProphecy->reveal());
 
         $this->dayRepository
             ->expects($this->once())
@@ -231,13 +251,25 @@ class EventControllerTest extends UnitTestCase
      */
     public function listMyEventsActionFindEventsAndAssignsThemToView()
     {
+        /** @var QuerySettingsInterface|ObjectProphecy $querySettingsProphecy */
+        $querySettingsProphecy = $this->prophesize(Typo3QuerySettings::class);
+        /** @var QueryInterface|ObjectProphecy $queryProphecy */
+        $queryProphecy = $this->prophesize(Query::class);
+        $queryProphecy
+            ->getQuerySettings()
+            ->shouldBeCalled()
+            ->willReturn($querySettingsProphecy->reveal());
+        /** @var QueryResultInterface|ObjectProphecy $queryResultProphecy */
         $queryResultProphecy = $this->prophesize(QueryResult::class);
-        $tsfeBackup = $GLOBALS['TSFE'];
+        $queryResultProphecy
+            ->getQuery()
+            ->shouldBeCalled()
+            ->willReturn($queryProphecy->reveal());
+
         $feUser = new \stdClass();
         $feUser->user = $user = [
             'uid' => 123,
         ];
-        $GLOBALS['TSFE'] = new \stdClass();
         $GLOBALS['TSFE']->fe_user = $feUser;
 
         $this->eventRepository
@@ -257,7 +289,6 @@ class EventControllerTest extends UnitTestCase
         $this->subject->_set('view', $this->view);
 
         $this->subject->listMyEventsAction();
-        $GLOBALS['TSFE'] = $tsfeBackup;
     }
 
     /**
