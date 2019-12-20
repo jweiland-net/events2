@@ -15,7 +15,7 @@ return [
             'recurring' => 'ext-events2-calendar-recurring',
             'duration' => 'ext-events2-calendar-duration',
         ],
-        'default_sortby' => 'ORDER BY title',
+        'default_sortby' => 'ORDER BY event_begin DESC',
         'versioningWS' => true,
         'origUid' => 't3_origuid',
         'languageField' => 'sys_language_uid',
