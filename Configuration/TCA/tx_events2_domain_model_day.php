@@ -31,7 +31,8 @@ return [
             'config' => [
                 'type' => 'input',
                 'renderType' => 'inputDateTime',
-                'eval' => 'date',
+                'default' => 0,
+                'eval' => 'date,int',
             ],
         ],
         'day_time' => [
@@ -39,7 +40,8 @@ return [
             'config' => [
                 'type' => 'input',
                 'renderType' => 'inputDateTime',
-                'eval' => 'datetime',
+                'default' => 0,
+                'eval' => 'datetime,int',
             ],
         ],
         'sort_day_time' => [
@@ -47,7 +49,8 @@ return [
             'config' => [
                 'type' => 'input',
                 'renderType' => 'inputDateTime',
-                'eval' => 'datetime',
+                'default' => 0,
+                'eval' => 'datetime,int',
             ],
         ],
         'same_day_time' => [
@@ -55,7 +58,8 @@ return [
             'config' => [
                 'type' => 'input',
                 'renderType' => 'inputDateTime',
-                'eval' => 'datetime',
+                'default' => 0,
+                'eval' => 'datetime,int',
             ],
         ],
         'event' => [
