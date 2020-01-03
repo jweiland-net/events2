@@ -222,7 +222,8 @@ return [
                 'type' => 'input',
                 'renderType' => 'inputDateTime',
                 'size' => 7,
-                'eval' => 'date,required',
+                'default' => 0,
+                'eval' => 'date,int,required',
             ],
         ],
         'event_end' => [
@@ -232,7 +233,8 @@ return [
                 'type' => 'input',
                 'renderType' => 'inputDateTime',
                 'size' => 7,
-                'eval' => 'date,required',
+                'default' => 0,
+                'eval' => 'date,int,required',
             ],
         ],
         'event_time' => [
@@ -411,7 +413,8 @@ return [
                 'type' => 'input',
                 'renderType' => 'inputDateTime',
                 'size' => 7,
-                'eval' => 'date',
+                'default' => 0,
+                'eval' => 'date,int',
             ],
         ],
         'exceptions' => [

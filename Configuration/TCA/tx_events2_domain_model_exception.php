@@ -190,7 +190,7 @@ return [
                 'type' => 'input',
                 'renderType' => 'inputDateTime',
                 'size' => 7,
-                'eval' => 'date, required',
+                'eval' => 'date,int,required',
                 'checkbox' => 1,
                 'default' => time(),
             ],
