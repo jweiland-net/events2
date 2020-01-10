@@ -41,10 +41,9 @@ use TYPO3\CMS\Core\Routing\Aspect\StaticMappableAspectInterface;
  *         type: TimestampMapper
  *         format: 'Y-m-d_Hi'
  *       event_title:
- *         type: PersistedPatternMapper
- *         tableName: 'tx_events2_domain_model_event'
- *         routeFieldPattern: '^(?P<title>.+)-(?P<uid>\d+)$'
- *         routeFieldResult: '{title}-{uid}'
+ *         type: PersistedAliasMapper
+ *         tableName: tx_events2_domain_model_event
+ *         routeFieldName: path_segment
  */
 class TimestampMapper implements StaticMappableAspectInterface
 {

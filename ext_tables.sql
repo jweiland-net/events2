@@ -8,6 +8,7 @@ CREATE TABLE tx_events2_domain_model_event (
   event_type varchar(255) DEFAULT '' NOT NULL,
   top_of_list tinyint(1) unsigned DEFAULT '0' NOT NULL,
   title varchar(255) DEFAULT '' NOT NULL,
+	path_segment varchar(2048) DEFAULT '' NOT NULL,
   teaser varchar(255) DEFAULT '' NOT NULL,
   event_begin int(11) DEFAULT '0' NOT NULL,
   event_end int(11) DEFAULT '0' NOT NULL,
