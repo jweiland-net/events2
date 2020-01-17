@@ -14,6 +14,8 @@ namespace JWeiland\Events2\Domain\Model;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+use JWeiland\Events2\Domain\Traits\Typo3PropertiesTrait;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
@@ -25,15 +27,12 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  */
 class Event extends AbstractEntity
 {
+    use Typo3PropertiesTrait;
+
     /**
      * @var string
      */
     protected $eventType = 'single';
-
-    /**
-     * @var bool
-     */
-    protected $hidden = false;
 
     /**
      * @var bool
@@ -204,16 +203,6 @@ class Event extends AbstractEntity
     public function setEventType(string $eventType)
     {
         $this->eventType = $eventType;
-    }
-
-    public function getHidden(): bool
-    {
-        return $this->hidden;
-    }
-
-    public function setHidden(bool $hidden)
-    {
-        $this->hidden = $hidden;
     }
 
     public function getTopOfList(): bool

@@ -25,6 +25,26 @@ class Day extends AbstractEntity
     /**
      * @var \DateTime
      */
+    protected $crdate;
+
+    /**
+     * @var \DateTime
+     */
+    protected $tstamp;
+
+    /**
+     * @var bool
+     */
+    protected $hidden = false;
+
+    /**
+     * @var int
+     */
+    protected $cruserId = 0;
+
+    /**
+     * @var \DateTime
+     */
     protected $day;
 
     /**
@@ -46,6 +66,52 @@ class Day extends AbstractEntity
      * @var \JWeiland\Events2\Domain\Model\Event
      */
     protected $event;
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getCrdate()
+    {
+        return $this->crdate;
+    }
+
+    public function setCrdate(\DateTime $crdate = null)
+    {
+        $this->crdate = $crdate;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getTstamp()
+    {
+        return $this->tstamp;
+    }
+
+    public function setTstamp(\DateTime $tstamp = null)
+    {
+        $this->tstamp = $tstamp;
+    }
+
+    public function getHidden(): bool
+    {
+        return $this->hidden;
+    }
+
+    public function setHidden(bool $hidden)
+    {
+        $this->hidden = $hidden;
+    }
+
+    public function getCruserId(): int
+    {
+        return $this->cruserId;
+    }
+
+    public function setCruserId(int $cruserId)
+    {
+        $this->cruserId = $cruserId;
+    }
 
     public function getDay(): \DateTime
     {

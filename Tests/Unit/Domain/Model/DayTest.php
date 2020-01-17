@@ -48,6 +48,168 @@ class DayTest extends UnitTestCase
     /**
      * @test
      */
+    public function getCrdateInitiallyReturnsNull()
+    {
+        $this->assertNull(
+            $this->subject->getCrdate()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function setCrdateSetsCrdate()
+    {
+        $date = new \DateTime();
+        $this->subject->setCrdate($date);
+
+        $this->assertSame(
+            $date,
+            $this->subject->getCrdate()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function setCrdateWithNullSetsCrdate()
+    {
+        $this->subject->setCrdate(null);
+
+        $this->assertNull(
+            $this->subject->getCrdate()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function getTstampInitiallyReturnsNull()
+    {
+        $this->assertNull(
+            $this->subject->getTstamp()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function setTstampSetsTstamp()
+    {
+        $date = new \DateTime();
+        $this->subject->setTstamp($date);
+
+        $this->assertSame(
+            $date,
+            $this->subject->getTstamp()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function setTstampWithNullSetsTstamp()
+    {
+        $this->subject->setTstamp(null);
+
+        $this->assertNull(
+            $this->subject->getTstamp()
+        );
+    }
+
+
+    /**
+     * @test
+     */
+    public function getHiddenInitiallyReturnsFalse()
+    {
+        $this->assertFalse(
+            $this->subject->getHidden()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function setHiddenSetsHidden()
+    {
+        $this->subject->setHidden(true);
+        $this->assertTrue(
+            $this->subject->getHidden()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function setHiddenWithStringReturnsTrue()
+    {
+        $this->subject->setHidden('foo bar');
+        $this->assertTrue($this->subject->getHidden());
+    }
+
+    /**
+     * @test
+     */
+    public function setHiddenWithZeroReturnsFalse()
+    {
+        $this->subject->setHidden(0);
+        $this->assertFalse($this->subject->getHidden());
+    }
+
+    /**
+     * @test
+     */
+    public function getCruserIdInitiallyReturnsZero()
+    {
+        $this->assertSame(
+            0,
+            $this->subject->getCruserId()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function setCruserIdSetsCruserId()
+    {
+        $this->subject->setCruserId(123456);
+
+        $this->assertSame(
+            123456,
+            $this->subject->getCruserId()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function setCruserIdWithStringResultsInInteger()
+    {
+        $this->subject->setCruserId('123Test');
+
+        $this->assertSame(
+            123,
+            $this->subject->getCruserId()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function setCruserIdWithBooleanResultsInInteger()
+    {
+        $this->subject->setCruserId(true);
+
+        $this->assertSame(
+            1,
+            $this->subject->getCruserId()
+        );
+    }
+
+    /**
+     * @test
+     */
     public function setDaySetsDay()
     {
         $date = new \DateTime();

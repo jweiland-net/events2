@@ -14,6 +14,8 @@ namespace JWeiland\Events2\Domain\Model;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+use JWeiland\Events2\Domain\Traits\Typo3PropertiesTrait;
 use JWeiland\Maps2\Domain\Model\PoiCollection;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
@@ -22,6 +24,8 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
  */
 class Location extends AbstractEntity
 {
+    use Typo3PropertiesTrait;
+
     /**
      * @var string
      */
