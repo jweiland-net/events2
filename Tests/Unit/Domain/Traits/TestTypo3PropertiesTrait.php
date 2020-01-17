@@ -390,5 +390,4 @@ trait TestTypo3PropertiesTrait
             $this->subject->getCruserId()
         );
     }
-
 }
