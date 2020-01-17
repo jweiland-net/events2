@@ -117,7 +117,6 @@ class DayTest extends UnitTestCase
         );
     }
 
-
     /**
      * @test
      */
