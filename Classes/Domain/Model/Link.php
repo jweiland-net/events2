@@ -14,6 +14,8 @@ namespace JWeiland\Events2\Domain\Model;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+use JWeiland\Events2\Domain\Traits\Typo3PropertiesTrait;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /**
@@ -21,6 +23,8 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
  */
 class Link extends AbstractEntity
 {
+    use Typo3PropertiesTrait;
+
     /**
      * @var string
      */
@@ -30,11 +34,6 @@ class Link extends AbstractEntity
      * @var string
      */
     protected $title = 'Video';
-
-    /**
-     * @var bool
-     */
-    protected $deleted = false;
 
     public function getLink(): string
     {
@@ -54,15 +53,5 @@ class Link extends AbstractEntity
     public function setTitle(string $title)
     {
         $this->title = $title;
-    }
-
-    public function getDeleted(): bool
-    {
-        return $this->deleted;
-    }
-
-    public function setDeleted(bool $deleted)
-    {
-        $this->deleted = $deleted;
     }
 }

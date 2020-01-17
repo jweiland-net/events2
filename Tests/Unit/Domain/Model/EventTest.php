@@ -22,6 +22,7 @@ use JWeiland\Events2\Domain\Model\Link;
 use JWeiland\Events2\Domain\Model\Location;
 use JWeiland\Events2\Domain\Model\Organizer;
 use JWeiland\Events2\Domain\Model\Time;
+use JWeiland\Events2\Tests\Unit\Domain\Traits\TestTypo3PropertiesTrait;
 use Nimut\TestingFramework\MockObject\AccessibleMockObjectInterface;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
@@ -31,6 +32,8 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  */
 class EventTest extends UnitTestCase
 {
+    use TestTypo3PropertiesTrait;
+
     /**
      * @var \JWeiland\Events2\Domain\Model\Event
      */
@@ -50,47 +53,6 @@ class EventTest extends UnitTestCase
     public function tearDown()
     {
         unset($this->subject);
-    }
-
-    /**
-     * @test
-     */
-    public function getHiddenInitiallyReturnsFalse()
-    {
-        $this->assertSame(
-            false,
-            $this->subject->getHidden()
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function setHiddenSetsHidden()
-    {
-        $this->subject->setHidden(true);
-        $this->assertSame(
-            true,
-            $this->subject->getHidden()
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function setHiddenWithStringReturnsTrue()
-    {
-        $this->subject->setHidden('foo bar');
-        $this->assertTrue($this->subject->getHidden());
-    }
-
-    /**
-     * @test
-     */
-    public function setHiddenWithZeroReturnsFalse()
-    {
-        $this->subject->setHidden(0);
-        $this->assertFalse($this->subject->getHidden());
     }
 
     /**

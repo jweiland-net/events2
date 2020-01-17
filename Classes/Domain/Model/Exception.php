@@ -14,6 +14,8 @@ namespace JWeiland\Events2\Domain\Model;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+use JWeiland\Events2\Domain\Traits\Typo3PropertiesTrait;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /**
@@ -21,6 +23,8 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
  */
 class Exception extends AbstractEntity
 {
+    use Typo3PropertiesTrait;
+
     /**
      * @var string
      */

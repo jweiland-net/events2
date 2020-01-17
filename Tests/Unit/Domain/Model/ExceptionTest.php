@@ -16,6 +16,7 @@ namespace JWeiland\Events2\Tests\Unit\Domain\Model;
  */
 use JWeiland\Events2\Domain\Model\Exception;
 use JWeiland\Events2\Domain\Model\Time;
+use JWeiland\Events2\Tests\Unit\Domain\Traits\TestTypo3PropertiesTrait;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 
 /**
@@ -23,6 +24,8 @@ use Nimut\TestingFramework\TestCase\UnitTestCase;
  */
 class ExceptionTest extends UnitTestCase
 {
+    use TestTypo3PropertiesTrait;
+
     /**
      * @var \JWeiland\Events2\Domain\Model\Exception
      */
