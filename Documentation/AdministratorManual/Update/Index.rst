@@ -10,6 +10,13 @@ Updating
 
 If you update EXT:events2 to a newer version, please read this section carefully!
 
+Update to Version 4.1.1
+^^^^^^^^^^^^^^^^^^^^^^^
+
+With version 4.1.0 we have added the path_segment for slugs in event records, but first with version 4.1.1 we
+have added the Updater for this field.
+Please visit InstallTool and execute the updater for Slugs in event records.
+
 Update to Version 4.0.0
 ^^^^^^^^^^^^^^^^^^^^^^^
 
