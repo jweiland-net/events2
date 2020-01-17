@@ -13,7 +13,7 @@ Events2
 
 :Extension name: |extension_name|
 :Extension key: |extension_key|
-:Version: 4.0.2
+:Version: 4.1.1
 :Description: With this extension you can create single and recurring events
 :Language: en
 :Author: |author|
