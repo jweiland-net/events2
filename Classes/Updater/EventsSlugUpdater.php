@@ -51,7 +51,7 @@ class EventsSlugUpdater implements UpgradeWizardInterface
                 $this->tableName,
                 $this->fieldName,
                 $GLOBALS['TCA'][$this->tableName]['columns']['path_segment']['config']
-        );
+            );
         }
         $this->slugHelper = $slugHelper;
     }
