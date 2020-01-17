@@ -134,4 +134,8 @@ call_user_func(function ($extKey) {
             \TYPO3\CMS\Backend\Form\FormDataProvider\TcaSelectItems::class,
         ]
     ];
+
+    if (version_compare(TYPO3_branch, '9.4', '>=')) {
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['events2UpdateSlug'] = \JWeiland\Events2\Updater\EventsSlugUpdater::class;
+    }
 }, $_EXTKEY);
