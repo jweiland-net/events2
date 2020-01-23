@@ -187,8 +187,17 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
      */
     protected function getCoreFileReference(array $source)
     {
+        $configurationManager = $this->objectManager->get(ConfigurationManagerInterface::class);
+        $settings = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS, 'Events2');
+        $uploadFolderSetting = $settings['uploadFolder'];
+        
         // upload file
-        $uploadFolder = ResourceFactory::getInstance()->retrieveFileOrFolderObject('uploads/tx_events2/');
+        if (!empty($uploadFolderSetting)) {
+            $uploadFolder = ResourceFactory::getInstance()->retrieveFileOrFolderObject($uploadFolderSetting);
+        } else {
+            $uploadFolder = ResourceFactory::getInstance()->retrieveFileOrFolderObject('uploads/tx_events2/');
+        }
+        
         $uploadedFile = $uploadFolder->addUploadedFile($source, \TYPO3\CMS\Core\Resource\DuplicationBehavior::RENAME);
         // create Core FileReference
         return ResourceFactory::getInstance()->createFileReferenceObject(

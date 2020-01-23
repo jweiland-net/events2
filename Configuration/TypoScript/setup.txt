@@ -65,6 +65,7 @@ plugin.tx_events2 {
     includeDeTranslationForCalendar = {$plugin.tx_events2.settings.includeDeTranslationForCalendar}
     userGroup = {$plugin.tx_events2.settings.userGroup}
     remainingLetters = {$plugin.tx_events2.settings.remainingLetters}
+    uploadFolder = {$plugin.tx_events2.settings.uploadFolder}
     list {
       image {
         width = 50c

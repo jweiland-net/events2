@@ -34,6 +34,8 @@ plugin.tx_events2 {
     userGroup =
     # cat=plugin.tx_events2; type=int+; label=Remaining letters for field teaser while editing/create events in frontend
     remainingLetters = 250
+    # cat=plugin.tx_events2; type=string; label=Upload folder for files uploaded while editing/create events in frontend
+    uploadFolder = uploads/tx_events2/
 
     latest {
       # cat=plugin.tx_events2; type=int+; label=Show records: How many records should be displayed for latest view?
