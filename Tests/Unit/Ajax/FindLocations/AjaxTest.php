@@ -90,7 +90,7 @@ class AjaxTest extends UnitTestCase
     public function processAjaxRequestWithNoLocationsReturnsEmptyString()
     {
         $arguments = [
-            'locationPart' => '',
+            'search' => '',
         ];
         /** @var FindLocations\Ajax|\PHPUnit_Framework_MockObject_MockObject $subject */
         $subject = $this
@@ -110,7 +110,7 @@ class AjaxTest extends UnitTestCase
     public function processAjaxRequestWithHtmlCallsFindLocationsWithoutHtml()
     {
         $arguments = [
-            'locationPart' => 'Hello german umlauts: öäü. <b>How are you?</b>',
+            'search' => 'Hello german umlauts: öäü. <b>How are you?</b>',
         ];
         $expectedArgument = 'Hello german umlauts: öäü. How are you?';
         /** @var FindLocations\Ajax|\PHPUnit_Framework_MockObject_MockObject $subject */
@@ -131,7 +131,7 @@ class AjaxTest extends UnitTestCase
     public function processAjaxRequestWithTooSmallLocationsReturnsEmptyString()
     {
         $arguments = [
-            'locationPart' => 'x',
+            'search' => 'x',
         ];
         /** @var FindLocations\Ajax|\PHPUnit_Framework_MockObject_MockObject $subject */
         $subject = $this
@@ -182,11 +182,11 @@ class AjaxTest extends UnitTestCase
         $subject->expects($this->exactly(2))->method('findLocations')->will($this->returnValueMap($locationMap));
         $this->assertSame(
             '[{"uid":123,"label":"at home"}]',
-            $subject->processAjaxRequest(['locationPart' => 'at h'])
+            $subject->processAjaxRequest(['search' => 'at h'])
         );
         $this->assertSame(
             '[{"uid":234,"label":"Marienheide"},{"uid":345,"label":"Marienhagen"}]',
-            $subject->processAjaxRequest(['locationPart' => 'mar'])
+            $subject->processAjaxRequest(['search' => 'mar'])
         );
     }
 }
