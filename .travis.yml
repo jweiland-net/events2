@@ -1,5 +1,8 @@
 language: php
 
+os:
+  - linux
+
 jobs:
   include:
     - stage: test
@@ -22,8 +25,6 @@ jobs:
       env:
         - TYPO3_VERSION=^9
         - EXCLUDE_DIR=""
-
-sudo: false
 
 addons:
   apt:
