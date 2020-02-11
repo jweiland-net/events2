@@ -27,7 +27,7 @@ $EM_CONF[$_EXTKEY] = [
     'modify_tables' => '',
     'clearCacheOnLoad' => 0,
     'lockType' => '',
-    'version' => '4.1.2',
+    'version' => '4.1.3',
     'constraints' => [
         'depends' => [
             'typo3' => '8.7.0-9.99.99',
@@ -36,7 +36,7 @@ $EM_CONF[$_EXTKEY] = [
         'conflicts' => [
         ],
         'suggests' => [
-            'maps2' => '7.1.3-7.99.99',
+            'maps2' => '8.0.0-0.0.0',
         ],
     ],
 ];

@@ -27,7 +27,7 @@
 		"friendsofphp/php-cs-fixer": "^2.0",
 		"nimut/testing-framework": "^4.1",
 		"typo3/cms-scheduler": "^8.7 || ^9.5",
-		"jweiland/maps2": "^7.1.3 || ^7.2"
+		"jweiland/maps2": ">=8.0.0"
 	},
 	"autoload": {
 		"psr-4": {
