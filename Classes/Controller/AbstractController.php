@@ -25,8 +25,10 @@ use JWeiland\Events2\Domain\Repository\LinkRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Domain\Repository\OrganizerRepository;
 use JWeiland\Events2\Domain\Repository\UserRepository;
+use JWeiland\Events2\Service\TypoScriptService;
 use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -227,27 +229,21 @@ class AbstractController extends ActionController
         $typoScriptSettings = $this->configurationManager->getConfiguration(
             ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK,
             'events2',
-            'events2_event'
+            'events2_event' // invalid plugin name, to get fresh unmerged settings
         );
         if (empty($typoScriptSettings['settings'])) {
-            throw new \Exception('You have forgotten to add TS-Template of events2', 1474533307);
+            throw new \Exception('You have forgotten to add TS-Template of events2', 1580294227);
         }
         $mergedFlexFormSettings = $this->configurationManager->getConfiguration(
             ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS
         );
 
-        // if FlexForm setting is empty and value is available in TS
-        foreach ($typoScriptSettings['settings'] as $fieldName => $value) {
-            if (
-                $mergedFlexFormSettings[$fieldName] === '0' ||
-                (
-                    is_string($mergedFlexFormSettings[$fieldName]) &&
-                    strlen($mergedFlexFormSettings[$fieldName]) === 0
-                )
-            ) {
-                $mergedFlexFormSettings[$fieldName] = $value;
-            }
-        }
+        // start override
+        $typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
+        $typoScriptService->override(
+            $mergedFlexFormSettings,
+            $typoScriptSettings['settings']
+        );
         $this->settings = $mergedFlexFormSettings;
     }
 

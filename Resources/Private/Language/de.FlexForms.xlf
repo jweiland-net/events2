@@ -70,6 +70,10 @@
 				<source>Categories</source>
 				<target>Kategorien</target>
 			</trans-unit>
+			<trans-unit id="amountOfRecordsToShow">
+				<source>List amount of records (only for view: latest events)</source>
+				<target>Zeige Anzahl an Datensätzen (nur für Ansicht: Aktuellste Termine)</target>
+			</trans-unit>
 			<trans-unit id="mergeEventsAtSameDay">
 				<source>Merge events with multiple times at same day to one entry</source>
 				<target>Vereine Veranstaltungen mit mehreren Uhrzeiten zu einer Veranstaltung zusammen</target>

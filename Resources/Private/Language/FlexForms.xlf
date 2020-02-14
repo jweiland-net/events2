@@ -53,6 +53,9 @@
 			<trans-unit id="pidOfSearchPage">
 				<source>PID of search page</source>
 			</trans-unit>
+			<trans-unit id="amountOfRecordsToShow">
+				<source>List amount of records (only for view: latest events)</source>
+			</trans-unit>
 			<trans-unit id="mergeEventsAtSameDay">
 				<source>Merge events with multiple times at same day to one entry</source>
 			</trans-unit>
