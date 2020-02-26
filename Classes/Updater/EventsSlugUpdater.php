@@ -43,6 +43,11 @@ class EventsSlugUpdater implements UpgradeWizardInterface
      */
     protected $slugHelper;
 
+    /**
+     * @var array
+     */
+    protected $slugCache = [];
+
     public function __construct(SlugHelper $slugHelper = null)
     {
         if ($slugHelper === null) {
@@ -108,7 +113,7 @@ class EventsSlugUpdater implements UpgradeWizardInterface
     public function executeUpdate(): bool
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($this->tableName);
-        $recordsToUpdate = $queryBuilder
+        $statement = $queryBuilder
             ->select('uid', 'title', 'path_segment')
             ->from($this->tableName)
             ->where(
@@ -122,15 +127,10 @@ class EventsSlugUpdater implements UpgradeWizardInterface
                     )
                 )
             )
-            ->execute()
-            ->fetchAll();
-
-        if ($recordsToUpdate === false) {
-            $recordsToUpdate = [];
-        }
+            ->execute();
 
         $connection = $this->getConnectionPool()->getConnectionForTable($this->tableName);
-        foreach ($recordsToUpdate as $recordToUpdate) {
+        while ($recordToUpdate = $statement->fetch()) {
             if ((string)$recordToUpdate['title'] !== '') {
                 $slug = $this->slugHelper->sanitize((string)$recordToUpdate['title']);
                 $connection->update(
@@ -158,22 +158,24 @@ class EventsSlugUpdater implements UpgradeWizardInterface
      */
     protected function getUniqueValue(int $uid, string $slug): string
     {
-        $statement = $this->getUniqueCountStatement($uid, $slug);
-        if ($statement->fetchColumn(0)) {
-            for ($counter = 1; $counter <= 100; $counter++) {
-                $newSlug = $slug . '-' . $counter;
-                $statement->bindValue(1, $newSlug);
-                $statement->execute();
-                if (!$statement->fetchColumn()) {
-                    break;
-                }
+        $statement = $this->getUniqueSlugStatement($uid, $slug);
+        $counter = $this->slugCache[$slug] ?? 1;
+        while ($statement->fetch()) {
+            $newSlug = $slug . '-' . $counter;
+            $statement->bindValue(1, $newSlug);
+            $statement->execute();
+
+            // Do not cache every slug, because of memory consumption. I think 5 is a good value to start caching.
+            if ($counter > 5) {
+                $this->slugCache[$slug] = $counter;
             }
+            $counter++;
         }
 
         return $newSlug ?? $slug;
     }
 
-    protected function getUniqueCountStatement(int $uid, string $slug)
+    protected function getUniqueSlugStatement(int $uid, string $slug)
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($this->tableName);
         $queryBuilder
@@ -182,7 +184,7 @@ class EventsSlugUpdater implements UpgradeWizardInterface
             ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
 
         return $queryBuilder
-            ->count('uid')
+            ->select('uid')
             ->from($this->tableName)
             ->where(
                 $queryBuilder->expr()->eq(
