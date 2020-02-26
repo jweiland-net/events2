@@ -35,9 +35,7 @@ call_user_func(function () {
             'type' => 'slug',
             'size' => 50,
             'generatorOptions' => [
-                'fields' => ['title', 'uid'],
-                // Default fieldSeparator is / which is not allowed within path_segments
-                'fieldSeparator' => '-',
+                'fields' => ['title'],
                 // As pageSlug may contain slashes, we have to remove page slug
                 'prefixParentPageSlug' => false,
                 'replacements' => [
