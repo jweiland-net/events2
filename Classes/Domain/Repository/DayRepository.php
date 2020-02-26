@@ -108,6 +108,10 @@ class DayRepository extends Repository
 
         // add storage PID for event and day, but not for sys_category
         $this->databaseService->addConstraintForPid(
+            $queryBuilder,
+            $extbaseQuery->getQuerySettings()->getStoragePageIds()
+        );
+        $this->databaseService->addConstraintForPid(
             $subQueryBuilder,
             $extbaseQuery->getQuerySettings()->getStoragePageIds(),
             $queryBuilder,
