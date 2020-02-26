@@ -59,6 +59,7 @@ CREATE TABLE tx_events2_domain_model_event (
   PRIMARY KEY (uid),
   KEY parent (pid),
   KEY t3ver_oid (t3ver_oid,t3ver_wsid),
+  KEY path_segment (path_segment(225), uid),
   KEY language (l10n_parent,sys_language_uid)
 );
 
