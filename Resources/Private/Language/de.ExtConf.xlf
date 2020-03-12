@@ -8,8 +8,8 @@
 				<target>PID für Google Maps: Beim Speichern von Veranstaltungsorten werden automatisch GoogleMaps-Datensätze erzeugt. Geben Sie hier an, in welchem StorageFolder diese angelegt werden sollen.</target>
 			</trans-unit>
 			<trans-unit id="rootUid">
-				<source>Category root UID: In huge environments with a lot of categories defined, it would be cool to reduce the amount of categories to a parent category.</source>
-				<target>Eltern-Kategorie: Auf großen Webseiten mit vielen Kategorien kann es sinnvoll sein, die Anzahl der Kategorien auf eine hier definierte Hauptkategorie zu beschränken.</target>
+				<source>Category root UID: If you're working in an environments with a lot of categories defined, it may make sense to reduce the category tree within our Events2 Plugins to this root Category.</source>
+				<target>UID der Haupt-Kategorie: Auf Webseiten mit vielen Kategorien kann es sinnvoll sein, den Kategoriebaum in den FlexForms unserer Events2 Plugins auf diese Haupt-Kategorie zu beschränken.</target>
 			</trans-unit>
 			<trans-unit id="recurringPast">
 				<source>x months in past: When creating a new recurring event this extension can create related day records for the last x months.</source>

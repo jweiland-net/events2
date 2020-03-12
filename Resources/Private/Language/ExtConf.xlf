@@ -7,7 +7,7 @@
 				<source>PID for poiCollections: Define a storage pid where to store records of type Point of Interest.</source>
 			</trans-unit>
 			<trans-unit id="rootUid">
-				<source>Category root UID: In huge environments with a lot of categories defined, it would be cool to reduce the amount of categories to a parent category.</source>
+				<source>Category root UID: If you're working in an environments with a lot of categories defined, it may make sense to reduce the category tree within our Events2 Plugins to this root Category.</source>
 			</trans-unit>
 			<trans-unit id="recurringPast">
 				<source>x months in past: When creating a new recurring event this extension can create related day records for the last x months.</source>
