@@ -70,6 +70,10 @@
 				<source>Categories</source>
 				<target>Kategorien</target>
 			</trans-unit>
+			<trans-unit id="mainCategories">
+				<source>Main Categories: You should only select categories of one level. The UID of their parent should be set in rootCategory of TS-Template.</source>
+				<target>Haupt-Kategorien: Es sollten nur Kategorien einer Ebene gewählt werden. Die UID deren Eltern-Kategorie sollte in rootCategory des TS-Templates konfiguriert sein.</target>
+			</trans-unit>
 			<trans-unit id="amountOfRecordsToShow">
 				<source>List amount of records (only for view: latest events)</source>
 				<target>Zeige Anzahl an Datensätzen (nur für Ansicht: Aktuellste Termine)</target>
