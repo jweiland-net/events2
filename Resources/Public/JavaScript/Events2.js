@@ -1,66 +1,77 @@
-var Events2 = {
+let Events2 = {
     selectorPlugin: ".tx-events2",
     selectorCreatePlugin: ".tx-events2-create",
     selectorSearchPlugin: ".tx-events2-search",
-    selectorPluginVariables: "#events2DataElement",
-    selectorCshDialog: "#dialogHint",
+    selectorPluginVariables: ".events2DataElement",
+    selectorCshDialog: ".dialogHint",
     selectorCshButton: "span.csh",
     selectorRemainingChars: ".remainingChars",
-    selectorAutoCompleteLocation: "#autoCompleteLocation",
-    selectorAutoCompleteLocationHelper: "#autoCompleteLocationHelper",
-    selectorSearchMainCategory: "#searchMainCategory",
+    selectorAutoCompleteLocation: ".autoCompleteLocation",
+    selectorAutoCompleteLocationHelper: ".autoCompleteLocationHelper",
+    selectorSearchMainCategory: ".searchMainCategory",
 
     dateFormat: "dd.mm.yy"
 };
 
-Events2.initialize = function() {
-    // initializing jQuery elements
-    Events2.$events2Plugins = jQuery(Events2.selectorPlugin);
-    Events2.$events2CreatePlugins = jQuery(Events2.selectorCreatePlugin);
-    Events2.$events2SearchPlugins = jQuery(Events2.selectorSearchPlugin);
-    Events2.$cshDialog = Events2.$events2CreatePlugins.find(Events2.selectorCshDialog);
-    Events2.$cshButtons = Events2.$events2CreatePlugins.find(Events2.selectorCshButton);
-    Events2.$remainingCharsContainer = jQuery(Events2.selectorRemainingChars);
-    Events2.$autoCompleteLocation = jQuery(Events2.selectorAutoCompleteLocation);
-    Events2.$autoCompleteLocationHelper = jQuery(Events2.selectorAutoCompleteLocationHelper);
-    Events2.$searchMainCategory = jQuery(Events2.selectorSearchMainCategory);
-
-    // initializing variables
-    Events2.pluginVariables = jQuery(Events2.selectorPluginVariables).data("variables");
-
-    // initializing features
-    Events2.initializeDialogBoxForContextSensitiveHelp();
-    Events2.initializeRemainingLetters();
-    Events2.initializeDatePicker();
-    Events2.initializeAutoCompleteForLocation();
-    Events2.initializeSubCategoriesForSearch();
+Events2.initialize = function($element) {
+    Events2.pluginVariables = $element.find(Events2.selectorPluginVariables).data("variables");
+    if (Events2.isCreatePlugin($element)) {
+        Events2.$cshDialog = $element.find(Events2.selectorCshDialog);
+        Events2.$cshButtons = $element.find(Events2.selectorCshButton);
+        Events2.$remainingCharsContainer = $element.find(Events2.selectorRemainingChars);
+        Events2.$autoCompleteLocation = $element.find(Events2.selectorAutoCompleteLocation);
+        Events2.$autoCompleteLocationHelper = $element.find(Events2.selectorAutoCompleteLocationHelper);
+        Events2.initializeDialogBoxForContextSensitiveHelp();
+        Events2.initializeRemainingLetters();
+        Events2.initializeDatePicker();
+        Events2.initializeAutoCompleteForLocation();
+    } else if (Events2.isSearchPlugin($element)) {
+        Events2.$searchMainCategory = $element.find(Events2.selectorSearchMainCategory);
+        Events2.initializeDatePicker();
+        Events2.initializeSubCategoriesForSearch();
+    }
 };
 
 /**
- * Test, if there are events2 plugins defined in DOM
+ * Check type of Plugin. Event, Create or Search
  *
- * @returns {boolean}
+ * @returns {string}
  */
-Events2.hasEvents2Plugins = function() {
-    return !!Events2.$events2Plugins.length;
+Events2.getPluginType = function($element) {
+    if ($element.hasClass("tx-events2-create")) {
+        return 'create';
+    } else if ($element.hasClass("tx-events2-search")) {
+        return 'search';
+    } else {
+        return 'event';
+    }
 };
 
 /**
- * Test, if there are events2 create plugins defined in DOM
+ * Test, if element is of Type "Event Plugin"
  *
  * @returns {boolean}
  */
-Events2.hasEvents2CreatePlugins = function() {
-    return !!Events2.$events2CreatePlugins.length;
+Events2.isEventPlugin = function($element) {
+    return Events2.getPluginType($element) === "event";
 };
 
 /**
- * Test, if there are events2 search plugins defined in DOM
+ * Test, if element is of Type "Create Plugin"
  *
  * @returns {boolean}
  */
-Events2.hasEvents2SearchPlugins = function() {
-    return !!Events2.$events2SearchPlugins.length;
+Events2.isCreatePlugin = function($element) {
+    return Events2.getPluginType($element) === "create";
+};
+
+/**
+ * Test, if element is of Type "Search Plugin"
+ *
+ * @returns {boolean}
+ */
+Events2.isSearchPlugin = function($element) {
+    return Events2.getPluginType($element) === "search";
 };
 
 /**
@@ -114,14 +125,10 @@ Events2.hasSearchMainCategory = function() {
  * @returns {boolean}
  */
 Events2.hasCshElements = function() {
-    if (Events2.hasEvents2CreatePlugins()) {
-        if (!!Events2.$cshDialog.length && !!Events2.$cshButtons.length) {
-            return true;
-        } else {
-            console.log("We are on the create form, but we can not find any CSH buttons or dialogs. Feature deactivated.");
-            return false;
-        }
+    if (!!Events2.$cshDialog.length && !!Events2.$cshButtons.length) {
+        return true;
     } else {
+        console.log("We are on the create form, but we can not find any CSH buttons or dialogs. Feature deactivated.");
         return false;
     }
 };
@@ -134,6 +141,8 @@ Events2.initializeDialogBoxForContextSensitiveHelp = function() {
     if (!Events2.hasCshElements()) {
         return;
     }
+
+    jQuery(".hidden").hide();
 
     Events2.$cshDialog.dialog({
         autoOpen: false,
@@ -148,11 +157,9 @@ Events2.initializeDialogBoxForContextSensitiveHelp = function() {
  * Initialize DatePicker for elements with class: addDatePicker
  */
 Events2.initializeDatePicker = function() {
-    if (Events2.hasEvents2CreatePlugins() || Events2.hasEvents2SearchPlugins()) {
-        jQuery(".addDatePicker").datepicker({
-            dateFormat: Events2.dateFormat
-        });
-    }
+    jQuery(".addDatePicker").datepicker({
+        dateFormat: Events2.dateFormat
+    });
 };
 
 /**
@@ -166,14 +173,14 @@ Events2.initializeRemainingLetters = function() {
             console.log("Variable settings of pluginVariables is not available. Please check your templates");
         } else {
             Events2.$remainingCharsContainer.each(function() {
-                var $remainingCharsContainer = jQuery(this);
-                var $textarea = jQuery("#" + $remainingCharsContainer.data('id'));
+                let $remainingCharsContainer = jQuery(this);
+                let $textarea = jQuery("#" + $remainingCharsContainer.data('id'));
                 $remainingCharsContainer.text(Events2.pluginVariables.localization.remainingText + ": " + Events2.pluginVariables.settings.remainingLetters);
 
                 $textarea.on("keyup", function() {
-                    var value = $(this).val();
-                    var len = value.length;
-                    var maxLength = Events2.pluginVariables.settings.remainingLetters;
+                    let value = $(this).val();
+                    let len = value.length;
+                    let maxLength = Events2.pluginVariables.settings.remainingLetters;
 
                     $(this).val(value.substring(0, maxLength));
                     $remainingCharsContainer.text(
@@ -189,13 +196,13 @@ Events2.initializeRemainingLetters = function() {
  * Initialize AutoComplete for location
  */
 Events2.initializeAutoCompleteForLocation = function() {
-    if (Events2.hasEvents2CreatePlugins() && Events2.hasAutoCompleteLocation()) {
-        $locationStatus = jQuery("<span />").attr("class", "locationStatus");
+    if (Events2.hasAutoCompleteLocation()) {
+        let $locationStatus = jQuery("<span />").attr("class", "locationStatus");
         Events2.$autoCompleteLocation.after($locationStatus);
 
         Events2.$autoCompleteLocation.autocomplete({
             source: function(request, response) {
-                var siteUrl = location.protocol + "//" + location.hostname + (location.port ? ":" + location.port : "");
+                let siteUrl = location.protocol + "//" + location.hostname + (location.port ? ":" + location.port : "");
                 $.ajax({
                     url: siteUrl + "?eID=events2findLocations",
                     dataType: "json",
@@ -248,7 +255,10 @@ Events2.initializeAutoCompleteForLocation = function() {
  * It updates the text of the dialog box before it pops up.
  */
 Events2.attachClickEventToCsh = function(event) {
-    var property = jQuery(event.target).data("property");
+    let property = jQuery(event.target).data("property");
+    if (!property) {
+        property = jQuery(event.target).parent(".csh").data("property");
+    }
     Events2.$cshDialog.find("p").text(jQuery("#hidden_" + property).text());
     Events2.$cshDialog.dialog("open");
 };
@@ -257,7 +267,7 @@ Events2.attachClickEventToCsh = function(event) {
  * Initialize sub-categories of search plugin
  */
 Events2.initializeSubCategoriesForSearch = function() {
-    if (Events2.hasEvents2SearchPlugins() && Events2.hasSearchMainCategory()) {
+    if (Events2.hasSearchMainCategory()) {
         Events2.$searchMainCategory.on("change", function () {
             Events2.renderSubCategory();
         });
@@ -272,7 +282,7 @@ Events2.renderSubCategory = function() {
     jQuery("#searchSubCategory").empty().attr("disabled", "disabled");
 
     if (Events2.$searchMainCategory.val() !== "0") {
-        var siteUrl = location.protocol + "//" + location.hostname + (location.port ? ":" + location.port : "");
+        let siteUrl = location.protocol + "//" + location.hostname + (location.port ? ":" + location.port : "");
         jQuery.ajax({
             type: 'GET',
             url: siteUrl,
@@ -305,11 +315,11 @@ Events2.renderSubCategory = function() {
  * @param categories
  */
 Events2.fillSubCategories = function(categories) {
-    var count = 0;
-    var selected = "";
-    var $searchSubCategory = jQuery("#searchSubCategory");
+    let count = 0;
+    let selected = "";
+    let $searchSubCategory = jQuery("#searchSubCategory");
     $searchSubCategory.append("<option value=\"0\"></option>");
-    for (var property in categories) {
+    for (let property in categories) {
         if (categories.hasOwnProperty(property)) {
             count++;
             if (Events2.pluginVariables.search.subCategory !== null && Events2.pluginVariables.search.subCategory.uid === parseInt(property)) {
@@ -325,4 +335,6 @@ Events2.fillSubCategories = function(categories) {
     }
 };
 
-Events2.initialize();
+jQuery(Events2.selectorPlugin).each(function() {
+    Events2.initialize(jQuery(this));
+});

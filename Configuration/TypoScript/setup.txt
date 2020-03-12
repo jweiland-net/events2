@@ -56,6 +56,9 @@ plugin.tx_events2 {
       }
     }
   }
+  mvc {
+    callDefaultActionIfActionCantBeResolved = 1
+  }
   settings {
     rootCategory = {$plugin.tx_events2.settings.rootCategory}
     pidOfDetailPage = {$plugin.tx_events2.settings.pidOfDetailPage}

@@ -11,7 +11,7 @@
 			<f:if condition="{e2:feUser(field: 'tx_events2_organizer')}">
 				<f:then>
 					<f:flashMessages />
-					<f:render partial="FormErrors" arguments="{object:Event}"/>
+					<f:render partial="FormErrors" arguments="{object:Event}" />
 					<f:form action="create" name="event" object="{event}" enctype="multipart/form-data" class="form-horizontal">
 						<legend><f:translate key="newEntry" /></legend>
 						<f:render partial="Event/FormFields" arguments="{_all}" />
