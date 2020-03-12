@@ -30,11 +30,6 @@ trait Typo3PropertiesTrait
     /**
      * @var int
      */
-    protected $sysLanguageUid = 0;
-
-    /**
-     * @var int
-     */
     protected $l10nParent= 0;
 
     /**
@@ -90,12 +85,12 @@ trait Typo3PropertiesTrait
 
     public function getSysLanguageUid(): int
     {
-        return $this->sysLanguageUid;
+        return $this->_languageUid;
     }
 
     public function setSysLanguageUid(int $sysLanguageUid)
     {
-        $this->sysLanguageUid = $sysLanguageUid;
+        $this->_languageUid = $sysLanguageUid;
     }
 
     public function getL10nParent(): int
