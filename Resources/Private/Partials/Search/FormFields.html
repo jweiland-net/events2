@@ -15,10 +15,10 @@
 
 <div class="form-group">
 	<label for="searchMainCategory" class="col-sm-3 control-label">
-		<f:translate key="tx_events2_domain_model_search.mainCategory"/>
+		<f:translate key="tx_events2_domain_model_search.mainCategory" />
 	</label>
 	<div class="col-sm-9">
-		<select id="searchMainCategory" class="form-control" name="tx_events2_events[search][mainCategory]">
+		<select id="searchMainCategory" class="form-control searchMainCategory" name="tx_events2_events[search][mainCategory]">
 			<option value="0"></option>
 			<f:for each="{selectorData.categories.main}" as="category">
 				<f:if condition="{category.uid}=={search.mainCategory.uid}">

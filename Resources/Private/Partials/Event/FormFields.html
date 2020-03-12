@@ -71,8 +71,8 @@
 	<f:render section="renderLabel" arguments="{property: 'location', required: 1}" />
 	<f:render section="renderCsh" arguments="{property: 'location', transKey: 'cshLocation'}" />
 	<div class="col-sm-8">
-		<f:form.hidden id="autoCompleteLocationHelper" property="location" />
-		<f:form.textfield class="form-control" id="autoCompleteLocation" value="{f:if(condition: event.location, then: event.location.location, else: '')}" />
+		<f:form.hidden class="autoCompleteLocationHelper" property="location" />
+		<f:form.textfield class="form-control autoCompleteLocation" value="{f:if(condition: event.location, then: event.location.location, else: '')}" />
 		<div><f:link.page pageUid="8460" title="Neuen Veranstaltungsort beantragen">Neuen Ort beantragen</f:link.page></div>
 	</div>
 </div>
@@ -97,7 +97,7 @@
 	</div>
 </div>
 
-<div id="dialogHint" title="{f:translate(key: 'hint')}">
+<div class="dialogHint" title="{f:translate(key: 'hint')}">
 	<p>{settings.textForHint}</p>
 </div>
 
@@ -149,7 +149,11 @@
 	<div class="col-sm-1 text-right">
 		<f:if condition="{transKey}">
 			<span id="hidden_{property}" class="hidden">{f:translate(key: transKey)}</span>
-			<span class="badge csh" title="Hinweis" data-property="{property}">i</span>
+			<span class="badge csh" title="Hinweis" data-property="{property}">
+				<svg class="bi bi-info-fill" width="20px" height="20px" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+					<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.93-9.412l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533l1.002-4.705zM10 7.5a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
+				</svg>
+			</span>
 		</f:if>
 	</div>
 </f:section>
