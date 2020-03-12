@@ -25,34 +25,36 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class ModifyRootUidOfTreeSelectElements implements FormDataProviderInterface
 {
     /**
-     * Set rootUid of tree select elemtns of FlexForms to root category declared in EM
+     * Set rootUid of tree select elements of FlexForms to root category declared in EM
      *
      * @param array $result Initialized result array
      * @return array
      */
     public function addData(array $result): array
     {
-        if (
-            // check if a FlexForm was rendered
-            $result['tableName'] === 'tt_content'
-            && isset($result['flexParentDatabaseRow'])
-            && is_array($result['flexParentDatabaseRow'])
-            && GeneralUtility::isFirstPartOfStr($result['flexParentDatabaseRow']['list_type'], 'events2')
+        foreach (['settings.categories', 'settings.mainCategories'] as $categoryField) {
+            if (
+                // check if a FlexForm was rendered
+                $result['tableName'] === 'tt_content'
+                && isset($result['flexParentDatabaseRow'])
+                && is_array($result['flexParentDatabaseRow'])
+                && GeneralUtility::isFirstPartOfStr($result['flexParentDatabaseRow']['list_type'], 'events2')
 
-            // check, if TCA configuration exists
-            && isset($result['processedTca']['columns']['settings.categories'])
-            && is_array($result['processedTca']['columns']['settings.categories'])
-            && isset($result['processedTca']['columns']['settings.categories']['config'])
-            && is_array($result['processedTca']['columns']['settings.categories']['config'])
+                // check, if TCA configuration exists
+                && isset($result['processedTca']['columns'][$categoryField])
+                && is_array($result['processedTca']['columns'][$categoryField])
+                && isset($result['processedTca']['columns'][$categoryField]['config'])
+                && is_array($result['processedTca']['columns'][$categoryField]['config'])
 
-            // check, if we have TCA-type "select" defined and it is configured as "tree"
-            && isset($result['processedTca']['columns']['settings.categories']['config']['type'])
-            && $result['processedTca']['columns']['settings.categories']['config']['type'] === 'select'
-            && isset($result['processedTca']['columns']['settings.categories']['config']['renderMode'])
-            && $result['processedTca']['columns']['settings.categories']['config']['renderMode'] === 'tree'
-        ) {
-            $extConf = GeneralUtility::makeInstance(ExtConf::class);
-            $result['processedTca']['columns']['settings.categories']['config']['treeConfig']['rootUid'] = (int)$extConf->getRootUid();
+                // check, if we have TCA-type "select" defined and it is configured as "tree"
+                && isset($result['processedTca']['columns'][$categoryField]['config']['type'])
+                && $result['processedTca']['columns'][$categoryField]['config']['type'] === 'select'
+                && isset($result['processedTca']['columns'][$categoryField]['config']['renderMode'])
+                && $result['processedTca']['columns'][$categoryField]['config']['renderMode'] === 'tree'
+            ) {
+                $extConf = GeneralUtility::makeInstance(ExtConf::class);
+                $result['processedTca']['columns'][$categoryField]['config']['treeConfig']['rootUid'] = (int)$extConf->getRootUid();
+            }
         }
 
         return $result;
