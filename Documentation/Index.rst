@@ -13,7 +13,7 @@ Events2
 
 :Extension name: |extension_name|
 :Extension key: |extension_key|
-:Version: 4.1.1
+:Version: 5.0.0
 :Description: With this extension you can create single and recurring events
 :Language: en
 :Author: |author|
@@ -32,4 +32,5 @@ The content of this document is related to TYPO3, a GNU/GPL CMS/Framework availa
   Introduction/Index
   UserManual/Index
   AdministratorManual/Index
+  FAQ/Index
 
