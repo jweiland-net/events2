@@ -29,3 +29,8 @@ mod.wizards.newContentElement.wizardItems.plugins {
     }
   }
 }
+
+# Add CType Preview
+mod.web_layout.tt_content.preview.list.events2_events = EXT:events2/Resources/Private/Templates/PluginPreview/Events.html
+mod.web_layout.tt_content.preview.list.events2_calendar = EXT:events2/Resources/Private/Templates/PluginPreview/Events.html
+mod.web_layout.tt_content.preview.list.events2_search = EXT:events2/Resources/Private/Templates/PluginPreview/Events.html
