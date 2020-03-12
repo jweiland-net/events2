@@ -41,6 +41,9 @@
 			<trans-unit id="categories">
 				<source>Categories</source>
 			</trans-unit>
+			<trans-unit id="mainCategories">
+				<source>Main Categories: You should only select categories of one level. The UID of their parent should be set in rootCategory of TS-Template.</source>
+			</trans-unit>
 			<trans-unit id="pidOfDetailPage">
 				<source>PID of detail page</source>
 			</trans-unit>
