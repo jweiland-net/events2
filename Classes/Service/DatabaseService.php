@@ -315,10 +315,11 @@ class DatabaseService
                 $endDateTime->modify('+4 weeks');
                 break;
             case 'thisWeek':
+                // 'first day of' does not work for 'weeks'. Using 'this week' jumps to first day of week. Monday
                 $startDateTime = $dateTimeUtility->convert('today');
-                $startDateTime->modify('this week'); // 'first day of' does not work for 'weeks'
+                $startDateTime->modify('this week');
                 $endDateTime = $dateTimeUtility->convert('today');
-                $endDateTime->modify('this week +6 days'); // 'last day of' does not work for 'weeks'
+                $endDateTime->modify('this week +6 days');
                 break;
             case 'latest':
             case 'list':
