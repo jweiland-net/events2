@@ -94,10 +94,10 @@ trait TestTypo3PropertiesTrait
     /**
      * @test
      */
-    public function getSysLanguageUidInitiallyReturnsZero()
+    public function getSysLanguageUidInitiallyReturnsNull()
     {
         $this->assertSame(
-            0,
+            null,
             $this->subject->getSysLanguageUid()
         );
     }
