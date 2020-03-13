@@ -83,12 +83,15 @@ trait Typo3PropertiesTrait
         $this->tstamp = $tstamp;
     }
 
-    public function getSysLanguageUid(): int
+    /**
+     * @return int|null
+     */
+    public function getSysLanguageUid()
     {
         return $this->_languageUid;
     }
 
-    public function setSysLanguageUid(int $sysLanguageUid)
+    public function setSysLanguageUid(int $sysLanguageUid = null)
     {
         $this->_languageUid = $sysLanguageUid;
     }
