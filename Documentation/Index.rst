@@ -5,7 +5,7 @@
 	* optional: soft carriage return preferred.
 
 .. Includes roles, substitutions, ...
-.. include:: _IncludedDirectives.rst
+.. include:: Includes.txt
 
 =======
 Events2
