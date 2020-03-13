@@ -124,15 +124,10 @@ class DataHandlerTest extends FunctionalTestCase
      */
     public function deleteEventByAdminWillRemoveDayRecords()
     {
+        $this->setUpBackendUserFromFixture(1);
         $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
-        $backendUser = new BackendUserAuthentication();
-        $backendUser->user = [
-            'uid' => 1,
-            'admin' => 1
-        ];
 
         $dataHandler = new DataHandler();
-        $dataHandler->admin = 1;
         $dataHandler->start(
             [],
             [
@@ -141,8 +136,7 @@ class DataHandlerTest extends FunctionalTestCase
                         'delete' => 1
                     ]
                 ]
-            ],
-            $backendUser
+            ]
         );
         $dataHandler->process_datamap();
         $dataHandler->process_cmdmap();
@@ -152,24 +146,15 @@ class DataHandlerTest extends FunctionalTestCase
         $eventEnd = new \DateTime('today midnight');
         $eventEnd->modify('last day of this month');
 
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_events2_domain_model_day');
-        $queryBuilder->getRestrictions()->removeAll();
-        $amountOfDeletedDays = $queryBuilder
-            ->count('*')
-            ->from('tx_events2_domain_model_day')
-            ->where(
-                $queryBuilder->expr()->gte(
-                    'day',
-                    $queryBuilder->createNamedParameter($eventBegin->format('U'), \PDO::PARAM_INT)
-                ),
-                $queryBuilder->expr()->lt(
-                    'day',
-                    $queryBuilder->createNamedParameter($eventEnd->format('U'), \PDO::PARAM_INT)
-                )
+        $amountOfDeletedDays = $this->getDatabaseConnection()->selectCount(
+            '*',
+            'tx_events2_domain_model_day',
+            sprintf(
+                'day >= %d AND day < %d',
+                $eventBegin->format('U'),
+                $eventEnd->format('U')
             )
-            ->execute()
-            ->fetchColumn(0);
+        );
 
         $this->assertSame(
             0,
