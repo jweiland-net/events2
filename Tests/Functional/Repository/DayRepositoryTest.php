@@ -789,14 +789,14 @@ class DayRepositoryTest extends FunctionalTestCase
     public function findEventsByTypeWeek()
     {
         $dateStart = new \DateTime('midnight');
+        $dateStart->modify('this week');
         $dateEnd = new \DateTime('midnight');
-        $dateEnd->modify('+7 days');
+        $dateEnd->modify('this week +6 days');
 
         $this->dayRepository->setSettings([
             'mergeRecurringEvents' => 0
         ]);
 
-        /** @var Day[] $days */
         $days = $this->dayRepository->findEvents('thisWeek', new Filter());
         foreach ($days as $day) {
             $this->assertGreaterThanOrEqual(
