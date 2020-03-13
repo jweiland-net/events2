@@ -115,6 +115,8 @@ return [
         ],
         'hidden' => [
             'exclude' => true,
+            'l10n_display' => 'defaultAsReadonly',
+            'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
             'config' => [
                 'type' => 'check',
@@ -147,6 +149,8 @@ return [
         ],
         'starttime' => [
             'exclude' => true,
+            'l10n_display' => 'defaultAsReadonly',
+            'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:starttime_formlabel',
             'config' => [
                 'type' => 'input',
@@ -161,6 +165,8 @@ return [
         ],
         'endtime' => [
             'exclude' => true,
+            'l10n_display' => 'defaultAsReadonly',
+            'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:endtime_formlabel',
             'config' => [
                 'type' => 'input',
@@ -175,6 +181,8 @@ return [
         ],
         'event_type' => [
             'exclude' => true,
+            'l10n_display' => 'defaultAsReadonly',
+            'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_type',
             'config' => [
                 'type' => 'select',
@@ -217,6 +225,8 @@ return [
         ],
         'event_begin' => [
             'exclude' => true,
+            'l10n_display' => 'defaultAsReadonly',
+            'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_begin',
             'config' => [
                 'type' => 'input',
@@ -228,6 +238,8 @@ return [
         ],
         'event_end' => [
             'exclude' => true,
+            'l10n_display' => 'defaultAsReadonly',
+            'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_end',
             'config' => [
                 'type' => 'input',
@@ -239,6 +251,8 @@ return [
         ],
         'event_time' => [
             'exclude' => true,
+            'l10n_display' => 'defaultAsReadonly',
+            'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_time',
             'config' => [
                 'type' => 'inline',
@@ -261,6 +275,8 @@ return [
         ],
         'same_day' => [
             'exclude' => true,
+            'l10n_display' => 'defaultAsReadonly',
+            'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.same_day',
             'onChange' => 'reload',
             'config' => [
@@ -270,6 +286,8 @@ return [
         ],
         'multiple_times' => [
             'exclude' => true,
+            'l10n_display' => 'defaultAsReadonly',
+            'l10n_mode' => 'exclude',
             'displayCond' => 'FIELD:same_day:REQ:true',
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.multiple_times',
             'config' => [
@@ -293,6 +311,8 @@ return [
         ],
         'xth' => [
             'exclude' => true,
+            'l10n_display' => 'defaultAsReadonly',
+            'l10n_mode' => 'exclude',
             'displayCond' => [
                 'AND' => [
                     'FIELD:each_weeks:=:0',
@@ -315,6 +335,8 @@ return [
         ],
         'weekday' => [
             'exclude' => true,
+            'l10n_display' => 'defaultAsReadonly',
+            'l10n_mode' => 'exclude',
             'displayCond' => [
                 'AND' => [
                     'FIELD:each_weeks:=:0',
@@ -339,6 +361,8 @@ return [
         ],
         'different_times' => [
             'exclude' => true,
+            'l10n_display' => 'defaultAsReadonly',
+            'l10n_mode' => 'exclude',
             'displayCond' => [
                 'AND' => [
                     'FIELD:each_weeks:=:0',
@@ -372,6 +396,8 @@ return [
         ],
         'each_weeks' => [
             'exclude' => true,
+            'l10n_display' => 'defaultAsReadonly',
+            'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.each_weeks',
             'onChange' => 'reload',
             'config' => [
@@ -389,6 +415,8 @@ return [
         ],
         'each_months' => [
             'exclude' => true,
+            'l10n_display' => 'defaultAsReadonly',
+            'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.each_months',
             'onChange' => 'reload',
             'config' => [
@@ -408,6 +436,8 @@ return [
         ],
         'recurring_end' => [
             'exclude' => true,
+            'l10n_display' => 'defaultAsReadonly',
+            'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.recurring_end',
             'config' => [
                 'type' => 'input',
@@ -419,6 +449,8 @@ return [
         ],
         'exceptions' => [
             'exclude' => true,
+            'l10n_display' => 'defaultAsReadonly',
+            'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.exceptions',
             'config' => [
                 'type' => 'inline',
