@@ -335,7 +335,7 @@ class DayRepository extends Repository
         );
 
         $queryBuilder
-            ->select('day.*')
+            ->select(...$this->getColumnsForDayTable())
             ->from('tx_events2_domain_model_day', 'day')
             ->leftJoin(
                 'day',
@@ -349,12 +349,40 @@ class DayRepository extends Repository
             ->orderBy('event.top_of_list', 'DESC')
             ->addOrderBy('day.sort_day_time', 'ASC')
             ->addOrderBy('day.day_time', 'ASC')
-            ->groupBy('day.uid'); // keep that because of category relation
+            ->groupBy(...$this->getColumnsForDayTable()); // keep that because of category relation
 
         $this->emitModifyQueriesOfFindByTimestampSignal($queryBuilder, $timestamp, $this->settings);
         $extbaseQuery->statement($queryBuilder);
 
         return $extbaseQuery->execute();
+    }
+
+    /**
+     * ->select() and ->groupBy() has to be the same in DB configuration
+     * where strict_mode is activated.
+     *
+     * @return array
+     */
+    protected function getColumnsForDayTable(): array
+    {
+        $selectColumns = [
+            'uid',
+            'pid',
+            'crdate',
+            'tstamp',
+            'hidden',
+            'cruser_id',
+            'day',
+            'day_time',
+            'sort_day_time',
+            'same_day_time',
+            'event'
+        ];
+        $columns = [];
+        foreach ($selectColumns as $selectColumn) {
+            $columns[] = 'day.' . $selectColumn;
+        }
+        return $columns;
     }
 
     /**
