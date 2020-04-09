@@ -789,9 +789,9 @@ class DayRepositoryTest extends FunctionalTestCase
     public function findEventsByTypeWeek()
     {
         $dateStart = new \DateTime('midnight');
-        $dateStart->modify('this week');
+        $dateStart->modify('this week'); // First day of this week 00:00:00
         $dateEnd = new \DateTime('midnight');
-        $dateEnd->modify('this week +6 days');
+        $dateEnd->modify('this week +7 days'); // Everything LESS THAN Monday next Week 00:00:00
 
         $this->dayRepository->setSettings([
             'mergeRecurringEvents' => 0
