@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types = 1);
 namespace JWeiland\Events2\UserFunc;
 
 /*
@@ -17,8 +17,6 @@ namespace JWeiland\Events2\UserFunc;
 
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * UserFunc to show event and date in title of detail page
@@ -26,24 +24,19 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 class SetTitleForDetailPage
 {
     /**
-     * @var ContentObjectRenderer
-     */
-    public $cObj;
-
-    /**
      * Render page title for detail page
      *
      * @param string $content
      * @param array $conf
      * @return string
      */
-    public function render($content, $conf)
+    public function render(string $content, array $conf): string
     {
-        $gp = GeneralUtility::_GPmerged('tx_events2_events');
+        $gp = GeneralUtility::_GPmerged('tx_events2_events') ?? [];
         if ($this->isValidRequest($gp)) {
-            $dayRecord = $this->getDayRecord((int)$gp['day']);
+            $dayRecord = $this->getDayRecord((int)$gp['event'], (int)$gp['timestamp']);
             if (!empty($dayRecord)) {
-                $date = new \DateTime(date('c', (int)$dayRecord['day']));
+                $date = new \DateTime(date('c', (int)$gp['timestamp']));
                 $eventRecord = $this->getEventRecord((int)$dayRecord['event']);
                 if (!empty($eventRecord)) {
                     $content = sprintf(
@@ -58,52 +51,37 @@ class SetTitleForDetailPage
         return $content;
     }
 
-    /**
-     * Check, if current request is valid
-     *
-     * @param array $gp
-     * @return bool
-     */
-    protected function isValidRequest($gp)
+    protected function isValidRequest(array $gp): bool
     {
         if (!is_array($gp)) {
             return false;
         }
 
-        if (
-            !isset($gp['controller']) ||
-            !isset($gp['action']) ||
-            !isset($gp['day'])
-        ) {
+        if (!isset($gp['controller'], $gp['action'], $gp['timestamp'])) {
             return false;
         }
 
-        if (
-            !MathUtility::canBeInterpretedAsInteger($gp['day']) ||
-            (int)$gp['day'] <= 0
-        ) {
+        if ((int)$gp['timestamp'] <= 0) {
             return false;
         }
 
         return true;
     }
 
-    /**
-     * Get day record by UID
-     *
-     * @param int $uid
-     * @return array|false
-     */
-    protected function getDayRecord($uid)
+    protected function getDayRecord(int $eventUid, int $timestamp): array
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_day');
         $day = $queryBuilder
-            ->select('uid', 'event', 'day')
+            ->select('event')
             ->from('tx_events2_domain_model_day')
             ->where(
                 $queryBuilder->expr()->eq(
-                    'uid',
-                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                    'event',
+                    $queryBuilder->createNamedParameter($eventUid, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'day_time',
+                    $queryBuilder->createNamedParameter($timestamp, \PDO::PARAM_INT)
                 )
             )
             ->execute()
@@ -115,13 +93,7 @@ class SetTitleForDetailPage
         return $day;
     }
 
-    /**
-     * Get event record by UID
-     *
-     * @param int $uid
-     * @return array
-     */
-    protected function getEventRecord($uid)
+    protected function getEventRecord(int $uid): array
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_event');
         $event = $queryBuilder
@@ -142,12 +114,7 @@ class SetTitleForDetailPage
         return $event;
     }
 
-    /**
-     * Get TYPO3s Connection Pool
-     *
-     * @return ConnectionPool
-     */
-    protected function getConnectionPool()
+    protected function getConnectionPool(): ConnectionPool
     {
         return GeneralUtility::makeInstance(ConnectionPool::class);
     }
