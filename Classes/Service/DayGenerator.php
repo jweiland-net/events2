@@ -18,6 +18,8 @@ use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Exception;
 use JWeiland\Events2\Utility\DateTimeUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /**
  * Class to generate all day records for an event within configured range (ExtensionManager)
@@ -42,23 +44,28 @@ class DayGenerator
     protected $dateTimeUtility;
 
     /**
-     * @param ExtConf $extConf
+     * @var Dispatcher
      */
+    protected $signalSlotDispatcher;
+
     public function injectExtConf(ExtConf $extConf)
     {
         $this->extConf = $extConf;
     }
 
-    /**
-     * @param DateTimeUtility $dateTimeUtility
-     */
     public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
     {
         $this->dateTimeUtility = $dateTimeUtility;
     }
 
+    public function __construct(
+        Dispatcher $signalSlotDispatcher = null
+    ) {
+        $this->signalSlotDispatcher = $signalSlotDispatcher ?? GeneralUtility::makeInstance(Dispatcher::class);
+    }
+
     /**
-     * Initializes this object.
+     * This method will not only initialize this object, it further will start generating all days for given event.
      *
      * @param Event $event
      * @return bool
@@ -100,6 +107,8 @@ class DayGenerator
         if ($event->getExceptions()->count()) {
             $this->addExceptions($event);
         }
+
+        $this->emitPostGenerateDaysSignal($event);
 
         return true;
     }
@@ -208,9 +217,8 @@ class DayGenerator
 
         if ($recurringEnd instanceof \DateTime && $recurringEnd < $maxEventEnd) {
             return $this->dateTimeUtility->standardizeDateTimeObject($recurringEnd);
-        } else {
-            return $this->dateTimeUtility->standardizeDateTimeObject($maxEventEnd);
         }
+        return $this->dateTimeUtility->standardizeDateTimeObject($maxEventEnd);
     }
 
     /**
@@ -258,7 +266,7 @@ class DayGenerator
     {
         $result = [];
         foreach ($this->getItemsFromTca('xth') as $key => $item) {
-            $value = (bool)($event->getXth() & pow(2, $key));
+            $value = (bool)($event->getXth() & (2 ** $key));
             $result[$item[1]] = $value;
         }
 
@@ -275,7 +283,7 @@ class DayGenerator
     {
         $result = [];
         foreach ($this->getItemsFromTca('weekday') as $key => $item) {
-            $value = (bool)($event->getWeekday() & pow(2, $key));
+            $value = (bool)($event->getWeekday() & (2 ** $key));
             $result[$item[1]] = $value;
         }
 
@@ -295,9 +303,8 @@ class DayGenerator
             is_array($GLOBALS['TCA']['tx_events2_domain_model_event']['columns'][$field]['config']['items'])
         ) {
             return $GLOBALS['TCA']['tx_events2_domain_model_event']['columns'][$field]['config']['items'];
-        } else {
-            return [];
         }
+        return [];
     }
 
     /**
@@ -396,9 +403,8 @@ class DayGenerator
                         )
                     );
                     break;
-                case 'Time':
-                    break;
                 case 'Info':
+                case 'Time':
                     break;
                 default:
                     throw new \Exception('"' . $exception->getExceptionType() . '" is no valid exception type', 1370003254);
@@ -421,5 +427,19 @@ class DayGenerator
         if ($day >= $dateToStartCalculatingFrom && $day <= $dateToStopCalculatingTo) {
             $this->addDayToStorage($day);
         }
+    }
+
+    /**
+     * Use this signal, if you want to modify the generated days.
+     *
+     * @param Event $event
+     */
+    protected function emitPostGenerateDaysSignal(Event $event)
+    {
+        $this->signalSlotDispatcher->dispatch(
+            self::class,
+            'postGenerateDays',
+            [$event, $this]
+        );
     }
 }
