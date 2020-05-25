@@ -5,6 +5,14 @@ Updating
 
 If you update EXT:events2 to a newer version, please read this section carefully!
 
+Update to Version 5.0.0
+^^^^^^^^^^^^^^^^^^^^^^^
+
+With this release we have implemented a better multilingual support. We are not done, but as long as DayGenerator
+still has problems with languages we have marked a lot of fields in translated events as readonly.
+
+If you use events2 with one language only, there is no problem to upgrade to 5.0.0.
+
 Update to Version 4.1.1
 ^^^^^^^^^^^^^^^^^^^^^^^
 
