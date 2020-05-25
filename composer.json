@@ -1,52 +1,53 @@
 {
-	"name": "jweiland/events2",
-	"type": "typo3-cms-extension",
-	"description": "Organize your single and recurring events",
-	"license": "GPL-2.0-or-later",
-	"keywords": ["typo3", "TYPO3 CMS", "event", "events2"],
-	"homepage": "http://www.jweiland.net",
-	"authors": [
-		{
-			"name": "Stefan Froemken",
-			"email": "sfroemken@jweiland.net",
-			"role": "Lead Developer"
-		}
-	],
-	"support": {
-		"email": "projects@jweiland.net",
-		"issues": "https://github.com/jweiland-net/events2/issues",
-		"source": "https://github.com/jweiland-net/events2"
-	},
-	"require": {
-		"ext-dom": "*",
-		"ext-libxml": "*",
-		"typo3/cms-core": "^8.7 || ^9.5",
-		"sjbr/static-info-tables": "^6.4"
-	},
-	"require-dev": {
-		"friendsofphp/php-cs-fixer": "^2.0",
-		"nimut/testing-framework": "^4.1",
-		"typo3/cms-scheduler": "^8.7 || ^9.5",
-		"jweiland/maps2": ">=8.0.0"
-	},
-	"autoload": {
-		"psr-4": {
-			"JWeiland\\Events2\\": "Classes"
-		}
-	},
-	"autoload-dev": {
-		"psr-4": {
-			"JWeiland\\Events2\\Tests\\": "Tests"
-		}
-	},
-	"config": {
-		"vendor-dir": ".Build/vendor",
-		"bin-dir": ".Build/bin"
-	},
-	"extra": {
-		"typo3/cms": {
-			"cms-package-dir": "{$vendor-dir}/typo3/cms",
-			"web-dir": ".Build/public"
-		}
-	}
+    "name": "jweiland/events2",
+    "type": "typo3-cms-extension",
+    "description": "Organize your single and recurring events",
+    "license": "GPL-2.0-or-later",
+    "keywords": ["typo3", "TYPO3 CMS", "event", "events2"],
+    "homepage": "http://www.jweiland.net",
+    "authors": [
+        {
+            "name": "Stefan Froemken",
+            "email": "sfroemken@jweiland.net",
+            "role": "Lead Developer"
+        }
+    ],
+    "support": {
+        "email": "projects@jweiland.net",
+        "issues": "https://github.com/jweiland-net/events2/issues",
+        "source": "https://github.com/jweiland-net/events2"
+    },
+    "require": {
+        "ext-dom": "*",
+        "ext-libxml": "*",
+        "typo3/cms-core": "^8.7.34 || ^9.5.18",
+        "sjbr/static-info-tables": "^6.4"
+    },
+    "require-dev": {
+        "roave/security-advisories": "dev-master",
+        "friendsofphp/php-cs-fixer": "^2.0",
+        "nimut/testing-framework": "^4.1",
+        "typo3/cms-scheduler": "^8.7 || ^9.5",
+        "jweiland/maps2": ">=8.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "JWeiland\\Events2\\": "Classes"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "JWeiland\\Events2\\Tests\\": "Tests"
+        }
+    },
+    "config": {
+        "vendor-dir": ".Build/vendor",
+        "bin-dir": ".Build/bin"
+    },
+    "extra": {
+        "typo3/cms": {
+            "cms-package-dir": "{$vendor-dir}/typo3/cms",
+            "web-dir": ".Build/public"
+        }
+    }
 }
