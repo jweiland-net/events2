@@ -28,7 +28,7 @@ Events2
       events, jweiland.net, recurring
 
    :Copyright:
-      2013-2019
+      2013-2020
 
    :Author:
       Stefan Froemken
