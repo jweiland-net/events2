@@ -209,7 +209,7 @@ Events2.initializeAutoCompleteForLocation = function() {
                     data: {
                         tx_events2_events: {
                             arguments: {
-                                locationPart: request.term
+                                search: request.term
                             }
                         }
                     },
