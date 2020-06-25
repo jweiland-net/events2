@@ -16,7 +16,6 @@ namespace JWeiland\Events2\ViewHelpers\Widget\Controller;
  */
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
-use JWeiland\Events2\Domain\Model\Location;
 use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Service\EventService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
