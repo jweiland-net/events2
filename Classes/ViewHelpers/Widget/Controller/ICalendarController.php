@@ -181,15 +181,7 @@ class ICalendarController extends AbstractWidgetController
             }
             $event['DTEND'] = $this->convertToTstamp($lastDay->getDay(), $endTime);
         }
-        // in case of sys_language_mode=strict, location can be empty
-        if ($day->getEvent()->getLocation() instanceof Location) {
-            $location = $this->sanitizeString(
-                $day->getEvent()->getLocation()->getLocation()
-            );
-        } else {
-            $location = '';
-        }
-        $event['LOCATION'] = $location;
+        $event['LOCATION'] = $day->getEvent()->getLocationAsString();
         $event['SUMMARY'] = $this->sanitizeString($day->getEvent()->getTitle());
         $event['DESCRIPTION'] = $this->sanitizeString($day->getEvent()->getDetailInformations());
 
