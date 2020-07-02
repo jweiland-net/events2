@@ -33,8 +33,8 @@ use TYPO3\CMS\Core\Routing\Aspect\StaticMappableAspectInterface;
  *           date: timestamp
  *           event_title: event
  *     requirements:
- *       date: '\d+'
- *       event_title: '^[a-zA-Z0-9]+\-[0-9]+$'
+ *       date: '\d{4,4}-\d{2,2}-\d{2,2}_\d{4,4}'
+ *       event_title: '^[a-zA-Z0-9\-]+$'
  *     defaultController: 'Day::show'
  *     aspects:
  *       date:
