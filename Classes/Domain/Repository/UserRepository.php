@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-/**
+/*
  * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
@@ -11,7 +11,7 @@ declare(strict_types = 1);
 
 namespace JWeiland\Events2\Domain\Repository;
 
-/**
+/*
  * This repository is not connected to the extbase system. So saving does not work.
  * It creates readOnly access to the user values in $GLOBALS.
  */

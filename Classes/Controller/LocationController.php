@@ -11,8 +11,8 @@ namespace JWeiland\Events2\Controller;
 
 use JWeiland\Events2\Domain\Model\Location;
 
-/**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+/*
+ * A simple controller to just show the location/address or maybe a Google Maps record
  */
 class LocationController extends AbstractController
 {

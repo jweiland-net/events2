@@ -18,7 +18,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\CommandController;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
-/**
+/*
  * The naming is a little bit miss-understandable. It comes from the early days of development where I had many
  * problems with all these day records.
  * Today this class deletes ALL day records and creates them from scratch.

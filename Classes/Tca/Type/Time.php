@@ -13,8 +13,8 @@ use JWeiland\Events2\Converter\TimeToStringConverter;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
-/**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+/*
+ * This class checks, if given time entry like 08:34 is valid in TCA.
  */
 class Time
 {

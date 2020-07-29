@@ -11,7 +11,7 @@ namespace JWeiland\Events2\Controller;
 
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
-/**
+/*
  * Controller for Ajax Requests. Currently only for FindSubCategories
  */
 class AjaxController extends ActionController

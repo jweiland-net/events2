@@ -14,7 +14,7 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
+/*
  * This class will be loaded, if you create a new event in frontend. There we have a
  * selectbox for location, which searches for Locations by its name and stores the
  * location UID in a hidden field.

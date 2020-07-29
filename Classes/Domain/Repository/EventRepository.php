@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-/**
+/*
  * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
@@ -20,7 +20,7 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
-/**
+/*
  * Repository to get and find event records
  */
 class EventRepository extends Repository

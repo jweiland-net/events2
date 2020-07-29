@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-/**
+/*
  * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
@@ -15,7 +15,7 @@ use JWeiland\Events2\Domain\Traits\Typo3PropertiesTrait;
 use JWeiland\Maps2\Domain\Model\PoiCollection;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
-/**
+/*
  * This class contains all getter and setters for a Location.
  */
 class Location extends AbstractEntity

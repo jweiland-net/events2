@@ -9,7 +9,7 @@
 
 namespace JWeiland\Events2\Ajax;
 
-/**
+/*
  * Interface for all eID requests
  */
 interface AjaxInterface

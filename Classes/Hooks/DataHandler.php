@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-/**
+/*
  * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
@@ -16,7 +16,7 @@ use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
-/**
+/*
  * Hook into DataHandler and clear special caches or re-generate day records after saving an event.
  */
 class DataHandler

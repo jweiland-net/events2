@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-/**
+/*
  * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
@@ -11,7 +11,7 @@ declare(strict_types = 1);
 
 namespace JWeiland\Events2\Domain\Model;
 
-/**
+/*
  * We extend the original category class here, because we have some additional methods to find
  * categories in CategoryRepository.
  *

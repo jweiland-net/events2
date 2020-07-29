@@ -23,7 +23,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Scheduler\ProgressProviderInterface;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
-/**
+/*
  * This class loops through all events and re-creates the day records.
  * Instead of the RepairCommand, this class does NOT truncate the whole day table.
  */

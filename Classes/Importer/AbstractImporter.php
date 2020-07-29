@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-/**
+/*
  * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
@@ -31,7 +31,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
-/**
+/*
  * Abstract Importer which will keep most methods for all importer scripts
  */
 abstract class AbstractImporter implements ImporterInterface

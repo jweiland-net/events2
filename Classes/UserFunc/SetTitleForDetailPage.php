@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-/**
+/*
  * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
@@ -14,7 +14,7 @@ namespace JWeiland\Events2\UserFunc;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
+/*
  * UserFunc to show event and date in title of detail page
  */
 class SetTitleForDetailPage

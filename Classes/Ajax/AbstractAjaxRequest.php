@@ -12,7 +12,7 @@ namespace JWeiland\Events2\Ajax;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
-/**
+/*
  * Abstract class for all eID requests
  */
 abstract class AbstractAjaxRequest implements AjaxInterface

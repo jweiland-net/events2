@@ -13,7 +13,7 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
-/**
+/*
  * This VH is designed to convert PoiCollection record into JSON.
  * But, of cause, you can use it for all other arrays, too.
  */

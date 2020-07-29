@@ -13,7 +13,7 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
-/**
+/*
  * This VH checks if given URI is a valid YouTube-Link
  * and returns a special YouTube embed URI.
  */

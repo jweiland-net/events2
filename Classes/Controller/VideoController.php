@@ -9,8 +9,8 @@
 
 namespace JWeiland\Events2\Controller;
 
-/**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+/*
+ * A simple controller to show video-link as YouTube-Implementation
  */
 class VideoController extends AbstractController
 {

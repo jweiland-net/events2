@@ -11,8 +11,8 @@ namespace JWeiland\Events2\Backend\FormDataProvider;
 
 use TYPO3\CMS\Backend\Form\FormDataProviderInterface;
 
-/**
- * This class sets some dynamic default values for event record
+/*
+ * This class sets some dynamic default values (like event_begin) for event record
  */
 class InitializeNewEventRecord implements FormDataProviderInterface
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-/**
+/*
  * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
@@ -13,9 +13,8 @@ namespace JWeiland\Events2\Importer;
 
 use TYPO3\CMS\Core\Resource\FileInterface;
 
-/**
- * Class Import
- *
+/*
+ * An Interface as base for all event importer classes
  */
 interface ImporterInterface
 {

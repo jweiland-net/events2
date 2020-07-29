@@ -12,8 +12,8 @@ namespace JWeiland\Events2\Ajax;
 use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
-/**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+/*
+ * This is an Ajax call to find all sub-categories for event-search Plugin
  */
 class FindSubCategories extends AbstractAjaxRequest
 {
