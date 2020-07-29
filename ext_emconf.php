@@ -27,11 +27,11 @@ $EM_CONF[$_EXTKEY] = [
     'modify_tables' => '',
     'clearCacheOnLoad' => 0,
     'lockType' => '',
-    'version' => '5.1.2',
+    'version' => '6.0.0',
     'constraints' => [
         'depends' => [
-            'typo3' => '8.7.34-9.99.99',
-            'static_info_tables' => '6.3.9',
+            'typo3' => '9.5.20-10.4.99',
+            'static_info_tables' => '6.9.0',
         ],
         'conflicts' => [
         ],
