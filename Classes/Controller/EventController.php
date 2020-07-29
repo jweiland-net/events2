@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-/**
+/*
  * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
@@ -20,7 +20,7 @@ use TYPO3\CMS\Extbase\Property\TypeConverter\DateTimeConverter;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
-/**
+/*
  * The EventController contains actions to search, create, activate, update and delete events.
  * For plain listing of events please visit DayController
  */

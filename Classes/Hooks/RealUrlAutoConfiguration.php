@@ -14,9 +14,8 @@ use JWeiland\Events2\RealUrl\TimestampMapping;
 use JWeiland\Jwtools2\RealUrl\ConvertTableAliasToId;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
-/**
+/*
  * Class RealUrl
- *
  */
 class RealUrlAutoConfiguration
 {

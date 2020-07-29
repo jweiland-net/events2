@@ -11,8 +11,8 @@ namespace JWeiland\Events2\Tca;
 
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
-/**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+/*
+ * This class adds the time and weekday to lable of time-records in TCA.
  */
 class TimeLabel
 {

@@ -9,9 +9,8 @@
 
 namespace JWeiland\Events2\RealUrl;
 
-/**
+/*
  * Class TimestampMapping
- *
  */
 class TimestampMapping
 {

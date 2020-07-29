@@ -37,7 +37,7 @@ use TYPO3\CMS\Extbase\Validation\Validator\NotEmptyValidator;
 use TYPO3\CMS\Extbase\Validation\Validator\RegularExpressionValidator;
 use TYPO3\CMS\Extbase\Validation\ValidatorResolver;
 
-/**
+/*
  * A collection of various helper methods and inject methods to keep
  * our Action Controllers small and clean
  */

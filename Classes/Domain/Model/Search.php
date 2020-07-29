@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-/**
+/*
  * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
@@ -13,7 +13,7 @@ namespace JWeiland\Events2\Domain\Model;
 
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
-/**
+/*
  * This class will not be persisted. It's a helper class to manage search requests.
  */
 class Search extends AbstractEntity

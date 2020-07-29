@@ -11,7 +11,7 @@ namespace JWeiland\Events2\Configuration;
 
 use TYPO3\CMS\Core\SingletonInterface;
 
-/**
+/*
  * This class streamlines all settings from extension manager
  */
 class ExtConf implements SingletonInterface

@@ -19,7 +19,7 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
 
-/**
+/*
  * This class is needed for jQuery calendar. If you flip to next month, this
  * class will be called and returns the events valid for selected month.
  */

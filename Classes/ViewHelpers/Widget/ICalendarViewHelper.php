@@ -13,7 +13,7 @@ use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\ViewHelpers\Widget\Controller\ICalendarController;
 use TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetViewHelper;
 
-/**
+/*
  * A Fluid widget to create a link for downloading an iCal file
  */
 class ICalendarViewHelper extends AbstractWidgetViewHelper

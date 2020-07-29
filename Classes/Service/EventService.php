@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-/**
+/*
  * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
@@ -20,7 +20,7 @@ use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
+/*
  * f.e. the time domain model can be connected 4 times with an event (exceptionTimes, differentTimes, MultipleTimes and eventTime)
  * So which time has priority, which time has to be merged
  * This Utility tries to help you/me to make life easier with events2.

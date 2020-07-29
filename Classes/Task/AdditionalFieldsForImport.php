@@ -17,9 +17,8 @@ use TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
-/**
- * Class AdditionalFieldsForImport
- *
+/*
+ * Additional FieldProvider for events2 Importer
  */
 class AdditionalFieldsForImport implements AdditionalFieldProviderInterface
 {

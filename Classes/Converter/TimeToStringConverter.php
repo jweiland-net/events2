@@ -9,8 +9,8 @@
 
 namespace JWeiland\Events2\Converter;
 
-/**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+/*
+ * With this class you can convert a time like 08:34 into its integer representation (seconds after midnight)
  */
 class TimeToStringConverter
 {

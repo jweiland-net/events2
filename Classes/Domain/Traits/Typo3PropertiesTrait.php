@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-/**
+/*
  * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
@@ -11,6 +11,9 @@ declare(strict_types = 1);
 
 namespace JWeiland\Events2\Domain\Traits;
 
+/*
+ * A Trait which contains all getters and setters for TYPO3 columns
+ */
 trait Typo3PropertiesTrait
 {
     /**

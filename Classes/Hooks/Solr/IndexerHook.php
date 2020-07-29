@@ -16,7 +16,7 @@ use JWeiland\Events2\Service\EventService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
-/**
+/*
  * As we can't create a SQL Query with JOIN in Solr configuration,
  * we have to remove invalid documents on our own here
  */

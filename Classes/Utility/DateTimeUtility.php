@@ -11,8 +11,8 @@ namespace JWeiland\Events2\Utility;
 
 use TYPO3\CMS\Core\Utility\MathUtility;
 
-/**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+/*
+ * With this class you can convert various strings and integers into a DateTime object.
  */
 class DateTimeUtility
 {

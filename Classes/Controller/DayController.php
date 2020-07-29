@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-/**
+/*
  * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
@@ -17,7 +17,7 @@ use JWeiland\Events2\Utility\CacheUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
+/*
  * The DayController contains actions for various list actions and detail view.
  */
 class DayController extends AbstractController

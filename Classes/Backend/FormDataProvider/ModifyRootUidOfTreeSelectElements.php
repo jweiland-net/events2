@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-/**
+/*
  * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
@@ -15,7 +15,7 @@ use JWeiland\Events2\Configuration\ExtConf;
 use TYPO3\CMS\Backend\Form\FormDataProviderInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
+/*
  * Reduce amount of categories to given root category declared in extension configuration
  */
 class ModifyRootUidOfTreeSelectElements implements FormDataProviderInterface

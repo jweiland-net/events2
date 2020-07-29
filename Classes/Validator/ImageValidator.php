@@ -12,8 +12,8 @@ namespace JWeiland\Events2\Validator;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
 
-/**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+/*
+ * @ToDo: Trash
  */
 class ImageValidator extends AbstractValidator
 {
