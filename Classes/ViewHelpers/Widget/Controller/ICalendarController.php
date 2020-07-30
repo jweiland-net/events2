@@ -26,14 +26,11 @@ use TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetController;
 class ICalendarController extends AbstractWidgetController
 {
     /**
-     * @var \JWeiland\Events2\Service\EventService
+     * @var EventService
      */
     protected $eventService;
 
-    /**
-     * @param EventService $eventService
-     */
-    public function injectEventService(EventService $eventService)
+    public function injectEventService(EventService $eventService): void
     {
         $this->eventService = $eventService;
     }

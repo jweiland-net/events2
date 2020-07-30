@@ -265,7 +265,6 @@ class EventController extends AbstractController
      */
     public function sendMail(string $subjectKey, Event $event): bool
     {
-        /* @var \JWeiland\Events2\Domain\Model\Day $day */
         $this->view->assign('event', $event);
 
         $this->mail->setFrom($this->extConf->getEmailFromAddress(), $this->extConf->getEmailFromName());

@@ -59,7 +59,7 @@ class Day extends AbstractEntity
     protected $sameDayTime;
 
     /**
-     * @var \JWeiland\Events2\Domain\Model\Event
+     * @var Event
      */
     protected $event;
 

@@ -9,6 +9,7 @@
 
 namespace JWeiland\Events2\Property\TypeConverter;
 
+use TYPO3\CMS\Core\Resource\DuplicationBehavior;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
@@ -184,7 +185,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
     {
         // upload file
         $uploadFolder = ResourceFactory::getInstance()->retrieveFileOrFolderObject('uploads/tx_events2/');
-        $uploadedFile = $uploadFolder->addUploadedFile($source, \TYPO3\CMS\Core\Resource\DuplicationBehavior::RENAME);
+        $uploadedFile = $uploadFolder->addUploadedFile($source, DuplicationBehavior::RENAME);
         // create Core FileReference
         return ResourceFactory::getInstance()->createFileReferenceObject(
             [

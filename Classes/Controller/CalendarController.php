@@ -22,16 +22,11 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 class CalendarController extends AbstractController
 {
     /**
-     * @var \TYPO3\CMS\Core\Page\PageRenderer
+     * @var PageRenderer
      */
     protected $pageRenderer;
 
-    /**
-     * inject page renderer.
-     *
-     * @param PageRenderer $pageRenderer
-     */
-    public function injectPageRenderer(PageRenderer $pageRenderer)
+    public function injectPageRenderer(PageRenderer $pageRenderer): void
     {
         $this->pageRenderer = $pageRenderer;
     }
@@ -120,7 +115,7 @@ class CalendarController extends AbstractController
      * get day from url
      * we can't set $day as parameter in showAction($day), because this action is of controller Calendar and not Event.
      *
-     * @return \JWeiland\Events2\Domain\Model\Day|null
+     * @return Day|null
      */
     protected function getDayFromUrl()
     {

@@ -44,179 +44,106 @@ use TYPO3\CMS\Extbase\Validation\ValidatorResolver;
 class AbstractController extends ActionController
 {
     /**
-     * @var \TYPO3\CMS\Core\Mail\MailMessage
+     * @var MailMessage
      */
     protected $mail;
 
     /**
-     * @var \JWeiland\Events2\Configuration\ExtConf
+     * @var ExtConf
      */
     protected $extConf;
 
     /**
-     * eventRepository.
-     *
-     * @var \JWeiland\Events2\Domain\Repository\EventRepository
+     * @var EventRepository
      */
     protected $eventRepository;
 
     /**
-     * dayRepository.
-     *
-     * @var \JWeiland\Events2\Domain\Repository\DayRepository
+     * @var DayRepository
      */
     protected $dayRepository;
 
     /**
-     * locationRepository.
-     *
-     * @var \JWeiland\Events2\Domain\Repository\LocationRepository
+     * @var LocationRepository
      */
     protected $locationRepository;
 
     /**
-     * organizerRepository
-     *
-     * @var \JWeiland\Events2\Domain\Repository\OrganizerRepository
+     * @var OrganizerRepository
      */
     protected $organizerRepository;
 
     /**
-     * categoryRepository.
-     *
-     * @var \JWeiland\Events2\Domain\Repository\CategoryRepository
+     * @var CategoryRepository
      */
     protected $categoryRepository;
 
     /**
-     * userRepository.
-     *
-     * @var \JWeiland\Events2\Domain\Repository\UserRepository
+     * @var UserRepository
      */
     protected $userRepository;
 
     /**
-     * persistenceManager.
-     *
-     * @var \TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface
+     * @var PersistenceManagerInterface
      */
     protected $persistenceManager;
 
     /**
-     * Persistence session.
-     *
-     * @var \TYPO3\CMS\Extbase\Persistence\Generic\Session
+     * @var Session
      */
     protected $session;
 
-    /**
-     * inject persistenceManager.
-     *
-     * @param PersistenceManagerInterface $persistenceManager
-     */
-    public function injectPersistenceManager(PersistenceManagerInterface $persistenceManager)
+    public function injectPersistenceManager(PersistenceManagerInterface $persistenceManager): void
     {
         $this->persistenceManager = $persistenceManager;
     }
 
-    /**
-     * inject mail.
-     *
-     * @param MailMessage $mail
-     */
-    public function injectMail(MailMessage $mail)
+    public function injectMail(MailMessage $mail): void
     {
         $this->mail = $mail;
     }
 
-    /**
-     * inject extConf.
-     *
-     * @param ExtConf $extConf
-     */
-    public function injectExtConf(ExtConf $extConf)
+    public function injectExtConf(ExtConf $extConf): void
     {
         $this->extConf = $extConf;
     }
 
-    /**
-     * inject event repository.
-     *
-     * @param EventRepository $eventRepository
-     */
-    public function injectEventRepository(EventRepository $eventRepository)
+    public function injectEventRepository(EventRepository $eventRepository): void
     {
         $this->eventRepository = $eventRepository;
     }
 
-    /**
-     * inject day repository.
-     *
-     * @param DayRepository $dayRepository
-     */
-    public function injectDayRepository(DayRepository $dayRepository)
+    public function injectDayRepository(DayRepository $dayRepository): void
     {
         $this->dayRepository = $dayRepository;
     }
 
-    /**
-     * inject location repository.
-     *
-     * @param LocationRepository $locationRepository
-     */
-    public function injectLocationRepository(LocationRepository $locationRepository)
+    public function injectLocationRepository(LocationRepository $locationRepository): void
     {
         $this->locationRepository = $locationRepository;
     }
 
-    /**
-     * inject organizerRepository
-     *
-     * @param OrganizerRepository $organizerRepository
-     */
-    public function injectOrganizerRepository(OrganizerRepository $organizerRepository)
+    public function injectOrganizerRepository(OrganizerRepository $organizerRepository): void
     {
         $this->organizerRepository = $organizerRepository;
     }
 
-    /**
-     * inject category repository.
-     *
-     * @param CategoryRepository $categoryRepository
-     */
-    public function injectCategoryRepository(CategoryRepository $categoryRepository)
+    public function injectCategoryRepository(CategoryRepository $categoryRepository): void
     {
         $this->categoryRepository = $categoryRepository;
     }
 
-    /**
-     * inject user repository.
-     *
-     * @param UserRepository $userRepository
-     */
-    public function injectUserRepository(UserRepository $userRepository)
+    public function injectUserRepository(UserRepository $userRepository): void
     {
         $this->userRepository = $userRepository;
     }
 
-    /**
-     * inject session.
-     *
-     * @param Session $session
-     */
-    public function injectSession(Session $session)
+    public function injectSession(Session $session): void
     {
         $this->session = $session;
     }
 
-    /**
-     * Pre configure configuration
-     *
-     * @param ConfigurationManagerInterface $configurationManager
-     * @return void
-     * @throws \Exception
-     */
-    public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager)
+    public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager): void
     {
         $this->configurationManager = $configurationManager;
 
@@ -346,16 +273,13 @@ class AbstractController extends ActionController
     protected function deleteUploadedFilesOnValidationErrors($argument)
     {
         if ($this->getControllerContext()->getRequest()->hasArgument($argument)) {
-            /** @var \JWeiland\Events2\Domain\Model\Event $event */
+            /** @var Event $event */
             $event = $this->getControllerContext()->getRequest()->getArgument($argument);
             if ($event instanceof Event) {
                 $images = $event->getImages();
-                if (count($images)) {
-                    /** @var \TYPO3\CMS\Extbase\Domain\Model\FileReference $image */
-                    foreach ($images as $image) {
-                        $orig = $image->getOriginalResource();
-                        $orig->delete();
-                    }
+                foreach ($images as $image) {
+                    $orig = $image->getOriginalResource();
+                    $orig->delete();
                 }
             }
         }
@@ -421,7 +345,7 @@ class AbstractController extends ActionController
      * delete videoLink if empty
      * Extbase can not set deleted=1 itself.
      *
-     * @param \JWeiland\Events2\Domain\Model\Event $event
+     * @param Event $event
      * @return void
      * @throws \Exception
      */
