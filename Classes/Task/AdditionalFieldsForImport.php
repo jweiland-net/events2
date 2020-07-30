@@ -81,7 +81,7 @@ class AdditionalFieldsForImport implements AdditionalFieldProviderInterface
      *
      * @return array A two dimensional array, ['Identifier' => ['fieldId' => ['code' => '', 'label' => '', 'cshKey' => '', 'cshLabel' => '']]]
      */
-    public function getAdditionalFields(array $taskInfo, $task, SchedulerModuleController $schedulerModule)
+    public function getAdditionalFields(array &$taskInfo, $task, SchedulerModuleController $schedulerModule)
     {
         // make variables available for all methods in this class
         $this->initialize($taskInfo, $task, $schedulerModule);
