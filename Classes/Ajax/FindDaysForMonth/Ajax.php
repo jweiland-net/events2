@@ -211,9 +211,7 @@ class Ajax
         ];
         $cacheHashArray = $this->cacheHashCalculator->getRelevantParameters(GeneralUtility::implodeArrayForUrl('', $query));
         $query['cHash'] = $this->cacheHashCalculator->calculateCacheHash($cacheHashArray);
-        $uri = $siteUrl . http_build_query($query);
-
-        return $uri;
+        return $siteUrl . http_build_query($query);
     }
 
     /**
