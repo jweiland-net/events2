@@ -185,7 +185,6 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
         $flashMessage = GeneralUtility::makeInstance(FlashMessage::class, $message, '', $severity);
         /** @var $flashMessageService FlashMessageService */
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
-        /** @var $defaultFlashMessageQueue FlashMessageQueue */
         $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
         $defaultFlashMessageQueue->enqueue($flashMessage);
     }

@@ -493,7 +493,6 @@ class XmlImporter extends AbstractImporter
                 $targetDirectoryPath = Environment::getPublicPath() . '/' . $rootFolder->getPublicUrl() . $relativeTargetDirectoryPath;
                 GeneralUtility::mkdir_deep($targetDirectoryPath);
 
-                /** @var Folder $targetFolder */
                 $targetFolder = ResourceFactory::getInstance()->getFolderObjectFromCombinedIdentifier(
                     $rootFolder->getCombinedIdentifier() . $relativeTargetDirectoryPath
                 );

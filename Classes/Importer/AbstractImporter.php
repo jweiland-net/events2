@@ -371,7 +371,6 @@ abstract class AbstractImporter implements ImporterInterface
         $flashMessage = GeneralUtility::makeInstance(FlashMessage::class, $message, '', $severity);
         /** @var FlashMessageService $flashMessageService */
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
-        /** @var FlashMessageQueue $defaultFlashMessageQueue */
         $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
         $defaultFlashMessageQueue->enqueue($flashMessage);
     }
