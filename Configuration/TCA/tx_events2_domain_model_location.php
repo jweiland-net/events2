@@ -11,7 +11,6 @@ $tx_events2_domain_model_event = [
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
-        'dividers2tabs' => true,
         'default_sortby' => 'ORDER BY location',
         'versioningWS' => true,
         'origUid' => 't3_origuid',
@@ -32,16 +31,21 @@ $tx_events2_domain_model_event = [
     ],
     'types' => [
         '1' => [
-            'showitem' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, location,
-            street, house_number, zip, city, country, link,
+            'showitem' => '--palette--;;languageHidden, l10n_diffsource, location,
+            --palette--;;streetHouseNumber,
+            --palette--;;zipCity,
+            country, link,
             --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access, 
             --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access'
         ],
     ],
     'palettes' => [
+        'languageHidden' => ['showitem' => 'sys_language_uid, l10n_parent, hidden'],
+        'streetHouseNumber' => ['showitem' => 'street, house_number'],
+        'zipCity' => ['showitem' => 'zip, city'],
         'access' => [
-            'showitem' => 'starttime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:starttime_formlabel,endtime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:endtime_formlabel',
-        ]
+            'showitem' => 'starttime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:starttime_formlabel,endtime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:endtime_formlabel'
+        ],
     ],
     'columns' => [
         'sys_language_uid' => [

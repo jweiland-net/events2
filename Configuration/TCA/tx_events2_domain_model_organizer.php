@@ -6,7 +6,6 @@ return [
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
-        'dividers2tabs' => true,
         'default_sortby' => 'ORDER BY organizer',
         'versioningWS' => true,
         'origUid' => 't3_origuid',
@@ -27,13 +26,15 @@ return [
     ],
     'types' => [
         '1' => [
-            'showitem' => '--palette--;;l10nHideFilter, l10n_parent, l10n_diffsource, organizer, link,
+            'showitem' => '--palette--;;languageHidden, l10n_diffsource,
+            --palette--;;organizerFilter, link,
             --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access, 
             --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access'
         ],
     ],
     'palettes' => [
-        'l10nHideFilter' => ['showitem' => 'sys_language_uid, hidden, hide_in_filter'],
+        'languageHidden' => ['showitem' => 'sys_language_uid, l10n_parent, hidden'],
+        'organizerFilter' => ['showitem' => 'organizer, hide_in_filter'],
         'access' => [
             'showitem' => 'starttime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:starttime_formlabel,endtime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:endtime_formlabel',
         ]

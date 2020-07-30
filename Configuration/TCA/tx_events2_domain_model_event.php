@@ -6,7 +6,6 @@ return [
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
-        'dividers2tabs' => true,
         'type' => 'event_type',
         'typeicon_column' => 'event_type',
         'typeicon_classes' => [
@@ -34,14 +33,14 @@ return [
     ],
     'types' => [
         'single' => [
-            'showitem' => '--palette--;;typeAndOnTop, --palette--;;titleLanguage, event_begin, event_time,
+            'showitem' => '--palette--;;languageHiddenTop, --palette--;;titleType, event_begin, event_time,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.event_details, teaser, detail_informations, free_entry, ticket_link, alternative_times, location, organizer,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.media, images, video_link, download_links, import_id,
             --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access, 
             --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access'
         ],
         'recurring' => [
-            'showitem' => 'event_type, hidden, --palette--;;titleLanguage,
+            'showitem' => '--palette--;;languageHiddenTop, --palette--;;titleType,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.recurring_event,
             --palette--;;recurringBeginEnd, event_time, same_day, multiple_times, xth, weekday, different_times, --palette--;;recurringWeekMonth,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.exceptions, exceptions,
@@ -51,7 +50,7 @@ return [
             --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access'
         ],
         'duration' => [
-            'showitem' => '--palette--;;typeAndOnTop, --palette--;;titleLanguage, --palette--;;eventBeginEnd, event_time,
+            'showitem' => '--palette--;;languageHiddenTop, --palette--;;titleType, --palette--;;eventBeginEnd, event_time,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.exceptions, exceptions,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.event_details, teaser, detail_informations, free_entry, ticket_link, alternative_times, location, organizer,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.media,--palette--;;newline, images, video_link, download_links, import_id,
@@ -60,9 +59,9 @@ return [
         ],
     ],
     'palettes' => [
-        'titleLanguage' => ['showitem' => 'title, sys_language_uid, l10n_parent'],
+        'languageHiddenTop' => ['showitem' => 'sys_language_uid, l10n_parent, hidden, top_of_list'],
+        'titleType' => ['showitem' => 'title, event_type'],
         'eventBeginEnd' => ['showitem' => 'event_begin, event_end'],
-        'typeAndOnTop' => ['showitem' => 'event_type, hidden, top_of_list'],
         'recurringBeginEnd' => ['showitem' => 'event_begin, recurring_end'],
         'recurringWeekMonth' => ['showitem' => 'each_weeks, each_months'],
         'access' => [
