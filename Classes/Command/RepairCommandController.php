@@ -12,10 +12,12 @@ namespace JWeiland\Events2\Command;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Service\DayRelationService;
-use JWeiland\Events2\Utility\DateTimeUtility;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\Controller\CommandController;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 /*
@@ -23,13 +25,8 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
  * problems with all these day records.
  * Today this class deletes ALL day records and creates them from scratch.
  */
-class RepairCommandController extends CommandController
+class RepairCommandController extends Command
 {
-    /**
-     * @var DateTimeUtility
-     */
-    protected $dateTimeUtility;
-
     /**
      * Needed to wrap activity bar:
      * ...........F.......
@@ -40,29 +37,33 @@ class RepairCommandController extends CommandController
     protected $rowCounter = 0;
 
     /**
-     * inject DateTime Utility.
-     *
-     * @param DateTimeUtility $dateTimeUtility
+     * @var OutputInterface
      */
-    public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
+    protected $output;
+
+    /**
+     * Defines the allowed options for this command
+     */
+    protected function configure()
     {
-        $this->dateTimeUtility = $dateTimeUtility;
+        $this->setDescription('Delete and re-create all day records of events2');
     }
 
     /**
-     * Repair events.
-     *
-     * @throws \Exception
+     * Delete and re-create all day records of events2
      */
-    public function eventsCommand()
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->outputLine('Start repairing day records of events');
+        $this->output = $output;
 
-        $this->outputLine('');
+        $output->writeln('Start repairing day records of events');
+        $output->writeln('');
         $this->truncateDayTable();
-        $this->outputLine('');
+        $output->writeln('');
         $this->reGenerateDayRelations();
-        $this->outputLine('');
+        $output->writeln('');
+
+        return 0;
     }
 
     /**
@@ -72,32 +73,30 @@ class RepairCommandController extends CommandController
      */
     protected function truncateDayTable()
     {
-        /** @var DatabaseService $databaseService */
         $databaseService = GeneralUtility::makeInstance(DatabaseService::class);
         $databaseService->truncateTable('tx_events2_domain_model_day', true);
 
-        $this->outputLine('I have truncated the day table' . PHP_EOL);
+        $this->output->writeln('I have truncated the day table' . PHP_EOL);
     }
 
     /**
      * After solving bugs in DayGenerator it would be good to recreate all days for events
      *
      * @return void
-     * @throws \Exception
      */
     protected function reGenerateDayRelations()
     {
         $eventCounter = 0;
         $dayCounter = 0;
-        $dayRelations = $this->objectManager->get(DayRelationService::class);
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $dayRelations = $objectManager->get(DayRelationService::class);
 
         $this->echoValue('Process each event record' . PHP_EOL);
 
-        /** @var DatabaseService $databaseService */
         $databaseService = GeneralUtility::makeInstance(DatabaseService::class);
         $rows = $databaseService->getCurrentAndFutureEvents();
         if (!empty($rows)) {
-            $persistenceManager = $this->objectManager->get(PersistenceManager::class);
+            $persistenceManager = $objectManager->get(PersistenceManager::class);
 
             // with each changing PID pageTSConfigCache will grow by roundabout 200KB
             // which may exceed memory_limit
@@ -132,7 +131,7 @@ class RepairCommandController extends CommandController
             }
         }
 
-        $this->outputLine(sprintf(
+        $this->output->writeln(sprintf(
             'We have recreated the day records for %d event records and %d day records' . PHP_EOL,
             $eventCounter,
             $dayCounter
