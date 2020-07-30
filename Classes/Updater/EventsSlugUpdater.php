@@ -174,10 +174,8 @@ class EventsSlugUpdater implements UpgradeWizardInterface
     protected function getUniqueSlugStatement(int $uid, string $slug)
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($this->tableName);
-        $queryBuilder
-            ->getRestrictions()
-            ->removeAll()
-            ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
+        $queryBuilder->getRestrictions()->removeAll();
+        $queryBuilder->getRestrictions()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
 
         return $queryBuilder
             ->select('uid')
