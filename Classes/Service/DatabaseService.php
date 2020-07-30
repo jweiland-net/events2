@@ -543,16 +543,12 @@ class DatabaseService
      */
     public function addVisibilityConstraintToQuery(QueryBuilder $queryBuilder)
     {
-        if (version_compare(TYPO3_branch, '9.4', '>=')) {
-            $context = GeneralUtility::makeInstance(Context::class);
-            $showHiddenRecords = (bool)$context->getPropertyFromAspect(
-                'visibility',
-                'includeHiddenContent',
-                false
-            );
-        } else {
-            $showHiddenRecords = (bool)$this->getTypoScriptFrontendController()->showHiddenRecords;
-        }
+        $context = GeneralUtility::makeInstance(Context::class);
+        $showHiddenRecords = (bool)$context->getPropertyFromAspect(
+            'visibility',
+            'includeHiddenContent',
+            false
+        );
 
         if ($showHiddenRecords) {
             $queryBuilder->getRestrictions()->removeByType(HiddenRestriction::class);

@@ -54,11 +54,7 @@ class AjaxTest extends UnitTestCase
         ];
 
         $this->phpFrontendProphecy = $this->prophesize(PhpFrontend::class);
-        if (version_compare(TYPO3_branch, '9.0', '>=')) {
-            $this->phpFrontendProphecy->require(Argument::any())->shouldBeCalled()->willReturn($cacheData);
-        } else {
-            $this->phpFrontendProphecy->requireOnce(Argument::any())->shouldBeCalled()->willReturn(true);
-        }
+        $this->phpFrontendProphecy->require(Argument::any())->shouldBeCalled()->willReturn($cacheData);
 
         /** @var CacheManager|ObjectProphecy $cacheManagerProphecy */
         $this->cacheManagerProphecy = $this->prophesize(CacheManager::class);

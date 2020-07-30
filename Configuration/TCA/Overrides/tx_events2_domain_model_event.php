@@ -29,31 +29,29 @@ call_user_func(function () {
         $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['location']['config']['minitems'] = 1;
     }
 
-    if (version_compare(TYPO3_branch, '9.4', '>=')) {
-        // Router configuration can not access sanitize() method of slugs, so we have to create our own column
-        $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['path_segment']['config'] = [
-            'type' => 'slug',
-            'size' => 50,
-            'generatorOptions' => [
-                'fields' => ['title'],
-                // As pageSlug may contain slashes, we have to remove page slug
-                'prefixParentPageSlug' => false,
-                'replacements' => [
-                    '/' => '-'
-                ],
+    // Router configuration can not access sanitize() method of slugs, so we have to create our own column
+    $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['path_segment']['config'] = [
+        'type' => 'slug',
+        'size' => 50,
+        'generatorOptions' => [
+            'fields' => ['title'],
+            // As pageSlug may contain slashes, we have to remove page slug
+            'prefixParentPageSlug' => false,
+            'replacements' => [
+                '/' => '-'
             ],
-            'fallbackCharacter' => '-',
-            // Do not add / in path_segments, as they are not allowed in RouteEnhancer configuration
-            'prependSlash' => false,
-            'eval' => 'uniqueInSite',
-            'default' => ''
-        ];
-        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
-            'tx_events2_domain_model_event',
-            'path_segment',
-            '',
-            'after:title'
-        );
-        $GLOBALS['TCA']['tx_events2_domain_model_event']['interface']['showRecordFieldList'] .= ',path_segment';
-    }
+        ],
+        'fallbackCharacter' => '-',
+        // Do not add / in path_segments, as they are not allowed in RouteEnhancer configuration
+        'prependSlash' => false,
+        'eval' => 'uniqueInSite',
+        'default' => ''
+    ];
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
+        'tx_events2_domain_model_event',
+        'path_segment',
+        '',
+        'after:title'
+    );
+    $GLOBALS['TCA']['tx_events2_domain_model_event']['interface']['showRecordFieldList'] .= ',path_segment';
 });

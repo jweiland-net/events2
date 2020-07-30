@@ -425,21 +425,11 @@ class DayRepositoryTest extends FunctionalTestCase
 
     protected function setShowHiddenRecords()
     {
-        if (version_compare(TYPO3_branch, '9.4', '>=')) {
-            $context = GeneralUtility::makeInstance(Context::class);
-            $context->setAspect(
-                'visibility',
-                GeneralUtility::makeInstance(VisibilityAspect::class, false, true)
-            );
-        } else {
-            $GLOBALS['TSFE'] = GeneralUtility::makeInstance(
-                TypoScriptFrontendController::class,
-                [],
-                1,
-                0
-            );
-            $GLOBALS['TSFE']->showHiddenRecords = 1;
-        }
+        $context = GeneralUtility::makeInstance(Context::class);
+        $context->setAspect(
+            'visibility',
+            GeneralUtility::makeInstance(VisibilityAspect::class, false, true)
+        );
     }
 
     /**
