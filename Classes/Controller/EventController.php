@@ -261,9 +261,9 @@ class EventController extends AbstractController
      *
      * @param string $subjectKey
      * @param Event $event
-     * @return int The amount of email receivers
+     * @return bool True, if mail was sent
      */
-    public function sendMail(string $subjectKey, Event $event): int
+    public function sendMail(string $subjectKey, Event $event): bool
     {
         /* @var \JWeiland\Events2\Domain\Model\Day $day */
         $this->view->assign('event', $event);
@@ -271,8 +271,12 @@ class EventController extends AbstractController
         $this->mail->setFrom($this->extConf->getEmailFromAddress(), $this->extConf->getEmailFromName());
         $this->mail->setTo($this->extConf->getEmailToAddress(), $this->extConf->getEmailToName());
         $this->mail->setSubject(LocalizationUtility::translate('email.subject.' . $subjectKey, 'events2'));
-        $this->mail->setBody($this->view->render(), 'text/html');
+        if (version_compare(TYPO3_branch, '10.0', '>=')) {
+            $this->mail->html($this->view->render());
+        } else {
+            $this->mail->setBody($this->view->render(), 'text/html');
+        }
 
-        return $this->mail->send();
+        return (bool)$this->mail->send();
     }
 }
