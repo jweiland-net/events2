@@ -130,7 +130,6 @@ class AdditionalFieldsForImport implements AdditionalFieldProviderInterface
             $attributes = array_merge($attributes, $configuration['attr']);
         }
 
-        /** @var TagBuilder $tagBuilder */
         $tagBuilder = GeneralUtility::makeInstance(TagBuilder::class);
         $tagBuilder->setTagName('input');
         $tagBuilder->addAttributes($attributes);
