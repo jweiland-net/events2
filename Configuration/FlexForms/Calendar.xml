@@ -15,6 +15,7 @@
 							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:categories</label>
 							<config>
 								<type>select</type>
+								<renderType>selectTree</renderType>
 								<foreign_table>sys_category</foreign_table>
 								<renderMode>tree</renderMode>
 								<treeConfig>
