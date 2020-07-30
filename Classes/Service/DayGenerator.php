@@ -31,12 +31,12 @@ class DayGenerator
     protected $dateTimeStorage = [];
 
     /**
-     * @var \JWeiland\Events2\Configuration\ExtConf
+     * @var ExtConf
      */
     protected $extConf;
 
     /**
-     * @var \JWeiland\Events2\Utility\DateTimeUtility
+     * @var DateTimeUtility
      */
     protected $dateTimeUtility;
 

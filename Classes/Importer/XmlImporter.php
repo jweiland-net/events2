@@ -26,6 +26,7 @@ use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /*
@@ -516,8 +517,7 @@ class XmlImporter extends AbstractImporter
                 }
 
                 // Create new FileReference
-                /** @var \TYPO3\CMS\Extbase\Domain\Model\FileReference $extbaseFileReference */
-                $extbaseFileReference = $this->objectManager->get(\TYPO3\CMS\Extbase\Domain\Model\FileReference::class);
+                $extbaseFileReference = $this->objectManager->get(FileReference::class);
                 $extbaseFileReference->setPid($this->storagePid);
                 $extbaseFileReference->setOriginalResource(ResourceFactory::getInstance()->createFileReferenceObject(
                     [

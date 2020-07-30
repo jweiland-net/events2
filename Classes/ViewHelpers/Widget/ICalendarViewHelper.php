@@ -31,12 +31,6 @@ class ICalendarViewHelper extends AbstractWidgetViewHelper
         $this->controller = $controller;
     }
 
-    /**
-     * Initialize arguments.
-     *
-     * @api
-     * @throws \TYPO3Fluid\Fluid\Core\ViewHelper\Exception
-     */
     public function initializeArguments()
     {
         parent::initializeArguments();

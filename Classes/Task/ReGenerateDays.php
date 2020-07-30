@@ -66,7 +66,6 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
 
         // with each changing PID pageTSConfigCache will grow by roundabout 200KB
         // which may exceed memory_limit
-        /** @var $runtimeCache \TYPO3\CMS\Core\Cache\Frontend\AbstractFrontend */
         $runtimeCache = GeneralUtility::makeInstance(CacheManager::class)
             ->getCache('cache_runtime');
 

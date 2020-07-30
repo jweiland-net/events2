@@ -10,6 +10,7 @@
 namespace JWeiland\Events2\Ajax;
 
 use JWeiland\Events2\Domain\Repository\CategoryRepository;
+use TYPO3\CMS\Extbase\Domain\Model\Category;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /*
@@ -18,16 +19,11 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 class FindSubCategories extends AbstractAjaxRequest
 {
     /**
-     * @var \JWeiland\Events2\Domain\Repository\CategoryRepository
+     * @var CategoryRepository
      */
     protected $categoryRepository;
 
-    /**
-     * inject category repository.
-     *
-     * @param CategoryRepository $categoryRepository
-     */
-    public function injectCategoryRepository(CategoryRepository $categoryRepository)
+    public function injectCategoryRepository(CategoryRepository $categoryRepository): void
     {
         $this->categoryRepository = $categoryRepository;
     }
@@ -51,14 +47,12 @@ class FindSubCategories extends AbstractAjaxRequest
      * We don't want to add a huge JSON String with all properties through AJAX-Process
      * It is easier and smaller to pass only needed values like UID and Label.
      *
-     * @param \TYPO3\CMS\Extbase\Persistence\QueryResultInterface $categories
-     *
+     * @param QueryResultInterface|Category[] $categories
      * @return array
      */
     protected function reduceCategoryData(QueryResultInterface $categories)
     {
         $response = [];
-        /** @var \TYPO3\CMS\Extbase\Domain\Model\Category $category */
         foreach ($categories as $category) {
             $response[$category->getUid()] = $category->getTitle();
         }
