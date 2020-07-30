@@ -3,9 +3,9 @@ if (!defined('TYPO3_MODE')) {
     die('Access denied.');
 }
 
-call_user_func(function ($extKey) {
+call_user_func(function () {
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-        'JWeiland.' . $extKey,
+        'JWeiland.events2',
         'Events',
         [
             'Day' => 'list, listLatest, listToday, listWeek, listRange, show, showByTimestamp',
@@ -20,7 +20,7 @@ call_user_func(function ($extKey) {
     );
 
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-        'JWeiland.' . $extKey,
+        'JWeiland.events2',
         'Calendar',
         [
             'Calendar' => 'show',
@@ -32,7 +32,7 @@ call_user_func(function ($extKey) {
     );
 
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-        'JWeiland.' . $extKey,
+        'JWeiland.events2',
         'Search',
         [
             'Search' => 'show',
@@ -56,7 +56,7 @@ call_user_func(function ($extKey) {
 
     // create scheduler to create/update days with recurrency
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\JWeiland\Events2\Task\ReGenerateDays::class] = [
-        'extension' => $extKey,
+        'extension' => 'events2',
         'title' => 'Create/Update Days',
         'description' => 'Re-Generate day records for events with recurrency. It also deletes old iCAL downloads.',
         'additionalFields' => 'JWeiland\\Events2\\Task\\ReGenerateDays',
@@ -64,7 +64,7 @@ call_user_func(function ($extKey) {
 
     // create scheduler to import events from different sources
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\JWeiland\Events2\Task\Import::class] = [
-        'extension' => $extKey,
+        'extension' => 'events2',
         'title' => 'Import events',
         'description' => 'Import events over a XML interface or by mail into events2.',
         'additionalFields' => \JWeiland\Events2\Task\AdditionalFieldsForImport::class,
@@ -136,4 +136,4 @@ call_user_func(function ($extKey) {
     if (version_compare(TYPO3_branch, '9.4', '>=')) {
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['events2UpdateSlug'] = \JWeiland\Events2\Updater\EventsSlugUpdater::class;
     }
-}, $_EXTKEY);
+});
