@@ -104,7 +104,7 @@ class AdditionalFieldsForImport implements AdditionalFieldProviderInterface
      *
      * @return void
      */
-    protected function initialize(array &$taskInfo, $task, SchedulerModuleController $schedulerModule)
+    protected function initialize(array $taskInfo, $task, SchedulerModuleController $schedulerModule)
     {
         $this->taskInfo = $taskInfo;
         $this->task = $task;
