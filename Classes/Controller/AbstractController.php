@@ -143,6 +143,10 @@ class AbstractController extends ActionController
         $this->session = $session;
     }
 
+    /**
+     * @param ConfigurationManagerInterface $configurationManager
+     * @throws \Exception
+     */
     public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager): void
     {
         $this->configurationManager = $configurationManager;

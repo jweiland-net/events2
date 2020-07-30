@@ -49,7 +49,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
      *
      * @api
      */
-    public function canConvertFrom($source, $targetType)
+    public function canConvertFrom($source, string $targetType): bool
     {
         // check if $source consists of uploaded files
         foreach ($source as $uploadedFile) {
