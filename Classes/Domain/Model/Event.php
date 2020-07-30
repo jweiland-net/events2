@@ -14,10 +14,10 @@ namespace JWeiland\Events2\Domain\Model;
 use JWeiland\Events2\Domain\Traits\Typo3PropertiesTrait;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Annotation as Extbase;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
-
 /*
  * This class contains all getter and setters for an Event.
  */
@@ -37,20 +37,20 @@ class Event extends AbstractEntity
 
     /**
      * @var string
-     * @validate NotEmpty
+     * @Extbase\Validate("NotEmpty")
      */
     protected $title = '';
 
     /**
      * @var \DateTime
-     * @validate NotEmpty
+     * @Extbase\Validate("NotEmpty")
      */
     protected $eventBegin;
 
     /**
      * @var \JWeiland\Events2\Domain\Model\Time
-     * @cascade remove
-     * @validate NotEmpty
+     * @Extbase\ORM\Cascade("remove")
+     * @Extbase\Validate("NotEmpty")
      */
     protected $eventTime;
 
@@ -66,8 +66,8 @@ class Event extends AbstractEntity
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Time>
-     * @cascade remove
-     * @lazy
+     * @Extbase\ORM\Cascade("remove")
+     * @Extbase\ORM\Lazy
      */
     protected $multipleTimes;
 
@@ -83,8 +83,8 @@ class Event extends AbstractEntity
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Time>
-     * @cascade remove
-     * @lazy
+     * @Extbase\ORM\Cascade("remove")
+     * @Extbase\ORM\Lazy
      */
     protected $differentTimes;
 
@@ -105,8 +105,8 @@ class Event extends AbstractEntity
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Exception>
-     * @cascade remove
-     * @lazy
+     * @Extbase\ORM\Cascade("remove")
+     * @Extbase\ORM\Lazy
      */
     protected $exceptions;
 
@@ -127,21 +127,21 @@ class Event extends AbstractEntity
 
     /**
      * @var \JWeiland\Events2\Domain\Model\Link
-     * @cascade remove
+     * @Extbase\ORM\Cascade("remove")
      */
     protected $ticketLink;
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Category>
-     * @validate NotEmpty
-     * @lazy
+     * @Extbase\Validate("NotEmpty")
+     * @Extbase\ORM\Lazy
      */
     protected $categories;
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Day>
-     * @cascade remove
-     * @lazy
+     * @Extbase\ORM\Cascade("remove")
+     * @Extbase\ORM\Lazy
      */
     protected $days;
 
@@ -157,21 +157,21 @@ class Event extends AbstractEntity
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference>
-     * @cascade remove
-     * @lazy
+     * @Extbase\ORM\Cascade("remove")
+     * @Extbase\ORM\Lazy
      */
     protected $images;
 
     /**
      * @var \JWeiland\Events2\Domain\Model\Link
-     * @cascade remove
+     * @Extbase\ORM\Cascade("remove")
      */
     protected $videoLink;
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Link>
-     * @cascade remove
-     * @lazy
+     * @Extbase\ORM\Cascade("remove")
+     * @Extbase\ORM\Lazy
      */
     protected $downloadLinks;
 
