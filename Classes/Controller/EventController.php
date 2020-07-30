@@ -234,7 +234,11 @@ class EventController extends AbstractController
         $this->mail->setFrom($this->extConf->getEmailFromAddress(), $this->extConf->getEmailFromName());
         $this->mail->setTo($this->extConf->getEmailToAddress(), $this->extConf->getEmailToName());
         $this->mail->setSubject(LocalizationUtility::translate('email.subject.activate', 'events2'));
-        $this->mail->setBody($this->view->render(), 'text/html');
+        if (version_compare(TYPO3_branch, '10.0', '>=')) {
+            $this->mail->html($this->view->render());
+        } else {
+            $this->mail->setBody($this->view->render(), 'text/html');
+        }
         $this->mail->send();
 
         $this->redirect('list', 'Day');
