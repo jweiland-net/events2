@@ -12,6 +12,7 @@ declare(strict_types = 1);
 namespace JWeiland\Events2\Domain\Model;
 
 use JWeiland\Events2\Domain\Traits\Typo3PropertiesTrait;
+use TYPO3\CMS\Extbase\Annotation as Extbase;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /*
@@ -28,25 +29,29 @@ class Time extends AbstractEntity
 
     /**
      * @var string
-     * @validate NotEmpty,RegularExpression(regularExpression=/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/)
+     * @Extbase\Validate("NotEmpty")
+     * @Extbase\Validate("RegularExpression", options={"regularExpression": "/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/"})
      */
     protected $timeBegin = '';
 
     /**
      * @var string
-     * @validate RegularExpression(regularExpression=/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/)
+     * @Extbase\Validate("NotEmpty")
+     * @Extbase\Validate("RegularExpression", options={"regularExpression": "/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/"})
      */
     protected $timeEntry = '';
 
     /**
      * @var string
-     * @validate RegularExpression(regularExpression=/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/)
+     * @Extbase\Validate("NotEmpty")
+     * @Extbase\Validate("RegularExpression", options={"regularExpression": "/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/"})
      */
     protected $duration = '';
 
     /**
      * @var string
-     * @validate RegularExpression(regularExpression=/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/)
+     * @Extbase\Validate("NotEmpty")
+     * @Extbase\Validate("RegularExpression", options={"regularExpression": "/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/"})
      */
     protected $timeEnd = '';
 
