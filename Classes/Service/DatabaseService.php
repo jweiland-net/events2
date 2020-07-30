@@ -203,12 +203,10 @@ class DatabaseService
             $queryBuilder->createNamedParameter($endDate->format('U'), \PDO::PARAM_INT)
         );
 
-        $daysInMonth = $queryBuilder
+        return $queryBuilder
             ->where(...$constraint)
             ->execute()
             ->fetchAll();
-
-        return $daysInMonth;
     }
 
     /**

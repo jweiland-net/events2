@@ -32,9 +32,7 @@ class AjaxController extends ActionController
             if (class_exists($className)) {
                 $object = $this->objectManager->get($className);
                 if (method_exists($object, 'processAjaxRequest')) {
-                    $result = $object->processAjaxRequest($arguments);
-
-                    return $result;
+                    return $object->processAjaxRequest($arguments);
                 }
             }
         }

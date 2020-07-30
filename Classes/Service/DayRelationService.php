@@ -314,9 +314,7 @@ class DayRelationService
             list($hour, $minute) = $this->getHourAndMinuteFromTime($this->firstTime);
         }
 
-        $sortDayTime = $this->getSortDayTime($day, $hour, $minute, $event);
-
-        return $sortDayTime;
+        return $this->getSortDayTime($day, $hour, $minute, $event);
     }
 
     /**
