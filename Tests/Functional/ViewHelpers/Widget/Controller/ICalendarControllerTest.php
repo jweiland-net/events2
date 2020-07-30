@@ -26,6 +26,7 @@ use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\ViewHelpers\Widget\Controller\ICalendarController;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Web\Response;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -124,7 +125,7 @@ class ICalendarControllerTest extends FunctionalTestCase
             $dayRelationService->createDayRelations($event->getUid());
         }
 
-        $this->tempDirectory = PATH_site . 'typo3temp/tx_events2/iCal/';
+        $this->tempDirectory = Environment::getPublicPath() . '/' . 'typo3temp/tx_events2/iCal/';
     }
 
     /**

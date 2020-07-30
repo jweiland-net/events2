@@ -15,6 +15,7 @@ use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Service\EventService;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetController;
@@ -63,7 +64,7 @@ class ICalendarController extends AbstractWidgetController
         );
 
         $content = preg_replace('/\h+/', ' ', $this->view->render());
-        GeneralUtility::writeFileToTypo3tempDir(PATH_site . $filePath, $content);
+        GeneralUtility::writeFileToTypo3tempDir(Environment::getPublicPath() . '/' . $filePath, $content);
 
         return sprintf(
             '<a href="%s" target="_blank">%s</a>',

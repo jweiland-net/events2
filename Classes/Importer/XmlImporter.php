@@ -20,6 +20,7 @@ use JWeiland\Events2\Domain\Model\Organizer;
 use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Task\Import;
 use TYPO3\CMS\Core\Charset\CharsetConverter;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\Folder;
@@ -488,7 +489,7 @@ class XmlImporter extends AbstractImporter
                     $this->today->format('d'),
                     $this->today->format('His')
                 );
-                $targetDirectoryPath = PATH_site . $rootFolder->getPublicUrl() . $relativeTargetDirectoryPath;
+                $targetDirectoryPath = Environment::getPublicPath() . '/' . $rootFolder->getPublicUrl() . $relativeTargetDirectoryPath;
                 GeneralUtility::mkdir_deep($targetDirectoryPath);
 
                 /** @var Folder $targetFolder */
