@@ -35,6 +35,7 @@ use TYPO3\CMS\Extbase\Validation\Validator\ConjunctionValidator;
 use TYPO3\CMS\Extbase\Validation\Validator\GenericObjectValidator;
 use TYPO3\CMS\Extbase\Validation\Validator\NotEmptyValidator;
 use TYPO3\CMS\Extbase\Validation\Validator\RegularExpressionValidator;
+use TYPO3\CMS\Extbase\Validation\Validator\ValidatorInterface;
 use TYPO3\CMS\Extbase\Validation\ValidatorResolver;
 
 /*
@@ -304,10 +305,11 @@ class AbstractController extends ActionController
             $eventRaw = $this->request->getArgument('event') &&
             empty($eventRaw['videoLink']['link'])
         ) {
-            // create a new RegExpValidator for property link
+            /** @var ValidatorInterface $regExpValidator */
             $regExpValidator = $this->objectManager->get(RegularExpressionValidator::class, [
                 'regularExpression' => '~^(|http:|https:)//(|www.)youtube(.*?)(v=|embed/)([a-zA-Z0-9_-]+)~i',
             ]);
+            /** @var ValidatorInterface $genericObjectValidator */
             $genericObjectValidator = $this->objectManager->get(GenericObjectValidator::class);
             $genericObjectValidator->addPropertyValidator('link', $regExpValidator);
 
