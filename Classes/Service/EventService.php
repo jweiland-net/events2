@@ -190,7 +190,7 @@ class EventService
      * @param \DateTime $date
      * @param Time $time
      */
-    protected function addDateTimeObjectsToTime(\DateTime $date, Time $time): Time
+    protected function addDateTimeObjectsToTime(\DateTime $date, Time $time): void
     {
         $format = 'd.m.Y H:i:s';
         foreach (['TimeEntry', 'TimeBegin', 'TimeEnd'] as $property) {
