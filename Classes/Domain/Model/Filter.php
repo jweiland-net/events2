@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 namespace JWeiland\Events2\Domain\Model;
 
 /*
@@ -32,18 +32,12 @@ class Filter extends AbstractEntity
      */
     protected $organizer;
 
-    /**
-     * @return int|null
-     */
-    public function getOrganizer()
+    public function getOrganizer(): ?int
     {
         return $this->organizer;
     }
 
-    /**
-     * @param int|null $organizer
-     */
-    public function setOrganizer($organizer = null)
+    public function setOrganizer(?int $organizer = null)
     {
         $this->organizer = $organizer;
     }

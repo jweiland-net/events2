@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the package jweiland/events2.
@@ -130,10 +130,7 @@ class Time extends AbstractEntity
      * Helpful to use f:format.date()
      */
 
-    /**
-     * @return \DateTime|null
-     */
-    public function getTimeBeginAsDateTime()
+    public function getTimeBeginAsDateTime(): ?\DateTime
     {
         return $this->timeBeginAsDateTime;
     }
@@ -143,10 +140,7 @@ class Time extends AbstractEntity
         $this->timeBeginAsDateTime = $timeBegin;
     }
 
-    /**
-     * @return \DateTime|null
-     */
-    public function getTimeEntryAsDateTime()
+    public function getTimeEntryAsDateTime(): ?\DateTime
     {
         return $this->timeEntryAsDateTime;
     }
@@ -156,10 +150,7 @@ class Time extends AbstractEntity
         $this->timeEntryAsDateTime = $timeEntry;
     }
 
-    /**
-     * @return \DateTime|null
-     */
-    public function getTimeEndAsDateTime()
+    public function getTimeEndAsDateTime(): ?\DateTime
     {
         return $this->timeEndAsDateTime;
     }

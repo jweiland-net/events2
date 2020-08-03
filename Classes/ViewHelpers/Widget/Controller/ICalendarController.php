@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the package jweiland/events2.
@@ -121,7 +121,7 @@ class ICalendarController extends AbstractWidgetController
      * @param Event $event
      * @return Day|null
      */
-    protected function getFirstDayOfEvent(Event $event)
+    protected function getFirstDayOfEvent(Event $event): ?Day
     {
         $days = [];
         foreach ($event->getDays() as $day) {
@@ -139,7 +139,7 @@ class ICalendarController extends AbstractWidgetController
      * @param Event $event
      * @return Day|null
      */
-    protected function getLastDayOfEvent(Event $event)
+    protected function getLastDayOfEvent(Event $event): ?Day
     {
         $days = [];
         foreach ($event->getDays() as $day) {

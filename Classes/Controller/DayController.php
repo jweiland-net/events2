@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the package jweiland/events2.
@@ -25,7 +25,7 @@ class DayController extends AbstractController
     /**
      * @param Filter|null $filter
      */
-    public function listAction(Filter $filter = null)
+    public function listAction(?Filter $filter = null): void
     {
         $days = $this->dayRepository->findEvents('list', $this->validateAndAssignFilter($filter));
         $this->view->assign('days', $days);
@@ -35,7 +35,7 @@ class DayController extends AbstractController
     /**
      * @param Filter|null $filter
      */
-    public function listLatestAction(Filter $filter = null)
+    public function listLatestAction(?Filter $filter = null): void
     {
         $days = $days = $this->dayRepository->findEvents(
             'latest',
@@ -50,7 +50,7 @@ class DayController extends AbstractController
     /**
      * @param Filter|null $filter
      */
-    public function listTodayAction(Filter $filter = null)
+    public function listTodayAction(?Filter $filter = null): void
     {
         $days = $this->dayRepository->findEvents('today', $this->validateAndAssignFilter($filter));
         $this->view->assign('days', $days);
@@ -60,7 +60,7 @@ class DayController extends AbstractController
     /**
      * @param Filter|null $filter
      */
-    public function listThisWeekAction(Filter $filter = null)
+    public function listThisWeekAction(?Filter $filter = null): void
     {
         $days = $this->dayRepository->findEvents('thisWeek', $this->validateAndAssignFilter($filter));
         $this->view->assign('days', $days);
@@ -70,7 +70,7 @@ class DayController extends AbstractController
     /**
      * @param Filter|null $filter
      */
-    public function listRangeAction(Filter $filter = null)
+    public function listRangeAction(?Filter $filter = null): void
     {
         $days = $this->dayRepository->findEvents('range', $this->validateAndAssignFilter($filter));
         $this->view->assign('days', $days);
@@ -83,7 +83,7 @@ class DayController extends AbstractController
      * @param int $event
      * @param int $timestamp
      */
-    public function showAction(int $event, int $timestamp = 0)
+    public function showAction(int $event, int $timestamp = 0): void
     {
         $day = $this->dayRepository->findDayByEventAndTimestamp($event, $timestamp);
         $jsonLdService = GeneralUtility::makeInstance(JsonLdService::class);
@@ -106,7 +106,7 @@ class DayController extends AbstractController
     /**
      * @param int $timestamp
      */
-    public function showByTimestampAction(int $timestamp)
+    public function showByTimestampAction(int $timestamp): void
     {
         $days = $this->dayRepository->findByTimestamp((int)$timestamp);
         $this->view->assign('days', $days);

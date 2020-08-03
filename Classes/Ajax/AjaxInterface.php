@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -14,12 +16,5 @@ namespace JWeiland\Events2\Ajax;
  */
 interface AjaxInterface
 {
-    /**
-     * process ajax request.
-     *
-     * @param array $arguments Arguments to process
-     *
-     * @return string
-     */
-    public function processAjaxRequest(array $arguments);
+    public function processAjaxRequest(array $arguments): string;
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -173,11 +175,6 @@ class AbstractController extends ActionController
         $this->settings = $mergedFlexFormSettings;
     }
 
-    /**
-     * PreProcessing of all actions.
-     *
-     * @return void
-     */
     public function initializeAction()
     {
         $this->eventRepository->setSettings($this->settings);
@@ -199,15 +196,6 @@ class AbstractController extends ActionController
         }
     }
 
-    /**
-     * Initializes the view before invoking an action method.
-     *
-     * Override this method to solve assign variables common for all actions
-     * or prepare the view in another way before the action is called.
-     *
-     * @param ViewInterface $view The view to be initialized
-     * @return void
-     */
     protected function initializeView(ViewInterface $view)
     {
         $this->view->assign('data', $this->configurationManager->getContentObject()->data);
@@ -227,7 +215,7 @@ class AbstractController extends ActionController
      * @param array $override
      * @return array
      */
-    protected function getJsVariables(array $override = [])
+    protected function getJsVariables(array $override = []): array
     {
         // remove pi_flexform from data, as it contains XML/HTML which can be indexed through Solr
         $data = $this->configurationManager->getContentObject()->data;
@@ -254,12 +242,9 @@ class AbstractController extends ActionController
      * @param Filter|null $filter
      * @return Filter
      */
-    protected function validateAndAssignFilter($filter)
+    protected function validateAndAssignFilter(?Filter $filter): Filter
     {
-        if (
-            !$filter instanceof Filter ||
-            $filter === null
-        ) {
+        if ($filter === null) {
             $filter = $this->objectManager->get(Filter::class);
         }
         $this->view->assign('filter', $filter);
@@ -273,9 +258,8 @@ class AbstractController extends ActionController
      *
      * @param string $argument
      * @return void
-     * @throws \Exception
      */
-    protected function deleteUploadedFilesOnValidationErrors($argument)
+    protected function deleteUploadedFilesOnValidationErrors(string $argument): void
     {
         if ($this->getControllerContext()->getRequest()->hasArgument($argument)) {
             /** @var Event $event */
@@ -292,13 +276,12 @@ class AbstractController extends ActionController
 
     /**
      * Remove videoLink if empty
-     * Add special validation for videolink
-     * I can't add this validation to Linkmodel, as such a validation would be also valid for organizer link.
+     * Add special validation for VideoLink
+     * I can't add this validation to LinkModel, as such a validation would be also valid for organizer link.
      *
      * @return void
-     * @throws \Exception
      */
-    protected function addValidationForVideoLink()
+    protected function addValidationForVideoLink(): void
     {
         if (
             $this->request->hasArgument('event') &&
@@ -332,9 +315,8 @@ class AbstractController extends ActionController
      * This is a workaround to help controller actions to find (hidden) events.
      *
      * @return void
-     * @throws \Exception
      */
-    protected function registerEventFromRequest()
+    protected function registerEventFromRequest(): void
     {
         $eventRaw = $this->request->getArgument('event');
         if (is_array($eventRaw)) {
@@ -348,14 +330,13 @@ class AbstractController extends ActionController
     }
 
     /**
-     * delete videoLink if empty
+     * Delete VideoLink if empty
      * Extbase can not set deleted=1 itself.
      *
      * @param Event $event
      * @return void
-     * @throws \Exception
      */
-    protected function deleteVideoLinkIfEmpty(Event $event)
+    protected function deleteVideoLinkIfEmpty(Event $event): void
     {
         $linkText = $event->getVideoLink()->getLink();
         if (empty($linkText)) {
@@ -368,7 +349,7 @@ class AbstractController extends ActionController
     /**
      * Frontend insertion of events also has to respect location, if configured in ExtConf
      */
-    protected function applyLocationAsMandatoryIfNeeded()
+    protected function applyLocationAsMandatoryIfNeeded(): void
     {
         if ($this->extConf->getLocationIsRequired()) {
             /** @var ValidatorResolver $validatorResolver */
@@ -389,16 +370,15 @@ class AbstractController extends ActionController
     }
 
     /**
-     * add organizer.
+     * Add organizer.
      *
      * In a HTML-Template you can change the user uid if you want
      * So it's better to add the organizer here in PHP
      *
      * @param string $argument
      * @return bool
-     * @throws \Exception
      */
-    protected function addOrganizer($argument)
+    protected function addOrganizer(string $argument): bool
     {
         if ($this->request->hasArgument($argument)) {
             /** @var array $event */

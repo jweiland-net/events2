@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -31,10 +33,7 @@ class CalendarController extends AbstractController
         $this->pageRenderer = $pageRenderer;
     }
 
-    /**
-     * action show.
-     */
-    public function showAction()
+    public function showAction(): void
     {
         $placeHolders = $this->getEnvironmentPlaceholders();
 
@@ -62,12 +61,7 @@ class CalendarController extends AbstractController
         $this->view->assignMultiple($placeHolders);
     }
 
-    /**
-     * Get environment placeholders
-     *
-     * @return array
-     */
-    protected function getEnvironmentPlaceholders()
+    protected function getEnvironmentPlaceholders(): array
     {
         $placeHolders = [];
         $placeHolders['environment'] = [];
@@ -81,24 +75,19 @@ class CalendarController extends AbstractController
         return $placeHolders;
     }
 
-    /**
-     * Get TYPO3 SiteUrl
-     *
-     * @return string
-     */
-    protected function getTypo3SiteUrl()
+    protected function getTypo3SiteUrl(): string
     {
         return GeneralUtility::getIndpEnv('TYPO3_SITE_URL');
     }
 
     /**
-     * selected month and year was saved in user session by eID script
+     * Selected month and year was saved in user session by eID script
      * this method returns these values to set calendar to this date
      * Further we need this method for UnitTests (getMock).
      *
      * @return array contains month and year OR empty array
      */
-    protected function getMonthAndYearFromUserSession()
+    protected function getMonthAndYearFromUserSession(): array
     {
         $monthAndYear = $this->getTypoScriptFrontendController()->fe_user->getKey(
             'ses',
@@ -112,12 +101,12 @@ class CalendarController extends AbstractController
     }
 
     /**
-     * get day from url
-     * we can't set $day as parameter in showAction($day), because this action is of controller Calendar and not Event.
+     * Get day from url
+     * We can't set $day as parameter in showAction($day), because this action is of controller Calendar and not Event.
      *
      * @return Day|null
      */
-    protected function getDayFromUrl()
+    protected function getDayFromUrl(): ?Day
     {
         $day = null;
         // get parameters of event-plugin-namespace
@@ -134,12 +123,7 @@ class CalendarController extends AbstractController
         return $day;
     }
 
-    /**
-     * Get TSFE
-     *
-     * @return TypoScriptFrontendController
-     */
-    protected function getTypoScriptFrontendController()
+    protected function getTypoScriptFrontendController(): TypoScriptFrontendController
     {
         return $GLOBALS['TSFE'];
     }

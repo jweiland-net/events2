@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the package jweiland/events2.
@@ -117,7 +117,7 @@ class Import extends AbstractTask
      * @param int $severity Message level (according to \TYPO3\CMS\Core\Messaging\FlashMessage class constants)
      * @throws \Exception
      */
-    public function addMessage(string $message, int $severity = FlashMessage::OK)
+    public function addMessage(string $message, int $severity = FlashMessage::OK): void
     {
         $flashMessage = GeneralUtility::makeInstance(FlashMessage::class, $message, '', $severity);
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);

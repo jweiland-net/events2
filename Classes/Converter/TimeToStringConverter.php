@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -14,15 +16,7 @@ namespace JWeiland\Events2\Converter;
  */
 class TimeToStringConverter
 {
-    /**
-     * a method to convert a timestamp to a readable time format like: 21:35
-     * maximum value is 23:59.
-     *
-     * @param int $timestamp Timestamp to convert
-     *
-     * @return string
-     */
-    public function convert($timestamp)
+    public function convert(int $timestamp): string
     {
         $time = '';
         if (is_int($timestamp)) {
@@ -47,10 +41,9 @@ class TimeToStringConverter
      * Hint: Can also return 0. Be careful with this result (division by zero).
      *
      * @param int $time
-     *
      * @return float
      */
-    protected function getHours($time)
+    protected function getHours(int $time)
     {
         return floor((int)$time / 3600);
     }
@@ -65,10 +58,9 @@ class TimeToStringConverter
      *
      * @param int   $time  seconds since midnight
      * @param float $hours
-     *
      * @return int remaining minutes
      */
-    protected function getRemainingMinutes($time, $hours)
+    protected function getRemainingMinutes(int $time, float $hours): int
     {
         $seconds = $hours === (float) 0 ? $time : $time % ($hours * 3600);
         if ($seconds) {

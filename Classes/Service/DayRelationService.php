@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -72,61 +74,31 @@ class DayRelationService
      */
     protected $firstTime;
 
-    /**
-     * inject extConf
-     *
-     * @param ExtConf $extConf
-     */
     public function injectExtConf(ExtConf $extConf)
     {
         $this->extConf = $extConf;
     }
 
-    /**
-     * inject dayGenerator.
-     *
-     * @param DayGenerator $dayGenerator
-     */
     public function injectDayGenerator(DayGenerator $dayGenerator)
     {
         $this->dayGenerator = $dayGenerator;
     }
 
-    /**
-     * inject eventRepository
-     *
-     * @param EventRepository $eventRepository
-     */
     public function injectEventRepository(EventRepository $eventRepository)
     {
         $this->eventRepository = $eventRepository;
     }
 
-    /**
-     * inject eventService
-     *
-     * @param EventService $eventService
-     */
     public function injectEventService(EventService $eventService)
     {
         $this->eventService = $eventService;
     }
 
-    /**
-     * inject dateTimeUtility.
-     *
-     * @param DateTimeUtility $dateTimeUtility
-     */
     public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
     {
         $this->dateTimeUtility = $dateTimeUtility;
     }
 
-    /**
-     * inject persistenceManager
-     *
-     * @param PersistenceManager $persistenceManager
-     */
     public function injectPersistenceManager(PersistenceManager $persistenceManager)
     {
         $this->persistenceManager = $persistenceManager;
@@ -139,7 +111,7 @@ class DayRelationService
      * @return Event
      * @throws \Exception
      */
-    public function createDayRelations(int $eventUid)
+    public function createDayRelations(int $eventUid): ?Event
     {
         // As create/update action will set event as hidden, we have to search for them, too.
         $event = $this->eventRepository->findHiddenEntry($eventUid);
@@ -176,7 +148,7 @@ class DayRelationService
      * @param Event $event
      * @param \DateTime $dateTime
      */
-    public function addDay(Event $event, \DateTime $dateTime)
+    public function addDay(Event $event, \DateTime $dateTime): void
     {
         // to prevent adding multiple day records for ONE day we set them all to midnight 00:00:00
         $dateTime = $this->dateTimeUtility->standardizeDateTimeObject($dateTime);
@@ -198,14 +170,7 @@ class DayRelationService
         }
     }
 
-    /**
-     * Add day record
-     *
-     * @param \DateTime $dateTime
-     * @param Event $event
-     * @param Time|null $time
-     */
-    protected function addGeneratedDayToEvent(\DateTime $dateTime, Event $event, $time = null)
+    protected function addGeneratedDayToEvent(\DateTime $dateTime, Event $event, ?Time $time = null)
     {
         list($hour, $minute) = $this->getHourAndMinuteFromTime($time);
 
@@ -213,9 +178,9 @@ class DayRelationService
         $day = GeneralUtility::makeInstance(Day::class);
         $day->setPid($event->getPid());
         $day->setDay($dateTime);
-        $day->setDayTime($this->getDayTime($dateTime, $hour, $minute));
-        $day->setSortDayTime($this->getSortDayTime($dateTime, $hour, $minute, $event));
-        $day->setSameDayTime($this->getSameDayTime($dateTime, $hour, $minute, $event));
+        $day->setDayTime($this->getDayTime($dateTime, (int)$hour, (int)$minute));
+        $day->setSortDayTime($this->getSortDayTime($dateTime, (int)$hour, (int)$minute, $event));
+        $day->setSameDayTime($this->getSameDayTime($dateTime, (int)$hour, (int)$minute, $event));
         $day->setEvent($event);
 
         $event->addDay($day);
@@ -227,7 +192,7 @@ class DayRelationService
      * @param Time|null $time
      * @return array
      */
-    protected function getHourAndMinuteFromTime(Time $time = null): array
+    protected function getHourAndMinuteFromTime(?Time $time = null): array
     {
         $hourAndMinute = [0, 0];
         if (
@@ -253,14 +218,14 @@ class DayRelationService
      * @param int $minute
      * @return \DateTime
      */
-    protected function getDayTime(\DateTime $day, $hour, $minute): \DateTime
+    protected function getDayTime(\DateTime $day, int $hour, int $minute): \DateTime
     {
         // Don't modify original day
         $dayTime = clone $day;
         $dayTime->modify(sprintf(
             '+%d hour +%d minute',
-            (int)$hour,
-            (int)$minute
+            $hour,
+            $minute
         ));
         return $dayTime;
     }
@@ -280,7 +245,7 @@ class DayRelationService
      * @param Event $event
      * @return \DateTime
      */
-    protected function getSortDayTime(\DateTime $day, $hour, $minute, Event $event)
+    protected function getSortDayTime(\DateTime $day, int $hour, int $minute, Event $event): \DateTime
     {
         if ($event->getEventType() === 'duration') {
             list($hour, $minute) = $this->getHourAndMinuteFromTime($this->firstTime);
@@ -308,7 +273,7 @@ class DayRelationService
      * @param Event $event
      * @return \DateTime
      */
-    protected function getSameDayTime(\DateTime $day, $hour, $minute, Event $event)
+    protected function getSameDayTime(\DateTime $day, int $hour, int $minute, Event $event): \DateTime
     {
         if ($event->getEventType() !== 'duration') {
             list($hour, $minute) = $this->getHourAndMinuteFromTime($this->firstTime);
@@ -317,10 +282,7 @@ class DayRelationService
         return $this->getSortDayTime($day, $hour, $minute, $event);
     }
 
-    /**
-     * @return Logger
-     */
-    protected function getLogger()
+    protected function getLogger(): Logger
     {
         return GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
     }

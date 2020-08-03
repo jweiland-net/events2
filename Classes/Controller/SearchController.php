@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -25,7 +27,6 @@ class SearchController extends AbstractController
      * PreProcessing for all actions.
      *
      * @return void
-     * @throws \Exception
      */
     public function initializeAction()
     {
@@ -53,7 +54,7 @@ class SearchController extends AbstractController
 
         $allowedMainCategories = $this->categoryRepository->getSelectedCategories(
             $this->settings['mainCategories'],
-            $this->settings['rootCategory']
+            (int)$this->settings['rootCategory']
         );
 
         if (!$allowedMainCategories->count()) {
@@ -74,9 +75,8 @@ class SearchController extends AbstractController
      * That's why we have to manually allow some form-elements.
      *
      * @return void
-     * @throws \Exception
      */
-    public function initializeShowAction()
+    public function initializeShowAction(): void
     {
         $this->arguments->getArgument('search')->getPropertyMappingConfiguration()->setTypeConverterOptions(
             PersistentObjectConverter::class,
@@ -88,12 +88,12 @@ class SearchController extends AbstractController
     }
 
     /**
-     * action show.
+     * Action show.
      *
-     * @param Search $search
+     * @param Search|null $search
      * @return void
      */
-    public function showAction(Search $search = null)
+    public function showAction(?Search $search = null): void
     {
         // Because of the checkbox we have to create a new empty domain model
         if ($search === null) {

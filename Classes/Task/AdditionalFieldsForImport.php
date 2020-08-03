@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -46,7 +48,7 @@ class AdditionalFieldsForImport implements AdditionalFieldProviderInterface
     ];
 
     /**
-     * list of fields to create input fields for
+     * List of fields to create input fields for
      *
      * @var array
      */
@@ -78,7 +80,6 @@ class AdditionalFieldsForImport implements AdditionalFieldProviderInterface
      * @param array $taskInfo Values of the fields from the add/edit task form
      * @param AbstractTask $task The task object being eddited. Null when adding a task!
      * @param SchedulerModuleController $schedulerModule Reference to the scheduler backend module
-     *
      * @return array A two dimensional array, ['Identifier' => ['fieldId' => ['code' => '', 'label' => '', 'cshKey' => '', 'cshLabel' => '']]]
      */
     public function getAdditionalFields(array &$taskInfo, $task, SchedulerModuleController $schedulerModule)
@@ -94,33 +95,17 @@ class AdditionalFieldsForImport implements AdditionalFieldProviderInterface
         return $additionalFields;
     }
 
-    /**
-     * initializes this object
-     * and set some value available for all methods in this class
-     *
-     * @param array $taskInfo
-     * @param AbstractTask $task
-     * @param SchedulerModuleController $schedulerModule
-     *
-     * @return void
-     */
-    protected function initialize(array $taskInfo, $task, SchedulerModuleController $schedulerModule)
-    {
+    protected function initialize(
+        array $taskInfo,
+        AbstractTask $task,
+        SchedulerModuleController $schedulerModule
+    ): void {
         $this->taskInfo = $taskInfo;
         $this->task = $task;
         $this->schedulerModule = $schedulerModule;
     }
 
-    /**
-     * create new input field
-     *
-     * @param string $fieldName
-     * @param array $configuration
-     * @param array $additionalFields
-     *
-     * @return void
-     */
-    protected function createInputField($fieldName, array $configuration, array &$additionalFields)
+    protected function createInputField(string $fieldName, array $configuration, array &$additionalFields): void
     {
         $attributes = $this->defaultAttributes;
         $attributes['id'] = 'task_' . $fieldName;
@@ -142,15 +127,7 @@ class AdditionalFieldsForImport implements AdditionalFieldProviderInterface
         ];
     }
 
-    /**
-     * get value for input field
-     *
-     * @param string $fieldName
-     * @param array $configuration
-     *
-     * @return string Value for input field
-     */
-    protected function getValueForInputField($fieldName, array $configuration)
+    protected function getValueForInputField(string $fieldName, array $configuration): string
     {
         $value = '';
         // if field is empty try to find the needed value
@@ -175,7 +152,6 @@ class AdditionalFieldsForImport implements AdditionalFieldProviderInterface
      *
      * @param array $submittedData An array containing the data submitted by the add/edit task form
      * @param SchedulerModuleController $schedulerModule Reference to the scheduler backend module
-     *
      * @return bool true if validation was ok (or selected class is not relevant), FALSE otherwise
      */
     public function validateAdditionalFields(array &$submittedData, SchedulerModuleController $schedulerModule)
@@ -199,7 +175,6 @@ class AdditionalFieldsForImport implements AdditionalFieldProviderInterface
      *
      * @param array $submittedData An array containing the data submitted by the add/edit task form
      * @param AbstractTask $task Reference to the scheduler backend module
-     *
      * @return void
      */
     public function saveAdditionalFields(array $submittedData, AbstractTask $task)

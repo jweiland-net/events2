@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -23,10 +25,9 @@ class EmStaticInfo
      *
      * @param array $params
      * @param $configurationForm
-     *
      * @return string
      */
-    public function renderDefaultCountry(array $params, $configurationForm)
+    public function renderDefaultCountry(array $params, $configurationForm): string
     {
         $options = [];
         $options[] = '<option value=""></option>';
@@ -54,7 +55,7 @@ class EmStaticInfo
      *
      * @return array
      */
-    protected function getCountries()
+    protected function getCountries(): array
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('static_countries');
         $queryBuilder->getRestrictions()->removeAll()->add(
@@ -73,16 +74,7 @@ class EmStaticInfo
         return $countries;
     }
 
-    /**
-     * Wrap option tag
-     *
-     * @param string $value
-     * @param string $label
-     * @param bool $selected
-     *
-     * @return string
-     */
-    protected function wrapOption($value, $label, $selected)
+    protected function wrapOption(string $value, string $label, bool $selected): string
     {
         return sprintf(
             '<option value="%s"%s>%s</option>',
@@ -92,12 +84,7 @@ class EmStaticInfo
         );
     }
 
-    /**
-     * Get TYPO3s Connection Pool
-     *
-     * @return ConnectionPool
-     */
-    protected function getConnectionPool()
+    protected function getConnectionPool(): ConnectionPool
     {
         return GeneralUtility::makeInstance(ConnectionPool::class);
     }

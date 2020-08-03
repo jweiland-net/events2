@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the package jweiland/events2.
@@ -221,10 +221,7 @@ class Event extends AbstractEntity
         $this->title = $title;
     }
 
-    /**
-     * @return \DateTime|null
-     */
-    public function getEventBegin()
+    public function getEventBegin(): ?\DateTime
     {
         if ($this->eventBegin instanceof \DateTime) {
             if ($this->eventBegin->timezone_type !== 3) {
@@ -236,20 +233,17 @@ class Event extends AbstractEntity
         }
     }
 
-    public function setEventBegin(\DateTime $eventBegin = null)
+    public function setEventBegin(?\DateTime $eventBegin = null)
     {
         $this->eventBegin = $eventBegin;
     }
 
-    /**
-     * @return Time|null
-     */
-    public function getEventTime()
+    public function getEventTime(): ?Time
     {
         return $this->eventTime;
     }
 
-    public function setEventTime(Time $eventTime = null)
+    public function setEventTime(?Time $eventTime = null)
     {
         $this->eventTime = $eventTime;
     }
@@ -269,10 +263,7 @@ class Event extends AbstractEntity
         }
     }
 
-    /**
-     * @return \DateTime|null
-     */
-    public function getEventEnd()
+    public function getEventEnd(): ?\DateTime
     {
         if ($this->eventEnd instanceof \DateTime) {
             if ($this->eventEnd->timezone_type !== 3) {
@@ -284,7 +275,7 @@ class Event extends AbstractEntity
         }
     }
 
-    public function setEventEnd(\DateTime $eventEnd = null)
+    public function setEventEnd(?\DateTime $eventEnd = null)
     {
         $this->eventEnd = $eventEnd;
     }
@@ -397,10 +388,7 @@ class Event extends AbstractEntity
         $this->eachMonths = $eachMonths;
     }
 
-    /**
-     * @return \DateTime|null
-     */
-    public function getRecurringEnd()
+    public function getRecurringEnd(): ?\DateTime
     {
         if ($this->recurringEnd instanceof \DateTime) {
             if ($this->recurringEnd->timezone_type !== 3) {
@@ -412,7 +400,7 @@ class Event extends AbstractEntity
         }
     }
 
-    public function setRecurringEnd(\DateTime $recurringEnd = null)
+    public function setRecurringEnd(?\DateTime $recurringEnd = null)
     {
         $this->recurringEnd = $recurringEnd;
     }
@@ -488,15 +476,12 @@ class Event extends AbstractEntity
         $this->freeEntry = $freeEntry;
     }
 
-    /**
-     * @return Link|null
-     */
-    public function getTicketLink()
+    public function getTicketLink(): ?Link
     {
         return $this->ticketLink;
     }
 
-    public function setTicketLink(Link $ticketLink = null)
+    public function setTicketLink(?Link $ticketLink = null)
     {
         $this->ticketLink = $ticketLink;
     }
@@ -613,7 +598,7 @@ class Event extends AbstractEntity
      *
      * @return Location|null $location
      */
-    public function getLocation()
+    public function getLocation(): ?Location
     {
         return $this->location;
     }
@@ -651,7 +636,7 @@ class Event extends AbstractEntity
         return $location;
     }
 
-    public function setLocation(Location $location = null)
+    public function setLocation(?Location $location = null)
     {
         $this->location = $location;
     }
@@ -662,12 +647,12 @@ class Event extends AbstractEntity
      *
      * @return Organizer|null
      */
-    public function getOrganizer()
+    public function getOrganizer(): ?Organizer
     {
         return $this->organizer;
     }
 
-    public function setOrganizer(Organizer $organizer = null)
+    public function setOrganizer(?Organizer $organizer = null)
     {
         $this->organizer = $organizer;
     }
@@ -692,15 +677,12 @@ class Event extends AbstractEntity
         $this->images = $images;
     }
 
-    /**
-     * @return Link|null
-     */
-    public function getVideoLink()
+    public function getVideoLink(): ?Link
     {
         return $this->videoLink;
     }
 
-    public function setVideoLink(Link $videoLink = null)
+    public function setVideoLink(?Link $videoLink = null)
     {
         $this->videoLink = $videoLink;
     }

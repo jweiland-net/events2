@@ -22,7 +22,6 @@ class ImageValidator extends AbstractValidator
      * to result.
      *
      * @param mixed $value
-     *
      * @return void
      */
     public function isValid($value)

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the package jweiland/events2.
@@ -27,7 +27,7 @@ class DataHandler
      *
      * @param array $params
      */
-    public function clearCachePostProc(array $params)
+    public function clearCachePostProc(array $params): void
     {
         if (isset($params['table']) && $params['table'] === 'tx_events2_domain_model_event') {
             $cacheTagsToFlush = ['tx_events2_domain_model_event'];
@@ -50,7 +50,7 @@ class DataHandler
      *
      * @param \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler
      */
-    public function processDatamap_afterAllOperations(\TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler)
+    public function processDatamap_afterAllOperations(\TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): void
     {
         if (array_key_exists('tx_events2_domain_model_event', $dataHandler->datamap)) {
             foreach ($dataHandler->datamap['tx_events2_domain_model_event'] as $eventUid => $eventRecord) {
@@ -64,7 +64,7 @@ class DataHandler
      *
      * @param int $eventUid
      */
-    protected function addDayRelationsForEvent(int $eventUid)
+    protected function addDayRelationsForEvent(int $eventUid): void
     {
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $dayRelationService = $objectManager->get(DayRelationService::class);

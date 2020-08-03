@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the package jweiland/events2.
@@ -19,13 +19,6 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  */
 class CategoryRepository extends \TYPO3\CMS\Extbase\Domain\Repository\CategoryRepository
 {
-    /**
-     * Get category objects from list of UIDs.
-     *
-     * @param string $categoryUids UIDs category
-     * @return QueryResultInterface
-     * @throws \Exception
-     */
     public function getCategories($categoryUids): QueryResultInterface
     {
         $categoryUids = GeneralUtility::intExplode(',', $categoryUids);
@@ -34,13 +27,7 @@ class CategoryRepository extends \TYPO3\CMS\Extbase\Domain\Repository\CategoryRe
         return $query->matching($query->in('uid', $categoryUids))->execute();
     }
 
-    /**
-     * Get subcategories of given UID.
-     *
-     * @param string $category UID category
-     * @return QueryResultInterface
-     */
-    public function getSubCategories($category): QueryResultInterface
+    public function getSubCategories(int $category): QueryResultInterface
     {
         $query = $this->createQuery();
 
@@ -51,11 +38,11 @@ class CategoryRepository extends \TYPO3\CMS\Extbase\Domain\Repository\CategoryRe
      * Get all categories given by comma separated list.
      *
      * @param string $categoryUids comma separated list of category uids
-     * @param string $parent parent category UID. This value comes from TS, so it's a string
+     * @param int $parent parent category UID
      * @return QueryResultInterface
      * @throws \Exception
      */
-    public function getSelectedCategories($categoryUids, $parent = '0'): QueryResultInterface
+    public function getSelectedCategories(string $categoryUids, int $parent = 0): QueryResultInterface
     {
         // remove empty values
         // convert them to int

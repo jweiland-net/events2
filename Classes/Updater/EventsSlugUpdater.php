@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the package jweiland/events2.
@@ -171,7 +171,7 @@ class EventsSlugUpdater implements UpgradeWizardInterface
         return $newSlug ?? $slug;
     }
 
-    protected function getUniqueSlugStatement(int $uid, string $slug)
+    protected function getUniqueSlugStatement(int $uid, string $slug): void
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($this->tableName);
         $queryBuilder->getRestrictions()->removeAll();
@@ -203,11 +203,6 @@ class EventsSlugUpdater implements UpgradeWizardInterface
         ];
     }
 
-    /**
-     * Get TYPO3s Connection Pool
-     *
-     * @return ConnectionPool
-     */
     protected function getConnectionPool(): ConnectionPool
     {
         return GeneralUtility::makeInstance(ConnectionPool::class);

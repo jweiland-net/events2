@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -51,6 +53,10 @@ class RepairCommandController extends Command
 
     /**
      * Delete and re-create all day records of events2
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -66,12 +72,7 @@ class RepairCommandController extends Command
         return 0;
     }
 
-    /**
-     * Truncate day table. We will build them up again within the next steps
-     *
-     * @return void
-     */
-    protected function truncateDayTable()
+    protected function truncateDayTable(): void
     {
         $databaseService = GeneralUtility::makeInstance(DatabaseService::class);
         $databaseService->truncateTable('tx_events2_domain_model_day', true);
@@ -79,12 +80,7 @@ class RepairCommandController extends Command
         $this->output->writeln('I have truncated the day table' . PHP_EOL);
     }
 
-    /**
-     * After solving bugs in DayGenerator it would be good to recreate all days for events
-     *
-     * @return void
-     */
-    protected function reGenerateDayRelations()
+    protected function reGenerateDayRelations(): void
     {
         $eventCounter = 0;
         $dayCounter = 0;
@@ -138,14 +134,7 @@ class RepairCommandController extends Command
         ));
     }
 
-    /**
-     * Echo $value to CLI
-     *
-     * @param string $value In most cases you should use only ONE letter
-     * @param bool $reset If true, we insert a line break
-     * @return void
-     */
-    protected function echoValue($value = '.', $reset = false)
+    protected function echoValue(string $value = '.', bool $reset = false): void
     {
         if ($reset) {
             $this->rowCounter = 0;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -30,9 +32,6 @@ class DatabaseService
      */
     protected $extConf;
 
-    /**
-     * @param ExtConf $extConf
-     */
     public function injectExtConf(ExtConf $extConf)
     {
         $this->extConf = $extConf;
@@ -44,7 +43,7 @@ class DatabaseService
      * @param string $tableName
      * @return array
      */
-    public function getColumnsFromTable($tableName): array
+    public function getColumnsFromTable(string $tableName): array
     {
         $output = [];
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($tableName);
@@ -65,7 +64,7 @@ class DatabaseService
      * @param string $tableName
      * @param bool $really
      */
-    public function truncateTable($tableName, $really = false)
+    public function truncateTable(string $tableName, bool $really = false): void
     {
         if ($really) {
             $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($tableName);
@@ -86,7 +85,7 @@ class DatabaseService
      *
      * @return array
      */
-    public function getCurrentAndFutureEvents()
+    public function getCurrentAndFutureEvents(): array
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_events2_domain_model_event');
@@ -128,8 +127,12 @@ class DatabaseService
      * @param array $categories
      * @return array Days with event UID, event title and day timestamp
      */
-    public function getDaysInRange(\DateTime $startDate, \DateTime $endDate, array $storagePids = [], array $categories = [])
-    {
+    public function getDaysInRange(
+        \DateTime $startDate,
+        \DateTime $endDate,
+        array $storagePids = [],
+        array $categories = []
+    ): array {
         $constraint = [];
 
         // Create basic query with QueryBuilder. Where-clause will be added dynamically
@@ -155,7 +158,7 @@ class DatabaseService
                     'event',
                     'sys_category_record_mm',
                     'category_mm',
-                    $queryBuilder->expr()->andX(
+                    (string)$queryBuilder->expr()->andX(
                         $queryBuilder->expr()->eq(
                             'event.uid',
                             $queryBuilder->quoteIdentifier('category_mm.uid_foreign')
@@ -209,12 +212,6 @@ class DatabaseService
             ->fetchAll();
     }
 
-    /**
-     * Get Constraint for single events
-     *
-     * @param QueryBuilder $queryBuilder
-     * @return string
-     */
     public function getConstraintForSingleEvents(QueryBuilder $queryBuilder): string
     {
         // add where clause for single events
@@ -230,12 +227,6 @@ class DatabaseService
         );
     }
 
-    /**
-     * Get Constraint for duration events
-     *
-     * @param QueryBuilder $queryBuilder
-     * @return string
-     */
     public function getConstraintForDurationEvents(QueryBuilder $queryBuilder): string
     {
         return (string)$queryBuilder->expr()->andX(
@@ -256,12 +247,6 @@ class DatabaseService
         );
     }
 
-    /**
-     * Get Constraint for recurring events
-     *
-     * @param QueryBuilder $queryBuilder
-     * @return string
-     */
     public function getConstraintForRecurringEvents(QueryBuilder $queryBuilder): string
     {
         return (string)$queryBuilder->expr()->andX(
@@ -282,16 +267,12 @@ class DatabaseService
         );
     }
 
-    /**
-     * Add Constraints for Date
-     *
-     * @param QueryBuilder $queryBuilder
-     * @param string $type
-     * @param string $alias
-     * @param QueryBuilder $parentQueryBuilder
-     */
-    public function addConstraintForDate(QueryBuilder $queryBuilder, string $type, QueryBuilder $parentQueryBuilder = null, string $alias = 'day')
-    {
+    public function addConstraintForDate(
+        QueryBuilder $queryBuilder,
+        string $type,
+        QueryBuilder $parentQueryBuilder = null,
+        string $alias = 'day'
+    ): void {
         $dateTimeUtility = GeneralUtility::makeInstance(DateTimeUtility::class);
         $startDateTime = null;
         $endDateTime = null;
@@ -329,17 +310,13 @@ class DatabaseService
         $this->addConstraintForDateRange($queryBuilder, $startDateTime, $endDateTime, $parentQueryBuilder, $alias);
     }
 
-    /**
-     * Add constraint for Date within a given range
-     *
-     * @param QueryBuilder $queryBuilder
-     * @param \DateTime $startDateTime
-     * @param \DateTime|null $endDateTime
-     * @param QueryBuilder $parentQueryBuilder
-     * @param string $alias
-     */
-    public function addConstraintForDateRange(QueryBuilder $queryBuilder, \DateTime $startDateTime, \DateTime $endDateTime = null, QueryBuilder $parentQueryBuilder = null, string $alias = 'day')
-    {
+    public function addConstraintForDateRange(
+        QueryBuilder $queryBuilder,
+        \DateTime $startDateTime,
+        \DateTime $endDateTime = null,
+        QueryBuilder $parentQueryBuilder = null,
+        string $alias = 'day'
+    ): void {
         if ($parentQueryBuilder === null) {
             $parentQueryBuilder = $queryBuilder;
         }
@@ -371,16 +348,12 @@ class DatabaseService
         $queryBuilder->andWhere($constraintForDateTime);
     }
 
-    /**
-     * Add Constraint for storage page UIDs
-     *
-     * @param QueryBuilder $queryBuilder
-     * @param array $storagePageIds
-     * @param QueryBuilder $parentQueryBuilder
-     * @param string $postAlias
-     */
-    public function addConstraintForPid(QueryBuilder $queryBuilder, array $storagePageIds, QueryBuilder $parentQueryBuilder = null, string $postAlias = '')
-    {
+    public function addConstraintForPid(
+        QueryBuilder $queryBuilder,
+        array $storagePageIds,
+        QueryBuilder $parentQueryBuilder = null,
+        string $postAlias = ''
+    ): void {
         if ($parentQueryBuilder === null) {
             $parentQueryBuilder = $queryBuilder;
         }
@@ -405,16 +378,12 @@ class DatabaseService
         );
     }
 
-    /**
-     * Add Constraint for Categories
-     *
-     * @param QueryBuilder $queryBuilder
-     * @param array $categories
-     * @param QueryBuilder $parentQueryBuilder
-     * @param string $alias
-     */
-    public function addConstraintForCategories(QueryBuilder $queryBuilder, array $categories, QueryBuilder $parentQueryBuilder = null, string $alias = 'event')
-    {
+    public function addConstraintForCategories(
+        QueryBuilder $queryBuilder,
+        array $categories,
+        QueryBuilder $parentQueryBuilder = null,
+        string $alias = 'event'
+    ): void {
         if ($parentQueryBuilder === null) {
             $parentQueryBuilder = $queryBuilder;
         }
@@ -456,16 +425,12 @@ class DatabaseService
         );
     }
 
-    /**
-     * Add Constraint for Organizer
-     *
-     * @param QueryBuilder $queryBuilder
-     * @param int $organizer
-     * @param QueryBuilder $parentQueryBuilder
-     * @param string $alias
-     */
-    public function addConstraintForOrganizer(QueryBuilder $queryBuilder, int $organizer, QueryBuilder $parentQueryBuilder = null, string $alias = 'event')
-    {
+    public function addConstraintForOrganizer(
+        QueryBuilder $queryBuilder,
+        int $organizer,
+        QueryBuilder $parentQueryBuilder = null,
+        string $alias = 'event'
+    ): void {
         if ($parentQueryBuilder === null) {
             $parentQueryBuilder = $queryBuilder;
         }
@@ -481,16 +446,12 @@ class DatabaseService
         );
     }
 
-    /**
-     * Add Constraint for Location
-     *
-     * @param QueryBuilder $queryBuilder
-     * @param int $location
-     * @param QueryBuilder $parentQueryBuilder
-     * @param string $alias
-     */
-    public function addConstraintForLocation(QueryBuilder $queryBuilder, int $location, QueryBuilder $parentQueryBuilder = null, string $alias = 'event')
-    {
+    public function addConstraintForLocation(
+        QueryBuilder $queryBuilder,
+        int $location,
+        QueryBuilder $parentQueryBuilder = null,
+        string $alias = 'event'
+    ): void {
         if ($parentQueryBuilder === null) {
             $parentQueryBuilder = $queryBuilder;
         }
@@ -511,13 +472,19 @@ class DatabaseService
      *
      * @param QueryBuilder $queryBuilder
      * @param string $column
-     * @param string $value
+     * @param mixed $value
      * @param int $dataType
      * @param QueryBuilder $parentQueryBuilder
      * @param string $alias
      */
-    public function addConstraintForEventColumn(QueryBuilder $queryBuilder, string $column, $value, int $dataType = \PDO::PARAM_STR, QueryBuilder $parentQueryBuilder = null, string $alias = 'event')
-    {
+    public function addConstraintForEventColumn(
+        QueryBuilder $queryBuilder,
+        string $column,
+        $value,
+        int $dataType = \PDO::PARAM_STR,
+        QueryBuilder $parentQueryBuilder = null,
+        string $alias = 'event'
+    ): void {
         if ($parentQueryBuilder === null) {
             $parentQueryBuilder = $queryBuilder;
         }
@@ -539,7 +506,7 @@ class DatabaseService
      *
      * @param QueryBuilder $queryBuilder
      */
-    public function addVisibilityConstraintToQuery(QueryBuilder $queryBuilder)
+    public function addVisibilityConstraintToQuery(QueryBuilder $queryBuilder): void
     {
         $context = GeneralUtility::makeInstance(Context::class);
         $showHiddenRecords = (bool)$context->getPropertyFromAspect(
@@ -553,9 +520,6 @@ class DatabaseService
         }
     }
 
-    /**
-     * @return TypoScriptFrontendController
-     */
     protected function getTypoScriptFrontendController(): TypoScriptFrontendController
     {
         if ($GLOBALS['TSFE'] === null) {

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the package jweiland/events2.
@@ -30,7 +30,7 @@ class EventController extends AbstractController
      * We have a self-build form based on method GET.
      * That's why we have to manually allow some form-elements.
      */
-    public function initializeListSearchResultsAction()
+    public function initializeListSearchResultsAction(): void
     {
         $this->arguments->getArgument('search')->getPropertyMappingConfiguration()->setTypeConverterOptions(
             PersistentObjectConverter::class,
@@ -41,24 +41,21 @@ class EventController extends AbstractController
         $this->arguments->getArgument('search')->getPropertyMappingConfiguration()->allowAllProperties();
     }
 
-    /**
-     * @param Search $search
-     */
-    public function listSearchResultsAction(Search $search)
+    public function listSearchResultsAction(Search $search): void
     {
         $days = $this->dayRepository->searchEvents($search);
         $this->view->assign('days', $days);
         CacheUtility::addPageCacheTagsByQuery($days->getQuery());
     }
 
-    public function listMyEventsAction()
+    public function listMyEventsAction(): void
     {
         $events = $this->eventRepository->findMyEvents();
         $this->view->assign('events', $events);
         CacheUtility::addPageCacheTagsByQuery($events->getQuery());
     }
 
-    public function newAction()
+    public function newAction(): void
     {
         $this->deleteUploadedFilesOnValidationErrors('event');
         $event = $this->objectManager->get(Event::class);
@@ -79,7 +76,7 @@ class EventController extends AbstractController
      * Initialize create action.
      * We need this to create a DateTime-Object with time of midnight.
      */
-    public function initializeCreateAction()
+    public function initializeCreateAction(): void
     {
         $this->addValidationForVideoLink();
         $this->addOrganizer('event');
@@ -114,7 +111,7 @@ class EventController extends AbstractController
     /**
      * @param Event $event
      */
-    public function createAction(Event $event)
+    public function createAction(Event $event): void
     {
         $event->setHidden(true);
         $event->setEventType($event->getEventEnd() ? 'duration' : 'single');
@@ -130,7 +127,7 @@ class EventController extends AbstractController
     /**
      * @param int $event
      */
-    public function editAction(int $event)
+    public function editAction(int $event): void
     {
         $eventObject = $this->eventRepository->findHiddenEntry($event);
         $categories = $this->categoryRepository->getCategories(
@@ -150,7 +147,7 @@ class EventController extends AbstractController
      * Initialize update action
      * We need this to create a DateTime-Object with time of midnight.
      */
-    public function initializeUpdateAction()
+    public function initializeUpdateAction(): void
     {
         $this->registerEventFromRequest();
         $this->addValidationForVideoLink();
@@ -191,7 +188,7 @@ class EventController extends AbstractController
     /**
      * @param Event $event
      */
-    public function updateAction(Event $event)
+    public function updateAction(Event $event): void
     {
         $isHidden = $event->getHidden();
         $event->setHidden(true);
@@ -211,7 +208,7 @@ class EventController extends AbstractController
     /**
      * @param int $event
      */
-    public function deleteAction(int $event)
+    public function deleteAction(int $event): void
     {
         $eventObject = $this->eventRepository->findByIdentifier($event);
         $this->eventRepository->remove($eventObject);
@@ -222,7 +219,7 @@ class EventController extends AbstractController
     /**
      * @param int $event
      */
-    public function activateAction(int $event)
+    public function activateAction(int $event): void
     {
         $eventObject = $this->eventRepository->findHiddenEntry($event);
         $eventObject->setHidden(false);
@@ -244,25 +241,13 @@ class EventController extends AbstractController
         $this->redirect('list', 'Day');
     }
 
-    /**
-     * Add day relations to event record.
-     *
-     * @param Event $event
-     */
-    protected function addDayRelations(Event $event)
+    protected function addDayRelations(Event $event): void
     {
         /** @var DayRelationService $dayRelations */
         $dayRelations = $this->objectManager->get(DayRelationService::class);
         $dayRelations->createDayRelations($event->getUid());
     }
 
-    /**
-     * Send email on new/update.
-     *
-     * @param string $subjectKey
-     * @param Event $event
-     * @return bool True, if mail was sent
-     */
     public function sendMail(string $subjectKey, Event $event): bool
     {
         $this->view->assign('event', $event);

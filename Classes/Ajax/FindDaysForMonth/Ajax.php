@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -47,17 +49,10 @@ class Ajax
      */
     protected $cacheHashCalculator;
 
-    /**
-     * Ajax constructor.
-     *
-     * @param ExtConf|null $extConf
-     * @param DateTimeUtility|null $dateTimeUtility
-     * @param CacheHashCalculator|null $cacheHashCalculator
-     */
     public function __construct(
-        ExtConf $extConf = null,
-        DateTimeUtility $dateTimeUtility = null,
-        CacheHashCalculator $cacheHashCalculator = null
+        ?ExtConf $extConf = null,
+        ?DateTimeUtility $dateTimeUtility = null,
+        ?CacheHashCalculator $cacheHashCalculator = null
     ) {
         if ($extConf === null) {
             $extConf = GeneralUtility::makeInstance(ExtConf::class);
@@ -75,32 +70,19 @@ class Ajax
         $this->cacheHashCalculator = $cacheHashCalculator;
     }
 
-    /**
-     * Initializes this class.
-     *
-     * @param array $arguments
-     * @return void
-     */
-    protected function initialize(array $arguments)
+    protected function initialize(array $arguments): void
     {
         $this->setArguments($arguments);
         ExtensionManagementUtility::loadBaseTca(true);
     }
 
-    /**
-     * Process ajax request.
-     *
-     * @param array $arguments Arguments to process
-     * @return string
-     * @throws \Exception
-     */
-    public function processAjaxRequest(array $arguments)
+    public function processAjaxRequest(array $arguments): string
     {
         $this->initialize($arguments);
-        $month = $this->getArgument('month');
-        $year = $this->getArgument('year');
+        $month = (int)$this->getArgument('month');
+        $year = (int)$this->getArgument('year');
 
-        // save a session for selected month
+        // Save a session for selected month
         $this->saveMonthAndYearInSession($month, $year);
 
         $dayArray = [];
@@ -127,13 +109,7 @@ class Ajax
         return json_encode($dayArray);
     }
 
-    /**
-     * Set and check GET Arguments.
-     *
-     * @param array $arguments
-     * @return void
-     */
-    protected function setArguments(array $arguments)
+    protected function setArguments(array $arguments): void
     {
         // sanitize categories
         $sanitizedArguments['categories'] = $this->sanitizeCommaSeparatedIntValues((string)$arguments['categories']);
@@ -156,11 +132,9 @@ class Ajax
      */
     protected function sanitizeCommaSeparatedIntValues(string $list): string
     {
-        $values = GeneralUtility::trimExplode(',', $list, true);
+        $values = GeneralUtility::intExplode(',', $list, true);
         foreach ($values as $key => $value) {
-            if (MathUtility::canBeInterpretedAsInteger($value)) {
-                $values[$key] = (int)$value;
-            } else {
+            if ($value === 0) {
                 unset($values[$key]);
             }
         }
@@ -172,7 +146,7 @@ class Ajax
      * Get an argument from GET.
      *
      * @param string $argumentName
-     * @return string|array
+     * @return mixed
      */
     protected function getArgument(string $argumentName)
     {
@@ -214,13 +188,7 @@ class Ajax
         return $siteUrl . http_build_query($query);
     }
 
-    /**
-     * Add Holidays
-     *
-     * @param array $days
-     * @return void
-     */
-    protected function addHolidays(array &$days)
+    protected function addHolidays(array &$days): void
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_holiday');
         $holidays = $queryBuilder
@@ -238,21 +206,14 @@ class Ajax
         if (!empty($holidays)) {
             foreach ($holidays as $holiday) {
                 $days[$holiday['day']][] = [
-                    'uid' => $holiday['day'],
+                    'uid' => (int)$holiday['day'],
                     'class' => 'holiday'
                 ];
             }
         }
     }
 
-    /**
-     * save selected month and year in an user session.
-     *
-     * @param int $month
-     * @param int $year
-     * @return void
-     */
-    protected function saveMonthAndYearInSession(int $month, int $year)
+    protected function saveMonthAndYearInSession(int $month, int $year): void
     {
         $userAuthentication = $this->getFrontendUserAuthentication();
         $userAuthentication->start();
@@ -265,15 +226,7 @@ class Ajax
         );
     }
 
-    /**
-     * Find all days in given month.
-     *
-     * @param int $month
-     * @param int $year
-     * @return array
-     * @throws \Exception
-     */
-    protected function findAllDaysInMonth(int $month, int $year)
+    protected function findAllDaysInMonth(int $month, int $year): array
     {
         $earliestAllowedDate = new \DateTime('now midnight');
         $earliestAllowedDate->modify(sprintf('-%d months', $this->extConf->getRecurringPast()));
@@ -320,21 +273,11 @@ class Ajax
         );
     }
 
-    /**
-     * Get Frontend User Authentication
-     *
-     * @return FrontendUserAuthentication
-     */
     protected function getFrontendUserAuthentication(): FrontendUserAuthentication
     {
         return GeneralUtility::makeInstance(FrontendUserAuthentication::class);
     }
 
-    /**
-     * Get TYPO3s Connection Pool
-     *
-     * @return ConnectionPool
-     */
     protected function getConnectionPool(): ConnectionPool
     {
         return GeneralUtility::makeInstance(ConnectionPool::class);

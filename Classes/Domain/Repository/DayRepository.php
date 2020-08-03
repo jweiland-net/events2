@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the package jweiland/events2.
@@ -52,35 +52,21 @@ class DayRepository extends Repository
      */
     protected $settings = [];
 
-    /**
-     * @param DateTimeUtility $dateTimeUtility
-     */
     public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
     {
         $this->dateTimeUtility = $dateTimeUtility;
     }
 
-    /**
-     * @param ExtConf $extConf
-     */
     public function injectExtConf(ExtConf $extConf)
     {
         $this->extConf = $extConf;
     }
 
-    /**
-     * @param DatabaseService $databaseService
-     */
     public function injectDatabaseService(DatabaseService $databaseService)
     {
         $this->databaseService = $databaseService;
     }
 
-    /**
-     * Sets the settings
-     *
-     * @param array $settings
-     */
     public function setSettings(array $settings)
     {
         $this->settings = $settings;
@@ -387,7 +373,7 @@ class DayRepository extends Repository
      *
      * @param QueryBuilder $subQueryBuilder
      */
-    protected function addMergeFeatureToQuery(QueryBuilder $subQueryBuilder)
+    protected function addMergeFeatureToQuery(QueryBuilder $subQueryBuilder): void
     {
         if ((bool)$this->settings['mergeRecurringEvents']) {
             // $queryBuilder->groupBy('day.uid');
@@ -405,7 +391,7 @@ class DayRepository extends Repository
      * @param QueryBuilder $queryBuilder
      * @param QueryBuilder $subQueryBuilder
      */
-    protected function joinSubQueryIntoQueryBuilder(QueryBuilder $queryBuilder, QueryBuilder $subQueryBuilder)
+    protected function joinSubQueryIntoQueryBuilder(QueryBuilder $queryBuilder, QueryBuilder $subQueryBuilder): void
     {
         $queryBuilder->getConcreteQueryBuilder()->join(
             $queryBuilder->quoteIdentifier('day'),
@@ -483,7 +469,7 @@ class DayRepository extends Repository
         string $type,
         Filter $filter,
         array $settings
-    ) {
+    ): void {
         $signalSlotDispatcher = GeneralUtility::makeInstance(ObjectManager::class)->get(Dispatcher::class);
         $signalSlotDispatcher->dispatch(
             self::class,
@@ -505,7 +491,7 @@ class DayRepository extends Repository
         QueryBuilder $subQueryBuilder,
         Search $search,
         array $settings
-    ) {
+    ): void {
         $signalSlotDispatcher = GeneralUtility::makeInstance(ObjectManager::class)->get(Dispatcher::class);
         $signalSlotDispatcher->dispatch(
             self::class,
@@ -525,8 +511,9 @@ class DayRepository extends Repository
         QueryBuilder $queryBuilder,
         int $timestamp,
         array $settings
-    ) {
-        $signalSlotDispatcher = GeneralUtility::makeInstance(ObjectManager::class)->get(Dispatcher::class);
+    ):void {
+        $signalSlotDispatcher = GeneralUtility::makeInstance(ObjectManager::class)
+            ->get(Dispatcher::class);
         $signalSlotDispatcher->dispatch(
             self::class,
             'modifyQueriesOfFindByTimestamp',
@@ -534,11 +521,6 @@ class DayRepository extends Repository
         );
     }
 
-    /**
-     * Get TYPO3s Connection Pool
-     *
-     * @return ConnectionPool
-     */
     protected function getConnectionPool(): ConnectionPool
     {
         return GeneralUtility::makeInstance(ConnectionPool::class);
