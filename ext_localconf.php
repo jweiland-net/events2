@@ -98,7 +98,7 @@ call_user_func(function () {
         );
     }
 
-    // add maps2 plugin to new element wizard
+    // add events2 plugin to new element wizard
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('<INCLUDE_TYPOSCRIPT: source="FILE:EXT:events2/Configuration/TSconfig/ContentElementWizard.txt">');
 
     // register eID scripts
