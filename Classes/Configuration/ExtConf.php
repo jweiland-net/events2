@@ -11,7 +11,9 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Configuration;
 
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /*
  * This class streamlines all settings from extension manager
@@ -75,17 +77,14 @@ class ExtConf implements SingletonInterface
 
     public function __construct()
     {
-        // On a fresh installation this value can be null.
-        if (isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['events2'])) {
-            // get global configuration
-            $extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['events2']);
-            if (is_array($extConf) && count($extConf)) {
-                // call setter method foreach configuration entry
-                foreach ($extConf as $key => $value) {
-                    $methodName = 'set' . ucfirst($key);
-                    if (method_exists($this, $methodName)) {
-                        $this->$methodName($value);
-                    }
+        // get global configuration
+        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('events2');
+        if (is_array($extConf) && count($extConf)) {
+            // call setter method foreach configuration entry
+            foreach ($extConf as $key => $value) {
+                $methodName = 'set' . ucfirst($key);
+                if (method_exists($this, $methodName)) {
+                    $this->$methodName($value);
                 }
             }
         }
@@ -173,6 +172,10 @@ class ExtConf implements SingletonInterface
         $this->locationIsRequired = (bool)$locationIsRequired;
     }
 
+    /**
+     * @return string
+     * @throws \Exception
+     */
     public function getEmailFromAddress(): string
     {
         if (empty($this->emailFromAddress)) {
