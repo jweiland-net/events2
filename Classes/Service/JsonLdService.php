@@ -93,7 +93,7 @@ class JsonLdService
         }
         $this->addNameToData($day->getEvent());
         $this->addDescriptionToData($day->getEvent());
-        $this->addUrlToData($day->getEvent());
+        $this->addUrlToData();
         $this->addLocationToData($day->getEvent());
         $this->addOrganizerToData($day->getEvent());
         $this->addImageToData($day->getEvent());
