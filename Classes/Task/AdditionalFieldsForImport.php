@@ -14,7 +14,7 @@ namespace JWeiland\Events2\Task;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
-use TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface;
+use TYPO3\CMS\Scheduler\AbstractAdditionalFieldProvider;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 use TYPO3Fluid\Fluid\Core\ViewHelper\TagBuilder;
@@ -22,7 +22,7 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\TagBuilder;
 /*
  * Additional FieldProvider for events2 Importer
  */
-class AdditionalFieldsForImport implements AdditionalFieldProviderInterface
+class AdditionalFieldsForImport extends AbstractAdditionalFieldProvider
 {
     /**
      * @var array
@@ -132,11 +132,11 @@ class AdditionalFieldsForImport implements AdditionalFieldProviderInterface
         $value = '';
         // if field is empty try to find the needed value
         if (empty($this->taskInfo[$fieldName])) {
-            if ($this->schedulerModule->CMD === 'add' && isset($configuration['default'])) {
+            if ($this->schedulerModule->getCurrentAction()->equals('add') && isset($configuration['default'])) {
                 // In case of new task override value with value from configuration
                 $value = $configuration['default'];
             }
-            if ($this->schedulerModule->CMD == 'edit') {
+            if ($this->schedulerModule->getCurrentAction()->equals('edit')) {
                 // In case of edit, set to internal value
                 $value = $this->task->$fieldName;
             }
@@ -162,7 +162,7 @@ class AdditionalFieldsForImport implements AdditionalFieldProviderInterface
             if (empty($value)) {
                 // Issue error message
                 $errorExists = true;
-                $schedulerModule->addMessage('Field: ' . $fieldName . ' can not be empty', FlashMessage::ERROR);
+                $this->addMessage('Field: ' . $fieldName . ' can not be empty', FlashMessage::ERROR);
             } else {
                 $submittedData[$fieldName] = $value;
             }
