@@ -65,10 +65,6 @@ class AjaxTest extends AbstractUnitTestCase
      */
     public function setUp()
     {
-        $GLOBALS['TYPO3_LOADED_EXT'] = [
-            'events2' => []
-        ];
-
         $this->extConfProphecy = $this->prophesize(ExtConf::class);
         $this->extConfProphecy->getRecurringPast()->willReturn(3);
         $this->extConfProphecy->getRecurringFuture()->willReturn(6);
