@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -17,11 +19,9 @@ use JWeiland\Events2\Domain\Model\Location;
 class LocationController extends AbstractController
 {
     /**
-     * action show.
-     *
      * @param Location $location
      */
-    public function showAction(Location $location)
+    public function showAction(Location $location): void
     {
         $this->view->assign('location', $location);
     }

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the package jweiland/events2.
@@ -24,9 +24,9 @@ class ModifyRootUidOfTreeSelectElements implements FormDataProviderInterface
      * Set rootUid of tree select elements of FlexForms to root category declared in EM
      *
      * @param array $result Initialized result array
-     * @return array
+     * @return array Do not add as strict type because of Interface
      */
-    public function addData(array $result): array
+    public function addData(array $result)
     {
         foreach (['settings.categories', 'settings.mainCategories'] as $categoryField) {
             if (

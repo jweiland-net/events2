@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -23,7 +25,7 @@ class TimeLabel
      * @param array $ctrlArray
      * @param $parentObject
      */
-    public function getTitle(array &$ctrlArray, $parentObject)
+    public function getTitle(array &$ctrlArray, $parentObject): void
     {
         if ($ctrlArray['table'] === 'tx_events2_domain_model_time') {
             // add begin and end to title in general

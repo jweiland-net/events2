@@ -117,6 +117,6 @@ class CategoryRepositoryTest extends UnitTestCase
         $this->subject->expects($this->once())->method('createQuery')->willReturn($query);
 
         // parent (5) should be casted to integer
-        $this->subject->getSelectedCategories('1,2,3,4', '5');
+        $this->subject->getSelectedCategories('1,2,3,4', 5);
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -44,10 +46,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
      *
      * @param mixed  $source     the source data
      * @param string $targetType the type to convert to.
-     *
-     * @return bool TRUE if this TypeConverter can convert from $source to $targetType, FALSE otherwise.
-     *
-     * @api
+     * @return bool true if this TypeConverter can convert from $source to $targetType, FALSE otherwise.
      */
     public function canConvertFrom($source, string $targetType): bool
     {
@@ -75,12 +74,11 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
      * @param string $targetType
      * @param array $convertedChildProperties
      * @param PropertyMappingConfigurationInterface $configuration
-     *
      * @return mixed|Error the target type, or an error object if a user-error occurred
      */
     public function convertFrom(
         $source,
-        $targetType,
+        string $targetType,
         array $convertedChildProperties = [],
         PropertyMappingConfigurationInterface $configuration = null
     ) {
@@ -161,11 +159,10 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
     /**
      * upload file and get a file reference object.
      *
-     * @param array  $source
-     *
+     * @param array $source
      * @return FileReference
      */
-    protected function getExtbaseFileReference($source)
+    protected function getExtbaseFileReference(array $source): FileReference
     {
         /** @var FileReference $extbaseFileReference */
         $extbaseFileReference = $this->objectManager->get(FileReference::class);
@@ -178,10 +175,9 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
      * upload file and get a file reference object.
      *
      * @param array $source
-     *
      * @return \TYPO3\CMS\Core\Resource\FileReference
      */
-    protected function getCoreFileReference(array $source)
+    protected function getCoreFileReference(array $source): \TYPO3\CMS\Core\Resource\FileReference
     {
         // upload file
         $uploadFolder = ResourceFactory::getInstance()->retrieveFileOrFolderObject('uploads/tx_events2/');

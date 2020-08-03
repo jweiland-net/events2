@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -15,13 +17,10 @@ namespace JWeiland\Events2\Controller;
 class VideoController extends AbstractController
 {
     /**
-     * action show
-     *
      * @param int $event
-     *
      * @return void
      */
-    public function showAction($event)
+    public function showAction(int $event): void
     {
         $event = $this->eventRepository->findByIdentifier((int)$event);
         $this->view->assign('event', $event);

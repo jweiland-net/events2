@@ -23,7 +23,7 @@ class DateTimeUtility
      * @param int|string $value Unix timestamp or date/datetime value
      * @return \DateTime|null
      */
-    public function convert($value)
+    public function convert($value): ?\DateTime
     {
         try {
             if (is_bool($value) || empty($value) || $value === '0000-00-00' || $value === '0000-00-00 00:00:00') {
@@ -53,7 +53,7 @@ class DateTimeUtility
      * @param \DateTime $date
      * @return \DateTime
      */
-    public function standardizeDateTimeObject($date)
+    public function standardizeDateTimeObject($date): \DateTime
     {
         if ($date instanceof \DateTime) {
             $date->modify('midnight');
@@ -70,7 +70,7 @@ class DateTimeUtility
      * @param \DateTime $to   The date TO
      * @return \DateTime
      */
-    public function addDiffToDay(\DateTime $day, \DateTime $from, \DateTime $to)
+    public function addDiffToDay(\DateTime $day, \DateTime $from, \DateTime $to): \DateTime
     {
         // then and else parts will be parsed before if condition was called. This is in my kind of view a bug: http://forge.typo3.org/issues/49292
         // But eventEnd is not a required event property, but it is a required property here

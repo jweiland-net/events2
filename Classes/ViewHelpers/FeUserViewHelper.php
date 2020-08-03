@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -42,8 +44,11 @@ class FeUserViewHelper extends AbstractViewHelper
      * @param RenderingContextInterface $renderingContext
      * @return string
      */
-    public static function renderStatic(array $arguments, \Closure $childClosure, RenderingContextInterface $renderingContext)
-    {
+    public static function renderStatic(
+        array $arguments,
+        \Closure $childClosure,
+        RenderingContextInterface $renderingContext
+    ) {
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $userRepository = $objectManager->get(UserRepository::class);
         return $userRepository->getFieldFromUser($arguments['field']);

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the package jweiland/events2.
@@ -107,15 +107,12 @@ class Location extends AbstractEntity
         $this->city = $city;
     }
 
-    /**
-     * @return Link|null
-     */
-    public function getLink()
+    public function getLink(): ?Link
     {
         return $this->link;
     }
 
-    public function setLink(Link $link = null)
+    public function setLink(?Link $link = null)
     {
         $this->link = $link;
     }

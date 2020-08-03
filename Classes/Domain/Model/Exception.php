@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the package jweiland/events2.
@@ -62,15 +62,12 @@ class Exception extends AbstractEntity
         $this->exceptionDate = $exceptionDate;
     }
 
-    /**
-     * @return Time|null
-     */
-    public function getExceptionTime()
+    public function getExceptionTime(): ?Time
     {
         return $this->exceptionTime;
     }
 
-    public function setExceptionTime(Time $exceptionTime = null)
+    public function setExceptionTime(?Time $exceptionTime = null)
     {
         $this->exceptionTime = $exceptionTime;
     }

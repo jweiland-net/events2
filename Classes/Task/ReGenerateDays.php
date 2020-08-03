@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -174,12 +176,10 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
      *
      * @param string $message The message itself
      * @param int $severity Message level (according to \TYPO3\CMS\Core\Messaging\FlashMessage class constants)
-     *
      * @return void
-     *
      * @throws \Exception
      */
-    public function addMessage($message, $severity = FlashMessage::OK)
+    public function addMessage(string $message, int $severity = FlashMessage::OK): void
     {
         /** @var FlashMessage $flashMessage */
         $flashMessage = GeneralUtility::makeInstance(FlashMessage::class, $message, '', $severity);
@@ -189,12 +189,7 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
         $defaultFlashMessageQueue->enqueue($flashMessage);
     }
 
-    /**
-     * Get TYPO3s Connection Pool
-     *
-     * @return ConnectionPool
-     */
-    protected function getConnectionPool()
+    protected function getConnectionPool(): ConnectionPool
     {
         return GeneralUtility::makeInstance(ConnectionPool::class);
     }

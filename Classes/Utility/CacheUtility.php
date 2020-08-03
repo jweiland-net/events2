@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the package jweiland/events2.
@@ -26,7 +26,7 @@ class CacheUtility
      *
      * @param array|QueryResultInterface $eventRecords
      */
-    public static function addCacheTagsByEventRecords($eventRecords)
+    public static function addCacheTagsByEventRecords($eventRecords): void
     {
         $cacheTags = [];
         foreach ($eventRecords as $event) {
@@ -48,7 +48,7 @@ class CacheUtility
      *
      * @param QueryInterface $query
      */
-    public static function addPageCacheTagsByQuery(QueryInterface $query)
+    public static function addPageCacheTagsByQuery(QueryInterface $query): void
     {
         $cacheTags = [];
         if ($query->getQuerySettings()->getStoragePageIds()) {

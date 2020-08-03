@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the package jweiland/events2.
@@ -63,28 +63,22 @@ class Day extends AbstractEntity
      */
     protected $event;
 
-    /**
-     * @return \DateTime|null
-     */
-    public function getCrdate()
+    public function getCrdate(): ?\DateTime
     {
         return $this->crdate;
     }
 
-    public function setCrdate(\DateTime $crdate = null)
+    public function setCrdate(?\DateTime $crdate = null)
     {
         $this->crdate = $crdate;
     }
 
-    /**
-     * @return \DateTime|null
-     */
-    public function getTstamp()
+    public function getTstamp(): ?\DateTime
     {
         return $this->tstamp;
     }
 
-    public function setTstamp(\DateTime $tstamp = null)
+    public function setTstamp(?\DateTime $tstamp = null)
     {
         $this->tstamp = $tstamp;
     }
@@ -161,15 +155,12 @@ class Day extends AbstractEntity
         $this->sameDayTime = $sameDayTime;
     }
 
-    /**
-     * @return Event|null
-     */
-    public function getEvent()
+    public function getEvent(): ?Event
     {
         return $this->event;
     }
 
-    public function setEvent(Event $event = null)
+    public function setEvent(?Event $event = null)
     {
         $this->event = $event;
     }

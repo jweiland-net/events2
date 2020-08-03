@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the package jweiland/events2.
@@ -57,43 +57,26 @@ class EventRepository extends Repository
      */
     protected $settings = [];
 
-    /**
-     * @param DateTimeUtility $dateTimeUtility
-     */
     public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
     {
         $this->dateTimeUtility = $dateTimeUtility;
     }
 
-    /**
-     * @param DataMapper $dataMapper
-     */
     public function injectDataMapper(DataMapper $dataMapper)
     {
         $this->dataMapper = $dataMapper;
     }
 
-    /**
-     * @param Session $persistenceSession
-     */
     public function injectPersistenceSession(Session $persistenceSession)
     {
         $this->persistenceSession = $persistenceSession;
     }
 
-    /**
-     * @param ConfigurationManagerInterface $configurationManager
-     */
     public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager)
     {
         $this->configurationManager = $configurationManager;
     }
 
-    /**
-     * Sets the settings
-     *
-     * @param array $settings
-     */
     public function setSettings(array $settings)
     {
         $this->settings = $settings;
@@ -106,7 +89,7 @@ class EventRepository extends Repository
      * @param string $property
      * @return Event|null
      */
-    public function findHiddenEntry($value, string $property = 'uid')
+    public function findHiddenEntry($value, string $property = 'uid'): ?Event
     {
         $query = $this->createQuery();
         $query->getQuerySettings()->setIgnoreEnableFields(true);
@@ -118,11 +101,6 @@ class EventRepository extends Repository
         return $event;
     }
 
-    /**
-     * Find events of a specified user.
-     *
-     * @return QueryResultInterface
-     */
     public function findMyEvents(): QueryResultInterface
     {
         /** @var UserRepository $userRepository */

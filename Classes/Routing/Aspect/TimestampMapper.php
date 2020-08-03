@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the package jweiland/events2.
@@ -48,10 +48,6 @@ class TimestampMapper implements StaticMappableAspectInterface
      */
     protected $settings;
 
-    /**
-     * @param array $settings
-     * @throws \InvalidArgumentException
-     */
     public function __construct(array $settings)
     {
         if (

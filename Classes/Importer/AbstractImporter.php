@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the package jweiland/events2.
@@ -140,7 +140,7 @@ abstract class AbstractImporter implements ImporterInterface
      * @return bool
      * @throws \Exception
      */
-    protected function hasInvalidEvents(array $events)
+    protected function hasInvalidEvents(array $events): bool
     {
         foreach ($events as $event) {
             if (!$this->isValidEvent($event)) {
@@ -158,7 +158,7 @@ abstract class AbstractImporter implements ImporterInterface
      * @return bool
      * @throws \Exception
      */
-    protected function isValidEvent(array $event)
+    protected function isValidEvent(array $event): bool
     {
         // is future event?
         $eventBegin = \DateTime::createFromFormat('Y-m-d', $event['event_begin']);
@@ -273,7 +273,7 @@ abstract class AbstractImporter implements ImporterInterface
      * @param string $title
      * @return array|false|null
      */
-    protected function getOrganizer($title)
+    protected function getOrganizer(string $title)
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_organizer');
         return $queryBuilder
@@ -295,7 +295,7 @@ abstract class AbstractImporter implements ImporterInterface
      * @param $title
      * @return array|null
      */
-    protected function getLocation($title)
+    protected function getLocation(string $title)
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_location');
 
@@ -319,7 +319,7 @@ abstract class AbstractImporter implements ImporterInterface
      * @param string $title
      * @return array|false|null
      */
-    protected function getCategory($title)
+    protected function getCategory(string $title)
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('sys_category');
         return $queryBuilder
@@ -343,7 +343,7 @@ abstract class AbstractImporter implements ImporterInterface
      * @return void
      * @throws \Exception
      */
-    protected function addMessage($message, $severity = FlashMessage::OK)
+    protected function addMessage(string $message, int $severity = FlashMessage::OK): void
     {
         static $firstMessage = true;
         /** @var AbstractFile $logFile */
@@ -382,7 +382,7 @@ abstract class AbstractImporter implements ImporterInterface
      * @return AbstractFile
      * @throws \Exception
      */
-    protected function getLogFile()
+    protected function getLogFile(): AbstractFile
     {
         try {
             /** @var Folder $folder */
@@ -401,16 +401,7 @@ abstract class AbstractImporter implements ImporterInterface
         return $logFile;
     }
 
-    /**
-     * Set property of event object
-     *
-     * @param Event $event
-     * @param string $column
-     * @param mixed $value
-     *
-     * @return void
-     */
-    protected function setEventProperty(Event $event, $column, $value)
+    protected function setEventProperty(Event $event, string $column, $value): void
     {
         $setter = 'set' . GeneralUtility::underscoredToUpperCamelCase($column);
         if (method_exists($event, $setter)) {
@@ -418,12 +409,7 @@ abstract class AbstractImporter implements ImporterInterface
         }
     }
 
-    /**
-     * Get persistence manager
-     *
-     * @return PersistenceManagerInterface
-     */
-    protected function getPersistenceManager()
+    protected function getPersistenceManager(): PersistenceManagerInterface
     {
         if ($this->persistenceManager === null) {
             /** @var ObjectManager $objectManager */
@@ -434,12 +420,7 @@ abstract class AbstractImporter implements ImporterInterface
         return $this->persistenceManager;
     }
 
-    /**
-     * Get TYPO3s Connection Pool
-     *
-     * @return ConnectionPool
-     */
-    protected function getConnectionPool()
+    protected function getConnectionPool(): ConnectionPool
     {
         return GeneralUtility::makeInstance(ConnectionPool::class);
     }

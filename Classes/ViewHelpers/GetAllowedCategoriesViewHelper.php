@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -44,8 +46,11 @@ class GetAllowedCategoriesViewHelper extends AbstractViewHelper
      * @param RenderingContextInterface $renderingContext
      * @return array
      */
-    public static function renderStatic(array $arguments, \Closure $childClosure, RenderingContextInterface $renderingContext)
-    {
+    public static function renderStatic(
+        array $arguments,
+        \Closure $childClosure,
+        RenderingContextInterface $renderingContext
+    ) {
         $allowedCategories = [];
         $pluginCategories = GeneralUtility::intExplode(',', trim($arguments['pluginCategories']), true);
         foreach ($pluginCategories as $pluginCategory) {

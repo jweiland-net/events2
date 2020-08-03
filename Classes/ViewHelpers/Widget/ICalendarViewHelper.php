@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -23,10 +25,7 @@ class ICalendarViewHelper extends AbstractWidgetViewHelper
      */
     protected $controller;
 
-    /**
-     * @param ICalendarController $controller
-     */
-    public function injectController(ICalendarController $controller)
+    public function injectController(ICalendarController $controller): void
     {
         $this->controller = $controller;
     }
@@ -42,6 +41,6 @@ class ICalendarViewHelper extends AbstractWidgetViewHelper
      */
     public function render(): string
     {
-        return $this->initiateSubRequest();
+        return (string)$this->initiateSubRequest();
     }
 }

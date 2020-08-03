@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -24,7 +26,7 @@ class Time
      *
      * @return string
      */
-    public function returnFieldJS()
+    public function returnFieldJS(): string
     {
         return 'return value;';
     }
@@ -33,10 +35,9 @@ class Time
      * This method converts the value into a unique time format: 21:23.
      *
      * @param mixed $value
-     *
      * @return string
      */
-    public function evaluateFieldValue($value)
+    public function evaluateFieldValue($value): string
     {
         if (MathUtility::canBeInterpretedAsInteger($value)) {
             // this is only for backwards compatibility. In earlier versions we calculated these values with int

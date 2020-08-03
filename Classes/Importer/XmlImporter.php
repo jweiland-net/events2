@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the package jweiland/events2.
@@ -131,7 +131,7 @@ class XmlImporter extends AbstractImporter
      * @param array $data
      * @throws \Exception
      */
-    protected function processEvent(array $data)
+    protected function processEvent(array $data): void
     {
         $event = $this->eventRepository->findHiddenEntry($data['import_id'], 'importId');
         switch ($this->getProcessAs($data)) {
@@ -239,11 +239,7 @@ class XmlImporter extends AbstractImporter
         return $event;
     }
 
-    /**
-     * @param Event $event
-     * @param array $data
-     */
-    protected function addRootProperties(Event $event, array $data)
+    protected function addRootProperties(Event $event, array $data): void
     {
         $allowedRootProperties = [
             'event_type' => 'string',
@@ -275,11 +271,7 @@ class XmlImporter extends AbstractImporter
         }
     }
 
-    /**
-     * @param Event $event
-     * @param array $data
-     */
-    protected function addDateProperties(Event $event, array $data)
+    protected function addDateProperties(Event $event, array $data): void
     {
         $allowedDateProperties = [
             'event_begin',
@@ -298,11 +290,7 @@ class XmlImporter extends AbstractImporter
         }
     }
 
-    /**
-     * @param Event $event
-     * @param array $data
-     */
-    protected function addTimeProperties(Event $event, array $data)
+    protected function addTimeProperties(Event $event, array $data): void
     {
         // add event time
         if (isset($data['event_time']) && is_array($data['event_time'])) {
@@ -352,11 +340,7 @@ class XmlImporter extends AbstractImporter
         }
     }
 
-    /**
-     * @param Event $event
-     * @param array $data
-     */
-    protected function addOrganizer(Event $event, array $data)
+    protected function addOrganizer(Event $event, array $data): void
     {
         $organizerFromDatabase = $this->getOrganizer($data['organizer']);
 
@@ -365,12 +349,7 @@ class XmlImporter extends AbstractImporter
         $event->setOrganizer($organizerObject);
     }
 
-    /**
-     * @param Event $event
-     * @param array $data
-     * @throws \Exception
-     */
-    protected function addLocation(Event $event, array $data)
+    protected function addLocation(Event $event, array $data): void
     {
         $locationFromDatabase = $this->getLocation($data['location']);
 
@@ -379,12 +358,7 @@ class XmlImporter extends AbstractImporter
         $event->setLocation($locationObject);
     }
 
-    /**
-     * @param Event $event
-     * @param array $data
-     * @throws \Exception
-     */
-    protected function addLinks(Event $event, array $data)
+    protected function addLinks(Event $event, array $data): void
     {
         $properties = ['ticket_link', 'video_link', 'download_links'];
         foreach ($properties as $property) {
@@ -406,12 +380,7 @@ class XmlImporter extends AbstractImporter
         }
     }
 
-    /**
-     * @param Event $event
-     * @param array $data
-     * @throws \Exception
-     */
-    protected function addExceptions(Event $event, array $data)
+    protected function addExceptions(Event $event, array $data): void
     {
         if (!isset($data['exceptions']) || !is_array($data['exceptions'])) {
             return;
@@ -446,12 +415,7 @@ class XmlImporter extends AbstractImporter
         }
     }
 
-    /**
-     * @param Event $event
-     * @param array $data
-     * @throws \Exception
-     */
-    protected function addCategories(Event $event, array $data)
+    protected function addCategories(Event $event, array $data): void
     {
         foreach ($data['categories'] as $title) {
             $dbCategory = $this->getCategory($title);
@@ -461,12 +425,7 @@ class XmlImporter extends AbstractImporter
         }
     }
 
-    /**
-     * @param Event $event
-     * @param array $data
-     * @throws \Exception
-     */
-    protected function addImages(Event $event, array $data)
+    protected function addImages(Event $event, array $data): void
     {
         if (isset($data['images']) && is_array($data['images'])) {
             $images = new ObjectStorage();

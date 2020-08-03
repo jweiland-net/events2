@@ -668,7 +668,7 @@ class EventServiceTest extends UnitTestCase
 
         $this->subject->injectEventRepository($eventRepository->reveal());
 
-        $this->assertFalse(
+        $this->assertNull(
             $this->subject->getNextDayForEvent(1)
         );
     }
@@ -701,7 +701,7 @@ class EventServiceTest extends UnitTestCase
 
         $this->subject->injectEventRepository($eventRepository->reveal());
 
-        $this->assertFalse(
+        $this->assertNull(
             $this->subject->getNextDayForEvent(1)
         );
     }
@@ -734,7 +734,7 @@ class EventServiceTest extends UnitTestCase
 
         $this->subject->injectEventRepository($eventRepository->reveal());
 
-        $this->assertEquals(
+        $this->assertNull(
             $day->getDay(),
             $this->subject->getNextDayForEvent(1)
         );

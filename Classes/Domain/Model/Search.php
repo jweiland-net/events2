@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the package jweiland/events2.
@@ -63,15 +63,12 @@ class Search extends AbstractEntity
         $this->search = htmlspecialchars($search);
     }
 
-    /**
-     * @return Category|null
-     */
-    public function getMainCategory()
+    public function getMainCategory(): ?Category
     {
         return $this->mainCategory;
     }
 
-    public function setMainCategory(Category $mainCategory = null)
+    public function setMainCategory(?Category $mainCategory = null)
     {
         $this->mainCategory = $mainCategory;
     }
@@ -79,20 +76,17 @@ class Search extends AbstractEntity
     /**
      * @return Category|null
      */
-    public function getSubCategory()
+    public function getSubCategory(): ?Category
     {
         return $this->subCategory;
     }
 
-    public function setSubCategory(Category $subCategory = null)
+    public function setSubCategory(?Category $subCategory = null)
     {
         $this->subCategory = $subCategory;
     }
 
-    /**
-     * @return \DateTime|null $eventBegin
-     */
-    public function getEventBegin()
+    public function getEventBegin(): ?\DateTime
     {
         if (empty($this->eventBegin)) {
             return null;
@@ -112,10 +106,7 @@ class Search extends AbstractEntity
         $this->eventBegin = $eventBegin;
     }
 
-    /**
-     * @return \DateTime|null $eventEnd
-     */
-    public function getEventEnd()
+    public function getEventEnd(): ?\DateTime
     {
         if (empty($this->eventEnd)) {
             return null;
@@ -135,10 +126,7 @@ class Search extends AbstractEntity
         $this->eventEnd = $eventEnd;
     }
 
-    /**
-     * @return Location|null
-     */
-    public function getLocation()
+    public function getLocation(): ?Location
     {
         return $this->location;
     }

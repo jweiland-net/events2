@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the package jweiland/events2.
@@ -56,36 +56,27 @@ trait Typo3PropertiesTrait
      */
     protected $cruserId = 0;
 
-    /**
-     * @return \DateTime|null
-     */
-    public function getCrdate()
+    public function getCrdate(): ?\DateTime
     {
         return $this->crdate;
     }
 
-    public function setCrdate(\DateTime $crdate = null)
+    public function setCrdate(?\DateTime $crdate = null)
     {
         $this->crdate = $crdate;
     }
 
-    /**
-     * @return \DateTime|null
-     */
-    public function getTstamp()
+    public function getTstamp(): ?\DateTime
     {
         return $this->tstamp;
     }
 
-    public function setTstamp(\DateTime $tstamp = null)
+    public function setTstamp(?\DateTime $tstamp = null)
     {
         $this->tstamp = $tstamp;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getSysLanguageUid()
+    public function getSysLanguageUid(): ?int
     {
         return $this->_languageUid;
     }
@@ -105,28 +96,22 @@ trait Typo3PropertiesTrait
         $this->l10nParent = $l10nParent;
     }
 
-    /**
-     * @return \DateTime|null
-     */
-    public function getStarttime()
+    public function getStarttime(): ?\DateTime
     {
         return $this->starttime;
     }
 
-    public function setStarttime(\DateTime $starttime = null)
+    public function setStarttime(?\DateTime $starttime = null)
     {
         $this->starttime = $starttime;
     }
 
-    /**
-     * @return \DateTime|null
-     */
-    public function getEndtime()
+    public function getEndtime(): ?\DateTime
     {
         return $this->endtime;
     }
 
-    public function setEndtime(\DateTime $endtime = null)
+    public function setEndtime(?\DateTime $endtime = null)
     {
         $this->endtime = $endtime;
     }

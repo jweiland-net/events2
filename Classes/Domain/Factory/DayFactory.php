@@ -46,11 +46,6 @@ class DayFactory
         'buildDay',
     ];
 
-    /**
-     * inject databaseService
-     *
-     * @param DatabaseService $databaseService
-     */
     public function injectDatabaseService(DatabaseService $databaseService)
     {
         $this->databaseService = $databaseService;
@@ -86,14 +81,7 @@ class DayFactory
         return $day;
     }
 
-    /**
-     * Find exact matching day record
-     *
-     * @param array $searchValues
-     * @param QueryInterface|Query $query
-     * @return Day|null
-     */
-    protected function findExactDay(array $searchValues, QueryInterface $query)
+    protected function findExactDay(array $searchValues, QueryInterface $query): ?Day
     {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder->andWhere(
@@ -113,14 +101,7 @@ class DayFactory
         );
     }
 
-    /**
-     * Find next matching day record
-     *
-     * @param array $searchValues
-     * @param QueryInterface|Query $query
-     * @return Day|null
-     */
-    protected function findNextDay(array $searchValues, QueryInterface $query)
+    protected function findNextDay(array $searchValues, QueryInterface $query): ?Day
     {
         $queryBuilder = $this->getQueryBuilder();
         $this->databaseService->addConstraintForDateRange(
@@ -135,14 +116,7 @@ class DayFactory
         );
     }
 
-    /**
-     * Find previous matching day record
-     *
-     * @param array $searchValues
-     * @param QueryInterface|Query $query
-     * @return Day|null
-     */
-    protected function findPreviousDay(array $searchValues, QueryInterface $query)
+    protected function findPreviousDay(array $searchValues, QueryInterface $query): ?Day
     {
         $queryBuilder = $this->getQueryBuilder(QueryInterface::ORDER_DESCENDING);
         $this->databaseService->addConstraintForDateRange(
@@ -158,7 +132,7 @@ class DayFactory
     }
 
     /**
-     * Build day object on  our own.
+     * Build day object on our own.
      * It will not get an UID or PID
      *
      * @param array $searchValues
@@ -217,7 +191,7 @@ class DayFactory
      * @param QueryInterface|Query $query
      * @return Day|null
      */
-    protected function findDayByEvent(int $eventUid, QueryBuilder $queryBuilder, QueryInterface $query)
+    protected function findDayByEvent(int $eventUid, QueryBuilder $queryBuilder, QueryInterface $query): ?Day
     {
         $this->addBaseConstraint($queryBuilder, $query, $eventUid);
 
@@ -263,7 +237,7 @@ class DayFactory
      * @param QueryInterface $query
      * @param int $eventUid
      */
-    protected function addBaseConstraint(QueryBuilder $queryBuilder, QueryInterface $query, int $eventUid)
+    protected function addBaseConstraint(QueryBuilder $queryBuilder, QueryInterface $query, int $eventUid): void
     {
         // add storage PID for event and day, but not for sys_category
         $this->databaseService->addConstraintForPid(
@@ -279,11 +253,6 @@ class DayFactory
         );
     }
 
-    /**
-     * Get TYPO3s Connection Pool
-     *
-     * @return ConnectionPool
-     */
     protected function getConnectionPool(): ConnectionPool
     {
         return GeneralUtility::makeInstance(ConnectionPool::class);

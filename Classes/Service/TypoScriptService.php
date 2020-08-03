@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the package jweiland/events2.
@@ -17,11 +17,7 @@ namespace JWeiland\Events2\Service;
  */
 class TypoScriptService
 {
-    /**
-     * @param array $mergedFlexFormSettings
-     * @param array $typoScriptSettings
-     */
-    public function override(array &$mergedFlexFormSettings, array $typoScriptSettings)
+    public function override(array &$mergedFlexFormSettings, array $typoScriptSettings): void
     {
         foreach ($typoScriptSettings as $property => $value) {
             if (isset($typoScriptSettings[$property]) && is_array($typoScriptSettings[$property])) {

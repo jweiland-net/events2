@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -21,12 +23,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Ajax extends AbstractAjaxRequest
 {
-    /**
-     * Process ajax request.
-     *
-     * @param array $arguments Arguments to process
-     * @return string
-     */
     public function processAjaxRequest(array $arguments): string
     {
         ExtensionManagementUtility::loadBaseTca(true);
@@ -41,13 +37,7 @@ class Ajax extends AbstractAjaxRequest
         }
     }
 
-    /**
-     * Find locations by locationsPart.
-     *
-     * @param $locationPart
-     * @return array
-     */
-    protected function findLocations($locationPart): array
+    protected function findLocations(string $locationPart): array
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_events2_domain_model_location');

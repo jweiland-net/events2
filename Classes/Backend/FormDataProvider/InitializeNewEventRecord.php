@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -17,10 +19,10 @@ use TYPO3\CMS\Backend\Form\FormDataProviderInterface;
 class InitializeNewEventRecord implements FormDataProviderInterface
 {
     /**
-     * Add form data to result array
+     * Prefill event_begin with current date
      *
      * @param array $result Initialized result array
-     * @return array Result filled with more data
+     * @return array Do not add as strict type because of Interface
      */
     public function addData(array $result)
     {

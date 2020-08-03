@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the package jweiland/events2.
@@ -34,7 +34,7 @@ class OrganizerRepository extends Repository
      *
      * @return QueryResultInterface|Organizer[]
      */
-    public function getOrganizersForFilter()
+    public function getOrganizersForFilter(): QueryResultInterface
     {
         $query = $this->createQuery();
         return $query->matching($query->equals('hide_in_filter', 0))->execute();

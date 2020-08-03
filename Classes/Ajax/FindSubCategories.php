@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -28,29 +30,14 @@ class FindSubCategories extends AbstractAjaxRequest
         $this->categoryRepository = $categoryRepository;
     }
 
-    /**
-     * process ajax request.
-     *
-     * @param array $arguments Arguments to process
-     *
-     * @return string
-     */
-    public function processAjaxRequest(array $arguments)
+    public function processAjaxRequest(array $arguments): string
     {
-        $parentCategory = (int)$arguments['category'];
-        $categories = $this->categoryRepository->getSubCategories($parentCategory);
+        $categories = $this->categoryRepository->getSubCategories((int)$arguments['category']);
 
         return json_encode($this->reduceCategoryData($categories), JSON_FORCE_OBJECT);
     }
 
-    /**
-     * We don't want to add a huge JSON String with all properties through AJAX-Process
-     * It is easier and smaller to pass only needed values like UID and Label.
-     *
-     * @param QueryResultInterface|Category[] $categories
-     * @return array
-     */
-    protected function reduceCategoryData(QueryResultInterface $categories)
+    protected function reduceCategoryData(QueryResultInterface $categories): array
     {
         $response = [];
         foreach ($categories as $category) {

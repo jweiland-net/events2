@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -39,8 +41,11 @@ class ConvertToJsonViewHelper extends AbstractViewHelper
      * @param RenderingContextInterface $renderingContext
      * @return string
      */
-    public static function renderStatic(array $arguments, \Closure $childClosure, RenderingContextInterface $renderingContext)
-    {
+    public static function renderStatic(
+        array $arguments,
+        \Closure $childClosure,
+        RenderingContextInterface $renderingContext
+    ) {
         $value = $childClosure();
         if (empty($value)) {
             $json = '{}';
