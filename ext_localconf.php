@@ -45,8 +45,6 @@ call_user_func(function () {
         ]
     );
 
-    // Add command to truncate day table and recreate day records from scratch
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['extbase']['commandControllers'][] = \JWeiland\Events2\Command\RepairCommandController::class;
     // register an eval function to check for time
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tce']['formevals'][\JWeiland\Events2\Tca\Type\Time::class] = 'EXT:events2/Classes/Tca/Type/Time.php';
     // delete and recreate day relations for an event while saving

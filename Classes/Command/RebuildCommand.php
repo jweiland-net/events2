@@ -27,7 +27,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
  * problems with all these day records.
  * Today this class deletes ALL day records and creates them from scratch.
  */
-class RepairCommandController extends Command
+class RebuildCommand extends Command
 {
     /**
      * Needed to wrap activity bar:
