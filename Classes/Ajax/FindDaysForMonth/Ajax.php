@@ -78,7 +78,7 @@ class Ajax
 
     public function processAjaxRequest(array $arguments): string
     {
-        $this->initialize($arguments);
+        /*$this->initialize($arguments);
         $month = (int)$this->getArgument('month');
         $year = (int)$this->getArgument('year');
 
@@ -106,7 +106,8 @@ class Ajax
         }
         $this->addHolidays($dayArray);
 
-        return json_encode($dayArray);
+        return json_encode($dayArray);*/
+        return '';
     }
 
     protected function setArguments(array $arguments): void

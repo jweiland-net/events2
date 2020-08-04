@@ -12,12 +12,16 @@ namespace JWeiland\Events2\Ajax;
 use JWeiland\Events2\Ajax\FindLocations\Ajax;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-$request = GeneralUtility::_GPmerged('tx_events2_events');
+/*$request = GeneralUtility::_GPmerged('tx_events2_events');
 
 if (is_array($request) && is_array($request['arguments'])) {
-    /** @var Ajax $ajaxObject */
     $ajaxObject = GeneralUtility::makeInstance(Ajax::class);
     echo $ajaxObject->processAjaxRequest($request['arguments']);
 } else {
     echo '';
+}*/
+
+class FindLocations
+{
+
 }

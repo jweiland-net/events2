@@ -25,7 +25,7 @@ class Ajax extends AbstractAjaxRequest
 {
     public function processAjaxRequest(array $arguments): string
     {
-        ExtensionManagementUtility::loadBaseTca(true);
+        /*ExtensionManagementUtility::loadBaseTca(true);
 
         // Hint: search may fail with "&" in $locationPart
         $locationPart = (string)trim(htmlspecialchars(strip_tags($arguments['locationPart'])));
@@ -34,7 +34,8 @@ class Ajax extends AbstractAjaxRequest
             return '';
         } else {
             return json_encode($this->findLocations($locationPart));
-        }
+        }*/
+        return '';
     }
 
     protected function findLocations(string $locationPart): array
