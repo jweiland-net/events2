@@ -6,25 +6,21 @@ os:
 jobs:
   include:
     - stage: test
-      php: "7.0"
-      env:
-        - TYPO3_VERSION=^8
-        - EXCLUDE_DIR="./Classes/Routing/*"
-    - stage: test
-      php: "7.1"
-      env:
-        - TYPO3_VERSION=^8
-        - EXCLUDE_DIR=""
-    - stage: test
-      php: "7.2"
-      env:
-        - TYPO3_VERSION=^8
-        - EXCLUDE_DIR=""
-    - stage: test
       php: "7.2"
       env:
         - TYPO3_VERSION=^9
-        - EXCLUDE_DIR=""
+    - stage: test
+      php: "7.3"
+      env:
+        - TYPO3_VERSION=^9
+    - stage: test
+      php: "7.3"
+      env:
+        - TYPO3_VERSION=^10
+    - stage: test
+      php: "7.4"
+      env:
+        - TYPO3_VERSION=^10
 
 addons:
   apt:
@@ -73,7 +69,7 @@ script:
     echo "Running parallel";
     echo;
     echo;
-    find . -name \*.php ! -path "./.Build/*" ! -path "$EXCLUDE_DIR" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;;
+    find . -name \*.php ! -path "./.Build/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;;
 
   - >
     echo;
