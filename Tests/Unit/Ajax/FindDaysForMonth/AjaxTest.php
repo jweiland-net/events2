@@ -65,7 +65,7 @@ class AjaxTest extends AbstractUnitTestCase
      */
     public function setUp()
     {
-        $this->extConfProphecy = $this->prophesize(ExtConf::class);
+        /*$this->extConfProphecy = $this->prophesize(ExtConf::class);
         $this->extConfProphecy->getRecurringPast()->willReturn(3);
         $this->extConfProphecy->getRecurringFuture()->willReturn(6);
 
@@ -76,10 +76,10 @@ class AjaxTest extends AbstractUnitTestCase
         ];
 
         $this->phpFrontendProphecy = $this->prophesize(PhpFrontend::class);
-        $this->phpFrontendProphecy->require(Argument::any())->shouldBeCalled()->willReturn($cacheData);
+        $this->phpFrontendProphecy->require(Argument::any())->shouldBeCalled()->willReturn($cacheData);*/
 
         /** @var CacheManager|ObjectProphecy $cacheManagerProphecy */
-        $this->cacheManagerProphecy = $this->prophesize(CacheManager::class);
+        /*$this->cacheManagerProphecy = $this->prophesize(CacheManager::class);
         $this->cacheManagerProphecy
             ->getCache('cache_core')
             ->shouldBeCalled()
@@ -90,7 +90,7 @@ class AjaxTest extends AbstractUnitTestCase
             $this->extConfProphecy->reveal(),
             new DateTimeUtility(),
             new CacheHashCalculator()
-        );
+        );*/
     }
 
     /**
@@ -98,9 +98,9 @@ class AjaxTest extends AbstractUnitTestCase
      */
     public function tearDown()
     {
-        parent::tearDown();
+        /*parent::tearDown();
         ExtensionManagementUtilityAccessibleProxy::setCacheManager(null);
-        unset($this->subject);
+        unset($this->subject);*/
     }
 
     /**
