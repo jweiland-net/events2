@@ -19,18 +19,20 @@ class TimeToStringConverter
     public function convert(int $timestamp): string
     {
         $time = '';
-        if (is_int($timestamp)) {
-            if ($timestamp >= (60 * 60 * 24)) {
-                // return highest allowed value: 23:59 if timestamp is too high
-                $time = '23:59';
-            } elseif ($timestamp <= 0) {
-                // return minimum allowed value: 00:00 if timestamp is too low
-                $time = '00:00';
-            } else {
-                $hours = $this->getHours($timestamp);
-                $minutes = $this->getRemainingMinutes($timestamp, $hours);
-                $time = str_pad($hours, 2, '0', STR_PAD_LEFT) . ':' . str_pad($minutes, 2, '0', STR_PAD_LEFT);
-            }
+        if ($timestamp >= (60 * 60 * 24)) {
+            // return highest allowed value: 23:59 if timestamp is too high
+            $time = '23:59';
+        } elseif ($timestamp <= 0) {
+            // return minimum allowed value: 00:00 if timestamp is too low
+            $time = '00:00';
+        } else {
+            $hours = $this->getHours($timestamp);
+            $minutes = $this->getRemainingMinutes($timestamp, $hours);
+            $time = sprintf(
+                '%s:%s',
+                str_pad((string)$hours, 2, '0', STR_PAD_LEFT),
+                str_pad((string)$minutes, 2, '0', STR_PAD_LEFT)
+            );
         }
 
         return $time;
@@ -69,6 +71,6 @@ class TimeToStringConverter
             $minutes = 0;
         }
 
-        return $minutes;
+        return (int)$minutes;
     }
 }
