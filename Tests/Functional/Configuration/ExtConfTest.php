@@ -1,6 +1,6 @@
 <?php
 
-namespace JWeiland\Events2\Tests\Unit\Configuration;
+namespace JWeiland\Events2\Tests\Functional\Configuration;
 
 /*
  * This file is part of the events2 project.
@@ -15,44 +15,38 @@ namespace JWeiland\Events2\Tests\Unit\Configuration;
  * The TYPO3 project - inspiring people to share!
  */
 use JWeiland\Events2\Configuration\ExtConf;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
+use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 
 /**
  * Test case.
  */
-class ExtConfTest extends UnitTestCase
+class ExtConfTest extends FunctionalTestCase
 {
     /**
-     * @var \JWeiland\Events2\Configuration\ExtConf
+     * @var ExtConf
      */
     protected $subject;
 
     /**
-     * @var string
+     * @var array
      */
-    protected $backupExtConfOfEvents = '';
+    protected $testExtensionsToLoad = [
+        'typo3conf/ext/events2'
+    ];
 
-    /**
-     * set up.
-     */
     public function setUp()
     {
-        $this->backupExtConfOfEvents = $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['events2'];
-        $newExtConfForEvents = [
-            'recurringPast' => '3',
-            'recurringFuture' => '6',
-        ];
-        $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['events2'] = serialize($newExtConfForEvents);
+        parent::setUp();
+
         $this->subject = new ExtConf();
+        $this->subject->setRecurringPast('3');
+        $this->subject->setRecurringFuture('6');
     }
 
-    /**
-     * tear down.
-     */
     public function tearDown()
     {
-        $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['events2'] = $this->backupExtConfOfEvents;
         unset($this->subject);
+        parent::tearDown();
     }
 
     /**
