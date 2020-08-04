@@ -8,19 +8,19 @@ jobs:
     - stage: test
       php: "7.2"
       env:
-        - TYPO3_VERSION=^9
+        - TYPO3_VERSION=^9.5
     - stage: test
       php: "7.3"
       env:
-        - TYPO3_VERSION=^9
+        - TYPO3_VERSION=^9.5
     - stage: test
       php: "7.3"
       env:
-        - TYPO3_VERSION=^10
+        - TYPO3_VERSION=^10.4
     - stage: test
       php: "7.4"
       env:
-        - TYPO3_VERSION=^10
+        - TYPO3_VERSION=^10.4
 
 addons:
   apt:
@@ -45,8 +45,8 @@ before_install:
 
 install:
   - >
-    composer config minimum-stability dev;
-    composer config prefer-stable true;
+    composer config minimum-stability dev
+    composer config prefer-stable true
   - composer require typo3/minimal=$TYPO3_VERSION
   - mkdir -p .Build/public/typo3conf/ext/
   - if [ ! -L .Build/public/typo3conf/ext/events2 ]; then ln -snvf ../../../../. .Build/public/typo3conf/ext/events2; fi
