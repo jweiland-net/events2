@@ -45,7 +45,7 @@ class DateTimeUtility
     }
 
     /**
-     * we have our own implementation of Time
+     * We have our own implementation of Time
      * That's why we change time to midnight in DateTime-Objects
      * Further it's easier to compare DateTime-Objects
      * Hint: This function can also be called with NULL.
@@ -53,7 +53,7 @@ class DateTimeUtility
      * @param \DateTime $date
      * @return \DateTime
      */
-    public function standardizeDateTimeObject($date): \DateTime
+    public function standardizeDateTimeObject(?\DateTime $date): ?\DateTime
     {
         if ($date instanceof \DateTime) {
             $date->modify('midnight');
