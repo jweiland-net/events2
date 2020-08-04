@@ -15,7 +15,6 @@ namespace JWeiland\Events2\Tests\Unit\Domain\Model;
  */
 
 use JWeiland\Events2\Domain\Model\Filter;
-use JWeiland\Events2\Domain\Model\Organizer;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 
 /**

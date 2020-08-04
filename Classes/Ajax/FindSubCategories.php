@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Ajax;
 
 use JWeiland\Events2\Domain\Repository\CategoryRepository;
-use TYPO3\CMS\Extbase\Domain\Model\Category;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /*
