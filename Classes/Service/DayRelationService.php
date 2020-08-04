@@ -249,7 +249,7 @@ class DayRelationService
     {
         if ($event->getEventType() === 'duration') {
             list($hour, $minute) = $this->getHourAndMinuteFromTime($this->firstTime);
-            $sortDayTime = $this->getDayTime($this->firstDateTime, $hour, $minute);
+            $sortDayTime = $this->getDayTime($this->firstDateTime, (int)$hour, (int)$minute);
         } else {
             $sortDayTime = $this->getDayTime($day, $hour, $minute);
         }
@@ -279,7 +279,7 @@ class DayRelationService
             list($hour, $minute) = $this->getHourAndMinuteFromTime($this->firstTime);
         }
 
-        return $this->getSortDayTime($day, $hour, $minute, $event);
+        return $this->getSortDayTime($day, (int)$hour, (int)$minute, $event);
     }
 
     protected function getLogger(): Logger
