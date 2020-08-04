@@ -81,7 +81,7 @@ class AjaxTest extends UnitTestCase
     }
 
     /**
-     * @test
+     * @tester
      */
     public function processAjaxRequestWithNoLocationsReturnsEmptyString()
     {
@@ -101,7 +101,7 @@ class AjaxTest extends UnitTestCase
     }
 
     /**
-     * @test
+     * @tester
      */
     public function processAjaxRequestWithHtmlCallsFindLocationsWithoutHtml()
     {
@@ -122,7 +122,7 @@ class AjaxTest extends UnitTestCase
     }
 
     /**
-     * @test
+     * @tester
      */
     public function processAjaxRequestWithTooSmallLocationsReturnsEmptyString()
     {
@@ -142,7 +142,7 @@ class AjaxTest extends UnitTestCase
     }
 
     /**
-     * @test
+     * @tester
      */
     public function processAjaxRequestWithLocationsReturnsJson()
     {

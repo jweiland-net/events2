@@ -51,11 +51,11 @@ class FilterTest extends UnitTestCase
      */
     public function setOrganizerSetsOrganizer()
     {
-        $instance = new Organizer();
-        $this->subject->setOrganizer($instance);
+        $organizer = 34;
+        $this->subject->setOrganizer($organizer);
 
         $this->assertSame(
-            $instance,
+            $organizer,
             $this->subject->getOrganizer()
         );
     }

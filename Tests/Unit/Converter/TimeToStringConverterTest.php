@@ -38,35 +38,6 @@ class TimeToStringConverterTest extends UnitTestCase
     }
 
     /**
-     * dataProvider for invalid timestamp.
-     *
-     * @return array
-     */
-    public function dataProviderForInvalidTimestamps()
-    {
-        $timestamps = [];
-        $timestamps['array'] = [['Test', 'Test']];
-        $timestamps['string'] = ['Hello'];
-        $timestamps['object'] = [new \stdClass()];
-
-        return $timestamps;
-    }
-
-    /**
-     * @test
-     *
-     * @param mixed $invalidTimestamp
-     * @dataProvider dataProviderForInvalidTimestamps
-     */
-    public function convertWithInvalidValuesReturnsEmptyString($invalidTimestamp)
-    {
-        $this->assertSame(
-            '',
-            $this->subject->convert($invalidTimestamp)
-        );
-    }
-
-    /**
      * dataProvider for too high int values.
      *
      * @return array

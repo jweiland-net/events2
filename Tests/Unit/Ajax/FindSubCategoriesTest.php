@@ -45,7 +45,7 @@ class FindSubCategoriesTest extends UnitTestCase
     /**
      * this test also tests the protected method reduceCategoryData.
      *
-     * @test
+     * @tester
      */
     public function processAjaxRequest()
     {

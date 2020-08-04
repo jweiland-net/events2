@@ -17,6 +17,7 @@ namespace JWeiland\Events2\Tests\Unit\Controller;
 use JWeiland\Events2\Ajax\FindSubCategories;
 use JWeiland\Events2\Controller\AjaxController;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Extbase\Mvc\Controller\Arguments;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
@@ -41,47 +42,25 @@ class AjaxControllerTest extends UnitTestCase
     }
 
     /**
-     * data provider for callAjaxObjectActionWithInvalidObjectNameResultsInEmptyString.
-     *
-     * @return array
-     */
-    public function dataProviderForInvalidObjectNames()
-    {
-        $objectNames = [];
-        $objectNames['integer'] = [123];
-        $objectNames['object'] = [new \stdClass()];
-        $objectNames['array'] = [['foo', 'bar']];
-        $objectNames['non existing Class'] = ['fooBar'];
-
-        return $objectNames;
-    }
-
-    /**
-     * @test
-     *
-     * @dataProvider dataProviderForInvalidObjectNames
-     *
-     * @param mixed $objectName
-     */
-    public function callAjaxObjectActionWithInvalidObjectNameResultsInEmptyString($objectName)
-    {
-        $this->assertEmpty($this->subject->callAjaxObjectAction($objectName, []));
-    }
-
-    /**
      * @test
      */
     public function callAjaxObjectActionWithLowerCasedObjectNameWillBeConvertedToUcFirst()
     {
-        /** @var ObjectManager|\PHPUnit_Framework_MockObject_MockObject $objectManager */
-        $objectManager = $this->getMockBuilder(ObjectManager::class)->getMock();
-        // ->get will be called within injectObjectManager the first time
-        $objectManager->expects($this->at(0))->method('get')->with($this->equalTo(Arguments::class))->will($this->returnValue(new \stdClass()));
-        // now we can configure method get for FindSubCategories
-        $objectManager->expects($this->at(1))->method('get')->with($this->equalTo(FindSubCategories::class))->will($this->returnValue(new \stdClass()));
+        /** @var ObjectManager|ObjectProphecy $objectManager */
+        $objectManager = $this->prophesize(ObjectManager::class);
+        $objectManager
+            ->get(Arguments::class)
+            ->shouldBeCalled()
+            ->willReturn(new \stdClass());
+        $objectManager
+            ->get(FindSubCategories::class)
+            ->shouldBeCalled()
+            ->willReturn(new \stdClass());
 
-        $this->subject->injectObjectManager($objectManager);
-        $this->assertEmpty($this->subject->callAjaxObjectAction('findSubCategories', []));
+        $this->subject->injectObjectManager($objectManager->reveal());
+        $this->assertEmpty(
+            $this->subject->callAjaxObjectAction('findSubCategories', [])
+        );
     }
 
     /**
@@ -96,14 +75,18 @@ class AjaxControllerTest extends UnitTestCase
         $findSubCategories = $this->getMockBuilder(FindSubCategories::class)->setMethods(['processAjaxRequest'])->getMock();
         $findSubCategories->expects($this->once())->method('processAjaxRequest')->with($arguments)->will($this->returnValue($expectedResult));
 
-        /** @var ObjectManager|\PHPUnit_Framework_MockObject_MockObject $objectManager */
-        $objectManager = $this->getMockBuilder(ObjectManager::class)->getMock();
-        // ->get will be called within injectObjectManager the first time
-        $objectManager->expects($this->at(0))->method('get')->with($this->equalTo(Arguments::class))->will($this->returnValue(new \stdClass()));
-        // now we can configure method get for FindSubCategories
-        $objectManager->expects($this->at(1))->method('get')->with($this->equalTo(FindSubCategories::class))->will($this->returnValue($findSubCategories));
+        /** @var ObjectManager|ObjectProphecy $objectManager */
+        $objectManager = $this->prophesize(ObjectManager::class);
+        $objectManager
+            ->get(Arguments::class)
+            ->shouldBeCalled()
+            ->willReturn(new \stdClass());
+        $objectManager
+            ->get(FindSubCategories::class)
+            ->shouldBeCalled()
+            ->willReturn($findSubCategories);
 
-        $this->subject->injectObjectManager($objectManager);
+        $this->subject->injectObjectManager($objectManager->reveal());
         $this->assertSame(
             $expectedResult,
             $this->subject->callAjaxObjectAction('FindSubCategories', $arguments)
