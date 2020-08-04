@@ -291,9 +291,9 @@ class EventService
      * Needed by SolrIndexer, as we can't create JOIN Queries in Solr configuration
      *
      * @param int $eventUid
-     * @return Day|null
+     * @return \DateTime|null
      */
-    public function getLastDayForEvent(int $eventUid): ?Day
+    public function getLastDayForEvent(int $eventUid): ?\DateTime
     {
         /** @var Event $event */
         $event = $this->eventRepository->findByIdentifier($eventUid);
@@ -301,7 +301,6 @@ class EventService
         krsort($days);
         reset($days);
 
-        /** @var Day $day */
         $day = current($days);
         return $day ?: null;
     }
