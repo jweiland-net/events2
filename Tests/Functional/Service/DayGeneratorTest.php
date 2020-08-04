@@ -38,6 +38,8 @@ class DayGeneratorTest extends UnitTestCase
      */
     public function setUp()
     {
+        parent::setUp();
+
         $extConf = new ExtConf();
         $extConf->setRecurringFuture(12);
 
@@ -70,6 +72,8 @@ class DayGeneratorTest extends UnitTestCase
     public function tearDown()
     {
         unset($this->subject);
+
+        parent::tearDown();
     }
 
     /**
