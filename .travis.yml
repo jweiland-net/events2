@@ -44,9 +44,8 @@ before_install:
   - composer self-update
 
 install:
-  - >
-    composer config minimum-stability dev
-    composer config prefer-stable true
+  - composer config minimum-stability dev
+  - composer config prefer-stable true
   - composer require typo3/minimal=$TYPO3_VERSION
   - mkdir -p .Build/public/typo3conf/ext/
   - if [ ! -L .Build/public/typo3conf/ext/events2 ]; then ln -snvf ../../../../. .Build/public/typo3conf/ext/events2; fi
