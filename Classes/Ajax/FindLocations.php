@@ -23,5 +23,4 @@ if (is_array($request) && is_array($request['arguments'])) {
 
 class FindLocations
 {
-
 }
