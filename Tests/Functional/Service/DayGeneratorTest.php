@@ -1,6 +1,6 @@
 <?php
 
-namespace JWeiland\Events2\Tests\Unit\Service;
+namespace JWeiland\Events2\Tests\Functional\Service;
 
 /*
  * This file is part of the events2 project.
@@ -20,13 +20,14 @@ use JWeiland\Events2\Domain\Model\Exception;
 use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Service\DayGenerator;
 use JWeiland\Events2\Utility\DateTimeUtility;
+use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Test case for class \JWeiland\Events2\Service\DayGenerator.
  */
-class DayGeneratorTest extends UnitTestCase
+class DayGeneratorTest extends FunctionalTestCase
 {
     /**
      * @var \JWeiland\Events2\Service\DayGenerator
@@ -34,8 +35,12 @@ class DayGeneratorTest extends UnitTestCase
     protected $subject;
 
     /**
-     * set up.
+     * @var array
      */
+    protected $testExtensionsToLoad = [
+        'typo3conf/ext/events2'
+    ];
+
     public function setUp()
     {
         parent::setUp();

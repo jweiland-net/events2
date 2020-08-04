@@ -1,6 +1,6 @@
 <?php
 
-namespace JWeiland\Events2\Tests\Unit\Service;
+namespace JWeiland\Events2\Tests\Functional\Service;
 
 /*
  * This file is part of the events2 project.
@@ -24,7 +24,7 @@ use JWeiland\Events2\Service\DayGenerator;
 use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Service\EventService;
 use JWeiland\Events2\Utility\DateTimeUtility;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
+use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
@@ -33,7 +33,7 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 /**
  * Test case for class \JWeiland\Events2\Service\DayRelationService
  */
-class DayRelationServiceTest extends UnitTestCase
+class DayRelationServiceTest extends FunctionalTestCase
 {
     /**
      * @var DayRelationService
@@ -60,6 +60,8 @@ class DayRelationServiceTest extends UnitTestCase
      */
     public function setUp()
     {
+        parent::setUp();
+
         $this->extConfProphecy = $this->prophesize(ExtConf::class);
         $this->extConfProphecy->getRecurringPast()->willReturn(3);
         $this->extConfProphecy->getRecurringFuture()->willReturn(6);
@@ -110,6 +112,8 @@ class DayRelationServiceTest extends UnitTestCase
         unset($this->eventRepositoryProphecy);
         unset($this->persistenceManagerProphecy);
         unset($this->subject);
+
+        parent::tearDown();
     }
 
     /**

@@ -23,6 +23,7 @@ use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
 use Nimut\TestingFramework\MockObject\AccessibleMockObjectInterface;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
+use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
@@ -179,25 +180,24 @@ class EventControllerTest extends UnitTestCase
             'rootCategory' => '12'
         ];
 
-        $configurationManager = $this->getMockBuilder(ConfigurationManager::class)->getMock();
+        /** @var ConfigurationManagerInterface|ObjectProphecy $configurationManager */
+        $configurationManager = $this->prophesize(ConfigurationManager::class);
         $configurationManager
-            ->expects($this->at(0))
-            ->method('getConfiguration')
-            ->with(
-                $this->identicalTo(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK),
-                $this->identicalTo('events2'),
-                $this->identicalTo('events2_event')
+            ->getConfiguration(
+                Argument::exact(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK),
+                Argument::exact('events2'),
+                Argument::exact('events2_event')
             )
+            ->shouldBeCalled()
             ->willReturn($typoScript);
         $configurationManager
-            ->expects($this->at(1))
-            ->method('getConfiguration')
-            ->with(
-                $this->identicalTo(ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS)
+            ->getConfiguration(
+                Argument::exact(ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS)
             )
+            ->shouldBeCalled()
             ->willReturn($flexFormSettings);
 
-        $this->subject->injectConfigurationManager($configurationManager);
+        $this->subject->injectConfigurationManager($configurationManager->reveal());
 
         $this->assertSame(
             $expectedResult,

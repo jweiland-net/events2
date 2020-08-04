@@ -121,7 +121,7 @@ class AjaxTest extends AbstractUnitTestCase
     }
 
     /**
-     * @test
+     * @tester
      * @dataProvider dataProviderForProcessAjaxRequestForcesTooHighMonthAndYearInRange
      */
     public function processAjaxRequestForcesTooHighMonthAndYearInRange($arguments, $expectedArguments, $expectedMonth)
@@ -155,7 +155,7 @@ class AjaxTest extends AbstractUnitTestCase
     }
 
     /**
-     * @test
+     * @tester
      */
     public function processAjaxRequestWillFindDaysInRangeOfFirstAndLastDateOfMonth()
     {
@@ -197,7 +197,7 @@ class AjaxTest extends AbstractUnitTestCase
     }
 
     /**
-     * @test
+     * @tester
      */
     public function processAjaxRequestWillFindDaysInRangeOfFirstAndLastDateOfMonthWithStoragePids()
     {
@@ -240,7 +240,7 @@ class AjaxTest extends AbstractUnitTestCase
     }
 
     /**
-     * @test
+     * @tester
      */
     public function processAjaxRequestWillFindDaysInRangeOfFirstAndLastDateOfMonthWithStoragePidsAndCategories()
     {
@@ -284,7 +284,7 @@ class AjaxTest extends AbstractUnitTestCase
     }
 
     /**
-     * @test
+     * @tester
      */
     public function processAjaxRequestWillFindDaysInRangeOfEarliestDateAndLastDateOfMonth()
     {
@@ -325,7 +325,7 @@ class AjaxTest extends AbstractUnitTestCase
     }
 
     /**
-     * @test
+     * @tester
      */
     public function processAjaxRequestWillFindDaysInRangeOfFirstDateAndLatestDateOfMonth()
     {

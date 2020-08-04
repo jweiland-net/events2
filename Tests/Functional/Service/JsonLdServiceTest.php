@@ -61,7 +61,11 @@ class JsonLdServiceTest extends FunctionalTestCase
 
     public function setUp()
     {
+        $_SERVER['HTTP_HOST'] = 'example.com';
+        $_SERVER['REQUEST_URI'] = 'index.php';
         parent::setUp();
+        $this->importDataSet('ntf://Database/pages.xml');
+        parent::setUpFrontendRootPage(1);
 
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->dayRepository = $this->objectManager->get(DayRepository::class);

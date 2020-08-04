@@ -27,6 +27,7 @@ use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\ViewHelpers\Widget\Controller\ICalendarController;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Web\Response;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -73,6 +74,7 @@ class ICalendarControllerTest extends FunctionalTestCase
     public function setUp()
     {
         parent::setUp();
+        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
 
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->dayRepository = $this->objectManager->get(DayRepository::class);

@@ -54,7 +54,8 @@ class XmlImporterTest extends FunctionalTestCase
      * @var array
      */
     protected $testExtensionsToLoad = [
-        'typo3conf/ext/events2'
+        'typo3conf/ext/events2',
+        'typo3conf/ext/static_info_tables',
     ];
 
     /**
