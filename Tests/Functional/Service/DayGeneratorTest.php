@@ -240,9 +240,8 @@ class DayGeneratorTest extends FunctionalTestCase
             $days = $dayGenerator->getDateTimeStorage()
         );
         // test for correct TimezoneType, else times are not DST save
-        /** @var \DateTime $day */
         foreach ($days as $day) {
-            $this->assertSame(3, $day->timezone_type);
+            $this->assertIsArray($day->getTimezone()->getLocation());
         }
     }
 
@@ -391,9 +390,8 @@ class DayGeneratorTest extends FunctionalTestCase
             $days = $dayGenerator->getDateTimeStorage()
         );
         // test for correct TimezoneType, else times are not DST save
-        /** @var \DateTime $day */
         foreach ($days as $day) {
-            $this->assertSame(3, $day->timezone_type);
+            $this->assertIsArray($day->getTimezone()->getLocation());
         }
     }
 
@@ -836,9 +834,8 @@ class DayGeneratorTest extends FunctionalTestCase
             $dateTimeStorage
         );
 
-        /** @var \DateTime $dateTime */
         foreach ($dateTimeStorage as $dateTime) {
-            $this->assertSame(3, $dateTime->timezone_type);
+            $this->assertIsArray($dateTime->getTimezone()->getLocation());
         }
     }
 
@@ -886,9 +883,8 @@ class DayGeneratorTest extends FunctionalTestCase
             $dateTimeStorage
         );
 
-        /** @var \DateTime $dateTime */
         foreach ($dateTimeStorage as $dateTime) {
-            $this->assertSame(3, $dateTime->timezone_type);
+            $this->assertIsArray($dateTime->getTimezone()->getLocation());
         }
     }
 

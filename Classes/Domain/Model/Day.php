@@ -105,7 +105,9 @@ class Day extends AbstractEntity
 
     public function getDay(): \DateTime
     {
-        if ($this->day->timezone_type !== 3) {
+        // Since PHP 7.4 we can not access timezone_type directly anymore.
+        // If location is false, timezone_type is 1 or 2, but we need 3
+        if ($this->day->getTimezone()->getLocation() === false) {
             $this->day->setTimezone(new \DateTimeZone(date_default_timezone_get()));
         }
         return clone $this->day;
@@ -118,7 +120,9 @@ class Day extends AbstractEntity
 
     public function getDayTime(): \DateTime
     {
-        if ($this->dayTime->timezone_type !== 3) {
+        // Since PHP 7.4 we can not access timezone_type directly anymore.
+        // If location is false, timezone_type is 1 or 2, but we need 3
+        if ($this->dayTime->getTimezone()->getLocation() === false) {
             $this->dayTime->setTimezone(new \DateTimeZone(date_default_timezone_get()));
         }
         return clone $this->dayTime;
@@ -131,7 +135,9 @@ class Day extends AbstractEntity
 
     public function getSortDayTime(): \DateTime
     {
-        if ($this->sortDayTime->timezone_type !== 3) {
+        // Since PHP 7.4 we can not access timezone_type directly anymore.
+        // If location is false, timezone_type is 1 or 2, but we need 3
+        if ($this->sortDayTime->getTimezone()->getLocation() === false) {
             $this->sortDayTime->setTimezone(new \DateTimeZone(date_default_timezone_get()));
         }
         return clone $this->sortDayTime;
@@ -144,7 +150,9 @@ class Day extends AbstractEntity
 
     public function getSameDayTime(): \DateTime
     {
-        if ($this->sameDayTime->timezone_type !== 3) {
+        // Since PHP 7.4 we can not access timezone_type directly anymore.
+        // If location is false, timezone_type is 1 or 2, but we need 3
+        if ($this->sameDayTime->getTimezone()->getLocation() === false) {
             $this->sameDayTime->setTimezone(new \DateTimeZone(date_default_timezone_get()));
         }
         return clone $this->sameDayTime;
