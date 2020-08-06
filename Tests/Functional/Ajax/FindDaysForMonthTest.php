@@ -1,6 +1,6 @@
 <?php
 
-namespace JWeiland\Events2\Tests\Unit\Ajax\FindDaysForMonth;
+namespace JWeiland\Events2\Tests\Unit\Ajax;
 
 /*
  * This file is part of the events2 project.
@@ -26,6 +26,7 @@ use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Frontend\PhpFrontend;
 use TYPO3\CMS\Core\Category\CategoryRegistry;
+use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
@@ -33,10 +34,10 @@ use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
 /**
  * Test case.
  */
-class AjaxTest extends AbstractUnitTestCase
+class FindDaysForMonthTest extends AbstractUnitTestCase
 {
     /**
-     * @var FindDaysForMonth\Ajax
+     * @var FindDaysForMonth
      */
     protected $subject;
 
@@ -65,7 +66,7 @@ class AjaxTest extends AbstractUnitTestCase
      */
     public function setUp()
     {
-        /*$this->extConfProphecy = $this->prophesize(ExtConf::class);
+        $this->extConfProphecy = $this->prophesize(ExtConf::class);
         $this->extConfProphecy->getRecurringPast()->willReturn(3);
         $this->extConfProphecy->getRecurringFuture()->willReturn(6);
 
@@ -76,21 +77,21 @@ class AjaxTest extends AbstractUnitTestCase
         ];
 
         $this->phpFrontendProphecy = $this->prophesize(PhpFrontend::class);
-        $this->phpFrontendProphecy->require(Argument::any())->shouldBeCalled()->willReturn($cacheData);*/
+        $this->phpFrontendProphecy->require(Argument::any())->shouldBeCalled()->willReturn($cacheData);
 
         /** @var CacheManager|ObjectProphecy $cacheManagerProphecy */
-        /*$this->cacheManagerProphecy = $this->prophesize(CacheManager::class);
+        $this->cacheManagerProphecy = $this->prophesize(CacheManager::class);
         $this->cacheManagerProphecy
             ->getCache('cache_core')
             ->shouldBeCalled()
             ->willReturn($this->phpFrontendProphecy->reveal());
         GeneralUtility::setSingletonInstance(CacheManager::class, $this->cacheManagerProphecy->reveal());
 
-        $this->subject = new FindDaysForMonth\Ajax(
+        $this->subject = new FindDaysForMonth(
             $this->extConfProphecy->reveal(),
             new DateTimeUtility(),
             new CacheHashCalculator()
-        );*/
+        );
     }
 
     /**
@@ -98,9 +99,9 @@ class AjaxTest extends AbstractUnitTestCase
      */
     public function tearDown()
     {
-        /*parent::tearDown();
+        parent::tearDown();
         ExtensionManagementUtilityAccessibleProxy::setCacheManager(null);
-        unset($this->subject);*/
+        unset($this->subject);
     }
 
     /**
@@ -111,20 +112,19 @@ class AjaxTest extends AbstractUnitTestCase
     public function dataProviderForProcessAjaxRequestForcesTooHighMonthAndYearInRange()
     {
         $arguments = [];
-        $arguments['negative values'] = [['month' => -50, 'year' => -2400], ['month' => '01', 'year' => '1500'], 1];
-        $arguments['valid int values'] = [['month' => 10, 'year' => 2100], ['month' => '10', 'year' => '2100'], 10];
-        $arguments['string values'] = [['month' => '10', 'year' => '2100'], ['month' => '10', 'year' => '2100'], 10];
-        $arguments['too huge values'] = [['month' => 250, 'year' => 12050], ['month' => '12', 'year' => '2500'], 12];
-        $arguments['add 0 to small numbers'] = [['month' => 3, 'year' => 2145], ['month' => '03', 'year' => '2145'], 3];
+        $arguments['negative values'] = ['http://www.example.com/?tx_events2_events[arguments][month]=-50&tx_events2_events[arguments][year]=-2400', ['month' => '01', 'year' => '1500'], 1];
+        $arguments['valid int values'] = ['http://www.example.com/?tx_events2_events[arguments][month]=10&tx_events2_events[arguments][year]=2100', ['month' => '10', 'year' => '2100'], 10];
+        $arguments['too huge values'] = ['http://www.example.com/?tx_events2_events[arguments][month]=250&tx_events2_events[arguments][year]=12050', ['month' => '12', 'year' => '2500'], 12];
+        $arguments['add 0 to small numbers'] = ['http://www.example.com/?tx_events2_events[arguments][month]=3&tx_events2_events[arguments][year]=2145', ['month' => '03', 'year' => '2145'], 3];
 
         return $arguments;
     }
 
     /**
-     * @tester
+     * @test
      * @dataProvider dataProviderForProcessAjaxRequestForcesTooHighMonthAndYearInRange
      */
-    public function processAjaxRequestForcesTooHighMonthAndYearInRange($arguments, $expectedArguments, $expectedMonth)
+    public function processAjaxRequestForcesTooHighMonthAndYearInRange($uri, $expectedArguments, $expectedMonth)
     {
         /** @var FrontendUserAuthentication|ObjectProphecy $frontendUserAuthentication */
         $frontendUserAuthentication = $this->prophesize(FrontendUserAuthentication::class);
@@ -151,20 +151,21 @@ class AjaxTest extends AbstractUnitTestCase
             ]
         );
 
-        $this->subject->processAjaxRequest($arguments);
+        $this->subject->processRequest(new ServerRequest($uri));
     }
 
     /**
-     * @tester
+     * @test
      */
     public function processAjaxRequestWillFindDaysInRangeOfFirstAndLastDateOfMonth()
     {
         $currentDate = new \DateTime('now midnight');
-        $arguments = [
-            'month' => $currentDate->format('n'),
-            'year' => $currentDate->format('Y'),
-            'pidOfListPage' => 4321
-        ];
+        $uri = sprintf(
+            'http://www.example.com/?tx_events2_events[arguments][pidOfListPage]=%d&tx_events2_events[arguments][month]=%d&tx_events2_events[arguments][year]=%d',
+            4321,
+            (int)$currentDate->format('n'),
+            (int)$currentDate->format('Y')
+        );
         $startDate = clone $currentDate;
         $startDate->modify('first day of this month');
         $endDate = clone $currentDate;
@@ -188,26 +189,27 @@ class AjaxTest extends AbstractUnitTestCase
                 [
                     'expr' => 'eq',
                     'field' => 'month',
-                    'value' => (int)$arguments['month']
+                    'value' => (int)$currentDate->format('n')
                 ]
             ]
         );
 
-        $this->subject->processAjaxRequest($arguments);
+        $this->subject->processRequest(new ServerRequest($uri));
     }
 
     /**
-     * @tester
+     * @test
      */
     public function processAjaxRequestWillFindDaysInRangeOfFirstAndLastDateOfMonthWithStoragePids()
     {
         $currentDate = new \DateTime('now midnight');
-        $arguments = [
-            'storagePids' => '21,22,23',
-            'month' => $currentDate->format('n'),
-            'year' => $currentDate->format('Y'),
-            'pidOfListPage' => 4321
-        ];
+        $uri = sprintf(
+            'http://www.example.com/?tx_events2_events[arguments][storagePids]=%s&tx_events2_events[arguments][pidOfListPage]=%d&tx_events2_events[arguments][month]=%d&tx_events2_events[arguments][year]=%d',
+            '21,22,23',
+            4321,
+            (int)$currentDate->format('n'),
+            (int)$currentDate->format('Y')
+        );
         $startDate = clone $currentDate;
         $startDate->modify('first day of this month');
         $endDate = clone $currentDate;
@@ -231,27 +233,28 @@ class AjaxTest extends AbstractUnitTestCase
                 [
                     'expr' => 'eq',
                     'field' => 'month',
-                    'value' => (int)$arguments['month']
+                    'value' => (int)$currentDate->format('n')
                 ]
             ]
         );
 
-        $this->subject->processAjaxRequest($arguments);
+        $this->subject->processRequest(new ServerRequest($uri));
     }
 
     /**
-     * @tester
+     * @test
      */
     public function processAjaxRequestWillFindDaysInRangeOfFirstAndLastDateOfMonthWithStoragePidsAndCategories()
     {
         $currentDate = new \DateTime('now midnight');
-        $arguments = [
-            'storagePids' => '21,22,23',
-            'categories' => '31,32,33',
-            'month' => $currentDate->format('n'),
-            'year' => $currentDate->format('Y'),
-            'pidOfListPage' => 4321
-        ];
+        $uri = sprintf(
+            'http://www.example.com/?tx_events2_events[arguments][categories]=%s&tx_events2_events[arguments][storagePids]=%s&tx_events2_events[arguments][pidOfListPage]=%d&tx_events2_events[arguments][month]=%d&tx_events2_events[arguments][year]=%d',
+            '31,32,33',
+            '21,22,23',
+            4321,
+            (int)$currentDate->format('n'),
+            (int)$currentDate->format('Y')
+        );
         $startDate = clone $currentDate;
         $startDate->modify('first day of this month');
         $endDate = clone $currentDate;
@@ -275,25 +278,26 @@ class AjaxTest extends AbstractUnitTestCase
                 [
                     'expr' => 'eq',
                     'field' => 'month',
-                    'value' => (int)$arguments['month']
+                    'value' => (int)$currentDate->format('n')
                 ]
             ]
         );
 
-        $this->subject->processAjaxRequest($arguments);
+        $this->subject->processRequest(new ServerRequest($uri));
     }
 
     /**
-     * @tester
+     * @test
      */
     public function processAjaxRequestWillFindDaysInRangeOfEarliestDateAndLastDateOfMonth()
     {
         $currentDate = new \DateTime('-3 months midnight');
-        $arguments = [
-            'month' => $currentDate->format('n'),
-            'year' => $currentDate->format('Y'),
-            'pidOfListPage' => 4321
-        ];
+        $uri = sprintf(
+            'http://www.example.com/?tx_events2_events[arguments][pidOfListPage]=%d&tx_events2_events[arguments][month]=%d&tx_events2_events[arguments][year]=%d',
+            4321,
+            (int)$currentDate->format('n'),
+            (int)$currentDate->format('Y')
+        );
         $startDate = clone $currentDate;
         $endDate = clone $currentDate;
         $endDate->modify('last day of this month')->modify('tomorrow');
@@ -316,25 +320,26 @@ class AjaxTest extends AbstractUnitTestCase
                 [
                     'expr' => 'eq',
                     'field' => 'month',
-                    'value' => (int)$arguments['month']
+                    'value' => (int)$currentDate->format('n')
                 ]
             ]
         );
 
-        $this->subject->processAjaxRequest($arguments);
+        $this->subject->processRequest(new ServerRequest($uri));
     }
 
     /**
-     * @tester
+     * @test
      */
     public function processAjaxRequestWillFindDaysInRangeOfFirstDateAndLatestDateOfMonth()
     {
         $currentDate = new \DateTime('+6 months midnight');
-        $arguments = [
-            'month' => $currentDate->format('n'),
-            'year' => $currentDate->format('Y'),
-            'pidOfListPage' => 4321
-        ];
+        $uri = sprintf(
+            'http://www.example.com/?tx_events2_events[arguments][pidOfListPage]=%d&tx_events2_events[arguments][month]=%d&tx_events2_events[arguments][year]=%d',
+            4321,
+            (int)$currentDate->format('n'),
+            (int)$currentDate->format('Y')
+        );
         $startDate = clone $currentDate;
         $startDate->modify('first day of this month');
         $endDate = clone $currentDate;
@@ -358,11 +363,11 @@ class AjaxTest extends AbstractUnitTestCase
                 [
                     'expr' => 'eq',
                     'field' => 'month',
-                    'value' => (int)$arguments['month']
+                    'value' => (int)$currentDate->format('n')
                 ]
             ]
         );
 
-        $this->subject->processAjaxRequest($arguments);
+        $this->subject->processRequest(new ServerRequest($uri));
     }
 }
