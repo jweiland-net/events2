@@ -78,7 +78,7 @@ class AdditionalFieldsForImport extends AbstractAdditionalFieldProvider
      * Gets additional fields to render in the form to add/edit a task
      *
      * @param array $taskInfo Values of the fields from the add/edit task form
-     * @param AbstractTask $task The task object being eddited. Null when adding a task!
+     * @param AbstractTask|null $task The task object being edited. Null when adding a task!
      * @param SchedulerModuleController $schedulerModule Reference to the scheduler backend module
      * @return array A two dimensional array, ['Identifier' => ['fieldId' => ['code' => '', 'label' => '', 'cshKey' => '', 'cshLabel' => '']]]
      */
@@ -97,7 +97,7 @@ class AdditionalFieldsForImport extends AbstractAdditionalFieldProvider
 
     protected function initialize(
         array $taskInfo,
-        AbstractTask $task,
+        ?AbstractTask $task,
         SchedulerModuleController $schedulerModule
     ): void {
         $this->taskInfo = $taskInfo;
