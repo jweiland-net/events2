@@ -41,9 +41,6 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
      */
     protected $registry;
 
-    /**
-     * constructor of this class.
-     */
     public function __construct()
     {
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
@@ -51,18 +48,9 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
         parent::__construct();
     }
 
-    /**
-     * This is the main method that is called when a task is executed
-     * Note that there is no error handling, errors and failures are expected
-     * to be handled and logged by the client implementations.
-     * Should return TRUE on successful execution, FALSE on error.
-     *
-     * @return bool Returns TRUE on successful execution, FALSE on error
-     * @throws \Exception
-     */
     public function execute()
     {
-        $dayRelations = $this->objectManager->get(DayRelationService::class);
+        $dayRelationService = $this->objectManager->get(DayRelationService::class);
         $persistenceManager = $this->objectManager->get(PersistenceManager::class);
 
         // with each changing PID pageTSConfigCache will grow by roundabout 200KB
@@ -72,7 +60,6 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
 
         $this->registry->removeAllByNamespace('events2TaskCreateUpdate');
 
-        /** @var DatabaseService $databaseService */
         $databaseService = GeneralUtility::makeInstance(DatabaseService::class);
         $events = $databaseService->getCurrentAndFutureEvents();
         if (!empty($events)) {
@@ -85,7 +72,7 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
                 ]);
 
                 try {
-                    $dayRelations->createDayRelations((int)$event['uid']);
+                    $dayRelationService->createDayRelations((int)$event['uid']);
                 } catch (\Exception $e) {
                     $this->addMessage(sprintf(
                         'Event UID: %d, PID: %d, Error: %s, File: %s, Line: %d',
