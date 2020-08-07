@@ -14,12 +14,12 @@ namespace JWeiland\Events2\Tests\Functional\Ajax;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
 use JWeiland\Events2\Ajax\FindSubCategories;
 use JWeiland\Events2\Domain\Model\Category;
 use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use Nimut\TestingFramework\MockObject\AccessibleMockObjectInterface;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 

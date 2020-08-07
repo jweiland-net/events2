@@ -23,9 +23,7 @@ use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Frontend\PhpFrontend;
-use TYPO3\CMS\Core\Category\CategoryRegistry;
 use TYPO3\CMS\Core\Http\ServerRequest;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Test case.
@@ -63,27 +61,9 @@ class FindLocationsTest extends FunctionalTestCase
     {
         parent::setUp();
 
-        $cacheData = [
-            'categoryRegistry' => serialize(new CategoryRegistry())
-        ];
-
         $this->locationRepositoryProphecy = $this->prophesize(LocationRepository::class);
 
-        //$this->phpFrontendProphecy = $this->prophesize(PhpFrontend::class);
-        //$this->phpFrontendProphecy->require(Argument::any())->shouldBeCalled()->willReturn($cacheData);
-
-        /** @var CacheManager|ObjectProphecy $cacheManagerProphecy */
-        /*$this->cacheManagerProphecy = $this->prophesize(CacheManager::class);
-        $this->cacheManagerProphecy
-            ->getCache('cache_core')
-            ->shouldBeCalled()
-            ->willReturn($this->phpFrontendProphecy->reveal());
-        GeneralUtility::setSingletonInstance(CacheManager::class, $this->cacheManagerProphecy->reveal());*/
-
         $this->subject = new FindLocations($this->locationRepositoryProphecy->reveal());
-        /*$GLOBALS['TYPO3_LOADED_EXT'] = [
-            'events2' => []
-        ];*/
     }
 
     public function tearDown()
@@ -136,7 +116,7 @@ class FindLocationsTest extends FunctionalTestCase
 
         $request = new ServerRequest('http://www.example.com/');
         $request = $request->withQueryParams($queryParams);
-        $response = $this->subject->processRequest($request);#
+        $response = $this->subject->processRequest($request);
         $response->getBody()->rewind();
         $this->assertSame(
             '',
