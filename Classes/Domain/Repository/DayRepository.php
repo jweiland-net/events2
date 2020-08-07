@@ -455,6 +455,39 @@ class DayRepository extends Repository
     }
 
     /**
+     * Nearly the same as "findDayByEventAndTimestamp", but this method was used by PageTitleProvider
+     * which is out of Extbase context. So we are using a plain Doctrine Query here.
+     *
+     * @param int $eventUid
+     * @param int $timestamp
+     * @return array
+     */
+    public function getDayRecord(int $eventUid, int $timestamp): array
+    {
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_day');
+        $day = $queryBuilder
+            ->select('event')
+            ->from('tx_events2_domain_model_day')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'event',
+                    $queryBuilder->createNamedParameter($eventUid, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'day_time',
+                    $queryBuilder->createNamedParameter($timestamp, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetch();
+
+        if (empty($day)) {
+            $day = [];
+        }
+        return $day;
+    }
+
+    /**
      * Use this signal, if you want to modify the queries of method findEvents.
      *
      * @param QueryBuilder $queryBuilder

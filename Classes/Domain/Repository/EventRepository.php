@@ -13,6 +13,8 @@ namespace JWeiland\Events2\Domain\Repository;
 
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Utility\DateTimeUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Extbase\Persistence\Generic\Session;
@@ -109,5 +111,38 @@ class EventRepository extends Repository
         $query = $this->createQuery();
 
         return $query->matching($query->equals('organizer.uid', $organizer))->execute();
+    }
+
+    /**
+     * Nearly the same as "findByUid", but this method was used by PageTitleProvider
+     * which is out of Extbase context. So we are using a plain Doctrine Query here.
+     *
+     * @param int $uid
+     * @return array
+     */
+    public function getEventRecord(int $uid): array
+    {
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_event');
+        $event = $queryBuilder
+            ->select('uid', 'title')
+            ->from('tx_events2_domain_model_event')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid',
+                    $queryBuilder->createNamedParameter((int)$uid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetch();
+
+        if (empty($event)) {
+            $event = [];
+        }
+        return $event;
+    }
+
+    protected function getConnectionPool(): ConnectionPool
+    {
+        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 }
