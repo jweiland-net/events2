@@ -94,6 +94,10 @@
 				<source>Show a filter selection for organizers in Frontend</source>
 				<target>Füge eine Filteroption für Veranstalter in die Webseite ein</target>
 			</trans-unit>
+			<trans-unit id="showFilterForOrganizerInFrontend.description">
+				<source>Filter will only be displayed, if there are at least 2 Organizers available</source>
+				<target>Der Filter wird nur ab mindestens 2 Veranstaltern angezeigt</target>
+			</trans-unit>
 			<trans-unit id="display">
 				<source>Display</source>
 				<target>Bereich anzeigen</target>

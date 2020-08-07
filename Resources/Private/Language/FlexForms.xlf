@@ -71,6 +71,9 @@
 			<trans-unit id="showFilterForOrganizerInFrontend">
 				<source>Show a filter selection for organizers in Frontend</source>
 			</trans-unit>
+			<trans-unit id="showFilterForOrganizerInFrontend.description">
+				<source>Filter will only be displayed, if there are at least 2 Organizers available</source>
+			</trans-unit>
 			<trans-unit id="display">
 				<source>Display</source>
 			</trans-unit>
