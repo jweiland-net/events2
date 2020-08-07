@@ -43,12 +43,15 @@ class RebuildCommand extends Command
      */
     protected $output;
 
-    /**
-     * Defines the allowed options for this command
-     */
     protected function configure()
     {
-        $this->setDescription('Delete and re-create all day records of events2');
+        $this->setDescription(
+            'Executing this command will delete all day records found in day table. ' .
+            'Afterwards, it searches for each current and future event and re-creates all day records again. ' .
+            'If you have any problems with created day records, this command is the first place to start. ' .
+            'Please do not start this command by a CronJob each day, as for the time it runs, there ' .
+            'may no events visible in frontend. Please use our Scheduler Task instead.'
+        );
     }
 
     /**
@@ -128,7 +131,7 @@ class RebuildCommand extends Command
         }
 
         $this->output->writeln(sprintf(
-            'We have recreated the day records for %d event records and %d day records' . PHP_EOL,
+            'We have recreated the day records for %d event records and %d day records in total' . PHP_EOL,
             $eventCounter,
             $dayCounter
         ));
