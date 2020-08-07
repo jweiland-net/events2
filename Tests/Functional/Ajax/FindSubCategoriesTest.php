@@ -1,6 +1,6 @@
 <?php
 
-namespace JWeiland\Events2\Tests\Unit\Ajax;
+namespace JWeiland\Events2\Tests\Functional\Ajax;
 
 /*
  * This file is part of the events2 project.
@@ -18,6 +18,7 @@ use JWeiland\Events2\Ajax\FindSubCategories;
 use JWeiland\Events2\Domain\Model\Category;
 use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use Nimut\TestingFramework\MockObject\AccessibleMockObjectInterface;
+use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
@@ -25,27 +26,37 @@ use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 /**
  * Test case.
  */
-class FindSubCategoriesTest extends UnitTestCase
+class FindSubCategoriesTest extends FunctionalTestCase
 {
     /**
      * @var \JWeiland\Events2\Ajax\FindSubCategories
      */
     protected $subject;
 
+    /**
+     * @var array
+     */
+    protected $testExtensionsToLoad = [
+        'typo3conf/ext/events2'
+    ];
+
     public function setUp()
     {
+        parent::setUp();
+
         $this->subject = new FindSubCategories();
     }
 
     public function tearDown()
     {
         unset($this->subject);
+        parent::tearDown();
     }
 
     /**
      * this test also tests the protected method reduceCategoryData.
      *
-     * @tester
+     * @test
      */
     public function processAjaxRequest()
     {
