@@ -166,6 +166,7 @@
 					<settings.showFilterForOrganizerInFrontend>
 						<TCEforms>
 							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:showFilterForOrganizerInFrontend</label>
+							<description>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:showFilterForOrganizerInFrontend.description</description>
 							<config>
 								<type>check</type>
 								<default>0</default>
