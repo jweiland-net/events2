@@ -160,16 +160,16 @@ class FindDaysForMonth
     }
 
     /**
-     * We can't create the uri within a JavaScript for-loop.
-     * This way we also have realurl functionality
-     * We need the current day for calendar and day controller.
+     * We can't create a speaking URI within a JavaScript for-loop.
+     * But creating all links in events2 calendar by public TYPO3 API needs to long.
+     * That's why we build these links the old-school way: &tx_events2_event[event]=123&...
      *
      * @param int $timestamp
      * @return string
      */
     protected function getUriForDay(int $timestamp): string
     {
-        // uriBuilder is very slow: 223ms for 31 links */
+        // uriBuilder is very slow: 223ms for 31 links. Swiping through the months feels bad */
         /*$uri = $this->uriBuilder
             ->reset()
             ->setTargetPageUid($pid)
