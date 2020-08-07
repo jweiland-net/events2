@@ -128,6 +128,7 @@
 					<settings.mergeEventsAtSameDay>
 						<TCEforms>
 							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:mergeEventsAtSameDay</label>
+							<description>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:mergeEventsAtSameDay.description</description>
 							<config>
 								<type>check</type>
 								<default>0</default>
@@ -137,6 +138,7 @@
 					<settings.mergeRecurringEvents>
 						<TCEforms>
 							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:mergeRecurringEvents</label>
+							<description>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:mergeRecurringEvents.description</description>
 							<config>
 								<type>check</type>
 								<default>0</default>
@@ -186,6 +188,7 @@
 					<settings.display>
 						<TCEforms>
 							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:display</label>
+							<description>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:display.description</description>
 							<config>
 								<type>radio</type>
 								<items>
