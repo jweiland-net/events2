@@ -29,18 +29,18 @@ return [
         'searchFields' => 'title,teaser,event_begin,event_end,detail_informations,',
     ],
     'interface' => [
-        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, event_type, top_of_list, title, teaser, event_begin, event_end, event_time, same_day, multiple_times, xth, weekday, different_times, each_weeks, each_months, recurring_end, exceptions, detail_informations, free_entry, ticket_link, alternative_times, location, organizer, images, video_link, download_links, import_id',
+        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, event_type, top_of_list, title, path_segment, teaser, event_begin, event_end, event_time, same_day, multiple_times, xth, weekday, different_times, each_weeks, each_months, recurring_end, exceptions, detail_informations, free_entry, ticket_link, alternative_times, location, organizer, images, video_link, download_links, import_id',
     ],
     'types' => [
         'single' => [
-            'showitem' => '--palette--;;languageHiddenTop, --palette--;;titleType, event_begin, event_time,
+            'showitem' => '--palette--;;languageHiddenTop, --palette--;;titleType, path_segment, event_begin, event_time,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.event_details, --palette--;;teaserFreeEntry, detail_informations, ticket_link, alternative_times, location, organizer,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.media, images, video_link, download_links, import_id,
             --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access, 
             --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access'
         ],
         'recurring' => [
-            'showitem' => '--palette--;;languageHiddenTop, --palette--;;titleType,
+            'showitem' => '--palette--;;languageHiddenTop, --palette--;;titleType, path_segment,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.recurring_event,
             --palette--;;recurringBeginEnd, event_time, same_day, multiple_times, xth, weekday, different_times, --palette--;;recurringWeekMonth,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.exceptions, exceptions,
@@ -50,7 +50,7 @@ return [
             --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access'
         ],
         'duration' => [
-            'showitem' => '--palette--;;languageHiddenTop, --palette--;;titleType, --palette--;;eventBeginEnd, event_time,
+            'showitem' => '--palette--;;languageHiddenTop, --palette--;;titleType, path_segment, --palette--;;eventBeginEnd, event_time,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.exceptions, exceptions,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.event_details, --palette--;;teaserFreeEntry, detail_informations, ticket_link, alternative_times, location, organizer,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.media,--palette--;;newline, images, video_link, download_links, import_id,
@@ -214,6 +214,26 @@ return [
                 'size' => 30,
                 'eval' => 'trim,required',
             ],
+        ],
+        'path_segment' => [
+            'exclude' => true,
+            'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.path_segment',
+            'displayCond' => 'VERSION:IS:false',
+            'config' => [
+                'type' => 'slug',
+                'size' => 50,
+                'generatorOptions' => [
+                    'fields' => ['title'],
+                    // As pageSlug may contain slashes, we have to remove page slug
+                    'prefixParentPageSlug' => false,
+                    'replacements' => [
+                        '/' => '-'
+                    ],
+                ],
+                'fallbackCharacter' => '-',
+                'eval' => 'uniqueInSite',
+                'default' => ''
+            ]
         ],
         'teaser' => [
             'exclude' => true,
