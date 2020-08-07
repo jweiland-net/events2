@@ -105,7 +105,8 @@ class DayRelationService
     }
 
     /**
-     * Create day relations for given event
+     * Delete all related day records of given event and
+     * start re-creating the day records.
      *
      * @param int $eventUid Event UID. This also can be a hidden event.
      * @return Event
