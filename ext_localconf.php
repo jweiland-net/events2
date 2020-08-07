@@ -55,9 +55,9 @@ call_user_func(function () {
     // create scheduler to create/update days with recurrency
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\JWeiland\Events2\Task\ReGenerateDays::class] = [
         'extension' => 'events2',
-        'title' => 'Create/Update Days',
-        'description' => 'Re-Generate day records for events with recurrency. It also deletes old iCAL downloads.',
-        'additionalFields' => 'JWeiland\\Events2\\Task\\ReGenerateDays',
+        'title' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:task.reCreateDays.title',
+        'description' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:task.reCreateDays.description',
+        'additionalFields' => JWeiland\Events2\Task\ReGenerateDays::class,
     ];
 
     // create scheduler to import events from different sources
