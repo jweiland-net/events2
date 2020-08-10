@@ -1,11 +1,10 @@
 .. include:: ../../Includes.txt
 
+=========
 Templates
----------
+=========
 
-.. only:: html
-
-  This chapter is all about templating EXT:|extension_key|
+   This chapter is all about templating EXT:events2
 
 .. toctree::
   :maxdepth: 2

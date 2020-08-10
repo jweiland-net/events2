@@ -1,10 +1,13 @@
 .. include:: ../../Includes.txt
 
+.. _faq:
+
+===
 FAQ
----
+===
 
 Exception thrown in Location/Show.html
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+======================================
 
 If you have NOT installed maps2 you may get following exception while visiting
 Show template of Location:

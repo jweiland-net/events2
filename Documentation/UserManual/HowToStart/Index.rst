@@ -2,22 +2,16 @@
 
 .. _howToStart:
 
+============
 How to start
 ============
-This walkthrough will help you to implement the extension |extension_key| at your
+
+This walkthrough will help you to implement the extension events2 at your
 TYPO3 site. The installation is covered :ref:`here <installation>`.
-
-.. only:: html
-
-.. contents::
-        :local:
-        :depth: 1
-
-.. _howToStartCreateRecords:
 
 Create the records
 ------------------
-Before any |extension_key| record can be shown in the frontend, those need to be
+Before any events2 record can be shown in the frontend, those need to be
 created.
 
 #. Create a new sysfolder and switch to the list module. (Of
@@ -25,13 +19,11 @@ created.
 
 #. Switch to **List module**
 
-#. Use the icon in the topbar "Create new record" and search for "|extension_name|" and its
+#. Use the icon in the topbar "Create new record" and search for "Events2" and its
    record "Event".
 
 #. Click on "Event" to create a new event record. Choose an event type and
    fill as many fields you want. The required fields are highlighted in red.
-
-.. _howToStartAddPlugin:
 
 Add a plugin to a page
 ----------------------

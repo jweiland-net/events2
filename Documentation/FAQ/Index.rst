@@ -7,7 +7,7 @@ FAQ
 ===
 
 Why not using f:form in search form?
-------------------------------------
+====================================
 
 We have tried it without using no_cache, but in some rare situations, when a customer starts two searches,
 the second search request shows the results of the first request. Since than we do not add cHash anymore
@@ -18,9 +18,8 @@ If we would use f:form VH in combination with GET, all hidden information of ext
 which makes the URI extremely long. As there are some browsers limiting the URIs length to 1000 or 3000 we
 can not us f:form, to prevent cutting the URI by Browser restrictions.
 
-
 Translations
-------------
+============
 
 Events2 is currently not fully multilingual. Our idea was to have one day record for all translations of an
 event record. That way we have removed all translation columns from TCA of day table. But since TYPO3 8 and especially

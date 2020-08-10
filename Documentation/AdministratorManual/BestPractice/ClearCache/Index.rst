@@ -2,9 +2,9 @@
 
 .. _clearCache:
 
-
+========================================
 Clearing the cache after editing records
-----------------------------------------
+========================================
 
 Events2 has a built-in mechanism that takes care of clearing the cache after manipulation of Event records.
 

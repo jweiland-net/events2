@@ -1,7 +1,10 @@
 .. include:: ../../Includes.txt
 
+.. _configuration:
+
+=============
 Configuration
--------------
+=============
 
 .. only:: html
 
