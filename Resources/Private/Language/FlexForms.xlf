@@ -20,7 +20,7 @@
 			</trans-unit>
 
 			<trans-unit id="chooseAction" xml:space="preserve">
-				<source>Ansicht wählen</source>
+				<source>Choose view</source>
 			</trans-unit>
 
 			<trans-unit id="list">
@@ -33,7 +33,7 @@
 				<source>List events of today</source>
 			</trans-unit>
 			<trans-unit id="listRange">
-				<source>List events for next 4 months</source>
+				<source>List events for next 4 weeks</source>
 			</trans-unit>
 			<trans-unit id="listThisWeek">
 				<source>List events for this week</source>

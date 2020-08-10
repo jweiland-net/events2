@@ -43,7 +43,7 @@
 				<target>Auflistung der heutigen Termine</target>
 			</trans-unit>
 			<trans-unit id="listRange">
-				<source>List events for next 4 months</source>
+				<source>List events for next 4 weeks</source>
 				<target>Auflistung von Terminen der nächsten 4 Wochen</target>
 			</trans-unit>
 			<trans-unit id="listThisWeek">

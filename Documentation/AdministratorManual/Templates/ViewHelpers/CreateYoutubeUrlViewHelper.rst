@@ -1,10 +1,15 @@
+.. include:: ../../../Includes.txt
+
+.. _youTubeViewHelper:
+
+==========================
 CreateYoutubeUrlViewHelper
---------------------------
+==========================
 
 It searches the given link for Youtube ID and attaches the ID to the embedded Youtube Link.
 
 Examples
-^^^^^^^^
+========
 
 Given link A: https://www.youtube.com/watch?v=B5gDI2h0F20
 Given link B: https://www.youtube.com/watch?v=B5gDI2h0F20

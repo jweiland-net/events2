@@ -1,5 +1,8 @@
-.. include:: ../../../Includes.txt
+.. include:: ../../Includes.txt
 
+.. _dynamicPageTitle:
+
+==================
 Dynamic page title
 ==================
 

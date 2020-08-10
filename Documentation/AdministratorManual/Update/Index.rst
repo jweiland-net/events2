@@ -1,12 +1,15 @@
 .. include:: ../../Includes.txt
 
+.. _update:
+
+========
 Updating
---------
+========
 
 If you update EXT:events2 to a newer version, please read this section carefully!
 
 Update to Version 5.0.0
-^^^^^^^^^^^^^^^^^^^^^^^
+=======================
 
 With this release we have implemented a better multilingual support. We are not done, but as long as DayGenerator
 still has problems with languages we have marked a lot of fields in translated events as readonly.
@@ -14,14 +17,14 @@ still has problems with languages we have marked a lot of fields in translated e
 If you use events2 with one language only, there is no problem to upgrade to 5.0.0.
 
 Update to Version 4.1.1
-^^^^^^^^^^^^^^^^^^^^^^^
+=======================
 
 With version 4.1.0 we have added the path_segment for slugs in event records, but first with version 4.1.1 we
 have added the Updater for this field.
 Please visit InstallTool and execute the updater for Slugs in event records.
 
 Update to Version 4.0.0
-^^^^^^^^^^^^^^^^^^^^^^^
+=======================
 
 If you don't use the event2 API or you don't use your own XmlImporter an Update shouldn't be a problem
 for you.
@@ -38,7 +41,7 @@ Method ``initialize`` is not required by ImporterInterface and will not be calle
 process into Constructor directly.
 
 Update to Version 3.7.0
-^^^^^^^^^^^^^^^^^^^^^^^
+=======================
 
 New Feature:
 We have added 3 new getters to Time object:
@@ -49,7 +52,7 @@ We have added 3 new getters to Time object:
 These are very helpful as you now can format them with f:format.date() VH
 
 Update to Version 3.3.1
-^^^^^^^^^^^^^^^^^^^^^^^
+=======================
 
 With version 3.3.1 we have added a new column ``same_day_time`` to day table. It helps us to GROUP BY days with
 multiple time records for one day, if mergeEventsAtSameDate is set in plugin.
@@ -57,7 +60,7 @@ multiple time records for one day, if mergeEventsAtSameDate is set in plugin.
 Please update DB in Installtool and start scheduler task to re-generate all day records.
 
 Update to Version 3.2.0
-^^^^^^^^^^^^^^^^^^^^^^^
+=======================
 
 With version 3.2.0 we have completely rewritten DayRepository to work with
 Doctrine/Core QueryBuilder now. We have added functional tests to be sure
@@ -75,7 +78,7 @@ We have removed mergeEvents option from ExtensionManager. If you have set this o
 re-create your records with CLI or scheduler task.
 
 Update to Version 3.1.0
-^^^^^^^^^^^^^^^^^^^^^^^
+=======================
 
 With version 3.1.0 we have made a little but breaking change:
 
@@ -99,7 +102,7 @@ Code: ::
 Use data-id to relate it to a textarea id-attribute.
 
 Update to Version 3.0.0
-^^^^^^^^^^^^^^^^^^^^^^^
+=======================
 
 * We have removed GetEventDates VH and implemented a completely new way to get future event dates.
 * We have removed MicroStart VH
@@ -138,12 +141,12 @@ We have removed all methods to get time records for an event from DayRelationSer
 methods in EventService already.
 
 Update to Version 2.4.0
-^^^^^^^^^^^^^^^^^^^^^^^
+=======================
 
 Version 2.4.0 is now TYPO3 9 compatible. We also have removed compatibility to TYPO3 6 and 7.
 
 Update to Version 2.3.0
-^^^^^^^^^^^^^^^^^^^^^^^
+=======================
 
 With version 2.3.0 we have rewritten the frontend Events2.js completely. Now it it much more readable and
 it prevents executing JavaScript, if it is not valid for current view. That's why we have some changes in our
@@ -180,7 +183,7 @@ We have moved all email settings in ExtConf to new tab "Email"
 EXT maps2 is not a hard-coded dependency to events2 anymore, but we still suggest it in ext_emconf.php.
 
 Update to Version 2.0.0
-^^^^^^^^^^^^^^^^^^^^^^^
+=======================
 
 Version 2.0.0 will come with some new cols and we have removed some cols. So please be careful while comparing
 database with TCA definition after upgrading.
