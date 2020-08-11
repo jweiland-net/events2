@@ -8,6 +8,14 @@ Updating
 
 If you update EXT:events2 to a newer version, please read this section carefully!
 
+Update to Version 6.0.0
+=======================
+
+With events2 6.0.0 we have removed TYPO3 8 compatibility and add TYPO3 10 compatibility.
+We have not added any new features.
+
+Because of incompatibility we have created a new pageTitleProvider as replacement for pageTitleUserfunc.
+
 Update to Version 5.0.0
 =======================
 
