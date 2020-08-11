@@ -101,17 +101,6 @@
 	<p>{settings.textForHint}</p>
 </div>
 
-<f:section name="uploadImage">
-	<f:if condition="{image}"><f:image image="{image}" alt="Bild{position}" width="{settings.show.image.width}" height="{settings.show.image.height}" minWidth="{settings.show.image.minWidth}" maxWidth="{settings.show.image.maxWidth}" minHeight="{settings.show.image.minHeight}" maxHeight="{settings.show.image.maxHeight}" /></f:if>
-	<f:form.upload id="images_{index}" name="event[images][{index}]" />
-	<div class="checkbox">
-		<label>
-			<f:form.checkbox name="event[images][{index}][rights]" value="1" />
-			<f:translate key="rightsMessage" />
-		</label>
-	</div>
-</f:section>
-
 <f:section name="renderTextfield">
 	<div class="form-group row">
 		<f:render section="renderLabel" arguments="{property: property, required: required, transKey: transKeyLabel}" />
