@@ -13,7 +13,6 @@ The section "*Events2Record*" lists all the fields of the record and
 
 .. toctree::
    :maxdepth: 2
-   :titlesonly:
 
    HowToStart/Index
    Events2Record/Index

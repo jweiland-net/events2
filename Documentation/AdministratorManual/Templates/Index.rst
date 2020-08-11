@@ -1,14 +1,15 @@
 .. include:: ../../Includes.txt
 
+.. _templates:
+
 =========
 Templates
 =========
 
-   This chapter is all about templating EXT:events2
+This chapter is all about templating EXT:events2
 
 .. toctree::
-  :maxdepth: 2
-  :titlesonly:
+   :maxdepth: 2
 
-  Start/Index
-  ViewHelpers/Index
+   Start/Index
+   ViewHelpers/Index

@@ -9,7 +9,7 @@
 .. _start:
 
 :Version:
-   |release|
+   6.0.0
 
 :Language:
    en
@@ -32,9 +32,11 @@
 This documentation is for the TYPO3 extension events2.
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
 
    Introduction/Index
+   Installation/Index
+   Configuration/Index
    UserManual/Index
    AdministratorManual/Index
    FAQ/Index

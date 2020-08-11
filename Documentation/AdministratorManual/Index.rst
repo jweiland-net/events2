@@ -10,9 +10,7 @@ This chapter describes how to manage the extension from a superuser point of vie
 
 .. toctree::
    :maxdepth: 2
-   :titlesonly:
 
-   Installation/Index
-   Configuration/Index
+   BestPractice/Index
    Templates/Index
    Update/Index
