@@ -75,7 +75,7 @@ class FindSubCategoriesTest extends FunctionalTestCase
             ->getMockBuilder(CategoryRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $categoryRepository->expects($this->once())->method('getSubCategories')->with(284)->will($this->returnValue($queryResult));
+        $categoryRepository->expects(self::once())->method('getSubCategories')->with(284)->will($this->returnValue($queryResult));
 
         $this->subject->injectCategoryRepository($categoryRepository);
 

@@ -68,7 +68,7 @@ class AjaxControllerTest extends UnitTestCase
 
         /** @var FindSubCategories|\PHPUnit_Framework_MockObject_MockObject $findSubCategories */
         $findSubCategories = $this->getMockBuilder(FindSubCategories::class)->setMethods(['processAjaxRequest'])->getMock();
-        $findSubCategories->expects($this->once())->method('processAjaxRequest')->with($arguments)->will($this->returnValue($expectedResult));
+        $findSubCategories->expects(self::once())->method('processAjaxRequest')->with($arguments)->will($this->returnValue($expectedResult));
 
         /** @var ObjectManager|ObjectProphecy $objectManager */
         $objectManager = $this->prophesize(ObjectManager::class);

@@ -56,8 +56,8 @@ class CategoryRepositoryTest extends UnitTestCase
         $querySettings = $this
             ->getMockBuilder(Typo3QuerySettings::class)
             ->getMock();
-        $querySettings->expects($this->once())->method('setRespectSysLanguage')->with(
-            $this->equalTo(false)
+        $querySettings->expects(self::once())->method('setRespectSysLanguage')->with(
+            self::equalTo(false)
         );
 
         /** @var Query|\PHPUnit_Framework_MockObject_MockObject $query */
@@ -65,17 +65,17 @@ class CategoryRepositoryTest extends UnitTestCase
             ->getMockBuilder(Query::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $query->expects($this->once())->method('getQuerySettings')->willReturn($querySettings);
-        $query->expects($this->once())->method('matching')->willReturn($query);
-        $query->expects($this->once())->method('in')->with(
-            $this->equalTo('uid'),
-            $this->equalTo([1, 2, 4])
+        $query->expects(self::once())->method('getQuerySettings')->willReturn($querySettings);
+        $query->expects(self::once())->method('matching')->willReturn($query);
+        $query->expects(self::once())->method('in')->with(
+            self::equalTo('uid'),
+            self::equalTo([1, 2, 4])
         );
-        $query->expects($this->once())->method('execute')->willReturn(
+        $query->expects(self::once())->method('execute')->willReturn(
             new QueryResult(new Query(Event::class))
         );
 
-        $this->subject->expects($this->once())->method('createQuery')->willReturn($query);
+        $this->subject->expects(self::once())->method('createQuery')->willReturn($query);
 
         $this->subject->getSelectedCategories('1,2test,drei,4');
     }
@@ -89,8 +89,8 @@ class CategoryRepositoryTest extends UnitTestCase
         $querySettings = $this
             ->getMockBuilder(Typo3QuerySettings::class)
             ->getMock();
-        $querySettings->expects($this->once())->method('setRespectSysLanguage')->with(
-            $this->equalTo(false)
+        $querySettings->expects(self::once())->method('setRespectSysLanguage')->with(
+            self::equalTo(false)
         );
 
         /** @var Query|\PHPUnit_Framework_MockObject_MockObject $query */
@@ -98,17 +98,17 @@ class CategoryRepositoryTest extends UnitTestCase
             ->getMockBuilder(Query::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $query->expects($this->once())->method('getQuerySettings')->willReturn($querySettings);
-        $query->expects($this->once())->method('equals')->with(
-            $this->equalTo('parent'),
-            $this->equalTo(5)
+        $query->expects(self::once())->method('getQuerySettings')->willReturn($querySettings);
+        $query->expects(self::once())->method('equals')->with(
+            self::equalTo('parent'),
+            self::equalTo(5)
         );
-        $query->expects($this->once())->method('matching')->willReturn($query);
-        $query->expects($this->once())->method('execute')->willReturn(
+        $query->expects(self::once())->method('matching')->willReturn($query);
+        $query->expects(self::once())->method('execute')->willReturn(
             new QueryResult(new Query(Event::class))
         );
 
-        $this->subject->expects($this->once())->method('createQuery')->willReturn($query);
+        $this->subject->expects(self::once())->method('createQuery')->willReturn($query);
 
         // parent (5) should be casted to integer
         $this->subject->getSelectedCategories('1,2,3,4', 5);
