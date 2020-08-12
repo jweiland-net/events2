@@ -36,21 +36,18 @@ class Time extends AbstractEntity
 
     /**
      * @var string
-     * @Extbase\Validate("NotEmpty")
      * @Extbase\Validate("RegularExpression", options={"regularExpression": "/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/"})
      */
     protected $timeEntry = '';
 
     /**
      * @var string
-     * @Extbase\Validate("NotEmpty")
      * @Extbase\Validate("RegularExpression", options={"regularExpression": "/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/"})
      */
     protected $duration = '';
 
     /**
      * @var string
-     * @Extbase\Validate("NotEmpty")
      * @Extbase\Validate("RegularExpression", options={"regularExpression": "/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/"})
      */
     protected $timeEnd = '';
