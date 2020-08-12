@@ -27,7 +27,7 @@
 		"roave/security-advisories": "dev-master",
 		"friendsofphp/php-cs-fixer": "^2.16",
 		"nimut/testing-framework": "^5.1",
-		"typo3/cms-scheduler": "^9.5 || ^10.4",
+		"typo3/cms-scheduler": "^9.5.20 || ^10.4.6",
 		"jweiland/maps2": ">=8.0.0"
 	},
 	"autoload": {
