@@ -376,21 +376,21 @@ class EventControllerTest extends UnitTestCase
             ->willReturn($categories);
 
         $this->view
-            ->expects($this->at(0))
+            ->expects(self::at(0))
             ->method('assign')
             ->with(
                 self::equalTo('event'),
                 self::equalTo($event)
             );
         $this->view
-            ->expects($this->at(1))
+            ->expects(self::at(1))
             ->method('assign')
             ->with(
                 self::equalTo('locations'),
                 self::equalTo([])
             );
         $this->view
-            ->expects($this->at(2))
+            ->expects(self::at(2))
             ->method('assign')
             ->with(
                 self::equalTo('selectableCategories'),

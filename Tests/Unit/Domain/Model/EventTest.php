@@ -97,8 +97,7 @@ class EventTest extends UnitTestCase
      */
     public function getTopOfListInitiallyReturnsFalse()
     {
-        self::assertSame(
-            false,
+        self::assertFalse(
             $this->subject->getTopOfList()
         );
     }
@@ -109,8 +108,7 @@ class EventTest extends UnitTestCase
     public function setTopOfListSetsTopOfList()
     {
         $this->subject->setTopOfList(true);
-        self::assertSame(
-            true,
+        self::assertTrue(
             $this->subject->getTopOfList()
         );
     }
@@ -310,8 +308,7 @@ class EventTest extends UnitTestCase
      */
     public function getSameDayInitiallyReturnsFalse()
     {
-        self::assertSame(
-            false,
+        self::assertFalse(
             $this->subject->getSameDay()
         );
     }
@@ -322,8 +319,7 @@ class EventTest extends UnitTestCase
     public function setSameDaySetsSameDay()
     {
         $this->subject->setSameDay(true);
-        self::assertSame(
-            true,
+        self::assertTrue(
             $this->subject->getSameDay()
         );
     }
@@ -744,14 +740,6 @@ class EventTest extends UnitTestCase
     }
 
     /**
-     *
-     */
-    public function getFutureExeptions()
-    {
-        // skip
-    }
-
-    /**
      * @test
      */
     public function getDetailInformationsInitiallyReturnsEmptyString()
@@ -798,8 +786,7 @@ class EventTest extends UnitTestCase
      */
     public function getFreeEntryInitiallyReturnsFalse()
     {
-        self::assertSame(
-            false,
+        self::assertFalse(
             $this->subject->getFreeEntry()
         );
     }
@@ -810,8 +797,7 @@ class EventTest extends UnitTestCase
     public function setFreeEntrySetsFreeEntry()
     {
         $this->subject->setFreeEntry(true);
-        self::assertSame(
-            true,
+        self::assertTrue(
             $this->subject->getFreeEntry()
         );
     }

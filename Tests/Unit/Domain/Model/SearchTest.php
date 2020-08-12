@@ -195,8 +195,7 @@ class SearchTest extends UnitTestCase
      */
     public function getFreeEntryInitiallyReturnsFalse()
     {
-        self::assertSame(
-            false,
+        self::assertFalse(
             $this->subject->getFreeEntry()
         );
     }
@@ -207,8 +206,7 @@ class SearchTest extends UnitTestCase
     public function setFreeEntrySetsFreeEntry()
     {
         $this->subject->setFreeEntry(true);
-        self::assertSame(
-            true,
+        self::assertTrue(
             $this->subject->getFreeEntry()
         );
     }
