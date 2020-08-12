@@ -1,53 +1,66 @@
 {
-    "name": "jweiland/events2",
-    "type": "typo3-cms-extension",
-    "description": "Organize your single and recurring events",
-    "license": "GPL-2.0-or-later",
-    "keywords": ["typo3", "TYPO3 CMS", "event", "events2"],
-    "homepage": "http://www.jweiland.net",
-    "authors": [
-        {
-            "name": "Stefan Froemken",
-            "email": "sfroemken@jweiland.net",
-            "role": "Lead Developer"
-        }
-    ],
-    "support": {
-        "email": "projects@jweiland.net",
-        "issues": "https://github.com/jweiland-net/events2/issues",
-        "source": "https://github.com/jweiland-net/events2"
-    },
-    "require": {
-        "ext-dom": "*",
-        "ext-libxml": "*",
-        "typo3/cms-core": "^9.5.20 || ^10.4.6",
-        "sjbr/static-info-tables": "^6.9"
-    },
-    "require-dev": {
-        "roave/security-advisories": "dev-master",
-        "friendsofphp/php-cs-fixer": "^2.16",
-        "nimut/testing-framework": "^5.1",
-        "typo3/cms-scheduler": "^9.5 || ^10.4",
-        "jweiland/maps2": ">=8.0.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "JWeiland\\Events2\\": "Classes"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "JWeiland\\Events2\\Tests\\": "Tests"
-        }
-    },
-    "config": {
-        "vendor-dir": ".Build/vendor",
-        "bin-dir": ".Build/bin"
-    },
-    "extra": {
-        "typo3/cms": {
-            "cms-package-dir": "{$vendor-dir}/typo3/cms",
-            "web-dir": ".Build/public"
-        }
-    }
+	"name": "jweiland/events2",
+	"type": "typo3-cms-extension",
+	"description": "Organize your single and recurring events",
+	"license": "GPL-2.0-or-later",
+	"keywords": ["typo3", "TYPO3 CMS", "event", "events2"],
+	"homepage": "http://www.jweiland.net",
+	"authors": [
+		{
+			"name": "Stefan Froemken",
+			"email": "sfroemken@jweiland.net",
+			"role": "Lead Developer"
+		}
+	],
+	"support": {
+		"email": "projects@jweiland.net",
+		"issues": "https://github.com/jweiland-net/events2/issues",
+		"source": "https://github.com/jweiland-net/events2"
+	},
+	"require": {
+		"ext-dom": "*",
+		"ext-libxml": "*",
+		"typo3/cms-core": "^9.5.20 || ^10.4.6",
+		"sjbr/static-info-tables": "^6.9"
+	},
+	"require-dev": {
+		"roave/security-advisories": "dev-master",
+		"friendsofphp/php-cs-fixer": "^2.16",
+		"nimut/testing-framework": "^5.1",
+		"typo3/cms-scheduler": "^9.5 || ^10.4",
+		"jweiland/maps2": ">=8.0.0"
+	},
+	"autoload": {
+		"psr-4": {
+			"JWeiland\\Events2\\": "Classes"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"JWeiland\\Events2\\Tests\\": "Tests"
+		}
+	},
+	"config": {
+		"vendor-dir": ".build/vendor"
+	},
+	"extra": {
+		"typo3/cms": {
+			"app-dir": ".build",
+			"web-dir": ".build/public"
+		}
+	},
+	"scripts": {
+		"php:fix": ".build/vendor/bin/php-cs-fixer --config=Build/.php_cs.php fix Classes Tests",
+		"ci:php:lint": "find *.php Classes Configuration Tests -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l",
+		"ci:php:fixer": ".build/vendor/bin/php-cs-fixer --config=Build/.php_cs.php fix --dry-run -v --show-progress=dots --diff-format=udiff Classes Tests",
+		"ci:tests:unit": ".build/vendor/bin/phpunit -c .build/vendor/nimut/testing-framework/res/Configuration/UnitTests.xml Tests/Unit",
+		"ci:tests:functional": "find 'Tests/Functional' -wholename '*Test.php' | parallel --gnu 'echo; echo \"Running functional test suite {}\"; .build/vendor/bin/phpunit -c .build/vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml {}';",
+		"link-extension": [
+			"@php -r 'is_dir($extFolder=__DIR__.\"/.build/public/typo3conf/ext/\") || mkdir($extFolder, 0777, true);'",
+			"@php -r 'file_exists($extFolder=__DIR__.\"/.build/public/typo3conf/ext/events2\") || symlink(__DIR__,$extFolder);'"
+		],
+		"post-autoload-dump": [
+			"@link-extension"
+		]
+	}
 }
