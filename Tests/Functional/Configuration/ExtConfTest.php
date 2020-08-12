@@ -1,19 +1,14 @@
 <?php
 
-namespace JWeiland\Events2\Tests\Functional\Configuration;
-
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
  */
+
+namespace JWeiland\Events2\Tests\Functional\Configuration;
+
 use JWeiland\Events2\Configuration\ExtConf;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 
@@ -54,7 +49,7 @@ class ExtConfTest extends FunctionalTestCase
      */
     public function getPoiCollectionPidInitiallyReturnsZero()
     {
-        $this->assertSame(
+        self::assertSame(
             0,
             $this->subject->getPoiCollectionPid()
         );
@@ -67,7 +62,7 @@ class ExtConfTest extends FunctionalTestCase
     {
         $this->subject->setPoiCollectionPid(123456);
 
-        $this->assertSame(
+        self::assertSame(
             123456,
             $this->subject->getPoiCollectionPid()
         );
@@ -80,7 +75,7 @@ class ExtConfTest extends FunctionalTestCase
     {
         $this->subject->setPoiCollectionPid('123Test');
 
-        $this->assertSame(
+        self::assertSame(
             123,
             $this->subject->getPoiCollectionPid()
         );
@@ -93,7 +88,7 @@ class ExtConfTest extends FunctionalTestCase
     {
         $this->subject->setPoiCollectionPid(true);
 
-        $this->assertSame(
+        self::assertSame(
             1,
             $this->subject->getPoiCollectionPid()
         );
@@ -104,7 +99,7 @@ class ExtConfTest extends FunctionalTestCase
      */
     public function getRootUidInitiallyReturnsZero()
     {
-        $this->assertSame(
+        self::assertSame(
             0,
             $this->subject->getRootUid()
         );
@@ -117,7 +112,7 @@ class ExtConfTest extends FunctionalTestCase
     {
         $this->subject->setRootUid(123456);
 
-        $this->assertSame(
+        self::assertSame(
             123456,
             $this->subject->getRootUid()
         );
@@ -130,7 +125,7 @@ class ExtConfTest extends FunctionalTestCase
     {
         $this->subject->setRootUid('123Test');
 
-        $this->assertSame(
+        self::assertSame(
             123,
             $this->subject->getRootUid()
         );
@@ -143,7 +138,7 @@ class ExtConfTest extends FunctionalTestCase
     {
         $this->subject->setRootUid(true);
 
-        $this->assertSame(
+        self::assertSame(
             1,
             $this->subject->getRootUid()
         );
@@ -154,7 +149,7 @@ class ExtConfTest extends FunctionalTestCase
      */
     public function getRecurringPastReturns3monthAsDefault()
     {
-        $this->assertSame(
+        self::assertSame(
             3,
             $this->subject->getRecurringPast()
         );
@@ -166,7 +161,7 @@ class ExtConfTest extends FunctionalTestCase
     public function setRecurringPastWithIntegerWillReturnSameInGetter()
     {
         $this->subject->setRecurringPast(6);
-        $this->assertSame(
+        self::assertSame(
             6,
             $this->subject->getRecurringPast()
         );
@@ -178,7 +173,7 @@ class ExtConfTest extends FunctionalTestCase
     public function setRecurringPastWithStringWillReturnIntegerInGetter()
     {
         $this->subject->setRecurringPast('6');
-        $this->assertSame(
+        self::assertSame(
             6,
             $this->subject->getRecurringPast()
         );
@@ -190,7 +185,7 @@ class ExtConfTest extends FunctionalTestCase
     public function setRecurringPastWithInvalidValueWillReturnIntCastedValueInGetter()
     {
         $this->subject->setRecurringPast('invalidValue');
-        $this->assertSame(
+        self::assertSame(
             0,
             $this->subject->getRecurringPast()
         );
@@ -201,7 +196,7 @@ class ExtConfTest extends FunctionalTestCase
      */
     public function getRecurringFutureReturns6monthAsDefault()
     {
-        $this->assertSame(
+        self::assertSame(
             6,
             $this->subject->getRecurringFuture()
         );
@@ -213,7 +208,7 @@ class ExtConfTest extends FunctionalTestCase
     public function setRecurringFutureWithIntegerWillReturnSameInGetter()
     {
         $this->subject->setRecurringFuture(12);
-        $this->assertSame(
+        self::assertSame(
             12,
             $this->subject->getRecurringFuture()
         );
@@ -225,7 +220,7 @@ class ExtConfTest extends FunctionalTestCase
     public function setRecurringFutureWithStringWillReturnIntegerInGetter()
     {
         $this->subject->setRecurringFuture('12');
-        $this->assertSame(
+        self::assertSame(
             12,
             $this->subject->getRecurringFuture()
         );
@@ -237,7 +232,7 @@ class ExtConfTest extends FunctionalTestCase
     public function setRecurringFutureWithInvalidValueWillReturnDefaultValueInGetter()
     {
         $this->subject->setRecurringFuture('invalidValue');
-        $this->assertSame(
+        self::assertSame(
             6,
             $this->subject->getRecurringFuture()
         );
@@ -248,7 +243,7 @@ class ExtConfTest extends FunctionalTestCase
      */
     public function getDefaultCountryInitiallyReturnsEmptyString()
     {
-        $this->assertSame(
+        self::assertSame(
             '',
             $this->subject->getDefaultCountry()
         );
@@ -261,7 +256,7 @@ class ExtConfTest extends FunctionalTestCase
     {
         $this->subject->setDefaultCountry('foo bar');
 
-        $this->assertSame(
+        self::assertSame(
             'foo bar',
             $this->subject->getDefaultCountry()
         );
@@ -273,7 +268,7 @@ class ExtConfTest extends FunctionalTestCase
     public function setDefaultCountryWithIntegerResultsInString()
     {
         $this->subject->setDefaultCountry(123);
-        $this->assertSame('123', $this->subject->getDefaultCountry());
+        self::assertSame('123', $this->subject->getDefaultCountry());
     }
 
     /**
@@ -282,7 +277,7 @@ class ExtConfTest extends FunctionalTestCase
     public function setDefaultCountryWithBooleanResultsInString()
     {
         $this->subject->setDefaultCountry(true);
-        $this->assertSame('1', $this->subject->getDefaultCountry());
+        self::assertSame('1', $this->subject->getDefaultCountry());
     }
 
     /**
@@ -293,7 +288,7 @@ class ExtConfTest extends FunctionalTestCase
      */
     public function getEmailFromAddressInitiallyReturnsEmptyString()
     {
-        $this->assertSame(
+        self::assertSame(
             '',
             $this->subject->getEmailFromAddress()
         );
@@ -306,7 +301,7 @@ class ExtConfTest extends FunctionalTestCase
     {
         $this->subject->setEmailFromAddress('foo bar');
 
-        $this->assertSame(
+        self::assertSame(
             'foo bar',
             $this->subject->getEmailFromAddress()
         );
@@ -318,7 +313,7 @@ class ExtConfTest extends FunctionalTestCase
     public function setEmailFromAddressWithIntegerResultsInString()
     {
         $this->subject->setEmailFromAddress(123);
-        $this->assertSame('123', $this->subject->getEmailFromAddress());
+        self::assertSame('123', $this->subject->getEmailFromAddress());
     }
 
     /**
@@ -327,7 +322,7 @@ class ExtConfTest extends FunctionalTestCase
     public function setEmailFromAddressWithBooleanResultsInString()
     {
         $this->subject->setEmailFromAddress(true);
-        $this->assertSame('1', $this->subject->getEmailFromAddress());
+        self::assertSame('1', $this->subject->getEmailFromAddress());
     }
 
     /**
@@ -338,7 +333,7 @@ class ExtConfTest extends FunctionalTestCase
      */
     public function getEmailFromNameInitiallyReturnsEmptyString()
     {
-        $this->assertSame(
+        self::assertSame(
             '',
             $this->subject->getEmailFromName()
         );
@@ -351,7 +346,7 @@ class ExtConfTest extends FunctionalTestCase
     {
         $this->subject->setEmailFromName('foo bar');
 
-        $this->assertSame(
+        self::assertSame(
             'foo bar',
             $this->subject->getEmailFromName()
         );
@@ -363,7 +358,7 @@ class ExtConfTest extends FunctionalTestCase
     public function setEmailFromNameWithIntegerResultsInString()
     {
         $this->subject->setEmailFromName(123);
-        $this->assertSame('123', $this->subject->getEmailFromName());
+        self::assertSame('123', $this->subject->getEmailFromName());
     }
 
     /**
@@ -372,7 +367,7 @@ class ExtConfTest extends FunctionalTestCase
     public function setEmailFromNameWithBooleanResultsInString()
     {
         $this->subject->setEmailFromName(true);
-        $this->assertSame('1', $this->subject->getEmailFromName());
+        self::assertSame('1', $this->subject->getEmailFromName());
     }
 
     /**
@@ -380,7 +375,7 @@ class ExtConfTest extends FunctionalTestCase
      */
     public function getEmailToAddressInitiallyReturnsEmptyString()
     {
-        $this->assertSame(
+        self::assertSame(
             '',
             $this->subject->getEmailToAddress()
         );
@@ -393,7 +388,7 @@ class ExtConfTest extends FunctionalTestCase
     {
         $this->subject->setEmailToAddress('foo bar');
 
-        $this->assertSame(
+        self::assertSame(
             'foo bar',
             $this->subject->getEmailToAddress()
         );
@@ -405,7 +400,7 @@ class ExtConfTest extends FunctionalTestCase
     public function setEmailToAddressWithIntegerResultsInString()
     {
         $this->subject->setEmailToAddress(123);
-        $this->assertSame('123', $this->subject->getEmailToAddress());
+        self::assertSame('123', $this->subject->getEmailToAddress());
     }
 
     /**
@@ -414,7 +409,7 @@ class ExtConfTest extends FunctionalTestCase
     public function setEmailToAddressWithBooleanResultsInString()
     {
         $this->subject->setEmailToAddress(true);
-        $this->assertSame('1', $this->subject->getEmailToAddress());
+        self::assertSame('1', $this->subject->getEmailToAddress());
     }
 
     /**
@@ -422,7 +417,7 @@ class ExtConfTest extends FunctionalTestCase
      */
     public function getEmailToNameInitiallyReturnsEmptyString()
     {
-        $this->assertSame(
+        self::assertSame(
             '',
             $this->subject->getEmailToName()
         );
@@ -435,7 +430,7 @@ class ExtConfTest extends FunctionalTestCase
     {
         $this->subject->setEmailToName('foo bar');
 
-        $this->assertSame(
+        self::assertSame(
             'foo bar',
             $this->subject->getEmailToName()
         );
@@ -447,7 +442,7 @@ class ExtConfTest extends FunctionalTestCase
     public function setEmailToNameWithIntegerResultsInString()
     {
         $this->subject->setEmailToName(123);
-        $this->assertSame('123', $this->subject->getEmailToName());
+        self::assertSame('123', $this->subject->getEmailToName());
     }
 
     /**
@@ -456,6 +451,6 @@ class ExtConfTest extends FunctionalTestCase
     public function setEmailToNameWithBooleanResultsInString()
     {
         $this->subject->setEmailToName(true);
-        $this->assertSame('1', $this->subject->getEmailToName());
+        self::assertSame('1', $this->subject->getEmailToName());
     }
 }

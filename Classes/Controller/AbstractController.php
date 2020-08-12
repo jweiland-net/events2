@@ -257,7 +257,6 @@ class AbstractController extends ActionController
      * In that case all uploaded files have to be deleted
      *
      * @param string $argument
-     * @return void
      */
     protected function deleteUploadedFilesOnValidationErrors(string $argument): void
     {
@@ -278,8 +277,6 @@ class AbstractController extends ActionController
      * Remove videoLink if empty
      * Add special validation for VideoLink
      * I can't add this validation to LinkModel, as such a validation would be also valid for organizer link.
-     *
-     * @return void
      */
     protected function addValidationForVideoLink(): void
     {
@@ -313,8 +310,6 @@ class AbstractController extends ActionController
 
     /**
      * This is a workaround to help controller actions to find (hidden) events.
-     *
-     * @return void
      */
     protected function registerEventFromRequest(): void
     {
@@ -334,7 +329,6 @@ class AbstractController extends ActionController
      * Extbase can not set deleted=1 itself.
      *
      * @param Event $event
-     * @return void
      */
     protected function deleteVideoLinkIfEmpty(Event $event): void
     {

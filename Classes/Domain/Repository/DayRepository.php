@@ -544,7 +544,7 @@ class DayRepository extends Repository
         QueryBuilder $queryBuilder,
         int $timestamp,
         array $settings
-    ):void {
+    ): void {
         $signalSlotDispatcher = GeneralUtility::makeInstance(ObjectManager::class)
             ->get(Dispatcher::class);
         $signalSlotDispatcher->dispatch(

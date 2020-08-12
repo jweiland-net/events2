@@ -1,19 +1,14 @@
 <?php
 
-namespace JWeiland\Events2\Tests\Unit\Tca\Type;
-
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
  */
+
+namespace JWeiland\Events2\Tests\Unit\Tca\Type;
+
 use JWeiland\Events2\Tca\Type\Time;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 
@@ -61,7 +56,7 @@ class TimeTest extends UnitTestCase
      */
     public function evaluateWithTimesWhichWillNotBeModified($unmodifiedTime)
     {
-        $this->assertSame(
+        self::assertSame(
             $unmodifiedTime,
             $this->subject->evaluateFieldValue($unmodifiedTime)
         );
@@ -90,7 +85,7 @@ class TimeTest extends UnitTestCase
      */
     public function evaluateWithTimesWhichWillAddPaddings($unpaddedTimes, $paddedTimes)
     {
-        $this->assertSame(
+        self::assertSame(
             $paddedTimes,
             $this->subject->evaluateFieldValue($unpaddedTimes)
         );
@@ -121,7 +116,7 @@ class TimeTest extends UnitTestCase
      */
     public function evaluateWithTooHighTimeValues($tooHighTime, $normalizedTime)
     {
-        $this->assertSame(
+        self::assertSame(
             $normalizedTime,
             $this->subject->evaluateFieldValue($tooHighTime)
         );
@@ -148,7 +143,7 @@ class TimeTest extends UnitTestCase
      */
     public function evaluateWithInvalidValues($invalidTime, $expectedTime)
     {
-        $this->assertSame(
+        self::assertSame(
             $expectedTime,
             $this->subject->evaluateFieldValue($invalidTime)
         );
@@ -182,7 +177,7 @@ class TimeTest extends UnitTestCase
      */
     public function evaluateWithInteger($intValue, $expectedTime)
     {
-        $this->assertSame(
+        self::assertSame(
             $expectedTime,
             $this->subject->evaluateFieldValue($intValue)
         );

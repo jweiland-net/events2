@@ -154,9 +154,8 @@ class FindDaysForMonth
     {
         if (isset($this->arguments[$argumentName])) {
             return $this->arguments[$argumentName];
-        } else {
-            return '';
         }
+        return '';
     }
 
     /**

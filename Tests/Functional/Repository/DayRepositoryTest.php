@@ -1,19 +1,13 @@
 <?php
 
-namespace JWeiland\Events2\Tests\Functional\Repository;
-
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
  */
+
+namespace JWeiland\Events2\Tests\Functional\Repository;
 
 use JWeiland\Events2\Domain\Model\Category;
 use JWeiland\Events2\Domain\Model\Day;
@@ -438,7 +432,7 @@ class DayRepositoryTest extends FunctionalTestCase
     {
         $day = $this->dayRepository->findByIdentifier(1);
 
-        $this->assertInstanceOf(
+        self::assertInstanceOf(
             Day::class,
             $day
         );
@@ -457,7 +451,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $allDaysMergedByTime = $this->dayRepository->findEvents('list', new Filter());
 
         // if merge has worked we MUST have less records now
-        $this->assertLessThan(
+        self::assertLessThan(
             $allDays->count(),
             $allDaysMergedByTime->count()
         );
@@ -483,17 +477,17 @@ class DayRepositoryTest extends FunctionalTestCase
         ]);
         $allDaysMergedByEvent = $this->dayRepository->findEvents('list', new Filter());
 
-        $this->assertLessThan(
+        self::assertLessThan(
             $allDays->count(),
             $allDaysMergedByTime->count()
         );
 
-        $this->assertLessThan(
+        self::assertLessThan(
             $allDays->count(),
             $allDaysMergedByEvent->count()
         );
 
-        $this->assertGreaterThan(
+        self::assertGreaterThan(
             $allDaysMergedByEvent->count(),
             $allDaysMergedByTime->count()
         );
@@ -510,14 +504,14 @@ class DayRepositoryTest extends FunctionalTestCase
 
         $this->querySettings->setStoragePageIds([11]);
         $days = $this->dayRepository->findEvents('list', new Filter());
-        $this->assertSame(
+        self::assertSame(
             9,
             $days->count()
         );
 
         $this->querySettings->setStoragePageIds([40]);
         $days = $this->dayRepository->findEvents('list', new Filter());
-        $this->assertSame(
+        self::assertSame(
             2,
             $days->count()
         );
@@ -536,7 +530,7 @@ class DayRepositoryTest extends FunctionalTestCase
 
         $this->querySettings->setStoragePageIds([11]);
         $days = $this->dayRepository->findEvents('list', new Filter());
-        $this->assertSame(
+        self::assertSame(
             10,
             $days->count()
         );
@@ -553,7 +547,7 @@ class DayRepositoryTest extends FunctionalTestCase
         ]);
         $days = $this->dayRepository->findEvents('list', new Filter());
 
-        $this->assertSame(
+        self::assertSame(
             7,
             count($days->toArray())
         );
@@ -563,7 +557,7 @@ class DayRepositoryTest extends FunctionalTestCase
             'categories' => '2'
         ]);
         $days = $this->dayRepository->findEvents('list', new Filter());
-        $this->assertSame(
+        self::assertSame(
             1,
             $days->count()
         );
@@ -573,7 +567,7 @@ class DayRepositoryTest extends FunctionalTestCase
             'categories' => '3'
         ]);
         $days = $this->dayRepository->findEvents('list', new Filter());
-        $this->assertSame(
+        self::assertSame(
             3,
             $days->count()
         );
@@ -583,7 +577,7 @@ class DayRepositoryTest extends FunctionalTestCase
             'categories' => '1,2,3'
         ]);
         $days = $this->dayRepository->findEvents('list', new Filter());
-        $this->assertSame(
+        self::assertSame(
             9,
             count($days->toArray())
         );
@@ -600,7 +594,7 @@ class DayRepositoryTest extends FunctionalTestCase
             'preFilterByOrganizer' => '1'
         ]);
         $days = $this->dayRepository->findEvents('list', new Filter());
-        $this->assertSame(
+        self::assertSame(
             7,
             $days->count()
         );
@@ -611,7 +605,7 @@ class DayRepositoryTest extends FunctionalTestCase
             'mergeRecurringEvents' => 1
         ]);
         $days = $this->dayRepository->findEvents('list', $filter);
-        $this->assertSame(
+        self::assertSame(
             7,
             $days->count()
         );
@@ -622,7 +616,7 @@ class DayRepositoryTest extends FunctionalTestCase
             'preFilterByOrganizer' => '2'
         ]);
         $days = $this->dayRepository->findEvents('list', new Filter());
-        $this->assertSame(
+        self::assertSame(
             3,
             $days->count()
         );
@@ -633,7 +627,7 @@ class DayRepositoryTest extends FunctionalTestCase
             'mergeRecurringEvents' => 1
         ]);
         $days = $this->dayRepository->findEvents('list', $filter);
-        $this->assertSame(
+        self::assertSame(
             3,
             $days->count()
         );
@@ -651,7 +645,7 @@ class DayRepositoryTest extends FunctionalTestCase
             'preFilterByOrganizer' => '1'
         ]);
         $days = $this->dayRepository->findEvents('list', $filter);
-        $this->assertSame(
+        self::assertSame(
             7,
             $days->count()
         );
@@ -667,7 +661,7 @@ class DayRepositoryTest extends FunctionalTestCase
         ]);
 
         $days = $this->dayRepository->findEvents('list', new Filter(), 5);
-        $this->assertSame(
+        self::assertSame(
             5,
             count($days->toArray())
         );
@@ -688,7 +682,7 @@ class DayRepositoryTest extends FunctionalTestCase
         /** @var Day $day */
         $day = $days->current();
 
-        $this->assertSame(
+        self::assertSame(
             true,
             $day->getEvent()->getTopOfList()
         );
@@ -706,13 +700,13 @@ class DayRepositoryTest extends FunctionalTestCase
         ]);
 
         $days = $this->dayRepository->findEvents('latest', new Filter(), 7);
-        $this->assertSame(
+        self::assertSame(
             7,
             count($days->toArray())
         );
 
         foreach ($days as $day) {
-            $this->assertGreaterThanOrEqual(
+            self::assertGreaterThanOrEqual(
                 $todayStart,
                 $day->getDayTime()
             );
@@ -734,11 +728,11 @@ class DayRepositoryTest extends FunctionalTestCase
         /** @var Day[] $days */
         $days = $this->dayRepository->findEvents('today', new Filter());
         foreach ($days as $day) {
-            $this->assertGreaterThanOrEqual(
+            self::assertGreaterThanOrEqual(
                 $todayStart,
                 $day->getDayTime()
             );
-            $this->assertLessThan(
+            self::assertLessThan(
                 $todayEnd,
                 $day->getDayTime()
             );
@@ -761,11 +755,11 @@ class DayRepositoryTest extends FunctionalTestCase
         /** @var Day[] $days */
         $days = $this->dayRepository->findEvents('range', new Filter());
         foreach ($days as $day) {
-            $this->assertGreaterThanOrEqual(
+            self::assertGreaterThanOrEqual(
                 $dateStart,
                 $day->getDayTime()
             );
-            $this->assertLessThan(
+            self::assertLessThan(
                 $dateEnd,
                 $day->getDayTime()
             );
@@ -788,11 +782,11 @@ class DayRepositoryTest extends FunctionalTestCase
 
         $days = $this->dayRepository->findEvents('thisWeek', new Filter());
         foreach ($days as $day) {
-            $this->assertGreaterThanOrEqual(
+            self::assertGreaterThanOrEqual(
                 $dateStart,
                 $day->getDayTime()
             );
-            $this->assertLessThan(
+            self::assertLessThan(
                 $dateEnd,
                 $day->getDayTime()
             );
@@ -810,14 +804,14 @@ class DayRepositoryTest extends FunctionalTestCase
 
         $this->querySettings->setStoragePageIds([11]);
         $days = $this->dayRepository->searchEvents(new Search());
-        $this->assertSame(
+        self::assertSame(
             9,
             count($days->toArray())
         );
 
         $this->querySettings->setStoragePageIds([40]);
         $days = $this->dayRepository->searchEvents(new Search());
-        $this->assertSame(
+        self::assertSame(
             2,
             count($days->toArray())
         );
@@ -836,7 +830,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $search->setSearch('birthday');
 
         $days = $this->dayRepository->searchEvents($search);
-        $this->assertSame(
+        self::assertSame(
             2,
             count($days->toArray())
         );
@@ -855,7 +849,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $search->setSearch('coding');
 
         $days = $this->dayRepository->searchEvents($search);
-        $this->assertSame(
+        self::assertSame(
             1,
             count($days->toArray())
         );
@@ -879,7 +873,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $search->setMainCategory($mainCategory);
 
         $days = $this->dayRepository->searchEvents($search);
-        $this->assertSame(
+        self::assertSame(
             1,
             count($days->toArray())
         );
@@ -892,7 +886,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $search->setSubCategory($subCategory);
 
         $days = $this->dayRepository->searchEvents($search);
-        $this->assertSame(
+        self::assertSame(
             7,
             count($days->toArray())
         );
@@ -902,7 +896,7 @@ class DayRepositoryTest extends FunctionalTestCase
             'categories' => '2,3'
         ]);
         $days = $this->dayRepository->searchEvents(new Search());
-        $this->assertSame(
+        self::assertSame(
             4,
             count($days->toArray())
         );
@@ -925,7 +919,7 @@ class DayRepositoryTest extends FunctionalTestCase
         /** @var Day[] $days */
         $days = $this->dayRepository->searchEvents($search);
         foreach ($days as $day) {
-            $this->assertGreaterThanOrEqual(
+            self::assertGreaterThanOrEqual(
                 $tomorrow,
                 $day->getDayTime()
             );
@@ -952,11 +946,11 @@ class DayRepositoryTest extends FunctionalTestCase
         /** @var Day[] $days */
         $days = $this->dayRepository->searchEvents($search);
         foreach ($days as $day) {
-            $this->assertGreaterThanOrEqual(
+            self::assertGreaterThanOrEqual(
                 $tomorrow,
                 $day->getDayTime()
             );
-            $this->assertLessThanOrEqual(
+            self::assertLessThanOrEqual(
                 $nextMonth,
                 $day->getDayTime()
             );
@@ -981,7 +975,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $search->setLocation($location);
 
         $days = $this->dayRepository->searchEvents($search);
-        $this->assertSame(
+        self::assertSame(
             8,
             count($days->toArray())
         );
@@ -1000,7 +994,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $search->setFreeEntry(true);
 
         $days = $this->dayRepository->searchEvents($search);
-        $this->assertSame(
+        self::assertSame(
             1,
             count($days->toArray())
         );
@@ -1019,7 +1013,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $twoWeeks->modify('+2 weeks'); // two birthday records
 
         $days = $this->dayRepository->findByTimestamp($twoWeeks->format('U'));
-        $this->assertGreaterThanOrEqual( // in last week of month we have 3 because of UserGroup
+        self::assertGreaterThanOrEqual( // in last week of month we have 3 because of UserGroup
             2,
             count($days->toArray())
         );
@@ -1046,7 +1040,7 @@ class DayRepositoryTest extends FunctionalTestCase
             $events[$day->getEvent()->getUid()] = 1;
         }
         // 1 = week market
-        $this->assertArrayHasKey(1, $events);
+        self::assertArrayHasKey(1, $events);
     }
 
     /**
@@ -1063,7 +1057,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $twoWeeks->modify('+2 weeks'); // two birthday records
 
         $days = $this->dayRepository->findByTimestamp($twoWeeks->format('U'));
-        $this->assertGreaterThanOrEqual( // in last week of month we have 3 because of UserGroup
+        self::assertGreaterThanOrEqual( // in last week of month we have 3 because of UserGroup
             2,
             count($days->toArray())
         );
@@ -1078,11 +1072,11 @@ class DayRepositoryTest extends FunctionalTestCase
 
         // EventUid 4 => Holiday duration
         $day = $this->dayRepository->findDayByEventAndTimestamp(3, $tomorrow->format('U'));
-        $this->assertInstanceOf(
+        self::assertInstanceOf(
             Day::class,
             $day
         );
-        $this->assertSame(
+        self::assertSame(
             'Morgen',
             $day->getEvent()->getTitle()
         );
@@ -1103,7 +1097,7 @@ class DayRepositoryTest extends FunctionalTestCase
                 $counter++;
             }
         }
-        $this->assertSame(
+        self::assertSame(
             2,
             $counter
         );

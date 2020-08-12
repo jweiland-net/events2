@@ -339,7 +339,6 @@ abstract class AbstractImporter implements ImporterInterface
      *
      * @param string $message The message itself
      * @param int $severity Message level (according to \TYPO3\CMS\Core\Messaging\FlashMessage class constants)
-     * @return void
      * @throws \Exception
      */
     protected function addMessage(string $message, int $severity = FlashMessage::OK): void

@@ -29,9 +29,8 @@ class UserRepository
             unset($GLOBALS['TSFE']->fe_user->user['password']);
 
             return $GLOBALS['TSFE']->fe_user->user;
-        } else {
-            return [];
         }
+        return [];
     }
 
     /**
@@ -45,8 +44,7 @@ class UserRepository
         $user = $this->getUser();
         if (isset($user[$field])) {
             return (string)$user[$field];
-        } else {
-            return '';
         }
+        return '';
     }
 }

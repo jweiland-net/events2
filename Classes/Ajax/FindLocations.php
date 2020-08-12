@@ -48,8 +48,7 @@ class FindLocations
         // keep it in sync to minLength in JS
         if (empty($locationPart) || strlen($locationPart) <= 2) {
             return new JsonResponse('');
-        } else {
-            return new JsonResponse($this->locationRepository->findLocations($locationPart));
         }
+        return new JsonResponse($this->locationRepository->findLocations($locationPart));
     }
 }

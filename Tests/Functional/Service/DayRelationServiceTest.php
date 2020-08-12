@@ -1,19 +1,14 @@
 <?php
 
-namespace JWeiland\Events2\Tests\Functional\Service;
-
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
  */
+
+namespace JWeiland\Events2\Tests\Functional\Service;
+
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
@@ -180,15 +175,15 @@ class DayRelationServiceTest extends FunctionalTestCase
 
         $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
         $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
-        $this->assertCount(3, $event->getDays());
+        self::assertCount(3, $event->getDays());
 
         /** @var Day $day */
         $days = ['yesterday', 'today', 'tomorrow'];
         foreach ($event->getDays()->toArray() as $key => $day) {
-            $this->assertEquals(${$days[$key]}, $day->getDay());
-            $this->assertEquals(${$days[$key]}, $day->getDayTime());
-            $this->assertEquals(${$days[$key]}, $day->getSortDayTime());
-            $this->assertEquals(${$days[$key]}, $day->getSameDayTime());
+            self::assertEquals(${$days[$key]}, $day->getDay());
+            self::assertEquals(${$days[$key]}, $day->getDayTime());
+            self::assertEquals(${$days[$key]}, $day->getSortDayTime());
+            self::assertEquals(${$days[$key]}, $day->getSameDayTime());
         }
     }
 
@@ -232,15 +227,15 @@ class DayRelationServiceTest extends FunctionalTestCase
 
         $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
         $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
-        $this->assertCount(3, $event->getDays());
+        self::assertCount(3, $event->getDays());
 
         /** @var Day $day */
         $days = ['yesterday', 'today', 'tomorrow'];
         foreach ($event->getDays()->toArray() as $key => $day) {
-            $this->assertEquals(${$days[$key]}, $day->getDay());
-            $this->assertEquals(${$days[$key] . 'Launch'}, $day->getDayTime());
-            $this->assertEquals(${$days[$key] . 'Launch'}, $day->getSortDayTime());
-            $this->assertEquals(${$days[$key] . 'Launch'}, $day->getSameDayTime());
+            self::assertEquals(${$days[$key]}, $day->getDay());
+            self::assertEquals(${$days[$key] . 'Launch'}, $day->getDayTime());
+            self::assertEquals(${$days[$key] . 'Launch'}, $day->getSortDayTime());
+            self::assertEquals(${$days[$key] . 'Launch'}, $day->getSameDayTime());
         }
     }
 
@@ -298,16 +293,16 @@ class DayRelationServiceTest extends FunctionalTestCase
 
         $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
         $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
-        $this->assertCount(6, $event->getDays());
+        self::assertCount(6, $event->getDays());
 
         /** @var Day $day */
         $days = ['yesterday', 'yesterday', 'today', 'today', 'tomorrow', 'tomorrow'];
         foreach ($event->getDays()->toArray() as $key => $day) {
             $methodName = $key % 2 ? 'Evening' : 'Morning';
-            $this->assertEquals(${$days[$key]}, $day->getDay());
-            $this->assertEquals(${$days[$key] . $methodName}, $day->getDayTime());
-            $this->assertEquals(${$days[$key] . $methodName}, $day->getSortDayTime());
-            $this->assertEquals(${$days[$key] . 'Morning'}, $day->getSameDayTime());
+            self::assertEquals(${$days[$key]}, $day->getDay());
+            self::assertEquals(${$days[$key] . $methodName}, $day->getDayTime());
+            self::assertEquals(${$days[$key] . $methodName}, $day->getSortDayTime());
+            self::assertEquals(${$days[$key] . 'Morning'}, $day->getSameDayTime());
         }
     }
 
@@ -366,16 +361,16 @@ class DayRelationServiceTest extends FunctionalTestCase
 
         $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
         $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
-        $this->assertCount(4, $event->getDays());
+        self::assertCount(4, $event->getDays());
 
         /** @var Day $day */
         $days = ['today', 'today', 'tomorrow', 'tomorrow'];
         foreach ($event->getDays()->toArray() as $key => $day) {
             $methodName = $key % 2 ? 'Evening' : 'Morning';
-            $this->assertEquals(${$days[$key]}, $day->getDay());
-            $this->assertEquals(${$days[$key] . $methodName}, $day->getDayTime());
-            $this->assertEquals(${$days[$key] . $methodName}, $day->getSortDayTime());
-            $this->assertEquals(${$days[$key] . 'Morning'}, $day->getSameDayTime());
+            self::assertEquals(${$days[$key]}, $day->getDay());
+            self::assertEquals(${$days[$key] . $methodName}, $day->getDayTime());
+            self::assertEquals(${$days[$key] . $methodName}, $day->getSortDayTime());
+            self::assertEquals(${$days[$key] . 'Morning'}, $day->getSameDayTime());
         }
     }
 
@@ -427,16 +422,16 @@ class DayRelationServiceTest extends FunctionalTestCase
 
         $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
         $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
-        $this->assertCount(3, $event->getDays());
+        self::assertCount(3, $event->getDays());
 
         /** @var Day $day */
         $days = ['tuesday', 'wednesday', 'thursday'];
         foreach ($event->getDays()->toArray() as $key => $day) {
             $methodName = $key === 1 ? 'Evening' : 'Morning';
-            $this->assertEquals(${$days[$key]}, $day->getDay());
-            $this->assertEquals(${$days[$key] . $methodName}, $day->getDayTime());
-            $this->assertEquals(${$days[$key] . $methodName}, $day->getSortDayTime());
-            $this->assertEquals(${$days[$key] . $methodName}, $day->getSameDayTime());
+            self::assertEquals(${$days[$key]}, $day->getDay());
+            self::assertEquals(${$days[$key] . $methodName}, $day->getDayTime());
+            self::assertEquals(${$days[$key] . $methodName}, $day->getSortDayTime());
+            self::assertEquals(${$days[$key] . $methodName}, $day->getSameDayTime());
         }
     }
 
@@ -497,7 +492,7 @@ class DayRelationServiceTest extends FunctionalTestCase
 
         $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
         $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
-        $this->assertCount(4, $event->getDays());
+        self::assertCount(4, $event->getDays());
 
         /** @var Day $day */
         $days = ['tuesday', 'wednesday', 'thursday', 'friday'];
@@ -512,10 +507,10 @@ class DayRelationServiceTest extends FunctionalTestCase
                 default:
                     $methodName = '';
             }
-            $this->assertEquals(${$days[$key]}, $day->getDay());
-            $this->assertEquals(${$days[$key] . $methodName}, $day->getDayTime());
-            $this->assertEquals(${$days[$key] . $methodName}, $day->getSortDayTime());
-            $this->assertEquals(${$days[$key] . $methodName}, $day->getSameDayTime());
+            self::assertEquals(${$days[$key]}, $day->getDay());
+            self::assertEquals(${$days[$key] . $methodName}, $day->getDayTime());
+            self::assertEquals(${$days[$key] . $methodName}, $day->getSortDayTime());
+            self::assertEquals(${$days[$key] . $methodName}, $day->getSameDayTime());
         }
     }
 
@@ -585,7 +580,7 @@ class DayRelationServiceTest extends FunctionalTestCase
 
         $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
         $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
-        $this->assertCount(5, $event->getDays());
+        self::assertCount(5, $event->getDays());
 
         /** @var Day $day */
         $days = ['tuesday', 'wednesday', 'wednesday', 'thursday', 'friday'];
@@ -604,10 +599,10 @@ class DayRelationServiceTest extends FunctionalTestCase
                 default:
                     $methodName = '';
             }
-            $this->assertEquals(${$days[$key]}, $day->getDay());
-            $this->assertEquals(${$days[$key] . $methodName}, $day->getDayTime());
-            $this->assertEquals(${$days[$key] . $methodName}, $day->getSortDayTime());
-            $this->assertEquals(${$sameDayMethods[$key]}, $day->getSameDayTime());
+            self::assertEquals(${$days[$key]}, $day->getDay());
+            self::assertEquals(${$days[$key] . $methodName}, $day->getDayTime());
+            self::assertEquals(${$days[$key] . $methodName}, $day->getSortDayTime());
+            self::assertEquals(${$sameDayMethods[$key]}, $day->getSameDayTime());
         }
     }
 
@@ -630,15 +625,15 @@ class DayRelationServiceTest extends FunctionalTestCase
 
         $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
         $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
-        $this->assertCount(1, $event->getDays());
+        self::assertCount(1, $event->getDays());
 
         /** @var Day $day */
         $days = ['nextWeek'];
         foreach ($event->getDays()->toArray() as $key => $day) {
-            $this->assertEquals(${$days[$key]}, $day->getDay());
-            $this->assertEquals(${$days[$key]}, $day->getDayTime());
-            $this->assertEquals(${$days[$key]}, $day->getSortDayTime());
-            $this->assertEquals(${$days[$key]}, $day->getSameDayTime());
+            self::assertEquals(${$days[$key]}, $day->getDay());
+            self::assertEquals(${$days[$key]}, $day->getDayTime());
+            self::assertEquals(${$days[$key]}, $day->getSortDayTime());
+            self::assertEquals(${$days[$key]}, $day->getSameDayTime());
         }
     }
 
@@ -667,15 +662,15 @@ class DayRelationServiceTest extends FunctionalTestCase
 
         $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
         $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
-        $this->assertCount(1, $event->getDays());
+        self::assertCount(1, $event->getDays());
 
         /** @var Day $day */
         $days = ['nextWeek'];
         foreach ($event->getDays()->toArray() as $key => $day) {
-            $this->assertEquals(${$days[$key]}, $day->getDay());
-            $this->assertEquals(${$days[$key] . 'Midnight'}, $day->getDayTime());
-            $this->assertEquals(${$days[$key] . 'Midnight'}, $day->getSortDayTime());
-            $this->assertEquals(${$days[$key] . 'Midnight'}, $day->getSameDayTime());
+            self::assertEquals(${$days[$key]}, $day->getDay());
+            self::assertEquals(${$days[$key] . 'Midnight'}, $day->getDayTime());
+            self::assertEquals(${$days[$key] . 'Midnight'}, $day->getSortDayTime());
+            self::assertEquals(${$days[$key] . 'Midnight'}, $day->getSameDayTime());
         }
     }
 
@@ -703,15 +698,15 @@ class DayRelationServiceTest extends FunctionalTestCase
 
         $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
         $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
-        $this->assertCount(3, $event->getDays());
+        self::assertCount(3, $event->getDays());
 
         /** @var Day $day */
         $days = ['today', 'tomorrow', 'in2days'];
         foreach ($event->getDays()->toArray() as $key => $day) {
-            $this->assertEquals(${$days[$key]}, $day->getDay());
-            $this->assertEquals(${$days[$key]}, $day->getDayTime());
-            $this->assertEquals($today, $day->getSortDayTime());
-            $this->assertEquals($today, $day->getSameDayTime());
+            self::assertEquals(${$days[$key]}, $day->getDay());
+            self::assertEquals(${$days[$key]}, $day->getDayTime());
+            self::assertEquals($today, $day->getSortDayTime());
+            self::assertEquals($today, $day->getSameDayTime());
         }
     }
 
@@ -749,15 +744,15 @@ class DayRelationServiceTest extends FunctionalTestCase
 
         $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
         $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
-        $this->assertCount(3, $event->getDays());
+        self::assertCount(3, $event->getDays());
 
         /** @var Day $day */
         $days = ['today', 'tomorrow', 'in2days'];
         foreach ($event->getDays()->toArray() as $key => $day) {
-            $this->assertEquals(${$days[$key]}, $day->getDay());
-            $this->assertEquals(${$days[$key] . 'Morning'}, $day->getDayTime());
-            $this->assertEquals($todayMorning, $day->getSortDayTime());
-            $this->assertEquals($todayMorning, $day->getSameDayTime());
+            self::assertEquals(${$days[$key]}, $day->getDay());
+            self::assertEquals(${$days[$key] . 'Morning'}, $day->getDayTime());
+            self::assertEquals($todayMorning, $day->getSortDayTime());
+            self::assertEquals($todayMorning, $day->getSameDayTime());
         }
     }
 }

@@ -1,19 +1,13 @@
 <?php
 
-namespace JWeiland\Events2\Tests\Functional\Ajax;
-
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
  */
+
+namespace JWeiland\Events2\Tests\Functional\Ajax;
 
 use JWeiland\Events2\Ajax\FindLocations;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
@@ -91,7 +85,7 @@ class FindLocationsTest extends FunctionalTestCase
 
         $request = new ServerRequest('http://www.example.com/');
         $request = $request->withQueryParams($queryParams);
-        $this->assertSame(
+        self::assertSame(
             '',
             (string)$this->subject->processRequest($request)->getBody()
         );
@@ -118,7 +112,7 @@ class FindLocationsTest extends FunctionalTestCase
         $request = $request->withQueryParams($queryParams);
         $response = $this->subject->processRequest($request);
         $response->getBody()->rewind();
-        $this->assertSame(
+        self::assertSame(
             '',
             (string)$response->getBody()
         );
@@ -142,7 +136,7 @@ class FindLocationsTest extends FunctionalTestCase
 
         $request = new ServerRequest('http://www.example.com/');
         $request = $request->withQueryParams($queryParams);
-        $this->assertSame(
+        self::assertSame(
             '',
             (string)$this->subject->processRequest($request)->getBody()
         );
@@ -185,7 +179,7 @@ class FindLocationsTest extends FunctionalTestCase
             ]
         ];
         $request = $request->withQueryParams($queryParams);
-        $this->assertSame(
+        self::assertSame(
             '[{"uid":123,"label":"at home"}]',
             (string)$this->subject->processRequest($request)->getBody()
         );
@@ -198,7 +192,7 @@ class FindLocationsTest extends FunctionalTestCase
             ]
         ];
         $request = $request->withQueryParams($queryParams);
-        $this->assertSame(
+        self::assertSame(
             '[{"uid":234,"label":"Marienheide"},{"uid":345,"label":"Marienhagen"}]',
             (string)$this->subject->processRequest($request)->getBody()
         );

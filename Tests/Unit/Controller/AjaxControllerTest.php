@@ -1,19 +1,14 @@
 <?php
 
-namespace JWeiland\Events2\Tests\Unit\Controller;
-
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
  */
+
+namespace JWeiland\Events2\Tests\Unit\Controller;
+
 use JWeiland\Events2\Ajax\FindSubCategories;
 use JWeiland\Events2\Controller\AjaxController;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
@@ -58,7 +53,7 @@ class AjaxControllerTest extends UnitTestCase
             ->willReturn(new \stdClass());
 
         $this->subject->injectObjectManager($objectManager->reveal());
-        $this->assertEmpty(
+        self::assertEmpty(
             $this->subject->callAjaxObjectAction('findSubCategories', [])
         );
     }
@@ -87,7 +82,7 @@ class AjaxControllerTest extends UnitTestCase
             ->willReturn($findSubCategories);
 
         $this->subject->injectObjectManager($objectManager->reveal());
-        $this->assertSame(
+        self::assertSame(
             $expectedResult,
             $this->subject->callAjaxObjectAction('FindSubCategories', $arguments)
         );

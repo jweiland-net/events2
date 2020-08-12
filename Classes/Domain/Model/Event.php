@@ -231,9 +231,8 @@ class Event extends AbstractEntity
                 $this->eventBegin->setTimezone(new \DateTimeZone(date_default_timezone_get()));
             }
             return clone $this->eventBegin;
-        } else {
-            return null;
         }
+        return null;
     }
 
     public function setEventBegin(?\DateTime $eventBegin = null)
@@ -261,9 +260,8 @@ class Event extends AbstractEntity
             $diff = $eventBegin->diff($eventEnd);
             // Example: 20.01.2013 - 23.01.2013 = 4 days but diff shows 3. So we have to add 1 day here
             return (int)$diff->format('%a') + 1;
-        } else {
-            return 0;
         }
+        return 0;
     }
 
     public function getEventEnd(): ?\DateTime
@@ -275,9 +273,8 @@ class Event extends AbstractEntity
                 $this->eventEnd->setTimezone(new \DateTimeZone(date_default_timezone_get()));
             }
             return clone $this->eventEnd;
-        } else {
-            return null;
         }
+        return null;
     }
 
     public function setEventEnd(?\DateTime $eventEnd = null)
@@ -402,9 +399,8 @@ class Event extends AbstractEntity
                 $this->recurringEnd->setTimezone(new \DateTimeZone(date_default_timezone_get()));
             }
             return clone $this->recurringEnd;
-        } else {
-            return null;
         }
+        return null;
     }
 
     public function setRecurringEnd(?\DateTime $recurringEnd = null)

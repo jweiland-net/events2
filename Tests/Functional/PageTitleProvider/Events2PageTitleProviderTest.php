@@ -1,19 +1,13 @@
 <?php
 
-namespace JWeiland\Events2\Tests\Functional\PageTitleProvider;
-
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
  */
+
+namespace JWeiland\Events2\Tests\Functional\PageTitleProvider;
 
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Repository\EventRepository;
@@ -100,7 +94,7 @@ class Events2PageTitleProviderTest extends FunctionalTestCase
         $_GET['tx_events2_events']['event'] = 1;
         $_GET['tx_events2_events']['timestamp'] = $date->format('U');
 
-        $this->assertSame(
+        self::assertSame(
             'Nice title for detail page - ' . $date->format('d.m.Y'),
             $this->subject->getTitle()
         );

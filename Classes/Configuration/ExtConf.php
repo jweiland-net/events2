@@ -104,9 +104,8 @@ class ExtConf implements SingletonInterface
     {
         if (empty($this->rootUid)) {
             return 0;
-        } else {
-            return $this->rootUid;
         }
+        return $this->rootUid;
     }
 
     public function setRootUid($rootUid)
@@ -118,9 +117,8 @@ class ExtConf implements SingletonInterface
     {
         if ($this->recurringPast >= 0) {
             return $this->recurringPast;
-        } else {
-            return 3;
         }
+        return 3;
     }
 
     public function setRecurringPast($recurringPast)
@@ -132,9 +130,8 @@ class ExtConf implements SingletonInterface
     {
         if (empty($this->recurringFuture)) {
             return 6;
-        } else {
-            return $this->recurringFuture;
         }
+        return $this->recurringFuture;
     }
 
     public function setRecurringFuture($recurringFuture)
@@ -182,12 +179,10 @@ class ExtConf implements SingletonInterface
             $senderMail = $GLOBALS['TYPO3_CONF_VARS']['MAIL']['defaultMailFromAddress'];
             if (empty($senderMail)) {
                 throw new \Exception('You have forgotten to set a sender email address in extension configuration or in install tool', 1484823422);
-            } else {
-                return $senderMail;
             }
-        } else {
-            return $this->emailFromAddress;
+            return $senderMail;
         }
+        return $this->emailFromAddress;
     }
 
     public function setEmailFromAddress(string $emailFromAddress)
@@ -204,12 +199,10 @@ class ExtConf implements SingletonInterface
             $senderName = $GLOBALS['TYPO3_CONF_VARS']['MAIL']['defaultMailFromName'];
             if (empty($senderName)) {
                 throw new \Exception('You have forgotten to set a sender name in extension configuration or in install tool', 1484823661);
-            } else {
-                return $senderName;
             }
-        } else {
-            return $this->emailFromName;
+            return $senderName;
         }
+        return $this->emailFromName;
     }
 
     public function setEmailFromName(string $emailFromName)

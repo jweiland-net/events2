@@ -1,19 +1,14 @@
 <?php
 
-namespace JWeiland\Events2\Tests\Unit\Domain\Model;
-
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
  */
+
+namespace JWeiland\Events2\Tests\Unit\Domain\Model;
+
 use JWeiland\Events2\Domain\Model\Category;
 use JWeiland\Events2\Domain\Model\Location;
 use JWeiland\Events2\Domain\Model\Search;
@@ -50,7 +45,7 @@ class SearchTest extends UnitTestCase
      */
     public function getSearchInitiallyReturnsEmptyString()
     {
-        $this->assertSame(
+        self::assertSame(
             '',
             $this->subject->getSearch()
         );
@@ -63,7 +58,7 @@ class SearchTest extends UnitTestCase
     {
         $this->subject->setSearch('foo bar');
 
-        $this->assertSame(
+        self::assertSame(
             'foo bar',
             $this->subject->getSearch()
         );
@@ -75,7 +70,7 @@ class SearchTest extends UnitTestCase
     public function setSearchWithIntegerResultsInString()
     {
         $this->subject->setSearch(123);
-        $this->assertSame('123', $this->subject->getSearch());
+        self::assertSame('123', $this->subject->getSearch());
     }
 
     /**
@@ -84,7 +79,7 @@ class SearchTest extends UnitTestCase
     public function setSearchWithBooleanResultsInString()
     {
         $this->subject->setSearch(true);
-        $this->assertSame('1', $this->subject->getSearch());
+        self::assertSame('1', $this->subject->getSearch());
     }
 
     /**
@@ -92,7 +87,7 @@ class SearchTest extends UnitTestCase
      */
     public function getMainCategoryInitiallyReturnsNull()
     {
-        $this->assertNull($this->subject->getMainCategory());
+        self::assertNull($this->subject->getMainCategory());
     }
 
     /**
@@ -103,7 +98,7 @@ class SearchTest extends UnitTestCase
         $instance = new Category();
         $this->subject->setMainCategory($instance);
 
-        $this->assertSame(
+        self::assertSame(
             $instance,
             $this->subject->getMainCategory()
         );
@@ -114,7 +109,7 @@ class SearchTest extends UnitTestCase
      */
     public function getSubCategoryInitiallyReturnsNull()
     {
-        $this->assertNull($this->subject->getSubCategory());
+        self::assertNull($this->subject->getSubCategory());
     }
 
     /**
@@ -125,7 +120,7 @@ class SearchTest extends UnitTestCase
         $instance = new Category();
         $this->subject->setSubCategory($instance);
 
-        $this->assertSame(
+        self::assertSame(
             $instance,
             $this->subject->getSubCategory()
         );
@@ -136,7 +131,7 @@ class SearchTest extends UnitTestCase
      */
     public function getEventBeginInitiallyReturnsNULL()
     {
-        $this->assertNull($this->subject->getEventBegin());
+        self::assertNull($this->subject->getEventBegin());
     }
 
     /**
@@ -146,7 +141,7 @@ class SearchTest extends UnitTestCase
     {
         $this->subject->setEventBegin('today');
 
-        $this->assertEquals(
+        self::assertEquals(
             new \DateTime('today'),
             $this->subject->getEventBegin()
         );
@@ -157,7 +152,7 @@ class SearchTest extends UnitTestCase
      */
     public function getEventEndInitiallyReturnsNull()
     {
-        $this->assertNull($this->subject->getEventEnd());
+        self::assertNull($this->subject->getEventEnd());
     }
 
     /**
@@ -167,7 +162,7 @@ class SearchTest extends UnitTestCase
     {
         $this->subject->setEventEnd('today');
 
-        $this->assertEquals(
+        self::assertEquals(
             new \DateTime('today'),
             $this->subject->getEventEnd()
         );
@@ -178,7 +173,7 @@ class SearchTest extends UnitTestCase
      */
     public function getLocationInitiallyReturnsNull()
     {
-        $this->assertNull($this->subject->getLocation());
+        self::assertNull($this->subject->getLocation());
     }
 
     /**
@@ -189,7 +184,7 @@ class SearchTest extends UnitTestCase
         $instance = new Location();
         $this->subject->setLocation($instance);
 
-        $this->assertSame(
+        self::assertSame(
             $instance,
             $this->subject->getLocation()
         );
@@ -200,7 +195,7 @@ class SearchTest extends UnitTestCase
      */
     public function getFreeEntryInitiallyReturnsFalse()
     {
-        $this->assertSame(
+        self::assertSame(
             false,
             $this->subject->getFreeEntry()
         );
@@ -212,7 +207,7 @@ class SearchTest extends UnitTestCase
     public function setFreeEntrySetsFreeEntry()
     {
         $this->subject->setFreeEntry(true);
-        $this->assertSame(
+        self::assertSame(
             true,
             $this->subject->getFreeEntry()
         );
@@ -224,7 +219,7 @@ class SearchTest extends UnitTestCase
     public function setFreeEntryWithStringReturnsTrue()
     {
         $this->subject->setFreeEntry('foo bar');
-        $this->assertTrue($this->subject->getFreeEntry());
+        self::assertTrue($this->subject->getFreeEntry());
     }
 
     /**
@@ -233,6 +228,6 @@ class SearchTest extends UnitTestCase
     public function setFreeEntryWithZeroReturnsFalse()
     {
         $this->subject->setFreeEntry(0);
-        $this->assertFalse($this->subject->getFreeEntry());
+        self::assertFalse($this->subject->getFreeEntry());
     }
 }

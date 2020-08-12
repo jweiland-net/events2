@@ -1,19 +1,14 @@
 <?php
 
-namespace JWeiland\Events2\Tests\Unit\Domain\Model;
-
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
  */
+
+namespace JWeiland\Events2\Tests\Unit\Domain\Model;
+
 use JWeiland\Events2\Domain\Model\Exception;
 use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Tests\Unit\Domain\Traits\TestTypo3PropertiesTrait;
@@ -52,7 +47,7 @@ class ExceptionTest extends UnitTestCase
      */
     public function getExceptionTypeInitiallyReturnsEmptyString()
     {
-        $this->assertSame(
+        self::assertSame(
             '',
             $this->subject->getExceptionType()
         );
@@ -65,7 +60,7 @@ class ExceptionTest extends UnitTestCase
     {
         $this->subject->setExceptionType('foo bar');
 
-        $this->assertSame(
+        self::assertSame(
             'foo bar',
             $this->subject->getExceptionType()
         );
@@ -77,7 +72,7 @@ class ExceptionTest extends UnitTestCase
     public function setExceptionTypeWithIntegerResultsInString()
     {
         $this->subject->setExceptionType(123);
-        $this->assertSame('123', $this->subject->getExceptionType());
+        self::assertSame('123', $this->subject->getExceptionType());
     }
 
     /**
@@ -86,7 +81,7 @@ class ExceptionTest extends UnitTestCase
     public function setExceptionTypeWithBooleanResultsInString()
     {
         $this->subject->setExceptionType(true);
-        $this->assertSame('1', $this->subject->getExceptionType());
+        self::assertSame('1', $this->subject->getExceptionType());
     }
 
     /**
@@ -97,7 +92,7 @@ class ExceptionTest extends UnitTestCase
         $date = new \DateTime();
         $this->subject->setExceptionDate($date);
 
-        $this->assertEquals(
+        self::assertEquals(
             $date,
             $this->subject->getExceptionDate()
         );
@@ -108,7 +103,7 @@ class ExceptionTest extends UnitTestCase
      */
     public function getExceptionTimeInitiallyReturnsNull()
     {
-        $this->assertNull($this->subject->getExceptionTime());
+        self::assertNull($this->subject->getExceptionTime());
     }
 
     /**
@@ -119,7 +114,7 @@ class ExceptionTest extends UnitTestCase
         $instance = new Time();
         $this->subject->setExceptionTime($instance);
 
-        $this->assertSame(
+        self::assertSame(
             $instance,
             $this->subject->getExceptionTime()
         );
@@ -130,7 +125,7 @@ class ExceptionTest extends UnitTestCase
      */
     public function getExceptionDetailsInitiallyReturnsEmptyString()
     {
-        $this->assertSame(
+        self::assertSame(
             '',
             $this->subject->getExceptionDetails()
         );
@@ -143,7 +138,7 @@ class ExceptionTest extends UnitTestCase
     {
         $this->subject->setExceptionDetails('foo bar');
 
-        $this->assertSame(
+        self::assertSame(
             'foo bar',
             $this->subject->getExceptionDetails()
         );
@@ -155,7 +150,7 @@ class ExceptionTest extends UnitTestCase
     public function setExceptionDetailsWithIntegerResultsInString()
     {
         $this->subject->setExceptionDetails(123);
-        $this->assertSame('123', $this->subject->getExceptionDetails());
+        self::assertSame('123', $this->subject->getExceptionDetails());
     }
 
     /**
@@ -164,6 +159,6 @@ class ExceptionTest extends UnitTestCase
     public function setExceptionDetailsWithBooleanResultsInString()
     {
         $this->subject->setExceptionDetails(true);
-        $this->assertSame('1', $this->subject->getExceptionDetails());
+        self::assertSame('1', $this->subject->getExceptionDetails());
     }
 }

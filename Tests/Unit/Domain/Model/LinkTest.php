@@ -1,19 +1,14 @@
 <?php
 
-namespace JWeiland\Events2\Tests\Unit\Domain\Model;
-
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
  */
+
+namespace JWeiland\Events2\Tests\Unit\Domain\Model;
+
 use JWeiland\Events2\Domain\Model\Link;
 use JWeiland\Events2\Tests\Unit\Domain\Traits\TestTypo3PropertiesTrait;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
@@ -51,7 +46,7 @@ class LinkTest extends UnitTestCase
      */
     public function getLinkInitiallyReturnsEmptyString()
     {
-        $this->assertSame(
+        self::assertSame(
             '',
             $this->subject->getLink()
         );
@@ -64,7 +59,7 @@ class LinkTest extends UnitTestCase
     {
         $this->subject->setLink('foo bar');
 
-        $this->assertSame(
+        self::assertSame(
             'foo bar',
             $this->subject->getLink()
         );
@@ -76,7 +71,7 @@ class LinkTest extends UnitTestCase
     public function setLinkWithIntegerResultsInString()
     {
         $this->subject->setLink(123);
-        $this->assertSame('123', $this->subject->getLink());
+        self::assertSame('123', $this->subject->getLink());
     }
 
     /**
@@ -85,7 +80,7 @@ class LinkTest extends UnitTestCase
     public function setLinkWithBooleanResultsInString()
     {
         $this->subject->setLink(true);
-        $this->assertSame('1', $this->subject->getLink());
+        self::assertSame('1', $this->subject->getLink());
     }
 
     /**
@@ -93,7 +88,7 @@ class LinkTest extends UnitTestCase
      */
     public function getTitleInitiallyReturnsVideo()
     {
-        $this->assertSame(
+        self::assertSame(
             'Video',
             $this->subject->getTitle()
         );
@@ -106,7 +101,7 @@ class LinkTest extends UnitTestCase
     {
         $this->subject->setTitle('foo bar');
 
-        $this->assertSame(
+        self::assertSame(
             'foo bar',
             $this->subject->getTitle()
         );
@@ -118,7 +113,7 @@ class LinkTest extends UnitTestCase
     public function setTitleWithIntegerResultsInString()
     {
         $this->subject->setTitle(123);
-        $this->assertSame('123', $this->subject->getTitle());
+        self::assertSame('123', $this->subject->getTitle());
     }
 
     /**
@@ -127,7 +122,7 @@ class LinkTest extends UnitTestCase
     public function setTitleWithBooleanResultsInString()
     {
         $this->subject->setTitle(true);
-        $this->assertSame('1', $this->subject->getTitle());
+        self::assertSame('1', $this->subject->getTitle());
     }
 
     /**
@@ -135,7 +130,7 @@ class LinkTest extends UnitTestCase
      */
     public function getDeletedInitiallyReturnsFalse()
     {
-        $this->assertSame(
+        self::assertSame(
             false,
             $this->subject->getDeleted()
         );
@@ -147,7 +142,7 @@ class LinkTest extends UnitTestCase
     public function setDeletedSetsDeleted()
     {
         $this->subject->setDeleted(true);
-        $this->assertSame(
+        self::assertSame(
             true,
             $this->subject->getDeleted()
         );
@@ -159,7 +154,7 @@ class LinkTest extends UnitTestCase
     public function setDeletedWithStringReturnsTrue()
     {
         $this->subject->setDeleted('foo bar');
-        $this->assertTrue($this->subject->getDeleted());
+        self::assertTrue($this->subject->getDeleted());
     }
 
     /**
@@ -168,6 +163,6 @@ class LinkTest extends UnitTestCase
     public function setDeletedWithZeroReturnsFalse()
     {
         $this->subject->setDeleted(0);
-        $this->assertFalse($this->subject->getDeleted());
+        self::assertFalse($this->subject->getDeleted());
     }
 }

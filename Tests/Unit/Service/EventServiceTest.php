@@ -1,19 +1,13 @@
 <?php
 
-namespace JWeiland\Events2\Tests\Unit\Service;
-
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
  */
+
+namespace JWeiland\Events2\Tests\Unit\Service;
 
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
@@ -60,7 +54,7 @@ class EventServiceTest extends UnitTestCase
     {
         $event = new Event();
 
-        $this->assertEquals(
+        self::assertEquals(
             new \SplObjectStorage(),
             $this->subject->getExceptionsForDate($event, new \DateTime())
         );
@@ -83,7 +77,7 @@ class EventServiceTest extends UnitTestCase
         $event = new Event();
         $event->setExceptions($exceptions);
 
-        $this->assertEquals(
+        self::assertEquals(
             new \SplObjectStorage(),
             $this->subject->getExceptionsForDate($event, $date, 'Add')
         );
@@ -109,7 +103,7 @@ class EventServiceTest extends UnitTestCase
         $expectedExceptions = new \SplObjectStorage();
         $expectedExceptions->attach($exception);
 
-        $this->assertEquals(
+        self::assertEquals(
             $expectedExceptions,
             $this->subject->getExceptionsForDate($event, $date, 'Remove')
         );
@@ -135,7 +129,7 @@ class EventServiceTest extends UnitTestCase
         $expectedExceptions = new \SplObjectStorage();
         $expectedExceptions->attach($exception);
 
-        $this->assertEquals(
+        self::assertEquals(
             $expectedExceptions,
             $this->subject->getExceptionsForDate($event, $date, 'Remove')
         );
@@ -165,7 +159,7 @@ class EventServiceTest extends UnitTestCase
         $expectedAddExceptions = new \SplObjectStorage();
         $expectedAddExceptions->attach($addException);
 
-        $this->assertEquals(
+        self::assertEquals(
             $expectedAddExceptions,
             $this->subject->getExceptionsForDate($event, $date, 'Add')
         );
@@ -197,7 +191,7 @@ class EventServiceTest extends UnitTestCase
         $expectedAddExceptions = new \SplObjectStorage();
         $expectedAddExceptions->attach($firstAddException);
 
-        $this->assertEquals(
+        self::assertEquals(
             $expectedAddExceptions,
             $this->subject->getExceptionsForDate($event, $firstDate, 'Add')
         );
@@ -241,7 +235,7 @@ class EventServiceTest extends UnitTestCase
         $expectedExceptions->attach($timeException);
         $expectedExceptions->attach($infoException);
 
-        $this->assertEquals(
+        self::assertEquals(
             $expectedExceptions,
             $this->subject->getExceptionsForDate($event, $firstDate, 'add, time,  info')
         );
@@ -272,7 +266,7 @@ class EventServiceTest extends UnitTestCase
 
         $expectedTimes = new \SplObjectStorage();
 
-        $this->assertEquals(
+        self::assertEquals(
             $expectedTimes,
             $this->subject->getTimesForDate($event, $firstDate)
         );
@@ -309,7 +303,7 @@ class EventServiceTest extends UnitTestCase
         $expectedTimes = new \SplObjectStorage();
         $expectedTimes->attach($time);
 
-        $this->assertEquals(
+        self::assertEquals(
             $expectedTimes,
             $this->subject->getTimesForDate($event, $firstDate)
         );
@@ -345,7 +339,7 @@ class EventServiceTest extends UnitTestCase
         $expectedTimes->attach($time);
         $expectedTimes->attach($time);
 
-        $this->assertEquals(
+        self::assertEquals(
             $expectedTimes,
             $this->subject->getTimesForDate($event, $firstDate)
         );
@@ -370,7 +364,7 @@ class EventServiceTest extends UnitTestCase
 
         $expectedTimes = new \SplObjectStorage();
 
-        $this->assertEquals(
+        self::assertEquals(
             $expectedTimes,
             $this->subject->getTimesForDate($event, $firstDate)
         );
@@ -398,7 +392,7 @@ class EventServiceTest extends UnitTestCase
 
         $expectedTimes = new \SplObjectStorage();
 
-        $this->assertEquals(
+        self::assertEquals(
             $expectedTimes,
             $this->subject->getTimesForDate($event, $firstDate)
         );
@@ -425,7 +419,7 @@ class EventServiceTest extends UnitTestCase
         $expectedTimes = new \SplObjectStorage();
         $expectedTimes->attach($time);
 
-        $this->assertEquals(
+        self::assertEquals(
             $expectedTimes,
             $this->subject->getTimesForDate($event, $firstDate)
         );
@@ -452,7 +446,7 @@ class EventServiceTest extends UnitTestCase
         $expectedTimes = new \SplObjectStorage();
         $expectedTimes->attach($time);
 
-        $this->assertEquals(
+        self::assertEquals(
             $expectedTimes,
             $this->subject->getTimesForDate($event, $firstDate)
         );
@@ -475,7 +469,7 @@ class EventServiceTest extends UnitTestCase
         $expectedTimes = new \SplObjectStorage();
         $expectedTimes->attach($time);
 
-        $this->assertEquals(
+        self::assertEquals(
             $expectedTimes,
             $this->subject->getTimesForDate($event, $firstDate)
         );
@@ -511,7 +505,7 @@ class EventServiceTest extends UnitTestCase
         $expectedTimes = new \SplObjectStorage();
         $expectedTimes->attach($time);
 
-        $this->assertEquals(
+        self::assertEquals(
             $expectedTimes,
             $this->subject->getTimesForDate($event, $firstDate)
         );
@@ -528,7 +522,7 @@ class EventServiceTest extends UnitTestCase
 
         $expectedTimes = new \SplObjectStorage();
 
-        $this->assertEquals(
+        self::assertEquals(
             $expectedTimes,
             $this->subject->getSortedTimesForDate($event, $date)
         );
@@ -550,7 +544,7 @@ class EventServiceTest extends UnitTestCase
         $expectedTimes = new \SplObjectStorage();
         $expectedTimes->attach($time);
 
-        $this->assertEquals(
+        self::assertEquals(
             $expectedTimes,
             $this->subject->getSortedTimesForDate($event, $date)
         );
@@ -593,7 +587,7 @@ class EventServiceTest extends UnitTestCase
         $expectedTimes->attach($time2);
         $expectedTimes->attach($time1);
 
-        $this->assertEquals(
+        self::assertEquals(
             $expectedTimes,
             $this->subject->getSortedTimesForDate($event, $date)
         );
@@ -648,7 +642,7 @@ class EventServiceTest extends UnitTestCase
         $expectedTimes->attach($time2);
         $expectedTimes->attach($time1);
 
-        $this->assertEquals(
+        self::assertEquals(
             $expectedTimes,
             $this->subject->getSortedTimesForDate($event, $date)
         );
@@ -668,7 +662,7 @@ class EventServiceTest extends UnitTestCase
 
         $this->subject->injectEventRepository($eventRepository->reveal());
 
-        $this->assertNull(
+        self::assertNull(
             $this->subject->getNextDayForEvent(1)
         );
     }
@@ -701,7 +695,7 @@ class EventServiceTest extends UnitTestCase
 
         $this->subject->injectEventRepository($eventRepository->reveal());
 
-        $this->assertNull(
+        self::assertNull(
             $this->subject->getNextDayForEvent(1)
         );
     }
@@ -734,7 +728,7 @@ class EventServiceTest extends UnitTestCase
 
         $this->subject->injectEventRepository($eventRepository->reveal());
 
-        $this->assertEquals(
+        self::assertEquals(
             $day->getDay(),
             $this->subject->getNextDayForEvent(1)
         );
@@ -785,7 +779,7 @@ class EventServiceTest extends UnitTestCase
 
         $this->subject->injectEventRepository($eventRepository->reveal());
 
-        $this->assertEquals(
+        self::assertEquals(
             $day3->getDay(),
             $this->subject->getNextDayForEvent(1)
         );
@@ -819,7 +813,7 @@ class EventServiceTest extends UnitTestCase
 
         $this->subject->injectEventRepository($eventRepository->reveal());
 
-        $this->assertEquals(
+        self::assertEquals(
             $day->getDay(),
             $this->subject->getLastDayForEvent(1)
         );
@@ -870,7 +864,7 @@ class EventServiceTest extends UnitTestCase
 
         $this->subject->injectEventRepository($eventRepository->reveal());
 
-        $this->assertEquals(
+        self::assertEquals(
             $day1->getDay(),
             $this->subject->getLastDayForEvent(1)
         );

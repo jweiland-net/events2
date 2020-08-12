@@ -1,19 +1,14 @@
 <?php
 
-namespace JWeiland\Events2\Tests\Unit\Domain\Model;
-
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
  */
+
+namespace JWeiland\Events2\Tests\Unit\Domain\Model;
+
 use JWeiland\Events2\Domain\Model\Link;
 use JWeiland\Events2\Domain\Model\Organizer;
 use JWeiland\Events2\Tests\Unit\Domain\Traits\TestTypo3PropertiesTrait;
@@ -52,7 +47,7 @@ class OrganizerTest extends UnitTestCase
      */
     public function getOrganizerInitiallyReturnsEmptyString()
     {
-        $this->assertSame(
+        self::assertSame(
             '',
             $this->subject->getOrganizer()
         );
@@ -65,7 +60,7 @@ class OrganizerTest extends UnitTestCase
     {
         $this->subject->setOrganizer('foo bar');
 
-        $this->assertSame(
+        self::assertSame(
             'foo bar',
             $this->subject->getOrganizer()
         );
@@ -77,7 +72,7 @@ class OrganizerTest extends UnitTestCase
     public function setOrganizerWithIntegerResultsInString()
     {
         $this->subject->setOrganizer(123);
-        $this->assertSame('123', $this->subject->getOrganizer());
+        self::assertSame('123', $this->subject->getOrganizer());
     }
 
     /**
@@ -86,7 +81,7 @@ class OrganizerTest extends UnitTestCase
     public function setOrganizerWithBooleanResultsInString()
     {
         $this->subject->setOrganizer(true);
-        $this->assertSame('1', $this->subject->getOrganizer());
+        self::assertSame('1', $this->subject->getOrganizer());
     }
 
     /**
@@ -94,7 +89,7 @@ class OrganizerTest extends UnitTestCase
      */
     public function getLinkInitiallyReturnsNull()
     {
-        $this->assertNull($this->subject->getLink());
+        self::assertNull($this->subject->getLink());
     }
 
     /**
@@ -105,7 +100,7 @@ class OrganizerTest extends UnitTestCase
         $instance = new Link();
         $this->subject->setLink($instance);
 
-        $this->assertSame(
+        self::assertSame(
             $instance,
             $this->subject->getLink()
         );

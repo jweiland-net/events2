@@ -55,12 +55,11 @@ class Import extends AbstractTask
                 if ($file->isMissing()) {
                     $this->addMessage('The defined file seems to be missing. Please check, if file is still at its place', FlashMessage::ERROR);
                     return false;
-                } else {
-                    // File can be updated by (S)FTP. So we have to update its properties first.
-                    /** @var Indexer $indexer */
-                    $indexer = GeneralUtility::makeInstance(Indexer::class, $file->getStorage());
-                    $indexer->updateIndexEntry($file);
                 }
+                // File can be updated by (S)FTP. So we have to update its properties first.
+                /** @var Indexer $indexer */
+                $indexer = GeneralUtility::makeInstance(Indexer::class, $file->getStorage());
+                $indexer->updateIndexEntry($file);
             } else {
                 $this->addMessage('The defined file is not a valid file. Maybe you have defined a folder. Please re-check file path', FlashMessage::ERROR);
                 return false;
@@ -74,9 +73,8 @@ class Import extends AbstractTask
             if ($this->importFile($file)) {
                 $file->delete();
                 return true;
-            } else {
-                return false;
             }
+            return false;
         } catch (\Exception $e) {
             return false;
         }

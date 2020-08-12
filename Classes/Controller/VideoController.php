@@ -18,7 +18,6 @@ class VideoController extends AbstractController
 {
     /**
      * @param int $event
-     * @return void
      */
     public function showAction(int $event): void
     {
