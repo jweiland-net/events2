@@ -13,9 +13,8 @@ use JWeiland\Events2\Domain\Repository\LocationRepository;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Http\JsonResponse;
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /*
  * This class will be loaded, if you create a new event in frontend. There we have a
@@ -32,7 +31,7 @@ class FindLocations
     public function __construct(LocationRepository $locationRepository = null)
     {
         if ($locationRepository === null) {
-            $objectManager = GeneralUtility::makeInstance(ObjectManagerInterface::class);
+            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
             $this->locationRepository = $objectManager->get(LocationRepository::class);
         } else {
             $this->locationRepository = $locationRepository;
