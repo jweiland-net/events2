@@ -18,7 +18,7 @@ jobs:
 
       - name: Set PHP Timezone
         run: |
-          echo 'date.timezone = "Europe/Berlin"' >> /etc/php/${{ matrix.php }}/conf.d/timezone.ini
+          echo 'date.timezone = "Europe/Berlin"' >> /etc/php/${{ matrix.php }}/cli/conf.d/timezone.ini
 
       - name: Set up PHP Version ${{ matrix.php }}
         run: |
