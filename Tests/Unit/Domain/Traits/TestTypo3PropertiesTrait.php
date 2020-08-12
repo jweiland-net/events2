@@ -91,8 +91,7 @@ trait TestTypo3PropertiesTrait
      */
     public function getSysLanguageUidInitiallyReturnsNull()
     {
-        self::assertSame(
-            null,
+        self::assertNull(
             $this->subject->getSysLanguageUid()
         );
     }

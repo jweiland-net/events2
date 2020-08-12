@@ -130,8 +130,7 @@ class LinkTest extends UnitTestCase
      */
     public function getDeletedInitiallyReturnsFalse()
     {
-        self::assertSame(
-            false,
+        self::assertFalse(
             $this->subject->getDeleted()
         );
     }
@@ -142,8 +141,7 @@ class LinkTest extends UnitTestCase
     public function setDeletedSetsDeleted()
     {
         $this->subject->setDeleted(true);
-        self::assertSame(
-            true,
+        self::assertTrue(
             $this->subject->getDeleted()
         );
     }
