@@ -16,10 +16,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Set PHP Timezone
-        run: |
-          sudo echo 'date.timezone = "Europe/Berlin"' >> /etc/php/${{ matrix.php }}/cli/conf.d/timezone.ini
-
       - name: Set up PHP Version ${{ matrix.php }}
         run: |
           sudo update-alternatives --set php /usr/bin/php${{ matrix.php }}
