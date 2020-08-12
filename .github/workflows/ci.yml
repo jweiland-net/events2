@@ -16,6 +16,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Set PHP Timezone
+        run: |
+          echo 'date.timezone = "Europe/Berlin"' >> /etc/php/${{ matrix.php }}/conf.d/timezone.ini
+
       - name: Set up PHP Version ${{ matrix.php }}
         run: |
           sudo update-alternatives --set php /usr/bin/php${{ matrix.php }}
@@ -35,8 +39,8 @@ jobs:
 
       - name: Unit Tests
         run: |
-          sudo timedatectl set-timezone Europe/Berlin
           composer ci:tests:unit
+
       - name: Functional Tests
         env:
           typo3DatabaseName: test
@@ -44,6 +48,5 @@ jobs:
           typo3DatabasePassword: root
           typo3DatabaseHost: 127.0.0.1
         run: |
-          sudo timedatectl set-timezone Europe/Berlin
           sudo systemctl start mysql.service
           composer ci:tests:functional
