@@ -1,19 +1,13 @@
 <?php
 
-namespace JWeiland\Events2\Tests\Functional\ViewHelpers\Widget\Controller;
-
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
  */
+
+namespace JWeiland\Events2\Tests\Functional\ViewHelpers\Widget\Controller;
 
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Day;
@@ -156,7 +150,7 @@ class ICalendarControllerTest extends FunctionalTestCase
         $iCalendarController->processRequest($request, $response);
 
         // Yes, content is initially null
-        $this->assertNull(
+        self::assertNull(
             $response->getContent()
         );
     }
@@ -183,11 +177,11 @@ class ICalendarControllerTest extends FunctionalTestCase
         $iCalendarController = $this->objectManager->get(ICalendarController::class);
         $iCalendarController->processRequest($widgetRequest, $response);
 
-        $this->assertContains(
+        self::assertContains(
             'Export date',
             $response->getContent()
         );
-        $this->assertContains(
+        self::assertContains(
             'typo3temp/tx_events2',
             $response->getContent()
         );
@@ -217,27 +211,27 @@ class ICalendarControllerTest extends FunctionalTestCase
 
         $files = array_slice(scandir($this->tempDirectory), 2, 1);
         $content = file_get_contents($this->tempDirectory . $files[0]);
-        $this->assertContains(
+        self::assertContains(
             'BEGIN:VCALENDAR',
             $content
         );
-        $this->assertContains(
+        self::assertContains(
             'VERSION:2.0',
             $content
         );
-        $this->assertContains(
+        self::assertContains(
             'PRODID:',
             $content
         );
-        $this->assertContains(
+        self::assertContains(
             'BEGIN:VEVENT',
             $content
         );
-        $this->assertContains(
+        self::assertContains(
             'END:VEVENT',
             $content
         );
-        $this->assertContains(
+        self::assertContains(
             'END:VCALENDAR',
             $content
         );
@@ -274,7 +268,7 @@ class ICalendarControllerTest extends FunctionalTestCase
         $expectedDate->modify('+8 hours');
         $expectedDate->setTimezone($dateTimeZone);
 
-        $this->assertContains(
+        self::assertContains(
             'DTSTART:' . $expectedDate->format('Ymd\THis\Z'),
             $content
         );
@@ -311,7 +305,7 @@ class ICalendarControllerTest extends FunctionalTestCase
         $expectedDate->modify('+10 hours');
         $expectedDate->setTimezone($dateTimeZone);
 
-        $this->assertContains(
+        self::assertContains(
             'DTEND:' . $expectedDate->format('Ymd\THis\Z'),
             $content
         );

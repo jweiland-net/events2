@@ -152,9 +152,8 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
         $progress = $this->registry->get('events2TaskCreateUpdate', 'progress');
         if ($progress) {
             return 100 / $progress['records'] * $progress['counter'];
-        } else {
-            return 0.0;
         }
+        return 0.0;
     }
 
     /**
@@ -162,7 +161,6 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
      *
      * @param string $message The message itself
      * @param int $severity Message level (according to \TYPO3\CMS\Core\Messaging\FlashMessage class constants)
-     * @return void
      * @throws \Exception
      */
     public function addMessage(string $message, int $severity = FlashMessage::OK): void
@@ -186,8 +184,6 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
      * all properties will be reconstructed by the information in serialized value.
      * These properties will be created again with new() instead of GeneralUtility::makeInstance()
      * which leads to the problem, that object of type SingletonInterface were created twice.
-     *
-     * @return void
      */
     public function __wakeup()
     {

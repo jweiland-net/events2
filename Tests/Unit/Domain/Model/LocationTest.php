@@ -1,19 +1,13 @@
 <?php
 
-namespace JWeiland\Events2\Tests\Unit\Domain\Model;
-
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
  */
+
+namespace JWeiland\Events2\Tests\Unit\Domain\Model;
 
 use JWeiland\Events2\Domain\Model\Link;
 use JWeiland\Events2\Domain\Model\Location;
@@ -53,7 +47,7 @@ class LocationTest extends UnitTestCase
      */
     public function getLocationInitiallyReturnsEmptyString()
     {
-        $this->assertSame(
+        self::assertSame(
             '',
             $this->subject->getLocation()
         );
@@ -66,7 +60,7 @@ class LocationTest extends UnitTestCase
     {
         $this->subject->setLocation('foo bar');
 
-        $this->assertSame(
+        self::assertSame(
             'foo bar',
             $this->subject->getLocation()
         );
@@ -78,7 +72,7 @@ class LocationTest extends UnitTestCase
     public function setLocationWithIntegerResultsInString()
     {
         $this->subject->setLocation(123);
-        $this->assertSame('123', $this->subject->getLocation());
+        self::assertSame('123', $this->subject->getLocation());
     }
 
     /**
@@ -87,7 +81,7 @@ class LocationTest extends UnitTestCase
     public function setLocationWithBooleanResultsInString()
     {
         $this->subject->setLocation(true);
-        $this->assertSame('1', $this->subject->getLocation());
+        self::assertSame('1', $this->subject->getLocation());
     }
 
     /**
@@ -95,7 +89,7 @@ class LocationTest extends UnitTestCase
      */
     public function getStreetInitiallyReturnsEmptyString()
     {
-        $this->assertSame(
+        self::assertSame(
             '',
             $this->subject->getStreet()
         );
@@ -108,7 +102,7 @@ class LocationTest extends UnitTestCase
     {
         $this->subject->setStreet('foo bar');
 
-        $this->assertSame(
+        self::assertSame(
             'foo bar',
             $this->subject->getStreet()
         );
@@ -120,7 +114,7 @@ class LocationTest extends UnitTestCase
     public function setStreetWithIntegerResultsInString()
     {
         $this->subject->setStreet(123);
-        $this->assertSame('123', $this->subject->getStreet());
+        self::assertSame('123', $this->subject->getStreet());
     }
 
     /**
@@ -129,7 +123,7 @@ class LocationTest extends UnitTestCase
     public function setStreetWithBooleanResultsInString()
     {
         $this->subject->setStreet(true);
-        $this->assertSame('1', $this->subject->getStreet());
+        self::assertSame('1', $this->subject->getStreet());
     }
 
     /**
@@ -137,7 +131,7 @@ class LocationTest extends UnitTestCase
      */
     public function getHouseNumberInitiallyReturnsEmptyString()
     {
-        $this->assertSame(
+        self::assertSame(
             '',
             $this->subject->getHouseNumber()
         );
@@ -150,7 +144,7 @@ class LocationTest extends UnitTestCase
     {
         $this->subject->setHouseNumber('foo bar');
 
-        $this->assertSame(
+        self::assertSame(
             'foo bar',
             $this->subject->getHouseNumber()
         );
@@ -162,7 +156,7 @@ class LocationTest extends UnitTestCase
     public function setHouseNumberWithIntegerResultsInString()
     {
         $this->subject->setHouseNumber(123);
-        $this->assertSame('123', $this->subject->getHouseNumber());
+        self::assertSame('123', $this->subject->getHouseNumber());
     }
 
     /**
@@ -171,7 +165,7 @@ class LocationTest extends UnitTestCase
     public function setHouseNumberWithBooleanResultsInString()
     {
         $this->subject->setHouseNumber(true);
-        $this->assertSame('1', $this->subject->getHouseNumber());
+        self::assertSame('1', $this->subject->getHouseNumber());
     }
 
     /**
@@ -179,7 +173,7 @@ class LocationTest extends UnitTestCase
      */
     public function getZipInitiallyReturnsEmptyString()
     {
-        $this->assertSame(
+        self::assertSame(
             '',
             $this->subject->getZip()
         );
@@ -192,7 +186,7 @@ class LocationTest extends UnitTestCase
     {
         $this->subject->setZip('foo bar');
 
-        $this->assertSame(
+        self::assertSame(
             'foo bar',
             $this->subject->getZip()
         );
@@ -204,7 +198,7 @@ class LocationTest extends UnitTestCase
     public function setZipWithIntegerResultsInString()
     {
         $this->subject->setZip(123);
-        $this->assertSame('123', $this->subject->getZip());
+        self::assertSame('123', $this->subject->getZip());
     }
 
     /**
@@ -213,7 +207,7 @@ class LocationTest extends UnitTestCase
     public function setZipWithBooleanResultsInString()
     {
         $this->subject->setZip(true);
-        $this->assertSame('1', $this->subject->getZip());
+        self::assertSame('1', $this->subject->getZip());
     }
 
     /**
@@ -221,7 +215,7 @@ class LocationTest extends UnitTestCase
      */
     public function getCityInitiallyReturnsEmptyString()
     {
-        $this->assertSame(
+        self::assertSame(
             '',
             $this->subject->getCity()
         );
@@ -234,7 +228,7 @@ class LocationTest extends UnitTestCase
     {
         $this->subject->setCity('foo bar');
 
-        $this->assertSame(
+        self::assertSame(
             'foo bar',
             $this->subject->getCity()
         );
@@ -246,7 +240,7 @@ class LocationTest extends UnitTestCase
     public function setCityWithIntegerResultsInString()
     {
         $this->subject->setCity(123);
-        $this->assertSame('123', $this->subject->getCity());
+        self::assertSame('123', $this->subject->getCity());
     }
 
     /**
@@ -255,7 +249,7 @@ class LocationTest extends UnitTestCase
     public function setCityWithBooleanResultsInString()
     {
         $this->subject->setCity(true);
-        $this->assertSame('1', $this->subject->getCity());
+        self::assertSame('1', $this->subject->getCity());
     }
 
     /**
@@ -263,7 +257,7 @@ class LocationTest extends UnitTestCase
      */
     public function getLinkInitiallyReturnsNull()
     {
-        $this->assertNull($this->subject->getLink());
+        self::assertNull($this->subject->getLink());
     }
 
     /**
@@ -274,7 +268,7 @@ class LocationTest extends UnitTestCase
         $instance = new Link();
         $this->subject->setLink($instance);
 
-        $this->assertSame(
+        self::assertSame(
             $instance,
             $this->subject->getLink()
         );
@@ -285,6 +279,6 @@ class LocationTest extends UnitTestCase
      */
     public function getTxMaps2UidInitiallyReturnsNull()
     {
-        $this->assertNull($this->subject->getTxMaps2Uid());
+        self::assertNull($this->subject->getTxMaps2Uid());
     }
 }

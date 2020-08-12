@@ -25,8 +25,6 @@ class SearchController extends AbstractController
 {
     /**
      * PreProcessing for all actions.
-     *
-     * @return void
      */
     public function initializeAction()
     {
@@ -73,8 +71,6 @@ class SearchController extends AbstractController
     /**
      * we have a self-build form.
      * That's why we have to manually allow some form-elements.
-     *
-     * @return void
      */
     public function initializeShowAction(): void
     {
@@ -91,7 +87,6 @@ class SearchController extends AbstractController
      * Action show.
      *
      * @param Search|null $search
-     * @return void
      */
     public function showAction(?Search $search = null): void
     {

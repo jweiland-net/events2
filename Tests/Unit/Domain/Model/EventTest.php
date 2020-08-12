@@ -1,19 +1,14 @@
 <?php
 
-namespace JWeiland\Events2\Tests\Unit\Domain\Model;
-
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
  */
+
+namespace JWeiland\Events2\Tests\Unit\Domain\Model;
+
 use JWeiland\Events2\Domain\Model\Category;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
@@ -60,7 +55,7 @@ class EventTest extends UnitTestCase
      */
     public function getTitleInitiallyReturnsEmptyString()
     {
-        $this->assertSame(
+        self::assertSame(
             '',
             $this->subject->getTitle()
         );
@@ -73,7 +68,7 @@ class EventTest extends UnitTestCase
     {
         $this->subject->setTitle('foo bar');
 
-        $this->assertSame(
+        self::assertSame(
             'foo bar',
             $this->subject->getTitle()
         );
@@ -85,7 +80,7 @@ class EventTest extends UnitTestCase
     public function setTitleWithIntegerResultsInString()
     {
         $this->subject->setTitle(123);
-        $this->assertSame('123', $this->subject->getTitle());
+        self::assertSame('123', $this->subject->getTitle());
     }
 
     /**
@@ -94,7 +89,7 @@ class EventTest extends UnitTestCase
     public function setTitleWithBooleanResultsInString()
     {
         $this->subject->setTitle(true);
-        $this->assertSame('1', $this->subject->getTitle());
+        self::assertSame('1', $this->subject->getTitle());
     }
 
     /**
@@ -102,7 +97,7 @@ class EventTest extends UnitTestCase
      */
     public function getTopOfListInitiallyReturnsFalse()
     {
-        $this->assertSame(
+        self::assertSame(
             false,
             $this->subject->getTopOfList()
         );
@@ -114,7 +109,7 @@ class EventTest extends UnitTestCase
     public function setTopOfListSetsTopOfList()
     {
         $this->subject->setTopOfList(true);
-        $this->assertSame(
+        self::assertSame(
             true,
             $this->subject->getTopOfList()
         );
@@ -126,7 +121,7 @@ class EventTest extends UnitTestCase
     public function setTopOfListWithStringReturnsTrue()
     {
         $this->subject->setTopOfList('foo bar');
-        $this->assertTrue($this->subject->getTopOfList());
+        self::assertTrue($this->subject->getTopOfList());
     }
 
     /**
@@ -135,7 +130,7 @@ class EventTest extends UnitTestCase
     public function setTopOfListWithZeroReturnsFalse()
     {
         $this->subject->setTopOfList(0);
-        $this->assertFalse($this->subject->getTopOfList());
+        self::assertFalse($this->subject->getTopOfList());
     }
 
     /**
@@ -143,7 +138,7 @@ class EventTest extends UnitTestCase
      */
     public function getTeaserInitiallyReturnsEmptyString()
     {
-        $this->assertSame(
+        self::assertSame(
             '',
             $this->subject->getTeaser()
         );
@@ -156,7 +151,7 @@ class EventTest extends UnitTestCase
     {
         $this->subject->setTeaser('foo bar');
 
-        $this->assertSame(
+        self::assertSame(
             'foo bar',
             $this->subject->getTeaser()
         );
@@ -168,7 +163,7 @@ class EventTest extends UnitTestCase
     public function setTeaserWithIntegerResultsInString()
     {
         $this->subject->setTeaser(123);
-        $this->assertSame('123', $this->subject->getTeaser());
+        self::assertSame('123', $this->subject->getTeaser());
     }
 
     /**
@@ -177,7 +172,7 @@ class EventTest extends UnitTestCase
     public function setTeaserWithBooleanResultsInString()
     {
         $this->subject->setTeaser(true);
-        $this->assertSame('1', $this->subject->getTeaser());
+        self::assertSame('1', $this->subject->getTeaser());
     }
 
     /**
@@ -185,7 +180,7 @@ class EventTest extends UnitTestCase
      */
     public function getEventBeginInitiallyReturnsNull()
     {
-        $this->assertNull(
+        self::assertNull(
             $this->subject->getEventBegin()
         );
     }
@@ -198,7 +193,7 @@ class EventTest extends UnitTestCase
         $date = new \DateTime();
         $this->subject->setEventBegin($date);
 
-        $this->assertEquals(
+        self::assertEquals(
             $date,
             $this->subject->getEventBegin()
         );
@@ -209,7 +204,7 @@ class EventTest extends UnitTestCase
      */
     public function getEventTimeInitiallyReturnsNull()
     {
-        $this->assertNull($this->subject->getEventTime());
+        self::assertNull($this->subject->getEventTime());
     }
 
     /**
@@ -220,7 +215,7 @@ class EventTest extends UnitTestCase
         $time = new Time();
         $time->setTimeBegin('09:34');
         $this->subject->setEventTime($time);
-        $this->assertEquals(
+        self::assertEquals(
             $time,
             $this->subject->getEventTime()
         );
@@ -234,7 +229,7 @@ class EventTest extends UnitTestCase
         $instance = new Time();
         $this->subject->setEventTime($instance);
 
-        $this->assertSame(
+        self::assertSame(
             $instance,
             $this->subject->getEventTime()
         );
@@ -251,7 +246,7 @@ class EventTest extends UnitTestCase
         $this->subject->setEventBegin($eventBegin);
         $this->subject->setEventEnd($eventEnd);
 
-        $this->assertSame(
+        self::assertSame(
             0,
             $this->subject->getDaysOfEventsTakingDays()
         );
@@ -265,7 +260,7 @@ class EventTest extends UnitTestCase
         $eventBegin = new \DateTime();
         $this->subject->setEventBegin($eventBegin);
 
-        $this->assertSame(
+        self::assertSame(
             0,
             $this->subject->getDaysOfEventsTakingDays()
         );
@@ -282,7 +277,7 @@ class EventTest extends UnitTestCase
         $this->subject->setEventBegin($eventBegin);
         $this->subject->setEventEnd($eventEnd);
 
-        $this->assertSame(
+        self::assertSame(
             5,
             $this->subject->getDaysOfEventsTakingDays()
         );
@@ -293,7 +288,7 @@ class EventTest extends UnitTestCase
      */
     public function getEventEndInitiallyReturnsNull()
     {
-        $this->assertNull($this->subject->getEventEnd());
+        self::assertNull($this->subject->getEventEnd());
     }
 
     /**
@@ -304,7 +299,7 @@ class EventTest extends UnitTestCase
         $instance = new \DateTime();
         $this->subject->setEventEnd($instance);
 
-        $this->assertEquals(
+        self::assertEquals(
             $instance,
             $this->subject->getEventEnd()
         );
@@ -315,7 +310,7 @@ class EventTest extends UnitTestCase
      */
     public function getSameDayInitiallyReturnsFalse()
     {
-        $this->assertSame(
+        self::assertSame(
             false,
             $this->subject->getSameDay()
         );
@@ -327,7 +322,7 @@ class EventTest extends UnitTestCase
     public function setSameDaySetsSameDay()
     {
         $this->subject->setSameDay(true);
-        $this->assertSame(
+        self::assertSame(
             true,
             $this->subject->getSameDay()
         );
@@ -339,7 +334,7 @@ class EventTest extends UnitTestCase
     public function setSameDayWithStringReturnsTrue()
     {
         $this->subject->setSameDay('foo bar');
-        $this->assertTrue($this->subject->getSameDay());
+        self::assertTrue($this->subject->getSameDay());
     }
 
     /**
@@ -348,7 +343,7 @@ class EventTest extends UnitTestCase
     public function setSameDayWithZeroReturnsFalse()
     {
         $this->subject->setSameDay(0);
-        $this->assertFalse($this->subject->getSameDay());
+        self::assertFalse($this->subject->getSameDay());
     }
 
     /**
@@ -356,7 +351,7 @@ class EventTest extends UnitTestCase
      */
     public function getMultipleTimesInitiallyReturnsObjectStorage()
     {
-        $this->assertEquals(
+        self::assertEquals(
             new ObjectStorage(),
             $this->subject->getMultipleTimes()
         );
@@ -370,7 +365,7 @@ class EventTest extends UnitTestCase
         $instance = new ObjectStorage();
         $this->subject->setMultipleTimes($instance);
 
-        $this->assertSame(
+        self::assertSame(
             $instance,
             $this->subject->getMultipleTimes()
         );
@@ -397,7 +392,7 @@ class EventTest extends UnitTestCase
             'fifth' => 0,
         ];
 
-        $this->assertSame(
+        self::assertSame(
             $expectedArray,
             $this->subject->getXth()
         );
@@ -425,7 +420,7 @@ class EventTest extends UnitTestCase
         ];
         $this->subject->setXth(23);
 
-        $this->assertSame(
+        self::assertSame(
             $expectedArray,
             $this->subject->getXth()
         );
@@ -456,7 +451,7 @@ class EventTest extends UnitTestCase
             'sunday' => 0,
         ];
 
-        $this->assertSame(
+        self::assertSame(
             $expectedArray,
             $this->subject->getWeekday()
         );
@@ -488,7 +483,7 @@ class EventTest extends UnitTestCase
         ];
         $this->subject->setWeekday(87);
 
-        $this->assertSame(
+        self::assertSame(
             $expectedArray,
             $this->subject->getWeekday()
         );
@@ -499,7 +494,7 @@ class EventTest extends UnitTestCase
      */
     public function getDifferentTimesInitiallyReturnsObjectStorage()
     {
-        $this->assertEquals(
+        self::assertEquals(
             new ObjectStorage(),
             $this->subject->getDifferentTimes()
         );
@@ -515,7 +510,7 @@ class EventTest extends UnitTestCase
         $objectStorage->attach($object);
         $this->subject->setDifferentTimes($objectStorage);
 
-        $this->assertSame(
+        self::assertSame(
             $objectStorage,
             $this->subject->getDifferentTimes()
         );
@@ -534,7 +529,7 @@ class EventTest extends UnitTestCase
 
         $objectStorage->attach($object);
 
-        $this->assertSame(
+        self::assertSame(
             $objectStorage,
             $this->subject->getDifferentTimes()
         );
@@ -553,7 +548,7 @@ class EventTest extends UnitTestCase
         $this->subject->removeDifferentTime($object);
         $objectStorage->detach($object);
 
-        $this->assertSame(
+        self::assertSame(
             $objectStorage,
             $this->subject->getDifferentTimes()
         );
@@ -564,7 +559,7 @@ class EventTest extends UnitTestCase
      */
     public function getEachWeeksInitiallyReturnsZero()
     {
-        $this->assertSame(
+        self::assertSame(
             0,
             $this->subject->getEachWeeks()
         );
@@ -577,7 +572,7 @@ class EventTest extends UnitTestCase
     {
         $this->subject->setEachWeeks(123456);
 
-        $this->assertSame(
+        self::assertSame(
             123456,
             $this->subject->getEachWeeks()
         );
@@ -590,7 +585,7 @@ class EventTest extends UnitTestCase
     {
         $this->subject->setEachWeeks('123Test');
 
-        $this->assertSame(
+        self::assertSame(
             123,
             $this->subject->getEachWeeks()
         );
@@ -603,7 +598,7 @@ class EventTest extends UnitTestCase
     {
         $this->subject->setEachWeeks(true);
 
-        $this->assertSame(
+        self::assertSame(
             1,
             $this->subject->getEachWeeks()
         );
@@ -614,7 +609,7 @@ class EventTest extends UnitTestCase
      */
     public function getEachMonthsInitiallyReturnsZero()
     {
-        $this->assertSame(
+        self::assertSame(
             0,
             $this->subject->getEachMonths()
         );
@@ -627,7 +622,7 @@ class EventTest extends UnitTestCase
     {
         $this->subject->setEachMonths(123456);
 
-        $this->assertSame(
+        self::assertSame(
             123456,
             $this->subject->getEachMonths()
         );
@@ -640,7 +635,7 @@ class EventTest extends UnitTestCase
     {
         $this->subject->setEachMonths('123Test');
 
-        $this->assertSame(
+        self::assertSame(
             123,
             $this->subject->getEachMonths()
         );
@@ -653,7 +648,7 @@ class EventTest extends UnitTestCase
     {
         $this->subject->setEachMonths(true);
 
-        $this->assertSame(
+        self::assertSame(
             1,
             $this->subject->getEachMonths()
         );
@@ -664,7 +659,7 @@ class EventTest extends UnitTestCase
      */
     public function getRecurringEndInitiallyReturnsNull()
     {
-        $this->assertNull(
+        self::assertNull(
             $this->subject->getRecurringEnd()
         );
     }
@@ -677,7 +672,7 @@ class EventTest extends UnitTestCase
         $date = new \DateTime();
         $this->subject->setRecurringEnd($date);
 
-        $this->assertEquals(
+        self::assertEquals(
             $date,
             $this->subject->getRecurringEnd()
         );
@@ -688,7 +683,7 @@ class EventTest extends UnitTestCase
      */
     public function getExceptionsInitiallyReturnsObjectStorage()
     {
-        $this->assertEquals(
+        self::assertEquals(
             new ObjectStorage(),
             $this->subject->getExceptions()
         );
@@ -704,7 +699,7 @@ class EventTest extends UnitTestCase
         $objectStorage->attach($object);
         $this->subject->setExceptions($objectStorage);
 
-        $this->assertSame(
+        self::assertSame(
             $objectStorage,
             $this->subject->getExceptions()
         );
@@ -723,7 +718,7 @@ class EventTest extends UnitTestCase
 
         $objectStorage->attach($object);
 
-        $this->assertSame(
+        self::assertSame(
             $objectStorage,
             $this->subject->getExceptions()
         );
@@ -742,7 +737,7 @@ class EventTest extends UnitTestCase
         $this->subject->removeException($object);
         $objectStorage->detach($object);
 
-        $this->assertSame(
+        self::assertSame(
             $objectStorage,
             $this->subject->getExceptions()
         );
@@ -761,7 +756,7 @@ class EventTest extends UnitTestCase
      */
     public function getDetailInformationsInitiallyReturnsEmptyString()
     {
-        $this->assertSame(
+        self::assertSame(
             '',
             $this->subject->getDetailInformations()
         );
@@ -774,7 +769,7 @@ class EventTest extends UnitTestCase
     {
         $this->subject->setDetailInformations('foo bar');
 
-        $this->assertSame(
+        self::assertSame(
             'foo bar',
             $this->subject->getDetailInformations()
         );
@@ -786,7 +781,7 @@ class EventTest extends UnitTestCase
     public function setDetailInformationsWithIntegerResultsInString()
     {
         $this->subject->setDetailInformations(123);
-        $this->assertSame('123', $this->subject->getDetailInformations());
+        self::assertSame('123', $this->subject->getDetailInformations());
     }
 
     /**
@@ -795,7 +790,7 @@ class EventTest extends UnitTestCase
     public function setDetailInformationsWithBooleanResultsInString()
     {
         $this->subject->setDetailInformations(true);
-        $this->assertSame('1', $this->subject->getDetailInformations());
+        self::assertSame('1', $this->subject->getDetailInformations());
     }
 
     /**
@@ -803,7 +798,7 @@ class EventTest extends UnitTestCase
      */
     public function getFreeEntryInitiallyReturnsFalse()
     {
-        $this->assertSame(
+        self::assertSame(
             false,
             $this->subject->getFreeEntry()
         );
@@ -815,7 +810,7 @@ class EventTest extends UnitTestCase
     public function setFreeEntrySetsFreeEntry()
     {
         $this->subject->setFreeEntry(true);
-        $this->assertSame(
+        self::assertSame(
             true,
             $this->subject->getFreeEntry()
         );
@@ -827,7 +822,7 @@ class EventTest extends UnitTestCase
     public function setFreeEntryWithStringReturnsTrue()
     {
         $this->subject->setFreeEntry('foo bar');
-        $this->assertTrue($this->subject->getFreeEntry());
+        self::assertTrue($this->subject->getFreeEntry());
     }
 
     /**
@@ -836,7 +831,7 @@ class EventTest extends UnitTestCase
     public function setFreeEntryWithZeroReturnsFalse()
     {
         $this->subject->setFreeEntry(0);
-        $this->assertFalse($this->subject->getFreeEntry());
+        self::assertFalse($this->subject->getFreeEntry());
     }
 
     /**
@@ -844,7 +839,7 @@ class EventTest extends UnitTestCase
      */
     public function getTicketLinkInitiallyReturnsNull()
     {
-        $this->assertNull($this->subject->getTicketLink());
+        self::assertNull($this->subject->getTicketLink());
     }
 
     /**
@@ -855,7 +850,7 @@ class EventTest extends UnitTestCase
         $instance = new Link();
         $this->subject->setTicketLink($instance);
 
-        $this->assertSame(
+        self::assertSame(
             $instance,
             $this->subject->getTicketLink()
         );
@@ -866,7 +861,7 @@ class EventTest extends UnitTestCase
      */
     public function getCategoriesInitiallyReturnsObjectStorage()
     {
-        $this->assertEquals(
+        self::assertEquals(
             new ObjectStorage(),
             $this->subject->getCategories()
         );
@@ -882,7 +877,7 @@ class EventTest extends UnitTestCase
         $objectStorage->attach($object);
         $this->subject->setCategories($objectStorage);
 
-        $this->assertSame(
+        self::assertSame(
             $objectStorage,
             $this->subject->getCategories()
         );
@@ -901,7 +896,7 @@ class EventTest extends UnitTestCase
 
         $objectStorage->attach($object);
 
-        $this->assertSame(
+        self::assertSame(
             $objectStorage,
             $this->subject->getCategories()
         );
@@ -920,7 +915,7 @@ class EventTest extends UnitTestCase
         $this->subject->removeCategory($object);
         $objectStorage->detach($object);
 
-        $this->assertSame(
+        self::assertSame(
             $objectStorage,
             $this->subject->getCategories()
         );
@@ -937,7 +932,7 @@ class EventTest extends UnitTestCase
             $category->_set('uid', $i);
             $this->subject->addCategory($category);
         }
-        $this->assertSame(
+        self::assertSame(
             [1, 2, 3],
             $this->subject->getCategoryUids()
         );
@@ -948,7 +943,7 @@ class EventTest extends UnitTestCase
      */
     public function getDaysInitiallyReturnsObjectStorage()
     {
-        $this->assertEquals(
+        self::assertEquals(
             new ObjectStorage(),
             $this->subject->getDays()
         );
@@ -964,7 +959,7 @@ class EventTest extends UnitTestCase
         $objectStorage->attach($object);
         $this->subject->setDays($objectStorage);
 
-        $this->assertSame(
+        self::assertSame(
             $objectStorage,
             $this->subject->getDays()
         );
@@ -983,7 +978,7 @@ class EventTest extends UnitTestCase
 
         $objectStorage->attach($object);
 
-        $this->assertSame(
+        self::assertSame(
             $objectStorage,
             $this->subject->getDays()
         );
@@ -1002,7 +997,7 @@ class EventTest extends UnitTestCase
         $this->subject->removeDay($object);
         $objectStorage->detach($object);
 
-        $this->assertSame(
+        self::assertSame(
             $objectStorage,
             $this->subject->getDays()
         );
@@ -1013,7 +1008,7 @@ class EventTest extends UnitTestCase
      */
     public function getLocationInitiallyReturnsNull()
     {
-        $this->assertNull($this->subject->getLocation());
+        self::assertNull($this->subject->getLocation());
     }
 
     /**
@@ -1024,7 +1019,7 @@ class EventTest extends UnitTestCase
         $instance = new Location();
         $this->subject->setLocation($instance);
 
-        $this->assertSame(
+        self::assertSame(
             $instance,
             $this->subject->getLocation()
         );
@@ -1035,7 +1030,7 @@ class EventTest extends UnitTestCase
      */
     public function getOrganizerInitiallyReturnsNull()
     {
-        $this->assertNull($this->subject->getOrganizer());
+        self::assertNull($this->subject->getOrganizer());
     }
 
     /**
@@ -1046,7 +1041,7 @@ class EventTest extends UnitTestCase
         $instance = new Organizer();
         $this->subject->setOrganizer($instance);
 
-        $this->assertSame(
+        self::assertSame(
             $instance,
             $this->subject->getOrganizer()
         );
@@ -1057,7 +1052,7 @@ class EventTest extends UnitTestCase
      */
     public function getImagesInitiallyReturnsArray()
     {
-        $this->assertEquals(
+        self::assertEquals(
             [],
             $this->subject->getImages()
         );
@@ -1073,7 +1068,7 @@ class EventTest extends UnitTestCase
         $objectStorage->attach($object);
         $this->subject->setImages($objectStorage);
 
-        $this->assertSame(
+        self::assertSame(
             [0 => $object],
             $this->subject->getImages()
         );
@@ -1084,7 +1079,7 @@ class EventTest extends UnitTestCase
      */
     public function getVideoLinkInitiallyReturnsNull()
     {
-        $this->assertNull($this->subject->getVideoLink());
+        self::assertNull($this->subject->getVideoLink());
     }
 
     /**
@@ -1095,7 +1090,7 @@ class EventTest extends UnitTestCase
         $instance = new Link();
         $this->subject->setVideoLink($instance);
 
-        $this->assertSame(
+        self::assertSame(
             $instance,
             $this->subject->getVideoLink()
         );
@@ -1106,7 +1101,7 @@ class EventTest extends UnitTestCase
      */
     public function getDownloadLinksInitiallyReturnsObjectStorage()
     {
-        $this->assertEquals(
+        self::assertEquals(
             new ObjectStorage(),
             $this->subject->getDownloadLinks()
         );
@@ -1122,7 +1117,7 @@ class EventTest extends UnitTestCase
         $objectStorage->attach($object);
         $this->subject->setDownloadLinks($objectStorage);
 
-        $this->assertSame(
+        self::assertSame(
             $objectStorage,
             $this->subject->getDownloadLinks()
         );
@@ -1141,7 +1136,7 @@ class EventTest extends UnitTestCase
 
         $objectStorage->attach($object);
 
-        $this->assertSame(
+        self::assertSame(
             $objectStorage,
             $this->subject->getDownloadLinks()
         );
@@ -1160,7 +1155,7 @@ class EventTest extends UnitTestCase
         $this->subject->removeDownloadLink($object);
         $objectStorage->detach($object);
 
-        $this->assertSame(
+        self::assertSame(
             $objectStorage,
             $this->subject->getDownloadLinks()
         );

@@ -64,7 +64,7 @@ class TimeToStringConverter
      */
     protected function getRemainingMinutes(int $time, float $hours): int
     {
-        $seconds = $hours === (float) 0 ? $time : $time % ($hours * 3600);
+        $seconds = $hours === (float)0 ? $time : $time % ($hours * 3600);
         if ($seconds) {
             $minutes = floor($seconds / 60);
         } else {

@@ -468,10 +468,9 @@ class XmlImporter extends AbstractImporter
                             $report['message']
                         ), FlashMessage::NOTICE);
                         continue;
-                    } else {
-                        $file = $targetFolder->createFile($filename);
-                        $file->setContents($content);
                     }
+                    $file = $targetFolder->createFile($filename);
+                    $file->setContents($content);
                 }
 
                 // Create new FileReference

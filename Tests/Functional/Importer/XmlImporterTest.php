@@ -1,19 +1,13 @@
 <?php
 
-namespace JWeiland\Events2\Tests\Functional\Importer;
-
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
  */
+
+namespace JWeiland\Events2\Tests\Functional\Importer;
 
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Repository\EventRepository;
@@ -102,8 +96,8 @@ class XmlImporterTest extends FunctionalTestCase
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/Success.xml');
         $xmlImporter = new XmlImporter($fileObject, $this->task);
 
-        $this->assertTrue($xmlImporter->import());
-        $this->assertRegExp(
+        self::assertTrue($xmlImporter->import());
+        self::assertRegExp(
             '/We have processed 3 events/',
             file_get_contents(GeneralUtility::getFileAbsFileName(
                 'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt'
@@ -120,8 +114,8 @@ class XmlImporterTest extends FunctionalTestCase
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/InvalidEvent.xml');
         $xmlImporter = new XmlImporter($fileObject, $this->task);
 
-        $this->assertFalse($xmlImporter->import());
-        $this->assertRegExp(
+        self::assertFalse($xmlImporter->import());
+        self::assertRegExp(
             '/Missing child element.*?Expected is.*?categories/',
             file_get_contents(GeneralUtility::getFileAbsFileName(
                 'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt'
@@ -138,28 +132,28 @@ class XmlImporterTest extends FunctionalTestCase
         $fileObject = ResourceFactory::getInstance()
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/SimpleEvent.xml');
         $xmlImporter = new XmlImporter($fileObject, $this->task);
-        $this->assertTrue($xmlImporter->import());
+        self::assertTrue($xmlImporter->import());
 
         // Override simple event
         $fileObject = ResourceFactory::getInstance()
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/ModifySimpleEvent.xml');
         $xmlImporter = new XmlImporter($fileObject, $this->task);
-        $this->assertTrue($xmlImporter->import());
+        self::assertTrue($xmlImporter->import());
 
         // Test, if we still have exactly one event
         $events = $this->createEventQuery()->execute(true);
-        $this->assertSame(
+        self::assertSame(
             1,
             count($events)
         );
         $event = current($events);
 
         // Test values of event
-        $this->assertSame(
+        self::assertSame(
             'Bearbeiteter Termin',
             $event['title']
         );
-        $this->assertSame(
+        self::assertSame(
             1762902000, // Dienstag, 12. November 2019 00:00:00 GMT+01:00
             $event['event_begin']
         );
@@ -181,11 +175,11 @@ class XmlImporterTest extends FunctionalTestCase
         $fileObject = ResourceFactory::getInstance()
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/DeleteSimpleEvent.xml');
         $xmlImporter = new XmlImporter($fileObject, $this->task);
-        $this->assertTrue($xmlImporter->import());
+        self::assertTrue($xmlImporter->import());
 
         // Test, if we still have exactly one event
         $events = $this->createEventQuery()->execute(true);
-        $this->assertSame(
+        self::assertSame(
             1,
             count($events)
         );

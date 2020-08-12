@@ -175,7 +175,6 @@ class AdditionalFieldsForImport extends AbstractAdditionalFieldProvider
      *
      * @param array $submittedData An array containing the data submitted by the add/edit task form
      * @param AbstractTask $task Reference to the scheduler backend module
-     * @return void
      */
     public function saveAdditionalFields(array $submittedData, AbstractTask $task)
     {

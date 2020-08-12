@@ -73,9 +73,8 @@ class TimestampMapper implements StaticMappableAspectInterface
         $date = new \DateTime(date('c', (int)$value));
         if (!$date instanceof \DateTime) {
             return null;
-        } else {
-            return $date->format($this->settings['format']);
         }
+        return $date->format($this->settings['format']);
     }
 
     /**
@@ -86,8 +85,7 @@ class TimestampMapper implements StaticMappableAspectInterface
         $date = \DateTime::createFromFormat($this->settings['format'], $value);
         if (!$date instanceof \DateTime) {
             return null;
-        } else {
-            return $date->format('U');
         }
+        return $date->format('U');
     }
 }
