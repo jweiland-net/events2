@@ -83,6 +83,10 @@ plugin.tx_events2 {
       amountOfRecordsToShow = {$plugin.tx_events2.settings.latest.amountOfRecordsToShow}
     }
 
+    new {
+      uploadFolder = 1:user_upload/tx_events2/
+    }
+
     pageBrowser {
       itemsPerPage = {$plugin.tx_events2.settings.pageBrowser.itemsPerPage}
       insertAbove = {$plugin.tx_events2.settings.pageBrowser.insertAbove}

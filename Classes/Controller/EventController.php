@@ -105,7 +105,12 @@ class EventController extends AbstractController
         $this->arguments->getArgument('event')
             ->getPropertyMappingConfiguration()
             ->forProperty('images')
-            ->setTypeConverter($multipleFilesTypeConverter);
+            ->setTypeConverter($multipleFilesTypeConverter)
+            ->setTypeConverterOption(
+                UploadMultipleFilesConverter::class,
+                'settings',
+                $this->settings
+            );
     }
 
     /**
@@ -180,6 +185,7 @@ class EventController extends AbstractController
             ->setTypeConverterOptions(
                 UploadMultipleFilesConverter::class,
                 [
+                    'settings' => $this->settings,
                     'IMAGES' => $event->getImages()
                 ]
             );

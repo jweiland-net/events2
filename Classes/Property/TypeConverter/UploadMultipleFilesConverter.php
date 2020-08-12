@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Property\TypeConverter;
 
 use TYPO3\CMS\Core\Resource\DuplicationBehavior;
+use TYPO3\CMS\Core\Resource\Exception\FolderDoesNotExistException;
+use TYPO3\CMS\Core\Resource\Exception\ResourceDoesNotExistException;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
@@ -19,6 +21,7 @@ use TYPO3\CMS\Extbase\Error\Error;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Extbase\Property\PropertyMappingConfigurationInterface;
 use TYPO3\CMS\Extbase\Property\TypeConverter\AbstractTypeConverter;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /*
@@ -40,6 +43,11 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
      * @var int
      */
     protected $priority = 2;
+
+    /**
+     * @var PropertyMappingConfigurationInterface
+     */
+    protected $converterConfiguration = [];
 
     /**
      * This implementation always returns TRUE for this method.
@@ -82,7 +90,8 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
         array $convertedChildProperties = [],
         PropertyMappingConfigurationInterface $configuration = null
     ) {
-        $alreadyPersistedImages = $configuration->getConfigurationValue(
+        $this->converterConfiguration = $configuration;
+        $alreadyPersistedImages = $this->converterConfiguration->getConfigurationValue(
             self::class,
             'IMAGES'
         );
@@ -109,13 +118,6 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
                 return new Error(
                     LocalizationUtility::translate('error.upload', 'events2') . $uploadedFile['error'],
                     1396957314
-                );
-            }
-            // now we have a valid uploaded file. Check if user has rights to upload this file
-            if (!isset($uploadedFile['rights']) || empty($uploadedFile['rights'])) {
-                return new Error(
-                    LocalizationUtility::translate('error.uploadRights', 'events2'),
-                    1397464390
                 );
             }
             // check if file extension is allowed
@@ -172,18 +174,38 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
     }
 
     /**
-     * upload file and get a file reference object.
+     * Upload file and get a file reference object.
      *
      * @param array $source
      * @return \TYPO3\CMS\Core\Resource\FileReference
      */
     protected function getCoreFileReference(array $source): \TYPO3\CMS\Core\Resource\FileReference
     {
-        // upload file
-        $uploadFolder = ResourceFactory::getInstance()->retrieveFileOrFolderObject('uploads/tx_events2/');
+        $settings = $this->converterConfiguration->getConfigurationValue(
+            self::class,
+            'settings'
+        ) ?? [];
+
+        $resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);
+        $uploadFolderIdentifier = $settings['new']['uploadFolder'] ?? '';
+
+        try {
+            $uploadFolder = $resourceFactory->getFolderObjectFromCombinedIdentifier($uploadFolderIdentifier);
+        } catch (FolderDoesNotExistException $e) {
+            [$storageUid, $identifier] = GeneralUtility::trimExplode(':', $uploadFolderIdentifier);
+            try {
+                $storage = $resourceFactory->getStorageObject($storageUid);
+            } catch (\InvalidArgumentException $e) {
+                $storage = $resourceFactory->getDefaultStorage();
+                $identifier = $uploadFolderIdentifier;
+            }
+            $uploadFolder = $storage->createFolder($identifier);
+        }
+
         $uploadedFile = $uploadFolder->addUploadedFile($source, DuplicationBehavior::RENAME);
+
         // create Core FileReference
-        return ResourceFactory::getInstance()->createFileReferenceObject(
+        return $resourceFactory->createFileReferenceObject(
             [
                 'uid_local' => $uploadedFile->getUid(),
                 'uid_foreign' => uniqid('NEW_'),
