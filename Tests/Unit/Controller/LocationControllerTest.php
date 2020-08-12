@@ -61,11 +61,11 @@ class LocationControllerTest extends UnitTestCase
         $location = new Location();
 
         $this->view
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('assign')
             ->with(
-                $this->equalTo('location'),
-                $this->equalTo($location)
+                self::equalTo('location'),
+                self::equalTo($location)
             );
 
         $this->subject->showAction($location);

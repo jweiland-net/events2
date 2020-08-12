@@ -155,25 +155,25 @@ class CalendarControllerTest extends UnitTestCase
             ->willReturn($persistenceSettings);
 
         $this->frontendUserAuthentication
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getKey')
             ->with(
-                $this->equalTo('ses'),
-                $this->equalTo('events2MonthAndYearForCalendar')
+                self::equalTo('ses'),
+                self::equalTo('events2MonthAndYearForCalendar')
             )
             ->willReturn(null);
 
         $this->view
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('assignMultiple')
             ->with($expectedParameter);
 
         $this->subject
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getTypo3SiteUrl')
             ->willReturn('http://www.example.com');
         $this->subject
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getTypoScriptFrontendController')
             ->willReturn($this->typoScriptFrontendController);
 
@@ -212,20 +212,20 @@ class CalendarControllerTest extends UnitTestCase
             ->willReturn($persistenceSettings);
 
         $this->view
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('assignMultiple')
             ->with($expectedParameter);
 
         $this->subject
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getTypo3SiteUrl')
             ->willReturn('http://www.example.com');
         $this->subject
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getTypoScriptFrontendController')
             ->willReturn($this->typoScriptFrontendController);
         $this->subject
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getDayFromUrl')
             ->willReturn($day);
 
@@ -261,11 +261,11 @@ class CalendarControllerTest extends UnitTestCase
             ->willReturn($persistenceSettings);
 
         $this->frontendUserAuthentication
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getKey')
             ->with(
-                $this->equalTo('ses'),
-                $this->equalTo('events2MonthAndYearForCalendar')
+                self::equalTo('ses'),
+                self::equalTo('events2MonthAndYearForCalendar')
             )
             ->willReturn([
                 'month' => '03',
@@ -273,16 +273,16 @@ class CalendarControllerTest extends UnitTestCase
             ]);
 
         $this->view
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('assignMultiple')
             ->with($expectedParameter);
 
         $this->subject
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getTypo3SiteUrl')
             ->willReturn('http://www.example.com');
         $this->subject
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getTypoScriptFrontendController')
             ->willReturn($this->typoScriptFrontendController);
 

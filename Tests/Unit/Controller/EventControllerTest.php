@@ -222,17 +222,17 @@ class EventControllerTest extends UnitTestCase
             ->willReturn($queryProphecy->reveal());
 
         $this->dayRepository
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('searchEvents')
-            ->with($this->equalTo($search))
+            ->with(self::equalTo($search))
             ->willReturn($queryResultProphecy->reveal());
 
         $this->view
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('assign')
             ->with(
-                $this->equalTo('days'),
-                $this->equalTo($queryResultProphecy->reveal())
+                self::equalTo('days'),
+                self::equalTo($queryResultProphecy->reveal())
             );
 
         $this->subject->injectDayRepository($this->dayRepository);
@@ -268,16 +268,16 @@ class EventControllerTest extends UnitTestCase
         $GLOBALS['TSFE']->fe_user = $feUser;
 
         $this->eventRepository
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('findMyEvents')
             ->willReturn($queryResultProphecy->reveal());
 
         $this->view
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('assign')
             ->with(
-                $this->equalTo('events'),
-                $this->equalTo($queryResultProphecy->reveal())
+                self::equalTo('events'),
+                self::equalTo($queryResultProphecy->reveal())
             );
 
         $this->subject->injectEventRepository($this->eventRepository);
@@ -301,31 +301,31 @@ class EventControllerTest extends UnitTestCase
         $categories = $queryResultProphecy->reveal();
 
         $this->request
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('hasArgument')
             ->with('event');
         $this->request
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('getArgument');
 
         $this->objectManager
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('get')
-            ->with($this->equalTo(Event::class))
+            ->with(self::equalTo(Event::class))
             ->willReturn($event);
 
         $this->categoryRepository
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getCategories')
             ->with(
-                $this->equalTo('23,24')
+                self::equalTo('23,24')
             )
             ->willReturn($categories);
 
         $this->subject
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('addFlashMessage')
-            ->with($this->equalTo('Dear Admin: You have forgotten to define some allowed categories in plugin configuration'));
+            ->with(self::equalTo('Dear Admin: You have forgotten to define some allowed categories in plugin configuration'));
 
         $this->subject->_set('settings', [
             'selectableCategoriesForNewEvents' => '23,24'
@@ -349,29 +349,29 @@ class EventControllerTest extends UnitTestCase
         $categories = $queryResultProphecy->reveal();
 
         $this->request
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('hasArgument')
             ->with('event');
         $this->request
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('getArgument');
 
         $this->objectManager
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('get')
-            ->with($this->equalTo(Event::class))
+            ->with(self::equalTo(Event::class))
             ->willReturn($event);
 
         $this->locationRepository
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('findAll')
             ->willReturn([]);
 
         $this->categoryRepository
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getCategories')
             ->with(
-                $this->equalTo('23,24')
+                self::equalTo('23,24')
             )
             ->willReturn($categories);
 
@@ -379,22 +379,22 @@ class EventControllerTest extends UnitTestCase
             ->expects($this->at(0))
             ->method('assign')
             ->with(
-                $this->equalTo('event'),
-                $this->equalTo($event)
+                self::equalTo('event'),
+                self::equalTo($event)
             );
         $this->view
             ->expects($this->at(1))
             ->method('assign')
             ->with(
-                $this->equalTo('locations'),
-                $this->equalTo([])
+                self::equalTo('locations'),
+                self::equalTo([])
             );
         $this->view
             ->expects($this->at(2))
             ->method('assign')
             ->with(
-                $this->equalTo('selectableCategories'),
-                $this->equalTo($categories)
+                self::equalTo('selectableCategories'),
+                self::equalTo($categories)
             );
 
         $this->subject->_set('settings', [
@@ -420,22 +420,22 @@ class EventControllerTest extends UnitTestCase
         /** @var Event|\PHPUnit_Framework_MockObject_MockObject $event */
         $event = $this->getMockBuilder(Event::class)->getMock();
         $event
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getImages')
             ->willReturn([]);
 
         $this->categoryRepository
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getCategories')
             ->willReturn($categories);
 
         $this->request
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('hasArgument')
             ->with('event')
             ->willReturn(true);
         $this->request
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getArgument')
             ->with('event')
             ->willReturn($event);
@@ -462,13 +462,13 @@ class EventControllerTest extends UnitTestCase
             ->disableOriginalConstructor()
             ->getMock();
         $originalResource
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('delete');
 
         /** @var \TYPO3\CMS\Extbase\Domain\Model\FileReference|\PHPUnit_Framework_MockObject_MockObject $uploadedFile */
         $uploadedFile = $this->getMockBuilder(\TYPO3\CMS\Extbase\Domain\Model\FileReference::class)->getMock();
         $uploadedFile
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getOriginalResource')
             ->willReturn($originalResource);
 
@@ -479,17 +479,17 @@ class EventControllerTest extends UnitTestCase
         $event->setImages($images);
 
         $this->categoryRepository
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getCategories')
             ->willReturn($categories);
 
         $this->request
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('hasArgument')
             ->with('event')
             ->willReturn(true);
         $this->request
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('getArgument')
             ->with('event')
             ->willReturn($event);

@@ -682,8 +682,7 @@ class DayRepositoryTest extends FunctionalTestCase
         /** @var Day $day */
         $day = $days->current();
 
-        self::assertSame(
-            true,
+        self::assertTrue(
             $day->getEvent()->getTopOfList()
         );
     }
