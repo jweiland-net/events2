@@ -40,11 +40,19 @@ class Time
     public function evaluateFieldValue($value): string
     {
         if (MathUtility::canBeInterpretedAsInteger($value)) {
-            // this is only for backwards compatibility. In earlier versions we calculated these values with int
-            /** @var TimeToStringConverter $converter */
-            $converter = GeneralUtility::makeInstance(TimeToStringConverter::class);
+            $value = (int)$value;
+            if ($value < 60) {
+                // Everything smaller 60 are just seconds, which will be displayed as 00:00.
+                // That way we can use them to interpret these values as hours: 2 => 02:00.
+                // Invalid values like 34:00 will be corrected below.
+                $value = str_pad((string)$value, 2, '0', STR_PAD_LEFT) . ':00';
+            } else {
+                // this is only for backwards compatibility. In earlier versions we calculated these values with int
+                /** @var TimeToStringConverter $converter */
+                $converter = GeneralUtility::makeInstance(TimeToStringConverter::class);
 
-            return $converter->convert($value);
+                return $converter->convert((int)$value);
+            }
         }
 
         if ($value === '24:00') {

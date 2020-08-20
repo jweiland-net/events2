@@ -12,13 +12,15 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Converter;
 
 /*
- * With this class you can convert a time like 08:34 into its integer representation (seconds after midnight)
+ * With this class you can convert seconds from midnight into a time format like 08:34.
+ *
+ * ToDo: I remember we have implemented it as backwards compatibility where we have entered duration with
+ * ToDo: seconds after midnight. Maybe we can remove that class with next major release.
  */
 class TimeToStringConverter
 {
     public function convert(int $timestamp): string
     {
-        $time = '';
         if ($timestamp >= (60 * 60 * 24)) {
             // return highest allowed value: 23:59 if timestamp is too high
             $time = '23:59';

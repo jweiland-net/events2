@@ -46,7 +46,7 @@ call_user_func(function () {
     );
 
     // register an eval function to check for time
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tce']['formevals'][\JWeiland\Events2\Tca\Type\Time::class] = 'EXT:events2/Classes/Tca/Type/Time.php';
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tce']['formevals'][\JWeiland\Events2\Tca\Type\Time::class] = '';
     // delete and recreate day relations for an event while saving
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = \JWeiland\Events2\Hooks\DataHandler::class;
     // Clear cache of pages with events, if event was edited/created/deleted in BE

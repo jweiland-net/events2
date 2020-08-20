@@ -41,7 +41,7 @@ class TimeTest extends UnitTestCase
     {
         $times = [];
         $times['empty values'] = [''];
-        $times['erliest two digit time'] = ['00:00'];
+        $times['earliest two digit time'] = ['00:00'];
         $times['latest two digit time'] = ['23:59'];
         $times['random two digit time'] = ['21:34'];
 
@@ -156,8 +156,9 @@ class TimeTest extends UnitTestCase
     {
         $timestamps = [];
         $timestamps['edge case with zero'] = [0, '00:00'];
-        $timestamps['edge case with one second'] = [1, '00:00'];
-        $timestamps['edge case with one minute'] = [60, '00:01'];
+        $timestamps['integers smaller than 24 will be interpreted as hours'] = [3, '03:00'];
+        $timestamps['integers smaller than 60 will be corrected to 23 hours'] = [55, '23:00'];
+        $timestamps['60 will be interpreted as one minute'] = [60, '00:01'];
         $timestamps['edge case with midnight'] = [60 * 60 * 24, '23:59'];
         $timestamps['edge case with midnight - 1 second'] = [(60 * 60 * 24) - 1, '23:59'];
         $timestamps['timestamp with padded zero in front'] = [60 * 60 * 7 + 60 * 3, '07:03'];
