@@ -7,11 +7,11 @@
  * LICENSE file that was distributed with this source code.
  */
 
-namespace JWeiland\Events2\Tests\Unit\Controller;
+namespace JWeiland\Events2\Tests\Functional\Controller;
 
 use JWeiland\Events2\Ajax\FindSubCategories;
 use JWeiland\Events2\Controller\AjaxController;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
+use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Extbase\Mvc\Controller\Arguments;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -19,21 +19,42 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 /**
  * Test case.
  */
-class AjaxControllerTest extends UnitTestCase
+class AjaxControllerTest extends FunctionalTestCase
 {
     /**
-     * @var \JWeiland\Events2\Controller\AjaxController
+     * @var AjaxController
      */
     protected $subject;
 
+    /**
+     * @var array
+     */
+    protected $testExtensionsToLoad = [
+        'typo3conf/ext/events2'
+    ];
+
     public function setUp()
     {
+        parent::setUp();
+
         $this->subject = new AjaxController();
     }
 
     public function tearDown()
     {
         unset($this->subject);
+
+        parent::tearDown();
+    }
+
+    /**
+     * @test
+     */
+    public function callAjaxObjectActionWithEmptyObjectNameResultsEmptyString()
+    {
+        self::assertEmpty(
+            $this->subject->callAjaxObjectAction('')
+        );
     }
 
     /**
@@ -66,9 +87,12 @@ class AjaxControllerTest extends UnitTestCase
         $arguments = ['foo', 'bar'];
         $expectedResult = '[{"123":"foo"}]';
 
-        /** @var FindSubCategories|\PHPUnit_Framework_MockObject_MockObject $findSubCategories */
-        $findSubCategories = $this->getMockBuilder(FindSubCategories::class)->setMethods(['processAjaxRequest'])->getMock();
-        $findSubCategories->expects(self::once())->method('processAjaxRequest')->with($arguments)->willReturn($expectedResult);
+        /** @var FindSubCategories|ObjectProphecy $findSubCategories */
+        $findSubCategories = $this->prophesize(FindSubCategories::class);
+        $findSubCategories
+            ->processAjaxRequest($arguments)
+            ->shouldBeCalled()
+            ->willReturn($expectedResult);
 
         /** @var ObjectManager|ObjectProphecy $objectManager */
         $objectManager = $this->prophesize(ObjectManager::class);

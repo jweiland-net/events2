@@ -12,6 +12,7 @@ namespace JWeiland\Events2\Tests\Functional\Ajax;
 use JWeiland\Events2\Ajax\FindDaysForMonth;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Service\DatabaseService;
+use JWeiland\Events2\Session\UserSession;
 use JWeiland\Events2\Tests\Unit\Utility\AccessibleProxies\ExtensionManagementUtilityAccessibleProxy;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
@@ -40,9 +41,9 @@ class FindDaysForMonthTest extends FunctionalTestCase
     protected $extConf;
 
     /**
-     * @var FrontendUserAuthentication|ObjectProphecy
+     * @var UserSession|ObjectProphecy
      */
-    protected $frontendUserAuthenticationProphecy;
+    protected $userSessionProphecy;
 
     /**
      * @var PhpFrontend|ObjectProphecy
@@ -69,12 +70,13 @@ class FindDaysForMonthTest extends FunctionalTestCase
         $this->extConf->setRecurringPast(3);
         $this->extConf->setRecurringFuture(6);
 
-        $this->frontendUserAuthenticationProphecy = $this->prophesize(FrontendUserAuthentication::class);
+        $this->userSessionProphecy = $this->prophesize(UserSession::class);
 
         $this->subject = new FindDaysForMonth(
             $this->extConf,
-            new DateTimeUtility(),
-            new CacheHashCalculator()
+            null,
+            null,
+            $this->userSessionProphecy->reveal()
         );
     }
 
@@ -163,18 +165,12 @@ class FindDaysForMonthTest extends FunctionalTestCase
      */
     public function processAjaxRequestForcesTooHighMonthAndYearInRange($queryParams, $expectedArguments, $expectedMonth)
     {
-        /** @var FrontendUserAuthentication|ObjectProphecy $frontendUserAuthentication */
-        $frontendUserAuthentication = $this->prophesize(FrontendUserAuthentication::class);
-        $frontendUserAuthentication->start()->shouldBeCalled();
-        $frontendUserAuthentication->setAndSaveSessionData(
-            'events2MonthAndYearForCalendar',
-            [
-                'month' => $expectedArguments['month'],
-                'year' => $expectedArguments['year']
-            ]
-        )->shouldBeCalled();
-
-        GeneralUtility::addInstance(FrontendUserAuthentication::class, $frontendUserAuthentication->reveal());
+        $this->userSessionProphecy
+            ->setMonthAndYear(
+                $expectedArguments['month'],
+                $expectedArguments['year']
+            )
+            ->shouldBeCalled();
 
         $request = new ServerRequest('http://www.example.com/');
         $request = $request->withQueryParams($queryParams);
@@ -200,12 +196,6 @@ class FindDaysForMonthTest extends FunctionalTestCase
         $startDate->modify('first day of this month');
         $endDate = clone $currentDate;
         $endDate->modify('last day of this month')->modify('tomorrow');
-
-        /** @var FrontendUserAuthentication|ObjectProphecy $frontendUserAuthentication */
-        $frontendUserAuthentication = $this->prophesize(FrontendUserAuthentication::class);
-        $frontendUserAuthentication->start()->shouldBeCalled();
-        $frontendUserAuthentication->setAndSaveSessionData(Argument::cetera())->shouldBeCalled();
-        GeneralUtility::addInstance(FrontendUserAuthentication::class, $frontendUserAuthentication->reveal());
 
         /** @var DatabaseService $databaseServiceProphecy */
         $databaseServiceProphecy = $this->prophesize(DatabaseService::class);
@@ -237,12 +227,6 @@ class FindDaysForMonthTest extends FunctionalTestCase
         $startDate->modify('first day of this month');
         $endDate = clone $currentDate;
         $endDate->modify('last day of this month')->modify('tomorrow');
-
-        /** @var FrontendUserAuthentication|ObjectProphecy $frontendUserAuthentication */
-        $frontendUserAuthentication = $this->prophesize(FrontendUserAuthentication::class);
-        $frontendUserAuthentication->start()->shouldBeCalled();
-        $frontendUserAuthentication->setAndSaveSessionData(Argument::cetera())->shouldBeCalled();
-        GeneralUtility::addInstance(FrontendUserAuthentication::class, $frontendUserAuthentication->reveal());
 
         /** @var DatabaseService $databaseServiceProphecy */
         $databaseServiceProphecy = $this->prophesize(DatabaseService::class);
@@ -276,12 +260,6 @@ class FindDaysForMonthTest extends FunctionalTestCase
         $endDate = clone $currentDate;
         $endDate->modify('last day of this month')->modify('tomorrow');
 
-        /** @var FrontendUserAuthentication|ObjectProphecy $frontendUserAuthentication */
-        $frontendUserAuthentication = $this->prophesize(FrontendUserAuthentication::class);
-        $frontendUserAuthentication->start()->shouldBeCalled();
-        $frontendUserAuthentication->setAndSaveSessionData(Argument::cetera())->shouldBeCalled();
-        GeneralUtility::addInstance(FrontendUserAuthentication::class, $frontendUserAuthentication->reveal());
-
         /** @var DatabaseService $databaseServiceProphecy */
         $databaseServiceProphecy = $this->prophesize(DatabaseService::class);
         $databaseServiceProphecy->getDaysInRange($startDate, $endDate, [21, 22, 23], [31, 32, 33])->shouldBeCalled()->willReturn([]);
@@ -310,12 +288,6 @@ class FindDaysForMonthTest extends FunctionalTestCase
         $startDate = clone $currentDate;
         $endDate = clone $currentDate;
         $endDate->modify('last day of this month')->modify('tomorrow');
-
-        /** @var FrontendUserAuthentication|ObjectProphecy $frontendUserAuthentication */
-        $frontendUserAuthentication = $this->prophesize(FrontendUserAuthentication::class);
-        $frontendUserAuthentication->start()->shouldBeCalled();
-        $frontendUserAuthentication->setAndSaveSessionData(Argument::cetera())->shouldBeCalled();
-        GeneralUtility::addInstance(FrontendUserAuthentication::class, $frontendUserAuthentication->reveal());
 
         /** @var DatabaseService $databaseServiceProphecy */
         $databaseServiceProphecy = $this->prophesize(DatabaseService::class);
@@ -346,12 +318,6 @@ class FindDaysForMonthTest extends FunctionalTestCase
         $startDate->modify('first day of this month');
         $endDate = clone $currentDate;
         $endDate->modify('tomorrow');
-
-        /** @var FrontendUserAuthentication|ObjectProphecy $frontendUserAuthentication */
-        $frontendUserAuthentication = $this->prophesize(FrontendUserAuthentication::class);
-        $frontendUserAuthentication->start()->shouldBeCalled();
-        $frontendUserAuthentication->setAndSaveSessionData(Argument::cetera())->shouldBeCalled();
-        GeneralUtility::addInstance(FrontendUserAuthentication::class, $frontendUserAuthentication->reveal());
 
         /** @var DatabaseService $databaseServiceProphecy */
         $databaseServiceProphecy = $this->prophesize(DatabaseService::class);

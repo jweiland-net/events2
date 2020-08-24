@@ -12,11 +12,11 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Controller;
 
 use JWeiland\Events2\Domain\Model\Day;
+use JWeiland\Events2\Session\UserSession;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /*
  * Controller to show the jquery UI calendar. Further is stores the selected month in user-session
@@ -28,10 +28,16 @@ class CalendarController extends AbstractController
      */
     protected $pageRenderer;
 
-    public function __construct(?PageRenderer $pageRenderer = null)
+    /**
+     * @var UserSession
+     */
+    protected $userSession;
+
+    public function __construct(
+        ?UserSession $userSession = null)
     {
         parent::__construct();
-        $this->pageRenderer = $pageRenderer ?? GeneralUtility::makeInstance(PageRenderer::class);
+        $this->userSession = $userSession ?? GeneralUtility::makeInstance(UserSession::class);
     }
 
     public function showAction(): void
@@ -39,7 +45,7 @@ class CalendarController extends AbstractController
         $placeHolders = $this->getEnvironmentPlaceholders();
 
         // get month and year from session
-        $monthAndYear = $this->getMonthAndYearFromUserSession();
+        $monthAndYear = $this->userSession->getMonthAndYear();
         $day = $this->getDayFromUrl();
 
         // move calendar to month and year if given
@@ -82,26 +88,6 @@ class CalendarController extends AbstractController
     }
 
     /**
-     * Selected month and year was saved in user session by eID script
-     * this method returns these values to set calendar to this date
-     * Further we need this method for UnitTests (getMock).
-     *
-     * @return array contains month and year OR empty array
-     */
-    protected function getMonthAndYearFromUserSession(): array
-    {
-        $monthAndYear = $this->getTypoScriptFrontendController()->fe_user->getKey(
-            'ses',
-            'events2MonthAndYearForCalendar'
-        );
-        if (!is_array($monthAndYear)) {
-            $monthAndYear = [];
-        }
-
-        return $monthAndYear;
-    }
-
-    /**
      * Get day from url
      * We can't set $day as parameter in showAction($day), because this action is of controller Calendar and not Event.
      *
@@ -122,10 +108,5 @@ class CalendarController extends AbstractController
         }
 
         return $day;
-    }
-
-    protected function getTypoScriptFrontendController(): TypoScriptFrontendController
-    {
-        return $GLOBALS['TSFE'];
     }
 }

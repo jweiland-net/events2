@@ -154,6 +154,9 @@ class AbstractController extends ActionController
             'events2',
             'events2_event' // invalid plugin name, to get fresh unmerged settings
         );
+
+        var_dump($typoScriptSettings);
+
         if (empty($typoScriptSettings['settings'])) {
             throw new \Exception('You have forgotten to add TS-Template of events2', 1580294227);
         }
