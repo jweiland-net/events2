@@ -9,23 +9,8 @@
 
 namespace JWeiland\Events2\Tests\Functional\Session;
 
-use JWeiland\Events2\Configuration\ExtConf;
-use JWeiland\Events2\Domain\Model\Day;
-use JWeiland\Events2\Domain\Model\Event;
-use JWeiland\Events2\Domain\Model\Link;
-use JWeiland\Events2\Domain\Model\Location;
-use JWeiland\Events2\Domain\Model\Organizer;
-use JWeiland\Events2\Domain\Model\Time;
-use JWeiland\Events2\Domain\Repository\DayRepository;
-use JWeiland\Events2\Domain\Repository\EventRepository;
-use JWeiland\Events2\Service\DayRelationService;
-use JWeiland\Events2\Service\JsonLdService;
 use JWeiland\Events2\Session\UserSession;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
-use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
 
 /**
  * Functional test for UserSession
@@ -94,7 +79,7 @@ class UserSessionTest extends FunctionalTestCase
      */
     public function getMonthAndYearWillReturnMonthAndYear($month, $year, $expectedMonth, $expectedYear)
     {
-        $this->subject->setMonthAndYear($month,$year);
+        $this->subject->setMonthAndYear($month, $year);
         self::assertSame(
             [
                 'month' => $expectedMonth,

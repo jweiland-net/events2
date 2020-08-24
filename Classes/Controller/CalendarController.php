@@ -14,9 +14,7 @@ namespace JWeiland\Events2\Controller;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Helper\DayHelper;
 use JWeiland\Events2\Session\UserSession;
-use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 /*
@@ -34,7 +32,8 @@ class CalendarController extends AbstractController
      */
     protected $dayHelper;
 
-    public function __construct(?UserSession $userSession = null) {
+    public function __construct(?UserSession $userSession = null)
+    {
         parent::__construct();
         $this->userSession = $userSession ?? GeneralUtility::makeInstance(UserSession::class);
     }
