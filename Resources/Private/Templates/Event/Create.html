@@ -47,10 +47,12 @@
 			<td>{event.location.location}</td>
 		</tr>
 	</f:if>
-	<tr>
-		<td><f:translate key="tx_events2_domain_model_event.video_link" /></td>
-		<td>{event.videoLink.link}</td>
-	</tr>
+	<f:if condition="{event.videoLink}">
+		<tr>
+			<td><f:translate key="tx_events2_domain_model_event.video_link" /></td>
+			<td>{event.videoLink.link}</td>
+		</tr>
+	</f:if>
 	<f:if condition="{event.organizer}">
 		<tr>
 			<td><f:translate key="tx_events2_domain_model_event.organizer" /></td>
