@@ -96,19 +96,19 @@ class AbstractController extends ActionController
      */
     protected $session;
 
+    public function __construct(
+        ?ExtConf $extConf = null,
+        ?MailMessage $mailMessage = null,
+        ?UserRepository $userRepository = null
+    ) {
+        $this->extConf = $extConf ?? GeneralUtility::makeInstance(ExtConf::class);
+        $this->mail = $mailMessage ?? GeneralUtility::makeInstance(MailMessage::class);
+        $this->userRepository = $userRepository ?? GeneralUtility::makeInstance(UserRepository::class);
+    }
+
     public function injectPersistenceManager(PersistenceManagerInterface $persistenceManager): void
     {
         $this->persistenceManager = $persistenceManager;
-    }
-
-    public function injectMail(MailMessage $mail): void
-    {
-        $this->mail = $mail;
-    }
-
-    public function injectExtConf(ExtConf $extConf): void
-    {
-        $this->extConf = $extConf;
     }
 
     public function injectEventRepository(EventRepository $eventRepository): void
@@ -134,11 +134,6 @@ class AbstractController extends ActionController
     public function injectCategoryRepository(CategoryRepository $categoryRepository): void
     {
         $this->categoryRepository = $categoryRepository;
-    }
-
-    public function injectUserRepository(UserRepository $userRepository): void
-    {
-        $this->userRepository = $userRepository;
     }
 
     public function injectSession(Session $session): void
@@ -245,7 +240,7 @@ class AbstractController extends ActionController
     protected function validateAndAssignFilter(?Filter $filter): Filter
     {
         if ($filter === null) {
-            $filter = $this->objectManager->get(Filter::class);
+            $filter = GeneralUtility::makeInstance(Filter::class);
         }
         $this->view->assign('filter', $filter);
         return $filter;

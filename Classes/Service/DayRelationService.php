@@ -74,14 +74,14 @@ class DayRelationService
      */
     protected $firstTime;
 
-    public function injectExtConf(ExtConf $extConf)
-    {
-        $this->extConf = $extConf;
-    }
-
-    public function injectDayGenerator(DayGenerator $dayGenerator)
-    {
-        $this->dayGenerator = $dayGenerator;
+    public function __construct(
+        ?ExtConf $extConf = null,
+        ?DayGenerator $dayGenerator = null,
+        ?DateTimeUtility $dateTimeUtility = null
+    ) {
+        $this->extConf = $extConf ?? GeneralUtility::makeInstance(ExtConf::class);
+        $this->dayGenerator = $dayGenerator ?? GeneralUtility::makeInstance(DayGenerator::class);
+        $this->dateTimeUtility = $dateTimeUtility ?? GeneralUtility::makeInstance(DateTimeUtility::class);
     }
 
     public function injectEventRepository(EventRepository $eventRepository)
@@ -92,11 +92,6 @@ class DayRelationService
     public function injectEventService(EventService $eventService)
     {
         $this->eventService = $eventService;
-    }
-
-    public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
-    {
-        $this->dateTimeUtility = $dateTimeUtility;
     }
 
     public function injectPersistenceManager(PersistenceManager $persistenceManager)

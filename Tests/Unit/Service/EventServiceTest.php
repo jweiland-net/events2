@@ -36,7 +36,6 @@ class EventServiceTest extends UnitTestCase
     public function setUp()
     {
         $this->subject = new EventService();
-        $this->subject->injectDateTimeUtility(new DateTimeUtility());
     }
 
     /**

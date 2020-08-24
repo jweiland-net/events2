@@ -32,9 +32,9 @@ class DatabaseService
      */
     protected $extConf;
 
-    public function injectExtConf(ExtConf $extConf)
+    public function __construct(?ExtConf $extConf = null)
     {
-        $this->extConf = $extConf;
+        $this->extConf = $extConf ?? GeneralUtility::makeInstance(ExtConf::class);
     }
 
     /**

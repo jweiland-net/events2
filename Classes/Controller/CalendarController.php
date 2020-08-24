@@ -28,9 +28,10 @@ class CalendarController extends AbstractController
      */
     protected $pageRenderer;
 
-    public function injectPageRenderer(PageRenderer $pageRenderer): void
+    public function __construct(?PageRenderer $pageRenderer = null)
     {
-        $this->pageRenderer = $pageRenderer;
+        parent::__construct();
+        $this->pageRenderer = $pageRenderer ?? GeneralUtility::makeInstance(PageRenderer::class);
     }
 
     public function showAction(): void

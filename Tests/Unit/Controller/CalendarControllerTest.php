@@ -110,9 +110,9 @@ class CalendarControllerTest extends UnitTestCase
                 'getDayFromUrl'
             ]
         );
+        $this->subject->_set('pageRenderer', $this->pageRenderer);
         $this->subject->_set('view', $this->view);
         $this->subject->_set('settings', $this->settings);
-        $this->subject->injectPageRenderer($this->pageRenderer);
         $this->subject->injectDayRepository($this->dayRepository);
         $this->subject->injectConfigurationManager($this->configurationManager->reveal());
     }

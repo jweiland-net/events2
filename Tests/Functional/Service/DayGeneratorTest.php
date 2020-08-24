@@ -42,9 +42,7 @@ class DayGeneratorTest extends FunctionalTestCase
         $extConf = new ExtConf();
         $extConf->setRecurringFuture(12);
 
-        $this->subject = new DayGenerator();
-        $this->subject->injectExtConf($extConf);
-        $this->subject->injectDateTimeUtility(new DateTimeUtility());
+        $this->subject = new DayGenerator(null, $extConf);
 
         $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['xth']['config']['items'] = [
             ['first', 'first'],
@@ -65,9 +63,6 @@ class DayGeneratorTest extends FunctionalTestCase
         ];
     }
 
-    /**
-     * tear down.
-     */
     public function tearDown()
     {
         unset($this->subject);
@@ -149,8 +144,6 @@ class DayGeneratorTest extends FunctionalTestCase
             ->getMockBuilder(DayGenerator::class)
             ->setMethods(['addRecurrings', 'addException', 'getEventBegin'])
             ->getMock();
-        $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
-        $dayGenerator->injectExtConf(new ExtConf());
         $dayGenerator->expects(self::once())->method('addRecurrings');
         $dayGenerator->expects(self::never())->method('addException');
         $dayGenerator->expects(self::never())->method('getEventBegin');
@@ -179,8 +172,6 @@ class DayGeneratorTest extends FunctionalTestCase
 
         /** @var DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
         $dayGenerator = new DayGenerator();
-        $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
-        $dayGenerator->injectExtConf(new ExtConf());
         self::assertTrue($dayGenerator->initialize($event));
         $days = $dayGenerator->getDateTimeStorage();
         foreach ($days as $day) {
@@ -225,8 +216,6 @@ class DayGeneratorTest extends FunctionalTestCase
             ->getMockBuilder(DayGenerator::class)
             ->setMethods(['addException', 'getDateToStopCalculatingTo'])
             ->getMock();
-        $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
-        $dayGenerator->injectExtConf(new ExtConf());
         $dayGenerator->expects(self::never())->method('addException');
         $dayGenerator->expects(self::once())->method('getDateToStopCalculatingTo')->willReturn($eventEnd);
         self::assertTrue($dayGenerator->initialize($event));
@@ -271,8 +260,6 @@ class DayGeneratorTest extends FunctionalTestCase
             ->getMockBuilder(DayGenerator::class)
             ->setMethods(['addException', 'getDateToStopCalculatingTo'])
             ->getMock();
-        $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
-        $dayGenerator->injectExtConf(new ExtConf());
         $dayGenerator->expects(self::never())->method('addException');
         $dayGenerator->expects(self::once())->method('getDateToStopCalculatingTo')->willReturn($eventEnd);
         self::assertTrue($dayGenerator->initialize($event));
@@ -326,9 +313,8 @@ class DayGeneratorTest extends FunctionalTestCase
         $dayGenerator = $this
             ->getMockBuilder(DayGenerator::class)
             ->setMethods(['addException', 'getDateToStopCalculatingTo'])
+            ->setConstructorArgs([null, $extConf])
             ->getMock();
-        $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
-        $dayGenerator->injectExtConf($extConf);
         $dayGenerator->expects(self::never())->method('addException');
         $dayGenerator->expects(self::once())->method('getDateToStopCalculatingTo')->willReturn($expectedEnd);
         self::assertTrue($dayGenerator->initialize($event));
@@ -374,9 +360,8 @@ class DayGeneratorTest extends FunctionalTestCase
         $dayGenerator = $this
             ->getMockBuilder(DayGenerator::class)
             ->setMethods(['addException', 'getDateToStopCalculatingTo'])
+            ->setConstructorArgs([null, $extConf])
             ->getMock();
-        $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
-        $dayGenerator->injectExtConf($extConf);
         $dayGenerator->expects(self::never())->method('addException');
         $dayGenerator->expects(self::once())->method('getDateToStopCalculatingTo')->willReturn($recurringEnd);
         self::assertTrue($dayGenerator->initialize($event));
@@ -421,8 +406,6 @@ class DayGeneratorTest extends FunctionalTestCase
             ->getMockBuilder(DayGenerator::class)
             ->setMethods(['addException', 'getDateToStopCalculatingTo'])
             ->getMock();
-        $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
-        $dayGenerator->injectExtConf(new ExtConf());
         $dayGenerator->expects(self::never())->method('addException');
         $dayGenerator->expects(self::once())->method('getDateToStopCalculatingTo')->willReturn($eventEnd);
         self::assertTrue($dayGenerator->initialize($event));
@@ -463,9 +446,7 @@ class DayGeneratorTest extends FunctionalTestCase
         $expectedDays = [];
         $expectedDays[$eventEnd->format('U')] = $eventEnd;
 
-        $dayGenerator = new DayGenerator();
-        $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
-        $dayGenerator->injectExtConf($extConf);
+        $dayGenerator = new DayGenerator(null, $extConf);
         self::assertTrue($dayGenerator->initialize($event));
         self::assertEquals(
             $expectedDays,
@@ -511,8 +492,6 @@ class DayGeneratorTest extends FunctionalTestCase
             ->getMockBuilder(DayGenerator::class)
             ->setMethods(['addException', 'getDateToStopCalculatingTo'])
             ->getMock();
-        $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
-        $dayGenerator->injectExtConf(new ExtConf());
         $dayGenerator->expects(self::never())->method('addException');
         $dayGenerator->expects(self::once())->method('getDateToStopCalculatingTo')->willReturn($eventEnd);
         self::assertTrue($dayGenerator->initialize($event));
@@ -775,7 +754,6 @@ class DayGeneratorTest extends FunctionalTestCase
             ->getMockBuilder(DayGenerator::class)
             ->setMethods(['addRecurringEvents', 'addDayToStorage', 'addExceptions'])
             ->getMock();
-        $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
         $dayGenerator->expects(self::never())->method('addRecurringEvents');
         $dayGenerator->expects(self::once())->method('addDayToStorage')->with($eventBegin);
         $dayGenerator->expects(self::once())->method('addExceptions');

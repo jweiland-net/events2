@@ -45,20 +45,14 @@ class DayGenerator
      */
     protected $signalSlotDispatcher;
 
-    public function injectExtConf(ExtConf $extConf)
-    {
-        $this->extConf = $extConf;
-    }
-
-    public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
-    {
-        $this->dateTimeUtility = $dateTimeUtility;
-    }
-
     public function __construct(
-        Dispatcher $signalSlotDispatcher = null
+        ?Dispatcher $signalSlotDispatcher = null,
+        ?ExtConf $extConf = null,
+        ?DateTimeUtility $dateTimeUtility = null
     ) {
         $this->signalSlotDispatcher = $signalSlotDispatcher ?? GeneralUtility::makeInstance(Dispatcher::class);
+        $this->extConf = $extConf ?? GeneralUtility::makeInstance(ExtConf::class);
+        $this->dateTimeUtility = $dateTimeUtility ?? GeneralUtility::makeInstance(DateTimeUtility::class);
     }
 
     /**

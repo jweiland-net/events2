@@ -50,9 +50,10 @@ class DayRelationServiceTest extends FunctionalTestCase
      */
     protected $persistenceManagerProphecy;
 
-    /**
-     * set up.
-     */
+    protected $testExtensionsToLoad = [
+        'typo3conf/ext/events2'
+    ];
+
     public function setUp()
     {
         parent::setUp();
@@ -82,25 +83,19 @@ class DayRelationServiceTest extends FunctionalTestCase
         $this->eventRepositoryProphecy = $this->prophesize(EventRepository::class);
         $this->persistenceManagerProphecy = $this->prophesize(PersistenceManager::class);
 
-        $dayGenerator = new DayGenerator();
-        $dayGenerator->injectExtConf($this->extConfProphecy->reveal());
-        $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
+        $dayGenerator = new DayGenerator(null, $this->extConfProphecy->reveal());
 
         $eventService = new EventService();
-        $eventService->injectDateTimeUtility(new DateTimeUtility());
 
-        $this->subject = new DayRelationService();
-        $this->subject->injectExtConf($this->extConfProphecy->reveal());
-        $this->subject->injectDayGenerator($dayGenerator);
+        $this->subject = new DayRelationService(
+            $this->extConfProphecy->reveal(),
+            $dayGenerator
+        );
         $this->subject->injectEventRepository($this->eventRepositoryProphecy->reveal());
         $this->subject->injectPersistenceManager($this->persistenceManagerProphecy->reveal());
         $this->subject->injectEventService($eventService);
-        $this->subject->injectDateTimeUtility(new DateTimeUtility());
     }
 
-    /**
-     * tear down.
-     */
     public function tearDown()
     {
         unset($this->extConfProphecy);
