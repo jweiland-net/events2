@@ -22,6 +22,7 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -52,19 +53,16 @@ class DayRepository extends Repository
      */
     protected $settings = [];
 
-    public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
-    {
-        $this->dateTimeUtility = $dateTimeUtility;
-    }
-
-    public function injectExtConf(ExtConf $extConf)
-    {
-        $this->extConf = $extConf;
-    }
-
-    public function injectDatabaseService(DatabaseService $databaseService)
-    {
-        $this->databaseService = $databaseService;
+    public function __construct(
+        ObjectManagerInterface $objectManager,
+        ?ExtConf $extConf = null,
+        ?DateTimeUtility $dateTimeUtility = null,
+        ?DatabaseService $databaseService = null
+    ) {
+        parent::__construct($objectManager);
+        $this->extConf = $extConf ?? GeneralUtility::makeInstance(ExtConf::class);
+        $this->dateTimeUtility = $dateTimeUtility ?? GeneralUtility::makeInstance(DateTimeUtility::class);
+        $this->databaseService = $databaseService ?? GeneralUtility::makeInstance(DatabaseService::class);
     }
 
     public function setSettings(array $settings)

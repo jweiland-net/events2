@@ -42,14 +42,12 @@ class EventService
      */
     protected $eventRepository;
 
-    public function injectExtConf(ExtConf $extConf)
-    {
-        $this->extConf = $extConf;
-    }
-
-    public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
-    {
-        $this->dateTimeUtility = $dateTimeUtility;
+    public function __construct(
+        ?ExtConf $extConf = null,
+        ?DateTimeUtility $dateTimeUtility = null
+    ) {
+        $this->extConf = $extConf ?? GeneralUtility::makeInstance(ExtConf::class);
+        $this->dateTimeUtility = $dateTimeUtility ?? GeneralUtility::makeInstance(DateTimeUtility::class);
     }
 
     public function injectEventRepository(EventRepository $eventRepository)

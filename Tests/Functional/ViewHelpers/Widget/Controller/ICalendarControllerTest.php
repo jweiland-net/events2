@@ -62,9 +62,6 @@ class ICalendarControllerTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    /**
-     * set up.
-     */
     public function setUp()
     {
         parent::setUp();
@@ -124,9 +121,6 @@ class ICalendarControllerTest extends FunctionalTestCase
         $this->tempDirectory = Environment::getPublicPath() . '/' . 'typo3temp/tx_events2/iCal/';
     }
 
-    /**
-     * tear down.
-     */
     public function tearDown()
     {
         unset($this->subject);
