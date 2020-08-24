@@ -18,7 +18,6 @@ use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Service\DayGenerator;
 use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Service\EventService;
-use JWeiland\Events2\Utility\DateTimeUtility;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;

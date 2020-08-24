@@ -134,7 +134,6 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
             }
             // OK...we have a valid file and the user has the rights. It's time to check, if an old file can be deleted
             if ($alreadyPersistedImages[$key] instanceof FileReference) {
-                /** @var FileReference $oldFile */
                 $oldFile = $alreadyPersistedImages[$key];
                 $oldFile->getOriginalResource()->getOriginalFile()->delete();
             }
