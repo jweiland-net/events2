@@ -15,6 +15,7 @@ use Doctrine\DBAL\Driver\Statement;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
+use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\DataHandling\SlugHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
@@ -82,6 +83,7 @@ class EventsSlugUpdater implements UpgradeWizardInterface
     public function updateNecessary(): bool
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($this->tableName);
+        $queryBuilder->getRestrictions()->removeByType(HiddenRestriction::class);
         $amountOfRecordsWithEmptySlug = $queryBuilder
             ->count('*')
             ->from($this->tableName)
@@ -110,6 +112,7 @@ class EventsSlugUpdater implements UpgradeWizardInterface
     public function executeUpdate(): bool
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($this->tableName);
+        $queryBuilder->getRestrictions()->removeByType(HiddenRestriction::class);
         $statement = $queryBuilder
             ->select('uid', 'title', 'path_segment')
             ->from($this->tableName)
