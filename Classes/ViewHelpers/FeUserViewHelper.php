@@ -47,8 +47,7 @@ class FeUserViewHelper extends AbstractViewHelper
         \Closure $childClosure,
         RenderingContextInterface $renderingContext
     ) {
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $userRepository = $objectManager->get(UserRepository::class);
+        $userRepository = GeneralUtility::makeInstance(UserRepository::class);
         return $userRepository->getFieldFromUser($arguments['field']);
     }
 }

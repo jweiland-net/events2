@@ -92,7 +92,7 @@ class SearchController extends AbstractController
     {
         // Because of the checkbox we have to create a new empty domain model
         if ($search === null) {
-            $search = $this->objectManager->get(Search::class);
+            $search = GeneralUtility::makeInstance(Search::class);
         }
 
         $gettableSearchProperties = ObjectAccess::getGettableProperties($search);

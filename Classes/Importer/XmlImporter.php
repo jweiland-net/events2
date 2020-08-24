@@ -224,8 +224,7 @@ class XmlImporter extends AbstractImporter
      */
     protected function createEvent(array $data): Event
     {
-        /** @var Event $event */
-        $event = $this->objectManager->get(Event::class);
+        $event = GeneralUtility::makeInstance(Event::class);
         $this->addRootProperties($event, $data);
         $this->addDateProperties($event, $data);
         $this->addTimeProperties($event, $data);
@@ -294,8 +293,7 @@ class XmlImporter extends AbstractImporter
     {
         // add event time
         if (isset($data['event_time']) && is_array($data['event_time'])) {
-            /** @var Time $eventTime */
-            $eventTime = $this->objectManager->get(Time::class);
+            $eventTime = GeneralUtility::makeInstance(Time::class);
             $eventTime->setPid($this->storagePid);
             $eventTime->setTimeBegin($data['event_time']['time_begin'] ?: '');
             $eventTime->setTimeEntry($data['event_time']['time_entry'] ?: '');
@@ -312,7 +310,7 @@ class XmlImporter extends AbstractImporter
             is_array($data['multiple_times'])
         ) {
             foreach ($data['multiple_times'] as $multipleTime) {
-                $newTime = $this->objectManager->get(Time::class);
+                $newTime = GeneralUtility::makeInstance(Time::class);
                 $newTime->setPid($this->storagePid);
                 $newTime->setTimeBegin($multipleTime['time_begin'] ?: '');
                 $newTime->setTimeEntry($multipleTime['time_entry'] ?: '');
@@ -328,7 +326,7 @@ class XmlImporter extends AbstractImporter
             is_array($data['different_times'])
         ) {
             foreach ($data['different_times'] as $differentTime) {
-                $newTime = $this->objectManager->get(Time::class);
+                $newTime = GeneralUtility::makeInstance(Time::class);
                 $newTime->setPid($this->storagePid);
                 $newTime->setWeekday($differentTime['weekday']);
                 $newTime->setTimeBegin($differentTime['time_begin'] ?: '');
@@ -364,7 +362,7 @@ class XmlImporter extends AbstractImporter
         foreach ($properties as $property) {
             if (isset($data[$property]) && filter_var($data[$property]['uri'], FILTER_VALIDATE_URL)) {
                 /** @var Link $link */
-                $link = $this->objectManager->get(Link::class);
+                $link = GeneralUtility::makeInstance(Link::class);
                 $link->setPid($this->storagePid);
                 $link->setTitle($data[$property]['title']);
                 $link->setLink($data[$property]['uri']);
@@ -387,8 +385,7 @@ class XmlImporter extends AbstractImporter
         }
 
         foreach ($data['exceptions'] as $exception) {
-            /** @var Exception $newException */
-            $newException = $this->objectManager->get(Exception::class);
+            $newException = GeneralUtility::makeInstance(Exception::class);
             $newException->setPid($this->storagePid);
             $newException->setExceptionType($exception['exception_type']);
 
@@ -399,8 +396,7 @@ class XmlImporter extends AbstractImporter
             $newException->setExceptionDate($this->dateTimeUtility->standardizeDateTimeObject($exceptionDate));
 
             if (isset($exception['exception_time'])) {
-                /** @var Time $newTime */
-                $newTime = $this->objectManager->get(Time::class);
+                $newTime = GeneralUtility::makeInstance(Time::class);
                 $newTime->setPid($this->storagePid);
                 $newTime->setTimeBegin($exception['exception_time']['time_begin'] ?: '');
                 $newTime->setTimeEntry($exception['exception_time']['time_entry'] ?: '');
@@ -474,7 +470,7 @@ class XmlImporter extends AbstractImporter
                 }
 
                 // Create new FileReference
-                $extbaseFileReference = $this->objectManager->get(FileReference::class);
+                $extbaseFileReference = GeneralUtility::makeInstance(FileReference::class);
                 $extbaseFileReference->setPid($this->storagePid);
                 $extbaseFileReference->setOriginalResource(ResourceFactory::getInstance()->createFileReferenceObject(
                     [

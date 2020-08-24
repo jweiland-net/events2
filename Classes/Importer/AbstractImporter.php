@@ -109,7 +109,7 @@ abstract class AbstractImporter implements ImporterInterface
         $this->organizerRepository = $this->objectManager->get(OrganizerRepository::class);
         $this->locationRepository = $this->objectManager->get(LocationRepository::class);
         $this->categoryRepository = $this->objectManager->get(CategoryRepository::class);
-        $this->dateTimeUtility = $this->objectManager->get(DateTimeUtility::class);
+        $this->dateTimeUtility = GeneralUtility::makeInstance(DateTimeUtility::class);
         $this->today = new \DateTime('now');
     }
 
@@ -410,10 +410,8 @@ abstract class AbstractImporter implements ImporterInterface
     protected function getPersistenceManager(): PersistenceManagerInterface
     {
         if ($this->persistenceManager === null) {
-            /** @var ObjectManager $objectManager */
             $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            /** @var PersistenceManagerInterface $persistenceManager */
-            $this->persistenceManager = $objectManager->get(PersistenceManager::class);
+            $this->persistenceManager = $objectManager->get(PersistenceManagerInterface::class);
         }
         return $this->persistenceManager;
     }
