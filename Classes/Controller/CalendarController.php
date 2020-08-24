@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Controller;
 
 use JWeiland\Events2\Domain\Model\Day;
+use JWeiland\Events2\Helper\DayHelper;
 use JWeiland\Events2\Session\UserSession;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -24,20 +25,23 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 class CalendarController extends AbstractController
 {
     /**
-     * @var PageRenderer
-     */
-    protected $pageRenderer;
-
-    /**
      * @var UserSession
      */
     protected $userSession;
 
-    public function __construct(
-        ?UserSession $userSession = null)
-    {
+    /**
+     * @var DayHelper
+     */
+    protected $dayHelper;
+
+    public function __construct(?UserSession $userSession = null) {
         parent::__construct();
         $this->userSession = $userSession ?? GeneralUtility::makeInstance(UserSession::class);
+    }
+
+    public function injectDayHelper(DayHelper $dayHelper)
+    {
+        $this->dayHelper = $dayHelper;
     }
 
     public function showAction(): void
@@ -46,7 +50,7 @@ class CalendarController extends AbstractController
 
         // get month and year from session
         $monthAndYear = $this->userSession->getMonthAndYear();
-        $day = $this->getDayFromUrl();
+        $day = $this->dayHelper->getDayFromUri();
 
         // move calendar to month and year if given
         if ($day instanceof Day) {
@@ -85,28 +89,5 @@ class CalendarController extends AbstractController
     protected function getTypo3SiteUrl(): string
     {
         return GeneralUtility::getIndpEnv('TYPO3_SITE_URL');
-    }
-
-    /**
-     * Get day from url
-     * We can't set $day as parameter in showAction($day), because this action is of controller Calendar and not Event.
-     *
-     * @return Day|null
-     */
-    protected function getDayFromUrl(): ?Day
-    {
-        $day = null;
-        // get parameters of event-plugin-namespace
-        $pluginParameters = GeneralUtility::_GPmerged('tx_events2_events');
-        if (
-            is_array($pluginParameters) &&
-            array_key_exists('day', $pluginParameters) &&
-            MathUtility::canBeInterpretedAsInteger($pluginParameters['day'])
-        ) {
-            /** @var Day $day */
-            $day = $this->dayRepository->findByIdentifier((int)$pluginParameters['day']);
-        }
-
-        return $day;
     }
 }
