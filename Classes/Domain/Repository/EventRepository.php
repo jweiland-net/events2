@@ -107,8 +107,7 @@ class EventRepository extends Repository
 
     public function findMyEvents(): QueryResultInterface
     {
-        /** @var UserRepository $userRepository */
-        $userRepository = $this->objectManager->get(UserRepository::class);
+        $userRepository = GeneralUtility::makeInstance(UserRepository::class);
         $organizer = (int)$userRepository->getFieldFromUser('tx_events2_organizer');
         $query = $this->createQuery();
 

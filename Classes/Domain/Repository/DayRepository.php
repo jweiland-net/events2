@@ -448,7 +448,7 @@ class DayRepository extends Repository
      */
     public function findDayByEventAndTimestamp(int $eventUid, int $timestamp = 0): Day
     {
-        $dayFactory = $this->objectManager->get(DayFactory::class);
+        $dayFactory = GeneralUtility::makeInstance(DayFactory::class);
         return $dayFactory->findDayByEventAndTimestamp($eventUid, $timestamp, $this->createQuery());
     }
 

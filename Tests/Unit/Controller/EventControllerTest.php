@@ -308,12 +308,6 @@ class EventControllerTest extends UnitTestCase
             ->expects(self::never())
             ->method('getArgument');
 
-        $this->objectManager
-            ->expects(self::once())
-            ->method('get')
-            ->with(self::equalTo(Event::class))
-            ->willReturn($event);
-
         $this->categoryRepository
             ->expects(self::once())
             ->method('getCategories')
@@ -355,12 +349,6 @@ class EventControllerTest extends UnitTestCase
         $this->request
             ->expects(self::never())
             ->method('getArgument');
-
-        $this->objectManager
-            ->expects(self::once())
-            ->method('get')
-            ->with(self::equalTo(Event::class))
-            ->willReturn($event);
 
         $this->locationRepository
             ->expects(self::once())

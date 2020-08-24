@@ -16,6 +16,7 @@ use JWeiland\Events2\Domain\Model\Search;
 use JWeiland\Events2\Property\TypeConverter\UploadMultipleFilesConverter;
 use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Utility\CacheUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Property\TypeConverter\DateTimeConverter;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -58,7 +59,7 @@ class EventController extends AbstractController
     public function newAction(): void
     {
         $this->deleteUploadedFilesOnValidationErrors('event');
-        $event = $this->objectManager->get(Event::class);
+        $event = GeneralUtility::makeInstance(Event::class);
         $categories = $this->categoryRepository->getCategories(
             $this->settings['selectableCategoriesForNewEvents']
         );

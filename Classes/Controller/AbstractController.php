@@ -281,11 +281,11 @@ class AbstractController extends ActionController
             empty($eventRaw['videoLink']['link'])
         ) {
             /** @var ValidatorInterface $regExpValidator */
-            $regExpValidator = $this->objectManager->get(RegularExpressionValidator::class, [
+            $regExpValidator = GeneralUtility::makeInstance(RegularExpressionValidator::class, [
                 'regularExpression' => '~^(|http:|https:)//(|www.)youtube(.*?)(v=|embed/)([a-zA-Z0-9_-]+)~i',
             ]);
             /** @var ValidatorInterface $genericObjectValidator */
-            $genericObjectValidator = $this->objectManager->get(GenericObjectValidator::class);
+            $genericObjectValidator = GeneralUtility::makeInstance(GenericObjectValidator::class);
             $genericObjectValidator->addPropertyValidator('link', $regExpValidator);
 
             // modify current validator of event
