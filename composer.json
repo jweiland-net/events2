@@ -20,14 +20,14 @@
 	"require": {
 		"ext-dom": "*",
 		"ext-libxml": "*",
-		"typo3/cms-core": "^9.5.20 || ^10.4.6",
+		"typo3/cms-core": "^9.5.20 || ^10.4",
 		"sjbr/static-info-tables": "^6.9"
 	},
 	"require-dev": {
 		"roave/security-advisories": "dev-master",
 		"friendsofphp/php-cs-fixer": "^2.16",
 		"nimut/testing-framework": "^5.1",
-		"typo3/cms-scheduler": "^9.5.20 || ^10.4.6",
+		"typo3/cms-scheduler": "^9.5.20 || ^10.4",
 		"jweiland/maps2": ">=8.0.0"
 	},
 	"autoload": {
