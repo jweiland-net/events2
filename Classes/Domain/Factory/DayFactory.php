@@ -46,7 +46,7 @@ class DayFactory
         'buildDay',
     ];
 
-    public function __construct(?DatabaseService $databaseService = null)
+    public function __construct(DatabaseService $databaseService = null)
     {
         $this->databaseService = $databaseService ?? GeneralUtility::makeInstance(DatabaseService::class);
     }
