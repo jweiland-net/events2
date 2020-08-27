@@ -51,7 +51,7 @@ class SearchController extends AbstractController
         }
 
         $allowedMainCategories = $this->categoryRepository->getSelectedCategories(
-            $this->settings['mainCategories'],
+            (string)$this->settings['mainCategories'],
             (int)$this->settings['rootCategory']
         );
 
@@ -88,11 +88,11 @@ class SearchController extends AbstractController
      *
      * @param Search|null $search
      */
-    public function showAction(?Search $search = null): void
+    public function showAction(Search $search = null): void
     {
         // Because of the checkbox we have to create a new empty domain model
         if ($search === null) {
-            $search = $this->objectManager->get(Search::class);
+            $search = GeneralUtility::makeInstance(Search::class);
         }
 
         $gettableSearchProperties = ObjectAccess::getGettableProperties($search);

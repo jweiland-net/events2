@@ -16,6 +16,7 @@ use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Extbase\Persistence\Generic\Session;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
@@ -59,8 +60,9 @@ class EventRepository extends Repository
      */
     protected $settings = [];
 
-    public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
+    public function __construct(ObjectManagerInterface $objectManager, DateTimeUtility $dateTimeUtility)
     {
+        parent::__construct($objectManager);
         $this->dateTimeUtility = $dateTimeUtility;
     }
 
@@ -105,8 +107,7 @@ class EventRepository extends Repository
 
     public function findMyEvents(): QueryResultInterface
     {
-        /** @var UserRepository $userRepository */
-        $userRepository = $this->objectManager->get(UserRepository::class);
+        $userRepository = GeneralUtility::makeInstance(UserRepository::class);
         $organizer = (int)$userRepository->getFieldFromUser('tx_events2_organizer');
         $query = $this->createQuery();
 

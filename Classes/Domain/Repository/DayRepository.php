@@ -22,6 +22,7 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -52,18 +53,15 @@ class DayRepository extends Repository
      */
     protected $settings = [];
 
-    public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
-    {
-        $this->dateTimeUtility = $dateTimeUtility;
-    }
-
-    public function injectExtConf(ExtConf $extConf)
-    {
+    public function __construct(
+        ObjectManagerInterface $objectManager,
+        ExtConf $extConf,
+        DateTimeUtility $dateTimeUtility,
+        DatabaseService $databaseService
+    ) {
+        parent::__construct($objectManager);
         $this->extConf = $extConf;
-    }
-
-    public function injectDatabaseService(DatabaseService $databaseService)
-    {
+        $this->dateTimeUtility = $dateTimeUtility;
         $this->databaseService = $databaseService;
     }
 
@@ -450,7 +448,7 @@ class DayRepository extends Repository
      */
     public function findDayByEventAndTimestamp(int $eventUid, int $timestamp = 0): Day
     {
-        $dayFactory = $this->objectManager->get(DayFactory::class);
+        $dayFactory = GeneralUtility::makeInstance(DayFactory::class);
         return $dayFactory->findDayByEventAndTimestamp($eventUid, $timestamp, $this->createQuery());
     }
 

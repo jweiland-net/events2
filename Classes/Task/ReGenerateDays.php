@@ -21,7 +21,7 @@ use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
+use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\CMS\Scheduler\ProgressProviderInterface;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
@@ -44,14 +44,14 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
     public function __construct()
     {
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->registry = $this->objectManager->get(Registry::class);
+        $this->registry = GeneralUtility::makeInstance(Registry::class);
         parent::__construct();
     }
 
     public function execute()
     {
         $dayRelationService = $this->objectManager->get(DayRelationService::class);
-        $persistenceManager = $this->objectManager->get(PersistenceManager::class);
+        $persistenceManager = $this->objectManager->get(PersistenceManagerInterface::class);
 
         // with each changing PID pageTSConfigCache will grow by roundabout 200KB
         // which may exceed memory_limit
@@ -188,6 +188,6 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
     public function __wakeup()
     {
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->registry = $this->objectManager->get(Registry::class);
+        $this->registry = GeneralUtility::makeInstance(Registry::class);
     }
 }

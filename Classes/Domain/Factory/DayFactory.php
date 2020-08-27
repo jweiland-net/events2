@@ -46,9 +46,9 @@ class DayFactory
         'buildDay',
     ];
 
-    public function injectDatabaseService(DatabaseService $databaseService)
+    public function __construct(DatabaseService $databaseService = null)
     {
-        $this->databaseService = $databaseService;
+        $this->databaseService = $databaseService ?? GeneralUtility::makeInstance(DatabaseService::class);
     }
 
     /**

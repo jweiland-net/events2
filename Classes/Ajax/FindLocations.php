@@ -32,11 +32,11 @@ class FindLocations
     {
         if ($locationRepository === null) {
             $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            $this->locationRepository = $objectManager->get(LocationRepository::class);
-        } else {
-            $this->locationRepository = $locationRepository;
+            $locationRepository = $objectManager->get(LocationRepository::class);
         }
+        $this->locationRepository = $locationRepository;
     }
+
     public function processRequest(ServerRequestInterface $request): ResponseInterface
     {
         $parameters = $request->getQueryParams()['tx_events2_events']['arguments'] ?? [];

@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Controller;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Filter;
+use JWeiland\Events2\Domain\Model\Link;
 use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
@@ -96,19 +97,16 @@ class AbstractController extends ActionController
      */
     protected $session;
 
+    public function __construct(ExtConf $extConf, MailMessage $mailMessage, UserRepository $userRepository)
+    {
+        $this->extConf = $extConf;
+        $this->mail = $mailMessage;
+        $this->userRepository = $userRepository;
+    }
+
     public function injectPersistenceManager(PersistenceManagerInterface $persistenceManager): void
     {
         $this->persistenceManager = $persistenceManager;
-    }
-
-    public function injectMail(MailMessage $mail): void
-    {
-        $this->mail = $mail;
-    }
-
-    public function injectExtConf(ExtConf $extConf): void
-    {
-        $this->extConf = $extConf;
     }
 
     public function injectEventRepository(EventRepository $eventRepository): void
@@ -136,11 +134,6 @@ class AbstractController extends ActionController
         $this->categoryRepository = $categoryRepository;
     }
 
-    public function injectUserRepository(UserRepository $userRepository): void
-    {
-        $this->userRepository = $userRepository;
-    }
-
     public function injectSession(Session $session): void
     {
         $this->session = $session;
@@ -159,12 +152,13 @@ class AbstractController extends ActionController
             'events2',
             'events2_event' // invalid plugin name, to get fresh unmerged settings
         );
+
         if (empty($typoScriptSettings['settings'])) {
             throw new \Exception('You have forgotten to add TS-Template of events2', 1580294227);
         }
         $mergedFlexFormSettings = $this->configurationManager->getConfiguration(
             ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS
-        );
+        ) ?? [];
 
         // start override
         $typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
@@ -172,6 +166,7 @@ class AbstractController extends ActionController
             $mergedFlexFormSettings,
             $typoScriptSettings['settings']
         );
+
         $this->settings = $mergedFlexFormSettings;
     }
 
@@ -245,7 +240,7 @@ class AbstractController extends ActionController
     protected function validateAndAssignFilter(?Filter $filter): Filter
     {
         if ($filter === null) {
-            $filter = $this->objectManager->get(Filter::class);
+            $filter = GeneralUtility::makeInstance(Filter::class);
         }
         $this->view->assign('filter', $filter);
         return $filter;
@@ -286,11 +281,11 @@ class AbstractController extends ActionController
             empty($eventRaw['videoLink']['link'])
         ) {
             /** @var ValidatorInterface $regExpValidator */
-            $regExpValidator = $this->objectManager->get(RegularExpressionValidator::class, [
+            $regExpValidator = GeneralUtility::makeInstance(RegularExpressionValidator::class, [
                 'regularExpression' => '~^(|http:|https:)//(|www.)youtube(.*?)(v=|embed/)([a-zA-Z0-9_-]+)~i',
             ]);
             /** @var ValidatorInterface $genericObjectValidator */
-            $genericObjectValidator = $this->objectManager->get(GenericObjectValidator::class);
+            $genericObjectValidator = GeneralUtility::makeInstance(GenericObjectValidator::class);
             $genericObjectValidator->addPropertyValidator('link', $regExpValidator);
 
             // modify current validator of event
@@ -332,8 +327,10 @@ class AbstractController extends ActionController
      */
     protected function deleteVideoLinkIfEmpty(Event $event): void
     {
-        $linkText = $event->getVideoLink()->getLink();
-        if (empty($linkText)) {
+        if (
+            $event->getVideoLink() instanceof Link
+            && empty($event->getVideoLink()->getLink())
+        ) {
             $linkRepository = $this->objectManager->get(LinkRepository::class);
             $linkRepository->remove($event->getVideoLink());
             $event->setVideoLink(null);
@@ -375,9 +372,8 @@ class AbstractController extends ActionController
     protected function addOrganizer(string $argument): bool
     {
         if ($this->request->hasArgument($argument)) {
-            /** @var array $event */
             $event = $this->request->getArgument($argument);
-            if (!isset($event['organizer'])) {
+            if (is_array($event) && array_key_exists('organizer', $event)) {
                 $organizerOfCurrentUser = $this->userRepository->getFieldFromUser('tx_events2_organizer');
                 if (MathUtility::canBeInterpretedAsInteger($organizerOfCurrentUser)) {
                     $event['organizer'] = $organizerOfCurrentUser;

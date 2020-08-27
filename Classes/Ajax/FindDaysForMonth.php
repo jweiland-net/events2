@@ -11,6 +11,7 @@ namespace JWeiland\Events2\Ajax;
 
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Service\DatabaseService;
+use JWeiland\Events2\Session\UserSession;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -19,7 +20,6 @@ use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
 
 /**
@@ -50,25 +50,21 @@ class FindDaysForMonth
      */
     protected $cacheHashCalculator;
 
+    /**
+     * @var UserSession
+     */
+    protected $userSession;
+
     public function __construct(
-        ?ExtConf $extConf = null,
-        ?DateTimeUtility $dateTimeUtility = null,
-        ?CacheHashCalculator $cacheHashCalculator = null
+        ExtConf $extConf = null,
+        DateTimeUtility $dateTimeUtility = null,
+        CacheHashCalculator $cacheHashCalculator = null,
+        UserSession $userSession = null
     ) {
-        if ($extConf === null) {
-            $extConf = GeneralUtility::makeInstance(ExtConf::class);
-        }
-        $this->extConf = $extConf;
-
-        if ($dateTimeUtility === null) {
-            $dateTimeUtility = GeneralUtility::makeInstance(DateTimeUtility::class);
-        }
-        $this->dateTimeUtility = $dateTimeUtility;
-
-        if ($cacheHashCalculator === null) {
-            $cacheHashCalculator = GeneralUtility::makeInstance(CacheHashCalculator::class);
-        }
-        $this->cacheHashCalculator = $cacheHashCalculator;
+        $this->extConf = $extConf ?? GeneralUtility::makeInstance(ExtConf::class);
+        $this->dateTimeUtility = $dateTimeUtility ?? GeneralUtility::makeInstance(DateTimeUtility::class);
+        $this->cacheHashCalculator = $cacheHashCalculator ?? GeneralUtility::makeInstance(CacheHashCalculator::class);
+        $this->userSession = $userSession ?? GeneralUtility::makeInstance(UserSession::class);
     }
 
     public function processRequest(ServerRequestInterface $request): ResponseInterface
@@ -79,7 +75,7 @@ class FindDaysForMonth
         $year = (int)$this->getArgument('year');
 
         // Save a session for selected month
-        $this->saveMonthAndYearInSession($month, $year);
+        $this->userSession->setMonthAndYear($month, $year);
 
         $dayArray = [];
         $days = $this->findAllDaysInMonth($month, $year);
@@ -214,19 +210,6 @@ class FindDaysForMonth
         }
     }
 
-    protected function saveMonthAndYearInSession(int $month, int $year): void
-    {
-        $userAuthentication = $this->getFrontendUserAuthentication();
-        $userAuthentication->start();
-        $userAuthentication->setAndSaveSessionData(
-            'events2MonthAndYearForCalendar',
-            [
-                'month' => str_pad((string)$month, 2, '0', STR_PAD_LEFT),
-                'year' => (string)$year
-            ]
-        );
-    }
-
     protected function findAllDaysInMonth(int $month, int $year): array
     {
         $earliestAllowedDate = new \DateTime('now midnight');
@@ -264,7 +247,6 @@ class FindDaysForMonth
             return [];
         }
 
-        /** @var DatabaseService $databaseService */
         $databaseService = GeneralUtility::makeInstance(DatabaseService::class);
         return $databaseService->getDaysInRange(
             $firstDayOfMonth,
@@ -272,11 +254,6 @@ class FindDaysForMonth
             GeneralUtility::intExplode(',', $this->getArgument('storagePids'), true),
             GeneralUtility::intExplode(',', $this->getArgument('categories'), true)
         );
-    }
-
-    protected function getFrontendUserAuthentication(): FrontendUserAuthentication
-    {
-        return GeneralUtility::makeInstance(FrontendUserAuthentication::class);
     }
 
     protected function getConnectionPool(): ConnectionPool

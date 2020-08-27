@@ -22,8 +22,10 @@ use JWeiland\Events2\Utility\DateTimeUtility;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /**
  * Test case for class \JWeiland\Events2\Service\DayRelationService
@@ -50,9 +52,10 @@ class DayRelationServiceTest extends FunctionalTestCase
      */
     protected $persistenceManagerProphecy;
 
-    /**
-     * set up.
-     */
+    protected $testExtensionsToLoad = [
+        'typo3conf/ext/events2'
+    ];
+
     public function setUp()
     {
         parent::setUp();
@@ -82,25 +85,27 @@ class DayRelationServiceTest extends FunctionalTestCase
         $this->eventRepositoryProphecy = $this->prophesize(EventRepository::class);
         $this->persistenceManagerProphecy = $this->prophesize(PersistenceManager::class);
 
-        $dayGenerator = new DayGenerator();
-        $dayGenerator->injectExtConf($this->extConfProphecy->reveal());
-        $dayGenerator->injectDateTimeUtility(new DateTimeUtility());
+        $dayGenerator = new DayGenerator(
+            GeneralUtility::makeInstance(Dispatcher::class),
+            $this->extConfProphecy->reveal(),
+            new DateTimeUtility()
+        );
 
-        $eventService = new EventService();
-        $eventService->injectDateTimeUtility(new DateTimeUtility());
+        $eventService = new EventService(
+            $this->extConfProphecy->reveal(),
+            new DateTimeUtility()
+        );
 
-        $this->subject = new DayRelationService();
-        $this->subject->injectExtConf($this->extConfProphecy->reveal());
-        $this->subject->injectDayGenerator($dayGenerator);
+        $this->subject = new DayRelationService(
+            $this->extConfProphecy->reveal(),
+            $dayGenerator,
+            new DateTimeUtility()
+        );
         $this->subject->injectEventRepository($this->eventRepositoryProphecy->reveal());
         $this->subject->injectPersistenceManager($this->persistenceManagerProphecy->reveal());
         $this->subject->injectEventService($eventService);
-        $this->subject->injectDateTimeUtility(new DateTimeUtility());
     }
 
-    /**
-     * tear down.
-     */
     public function tearDown()
     {
         unset($this->extConfProphecy);

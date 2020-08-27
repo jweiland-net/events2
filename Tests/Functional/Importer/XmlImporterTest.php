@@ -9,7 +9,6 @@
 
 namespace JWeiland\Events2\Tests\Functional\Importer;
 
-use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Importer\XmlImporter;
 use JWeiland\Events2\Task\Import;
@@ -64,7 +63,7 @@ class XmlImporterTest extends FunctionalTestCase
         $this->importDataSet(__DIR__ . '/../Fixtures/tx_events2_domain_model_location.xml');
         $this->importDataSet(__DIR__ . '/../Fixtures/tx_events2_domain_model_organizer.xml');
 
-        /** @var ObjectProphecy $taskProphecy */
+        /** @var Import|ObjectProphecy $taskProphecy */
         $taskProphecy = $this->prophesize(Import::class);
         /** @var AbstractTask $task */
         $this->task = $taskProphecy->reveal();

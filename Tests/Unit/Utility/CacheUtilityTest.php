@@ -14,10 +14,12 @@ use JWeiland\Events2\Utility\CacheUtility;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
+use TYPO3\CMS\Extbase\Service\EnvironmentService;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
@@ -30,18 +32,20 @@ class CacheUtilityTest extends UnitTestCase
      */
     protected $subject;
 
-    /**
-     * set up.
-     */
     public function setUp()
     {
+        /** @var EnvironmentService|ObjectProphecy $environmentServiceProphecy */
+        $environmentServiceProphecy = $this->prophesize(EnvironmentService::class);
+        $environmentServiceProphecy
+            ->isEnvironmentInFrontendMode()
+            ->shouldBeCalled()
+            ->willReturn(true);
+        GeneralUtility::setSingletonInstance(EnvironmentService::class, $environmentServiceProphecy->reveal());
+
         $tsfeProphecy = $this->prophesize(TypoScriptFrontendController::class);
         $GLOBALS['TSFE'] = $tsfeProphecy->reveal();
     }
 
-    /**
-     * tear down.
-     */
     public function tearDown()
     {
         unset($GLOBALS['TSFE']);

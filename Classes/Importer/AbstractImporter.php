@@ -26,7 +26,6 @@ use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
@@ -109,7 +108,7 @@ abstract class AbstractImporter implements ImporterInterface
         $this->organizerRepository = $this->objectManager->get(OrganizerRepository::class);
         $this->locationRepository = $this->objectManager->get(LocationRepository::class);
         $this->categoryRepository = $this->objectManager->get(CategoryRepository::class);
-        $this->dateTimeUtility = $this->objectManager->get(DateTimeUtility::class);
+        $this->dateTimeUtility = GeneralUtility::makeInstance(DateTimeUtility::class);
         $this->today = new \DateTime('now');
     }
 
@@ -410,10 +409,8 @@ abstract class AbstractImporter implements ImporterInterface
     protected function getPersistenceManager(): PersistenceManagerInterface
     {
         if ($this->persistenceManager === null) {
-            /** @var ObjectManager $objectManager */
             $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            /** @var PersistenceManagerInterface $persistenceManager */
-            $this->persistenceManager = $objectManager->get(PersistenceManager::class);
+            $this->persistenceManager = $objectManager->get(PersistenceManagerInterface::class);
         }
         return $this->persistenceManager;
     }

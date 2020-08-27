@@ -9,6 +9,7 @@
 
 namespace JWeiland\Events2\Tests\Unit\Service;
 
+use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Exception;
@@ -16,35 +17,41 @@ use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Service\EventService;
 use JWeiland\Events2\Utility\DateTimeUtility;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
+use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Test case for class \JWeiland\Events2\Service\EventService
  */
-class EventServiceTest extends UnitTestCase
+class EventServiceTest extends FunctionalTestCase
 {
     /**
      * @var EventService
      */
     protected $subject;
 
-    /**
-     * set up.
-     */
+    protected $testExtensionsToLoad = [
+        'typo3conf/ext/events2'
+    ];
+
     public function setUp()
     {
-        $this->subject = new EventService();
-        $this->subject->injectDateTimeUtility(new DateTimeUtility());
+        parent::setUp();
+
+        $this->subject = new EventService(
+            new ExtConf(),
+            new DateTimeUtility()
+        );
     }
 
-    /**
-     * tear down.
-     */
     public function tearDown()
     {
-        unset($this->subject);
+        unset(
+            $this->subject
+        );
+
+        parent::tearDown();
     }
 
     /**
