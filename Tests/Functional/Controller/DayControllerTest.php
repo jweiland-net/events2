@@ -116,7 +116,10 @@ class DayControllerTest extends FunctionalTestCase
      * @dataProvider listWithEmptyFilterDataProvider
      */
     public function processRequestWithListActionWillValidateAndAssignFilterToView(
-        $action, $type, $filter, $amountOfRecords
+        $action,
+        $type,
+        $filter,
+        $amountOfRecords
     ) {
         $this->dayRepositoryProphecy
             ->findEvents($type, $filter, $amountOfRecords)
@@ -148,7 +151,10 @@ class DayControllerTest extends FunctionalTestCase
      * @dataProvider listWithFilledFilterDataProvider
      */
     public function processRequestWithListActionWillAssignFilterToView(
-        $action, $type, $filter, $amountOfRecords
+        $action,
+        $type,
+        $filter,
+        $amountOfRecords
     ) {
         $this->dayRepositoryProphecy
             ->findEvents($type, $filter, $amountOfRecords)
@@ -172,7 +178,8 @@ class DayControllerTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function processRequestWithShowActionWillAssignDayToView() {
+    public function processRequestWithShowActionWillAssignDayToView()
+    {
         $event = new Event();
         $event->setTitle('Test Event');
         $date = new \DateTime();
@@ -205,7 +212,8 @@ class DayControllerTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function processRequestWithShowByTimestampActionWillCallFindByTimestamp() {
+    public function processRequestWithShowByTimestampActionWillCallFindByTimestamp()
+    {
         $this->dayRepositoryProphecy
             ->findByTimestamp(Argument::any())
             ->shouldBeCalled()

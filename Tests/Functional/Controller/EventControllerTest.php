@@ -9,12 +9,8 @@
 
 namespace JWeiland\Events2\Tests\Functional\Controller;
 
-use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Controller\EventController;
-use JWeiland\Events2\Domain\Model\Category;
-use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Search;
-use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
@@ -22,7 +18,6 @@ use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Core\Localization\LanguageService;
-use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Mvc\Response;
