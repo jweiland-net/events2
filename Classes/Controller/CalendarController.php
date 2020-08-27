@@ -11,9 +11,12 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Controller;
 
+use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Day;
+use JWeiland\Events2\Domain\Repository\UserRepository;
 use JWeiland\Events2\Helper\DayHelper;
 use JWeiland\Events2\Session\UserSession;
+use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
@@ -32,10 +35,14 @@ class CalendarController extends AbstractController
      */
     protected $dayHelper;
 
-    public function __construct(?UserSession $userSession = null)
-    {
-        parent::__construct();
-        $this->userSession = $userSession ?? GeneralUtility::makeInstance(UserSession::class);
+    public function __construct(
+        ExtConf $extConf,
+        MailMessage $mailMessage,
+        UserRepository $userRepository,
+        UserSession $userSession
+    ) {
+        parent::__construct($extConf, $mailMessage, $userRepository);
+        $this->userSession = $userSession;
     }
 
     public function injectDayHelper(DayHelper $dayHelper)
