@@ -18,11 +18,14 @@ use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Service\DayGenerator;
 use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Service\EventService;
+use JWeiland\Events2\Utility\DateTimeUtility;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /**
  * Test case for class \JWeiland\Events2\Service\DayRelationService
@@ -82,13 +85,21 @@ class DayRelationServiceTest extends FunctionalTestCase
         $this->eventRepositoryProphecy = $this->prophesize(EventRepository::class);
         $this->persistenceManagerProphecy = $this->prophesize(PersistenceManager::class);
 
-        $dayGenerator = new DayGenerator(null, $this->extConfProphecy->reveal());
+        $dayGenerator = new DayGenerator(
+            GeneralUtility::makeInstance(Dispatcher::class),
+            $this->extConfProphecy->reveal(),
+            new DateTimeUtility()
+        );
 
-        $eventService = new EventService();
+        $eventService = new EventService(
+            $this->extConfProphecy->reveal(),
+            new DateTimeUtility()
+        );
 
         $this->subject = new DayRelationService(
             $this->extConfProphecy->reveal(),
-            $dayGenerator
+            $dayGenerator,
+            new DateTimeUtility()
         );
         $this->subject->injectEventRepository($this->eventRepositoryProphecy->reveal());
         $this->subject->injectPersistenceManager($this->persistenceManagerProphecy->reveal());
