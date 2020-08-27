@@ -15,7 +15,6 @@ use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Exception;
 use JWeiland\Events2\Utility\DateTimeUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /*
@@ -46,13 +45,13 @@ class DayGenerator
     protected $signalSlotDispatcher;
 
     public function __construct(
-        ?Dispatcher $signalSlotDispatcher = null,
-        ?ExtConf $extConf = null,
-        ?DateTimeUtility $dateTimeUtility = null
+        Dispatcher $signalSlotDispatcher,
+        ExtConf $extConf,
+        DateTimeUtility $dateTimeUtility
     ) {
-        $this->signalSlotDispatcher = $signalSlotDispatcher ?? GeneralUtility::makeInstance(Dispatcher::class);
-        $this->extConf = $extConf ?? GeneralUtility::makeInstance(ExtConf::class);
-        $this->dateTimeUtility = $dateTimeUtility ?? GeneralUtility::makeInstance(DateTimeUtility::class);
+        $this->signalSlotDispatcher = $signalSlotDispatcher;
+        $this->extConf = $extConf;
+        $this->dateTimeUtility = $dateTimeUtility;
     }
 
     /**
