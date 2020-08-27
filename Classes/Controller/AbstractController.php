@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Controller;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Filter;
+use JWeiland\Events2\Domain\Model\Link;
 use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
@@ -96,14 +97,11 @@ class AbstractController extends ActionController
      */
     protected $session;
 
-    public function __construct(
-        ?ExtConf $extConf = null,
-        ?MailMessage $mailMessage = null,
-        ?UserRepository $userRepository = null
-    ) {
-        $this->extConf = $extConf ?? GeneralUtility::makeInstance(ExtConf::class);
-        $this->mail = $mailMessage ?? GeneralUtility::makeInstance(MailMessage::class);
-        $this->userRepository = $userRepository ?? GeneralUtility::makeInstance(UserRepository::class);
+    public function __construct(ExtConf $extConf, MailMessage $mailMessage, UserRepository $userRepository)
+    {
+        $this->extConf = $extConf;
+        $this->mail = $mailMessage;
+        $this->userRepository = $userRepository;
     }
 
     public function injectPersistenceManager(PersistenceManagerInterface $persistenceManager): void
@@ -155,14 +153,12 @@ class AbstractController extends ActionController
             'events2_event' // invalid plugin name, to get fresh unmerged settings
         );
 
-        var_dump($typoScriptSettings);
-
         if (empty($typoScriptSettings['settings'])) {
             throw new \Exception('You have forgotten to add TS-Template of events2', 1580294227);
         }
         $mergedFlexFormSettings = $this->configurationManager->getConfiguration(
             ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS
-        );
+        ) ?? [];
 
         // start override
         $typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
@@ -170,6 +166,7 @@ class AbstractController extends ActionController
             $mergedFlexFormSettings,
             $typoScriptSettings['settings']
         );
+
         $this->settings = $mergedFlexFormSettings;
     }
 
@@ -330,8 +327,10 @@ class AbstractController extends ActionController
      */
     protected function deleteVideoLinkIfEmpty(Event $event): void
     {
-        $linkText = $event->getVideoLink()->getLink();
-        if (empty($linkText)) {
+        if (
+            $event->getVideoLink() instanceof Link
+            && empty($event->getVideoLink()->getLink())
+        ) {
             $linkRepository = $this->objectManager->get(LinkRepository::class);
             $linkRepository->remove($event->getVideoLink());
             $event->setVideoLink(null);
@@ -373,9 +372,8 @@ class AbstractController extends ActionController
     protected function addOrganizer(string $argument): bool
     {
         if ($this->request->hasArgument($argument)) {
-            /** @var array $event */
             $event = $this->request->getArgument($argument);
-            if (!isset($event['organizer'])) {
+            if (is_array($event) && array_key_exists('organizer', $event)) {
                 $organizerOfCurrentUser = $this->userRepository->getFieldFromUser('tx_events2_organizer');
                 if (MathUtility::canBeInterpretedAsInteger($organizerOfCurrentUser)) {
                     $event['organizer'] = $organizerOfCurrentUser;
