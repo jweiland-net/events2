@@ -26,17 +26,11 @@ class ExceptionTest extends UnitTestCase
      */
     protected $subject;
 
-    /**
-     * set up.
-     */
     public function setUp()
     {
         $this->subject = new Exception();
     }
 
-    /**
-     * tear down.
-     */
     public function tearDown()
     {
         unset($this->subject);

@@ -22,17 +22,11 @@ class DateTimeUtilityTest extends UnitTestCase
      */
     protected $subject;
 
-    /**
-     * set up.
-     */
     public function setUp()
     {
         $this->subject = new DateTimeUtility();
     }
 
-    /**
-     * tear down.
-     */
     public function tearDown()
     {
         unset($this->subject);

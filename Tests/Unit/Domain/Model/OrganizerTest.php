@@ -26,17 +26,11 @@ class OrganizerTest extends UnitTestCase
      */
     protected $subject;
 
-    /**
-     * set up.
-     */
     public function setUp()
     {
         $this->subject = new Organizer();
     }
 
-    /**
-     * tear down.
-     */
     public function tearDown()
     {
         unset($this->subject);

@@ -27,9 +27,6 @@ class CategoryRepositoryTest extends UnitTestCase
      */
     protected $subject;
 
-    /**
-     * set up.
-     */
     public function setUp()
     {
         $this->subject = $this
@@ -39,9 +36,6 @@ class CategoryRepositoryTest extends UnitTestCase
             ->getMock();
     }
 
-    /**
-     * tear down.
-     */
     public function tearDown()
     {
         unset($this->subject);
