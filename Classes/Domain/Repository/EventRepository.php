@@ -60,10 +60,10 @@ class EventRepository extends Repository
      */
     protected $settings = [];
 
-    public function __construct(ObjectManagerInterface $objectManager, ?DateTimeUtility $dateTimeUtility = null)
+    public function __construct(ObjectManagerInterface $objectManager, DateTimeUtility $dateTimeUtility)
     {
         parent::__construct($objectManager);
-        $this->dateTimeUtility = $dateTimeUtility ?? GeneralUtility::makeInstance(DateTimeUtility::class);
+        $this->dateTimeUtility = $dateTimeUtility;
     }
 
     public function injectDataMapper(DataMapper $dataMapper)
