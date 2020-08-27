@@ -108,7 +108,7 @@ class DayController extends AbstractController
      */
     public function showByTimestampAction(int $timestamp): void
     {
-        $days = $this->dayRepository->findByTimestamp((int)$timestamp);
+        $days = $this->dayRepository->findByTimestamp($timestamp);
         $this->view->assign('days', $days);
         CacheUtility::addPageCacheTagsByQuery($days->getQuery());
     }
