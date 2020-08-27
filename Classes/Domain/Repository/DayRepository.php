@@ -55,14 +55,14 @@ class DayRepository extends Repository
 
     public function __construct(
         ObjectManagerInterface $objectManager,
-        ?ExtConf $extConf = null,
-        ?DateTimeUtility $dateTimeUtility = null,
-        ?DatabaseService $databaseService = null
+        ExtConf $extConf,
+        DateTimeUtility $dateTimeUtility,
+        DatabaseService $databaseService
     ) {
         parent::__construct($objectManager);
-        $this->extConf = $extConf ?? GeneralUtility::makeInstance(ExtConf::class);
-        $this->dateTimeUtility = $dateTimeUtility ?? GeneralUtility::makeInstance(DateTimeUtility::class);
-        $this->databaseService = $databaseService ?? GeneralUtility::makeInstance(DatabaseService::class);
+        $this->extConf = $extConf;
+        $this->dateTimeUtility = $dateTimeUtility;
+        $this->databaseService = $databaseService;
     }
 
     public function setSettings(array $settings)
