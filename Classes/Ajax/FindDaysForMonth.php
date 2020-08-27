@@ -56,10 +56,10 @@ class FindDaysForMonth
     protected $userSession;
 
     public function __construct(
-        ?ExtConf $extConf = null,
-        ?DateTimeUtility $dateTimeUtility = null,
-        ?CacheHashCalculator $cacheHashCalculator = null,
-        ?UserSession $userSession = null
+        ExtConf $extConf = null,
+        DateTimeUtility $dateTimeUtility = null,
+        CacheHashCalculator $cacheHashCalculator = null,
+        UserSession $userSession = null
     ) {
         $this->extConf = $extConf ?? GeneralUtility::makeInstance(ExtConf::class);
         $this->dateTimeUtility = $dateTimeUtility ?? GeneralUtility::makeInstance(DateTimeUtility::class);
