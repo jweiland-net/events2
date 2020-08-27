@@ -13,7 +13,11 @@ use JWeiland\Events2\Ajax\FindSubCategories;
 use JWeiland\Events2\Controller\AjaxController;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use Prophecy\Prophecy\ObjectProphecy;
+use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\Arguments;
+use TYPO3\CMS\Extbase\Mvc\Request;
+use TYPO3\CMS\Extbase\Mvc\Response;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
@@ -27,6 +31,11 @@ class AjaxControllerTest extends FunctionalTestCase
     protected $subject;
 
     /**
+     * @var Request
+     */
+    protected $request;
+
+    /**
      * @var array
      */
     protected $testExtensionsToLoad = [
@@ -36,13 +45,29 @@ class AjaxControllerTest extends FunctionalTestCase
     public function setUp()
     {
         parent::setUp();
+        $this->importDataSet('ntf://Database/pages.xml');
+        $this->setUpFrontendRootPage(1, [__DIR__ . '/../Fixtures/TypoScript/plugin.typoscript']);
 
-        $this->subject = new AjaxController();
+        $this->request = new Request();
+        $this->request->setControllerAliasToClassNameMapping([
+            'Ajax' => AjaxController::class
+        ]);
+        $this->request->setControllerExtensionName('Events2');
+        $this->request->setPluginName('Events');
+        $this->request->setControllerName('Ajax');
+
+        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
+
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $this->subject = $objectManager->get(AjaxController::class);
     }
 
     public function tearDown()
     {
-        unset($this->subject);
+        unset(
+            $this->subject,
+            $this->request
+        );
 
         parent::tearDown();
     }
@@ -50,10 +75,36 @@ class AjaxControllerTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function callAjaxObjectActionWithEmptyObjectNameResultsEmptyString()
+    public function callAjaxObjectActionWithEmptyObjectNameResultsInEmptyString()
     {
+        $this->request->setControllerActionName('callAjaxObject');
+        $this->request->setArgument('objectName', '');
+
+        $response = new Response();
+
+        $this->subject->processRequest($this->request, $response);
+        $content = $response->getContent();
+
         self::assertEmpty(
-            $this->subject->callAjaxObjectAction('')
+            $content
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function callAjaxObjectActionWithInvalidObjectNameResultsInEmptyString()
+    {
+        $this->request->setControllerActionName('callAjaxObject');
+        $this->request->setArgument('objectName', 'WrongObjectName');
+
+        $response = new Response();
+
+        $this->subject->processRequest($this->request, $response);
+        $content = $response->getContent();
+
+        self::assertEmpty(
+            $content
         );
     }
 
@@ -62,20 +113,17 @@ class AjaxControllerTest extends FunctionalTestCase
      */
     public function callAjaxObjectActionWithLowerCasedObjectNameWillBeConvertedToUcFirst()
     {
-        /** @var ObjectManager|ObjectProphecy $objectManager */
-        $objectManager = $this->prophesize(ObjectManager::class);
-        $objectManager
-            ->get(Arguments::class)
-            ->shouldBeCalled()
-            ->willReturn(new \stdClass());
-        $objectManager
-            ->get(FindSubCategories::class)
-            ->shouldBeCalled()
-            ->willReturn(new \stdClass());
+        $this->request->setControllerActionName('callAjaxObject');
+        $this->request->setArgument('objectName', 'findSubCategories');
 
-        $this->subject->injectObjectManager($objectManager->reveal());
-        self::assertEmpty(
-            $this->subject->callAjaxObjectAction('findSubCategories', [])
+        $response = new Response();
+
+        $this->subject->processRequest($this->request, $response);
+        $content = $response->getContent();
+
+        self::assertSame(
+            '{}',
+            $content
         );
     }
 
@@ -84,31 +132,23 @@ class AjaxControllerTest extends FunctionalTestCase
      */
     public function callAjaxObjectActionWithValidObjectNameAndArgumentsResultsWithJsonOutput()
     {
-        $arguments = ['foo', 'bar'];
-        $expectedResult = '[{"123":"foo"}]';
+        $this->request->setControllerActionName('callAjaxObject');
+        $this->request->setArgument('objectName', 'FindSubCategories');
+        $this->request->setArgument(
+            'arguments',
+            [
+                'category' => 123
+            ]
+        );
 
-        /** @var FindSubCategories|ObjectProphecy $findSubCategories */
-        $findSubCategories = $this->prophesize(FindSubCategories::class);
-        $findSubCategories
-            ->processAjaxRequest($arguments)
-            ->shouldBeCalled()
-            ->willReturn($expectedResult);
+        $response = new Response();
 
-        /** @var ObjectManager|ObjectProphecy $objectManager */
-        $objectManager = $this->prophesize(ObjectManager::class);
-        $objectManager
-            ->get(Arguments::class)
-            ->shouldBeCalled()
-            ->willReturn(new \stdClass());
-        $objectManager
-            ->get(FindSubCategories::class)
-            ->shouldBeCalled()
-            ->willReturn($findSubCategories);
+        $this->subject->processRequest($this->request, $response);
+        $content = $response->getContent();
 
-        $this->subject->injectObjectManager($objectManager->reveal());
         self::assertSame(
-            $expectedResult,
-            $this->subject->callAjaxObjectAction('FindSubCategories', $arguments)
+            '{}',
+            $content
         );
     }
 }

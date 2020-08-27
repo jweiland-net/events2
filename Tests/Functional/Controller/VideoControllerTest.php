@@ -9,7 +9,7 @@
 
 namespace JWeiland\Events2\Tests\Functional\Controller;
 
-use JWeiland\Events2\Controller\LocationController;
+use JWeiland\Events2\Controller\VideoController;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -20,10 +20,10 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 /**
  * Test case.
  */
-class LocationControllerTest extends FunctionalTestCase
+class VideoControllerTest extends FunctionalTestCase
 {
     /**
-     * @var LocationController
+     * @var VideoController
      */
     protected $subject;
 
@@ -43,21 +43,21 @@ class LocationControllerTest extends FunctionalTestCase
     {
         parent::setUp();
         $this->importDataSet('ntf://Database/pages.xml');
-        $this->importDataSet(__DIR__ . '/../Fixtures/tx_events2_domain_model_location.xml');
+        $this->importDataSet(__DIR__ . '/../Fixtures/tx_events2_domain_model_event.xml');
         $this->setUpFrontendRootPage(1, [__DIR__ . '/../Fixtures/TypoScript/plugin.typoscript']);
 
         $this->request = new Request();
         $this->request->setControllerAliasToClassNameMapping([
-            'Location' => LocationController::class
+            'Video' => VideoController::class
         ]);
         $this->request->setControllerExtensionName('Events2');
         $this->request->setPluginName('Events');
-        $this->request->setControllerName('Location');
+        $this->request->setControllerName('Video');
 
         $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
 
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->subject = $objectManager->get(LocationController::class);
+        $this->subject = $objectManager->get(VideoController::class);
     }
 
     public function tearDown()
@@ -73,26 +73,53 @@ class LocationControllerTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function processRequestWithShowActionWillAssignLocationToView()
+    public function processRequestWithShowActionWillNotRenderAnyVideo()
     {
+        $databaseConnection = $this->getDatabaseConnection();
+        $databaseConnection->updateArray(
+            'tx_events2_domain_model_event',
+            [
+                'uid' => '1'
+            ],
+            [
+                'video_link' => 0
+            ]
+        );
         $this->request->setControllerActionName('show');
-        $this->request->setArgument('location', 1);
+        $this->request->setArgument('event', 1);
 
         $response = new Response();
 
         $this->subject->processRequest($this->request, $response);
-        $content = $response->getContent();
+        $content = trim($response->getContent());
 
-        $this->assertContains(
-            'Kino',
+        $this->assertSame(
+            '',
             $content
         );
-        $this->assertContains(
-            'Cinemastreet 42',
+    }
+
+    /**
+     * @test
+     */
+    public function processRequestWithShowActionWillConvertYouTubeHashToUrl()
+    {
+        $this->importDataSet(__DIR__ . '/../Fixtures/tx_events2_domain_model_link.xml');
+
+        $this->request->setControllerActionName('show');
+        $this->request->setArgument('event', 1);
+
+        $response = new Response();
+
+        $this->subject->processRequest($this->request, $response);
+        $content = trim($response->getContent());
+
+        self::assertStringContainsString(
+            'Header: YouTube',
             $content
         );
-        $this->assertContains(
-            '12345 Everywhere',
+        self::assertStringContainsString(
+            'YouTube URL: //www.youtube.com/embed/5Xqo_SPiHlY',
             $content
         );
     }

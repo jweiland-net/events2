@@ -9,7 +9,8 @@
 
 namespace JWeiland\Events2\Tests\Functional\Controller;
 
-use JWeiland\Events2\Controller\VideoController;
+use JWeiland\Events2\Controller\SearchController;
+use JWeiland\Events2\Domain\Model\Search;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -20,10 +21,10 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 /**
  * Test case.
  */
-class VideoControllerTest extends FunctionalTestCase
+class SearchControllerTest extends FunctionalTestCase
 {
     /**
-     * @var VideoController
+     * @var SearchController
      */
     protected $subject;
 
@@ -42,22 +43,23 @@ class VideoControllerTest extends FunctionalTestCase
     public function setUp()
     {
         parent::setUp();
+        $this->setUpBackendUserFromFixture(1);
         $this->importDataSet('ntf://Database/pages.xml');
         $this->importDataSet(__DIR__ . '/../Fixtures/tx_events2_domain_model_event.xml');
         $this->setUpFrontendRootPage(1, [__DIR__ . '/../Fixtures/TypoScript/plugin.typoscript']);
 
         $this->request = new Request();
         $this->request->setControllerAliasToClassNameMapping([
-            'Video' => VideoController::class
+            'Search' => SearchController::class
         ]);
         $this->request->setControllerExtensionName('Events2');
-        $this->request->setPluginName('Events');
-        $this->request->setControllerName('Video');
+        $this->request->setPluginName('Search');
+        $this->request->setControllerName('Search');
 
         $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
 
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->subject = $objectManager->get(VideoController::class);
+        $this->subject = $objectManager->get(SearchController::class);
     }
 
     public function tearDown()
@@ -73,28 +75,21 @@ class VideoControllerTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function processRequestWithShowActionWillNotRenderAnyVideo()
+    public function processRequestWithShowActionWillAssignEmptySearchObject()
     {
-        $databaseConnection = $this->getDatabaseConnection();
-        $databaseConnection->updateArray(
-            'tx_events2_domain_model_event',
-            [
-                'uid' => '1'
-            ],
-            [
-                'video_link' => 0
-            ]
-        );
         $this->request->setControllerActionName('show');
-        $this->request->setArgument('event', 1);
 
         $response = new Response();
 
         $this->subject->processRequest($this->request, $response);
         $content = trim($response->getContent());
 
-        $this->assertSame(
-            '',
+        self::assertStringContainsString(
+            'Search:',
+            $content
+        );
+        self::assertStringContainsString(
+            'Free entry: no',
             $content
         );
     }
@@ -102,24 +97,25 @@ class VideoControllerTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function processRequestWithShowActionWillConvertYouTubeHashToUrl()
+    public function processRequestWithShowActionWillUpdateFormValues()
     {
-        $this->importDataSet(__DIR__ . '/../Fixtures/tx_events2_domain_model_link.xml');
-
+        $search = new Search();
+        $search->setSearch('Test');
+        $search->setFreeEntry(true);
         $this->request->setControllerActionName('show');
-        $this->request->setArgument('event', 1);
+        $this->request->setArgument('search', $search);
 
         $response = new Response();
 
         $this->subject->processRequest($this->request, $response);
         $content = trim($response->getContent());
 
-        $this->assertContains(
-            'Header: YouTube',
+        self::assertStringContainsString(
+            'Search: Test',
             $content
         );
-        $this->assertContains(
-            'YouTube URL: //www.youtube.com/embed/5Xqo_SPiHlY',
+        self::assertStringContainsString(
+            'Free entry: yes',
             $content
         );
     }

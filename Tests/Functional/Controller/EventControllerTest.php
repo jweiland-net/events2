@@ -9,24 +9,56 @@
 
 namespace JWeiland\Events2\Tests\Functional\Controller;
 
-use JWeiland\Events2\Controller\SearchController;
+use JWeiland\Events2\Configuration\ExtConf;
+use JWeiland\Events2\Controller\EventController;
+use JWeiland\Events2\Domain\Model\Category;
+use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Search;
+use JWeiland\Events2\Domain\Model\Time;
+use JWeiland\Events2\Domain\Repository\CategoryRepository;
+use JWeiland\Events2\Domain\Repository\DayRepository;
+use JWeiland\Events2\Domain\Repository\EventRepository;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Mvc\Response;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\Generic\Query;
+use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 
 /**
  * Test case.
  */
-class SearchControllerTest extends FunctionalTestCase
+class EventControllerTest extends FunctionalTestCase
 {
     /**
-     * @var SearchController
+     * @var EventController
      */
     protected $subject;
+
+    /**
+     * @var DayRepository|ObjectProphecy
+     */
+    protected $dayRepositoryProphecy;
+
+    /**
+     * @var EventRepository|ObjectProphecy
+     */
+    protected $eventRepositoryProphecy;
+
+    /**
+     * @var CategoryRepository|ObjectProphecy
+     */
+    protected $categoryRepositoryProphecy;
+
+    /**
+     * @var QueryResult|ObjectProphecy
+     */
+    protected $queryResultProphecy;
 
     /**
      * @var Request
@@ -45,21 +77,25 @@ class SearchControllerTest extends FunctionalTestCase
         parent::setUp();
         $this->setUpBackendUserFromFixture(1);
         $this->importDataSet('ntf://Database/pages.xml');
-        $this->importDataSet(__DIR__ . '/../Fixtures/tx_events2_domain_model_event.xml');
         $this->setUpFrontendRootPage(1, [__DIR__ . '/../Fixtures/TypoScript/plugin.typoscript']);
+
+        $this->queryResultProphecy = $this->prophesize(QueryResult::class);
+        $this->queryResultProphecy
+            ->getQuery()
+            ->willReturn($this->prophesize(Query::class)->reveal());
 
         $this->request = new Request();
         $this->request->setControllerAliasToClassNameMapping([
-            'Search' => SearchController::class
+            'Event' => EventController::class
         ]);
         $this->request->setControllerExtensionName('Events2');
-        $this->request->setPluginName('Search');
-        $this->request->setControllerName('Search');
+        $this->request->setPluginName('Events');
+        $this->request->setControllerName('Event');
 
         $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
 
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->subject = $objectManager->get(SearchController::class);
+        $this->subject = $objectManager->get(EventController::class);
     }
 
     public function tearDown()
@@ -75,48 +111,72 @@ class SearchControllerTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function processRequestWithShowActionWillAssignEmptySearchObject()
+    public function processRequestWithListSearchResultsWillSearchForEvents()
     {
-        $this->request->setControllerActionName('show');
+        $this->dayRepositoryProphecy = $this->prophesize(DayRepository::class);
+        $this->dayRepositoryProphecy
+            ->setSettings(Argument::any())
+            ->shouldBeCalled();
 
-        $response = new Response();
-
-        $this->subject->processRequest($this->request, $response);
-        $content = trim($response->getContent());
-
-        self::assertStringContainsString(
-            'Search:',
-            $content
-        );
-        self::assertStringContainsString(
-            'Free entry: no',
-            $content
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function processRequestWithShowActionWillUpdateFormValues()
-    {
         $search = new Search();
-        $search->setSearch('Test');
-        $search->setFreeEntry(true);
-        $this->request->setControllerActionName('show');
+        $this->dayRepositoryProphecy
+            ->searchEvents($search)
+            ->shouldBeCalled()
+            ->willReturn($this->queryResultProphecy->reveal());
+        $this->subject->injectDayRepository($this->dayRepositoryProphecy->reveal());
+
+        $this->request->setControllerActionName('listSearchResults');
         $this->request->setArgument('search', $search);
 
         $response = new Response();
 
         $this->subject->processRequest($this->request, $response);
-        $content = trim($response->getContent());
+    }
 
-        self::assertStringContainsString(
-            'Search: Test',
-            $content
-        );
-        self::assertStringContainsString(
-            'Free entry: yes',
-            $content
-        );
+    /**
+     * @test
+     */
+    public function processRequestWithListMyEventsWillCallFindMyEvents()
+    {
+        $this->eventRepositoryProphecy = $this->prophesize(EventRepository::class);
+        $this->eventRepositoryProphecy
+            ->setSettings(Argument::any())
+            ->shouldBeCalled();
+
+        $this->eventRepositoryProphecy
+            ->findMyEvents()
+            ->shouldBeCalled()
+            ->willReturn($this->queryResultProphecy->reveal());
+        $this->subject->injectEventRepository($this->eventRepositoryProphecy->reveal());
+
+        $this->request->setControllerActionName('listMyEvents');
+
+        $response = new Response();
+
+        $this->subject->processRequest($this->request, $response);
+    }
+
+    /**
+     * @test
+     */
+    public function processRequestWithNewActionWillCollectSelectableCategories()
+    {
+        $this->queryResultProphecy
+            ->count()
+            ->shouldBeCalled()
+            ->willReturn(3);
+
+        $this->categoryRepositoryProphecy = $this->prophesize(CategoryRepository::class);
+        $this->categoryRepositoryProphecy
+            ->getCategories('1,12,123')
+            ->shouldBeCalled()
+            ->willReturn($this->queryResultProphecy->reveal());
+        $this->subject->injectCategoryRepository($this->categoryRepositoryProphecy->reveal());
+
+        $this->request->setControllerActionName('new');
+
+        $response = new Response();
+
+        $this->subject->processRequest($this->request, $response);
     }
 }
