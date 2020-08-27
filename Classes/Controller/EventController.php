@@ -255,7 +255,7 @@ class EventController extends AbstractController
         $dayRelations->createDayRelations($event->getUid());
     }
 
-    public function sendMail(string $subjectKey, Event $event): bool
+    protected function sendMail(string $subjectKey, Event $event): bool
     {
         $this->view->assign('event', $event);
 
