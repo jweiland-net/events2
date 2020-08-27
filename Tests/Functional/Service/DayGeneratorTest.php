@@ -190,7 +190,8 @@ class DayGeneratorTest extends FunctionalTestCase
         $dayGenerator = new DayGenerator(
             GeneralUtility::makeInstance(Dispatcher::class),
             new ExtConf(),
-            new DateTimeUtility());
+            new DateTimeUtility()
+        );
         self::assertTrue($dayGenerator->initialize($event));
         $days = $dayGenerator->getDateTimeStorage();
         foreach ($days as $day) {

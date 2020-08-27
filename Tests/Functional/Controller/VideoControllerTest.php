@@ -93,7 +93,7 @@ class VideoControllerTest extends FunctionalTestCase
         $this->subject->processRequest($this->request, $response);
         $content = trim($response->getContent());
 
-        $this->assertSame(
+        self::assertSame(
             '',
             $content
         );
