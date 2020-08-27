@@ -46,9 +46,11 @@ class AjaxControllerTest extends FunctionalTestCase
         $this->setUpFrontendRootPage(1, [__DIR__ . '/../Fixtures/TypoScript/plugin.typoscript']);
 
         $this->request = new Request();
-        $this->request->setControllerAliasToClassNameMapping([
-            'Ajax' => AjaxController::class
-        ]);
+        if (method_exists($this->request, 'setControllerAliasToClassNameMapping')) {
+            $this->request->setControllerAliasToClassNameMapping([
+                'Ajax' => AjaxController::class
+            ]);
+        }
         $this->request->setControllerExtensionName('Events2');
         $this->request->setPluginName('Events');
         $this->request->setControllerName('Ajax');

@@ -74,9 +74,11 @@ class DayControllerTest extends FunctionalTestCase
             ->willReturn($this->prophesize(Query::class)->reveal());
 
         $this->request = new Request();
-        $this->request->setControllerAliasToClassNameMapping([
-            'Day' => DayController::class
-        ]);
+        if (method_exists($this->request, 'setControllerAliasToClassNameMapping')) {
+            $this->request->setControllerAliasToClassNameMapping([
+                'Day' => DayController::class
+            ]);
+        }
         $this->request->setControllerExtensionName('Events2');
         $this->request->setPluginName('Events');
         $this->request->setControllerName('Day');
