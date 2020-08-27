@@ -49,9 +49,11 @@ class SearchControllerTest extends FunctionalTestCase
         $this->setUpFrontendRootPage(1, [__DIR__ . '/../Fixtures/TypoScript/plugin.typoscript']);
 
         $this->request = new Request();
-        $this->request->setControllerAliasToClassNameMapping([
-            'Search' => SearchController::class
-        ]);
+        if (method_exists($this->request, 'setControllerAliasToClassNameMapping')) {
+            $this->request->setControllerAliasToClassNameMapping([
+                'Search' => SearchController::class
+            ]);
+        }
         $this->request->setControllerExtensionName('Events2');
         $this->request->setPluginName('Search');
         $this->request->setControllerName('Search');

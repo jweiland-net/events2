@@ -47,9 +47,11 @@ class VideoControllerTest extends FunctionalTestCase
         $this->setUpFrontendRootPage(1, [__DIR__ . '/../Fixtures/TypoScript/plugin.typoscript']);
 
         $this->request = new Request();
-        $this->request->setControllerAliasToClassNameMapping([
-            'Video' => VideoController::class
-        ]);
+        if (method_exists($this->request, 'setControllerAliasToClassNameMapping')) {
+            $this->request->setControllerAliasToClassNameMapping([
+                'Video' => VideoController::class
+            ]);
+        }
         $this->request->setControllerExtensionName('Events2');
         $this->request->setPluginName('Events');
         $this->request->setControllerName('Video');

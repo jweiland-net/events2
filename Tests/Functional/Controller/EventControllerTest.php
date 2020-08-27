@@ -80,9 +80,11 @@ class EventControllerTest extends FunctionalTestCase
             ->willReturn($this->prophesize(Query::class)->reveal());
 
         $this->request = new Request();
-        $this->request->setControllerAliasToClassNameMapping([
-            'Event' => EventController::class
-        ]);
+        if (method_exists($this->request, 'setControllerAliasToClassNameMapping')) {
+            $this->request->setControllerAliasToClassNameMapping([
+                'Event' => EventController::class
+            ]);
+        }
         $this->request->setControllerExtensionName('Events2');
         $this->request->setPluginName('Events');
         $this->request->setControllerName('Event');
