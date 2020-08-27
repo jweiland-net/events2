@@ -1,0 +1,15 @@
+Search: {search.search}
+
+<f:if condition="{search.mainCategory}">
+Main Category: {search.mainCategory.title}
+</f:if>
+
+<f:if condition="{search.subCategory}">
+Sub Category: {search.subCategory.title}
+</f:if>
+
+Event begin: {search.eventBegin}
+
+Event end: {search.eventEnd}
+
+Free entry: {f:if(condition: search.freeEntry, then: 'yes', else: 'no')}
