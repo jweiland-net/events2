@@ -9,22 +9,28 @@
 
 namespace JWeiland\Events2\Tests\Functional\Controller;
 
-use JWeiland\Events2\Ajax\FindSubCategories;
-use JWeiland\Events2\Controller\AjaxController;
+use JWeiland\Events2\Controller\LocationController;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-use Prophecy\Prophecy\ObjectProphecy;
-use TYPO3\CMS\Extbase\Mvc\Controller\Arguments;
+use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\Request;
+use TYPO3\CMS\Extbase\Mvc\Response;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Test case.
  */
-class AjaxControllerTest extends FunctionalTestCase
+class LocationControllerTest extends FunctionalTestCase
 {
     /**
-     * @var AjaxController
+     * @var LocationController
      */
     protected $subject;
+
+    /**
+     * @var Request
+     */
+    protected $request;
 
     /**
      * @var array
@@ -36,13 +42,30 @@ class AjaxControllerTest extends FunctionalTestCase
     public function setUp()
     {
         parent::setUp();
+        $this->importDataSet('ntf://Database/pages.xml');
+        $this->importDataSet(__DIR__ . '/../Fixtures/tx_events2_domain_model_location.xml');
+        $this->setUpFrontendRootPage(1, [__DIR__ . '/../Fixtures/TypoScript/plugin.typoscript']);
 
-        $this->subject = new AjaxController();
+        $this->request = new Request();
+        $this->request->setControllerAliasToClassNameMapping([
+            'Location' => LocationController::class
+        ]);
+        $this->request->setControllerExtensionName('Events2');
+        $this->request->setPluginName('Events');
+        $this->request->setControllerName('Location');
+
+        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
+
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $this->subject = $objectManager->get(LocationController::class);
     }
 
     public function tearDown()
     {
-        unset($this->subject);
+        unset(
+            $this->subject,
+            $this->request
+        );
 
         parent::tearDown();
     }
@@ -50,65 +73,27 @@ class AjaxControllerTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function callAjaxObjectActionWithEmptyObjectNameResultsEmptyString()
+    public function processRequestWithShowActionWillAssignLocationToView()
     {
-        self::assertEmpty(
-            $this->subject->callAjaxObjectAction('')
+        $this->request->setControllerActionName('show');
+        $this->request->setArgument('location', 1);
+
+        $response = new Response();
+
+        $this->subject->processRequest($this->request, $response);
+        $content = $response->getContent();
+
+        self::assertStringContainsString(
+            'Kino',
+            $content
         );
-    }
-
-    /**
-     * @test
-     */
-    public function callAjaxObjectActionWithLowerCasedObjectNameWillBeConvertedToUcFirst()
-    {
-        /** @var ObjectManager|ObjectProphecy $objectManager */
-        $objectManager = $this->prophesize(ObjectManager::class);
-        $objectManager
-            ->get(Arguments::class)
-            ->shouldBeCalled()
-            ->willReturn(new \stdClass());
-        $objectManager
-            ->get(FindSubCategories::class)
-            ->shouldBeCalled()
-            ->willReturn(new \stdClass());
-
-        $this->subject->injectObjectManager($objectManager->reveal());
-        self::assertEmpty(
-            $this->subject->callAjaxObjectAction('findSubCategories', [])
+        self::assertStringContainsString(
+            'Cinemastreet 42',
+            $content
         );
-    }
-
-    /**
-     * @test
-     */
-    public function callAjaxObjectActionWithValidObjectNameAndArgumentsResultsWithJsonOutput()
-    {
-        $arguments = ['foo', 'bar'];
-        $expectedResult = '[{"123":"foo"}]';
-
-        /** @var FindSubCategories|ObjectProphecy $findSubCategories */
-        $findSubCategories = $this->prophesize(FindSubCategories::class);
-        $findSubCategories
-            ->processAjaxRequest($arguments)
-            ->shouldBeCalled()
-            ->willReturn($expectedResult);
-
-        /** @var ObjectManager|ObjectProphecy $objectManager */
-        $objectManager = $this->prophesize(ObjectManager::class);
-        $objectManager
-            ->get(Arguments::class)
-            ->shouldBeCalled()
-            ->willReturn(new \stdClass());
-        $objectManager
-            ->get(FindSubCategories::class)
-            ->shouldBeCalled()
-            ->willReturn($findSubCategories);
-
-        $this->subject->injectObjectManager($objectManager->reveal());
-        self::assertSame(
-            $expectedResult,
-            $this->subject->callAjaxObjectAction('FindSubCategories', $arguments)
+        self::assertStringContainsString(
+            '12345 Everywhere',
+            $content
         );
     }
 }
