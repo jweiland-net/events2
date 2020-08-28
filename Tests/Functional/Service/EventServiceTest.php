@@ -19,6 +19,7 @@ use JWeiland\Events2\Service\EventService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use Prophecy\Prophecy\ObjectProphecy;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
@@ -31,6 +32,11 @@ class EventServiceTest extends FunctionalTestCase
      */
     protected $subject;
 
+    /**
+     * @var EventRepository|ObjectProphecy
+     */
+    protected $eventRepositoryProphecy;
+
     protected $testExtensionsToLoad = [
         'typo3conf/ext/events2'
     ];
@@ -39,16 +45,21 @@ class EventServiceTest extends FunctionalTestCase
     {
         parent::setUp();
 
-        $this->subject = new EventService(
-            new ExtConf(),
-            new DateTimeUtility()
+        $this->eventRepositoryProphecy = $this->prophesize(EventRepository::class);
+
+        $this->subject = GeneralUtility::makeInstance(
+            EventService::class,
+            $this->eventRepositoryProphecy->reveal(),
+            GeneralUtility::makeInstance(ExtConf::class),
+            GeneralUtility::makeInstance(DateTimeUtility::class)
         );
     }
 
     public function tearDown()
     {
         unset(
-            $this->subject
+            $this->subject,
+            $this->eventRepositoryProphecy
         );
 
         parent::tearDown();
@@ -660,14 +671,10 @@ class EventServiceTest extends FunctionalTestCase
      */
     public function getNextDayForEventWithoutEventReturnsFalse()
     {
-        /** @var EventRepository|ObjectProphecy $eventRepository */
-        $eventRepository = $this->prophesize(EventRepository::class);
-        $eventRepository
+        $this->eventRepositoryProphecy
             ->findByIdentifier(1)
             ->shouldBeCalled()
             ->willReturn(null);
-
-        $this->subject->injectEventRepository($eventRepository->reveal());
 
         self::assertNull(
             $this->subject->getNextDayForEvent(1)
@@ -693,14 +700,10 @@ class EventServiceTest extends FunctionalTestCase
         $event = new Event();
         $event->setDays($days);
 
-        /** @var EventRepository|ObjectProphecy $eventRepository */
-        $eventRepository = $this->prophesize(EventRepository::class);
-        $eventRepository
+        $this->eventRepositoryProphecy
             ->findByIdentifier(1)
             ->shouldBeCalled()
             ->willReturn(null);
-
-        $this->subject->injectEventRepository($eventRepository->reveal());
 
         self::assertNull(
             $this->subject->getNextDayForEvent(1)
@@ -726,14 +729,10 @@ class EventServiceTest extends FunctionalTestCase
         $event = new Event();
         $event->setDays($days);
 
-        /** @var EventRepository|ObjectProphecy $eventRepository */
-        $eventRepository = $this->prophesize(EventRepository::class);
-        $eventRepository
+        $this->eventRepositoryProphecy
             ->findByIdentifier(1)
             ->shouldBeCalled()
             ->willReturn($event);
-
-        $this->subject->injectEventRepository($eventRepository->reveal());
 
         self::assertEquals(
             $day->getDay(),
@@ -777,14 +776,10 @@ class EventServiceTest extends FunctionalTestCase
         $event->setEventType('recurring');
         $event->setDays($days);
 
-        /** @var EventRepository|ObjectProphecy $eventRepository */
-        $eventRepository = $this->prophesize(EventRepository::class);
-        $eventRepository
+        $this->eventRepositoryProphecy
             ->findByIdentifier(1)
             ->shouldBeCalled()
             ->willReturn($event);
-
-        $this->subject->injectEventRepository($eventRepository->reveal());
 
         self::assertEquals(
             $day3->getDay(),
@@ -811,14 +806,10 @@ class EventServiceTest extends FunctionalTestCase
         $event = new Event();
         $event->setDays($days);
 
-        /** @var EventRepository|ObjectProphecy $eventRepository */
-        $eventRepository = $this->prophesize(EventRepository::class);
-        $eventRepository
+        $this->eventRepositoryProphecy
             ->findByIdentifier(1)
             ->shouldBeCalled()
             ->willReturn($event);
-
-        $this->subject->injectEventRepository($eventRepository->reveal());
 
         self::assertEquals(
             $day->getDay(),
@@ -862,14 +853,10 @@ class EventServiceTest extends FunctionalTestCase
         $event->setEventType('recurring');
         $event->setDays($days);
 
-        /** @var EventRepository|ObjectProphecy $eventRepository */
-        $eventRepository = $this->prophesize(EventRepository::class);
-        $eventRepository
+        $this->eventRepositoryProphecy
             ->findByIdentifier(1)
             ->shouldBeCalled()
             ->willReturn($event);
-
-        $this->subject->injectEventRepository($eventRepository->reveal());
 
         self::assertEquals(
             $day1->getDay(),

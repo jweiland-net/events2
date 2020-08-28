@@ -92,18 +92,18 @@ class DayRelationServiceTest extends FunctionalTestCase
         );
 
         $eventService = new EventService(
+            $this->eventRepositoryProphecy->reveal(),
             $this->extConfProphecy->reveal(),
             new DateTimeUtility()
         );
 
         $this->subject = new DayRelationService(
-            $this->extConfProphecy->reveal(),
             $dayGenerator,
+            $this->eventRepositoryProphecy->reveal(),
+            $eventService,
+            $this->persistenceManagerProphecy->reveal(),
             new DateTimeUtility()
         );
-        $this->subject->injectEventRepository($this->eventRepositoryProphecy->reveal());
-        $this->subject->injectPersistenceManager($this->persistenceManagerProphecy->reveal());
-        $this->subject->injectEventService($eventService);
     }
 
     public function tearDown()
