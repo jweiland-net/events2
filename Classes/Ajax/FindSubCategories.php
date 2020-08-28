@@ -17,14 +17,14 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 /*
  * This is an Ajax call to find all sub-categories for event-search Plugin
  */
-class FindSubCategories extends AbstractAjaxRequest
+class FindSubCategories implements AjaxInterface
 {
     /**
      * @var CategoryRepository
      */
     protected $categoryRepository;
 
-    public function injectCategoryRepository(CategoryRepository $categoryRepository): void
+    public function __construct(CategoryRepository $categoryRepository)
     {
         $this->categoryRepository = $categoryRepository;
     }
