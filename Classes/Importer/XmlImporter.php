@@ -136,7 +136,7 @@ class XmlImporter extends AbstractImporter
         switch ($this->getProcessAs($data)) {
             case 'delete':
                 if ($event instanceof Event) {
-                    $this->getPersistenceManager()->remove($event);
+                    $this->persistenceManager->remove($event);
                 } else {
                     throw new \Exception(sprintf(
                         'Can not delete event with import-ID %s, as it does not exist in our database.',
@@ -181,7 +181,7 @@ class XmlImporter extends AbstractImporter
 
                     $event->setDays(new ObjectStorage());
 
-                    $this->getPersistenceManager()->update($event);
+                    $this->persistenceManager->update($event);
                 } else {
                     throw new \Exception(sprintf(
                         'Can not edit event with import-ID %s, as it does not exist in our database.',
@@ -195,7 +195,7 @@ class XmlImporter extends AbstractImporter
                 $event->setImportId($data['import_id'] ?: '');
                 $event->setHidden(true);
                 $event->setPid($this->storagePid);
-                $this->getPersistenceManager()->add($event);
+                $this->persistenceManager->add($event);
                 break;
         }
     }
