@@ -25,7 +25,7 @@ class ICalendarViewHelper extends AbstractWidgetViewHelper
      */
     protected $controller;
 
-    public function injectController(ICalendarController $controller): void
+    public function __construct(ICalendarController $controller)
     {
         $this->controller = $controller;
     }

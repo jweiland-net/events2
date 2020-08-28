@@ -18,6 +18,7 @@ use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\Index\Indexer;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
 /*
@@ -49,7 +50,6 @@ class Import extends AbstractTask
     public function execute(): bool
     {
         try {
-            /** @var File $file */
             $file = ResourceFactory::getInstance()->retrieveFileOrFolderObject($this->path);
             if ($file instanceof File) {
                 if ($file->isMissing()) {
@@ -57,7 +57,6 @@ class Import extends AbstractTask
                     return false;
                 }
                 // File can be updated by (S)FTP. So we have to update its properties first.
-                /** @var Indexer $indexer */
                 $indexer = GeneralUtility::makeInstance(Indexer::class, $file->getStorage());
                 $indexer->updateIndexEntry($file);
             } else {
@@ -97,12 +96,16 @@ class Import extends AbstractTask
             $this->addMessage('There is no class to handler files of type: ' . $file->getExtension());
             return false;
         }
-        $importer = GeneralUtility::makeInstance($className, $file, $this);
+
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $importer = $objectManager->get($className);
         if (!$importer instanceof ImporterInterface) {
             $this->addMessage('Importer has to implement ImporterInterface');
             return false;
         }
-        if (!$importer->isValid($file)) {
+        $importer->setTask($this);
+        $importer->setFile($file);
+        if (!$importer->checkFile()) {
             return false;
         }
         return $importer->import();

@@ -28,6 +28,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class EventService
 {
     /**
+     * @var EventRepository
+     */
+    protected $eventRepository;
+
+    /**
      * @var ExtConf
      */
     protected $extConf;
@@ -37,20 +42,14 @@ class EventService
      */
     protected $dateTimeUtility;
 
-    /**
-     * @var EventRepository
-     */
-    protected $eventRepository;
-
-    public function __construct(ExtConf $extConf, DateTimeUtility $dateTimeUtility)
-    {
+    public function __construct(
+        EventRepository $eventRepository,
+        ExtConf $extConf,
+        DateTimeUtility $dateTimeUtility
+    ) {
+        $this->eventRepository = $eventRepository;
         $this->extConf = $extConf;
         $this->dateTimeUtility = $dateTimeUtility;
-    }
-
-    public function injectEventRepository(EventRepository $eventRepository)
-    {
-        $this->eventRepository = $eventRepository;
     }
 
     /**

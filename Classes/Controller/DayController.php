@@ -12,16 +12,54 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Controller;
 
 use JWeiland\Events2\Domain\Model\Filter;
+use JWeiland\Events2\Domain\Repository\DayRepository;
+use JWeiland\Events2\Domain\Repository\OrganizerRepository;
 use JWeiland\Events2\Service\JsonLdService;
 use JWeiland\Events2\Utility\CacheUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 
 /*
  * The DayController contains actions for various list actions and detail view.
  */
 class DayController extends AbstractController
 {
+    /**
+     * @var DayRepository
+     */
+    protected $dayRepository;
+
+    /**
+     * @var OrganizerRepository
+     */
+    protected $organizerRepository;
+
+    public function __construct(
+        DayRepository $dayRepository,
+        OrganizerRepository $organizerRepository
+    ) {
+        $this->dayRepository = $dayRepository;
+        $this->organizerRepository = $organizerRepository;
+    }
+
+    public function initializeObject()
+    {
+        $this->dayRepository->setSettings($this->settings);
+    }
+
+    protected function initializeView(ViewInterface $view)
+    {
+        parent::initializeView($view);
+
+        if ($this->settings['showFilterForOrganizerInFrontend']) {
+            $this->view->assign(
+                'organizers',
+                $this->organizerRepository->getOrganizersForFilter()
+            );
+        }
+    }
+
     /**
      * @param Filter|null $filter
      */
@@ -111,5 +149,22 @@ class DayController extends AbstractController
         $days = $this->dayRepository->findByTimestamp($timestamp);
         $this->view->assign('days', $days);
         CacheUtility::addPageCacheTagsByQuery($days->getQuery());
+    }
+
+    /**
+     * Validate filter
+     * Create empty filter if not valid
+     * Assign filter to view
+     *
+     * @param Filter|null $filter
+     * @return Filter
+     */
+    protected function validateAndAssignFilter(?Filter $filter): Filter
+    {
+        if ($filter === null) {
+            $filter = GeneralUtility::makeInstance(Filter::class);
+        }
+        $this->view->assign('filter', $filter);
+        return $filter;
     }
 }
