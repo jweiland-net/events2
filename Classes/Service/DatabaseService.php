@@ -474,7 +474,7 @@ class DatabaseService
      * @param string $column
      * @param mixed $value
      * @param int $dataType
-     * @param QueryBuilder $parentQueryBuilder
+     * @param QueryBuilder|null $parentQueryBuilder
      * @param string $alias
      */
     public function addConstraintForEventColumn(

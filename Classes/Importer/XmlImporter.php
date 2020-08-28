@@ -422,6 +422,7 @@ class XmlImporter extends AbstractImporter
 
     protected function addImages(Event $event, array $data): void
     {
+        $resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);
         if (isset($data['images']) && is_array($data['images'])) {
             $images = new ObjectStorage();
             /** @var CharsetConverter $csConverter */
@@ -447,11 +448,11 @@ class XmlImporter extends AbstractImporter
                 $targetDirectoryPath = Environment::getPublicPath() . '/' . $rootFolder->getPublicUrl() . $relativeTargetDirectoryPath;
                 GeneralUtility::mkdir_deep($targetDirectoryPath);
 
-                $targetFolder = ResourceFactory::getInstance()->getFolderObjectFromCombinedIdentifier(
+                $targetFolder = $resourceFactory->getFolderObjectFromCombinedIdentifier(
                     $rootFolder->getCombinedIdentifier() . $relativeTargetDirectoryPath
                 );
                 if ($targetFolder->hasFile($filename)) {
-                    $file = ResourceFactory::getInstance()->retrieveFileOrFolderObject(
+                    $file = $resourceFactory->retrieveFileOrFolderObject(
                         $targetFolder->getCombinedIdentifier() . $filename
                     );
                 } else {
@@ -471,7 +472,7 @@ class XmlImporter extends AbstractImporter
                 // Create new FileReference
                 $extbaseFileReference = GeneralUtility::makeInstance(FileReference::class);
                 $extbaseFileReference->setPid($this->storagePid);
-                $extbaseFileReference->setOriginalResource(ResourceFactory::getInstance()->createFileReferenceObject(
+                $extbaseFileReference->setOriginalResource($resourceFactory->createFileReferenceObject(
                     [
                         'uid_local' => $file->getUid(),
                         'uid_foreign' => uniqid('NEW_'),

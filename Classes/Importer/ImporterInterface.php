@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Importer;
 
+use JWeiland\Events2\Task\Import;
 use TYPO3\CMS\Core\Resource\FileInterface;
-use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
 /*
  * An Interface as base for all event importer classes
@@ -23,9 +23,9 @@ interface ImporterInterface
      * Set task
      * Needed, to get the StoragePid
      *
-     * @param AbstractTask $task
+     * @param Import $task
      */
-    public function setTask(AbstractTask $task): void;
+    public function setTask(Import $task): void;
 
     /**
      * Set file to import

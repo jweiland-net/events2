@@ -49,6 +49,16 @@ class DayRepository extends Repository
     protected $databaseService;
 
     /**
+     * @var DayFactory
+     */
+    protected $dayFactory;
+
+    /**
+     * @var Dispatcher
+     */
+    protected $dispatcher;
+
+    /**
      * @var array
      */
     protected $settings = [];
@@ -57,12 +67,16 @@ class DayRepository extends Repository
         ObjectManagerInterface $objectManager,
         ExtConf $extConf,
         DateTimeUtility $dateTimeUtility,
-        DatabaseService $databaseService
+        DatabaseService $databaseService,
+        DayFactory $dayFactory,
+        Dispatcher $dispatcher
     ) {
         parent::__construct($objectManager);
         $this->extConf = $extConf;
         $this->dateTimeUtility = $dateTimeUtility;
         $this->databaseService = $databaseService;
+        $this->dayFactory = $dayFactory;
+        $this->dispatcher = $dispatcher;
     }
 
     public function setSettings(array $settings)
@@ -448,8 +462,7 @@ class DayRepository extends Repository
      */
     public function findDayByEventAndTimestamp(int $eventUid, int $timestamp = 0): Day
     {
-        $dayFactory = GeneralUtility::makeInstance(DayFactory::class);
-        return $dayFactory->findDayByEventAndTimestamp($eventUid, $timestamp, $this->createQuery());
+        return $this->dayFactory->findDayByEventAndTimestamp($eventUid, $timestamp, $this->createQuery());
     }
 
     /**
@@ -501,8 +514,7 @@ class DayRepository extends Repository
         Filter $filter,
         array $settings
     ): void {
-        $signalSlotDispatcher = GeneralUtility::makeInstance(ObjectManager::class)->get(Dispatcher::class);
-        $signalSlotDispatcher->dispatch(
+        $this->dispatcher->dispatch(
             self::class,
             'modifyQueriesOfFindEvents',
             [$queryBuilder, $subQueryBuilder, $type, $filter, $settings]
@@ -523,8 +535,7 @@ class DayRepository extends Repository
         Search $search,
         array $settings
     ): void {
-        $signalSlotDispatcher = GeneralUtility::makeInstance(ObjectManager::class)->get(Dispatcher::class);
-        $signalSlotDispatcher->dispatch(
+        $this->dispatcher->dispatch(
             self::class,
             'modifyQueriesOfSearchEvents',
             [$queryBuilder, $subQueryBuilder, $search, $settings]
@@ -543,9 +554,7 @@ class DayRepository extends Repository
         int $timestamp,
         array $settings
     ): void {
-        $signalSlotDispatcher = GeneralUtility::makeInstance(ObjectManager::class)
-            ->get(Dispatcher::class);
-        $signalSlotDispatcher->dispatch(
+        $this->dispatcher->dispatch(
             self::class,
             'modifyQueriesOfFindByTimestamp',
             [$queryBuilder, $timestamp, $settings]

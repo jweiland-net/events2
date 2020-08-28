@@ -16,6 +16,7 @@ use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Domain\Repository\OrganizerRepository;
+use JWeiland\Events2\Task\Import;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
@@ -25,9 +26,7 @@ use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
-use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
 /*
  * Abstract Importer which will keep most methods for all importer scripts
@@ -44,7 +43,7 @@ abstract class AbstractImporter implements ImporterInterface
     /**
      * Needed to retrieve the storagePid
      *
-     * @var AbstractTask
+     * @var Import
      */
     protected $task;
 
@@ -110,7 +109,7 @@ abstract class AbstractImporter implements ImporterInterface
         $this->today = new \DateTime('now');
     }
 
-    public function setTask(AbstractTask $task): void
+    public function setTask(Import $task): void
     {
         $this->task = $task;
     }
@@ -348,7 +347,7 @@ abstract class AbstractImporter implements ImporterInterface
             if (!$folder->hasFile($this->logFileName)) {
                 $logFile = $folder->createFile($this->logFileName);
             } else {
-                $logFile = ResourceFactory::getInstance()->retrieveFileOrFolderObject(
+                $logFile = GeneralUtility::makeInstance(ResourceFactory::class)->retrieveFileOrFolderObject(
                     $folder->getCombinedIdentifier() . $this->logFileName
                 );
             }

@@ -80,8 +80,8 @@ class JsonLdService
 
     protected function collectData(Day $day): void
     {
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $eventService = $objectManager->get(EventService::class);
+        $eventService = GeneralUtility::makeInstance(ObjectManager::class)
+            ->get(EventService::class);
         $time = $eventService->getTimeForDay($day);
         if ($time instanceof Time) {
             $this->addStartDateOfTimeToData($time);
