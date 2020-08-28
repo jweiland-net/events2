@@ -345,9 +345,9 @@ class EventController extends AbstractController
 
     protected function addDayRelations(Event $event): void
     {
-        /** @var DayRelationService $dayRelations */
-        $dayRelations = $this->objectManager->get(DayRelationService::class);
-        $dayRelations->createDayRelations($event->getUid());
+        $this->objectManager
+            ->get(DayRelationService::class)
+            ->createDayRelations($event->getUid());
     }
 
     protected function sendMail(string $subjectKey, Event $event): bool
@@ -489,7 +489,7 @@ class EventController extends AbstractController
             $regExpValidator = GeneralUtility::makeInstance(RegularExpressionValidator::class, [
                 'regularExpression' => '~^(|http:|https:)//(|www.)youtube(.*?)(v=|embed/)([a-zA-Z0-9_-]+)~i',
             ]);
-            /** @var ValidatorInterface $genericObjectValidator */
+            /** @var GenericObjectValidator $genericObjectValidator */
             $genericObjectValidator = GeneralUtility::makeInstance(GenericObjectValidator::class);
             $genericObjectValidator->addPropertyValidator('link', $regExpValidator);
 

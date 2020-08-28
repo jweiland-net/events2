@@ -50,7 +50,8 @@ class Import extends AbstractTask
     public function execute(): bool
     {
         try {
-            $file = ResourceFactory::getInstance()->retrieveFileOrFolderObject($this->path);
+            $file = GeneralUtility::makeInstance(ResourceFactory::class)
+                ->retrieveFileOrFolderObject($this->path);
             if ($file instanceof File) {
                 if ($file->isMissing()) {
                     $this->addMessage('The defined file seems to be missing. Please check, if file is still at its place', FlashMessage::ERROR);

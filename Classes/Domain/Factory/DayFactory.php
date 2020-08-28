@@ -19,7 +19,6 @@ use JWeiland\Events2\Service\DayRelationService;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
@@ -37,6 +36,16 @@ class DayFactory
     protected $databaseService;
 
     /**
+     * @var EventRepository
+     */
+    protected $eventRepository;
+
+    /**
+     * @var DayRelationService
+     */
+    protected $dayRelationService;
+
+    /**
      * @var array
      */
     protected $processOrderedMethods = [
@@ -46,9 +55,14 @@ class DayFactory
         'buildDay',
     ];
 
-    public function __construct(DatabaseService $databaseService = null)
-    {
-        $this->databaseService = $databaseService ?? GeneralUtility::makeInstance(DatabaseService::class);
+    public function __construct(
+        DatabaseService $databaseService,
+        EventRepository $eventRepository,
+        DayRelationService $dayRelationService
+    ) {
+        $this->databaseService = $databaseService;
+        $this->eventRepository = $eventRepository;
+        $this->dayRelationService = $dayRelationService;
     }
 
     /**
@@ -142,12 +156,8 @@ class DayFactory
      */
     protected function buildDay(array $searchValues, QueryInterface $query): Day
     {
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $eventRepository = $objectManager->get(EventRepository::class);
-        $dayRelationService = $objectManager->get(DayRelationService::class);
-
         /** @var Event|null $event */
-        $event = $eventRepository->findByIdentifier($searchValues['event']);
+        $event = $this->eventRepository->findByIdentifier($searchValues['event']);
         if (!$event instanceof Event) {
             // Normally this can't be thrown, as this class will only be called at a detail page.
             // So action controller will throw Exception first, if event is not given.
@@ -163,7 +173,7 @@ class DayFactory
 
         if (!$event->getDays()->count()) {
             // event seems to be out of time frame. Try to re-generate day records
-            $dayRelationService->addDay($event, $event->getEventBegin());
+            $this->dayRelationService->addDay($event, $event->getEventBegin());
         }
 
         $event->getDays()->rewind();

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Controller;
 
+use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Service\TypoScriptService;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -77,7 +78,7 @@ class AbstractController extends ActionController
     protected function initializeView(ViewInterface $view)
     {
         $this->view->assign('data', $this->configurationManager->getContentObject()->data);
-        $this->view->assign('extConf', $this->extConf);
+        $this->view->assign('extConf', GeneralUtility::makeInstance(ExtConf::class));
         $this->view->assign('jsVariables', json_encode($this->getJsVariables()));
     }
 

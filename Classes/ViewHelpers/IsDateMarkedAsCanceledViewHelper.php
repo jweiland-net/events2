@@ -49,8 +49,8 @@ class IsDateMarkedAsCanceledViewHelper extends AbstractViewHelper
         \Closure $childClosure,
         RenderingContextInterface $renderingContext
     ) {
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $eventService = $objectManager->get(EventService::class);
+        $eventService = GeneralUtility::makeInstance(ObjectManager::class)
+            ->get(EventService::class);
 
         return (bool)$eventService->getExceptionsForDate(
             $arguments['event'],

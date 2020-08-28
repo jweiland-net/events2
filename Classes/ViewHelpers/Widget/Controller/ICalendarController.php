@@ -155,7 +155,7 @@ class ICalendarController extends AbstractWidgetController
      * Hint: We can't use DTSTAMP here, because this must be UTC, but we don't have UTC times here.
      *
      * @param Day $day current Day. In case of duration it will be the first day
-     * @param Day $lastDay current Day. In case of duration it will be the last day
+     * @param Day|null $lastDay current Day. In case of duration it will be the last day
      * @param string $startTime Something like 15:30
      * @param string $endTime Something like 17:30
      * @return array
