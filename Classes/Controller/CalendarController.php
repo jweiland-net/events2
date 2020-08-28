@@ -26,28 +26,21 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 class CalendarController extends AbstractController
 {
     /**
-     * @var UserSession
-     */
-    protected $userSession;
-
-    /**
      * @var DayHelper
      */
     protected $dayHelper;
 
+    /**
+     * @var UserSession
+     */
+    protected $userSession;
+
     public function __construct(
-        ExtConf $extConf,
-        MailMessage $mailMessage,
-        UserRepository $userRepository,
+        DayHelper $dayHelper,
         UserSession $userSession
     ) {
-        parent::__construct($extConf, $mailMessage, $userRepository);
-        $this->userSession = $userSession;
-    }
-
-    public function injectDayHelper(DayHelper $dayHelper)
-    {
         $this->dayHelper = $dayHelper;
+        $this->userSession = $userSession;
     }
 
     public function showAction(): void

@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Controller;
 
 use JWeiland\Events2\Domain\Model\Search;
+use JWeiland\Events2\Domain\Repository\CategoryRepository;
+use JWeiland\Events2\Domain\Repository\LocationRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\Category;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
@@ -24,28 +26,27 @@ use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 class SearchController extends AbstractController
 {
     /**
-     * PreProcessing for all actions.
+     * @var CategoryRepository
      */
-    public function initializeAction()
-    {
-        // register foreign argument for search action
-        // so tx_events2_events was also available here in tx_events2_search context
-        $foreignPluginContext = GeneralUtility::_POST('tx_events2_events');
-        if (isset($foreignPluginContext['search'])) {
-            $search = $foreignPluginContext['search'];
-            if (is_array($search) && count($search)) {
-                $this->request->setArgument('search', $search);
-            }
-        }
-    }
+    protected $categoryRepository;
 
     /**
-     * PreProcessing of view for all actions.
-     *
-     * @param ViewInterface $view
+     * @var LocationRepository
      */
+    protected $locationRepository;
+
+    public function __construct(
+        CategoryRepository $categoryRepository,
+        LocationRepository $locationRepository
+    ) {
+        $this->categoryRepository = $categoryRepository;
+        $this->locationRepository = $locationRepository;
+    }
+
     protected function initializeView(ViewInterface $view)
     {
+        parent::initializeView($view);
+
         if (!$this->settings['mainCategories']) {
             $this->addFlashMessage('Dear Admin: You have forgotten to define some allowed categories in plugin configuration');
         }
@@ -65,15 +66,22 @@ class SearchController extends AbstractController
         $selectorData['locations'] = $this->locationRepository->findAll();
 
         $view->assign('selectorData', $selectorData);
-        parent::initializeView($view);
     }
 
-    /**
-     * we have a self-build form.
-     * That's why we have to manually allow some form-elements.
-     */
     public function initializeShowAction(): void
     {
+        // Register foreign argument for search action
+        // so tx_events2_events was also available here in tx_events2_search context
+        $foreignPluginContext = GeneralUtility::_POST('tx_events2_events');
+        if (isset($foreignPluginContext['search'])) {
+            $search = $foreignPluginContext['search'];
+            if (is_array($search) && count($search)) {
+                $this->request->setArgument('search', $search);
+            }
+        }
+
+        // We have a self-build <form> tag.
+        // That's why we have to manually allow some form-elements.
         $this->arguments->getArgument('search')->getPropertyMappingConfiguration()->setTypeConverterOptions(
             PersistentObjectConverter::class,
             [
@@ -84,8 +92,6 @@ class SearchController extends AbstractController
     }
 
     /**
-     * Action show.
-     *
      * @param Search|null $search
      */
     public function showAction(Search $search = null): void

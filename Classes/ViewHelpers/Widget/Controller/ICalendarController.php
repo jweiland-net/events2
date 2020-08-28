@@ -30,7 +30,7 @@ class ICalendarController extends AbstractWidgetController
      */
     protected $eventService;
 
-    public function injectEventService(EventService $eventService): void
+    public function __construct(EventService $eventService)
     {
         $this->eventService = $eventService;
     }

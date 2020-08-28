@@ -19,6 +19,7 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Extbase\Persistence\Generic\Session;
+use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -26,7 +27,7 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
 /*
  * Repository to get and find event records
  */
-class EventRepository extends Repository
+class EventRepository extends Repository implements HiddenRepositoryInterface
 {
     /**
      * @var array
@@ -60,49 +61,22 @@ class EventRepository extends Repository
      */
     protected $settings = [];
 
-    public function __construct(ObjectManagerInterface $objectManager, DateTimeUtility $dateTimeUtility)
-    {
+    public function __construct(
+        ObjectManagerInterface $objectManager,
+        DateTimeUtility $dateTimeUtility
+    ) {
         parent::__construct($objectManager);
         $this->dateTimeUtility = $dateTimeUtility;
     }
 
-    public function injectDataMapper(DataMapper $dataMapper)
-    {
-        $this->dataMapper = $dataMapper;
-    }
-
-    public function injectPersistenceSession(Session $persistenceSession)
-    {
-        $this->persistenceSession = $persistenceSession;
-    }
-
-    public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager)
-    {
-        $this->configurationManager = $configurationManager;
-    }
-
-    public function setSettings(array $settings)
-    {
-        $this->settings = $settings;
-    }
-
-    /**
-     * Find event by a given property value whether it is hidden or not.
-     *
-     * @param mixed $value
-     * @param string $property
-     * @return Event|null
-     */
-    public function findHiddenEntry($value, string $property = 'uid'): ?Event
+    public function findHiddenObject($value, string $property = 'uid'): ?object
     {
         $query = $this->createQuery();
         $query->getQuerySettings()->setIgnoreEnableFields(true);
         $query->getQuerySettings()->setEnableFieldsToBeIgnored(['disabled']);
         $query->getQuerySettings()->setRespectStoragePage(false);
 
-        /** @var Event $event */
-        $event = $query->matching($query->equals($property, $value))->execute()->getFirst();
-        return $event;
+        return $query->matching($query->equals($property, $value))->execute()->getFirst();
     }
 
     public function findMyEvents(): QueryResultInterface

@@ -22,6 +22,7 @@ use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 
 /*
  * While saving an event in backend, this class generates all the day records
@@ -75,28 +76,17 @@ class DayRelationService
     protected $firstTime;
 
     public function __construct(
-        ExtConf $extConf,
         DayGenerator $dayGenerator,
+        EventRepository $eventRepository,
+        EventService $eventService,
+        PersistenceManagerInterface $persistenceManager,
         DateTimeUtility $dateTimeUtility
     ) {
-        $this->extConf = $extConf;
         $this->dayGenerator = $dayGenerator;
-        $this->dateTimeUtility = $dateTimeUtility;
-    }
-
-    public function injectEventRepository(EventRepository $eventRepository)
-    {
         $this->eventRepository = $eventRepository;
-    }
-
-    public function injectEventService(EventService $eventService)
-    {
         $this->eventService = $eventService;
-    }
-
-    public function injectPersistenceManager(PersistenceManager $persistenceManager)
-    {
         $this->persistenceManager = $persistenceManager;
+        $this->dateTimeUtility = $dateTimeUtility;
     }
 
     /**
@@ -110,7 +100,7 @@ class DayRelationService
     public function createDayRelations(int $eventUid): ?Event
     {
         // As create/update action will set event as hidden, we have to search for them, too.
-        $event = $this->eventRepository->findHiddenEntry($eventUid);
+        $event = $this->eventRepository->findHiddenObject($eventUid);
         if (!$event instanceof Event) {
             // write a warning (2) to sys_log
             $this->getLogger()->warning('Related days could not be created, because of an empty event or a non given event uid or pid.');
@@ -170,7 +160,6 @@ class DayRelationService
     {
         list($hour, $minute) = $this->getHourAndMinuteFromTime($time);
 
-        /** @var Day $day */
         $day = GeneralUtility::makeInstance(Day::class);
         $day->setPid($event->getPid());
         $day->setDay($dateTime);

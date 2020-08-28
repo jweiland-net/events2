@@ -74,7 +74,7 @@ class XmlImporter extends AbstractImporter
             );
             return false;
         }
-        $this->getPersistenceManager()->persistAll();
+        $this->persistenceManager->persistAll();
         $this->addMessage('We have processed ' . count($events) . ' events');
 
         return true;
@@ -132,7 +132,7 @@ class XmlImporter extends AbstractImporter
      */
     protected function processEvent(array $data): void
     {
-        $event = $this->eventRepository->findHiddenEntry($data['import_id'], 'importId');
+        $event = $this->eventRepository->findHiddenObject((int)$data['import_id'], 'importId');
         switch ($this->getProcessAs($data)) {
             case 'delete':
                 if ($event instanceof Event) {
