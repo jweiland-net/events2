@@ -58,7 +58,7 @@ class DayFactoryTest extends FunctionalTestCase
         parent::setUp();
 
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->dayFactory = GeneralUtility::makeInstance(DayFactory::class);
+        $this->dayFactory = $this->objectManager->get(DayFactory::class);
         $persistenceManager = $this->objectManager->get(PersistenceManagerInterface::class);
         $this->querySettings = $this->objectManager->get(QuerySettingsInterface::class);
         $this->querySettings->setStoragePageIds([11, 40]);

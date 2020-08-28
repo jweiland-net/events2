@@ -253,7 +253,7 @@ abstract class AbstractImporter implements ImporterInterface
     protected function getOrganizer(string $title): ?array
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_organizer');
-        return $queryBuilder
+        $organizer = $queryBuilder
             ->select('uid')
             ->from('tx_events2_domain_model_organizer')
             ->where(
@@ -264,14 +264,16 @@ abstract class AbstractImporter implements ImporterInterface
             )
             ->execute()
             ->fetch();
+
+        return $organizer ?: [];
     }
 
-    protected function getLocation(string $title): ?array
+    protected function getLocation(string $title): array
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_location');
 
         // I don't have the TypoScript or Plugin storage PID. That's why I don't use the repository directly
-        return $queryBuilder
+        $location = $queryBuilder
             ->select('uid')
             ->from('tx_events2_domain_model_location')
             ->where(
@@ -282,12 +284,14 @@ abstract class AbstractImporter implements ImporterInterface
             )
             ->execute()
             ->fetch();
+
+        return $location ?: [];
     }
 
-    protected function getCategory(string $title): ?array
+    protected function getCategory(string $title): array
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('sys_category');
-        return $queryBuilder
+        $category = $queryBuilder
             ->select('uid')
             ->from('sys_category')
             ->where(
@@ -298,6 +302,8 @@ abstract class AbstractImporter implements ImporterInterface
             )
             ->execute()
             ->fetch();
+
+        return $category ?: [];
     }
 
     protected function addMessage(string $message, int $severity = FlashMessage::OK): void

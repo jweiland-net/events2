@@ -13,7 +13,10 @@ use JWeiland\Events2\Controller\DayController;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Filter;
+use JWeiland\Events2\Domain\Model\Organizer;
 use JWeiland\Events2\Domain\Repository\DayRepository;
+use JWeiland\Events2\Domain\Repository\EventRepository;
+use JWeiland\Events2\Service\DayRelationService;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -22,8 +25,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Mvc\Response;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
+use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
 
 /**
  * Test case.
@@ -34,16 +39,6 @@ class DayControllerTest extends FunctionalTestCase
      * @var DayController
      */
     protected $subject;
-
-    /**
-     * @var DayRepository|ObjectProphecy
-     */
-    protected $dayRepositoryProphecy;
-
-    /**
-     * @var QueryResult|ObjectProphecy
-     */
-    protected $queryResultProphecy;
 
     /**
      * @var Request
@@ -63,15 +58,40 @@ class DayControllerTest extends FunctionalTestCase
         $this->importDataSet('ntf://Database/pages.xml');
         $this->setUpFrontendRootPage(1, [__DIR__ . '/../Fixtures/TypoScript/plugin.typoscript']);
 
-        $this->dayRepositoryProphecy = $this->prophesize(DayRepository::class);
-        $this->dayRepositoryProphecy
-            ->setSettings(Argument::any())
-            ->shouldBeCalled();
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $persistenceManager = $objectManager->get(PersistenceManager::class);
+        $dayRelationService = $objectManager->get(DayRelationService::class);
+        $querySettings = $objectManager->get(QuerySettingsInterface::class);
+        $querySettings->setStoragePageIds([1]);
+        $eventRepository = $objectManager->get(EventRepository::class);
+        $eventRepository->setDefaultQuerySettings($querySettings);
 
-        $this->queryResultProphecy = $this->prophesize(QueryResult::class);
-        $this->queryResultProphecy
-            ->getQuery()
-            ->willReturn($this->prophesize(Query::class)->reveal());
+        $event = new Event();
+        $event->setPid(1);
+        $event->setEventType('single');
+        $event->setEventBegin(new \DateTime('midnight'));
+        $event->setTitle('Today');
+        $persistenceManager->add($event);
+        $persistenceManager->persistAll();
+
+        $organizer = new Organizer();
+        $organizer->setPid(1);
+        $organizer->setOrganizer('Me');
+        $persistenceManager->add($organizer);
+
+        $event = new Event();
+        $event->setPid(1);
+        $event->setEventType('single');
+        $event->setEventBegin(new \DateTime('tomorrow midnight'));
+        $event->setTitle('Tomorrow');
+        $event->setOrganizer($organizer);
+        $persistenceManager->add($event);
+        $persistenceManager->persistAll();
+
+        $events = $eventRepository->findAll();
+        foreach ($events as $event) {
+            $dayRelationService->createDayRelations($event->getUid());
+        }
 
         $this->request = new Request();
         if (method_exists($this->request, 'setControllerAliasToClassNameMapping')) {
@@ -101,14 +121,12 @@ class DayControllerTest extends FunctionalTestCase
 
     public function listWithEmptyFilterDataProvider()
     {
-        $filter = new Filter();
-
         return [
-            'Action: list' => ['list', 'list', $filter, null],
-            'Action: list latest' => ['listLatest', 'latest', $filter, 2],
-            'Action: list today' => ['listToday', 'today', $filter, null],
-            'Action: list this week' => ['listThisWeek', 'thisWeek', $filter, null],
-            'Action: list range' => ['listRange', 'range', $filter, null],
+            'Action: list' => ['list'],
+            'Action: list latest' => ['listLatest'],
+            'Action: list today' => ['listToday'],
+            'Action: list this week' => ['listThisWeek'],
+            'Action: list range' => ['listRange'],
         ];
     }
 
@@ -117,33 +135,41 @@ class DayControllerTest extends FunctionalTestCase
      *
      * @dataProvider listWithEmptyFilterDataProvider
      */
-    public function processRequestWithListActionWillValidateAndAssignFilterToView(
-        $action,
-        $type,
-        $filter,
-        $amountOfRecords
-    ) {
-        $this->dayRepositoryProphecy
-            ->findEvents($type, $filter, $amountOfRecords)
-            ->shouldBeCalled()
-            ->willReturn($this->queryResultProphecy->reveal());
-        $this->subject->injectDayRepository($this->dayRepositoryProphecy->reveal());
+    public function processRequestWithListActionWillValidateAndAssignFilterToView($action)
+    {
         $this->request->setControllerActionName($action);
 
-        $this->subject->processRequest($this->request, new Response());
+        $response = new Response();
+        $this->subject->processRequest($this->request, $response);
+        $content = $response->getContent();
+
+        self::assertStringContainsString(
+            'Event Title 1: Today',
+            $content
+        );
+        if ($action !== 'listToday') {
+            self::assertStringContainsString(
+                'Event Title 2: Tomorrow',
+                $content
+            );
+        }
+        self::assertStringNotContainsString(
+            'Organizer: 1',
+            $content
+        );
     }
 
     public function listWithFilledFilterDataProvider()
     {
         $filter = new Filter();
-        $filter->setOrganizer(8);
+        $filter->setOrganizer(1);
 
         return [
-            'Action: list' => ['list', 'list', $filter, null],
-            'Action: list latest' => ['listLatest', 'latest', $filter, 2],
-            'Action: list today' => ['listToday', 'today', $filter, null],
-            'Action: list this week' => ['listThisWeek', 'thisWeek', $filter, null],
-            'Action: list range' => ['listRange', 'range', $filter, null],
+            'Action: list' => ['list', $filter],
+            'Action: list latest' => ['listLatest', $filter],
+            'Action: list today' => ['listToday', $filter],
+            'Action: list this week' => ['listThisWeek', $filter],
+            'Action: list range' => ['listRange', $filter],
         ];
     }
 
@@ -152,17 +178,8 @@ class DayControllerTest extends FunctionalTestCase
      *
      * @dataProvider listWithFilledFilterDataProvider
      */
-    public function processRequestWithListActionWillAssignFilterToView(
-        $action,
-        $type,
-        $filter,
-        $amountOfRecords
-    ) {
-        $this->dayRepositoryProphecy
-            ->findEvents($type, $filter, $amountOfRecords)
-            ->shouldBeCalled()
-            ->willReturn($this->queryResultProphecy->reveal());
-        $this->subject->injectDayRepository($this->dayRepositoryProphecy->reveal());
+    public function processRequestWithListActionWillAssignFilterToView($action, $filter)
+    {
         $this->request->setControllerActionName($action);
         $this->request->setArgument('filter', $filter);
 
@@ -171,61 +188,15 @@ class DayControllerTest extends FunctionalTestCase
         $this->subject->processRequest($this->request, $response);
         $content = $response->getContent();
 
+        if ($action !== 'listToday') {
+            self::assertStringContainsString(
+                'Event Title 1: Tomorrow',
+                $content
+            );
+        }
         self::assertStringContainsString(
-            'Organizer: 8',
+            'Organizer: 1',
             $content
         );
-    }
-
-    /**
-     * @test
-     */
-    public function processRequestWithShowActionWillAssignDayToView()
-    {
-        $event = new Event();
-        $event->setTitle('Test Event');
-        $date = new \DateTime();
-        $day = new Day();
-        $day->setDay($date);
-        $day->setDayTime($date);
-        $day->setSameDayTime($date);
-        $day->setSortDayTime($date);
-        $day->setEvent($event);
-
-        $this->dayRepositoryProphecy
-            ->findDayByEventAndTimestamp(1, 0)
-            ->shouldBeCalled()
-            ->willReturn($day);
-        $this->subject->injectDayRepository($this->dayRepositoryProphecy->reveal());
-        $this->request->setControllerActionName('show');
-        $this->request->setArgument('event', 1);
-
-        $response = new Response();
-
-        $this->subject->processRequest($this->request, $response);
-        $content = $response->getContent();
-
-        self::assertStringContainsString(
-            'Title: Test Event',
-            $content
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function processRequestWithShowByTimestampActionWillCallFindByTimestamp()
-    {
-        $this->dayRepositoryProphecy
-            ->findByTimestamp(Argument::any())
-            ->shouldBeCalled()
-            ->willReturn($this->queryResultProphecy->reveal());
-        $this->subject->injectDayRepository($this->dayRepositoryProphecy->reveal());
-        $this->request->setControllerActionName('showByTimestamp');
-        $this->request->setArgument('timestamp', 1234567890);
-
-        $response = new Response();
-
-        $this->subject->processRequest($this->request, $response);
     }
 }

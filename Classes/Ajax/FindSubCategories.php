@@ -15,7 +15,7 @@ use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /*
- * This is an Ajax call to find all sub-categories for event-search Plugin
+ * This is an Ajax call to find all SubCategories for tx_events2_search Plugin
  */
 class FindSubCategories implements AjaxInterface
 {
@@ -31,9 +31,18 @@ class FindSubCategories implements AjaxInterface
 
     public function processAjaxRequest(array $arguments): string
     {
-        $categories = $this->categoryRepository->getSubCategories((int)$arguments['category']);
+        if (!array_key_exists('category', $arguments)) {
+            return json_encode([], JSON_FORCE_OBJECT);
+        }
 
-        return json_encode($this->reduceCategoryData($categories), JSON_FORCE_OBJECT);
+        return json_encode(
+            $this->reduceCategoryData(
+                $this->categoryRepository->getSubCategories(
+                    (int)$arguments['category']
+                )
+            ),
+            JSON_FORCE_OBJECT
+        );
     }
 
     protected function reduceCategoryData(QueryResultInterface $categories): array
