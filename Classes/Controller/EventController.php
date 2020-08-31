@@ -158,9 +158,19 @@ class EventController extends AbstractController
             $this->addFlashMessage('Dear Admin: You have forgotten to define some allowed categories in plugin configuration');
         }
 
-        $this->view->assign('event', $event);
-        $this->view->assign('locations', $this->locationRepository->findAll());
-        $this->view->assign('selectableCategories', $categories);
+        $assignedValues = [
+            'event' => $event,
+            'locations' => $this->locationRepository->findAll(),
+            'selectableCategories' => $categories
+        ];
+
+        $this->view->assignMultiple(
+            $this->emitActionSignal(
+                'EventController',
+                'newAction',
+                $assignedValues
+            )
+        );
     }
 
     /**
@@ -215,7 +225,18 @@ class EventController extends AbstractController
         $this->eventRepository->add($event);
         $this->persistenceManager->persistAll();
         $this->addDayRelations($event);
-        $this->sendMail('create', $event);
+
+        $signalArguments = [
+            'event' => $event
+        ];
+
+        $signalArguments = $this->emitActionSignal(
+            'EventController',
+            'createAction',
+            $signalArguments
+        );
+
+        $this->sendMail('create', $signalArguments['event']);
         $this->addFlashMessage(LocalizationUtility::translate('eventCreated', 'events2'));
         $this->redirect('list', 'Day');
     }
@@ -234,9 +255,19 @@ class EventController extends AbstractController
             $this->addFlashMessage('Dear Admin: You have forgotten to define some allowed categories in plugin configuration');
         }
 
-        $this->view->assign('event', $eventObject);
-        $this->view->assign('locations', $this->locationRepository->findAll());
-        $this->view->assign('selectableCategories', $categories);
+        $assignedValues = [
+            'event' => $eventObject,
+            'locations' => $this->locationRepository->findAll(),
+            'selectableCategories' => $categories
+        ];
+
+        $this->view->assignMultiple(
+            $this->emitActionSignal(
+                'EventController',
+                'editAction',
+                $assignedValues
+            )
+        );
     }
 
     /**
@@ -299,9 +330,19 @@ class EventController extends AbstractController
         $this->persistenceManager->persistAll();
         $this->addDayRelations($event);
 
+        $signalArguments = [
+            'event' => $event
+        ];
+
+        $signalArguments = $this->emitActionSignal(
+            'EventController',
+            'updateAction',
+            $signalArguments
+        );
+
         // if editor edits this hidden record, mail should not be send
         if (!$isHidden) {
-            $this->sendMail('update', $event);
+            $this->sendMail('update', $signalArguments['event']);
         }
         $this->addFlashMessage(LocalizationUtility::translate('eventUpdated', 'events2'));
         $this->redirect('listMyEvents', 'Event');
@@ -314,6 +355,17 @@ class EventController extends AbstractController
     {
         $eventObject = $this->eventRepository->findByIdentifier($event);
         $this->eventRepository->remove($eventObject);
+
+        $signalArguments = [
+            'event' => $event
+        ];
+
+        $this->emitActionSignal(
+            'EventController',
+            'deleteAction',
+            $signalArguments
+        );
+
         $this->addFlashMessage(LocalizationUtility::translate('eventDeleted', 'events2'));
         $this->redirect('list', 'Day');
     }
@@ -327,9 +379,17 @@ class EventController extends AbstractController
         $eventObject->setHidden(false);
         $this->eventRepository->update($eventObject);
 
-        // send mail
-        $this->view->assign('event', $eventObject);
+        $assignedValues = [
+            'event' => $eventObject
+        ];
 
+        $this->view->assignMultiple($this->emitActionSignal(
+            'EventController',
+            'activateAction',
+            $assignedValues
+        ));
+
+        // send mail
         $this->mail->setFrom($this->extConf->getEmailFromAddress(), $this->extConf->getEmailFromName());
         $this->mail->setTo($this->extConf->getEmailToAddress(), $this->extConf->getEmailToName());
         $this->mail->setSubject(LocalizationUtility::translate('email.subject.activate', 'events2'));
