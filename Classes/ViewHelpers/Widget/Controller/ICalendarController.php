@@ -177,7 +177,7 @@ class ICalendarController extends AbstractWidgetController
         }
         $event['LOCATION'] = $day->getEvent()->getLocationAsString();
         $event['SUMMARY'] = $this->sanitizeString($day->getEvent()->getTitle());
-        $event['DESCRIPTION'] = $this->sanitizeString($day->getEvent()->getDetailInformations());
+        $event['DESCRIPTION'] = $this->sanitizeString($day->getEvent()->getDetailInformation());
 
         return $event;
     }
