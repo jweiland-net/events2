@@ -109,4 +109,27 @@ class AbstractController extends ActionController
 
         return $jsVariables;
     }
+
+    /**
+     * Emits signal for various actions
+     *
+     * @param string $classPart last part of the class name
+     * @param string $signalName name of the signal slot
+     * @param array $signalArguments arguments for the signal slot
+     * @return array
+     */
+    protected function emitActionSignal(string $classPart, string $signalName, array $signalArguments): array
+    {
+        $signalArguments['extendedVariables'] = [];
+        $className = 'JWeiland\\Events2\\Controller\\' . $classPart;
+        if (class_exists($className)) {
+            return $this->signalSlotDispatcher->dispatch(
+                $className,
+                $signalName,
+                $signalArguments
+            );
+        }
+
+        return $signalArguments;
+    }
 }
