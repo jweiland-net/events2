@@ -461,10 +461,11 @@ class Event extends AbstractEntity
 
     /**
      * @return string
-     * @deprecated Please use getDetailInformation instead
+     * @deprecated
      */
     public function getDetailInformations(): string
     {
+        trigger_error('getDetailInformations() will be removed in events2 7.0.0. Please use getDetailInformation() instead.', E_USER_DEPRECATED);
         return $this->detailInformation;
     }
 
@@ -475,10 +476,11 @@ class Event extends AbstractEntity
 
     /**
      * @param string $detailInformation
-     * @deprecated Please use setDetailInformation instead
+     * @deprecated
      */
     public function setDetailInformations(string $detailInformation)
     {
+        trigger_error('setDetailInformations() will be removed in events2 7.0.0. Please use setDetailInformation() instead.', E_USER_DEPRECATED);
         $this->detailInformation = $detailInformation;
     }
 
