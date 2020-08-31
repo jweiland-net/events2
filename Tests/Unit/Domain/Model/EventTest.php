@@ -736,43 +736,43 @@ class EventTest extends UnitTestCase
     /**
      * @test
      */
-    public function getDetailInformationsInitiallyReturnsEmptyString()
+    public function getDetailInformationInitiallyReturnsEmptyString()
     {
         self::assertSame(
             '',
-            $this->subject->getDetailInformations()
+            $this->subject->getDetailInformation()
         );
     }
 
     /**
      * @test
      */
-    public function setDetailInformationsSetsDetailInformations()
+    public function setDetailInformationSetsDetailInformation()
     {
-        $this->subject->setDetailInformations('foo bar');
+        $this->subject->setDetailInformation('foo bar');
 
         self::assertSame(
             'foo bar',
-            $this->subject->getDetailInformations()
+            $this->subject->getDetailInformation()
         );
     }
 
     /**
      * @test
      */
-    public function setDetailInformationsWithIntegerResultsInString()
+    public function setDetailInformationWithIntegerResultsInString()
     {
-        $this->subject->setDetailInformations(123);
-        self::assertSame('123', $this->subject->getDetailInformations());
+        $this->subject->setDetailInformation(123);
+        self::assertSame('123', $this->subject->getDetailInformation());
     }
 
     /**
      * @test
      */
-    public function setDetailInformationsWithBooleanResultsInString()
+    public function setDetailInformationWithBooleanResultsInString()
     {
-        $this->subject->setDetailInformations(true);
-        self::assertSame('1', $this->subject->getDetailInformations());
+        $this->subject->setDetailInformation(true);
+        self::assertSame('1', $this->subject->getDetailInformation());
     }
 
     /**
