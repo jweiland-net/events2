@@ -30,7 +30,7 @@
 			action="show"
 			controller="Day"
 			pageUid="{settings.pidOfDetailPage}"
-			arguments="{timestamp: '{day.dayTime->f:format.date(format: \'U\')}', event: day.event}"
+			arguments="{timestamp: day.dayTimeAsTimestamp, event: day.event}"
 			title="{f:translate(key: 'singleView')}: {day.event.title}"
 		>{f:translate(key: 'showDetailview')}</f:link.action>
 	</f:then>

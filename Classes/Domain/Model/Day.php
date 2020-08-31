@@ -172,4 +172,19 @@ class Day extends AbstractEntity
     {
         $this->event = $event;
     }
+
+    public function getDayTimeAsTimestamp(): int
+    {
+        return (int)$this->getDayTime()->format('U');
+    }
+
+    public function getSortDayTimeAsTimestamp(): int
+    {
+        return (int)$this->getSortDayTime()->format('U');
+    }
+
+    public function getSameDayTimeAsTimestamp(): int
+    {
+        return (int)$this->getSameDayTime()->format('U');
+    }
 }
