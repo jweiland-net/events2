@@ -1,19 +1,14 @@
 <?php
 
-namespace JWeiland\Events2\Tests\Unit\Converter;
-
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\Tests\Unit\Converter;
+
 use JWeiland\Events2\Converter\TimeToStringConverter;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 
@@ -35,35 +30,6 @@ class TimeToStringConverterTest extends UnitTestCase
     public function tearDown()
     {
         unset($this->subject);
-    }
-
-    /**
-     * dataProvider for invalid timestamp.
-     *
-     * @return array
-     */
-    public function dataProviderForInvalidTimestamps()
-    {
-        $timestamps = [];
-        $timestamps['array'] = [['Test', 'Test']];
-        $timestamps['string'] = ['Hello'];
-        $timestamps['object'] = [new \stdClass()];
-
-        return $timestamps;
-    }
-
-    /**
-     * @test
-     *
-     * @param mixed $invalidTimestamp
-     * @dataProvider dataProviderForInvalidTimestamps
-     */
-    public function convertWithInvalidValuesReturnsEmptyString($invalidTimestamp)
-    {
-        $this->assertSame(
-            '',
-            $this->subject->convert($invalidTimestamp)
-        );
     }
 
     /**
@@ -89,7 +55,7 @@ class TimeToStringConverterTest extends UnitTestCase
      */
     public function convertWithTooHighIntergerValues($tooHighIntegerValue)
     {
-        $this->assertSame(
+        self::assertSame(
             '23:59',
             $this->subject->convert($tooHighIntegerValue)
         );
@@ -118,7 +84,7 @@ class TimeToStringConverterTest extends UnitTestCase
      */
     public function convertWithTooLowIntergerValues($tooLowIntegerValue)
     {
-        $this->assertSame(
+        self::assertSame(
             '00:00',
             $this->subject->convert($tooLowIntegerValue)
         );
@@ -154,7 +120,7 @@ class TimeToStringConverterTest extends UnitTestCase
      */
     public function convertWithIntegersInAllowedRangeResultsInStringInterpretation($timestampInRange, $expectedTime)
     {
-        $this->assertSame(
+        self::assertSame(
             $expectedTime,
             $this->subject->convert($timestampInRange)
         );

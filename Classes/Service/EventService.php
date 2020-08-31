@@ -1,19 +1,15 @@
 <?php
-declare(strict_types = 1);
-namespace JWeiland\Events2\Service;
+
+declare(strict_types=1);
 
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\Service;
 
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Day;
@@ -24,13 +20,18 @@ use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
+/*
  * f.e. the time domain model can be connected 4 times with an event (exceptionTimes, differentTimes, MultipleTimes and eventTime)
  * So which time has priority, which time has to be merged
  * This Utility tries to help you/me to make life easier with events2.
  */
 class EventService
 {
+    /**
+     * @var EventRepository
+     */
+    protected $eventRepository;
+
     /**
      * @var ExtConf
      */
@@ -41,39 +42,14 @@ class EventService
      */
     protected $dateTimeUtility;
 
-    /**
-     * @var EventRepository
-     */
-    protected $eventRepository;
-
-    /**
-     * Injects extConf
-     *
-     * @param ExtConf $extConf
-     */
-    public function injectExtConf(ExtConf $extConf)
-    {
-        $this->extConf = $extConf;
-    }
-
-    /**
-     * Inject DateTime Utility.
-     *
-     * @param DateTimeUtility $dateTimeUtility
-     */
-    public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
-    {
-        $this->dateTimeUtility = $dateTimeUtility;
-    }
-
-    /**
-     * Inject eventRepository
-     *
-     * @param EventRepository $eventRepository
-     */
-    public function injectEventRepository(EventRepository $eventRepository)
-    {
+    public function __construct(
+        EventRepository $eventRepository,
+        ExtConf $extConf,
+        DateTimeUtility $dateTimeUtility
+    ) {
         $this->eventRepository = $eventRepository;
+        $this->extConf = $extConf;
+        $this->dateTimeUtility = $dateTimeUtility;
     }
 
     /**
@@ -85,8 +61,11 @@ class EventService
      * @param string $commaSeparatedExtensionTypes Type like Add, Remove, Time or Info. If empty add all exceptions
      * @return \SplObjectStorage|Exception[]
      */
-    public function getExceptionsForDate(Event $event, \DateTime $date, string $commaSeparatedExtensionTypes = ''): \SplObjectStorage
-    {
+    public function getExceptionsForDate(
+        Event $event,
+        \DateTime $date,
+        string $commaSeparatedExtensionTypes = ''
+    ): \SplObjectStorage {
         $exceptionTypes = GeneralUtility::trimExplode(',', strtolower($commaSeparatedExtensionTypes), true);
         $exceptions = new \SplObjectStorage();
         foreach ($event->getExceptions() as $exception) {
@@ -111,7 +90,7 @@ class EventService
      * @param \DateTime $date
      * @return \SplObjectStorage|Time[]
      */
-    public function getTimesForDate(Event $event, \DateTime $date)
+    public function getTimesForDate(Event $event, \DateTime $date): \SplObjectStorage
     {
         /** @var \SplObjectStorage|Time[] $timesForDate */
         $timesForDate = new \SplObjectStorage();
@@ -161,7 +140,7 @@ class EventService
      * @param \DateTime $date
      * @return \SplObjectStorage|Time[]
      */
-    public function getSortedTimesForDate(Event $event, \DateTime $date)
+    public function getSortedTimesForDate(Event $event, \DateTime $date): \SplObjectStorage
     {
         $sortedTimes = [];
         $sortedTimeStorage = new \SplObjectStorage();
@@ -186,7 +165,7 @@ class EventService
      * @param Day $day
      * @return Time|null
      */
-    public function getTimeForDay(Day $day)
+    public function getTimeForDay(Day $day): ?Time
     {
         $times = $this->getTimesForDate($day->getEvent(), $day->getDay());
         if ($times->count()) {
@@ -206,7 +185,7 @@ class EventService
      * @param \DateTime $date
      * @param Time $time
      */
-    protected function addDateTimeObjectsToTime(\DateTime $date, Time $time)
+    protected function addDateTimeObjectsToTime(\DateTime $date, Time $time): void
     {
         $format = 'd.m.Y H:i:s';
         foreach (['TimeEntry', 'TimeBegin', 'TimeEnd'] as $property) {
@@ -239,7 +218,7 @@ class EventService
      * @param \DateTime $date
      * @return \SplObjectStorage|Time[]
      */
-    protected function getDifferentTimesForDate(Event $event, \DateTime $date)
+    protected function getDifferentTimesForDate(Event $event, \DateTime $date): \SplObjectStorage
     {
         $times = new \SplObjectStorage();
         if ($event->getEventType() !== 'single') {
@@ -285,18 +264,12 @@ class EventService
         return $times;
     }
 
-    /**
-     * Get next day for event
-     *
-     * @param int $eventUid
-     * @return \DateTime|false
-     */
-    public function getNextDayForEvent(int $eventUid)
+    public function getNextDayForEvent(int $eventUid): ?\DateTime
     {
         /** @var Event $event */
         $event = $this->eventRepository->findByIdentifier($eventUid);
         if (!$event instanceof Event) {
-            return false;
+            return null;
         }
 
         $days = $event->getFutureDatesGroupedAndSorted();
@@ -304,7 +277,7 @@ class EventService
             return current($days);
         }
 
-        return false;
+        return null;
     }
 
     /**
@@ -313,9 +286,9 @@ class EventService
      * Needed by SolrIndexer, as we can't create JOIN Queries in Solr configuration
      *
      * @param int $eventUid
-     * @return Day|false
+     * @return \DateTime|null
      */
-    public function getLastDayForEvent(int $eventUid)
+    public function getLastDayForEvent(int $eventUid): ?\DateTime
     {
         /** @var Event $event */
         $event = $this->eventRepository->findByIdentifier($eventUid);
@@ -323,6 +296,7 @@ class EventService
         krsort($days);
         reset($days);
 
-        return current($days);
+        $day = current($days);
+        return $day ?: null;
     }
 }

@@ -1,24 +1,20 @@
 <?php
-declare(strict_types = 1);
-namespace JWeiland\Events2\Domain\Model;
+
+declare(strict_types=1);
 
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\Domain\Model;
 
 use JWeiland\Events2\Domain\Traits\Typo3PropertiesTrait;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
-/**
+/*
  * This class contains all getter and setters for an Organizer.
  */
 class Organizer extends AbstractEntity
@@ -45,15 +41,12 @@ class Organizer extends AbstractEntity
         $this->organizer = $organizer;
     }
 
-    /**
-     * @return Link|null $link
-     */
-    public function getLink()
+    public function getLink(): ?Link
     {
         return $this->link;
     }
 
-    public function setLink(Link $link = null)
+    public function setLink(?Link $link = null)
     {
         $this->link = $link;
     }

@@ -1,19 +1,14 @@
 <?php
 
-namespace JWeiland\Events2\Tests\Unit\Domain\Model;
-
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\Tests\Unit\Domain\Model;
+
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
@@ -28,18 +23,12 @@ class DayTest extends UnitTestCase
      */
     protected $subject;
 
-    /**
-     * set up.
-     */
     public function setUp()
     {
         $this->subject = new Day();
         $this->subject->setDay(new \DateTime());
     }
 
-    /**
-     * tear down.
-     */
     public function tearDown()
     {
         unset($this->subject);
@@ -50,7 +39,7 @@ class DayTest extends UnitTestCase
      */
     public function getCrdateInitiallyReturnsNull()
     {
-        $this->assertNull(
+        self::assertNull(
             $this->subject->getCrdate()
         );
     }
@@ -63,7 +52,7 @@ class DayTest extends UnitTestCase
         $date = new \DateTime();
         $this->subject->setCrdate($date);
 
-        $this->assertSame(
+        self::assertSame(
             $date,
             $this->subject->getCrdate()
         );
@@ -76,7 +65,7 @@ class DayTest extends UnitTestCase
     {
         $this->subject->setCrdate(null);
 
-        $this->assertNull(
+        self::assertNull(
             $this->subject->getCrdate()
         );
     }
@@ -86,7 +75,7 @@ class DayTest extends UnitTestCase
      */
     public function getTstampInitiallyReturnsNull()
     {
-        $this->assertNull(
+        self::assertNull(
             $this->subject->getTstamp()
         );
     }
@@ -99,7 +88,7 @@ class DayTest extends UnitTestCase
         $date = new \DateTime();
         $this->subject->setTstamp($date);
 
-        $this->assertSame(
+        self::assertSame(
             $date,
             $this->subject->getTstamp()
         );
@@ -112,7 +101,7 @@ class DayTest extends UnitTestCase
     {
         $this->subject->setTstamp(null);
 
-        $this->assertNull(
+        self::assertNull(
             $this->subject->getTstamp()
         );
     }
@@ -122,7 +111,7 @@ class DayTest extends UnitTestCase
      */
     public function getHiddenInitiallyReturnsFalse()
     {
-        $this->assertFalse(
+        self::assertFalse(
             $this->subject->getHidden()
         );
     }
@@ -133,7 +122,7 @@ class DayTest extends UnitTestCase
     public function setHiddenSetsHidden()
     {
         $this->subject->setHidden(true);
-        $this->assertTrue(
+        self::assertTrue(
             $this->subject->getHidden()
         );
     }
@@ -144,7 +133,7 @@ class DayTest extends UnitTestCase
     public function setHiddenWithStringReturnsTrue()
     {
         $this->subject->setHidden('foo bar');
-        $this->assertTrue($this->subject->getHidden());
+        self::assertTrue($this->subject->getHidden());
     }
 
     /**
@@ -153,7 +142,7 @@ class DayTest extends UnitTestCase
     public function setHiddenWithZeroReturnsFalse()
     {
         $this->subject->setHidden(0);
-        $this->assertFalse($this->subject->getHidden());
+        self::assertFalse($this->subject->getHidden());
     }
 
     /**
@@ -161,7 +150,7 @@ class DayTest extends UnitTestCase
      */
     public function getCruserIdInitiallyReturnsZero()
     {
-        $this->assertSame(
+        self::assertSame(
             0,
             $this->subject->getCruserId()
         );
@@ -174,7 +163,7 @@ class DayTest extends UnitTestCase
     {
         $this->subject->setCruserId(123456);
 
-        $this->assertSame(
+        self::assertSame(
             123456,
             $this->subject->getCruserId()
         );
@@ -187,7 +176,7 @@ class DayTest extends UnitTestCase
     {
         $this->subject->setCruserId('123Test');
 
-        $this->assertSame(
+        self::assertSame(
             123,
             $this->subject->getCruserId()
         );
@@ -200,7 +189,7 @@ class DayTest extends UnitTestCase
     {
         $this->subject->setCruserId(true);
 
-        $this->assertSame(
+        self::assertSame(
             1,
             $this->subject->getCruserId()
         );
@@ -214,7 +203,7 @@ class DayTest extends UnitTestCase
         $date = new \DateTime();
         $this->subject->setDay($date);
 
-        $this->assertEquals(
+        self::assertEquals(
             $date,
             $this->subject->getDay()
         );
@@ -225,7 +214,7 @@ class DayTest extends UnitTestCase
      */
     public function getEventInitiallyReturnsNull()
     {
-        $this->assertNull($this->subject->getEvent());
+        self::assertNull($this->subject->getEvent());
     }
 
     /**
@@ -236,7 +225,7 @@ class DayTest extends UnitTestCase
         $instance = new Event();
         $this->subject->setEvent($instance);
 
-        $this->assertSame(
+        self::assertSame(
             $instance,
             $this->subject->getEvent()
         );

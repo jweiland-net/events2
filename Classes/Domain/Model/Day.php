@@ -1,23 +1,19 @@
 <?php
-declare(strict_types = 1);
-namespace JWeiland\Events2\Domain\Model;
+
+declare(strict_types=1);
 
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\Domain\Model;
 
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
-/**
+/*
  * This class contains all getter and setters for a Day.
  */
 class Day extends AbstractEntity
@@ -67,28 +63,22 @@ class Day extends AbstractEntity
      */
     protected $event;
 
-    /**
-     * @return \DateTime|null
-     */
-    public function getCrdate()
+    public function getCrdate(): ?\DateTime
     {
         return $this->crdate;
     }
 
-    public function setCrdate(\DateTime $crdate = null)
+    public function setCrdate(?\DateTime $crdate = null)
     {
         $this->crdate = $crdate;
     }
 
-    /**
-     * @return \DateTime|null
-     */
-    public function getTstamp()
+    public function getTstamp(): ?\DateTime
     {
         return $this->tstamp;
     }
 
-    public function setTstamp(\DateTime $tstamp = null)
+    public function setTstamp(?\DateTime $tstamp = null)
     {
         $this->tstamp = $tstamp;
     }
@@ -115,7 +105,9 @@ class Day extends AbstractEntity
 
     public function getDay(): \DateTime
     {
-        if ($this->day->timezone_type !== 3) {
+        // Since PHP 7.4 we can not access timezone_type directly anymore.
+        // If location is false, timezone_type is 1 or 2, but we need 3
+        if ($this->day->getTimezone()->getLocation() === false) {
             $this->day->setTimezone(new \DateTimeZone(date_default_timezone_get()));
         }
         return clone $this->day;
@@ -128,7 +120,9 @@ class Day extends AbstractEntity
 
     public function getDayTime(): \DateTime
     {
-        if ($this->dayTime->timezone_type !== 3) {
+        // Since PHP 7.4 we can not access timezone_type directly anymore.
+        // If location is false, timezone_type is 1 or 2, but we need 3
+        if ($this->dayTime->getTimezone()->getLocation() === false) {
             $this->dayTime->setTimezone(new \DateTimeZone(date_default_timezone_get()));
         }
         return clone $this->dayTime;
@@ -141,7 +135,9 @@ class Day extends AbstractEntity
 
     public function getSortDayTime(): \DateTime
     {
-        if ($this->sortDayTime->timezone_type !== 3) {
+        // Since PHP 7.4 we can not access timezone_type directly anymore.
+        // If location is false, timezone_type is 1 or 2, but we need 3
+        if ($this->sortDayTime->getTimezone()->getLocation() === false) {
             $this->sortDayTime->setTimezone(new \DateTimeZone(date_default_timezone_get()));
         }
         return clone $this->sortDayTime;
@@ -154,7 +150,9 @@ class Day extends AbstractEntity
 
     public function getSameDayTime(): \DateTime
     {
-        if ($this->sameDayTime->timezone_type !== 3) {
+        // Since PHP 7.4 we can not access timezone_type directly anymore.
+        // If location is false, timezone_type is 1 or 2, but we need 3
+        if ($this->sameDayTime->getTimezone()->getLocation() === false) {
             $this->sameDayTime->setTimezone(new \DateTimeZone(date_default_timezone_get()));
         }
         return clone $this->sameDayTime;
@@ -165,15 +163,12 @@ class Day extends AbstractEntity
         $this->sameDayTime = $sameDayTime;
     }
 
-    /**
-     * @return Event|null
-     */
-    public function getEvent()
+    public function getEvent(): ?Event
     {
         return $this->event;
     }
 
-    public function setEvent(Event $event = null)
+    public function setEvent(?Event $event = null)
     {
         $this->event = $event;
     }

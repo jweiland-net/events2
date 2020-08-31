@@ -1,23 +1,22 @@
 <?php
-declare(strict_types = 1);
-namespace JWeiland\Events2\Utility;
+
+declare(strict_types=1);
 
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\Utility;
+
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
+use TYPO3\CMS\Extbase\Service\EnvironmentService;
 
-/**
+/*
  * Cache Utility class
  */
 class CacheUtility
@@ -29,8 +28,12 @@ class CacheUtility
      *
      * @param array|QueryResultInterface $eventRecords
      */
-    public static function addCacheTagsByEventRecords($eventRecords)
+    public static function addCacheTagsByEventRecords($eventRecords): void
     {
+        if (!self::getEnvironmentService()->isEnvironmentInFrontendMode()) {
+            return;
+        }
+
         $cacheTags = [];
         foreach ($eventRecords as $event) {
             // cache tag for each event record
@@ -51,8 +54,12 @@ class CacheUtility
      *
      * @param QueryInterface $query
      */
-    public static function addPageCacheTagsByQuery(QueryInterface $query)
+    public static function addPageCacheTagsByQuery(QueryInterface $query): void
     {
+        if (!self::getEnvironmentService()->isEnvironmentInFrontendMode()) {
+            return;
+        }
+
         $cacheTags = [];
         if ($query->getQuerySettings()->getStoragePageIds()) {
             // Add cache tags for each storage page
@@ -63,5 +70,10 @@ class CacheUtility
             $cacheTags[] = 'tx_events2_domain_model_event';
         }
         $GLOBALS['TSFE']->addCacheTags($cacheTags);
+    }
+
+    protected static function getEnvironmentService(): EnvironmentService
+    {
+        return GeneralUtility::makeInstance(EnvironmentService::class);
     }
 }

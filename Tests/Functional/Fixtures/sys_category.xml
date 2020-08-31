@@ -6,6 +6,25 @@
 		<tstamp>1551266318</tstamp>
 		<hidden>0</hidden>
 		<cruser_id>1</cruser_id>
-		<title>Burg Theater</title>
+		<parent>0</parent>
+		<title>Cars</title>
+	</sys_category>
+	<sys_category>
+		<uid>2</uid>
+		<pid>12</pid>
+		<tstamp>1551266318</tstamp>
+		<hidden>0</hidden>
+		<cruser_id>1</cruser_id>
+		<parent>1</parent>
+		<title>Audi</title>
+	</sys_category>
+	<sys_category>
+		<uid>3</uid>
+		<pid>12</pid>
+		<tstamp>1551266318</tstamp>
+		<hidden>0</hidden>
+		<cruser_id>1</cruser_id>
+		<parent>1</parent>
+		<title>BMW</title>
 	</sys_category>
 </dataset>

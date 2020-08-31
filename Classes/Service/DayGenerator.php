@@ -1,27 +1,23 @@
 <?php
-declare(strict_types = 1);
-namespace JWeiland\Events2\Service;
+
+declare(strict_types=1);
 
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\Service;
+
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Exception;
 use JWeiland\Events2\Utility\DateTimeUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
-/**
+/*
  * Class to generate all day records for an event within configured range (ExtensionManager)
  */
 class DayGenerator
@@ -34,12 +30,12 @@ class DayGenerator
     protected $dateTimeStorage = [];
 
     /**
-     * @var \JWeiland\Events2\Configuration\ExtConf
+     * @var ExtConf
      */
     protected $extConf;
 
     /**
-     * @var \JWeiland\Events2\Utility\DateTimeUtility
+     * @var DateTimeUtility
      */
     protected $dateTimeUtility;
 
@@ -48,20 +44,14 @@ class DayGenerator
      */
     protected $signalSlotDispatcher;
 
-    public function injectExtConf(ExtConf $extConf)
-    {
-        $this->extConf = $extConf;
-    }
-
-    public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
-    {
-        $this->dateTimeUtility = $dateTimeUtility;
-    }
-
     public function __construct(
-        Dispatcher $signalSlotDispatcher = null
+        Dispatcher $signalSlotDispatcher,
+        ExtConf $extConf,
+        DateTimeUtility $dateTimeUtility
     ) {
-        $this->signalSlotDispatcher = $signalSlotDispatcher ?? GeneralUtility::makeInstance(Dispatcher::class);
+        $this->signalSlotDispatcher = $signalSlotDispatcher;
+        $this->extConf = $extConf;
+        $this->dateTimeUtility = $dateTimeUtility;
     }
 
     /**
@@ -116,7 +106,7 @@ class DayGenerator
     /**
      * Reset dateTimeStorage
      */
-    protected function reset()
+    protected function reset(): void
     {
         $this->dateTimeStorage = [];
     }
@@ -139,7 +129,7 @@ class DayGenerator
      *
      * @param array $dateTimeStorage
      */
-    public function setDateTimeStorage(array $dateTimeStorage)
+    public function setDateTimeStorage(array $dateTimeStorage): void
     {
         $this->dateTimeStorage = $dateTimeStorage;
     }
@@ -170,7 +160,7 @@ class DayGenerator
      *
      * @param \DateTime $day Day to add
      */
-    protected function addDayToStorage(\DateTime $day)
+    protected function addDayToStorage(\DateTime $day): void
     {
         // group days to make them unique
         // I don't know why, but $day is a reference, so I clone it here to have individual dates in this array
@@ -182,7 +172,7 @@ class DayGenerator
      *
      * @param \DateTime $day Day to remove
      */
-    protected function removeDayFromStorage(\DateTime $day)
+    protected function removeDayFromStorage(\DateTime $day): void
     {
         unset($this->dateTimeStorage[$day->format('U')]);
     }
@@ -312,7 +302,7 @@ class DayGenerator
      *
      * @param Event $event
      */
-    protected function addRecurringEvents(Event $event)
+    protected function addRecurringEvents(Event $event): void
     {
         if ($event->getEachWeeks() || $event->getEachMonths()) {
             // add days for each week(s) and/or months
@@ -342,7 +332,7 @@ class DayGenerator
      *
      * @param Event $event
      */
-    protected function addRecurrings(Event $event)
+    protected function addRecurrings(Event $event): void
     {
         $dateToStartCalculatingFrom = $this->getDateToStartCalculatingFrom($event);
         $dateToStopCalculatingTo = $this->getDateToStopCalculatingTo($event);
@@ -353,14 +343,7 @@ class DayGenerator
         }
     }
 
-    /**
-     * Add days for given month.
-     *
-     * @param string $month
-     * @param int $year
-     * @param Event $event
-     */
-    protected function addDaysForMonth(string $month, int $year, Event $event)
+    protected function addDaysForMonth(string $month, int $year, Event $event): void
     {
         // we need this to have a date where time is set to 00:00:00
         $day = $this->dateTimeUtility->convert('today');
@@ -389,7 +372,7 @@ class DayGenerator
      * @param Event $event
      * @throws \Exception
      */
-    protected function addExceptions(Event $event)
+    protected function addExceptions(Event $event): void
     {
         foreach ($event->getExceptions() as $exception) {
             switch ($exception->getExceptionType()) {
@@ -418,7 +401,7 @@ class DayGenerator
      * @param Event $event
      * @param Exception $exception
      */
-    protected function addException(Event $event, Exception $exception)
+    protected function addException(Event $event, Exception $exception): void
     {
         $dateToStartCalculatingFrom = $this->getDateToStartCalculatingFrom($event);
         $dateToStopCalculatingTo = $this->getDateToStopCalculatingTo($event);
@@ -434,7 +417,7 @@ class DayGenerator
      *
      * @param Event $event
      */
-    protected function emitPostGenerateDaysSignal(Event $event)
+    protected function emitPostGenerateDaysSignal(Event $event): void
     {
         $this->signalSlotDispatcher->dispatch(
             self::class,

@@ -1,19 +1,13 @@
 <?php
 
-namespace JWeiland\Events2\Tests\Functional\Service;
-
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\Tests\Functional\Service;
 
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Day;
@@ -61,7 +55,11 @@ class JsonLdServiceTest extends FunctionalTestCase
 
     public function setUp()
     {
+        $_SERVER['HTTP_HOST'] = 'example.com';
+        $_SERVER['REQUEST_URI'] = 'index.php';
         parent::setUp();
+        $this->importDataSet('ntf://Database/pages.xml');
+        parent::setUpFrontendRootPage(1);
 
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->dayRepository = $this->objectManager->get(DayRepository::class);
@@ -156,7 +154,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         $jsonLdService = GeneralUtility::makeInstance(JsonLdService::class);
         $jsonLdService->addJsonLdToPageHeader($day);
 
-        $this->assertSame(
+        self::assertSame(
             $day->getEvent()->getEventBegin()->format('Y-m-d'),
             $jsonLdService->getCollectedJsonLdData()['startDate']
         );
@@ -173,7 +171,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         $jsonLdService = GeneralUtility::makeInstance(JsonLdService::class);
         $jsonLdService->addJsonLdToPageHeader($day);
 
-        $this->assertSame(
+        self::assertSame(
             $day->getEvent()->getEventEnd()->format('Y-m-d'),
             $jsonLdService->getCollectedJsonLdData()['endDate']
         );
@@ -190,7 +188,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         $jsonLdService = GeneralUtility::makeInstance(JsonLdService::class);
         $jsonLdService->addJsonLdToPageHeader($day);
 
-        $this->assertSame(
+        self::assertSame(
             $day->getEvent()->getEventTime()->getTimeBeginAsDateTime()->format('Y-m-d\TH:i:s'),
             $jsonLdService->getCollectedJsonLdData()['startDate']
         );
@@ -207,7 +205,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         $jsonLdService = GeneralUtility::makeInstance(JsonLdService::class);
         $jsonLdService->addJsonLdToPageHeader($day);
 
-        $this->assertSame(
+        self::assertSame(
             $day->getEvent()->getEventTime()->getTimeEntryAsDateTime()->format('Y-m-d\TH:i:s'),
             $jsonLdService->getCollectedJsonLdData()['doorTime']
         );
@@ -229,7 +227,7 @@ class JsonLdServiceTest extends FunctionalTestCase
             $day->getEvent()->getEventTime()->getDuration()
         );
 
-        $this->assertSame(
+        self::assertSame(
             'PT' . (int)$hours . 'H' . (int)$minutes . 'M',
             $jsonLdService->getCollectedJsonLdData()['duration']
         );
@@ -246,7 +244,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         $jsonLdService = GeneralUtility::makeInstance(JsonLdService::class);
         $jsonLdService->addJsonLdToPageHeader($day);
 
-        $this->assertSame(
+        self::assertSame(
             $day->getEvent()->getEventTime()->getTimeEndAsDateTime()->format('Y-m-d\TH:i:s'),
             $jsonLdService->getCollectedJsonLdData()['endDate']
         );
@@ -263,7 +261,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         $jsonLdService = GeneralUtility::makeInstance(JsonLdService::class);
         $jsonLdService->addJsonLdToPageHeader($day);
 
-        $this->assertSame(
+        self::assertSame(
             $day->getEvent()->getTitle(),
             $jsonLdService->getCollectedJsonLdData()['name']
         );
@@ -280,7 +278,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         $jsonLdService = GeneralUtility::makeInstance(JsonLdService::class);
         $jsonLdService->addJsonLdToPageHeader($day);
 
-        $this->assertSame(
+        self::assertSame(
             $day->getEvent()->getDetailInformations(),
             $jsonLdService->getCollectedJsonLdData()['description']
         );
@@ -297,7 +295,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         $jsonLdService = GeneralUtility::makeInstance(JsonLdService::class);
         $jsonLdService->addJsonLdToPageHeader($day);
 
-        $this->assertStringStartsWith(
+        self::assertStringStartsWith(
             'http',
             $jsonLdService->getCollectedJsonLdData()['url']
         );
@@ -314,7 +312,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         $jsonLdService = GeneralUtility::makeInstance(JsonLdService::class);
         $jsonLdService->addJsonLdToPageHeader($day);
 
-        $this->assertSame(
+        self::assertSame(
             'True',
             $jsonLdService->getCollectedJsonLdData()['isAccessibleForFree']
         );
@@ -325,7 +323,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         $jsonLdService = GeneralUtility::makeInstance(JsonLdService::class);
         $jsonLdService->addJsonLdToPageHeader($day);
 
-        $this->assertSame(
+        self::assertSame(
             'False',
             $jsonLdService->getCollectedJsonLdData()['isAccessibleForFree']
         );
@@ -344,15 +342,15 @@ class JsonLdServiceTest extends FunctionalTestCase
 
         $offer = $jsonLdService->getCollectedJsonLdData()['offers'][0];
 
-        $this->assertSame(
+        self::assertSame(
             'Offer',
             $offer['@type']
         );
-        $this->assertSame(
+        self::assertSame(
             'TYPO3',
             $offer['name']
         );
-        $this->assertSame(
+        self::assertSame(
             'https://www.typo3.org',
             $offer['url']
         );
@@ -371,27 +369,27 @@ class JsonLdServiceTest extends FunctionalTestCase
 
         $location = $jsonLdService->getCollectedJsonLdData()['location'];
 
-        $this->assertSame(
+        self::assertSame(
             'Place',
             $location['@type']
         );
-        $this->assertSame(
+        self::assertSame(
             'jweiland.net',
             $location['name']
         );
-        $this->assertSame(
+        self::assertSame(
             'PostalAddress',
             $location['address']['@type']
         );
-        $this->assertSame(
+        self::assertSame(
             'Echterdinger Straße 57',
             $location['address']['streetAddress']
         );
-        $this->assertSame(
+        self::assertSame(
             '70794',
             $location['address']['postalCode']
         );
-        $this->assertSame(
+        self::assertSame(
             'Filderstadt',
             $location['address']['addressLocality']
         );
@@ -410,15 +408,15 @@ class JsonLdServiceTest extends FunctionalTestCase
 
         $organizer = $jsonLdService->getCollectedJsonLdData()['organizer'];
 
-        $this->assertSame(
+        self::assertSame(
             'Organization',
             $organizer['@type']
         );
-        $this->assertSame(
+        self::assertSame(
             'Stefan',
             $organizer['name']
         );
-        $this->assertSame(
+        self::assertSame(
             'https://www.typo3.org',
             $organizer['url']
         );

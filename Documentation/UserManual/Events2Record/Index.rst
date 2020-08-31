@@ -2,155 +2,190 @@
 
 .. _events2Record:
 
+============
 Event record
 ============
 
-The Event record is the most important record in this extension.
+Columns
+=======
 
-.. t3-field-list-table::
- :header-rows: 1
+Top of List
+"""""""""""
 
- - :Field:
-         Field
-   :Description:
-         Description
- - :Field:
-         Event type
-   :Description:
-         There are currently three different kinds of types available
-         Choose one of Single, Recurring and Duration.
- - :Field:
-         Top of list
-   :Description:
-         The event will be always on top of list in frontend. You can assign
-         them a CSS class to highlight them in Fluid-Template, if you want.
- - :Field:
-         Title
-   :Description:
-         A short title of the event.
- - :Field:
-         Event begin
-   :Description:
-         Only available for: Single and Duration.
-         Define the first date, when this event starts.
- - :Field:
-         Event end
-   :Description:
-         Only available for: Duration.
-         Define the last day of this event.
- - :Field:
-         Time
-   :Description:
-         Add a time record, to define times for:
-         Begin, Entry, Duration and end. This record is a default for all
-         recurring days, but can be overwritten by other time records.
- - :Field:
-         Recurring end
-   :Description:
-         Normally a recurring is unlimited. The dates will be created for the next 6
-         month. With this setting you can assign a date where recurring should end.
- - :Field:
-         Same day
-   :Description:
-         After activating this checkbox the form will be reloaded and you have the
-         possibility to assign multiple time records for one day. But be careful, if
-         you define other time records for a special weekday below, it will overwrite
-         this setting completely.
- - :Field:
-         Multiple times on same day
-   :Description:
-         See above. Same day.
- - :Field:
-         Recurring
-   :Description:
-         How often should this event repeated. Example: Each **1st** monday a month
- - :Field:
-         Weekday
-   :Description:
-         How often should this event repeated. Example: Each 1st **monday** a month
- - :Field:
-         Different times each weekday
-   :Description:
-         You can set another time for a specified weekday. Be careful: This setting will
-         overwrite the setting of multiple times above completely, if it matches.
- - :Field:
-         Recurring weeks
-   :Description:
-         If you change that value the complete form will reload and you can set a recurring over weeks.
- - :Field:
-         Recurring months
-   :Description:
-         If you change that value the complete form will reload and you can set a recurring over months.
- - :Field:
-         Exceptions
-   :Description:
-         With this records you can define some specials for your recurring event.
-         You can add or remove a special date for your recurring. Further you can define some
-         additional information or change the times for a special date.
- - :Field:
-         Event teaser
-   :Description:
-         This is a short version (1 or 2 sentences) of your detail information.
-         It will be displayed in listings. If not given the first 100 letters of
-         detail information will be displayed
- - :Field:
-         Detail information
-   :Description:
-         This detail text will be displayed at the detail page of the event record.
- - :Field:
-         Free entry
-   :Description:
-         If a visitor can access this event for free activate this checkbox.
- - :Field:
-         Ticket Link
-   :Description:
-         A link to the organizer, where you can buy tickets.
- - :Field:
-         Location
-   :Description:
-         This is a required field. Where will this event take place.
- - :Field:
-         Organizer
-   :Description:
-         This is a required field. How will organize this event.
- - :Field:
-         Images
-   :Description:
-         Add one or more images to your event. You can resize them by TS-Settings
- - :Field:
-         Link to YouTube
-   :Description:
-         If you have created a little presentation video for this event, you
-         can assign the link to YouTube here. Hint: Only YouTube-Links are valid.
- - :Field:
-         Download Links
-   :Description:
-         Add some images or brochures with more information as PDF here.
+Default: false
 
-Type: Single
-------------
-Choose type single, if you want to create a record which takes place at
-only one day. But you have the possibility to create individual dates over the
-exception tab.
+If activated this event will always be on top of list. If you have multiple events marked *top_of_list*
+events2 will order them by title DESC.
 
-Type: Recurring
----------------
-With this type you will get access to an additional tab called Recurring. At this
-tab you can define start and end of recurring and of cause at which weekdays this
-event should take place.
+Title
+"""""
 
-Example: Each 1st and 3rd Tuesday and Friday a month
+Default: empty
 
-Or, you can define a recurring over weeks
+The title of the event.
 
-Example: Each 3rd week.
+Event Type
+""""""""""
 
-Type: Duration
---------------
-This is a special type for trips or holidays. Such kinds of events will always have
-a start and end date and will be displayed like this in frontend:
+Default: single
 
-12.04.2016-16.04.2016
+There are currently three different kinds of event types available. Choose one
 
-At such dates you can't attend at 14.04.2016. You have to take place the full
-duration of this event.
+**single**
+
+This event will be visible for just one day. It is not possible to add or remove any days
+
+**duration**
+
+Think at holidays. You're away from 17.07.2020 - 21.07.2020. So it is not possible for others to take part on
+your holidays at 20.07.2020. This is the main difference to recurring events where you can create different time
+records for each day.
+
+**recurring**
+
+Think at a meeting two times a week. With recurring events you can create events like 1st and 3rd monday and friday
+a week, beginning at 08:00 and 16:00 o'clock except 24.12. because of X-Mas but additional at 17.07.2020, because
+of a special guest and please use a different time slot, if event matches friday.
+
+Path Segment
+""""""""""""
+
+Default: An URL interpretable string of column title
+
+Path segment for speaking URLs
+
+Event Begin
+"""""""""""
+
+Default: today
+
+For single event: Date of Event
+For duration  event: First date of Event
+For recurring event: First date to start day generation
+
+Event End
+"""""""""
+
+Default: empty
+
+For duration event: Last date of Event
+
+End of recurring
+""""""""""""""""
+
+Default: empty
+
+For recurring event: Last date of day generation
+
+Time
+""""
+
+Add a time record, to define times for:
+Begin, Entry, Duration and End. This record is a default for all
+recurring days, but can be overwritten by other time records.
+
+Same Day
+""""""""
+
+Default: false
+
+After activating this checkbox the form will be reloaded and you have the
+possibility to assign multiple time records for one day. But be careful, if
+you define other time records for a special weekday below, it will overwrite
+this setting completely.
+
+Multiple Times
+""""""""""""""
+
+Default: empty
+
+See description for column *same_day*
+
+Recurring
+"""""""""
+
+How often should this event repeated.
+
+Example: Each **1st** and **3rd** monday a month
+
+Weekday
+"""""""
+
+How often should this event be repeated.
+
+Example: Each 1st **monday** and **wednesday** a month
+
+Different times each weekday
+""""""""""""""""""""""""""""
+
+You can set another time for a specified weekday. Be careful: This setting will
+overwrite the setting of multiple times above completely, if it matches.
+
+Recurring weeks
+"""""""""""""""
+
+If you change that value the complete form will reload and you can set a recurring over weeks.
+
+Recurring months
+""""""""""""""""
+
+If you change that value the complete form will reload and you can set a recurring over months.
+
+Exceptions
+""""""""""
+
+With this records you can define some specials for your recurring event.
+You can add or remove a special date for your recurring. Further you can define some
+additional information or change the times for a special date.
+
+Teaser
+""""""
+
+This is a short version (1 or 2 sentences) of your detail information.
+It will be displayed in listings. If not given the first 100 letters of
+detail information will be displayed
+
+Detail information
+""""""""""""""""""
+
+This detail text will be displayed at the detail page of the event record.
+
+Free entry
+""""""""""
+
+If a visitor can access this event for free activate this checkbox.
+
+Ticket Link
+"""""""""""
+
+A link to the organizer, where you can buy tickets.
+
+Location
+""""""""
+
+Where will this event take place?
+
+This is a required field, if it was set as *required* in Extension Settings.
+
+Organizer
+"""""""""
+
+Who will organize this event?
+
+This is a required field, if it was set as *required* in Extension Settings.
+
+Images
+""""""
+
+Add one or more images to your event. You can resize them by TS-Settings
+
+Link to YouTube
+"""""""""""""""
+
+If you have created a little presentation video for this event, you
+can assign the link to YouTube here. Hint: Only YouTube-Links are valid.
+
+Download Links
+""""""""""""""
+
+Add some brochures with more information as PDF or similar here.

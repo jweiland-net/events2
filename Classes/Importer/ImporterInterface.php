@@ -1,34 +1,45 @@
 <?php
-declare(strict_types = 1);
-namespace JWeiland\Events2\Importer;
+
+declare(strict_types=1);
 
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\Importer;
+
+use JWeiland\Events2\Task\Import;
 use TYPO3\CMS\Core\Resource\FileInterface;
 
-/**
- * Class Import
- *
+/*
+ * An Interface as base for all event importer classes
  */
 interface ImporterInterface
 {
     /**
-     * Check, if File is valid for this importer
+     * Set task
+     * Needed, to get the StoragePid
+     *
+     * @param Import $task
+     */
+    public function setTask(Import $task): void;
+
+    /**
+     * Set file to import
      *
      * @param FileInterface $file
+     */
+    public function setFile(FileInterface $file): void;
+
+    /**
+     * Check, if File is valid for this importer
+     *
      * @return bool
      */
-    public function isValid(FileInterface $file): bool;
+    public function checkFile(): bool;
 
     /**
      * Import XML file

@@ -1,0 +1,146 @@
+page.includeJSFooter {
+  jQueryForEvents2 = https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js
+  jQueryForEvents2.external = 1
+  jQueryForEvents2.if.isTrue = {$plugin.tx_events2.settings.includeJQueryLibrary}
+  jQueryUiForEvents2 = https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js
+  jQueryUiForEvents2.external = 1
+  jQueryUiForEvents2.if.isTrue = {$plugin.tx_events2.settings.includeJQueryUiLibrary}
+  jQueryUiCalendarDe = EXT:events2/Resources/Public/JavaScript/jquery.ui.datepicker-de.js
+  jQueryUiCalendarDe.if.isTrue = {$plugin.tx_events2.settings.includeDeTranslationForCalendar}
+  events2 = EXT:events2/Resources/Public/JavaScript/Events2.js
+  events2Calendar = EXT:events2/Resources/Public/JavaScript/Calendar.js
+}
+
+page.includeCSS {
+  jQueryCssForEvents2 = https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css
+  jQueryCssForEvents2.external = 1
+  jQueryCssForEvents2.excludeFromConcatenation = 1
+  jQueryCssForEvents2.disableCompression = 1
+  jQueryCssForEvents2.if.isTrue = {$plugin.tx_events2.settings.includeJQueryUiCss}
+}
+
+# search should work with get params of events plugin
+plugin.tx_events2_search.view.pluginNamespace = tx_events2_events
+# but if there was an action called which is not accessible, then call the default action
+plugin.tx_events2_search.mvc.callDefaultActionIfActionCantBeResolved = 1
+
+plugin.tx_events2 {
+  view {
+    templateRootPaths {
+      0 = EXT:events2/Resources/Private/Templates/
+      1 = {$plugin.tx_events2.view.templateRootPath}
+    }
+    partialRootPaths {
+      0 = EXT:events2/Resources/Private/Partials/
+      1 = {$plugin.tx_events2.view.partialRootPath}
+    }
+    layoutRootPaths {
+      0 = EXT:events2/Resources/Private/Layouts/
+      1 = {$plugin.tx_events2.view.layoutRootPath}
+    }
+  }
+  persistence {
+    storagePid = {$plugin.tx_events2.persistence.storagePid}
+    classes {
+      JWeiland\Events2\Domain\Model\Location {
+        newRecordStoragePid =
+      }
+      JWeiland\Events2\Domain\Model\Organizer {
+        newRecordStoragePid =
+      }
+      JWeiland\Events2\Domain\Model\Category {
+        mapping {
+          tableName = sys_category
+          recordType =
+        }
+      }
+    }
+  }
+  mvc {
+    callDefaultActionIfActionCantBeResolved = 1
+  }
+  settings {
+    rootCategory = {$plugin.tx_events2.settings.rootCategory}
+    pidOfDetailPage = {$plugin.tx_events2.settings.pidOfDetailPage}
+    pidOfSearchPage = {$plugin.tx_events2.settings.pidOfSearchPage}
+    pidOfLocationPage = {$plugin.tx_events2.settings.pidOfLocationPage}
+    pidOfListPage = {$plugin.tx_events2.settings.pidOfListPage}
+    includeDeTranslationForCalendar = {$plugin.tx_events2.settings.includeDeTranslationForCalendar}
+    userGroup = {$plugin.tx_events2.settings.userGroup}
+    remainingLetters = {$plugin.tx_events2.settings.remainingLetters}
+    list {
+      image {
+        width = 50c
+        height = 50c
+        maxWidth = 50
+        minWidth = 50
+        maxHeight = 50
+        minHeight = 50
+      }
+    }
+
+    latest {
+      amountOfRecordsToShow = {$plugin.tx_events2.settings.latest.amountOfRecordsToShow}
+    }
+
+    new {
+      uploadFolder = 1:user_upload/tx_events2/
+    }
+
+    pageBrowser {
+      itemsPerPage = {$plugin.tx_events2.settings.pageBrowser.itemsPerPage}
+      insertAbove = {$plugin.tx_events2.settings.pageBrowser.insertAbove}
+      insertBelow = {$plugin.tx_events2.settings.pageBrowser.insertBelow}
+      maximumNumberOfLinks = {$plugin.tx_events2.settings.pageBrowser.maximumNumberOfLinks}
+    }
+
+    show {
+      image {
+        width = 200c
+        height = 150c
+        maxWidth = 200
+        minWidth = 200
+        maxHeight = 150
+        minHeight = 150
+      }
+    }
+  }
+  _LOCAL_LANG.de.rightsMessage = Hiermit räume ich ... ein einfaches, unbeschränktes Nutzungsrecht an dem hochgeladenen Werk ein. Mit der Nutzung werden keine Rechte von Dritten verletzt.
+  _LOCAL_LANG.default.rightsMessage = I give all rights of this image to...
+}
+
+# TYPO3 8 comes with a new security feature which requires a cHash for all URLs.
+# As we have some individual forms and AjaxCalls, where we can not create an individual cHash
+# we have to disable that feature
+plugin.tx_events2_events.features.requireCHashArgumentForActionArguments = 0
+plugin.tx_events2_search.features.requireCHashArgumentForActionArguments = 0
+
+module.tx_events2 {
+  view {
+    templateRootPaths {
+      0 = EXT:events2/Resources/Private/Backend/Templates/
+      1 = {$module.tx_events2.view.templateRootPath}
+    }
+    partialRootPaths {
+      0 = EXT:events2/Resources/Private/Backend/Partials/
+      1 = {$module.tx_events2.view.partialRootPath}
+    }
+    layoutRootPaths {
+      0 = EXT:events2/Resources/Private/Backend/Layouts/
+      1 = {$module.tx_events2.view.layoutRootPath}
+    }
+  }
+  persistence < plugin.tx_events2.persistence
+}
+
+plugin.tx_events2._CSS_DEFAULT_STYLE (
+  textarea.f3-form-error {
+    background-color:#FF9F9F;
+    border: 1px #FF0000 solid;
+  }
+
+  input.f3-form-error {
+    background-color:#FF9F9F;
+    border: 1px #FF0000 solid;
+  }
+)

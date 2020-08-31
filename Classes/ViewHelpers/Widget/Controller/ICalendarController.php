@@ -1,42 +1,36 @@
 <?php
-declare(strict_types = 1);
-namespace JWeiland\Events2\ViewHelpers\Widget\Controller;
+
+declare(strict_types=1);
 
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\ViewHelpers\Widget\Controller;
+
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
-use JWeiland\Events2\Domain\Model\Location;
 use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Service\EventService;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetController;
 
-/**
+/*
  * A Fluid widget to create a link for downloading an iCal file
  */
 class ICalendarController extends AbstractWidgetController
 {
     /**
-     * @var \JWeiland\Events2\Service\EventService
+     * @var EventService
      */
     protected $eventService;
 
-    /**
-     * @param EventService $eventService
-     */
-    public function injectEventService(EventService $eventService)
+    public function __construct(EventService $eventService)
     {
         $this->eventService = $eventService;
     }
@@ -67,7 +61,7 @@ class ICalendarController extends AbstractWidgetController
         );
 
         $content = preg_replace('/\h+/', ' ', $this->view->render());
-        GeneralUtility::writeFileToTypo3tempDir(PATH_site . $filePath, $content);
+        GeneralUtility::writeFileToTypo3tempDir(Environment::getPublicPath() . '/' . $filePath, $content);
 
         return sprintf(
             '<a href="%s" target="_blank">%s</a>',
@@ -127,7 +121,7 @@ class ICalendarController extends AbstractWidgetController
      * @param Event $event
      * @return Day|null
      */
-    protected function getFirstDayOfEvent(Event $event)
+    protected function getFirstDayOfEvent(Event $event): ?Day
     {
         $days = [];
         foreach ($event->getDays() as $day) {
@@ -145,7 +139,7 @@ class ICalendarController extends AbstractWidgetController
      * @param Event $event
      * @return Day|null
      */
-    protected function getLastDayOfEvent(Event $event)
+    protected function getLastDayOfEvent(Event $event): ?Day
     {
         $days = [];
         foreach ($event->getDays() as $day) {
@@ -161,7 +155,7 @@ class ICalendarController extends AbstractWidgetController
      * Hint: We can't use DTSTAMP here, because this must be UTC, but we don't have UTC times here.
      *
      * @param Day $day current Day. In case of duration it will be the first day
-     * @param Day $lastDay current Day. In case of duration it will be the last day
+     * @param Day|null $lastDay current Day. In case of duration it will be the last day
      * @param string $startTime Something like 15:30
      * @param string $endTime Something like 17:30
      * @return array
@@ -181,15 +175,7 @@ class ICalendarController extends AbstractWidgetController
             }
             $event['DTEND'] = $this->convertToTstamp($lastDay->getDay(), $endTime);
         }
-        // in case of sys_language_mode=strict, location can be empty
-        if ($day->getEvent()->getLocation() instanceof Location) {
-            $location = $this->sanitizeString(
-                $day->getEvent()->getLocation()->getLocation()
-            );
-        } else {
-            $location = '';
-        }
-        $event['LOCATION'] = $location;
+        $event['LOCATION'] = $day->getEvent()->getLocationAsString();
         $event['SUMMARY'] = $this->sanitizeString($day->getEvent()->getTitle());
         $event['DESCRIPTION'] = $this->sanitizeString($day->getEvent()->getDetailInformations());
 

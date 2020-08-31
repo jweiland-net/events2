@@ -1,19 +1,16 @@
 <?php
-declare(strict_types = 1);
-namespace JWeiland\Events2\Task;
+
+declare(strict_types=1);
 
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\Task;
+
 use JWeiland\Events2\Importer\ImporterInterface;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
@@ -21,9 +18,10 @@ use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\Index\Indexer;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
-/**
+/*
  * Task to import events by various file formats like XML
  */
 class Import extends AbstractTask
@@ -52,18 +50,16 @@ class Import extends AbstractTask
     public function execute(): bool
     {
         try {
-            /** @var File $file */
-            $file = ResourceFactory::getInstance()->retrieveFileOrFolderObject($this->path);
+            $file = GeneralUtility::makeInstance(ResourceFactory::class)
+                ->retrieveFileOrFolderObject($this->path);
             if ($file instanceof File) {
                 if ($file->isMissing()) {
                     $this->addMessage('The defined file seems to be missing. Please check, if file is still at its place', FlashMessage::ERROR);
                     return false;
-                } else {
-                    // File can be updated by (S)FTP. So we have to update its properties first.
-                    /** @var Indexer $indexer */
-                    $indexer = GeneralUtility::makeInstance(Indexer::class, $file->getStorage());
-                    $indexer->updateIndexEntry($file);
                 }
+                // File can be updated by (S)FTP. So we have to update its properties first.
+                $indexer = GeneralUtility::makeInstance(Indexer::class, $file->getStorage());
+                $indexer->updateIndexEntry($file);
             } else {
                 $this->addMessage('The defined file is not a valid file. Maybe you have defined a folder. Please re-check file path', FlashMessage::ERROR);
                 return false;
@@ -77,9 +73,8 @@ class Import extends AbstractTask
             if ($this->importFile($file)) {
                 $file->delete();
                 return true;
-            } else {
-                return false;
             }
+            return false;
         } catch (\Exception $e) {
             return false;
         }
@@ -102,12 +97,16 @@ class Import extends AbstractTask
             $this->addMessage('There is no class to handler files of type: ' . $file->getExtension());
             return false;
         }
-        $importer = GeneralUtility::makeInstance($className, $file, $this);
+
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $importer = $objectManager->get($className);
         if (!$importer instanceof ImporterInterface) {
             $this->addMessage('Importer has to implement ImporterInterface');
             return false;
         }
-        if (!$importer->isValid($file)) {
+        $importer->setTask($this);
+        $importer->setFile($file);
+        if (!$importer->checkFile()) {
             return false;
         }
         return $importer->import();
@@ -120,7 +119,7 @@ class Import extends AbstractTask
      * @param int $severity Message level (according to \TYPO3\CMS\Core\Messaging\FlashMessage class constants)
      * @throws \Exception
      */
-    public function addMessage(string $message, int $severity = FlashMessage::OK)
+    public function addMessage(string $message, int $severity = FlashMessage::OK): void
     {
         $flashMessage = GeneralUtility::makeInstance(FlashMessage::class, $message, '', $severity);
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);

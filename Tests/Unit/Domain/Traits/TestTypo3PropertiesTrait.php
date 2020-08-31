@@ -1,18 +1,13 @@
 <?php
-namespace JWeiland\Events2\Tests\Unit\Domain\Traits;
 
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\Tests\Unit\Domain\Traits;
 
 /**
  * Test case.
@@ -24,7 +19,7 @@ trait TestTypo3PropertiesTrait
      */
     public function getCrdateInitiallyReturnsNull()
     {
-        $this->assertNull(
+        self::assertNull(
             $this->subject->getCrdate()
         );
     }
@@ -37,7 +32,7 @@ trait TestTypo3PropertiesTrait
         $date = new \DateTime();
         $this->subject->setCrdate($date);
 
-        $this->assertSame(
+        self::assertSame(
             $date,
             $this->subject->getCrdate()
         );
@@ -50,7 +45,7 @@ trait TestTypo3PropertiesTrait
     {
         $this->subject->setCrdate(null);
 
-        $this->assertNull(
+        self::assertNull(
             $this->subject->getCrdate()
         );
     }
@@ -60,7 +55,7 @@ trait TestTypo3PropertiesTrait
      */
     public function getTstampInitiallyReturnsNull()
     {
-        $this->assertNull(
+        self::assertNull(
             $this->subject->getTstamp()
         );
     }
@@ -73,7 +68,7 @@ trait TestTypo3PropertiesTrait
         $date = new \DateTime();
         $this->subject->setTstamp($date);
 
-        $this->assertSame(
+        self::assertSame(
             $date,
             $this->subject->getTstamp()
         );
@@ -86,7 +81,7 @@ trait TestTypo3PropertiesTrait
     {
         $this->subject->setTstamp(null);
 
-        $this->assertNull(
+        self::assertNull(
             $this->subject->getTstamp()
         );
     }
@@ -96,8 +91,7 @@ trait TestTypo3PropertiesTrait
      */
     public function getSysLanguageUidInitiallyReturnsNull()
     {
-        $this->assertSame(
-            null,
+        self::assertNull(
             $this->subject->getSysLanguageUid()
         );
     }
@@ -109,7 +103,7 @@ trait TestTypo3PropertiesTrait
     {
         $this->subject->setSysLanguageUid(123456);
 
-        $this->assertSame(
+        self::assertSame(
             123456,
             $this->subject->getSysLanguageUid()
         );
@@ -122,7 +116,7 @@ trait TestTypo3PropertiesTrait
     {
         $this->subject->setSysLanguageUid('123Test');
 
-        $this->assertSame(
+        self::assertSame(
             123,
             $this->subject->getSysLanguageUid()
         );
@@ -135,7 +129,7 @@ trait TestTypo3PropertiesTrait
     {
         $this->subject->setSysLanguageUid(true);
 
-        $this->assertSame(
+        self::assertSame(
             1,
             $this->subject->getSysLanguageUid()
         );
@@ -146,7 +140,7 @@ trait TestTypo3PropertiesTrait
      */
     public function getL10nParentInitiallyReturnsZero()
     {
-        $this->assertSame(
+        self::assertSame(
             0,
             $this->subject->getL10nParent()
         );
@@ -159,7 +153,7 @@ trait TestTypo3PropertiesTrait
     {
         $this->subject->setL10nParent(123456);
 
-        $this->assertSame(
+        self::assertSame(
             123456,
             $this->subject->getL10nParent()
         );
@@ -172,7 +166,7 @@ trait TestTypo3PropertiesTrait
     {
         $this->subject->setL10nParent('123Test');
 
-        $this->assertSame(
+        self::assertSame(
             123,
             $this->subject->getL10nParent()
         );
@@ -185,7 +179,7 @@ trait TestTypo3PropertiesTrait
     {
         $this->subject->setL10nParent(true);
 
-        $this->assertSame(
+        self::assertSame(
             1,
             $this->subject->getL10nParent()
         );
@@ -196,7 +190,7 @@ trait TestTypo3PropertiesTrait
      */
     public function getStarttimeInitiallyReturnsNull()
     {
-        $this->assertNull(
+        self::assertNull(
             $this->subject->getStarttime()
         );
     }
@@ -209,7 +203,7 @@ trait TestTypo3PropertiesTrait
         $date = new \DateTime();
         $this->subject->setStarttime($date);
 
-        $this->assertSame(
+        self::assertSame(
             $date,
             $this->subject->getStarttime()
         );
@@ -222,7 +216,7 @@ trait TestTypo3PropertiesTrait
     {
         $this->subject->setStarttime(null);
 
-        $this->assertNull(
+        self::assertNull(
             $this->subject->getStarttime()
         );
     }
@@ -232,7 +226,7 @@ trait TestTypo3PropertiesTrait
      */
     public function getEndtimeInitiallyReturnsNull()
     {
-        $this->assertNull(
+        self::assertNull(
             $this->subject->getEndtime()
         );
     }
@@ -245,7 +239,7 @@ trait TestTypo3PropertiesTrait
         $date = new \DateTime();
         $this->subject->setEndtime($date);
 
-        $this->assertSame(
+        self::assertSame(
             $date,
             $this->subject->getEndtime()
         );
@@ -258,7 +252,7 @@ trait TestTypo3PropertiesTrait
     {
         $this->subject->setEndtime(null);
 
-        $this->assertNull(
+        self::assertNull(
             $this->subject->getEndtime()
         );
     }
@@ -268,7 +262,7 @@ trait TestTypo3PropertiesTrait
      */
     public function getHiddenInitiallyReturnsFalse()
     {
-        $this->assertFalse(
+        self::assertFalse(
             $this->subject->getHidden()
         );
     }
@@ -279,7 +273,7 @@ trait TestTypo3PropertiesTrait
     public function setHiddenSetsHidden()
     {
         $this->subject->setHidden(true);
-        $this->assertTrue(
+        self::assertTrue(
             $this->subject->getHidden()
         );
     }
@@ -290,7 +284,7 @@ trait TestTypo3PropertiesTrait
     public function setHiddenWithStringReturnsTrue()
     {
         $this->subject->setHidden('foo bar');
-        $this->assertTrue($this->subject->getHidden());
+        self::assertTrue($this->subject->getHidden());
     }
 
     /**
@@ -299,7 +293,7 @@ trait TestTypo3PropertiesTrait
     public function setHiddenWithZeroReturnsFalse()
     {
         $this->subject->setHidden(0);
-        $this->assertFalse($this->subject->getHidden());
+        self::assertFalse($this->subject->getHidden());
     }
 
     /**
@@ -307,7 +301,7 @@ trait TestTypo3PropertiesTrait
      */
     public function getDeletedInitiallyReturnsFalse()
     {
-        $this->assertFalse(
+        self::assertFalse(
             $this->subject->getDeleted()
         );
     }
@@ -318,7 +312,7 @@ trait TestTypo3PropertiesTrait
     public function setDeletedSetsDeleted()
     {
         $this->subject->setDeleted(true);
-        $this->assertTrue(
+        self::assertTrue(
             $this->subject->getDeleted()
         );
     }
@@ -329,7 +323,7 @@ trait TestTypo3PropertiesTrait
     public function setDeletedWithStringReturnsTrue()
     {
         $this->subject->setDeleted('foo bar');
-        $this->assertTrue($this->subject->getDeleted());
+        self::assertTrue($this->subject->getDeleted());
     }
 
     /**
@@ -338,7 +332,7 @@ trait TestTypo3PropertiesTrait
     public function setDeletedWithZeroReturnsFalse()
     {
         $this->subject->setDeleted(0);
-        $this->assertFalse($this->subject->getDeleted());
+        self::assertFalse($this->subject->getDeleted());
     }
 
     /**
@@ -346,7 +340,7 @@ trait TestTypo3PropertiesTrait
      */
     public function getCruserIdInitiallyReturnsZero()
     {
-        $this->assertSame(
+        self::assertSame(
             0,
             $this->subject->getCruserId()
         );
@@ -359,7 +353,7 @@ trait TestTypo3PropertiesTrait
     {
         $this->subject->setCruserId(123456);
 
-        $this->assertSame(
+        self::assertSame(
             123456,
             $this->subject->getCruserId()
         );
@@ -372,7 +366,7 @@ trait TestTypo3PropertiesTrait
     {
         $this->subject->setCruserId('123Test');
 
-        $this->assertSame(
+        self::assertSame(
             123,
             $this->subject->getCruserId()
         );
@@ -385,7 +379,7 @@ trait TestTypo3PropertiesTrait
     {
         $this->subject->setCruserId(true);
 
-        $this->assertSame(
+        self::assertSame(
             1,
             $this->subject->getCruserId()
         );

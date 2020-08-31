@@ -1,32 +1,28 @@
 <?php
 
-namespace JWeiland\Events2\Backend\FormDataProvider;
+declare(strict_types=1);
 
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\Backend\FormDataProvider;
 
 use TYPO3\CMS\Backend\Form\FormDataProviderInterface;
 
-/**
- * This class sets some dynamic default values for event record
+/*
+ * This class sets some dynamic default values (like event_begin) for event record
  */
 class InitializeNewEventRecord implements FormDataProviderInterface
 {
     /**
-     * Add form data to result array
+     * Prefill event_begin with current date
      *
      * @param array $result Initialized result array
-     * @return array Result filled with more data
+     * @return array Do not add as strict type because of Interface
      */
     public function addData(array $result)
     {

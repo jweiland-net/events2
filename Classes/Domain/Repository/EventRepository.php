@@ -1,32 +1,31 @@
 <?php
-declare(strict_types = 1);
-namespace JWeiland\Events2\Domain\Repository;
+
+declare(strict_types=1);
 
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
-use JWeiland\Events2\Domain\Model\Event;
+
+namespace JWeiland\Events2\Domain\Repository;
+
 use JWeiland\Events2\Utility\DateTimeUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Extbase\Persistence\Generic\Session;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
-/**
+/*
  * Repository to get and find event records
  */
-class EventRepository extends Repository
+class EventRepository extends Repository implements HiddenRepositoryInterface
 {
     /**
      * @var array
@@ -60,79 +59,63 @@ class EventRepository extends Repository
      */
     protected $settings = [];
 
-    /**
-     * @param DateTimeUtility $dateTimeUtility
-     */
-    public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
-    {
+    public function __construct(
+        ObjectManagerInterface $objectManager,
+        DateTimeUtility $dateTimeUtility
+    ) {
+        parent::__construct($objectManager);
         $this->dateTimeUtility = $dateTimeUtility;
     }
 
-    /**
-     * @param DataMapper $dataMapper
-     */
-    public function injectDataMapper(DataMapper $dataMapper)
-    {
-        $this->dataMapper = $dataMapper;
-    }
-
-    /**
-     * @param Session $persistenceSession
-     */
-    public function injectPersistenceSession(Session $persistenceSession)
-    {
-        $this->persistenceSession = $persistenceSession;
-    }
-
-    /**
-     * @param ConfigurationManagerInterface $configurationManager
-     */
-    public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager)
-    {
-        $this->configurationManager = $configurationManager;
-    }
-
-    /**
-     * Sets the settings
-     *
-     * @param array $settings
-     */
-    public function setSettings(array $settings)
-    {
-        $this->settings = $settings;
-    }
-
-    /**
-     * Find event by a given property value whether it is hidden or not.
-     *
-     * @param mixed $value
-     * @param string $property
-     * @return Event|null
-     */
-    public function findHiddenEntry($value, string $property = 'uid')
+    public function findHiddenObject($value, string $property = 'uid'): ?object
     {
         $query = $this->createQuery();
         $query->getQuerySettings()->setIgnoreEnableFields(true);
         $query->getQuerySettings()->setEnableFieldsToBeIgnored(['disabled']);
         $query->getQuerySettings()->setRespectStoragePage(false);
 
-        /** @var Event $event */
-        $event = $query->matching($query->equals($property, $value))->execute()->getFirst();
-        return $event;
+        return $query->matching($query->equals($property, $value))->execute()->getFirst();
     }
 
-    /**
-     * Find events of a specified user.
-     *
-     * @return QueryResultInterface
-     */
     public function findMyEvents(): QueryResultInterface
     {
-        /** @var UserRepository $userRepository */
-        $userRepository = $this->objectManager->get(UserRepository::class);
+        $userRepository = GeneralUtility::makeInstance(UserRepository::class);
         $organizer = (int)$userRepository->getFieldFromUser('tx_events2_organizer');
         $query = $this->createQuery();
 
         return $query->matching($query->equals('organizer.uid', $organizer))->execute();
+    }
+
+    /**
+     * Nearly the same as "findByUid", but this method was used by PageTitleProvider
+     * which is out of Extbase context. So we are using a plain Doctrine Query here.
+     *
+     * @param int $uid
+     * @return array
+     */
+    public function getEventRecord(int $uid): array
+    {
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_event');
+        $event = $queryBuilder
+            ->select('uid', 'title')
+            ->from('tx_events2_domain_model_event')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid',
+                    $queryBuilder->createNamedParameter((int)$uid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetch();
+
+        if (empty($event)) {
+            $event = [];
+        }
+        return $event;
+    }
+
+    protected function getConnectionPool(): ConnectionPool
+    {
+        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 }

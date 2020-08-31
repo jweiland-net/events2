@@ -1,48 +1,40 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of the package jweiland/events2.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE file that was distributed with this source code.
+ */
+
 namespace JWeiland\Events2\Converter;
 
 /*
- * This file is part of the events2 project.
+ * With this class you can convert seconds from midnight into a time format like 08:34.
  *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
- *
- * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
- */
-
-/**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * ToDo: I remember we have implemented it as backwards compatibility where we have entered duration with
+ * ToDo: seconds after midnight. Maybe we can remove that class with next major release.
  */
 class TimeToStringConverter
 {
-    /**
-     * a method to convert a timestamp to a readable time format like: 21:35
-     * maximum value is 23:59.
-     *
-     * @param int $timestamp Timestamp to convert
-     *
-     * @return string
-     */
-    public function convert($timestamp)
+    public function convert(int $timestamp): string
     {
-        $time = '';
-        if (is_int($timestamp)) {
-            if ($timestamp >= (60 * 60 * 24)) {
-                // return highest allowed value: 23:59 if timestamp is too high
-                $time = '23:59';
-            } elseif ($timestamp <= 0) {
-                // return minimum allowed value: 00:00 if timestamp is too low
-                $time = '00:00';
-            } else {
-                $hours = $this->getHours($timestamp);
-                $minutes = $this->getRemainingMinutes($timestamp, $hours);
-                $time = str_pad($hours, 2, '0', STR_PAD_LEFT) . ':' . str_pad($minutes, 2, '0', STR_PAD_LEFT);
-            }
+        if ($timestamp >= (60 * 60 * 24)) {
+            // return highest allowed value: 23:59 if timestamp is too high
+            $time = '23:59';
+        } elseif ($timestamp <= 0) {
+            // return minimum allowed value: 00:00 if timestamp is too low
+            $time = '00:00';
+        } else {
+            $hours = $this->getHours($timestamp);
+            $minutes = $this->getRemainingMinutes($timestamp, $hours);
+            $time = sprintf(
+                '%s:%s',
+                str_pad((string)$hours, 2, '0', STR_PAD_LEFT),
+                str_pad((string)$minutes, 2, '0', STR_PAD_LEFT)
+            );
         }
 
         return $time;
@@ -53,10 +45,9 @@ class TimeToStringConverter
      * Hint: Can also return 0. Be careful with this result (division by zero).
      *
      * @param int $time
-     *
      * @return float
      */
-    protected function getHours($time)
+    protected function getHours(int $time)
     {
         return floor((int)$time / 3600);
     }
@@ -71,18 +62,17 @@ class TimeToStringConverter
      *
      * @param int   $time  seconds since midnight
      * @param float $hours
-     *
      * @return int remaining minutes
      */
-    protected function getRemainingMinutes($time, $hours)
+    protected function getRemainingMinutes(int $time, float $hours): int
     {
-        $seconds = $hours === (float) 0 ? $time : $time % ($hours * 3600);
+        $seconds = $hours === (float)0 ? $time : $time % ($hours * 3600);
         if ($seconds) {
             $minutes = floor($seconds / 60);
         } else {
             $minutes = 0;
         }
 
-        return $minutes;
+        return (int)$minutes;
     }
 }

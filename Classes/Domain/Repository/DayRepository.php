@@ -1,19 +1,16 @@
 <?php
-declare(strict_types = 1);
-namespace JWeiland\Events2\Domain\Repository;
+
+declare(strict_types=1);
 
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\Domain\Repository;
+
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Factory\DayFactory;
 use JWeiland\Events2\Domain\Model\Day;
@@ -24,13 +21,13 @@ use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
-/**
+/*
  * Repository to get and find day records from storage
  */
 class DayRepository extends Repository
@@ -51,39 +48,36 @@ class DayRepository extends Repository
     protected $databaseService;
 
     /**
+     * @var DayFactory
+     */
+    protected $dayFactory;
+
+    /**
+     * @var Dispatcher
+     */
+    protected $dispatcher;
+
+    /**
      * @var array
      */
     protected $settings = [];
 
-    /**
-     * @param DateTimeUtility $dateTimeUtility
-     */
-    public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
-    {
-        $this->dateTimeUtility = $dateTimeUtility;
-    }
-
-    /**
-     * @param ExtConf $extConf
-     */
-    public function injectExtConf(ExtConf $extConf)
-    {
+    public function __construct(
+        ObjectManagerInterface $objectManager,
+        ExtConf $extConf,
+        DateTimeUtility $dateTimeUtility,
+        DatabaseService $databaseService,
+        DayFactory $dayFactory,
+        Dispatcher $dispatcher
+    ) {
+        parent::__construct($objectManager);
         $this->extConf = $extConf;
-    }
-
-    /**
-     * @param DatabaseService $databaseService
-     */
-    public function injectDatabaseService(DatabaseService $databaseService)
-    {
+        $this->dateTimeUtility = $dateTimeUtility;
         $this->databaseService = $databaseService;
+        $this->dayFactory = $dayFactory;
+        $this->dispatcher = $dispatcher;
     }
 
-    /**
-     * Sets the settings
-     *
-     * @param array $settings
-     */
     public function setSettings(array $settings)
     {
         $this->settings = $settings;
@@ -390,7 +384,7 @@ class DayRepository extends Repository
      *
      * @param QueryBuilder $subQueryBuilder
      */
-    protected function addMergeFeatureToQuery(QueryBuilder $subQueryBuilder)
+    protected function addMergeFeatureToQuery(QueryBuilder $subQueryBuilder): void
     {
         if ((bool)$this->settings['mergeRecurringEvents']) {
             // $queryBuilder->groupBy('day.uid');
@@ -408,7 +402,7 @@ class DayRepository extends Repository
      * @param QueryBuilder $queryBuilder
      * @param QueryBuilder $subQueryBuilder
      */
-    protected function joinSubQueryIntoQueryBuilder(QueryBuilder $queryBuilder, QueryBuilder $subQueryBuilder)
+    protected function joinSubQueryIntoQueryBuilder(QueryBuilder $queryBuilder, QueryBuilder $subQueryBuilder): void
     {
         $queryBuilder->getConcreteQueryBuilder()->join(
             $queryBuilder->quoteIdentifier('day'),
@@ -467,8 +461,40 @@ class DayRepository extends Repository
      */
     public function findDayByEventAndTimestamp(int $eventUid, int $timestamp = 0): Day
     {
-        $dayFactory = $this->objectManager->get(DayFactory::class);
-        return $dayFactory->findDayByEventAndTimestamp($eventUid, $timestamp, $this->createQuery());
+        return $this->dayFactory->findDayByEventAndTimestamp($eventUid, $timestamp, $this->createQuery());
+    }
+
+    /**
+     * Nearly the same as "findDayByEventAndTimestamp", but this method was used by PageTitleProvider
+     * which is out of Extbase context. So we are using a plain Doctrine Query here.
+     *
+     * @param int $eventUid
+     * @param int $timestamp
+     * @return array
+     */
+    public function getDayRecord(int $eventUid, int $timestamp): array
+    {
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_day');
+        $day = $queryBuilder
+            ->select('event')
+            ->from('tx_events2_domain_model_day')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'event',
+                    $queryBuilder->createNamedParameter($eventUid, \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    'day_time',
+                    $queryBuilder->createNamedParameter($timestamp, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetch();
+
+        if (empty($day)) {
+            $day = [];
+        }
+        return $day;
     }
 
     /**
@@ -486,9 +512,8 @@ class DayRepository extends Repository
         string $type,
         Filter $filter,
         array $settings
-    ) {
-        $signalSlotDispatcher = GeneralUtility::makeInstance(ObjectManager::class)->get(Dispatcher::class);
-        $signalSlotDispatcher->dispatch(
+    ): void {
+        $this->dispatcher->dispatch(
             self::class,
             'modifyQueriesOfFindEvents',
             [$queryBuilder, $subQueryBuilder, $type, $filter, $settings]
@@ -508,9 +533,8 @@ class DayRepository extends Repository
         QueryBuilder $subQueryBuilder,
         Search $search,
         array $settings
-    ) {
-        $signalSlotDispatcher = GeneralUtility::makeInstance(ObjectManager::class)->get(Dispatcher::class);
-        $signalSlotDispatcher->dispatch(
+    ): void {
+        $this->dispatcher->dispatch(
             self::class,
             'modifyQueriesOfSearchEvents',
             [$queryBuilder, $subQueryBuilder, $search, $settings]
@@ -528,20 +552,14 @@ class DayRepository extends Repository
         QueryBuilder $queryBuilder,
         int $timestamp,
         array $settings
-    ) {
-        $signalSlotDispatcher = GeneralUtility::makeInstance(ObjectManager::class)->get(Dispatcher::class);
-        $signalSlotDispatcher->dispatch(
+    ): void {
+        $this->dispatcher->dispatch(
             self::class,
             'modifyQueriesOfFindByTimestamp',
             [$queryBuilder, $timestamp, $settings]
         );
     }
 
-    /**
-     * Get TYPO3s Connection Pool
-     *
-     * @return ConnectionPool
-     */
     protected function getConnectionPool(): ConnectionPool
     {
         return GeneralUtility::makeInstance(ConnectionPool::class);

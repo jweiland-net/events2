@@ -1,23 +1,20 @@
 <?php
 
-namespace JWeiland\Events2\Tca;
+declare(strict_types=1);
 
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\Tca;
+
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
-/**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+/*
+ * This class adds the time and weekday to label of time-records in TCA.
  */
 class TimeLabel
 {
@@ -28,7 +25,7 @@ class TimeLabel
      * @param array $ctrlArray
      * @param $parentObject
      */
-    public function getTitle(array &$ctrlArray, $parentObject)
+    public function getTitle(array &$ctrlArray, $parentObject): void
     {
         if ($ctrlArray['table'] === 'tx_events2_domain_model_time') {
             // add begin and end to title in general

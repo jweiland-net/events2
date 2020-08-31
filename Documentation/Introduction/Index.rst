@@ -6,35 +6,28 @@
 Introduction
 ============
 
-Releases
---------
-
-* Currently the source code is available at `Github <https://github.com/jweiland-net/events2>`_
-* We have tagged all versions at Github and added a composer.json,
-  so you can install different versions of |extension_key| with composer.
-
-Bugs and Known Issues
----------------------
-
-If you found a bug, it would be cool if you notify us
-about that over the `Bug Tracker <https://github.com/jweiland-net/events2/issues>`_ of Github.
-
 What does it do?
-----------------
+================
 
-With this extension you can create single and recurring events. Further it is possible
-to add and remove dates from recurring. Change time and description for a special
-date. Multiple times for an event. Different times for a specified weekday.
+Our events2 is a timeframe based event management system. That means, that only events within this ongoing timeframe
+are visible in Frontend. All newer/older events are still accessible, but there is no date calculated for them anymore.
 
-.. _screenshots:
+Other than EXT:cal we have only one event record with a huge amount of settings to dynamically calculate the day
+records. If you change a description, one event record will be updated only.
+
+You can create different types of events:
+
+* Single: An event for just one day
+* Duration: An event like 17.07.2020-20.07.2020
+* Recurring: An event like 1st and 3rd monday and friday a month, except 23.07.2020 and different time on friday
 
 Screenshots
------------
+===========
 
-See |extension_key| in action.
+See events2 in action.
 
 Output Frontend
-^^^^^^^^^^^^^^^
+"""""""""""""""
 
 .. figure:: ../Images/Introduction/events2-list.jpg
    :width: 500px

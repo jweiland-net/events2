@@ -1,19 +1,13 @@
 <?php
 
-namespace JWeiland\Events2\Tests\Functional\ViewHelpers\Widget\Controller;
-
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\Tests\Functional\ViewHelpers\Widget\Controller;
 
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Day;
@@ -26,6 +20,8 @@ use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\ViewHelpers\Widget\Controller\ICalendarController;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Web\Response;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -66,12 +62,10 @@ class ICalendarControllerTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    /**
-     * set up.
-     */
     public function setUp()
     {
         parent::setUp();
+        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
 
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->dayRepository = $this->objectManager->get(DayRepository::class);
@@ -124,12 +118,9 @@ class ICalendarControllerTest extends FunctionalTestCase
             $dayRelationService->createDayRelations($event->getUid());
         }
 
-        $this->tempDirectory = PATH_site . 'typo3temp/tx_events2/iCal/';
+        $this->tempDirectory = Environment::getPublicPath() . '/' . 'typo3temp/tx_events2/iCal/';
     }
 
-    /**
-     * tear down.
-     */
     public function tearDown()
     {
         unset($this->subject);
@@ -153,7 +144,7 @@ class ICalendarControllerTest extends FunctionalTestCase
         $iCalendarController->processRequest($request, $response);
 
         // Yes, content is initially null
-        $this->assertNull(
+        self::assertNull(
             $response->getContent()
         );
     }
@@ -180,11 +171,11 @@ class ICalendarControllerTest extends FunctionalTestCase
         $iCalendarController = $this->objectManager->get(ICalendarController::class);
         $iCalendarController->processRequest($widgetRequest, $response);
 
-        $this->assertContains(
+        self::assertContains(
             'Export date',
             $response->getContent()
         );
-        $this->assertContains(
+        self::assertContains(
             'typo3temp/tx_events2',
             $response->getContent()
         );
@@ -214,27 +205,27 @@ class ICalendarControllerTest extends FunctionalTestCase
 
         $files = array_slice(scandir($this->tempDirectory), 2, 1);
         $content = file_get_contents($this->tempDirectory . $files[0]);
-        $this->assertContains(
+        self::assertContains(
             'BEGIN:VCALENDAR',
             $content
         );
-        $this->assertContains(
+        self::assertContains(
             'VERSION:2.0',
             $content
         );
-        $this->assertContains(
+        self::assertContains(
             'PRODID:',
             $content
         );
-        $this->assertContains(
+        self::assertContains(
             'BEGIN:VEVENT',
             $content
         );
-        $this->assertContains(
+        self::assertContains(
             'END:VEVENT',
             $content
         );
-        $this->assertContains(
+        self::assertContains(
             'END:VCALENDAR',
             $content
         );
@@ -271,7 +262,7 @@ class ICalendarControllerTest extends FunctionalTestCase
         $expectedDate->modify('+8 hours');
         $expectedDate->setTimezone($dateTimeZone);
 
-        $this->assertContains(
+        self::assertContains(
             'DTSTART:' . $expectedDate->format('Ymd\THis\Z'),
             $content
         );
@@ -308,7 +299,7 @@ class ICalendarControllerTest extends FunctionalTestCase
         $expectedDate->modify('+10 hours');
         $expectedDate->setTimezone($dateTimeZone);
 
-        $this->assertContains(
+        self::assertContains(
             'DTEND:' . $expectedDate->format('Ymd\THis\Z'),
             $content
         );

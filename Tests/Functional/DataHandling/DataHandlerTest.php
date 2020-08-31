@@ -1,19 +1,13 @@
 <?php
 
-namespace JWeiland\Events2\Tests\Functional\DataHandling;
-
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\Tests\Functional\DataHandling;
 
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Location;
@@ -25,11 +19,11 @@ use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
-use TYPO3\CMS\Lang\LanguageService;
 
 /**
  * Functional test for DataHandler
@@ -156,7 +150,7 @@ class DataHandlerTest extends FunctionalTestCase
             )
         );
 
-        $this->assertSame(
+        self::assertSame(
             0,
             $amountOfDeletedDays
         );
@@ -220,7 +214,7 @@ class DataHandlerTest extends FunctionalTestCase
             ->execute()
             ->fetchColumn(0);
 
-        $this->assertSame(
+        self::assertSame(
             0,
             $amountOfDeletedDays
         );

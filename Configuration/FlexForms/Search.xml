@@ -1,7 +1,4 @@
 <T3DataStructure>
-	<meta>
-		<langDisable>1</langDisable>
-	</meta>
 	<sheets>
 		<sDEFAULT>
 			<ROOT>
@@ -15,6 +12,7 @@
 							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:mainCategories</label>
 							<config>
 								<type>select</type>
+								<renderType>selectTree</renderType>
 								<foreign_table>sys_category</foreign_table>
 								<renderMode>tree</renderMode>
 								<treeConfig>

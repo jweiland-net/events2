@@ -1,28 +1,25 @@
 <?php
-declare(strict_types = 1);
-namespace JWeiland\Events2\Domain\Model;
+
+declare(strict_types=1);
 
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\Domain\Model;
 
 use JWeiland\Events2\Domain\Traits\Typo3PropertiesTrait;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Annotation as Extbase;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
-/**
+/*
  * This class contains all getter and setters for an Event.
  */
 class Event extends AbstractEntity
@@ -41,20 +38,20 @@ class Event extends AbstractEntity
 
     /**
      * @var string
-     * @validate NotEmpty
+     * @Extbase\Validate("NotEmpty")
      */
     protected $title = '';
 
     /**
      * @var \DateTime
-     * @validate NotEmpty
+     * @Extbase\Validate("NotEmpty")
      */
     protected $eventBegin;
 
     /**
      * @var \JWeiland\Events2\Domain\Model\Time
-     * @cascade remove
-     * @validate NotEmpty
+     * @Extbase\ORM\Cascade("remove")
+     * @Extbase\Validate("NotEmpty")
      */
     protected $eventTime;
 
@@ -70,8 +67,8 @@ class Event extends AbstractEntity
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Time>
-     * @cascade remove
-     * @lazy
+     * @Extbase\ORM\Cascade("remove")
+     * @Extbase\ORM\Lazy
      */
     protected $multipleTimes;
 
@@ -87,8 +84,8 @@ class Event extends AbstractEntity
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Time>
-     * @cascade remove
-     * @lazy
+     * @Extbase\ORM\Cascade("remove")
+     * @Extbase\ORM\Lazy
      */
     protected $differentTimes;
 
@@ -109,8 +106,8 @@ class Event extends AbstractEntity
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Exception>
-     * @cascade remove
-     * @lazy
+     * @Extbase\ORM\Cascade("remove")
+     * @Extbase\ORM\Lazy
      */
     protected $exceptions;
 
@@ -131,21 +128,21 @@ class Event extends AbstractEntity
 
     /**
      * @var \JWeiland\Events2\Domain\Model\Link
-     * @cascade remove
+     * @Extbase\ORM\Cascade("remove")
      */
     protected $ticketLink;
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Category>
-     * @validate NotEmpty
-     * @lazy
+     * @Extbase\Validate("NotEmpty")
+     * @Extbase\ORM\Lazy
      */
     protected $categories;
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Day>
-     * @cascade remove
-     * @lazy
+     * @Extbase\ORM\Cascade("remove")
+     * @Extbase\ORM\Lazy
      */
     protected $days;
 
@@ -161,21 +158,21 @@ class Event extends AbstractEntity
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference>
-     * @cascade remove
-     * @lazy
+     * @Extbase\ORM\Cascade("remove")
+     * @Extbase\ORM\Lazy
      */
     protected $images;
 
     /**
      * @var \JWeiland\Events2\Domain\Model\Link
-     * @cascade remove
+     * @Extbase\ORM\Cascade("remove")
      */
     protected $videoLink;
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Link>
-     * @cascade remove
-     * @lazy
+     * @Extbase\ORM\Cascade("remove")
+     * @Extbase\ORM\Lazy
      */
     protected $downloadLinks;
 
@@ -225,35 +222,30 @@ class Event extends AbstractEntity
         $this->title = $title;
     }
 
-    /**
-     * @return \DateTime|null
-     */
-    public function getEventBegin()
+    public function getEventBegin(): ?\DateTime
     {
         if ($this->eventBegin instanceof \DateTime) {
-            if ($this->eventBegin->timezone_type !== 3) {
+            // Since PHP 7.4 we can not access timezone_type directly anymore.
+            // If location is false, timezone_type is 1 or 2, but we need 3
+            if ($this->eventBegin->getTimezone()->getLocation() === false) {
                 $this->eventBegin->setTimezone(new \DateTimeZone(date_default_timezone_get()));
             }
             return clone $this->eventBegin;
-        } else {
-            return null;
         }
+        return null;
     }
 
-    public function setEventBegin(\DateTime $eventBegin = null)
+    public function setEventBegin(?\DateTime $eventBegin = null)
     {
         $this->eventBegin = $eventBegin;
     }
 
-    /**
-     * @return Time|null
-     */
-    public function getEventTime()
+    public function getEventTime(): ?Time
     {
         return $this->eventTime;
     }
 
-    public function setEventTime(Time $eventTime = null)
+    public function setEventTime(?Time $eventTime = null)
     {
         $this->eventTime = $eventTime;
     }
@@ -268,27 +260,24 @@ class Event extends AbstractEntity
             $diff = $eventBegin->diff($eventEnd);
             // Example: 20.01.2013 - 23.01.2013 = 4 days but diff shows 3. So we have to add 1 day here
             return (int)$diff->format('%a') + 1;
-        } else {
-            return 0;
         }
+        return 0;
     }
 
-    /**
-     * @return \DateTime|null
-     */
-    public function getEventEnd()
+    public function getEventEnd(): ?\DateTime
     {
         if ($this->eventEnd instanceof \DateTime) {
-            if ($this->eventEnd->timezone_type !== 3) {
+            // Since PHP 7.4 we can not access timezone_type directly anymore.
+            // If location is false, timezone_type is 1 or 2, but we need 3
+            if ($this->eventEnd->getTimezone()->getLocation() === false) {
                 $this->eventEnd->setTimezone(new \DateTimeZone(date_default_timezone_get()));
             }
             return clone $this->eventEnd;
-        } else {
-            return null;
         }
+        return null;
     }
 
-    public function setEventEnd(\DateTime $eventEnd = null)
+    public function setEventEnd(?\DateTime $eventEnd = null)
     {
         $this->eventEnd = $eventEnd;
     }
@@ -401,22 +390,20 @@ class Event extends AbstractEntity
         $this->eachMonths = $eachMonths;
     }
 
-    /**
-     * @return \DateTime|null
-     */
-    public function getRecurringEnd()
+    public function getRecurringEnd(): ?\DateTime
     {
         if ($this->recurringEnd instanceof \DateTime) {
-            if ($this->recurringEnd->timezone_type !== 3) {
+            // Since PHP 7.4 we can not access timezone_type directly anymore.
+            // If location is false, timezone_type is 1 or 2, but we need 3
+            if ($this->recurringEnd->getTimezone()->getLocation() === false) {
                 $this->recurringEnd->setTimezone(new \DateTimeZone(date_default_timezone_get()));
             }
             return clone $this->recurringEnd;
-        } else {
-            return null;
         }
+        return null;
     }
 
-    public function setRecurringEnd(\DateTime $recurringEnd = null)
+    public function setRecurringEnd(?\DateTime $recurringEnd = null)
     {
         $this->recurringEnd = $recurringEnd;
     }
@@ -492,15 +479,12 @@ class Event extends AbstractEntity
         $this->freeEntry = $freeEntry;
     }
 
-    /**
-     * @return Link|null
-     */
-    public function getTicketLink()
+    public function getTicketLink(): ?Link
     {
         return $this->ticketLink;
     }
 
-    public function setTicketLink(Link $ticketLink = null)
+    public function setTicketLink(?Link $ticketLink = null)
     {
         $this->ticketLink = $ticketLink;
     }
@@ -617,12 +601,45 @@ class Event extends AbstractEntity
      *
      * @return Location|null $location
      */
-    public function getLocation()
+    public function getLocation(): ?Location
     {
         return $this->location;
     }
 
-    public function setLocation(Location $location = null)
+    /**
+     * Returns the location as String.
+     * This is useful for export or LOCATION-part in ICS
+     *
+     * @return string
+     */
+    public function getLocationAsString(): string
+    {
+        $location = '';
+        if ($this->getLocation() instanceof Location) {
+            $addressParts = [];
+            if ($this->getLocation()->getLocation()) {
+                $addressParts[] = $this->getLocation()->getLocation();
+            }
+            if ($this->getLocation()->getStreet()) {
+                $addressParts[] = trim(sprintf(
+                    '%s %s',
+                    $this->getLocation()->getStreet(),
+                    $this->getLocation()->getHouseNumber()
+                ));
+            }
+            if ($this->getLocation()->getZip() || $this->getLocation()->getCity()) {
+                $addressParts[] = trim(sprintf(
+                    '%s %s',
+                    $this->getLocation()->getZip(),
+                    $this->getLocation()->getCity()
+                ));
+            }
+            $location = implode(', ', $addressParts);
+        }
+        return $location;
+    }
+
+    public function setLocation(?Location $location = null)
     {
         $this->location = $location;
     }
@@ -633,12 +650,12 @@ class Event extends AbstractEntity
      *
      * @return Organizer|null
      */
-    public function getOrganizer()
+    public function getOrganizer(): ?Organizer
     {
         return $this->organizer;
     }
 
-    public function setOrganizer(Organizer $organizer = null)
+    public function setOrganizer(?Organizer $organizer = null)
     {
         $this->organizer = $organizer;
     }
@@ -663,15 +680,12 @@ class Event extends AbstractEntity
         $this->images = $images;
     }
 
-    /**
-     * @return Link|null
-     */
-    public function getVideoLink()
+    public function getVideoLink(): ?Link
     {
         return $this->videoLink;
     }
 
-    public function setVideoLink(Link $videoLink = null)
+    public function setVideoLink(?Link $videoLink = null)
     {
         $this->videoLink = $videoLink;
     }

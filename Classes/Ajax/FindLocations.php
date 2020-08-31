@@ -1,28 +1,54 @@
 <?php
 
-namespace JWeiland\Events2\Ajax;
-
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
-use JWeiland\Events2\Ajax\FindLocations\Ajax;
+
+namespace JWeiland\Events2\Ajax;
+
+use JWeiland\Events2\Domain\Repository\LocationRepository;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
-$request = GeneralUtility::_GPmerged('tx_events2_events');
+/*
+ * This class will be loaded, if you create a new event in frontend. There we have a
+ * selectbox for location, which searches for Locations by its name and stores the
+ * location UID in a hidden field.
+ */
+class FindLocations
+{
+    /**
+     * @var LocationRepository
+     */
+    protected $locationRepository;
 
-if (is_array($request) && is_array($request['arguments'])) {
-    /** @var Ajax $ajaxObject */
-    $ajaxObject = GeneralUtility::makeInstance(Ajax::class);
-    echo $ajaxObject->processAjaxRequest($request['arguments']);
-} else {
-    echo '';
+    public function __construct(LocationRepository $locationRepository = null)
+    {
+        if ($locationRepository === null) {
+            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+            $locationRepository = $objectManager->get(LocationRepository::class);
+        }
+        $this->locationRepository = $locationRepository;
+    }
+
+    public function processRequest(ServerRequestInterface $request): ResponseInterface
+    {
+        $parameters = $request->getQueryParams()['tx_events2_events']['arguments'] ?? [];
+
+        //ExtensionManagementUtility::loadBaseTca(true);
+
+        // Hint: search may fail with "&" in $locationPart
+        $locationPart = trim(htmlspecialchars(strip_tags($parameters['locationPart'])));
+        // keep it in sync to minLength in JS
+        if (empty($locationPart) || strlen($locationPart) <= 2) {
+            return new JsonResponse('');
+        }
+        return new JsonResponse($this->locationRepository->findLocations($locationPart));
+    }
 }

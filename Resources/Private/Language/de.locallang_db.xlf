@@ -42,6 +42,15 @@
 				<target>Neue Uhrzeit anlegen</target>
 			</trans-unit>
 
+			<trans-unit id="task.reCreateDays.title">
+				<source>Re-Create day records</source>
+				<target>Tagesdatensätze neu erstellen</target>
+			</trans-unit>
+			<trans-unit id="task.reCreateDays.description">
+				<source>Loops through all current and future events to delete and recreate their day records. Further it cleans up all the old iCal export files.</source>
+				<target>Durchläuft alle aktuellen und zukünftigen Veranstaltungen, um deren Tagesdatensätze zu löschen und neu zu erstellen. Außerdem werden alte iCal Exporte gelöscht.</target>
+			</trans-unit>
+
 			<trans-unit id="tx_events2_domain_model_event">
 				<source>Event</source>
 				<target>Veranstaltung</target>
@@ -90,6 +99,10 @@
 			<trans-unit id="tx_events2_domain_model_event.title">
 				<source>Title</source>
 				<target>Titel</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.path_segment">
+				<source>Speaking URL path segment</source>
+				<target>Segment für Sprechende URL</target>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.teaser">
 				<source>Teaser</source>

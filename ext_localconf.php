@@ -3,9 +3,9 @@ if (!defined('TYPO3_MODE')) {
     die('Access denied.');
 }
 
-call_user_func(function ($extKey) {
+call_user_func(function () {
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-        'JWeiland.' . $extKey,
+        'JWeiland.events2',
         'Events',
         [
             'Day' => 'list, listLatest, listToday, listWeek, listRange, show, showByTimestamp',
@@ -20,7 +20,7 @@ call_user_func(function ($extKey) {
     );
 
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-        'JWeiland.' . $extKey,
+        'JWeiland.events2',
         'Calendar',
         [
             'Calendar' => 'show',
@@ -32,7 +32,7 @@ call_user_func(function ($extKey) {
     );
 
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-        'JWeiland.' . $extKey,
+        'JWeiland.events2',
         'Search',
         [
             'Search' => 'show',
@@ -45,10 +45,8 @@ call_user_func(function ($extKey) {
         ]
     );
 
-    // Add command to truncate day table and recreate day records from scratch
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['extbase']['commandControllers'][] = \JWeiland\Events2\Command\RepairCommandController::class;
     // register an eval function to check for time
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tce']['formevals'][\JWeiland\Events2\Tca\Type\Time::class] = 'EXT:events2/Classes/Tca/Type/Time.php';
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tce']['formevals'][\JWeiland\Events2\Tca\Type\Time::class] = '';
     // delete and recreate day relations for an event while saving
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = \JWeiland\Events2\Hooks\DataHandler::class;
     // Clear cache of pages with events, if event was edited/created/deleted in BE
@@ -56,15 +54,15 @@ call_user_func(function ($extKey) {
 
     // create scheduler to create/update days with recurrency
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\JWeiland\Events2\Task\ReGenerateDays::class] = [
-        'extension' => $extKey,
-        'title' => 'Create/Update Days',
-        'description' => 'Re-Generate day records for events with recurrency. It also deletes old iCAL downloads.',
-        'additionalFields' => 'JWeiland\\Events2\\Task\\ReGenerateDays',
+        'extension' => 'events2',
+        'title' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:task.reCreateDays.title',
+        'description' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:task.reCreateDays.description',
+        'additionalFields' => JWeiland\Events2\Task\ReGenerateDays::class,
     ];
 
     // create scheduler to import events from different sources
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\JWeiland\Events2\Task\Import::class] = [
-        'extension' => $extKey,
+        'extension' => 'events2',
         'title' => 'Import events',
         'description' => 'Import events over a XML interface or by mail into events2.',
         'additionalFields' => \JWeiland\Events2\Task\AdditionalFieldsForImport::class,
@@ -100,17 +98,14 @@ call_user_func(function ($extKey) {
         );
     }
 
-    // add maps2 plugin to new element wizard
+    // add events2 plugin to new element wizard
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('<INCLUDE_TYPOSCRIPT: source="FILE:EXT:events2/Configuration/TSconfig/ContentElementWizard.txt">');
 
     // register eID scripts
-    $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['events2findDaysForMonth'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('events2') . 'Classes/Ajax/FindDaysForMonth.php';
-    $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['events2findLocations'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('events2') . 'Classes/Ajax/FindLocations.php';
+    $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['events2findDaysForMonth'] = \JWeiland\Events2\Ajax\FindDaysForMonth::class . '::processRequest';
+    $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['events2findLocations'] = \JWeiland\Events2\Ajax\FindLocations::class . '::processRequest';
 
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['aspects']['TimestampMapper'] = \JWeiland\Events2\Routing\Aspect\TimestampMapper::class;
-    if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('realurl')) {
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/realurl/class.tx_realurl_autoconfgen.php']['extensionConfiguration']['events2'] = \JWeiland\Events2\Hooks\RealUrlAutoConfiguration::class . '->addEvents2Config';
-    }
 
     if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('solr')) {
         // Remove non current events from resultSet
@@ -133,7 +128,5 @@ call_user_func(function ($extKey) {
         ]
     ];
 
-    if (version_compare(TYPO3_branch, '9.4', '>=')) {
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['events2UpdateSlug'] = \JWeiland\Events2\Updater\EventsSlugUpdater::class;
-    }
-}, $_EXTKEY);
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['events2UpdateSlug'] = \JWeiland\Events2\Updater\EventsSlugUpdater::class;
+});

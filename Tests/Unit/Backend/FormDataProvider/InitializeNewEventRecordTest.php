@@ -1,19 +1,13 @@
 <?php
 
-namespace JWeiland\Events2\Tests\Unit\Backend\FormDataProvider;
-
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\Tests\Unit\Backend\FormDataProvider;
 
 use JWeiland\Events2\Backend\FormDataProvider\InitializeNewEventRecord;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
@@ -49,7 +43,7 @@ class InitializeNewEventRecordTest extends UnitTestCase
             'tableName' => 'WhatEver'
         ];
 
-        $this->assertSame(
+        self::assertSame(
             $result,
             $this->subject->addData($result)
         );
@@ -65,7 +59,7 @@ class InitializeNewEventRecordTest extends UnitTestCase
             'command' => 'edit'
         ];
 
-        $this->assertSame(
+        self::assertSame(
             $result,
             $this->subject->addData($result)
         );
@@ -85,7 +79,7 @@ class InitializeNewEventRecordTest extends UnitTestCase
             'event_begin' => $GLOBALS['EXEC_TIME']
         ];
 
-        $this->assertSame(
+        self::assertSame(
             $expected,
             $this->subject->addData($result)
         );

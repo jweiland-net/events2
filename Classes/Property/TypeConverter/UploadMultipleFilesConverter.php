@@ -1,19 +1,18 @@
 <?php
 
-namespace JWeiland\Events2\Property\TypeConverter;
+declare(strict_types=1);
 
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\Property\TypeConverter;
+
+use TYPO3\CMS\Core\Resource\DuplicationBehavior;
+use TYPO3\CMS\Core\Resource\Exception\FolderDoesNotExistException;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
@@ -23,8 +22,8 @@ use TYPO3\CMS\Extbase\Property\PropertyMappingConfigurationInterface;
 use TYPO3\CMS\Extbase\Property\TypeConverter\AbstractTypeConverter;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
-/**
- * Converter for uploads.
+/*
+ * A for PropertyMapper to convert multiple file uploads into an array
  */
 class UploadMultipleFilesConverter extends AbstractTypeConverter
 {
@@ -44,16 +43,18 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
     protected $priority = 2;
 
     /**
+     * @var PropertyMappingConfigurationInterface
+     */
+    protected $converterConfiguration = [];
+
+    /**
      * This implementation always returns TRUE for this method.
      *
      * @param mixed  $source     the source data
      * @param string $targetType the type to convert to.
-     *
-     * @return bool TRUE if this TypeConverter can convert from $source to $targetType, FALSE otherwise.
-     *
-     * @api
+     * @return bool true if this TypeConverter can convert from $source to $targetType, FALSE otherwise.
      */
-    public function canConvertFrom($source, $targetType)
+    public function canConvertFrom($source, string $targetType): bool
     {
         // check if $source consists of uploaded files
         foreach ($source as $uploadedFile) {
@@ -78,17 +79,17 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
      * @param mixed $source
      * @param string $targetType
      * @param array $convertedChildProperties
-     * @param PropertyMappingConfigurationInterface $configuration
-     *
+     * @param PropertyMappingConfigurationInterface|null $configuration
      * @return mixed|Error the target type, or an error object if a user-error occurred
      */
     public function convertFrom(
         $source,
-        $targetType,
+        string $targetType,
         array $convertedChildProperties = [],
         PropertyMappingConfigurationInterface $configuration = null
     ) {
-        $alreadyPersistedImages = $configuration->getConfigurationValue(
+        $this->converterConfiguration = $configuration;
+        $alreadyPersistedImages = $this->converterConfiguration->getConfigurationValue(
             self::class,
             'IMAGES'
         );
@@ -117,13 +118,6 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
                     1396957314
                 );
             }
-            // now we have a valid uploaded file. Check if user has rights to upload this file
-            if (!isset($uploadedFile['rights']) || empty($uploadedFile['rights'])) {
-                return new Error(
-                    LocalizationUtility::translate('error.uploadRights', 'events2'),
-                    1397464390
-                );
-            }
             // check if file extension is allowed
             $fileParts = GeneralUtility::split_fileref($uploadedFile['name']);
             if (!GeneralUtility::inList($GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'], $fileParts['fileext'])) {
@@ -140,7 +134,6 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
             }
             // OK...we have a valid file and the user has the rights. It's time to check, if an old file can be deleted
             if ($alreadyPersistedImages[$key] instanceof FileReference) {
-                /** @var FileReference $oldFile */
                 $oldFile = $alreadyPersistedImages[$key];
                 $oldFile->getOriginalResource()->getOriginalFile()->delete();
             }
@@ -149,8 +142,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
         // I will do two foreach here. First: everything must be OK, before files will be uploaded
 
         // upload file and add it to ObjectStorage
-        /** @var ObjectStorage $references */
-        $references = $this->objectManager->get(ObjectStorage::class);
+        $references = GeneralUtility::makeInstance(ObjectStorage::class);
         foreach ($source as $uploadedFile) {
             if ($uploadedFile instanceof FileReference) {
                 $references->attach($uploadedFile);
@@ -165,33 +157,50 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
     /**
      * upload file and get a file reference object.
      *
-     * @param array  $source
-     *
+     * @param array $source
      * @return FileReference
      */
-    protected function getExtbaseFileReference($source)
+    protected function getExtbaseFileReference(array $source): FileReference
     {
-        /** @var FileReference $extbaseFileReference */
-        $extbaseFileReference = $this->objectManager->get(FileReference::class);
+        $extbaseFileReference = GeneralUtility::makeInstance(FileReference::class);
         $extbaseFileReference->setOriginalResource($this->getCoreFileReference($source));
 
         return $extbaseFileReference;
     }
 
     /**
-     * upload file and get a file reference object.
+     * Upload file and get a file reference object.
      *
      * @param array $source
-     *
      * @return \TYPO3\CMS\Core\Resource\FileReference
      */
-    protected function getCoreFileReference(array $source)
+    protected function getCoreFileReference(array $source): \TYPO3\CMS\Core\Resource\FileReference
     {
-        // upload file
-        $uploadFolder = ResourceFactory::getInstance()->retrieveFileOrFolderObject('uploads/tx_events2/');
-        $uploadedFile = $uploadFolder->addUploadedFile($source, \TYPO3\CMS\Core\Resource\DuplicationBehavior::RENAME);
+        $settings = $this->converterConfiguration->getConfigurationValue(
+            self::class,
+            'settings'
+        ) ?? [];
+
+        $resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);
+        $uploadFolderIdentifier = $settings['new']['uploadFolder'] ?? '';
+
+        try {
+            $uploadFolder = $resourceFactory->getFolderObjectFromCombinedIdentifier($uploadFolderIdentifier);
+        } catch (FolderDoesNotExistException $e) {
+            [$storageUid, $identifier] = GeneralUtility::trimExplode(':', $uploadFolderIdentifier);
+            try {
+                $storage = $resourceFactory->getStorageObject($storageUid);
+            } catch (\InvalidArgumentException $e) {
+                $storage = $resourceFactory->getDefaultStorage();
+                $identifier = $uploadFolderIdentifier;
+            }
+            $uploadFolder = $storage->createFolder($identifier);
+        }
+
+        $uploadedFile = $uploadFolder->addUploadedFile($source, DuplicationBehavior::RENAME);
+
         // create Core FileReference
-        return ResourceFactory::getInstance()->createFileReferenceObject(
+        return $resourceFactory->createFileReferenceObject(
             [
                 'uid_local' => $uploadedFile->getUid(),
                 'uid_foreign' => uniqid('NEW_'),

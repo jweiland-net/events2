@@ -1,20 +1,19 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
+
+/*
+ * This file is part of the package jweiland/events2.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE file that was distributed with this source code.
+ */
+
 namespace JWeiland\Events2\Domain\Traits;
 
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
- *
- * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * A Trait which contains all getters and setters for TYPO3 columns
  */
-
 trait Typo3PropertiesTrait
 {
     /**
@@ -57,36 +56,27 @@ trait Typo3PropertiesTrait
      */
     protected $cruserId = 0;
 
-    /**
-     * @return \DateTime|null
-     */
-    public function getCrdate()
+    public function getCrdate(): ?\DateTime
     {
         return $this->crdate;
     }
 
-    public function setCrdate(\DateTime $crdate = null)
+    public function setCrdate(?\DateTime $crdate = null)
     {
         $this->crdate = $crdate;
     }
 
-    /**
-     * @return \DateTime|null
-     */
-    public function getTstamp()
+    public function getTstamp(): ?\DateTime
     {
         return $this->tstamp;
     }
 
-    public function setTstamp(\DateTime $tstamp = null)
+    public function setTstamp(?\DateTime $tstamp = null)
     {
         $this->tstamp = $tstamp;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getSysLanguageUid()
+    public function getSysLanguageUid(): ?int
     {
         return $this->_languageUid;
     }
@@ -106,28 +96,22 @@ trait Typo3PropertiesTrait
         $this->l10nParent = $l10nParent;
     }
 
-    /**
-     * @return \DateTime|null
-     */
-    public function getStarttime()
+    public function getStarttime(): ?\DateTime
     {
         return $this->starttime;
     }
 
-    public function setStarttime(\DateTime $starttime = null)
+    public function setStarttime(?\DateTime $starttime = null)
     {
         $this->starttime = $starttime;
     }
 
-    /**
-     * @return \DateTime|null
-     */
-    public function getEndtime()
+    public function getEndtime(): ?\DateTime
     {
         return $this->endtime;
     }
 
-    public function setEndtime(\DateTime $endtime = null)
+    public function setEndtime(?\DateTime $endtime = null)
     {
         $this->endtime = $endtime;
     }

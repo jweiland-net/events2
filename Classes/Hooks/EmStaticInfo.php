@@ -1,25 +1,21 @@
 <?php
 
-namespace JWeiland\Events2\Hooks;
+declare(strict_types=1);
 
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\Hooks;
 
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
+/*
  * Render a selectbox with countries from static_info_tables within ExtensionManager configuration for events2
  */
 class EmStaticInfo
@@ -29,10 +25,9 @@ class EmStaticInfo
      *
      * @param array $params
      * @param $configurationForm
-     *
      * @return string
      */
-    public function renderDefaultCountry(array $params, $configurationForm)
+    public function renderDefaultCountry(array $params, $configurationForm): string
     {
         $options = [];
         $options[] = '<option value=""></option>';
@@ -40,7 +35,7 @@ class EmStaticInfo
         $countries = $this->getCountries();
         foreach ($countries as $country) {
             $options[] = $this->wrapOption(
-                (int)$country['uid'],
+                (string)(int)$country['uid'],
                 $country['cn_short_en'],
                 $params['fieldValue'] == $country['uid']
             );
@@ -60,7 +55,7 @@ class EmStaticInfo
      *
      * @return array
      */
-    protected function getCountries()
+    protected function getCountries(): array
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('static_countries');
         $queryBuilder->getRestrictions()->removeAll()->add(
@@ -79,16 +74,7 @@ class EmStaticInfo
         return $countries;
     }
 
-    /**
-     * Wrap option tag
-     *
-     * @param string $value
-     * @param string $label
-     * @param bool $selected
-     *
-     * @return string
-     */
-    protected function wrapOption($value, $label, $selected)
+    protected function wrapOption(string $value, string $label, bool $selected): string
     {
         return sprintf(
             '<option value="%s"%s>%s</option>',
@@ -98,12 +84,7 @@ class EmStaticInfo
         );
     }
 
-    /**
-     * Get TYPO3s Connection Pool
-     *
-     * @return ConnectionPool
-     */
-    protected function getConnectionPool()
+    protected function getConnectionPool(): ConnectionPool
     {
         return GeneralUtility::makeInstance(ConnectionPool::class);
     }

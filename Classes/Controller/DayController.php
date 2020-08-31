@@ -1,34 +1,69 @@
 <?php
-declare(strict_types = 1);
-namespace JWeiland\Events2\Controller;
+
+declare(strict_types=1);
 
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\Controller;
+
 use JWeiland\Events2\Domain\Model\Filter;
+use JWeiland\Events2\Domain\Repository\DayRepository;
+use JWeiland\Events2\Domain\Repository\OrganizerRepository;
 use JWeiland\Events2\Service\JsonLdService;
 use JWeiland\Events2\Utility\CacheUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 
-/**
+/*
  * The DayController contains actions for various list actions and detail view.
  */
 class DayController extends AbstractController
 {
     /**
+     * @var DayRepository
+     */
+    protected $dayRepository;
+
+    /**
+     * @var OrganizerRepository
+     */
+    protected $organizerRepository;
+
+    public function __construct(
+        DayRepository $dayRepository,
+        OrganizerRepository $organizerRepository
+    ) {
+        $this->dayRepository = $dayRepository;
+        $this->organizerRepository = $organizerRepository;
+    }
+
+    public function initializeObject()
+    {
+        $this->dayRepository->setSettings($this->settings);
+    }
+
+    protected function initializeView(ViewInterface $view)
+    {
+        parent::initializeView($view);
+
+        if ($this->settings['showFilterForOrganizerInFrontend']) {
+            $this->view->assign(
+                'organizers',
+                $this->organizerRepository->getOrganizersForFilter()
+            );
+        }
+    }
+
+    /**
      * @param Filter|null $filter
      */
-    public function listAction(Filter $filter = null)
+    public function listAction(?Filter $filter = null): void
     {
         $days = $this->dayRepository->findEvents('list', $this->validateAndAssignFilter($filter));
         $this->view->assign('days', $days);
@@ -38,7 +73,7 @@ class DayController extends AbstractController
     /**
      * @param Filter|null $filter
      */
-    public function listLatestAction(Filter $filter = null)
+    public function listLatestAction(?Filter $filter = null): void
     {
         $days = $days = $this->dayRepository->findEvents(
             'latest',
@@ -53,7 +88,7 @@ class DayController extends AbstractController
     /**
      * @param Filter|null $filter
      */
-    public function listTodayAction(Filter $filter = null)
+    public function listTodayAction(?Filter $filter = null): void
     {
         $days = $this->dayRepository->findEvents('today', $this->validateAndAssignFilter($filter));
         $this->view->assign('days', $days);
@@ -63,7 +98,7 @@ class DayController extends AbstractController
     /**
      * @param Filter|null $filter
      */
-    public function listThisWeekAction(Filter $filter = null)
+    public function listThisWeekAction(?Filter $filter = null): void
     {
         $days = $this->dayRepository->findEvents('thisWeek', $this->validateAndAssignFilter($filter));
         $this->view->assign('days', $days);
@@ -73,7 +108,7 @@ class DayController extends AbstractController
     /**
      * @param Filter|null $filter
      */
-    public function listRangeAction(Filter $filter = null)
+    public function listRangeAction(?Filter $filter = null): void
     {
         $days = $this->dayRepository->findEvents('range', $this->validateAndAssignFilter($filter));
         $this->view->assign('days', $days);
@@ -86,7 +121,7 @@ class DayController extends AbstractController
      * @param int $event
      * @param int $timestamp
      */
-    public function showAction(int $event, int $timestamp = 0)
+    public function showAction(int $event, int $timestamp = 0): void
     {
         $day = $this->dayRepository->findDayByEventAndTimestamp($event, $timestamp);
         $jsonLdService = GeneralUtility::makeInstance(JsonLdService::class);
@@ -109,10 +144,27 @@ class DayController extends AbstractController
     /**
      * @param int $timestamp
      */
-    public function showByTimestampAction(int $timestamp)
+    public function showByTimestampAction(int $timestamp): void
     {
-        $days = $this->dayRepository->findByTimestamp((int)$timestamp);
+        $days = $this->dayRepository->findByTimestamp($timestamp);
         $this->view->assign('days', $days);
         CacheUtility::addPageCacheTagsByQuery($days->getQuery());
+    }
+
+    /**
+     * Validate filter
+     * Create empty filter if not valid
+     * Assign filter to view
+     *
+     * @param Filter|null $filter
+     * @return Filter
+     */
+    protected function validateAndAssignFilter(?Filter $filter): Filter
+    {
+        if ($filter === null) {
+            $filter = GeneralUtility::makeInstance(Filter::class);
+        }
+        $this->view->assign('filter', $filter);
+        return $filter;
     }
 }

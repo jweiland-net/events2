@@ -1,33 +1,38 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of the package jweiland/events2.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE file that was distributed with this source code.
+ */
+
 namespace JWeiland\Events2\Controller;
 
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
- *
- * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * A simple controller to show video-link as YouTube-Implementation
  */
 
-/**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
- */
+use JWeiland\Events2\Domain\Repository\EventRepository;
+
 class VideoController extends AbstractController
 {
     /**
-     * action show
-     *
-     * @param int $event
-     *
-     * @return void
+     * @var EventRepository
      */
-    public function showAction($event)
+    protected $eventRepository;
+
+    public function __construct(EventRepository $eventRepository)
+    {
+        $this->eventRepository = $eventRepository;
+    }
+
+    /**
+     * @param int $event
+     */
+    public function showAction(int $event): void
     {
         $event = $this->eventRepository->findByIdentifier((int)$event);
         $this->view->assign('event', $event);

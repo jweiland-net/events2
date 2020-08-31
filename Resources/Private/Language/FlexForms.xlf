@@ -20,7 +20,7 @@
 			</trans-unit>
 
 			<trans-unit id="chooseAction" xml:space="preserve">
-				<source>Ansicht wählen</source>
+				<source>Choose view</source>
 			</trans-unit>
 
 			<trans-unit id="list">
@@ -33,7 +33,7 @@
 				<source>List events of today</source>
 			</trans-unit>
 			<trans-unit id="listRange">
-				<source>List events for next 4 months</source>
+				<source>List events for next 4 weeks</source>
 			</trans-unit>
 			<trans-unit id="listThisWeek">
 				<source>List events for this week</source>
@@ -62,8 +62,14 @@
 			<trans-unit id="mergeEventsAtSameDay">
 				<source>Merge events with multiple times at same day to one entry</source>
 			</trans-unit>
+			<trans-unit id="mergeEventsAtSameDay.description">
+				<source>Example: 17.07.2020 08:00 and 20:00 will be merged to just one entry without any time information, but with a hint, that there are multiple time entries available in detail view.</source>
+			</trans-unit>
 			<trans-unit id="mergeRecurringEvents">
 				<source>Merge recurring events to one entry</source>
+			</trans-unit>
+			<trans-unit id="mergeRecurringEvents.description">
+				<source>Example: 17.07., 18.07., 22.07. will be merged to 17.07.-22.07. with a hint to look into detail view for exact dates.</source>
 			</trans-unit>
 			<trans-unit id="preFilterByOrganizer">
 				<source>Pre filter events by organizer</source>
@@ -71,8 +77,14 @@
 			<trans-unit id="showFilterForOrganizerInFrontend">
 				<source>Show a filter selection for organizers in Frontend</source>
 			</trans-unit>
+			<trans-unit id="showFilterForOrganizerInFrontend.description">
+				<source>Filter will only be displayed, if there are at least 2 Organizers available</source>
+			</trans-unit>
 			<trans-unit id="display">
 				<source>Display</source>
+			</trans-unit>
+			<trans-unit id="display.description">
+				<source>It's possible to cut the output into two peaces. That way you can display images on top of page, the event output at bottom and other content in between.</source>
 			</trans-unit>
 			<trans-unit id="displayBoth">
 				<source>Show images and events</source>

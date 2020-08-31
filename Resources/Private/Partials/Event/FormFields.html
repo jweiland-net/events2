@@ -72,7 +72,7 @@
 	<f:render section="renderCsh" arguments="{property: 'location', transKey: 'cshLocation'}" />
 	<div class="col-sm-8">
 		<f:form.hidden class="autoCompleteLocationHelper" property="location" />
-		<f:form.textfield class="form-control autoCompleteLocation" value="{f:if(condition: event.location, then: event.location.location, else: '')}" />
+		<input type="text" class="form-control autoCompleteLocation" value="{f:if(condition: event.location, then: event.location.location, else: '')}" />
 		<div><f:link.page pageUid="8460" title="Neuen Veranstaltungsort beantragen">Neuen Ort beantragen</f:link.page></div>
 	</div>
 </div>
@@ -104,12 +104,6 @@
 <f:section name="uploadImage">
 	<f:if condition="{image}"><f:image image="{image}" alt="Bild{position}" width="{settings.show.image.width}" height="{settings.show.image.height}" minWidth="{settings.show.image.minWidth}" maxWidth="{settings.show.image.maxWidth}" minHeight="{settings.show.image.minHeight}" maxHeight="{settings.show.image.maxHeight}" /></f:if>
 	<f:form.upload id="images_{index}" name="event[images][{index}]" />
-	<div class="checkbox">
-		<label>
-			<f:form.checkbox name="event[images][{index}][rights]" value="1" />
-			<f:translate key="rightsMessage" />
-		</label>
-	</div>
 </f:section>
 
 <f:section name="renderTextfield">

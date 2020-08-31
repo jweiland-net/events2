@@ -1,40 +1,34 @@
 <?php
-declare(strict_types = 1);
-namespace JWeiland\Events2\Importer;
+
+declare(strict_types=1);
 
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\Importer;
+
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Domain\Repository\OrganizerRepository;
+use JWeiland\Events2\Task\Import;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
-use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Resource\AbstractFile;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
-use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
-/**
+/*
  * Abstract Importer which will keep most methods for all importer scripts
  */
 abstract class AbstractImporter implements ImporterInterface
@@ -49,7 +43,7 @@ abstract class AbstractImporter implements ImporterInterface
     /**
      * Needed to retrieve the storagePid
      *
-     * @var AbstractTask
+     * @var Import
      */
     protected $task;
 
@@ -62,11 +56,6 @@ abstract class AbstractImporter implements ImporterInterface
      * @var array
      */
     protected $allowedMimeType = [];
-
-    /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
 
     /**
      * @var PersistenceManagerInterface
@@ -103,32 +92,38 @@ abstract class AbstractImporter implements ImporterInterface
      */
     protected $today;
 
-    public function __construct(FileInterface $file, AbstractTask $task)
-    {
-        $this->file = $file;
-        $this->task = $task;
-
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->eventRepository = $this->objectManager->get(EventRepository::class);
-        $this->organizerRepository = $this->objectManager->get(OrganizerRepository::class);
-        $this->locationRepository = $this->objectManager->get(LocationRepository::class);
-        $this->categoryRepository = $this->objectManager->get(CategoryRepository::class);
-        $this->dateTimeUtility = $this->objectManager->get(DateTimeUtility::class);
+    public function __construct(
+        EventRepository $eventRepository,
+        OrganizerRepository $organizerRepository,
+        LocationRepository $locationRepository,
+        CategoryRepository $categoryRepository,
+        PersistenceManagerInterface $persistenceManager,
+        DateTimeUtility $dateTimeUtility
+    ) {
+        $this->eventRepository = $eventRepository;
+        $this->organizerRepository = $organizerRepository;
+        $this->locationRepository = $locationRepository;
+        $this->categoryRepository = $categoryRepository;
+        $this->persistenceManager = $persistenceManager;
+        $this->dateTimeUtility = $dateTimeUtility;
         $this->today = new \DateTime('now');
     }
 
-    /**
-     * Check, if File is valid for this importer
-     *
-     * @param FileInterface $file
-     * @return bool
-     * @throws \Exception
-     */
-    public function isValid(FileInterface $file): bool
+    public function setTask(Import $task): void
+    {
+        $this->task = $task;
+    }
+
+    public function setFile(FileInterface $file): void
+    {
+        $this->file = $file;
+    }
+
+    public function checkFile(): bool
     {
         $isValid = true;
 
-        if (!in_array($file->getMimeType(), $this->allowedMimeType)) {
+        if (!in_array($this->file->getMimeType(), $this->allowedMimeType)) {
             $isValid = false;
             $this->addMessage('MimeType of file is not allowed', FlashMessage::ERROR);
         }
@@ -136,14 +131,7 @@ abstract class AbstractImporter implements ImporterInterface
         return $isValid;
     }
 
-    /**
-     * Check, if we have invalid events in our array
-     *
-     * @param array $events
-     * @return bool
-     * @throws \Exception
-     */
-    protected function hasInvalidEvents(array $events)
+    protected function hasInvalidEvents(array $events): bool
     {
         foreach ($events as $event) {
             if (!$this->isValidEvent($event)) {
@@ -153,15 +141,7 @@ abstract class AbstractImporter implements ImporterInterface
         return false;
     }
 
-    /**
-     * Is valid event
-     * It also checks, if given relations exists in DB
-     *
-     * @param array $event
-     * @return bool
-     * @throws \Exception
-     */
-    protected function isValidEvent(array $event)
+    protected function isValidEvent(array $event): bool
     {
         // is future event?
         $eventBegin = \DateTime::createFromFormat('Y-m-d', $event['event_begin']);
@@ -270,16 +250,10 @@ abstract class AbstractImporter implements ImporterInterface
         return true;
     }
 
-    /**
-     * Get organizer from DB
-     *
-     * @param string $title
-     * @return array|false|null
-     */
-    protected function getOrganizer($title)
+    protected function getOrganizer(string $title): ?array
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_organizer');
-        return $queryBuilder
+        $organizer = $queryBuilder
             ->select('uid')
             ->from('tx_events2_domain_model_organizer')
             ->where(
@@ -290,20 +264,16 @@ abstract class AbstractImporter implements ImporterInterface
             )
             ->execute()
             ->fetch();
+
+        return $organizer ?: [];
     }
 
-    /**
-     * Get location from DB
-     *
-     * @param $title
-     * @return array|null
-     */
-    protected function getLocation($title)
+    protected function getLocation(string $title): array
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_location');
 
         // I don't have the TypoScript or Plugin storage PID. That's why I don't use the repository directly
-        return $queryBuilder
+        $location = $queryBuilder
             ->select('uid')
             ->from('tx_events2_domain_model_location')
             ->where(
@@ -314,18 +284,14 @@ abstract class AbstractImporter implements ImporterInterface
             )
             ->execute()
             ->fetch();
+
+        return $location ?: [];
     }
 
-    /**
-     * Get category from DB
-     *
-     * @param string $title
-     * @return array|false|null
-     */
-    protected function getCategory($title)
+    protected function getCategory(string $title): array
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('sys_category');
-        return $queryBuilder
+        $category = $queryBuilder
             ->select('uid')
             ->from('sys_category')
             ->where(
@@ -336,17 +302,11 @@ abstract class AbstractImporter implements ImporterInterface
             )
             ->execute()
             ->fetch();
+
+        return $category ?: [];
     }
 
-    /**
-     * This method is used to add a message to the internal queue
-     *
-     * @param string $message The message itself
-     * @param int $severity Message level (according to \TYPO3\CMS\Core\Messaging\FlashMessage class constants)
-     * @return void
-     * @throws \Exception
-     */
-    protected function addMessage($message, $severity = FlashMessage::OK)
+    protected function addMessage(string $message, int $severity = FlashMessage::OK): void
     {
         static $firstMessage = true;
         /** @var AbstractFile $logFile */
@@ -374,7 +334,6 @@ abstract class AbstractImporter implements ImporterInterface
         $flashMessage = GeneralUtility::makeInstance(FlashMessage::class, $message, '', $severity);
         /** @var FlashMessageService $flashMessageService */
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
-        /** @var FlashMessageQueue $defaultFlashMessageQueue */
         $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
         $defaultFlashMessageQueue->enqueue($flashMessage);
     }
@@ -386,7 +345,7 @@ abstract class AbstractImporter implements ImporterInterface
      * @return AbstractFile
      * @throws \Exception
      */
-    protected function getLogFile()
+    protected function getLogFile(): AbstractFile
     {
         try {
             /** @var Folder $folder */
@@ -394,7 +353,7 @@ abstract class AbstractImporter implements ImporterInterface
             if (!$folder->hasFile($this->logFileName)) {
                 $logFile = $folder->createFile($this->logFileName);
             } else {
-                $logFile = ResourceFactory::getInstance()->retrieveFileOrFolderObject(
+                $logFile = GeneralUtility::makeInstance(ResourceFactory::class)->retrieveFileOrFolderObject(
                     $folder->getCombinedIdentifier() . $this->logFileName
                 );
             }
@@ -405,16 +364,7 @@ abstract class AbstractImporter implements ImporterInterface
         return $logFile;
     }
 
-    /**
-     * Set property of event object
-     *
-     * @param Event $event
-     * @param string $column
-     * @param mixed $value
-     *
-     * @return void
-     */
-    protected function setEventProperty(Event $event, $column, $value)
+    protected function setEventProperty(Event $event, string $column, $value): void
     {
         $setter = 'set' . GeneralUtility::underscoredToUpperCamelCase($column);
         if (method_exists($event, $setter)) {
@@ -422,28 +372,7 @@ abstract class AbstractImporter implements ImporterInterface
         }
     }
 
-    /**
-     * Get persistence manager
-     *
-     * @return PersistenceManagerInterface
-     */
-    protected function getPersistenceManager()
-    {
-        if ($this->persistenceManager === null) {
-            /** @var ObjectManager $objectManager */
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            /** @var PersistenceManagerInterface $persistenceManager */
-            $this->persistenceManager = $objectManager->get(PersistenceManager::class);
-        }
-        return $this->persistenceManager;
-    }
-
-    /**
-     * Get TYPO3s Connection Pool
-     *
-     * @return ConnectionPool
-     */
-    protected function getConnectionPool()
+    protected function getConnectionPool(): ConnectionPool
     {
         return GeneralUtility::makeInstance(ConnectionPool::class);
     }

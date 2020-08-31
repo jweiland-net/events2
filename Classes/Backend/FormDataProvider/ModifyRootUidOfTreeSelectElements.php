@@ -1,25 +1,21 @@
 <?php
-declare(strict_types = 1);
-namespace JWeiland\Events2\Backend\FormDataProvider;
+
+declare(strict_types=1);
 
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\Backend\FormDataProvider;
 
 use JWeiland\Events2\Configuration\ExtConf;
 use TYPO3\CMS\Backend\Form\FormDataProviderInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/**
+/*
  * Reduce amount of categories to given root category declared in extension configuration
  */
 class ModifyRootUidOfTreeSelectElements implements FormDataProviderInterface
@@ -28,9 +24,9 @@ class ModifyRootUidOfTreeSelectElements implements FormDataProviderInterface
      * Set rootUid of tree select elements of FlexForms to root category declared in EM
      *
      * @param array $result Initialized result array
-     * @return array
+     * @return array Do not add as strict type because of Interface
      */
-    public function addData(array $result): array
+    public function addData(array $result)
     {
         foreach (['settings.categories', 'settings.mainCategories'] as $categoryField) {
             if (

@@ -1,24 +1,21 @@
 <?php
 
-namespace JWeiland\Events2\ViewHelpers;
+declare(strict_types=1);
 
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\ViewHelpers;
+
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
-/**
+/*
  * This VH checks if given URI is a valid YouTube-Link
  * and returns a special YouTube embed URI.
  */
@@ -29,8 +26,6 @@ class CreateYoutubeUriViewHelper extends AbstractViewHelper
     /**
      * Initialize all arguments. You need to override this method and call
      * $this->registerArgument(...) inside this method, to register all your arguments.
-     *
-     * @return void
      */
     public function initializeArguments()
     {
@@ -45,8 +40,11 @@ class CreateYoutubeUriViewHelper extends AbstractViewHelper
      * @param RenderingContextInterface $renderingContext
      * @return string
      */
-    public static function renderStatic(array $arguments, \Closure $childClosure, RenderingContextInterface $renderingContext)
-    {
+    public static function renderStatic(
+        array $arguments,
+        \Closure $childClosure,
+        RenderingContextInterface $renderingContext
+    ) {
         if (preg_match('~^(|http:|https:)//(|www.)youtu(\.be|be)(.*?)(v=|embed/|)([a-zA-Z0-9_-]+)$~i', $arguments['link'], $matches)) {
             $url = '//www.youtube.com/embed/' . $matches[6];
         } else {

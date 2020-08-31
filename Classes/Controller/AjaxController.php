@@ -1,49 +1,45 @@
 <?php
 
-namespace JWeiland\Events2\Controller;
+declare(strict_types=1);
 
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\Controller;
+
+use JWeiland\Events2\Ajax\AjaxInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
-/**
+/*
  * Controller for Ajax Requests. Currently only for FindSubCategories
  */
 class AjaxController extends ActionController
 {
     /**
-     * this ajax action can only call Ajax scripts based on pageType
+     * This ajax action can only be called by Ajax scripts based on pageType.
      * eID scripts has its own bootstrap.
      *
      * @param string $objectName Which Ajax Object has to be called
-     * @param array  $arguments  Arguments which have to be send to the Ajax Object
-     *
+     * @param array $arguments  Arguments which have to be send to the Ajax Object
      * @return string
      */
-    public function callAjaxObjectAction($objectName, $arguments = [])
+    public function callAjaxObjectAction(string $objectName, array $arguments = []): string
     {
-        if (is_string($objectName)) {
+        if ($objectName !== '') {
             $className = 'JWeiland\\Events2\\Ajax\\' . ucfirst($objectName);
             if (class_exists($className)) {
                 $object = $this->objectManager->get($className);
-                if (method_exists($object, 'processAjaxRequest')) {
-                    $result = $object->processAjaxRequest($arguments);
-
-                    return $result;
+                if ($object instanceof AjaxInterface) {
+                    return $object->processAjaxRequest($arguments);
                 }
             }
         }
 
+        // @ToDo: Empty String will be returned as NULL in callActionMethod of Extbase
         return '';
     }
 }

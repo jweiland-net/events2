@@ -1,19 +1,13 @@
 <?php
 
-namespace JWeiland\Events2\Tests\Functional\Factory;
-
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\Tests\Functional\Factory;
 
 use JWeiland\Events2\Domain\Factory\DayFactory;
 use JWeiland\Events2\Domain\Model\Day;
@@ -195,11 +189,11 @@ class DayFactoryTest extends FunctionalTestCase
 
         // Try to get exactly matching day record for today
         $day = $this->dayFactory->findDayByEventAndTimestamp(1, $date->format('U'), $query);
-        $this->assertSame(
+        self::assertSame(
             1,
             $day->getEvent()->getUid()
         );
-        $this->assertSame(
+        self::assertSame(
             2,
             $day->getUid()
         );
@@ -220,11 +214,11 @@ class DayFactoryTest extends FunctionalTestCase
 
         // Try to get a day record for yesterday, where no day for this event exists.
         $day = $this->dayFactory->findDayByEventAndTimestamp(1, $date->format('U'), $query);
-        $this->assertSame(
+        self::assertSame(
             1,
             $day->getEvent()->getUid()
         );
-        $this->assertSame(
+        self::assertSame(
             2,
             $day->getUid()
         );
@@ -245,11 +239,11 @@ class DayFactoryTest extends FunctionalTestCase
 
         // Try to get a day record for tomorrow, where no day for this event exists.
         $day = $this->dayFactory->findDayByEventAndTimestamp(1, $date->format('U'), $query);
-        $this->assertSame(
+        self::assertSame(
             1,
             $day->getEvent()->getUid()
         );
-        $this->assertSame(
+        self::assertSame(
             2,
             $day->getUid()
         );
@@ -270,11 +264,11 @@ class DayFactoryTest extends FunctionalTestCase
 
         // This Timestamp isn't in DB for event 2
         $day = $this->dayFactory->findDayByEventAndTimestamp(2, $date->format('U'), $query);
-        $this->assertSame(
+        self::assertSame(
             2,
             $day->getEvent()->getUid()
         );
-        $this->assertSame(
+        self::assertSame(
             3,
             $day->getUid()
         );
@@ -295,11 +289,11 @@ class DayFactoryTest extends FunctionalTestCase
 
         // This Timestamp isn't in DB for event 3
         $day = $this->dayFactory->findDayByEventAndTimestamp(3, $date->format('U'), $query);
-        $this->assertSame(
+        self::assertSame(
             3,
             $day->getEvent()->getUid()
         );
-        $this->assertSame(
+        self::assertSame(
             1,
             $day->getUid()
         );
@@ -319,16 +313,16 @@ class DayFactoryTest extends FunctionalTestCase
         $query->setQuerySettings($this->querySettings);
 
         $day = $this->dayFactory->findDayByEventAndTimestamp(4, $date->format('U'), $query);
-        $this->assertSame(
+        self::assertSame(
             4,
             $day->getEvent()->getUid()
         );
-        $this->assertNull($day->getUid());
+        self::assertNull($day->getUid());
 
         $expectedDate = new \DateTime('midnight');
         $expectedDate->modify('-1 year')->modify('07:30:00');
 
-        $this->assertEquals(
+        self::assertEquals(
             $expectedDate,
             $day->getDayTime()
         );

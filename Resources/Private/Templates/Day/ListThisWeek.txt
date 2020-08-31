@@ -1,0 +1,7 @@
+Days:
+<f:for each="{days}" as="day" iteration="iterator">
+Event Title {iterator.cycle}: {day.event.title}
+</f:for>
+
+Filter:
+Organizer: {filter.organizer}

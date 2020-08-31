@@ -1,25 +1,22 @@
 <?php
-declare(strict_types = 1);
-namespace JWeiland\Events2\Hooks;
+
+declare(strict_types=1);
 
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\Hooks;
+
 use JWeiland\Events2\Service\DayRelationService;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
-/**
+/*
  * Hook into DataHandler and clear special caches or re-generate day records after saving an event.
  */
 class DataHandler
@@ -30,7 +27,7 @@ class DataHandler
      *
      * @param array $params
      */
-    public function clearCachePostProc(array $params)
+    public function clearCachePostProc(array $params): void
     {
         if (isset($params['table']) && $params['table'] === 'tx_events2_domain_model_event') {
             $cacheTagsToFlush = ['tx_events2_domain_model_event'];
@@ -53,7 +50,7 @@ class DataHandler
      *
      * @param \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler
      */
-    public function processDatamap_afterAllOperations(\TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler)
+    public function processDatamap_afterAllOperations(\TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): void
     {
         if (array_key_exists('tx_events2_domain_model_event', $dataHandler->datamap)) {
             foreach ($dataHandler->datamap['tx_events2_domain_model_event'] as $eventUid => $eventRecord) {
@@ -67,7 +64,7 @@ class DataHandler
      *
      * @param int $eventUid
      */
-    protected function addDayRelationsForEvent(int $eventUid)
+    protected function addDayRelationsForEvent(int $eventUid): void
     {
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $dayRelationService = $objectManager->get(DayRelationService::class);

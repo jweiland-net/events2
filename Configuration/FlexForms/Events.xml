@@ -1,7 +1,4 @@
 <T3DataStructure>
-	<meta>
-		<langDisable>1</langDisable>
-	</meta>
 	<sheets>
 		<sDEFAULT>
 			<ROOT>
@@ -15,6 +12,7 @@
 							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:chooseAction</label>
 							<config>
 								<type>select</type>
+								<renderType>selectSingle</renderType>
 								<items>
 									<numIndex index="0">
 										<numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:list</numIndex>
@@ -44,9 +42,12 @@
 						<TCEforms>
 							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:pidOfDetailPage</label>
 							<config>
-								<type>input</type>
-								<eval>int</eval>
-								<default>0</default>
+								<type>group</type>
+								<internal_type>db</internal_type>
+								<allowed>pages</allowed>
+								<size>1</size>
+								<maxitems>1</maxitems>
+								<minitems>0</minitems>
 							</config>
 						</TCEforms>
 					</settings.pidOfDetailPage>
@@ -54,9 +55,12 @@
 						<TCEforms>
 							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:pidOfListPage</label>
 							<config>
-								<type>input</type>
-								<eval>int</eval>
-								<default>0</default>
+								<type>group</type>
+								<internal_type>db</internal_type>
+								<allowed>pages</allowed>
+								<size>1</size>
+								<maxitems>1</maxitems>
+								<minitems>0</minitems>
 							</config>
 						</TCEforms>
 					</settings.pidOfListPage>
@@ -64,9 +68,12 @@
 						<TCEforms>
 							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:pidOfLocationPage</label>
 							<config>
-								<type>input</type>
-								<eval>int</eval>
-								<default>0</default>
+								<type>group</type>
+								<internal_type>db</internal_type>
+								<allowed>pages</allowed>
+								<size>1</size>
+								<maxitems>1</maxitems>
+								<minitems>0</minitems>
 							</config>
 						</TCEforms>
 					</settings.pidOfLocationPage>
@@ -74,9 +81,12 @@
 						<TCEforms>
 							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:pidOfSearchPage</label>
 							<config>
-								<type>input</type>
-								<eval>int</eval>
-								<default>0</default>
+								<type>group</type>
+								<internal_type>db</internal_type>
+								<allowed>pages</allowed>
+								<size>1</size>
+								<maxitems>1</maxitems>
+								<minitems>0</minitems>
 							</config>
 						</TCEforms>
 					</settings.pidOfSearchPage>
@@ -85,6 +95,7 @@
 							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:categories</label>
 							<config>
 								<type>select</type>
+								<renderType>selectTree</renderType>
 								<foreign_table>sys_category</foreign_table>
 								<renderMode>tree</renderMode>
 								<treeConfig>
@@ -126,8 +137,10 @@
 					<settings.mergeEventsAtSameDay>
 						<TCEforms>
 							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:mergeEventsAtSameDay</label>
+							<description>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:mergeEventsAtSameDay.description</description>
 							<config>
 								<type>check</type>
+								<renderType>checkboxToggle</renderType>
 								<default>0</default>
 							</config>
 						</TCEforms>
@@ -135,8 +148,10 @@
 					<settings.mergeRecurringEvents>
 						<TCEforms>
 							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:mergeRecurringEvents</label>
+							<description>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:mergeRecurringEvents.description</description>
 							<config>
 								<type>check</type>
+								<renderType>checkboxToggle</renderType>
 								<default>0</default>
 							</config>
 						</TCEforms>
@@ -146,6 +161,7 @@
 							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:preFilterByOrganizer</label>
 							<config>
 								<type>select</type>
+								<renderType>selectSingle</renderType>
 								<foreign_table>tx_events2_domain_model_organizer</foreign_table>
 								<foreign_table_where>AND CASE ###PAGE_TSCONFIG_ID### WHEN 0 THEN tx_events2_domain_model_organizer.pid>0 ELSE tx_events2_domain_model_organizer.pid=###PAGE_TSCONFIG_ID### END ORDER BY title</foreign_table_where>
 								<items>
@@ -163,8 +179,10 @@
 					<settings.showFilterForOrganizerInFrontend>
 						<TCEforms>
 							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:showFilterForOrganizerInFrontend</label>
+							<description>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:showFilterForOrganizerInFrontend.description</description>
 							<config>
 								<type>check</type>
+								<renderType>checkboxToggle</renderType>
 								<default>0</default>
 							</config>
 						</TCEforms>
@@ -182,6 +200,7 @@
 					<settings.display>
 						<TCEforms>
 							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:display</label>
+							<description>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:display.description</description>
 							<config>
 								<type>radio</type>
 								<items>
@@ -217,6 +236,7 @@
 							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:selectableCategoriesForNewEvents</label>
 							<config>
 								<type>select</type>
+								<renderType>selectTree</renderType>
 								<foreign_table>sys_category</foreign_table>
 								<renderMode>tree</renderMode>
 								<treeConfig>

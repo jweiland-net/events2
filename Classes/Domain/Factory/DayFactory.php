@@ -1,19 +1,16 @@
 <?php
+
 declare(strict_types=1);
-namespace JWeiland\Events2\Domain\Factory;
 
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\Domain\Factory;
+
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Repository\EventRepository;
@@ -22,11 +19,10 @@ use JWeiland\Events2\Service\DayRelationService;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
-/**
+/*
  * This class contains methods to find a day by a given event and exact timestamp.
  * If day was not found it will automatically search for next day.
  * If day was not found it will automatically search for previous day.
@@ -40,6 +36,16 @@ class DayFactory
     protected $databaseService;
 
     /**
+     * @var EventRepository
+     */
+    protected $eventRepository;
+
+    /**
+     * @var DayRelationService
+     */
+    protected $dayRelationService;
+
+    /**
      * @var array
      */
     protected $processOrderedMethods = [
@@ -49,14 +55,14 @@ class DayFactory
         'buildDay',
     ];
 
-    /**
-     * inject databaseService
-     *
-     * @param DatabaseService $databaseService
-     */
-    public function injectDatabaseService(DatabaseService $databaseService)
-    {
+    public function __construct(
+        DatabaseService $databaseService,
+        EventRepository $eventRepository,
+        DayRelationService $dayRelationService
+    ) {
         $this->databaseService = $databaseService;
+        $this->eventRepository = $eventRepository;
+        $this->dayRelationService = $dayRelationService;
     }
 
     /**
@@ -89,14 +95,7 @@ class DayFactory
         return $day;
     }
 
-    /**
-     * Find exact matching day record
-     *
-     * @param array $searchValues
-     * @param QueryInterface|Query $query
-     * @return Day|null
-     */
-    protected function findExactDay(array $searchValues, QueryInterface $query)
+    protected function findExactDay(array $searchValues, QueryInterface $query): ?Day
     {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder->andWhere(
@@ -116,14 +115,7 @@ class DayFactory
         );
     }
 
-    /**
-     * Find next matching day record
-     *
-     * @param array $searchValues
-     * @param QueryInterface|Query $query
-     * @return Day|null
-     */
-    protected function findNextDay(array $searchValues, QueryInterface $query)
+    protected function findNextDay(array $searchValues, QueryInterface $query): ?Day
     {
         $queryBuilder = $this->getQueryBuilder();
         $this->databaseService->addConstraintForDateRange(
@@ -138,14 +130,7 @@ class DayFactory
         );
     }
 
-    /**
-     * Find previous matching day record
-     *
-     * @param array $searchValues
-     * @param QueryInterface|Query $query
-     * @return Day|null
-     */
-    protected function findPreviousDay(array $searchValues, QueryInterface $query)
+    protected function findPreviousDay(array $searchValues, QueryInterface $query): ?Day
     {
         $queryBuilder = $this->getQueryBuilder(QueryInterface::ORDER_DESCENDING);
         $this->databaseService->addConstraintForDateRange(
@@ -161,7 +146,7 @@ class DayFactory
     }
 
     /**
-     * Build day object on  our own.
+     * Build day object on our own.
      * It will not get an UID or PID
      *
      * @param array $searchValues
@@ -171,12 +156,8 @@ class DayFactory
      */
     protected function buildDay(array $searchValues, QueryInterface $query): Day
     {
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $eventRepository = $objectManager->get(EventRepository::class);
-        $dayRelationService = $objectManager->get(DayRelationService::class);
-
         /** @var Event|null $event */
-        $event = $eventRepository->findByIdentifier($searchValues['event']);
+        $event = $this->eventRepository->findByIdentifier($searchValues['event']);
         if (!$event instanceof Event) {
             // Normally this can't be thrown, as this class will only be called at a detail page.
             // So action controller will throw Exception first, if event is not given.
@@ -192,7 +173,7 @@ class DayFactory
 
         if (!$event->getDays()->count()) {
             // event seems to be out of time frame. Try to re-generate day records
-            $dayRelationService->addDay($event, $event->getEventBegin());
+            $this->dayRelationService->addDay($event, $event->getEventBegin());
         }
 
         $event->getDays()->rewind();
@@ -220,7 +201,7 @@ class DayFactory
      * @param QueryInterface|Query $query
      * @return Day|null
      */
-    protected function findDayByEvent(int $eventUid, QueryBuilder $queryBuilder, QueryInterface $query)
+    protected function findDayByEvent(int $eventUid, QueryBuilder $queryBuilder, QueryInterface $query): ?Day
     {
         $this->addBaseConstraint($queryBuilder, $query, $eventUid);
 
@@ -266,7 +247,7 @@ class DayFactory
      * @param QueryInterface $query
      * @param int $eventUid
      */
-    protected function addBaseConstraint(QueryBuilder $queryBuilder, QueryInterface $query, int $eventUid)
+    protected function addBaseConstraint(QueryBuilder $queryBuilder, QueryInterface $query, int $eventUid): void
     {
         // add storage PID for event and day, but not for sys_category
         $this->databaseService->addConstraintForPid(
@@ -282,11 +263,6 @@ class DayFactory
         );
     }
 
-    /**
-     * Get TYPO3s Connection Pool
-     *
-     * @return ConnectionPool
-     */
     protected function getConnectionPool(): ConnectionPool
     {
         return GeneralUtility::makeInstance(ConnectionPool::class);

@@ -1,19 +1,16 @@
 <?php
 
-namespace JWeiland\Events2\ViewHelpers;
+declare(strict_types=1);
 
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\ViewHelpers;
+
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Service\EventService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -22,7 +19,7 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
-/**
+/*
  * Check, if there is an exceptions of type "remove" for specified date
  */
 class IsDateMarkedAsCanceledViewHelper extends AbstractViewHelper
@@ -32,8 +29,6 @@ class IsDateMarkedAsCanceledViewHelper extends AbstractViewHelper
     /**
      * Initialize all arguments. You need to override this method and call
      * $this->registerArgument(...) inside this method, to register all your arguments.
-     *
-     * @return void
      */
     public function initializeArguments()
     {
@@ -49,10 +44,13 @@ class IsDateMarkedAsCanceledViewHelper extends AbstractViewHelper
      * @param RenderingContextInterface $renderingContext
      * @return string
      */
-    public static function renderStatic(array $arguments, \Closure $childClosure, RenderingContextInterface $renderingContext)
-    {
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $eventService = $objectManager->get(EventService::class);
+    public static function renderStatic(
+        array $arguments,
+        \Closure $childClosure,
+        RenderingContextInterface $renderingContext
+    ) {
+        $eventService = GeneralUtility::makeInstance(ObjectManager::class)
+            ->get(EventService::class);
 
         return (bool)$eventService->getExceptionsForDate(
             $arguments['event'],

@@ -1,19 +1,15 @@
 <?php
-declare(strict_types = 1);
-namespace JWeiland\Events2\Service;
+
+declare(strict_types=1);
 
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\Service;
 
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
@@ -29,7 +25,7 @@ use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
-/**
+/*
  * Extract various information from an event/day to build a json-ld string
  */
 class JsonLdService
@@ -57,11 +53,10 @@ class JsonLdService
      *
      * @param Day $day
      */
-    public function addJsonLdToPageHeader(Day $day)
+    public function addJsonLdToPageHeader(Day $day): void
     {
         $this->collectData($day);
 
-        /** @var PageRenderer $pageRenderer */
         $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
         // as long as all JS methods will render a script-tag with type "text/javascript", we have to
         // add our own script-Tag
@@ -83,13 +78,10 @@ class JsonLdService
         return $this->data;
     }
 
-    /**
-     * @param Day $day
-     */
-    protected function collectData(Day $day)
+    protected function collectData(Day $day): void
     {
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $eventService = $objectManager->get(EventService::class);
+        $eventService = GeneralUtility::makeInstance(ObjectManager::class)
+            ->get(EventService::class);
         $time = $eventService->getTimeForDay($day);
         if ($time instanceof Time) {
             $this->addStartDateOfTimeToData($time);
@@ -102,7 +94,7 @@ class JsonLdService
         }
         $this->addNameToData($day->getEvent());
         $this->addDescriptionToData($day->getEvent());
-        $this->addUrlToData($day->getEvent());
+        $this->addUrlToData();
         $this->addLocationToData($day->getEvent());
         $this->addOrganizerToData($day->getEvent());
         $this->addImageToData($day->getEvent());
@@ -116,7 +108,7 @@ class JsonLdService
      * @link: https://schema.org/DateTime
      * @param Time $time
      */
-    protected function addStartDateOfTimeToData(Time $time)
+    protected function addStartDateOfTimeToData(Time $time): void
     {
         if ($time->getTimeBeginAsDateTime() instanceof \DateTime) {
             $this->data['startDate'] = $time->getTimeBeginAsDateTime()->format($this->dateTimeFormat);
@@ -129,7 +121,7 @@ class JsonLdService
      * @link: https://schema.org/DateTime
      * @param Time $time
      */
-    protected function addDoorTimeOfTimeToData(Time $time)
+    protected function addDoorTimeOfTimeToData(Time $time): void
     {
         if ($time->getTimeEntryAsDateTime() instanceof \DateTime) {
             $this->data['doorTime'] = $time->getTimeEntryAsDateTime()->format($this->dateTimeFormat);
@@ -142,7 +134,7 @@ class JsonLdService
      * @link: https://schema.org/Duration
      * @param Time $time
      */
-    protected function addDurationToData(Time $time)
+    protected function addDurationToData(Time $time): void
     {
         if ($time->getDuration() && preg_match('#\d\d:\d\d#', $time->getDuration())) {
             list($hours, $minutes) = GeneralUtility::trimExplode(':', $time->getDuration());
@@ -160,7 +152,7 @@ class JsonLdService
      * @link: https://schema.org/DateTime
      * @param Time $time
      */
-    protected function addEndDateOfTimeToData(Time $time)
+    protected function addEndDateOfTimeToData(Time $time): void
     {
         if ($time->getTimeEndAsDateTime() instanceof \DateTime) {
             $this->data['endDate'] = $time->getTimeEndAsDateTime()->format($this->dateTimeFormat);
@@ -173,7 +165,7 @@ class JsonLdService
      * @link: https://schema.org/Date
      * @param Event $event
      */
-    protected function addStartDateOfEventToData(Event $event)
+    protected function addStartDateOfEventToData(Event $event): void
     {
         if ($event->getEventBegin() instanceof \DateTime) {
             $this->data['startDate'] = $event->getEventBegin()->format($this->dateFormat);
@@ -186,7 +178,7 @@ class JsonLdService
      * @link: https://schema.org/Date
      * @param Event $event
      */
-    protected function addEndDateOfEventToData(Event $event)
+    protected function addEndDateOfEventToData(Event $event): void
     {
         if ($event->getEventType() === 'duration' && $event->getEventEnd() instanceof \DateTime) {
             $this->data['endDate'] = $event->getEventEnd()->format($this->dateFormat);
@@ -199,7 +191,7 @@ class JsonLdService
      * @link: https://schema.org/name
      * @param Event $event
      */
-    protected function addNameToData(Event $event)
+    protected function addNameToData(Event $event): void
     {
         $this->data['name'] = strip_tags($event->getTitle());
     }
@@ -210,7 +202,7 @@ class JsonLdService
      * @link: https://schema.org/description
      * @param Event $event
      */
-    protected function addDescriptionToData(Event $event)
+    protected function addDescriptionToData(Event $event): void
     {
         $this->data['description'] = strip_tags($event->getDetailInformations());
     }
@@ -219,9 +211,8 @@ class JsonLdService
      * Add event URL to data
      *
      * @link: https://schema.org/URL
-     * @param Event $event
      */
-    protected function addUrlToData(Event $event)
+    protected function addUrlToData(): void
     {
         $this->data['url'] = rawurldecode(GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL'));
     }
@@ -232,7 +223,7 @@ class JsonLdService
      * @link: https://schema.org/isAccessibleForFree
      * @param Event $event
      */
-    protected function addIsAccessibleForFreeToData(Event $event)
+    protected function addIsAccessibleForFreeToData(Event $event): void
     {
         $this->data['isAccessibleForFree'] = $event->getFreeEntry() ? 'True' : 'False';
     }
@@ -243,7 +234,7 @@ class JsonLdService
      * @link: https://schema.org/Offer
      * @param Event $event
      */
-    protected function addOfferToData(Event $event)
+    protected function addOfferToData(Event $event): void
     {
         if ($event->getTicketLink() instanceof Link) {
             $this->data['offers'] = [
@@ -263,7 +254,7 @@ class JsonLdService
      * @link: https://schema.org/PostalAddress
      * @param Event $event
      */
-    protected function addLocationToData(Event $event)
+    protected function addLocationToData(Event $event): void
     {
         if ($event->getLocation() instanceof Location) {
             $this->data['location'] = [
@@ -288,7 +279,7 @@ class JsonLdService
      * @link: https://schema.org/Organization
      * @param Event $event
      */
-    protected function addOrganizerToData(Event $event)
+    protected function addOrganizerToData(Event $event): void
     {
         if ($event->getOrganizer() instanceof Organizer) {
             $this->data['organizer'] = [
@@ -307,7 +298,7 @@ class JsonLdService
      * @link: https://schema.org/ImageObject
      * @param Event $event
      */
-    protected function addImageToData(Event $event)
+    protected function addImageToData(Event $event): void
     {
         if (!empty($event->getImages())) {
             $image = $event->getImages()[0];
@@ -320,12 +311,7 @@ class JsonLdService
                 return;
             }
 
-            if (version_compare(TYPO3_branch, '9.2', '<')) {
-                $url = GeneralUtility::locationHeaderUrl(PathUtility::getAbsoluteWebPath(PATH_site));
-            } else {
-                $url = GeneralUtility::locationHeaderUrl(PathUtility::getAbsoluteWebPath(Environment::getPublicPath()));
-            }
-
+            $url = GeneralUtility::locationHeaderUrl(PathUtility::getAbsoluteWebPath(Environment::getPublicPath()));
             $url .= $resource->getPublicUrl(false);
 
             $this->data['image'] = [

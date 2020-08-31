@@ -1,32 +1,27 @@
 <?php
 
-namespace JWeiland\Events2\Controller;
+declare(strict_types=1);
 
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\Controller;
+
 use JWeiland\Events2\Domain\Model\Location;
 
-/**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+/*
+ * A simple controller to just show the location/address or maybe a Google Maps record
  */
 class LocationController extends AbstractController
 {
     /**
-     * action show.
-     *
      * @param Location $location
      */
-    public function showAction(Location $location)
+    public function showAction(Location $location): void
     {
         $this->view->assign('location', $location);
     }

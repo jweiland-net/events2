@@ -1,23 +1,18 @@
 <?php
 
-namespace JWeiland\Events2\Utility;
-
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\Utility;
+
 use TYPO3\CMS\Core\Utility\MathUtility;
 
-/**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+/*
+ * With this class you can convert various strings and integers into a DateTime object.
  */
 class DateTimeUtility
 {
@@ -28,7 +23,7 @@ class DateTimeUtility
      * @param int|string $value Unix timestamp or date/datetime value
      * @return \DateTime|null
      */
-    public function convert($value)
+    public function convert($value): ?\DateTime
     {
         try {
             if (is_bool($value) || empty($value) || $value === '0000-00-00' || $value === '0000-00-00 00:00:00') {
@@ -50,15 +45,15 @@ class DateTimeUtility
     }
 
     /**
-     * we have our own implementation of Time
+     * We have our own implementation of Time
      * That's why we change time to midnight in DateTime-Objects
      * Further it's easier to compare DateTime-Objects
      * Hint: This function can also be called with NULL.
      *
-     * @param \DateTime $date
+     * @param \DateTime|null $date
      * @return \DateTime
      */
-    public function standardizeDateTimeObject($date)
+    public function standardizeDateTimeObject(?\DateTime $date): ?\DateTime
     {
         if ($date instanceof \DateTime) {
             $date->modify('midnight');
@@ -75,7 +70,7 @@ class DateTimeUtility
      * @param \DateTime $to   The date TO
      * @return \DateTime
      */
-    public function addDiffToDay(\DateTime $day, \DateTime $from, \DateTime $to)
+    public function addDiffToDay(\DateTime $day, \DateTime $from, \DateTime $to): \DateTime
     {
         // then and else parts will be parsed before if condition was called. This is in my kind of view a bug: http://forge.typo3.org/issues/49292
         // But eventEnd is not a required event property, but it is a required property here

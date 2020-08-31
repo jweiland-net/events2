@@ -1,24 +1,21 @@
 <?php
-declare(strict_types = 1);
-namespace JWeiland\Events2\Domain\Model;
+
+declare(strict_types=1);
 
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
 
+namespace JWeiland\Events2\Domain\Model;
+
 use JWeiland\Events2\Domain\Traits\Typo3PropertiesTrait;
+use TYPO3\CMS\Extbase\Annotation as Extbase;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
-/**
+/*
  * This class contains all getter and setters for a Time.
  */
 class Time extends AbstractEntity
@@ -32,25 +29,26 @@ class Time extends AbstractEntity
 
     /**
      * @var string
-     * @validate NotEmpty,RegularExpression(regularExpression=/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/)
+     * @Extbase\Validate("NotEmpty")
+     * @Extbase\Validate("RegularExpression", options={"regularExpression": "/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/"})
      */
     protected $timeBegin = '';
 
     /**
      * @var string
-     * @validate RegularExpression(regularExpression=/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/)
+     * @Extbase\Validate("RegularExpression", options={"regularExpression": "/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/"})
      */
     protected $timeEntry = '';
 
     /**
      * @var string
-     * @validate RegularExpression(regularExpression=/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/)
+     * @Extbase\Validate("RegularExpression", options={"regularExpression": "/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/"})
      */
     protected $duration = '';
 
     /**
      * @var string
-     * @validate RegularExpression(regularExpression=/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/)
+     * @Extbase\Validate("RegularExpression", options={"regularExpression": "/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/"})
      */
     protected $timeEnd = '';
 
@@ -129,10 +127,7 @@ class Time extends AbstractEntity
      * Helpful to use f:format.date()
      */
 
-    /**
-     * @return \DateTime|null
-     */
-    public function getTimeBeginAsDateTime()
+    public function getTimeBeginAsDateTime(): ?\DateTime
     {
         return $this->timeBeginAsDateTime;
     }
@@ -142,10 +137,7 @@ class Time extends AbstractEntity
         $this->timeBeginAsDateTime = $timeBegin;
     }
 
-    /**
-     * @return \DateTime|null
-     */
-    public function getTimeEntryAsDateTime()
+    public function getTimeEntryAsDateTime(): ?\DateTime
     {
         return $this->timeEntryAsDateTime;
     }
@@ -155,10 +147,7 @@ class Time extends AbstractEntity
         $this->timeEntryAsDateTime = $timeEntry;
     }
 
-    /**
-     * @return \DateTime|null
-     */
-    public function getTimeEndAsDateTime()
+    public function getTimeEndAsDateTime(): ?\DateTime
     {
         return $this->timeEndAsDateTime;
     }

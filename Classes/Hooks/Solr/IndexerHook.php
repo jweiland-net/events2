@@ -1,27 +1,21 @@
 <?php
 
-namespace JWeiland\Events2\Hooks\Solr;
-
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\Hooks\Solr;
+
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerDocumentsModifier;
-use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Service\EventService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
-/**
+/*
  * As we can't create a SQL Query with JOIN in Solr configuration,
  * we have to remove invalid documents on our own here
  */
@@ -32,9 +26,6 @@ class IndexerHook implements PageIndexerDocumentsModifier
      */
     protected $eventService;
 
-    /**
-     * ResultsCommandHook constructor.
-     */
     public function __construct()
     {
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
@@ -52,11 +43,11 @@ class IndexerHook implements PageIndexerDocumentsModifier
      * @param array $documents An array of documents to be indexed
      * @return array An array of modified documents
      */
-    public function modifyDocuments(Item $item, $language, array $documents)
+    public function modifyDocuments(Item $item, $language, array $documents): array
     {
         if ($item->getType() === 'tx_events2_domain_model_event') {
             $nextDate = $this->eventService->getNextDayForEvent((int)$item->getRecordUid());
-            if ($nextDate === false || !$nextDate instanceof \DateTime) {
+            if (!$nextDate instanceof \DateTime) {
                 // clear document array, if there are no further dates in future
                 $documents = [];
             }

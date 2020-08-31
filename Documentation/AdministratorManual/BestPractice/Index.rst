@@ -1,14 +1,15 @@
 .. include:: ../../Includes.txt
 
-Configuration
--------------
+.. _bestPractice:
 
-.. only:: html
+=============
+Best Practice
+=============
 
-	This chapter describes some best practice concepts
+This chapter describes some best practice concepts
 
 .. toctree::
-	:maxdepth: 2
-	:titlesonly:
+   :maxdepth: 2
 
-  ClearCache/Index
+   ClearCache/Index
+   Commands/Index

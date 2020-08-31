@@ -1,19 +1,14 @@
 <?php
 
-namespace JWeiland\Events2\Tests\Unit\Utility;
-
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\Tests\Unit\Utility;
+
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 
@@ -27,17 +22,11 @@ class DateTimeUtilityTest extends UnitTestCase
      */
     protected $subject;
 
-    /**
-     * set up.
-     */
     public function setUp()
     {
         $this->subject = new DateTimeUtility();
     }
 
-    /**
-     * tear down.
-     */
     public function tearDown()
     {
         unset($this->subject);
@@ -65,7 +54,7 @@ class DateTimeUtilityTest extends UnitTestCase
      */
     public function convertEmptyDatesResultsInNull($emptyDate, $expectedDate)
     {
-        $this->assertSame(
+        self::assertSame(
             $expectedDate,
             $this->subject->convert($emptyDate)
         );
@@ -96,7 +85,7 @@ class DateTimeUtilityTest extends UnitTestCase
      */
     public function convertInvalidDates($invalidValue)
     {
-        $this->assertNull($this->subject->convert($invalidValue));
+        self::assertNull($this->subject->convert($invalidValue));
     }
 
     /**
@@ -130,7 +119,7 @@ class DateTimeUtilityTest extends UnitTestCase
      */
     public function convertWithStringDates($stringDate, $expectedDate)
     {
-        $this->assertEquals(
+        self::assertEquals(
             $expectedDate,
             $this->subject->convert($stringDate)
         );
@@ -167,9 +156,9 @@ class DateTimeUtilityTest extends UnitTestCase
     {
         $convertedResult = $this->subject->convert($timestamp);
         if ($convertedResult === null) {
-            $this->assertSame($expectedDate, $convertedResult);
+            self::assertSame($expectedDate, $convertedResult);
         } else {
-            $this->assertEquals(
+            self::assertEquals(
             /* @var \DateTime $expectedDate */
                 $expectedDate->format('U'),
                 $convertedResult->format('U')

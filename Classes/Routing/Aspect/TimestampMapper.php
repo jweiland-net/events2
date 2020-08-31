@@ -1,23 +1,19 @@
 <?php
-declare(strict_types = 1);
-namespace JWeiland\Events2\Routing\Aspect;
+
+declare(strict_types=1);
 
 /*
- * This file is part of the events2 project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace JWeiland\Events2\Routing\Aspect;
 
 use TYPO3\CMS\Core\Routing\Aspect\StaticMappableAspectInterface;
 
-/**
+/*
  * Mapper to map a timestamp to a formatted value and back to a timestamp.
  *
  * routeEnhancers:
@@ -33,8 +29,8 @@ use TYPO3\CMS\Core\Routing\Aspect\StaticMappableAspectInterface;
  *           date: timestamp
  *           event_title: event
  *     requirements:
- *       date: '\d+'
- *       event_title: '^[a-zA-Z0-9]+\-[0-9]+$'
+ *       date: '\d{4,4}-\d{2,2}-\d{2,2}_\d{4,4}'
+ *       event_title: '^[a-zA-Z0-9\-]+$'
  *     defaultController: 'Day::show'
  *     aspects:
  *       date:
@@ -52,10 +48,6 @@ class TimestampMapper implements StaticMappableAspectInterface
      */
     protected $settings;
 
-    /**
-     * @param array $settings
-     * @throws \InvalidArgumentException
-     */
     public function __construct(array $settings)
     {
         if (
@@ -81,9 +73,8 @@ class TimestampMapper implements StaticMappableAspectInterface
         $date = new \DateTime(date('c', (int)$value));
         if (!$date instanceof \DateTime) {
             return null;
-        } else {
-            return $date->format($this->settings['format']);
         }
+        return $date->format($this->settings['format']);
     }
 
     /**
@@ -94,8 +85,7 @@ class TimestampMapper implements StaticMappableAspectInterface
         $date = \DateTime::createFromFormat($this->settings['format'], $value);
         if (!$date instanceof \DateTime) {
             return null;
-        } else {
-            return $date->format('U');
         }
+        return $date->format('U');
     }
 }
