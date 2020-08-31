@@ -201,8 +201,8 @@
 			<trans-unit id="tx_events2_domain_model_event.exceptions">
 				<source>Exceptions</source>
 			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.detail_informations">
-				<source>Detail Informations</source>
+			<trans-unit id="tx_events2_domain_model_event.detail_information">
+				<source>Detail Information</source>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.free_entry">
 				<source>Free Entry</source>

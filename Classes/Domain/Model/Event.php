@@ -119,7 +119,7 @@ class Event extends AbstractEntity
     /**
      * @var string
      */
-    protected $detailInformations = '';
+    protected $detailInformation = '';
 
     /**
      * @var bool
@@ -459,14 +459,35 @@ class Event extends AbstractEntity
         $this->teaser = $teaser;
     }
 
+    /**
+     * @return string
+     * @deprecated Please use getDetailInformation instead
+     */
     public function getDetailInformations(): string
     {
-        return $this->detailInformations;
+        return $this->detailInformation;
     }
 
-    public function setDetailInformations(string $detailInformations)
+    public function getDetailInformation(): string
     {
-        $this->detailInformations = $detailInformations;
+        return $this->detailInformation;
+    }
+
+    /**
+     * @param string $detailInformation
+     * @deprecated Please use setDetailInformation instead
+     */
+    public function setDetailInformations(string $detailInformation)
+    {
+        $this->detailInformation = $detailInformation;
+    }
+
+    /**
+     * @param string $detailInformation
+     */
+    public function setDetailInformation(string $detailInformation)
+    {
+        $this->detailInformation = $detailInformation;
     }
 
     public function getFreeEntry(): bool

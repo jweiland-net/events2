@@ -204,7 +204,7 @@ class JsonLdService
      */
     protected function addDescriptionToData(Event $event): void
     {
-        $this->data['description'] = strip_tags($event->getDetailInformations());
+        $this->data['description'] = strip_tags($event->getDetailInformation());
     }
 
     /**
