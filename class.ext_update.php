@@ -18,6 +18,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Update class for the extension manager.
+ *
+ * @deprecated Will be removed with Version 7.0.0
  */
 class ext_update
 {
