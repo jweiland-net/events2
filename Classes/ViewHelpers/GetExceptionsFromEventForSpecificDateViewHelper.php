@@ -50,13 +50,12 @@ class GetExceptionsFromEventForSpecificDateViewHelper extends AbstractViewHelper
         \Closure $childClosure,
         RenderingContextInterface $renderingContext
     ) {
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $eventService = $objectManager->get(EventService::class);
+        /** @var Event $event */
+        $event = $arguments['event'];
+        /** @var \DateTime $date */
+        $date = $arguments['date'];
+        $type = (string)$arguments['type'];
 
-        return $eventService->getExceptionsForDate(
-            $arguments['event'],
-            $arguments['date'],
-            $arguments['type']
-        );
+        return $event->getExceptionsForDate($date, $type);
     }
 }
