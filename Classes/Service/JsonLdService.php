@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Service;
 
+use JWeiland\Events2\Domain\Factory\TimeFactory;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Link;
@@ -80,9 +81,8 @@ class JsonLdService
 
     protected function collectData(Day $day): void
     {
-        $eventService = GeneralUtility::makeInstance(ObjectManager::class)
-            ->get(EventService::class);
-        $time = $eventService->getTimeForDay($day);
+        $timeFactory = GeneralUtility::makeInstance(TimeFactory::class);
+        $time = $timeFactory->getTimeForDay($day);
         if ($time instanceof Time) {
             $this->addStartDateOfTimeToData($time);
             $this->addDoorTimeOfTimeToData($time);

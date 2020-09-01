@@ -11,10 +11,10 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\ViewHelpers\Widget\Controller;
 
+use JWeiland\Events2\Domain\Factory\TimeFactory;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Time;
-use JWeiland\Events2\Service\EventService;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -26,13 +26,13 @@ use TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetController;
 class ICalendarController extends AbstractWidgetController
 {
     /**
-     * @var EventService
+     * @var TimeFactory
      */
-    protected $eventService;
+    protected $timeFactory;
 
-    public function __construct(EventService $eventService)
+    public function __construct(TimeFactory $eventService)
     {
-        $this->eventService = $eventService;
+        $this->timeFactory = $eventService;
     }
 
     /**
@@ -83,8 +83,8 @@ class ICalendarController extends AbstractWidgetController
             case 'duration':
                 $firstDay = $this->getFirstDayOfEvent($day->getEvent());
                 $lastDay = $this->getLastDayOfEvent($day->getEvent());
-                $startTimes = $this->eventService->getTimesForDate($firstDay->getEvent(), $firstDay->getDay());
-                $endTimes = $this->eventService->getTimesForDate($lastDay->getEvent(), $lastDay->getDay());
+                $startTimes = $this->timeFactory->getTimesForDate($firstDay->getEvent(), $firstDay->getDay());
+                $endTimes = $this->timeFactory->getTimesForDate($lastDay->getEvent(), $lastDay->getDay());
                 $startTimes->rewind();
                 $startTime = $startTimes->current();
                 $endTimes->rewind();
@@ -100,7 +100,7 @@ class ICalendarController extends AbstractWidgetController
             case 'recurring':
             case 'single':
             default:
-                $times = $this->eventService->getTimesForDate($day->getEvent(), $day->getDay());
+                $times = $this->timeFactory->getTimesForDate($day->getEvent(), $day->getDay());
                 if ($times->count()) {
                     foreach ($times as $time) {
                         $events[] = $this->createEvent($day, $day, $time->getTimeBegin(), $time->getTimeEnd());

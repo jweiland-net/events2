@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Service;
 
 use JWeiland\Events2\Configuration\ExtConf;
+use JWeiland\Events2\Domain\Factory\TimeFactory;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Time;
@@ -51,9 +52,9 @@ class DayRelationService
     protected $eventRepository;
 
     /**
-     * @var EventService
+     * @var TimeFactory
      */
-    protected $eventService;
+    protected $timeFactory;
 
     /**
      * @var DateTimeUtility
@@ -78,13 +79,13 @@ class DayRelationService
     public function __construct(
         DayGenerator $dayGenerator,
         EventRepository $eventRepository,
-        EventService $eventService,
+        TimeFactory $timeFactory,
         PersistenceManagerInterface $persistenceManager,
         DateTimeUtility $dateTimeUtility
     ) {
         $this->dayGenerator = $dayGenerator;
         $this->eventRepository = $eventRepository;
-        $this->eventService = $eventService;
+        $this->timeFactory = $timeFactory;
         $this->persistenceManager = $persistenceManager;
         $this->dateTimeUtility = $dateTimeUtility;
     }
@@ -138,7 +139,7 @@ class DayRelationService
     {
         // to prevent adding multiple day records for ONE day we set them all to midnight 00:00:00
         $dateTime = $this->dateTimeUtility->standardizeDateTimeObject($dateTime);
-        $times = $this->eventService->getTimesForDate($event, $dateTime);
+        $times = $this->timeFactory->getTimesForDate($event, $dateTime);
         if ($times->count()) {
             foreach ($times as $time) {
                 if ($this->firstTime === null) {
