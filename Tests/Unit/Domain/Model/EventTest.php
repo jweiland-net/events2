@@ -986,6 +986,251 @@ class EventTest extends UnitTestCase
     /**
      * @test
      */
+    public function getFutureDatesGroupedAndSortedReturnsFutureDatesOnly()
+    {
+        $yesterday = new \DateTime('yesterday');
+        $today = new \DateTime('now');
+        $future = new \DateTime('now 20:00:00');
+
+        $yesterdayDay = new Day();
+        $yesterdayDay->setDay(new \DateTime('yesterday midnight'));
+        $yesterdayDay->setDayTime($yesterday);
+        $todayDay = new Day();
+        $todayDay->setDay(new \DateTime('midnight'));
+        $todayDay->setDayTime($today);
+        $futureDay = new Day();
+        $futureDay->setDay(new \DateTime('midnight'));
+        $futureDay->setDayTime($future);
+
+        $days = new ObjectStorage();
+        $days->attach($yesterdayDay);
+        $days->attach($todayDay);
+        $days->attach($futureDay);
+
+        $this->subject->setDays($days);
+        $futureDays = $this->subject->getFutureDatesGroupedAndSorted();
+
+        self::assertSame(
+            1,
+            count($futureDays)
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function getFutureDatesGroupedAndSortedReturnsDatesGroupedAndSorted()
+    {
+        $today1 = new \DateTime('now 12:00:00');
+        $today2 = new \DateTime('now 20:00:00');
+        $future1 = new \DateTime('tomorrow 12:00:00');
+        $future2 = new \DateTime('tomorrow 20:00:00');
+
+        $today1Day = new Day();
+        $today1Day->setDay(new \DateTime('midnight'));
+        $today1Day->setDayTime($today1);
+        $today2Day = new Day();
+        $today2Day->setDay(new \DateTime('midnight'));
+        $today2Day->setDayTime($today2);
+        $future1Day = new Day();
+        $future1Day->setDay(new \DateTime('tomorrow midnight'));
+        $future1Day->setDayTime($future1);
+        $future2Day = new Day();
+        $future2Day->setDay(new \DateTime('tomorrow midnight'));
+        $future2Day->setDayTime($future2);
+
+        $days = new ObjectStorage();
+        $days->attach($future1Day);
+        $days->attach($future2Day);
+        $days->attach($today1Day);
+        $days->attach($today2Day);
+
+        $this->subject->setDays($days);
+        $futureDays = $this->subject->getFutureDatesGroupedAndSorted();
+
+        self::assertSame(
+            2,
+            count($futureDays)
+        );
+
+        self::assertSame(
+            sprintf(
+                '%d,%d',
+                $today1->modify('midnight')->format('U'),
+                $future1->modify('midnight')->format('U')
+            ),
+            implode(',', array_keys($futureDays))
+        );
+
+        // Check, if pointer of array was moved to position 1
+        self::assertEquals(
+            $today1->modify('midnight'),
+            current($futureDays)
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function getAlternativeDaysGroupedAndSortedReturnsFutureDatesOnly()
+    {
+        $yesterday = new \DateTime('yesterday');
+        $today1 = new \DateTime('now 12:00:00');
+        $today2 = new \DateTime('now 20:00:00');
+        $future1 = new \DateTime('tomorrow 12:00:00');
+        $future2 = new \DateTime('tomorrow 20:00:00');
+
+        $yesterdayDay = new Day();
+        $yesterdayDay->setDay(new \DateTime('yesterday midnight'));
+        $yesterdayDay->setDayTime($yesterday);
+        $today1Day = new Day();
+        $today1Day->setDay(new \DateTime('midnight'));
+        $today1Day->setDayTime($today1);
+        $today2Day = new Day();
+        $today2Day->setDay(new \DateTime('midnight'));
+        $today2Day->setDayTime($today2);
+        $future1Day = new Day();
+        $future1Day->setDay(new \DateTime('tomorrow midnight'));
+        $future1Day->setDayTime($future1);
+        $future2Day = new Day();
+        $future2Day->setDay(new \DateTime('tomorrow midnight'));
+        $future2Day->setDayTime($future2);
+
+        $days = new ObjectStorage();
+        $days->attach($yesterdayDay);
+        $days->attach($today1Day);
+        $days->attach($today2Day);
+        $days->attach($future1Day);
+        $days->attach($future2Day);
+
+        $this->subject->setDays($days);
+        $futureDays = $this->subject->getAlternativeTimesGroupedAndSorted();
+
+        self::assertSame(
+            2,
+            count($futureDays)
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function getAlternativeDaysGroupedAndSortedWithRemovedTimeWillReturnDaysGroupedAndSorted()
+    {
+        $today1 = new \DateTime('now 12:00:00');
+        $today2 = new \DateTime('now 20:00:00');
+        $future1 = new \DateTime('tomorrow 12:00:00');
+        $future2 = new \DateTime('tomorrow 20:00:00');
+
+        $today1Day = new Day();
+        $today1Day->setDay(new \DateTime('midnight'));
+        $today1Day->setDayTime($today1);
+        $today2Day = new Day();
+        $today2Day->setDay(new \DateTime('midnight'));
+        $today2Day->setDayTime($today2);
+        $future1Day = new Day();
+        $future1Day->setDay(new \DateTime('tomorrow midnight'));
+        $future1Day->setDayTime($future1);
+        $future2Day = new Day();
+        $future2Day->setDay(new \DateTime('tomorrow midnight'));
+        $future2Day->setDayTime($future2);
+
+        $days = new ObjectStorage();
+        $days->attach($future1Day);
+        $days->attach($future2Day);
+        $days->attach($today1Day);
+        $days->attach($today2Day);
+
+        $_GET['tx_events2_events']['timestamp'] = $today2->format('U');
+        $this->subject->setDays($days);
+        $futureDays = $this->subject->getAlternativeTimesGroupedAndSorted();
+
+        self::assertSame(
+            2,
+            count($futureDays)
+        );
+
+        $futureDay = current($futureDays);
+        self::assertArrayHasKey(
+            'date',
+            $futureDay
+        );
+        self::assertArrayHasKey(
+            'times',
+            $futureDay
+        );
+        self::assertInstanceOf(
+            \SplObjectStorage::class,
+            $futureDay['times']
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function getFutureDatesIncludingRemovedGroupedAndSortedReturnsFutureDatesSorted()
+    {
+        $yesterday = new \DateTime('yesterday');
+        $today1 = new \DateTime('now 12:00:00');
+        $today2 = new \DateTime('now 20:00:00');
+        $future1 = new \DateTime('tomorrow 12:00:00');
+        $future2 = new \DateTime('tomorrow 20:00:00');
+
+        $yesterdayDay = new Day();
+        $yesterdayDay->setDay(new \DateTime('yesterday midnight'));
+        $yesterdayDay->setDayTime($yesterday);
+        $today1Day = new Day();
+        $today1Day->setDay(new \DateTime('midnight'));
+        $today1Day->setDayTime($today1);
+        $today2Day = new Day();
+        $today2Day->setDay(new \DateTime('midnight'));
+        $today2Day->setDayTime($today2);
+        $future1Day = new Day();
+        $future1Day->setDay(new \DateTime('tomorrow midnight'));
+        $future1Day->setDayTime($future1);
+        $future2Day = new Day();
+        $future2Day->setDay(new \DateTime('tomorrow midnight'));
+        $future2Day->setDayTime($future2);
+
+        $days = new ObjectStorage();
+        $days->attach($future1Day);
+        $days->attach($future2Day);
+        $days->attach($today1Day);
+        $days->attach($today2Day);
+        $days->attach($yesterdayDay);
+
+        $exception = new Exception();
+        $exception->setExceptionType('remove');
+        $exception->setExceptionDate(new \DateTime('tomorrow midnight'));
+
+        $this->subject->setDays($days);
+        $this->subject->addException($exception);
+        $futureDays = $this->subject->getFutureDatesGroupedAndSorted();
+
+        self::assertSame(
+            2,
+            count($futureDays)
+        );
+
+        self::assertSame(
+            sprintf(
+                '%d,%d',
+                $today1->modify('midnight')->format('U'),
+                $future1->modify('midnight')->format('U')
+            ),
+            implode(',', array_keys($futureDays))
+        );
+
+        // Check, if pointer of array was moved to position 1
+        self::assertEquals(
+            $today1->modify('midnight'),
+            current($futureDays)
+        );
+    }
+
+    /**
+     * @test
+     */
     public function getLocationInitiallyReturnsNull()
     {
         self::assertNull($this->subject->getLocation());
