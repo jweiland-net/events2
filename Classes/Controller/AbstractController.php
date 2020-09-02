@@ -163,7 +163,8 @@ class AbstractController extends ActionController
             throw new \Exception('You have forgotten to add TS-Template of events2', 1580294227);
         }
         $mergedFlexFormSettings = $this->configurationManager->getConfiguration(
-            ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS
+            ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS,
+            'events2'
         );
 
         // start override
