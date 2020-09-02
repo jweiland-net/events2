@@ -9,24 +9,12 @@
 
 namespace JWeiland\Events2\Tests\Functional\Domain\Factory;
 
-use JWeiland\Events2\Domain\Factory\DayFactory;
 use JWeiland\Events2\Domain\Factory\TimeFactory;
-use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Exception;
-use JWeiland\Events2\Domain\Model\Location;
-use JWeiland\Events2\Domain\Model\Organizer;
 use JWeiland\Events2\Domain\Model\Time;
-use JWeiland\Events2\Domain\Repository\EventRepository;
-use JWeiland\Events2\Service\DayRelationService;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Persistence\Generic\Query;
-use TYPO3\CMS\Extbase\Persistence\Generic\QueryFactory;
-use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
-use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 
 /**
  * Functional test for TimeFactory
