@@ -10,6 +10,7 @@
 namespace JWeiland\Events2\Tests\Functional\Service;
 
 use JWeiland\Events2\Configuration\ExtConf;
+use JWeiland\Events2\Domain\Factory\TimeFactory;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Exception;
@@ -17,7 +18,6 @@ use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Service\DayGenerator;
 use JWeiland\Events2\Service\DayRelationService;
-use JWeiland\Events2\Service\EventService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use Prophecy\Argument;
@@ -91,16 +91,10 @@ class DayRelationServiceTest extends FunctionalTestCase
             new DateTimeUtility()
         );
 
-        $eventService = new EventService(
-            $this->eventRepositoryProphecy->reveal(),
-            $this->extConfProphecy->reveal(),
-            new DateTimeUtility()
-        );
-
         $this->subject = new DayRelationService(
             $dayGenerator,
             $this->eventRepositoryProphecy->reveal(),
-            $eventService,
+            new TimeFactory(),
             $this->persistenceManagerProphecy->reveal(),
             new DateTimeUtility()
         );
