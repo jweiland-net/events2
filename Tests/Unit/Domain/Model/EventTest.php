@@ -736,6 +736,192 @@ class EventTest extends UnitTestCase
     /**
      * @test
      */
+    public function getExceptionsForDateReturnZeroExceptions()
+    {
+        self::assertEquals(
+            new ObjectStorage(),
+            $this->subject->getExceptionsForDate(new \DateTime())
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function getExceptionsForDateWithRemoveExceptionReturnsZeroExceptionsForAdd()
+    {
+        $date = new \DateTime('midnight');
+
+        $exception = new Exception();
+        $exception->setExceptionType('Remove');
+        $exception->setExceptionDate($date);
+
+        $exceptions = new ObjectStorage();
+        $exceptions->attach($exception);
+
+        $this->subject->setExceptions($exceptions);
+
+        self::assertEquals(
+            new ObjectStorage(),
+            $this->subject->getExceptionsForDate($date, 'Add')
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function getExceptionsForDateWithRemoveExceptionReturnsOneRemoveException()
+    {
+        $date = new \DateTime('midnight');
+
+        $exception = new Exception();
+        $exception->setExceptionType('Remove');
+        $exception->setExceptionDate($date);
+
+        $exceptions = new ObjectStorage();
+        $exceptions->attach($exception);
+
+        $this->subject->setExceptions($exceptions);
+
+        $expectedExceptions = new ObjectStorage();
+        $expectedExceptions->attach($exception);
+
+        self::assertEquals(
+            $expectedExceptions,
+            $this->subject->getExceptionsForDate($date, 'Remove')
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function getExceptionsForDateWithRemoveExceptionWithNonNormalizedDateReturnsOneRemoveException()
+    {
+        $date = new \DateTime('now'); // date must be sanitized to midnight in getExceptionsForDate
+
+        $exception = new Exception();
+        $exception->setExceptionType('Remove');
+        $exception->setExceptionDate($date);
+
+        $exceptions = new ObjectStorage();
+        $exceptions->attach($exception);
+
+        $this->subject->setExceptions($exceptions);
+
+        $expectedExceptions = new ObjectStorage();
+        $expectedExceptions->attach($exception);
+
+        self::assertEquals(
+            $expectedExceptions,
+            $this->subject->getExceptionsForDate($date, 'Remove')
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function getExceptionsForDateWithDifferentExceptionsReturnsAddException()
+    {
+        $date = new \DateTime('midnight');
+
+        $removeException = new Exception();
+        $removeException->setExceptionType('Remove');
+        $removeException->setExceptionDate($date);
+        $addException = new Exception();
+        $addException->setExceptionType('Add');
+        $addException->setExceptionDate($date);
+
+        $exceptions = new ObjectStorage();
+        $exceptions->attach($removeException);
+        $exceptions->attach($addException);
+
+        $this->subject->setExceptions($exceptions);
+
+        $expectedAddExceptions = new ObjectStorage();
+        $expectedAddExceptions->attach($addException);
+
+        self::assertEquals(
+            $expectedAddExceptions,
+            $this->subject->getExceptionsForDate($date, 'Add')
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function getExceptionsForDateWithExceptionsOfDifferentDatesReturnsAddException()
+    {
+        $firstDate = new \DateTime('midnight');
+        $secondDate = new \DateTime('midnight');
+        $secondDate->modify('tomorrow');
+
+        $firstAddException = new Exception();
+        $firstAddException->setExceptionType('Add');
+        $firstAddException->setExceptionDate($firstDate);
+        $secondAddException = new Exception();
+        $secondAddException->setExceptionType('Add');
+        $secondAddException->setExceptionDate($secondDate);
+
+        $exceptions = new ObjectStorage();
+        $exceptions->attach($firstAddException);
+        $exceptions->attach($secondAddException);
+
+        $this->subject->setExceptions($exceptions);
+
+        $expectedAddExceptions = new ObjectStorage();
+        $expectedAddExceptions->attach($firstAddException);
+
+        self::assertEquals(
+            $expectedAddExceptions,
+            $this->subject->getExceptionsForDate($firstDate, 'Add')
+        );
+    }
+
+    /**
+     * This test also checks against lowercased and multiple spaces in list of exception types
+     *
+     * @test
+     */
+    public function getExceptionsForDateWithExceptionsOfDifferentDatesReturnsDifferentExceptions()
+    {
+        $firstDate = new \DateTime('midnight');
+        $secondDate = new \DateTime('midnight');
+        $secondDate->modify('tomorrow');
+
+        $firstAddException = new Exception();
+        $firstAddException->setExceptionType('Add');
+        $firstAddException->setExceptionDate($firstDate);
+        $secondAddException = new Exception();
+        $secondAddException->setExceptionType('Add');
+        $secondAddException->setExceptionDate($secondDate);
+        $timeException = new Exception();
+        $timeException->setExceptionType('Time');
+        $timeException->setExceptionDate($firstDate);
+        $infoException = new Exception();
+        $infoException->setExceptionType('Info');
+        $infoException->setExceptionDate($firstDate);
+
+        $exceptions = new ObjectStorage();
+        $exceptions->attach($firstAddException);
+        $exceptions->attach($secondAddException);
+        $exceptions->attach($timeException);
+        $exceptions->attach($infoException);
+
+        $this->subject->setExceptions($exceptions);
+
+        $expectedExceptions = new ObjectStorage();
+        $expectedExceptions->attach($firstAddException);
+        $expectedExceptions->attach($timeException);
+        $expectedExceptions->attach($infoException);
+
+        self::assertEquals(
+            $expectedExceptions,
+            $this->subject->getExceptionsForDate($firstDate, 'add, time,  info')
+        );
+    }
+
+    /**
+     * @test
+     */
     public function getDetailInformationInitiallyReturnsEmptyString()
     {
         self::assertSame(
@@ -990,7 +1176,7 @@ class EventTest extends UnitTestCase
     {
         $yesterday = new \DateTime('yesterday');
         $today = new \DateTime('now');
-        $future = new \DateTime('now 20:00:00');
+        $future = new \DateTime('tomorrow');
 
         $yesterdayDay = new Day();
         $yesterdayDay->setDay(new \DateTime('yesterday midnight'));
@@ -999,7 +1185,7 @@ class EventTest extends UnitTestCase
         $todayDay->setDay(new \DateTime('midnight'));
         $todayDay->setDayTime($today);
         $futureDay = new Day();
-        $futureDay->setDay(new \DateTime('midnight'));
+        $futureDay->setDay(new \DateTime('tomorrow midnight'));
         $futureDay->setDayTime($future);
 
         $days = new ObjectStorage();
@@ -1011,7 +1197,7 @@ class EventTest extends UnitTestCase
         $futureDays = $this->subject->getFutureDatesGroupedAndSorted();
 
         self::assertSame(
-            1,
+            2,
             count($futureDays)
         );
     }
@@ -1040,9 +1226,9 @@ class EventTest extends UnitTestCase
         $future2Day->setDayTime($future2);
 
         $days = new ObjectStorage();
-        $days->attach($future1Day);
         $days->attach($future2Day);
         $days->attach($today1Day);
+        $days->attach($future1Day);
         $days->attach($today2Day);
 
         $this->subject->setDays($days);
@@ -1066,102 +1252,6 @@ class EventTest extends UnitTestCase
         self::assertEquals(
             $today1->modify('midnight'),
             current($futureDays)
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function getAlternativeDaysGroupedAndSortedReturnsFutureDatesOnly()
-    {
-        $yesterday = new \DateTime('yesterday');
-        $today1 = new \DateTime('now 12:00:00');
-        $today2 = new \DateTime('now 20:00:00');
-        $future1 = new \DateTime('tomorrow 12:00:00');
-        $future2 = new \DateTime('tomorrow 20:00:00');
-
-        $yesterdayDay = new Day();
-        $yesterdayDay->setDay(new \DateTime('yesterday midnight'));
-        $yesterdayDay->setDayTime($yesterday);
-        $today1Day = new Day();
-        $today1Day->setDay(new \DateTime('midnight'));
-        $today1Day->setDayTime($today1);
-        $today2Day = new Day();
-        $today2Day->setDay(new \DateTime('midnight'));
-        $today2Day->setDayTime($today2);
-        $future1Day = new Day();
-        $future1Day->setDay(new \DateTime('tomorrow midnight'));
-        $future1Day->setDayTime($future1);
-        $future2Day = new Day();
-        $future2Day->setDay(new \DateTime('tomorrow midnight'));
-        $future2Day->setDayTime($future2);
-
-        $days = new ObjectStorage();
-        $days->attach($yesterdayDay);
-        $days->attach($today1Day);
-        $days->attach($today2Day);
-        $days->attach($future1Day);
-        $days->attach($future2Day);
-
-        $this->subject->setDays($days);
-        $futureDays = $this->subject->getAlternativeTimesGroupedAndSorted();
-
-        self::assertSame(
-            2,
-            count($futureDays)
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function getAlternativeDaysGroupedAndSortedWithRemovedTimeWillReturnDaysGroupedAndSorted()
-    {
-        $today1 = new \DateTime('now 12:00:00');
-        $today2 = new \DateTime('now 20:00:00');
-        $future1 = new \DateTime('tomorrow 12:00:00');
-        $future2 = new \DateTime('tomorrow 20:00:00');
-
-        $today1Day = new Day();
-        $today1Day->setDay(new \DateTime('midnight'));
-        $today1Day->setDayTime($today1);
-        $today2Day = new Day();
-        $today2Day->setDay(new \DateTime('midnight'));
-        $today2Day->setDayTime($today2);
-        $future1Day = new Day();
-        $future1Day->setDay(new \DateTime('tomorrow midnight'));
-        $future1Day->setDayTime($future1);
-        $future2Day = new Day();
-        $future2Day->setDay(new \DateTime('tomorrow midnight'));
-        $future2Day->setDayTime($future2);
-
-        $days = new ObjectStorage();
-        $days->attach($future1Day);
-        $days->attach($future2Day);
-        $days->attach($today1Day);
-        $days->attach($today2Day);
-
-        $_GET['tx_events2_events']['timestamp'] = $today2->format('U');
-        $this->subject->setDays($days);
-        $futureDays = $this->subject->getAlternativeTimesGroupedAndSorted();
-
-        self::assertSame(
-            2,
-            count($futureDays)
-        );
-
-        $futureDay = current($futureDays);
-        self::assertArrayHasKey(
-            'date',
-            $futureDay
-        );
-        self::assertArrayHasKey(
-            'times',
-            $futureDay
-        );
-        self::assertInstanceOf(
-            \SplObjectStorage::class,
-            $futureDay['times']
         );
     }
 

@@ -594,6 +594,8 @@ class Event extends AbstractEntity
 
     /**
      * Returns grouped and sorted days of today and future.
+     * It must be grouped by day (midnight) as we need it to merge it with exceptions
+     * which only have a date, but not a time record for comparison.
      *
      * @return array|\DateTime[]
      */
@@ -617,6 +619,8 @@ class Event extends AbstractEntity
 
     /**
      * Returns grouped and sorted alternative days of today and future.
+     * It must be grouped by day (midnight) as we need it in FE to show multiple
+     * Time records for one day.
      *
      * @return array
      */
@@ -652,6 +656,8 @@ class Event extends AbstractEntity
     /**
      * Returns grouped and sorted days of today and future.
      * This method also returns days which are marked as removed (is_removed=1).
+     * It must be grouped by day (midnight) as we need it to merge it with exceptions
+     * which only have a date, but not a time record for comparison.
      *
      * @return array|\DateTime[]
      */
@@ -676,6 +682,8 @@ class Event extends AbstractEntity
 
     /**
      * Returns grouped and sorted alternative days including removed of today and future.
+     * It must be grouped by day (midnight) as we need it in FE to show multiple
+     * Time records for one day.
      *
      * @return array
      */

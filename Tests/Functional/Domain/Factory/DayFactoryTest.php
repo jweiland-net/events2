@@ -7,7 +7,7 @@
  * LICENSE file that was distributed with this source code.
  */
 
-namespace JWeiland\Events2\Tests\Functional\Factory;
+namespace JWeiland\Events2\Tests\Functional\Domain\Factory;
 
 use JWeiland\Events2\Domain\Factory\DayFactory;
 use JWeiland\Events2\Domain\Model\Day;
