@@ -9,11 +9,11 @@
 		<f:render section="renderImages" arguments="{event: day.event}" />
 		<f:render section="videoLink" arguments="{event: day.event}" />
 		<p class="lead">{day.event.teaser}</p>
-		<f:format.html>{day.event.detailInformations}</f:format.html>
+		<f:format.html>{day.event.detailInformation}</f:format.html>
 		<f:render section="downloadLinks" arguments="{event: day.event}" />
 	</div>
 	<div class="col-md-3">
-		<f:render section="showDateAndTimes" arguments="{day: day, date: day.day}" />
+		<f:render section="showDateAndTimes" arguments="{day: day, date: day.day, times: day.times}" />
 		<f:if condition="{day.event.location}">
 			<f:render section="location" arguments="{event: day.event}" />
 			<f:render section="googleRoute" arguments="{event: day.event}" />
@@ -25,10 +25,12 @@
 		<f:render section="freeEntry" arguments="{event: day.event}" />
 		<f:render section="iCalendar" arguments="{day: day}" />
 
-		<p class="lead"><f:translate key="alternativeEventDates" /></p>
-		<f:for each="{day.event.futureDatesIncludingRemovedGroupedAndSorted}" as="futureDate">
-			<f:render section="showDateAndTimes" arguments="{day: day, date: futureDate}" />
-		</f:for>
+		<f:if condition="{day.event.alternativeTimesIncludingRemovedGroupedAndSorted}">
+			<p class="lead">{f:translate(key: "alternativeEventDates")}</p>
+			<f:for each="{day.event.alternativeTimesIncludingRemovedGroupedAndSorted}" as="alternatives">
+				<f:render section="showDateAndTimes" arguments="{day: day, date: alternatives.date, times: alternatives.times}" />
+			</f:for>
+		</f:if>
 	</div>
 </div>
 
@@ -64,18 +66,16 @@
 </f:section>
 
 <f:section name="showDateAndTimes">
-	<f:alias map="{times: '{e2:getMergedEventTimes(event: day.event, date: date)}'}">
-		<f:if condition="{times->f:count()}">
-			<f:then>
-				<f:for each="{times}" as="time">
-					<f:render section="showDateAndTime" arguments="{day: day, date: date, time: time}" />
-				</f:for>
-			</f:then>
-			<f:else>
-				<f:render section="showDateAndTime" arguments="{day: day, date: date}" />
-			</f:else>
-		</f:if>
-	</f:alias>
+	<f:if condition="{times -> f:count()}">
+		<f:then>
+			<f:for each="{times}" as="time">
+				<f:render section="showDateAndTime" arguments="{day: day, date: date, time: time}" />
+			</f:for>
+		</f:then>
+		<f:else>
+			<f:render section="showDateAndTime" arguments="{day: day, date: date}" />
+		</f:else>
+	</f:if>
 </f:section>
 
 <f:section name="showDateAndTime">
@@ -83,7 +83,7 @@
 		<dt>
 			<strong>
 				{f:if(condition: '{e2:isDateMarkedAsCanceled(event: day.event, date: date)}', then: '<s>')}
-				{date->f:format.date(format: '%A, %d.%m.%Y')}
+				{date -> f:format.date(format: '%A, %d.%m.%Y')}
 				{f:if(condition: '{e2:isDateMarkedAsCanceled(event: day.event, date: date)}', then: '</s>')}
 			</strong>
 		</dt>

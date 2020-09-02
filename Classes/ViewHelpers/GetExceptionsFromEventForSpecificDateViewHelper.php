@@ -12,9 +12,6 @@ declare(strict_types=1);
 namespace JWeiland\Events2\ViewHelpers;
 
 use JWeiland\Events2\Domain\Model\Event;
-use JWeiland\Events2\Service\EventService;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
@@ -50,13 +47,12 @@ class GetExceptionsFromEventForSpecificDateViewHelper extends AbstractViewHelper
         \Closure $childClosure,
         RenderingContextInterface $renderingContext
     ) {
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $eventService = $objectManager->get(EventService::class);
+        /** @var Event $event */
+        $event = $arguments['event'];
+        /** @var \DateTime $date */
+        $date = $arguments['date'];
+        $type = (string)$arguments['type'];
 
-        return $eventService->getExceptionsForDate(
-            $arguments['event'],
-            $arguments['date'],
-            $arguments['type']
-        );
+        return $event->getExceptionsForDate($date, $type);
     }
 }

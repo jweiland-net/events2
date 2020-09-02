@@ -50,7 +50,7 @@ class DateTimeUtility
      * Further it's easier to compare DateTime-Objects
      * Hint: This function can also be called with NULL.
      *
-     * @param \DateTime $date
+     * @param \DateTime|null $date
      * @return \DateTime
      */
     public function standardizeDateTimeObject(?\DateTime $date): ?\DateTime

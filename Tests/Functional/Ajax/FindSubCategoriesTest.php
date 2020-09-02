@@ -10,12 +10,9 @@
 namespace JWeiland\Events2\Tests\Functional\Ajax;
 
 use JWeiland\Events2\Ajax\FindSubCategories;
-use JWeiland\Events2\Domain\Model\Category;
-use JWeiland\Events2\Domain\Repository\CategoryRepository;
-use Nimut\TestingFramework\MockObject\AccessibleMockObjectInterface;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-use TYPO3\CMS\Extbase\Persistence\Generic\Query;
-use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Test case.
@@ -23,7 +20,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 class FindSubCategoriesTest extends FunctionalTestCase
 {
     /**
-     * @var \JWeiland\Events2\Ajax\FindSubCategories
+     * @var FindSubCategories
      */
     protected $subject;
 
@@ -37,8 +34,10 @@ class FindSubCategoriesTest extends FunctionalTestCase
     public function setUp()
     {
         parent::setUp();
+        $this->importDataSet(__DIR__ . '/../Fixtures/sys_category.xml');
 
-        $this->subject = new FindSubCategories();
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $this->subject = $objectManager->get(FindSubCategories::class);
     }
 
     public function tearDown()
@@ -48,40 +47,43 @@ class FindSubCategoriesTest extends FunctionalTestCase
     }
 
     /**
-     * this test also tests the protected method reduceCategoryData.
-     *
      * @test
      */
-    public function processAjaxRequest()
+    public function processAjaxRequestWithEmptyArrayReturnsEmptyJson()
     {
-        $categories = [];
-        $category1 = new Category();
-        $category1->_setProperty('uid', 123);
-        $category1->setTitle('BMW');
-        $category1->setDescription('foo');
-        $categories[] = $category1;
-        $category2 = new Category();
-        $category2->_setProperty('uid', 456);
-        $category2->setTitle('Audi');
-        $category1->setDescription('bar');
-        $categories[] = $category2;
-
-        /* @var QueryResult|\PHPUnit_Framework_MockObject_MockObject|AccessibleMockObjectInterface $categories */
-        $queryResult = $this->getAccessibleMock(QueryResult::class, ['dummy'], [new Query('fooBarType')]);
-        $queryResult->_set('queryResult', $categories);
-
-        /** @var CategoryRepository|\PHPUnit_Framework_MockObject_MockObject $categoryRepository */
-        $categoryRepository = $this
-            ->getMockBuilder(CategoryRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $categoryRepository->expects(self::once())->method('getSubCategories')->with(284)->willReturn($queryResult);
-
-        $this->subject->injectCategoryRepository($categoryRepository);
-
         self::assertSame(
-            '{"123":"BMW","456":"Audi"}',
-            $this->subject->processAjaxRequest(['category' => '284']) // test if case to int works
+            '{}',
+            $this->subject->processAjaxRequest([])
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function processAjaxRequestWillReturnTwoCategories()
+    {
+        self::assertSame(
+            '{"2":"Audi","3":"BMW"}',
+            $this->subject->processAjaxRequest(
+                [
+                    'category' => '1'
+                ]
+            )
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function processAjaxRequestWillReturnOneCategoryFromRoot()
+    {
+        self::assertSame(
+            '{"1":"Cars"}',
+            $this->subject->processAjaxRequest(
+                [
+                    'category' => '0'
+                ]
+            )
         );
     }
 }

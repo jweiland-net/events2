@@ -14,8 +14,21 @@ namespace JWeiland\Events2\Controller;
 /*
  * A simple controller to show video-link as YouTube-Implementation
  */
+
+use JWeiland\Events2\Domain\Repository\EventRepository;
+
 class VideoController extends AbstractController
 {
+    /**
+     * @var EventRepository
+     */
+    protected $eventRepository;
+
+    public function __construct(EventRepository $eventRepository)
+    {
+        $this->eventRepository = $eventRepository;
+    }
+
     /**
      * @param int $event
      */

@@ -132,8 +132,8 @@
 				<source>Exceptions</source>
 				<target>Termine</target>
 			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.detail_informations">
-				<source>Detail informations</source>
+			<trans-unit id="tx_events2_domain_model_event.detail_information">
+				<source>Detail information</source>
 				<target>Zusatztext</target>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.free_entry">

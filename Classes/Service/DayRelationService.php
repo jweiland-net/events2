@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Service;
 
 use JWeiland\Events2\Configuration\ExtConf;
+use JWeiland\Events2\Domain\Factory\TimeFactory;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Time;
@@ -22,6 +23,7 @@ use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 
 /*
  * While saving an event in backend, this class generates all the day records
@@ -50,9 +52,9 @@ class DayRelationService
     protected $eventRepository;
 
     /**
-     * @var EventService
+     * @var TimeFactory
      */
-    protected $eventService;
+    protected $timeFactory;
 
     /**
      * @var DateTimeUtility
@@ -74,34 +76,18 @@ class DayRelationService
      */
     protected $firstTime;
 
-    public function injectExtConf(ExtConf $extConf)
-    {
-        $this->extConf = $extConf;
-    }
-
-    public function injectDayGenerator(DayGenerator $dayGenerator)
-    {
+    public function __construct(
+        DayGenerator $dayGenerator,
+        EventRepository $eventRepository,
+        TimeFactory $timeFactory,
+        PersistenceManagerInterface $persistenceManager,
+        DateTimeUtility $dateTimeUtility
+    ) {
         $this->dayGenerator = $dayGenerator;
-    }
-
-    public function injectEventRepository(EventRepository $eventRepository)
-    {
         $this->eventRepository = $eventRepository;
-    }
-
-    public function injectEventService(EventService $eventService)
-    {
-        $this->eventService = $eventService;
-    }
-
-    public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
-    {
-        $this->dateTimeUtility = $dateTimeUtility;
-    }
-
-    public function injectPersistenceManager(PersistenceManager $persistenceManager)
-    {
+        $this->timeFactory = $timeFactory;
         $this->persistenceManager = $persistenceManager;
+        $this->dateTimeUtility = $dateTimeUtility;
     }
 
     /**
@@ -115,7 +101,7 @@ class DayRelationService
     public function createDayRelations(int $eventUid): ?Event
     {
         // As create/update action will set event as hidden, we have to search for them, too.
-        $event = $this->eventRepository->findHiddenEntry($eventUid);
+        $event = $this->eventRepository->findHiddenObject($eventUid);
         if (!$event instanceof Event) {
             // write a warning (2) to sys_log
             $this->getLogger()->warning('Related days could not be created, because of an empty event or a non given event uid or pid.');
@@ -153,7 +139,7 @@ class DayRelationService
     {
         // to prevent adding multiple day records for ONE day we set them all to midnight 00:00:00
         $dateTime = $this->dateTimeUtility->standardizeDateTimeObject($dateTime);
-        $times = $this->eventService->getTimesForDate($event, $dateTime);
+        $times = $this->timeFactory->getTimesForDate($event, $dateTime);
         if ($times->count()) {
             foreach ($times as $time) {
                 if ($this->firstTime === null) {
@@ -175,7 +161,6 @@ class DayRelationService
     {
         list($hour, $minute) = $this->getHourAndMinuteFromTime($time);
 
-        /** @var Day $day */
         $day = GeneralUtility::makeInstance(Day::class);
         $day->setPid($event->getPid());
         $day->setDay($dateTime);

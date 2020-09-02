@@ -11,10 +11,10 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\ViewHelpers\Widget\Controller;
 
+use JWeiland\Events2\Domain\Factory\TimeFactory;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Time;
-use JWeiland\Events2\Service\EventService;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -26,13 +26,13 @@ use TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetController;
 class ICalendarController extends AbstractWidgetController
 {
     /**
-     * @var EventService
+     * @var TimeFactory
      */
-    protected $eventService;
+    protected $timeFactory;
 
-    public function injectEventService(EventService $eventService): void
+    public function __construct(TimeFactory $eventService)
     {
-        $this->eventService = $eventService;
+        $this->timeFactory = $eventService;
     }
 
     /**
@@ -83,8 +83,8 @@ class ICalendarController extends AbstractWidgetController
             case 'duration':
                 $firstDay = $this->getFirstDayOfEvent($day->getEvent());
                 $lastDay = $this->getLastDayOfEvent($day->getEvent());
-                $startTimes = $this->eventService->getTimesForDate($firstDay->getEvent(), $firstDay->getDay());
-                $endTimes = $this->eventService->getTimesForDate($lastDay->getEvent(), $lastDay->getDay());
+                $startTimes = $this->timeFactory->getTimesForDate($firstDay->getEvent(), $firstDay->getDay());
+                $endTimes = $this->timeFactory->getTimesForDate($lastDay->getEvent(), $lastDay->getDay());
                 $startTimes->rewind();
                 $startTime = $startTimes->current();
                 $endTimes->rewind();
@@ -100,7 +100,7 @@ class ICalendarController extends AbstractWidgetController
             case 'recurring':
             case 'single':
             default:
-                $times = $this->eventService->getTimesForDate($day->getEvent(), $day->getDay());
+                $times = $this->timeFactory->getTimesForDate($day->getEvent(), $day->getDay());
                 if ($times->count()) {
                     foreach ($times as $time) {
                         $events[] = $this->createEvent($day, $day, $time->getTimeBegin(), $time->getTimeEnd());
@@ -155,7 +155,7 @@ class ICalendarController extends AbstractWidgetController
      * Hint: We can't use DTSTAMP here, because this must be UTC, but we don't have UTC times here.
      *
      * @param Day $day current Day. In case of duration it will be the first day
-     * @param Day $lastDay current Day. In case of duration it will be the last day
+     * @param Day|null $lastDay current Day. In case of duration it will be the last day
      * @param string $startTime Something like 15:30
      * @param string $endTime Something like 17:30
      * @return array
@@ -177,7 +177,7 @@ class ICalendarController extends AbstractWidgetController
         }
         $event['LOCATION'] = $day->getEvent()->getLocationAsString();
         $event['SUMMARY'] = $this->sanitizeString($day->getEvent()->getTitle());
-        $event['DESCRIPTION'] = $this->sanitizeString($day->getEvent()->getDetailInformations());
+        $event['DESCRIPTION'] = $this->sanitizeString($day->getEvent()->getDetailInformation());
 
         return $event;
     }

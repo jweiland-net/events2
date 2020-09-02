@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Domain\Model;
 
+use JWeiland\Events2\Domain\Factory\TimeFactory;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /*
@@ -59,7 +61,7 @@ class Day extends AbstractEntity
     protected $sameDayTime;
 
     /**
-     * @var Event
+     * @var \JWeiland\Events2\Domain\Model\Event
      */
     protected $event;
 
@@ -171,5 +173,34 @@ class Day extends AbstractEntity
     public function setEvent(?Event $event = null)
     {
         $this->event = $event;
+    }
+
+    public function getDayAsTimestamp(): int
+    {
+        return (int)$this->getDay()->format('U');
+    }
+
+    public function getDayTimeAsTimestamp(): int
+    {
+        return (int)$this->getDayTime()->format('U');
+    }
+
+    public function getSortDayTimeAsTimestamp(): int
+    {
+        return (int)$this->getSortDayTime()->format('U');
+    }
+
+    public function getSameDayTimeAsTimestamp(): int
+    {
+        return (int)$this->getSameDayTime()->format('U');
+    }
+
+    public function getTimes(): \SplObjectStorage
+    {
+        $timeFactory = GeneralUtility::makeInstance(TimeFactory::class);
+        return $timeFactory->getSortedTimesForDate(
+            $this->getEvent(),
+            $this->getDay()
+        );
     }
 }

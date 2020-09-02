@@ -136,7 +136,7 @@
 				</source>
 			</trans-unit>
 
-			<trans-unit id="detail_informations.description">
+			<trans-unit id="detail_information.description">
 				<source>Explain on detail what happens at that event</source>
 			</trans-unit>
 

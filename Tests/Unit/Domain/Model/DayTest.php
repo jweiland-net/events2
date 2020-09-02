@@ -23,18 +23,12 @@ class DayTest extends UnitTestCase
      */
     protected $subject;
 
-    /**
-     * set up.
-     */
     public function setUp()
     {
         $this->subject = new Day();
         $this->subject->setDay(new \DateTime());
     }
 
-    /**
-     * tear down.
-     */
     public function tearDown()
     {
         unset($this->subject);
@@ -234,6 +228,51 @@ class DayTest extends UnitTestCase
         self::assertSame(
             $instance,
             $this->subject->getEvent()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function getDayTimeAsTimestampWillReturnDayTimeAsInt()
+    {
+        $date = new \DateTime('today midnight');
+
+        $this->subject->setDayTime($date);
+
+        self::assertSame(
+            (int)$date->format('U'),
+            $this->subject->getDayTimeAsTimestamp()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function getSortDayTimeAsTimestampWillReturnSortDayTimeAsInt()
+    {
+        $date = new \DateTime('today midnight');
+
+        $this->subject->setSortDayTime($date);
+
+        self::assertSame(
+            (int)$date->format('U'),
+            $this->subject->getSortDayTimeAsTimestamp()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function getSameDayTimeAsTimestampWillReturnSameDayTimeAsInt()
+    {
+        $date = new \DateTime('today midnight');
+
+        $this->subject->setSameDayTime($date);
+
+        self::assertSame(
+            (int)$date->format('U'),
+            $this->subject->getSameDayTimeAsTimestamp()
         );
     }
 }

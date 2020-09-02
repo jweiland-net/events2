@@ -499,7 +499,7 @@ return [
         ],
         'detail_informations' => [
             'exclude' => true,
-            'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.detail_informations',
+            'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.detail_information',
             'config' => [
                 'type' => 'text',
                 'cols' => 40,

@@ -79,7 +79,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
      * @param mixed $source
      * @param string $targetType
      * @param array $convertedChildProperties
-     * @param PropertyMappingConfigurationInterface $configuration
+     * @param PropertyMappingConfigurationInterface|null $configuration
      * @return mixed|Error the target type, or an error object if a user-error occurred
      */
     public function convertFrom(
@@ -134,7 +134,6 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
             }
             // OK...we have a valid file and the user has the rights. It's time to check, if an old file can be deleted
             if ($alreadyPersistedImages[$key] instanceof FileReference) {
-                /** @var FileReference $oldFile */
                 $oldFile = $alreadyPersistedImages[$key];
                 $oldFile->getOriginalResource()->getOriginalFile()->delete();
             }
@@ -143,8 +142,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
         // I will do two foreach here. First: everything must be OK, before files will be uploaded
 
         // upload file and add it to ObjectStorage
-        /** @var ObjectStorage $references */
-        $references = $this->objectManager->get(ObjectStorage::class);
+        $references = GeneralUtility::makeInstance(ObjectStorage::class);
         foreach ($source as $uploadedFile) {
             if ($uploadedFile instanceof FileReference) {
                 $references->attach($uploadedFile);
@@ -164,8 +162,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
      */
     protected function getExtbaseFileReference(array $source): FileReference
     {
-        /** @var FileReference $extbaseFileReference */
-        $extbaseFileReference = $this->objectManager->get(FileReference::class);
+        $extbaseFileReference = GeneralUtility::makeInstance(FileReference::class);
         $extbaseFileReference->setOriginalResource($this->getCoreFileReference($source));
 
         return $extbaseFileReference;

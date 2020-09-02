@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Service;
 
+use JWeiland\Events2\Domain\Factory\TimeFactory;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Link;
@@ -22,7 +23,6 @@ use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /*
@@ -80,9 +80,8 @@ class JsonLdService
 
     protected function collectData(Day $day): void
     {
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $eventService = $objectManager->get(EventService::class);
-        $time = $eventService->getTimeForDay($day);
+        $timeFactory = GeneralUtility::makeInstance(TimeFactory::class);
+        $time = $timeFactory->getTimeForDay($day);
         if ($time instanceof Time) {
             $this->addStartDateOfTimeToData($time);
             $this->addDoorTimeOfTimeToData($time);
@@ -204,7 +203,7 @@ class JsonLdService
      */
     protected function addDescriptionToData(Event $event): void
     {
-        $this->data['description'] = strip_tags($event->getDetailInformations());
+        $this->data['description'] = strip_tags($event->getDetailInformation());
     }
 
     /**

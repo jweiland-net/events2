@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Importer;
 
+use JWeiland\Events2\Task\Import;
 use TYPO3\CMS\Core\Resource\FileInterface;
 
 /*
@@ -19,12 +20,26 @@ use TYPO3\CMS\Core\Resource\FileInterface;
 interface ImporterInterface
 {
     /**
-     * Check, if File is valid for this importer
+     * Set task
+     * Needed, to get the StoragePid
+     *
+     * @param Import $task
+     */
+    public function setTask(Import $task): void;
+
+    /**
+     * Set file to import
      *
      * @param FileInterface $file
+     */
+    public function setFile(FileInterface $file): void;
+
+    /**
+     * Check, if File is valid for this importer
+     *
      * @return bool
      */
-    public function isValid(FileInterface $file): bool;
+    public function checkFile(): bool;
 
     /**
      * Import XML file

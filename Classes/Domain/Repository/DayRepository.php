@@ -21,7 +21,7 @@ use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -48,23 +48,34 @@ class DayRepository extends Repository
     protected $databaseService;
 
     /**
+     * @var DayFactory
+     */
+    protected $dayFactory;
+
+    /**
+     * @var Dispatcher
+     */
+    protected $dispatcher;
+
+    /**
      * @var array
      */
     protected $settings = [];
 
-    public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility)
-    {
-        $this->dateTimeUtility = $dateTimeUtility;
-    }
-
-    public function injectExtConf(ExtConf $extConf)
-    {
+    public function __construct(
+        ObjectManagerInterface $objectManager,
+        ExtConf $extConf,
+        DateTimeUtility $dateTimeUtility,
+        DatabaseService $databaseService,
+        DayFactory $dayFactory,
+        Dispatcher $dispatcher
+    ) {
+        parent::__construct($objectManager);
         $this->extConf = $extConf;
-    }
-
-    public function injectDatabaseService(DatabaseService $databaseService)
-    {
+        $this->dateTimeUtility = $dateTimeUtility;
         $this->databaseService = $databaseService;
+        $this->dayFactory = $dayFactory;
+        $this->dispatcher = $dispatcher;
     }
 
     public function setSettings(array $settings)
@@ -450,8 +461,7 @@ class DayRepository extends Repository
      */
     public function findDayByEventAndTimestamp(int $eventUid, int $timestamp = 0): Day
     {
-        $dayFactory = $this->objectManager->get(DayFactory::class);
-        return $dayFactory->findDayByEventAndTimestamp($eventUid, $timestamp, $this->createQuery());
+        return $this->dayFactory->findDayByEventAndTimestamp($eventUid, $timestamp, $this->createQuery());
     }
 
     /**
@@ -503,8 +513,7 @@ class DayRepository extends Repository
         Filter $filter,
         array $settings
     ): void {
-        $signalSlotDispatcher = GeneralUtility::makeInstance(ObjectManager::class)->get(Dispatcher::class);
-        $signalSlotDispatcher->dispatch(
+        $this->dispatcher->dispatch(
             self::class,
             'modifyQueriesOfFindEvents',
             [$queryBuilder, $subQueryBuilder, $type, $filter, $settings]
@@ -525,8 +534,7 @@ class DayRepository extends Repository
         Search $search,
         array $settings
     ): void {
-        $signalSlotDispatcher = GeneralUtility::makeInstance(ObjectManager::class)->get(Dispatcher::class);
-        $signalSlotDispatcher->dispatch(
+        $this->dispatcher->dispatch(
             self::class,
             'modifyQueriesOfSearchEvents',
             [$queryBuilder, $subQueryBuilder, $search, $settings]
@@ -545,9 +553,7 @@ class DayRepository extends Repository
         int $timestamp,
         array $settings
     ): void {
-        $signalSlotDispatcher = GeneralUtility::makeInstance(ObjectManager::class)
-            ->get(Dispatcher::class);
-        $signalSlotDispatcher->dispatch(
+        $this->dispatcher->dispatch(
             self::class,
             'modifyQueriesOfFindByTimestamp',
             [$queryBuilder, $timestamp, $settings]

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Domain\Model;
 
+use JWeiland\Events2\Domain\Factory\TimeFactory;
 use JWeiland\Events2\Domain\Traits\Typo3PropertiesTrait;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -119,7 +120,7 @@ class Event extends AbstractEntity
     /**
      * @var string
      */
-    protected $detailInformations = '';
+    protected $detailInformation = '';
 
     /**
      * @var bool
@@ -419,29 +420,55 @@ class Event extends AbstractEntity
     }
 
     /**
-     * Returns the exceptions.
+     * Without argument it returns all exceptions.
      * Additionally you can filter exceptions by type
      * Types: add, remove, time, info
      *
-     * @param string $filterByType
+     * @param string $exceptionTypes Comma-separated list of exception types
      * @return ObjectStorage|Exception[]
      */
-    public function getExceptions($filterByType = ''): ObjectStorage
+    public function getExceptions($exceptionTypes = ''): ObjectStorage
     {
         $exceptions = new ObjectStorage();
-        $filterByType = strtolower($filterByType);
+        $exceptionTypes = GeneralUtility::trimExplode(',', strtolower($exceptionTypes), true);
 
-        if (empty($filterByType)) {
+        if (empty($exceptionTypes)) {
             $exceptions = $this->exceptions;
         } else {
             foreach ($this->exceptions as $exception) {
-                $exceptionType = strtolower($exception->getExceptionType());
-                if ($exceptionType === $filterByType) {
+                if (in_array(strtolower($exception->getExceptionType()), $exceptionTypes)) {
                     $exceptions->attach($exception);
                 }
             }
         }
         return $exceptions;
+    }
+
+    /**
+     * Get exceptions for a given date
+     * You can limit the result by given exception types.
+     *
+     * @param \DateTime $date
+     * @param string $exceptionTypes Type like Add, Remove, Time or Info. If empty add all exceptions
+     * @return ObjectStorage|Exception[]
+     */
+    public function getExceptionsForDate(
+        \DateTime $date,
+        string $exceptionTypes = ''
+    ): ObjectStorage {
+        $exceptionsForDate = new ObjectStorage();
+        $dateTimeUtility = GeneralUtility::makeInstance(DateTimeUtility::class);
+        foreach ($this->getExceptions($exceptionTypes) as $filteredException) {
+            $exceptionDate = $dateTimeUtility->standardizeDateTimeObject($filteredException->getExceptionDate());
+            $currentDate = $dateTimeUtility->standardizeDateTimeObject($date);
+
+            // we compare objects here so no === possible
+            if ($exceptionDate == $currentDate) {
+                $exceptionsForDate->attach($filteredException);
+            }
+        }
+
+        return $exceptionsForDate;
     }
 
     public function setExceptions(ObjectStorage $exceptions)
@@ -459,14 +486,37 @@ class Event extends AbstractEntity
         $this->teaser = $teaser;
     }
 
+    /**
+     * @return string
+     * @deprecated
+     */
     public function getDetailInformations(): string
     {
-        return $this->detailInformations;
+        trigger_error('getDetailInformations() will be removed in events2 7.0.0. Please use getDetailInformation() instead.', E_USER_DEPRECATED);
+        return $this->detailInformation;
     }
 
-    public function setDetailInformations(string $detailInformations)
+    public function getDetailInformation(): string
     {
-        $this->detailInformations = $detailInformations;
+        return $this->detailInformation;
+    }
+
+    /**
+     * @param string $detailInformation
+     * @deprecated
+     */
+    public function setDetailInformations(string $detailInformation)
+    {
+        trigger_error('setDetailInformations() will be removed in events2 7.0.0. Please use setDetailInformation() instead.', E_USER_DEPRECATED);
+        $this->detailInformation = $detailInformation;
+    }
+
+    /**
+     * @param string $detailInformation
+     */
+    public function setDetailInformation(string $detailInformation)
+    {
+        $this->detailInformation = $detailInformation;
     }
 
     public function getFreeEntry(): bool
@@ -544,6 +594,8 @@ class Event extends AbstractEntity
 
     /**
      * Returns grouped and sorted days of today and future.
+     * It must be grouped by day (midnight) as we need it to merge it with exceptions
+     * which only have a date, but not a time record for comparison.
      *
      * @return array|\DateTime[]
      */
@@ -554,9 +606,9 @@ class Event extends AbstractEntity
 
         $futureDates = [];
         foreach ($this->getDays() as $day) {
-            if ($day->getDayTime() > $today) {
+            if ($day->getDayTime() >= $today) {
                 $futureDay = clone $day;
-                $futureDates[$futureDay->getDay()->format('U')] = $futureDay->getDay();
+                $futureDates[$futureDay->getDayAsTimestamp()] = $futureDay->getDay();
             }
         }
         ksort($futureDates);
@@ -566,8 +618,46 @@ class Event extends AbstractEntity
     }
 
     /**
+     * Returns grouped and sorted alternative days of today and future.
+     * It must be grouped by day (midnight) as we need it in FE to show multiple
+     * Time records for one day.
+     *
+     * @return array
+     */
+    public function getAlternativeTimesGroupedAndSorted(): array
+    {
+        $dateTimeUtility = GeneralUtility::makeInstance(DateTimeUtility::class);
+        $today = $dateTimeUtility->standardizeDateTimeObject(new \DateTime());
+        $timeFactory = GeneralUtility::makeInstance(TimeFactory::class);
+
+        $alternativeDays = [];
+        foreach ($this->getDays() as $day) {
+            if ($day->getDayTime() >= $today) {
+                $alternativeDay = clone $day;
+                $times = $timeFactory->getSortedTimesForDate(
+                    $this,
+                    $alternativeDay->getDay(),
+                    true
+                );
+                if ($times->count()) {
+                    $alternativeDays[$alternativeDay->getDayAsTimestamp()] = [
+                        'date' => $alternativeDay->getDay(),
+                        'times' => $times
+                    ];
+                }
+            }
+        }
+        ksort($alternativeDays);
+        reset($alternativeDays);
+
+        return $alternativeDays;
+    }
+
+    /**
      * Returns grouped and sorted days of today and future.
      * This method also returns days which are marked as removed (is_removed=1).
+     * It must be grouped by day (midnight) as we need it to merge it with exceptions
+     * which only have a date, but not a time record for comparison.
      *
      * @return array|\DateTime[]
      */
@@ -578,7 +668,7 @@ class Event extends AbstractEntity
 
         $futureDates = $this->getFutureDatesGroupedAndSorted();
         foreach ($this->getExceptions('remove') as $exception) {
-            if ($exception->getExceptionDate() > $today) {
+            if ($exception->getExceptionDate() >= $today) {
                 $exceptionDate = clone $exception->getExceptionDate();
                 $futureDates[$exceptionDate->format('U')] = $exceptionDate;
             }
@@ -588,6 +678,43 @@ class Event extends AbstractEntity
         reset($futureDates);
 
         return $futureDates;
+    }
+
+    /**
+     * Returns grouped and sorted alternative days including removed of today and future.
+     * It must be grouped by day (midnight) as we need it in FE to show multiple
+     * Time records for one day.
+     *
+     * @return array
+     */
+    public function getAlternativeTimesIncludingRemovedGroupedAndSorted(): array
+    {
+        $alternativeTimes = $this->getAlternativeTimesGroupedAndSorted();
+        $dateTimeUtility = GeneralUtility::makeInstance(DateTimeUtility::class);
+        $today = $dateTimeUtility->standardizeDateTimeObject(new \DateTime());
+        $timeFactory = GeneralUtility::makeInstance(TimeFactory::class);
+
+        foreach ($this->getExceptions('remove') as $exception) {
+            if ($exception->getExceptionDate() >= $today) {
+                $exceptionDate = clone $exception->getExceptionDate();
+                $times = $timeFactory->getSortedTimesForDate(
+                    $this,
+                    $exceptionDate,
+                    true
+                );
+                if ($times->count()) {
+                    $alternativeTimes[$exceptionDate->format('U')] = [
+                        'date' => $exceptionDate,
+                        'times' => $times
+                    ];
+                }
+            }
+        }
+
+        ksort($alternativeTimes);
+        reset($alternativeTimes);
+
+        return $alternativeTimes;
     }
 
     public function setDays(ObjectStorage $days)

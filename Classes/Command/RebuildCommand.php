@@ -20,7 +20,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
+use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 
 /*
  * The naming is a little bit miss-understandable. It comes from the early days of development where I had many
@@ -95,7 +95,7 @@ class RebuildCommand extends Command
         $databaseService = GeneralUtility::makeInstance(DatabaseService::class);
         $rows = $databaseService->getCurrentAndFutureEvents();
         if (!empty($rows)) {
-            $persistenceManager = $objectManager->get(PersistenceManager::class);
+            $persistenceManager = $objectManager->get(PersistenceManagerInterface::class);
 
             // with each changing PID pageTSConfigCache will grow by roundabout 200KB
             // which may exceed memory_limit

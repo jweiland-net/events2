@@ -9,18 +9,15 @@
 
 namespace JWeiland\Events2\Tests\Functional\Importer;
 
-use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Importer\XmlImporter;
 use JWeiland\Events2\Task\Import;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
-use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
 /**
  * Functional test for XmlImporter
@@ -33,7 +30,12 @@ class XmlImporterTest extends FunctionalTestCase
     protected $eventRepository;
 
     /**
-     * @var AbstractTask
+     * @var ObjectManager
+     */
+    protected $objectManager;
+
+    /**
+     * @var Import
      */
     protected $task;
 
@@ -64,14 +66,13 @@ class XmlImporterTest extends FunctionalTestCase
         $this->importDataSet(__DIR__ . '/../Fixtures/tx_events2_domain_model_location.xml');
         $this->importDataSet(__DIR__ . '/../Fixtures/tx_events2_domain_model_organizer.xml');
 
-        /** @var ObjectProphecy $taskProphecy */
         $taskProphecy = $this->prophesize(Import::class);
-        /** @var AbstractTask $task */
+        /** @var Import $task */
         $this->task = $taskProphecy->reveal();
         $this->task->storagePid = 12;
 
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->eventRepository = $objectManager->get(EventRepository::class);
+        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $this->eventRepository = $this->objectManager->get(EventRepository::class);
 
         $GLOBALS['BE_USER'] = new BackendUserAuthentication();
     }
@@ -94,7 +95,9 @@ class XmlImporterTest extends FunctionalTestCase
     {
         $fileObject = ResourceFactory::getInstance()
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/Success.xml');
-        $xmlImporter = new XmlImporter($fileObject, $this->task);
+        $xmlImporter = $this->objectManager->get(XmlImporter::class);
+        $xmlImporter->setFile($fileObject);
+        $xmlImporter->setTask($this->task);
 
         self::assertTrue($xmlImporter->import());
         self::assertRegExp(
@@ -112,7 +115,9 @@ class XmlImporterTest extends FunctionalTestCase
     {
         $fileObject = ResourceFactory::getInstance()
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/InvalidEvent.xml');
-        $xmlImporter = new XmlImporter($fileObject, $this->task);
+        $xmlImporter = $this->objectManager->get(XmlImporter::class);
+        $xmlImporter->setFile($fileObject);
+        $xmlImporter->setTask($this->task);
 
         self::assertFalse($xmlImporter->import());
         self::assertRegExp(
@@ -131,13 +136,17 @@ class XmlImporterTest extends FunctionalTestCase
         // Add simple event
         $fileObject = ResourceFactory::getInstance()
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/SimpleEvent.xml');
-        $xmlImporter = new XmlImporter($fileObject, $this->task);
+        $xmlImporter = $this->objectManager->get(XmlImporter::class);
+        $xmlImporter->setFile($fileObject);
+        $xmlImporter->setTask($this->task);
         self::assertTrue($xmlImporter->import());
 
         // Override simple event
         $fileObject = ResourceFactory::getInstance()
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/ModifySimpleEvent.xml');
-        $xmlImporter = new XmlImporter($fileObject, $this->task);
+        $xmlImporter = $this->objectManager->get(XmlImporter::class);
+        $xmlImporter->setFile($fileObject);
+        $xmlImporter->setTask($this->task);
         self::assertTrue($xmlImporter->import());
 
         // Test, if we still have exactly one event
@@ -167,14 +176,18 @@ class XmlImporterTest extends FunctionalTestCase
         // Add 2 simple events
         $fileObject = ResourceFactory::getInstance()
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/SimpleEvent.xml');
-        $xmlImporter = new XmlImporter($fileObject, $this->task);
+        $xmlImporter = $this->objectManager->get(XmlImporter::class);
+        $xmlImporter->setFile($fileObject);
+        $xmlImporter->setTask($this->task);
         $xmlImporter->import();
         $xmlImporter->import();
 
         // Delete one simple event
         $fileObject = ResourceFactory::getInstance()
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/DeleteSimpleEvent.xml');
-        $xmlImporter = new XmlImporter($fileObject, $this->task);
+        $xmlImporter = $this->objectManager->get(XmlImporter::class);
+        $xmlImporter->setFile($fileObject);
+        $xmlImporter->setTask($this->task);
         self::assertTrue($xmlImporter->import());
 
         // Test, if we still have exactly one event

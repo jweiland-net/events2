@@ -20,7 +20,7 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 class AjaxController extends ActionController
 {
     /**
-     * This ajax action can only call Ajax scripts based on pageType
+     * This ajax action can only be called by Ajax scripts based on pageType.
      * eID scripts has its own bootstrap.
      *
      * @param string $objectName Which Ajax Object has to be called
@@ -29,17 +29,17 @@ class AjaxController extends ActionController
      */
     public function callAjaxObjectAction(string $objectName, array $arguments = []): string
     {
-        if (is_string($objectName)) {
+        if ($objectName !== '') {
             $className = 'JWeiland\\Events2\\Ajax\\' . ucfirst($objectName);
             if (class_exists($className)) {
-                /** @var AjaxInterface $object */
                 $object = $this->objectManager->get($className);
-                if (method_exists($object, 'processAjaxRequest')) {
+                if ($object instanceof AjaxInterface) {
                     return $object->processAjaxRequest($arguments);
                 }
             }
         }
 
+        // @ToDo: Empty String will be returned as NULL in callActionMethod of Extbase
         return '';
     }
 }
