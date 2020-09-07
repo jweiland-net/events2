@@ -34,6 +34,11 @@ use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 abstract class AbstractImporter implements ImporterInterface
 {
     /**
+     * @var int
+     */
+    protected $storagePid = 0;
+
+    /**
      * The file to import
      *
      * @var FileInterface
@@ -43,6 +48,7 @@ abstract class AbstractImporter implements ImporterInterface
     /**
      * Needed to retrieve the storagePid
      *
+     * @deprecated
      * @var Import
      */
     protected $task;
@@ -109,9 +115,22 @@ abstract class AbstractImporter implements ImporterInterface
         $this->today = new \DateTime('now');
     }
 
+    /**
+     * @param Import $task
+     * @deprecated will be removed in events2 7.0.0. Please set the storagePid directly
+     */
     public function setTask(Import $task): void
     {
+        trigger_error('setTask() will be removed in events2 7.0.0. Please set the storagePid directly.', E_USER_DEPRECATED);
         $this->task = $task;
+    }
+
+    /**
+     * @param int $storagePid
+     */
+    public function setStoragePid(int $storagePid): void
+    {
+        $this->storagePid = $storagePid;
     }
 
     public function setFile(FileInterface $file): void
