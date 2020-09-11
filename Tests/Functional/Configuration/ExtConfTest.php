@@ -285,7 +285,7 @@ class ExtConfTest extends FunctionalTestCase
      */
     public function getXmlImportValidatorPathInitiallyReturnsEmptyString()
     {
-        $this->assertSame(
+        self::assertSame(
             '',
             $this->subject->getXmlImportValidatorPath()
         );
@@ -298,7 +298,7 @@ class ExtConfTest extends FunctionalTestCase
     {
         $this->subject->setXmlImportValidatorPath('foo bar');
 
-        $this->assertSame(
+        self::assertSame(
             'foo bar',
             $this->subject->getXmlImportValidatorPath()
         );
@@ -310,7 +310,7 @@ class ExtConfTest extends FunctionalTestCase
     public function setXmlImportValidatorPathWithIntegerResultsInString()
     {
         $this->subject->setXmlImportValidatorPath(123);
-        $this->assertSame('123', $this->subject->getXmlImportValidatorPath());
+        self::assertSame('123', $this->subject->getXmlImportValidatorPath());
     }
 
     /**
@@ -319,7 +319,7 @@ class ExtConfTest extends FunctionalTestCase
     public function setXmlImportValidatorPathWithBooleanResultsInString()
     {
         $this->subject->setXmlImportValidatorPath(true);
-        $this->assertSame('1', $this->subject->getXmlImportValidatorPath());
+        self::assertSame('1', $this->subject->getXmlImportValidatorPath());
     }
 
     /**
@@ -327,7 +327,7 @@ class ExtConfTest extends FunctionalTestCase
      */
     public function getOrganizerIsRequiredInitiallyReturnsFalse()
     {
-        $this->assertFalse(
+        self::assertFalse(
             $this->subject->getOrganizerIsRequired()
         );
     }
@@ -338,7 +338,7 @@ class ExtConfTest extends FunctionalTestCase
     public function setOrganizerIsRequiredSetsOrganizerIsRequired()
     {
         $this->subject->setOrganizerIsRequired(true);
-        $this->assertTrue(
+        self::assertTrue(
             $this->subject->getOrganizerIsRequired()
         );
     }
@@ -349,7 +349,7 @@ class ExtConfTest extends FunctionalTestCase
     public function setOrganizerIsRequiredWithStringReturnsTrue()
     {
         $this->subject->setOrganizerIsRequired('foo bar');
-        $this->assertTrue($this->subject->getOrganizerIsRequired());
+        self::assertTrue($this->subject->getOrganizerIsRequired());
     }
 
     /**
@@ -358,7 +358,7 @@ class ExtConfTest extends FunctionalTestCase
     public function setOrganizerIsRequiredWithZeroReturnsFalse()
     {
         $this->subject->setOrganizerIsRequired(0);
-        $this->assertFalse($this->subject->getOrganizerIsRequired());
+        self::assertFalse($this->subject->getOrganizerIsRequired());
     }
 
     /**
@@ -366,7 +366,7 @@ class ExtConfTest extends FunctionalTestCase
      */
     public function getLocationIsRequiredInitiallyReturnsFalse()
     {
-        $this->assertFalse(
+        self::assertFalse(
             $this->subject->getLocationIsRequired()
         );
     }
@@ -377,7 +377,7 @@ class ExtConfTest extends FunctionalTestCase
     public function setLocationIsRequiredSetsLocationIsRequired()
     {
         $this->subject->setLocationIsRequired(true);
-        $this->assertTrue(
+        self::assertTrue(
             $this->subject->getLocationIsRequired()
         );
     }
@@ -388,7 +388,7 @@ class ExtConfTest extends FunctionalTestCase
     public function setLocationIsRequiredWithStringReturnsTrue()
     {
         $this->subject->setLocationIsRequired('foo bar');
-        $this->assertTrue($this->subject->getLocationIsRequired());
+        self::assertTrue($this->subject->getLocationIsRequired());
     }
 
     /**
@@ -397,7 +397,7 @@ class ExtConfTest extends FunctionalTestCase
     public function setLocationIsRequiredWithZeroReturnsFalse()
     {
         $this->subject->setLocationIsRequired(0);
-        $this->assertFalse($this->subject->getLocationIsRequired());
+        self::assertFalse($this->subject->getLocationIsRequired());
     }
 
     /**
