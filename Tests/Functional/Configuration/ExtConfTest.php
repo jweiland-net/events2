@@ -283,10 +283,10 @@ class ExtConfTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getXmlImportValidatorPathInitiallyReturnsEmptyString()
+    public function getXmlImportValidatorPathInitiallyReturnsDefaultXsdPath()
     {
         self::assertSame(
-            '',
+            'EXT:events2/Resources/Public/XmlImportValidator.xsd',
             $this->subject->getXmlImportValidatorPath()
         );
     }
@@ -405,6 +405,9 @@ class ExtConfTest extends FunctionalTestCase
      */
     public function getEmailFromAddressInitiallyReturnsEmptyString()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionCode(1484823422);
+
         self::assertSame(
             '',
             $this->subject->getEmailFromAddress()
@@ -447,6 +450,9 @@ class ExtConfTest extends FunctionalTestCase
      */
     public function getEmailFromNameInitiallyReturnsEmptyString()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionCode(1484823661);
+
         self::assertSame(
             '',
             $this->subject->getEmailFromName()
