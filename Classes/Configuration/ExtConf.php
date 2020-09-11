@@ -46,6 +46,11 @@ class ExtConf implements SingletonInterface
     protected $defaultCountry = '';
 
     /**
+     * @var string
+     */
+    protected $xmlImportValidatorPath = '';
+
+    /**
      * @var bool
      */
     protected $organizerIsRequired = false;
@@ -147,6 +152,19 @@ class ExtConf implements SingletonInterface
     public function setDefaultCountry(string $defaultCountry)
     {
         $this->defaultCountry = $defaultCountry;
+    }
+
+    public function getXmlImportValidatorPath(): string
+    {
+        if (empty($this->xmlImportValidatorPath)) {
+            $this->xmlImportValidatorPath = 'EXT:events2/Resources/Public/XmlImportValidator.xsd';
+        }
+        return $this->xmlImportValidatorPath;
+    }
+
+    public function setXmlImportValidatorPath(string $xmlImportValidatorPath): void
+    {
+        $this->xmlImportValidatorPath = $xmlImportValidatorPath;
     }
 
     public function getOrganizerIsRequired(): bool

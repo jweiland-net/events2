@@ -282,9 +282,126 @@ class ExtConfTest extends FunctionalTestCase
 
     /**
      * @test
-     *
-     * @expectedException \Exception
-     * @expectedExceptionCode 1484823422
+     */
+    public function getXmlImportValidatorPathInitiallyReturnsEmptyString()
+    {
+        $this->assertSame(
+            '',
+            $this->subject->getXmlImportValidatorPath()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function setXmlImportValidatorPathSetsXmlImportValidatorPath()
+    {
+        $this->subject->setXmlImportValidatorPath('foo bar');
+
+        $this->assertSame(
+            'foo bar',
+            $this->subject->getXmlImportValidatorPath()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function setXmlImportValidatorPathWithIntegerResultsInString()
+    {
+        $this->subject->setXmlImportValidatorPath(123);
+        $this->assertSame('123', $this->subject->getXmlImportValidatorPath());
+    }
+
+    /**
+     * @test
+     */
+    public function setXmlImportValidatorPathWithBooleanResultsInString()
+    {
+        $this->subject->setXmlImportValidatorPath(true);
+        $this->assertSame('1', $this->subject->getXmlImportValidatorPath());
+    }
+
+    /**
+     * @test
+     */
+    public function getOrganizerIsRequiredInitiallyReturnsFalse()
+    {
+        $this->assertFalse(
+            $this->subject->getOrganizerIsRequired()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function setOrganizerIsRequiredSetsOrganizerIsRequired()
+    {
+        $this->subject->setOrganizerIsRequired(true);
+        $this->assertTrue(
+            $this->subject->getOrganizerIsRequired()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function setOrganizerIsRequiredWithStringReturnsTrue()
+    {
+        $this->subject->setOrganizerIsRequired('foo bar');
+        $this->assertTrue($this->subject->getOrganizerIsRequired());
+    }
+
+    /**
+     * @test
+     */
+    public function setOrganizerIsRequiredWithZeroReturnsFalse()
+    {
+        $this->subject->setOrganizerIsRequired(0);
+        $this->assertFalse($this->subject->getOrganizerIsRequired());
+    }
+
+    /**
+     * @test
+     */
+    public function getLocationIsRequiredInitiallyReturnsFalse()
+    {
+        $this->assertFalse(
+            $this->subject->getLocationIsRequired()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function setLocationIsRequiredSetsLocationIsRequired()
+    {
+        $this->subject->setLocationIsRequired(true);
+        $this->assertTrue(
+            $this->subject->getLocationIsRequired()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function setLocationIsRequiredWithStringReturnsTrue()
+    {
+        $this->subject->setLocationIsRequired('foo bar');
+        $this->assertTrue($this->subject->getLocationIsRequired());
+    }
+
+    /**
+     * @test
+     */
+    public function setLocationIsRequiredWithZeroReturnsFalse()
+    {
+        $this->subject->setLocationIsRequired(0);
+        $this->assertFalse($this->subject->getLocationIsRequired());
+    }
+
+    /**
+     * @test
      */
     public function getEmailFromAddressInitiallyReturnsEmptyString()
     {
@@ -327,9 +444,6 @@ class ExtConfTest extends FunctionalTestCase
 
     /**
      * @test
-     *
-     * @expectedException \Exception
-     * @expectedExceptionCode 1484823661
      */
     public function getEmailFromNameInitiallyReturnsEmptyString()
     {
