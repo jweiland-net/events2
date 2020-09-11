@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Importer;
 
+use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Category;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Exception;
@@ -89,13 +90,14 @@ class XmlImporter extends AbstractImporter
      */
     protected function validateXml(FileInterface $file): bool
     {
+        $extConf = GeneralUtility::makeInstance(ExtConf::class);
         try {
             libxml_use_internal_errors(true);
             $domDoc = new \DOMDocument();
             $domDoc->loadXML($file->getContents());
             if (
                 !$domDoc->schemaValidate(
-                    GeneralUtility::getFileAbsFileName('EXT:events2/Resources/Public/XmlImportValidator.xsd')
+                    GeneralUtility::getFileAbsFileName($extConf->getXmlImportValidatorPath())
                 )
             ) {
                 foreach (libxml_get_errors() as $error) {
