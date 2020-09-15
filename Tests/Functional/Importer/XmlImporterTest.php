@@ -11,7 +11,6 @@ namespace JWeiland\Events2\Tests\Functional\Importer;
 
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Importer\XmlImporter;
-use JWeiland\Events2\Task\Import;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
@@ -33,11 +32,6 @@ class XmlImporterTest extends FunctionalTestCase
      * @var ObjectManager
      */
     protected $objectManager;
-
-    /**
-     * @var Import
-     */
-    protected $task;
 
     /**
      * @var array
@@ -66,11 +60,6 @@ class XmlImporterTest extends FunctionalTestCase
         $this->importDataSet(__DIR__ . '/../Fixtures/tx_events2_domain_model_location.xml');
         $this->importDataSet(__DIR__ . '/../Fixtures/tx_events2_domain_model_organizer.xml');
 
-        $taskProphecy = $this->prophesize(Import::class);
-        /** @var Import $task */
-        $this->task = $taskProphecy->reveal();
-        $this->task->storagePid = 12;
-
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->eventRepository = $this->objectManager->get(EventRepository::class);
 
@@ -97,7 +86,7 @@ class XmlImporterTest extends FunctionalTestCase
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/Success.xml');
         $xmlImporter = $this->objectManager->get(XmlImporter::class);
         $xmlImporter->setFile($fileObject);
-        $xmlImporter->setTask($this->task);
+        $xmlImporter->setStoragePid(12);
 
         self::assertTrue($xmlImporter->import());
         self::assertRegExp(
@@ -117,7 +106,7 @@ class XmlImporterTest extends FunctionalTestCase
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/InvalidEvent.xml');
         $xmlImporter = $this->objectManager->get(XmlImporter::class);
         $xmlImporter->setFile($fileObject);
-        $xmlImporter->setTask($this->task);
+        $xmlImporter->setStoragePid(12);
 
         self::assertFalse($xmlImporter->import());
         self::assertRegExp(
@@ -138,7 +127,7 @@ class XmlImporterTest extends FunctionalTestCase
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/SimpleEvent.xml');
         $xmlImporter = $this->objectManager->get(XmlImporter::class);
         $xmlImporter->setFile($fileObject);
-        $xmlImporter->setTask($this->task);
+        $xmlImporter->setStoragePid(12);
         self::assertTrue($xmlImporter->import());
 
         // Override simple event
@@ -146,7 +135,7 @@ class XmlImporterTest extends FunctionalTestCase
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/ModifySimpleEvent.xml');
         $xmlImporter = $this->objectManager->get(XmlImporter::class);
         $xmlImporter->setFile($fileObject);
-        $xmlImporter->setTask($this->task);
+        $xmlImporter->setStoragePid(12);
         self::assertTrue($xmlImporter->import());
 
         // Test, if we still have exactly one event
@@ -178,7 +167,7 @@ class XmlImporterTest extends FunctionalTestCase
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/SimpleEvent.xml');
         $xmlImporter = $this->objectManager->get(XmlImporter::class);
         $xmlImporter->setFile($fileObject);
-        $xmlImporter->setTask($this->task);
+        $xmlImporter->setStoragePid(12);
         $xmlImporter->import();
         $xmlImporter->import();
 
@@ -187,7 +176,7 @@ class XmlImporterTest extends FunctionalTestCase
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/DeleteSimpleEvent.xml');
         $xmlImporter = $this->objectManager->get(XmlImporter::class);
         $xmlImporter->setFile($fileObject);
-        $xmlImporter->setTask($this->task);
+        $xmlImporter->setStoragePid(12);
         self::assertTrue($xmlImporter->import());
 
         // Test, if we still have exactly one event
