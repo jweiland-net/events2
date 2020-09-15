@@ -265,7 +265,6 @@ abstract class AbstractImporter implements ImporterInterface
                     $property,
                     $event[$property]
                 )
-
             ),
             FlashMessage::ERROR
         );
