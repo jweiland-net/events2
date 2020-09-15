@@ -59,8 +59,6 @@ class XmlImporter extends AbstractImporter
             return false;
         }
 
-        $this->storagePid = (int)$this->task->storagePid;
-
         $events = GeneralUtility::xml2array($this->file->getContents());
         if ($this->hasInvalidEvents($events)) {
             return false;
@@ -129,57 +127,57 @@ class XmlImporter extends AbstractImporter
     /**
      * Check, if an event has to be created/updated/deleted
      *
-     * @param array $data
+     * @param array $eventRecord
      * @throws \Exception
      */
-    protected function processEvent(array $data): void
+    protected function processEvent(array $eventRecord): void
     {
-        $event = $this->eventRepository->findHiddenObject((int)$data['import_id'], 'importId');
-        switch ($this->getProcessAs($data)) {
+        $event = $this->eventRepository->findHiddenObject((int)$eventRecord['import_id'], 'importId');
+        switch ($this->getProcessAs($eventRecord)) {
             case 'delete':
                 if ($event instanceof Event) {
                     $this->persistenceManager->remove($event);
                 } else {
                     throw new \Exception(sprintf(
                         'Can not delete event with import-ID %s, as it does not exist in our database.',
-                        $data['import_id']
+                        $eventRecord['import_id']
                     ));
                 }
                 break;
             case 'edit':
                 if ($event instanceof Event) {
                     // reset all properties and set them again
-                    $this->addRootProperties($event, $data);
+                    $this->addRootProperties($event, $eventRecord);
 
                     $event->setEventBegin(null);
                     $event->setEventEnd(null);
                     $event->setRecurringEnd(null);
-                    $this->addDateProperties($event, $data);
+                    $this->addDateProperties($event, $eventRecord);
 
                     $event->setEventTime(null);
                     $event->setMultipleTimes(new ObjectStorage());
                     $event->setDifferentTimes(new ObjectStorage());
-                    $this->addTimeProperties($event, $data);
+                    $this->addTimeProperties($event, $eventRecord);
 
                     $event->setOrganizer(null);
-                    $this->addOrganizer($event, $data);
+                    $this->addOrganizer($event, $eventRecord);
 
                     $event->setLocation(null);
-                    $this->addLocation($event, $data);
+                    $this->addLocation($event, $eventRecord);
 
                     $event->setTicketLink(null);
                     $event->setvideoLink(null);
                     $event->setDownloadLinks(new ObjectStorage());
-                    $this->addLinks($event, $data);
+                    $this->addLinks($event, $eventRecord);
 
                     $event->setExceptions(new ObjectStorage());
-                    $this->addExceptions($event, $data);
+                    $this->addExceptions($event, $eventRecord);
 
                     $event->setCategories(new ObjectStorage());
-                    $this->addCategories($event, $data);
+                    $this->addCategories($event, $eventRecord);
 
                     $event->setImages(new ObjectStorage());
-                    $this->addImages($event, $data);
+                    $this->addImages($event, $eventRecord);
 
                     $event->setDays(new ObjectStorage());
 
@@ -187,14 +185,14 @@ class XmlImporter extends AbstractImporter
                 } else {
                     throw new \Exception(sprintf(
                         'Can not edit event with import-ID %s, as it does not exist in our database.',
-                        $data['import_id']
+                        $eventRecord['import_id']
                     ));
                 }
                 break;
             case 'new':
             default:
-                $event = $this->createEvent($data);
-                $event->setImportId($data['import_id'] ?: '');
+                $event = $this->createEvent($eventRecord);
+                $event->setImportId($eventRecord['import_id'] ?: '');
                 $event->setHidden(true);
                 $event->setPid($this->storagePid);
                 $this->persistenceManager->add($event);
@@ -202,15 +200,9 @@ class XmlImporter extends AbstractImporter
         }
     }
 
-    /**
-     * Get information how to process a given event
-     *
-     * @param array $data
-     * @return string
-     */
-    protected function getProcessAs(array $data): string
+    protected function getProcessAs(array $eventRecord): string
     {
-        $processAs = $data['process_as'] ?: 'new';
+        $processAs = $eventRecord['process_as'] ?: 'new';
         $processAs = strtolower($processAs);
         if (!in_array($processAs, ['new', 'edit', 'delete'], true)) {
             $processAs = 'new';
@@ -218,28 +210,23 @@ class XmlImporter extends AbstractImporter
         return $processAs;
     }
 
-    /**
-     * @param array $data
-     * @return Event
-     * @throws \Exception
-     */
-    protected function createEvent(array $data): Event
+    protected function createEvent(array $eventRecord): Event
     {
         $event = GeneralUtility::makeInstance(Event::class);
-        $this->addRootProperties($event, $data);
-        $this->addDateProperties($event, $data);
-        $this->addTimeProperties($event, $data);
-        $this->addOrganizer($event, $data);
-        $this->addLocation($event, $data);
-        $this->addLinks($event, $data);
-        $this->addExceptions($event, $data);
-        $this->addCategories($event, $data);
-        $this->addImages($event, $data);
+        $this->addRootProperties($event, $eventRecord);
+        $this->addDateProperties($event, $eventRecord);
+        $this->addTimeProperties($event, $eventRecord);
+        $this->addOrganizer($event, $eventRecord);
+        $this->addLocation($event, $eventRecord);
+        $this->addLinks($event, $eventRecord);
+        $this->addExceptions($event, $eventRecord);
+        $this->addCategories($event, $eventRecord);
+        $this->addImages($event, $eventRecord);
 
         return $event;
     }
 
-    protected function addRootProperties(Event $event, array $data): void
+    protected function addRootProperties(Event $event, array $eventRecord): void
     {
         $allowedRootProperties = [
             'event_type' => 'string',
@@ -254,24 +241,24 @@ class XmlImporter extends AbstractImporter
             'free_entry' => 'bool',
         ];
         foreach ($allowedRootProperties as $property => $dataType) {
-            if (isset($data[$property])) {
+            if (isset($eventRecord[$property])) {
                 switch ($dataType) {
                     case 'int':
-                        $this->setEventProperty($event, $property, (int)$data[$property]);
+                        $this->setEventProperty($event, $property, (int)$eventRecord[$property]);
                         break;
                     case 'bool':
-                        $this->setEventProperty($event, $property, (bool)$data[$property]);
+                        $this->setEventProperty($event, $property, (bool)$eventRecord[$property]);
                         break;
                     case 'string':
                     default:
-                        $this->setEventProperty($event, $property, (string)$data[$property]);
+                        $this->setEventProperty($event, $property, (string)$eventRecord[$property]);
                         break;
                 }
             }
         }
     }
 
-    protected function addDateProperties(Event $event, array $data): void
+    protected function addDateProperties(Event $event, array $eventRecord): void
     {
         $allowedDateProperties = [
             'event_begin',
@@ -279,10 +266,10 @@ class XmlImporter extends AbstractImporter
             'recurring_end',
         ];
         foreach ($allowedDateProperties as $property) {
-            if (!isset($data[$property])) {
+            if (!isset($eventRecord[$property])) {
                 continue;
             }
-            $date = \DateTime::createFromFormat('Y-m-d', $data[$property]);
+            $date = \DateTime::createFromFormat('Y-m-d', $eventRecord[$property]);
             if (!$date instanceof \DateTime) {
                 continue;
             }
@@ -290,27 +277,27 @@ class XmlImporter extends AbstractImporter
         }
     }
 
-    protected function addTimeProperties(Event $event, array $data): void
+    protected function addTimeProperties(Event $event, array $eventRecord): void
     {
         // add event time
-        if (isset($data['event_time']) && is_array($data['event_time'])) {
+        if (isset($eventRecord['event_time']) && is_array($eventRecord['event_time'])) {
             $eventTime = GeneralUtility::makeInstance(Time::class);
             $eventTime->setPid($this->storagePid);
-            $eventTime->setTimeBegin($data['event_time']['time_begin'] ?: '');
-            $eventTime->setTimeEntry($data['event_time']['time_entry'] ?: '');
-            $eventTime->setTimeEnd($data['event_time']['time_end'] ?: '');
-            $eventTime->setDuration($data['event_time']['duration'] ?: '');
+            $eventTime->setTimeBegin($eventRecord['event_time']['time_begin'] ?: '');
+            $eventTime->setTimeEntry($eventRecord['event_time']['time_entry'] ?: '');
+            $eventTime->setTimeEnd($eventRecord['event_time']['time_end'] ?: '');
+            $eventTime->setDuration($eventRecord['event_time']['duration'] ?: '');
             $event->setEventTime($eventTime);
         }
 
         // add multiple times for same day
         if (
-            isset($data['same_day']) &&
-            $data['same_day'] &&
-            isset($data['multiple_times']) &&
-            is_array($data['multiple_times'])
+            isset($eventRecord['same_day']) &&
+            $eventRecord['same_day'] &&
+            isset($eventRecord['multiple_times']) &&
+            is_array($eventRecord['multiple_times'])
         ) {
-            foreach ($data['multiple_times'] as $multipleTime) {
+            foreach ($eventRecord['multiple_times'] as $multipleTime) {
                 $newTime = GeneralUtility::makeInstance(Time::class);
                 $newTime->setPid($this->storagePid);
                 $newTime->setTimeBegin($multipleTime['time_begin'] ?: '');
@@ -323,10 +310,10 @@ class XmlImporter extends AbstractImporter
 
         // add different times
         if (
-            isset($data['different_times']) &&
-            is_array($data['different_times'])
+            isset($eventRecord['different_times']) &&
+            is_array($eventRecord['different_times'])
         ) {
-            foreach ($data['different_times'] as $differentTime) {
+            foreach ($eventRecord['different_times'] as $differentTime) {
                 $newTime = GeneralUtility::makeInstance(Time::class);
                 $newTime->setPid($this->storagePid);
                 $newTime->setWeekday($differentTime['weekday']);
@@ -339,34 +326,38 @@ class XmlImporter extends AbstractImporter
         }
     }
 
-    protected function addOrganizer(Event $event, array $data): void
+    protected function addOrganizer(Event $event, array $eventRecord): void
     {
-        $organizerFromDatabase = $this->getOrganizer($data['organizer']);
+        if ($this->isOrganizerProcessable($eventRecord)) {
+            $organizerFromDatabase = $this->getOrganizer($eventRecord['organizer']);
 
-        /** @var Organizer $organizerObject */
-        $organizerObject = $this->organizerRepository->findByIdentifier($organizerFromDatabase['uid']);
-        $event->setOrganizer($organizerObject);
+            /** @var Organizer $organizerObject */
+            $organizerObject = $this->organizerRepository->findByIdentifier($organizerFromDatabase['uid']);
+            $event->setOrganizer($organizerObject);
+        }
     }
 
-    protected function addLocation(Event $event, array $data): void
+    protected function addLocation(Event $event, array $eventRecord): void
     {
-        $locationFromDatabase = $this->getLocation($data['location']);
+        if ($this->isLocationProcessable($eventRecord)) {
+            $locationFromDatabase = $this->getLocation($eventRecord['location']);
 
-        /** @var Location $locationObject */
-        $locationObject = $this->locationRepository->findByIdentifier($locationFromDatabase['uid']);
-        $event->setLocation($locationObject);
+            /** @var Location $locationObject */
+            $locationObject = $this->locationRepository->findByIdentifier($locationFromDatabase['uid']);
+            $event->setLocation($locationObject);
+        }
     }
 
-    protected function addLinks(Event $event, array $data): void
+    protected function addLinks(Event $event, array $eventRecord): void
     {
         $properties = ['ticket_link', 'video_link', 'download_links'];
         foreach ($properties as $property) {
-            if (isset($data[$property]) && filter_var($data[$property]['uri'], FILTER_VALIDATE_URL)) {
+            if (isset($eventRecord[$property]) && filter_var($eventRecord[$property]['uri'], FILTER_VALIDATE_URL)) {
                 /** @var Link $link */
                 $link = GeneralUtility::makeInstance(Link::class);
                 $link->setPid($this->storagePid);
-                $link->setTitle($data[$property]['title']);
-                $link->setLink($data[$property]['uri']);
+                $link->setTitle($eventRecord[$property]['title']);
+                $link->setLink($eventRecord[$property]['uri']);
 
                 if ($property === 'download_links') {
                     $objectStorage = new ObjectStorage();
@@ -379,13 +370,13 @@ class XmlImporter extends AbstractImporter
         }
     }
 
-    protected function addExceptions(Event $event, array $data): void
+    protected function addExceptions(Event $event, array $eventRecord): void
     {
-        if (!isset($data['exceptions']) || !is_array($data['exceptions'])) {
+        if (!isset($eventRecord['exceptions']) || !is_array($eventRecord['exceptions'])) {
             return;
         }
 
-        foreach ($data['exceptions'] as $exception) {
+        foreach ($eventRecord['exceptions'] as $exception) {
             $newException = GeneralUtility::makeInstance(Exception::class);
             $newException->setPid($this->storagePid);
             $newException->setExceptionType($exception['exception_type']);
@@ -412,9 +403,9 @@ class XmlImporter extends AbstractImporter
         }
     }
 
-    protected function addCategories(Event $event, array $data): void
+    protected function addCategories(Event $event, array $eventRecord): void
     {
-        foreach ($data['categories'] as $title) {
+        foreach ($eventRecord['categories'] as $title) {
             $dbCategory = $this->getCategory($title);
             /** @var Category $category */
             $category = $this->categoryRepository->findByIdentifier($dbCategory['uid']);
@@ -422,14 +413,14 @@ class XmlImporter extends AbstractImporter
         }
     }
 
-    protected function addImages(Event $event, array $data): void
+    protected function addImages(Event $event, array $eventRecord): void
     {
         $resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);
-        if (isset($data['images']) && is_array($data['images'])) {
+        if (isset($eventRecord['images']) && is_array($eventRecord['images'])) {
             $images = new ObjectStorage();
             /** @var CharsetConverter $csConverter */
             $csConverter = GeneralUtility::makeInstance(CharsetConverter::class);
-            foreach ($data['images'] as $image) {
+            foreach ($eventRecord['images'] as $image) {
                 // we try to keep the original structure from origin server to prevent duplicate filenames
                 $filePath = parse_url($image['url'], PHP_URL_PATH);
                 $fileParts = GeneralUtility::split_fileref($filePath);
