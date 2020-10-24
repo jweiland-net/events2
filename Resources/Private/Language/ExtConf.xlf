@@ -18,6 +18,9 @@
 			<trans-unit id="defaultCountry">
 				<source>Default country: If you're only working for one specified country while creating/editing POIs in backend it would be cool to set a country by default. So you only need to add street and city to find a POI. If you need POIs from all over the world, please keep this field empty</source>
 			</trans-unit>
+			<trans-unit id="xmlImportValidatorPath">
+				<source>XML Import Validator Path (xsd): While Importing Events we will check the XML file against a XSD file. If you need some specials you can define your own file here.</source>
+			</trans-unit>
 			<trans-unit id="organizerIsRequired">
 				<source>Is organizer required: By default it is not needed to explicit set an organizer. But, if you want, you can set organizer as a required property with activating this checkbox</source>
 			</trans-unit>
