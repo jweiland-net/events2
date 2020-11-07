@@ -84,9 +84,11 @@ class JsonLdService
         $time = $timeFactory->getTimeForDay($day);
         if ($time instanceof Time) {
             $this->addStartDateOfTimeToData($time);
+            $this->addStartDateOfEventToData($day->getEvent());
             $this->addDoorTimeOfTimeToData($time);
             $this->addDurationToData($time);
             $this->addEndDateOfTimeToData($time);
+            $this->addEndDateOfEventToData($day->getEvent());
         } else {
             $this->addStartDateOfEventToData($day->getEvent());
             $this->addEndDateOfEventToData($day->getEvent());
@@ -146,7 +148,7 @@ class JsonLdService
     }
 
     /**
-     * If an event have a Time record, we add endtDate by time_end column
+     * If an event have a Time record, we add endDate by time_end column
      *
      * @link: https://schema.org/DateTime
      * @param Time $time
@@ -166,7 +168,7 @@ class JsonLdService
      */
     protected function addStartDateOfEventToData(Event $event): void
     {
-        if ($event->getEventBegin() instanceof \DateTime) {
+        if (empty($this->data['startDate']) && $event->getEventBegin() instanceof \DateTime) {
             $this->data['startDate'] = $event->getEventBegin()->format($this->dateFormat);
         }
     }
@@ -179,7 +181,11 @@ class JsonLdService
      */
     protected function addEndDateOfEventToData(Event $event): void
     {
-        if ($event->getEventType() === 'duration' && $event->getEventEnd() instanceof \DateTime) {
+        if (
+            empty($this->data['endDate'])
+            && $event->getEventType() === 'duration'
+            && $event->getEventEnd() instanceof \DateTime
+        ) {
             $this->data['endDate'] = $event->getEventEnd()->format($this->dateFormat);
         }
     }
