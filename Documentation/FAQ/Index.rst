@@ -83,3 +83,21 @@ Code: ::
      <maps2:widget.poiCollection poiCollection="{location.txMaps2Uid}" override="{settings: {mapWidth: '100%', mapHeight: '300', zoom: '14'}}" />
    </f:if>
 
+File Uploads
+============
+
+If you need the image rights from the uploader for uploaded images you should install EXT:checkfaluploads and
+add following line into FormFields template:
+
+Code: ::
+
+   <f:form.checkbox value="1" name="event[images][{index}][rights]" checked="" />
+
+In our TypeConverter we check for installed checkfaluploads and add an error message, if checkbox was not activated
+
+If you want to delete an image, you can add following line into FormFields template:
+
+Code: ::
+
+   <f:form.checkbox value="1" name="event[images][{index}][delete]" checked="" />
+
