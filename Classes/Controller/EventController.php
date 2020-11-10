@@ -389,7 +389,7 @@ class EventController extends AbstractController
         $converterOptionValue
     ): void {
         if ($property === 'logo' || $property === 'images') {
-            $className = \JWeiland\Events2\Property\TypeConverter\UploadMultipleFilesConverter::class;
+            $className = UploadMultipleFilesConverter::class;
             $converterOptionName = 'IMAGES';
         } else {
             return;
