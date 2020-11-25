@@ -362,10 +362,10 @@ class DayRepository extends Repository
         $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_day');
         return array_map(
             function ($column) {
-                return 'c.' . $column;
+                return 'day.' . $column;
             },
             array_keys(
-                $connection->getSchemaManager()->listTableColumns('tx_events2_domain_model_day')
+                $connection->getSchemaManager()->listTableColumns('tx_events2_domain_model_day') ?? []
             )
         );
     }
