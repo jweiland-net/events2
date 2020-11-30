@@ -249,6 +249,14 @@ class LocationTest extends UnitTestCase
     /**
      * @test
      */
+    public function getCountryInitiallyReturnsNull()
+    {
+        self::assertNull($this->subject->getCountry());
+    }
+
+    /**
+     * @test
+     */
     public function getLinkInitiallyReturnsNull()
     {
         self::assertNull($this->subject->getLink());
