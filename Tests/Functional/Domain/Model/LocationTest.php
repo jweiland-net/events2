@@ -39,6 +39,8 @@ class LocationTest extends FunctionalTestCase
     public function setUp()
     {
         parent::setUp();
+        $this->importDataSet('ntf://Database/pages.xml');
+        parent::setUpFrontendRootPage(1);
 
         $this->subject = new Location();
     }
