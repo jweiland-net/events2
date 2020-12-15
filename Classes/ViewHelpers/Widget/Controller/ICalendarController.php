@@ -54,6 +54,7 @@ class ICalendarController extends AbstractWidgetController
         $events = $this->getEvents($day);
 
         $this->view->assign('events', $events);
+        $this->view->assign('day', $day);
 
         $filePath = sprintf(
             'typo3temp/tx_events2/iCal/%s.ics',
