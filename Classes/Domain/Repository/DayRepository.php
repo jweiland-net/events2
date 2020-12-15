@@ -353,30 +353,21 @@ class DayRepository extends Repository
 
     /**
      * ->select() and ->groupBy() has to be the same in DB configuration
-     * where strict_mode is activated.
+     * where only_full_group_by is activated.
      *
      * @return array
      */
     protected function getColumnsForDayTable(): array
     {
-        $selectColumns = [
-            'uid',
-            'pid',
-            'crdate',
-            'tstamp',
-            'hidden',
-            'cruser_id',
-            'day',
-            'day_time',
-            'sort_day_time',
-            'same_day_time',
-            'event'
-        ];
-        $columns = [];
-        foreach ($selectColumns as $selectColumn) {
-            $columns[] = 'day.' . $selectColumn;
-        }
-        return $columns;
+        $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_day');
+        return array_map(
+            function ($column) {
+                return 'day.' . $column;
+            },
+            array_keys(
+                $connection->getSchemaManager()->listTableColumns('tx_events2_domain_model_day') ?? []
+            )
+        );
     }
 
     /**
@@ -387,7 +378,6 @@ class DayRepository extends Repository
     protected function addMergeFeatureToQuery(QueryBuilder $subQueryBuilder): void
     {
         if ((bool)$this->settings['mergeRecurringEvents']) {
-            // $queryBuilder->groupBy('day.uid');
             $subQueryBuilder->groupBy('day_sub_query.event');
         } elseif ((bool)$this->settings['mergeEventsAtSameDay']) {
             $subQueryBuilder->groupBy('day_sub_query.event', 'day_sub_query.same_day_time');

@@ -28,9 +28,12 @@ use JWeiland\Events2\Utility\CacheUtility;
 use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Extbase\Mvc\Controller\MvcPropertyMappingConfiguration;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
+use TYPO3\CMS\Extbase\Property\PropertyMappingConfigurationInterface;
 use TYPO3\CMS\Extbase\Property\TypeConverter\DateTimeConverter;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
+use TYPO3\CMS\Extbase\Property\TypeConverterInterface;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Extbase\Validation\Validator\ConjunctionValidator;
 use TYPO3\CMS\Extbase\Validation\Validator\GenericObjectValidator;
@@ -182,36 +185,14 @@ class EventController extends AbstractController
         $this->addValidationForVideoLink();
         $this->addOrganizer('event');
         $this->applyLocationAsMandatoryIfNeeded();
-        $this->arguments->getArgument('event')
-            ->getPropertyMappingConfiguration()
-            ->forProperty('eventBegin')
-            ->setTypeConverterOption(
-                DateTimeConverter::class,
-                DateTimeConverter::CONFIGURATION_DATE_FORMAT,
-                'd.m.Y'
-            );
-        $this->arguments->getArgument('event')
-            ->getPropertyMappingConfiguration()
-            ->forProperty('eventEnd')
-            ->setTypeConverterOption(
-                DateTimeConverter::class,
-                DateTimeConverter::CONFIGURATION_DATE_FORMAT,
-                'd.m.Y'
-            );
 
-        /** @var UploadMultipleFilesConverter $multipleFilesTypeConverter */
-        $multipleFilesTypeConverter = $this->objectManager->get(
-            UploadMultipleFilesConverter::class
-        );
-        $this->arguments->getArgument('event')
-            ->getPropertyMappingConfiguration()
-            ->forProperty('images')
-            ->setTypeConverter($multipleFilesTypeConverter)
-            ->setTypeConverterOption(
-                UploadMultipleFilesConverter::class,
-                'settings',
-                $this->settings
-            );
+        $eventMappingConfiguration = $this->arguments
+            ->getArgument('event')
+            ->getPropertyMappingConfiguration();
+
+        $this->setDatePropertyFormat('eventBegin', $eventMappingConfiguration);
+        $this->setDatePropertyFormat('eventEnd', $eventMappingConfiguration);
+        $this->assignMediaTypeConverter('images', $eventMappingConfiguration, null);
     }
 
     /**
@@ -284,38 +265,19 @@ class EventController extends AbstractController
         );
         $this->addValidationForVideoLink();
         $this->applyLocationAsMandatoryIfNeeded();
-        $this->arguments->getArgument('event')
-            ->getPropertyMappingConfiguration()
-            ->forProperty('eventBegin')
-            ->setTypeConverterOption(
-                DateTimeConverter::class,
-                DateTimeConverter::CONFIGURATION_DATE_FORMAT,
-                'd.m.Y'
-            );
-        $this->arguments->getArgument('event')
-            ->getPropertyMappingConfiguration()
-            ->forProperty('eventEnd')
-            ->setTypeConverterOption(
-                DateTimeConverter::class,
-                DateTimeConverter::CONFIGURATION_DATE_FORMAT,
-                'd.m.Y'
-            );
-        $argument = $this->request->getArgument('event');
+
         /** @var Event $event */
-        $event = $this->eventRepository->findByIdentifier($argument['__identity']);
-        /** @var UploadMultipleFilesConverter $multipleFilesTypeConverter */
-        $multipleFilesTypeConverter = $this->objectManager->get(UploadMultipleFilesConverter::class);
-        $this->arguments->getArgument('event')
-            ->getPropertyMappingConfiguration()
-            ->forProperty('images')
-            ->setTypeConverter($multipleFilesTypeConverter)
-            ->setTypeConverterOptions(
-                UploadMultipleFilesConverter::class,
-                [
-                    'settings' => $this->settings,
-                    'IMAGES' => $event->getImages()
-                ]
-            );
+        $event = $this->eventRepository->findByIdentifier(
+            $this->request->getArgument('event')['__identity']
+        );
+
+        $eventMappingConfiguration = $this->arguments
+            ->getArgument('event')
+            ->getPropertyMappingConfiguration();
+
+        $this->setDatePropertyFormat('eventBegin', $eventMappingConfiguration);
+        $this->setDatePropertyFormat('eventEnd', $eventMappingConfiguration);
+        $this->assignMediaTypeConverter('images', $eventMappingConfiguration, $event->getImages());
     }
 
     /**
@@ -401,6 +363,58 @@ class EventController extends AbstractController
         $this->mail->send();
 
         $this->redirect('list', 'Day');
+    }
+
+    protected function setDatePropertyFormat(string $property, PropertyMappingConfigurationInterface $configuration)
+    {
+        $configuration
+            ->forProperty($property)
+            ->setTypeConverterOption(
+                DateTimeConverter::class,
+                DateTimeConverter::CONFIGURATION_DATE_FORMAT,
+                'd.m.Y'
+            );
+    }
+
+    /**
+     * Currently only "logo" and "images" are allowed properties.
+     *
+     * @param string $property
+     * @param MvcPropertyMappingConfiguration $propertyMappingConfigurationForClub
+     * @param mixed $converterOptionValue
+     */
+    protected function assignMediaTypeConverter(
+        string $property,
+        MvcPropertyMappingConfiguration $propertyMappingConfigurationForClub,
+        $converterOptionValue
+    ): void {
+        if ($property === 'logo' || $property === 'images') {
+            $className = UploadMultipleFilesConverter::class;
+            $converterOptionName = 'IMAGES';
+        } else {
+            return;
+        }
+
+        /** @var TypeConverterInterface $typeConverter */
+        $typeConverter = $this->objectManager->get($className);
+        $propertyMappingConfigurationForMediaFiles = $propertyMappingConfigurationForClub
+            ->forProperty($property)
+            ->setTypeConverter($typeConverter);
+
+        $propertyMappingConfigurationForMediaFiles->setTypeConverterOption(
+            $className,
+            'settings',
+            $this->settings
+        );
+
+        if (!empty($converterOptionValue)) {
+            // Do not use setTypeConverterOptions() as this will remove all existing options
+            $propertyMappingConfigurationForMediaFiles->setTypeConverterOption(
+                $className,
+                $converterOptionName,
+                $converterOptionValue
+            );
+        }
     }
 
     protected function addDayRelations(Event $event): void
@@ -521,7 +535,6 @@ class EventController extends AbstractController
     protected function deleteUploadedFilesOnValidationErrors(string $argument): void
     {
         if ($this->getControllerContext()->getRequest()->hasArgument($argument)) {
-            /** @var Event $event */
             $event = $this->getControllerContext()->getRequest()->getArgument($argument);
             if ($event instanceof Event) {
                 $images = $event->getImages();

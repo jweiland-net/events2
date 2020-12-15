@@ -7,33 +7,51 @@
  * LICENSE file that was distributed with this source code.
  */
 
-namespace JWeiland\Events2\Tests\Unit\Domain\Model;
+namespace JWeiland\Events2\Tests\Functional\Domain\Model;
 
 use JWeiland\Events2\Domain\Model\Link;
 use JWeiland\Events2\Domain\Model\Location;
 use JWeiland\Events2\Tests\Unit\Domain\Traits\TestTypo3PropertiesTrait;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
+use JWeiland\Maps2\Domain\Model\PoiCollection;
+use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use SJBR\StaticInfoTables\Domain\Model\Country;
 
 /**
  * Test case.
  */
-class LocationTest extends UnitTestCase
+class LocationTest extends FunctionalTestCase
 {
     use TestTypo3PropertiesTrait;
 
     /**
-     * @var \JWeiland\Events2\Domain\Model\Location
+     * @var Location
      */
     protected $subject;
 
+    /**
+     * @var array
+     */
+    protected $testExtensionsToLoad = [
+        'typo3conf/ext/maps2',
+        'typo3conf/ext/static_info_tables'
+    ];
+
     public function setUp()
     {
+        parent::setUp();
+        $this->importDataSet('ntf://Database/pages.xml');
+        parent::setUpFrontendRootPage(1);
+
         $this->subject = new Location();
     }
 
     public function tearDown()
     {
-        unset($this->subject);
+        unset(
+            $this->subject
+        );
+
+        parent::tearDown();
     }
 
     /**
@@ -249,6 +267,28 @@ class LocationTest extends UnitTestCase
     /**
      * @test
      */
+    public function getCountryInitiallyReturnsNull()
+    {
+        self::assertNull($this->subject->getCountry());
+    }
+
+    /**
+     * @test
+     */
+    public function setCountrySetsCountry()
+    {
+        $instance = new Country();
+        $this->subject->setCountry($instance);
+
+        self::assertSame(
+            $instance,
+            $this->subject->getCountry()
+        );
+    }
+
+    /**
+     * @test
+     */
     public function getLinkInitiallyReturnsNull()
     {
         self::assertNull($this->subject->getLink());
@@ -274,5 +314,19 @@ class LocationTest extends UnitTestCase
     public function getTxMaps2UidInitiallyReturnsNull()
     {
         self::assertNull($this->subject->getTxMaps2Uid());
+    }
+
+    /**
+     * @test
+     */
+    public function setTxMaps2UidSetsTxMaps2Uid()
+    {
+        $instance = new PoiCollection();
+        $this->subject->setTxMaps2Uid($instance);
+
+        self::assertSame(
+            $instance,
+            $this->subject->getTxMaps2Uid()
+        );
     }
 }

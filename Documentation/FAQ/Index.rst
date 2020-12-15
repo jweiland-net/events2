@@ -51,7 +51,7 @@ Can I import events?
 ====================
 
 Yes. But currently only XML files are allowed. Please add Scheduler Task *Import events* and set a filepath
-to import.
+to import. Examples of XML files are available at https://github.com/jweiland-net/events2/tree/master/Tests/Functional/Fixtures/XmlImport.
 
 We will validate the imported file against configuration in EXT:events2/Resources/Public/XmlImportValidator.xsd.
 
@@ -82,4 +82,22 @@ Code: ::
    <f:if condition="{location.txMaps2Uid}">
      <maps2:widget.poiCollection poiCollection="{location.txMaps2Uid}" override="{settings: {mapWidth: '100%', mapHeight: '300', zoom: '14'}}" />
    </f:if>
+
+File Uploads
+============
+
+If you need the image rights from the uploader for uploaded images you should install EXT:checkfaluploads and
+add following line into FormFields template:
+
+Code: ::
+
+   <f:form.checkbox value="1" name="event[images][{index}][rights]" checked="" />
+
+In our TypeConverter we check for installed checkfaluploads and add an error message, if checkbox was not activated
+
+If you want to delete an image, you can add following line into FormFields template:
+
+Code: ::
+
+   <f:form.checkbox value="1" name="event[images][{index}][delete]" checked="" />
 

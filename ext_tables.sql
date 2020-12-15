@@ -85,7 +85,7 @@ CREATE TABLE tx_events2_domain_model_location (
   house_number varchar(10) DEFAULT '' NOT NULL,
   zip varchar(10) DEFAULT '' NOT NULL,
   city varchar(255) DEFAULT '' NOT NULL,
-  country varchar(255) DEFAULT '' NOT NULL,
+  country int(11) unsigned DEFAULT '0',
   link int(11) unsigned DEFAULT '0'
 );
 

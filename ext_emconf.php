@@ -8,7 +8,7 @@ $EM_CONF[$_EXTKEY] = [
     'author_company' => 'jweiland.net',
     'state' => 'stable',
     'clearCacheOnLoad' => true,
-    'version' => '6.0.0',
+    'version' => '6.1.1',
     'constraints' => [
         'depends' => [
             'typo3' => '9.5.20-10.4.99',
@@ -17,6 +17,7 @@ $EM_CONF[$_EXTKEY] = [
         'conflicts' => [
         ],
         'suggests' => [
+            'checkfaluploads' => '',
             'maps2' => '8.0.0-0.0.0',
         ],
     ],

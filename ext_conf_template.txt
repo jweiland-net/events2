@@ -8,6 +8,8 @@ recurringPast = 3
 recurringFuture = 6
 # cat=basic; type=user[JWeiland\Events2\Hooks\EmStaticInfo->renderDefaultCountry]; label=LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:defaultCountry
 defaultCountry =
+# cat=basic; type=string; label=LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:xmlImportValidatorPath
+xmlImportValidatorPath = EXT:events2/Resources/Public/XmlImportValidator.xsd
 # cat=basic; type=boolean; label=LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:organizerIsRequired
 organizerIsRequired =
 # cat=basic; type=boolean; label=LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:locationIsRequired

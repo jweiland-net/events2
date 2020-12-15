@@ -104,7 +104,7 @@ class Import extends AbstractTask
             $this->addMessage('Importer has to implement ImporterInterface');
             return false;
         }
-        $importer->setTask($this);
+        $importer->setStoragePid($this->storagePid);
         $importer->setFile($file);
         if (!$importer->checkFile()) {
             return false;

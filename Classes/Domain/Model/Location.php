@@ -13,6 +13,7 @@ namespace JWeiland\Events2\Domain\Model;
 
 use JWeiland\Events2\Domain\Traits\Typo3PropertiesTrait;
 use JWeiland\Maps2\Domain\Model\PoiCollection;
+use SJBR\StaticInfoTables\Domain\Model\Country;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /*
@@ -46,6 +47,11 @@ class Location extends AbstractEntity
      * @var string
      */
     protected $city = '';
+
+    /**
+     * @var \SJBR\StaticInfoTables\Domain\Model\Country
+     */
+    protected $country;
 
     /**
      * @var \JWeiland\Events2\Domain\Model\Link
@@ -105,6 +111,16 @@ class Location extends AbstractEntity
     public function setCity(string $city)
     {
         $this->city = $city;
+    }
+
+    public function getCountry(): ?Country
+    {
+        return $this->country;
+    }
+
+    public function setCountry(?Country $country)
+    {
+        $this->country = $country;
     }
 
     public function getLink(): ?Link

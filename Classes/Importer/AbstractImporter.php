@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Importer;
 
+use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
@@ -34,6 +35,11 @@ use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 abstract class AbstractImporter implements ImporterInterface
 {
     /**
+     * @var int
+     */
+    protected $storagePid = 0;
+
+    /**
      * The file to import
      *
      * @var FileInterface
@@ -43,6 +49,7 @@ abstract class AbstractImporter implements ImporterInterface
     /**
      * Needed to retrieve the storagePid
      *
+     * @deprecated
      * @var Import
      */
     protected $task;
@@ -88,6 +95,11 @@ abstract class AbstractImporter implements ImporterInterface
     protected $dateTimeUtility;
 
     /**
+     * @var ExtConf
+     */
+    protected $extConf;
+
+    /**
      * @var \DateTime
      */
     protected $today;
@@ -98,7 +110,8 @@ abstract class AbstractImporter implements ImporterInterface
         LocationRepository $locationRepository,
         CategoryRepository $categoryRepository,
         PersistenceManagerInterface $persistenceManager,
-        DateTimeUtility $dateTimeUtility
+        DateTimeUtility $dateTimeUtility,
+        ExtConf $extConf
     ) {
         $this->eventRepository = $eventRepository;
         $this->organizerRepository = $organizerRepository;
@@ -106,12 +119,26 @@ abstract class AbstractImporter implements ImporterInterface
         $this->categoryRepository = $categoryRepository;
         $this->persistenceManager = $persistenceManager;
         $this->dateTimeUtility = $dateTimeUtility;
+        $this->extConf = $extConf;
         $this->today = new \DateTime('now');
     }
 
+    /**
+     * @param Import $task
+     * @deprecated will be removed in events2 7.0.0. Please set the storagePid directly
+     */
     public function setTask(Import $task): void
     {
+        trigger_error('setTask() will be removed in events2 7.0.0. Please set the storagePid directly.', E_USER_DEPRECATED);
         $this->task = $task;
+    }
+
+    /**
+     * @param int $storagePid
+     */
+    public function setStoragePid(int $storagePid): void
+    {
+        $this->storagePid = $storagePid;
     }
 
     public function setFile(FileInterface $file): void
@@ -143,7 +170,7 @@ abstract class AbstractImporter implements ImporterInterface
 
     protected function isValidEvent(array $event): bool
     {
-        // is future event?
+        // Is future event?
         $eventBegin = \DateTime::createFromFormat('Y-m-d', $event['event_begin']);
         if ($eventBegin < $this->today) {
             $this->addMessage(
@@ -158,50 +185,26 @@ abstract class AbstractImporter implements ImporterInterface
             return false;
         }
 
-        // specified organizer exists?
-        $organizer = $this->getOrganizer($event['organizer']);
-        if (empty($organizer)) {
-            $this->addMessage(
-                sprintf(
-                    'Event: %s - Date: %s - Error: %s',
-                    $event['title'],
-                    $eventBegin->format('d.m.Y'),
-                    'Given organizer "' . $event['organizer'] . '" does not exist in our database'
-                ),
-                FlashMessage::ERROR
-            );
-            return false;
-        }
-
-        // specified location exists?
-        $location = $this->getLocation($event['location']);
-        if (empty($location)) {
-            $this->addMessage(
-                sprintf(
-                    'Event: %s - Date: %s - Error: %s',
-                    $event['title'],
-                    $eventBegin->format('d.m.Y'),
-                    'Given location "' . $event['location'] . '" does not exist in our database'
-                ),
-                FlashMessage::ERROR
-            );
-            return false;
-        }
-
-        // specified categories exists?
-        foreach ($event['categories'] as $title) {
-            $category = $this->getCategory($title);
-            if (empty($category)) {
-                $this->addMessage(
-                    sprintf(
-                        'Event: %s - Date: %s - Error: %s',
-                        $event['title'],
-                        $eventBegin->format('d.m.Y'),
-                        'Given category "' . $title . '" does not exist in our database'
-                    ),
-                    FlashMessage::ERROR
-                );
+        if ($this->isOrganizerProcessable($event)) {
+            if ($this->getOrganizer($event['organizer']) === []) {
+                $this->addNotFoundMessage($event, 'organizer', $eventBegin);
                 return false;
+            }
+        }
+
+        if ($this->isLocationProcessable($event)) {
+            if ($this->getLocation($event['location']) === []) {
+                $this->addNotFoundMessage($event, 'location', $eventBegin);
+                return false;
+            }
+        }
+
+        if (isset($event['categories']) && is_array($event['categories'])) {
+            foreach ($event['categories'] as $title) {
+                if ($this->getCategory($title) === []) {
+                    $this->addNotFoundMessage($event, 'location', $eventBegin);
+                    return false;
+                }
             }
         }
 
@@ -250,8 +253,36 @@ abstract class AbstractImporter implements ImporterInterface
         return true;
     }
 
+    protected function addNotFoundMessage(array $event, string $property, \DateTime $date): void
+    {
+        $this->addMessage(
+            sprintf(
+                'Event: %s - Date: %s - Error: %s',
+                $event['title'],
+                $date->format('d.m.Y'),
+                sprintf(
+                    'Given %s "%s" does not exist in our database',
+                    $property,
+                    $event[$property]
+                )
+            ),
+            FlashMessage::ERROR
+        );
+    }
+
+    protected function isOrganizerProcessable(array $event): bool
+    {
+        return $this->extConf->getOrganizerIsRequired()
+            && array_key_exists('organizer', $event)
+            && $event['organizer'] !== '';
+    }
+
     protected function getOrganizer(string $title): ?array
     {
+        if ($title === '') {
+            return [];
+        }
+
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_organizer');
         $organizer = $queryBuilder
             ->select('uid')
@@ -268,8 +299,19 @@ abstract class AbstractImporter implements ImporterInterface
         return $organizer ?: [];
     }
 
+    protected function isLocationProcessable(array $event): bool
+    {
+        return $this->extConf->getLocationIsRequired()
+            && array_key_exists('location', $event)
+            && $event['location'] !== '';
+    }
+
     protected function getLocation(string $title): array
     {
+        if ($title === '') {
+            return [];
+        }
+
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_location');
 
         // I don't have the TypoScript or Plugin storage PID. That's why I don't use the repository directly
@@ -290,6 +332,10 @@ abstract class AbstractImporter implements ImporterInterface
 
     protected function getCategory(string $title): array
     {
+        if ($title === '') {
+            return [];
+        }
+
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('sys_category');
         $category = $queryBuilder
             ->select('uid')

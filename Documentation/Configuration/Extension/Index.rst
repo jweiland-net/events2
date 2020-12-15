@@ -59,6 +59,20 @@ If you're only working for one specific country while creating/editing locations
 in backend, it may be helpful to set country property with this default country. So you only need
 to add street and city to find a POI. If you need POIs from all over the world, please keep this field empty.
 
+xmlImportValidatorPath
+""""""""""""""""""""""
+
+Default: EXT:events2/Resources/Public/XmlImportValidator.xsd
+
+If you use our XML importer we will validate your XML structure against a XSD file. So, if you use name-Tag for
+categories the import will fail, because XSD knows that only a title-Tag is valid.
+
+By default organizer, location and categories are mandatory while import. If you set organizer and/or
+location as non-mandatory in Extension Setting this has no effect to the importer. Please make a copy of
+our XSD file and add the modifications you need and set new file path into this variable.
+
+You can prefix the path with EXT:
+
 organizerIsRequired
 """""""""""""""""""
 

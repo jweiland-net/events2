@@ -8,6 +8,11 @@ Updating
 
 If you update EXT:events2 to a newer version, please read this section carefully!
 
+Update to Version 6.1.1
+=======================
+
+We have changed data type of country to INT in DB. Please start compare database in INstalltool.
+
 Update to Version 6.0.0
 =======================
 

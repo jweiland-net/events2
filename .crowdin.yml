@@ -1,0 +1,5 @@
+files:
+  - source: /Resources/Private/Language/
+    ignore:
+      - /%original_path%/de.%original_file_name%
+    translation: /%original_path%/%two_letters_code%.%original_file_name%
