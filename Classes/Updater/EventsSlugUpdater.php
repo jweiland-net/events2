@@ -114,7 +114,7 @@ class EventsSlugUpdater implements UpgradeWizardInterface
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($this->tableName);
         $queryBuilder->getRestrictions()->removeByType(HiddenRestriction::class);
         $statement = $queryBuilder
-            ->select('uid', 'title', 'path_segment')
+            ->select('uid', 'pid', 'title')
             ->from($this->tableName)
             ->where(
                 $queryBuilder->expr()->orX(
@@ -132,7 +132,7 @@ class EventsSlugUpdater implements UpgradeWizardInterface
         $connection = $this->getConnectionPool()->getConnectionForTable($this->tableName);
         while ($recordToUpdate = $statement->fetch()) {
             if ((string)$recordToUpdate['title'] !== '') {
-                $slug = $this->slugHelper->sanitize((string)$recordToUpdate['title']);
+                $slug = $this->slugHelper->generate($recordToUpdate, (int)$recordToUpdate['pid']);
                 $connection->update(
                     $this->tableName,
                     [
