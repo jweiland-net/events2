@@ -12,11 +12,12 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Updater;
 
 use Doctrine\DBAL\Driver\Statement;
+use JWeiland\Events2\Configuration\ExtConf;
+use JWeiland\Events2\Helper\PathSegmentHelper;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
-use TYPO3\CMS\Core\DataHandling\SlugHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
 use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
@@ -34,29 +35,27 @@ class EventsSlugUpdater implements UpgradeWizardInterface
     /**
      * @var string
      */
-    protected $fieldName = 'path_segment';
+    protected $slugColumn = 'path_segment';
 
     /**
-     * @var SlugHelper
+     * @var string
      */
-    protected $slugHelper;
+    protected $titleColumn = 'title';
 
     /**
-     * @var array
+     * @var PathSegmentHelper
      */
-    protected $slugCache = [];
+    protected $pathSegmentHelper;
 
-    public function __construct(SlugHelper $slugHelper = null)
+    /**
+     * @var ExtConf
+     */
+    protected $extConf;
+
+    public function __construct(PathSegmentHelper $pathSegmentHelper = null, ExtConf $extConf = null)
     {
-        if ($slugHelper === null) {
-            $slugHelper = GeneralUtility::makeInstance(
-                SlugHelper::class,
-                $this->tableName,
-                $this->fieldName,
-                $GLOBALS['TCA'][$this->tableName]['columns']['path_segment']['config']
-            );
-        }
-        $this->slugHelper = $slugHelper;
+        $this->pathSegmentHelper = $pathSegmentHelper ?? GeneralUtility::makeInstance(PathSegmentHelper::class);
+        $this->extConf = $extConf ?? GeneralUtility::makeInstance(ExtConf::class);
     }
 
     /**
@@ -82,6 +81,10 @@ class EventsSlugUpdater implements UpgradeWizardInterface
 
     public function updateNecessary(): bool
     {
+        if ($this->extConf->getPathSegmentType() === 'empty') {
+            return false;
+        }
+
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($this->tableName);
         $queryBuilder->getRestrictions()->removeByType(HiddenRestriction::class);
         $amountOfRecordsWithEmptySlug = $queryBuilder
@@ -90,11 +93,11 @@ class EventsSlugUpdater implements UpgradeWizardInterface
             ->where(
                 $queryBuilder->expr()->orX(
                     $queryBuilder->expr()->eq(
-                        $this->fieldName,
+                        $this->slugColumn,
                         $queryBuilder->createNamedParameter('', Connection::PARAM_STR)
                     ),
                     $queryBuilder->expr()->isNull(
-                        $this->fieldName
+                        $this->slugColumn
                     )
                 )
             )
@@ -111,19 +114,23 @@ class EventsSlugUpdater implements UpgradeWizardInterface
      */
     public function executeUpdate(): bool
     {
+        if ($this->extConf->getPathSegmentType() === 'empty') {
+            return false;
+        }
+
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($this->tableName);
         $queryBuilder->getRestrictions()->removeByType(HiddenRestriction::class);
         $statement = $queryBuilder
-            ->select('uid', 'pid', 'title')
+            ->select('uid', 'pid', $this->titleColumn)
             ->from($this->tableName)
             ->where(
                 $queryBuilder->expr()->orX(
                     $queryBuilder->expr()->eq(
-                        $this->fieldName,
+                        $this->slugColumn,
                         $queryBuilder->createNamedParameter('', Connection::PARAM_STR)
                     ),
                     $queryBuilder->expr()->isNull(
-                        $this->fieldName
+                        $this->slugColumn
                     )
                 )
             )
@@ -131,15 +138,11 @@ class EventsSlugUpdater implements UpgradeWizardInterface
 
         $connection = $this->getConnectionPool()->getConnectionForTable($this->tableName);
         while ($recordToUpdate = $statement->fetch()) {
-            if ((string)$recordToUpdate['title'] !== '') {
-                $slug = $this->slugHelper->generate($recordToUpdate, (int)$recordToUpdate['pid']);
+            if ((string)$recordToUpdate[$this->titleColumn] !== '') {
                 $connection->update(
                     $this->tableName,
                     [
-                        $this->fieldName => $this->getUniqueValue(
-                            (int)$recordToUpdate['uid'],
-                            $slug
-                        )
+                        $this->slugColumn => $this->pathSegmentHelper->generatePathSegment($recordToUpdate)
                     ],
                     [
                         'uid' => (int)$recordToUpdate['uid']
@@ -186,7 +189,7 @@ class EventsSlugUpdater implements UpgradeWizardInterface
             ->from($this->tableName)
             ->where(
                 $queryBuilder->expr()->eq(
-                    $this->fieldName,
+                    $this->slugColumn,
                     $queryBuilder->createPositionalParameter($slug, Connection::PARAM_STR)
                 ),
                 $queryBuilder->expr()->neq(

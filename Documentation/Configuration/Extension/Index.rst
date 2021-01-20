@@ -87,6 +87,29 @@ Default: false
 
 If you want, you can set column *Location* as required. That way an editor has to fill this column.
 
+pathSegmentType
+"""""""""""""""
+
+Default: Do nothing (Internal: empty)
+
+events2 works with path segments to help you building much more readable URLs with new RouteEnhancers. But what should
+happen, if there are duplicates while executing the PathSegmentUpdateWizard or a frontend user creates a new event?
+
+Info: This setting does not effect new events generated within TYPO3 Backend, as we do not have any UID while storing
+the event!
+
+**Do nothing (default)**
+The column `path_segment` will not be touched by events2. Use the SignalSlot in `createAction` and implement
+generation of `path_segment` on your own. But if you return an empty value events2 will throw an exception.
+
+**RealUrl**
+`path_segment` will be filled with an incremented value of event title. If there are 3 events called `swimming` it
+will result in `swimming`, `swimming-1`, `swimming-2`
+
+**Incl. UID**
+Column `path_segment` will be filled with a combination of event title and uid like: `star-wars-77`
+
+
 Tab: Email
 ==========
 

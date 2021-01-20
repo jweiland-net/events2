@@ -22,6 +22,7 @@ use JWeiland\Events2\Domain\Repository\LinkRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Domain\Repository\UserRepository;
 use JWeiland\Events2\Helper\HiddenObjectHelper;
+use JWeiland\Events2\Helper\PathSegmentHelper;
 use JWeiland\Events2\Property\TypeConverter\UploadMultipleFilesConverter;
 use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Utility\CacheUtility;
@@ -207,15 +208,24 @@ class EventController extends AbstractController
         $this->persistenceManager->persistAll();
         $this->addDayRelations($event);
 
-        $signalArguments = [
-            'event' => $event
-        ];
+        $pathSegmentHelper = GeneralUtility::makeInstance(PathSegmentHelper::class);
+        $pathSegmentHelper->updatePathSegmentForEvent($event);
+        $this->eventRepository->update($event);
 
         $signalArguments = $this->emitActionSignal(
             'EventController',
             'createAction',
-            $signalArguments
+            [
+                'event' => $event
+            ]
         );
+
+        if (!$event->getPathSegment()) {
+            throw new \Exception(
+                'Path Segment of event is missing. Please check pathSegmentType in extension settings or used SignalSlots in create action',
+                1611157656
+            );
+        }
 
         $this->sendMail('create', $signalArguments['event']);
         $this->addFlashMessage(LocalizationUtility::translate('eventCreated', 'events2'));
