@@ -80,6 +80,11 @@ class ExtConf implements SingletonInterface
      */
     protected $emailToName = '';
 
+    /**
+     * @var string
+     */
+    protected $pathSegmentType = 'empty';
+
     public function __construct()
     {
         // get global configuration
@@ -245,5 +250,19 @@ class ExtConf implements SingletonInterface
     public function setEmailToName(string $emailToName)
     {
         $this->emailToName = $emailToName;
+    }
+
+    public function getPathSegmentType(): string
+    {
+        if (empty($this->pathSegmentType)) {
+            $this->pathSegmentType = 'empty';
+        }
+
+        return $this->pathSegmentType;
+    }
+
+    public function setPathSegmentType(string $pathSegmentType): void
+    {
+        $this->pathSegmentType = $pathSegmentType;
     }
 }

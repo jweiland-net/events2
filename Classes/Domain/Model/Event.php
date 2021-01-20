@@ -44,6 +44,11 @@ class Event extends AbstractEntity
     protected $title = '';
 
     /**
+     * @var string
+     */
+    protected $pathSegment = '';
+
+    /**
      * @var \DateTime
      * @Extbase\Validate("NotEmpty")
      */
@@ -221,6 +226,16 @@ class Event extends AbstractEntity
     public function setTitle(string $title)
     {
         $this->title = $title;
+    }
+
+    public function getPathSegment(): string
+    {
+        return trim($this->pathSegment);
+    }
+
+    public function setPathSegment(string $pathSegment): void
+    {
+        $this->pathSegment = $pathSegment;
     }
 
     public function getEventBegin(): ?\DateTime
@@ -848,5 +863,20 @@ class Event extends AbstractEntity
     public function setImportId(string $importId)
     {
         $this->importId = $importId;
+    }
+
+    /**
+     * Helper method to build a baseRecord for path_segment
+     * Needed in PathSegmentHelper
+     *
+     * @return array
+     */
+    public function getBaseRecordForPathSegment(): array
+    {
+        return [
+            'uid' => $this->getUid(),
+            'pid' => $this->getPid(),
+            'title' => $this->getTitle()
+        ];
     }
 }

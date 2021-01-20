@@ -35,6 +35,10 @@
 				<source>Is location required: By default it is not needed to explicit set a location. But, if you want, you can set location as a required property with activating this checkbox</source>
 				<target>Veranstaltungsort als Pflichtfeld: Standardmäßig ist der Veranstaltungsort kein Pflichtfeld. Aber wenn alle Veranstaltungen zwingend einen Veranstaltungsort benötigen, dann kannst Du dies mit dieser Option aktivieren.</target>
 			</trans-unit>
+			<trans-unit id="pathSegmentType" xml:space="preserve">
+				<source>Path Segment type: Set path segment type for frontend created events and PathSegment UpdateWizard. Set to "Do nothing" to keep path_segment untouched. Set to "RealUrl" to add a counter on duplicates (swimm, swimm-1, swimm-2). Set to "UID" to build a path segment based on title and uid.</source>
+				<target>Typ für sprechende URL: Setzt den Sprechende URL Typ für im Frontend erstellte Veranstaltungen und den PathSegment UpdateWizard. Bei "Do nothing" bleibt path_segment unberührt. Bei "RealUrl" wird dem path_segment ein Zähler angefügt, um Duplikate zu verhindern (brot, brot-1, brot-2). Bei "UID" wird path_segment auf Basis von Titel und UID erstellt.</target>
+			</trans-unit>
 
 			<trans-unit id="emailFromAddress" xml:space="preserve">
 				<source>email from address: The senders email address. If not given the extension tries to get one from INSTALL_TOOL.</source>
