@@ -79,7 +79,8 @@ class PathSegmentHelper
         $this->slugHelper = $slugHelper;
     }
 
-    public function generatePathSegment(array $baseRecord): string {
+    public function generatePathSegment(array $baseRecord): string
+    {
         $pathSegment = $this->slugHelper->generate(
             $baseRecord,
             (int)$baseRecord['pid']
