@@ -16,6 +16,7 @@ use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Helper\PathSegmentHelper;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -85,22 +86,9 @@ class EventsSlugUpdater implements UpgradeWizardInterface
             return false;
         }
 
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($this->tableName);
-        $queryBuilder->getRestrictions()->removeByType(HiddenRestriction::class);
+        $queryBuilder = $this->getQueryBuilder();
         $amountOfRecordsWithEmptySlug = $queryBuilder
             ->count('*')
-            ->from($this->tableName)
-            ->where(
-                $queryBuilder->expr()->orX(
-                    $queryBuilder->expr()->eq(
-                        $this->slugColumn,
-                        $queryBuilder->createNamedParameter('', Connection::PARAM_STR)
-                    ),
-                    $queryBuilder->expr()->isNull(
-                        $this->slugColumn
-                    )
-                )
-            )
             ->execute()
             ->fetchColumn(0);
 
@@ -118,22 +106,9 @@ class EventsSlugUpdater implements UpgradeWizardInterface
             return false;
         }
 
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($this->tableName);
-        $queryBuilder->getRestrictions()->removeByType(HiddenRestriction::class);
+        $queryBuilder = $this->getQueryBuilder();
         $statement = $queryBuilder
             ->select('uid', 'pid', $this->titleColumn)
-            ->from($this->tableName)
-            ->where(
-                $queryBuilder->expr()->orX(
-                    $queryBuilder->expr()->eq(
-                        $this->slugColumn,
-                        $queryBuilder->createNamedParameter('', Connection::PARAM_STR)
-                    ),
-                    $queryBuilder->expr()->isNull(
-                        $this->slugColumn
-                    )
-                )
-            )
             ->execute();
 
         $connection = $this->getConnectionPool()->getConnectionForTable($this->tableName);
@@ -152,6 +127,27 @@ class EventsSlugUpdater implements UpgradeWizardInterface
         }
 
         return true;
+    }
+
+    protected function getQueryBuilder(): QueryBuilder
+    {
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($this->tableName);
+        $queryBuilder->getRestrictions()->removeAll();
+        $queryBuilder->getRestrictions()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
+
+        return $queryBuilder
+            ->from($this->tableName)
+            ->where(
+                $queryBuilder->expr()->orX(
+                    $queryBuilder->expr()->eq(
+                        $this->slugColumn,
+                        $queryBuilder->createNamedParameter('', Connection::PARAM_STR)
+                    ),
+                    $queryBuilder->expr()->isNull(
+                        $this->slugColumn
+                    )
+                )
+            );
     }
 
     /**
