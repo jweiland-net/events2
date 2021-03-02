@@ -192,7 +192,7 @@ class DayRepository extends Repository
         // add storage PID for event and day, but not for sys_category
         $this->databaseService->addConstraintForPid(
             $subQueryBuilder,
-            $extbaseQuery->getQuerySettings()->getStoragePageIds(),
+            $search->getStoragePids() ?: $extbaseQuery->getQuerySettings()->getStoragePageIds(),
             $queryBuilder,
             '_sub_query'
         );
@@ -290,6 +290,10 @@ class DayRepository extends Repository
             ->orderBy('event.top_of_list', 'DESC')
             ->addOrderBy('day.sort_day_time', 'ASC')
             ->addOrderBy('day.day_time', 'ASC');
+
+        if (!empty($search->getLimit())) {
+            $queryBuilder->setMaxResults($search->getLimit());
+        }
 
         $this->addMergeFeatureToQuery($subQueryBuilder);
         $this->emitModifyQueriesOfSearchEventsSignal($queryBuilder, $subQueryBuilder, $search, $this->settings);

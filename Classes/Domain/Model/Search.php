@@ -56,6 +56,16 @@ class Search extends AbstractEntity
      */
     protected $freeEntry = false;
 
+    /**
+     * @var array
+     */
+    protected $storagePids = [];
+
+    /**
+     * @var int
+     */
+    protected $limit = 0;
+
     public function getSearch(): string
     {
         return $this->search;
@@ -159,5 +169,25 @@ class Search extends AbstractEntity
     public function setFreeEntry(bool $freeEntry)
     {
         $this->freeEntry = $freeEntry;
+    }
+
+    public function getStoragePids(): array
+    {
+        return $this->storagePids;
+    }
+
+    public function setStoragePids(array $storagePids)
+    {
+        $this->storagePids = $storagePids;
+    }
+
+    public function getLimit(): int
+    {
+        return $this->limit;
+    }
+
+    public function setLimit(int $limit)
+    {
+        $this->limit = $limit;
     }
 }
