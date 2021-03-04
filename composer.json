@@ -45,6 +45,7 @@
 	},
 	"extra": {
 		"typo3/cms": {
+			"extension-key": "events2",
 			"app-dir": ".build",
 			"web-dir": ".build/public"
 		}
