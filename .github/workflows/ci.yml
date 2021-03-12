@@ -5,23 +5,51 @@ on: [pull_request]
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
+
     strategy:
+      fail-fast: false
       matrix:
         typo3: [^9.5, ^10.4]
         php: ['7.2', '7.3', '7.4']
-        os: [ubuntu-latest]
+
+    services:
+      mysql:
+        image: mysql:5.6
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: false
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: test
+        ports:
+          - 3306/tcp
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Set up PHP Version ${{ matrix.php }}
-        run: |
-          sudo update-alternatives --set php /usr/bin/php${{ matrix.php }}
-          php -v
+      - name: Setup PHP ${{ matrix.php }}, with composer and extensions
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, dom, zip, mysql
+
+      - name: Start mysql service
+        run: sudo /etc/init.d/mysql start
+
       - name: Validate composer.json and composer.lock
         run: composer validate
+
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Cache composer dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ runner.os }}-composer-
 
       - name: Install dependencies with typo3/cms-core:${{ matrix.typo3 }}
         run: |
@@ -36,16 +64,14 @@ jobs:
         run: composer ci:php:lint
 
       - name: Unit Tests
-        run: |
-          composer ci:tests:unit
+        run: composer ci:tests:unit
 
       - name: Functional Tests
         env:
           typo3DatabaseName: test
           typo3DatabaseUsername: root
-          typo3DatabasePassword: root
+          typo3DatabasePassword: password
           typo3DatabaseHost: 127.0.0.1
-          COMPOSER_PROCESS_TIMEOUT: 900
+          typo3DatabasePort: ${{ job.services.mysql.ports['3306'] }}
         run: |
-          sudo systemctl start mysql.service
           composer ci:tests:functional
