@@ -333,7 +333,7 @@ class DayRepository extends Repository
         );
 
         $queryBuilder
-            ->select(...$this->getColumnsForDayTable())
+            ->select(...$this->getColumnsForDayTable(['event.top_of_list']))
             ->from('tx_events2_domain_model_day', 'day')
             ->leftJoin(
                 'day',
@@ -347,7 +347,7 @@ class DayRepository extends Repository
             ->orderBy('event.top_of_list', 'DESC')
             ->addOrderBy('day.sort_day_time', 'ASC')
             ->addOrderBy('day.day_time', 'ASC')
-            ->groupBy(...$this->getColumnsForDayTable()); // keep that because of category relation
+            ->groupBy(...$this->getColumnsForDayTable(['event.top_of_list'])); // keep that because of category relation
 
         $this->emitModifyQueriesOfFindByTimestampSignal($queryBuilder, $timestamp, $this->settings);
         $extbaseQuery->statement($queryBuilder);
@@ -359,12 +359,13 @@ class DayRepository extends Repository
      * ->select() and ->groupBy() has to be the same in DB configuration
      * where only_full_group_by is activated.
      *
+     * @param array $additionalColumns Must contain table: [table].[column]
      * @return array
      */
-    protected function getColumnsForDayTable(): array
+    protected function getColumnsForDayTable(array $additionalColumns = []): array
     {
         $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_day');
-        return array_map(
+        $dayColumns = array_map(
             function ($column) {
                 return 'day.' . $column;
             },
@@ -372,6 +373,8 @@ class DayRepository extends Repository
                 $connection->getSchemaManager()->listTableColumns('tx_events2_domain_model_day') ?? []
             )
         );
+
+        return array_merge($dayColumns, $additionalColumns);
     }
 
     /**
