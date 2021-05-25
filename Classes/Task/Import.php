@@ -34,7 +34,10 @@ class Import extends AbstractTask
     public $path = '';
 
     /**
-     * @var int
+     * It's public and will be set externally by scheduler.
+     * Internally it's INT, but the form-value is string.
+     *
+     * @var int|string
      */
     public $storagePid = 0;
 
@@ -104,7 +107,7 @@ class Import extends AbstractTask
             $this->addMessage('Importer has to implement ImporterInterface');
             return false;
         }
-        $importer->setStoragePid($this->storagePid);
+        $importer->setStoragePid($this->getStoragePid());
         $importer->setFile($file);
         if (!$importer->checkFile()) {
             return false;
@@ -125,5 +128,10 @@ class Import extends AbstractTask
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
         $defaultFlashMessageQueue->enqueue($flashMessage);
+    }
+
+    protected function getStoragePid(): int
+    {
+        return (int)$this->storagePid;
     }
 }
