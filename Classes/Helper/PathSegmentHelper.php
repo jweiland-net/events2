@@ -49,39 +49,18 @@ class PathSegmentHelper
     protected $extConf;
 
     /**
-     * @var SlugHelper
-     */
-    protected $slugHelper;
-
-    /**
      * @var array
      */
     protected $slugCache = [];
 
-    public function __construct(ExtConf $extConf = null, SlugHelper $slugHelper = null)
+    public function __construct(ExtConf $extConf = null)
     {
         $this->extConf = $extConf ?? GeneralUtility::makeInstance(ExtConf::class);
-
-        if ($slugHelper === null) {
-            $config = $GLOBALS['TCA'][$this->tableName]['columns'][$this->slugColumn]['config'];
-
-            if ($this->extConf->getPathSegmentType() === 'uid') {
-                $config['generatorOptions']['fields'] = ['title', 'uid'];
-            }
-
-            $slugHelper = GeneralUtility::makeInstance(
-                SlugHelper::class,
-                $this->tableName,
-                $this->slugColumn,
-                $config
-            );
-        }
-        $this->slugHelper = $slugHelper;
     }
 
     public function generatePathSegment(array $baseRecord): string
     {
-        $pathSegment = $this->slugHelper->generate(
+        $pathSegment = $this->getSlugHelper()->generate(
             $baseRecord,
             (int)$baseRecord['pid']
         );
@@ -148,6 +127,22 @@ class PathSegmentHelper
                 )
             )
             ->execute();
+    }
+
+    protected function getSlugHelper(): SlugHelper
+    {
+        $config = $GLOBALS['TCA'][$this->tableName]['columns'][$this->slugColumn]['config'];
+
+        if ($this->extConf->getPathSegmentType() === 'uid') {
+            $config['generatorOptions']['fields'] = ['title', 'uid'];
+        }
+
+        return GeneralUtility::makeInstance(
+            SlugHelper::class,
+            $this->tableName,
+            $this->slugColumn,
+            $config
+        );
     }
 
     protected function getConnectionPool(): ConnectionPool
