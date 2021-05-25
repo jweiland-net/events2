@@ -8,6 +8,11 @@ Updating
 
 If you update EXT:events2 to a newer version, please read this section carefully!
 
+Update to Version 6.2.4
+=======================
+
+We have changed some method arguments, please flush cache in InstallTool
+
 Update to Version 6.1.1
 =======================
 
