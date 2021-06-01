@@ -48,7 +48,7 @@ call_user_func(function () {
     // register an eval function to check for time
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tce']['formevals'][\JWeiland\Events2\Tca\Type\Time::class] = '';
     // delete and recreate day relations for an event while saving
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = \JWeiland\Events2\Hooks\DataHandler::class;
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['events2_createDayRelations'] = \JWeiland\Events2\Hooks\DataHandler::class;
     // Clear cache of pages with events, if event was edited/created/deleted in BE
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['clearCachePostProc']['events2_clearcache'] = \JWeiland\Events2\Hooks\DataHandler::class . '->clearCachePostProc';
 
@@ -110,9 +110,9 @@ call_user_func(function () {
     if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('solr')) {
         // Remove non current events from resultSet
         // Add nextDay field to SearchResult object
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch'][] = \JWeiland\Events2\Hooks\Solr\ResultsCommandHook::class;
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']['events2_addNextDay'] = \JWeiland\Events2\Hooks\Solr\ResultsCommandHook::class;
         // As we can't create a SQL Query with JOIN in Solr configuration, we have to remove invalid documents on our own
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments'][] = \JWeiland\Events2\Hooks\Solr\IndexerHook::class;
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments']['events2_removeInvalidDocs'] = \JWeiland\Events2\Hooks\Solr\IndexerHook::class;
     }
 
     // Prefill event_begin with current Timestamp
