@@ -8,6 +8,12 @@ Updating
 
 If you update EXT:events2 to a newer version, please read this section carefully!
 
+Update to Version 6.2.6
+=======================
+
+We have changed the keys for various used hooks from incremented numbered to string based keys in ext_localconf.php.
+As a developer you should check, if your own implementation is still working.
+
 Update to Version 6.2.4
 =======================
 
