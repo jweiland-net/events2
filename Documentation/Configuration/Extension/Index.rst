@@ -78,7 +78,7 @@ organizerIsRequired
 
 Default: false
 
-If you want, you can set column *Organizer* as required. That way an editor has to fill this column.
+If you want, you can set column *Organizers* as required. That way an editor has to fill this column.
 
 locationIsRequired
 """"""""""""""""""

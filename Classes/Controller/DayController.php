@@ -43,12 +43,12 @@ class DayController extends AbstractController
         $this->organizerRepository = $organizerRepository;
     }
 
-    public function initializeObject()
+    public function initializeObject(): void
     {
         $this->dayRepository->setSettings($this->settings);
     }
 
-    protected function initializeView(ViewInterface $view)
+    protected function initializeView(ViewInterface $view): void
     {
         parent::initializeView($view);
 

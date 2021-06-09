@@ -28,7 +28,7 @@
 				<target>Pfad zur XML Validator Datei (xsd): Beim Importieren von Veranstaltungen über unsere XML Schnittstelle prüfen wir die XML Datei gegen eine XSD Datei. Wenn Ihr hier eigene Überprüfungen benötigt, könnt ihr hier eine eigene XSD-Datei angeben.</target>
 			</trans-unit>
 			<trans-unit id="organizerIsRequired">
-				<source>Is organizer required: By default it is not needed to explicit set an organizer. But, if you want, you can set organizer as a required property with activating this checkbox</source>
+				<source>Is organizer required: By default it is not needed to explicit set an organizer. But, if you want, you can set organizers as a required property with activating this checkbox</source>
 				<target>Veranstalter als Pflichtfeld: Standardmäßig ist der Veranstalter kein Pflichtfeld. Aber wenn alle Veranstaltungen zwingend einen Veranstalter benötigen, dann kannst Du dies mit dieser Option aktivieren.</target>
 			</trans-unit>
 			<trans-unit id="locationIsRequired">

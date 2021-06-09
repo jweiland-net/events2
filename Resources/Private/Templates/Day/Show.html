@@ -30,7 +30,7 @@
 				<span aria-hidden="true" class="icon-arrowright"></span>
 			</f:link.action>
 		</p>
-		<f:if condition="{e2:feUser(field: 'tx_events2_organizer')} == {event.organizer.uid}">
+		<f:if condition="{event.isCurrentUserAllowedOrganizer}">
 			<p class="align-right info-box">
 				<f:link.action action="edit" controller="Event" arguments="{event: event, timestamp: '0'}" title="{f:translate(key: 'update')}">
 					<f:translate key="update" />

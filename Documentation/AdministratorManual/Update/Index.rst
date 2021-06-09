@@ -8,6 +8,28 @@ Updating
 
 If you update EXT:events2 to a newer version, please read this section carefully!
 
+Update to Version 6.3.0
+=======================
+
+It is now possible to assign multiple organizers to an event record. That's why we have added a new MM table
+and a new column ``organizers`` which has to be created by ``Analyze database`` button in Installtool. Please
+execute events2 upgrade wizard to migrate all current relations into this new table. If UpgradeWizard was
+executed successfully you can remove the old ``organizer`` column.
+
+Please update following parts in your templates:
+
+<f:if condition="{e2:feUser(field: 'tx_events2_organizer')} == {event.organizer.uid}">
+
+to ``<f:if condition="{event.isCurrentUserAllowedOrganizer}">``.
+
+We have changed the column ``detail_informations`` of event table to ``detail_information``. Please execute
+UpgradeWizard to move all data into this new column. Old calls to getDetailInformations are still possible but
+deprecated and removed with events2 7.0.0.
+
+In XSD file for XML import we have changed ``organizer`` to ``organizers``. Please update your XML file generation
+or load an old XSD file in Extension Settings of Installtool. But with 7.0.0 we will not support the old
+``organizer`` property while XML import anymore.
+
 Update to Version 6.2.6
 =======================
 

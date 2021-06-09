@@ -19,12 +19,12 @@ CREATE TABLE tx_events2_domain_model_event (
   each_months int(11) DEFAULT '0' NOT NULL,
   recurring_end int(11) DEFAULT '0' NOT NULL,
   exceptions int(11) DEFAULT '0' NOT NULL,
-  detail_informations text,
+  detail_information text,
   free_entry tinyint(1) unsigned DEFAULT '0' NOT NULL,
   ticket_link int(11) unsigned DEFAULT '0',
   days int(11) unsigned DEFAULT '0' NOT NULL,
   location int(11) unsigned DEFAULT '0',
-  organizer int(11) unsigned DEFAULT '0',
+  organizers int(11) unsigned DEFAULT '0',
   images int(11) unsigned DEFAULT '0',
   video_link int(11) unsigned DEFAULT '0',
   download_links varchar(255) DEFAULT '' NOT NULL,
@@ -113,6 +113,19 @@ CREATE TABLE tx_events2_domain_model_holiday (
   title varchar(255) DEFAULT '' NOT NULL,
   day int(2) unsigned DEFAULT '0' NOT NULL,
   month int(2) unsigned DEFAULT '0' NOT NULL
+);
+
+#
+# Table structure for table 'tx_events2_event_organizer_mm'
+#
+CREATE TABLE tx_events2_event_organizer_mm (
+  uid_local int(11) unsigned DEFAULT '0' NOT NULL,
+  uid_foreign int(11) unsigned DEFAULT '0' NOT NULL,
+  sorting int(11) unsigned DEFAULT '0' NOT NULL,
+  sorting_foreign int(11) unsigned DEFAULT '0' NOT NULL,
+
+  KEY uid_local (uid_local),
+  KEY uid_foreign (uid_foreign)
 );
 
 #

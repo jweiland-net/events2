@@ -375,8 +375,10 @@ class EventController extends AbstractController
         $this->redirect('list', 'Day');
     }
 
-    protected function setDatePropertyFormat(string $property, PropertyMappingConfigurationInterface $configuration)
-    {
+    protected function setDatePropertyFormat(
+        string $property,
+        PropertyMappingConfigurationInterface $configuration
+    ): void {
         $configuration
             ->forProperty($property)
             ->setTypeConverterOption(
@@ -503,27 +505,26 @@ class EventController extends AbstractController
     {
         if ($this->request->hasArgument($argument)) {
             $event = $this->request->getArgument($argument);
-            if (is_array($event) && array_key_exists('organizer', $event)) {
+            if (is_array($event) && !array_key_exists('organizers', $event)) {
                 $organizerOfCurrentUser = $this->userRepository->getFieldFromUser('tx_events2_organizer');
                 if (MathUtility::canBeInterpretedAsInteger($organizerOfCurrentUser)) {
-                    $event['organizer'] = $organizerOfCurrentUser;
+                    $event['organizers'][0] = $organizerOfCurrentUser;
                     // per default it is not allowed to add new Arguments manually. So we have to register them.
                     // allow mapping of organizer
                     $this->arguments
                         ->getArgument($argument)
                         ->getPropertyMappingConfiguration()
-                        ->allowProperties('organizer');
+                        ->allowProperties('organizers');
                     // allow creation
                     $this->arguments
                         ->getArgument($argument)
                         ->getPropertyMappingConfiguration()
-                        ->forProperty('organizer')
+                        ->forProperty('organizers.*')
                         ->setTypeConverterOption(
                             'TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter',
                             PersistentObjectConverter::CONFIGURATION_CREATION_ALLOWED,
                             true
-                        )
-                        ->allowProperties('organizer');
+                        );
                     $this->request->setArgument($argument, $event);
                 } else {
                     return false;

@@ -10,7 +10,7 @@
 			<duration>60</duration>
 		</event_time>
 		<same_day>true</same_day>
-		<detail_informations />
+		<detail_information />
 		<ticket_link>
 			<title>Tickets</title>
 			<uri>https://www.jweiland.net</uri>
@@ -31,7 +31,7 @@
 		</event_time>
 		<xth>2</xth>
 		<weekday>9</weekday>
-		<detail_informations />
+		<detail_information />
 		<images />
 		<categories />
 	</event>
@@ -46,7 +46,7 @@
 		<event_time>
 			<time_begin>12:30</time_begin>
 		</event_time>
-		<detail_informations />
+		<detail_information />
 		<images />
 		<categories />
 	</event>

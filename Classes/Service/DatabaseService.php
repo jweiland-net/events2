@@ -435,15 +435,25 @@ class DatabaseService
             $parentQueryBuilder = $queryBuilder;
         }
 
-        $queryBuilder->andWhere(
-            $queryBuilder->expr()->eq(
-                $alias . '.organizer',
-                $parentQueryBuilder->createNamedParameter(
-                    $organizer,
-                    \PDO::PARAM_INT
+        $queryBuilder
+            ->innerJoin(
+                $alias,
+                'tx_events2_event_organizer_mm',
+                'eo_mm',
+                $queryBuilder->expr()->eq(
+                    $alias . '.uid',
+                    $queryBuilder->quoteIdentifier('eo_mm.uid_local')
                 )
             )
-        );
+            ->andWhere(
+                $queryBuilder->expr()->eq(
+                    'eo_mm.uid_foreign',
+                    $parentQueryBuilder->createNamedParameter(
+                        $organizer,
+                        \PDO::PARAM_INT
+                    )
+                )
+            );
     }
 
     public function addConstraintForLocation(

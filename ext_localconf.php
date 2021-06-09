@@ -128,5 +128,10 @@ call_user_func(function () {
         ]
     ];
 
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['events2UpdateSlug'] = \JWeiland\Events2\Updater\EventsSlugUpdater::class;
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['events2UpdateSlug']
+        = \JWeiland\Events2\Updater\EventsSlugUpdater::class;
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['events2MigrateOrganizer']
+        = \JWeiland\Events2\Updater\MigrateOrganizerToMMUpdater::class;
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['events2MigrateDetailInformations']
+        = \JWeiland\Events2\Updater\MigrateDetailInformationsUpdater::class;
 });

@@ -83,7 +83,7 @@ class EventRepository extends Repository implements HiddenRepositoryInterface
         $organizer = (int)$userRepository->getFieldFromUser('tx_events2_organizer');
         $query = $this->createQuery();
 
-        return $query->matching($query->equals('organizer.uid', $organizer))->execute();
+        return $query->matching($query->equals('organizers.uid', $organizer))->execute();
     }
 
     /**

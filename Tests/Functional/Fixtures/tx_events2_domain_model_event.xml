@@ -15,7 +15,7 @@
 		<same_day>0</same_day>
 		<each_weeks>0</each_weeks>
 		<each_months>0</each_months>
-		<detail_informations>Detail Event</detail_informations>
+		<detail_information>Detail Event</detail_information>
 		<free_entry>1</free_entry>
 		<video_link>1</video_link>
 	</tx_events2_domain_model_event>

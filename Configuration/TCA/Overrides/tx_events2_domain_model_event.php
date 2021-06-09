@@ -20,8 +20,8 @@ call_user_func(function () {
 
     // check, if organizer is required
     if ($extConf->getOrganizerIsRequired()) {
-        $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['organizer']['config']['required'] = true;
-        $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['organizer']['config']['minitems'] = 1;
+        $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['organizers']['config']['required'] = true;
+        $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['organizers']['config']['minitems'] = 1;
     }
     // check, if location is required
     if ($extConf->getLocationIsRequired()) {
