@@ -10,12 +10,14 @@
 			<time_begin>12:45</time_begin>
 			<duration>60</duration>
 		</event_time>
-		<detail_informations />
+		<detail_information />
 		<ticket_link>
 			<title>Tickets</title>
 			<uri>https://www.jweiland.net</uri>
 		</ticket_link>
-		<organizer>Kino</organizer>
+		<organizers>
+			<organizer index="0">Kino</organizer>
+		</organizers>
 		<location>Kino</location>
 		<images />
 		<categories>

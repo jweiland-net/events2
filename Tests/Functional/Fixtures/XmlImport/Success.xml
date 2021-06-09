@@ -10,12 +10,14 @@
 			<duration>60</duration>
 		</event_time>
 		<same_day>true</same_day>
-		<detail_informations />
+		<detail_information />
 		<ticket_link>
 			<title>Tickets</title>
 			<uri>https://www.jweiland.net</uri>
 		</ticket_link>
-		<organizer>Kino</organizer>
+		<organizers>
+			<organizer index="0">Kino</organizer>
+		</organizers>
 		<location>Kino</location>
 		<images />
 		<categories>
@@ -35,8 +37,10 @@
 		</event_time>
 		<xth>2</xth>
 		<weekday>9</weekday>
-		<detail_informations />
-		<organizer>Kino</organizer>
+		<detail_information />
+		<organizers>
+			<organizer index="0">Kino</organizer>
+		</organizers>
 		<location>Kino</location>
 		<images />
 		<categories>
@@ -54,8 +58,10 @@
 		<event_time>
 			<time_begin>12:30</time_begin>
 		</event_time>
-		<detail_informations />
-		<organizer>Kino</organizer>
+		<detail_information />
+		<organizers>
+			<organizer index="0">Kino</organizer>
+		</organizers>
 		<location>Kino</location>
 		<images />
 		<categories>

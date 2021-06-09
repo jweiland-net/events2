@@ -3,7 +3,6 @@
 	<file source-language="en" datatype="plaintext" original="messages" date="2013-03-40T10:38:40Z" product-name="events2">
 		<header/>
 		<body>
-
 			<trans-unit id="tx_events2_domain_model_event">
 				<source>Event</source>
 			</trans-unit>
@@ -117,6 +116,9 @@
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.organizer">
 				<source>Organizer</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.organizers">
+				<source>Organizers</source>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.images">
 				<source>Images</source>
@@ -420,7 +422,6 @@
 			<trans-unit id="scheduler.storagePid">
 				<source>Storage PID</source>
 			</trans-unit>
-
 		</body>
 	</file>
 </xliff>

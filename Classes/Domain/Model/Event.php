@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Domain\Model;
 
 use JWeiland\Events2\Domain\Factory\TimeFactory;
+use JWeiland\Events2\Domain\Repository\UserRepository;
 use JWeiland\Events2\Domain\Traits\Typo3PropertiesTrait;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -158,9 +159,10 @@ class Event extends AbstractEntity
     protected $location;
 
     /**
-     * @var \JWeiland\Events2\Domain\Model\Organizer
+     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Organizer>
+     * @Extbase\ORM\Lazy
      */
-    protected $organizer;
+    protected $organizers;
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference>
@@ -194,6 +196,7 @@ class Event extends AbstractEntity
         $this->exceptions = new ObjectStorage();
         $this->categories = new ObjectStorage();
         $this->days = new ObjectStorage();
+        $this->organizers = new ObjectStorage();
         $this->images = new ObjectStorage();
         $this->downloadLinks = new ObjectStorage();
     }
@@ -203,7 +206,7 @@ class Event extends AbstractEntity
         return $this->eventType;
     }
 
-    public function setEventType(string $eventType)
+    public function setEventType(string $eventType): void
     {
         $this->eventType = $eventType;
     }
@@ -213,7 +216,7 @@ class Event extends AbstractEntity
         return $this->topOfList;
     }
 
-    public function setTopOfList(bool $topOfList)
+    public function setTopOfList(bool $topOfList): void
     {
         $this->topOfList = $topOfList;
     }
@@ -223,7 +226,7 @@ class Event extends AbstractEntity
         return $this->title;
     }
 
-    public function setTitle(string $title)
+    public function setTitle(string $title): void
     {
         $this->title = $title;
     }
@@ -251,7 +254,7 @@ class Event extends AbstractEntity
         return null;
     }
 
-    public function setEventBegin(?\DateTime $eventBegin = null)
+    public function setEventBegin(?\DateTime $eventBegin = null): void
     {
         $this->eventBegin = $eventBegin;
     }
@@ -261,7 +264,7 @@ class Event extends AbstractEntity
         return $this->eventTime;
     }
 
-    public function setEventTime(?Time $eventTime = null)
+    public function setEventTime(?Time $eventTime = null): void
     {
         $this->eventTime = $eventTime;
     }
@@ -293,7 +296,7 @@ class Event extends AbstractEntity
         return null;
     }
 
-    public function setEventEnd(?\DateTime $eventEnd = null)
+    public function setEventEnd(?\DateTime $eventEnd = null): void
     {
         $this->eventEnd = $eventEnd;
     }
@@ -303,7 +306,7 @@ class Event extends AbstractEntity
         return $this->sameDay;
     }
 
-    public function setSameDay(bool $sameDay)
+    public function setSameDay(bool $sameDay): void
     {
         $this->sameDay = $sameDay;
     }
@@ -316,17 +319,17 @@ class Event extends AbstractEntity
         return $this->multipleTimes;
     }
 
-    public function setMultipleTimes(ObjectStorage $multipleTimes)
+    public function setMultipleTimes(ObjectStorage $multipleTimes): void
     {
         $this->multipleTimes = $multipleTimes;
     }
 
-    public function addMultipleTime(Time $multipleTime)
+    public function addMultipleTime(Time $multipleTime): void
     {
         $this->multipleTimes->attach($multipleTime);
     }
 
-    public function removeMultipleTime(Time $multipleTime)
+    public function removeMultipleTime(Time $multipleTime): void
     {
         $this->multipleTimes->detach($multipleTime);
     }
@@ -342,7 +345,7 @@ class Event extends AbstractEntity
         return $result;
     }
 
-    public function setXth(int $xth)
+    public function setXth(int $xth): void
     {
         $this->xth = $xth;
     }
@@ -358,7 +361,7 @@ class Event extends AbstractEntity
         return $result;
     }
 
-    public function setWeekday(int $weekday)
+    public function setWeekday(int $weekday): void
     {
         $this->weekday = $weekday;
     }
@@ -371,17 +374,17 @@ class Event extends AbstractEntity
         return $this->differentTimes;
     }
 
-    public function setDifferentTimes(ObjectStorage $differentTimes)
+    public function setDifferentTimes(ObjectStorage $differentTimes): void
     {
         $this->differentTimes = $differentTimes;
     }
 
-    public function addDifferentTime(Time $differentTime)
+    public function addDifferentTime(Time $differentTime): void
     {
         $this->differentTimes->attach($differentTime);
     }
 
-    public function removeDifferentTime(Time $differentTime)
+    public function removeDifferentTime(Time $differentTime): void
     {
         $this->differentTimes->detach($differentTime);
     }
@@ -391,7 +394,7 @@ class Event extends AbstractEntity
         return $this->eachWeeks;
     }
 
-    public function setEachWeeks(int $eachWeeks)
+    public function setEachWeeks(int $eachWeeks): void
     {
         $this->eachWeeks = $eachWeeks;
     }
@@ -401,7 +404,7 @@ class Event extends AbstractEntity
         return $this->eachMonths;
     }
 
-    public function setEachMonths(int $eachMonths)
+    public function setEachMonths(int $eachMonths): void
     {
         $this->eachMonths = $eachMonths;
     }
@@ -419,17 +422,17 @@ class Event extends AbstractEntity
         return null;
     }
 
-    public function setRecurringEnd(?\DateTime $recurringEnd = null)
+    public function setRecurringEnd(?\DateTime $recurringEnd = null): void
     {
         $this->recurringEnd = $recurringEnd;
     }
 
-    public function addException(Exception $exception)
+    public function addException(Exception $exception): void
     {
         $this->exceptions->attach($exception);
     }
 
-    public function removeException(Exception $exception)
+    public function removeException(Exception $exception): void
     {
         $this->exceptions->detach($exception);
     }
@@ -442,7 +445,7 @@ class Event extends AbstractEntity
      * @param string $exceptionTypes Comma-separated list of exception types
      * @return ObjectStorage|Exception[]
      */
-    public function getExceptions($exceptionTypes = ''): ObjectStorage
+    public function getExceptions(string $exceptionTypes = ''): ObjectStorage
     {
         $exceptions = new ObjectStorage();
         $exceptionTypes = GeneralUtility::trimExplode(',', strtolower($exceptionTypes), true);
@@ -486,7 +489,7 @@ class Event extends AbstractEntity
         return $exceptionsForDate;
     }
 
-    public function setExceptions(ObjectStorage $exceptions)
+    public function setExceptions(ObjectStorage $exceptions): void
     {
         $this->exceptions = $exceptions;
     }
@@ -496,7 +499,7 @@ class Event extends AbstractEntity
         return $this->teaser;
     }
 
-    public function setTeaser(string $teaser)
+    public function setTeaser(string $teaser): void
     {
         $this->teaser = $teaser;
     }
@@ -520,7 +523,7 @@ class Event extends AbstractEntity
      * @param string $detailInformation
      * @deprecated
      */
-    public function setDetailInformations(string $detailInformation)
+    public function setDetailInformations(string $detailInformation): void
     {
         trigger_error('setDetailInformations() will be removed in events2 7.0.0. Please use setDetailInformation() instead.', E_USER_DEPRECATED);
         $this->detailInformation = $detailInformation;
@@ -529,7 +532,7 @@ class Event extends AbstractEntity
     /**
      * @param string $detailInformation
      */
-    public function setDetailInformation(string $detailInformation)
+    public function setDetailInformation(string $detailInformation): void
     {
         $this->detailInformation = $detailInformation;
     }
@@ -539,7 +542,7 @@ class Event extends AbstractEntity
         return $this->freeEntry;
     }
 
-    public function setFreeEntry(bool $freeEntry)
+    public function setFreeEntry(bool $freeEntry): void
     {
         $this->freeEntry = $freeEntry;
     }
@@ -549,17 +552,17 @@ class Event extends AbstractEntity
         return $this->ticketLink;
     }
 
-    public function setTicketLink(?Link $ticketLink = null)
+    public function setTicketLink(?Link $ticketLink = null): void
     {
         $this->ticketLink = $ticketLink;
     }
 
-    public function addCategory(Category $category)
+    public function addCategory(Category $category): void
     {
         $this->categories->attach($category);
     }
 
-    public function removeCategory(Category $category)
+    public function removeCategory(Category $category): void
     {
         $this->categories->detach($category);
     }
@@ -584,17 +587,17 @@ class Event extends AbstractEntity
         return $categoryUids;
     }
 
-    public function setCategories(ObjectStorage $categories)
+    public function setCategories(ObjectStorage $categories): void
     {
         $this->categories = $categories;
     }
 
-    public function addDay(Day $day)
+    public function addDay(Day $day): void
     {
         $this->days->attach($day);
     }
 
-    public function removeDay(Day $day)
+    public function removeDay(Day $day): void
     {
         $this->days->detach($day);
     }
@@ -732,7 +735,7 @@ class Event extends AbstractEntity
         return $alternativeTimes;
     }
 
-    public function setDays(ObjectStorage $days)
+    public function setDays(ObjectStorage $days): void
     {
         $this->days = $days;
     }
@@ -781,7 +784,7 @@ class Event extends AbstractEntity
         return $location;
     }
 
-    public function setLocation(?Location $location = null)
+    public function setLocation(?Location $location = null): void
     {
         $this->location = $location;
     }
@@ -791,15 +794,72 @@ class Event extends AbstractEntity
      * Since version 2.3.1 this property can be (not must be) required
      *
      * @return Organizer|null
+     * @deprecated
      */
     public function getOrganizer(): ?Organizer
     {
-        return $this->organizer;
+        trigger_error('getOrganizer() will be removed in events2 7.0.0. Please use getFirstOrganizer() instead.', E_USER_DEPRECATED);
+        return $this->getFirstOrganizer();
     }
 
-    public function setOrganizer(?Organizer $organizer = null)
+    /**
+     * @param Organizer|null $organizer
+     * @deprecated
+     */
+    public function setOrganizer(?Organizer $organizer = null): void
     {
-        $this->organizer = $organizer;
+        trigger_error('setOrganizer() will be removed in events2 7.0.0. Please use addOrganizer() or setOrganizers() instead.', E_USER_DEPRECATED);
+
+        // Clear organizers before attaching a new one.
+        foreach ($this->organizers->toArray() as $organizerToBeRemoved) {
+            $this->organizers->detach($organizerToBeRemoved);
+        }
+
+        if ($organizer instanceof Organizer) {
+            $this->organizers->attach($organizer);
+        }
+    }
+
+    public function getOrganizers(): ObjectStorage
+    {
+        return $this->organizers;
+    }
+
+    public function setOrganizers(ObjectStorage $organizers): void
+    {
+        $this->organizers = $organizers;
+    }
+
+    public function addOrganizer(Organizer $organizer): void
+    {
+        $this->organizers->attach($organizer);
+    }
+
+    public function removeOrganizer(Organizer $organizer): void
+    {
+        $this->organizers->detach($organizer);
+    }
+
+    public function getFirstOrganizer(): ?Organizer
+    {
+        $this->organizers->rewind();
+        return $this->organizers->current();
+    }
+
+    public function getIsCurrentUserAllowedOrganizer(): bool
+    {
+        $isAllowed = false;
+        $userRepository = GeneralUtility::makeInstance(UserRepository::class);
+        $userAssignedOrganizer = (int)$userRepository->getFieldFromUser('tx_events2_organizer');
+
+        foreach ($this->organizers as $organizer) {
+            if ($organizer->getUid() === $userAssignedOrganizer) {
+                $isAllowed = true;
+                break;
+            }
+        }
+
+        return $isAllowed;
     }
 
     /**
@@ -817,7 +877,7 @@ class Event extends AbstractEntity
         return $references;
     }
 
-    public function setImages(ObjectStorage $images)
+    public function setImages(ObjectStorage $images): void
     {
         $this->images = $images;
     }
@@ -827,7 +887,7 @@ class Event extends AbstractEntity
         return $this->videoLink;
     }
 
-    public function setVideoLink(?Link $videoLink = null)
+    public function setVideoLink(?Link $videoLink = null): void
     {
         $this->videoLink = $videoLink;
     }
@@ -840,17 +900,17 @@ class Event extends AbstractEntity
         return $this->downloadLinks;
     }
 
-    public function setDownloadLinks(ObjectStorage $downloadLinks)
+    public function setDownloadLinks(ObjectStorage $downloadLinks): void
     {
         $this->downloadLinks = $downloadLinks;
     }
 
-    public function addDownloadLink(Link $downloadLink)
+    public function addDownloadLink(Link $downloadLink): void
     {
         $this->downloadLinks->attach($downloadLink);
     }
 
-    public function removeDownloadLink(Link $downloadLink)
+    public function removeDownloadLink(Link $downloadLink): void
     {
         $this->downloadLinks->detach($downloadLink);
     }
@@ -860,7 +920,7 @@ class Event extends AbstractEntity
         return $this->importId;
     }
 
-    public function setImportId(string $importId)
+    public function setImportId(string $importId): void
     {
         $this->importId = $importId;
     }

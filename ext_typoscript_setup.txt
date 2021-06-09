@@ -35,13 +35,6 @@ config.tx_extbase {
           tableName = sys_category
         }
       }
-      JWeiland\Events2\Domain\Model\Event {
-        mapping {
-          columns {
-            detail_informations.mapOnProperty = detailInformation
-          }
-        }
-      }
     }
   }
 }

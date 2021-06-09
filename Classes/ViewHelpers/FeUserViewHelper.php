@@ -24,11 +24,7 @@ class FeUserViewHelper extends AbstractViewHelper
 {
     use CompileWithRenderStatic;
 
-    /**
-     * Initialize all arguments. You need to override this method and call
-     * $this->registerArgument(...) inside this method, to register all your arguments.
-     */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument('field', 'string', 'The field/ArrayKey from currently logged in frontend user', false, 'uid');
     }
@@ -37,13 +33,13 @@ class FeUserViewHelper extends AbstractViewHelper
      * Implements a ViewHelper to get values from current logged in fe_user.
      *
      * @param array $arguments
-     * @param \Closure $childClosure
+     * @param \Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
-     * @return string
+     * @return mixed
      */
     public static function renderStatic(
         array $arguments,
-        \Closure $childClosure,
+        \Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
     ) {
         $userRepository = GeneralUtility::makeInstance(UserRepository::class);

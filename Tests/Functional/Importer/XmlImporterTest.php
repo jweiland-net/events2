@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -52,7 +54,7 @@ class XmlImporterTest extends FunctionalTestCase
     /**
      * I have set the date of the import events to 2025. That should be enough for the next years ;-)
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -66,7 +68,7 @@ class XmlImporterTest extends FunctionalTestCase
         $GLOBALS['BE_USER'] = new BackendUserAuthentication();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset(
             $GLOBALS['BE_USER']
@@ -80,7 +82,7 @@ class XmlImporterTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function importWillCreate3events()
+    public function importWillCreate3events(): void
     {
         $fileObject = ResourceFactory::getInstance()
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/Success.xml');
@@ -100,7 +102,7 @@ class XmlImporterTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function importInvalidEventWillResultInErrorInMessagesTxt()
+    public function importInvalidEventWillResultInErrorInMessagesTxt(): void
     {
         $fileObject = ResourceFactory::getInstance()
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/InvalidEvent.xml');
@@ -120,7 +122,7 @@ class XmlImporterTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function modifySimpleEvent()
+    public function modifySimpleEvent(): void
     {
         // Add simple event
         $fileObject = ResourceFactory::getInstance()
@@ -140,9 +142,9 @@ class XmlImporterTest extends FunctionalTestCase
 
         // Test, if we still have exactly one event
         $events = $this->createEventQuery()->execute(true);
-        self::assertSame(
+        self::assertCount(
             1,
-            count($events)
+            $events
         );
         $event = current($events);
 
@@ -160,7 +162,7 @@ class XmlImporterTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function deleteSimpleEvent()
+    public function deleteSimpleEvent(): void
     {
         // Add 2 simple events
         $fileObject = ResourceFactory::getInstance()
@@ -181,9 +183,9 @@ class XmlImporterTest extends FunctionalTestCase
 
         // Test, if we still have exactly one event
         $events = $this->createEventQuery()->execute(true);
-        self::assertSame(
+        self::assertCount(
             1,
-            count($events)
+            $events
         );
     }
 

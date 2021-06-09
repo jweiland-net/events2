@@ -159,8 +159,8 @@ class XmlImporter extends AbstractImporter
                     $event->setDifferentTimes(new ObjectStorage());
                     $this->addTimeProperties($event, $eventRecord);
 
-                    $event->setOrganizer(null);
-                    $this->addOrganizer($event, $eventRecord);
+                    $event->setOrganizers(new ObjectStorage());
+                    $this->addOrganizers($event, $eventRecord);
 
                     $event->setLocation(null);
                     $this->addLocation($event, $eventRecord);
@@ -216,7 +216,7 @@ class XmlImporter extends AbstractImporter
         $this->addRootProperties($event, $eventRecord);
         $this->addDateProperties($event, $eventRecord);
         $this->addTimeProperties($event, $eventRecord);
-        $this->addOrganizer($event, $eventRecord);
+        $this->addOrganizers($event, $eventRecord);
         $this->addLocation($event, $eventRecord);
         $this->addLinks($event, $eventRecord);
         $this->addExceptions($event, $eventRecord);
@@ -237,7 +237,7 @@ class XmlImporter extends AbstractImporter
             'xth' => 'int',
             'weekday' => 'int',
             'each_weeks' => 'int',
-            'detail_informations' => 'string',
+            'detail_information' => 'string',
             'free_entry' => 'bool',
         ];
         foreach ($allowedRootProperties as $property => $dataType) {
@@ -326,14 +326,23 @@ class XmlImporter extends AbstractImporter
         }
     }
 
-    protected function addOrganizer(Event $event, array $eventRecord): void
+    protected function addOrganizers(Event $event, array $eventRecord): void
     {
         if ($this->isOrganizerProcessable($eventRecord)) {
-            $organizerFromDatabase = $this->getOrganizer($eventRecord['organizer']);
+            // @deprecated. Will be removed with events2 7.0.0
+            $organizers = [$eventRecord['organizer']];
 
-            /** @var Organizer $organizerObject */
-            $organizerObject = $this->organizerRepository->findByIdentifier($organizerFromDatabase['uid']);
-            $event->setOrganizer($organizerObject);
+            if (array_key_exists('organizers', $eventRecord)) {
+                $organizers = $eventRecord['organizers'];
+            }
+
+            foreach ($organizers as $organizerName) {
+                $organizerFromDatabase = $this->getOrganizer($organizerName);
+
+                /** @var Organizer $organizerObject */
+                $organizerObject = $this->organizerRepository->findByIdentifier($organizerFromDatabase['uid']);
+                $event->addOrganizer($organizerObject);
+            }
         }
     }
 

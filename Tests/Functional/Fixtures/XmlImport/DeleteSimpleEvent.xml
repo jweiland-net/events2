@@ -10,11 +10,13 @@
 			<time_begin>12:45</time_begin>
 			<duration>60</duration>
 		</event_time>
-		<detail_informations>
+		<detail_information>
 			Gelöschter Termin. Alle anderen Felder müssen wegen der XSD-Prüfung vorhanden sein.
 			Die Felder müssen jedoch nicht unbedingt dem original Datensatz entsprechen.
-		</detail_informations>
-		<organizer>Kino</organizer>
+		</detail_information>
+		<organizers>
+			<organizer index="0">Kino</organizer>
+		</organizers>
 		<location>Kino</location>
 		<images />
 		<categories>

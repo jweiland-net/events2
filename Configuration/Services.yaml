@@ -13,6 +13,9 @@ services:
   JWeiland\Events2\Domain\Factory\TimeFactory:
     public: true
 
+  JWeiland\Events2\Domain\Model\UserRepository:
+    public: true
+
   JWeiland\Events2\Service\EventService:
     public: true
 

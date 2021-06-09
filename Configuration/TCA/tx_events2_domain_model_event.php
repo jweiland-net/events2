@@ -26,15 +26,15 @@ return [
             'starttime' => 'starttime',
             'endtime' => 'endtime',
         ],
-        'searchFields' => 'title,teaser,event_begin,event_end,detail_informations,',
+        'searchFields' => 'title,teaser,event_begin,event_end,detail_information,',
     ],
     'interface' => [
-        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, event_type, top_of_list, title, path_segment, teaser, event_begin, event_end, event_time, same_day, multiple_times, xth, weekday, different_times, each_weeks, each_months, recurring_end, exceptions, detail_informations, free_entry, ticket_link, alternative_times, location, organizer, images, video_link, download_links, import_id',
+        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, event_type, top_of_list, title, path_segment, teaser, event_begin, event_end, event_time, same_day, multiple_times, xth, weekday, different_times, each_weeks, each_months, recurring_end, exceptions, detail_information, free_entry, ticket_link, alternative_times, location, organizers, images, video_link, download_links, import_id',
     ],
     'types' => [
         'single' => [
             'showitem' => '--palette--;;languageHiddenTop, --palette--;;titleType, path_segment, event_begin, event_time,
-            --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.event_details, --palette--;;teaserFreeEntry, detail_informations, ticket_link, alternative_times, location, organizer,
+            --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.event_details, --palette--;;teaserFreeEntry, detail_information, ticket_link, alternative_times, location, organizers,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.media, images, video_link, download_links,
             --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access, 
             --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access'
@@ -44,7 +44,7 @@ return [
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.recurring_event,
             --palette--;;recurringBeginEnd, event_time, same_day, multiple_times, xth, weekday, different_times, --palette--;;recurringWeekMonth,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.exceptions, exceptions,
-            --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.event_details, --palette--;;teaserFreeEntry, detail_informations, ticket_link, alternative_times, location, organizer,
+            --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.event_details, --palette--;;teaserFreeEntry, detail_information, ticket_link, alternative_times, location, organizers,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.media,--palette--;;newline, images, video_link, download_links,
             --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access, 
             --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access'
@@ -52,7 +52,7 @@ return [
         'duration' => [
             'showitem' => '--palette--;;languageHiddenTop, --palette--;;titleType, path_segment, --palette--;;eventBeginEnd, event_time,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.exceptions, exceptions,
-            --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.event_details, --palette--;;teaserFreeEntry, detail_informations, ticket_link, alternative_times, location, organizer,
+            --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.event_details, --palette--;;teaserFreeEntry, detail_information, ticket_link, alternative_times, location, organizers,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.media,--palette--;;newline, images, video_link, download_links,
             --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access, 
             --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access'
@@ -497,7 +497,7 @@ return [
                 ],
             ],
         ],
-        'detail_informations' => [
+        'detail_information' => [
             'exclude' => true,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.detail_information',
             'config' => [
@@ -566,23 +566,19 @@ return [
                 ],
             ],
         ],
-        'organizer' => [
+        'organizers' => [
             'exclude' => true,
-            'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.organizer',
+            'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.organizers',
             'config' => [
-                'type' => 'group',
-                'internal_type' => 'db',
-                'allowed' => 'tx_events2_domain_model_organizer',
+                'type' => 'select',
+                'renderType' => 'selectMultipleSideBySide',
                 'foreign_table' => 'tx_events2_domain_model_organizer',
-                'size' => 1,
-                'maxitems' => 1,
+                'foreign_table_where' => 'AND 1=1 ORDER BY tx_events2_domain_model_organizer.organizer ASC',
+                'MM' => 'tx_events2_event_organizer_mm',
+                'size' => 5,
+                'maxitems' => 10,
                 'minitems' => 0,
                 'default' => 0,
-                'suggestOptions' => [
-                    'default' => [
-                        'searchWholePhrase' => true,
-                    ],
-                ],
             ],
         ],
         'images' => [

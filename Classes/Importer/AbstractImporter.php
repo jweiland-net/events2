@@ -185,18 +185,14 @@ abstract class AbstractImporter implements ImporterInterface
             return false;
         }
 
-        if ($this->isOrganizerProcessable($event)) {
-            if ($this->getOrganizer($event['organizer']) === []) {
-                $this->addNotFoundMessage($event, 'organizer', $eventBegin);
-                return false;
-            }
+        if ($this->isOrganizerProcessable($event) && $this->getOrganizer($event['organizer']) === []) {
+            $this->addNotFoundMessage($event, 'organizer', $eventBegin);
+            return false;
         }
 
-        if ($this->isLocationProcessable($event)) {
-            if ($this->getLocation($event['location']) === []) {
-                $this->addNotFoundMessage($event, 'location', $eventBegin);
-                return false;
-            }
+        if ($this->isLocationProcessable($event) && $this->getLocation($event['location']) === []) {
+            $this->addNotFoundMessage($event, 'location', $eventBegin);
+            return false;
         }
 
         if (isset($event['categories']) && is_array($event['categories'])) {
@@ -272,9 +268,28 @@ abstract class AbstractImporter implements ImporterInterface
 
     protected function isOrganizerProcessable(array $event): bool
     {
-        return $this->extConf->getOrganizerIsRequired()
-            && array_key_exists('organizer', $event)
-            && $event['organizer'] !== '';
+        if ($this->extConf->getOrganizerIsRequired() === false) {
+            return false;
+        }
+
+        // @deprecated, will be removed with events2 7.0.0
+        if (array_key_exists('organizer', $event) && $event['organizer'] !== '') {
+            return true;
+        }
+
+        if (
+            array_key_exists('organizers', $event)
+            && is_array($event['organizer'])
+        ) {
+            foreach ($event['organizer'] as $organizer) {
+                if (empty($organizer)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        return false;
     }
 
     protected function getOrganizer(string $title): ?array

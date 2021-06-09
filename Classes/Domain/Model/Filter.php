@@ -19,8 +19,6 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
  *
  * Hint: After selecting an organizer and switching back to an empty organizer to show all events again
  * setOrganizer will be called with null.
- *
- * @ToDo: Use nullable strict type if we do not support TYPO3 8 anymore because of PHP 7.0
  */
 class Filter extends AbstractEntity
 {
@@ -34,7 +32,7 @@ class Filter extends AbstractEntity
         return $this->organizer;
     }
 
-    public function setOrganizer(?int $organizer = null)
+    public function setOrganizer(?int $organizer = null): void
     {
         $this->organizer = $organizer;
     }

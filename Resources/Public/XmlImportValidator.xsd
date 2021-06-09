@@ -1,44 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:element name="events" type="events" />
+	<xs:element name="events" type="events" />
 
-  <xs:complexType name="events">
-    <xs:sequence>
-      <xs:element type="event" name="event" maxOccurs="unbounded" minOccurs="0" />
-    </xs:sequence>
-  </xs:complexType>
+	<xs:complexType name="events">
+		<xs:sequence>
+			<xs:element type="event" name="event" maxOccurs="unbounded" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
 
-  <xs:complexType name="event">
-    <xs:sequence>
-      <xs:element type="processAs" name="process_as" minOccurs="0" />
-      <xs:element type="xs:string" name="import_id" minOccurs="0" />
-      <xs:element type="eventType" name="event_type" />
-      <xs:element type="xs:boolean" name="top_of_list" minOccurs="0" />
-      <xs:element type="requiredString" name="title" />
-      <xs:element type="xs:string" name="teaser" minOccurs="0" />
-      <xs:element type="xs:date" name="event_begin" />
-      <xs:element type="xs:date" name="event_end" minOccurs="0" />
-      <xs:element type="xs:date" name="recurring_end" minOccurs="0" />
-      <xs:element type="event_time" name="event_time" />
-      <xs:element type="xs:boolean" name="same_day" minOccurs="0" />
-      <xs:element type="multiple_times" name="multiple_times" minOccurs="0" />
-      <xs:element type="xs:integer" name="xth" minOccurs="0" />
-      <xs:element type="xs:integer" name="weekday" minOccurs="0" />
-      <xs:element type="different_times" name="different_times" minOccurs="0" />
-      <xs:element type="xs:integer" name="each_weeks" minOccurs="0" />
-      <xs:element type="exceptions" name="exceptions" minOccurs="0" />
-      <xs:element type="xs:string" name="detail_informations" />
-      <xs:element type="nonRequiredLink" name="video_link" minOccurs="0" />
-      <xs:element type="xs:boolean" name="free_entry" minOccurs="0" />
-      <xs:element type="nonRequiredLink" name="ticket_link" minOccurs="0" />
-      <xs:element type="requiredString" name="organizer" />
-      <xs:element type="requiredString" name="location" />
-      <xs:element type="nonRequiredLink" name="download_links" minOccurs="0" />
-      <xs:element type="images" name="images" />
-      <xs:element type="categories" name="categories" />
-    </xs:sequence>
-    <xs:attribute name="index" type="xs:integer" use="required" />
-  </xs:complexType>
+	<xs:complexType name="event">
+		<xs:sequence>
+			<xs:element type="processAs" name="process_as" minOccurs="0" />
+			<xs:element type="xs:string" name="import_id" minOccurs="0" />
+			<xs:element type="eventType" name="event_type" />
+			<xs:element type="xs:boolean" name="top_of_list" minOccurs="0" />
+			<xs:element type="requiredString" name="title" />
+			<xs:element type="xs:string" name="teaser" minOccurs="0" />
+			<xs:element type="xs:date" name="event_begin" />
+			<xs:element type="xs:date" name="event_end" minOccurs="0" />
+			<xs:element type="xs:date" name="recurring_end" minOccurs="0" />
+			<xs:element type="event_time" name="event_time" />
+			<xs:element type="xs:boolean" name="same_day" minOccurs="0" />
+			<xs:element type="multiple_times" name="multiple_times" minOccurs="0" />
+			<xs:element type="xs:integer" name="xth" minOccurs="0" />
+			<xs:element type="xs:integer" name="weekday" minOccurs="0" />
+			<xs:element type="different_times" name="different_times" minOccurs="0" />
+			<xs:element type="xs:integer" name="each_weeks" minOccurs="0" />
+			<xs:element type="exceptions" name="exceptions" minOccurs="0" />
+			<xs:element type="xs:string" name="detail_information" />
+			<xs:element type="nonRequiredLink" name="video_link" minOccurs="0" />
+			<xs:element type="xs:boolean" name="free_entry" minOccurs="0" />
+			<xs:element type="nonRequiredLink" name="ticket_link" minOccurs="0" />
+			<xs:element type="organizers" name="organizers" />
+			<xs:element type="requiredString" name="location" />
+			<xs:element type="nonRequiredLink" name="download_links" minOccurs="0" />
+			<xs:element type="images" name="images" />
+			<xs:element type="categories" name="categories" />
+		</xs:sequence>
+		<xs:attribute name="index" type="xs:integer" use="required" />
+	</xs:complexType>
 
 	<xs:simpleType name="processAs">
 		<xs:restriction base="xs:string">
@@ -53,129 +53,143 @@
 	</xs:simpleType>
 
 	<xs:complexType name="event_time_array">
-    <xs:sequence>
-      <xs:element type="weekday" name="weekday" minOccurs="0" />
-      <xs:element type="time" name="time_begin" />
-      <xs:element type="time" name="time_entry" minOccurs="0" />
-      <xs:element type="time" name="time_end" minOccurs="0" />
-      <xs:element type="xs:integer" name="duration" minOccurs="0" />
-    </xs:sequence>
-    <xs:attribute type="xs:integer" name="index" use="required" />
-  </xs:complexType>
+		<xs:sequence>
+			<xs:element type="weekday" name="weekday" minOccurs="0" />
+			<xs:element type="time" name="time_begin" />
+			<xs:element type="time" name="time_entry" minOccurs="0" />
+			<xs:element type="time" name="time_end" minOccurs="0" />
+			<xs:element type="xs:integer" name="duration" minOccurs="0" />
+		</xs:sequence>
+		<xs:attribute type="xs:integer" name="index" use="required" />
+	</xs:complexType>
 
-  <xs:complexType name="event_time">
-    <xs:sequence>
-      <xs:element type="weekday" name="weekday" minOccurs="0" />
-      <xs:element type="time" name="time_begin" />
-      <xs:element type="time" name="time_entry" minOccurs="0" />
-      <xs:element type="time" name="time_end" minOccurs="0" />
-      <xs:element type="xs:integer" name="duration" minOccurs="0" />
-    </xs:sequence>
-  </xs:complexType>
+	<xs:complexType name="event_time">
+		<xs:sequence>
+			<xs:element type="weekday" name="weekday" minOccurs="0" />
+			<xs:element type="time" name="time_begin" />
+			<xs:element type="time" name="time_entry" minOccurs="0" />
+			<xs:element type="time" name="time_end" minOccurs="0" />
+			<xs:element type="xs:integer" name="duration" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
 
-  <xs:simpleType name="weekday">
-    <xs:restriction base="xs:string">
-      <xs:pattern value="monday|tuesday|wednesday|thursday|friday|saturday|sunday" />
-    </xs:restriction>
-  </xs:simpleType>
+	<xs:simpleType name="weekday">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="monday|tuesday|wednesday|thursday|friday|saturday|sunday" />
+		</xs:restriction>
+	</xs:simpleType>
 
-  <xs:simpleType name="time">
-    <xs:restriction base="xs:string">
-      <xs:pattern value="[0-9]{2,2}:[0-9]{2,2}" />
-    </xs:restriction>
-  </xs:simpleType>
+	<xs:simpleType name="time">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[0-9]{2,2}:[0-9]{2,2}" />
+		</xs:restriction>
+	</xs:simpleType>
 
-  <xs:complexType name="multiple_times">
-    <xs:sequence>
-      <xs:element type="event_time_array" name="event_time" maxOccurs="unbounded" minOccurs="0" />
-    </xs:sequence>
-  </xs:complexType>
+	<xs:complexType name="multiple_times">
+		<xs:sequence>
+			<xs:element type="event_time_array" name="event_time" maxOccurs="unbounded" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
 
-  <xs:complexType name="different_times">
-    <xs:sequence>
-      <xs:element type="event_time_array" name="event_time" maxOccurs="unbounded" minOccurs="0" />
-    </xs:sequence>
-  </xs:complexType>
+	<xs:complexType name="different_times">
+		<xs:sequence>
+			<xs:element type="event_time_array" name="event_time" maxOccurs="unbounded" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
 
-  <xs:complexType name="exceptions">
-    <xs:sequence>
-      <xs:element type="exception" name="exception" maxOccurs="unbounded" minOccurs="0"/>
-    </xs:sequence>
-  </xs:complexType>
+	<xs:complexType name="exceptions">
+		<xs:sequence>
+			<xs:element type="exception" name="exception" maxOccurs="unbounded" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
 
-  <xs:complexType name="exception">
-    <xs:sequence>
-      <xs:element type="exception_type" name="exception_type" />
-      <xs:element type="xs:date" name="exception_date" />
-      <xs:element type="event_time" name="exception_time" minOccurs="0" />
-      <xs:element type="xs:string" name="exception_details" minOccurs="0" />
-    </xs:sequence>
-    <xs:attribute type="xs:byte" name="index" use="optional" />
-  </xs:complexType>
+	<xs:complexType name="exception">
+		<xs:sequence>
+			<xs:element type="exception_type" name="exception_type" />
+			<xs:element type="xs:date" name="exception_date" />
+			<xs:element type="event_time" name="exception_time" minOccurs="0" />
+			<xs:element type="xs:string" name="exception_details" minOccurs="0" />
+		</xs:sequence>
+		<xs:attribute type="xs:byte" name="index" use="optional" />
+	</xs:complexType>
 
-  <xs:simpleType name="exception_type">
-    <xs:restriction base="xs:string">
-      <xs:pattern value="Add|Remove|Time|Info" />
-    </xs:restriction>
-  </xs:simpleType>
+	<xs:simpleType name="exception_type">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="Add|Remove|Time|Info" />
+		</xs:restriction>
+	</xs:simpleType>
 
-  <xs:complexType name="images">
-    <xs:sequence>
-      <xs:element type="image" name="image" minOccurs="0" maxOccurs="unbounded" />
-    </xs:sequence>
-  </xs:complexType>
+	<xs:complexType name="organizers">
+		<xs:sequence>
+			<xs:element type="organizer" name="organizer" minOccurs="1" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
 
-  <xs:complexType name="image">
-    <xs:sequence>
-      <xs:element type="requiredUri" name="url" />
-    </xs:sequence>
-    <xs:attribute type="xs:integer" name="index" use="required" />
-  </xs:complexType>
+	<xs:complexType name="organizer">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute type="xs:integer" name="index" use="required" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
 
-  <xs:complexType name="categories">
-    <xs:sequence>
-      <xs:element type="category" name="category" minOccurs="1" maxOccurs="unbounded" />
-    </xs:sequence>
-  </xs:complexType>
+	<xs:complexType name="images">
+		<xs:sequence>
+			<xs:element type="image" name="image" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
 
-  <xs:complexType name="category">
-    <xs:simpleContent>
-      <xs:extension base="xs:string">
-        <xs:attribute type="xs:integer" name="index" use="required" />
-      </xs:extension>
-    </xs:simpleContent>
-  </xs:complexType>
+	<xs:complexType name="image">
+		<xs:sequence>
+			<xs:element type="requiredUri" name="url" />
+		</xs:sequence>
+		<xs:attribute type="xs:integer" name="index" use="required" />
+	</xs:complexType>
 
-  <xs:simpleType name="intOrEmptyString">
-    <xs:union>
-      <xs:simpleType>
-        <xs:restriction base='xs:string'>
-          <xs:length value="0" />
-        </xs:restriction>
-      </xs:simpleType>
-      <xs:simpleType>
-        <xs:restriction base='xs:int' />
-      </xs:simpleType>
-    </xs:union>
-  </xs:simpleType>
+	<xs:complexType name="categories">
+		<xs:sequence>
+			<xs:element type="category" name="category" minOccurs="1" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
 
-  <xs:complexType name="nonRequiredLink">
-    <xs:sequence>
-      <xs:element type="xs:string" name="title" />
-      <xs:element type="xs:anyURI" name="uri" />
-    </xs:sequence>
-  </xs:complexType>
+	<xs:complexType name="category">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute type="xs:integer" name="index" use="required" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
 
-  <xs:simpleType name="requiredString">
-    <xs:restriction base="xs:string">
-      <xs:minLength value="1" />
-    </xs:restriction>
-  </xs:simpleType>
+	<xs:simpleType name="intOrEmptyString">
+		<xs:union>
+			<xs:simpleType>
+				<xs:restriction base='xs:string'>
+					<xs:length value="0" />
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:simpleType>
+				<xs:restriction base='xs:int' />
+			</xs:simpleType>
+		</xs:union>
+	</xs:simpleType>
 
-  <xs:simpleType name="requiredUri">
-    <xs:restriction base="xs:string">
-      <xs:minLength value="1" />
-      <xs:pattern value="https?://.*" />
-    </xs:restriction>
-  </xs:simpleType>
+	<xs:complexType name="nonRequiredLink">
+		<xs:sequence>
+			<xs:element type="xs:string" name="title" />
+			<xs:element type="xs:anyURI" name="uri" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:simpleType name="requiredString">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="requiredUri">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1" />
+			<xs:pattern value="https?://.*" />
+		</xs:restriction>
+	</xs:simpleType>
 </xs:schema>
