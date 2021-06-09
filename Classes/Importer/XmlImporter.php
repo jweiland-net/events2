@@ -329,14 +329,7 @@ class XmlImporter extends AbstractImporter
     protected function addOrganizers(Event $event, array $eventRecord): void
     {
         if ($this->isOrganizerProcessable($eventRecord)) {
-            // @deprecated. Will be removed with events2 7.0.0
-            $organizers = [$eventRecord['organizer']];
-
-            if (array_key_exists('organizers', $eventRecord)) {
-                $organizers = $eventRecord['organizers'];
-            }
-
-            foreach ($organizers as $organizerName) {
+            foreach ($eventRecord['organizers'] as $organizerName) {
                 $organizerFromDatabase = $this->getOrganizer($organizerName);
 
                 /** @var Organizer $organizerObject */

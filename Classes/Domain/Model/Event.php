@@ -504,34 +504,11 @@ class Event extends AbstractEntity
         $this->teaser = $teaser;
     }
 
-    /**
-     * @return string
-     * @deprecated
-     */
-    public function getDetailInformations(): string
-    {
-        trigger_error('getDetailInformations() will be removed in events2 7.0.0. Please use getDetailInformation() instead.', E_USER_DEPRECATED);
-        return $this->detailInformation;
-    }
-
     public function getDetailInformation(): string
     {
         return $this->detailInformation;
     }
 
-    /**
-     * @param string $detailInformation
-     * @deprecated
-     */
-    public function setDetailInformations(string $detailInformation): void
-    {
-        trigger_error('setDetailInformations() will be removed in events2 7.0.0. Please use setDetailInformation() instead.', E_USER_DEPRECATED);
-        $this->detailInformation = $detailInformation;
-    }
-
-    /**
-     * @param string $detailInformation
-     */
     public function setDetailInformation(string $detailInformation): void
     {
         $this->detailInformation = $detailInformation;
@@ -787,37 +764,6 @@ class Event extends AbstractEntity
     public function setLocation(?Location $location = null): void
     {
         $this->location = $location;
-    }
-
-    /**
-     * Returns the organizer.
-     * Since version 2.3.1 this property can be (not must be) required
-     *
-     * @return Organizer|null
-     * @deprecated
-     */
-    public function getOrganizer(): ?Organizer
-    {
-        trigger_error('getOrganizer() will be removed in events2 7.0.0. Please use getFirstOrganizer() instead.', E_USER_DEPRECATED);
-        return $this->getFirstOrganizer();
-    }
-
-    /**
-     * @param Organizer|null $organizer
-     * @deprecated
-     */
-    public function setOrganizer(?Organizer $organizer = null): void
-    {
-        trigger_error('setOrganizer() will be removed in events2 7.0.0. Please use addOrganizer() or setOrganizers() instead.', E_USER_DEPRECATED);
-
-        // Clear organizers before attaching a new one.
-        foreach ($this->organizers->toArray() as $organizerToBeRemoved) {
-            $this->organizers->detach($organizerToBeRemoved);
-        }
-
-        if ($organizer instanceof Organizer) {
-            $this->organizers->attach($organizer);
-        }
     }
 
     public function getOrganizers(): ObjectStorage
