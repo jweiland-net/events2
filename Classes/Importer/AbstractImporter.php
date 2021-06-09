@@ -47,14 +47,6 @@ abstract class AbstractImporter implements ImporterInterface
     protected $file;
 
     /**
-     * Needed to retrieve the storagePid
-     *
-     * @deprecated
-     * @var Import
-     */
-    protected $task;
-
-    /**
      * @var string
      */
     protected $logFileName = 'Messages.txt';
@@ -123,19 +115,6 @@ abstract class AbstractImporter implements ImporterInterface
         $this->today = new \DateTime('now');
     }
 
-    /**
-     * @param Import $task
-     * @deprecated will be removed in events2 7.0.0. Please set the storagePid directly
-     */
-    public function setTask(Import $task): void
-    {
-        trigger_error('setTask() will be removed in events2 7.0.0. Please set the storagePid directly.', E_USER_DEPRECATED);
-        $this->task = $task;
-    }
-
-    /**
-     * @param int $storagePid
-     */
     public function setStoragePid(int $storagePid): void
     {
         $this->storagePid = $storagePid;
@@ -270,11 +249,6 @@ abstract class AbstractImporter implements ImporterInterface
     {
         if ($this->extConf->getOrganizerIsRequired() === false) {
             return false;
-        }
-
-        // @deprecated, will be removed with events2 7.0.0
-        if (array_key_exists('organizer', $event) && $event['organizer'] !== '') {
-            return true;
         }
 
         if (

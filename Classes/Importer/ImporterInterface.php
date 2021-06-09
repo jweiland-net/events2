@@ -20,15 +20,6 @@ use TYPO3\CMS\Core\Resource\FileInterface;
 interface ImporterInterface
 {
     /**
-     * Set task
-     * Needed, to get the StoragePid
-     *
-     * @param Import $task
-     * @deprecated will be removed with version 7.0.0
-     */
-    public function setTask(Import $task): void;
-
-    /**
      * Set storage pid
      *
      * @param int $storagePid
