@@ -25,16 +25,3 @@ events2AjaxResponse {
     userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
   }
 }
-
-# Remove that part while removing TYPO3 9 compatibility
-config.tx_extbase {
-  persistence{
-    classes {
-      JWeiland\Events2\Domain\Model\Category {
-        mapping {
-          tableName = sys_category
-        }
-      }
-    }
-  }
-}
