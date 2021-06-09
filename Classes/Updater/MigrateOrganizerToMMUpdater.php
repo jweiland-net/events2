@@ -91,7 +91,7 @@ class MigrateOrganizerToMMUpdater implements UpgradeWizardInterface
                     'sorting_foreign' => 0
                 ]
             );
-            // event->organizer was an 1zu1 relation, so organizer = 1 should be OK here
+            // event->organizer was an 1:1 relation, so organizer = 1 should be OK here
             $eventConnection->update(
                 'tx_events2_domain_model_event',
                 [
