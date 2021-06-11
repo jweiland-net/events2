@@ -3,17 +3,18 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the package jweiland/yellowpages2.
+ * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
 
-namespace JWeiland\Yellowpages2\Event;
+namespace JWeiland\Events2\Event;
 
-use JWeiland\Yellowpages2\Controller\CompanyController;
-use JWeiland\Yellowpages2\Controller\MapController;
-use JWeiland\Yellowpages2\Domain\Model\Company;
+use JWeiland\Events2\Controller\DayController;
+use JWeiland\Events2\Controller\EventController;
+use JWeiland\Events2\Domain\Model\Day;
+use JWeiland\Events2\Domain\Model\Event;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Request;
 
@@ -24,14 +25,19 @@ use TYPO3\CMS\Extbase\Mvc\Request;
 class PostProcessControllerActionEvent implements ControllerActionEventInterface
 {
     /**
-     * @var ActionController|CompanyController|MapController
+     * @var ActionController|EventController|DayController
      */
     protected $controller;
 
     /**
-     * @var Company|null
+     * @var Event|null
      */
-    protected $company;
+    protected $event;
+
+    /**
+     * @var Day|null
+     */
+    protected $day;
 
     /**
      * @var array
@@ -40,11 +46,13 @@ class PostProcessControllerActionEvent implements ControllerActionEventInterface
 
     public function __construct(
         ActionController $controller,
-        ?Company $company,
+        ?Event $event,
+        ?Day $day,
         array $settings
     ) {
         $this->controller = $controller;
-        $this->company = $company;
+        $this->event = $event;
+        $this->day = $day;
         $this->settings = $settings;
     }
 
@@ -53,12 +61,12 @@ class PostProcessControllerActionEvent implements ControllerActionEventInterface
         return $this->controller;
     }
 
-    public function getCompanyController(): CompanyController
+    public function getEventController(): EventController
     {
         return $this->controller;
     }
 
-    public function getMapController(): MapController
+    public function getDayController(): DayController
     {
         return $this->controller;
     }
@@ -78,9 +86,14 @@ class PostProcessControllerActionEvent implements ControllerActionEventInterface
         return $this->getRequest()->getControllerActionName();
     }
 
-    public function getCompany(): ?Company
+    public function getEvent(): ?Event
     {
-        return $this->company;
+        return $this->event;
+    }
+
+    public function getDay(): ?Day
+    {
+        return $this->day;
     }
 
     public function getSettings(): array

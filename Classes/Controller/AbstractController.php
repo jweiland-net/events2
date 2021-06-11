@@ -12,6 +12,11 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Controller;
 
 use JWeiland\Events2\Configuration\ExtConf;
+use JWeiland\Events2\Domain\Model\Day;
+use JWeiland\Events2\Domain\Model\Event;
+use JWeiland\Events2\Event\PostProcessControllerActionEvent;
+use JWeiland\Events2\Event\PostProcessFluidVariablesEvent;
+use JWeiland\Events2\Event\PreProcessControllerActionEvent;
 use JWeiland\Events2\Service\TypoScriptService;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -58,7 +63,7 @@ class AbstractController extends ActionController
         $this->settings = $mergedFlexFormSettings;
     }
 
-    public function initializeAction()
+    public function initializeAction(): void
     {
         // if this value was not set, then it will be filled with 0
         // but that is not good, because UriBuilder accepts 0 as pid, so it's better to set it to NULL
@@ -76,7 +81,7 @@ class AbstractController extends ActionController
         }
     }
 
-    protected function initializeView(ViewInterface $view)
+    protected function initializeView(ViewInterface $view): void
     {
         $this->view->assign('data', $this->configurationManager->getContentObject()->data);
         $this->view->assign('extConf', GeneralUtility::makeInstance(ExtConf::class));
@@ -111,26 +116,40 @@ class AbstractController extends ActionController
         return $jsVariables;
     }
 
-    /**
-     * Emits signal for various actions
-     *
-     * @param string $classPart last part of the class name
-     * @param string $signalName name of the signal slot
-     * @param array $signalArguments arguments for the signal slot
-     * @return array
-     */
-    protected function emitActionSignal(string $classPart, string $signalName, array $signalArguments): array
+    protected function postProcessAndAssignFluidVariables(array $variables = []): void
     {
-        $signalArguments['extendedVariables'] = [];
-        $className = 'JWeiland\\Events2\\Controller\\' . $classPart;
-        if (class_exists($className)) {
-            return $this->signalSlotDispatcher->dispatch(
-                $className,
-                $signalName,
-                $signalArguments
-            );
-        }
+        /** @var PostProcessFluidVariablesEvent $event */
+        $event = $this->eventDispatcher->dispatch(
+            new PostProcessFluidVariablesEvent(
+                $this->request,
+                $this->settings,
+                $variables
+            )
+        );
 
-        return $signalArguments;
+        $this->view->assignMultiple($event->getFluidVariables());
+    }
+
+    protected function postProcessControllerAction(?Event $event, ?Day $day): void
+    {
+        $this->eventDispatcher->dispatch(
+            new PostProcessControllerActionEvent(
+                $this,
+                $event,
+                $day,
+                $this->settings
+            )
+        );
+    }
+
+    protected function preProcessControllerAction(): void
+    {
+        $this->eventDispatcher->dispatch(
+            new PreProcessControllerActionEvent(
+                $this->request,
+                $this->arguments,
+                $this->settings
+            )
+        );
     }
 }

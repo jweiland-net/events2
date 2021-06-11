@@ -43,9 +43,20 @@ class SearchController extends AbstractController
         $this->locationRepository = $locationRepository;
     }
 
-    protected function initializeView(ViewInterface $view)
+    public function initializeShowAction(): void
     {
-        parent::initializeView($view);
+        $this->preProcessControllerAction();
+    }
+
+    /**
+     * @param Search|null $search
+     */
+    public function showAction(Search $search = null): void
+    {
+        // Because of the checkbox in search form we have to create a new empty domain model
+        if ($search === null) {
+            $search = GeneralUtility::makeInstance(Search::class);
+        }
 
         if (!$this->settings['mainCategories']) {
             $this->addFlashMessage('Dear Admin: You have forgotten to define some allowed categories in plugin configuration');
@@ -60,47 +71,7 @@ class SearchController extends AbstractController
             $this->addFlashMessage('Dear Admin: Please check if you have set rootCategory correctly as parent of your defined mainCategories.');
         }
 
-        $selectorData = [];
-        $selectorData['categories']['main'] = $allowedMainCategories;
-        $selectorData['categories']['sub'] = [];
-        $selectorData['locations'] = $this->locationRepository->findAll();
-
-        $view->assign('selectorData', $selectorData);
-    }
-
-    public function initializeShowAction(): void
-    {
-        // Register foreign argument for search action
-        // so tx_events2_events was also available here in tx_events2_search context
-        $foreignPluginContext = GeneralUtility::_POST('tx_events2_events');
-        if (isset($foreignPluginContext['search'])) {
-            $search = $foreignPluginContext['search'];
-            if (is_array($search) && count($search)) {
-                $this->request->setArgument('search', $search);
-            }
-        }
-
-        // We have a self-build <form> tag.
-        // That's why we have to manually allow some form-elements.
-        $this->arguments->getArgument('search')->getPropertyMappingConfiguration()->setTypeConverterOptions(
-            PersistentObjectConverter::class,
-            [
-                PersistentObjectConverter::CONFIGURATION_CREATION_ALLOWED => true,
-            ]
-        );
-        $this->arguments->getArgument('search')->getPropertyMappingConfiguration()->allowAllProperties();
-    }
-
-    /**
-     * @param Search|null $search
-     */
-    public function showAction(Search $search = null): void
-    {
-        // Because of the checkbox we have to create a new empty domain model
-        if ($search === null) {
-            $search = GeneralUtility::makeInstance(Search::class);
-        }
-
+        // Convert sub-properties to array
         $gettableSearchProperties = ObjectAccess::getGettableProperties($search);
         if ($search->getMainCategory() instanceof Category) {
             $gettableSearchProperties['mainCategory'] = ObjectAccess::getGettableProperties($search->getMainCategory());
@@ -109,12 +80,21 @@ class SearchController extends AbstractController
             $gettableSearchProperties['subCategory'] = ObjectAccess::getGettableProperties($search->getSubCategory());
         }
 
-        $this->view->assign('search', $search);
-        $this->view->assign('jsVariables', json_encode(
-            $this->getJsVariables([
-                'siteId' => $GLOBALS['TSFE']->id,
-                'search' => $gettableSearchProperties
-            ])
-        ));
+        $this->postProcessAndAssignFluidVariables([
+            'search' => $search,
+            'selectorData' => [
+                'locations' => $this->locationRepository->findAll(),
+                'categories' => [
+                    'main' => $allowedMainCategories,
+                    'sub' => []
+                ]
+            ],
+            'jsVariables' => json_encode(
+                $this->getJsVariables([
+                    'siteId' => $GLOBALS['TSFE']->id,
+                    'search' => $gettableSearchProperties
+                ])
+            ),
+        ]);
     }
 }

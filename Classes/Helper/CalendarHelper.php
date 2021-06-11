@@ -12,44 +12,82 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Helper;
 
 use JWeiland\Events2\Domain\Model\Day;
-use JWeiland\Events2\Domain\Repository\DayRepository;
+use JWeiland\Events2\Session\UserSession;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\MathUtility;
 
 /*
- * Helper class containing various methods to work with Day models
+ * Helper class containing various methods to help building variables for jquery calendar
  */
-class DayHelper
+class CalendarHelper
 {
     /**
-     * @var DayRepository
+     * @var DayHelper
      */
-    protected $dayRepository;
+    protected $dayHelper;
 
-    public function __construct(DayRepository $dayRepository)
-    {
-        $this->dayRepository = $dayRepository;
-    }
     /**
-     * Get day from URI
-     * We can't set $day as parameter in showAction($day), because this action is of controller Calendar and not Event.
-     *
-     * @return Day|null
+     * @var UserSession
      */
-    public function getDayFromUri(): ?Day
-    {
-        $day = null;
-        // get parameters of event-plugin-namespace
-        $pluginParameters = GeneralUtility::_GPmerged('tx_events2_events');
-        if (
-            is_array($pluginParameters) &&
-            array_key_exists('day', $pluginParameters) &&
-            MathUtility::canBeInterpretedAsInteger($pluginParameters['day'])
-        ) {
-            /** @var Day $day */
-            $day = $this->dayRepository->findByIdentifier((int)$pluginParameters['day']);
-        }
+    protected $userSession;
 
-        return $day;
+    public function __construct(
+        DayHelper $dayHelper,
+        UserSession $userSession
+    ) {
+        $this->dayHelper = $dayHelper;
+        $this->userSession = $userSession;
+    }
+
+    public function getCalendarVariables(): array
+    {
+        $variables = $this->getBasicVariables();
+        $this->addDefaultCalendarVariables($variables);
+        $this->addCalendarVariablesByDayParameterFromUrl($variables);
+        $this->addCalendarVariablesByUserSession($variables);
+
+        return $variables;
+    }
+
+    protected function getBasicVariables(): array
+    {
+        return [
+            'siteUrl' => $this->getTypo3SiteUrl(),
+            'siteId' => $GLOBALS['TSFE']->id
+        ];
+    }
+
+    protected function addCalendarVariablesByUserSession(array &$variables): void
+    {
+        // 1st priority. If an user session was found we will use stored month/year from session
+        $monthAndYear = $this->userSession->getMonthAndYear();
+        if (is_array($monthAndYear) && !empty($monthAndYear)) {
+            $placeHolders['environment']['day'] = '01';
+            $placeHolders['environment']['month'] = (string)$monthAndYear['month'];
+            $placeHolders['environment']['year'] = (string)$monthAndYear['year'];
+        }
+    }
+
+    protected function addCalendarVariablesByDayParameterFromUrl(array &$variables): void
+    {
+        // 2nd priority. If a day parameter was found in current URL use that
+        $day = $this->dayHelper->getDayFromUri();
+        if ($day instanceof Day) {
+            $variables['day'] = $day->getDay()->format('d');
+            $variables['month'] = $day->getDay()->format('m');
+            $variables['year'] = $day->getDay()->format('Y');
+        }
+    }
+
+    protected function addDefaultCalendarVariables(array &$variables): void
+    {
+        // lowest priority. Will be overwritten, if day oder user session exists
+        $variables['day'] = date('d');
+        $variables['month'] = date('m');
+        $variables['year'] = date('Y');
+    }
+
+    protected function getTypo3SiteUrl(): string
+    {
+        return GeneralUtility::getIndpEnv('TYPO3_SITE_URL');
     }
 }
