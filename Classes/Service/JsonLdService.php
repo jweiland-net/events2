@@ -286,13 +286,17 @@ class JsonLdService
      */
     protected function addOrganizerToData(Event $event): void
     {
-        if ($event->getOrganizer() instanceof Organizer) {
+        if ($event->getFirstOrganizer() instanceof Organizer) {
             $this->data['organizer'] = [
                 '@type' => 'Organization',
-                'name' => $event->getOrganizer()->getOrganizer(),
+                'name' => $event->getFirstOrganizer()->getOrganizer(),
             ];
-            if ($event->getOrganizer()->getLink() instanceof Link) {
-                $this->data['organizer']['url'] = $this->getUrlFromParameter($event->getOrganizer()->getLink()->getLink());
+            if ($event->getFirstOrganizer()->getLink() instanceof Link) {
+                $this->data['organizer']['url'] = $this->getUrlFromParameter(
+                    $event->getFirstOrganizer()
+                        ->getLink()
+                        ->getLink()
+                );
             }
         }
     }
