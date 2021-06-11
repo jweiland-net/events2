@@ -21,3 +21,13 @@ services:
 
   JWeiland\Events2\Utility\DateTimeUtility:
     public: true
+
+  JWeiland\Events2\EventListener\RemapSearchParameterEventListener:
+    tags:
+      - name: event.listener
+        event: JWeiland\Events2\Event\PreProcessControllerActionEvent
+        before: JWeiland\Events2\EventListener\AllowSearchParameterEventListener
+  JWeiland\Events2\EventListener\AllowSearchParameterEventListener:
+    tags:
+      - name: event.listener
+        event: JWeiland\Events2\Event\PreProcessControllerActionEvent

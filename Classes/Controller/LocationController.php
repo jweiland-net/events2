@@ -23,6 +23,8 @@ class LocationController extends AbstractController
      */
     public function showAction(Location $location): void
     {
-        $this->view->assign('location', $location);
+        $this->postProcessAndAssignFluidVariables([
+            'location' => $location
+        ]);
     }
 }

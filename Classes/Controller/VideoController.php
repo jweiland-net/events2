@@ -11,12 +11,11 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Controller;
 
+use JWeiland\Events2\Domain\Repository\EventRepository;
+
 /*
  * A simple controller to show video-link as YouTube-Implementation
  */
-
-use JWeiland\Events2\Domain\Repository\EventRepository;
-
 class VideoController extends AbstractController
 {
     /**
@@ -34,7 +33,8 @@ class VideoController extends AbstractController
      */
     public function showAction(int $event): void
     {
-        $event = $this->eventRepository->findByIdentifier((int)$event);
-        $this->view->assign('event', $event);
+        $this->postProcessAndAssignFluidVariables([
+            'event' => $this->eventRepository->findByIdentifier($event)
+        ]);
     }
 }

@@ -116,7 +116,7 @@ class EventController extends AbstractController
         $this->extConf = $extConf;
     }
 
-    public function initializeObject()
+    public function initializeObject(): void
     {
         $this->dayRepository->setSettings($this->settings);
     }
@@ -127,26 +127,24 @@ class EventController extends AbstractController
      */
     public function initializeListSearchResultsAction(): void
     {
-        $this->arguments->getArgument('search')->getPropertyMappingConfiguration()->setTypeConverterOptions(
-            PersistentObjectConverter::class,
-            [
-                PersistentObjectConverter::CONFIGURATION_CREATION_ALLOWED => true,
-            ]
-        );
-        $this->arguments->getArgument('search')->getPropertyMappingConfiguration()->allowAllProperties();
+        $this->preProcessControllerAction();
     }
 
     public function listSearchResultsAction(Search $search): void
     {
         $days = $this->dayRepository->searchEvents($search);
-        $this->view->assign('days', $days);
+        $this->postProcessAndAssignFluidVariables([
+            'days' => $days
+        ]);
         CacheUtility::addPageCacheTagsByQuery($days->getQuery());
     }
 
     public function listMyEventsAction(): void
     {
         $events = $this->eventRepository->findMyEvents();
-        $this->view->assign('events', $events);
+        $this->postProcessAndAssignFluidVariables([
+            'events' => $events
+        ]);
         CacheUtility::addPageCacheTagsByQuery($events->getQuery());
     }
 
@@ -158,23 +156,15 @@ class EventController extends AbstractController
             $this->settings['selectableCategoriesForNewEvents']
         );
 
-        if (!$categories->count()) {
+        if ($categories->count() === 0) {
             $this->addFlashMessage('Dear Admin: You have forgotten to define some allowed categories in plugin configuration');
         }
 
-        $assignedValues = [
+        $this->postProcessAndAssignFluidVariables([
             'event' => $event,
             'locations' => $this->locationRepository->findAll(),
             'selectableCategories' => $categories
-        ];
-
-        $this->view->assignMultiple(
-            $this->emitActionSignal(
-                'EventController',
-                'newAction',
-                $assignedValues
-            )
-        );
+        ]);
     }
 
     /**
@@ -246,19 +236,11 @@ class EventController extends AbstractController
             $this->addFlashMessage('Dear Admin: You have forgotten to define some allowed categories in plugin configuration');
         }
 
-        $assignedValues = [
+        $this->postProcessAndAssignFluidVariables([
             'event' => $eventObject,
             'locations' => $this->locationRepository->findAll(),
             'selectableCategories' => $categories
-        ];
-
-        $this->view->assignMultiple(
-            $this->emitActionSignal(
-                'EventController',
-                'editAction',
-                $assignedValues
-            )
-        );
+        ]);
     }
 
     /**
@@ -351,15 +333,9 @@ class EventController extends AbstractController
         $eventObject->setHidden(false);
         $this->eventRepository->update($eventObject);
 
-        $assignedValues = [
+        $this->postProcessAndAssignFluidVariables([
             'event' => $eventObject
-        ];
-
-        $this->view->assignMultiple($this->emitActionSignal(
-            'EventController',
-            'activateAction',
-            $assignedValues
-        ));
+        ]);
 
         // send mail
         $this->mail->setFrom($this->extConf->getEmailFromAddress(), $this->extConf->getEmailFromName());
