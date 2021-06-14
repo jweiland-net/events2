@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Helper;
 
 use JWeiland\Events2\Domain\Repository\HiddenRepositoryInterface;
+use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Session;
 use TYPO3\CMS\Extbase\Persistence\RepositoryInterface;
@@ -46,7 +47,10 @@ class HiddenObjectHelper
                 // get object from UID
                 $object = $repository->findHiddenObject((int)$objectRaw);
             }
-            $this->session->registerObject($object, $object->getUid());
+
+            if ($object instanceof AbstractDomainObject) {
+                $this->session->registerObject($object, $object->getUid());
+            }
         }
     }
 }

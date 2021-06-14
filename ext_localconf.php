@@ -8,14 +8,15 @@ call_user_func(function () {
         'JWeiland.events2',
         'Events',
         [
-            'Day' => 'list, listLatest, listToday, listWeek, listRange, show, showByTimestamp',
-            'Event' => 'listSearchResults, listMyEvents, new, create, edit, update, delete, activate',
+            'Day' => 'list, listLatest, listToday, listWeek, listRange, listSearchResults, show, showByTimestamp',
+            'Event' => 'listMyEvents, new, create, edit, update, delete, activate',
             'Location' => 'show',
             'Video' => 'show',
         ],
         // non-cacheable actions
         [
-            'Event' => 'listSearchResults, create, update, delete, activate',
+            'Day' => 'listSearchResults',
+            'Event' => 'create, edit, update, delete, activate',
         ]
     );
 

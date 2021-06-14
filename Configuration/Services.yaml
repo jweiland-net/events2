@@ -22,12 +22,50 @@ services:
   JWeiland\Events2\Utility\DateTimeUtility:
     public: true
 
+  JWeiland\Events2\EventListener\AddOrganizerToEventRecordEventListener:
+    tags:
+      - name: event.listener
+        event: JWeiland\Events2\Event\PreProcessControllerActionEvent
+  JWeiland\Events2\EventListener\AddValidationForVideoLinkEventListener:
+    tags:
+      - name: event.listener
+        event: JWeiland\Events2\Event\PreProcessControllerActionEvent
+  JWeiland\Events2\EventListener\AllowSearchParameterEventListener:
+    tags:
+      - name: event.listener
+        event: JWeiland\Events2\Event\PreProcessControllerActionEvent
+  JWeiland\Events2\EventListener\ApplyLocationAsMandatoryIfNeededEventListener:
+    tags:
+      - name: event.listener
+        event: JWeiland\Events2\Event\PreProcessControllerActionEvent
+  JWeiland\Events2\EventListener\AssignMediaTypeConverterEventListener:
+    tags:
+      - name: event.listener
+        event: JWeiland\Events2\Event\PreProcessControllerActionEvent
+  JWeiland\Events2\EventListener\RegisterHiddenEventEventListener:
+    tags:
+      - name: event.listener
+        event: JWeiland\Events2\Event\PreProcessControllerActionEvent
   JWeiland\Events2\EventListener\RemapSearchParameterEventListener:
     tags:
       - name: event.listener
         event: JWeiland\Events2\Event\PreProcessControllerActionEvent
         before: JWeiland\Events2\EventListener\AllowSearchParameterEventListener
-  JWeiland\Events2\EventListener\AllowSearchParameterEventListener:
+  JWeiland\Events2\EventListener\SetDateFormatForPropertyMappingEventListener:
     tags:
       - name: event.listener
         event: JWeiland\Events2\Event\PreProcessControllerActionEvent
+
+  JWeiland\Events2\EventListener\DeleteUploadedFilesOnErrorEventListener:
+    tags:
+      - name: event.listener
+        event: JWeiland\Events2\Event\PostProcessFluidVariablesEvent
+
+  JWeiland\Events2\EventListener\DeleteVideoLinkIfEmptyEventListener:
+    tags:
+      - name: event.listener
+        event: JWeiland\Events2\Event\PostProcessControllerActionEvent
+  JWeiland\Events2\EventListener\UpdateEventPathSegmentEventListener:
+    tags:
+      - name: event.listener
+        event: JWeiland\Events2\Event\PostProcessControllerActionEvent

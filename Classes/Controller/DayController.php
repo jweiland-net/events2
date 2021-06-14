@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Controller;
 
 use JWeiland\Events2\Domain\Model\Filter;
+use JWeiland\Events2\Domain\Model\Search;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\OrganizerRepository;
 use JWeiland\Events2\Service\JsonLdService;
@@ -60,6 +61,11 @@ class DayController extends AbstractController
         }
     }
 
+    public function initializeListAction(): void
+    {
+        $this->preProcessControllerAction();
+    }
+
     /**
      * @param Filter|null $filter
      */
@@ -68,6 +74,11 @@ class DayController extends AbstractController
         $days = $this->dayRepository->findEvents('list', $this->validateAndAssignFilter($filter));
         $this->view->assign('days', $days);
         CacheUtility::addPageCacheTagsByQuery($days->getQuery());
+    }
+
+    public function initializeListLatestAction(): void
+    {
+        $this->preProcessControllerAction();
     }
 
     /**
@@ -85,6 +96,11 @@ class DayController extends AbstractController
         CacheUtility::addPageCacheTagsByQuery($days->getQuery());
     }
 
+    public function initializeListTodayAction(): void
+    {
+        $this->preProcessControllerAction();
+    }
+
     /**
      * @param Filter|null $filter
      */
@@ -93,6 +109,11 @@ class DayController extends AbstractController
         $days = $this->dayRepository->findEvents('today', $this->validateAndAssignFilter($filter));
         $this->view->assign('days', $days);
         CacheUtility::addPageCacheTagsByQuery($days->getQuery());
+    }
+
+    public function initializeListThisWeekAction(): void
+    {
+        $this->preProcessControllerAction();
     }
 
     /**
@@ -105,6 +126,11 @@ class DayController extends AbstractController
         CacheUtility::addPageCacheTagsByQuery($days->getQuery());
     }
 
+    public function initializeListRangeAction(): void
+    {
+        $this->preProcessControllerAction();
+    }
+
     /**
      * @param Filter|null $filter
      */
@@ -112,6 +138,20 @@ class DayController extends AbstractController
     {
         $days = $this->dayRepository->findEvents('range', $this->validateAndAssignFilter($filter));
         $this->view->assign('days', $days);
+        CacheUtility::addPageCacheTagsByQuery($days->getQuery());
+    }
+
+    public function initializeListSearchResultsAction(): void
+    {
+        $this->preProcessControllerAction();
+    }
+
+    public function listSearchResultsAction(Search $search): void
+    {
+        $days = $this->dayRepository->searchEvents($search);
+        $this->postProcessAndAssignFluidVariables([
+            'days' => $days
+        ]);
         CacheUtility::addPageCacheTagsByQuery($days->getQuery());
     }
 
