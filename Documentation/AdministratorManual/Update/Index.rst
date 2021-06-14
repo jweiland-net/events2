@@ -8,6 +8,21 @@ Updating
 
 If you update EXT:events2 to a newer version, please read this section carefully!
 
+Update to Version 7.0.0
+=======================
+
+Nearly all Controller Actions contains a call to the new TYPO3 EventDispatcher now. That way we have moved a lot of
+logic of the event controllers into EventListeners. All Extbase SignalSlot have been removed.
+
+The Action ``listSearchResults`` was moved from event controller into day controller. Please update controller name
+in ``Search/Show.html``:
+
+``<input type="hidden" name="tx_events2_events[controller]" value="Day" />``
+
+All deprecated methods and version_compare lines have been removed.
+
+``edit`` action is defined as ``uncached`` in ext_localconf.php now.
+
 Update to Version 6.3.0
 =======================
 
