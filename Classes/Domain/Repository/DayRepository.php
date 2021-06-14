@@ -78,7 +78,7 @@ class DayRepository extends Repository
         $this->dispatcher = $dispatcher;
     }
 
-    public function setSettings(array $settings)
+    public function setSettings(array $settings): void
     {
         $this->settings = $settings;
     }
@@ -201,6 +201,10 @@ class DayRepository extends Repository
                     ),
                     $subQueryBuilder->expr()->like(
                         'event_sub_query.teaser',
+                        $queryBuilder->quote('%' . $search->getSearch() . '%')
+                    ),
+                    $subQueryBuilder->expr()->like(
+                        'event_sub_query.detail_information',
                         $queryBuilder->quote('%' . $search->getSearch() . '%')
                     )
                 )

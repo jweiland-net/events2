@@ -808,6 +808,11 @@ class Event extends AbstractEntity
         return $isAllowed;
     }
 
+    public function getOriginalImages(): ObjectStorage
+    {
+        return $this->images;
+    }
+
     /**
      * @return array|FileReference[]
      */

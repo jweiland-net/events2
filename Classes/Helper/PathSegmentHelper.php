@@ -14,10 +14,12 @@ namespace JWeiland\Events2\Helper;
 use Doctrine\DBAL\Driver\Statement;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Event;
+use JWeiland\Events2\Event\GeneratePathSegmentEvent;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\DataHandling\SlugHelper;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
@@ -28,6 +30,16 @@ use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
  */
 class PathSegmentHelper
 {
+    /**
+     * @var ExtConf
+     */
+    protected $extConf;
+
+    /**
+     * @var EventDispatcher
+     */
+    protected $eventDispatcher;
+
     /**
      * @var string
      */
@@ -44,29 +56,40 @@ class PathSegmentHelper
     protected $titleColumn = 'title';
 
     /**
-     * @var ExtConf
-     */
-    protected $extConf;
-
-    /**
      * @var array
      */
     protected $slugCache = [];
 
-    public function __construct(ExtConf $extConf = null)
+    public function __construct(ExtConf $extConf, EventDispatcher $eventDispatcher)
     {
-        $this->extConf = $extConf ?? GeneralUtility::makeInstance(ExtConf::class);
+        $this->extConf = $extConf;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function generatePathSegment(array $baseRecord): string
     {
-        $pathSegment = $this->getSlugHelper()->generate(
-            $baseRecord,
-            (int)$baseRecord['pid']
-        );
+        if ($this->extConf->getPathSegmentType() === 'empty') {
+            /** @var GeneratePathSegmentEvent $generatePathSegmentEvent */
+            $generatePathSegmentEvent = $this->eventDispatcher->dispatch(
+                new GeneratePathSegmentEvent($baseRecord)
+            );
+            $pathSegment = $generatePathSegmentEvent->getPathSegment();
+            if ($pathSegment === '' || $pathSegment === '/') {
+                throw new \Exception(
+                    'You have configured "empty" in Extension Settings for path segment generation. Please check your configured Event or change path generation to "realurl" or "uid"',
+                    1623682407
+                );
+            }
+        } else {
+            // We configure path segment type "uid" in getSlugHelper()
+            $pathSegment = $this->getSlugHelper()->generate(
+                $baseRecord,
+                (int)$baseRecord['pid']
+            );
 
-        if ($this->extConf->getPathSegmentType() === 'realurl') {
-            $pathSegment = $this->getUniqueValue((int)$baseRecord['uid'], $pathSegment);
+            if ($this->extConf->getPathSegmentType() === 'realurl') {
+                $pathSegment = $this->getUniqueValue((int)$baseRecord['uid'], $pathSegment);
+            }
         }
 
         return $pathSegment;

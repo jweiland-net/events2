@@ -130,7 +130,7 @@ class AbstractController extends ActionController
         $this->view->assignMultiple($event->getFluidVariables());
     }
 
-    protected function postProcessControllerAction(?Event $event, ?Day $day): void
+    protected function postProcessControllerAction(?Event $event = null, ?Day $day = null): void
     {
         $this->eventDispatcher->dispatch(
             new PostProcessControllerActionEvent(

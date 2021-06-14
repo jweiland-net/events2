@@ -11,10 +11,12 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Domain\Repository;
 
+use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Extbase\Persistence\Generic\Session;
@@ -67,14 +69,24 @@ class EventRepository extends Repository implements HiddenRepositoryInterface
         $this->dateTimeUtility = $dateTimeUtility;
     }
 
-    public function findHiddenObject($value, string $property = 'uid'): ?object
+    /**
+     * @param mixed $value
+     * @param string $property
+     * @return AbstractDomainObject|Event|null
+     */
+    public function findHiddenObject($value, string $property = 'uid'): ?AbstractDomainObject
     {
         $query = $this->createQuery();
         $query->getQuerySettings()->setIgnoreEnableFields(true);
         $query->getQuerySettings()->setEnableFieldsToBeIgnored(['disabled']);
         $query->getQuerySettings()->setRespectStoragePage(false);
 
-        return $query->matching($query->equals($property, $value))->execute()->getFirst();
+        $firstObject = $query->matching($query->equals($property, $value))->execute()->getFirst();
+        if ($firstObject instanceof AbstractDomainObject) {
+            return $firstObject;
+        }
+
+        return null;
     }
 
     public function findMyEvents(): QueryResultInterface
