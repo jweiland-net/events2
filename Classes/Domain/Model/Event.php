@@ -278,7 +278,7 @@ class Event extends AbstractEntity
         if (
             $eventBegin !== null
             && $eventEnd !== null
-            && $eventEnd !== $eventBegin
+            && $eventEnd <> $eventBegin
         ) {
             $diff = $eventBegin->diff($eventEnd);
 
