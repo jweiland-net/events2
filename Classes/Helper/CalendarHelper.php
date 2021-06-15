@@ -61,9 +61,9 @@ class CalendarHelper
         // 1st priority. If an user session was found we will use stored month/year from session
         $monthAndYear = $this->userSession->getMonthAndYear();
         if (is_array($monthAndYear) && !empty($monthAndYear)) {
-            $placeHolders['environment']['day'] = '01';
-            $placeHolders['environment']['month'] = (string)$monthAndYear['month'];
-            $placeHolders['environment']['year'] = (string)$monthAndYear['year'];
+            $variables['day'] = '01';
+            $variables['month'] = (string)$monthAndYear['month'];
+            $variables['year'] = (string)$monthAndYear['year'];
         }
     }
 

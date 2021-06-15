@@ -25,11 +25,7 @@ class GetMergedEventTimesViewHelper extends AbstractViewHelper
 {
     use CompileWithRenderStatic;
 
-    /**
-     * Initialize all arguments. You need to override this method and call
-     * $this->registerArgument(...) inside this method, to register all your arguments.
-     */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument('event', Event::class, 'The event to get the times from', true);
         $this->registerArgument('date', \DateTime::class, 'The date to get the times from', true);
@@ -40,15 +36,15 @@ class GetMergedEventTimesViewHelper extends AbstractViewHelper
      * This ViewHelpers helps you to find the times with highest priority and merge them into one collection.
      *
      * @param array $arguments
-     * @param \Closure $childClosure
+     * @param \Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
-     * @return string
+     * @return \SplObjectStorage
      */
     public static function renderStatic(
         array $arguments,
-        \Closure $childClosure,
+        \Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
-    ) {
+    ): \SplObjectStorage {
         $timeFactory = GeneralUtility::makeInstance(TimeFactory::class);
         return $timeFactory->getSortedTimesForDate(
             $arguments['event'],

@@ -88,11 +88,10 @@ class JsonLdService
             $this->addDoorTimeOfTimeToData($time);
             $this->addDurationToData($time);
             $this->addEndDateOfTimeToData($time);
-            $this->addEndDateOfEventToData($day->getEvent());
         } else {
             $this->addStartDateOfEventToData($day->getEvent());
-            $this->addEndDateOfEventToData($day->getEvent());
         }
+        $this->addEndDateOfEventToData($day->getEvent());
         $this->addNameToData($day->getEvent());
         $this->addDescriptionToData($day->getEvent());
         $this->addUrlToData();
@@ -138,7 +137,7 @@ class JsonLdService
     protected function addDurationToData(Time $time): void
     {
         if ($time->getDuration() && preg_match('#\d\d:\d\d#', $time->getDuration())) {
-            list($hours, $minutes) = GeneralUtility::trimExplode(':', $time->getDuration());
+            [$hours, $minutes] = GeneralUtility::trimExplode(':', $time->getDuration());
             $this->data['duration'] = sprintf(
                 'PT%dH%dM',
                 (int)$hours,

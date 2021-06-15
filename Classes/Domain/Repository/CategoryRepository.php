@@ -59,7 +59,7 @@ class CategoryRepository extends \TYPO3\CMS\Extbase\Domain\Repository\CategoryRe
             $constraint[] = $query->in('uid', $selectedCategories);
         }
 
-        $constraint[] = $query->equals('parent', (int)$parent);
+        $constraint[] = $query->equals('parent', $parent);
 
         return $query->matching($query->logicalAnd($constraint))->execute();
     }

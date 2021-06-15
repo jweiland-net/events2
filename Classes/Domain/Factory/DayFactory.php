@@ -207,10 +207,12 @@ class DayFactory
 
         $query->statement($queryBuilder);
 
-        /** @var Day $day */
         $day = $query->execute()->getFirst();
+        if ($day instanceof Day) {
+            return $day;
+        }
 
-        return $day;
+        return null;
     }
 
     /**

@@ -223,13 +223,14 @@ class DayGenerator
     {
         $earliestDateToStartCalculatingFrom = clone $this->dateTimeUtility->convert('today');
         $earliestDateToStartCalculatingFrom->modify('-' . $this->extConf->getRecurringPast() . ' months');
+        $eventBegin = $event->getEventBegin();
         if (
-            $event->getEventBegin() instanceof \DateTime
-            && $earliestDateToStartCalculatingFrom > $event->getEventBegin()
+            $eventBegin instanceof \DateTime
+            && $earliestDateToStartCalculatingFrom > $eventBegin
         ) {
             $dateToStartCalculatingFrom = $earliestDateToStartCalculatingFrom;
         } else {
-            $dateToStartCalculatingFrom = $event->getEventBegin();
+            $dateToStartCalculatingFrom = $eventBegin;
         }
 
         // In case of eachWeeks and eachMonth $dateToStartCalculatingFrom has to be
@@ -348,7 +349,7 @@ class DayGenerator
         // we need this to have a date where time is set to 00:00:00
         $day = $this->dateTimeUtility->convert('today');
         $lastDayOfMonth = $this->dateTimeUtility->convert('today');
-        $lastDayOfMonth->modify('last day of ' . $month . ' ' . (string)$year . ' 23:59:59');
+        $lastDayOfMonth->modify('last day of ' . $month . ' ' . $year . ' 23:59:59');
         $dateToStartCalculatingFrom = $this->getDateToStartCalculatingFrom($event); // prevent from calling it multiple times in foreach
         $dateToStopCalculatingTo = $this->getDateToStopCalculatingTo($event); // prevent from calling it multiple times in foreach
 

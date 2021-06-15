@@ -61,7 +61,7 @@ trait Typo3PropertiesTrait
         return $this->crdate;
     }
 
-    public function setCrdate(?\DateTime $crdate = null)
+    public function setCrdate(?\DateTime $crdate = null): void
     {
         $this->crdate = $crdate;
     }
@@ -71,7 +71,7 @@ trait Typo3PropertiesTrait
         return $this->tstamp;
     }
 
-    public function setTstamp(?\DateTime $tstamp = null)
+    public function setTstamp(?\DateTime $tstamp = null): void
     {
         $this->tstamp = $tstamp;
     }
@@ -81,7 +81,7 @@ trait Typo3PropertiesTrait
         return $this->_languageUid;
     }
 
-    public function setSysLanguageUid(int $sysLanguageUid = null)
+    public function setSysLanguageUid(int $sysLanguageUid = null): void
     {
         $this->_languageUid = $sysLanguageUid;
     }
@@ -91,7 +91,7 @@ trait Typo3PropertiesTrait
         return $this->l10nParent;
     }
 
-    public function setL10nParent(int $l10nParent)
+    public function setL10nParent(int $l10nParent): void
     {
         $this->l10nParent = $l10nParent;
     }
@@ -101,7 +101,7 @@ trait Typo3PropertiesTrait
         return $this->starttime;
     }
 
-    public function setStarttime(?\DateTime $starttime = null)
+    public function setStarttime(?\DateTime $starttime = null): void
     {
         $this->starttime = $starttime;
     }
@@ -111,7 +111,7 @@ trait Typo3PropertiesTrait
         return $this->endtime;
     }
 
-    public function setEndtime(?\DateTime $endtime = null)
+    public function setEndtime(?\DateTime $endtime = null): void
     {
         $this->endtime = $endtime;
     }
@@ -121,7 +121,7 @@ trait Typo3PropertiesTrait
         return $this->hidden;
     }
 
-    public function setHidden(bool $hidden)
+    public function setHidden(bool $hidden): void
     {
         $this->hidden = $hidden;
     }
@@ -131,7 +131,7 @@ trait Typo3PropertiesTrait
         return $this->deleted;
     }
 
-    public function setDeleted(bool $deleted)
+    public function setDeleted(bool $deleted): void
     {
         $this->deleted = $deleted;
     }
@@ -141,7 +141,7 @@ trait Typo3PropertiesTrait
         return $this->cruserId;
     }
 
-    public function setCruserId(int $cruserId)
+    public function setCruserId(int $cruserId): void
     {
         $this->cruserId = $cruserId;
     }

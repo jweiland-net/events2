@@ -24,7 +24,7 @@ class InitializeNewEventRecord implements FormDataProviderInterface
      * @param array $result Initialized result array
      * @return array Do not add as strict type because of Interface
      */
-    public function addData(array $result)
+    public function addData(array $result): array
     {
         if ($result['tableName'] !== 'tx_events2_domain_model_event') {
             return $result;

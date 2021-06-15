@@ -153,20 +153,20 @@ class DayRelationService
                 $this->firstTime = null;
             }
         } else {
-            $this->addGeneratedDayToEvent($dateTime, $event, null);
+            $this->addGeneratedDayToEvent($dateTime, $event);
         }
     }
 
-    protected function addGeneratedDayToEvent(\DateTime $dateTime, Event $event, ?Time $time = null)
+    protected function addGeneratedDayToEvent(\DateTime $dateTime, Event $event, ?Time $time = null): void
     {
-        list($hour, $minute) = $this->getHourAndMinuteFromTime($time);
+        [$hour, $minute] = $this->getHourAndMinuteFromTime($time);
 
         $day = GeneralUtility::makeInstance(Day::class);
         $day->setPid($event->getPid());
         $day->setDay($dateTime);
-        $day->setDayTime($this->getDayTime($dateTime, (int)$hour, (int)$minute));
-        $day->setSortDayTime($this->getSortDayTime($dateTime, (int)$hour, (int)$minute, $event));
-        $day->setSameDayTime($this->getSameDayTime($dateTime, (int)$hour, (int)$minute, $event));
+        $day->setDayTime($this->getDayTime($dateTime, $hour, $minute));
+        $day->setSortDayTime($this->getSortDayTime($dateTime, $hour, $minute, $event));
+        $day->setSameDayTime($this->getSameDayTime($dateTime, $hour, $minute, $event));
         $day->setEvent($event);
 
         $event->addDay($day);
@@ -183,7 +183,7 @@ class DayRelationService
         $hourAndMinute = [0, 0];
         if (
             $time instanceof Time &&
-            preg_match('@^([0-1][0-9]|2[0-3]):[0-5][0-9]$@', $time->getTimeBegin())
+            preg_match('@^([0-1]\d|2[0-3]):[0-5]\d$@', $time->getTimeBegin())
         ) {
             $hourAndMinute = explode(':', $time->getTimeBegin());
         }
@@ -234,8 +234,8 @@ class DayRelationService
     protected function getSortDayTime(\DateTime $day, int $hour, int $minute, Event $event): \DateTime
     {
         if ($event->getEventType() === 'duration') {
-            list($hour, $minute) = $this->getHourAndMinuteFromTime($this->firstTime);
-            $sortDayTime = $this->getDayTime($this->firstDateTime, (int)$hour, (int)$minute);
+            [$hour, $minute] = $this->getHourAndMinuteFromTime($this->firstTime);
+            $sortDayTime = $this->getDayTime($this->firstDateTime, $hour, $minute);
         } else {
             $sortDayTime = $this->getDayTime($day, $hour, $minute);
         }
@@ -262,10 +262,10 @@ class DayRelationService
     protected function getSameDayTime(\DateTime $day, int $hour, int $minute, Event $event): \DateTime
     {
         if ($event->getEventType() !== 'duration') {
-            list($hour, $minute) = $this->getHourAndMinuteFromTime($this->firstTime);
+            [$hour, $minute] = $this->getHourAndMinuteFromTime($this->firstTime);
         }
 
-        return $this->getSortDayTime($day, (int)$hour, (int)$minute, $event);
+        return $this->getSortDayTime($day, $hour, $minute, $event);
     }
 
     protected function getLogger(): Logger

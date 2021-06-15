@@ -26,30 +26,32 @@ class ModifyRootUidOfTreeSelectElements implements FormDataProviderInterface
      * @param array $result Initialized result array
      * @return array Do not add as strict type because of Interface
      */
-    public function addData(array $result)
+    public function addData(array $result): array
     {
         foreach (['settings.categories', 'settings.mainCategories'] as $categoryField) {
             if (
-                // check if a FlexForm was rendered
-                $result['tableName'] === 'tt_content'
-                && isset($result['flexParentDatabaseRow'])
-                && is_array($result['flexParentDatabaseRow'])
-                && GeneralUtility::isFirstPartOfStr($result['flexParentDatabaseRow']['list_type'], 'events2')
+                // check global structure
+                isset(
+                    $result['flexParentDatabaseRow'],
+                    $result['processedTca']['columns'][$categoryField]['config']['type'],
+                    $result['processedTca']['columns'][$categoryField]['config']['renderMode']
+                )
 
                 // check, if TCA configuration exists
-                && isset($result['processedTca']['columns'][$categoryField])
                 && is_array($result['processedTca']['columns'][$categoryField])
-                && isset($result['processedTca']['columns'][$categoryField]['config'])
                 && is_array($result['processedTca']['columns'][$categoryField]['config'])
 
                 // check, if we have TCA-type "select" defined and it is configured as "tree"
-                && isset($result['processedTca']['columns'][$categoryField]['config']['type'])
                 && $result['processedTca']['columns'][$categoryField]['config']['type'] === 'select'
-                && isset($result['processedTca']['columns'][$categoryField]['config']['renderMode'])
                 && $result['processedTca']['columns'][$categoryField]['config']['renderMode'] === 'tree'
+
+                // check if a FlexForm was rendered
+                && $result['tableName'] === 'tt_content'
+                && is_array($result['flexParentDatabaseRow'])
+                && GeneralUtility::isFirstPartOfStr($result['flexParentDatabaseRow']['list_type'], 'events2')
             ) {
                 $extConf = GeneralUtility::makeInstance(ExtConf::class);
-                $result['processedTca']['columns'][$categoryField]['config']['treeConfig']['rootUid'] = (int)$extConf->getRootUid();
+                $result['processedTca']['columns'][$categoryField]['config']['treeConfig']['rootUid'] = $extConf->getRootUid();
             }
         }
 

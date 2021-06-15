@@ -275,8 +275,13 @@ class Event extends AbstractEntity
 
         $eventBegin = $dateTimeUtility->standardizeDateTimeObject($this->getEventBegin());
         $eventEnd = $dateTimeUtility->standardizeDateTimeObject($this->getEventEnd());
-        if (!empty($eventEnd) && $eventEnd != $eventBegin) {
+        if (
+            $eventBegin !== null
+            && $eventEnd !== null
+            && $eventEnd !== $eventBegin
+        ) {
             $diff = $eventBegin->diff($eventEnd);
+
             // Example: 20.01.2013 - 23.01.2013 = 4 days but diff shows 3. So we have to add 1 day here
             return (int)$diff->format('%a') + 1;
         }
@@ -339,7 +344,7 @@ class Event extends AbstractEntity
         $result = [];
         $items = $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['xth']['config']['items'];
         foreach ($items as $key => $item) {
-            $result[$item[1]] = $this->xth & pow(2, $key);
+            $result[$item[1]] = $this->xth & (2 ** $key);
         }
 
         return $result;
@@ -355,7 +360,7 @@ class Event extends AbstractEntity
         $result = [];
         $items = $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['weekday']['config']['items'];
         foreach ($items as $key => $item) {
-            $result[$item[1]] = $this->weekday & pow(2, $key);
+            $result[$item[1]] = $this->weekday & (2 ** $key);
         }
 
         return $result;
@@ -789,7 +794,11 @@ class Event extends AbstractEntity
     public function getFirstOrganizer(): ?Organizer
     {
         $this->organizers->rewind();
-        return $this->organizers->current();
+        $organizer = $this->organizers->current();
+        if ($organizer instanceof Organizer) {
+            return $organizer;
+        }
+        return null;
     }
 
     public function getIsCurrentUserAllowedOrganizer(): bool

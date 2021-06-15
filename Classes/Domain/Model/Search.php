@@ -68,7 +68,7 @@ class Search extends AbstractEntity
         return $this->search;
     }
 
-    public function setSearch(string $search)
+    public function setSearch(string $search): void
     {
         $this->search = htmlspecialchars($search);
     }
@@ -78,7 +78,7 @@ class Search extends AbstractEntity
         return $this->mainCategory;
     }
 
-    public function setMainCategory(?Category $mainCategory = null)
+    public function setMainCategory(?Category $mainCategory = null): void
     {
         $this->mainCategory = $mainCategory;
     }
@@ -91,7 +91,7 @@ class Search extends AbstractEntity
         return $this->subCategory;
     }
 
-    public function setSubCategory(?Category $subCategory = null)
+    public function setSubCategory(?Category $subCategory = null): void
     {
         $this->subCategory = $subCategory;
     }
@@ -111,7 +111,7 @@ class Search extends AbstractEntity
         return $date;
     }
 
-    public function setEventBegin(string $eventBegin)
+    public function setEventBegin(string $eventBegin): void
     {
         $this->eventBegin = $eventBegin;
     }
@@ -131,7 +131,7 @@ class Search extends AbstractEntity
         return $date;
     }
 
-    public function setEventEnd(string $eventEnd)
+    public function setEventEnd(string $eventEnd): void
     {
         $this->eventEnd = $eventEnd;
     }
@@ -141,7 +141,7 @@ class Search extends AbstractEntity
         return $this->location;
     }
 
-    public function setLocation(Location $location = null)
+    public function setLocation(Location $location = null): void
     {
         $this->location = $location;
     }
@@ -151,7 +151,7 @@ class Search extends AbstractEntity
         return $this->freeEntry;
     }
 
-    public function setFreeEntry(bool $freeEntry)
+    public function setFreeEntry(bool $freeEntry): void
     {
         $this->freeEntry = $freeEntry;
     }
@@ -161,7 +161,7 @@ class Search extends AbstractEntity
         return $this->storagePids;
     }
 
-    public function setStoragePids(array $storagePids)
+    public function setStoragePids(array $storagePids): void
     {
         $this->storagePids = $storagePids;
     }
@@ -171,7 +171,7 @@ class Search extends AbstractEntity
         return $this->limit;
     }
 
-    public function setLimit(int $limit)
+    public function setLimit(int $limit): void
     {
         $this->limit = $limit;
     }

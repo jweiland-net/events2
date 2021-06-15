@@ -166,15 +166,13 @@ class DatabaseService
                         $queryBuilder->expr()->eq(
                             'category_mm.tablenames',
                             $queryBuilder->createNamedParameter(
-                                'tx_events2_domain_model_event',
-                                \PDO::PARAM_STR
+                                'tx_events2_domain_model_event'
                             )
                         ),
                         $queryBuilder->expr()->eq(
                             'category_mm.fieldname',
                             $queryBuilder->createNamedParameter(
-                                'categories',
-                                \PDO::PARAM_STR
+                                'categories'
                             )
                         )
                     )
@@ -218,7 +216,7 @@ class DatabaseService
         return (string)$queryBuilder->expr()->andX(
             $queryBuilder->expr()->eq(
                 'event_type',
-                $queryBuilder->createNamedParameter('single', \PDO::PARAM_STR)
+                $queryBuilder->createNamedParameter('single')
             ),
             $queryBuilder->expr()->gt(
                 'event_begin',
@@ -232,7 +230,7 @@ class DatabaseService
         return (string)$queryBuilder->expr()->andX(
             $queryBuilder->expr()->eq(
                 'event_type',
-                $queryBuilder->createNamedParameter('duration', \PDO::PARAM_STR)
+                $queryBuilder->createNamedParameter('duration')
             ),
             $queryBuilder->expr()->orX(
                 $queryBuilder->expr()->eq(
@@ -252,7 +250,7 @@ class DatabaseService
         return (string)$queryBuilder->expr()->andX(
             $queryBuilder->expr()->eq(
                 'event_type',
-                $queryBuilder->createNamedParameter('recurring', \PDO::PARAM_STR)
+                $queryBuilder->createNamedParameter('recurring')
             ),
             $queryBuilder->expr()->orX(
                 $queryBuilder->expr()->eq(
@@ -274,7 +272,6 @@ class DatabaseService
         string $alias = 'day'
     ): void {
         $dateTimeUtility = GeneralUtility::makeInstance(DateTimeUtility::class);
-        $startDateTime = null;
         $endDateTime = null;
 
         switch ($type) {
@@ -400,15 +397,13 @@ class DatabaseService
                 $queryBuilder->expr()->eq(
                     'category_mm.tablenames',
                     $parentQueryBuilder->createNamedParameter(
-                        'tx_events2_domain_model_event',
-                        \PDO::PARAM_STR
+                        'tx_events2_domain_model_event'
                     )
                 ),
                 $queryBuilder->expr()->eq(
                     'category_mm.fieldname',
                     $parentQueryBuilder->createNamedParameter(
-                        'categories',
-                        \PDO::PARAM_STR
+                        'categories'
                     )
                 )
             )

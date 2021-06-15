@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Domain\Repository;
 
+use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Factory\DayFactory;
 use JWeiland\Events2\Domain\Model\Day;
@@ -123,7 +124,7 @@ class DayRepository extends Repository
         }
 
         // add filter for organizer
-        if ($filter->getOrganizer() || $this->settings['preFilterByOrganizer']) {
+        if ($this->settings['preFilterByOrganizer'] || $filter->getOrganizer()) {
             $this->databaseService->addConstraintForOrganizer(
                 $subQueryBuilder,
                 (int)$filter->getOrganizer() ?: (int)$this->settings['preFilterByOrganizer'],
@@ -157,7 +158,7 @@ class DayRepository extends Repository
             ->addOrderBy('day.day_time', 'ASC');
 
         if (!empty($limit)) {
-            $queryBuilder->setMaxResults((int)$limit);
+            $queryBuilder->setMaxResults($limit);
         }
 
         $this->addMergeFeatureToQuery($subQueryBuilder);
@@ -368,17 +369,21 @@ class DayRepository extends Repository
      */
     protected function getColumnsForDayTable(array $additionalColumns = []): array
     {
+        $columns = [];
         $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_day');
-        $dayColumns = array_map(
-            function ($column) {
-                return 'day.' . $column;
-            },
-            array_keys(
-                $connection->getSchemaManager()->listTableColumns('tx_events2_domain_model_day') ?? []
-            )
-        );
+        if ($connection->getSchemaManager() instanceof AbstractSchemaManager) {
+            $dayColumns = array_map(
+                static function ($column) {
+                    return 'day.' . $column;
+                },
+                array_keys(
+                    $connection->getSchemaManager()->listTableColumns('tx_events2_domain_model_day') ?? []
+                )
+            );
+            $columns = array_merge($dayColumns, $additionalColumns);
+        }
 
-        return array_merge($dayColumns, $additionalColumns);
+        return $columns;
     }
 
     /**
@@ -388,9 +393,9 @@ class DayRepository extends Repository
      */
     protected function addMergeFeatureToQuery(QueryBuilder $subQueryBuilder): void
     {
-        if ((bool)$this->settings['mergeRecurringEvents']) {
+        if ($this->settings['mergeRecurringEvents']) {
             $subQueryBuilder->groupBy('day_sub_query.event');
-        } elseif ((bool)$this->settings['mergeEventsAtSameDay']) {
+        } elseif ($this->settings['mergeEventsAtSameDay']) {
             $subQueryBuilder->groupBy('day_sub_query.event', 'day_sub_query.same_day_time');
         } else {
             $subQueryBuilder->groupBy('day_sub_query.event', 'day_sub_query.sort_day_time');

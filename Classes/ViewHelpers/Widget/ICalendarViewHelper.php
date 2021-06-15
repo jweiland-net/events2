@@ -30,7 +30,7 @@ class ICalendarViewHelper extends AbstractWidgetViewHelper
         $this->controller = $controller;
     }
 
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerArgument('day', Day::class, 'The day object to create the download iCal file for', true);

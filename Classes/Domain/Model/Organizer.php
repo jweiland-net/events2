@@ -36,7 +36,7 @@ class Organizer extends AbstractEntity
         return $this->organizer;
     }
 
-    public function setOrganizer(string $organizer)
+    public function setOrganizer(string $organizer): void
     {
         $this->organizer = $organizer;
     }
@@ -46,7 +46,7 @@ class Organizer extends AbstractEntity
         return $this->link;
     }
 
-    public function setLink(?Link $link = null)
+    public function setLink(?Link $link = null): void
     {
         $this->link = $link;
     }

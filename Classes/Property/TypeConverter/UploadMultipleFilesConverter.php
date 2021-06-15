@@ -170,7 +170,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
         return $references;
     }
 
-    protected function initialize(?PropertyMappingConfigurationInterface $configuration)
+    protected function initialize(?PropertyMappingConfigurationInterface $configuration): void
     {
         if ($configuration === null) {
             throw new \Exception(
@@ -211,7 +211,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
         return $settings ?? [];
     }
 
-    protected function setUploadFolder()
+    protected function setUploadFolder(): void
     {
         $combinedUploadFolderIdentifier = $this->getTypoScriptPluginSettings()['new']['uploadFolder'] ?? '';
         if ($combinedUploadFolderIdentifier === '') {
@@ -260,7 +260,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
      *
      * @param FileReference|null $fileReference
      */
-    protected function deleteFile(?FileReference $fileReference)
+    protected function deleteFile(?FileReference $fileReference): void
     {
         if ($fileReference !== null) {
             $fileReference = $fileReference->getOriginalResource();
@@ -304,8 +304,8 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
         return $resourceFactory->createFileReferenceObject(
             [
                 'uid_local' => $uploadedFile->getUid(),
-                'uid_foreign' => uniqid('NEW_'),
-                'uid' => uniqid('NEW_'),
+                'uid_foreign' => uniqid('NEW_', true),
+                'uid' => uniqid('NEW_', true),
             ]
         );
     }

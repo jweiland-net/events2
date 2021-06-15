@@ -23,11 +23,7 @@ class CreateYoutubeUriViewHelper extends AbstractViewHelper
 {
     use CompileWithRenderStatic;
 
-    /**
-     * Initialize all arguments. You need to override this method and call
-     * $this->registerArgument(...) inside this method, to register all your arguments.
-     */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument('link', 'string', 'Insert the YouTube-Link', true);
     }
@@ -36,15 +32,15 @@ class CreateYoutubeUriViewHelper extends AbstractViewHelper
      * Extract the youtube ID from link and return the embedded youtube url.
      *
      * @param array $arguments
-     * @param \Closure $childClosure
+     * @param \Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
      * @return string
      */
     public static function renderStatic(
         array $arguments,
-        \Closure $childClosure,
+        \Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
-    ) {
+    ): string {
         if (preg_match('~^(|http:|https:)//(|www.)youtu(\.be|be)(.*?)(v=|embed/|)([a-zA-Z0-9_-]+)$~i', $arguments['link'], $matches)) {
             $url = '//www.youtube.com/embed/' . $matches[6];
         } else {

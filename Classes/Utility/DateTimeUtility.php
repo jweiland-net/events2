@@ -20,7 +20,7 @@ class DateTimeUtility
      * Creates a DateTime from an unix timestamp or date/datetime value.
      * If the input is empty, NULL is returned.
      *
-     * @param int|string $value Unix timestamp or date/datetime value
+     * @param mixed $value Unix timestamp or date/datetime value
      * @return \DateTime|null
      */
     public function convert($value): ?\DateTime

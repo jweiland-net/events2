@@ -77,7 +77,7 @@ class Time extends AbstractEntity
         return $this->weekday;
     }
 
-    public function setWeekday(string $weekday)
+    public function setWeekday(string $weekday): void
     {
         $this->weekday = $weekday;
     }
@@ -87,7 +87,7 @@ class Time extends AbstractEntity
         return $this->timeBegin;
     }
 
-    public function setTimeBegin(string $timeBegin)
+    public function setTimeBegin(string $timeBegin): void
     {
         $this->timeBegin = $timeBegin;
     }
@@ -97,7 +97,7 @@ class Time extends AbstractEntity
         return $this->timeEntry;
     }
 
-    public function setTimeEntry(string $timeEntry)
+    public function setTimeEntry(string $timeEntry): void
     {
         $this->timeEntry = $timeEntry;
     }
@@ -107,7 +107,7 @@ class Time extends AbstractEntity
         return $this->duration;
     }
 
-    public function setDuration(string $duration)
+    public function setDuration(string $duration): void
     {
         $this->duration = $duration;
     }
@@ -117,7 +117,7 @@ class Time extends AbstractEntity
         return $this->timeEnd;
     }
 
-    public function setTimeEnd(string $timeEnd)
+    public function setTimeEnd(string $timeEnd): void
     {
         $this->timeEnd = $timeEnd;
     }
@@ -132,7 +132,7 @@ class Time extends AbstractEntity
         return $this->timeBeginAsDateTime;
     }
 
-    public function setTimeBeginAsDateTime(\DateTime $timeBegin = null)
+    public function setTimeBeginAsDateTime(\DateTime $timeBegin = null): void
     {
         $this->timeBeginAsDateTime = $timeBegin;
     }
@@ -142,7 +142,7 @@ class Time extends AbstractEntity
         return $this->timeEntryAsDateTime;
     }
 
-    public function setTimeEntryAsDateTime(\DateTime $timeEntry = null)
+    public function setTimeEntryAsDateTime(\DateTime $timeEntry = null): void
     {
         $this->timeEntryAsDateTime = $timeEntry;
     }
@@ -152,7 +152,7 @@ class Time extends AbstractEntity
         return $this->timeEndAsDateTime;
     }
 
-    public function setTimeEndAsDateTime(\DateTime $timeEnd = null)
+    public function setTimeEndAsDateTime(\DateTime $timeEnd = null): void
     {
         $this->timeEndAsDateTime = $timeEnd;
     }

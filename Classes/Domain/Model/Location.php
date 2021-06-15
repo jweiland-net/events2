@@ -68,7 +68,7 @@ class Location extends AbstractEntity
         return $this->location;
     }
 
-    public function setLocation(string $location)
+    public function setLocation(string $location): void
     {
         $this->location = $location;
     }
@@ -78,7 +78,7 @@ class Location extends AbstractEntity
         return $this->street;
     }
 
-    public function setStreet(string $street)
+    public function setStreet(string $street): void
     {
         $this->street = $street;
     }
@@ -88,7 +88,7 @@ class Location extends AbstractEntity
         return $this->houseNumber;
     }
 
-    public function setHouseNumber(string $houseNumber)
+    public function setHouseNumber(string $houseNumber): void
     {
         $this->houseNumber = $houseNumber;
     }
@@ -98,7 +98,7 @@ class Location extends AbstractEntity
         return $this->zip;
     }
 
-    public function setZip(string $zip)
+    public function setZip(string $zip): void
     {
         $this->zip = $zip;
     }
@@ -108,7 +108,7 @@ class Location extends AbstractEntity
         return $this->city;
     }
 
-    public function setCity(string $city)
+    public function setCity(string $city): void
     {
         $this->city = $city;
     }
@@ -118,7 +118,7 @@ class Location extends AbstractEntity
         return $this->country;
     }
 
-    public function setCountry(?Country $country)
+    public function setCountry(?Country $country): void
     {
         $this->country = $country;
     }
@@ -128,7 +128,7 @@ class Location extends AbstractEntity
         return $this->link;
     }
 
-    public function setLink(?Link $link = null)
+    public function setLink(?Link $link = null): void
     {
         $this->link = $link;
     }
@@ -140,12 +140,16 @@ class Location extends AbstractEntity
      *
      * @param PoiCollection|null $txMaps2Uid
      */
-    public function setTxMaps2Uid($txMaps2Uid = null)
+    public function setTxMaps2Uid($txMaps2Uid = null): void
     {
         $this->txMaps2Uid = $txMaps2Uid;
     }
 
     /**
+     * SF: Do not add PoiCollection as strict_type to $txMaps2Uid
+     * as this will break DataMap in Extbase when maps2 is not installed
+     * @link https://github.com/jweiland-net/events2/issues/114
+     *
      * @return PoiCollection|null
      */
     public function getTxMaps2Uid()

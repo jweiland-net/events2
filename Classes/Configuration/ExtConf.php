@@ -105,7 +105,7 @@ class ExtConf implements SingletonInterface
         return $this->poiCollectionPid;
     }
 
-    public function setPoiCollectionPid($poiCollectionPid)
+    public function setPoiCollectionPid($poiCollectionPid): void
     {
         $this->poiCollectionPid = (int)$poiCollectionPid;
     }
@@ -118,7 +118,7 @@ class ExtConf implements SingletonInterface
         return $this->rootUid;
     }
 
-    public function setRootUid($rootUid)
+    public function setRootUid($rootUid): void
     {
         $this->rootUid = (int)$rootUid;
     }
@@ -131,7 +131,7 @@ class ExtConf implements SingletonInterface
         return 3;
     }
 
-    public function setRecurringPast($recurringPast)
+    public function setRecurringPast($recurringPast): void
     {
         $this->recurringPast = (int)$recurringPast;
     }
@@ -144,7 +144,7 @@ class ExtConf implements SingletonInterface
         return $this->recurringFuture;
     }
 
-    public function setRecurringFuture($recurringFuture)
+    public function setRecurringFuture($recurringFuture): void
     {
         $this->recurringFuture = (int)$recurringFuture;
     }
@@ -154,7 +154,7 @@ class ExtConf implements SingletonInterface
         return $this->defaultCountry;
     }
 
-    public function setDefaultCountry(string $defaultCountry)
+    public function setDefaultCountry(string $defaultCountry): void
     {
         $this->defaultCountry = $defaultCountry;
     }
@@ -177,7 +177,7 @@ class ExtConf implements SingletonInterface
         return $this->organizerIsRequired;
     }
 
-    public function setOrganizerIsRequired($organizerIsRequired)
+    public function setOrganizerIsRequired($organizerIsRequired): void
     {
         $this->organizerIsRequired = (bool)$organizerIsRequired;
     }
@@ -187,7 +187,7 @@ class ExtConf implements SingletonInterface
         return $this->locationIsRequired;
     }
 
-    public function setLocationIsRequired($locationIsRequired)
+    public function setLocationIsRequired($locationIsRequired): void
     {
         $this->locationIsRequired = (bool)$locationIsRequired;
     }
@@ -208,7 +208,7 @@ class ExtConf implements SingletonInterface
         return $this->emailFromAddress;
     }
 
-    public function setEmailFromAddress(string $emailFromAddress)
+    public function setEmailFromAddress(string $emailFromAddress): void
     {
         $this->emailFromAddress = $emailFromAddress;
     }
@@ -228,7 +228,7 @@ class ExtConf implements SingletonInterface
         return $this->emailFromName;
     }
 
-    public function setEmailFromName(string $emailFromName)
+    public function setEmailFromName(string $emailFromName): void
     {
         $this->emailFromName = $emailFromName;
     }
@@ -238,7 +238,7 @@ class ExtConf implements SingletonInterface
         return $this->emailToAddress;
     }
 
-    public function setEmailToAddress(string $emailToAddress)
+    public function setEmailToAddress(string $emailToAddress): void
     {
         $this->emailToAddress = $emailToAddress;
     }
@@ -247,7 +247,7 @@ class ExtConf implements SingletonInterface
         return $this->emailToName;
     }
 
-    public function setEmailToName(string $emailToName)
+    public function setEmailToName(string $emailToName): void
     {
         $this->emailToName = $emailToName;
     }

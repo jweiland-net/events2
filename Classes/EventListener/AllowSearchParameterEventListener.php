@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace JWeiland\Events2\EventListener;
 
 use JWeiland\Events2\Event\PreProcessControllerActionEvent;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 
 /*

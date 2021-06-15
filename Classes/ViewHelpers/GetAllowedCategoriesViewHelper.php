@@ -25,11 +25,7 @@ class GetAllowedCategoriesViewHelper extends AbstractViewHelper
 {
     use CompileWithRenderStatic;
 
-    /**
-     * Initialize all arguments. You need to override this method and call
-     * $this->registerArgument(...) inside this method, to register all your arguments.
-     */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument('event', Event::class, 'The Event from where we should extract the categories', true);
         $this->registerArgument('pluginCategories', 'string', 'A comma separated list of categories. Normally we use the categories from plugin FlexForm', false, '');
@@ -40,15 +36,15 @@ class GetAllowedCategoriesViewHelper extends AbstractViewHelper
      * This is the case, if an event has multiple assigned categories
      *
      * @param array $arguments
-     * @param \Closure $childClosure
+     * @param \Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
      * @return array
      */
     public static function renderStatic(
         array $arguments,
-        \Closure $childClosure,
+        \Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
-    ) {
+    ): array {
         $allowedCategories = [];
         $pluginCategories = GeneralUtility::intExplode(',', trim($arguments['pluginCategories']), true);
         foreach ($pluginCategories as $pluginCategory) {

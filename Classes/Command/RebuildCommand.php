@@ -43,7 +43,7 @@ class RebuildCommand extends Command
      */
     protected $output;
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setDescription(
             'Executing this command will delete all day records found in day table. ' .
@@ -61,7 +61,7 @@ class RebuildCommand extends Command
      * @param OutputInterface $output
      * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->output = $output;
 
@@ -102,7 +102,7 @@ class RebuildCommand extends Command
             $runtimeCache = GeneralUtility::makeInstance(CacheManager::class)
                 ->getCache('cache_runtime');
 
-            foreach ($rows as $key => $row) {
+            foreach ($rows as $row) {
                 $event = $dayRelations->createDayRelations((int)$row['uid']);
                 if ($event instanceof Event) {
                     $this->echoValue(sprintf(

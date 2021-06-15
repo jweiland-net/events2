@@ -47,7 +47,7 @@ class LocationRepository extends Repository
             ->where(
                 $queryBuilder->expr()->like(
                     'location',
-                    $queryBuilder->createNamedParameter('%' . $locationPart . '%', \PDO::PARAM_STR)
+                    $queryBuilder->createNamedParameter('%' . $locationPart . '%')
                 )
             )
             ->orderBy('location', 'ASC')

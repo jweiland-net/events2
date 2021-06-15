@@ -37,16 +37,16 @@ class ConvertToJsonViewHelper extends AbstractViewHelper
      * Implements a ViewHelper to convert an array into JSON format
      *
      * @param array $arguments
-     * @param \Closure $childClosure
+     * @param \Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
      * @return string
      */
     public static function renderStatic(
         array $arguments,
-        \Closure $childClosure,
+        \Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
-    ) {
-        $value = $childClosure();
+    ): string {
+        $value = $renderChildrenClosure();
         if (empty($value)) {
             $json = '{}';
         } else {

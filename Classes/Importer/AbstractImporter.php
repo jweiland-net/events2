@@ -17,7 +17,6 @@ use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Domain\Repository\OrganizerRepository;
-use JWeiland\Events2\Task\Import;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
@@ -129,7 +128,7 @@ abstract class AbstractImporter implements ImporterInterface
     {
         $isValid = true;
 
-        if (!in_array($this->file->getMimeType(), $this->allowedMimeType)) {
+        if (!in_array($this->file->getMimeType(), $this->allowedMimeType, true)) {
             $isValid = false;
             $this->addMessage('MimeType of file is not allowed', FlashMessage::ERROR);
         }
@@ -279,7 +278,7 @@ abstract class AbstractImporter implements ImporterInterface
             ->where(
                 $queryBuilder->expr()->eq(
                     'organizer',
-                    $queryBuilder->createNamedParameter($title, \PDO::PARAM_STR)
+                    $queryBuilder->createNamedParameter($title)
                 )
             )
             ->execute()
@@ -310,7 +309,7 @@ abstract class AbstractImporter implements ImporterInterface
             ->where(
                 $queryBuilder->expr()->eq(
                     'location',
-                    $queryBuilder->createNamedParameter($title, \PDO::PARAM_STR)
+                    $queryBuilder->createNamedParameter($title)
                 )
             )
             ->execute()
@@ -332,7 +331,7 @@ abstract class AbstractImporter implements ImporterInterface
             ->where(
                 $queryBuilder->expr()->eq(
                     'title',
-                    $queryBuilder->createNamedParameter($title, \PDO::PARAM_STR)
+                    $queryBuilder->createNamedParameter($title)
                 )
             )
             ->execute()

@@ -46,7 +46,7 @@ class Exception extends AbstractEntity
         return $this->exceptionType;
     }
 
-    public function setExceptionType(string $exceptionType)
+    public function setExceptionType(string $exceptionType): void
     {
         $this->exceptionType = $exceptionType;
     }
@@ -57,7 +57,7 @@ class Exception extends AbstractEntity
         return clone $this->exceptionDate;
     }
 
-    public function setExceptionDate(\DateTime $exceptionDate)
+    public function setExceptionDate(\DateTime $exceptionDate): void
     {
         $this->exceptionDate = $exceptionDate;
     }
@@ -67,7 +67,7 @@ class Exception extends AbstractEntity
         return $this->exceptionTime;
     }
 
-    public function setExceptionTime(?Time $exceptionTime = null)
+    public function setExceptionTime(?Time $exceptionTime = null): void
     {
         $this->exceptionTime = $exceptionTime;
     }
@@ -77,7 +77,7 @@ class Exception extends AbstractEntity
         return $this->exceptionDetails;
     }
 
-    public function setExceptionDetails(string $exceptionDetails)
+    public function setExceptionDetails(string $exceptionDetails): void
     {
         $this->exceptionDetails = $exceptionDetails;
     }

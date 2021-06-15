@@ -48,7 +48,7 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
         parent::__construct();
     }
 
-    public function execute()
+    public function execute(): bool
     {
         $dayRelationService = $this->objectManager->get(DayRelationService::class);
         $persistenceManager = $this->objectManager->get(PersistenceManagerInterface::class);
@@ -127,7 +127,7 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
      *
      * @return string Information to display
      */
-    public function getAdditionalInformation()
+    public function getAdditionalInformation(): string
     {
         $content = '';
         $info = $this->registry->get('events2TaskCreateUpdate', 'info');
