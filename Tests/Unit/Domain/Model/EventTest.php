@@ -39,14 +39,14 @@ class EventTest extends UnitTestCase
      */
     protected $subject;
 
-    public function setUp(): void
+    public function setUp(): void: void
     {
         parent::setUp();
 
         $this->subject = new Event();
     }
 
-    public function tearDown(): void
+    public function tearDown(): void: void
     {
         unset($this->subject);
 

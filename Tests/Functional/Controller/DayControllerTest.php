@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -13,6 +15,7 @@ use JWeiland\Events2\Controller\DayController;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Model\Organizer;
+use JWeiland\Events2\Domain\Model\Search;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Service\DayRelationService;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
@@ -46,7 +49,7 @@ class DayControllerTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->importDataSet('ntf://Database/pages.xml');
@@ -78,7 +81,7 @@ class DayControllerTest extends FunctionalTestCase
         $event->setEventType('single');
         $event->setEventBegin(new \DateTime('tomorrow midnight'));
         $event->setTitle('Tomorrow');
-        $event->setOrganizer($organizer);
+        $event->addOrganizer($organizer);
         $persistenceManager->add($event);
         $persistenceManager->persistAll();
 
@@ -103,7 +106,7 @@ class DayControllerTest extends FunctionalTestCase
         $this->subject = $objectManager->get(DayController::class);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset(
             $this->subject,
@@ -113,7 +116,7 @@ class DayControllerTest extends FunctionalTestCase
         parent::tearDown();
     }
 
-    public function listWithEmptyFilterDataProvider()
+    public function listWithEmptyFilterDataProvider(): array
     {
         return [
             'Action: list' => ['list'],
@@ -129,7 +132,7 @@ class DayControllerTest extends FunctionalTestCase
      *
      * @dataProvider listWithEmptyFilterDataProvider
      */
-    public function processRequestWithListActionWillValidateAndAssignFilterToView($action)
+    public function processRequestWithListActionWillValidateAndAssignFilterToView($action): void
     {
         $this->request->setControllerActionName($action);
 
@@ -153,7 +156,7 @@ class DayControllerTest extends FunctionalTestCase
         );
     }
 
-    public function listWithFilledFilterDataProvider()
+    public function listWithFilledFilterDataProvider(): array
     {
         $filter = new Filter();
         $filter->setOrganizer(1);
@@ -169,10 +172,9 @@ class DayControllerTest extends FunctionalTestCase
 
     /**
      * @test
-     *
      * @dataProvider listWithFilledFilterDataProvider
      */
-    public function processRequestWithListActionWillAssignFilterToView($action, $filter)
+    public function processRequestWithListActionWillAssignFilterToView($action, $filter): void
     {
         $this->request->setControllerActionName($action);
         $this->request->setArgument('filter', $filter);
@@ -190,6 +192,51 @@ class DayControllerTest extends FunctionalTestCase
         }
         self::assertStringContainsString(
             'Organizer: 1',
+            $content
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function processRequestWithListSearchResultsWillSearchForEvents(): void
+    {
+        $this->request->setControllerActionName('listSearchResults');
+        $this->request->setArgument('search', new Search());
+
+        $response = new Response();
+
+        $this->subject->processRequest($this->request, $response);
+        $content = $response->getContent();
+
+        self::assertStringContainsString(
+            'Event Title 1: Today',
+            $content
+        );
+        self::assertStringContainsString(
+            'Event Title 2: Tomorrow',
+            $content
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function processRequestWithListSearchResultsWillSearchEventsBySearch(): void
+    {
+        $search = new Search();
+        $search->setSearch('today');
+
+        $this->request->setControllerActionName('listSearchResults');
+        $this->request->setArgument('search', $search);
+
+        $response = new Response();
+
+        $this->subject->processRequest($this->request, $response);
+        $content = $response->getContent();
+
+        self::assertStringContainsString(
+            'Event Title 1: Today',
             $content
         );
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -26,12 +28,12 @@ class OrganizerTest extends UnitTestCase
      */
     protected $subject;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->subject = new Organizer();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->subject);
     }
@@ -39,7 +41,7 @@ class OrganizerTest extends UnitTestCase
     /**
      * @test
      */
-    public function getOrganizerInitiallyReturnsEmptyString()
+    public function getOrganizerInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
             '',
@@ -50,7 +52,7 @@ class OrganizerTest extends UnitTestCase
     /**
      * @test
      */
-    public function setOrganizerSetsOrganizer()
+    public function setOrganizerSetsOrganizer(): void
     {
         $this->subject->setOrganizer('foo bar');
 
@@ -63,25 +65,7 @@ class OrganizerTest extends UnitTestCase
     /**
      * @test
      */
-    public function setOrganizerWithIntegerResultsInString()
-    {
-        $this->subject->setOrganizer(123);
-        self::assertSame('123', $this->subject->getOrganizer());
-    }
-
-    /**
-     * @test
-     */
-    public function setOrganizerWithBooleanResultsInString()
-    {
-        $this->subject->setOrganizer(true);
-        self::assertSame('1', $this->subject->getOrganizer());
-    }
-
-    /**
-     * @test
-     */
-    public function getLinkInitiallyReturnsNull()
+    public function getLinkInitiallyReturnsNull(): void
     {
         self::assertNull($this->subject->getLink());
     }
@@ -89,7 +73,7 @@ class OrganizerTest extends UnitTestCase
     /**
      * @test
      */
-    public function setLinkSetsLink()
+    public function setLinkSetsLink(): void
     {
         $instance = new Link();
         $this->subject->setLink($instance);

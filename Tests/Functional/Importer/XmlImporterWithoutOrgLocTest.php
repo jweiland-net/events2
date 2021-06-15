@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -57,7 +59,7 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
     /**
      * I have set the date of the import events to 2025. That should be enough for the next years ;-)
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -72,7 +74,7 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
         $GLOBALS['BE_USER'] = new BackendUserAuthentication();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset(
             $GLOBALS['BE_USER']
@@ -86,7 +88,7 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function importWillCreate3events()
+    public function importWillCreate3events(): void
     {
         $fileObject = GeneralUtility::makeInstance(ResourceFactory::class)
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/SuccessMissingOrganizerLocation.xml');

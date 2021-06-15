@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -56,7 +58,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -100,12 +102,14 @@ class DayRelationServiceTest extends FunctionalTestCase
         );
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
-        unset($this->extConfProphecy);
-        unset($this->eventRepositoryProphecy);
-        unset($this->persistenceManagerProphecy);
-        unset($this->subject);
+        unset(
+            $this->extConfProphecy,
+            $this->eventRepositoryProphecy,
+            $this->persistenceManagerProphecy,
+            $this->subject
+        );
 
         parent::tearDown();
     }
@@ -113,7 +117,7 @@ class DayRelationServiceTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function createDayRelationsWithEmptyEventWillNeverCallAnyQuery()
+    public function createDayRelationsWithEmptyEventWillNeverCallAnyQuery(): void
     {
         $this->persistenceManagerProphecy->update(Argument::cetera())->shouldNotBeCalled();
         $this->persistenceManagerProphecy->persistAll(Argument::cetera())->shouldNotBeCalled();
@@ -130,7 +134,7 @@ class DayRelationServiceTest extends FunctionalTestCase
      *
      * @test
      */
-    public function createDayRelationsWithNonConfiguredEventDoesNotCallAddDay()
+    public function createDayRelationsWithNonConfiguredEventDoesNotCallAddDay(): void
     {
         $event = new Event();
         $event->_setProperty('uid', 123);
@@ -151,7 +155,7 @@ class DayRelationServiceTest extends FunctionalTestCase
      *
      * @test
      */
-    public function createDayRelationsWithRecurringEvent()
+    public function createDayRelationsWithRecurringEvent(): void
     {
         $yesterday = new \DateTime();
         $yesterday->modify('yesterday midnight');
@@ -193,7 +197,7 @@ class DayRelationServiceTest extends FunctionalTestCase
      *
      * @test
      */
-    public function createDayRelationsWithRecurringEventAndTime()
+    public function createDayRelationsWithRecurringEventAndTime(): void
     {
         $yesterday = new \DateTime();
         $yesterday->modify('yesterday midnight');
@@ -246,7 +250,7 @@ class DayRelationServiceTest extends FunctionalTestCase
      *
      * @test
      */
-    public function createDayRelationsWithRecurringEventAndMultipleTimesAtSameDay()
+    public function createDayRelationsWithRecurringEventAndMultipleTimesAtSameDay(): void
     {
         $yesterday = new \DateTime();
         $yesterday->modify('yesterday midnight');
@@ -312,7 +316,7 @@ class DayRelationServiceTest extends FunctionalTestCase
      *
      * @test
      */
-    public function createDayRelationsWithRecurringEventAndMultipleTimesAtSameDayFuture()
+    public function createDayRelationsWithRecurringEventAndMultipleTimesAtSameDayFuture(): void
     {
         $this->extConfProphecy->getRecurringPast()->willReturn(0);
 
@@ -380,7 +384,7 @@ class DayRelationServiceTest extends FunctionalTestCase
      *
      * @test
      */
-    public function createDayRelationsWithRecurringEventAndDifferentTimes()
+    public function createDayRelationsWithRecurringEventAndDifferentTimes(): void
     {
         $tuesday = new \DateTime();
         $tuesday->modify('last tuesday midnight');
@@ -441,7 +445,7 @@ class DayRelationServiceTest extends FunctionalTestCase
      *
      * @test
      */
-    public function createDayRelationsWithRecurringEventAndExceptionTimes()
+    public function createDayRelationsWithRecurringEventAndExceptionTimes(): void
     {
         $tuesday = new \DateTime();
         $tuesday->modify('last tuesday midnight');
@@ -521,7 +525,7 @@ class DayRelationServiceTest extends FunctionalTestCase
      *
      * @test
      */
-    public function createDayRelationsWithRecurringEventAndMultipleExceptionTimes()
+    public function createDayRelationsWithRecurringEventAndMultipleExceptionTimes(): void
     {
         $tuesday = new \DateTime();
         $tuesday->modify('last tuesday midnight');
@@ -608,7 +612,7 @@ class DayRelationServiceTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function createDayRelationsWithSingleEvent()
+    public function createDayRelationsWithSingleEvent(): void
     {
         $nextWeek = new \DateTime();
         $nextWeek->modify('+1 week midnight');
@@ -639,7 +643,7 @@ class DayRelationServiceTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function createDayRelationsWithSingleEventAndTime()
+    public function createDayRelationsWithSingleEventAndTime(): void
     {
         $nextWeek = new \DateTime();
         $nextWeek->modify('+1 week midnight');
@@ -676,7 +680,7 @@ class DayRelationServiceTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function createDayRelationsWithDurationEvent()
+    public function createDayRelationsWithDurationEvent(): void
     {
         $today = new \DateTime();
         $today->modify('midnight');
@@ -712,7 +716,7 @@ class DayRelationServiceTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function createDayRelationsWithDurationEventWithTime()
+    public function createDayRelationsWithDurationEventWithTime(): void
     {
         $today = new \DateTime();
         $today->modify('midnight');

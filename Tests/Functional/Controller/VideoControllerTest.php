@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -39,7 +41,7 @@ class VideoControllerTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->importDataSet('ntf://Database/pages.xml');
@@ -62,7 +64,7 @@ class VideoControllerTest extends FunctionalTestCase
         $this->subject = $objectManager->get(VideoController::class);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset(
             $this->subject,
@@ -75,7 +77,7 @@ class VideoControllerTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function processRequestWithShowActionWillNotRenderAnyVideo()
+    public function processRequestWithShowActionWillNotRenderAnyVideo(): void
     {
         $databaseConnection = $this->getDatabaseConnection();
         $databaseConnection->updateArray(
@@ -104,7 +106,7 @@ class VideoControllerTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function processRequestWithShowActionWillConvertYouTubeHashToUrl()
+    public function processRequestWithShowActionWillConvertYouTubeHashToUrl(): void
     {
         $this->importDataSet(__DIR__ . '/../Fixtures/tx_events2_domain_model_link.xml');
 

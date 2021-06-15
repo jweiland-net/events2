@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -25,12 +27,12 @@ class TimeTest extends UnitTestCase
      */
     protected $subject;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->subject = new Time();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->subject);
     }
@@ -38,7 +40,7 @@ class TimeTest extends UnitTestCase
     /**
      * @test
      */
-    public function getWeekdayInitiallyReturnsEmptyString()
+    public function getWeekdayInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
             '',
@@ -49,7 +51,7 @@ class TimeTest extends UnitTestCase
     /**
      * @test
      */
-    public function setWeekdaySetsWeekday()
+    public function setWeekdaySetsWeekday(): void
     {
         $this->subject->setWeekday('foo bar');
 
@@ -62,25 +64,7 @@ class TimeTest extends UnitTestCase
     /**
      * @test
      */
-    public function setWeekdayWithIntegerResultsInString()
-    {
-        $this->subject->setWeekday(123);
-        self::assertSame('123', $this->subject->getWeekday());
-    }
-
-    /**
-     * @test
-     */
-    public function setWeekdayWithBooleanResultsInString()
-    {
-        $this->subject->setWeekday(true);
-        self::assertSame('1', $this->subject->getWeekday());
-    }
-
-    /**
-     * @test
-     */
-    public function getTimeBeginInitiallyReturnsEmptyString()
+    public function getTimeBeginInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
             '',
@@ -91,7 +75,7 @@ class TimeTest extends UnitTestCase
     /**
      * @test
      */
-    public function setTimeBeginSetsTimeBegin()
+    public function setTimeBeginSetsTimeBegin(): void
     {
         $this->subject->setTimeBegin('foo bar');
 
@@ -104,25 +88,7 @@ class TimeTest extends UnitTestCase
     /**
      * @test
      */
-    public function setTimeBeginWithIntegerResultsInString()
-    {
-        $this->subject->setTimeBegin(123);
-        self::assertSame('123', $this->subject->getTimeBegin());
-    }
-
-    /**
-     * @test
-     */
-    public function setTimeBeginWithBooleanResultsInString()
-    {
-        $this->subject->setTimeBegin(true);
-        self::assertSame('1', $this->subject->getTimeBegin());
-    }
-
-    /**
-     * @test
-     */
-    public function getTimeEntryInitiallyReturnsEmptyString()
+    public function getTimeEntryInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
             '',
@@ -133,7 +99,7 @@ class TimeTest extends UnitTestCase
     /**
      * @test
      */
-    public function setTimeEntrySetsTimeEntry()
+    public function setTimeEntrySetsTimeEntry(): void
     {
         $this->subject->setTimeEntry('foo bar');
 
@@ -146,25 +112,7 @@ class TimeTest extends UnitTestCase
     /**
      * @test
      */
-    public function setTimeEntryWithIntegerResultsInString()
-    {
-        $this->subject->setTimeEntry(123);
-        self::assertSame('123', $this->subject->getTimeEntry());
-    }
-
-    /**
-     * @test
-     */
-    public function setTimeEntryWithBooleanResultsInString()
-    {
-        $this->subject->setTimeEntry(true);
-        self::assertSame('1', $this->subject->getTimeEntry());
-    }
-
-    /**
-     * @test
-     */
-    public function getDurationInitiallyReturnsEmptyString()
+    public function getDurationInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
             '',
@@ -175,7 +123,7 @@ class TimeTest extends UnitTestCase
     /**
      * @test
      */
-    public function setDurationSetsDuration()
+    public function setDurationSetsDuration(): void
     {
         $this->subject->setDuration('foo bar');
 
@@ -188,25 +136,7 @@ class TimeTest extends UnitTestCase
     /**
      * @test
      */
-    public function setDurationWithIntegerResultsInString()
-    {
-        $this->subject->setDuration(123);
-        self::assertSame('123', $this->subject->getDuration());
-    }
-
-    /**
-     * @test
-     */
-    public function setDurationWithBooleanResultsInString()
-    {
-        $this->subject->setDuration(true);
-        self::assertSame('1', $this->subject->getDuration());
-    }
-
-    /**
-     * @test
-     */
-    public function getTimeEndInitiallyReturnsEmptyString()
+    public function getTimeEndInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
             '',
@@ -217,7 +147,7 @@ class TimeTest extends UnitTestCase
     /**
      * @test
      */
-    public function setTimeEndSetsTimeEnd()
+    public function setTimeEndSetsTimeEnd(): void
     {
         $this->subject->setTimeEnd('foo bar');
 
@@ -230,25 +160,7 @@ class TimeTest extends UnitTestCase
     /**
      * @test
      */
-    public function setTimeEndWithIntegerResultsInString()
-    {
-        $this->subject->setTimeEnd(123);
-        self::assertSame('123', $this->subject->getTimeEnd());
-    }
-
-    /**
-     * @test
-     */
-    public function setTimeEndWithBooleanResultsInString()
-    {
-        $this->subject->setTimeEnd(true);
-        self::assertSame('1', $this->subject->getTimeEnd());
-    }
-
-    /**
-     * @test
-     */
-    public function getTimeEntryAsDateTimeInitiallyReturnsNull()
+    public function getTimeEntryAsDateTimeInitiallyReturnsNull(): void
     {
         self::assertNull(
             $this->subject->getTimeEntryAsDateTime()
@@ -258,7 +170,7 @@ class TimeTest extends UnitTestCase
     /**
      * @test
      */
-    public function setTimeEntryAsDateTimeSetsTimeEntryAsDateTime()
+    public function setTimeEntryAsDateTimeSetsTimeEntryAsDateTime(): void
     {
         $date = new \DateTime();
         $this->subject->setTimeEntryAsDateTime($date);
@@ -272,7 +184,7 @@ class TimeTest extends UnitTestCase
     /**
      * @test
      */
-    public function getTimeBeginAsDateTimeInitiallyReturnsNull()
+    public function getTimeBeginAsDateTimeInitiallyReturnsNull(): void
     {
         self::assertNull(
             $this->subject->getTimeBeginAsDateTime()
@@ -282,7 +194,7 @@ class TimeTest extends UnitTestCase
     /**
      * @test
      */
-    public function setTimeBeginAsDateTimeSetsTimeBeginAsDateTime()
+    public function setTimeBeginAsDateTimeSetsTimeBeginAsDateTime(): void
     {
         $date = new \DateTime();
         $this->subject->setTimeBeginAsDateTime($date);
@@ -296,7 +208,7 @@ class TimeTest extends UnitTestCase
     /**
      * @test
      */
-    public function getTimeEndAsDateTimeInitiallyReturnsNull()
+    public function getTimeEndAsDateTimeInitiallyReturnsNull(): void
     {
         self::assertNull(
             $this->subject->getTimeEndAsDateTime()
@@ -306,7 +218,7 @@ class TimeTest extends UnitTestCase
     /**
      * @test
      */
-    public function setTimeEndAsDateTimeSetsTimeEndAsDateTime()
+    public function setTimeEndAsDateTimeSetsTimeEndAsDateTime(): void
     {
         $date = new \DateTime();
         $this->subject->setTimeEndAsDateTime($date);
