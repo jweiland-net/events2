@@ -23,7 +23,8 @@ class GeneratePathSegmentEvent
      */
     protected $pathSegment = '';
 
-    public function __construct(array $baseRecord) {
+    public function __construct(array $baseRecord)
+    {
         $this->baseRecord = $baseRecord;
     }
 

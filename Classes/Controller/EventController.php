@@ -260,7 +260,8 @@ class EventController extends AbstractController
         $this->mail->setTo($this->extConf->getEmailToAddress(), $this->extConf->getEmailToName());
         $this->mail->setSubject(
             LocalizationUtility::translate(
-                'email.subject.' . $subjectKey, 'events2'
+                'email.subject.' . $subjectKey,
+                'events2'
             )
         );
 

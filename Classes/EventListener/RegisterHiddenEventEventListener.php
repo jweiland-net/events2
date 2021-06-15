@@ -36,7 +36,7 @@ class RegisterHiddenEventEventListener extends AbstractControllerEventListener
 
     public function __construct(
         HiddenObjectHelper $hiddenObjectHelper,
-        EventRepository  $eventRepository
+        EventRepository $eventRepository
     ) {
         $this->hiddenObjectHelper = $hiddenObjectHelper;
         $this->eventRepository = $eventRepository;
