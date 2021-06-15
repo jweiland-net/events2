@@ -23,11 +23,7 @@ class IsDateMarkedAsCanceledViewHelper extends AbstractViewHelper
 {
     use CompileWithRenderStatic;
 
-    /**
-     * Initialize all arguments. You need to override this method and call
-     * $this->registerArgument(...) inside this method, to register all your arguments.
-     */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument('event', Event::class, 'Get the exceptions from event', true);
         $this->registerArgument('date', \DateTime::class, 'Get the exceptions from event to this specific date', true);
@@ -37,15 +33,15 @@ class IsDateMarkedAsCanceledViewHelper extends AbstractViewHelper
      * Check, if there is an exceptions of type "remove" for specified date
      *
      * @param array $arguments
-     * @param \Closure $childClosure
+     * @param \Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
-     * @return string
+     * @return bool
      */
     public static function renderStatic(
         array $arguments,
-        \Closure $childClosure,
+        \Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
-    ) {
+    ): bool {
         /** @var Event $event */
         $event = $arguments['event'];
         /** @var \DateTime $date */

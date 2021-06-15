@@ -82,7 +82,7 @@ class AdditionalFieldsForImport extends AbstractAdditionalFieldProvider
      * @param SchedulerModuleController $schedulerModule Reference to the scheduler backend module
      * @return array A two dimensional array, ['Identifier' => ['fieldId' => ['code' => '', 'label' => '', 'cshKey' => '', 'cshLabel' => '']]]
      */
-    public function getAdditionalFields(array &$taskInfo, $task, SchedulerModuleController $schedulerModule)
+    public function getAdditionalFields(array &$taskInfo, $task, SchedulerModuleController $schedulerModule): array
     {
         // make variables available for all methods in this class
         $this->initialize($taskInfo, $task, $schedulerModule);
@@ -132,7 +132,10 @@ class AdditionalFieldsForImport extends AbstractAdditionalFieldProvider
         $value = '';
         // if field is empty try to find the needed value
         if (empty($this->taskInfo[$fieldName])) {
-            if ($this->schedulerModule->getCurrentAction()->equals('add') && isset($configuration['default'])) {
+            if (
+                isset($configuration['default'])
+                && $this->schedulerModule->getCurrentAction()->equals('add')
+            ) {
                 // In case of new task override value with value from configuration
                 $value = $configuration['default'];
             }
@@ -154,7 +157,7 @@ class AdditionalFieldsForImport extends AbstractAdditionalFieldProvider
      * @param SchedulerModuleController $schedulerModule Reference to the scheduler backend module
      * @return bool true if validation was ok (or selected class is not relevant), FALSE otherwise
      */
-    public function validateAdditionalFields(array &$submittedData, SchedulerModuleController $schedulerModule)
+    public function validateAdditionalFields(array &$submittedData, SchedulerModuleController $schedulerModule): bool
     {
         $errorExists = false;
         foreach (array_keys($this->createFieldsFor) as $fieldName) {
@@ -176,7 +179,7 @@ class AdditionalFieldsForImport extends AbstractAdditionalFieldProvider
      * @param array $submittedData An array containing the data submitted by the add/edit task form
      * @param AbstractTask $task Reference to the scheduler backend module
      */
-    public function saveAdditionalFields(array $submittedData, AbstractTask $task)
+    public function saveAdditionalFields(array $submittedData, AbstractTask $task): void
     {
         foreach (array_keys($this->createFieldsFor) as $fieldName) {
             $task->$fieldName = $submittedData[$fieldName];

@@ -148,10 +148,7 @@ class FindDaysForMonth
      */
     protected function getArgument(string $argumentName)
     {
-        if (isset($this->arguments[$argumentName])) {
-            return $this->arguments[$argumentName];
-        }
-        return '';
+        return $this->arguments[$argumentName] ?? '';
     }
 
     /**
@@ -177,7 +174,7 @@ class FindDaysForMonth
             'tx_events2_events' => [
                 'controller' => 'Day',
                 'action' => 'showByTimestamp',
-                'timestamp' => (int)$timestamp,
+                'timestamp' => $timestamp,
             ],
         ];
         $cacheHashArray = $this->cacheHashCalculator->getRelevantParameters(GeneralUtility::implodeArrayForUrl('', $query));

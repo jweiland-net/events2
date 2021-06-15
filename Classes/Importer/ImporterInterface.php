@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Importer;
 
-use JWeiland\Events2\Task\Import;
 use TYPO3\CMS\Core\Resource\FileInterface;
 
 /*

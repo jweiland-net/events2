@@ -70,7 +70,7 @@ class Day extends AbstractEntity
         return $this->crdate;
     }
 
-    public function setCrdate(?\DateTime $crdate = null)
+    public function setCrdate(?\DateTime $crdate = null): void
     {
         $this->crdate = $crdate;
     }
@@ -80,7 +80,7 @@ class Day extends AbstractEntity
         return $this->tstamp;
     }
 
-    public function setTstamp(?\DateTime $tstamp = null)
+    public function setTstamp(?\DateTime $tstamp = null): void
     {
         $this->tstamp = $tstamp;
     }
@@ -90,7 +90,7 @@ class Day extends AbstractEntity
         return $this->hidden;
     }
 
-    public function setHidden(bool $hidden)
+    public function setHidden(bool $hidden): void
     {
         $this->hidden = $hidden;
     }
@@ -100,7 +100,7 @@ class Day extends AbstractEntity
         return $this->cruserId;
     }
 
-    public function setCruserId(int $cruserId)
+    public function setCruserId(int $cruserId): void
     {
         $this->cruserId = $cruserId;
     }
@@ -115,7 +115,7 @@ class Day extends AbstractEntity
         return clone $this->day;
     }
 
-    public function setDay(\DateTime $day)
+    public function setDay(\DateTime $day): void
     {
         $this->day = $day;
     }
@@ -130,7 +130,7 @@ class Day extends AbstractEntity
         return clone $this->dayTime;
     }
 
-    public function setDayTime(\DateTime $dayTime)
+    public function setDayTime(\DateTime $dayTime): void
     {
         $this->dayTime = $dayTime;
     }
@@ -145,7 +145,7 @@ class Day extends AbstractEntity
         return clone $this->sortDayTime;
     }
 
-    public function setSortDayTime(\DateTime $sortDayTime)
+    public function setSortDayTime(\DateTime $sortDayTime): void
     {
         $this->sortDayTime = $sortDayTime;
     }
@@ -160,7 +160,7 @@ class Day extends AbstractEntity
         return clone $this->sameDayTime;
     }
 
-    public function setSameDayTime(\DateTime $sameDayTime)
+    public function setSameDayTime(\DateTime $sameDayTime): void
     {
         $this->sameDayTime = $sameDayTime;
     }
@@ -170,7 +170,7 @@ class Day extends AbstractEntity
         return $this->event;
     }
 
-    public function setEvent(?Event $event = null)
+    public function setEvent(?Event $event = null): void
     {
         $this->event = $event;
     }

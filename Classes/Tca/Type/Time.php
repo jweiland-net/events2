@@ -60,7 +60,7 @@ class Time
         }
 
         $parts = GeneralUtility::intExplode(':', $value);
-        if (count($parts) == 2) {
+        if (count($parts) === 2) {
             $parts[0] = str_pad(
                 (string)MathUtility::forceIntegerInRange($parts[0], 0, 23),
                 2,

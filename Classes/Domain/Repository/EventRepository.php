@@ -114,7 +114,7 @@ class EventRepository extends Repository implements HiddenRepositoryInterface
             ->where(
                 $queryBuilder->expr()->eq(
                     'uid',
-                    $queryBuilder->createNamedParameter((int)$uid, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
                 )
             )
             ->execute()

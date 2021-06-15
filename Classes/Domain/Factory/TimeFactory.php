@@ -114,7 +114,6 @@ class TimeFactory
      *
      * @param \SplObjectStorage $timesForDate
      * @param Event $event
-     * @param \DateTime $date
      */
     protected function addDifferentTimes(
         \SplObjectStorage $timesForDate,
@@ -174,7 +173,7 @@ class TimeFactory
         }
     }
 
-    protected function addTimeToObjectStorage(\SplObjectStorage $timesForDate, Time $time)
+    protected function addTimeToObjectStorage(\SplObjectStorage $timesForDate, Time $time): void
     {
         if ($this->removeCurrentDay) {
             // If activated we have to extract the time information from URI parameter "timestamp".

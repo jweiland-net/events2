@@ -36,7 +36,7 @@ class Link extends AbstractEntity
         return $this->link;
     }
 
-    public function setLink(string $link)
+    public function setLink(string $link): void
     {
         $this->link = $link;
     }
@@ -46,7 +46,7 @@ class Link extends AbstractEntity
         return $this->title;
     }
 
-    public function setTitle(string $title)
+    public function setTitle(string $title): void
     {
         $this->title = $title;
     }

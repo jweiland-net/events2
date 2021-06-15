@@ -37,7 +37,7 @@ class EmStaticInfo
             $options[] = $this->wrapOption(
                 (string)(int)$country['uid'],
                 $country['cn_short_en'],
-                $params['fieldValue'] == $country['uid']
+                (int)$params['fieldValue'] === (int)$country['uid']
             );
         }
 

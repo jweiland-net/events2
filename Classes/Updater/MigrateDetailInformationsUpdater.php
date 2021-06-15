@@ -60,7 +60,7 @@ class MigrateDetailInformationsUpdater implements UpgradeWizardInterface
                 )
             )
             ->execute()
-            ->fetchColumn(0);
+            ->fetchColumn();
 
         return $amountOfMigratedRecords === 0;
     }

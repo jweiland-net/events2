@@ -11,14 +11,8 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\EventListener;
 
-use JWeiland\Events2\Domain\Model\Event;
-use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Event\PreProcessControllerActionEvent;
-use JWeiland\Events2\Property\TypeConverter\UploadMultipleFilesConverter;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\Controller\MvcPropertyMappingConfiguration;
-use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
-use TYPO3\CMS\Extbase\Property\PropertyMappingConfiguration;
 use TYPO3\CMS\Extbase\Validation\Validator\ConjunctionValidator;
 use TYPO3\CMS\Extbase\Validation\Validator\GenericObjectValidator;
 use TYPO3\CMS\Extbase\Validation\Validator\RegularExpressionValidator;

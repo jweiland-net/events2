@@ -28,6 +28,16 @@ use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 class EventsSlugUpdater implements UpgradeWizardInterface
 {
     /**
+     * @var PathSegmentHelper
+     */
+    protected $pathSegmentHelper;
+
+    /**
+     * @var ExtConf
+     */
+    protected $extConf;
+
+    /**
      * @var string
      */
     protected $tableName = 'tx_events2_domain_model_event';
@@ -43,14 +53,11 @@ class EventsSlugUpdater implements UpgradeWizardInterface
     protected $titleColumn = 'title';
 
     /**
-     * @var PathSegmentHelper
+     * Cache to boost incrementation of slugs
+     *
+     * @var array
      */
-    protected $pathSegmentHelper;
-
-    /**
-     * @var ExtConf
-     */
-    protected $extConf;
+    protected $slugCache = [];
 
     public function __construct(PathSegmentHelper $pathSegmentHelper = null, ExtConf $extConf = null)
     {
@@ -89,7 +96,7 @@ class EventsSlugUpdater implements UpgradeWizardInterface
         $amountOfRecordsWithEmptySlug = $queryBuilder
             ->count('*')
             ->execute()
-            ->fetchColumn(0);
+            ->fetchColumn();
 
         return (bool)$amountOfRecordsWithEmptySlug;
     }

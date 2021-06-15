@@ -47,9 +47,9 @@ class TimeToStringConverter
      * @param int $time
      * @return float
      */
-    protected function getHours(int $time)
+    protected function getHours(int $time): float
     {
-        return floor((int)$time / 3600);
+        return floor($time / 3600);
     }
 
     /**
