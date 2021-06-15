@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -40,7 +42,7 @@ class SearchControllerTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->setUpBackendUserFromFixture(1);
@@ -64,7 +66,7 @@ class SearchControllerTest extends FunctionalTestCase
         $this->subject = $objectManager->get(SearchController::class);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset(
             $this->subject,
@@ -77,7 +79,7 @@ class SearchControllerTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function processRequestWithShowActionWillAssignEmptySearchObject()
+    public function processRequestWithShowActionWillAssignEmptySearchObject(): void
     {
         $this->request->setControllerActionName('show');
 
@@ -99,7 +101,7 @@ class SearchControllerTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function processRequestWithShowActionWillUpdateFormValues()
+    public function processRequestWithShowActionWillUpdateFormValues(): void
     {
         $search = new Search();
         $search->setSearch('Test');

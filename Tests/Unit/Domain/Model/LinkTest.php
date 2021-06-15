@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -25,12 +27,12 @@ class LinkTest extends UnitTestCase
      */
     protected $subject;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->subject = new Link();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->subject);
     }
@@ -38,7 +40,7 @@ class LinkTest extends UnitTestCase
     /**
      * @test
      */
-    public function getLinkInitiallyReturnsEmptyString()
+    public function getLinkInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
             '',
@@ -49,7 +51,7 @@ class LinkTest extends UnitTestCase
     /**
      * @test
      */
-    public function setLinkSetsLink()
+    public function setLinkSetsLink(): void
     {
         $this->subject->setLink('foo bar');
 
@@ -62,25 +64,7 @@ class LinkTest extends UnitTestCase
     /**
      * @test
      */
-    public function setLinkWithIntegerResultsInString()
-    {
-        $this->subject->setLink(123);
-        self::assertSame('123', $this->subject->getLink());
-    }
-
-    /**
-     * @test
-     */
-    public function setLinkWithBooleanResultsInString()
-    {
-        $this->subject->setLink(true);
-        self::assertSame('1', $this->subject->getLink());
-    }
-
-    /**
-     * @test
-     */
-    public function getTitleInitiallyReturnsVideo()
+    public function getTitleInitiallyReturnsVideo(): void
     {
         self::assertSame(
             'Video',
@@ -91,7 +75,7 @@ class LinkTest extends UnitTestCase
     /**
      * @test
      */
-    public function setTitleSetsTitle()
+    public function setTitleSetsTitle(): void
     {
         $this->subject->setTitle('foo bar');
 
@@ -104,25 +88,7 @@ class LinkTest extends UnitTestCase
     /**
      * @test
      */
-    public function setTitleWithIntegerResultsInString()
-    {
-        $this->subject->setTitle(123);
-        self::assertSame('123', $this->subject->getTitle());
-    }
-
-    /**
-     * @test
-     */
-    public function setTitleWithBooleanResultsInString()
-    {
-        $this->subject->setTitle(true);
-        self::assertSame('1', $this->subject->getTitle());
-    }
-
-    /**
-     * @test
-     */
-    public function getDeletedInitiallyReturnsFalse()
+    public function getDeletedInitiallyReturnsFalse(): void
     {
         self::assertFalse(
             $this->subject->getDeleted()
@@ -132,29 +98,11 @@ class LinkTest extends UnitTestCase
     /**
      * @test
      */
-    public function setDeletedSetsDeleted()
+    public function setDeletedSetsDeleted(): void
     {
         $this->subject->setDeleted(true);
         self::assertTrue(
             $this->subject->getDeleted()
         );
-    }
-
-    /**
-     * @test
-     */
-    public function setDeletedWithStringReturnsTrue()
-    {
-        $this->subject->setDeleted('foo bar');
-        self::assertTrue($this->subject->getDeleted());
-    }
-
-    /**
-     * @test
-     */
-    public function setDeletedWithZeroReturnsFalse()
-    {
-        $this->subject->setDeleted(0);
-        self::assertFalse($this->subject->getDeleted());
     }
 }

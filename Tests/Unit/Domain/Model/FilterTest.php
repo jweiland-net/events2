@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -22,12 +24,12 @@ class FilterTest extends UnitTestCase
      */
     protected $subject;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->subject = new Filter();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->subject);
     }
@@ -35,7 +37,7 @@ class FilterTest extends UnitTestCase
     /**
      * @test
      */
-    public function getOrganizerInitiallyReturnsNull()
+    public function getOrganizerInitiallyReturnsNull(): void
     {
         self::assertNull($this->subject->getOrganizer());
     }
@@ -43,7 +45,7 @@ class FilterTest extends UnitTestCase
     /**
      * @test
      */
-    public function setOrganizerSetsOrganizer()
+    public function setOrganizerSetsOrganizer(): void
     {
         $organizer = 34;
         $this->subject->setOrganizer($organizer);
@@ -57,9 +59,9 @@ class FilterTest extends UnitTestCase
     /**
      * @test
      */
-    public function setOrganizerWithNullSetsOrganizer()
+    public function setOrganizerWithNullSetsOrganizer(): void
     {
-        $this->subject->setOrganizer(null);
+        $this->subject->setOrganizer();
 
         self::assertNull(
             $this->subject->getOrganizer()

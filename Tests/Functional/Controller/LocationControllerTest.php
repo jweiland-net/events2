@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -40,7 +42,7 @@ class LocationControllerTest extends FunctionalTestCase
         'typo3conf/ext/static_info_tables'
     ];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->importDataSet('ntf://Database/pages.xml');
@@ -63,7 +65,7 @@ class LocationControllerTest extends FunctionalTestCase
         $this->subject = $objectManager->get(LocationController::class);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset(
             $this->subject,
@@ -76,7 +78,7 @@ class LocationControllerTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function processRequestWithShowActionWillAssignLocationToView()
+    public function processRequestWithShowActionWillAssignLocationToView(): void
     {
         $this->request->setControllerActionName('show');
         $this->request->setArgument('location', 1);

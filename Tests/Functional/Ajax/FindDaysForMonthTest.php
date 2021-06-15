@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -60,7 +62,7 @@ class FindDaysForMonthTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -78,7 +80,7 @@ class FindDaysForMonthTest extends FunctionalTestCase
         );
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         ExtensionManagementUtilityAccessibleProxy::setCacheManager(null);
         unset($this->subject);
@@ -90,7 +92,7 @@ class FindDaysForMonthTest extends FunctionalTestCase
      *
      * @return array
      */
-    public function dataProviderForProcessAjaxRequestForcesTooHighMonthAndYearInRange()
+    public function dataProviderForProcessAjaxRequestForcesTooHighMonthAndYearInRange(): array
     {
         $arguments = [];
         $arguments['negative values'] = [
@@ -161,8 +163,11 @@ class FindDaysForMonthTest extends FunctionalTestCase
      * @test
      * @dataProvider dataProviderForProcessAjaxRequestForcesTooHighMonthAndYearInRange
      */
-    public function processAjaxRequestForcesTooHighMonthAndYearInRange($queryParams, $expectedArguments, $expectedMonth)
-    {
+    public function processAjaxRequestForcesTooHighMonthAndYearInRange(
+        $queryParams,
+        $expectedArguments,
+        $expectedMonth
+    ): void {
         $this->userSessionProphecy
             ->setMonthAndYear(
                 $expectedArguments['month'],
@@ -178,7 +183,7 @@ class FindDaysForMonthTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function processAjaxRequestWillFindDaysInRangeOfFirstAndLastDateOfMonth()
+    public function processAjaxRequestWillFindDaysInRangeOfFirstAndLastDateOfMonth(): void
     {
         $currentDate = new \DateTime('now midnight');
         $queryParams = [
@@ -208,7 +213,7 @@ class FindDaysForMonthTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function processAjaxRequestWillFindDaysInRangeOfFirstAndLastDateOfMonthWithStoragePids()
+    public function processAjaxRequestWillFindDaysInRangeOfFirstAndLastDateOfMonthWithStoragePids(): void
     {
         $currentDate = new \DateTime('now midnight');
         $queryParams = [
@@ -239,7 +244,7 @@ class FindDaysForMonthTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function processAjaxRequestWillFindDaysInRangeOfFirstAndLastDateOfMonthWithStoragePidsAndCategories()
+    public function processAjaxRequestWillFindDaysInRangeOfFirstAndLastDateOfMonthWithStoragePidsAndCategories(): void
     {
         $currentDate = new \DateTime('now midnight');
         $queryParams = [
@@ -271,7 +276,7 @@ class FindDaysForMonthTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function processAjaxRequestWillFindDaysInRangeOfEarliestDateAndLastDateOfMonth()
+    public function processAjaxRequestWillFindDaysInRangeOfEarliestDateAndLastDateOfMonth(): void
     {
         $currentDate = new \DateTime('-3 months midnight');
         $queryParams = [
@@ -300,7 +305,7 @@ class FindDaysForMonthTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function processAjaxRequestWillFindDaysInRangeOfFirstDateAndLatestDateOfMonth()
+    public function processAjaxRequestWillFindDaysInRangeOfFirstDateAndLatestDateOfMonth(): void
     {
         $currentDate = new \DateTime('+6 months midnight');
         $queryParams = [

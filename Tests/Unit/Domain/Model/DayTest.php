@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -23,13 +25,13 @@ class DayTest extends UnitTestCase
      */
     protected $subject;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->subject = new Day();
         $this->subject->setDay(new \DateTime());
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->subject);
     }
@@ -37,7 +39,7 @@ class DayTest extends UnitTestCase
     /**
      * @test
      */
-    public function getCrdateInitiallyReturnsNull()
+    public function getCrdateInitiallyReturnsNull(): void
     {
         self::assertNull(
             $this->subject->getCrdate()
@@ -47,7 +49,7 @@ class DayTest extends UnitTestCase
     /**
      * @test
      */
-    public function setCrdateSetsCrdate()
+    public function setCrdateSetsCrdate(): void
     {
         $date = new \DateTime();
         $this->subject->setCrdate($date);
@@ -61,7 +63,7 @@ class DayTest extends UnitTestCase
     /**
      * @test
      */
-    public function setCrdateWithNullSetsCrdate()
+    public function setCrdateWithNullSetsCrdate(): void
     {
         $this->subject->setCrdate(null);
 
@@ -73,7 +75,7 @@ class DayTest extends UnitTestCase
     /**
      * @test
      */
-    public function getTstampInitiallyReturnsNull()
+    public function getTstampInitiallyReturnsNull(): void
     {
         self::assertNull(
             $this->subject->getTstamp()
@@ -83,7 +85,7 @@ class DayTest extends UnitTestCase
     /**
      * @test
      */
-    public function setTstampSetsTstamp()
+    public function setTstampSetsTstamp(): void
     {
         $date = new \DateTime();
         $this->subject->setTstamp($date);
@@ -97,7 +99,7 @@ class DayTest extends UnitTestCase
     /**
      * @test
      */
-    public function setTstampWithNullSetsTstamp()
+    public function setTstampWithNullSetsTstamp(): void
     {
         $this->subject->setTstamp(null);
 
@@ -109,7 +111,7 @@ class DayTest extends UnitTestCase
     /**
      * @test
      */
-    public function getHiddenInitiallyReturnsFalse()
+    public function getHiddenInitiallyReturnsFalse(): void
     {
         self::assertFalse(
             $this->subject->getHidden()
@@ -119,7 +121,7 @@ class DayTest extends UnitTestCase
     /**
      * @test
      */
-    public function setHiddenSetsHidden()
+    public function setHiddenSetsHidden(): void
     {
         $this->subject->setHidden(true);
         self::assertTrue(
@@ -130,25 +132,7 @@ class DayTest extends UnitTestCase
     /**
      * @test
      */
-    public function setHiddenWithStringReturnsTrue()
-    {
-        $this->subject->setHidden('foo bar');
-        self::assertTrue($this->subject->getHidden());
-    }
-
-    /**
-     * @test
-     */
-    public function setHiddenWithZeroReturnsFalse()
-    {
-        $this->subject->setHidden(0);
-        self::assertFalse($this->subject->getHidden());
-    }
-
-    /**
-     * @test
-     */
-    public function getCruserIdInitiallyReturnsZero()
+    public function getCruserIdInitiallyReturnsZero(): void
     {
         self::assertSame(
             0,
@@ -159,7 +143,7 @@ class DayTest extends UnitTestCase
     /**
      * @test
      */
-    public function setCruserIdSetsCruserId()
+    public function setCruserIdSetsCruserId(): void
     {
         $this->subject->setCruserId(123456);
 
@@ -172,33 +156,7 @@ class DayTest extends UnitTestCase
     /**
      * @test
      */
-    public function setCruserIdWithStringResultsInInteger()
-    {
-        $this->subject->setCruserId('123Test');
-
-        self::assertSame(
-            123,
-            $this->subject->getCruserId()
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function setCruserIdWithBooleanResultsInInteger()
-    {
-        $this->subject->setCruserId(true);
-
-        self::assertSame(
-            1,
-            $this->subject->getCruserId()
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function setDaySetsDay()
+    public function setDaySetsDay(): void
     {
         $date = new \DateTime();
         $this->subject->setDay($date);
@@ -212,7 +170,7 @@ class DayTest extends UnitTestCase
     /**
      * @test
      */
-    public function getEventInitiallyReturnsNull()
+    public function getEventInitiallyReturnsNull(): void
     {
         self::assertNull($this->subject->getEvent());
     }
@@ -220,7 +178,7 @@ class DayTest extends UnitTestCase
     /**
      * @test
      */
-    public function setEventSetsEvent()
+    public function setEventSetsEvent(): void
     {
         $instance = new Event();
         $this->subject->setEvent($instance);
@@ -234,7 +192,7 @@ class DayTest extends UnitTestCase
     /**
      * @test
      */
-    public function getDayTimeAsTimestampWillReturnDayTimeAsInt()
+    public function getDayTimeAsTimestampWillReturnDayTimeAsInt(): void
     {
         $date = new \DateTime('today midnight');
 
@@ -249,7 +207,7 @@ class DayTest extends UnitTestCase
     /**
      * @test
      */
-    public function getSortDayTimeAsTimestampWillReturnSortDayTimeAsInt()
+    public function getSortDayTimeAsTimestampWillReturnSortDayTimeAsInt(): void
     {
         $date = new \DateTime('today midnight');
 
@@ -264,7 +222,7 @@ class DayTest extends UnitTestCase
     /**
      * @test
      */
-    public function getSameDayTimeAsTimestampWillReturnSameDayTimeAsInt()
+    public function getSameDayTimeAsTimestampWillReturnSameDayTimeAsInt(): void
     {
         $date = new \DateTime('today midnight');
 

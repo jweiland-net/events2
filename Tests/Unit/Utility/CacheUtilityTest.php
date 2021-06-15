@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -32,7 +34,7 @@ class CacheUtilityTest extends UnitTestCase
      */
     protected $subject;
 
-    public function setUp()
+    public function setUp(): void
     {
         /** @var EnvironmentService|ObjectProphecy $environmentServiceProphecy */
         $environmentServiceProphecy = $this->prophesize(EnvironmentService::class);
@@ -46,7 +48,7 @@ class CacheUtilityTest extends UnitTestCase
         $GLOBALS['TSFE'] = $tsfeProphecy->reveal();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($GLOBALS['TSFE']);
     }
@@ -54,7 +56,7 @@ class CacheUtilityTest extends UnitTestCase
     /**
      * @test
      */
-    public function addCacheTagsByEventRecordsWithoutEventsWillNotAddCacheTags()
+    public function addCacheTagsByEventRecordsWithoutEventsWillNotAddCacheTags(): void
     {
         $tsfeProphecy = $this->prophesize(TypoScriptFrontendController::class);
         $tsfeProphecy
@@ -69,7 +71,7 @@ class CacheUtilityTest extends UnitTestCase
     /**
      * @test
      */
-    public function addCacheTagsByEventRecordsWithEventsWillAddCacheTags()
+    public function addCacheTagsByEventRecordsWithEventsWillAddCacheTags(): void
     {
         $event = new Event();
         $event->_setProperty('uid', 123);
@@ -87,7 +89,7 @@ class CacheUtilityTest extends UnitTestCase
     /**
      * @test
      */
-    public function addCacheTagsByEventRecordsWithLocalizedEventsWillAddCacheTags()
+    public function addCacheTagsByEventRecordsWithLocalizedEventsWillAddCacheTags(): void
     {
         $event = new Event();
         $event->_setProperty('uid', 123);
@@ -106,7 +108,7 @@ class CacheUtilityTest extends UnitTestCase
     /**
      * @test
      */
-    public function addPageCacheTagsByQueryWithoutStoragePidsWillAddTableNameAsCacheTag()
+    public function addPageCacheTagsByQueryWithoutStoragePidsWillAddTableNameAsCacheTag(): void
     {
         $tsfeProphecy = $this->prophesize(TypoScriptFrontendController::class);
         $tsfeProphecy
@@ -130,7 +132,7 @@ class CacheUtilityTest extends UnitTestCase
     /**
      * @test
      */
-    public function addPageCacheTagsByQueryWithStoragePidsWillAddStoragePidCacheTags()
+    public function addPageCacheTagsByQueryWithStoragePidsWillAddStoragePidCacheTags(): void
     {
         $tsfeProphecy = $this->prophesize(TypoScriptFrontendController::class);
         $tsfeProphecy

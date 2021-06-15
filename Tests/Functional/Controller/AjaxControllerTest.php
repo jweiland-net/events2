@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -39,7 +41,7 @@ class AjaxControllerTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->importDataSet('ntf://Database/pages.xml');
@@ -61,7 +63,7 @@ class AjaxControllerTest extends FunctionalTestCase
         $this->subject = $objectManager->get(AjaxController::class);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset(
             $this->subject,
@@ -74,7 +76,7 @@ class AjaxControllerTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function callAjaxObjectActionWithEmptyObjectNameResultsInEmptyString()
+    public function callAjaxObjectActionWithEmptyObjectNameResultsInEmptyString(): void
     {
         $this->request->setControllerActionName('callAjaxObject');
         $this->request->setArgument('objectName', '');
@@ -92,7 +94,7 @@ class AjaxControllerTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function callAjaxObjectActionWithInvalidObjectNameResultsInEmptyString()
+    public function callAjaxObjectActionWithInvalidObjectNameResultsInEmptyString(): void
     {
         $this->request->setControllerActionName('callAjaxObject');
         $this->request->setArgument('objectName', 'WrongObjectName');
@@ -110,7 +112,7 @@ class AjaxControllerTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function callAjaxObjectActionWithLowerCasedObjectNameWillBeConvertedToUcFirst()
+    public function callAjaxObjectActionWithLowerCasedObjectNameWillBeConvertedToUcFirst(): void
     {
         $this->request->setControllerActionName('callAjaxObject');
         $this->request->setArgument('objectName', 'findSubCategories');
@@ -129,7 +131,7 @@ class AjaxControllerTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function callAjaxObjectActionWithValidObjectNameAndArgumentsResultsWithJsonOutput()
+    public function callAjaxObjectActionWithValidObjectNameAndArgumentsResultsWithJsonOutput(): void
     {
         $this->request->setControllerActionName('callAjaxObject');
         $this->request->setArgument('objectName', 'FindSubCategories');

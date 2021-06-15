@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -32,7 +34,7 @@ class DayHelperTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -40,7 +42,7 @@ class DayHelperTest extends FunctionalTestCase
         $this->subject = $objectManager->get(DayHelper::class);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset(
             $this->subject
@@ -52,7 +54,7 @@ class DayHelperTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getDayFromUriReturnsNull()
+    public function getDayFromUriReturnsNull(): void
     {
         self::assertNull(
             $this->subject->getDayFromUri()
@@ -62,7 +64,7 @@ class DayHelperTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getDayFromUriWithInvalidDayReturnsNull()
+    public function getDayFromUriWithInvalidDayReturnsNull(): void
     {
         $databaseConnection = $this->getDatabaseConnection();
         $databaseConnection->insertArray(
@@ -82,7 +84,7 @@ class DayHelperTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getDayFromUriWithValidDayReturnsDay()
+    public function getDayFromUriWithValidDayReturnsDay(): void
     {
         $databaseConnection = $this->getDatabaseConnection();
         $databaseConnection->insertArray(

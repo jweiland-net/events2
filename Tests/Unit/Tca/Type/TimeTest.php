@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -22,12 +24,12 @@ class TimeTest extends UnitTestCase
      */
     protected $subject;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->subject = new Time();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->subject);
     }
@@ -37,7 +39,7 @@ class TimeTest extends UnitTestCase
      *
      * @return array
      */
-    public function unmodifiedTimesDataProvider()
+    public function unmodifiedTimesDataProvider(): array
     {
         $times = [];
         $times['empty values'] = [''];
@@ -54,7 +56,7 @@ class TimeTest extends UnitTestCase
      * @param $unmodifiedTime
      * @dataProvider unmodifiedTimesDataProvider
      */
-    public function evaluateWithTimesWhichWillNotBeModified($unmodifiedTime)
+    public function evaluateWithTimesWhichWillNotBeModified($unmodifiedTime): void
     {
         self::assertSame(
             $unmodifiedTime,
@@ -65,7 +67,7 @@ class TimeTest extends UnitTestCase
     /**
      * @return array
      */
-    public function unpaddedTimesDataProvider()
+    public function unpaddedTimesDataProvider(): array
     {
         $times = [];
         $times['zero values'] = ['0:0', '00:00'];
@@ -83,7 +85,7 @@ class TimeTest extends UnitTestCase
      * @param $paddedTimes
      * @dataProvider unpaddedTimesDataProvider
      */
-    public function evaluateWithTimesWhichWillAddPaddings($unpaddedTimes, $paddedTimes)
+    public function evaluateWithTimesWhichWillAddPaddings($unpaddedTimes, $paddedTimes): void
     {
         self::assertSame(
             $paddedTimes,
@@ -94,7 +96,7 @@ class TimeTest extends UnitTestCase
     /**
      * @return array
      */
-    public function tooHighTimesDataProvider()
+    public function tooHighTimesDataProvider(): array
     {
         $times = [];
         $times['edge case midnight'] = ['24:00', '24:00'];
@@ -114,7 +116,7 @@ class TimeTest extends UnitTestCase
      * @param string $normalizedTime
      * @dataProvider tooHighTimesDataProvider
      */
-    public function evaluateWithTooHighTimeValues($tooHighTime, $normalizedTime)
+    public function evaluateWithTooHighTimeValues($tooHighTime, $normalizedTime): void
     {
         self::assertSame(
             $normalizedTime,
@@ -125,7 +127,7 @@ class TimeTest extends UnitTestCase
     /**
      * @return array
      */
-    public function invalidTimesDataProvider()
+    public function invalidTimesDataProvider(): array
     {
         $times = [];
         $times['invalid value: Stefan'] = ['Stefan', ''];
@@ -141,7 +143,7 @@ class TimeTest extends UnitTestCase
      * @param string $expectedTime
      * @dataProvider invalidTimesDataProvider
      */
-    public function evaluateWithInvalidValues($invalidTime, $expectedTime)
+    public function evaluateWithInvalidValues($invalidTime, $expectedTime): void
     {
         self::assertSame(
             $expectedTime,
@@ -152,7 +154,7 @@ class TimeTest extends UnitTestCase
     /**
      * @return array
      */
-    public function dateProviderForVariousIntegerValues()
+    public function dateProviderForVariousIntegerValues(): array
     {
         $timestamps = [];
         $timestamps['edge case with zero'] = [0, '00:00'];
@@ -176,7 +178,7 @@ class TimeTest extends UnitTestCase
      * @param string $expectedTime
      * @dataProvider dateProviderForVariousIntegerValues
      */
-    public function evaluateWithInteger($intValue, $expectedTime)
+    public function evaluateWithInteger($intValue, $expectedTime): void
     {
         self::assertSame(
             $expectedTime,

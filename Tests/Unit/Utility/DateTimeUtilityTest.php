@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -22,12 +24,12 @@ class DateTimeUtilityTest extends UnitTestCase
      */
     protected $subject;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->subject = new DateTimeUtility();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->subject);
     }
@@ -35,7 +37,7 @@ class DateTimeUtilityTest extends UnitTestCase
     /**
      * @return array
      */
-    public function emptyDatesDataProvider()
+    public function emptyDatesDataProvider(): array
     {
         $emptyDate = [];
         $emptyDate['empty value: null'] = [null, null];
@@ -52,7 +54,7 @@ class DateTimeUtilityTest extends UnitTestCase
      * @param $expectedDate
      * @dataProvider emptyDatesDataProvider
      */
-    public function convertEmptyDatesResultsInNull($emptyDate, $expectedDate)
+    public function convertEmptyDatesResultsInNull($emptyDate, $expectedDate): void
     {
         self::assertSame(
             $expectedDate,
@@ -65,7 +67,7 @@ class DateTimeUtilityTest extends UnitTestCase
      *
      * @return array
      */
-    public function dataProviderWithInvalidValuesForDateTimeObjects()
+    public function dataProviderWithInvalidValuesForDateTimeObjects(): array
     {
         $invalidValues = [];
         $invalidValues['string'] = ['Hello'];
@@ -83,7 +85,7 @@ class DateTimeUtilityTest extends UnitTestCase
      * @param mixed $invalidValue
      * @dataProvider dataProviderWithInvalidValuesForDateTimeObjects
      */
-    public function convertInvalidDates($invalidValue)
+    public function convertInvalidDates($invalidValue): void
     {
         self::assertNull($this->subject->convert($invalidValue));
     }
@@ -91,7 +93,7 @@ class DateTimeUtilityTest extends UnitTestCase
     /**
      * @return array
      */
-    public function stringDatesDataProvider()
+    public function stringDatesDataProvider(): array
     {
         $dateStrings = [];
 
@@ -117,7 +119,7 @@ class DateTimeUtilityTest extends UnitTestCase
      * @param $expectedDate
      * @dataProvider stringDatesDataProvider
      */
-    public function convertWithStringDates($stringDate, $expectedDate)
+    public function convertWithStringDates($stringDate, $expectedDate): void
     {
         self::assertEquals(
             $expectedDate,
@@ -128,7 +130,7 @@ class DateTimeUtilityTest extends UnitTestCase
     /**
      * @return array
      */
-    public function timestampDataProvider()
+    public function timestampDataProvider(): array
     {
         $timestamps = [];
         $timestamps['timestamp: 0'] = [0, null];
@@ -152,14 +154,14 @@ class DateTimeUtilityTest extends UnitTestCase
      * @param $expectedDate
      * @dataProvider timestampDataProvider
      */
-    public function convertTimestamps($timestamp, $expectedDate)
+    public function convertTimestamps($timestamp, $expectedDate): void
     {
         $convertedResult = $this->subject->convert($timestamp);
         if ($convertedResult === null) {
             self::assertSame($expectedDate, $convertedResult);
         } else {
             self::assertEquals(
-            /* @var \DateTime $expectedDate */
+                /* @var \DateTime $expectedDate */
                 $expectedDate->format('U'),
                 $convertedResult->format('U')
             );

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -62,7 +64,7 @@ class ICalendarControllerTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
@@ -121,7 +123,7 @@ class ICalendarControllerTest extends FunctionalTestCase
         $this->tempDirectory = Environment::getPublicPath() . '/' . 'typo3temp/tx_events2/iCal/';
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->subject);
         $files = array_slice(scandir($this->tempDirectory), 2);
@@ -134,7 +136,7 @@ class ICalendarControllerTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function indexActionWithoutDayWillReturnEmptyString()
+    public function indexActionWithoutDayWillReturnEmptyString(): void
     {
         $widgetContext = $this->objectManager->get(WidgetContext::class);
         $request = $this->objectManager->get(WidgetRequest::class);
@@ -152,7 +154,7 @@ class ICalendarControllerTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function indexActionWithDayWillGenerateDownloadLink()
+    public function indexActionWithDayWillGenerateDownloadLink(): void
     {
         $day = $this->dayRepository->findByIdentifier(1);
 
@@ -184,7 +186,7 @@ class ICalendarControllerTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function indexActionWithDayCreatesICal()
+    public function indexActionWithDayCreatesICal(): void
     {
         $day = $this->dayRepository->findByIdentifier(1);
 
@@ -234,7 +236,7 @@ class ICalendarControllerTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function indexActionWithDayCreatesICalWithDTSTART()
+    public function indexActionWithDayCreatesICalWithDTSTART(): void
     {
         /** @var Day $day */
         $day = $this->dayRepository->findByIdentifier(1);
@@ -271,7 +273,7 @@ class ICalendarControllerTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function indexActionWithDayCreatesICalWithDTEND()
+    public function indexActionWithDayCreatesICalWithDTEND(): void
     {
         /** @var Day $day */
         $day = $this->dayRepository->findByIdentifier(1);

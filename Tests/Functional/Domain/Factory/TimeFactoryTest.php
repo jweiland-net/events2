@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -33,14 +35,14 @@ class TimeFactoryTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
         $this->subject = new TimeFactory();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset(
             $this->subject
@@ -51,7 +53,7 @@ class TimeFactoryTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getTimesForDateWithoutAnyTimesReturnsNoTimes()
+    public function getTimesForDateWithoutAnyTimesReturnsNoTimes(): void
     {
         $firstDate = new \DateTime('midnight');
         $secondDate = new \DateTime('midnight');
@@ -82,7 +84,7 @@ class TimeFactoryTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getTimesForDateWithExceptionsWithTimeReturnsTimes()
+    public function getTimesForDateWithExceptionsWithTimeReturnsTimes(): void
     {
         $firstDate = new \DateTime('midnight');
         $secondDate = new \DateTime('midnight');
@@ -119,7 +121,7 @@ class TimeFactoryTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getTimesForDateWithDifferentExceptionTypesWithTimeReturnsTimes()
+    public function getTimesForDateWithDifferentExceptionTypesWithTimeReturnsTimes(): void
     {
         $firstDate = new \DateTime('midnight');
 
@@ -155,7 +157,7 @@ class TimeFactoryTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getTimesForDateWithDifferentTimesAndSingleEventReturnsNoTimes()
+    public function getTimesForDateWithDifferentTimesAndSingleEventReturnsNoTimes(): void
     {
         $firstDate = new \DateTime('midnight');
 
@@ -180,7 +182,7 @@ class TimeFactoryTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getTimesForDateWithDifferentTimesOnDifferentWeekdayAndRecurringEventReturnsNoTimes()
+    public function getTimesForDateWithDifferentTimesOnDifferentWeekdayAndRecurringEventReturnsNoTimes(): void
     {
         $firstDate = new \DateTime('midnight');
         $secondDate = new \DateTime('midnight');
@@ -208,7 +210,7 @@ class TimeFactoryTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getTimesForDateWithDifferentTimesAndRecurringEventReturnsTimes()
+    public function getTimesForDateWithDifferentTimesAndRecurringEventReturnsTimes(): void
     {
         $firstDate = new \DateTime('midnight');
 
@@ -235,7 +237,7 @@ class TimeFactoryTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getTimesForDateWithDifferentTimesAndSingleEventReturnsOneTime()
+    public function getTimesForDateWithDifferentTimesAndSingleEventReturnsOneTime(): void
     {
         $firstDate = new \DateTime('midnight');
 
@@ -262,7 +264,7 @@ class TimeFactoryTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getTimesForDateWithEventTimeReturnsOneTime()
+    public function getTimesForDateWithEventTimeReturnsOneTime(): void
     {
         $firstDate = new \DateTime('midnight');
 
@@ -285,7 +287,7 @@ class TimeFactoryTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getTimesForDateWithExceptionsWithoutTimesButWithEventTimeReturnsOneTime()
+    public function getTimesForDateWithExceptionsWithoutTimesButWithEventTimeReturnsOneTime(): void
     {
         $firstDate = new \DateTime('midnight');
         $secondDate = new \DateTime('midnight');
@@ -321,7 +323,7 @@ class TimeFactoryTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getSortedTimesForDateWithoutTimesReturnsEmptyStorage()
+    public function getSortedTimesForDateWithoutTimesReturnsEmptyStorage(): void
     {
         $date = new \DateTime('midnight');
 
@@ -338,7 +340,7 @@ class TimeFactoryTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getSortedTimesForDateWithEventTimeReturnsOneSortedTime()
+    public function getSortedTimesForDateWithEventTimeReturnsOneSortedTime(): void
     {
         $date = new \DateTime('midnight');
 
@@ -360,7 +362,7 @@ class TimeFactoryTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getSortedTimesForDateWithDifferentTimesReturnsSortedTimes()
+    public function getSortedTimesForDateWithDifferentTimesReturnsSortedTimes(): void
     {
         $date = new \DateTime('midnight');
         $tomorrow = new \DateTime('midnight');
@@ -403,7 +405,7 @@ class TimeFactoryTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getSortedTimesForDateWithTimeExceptionsReturnsSortedTimes()
+    public function getSortedTimesForDateWithTimeExceptionsReturnsSortedTimes(): void
     {
         $date = new \DateTime('midnight');
         $tomorrow = new \DateTime('midnight');

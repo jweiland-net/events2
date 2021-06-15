@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -29,14 +31,14 @@ class UserSessionTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
         $this->subject = new UserSession();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset(
             $this->subject
@@ -48,7 +50,7 @@ class UserSessionTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getMonthAndYearWillReturnEmptyArray()
+    public function getMonthAndYearWillReturnEmptyArray(): void
     {
         self::assertEmpty(
             $this->subject->getMonthAndYear()
@@ -60,7 +62,7 @@ class UserSessionTest extends FunctionalTestCase
      *
      * @return array
      */
-    public function yearAndMonthDataProvider()
+    public function yearAndMonthDataProvider(): array
     {
         return [
             'empty month and year' => [0, 0, '01', '1970'],
@@ -77,7 +79,7 @@ class UserSessionTest extends FunctionalTestCase
      *
      * @dataProvider yearAndMonthDataProvider
      */
-    public function getMonthAndYearWillReturnMonthAndYear($month, $year, $expectedMonth, $expectedYear)
+    public function getMonthAndYearWillReturnMonthAndYear($month, $year, $expectedMonth, $expectedYear): void
     {
         $this->subject->setMonthAndYear($month, $year);
         self::assertSame(

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -51,7 +53,7 @@ class DatabaseServiceTest extends FunctionalTestCase
         'typo3conf/ext/maps2'
     ];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -104,7 +106,7 @@ class DatabaseServiceTest extends FunctionalTestCase
         }
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->dayRepository);
         parent::tearDown();
@@ -113,7 +115,7 @@ class DatabaseServiceTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getDaysInRangeWillFindDaysForCurrentMonth()
+    public function getDaysInRangeWillFindDaysForCurrentMonth(): void
     {
         $eventBegin = new \DateTime('today midnight');
         $eventBegin->modify('first day of this month');

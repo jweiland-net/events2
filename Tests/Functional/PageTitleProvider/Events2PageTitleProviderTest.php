@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -36,7 +38,7 @@ class Events2PageTitleProviderTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -71,7 +73,7 @@ class Events2PageTitleProviderTest extends FunctionalTestCase
         }
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->pageTitleProvider);
         parent::tearDown();
@@ -80,7 +82,7 @@ class Events2PageTitleProviderTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function findDayWithDateTimeOfTodayWillFindExactlyMatchingDay()
+    public function findDayWithDateTimeOfTodayWillFindExactlyMatchingDay(): void
     {
         $record = $this->getDatabaseConnection()->selectSingleRow(
             '*',

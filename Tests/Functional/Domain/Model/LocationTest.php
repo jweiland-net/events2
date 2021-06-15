@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -36,16 +38,16 @@ class LocationTest extends FunctionalTestCase
         'typo3conf/ext/static_info_tables'
     ];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->importDataSet('ntf://Database/pages.xml');
-        parent::setUpFrontendRootPage(1);
+        $this->setUpFrontendRootPage(1);
 
         $this->subject = new Location();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset(
             $this->subject
@@ -57,7 +59,7 @@ class LocationTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getLocationInitiallyReturnsEmptyString()
+    public function getLocationInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
             '',
@@ -68,7 +70,7 @@ class LocationTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function setLocationSetsLocation()
+    public function setLocationSetsLocation(): void
     {
         $this->subject->setLocation('foo bar');
 
@@ -81,25 +83,7 @@ class LocationTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function setLocationWithIntegerResultsInString()
-    {
-        $this->subject->setLocation(123);
-        self::assertSame('123', $this->subject->getLocation());
-    }
-
-    /**
-     * @test
-     */
-    public function setLocationWithBooleanResultsInString()
-    {
-        $this->subject->setLocation(true);
-        self::assertSame('1', $this->subject->getLocation());
-    }
-
-    /**
-     * @test
-     */
-    public function getStreetInitiallyReturnsEmptyString()
+    public function getStreetInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
             '',
@@ -110,7 +94,7 @@ class LocationTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function setStreetSetsStreet()
+    public function setStreetSetsStreet(): void
     {
         $this->subject->setStreet('foo bar');
 
@@ -123,25 +107,7 @@ class LocationTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function setStreetWithIntegerResultsInString()
-    {
-        $this->subject->setStreet(123);
-        self::assertSame('123', $this->subject->getStreet());
-    }
-
-    /**
-     * @test
-     */
-    public function setStreetWithBooleanResultsInString()
-    {
-        $this->subject->setStreet(true);
-        self::assertSame('1', $this->subject->getStreet());
-    }
-
-    /**
-     * @test
-     */
-    public function getHouseNumberInitiallyReturnsEmptyString()
+    public function getHouseNumberInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
             '',
@@ -152,7 +118,7 @@ class LocationTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function setHouseNumberSetsHouseNumber()
+    public function setHouseNumberSetsHouseNumber(): void
     {
         $this->subject->setHouseNumber('foo bar');
 
@@ -165,25 +131,7 @@ class LocationTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function setHouseNumberWithIntegerResultsInString()
-    {
-        $this->subject->setHouseNumber(123);
-        self::assertSame('123', $this->subject->getHouseNumber());
-    }
-
-    /**
-     * @test
-     */
-    public function setHouseNumberWithBooleanResultsInString()
-    {
-        $this->subject->setHouseNumber(true);
-        self::assertSame('1', $this->subject->getHouseNumber());
-    }
-
-    /**
-     * @test
-     */
-    public function getZipInitiallyReturnsEmptyString()
+    public function getZipInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
             '',
@@ -194,7 +142,7 @@ class LocationTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function setZipSetsZip()
+    public function setZipSetsZip(): void
     {
         $this->subject->setZip('foo bar');
 
@@ -207,25 +155,7 @@ class LocationTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function setZipWithIntegerResultsInString()
-    {
-        $this->subject->setZip(123);
-        self::assertSame('123', $this->subject->getZip());
-    }
-
-    /**
-     * @test
-     */
-    public function setZipWithBooleanResultsInString()
-    {
-        $this->subject->setZip(true);
-        self::assertSame('1', $this->subject->getZip());
-    }
-
-    /**
-     * @test
-     */
-    public function getCityInitiallyReturnsEmptyString()
+    public function getCityInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
             '',
@@ -236,7 +166,7 @@ class LocationTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function setCitySetsCity()
+    public function setCitySetsCity(): void
     {
         $this->subject->setCity('foo bar');
 
@@ -249,25 +179,7 @@ class LocationTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function setCityWithIntegerResultsInString()
-    {
-        $this->subject->setCity(123);
-        self::assertSame('123', $this->subject->getCity());
-    }
-
-    /**
-     * @test
-     */
-    public function setCityWithBooleanResultsInString()
-    {
-        $this->subject->setCity(true);
-        self::assertSame('1', $this->subject->getCity());
-    }
-
-    /**
-     * @test
-     */
-    public function getCountryInitiallyReturnsNull()
+    public function getCountryInitiallyReturnsNull(): void
     {
         self::assertNull($this->subject->getCountry());
     }
@@ -275,7 +187,7 @@ class LocationTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function setCountrySetsCountry()
+    public function setCountrySetsCountry(): void
     {
         $instance = new Country();
         $this->subject->setCountry($instance);
@@ -289,7 +201,7 @@ class LocationTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getLinkInitiallyReturnsNull()
+    public function getLinkInitiallyReturnsNull(): void
     {
         self::assertNull($this->subject->getLink());
     }
@@ -297,7 +209,7 @@ class LocationTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function setLinkSetsLink()
+    public function setLinkSetsLink(): void
     {
         $instance = new Link();
         $this->subject->setLink($instance);
@@ -311,7 +223,7 @@ class LocationTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getTxMaps2UidInitiallyReturnsNull()
+    public function getTxMaps2UidInitiallyReturnsNull(): void
     {
         self::assertNull($this->subject->getTxMaps2Uid());
     }
@@ -319,7 +231,7 @@ class LocationTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function setTxMaps2UidSetsTxMaps2Uid()
+    public function setTxMaps2UidSetsTxMaps2Uid(): void
     {
         $instance = new PoiCollection();
         $this->subject->setTxMaps2Uid($instance);
