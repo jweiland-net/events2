@@ -56,6 +56,10 @@ services:
       - name: event.listener
         event: JWeiland\Events2\Event\PreProcessControllerActionEvent
 
+  JWeiland\Events2\EventListener\AddOrganizersForFilterEventListener:
+    tags:
+      - name: event.listener
+        event: JWeiland\Events2\Event\PostProcessFluidVariablesEvent
   JWeiland\Events2\EventListener\DeleteUploadedFilesOnErrorEventListener:
     tags:
       - name: event.listener

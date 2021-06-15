@@ -53,10 +53,13 @@ class DayController extends AbstractController
     {
         parent::initializeView($view);
 
-        if ($this->settings['showFilterForOrganizerInFrontend']) {
-            $this->view->assign(
-                'organizers',
-                $this->organizerRepository->getOrganizersForFilter()
+        // This is a very seldom problem. It appears, when you save tt_content by a hook and cast value of pages to int before save.
+        $data = $this->configurationManager->getContentObject()->data;
+        if ($data['pages'] === '0') {
+            $this->addFlashMessage(
+                'Please check content record with UID "' . $data['records'] . '". Column "pages" can not be 0. It must be empty or higher than 0.',
+                'tt_content column pages can not be 0',
+                FlashMessage::WARNING
             );
         }
     }
@@ -71,8 +74,12 @@ class DayController extends AbstractController
      */
     public function listAction(?Filter $filter = null): void
     {
-        $days = $this->dayRepository->findEvents('list', $this->validateAndAssignFilter($filter));
-        $this->view->assign('days', $days);
+        $filter = $this->getOrCreateFilter($filter);
+        $days = $this->dayRepository->findEvents('list', $filter);
+        $this->postProcessAndAssignFluidVariables([
+            'days' => $days,
+            'filter' => $filter
+        ]);
         CacheUtility::addPageCacheTagsByQuery($days->getQuery());
     }
 
@@ -86,13 +93,16 @@ class DayController extends AbstractController
      */
     public function listLatestAction(?Filter $filter = null): void
     {
-        $days = $days = $this->dayRepository->findEvents(
+        $filter = $this->getOrCreateFilter($filter);
+        $days = $this->dayRepository->findEvents(
             'latest',
-            $this->validateAndAssignFilter($filter),
+            $filter,
             (int)$this->settings['latest']['amountOfRecordsToShow']
         );
-
-        $this->view->assign('days', $days);
+        $this->postProcessAndAssignFluidVariables([
+            'days' => $days,
+            'filter' => $filter
+        ]);
         CacheUtility::addPageCacheTagsByQuery($days->getQuery());
     }
 
@@ -106,8 +116,12 @@ class DayController extends AbstractController
      */
     public function listTodayAction(?Filter $filter = null): void
     {
-        $days = $this->dayRepository->findEvents('today', $this->validateAndAssignFilter($filter));
-        $this->view->assign('days', $days);
+        $filter = $this->getOrCreateFilter($filter);
+        $days = $this->dayRepository->findEvents('today', $filter);
+        $this->postProcessAndAssignFluidVariables([
+            'days' => $days,
+            'filter' => $filter
+        ]);
         CacheUtility::addPageCacheTagsByQuery($days->getQuery());
     }
 
@@ -121,8 +135,12 @@ class DayController extends AbstractController
      */
     public function listThisWeekAction(?Filter $filter = null): void
     {
-        $days = $this->dayRepository->findEvents('thisWeek', $this->validateAndAssignFilter($filter));
-        $this->view->assign('days', $days);
+        $filter = $this->getOrCreateFilter($filter);
+        $days = $this->dayRepository->findEvents('thisWeek', $filter);
+        $this->postProcessAndAssignFluidVariables([
+            'days' => $days,
+            'filter' => $filter,
+        ]);
         CacheUtility::addPageCacheTagsByQuery($days->getQuery());
     }
 
@@ -136,8 +154,12 @@ class DayController extends AbstractController
      */
     public function listRangeAction(?Filter $filter = null): void
     {
-        $days = $this->dayRepository->findEvents('range', $this->validateAndAssignFilter($filter));
-        $this->view->assign('days', $days);
+        $filter = $this->getOrCreateFilter($filter);
+        $days = $this->dayRepository->findEvents('range', $filter);
+        $this->postProcessAndAssignFluidVariables([
+            'days' => $days,
+            'filter' => $filter,
+        ]);
         CacheUtility::addPageCacheTagsByQuery($days->getQuery());
     }
 
@@ -164,20 +186,11 @@ class DayController extends AbstractController
     public function showAction(int $event, int $timestamp = 0): void
     {
         $day = $this->dayRepository->findDayByEventAndTimestamp($event, $timestamp);
-        $jsonLdService = GeneralUtility::makeInstance(JsonLdService::class);
-        $jsonLdService->addJsonLdToPageHeader($day);
+        $this->postProcessControllerAction($day->getEvent(), $day);
 
-        // This is a very seldom problem. It appears, when you save tt_content by a hook and cast value of pages to int before save.
-        $data = $this->configurationManager->getContentObject()->data;
-        if ($data['pages'] === '0') {
-            $this->addFlashMessage(
-                'Please check content record with UID "' . $data['records'] . '". Column "pages" can not be 0. It must be empty or higher than 0.',
-                'tt_content column pages can not be 0',
-                FlashMessage::WARNING
-            );
-        }
-
-        $this->view->assign('day', $day);
+        $this->postProcessAndAssignFluidVariables([
+            'day' => $day
+        ]);
         CacheUtility::addCacheTagsByEventRecords([$day->getEvent()]);
     }
 
@@ -187,7 +200,9 @@ class DayController extends AbstractController
     public function showByTimestampAction(int $timestamp): void
     {
         $days = $this->dayRepository->findByTimestamp($timestamp);
-        $this->view->assign('days', $days);
+        $this->postProcessAndAssignFluidVariables([
+            'days' => $days
+        ]);
         CacheUtility::addPageCacheTagsByQuery($days->getQuery());
     }
 
@@ -199,12 +214,8 @@ class DayController extends AbstractController
      * @param Filter|null $filter
      * @return Filter
      */
-    protected function validateAndAssignFilter(?Filter $filter): Filter
+    protected function getOrCreateFilter(?Filter $filter): Filter
     {
-        if ($filter === null) {
-            $filter = GeneralUtility::makeInstance(Filter::class);
-        }
-        $this->view->assign('filter', $filter);
-        return $filter;
+        return $filter ?? GeneralUtility::makeInstance(Filter::class);
     }
 }
