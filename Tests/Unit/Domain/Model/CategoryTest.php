@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -22,12 +24,12 @@ class CategoryTest extends UnitTestCase
      */
     protected $subject;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->subject = new Category();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->subject);
     }
@@ -35,7 +37,7 @@ class CategoryTest extends UnitTestCase
     /**
      * @test
      */
-    public function getTitleInitiallyReturnsEmptyString()
+    public function getTitleInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
             '',
@@ -46,7 +48,7 @@ class CategoryTest extends UnitTestCase
     /**
      * @test
      */
-    public function setTitleSetsTitle()
+    public function setTitleSetsTitle(): void
     {
         $this->subject->setTitle('foo bar');
 
@@ -59,7 +61,7 @@ class CategoryTest extends UnitTestCase
     /**
      * @test
      */
-    public function getDescriptionInitiallyReturnsEmptyString()
+    public function getDescriptionInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
             '',
@@ -70,7 +72,7 @@ class CategoryTest extends UnitTestCase
     /**
      * @test
      */
-    public function setDescriptionSetsDescription()
+    public function setDescriptionSetsDescription(): void
     {
         $this->subject->setDescription('foo bar');
 

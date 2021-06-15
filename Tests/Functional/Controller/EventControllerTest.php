@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -71,7 +73,7 @@ class EventControllerTest extends FunctionalTestCase
         'typo3conf/ext/static_info_tables'
     ];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->setUpBackendUserFromFixture(1);
@@ -105,7 +107,7 @@ class EventControllerTest extends FunctionalTestCase
         $event->setEventType('single');
         $event->setEventBegin(new \DateTime('tomorrow midnight'));
         $event->setTitle('Tomorrow');
-        $event->setOrganizer($organizer);
+        $event->addOrganizer($organizer);
         $persistenceManager->add($event);
         $persistenceManager->persistAll();
 
@@ -130,7 +132,7 @@ class EventControllerTest extends FunctionalTestCase
         $this->subject = $objectManager->get(EventController::class);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset(
             $this->subject,
@@ -143,52 +145,7 @@ class EventControllerTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function processRequestWithListSearchResultsWillSearchForEvents()
-    {
-        $this->request->setControllerActionName('listSearchResults');
-        $this->request->setArgument('search', new Search());
-
-        $response = new Response();
-
-        $this->subject->processRequest($this->request, $response);
-        $content = $response->getContent();
-
-        self::assertStringContainsString(
-            'Event Title 1: Today',
-            $content
-        );
-        self::assertStringContainsString(
-            'Event Title 2: Tomorrow',
-            $content
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function processRequestWithListSearchResultsWillSearchEventsBySearch()
-    {
-        $search = new Search();
-        $search->setSearch('today');
-
-        $this->request->setControllerActionName('listSearchResults');
-        $this->request->setArgument('search', $search);
-
-        $response = new Response();
-
-        $this->subject->processRequest($this->request, $response);
-        $content = $response->getContent();
-
-        self::assertStringContainsString(
-            'Event Title 1: Today',
-            $content
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function processRequestWithNewActionWillCollectSelectableCategories()
+    public function processRequestWithNewActionWillCollectSelectableCategories(): void
     {
         $this->request->setControllerActionName('new');
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -24,12 +26,12 @@ class SearchTest extends UnitTestCase
      */
     protected $subject;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->subject = new Search();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->subject);
     }
@@ -37,7 +39,7 @@ class SearchTest extends UnitTestCase
     /**
      * @test
      */
-    public function getSearchInitiallyReturnsEmptyString()
+    public function getSearchInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
             '',
@@ -48,7 +50,7 @@ class SearchTest extends UnitTestCase
     /**
      * @test
      */
-    public function setSearchSetsSearch()
+    public function setSearchSetsSearch(): void
     {
         $this->subject->setSearch('foo bar');
 
@@ -61,25 +63,7 @@ class SearchTest extends UnitTestCase
     /**
      * @test
      */
-    public function setSearchWithIntegerResultsInString()
-    {
-        $this->subject->setSearch(123);
-        self::assertSame('123', $this->subject->getSearch());
-    }
-
-    /**
-     * @test
-     */
-    public function setSearchWithBooleanResultsInString()
-    {
-        $this->subject->setSearch(true);
-        self::assertSame('1', $this->subject->getSearch());
-    }
-
-    /**
-     * @test
-     */
-    public function getMainCategoryInitiallyReturnsNull()
+    public function getMainCategoryInitiallyReturnsNull(): void
     {
         self::assertNull($this->subject->getMainCategory());
     }
@@ -87,7 +71,7 @@ class SearchTest extends UnitTestCase
     /**
      * @test
      */
-    public function setMainCategorySetsMainCategory()
+    public function setMainCategorySetsMainCategory(): void
     {
         $instance = new Category();
         $this->subject->setMainCategory($instance);
@@ -101,7 +85,7 @@ class SearchTest extends UnitTestCase
     /**
      * @test
      */
-    public function getSubCategoryInitiallyReturnsNull()
+    public function getSubCategoryInitiallyReturnsNull(): void
     {
         self::assertNull($this->subject->getSubCategory());
     }
@@ -109,7 +93,7 @@ class SearchTest extends UnitTestCase
     /**
      * @test
      */
-    public function setSubCategorySetsSubCategory()
+    public function setSubCategorySetsSubCategory(): void
     {
         $instance = new Category();
         $this->subject->setSubCategory($instance);
@@ -123,7 +107,7 @@ class SearchTest extends UnitTestCase
     /**
      * @test
      */
-    public function getEventBeginInitiallyReturnsNULL()
+    public function getEventBeginInitiallyReturnsNULL(): void
     {
         self::assertNull($this->subject->getEventBegin());
     }
@@ -131,7 +115,7 @@ class SearchTest extends UnitTestCase
     /**
      * @test
      */
-    public function setEventBeginSetsEventBegin()
+    public function setEventBeginSetsEventBegin(): void
     {
         $this->subject->setEventBegin('today');
 
@@ -144,7 +128,7 @@ class SearchTest extends UnitTestCase
     /**
      * @test
      */
-    public function getEventEndInitiallyReturnsNull()
+    public function getEventEndInitiallyReturnsNull(): void
     {
         self::assertNull($this->subject->getEventEnd());
     }
@@ -152,7 +136,7 @@ class SearchTest extends UnitTestCase
     /**
      * @test
      */
-    public function setEventEndSetsEventEnd()
+    public function setEventEndSetsEventEnd(): void
     {
         $this->subject->setEventEnd('today');
 
@@ -165,7 +149,7 @@ class SearchTest extends UnitTestCase
     /**
      * @test
      */
-    public function getLocationInitiallyReturnsNull()
+    public function getLocationInitiallyReturnsNull(): void
     {
         self::assertNull($this->subject->getLocation());
     }
@@ -173,7 +157,7 @@ class SearchTest extends UnitTestCase
     /**
      * @test
      */
-    public function setLocationSetsLocation()
+    public function setLocationSetsLocation(): void
     {
         $instance = new Location();
         $this->subject->setLocation($instance);
@@ -187,7 +171,7 @@ class SearchTest extends UnitTestCase
     /**
      * @test
      */
-    public function getFreeEntryInitiallyReturnsFalse()
+    public function getFreeEntryInitiallyReturnsFalse(): void
     {
         self::assertFalse(
             $this->subject->getFreeEntry()
@@ -197,29 +181,11 @@ class SearchTest extends UnitTestCase
     /**
      * @test
      */
-    public function setFreeEntrySetsFreeEntry()
+    public function setFreeEntrySetsFreeEntry(): void
     {
         $this->subject->setFreeEntry(true);
         self::assertTrue(
             $this->subject->getFreeEntry()
         );
-    }
-
-    /**
-     * @test
-     */
-    public function setFreeEntryWithStringReturnsTrue()
-    {
-        $this->subject->setFreeEntry('foo bar');
-        self::assertTrue($this->subject->getFreeEntry());
-    }
-
-    /**
-     * @test
-     */
-    public function setFreeEntryWithZeroReturnsFalse()
-    {
-        $this->subject->setFreeEntry(0);
-        self::assertFalse($this->subject->getFreeEntry());
     }
 }

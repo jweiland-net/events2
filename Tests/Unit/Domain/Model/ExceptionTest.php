@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -26,12 +28,12 @@ class ExceptionTest extends UnitTestCase
      */
     protected $subject;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->subject = new Exception();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->subject);
     }
@@ -39,7 +41,7 @@ class ExceptionTest extends UnitTestCase
     /**
      * @test
      */
-    public function getExceptionTypeInitiallyReturnsEmptyString()
+    public function getExceptionTypeInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
             '',
@@ -50,7 +52,7 @@ class ExceptionTest extends UnitTestCase
     /**
      * @test
      */
-    public function setExceptionTypeSetsExceptionType()
+    public function setExceptionTypeSetsExceptionType(): void
     {
         $this->subject->setExceptionType('foo bar');
 
@@ -63,25 +65,7 @@ class ExceptionTest extends UnitTestCase
     /**
      * @test
      */
-    public function setExceptionTypeWithIntegerResultsInString()
-    {
-        $this->subject->setExceptionType(123);
-        self::assertSame('123', $this->subject->getExceptionType());
-    }
-
-    /**
-     * @test
-     */
-    public function setExceptionTypeWithBooleanResultsInString()
-    {
-        $this->subject->setExceptionType(true);
-        self::assertSame('1', $this->subject->getExceptionType());
-    }
-
-    /**
-     * @test
-     */
-    public function setExceptionDateSetsExceptionDate()
+    public function setExceptionDateSetsExceptionDate(): void
     {
         $date = new \DateTime();
         $this->subject->setExceptionDate($date);
@@ -95,7 +79,7 @@ class ExceptionTest extends UnitTestCase
     /**
      * @test
      */
-    public function getExceptionTimeInitiallyReturnsNull()
+    public function getExceptionTimeInitiallyReturnsNull(): void
     {
         self::assertNull($this->subject->getExceptionTime());
     }
@@ -103,7 +87,7 @@ class ExceptionTest extends UnitTestCase
     /**
      * @test
      */
-    public function setExceptionTimeSetsExceptionTime()
+    public function setExceptionTimeSetsExceptionTime(): void
     {
         $instance = new Time();
         $this->subject->setExceptionTime($instance);
@@ -117,7 +101,7 @@ class ExceptionTest extends UnitTestCase
     /**
      * @test
      */
-    public function getExceptionDetailsInitiallyReturnsEmptyString()
+    public function getExceptionDetailsInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
             '',
@@ -128,7 +112,7 @@ class ExceptionTest extends UnitTestCase
     /**
      * @test
      */
-    public function setExceptionDetailsSetsExceptionDetails()
+    public function setExceptionDetailsSetsExceptionDetails(): void
     {
         $this->subject->setExceptionDetails('foo bar');
 
@@ -136,23 +120,5 @@ class ExceptionTest extends UnitTestCase
             'foo bar',
             $this->subject->getExceptionDetails()
         );
-    }
-
-    /**
-     * @test
-     */
-    public function setExceptionDetailsWithIntegerResultsInString()
-    {
-        $this->subject->setExceptionDetails(123);
-        self::assertSame('123', $this->subject->getExceptionDetails());
-    }
-
-    /**
-     * @test
-     */
-    public function setExceptionDetailsWithBooleanResultsInString()
-    {
-        $this->subject->setExceptionDetails(true);
-        self::assertSame('1', $this->subject->getExceptionDetails());
     }
 }

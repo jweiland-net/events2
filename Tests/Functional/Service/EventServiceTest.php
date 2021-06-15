@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -38,7 +40,7 @@ class EventServiceTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -51,7 +53,7 @@ class EventServiceTest extends FunctionalTestCase
         );
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset(
             $this->subject,
@@ -64,7 +66,7 @@ class EventServiceTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getNextDayForEventWithoutEventReturnsFalse()
+    public function getNextDayForEventWithoutEventReturnsFalse(): void
     {
         $this->eventRepositoryProphecy
             ->findByIdentifier(1)
@@ -79,7 +81,7 @@ class EventServiceTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getNextDayForEventWithEventButWithoutFutureDaysReturnsFalse()
+    public function getNextDayForEventWithEventButWithoutFutureDaysReturnsFalse(): void
     {
         $yesterday = new \DateTime('yesterday midnight');
         $yesterdayWithTime = new \DateTime('yesterday');
@@ -108,7 +110,7 @@ class EventServiceTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getNextDayForEventWithEventWithFutureDayReturnsDay()
+    public function getNextDayForEventWithEventWithFutureDayReturnsDay(): void
     {
         $tomorrow = new \DateTime('tomorrow midnight');
         $tomorrowWithTime = new \DateTime('tomorrow');
@@ -140,7 +142,7 @@ class EventServiceTest extends FunctionalTestCase
      *
      * @test
      */
-    public function getNextDayForEventWithEventWithFutureDaysReturnsNextDay()
+    public function getNextDayForEventWithEventWithFutureDaysReturnsNextDay(): void
     {
         $tomorrow = new \DateTime('tomorrow midnight');
         $tomorrowWithTime = new \DateTime('tomorrow');
@@ -185,7 +187,7 @@ class EventServiceTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getLastDayForEventWithEventWithFutureDayReturnsDay()
+    public function getLastDayForEventWithEventWithFutureDayReturnsDay(): void
     {
         $tomorrow = new \DateTime('tomorrow midnight');
         $tomorrowWithTime = new \DateTime('tomorrow');
@@ -217,7 +219,7 @@ class EventServiceTest extends FunctionalTestCase
      *
      * @test
      */
-    public function getLastDayForEventWithEventWithFutureDaysReturnsLastDay()
+    public function getLastDayForEventWithEventWithFutureDaysReturnsLastDay(): void
     {
         $tomorrow = new \DateTime('tomorrow midnight');
         $tomorrowWithTime = new \DateTime('tomorrow');

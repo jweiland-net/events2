@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -22,14 +24,14 @@ class InitializeNewEventRecordTest extends UnitTestCase
      */
     protected $subject;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->subject = new InitializeNewEventRecord();
 
         $GLOBALS['EXEC_TIME'] = time();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->subject);
     }
@@ -37,7 +39,7 @@ class InitializeNewEventRecordTest extends UnitTestCase
     /**
      * @test
      */
-    public function addDataWithWrongTableNameWillNotModifyResult()
+    public function addDataWithWrongTableNameWillNotModifyResult(): void
     {
         $result = [
             'tableName' => 'WhatEver'
@@ -52,7 +54,7 @@ class InitializeNewEventRecordTest extends UnitTestCase
     /**
      * @test
      */
-    public function addDataWillNotModifyResultIfRecordIsNotNew()
+    public function addDataWillNotModifyResultIfRecordIsNotNew(): void
     {
         $result = [
             'tableName' => 'tx_events2_domain_model_event',
@@ -68,7 +70,7 @@ class InitializeNewEventRecordTest extends UnitTestCase
     /**
      * @test
      */
-    public function addDataWithEventTableAndNewRecordWillModifyEventBegin()
+    public function addDataWithEventTableAndNewRecordWillModifyEventBegin(): void
     {
         $expected = $result = [
             'tableName' => 'tx_events2_domain_model_event',

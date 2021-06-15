@@ -176,7 +176,7 @@ class DayRelationService
      * Analyze for valid time value like "21:40" and return exploded time parts: hour (21) and minute (40)
      *
      * @param Time|null $time
-     * @return array
+     * @return array|int[]
      */
     protected function getHourAndMinuteFromTime(?Time $time = null): array
     {
@@ -185,7 +185,7 @@ class DayRelationService
             $time instanceof Time &&
             preg_match('@^([0-1]\d|2[0-3]):[0-5]\d$@', $time->getTimeBegin())
         ) {
-            $hourAndMinute = explode(':', $time->getTimeBegin());
+            $hourAndMinute = GeneralUtility::intExplode(':', $time->getTimeBegin());
         }
         return $hourAndMinute;
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -27,7 +29,7 @@ class CategoryRepositoryTest extends UnitTestCase
      */
     protected $subject;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->subject = $this
             ->getMockBuilder(CategoryRepository::class)
@@ -36,7 +38,7 @@ class CategoryRepositoryTest extends UnitTestCase
             ->getMock();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->subject);
     }
@@ -44,7 +46,7 @@ class CategoryRepositoryTest extends UnitTestCase
     /**
      * @test
      */
-    public function getSelectedCategoriesConvertsWrongCategoriesToInteger()
+    public function getSelectedCategoriesConvertsWrongCategoriesToInteger(): void
     {
         /** @var QuerySettingsInterface|\PHPUnit_Framework_MockObject_MockObject $querySettings */
         $querySettings = $this
@@ -77,7 +79,7 @@ class CategoryRepositoryTest extends UnitTestCase
     /**
      * @test
      */
-    public function getSelectedCategoriesWithGivenParentWillCallEquals()
+    public function getSelectedCategoriesWithGivenParentWillCallEquals(): void
     {
         /** @var QuerySettingsInterface|\PHPUnit_Framework_MockObject_MockObject $querySettings */
         $querySettings = $this

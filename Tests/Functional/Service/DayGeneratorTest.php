@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -37,7 +39,7 @@ class DayGeneratorTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -69,7 +71,7 @@ class DayGeneratorTest extends FunctionalTestCase
         ];
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->subject);
 
@@ -81,7 +83,7 @@ class DayGeneratorTest extends FunctionalTestCase
      *
      * @throws \Exception
      */
-    public function initializeWithEmptyEventRecordResultsInFalse()
+    public function initializeWithEmptyEventRecordResultsInFalse(): void
     {
         $event = new Event();
         $event->_setProperty('uid', 123);
@@ -93,7 +95,7 @@ class DayGeneratorTest extends FunctionalTestCase
      *
      * @throws \Exception
      */
-    public function initializeWithInvalidEventRecordResultsInFalse()
+    public function initializeWithInvalidEventRecordResultsInFalse(): void
     {
         $event = new Event();
         $event->_setProperty('uid', 123);
@@ -105,7 +107,7 @@ class DayGeneratorTest extends FunctionalTestCase
      *
      * @throws \Exception
      */
-    public function initializeWithRecurringEventCallsAddRecurringEvents()
+    public function initializeWithRecurringEventCallsAddRecurringEvents(): void
     {
         $event = new Event();
         $event->_setProperty('uid', 123);
@@ -138,7 +140,7 @@ class DayGeneratorTest extends FunctionalTestCase
      *
      * @throws \Exception
      */
-    public function initializeWithRecurringWeeksCallsAddRecurrings()
+    public function initializeWithRecurringWeeksCallsAddRecurrings(): void
     {
         $event = new Event();
         $event->_setProperty('uid', 123);
@@ -171,7 +173,7 @@ class DayGeneratorTest extends FunctionalTestCase
      *
      * @throws \Exception
      */
-    public function initializeWithRecurringWeeksResetsDayToMidnight()
+    public function initializeWithRecurringWeeksResetsDayToMidnight(): void
     {
         $eventBegin = new \DateTime('yesterday 15:38:24');
         $recurringEnd = new \DateTime('+6 weeks 15:38:24');
@@ -207,7 +209,7 @@ class DayGeneratorTest extends FunctionalTestCase
      *
      * @throws \Exception
      */
-    public function initializeWithRecurringOverEachWeekAddsThreeDaysToStorage()
+    public function initializeWithRecurringOverEachWeekAddsThreeDaysToStorage(): void
     {
         $eventBegin = new \DateTime();
         $eventBegin->modify('midnight');
@@ -259,7 +261,7 @@ class DayGeneratorTest extends FunctionalTestCase
      *
      * @throws \Exception
      */
-    public function initializeWithRecurringOverTwoWeeksAddsDaysToStorage()
+    public function initializeWithRecurringOverTwoWeeksAddsDaysToStorage(): void
     {
         $eventBegin = new \DateTime();
         $eventBegin->modify('midnight');
@@ -306,7 +308,7 @@ class DayGeneratorTest extends FunctionalTestCase
      *
      * @throws \Exception
      */
-    public function initializeWithRecurringWeeksWillKeepDaylightSavingTime()
+    public function initializeWithRecurringWeeksWillKeepDaylightSavingTime(): void
     {
         $timestamp = mktime(0, 0, 0, 10, 20, 2017);
         // this test has to build days in past. To allow this we have to set recurring past to a high value
@@ -363,7 +365,7 @@ class DayGeneratorTest extends FunctionalTestCase
      *
      * @throws \Exception
      */
-    public function initializeWithRecurringOverEachMonthAddsThreeDaysToStorage()
+    public function initializeWithRecurringOverEachMonthAddsThreeDaysToStorage(): void
     {
         $eventBegin = new \DateTime();
         $eventBegin->modify('midnight')->modify('first day of this month')->modify('+25 days');
@@ -418,7 +420,7 @@ class DayGeneratorTest extends FunctionalTestCase
      *
      * @throws \Exception
      */
-    public function initializeWithRecurringOverTwoMonthsAddsDaysToStorage()
+    public function initializeWithRecurringOverTwoMonthsAddsDaysToStorage(): void
     {
         $eventBegin = new \DateTime();
         $eventBegin->modify('midnight');
@@ -465,7 +467,7 @@ class DayGeneratorTest extends FunctionalTestCase
      *
      * @throws \Exception
      */
-    public function initializeWithRecurringOverTwoMonthsAndVeryEarlyEventDateAddsDayToStorage()
+    public function initializeWithRecurringOverTwoMonthsAndVeryEarlyEventDateAddsDayToStorage(): void
     {
         $extConf = new ExtConf();
         $extConf->setRecurringPast(3);
@@ -506,7 +508,7 @@ class DayGeneratorTest extends FunctionalTestCase
      *
      * @throws \Exception
      */
-    public function initializeWithRecurringOverEachMonthAndTwoWeeksAddsDaysToStorage()
+    public function initializeWithRecurringOverEachMonthAndTwoWeeksAddsDaysToStorage(): void
     {
         $eventBegin = new \DateTime();
         $eventBegin->modify('midnight');
@@ -558,7 +560,7 @@ class DayGeneratorTest extends FunctionalTestCase
      *
      * @throws \Exception
      */
-    public function initializeWithRecurringAndEqualEventBeginAndEventEndResultsInOneDayInStorage()
+    public function initializeWithRecurringAndEqualEventBeginAndEventEndResultsInOneDayInStorage(): void
     {
         $eventBegin = new \DateTime();
         $eventBegin->modify('midnight');
@@ -586,7 +588,7 @@ class DayGeneratorTest extends FunctionalTestCase
      *
      * @throws \Exception
      */
-    public function initializeWithAnEmptySettingForRecurringsResultsInAddDaysForEachDay()
+    public function initializeWithAnEmptySettingForRecurringsResultsInAddDaysForEachDay(): void
     {
         $eventBegin = new \DateTime();
         $eventBegin->modify('midnight');
@@ -622,7 +624,7 @@ class DayGeneratorTest extends FunctionalTestCase
      *
      * @throws \Exception
      */
-    public function initializeWithGivenWeekdaysResultsInAddedDaysInStorage()
+    public function initializeWithGivenWeekdaysResultsInAddedDaysInStorage(): void
     {
         $eventBegin = new \DateTime();
         $eventBegin->modify('midnight');
@@ -670,7 +672,7 @@ class DayGeneratorTest extends FunctionalTestCase
      *
      * @throws \Exception
      */
-    public function initializeWithGivenXthsResultsInAddedDaysInStorage()
+    public function initializeWithGivenXthsResultsInAddedDaysInStorage(): void
     {
         // $eventBegin has to start with a month beginning with a thursday
         $eventBegin = new \DateTime('now');
@@ -717,7 +719,7 @@ class DayGeneratorTest extends FunctionalTestCase
      *
      * @throws \Exception
      */
-    public function initializeWithEventEndAddsDaysToStorage()
+    public function initializeWithEventEndAddsDaysToStorage(): void
     {
         $eventBegin = new \DateTime();
         $eventBegin->modify('midnight');
@@ -754,7 +756,7 @@ class DayGeneratorTest extends FunctionalTestCase
      *
      * @throws \Exception
      */
-    public function initializeWithEventBeginAddsOneDayToStorage()
+    public function initializeWithEventBeginAddsOneDayToStorage(): void
     {
         $eventBegin = new \DateTime();
         $eventBegin->modify('midnight');
@@ -782,7 +784,7 @@ class DayGeneratorTest extends FunctionalTestCase
      *
      * @throws \Exception
      */
-    public function initializeWithExceptionsInEventCallsAddExceptions()
+    public function initializeWithExceptionsInEventCallsAddExceptions(): void
     {
         $eventBegin = new \DateTime();
         $eventBegin->modify('midnight');
@@ -822,7 +824,7 @@ class DayGeneratorTest extends FunctionalTestCase
      *
      * @throws \Exception
      */
-    public function initializeWithAddExceptionAddsOneDayInStorage()
+    public function initializeWithAddExceptionAddsOneDayInStorage(): void
     {
         $timestamp = mktime(0, 0, 0);
 
@@ -872,7 +874,7 @@ class DayGeneratorTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function initializeWithAddExceptionOutOfAllowedRangeDoesNotAddDayInStorage()
+    public function initializeWithAddExceptionOutOfAllowedRangeDoesNotAddDayInStorage(): void
     {
         $timestamp = mktime(0, 0, 0);
 
@@ -923,7 +925,7 @@ class DayGeneratorTest extends FunctionalTestCase
      *
      * @throws \Exception
      */
-    public function initializeWithRemoveExceptionRemovesOneDayFromStorage()
+    public function initializeWithRemoveExceptionRemovesOneDayFromStorage(): void
     {
         $eventBegin = new \DateTime();
         $eventBegin->modify('midnight');
@@ -962,7 +964,7 @@ class DayGeneratorTest extends FunctionalTestCase
      *
      * @throws \Exception
      */
-    public function initializeWithTimeExceptionDoNotAddDayToStorage()
+    public function initializeWithTimeExceptionDoNotAddDayToStorage(): void
     {
         $eventBegin = new \DateTime();
         $eventBegin->modify('midnight');
@@ -1001,7 +1003,7 @@ class DayGeneratorTest extends FunctionalTestCase
      *
      * @throws \Exception
      */
-    public function initializeWithInfoExceptionDoNotAddDayToStorage()
+    public function initializeWithInfoExceptionDoNotAddDayToStorage(): void
     {
         $eventBegin = new \DateTime();
         $eventBegin->modify('midnight');
@@ -1042,7 +1044,7 @@ class DayGeneratorTest extends FunctionalTestCase
      *
      * @expectedException \Exception
      */
-    public function initializeWithInvalidExceptionThrowsException()
+    public function initializeWithInvalidExceptionThrowsException(): void
     {
         $eventBegin = new \DateTime();
         $eventBegin->modify('midnight');
@@ -1079,7 +1081,7 @@ class DayGeneratorTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getDayStorageResultsInSortedArray()
+    public function getDayStorageResultsInSortedArray(): void
     {
         $this->subject->setDateTimeStorage([
             4 => 'TestValue',

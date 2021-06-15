@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -22,12 +24,12 @@ class TimeToStringConverterTest extends UnitTestCase
      */
     protected $subject;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->subject = new TimeToStringConverter();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->subject);
     }
@@ -37,7 +39,7 @@ class TimeToStringConverterTest extends UnitTestCase
      *
      * @return array
      */
-    public function dataProviderForTooHighIntegerValues()
+    public function dataProviderForTooHighIntegerValues(): array
     {
         $timestamps = [];
         $timestamps['one second too high'] = [60 * 60 * 24];
@@ -53,7 +55,7 @@ class TimeToStringConverterTest extends UnitTestCase
      * @param int $tooHighIntegerValue
      * @dataProvider dataProviderForTooHighIntegerValues
      */
-    public function convertWithTooHighIntergerValues($tooHighIntegerValue)
+    public function convertWithTooHighIntergerValues($tooHighIntegerValue): void
     {
         self::assertSame(
             '23:59',
@@ -66,7 +68,7 @@ class TimeToStringConverterTest extends UnitTestCase
      *
      * @return array
      */
-    public function dataProviderForTooLowIntegerValues()
+    public function dataProviderForTooLowIntegerValues(): array
     {
         $timestamps = [];
         $timestamps['edge case with zero'] = [0];
@@ -82,7 +84,7 @@ class TimeToStringConverterTest extends UnitTestCase
      * @param int $tooLowIntegerValue
      * @dataProvider dataProviderForTooLowIntegerValues
      */
-    public function convertWithTooLowIntergerValues($tooLowIntegerValue)
+    public function convertWithTooLowIntergerValues($tooLowIntegerValue): void
     {
         self::assertSame(
             '00:00',
@@ -95,7 +97,7 @@ class TimeToStringConverterTest extends UnitTestCase
      *
      * @return array
      */
-    public function dataProviderForTimestampsInAllowedRange()
+    public function dataProviderForTimestampsInAllowedRange(): array
     {
         $timestamps = [];
         $timestamps['edge case with zero'] = [0, '00:00'];
@@ -118,8 +120,10 @@ class TimeToStringConverterTest extends UnitTestCase
      * @param string $expectedTime
      * @dataProvider dataProviderForTimestampsInAllowedRange
      */
-    public function convertWithIntegersInAllowedRangeResultsInStringInterpretation($timestampInRange, $expectedTime)
-    {
+    public function convertWithIntegersInAllowedRangeResultsInStringInterpretation(
+        $timestampInRange,
+        $expectedTime
+    ): void {
         self::assertSame(
             $expectedTime,
             $this->subject->convert($timestampInRange)

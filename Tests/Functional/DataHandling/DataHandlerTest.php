@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -53,7 +55,7 @@ class DataHandlerTest extends FunctionalTestCase
         'typo3conf/ext/maps2'
     ];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -95,7 +97,7 @@ class DataHandlerTest extends FunctionalTestCase
         $event->setEachMonths(0);
         $event->setRecurringEnd(null);
         $event->setFreeEntry(false);
-        $event->setOrganizer($organizer);
+        $event->addOrganizer($organizer);
         $event->setLocation($location);
         $persistenceManager->add($event);
 
@@ -107,7 +109,7 @@ class DataHandlerTest extends FunctionalTestCase
         }
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->dayRepository);
         parent::tearDown();

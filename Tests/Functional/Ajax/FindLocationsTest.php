@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -51,7 +53,7 @@ class FindLocationsTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -60,7 +62,7 @@ class FindLocationsTest extends FunctionalTestCase
         $this->subject = new FindLocations($this->locationRepositoryProphecy->reveal());
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         ExtensionManagementUtilityAccessibleProxy::setCacheManager(null);
         unset($this->subject);
@@ -70,7 +72,7 @@ class FindLocationsTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function processAjaxRequestWithNoLocationsReturnsEmptyString()
+    public function processAjaxRequestWithNoLocationsReturnsEmptyString(): void
     {
         $queryParams = [
             'tx_events2_events' => [
@@ -94,7 +96,7 @@ class FindLocationsTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function processAjaxRequestWithHtmlCallsFindLocationsWithoutHtml()
+    public function processAjaxRequestWithHtmlCallsFindLocationsWithoutHtml(): void
     {
         $queryParams = [
             'tx_events2_events' => [
@@ -121,7 +123,7 @@ class FindLocationsTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function processAjaxRequestWithTooSmallLocationsReturnsEmptyString()
+    public function processAjaxRequestWithTooSmallLocationsReturnsEmptyString(): void
     {
         $queryParams = [
             'tx_events2_events' => [
@@ -145,7 +147,7 @@ class FindLocationsTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function processAjaxRequestWithLocationsReturnsJson()
+    public function processAjaxRequestWithLocationsReturnsJson(): void
     {
         $this->locationRepositoryProphecy
             ->findLocations('at h')

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -52,7 +54,7 @@ class HiddenObjectHelperTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -67,7 +69,7 @@ class HiddenObjectHelperTest extends FunctionalTestCase
         );
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset(
             $this->subject,
@@ -80,7 +82,7 @@ class HiddenObjectHelperTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function registerWithInvalidRepositoryWillNotAddObjectToSession()
+    public function registerWithInvalidRepositoryWillNotAddObjectToSession(): void
     {
         /** @var LocationRepository|ObjectProphecy $locationRepositoryProphecy */
         $locationRepositoryProphecy = $this->prophesize(LocationRepository::class);
@@ -103,7 +105,7 @@ class HiddenObjectHelperTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function registerWithRepositoryWillAddObjectByArrayToSession()
+    public function registerWithRepositoryWillAddObjectByArrayToSession(): void
     {
         $event = new Event();
         $event->_setProperty('uid', 12);
@@ -139,7 +141,7 @@ class HiddenObjectHelperTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function registerWithRepositoryWillAddObjectByUidToSession()
+    public function registerWithRepositoryWillAddObjectByUidToSession(): void
     {
         $event = new Event();
         $event->_setProperty('uid', 543);

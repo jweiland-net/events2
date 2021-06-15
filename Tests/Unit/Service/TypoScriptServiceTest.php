@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -22,12 +24,12 @@ class TypoScriptServiceTest extends UnitTestCase
      */
     protected $subject;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->subject = new TypoScriptService();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset(
             $this->subject
@@ -37,7 +39,7 @@ class TypoScriptServiceTest extends UnitTestCase
     /**
      * @test
      */
-    public function overrideWithEmptyValuesDoesNotOverrideAnything()
+    public function overrideWithEmptyValuesDoesNotOverrideAnything(): void
     {
         $flexFormSettings = [];
         $typoScriptSettings = [];
@@ -52,7 +54,7 @@ class TypoScriptServiceTest extends UnitTestCase
     /**
      * @test
      */
-    public function overrideWithNonSetFlexFormSettingWillUseValueOfTypoScript()
+    public function overrideWithNonSetFlexFormSettingWillUseValueOfTypoScript(): void
     {
         $flexFormSettings = [];
         $typoScriptSettings = [
@@ -71,7 +73,7 @@ class TypoScriptServiceTest extends UnitTestCase
     /**
      * @test
      */
-    public function overrideWithZeroFlexFormSettingWillUseValueOfTypoScript()
+    public function overrideWithZeroFlexFormSettingWillUseValueOfTypoScript(): void
     {
         $flexFormSettings = [
             'foo' => '0'
@@ -92,7 +94,7 @@ class TypoScriptServiceTest extends UnitTestCase
     /**
      * @test
      */
-    public function overrideWithEmptyFlexFormSettingWillUseValueOfTypoScript()
+    public function overrideWithEmptyFlexFormSettingWillUseValueOfTypoScript(): void
     {
         $flexFormSettings = [
             'foo' => ''
@@ -113,7 +115,7 @@ class TypoScriptServiceTest extends UnitTestCase
     /**
      * @test
      */
-    public function overrideWithFilledFlexFormAndTypoScriptSettingWillOverride()
+    public function overrideWithFilledFlexFormAndTypoScriptSettingWillOverride(): void
     {
         $flexFormSettings = [
             'foo' => 'hello',
