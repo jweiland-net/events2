@@ -54,7 +54,7 @@ class XmlImporterTest extends FunctionalTestCase
     /**
      * I have set the date of the import events to 2025. That should be enough for the next years ;-)
      */
-    public function setUp(): void: void
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -68,7 +68,7 @@ class XmlImporterTest extends FunctionalTestCase
         $GLOBALS['BE_USER'] = new BackendUserAuthentication();
     }
 
-    public function tearDown(): void: void
+    public function tearDown(): void
     {
         unset(
             $GLOBALS['BE_USER']
