@@ -104,7 +104,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         $event->setEventBegin($eventBegin);
         $event->setEventEnd($eventEnd);
         $event->setFreeEntry(true);
-        $event->setOrganizer($organizer);
+        $event->addOrganizer($organizer);
         $event->setLocation($location);
         $persistenceManager->add($event);
 
@@ -119,12 +119,12 @@ class JsonLdServiceTest extends FunctionalTestCase
         $event->setEventType('single');
         $event->setTopOfList(false);
         $event->setTitle('Birthday');
-        $event->setDetailInformations('Happy birthday to you, happy birthday to you, ...');
+        $event->setDetailInformation('Happy birthday to you, happy birthday to you, ...');
         $event->setEventBegin($eventBegin);
         $event->setEventTime($time);
         $event->setTicketLink($link);
         $event->setFreeEntry(false);
-        $event->setOrganizer($organizer);
+        $event->addOrganizer($organizer);
         $event->setLocation($location);
         $persistenceManager->add($event);
 

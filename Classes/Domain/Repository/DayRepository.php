@@ -72,7 +72,7 @@ class DayRepository extends Repository
         DateTimeUtility $dateTimeUtility,
         DatabaseService $databaseService,
         DayFactory $dayFactory,
-        Dispatcher $dispatcher
+        EventDispatcher $dispatcher
     ) {
         parent::__construct($objectManager);
         $this->extConf = $extConf;
