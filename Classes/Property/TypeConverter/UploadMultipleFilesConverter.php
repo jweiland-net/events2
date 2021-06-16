@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Property\TypeConverter;
 
 use JWeiland\Checkfaluploads\Service\FalUploadService;
+use JWeiland\Events2\Event\PostCheckFileReferenceEvent;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Resource\DuplicationBehavior;
 use TYPO3\CMS\Core\Resource\Exception\ResourceDoesNotExistException;
 use TYPO3\CMS\Core\Resource\Folder;
@@ -23,7 +25,6 @@ use TYPO3\CMS\Extbase\Error\Error;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Extbase\Property\PropertyMappingConfigurationInterface;
 use TYPO3\CMS\Extbase\Property\TypeConverter\AbstractTypeConverter;
-use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /*
@@ -57,9 +58,9 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
     protected $converterConfiguration = [];
 
     /**
-     * @var Dispatcher
+     * @var EventDispatcher
      */
-    protected $signalSlotDispatcher;
+    protected $eventDispatcher;
 
     /**
      * Do not inject this property, as EXT:checkfaluploads may not be loaded
@@ -68,18 +69,11 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
      */
     protected $falUploadService;
 
-    public function injectSignalSlotDispatcher(Dispatcher $signalSlotDispatcher): void
+    public function __construct(EventDispatcher $eventDispatcher)
     {
-        $this->signalSlotDispatcher = $signalSlotDispatcher;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
-    /**
-     * This implementation always returns TRUE for this method.
-     *
-     * @param mixed  $source     the source data
-     * @param string $targetType the type to convert to.
-     * @return bool true if this TypeConverter can convert from $source to $targetType, FALSE otherwise.
-     */
     public function canConvertFrom($source, string $targetType): bool
     {
         // check if $source consists of uploaded files
@@ -154,7 +148,9 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
                 return $error;
             }
 
-            $this->emitPostCheckFileReference($source, $key, $alreadyPersistedImage, $uploadedFile);
+            $this->eventDispatcher->dispatch(
+                new PostCheckFileReferenceEvent($source, $key, $alreadyPersistedImage, $uploadedFile)
+            );
         }
 
         // Upload file and add it to ObjectStorage
@@ -307,19 +303,6 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
                 'uid_foreign' => uniqid('NEW_', true),
                 'uid' => uniqid('NEW_', true),
             ]
-        );
-    }
-
-    protected function emitPostCheckFileReference(
-        array $source,
-        int $key,
-        ?FileReference $alreadyPersistedImage,
-        array $uploadedFile
-    ): void {
-        $this->signalSlotDispatcher->dispatch(
-            self::class,
-            'postCheckFileReference',
-            [$source, $key, $alreadyPersistedImage, $uploadedFile]
         );
     }
 

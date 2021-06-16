@@ -14,8 +14,9 @@ namespace JWeiland\Events2\Service;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Exception;
+use JWeiland\Events2\Event\PostGenerateDaysEvent;
 use JWeiland\Events2\Utility\DateTimeUtility;
-use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 
 /*
  * Class to generate all day records for an event within configured range (ExtensionManager)
@@ -40,16 +41,16 @@ class DayGenerator
     protected $dateTimeUtility;
 
     /**
-     * @var Dispatcher
+     * @var EventDispatcher
      */
-    protected $signalSlotDispatcher;
+    protected $eventDispatcher;
 
     public function __construct(
-        Dispatcher $signalSlotDispatcher,
+        EventDispatcher $eventDispatcher,
         ExtConf $extConf,
         DateTimeUtility $dateTimeUtility
     ) {
-        $this->signalSlotDispatcher = $signalSlotDispatcher;
+        $this->eventDispatcher = $eventDispatcher;
         $this->extConf = $extConf;
         $this->dateTimeUtility = $dateTimeUtility;
     }
@@ -98,7 +99,9 @@ class DayGenerator
             $this->addExceptions($event);
         }
 
-        $this->emitPostGenerateDaysSignal($event);
+        $this->eventDispatcher->dispatch(
+            new PostGenerateDaysEvent($event)
+        );
 
         return true;
     }
@@ -411,19 +414,5 @@ class DayGenerator
         if ($day >= $dateToStartCalculatingFrom && $day <= $dateToStopCalculatingTo) {
             $this->addDayToStorage($day);
         }
-    }
-
-    /**
-     * Use this signal, if you want to modify the generated days.
-     *
-     * @param Event $event
-     */
-    protected function emitPostGenerateDaysSignal(Event $event): void
-    {
-        $this->signalSlotDispatcher->dispatch(
-            self::class,
-            'postGenerateDays',
-            [$event, $this]
-        );
     }
 }
