@@ -14,7 +14,6 @@ namespace JWeiland\Events2\Tests\Functional\Controller;
 use JWeiland\Events2\Controller\EventController;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Organizer;
-use JWeiland\Events2\Domain\Model\Search;
 use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
