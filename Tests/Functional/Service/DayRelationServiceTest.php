@@ -24,10 +24,10 @@ use JWeiland\Events2\Utility\DateTimeUtility;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
-use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /**
  * Test case for class \JWeiland\Events2\Service\DayRelationService
@@ -88,7 +88,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         $this->persistenceManagerProphecy = $this->prophesize(PersistenceManager::class);
 
         $dayGenerator = new DayGenerator(
-            GeneralUtility::makeInstance(Dispatcher::class),
+            GeneralUtility::makeInstance(EventDispatcher::class),
             $this->extConfProphecy->reveal(),
             new DateTimeUtility()
         );

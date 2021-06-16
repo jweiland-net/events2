@@ -106,7 +106,7 @@ class ICalendarControllerTest extends FunctionalTestCase
         $event->setEachWeeks(0);
         $event->setEachMonths(0);
         $event->setFreeEntry(false);
-        $event->setOrganizer($organizer);
+        $event->addOrganizer($organizer);
         $event->setLocation($location);
         $persistenceManager->add($event);
 
@@ -120,15 +120,18 @@ class ICalendarControllerTest extends FunctionalTestCase
             $dayRelationService->createDayRelations($event->getUid());
         }
 
-        $this->tempDirectory = Environment::getPublicPath() . '/' . 'typo3temp/tx_events2/iCal/';
+        $this->tempDirectory = Environment::getPublicPath() . '/typo3temp/tx_events2/iCal/';
     }
 
     public function tearDown(): void
     {
         unset($this->subject);
-        $files = array_slice(scandir($this->tempDirectory), 2);
-        foreach ($files as $file) {
-            unlink($this->tempDirectory . $file);
+        $dirAndFiles = scandir($this->tempDirectory);
+        if ($dirAndFiles !== false) {
+            $files = array_slice($dirAndFiles, 2);
+            foreach ($files as $file) {
+                unlink($this->tempDirectory . $file);
+            }
         }
         parent::tearDown();
     }

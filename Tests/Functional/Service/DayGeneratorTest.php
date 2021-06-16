@@ -18,9 +18,9 @@ use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Service\DayGenerator;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
-use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /**
  * Test case for class \JWeiland\Events2\Service\DayGenerator.
@@ -47,7 +47,7 @@ class DayGeneratorTest extends FunctionalTestCase
         $extConf->setRecurringFuture(12);
 
         $this->subject = new DayGenerator(
-            GeneralUtility::makeInstance(Dispatcher::class),
+            GeneralUtility::makeInstance(EventDispatcher::class),
             $extConf,
             new DateTimeUtility()
         );
@@ -123,7 +123,7 @@ class DayGeneratorTest extends FunctionalTestCase
         $dayGenerator = $this
             ->getMockBuilder(DayGenerator::class)
             ->setConstructorArgs([
-                GeneralUtility::makeInstance(Dispatcher::class),
+                GeneralUtility::makeInstance(EventDispatcher::class),
                 new ExtConf(),
                 new DateTimeUtility()
             ])
@@ -156,7 +156,7 @@ class DayGeneratorTest extends FunctionalTestCase
         $dayGenerator = $this
             ->getMockBuilder(DayGenerator::class)
             ->setConstructorArgs([
-                GeneralUtility::makeInstance(Dispatcher::class),
+                GeneralUtility::makeInstance(EventDispatcher::class),
                 new ExtConf(),
                 new DateTimeUtility()
             ])
@@ -190,7 +190,7 @@ class DayGeneratorTest extends FunctionalTestCase
 
         /** @var DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
         $dayGenerator = new DayGenerator(
-            GeneralUtility::makeInstance(Dispatcher::class),
+            GeneralUtility::makeInstance(EventDispatcher::class),
             new ExtConf(),
             new DateTimeUtility()
         );
@@ -237,7 +237,7 @@ class DayGeneratorTest extends FunctionalTestCase
         $dayGenerator = $this
             ->getMockBuilder(DayGenerator::class)
             ->setConstructorArgs([
-                GeneralUtility::makeInstance(Dispatcher::class),
+                GeneralUtility::makeInstance(EventDispatcher::class),
                 new ExtConf(),
                 new DateTimeUtility()
             ])
@@ -286,7 +286,7 @@ class DayGeneratorTest extends FunctionalTestCase
         $dayGenerator = $this
             ->getMockBuilder(DayGenerator::class)
             ->setConstructorArgs([
-                GeneralUtility::makeInstance(Dispatcher::class),
+                GeneralUtility::makeInstance(EventDispatcher::class),
                 new ExtConf(),
                 new DateTimeUtility()
             ])
@@ -345,7 +345,7 @@ class DayGeneratorTest extends FunctionalTestCase
         $dayGenerator = $this
             ->getMockBuilder(DayGenerator::class)
             ->setConstructorArgs([
-                GeneralUtility::makeInstance(Dispatcher::class),
+                GeneralUtility::makeInstance(EventDispatcher::class),
                 $extConf,
                 new DateTimeUtility()
             ])
@@ -396,7 +396,7 @@ class DayGeneratorTest extends FunctionalTestCase
         $dayGenerator = $this
             ->getMockBuilder(DayGenerator::class)
             ->setConstructorArgs([
-                GeneralUtility::makeInstance(Dispatcher::class),
+                GeneralUtility::makeInstance(EventDispatcher::class),
                 $extConf,
                 new DateTimeUtility()
             ])
@@ -445,7 +445,7 @@ class DayGeneratorTest extends FunctionalTestCase
         $dayGenerator = $this
             ->getMockBuilder(DayGenerator::class)
             ->setConstructorArgs([
-                GeneralUtility::makeInstance(Dispatcher::class),
+                GeneralUtility::makeInstance(EventDispatcher::class),
                 new ExtConf(),
                 new DateTimeUtility()
             ])
@@ -492,7 +492,7 @@ class DayGeneratorTest extends FunctionalTestCase
         $expectedDays[$eventEnd->format('U')] = $eventEnd;
 
         $dayGenerator = new DayGenerator(
-            GeneralUtility::makeInstance(Dispatcher::class),
+            GeneralUtility::makeInstance(EventDispatcher::class),
             $extConf,
             new DateTimeUtility()
         );
@@ -540,7 +540,7 @@ class DayGeneratorTest extends FunctionalTestCase
         $dayGenerator = $this
             ->getMockBuilder(DayGenerator::class)
             ->setConstructorArgs([
-                GeneralUtility::makeInstance(Dispatcher::class),
+                GeneralUtility::makeInstance(EventDispatcher::class),
                 new ExtConf(),
                 new DateTimeUtility()
             ])
@@ -807,7 +807,7 @@ class DayGeneratorTest extends FunctionalTestCase
         $dayGenerator = $this
             ->getMockBuilder(DayGenerator::class)
             ->setConstructorArgs([
-                GeneralUtility::makeInstance(Dispatcher::class),
+                GeneralUtility::makeInstance(EventDispatcher::class),
                 new ExtConf(),
                 new DateTimeUtility()
             ])

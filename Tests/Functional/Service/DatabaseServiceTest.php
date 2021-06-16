@@ -91,7 +91,7 @@ class DatabaseServiceTest extends FunctionalTestCase
         $event->setEachMonths(0);
         $event->setRecurringEnd(null);
         $event->setFreeEntry(false);
-        $event->setOrganizer($organizer);
+        $event->addOrganizer($organizer);
         $event->setLocation($location);
         $persistenceManager->add($event);
 
