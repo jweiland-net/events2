@@ -9,7 +9,7 @@
 .. _start:
 
 :Version:
-   6.2.4
+   7.0.0
 
 :Language:
    en

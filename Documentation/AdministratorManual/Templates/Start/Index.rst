@@ -63,16 +63,3 @@ the paths
        layoutRootPath = fileadmin/templates/ext/events2/Layouts/
      }
    }
-
-Change path of the paginate widget
-==================================
-
-The path of the paginate widget can be changed by using a configuration like below.
-
-.. code-block:: typoscript
-
-   plugin.tx_events2 {
-     view {
-       widget.JWeiland\Events2\ViewHelpers\Widget\PaginateViewHelper.templateRootPath = {$plugin.tx_events2.view.templateRootPath}
-     }
-   }
