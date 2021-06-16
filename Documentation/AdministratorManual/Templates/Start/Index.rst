@@ -73,6 +73,6 @@ The path of the paginate widget can be changed by using a configuration like bel
 
    plugin.tx_events2 {
      view {
-       widget.JWeiland\Events2\ViewHelpers\Widget\PaginateViewHelper.templateRootPath = {$plugin.tx_events2.view.templateRootPath}
+       widget.TYPO3\CMS\Fluid\ViewHelpers\Widget\PaginateViewHelper.templateRootPath = {$plugin.tx_events2.view.templateRootPath}
      }
    }
