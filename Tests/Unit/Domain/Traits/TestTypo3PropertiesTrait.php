@@ -114,32 +114,6 @@ trait TestTypo3PropertiesTrait
     /**
      * @test
      */
-    public function setSysLanguageUidWithStringResultsInInteger(): void
-    {
-        $this->subject->setSysLanguageUid('123Test');
-
-        self::assertSame(
-            123,
-            $this->subject->getSysLanguageUid()
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function setSysLanguageUidWithBooleanResultsInInteger(): void
-    {
-        $this->subject->setSysLanguageUid(true);
-
-        self::assertSame(
-            1,
-            $this->subject->getSysLanguageUid()
-        );
-    }
-
-    /**
-     * @test
-     */
     public function getL10nParentInitiallyReturnsZero(): void
     {
         self::assertSame(
@@ -157,32 +131,6 @@ trait TestTypo3PropertiesTrait
 
         self::assertSame(
             123456,
-            $this->subject->getL10nParent()
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function setL10nParentWithStringResultsInInteger(): void
-    {
-        $this->subject->setL10nParent('123Test');
-
-        self::assertSame(
-            123,
-            $this->subject->getL10nParent()
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function setL10nParentWithBooleanResultsInInteger(): void
-    {
-        $this->subject->setL10nParent(true);
-
-        self::assertSame(
-            1,
             $this->subject->getL10nParent()
         );
     }
@@ -283,24 +231,6 @@ trait TestTypo3PropertiesTrait
     /**
      * @test
      */
-    public function setHiddenWithStringReturnsTrue(): void
-    {
-        $this->subject->setHidden('foo bar');
-        self::assertTrue($this->subject->getHidden());
-    }
-
-    /**
-     * @test
-     */
-    public function setHiddenWithZeroReturnsFalse(): void
-    {
-        $this->subject->setHidden(0);
-        self::assertFalse($this->subject->getHidden());
-    }
-
-    /**
-     * @test
-     */
     public function getDeletedInitiallyReturnsFalse(): void
     {
         self::assertFalse(
@@ -317,24 +247,6 @@ trait TestTypo3PropertiesTrait
         self::assertTrue(
             $this->subject->getDeleted()
         );
-    }
-
-    /**
-     * @test
-     */
-    public function setDeletedWithStringReturnsTrue(): void
-    {
-        $this->subject->setDeleted('foo bar');
-        self::assertTrue($this->subject->getDeleted());
-    }
-
-    /**
-     * @test
-     */
-    public function setDeletedWithZeroReturnsFalse(): void
-    {
-        $this->subject->setDeleted(0);
-        self::assertFalse($this->subject->getDeleted());
     }
 
     /**
@@ -357,32 +269,6 @@ trait TestTypo3PropertiesTrait
 
         self::assertSame(
             123456,
-            $this->subject->getCruserId()
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function setCruserIdWithStringResultsInInteger(): void
-    {
-        $this->subject->setCruserId('123Test');
-
-        self::assertSame(
-            123,
-            $this->subject->getCruserId()
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function setCruserIdWithBooleanResultsInInteger(): void
-    {
-        $this->subject->setCruserId(true);
-
-        self::assertSame(
-            1,
             $this->subject->getCruserId()
         );
     }
