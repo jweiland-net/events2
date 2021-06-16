@@ -17,16 +17,19 @@ use JWeiland\Events2\Domain\Factory\DayFactory;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Model\Search;
+use JWeiland\Events2\Event\ModifyQueriesOfFindByTimestampEvent;
+use JWeiland\Events2\Event\ModifyQueriesOfFindEventsEvent;
+use JWeiland\Events2\Event\ModifyQueriesOfSearchEventsEvent;
 use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
-use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /*
  * Repository to get and find day records from storage
@@ -54,9 +57,9 @@ class DayRepository extends Repository
     protected $dayFactory;
 
     /**
-     * @var Dispatcher
+     * @var EventDispatcher
      */
-    protected $dispatcher;
+    protected $eventDispatcher;
 
     /**
      * @var array
@@ -76,7 +79,7 @@ class DayRepository extends Repository
         $this->dateTimeUtility = $dateTimeUtility;
         $this->databaseService = $databaseService;
         $this->dayFactory = $dayFactory;
-        $this->dispatcher = $dispatcher;
+        $this->eventDispatcher = $dispatcher;
     }
 
     public function setSettings(array $settings): void
@@ -162,7 +165,9 @@ class DayRepository extends Repository
         }
 
         $this->addMergeFeatureToQuery($subQueryBuilder);
-        $this->emitModifyQueriesOfFindEventsSignal($queryBuilder, $subQueryBuilder, $type, $filter, $this->settings);
+        $this->eventDispatcher->dispatch(
+            new ModifyQueriesOfFindEventsEvent($queryBuilder, $subQueryBuilder, $type, $filter, $this->settings)
+        );
         $this->joinSubQueryIntoQueryBuilder($queryBuilder, $subQueryBuilder);
         $extbaseQuery->statement($queryBuilder);
 
@@ -295,7 +300,9 @@ class DayRepository extends Repository
         }
 
         $this->addMergeFeatureToQuery($subQueryBuilder);
-        $this->emitModifyQueriesOfSearchEventsSignal($queryBuilder, $subQueryBuilder, $search, $this->settings);
+        $this->eventDispatcher->dispatch(
+            new ModifyQueriesOfSearchEventsEvent($queryBuilder, $subQueryBuilder, $search, $this->settings)
+        );
         $this->joinSubQueryIntoQueryBuilder($queryBuilder, $subQueryBuilder);
         $extbaseQuery->statement($queryBuilder);
 
@@ -354,7 +361,9 @@ class DayRepository extends Repository
             ->addOrderBy('day.day_time', 'ASC')
             ->groupBy(...$this->getColumnsForDayTable(['event.top_of_list'])); // keep that because of category relation
 
-        $this->emitModifyQueriesOfFindByTimestampSignal($queryBuilder, $timestamp, $this->settings);
+        $this->eventDispatcher->dispatch(
+            new ModifyQueriesOfFindByTimestampEvent($queryBuilder, $timestamp, $this->settings)
+        );
         $extbaseQuery->statement($queryBuilder);
 
         return $extbaseQuery->execute();
@@ -501,69 +510,6 @@ class DayRepository extends Repository
             $day = [];
         }
         return $day;
-    }
-
-    /**
-     * Use this signal, if you want to modify the queries of method findEvents.
-     *
-     * @param QueryBuilder $queryBuilder
-     * @param QueryBuilder $subQueryBuilder
-     * @param string $type
-     * @param Filter $filter
-     * @param array $settings
-     */
-    protected function emitModifyQueriesOfFindEventsSignal(
-        QueryBuilder $queryBuilder,
-        QueryBuilder $subQueryBuilder,
-        string $type,
-        Filter $filter,
-        array $settings
-    ): void {
-        $this->dispatcher->dispatch(
-            self::class,
-            'modifyQueriesOfFindEvents',
-            [$queryBuilder, $subQueryBuilder, $type, $filter, $settings]
-        );
-    }
-
-    /**
-     * Use this signal, if you want to modify the queries of method searchEvents.
-     *
-     * @param QueryBuilder $queryBuilder
-     * @param QueryBuilder $subQueryBuilder
-     * @param Search $search
-     * @param array $settings
-     */
-    protected function emitModifyQueriesOfSearchEventsSignal(
-        QueryBuilder $queryBuilder,
-        QueryBuilder $subQueryBuilder,
-        Search $search,
-        array $settings
-    ): void {
-        $this->dispatcher->dispatch(
-            self::class,
-            'modifyQueriesOfSearchEvents',
-            [$queryBuilder, $subQueryBuilder, $search, $settings]
-        );
-    }
-
-    /**
-     * Use this signal, if you want to modify the query of method findByTimestamp.
-     *
-     * @param QueryBuilder $queryBuilder
-     * @param int $timestamp
-     * @param array $settings
-     */
-    protected function emitModifyQueriesOfFindByTimestampSignal(
-        QueryBuilder $queryBuilder,
-        int $timestamp,
-        array $settings
-    ): void {
-        $this->dispatcher->dispatch(
-            self::class,
-            'modifyQueriesOfFindByTimestamp',
-            [$queryBuilder, $timestamp, $settings]
-        );
     }
 
     protected function getConnectionPool(): ConnectionPool
