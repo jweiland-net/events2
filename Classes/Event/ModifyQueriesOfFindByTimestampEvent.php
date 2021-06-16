@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Event;
 
-use JWeiland\Events2\Domain\Model\Search;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 
 /*
