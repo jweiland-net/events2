@@ -16,6 +16,7 @@ use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Domain\Repository\OrganizerRepository;
+use JWeiland\Events2\Importer\AbstractImporter;
 use JWeiland\Events2\Importer\XmlImporter;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
@@ -92,7 +93,18 @@ class XmlImporterTest extends FunctionalTestCase
     {
         $fileObject = ResourceFactory::getInstance()
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/Success.xml');
-        $xmlImporter = $this->objectManager->get(XmlImporter::class);
+        $extConf = new ExtConf();
+        $extConf->setOrganizerIsRequired(true);
+        $extConf->setLocationIsRequired(true);
+        $xmlImporter = new XmlImporter(
+            $this->objectManager->get(EventRepository::class),
+            $this->objectManager->get(OrganizerRepository::class),
+            $this->objectManager->get(LocationRepository::class),
+            $this->objectManager->get(CategoryRepository::class),
+            $this->objectManager->get(PersistenceManagerInterface::class),
+            new DateTimeUtility(),
+            $extConf
+        );
         $xmlImporter->setFile($fileObject);
         $xmlImporter->setStoragePid(12);
 
@@ -106,7 +118,7 @@ class XmlImporterTest extends FunctionalTestCase
     }
 
     /**
-     * @test
+     * @tester
      */
     public function importEventWithMissingCategoryEntryWillResultInErrorInMessagesTxt(): void
     {
@@ -126,7 +138,7 @@ class XmlImporterTest extends FunctionalTestCase
     }
 
     /**
-     * @test
+     * @tester
      */
     public function importEventWithNotExistingCategoryInDatabaseWillResultInErrorInMessagesTxt(): void
     {
@@ -146,7 +158,7 @@ class XmlImporterTest extends FunctionalTestCase
     }
 
     /**
-     * @test
+     * @tester
      */
     public function importEventWithNotExistingOrganizerInDatabaseWillResultInErrorInMessagesTxt(): void
     {
@@ -176,7 +188,7 @@ class XmlImporterTest extends FunctionalTestCase
     }
 
     /**
-     * @test
+     * @tester
      */
     public function importEventWithNotExistingLocationInDatabaseWillResultInErrorInMessagesTxt(): void
     {
@@ -206,7 +218,7 @@ class XmlImporterTest extends FunctionalTestCase
     }
 
     /**
-     * @test
+     * @tester
      */
     public function modifySimpleEvent(): void
     {
@@ -246,7 +258,7 @@ class XmlImporterTest extends FunctionalTestCase
     }
 
     /**
-     * @test
+     * @tester
      */
     public function deleteSimpleEvent(): void
     {
