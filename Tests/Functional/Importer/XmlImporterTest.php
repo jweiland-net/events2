@@ -16,7 +16,6 @@ use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Domain\Repository\OrganizerRepository;
-use JWeiland\Events2\Importer\AbstractImporter;
 use JWeiland\Events2\Importer\XmlImporter;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
@@ -118,7 +117,7 @@ class XmlImporterTest extends FunctionalTestCase
     }
 
     /**
-     * @tester
+     * @test
      */
     public function importEventWithMissingCategoryEntryWillResultInErrorInMessagesTxt(): void
     {
@@ -138,7 +137,7 @@ class XmlImporterTest extends FunctionalTestCase
     }
 
     /**
-     * @tester
+     * @test
      */
     public function importEventWithNotExistingCategoryInDatabaseWillResultInErrorInMessagesTxt(): void
     {
@@ -158,7 +157,7 @@ class XmlImporterTest extends FunctionalTestCase
     }
 
     /**
-     * @tester
+     * @test
      */
     public function importEventWithNotExistingOrganizerInDatabaseWillResultInErrorInMessagesTxt(): void
     {
@@ -188,7 +187,7 @@ class XmlImporterTest extends FunctionalTestCase
     }
 
     /**
-     * @tester
+     * @test
      */
     public function importEventWithNotExistingLocationInDatabaseWillResultInErrorInMessagesTxt(): void
     {
@@ -218,7 +217,7 @@ class XmlImporterTest extends FunctionalTestCase
     }
 
     /**
-     * @tester
+     * @test
      */
     public function modifySimpleEvent(): void
     {
@@ -258,7 +257,7 @@ class XmlImporterTest extends FunctionalTestCase
     }
 
     /**
-     * @tester
+     * @test
      */
     public function deleteSimpleEvent(): void
     {
