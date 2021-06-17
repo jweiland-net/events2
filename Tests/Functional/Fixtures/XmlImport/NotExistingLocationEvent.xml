@@ -16,9 +16,12 @@
 			<uri>https://www.jweiland.net</uri>
 		</ticket_link>
 		<organizers>
-			<organizer index="0">Kino</organizer>
+			<organizer index="0">AG</organizer>
 		</organizers>
-		<location>Kino</location>
+		<location>Not existing</location>
 		<images />
+		<categories>
+			<category index="0">Audi</category>
+		</categories>
 	</event>
 </events>
