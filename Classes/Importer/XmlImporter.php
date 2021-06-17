@@ -35,11 +35,6 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 class XmlImporter extends AbstractImporter
 {
     /**
-     * @var int
-     */
-    protected $storagePid = 0;
-
-    /**
      * @var array
      */
     protected $allowedMimeType = [
@@ -149,12 +144,12 @@ class XmlImporter extends AbstractImporter
                     // reset all properties and set them again
                     $this->addRootProperties($event, $eventRecord);
 
-                    $event->setEventBegin(null);
-                    $event->setEventEnd(null);
-                    $event->setRecurringEnd(null);
+                    $event->setEventBegin();
+                    $event->setEventEnd();
+                    $event->setRecurringEnd();
                     $this->addDateProperties($event, $eventRecord);
 
-                    $event->setEventTime(null);
+                    $event->setEventTime();
                     $event->setMultipleTimes(new ObjectStorage());
                     $event->setDifferentTimes(new ObjectStorage());
                     $this->addTimeProperties($event, $eventRecord);
@@ -162,11 +157,11 @@ class XmlImporter extends AbstractImporter
                     $event->setOrganizers(new ObjectStorage());
                     $this->addOrganizers($event, $eventRecord);
 
-                    $event->setLocation(null);
+                    $event->setLocation();
                     $this->addLocation($event, $eventRecord);
 
-                    $event->setTicketLink(null);
-                    $event->setvideoLink(null);
+                    $event->setTicketLink();
+                    $event->setvideoLink();
                     $event->setDownloadLinks(new ObjectStorage());
                     $this->addLinks($event, $eventRecord);
 
@@ -292,10 +287,9 @@ class XmlImporter extends AbstractImporter
 
         // add multiple times for same day
         if (
-            isset($eventRecord['same_day']) &&
-            $eventRecord['same_day'] &&
-            isset($eventRecord['multiple_times']) &&
-            is_array($eventRecord['multiple_times'])
+            isset($eventRecord['same_day'], $eventRecord['multiple_times'])
+            && $eventRecord['same_day']
+            && is_array($eventRecord['multiple_times'])
         ) {
             foreach ($eventRecord['multiple_times'] as $multipleTime) {
                 $newTime = GeneralUtility::makeInstance(Time::class);
@@ -328,7 +322,7 @@ class XmlImporter extends AbstractImporter
 
     protected function addOrganizers(Event $event, array $eventRecord): void
     {
-        if ($this->isOrganizerProcessable($eventRecord)) {
+        if ($this->areOrganizersProcessable($eventRecord)) {
             // @deprecated. Will be removed with events2 7.0.0
             $organizers = [$eventRecord['organizer']];
 
@@ -477,8 +471,8 @@ class XmlImporter extends AbstractImporter
                 $extbaseFileReference->setOriginalResource($resourceFactory->createFileReferenceObject(
                     [
                         'uid_local' => $file->getUid(),
-                        'uid_foreign' => uniqid('NEW_'),
-                        'uid' => uniqid('NEW_')
+                        'uid_foreign' => uniqid('NEW_', true),
+                        'uid' => uniqid('NEW_', true)
                     ]
                 ));
                 $images->attach($extbaseFileReference);

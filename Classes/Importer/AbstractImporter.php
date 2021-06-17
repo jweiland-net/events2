@@ -185,20 +185,24 @@ abstract class AbstractImporter implements ImporterInterface
             return false;
         }
 
-        if ($this->isOrganizerProcessable($event) && $this->getOrganizer($event['organizer']) === []) {
-            $this->addNotFoundMessage($event, 'organizer', $eventBegin);
-            return false;
+        if ($this->areOrganizersProcessable($event)) {
+            foreach ($event['organizers'] as $organizer) {
+                if ($this->getOrganizer($organizer) === []) {
+                    $this->addNotFoundMessage($event, 'organizer', $organizer, $eventBegin);
+                    return false;
+                }
+            }
         }
 
         if ($this->isLocationProcessable($event) && $this->getLocation($event['location']) === []) {
-            $this->addNotFoundMessage($event, 'location', $eventBegin);
+            $this->addNotFoundMessage($event, 'location', $event['location'], $eventBegin);
             return false;
         }
 
         if (isset($event['categories']) && is_array($event['categories'])) {
             foreach ($event['categories'] as $title) {
                 if ($this->getCategory($title) === []) {
-                    $this->addNotFoundMessage($event, 'location', $eventBegin);
+                    $this->addNotFoundMessage($event, 'category', $title, $eventBegin);
                     return false;
                 }
             }
@@ -249,7 +253,7 @@ abstract class AbstractImporter implements ImporterInterface
         return true;
     }
 
-    protected function addNotFoundMessage(array $event, string $property, \DateTime $date): void
+    protected function addNotFoundMessage(array $event, string $property, string $value, \DateTime $date): void
     {
         $this->addMessage(
             sprintf(
@@ -259,14 +263,14 @@ abstract class AbstractImporter implements ImporterInterface
                 sprintf(
                     'Given %s "%s" does not exist in our database',
                     $property,
-                    $event[$property]
+                    $value
                 )
             ),
             FlashMessage::ERROR
         );
     }
 
-    protected function isOrganizerProcessable(array $event): bool
+    protected function areOrganizersProcessable(array $event): bool
     {
         if ($this->extConf->getOrganizerIsRequired() === false) {
             return false;
@@ -279,9 +283,9 @@ abstract class AbstractImporter implements ImporterInterface
 
         if (
             array_key_exists('organizers', $event)
-            && is_array($event['organizer'])
+            && is_array($event['organizers'])
         ) {
-            foreach ($event['organizer'] as $organizer) {
+            foreach ($event['organizers'] as $organizer) {
                 if (empty($organizer)) {
                     return false;
                 }
