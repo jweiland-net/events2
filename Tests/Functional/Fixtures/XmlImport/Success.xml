@@ -40,7 +40,7 @@
 		<weekday>9</weekday>
 		<detail_information />
 		<organizers>
-			<organizer index="0">AG</organizer>
+			<organizer index="0">GmbH</organizer>
 		</organizers>
 		<location>Kino</location>
 		<images />
@@ -61,7 +61,7 @@
 		</event_time>
 		<detail_information />
 		<organizers>
-			<organizer index="0">GBR</organizer>
+			<organizer index="0">Co. KG</organizer>
 		</organizers>
 		<location>Kino</location>
 		<images />
