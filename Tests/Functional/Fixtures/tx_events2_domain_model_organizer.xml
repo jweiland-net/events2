@@ -6,6 +6,14 @@
 		<tstamp>1551266318</tstamp>
 		<hidden>0</hidden>
 		<cruser_id>1</cruser_id>
-		<organizer>Kino</organizer>
+		<organizer>GmbH</organizer>
+	</tx_events2_domain_model_organizer>
+	<tx_events2_domain_model_organizer>
+		<uid>2</uid>
+		<pid>12</pid>
+		<tstamp>1551266319</tstamp>
+		<hidden>0</hidden>
+		<cruser_id>1</cruser_id>
+		<organizer>Co. KG</organizer>
 	</tx_events2_domain_model_organizer>
 </dataset>
