@@ -3,8 +3,8 @@
 		<process_as>new</process_as>
 		<import_id>387</import_id>
 		<event_type>single</event_type>
-		<title>Einfacher Termin</title>
-		<teaser>Einfacher Termin an einem Montag um 16:30</teaser>
+		<title>Invalid Event</title>
+		<teaser>Invalid Event because of missing categories</teaser>
 		<event_begin>2025-11-11</event_begin>
 		<event_time>
 			<time_begin>16:30</time_begin>
@@ -16,12 +16,9 @@
 			<uri>https://www.jweiland.net</uri>
 		</ticket_link>
 		<organizers>
-			<organizer index="0">KG</organizer>
+			<organizer index="0">Co. KG</organizer>
 		</organizers>
 		<location>Kino</location>
 		<images />
-		<categories>
-			<category index="0">Audi</category>
-		</categories>
 	</event>
 </events>

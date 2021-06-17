@@ -16,7 +16,8 @@
 			<uri>https://www.jweiland.net</uri>
 		</ticket_link>
 		<organizers>
-			<organizer index="0">Kino</organizer>
+			<organizer index="0">GmbH</organizer>
+			<organizer index="1">Co. KG</organizer>
 		</organizers>
 		<location>Kino</location>
 		<images />
@@ -39,7 +40,7 @@
 		<weekday>9</weekday>
 		<detail_information />
 		<organizers>
-			<organizer index="0">Kino</organizer>
+			<organizer index="0">AG</organizer>
 		</organizers>
 		<location>Kino</location>
 		<images />
@@ -60,7 +61,7 @@
 		</event_time>
 		<detail_information />
 		<organizers>
-			<organizer index="0">Kino</organizer>
+			<organizer index="0">GBR</organizer>
 		</organizers>
 		<location>Kino</location>
 		<images />

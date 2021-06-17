@@ -11,13 +11,19 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Tests\Functional\Importer;
 
+use JWeiland\Events2\Configuration\ExtConf;
+use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
+use JWeiland\Events2\Domain\Repository\LocationRepository;
+use JWeiland\Events2\Domain\Repository\OrganizerRepository;
 use JWeiland\Events2\Importer\XmlImporter;
+use JWeiland\Events2\Utility\DateTimeUtility;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 /**
@@ -102,10 +108,10 @@ class XmlImporterTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function importInvalidEventWillResultInErrorInMessagesTxt(): void
+    public function importEventWithMissingCategoryEntryWillResultInErrorInMessagesTxt(): void
     {
         $fileObject = ResourceFactory::getInstance()
-            ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/InvalidEvent.xml');
+            ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/MissingCategoryEntryEvent.xml');
         $xmlImporter = $this->objectManager->get(XmlImporter::class);
         $xmlImporter->setFile($fileObject);
         $xmlImporter->setStoragePid(12);
@@ -113,6 +119,86 @@ class XmlImporterTest extends FunctionalTestCase
         self::assertFalse($xmlImporter->import());
         self::assertRegExp(
             '/Missing child element.*?Expected is.*?categories/',
+            file_get_contents(GeneralUtility::getFileAbsFileName(
+                'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt'
+            ))
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function importEventWithNotExistingCategoryInDatabaseWillResultInErrorInMessagesTxt(): void
+    {
+        $fileObject = ResourceFactory::getInstance()
+            ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/NotExistingCategoriesEvent.xml');
+        $xmlImporter = $this->objectManager->get(XmlImporter::class);
+        $xmlImporter->setFile($fileObject);
+        $xmlImporter->setStoragePid(12);
+
+        self::assertFalse($xmlImporter->import());
+        self::assertRegExp(
+            '/Given category "I\'m not in database" does not exist/',
+            file_get_contents(GeneralUtility::getFileAbsFileName(
+                'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt'
+            ))
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function importEventWithNotExistingOrganizerInDatabaseWillResultInErrorInMessagesTxt(): void
+    {
+        $fileObject = ResourceFactory::getInstance()
+            ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/NotExistingOrganizerEvent.xml');
+        $extConf = new ExtConf();
+        $extConf->setOrganizerIsRequired(true);
+        $xmlImporter = new XmlImporter(
+            $this->objectManager->get(EventRepository::class),
+            $this->objectManager->get(OrganizerRepository::class),
+            $this->objectManager->get(LocationRepository::class),
+            $this->objectManager->get(CategoryRepository::class),
+            $this->objectManager->get(PersistenceManagerInterface::class),
+            new DateTimeUtility(),
+            $extConf
+        );
+        $xmlImporter->setFile($fileObject);
+        $xmlImporter->setStoragePid(12);
+
+        self::assertFalse($xmlImporter->import());
+        self::assertRegExp(
+            '/Given organizer "AG" does not exist/',
+            file_get_contents(GeneralUtility::getFileAbsFileName(
+                'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt'
+            ))
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function importEventWithNotExistingLocationInDatabaseWillResultInErrorInMessagesTxt(): void
+    {
+        $fileObject = ResourceFactory::getInstance()
+            ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/NotExistingLocationEvent.xml');
+        $extConf = new ExtConf();
+        $extConf->setLocationIsRequired(true);
+        $xmlImporter = new XmlImporter(
+            $this->objectManager->get(EventRepository::class),
+            $this->objectManager->get(OrganizerRepository::class),
+            $this->objectManager->get(LocationRepository::class),
+            $this->objectManager->get(CategoryRepository::class),
+            $this->objectManager->get(PersistenceManagerInterface::class),
+            new DateTimeUtility(),
+            $extConf
+        );
+        $xmlImporter->setFile($fileObject);
+        $xmlImporter->setStoragePid(12);
+
+        self::assertFalse($xmlImporter->import());
+        self::assertRegExp(
+            '/Given location "Not existing" does not exist/',
             file_get_contents(GeneralUtility::getFileAbsFileName(
                 'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt'
             ))
