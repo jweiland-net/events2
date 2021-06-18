@@ -37,36 +37,22 @@ class EventRepository extends Repository implements HiddenRepositoryInterface
     ];
 
     /**
-     * @var DateTimeUtility
-     */
-    protected $dateTimeUtility;
-
-    /**
-     * @var DataMapper
-     */
-    protected $dataMapper;
-
-    /**
-     * @var Session
-     */
-    protected $persistenceSession;
-
-    /**
-     * @var ConfigurationManagerInterface
-     */
-    protected $configurationManager;
-
-    /**
      * @var array
      */
     protected $settings = [];
 
+    /**
+     * @var UserRepository
+     */
+    protected $userRepository;
+
     public function __construct(
         ObjectManagerInterface $objectManager,
-        DateTimeUtility $dateTimeUtility
+        UserRepository $userRepository
     ) {
         parent::__construct($objectManager);
-        $this->dateTimeUtility = $dateTimeUtility;
+
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -91,8 +77,7 @@ class EventRepository extends Repository implements HiddenRepositoryInterface
 
     public function findMyEvents(): QueryResultInterface
     {
-        $userRepository = GeneralUtility::makeInstance(UserRepository::class);
-        $organizer = (int)$userRepository->getFieldFromUser('tx_events2_organizer');
+        $organizer = (int)$this->userRepository->getFieldFromUser('tx_events2_organizer');
         $query = $this->createQuery();
 
         return $query->matching($query->equals('organizers.uid', $organizer))->execute();

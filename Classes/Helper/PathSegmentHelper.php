@@ -22,6 +22,7 @@ use TYPO3\CMS\Core\DataHandling\SlugHelper;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 
 /*
@@ -30,16 +31,6 @@ use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
  */
 class PathSegmentHelper
 {
-    /**
-     * @var ExtConf
-     */
-    protected $extConf;
-
-    /**
-     * @var EventDispatcher
-     */
-    protected $eventDispatcher;
-
     /**
      * @var string
      */
@@ -60,8 +51,27 @@ class PathSegmentHelper
      */
     protected $slugCache = [];
 
-    public function __construct(ExtConf $extConf, EventDispatcher $eventDispatcher)
-    {
+    /**
+     * @var ObjectManagerInterface
+     */
+    protected $objectManager;
+
+    /**
+     * @var ExtConf
+     */
+    protected $extConf;
+
+    /**
+     * @var EventDispatcher
+     */
+    protected $eventDispatcher;
+
+    public function __construct(
+        ObjectManagerInterface $objectManager,
+        ExtConf $extConf,
+        EventDispatcher $eventDispatcher
+    ) {
+        $this->objectManager = $objectManager;
         $this->extConf = $extConf;
         $this->eventDispatcher = $eventDispatcher;
     }
@@ -99,8 +109,7 @@ class PathSegmentHelper
     {
         // First of all, we have to check, if an UID is available
         if (!$event->getUid()) {
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            $persistenceManager = $objectManager->get(PersistenceManagerInterface::class);
+            $persistenceManager = $this->objectManager->get(PersistenceManagerInterface::class);
             $persistenceManager->persistAll();
         }
 

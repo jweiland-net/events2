@@ -21,6 +21,7 @@ use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Frontend\PhpFrontend;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
@@ -46,6 +47,11 @@ class FindDaysForMonthTest extends FunctionalTestCase
     protected $userSessionProphecy;
 
     /**
+     * @var DatabaseService|ObjectProphecy
+     */
+    protected $databaseServiceProphecy;
+
+    /**
      * @var PhpFrontend|ObjectProphecy
      */
     protected $phpFrontendProphecy;
@@ -66,17 +72,19 @@ class FindDaysForMonthTest extends FunctionalTestCase
     {
         parent::setUp();
 
-        $this->extConf = new ExtConf();
+        $this->extConf = new ExtConf(new ExtensionConfiguration());
         $this->extConf->setRecurringPast(3);
         $this->extConf->setRecurringFuture(6);
 
         $this->userSessionProphecy = $this->prophesize(UserSession::class);
+        $this->databaseServiceProphecy = $this->prophesize(DatabaseService::class);
 
         $this->subject = new FindDaysForMonth(
             $this->extConf,
             new DateTimeUtility(),
             new CacheHashCalculator(),
-            $this->userSessionProphecy->reveal()
+            $this->userSessionProphecy->reveal(),
+            $this->databaseServiceProphecy->reveal()
         );
     }
 
@@ -200,10 +208,10 @@ class FindDaysForMonthTest extends FunctionalTestCase
         $endDate = clone $currentDate;
         $endDate->modify('last day of this month')->modify('tomorrow');
 
-        /** @var DatabaseService $databaseServiceProphecy */
-        $databaseServiceProphecy = $this->prophesize(DatabaseService::class);
-        $databaseServiceProphecy->getDaysInRange($startDate, $endDate, [], [])->shouldBeCalled()->willReturn([]);
-        GeneralUtility::addInstance(DatabaseService::class, $databaseServiceProphecy->reveal());
+        $this->databaseServiceProphecy
+            ->getDaysInRange($startDate, $endDate, [], [])
+            ->shouldBeCalled()
+            ->willReturn([]);
 
         $request = new ServerRequest('http://www.example.com/');
         $request = $request->withQueryParams($queryParams);
@@ -231,10 +239,10 @@ class FindDaysForMonthTest extends FunctionalTestCase
         $endDate = clone $currentDate;
         $endDate->modify('last day of this month')->modify('tomorrow');
 
-        /** @var DatabaseService $databaseServiceProphecy */
-        $databaseServiceProphecy = $this->prophesize(DatabaseService::class);
-        $databaseServiceProphecy->getDaysInRange($startDate, $endDate, [21, 22, 23], [])->shouldBeCalled()->willReturn([]);
-        GeneralUtility::addInstance(DatabaseService::class, $databaseServiceProphecy->reveal());
+        $this->databaseServiceProphecy
+            ->getDaysInRange($startDate, $endDate, [21, 22, 23], [])
+            ->shouldBeCalled()
+            ->willReturn([]);
 
         $request = new ServerRequest('http://www.example.com/');
         $request = $request->withQueryParams($queryParams);
@@ -263,10 +271,10 @@ class FindDaysForMonthTest extends FunctionalTestCase
         $endDate = clone $currentDate;
         $endDate->modify('last day of this month')->modify('tomorrow');
 
-        /** @var DatabaseService $databaseServiceProphecy */
-        $databaseServiceProphecy = $this->prophesize(DatabaseService::class);
-        $databaseServiceProphecy->getDaysInRange($startDate, $endDate, [21, 22, 23], [31, 32, 33])->shouldBeCalled()->willReturn([]);
-        GeneralUtility::addInstance(DatabaseService::class, $databaseServiceProphecy->reveal());
+        $this->databaseServiceProphecy
+            ->getDaysInRange($startDate, $endDate, [21, 22, 23], [31, 32, 33])
+            ->shouldBeCalled()
+            ->willReturn([]);
 
         $request = new ServerRequest('http://www.example.com/');
         $request = $request->withQueryParams($queryParams);
@@ -292,10 +300,10 @@ class FindDaysForMonthTest extends FunctionalTestCase
         $endDate = clone $currentDate;
         $endDate->modify('last day of this month')->modify('tomorrow');
 
-        /** @var DatabaseService $databaseServiceProphecy */
-        $databaseServiceProphecy = $this->prophesize(DatabaseService::class);
-        $databaseServiceProphecy->getDaysInRange($startDate, $endDate, [], [])->shouldBeCalled()->willReturn([]);
-        GeneralUtility::addInstance(DatabaseService::class, $databaseServiceProphecy->reveal());
+        $this->databaseServiceProphecy
+            ->getDaysInRange($startDate, $endDate, [], [])
+            ->shouldBeCalled()
+            ->willReturn([]);
 
         $request = new ServerRequest('http://www.example.com/');
         $request = $request->withQueryParams($queryParams);
@@ -322,10 +330,10 @@ class FindDaysForMonthTest extends FunctionalTestCase
         $endDate = clone $currentDate;
         $endDate->modify('tomorrow');
 
-        /** @var DatabaseService $databaseServiceProphecy */
-        $databaseServiceProphecy = $this->prophesize(DatabaseService::class);
-        $databaseServiceProphecy->getDaysInRange($startDate, $endDate, [], [])->shouldBeCalled()->willReturn([]);
-        GeneralUtility::addInstance(DatabaseService::class, $databaseServiceProphecy->reveal());
+        $this->databaseServiceProphecy
+            ->getDaysInRange($startDate, $endDate, [], [])
+            ->shouldBeCalled()
+            ->willReturn([]);
 
         $request = new ServerRequest('http://www.example.com/');
         $request = $request->withQueryParams($queryParams);

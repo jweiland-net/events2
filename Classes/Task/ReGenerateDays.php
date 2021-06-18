@@ -21,6 +21,7 @@ use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\CMS\Scheduler\ProgressProviderInterface;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
@@ -37,31 +38,48 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
     protected $objectManager;
 
     /**
+     * @var CacheManager
+     */
+    protected $cacheManager;
+
+    /**
+     * @var DatabaseService
+     */
+    protected $databaseService;
+
+    /**
      * @var Registry
      */
     protected $registry;
 
-    public function __construct()
-    {
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->registry = GeneralUtility::makeInstance(Registry::class);
+    public function __construct(
+        ObjectManagerInterface $objectManager,
+        CacheManager $cacheManager,
+        DatabaseService $databaseService,
+        Registry $registry
+    ) {
         parent::__construct();
+
+        $this->objectManager = $objectManager;
+        $this->cacheManager = $cacheManager;
+        $this->databaseService = $databaseService;
+        $this->registry = $registry;
     }
 
     public function execute(): bool
     {
+        // Do not move these lines of code into constructor.
+        // It will break serialization. Error: Serialization of 'Closure' is not allowed
         $dayRelationService = $this->objectManager->get(DayRelationService::class);
         $persistenceManager = $this->objectManager->get(PersistenceManagerInterface::class);
 
         // with each changing PID pageTSConfigCache will grow by roundabout 200KB
         // which may exceed memory_limit
-        $runtimeCache = GeneralUtility::makeInstance(CacheManager::class)
-            ->getCache('runtime');
+        $runtimeCache = $this->cacheManager->getCache('runtime');
 
         $this->registry->removeAllByNamespace('events2TaskCreateUpdate');
 
-        $databaseService = GeneralUtility::makeInstance(DatabaseService::class);
-        $events = $databaseService->getCurrentAndFutureEvents();
+        $events = $this->databaseService->getCurrentAndFutureEvents();
         if (!empty($events)) {
             $counter = 0;
             foreach ($events as $event) {
@@ -165,9 +183,7 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
      */
     public function addMessage(string $message, int $severity = FlashMessage::OK): void
     {
-        /** @var FlashMessage $flashMessage */
         $flashMessage = GeneralUtility::makeInstance(FlashMessage::class, $message, '', $severity);
-        /** @var $flashMessageService FlashMessageService */
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
         $defaultFlashMessageQueue->enqueue($flashMessage);
@@ -178,16 +194,8 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
         return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 
-    /**
-     * This object will be serialized in tx_scheduler_task.
-     * While executing this task, it seems that __construct will not be called again and
-     * all properties will be reconstructed by the information in serialized value.
-     * These properties will be created again with new() instead of GeneralUtility::makeInstance()
-     * which leads to the problem, that object of type SingletonInterface were created twice.
-     */
-    public function __wakeup()
+    public function __sleep()
     {
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->registry = GeneralUtility::makeInstance(Registry::class);
+        return array_keys(get_object_vars($this));
     }
 }

@@ -13,6 +13,8 @@ namespace JWeiland\Events2\Tests\Functional\Session;
 
 use JWeiland\Events2\Session\UserSession;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
 /**
  * Functional test for UserSession
@@ -35,7 +37,8 @@ class UserSessionTest extends FunctionalTestCase
     {
         parent::setUp();
 
-        $this->subject = new UserSession();
+        $feUser = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
+        $this->subject = new UserSession($feUser);
     }
 
     public function tearDown(): void

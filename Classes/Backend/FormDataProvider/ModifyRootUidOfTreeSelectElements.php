@@ -21,6 +21,16 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class ModifyRootUidOfTreeSelectElements implements FormDataProviderInterface
 {
     /**
+     * @var ExtConf
+     */
+    protected $extConf;
+
+    public function __construct(ExtConf $extConf)
+    {
+        $this->extConf = $extConf;
+    }
+
+    /**
      * Set rootUid of tree select elements of FlexForms to root category declared in EM
      *
      * @param array $result Initialized result array
@@ -50,8 +60,8 @@ class ModifyRootUidOfTreeSelectElements implements FormDataProviderInterface
                 && is_array($result['flexParentDatabaseRow'])
                 && GeneralUtility::isFirstPartOfStr($result['flexParentDatabaseRow']['list_type'], 'events2')
             ) {
-                $extConf = GeneralUtility::makeInstance(ExtConf::class);
-                $result['processedTca']['columns'][$categoryField]['config']['treeConfig']['rootUid'] = $extConf->getRootUid();
+                $result['processedTca']['columns'][$categoryField]['config']['treeConfig']['rootUid']
+                    = $this->extConf->getRootUid();
             }
         }
 

@@ -55,16 +55,32 @@ class FindDaysForMonth
      */
     protected $userSession;
 
+    /**
+     * @var DatabaseService
+     */
+    protected $databaseService;
+
+    /**
+     * Will be called by call_user_func_array, so don't add Extbase classes with inject methods as argument
+     *
+     * @param ExtConf $extConf
+     * @param DateTimeUtility $dateTimeUtility
+     * @param CacheHashCalculator $cacheHashCalculator
+     * @param UserSession $userSession
+     * @param DatabaseService $databaseService
+     */
     public function __construct(
         ExtConf $extConf,
         DateTimeUtility $dateTimeUtility,
         CacheHashCalculator $cacheHashCalculator,
-        UserSession $userSession
+        UserSession $userSession,
+        DatabaseService $databaseService
     ) {
         $this->extConf = $extConf;
         $this->dateTimeUtility = $dateTimeUtility;
         $this->cacheHashCalculator = $cacheHashCalculator;
         $this->userSession = $userSession;
+        $this->databaseService = $databaseService;
     }
 
     public function processRequest(ServerRequestInterface $request): ResponseInterface
@@ -244,8 +260,7 @@ class FindDaysForMonth
             return [];
         }
 
-        $databaseService = GeneralUtility::makeInstance(DatabaseService::class);
-        return $databaseService->getDaysInRange(
+        return $this->databaseService->getDaysInRange(
             $firstDayOfMonth,
             $lastDayOfMonth->modify('tomorrow'),
             GeneralUtility::intExplode(',', $this->getArgument('storagePids'), true),

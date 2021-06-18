@@ -36,6 +36,16 @@ class TimeFactory
      */
     protected $removeCurrentDay = false;
 
+    /**
+     * @var DateTimeUtility
+     */
+    protected $dateTimeUtility;
+
+    public function __construct(DateTimeUtility $dateTimeUtility)
+    {
+        $this->dateTimeUtility = $dateTimeUtility;
+    }
+
     public function getSortedTimesForDate(
         Event $event,
         \DateTime $date,
@@ -180,10 +190,9 @@ class TimeFactory
             // We will remove ALL time records of current day, as ALL time records for current day are
             // already visible in event show action. So no need to remove individual time records.
             $uriParameters = GeneralUtility::_GET('tx_events2_events');
-            $dateTimeUtility = GeneralUtility::makeInstance(DateTimeUtility::class);
-            $currentDateMidnight = $dateTimeUtility->convert($uriParameters['timestamp']);
+            $currentDateMidnight = $this->dateTimeUtility->convert($uriParameters['timestamp']);
             if ($currentDateMidnight instanceof \DateTime) {
-                $currentDateMidnight = $dateTimeUtility->standardizeDateTimeObject($currentDateMidnight);
+                $currentDateMidnight = $this->dateTimeUtility->standardizeDateTimeObject($currentDateMidnight);
             }
 
             if ($this->date != $currentDateMidnight) {

@@ -20,6 +20,7 @@ use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Frontend\PhpFrontend;
 use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Test case.
@@ -59,7 +60,13 @@ class FindLocationsTest extends FunctionalTestCase
 
         $this->locationRepositoryProphecy = $this->prophesize(LocationRepository::class);
 
-        $this->subject = new FindLocations($this->locationRepositoryProphecy->reveal());
+        /** @var ObjectManager|ObjectProphecy $objectManager */
+        $objectManager = $this->prophesize(ObjectManager::class);
+        $objectManager
+            ->get(LocationRepository::class)
+            ->willReturn($this->locationRepositoryProphecy->reveal());
+
+        $this->subject = new FindLocations($objectManager->reveal());
     }
 
     public function tearDown(): void

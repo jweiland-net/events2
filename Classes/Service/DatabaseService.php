@@ -32,9 +32,15 @@ class DatabaseService
      */
     protected $extConf;
 
-    public function __construct(ExtConf $extConf)
+    /**
+     * @var DateTimeUtility
+     */
+    protected $dateTimeUtility;
+
+    public function __construct(ExtConf $extConf, DateTimeUtility $dateTimeUtility)
     {
         $this->extConf = $extConf;
+        $this->dateTimeUtility = $dateTimeUtility;
     }
 
     /**
@@ -269,25 +275,24 @@ class DatabaseService
         QueryBuilder $parentQueryBuilder = null,
         string $alias = 'day'
     ): void {
-        $dateTimeUtility = GeneralUtility::makeInstance(DateTimeUtility::class);
         $endDateTime = null;
 
         switch ($type) {
             case 'today':
-                $startDateTime = $dateTimeUtility->convert('today');
+                $startDateTime = $this->dateTimeUtility->convert('today');
                 $endDateTime = clone $startDateTime;
                 $endDateTime->modify('23:59:59');
                 break;
             case 'range':
-                $startDateTime = $dateTimeUtility->convert('today');
-                $endDateTime = $dateTimeUtility->convert('today');
+                $startDateTime = $this->dateTimeUtility->convert('today');
+                $endDateTime = $this->dateTimeUtility->convert('today');
                 $endDateTime->modify('+4 weeks');
                 break;
             case 'thisWeek':
                 // 'first day of' does not work for 'weeks'. Using 'this week' jumps to first day of week. Monday
-                $startDateTime = $dateTimeUtility->convert('today');
+                $startDateTime = $this->dateTimeUtility->convert('today');
                 $startDateTime->modify('this week');
-                $endDateTime = $dateTimeUtility->convert('today');
+                $endDateTime = $this->dateTimeUtility->convert('today');
                 $endDateTime->modify('this week +6 days');
                 break;
             case 'latest':
@@ -298,7 +303,7 @@ class DatabaseService
                     $startDateTime = new \DateTime('now');
                 } else {
                     // exclude current time. Start with 00:00:00
-                    $startDateTime = $dateTimeUtility->convert('today');
+                    $startDateTime = $this->dateTimeUtility->convert('today');
                 }
         }
 

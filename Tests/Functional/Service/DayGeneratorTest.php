@@ -18,6 +18,7 @@ use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Service\DayGenerator;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
@@ -43,7 +44,7 @@ class DayGeneratorTest extends FunctionalTestCase
     {
         parent::setUp();
 
-        $extConf = new ExtConf();
+        $extConf = new ExtConf(new ExtensionConfiguration());
         $extConf->setRecurringFuture(12);
 
         $this->subject = new DayGenerator(
@@ -124,7 +125,7 @@ class DayGeneratorTest extends FunctionalTestCase
             ->getMockBuilder(DayGenerator::class)
             ->setConstructorArgs([
                 GeneralUtility::makeInstance(EventDispatcher::class),
-                new ExtConf(),
+                new ExtConf(new ExtensionConfiguration()),
                 new DateTimeUtility()
             ])
             ->setMethods(['addRecurringEvents', 'addException', 'getEventBegin'])
@@ -157,7 +158,7 @@ class DayGeneratorTest extends FunctionalTestCase
             ->getMockBuilder(DayGenerator::class)
             ->setConstructorArgs([
                 GeneralUtility::makeInstance(EventDispatcher::class),
-                new ExtConf(),
+                new ExtConf(new ExtensionConfiguration()),
                 new DateTimeUtility()
             ])
             ->setMethods(['addRecurrings', 'addException', 'getEventBegin'])
@@ -191,7 +192,7 @@ class DayGeneratorTest extends FunctionalTestCase
         /** @var DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
         $dayGenerator = new DayGenerator(
             GeneralUtility::makeInstance(EventDispatcher::class),
-            new ExtConf(),
+            new ExtConf(new ExtensionConfiguration()),
             new DateTimeUtility()
         );
         self::assertTrue($dayGenerator->initialize($event));
@@ -238,7 +239,7 @@ class DayGeneratorTest extends FunctionalTestCase
             ->getMockBuilder(DayGenerator::class)
             ->setConstructorArgs([
                 GeneralUtility::makeInstance(EventDispatcher::class),
-                new ExtConf(),
+                new ExtConf(new ExtensionConfiguration()),
                 new DateTimeUtility()
             ])
             ->setMethods(['addException', 'getDateToStopCalculatingTo'])
@@ -287,7 +288,7 @@ class DayGeneratorTest extends FunctionalTestCase
             ->getMockBuilder(DayGenerator::class)
             ->setConstructorArgs([
                 GeneralUtility::makeInstance(EventDispatcher::class),
-                new ExtConf(),
+                new ExtConf(new ExtensionConfiguration()),
                 new DateTimeUtility()
             ])
             ->setMethods(['addException', 'getDateToStopCalculatingTo'])
@@ -313,7 +314,7 @@ class DayGeneratorTest extends FunctionalTestCase
         $timestamp = mktime(0, 0, 0, 10, 20, 2017);
         // this test has to build days in past. To allow this we have to set recurring past to a high value
         // Maybe you have to update this value or the year above in future
-        $extConf = new ExtConf();
+        $extConf = new ExtConf(new ExtensionConfiguration());
         $extConf->setRecurringPast(60);
 
         // These dates will be created with timezone_type = 1, which does know the timezone (+02:00) only from the current date
@@ -389,7 +390,7 @@ class DayGeneratorTest extends FunctionalTestCase
         $expectedDays[$nextMonth->format('U')] = $nextMonth;
         $expectedDays[$recurringEnd->format('U')] = $recurringEnd;
 
-        $extConf = new ExtConf();
+        $extConf = new ExtConf(new ExtensionConfiguration());
         $extConf->setRecurringPast(1);
 
         /** @var DayGenerator|\PHPUnit_Framework_MockObject_MockObject $dayGenerator */
@@ -446,7 +447,7 @@ class DayGeneratorTest extends FunctionalTestCase
             ->getMockBuilder(DayGenerator::class)
             ->setConstructorArgs([
                 GeneralUtility::makeInstance(EventDispatcher::class),
-                new ExtConf(),
+                new ExtConf(new ExtensionConfiguration()),
                 new DateTimeUtility()
             ])
             ->setMethods(['addException', 'getDateToStopCalculatingTo'])
@@ -469,7 +470,7 @@ class DayGeneratorTest extends FunctionalTestCase
      */
     public function initializeWithRecurringOverTwoMonthsAndVeryEarlyEventDateAddsDayToStorage(): void
     {
-        $extConf = new ExtConf();
+        $extConf = new ExtConf(new ExtensionConfiguration());
         $extConf->setRecurringPast(3);
 
         $eventBegin = new \DateTime();
@@ -541,7 +542,7 @@ class DayGeneratorTest extends FunctionalTestCase
             ->getMockBuilder(DayGenerator::class)
             ->setConstructorArgs([
                 GeneralUtility::makeInstance(EventDispatcher::class),
-                new ExtConf(),
+                new ExtConf(new ExtensionConfiguration()),
                 new DateTimeUtility()
             ])
             ->setMethods(['addException', 'getDateToStopCalculatingTo'])
@@ -808,7 +809,7 @@ class DayGeneratorTest extends FunctionalTestCase
             ->getMockBuilder(DayGenerator::class)
             ->setConstructorArgs([
                 GeneralUtility::makeInstance(EventDispatcher::class),
-                new ExtConf(),
+                new ExtConf(new ExtensionConfiguration()),
                 new DateTimeUtility()
             ])
             ->setMethods(['addRecurringEvents', 'addDayToStorage', 'addExceptions'])

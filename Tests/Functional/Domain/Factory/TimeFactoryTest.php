@@ -15,6 +15,7 @@ use JWeiland\Events2\Domain\Factory\TimeFactory;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Exception;
 use JWeiland\Events2\Domain\Model\Time;
+use JWeiland\Events2\Utility\DateTimeUtility;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
@@ -39,7 +40,7 @@ class TimeFactoryTest extends FunctionalTestCase
     {
         parent::setUp();
 
-        $this->subject = new TimeFactory();
+        $this->subject = new TimeFactory(new DateTimeUtility());
     }
 
     public function tearDown(): void

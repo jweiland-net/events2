@@ -49,6 +49,16 @@ class JsonLdService
     ];
 
     /**
+     * @var TimeFactory
+     */
+    protected $timeFactory;
+
+    public function __construct(TimeFactory $timeFactory)
+    {
+        $this->timeFactory = $timeFactory;
+    }
+
+    /**
      * Read values from day and event record to build a json-ld string for page header
      *
      * @param Day $day
@@ -80,8 +90,7 @@ class JsonLdService
 
     protected function collectData(Day $day): void
     {
-        $timeFactory = GeneralUtility::makeInstance(TimeFactory::class);
-        $time = $timeFactory->getTimeForDay($day);
+        $time = $this->timeFactory->getTimeForDay($day);
         if ($time instanceof Time) {
             $this->addStartDateOfTimeToData($time);
             $this->addStartDateOfEventToData($day->getEvent());

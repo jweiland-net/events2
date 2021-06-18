@@ -9,13 +9,14 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace JWeiland\Events2\Tests\Unit\Service;
+namespace JWeiland\Events2\Tests\Functional\Service;
 
 use JWeiland\Events2\Domain\Factory\TimeFactory;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Service\EventService;
+use JWeiland\Events2\Utility\DateTimeUtility;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -49,7 +50,7 @@ class EventServiceTest extends FunctionalTestCase
         $this->subject = GeneralUtility::makeInstance(
             EventService::class,
             $this->eventRepositoryProphecy->reveal(),
-            new TimeFactory()
+            new TimeFactory(new DateTimeUtility())
         );
     }
 

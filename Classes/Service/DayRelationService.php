@@ -76,6 +76,15 @@ class DayRelationService
      */
     protected $firstTime;
 
+    /**
+     * Must be called by ObjectManager, because of EventRepository which has inject methods
+     *
+     * @param DayGenerator $dayGenerator
+     * @param EventRepository $eventRepository
+     * @param TimeFactory $timeFactory
+     * @param PersistenceManagerInterface $persistenceManager
+     * @param DateTimeUtility $dateTimeUtility
+     */
     public function __construct(
         DayGenerator $dayGenerator,
         EventRepository $eventRepository,
