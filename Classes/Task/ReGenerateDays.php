@@ -56,7 +56,7 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
         // with each changing PID pageTSConfigCache will grow by roundabout 200KB
         // which may exceed memory_limit
         $runtimeCache = GeneralUtility::makeInstance(CacheManager::class)
-            ->getCache('cache_runtime');
+            ->getCache('runtime');
 
         $this->registry->removeAllByNamespace('events2TaskCreateUpdate');
 

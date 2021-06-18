@@ -18,8 +18,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Cache\CacheManager;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 
 /*
@@ -39,9 +38,45 @@ class RebuildCommand extends Command
     protected $rowCounter = 0;
 
     /**
+     * @var ObjectManagerInterface
+     */
+    protected $objectManager;
+
+    /**
+     * @var DatabaseService
+     */
+    protected $databaseService;
+
+    /**
+     * @var CacheManager
+     */
+    protected $cacheManager;
+
+    /**
      * @var OutputInterface
      */
     protected $output;
+
+    /**
+     * Will be called by DI, so please don't add extbase classes with inject methods here.
+     *
+     * @param ObjectManagerInterface $objectManager
+     * @param DatabaseService $databaseService
+     * @param CacheManager $cacheManager
+     * @param string|null $name
+     */
+    public function __construct(
+        ObjectManagerInterface $objectManager,
+        DatabaseService $databaseService,
+        CacheManager $cacheManager,
+        string $name = null
+    ) {
+        parent::__construct($name);
+
+        $this->objectManager = $objectManager;
+        $this->databaseService = $databaseService;
+        $this->cacheManager = $cacheManager;
+    }
 
     protected function configure(): void
     {
@@ -77,36 +112,30 @@ class RebuildCommand extends Command
 
     protected function truncateDayTable(): void
     {
-        $databaseService = GeneralUtility::makeInstance(DatabaseService::class);
-        $databaseService->truncateTable('tx_events2_domain_model_day', true);
-
-        $this->output->writeln('I have truncated the day table' . PHP_EOL);
+        $this->databaseService->truncateTable('tx_events2_domain_model_day', true);
+        $this->output->writeln('I have truncated the day table');
     }
 
     protected function reGenerateDayRelations(): void
     {
         $eventCounter = 0;
         $dayCounter = 0;
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $dayRelations = $objectManager->get(DayRelationService::class);
+        $dayRelations = $this->objectManager->get(DayRelationService::class);
 
-        $this->echoValue('Process each event record' . PHP_EOL);
+        $this->output->writeln('Process each event record');
 
-        $databaseService = GeneralUtility::makeInstance(DatabaseService::class);
-        $rows = $databaseService->getCurrentAndFutureEvents();
+        $rows = $this->databaseService->getCurrentAndFutureEvents();
         if (!empty($rows)) {
-            $persistenceManager = $objectManager->get(PersistenceManagerInterface::class);
+            $persistenceManager = $this->objectManager->get(PersistenceManagerInterface::class);
 
-            // with each changing PID pageTSConfigCache will grow by roundabout 200KB
-            // which may exceed memory_limit
-            $runtimeCache = GeneralUtility::makeInstance(CacheManager::class)
-                ->getCache('cache_runtime');
+            // With each changing PID, pageTSConfigCache will grow by roundabout 200KB, which may exceed memory_limit
+            $runtimeCache = $this->cacheManager->getCache('runtime');
 
             foreach ($rows as $row) {
                 $event = $dayRelations->createDayRelations((int)$row['uid']);
                 if ($event instanceof Event) {
-                    $this->echoValue(sprintf(
-                        'Process event UID: %09d, PID: %05d, created: %04d day records, RAM: %d' . PHP_EOL,
+                    $this->output->writeln(sprintf(
+                        'Process event UID: %09d, PID: %05d, created: %04d day records, RAM: %d',
                         $event->getUid(),
                         $event->getPid(),
                         $event->getDays()->count(),
@@ -115,8 +144,8 @@ class RebuildCommand extends Command
                     $eventCounter++;
                     $dayCounter += $event->getDays()->count();
                 } else {
-                    $this->echoValue(sprintf(
-                        'ERROR event UID: %09d, PID: %05d' . PHP_EOL,
+                    $this->output->writeln(sprintf(
+                        'ERROR event UID: %09d, PID: %05d',
                         $row['uid'],
                         $row['pid']
                     ));
@@ -131,23 +160,9 @@ class RebuildCommand extends Command
         }
 
         $this->output->writeln(sprintf(
-            'We have recreated the day records for %d event records and %d day records in total' . PHP_EOL,
+            'We have recreated the day records for %d event records and %d day records in total',
             $eventCounter,
             $dayCounter
         ));
-    }
-
-    protected function echoValue(string $value = '.', bool $reset = false): void
-    {
-        if ($reset) {
-            $this->rowCounter = 0;
-        }
-        if ($this->rowCounter < 40) {
-            echo $value;
-            $this->rowCounter++;
-        } else {
-            echo PHP_EOL . $value;
-            $this->rowCounter = 1;
-        }
     }
 }
