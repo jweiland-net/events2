@@ -32,6 +32,22 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 class AbstractController extends ActionController
 {
     /**
+     * @var
+     */
+    protected $typoScriptService;
+
+    /**
+     * @var
+     */
+    protected $extConf;
+
+    public function __construct(TypoScriptService $typoScriptService, ExtConf $extConf)
+    {
+        $this->typoScriptService = $typoScriptService;
+        $this->extConf = $extConf;
+    }
+
+    /**
      * @param ConfigurationManagerInterface $configurationManager
      * @throws \Exception
      */
@@ -54,8 +70,7 @@ class AbstractController extends ActionController
         ) ?? [];
 
         // start override
-        $typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
-        $typoScriptService->override(
+        $this->typoScriptService->override(
             $mergedFlexFormSettings,
             $typoScriptSettings['settings']
         );
@@ -84,7 +99,7 @@ class AbstractController extends ActionController
     protected function initializeView(ViewInterface $view): void
     {
         $this->view->assign('data', $this->configurationManager->getContentObject()->data);
-        $this->view->assign('extConf', GeneralUtility::makeInstance(ExtConf::class));
+        $this->view->assign('extConf', $this->extConf);
         $this->view->assign('jsVariables', json_encode($this->getJsVariables()));
     }
 

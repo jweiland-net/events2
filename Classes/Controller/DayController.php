@@ -11,10 +11,12 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Controller;
 
+use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Model\Search;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\OrganizerRepository;
+use JWeiland\Events2\Service\TypoScriptService;
 use JWeiland\Events2\Utility\CacheUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -37,8 +39,12 @@ class DayController extends AbstractController
 
     public function __construct(
         DayRepository $dayRepository,
-        OrganizerRepository $organizerRepository
+        OrganizerRepository $organizerRepository,
+        TypoScriptService $typoScriptService,
+        ExtConf $extConf
     ) {
+        parent::__construct($typoScriptService, $extConf);
+
         $this->dayRepository = $dayRepository;
         $this->organizerRepository = $organizerRepository;
     }

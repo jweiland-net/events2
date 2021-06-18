@@ -17,6 +17,7 @@ use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Service\DayRelationService;
+use JWeiland\Events2\Service\TypoScriptService;
 use JWeiland\Events2\Utility\CacheUtility;
 use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -59,11 +60,6 @@ class EventController extends AbstractController
      */
     protected $mail;
 
-    /**
-     * @var ExtConf
-     */
-    protected $extConf;
-
     public function __construct(
         EventRepository $eventRepository,
         CategoryRepository $categoryRepository,
@@ -71,15 +67,18 @@ class EventController extends AbstractController
         DayRelationService $dayRelationService,
         PersistenceManagerInterface $persistenceManager,
         MailMessage $mail,
+        TypoScriptService $typoScriptService,
         ExtConf $extConf
     ) {
+        parent::__construct($typoScriptService, $extConf);
+
         $this->eventRepository = $eventRepository;
         $this->categoryRepository = $categoryRepository;
         $this->locationRepository = $locationRepository;
         $this->dayRelationService = $dayRelationService;
         $this->persistenceManager = $persistenceManager;
         $this->mail = $mail;
-        $this->extConf = $extConf;
+        $this->typoScriptService = $typoScriptService;
     }
 
     public function initializeListMyEventsAction(): void
