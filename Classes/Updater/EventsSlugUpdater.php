@@ -59,10 +59,10 @@ class EventsSlugUpdater implements UpgradeWizardInterface
      */
     protected $slugCache = [];
 
-    public function __construct(PathSegmentHelper $pathSegmentHelper = null, ExtConf $extConf = null)
+    public function __construct(PathSegmentHelper $pathSegmentHelper, ExtConf $extConf)
     {
-        $this->pathSegmentHelper = $pathSegmentHelper ?? GeneralUtility::makeInstance(PathSegmentHelper::class);
-        $this->extConf = $extConf ?? GeneralUtility::makeInstance(ExtConf::class);
+        $this->pathSegmentHelper = $pathSegmentHelper;
+        $this->extConf = $extConf;
     }
 
     /**

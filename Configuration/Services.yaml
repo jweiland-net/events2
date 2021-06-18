@@ -19,6 +19,10 @@ services:
   JWeiland\Events2\Service\EventService:
     public: true
 
+  # Must be public, because it was called by makeInstance in TYPO3s UpgradeWizardsService
+  JWeiland\Events2\Updater\EventsSlugUpdater:
+    public: true
+
   JWeiland\Events2\Utility\DateTimeUtility:
     public: true
 

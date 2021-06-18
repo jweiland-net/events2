@@ -3,7 +3,7 @@ if (!defined('TYPO3_MODE')) {
     die('Access denied.');
 }
 
-call_user_func(function () {
+call_user_func(static function () {
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
         'JWeiland.events2',
         'Events',
@@ -99,7 +99,7 @@ call_user_func(function () {
         );
     }
 
-    // add events2 plugin to new element wizard
+    // Add events2 plugin to new element wizard
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('<INCLUDE_TYPOSCRIPT: source="FILE:EXT:events2/Configuration/TSconfig/ContentElementWizard.txt">');
 
     // register eID scripts

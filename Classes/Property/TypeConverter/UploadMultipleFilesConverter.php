@@ -154,7 +154,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
         }
 
         // Upload file and add it to ObjectStorage
-        $references = GeneralUtility::makeInstance(ObjectStorage::class);
+        $references = new ObjectStorage();
         foreach ($source as $uploadedFile) {
             if ($uploadedFile instanceof FileReference) {
                 $references->attach($uploadedFile);
