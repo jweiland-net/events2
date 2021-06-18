@@ -11,9 +11,11 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Controller;
 
+use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Search;
 use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
+use JWeiland\Events2\Service\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\Category;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
@@ -35,8 +37,12 @@ class SearchController extends AbstractController
 
     public function __construct(
         CategoryRepository $categoryRepository,
-        LocationRepository $locationRepository
+        LocationRepository $locationRepository,
+        TypoScriptService $typoScriptService,
+        ExtConf $extConf
     ) {
+        parent::__construct($typoScriptService, $extConf);
+
         $this->categoryRepository = $categoryRepository;
         $this->locationRepository = $locationRepository;
     }

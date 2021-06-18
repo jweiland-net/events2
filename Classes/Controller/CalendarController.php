@@ -11,7 +11,9 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Controller;
 
+use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Helper\CalendarHelper;
+use JWeiland\Events2\Service\TypoScriptService;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 /*
@@ -24,8 +26,13 @@ class CalendarController extends AbstractController
      */
     protected $calendarHelper;
 
-    public function __construct(CalendarHelper $calendarHelper)
-    {
+    public function __construct(
+        CalendarHelper $calendarHelper,
+        TypoScriptService $typoScriptService,
+        ExtConf $extConf
+    ) {
+        parent::__construct($typoScriptService, $extConf);
+
         $this->calendarHelper = $calendarHelper;
     }
 

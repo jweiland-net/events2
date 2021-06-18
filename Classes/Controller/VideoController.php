@@ -11,7 +11,9 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Controller;
 
+use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Repository\EventRepository;
+use JWeiland\Events2\Service\TypoScriptService;
 
 /*
  * A simple controller to show video-link as YouTube-Implementation
@@ -23,8 +25,13 @@ class VideoController extends AbstractController
      */
     protected $eventRepository;
 
-    public function __construct(EventRepository $eventRepository)
-    {
+    public function __construct(
+        EventRepository $eventRepository,
+        TypoScriptService $typoScriptService,
+        ExtConf $extConf
+    ) {
+        parent::__construct($typoScriptService, $extConf);
+
         $this->eventRepository = $eventRepository;
     }
 
