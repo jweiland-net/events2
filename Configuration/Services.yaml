@@ -77,3 +77,7 @@ services:
     tags:
       - name: event.listener
         event: JWeiland\Events2\Event\PostProcessControllerActionEvent
+
+  JWeiland\Events2\Command\RebuildCommand:
+    tags:
+      - { name: 'console.command', command: 'events2:rebuild' }
