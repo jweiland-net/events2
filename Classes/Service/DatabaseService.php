@@ -32,9 +32,9 @@ class DatabaseService
      */
     protected $extConf;
 
-    public function __construct(ExtConf $extConf = null)
+    public function __construct(ExtConf $extConf)
     {
-        $this->extConf = $extConf ?? GeneralUtility::makeInstance(ExtConf::class);
+        $this->extConf = $extConf;
     }
 
     /**
@@ -46,7 +46,7 @@ class DatabaseService
     public function getColumnsFromTable(string $tableName): array
     {
         $output = [];
-        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($tableName);
+        $connection = $this->getConnectionPool()->getConnectionForTable($tableName);
         $statement = $connection->query('SHOW FULL COLUMNS FROM `' . $tableName . '`');
         while ($fieldRow = $statement->fetch()) {
             $output[$fieldRow['Field']] = $fieldRow;
@@ -67,10 +67,10 @@ class DatabaseService
     public function truncateTable(string $tableName, bool $really = false): void
     {
         if ($really) {
-            $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($tableName);
+            $connection = $this->getConnectionPool()->getConnectionForTable($tableName);
             $connection->truncate($tableName);
         } else {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($tableName);
+            $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($tableName);
             $queryBuilder->getRestrictions()->removeAll();
             $queryBuilder
                 ->delete($tableName)
@@ -87,8 +87,7 @@ class DatabaseService
      */
     public function getCurrentAndFutureEvents(): array
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_events2_domain_model_event');
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_event');
 
         $queryBuilder->getRestrictions()
             ->removeAll()
@@ -136,8 +135,7 @@ class DatabaseService
         $constraint = [];
 
         // Create basic query with QueryBuilder. Where-clause will be added dynamically
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_events2_domain_model_day');
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_day');
         $queryBuilder = $queryBuilder
             ->select('event.uid', 'event.title', 'day.day')
             ->from('tx_events2_domain_model_day', 'day')
@@ -536,5 +534,10 @@ class DatabaseService
             );
         }
         return $GLOBALS['TSFE'];
+    }
+
+    protected function getConnectionPool(): ConnectionPool
+    {
+        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 }

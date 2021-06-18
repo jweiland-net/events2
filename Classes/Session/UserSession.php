@@ -25,9 +25,9 @@ class UserSession
      */
     protected $feUser;
 
-    public function __construct(FrontendUserAuthentication $feUser = null)
+    public function __construct(FrontendUserAuthentication $feUser)
     {
-        $this->feUser = $feUser ?? GeneralUtility::makeInstance(FrontendUserAuthentication::class);
+        $this->feUser = $feUser;
         $this->feUser->start();
     }
 
