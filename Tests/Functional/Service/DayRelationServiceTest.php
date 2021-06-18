@@ -96,7 +96,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         $this->subject = new DayRelationService(
             $dayGenerator,
             $this->eventRepositoryProphecy->reveal(),
-            new TimeFactory(),
+            new TimeFactory(new DateTimeUtility()),
             $this->persistenceManagerProphecy->reveal(),
             new DateTimeUtility()
         );

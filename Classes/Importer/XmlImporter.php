@@ -83,14 +83,13 @@ class XmlImporter extends AbstractImporter
      */
     protected function validateXml(FileInterface $file): bool
     {
-        $extConf = GeneralUtility::makeInstance(ExtConf::class);
         try {
             libxml_use_internal_errors(true);
             $domDoc = new \DOMDocument();
             $domDoc->loadXML($file->getContents());
             if (
                 !$domDoc->schemaValidate(
-                    GeneralUtility::getFileAbsFileName($extConf->getXmlImportValidatorPath())
+                    GeneralUtility::getFileAbsFileName($this->extConf->getXmlImportValidatorPath())
                 )
             ) {
                 foreach (libxml_get_errors() as $error) {

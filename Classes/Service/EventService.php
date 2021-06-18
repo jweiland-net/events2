@@ -32,6 +32,12 @@ class EventService
      */
     protected $timeFactory;
 
+    /**
+     * Must be called by ObjectManager, because of EventRepository which has inject methods
+     *
+     * @param EventRepository $eventRepository
+     * @param TimeFactory $timeFactory
+     */
     public function __construct(
         EventRepository $eventRepository,
         TimeFactory $timeFactory

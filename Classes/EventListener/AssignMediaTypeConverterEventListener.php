@@ -27,6 +27,11 @@ class AssignMediaTypeConverterEventListener extends AbstractControllerEventListe
      */
     protected $eventRepository;
 
+    /**
+     * @var UploadMultipleFilesConverter
+     */
+    protected $uploadMultipleFilesConverter;
+
     protected $allowedControllerActions = [
         'Event' => [
             'create',
@@ -34,9 +39,12 @@ class AssignMediaTypeConverterEventListener extends AbstractControllerEventListe
         ]
     ];
 
-    public function __construct(EventRepository $eventRepository)
-    {
+    public function __construct(
+        EventRepository $eventRepository,
+        UploadMultipleFilesConverter $uploadMultipleFilesConverter
+    ) {
         $this->eventRepository = $eventRepository;
+        $this->uploadMultipleFilesConverter = $uploadMultipleFilesConverter;
     }
 
     public function __invoke(PreProcessControllerActionEvent $event): void
@@ -75,7 +83,7 @@ class AssignMediaTypeConverterEventListener extends AbstractControllerEventListe
     ): void {
         $propertyMappingConfiguration = $this->getPropertyMappingConfigurationForEvent($event)
             ->forProperty($property)
-            ->setTypeConverter(GeneralUtility::makeInstance(UploadMultipleFilesConverter::class));
+            ->setTypeConverter($this->uploadMultipleFilesConverter);
 
         // Do not use setTypeConverterOptions() as this will remove all existing options
         $this->addOptionToUploadFilesConverter(

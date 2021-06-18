@@ -85,10 +85,9 @@ class ExtConf implements SingletonInterface
      */
     protected $pathSegmentType = 'empty';
 
-    public function __construct()
+    public function __construct(ExtensionConfiguration $extensionConfiguration)
     {
-        // get global configuration
-        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('events2');
+        $extConf = $extensionConfiguration->get('events2');
         if (is_array($extConf) && count($extConf)) {
             // call setter method foreach configuration entry
             foreach ($extConf as $key => $value) {

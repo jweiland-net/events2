@@ -20,6 +20,7 @@ use JWeiland\Events2\Importer\XmlImporter;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -92,7 +93,7 @@ class XmlImporterTest extends FunctionalTestCase
     {
         $fileObject = ResourceFactory::getInstance()
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/Success.xml');
-        $extConf = new ExtConf();
+        $extConf = new ExtConf(new ExtensionConfiguration());
         $extConf->setOrganizerIsRequired(true);
         $extConf->setLocationIsRequired(true);
         $xmlImporter = new XmlImporter(
@@ -163,7 +164,7 @@ class XmlImporterTest extends FunctionalTestCase
     {
         $fileObject = ResourceFactory::getInstance()
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/NotExistingOrganizerEvent.xml');
-        $extConf = new ExtConf();
+        $extConf = new ExtConf(new ExtensionConfiguration());
         $extConf->setOrganizerIsRequired(true);
         $xmlImporter = new XmlImporter(
             $this->objectManager->get(EventRepository::class),
@@ -193,7 +194,7 @@ class XmlImporterTest extends FunctionalTestCase
     {
         $fileObject = ResourceFactory::getInstance()
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/NotExistingLocationEvent.xml');
-        $extConf = new ExtConf();
+        $extConf = new ExtConf(new ExtensionConfiguration());
         $extConf->setLocationIsRequired(true);
         $xmlImporter = new XmlImporter(
             $this->objectManager->get(EventRepository::class),

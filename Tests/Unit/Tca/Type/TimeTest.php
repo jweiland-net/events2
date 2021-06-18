@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Tests\Unit\Tca\Type;
 
+use JWeiland\Events2\Converter\TimeToStringConverter;
 use JWeiland\Events2\Tca\Type\Time;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 
@@ -26,7 +27,7 @@ class TimeTest extends UnitTestCase
 
     public function setUp(): void
     {
-        $this->subject = new Time();
+        $this->subject = new Time(new TimeToStringConverter());
     }
 
     public function tearDown(): void
@@ -35,7 +36,7 @@ class TimeTest extends UnitTestCase
     }
 
     /**
-     * dataprovider for times with times which will not be modified.
+     * DataProvider for times with times which will not be modified.
      *
      * @return array
      */

@@ -15,10 +15,11 @@ use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 /*
  * This class will be loaded, if you create a new event in frontend. There we have a
- * selectbox for location, which searches for Locations by its name and stores the
+ * selector for location, which searches for Locations by its name and stores the
  * location UID in a hidden field.
  */
 class FindLocations
@@ -28,20 +29,19 @@ class FindLocations
      */
     protected $locationRepository;
 
-    public function __construct(LocationRepository $locationRepository = null)
+    /**
+     * Will be called by call_user_func_array, so don't add Extbase classes with inject methods as argument
+     *
+     * @param ObjectManagerInterface $objectManager
+     */
+    public function __construct(ObjectManagerInterface $objectManager)
     {
-        if ($locationRepository === null) {
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            $locationRepository = $objectManager->get(LocationRepository::class);
-        }
-        $this->locationRepository = $locationRepository;
+        $this->locationRepository = $objectManager->get(LocationRepository::class);
     }
 
     public function processRequest(ServerRequestInterface $request): ResponseInterface
     {
         $parameters = $request->getQueryParams()['tx_events2_events']['arguments'] ?? [];
-
-        //ExtensionManagementUtility::loadBaseTca(true);
 
         // Hint: search may fail with "&" in $locationPart
         $locationPart = trim(htmlspecialchars(strip_tags($parameters['locationPart'])));

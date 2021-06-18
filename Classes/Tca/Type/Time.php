@@ -21,6 +21,16 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 class Time
 {
     /**
+     * @var TimeToStringConverter
+     */
+    protected $timeToStringConverter;
+
+    public function __construct(TimeToStringConverter $timeToStringConverter)
+    {
+        $this->timeToStringConverter = $timeToStringConverter;
+    }
+
+    /**
      * This method returns js code to check if valid time was entered
      * JS Validation does not work in IRRE context. So we have to validate by PHP.
      *
@@ -48,10 +58,7 @@ class Time
                 $value = str_pad((string)$value, 2, '0', STR_PAD_LEFT) . ':00';
             } else {
                 // this is only for backwards compatibility. In earlier versions we calculated these values with int
-                /** @var TimeToStringConverter $converter */
-                $converter = GeneralUtility::makeInstance(TimeToStringConverter::class);
-
-                return $converter->convert((int)$value);
+                return $this->timeToStringConverter->convert((int)$value);
             }
         }
 

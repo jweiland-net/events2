@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Tests\Functional\Domain\Factory;
 
+use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Factory\DayFactory;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
@@ -18,8 +19,11 @@ use JWeiland\Events2\Domain\Model\Location;
 use JWeiland\Events2\Domain\Model\Organizer;
 use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Domain\Repository\EventRepository;
+use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Service\DayRelationService;
+use JWeiland\Events2\Utility\DateTimeUtility;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
@@ -35,7 +39,7 @@ class DayFactoryTest extends FunctionalTestCase
     /**
      * @var DayFactory
      */
-    protected $dayFactory;
+    protected $subject;
 
     /**
      * @var ObjectManager
@@ -60,13 +64,18 @@ class DayFactoryTest extends FunctionalTestCase
         parent::setUp();
 
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->dayFactory = $this->objectManager->get(DayFactory::class);
         $persistenceManager = $this->objectManager->get(PersistenceManagerInterface::class);
         $this->querySettings = $this->objectManager->get(QuerySettingsInterface::class);
         $this->querySettings->setStoragePageIds([11, 40]);
         $dayRelationService = $this->objectManager->get(DayRelationService::class);
         $eventRepository = $this->objectManager->get(EventRepository::class);
         $eventRepository->setDefaultQuerySettings($this->querySettings);
+
+        $this->subject = new DayFactory(
+            new DatabaseService(new ExtConf(new ExtensionConfiguration()), new DateTimeUtility()),
+            $eventRepository,
+            $dayRelationService
+        );
 
         // As we need day related records, we can not use XML import functionality
         $organizer = new Organizer();
@@ -190,7 +199,7 @@ class DayFactoryTest extends FunctionalTestCase
         $query->setQuerySettings($this->querySettings);
 
         // Try to get exactly matching day record for today
-        $day = $this->dayFactory->findDayByEventAndTimestamp(1, (int)$date->format('U'), $query);
+        $day = $this->subject->findDayByEventAndTimestamp(1, (int)$date->format('U'), $query);
         self::assertSame(
             1,
             $day->getEvent()->getUid()
@@ -215,7 +224,7 @@ class DayFactoryTest extends FunctionalTestCase
         $query->setQuerySettings($this->querySettings);
 
         // Try to get a day record for yesterday, where no day for this event exists.
-        $day = $this->dayFactory->findDayByEventAndTimestamp(1, (int)$date->format('U'), $query);
+        $day = $this->subject->findDayByEventAndTimestamp(1, (int)$date->format('U'), $query);
         self::assertSame(
             1,
             $day->getEvent()->getUid()
@@ -240,7 +249,7 @@ class DayFactoryTest extends FunctionalTestCase
         $query->setQuerySettings($this->querySettings);
 
         // Try to get a day record for tomorrow, where no day for this event exists.
-        $day = $this->dayFactory->findDayByEventAndTimestamp(1, (int)$date->format('U'), $query);
+        $day = $this->subject->findDayByEventAndTimestamp(1, (int)$date->format('U'), $query);
         self::assertSame(
             1,
             $day->getEvent()->getUid()
@@ -265,7 +274,7 @@ class DayFactoryTest extends FunctionalTestCase
         $query->setQuerySettings($this->querySettings);
 
         // This Timestamp isn't in DB for event 2
-        $day = $this->dayFactory->findDayByEventAndTimestamp(2, (int)$date->format('U'), $query);
+        $day = $this->subject->findDayByEventAndTimestamp(2, (int)$date->format('U'), $query);
         self::assertSame(
             2,
             $day->getEvent()->getUid()
@@ -290,7 +299,7 @@ class DayFactoryTest extends FunctionalTestCase
         $query->setQuerySettings($this->querySettings);
 
         // This Timestamp isn't in DB for event 3
-        $day = $this->dayFactory->findDayByEventAndTimestamp(3, (int)$date->format('U'), $query);
+        $day = $this->subject->findDayByEventAndTimestamp(3, (int)$date->format('U'), $query);
         self::assertSame(
             3,
             $day->getEvent()->getUid()
@@ -314,7 +323,7 @@ class DayFactoryTest extends FunctionalTestCase
         $query = $queryFactory->create(Day::class);
         $query->setQuerySettings($this->querySettings);
 
-        $day = $this->dayFactory->findDayByEventAndTimestamp(4, (int)$date->format('U'), $query);
+        $day = $this->subject->findDayByEventAndTimestamp(4, (int)$date->format('U'), $query);
         self::assertSame(
             4,
             $day->getEvent()->getUid()

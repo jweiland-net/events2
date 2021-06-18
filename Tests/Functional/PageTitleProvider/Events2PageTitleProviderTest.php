@@ -50,7 +50,7 @@ class Events2PageTitleProviderTest extends FunctionalTestCase
         $eventRepository = $objectManager->get(EventRepository::class);
         $eventRepository->setDefaultQuerySettings($querySettings);
         $dayRelationService = $objectManager->get(DayRelationService::class);
-        $this->subject = new Events2PageTitleProvider();
+        $this->subject = new Events2PageTitleProvider($objectManager);
 
         $event = new Event();
         $event->setPid($pageId);

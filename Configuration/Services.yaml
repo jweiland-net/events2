@@ -10,22 +10,40 @@ services:
   JWeiland\Events2\Domain\Factory\DayFactory:
     public: true
 
+  # Called by makeInstance in event model where constructors are not loaded in some cases
+  # Called by makeInstance in static GetMergedEventTimesViewHelper
   JWeiland\Events2\Domain\Factory\TimeFactory:
     public: true
 
-  JWeiland\Events2\Domain\Model\UserRepository:
+  # Called by makeInstance in TYPO3s DataHandler
+  JWeiland\Events2\Hooks\DataHandler:
     public: true
 
+  # Called by makeInstance from EXT:solr
+  JWeiland\Events2\Hooks\Solr\IndexerHook:
+    public: true
+
+  # Called by makeInstance from EXT:solr
+  JWeiland\Events2\Hooks\Solr\ResultsCommandHook:
+    public: true
+
+  # Contains public API for other extension developers. Keep public.
   JWeiland\Events2\Service\EventService:
+    public: true
+
+  # Called by makeInstance in SchedulerModuleController
+  JWeiland\Events2\Task\ReGenerateDays:
     public: true
 
   # Must be public, because it was called by makeInstance in TYPO3s UpgradeWizardsService
   JWeiland\Events2\Updater\EventsSlugUpdater:
     public: true
 
+  # Called by makeInstance in event model where constructors are not loaded in some cases
   JWeiland\Events2\Utility\DateTimeUtility:
     public: true
 
+  # Register EventListeners for initialize*Actions
   JWeiland\Events2\EventListener\AddOrganizerToEventRecordEventListener:
     tags:
       - name: event.listener
@@ -60,6 +78,7 @@ services:
       - name: event.listener
         event: JWeiland\Events2\Event\PreProcessControllerActionEvent
 
+  # Register EventListeners for controller actions incl. Fluid variables
   JWeiland\Events2\EventListener\AddOrganizersForFilterEventListener:
     tags:
       - name: event.listener
@@ -69,6 +88,7 @@ services:
       - name: event.listener
         event: JWeiland\Events2\Event\PostProcessFluidVariablesEvent
 
+  # Register EventListeners for controller actions without Fluid variables
   JWeiland\Events2\EventListener\DeleteVideoLinkIfEmptyEventListener:
     tags:
       - name: event.listener
@@ -78,6 +98,7 @@ services:
       - name: event.listener
         event: JWeiland\Events2\Event\PostProcessControllerActionEvent
 
+  # Register commands for events2
   JWeiland\Events2\Command\RebuildCommand:
     tags:
       - { name: 'console.command', command: 'events2:rebuild' }

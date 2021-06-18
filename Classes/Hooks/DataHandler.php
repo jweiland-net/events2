@@ -15,12 +15,29 @@ use JWeiland\Events2\Service\DayRelationService;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 /*
  * Hook into DataHandler and clear special caches or re-generate day records after saving an event.
  */
 class DataHandler
 {
+    /**
+     * @var ObjectManagerInterface
+     */
+    protected $objectManager;
+
+    /**
+     * @var CacheManager
+     */
+    protected $cacheManager;
+
+    public function __construct(ObjectManagerInterface $objectManager, CacheManager $cacheManager)
+    {
+        $this->objectManager = $objectManager;
+        $this->cacheManager = $cacheManager;
+    }
+
     /**
      * Flushes the cache if an event record was edited.
      * This happens on two levels: by UID and by PID.
@@ -38,9 +55,8 @@ class DataHandler
                 $cacheTagsToFlush[] = 'tx_events2_pid_' . $params['uid_page'];
             }
 
-            $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
             foreach ($cacheTagsToFlush as $cacheTag) {
-                $cacheManager->flushCachesInGroupByTag('pages', $cacheTag);
+                $this->cacheManager->flushCachesInGroupByTag('pages', $cacheTag);
             }
         }
     }
@@ -66,8 +82,7 @@ class DataHandler
      */
     protected function addDayRelationsForEvent(int $eventUid): void
     {
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $dayRelationService = $objectManager->get(DayRelationService::class);
+        $dayRelationService = $this->objectManager->get(DayRelationService::class);
         $dayRelationService->createDayRelations($eventUid);
     }
 

@@ -24,6 +24,11 @@ class FindSubCategories implements AjaxInterface
      */
     protected $categoryRepository;
 
+    /**
+     * Will be called by ObjectManager in AjaxController, so Extbase classes can be used.
+     *
+     * @param CategoryRepository $categoryRepository
+     */
     public function __construct(CategoryRepository $categoryRepository)
     {
         $this->categoryRepository = $categoryRepository;

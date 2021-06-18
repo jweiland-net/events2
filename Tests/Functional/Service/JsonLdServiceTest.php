@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Functional\Service;
 
 use JWeiland\Events2\Configuration\ExtConf;
+use JWeiland\Events2\Domain\Factory\TimeFactory;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Link;
@@ -22,6 +23,7 @@ use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Service\JsonLdService;
+use JWeiland\Events2\Utility\DateTimeUtility;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -153,7 +155,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         /** @var Day $day */
         $day = $this->dayRepository->findByIdentifier(1);
 
-        $jsonLdService = GeneralUtility::makeInstance(JsonLdService::class);
+        $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
         $jsonLdService->addJsonLdToPageHeader($day);
 
         self::assertSame(
@@ -170,7 +172,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         /** @var Day $day */
         $day = $this->dayRepository->findByIdentifier(1);
 
-        $jsonLdService = GeneralUtility::makeInstance(JsonLdService::class);
+        $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
         $jsonLdService->addJsonLdToPageHeader($day);
 
         self::assertSame(
@@ -187,7 +189,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         /** @var Day $day */
         $day = $this->dayRepository->findByIdentifier(3);
 
-        $jsonLdService = GeneralUtility::makeInstance(JsonLdService::class);
+        $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
         $jsonLdService->addJsonLdToPageHeader($day);
 
         self::assertSame(
@@ -204,7 +206,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         /** @var Day $day */
         $day = $this->dayRepository->findByIdentifier(3);
 
-        $jsonLdService = GeneralUtility::makeInstance(JsonLdService::class);
+        $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
         $jsonLdService->addJsonLdToPageHeader($day);
 
         self::assertSame(
@@ -221,7 +223,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         /** @var Day $day */
         $day = $this->dayRepository->findByIdentifier(3);
 
-        $jsonLdService = GeneralUtility::makeInstance(JsonLdService::class);
+        $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
         $jsonLdService->addJsonLdToPageHeader($day);
 
         [$hours, $minutes] = GeneralUtility::trimExplode(
@@ -243,7 +245,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         /** @var Day $day */
         $day = $this->dayRepository->findByIdentifier(3);
 
-        $jsonLdService = GeneralUtility::makeInstance(JsonLdService::class);
+        $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
         $jsonLdService->addJsonLdToPageHeader($day);
 
         self::assertSame(
@@ -260,7 +262,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         /** @var Day $day */
         $day = $this->dayRepository->findByIdentifier(3);
 
-        $jsonLdService = GeneralUtility::makeInstance(JsonLdService::class);
+        $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
         $jsonLdService->addJsonLdToPageHeader($day);
 
         self::assertSame(
@@ -277,7 +279,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         /** @var Day $day */
         $day = $this->dayRepository->findByIdentifier(3);
 
-        $jsonLdService = GeneralUtility::makeInstance(JsonLdService::class);
+        $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
         $jsonLdService->addJsonLdToPageHeader($day);
 
         self::assertSame(
@@ -294,7 +296,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         /** @var Day $day */
         $day = $this->dayRepository->findByIdentifier(3);
 
-        $jsonLdService = GeneralUtility::makeInstance(JsonLdService::class);
+        $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
         $jsonLdService->addJsonLdToPageHeader($day);
 
         self::assertStringStartsWith(
@@ -311,7 +313,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         /** @var Day $day */
         $day = $this->dayRepository->findByIdentifier(1);
 
-        $jsonLdService = GeneralUtility::makeInstance(JsonLdService::class);
+        $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
         $jsonLdService->addJsonLdToPageHeader($day);
 
         self::assertSame(
@@ -322,7 +324,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         /** @var Day $day */
         $day = $this->dayRepository->findByIdentifier(3);
 
-        $jsonLdService = GeneralUtility::makeInstance(JsonLdService::class);
+        $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
         $jsonLdService->addJsonLdToPageHeader($day);
 
         self::assertSame(
@@ -339,7 +341,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         /** @var Day $day */
         $day = $this->dayRepository->findByIdentifier(3);
 
-        $jsonLdService = GeneralUtility::makeInstance(JsonLdService::class);
+        $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
         $jsonLdService->addJsonLdToPageHeader($day);
 
         $offer = $jsonLdService->getCollectedJsonLdData()['offers'][0];
@@ -366,7 +368,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         /** @var Day $day */
         $day = $this->dayRepository->findByIdentifier(3);
 
-        $jsonLdService = GeneralUtility::makeInstance(JsonLdService::class);
+        $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
         $jsonLdService->addJsonLdToPageHeader($day);
 
         $location = $jsonLdService->getCollectedJsonLdData()['location'];
@@ -405,7 +407,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         /** @var Day $day */
         $day = $this->dayRepository->findByIdentifier(3);
 
-        $jsonLdService = GeneralUtility::makeInstance(JsonLdService::class);
+        $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
         $jsonLdService->addJsonLdToPageHeader($day);
 
         $organizer = $jsonLdService->getCollectedJsonLdData()['organizer'];
