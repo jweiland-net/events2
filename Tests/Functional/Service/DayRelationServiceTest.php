@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Functional\Service;
 
 use JWeiland\Events2\Configuration\ExtConf;
+use JWeiland\Events2\Domain\Factory\EventFactory;
 use JWeiland\Events2\Domain\Factory\TimeFactory;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
@@ -26,7 +27,6 @@ use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
@@ -50,9 +50,9 @@ class DayRelationServiceTest extends FunctionalTestCase
     protected $eventRepositoryProphecy;
 
     /**
-     * @var PersistenceManager|ObjectProphecy
+     * @var EventFactory|ObjectProphecy
      */
-    protected $persistenceManagerProphecy;
+    protected $eventFactoryProphecy;
 
     protected $testExtensionsToLoad = [
         'typo3conf/ext/events2'
@@ -85,7 +85,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         ];
 
         $this->eventRepositoryProphecy = $this->prophesize(EventRepository::class);
-        $this->persistenceManagerProphecy = $this->prophesize(PersistenceManager::class);
+        $this->eventFactoryProphecy = $this->prophesize(EventFactory::class);
 
         $dayGenerator = new DayGenerator(
             GeneralUtility::makeInstance(EventDispatcher::class),
@@ -96,8 +96,8 @@ class DayRelationServiceTest extends FunctionalTestCase
         $this->subject = new DayRelationService(
             $dayGenerator,
             $this->eventRepositoryProphecy->reveal(),
+            $this->eventFactoryProphecy->reveal(),
             new TimeFactory(new DateTimeUtility()),
-            $this->persistenceManagerProphecy->reveal(),
             new DateTimeUtility()
         );
     }
@@ -107,7 +107,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         unset(
             $this->extConfProphecy,
             $this->eventRepositoryProphecy,
-            $this->persistenceManagerProphecy,
+            $this->eventFactoryProphecy,
             $this->subject
         );
 
@@ -119,10 +119,15 @@ class DayRelationServiceTest extends FunctionalTestCase
      */
     public function createDayRelationsWithEmptyEventWillNeverCallAnyQuery(): void
     {
-        $this->persistenceManagerProphecy->update(Argument::cetera())->shouldNotBeCalled();
-        $this->persistenceManagerProphecy->persistAll(Argument::cetera())->shouldNotBeCalled();
+        $this->eventRepositoryProphecy
+            ->findHiddenObject(123)
+            ->shouldBeCalled()
+            ->willReturn(null);
 
-        $this->eventRepositoryProphecy->findHiddenObject(123)->shouldBeCalled()->willReturn(null);
+        $this->eventFactoryProphecy
+            ->getEventRecord(123, Argument::cetera())
+            ->shouldBeCalled()
+            ->willReturn([]);
 
         $this->subject->createDayRelations(123);
     }
@@ -139,14 +144,34 @@ class DayRelationServiceTest extends FunctionalTestCase
         $event = new Event();
         $event->_setProperty('uid', 123);
         $event->setPid(321);
+        $event->setSysLanguageUid(0);
         $event->addDay(new Day());
 
-        $this->eventRepositoryProphecy->findHiddenObject(123)->willReturn($event);
+        $this->eventRepositoryProphecy
+            ->findHiddenObject(123)
+            ->shouldBeCalled()
+            ->willReturn($event);
+
+        $this->eventRepositoryProphecy
+            ->deleteRelatedDayRecords(123)
+            ->shouldBeCalled();
+
+        $this->eventFactoryProphecy
+            ->getEventRecord(123, Argument::cetera())
+            ->shouldBeCalled()
+            ->willReturn([
+                'uid' => 123,
+                'pid' => 321,
+                'days' => [
+                    0 => [
+                        'day' => new \DateTime()
+                    ]
+                ]
+            ]);
+
         $this->subject->createDayRelations(123);
 
         $event->setDays(new ObjectStorage());
-        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
-        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
     }
 
     /**
@@ -167,17 +192,38 @@ class DayRelationServiceTest extends FunctionalTestCase
         $event = new Event();
         $event->_setProperty('uid', 123);
         $event->setPid(321);
+        $event->setSysLanguageUid(0);
         $event->setEventType('recurring');
         $event->setEventBegin($yesterday);
         $event->setRecurringEnd($tomorrow);
         $event->setXth(31);
         $event->setWeekday(127);
 
-        $this->eventRepositoryProphecy->findHiddenObject(123)->willReturn($event);
+        $this->eventRepositoryProphecy
+            ->findHiddenObject(123)
+            ->shouldBeCalled()
+            ->willReturn($event);
+
+        $this->eventRepositoryProphecy
+            ->deleteRelatedDayRecords(123)
+            ->shouldBeCalled();
+
+        $this->eventFactoryProphecy
+            ->getEventRecord(123, Argument::cetera())
+            ->shouldBeCalled()
+            ->willReturn([
+                'uid' => 123,
+                'pid' => 321,
+                'sys_language_uid' => 0,
+                'event_type' => 'recurring',
+                'event_begin' => $yesterday,
+                'recurring_end' => $tomorrow,
+                'xth' => 31,
+                'weekday' => 127,
+            ]);
+
         $this->subject->createDayRelations(123);
 
-        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
-        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
         self::assertCount(3, $event->getDays());
 
         /** @var Day $day */
@@ -218,6 +264,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         $event = new Event();
         $event->_setProperty('uid', 123);
         $event->setPid(321);
+        $event->setSysLanguageUid(0);
         $event->setEventType('recurring');
         $event->setEventBegin($yesterday);
         $event->setRecurringEnd($tomorrow);
@@ -225,11 +272,34 @@ class DayRelationServiceTest extends FunctionalTestCase
         $event->setXth(31);
         $event->setWeekday(127);
 
-        $this->eventRepositoryProphecy->findHiddenObject(123)->willReturn($event);
+        $this->eventRepositoryProphecy
+            ->findHiddenObject(123)
+            ->shouldBeCalled()
+            ->willReturn($event);
+
+        $this->eventRepositoryProphecy
+            ->deleteRelatedDayRecords(123)
+            ->shouldBeCalled();
+
+        $this->eventFactoryProphecy
+            ->getEventRecord(123, Argument::cetera())
+            ->shouldBeCalled()
+            ->willReturn([
+                'uid' => 123,
+                'pid' => 321,
+                'sys_language_uid' => 0,
+                'event_type' => 'recurring',
+                'event_begin' => $yesterday,
+                'recurring_end' => $tomorrow,
+                'xth' => 31,
+                'weekday' => 127,
+                'event_time' => [
+                    'time_begin' => '12:30'
+                ]
+            ]);
+
         $this->subject->createDayRelations(123);
 
-        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
-        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
         self::assertCount(3, $event->getDays());
 
         /** @var Day $day */
@@ -282,6 +352,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         $event = new Event();
         $event->_setProperty('uid', 123);
         $event->setPid(321);
+        $event->setSysLanguageUid(0);
         $event->setEventType('recurring');
         $event->setEventBegin($yesterday);
         $event->setRecurringEnd($tomorrow);
@@ -291,11 +362,34 @@ class DayRelationServiceTest extends FunctionalTestCase
         $event->setXth(31);
         $event->setWeekday(127);
 
-        $this->eventRepositoryProphecy->findHiddenObject(123)->willReturn($event);
+        $this->eventRepositoryProphecy
+            ->findHiddenObject(123)
+            ->shouldBeCalled()
+            ->willReturn($event);
+
+        $this->eventRepositoryProphecy
+            ->deleteRelatedDayRecords(123)
+            ->shouldBeCalled();
+
+        $this->eventFactoryProphecy
+            ->getEventRecord(123, Argument::cetera())
+            ->shouldBeCalled()
+            ->willReturn([
+                'uid' => 123,
+                'pid' => 321,
+                'sys_language_uid' => 0,
+                'event_type' => 'recurring',
+                'event_begin' => $yesterday,
+                'recurring_end' => $tomorrow,
+                'xth' => 31,
+                'weekday' => 127,
+                'event_time' => [
+                    'time_begin' => '08:00'
+                ]
+            ]);
+
         $this->subject->createDayRelations(123);
 
-        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
-        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
         self::assertCount(6, $event->getDays());
 
         /** @var Day $day */
@@ -350,6 +444,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         $event = new Event();
         $event->_setProperty('uid', 123);
         $event->setPid(321);
+        $event->setSysLanguageUid(0);
         $event->setEventType('recurring');
         $event->setEventBegin($yesterday);
         $event->setRecurringEnd($tomorrow);
@@ -359,11 +454,34 @@ class DayRelationServiceTest extends FunctionalTestCase
         $event->setXth(31);
         $event->setWeekday(127);
 
-        $this->eventRepositoryProphecy->findHiddenObject(123)->willReturn($event);
+        $this->eventRepositoryProphecy
+            ->findHiddenObject(123)
+            ->shouldBeCalled()
+            ->willReturn($event);
+
+        $this->eventRepositoryProphecy
+            ->deleteRelatedDayRecords(123)
+            ->shouldBeCalled();
+
+        $this->eventFactoryProphecy
+            ->getEventRecord(123, Argument::cetera())
+            ->shouldBeCalled()
+            ->willReturn([
+                'uid' => 123,
+                'pid' => 321,
+                'sys_language_uid' => 0,
+                'event_type' => 'recurring',
+                'event_begin' => $yesterday,
+                'recurring_end' => $tomorrow,
+                'xth' => 31,
+                'weekday' => 127,
+                'event_time' => [
+                    'time_begin' => '08:00'
+                ]
+            ]);
+
         $this->subject->createDayRelations(123);
 
-        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
-        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
         self::assertCount(4, $event->getDays());
 
         /** @var Day $day */
@@ -411,6 +529,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         $event = new Event();
         $event->_setProperty('uid', 123);
         $event->setPid(321);
+        $event->setSysLanguageUid(0);
         $event->setEventType('recurring');
         $event->setEventBegin($tuesday);
         $event->setRecurringEnd($thursday);
@@ -420,11 +539,34 @@ class DayRelationServiceTest extends FunctionalTestCase
         $event->setXth(31);
         $event->setWeekday(127);
 
-        $this->eventRepositoryProphecy->findHiddenObject(123)->willReturn($event);
+        $this->eventRepositoryProphecy
+            ->findHiddenObject(123)
+            ->shouldBeCalled()
+            ->willReturn($event);
+
+        $this->eventRepositoryProphecy
+            ->deleteRelatedDayRecords(123)
+            ->shouldBeCalled();
+
+        $this->eventFactoryProphecy
+            ->getEventRecord(123, Argument::cetera())
+            ->shouldBeCalled()
+            ->willReturn([
+                'uid' => 123,
+                'pid' => 321,
+                'sys_language_uid' => 0,
+                'event_type' => 'recurring',
+                'event_begin' => $yesterday,
+                'recurring_end' => $tomorrow,
+                'xth' => 31,
+                'weekday' => 127,
+                'event_time' => [
+                    'time_begin' => '08:00'
+                ]
+            ]);
+
         $this->subject->createDayRelations(123);
 
-        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
-        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
         self::assertCount(3, $event->getDays());
 
         /** @var Day $day */
@@ -482,6 +624,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         $event = new Event();
         $event->_setProperty('uid', 123);
         $event->setPid(321);
+        $event->setSysLanguageUid(0);
         $event->setEventType('recurring');
         $event->setEventBegin($tuesday);
         $event->setRecurringEnd($friday);
@@ -490,11 +633,34 @@ class DayRelationServiceTest extends FunctionalTestCase
         $event->setWeekday(127);
         $event->setExceptions($exceptions);
 
-        $this->eventRepositoryProphecy->findHiddenObject(123)->willReturn($event);
+        $this->eventRepositoryProphecy
+            ->findHiddenObject(123)
+            ->shouldBeCalled()
+            ->willReturn($event);
+
+        $this->eventRepositoryProphecy
+            ->deleteRelatedDayRecords(123)
+            ->shouldBeCalled();
+
+        $this->eventFactoryProphecy
+            ->getEventRecord(123, Argument::cetera())
+            ->shouldBeCalled()
+            ->willReturn([
+                'uid' => 123,
+                'pid' => 321,
+                'sys_language_uid' => 0,
+                'event_type' => 'recurring',
+                'event_begin' => $yesterday,
+                'recurring_end' => $tomorrow,
+                'xth' => 31,
+                'weekday' => 127,
+                'event_time' => [
+                    'time_begin' => '08:00'
+                ]
+            ]);
+
         $this->subject->createDayRelations(123);
 
-        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
-        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
         self::assertCount(4, $event->getDays());
 
         /** @var Day $day */
@@ -570,6 +736,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         $event = new Event();
         $event->_setProperty('uid', 123);
         $event->setPid(321);
+        $event->setSysLanguageUid(0);
         $event->setEventType('recurring');
         $event->setEventBegin($tuesday);
         $event->setRecurringEnd($friday);
@@ -578,11 +745,34 @@ class DayRelationServiceTest extends FunctionalTestCase
         $event->setWeekday(127);
         $event->setExceptions($exceptions);
 
-        $this->eventRepositoryProphecy->findHiddenObject(123)->willReturn($event);
+        $this->eventRepositoryProphecy
+            ->findHiddenObject(123)
+            ->shouldBeCalled()
+            ->willReturn($event);
+
+        $this->eventRepositoryProphecy
+            ->deleteRelatedDayRecords(123)
+            ->shouldBeCalled();
+
+        $this->eventFactoryProphecy
+            ->getEventRecord(123, Argument::cetera())
+            ->shouldBeCalled()
+            ->willReturn([
+                'uid' => 123,
+                'pid' => 321,
+                'sys_language_uid' => 0,
+                'event_type' => 'recurring',
+                'event_begin' => $yesterday,
+                'recurring_end' => $tomorrow,
+                'xth' => 31,
+                'weekday' => 127,
+                'event_time' => [
+                    'time_begin' => '08:00'
+                ]
+            ]);
+
         $this->subject->createDayRelations(123);
 
-        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
-        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
         self::assertCount(5, $event->getDays());
 
         /** @var Day $day */
@@ -620,14 +810,38 @@ class DayRelationServiceTest extends FunctionalTestCase
         $event = new Event();
         $event->_setProperty('uid', 123);
         $event->setPid(321);
+        $event->setSysLanguageUid(0);
         $event->setEventType('single');
         $event->setEventBegin($nextWeek);
 
-        $this->eventRepositoryProphecy->findHiddenObject(123)->willReturn($event);
+        $this->eventRepositoryProphecy
+            ->findHiddenObject(123)
+            ->shouldBeCalled()
+            ->willReturn($event);
+
+        $this->eventRepositoryProphecy
+            ->deleteRelatedDayRecords(123)
+            ->shouldBeCalled();
+
+        $this->eventFactoryProphecy
+            ->getEventRecord(123, Argument::cetera())
+            ->shouldBeCalled()
+            ->willReturn([
+                'uid' => 123,
+                'pid' => 321,
+                'sys_language_uid' => 0,
+                'event_type' => 'recurring',
+                'event_begin' => $yesterday,
+                'recurring_end' => $tomorrow,
+                'xth' => 31,
+                'weekday' => 127,
+                'event_time' => [
+                    'time_begin' => '08:00'
+                ]
+            ]);
+
         $this->subject->createDayRelations(123);
 
-        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
-        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
         self::assertCount(1, $event->getDays());
 
         /** @var Day $day */
@@ -656,15 +870,39 @@ class DayRelationServiceTest extends FunctionalTestCase
         $event = new Event();
         $event->_setProperty('uid', 123);
         $event->setPid(321);
+        $event->setSysLanguageUid(0);
         $event->setEventType('single');
         $event->setEventBegin($nextWeek);
         $event->setEventTime($time);
 
-        $this->eventRepositoryProphecy->findHiddenObject(123)->willReturn($event);
+        $this->eventRepositoryProphecy
+            ->findHiddenObject(123)
+            ->shouldBeCalled()
+            ->willReturn($event);
+
+        $this->eventRepositoryProphecy
+            ->deleteRelatedDayRecords(123)
+            ->shouldBeCalled();
+
+        $this->eventFactoryProphecy
+            ->getEventRecord(123, Argument::cetera())
+            ->shouldBeCalled()
+            ->willReturn([
+                'uid' => 123,
+                'pid' => 321,
+                'sys_language_uid' => 0,
+                'event_type' => 'recurring',
+                'event_begin' => $yesterday,
+                'recurring_end' => $tomorrow,
+                'xth' => 31,
+                'weekday' => 127,
+                'event_time' => [
+                    'time_begin' => '08:00'
+                ]
+            ]);
+
         $this->subject->createDayRelations(123);
 
-        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
-        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
         self::assertCount(1, $event->getDays());
 
         /** @var Day $day */
@@ -692,15 +930,39 @@ class DayRelationServiceTest extends FunctionalTestCase
         $event = new Event();
         $event->_setProperty('uid', 123);
         $event->setPid(321);
+        $event->setSysLanguageUid(0);
         $event->setEventType('duration');
         $event->setEventBegin($today);
         $event->setEventEnd($in2days);
 
-        $this->eventRepositoryProphecy->findHiddenObject(123)->willReturn($event);
+        $this->eventRepositoryProphecy
+            ->findHiddenObject(123)
+            ->shouldBeCalled()
+            ->willReturn($event);
+
+        $this->eventRepositoryProphecy
+            ->deleteRelatedDayRecords(123)
+            ->shouldBeCalled();
+
+        $this->eventFactoryProphecy
+            ->getEventRecord(123, Argument::cetera())
+            ->shouldBeCalled()
+            ->willReturn([
+                'uid' => 123,
+                'pid' => 321,
+                'sys_language_uid' => 0,
+                'event_type' => 'recurring',
+                'event_begin' => $yesterday,
+                'recurring_end' => $tomorrow,
+                'xth' => 31,
+                'weekday' => 127,
+                'event_time' => [
+                    'time_begin' => '08:00'
+                ]
+            ]);
+
         $this->subject->createDayRelations(123);
 
-        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
-        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
         self::assertCount(3, $event->getDays());
 
         /** @var Day $day */
@@ -737,16 +999,40 @@ class DayRelationServiceTest extends FunctionalTestCase
         $event = new Event();
         $event->_setProperty('uid', 123);
         $event->setPid(321);
+        $event->setSysLanguageUid(0);
         $event->setEventType('duration');
         $event->setEventBegin($today);
         $event->setEventEnd($in2days);
         $event->setEventTime($time);
 
-        $this->eventRepositoryProphecy->findHiddenObject(123)->willReturn($event);
+        $this->eventRepositoryProphecy
+            ->findHiddenObject(123)
+            ->shouldBeCalled()
+            ->willReturn($event);
+
+        $this->eventRepositoryProphecy
+            ->deleteRelatedDayRecords(123)
+            ->shouldBeCalled();
+
+        $this->eventFactoryProphecy
+            ->getEventRecord(123, Argument::cetera())
+            ->shouldBeCalled()
+            ->willReturn([
+                'uid' => 123,
+                'pid' => 321,
+                'sys_language_uid' => 0,
+                'event_type' => 'recurring',
+                'event_begin' => $yesterday,
+                'recurring_end' => $tomorrow,
+                'xth' => 31,
+                'weekday' => 127,
+                'event_time' => [
+                    'time_begin' => '08:00'
+                ]
+            ]);
+
         $this->subject->createDayRelations(123);
 
-        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
-        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
         self::assertCount(3, $event->getDays());
 
         /** @var Day $day */

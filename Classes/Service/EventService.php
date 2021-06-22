@@ -11,9 +11,9 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Service;
 
-use JWeiland\Events2\Domain\Factory\TimeFactory;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Repository\EventRepository;
+use JWeiland\Events2\Utility\DateTimeUtility;
 
 /*
  * f.e. the time domain model can be connected 4 times with an event (exceptionTimes, differentTimes, MultipleTimes and eventTime)
@@ -28,22 +28,13 @@ class EventService
     protected $eventRepository;
 
     /**
-     * @var TimeFactory
-     */
-    protected $timeFactory;
-
-    /**
      * Must be called by ObjectManager, because of EventRepository which has inject methods
      *
      * @param EventRepository $eventRepository
-     * @param TimeFactory $timeFactory
      */
-    public function __construct(
-        EventRepository $eventRepository,
-        TimeFactory $timeFactory
-    ) {
+    public function __construct(EventRepository $eventRepository)
+    {
         $this->eventRepository = $eventRepository;
-        $this->timeFactory = $timeFactory;
     }
 
     public function getNextDayForEvent(int $eventUid): ?\DateTime

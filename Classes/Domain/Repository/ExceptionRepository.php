@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Domain\Repository;
 
-use JWeiland\Events2\Domain\Model\Organizer;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\EndTimeRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer;
@@ -20,24 +19,15 @@ use TYPO3\CMS\Core\Database\Query\Restriction\StartTimeRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
-use TYPO3\CMS\Extbase\Persistence\QueryInterface;
-use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 use TYPO3\CMS\Extbase\Service\EnvironmentService;
 
 /*
- * The organizer repository is used to sort the organizers in our create-new-form. Further it will be used in
+ * The location repository is used to sort the locations in our create-new-form. Further it will be used in
  * our event importer
  */
-class OrganizerRepository extends Repository
+class ExceptionRepository extends Repository
 {
-    /**
-     * @var array
-     */
-    protected $defaultOrderings = [
-        'organizer' => QueryInterface::ORDER_ASCENDING,
-    ];
-
     /**
      * @var EnvironmentService
      */
@@ -53,25 +43,14 @@ class OrganizerRepository extends Repository
     }
 
     /**
-     * Get allowed organizers for filter
-     *
-     * @return QueryResultInterface|Organizer[]
-     */
-    public function getOrganizersForFilter(): QueryResultInterface
-    {
-        $query = $this->createQuery();
-        return $query->matching($query->equals('hide_in_filter', 0))->execute();
-    }
-
-    /**
-     * A very fast method to just add the related organization records to event record.
+     * A very fast method to just add the related exception records to event record.
      * Currently used to re-generate day records at CLI and task.
      *
      * @param array $eventRecord
      * @param bool $ignoreEnableFields If true hidden/start/end will not be included.
      * @return void
      */
-    public function addOrganizers(array &$eventRecord, bool $ignoreEnableFields = false): void
+    public function addExceptions(array &$eventRecord, bool $ignoreEnableFields = false): void
     {
         if (
             $eventRecord === []
@@ -82,7 +61,7 @@ class OrganizerRepository extends Repository
             return;
         }
 
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_organizer');
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_exception');
         if ($this->environmentService->isEnvironmentInFrontendMode()) {
             $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
         }
@@ -95,27 +74,18 @@ class OrganizerRepository extends Repository
 
         $statement = $queryBuilder
             ->select('*')
-            ->from('tx_events2_domain_model_organizer', 'o')
-            ->leftJoin(
-                'o',
-                'tx_events2_event_organizer_mm',
-                'eo_mm',
-                $queryBuilder->expr()->eq(
-                    'o.uid',
-                    $queryBuilder->quoteIdentifier('eo_mm.uid_foreign')
-                )
-            )
+            ->from('tx_events2_domain_model_exception')
             ->where(
                 $queryBuilder->expr()->eq(
-                    'eo_mm.uid_local',
+                    'event',
                     $queryBuilder->createNamedParameter((int)$eventRecord['uid'])
                 )
             )
             ->execute();
 
-        $eventRecord['organizers'] = [];
-        while ($organizerRecord = $statement->fetch()) {
-            $eventRecord['organizers'][] = $organizerRecord;
+        $eventRecord['exceptions'] = [];
+        while ($exceptionRecord = $statement->fetch()) {
+            $eventRecord['exceptions'][] = $exceptionRecord;
         }
     }
 

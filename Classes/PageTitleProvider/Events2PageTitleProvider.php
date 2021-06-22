@@ -13,6 +13,7 @@ namespace JWeiland\Events2\PageTitleProvider;
 
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
+use JWeiland\Events2\Service\EventService;
 use TYPO3\CMS\Core\PageTitle\PageTitleProviderInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
@@ -26,9 +27,9 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 class Events2PageTitleProvider implements PageTitleProviderInterface
 {
     /**
-     * @var EventRepository
+     * @var EventService
      */
-    protected $eventRepository;
+    protected $eventService;
 
     /**
      * @var DayRepository
@@ -37,7 +38,7 @@ class Events2PageTitleProvider implements PageTitleProviderInterface
 
     public function __construct(ObjectManagerInterface $objectManager)
     {
-        $this->eventRepository = $objectManager->get(EventRepository::class);
+        $this->eventService = $objectManager->get(EventService::class);
         $this->dayRepository = $objectManager->get(DayRepository::class);
     }
 
@@ -53,9 +54,7 @@ class Events2PageTitleProvider implements PageTitleProviderInterface
 
             if (!empty($dayRecord)) {
                 $date = new \DateTime(date('c', (int)$gp['timestamp']));
-                $eventRecord = $this->eventRepository->getEventRecord(
-                    (int)$dayRecord['event']
-                );
+                $eventRecord = $this->eventService->getEventRecord((int)$dayRecord['event']);
 
                 if (!empty($eventRecord)) {
                     $pageTitle = sprintf(

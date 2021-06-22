@@ -12,18 +12,17 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Service;
 
 use JWeiland\Events2\Configuration\ExtConf;
+use JWeiland\Events2\Domain\Factory\EventFactory;
 use JWeiland\Events2\Domain\Factory\TimeFactory;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Utility\DateTimeUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
-use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
-use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 
 /*
  * While saving an event in backend, this class generates all the day records
@@ -52,6 +51,11 @@ class DayRelationService
     protected $eventRepository;
 
     /**
+     * @var EventFactory
+     */
+    protected $eventFactory;
+
+    /**
      * @var TimeFactory
      */
     protected $timeFactory;
@@ -60,11 +64,6 @@ class DayRelationService
      * @var DateTimeUtility
      */
     protected $dateTimeUtility;
-
-    /**
-     * @var PersistenceManager
-     */
-    protected $persistenceManager;
 
     /**
      * @var \DateTime
@@ -81,21 +80,21 @@ class DayRelationService
      *
      * @param DayGenerator $dayGenerator
      * @param EventRepository $eventRepository
+     * @param EventFactory $eventFactory
      * @param TimeFactory $timeFactory
-     * @param PersistenceManagerInterface $persistenceManager
      * @param DateTimeUtility $dateTimeUtility
      */
     public function __construct(
         DayGenerator $dayGenerator,
         EventRepository $eventRepository,
+        EventFactory $eventFactory,
         TimeFactory $timeFactory,
-        PersistenceManagerInterface $persistenceManager,
         DateTimeUtility $dateTimeUtility
     ) {
         $this->dayGenerator = $dayGenerator;
         $this->eventRepository = $eventRepository;
+        $this->eventFactory = $eventFactory;
         $this->timeFactory = $timeFactory;
-        $this->persistenceManager = $persistenceManager;
         $this->dateTimeUtility = $dateTimeUtility;
     }
 
@@ -104,37 +103,41 @@ class DayRelationService
      * start re-creating the day records.
      *
      * @param int $eventUid Event UID. This also can be a hidden event.
-     * @return Event
+     * @return Event We return a modified non-persisted Event
      * @throws \Exception
      */
     public function createDayRelations(int $eventUid): ?Event
     {
-        // As create/update action will set event as hidden, we have to search for them, too.
-        $event = $this->eventRepository->findHiddenObject($eventUid);
-        if (!$event instanceof Event) {
+        $eventRecord = $this->eventFactory->getEventRecord(
+            $eventUid,
+            true,
+            true,
+            false,
+            false,
+            false,
+            false,
+            true
+        );
+        // @ToDo: Maybe we find a solution to remove that in future and just still $eventRecord
+        $eventObject = $this->eventRepository->findHiddenObject($eventUid);
+        if ($eventRecord === [] || !$eventObject instanceof Event) {
             // write a warning (2) to sys_log
             $this->getLogger()->warning('Related days could not be created, because of an empty event or a non given event uid or pid.');
         } else {
-            // Delete all days from Repo and DB
-            $event->setDays(new ObjectStorage());
-            $this->persistenceManager->update($event);
-            $this->persistenceManager->persistAll();
+            $this->eventRepository->deleteRelatedDayRecords($eventUid);
 
             // Create days from scratch and store to DB
-            $this->dayGenerator->initialize($event);
-            $dateTimeStorage = $this->dayGenerator->getDateTimeStorage();
-            foreach ($dateTimeStorage as $dateTime) {
+            $this->dayGenerator->initialize($eventRecord);
+            foreach ($this->dayGenerator->getDateTimeStorage() as $dateTime) {
                 if ($this->firstDateTime === null) {
                     $this->firstDateTime = $dateTime;
                 }
-                $this->addDay($event, $dateTime);
+                $this->addDay($eventObject, $dateTime);
             }
             $this->firstDateTime = null;
-            $this->persistenceManager->update($event);
-            $this->persistenceManager->persistAll();
         }
 
-        return $event;
+        return $eventObject;
     }
 
     /**
@@ -177,6 +180,24 @@ class DayRelationService
         $day->setSortDayTime($this->getSortDayTime($dateTime, $hour, $minute, $event));
         $day->setSameDayTime($this->getSameDayTime($dateTime, $hour, $minute, $event));
         $day->setEvent($event);
+
+        $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_day');
+        $connection->insert(
+            'tx_events2_domain_model_day',
+            [
+                'pid' => $day->getPid(),
+                'tstamp' => time(),
+                'crdate' => time(),
+                'cruser_id' => 0,
+                'hidden' => $event->getHidden() ? 1 : 0,
+                'sys_language_uid' => $event->getSysLanguageUid(),
+                'day' => $day->getDay()->format('U'),
+                'day_time' => $day->getDayTime()->format('U'),
+                'sort_day_time' => $day->getSortDayTime()->format('U'),
+                'same_day_time' => $day->getSameDayTime()->format('U'),
+                'event' => $event->getUid(),
+            ]
+        );
 
         $event->addDay($day);
     }
@@ -275,6 +296,11 @@ class DayRelationService
         }
 
         return $this->getSortDayTime($day, $hour, $minute, $event);
+    }
+
+    protected function getConnectionPool(): ConnectionPool
+    {
+        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 
     protected function getLogger(): Logger

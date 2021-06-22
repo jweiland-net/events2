@@ -13,12 +13,18 @@ namespace JWeiland\Events2\Domain\Repository;
 
 use JWeiland\Events2\Domain\Model\Event;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
+use TYPO3\CMS\Core\Database\Query\Restriction\EndTimeRestriction;
+use TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer;
+use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
+use TYPO3\CMS\Core\Database\Query\Restriction\StartTimeRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
+use TYPO3\CMS\Extbase\Service\EnvironmentService;
 
 /*
  * Repository to get and find event records
@@ -42,13 +48,20 @@ class EventRepository extends Repository implements HiddenRepositoryInterface
      */
     protected $userRepository;
 
+    /**
+     * @var EnvironmentService
+     */
+    protected $environmentService;
+
     public function __construct(
         ObjectManagerInterface $objectManager,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        EnvironmentService $environmentService
     ) {
         parent::__construct($objectManager);
 
         $this->userRepository = $userRepository;
+        $this->environmentService = $environmentService;
     }
 
     /**
@@ -71,40 +84,72 @@ class EventRepository extends Repository implements HiddenRepositoryInterface
         return null;
     }
 
+    /**
+     * A very fast method to just get the event record as array by its event UID.
+     * Currently used to re-generate day records at CLI and task.
+     *
+     * @param int $eventUid
+     * @param bool $ignoreEnableFields If true hidden/start/end will not be included.
+     * @return array
+     */
+    public function getEventRecord(int $eventUid, bool $ignoreEnableFields = false): array
+    {
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_event');
+        if ($this->environmentService->isEnvironmentInFrontendMode()) {
+            $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
+        }
+
+        if ($ignoreEnableFields) {
+            $queryBuilder->getRestrictions()->removeByType(StartTimeRestriction::class);
+            $queryBuilder->getRestrictions()->removeByType(EndTimeRestriction::class);
+            $queryBuilder->getRestrictions()->removeByType(HiddenRestriction::class);
+        }
+
+        $eventRecord = $queryBuilder
+            ->select('*')
+            ->from('tx_events2_domain_model_event')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid',
+                    $queryBuilder->createNamedParameter($eventUid, \PDO::PARAM_INT)
+                )
+            )
+            ->execute()
+            ->fetch();
+
+        return $eventRecord ?: [];
+    }
+
+    /**
+     * A very fast method to delete all related days of a given event UID.
+     * Currently used to re-generate day records at CLI and task.
+     *
+     * @param int $eventUid
+     * @return void
+     */
+    public function deleteRelatedDayRecords(int $eventUid): void
+    {
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_day');
+        $queryBuilder->getRestrictions()->removeAll();
+        $queryBuilder->getRestrictions()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
+
+        $queryBuilder
+            ->delete('tx_events2_domain_model_day')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'event',
+                    $queryBuilder->createNamedParameter($eventUid)
+                )
+            )
+            ->execute();
+    }
+
     public function findMyEvents(): QueryResultInterface
     {
         $organizer = (int)$this->userRepository->getFieldFromUser('tx_events2_organizer');
         $query = $this->createQuery();
 
         return $query->matching($query->equals('organizers.uid', $organizer))->execute();
-    }
-
-    /**
-     * Nearly the same as "findByUid", but this method was used by PageTitleProvider
-     * which is out of Extbase context. So we are using a plain Doctrine Query here.
-     *
-     * @param int $uid
-     * @return array
-     */
-    public function getEventRecord(int $uid): array
-    {
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_event');
-        $event = $queryBuilder
-            ->select('uid', 'title')
-            ->from('tx_events2_domain_model_event')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'uid',
-                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
-                )
-            )
-            ->execute()
-            ->fetch();
-
-        if (empty($event)) {
-            $event = [];
-        }
-        return $event;
     }
 
     protected function getConnectionPool(): ConnectionPool

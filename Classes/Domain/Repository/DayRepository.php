@@ -24,12 +24,18 @@ use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Database\Query\Restriction\EndTimeRestriction;
+use TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer;
+use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
+use TYPO3\CMS\Core\Database\Query\Restriction\StartTimeRestriction;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
+use TYPO3\CMS\Extbase\Service\EnvironmentService;
 
 /*
  * Repository to get and find day records from storage
@@ -57,6 +63,11 @@ class DayRepository extends Repository
     protected $dayFactory;
 
     /**
+     * @var EnvironmentService
+     */
+    protected $environmentService;
+
+    /**
      * @var EventDispatcher
      */
     protected $eventDispatcher;
@@ -72,13 +83,16 @@ class DayRepository extends Repository
         DateTimeUtility $dateTimeUtility,
         DatabaseService $databaseService,
         DayFactory $dayFactory,
+        EnvironmentService $environmentService,
         EventDispatcher $dispatcher
     ) {
         parent::__construct($objectManager);
+
         $this->extConf = $extConf;
         $this->dateTimeUtility = $dateTimeUtility;
         $this->databaseService = $databaseService;
         $this->dayFactory = $dayFactory;
+        $this->environmentService = $environmentService;
         $this->eventDispatcher = $dispatcher;
     }
 
@@ -510,6 +524,53 @@ class DayRepository extends Repository
             $day = [];
         }
         return $day;
+    }
+
+    /**
+     * A very fast method to just add the related day records to event record.
+     * Currently used to re-generate day records at CLI and task.
+     *
+     * @param array $eventRecord
+     * @param bool $ignoreEnableFields If true hidden/start/end will not be included.
+     * @return void
+     */
+    public function addDayRecords(array &$eventRecord, bool $ignoreEnableFields = false): void
+    {
+        if (
+            $eventRecord === []
+            || !array_key_exists('uid', $eventRecord)
+            || empty($eventRecord['uid'])
+            || !MathUtility::canBeInterpretedAsInteger($eventRecord['uid'])
+        ) {
+            return;
+        }
+
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_day');
+        if ($this->environmentService->isEnvironmentInFrontendMode()) {
+            $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
+        }
+
+        if ($ignoreEnableFields) {
+            $queryBuilder->getRestrictions()->removeByType(StartTimeRestriction::class);
+            $queryBuilder->getRestrictions()->removeByType(EndTimeRestriction::class);
+            $queryBuilder->getRestrictions()->removeByType(HiddenRestriction::class);
+        }
+
+        $statement = $queryBuilder
+            ->select('*')
+            ->from('tx_events2_domain_model_day')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'event',
+                    $queryBuilder->createNamedParameter((int)$eventRecord['uid'])
+                )
+            )
+            ->execute();
+
+        $eventRecord['days'] = [];
+        while ($dayRecord = $statement->fetch()) {
+            $eventRecord['days'][] = $dayRecord;
+        }
     }
 
     protected function getConnectionPool(): ConnectionPool

@@ -11,14 +11,36 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Domain\Repository;
 
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\Restriction\EndTimeRestriction;
+use TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer;
+use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
+use TYPO3\CMS\Core\Database\Query\Restriction\StartTimeRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
+use TYPO3\CMS\Extbase\Service\EnvironmentService;
 
 /*
  * Category Repository to find records for our search form
  */
 class CategoryRepository extends \TYPO3\CMS\Extbase\Domain\Repository\CategoryRepository
 {
+    /**
+     * @var EnvironmentService
+     */
+    protected $environmentService;
+
+    public function __construct(
+        ObjectManagerInterface $objectManager,
+        EnvironmentService $environmentService
+    ) {
+        parent::__construct($objectManager);
+
+        $this->environmentService = $environmentService;
+    }
+
     public function getCategories($categoryUids): QueryResultInterface
     {
         $categoryUids = GeneralUtility::intExplode(',', $categoryUids);
@@ -62,5 +84,66 @@ class CategoryRepository extends \TYPO3\CMS\Extbase\Domain\Repository\CategoryRe
         $constraint[] = $query->equals('parent', $parent);
 
         return $query->matching($query->logicalAnd($constraint))->execute();
+    }
+
+    /**
+     * A very fast method to just add the related category records to event record.
+     * Currently used to re-generate day records at CLI and task.
+     *
+     * @param array $eventRecord
+     * @param bool $ignoreEnableFields If true hidden/start/end will not be included.
+     * @return void
+     */
+    public function addCategories(array &$eventRecord, bool $ignoreEnableFields = false): void
+    {
+        if (
+            $eventRecord === []
+            || !array_key_exists('uid', $eventRecord)
+            || empty($eventRecord['uid'])
+            || !MathUtility::canBeInterpretedAsInteger($eventRecord['uid'])
+        ) {
+            return;
+        }
+
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('sys_category');
+        if ($this->environmentService->isEnvironmentInFrontendMode()) {
+            $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
+        }
+
+        if ($ignoreEnableFields) {
+            $queryBuilder->getRestrictions()->removeByType(StartTimeRestriction::class);
+            $queryBuilder->getRestrictions()->removeByType(EndTimeRestriction::class);
+            $queryBuilder->getRestrictions()->removeByType(HiddenRestriction::class);
+        }
+
+        $statement = $queryBuilder
+            ->select('*')
+            ->from('sys_category', 'c')
+            ->leftJoin(
+                'c',
+                'sys_category_record_mm',
+                'ce_mm',
+                $queryBuilder->expr()->eq(
+                    'c.uid',
+                    $queryBuilder->quoteIdentifier('ce_mm.uid_local')
+                )
+            )
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'ce_mm.uid_foreign',
+                    $queryBuilder->createNamedParameter((int)$eventRecord['uid'])
+                )
+            )
+            ->execute();
+
+        $eventRecord['categories'] = [];
+        while ($categoryRecord = $statement->fetch()) {
+            $eventRecord['categories'][] = $categoryRecord;
+        }
+    }
+
+    protected function getConnectionPool(): ConnectionPool
+    {
+        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 }

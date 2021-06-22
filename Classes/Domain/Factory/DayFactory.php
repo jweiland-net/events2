@@ -41,11 +41,6 @@ class DayFactory
     protected $eventRepository;
 
     /**
-     * @var DayRelationService
-     */
-    protected $dayRelationService;
-
-    /**
      * @var array
      */
     protected $processOrderedMethods = [
@@ -57,12 +52,10 @@ class DayFactory
 
     public function __construct(
         DatabaseService $databaseService,
-        EventRepository $eventRepository,
-        DayRelationService $dayRelationService
+        EventRepository $eventRepository
     ) {
         $this->databaseService = $databaseService;
         $this->eventRepository = $eventRepository;
-        $this->dayRelationService = $dayRelationService;
     }
 
     /**
@@ -167,13 +160,6 @@ class DayFactory
         if (!$event->getEventBegin() instanceof \DateTime) {
             // Normally this can't be thrown, as event begin is a required field.
             throw new \Exception('Given event does not have an event begin date assigned.', 1548927203);
-        }
-
-        $event->getDays()->rewind();
-
-        if (!$event->getDays()->count()) {
-            // event seems to be out of time frame. Try to re-generate day records
-            $this->dayRelationService->addDay($event, $event->getEventBegin());
         }
 
         $event->getDays()->rewind();
