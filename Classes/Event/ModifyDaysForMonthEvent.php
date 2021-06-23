@@ -30,4 +30,9 @@ class ModifyDaysForMonthEvent
     {
         return $this->days;
     }
+
+    public function setDays(array $days): void
+    {
+        $this->days = $days;
+    }
 }
