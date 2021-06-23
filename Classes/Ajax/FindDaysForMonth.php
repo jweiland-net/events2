@@ -10,12 +10,14 @@
 namespace JWeiland\Events2\Ajax;
 
 use JWeiland\Events2\Configuration\ExtConf;
+use JWeiland\Events2\Event\ModifyDaysForMonthEvent;
 use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Session\UserSession;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -61,6 +63,11 @@ class FindDaysForMonth
     protected $databaseService;
 
     /**
+     * @var EventDispatcher
+     */
+    protected $eventDispatcher;
+
+    /**
      * Will be called by call_user_func_array, so don't add Extbase classes with inject methods as argument
      *
      * @param ExtConf $extConf
@@ -68,19 +75,22 @@ class FindDaysForMonth
      * @param CacheHashCalculator $cacheHashCalculator
      * @param UserSession $userSession
      * @param DatabaseService $databaseService
+     * @param EventDispatcher $eventDispatcher
      */
     public function __construct(
         ExtConf $extConf,
         DateTimeUtility $dateTimeUtility,
         CacheHashCalculator $cacheHashCalculator,
         UserSession $userSession,
-        DatabaseService $databaseService
+        DatabaseService $databaseService,
+        EventDispatcher $eventDispatcher
     ) {
         $this->extConf = $extConf;
         $this->dateTimeUtility = $dateTimeUtility;
         $this->cacheHashCalculator = $cacheHashCalculator;
         $this->userSession = $userSession;
         $this->databaseService = $databaseService;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function processRequest(ServerRequestInterface $request): ResponseInterface
@@ -114,7 +124,12 @@ class FindDaysForMonth
         }
         $this->addHolidays($dayArray);
 
-        return new JsonResponse($dayArray);
+        /** @var ModifyDaysForMonthEvent $event */
+        $event = $this->eventDispatcher->dispatch(
+            new ModifyDaysForMonthEvent($dayArray)
+        );
+
+        return new JsonResponse($event->getDays());
     }
 
     protected function initialize(array $arguments): void
