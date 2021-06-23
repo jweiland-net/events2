@@ -57,7 +57,7 @@ jobs:
           composer require typo3/cms-extensionmanager:${{ matrix.typo3 }} --no-progress
           # SF: Remove next line, if version 2.13.2 was released
           # Issue: https://github.com/Nimut/testing-framework/issues/136
-          composer require doctrine/dbal:2.10.4 --no-progress
+          composer require doctrine/dbal:2.10.4 doctrine/cache:^1.0 --no-progress
           git checkout composer.json
 
       - name: php-cs-fixer
