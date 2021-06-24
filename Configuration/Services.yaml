@@ -11,6 +11,10 @@ services:
   JWeiland\Events2\Ajax\FindDaysForMonth:
     public: true
 
+  # Called by makeInstance TCA overrides of location
+  JWeiland\Events2\Configuration\ExtConf:
+    public: true
+
   JWeiland\Events2\Domain\Factory\DayFactory:
     public: true
 
