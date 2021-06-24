@@ -31,12 +31,12 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 class AbstractController extends ActionController
 {
     /**
-     * @var
+     * @var TypoScriptService
      */
     protected $typoScriptService;
 
     /**
-     * @var
+     * @var ExtConf
      */
     protected $extConf;
 
