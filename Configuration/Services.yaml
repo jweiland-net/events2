@@ -11,6 +11,10 @@ services:
   JWeiland\Events2\Ajax\FindDaysForMonth:
     public: true
 
+  # Called by makeInstance in BE form FormDataGroup/OrderedProviderList
+  JWeiland\Events2\Backend\FormDataProvider\ModifyRootUidOfTreeSelectElements:
+    public: true
+
   # Called by makeInstance TCA overrides of location
   JWeiland\Events2\Configuration\ExtConf:
     public: true
@@ -21,14 +25,6 @@ services:
   # Called by makeInstance in event model where constructors are not loaded in some cases
   # Called by makeInstance in static GetMergedEventTimesViewHelper
   JWeiland\Events2\Domain\Factory\TimeFactory:
-    public: true
-
-  # Called by makeInstance in BE form FormDataGroup/OrderedProviderList
-  JWeiland\Events2\Backend\FormDataProvider\ModifyRootUidOfTreeSelectElements:
-    public: true
-
-  # Called by makeInstance out of TypoScript
-  JWeiland\Events2\PageTitleProvider\Events2PageTitleProvider:
     public: true
 
   # Called by makeInstance in TYPO3s DataHandler
@@ -43,12 +39,20 @@ services:
   JWeiland\Events2\Hooks\Solr\ResultsCommandHook:
     public: true
 
+  # Called by makeInstance out of TypoScript
+  JWeiland\Events2\PageTitleProvider\Events2PageTitleProvider:
+    public: true
+
   # Contains public API for other extension developers. Keep public.
   JWeiland\Events2\Service\EventService:
     public: true
 
   # Called by makeInstance in SchedulerModuleController
   JWeiland\Events2\Task\ReGenerateDays:
+    public: true
+
+  # Called by makeInstance in TCA validation "eval"
+  JWeiland\Events2\Tca\Type\Time:
     public: true
 
   # Must be public, because it was called by makeInstance in TYPO3s UpgradeWizardsService
