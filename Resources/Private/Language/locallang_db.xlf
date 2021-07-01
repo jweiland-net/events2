@@ -216,7 +216,7 @@
 			<trans-unit id="tx_events2_domain_model_event.location">
 				<source>Location</source>
 			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.organizer">
+			<trans-unit id="tx_events2_domain_model_event.organizers">
 				<source>Organizer</source>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.images">
