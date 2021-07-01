@@ -272,7 +272,7 @@
 				<source>Location</source>
 				<target>Veranstaltungsort</target>
 			</trans-unit>
-			<trans-unit id="tx_events2_domain_model_event.organizer">
+			<trans-unit id="tx_events2_domain_model_event.organizers">
 				<source>Organizer</source>
 				<target>Veranstalter</target>
 			</trans-unit>
