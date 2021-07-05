@@ -17,7 +17,6 @@ use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Domain\Repository\OrganizerRepository;
 use JWeiland\Events2\Helper\PathSegmentHelper;
-use JWeiland\Events2\Importer\AbstractImporter;
 use JWeiland\Events2\Importer\XmlImporter;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
