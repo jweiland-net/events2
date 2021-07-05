@@ -67,6 +67,7 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
         $this->extConf->setXmlImportValidatorPath('EXT:events2/Resources/Public/XmlImportWithoutRelationsValidator.xsd');
         $this->extConf->setOrganizerIsRequired(false);
         $this->extConf->setLocationIsRequired(false);
+        $this->extConf->setPathSegmentType('uid');
 
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->eventRepository = $this->objectManager->get(EventRepository::class);
@@ -104,5 +105,27 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
                 'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt'
             ))
         );
+
+        self::assertSame(
+            3,
+            $this->getDatabaseConnection()
+                ->selectCount(
+                    '*',
+                    'tx_events2_domain_model_event'
+                )
+        );
+
+        // Check, if path_segment is set for all three records
+        $statement = $this->getDatabaseConnection()
+            ->select(
+                '*',
+                'tx_events2_domain_model_event',
+                '1=1'
+            );
+
+        while ($eventRecord = $statement->fetch()) {
+            self::assertNotSame('/', $eventRecord['path_segment']);
+            self::assertNotSame('', $eventRecord['path_segment']);
+        }
     }
 }
