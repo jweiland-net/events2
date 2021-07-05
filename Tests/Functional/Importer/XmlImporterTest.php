@@ -16,11 +16,15 @@ use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Domain\Repository\OrganizerRepository;
+use JWeiland\Events2\Helper\PathSegmentHelper;
+use JWeiland\Events2\Importer\AbstractImporter;
 use JWeiland\Events2\Importer\XmlImporter;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -33,6 +37,11 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 class XmlImporterTest extends FunctionalTestCase
 {
     /**
+     * @var XmlImporter
+     */
+    protected $subject;
+
+    /**
      * @var EventRepository
      */
     protected $eventRepository;
@@ -41,6 +50,21 @@ class XmlImporterTest extends FunctionalTestCase
      * @var ObjectManager
      */
     protected $objectManager;
+
+    /**
+     * @var ExtConf
+     */
+    protected $extConf;
+
+    /**
+     * @var EventDispatcher|ObjectProphecy
+     */
+    protected $eventDispatcherProphecy;
+
+    /**
+     * @var PathSegmentHelper
+     */
+    protected $pathSegmentHelper;
 
     /**
      * @var array
@@ -72,17 +96,48 @@ class XmlImporterTest extends FunctionalTestCase
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->eventRepository = $this->objectManager->get(EventRepository::class);
 
+        $this->extConf = new ExtConf(new ExtensionConfiguration());
+        $this->extConf->setOrganizerIsRequired(true);
+        $this->extConf->setLocationIsRequired(true);
+        $this->extConf->setPathSegmentType('uid');
+
+        $this->eventDispatcherProphecy = $this->prophesize(EventDispatcher::class);
+
+        $this->pathSegmentHelper = new PathSegmentHelper(
+            $this->objectManager,
+            $this->extConf,
+            $this->eventDispatcherProphecy->reveal()
+        );
+
+        $this->subject = new XmlImporter(
+            $this->objectManager->get(EventRepository::class),
+            $this->objectManager->get(OrganizerRepository::class),
+            $this->objectManager->get(LocationRepository::class),
+            $this->objectManager->get(CategoryRepository::class),
+            $this->objectManager->get(PersistenceManagerInterface::class),
+            $this->pathSegmentHelper,
+            new DateTimeUtility(),
+            $this->extConf
+        );
+
         $GLOBALS['BE_USER'] = new BackendUserAuthentication();
     }
 
     public function tearDown(): void
     {
         unset(
-            $GLOBALS['BE_USER']
+            $GLOBALS['BE_USER'],
+            $this->eventRepository,
+            $this->objectManager,
+            $this->extConf,
+            $this->eventDispatcherProphecy,
+            $this->subject
         );
+
         unlink(GeneralUtility::getFileAbsFileName(
             'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt'
         ));
+
         parent::tearDown();
     }
 
@@ -93,22 +148,10 @@ class XmlImporterTest extends FunctionalTestCase
     {
         $fileObject = ResourceFactory::getInstance()
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/Success.xml');
-        $extConf = new ExtConf(new ExtensionConfiguration());
-        $extConf->setOrganizerIsRequired(true);
-        $extConf->setLocationIsRequired(true);
-        $xmlImporter = new XmlImporter(
-            $this->objectManager->get(EventRepository::class),
-            $this->objectManager->get(OrganizerRepository::class),
-            $this->objectManager->get(LocationRepository::class),
-            $this->objectManager->get(CategoryRepository::class),
-            $this->objectManager->get(PersistenceManagerInterface::class),
-            new DateTimeUtility(),
-            $extConf
-        );
-        $xmlImporter->setFile($fileObject);
-        $xmlImporter->setStoragePid(12);
+        $this->subject->setFile($fileObject);
+        $this->subject->setStoragePid(12);
 
-        self::assertTrue($xmlImporter->import());
+        self::assertTrue($this->subject->import());
         self::assertRegExp(
             '/We have processed 3 events/',
             file_get_contents(GeneralUtility::getFileAbsFileName(
@@ -124,11 +167,10 @@ class XmlImporterTest extends FunctionalTestCase
     {
         $fileObject = ResourceFactory::getInstance()
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/MissingCategoryEntryEvent.xml');
-        $xmlImporter = $this->objectManager->get(XmlImporter::class);
-        $xmlImporter->setFile($fileObject);
-        $xmlImporter->setStoragePid(12);
+        $this->subject->setFile($fileObject);
+        $this->subject->setStoragePid(12);
 
-        self::assertFalse($xmlImporter->import());
+        self::assertFalse($this->subject->import());
         self::assertRegExp(
             '/Missing child element.*?Expected is.*?categories/',
             file_get_contents(GeneralUtility::getFileAbsFileName(
@@ -144,11 +186,12 @@ class XmlImporterTest extends FunctionalTestCase
     {
         $fileObject = ResourceFactory::getInstance()
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/NotExistingCategoriesEvent.xml');
-        $xmlImporter = $this->objectManager->get(XmlImporter::class);
-        $xmlImporter->setFile($fileObject);
-        $xmlImporter->setStoragePid(12);
+        $this->extConf->setLocationIsRequired(false);
+        $this->extConf->setOrganizerIsRequired(false);
+        $this->subject->setFile($fileObject);
+        $this->subject->setStoragePid(12);
 
-        self::assertFalse($xmlImporter->import());
+        self::assertFalse($this->subject->import());
         self::assertRegExp(
             '/Given category "I\'m not in database" does not exist/',
             file_get_contents(GeneralUtility::getFileAbsFileName(
@@ -164,21 +207,10 @@ class XmlImporterTest extends FunctionalTestCase
     {
         $fileObject = ResourceFactory::getInstance()
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/NotExistingOrganizerEvent.xml');
-        $extConf = new ExtConf(new ExtensionConfiguration());
-        $extConf->setOrganizerIsRequired(true);
-        $xmlImporter = new XmlImporter(
-            $this->objectManager->get(EventRepository::class),
-            $this->objectManager->get(OrganizerRepository::class),
-            $this->objectManager->get(LocationRepository::class),
-            $this->objectManager->get(CategoryRepository::class),
-            $this->objectManager->get(PersistenceManagerInterface::class),
-            new DateTimeUtility(),
-            $extConf
-        );
-        $xmlImporter->setFile($fileObject);
-        $xmlImporter->setStoragePid(12);
+        $this->subject->setFile($fileObject);
+        $this->subject->setStoragePid(12);
 
-        self::assertFalse($xmlImporter->import());
+        self::assertFalse($this->subject->import());
         self::assertRegExp(
             '/Given organizer "AG" does not exist/',
             file_get_contents(GeneralUtility::getFileAbsFileName(
@@ -194,21 +226,11 @@ class XmlImporterTest extends FunctionalTestCase
     {
         $fileObject = ResourceFactory::getInstance()
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/NotExistingLocationEvent.xml');
-        $extConf = new ExtConf(new ExtensionConfiguration());
-        $extConf->setLocationIsRequired(true);
-        $xmlImporter = new XmlImporter(
-            $this->objectManager->get(EventRepository::class),
-            $this->objectManager->get(OrganizerRepository::class),
-            $this->objectManager->get(LocationRepository::class),
-            $this->objectManager->get(CategoryRepository::class),
-            $this->objectManager->get(PersistenceManagerInterface::class),
-            new DateTimeUtility(),
-            $extConf
-        );
-        $xmlImporter->setFile($fileObject);
-        $xmlImporter->setStoragePid(12);
+        $this->extConf->setOrganizerIsRequired(false);
+        $this->subject->setFile($fileObject);
+        $this->subject->setStoragePid(12);
 
-        self::assertFalse($xmlImporter->import());
+        self::assertFalse($this->subject->import());
         self::assertRegExp(
             '/Given location "Not existing" does not exist/',
             file_get_contents(GeneralUtility::getFileAbsFileName(
@@ -225,18 +247,19 @@ class XmlImporterTest extends FunctionalTestCase
         // Add simple event
         $fileObject = ResourceFactory::getInstance()
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/SimpleEvent.xml');
-        $xmlImporter = $this->objectManager->get(XmlImporter::class);
-        $xmlImporter->setFile($fileObject);
-        $xmlImporter->setStoragePid(12);
-        self::assertTrue($xmlImporter->import());
+        $this->extConf->setLocationIsRequired(false);
+        $this->extConf->setOrganizerIsRequired(false);
+
+        $this->subject->setFile($fileObject);
+        $this->subject->setStoragePid(12);
+        self::assertTrue($this->subject->import());
 
         // Override simple event
         $fileObject = ResourceFactory::getInstance()
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/ModifySimpleEvent.xml');
-        $xmlImporter = $this->objectManager->get(XmlImporter::class);
-        $xmlImporter->setFile($fileObject);
-        $xmlImporter->setStoragePid(12);
-        self::assertTrue($xmlImporter->import());
+        $this->subject->setFile($fileObject);
+        $this->subject->setStoragePid(12);
+        self::assertTrue($this->subject->import());
 
         // Test, if we still have exactly one event
         $events = $this->createEventQuery()->execute(true);
@@ -265,19 +288,20 @@ class XmlImporterTest extends FunctionalTestCase
         // Add 2 simple events
         $fileObject = ResourceFactory::getInstance()
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/SimpleEvent.xml');
-        $xmlImporter = $this->objectManager->get(XmlImporter::class);
-        $xmlImporter->setFile($fileObject);
-        $xmlImporter->setStoragePid(12);
-        $xmlImporter->import();
-        $xmlImporter->import();
+        $this->extConf->setLocationIsRequired(false);
+        $this->extConf->setOrganizerIsRequired(false);
+
+        $this->subject->setFile($fileObject);
+        $this->subject->setStoragePid(12);
+        $this->subject->import(); // Import event to be deleted
+        $this->subject->import(); // delete one of the imported event
 
         // Delete one simple event
         $fileObject = ResourceFactory::getInstance()
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/DeleteSimpleEvent.xml');
-        $xmlImporter = $this->objectManager->get(XmlImporter::class);
-        $xmlImporter->setFile($fileObject);
-        $xmlImporter->setStoragePid(12);
-        self::assertTrue($xmlImporter->import());
+        $this->subject->setFile($fileObject);
+        $this->subject->setStoragePid(12);
+        self::assertTrue($this->subject->import());
 
         // Test, if we still have exactly one event
         $events = $this->createEventQuery()->execute(true);

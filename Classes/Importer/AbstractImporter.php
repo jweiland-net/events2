@@ -82,14 +82,14 @@ abstract class AbstractImporter implements ImporterInterface
     protected $categoryRepository;
 
     /**
-     * @var DateTimeUtility
-     */
-    protected $dateTimeUtility;
-
-    /**
      * @var PathSegmentHelper
      */
     protected $pathSegmentHelper;
+
+    /**
+     * @var DateTimeUtility
+     */
+    protected $dateTimeUtility;
 
     /**
      * @var ExtConf
@@ -107,8 +107,8 @@ abstract class AbstractImporter implements ImporterInterface
         LocationRepository $locationRepository,
         CategoryRepository $categoryRepository,
         PersistenceManagerInterface $persistenceManager,
-        DateTimeUtility $dateTimeUtility,
         PathSegmentHelper $pathSegmentHelper,
+        DateTimeUtility $dateTimeUtility,
         ExtConf $extConf
     ) {
         $this->eventRepository = $eventRepository;
@@ -116,8 +116,8 @@ abstract class AbstractImporter implements ImporterInterface
         $this->locationRepository = $locationRepository;
         $this->categoryRepository = $categoryRepository;
         $this->persistenceManager = $persistenceManager;
-        $this->dateTimeUtility = $dateTimeUtility;
         $this->pathSegmentHelper = $pathSegmentHelper;
+        $this->dateTimeUtility = $dateTimeUtility;
         $this->extConf = $extConf;
         $this->today = new \DateTime('now');
     }
