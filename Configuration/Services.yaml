@@ -11,6 +11,10 @@ services:
   JWeiland\Events2\Ajax\FindDaysForMonth:
     public: true
 
+  # Called by makeInstance in eID middleware
+  JWeiland\Events2\Ajax\FindLocations:
+    public: true
+
   # Called by makeInstance in BE form FormDataGroup/OrderedProviderList
   JWeiland\Events2\Backend\FormDataProvider\ModifyRootUidOfTreeSelectElements:
     public: true
