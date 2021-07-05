@@ -17,6 +17,7 @@ use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Domain\Repository\OrganizerRepository;
+use JWeiland\Events2\Helper\PathSegmentHelper;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
@@ -86,6 +87,11 @@ abstract class AbstractImporter implements ImporterInterface
     protected $dateTimeUtility;
 
     /**
+     * @var PathSegmentHelper
+     */
+    protected $pathSegmentHelper;
+
+    /**
      * @var ExtConf
      */
     protected $extConf;
@@ -102,6 +108,7 @@ abstract class AbstractImporter implements ImporterInterface
         CategoryRepository $categoryRepository,
         PersistenceManagerInterface $persistenceManager,
         DateTimeUtility $dateTimeUtility,
+        PathSegmentHelper $pathSegmentHelper,
         ExtConf $extConf
     ) {
         $this->eventRepository = $eventRepository;
@@ -110,6 +117,7 @@ abstract class AbstractImporter implements ImporterInterface
         $this->categoryRepository = $categoryRepository;
         $this->persistenceManager = $persistenceManager;
         $this->dateTimeUtility = $dateTimeUtility;
+        $this->pathSegmentHelper = $pathSegmentHelper;
         $this->extConf = $extConf;
         $this->today = new \DateTime('now');
     }

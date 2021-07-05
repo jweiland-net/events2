@@ -188,8 +188,10 @@ class XmlImporter extends AbstractImporter
                 $event->setImportId($eventRecord['import_id'] ?: '');
                 $event->setHidden(true);
                 $event->setPid($this->storagePid);
+                $this->addPathSegment($event);
                 $this->persistenceManager->add($event);
-                break;
+
+            break;
         }
     }
 
@@ -249,6 +251,17 @@ class XmlImporter extends AbstractImporter
                 }
             }
         }
+    }
+
+    /**
+     * This method will store the event, if no UID was given (needed for URL like title-uid.html). So please keep
+     * this method at last position just before repo will add event, but just after event was set to hidden.
+     *
+     * @param Event $event
+     */
+    protected function addPathSegment(Event $event): void
+    {
+        $this->pathSegmentHelper->updatePathSegmentForEvent($event);
     }
 
     protected function addDateProperties(Event $event, array $eventRecord): void
