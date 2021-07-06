@@ -24,6 +24,9 @@ All deprecated methods and version_compare lines have been removed.
 
 ``edit`` action is defined as ``uncached`` in ext_localconf.php now.
 
+You have to remove existing Re-Generate tasks from scheduler and create them again. That's because of changed
+contructor arguments.
+
 Update to Version 6.3.0
 =======================
 
