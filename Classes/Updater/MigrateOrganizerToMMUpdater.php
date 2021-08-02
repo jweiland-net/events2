@@ -48,6 +48,15 @@ class MigrateOrganizerToMMUpdater implements UpgradeWizardInterface
     public function updateNecessary(): bool
     {
         $queryBuilder = $this->getQueryBuilder();
+        $schemaManager = $queryBuilder->getConnection()->getSchemaManager();
+        if ($schemaManager === null) {
+            return false;
+        }
+
+        $columns = array_keys($schemaManager->listTableColumns('tx_events2_domain_model_event'));
+        if (!in_array('organizer', $columns, true)) {
+            return false;
+        }
 
         $amountOfMigratedRecords = (int)$queryBuilder
             ->count('*')
