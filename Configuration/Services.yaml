@@ -48,7 +48,8 @@ services:
     public: true
 
   # Contains public API for other extension developers. Keep public.
-  JWeiland\Events2\Service:
+  JWeiland\Events2\Service\:
+    resource: '../Classes/Service/*'
     public: true
 
   # Called by makeInstance in SchedulerModuleController
