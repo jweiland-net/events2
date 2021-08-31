@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Domain\Repository;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /*
@@ -19,6 +20,13 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  */
 class CategoryRepository extends \TYPO3\CMS\Extbase\Domain\Repository\CategoryRepository
 {
+    /**
+     * @var array
+     */
+    protected $defaultOrderings = [
+        'title' => QueryInterface::ORDER_ASCENDING
+    ];
+
     public function getCategories($categoryUids): QueryResultInterface
     {
         $categoryUids = GeneralUtility::intExplode(',', $categoryUids);
