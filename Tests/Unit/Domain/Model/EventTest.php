@@ -665,6 +665,7 @@ class EventTest extends UnitTestCase
         $exceptions = new ObjectStorage();
         $exceptions->attach($exception);
 
+        $this->subject->setEventType('duration');
         $this->subject->setExceptions($exceptions);
 
         $expectedExceptions = new ObjectStorage();
@@ -690,6 +691,7 @@ class EventTest extends UnitTestCase
         $exceptions = new ObjectStorage();
         $exceptions->attach($exception);
 
+        $this->subject->setEventType('recurring');
         $this->subject->setExceptions($exceptions);
 
         $expectedExceptions = new ObjectStorage();
@@ -719,6 +721,7 @@ class EventTest extends UnitTestCase
         $exceptions->attach($removeException);
         $exceptions->attach($addException);
 
+        $this->subject->setEventType('duration');
         $this->subject->setExceptions($exceptions);
 
         $expectedAddExceptions = new ObjectStorage();
@@ -750,6 +753,7 @@ class EventTest extends UnitTestCase
         $exceptions->attach($firstAddException);
         $exceptions->attach($secondAddException);
 
+        $this->subject->setEventType('recurring');
         $this->subject->setExceptions($exceptions);
 
         $expectedAddExceptions = new ObjectStorage();
@@ -791,6 +795,7 @@ class EventTest extends UnitTestCase
         $exceptions->attach($timeException);
         $exceptions->attach($infoException);
 
+        $this->subject->setEventType('duration');
         $this->subject->setExceptions($exceptions);
 
         $expectedExceptions = new ObjectStorage();
