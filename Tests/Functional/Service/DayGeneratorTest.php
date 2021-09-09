@@ -796,7 +796,7 @@ class DayGeneratorTest extends FunctionalTestCase
 
         $event = new Event();
         $event->_setProperty('uid', 123);
-        $event->setEventType('single');
+        $event->setEventType('duration');
         $event->setEventBegin($eventBegin);
         $event->setXth(31);
         $event->setWeekday(127);
@@ -827,10 +827,11 @@ class DayGeneratorTest extends FunctionalTestCase
      */
     public function initializeWithAddExceptionAddsOneDayInStorage(): void
     {
-        $timestamp = mktime(0, 0, 0);
-
-        // These dates will be created with timezone_type = 1, which does know the timezone (+02:00) only from the current date
-        $eventBegin = new \DateTime(date('c', $timestamp));
+        $eventBegin = new \DateTime();
+        $eventBegin->modify('midnight');
+        $recurringEnd = new \DateTime();
+        $recurringEnd->modify('midnight');
+        $recurringEnd->modify('+4 days');
         $tomorrow = clone $eventBegin;
         $tomorrow->modify('tomorrow');
 
@@ -846,30 +847,27 @@ class DayGeneratorTest extends FunctionalTestCase
 
         $event = new Event();
         $event->_setProperty('uid', 123);
-        $event->setEventType('single');
+        $event->setEventType('recurring');
         $event->setEventBegin($eventBegin);
+        $event->setRecurringEnd($recurringEnd);
         $event->setXth(31);
         $event->setWeekday(127);
         $event->setEachWeeks(0);
         $event->setEachMonths(0);
         $event->setExceptions($exceptions);
 
+        $tempDate = clone $eventBegin;
         $expectedDays = [];
-        $expectedDays[$eventBegin->format('U')] = $eventBegin;
-        $expectedDays[$tomorrow->format('U')] = $tomorrow;
+        for ($i = 0; $i < 5; ++$i) {
+            $expectedDays[$tempDate->format('U')] = clone $tempDate;
+            $tempDate->modify('+1 day');
+        }
 
         self::assertTrue($this->subject->initialize($event));
-        $dateTimeStorage = $this->subject->getDateTimeStorage();
-
-        // assertEquals will only check for correct dates, but not for different timezoneTypes
         self::assertEquals(
             $expectedDays,
-            $dateTimeStorage
+            $this->subject->getDateTimeStorage()
         );
-
-        foreach ($dateTimeStorage as $dateTime) {
-            self::assertIsArray($dateTime->getTimezone()->getLocation());
-        }
     }
 
     /**

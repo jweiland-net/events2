@@ -108,6 +108,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $exceptions->attach($secondAddException);
 
         $event = new Event();
+        $event->setEventType('duration');
         $event->setExceptions($exceptions);
 
         $expectedTimes = new \SplObjectStorage();
@@ -143,6 +144,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $exceptions->attach($secondAddException);
 
         $event = new Event();
+        $event->setEventType('recurring');
         $event->setExceptions($exceptions);
 
         $expectedTimes = new \SplObjectStorage();
@@ -445,6 +447,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $exceptions->attach($exception4);
 
         $event = new Event();
+        $event->setEventType('duration');
         $event->setExceptions($exceptions);
 
         $expectedTimes = new \SplObjectStorage();
