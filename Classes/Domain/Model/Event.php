@@ -480,14 +480,16 @@ class Event extends AbstractEntity
         string $exceptionTypes = ''
     ): ObjectStorage {
         $exceptionsForDate = new ObjectStorage();
-        $dateTimeUtility = GeneralUtility::makeInstance(DateTimeUtility::class);
-        foreach ($this->getExceptions($exceptionTypes) as $filteredException) {
-            $exceptionDate = $dateTimeUtility->standardizeDateTimeObject($filteredException->getExceptionDate());
-            $currentDate = $dateTimeUtility->standardizeDateTimeObject($date);
+        if (in_array($this->getEventType(), ['recurring', 'duration']) && $this->getExceptions()->count()) {
+            $dateTimeUtility = GeneralUtility::makeInstance(DateTimeUtility::class);
+            foreach ($this->getExceptions($exceptionTypes) as $filteredException) {
+                $exceptionDate = $dateTimeUtility->standardizeDateTimeObject($filteredException->getExceptionDate());
+                $currentDate = $dateTimeUtility->standardizeDateTimeObject($date);
 
-            // we compare objects here so no === possible
-            if ($exceptionDate == $currentDate) {
-                $exceptionsForDate->attach($filteredException);
+                // we compare objects here so no === possible
+                if ($exceptionDate == $currentDate) {
+                    $exceptionsForDate->attach($filteredException);
+                }
             }
         }
 

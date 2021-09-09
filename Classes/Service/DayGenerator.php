@@ -94,8 +94,8 @@ class DayGenerator
             $this->addDayToStorage($event->getEventBegin());
         }
 
-        // exclude or include further days if exceptions are activated
-        if ($event->getExceptions()->count()) {
+        // exclude or include further days for events of type recurring or duration
+        if (in_array($event->getEventType(), ['recurring', 'duration']) && $event->getExceptions()->count()) {
             $this->addExceptions($event);
         }
 
