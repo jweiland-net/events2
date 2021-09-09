@@ -33,14 +33,14 @@ return [
     ],
     'types' => [
         'single' => [
-            'showitem' => '--palette--;;languageHiddenTop, --palette--;;titleType, path_segment, event_begin, event_time,
+            'showitem' => '--palette--;;language, --palette--;;eventTypeHiddenTopOfList, title, path_segment, event_begin, event_time,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.event_details, --palette--;;teaserFreeEntry, detail_information, ticket_link, alternative_times, location, organizers,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.media, images, video_link, download_links,
             --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access, 
             --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access'
         ],
         'recurring' => [
-            'showitem' => '--palette--;;languageHiddenTop, --palette--;;titleType, path_segment,
+            'showitem' => '--palette--;;language, --palette--;;eventTypeHiddenTopOfList, title, path_segment,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.recurring_event,
             --palette--;;recurringBeginEnd, event_time, same_day, multiple_times, xth, weekday, different_times, --palette--;;recurringWeekMonth,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.exceptions, exceptions,
@@ -50,7 +50,7 @@ return [
             --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access'
         ],
         'duration' => [
-            'showitem' => '--palette--;;languageHiddenTop, --palette--;;titleType, path_segment, --palette--;;eventBeginEnd, event_time,
+            'showitem' => '--palette--;;language, --palette--;;eventTypeHiddenTopOfList, title, path_segment, --palette--;;eventBeginEnd, event_time,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.exceptions, exceptions,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.event_details, --palette--;;teaserFreeEntry, detail_information, ticket_link, alternative_times, location, organizers,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.media,--palette--;;newline, images, video_link, download_links,
@@ -59,8 +59,8 @@ return [
         ],
     ],
     'palettes' => [
-        'languageHiddenTop' => ['showitem' => 'sys_language_uid, l10n_parent, hidden, top_of_list'],
-        'titleType' => ['showitem' => 'title, event_type'],
+        'language' => ['showitem' => 'sys_language_uid, l10n_parent'],
+        'eventTypeHiddenTopOfList' => ['showitem' => 'event_type, hidden, top_of_list'],
         'eventBeginEnd' => ['showitem' => 'event_begin, event_end'],
         'recurringBeginEnd' => ['showitem' => 'event_begin, recurring_end'],
         'recurringWeekMonth' => ['showitem' => 'each_weeks, each_months'],
@@ -91,17 +91,13 @@ return [
             'displayCond' => 'FIELD:sys_language_uid:>:0',
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.l18n_parent',
             'config' => [
-                'type' => 'select',
-                'renderType' => 'selectSingle',
-                'items' => [
-                    [
-                        '',
-                        0
-                    ]
-                ],
-                'foreign_table' => 'tx_events2_domain_model_event',
-                'foreign_table_where' => 'AND tx_events2_domain_model_event.pid=###CURRENT_PID### AND tx_events2_domain_model_event.sys_language_uid IN (-1,0)',
-                'default' => 0
+                'type' => 'group',
+                'internal_type' => 'db',
+                'allowed' => 'tx_events2_domain_model_event',
+                'size' => 1,
+                'maxitems' => 1,
+                'minitems' => 0,
+                'default' => 0,
             ]
         ],
         'l10n_source' => [
@@ -573,7 +569,7 @@ return [
                 'type' => 'select',
                 'renderType' => 'selectMultipleSideBySide',
                 'foreign_table' => 'tx_events2_domain_model_organizer',
-                'foreign_table_where' => 'AND 1=1 ORDER BY tx_events2_domain_model_organizer.organizer ASC',
+                'foreign_table_where' => ' AND (tx_events2_domain_model_organizer.sys_language_uid IN (-1,0) OR tx_events2_domain_model_organizer.l10n_parent = 0) ORDER BY tx_events2_domain_model_organizer.organizer ASC',
                 'MM' => 'tx_events2_event_organizer_mm',
                 'size' => 5,
                 'maxitems' => 10,
