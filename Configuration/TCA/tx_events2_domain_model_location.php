@@ -69,17 +69,13 @@ $tx_events2_domain_model_event = [
             'displayCond' => 'FIELD:sys_language_uid:>:0',
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.l18n_parent',
             'config' => [
-                'type' => 'select',
-                'renderType' => 'selectSingle',
-                'items' => [
-                    [
-                        '',
-                        0
-                    ]
-                ],
-                'foreign_table' => 'tx_events2_domain_model_location',
-                'foreign_table_where' => 'AND tx_events2_domain_model_location.pid=###CURRENT_PID### AND tx_events2_domain_model_location.sys_language_uid IN (-1,0)',
-                'default' => 0
+                'type' => 'group',
+                'internal_type' => 'db',
+                'allowed' => 'tx_events2_domain_model_location',
+                'size' => 1,
+                'maxitems' => 1,
+                'minitems' => 0,
+                'default' => 0,
             ]
         ],
         'l10n_source' => [
