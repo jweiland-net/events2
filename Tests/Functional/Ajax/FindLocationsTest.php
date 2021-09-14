@@ -84,7 +84,7 @@ class FindLocationsTest extends FunctionalTestCase
         $queryParams = [
             'tx_events2_events' => [
                 'arguments' => [
-                    'locationPart' => ''
+                    'search' => ''
                 ]
             ]
         ];
@@ -108,7 +108,7 @@ class FindLocationsTest extends FunctionalTestCase
         $queryParams = [
             'tx_events2_events' => [
                 'arguments' => [
-                    'locationPart' => 'Hello german umlauts: öäü. <b>How are you?</b>'
+                    'search' => 'Hello german umlauts: öäü. <b>How are you?</b>'
                 ]
             ]
         ];
@@ -135,7 +135,7 @@ class FindLocationsTest extends FunctionalTestCase
         $queryParams = [
             'tx_events2_events' => [
                 'arguments' => [
-                    'locationPart' => 'x'
+                    'search' => 'x'
                 ]
             ]
         ];
@@ -183,7 +183,7 @@ class FindLocationsTest extends FunctionalTestCase
         $queryParams = [
             'tx_events2_events' => [
                 'arguments' => [
-                    'locationPart' => 'at h'
+                    'search' => 'at h'
                 ]
             ]
         ];
@@ -196,7 +196,7 @@ class FindLocationsTest extends FunctionalTestCase
         $queryParams = [
             'tx_events2_events' => [
                 'arguments' => [
-                    'locationPart' => 'mar'
+                    'search' => 'mar'
                 ]
             ]
         ];
