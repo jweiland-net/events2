@@ -41,12 +41,12 @@ class FindLocations
     {
         $parameters = $request->getQueryParams()['tx_events2_events']['arguments'] ?? [];
 
-        // Hint: search may fail with "&" in $locationPart
-        $locationPart = trim(htmlspecialchars(strip_tags($parameters['locationPart'])));
+        // Hint: search may fail with "&" in $search
+        $search = trim(htmlspecialchars(strip_tags($parameters['search'])));
         // keep it in sync to minLength in JS
-        if (empty($locationPart) || strlen($locationPart) <= 2) {
+        if (empty($search) || strlen($search) <= 2) {
             return new JsonResponse('');
         }
-        return new JsonResponse($this->locationRepository->findLocations($locationPart));
+        return new JsonResponse($this->locationRepository->findLocations($search));
     }
 }
