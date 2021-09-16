@@ -569,7 +569,7 @@ return [
                 'type' => 'select',
                 'renderType' => 'selectMultipleSideBySide',
                 'foreign_table' => 'tx_events2_domain_model_organizer',
-                'foreign_table_where' => ' AND (tx_events2_domain_model_organizer.sys_language_uid IN (-1,0) OR tx_events2_domain_model_organizer.l10n_parent = 0) ORDER BY tx_events2_domain_model_organizer.organizer ASC',
+                'foreign_table_where' => ' AND (###PAGE_TSCONFIG_IDLIST### = 0 OR tx_events2_domain_model_organizer.pid IN(###PAGE_TSCONFIG_IDLIST###)) AND (tx_events2_domain_model_organizer.sys_language_uid IN (-1,0) OR tx_events2_domain_model_organizer.l10n_parent = 0) ORDER BY tx_events2_domain_model_organizer.organizer ASC',
                 'MM' => 'tx_events2_event_organizer_mm',
                 'size' => 5,
                 'maxitems' => 10,
