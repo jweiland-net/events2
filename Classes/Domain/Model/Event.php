@@ -736,8 +736,8 @@ class Event extends AbstractEntity
     }
 
     /**
-     * Returns the location as String.
-     * This is useful for export or LOCATION-part in ICS
+     * Returns the location as string incl. the full address.
+     * This is useful for export or LOCATION-part in ICS.
      *
      * @return string
      */
@@ -745,26 +745,9 @@ class Event extends AbstractEntity
     {
         $location = '';
         if ($this->getLocation() instanceof Location) {
-            $addressParts = [];
-            if ($this->getLocation()->getLocation()) {
-                $addressParts[] = $this->getLocation()->getLocation();
-            }
-            if ($this->getLocation()->getStreet()) {
-                $addressParts[] = trim(sprintf(
-                    '%s %s',
-                    $this->getLocation()->getStreet(),
-                    $this->getLocation()->getHouseNumber()
-                ));
-            }
-            if ($this->getLocation()->getZip() || $this->getLocation()->getCity()) {
-                $addressParts[] = trim(sprintf(
-                    '%s %s',
-                    $this->getLocation()->getZip(),
-                    $this->getLocation()->getCity()
-                ));
-            }
-            $location = implode(', ', $addressParts);
+            $location = $this->getLocation()->getLocationAsString();
         }
+
         return $location;
     }
 

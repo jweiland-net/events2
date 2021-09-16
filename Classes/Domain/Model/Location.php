@@ -134,6 +134,35 @@ class Location extends AbstractEntity
     }
 
     /**
+     * Returns the location as string incl. the full address.
+     * This is useful for export or LOCATION-part in ICS.
+     *
+     * @return string
+     */
+    public function getLocationAsString(): string
+    {
+        $addressParts = [];
+        if ($this->getLocation()) {
+            $addressParts[] = $this->getLocation();
+        }
+        if ($this->getStreet()) {
+            $addressParts[] = trim(sprintf(
+                '%s %s',
+                $this->getStreet(),
+                $this->getHouseNumber()
+            ));
+        }
+        if ($this->getZip() || $this->getCity()) {
+            $addressParts[] = trim(sprintf(
+                '%s %s',
+                $this->getZip(),
+                $this->getCity()
+            ));
+        }
+        return implode(', ', $addressParts);
+    }
+
+    /**
      * SF: Do not add PoiCollection as strict_type to $txMaps2Uid
      * as this will break DataMap in Extbase when maps2 is not installed
      * @link https://github.com/jweiland-net/events2/issues/114
