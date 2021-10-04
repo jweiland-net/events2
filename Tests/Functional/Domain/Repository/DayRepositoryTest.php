@@ -9,7 +9,7 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace JWeiland\Events2\Tests\Functional\Repository;
+namespace JWeiland\Events2\Tests\Functional\Domain\Repository;
 
 use JWeiland\Events2\Domain\Model\Category;
 use JWeiland\Events2\Domain\Model\Day;
@@ -45,6 +45,11 @@ class DayRepositoryTest extends FunctionalTestCase
     protected $dayRepository;
 
     /**
+     * @var EventRepository
+     */
+    protected $eventRepository;
+
+    /**
      * @var QuerySettingsInterface
      */
     protected $querySettings;
@@ -75,8 +80,8 @@ class DayRepositoryTest extends FunctionalTestCase
         $this->dayRepository->setDefaultQuerySettings($this->querySettings);
         $persistenceManager = $this->objectManager->get(PersistenceManager::class);
         $dayRelationService = $this->objectManager->get(DayRelationService::class);
-        $eventRepository = $this->objectManager->get(EventRepository::class);
-        $eventRepository->setDefaultQuerySettings($this->querySettings);
+        $this->eventRepository = $this->objectManager->get(EventRepository::class);
+        $this->eventRepository->setDefaultQuerySettings($this->querySettings);
 
         // As we need day related records, we can not use XML import functionality
         $organizer1 = new Organizer();
@@ -406,7 +411,7 @@ class DayRepositoryTest extends FunctionalTestCase
 
         $persistenceManager->persistAll();
 
-        $events = $eventRepository->findAll();
+        $events = $this->eventRepository->findAll();
         foreach ($events as $event) {
             $dayRelationService->createDayRelations($event->getUid());
         }
@@ -1071,8 +1076,10 @@ class DayRepositoryTest extends FunctionalTestCase
     {
         $tomorrow = new \DateTime('tomorrow midnight');
 
+        $event = $this->eventRepository->findByUid(3);
+
         // EventUid 4 => Holiday duration
-        $day = $this->dayRepository->findDayByEventAndTimestamp(3, (int)$tomorrow->format('U'));
+        $day = $this->dayRepository->findDayByEventAndTimestamp($event, (int)$tomorrow->format('U'));
         self::assertSame(
             'Morgen',
             $day->getEvent()->getTitle()
