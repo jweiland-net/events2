@@ -12,9 +12,11 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Controller;
 
 use JWeiland\Events2\Configuration\ExtConf;
+use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Model\Search;
 use JWeiland\Events2\Domain\Repository\DayRepository;
+use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Domain\Repository\OrganizerRepository;
 use JWeiland\Events2\Service\TypoScriptService;
 use JWeiland\Events2\Utility\CacheUtility;
@@ -31,6 +33,11 @@ class DayController extends AbstractController
      * @var DayRepository
      */
     protected $dayRepository;
+
+    /**
+     * @var EventRepository
+     */
+    protected $eventRepository;
 
     /**
      * @var OrganizerRepository
@@ -190,13 +197,15 @@ class DayController extends AbstractController
      */
     public function showAction(int $event, int $timestamp = 0): void
     {
-        $day = $this->dayRepository->findDayByEventAndTimestamp($event, $timestamp);
-        $this->postProcessControllerAction($day->getEvent(), $day);
-
-        $this->postProcessAndAssignFluidVariables([
-            'day' => $day
-        ]);
-        CacheUtility::addCacheTagsByEventRecords([$day->getEvent()]);
+        $eventObject = $this->eventRepository->findByUid($event);
+        if ($eventObject instanceof Event) {
+            $day = $this->dayRepository->findDayByEventAndTimestamp($event, $timestamp);
+            $this->postProcessControllerAction($day->getEvent(), $day);
+            $this->postProcessAndAssignFluidVariables([
+                'day' => $day
+            ]);
+            CacheUtility::addCacheTagsByEventRecords([$day->getEvent()]);
+        }
     }
 
     /**
