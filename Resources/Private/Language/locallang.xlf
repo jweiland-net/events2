@@ -308,6 +308,9 @@
 			<trans-unit id="no">
 				<source>no</source>
 			</trans-unit>
+			<trans-unit id="noEventFound">
+				<source>The requested event could not be found. It may have already been deleted.</source>
+			</trans-unit>
 			<trans-unit id="noResults">
 				<source>Today there are no events</source>
 			</trans-unit>

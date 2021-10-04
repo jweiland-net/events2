@@ -14,6 +14,8 @@ namespace JWeiland\Events2\Controller;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Service\JsonLdService;
 use JWeiland\Events2\Utility\CacheUtility;
@@ -88,9 +90,14 @@ class DayController extends AbstractController
      */
     public function showAction(int $event, int $timestamp = 0)
     {
-        $day = $this->dayRepository->findDayByEventAndTimestamp($event, $timestamp);
-        $jsonLdService = GeneralUtility::makeInstance(JsonLdService::class);
-        $jsonLdService->addJsonLdToPageHeader($day);
+        $eventObject = $this->eventRepository->findByUid($event);
+        if ($eventObject instanceof Event) {
+            $day = $this->dayRepository->findDayByEventAndTimestamp($event, $timestamp);
+            $jsonLdService = GeneralUtility::makeInstance(JsonLdService::class);
+            $jsonLdService->addJsonLdToPageHeader($day);
+            $this->view->assign('day', $day);
+            CacheUtility::addCacheTagsByEventRecords([$day->getEvent()]);
+        }
 
         // This is a very seldom problem. It appears, when you save tt_content by a hook and cast value of pages to int before save.
         $data = $this->configurationManager->getContentObject()->data;
@@ -101,9 +108,6 @@ class DayController extends AbstractController
                 FlashMessage::WARNING
             );
         }
-
-        $this->view->assign('day', $day);
-        CacheUtility::addCacheTagsByEventRecords([$day->getEvent()]);
     }
 
     /**
