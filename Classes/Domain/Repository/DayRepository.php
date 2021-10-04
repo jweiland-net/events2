@@ -15,6 +15,7 @@ use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Factory\DayFactory;
 use JWeiland\Events2\Domain\Model\Day;
+use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Model\Search;
 use JWeiland\Events2\Event\ModifyQueriesOfFindByTimestampEvent;
@@ -469,14 +470,14 @@ class DayRepository extends Repository
      * Find one Day by Event and Timestamp.
      * If timestamp is empty, we try to find next possible day in future/past or build our own one.
      *
-     * @param int $eventUid
+     * @param Event $event
      * @param int $timestamp
      * @return Day
      * @throws \Exception
      */
-    public function findDayByEventAndTimestamp(int $eventUid, int $timestamp = 0): Day
+    public function findDayByEventAndTimestamp(Event $event, int $timestamp = 0): Day
     {
-        return $this->dayFactory->findDayByEventAndTimestamp($eventUid, $timestamp, $this->createQuery());
+        return $this->dayFactory->findDayByEventAndTimestamp($event, $timestamp, $this->createQuery());
     }
 
     /**
