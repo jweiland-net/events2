@@ -11,8 +11,10 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Controller;
 
+use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Repository\DayRepository;
+use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Domain\Repository\OrganizerRepository;
 use JWeiland\Events2\Service\JsonLdService;
 use JWeiland\Events2\Utility\CacheUtility;
@@ -31,15 +33,24 @@ class DayController extends AbstractController
     protected $dayRepository;
 
     /**
+     * @var EventRepository
+     */
+    protected $eventRepository;
+
+    /**
      * @var OrganizerRepository
      */
     protected $organizerRepository;
 
     public function __construct(
         DayRepository $dayRepository,
+        EventRepository $eventRepository,
         OrganizerRepository $organizerRepository
     ) {
+        parent::__construct();
+
         $this->dayRepository = $dayRepository;
+        $this->eventRepository = $eventRepository;
         $this->organizerRepository = $organizerRepository;
     }
 
@@ -75,7 +86,7 @@ class DayController extends AbstractController
      */
     public function listLatestAction(?Filter $filter = null): void
     {
-        $days = $days = $this->dayRepository->findEvents(
+        $days = $this->dayRepository->findEvents(
             'latest',
             $this->validateAndAssignFilter($filter),
             (int)$this->settings['latest']['amountOfRecordsToShow']
@@ -123,9 +134,14 @@ class DayController extends AbstractController
      */
     public function showAction(int $event, int $timestamp = 0): void
     {
-        $day = $this->dayRepository->findDayByEventAndTimestamp($event, $timestamp);
-        $jsonLdService = GeneralUtility::makeInstance(JsonLdService::class);
-        $jsonLdService->addJsonLdToPageHeader($day);
+        $eventObject = $this->eventRepository->findByUid($event);
+        if ($eventObject instanceof Event) {
+            $day = $this->dayRepository->findDayByEventAndTimestamp($event, $timestamp);
+            $jsonLdService = GeneralUtility::makeInstance(JsonLdService::class);
+            $jsonLdService->addJsonLdToPageHeader($day);
+            $this->view->assign('day', $day);
+            CacheUtility::addCacheTagsByEventRecords([$day->getEvent()]);
+        }
 
         // This is a very seldom problem. It appears, when you save tt_content by a hook and cast value of pages to int before save.
         $data = $this->configurationManager->getContentObject()->data;
