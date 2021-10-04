@@ -161,7 +161,7 @@ class DayFactory
     }
 
     /**
-     * Build day object on  our own.
+     * Build day object on our own.
      * It will not get an UID or PID
      *
      * @param array $searchValues

@@ -1,23 +1,29 @@
-<html
-	xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-	xmlns:e2="http://typo3.org/ns/JWeiland/Events2/ViewHelpers"
-	data-namespace-typo3-fluid="true"
->
+<html lang="en"
+			xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+			xmlns:e2="http://typo3.org/ns/JWeiland/Events2/ViewHelpers"
+			data-namespace-typo3-fluid="true">
+
 <f:layout name="Default" />
 
 <f:section name="main">
-	<f:if condition="{0: settings.display}=={0: 'displayImages'}">
+	<f:flashMessages />
+
+	<f:if condition="{day}">
 		<f:then>
-			<f:if condition="{day.event.images->f:count}">
-				<f:render partial="Event/Images" arguments="{event: day.event}"/>
+			<f:if condition="{0: settings.display}=={0: 'displayImages'}">
+				<f:then>
+					<f:if condition="{day.event.images->f:count}">
+						<f:render partial="Event/Images" arguments="{event: day.event}"/>
+					</f:if>
+				</f:then>
+				<f:else>
+					<f:render section="newEdit" arguments="{event: day.event}" />
+					<f:render partial="Day/Properties" arguments="{day: day}" />
+				</f:else>
 			</f:if>
 		</f:then>
 		<f:else>
-			<f:flashMessages />
-			<f:if condition="{day}">
-				<f:render section="newEdit" arguments="{event: day.event}" />
-				<f:render partial="Day/Properties" arguments="{day: day}" />
-			</f:if>
+			<div>{f:translate(key: 'noEventFound')}</div>
 		</f:else>
 	</f:if>
 </f:section>
