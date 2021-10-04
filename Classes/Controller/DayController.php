@@ -199,7 +199,7 @@ class DayController extends AbstractController
     {
         $eventObject = $this->eventRepository->findByUid($event);
         if ($eventObject instanceof Event) {
-            $day = $this->dayRepository->findDayByEventAndTimestamp($event, $timestamp);
+            $day = $this->dayRepository->findDayByEventAndTimestamp($eventObject, $timestamp);
             $this->postProcessControllerAction($day->getEvent(), $day);
             $this->postProcessAndAssignFluidVariables([
                 'day' => $day
