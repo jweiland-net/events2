@@ -1,28 +1,28 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <xliff version="1.0">
-	<file source-language="en" datatype="plaintext" original="messages" date="2017-08-25T10:38:40Z" product-name="events2">
-		<header/>
-		<body>
-			<trans-unit id="weekday.description">
-				<source>This value is only available in case of time records for a specified weekday. Choose weekday for which this time record should be valid.</source>
-				<target>Dieser Wert kann nur angegeben werden, wenn eine Uhrzeit für einen bestimmten Wochentag konfiguriert werden soll. Wählen Sie einen Wochentag für den diese Uhrzeit gültig sein soll.</target>
-			</trans-unit>
-			<trans-unit id="time_begin.description">
-				<source>When does the event starts?</source>
-				<target>Wann fängt die Veranstaltung an?</target>
-			</trans-unit>
-			<trans-unit id="time_entry.description">
-				<source>When does you open the doors for visitors?</source>
-				<target>Ab wann ist der Einlass für Besucher gestattet?</target>
-			</trans-unit>
-			<trans-unit id="duration.description">
-				<source>How long does this event takes?</source>
-				<target>Wie lange dauert die Veranstaltung?</target>
-			</trans-unit>
-			<trans-unit id="time_end.description">
-				<source>When does the event end?</source>
-				<target>Um wie viel Uhr endet die Veranstaltung?</target>
-			</trans-unit>
-		</body>
-	</file>
+  <file source-language="en" datatype="plaintext" original="messages" date="2017-08-25T10:38:40Z" product-name="events2" target-language="de">
+    <header/>
+    <body>
+      <trans-unit id="weekday.description" approved="yes">
+        <source>This value is only available in case of time records for a specified weekday. Choose weekday for which this time record should be valid.</source>
+        <target state="final">Dieser Wert kann nur angegeben werden, wenn eine Uhrzeit für einen bestimmten Wochentag konfiguriert werden soll. Wählen Sie einen Wochentag für den diese Uhrzeit gültig sein soll.</target>
+      </trans-unit>
+      <trans-unit id="time_begin.description" approved="yes">
+        <source>When does the event starts?</source>
+        <target state="final">Wann beginnt die Veranstaltung?</target>
+      </trans-unit>
+      <trans-unit id="time_entry.description" approved="yes">
+        <source>When does you open the doors for visitors?</source>
+        <target state="final">Wann öffnen Sie die Türen für Besucher?</target>
+      </trans-unit>
+      <trans-unit id="duration.description" approved="yes">
+        <source>How long does this event takes?</source>
+        <target state="final">Wie lange dauert diese Veranstaltung?</target>
+      </trans-unit>
+      <trans-unit id="time_end.description" approved="yes">
+        <source>When does the event end?</source>
+        <target state="final">Wann endet die Veranstaltung?</target>
+      </trans-unit>
+    </body>
+  </file>
 </xliff>
