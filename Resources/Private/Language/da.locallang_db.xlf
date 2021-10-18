@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<xliff version="1.0">
+  <file source-language="en" datatype="plaintext" original="messages" date="2013-03-40T10:38:40Z" product-name="events2" target-language="da">
+    <header/>
+    <body>
+      <trans-unit id="plugin.events.title" approved="yes">
+        <source>Events</source>
+        <target state="final">Begivenheder</target>
+      </trans-unit>
+      <trans-unit id="plugin.events.description" approved="yes">
+        <source>Shows a list of events. You can configure them to show the latest, next or next week events.</source>
+        <target state="final">Viser en liste over begivenheder. Du kan indstille dem til at vise de nyeste, næste eller næste uge begivenheder.</target>
+      </trans-unit>
+      <trans-unit id="plugin.calendar.title" approved="yes">
+        <source>Events: Calendar</source>
+        <target state="final">Begivenheder: Kalender</target>
+      </trans-unit>
+      <trans-unit id="plugin.calendar.description" approved="yes">
+        <source>Shows a little calendar. If a day has some events, this day will be highlighted and clickable, so you can open a list of all events for this day.</source>
+        <target state="final">Viser en lille kalender. Hvis en dag har nogle begivenheder, vil denne dag blive fremhævet og klikbare, så du kan åbne en liste over alle begivenheder for denne dag.</target>
+      </trans-unit>
+      <trans-unit id="plugin.search.title" approved="yes">
+        <source>Events: Search</source>
+        <target state="final">Begivenheder: Søg</target>
+      </trans-unit>
+      <trans-unit id="plugin.search.description" approved="yes">
+        <source>Shows a form to search for events. You should add it to the same page, where you have inserted the event list plugin.</source>
+        <target state="final">Viser en formular til at søge efter begivenheder. Du skal føje den til den samme side, hvor du har indsat begivenhedslistens plugin.</target>
+      </trans-unit>
+      <trans-unit id="plugin.events.title" approved="yes">
+        <source>Events</source>
+        <target state="final">Begivenheder</target>
+      </trans-unit>
+      <trans-unit id="plugin.calendar.title" approved="yes">
+        <source>Events: Calendar</source>
+        <target state="final">Begivenheder: Kalender</target>
+      </trans-unit>
+      <trans-unit id="plugin.search.title" approved="yes">
+        <source>Events: Search</source>
+        <target state="final">Begivenheder: Søg</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_tab" approved="yes">
+        <source>Events</source>
+        <target state="final">Begivenheder</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_organizer" approved="yes">
+        <source>Organizer</source>
+        <target state="final">Organisator</target>
+      </trans-unit>
+      <trans-unit id="createNewRelationForTime" approved="yes">
+        <source>Create new time</source>
+        <target state="final">Opret ny tid</target>
+      </trans-unit>
+      <trans-unit id="task.reCreateDays.title" approved="yes">
+        <source>Re-Create day records</source>
+        <target state="final">Gen-opret dagselementer</target>
+      </trans-unit>
+      <trans-unit id="task.reCreateDays.description" approved="yes">
+        <source>Loops through all current and future events to delete and recreate their day records. Further it cleans up all the old iCal export files.</source>
+        <target state="final">Løber igennem alle aktuelle og fremtidige begivenheder for at slette og genskabe deres dagselementer. Hertil ryddes der op i alle de gamle iCal eksport filer.</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event" approved="yes">
+        <source>Event</source>
+        <target state="final">Begivenhed</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.image.add" approved="yes">
+        <source>Add image</source>
+        <target state="final">Tilføj billede</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.tab.recurring_event" approved="yes">
+        <source>Recurring Event</source>
+        <target state="final">Tilbagevendende Begivenhed</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.tab.exceptions" approved="yes">
+        <source>Exceptions</source>
+        <target state="final">Undtagelser</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.tab.event_details" approved="yes">
+        <source>Event Details</source>
+        <target state="final">Begivenhedsdetaljer</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.tab.media" approved="yes">
+        <source>Media</source>
+        <target state="final">Medie</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.event_type" approved="yes">
+        <source>Event type</source>
+        <target state="final">Begivenhedstype</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.event_type.single" approved="yes">
+        <source>Single</source>
+        <target state="final">Enkel</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.event_type.recurring" approved="yes">
+        <source>Recurring</source>
+        <target state="final">Tilbagevendende</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.event_type.duration" approved="yes">
+        <source>Duration</source>
+        <target state="final">Varighed</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.top_of_list" approved="yes">
+        <source>Top of list</source>
+        <target state="final">Top af liste</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.title" approved="yes">
+        <source>Title</source>
+        <target state="final">Titel</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.path_segment" approved="yes">
+        <source>Speaking URL path segment</source>
+        <target state="final">Speaking URL sti-segment</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.teaser" approved="yes">
+        <source>Teaser</source>
+        <target state="final">Manchet</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.event_begin" approved="yes">
+        <source>Event Begin</source>
+        <target state="final">Begivenhed begynd</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.event_end" approved="yes">
+        <source>Last Event</source>
+        <target state="final">Sidste begivenhed</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.event_time" approved="yes">
+        <source>Time</source>
+        <target state="final">Tid</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.same_day" approved="yes">
+        <source>Same Day</source>
+        <target state="final">Samme dag</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.multiple_times" approved="yes">
+        <source>Multiple times on same day</source>
+        <target state="final">Flere gange samme dag</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.xth" approved="yes">
+        <source>Recurring</source>
+        <target state="final">Tilbagevendende</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.xth.first" approved="yes">
+        <source>1st</source>
+        <target state="final">1.</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.xth.second" approved="yes">
+        <source>2nd</source>
+        <target state="final">2.</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.xth.third" approved="yes">
+        <source>3rd</source>
+        <target state="final">3.</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.xth.fourth" approved="yes">
+        <source>4th</source>
+        <target state="final">4.</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.xth.fifth" approved="yes">
+        <source>5th</source>
+        <target state="final">5.</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.weekday" approved="yes">
+        <source>Weekday</source>
+        <target state="final">Ugedag</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.weekday.monday" approved="yes">
+        <source>Mo</source>
+        <target state="final">Man</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.weekday.tuesday" approved="yes">
+        <source>Tu</source>
+        <target state="final">Tirs</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.weekday.wednesday" approved="yes">
+        <source>We</source>
+        <target state="final">Ons</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.weekday.thursday" approved="yes">
+        <source>Th</source>
+        <target state="final">Tors</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.weekday.friday" approved="yes">
+        <source>Fr</source>
+        <target state="final">Fre</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.weekday.saturday" approved="yes">
+        <source>Sa</source>
+        <target state="final">Lør</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.weekday.sunday" approved="yes">
+        <source>Su</source>
+        <target state="final">Søn</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.different_times" approved="yes">
+        <source>Different times for each weekday</source>
+        <target state="final">Forskellige tidspunkter for hver ugedag</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.each_weeks" approved="yes">
+        <source>Recurring weeks</source>
+        <target state="final">Tilbagevendende uger</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.each_weeks.0" approved="yes">
+        <source>Don't repeat in weeks. Use settings above.</source>
+        <target state="final">Gentag ikke i uger. Brug indstillinger ovenfor.</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.each_weeks.1" approved="yes">
+        <source>Each week</source>
+        <target state="final">Hver uge</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.each_weeks.2" approved="yes">
+        <source>Each 2 weeks</source>
+        <target state="final">Hver anden uge</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.each_weeks.3" approved="yes">
+        <source>Each 3 weeks</source>
+        <target state="final">Hver tredje uge</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.each_weeks.4" approved="yes">
+        <source>Each 4 weeks</source>
+        <target state="final">Hver fjerde uge</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.each_months" approved="yes">
+        <source>Recurring months</source>
+        <target state="final">Tilbagevendende måneder</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.each_months.0" approved="yes">
+        <source>Don't repeat in months. Use settings above.</source>
+        <target state="final">Gentag ikke i måneder. Brug indstillinger ovenfor.</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.each_months.1" approved="yes">
+        <source>Each month</source>
+        <target state="final">Hver måned</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.each_months.2" approved="yes">
+        <source>Each 2 months</source>
+        <target state="final">Hver anden måned</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.each_months.3" approved="yes">
+        <source>Each 3 months</source>
+        <target state="final">Hver tredje måned</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.each_months.4" approved="yes">
+        <source>Each 4 months</source>
+        <target state="final">Hver fjerde måned</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.each_months.5" approved="yes">
+        <source>Each 5 months</source>
+        <target state="final">Hver femte måned</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.each_months.6" approved="yes">
+        <source>Each 6 months</source>
+        <target state="final">Hver sjette måned</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.recurring_end" approved="yes">
+        <source>End of recurring</source>
+        <target state="final">Slut på tilbagevendende</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.exceptions" approved="yes">
+        <source>Exceptions</source>
+        <target state="final">Undtagelser</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.detail_information" approved="yes">
+        <source>Detail Information</source>
+        <target state="final">Detaljeret information</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.free_entry" approved="yes">
+        <source>Free Entry</source>
+        <target state="final">Gratis Indgang</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.ticket_link" approved="yes">
+        <source>Ticket Link</source>
+        <target state="final">Billet link</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.days" approved="yes">
+        <source>Days</source>
+        <target state="final">Dage</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.location" approved="yes">
+        <source>Location</source>
+        <target state="final">Sted</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.organizers">
+        <source>Organizer</source>
+        <target state="needs-translation">Organizer</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.images" approved="yes">
+        <source>Images</source>
+        <target state="final">Billeder</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.video_link" approved="yes">
+        <source>Link to Youtube</source>
+        <target state="final">Link til Youtube</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.download_links" approved="yes">
+        <source>Download links</source>
+        <target state="final">Download links</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.import_id" approved="yes">
+        <source>Import ID</source>
+        <target state="final">Import ID</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_day" approved="yes">
+        <source>Day</source>
+        <target state="final">Dag</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_day.day" approved="yes">
+        <source>Day</source>
+        <target state="final">Dag</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time" approved="yes">
+        <source>Time</source>
+        <target state="final">Tid</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.type" approved="yes">
+        <source>Type</source>
+        <target state="final">Type</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.weekday" approved="yes">
+        <source>Weekday</source>
+        <target state="final">Ugedag</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.weekday.monday" approved="yes">
+        <source>Monday</source>
+        <target state="final">Mandag</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.weekday.tuesday" approved="yes">
+        <source>Tuesday</source>
+        <target state="final">Tirsdag</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.weekday.wednesday" approved="yes">
+        <source>Wednesday</source>
+        <target state="final">Onsdag</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.weekday.thursday" approved="yes">
+        <source>Thursday</source>
+        <target state="final">Torsdag</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.weekday.friday" approved="yes">
+        <source>Friday</source>
+        <target state="final">Fredag</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.weekday.saturday" approved="yes">
+        <source>Saturday</source>
+        <target state="final">Lørdag</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.weekday.sunday" approved="yes">
+        <source>Sunday</source>
+        <target state="final">Søndag</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.time_begin" approved="yes">
+        <source>Time Begin (Format: hh:mm)</source>
+        <target state="final">Tid begynd (Format: tt:mm)</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.time_entry" approved="yes">
+        <source>Time Entry (Format: hh:mm)</source>
+        <target state="final">Tidspunkt (Format: tt:mm)</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.duration" approved="yes">
+        <source>Duration (Format: hh:mm)</source>
+        <target state="final">Varighed (Format: tt:mm)</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.time_end" approved="yes">
+        <source>Time End (Format: hh:mm)</source>
+        <target state="final">Tid slut (Format: tt:mm)</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_exception" approved="yes">
+        <source>Exception</source>
+        <target state="final">Undtagelse</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_exception.exception_type" approved="yes">
+        <source>Type</source>
+        <target state="final">Type</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_exception.exception_type.Add" approved="yes">
+        <source>Add</source>
+        <target state="final">Tilføj</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_exception.exception_type.Remove" approved="yes">
+        <source>Remove</source>
+        <target state="final">Fjern</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_exception.exception_type.Time" approved="yes">
+        <source>Time</source>
+        <target state="final">Tid</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_exception.exception_type.Info" approved="yes">
+        <source>Info</source>
+        <target state="final">Info</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_exception.exception_date" approved="yes">
+        <source>Date</source>
+        <target state="final">Dato</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_exception.exception_time" approved="yes">
+        <source>Time</source>
+        <target state="final">Tid</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_exception.exception_details" approved="yes">
+        <source>Details</source>
+        <target state="final">Detaljer</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_location" approved="yes">
+        <source>Location</source>
+        <target state="final">Sted</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_location.location" approved="yes">
+        <source>Location</source>
+        <target state="final">Sted</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_location.street" approved="yes">
+        <source>Street</source>
+        <target state="final">Gade</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_location.house_number" approved="yes">
+        <source>Number</source>
+        <target state="final">Nummer</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_location.zip" approved="yes">
+        <source>Zip</source>
+        <target state="final">Postnr.</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_location.city" approved="yes">
+        <source>City</source>
+        <target state="final">By</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_location.country" approved="yes">
+        <source>Country</source>
+        <target state="final">Land</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_location.link" approved="yes">
+        <source>Link</source>
+        <target state="final">Link</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_organizer" approved="yes">
+        <source>Organizer</source>
+        <target state="final">Organisator</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_organizer.organizer" approved="yes">
+        <source>Organizer</source>
+        <target state="final">Organisator</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_organizer.hide_in_filter" approved="yes">
+        <source>Hide in filter</source>
+        <target state="final">Skjul i filter</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_organizer.link" approved="yes">
+        <source>Link</source>
+        <target state="final">Link</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_link" approved="yes">
+        <source>Link</source>
+        <target state="final">Link</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_link.title" approved="yes">
+        <source>Title</source>
+        <target state="final">Titel</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_link.link" approved="yes">
+        <source>Link</source>
+        <target state="final">Link</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_holiday" approved="yes">
+        <source>Holiday</source>
+        <target state="final">Helligdag</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_holiday.title" approved="yes">
+        <source>Title</source>
+        <target state="final">Titel</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_holiday.day" approved="yes">
+        <source>Day</source>
+        <target state="final">Dag</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_holiday.month" approved="yes">
+        <source>Month</source>
+        <target state="final">Måned</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
