@@ -46,6 +46,7 @@ class DayController extends AbstractController
 
     public function __construct(
         DayRepository $dayRepository,
+        EventRepository $eventRepository,
         OrganizerRepository $organizerRepository,
         TypoScriptService $typoScriptService,
         ExtConf $extConf
@@ -53,6 +54,7 @@ class DayController extends AbstractController
         parent::__construct($typoScriptService, $extConf);
 
         $this->dayRepository = $dayRepository;
+        $this->eventRepository = $eventRepository;
         $this->organizerRepository = $organizerRepository;
     }
 
