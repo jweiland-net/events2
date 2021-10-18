@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<xliff version="1.0">
+  <file source-language="en" datatype="plaintext" original="messages" date="2017-08-25T10:38:40Z" product-name="events2" target-language="tr">
+    <header/>
+    <body>
+      <trans-unit id="weekday.description">
+        <source>This value is only available in case of time records for a specified weekday. Choose weekday for which this time record should be valid.</source>
+        <target state="needs-translation">This value is only available in case of time records for a specified weekday. Choose weekday for which this time record should be valid.</target>
+      </trans-unit>
+      <trans-unit id="time_begin.description">
+        <source>When does the event starts?</source>
+        <target state="needs-translation">When does the event starts?</target>
+      </trans-unit>
+      <trans-unit id="time_entry.description">
+        <source>When does you open the doors for visitors?</source>
+        <target state="needs-translation">When does you open the doors for visitors?</target>
+      </trans-unit>
+      <trans-unit id="duration.description">
+        <source>How long does this event takes?</source>
+        <target state="needs-translation">How long does this event takes?</target>
+      </trans-unit>
+      <trans-unit id="time_end.description">
+        <source>When does the event end?</source>
+        <target state="needs-translation">When does the event end?</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
