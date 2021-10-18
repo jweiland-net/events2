@@ -1,61 +1,55 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <xliff version="1.0">
-	<file source-language="en" datatype="plaintext" original="messages" date="2013-03-40T10:38:40Z" product-name="events2">
-		<header/>
-		<body>
-			<trans-unit id="poiCollectionPid">
-				<source>PID for poiCollections: Define a storage pid where to store records of type Point of Interest.</source>
-				<target>PID für Google Maps: Beim Speichern von Veranstaltungsorten werden automatisch GoogleMaps-Datensätze erzeugt. Geben Sie hier an, in welchem StorageFolder diese angelegt werden sollen.</target>
-			</trans-unit>
-			<trans-unit id="rootUid">
-				<source>Category root UID: If you're working in an environments with a lot of categories defined, it may make sense to reduce the category tree within our Events2 Plugins to this root Category.</source>
-				<target>UID der Haupt-Kategorie: Auf Webseiten mit vielen Kategorien kann es sinnvoll sein, den Kategoriebaum in den FlexForms unserer Events2 Plugins auf diese Haupt-Kategorie zu beschränken.</target>
-			</trans-unit>
-			<trans-unit id="recurringPast">
-				<source>x months in past: When creating a new recurring event this extension can create related day records for the last x months.</source>
-				<target>x Monate in der Vergangenheit: bei Veranstaltungen mit Wiederholungen werden Tagesdaten für die vergangenen x Monate erzeugt</target>
-			</trans-unit>
-			<trans-unit id="recurringFuture">
-				<source>x months in future: When creating a new recurring event this extension can create related day records for the next x months.</source>
-				<target>xMonate in der Zukunft: bei Veranstaltungen mit Wiederholungen werden Tagesdaten für die nächsten x Monate erzeugt</target>
-			</trans-unit>
-			<trans-unit id="defaultCountry">
-				<source>Default country: If you're only working for one specified country while creating/editing POIs in backend it would be cool to set a country by default. So you only need to add street and city to find a POI. If you need POIs from all over the world, please keep this field empty</source>
-				<target>Standard Land: Wenn es in Ihrem Projekt nur POIs aus einem ganz bestimmten Land gibt, dann können Sie dieses Land hier eintragen und brauchen beim Anlegen/Bearbeiten von POIS im Backend das Land nicht explizit anzugeben. Sollten Sie jedoch POIs auf der ganzen Welt benötigen, dann lassen Sie dieses Feld bitte leer.</target>
-			</trans-unit>
-			<trans-unit id="xmlImportValidatorPath">
-				<source>XML Import Validator Path (xsd): While Importing Events we will check the XML file against a XSD file. If you need some specials you can define your own file here.</source>
-				<target>Pfad zur XML Validator Datei (xsd): Beim Importieren von Veranstaltungen über unsere XML Schnittstelle prüfen wir die XML Datei gegen eine XSD Datei. Wenn Ihr hier eigene Überprüfungen benötigt, könnt ihr hier eine eigene XSD-Datei angeben.</target>
-			</trans-unit>
-			<trans-unit id="organizerIsRequired">
-				<source>Is organizer required: By default it is not needed to explicit set an organizer. But, if you want, you can set organizers as a required property with activating this checkbox</source>
-				<target>Veranstalter als Pflichtfeld: Standardmäßig ist der Veranstalter kein Pflichtfeld. Aber wenn alle Veranstaltungen zwingend einen Veranstalter benötigen, dann kannst Du dies mit dieser Option aktivieren.</target>
-			</trans-unit>
-			<trans-unit id="locationIsRequired">
-				<source>Is location required: By default it is not needed to explicit set a location. But, if you want, you can set location as a required property with activating this checkbox</source>
-				<target>Veranstaltungsort als Pflichtfeld: Standardmäßig ist der Veranstaltungsort kein Pflichtfeld. Aber wenn alle Veranstaltungen zwingend einen Veranstaltungsort benötigen, dann kannst Du dies mit dieser Option aktivieren.</target>
-			</trans-unit>
-			<trans-unit id="pathSegmentType" xml:space="preserve">
+  <file source-language="en" datatype="plaintext" original="messages" date="2013-03-40T10:38:40Z" product-name="events2" target-language="de">
+    <header/>
+    <body>
+      <trans-unit id="poiCollectionPid" approved="yes">
+        <source>PID for poiCollections: Define a storage pid where to store records of type Point of Interest.</source>
+        <target state="final">PID für POI Sammlungen: Definieren Sie eine Speicher-PID wo Datensätze vom Typ Point of Interest gespeichert werden sollen.</target>
+      </trans-unit>
+      <trans-unit id="rootUid" approved="yes">
+        <source>Category root UID: If you're working in an environments with a lot of categories defined, it may make sense to reduce the category tree within our Events2 Plugins to this root Category.</source>
+        <target state="final">Kategorie Root-UID: Wenn Sie in einer Umgebung mit vielen Kategorien arbeiten, kann es sinnvoll sein den Kategoriebaum innerhalb unserer Events2-Plugins auf diese Haupt-Kategorie zu reduzieren.</target>
+      </trans-unit>
+      <trans-unit id="recurringPast" approved="yes">
+        <source>x months in past: When creating a new recurring event this extension can create related day records for the last x months.</source>
+        <target state="final">x Monate in der Vergangenheit: Beim Erstellen einer neuen wiederkehrenden Veranstaltung kann events2 Tagesdatensätze für die letzten x Monate erstellen.</target>
+      </trans-unit>
+      <trans-unit id="recurringFuture" approved="yes">
+        <source>x months in future: When creating a new recurring event this extension can create related day records for the next x months.</source>
+        <target state="final">x Monate in Zukunft: Bei der Erstellung einer wiederkehrenden Veranstaltung kann events2 Tagesdatensätze für die nächsten x Monate erstellen.</target>
+      </trans-unit>
+      <trans-unit id="defaultCountry" approved="yes">
+        <source>Default country: If you're only working for one specified country while creating/editing POIs in backend it would be cool to set a country by default. So you only need to add street and city to find a POI. If you need POIs from all over the world, please keep this field empty</source>
+        <target state="final">Standardland: Wenn Sie nur Veranstaltungsorte für ein bestimmtes Land erstellen, ist es hilfreich hier ein Standardland anzugeben. Sie müssen im Datensatz also nur Straße und Stadt hinzufügen, um einen Point of Interest zu finden. Wenn du POIs aus der ganzen Welt benötigst, halte dieses Feld bitte leer</target>
+      </trans-unit>
+      <trans-unit id="xmlImportValidatorPath" approved="yes">
+        <source>XML Import Validator Path (xsd): While Importing Events we will check the XML file against a XSD file. If you need some specials you can define your own file here.</source>
+        <target state="final">XML Import Validator Pfad (xsd): Während des Imports von Veranstaltungen werden wir die XML-Datei mit einer XSD-Datei überprüfen. Wenn Sie individuelle Überprüfungen benötigen, können Sie hier Ihre eigene XSD-Datei festlegen.</target>
+      </trans-unit>
+      <trans-unit id="organizerIsRequired" approved="yes">
+        <source>Is organizer required: By default it is not needed to explicit set an organizer. But, if you want, you can set organizers as a required property with activating this checkbox</source>
+        <target state="final">Veranstalter als Pflichtfeld: Standardmäßig ist der Veranstalter kein Pflichtfeld. Aber wenn alle Veranstaltungen zwingend einen Veranstalter benötigen, dann kannst Du dies mit dieser Option aktivieren.</target>
+      </trans-unit>
+      <trans-unit id="locationIsRequired" approved="yes">
+        <source>Is location required: By default it is not needed to explicit set a location. But, if you want, you can set location as a required property with activating this checkbox</source>
+        <target state="final">Ist Standort erforderlich: Standardmäßig wird kein expliziter Standort benötigt. Aber wenn Sie möchten, können Sie den Ort als gewünschte Eigenschaft einstellen, indem Sie dieses Kontrollkästchen aktivieren</target>
+      </trans-unit>
+      <trans-unit id="pathSegmentType" xml:space="preserve" approved="yes">
 				<source>Path Segment type: Set path segment type for frontend created events and PathSegment UpdateWizard. Set to "Do nothing" to keep path_segment untouched. Set to "RealUrl" to add a counter on duplicates (swimm, swimm-1, swimm-2). Set to "UID" to build a path segment based on title and uid.</source>
-				<target>Typ für sprechende URL: Setzt den Sprechende URL Typ für im Frontend erstellte Veranstaltungen und den PathSegment UpdateWizard. Bei "Do nothing" bleibt path_segment unberührt. Bei "RealUrl" wird dem path_segment ein Zähler angefügt, um Duplikate zu verhindern (brot, brot-1, brot-2). Bei "UID" wird path_segment auf Basis von Titel und UID erstellt.</target>
-			</trans-unit>
-
-			<trans-unit id="emailFromAddress" xml:space="preserve">
+			<target state="final">Typ für sprechende URL: Setzt den Sprechende URL Typ für im Frontend erstellte Veranstaltungen und den PathSegment UpdateWizard. Bei "Do nothing" bleibt path_segment unberührt. Bei "RealUrl" wird dem path_segment ein Zähler angefügt, um Duplikate zu verhindern (brot, brot-1, brot-2). Bei "UID" wird path_segment auf Basis von Titel und UID erstellt.</target></trans-unit>
+      <trans-unit id="emailFromAddress" xml:space="preserve" approved="yes">
 				<source>email from address: The senders email address. If not given the extension tries to get one from INSTALL_TOOL.</source>
-				<target>E-Mail FROM: Die E-Mail-Adresse des Absenders. Wenn nicht angegeben, dann wird die konfigurierte E-Mail-Adresse aus dem Installtool verwendet.</target>
-			</trans-unit>
-			<trans-unit id="emailFromName" xml:space="preserve">
+			<target state="final">E-Mail von Adresse: Die E-Mail-Adresse des Absenders. Falls nicht angegeben, versucht events2 eine E-Mail Adresse vom INSTALL_TOOL zu erhalten.</target></trans-unit>
+      <trans-unit id="emailFromName" xml:space="preserve" approved="yes">
 				<source>email from name: The senders email name. If not given the extension tries to get one from INSTALL_TOOL.</source>
-				<target>E-Mail FROM Name: Der Name des Absenders. Wenn nicht angegeben, dann wird der konfigurierte Name aus dem Installtool verwendet.</target>
-			</trans-unit>
-			<trans-unit id="emailToAddress" xml:space="preserve">
+			<target state="final">E-Mail von Namen: Der Absender-E-Mail-Name. Falls nicht angegeben versucht events2 einen vom INSTALL_TOOL zu erhalten.</target></trans-unit>
+      <trans-unit id="emailToAddress" xml:space="preserve" approved="yes">
 				<source>email to address: The recipients email address.</source>
-				<target>E-Mail TO: Die Empfänger E-Mail-Adresse</target>
-			</trans-unit>
-			<trans-unit id="emailToName" xml:space="preserve">
+			<target state="final">An E-Mail Adresse: Die E-Mail-Adresse des Empfängers.</target></trans-unit>
+      <trans-unit id="emailToName" xml:space="preserve" approved="yes">
 				<source>email to name: The recipients email name.</source>
-				<target>E-Mail TO Name: Der Empfänger Name</target>
-			</trans-unit>
-		</body>
-	</file>
+			<target state="final">An E-Mail-Name: Der E-Mail-Name des Empfängers.</target></trans-unit>
+    </body>
+  </file>
 </xliff>
