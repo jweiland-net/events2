@@ -20,8 +20,9 @@
 	"require": {
 		"ext-dom": "*",
 		"ext-libxml": "*",
-		"typo3/cms-core": "^10.4.14",
-		"sjbr/static-info-tables": "^6.9"
+		"php": "^7.4 || ^8.0",
+		"typo3/cms-core": "^10.4.19 || ^11.5.0",
+		"sjbr/static-info-tables": "^6.9 || ^11.5"
 	},
 	"require-dev": {
 		"roave/security-advisories": "dev-latest",
