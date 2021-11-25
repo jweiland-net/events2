@@ -22,10 +22,6 @@ class AjaxController extends ActionController
     /**
      * This ajax action can only be called by Ajax scripts based on pageType.
      * eID scripts has its own bootstrap.
-     *
-     * @param string $objectName Which Ajax Object has to be called
-     * @param array $arguments  Arguments which have to be send to the Ajax Object
-     * @return string
      */
     public function callAjaxObjectAction(string $objectName, array $arguments = []): string
     {

@@ -18,10 +18,7 @@ use JWeiland\Events2\Domain\Model\Event;
  */
 class PostGenerateDaysEvent
 {
-    /**
-     * @var Event
-     */
-    protected $event;
+    protected Event $event;
 
     public function __construct(Event $event)
     {

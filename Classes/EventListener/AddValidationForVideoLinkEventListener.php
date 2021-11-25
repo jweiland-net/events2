@@ -25,7 +25,7 @@ use TYPO3\CMS\Extbase\Validation\Validator\ValidatorInterface;
  */
 class AddValidationForVideoLinkEventListener extends AbstractControllerEventListener
 {
-    protected $allowedControllerActions = [
+    protected array $allowedControllerActions = [
         'Event' => [
             'create',
             'update'

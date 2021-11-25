@@ -30,15 +30,9 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  */
 class AbstractController extends ActionController
 {
-    /**
-     * @var TypoScriptService
-     */
-    protected $typoScriptService;
+    protected TypoScriptService $typoScriptService;
 
-    /**
-     * @var ExtConf
-     */
-    protected $extConf;
+    protected ExtConf $extConf;
 
     public function __construct(TypoScriptService $typoScriptService, ExtConf $extConf)
     {
@@ -47,7 +41,6 @@ class AbstractController extends ActionController
     }
 
     /**
-     * @param ConfigurationManagerInterface $configurationManager
      * @throws \Exception
      */
     public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager): void
@@ -77,19 +70,22 @@ class AbstractController extends ActionController
         $this->settings = $mergedFlexFormSettings;
     }
 
-    public function initializeAction(): void
+    protected function initializeAction(): void
     {
         // if this value was not set, then it will be filled with 0
         // but that is not good, because UriBuilder accepts 0 as pid, so it's better to set it to NULL
         if (empty($this->settings['pidOfDetailPage'])) {
             $this->settings['pidOfDetailPage'] = null;
         }
+
         if (empty($this->settings['pidOfSearchPage'])) {
             $this->settings['pidOfSearchPage'] = null;
         }
+
         if (empty($this->settings['pidOfLocationPage'])) {
             $this->settings['pidOfLocationPage'] = null;
         }
+
         if (empty($this->settings['pidOfListPage'])) {
             $this->settings['pidOfListPage'] = null;
         }
@@ -99,7 +95,7 @@ class AbstractController extends ActionController
     {
         $this->view->assign('data', $this->configurationManager->getContentObject()->data);
         $this->view->assign('extConf', $this->extConf);
-        $this->view->assign('jsVariables', json_encode($this->getJsVariables()));
+        $this->view->assign('jsVariables', json_encode($this->getJsVariables(), JSON_THROW_ON_ERROR));
     }
 
     /**
@@ -108,8 +104,7 @@ class AbstractController extends ActionController
      * I have separated this method to its own method as we have to override these variables
      * in SearchController and I can read them from View after variables are already assigned.
      *
-     * @param array $override
-     * @return array
+     * @return array[]
      */
     protected function getJsVariables(array $override = []): array
     {

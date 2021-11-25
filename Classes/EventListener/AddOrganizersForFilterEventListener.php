@@ -20,12 +20,9 @@ use JWeiland\Events2\Event\PostProcessFluidVariablesEvent;
  */
 class AddOrganizersForFilterEventListener extends AbstractControllerEventListener
 {
-    /**
-     * @var OrganizerRepository
-     */
-    protected $organizerRepository;
+    protected OrganizerRepository $organizerRepository;
 
-    protected $allowedControllerActions = [
+    protected array $allowedControllerActions = [
         'Day' => [
             'list',
             'listLatest',
@@ -42,15 +39,21 @@ class AddOrganizersForFilterEventListener extends AbstractControllerEventListene
 
     public function __invoke(PostProcessFluidVariablesEvent $event): void
     {
-        if (
-            $this->isValidRequest($event)
-            && array_key_exists('showFilterForOrganizerInFrontend', $event->getSettings())
-            && $event->getSettings()['showFilterForOrganizerInFrontend'] === '1'
-        ) {
-            $event->addFluidVariable(
-                'organizers',
-                $this->organizerRepository->getOrganizersForFilter()
-            );
+        if (!$this->isValidRequest($event)) {
+            return;
         }
+
+        if (!array_key_exists('showFilterForOrganizerInFrontend', $event->getSettings())) {
+            return;
+        }
+
+        if (!$event->getSettings()['showFilterForOrganizerInFrontend'] === '1') {
+            return;
+        }
+
+        $event->addFluidVariable(
+            'organizers',
+            $this->organizerRepository->getOrganizersForFilter()
+        );
     }
 }

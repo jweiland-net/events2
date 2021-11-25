@@ -21,10 +21,7 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
  */
 class CalendarController extends AbstractController
 {
-    /**
-     * @var CalendarHelper
-     */
-    protected $calendarHelper;
+    protected CalendarHelper $calendarHelper;
 
     public function __construct(
         CalendarHelper $calendarHelper,

@@ -30,20 +30,11 @@ use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
  */
 class DatabaseServiceTest extends FunctionalTestCase
 {
-    /**
-     * @var DayRepository
-     */
-    protected $dayRepository;
+    protected DayRepository $dayRepository;
 
-    /**
-     * @var QuerySettingsInterface
-     */
-    protected $querySettings;
+    protected QuerySettingsInterface $querySettings;
 
-    /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
+    protected ObjectManager $objectManager;
 
     /**
      * @var array
@@ -53,17 +44,20 @@ class DatabaseServiceTest extends FunctionalTestCase
         'typo3conf/ext/maps2'
     ];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->dayRepository = $this->objectManager->get(DayRepository::class);
+
         $this->querySettings = $this->objectManager->get(QuerySettingsInterface::class);
         $this->querySettings->setStoragePageIds([11, 40]);
+
         $this->dayRepository->setDefaultQuerySettings($this->querySettings);
         $persistenceManager = $this->objectManager->get(PersistenceManager::class);
         $dayRelationService = $this->objectManager->get(DayRelationService::class);
+
         $eventRepository = $this->objectManager->get(EventRepository::class);
         $eventRepository->setDefaultQuerySettings($this->querySettings);
 
@@ -93,6 +87,7 @@ class DatabaseServiceTest extends FunctionalTestCase
         $event->setFreeEntry(false);
         $event->addOrganizer($organizer);
         $event->setLocation($location);
+
         $persistenceManager->add($event);
 
         $persistenceManager->persistAll();
@@ -100,13 +95,14 @@ class DatabaseServiceTest extends FunctionalTestCase
         $extConf = GeneralUtility::makeInstance(ExtConf::class);
         $extConf->setRecurringPast(3);
         $extConf->setRecurringFuture(6);
+
         $events = $eventRepository->findAll();
         foreach ($events as $event) {
             $dayRelationService->createDayRelations($event->getUid());
         }
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset($this->dayRepository);
         parent::tearDown();

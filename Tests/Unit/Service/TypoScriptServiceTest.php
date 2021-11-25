@@ -19,17 +19,14 @@ use Nimut\TestingFramework\TestCase\UnitTestCase;
  */
 class TypoScriptServiceTest extends UnitTestCase
 {
-    /**
-     * @var TypoScriptService
-     */
-    protected $subject;
+    protected TypoScriptService $subject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->subject = new TypoScriptService();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset(
             $this->subject

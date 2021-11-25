@@ -32,20 +32,11 @@ use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
  */
 class DataHandlerTest extends FunctionalTestCase
 {
-    /**
-     * @var DayRepository
-     */
-    protected $dayRepository;
+    protected DayRepository $dayRepository;
 
-    /**
-     * @var QuerySettingsInterface
-     */
-    protected $querySettings;
+    protected QuerySettingsInterface $querySettings;
 
-    /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
+    protected ObjectManager $objectManager;
 
     /**
      * @var array
@@ -55,7 +46,7 @@ class DataHandlerTest extends FunctionalTestCase
         'typo3conf/ext/maps2'
     ];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -64,8 +55,10 @@ class DataHandlerTest extends FunctionalTestCase
         $this->querySettings = $this->objectManager->get(QuerySettingsInterface::class);
         $this->querySettings->setStoragePageIds([11, 40]);
         $this->dayRepository->setDefaultQuerySettings($this->querySettings);
+
         $persistenceManager = $this->objectManager->get(PersistenceManager::class);
         $dayRelationService = $this->objectManager->get(DayRelationService::class);
+
         $eventRepository = $this->objectManager->get(EventRepository::class);
         $eventRepository->setDefaultQuerySettings($this->querySettings);
 
@@ -99,6 +92,7 @@ class DataHandlerTest extends FunctionalTestCase
         $event->setFreeEntry(false);
         $event->addOrganizer($organizer);
         $event->setLocation($location);
+
         $persistenceManager->add($event);
 
         $persistenceManager->persistAll();
@@ -109,7 +103,7 @@ class DataHandlerTest extends FunctionalTestCase
         }
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset($this->dayRepository);
         parent::tearDown();
@@ -118,7 +112,7 @@ class DataHandlerTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function deleteEventByAdminWillRemoveDayRecords()
+    public function deleteEventByAdminWillRemoveDayRecords(): void
     {
         $this->setUpBackendUserFromFixture(1);
         $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
@@ -139,6 +133,7 @@ class DataHandlerTest extends FunctionalTestCase
 
         $eventBegin = new \DateTime('today midnight');
         $eventBegin->modify('first day of this month');
+
         $eventEnd = new \DateTime('today midnight');
         $eventEnd->modify('last day of this month');
 
@@ -161,7 +156,7 @@ class DataHandlerTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function deleteEventByEditorWillRemoveDayRecords()
+    public function deleteEventByEditorWillRemoveDayRecords(): void
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('be_users');
@@ -194,6 +189,7 @@ class DataHandlerTest extends FunctionalTestCase
 
         $eventBegin = new \DateTime('today midnight');
         $eventBegin->modify('first day of this month');
+
         $eventEnd = new \DateTime('today midnight');
         $eventEnd->modify('last day of this month');
 

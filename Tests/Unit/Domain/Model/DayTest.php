@@ -20,18 +20,15 @@ use Nimut\TestingFramework\TestCase\UnitTestCase;
  */
 class DayTest extends UnitTestCase
 {
-    /**
-     * @var \JWeiland\Events2\Domain\Model\Day
-     */
-    protected $subject;
+    protected Day $subject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->subject = new Day();
         $this->subject->setDay(new \DateTime());
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset($this->subject);
     }

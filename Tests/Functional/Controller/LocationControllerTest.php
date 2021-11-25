@@ -24,15 +24,9 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
  */
 class LocationControllerTest extends FunctionalTestCase
 {
-    /**
-     * @var LocationController
-     */
-    protected $subject;
+    protected LocationController $subject;
 
-    /**
-     * @var Request
-     */
-    protected $request;
+    protected Request $request;
 
     /**
      * @var array
@@ -42,7 +36,7 @@ class LocationControllerTest extends FunctionalTestCase
         'typo3conf/ext/static_info_tables'
     ];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->importDataSet('ntf://Database/pages.xml');
@@ -55,6 +49,7 @@ class LocationControllerTest extends FunctionalTestCase
                 'Location' => LocationController::class
             ]);
         }
+
         $this->request->setControllerExtensionName('Events2');
         $this->request->setPluginName('Events');
         $this->request->setControllerName('Location');
@@ -65,7 +60,7 @@ class LocationControllerTest extends FunctionalTestCase
         $this->subject = $objectManager->get(LocationController::class);
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset(
             $this->subject,

@@ -21,33 +21,25 @@ class PostCheckFileReferenceEvent
     /**
      * Array containing the original source (all files of $_FILES) of the request
      * just before PropertyMapping (UploadMultipleFilesConverter) will start
-     *
-     * @var array
      */
-    protected $source;
+    protected array $source;
 
     /**
      * Array key of the currently looped file
-     *
-     * @var int
      */
-    protected $key = 0;
+    protected int $key = 0;
 
     /**
      * We check, if for current looped uploaded file a file record in DB
      * exists. If not, this value is null.
-     *
-     * @var ?FileReference $alreadyPersistedImage
      */
-    protected $alreadyPersistedImage;
+    protected ?FileReference $alreadyPersistedImage;
 
     /**
      * This is the value of the currently looped uploaded file.
      * It contains one file out of $_FILES
-     *
-     * @var array
      */
-    protected $uploadedFile = [];
+    protected array $uploadedFile = [];
 
     public function __construct(
         array $source,

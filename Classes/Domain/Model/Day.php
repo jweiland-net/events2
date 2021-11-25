@@ -21,66 +21,57 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 class Day extends AbstractEntity
 {
     /**
-     * @var \DateTime
+     * @var \DateTime|\DateTimeImmutable|null
      */
-    protected $crdate;
+    protected ?\DateTimeInterface $crdate;
 
     /**
-     * @var \DateTime
+     * @var \DateTime|\DateTimeImmutable|null
      */
-    protected $tstamp;
+    protected ?\DateTimeInterface $tstamp;
+
+    protected bool $hidden = false;
+
+    protected int $cruserId = 0;
 
     /**
-     * @var bool
+     * @var \DateTime|\DateTimeImmutable|null
      */
-    protected $hidden = false;
+    protected ?\DateTimeInterface $day;
 
     /**
-     * @var int
+     * @var \DateTime|\DateTimeImmutable|null
      */
-    protected $cruserId = 0;
+    protected ?\DateTimeInterface $dayTime;
 
     /**
-     * @var \DateTime
+     * @var \DateTime|\DateTimeImmutable|null
      */
-    protected $day;
+    protected ?\DateTimeInterface $sortDayTime;
 
     /**
-     * @var \DateTime
+     * @var \DateTime|\DateTimeImmutable|null
      */
-    protected $dayTime;
+    protected ?\DateTimeInterface $sameDayTime;
 
-    /**
-     * @var \DateTime
-     */
-    protected $sortDayTime;
+    protected ?Event $event;
 
-    /**
-     * @var \DateTime
-     */
-    protected $sameDayTime;
-
-    /**
-     * @var \JWeiland\Events2\Domain\Model\Event
-     */
-    protected $event;
-
-    public function getCrdate(): ?\DateTime
+    public function getCrdate(): ?\DateTimeInterface
     {
         return $this->crdate;
     }
 
-    public function setCrdate(?\DateTime $crdate = null): void
+    public function setCrdate(?\DateTimeInterface $crdate = null): void
     {
         $this->crdate = $crdate;
     }
 
-    public function getTstamp(): ?\DateTime
+    public function getTstamp(): ?\DateTimeInterface
     {
         return $this->tstamp;
     }
 
-    public function setTstamp(?\DateTime $tstamp = null): void
+    public function setTstamp(?\DateTimeInterface $tstamp = null): void
     {
         $this->tstamp = $tstamp;
     }
@@ -105,7 +96,7 @@ class Day extends AbstractEntity
         $this->cruserId = $cruserId;
     }
 
-    public function getDay(): \DateTime
+    public function getDay(): \DateTimeInterface
     {
         // Since PHP 7.4 we can not access timezone_type directly anymore.
         // If location is false, timezone_type is 1 or 2, but we need 3
@@ -115,12 +106,12 @@ class Day extends AbstractEntity
         return clone $this->day;
     }
 
-    public function setDay(\DateTime $day): void
+    public function setDay(\DateTimeInterface $day): void
     {
         $this->day = $day;
     }
 
-    public function getDayTime(): \DateTime
+    public function getDayTime(): \DateTimeInterface
     {
         // Since PHP 7.4 we can not access timezone_type directly anymore.
         // If location is false, timezone_type is 1 or 2, but we need 3
@@ -130,12 +121,12 @@ class Day extends AbstractEntity
         return clone $this->dayTime;
     }
 
-    public function setDayTime(\DateTime $dayTime): void
+    public function setDayTime(\DateTimeInterface $dayTime): void
     {
         $this->dayTime = $dayTime;
     }
 
-    public function getSortDayTime(): \DateTime
+    public function getSortDayTime(): \DateTimeInterface
     {
         // Since PHP 7.4 we can not access timezone_type directly anymore.
         // If location is false, timezone_type is 1 or 2, but we need 3
@@ -145,12 +136,12 @@ class Day extends AbstractEntity
         return clone $this->sortDayTime;
     }
 
-    public function setSortDayTime(\DateTime $sortDayTime): void
+    public function setSortDayTime(\DateTimeInterface $sortDayTime): void
     {
         $this->sortDayTime = $sortDayTime;
     }
 
-    public function getSameDayTime(): \DateTime
+    public function getSameDayTime(): \DateTimeInterface
     {
         // Since PHP 7.4 we can not access timezone_type directly anymore.
         // If location is false, timezone_type is 1 or 2, but we need 3
@@ -160,7 +151,7 @@ class Day extends AbstractEntity
         return clone $this->sameDayTime;
     }
 
-    public function setSameDayTime(\DateTime $sameDayTime): void
+    public function setSameDayTime(\DateTimeInterface $sameDayTime): void
     {
         $this->sameDayTime = $sameDayTime;
     }
@@ -198,6 +189,7 @@ class Day extends AbstractEntity
     public function getTimes(): \SplObjectStorage
     {
         $timeFactory = GeneralUtility::makeInstance(TimeFactory::class);
+
         return $timeFactory->getSortedTimesForDate(
             $this->getEvent(),
             $this->getDay()

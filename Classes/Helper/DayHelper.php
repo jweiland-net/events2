@@ -21,10 +21,7 @@ use TYPO3\CMS\Core\Utility\MathUtility;
  */
 class DayHelper
 {
-    /**
-     * @var DayRepository
-     */
-    protected $dayRepository;
+    protected DayRepository $dayRepository;
 
     public function __construct(DayRepository $dayRepository)
     {
@@ -33,8 +30,6 @@ class DayHelper
     /**
      * Get day from URI
      * We can't set $day as parameter in showAction($day), because this action is of controller Calendar and not Event.
-     *
-     * @return Day|null
      */
     public function getDayFromUri(): ?Day
     {

@@ -33,12 +33,7 @@ class GetMergedEventTimesViewHelper extends AbstractViewHelper
 
     /**
      * One event can have until 4 relations to time records.
-     * This ViewHelpers helps you to find the times with highest priority and merge them into one collection.
-     *
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return \SplObjectStorage
+     * This ViewHelpers helps you find the times with the highest priority and merge them into one collection.
      */
     public static function renderStatic(
         array $arguments,

@@ -26,9 +26,6 @@ $tx_events2_domain_model_event = [
         'searchFields' => 'location',
         'iconfile' => 'EXT:events2/Resources/Public/Icons/tx_events2_domain_model_location.png',
     ],
-    'interface' => [
-        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, location, street, house_number, zip, city, country, link',
-    ],
     'types' => [
         '1' => [
             'showitem' => '--palette--;;languageHidden, l10n_diffsource, location,

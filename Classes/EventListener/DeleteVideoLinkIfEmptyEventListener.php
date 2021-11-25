@@ -21,12 +21,9 @@ use JWeiland\Events2\Event\PostProcessControllerActionEvent;
  */
 class DeleteVideoLinkIfEmptyEventListener extends AbstractControllerEventListener
 {
-    /**
-     * @var LinkRepository
-     */
-    protected $linkRepository;
+    protected LinkRepository $linkRepository;
 
-    protected $allowedControllerActions = [
+    protected array $allowedControllerActions = [
         'Event' => [
             'create',
             'update'

@@ -32,38 +32,19 @@ class RebuildCommand extends Command
      * Needed to wrap activity bar:
      * ...........F.......
      * ....N....S.........
-     *
-     * @var int
      */
-    protected $rowCounter = 0;
+    protected int $rowCounter = 0;
 
-    /**
-     * @var ObjectManagerInterface
-     */
-    protected $objectManager;
+    protected ObjectManagerInterface $objectManager;
 
-    /**
-     * @var DatabaseService
-     */
-    protected $databaseService;
+    protected DatabaseService $databaseService;
 
-    /**
-     * @var CacheManager
-     */
-    protected $cacheManager;
+    protected CacheManager $cacheManager;
 
-    /**
-     * @var OutputInterface
-     */
-    protected $output;
+    protected OutputInterface $output;
 
     /**
      * Will be called by DI, so please don't add extbase classes with inject methods here.
-     *
-     * @param ObjectManagerInterface $objectManager
-     * @param DatabaseService $databaseService
-     * @param CacheManager $cacheManager
-     * @param string|null $name
      */
     public function __construct(
         ObjectManagerInterface $objectManager,
@@ -91,10 +72,6 @@ class RebuildCommand extends Command
 
     /**
      * Delete and re-create all day records of events2
-     *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -141,7 +118,7 @@ class RebuildCommand extends Command
                         $event->getDays()->count(),
                         memory_get_usage()
                     ));
-                    $eventCounter++;
+                    ++$eventCounter;
                     $dayCounter += $event->getDays()->count();
                 } else {
                     $this->output->writeln(sprintf(

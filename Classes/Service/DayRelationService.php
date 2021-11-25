@@ -31,59 +31,29 @@ use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
  */
 class DayRelationService
 {
-    /**
-     * @var array
-     */
-    protected $eventRecord = [];
+    protected array $eventRecord = [];
+
+    protected ExtConf $extConf;
+
+    protected DayGenerator $dayGenerator;
+
+    protected EventRepository $eventRepository;
+
+    protected TimeFactory $timeFactory;
+
+    protected DateTimeUtility $dateTimeUtility;
+
+    protected PersistenceManager $persistenceManager;
 
     /**
-     * @var ExtConf
+     * @var \DateTime|\DateTimeImmutable|null
      */
-    protected $extConf;
+    protected ?\DateTimeInterface $firstDateTime;
 
-    /**
-     * @var DayGenerator
-     */
-    protected $dayGenerator;
-
-    /**
-     * @var EventRepository
-     */
-    protected $eventRepository;
-
-    /**
-     * @var TimeFactory
-     */
-    protected $timeFactory;
-
-    /**
-     * @var DateTimeUtility
-     */
-    protected $dateTimeUtility;
-
-    /**
-     * @var PersistenceManager
-     */
-    protected $persistenceManager;
-
-    /**
-     * @var \DateTime
-     */
-    protected $firstDateTime;
-
-    /**
-     * @var Time|null
-     */
-    protected $firstTime;
+    protected ?Time $firstTime;
 
     /**
      * Must be called by ObjectManager, because of EventRepository which has inject methods
-     *
-     * @param DayGenerator $dayGenerator
-     * @param EventRepository $eventRepository
-     * @param TimeFactory $timeFactory
-     * @param PersistenceManagerInterface $persistenceManager
-     * @param DateTimeUtility $dateTimeUtility
      */
     public function __construct(
         DayGenerator $dayGenerator,
@@ -104,7 +74,6 @@ class DayRelationService
      * start re-creating the day records.
      *
      * @param int $eventUid Event UID. This also can be a hidden event.
-     * @return Event
      * @throws \Exception
      */
     public function createDayRelations(int $eventUid): ?Event
@@ -127,8 +96,10 @@ class DayRelationService
                 if ($this->firstDateTime === null) {
                     $this->firstDateTime = $dateTime;
                 }
+
                 $this->addDay($event, $dateTime);
             }
+
             $this->firstDateTime = null;
             $this->persistenceManager->update($event);
             $this->persistenceManager->persistAll();
@@ -141,19 +112,19 @@ class DayRelationService
      * Add day to DB
      * Also MM-Tables will be filled.
      *
-     * @param Event $event
      * @param \DateTime $dateTime
      */
-    public function addDay(Event $event, \DateTime $dateTime): void
+    public function addDay(Event $event, \DateTimeInterface $dateTime): void
     {
         // to prevent adding multiple day records for ONE day we set them all to midnight 00:00:00
         $dateTime = $this->dateTimeUtility->standardizeDateTimeObject($dateTime);
         $times = $this->timeFactory->getTimesForDate($event, $dateTime);
-        if ($times->count()) {
+        if ($times->count() !== 0) {
             foreach ($times as $time) {
                 if ($this->firstTime === null) {
                     $this->firstTime = $time;
                 }
+
                 $this->addGeneratedDayToEvent($dateTime, $event, $time);
             }
 
@@ -166,7 +137,10 @@ class DayRelationService
         }
     }
 
-    protected function addGeneratedDayToEvent(\DateTime $dateTime, Event $event, ?Time $time = null): void
+    /**
+     * @param \DateTime|\DateTimeImmutable $dateTime
+     */
+    protected function addGeneratedDayToEvent(\DateTimeInterface $dateTime, Event $event, ?Time $time = null): void
     {
         [$hour, $minute] = $this->getHourAndMinuteFromTime($time);
 
@@ -184,19 +158,19 @@ class DayRelationService
     /**
      * Analyze for valid time value like "21:40" and return exploded time parts: hour (21) and minute (40)
      *
-     * @param Time|null $time
      * @return array|int[]
      */
     protected function getHourAndMinuteFromTime(?Time $time = null): array
     {
-        $hourAndMinute = [0, 0];
-        if (
-            $time instanceof Time &&
-            preg_match('@^([0-1]\d|2[0-3]):[0-5]\d$@', $time->getTimeBegin())
-        ) {
-            $hourAndMinute = GeneralUtility::intExplode(':', $time->getTimeBegin());
+        if (!$time instanceof Time) {
+            return [0, 0];
         }
-        return $hourAndMinute;
+
+        if (!preg_match('@^([0-1]\d|2[0-3]):[0-5]\d$@', $time->getTimeBegin())) {
+            return [0, 0];
+        }
+
+        return GeneralUtility::intExplode(':', $time->getTimeBegin());
     }
 
     /**
@@ -207,13 +181,8 @@ class DayRelationService
      * Day: 18.01.2017 00:00:00 + 10h + 15m
      * Day: 19.01.2017 00:00:00 + 9h + 25m
      * Day: 20.01.2017 00:00:00 + 14h + 45m
-     *
-     * @param \DateTime $day
-     * @param int $hour
-     * @param int $minute
-     * @return \DateTime
      */
-    protected function getDayTime(\DateTime $day, int $hour, int $minute): \DateTime
+    protected function getDayTime(\DateTimeInterface $day, int $hour, int $minute): \DateTimeInterface
     {
         // Don't modify original day
         $dayTime = clone $day;
@@ -222,6 +191,7 @@ class DayRelationService
             $hour,
             $minute
         ));
+
         return $dayTime;
     }
 
@@ -234,22 +204,16 @@ class DayRelationService
      * Day: 19.01.2017 00:00:00 + 9h + 25m  = 17.01.2017 08:30:00
      * Day: 20.01.2017 00:00:00 + 14h + 45m = 17.01.2017 08:30:00
      *
-     * @param \DateTime $day
-     * @param int $hour
-     * @param int $minute
-     * @param Event $event
-     * @return \DateTime
+     * @return \DateTime|\DateTimeImmutable
      */
-    protected function getSortDayTime(\DateTime $day, int $hour, int $minute, Event $event): \DateTime
+    protected function getSortDayTime(\DateTimeInterface $day, int $hour, int $minute, Event $event): \DateTimeInterface
     {
         if ($event->getEventType() === 'duration') {
             [$hour, $minute] = $this->getHourAndMinuteFromTime($this->firstTime);
-            $sortDayTime = $this->getDayTime($this->firstDateTime, $hour, $minute);
-        } else {
-            $sortDayTime = $this->getDayTime($day, $hour, $minute);
+            return $this->getDayTime($this->firstDateTime, $hour, $minute);
         }
 
-        return $sortDayTime;
+        return $this->getDayTime($day, $hour, $minute);
     }
 
     /**
@@ -262,13 +226,10 @@ class DayRelationService
      * Day: 18.01.2017 00:00:00 + 8h + 30m  = 18.01.2017 08:30:00
      * Day: 28.01.2017 00:00:00 + 10h + 15m = 18.01.2017 08:30:00
      *
-     * @param \DateTime $day
-     * @param int $hour
-     * @param int $minute
-     * @param Event $event
-     * @return \DateTime
+     * @param \DateTime|\DateTimeImmutable $day
+     * @return \DateTime|\DateTimeImmutable
      */
-    protected function getSameDayTime(\DateTime $day, int $hour, int $minute, Event $event): \DateTime
+    protected function getSameDayTime(\DateTimeInterface $day, int $hour, int $minute, Event $event): \DateTimeInterface
     {
         if ($event->getEventType() !== 'duration') {
             [$hour, $minute] = $this->getHourAndMinuteFromTime($this->firstTime);
@@ -279,6 +240,6 @@ class DayRelationService
 
     protected function getLogger(): Logger
     {
-        return GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+        return GeneralUtility::makeInstance(LogManager::class)->getLogger(self::class);
     }
 }

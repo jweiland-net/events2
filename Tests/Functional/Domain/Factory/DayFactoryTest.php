@@ -36,20 +36,11 @@ use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
  */
 class DayFactoryTest extends FunctionalTestCase
 {
-    /**
-     * @var DayFactory
-     */
-    protected $subject;
+    protected DayFactory $subject;
 
-    /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
+    protected ObjectManager $objectManager;
 
-    /**
-     * @var QuerySettingsInterface
-     */
-    protected $querySettings;
+    protected QuerySettingsInterface $querySettings;
 
     /**
      * @var array
@@ -59,7 +50,7 @@ class DayFactoryTest extends FunctionalTestCase
         'typo3conf/ext/maps2'
     ];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -68,6 +59,7 @@ class DayFactoryTest extends FunctionalTestCase
         $this->querySettings = $this->objectManager->get(QuerySettingsInterface::class);
         $this->querySettings->setStoragePageIds([11, 40]);
         $dayRelationService = $this->objectManager->get(DayRelationService::class);
+
         $eventRepository = $this->objectManager->get(EventRepository::class);
         $eventRepository->setDefaultQuerySettings($this->querySettings);
 
@@ -107,6 +99,7 @@ class DayFactoryTest extends FunctionalTestCase
         $event->setFreeEntry(false);
         $event->addOrganizer($organizer);
         $event->setLocation($location);
+
         $persistenceManager->add($event);
 
         $eventBegin = new \DateTime('tomorrow midnight');
@@ -126,6 +119,7 @@ class DayFactoryTest extends FunctionalTestCase
         $event->setFreeEntry(false);
         $event->addOrganizer($organizer);
         $event->setLocation($location);
+
         $persistenceManager->add($event);
 
         $eventBegin = new \DateTime('yesterday midnight');
@@ -145,6 +139,7 @@ class DayFactoryTest extends FunctionalTestCase
         $event->setFreeEntry(false);
         $event->addOrganizer($organizer);
         $event->setLocation($location);
+
         $persistenceManager->add($event);
 
         // This date is out of time frame.
@@ -169,6 +164,7 @@ class DayFactoryTest extends FunctionalTestCase
         $event->setFreeEntry(false);
         $event->addOrganizer($organizer);
         $event->setLocation($location);
+
         $persistenceManager->add($event);
 
         $persistenceManager->persistAll();
@@ -179,7 +175,7 @@ class DayFactoryTest extends FunctionalTestCase
         }
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset($this->dayRepository);
         parent::tearDown();
@@ -192,6 +188,7 @@ class DayFactoryTest extends FunctionalTestCase
     {
         $date = new \DateTime('midnight');
         $date->modify('07:30:00');
+
         $queryFactory = $this->objectManager->get(QueryFactory::class);
 
         /** @var Query $query */
@@ -217,6 +214,7 @@ class DayFactoryTest extends FunctionalTestCase
     {
         $date = new \DateTime('yesterday midnight');
         $date->modify('07:30:00');
+
         $queryFactory = $this->objectManager->get(QueryFactory::class);
 
         /** @var Query $query */
@@ -225,6 +223,7 @@ class DayFactoryTest extends FunctionalTestCase
 
         // Try to get a day record for yesterday, where no day for this event exists.
         $day = $this->subject->findDayByEventAndTimestamp(1, (int)$date->format('U'), $query);
+
         self::assertSame(
             1,
             $day->getEvent()->getUid()
@@ -242,6 +241,7 @@ class DayFactoryTest extends FunctionalTestCase
     {
         $date = new \DateTime('tomorrow midnight');
         $date->modify('07:30:00');
+
         $queryFactory = $this->objectManager->get(QueryFactory::class);
 
         /** @var Query $query */
@@ -250,6 +250,7 @@ class DayFactoryTest extends FunctionalTestCase
 
         // Try to get a day record for tomorrow, where no day for this event exists.
         $day = $this->subject->findDayByEventAndTimestamp(1, (int)$date->format('U'), $query);
+
         self::assertSame(
             1,
             $day->getEvent()->getUid()
@@ -267,6 +268,7 @@ class DayFactoryTest extends FunctionalTestCase
     {
         $date = new \DateTime('midnight');
         $date->modify('07:30:00');
+
         $queryFactory = $this->objectManager->get(QueryFactory::class);
 
         /** @var Query $query */
@@ -275,6 +277,7 @@ class DayFactoryTest extends FunctionalTestCase
 
         // This Timestamp isn't in DB for event 2
         $day = $this->subject->findDayByEventAndTimestamp(2, (int)$date->format('U'), $query);
+
         self::assertSame(
             2,
             $day->getEvent()->getUid()
@@ -292,6 +295,7 @@ class DayFactoryTest extends FunctionalTestCase
     {
         $date = new \DateTime('midnight');
         $date->modify('07:30:00');
+
         $queryFactory = $this->objectManager->get(QueryFactory::class);
 
         /** @var Query $query */
@@ -300,6 +304,7 @@ class DayFactoryTest extends FunctionalTestCase
 
         // This Timestamp isn't in DB for event 3
         $day = $this->subject->findDayByEventAndTimestamp(3, (int)$date->format('U'), $query);
+
         self::assertSame(
             3,
             $day->getEvent()->getUid()
@@ -317,6 +322,7 @@ class DayFactoryTest extends FunctionalTestCase
     {
         $date = new \DateTime('midnight');
         $date->modify('07:30:00');
+
         $queryFactory = $this->objectManager->get(QueryFactory::class);
 
         /** @var Query $query */
@@ -324,6 +330,7 @@ class DayFactoryTest extends FunctionalTestCase
         $query->setQuerySettings($this->querySettings);
 
         $day = $this->subject->findDayByEventAndTimestamp(4, (int)$date->format('U'), $query);
+
         self::assertSame(
             4,
             $day->getEvent()->getUid()

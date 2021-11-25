@@ -28,166 +28,116 @@ class Event extends AbstractEntity
 {
     use Typo3PropertiesTrait;
 
-    /**
-     * @var string
-     */
-    protected $eventType = 'single';
+    protected string $eventType = 'single';
+
+    protected bool $topOfList = false;
 
     /**
-     * @var bool
-     */
-    protected $topOfList = false;
-
-    /**
-     * @var string
      * @Extbase\Validate("NotEmpty")
      */
-    protected $title = '';
+    protected string $title = '';
+
+    protected string $pathSegment = '';
 
     /**
-     * @var string
-     */
-    protected $pathSegment = '';
-
-    /**
-     * @var \DateTime
      * @Extbase\Validate("NotEmpty")
      */
-    protected $eventBegin;
+    protected \DateTimeInterface $eventBegin;
 
     /**
-     * @var \JWeiland\Events2\Domain\Model\Time
      * @Extbase\ORM\Cascade("remove")
      * @Extbase\Validate("NotEmpty")
      */
-    protected $eventTime;
+    protected ?Time $eventTime;
 
-    /**
-     * @var \DateTime
-     */
-    protected $eventEnd;
+    protected ?\DateTimeInterface $eventEnd;
 
-    /**
-     * @var bool
-     */
-    protected $sameDay = false;
+    protected bool $sameDay = false;
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Time>
      * @Extbase\ORM\Cascade("remove")
      * @Extbase\ORM\Lazy
      */
-    protected $multipleTimes;
+    protected ObjectStorage $multipleTimes;
 
-    /**
-     * @var int
-     */
-    protected $xth = 0;
+    protected int $xth = 0;
 
-    /**
-     * @var int
-     */
-    protected $weekday = 0;
+    protected int $weekday = 0;
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Time>
      * @Extbase\ORM\Cascade("remove")
      * @Extbase\ORM\Lazy
      */
-    protected $differentTimes;
+    protected ObjectStorage $differentTimes;
 
-    /**
-     * @var int
-     */
-    protected $eachWeeks = 0;
+    protected int $eachWeeks = 0;
 
-    /**
-     * @var int
-     */
-    protected $eachMonths = 0;
+    protected int $eachMonths = 0;
 
-    /**
-     * @var \DateTime
-     */
-    protected $recurringEnd;
+    protected ?\DateTimeInterface $recurringEnd;
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Exception>
      * @Extbase\ORM\Cascade("remove")
      * @Extbase\ORM\Lazy
      */
-    protected $exceptions;
+    protected ObjectStorage $exceptions;
+
+    protected string $teaser = '';
+
+    protected string $detailInformation = '';
+
+    protected bool $freeEntry = false;
 
     /**
-     * @var string
-     */
-    protected $teaser = '';
-
-    /**
-     * @var string
-     */
-    protected $detailInformation = '';
-
-    /**
-     * @var bool
-     */
-    protected $freeEntry = false;
-
-    /**
-     * @var \JWeiland\Events2\Domain\Model\Link
      * @Extbase\ORM\Cascade("remove")
      */
-    protected $ticketLink;
+    protected ?Link $ticketLink;
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Category>
      * @Extbase\Validate("NotEmpty")
      * @Extbase\ORM\Lazy
      */
-    protected $categories;
+    protected ObjectStorage $categories;
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Day>
      * @Extbase\ORM\Cascade("remove")
      * @Extbase\ORM\Lazy
      */
-    protected $days;
+    protected ObjectStorage $days;
 
-    /**
-     * @var \JWeiland\Events2\Domain\Model\Location
-     */
-    protected $location;
+    protected ?Location $location;
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Organizer>
      * @Extbase\ORM\Lazy
      */
-    protected $organizers;
+    protected ObjectStorage $organizers;
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference>
      * @Extbase\ORM\Cascade("remove")
      * @Extbase\ORM\Lazy
      */
-    protected $images;
+    protected ObjectStorage $images;
 
     /**
-     * @var \JWeiland\Events2\Domain\Model\Link
      * @Extbase\ORM\Cascade("remove")
      */
-    protected $videoLink;
+    protected ?Link $videoLink;
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Link>
      * @Extbase\ORM\Cascade("remove")
      * @Extbase\ORM\Lazy
      */
-    protected $downloadLinks;
+    protected ObjectStorage $downloadLinks;
 
-    /**
-     * @var string
-     */
-    protected $importId;
+    protected string $importId;
 
     public function __construct()
     {
@@ -241,20 +191,21 @@ class Event extends AbstractEntity
         $this->pathSegment = $pathSegment;
     }
 
-    public function getEventBegin(): ?\DateTime
+    public function getEventBegin(): \DateTimeInterface
     {
-        if ($this->eventBegin instanceof \DateTime) {
-            // Since PHP 7.4 we can not access timezone_type directly anymore.
-            // If location is false, timezone_type is 1 or 2, but we need 3
-            if ($this->eventBegin->getTimezone()->getLocation() === false) {
-                $this->eventBegin->setTimezone(new \DateTimeZone(date_default_timezone_get()));
-            }
-            return clone $this->eventBegin;
+        // Since PHP 7.4 we can not access timezone_type directly anymore.
+        // If location is false, timezone_type is 1 or 2, but we need 3
+        if ($this->eventBegin->getTimezone()->getLocation() === false) {
+            $this->eventBegin->setTimezone(new \DateTimeZone(date_default_timezone_get()));
         }
-        return null;
+
+        return clone $this->eventBegin;
     }
 
-    public function setEventBegin(?\DateTime $eventBegin = null): void
+    /**
+     * @param \DateTime|\DateTimeImmutable $eventBegin
+     */
+    public function setEventBegin(\DateTimeInterface $eventBegin): void
     {
         $this->eventBegin = $eventBegin;
     }
@@ -285,12 +236,13 @@ class Event extends AbstractEntity
             // Example: 20.01.2013 - 23.01.2013 = 4 days but diff shows 3. So we have to add 1 day here
             return (int)$diff->format('%a') + 1;
         }
+
         return 0;
     }
 
-    public function getEventEnd(): ?\DateTime
+    public function getEventEnd(): ?\DateTimeInterface
     {
-        if ($this->eventEnd instanceof \DateTime) {
+        if ($this->eventEnd instanceof \DateTimeInterface) {
             // Since PHP 7.4 we can not access timezone_type directly anymore.
             // If location is false, timezone_type is 1 or 2, but we need 3
             if ($this->eventEnd->getTimezone()->getLocation() === false) {
@@ -298,10 +250,14 @@ class Event extends AbstractEntity
             }
             return clone $this->eventEnd;
         }
+
         return null;
     }
 
-    public function setEventEnd(?\DateTime $eventEnd = null): void
+    /**
+     * @param \DateTime|\DateTimeImmutable|null $eventEnd
+     */
+    public function setEventEnd(?\DateTimeInterface $eventEnd = null): void
     {
         $this->eventEnd = $eventEnd;
     }
@@ -324,6 +280,9 @@ class Event extends AbstractEntity
         return $this->multipleTimes;
     }
 
+    /**
+     * @param ObjectStorage|Time[] $multipleTimes
+     */
     public function setMultipleTimes(ObjectStorage $multipleTimes): void
     {
         $this->multipleTimes = $multipleTimes;
@@ -339,6 +298,9 @@ class Event extends AbstractEntity
         $this->multipleTimes->detach($multipleTime);
     }
 
+    /**
+     * @return array<int|string, int>
+     */
     public function getXth(): array
     {
         $result = [];
@@ -355,6 +317,9 @@ class Event extends AbstractEntity
         $this->xth = $xth;
     }
 
+    /**
+     * @return array<int|string, int>
+     */
     public function getWeekday(): array
     {
         $result = [];
@@ -379,6 +344,9 @@ class Event extends AbstractEntity
         return $this->differentTimes;
     }
 
+    /**
+     * @param ObjectStorage|Time[] $differentTimes
+     */
     public function setDifferentTimes(ObjectStorage $differentTimes): void
     {
         $this->differentTimes = $differentTimes;
@@ -414,9 +382,9 @@ class Event extends AbstractEntity
         $this->eachMonths = $eachMonths;
     }
 
-    public function getRecurringEnd(): ?\DateTime
+    public function getRecurringEnd(): ?\DateTimeInterface
     {
-        if ($this->recurringEnd instanceof \DateTime) {
+        if ($this->recurringEnd instanceof \DateTimeInterface) {
             // Since PHP 7.4 we can not access timezone_type directly anymore.
             // If location is false, timezone_type is 1 or 2, but we need 3
             if ($this->recurringEnd->getTimezone()->getLocation() === false) {
@@ -427,7 +395,10 @@ class Event extends AbstractEntity
         return null;
     }
 
-    public function setRecurringEnd(?\DateTime $recurringEnd = null): void
+    /**
+     * @param \DateTime|\DateTimeImmutable|null $recurringEnd
+     */
+    public function setRecurringEnd(?\DateTimeInterface $recurringEnd = null): void
     {
         $this->recurringEnd = $recurringEnd;
     }
@@ -464,6 +435,7 @@ class Event extends AbstractEntity
                 }
             }
         }
+
         return $exceptions;
     }
 
@@ -471,12 +443,12 @@ class Event extends AbstractEntity
      * Get exceptions for a given date
      * You can limit the result by given exception types.
      *
-     * @param \DateTime $date
+     * @param \DateTimeInterface $date
      * @param string $exceptionTypes Type like Add, Remove, Time or Info. If empty add all exceptions
      * @return ObjectStorage|Exception[]
      */
     public function getExceptionsForDate(
-        \DateTime $date,
+        \DateTimeInterface $date,
         string $exceptionTypes = ''
     ): ObjectStorage {
         $exceptionsForDate = new ObjectStorage();
@@ -561,6 +533,8 @@ class Event extends AbstractEntity
 
     /**
      * A helper method to get all category UIDs as array
+     *
+     * @return int[]|null[]
      */
     public function getCategoryUids(): array
     {
@@ -568,9 +542,13 @@ class Event extends AbstractEntity
         foreach ($this->categories as $category) {
             $categoryUids[] = $category->getUid();
         }
+
         return $categoryUids;
     }
 
+    /**
+     * @param ObjectStorage|Category[] $categories
+     */
     public function setCategories(ObjectStorage $categories): void
     {
         $this->categories = $categories;
@@ -599,7 +577,7 @@ class Event extends AbstractEntity
      * It must be grouped by day (midnight) as we need it to merge it with exceptions
      * which only have a date, but not a time record for comparison.
      *
-     * @return array|\DateTime[]
+     * @return array|\DateTimeInterface[]
      */
     public function getFutureDatesGroupedAndSorted(): array
     {
@@ -613,6 +591,7 @@ class Event extends AbstractEntity
                 $futureDates[$futureDay->getDayAsTimestamp()] = $futureDay->getDay();
             }
         }
+
         ksort($futureDates);
         reset($futureDates);
 
@@ -624,7 +603,7 @@ class Event extends AbstractEntity
      * It must be grouped by day (midnight) as we need it in FE to show multiple
      * Time records for one day.
      *
-     * @return array
+     * @return array<int, array<string, mixed>>
      */
     public function getAlternativeTimesGroupedAndSorted(): array
     {
@@ -649,6 +628,7 @@ class Event extends AbstractEntity
                 }
             }
         }
+
         ksort($alternativeDays);
         reset($alternativeDays);
 
@@ -661,7 +641,7 @@ class Event extends AbstractEntity
      * It must be grouped by day (midnight) as we need it to merge it with exceptions
      * which only have a date, but not a time record for comparison.
      *
-     * @return array|\DateTime[]
+     * @return array|\DateTimeInterface[]
      */
     public function getFutureDatesIncludingRemovedGroupedAndSorted(): array
     {
@@ -687,7 +667,7 @@ class Event extends AbstractEntity
      * It must be grouped by day (midnight) as we need it in FE to show multiple
      * Time records for one day.
      *
-     * @return array
+     * @return array[]
      */
     public function getAlternativeTimesIncludingRemovedGroupedAndSorted(): array
     {
@@ -719,6 +699,9 @@ class Event extends AbstractEntity
         return $alternativeTimes;
     }
 
+    /**
+     * @param ObjectStorage|Day[] $days
+     */
     public function setDays(ObjectStorage $days): void
     {
         $this->days = $days;
@@ -727,8 +710,6 @@ class Event extends AbstractEntity
     /**
      * Returns the location.
      * Since version 2.3.1 this property can be (not must be) required
-     *
-     * @return Location|null $location
      */
     public function getLocation(): ?Location
     {
@@ -738,20 +719,17 @@ class Event extends AbstractEntity
     /**
      * Returns the location as string incl. the full address.
      * This is useful for export or LOCATION-part in ICS.
-     *
-     * @return string
      */
     public function getLocationAsString(): string
     {
-        $location = '';
         if ($this->getLocation() instanceof Location) {
-            $location = $this->getLocation()->getLocationAsString();
+            return $this->getLocation()->getLocationAsString();
         }
 
-        return $location;
+        return '';
     }
 
-    public function setLocation(?Location $location = null): void
+    public function setLocation(?Location $location): void
     {
         $this->location = $location;
     }
@@ -779,11 +757,8 @@ class Event extends AbstractEntity
     public function getFirstOrganizer(): ?Organizer
     {
         $this->organizers->rewind();
-        $organizer = $this->organizers->current();
-        if ($organizer instanceof Organizer) {
-            return $organizer;
-        }
-        return null;
+
+        return $this->organizers->current();
     }
 
     public function getIsCurrentUserAllowedOrganizer(): bool
@@ -832,7 +807,7 @@ class Event extends AbstractEntity
         return $this->videoLink;
     }
 
-    public function setVideoLink(?Link $videoLink = null): void
+    public function setVideoLink(?Link $videoLink): void
     {
         $this->videoLink = $videoLink;
     }
@@ -845,6 +820,9 @@ class Event extends AbstractEntity
         return $this->downloadLinks;
     }
 
+    /**
+     * @param ObjectStorage|Link[] $downloadLinks
+     */
     public function setDownloadLinks(ObjectStorage $downloadLinks): void
     {
         $this->downloadLinks = $downloadLinks;
@@ -874,7 +852,7 @@ class Event extends AbstractEntity
      * Helper method to build a baseRecord for path_segment
      * Needed in PathSegmentHelper
      *
-     * @return array
+     * @return array<string, int>|array<string, string>|array<string, null>
      */
     public function getBaseRecordForPathSegment(): array
     {

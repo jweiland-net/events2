@@ -22,12 +22,9 @@ use TYPO3\CMS\Extbase\Property\TypeConverter\DateTimeConverter;
  */
 class SetDateFormatForPropertyMappingEventListener extends AbstractControllerEventListener
 {
-    /**
-     * @var string
-     */
-    protected $defaultDateFormat = 'd.m.Y';
+    protected string $defaultDateFormat = 'd.m.Y';
 
-    protected $allowedControllerActions = [
+    protected array $allowedControllerActions = [
         'Event' => [
             'create',
             'update'

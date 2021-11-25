@@ -21,15 +21,9 @@ class Link extends AbstractEntity
 {
     use Typo3PropertiesTrait;
 
-    /**
-     * @var string
-     */
-    protected $link = '';
+    protected string $link = '';
 
-    /**
-     * @var string
-     */
-    protected $title = 'Video';
+    protected string $title = 'Video';
 
     public function getLink(): string
     {

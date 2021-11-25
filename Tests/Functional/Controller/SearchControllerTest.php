@@ -25,15 +25,9 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
  */
 class SearchControllerTest extends FunctionalTestCase
 {
-    /**
-     * @var SearchController
-     */
-    protected $subject;
+    protected SearchController $subject;
 
-    /**
-     * @var Request
-     */
-    protected $request;
+    protected Request $request;
 
     /**
      * @var array
@@ -42,7 +36,7 @@ class SearchControllerTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->setUpBackendUserFromFixture(1);
@@ -56,6 +50,7 @@ class SearchControllerTest extends FunctionalTestCase
                 'Search' => SearchController::class
             ]);
         }
+
         $this->request->setControllerExtensionName('Events2');
         $this->request->setPluginName('Search');
         $this->request->setControllerName('Search');
@@ -66,7 +61,7 @@ class SearchControllerTest extends FunctionalTestCase
         $this->subject = $objectManager->get(SearchController::class);
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset(
             $this->subject,
@@ -106,6 +101,7 @@ class SearchControllerTest extends FunctionalTestCase
         $search = new Search();
         $search->setSearch('Test');
         $search->setFreeEntry(true);
+
         $this->request->setControllerActionName('show');
         $this->request->setArgument('search', $search);
 

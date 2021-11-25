@@ -47,20 +47,11 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
      */
     protected $priority = 2;
 
-    /**
-     * @var Folder
-     */
-    protected $uploadFolder;
+    protected Folder $uploadFolder;
 
-    /**
-     * @var PropertyMappingConfigurationInterface
-     */
-    protected $converterConfiguration = [];
+    protected PropertyMappingConfigurationInterface $converterConfiguration;
 
-    /**
-     * @var EventDispatcher
-     */
-    protected $eventDispatcher;
+    protected EventDispatcher $eventDispatcher;
 
     /**
      * Do not inject this property, as EXT:checkfaluploads may not be loaded
@@ -92,6 +83,9 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
         return true;
     }
 
+    /**
+     * @return \TYPO3\CMS\Extbase\Error\Error|mixed|\TYPO3\CMS\Extbase\Persistence\ObjectStorage
+     */
     public function convertFrom(
         $source,
         string $targetType,
@@ -116,6 +110,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
                 } else {
                     unset($source[$key]);
                 }
+
                 continue;
             }
             // Check if uploaded file returns an error
@@ -220,7 +215,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
         $resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);
         try {
             $uploadFolder = $resourceFactory->getObjectFromCombinedIdentifier($combinedUploadFolderIdentifier);
-        } catch (ResourceDoesNotExistException $exception) {
+        } catch (ResourceDoesNotExistException $resourceDoesNotExistException) {
             [$storageUid] = GeneralUtility::trimExplode(':', $combinedUploadFolderIdentifier);
             $resourceStorage = $resourceFactory->getStorageObject((int)$storageUid);
             $uploadFolder = $resourceStorage->createFolder($combinedUploadFolderIdentifier);
@@ -232,9 +227,6 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
     /**
      * Check, if we have a valid uploaded file
      * Error = 4: No file uploaded
-     *
-     * @param array $uploadedFile
-     * @return bool
      */
     protected function isValidUploadFile(array $uploadedFile): bool
     {
@@ -253,8 +245,6 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
 
     /**
      * If file is in our own upload folder we can delete it from filesystem and sys_file table.
-     *
-     * @param FileReference|null $fileReference
      */
     protected function deleteFile(?FileReference $fileReference): void
     {
@@ -273,9 +263,6 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
 
     /**
      * upload file and get a file reference object.
-     *
-     * @param array $source
-     * @return FileReference
      */
     protected function getExtbaseFileReference(array $source): FileReference
     {
@@ -287,9 +274,6 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
 
     /**
      * Upload file and get a file reference object.
-     *
-     * @param array $source
-     * @return \TYPO3\CMS\Core\Resource\FileReference
      */
     protected function getCoreFileReference(array $source): \TYPO3\CMS\Core\Resource\FileReference
     {
@@ -311,6 +295,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
         if ($this->falUploadService === null) {
             $this->falUploadService = GeneralUtility::makeInstance(FalUploadService::class);
         }
+
         return $this->falUploadService;
     }
 }

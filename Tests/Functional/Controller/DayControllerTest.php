@@ -32,15 +32,9 @@ use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
  */
 class DayControllerTest extends FunctionalTestCase
 {
-    /**
-     * @var DayController
-     */
-    protected $subject;
+    protected DayController $subject;
 
-    /**
-     * @var Request
-     */
-    protected $request;
+    protected Request $request;
 
     /**
      * @var array
@@ -49,7 +43,7 @@ class DayControllerTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->importDataSet('ntf://Database/pages.xml');
@@ -60,6 +54,7 @@ class DayControllerTest extends FunctionalTestCase
         $dayRelationService = $objectManager->get(DayRelationService::class);
         $querySettings = $objectManager->get(QuerySettingsInterface::class);
         $querySettings->setStoragePageIds([1]);
+
         $eventRepository = $objectManager->get(EventRepository::class);
         $eventRepository->setDefaultQuerySettings($querySettings);
 
@@ -68,6 +63,7 @@ class DayControllerTest extends FunctionalTestCase
         $event->setEventType('single');
         $event->setEventBegin(new \DateTime('midnight'));
         $event->setTitle('Today');
+
         $persistenceManager->add($event);
         $persistenceManager->persistAll();
 
@@ -82,6 +78,7 @@ class DayControllerTest extends FunctionalTestCase
         $event->setEventBegin(new \DateTime('tomorrow midnight'));
         $event->setTitle('Tomorrow');
         $event->addOrganizer($organizer);
+
         $persistenceManager->add($event);
         $persistenceManager->persistAll();
 
@@ -106,7 +103,7 @@ class DayControllerTest extends FunctionalTestCase
         $this->subject = $objectManager->get(DayController::class);
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset(
             $this->subject,
@@ -115,6 +112,10 @@ class DayControllerTest extends FunctionalTestCase
 
         parent::tearDown();
     }
+
+    /**
+     * @return array<string, array<string>>
+     */
 
     public function listWithEmptyFilterDataProvider(): array
     {
@@ -132,7 +133,7 @@ class DayControllerTest extends FunctionalTestCase
      *
      * @dataProvider listWithEmptyFilterDataProvider
      */
-    public function processRequestWithListActionWillValidateAndAssignFilterToView($action): void
+    public function processRequestWithListActionWillValidateAndAssignFilterToView(string $action): void
     {
         $this->request->setControllerActionName($action);
 
@@ -144,18 +145,23 @@ class DayControllerTest extends FunctionalTestCase
             'Event Title 1: Today',
             $content
         );
+
         if ($action !== 'listToday') {
             self::assertStringContainsString(
                 'Event Title 2: Tomorrow',
                 $content
             );
         }
+
         self::assertStringNotContainsString(
             'Organizer: 1',
             $content
         );
     }
 
+    /**
+     * @return array<string, array<string|\JWeiland\Events2\Domain\Model\Filter>>
+     */
     public function listWithFilledFilterDataProvider(): array
     {
         $filter = new Filter();
@@ -174,7 +180,7 @@ class DayControllerTest extends FunctionalTestCase
      * @test
      * @dataProvider listWithFilledFilterDataProvider
      */
-    public function processRequestWithListActionWillAssignFilterToView($action, $filter): void
+    public function processRequestWithListActionWillAssignFilterToView(string $action, Filter $filter): void
     {
         $this->request->setControllerActionName($action);
         $this->request->setArgument('filter', $filter);
@@ -190,6 +196,7 @@ class DayControllerTest extends FunctionalTestCase
                 $content
             );
         }
+
         self::assertStringContainsString(
             'Organizer: 1',
             $content
@@ -213,6 +220,7 @@ class DayControllerTest extends FunctionalTestCase
             'Event Title 1: Today',
             $content
         );
+
         self::assertStringContainsString(
             'Event Title 2: Tomorrow',
             $content

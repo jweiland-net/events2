@@ -21,9 +21,6 @@ return [
         'searchFields' => 'title',
         'iconfile' => 'EXT:events2/Resources/Public/Icons/tx_events2_domain_model_holiday.svg',
     ],
-    'interface' => [
-        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, title, day, month',
-    ],
     'types' => [
         '1' => ['showitem' => '--palette--;;languageHidden, l10n_diffsource, 
             title, 

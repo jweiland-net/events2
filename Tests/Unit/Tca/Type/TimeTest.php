@@ -20,17 +20,14 @@ use Nimut\TestingFramework\TestCase\UnitTestCase;
  */
 class TimeTest extends UnitTestCase
 {
-    /**
-     * @var \JWeiland\Events2\Tca\Type\Time
-     */
-    protected $subject;
+    protected Time $subject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->subject = new Time(new TimeToStringConverter());
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset($this->subject);
     }
@@ -38,7 +35,7 @@ class TimeTest extends UnitTestCase
     /**
      * DataProvider for times with times which will not be modified.
      *
-     * @return array
+     * @return array<string, array<string>>
      */
     public function unmodifiedTimesDataProvider(): array
     {
@@ -66,7 +63,7 @@ class TimeTest extends UnitTestCase
     }
 
     /**
-     * @return array
+     * @return array<string, array<string>>
      */
     public function unpaddedTimesDataProvider(): array
     {
@@ -95,7 +92,7 @@ class TimeTest extends UnitTestCase
     }
 
     /**
-     * @return array
+     * @return array<string, array<string>>
      */
     public function tooHighTimesDataProvider(): array
     {
@@ -113,11 +110,9 @@ class TimeTest extends UnitTestCase
     /**
      * @test
      *
-     * @param string $tooHighTime
-     * @param string $normalizedTime
      * @dataProvider tooHighTimesDataProvider
      */
-    public function evaluateWithTooHighTimeValues($tooHighTime, $normalizedTime): void
+    public function evaluateWithTooHighTimeValues(string $tooHighTime, string $normalizedTime): void
     {
         self::assertSame(
             $normalizedTime,
@@ -126,7 +121,7 @@ class TimeTest extends UnitTestCase
     }
 
     /**
-     * @return array
+     * @return array<string, array<string>>
      */
     public function invalidTimesDataProvider(): array
     {
@@ -140,8 +135,6 @@ class TimeTest extends UnitTestCase
     /**
      * @test
      *
-     * @param string $invalidTime
-     * @param string $expectedTime
      * @dataProvider invalidTimesDataProvider
      */
     public function evaluateWithInvalidValues($invalidTime, $expectedTime): void
@@ -153,7 +146,7 @@ class TimeTest extends UnitTestCase
     }
 
     /**
-     * @return array
+     * @return array<string, array<int|string>>
      */
     public function dateProviderForVariousIntegerValues(): array
     {
@@ -175,11 +168,9 @@ class TimeTest extends UnitTestCase
     /**
      * @test
      *
-     * @param string $intValue
-     * @param string $expectedTime
      * @dataProvider dateProviderForVariousIntegerValues
      */
-    public function evaluateWithInteger($intValue, $expectedTime): void
+    public function evaluateWithInteger(string $intValue, string $expectedTime): void
     {
         self::assertSame(
             $expectedTime,

@@ -27,37 +27,20 @@ use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
  */
 class EventsSlugUpdater implements UpgradeWizardInterface
 {
-    /**
-     * @var PathSegmentHelper
-     */
-    protected $pathSegmentHelper;
+    protected PathSegmentHelper $pathSegmentHelper;
 
-    /**
-     * @var ExtConf
-     */
-    protected $extConf;
+    protected ExtConf $extConf;
 
-    /**
-     * @var string
-     */
-    protected $tableName = 'tx_events2_domain_model_event';
+    protected string $tableName = 'tx_events2_domain_model_event';
 
-    /**
-     * @var string
-     */
-    protected $slugColumn = 'path_segment';
+    protected string $slugColumn = 'path_segment';
 
-    /**
-     * @var string
-     */
-    protected $titleColumn = 'title';
+    protected string $titleColumn = 'title';
 
     /**
      * Cache to boost incrementation of slugs
-     *
-     * @var array
      */
-    protected $slugCache = [];
+    protected array $slugCache = [];
 
     public function __construct(PathSegmentHelper $pathSegmentHelper, ExtConf $extConf)
     {
@@ -68,8 +51,6 @@ class EventsSlugUpdater implements UpgradeWizardInterface
     /**
      * Return the identifier for this wizard
      * This should be the same string as used in the ext_localconf class registration
-     *
-     * @return string
      */
     public function getIdentifier(): string
     {
@@ -156,13 +137,9 @@ class EventsSlugUpdater implements UpgradeWizardInterface
             );
     }
 
-    /**
-     * @param int $uid
-     * @param string $slug
-     * @return string
-     */
     protected function getUniqueValue(int $uid, string $slug): string
     {
+        $newSlug = '';
         $statement = $this->getUniqueSlugStatement($uid, $slug);
         $counter = $this->slugCache[$slug] ?? 1;
         while ($statement->fetch()) {
@@ -174,7 +151,7 @@ class EventsSlugUpdater implements UpgradeWizardInterface
             if ($counter > 5) {
                 $this->slugCache[$slug] = $counter;
             }
-            $counter++;
+            ++$counter;
         }
 
         return $newSlug ?? $slug;
@@ -203,7 +180,7 @@ class EventsSlugUpdater implements UpgradeWizardInterface
     }
 
     /**
-     * @return string[]
+     * @return array<class-string<DatabaseUpdatedPrerequisite>>
      */
     public function getPrerequisites(): array
     {

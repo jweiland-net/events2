@@ -33,10 +33,7 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  */
 class XmlImporter extends AbstractImporter
 {
-    /**
-     * @var array
-     */
-    protected $allowedMimeType = [
+    protected array $allowedMimeType = [
         'text/xml',
         'application/xml'
     ];
@@ -44,7 +41,6 @@ class XmlImporter extends AbstractImporter
     /**
      * Import XML file
      *
-     * @return bool
      * @throws \Exception
      */
     public function import(): bool
@@ -54,12 +50,18 @@ class XmlImporter extends AbstractImporter
         }
 
         $events = GeneralUtility::xml2array($this->file->getContents());
+        if (is_string($events)) {
+            return false;
+        }
+
         if ($this->hasInvalidEvents($events)) {
             return false;
         }
 
         try {
-            array_map([$this, 'processEvent'], $events);
+            array_map(function (array $eventRecord) : void {
+                $this->processEvent($eventRecord);
+            }, $events);
         } catch (\Exception $e) {
             $this->addMessage(
                 $e->getMessage(),
@@ -76,8 +78,6 @@ class XmlImporter extends AbstractImporter
     /**
      * Validate XML for import
      *
-     * @param FileInterface $file
-     * @return bool
      * @throws \Exception
      */
     protected function validateXml(FileInterface $file): bool
@@ -101,6 +101,7 @@ class XmlImporter extends AbstractImporter
                         FlashMessage::ERROR
                     );
                 }
+
                 return false;
             }
         } catch (\Exception $e) {
@@ -112,15 +113,16 @@ class XmlImporter extends AbstractImporter
                 $e->getMessage(),
                 FlashMessage::ERROR
             );
+
             return false;
         }
+
         return true;
     }
 
     /**
      * Check, if an event has to be created/updated/deleted
      *
-     * @param array $eventRecord
      * @throws \Exception
      */
     protected function processEvent(array $eventRecord): void
@@ -136,6 +138,7 @@ class XmlImporter extends AbstractImporter
                         $eventRecord['import_id']
                     ));
                 }
+
                 break;
             case 'edit':
                 if ($event instanceof Event) {
@@ -181,6 +184,7 @@ class XmlImporter extends AbstractImporter
                         $eventRecord['import_id']
                     ));
                 }
+
                 break;
             case 'new':
             default:
@@ -202,6 +206,7 @@ class XmlImporter extends AbstractImporter
         if (!in_array($processAs, ['new', 'edit', 'delete'], true)) {
             $processAs = 'new';
         }
+
         return $processAs;
     }
 
@@ -235,6 +240,7 @@ class XmlImporter extends AbstractImporter
             'detail_information' => 'string',
             'free_entry' => 'bool',
         ];
+
         foreach ($allowedRootProperties as $property => $dataType) {
             if (isset($eventRecord[$property])) {
                 switch ($dataType) {
@@ -256,8 +262,6 @@ class XmlImporter extends AbstractImporter
     /**
      * This method will store the event, if no UID was given (needed for URL like title-uid.html). So please keep
      * this method at last position just before repo will add event, but just after event was set to hidden.
-     *
-     * @param Event $event
      */
     protected function addPathSegment(Event $event): void
     {
@@ -279,6 +283,7 @@ class XmlImporter extends AbstractImporter
             if (!$date instanceof \DateTime) {
                 continue;
             }
+
             $this->setEventProperty($event, $property, $this->dateTimeUtility->standardizeDateTimeObject($date));
         }
     }
@@ -314,20 +319,23 @@ class XmlImporter extends AbstractImporter
         }
 
         // add different times
-        if (
-            isset($eventRecord['different_times']) &&
-            is_array($eventRecord['different_times'])
-        ) {
-            foreach ($eventRecord['different_times'] as $differentTime) {
-                $newTime = GeneralUtility::makeInstance(Time::class);
-                $newTime->setPid($this->storagePid);
-                $newTime->setWeekday($differentTime['weekday']);
-                $newTime->setTimeBegin($differentTime['time_begin'] ?: '');
-                $newTime->setTimeEntry($differentTime['time_entry'] ?: '');
-                $newTime->setTimeEnd($differentTime['time_end'] ?: '');
-                $newTime->setDuration($differentTime['duration'] ?: '');
-                $event->addDifferentTime($newTime);
-            }
+        if (!isset($eventRecord['different_times'])) {
+            return;
+        }
+
+        if (!is_array($eventRecord['different_times'])) {
+            return;
+        }
+
+        foreach ($eventRecord['different_times'] as $differentTime) {
+            $newTime = GeneralUtility::makeInstance(Time::class);
+            $newTime->setPid($this->storagePid);
+            $newTime->setWeekday($differentTime['weekday']);
+            $newTime->setTimeBegin($differentTime['time_begin'] ?: '');
+            $newTime->setTimeEntry($differentTime['time_entry'] ?: '');
+            $newTime->setTimeEnd($differentTime['time_end'] ?: '');
+            $newTime->setDuration($differentTime['duration'] ?: '');
+            $event->addDifferentTime($newTime);
         }
     }
 
@@ -379,7 +387,11 @@ class XmlImporter extends AbstractImporter
 
     protected function addExceptions(Event $event, array $eventRecord): void
     {
-        if (!isset($eventRecord['exceptions']) || !is_array($eventRecord['exceptions'])) {
+        if (!isset($eventRecord['exceptions'])) {
+            return;
+        }
+
+        if (!is_array($eventRecord['exceptions'])) {
             return;
         }
 
@@ -392,6 +404,7 @@ class XmlImporter extends AbstractImporter
             if (!$exceptionDate instanceof \DateTime) {
                 continue;
             }
+
             $newException->setExceptionDate($this->dateTimeUtility->standardizeDateTimeObject($exceptionDate));
 
             if (isset($exception['exception_time'])) {
@@ -457,7 +470,7 @@ class XmlImporter extends AbstractImporter
                     );
                 } else {
                     $report = [];
-                    $content = GeneralUtility::getUrl($image['url'], 0, null, $report);
+                    $content = GeneralUtility::getUrl($image['url']);
                     if (!empty($report['error'])) {
                         $this->addMessage(sprintf(
                             'Given image was NOT added to event. Error: %s',
@@ -465,6 +478,7 @@ class XmlImporter extends AbstractImporter
                         ), FlashMessage::NOTICE);
                         continue;
                     }
+
                     $file = $targetFolder->createFile($filename);
                     $file->setContents($content);
                 }
@@ -479,8 +493,10 @@ class XmlImporter extends AbstractImporter
                         'uid' => uniqid('NEW_', true)
                     ]
                 ));
+
                 $images->attach($extbaseFileReference);
             }
+
             $event->setImages($images);
         }
     }

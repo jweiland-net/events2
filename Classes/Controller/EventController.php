@@ -30,35 +30,17 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  */
 class EventController extends AbstractController
 {
-    /**
-     * @var EventRepository
-     */
-    protected $eventRepository;
+    protected EventRepository $eventRepository;
 
-    /**
-     * @var CategoryRepository
-     */
-    protected $categoryRepository;
+    protected CategoryRepository $categoryRepository;
 
-    /**
-     * @var LocationRepository
-     */
-    protected $locationRepository;
+    protected LocationRepository $locationRepository;
 
-    /**
-     * @var DayRelationService
-     */
-    protected $dayRelationService;
+    protected DayRelationService $dayRelationService;
 
-    /**
-     * @var PersistenceManagerInterface
-     */
-    protected $persistenceManager;
+    protected PersistenceManagerInterface $persistenceManager;
 
-    /**
-     * @var MailMessage
-     */
-    protected $mail;
+    protected MailMessage $mail;
 
     public function __construct(
         EventRepository $eventRepository,
@@ -122,13 +104,10 @@ class EventController extends AbstractController
         $this->preProcessControllerAction();
     }
 
-    /**
-     * @param Event $event
-     */
     public function createAction(Event $event): void
     {
         $event->setHidden(true);
-        $event->setEventType($event->getEventEnd() ? 'duration' : 'single');
+        $event->setEventType($event->getEventEnd() !== null ? 'duration' : 'single');
         $this->eventRepository->add($event);
         $this->postProcessControllerAction($event);
 
@@ -150,16 +129,13 @@ class EventController extends AbstractController
         $this->preProcessControllerAction();
     }
 
-    /**
-     * @param Event $event
-     */
     public function editAction(Event $event): void
     {
         $categories = $this->categoryRepository->getCategories(
             $this->settings['selectableCategoriesForNewEvents']
         );
 
-        if (!$categories->count()) {
+        if ($categories->count() === 0) {
             $this->addFlashMessage('Dear Admin: You have forgotten to define some allowed categories in plugin configuration');
         }
 
@@ -175,9 +151,6 @@ class EventController extends AbstractController
         $this->preProcessControllerAction();
     }
 
-    /**
-     * @param Event $event
-     */
     public function updateAction(Event $event): void
     {
         $isHidden = $event->getHidden();
@@ -210,8 +183,6 @@ class EventController extends AbstractController
      * We work with event UID here to prevent calling event validators which will perform much better than
      * working with Event model here.
      * As this is not a form request, we can be sure that we will get a valid event from database.
-     *
-     * @param int $event
      */
     public function deleteAction(int $event): void
     {
@@ -233,8 +204,6 @@ class EventController extends AbstractController
      * We work with event UID here to prevent calling event validators which will perform much better than
      * working with Event model here.
      * As this is not a form request, we can be sure that we will get a valid event from database.
-     *
-     * @param int $event
      */
     public function activateAction(int $event): void
     {

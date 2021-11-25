@@ -25,22 +25,13 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  */
 class EventRepository extends Repository implements HiddenRepositoryInterface
 {
-    /**
-     * @var array
-     */
     protected $defaultOrderings = [
         'eventBegin' => QueryInterface::ORDER_ASCENDING,
     ];
 
-    /**
-     * @var array
-     */
-    protected $settings = [];
+    protected array $settings = [];
 
-    /**
-     * @var UserRepository
-     */
-    protected $userRepository;
+    protected UserRepository $userRepository;
 
     public function __construct(
         ObjectManagerInterface $objectManager,
@@ -53,7 +44,6 @@ class EventRepository extends Repository implements HiddenRepositoryInterface
 
     /**
      * @param mixed $value
-     * @param string $property
      * @return AbstractDomainObject|Event|null
      */
     public function findHiddenObject($value, string $property = 'uid'): ?AbstractDomainObject
@@ -82,9 +72,6 @@ class EventRepository extends Repository implements HiddenRepositoryInterface
     /**
      * Nearly the same as "findByUid", but this method was used by PageTitleProvider
      * which is out of Extbase context. So we are using a plain Doctrine Query here.
-     *
-     * @param int $uid
-     * @return array
      */
     public function getEventRecord(int $uid): array
     {
@@ -104,6 +91,7 @@ class EventRepository extends Repository implements HiddenRepositoryInterface
         if (empty($event)) {
             $event = [];
         }
+
         return $event;
     }
 

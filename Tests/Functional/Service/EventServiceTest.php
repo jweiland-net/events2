@@ -27,10 +27,7 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  */
 class EventServiceTest extends FunctionalTestCase
 {
-    /**
-     * @var EventService
-     */
-    protected $subject;
+    protected EventService $subject;
 
     /**
      * @var EventRepository|ObjectProphecy
@@ -41,7 +38,7 @@ class EventServiceTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -54,7 +51,7 @@ class EventServiceTest extends FunctionalTestCase
         );
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset(
             $this->subject,

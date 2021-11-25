@@ -22,17 +22,14 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
  */
 class Filter extends AbstractEntity
 {
-    /**
-     * @var int|null
-     */
-    protected $organizer;
+    protected ?int $organizer = 0;
 
     public function getOrganizer(): ?int
     {
         return $this->organizer;
     }
 
-    public function setOrganizer(?int $organizer = null): void
+    public function setOrganizer(?int $organizer): void
     {
         $this->organizer = $organizer;
     }

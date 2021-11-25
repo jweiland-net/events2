@@ -26,14 +26,8 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  */
 class LocationRepository extends Repository
 {
-    /**
-     * @var EventDispatcher
-     */
-    protected $eventDispatcher;
+    protected EventDispatcher $eventDispatcher;
 
-    /**
-     * @var array
-     */
     protected $defaultOrderings = [
         'location' => QueryInterface::ORDER_ASCENDING,
     ];
@@ -50,9 +44,6 @@ class LocationRepository extends Repository
     /**
      * This method does not use any Extbase Queries, as it was needed by Ajax Request FindLocations
      * which does not have any Extbase Context.
-     *
-     * @param string $search
-     * @return array
      */
     public function findLocations(string $search): array
     {

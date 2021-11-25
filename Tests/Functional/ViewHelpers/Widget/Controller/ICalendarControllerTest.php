@@ -37,25 +37,13 @@ use TYPO3\CMS\Fluid\Core\Widget\WidgetRequest;
  */
 class ICalendarControllerTest extends FunctionalTestCase
 {
-    /**
-     * @var DayRepository
-     */
-    protected $dayRepository;
+    protected DayRepository $dayRepository;
 
-    /**
-     * @var QuerySettingsInterface
-     */
-    protected $querySettings;
+    protected QuerySettingsInterface $querySettings;
 
-    /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
+    protected ObjectManager $objectManager;
 
-    /**
-     * @var string
-     */
-    protected $tempDirectory = '';
+    protected string $tempDirectory = '';
 
     /**
      * @var array
@@ -64,7 +52,7 @@ class ICalendarControllerTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
@@ -74,8 +62,10 @@ class ICalendarControllerTest extends FunctionalTestCase
         $this->querySettings = $this->objectManager->get(QuerySettingsInterface::class);
         $this->querySettings->setStoragePageIds([11, 40]);
         $this->dayRepository->setDefaultQuerySettings($this->querySettings);
+
         $persistenceManager = $this->objectManager->get(PersistenceManager::class);
         $dayRelationService = $this->objectManager->get(DayRelationService::class);
+
         $eventRepository = $this->objectManager->get(EventRepository::class);
         $eventRepository->setDefaultQuerySettings($this->querySettings);
 
@@ -123,7 +113,7 @@ class ICalendarControllerTest extends FunctionalTestCase
         $this->tempDirectory = Environment::getPublicPath() . '/typo3temp/tx_events2/iCal/';
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset($this->subject);
         $dirAndFiles = scandir($this->tempDirectory);

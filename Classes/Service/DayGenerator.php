@@ -25,25 +25,14 @@ class DayGenerator
 {
     /**
      * day storage.
-     *
-     * @var array
      */
-    protected $dateTimeStorage = [];
+    protected array $dateTimeStorage = [];
 
-    /**
-     * @var ExtConf
-     */
-    protected $extConf;
+    protected ExtConf $extConf;
 
-    /**
-     * @var DateTimeUtility
-     */
-    protected $dateTimeUtility;
+    protected DateTimeUtility $dateTimeUtility;
 
-    /**
-     * @var EventDispatcher
-     */
-    protected $eventDispatcher;
+    protected EventDispatcher $eventDispatcher;
 
     public function __construct(
         EventDispatcher $eventDispatcher,
@@ -58,8 +47,6 @@ class DayGenerator
     /**
      * This method will not only initialize this object, it further will start generating all days for given event.
      *
-     * @param Event $event
-     * @return bool
      * @throws \Exception
      */
     public function initialize(Event $event): bool
@@ -130,7 +117,7 @@ class DayGenerator
      * Setter for day storage
      * Needed for UnitTests.
      *
-     * @param array $dateTimeStorage
+     * @param \DateTime[] $dateTimeStorage
      */
     public function setDateTimeStorage(array $dateTimeStorage): void
     {
@@ -139,23 +126,11 @@ class DayGenerator
 
     /**
      * Check, if event record is a valid event.
-     *
-     * @param Event $event
-     * @return bool
      */
     protected function isValidEvent(Event $event): bool
     {
-        $valid = true;
-
         // some special fields must be set
-        if (
-            empty($event->getEventType()) ||
-            !$event->getEventBegin() instanceof \DateTime
-        ) {
-            $valid = false;
-        }
-
-        return $valid;
+        return !empty($event->getEventType()) && $event->getEventBegin() instanceof \DateTime;
     }
 
     /**
@@ -163,7 +138,7 @@ class DayGenerator
      *
      * @param \DateTime $day Day to add
      */
-    protected function addDayToStorage(\DateTime $day): void
+    protected function addDayToStorage(\DateTimeInterface $day): void
     {
         // group days to make them unique
         // I don't know why, but $day is a reference, so I clone it here to have individual dates in this array
@@ -175,7 +150,7 @@ class DayGenerator
      *
      * @param \DateTime $day Day to remove
      */
-    protected function removeDayFromStorage(\DateTime $day): void
+    protected function removeDayFromStorage(\DateTimeInterface $day): void
     {
         unset($this->dateTimeStorage[$day->format('U')]);
     }
@@ -185,10 +160,9 @@ class DayGenerator
      * If calculated date is older than eventEnd, it does not make sense to use that date and we
      * will return eventEnd instead.
      *
-     * @param Event $event
-     * @return \DateTime
+     * @return \DateTime|\DateTimeImmutable
      */
-    protected function getDateToStopCalculatingTo(Event $event): \DateTime
+    protected function getDateToStopCalculatingTo(Event $event): \DateTimeInterface
     {
         $today = clone $this->dateTimeUtility->convert('today');
         $maxEventEnd = $event->getEventBegin();
@@ -197,20 +171,18 @@ class DayGenerator
         if ($today > $maxEventEnd) {
             $maxEventEnd = $today;
         }
+
         $maxEventEnd->modify(sprintf(
             '+%d months',
             $this->extConf->getRecurringFuture()
         ));
 
-        if ($event->getEventType() === 'duration') {
-            $recurringEnd = $event->getEventEnd();
-        } else {
-            $recurringEnd = $event->getRecurringEnd();
-        }
+        $recurringEnd = $event->getEventType() === 'duration' ? $event->getEventEnd() : $event->getRecurringEnd();
 
         if ($recurringEnd instanceof \DateTime && $recurringEnd < $maxEventEnd) {
             return $this->dateTimeUtility->standardizeDateTimeObject($recurringEnd);
         }
+
         return $this->dateTimeUtility->standardizeDateTimeObject($maxEventEnd);
     }
 
@@ -219,13 +191,13 @@ class DayGenerator
      * If calculated date is older than eventBegin, it does not make sense to use that date and we
      * will return eventBegin instead.
      *
-     * @param Event $event
-     * @return \DateTime
+     * @return \DateTime|\DateTimeImmutable
      */
-    protected function getDateToStartCalculatingFrom(Event $event): \DateTime
+    protected function getDateToStartCalculatingFrom(Event $event): \DateTimeInterface
     {
         $earliestDateToStartCalculatingFrom = clone $this->dateTimeUtility->convert('today');
         $earliestDateToStartCalculatingFrom->modify('-' . $this->extConf->getRecurringPast() . ' months');
+
         $eventBegin = $event->getEventBegin();
         if (
             $eventBegin instanceof \DateTime
@@ -244,6 +216,7 @@ class DayGenerator
                 $eventBegin->modify('+' . $event->getEachMonths() . ' months');
                 $eventBegin->modify('+' . $event->getEachWeeks() . ' weeks');
             }
+
             $dateToStartCalculatingFrom = $eventBegin;
         }
 
@@ -252,9 +225,6 @@ class DayGenerator
 
     /**
      * Getter for xth.
-     *
-     * @param Event $event
-     * @return array
      */
     protected function getXth(Event $event): array
     {
@@ -270,8 +240,7 @@ class DayGenerator
     /**
      * Getter for weekday.
      *
-     * @param Event $event
-     * @return array
+     * @return array<int|string, bool>
      */
     protected function getWeekday(Event $event): array
     {
@@ -286,25 +255,22 @@ class DayGenerator
 
     /**
      * Get items from TCA.
-     *
-     * @param string $field
-     * @return array
      */
     protected function getItemsFromTca(string $field): array
     {
-        if (
-            isset($GLOBALS['TCA']['tx_events2_domain_model_event']['columns'][$field]['config']['items']) &&
-            is_array($GLOBALS['TCA']['tx_events2_domain_model_event']['columns'][$field]['config']['items'])
-        ) {
-            return $GLOBALS['TCA']['tx_events2_domain_model_event']['columns'][$field]['config']['items'];
+        if (!isset($GLOBALS['TCA']['tx_events2_domain_model_event']['columns'][$field]['config']['items'])) {
+            return [];
         }
-        return [];
+
+        if (!is_array($GLOBALS['TCA']['tx_events2_domain_model_event']['columns'][$field]['config']['items'])) {
+            return [];
+        }
+
+        return $GLOBALS['TCA']['tx_events2_domain_model_event']['columns'][$field]['config']['items'];
     }
 
     /**
      * Add days for recurring events.
-     *
-     * @param Event $event
      */
     protected function addRecurringEvents(Event $event): void
     {
@@ -333,13 +299,12 @@ class DayGenerator
 
     /**
      * Add days for recurring weeks and/or months.
-     *
-     * @param Event $event
      */
     protected function addRecurrings(Event $event): void
     {
         $dateToStartCalculatingFrom = $this->getDateToStartCalculatingFrom($event);
         $dateToStopCalculatingTo = $this->getDateToStopCalculatingTo($event);
+
         while ($dateToStartCalculatingFrom <= $dateToStopCalculatingTo) {
             $this->addDayToStorage($dateToStartCalculatingFrom);
             $dateToStartCalculatingFrom->modify('+' . $event->getEachMonths() . ' months');
@@ -353,6 +318,7 @@ class DayGenerator
         $day = $this->dateTimeUtility->convert('today');
         $lastDayOfMonth = $this->dateTimeUtility->convert('today');
         $lastDayOfMonth->modify('last day of ' . $month . ' ' . $year . ' 23:59:59');
+
         $dateToStartCalculatingFrom = $this->getDateToStartCalculatingFrom($event); // prevent from calling it multiple times in foreach
         $dateToStopCalculatingTo = $this->getDateToStopCalculatingTo($event); // prevent from calling it multiple times in foreach
 
@@ -373,7 +339,6 @@ class DayGenerator
     /**
      * Add event exceptions.
      *
-     * @param Event $event
      * @throws \Exception
      */
     protected function addExceptions(Event $event): void
@@ -411,8 +376,12 @@ class DayGenerator
         $dateToStopCalculatingTo = $this->getDateToStopCalculatingTo($event);
         $day = $this->dateTimeUtility->standardizeDateTimeObject($exception->getExceptionDate());
 
-        if ($day >= $dateToStartCalculatingFrom && $day <= $dateToStopCalculatingTo) {
-            $this->addDayToStorage($day);
+        if ($day < $dateToStartCalculatingFrom) {
+            return;
         }
+        if ($day > $dateToStopCalculatingTo) {
+            return;
+        }
+        $this->addDayToStorage($day);
     }
 }

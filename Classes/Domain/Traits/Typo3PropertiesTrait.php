@@ -17,61 +17,61 @@ namespace JWeiland\Events2\Domain\Traits;
 trait Typo3PropertiesTrait
 {
     /**
-     * @var \DateTime
+     * @var \DateTime|\DateTimeImmutable|null
      */
-    protected $crdate;
+    protected ?\DateTimeInterface $crdate;
 
     /**
-     * @var \DateTime
+     * @var \DateTime|\DateTimeImmutable|null
      */
-    protected $tstamp;
+    protected ?\DateTimeInterface $tstamp;
+
+    protected int $l10nParent= 0;
 
     /**
-     * @var int
+     * @var \DateTime|\DateTimeImmutable|null
      */
-    protected $l10nParent= 0;
+    protected ?\DateTimeInterface $starttime;
 
     /**
-     * @var \DateTime
+     * @var \DateTime|\DateTimeImmutable|null
      */
-    protected $starttime;
+    protected ?\DateTimeInterface $endtime;
+
+    protected bool $hidden = false;
+
+    protected bool $deleted = false;
+
+    protected int $cruserId = 0;
 
     /**
-     * @var \DateTime
+     * @return \DateTime|\DateTimeImmutable|null
      */
-    protected $endtime;
-
-    /**
-     * @var bool
-     */
-    protected $hidden = false;
-
-    /**
-     * @var bool
-     */
-    protected $deleted = false;
-
-    /**
-     * @var int
-     */
-    protected $cruserId = 0;
-
-    public function getCrdate(): ?\DateTime
+    public function getCrdate(): ?\DateTimeInterface
     {
         return $this->crdate;
     }
 
-    public function setCrdate(?\DateTime $crdate = null): void
+    /**
+     * @param \DateTime|\DateTimeImmutable|null $crdate
+     */
+    public function setCrdate(?\DateTimeInterface $crdate): void
     {
         $this->crdate = $crdate;
     }
 
-    public function getTstamp(): ?\DateTime
+    /**
+     * @return \DateTime|\DateTimeImmutable|null
+     */
+    public function getTstamp(): ?\DateTimeInterface
     {
         return $this->tstamp;
     }
 
-    public function setTstamp(?\DateTime $tstamp = null): void
+    /**
+     * @param \DateTime|\DateTimeImmutable|null $tstamp
+     */
+    public function setTstamp(?\DateTimeInterface $tstamp): void
     {
         $this->tstamp = $tstamp;
     }
@@ -96,22 +96,34 @@ trait Typo3PropertiesTrait
         $this->l10nParent = $l10nParent;
     }
 
-    public function getStarttime(): ?\DateTime
+    /**
+     * @return \DateTime|\DateTimeImmutable|null
+     */
+    public function getStarttime(): ?\DateTimeInterface
     {
         return $this->starttime;
     }
 
-    public function setStarttime(?\DateTime $starttime = null): void
+    /**
+     * @param \DateTime|\DateTimeImmutable|null $starttime
+     */
+    public function setStarttime(?\DateTimeInterface $starttime): void
     {
         $this->starttime = $starttime;
     }
 
-    public function getEndtime(): ?\DateTime
+    /**
+     * @return \DateTime|\DateTimeImmutable|null
+     */
+    public function getEndtime(): ?\DateTimeInterface
     {
         return $this->endtime;
     }
 
-    public function setEndtime(?\DateTime $endtime = null): void
+    /**
+     * @param \DateTime|\DateTimeImmutable|null $endtime
+     */
+    public function setEndtime(?\DateTimeInterface $endtime): void
     {
         $this->endtime = $endtime;
     }

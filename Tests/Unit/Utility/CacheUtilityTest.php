@@ -29,12 +29,9 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  */
 class CacheUtilityTest extends UnitTestCase
 {
-    /**
-     * @var \JWeiland\Events2\Utility\CacheUtility
-     */
-    protected $subject;
+    protected CacheUtility $subject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         /** @var EnvironmentService|ObjectProphecy $environmentServiceProphecy */
         $environmentServiceProphecy = $this->prophesize(EnvironmentService::class);
@@ -48,7 +45,7 @@ class CacheUtilityTest extends UnitTestCase
         $GLOBALS['TSFE'] = $tsfeProphecy->reveal();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset($GLOBALS['TSFE']);
     }

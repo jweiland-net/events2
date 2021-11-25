@@ -21,15 +21,9 @@ class Organizer extends AbstractEntity
 {
     use Typo3PropertiesTrait;
 
-    /**
-     * @var string
-     */
-    protected $organizer = '';
+    protected string $organizer = '';
 
-    /**
-     * @var \JWeiland\Events2\Domain\Model\Link
-     */
-    protected $link;
+    protected ?Link $link;
 
     public function getOrganizer(): string
     {
@@ -46,7 +40,7 @@ class Organizer extends AbstractEntity
         return $this->link;
     }
 
-    public function setLink(?Link $link = null): void
+    public function setLink(?Link $link): void
     {
         $this->link = $link;
     }

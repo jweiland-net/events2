@@ -22,17 +22,14 @@ class TimeTest extends UnitTestCase
 {
     use TestTypo3PropertiesTrait;
 
-    /**
-     * @var \JWeiland\Events2\Domain\Model\Time
-     */
-    protected $subject;
+    protected Time $subject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->subject = new Time();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset($this->subject);
     }

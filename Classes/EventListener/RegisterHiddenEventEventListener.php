@@ -17,17 +17,11 @@ use JWeiland\Events2\Helper\HiddenObjectHelper;
 
 class RegisterHiddenEventEventListener extends AbstractControllerEventListener
 {
-    /**
-     * @var HiddenObjectHelper
-     */
-    protected $hiddenObjectHelper;
+    protected HiddenObjectHelper $hiddenObjectHelper;
 
-    /**
-     * @var EventRepository
-     */
-    protected $eventRepository;
+    protected EventRepository $eventRepository;
 
-    protected $allowedControllerActions = [
+    protected array $allowedControllerActions = [
         'Event' => [
             'edit',
             'update'

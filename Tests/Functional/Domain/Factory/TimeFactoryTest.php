@@ -24,10 +24,7 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  */
 class TimeFactoryTest extends FunctionalTestCase
 {
-    /**
-     * @var TimeFactory
-     */
-    protected $subject;
+    protected TimeFactory $subject;
 
     /**
      * @var array
@@ -36,14 +33,14 @@ class TimeFactoryTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
         $this->subject = new TimeFactory(new DateTimeUtility());
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset(
             $this->subject
@@ -63,6 +60,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $firstAddException = new Exception();
         $firstAddException->setExceptionType('Add');
         $firstAddException->setExceptionDate($firstDate);
+
         $secondAddException = new Exception();
         $secondAddException->setExceptionType('Add');
         $secondAddException->setExceptionDate($secondDate);
@@ -98,6 +96,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $firstAddException->setExceptionType('Add');
         $firstAddException->setExceptionDate($firstDate);
         $firstAddException->setExceptionTime($time);
+
         $secondAddException = new Exception();
         $secondAddException->setExceptionType('Add');
         $secondAddException->setExceptionDate($secondDate);
@@ -134,6 +133,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $firstAddException->setExceptionType('Add');
         $firstAddException->setExceptionDate($firstDate);
         $firstAddException->setExceptionTime($time);
+
         $secondAddException = new Exception();
         $secondAddException->setExceptionType('Info');
         $secondAddException->setExceptionDate($firstDate);
@@ -302,6 +302,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $firstAddException = new Exception();
         $firstAddException->setExceptionType('Add');
         $firstAddException->setExceptionDate($firstDate);
+
         $secondAddException = new Exception();
         $secondAddException->setExceptionType('Add');
         $secondAddException->setExceptionDate($secondDate);
@@ -374,12 +375,15 @@ class TimeFactoryTest extends FunctionalTestCase
         $time1 = new Time();
         $time1->setWeekday($date->format('l'));
         $time1->setTimeBegin('23:56');
+
         $time2 = new Time();
         $time2->setWeekday($date->format('l'));
         $time2->setTimeBegin('12:34');
+
         $time3 = new Time();
         $time3->setWeekday($date->format('l'));
         $time3->setTimeBegin('00:34');
+
         $time4 = new Time();
         $time4->setWeekday($tomorrow->format('l'));
         $time4->setTimeBegin('10:35');
@@ -416,10 +420,13 @@ class TimeFactoryTest extends FunctionalTestCase
 
         $time1 = new Time();
         $time1->setTimeBegin('23:56');
+
         $time2 = new Time();
         $time2->setTimeBegin('12:34');
+
         $time3 = new Time();
         $time3->setTimeBegin('00:34');
+
         $time4 = new Time();
         $time4->setTimeBegin('10:35');
 
@@ -427,14 +434,17 @@ class TimeFactoryTest extends FunctionalTestCase
         $exception1->setExceptionType('Add');
         $exception1->setExceptionDate($date);
         $exception1->setExceptionTime($time1);
+
         $exception2 = new Exception();
         $exception2->setExceptionType('Time');
         $exception2->setExceptionDate($date);
         $exception2->setExceptionTime($time2);
+
         $exception3 = new Exception();
         $exception3->setExceptionType('Add');
         $exception3->setExceptionDate($date);
         $exception3->setExceptionTime($time3);
+
         $exception4 = new Exception();
         $exception4->setExceptionType('Add');
         $exception4->setExceptionDate($tomorrow);

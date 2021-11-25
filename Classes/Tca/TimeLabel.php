@@ -22,7 +22,6 @@ class TimeLabel
      * add weekday to time records
      * but only if record is for field different_times.
      *
-     * @param array $ctrlArray
      * @param $parentObject
      */
     public function getTitle(array &$ctrlArray, $parentObject): void

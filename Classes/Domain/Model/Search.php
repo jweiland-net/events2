@@ -18,50 +18,23 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
  */
 class Search extends AbstractEntity
 {
-    /**
-     * @var string
-     */
-    protected $search = '';
+    protected string $search = '';
 
-    /**
-     * @var \JWeiland\Events2\Domain\Model\Category
-     */
-    protected $mainCategory;
+    protected ?Category $mainCategory;
 
-    /**
-     * @var \JWeiland\Events2\Domain\Model\Category
-     */
-    protected $subCategory;
+    protected ?Category $subCategory;
 
-    /**
-     * @var string
-     */
-    protected $eventBegin = '';
+    protected string $eventBegin = '';
 
-    /**
-     * @var string
-     */
-    protected $eventEnd = '';
+    protected string $eventEnd = '';
 
-    /**
-     * @var \JWeiland\Events2\Domain\Model\Location
-     */
-    protected $location;
+    protected ?Location $location;
 
-    /**
-     * @var bool
-     */
-    protected $freeEntry = false;
+    protected bool $freeEntry = false;
 
-    /**
-     * @var array
-     */
-    protected $storagePids = [];
+    protected array $storagePids = [];
 
-    /**
-     * @var int
-     */
-    protected $limit = 0;
+    protected int $limit = 0;
 
     public function getSearch(): string
     {
@@ -96,11 +69,15 @@ class Search extends AbstractEntity
         $this->subCategory = $subCategory;
     }
 
-    public function getEventBegin(): ?\DateTime
+    /**
+     * @return \DateTime|\DateTimeImmutable|null
+     */
+    public function getEventBegin(): ?\DateTimeInterface
     {
         if (empty($this->eventBegin)) {
             return null;
         }
+
         try {
             $date = new \DateTime($this->eventBegin);
             $date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
@@ -116,11 +93,15 @@ class Search extends AbstractEntity
         $this->eventBegin = $eventBegin;
     }
 
-    public function getEventEnd(): ?\DateTime
+    /**
+     * @return \DateTime|\DateTimeImmutable|null
+     */
+    public function getEventEnd(): ?\DateTimeInterface
     {
         if (empty($this->eventEnd)) {
             return null;
         }
+
         try {
             $date = new \DateTime($this->eventEnd);
             $date->setTimezone(new \DateTimeZone(date_default_timezone_get()));

@@ -23,28 +23,17 @@ use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
  */
 class UpdateEventPathSegmentEventListener extends AbstractControllerEventListener
 {
-    /**
-     * @var PathSegmentHelper
-     */
-    protected $pathSegmentHelper;
+    protected PathSegmentHelper $pathSegmentHelper;
 
-    /**
-     * @var EventRepository
-     */
-    protected $eventRepository;
+    protected EventRepository $eventRepository;
 
-    /**
-     * @var PersistenceManagerInterface
-     */
-    protected $persistenceManager;
+    protected PersistenceManagerInterface $persistenceManager;
 
     /**
      * It should never be possible for a FE user to generate slug while update request. This would also change the
      * link to the detail page. If it was needed to change the link, please update slug in TYPO3 backend.
-     *
-     * @var \string[][]
      */
-    protected $allowedControllerActions = [
+    protected array $allowedControllerActions = [
         'Event' => [
             'create'
         ]

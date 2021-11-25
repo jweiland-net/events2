@@ -27,15 +27,9 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  */
 class DatabaseService
 {
-    /**
-     * @var ExtConf
-     */
-    protected $extConf;
+    protected ExtConf $extConf;
 
-    /**
-     * @var DateTimeUtility
-     */
-    protected $dateTimeUtility;
+    protected DateTimeUtility $dateTimeUtility;
 
     public function __construct(ExtConf $extConf, DateTimeUtility $dateTimeUtility)
     {
@@ -45,9 +39,6 @@ class DatabaseService
 
     /**
      * Get column definitions from table
-     *
-     * @param string $tableName
-     * @return array
      */
     public function getColumnsFromTable(string $tableName): array
     {
@@ -57,6 +48,7 @@ class DatabaseService
         while ($fieldRow = $statement->fetch()) {
             $output[$fieldRow['Field']] = $fieldRow;
         }
+
         return $output;
     }
 
@@ -67,8 +59,6 @@ class DatabaseService
      * Set $really to true, to do a really TRUNCATE, which also sets starting increment back to 1.
      *
      * @link: https://stackoverflow.com/questions/9686888/how-to-truncate-a-table-using-doctrine-2
-     * @param string $tableName
-     * @param bool $really
      */
     public function truncateTable(string $tableName, bool $really = false): void
     {
@@ -89,7 +79,7 @@ class DatabaseService
      * With this method you get all current and future events of all event types.
      * It does not select hidden records as eventRepository->findByIdentifier will not find them.
      *
-     * @return array
+     * @return array[]
      */
     public function getCurrentAndFutureEvents(): array
     {
@@ -125,16 +115,10 @@ class DatabaseService
     /**
      * Get days in range.
      * This method was used by Ajax call: findDaysByMonth
-     *
-     * @param \DateTime $startDate
-     * @param \DateTime $endDate
-     * @param array $storagePids
-     * @param array $categories
-     * @return array Days with event UID, event title and day timestamp
      */
     public function getDaysInRange(
-        \DateTime $startDate,
-        \DateTime $endDate,
+        \DateTimeInterface $startDate,
+        \DateTimeInterface $endDate,
         array $storagePids = [],
         array $categories = []
     ): array {
@@ -310,10 +294,17 @@ class DatabaseService
         $this->addConstraintForDateRange($queryBuilder, $startDateTime, $endDateTime, $parentQueryBuilder, $alias);
     }
 
+    /**
+     * @param QueryBuilder $queryBuilder
+     * @param \DateTime|\DateTimeImmutable $startDateTime
+     * @param \DateTime|\DateTimeImmutable|null $endDateTime
+     * @param QueryBuilder|null $parentQueryBuilder
+     * @param string $alias
+     */
     public function addConstraintForDateRange(
         QueryBuilder $queryBuilder,
-        \DateTime $startDateTime,
-        \DateTime $endDateTime = null,
+        \DateTimeInterface $startDateTime,
+        \DateTimeInterface $endDateTime = null,
         QueryBuilder $parentQueryBuilder = null,
         string $alias = 'day'
     ): void {
@@ -478,12 +469,8 @@ class DatabaseService
     /**
      * Add Constraint for various columns of event table
      *
-     * @param QueryBuilder $queryBuilder
-     * @param string $column
      * @param mixed $value
-     * @param int $dataType
      * @param QueryBuilder|null $parentQueryBuilder
-     * @param string $alias
      */
     public function addConstraintForEventColumn(
         QueryBuilder $queryBuilder,
@@ -511,8 +498,6 @@ class DatabaseService
     /**
      * Working with own QueryBuilder queries does not respect showHiddenContent settings of TYPO3, that's why
      * we have to manually remove Hidden constraint from restriction container.
-     *
-     * @param QueryBuilder $queryBuilder
      */
     public function addVisibilityConstraintToQuery(QueryBuilder $queryBuilder): void
     {
@@ -538,6 +523,7 @@ class DatabaseService
                 0
             );
         }
+
         return $GLOBALS['TSFE'];
     }
 

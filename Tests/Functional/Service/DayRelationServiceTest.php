@@ -34,10 +34,7 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  */
 class DayRelationServiceTest extends FunctionalTestCase
 {
-    /**
-     * @var DayRelationService
-     */
-    protected $subject;
+    protected DayRelationService $subject;
 
     /**
      * @var ExtConf|ObjectProphecy
@@ -58,7 +55,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -102,7 +99,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         );
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset(
             $this->extConfProphecy,
@@ -180,8 +177,9 @@ class DayRelationServiceTest extends FunctionalTestCase
         $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
         self::assertCount(3, $event->getDays());
 
-        /** @var Day $day */
         $days = ['yesterday', 'today', 'tomorrow'];
+
+        /** @var Day $day */
         foreach ($event->getDays()->toArray() as $key => $day) {
             self::assertEquals(${$days[$key]}, $day->getDay());
             self::assertEquals(${$days[$key]}, $day->getDayTime());
@@ -201,14 +199,19 @@ class DayRelationServiceTest extends FunctionalTestCase
     {
         $yesterday = new \DateTime();
         $yesterday->modify('yesterday midnight');
+
         $yesterdayLaunch = new \DateTime();
         $yesterdayLaunch->modify('yesterday 12:30');
+
         $today = new \DateTime();
         $today->modify('midnight');
+
         $todayLaunch = new \DateTime();
         $todayLaunch->modify('12:30');
+
         $tomorrow = new \DateTime();
         $tomorrow->modify('tomorrow midnight');
+
         $tomorrowLaunch = new \DateTime();
         $tomorrowLaunch->modify('tomorrow 12:30');
 
@@ -254,25 +257,34 @@ class DayRelationServiceTest extends FunctionalTestCase
     {
         $yesterday = new \DateTime();
         $yesterday->modify('yesterday midnight');
+
         $yesterdayMorning = new \DateTime();
         $yesterdayMorning->modify('yesterday 08:00');
+
         $yesterdayEvening = new \DateTime();
         $yesterdayEvening->modify('yesterday 20:15');
+
         $today = new \DateTime();
         $today->modify('midnight');
+
         $todayMorning = new \DateTime();
         $todayMorning->modify('08:00');
+
         $todayEvening = new \DateTime();
         $todayEvening->modify('20:15');
+
         $tomorrow = new \DateTime();
         $tomorrow->modify('tomorrow midnight');
+
         $tomorrowMorning = new \DateTime();
         $tomorrowMorning->modify('tomorrow 08:00');
+
         $tomorrowEvening = new \DateTime();
         $tomorrowEvening->modify('tomorrow 20:15');
 
         $timeBegin = new Time();
         $timeBegin->setTimeBegin('08:00');
+
         $timeEvening = new Time();
         $timeEvening->setTimeBegin('20:15');
 
@@ -296,12 +308,13 @@ class DayRelationServiceTest extends FunctionalTestCase
 
         $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
         $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
+
         self::assertCount(6, $event->getDays());
 
         /** @var Day $day */
         $days = ['yesterday', 'yesterday', 'today', 'today', 'tomorrow', 'tomorrow'];
         foreach ($event->getDays()->toArray() as $key => $day) {
-            $methodName = $key % 2 ? 'Evening' : 'Morning';
+            $methodName = $key % 2 !== 0 ? 'Evening' : 'Morning';
             self::assertEquals(${$days[$key]}, $day->getDay());
             self::assertEquals(${$days[$key] . $methodName}, $day->getDayTime());
             self::assertEquals(${$days[$key] . $methodName}, $day->getSortDayTime());
@@ -369,7 +382,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         /** @var Day $day */
         $days = ['today', 'today', 'tomorrow', 'tomorrow'];
         foreach ($event->getDays()->toArray() as $key => $day) {
-            $methodName = $key % 2 ? 'Evening' : 'Morning';
+            $methodName = $key % 2 !== 0 ? 'Evening' : 'Morning';
             self::assertEquals(${$days[$key]}, $day->getDay());
             self::assertEquals(${$days[$key] . $methodName}, $day->getDayTime());
             self::assertEquals(${$days[$key] . $methodName}, $day->getSortDayTime());
@@ -497,8 +510,9 @@ class DayRelationServiceTest extends FunctionalTestCase
         $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
         self::assertCount(4, $event->getDays());
 
-        /** @var Day $day */
         $days = ['tuesday', 'wednesday', 'thursday', 'friday'];
+
+        /** @var Day $day */
         foreach ($event->getDays()->toArray() as $key => $day) {
             switch ($key) {
                 case 1:
@@ -585,9 +599,10 @@ class DayRelationServiceTest extends FunctionalTestCase
         $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
         self::assertCount(5, $event->getDays());
 
-        /** @var Day $day */
         $days = ['tuesday', 'wednesday', 'wednesday', 'thursday', 'friday'];
         $sameDayMethods = ['tuesday', 'wednesdayMorning', 'wednesdayMorning', 'thursday', 'fridayLaunch'];
+
+        /** @var Day $day */
         foreach ($event->getDays()->toArray() as $key => $day) {
             switch ($key) {
                 case 1:
@@ -630,8 +645,9 @@ class DayRelationServiceTest extends FunctionalTestCase
         $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
         self::assertCount(1, $event->getDays());
 
-        /** @var Day $day */
         $days = ['nextWeek'];
+
+        /** @var Day $day */
         foreach ($event->getDays()->toArray() as $key => $day) {
             self::assertEquals(${$days[$key]}, $day->getDay());
             self::assertEquals(${$days[$key]}, $day->getDayTime());
@@ -667,8 +683,9 @@ class DayRelationServiceTest extends FunctionalTestCase
         $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
         self::assertCount(1, $event->getDays());
 
-        /** @var Day $day */
         $days = ['nextWeek'];
+
+        /** @var Day $day */
         foreach ($event->getDays()->toArray() as $key => $day) {
             self::assertEquals(${$days[$key]}, $day->getDay());
             self::assertEquals(${$days[$key] . 'Midnight'}, $day->getDayTime());
@@ -703,8 +720,9 @@ class DayRelationServiceTest extends FunctionalTestCase
         $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
         self::assertCount(3, $event->getDays());
 
-        /** @var Day $day */
         $days = ['today', 'tomorrow', 'in2days'];
+
+        /** @var Day $day */
         foreach ($event->getDays()->toArray() as $key => $day) {
             self::assertEquals(${$days[$key]}, $day->getDay());
             self::assertEquals(${$days[$key]}, $day->getDayTime());
@@ -749,8 +767,9 @@ class DayRelationServiceTest extends FunctionalTestCase
         $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
         self::assertCount(3, $event->getDays());
 
-        /** @var Day $day */
         $days = ['today', 'tomorrow', 'in2days'];
+
+        /** @var Day $day */
         foreach ($event->getDays()->toArray() as $key => $day) {
             self::assertEquals(${$days[$key]}, $day->getDay());
             self::assertEquals(${$days[$key] . 'Morning'}, $day->getDayTime());

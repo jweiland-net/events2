@@ -22,21 +22,12 @@ use JWeiland\Events2\Domain\Repository\EventRepository;
  */
 class EventService
 {
-    /**
-     * @var EventRepository
-     */
-    protected $eventRepository;
+    protected EventRepository $eventRepository;
 
-    /**
-     * @var TimeFactory
-     */
-    protected $timeFactory;
+    protected TimeFactory $timeFactory;
 
     /**
      * Must be called by ObjectManager, because of EventRepository which has inject methods
-     *
-     * @param EventRepository $eventRepository
-     * @param TimeFactory $timeFactory
      */
     public function __construct(
         EventRepository $eventRepository,
@@ -46,15 +37,19 @@ class EventService
         $this->timeFactory = $timeFactory;
     }
 
-    public function getNextDayForEvent(int $eventUid): ?\DateTime
+    /**
+     * @return \DateTime|\DateTimeImmutable|null
+     */
+    public function getNextDayForEvent(int $eventUid): ?\DateTimeInterface
     {
-        /** @var Event $event */
+        /** @var Event|null $event */
         $event = $this->eventRepository->findByIdentifier($eventUid);
         if (!$event instanceof Event) {
             return null;
         }
 
         $days = $event->getFutureDatesGroupedAndSorted();
+
         if (!empty($days)) {
             return current($days);
         }
@@ -66,11 +61,8 @@ class EventService
      * Get last day for event
      * Useful to check, if an event is over.
      * Needed by SolrIndexer, as we can't create JOIN Queries in Solr configuration
-     *
-     * @param int $eventUid
-     * @return \DateTime|null
      */
-    public function getLastDayForEvent(int $eventUid): ?\DateTime
+    public function getLastDayForEvent(int $eventUid): ?\DateTimeInterface
     {
         /** @var Event $event */
         $event = $this->eventRepository->findByIdentifier($eventUid);

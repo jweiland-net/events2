@@ -21,17 +21,11 @@ use TYPO3\CMS\Extbase\Property\PropertyMappingConfiguration;
 
 class AssignMediaTypeConverterEventListener extends AbstractControllerEventListener
 {
-    /**
-     * @var EventRepository
-     */
-    protected $eventRepository;
+    protected EventRepository $eventRepository;
 
-    /**
-     * @var UploadMultipleFilesConverter
-     */
-    protected $uploadMultipleFilesConverter;
+    protected UploadMultipleFilesConverter $uploadMultipleFilesConverter;
 
-    protected $allowedControllerActions = [
+    protected array $allowedControllerActions = [
         'Event' => [
             'create',
             'update'
@@ -65,7 +59,7 @@ class AssignMediaTypeConverterEventListener extends AbstractControllerEventListe
     protected function assignTypeConverterForUpdateAction(PreProcessControllerActionEvent $event): void
     {
         // Needed to get the previously stored images
-        /** @var Event $persistedEvent */
+        /** @var Event|null $persistedEvent */
         $persistedEvent = $this->eventRepository->findHiddenObject(
             (int)$event->getRequest()->getArgument('event')['__identity']
         );

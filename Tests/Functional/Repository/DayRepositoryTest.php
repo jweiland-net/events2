@@ -39,20 +39,11 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  */
 class DayRepositoryTest extends FunctionalTestCase
 {
-    /**
-     * @var DayRepository
-     */
-    protected $dayRepository;
+    protected DayRepository $dayRepository;
 
-    /**
-     * @var QuerySettingsInterface
-     */
-    protected $querySettings;
+    protected QuerySettingsInterface $querySettings;
 
-    /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
+    protected ObjectManager $objectManager;
 
     /**
      * @var array
@@ -62,19 +53,22 @@ class DayRepositoryTest extends FunctionalTestCase
         'typo3conf/ext/maps2'
     ];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->dayRepository = $this->objectManager->get(DayRepository::class);
+
         $this->querySettings = $this->objectManager->get(QuerySettingsInterface::class);
         $this->querySettings->setStoragePageIds([11, 40]);
         $this->querySettings->setIgnoreEnableFields(true);
         $this->querySettings->setEnableFieldsToBeIgnored(['disabled']); // needed to create hidden events, too
+
         $this->dayRepository->setDefaultQuerySettings($this->querySettings);
         $persistenceManager = $this->objectManager->get(PersistenceManager::class);
         $dayRelationService = $this->objectManager->get(DayRelationService::class);
+
         $eventRepository = $this->objectManager->get(EventRepository::class);
         $eventRepository->setDefaultQuerySettings($this->querySettings);
 
@@ -82,6 +76,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $organizer1 = new Organizer();
         $organizer1->setPid(11);
         $organizer1->setOrganizer('Stefan');
+
         $organizer2 = new Organizer();
         $organizer2->setPid(11);
         $organizer2->setOrganizer('Petra');
@@ -89,6 +84,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $location1 = new Location();
         $location1->setPid(11);
         $location1->setLocation('Market');
+
         $location2 = new Location();
         $location2->setPid(11);
         $location2->setLocation('Hospital');
@@ -134,6 +130,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $event->addOrganizer($organizer1);
         $event->setLocation($location1);
         $event->setCategories($categories);
+
         $persistenceManager->add($event);
 
         $multipleTime1 = new Time();
@@ -171,6 +168,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $event->addOrganizer($organizer1);
         $event->setLocation($location1);
         $event->setCategories($categories);
+
         $persistenceManager->add($event);
 
         $eventBegin = new \DateTime('tomorrow midnight');
@@ -189,6 +187,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $event->addOrganizer($organizer1);
         $event->setLocation($location1);
         $event->setCategories($categories);
+
         $persistenceManager->add($event);
 
         $eventBegin = new \DateTime('midnight');
@@ -213,6 +212,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $event->addOrganizer($organizer1);
         $event->setLocation($location2);
         $event->setCategories($categories);
+
         $persistenceManager->add($event);
 
         $categories = new ObjectStorage();
@@ -229,6 +229,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $event->addOrganizer($organizer1);
         $event->setLocation($location1);
         $event->setCategories($categories);
+
         $persistenceManager->add($event);
 
         $eventBegin = new \DateTime('midnight');
@@ -251,6 +252,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $event->addOrganizer($organizer2);
         $event->setLocation($location1);
         $event->setCategories($categories);
+
         $persistenceManager->add($event);
 
         $eventBegin = new \DateTime('midnight');
@@ -282,6 +284,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $event->addOrganizer($organizer1);
         $event->setLocation($location2);
         $event->setCategories($categories);
+
         $persistenceManager->add($event);
 
         $recurringEnd = new \DateTime('midnight');
@@ -305,6 +308,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $event->setFreeEntry(false);
         $event->setLocation($location1);
         $event->setCategories($categories);
+
         $persistenceManager->add($event);
 
         $event = new Event();
@@ -321,6 +325,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $event->setRecurringEnd($recurringEnd);
         $event->setFreeEntry(false);
         $event->addOrganizer($organizer1);
+
         $persistenceManager->add($event);
 
         $categories = new ObjectStorage();
@@ -342,6 +347,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $event->addOrganizer($organizer2);
         $event->setLocation($location1);
         $event->setCategories($categories);
+
         $persistenceManager->add($event);
 
         $eventBegin = new \DateTime('midnight');
@@ -359,6 +365,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $event->addOrganizer($organizer1);
         $event->setLocation($location1);
         $event->setCategories($categories);
+
         $persistenceManager->add($event);
 
         $eventBegin = new \DateTime('midnight');
@@ -412,7 +419,7 @@ class DayRepositoryTest extends FunctionalTestCase
         }
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset($this->dayRepository);
         parent::tearDown();
@@ -773,7 +780,7 @@ class DayRepositoryTest extends FunctionalTestCase
     public function findEventsByTypeWeek(): void
     {
         $dateStart = new \DateTime('midnight');
-        $dateStart->modify('this week'); // First day of this week 00:00:00
+        $dateStart->modify('this week');
         $dateEnd = new \DateTime('midnight');
         $dateEnd->modify('this week +7 days'); // Everything LESS THAN Monday next Week 00:00:00
 
@@ -1091,7 +1098,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $counter = 0;
         foreach ($days as $day) {
             if ($day->getEvent()->getEventType() === 'duration') {
-                $counter++;
+                ++$counter;
             }
         }
         self::assertSame(

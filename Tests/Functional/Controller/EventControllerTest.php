@@ -34,10 +34,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
  */
 class EventControllerTest extends FunctionalTestCase
 {
-    /**
-     * @var EventController
-     */
-    protected $subject;
+    protected EventController $subject;
 
     /**
      * @var DayRepository|ObjectProphecy
@@ -59,10 +56,7 @@ class EventControllerTest extends FunctionalTestCase
      */
     protected $queryResultProphecy;
 
-    /**
-     * @var Request
-     */
-    protected $request;
+    protected Request $request;
 
     /**
      * @var array
@@ -72,7 +66,7 @@ class EventControllerTest extends FunctionalTestCase
         'typo3conf/ext/static_info_tables'
     ];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->setUpBackendUserFromFixture(1);
@@ -85,6 +79,7 @@ class EventControllerTest extends FunctionalTestCase
         $dayRelationService = $objectManager->get(DayRelationService::class);
         $querySettings = $objectManager->get(QuerySettingsInterface::class);
         $querySettings->setStoragePageIds([1]);
+
         $eventRepository = $objectManager->get(EventRepository::class);
         $eventRepository->setDefaultQuerySettings($querySettings);
 
@@ -93,12 +88,14 @@ class EventControllerTest extends FunctionalTestCase
         $event->setEventType('single');
         $event->setEventBegin(new \DateTime('midnight'));
         $event->setTitle('Today');
+
         $persistenceManager->add($event);
         $persistenceManager->persistAll();
 
         $organizer = new Organizer();
         $organizer->setPid(1);
         $organizer->setOrganizer('Me');
+
         $persistenceManager->add($organizer);
 
         $event = new Event();
@@ -107,6 +104,7 @@ class EventControllerTest extends FunctionalTestCase
         $event->setEventBegin(new \DateTime('tomorrow midnight'));
         $event->setTitle('Tomorrow');
         $event->addOrganizer($organizer);
+
         $persistenceManager->add($event);
         $persistenceManager->persistAll();
 
@@ -121,6 +119,7 @@ class EventControllerTest extends FunctionalTestCase
                 'Event' => EventController::class
             ]);
         }
+
         $this->request->setControllerExtensionName('Events2');
         $this->request->setPluginName('Events');
         $this->request->setControllerName('Event');
@@ -131,7 +130,7 @@ class EventControllerTest extends FunctionalTestCase
         $this->subject = $objectManager->get(EventController::class);
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset(
             $this->subject,

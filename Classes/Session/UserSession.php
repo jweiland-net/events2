@@ -19,10 +19,7 @@ use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
  */
 class UserSession
 {
-    /**
-     * @var FrontendUserAuthentication
-     */
-    protected $feUser;
+    protected FrontendUserAuthentication $feUser;
 
     public function __construct(FrontendUserAuthentication $feUser)
     {

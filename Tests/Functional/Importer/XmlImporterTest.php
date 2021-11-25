@@ -35,35 +35,20 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
  */
 class XmlImporterTest extends FunctionalTestCase
 {
-    /**
-     * @var XmlImporter
-     */
-    protected $subject;
+    protected XmlImporter $subject;
 
-    /**
-     * @var EventRepository
-     */
-    protected $eventRepository;
+    protected EventRepository $eventRepository;
 
-    /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
+    protected ObjectManager $objectManager;
 
-    /**
-     * @var ExtConf
-     */
-    protected $extConf;
+    protected ExtConf $extConf;
 
     /**
      * @var EventDispatcher|ObjectProphecy
      */
     protected $eventDispatcherProphecy;
 
-    /**
-     * @var PathSegmentHelper
-     */
-    protected $pathSegmentHelper;
+    protected PathSegmentHelper $pathSegmentHelper;
 
     /**
      * @var array
@@ -84,7 +69,7 @@ class XmlImporterTest extends FunctionalTestCase
     /**
      * I have set the date of the import events to 2025. That should be enough for the next years ;-)
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -122,7 +107,7 @@ class XmlImporterTest extends FunctionalTestCase
         $GLOBALS['BE_USER'] = new BackendUserAuthentication();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset(
             $GLOBALS['BE_USER'],
@@ -145,7 +130,7 @@ class XmlImporterTest extends FunctionalTestCase
      */
     public function importWillCreate3events(): void
     {
-        $fileObject = ResourceFactory::getInstance()
+        $fileObject = GeneralUtility::makeInstance(ResourceFactory::class)
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/Success.xml');
         $this->subject->setFile($fileObject);
         $this->subject->setStoragePid(12);
@@ -164,7 +149,7 @@ class XmlImporterTest extends FunctionalTestCase
      */
     public function importEventWithMissingCategoryEntryWillResultInErrorInMessagesTxt(): void
     {
-        $fileObject = ResourceFactory::getInstance()
+        $fileObject = GeneralUtility::makeInstance(ResourceFactory::class)
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/MissingCategoryEntryEvent.xml');
         $this->subject->setFile($fileObject);
         $this->subject->setStoragePid(12);
@@ -183,7 +168,7 @@ class XmlImporterTest extends FunctionalTestCase
      */
     public function importEventWithNotExistingCategoryInDatabaseWillResultInErrorInMessagesTxt(): void
     {
-        $fileObject = ResourceFactory::getInstance()
+        $fileObject = GeneralUtility::makeInstance(ResourceFactory::class)
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/NotExistingCategoriesEvent.xml');
         $this->extConf->setLocationIsRequired(false);
         $this->extConf->setOrganizerIsRequired(false);
@@ -204,7 +189,7 @@ class XmlImporterTest extends FunctionalTestCase
      */
     public function importEventWithNotExistingOrganizerInDatabaseWillResultInErrorInMessagesTxt(): void
     {
-        $fileObject = ResourceFactory::getInstance()
+        $fileObject = GeneralUtility::makeInstance(ResourceFactory::class)
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/NotExistingOrganizerEvent.xml');
         $this->subject->setFile($fileObject);
         $this->subject->setStoragePid(12);
@@ -223,7 +208,7 @@ class XmlImporterTest extends FunctionalTestCase
      */
     public function importEventWithNotExistingLocationInDatabaseWillResultInErrorInMessagesTxt(): void
     {
-        $fileObject = ResourceFactory::getInstance()
+        $fileObject = GeneralUtility::makeInstance(ResourceFactory::class)
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/NotExistingLocationEvent.xml');
         $this->extConf->setOrganizerIsRequired(false);
         $this->subject->setFile($fileObject);
@@ -244,7 +229,7 @@ class XmlImporterTest extends FunctionalTestCase
     public function modifySimpleEvent(): void
     {
         // Add simple event
-        $fileObject = ResourceFactory::getInstance()
+        $fileObject = GeneralUtility::makeInstance(ResourceFactory::class)
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/SimpleEvent.xml');
         $this->extConf->setLocationIsRequired(false);
         $this->extConf->setOrganizerIsRequired(false);
@@ -254,7 +239,7 @@ class XmlImporterTest extends FunctionalTestCase
         self::assertTrue($this->subject->import());
 
         // Override simple event
-        $fileObject = ResourceFactory::getInstance()
+        $fileObject = GeneralUtility::makeInstance(ResourceFactory::class)
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/ModifySimpleEvent.xml');
         $this->subject->setFile($fileObject);
         $this->subject->setStoragePid(12);
@@ -285,7 +270,7 @@ class XmlImporterTest extends FunctionalTestCase
     public function deleteSimpleEvent(): void
     {
         // Add 2 simple events
-        $fileObject = ResourceFactory::getInstance()
+        $fileObject = GeneralUtility::makeInstance(ResourceFactory::class)
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/SimpleEvent.xml');
         $this->extConf->setLocationIsRequired(false);
         $this->extConf->setOrganizerIsRequired(false);
@@ -296,7 +281,7 @@ class XmlImporterTest extends FunctionalTestCase
         $this->subject->import(); // delete one of the imported event
 
         // Delete one simple event
-        $fileObject = ResourceFactory::getInstance()
+        $fileObject = GeneralUtility::makeInstance(ResourceFactory::class)
             ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/DeleteSimpleEvent.xml');
         $this->subject->setFile($fileObject);
         $this->subject->setStoragePid(12);
@@ -310,9 +295,7 @@ class XmlImporterTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @return QueryInterface
-     */
+
     protected function createEventQuery(): QueryInterface
     {
         $query = $this->eventRepository->createQuery();

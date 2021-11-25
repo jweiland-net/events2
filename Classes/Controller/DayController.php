@@ -27,15 +27,9 @@ use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
  */
 class DayController extends AbstractController
 {
-    /**
-     * @var DayRepository
-     */
-    protected $dayRepository;
+    protected DayRepository $dayRepository;
 
-    /**
-     * @var OrganizerRepository
-     */
-    protected $organizerRepository;
+    protected OrganizerRepository $organizerRepository;
 
     public function __construct(
         DayRepository $dayRepository,
@@ -74,9 +68,6 @@ class DayController extends AbstractController
         $this->preProcessControllerAction();
     }
 
-    /**
-     * @param Filter|null $filter
-     */
     public function listAction(?Filter $filter = null): void
     {
         $filter = $this->getOrCreateFilter($filter);
@@ -93,9 +84,6 @@ class DayController extends AbstractController
         $this->preProcessControllerAction();
     }
 
-    /**
-     * @param Filter|null $filter
-     */
     public function listLatestAction(?Filter $filter = null): void
     {
         $filter = $this->getOrCreateFilter($filter);
@@ -116,9 +104,6 @@ class DayController extends AbstractController
         $this->preProcessControllerAction();
     }
 
-    /**
-     * @param Filter|null $filter
-     */
     public function listTodayAction(?Filter $filter = null): void
     {
         $filter = $this->getOrCreateFilter($filter);
@@ -135,9 +120,6 @@ class DayController extends AbstractController
         $this->preProcessControllerAction();
     }
 
-    /**
-     * @param Filter|null $filter
-     */
     public function listThisWeekAction(?Filter $filter = null): void
     {
         $filter = $this->getOrCreateFilter($filter);
@@ -154,9 +136,6 @@ class DayController extends AbstractController
         $this->preProcessControllerAction();
     }
 
-    /**
-     * @param Filter|null $filter
-     */
     public function listRangeAction(?Filter $filter = null): void
     {
         $filter = $this->getOrCreateFilter($filter);
@@ -184,9 +163,6 @@ class DayController extends AbstractController
 
     /**
      * I call showAction with int instead of DomainModel to prevent that recursive validators will be called.
-     *
-     * @param int $event
-     * @param int $timestamp
      */
     public function showAction(int $event, int $timestamp = 0): void
     {
@@ -199,9 +175,6 @@ class DayController extends AbstractController
         CacheUtility::addCacheTagsByEventRecords([$day->getEvent()]);
     }
 
-    /**
-     * @param int $timestamp
-     */
     public function showByTimestampAction(int $timestamp): void
     {
         $days = $this->dayRepository->findByTimestamp($timestamp);
@@ -215,9 +188,6 @@ class DayController extends AbstractController
      * Validate filter
      * Create empty filter if not valid
      * Assign filter to view
-     *
-     * @param Filter|null $filter
-     * @return Filter
      */
     protected function getOrCreateFilter(?Filter $filter): Filter
     {

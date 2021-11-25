@@ -22,9 +22,6 @@ return [
         ],
         'iconfile' => 'EXT:events2/Resources/Public/Icons/tx_events2_domain_model_time.png',
     ],
-    'interface' => [
-        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, type, weekday, time_begin, time_entry, duration, time_end',
-    ],
     'types' => [
         '1' => [
             'showitem' => '--palette--;;language, type, --palette--;;times,

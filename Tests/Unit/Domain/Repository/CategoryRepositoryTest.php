@@ -29,7 +29,7 @@ class CategoryRepositoryTest extends UnitTestCase
      */
     protected $subject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->subject = $this
             ->getMockBuilder(CategoryRepository::class)
@@ -38,7 +38,7 @@ class CategoryRepositoryTest extends UnitTestCase
             ->getMock();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset($this->subject);
     }

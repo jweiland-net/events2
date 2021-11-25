@@ -20,9 +20,6 @@ return [
             'endtime' => 'endtime',
         ],
     ],
-    'interface' => [
-        'showRecordFieldList' => 'day',
-    ],
     'types' => [
         '1' => ['showitem' => 'day'],
     ],

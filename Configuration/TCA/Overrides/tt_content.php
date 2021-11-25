@@ -25,19 +25,19 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['events2_sear
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'JWeiland.events2',
+    'Events2',
     'Events',
     'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.events.title'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'JWeiland.events2',
+    'Events2',
     'Calendar',
     'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.calendar.title'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'JWeiland.events2',
+    'Events2',
     'Search',
     'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.search.title'
 );

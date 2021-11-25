@@ -18,9 +18,7 @@ namespace JWeiland\Events2\Domain\Repository;
 class UserRepository
 {
     /**
-     * Get currently logged in user.
-     *
-     * @return array The requested user data
+     * Get currently logged-in user.
      */
     public function getUser(): array
     {
@@ -30,6 +28,7 @@ class UserRepository
 
             return $GLOBALS['TSFE']->fe_user->user;
         }
+
         return [];
     }
 
@@ -45,6 +44,7 @@ class UserRepository
         if (isset($user[$field])) {
             return (string)$user[$field];
         }
+
         return '';
     }
 }

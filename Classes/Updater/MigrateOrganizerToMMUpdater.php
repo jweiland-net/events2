@@ -27,8 +27,6 @@ class MigrateOrganizerToMMUpdater implements UpgradeWizardInterface
     /**
      * Return the identifier for this wizard
      * This should be the same string as used in the ext_localconf class registration
-     *
-     * @return string
      */
     public function getIdentifier(): string
     {
@@ -53,8 +51,7 @@ class MigrateOrganizerToMMUpdater implements UpgradeWizardInterface
             return false;
         }
 
-        $columns = array_keys($schemaManager->listTableColumns('tx_events2_domain_model_event'));
-        if (!in_array('organizer', $columns, true)) {
+        if (!array_key_exists('organizer', $schemaManager->listTableColumns('tx_events2_domain_model_event'))) {
             return false;
         }
 
@@ -132,7 +129,7 @@ class MigrateOrganizerToMMUpdater implements UpgradeWizardInterface
     }
 
     /**
-     * @return string[]
+     * @return array<class-string<DatabaseUpdatedPrerequisite>>
      */
     public function getPrerequisites(): array
     {

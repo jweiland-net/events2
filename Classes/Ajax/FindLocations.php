@@ -10,7 +10,6 @@
 namespace JWeiland\Events2\Ajax;
 
 use JWeiland\Events2\Domain\Repository\LocationRepository;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
@@ -22,31 +21,32 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
  */
 class FindLocations
 {
-    /**
-     * @var LocationRepository
-     */
-    protected $locationRepository;
+    protected LocationRepository $locationRepository;
 
     /**
      * Will be called by call_user_func_array, so don't add Extbase classes with inject methods as argument
-     *
-     * @param ObjectManagerInterface $objectManager
      */
     public function __construct(ObjectManagerInterface $objectManager)
     {
         $this->locationRepository = $objectManager->get(LocationRepository::class);
     }
 
-    public function processRequest(ServerRequestInterface $request): ResponseInterface
+    public function processRequest(ServerRequestInterface $request): JsonResponse
     {
         $parameters = $request->getQueryParams()['tx_events2_events']['arguments'] ?? [];
 
         // Hint: search may fail with "&" in $search
         $search = trim(htmlspecialchars(strip_tags($parameters['search'])));
+
         // keep it in sync to minLength in JS
-        if (empty($search) || strlen($search) <= 2) {
-            return new JsonResponse('');
+        if (empty($search)) {
+            return new JsonResponse();
         }
+
+        if (strlen($search) <= 2) {
+            return new JsonResponse();
+        }
+
         return new JsonResponse($this->locationRepository->findLocations($search));
     }
 }

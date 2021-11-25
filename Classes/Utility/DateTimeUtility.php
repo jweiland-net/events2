@@ -21,9 +21,9 @@ class DateTimeUtility
      * If the input is empty, NULL is returned.
      *
      * @param mixed $value Unix timestamp or date/datetime value
-     * @return \DateTime|null
+     * @return \DateTime|\DateTimeImmutable|null
      */
-    public function convert($value): ?\DateTime
+    public function convert($value): ?\DateTimeInterface
     {
         try {
             if (is_bool($value) || empty($value) || $value === '0000-00-00' || $value === '0000-00-00 00:00:00') {
@@ -37,7 +37,7 @@ class DateTimeUtility
                 $date = new \DateTime(date('Y-m-d H:i:s', $value));
                 $dateTimeObject = $this->standardizeDateTimeObject($date);
             }
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             $dateTimeObject = null;
         }
 
@@ -51,9 +51,9 @@ class DateTimeUtility
      * Hint: This function can also be called with NULL.
      *
      * @param \DateTime|null $date
-     * @return \DateTime
+     * @return \DateTime|\DateTimeImmutable|null
      */
-    public function standardizeDateTimeObject(?\DateTime $date): ?\DateTime
+    public function standardizeDateTimeObject(?\DateTimeInterface $date): ?\DateTimeInterface
     {
         if ($date instanceof \DateTime) {
             $date->modify('midnight');
@@ -68,9 +68,9 @@ class DateTimeUtility
      * @param \DateTime $day  The Day to add the difference to
      * @param \DateTime $from The date FROM
      * @param \DateTime $to   The date TO
-     * @return \DateTime
+     * @return \DateTime|\DateTimeImmutable
      */
-    public function addDiffToDay(\DateTime $day, \DateTime $from, \DateTime $to): \DateTime
+    public function addDiffToDay(\DateTimeInterface $day, \DateTimeInterface $from, \DateTimeInterface $to): \DateTime
     {
         // then and else parts will be parsed before if condition was called. This is in my kind of view a bug: http://forge.typo3.org/issues/49292
         // But eventEnd is not a required event property, but it is a required property here

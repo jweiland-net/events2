@@ -20,10 +20,7 @@ use JWeiland\Events2\Service\TypoScriptService;
  */
 class VideoController extends AbstractController
 {
-    /**
-     * @var EventRepository
-     */
-    protected $eventRepository;
+    protected EventRepository $eventRepository;
 
     public function __construct(
         EventRepository $eventRepository,
@@ -35,9 +32,6 @@ class VideoController extends AbstractController
         $this->eventRepository = $eventRepository;
     }
 
-    /**
-     * @param int $event
-     */
     public function showAction(int $event): void
     {
         $this->postProcessAndAssignFluidVariables([

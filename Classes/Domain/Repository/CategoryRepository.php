@@ -20,9 +20,6 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  */
 class CategoryRepository extends \TYPO3\CMS\Extbase\Domain\Repository\CategoryRepository
 {
-    /**
-     * @var array
-     */
     protected $defaultOrderings = [
         'title' => QueryInterface::ORDER_ASCENDING
     ];
@@ -45,9 +42,6 @@ class CategoryRepository extends \TYPO3\CMS\Extbase\Domain\Repository\CategoryRe
     /**
      * Get all categories given by comma separated list.
      *
-     * @param string $categoryUids comma separated list of category uids
-     * @param int $parent parent category UID
-     * @return QueryResultInterface
      * @throws \Exception
      */
     public function getSelectedCategories(string $categoryUids, int $parent = 0): QueryResultInterface

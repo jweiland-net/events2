@@ -34,11 +34,6 @@ class GetExceptionsFromEventForSpecificDateViewHelper extends AbstractViewHelper
 
     /**
      * Get exception from an event to a specific date
-     *
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return ObjectStorage|Exception[]
      */
     public static function renderStatic(
         array $arguments,

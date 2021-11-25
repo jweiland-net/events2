@@ -21,10 +21,7 @@ use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
  */
 class UserSessionTest extends FunctionalTestCase
 {
-    /**
-     * @var UserSession
-     */
-    protected $subject;
+    protected UserSession $subject;
 
     /**
      * @var array
@@ -33,7 +30,7 @@ class UserSessionTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -41,7 +38,7 @@ class UserSessionTest extends FunctionalTestCase
         $this->subject = new UserSession($feUser);
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset(
             $this->subject
@@ -63,7 +60,7 @@ class UserSessionTest extends FunctionalTestCase
     /**
      * DataProvider for year and month.
      *
-     * @return array
+     * @return array<string, array<int|string>>
      */
     public function yearAndMonthDataProvider(): array
     {
@@ -82,7 +79,7 @@ class UserSessionTest extends FunctionalTestCase
      *
      * @dataProvider yearAndMonthDataProvider
      */
-    public function getMonthAndYearWillReturnMonthAndYear($month, $year, $expectedMonth, $expectedYear): void
+    public function getMonthAndYearWillReturnMonthAndYear(int $month, int $year, string $expectedMonth, string $expectedYear): void
     {
         $this->subject->setMonthAndYear($month, $year);
         self::assertSame(

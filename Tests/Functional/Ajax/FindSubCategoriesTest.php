@@ -21,10 +21,7 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
  */
 class FindSubCategoriesTest extends FunctionalTestCase
 {
-    /**
-     * @var FindSubCategories
-     */
-    protected $subject;
+    protected FindSubCategories $subject;
 
     /**
      * @var array
@@ -33,7 +30,7 @@ class FindSubCategoriesTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->importDataSet(__DIR__ . '/../Fixtures/sys_category.xml');
@@ -42,7 +39,7 @@ class FindSubCategoriesTest extends FunctionalTestCase
         $this->subject = $objectManager->get(FindSubCategories::class);
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset($this->subject);
         parent::tearDown();

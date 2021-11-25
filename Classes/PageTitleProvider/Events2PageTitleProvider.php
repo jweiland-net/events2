@@ -25,15 +25,9 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
  */
 class Events2PageTitleProvider implements PageTitleProviderInterface
 {
-    /**
-     * @var EventRepository
-     */
-    protected $eventRepository;
+    protected EventRepository $eventRepository;
 
-    /**
-     * @var DayRepository
-     */
-    protected $dayRepository;
+    protected DayRepository $dayRepository;
 
     public function __construct(ObjectManagerInterface $objectManager)
     {
@@ -80,10 +74,6 @@ class Events2PageTitleProvider implements PageTitleProviderInterface
             return false;
         }
 
-        if ((int)$gp['timestamp'] <= 0) {
-            return false;
-        }
-
-        return true;
+        return (int)$gp['timestamp'] > 0;
     }
 }

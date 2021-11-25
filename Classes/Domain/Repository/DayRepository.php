@@ -14,8 +14,10 @@ namespace JWeiland\Events2\Domain\Repository;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Factory\DayFactory;
+use JWeiland\Events2\Domain\Model\Category;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Filter;
+use JWeiland\Events2\Domain\Model\Location;
 use JWeiland\Events2\Domain\Model\Search;
 use JWeiland\Events2\Event\ModifyQueriesOfFindByTimestampEvent;
 use JWeiland\Events2\Event\ModifyQueriesOfFindEventsEvent;
@@ -36,35 +38,17 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  */
 class DayRepository extends Repository
 {
-    /**
-     * @var DateTimeUtility
-     */
-    protected $dateTimeUtility;
+    protected DateTimeUtility $dateTimeUtility;
 
-    /**
-     * @var ExtConf
-     */
-    protected $extConf;
+    protected ExtConf $extConf;
 
-    /**
-     * @var DatabaseService
-     */
-    protected $databaseService;
+    protected DatabaseService $databaseService;
 
-    /**
-     * @var DayFactory
-     */
-    protected $dayFactory;
+    protected DayFactory $dayFactory;
 
-    /**
-     * @var EventDispatcher
-     */
-    protected $eventDispatcher;
+    protected EventDispatcher $eventDispatcher;
 
-    /**
-     * @var array
-     */
-    protected $settings = [];
+    protected array $settings = [];
 
     public function __construct(
         ObjectManagerInterface $objectManager,
@@ -90,9 +74,6 @@ class DayRepository extends Repository
     /**
      * Find events
      *
-     * @param string $type
-     * @param Filter $filter
-     * @param int $limit As Paginator will override $limit, this will only work within LatestView
      * @return QueryResultInterface|Day[]
      * @throws \Exception
      */
@@ -177,8 +158,6 @@ class DayRepository extends Repository
     /**
      * Search for events.
      *
-     * @param Search $search
-     * @return QueryResultInterface
      * @throws \Exception
      */
     public function searchEvents(Search $search): QueryResultInterface
@@ -198,7 +177,7 @@ class DayRepository extends Repository
         );
 
         // add query for search string
-        if ($search->getSearch()) {
+        if ($search->getSearch() !== '') {
             $subQueryBuilder->andWhere(
                 (string)$subQueryBuilder->expr()->orX(
                     $queryBuilder->expr()->like(
@@ -218,8 +197,8 @@ class DayRepository extends Repository
         }
 
         // add query for categories
-        if ($search->getMainCategory()) {
-            if ($search->getSubCategory()) {
+        if ($search->getMainCategory() instanceof Category) {
+            if ($search->getSubCategory() instanceof Category) {
                 $this->databaseService->addConstraintForCategories(
                     $subQueryBuilder,
                     [$search->getSubCategory()->getUid()],
@@ -258,7 +237,7 @@ class DayRepository extends Repository
         );
 
         // add query for event location
-        if ($search->getLocation()) {
+        if ($search->getLocation() instanceof Location) {
             $this->databaseService->addConstraintForLocation(
                 $subQueryBuilder,
                 $search->getLocation()->getUid(),
@@ -312,7 +291,6 @@ class DayRepository extends Repository
     /**
      * Find all Days for a given Day (Timestamp with time set to 00:00:00).
      *
-     * @param int $timestamp
      * @return QueryResultInterface|Day[]
      * @throws \Exception
      */
@@ -382,9 +360,7 @@ class DayRepository extends Repository
         $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_day');
         if ($connection->getSchemaManager() instanceof AbstractSchemaManager) {
             $dayColumns = array_map(
-                static function ($column) {
-                    return 'day.' . $column;
-                },
+                static fn($column): string => 'day.' . $column,
                 array_keys(
                     $connection->getSchemaManager()->listTableColumns('tx_events2_domain_model_day') ?? []
                 )
@@ -397,8 +373,6 @@ class DayRepository extends Repository
 
     /**
      * Apply various merge features to query
-     *
-     * @param QueryBuilder $subQueryBuilder
      */
     protected function addMergeFeatureToQuery(QueryBuilder $subQueryBuilder): void
     {
@@ -413,9 +387,6 @@ class DayRepository extends Repository
 
     /**
      * Join SubQuery as SQL-Part into parent QueryBuilder
-     *
-     * @param QueryBuilder $queryBuilder
-     * @param QueryBuilder $subQueryBuilder
      */
     protected function joinSubQueryIntoQueryBuilder(QueryBuilder $queryBuilder, QueryBuilder $subQueryBuilder): void
     {
@@ -441,9 +412,6 @@ class DayRepository extends Repository
 
     /**
      * Get Sub-QueryBuilder
-     *
-     * @param QueryBuilder $queryBuilder
-     * @return QueryBuilder
      */
     protected function getSubQueryBuilder(QueryBuilder $queryBuilder): QueryBuilder
     {
@@ -469,9 +437,6 @@ class DayRepository extends Repository
      * Find one Day by Event and Timestamp.
      * If timestamp is empty, we try to find next possible day in future/past or build our own one.
      *
-     * @param int $eventUid
-     * @param int $timestamp
-     * @return Day
      * @throws \Exception
      */
     public function findDayByEventAndTimestamp(int $eventUid, int $timestamp = 0): Day
@@ -482,10 +447,6 @@ class DayRepository extends Repository
     /**
      * Nearly the same as "findDayByEventAndTimestamp", but this method was used by PageTitleProvider
      * which is out of Extbase context. So we are using a plain Doctrine Query here.
-     *
-     * @param int $eventUid
-     * @param int $timestamp
-     * @return array
      */
     public function getDayRecord(int $eventUid, int $timestamp): array
     {

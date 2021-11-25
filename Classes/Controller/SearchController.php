@@ -25,15 +25,9 @@ use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
  */
 class SearchController extends AbstractController
 {
-    /**
-     * @var CategoryRepository
-     */
-    protected $categoryRepository;
+    protected CategoryRepository $categoryRepository;
 
-    /**
-     * @var LocationRepository
-     */
-    protected $locationRepository;
+    protected LocationRepository $locationRepository;
 
     public function __construct(
         CategoryRepository $categoryRepository,
@@ -52,10 +46,7 @@ class SearchController extends AbstractController
         $this->preProcessControllerAction();
     }
 
-    /**
-     * @param Search|null $search
-     */
-    public function showAction(Search $search = null): void
+    public function showAction(?Search $search = null): void
     {
         // Because of the checkbox in search form we have to create a new empty domain model
         if ($search === null) {
@@ -71,7 +62,7 @@ class SearchController extends AbstractController
             (int)$this->settings['rootCategory']
         );
 
-        if (!$allowedMainCategories->count()) {
+        if ($allowedMainCategories->count() === 0) {
             $this->addFlashMessage('Dear Admin: Please check if you have set rootCategory correctly as parent of your defined mainCategories.');
         }
 
@@ -80,6 +71,7 @@ class SearchController extends AbstractController
         if ($search->getMainCategory() instanceof Category) {
             $gettableSearchProperties['mainCategory'] = ObjectAccess::getGettableProperties($search->getMainCategory());
         }
+
         if ($search->getSubCategory() instanceof Category) {
             $gettableSearchProperties['subCategory'] = ObjectAccess::getGettableProperties($search->getSubCategory());
         }
@@ -93,12 +85,10 @@ class SearchController extends AbstractController
                     'sub' => []
                 ]
             ],
-            'jsVariables' => json_encode(
-                $this->getJsVariables([
-                    'siteId' => $GLOBALS['TSFE']->id,
-                    'search' => $gettableSearchProperties
-                ])
-            ),
+            'jsVariables' => json_encode($this->getJsVariables([
+                'siteId' => $GLOBALS['TSFE']->id,
+                'search' => $gettableSearchProperties
+            ]), JSON_THROW_ON_ERROR),
         ]);
     }
 }

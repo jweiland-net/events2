@@ -43,10 +43,7 @@ use TYPO3\CMS\Core\Routing\Aspect\StaticMappableAspectInterface;
  */
 class TimestampMapper implements StaticMappableAspectInterface
 {
-    /**
-     * @var array
-     */
-    protected $settings;
+    protected array $settings;
 
     public function __construct(array $settings)
     {
@@ -71,9 +68,7 @@ class TimestampMapper implements StaticMappableAspectInterface
     public function generate(string $value): ?string
     {
         $date = new \DateTime(date('c', (int)$value));
-        if (!$date instanceof \DateTime) {
-            return null;
-        }
+
         return $date->format($this->settings['format']);
     }
 
@@ -86,6 +81,7 @@ class TimestampMapper implements StaticMappableAspectInterface
         if (!$date instanceof \DateTime) {
             return null;
         }
+
         return $date->format('U');
     }
 }

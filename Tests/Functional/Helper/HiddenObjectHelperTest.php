@@ -27,15 +27,9 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Session;
  */
 class HiddenObjectHelperTest extends FunctionalTestCase
 {
-    /**
-     * @var HiddenObjectHelper
-     */
-    protected $subject;
+    protected HiddenObjectHelper $subject;
 
-    /**
-     * @var Session
-     */
-    protected $session;
+    protected Session $session;
 
     /**
      * @var EventRepository|ObjectProphecy
@@ -54,7 +48,7 @@ class HiddenObjectHelperTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -69,7 +63,7 @@ class HiddenObjectHelperTest extends FunctionalTestCase
         );
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset(
             $this->subject,

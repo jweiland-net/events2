@@ -30,25 +30,13 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
  */
 class DayFactory
 {
-    /**
-     * @var DatabaseService
-     */
-    protected $databaseService;
+    protected DatabaseService $databaseService;
 
-    /**
-     * @var EventRepository
-     */
-    protected $eventRepository;
+    protected EventRepository $eventRepository;
 
-    /**
-     * @var DayRelationService
-     */
-    protected $dayRelationService;
+    protected DayRelationService $dayRelationService;
 
-    /**
-     * @var array
-     */
-    protected $processOrderedMethods = [
+    protected array $processOrderedMethods = [
         'findExactDay',
         'findNextDay',
         'findPreviousDay',
@@ -67,11 +55,6 @@ class DayFactory
 
     /**
      * Find one Day by Event and Timestamp.
-     *
-     * @param int $eventUid
-     * @param int $timestamp
-     * @param QueryInterface|Query $query
-     * @return Day
      */
     public function findDayByEventAndTimestamp(int $eventUid, int $timestamp, QueryInterface $query): Day
     {
@@ -149,9 +132,6 @@ class DayFactory
      * Build day object on our own.
      * It will not get an UID or PID
      *
-     * @param array $searchValues
-     * @param QueryInterface|Query $query
-     * @return Day
      * @throws \Exception
      */
     protected function buildDay(array $searchValues, QueryInterface $query): Day
@@ -171,7 +151,7 @@ class DayFactory
 
         $event->getDays()->rewind();
 
-        if (!$event->getDays()->count()) {
+        if ($event->getDays()->count() === 0) {
             // event seems to be out of time frame. Try to re-generate day records
             $this->dayRelationService->addDay($event, $event->getEventBegin());
         }
@@ -195,11 +175,6 @@ class DayFactory
 
     /**
      * Find Day record by event and by additional where-constraints
-     *
-     * @param int $eventUid
-     * @param QueryBuilder $queryBuilder
-     * @param QueryInterface|Query $query
-     * @return Day|null
      */
     protected function findDayByEvent(int $eventUid, QueryBuilder $queryBuilder, QueryInterface $query): ?Day
     {
@@ -218,9 +193,6 @@ class DayFactory
     /**
      * Get pre initialized QueryBuilder
      * Only the where-part has to be added in later process
-     *
-     * @param string $order ASC or DESC
-     * @return QueryBuilder
      */
     protected function getQueryBuilder(string $order = QueryInterface::ORDER_ASCENDING): QueryBuilder
     {
@@ -244,10 +216,6 @@ class DayFactory
 
     /**
      * Add base constraints (pid and event) which are valid for all queries in this class.
-     *
-     * @param QueryBuilder $queryBuilder
-     * @param QueryInterface $query
-     * @param int $eventUid
      */
     protected function addBaseConstraint(QueryBuilder $queryBuilder, QueryInterface $query, int $eventUid): void
     {

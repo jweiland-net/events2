@@ -32,15 +32,9 @@ use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
  */
 class FindDaysForMonthTest extends FunctionalTestCase
 {
-    /**
-     * @var FindDaysForMonth
-     */
-    protected $subject;
+    protected FindDaysForMonth $subject;
 
-    /**
-     * @var ExtConf
-     */
-    protected $extConf;
+    protected ExtConf $extConf;
 
     /**
      * @var UserSession|ObjectProphecy
@@ -62,14 +56,11 @@ class FindDaysForMonthTest extends FunctionalTestCase
      */
     protected $cacheManagerProphecy;
 
-    /**
-     * @var array
-     */
     protected $testExtensionsToLoad = [
         'typo3conf/ext/events2'
     ];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -90,7 +81,7 @@ class FindDaysForMonthTest extends FunctionalTestCase
         );
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         ExtensionManagementUtilityAccessibleProxy::setCacheManager(null);
         unset($this->subject);
@@ -100,7 +91,7 @@ class FindDaysForMonthTest extends FunctionalTestCase
     /**
      * DataProvider for arguments
      *
-     * @return array
+     * @return array<string, array<int|array<string, string>|array<string, array<string, array<string, string>>>>>
      */
     public function dataProviderForProcessAjaxRequestForcesTooHighMonthAndYearInRange(): array
     {
@@ -174,7 +165,7 @@ class FindDaysForMonthTest extends FunctionalTestCase
      * @dataProvider dataProviderForProcessAjaxRequestForcesTooHighMonthAndYearInRange
      */
     public function processAjaxRequestForcesTooHighMonthAndYearInRange(
-        $queryParams,
+        array $queryParams,
         $expectedArguments,
         $expectedMonth
     ): void {
@@ -207,6 +198,7 @@ class FindDaysForMonthTest extends FunctionalTestCase
         ];
         $startDate = clone $currentDate;
         $startDate->modify('first day of this month');
+
         $endDate = clone $currentDate;
         $endDate->modify('last day of this month')->modify('tomorrow');
 
@@ -238,6 +230,7 @@ class FindDaysForMonthTest extends FunctionalTestCase
         ];
         $startDate = clone $currentDate;
         $startDate->modify('first day of this month');
+
         $endDate = clone $currentDate;
         $endDate->modify('last day of this month')->modify('tomorrow');
 
@@ -248,6 +241,7 @@ class FindDaysForMonthTest extends FunctionalTestCase
 
         $request = new ServerRequest('http://www.example.com/');
         $request = $request->withQueryParams($queryParams);
+
         $this->subject->processRequest($request);
     }
 
@@ -270,6 +264,7 @@ class FindDaysForMonthTest extends FunctionalTestCase
         ];
         $startDate = clone $currentDate;
         $startDate->modify('first day of this month');
+
         $endDate = clone $currentDate;
         $endDate->modify('last day of this month')->modify('tomorrow');
 
@@ -280,6 +275,7 @@ class FindDaysForMonthTest extends FunctionalTestCase
 
         $request = new ServerRequest('http://www.example.com/');
         $request = $request->withQueryParams($queryParams);
+
         $this->subject->processRequest($request);
     }
 
@@ -299,6 +295,7 @@ class FindDaysForMonthTest extends FunctionalTestCase
             ]
         ];
         $startDate = clone $currentDate;
+
         $endDate = clone $currentDate;
         $endDate->modify('last day of this month')->modify('tomorrow');
 
@@ -329,6 +326,7 @@ class FindDaysForMonthTest extends FunctionalTestCase
         ];
         $startDate = clone $currentDate;
         $startDate->modify('first day of this month');
+
         $endDate = clone $currentDate;
         $endDate->modify('tomorrow');
 
@@ -339,6 +337,7 @@ class FindDaysForMonthTest extends FunctionalTestCase
 
         $request = new ServerRequest('http://www.example.com/');
         $request = $request->withQueryParams($queryParams);
+
         $this->subject->processRequest($request);
     }
 }

@@ -20,10 +20,7 @@ use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
  */
 class ExtConfTest extends FunctionalTestCase
 {
-    /**
-     * @var ExtConf
-     */
-    protected $subject;
+    protected ExtConf $subject;
 
     /**
      * @var array
@@ -32,7 +29,7 @@ class ExtConfTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -41,7 +38,7 @@ class ExtConfTest extends FunctionalTestCase
         $this->subject->setRecurringFuture('6');
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset($this->subject);
         parent::tearDown();

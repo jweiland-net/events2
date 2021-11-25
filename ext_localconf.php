@@ -3,46 +3,46 @@ if (!defined('TYPO3_MODE')) {
     die('Access denied.');
 }
 
-call_user_func(static function () {
+call_user_func(static function (): void {
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-        'JWeiland.events2',
+        'Events2',
         'Events',
         [
-            'Day' => 'list, listLatest, listToday, listWeek, listRange, listSearchResults, show, showByTimestamp',
-            'Event' => 'listMyEvents, new, create, edit, update, delete, activate',
-            'Location' => 'show',
-            'Video' => 'show',
+            \JWeiland\Events2\Controller\DayController::class => 'list, listLatest, listToday, listWeek, listRange, listSearchResults, show, showByTimestamp',
+            \JWeiland\Events2\Controller\EventController::class => 'listMyEvents, new, create, edit, update, delete, activate',
+            \JWeiland\Events2\Controller\LocationController::class => 'show',
+            \JWeiland\Events2\Controller\VideoController::class => 'show',
         ],
         // non-cacheable actions
         [
-            'Day' => 'listSearchResults',
-            'Event' => 'create, edit, update, delete, activate',
+            \JWeiland\Events2\Controller\DayController::class => 'listSearchResults',
+            \JWeiland\Events2\Controller\EventController::class => 'create, edit, update, delete, activate',
         ]
     );
 
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-        'JWeiland.events2',
+        'Events2',
         'Calendar',
         [
-            'Calendar' => 'show',
+            \JWeiland\Events2\Controller\CalendarController::class => 'show',
         ],
         // non-cacheable actions
         [
-            'Calendar' => 'show',
+            \JWeiland\Events2\Controller\CalendarController::class => 'show',
         ]
     );
 
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-        'JWeiland.events2',
+        'Events2',
         'Search',
         [
-            'Search' => 'show',
-            'Ajax' => 'callAjaxObject',
+            \JWeiland\Events2\Controller\SearchController::class => 'show',
+            \JWeiland\Events2\Controller\AjaxController::class => 'callAjaxObject',
         ],
         // non-cacheable actions
         [
-            'Search' => 'show',
-            'Ajax' => 'callAjaxObject',
+            \JWeiland\Events2\Controller\SearchController::class => 'show',
+            \JWeiland\Events2\Controller\AjaxController::class => 'callAjaxObject',
         ]
     );
 
@@ -91,6 +91,7 @@ call_user_func(static function () {
             ['source' => 'EXT:events2/Resources/Public/Icons/' . $fileName]
         );
     }
+
     foreach ($bmpIcons as $identifier => $fileName) {
         $iconRegistry->registerIcon(
             $identifier,

@@ -19,30 +19,24 @@ use Nimut\TestingFramework\TestCase\UnitTestCase;
  */
 class DateTimeUtilityTest extends UnitTestCase
 {
-    /**
-     * @var \JWeiland\Events2\Utility\DateTimeUtility
-     */
-    protected $subject;
+    protected DateTimeUtility $subject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->subject = new DateTimeUtility();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset($this->subject);
     }
 
-    /**
-     * @return array
-     */
     public function emptyDatesDataProvider(): array
     {
         $emptyDate = [];
-        $emptyDate['empty value: null'] = [null, null];
-        $emptyDate['empty value: 0000-00-00'] = ['0000-00-00', null];
-        $emptyDate['empty value: 0000-00-00 00:00:00'] = ['0000-00-00 00:00:00', null];
+        $emptyDate['empty value: null'] = [null];
+        $emptyDate['empty value: 0000-00-00'] = ['0000-00-00'];
+        $emptyDate['empty value: 0000-00-00 00:00:00'] = ['0000-00-00 00:00:00'];
 
         return $emptyDate;
     }
@@ -50,22 +44,17 @@ class DateTimeUtilityTest extends UnitTestCase
     /**
      * @test
      *
-     * @param $emptyDate
-     * @param $expectedDate
      * @dataProvider emptyDatesDataProvider
      */
-    public function convertEmptyDatesResultsInNull($emptyDate, $expectedDate): void
+    public function convertEmptyDatesResultsInNull(?string $emptyDate): void
     {
-        self::assertSame(
-            $expectedDate,
+        self::assertNull(
             $this->subject->convert($emptyDate)
         );
     }
 
     /**
      * dataProvider with invalid values for DateTime objects.
-     *
-     * @return array
      */
     public function dataProviderWithInvalidValuesForDateTimeObjects(): array
     {
@@ -90,9 +79,6 @@ class DateTimeUtilityTest extends UnitTestCase
         self::assertNull($this->subject->convert($invalidValue));
     }
 
-    /**
-     * @return array
-     */
     public function stringDatesDataProvider(): array
     {
         $dateStrings = [];
@@ -157,7 +143,7 @@ class DateTimeUtilityTest extends UnitTestCase
     public function convertTimestamps($timestamp, $expectedDate): void
     {
         $convertedResult = $this->subject->convert($timestamp);
-        if ($convertedResult === null) {
+        if (!$convertedResult instanceof \DateTime) {
             self::assertSame($expectedDate, $convertedResult);
         } else {
             self::assertEquals(

@@ -20,10 +20,7 @@ use TYPO3\CMS\Core\Utility\MathUtility;
  */
 class Time
 {
-    /**
-     * @var TimeToStringConverter
-     */
-    protected $timeToStringConverter;
+    protected TimeToStringConverter $timeToStringConverter;
 
     public function __construct(TimeToStringConverter $timeToStringConverter)
     {
@@ -33,8 +30,6 @@ class Time
     /**
      * This method returns js code to check if valid time was entered
      * JS Validation does not work in IRRE context. So we have to validate by PHP.
-     *
-     * @return string
      */
     public function returnFieldJS(): string
     {
@@ -45,7 +40,6 @@ class Time
      * This method converts the value into a unique time format: 21:23.
      *
      * @param mixed $value
-     * @return string
      */
     public function evaluateFieldValue($value): string
     {
@@ -83,6 +77,7 @@ class Time
 
             return $parts[0] . ':' . $parts[1];
         }
+
         return '';
     }
 }

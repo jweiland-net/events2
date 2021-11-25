@@ -22,35 +22,28 @@ class Time extends AbstractEntity
 {
     use Typo3PropertiesTrait;
 
-    /**
-     * @var string
-     */
-    protected $weekday = '';
+    protected string $weekday = '';
 
     /**
-     * @var string
      * @Extbase\Validate("NotEmpty")
      * @Extbase\Validate("RegularExpression", options={"regularExpression": "/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/"})
      */
-    protected $timeBegin = '';
+    protected string $timeBegin = '';
 
     /**
-     * @var string
      * @Extbase\Validate("RegularExpression", options={"regularExpression": "/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/"})
      */
-    protected $timeEntry = '';
+    protected string $timeEntry = '';
 
     /**
-     * @var string
      * @Extbase\Validate("RegularExpression", options={"regularExpression": "/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/"})
      */
-    protected $duration = '';
+    protected string $duration = '';
 
     /**
-     * @var string
      * @Extbase\Validate("RegularExpression", options={"regularExpression": "/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/"})
      */
-    protected $timeEnd = '';
+    protected string $timeEnd = '';
 
     /*
      * Helper variables for Fluid
@@ -58,19 +51,19 @@ class Time extends AbstractEntity
      */
 
     /**
-     * @var \DateTime
+     * @var \DateTime|\DateTimeImmutable|null
      */
-    protected $timeBeginAsDateTime;
+    protected ?\DateTimeInterface $timeBeginAsDateTime;
 
     /**
-     * @var \DateTime
+     * @var \DateTime|\DateTimeImmutable|null
      */
-    protected $timeEntryAsDateTime;
+    protected ?\DateTimeInterface $timeEntryAsDateTime;
 
     /**
-     * @var \DateTime
+     * @var \DateTime|\DateTimeImmutable|null
      */
-    protected $timeEndAsDateTime;
+    protected ?\DateTimeInterface $timeEndAsDateTime;
 
     public function getWeekday(): string
     {
@@ -127,32 +120,50 @@ class Time extends AbstractEntity
      * Helpful to use f:format.date()
      */
 
-    public function getTimeBeginAsDateTime(): ?\DateTime
+    /**
+     * @return \DateTime|\DateTimeImmutable|null
+     */
+    public function getTimeBeginAsDateTime(): ?\DateTimeInterface
     {
         return $this->timeBeginAsDateTime;
     }
 
-    public function setTimeBeginAsDateTime(\DateTime $timeBegin = null): void
+    /**
+     * @param \DateTime|\DateTimeImmutable $timeBegin
+     */
+    public function setTimeBeginAsDateTime(\DateTimeInterface $timeBegin = null): void
     {
         $this->timeBeginAsDateTime = $timeBegin;
     }
 
-    public function getTimeEntryAsDateTime(): ?\DateTime
+    /**
+     * @return \DateTime|\DateTimeImmutable|null
+     */
+    public function getTimeEntryAsDateTime(): ?\DateTimeInterface
     {
         return $this->timeEntryAsDateTime;
     }
 
-    public function setTimeEntryAsDateTime(\DateTime $timeEntry = null): void
+    /**
+     * @param \DateTime|\DateTimeImmutable $timeEntry
+     */
+    public function setTimeEntryAsDateTime(\DateTimeInterface $timeEntry = null): void
     {
         $this->timeEntryAsDateTime = $timeEntry;
     }
 
-    public function getTimeEndAsDateTime(): ?\DateTime
+    /**
+     * @return \DateTime|\DateTimeImmutable|null
+     */
+    public function getTimeEndAsDateTime(): ?\DateTimeInterface
     {
         return $this->timeEndAsDateTime;
     }
 
-    public function setTimeEndAsDateTime(\DateTime $timeEnd = null): void
+    /**
+     * @param \DateTime|\DateTimeImmutable $timeEnd
+     */
+    public function setTimeEndAsDateTime(\DateTimeInterface $timeEnd = null): void
     {
         $this->timeEndAsDateTime = $timeEnd;
     }

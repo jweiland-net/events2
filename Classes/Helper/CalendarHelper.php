@@ -20,15 +20,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class CalendarHelper
 {
-    /**
-     * @var DayHelper
-     */
-    protected $dayHelper;
+    protected DayHelper $dayHelper;
 
-    /**
-     * @var UserSession
-     */
-    protected $userSession;
+    protected UserSession $userSession;
 
     public function __construct(
         DayHelper $dayHelper,

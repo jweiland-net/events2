@@ -22,9 +22,6 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  */
 class OrganizerRepository extends Repository
 {
-    /**
-     * @var array
-     */
     protected $defaultOrderings = [
         'organizer' => QueryInterface::ORDER_ASCENDING,
     ];

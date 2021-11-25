@@ -30,40 +30,19 @@ use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
  */
 class PathSegmentHelper
 {
-    /**
-     * @var string
-     */
-    protected $tableName = 'tx_events2_domain_model_event';
+    protected string $tableName = 'tx_events2_domain_model_event';
 
-    /**
-     * @var string
-     */
-    protected $slugColumn = 'path_segment';
+    protected string $slugColumn = 'path_segment';
 
-    /**
-     * @var string
-     */
-    protected $titleColumn = 'title';
+    protected string $titleColumn = 'title';
 
-    /**
-     * @var array
-     */
-    protected $slugCache = [];
+    protected array $slugCache = [];
 
-    /**
-     * @var ObjectManagerInterface
-     */
-    protected $objectManager;
+    protected ObjectManagerInterface $objectManager;
 
-    /**
-     * @var ExtConf
-     */
-    protected $extConf;
+    protected ExtConf $extConf;
 
-    /**
-     * @var EventDispatcher
-     */
-    protected $eventDispatcher;
+    protected EventDispatcher $eventDispatcher;
 
     public function __construct(
         ObjectManagerInterface $objectManager,
@@ -121,6 +100,7 @@ class PathSegmentHelper
 
     protected function getUniqueValue(int $uid, string $slug): string
     {
+        $newSlug = '';
         $statement = $this->getUniqueSlugStatement($uid, $slug);
         $counter = $this->slugCache[$slug] ?? 1;
         while ($statement->fetch()) {
@@ -132,7 +112,7 @@ class PathSegmentHelper
             if ($counter > 5) {
                 $this->slugCache[$slug] = $counter;
             }
-            $counter++;
+            ++$counter;
         }
 
         return $newSlug ?? $slug;

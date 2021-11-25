@@ -19,15 +19,10 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  */
 class FindSubCategories implements AjaxInterface
 {
-    /**
-     * @var CategoryRepository
-     */
-    protected $categoryRepository;
+    protected CategoryRepository $categoryRepository;
 
     /**
      * Will be called by ObjectManager in AjaxController, so Extbase classes can be used.
-     *
-     * @param CategoryRepository $categoryRepository
      */
     public function __construct(CategoryRepository $categoryRepository)
     {
@@ -37,19 +32,19 @@ class FindSubCategories implements AjaxInterface
     public function processAjaxRequest(array $arguments): string
     {
         if (!array_key_exists('category', $arguments)) {
-            return json_encode([], JSON_FORCE_OBJECT);
+            return json_encode([], JSON_THROW_ON_ERROR | JSON_FORCE_OBJECT);
         }
 
-        return json_encode(
-            $this->reduceCategoryData(
-                $this->categoryRepository->getSubCategories(
-                    (int)$arguments['category']
-                )
-            ),
-            JSON_FORCE_OBJECT
-        );
+        return json_encode($this->reduceCategoryData(
+            $this->categoryRepository->getSubCategories(
+                (int)$arguments['category']
+            )
+        ), JSON_THROW_ON_ERROR | JSON_FORCE_OBJECT);
     }
 
+    /**
+     * @return string[]
+     */
     protected function reduceCategoryData(QueryResultInterface $categories): array
     {
         $response = [];

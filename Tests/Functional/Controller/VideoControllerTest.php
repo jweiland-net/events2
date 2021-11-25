@@ -24,15 +24,9 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
  */
 class VideoControllerTest extends FunctionalTestCase
 {
-    /**
-     * @var VideoController
-     */
-    protected $subject;
+    protected VideoController $subject;
 
-    /**
-     * @var Request
-     */
-    protected $request;
+    protected Request $request;
 
     /**
      * @var array
@@ -41,7 +35,7 @@ class VideoControllerTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->importDataSet('ntf://Database/pages.xml');
@@ -54,6 +48,7 @@ class VideoControllerTest extends FunctionalTestCase
                 'Video' => VideoController::class
             ]);
         }
+
         $this->request->setControllerExtensionName('Events2');
         $this->request->setPluginName('Events');
         $this->request->setControllerName('Video');
@@ -64,7 +59,7 @@ class VideoControllerTest extends FunctionalTestCase
         $this->subject = $objectManager->get(VideoController::class);
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset(
             $this->subject,

@@ -29,20 +29,11 @@ class PostProcessControllerActionEvent implements ControllerActionEventInterface
      */
     protected $controller;
 
-    /**
-     * @var Event|null
-     */
-    protected $event;
+    protected ?Event $event;
 
-    /**
-     * @var Day|null
-     */
-    protected $day;
+    protected ?Day $day;
 
-    /**
-     * @var array
-     */
-    protected $settings;
+    protected array $settings;
 
     public function __construct(
         ActionController $controller,

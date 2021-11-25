@@ -31,11 +31,6 @@ class IsDateMarkedAsCanceledViewHelper extends AbstractViewHelper
 
     /**
      * Check, if there is an exceptions of type "remove" for specified date
-     *
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return bool
      */
     public static function renderStatic(
         array $arguments,

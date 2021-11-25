@@ -22,10 +22,7 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
  */
 class DayHelperTest extends FunctionalTestCase
 {
-    /**
-     * @var DayHelper
-     */
-    protected $subject;
+    protected DayHelper $subject;
 
     /**
      * @var array
@@ -34,7 +31,7 @@ class DayHelperTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -42,7 +39,7 @@ class DayHelperTest extends FunctionalTestCase
         $this->subject = $objectManager->get(DayHelper::class);
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset(
             $this->subject

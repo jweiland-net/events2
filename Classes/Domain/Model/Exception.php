@@ -21,25 +21,13 @@ class Exception extends AbstractEntity
 {
     use Typo3PropertiesTrait;
 
-    /**
-     * @var string
-     */
-    protected $exceptionType = '';
+    protected string $exceptionType = '';
 
-    /**
-     * @var \DateTime
-     */
-    protected $exceptionDate;
+    protected \DateTimeInterface $exceptionDate;
 
-    /**
-     * @var \JWeiland\Events2\Domain\Model\Time
-     */
-    protected $exceptionTime;
+    protected ?Time $exceptionTime;
 
-    /**
-     * @var string
-     */
-    protected $exceptionDetails = '';
+    protected string $exceptionDetails = '';
 
     public function getExceptionType(): string
     {
@@ -51,13 +39,17 @@ class Exception extends AbstractEntity
         $this->exceptionType = $exceptionType;
     }
 
-    public function getExceptionDate(): \DateTime
+    public function getExceptionDate(): \DateTimeInterface
     {
         $this->exceptionDate->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+
         return clone $this->exceptionDate;
     }
 
-    public function setExceptionDate(\DateTime $exceptionDate): void
+    /**
+     * @param \DateTime|\DateTimeImmutable $exceptionDate
+     */
+    public function setExceptionDate(\DateTimeInterface $exceptionDate): void
     {
         $this->exceptionDate = $exceptionDate;
     }
@@ -67,7 +59,7 @@ class Exception extends AbstractEntity
         return $this->exceptionTime;
     }
 
-    public function setExceptionTime(?Time $exceptionTime = null): void
+    public function setExceptionTime(?Time $exceptionTime): void
     {
         $this->exceptionTime = $exceptionTime;
     }

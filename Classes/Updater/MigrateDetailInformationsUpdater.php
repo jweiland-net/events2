@@ -26,8 +26,6 @@ class MigrateDetailInformationsUpdater implements UpgradeWizardInterface
     /**
      * Return the identifier for this wizard
      * This should be the same string as used in the ext_localconf class registration
-     *
-     * @return string
      */
     public function getIdentifier(): string
     {
@@ -52,8 +50,7 @@ class MigrateDetailInformationsUpdater implements UpgradeWizardInterface
             return false;
         }
 
-        $columns = array_keys($schemaManager->listTableColumns('tx_events2_domain_model_event'));
-        if (!in_array('detail_informations', $columns, true)) {
+        if (!array_key_exists('detail_informations', $schemaManager->listTableColumns('tx_events2_domain_model_event'))) {
             return false;
         }
 
@@ -113,7 +110,7 @@ class MigrateDetailInformationsUpdater implements UpgradeWizardInterface
     }
 
     /**
-     * @return string[]
+     * @return array<class-string<DatabaseUpdatedPrerequisite>>
      */
     public function getPrerequisites(): array
     {

@@ -21,17 +21,14 @@ use Nimut\TestingFramework\TestCase\UnitTestCase;
  */
 class SearchTest extends UnitTestCase
 {
-    /**
-     * @var \JWeiland\Events2\Domain\Model\Search
-     */
-    protected $subject;
+    protected Search $subject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->subject = new Search();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset($this->subject);
     }

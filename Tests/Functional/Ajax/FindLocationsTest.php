@@ -27,10 +27,7 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
  */
 class FindLocationsTest extends FunctionalTestCase
 {
-    /**
-     * @var FindLocations
-     */
-    protected $subject;
+    protected FindLocations $subject;
 
     /**
      * @var LocationRepository|ObjectProphecy
@@ -54,7 +51,7 @@ class FindLocationsTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -69,7 +66,7 @@ class FindLocationsTest extends FunctionalTestCase
         $this->subject = new FindLocations($objectManager->reveal());
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         ExtensionManagementUtilityAccessibleProxy::setCacheManager(null);
         unset($this->subject);
@@ -94,6 +91,7 @@ class FindLocationsTest extends FunctionalTestCase
 
         $request = new ServerRequest('http://www.example.com/');
         $request = $request->withQueryParams($queryParams);
+
         self::assertSame(
             '',
             (string)$this->subject->processRequest($request)->getBody()
@@ -119,8 +117,10 @@ class FindLocationsTest extends FunctionalTestCase
 
         $request = new ServerRequest('http://www.example.com/');
         $request = $request->withQueryParams($queryParams);
+
         $response = $this->subject->processRequest($request);
         $response->getBody()->rewind();
+
         self::assertSame(
             '',
             (string)$response->getBody()
@@ -145,6 +145,7 @@ class FindLocationsTest extends FunctionalTestCase
 
         $request = new ServerRequest('http://www.example.com/');
         $request = $request->withQueryParams($queryParams);
+
         self::assertSame(
             '',
             (string)$this->subject->processRequest($request)->getBody()
@@ -201,6 +202,7 @@ class FindLocationsTest extends FunctionalTestCase
             ]
         ];
         $request = $request->withQueryParams($queryParams);
+
         self::assertSame(
             '[{"uid":234,"label":"Marienheide"},{"uid":345,"label":"Marienhagen"}]',
             (string)$this->subject->processRequest($request)->getBody()

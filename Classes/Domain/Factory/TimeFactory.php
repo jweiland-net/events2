@@ -24,22 +24,15 @@ class TimeFactory
 {
     /**
      * The Date to retrieve the Time records for.
-     *
-     * @var \DateTime
      */
-    protected $date;
+    protected \DateTimeInterface $date;
 
     /**
      * If true and URI parameter "timestamp" matches, this time will not be included.
-     *
-     * @var bool
      */
-    protected $removeCurrentDay = false;
+    protected bool $removeCurrentDay = false;
 
-    /**
-     * @var DateTimeUtility
-     */
-    protected $dateTimeUtility;
+    protected DateTimeUtility $dateTimeUtility;
 
     public function __construct(DateTimeUtility $dateTimeUtility)
     {
@@ -48,7 +41,7 @@ class TimeFactory
 
     public function getSortedTimesForDate(
         Event $event,
-        \DateTime $date,
+        \DateTimeInterface $date,
         bool $removeCurrentDay = false
     ): \SplObjectStorage {
         $this->date = $date;
@@ -58,25 +51,24 @@ class TimeFactory
         foreach ($this->getTimesForDate($event, $date, $removeCurrentDay) as $time) {
             $sortedTimes[$time->getTimeBegin()] = $time;
         }
+
         ksort($sortedTimes);
 
         $sortedTimeStorage = new \SplObjectStorage();
         foreach ($sortedTimes as $time) {
             $sortedTimeStorage->attach($time);
         }
+
         return $sortedTimeStorage;
     }
 
     /**
      * Each event can have one or more times for one day
-     * This method looks into all time related records and fetches the times with highest priority.
+     * This method looks into all-time related records and fetches the times with highest priority.
      *
-     * @param Event $event
-     * @param \DateTime $date
-     * @param bool $removeCurrentDay If true and URI parameter "timestamp" matches, this time will not be included.
      * @return \SplObjectStorage|Time[]
      */
-    public function getTimesForDate(Event $event, \DateTime $date, bool $removeCurrentDay = false): \SplObjectStorage
+    public function getTimesForDate(Event $event, \DateTimeInterface $date, bool $removeCurrentDay = false): \SplObjectStorage
     {
         $this->date = $date;
         $this->removeCurrentDay = $removeCurrentDay;
@@ -100,9 +92,6 @@ class TimeFactory
      * The exceptions of type "Add" were already moved to event->getDays (DayGenerator),
      * but not their time records. That's why we collect exceptions of
      * type "Add" and "Time" here
-     *
-     * @param \SplObjectStorage $timesForDate
-     * @param Event $event
      */
     protected function addExceptionTimes(
         \SplObjectStorage $timesForDate,
@@ -121,32 +110,30 @@ class TimeFactory
      * Different Times has 2nd highest priority.
      * You can override event times for a special weekday like 'monday'.
      * If different times are defined they override global event times.
-     *
-     * @param \SplObjectStorage $timesForDate
-     * @param Event $event
      */
-    protected function addDifferentTimes(
-        \SplObjectStorage $timesForDate,
-        Event $event
-    ): void {
-        if (
-            $timesForDate->count() === 0
-            && $event->getEventType() !== 'single'
-            && $event->getDifferentTimes()->count()
-        ) {
-            foreach ($event->getDifferentTimes() as $time) {
-                if (strtolower($time->getWeekday()) === strtolower($this->date->format('l'))) {
-                    $this->addTimeToObjectStorage($timesForDate, $time);
-                }
+    protected function addDifferentTimes(\SplObjectStorage $timesForDate, Event $event): void
+    {
+        if ($timesForDate->count() !== 0) {
+            return;
+        }
+
+        if ($event->getEventType() === 'single') {
+            return;
+        }
+
+        if ($event->getDifferentTimes()->count() === 0) {
+            return;
+        }
+
+        foreach ($event->getDifferentTimes() as $time) {
+            if (strtolower($time->getWeekday()) === strtolower($this->date->format('l'))) {
+                $this->addTimeToObjectStorage($timesForDate, $time);
             }
         }
-    }
+     }
 
     /**
      * Add global event times. This has most less priority
-     *
-     * @param \SplObjectStorage $timesForDate
-     * @param Event $event
      */
     protected function addEventTimes(
         \SplObjectStorage $timesForDate,
@@ -157,6 +144,7 @@ class TimeFactory
             if ($eventTime instanceof Time) {
                 $this->addTimeToObjectStorage($timesForDate, $eventTime);
             }
+
             $this->addMultipleTimes($timesForDate, $event);
         }
     }
@@ -165,23 +153,21 @@ class TimeFactory
      * If checkbox "same day" was checked, you can add additional times for one specific day.
      * This method adds the additional times for one day to $timesForDate.
      * It must be called from within addEventTimes to prevent adding times for exceptions or different times
-     *
-     * @param \SplObjectStorage $timesForDate
-     * @param Event $event
      */
-    protected function addMultipleTimes(
-        \SplObjectStorage $timesForDate,
-        Event $event
-    ): void {
-        if (
-            $event->getSameDay()
-            && $event->getEventType() !== 'single'
-        ) {
-            foreach ($event->getMultipleTimes() as $multipleTime) {
-                $this->addTimeToObjectStorage($timesForDate, $multipleTime);
-            }
+    protected function addMultipleTimes(\SplObjectStorage $timesForDate, Event $event): void
+    {
+        if (!$event->getSameDay()) {
+            return;
         }
-    }
+
+        if ($event->getEventType() === 'single') {
+            return;
+        }
+
+        foreach ($event->getMultipleTimes() as $multipleTime) {
+            $this->addTimeToObjectStorage($timesForDate, $multipleTime);
+        }
+     }
 
     protected function addTimeToObjectStorage(\SplObjectStorage $timesForDate, Time $time): void
     {
@@ -207,11 +193,8 @@ class TimeFactory
      * Time record does only contain time entries in the form 20:15.
      * This method uses the given $date (midnight) and adds the time (20:15) to it.
      * That way we get DateTime objects with correct time which can be used in Fluid.
-     *
-     * @param \DateTime $date
-     * @param Time $time
      */
-    protected function addDateTimeObjectsToTime(\DateTime $date, Time $time): void
+    protected function addDateTimeObjectsToTime(\DateTimeInterface $date, Time $time): void
     {
         foreach (['TimeEntry', 'TimeBegin', 'TimeEnd'] as $property) {
             $setter = 'set' . $property . 'AsDateTime';
@@ -219,6 +202,7 @@ class TimeFactory
             if ($time->{$getter}() === '') {
                 continue;
             }
+
             $time->{$setter}(
                 $this->getDateTimeByDateAndTime($date, $time->{$getter}())
             );
@@ -227,12 +211,8 @@ class TimeFactory
 
     /**
      * Merge $date (midnight) with time (20:15) to a new DateTime containing the time
-     *
-     * @param \DateTime $date
-     * @param string $time
-     * @return \DateTime|false
      */
-    protected function getDateTimeByDateAndTime(\DateTime $date, string $time): \DateTime
+    protected function getDateTimeByDateAndTime(\DateTimeInterface $date, string $time): \DateTimeInterface
     {
         return \DateTime::createFromFormat(
             'd.m.Y H:i:s',
@@ -255,13 +235,14 @@ class TimeFactory
     public function getTimeForDay(Day $day): ?Time
     {
         $times = $this->getTimesForDate($day->getEvent(), $day->getDay());
-        if ($times->count()) {
+        if ($times->count() !== 0) {
             foreach ($times as $time) {
                 if ($time->getTimeBeginAsDateTime() == $day->getDayTime()) {
                     return $time;
                 }
             }
         }
+
         return null;
     }
 }

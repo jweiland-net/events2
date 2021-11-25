@@ -21,15 +21,9 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
  */
 class DataHandler
 {
-    /**
-     * @var ObjectManagerInterface
-     */
-    protected $objectManager;
+    protected ObjectManagerInterface $objectManager;
 
-    /**
-     * @var CacheManager
-     */
-    protected $cacheManager;
+    protected CacheManager $cacheManager;
 
     public function __construct(ObjectManagerInterface $objectManager, CacheManager $cacheManager)
     {
@@ -40,8 +34,6 @@ class DataHandler
     /**
      * Flushes the cache if an event record was edited.
      * This happens on two levels: by UID and by PID.
-     *
-     * @param array $params
      */
     public function clearCachePostProc(array $params): void
     {
@@ -50,6 +42,7 @@ class DataHandler
             if (isset($params['uid'])) {
                 $cacheTagsToFlush[] = 'tx_events2_uid_' . $params['uid'];
             }
+
             if (isset($params['uid_page'])) {
                 $cacheTagsToFlush[] = 'tx_events2_pid_' . $params['uid_page'];
             }
@@ -62,13 +55,11 @@ class DataHandler
 
     /**
      * Add day relations to event record(s) while creating or saving them in backend.
-     *
-     * @param \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler
      */
     public function processDatamap_afterAllOperations(\TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): void
     {
         if (array_key_exists('tx_events2_domain_model_event', $dataHandler->datamap)) {
-            foreach ($dataHandler->datamap['tx_events2_domain_model_event'] as $eventUid => $eventRecord) {
+            foreach (array_keys($dataHandler->datamap['tx_events2_domain_model_event']) as $eventUid) {
                 $this->addDayRelationsForEvent($this->getRealUid($eventUid, $dataHandler));
             }
         }
@@ -76,8 +67,6 @@ class DataHandler
 
     /**
      * Add day relations to event record
-     *
-     * @param int $eventUid
      */
     protected function addDayRelationsForEvent(int $eventUid): void
     {
@@ -90,14 +79,13 @@ class DataHandler
      * This method returns the real uid as int.
      *
      * @param int|string $uid
-     * @param \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler
-     * @return int
      */
     protected function getRealUid($uid, \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): int
     {
         if (GeneralUtility::isFirstPartOfStr($uid, 'NEW')) {
             $uid = $dataHandler->substNEWwithIDs[$uid];
         }
+
         return (int)$uid;
     }
 }

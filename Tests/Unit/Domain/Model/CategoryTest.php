@@ -19,17 +19,14 @@ use Nimut\TestingFramework\TestCase\UnitTestCase;
  */
 class CategoryTest extends UnitTestCase
 {
-    /**
-     * @var \JWeiland\Events2\Domain\Model\Category
-     */
-    protected $subject;
+    protected Category $subject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->subject = new Category();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset($this->subject);
     }

@@ -24,17 +24,11 @@ use TYPO3\CMS\Extbase\Validation\ValidatorResolver;
  */
 class ApplyLocationAsMandatoryIfNeededEventListener extends AbstractControllerEventListener
 {
-    /**
-     * @var ObjectManagerInterface
-     */
-    protected $objectManager;
+    protected ObjectManagerInterface $objectManager;
 
-    /**
-     * @var ExtConf
-     */
-    protected $extConf;
+    protected ExtConf $extConf;
 
-    protected $allowedControllerActions = [
+    protected array $allowedControllerActions = [
         'Event' => [
             'create',
             'update'

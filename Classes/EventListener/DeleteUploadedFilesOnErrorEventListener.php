@@ -22,7 +22,7 @@ use JWeiland\Events2\Event\PostProcessFluidVariablesEvent;
  */
 class DeleteUploadedFilesOnErrorEventListener extends AbstractControllerEventListener
 {
-    protected $allowedControllerActions = [
+    protected array $allowedControllerActions = [
         'Event' => [
             'new'
         ]

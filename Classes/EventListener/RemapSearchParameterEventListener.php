@@ -23,7 +23,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class RemapSearchParameterEventListener extends AbstractControllerEventListener
 {
-    protected $allowedControllerActions = [
+    protected array $allowedControllerActions = [
         'Search' => [
             'show'
         ]
@@ -35,9 +35,15 @@ class RemapSearchParameterEventListener extends AbstractControllerEventListener
             $foreignPluginContext = GeneralUtility::_POST('tx_events2_events');
             if (isset($foreignPluginContext['search'])) {
                 $search = $foreignPluginContext['search'];
-                if (is_array($search) && !empty($search)) {
-                    $event->getRequest()->setArgument('search', $search);
+                if (!is_array($search)) {
+                    return;
                 }
+
+                if (empty($search)) {
+                    return;
+                }
+
+                $event->getRequest()->setArgument('search', $search);
             }
         }
     }

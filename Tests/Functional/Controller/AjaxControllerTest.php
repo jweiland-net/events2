@@ -24,15 +24,9 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
  */
 class AjaxControllerTest extends FunctionalTestCase
 {
-    /**
-     * @var AjaxController
-     */
-    protected $subject;
+    protected AjaxController $subject;
 
-    /**
-     * @var Request
-     */
-    protected $request;
+    protected Request $request;
 
     /**
      * @var array
@@ -41,7 +35,7 @@ class AjaxControllerTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->importDataSet('ntf://Database/pages.xml');
@@ -53,6 +47,7 @@ class AjaxControllerTest extends FunctionalTestCase
                 'Ajax' => AjaxController::class
             ]);
         }
+
         $this->request->setControllerExtensionName('Events2');
         $this->request->setPluginName('Events');
         $this->request->setControllerName('Ajax');
@@ -63,7 +58,7 @@ class AjaxControllerTest extends FunctionalTestCase
         $this->subject = $objectManager->get(AjaxController::class);
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset(
             $this->subject,

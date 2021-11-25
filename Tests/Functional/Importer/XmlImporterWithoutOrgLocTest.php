@@ -25,20 +25,11 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
  */
 class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
 {
-    /**
-     * @var EventRepository
-     */
-    protected $eventRepository;
+    protected EventRepository $eventRepository;
 
-    /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
+    protected ObjectManager $objectManager;
 
-    /**
-     * @var ExtConf
-     */
-    protected $extConf;
+    protected ExtConf $extConf;
 
     /**
      * @var array
@@ -59,7 +50,7 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
     /**
      * I have set the date of the import events to 2025. That should be enough for the next years ;-)
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -75,7 +66,7 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
         $GLOBALS['BE_USER'] = new BackendUserAuthentication();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset(
             $GLOBALS['BE_USER']
