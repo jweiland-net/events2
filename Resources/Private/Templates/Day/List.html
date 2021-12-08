@@ -1,8 +1,8 @@
-<html
-	xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-	xmlns:e2="http://typo3.org/ns/JWeiland/Events2/ViewHelpers"
-	data-namespace-typo3-fluid="true"
->
+<html lang="en"
+			xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+			xmlns:e2="http://typo3.org/ns/JWeiland/Events2/ViewHelpers"
+			data-namespace-typo3-fluid="true">
+
 <f:layout name="Default" />
 
 <f:section name="main">
@@ -12,9 +12,9 @@
 	<f:render partial="Event/Filter" arguments="{action: 'list', organizers: organizers, filter: filter}" />
 
 	<div class="list scroll-container">
-		<f:widget.paginate objects="{days}" as="paginatedDays" configuration="{itemsPerPage: settings.pageBrowser.itemsPerPage, insertAbove: settings.pageBrowser.insertAbove, insertBelow: settings.pageBrowser.insertBelow, maximumNumberOfLinks: settings.pageBrowser.maximumNumberOfLinks, addQueryStringMethod: 'GET,POST'}">
-			<f:render partial="Event/List" arguments="{days: paginatedDays, extConf: extConf}" />
-		</f:widget.paginate>
+		<f:render partial="Event/List" arguments="{days: paginatedDays, extConf: extConf}" />
+		<f:render partial="Component/Pagination"
+							arguments="{pagination: pagination, paginator: paginator, actionName: actionName}" />
 	</div>
 </f:section>
 </html>
