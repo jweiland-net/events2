@@ -16,27 +16,15 @@ namespace JWeiland\Events2\Domain\Traits;
  */
 trait Typo3PropertiesTrait
 {
-    /**
-     * @var \DateTime|\DateTimeImmutable|null
-     */
-    protected ?\DateTimeInterface $crdate;
+    protected ?\DateTimeImmutable $crdate;
 
-    /**
-     * @var \DateTime|\DateTimeImmutable|null
-     */
-    protected ?\DateTimeInterface $tstamp;
+    protected ?\DateTimeImmutable $tstamp;
 
     protected int $l10nParent= 0;
 
-    /**
-     * @var \DateTime|\DateTimeImmutable|null
-     */
-    protected ?\DateTimeInterface $starttime;
+    protected ?\DateTimeImmutable $starttime;
 
-    /**
-     * @var \DateTime|\DateTimeImmutable|null
-     */
-    protected ?\DateTimeInterface $endtime;
+    protected ?\DateTimeImmutable $endtime;
 
     protected bool $hidden = false;
 
@@ -44,34 +32,22 @@ trait Typo3PropertiesTrait
 
     protected int $cruserId = 0;
 
-    /**
-     * @return \DateTime|\DateTimeImmutable|null
-     */
-    public function getCrdate(): ?\DateTimeInterface
+    public function getCrdate(): ?\DateTimeImmutable
     {
         return $this->crdate;
     }
 
-    /**
-     * @param \DateTime|\DateTimeImmutable|null $crdate
-     */
-    public function setCrdate(?\DateTimeInterface $crdate): void
+    public function setCrdate(?\DateTimeImmutable $crdate): void
     {
         $this->crdate = $crdate;
     }
 
-    /**
-     * @return \DateTime|\DateTimeImmutable|null
-     */
-    public function getTstamp(): ?\DateTimeInterface
+    public function getTstamp(): ?\DateTimeImmutable
     {
         return $this->tstamp;
     }
 
-    /**
-     * @param \DateTime|\DateTimeImmutable|null $tstamp
-     */
-    public function setTstamp(?\DateTimeInterface $tstamp): void
+    public function setTstamp(?\DateTimeImmutable $tstamp): void
     {
         $this->tstamp = $tstamp;
     }
@@ -96,34 +72,22 @@ trait Typo3PropertiesTrait
         $this->l10nParent = $l10nParent;
     }
 
-    /**
-     * @return \DateTime|\DateTimeImmutable|null
-     */
-    public function getStarttime(): ?\DateTimeInterface
+    public function getStarttime(): ?\DateTimeImmutable
     {
         return $this->starttime;
     }
 
-    /**
-     * @param \DateTime|\DateTimeImmutable|null $starttime
-     */
-    public function setStarttime(?\DateTimeInterface $starttime): void
+    public function setStarttime(?\DateTimeImmutable $starttime): void
     {
         $this->starttime = $starttime;
     }
 
-    /**
-     * @return \DateTime|\DateTimeImmutable|null
-     */
-    public function getEndtime(): ?\DateTimeInterface
+    public function getEndtime(): ?\DateTimeImmutable
     {
         return $this->endtime;
     }
 
-    /**
-     * @param \DateTime|\DateTimeImmutable|null $endtime
-     */
-    public function setEndtime(?\DateTimeInterface $endtime): void
+    public function setEndtime(?\DateTimeImmutable $endtime): void
     {
         $this->endtime = $endtime;
     }

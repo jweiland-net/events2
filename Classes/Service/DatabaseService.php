@@ -117,8 +117,8 @@ class DatabaseService
      * This method was used by Ajax call: findDaysByMonth
      */
     public function getDaysInRange(
-        \DateTimeInterface $startDate,
-        \DateTimeInterface $endDate,
+        \DateTimeImmutable $startDate,
+        \DateTimeImmutable $endDate,
         array $storagePids = [],
         array $categories = []
     ): array {
@@ -303,8 +303,8 @@ class DatabaseService
      */
     public function addConstraintForDateRange(
         QueryBuilder $queryBuilder,
-        \DateTimeInterface $startDateTime,
-        \DateTimeInterface $endDateTime = null,
+        \DateTimeImmutable $startDateTime,
+        \DateTimeImmutable $endDateTime = null,
         QueryBuilder $parentQueryBuilder = null,
         string $alias = 'day'
     ): void {

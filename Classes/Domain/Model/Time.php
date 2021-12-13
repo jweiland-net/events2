@@ -50,20 +50,11 @@ class Time extends AbstractEntity
      * Helpful to use f:format.date()
      */
 
-    /**
-     * @var \DateTime|\DateTimeImmutable|null
-     */
-    protected ?\DateTimeInterface $timeBeginAsDateTime;
+    protected ?\DateTimeImmutable $timeBeginAsDateTime;
 
-    /**
-     * @var \DateTime|\DateTimeImmutable|null
-     */
-    protected ?\DateTimeInterface $timeEntryAsDateTime;
+    protected ?\DateTimeImmutable $timeEntryAsDateTime;
 
-    /**
-     * @var \DateTime|\DateTimeImmutable|null
-     */
-    protected ?\DateTimeInterface $timeEndAsDateTime;
+    protected ?\DateTimeImmutable $timeEndAsDateTime;
 
     public function getWeekday(): string
     {
@@ -120,50 +111,32 @@ class Time extends AbstractEntity
      * Helpful to use f:format.date()
      */
 
-    /**
-     * @return \DateTime|\DateTimeImmutable|null
-     */
-    public function getTimeBeginAsDateTime(): ?\DateTimeInterface
+    public function getTimeBeginAsDateTime(): ?\DateTimeImmutable
     {
         return $this->timeBeginAsDateTime;
     }
 
-    /**
-     * @param \DateTime|\DateTimeImmutable $timeBegin
-     */
-    public function setTimeBeginAsDateTime(\DateTimeInterface $timeBegin = null): void
+    public function setTimeBeginAsDateTime(\DateTimeImmutable $timeBegin = null): void
     {
         $this->timeBeginAsDateTime = $timeBegin;
     }
 
-    /**
-     * @return \DateTime|\DateTimeImmutable|null
-     */
-    public function getTimeEntryAsDateTime(): ?\DateTimeInterface
+    public function getTimeEntryAsDateTime(): ?\DateTimeImmutable
     {
         return $this->timeEntryAsDateTime;
     }
 
-    /**
-     * @param \DateTime|\DateTimeImmutable $timeEntry
-     */
-    public function setTimeEntryAsDateTime(\DateTimeInterface $timeEntry = null): void
+    public function setTimeEntryAsDateTime(\DateTimeImmutable $timeEntry = null): void
     {
         $this->timeEntryAsDateTime = $timeEntry;
     }
 
-    /**
-     * @return \DateTime|\DateTimeImmutable|null
-     */
-    public function getTimeEndAsDateTime(): ?\DateTimeInterface
+    public function getTimeEndAsDateTime(): ?\DateTimeImmutable
     {
         return $this->timeEndAsDateTime;
     }
 
-    /**
-     * @param \DateTime|\DateTimeImmutable $timeEnd
-     */
-    public function setTimeEndAsDateTime(\DateTimeInterface $timeEnd = null): void
+    public function setTimeEndAsDateTime(\DateTimeImmutable $timeEnd = null): void
     {
         $this->timeEndAsDateTime = $timeEnd;
     }

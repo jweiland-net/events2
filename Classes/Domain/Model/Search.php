@@ -69,17 +69,14 @@ class Search extends AbstractEntity
         $this->subCategory = $subCategory;
     }
 
-    /**
-     * @return \DateTime|\DateTimeImmutable|null
-     */
-    public function getEventBegin(): ?\DateTimeInterface
+    public function getEventBegin(): ?\DateTimeImmutable
     {
         if (empty($this->eventBegin)) {
             return null;
         }
 
         try {
-            $date = new \DateTime($this->eventBegin);
+            $date = new \DateTimeImmutable($this->eventBegin);
             $date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
         } catch (\Exception $exception) {
             $date = null;
@@ -93,17 +90,14 @@ class Search extends AbstractEntity
         $this->eventBegin = $eventBegin;
     }
 
-    /**
-     * @return \DateTime|\DateTimeImmutable|null
-     */
-    public function getEventEnd(): ?\DateTimeInterface
+    public function getEventEnd(): ?\DateTimeImmutable
     {
         if (empty($this->eventEnd)) {
             return null;
         }
 
         try {
-            $date = new \DateTime($this->eventEnd);
+            $date = new \DateTimeImmutable($this->eventEnd);
             $date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
         } catch (\Exception $exception) {
             $date = null;

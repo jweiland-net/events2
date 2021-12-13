@@ -37,10 +37,7 @@ class EventService
         $this->timeFactory = $timeFactory;
     }
 
-    /**
-     * @return \DateTime|\DateTimeImmutable|null
-     */
-    public function getNextDayForEvent(int $eventUid): ?\DateTimeInterface
+    public function getNextDayForEvent(int $eventUid): ?\DateTimeImmutable
     {
         /** @var Event|null $event */
         $event = $this->eventRepository->findByIdentifier($eventUid);
@@ -62,7 +59,7 @@ class EventService
      * Useful to check, if an event is over.
      * Needed by SolrIndexer, as we can't create JOIN Queries in Solr configuration
      */
-    public function getLastDayForEvent(int $eventUid): ?\DateTimeInterface
+    public function getLastDayForEvent(int $eventUid): ?\DateTimeImmutable
     {
         /** @var Event $event */
         $event = $this->eventRepository->findByIdentifier($eventUid);

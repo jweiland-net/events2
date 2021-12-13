@@ -214,10 +214,7 @@ abstract class AbstractImporter implements ImporterInterface
         return true;
     }
 
-    /**
-     * @param \DateTime|\DateTimeImmutable $date
-     */
-    protected function addNotFoundMessage(array $event, string $property, string $value, \DateTimeInterface $date): void
+    protected function addNotFoundMessage(array $event, string $property, string $value, \DateTimeImmutable $date): void
     {
         $this->addMessage(
             sprintf(

@@ -28,7 +28,7 @@ class GetMergedEventTimesViewHelper extends AbstractViewHelper
     public function initializeArguments(): void
     {
         $this->registerArgument('event', Event::class, 'The event to get the times from', true);
-        $this->registerArgument('date', \DateTime::class, 'The date to get the times from', true);
+        $this->registerArgument('date', \DateTimeImmutable::class, 'The date to get the times from', true);
     }
 
     /**

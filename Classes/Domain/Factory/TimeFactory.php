@@ -25,7 +25,7 @@ class TimeFactory
     /**
      * The Date to retrieve the Time records for.
      */
-    protected \DateTimeInterface $date;
+    protected \DateTimeImmutable $date;
 
     /**
      * If true and URI parameter "timestamp" matches, this time will not be included.
@@ -41,7 +41,7 @@ class TimeFactory
 
     public function getSortedTimesForDate(
         Event $event,
-        \DateTimeInterface $date,
+        \DateTimeImmutable $date,
         bool $removeCurrentDay = false
     ): \SplObjectStorage {
         $this->date = $date;
@@ -68,7 +68,7 @@ class TimeFactory
      *
      * @return \SplObjectStorage|Time[]
      */
-    public function getTimesForDate(Event $event, \DateTimeInterface $date, bool $removeCurrentDay = false): \SplObjectStorage
+    public function getTimesForDate(Event $event, \DateTimeImmutable $date, bool $removeCurrentDay = false): \SplObjectStorage
     {
         $this->date = $date;
         $this->removeCurrentDay = $removeCurrentDay;
@@ -194,7 +194,7 @@ class TimeFactory
      * This method uses the given $date (midnight) and adds the time (20:15) to it.
      * That way we get DateTime objects with correct time which can be used in Fluid.
      */
-    protected function addDateTimeObjectsToTime(\DateTimeInterface $date, Time $time): void
+    protected function addDateTimeObjectsToTime(\DateTimeImmutable $date, Time $time): void
     {
         foreach (['TimeEntry', 'TimeBegin', 'TimeEnd'] as $property) {
             $setter = 'set' . $property . 'AsDateTime';
@@ -212,9 +212,9 @@ class TimeFactory
     /**
      * Merge $date (midnight) with time (20:15) to a new DateTime containing the time
      */
-    protected function getDateTimeByDateAndTime(\DateTimeInterface $date, string $time): \DateTimeInterface
+    protected function getDateTimeByDateAndTime(\DateTimeImmutable $date, string $time): \DateTimeImmutable
     {
-        return \DateTime::createFromFormat(
+        return \DateTimeImmutable::createFromFormat(
             'd.m.Y H:i:s',
             sprintf(
                 '%s.%s.%s %s:00',
