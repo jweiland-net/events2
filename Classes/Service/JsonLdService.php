@@ -105,7 +105,7 @@ class JsonLdService
      */
     protected function addStartDateOfTimeToData(Time $time): void
     {
-        if ($time->getTimeBeginAsDateTime() instanceof \DateTime) {
+        if ($time->getTimeBeginAsDateTime() instanceof \DateTimeImmutable) {
             $this->data['startDate'] = $time->getTimeBeginAsDateTime()->format($this->dateTimeFormat);
         }
     }
@@ -117,7 +117,7 @@ class JsonLdService
      */
     protected function addDoorTimeOfTimeToData(Time $time): void
     {
-        if ($time->getTimeEntryAsDateTime() instanceof \DateTime) {
+        if ($time->getTimeEntryAsDateTime() instanceof \DateTimeImmutable) {
             $this->data['doorTime'] = $time->getTimeEntryAsDateTime()->format($this->dateTimeFormat);
         }
     }
@@ -146,7 +146,7 @@ class JsonLdService
      */
     protected function addEndDateOfTimeToData(Time $time): void
     {
-        if ($time->getTimeEndAsDateTime() instanceof \DateTime) {
+        if ($time->getTimeEndAsDateTime() instanceof \DateTimeImmutable) {
             $this->data['endDate'] = $time->getTimeEndAsDateTime()->format($this->dateTimeFormat);
         }
     }
@@ -162,7 +162,7 @@ class JsonLdService
             return;
         }
 
-        if (!$event->getEventBegin() instanceof \DateTime) {
+        if (!$event->getEventBegin() instanceof \DateTimeImmutable) {
             return;
         }
 
@@ -184,7 +184,7 @@ class JsonLdService
             return;
         }
 
-        if (!$event->getEventEnd() instanceof \DateTime) {
+        if (!$event->getEventEnd() instanceof \DateTimeImmutable) {
             return;
         }
 

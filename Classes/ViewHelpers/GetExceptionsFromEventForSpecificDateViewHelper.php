@@ -28,7 +28,7 @@ class GetExceptionsFromEventForSpecificDateViewHelper extends AbstractViewHelper
     public function initializeArguments(): void
     {
         $this->registerArgument('event', Event::class, 'Get the exceptions from event', true);
-        $this->registerArgument('date', \DateTime::class, 'Get the exceptions from event to this specific date', true);
+        $this->registerArgument('date', \DateTimeImmutable::class, 'Get the exceptions from event to this specific date', true);
         $this->registerArgument('type', 'string', 'Get exceptions of specified type. remove, add, time or info. You can combine them with comma', false, '');
     }
 
@@ -42,7 +42,7 @@ class GetExceptionsFromEventForSpecificDateViewHelper extends AbstractViewHelper
     ): ObjectStorage {
         /** @var Event $event */
         $event = $arguments['event'];
-        /** @var \DateTime $date */
+        /** @var \DateTimeImmutable $date */
         $date = $arguments['date'];
         $type = (string)$arguments['type'];
 

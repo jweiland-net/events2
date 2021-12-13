@@ -86,7 +86,7 @@ class FindDaysForMonth
 
             // generate day of month.
             // Convert int to DateTime like extbase does and set TimezoneType to something like Europe/Berlin
-            $date = new \DateTime(date('c', (int)$day['day']));
+            $date = new \DateTimeImmutable(date('c', (int)$day['day']));
             if ($date->getTimezone()->getLocation() === false) {
                 $date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
             }
@@ -210,19 +210,18 @@ class FindDaysForMonth
      */
     protected function findAllDaysInMonth(int $month, int $year): array
     {
-        $earliestAllowedDate = new \DateTime('now midnight');
+        $earliestAllowedDate = new \DateTimeImmutable('now midnight');
         $earliestAllowedDate->modify(sprintf('-%d months', $this->extConf->getRecurringPast()));
 
-        $latestAllowedDate = new \DateTime('now midnight');
+        $latestAllowedDate = new \DateTimeImmutable('now midnight');
         $latestAllowedDate->modify(sprintf('+%d months', $this->extConf->getRecurringFuture()));
 
         // get start and ending of given month
         // j => day without leading 0, n => month without leading 0
         $firstDayOfMonth = $this->dateTimeUtility->standardizeDateTimeObject(
-            \DateTime::createFromFormat('j.n.Y', '1.' . $month . '.' . $year)
+            \DateTimeImmutable::createFromFormat('j.n.Y', '1.' . $month . '.' . $year)
         );
-        $lastDayOfMonth = clone $firstDayOfMonth;
-        $lastDayOfMonth->modify('last day of this month');
+        $lastDayOfMonth = $firstDayOfMonth->modify('last day of this month');
 
         if (
             $earliestAllowedDate > $firstDayOfMonth &&

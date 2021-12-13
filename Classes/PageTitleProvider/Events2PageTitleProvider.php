@@ -46,7 +46,7 @@ class Events2PageTitleProvider implements PageTitleProviderInterface
             );
 
             if (!empty($dayRecord)) {
-                $date = new \DateTime(date('c', (int)$gp['timestamp']));
+                $date = new \DateTimeImmutable(date('c', (int)$gp['timestamp']));
                 $eventRecord = $this->eventRepository->getEventRecord(
                     (int)$dayRecord['event']
                 );

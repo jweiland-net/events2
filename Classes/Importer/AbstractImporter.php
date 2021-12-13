@@ -61,7 +61,7 @@ abstract class AbstractImporter implements ImporterInterface
 
     protected ExtConf $extConf;
 
-    protected \DateTime $today;
+    protected \DateTimeImmutable $today;
 
     public function __construct(
         EventRepository $eventRepository,
@@ -81,7 +81,7 @@ abstract class AbstractImporter implements ImporterInterface
         $this->pathSegmentHelper = $pathSegmentHelper;
         $this->dateTimeUtility = $dateTimeUtility;
         $this->extConf = $extConf;
-        $this->today = new \DateTime('now');
+        $this->today = new \DateTimeImmutable('now');
     }
 
     public function setStoragePid(int $storagePid): void
@@ -120,7 +120,7 @@ abstract class AbstractImporter implements ImporterInterface
     protected function isValidEvent(array $event): bool
     {
         // Is future event?
-        $eventBegin = \DateTime::createFromFormat('Y-m-d', $event['event_begin']);
+        $eventBegin = \DateTimeImmutable::createFromFormat('Y-m-d', $event['event_begin']);
         if ($eventBegin < $this->today) {
             $this->addMessage(
                 sprintf(

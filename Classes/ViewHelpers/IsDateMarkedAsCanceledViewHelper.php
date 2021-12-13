@@ -26,7 +26,7 @@ class IsDateMarkedAsCanceledViewHelper extends AbstractViewHelper
     public function initializeArguments(): void
     {
         $this->registerArgument('event', Event::class, 'Get the exceptions from event', true);
-        $this->registerArgument('date', \DateTime::class, 'Get the exceptions from event to this specific date', true);
+        $this->registerArgument('date', \DateTimeImmutable::class, 'Get the exceptions from event to this specific date', true);
     }
 
     /**
@@ -39,7 +39,7 @@ class IsDateMarkedAsCanceledViewHelper extends AbstractViewHelper
     ): bool {
         /** @var Event $event */
         $event = $arguments['event'];
-        /** @var \DateTime $date */
+        /** @var \DateTimeImmutable $date */
         $date = $arguments['date'];
 
         return (bool)$event->getExceptionsForDate($date, 'remove')->count();

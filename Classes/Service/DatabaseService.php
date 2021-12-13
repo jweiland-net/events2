@@ -284,7 +284,7 @@ class DatabaseService
             default:
                 if ($this->extConf->getRecurringPast() === 0) {
                     // including current time as events in past are not allowed to be displayed
-                    $startDateTime = new \DateTime('now');
+                    $startDateTime = new \DateTimeImmutable('now');
                 } else {
                     // exclude current time. Start with 00:00:00
                     $startDateTime = $this->dateTimeUtility->convert('today');
@@ -321,14 +321,14 @@ class DatabaseService
             )
         );
 
-        if ($endDateTime instanceof \DateTime) {
-            $endDateTime->modify('23:59:59');
+        if ($endDateTime instanceof \DateTimeImmutable) {
+            $endDateTimeNight = $endDateTime->modify('23:59:59');
             $constraintForDateTime = (string)$queryBuilder->expr()->andX(
                 $constraintForDateTime,
                 $queryBuilder->expr()->lt(
                     $alias . '.day_time',
                     $parentQueryBuilder->createNamedParameter(
-                        $endDateTime->format('U'),
+                        $endDateTimeNight->format('U'),
                         \PDO::PARAM_INT,
                         ':eventEndDate'
                     )

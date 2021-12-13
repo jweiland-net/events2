@@ -103,7 +103,7 @@ class DayFactory
         $queryBuilder = $this->getQueryBuilder();
         $this->databaseService->addConstraintForDateRange(
             $queryBuilder,
-            new \DateTime('now')
+            new \DateTimeImmutable('now')
         );
 
         return $this->findDayByEvent(
@@ -118,7 +118,7 @@ class DayFactory
         $queryBuilder = $this->getQueryBuilder(QueryInterface::ORDER_DESCENDING);
         $this->databaseService->addConstraintForDateRange(
             $queryBuilder,
-            new \DateTime('now')
+            new \DateTimeImmutable('now')
         );
 
         return $this->findDayByEvent(
@@ -144,7 +144,7 @@ class DayFactory
             throw new \Exception('Given event could not be found in DayFactory', 1548927197);
         }
 
-        if (!$event->getEventBegin() instanceof \DateTime) {
+        if (!$event->getEventBegin() instanceof \DateTimeImmutable) {
             // Normally this can't be thrown, as event begin is a required field.
             throw new \Exception('Given event does not have an event begin date assigned.', 1548927203);
         }

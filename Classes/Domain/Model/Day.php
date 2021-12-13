@@ -36,7 +36,7 @@ class Day extends AbstractEntity
 
     protected ?\DateTimeImmutable $sameDayTime;
 
-    protected ?Event $event;
+    protected Event $event;
 
     public function getCrdate(): ?\DateTimeImmutable
     {
@@ -82,11 +82,12 @@ class Day extends AbstractEntity
     {
         // Since PHP 7.4 we can not access timezone_type directly anymore.
         // If location is false, timezone_type is 1 or 2, but we need 3
+        $day = $this->day;
         if ($this->day->getTimezone()->getLocation() === false) {
-            $this->day->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+            $day = $this->day->setTimezone(new \DateTimeZone(date_default_timezone_get()));
         }
 
-        return clone $this->day;
+        return $day;
     }
 
     public function setDay(\DateTimeImmutable $day): void
@@ -98,11 +99,12 @@ class Day extends AbstractEntity
     {
         // Since PHP 7.4 we can not access timezone_type directly anymore.
         // If location is false, timezone_type is 1 or 2, but we need 3
+        $dayTime = $this->dayTime;
         if ($this->dayTime->getTimezone()->getLocation() === false) {
-            $this->dayTime->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+            $dayTime = $this->dayTime->setTimezone(new \DateTimeZone(date_default_timezone_get()));
         }
 
-        return clone $this->dayTime;
+        return $dayTime;
     }
 
     public function setDayTime(\DateTimeImmutable $dayTime): void
@@ -114,11 +116,12 @@ class Day extends AbstractEntity
     {
         // Since PHP 7.4 we can not access timezone_type directly anymore.
         // If location is false, timezone_type is 1 or 2, but we need 3
+        $sortDayTime = $this->sortDayTime;
         if ($this->sortDayTime->getTimezone()->getLocation() === false) {
-            $this->sortDayTime->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+            $sortDayTime = $this->sortDayTime->setTimezone(new \DateTimeZone(date_default_timezone_get()));
         }
 
-        return clone $this->sortDayTime;
+        return $sortDayTime;
     }
 
     public function setSortDayTime(\DateTimeImmutable $sortDayTime): void
@@ -130,11 +133,12 @@ class Day extends AbstractEntity
     {
         // Since PHP 7.4 we can not access timezone_type directly anymore.
         // If location is false, timezone_type is 1 or 2, but we need 3
+        $sameDayTime = $this->sameDayTime;
         if ($this->sameDayTime->getTimezone()->getLocation() === false) {
-            $this->sameDayTime->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+            $sameDayTime = $this->sameDayTime->setTimezone(new \DateTimeZone(date_default_timezone_get()));
         }
 
-        return clone $this->sameDayTime;
+        return $sameDayTime;
     }
 
     public function setSameDayTime(\DateTimeImmutable $sameDayTime): void
@@ -142,12 +146,12 @@ class Day extends AbstractEntity
         $this->sameDayTime = $sameDayTime;
     }
 
-    public function getEvent(): ?Event
+    public function getEvent(): Event
     {
         return $this->event;
     }
 
-    public function setEvent(?Event $event = null): void
+    public function setEvent(Event $event): void
     {
         $this->event = $event;
     }

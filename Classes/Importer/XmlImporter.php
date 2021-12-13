@@ -279,8 +279,8 @@ class XmlImporter extends AbstractImporter
             if (!isset($eventRecord[$property])) {
                 continue;
             }
-            $date = \DateTime::createFromFormat('Y-m-d', $eventRecord[$property]);
-            if (!$date instanceof \DateTime) {
+            $date = \DateTimeImmutable::createFromFormat('Y-m-d', $eventRecord[$property]);
+            if (!$date instanceof \DateTimeImmutable) {
                 continue;
             }
 
@@ -400,8 +400,8 @@ class XmlImporter extends AbstractImporter
             $newException->setPid($this->storagePid);
             $newException->setExceptionType($exception['exception_type']);
 
-            $exceptionDate = \DateTime::createFromFormat('Y-m-d', $exception['exception_date']);
-            if (!$exceptionDate instanceof \DateTime) {
+            $exceptionDate = \DateTimeImmutable::createFromFormat('Y-m-d', $exception['exception_date']);
+            if (!$exceptionDate instanceof \DateTimeImmutable) {
                 continue;
             }
 

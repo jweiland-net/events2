@@ -177,7 +177,7 @@ class TimeFactory
             // already visible in event show action. So no need to remove individual time records.
             $uriParameters = GeneralUtility::_GET('tx_events2_events');
             $currentDateMidnight = $this->dateTimeUtility->convert($uriParameters['timestamp']);
-            if ($currentDateMidnight instanceof \DateTime) {
+            if ($currentDateMidnight instanceof \DateTimeImmutable) {
                 $currentDateMidnight = $this->dateTimeUtility->standardizeDateTimeObject($currentDateMidnight);
             }
 

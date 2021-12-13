@@ -45,7 +45,7 @@ class IndexerHook implements PageIndexerDocumentsModifier
     {
         if ($item->getType() === 'tx_events2_domain_model_event') {
             $nextDate = $this->eventService->getNextDayForEvent((int)$item->getRecordUid());
-            if (!$nextDate instanceof \DateTime) {
+            if (!$nextDate instanceof \DateTimeImmutable) {
                 // clear document array, if there are no further dates in future
                 $documents = [];
             }
