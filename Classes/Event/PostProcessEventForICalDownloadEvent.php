@@ -11,60 +11,37 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Event;
 
-use JWeiland\Events2\Domain\Model\Filter;
-use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use JWeiland\Events2\Domain\Model\Day;
 
 /*
- * Use this event, if you want to modify the queries of DayRepository::findEvents.
+ * Use this event, if you want to modify the event before adding it to the iCal download
  */
-class ModifyQueriesOfFindEventsEvent
+class PostProcessEventForICalDownloadEvent
 {
-    protected QueryBuilder $queryBuilder;
+    protected array $event = [];
 
-    protected QueryBuilder $subQueryBuilder;
-
-    protected string $type = '';
-
-    protected Filter $filter;
-
-    protected array $settings = [];
+    protected Day $day;
 
     public function __construct(
-        QueryBuilder $queryBuilder,
-        QueryBuilder $subQueryBuilder,
-        string $type,
-        Filter $filter,
-        array $settings
+        array $event,
+        Day $day
     ) {
-        $this->queryBuilder = $queryBuilder;
-        $this->subQueryBuilder = $subQueryBuilder;
-        $this->type = $type;
-        $this->filter = $filter;
-        $this->settings = $settings;
+        $this->event = $event;
+        $this->day = $day;
     }
 
-    public function getQueryBuilder(): QueryBuilder
+    public function getEvent(): array
     {
-        return $this->queryBuilder;
+        return $this->event;
     }
 
-    public function getSubQueryBuilder(): QueryBuilder
+    public function setEvent(array $event): void
     {
-        return $this->subQueryBuilder;
+        $this->event = $event;
     }
 
-    public function getType(): string
+    public function getDay(): Day
     {
-        return $this->type;
-    }
-
-    public function getFilter(): Filter
-    {
-        return $this->filter;
-    }
-
-    public function getSettings(): array
-    {
-        return $this->settings;
+        return $this->day;
     }
 }

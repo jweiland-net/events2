@@ -11,31 +11,40 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Controller;
 
-use JWeiland\Events2\Ajax\AjaxInterface;
+use JWeiland\Events2\Domain\Repository\DayRepository;
+use JWeiland\Events2\Helper\DownloadHelper;
+use JWeiland\Events2\Helper\ICalendarHelper;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /*
- * Controller for Ajax Requests. Currently only for FindSubCategories
+ * Controller to deliver an iCal download
  */
-class AjaxController extends ActionController
+class ICalController extends ActionController
 {
-    /**
-     * This ajax action can only be called by Ajax scripts based on pageType.
-     * eID scripts has its own bootstrap.
-     */
-    public function callAjaxObjectAction(string $objectName, array $arguments = []): string
-    {
-        if ($objectName !== '') {
-            $className = 'JWeiland\\Events2\\Ajax\\' . ucfirst($objectName);
-            if (class_exists($className)) {
-                $object = $this->objectManager->get($className);
-                if ($object instanceof AjaxInterface) {
-                    return $object->processAjaxRequest($arguments);
-                }
-            }
-        }
+    protected DayRepository $dayRepository;
+    protected ICalendarHelper $iCalendarHelper;
+    protected DownloadHelper $downloadHelper;
 
-        // @ToDo: Empty String will be returned as NULL in callActionMethod of Extbase
-        return '';
+    public function __construct(
+        DayRepository $dayRepository,
+        ICalendarHelper $iCalendarHelper,
+        DownloadHelper $downloadHelper
+    ) {
+        $this->dayRepository = $dayRepository;
+        $this->iCalendarHelper = $iCalendarHelper;
+        $this->downloadHelper = $downloadHelper;
+    }
+
+    public function downloadAction(int $event, int $timestamp = 0): ResponseInterface
+    {
+        $day = $this->dayRepository->findDayByEventAndTimestamp($event, $timestamp);
+
+        return $this->downloadHelper->forceDownloadFile(
+            null,
+            $this->iCalendarHelper->buildICalExport($day),
+            true,
+            $this->iCalendarHelper->getEventUid($day) . '.ics'
+        );
     }
 }

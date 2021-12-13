@@ -11,67 +11,201 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Helper;
 
-use Psr\Http\Message\ResponseInterface;
-use TYPO3\CMS\Core\Http\ImmediateResponseException;
-use TYPO3\CMS\Core\Http\Response;
-use TYPO3\CMS\Core\Http\Stream;
-use TYPO3\CMS\Core\Resource\FileInterface;
+use JWeiland\Events2\Domain\Factory\TimeFactory;
+use JWeiland\Events2\Domain\Model\Day;
+use JWeiland\Events2\Domain\Model\Time;
+use JWeiland\Events2\Event\PostProcessEventForICalDownloadEvent;
+use JWeiland\Events2\Utility\DateTimeUtility;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /*
- * Helper class to provide a string or file as download
+ * Helper class to build an ical export
  */
-class DownloadHelper
+class ICalendarHelper
 {
-    public function downloadFile(
-        FileInterface $file = null,
-        string $body = '',
-        bool $asDownload = false,
-        string $alternativeFilename = null,
-        string $overrideMimeType = null
-    ): ResponseInterface {
-        if ($file === null && $body === '') {
-            throw new \InvalidArgumentException('Please provide either a file object or a string to download', 1639401496);
+    protected array $iCalHeader = [
+        0 => 'BEGIN:VCALENDAR'
+    ];
+
+    protected array $iCalFooter = [
+        0 => 'END:VCALENDAR'
+    ];
+
+    protected string $iCalVersion = '2.0';
+
+    protected string $lineBreak = LF;
+
+    protected TimeFactory $timeFactory;
+
+    protected DateTimeUtility $dateTimeUtility;
+
+    protected EventDispatcher $eventDispatcher;
+
+    public function __construct(
+        TimeFactory $eventService,
+        DateTimeUtility $dateTimeUtility,
+        EventDispatcher $eventDispatcher
+    ) {
+        $this->timeFactory = $eventService;
+        $this->dateTimeUtility = $dateTimeUtility;
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
+    public function buildICalExport(Day $day, array $parameters = []): string
+    {
+        $this->lineBreak = $parameters['lineBreak'] ?? $this->lineBreak;
+
+        $iCal = [];
+        $this->addICalHeader($iCal);
+        $this->addICalVersion($iCal);
+        $this->addICalProdId($iCal);
+
+        $this->addICalEvent($iCal, $day);
+
+        $this->addICalFooter($iCal);
+
+        return implode($this->lineBreak, $iCal);
+    }
+
+    protected function addICalHeader(array &$iCal): void
+    {
+        array_push($iCal, ...$this->iCalHeader);
+    }
+
+    protected function addICalVersion(array &$iCal): void
+    {
+        $iCal[] = 'VERSION:' . $this->iCalVersion;
+    }
+
+    protected function addICalProdId(array &$iCal): void
+    {
+        $iCal[] = 'PRODID:' . GeneralUtility::getIndpEnv('TYPO3_SITE_URL');
+    }
+
+    protected function addICalFooter(array &$iCal): void
+    {
+        array_push($iCal, ...$this->iCalFooter);
+    }
+
+    protected function addICalEvent(array &$iCal, Day $day): void
+    {
+        $event = [];
+        $this->addEventBegin($event);
+        $this->addEventUid($event, $day);
+        $this->addEventDateTime($event, $day);
+        $this->addEventLocation($event, $day);
+        $this->addEventSummary($event, $day);
+        $this->addEventDescription($event, $day);
+        $this->addEventEnd($event);
+
+        $this->eventDispatcher->dispatch(
+            new PostProcessEventForICalDownloadEvent($event, $day)
+        );
+
+        array_push($iCal, ...$event);
+    }
+
+    protected function addEventBegin(array &$event): void
+    {
+        $event[] = 'BEGIN:VEVENT';
+    }
+
+    protected function addEventUid(array &$event, Day $day): void
+    {
+        $event[] = 'UID:' . 'event' . uniqid($day->getDay()->format('dmY'), true);
+    }
+
+    protected function addEventDateTime(array &$event, Day $day): void
+    {
+        [$dateStart, $dateEnd] = $this->getStartAndEndDateForDay($day);
+
+        $event[] = 'DTSTART:' . $dateStart;
+        if ($dateEnd) {
+            $event[] = 'DTEND:' . $dateEnd;
         }
+    }
 
-        if ($file instanceof FileInterface) {
-            return $file->getStorage()->streamFile($file, $asDownload, $alternativeFilename, $overrideMimeType);
+    protected function addEventLocation(array &$event, Day $day): void
+    {
+        if ($day->getEvent()->getLocationAsString()) {
+            $event[] = 'LOCATION:' . $day->getEvent()->getLocationAsString();
         }
+    }
 
-        if (empty($alternativeFilename)) {
-            throw new \InvalidArgumentException('You want start a string download. Please provide alternative filename argument, as we can not extract a filename from file content', 1639401906);
+    protected function addEventSummary(array &$event, Day $day): void
+    {
+        $event[] = 'SUMMARY:' . $this->sanitizeString($day->getEvent()->getTitle());
+    }
+
+    protected function addEventDescription(array &$event, Day $day): void
+    {
+        $description = $this->sanitizeString($day->getEvent()->getDetailInformation());
+        if ($description) {
+            $event[] = 'DESCRIPTION:' . $this->sanitizeString($day->getEvent()->getDetailInformation());
         }
+    }
 
-        $stream = new Stream('php://temp', 'rw');
-        $headers = [
-            'Content-Disposition' => 'attachment; filename="' . $alternativeFilename . '"',
-            'Content-Type' => $overrideMimeType ?? 'text/plain',
-            'Content-Length' => (string)strlen($body),
-            'Last-Modified' => gmdate('D, d M Y H:i:s', time()) . ' GMT',
-            // Cache-Control header is needed here to solve an issue with browser IE8 and lower
-            // See for more information: http://support.microsoft.com/kb/323308
-            'Cache-Control' => '',
-        ];
-
-        return new Response($stream, 200, $headers);
+    protected function addEventEnd(array &$event): void
+    {
+        $event[] = 'END:VEVENT';
     }
 
     /**
-     * Use this method to force a download. It throws a special exception which will break current TYPO3
-     * process and jumps to a position, where the Response will be output directly.
-     * Please use downloadFile, if you don't want to skip anything.
-     *
-     * @throws ImmediateResponseException
+     * @return string[]
      */
-    public function forceDownloadFile(
-        FileInterface $file = null,
-        string $body = '',
-        bool $asDownload = false,
-        string $alternativeFilename = null,
-        string $overrideMimeType = null
-    ): Response {
-        throw new ImmediateResponseException(
-            $this->downloadFile($file, $body, $asDownload, $alternativeFilename, $overrideMimeType),
-            1639402254
-        );
+    protected function getStartAndEndTimeForDay(Day $day): array
+    {
+        $timeStart = '00:00:00';
+        $timeEnd = '23:59:59';
+        $time = $this->timeFactory->getTimeForDay($day);
+        if ($time instanceof Time) {
+            $timeStart = $time->getTimeBegin() ? $time->getTimeBegin() . ':00' : $timeStart;
+            $timeEnd = $time->getTimeEnd() ? $time->getTimeEnd() . ':59' : $timeEnd;
+        }
+
+        return [$timeStart, $timeEnd];
+    }
+
+    protected function getStartAndEndDateForDay(Day $day): array
+    {
+        [$timeStart, $timeEnd] = $this->getStartAndEndTimeForDay($day);
+
+        if ($day->getEvent()->getEventType() === 'duration') {
+            $dateStart = $this->dateTimeUtility->combineAndFormat($day->getEvent()->getEventBegin(), $timeStart);
+            $dateEnd = $this->dateTimeUtility->combineAndFormat($day->getEvent()->getEventEnd(), $timeEnd);
+        } else {
+            $dateStart = $this->dateTimeUtility->combineAndFormat($day->getDay(), $timeStart);
+            $dateEnd = $this->dateTimeUtility->combineAndFormat($day->getDay(), $timeEnd);
+        }
+
+        return [$dateStart, $dateEnd];
+    }
+
+    /**
+     * Sanitize Text.
+     *
+     * @link http://tools.ietf.org/html/rfc5545#page-45
+     *
+     * @param string $content The text to sanitize for *.ics
+     * @return string
+     */
+    protected function sanitizeString(string $content): string
+    {
+        // remove tags from content
+        $content = htmlspecialchars(strip_tags($content));
+        // some chars have to be escaped. See link above
+        $content = preg_replace('/([\\\\,;])/', '\\\$1', $content);
+        // sanitize all enter chars (vertical white-spaces) to \n
+        return preg_replace('/\v+/', '\\n', $content);
+    }
+
+    /**
+     * Get unique ID for given day.
+     * This method is public and will be used in ICalController, too.
+     */
+    public function getEventUid(Day $day): string
+    {
+        return 'event' . uniqid($day->getDay()->format('dmY'), true);
     }
 }

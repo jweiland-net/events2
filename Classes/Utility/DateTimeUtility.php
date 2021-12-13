@@ -59,4 +59,35 @@ class DateTimeUtility
 
         return null;
     }
+
+    /**
+     * Combines a DateTime object (should be configured as midnight) with hours and minutes from $time argument.
+     * $time must be a 5 letter value like: 12:56
+     * Keep "ical" as format to retrieve a format matching dates in Outlook.
+     * Keep "UTC" as TimeZone for iCal dates
+     */
+    public function combineAndFormat(
+        \DateTimeImmutable $date,
+        string $time = '',
+        string $format = 'ical',
+        string $timeZone = 'UTC'
+    ): string {
+        if ($format === '') {
+            return '';
+        }
+
+        $format = $format === 'ical' ? 'Ymd\THis\Z' : $format;
+
+        // Add hours and minutes to date
+        if (strlen($time) === 8) {
+            $dateWithTime = $date->modify($time);
+            if ($dateWithTime instanceof \DateTimeImmutable) {
+                $date = $dateWithTime;
+            }
+        }
+
+        $dateNewTimezone = $date->setTimezone(new \DateTimeZone($timeZone));
+
+        return $dateNewTimezone->format($format);
+    }
 }

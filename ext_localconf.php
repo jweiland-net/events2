@@ -12,11 +12,13 @@ call_user_func(static function (): void {
             \JWeiland\Events2\Controller\EventController::class => 'listMyEvents, new, create, edit, update, delete, activate',
             \JWeiland\Events2\Controller\LocationController::class => 'show',
             \JWeiland\Events2\Controller\VideoController::class => 'show',
+            \JWeiland\Events2\Controller\ICalController::class => 'download',
         ],
         // non-cacheable actions
         [
             \JWeiland\Events2\Controller\DayController::class => 'listSearchResults',
             \JWeiland\Events2\Controller\EventController::class => 'create, edit, update, delete, activate',
+            \JWeiland\Events2\Controller\ICalController::class => 'download',
         ]
     );
 
