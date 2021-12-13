@@ -83,15 +83,15 @@ class DateTimeUtilityTest extends UnitTestCase
     {
         $dateStrings = [];
 
-        $midnight = new \DateTime();
+        $midnight = new \DateTimeImmutable();
         $midnight->modify('midnight');
         $dateStrings['midnight'] = ['midnight', $midnight];
 
-        $tomorrow = new \DateTime();
+        $tomorrow = new \DateTimeImmutable();
         $tomorrow->modify('tomorrow')->modify('midnight');
         $dateStrings['tomorrow'] = ['tomorrow', $tomorrow];
 
-        $lastDayOfMonth = new \DateTime();
+        $lastDayOfMonth = new \DateTimeImmutable();
         $lastDayOfMonth->modify('last day of this month')->modify('midnight');
         $dateStrings['last day of this month'] = ['last day of this month', $lastDayOfMonth];
 
@@ -120,14 +120,14 @@ class DateTimeUtilityTest extends UnitTestCase
     {
         $timestamps = [];
         $timestamps['timestamp: 0'] = [0, null];
-        $timestamps['timestamp: 1'] = [1, \DateTime::createFromFormat('d.m.Y H:i:s', '01.01.1970 00:00:00')];
-        $timestamps['timestamp: 12345'] = [12345, \DateTime::createFromFormat('d.m.Y H:i:s', '01.01.1970 00:00:00')];
-        $timestamps['timestamp: 123456789'] = [123456789, \DateTime::createFromFormat('d.m.Y H:i:s', '29.11.1973 00:00:00')];
-        $timestamps['timestamp: 1234567890'] = [1234567890, \DateTime::createFromFormat('d.m.Y H:i:s', '14.02.2009 00:00:00')];
+        $timestamps['timestamp: 1'] = [1, \DateTimeImmutable::createFromFormat('d.m.Y H:i:s', '01.01.1970 00:00:00')];
+        $timestamps['timestamp: 12345'] = [12345, \DateTimeImmutable::createFromFormat('d.m.Y H:i:s', '01.01.1970 00:00:00')];
+        $timestamps['timestamp: 123456789'] = [123456789, \DateTimeImmutable::createFromFormat('d.m.Y H:i:s', '29.11.1973 00:00:00')];
+        $timestamps['timestamp: 1234567890'] = [1234567890, \DateTimeImmutable::createFromFormat('d.m.Y H:i:s', '14.02.2009 00:00:00')];
         if (strlen(decbin(~0)) === 64) {
             // this is only for 64bit OS
-            $timestamps['timestamp: 13000000000'] = [13000000000, \DateTime::createFromFormat('d.m.Y H:i:s', '15.12.2381 00:00:00')];
-            $timestamps['timestamp: 15000000000'] = [15000000000, \DateTime::createFromFormat('d.m.Y H:i:s', '01.05.2445 00:00:00')];
+            $timestamps['timestamp: 13000000000'] = [13000000000, \DateTimeImmutable::createFromFormat('d.m.Y H:i:s', '15.12.2381 00:00:00')];
+            $timestamps['timestamp: 15000000000'] = [15000000000, \DateTimeImmutable::createFromFormat('d.m.Y H:i:s', '01.05.2445 00:00:00')];
         }
 
         return $timestamps;
@@ -143,11 +143,11 @@ class DateTimeUtilityTest extends UnitTestCase
     public function convertTimestamps($timestamp, $expectedDate): void
     {
         $convertedResult = $this->subject->convert($timestamp);
-        if (!$convertedResult instanceof \DateTime) {
+        if (!$convertedResult instanceof \DateTimeImmutable) {
             self::assertSame($expectedDate, $convertedResult);
         } else {
             self::assertEquals(
-                /* @var \DateTime $expectedDate */
+                /* @var \DateTimeImmutable $expectedDate */
                 $expectedDate->format('U'),
                 $convertedResult->format('U')
             );

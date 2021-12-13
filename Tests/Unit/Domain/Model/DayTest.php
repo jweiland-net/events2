@@ -25,7 +25,7 @@ class DayTest extends UnitTestCase
     protected function setUp(): void
     {
         $this->subject = new Day();
-        $this->subject->setDay(new \DateTime());
+        $this->subject->setDay(new \DateTimeImmutable());
     }
 
     protected function tearDown(): void
@@ -48,7 +48,7 @@ class DayTest extends UnitTestCase
      */
     public function setCrdateSetsCrdate(): void
     {
-        $date = new \DateTime();
+        $date = new \DateTimeImmutable();
         $this->subject->setCrdate($date);
 
         self::assertSame(
@@ -84,7 +84,7 @@ class DayTest extends UnitTestCase
      */
     public function setTstampSetsTstamp(): void
     {
-        $date = new \DateTime();
+        $date = new \DateTimeImmutable();
         $this->subject->setTstamp($date);
 
         self::assertSame(
@@ -155,7 +155,7 @@ class DayTest extends UnitTestCase
      */
     public function setDaySetsDay(): void
     {
-        $date = new \DateTime();
+        $date = new \DateTimeImmutable();
         $this->subject->setDay($date);
 
         self::assertEquals(
@@ -191,7 +191,7 @@ class DayTest extends UnitTestCase
      */
     public function getDayTimeAsTimestampWillReturnDayTimeAsInt(): void
     {
-        $date = new \DateTime('today midnight');
+        $date = new \DateTimeImmutable('today midnight');
 
         $this->subject->setDayTime($date);
 
@@ -206,7 +206,7 @@ class DayTest extends UnitTestCase
      */
     public function getSortDayTimeAsTimestampWillReturnSortDayTimeAsInt(): void
     {
-        $date = new \DateTime('today midnight');
+        $date = new \DateTimeImmutable('today midnight');
 
         $this->subject->setSortDayTime($date);
 
@@ -221,7 +221,7 @@ class DayTest extends UnitTestCase
      */
     public function getSameDayTimeAsTimestampWillReturnSameDayTimeAsInt(): void
     {
-        $date = new \DateTime('today midnight');
+        $date = new \DateTimeImmutable('today midnight');
 
         $this->subject->setSameDayTime($date);
 

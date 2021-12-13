@@ -82,7 +82,7 @@ class ICalendarControllerTest extends FunctionalTestCase
         $location->setPid(11);
         $location->setLocation('Market');
 
-        $eventBegin = new \DateTime('midnight');
+        $eventBegin = new \DateTimeImmutable('midnight');
         $eventBegin->modify('first day of this month')->modify('+4 days')->modify('-2 months');
 
         $event = new Event();

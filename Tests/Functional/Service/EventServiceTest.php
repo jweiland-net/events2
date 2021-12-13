@@ -81,8 +81,8 @@ class EventServiceTest extends FunctionalTestCase
      */
     public function getNextDayForEventWithEventButWithoutFutureDaysReturnsFalse(): void
     {
-        $yesterday = new \DateTime('yesterday midnight');
-        $yesterdayWithTime = new \DateTime('yesterday');
+        $yesterday = new \DateTimeImmutable('yesterday midnight');
+        $yesterdayWithTime = new \DateTimeImmutable('yesterday');
 
         $day = new Day();
         $day->setDay($yesterday);
@@ -110,8 +110,8 @@ class EventServiceTest extends FunctionalTestCase
      */
     public function getNextDayForEventWithEventWithFutureDayReturnsDay(): void
     {
-        $tomorrow = new \DateTime('tomorrow midnight');
-        $tomorrowWithTime = new \DateTime('tomorrow');
+        $tomorrow = new \DateTimeImmutable('tomorrow midnight');
+        $tomorrowWithTime = new \DateTimeImmutable('tomorrow');
 
         $day = new Day();
         $day->setDay($tomorrow);
@@ -142,12 +142,12 @@ class EventServiceTest extends FunctionalTestCase
      */
     public function getNextDayForEventWithEventWithFutureDaysReturnsNextDay(): void
     {
-        $tomorrow = new \DateTime('tomorrow midnight');
-        $tomorrowWithTime = new \DateTime('tomorrow');
-        $nextWeek = new \DateTime('next week midnight');
-        $nextWeekWithTime = new \DateTime('next week');
-        $nextMonth = new \DateTime('next month midnight');
-        $nextMonthWithTime = new \DateTime('next month');
+        $tomorrow = new \DateTimeImmutable('tomorrow midnight');
+        $tomorrowWithTime = new \DateTimeImmutable('tomorrow');
+        $nextWeek = new \DateTimeImmutable('next week midnight');
+        $nextWeekWithTime = new \DateTimeImmutable('next week');
+        $nextMonth = new \DateTimeImmutable('next month midnight');
+        $nextMonthWithTime = new \DateTimeImmutable('next month');
 
         $day1 = new Day();
         $day1->setDay($nextMonth);
@@ -187,8 +187,8 @@ class EventServiceTest extends FunctionalTestCase
      */
     public function getLastDayForEventWithEventWithFutureDayReturnsDay(): void
     {
-        $tomorrow = new \DateTime('tomorrow midnight');
-        $tomorrowWithTime = new \DateTime('tomorrow');
+        $tomorrow = new \DateTimeImmutable('tomorrow midnight');
+        $tomorrowWithTime = new \DateTimeImmutable('tomorrow');
 
         $day = new Day();
         $day->setDay($tomorrow);
@@ -219,12 +219,12 @@ class EventServiceTest extends FunctionalTestCase
      */
     public function getLastDayForEventWithEventWithFutureDaysReturnsLastDay(): void
     {
-        $tomorrow = new \DateTime('tomorrow midnight');
-        $tomorrowWithTime = new \DateTime('tomorrow');
-        $nextWeek = new \DateTime('next week midnight');
-        $nextWeekWithTime = new \DateTime('next week');
-        $nextMonth = new \DateTime('next month midnight');
-        $nextMonthWithTime = new \DateTime('next month');
+        $tomorrow = new \DateTimeImmutable('tomorrow midnight');
+        $tomorrowWithTime = new \DateTimeImmutable('tomorrow');
+        $nextWeek = new \DateTimeImmutable('next week midnight');
+        $nextWeekWithTime = new \DateTimeImmutable('next week');
+        $nextMonth = new \DateTimeImmutable('next month midnight');
+        $nextMonthWithTime = new \DateTimeImmutable('next month');
 
         $day1 = new Day();
         $day1->setDay($nextMonth);

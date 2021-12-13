@@ -53,8 +53,8 @@ class TimeFactoryTest extends FunctionalTestCase
      */
     public function getTimesForDateWithoutAnyTimesReturnsNoTimes(): void
     {
-        $firstDate = new \DateTime('midnight');
-        $secondDate = new \DateTime('midnight');
+        $firstDate = new \DateTimeImmutable('midnight');
+        $secondDate = new \DateTimeImmutable('midnight');
         $secondDate->modify('tomorrow');
 
         $firstAddException = new Exception();
@@ -85,8 +85,8 @@ class TimeFactoryTest extends FunctionalTestCase
      */
     public function getTimesForDateWithExceptionsWithTimeReturnsTimes(): void
     {
-        $firstDate = new \DateTime('midnight');
-        $secondDate = new \DateTime('midnight');
+        $firstDate = new \DateTimeImmutable('midnight');
+        $secondDate = new \DateTimeImmutable('midnight');
         $secondDate->modify('tomorrow');
 
         $time = new Time();
@@ -124,7 +124,7 @@ class TimeFactoryTest extends FunctionalTestCase
      */
     public function getTimesForDateWithDifferentExceptionTypesWithTimeReturnsTimes(): void
     {
-        $firstDate = new \DateTime('midnight');
+        $firstDate = new \DateTimeImmutable('midnight');
 
         $time = new Time();
         $time->setTimeBegin('10:30');
@@ -162,7 +162,7 @@ class TimeFactoryTest extends FunctionalTestCase
      */
     public function getTimesForDateWithDifferentTimesAndSingleEventReturnsNoTimes(): void
     {
-        $firstDate = new \DateTime('midnight');
+        $firstDate = new \DateTimeImmutable('midnight');
 
         $time = new Time();
         $time->setTimeBegin('10:30');
@@ -187,8 +187,8 @@ class TimeFactoryTest extends FunctionalTestCase
      */
     public function getTimesForDateWithDifferentTimesOnDifferentWeekdayAndRecurringEventReturnsNoTimes(): void
     {
-        $firstDate = new \DateTime('midnight');
-        $secondDate = new \DateTime('midnight');
+        $firstDate = new \DateTimeImmutable('midnight');
+        $secondDate = new \DateTimeImmutable('midnight');
         $secondDate->modify('tomorrow');
 
         $time = new Time();
@@ -215,7 +215,7 @@ class TimeFactoryTest extends FunctionalTestCase
      */
     public function getTimesForDateWithDifferentTimesAndRecurringEventReturnsTimes(): void
     {
-        $firstDate = new \DateTime('midnight');
+        $firstDate = new \DateTimeImmutable('midnight');
 
         $time = new Time();
         $time->setTimeBegin('10:30');
@@ -242,7 +242,7 @@ class TimeFactoryTest extends FunctionalTestCase
      */
     public function getTimesForDateWithDifferentTimesAndSingleEventReturnsOneTime(): void
     {
-        $firstDate = new \DateTime('midnight');
+        $firstDate = new \DateTimeImmutable('midnight');
 
         $time = new Time();
         $time->setTimeBegin('10:30');
@@ -269,7 +269,7 @@ class TimeFactoryTest extends FunctionalTestCase
      */
     public function getTimesForDateWithEventTimeReturnsOneTime(): void
     {
-        $firstDate = new \DateTime('midnight');
+        $firstDate = new \DateTimeImmutable('midnight');
 
         $time = new Time();
         $time->setTimeBegin('10:30');
@@ -292,8 +292,8 @@ class TimeFactoryTest extends FunctionalTestCase
      */
     public function getTimesForDateWithExceptionsWithoutTimesButWithEventTimeReturnsOneTime(): void
     {
-        $firstDate = new \DateTime('midnight');
-        $secondDate = new \DateTime('midnight');
+        $firstDate = new \DateTimeImmutable('midnight');
+        $secondDate = new \DateTimeImmutable('midnight');
         $secondDate->modify('tomorrow');
 
         $time = new Time();
@@ -329,7 +329,7 @@ class TimeFactoryTest extends FunctionalTestCase
      */
     public function getSortedTimesForDateWithoutTimesReturnsEmptyStorage(): void
     {
-        $date = new \DateTime('midnight');
+        $date = new \DateTimeImmutable('midnight');
 
         $event = new Event();
 
@@ -346,7 +346,7 @@ class TimeFactoryTest extends FunctionalTestCase
      */
     public function getSortedTimesForDateWithEventTimeReturnsOneSortedTime(): void
     {
-        $date = new \DateTime('midnight');
+        $date = new \DateTimeImmutable('midnight');
 
         $time = new Time();
         $time->setTimeBegin('10:30');
@@ -368,8 +368,8 @@ class TimeFactoryTest extends FunctionalTestCase
      */
     public function getSortedTimesForDateWithDifferentTimesReturnsSortedTimes(): void
     {
-        $date = new \DateTime('midnight');
-        $tomorrow = new \DateTime('midnight');
+        $date = new \DateTimeImmutable('midnight');
+        $tomorrow = new \DateTimeImmutable('midnight');
         $tomorrow->modify('tomorrow');
 
         $time1 = new Time();
@@ -414,8 +414,8 @@ class TimeFactoryTest extends FunctionalTestCase
      */
     public function getSortedTimesForDateWithTimeExceptionsReturnsSortedTimes(): void
     {
-        $date = new \DateTime('midnight');
-        $tomorrow = new \DateTime('midnight');
+        $date = new \DateTimeImmutable('midnight');
+        $tomorrow = new \DateTimeImmutable('midnight');
         $tomorrow->modify('tomorrow');
 
         $time1 = new Time();

@@ -112,7 +112,7 @@ class DayGeneratorTest extends FunctionalTestCase
         $event = new Event();
         $event->_setProperty('uid', 123);
         $event->setEventType('recurring');
-        $event->setEventBegin(new \DateTime('now'));
+        $event->setEventBegin(new \DateTimeImmutable('now'));
         $event->setEventEnd(null);
         $event->setXth(31);
         $event->setWeekday(127);
@@ -147,7 +147,7 @@ class DayGeneratorTest extends FunctionalTestCase
         $event = new Event();
         $event->_setProperty('uid', 123);
         $event->setEventType('recurring');
-        $event->setEventBegin(new \DateTime('now'));
+        $event->setEventBegin(new \DateTimeImmutable('now'));
         $event->setEventEnd(null);
         $event->setXth(31);
         $event->setWeekday(127);
@@ -179,8 +179,8 @@ class DayGeneratorTest extends FunctionalTestCase
      */
     public function initializeWithRecurringWeeksResetsDayToMidnight(): void
     {
-        $eventBegin = new \DateTime('yesterday 15:38:24');
-        $recurringEnd = new \DateTime('+6 weeks 15:38:24');
+        $eventBegin = new \DateTimeImmutable('yesterday 15:38:24');
+        $recurringEnd = new \DateTimeImmutable('+6 weeks 15:38:24');
 
         $event = new Event();
         $event->_setProperty('uid', 123);
@@ -218,7 +218,7 @@ class DayGeneratorTest extends FunctionalTestCase
      */
     public function initializeWithRecurringOverEachWeekAddsThreeDaysToStorage(): void
     {
-        $eventBegin = new \DateTime();
+        $eventBegin = new \DateTimeImmutable();
         $eventBegin->modify('midnight');
         $nextWeek = clone $eventBegin;
         $nextWeek->modify('+7 days');
@@ -271,7 +271,7 @@ class DayGeneratorTest extends FunctionalTestCase
      */
     public function initializeWithRecurringOverTwoWeeksAddsDaysToStorage(): void
     {
-        $eventBegin = new \DateTime();
+        $eventBegin = new \DateTimeImmutable();
         $eventBegin->modify('midnight');
         $eventEnd = clone $eventBegin;
         $eventEnd->modify('+14 days');
@@ -327,7 +327,7 @@ class DayGeneratorTest extends FunctionalTestCase
         $extConf->setRecurringPast(60);
 
         // These dates will be created with timezone_type = 1, which does know the timezone (+02:00) only from the current date
-        $eventBegin = new \DateTime(date('c', $timestamp));
+        $eventBegin = new \DateTimeImmutable(date('c', $timestamp));
         $eventEnd = clone $eventBegin;
         $eventEnd->modify('+14 days');
 
@@ -379,7 +379,7 @@ class DayGeneratorTest extends FunctionalTestCase
      */
     public function initializeWithRecurringOverEachMonthAddsThreeDaysToStorage(): void
     {
-        $eventBegin = new \DateTime();
+        $eventBegin = new \DateTimeImmutable();
         $eventBegin->modify('midnight')->modify('first day of this month')->modify('+25 days');
         $nextMonth = clone $eventBegin;
         $nextMonth->modify('+1 months');
@@ -435,7 +435,7 @@ class DayGeneratorTest extends FunctionalTestCase
      */
     public function initializeWithRecurringOverTwoMonthsAddsDaysToStorage(): void
     {
-        $eventBegin = new \DateTime();
+        $eventBegin = new \DateTimeImmutable();
         $eventBegin->modify('midnight');
         $eventEnd = clone $eventBegin;
         $eventEnd->modify('+2 months');
@@ -487,7 +487,7 @@ class DayGeneratorTest extends FunctionalTestCase
         $extConf = new ExtConf(new ExtensionConfiguration());
         $extConf->setRecurringPast(3);
 
-        $eventBegin = new \DateTime();
+        $eventBegin = new \DateTimeImmutable();
         $eventBegin->modify('-4 months');
         $eventBegin->modify('midnight');
         $eventEnd = clone $eventBegin;
@@ -526,7 +526,7 @@ class DayGeneratorTest extends FunctionalTestCase
      */
     public function initializeWithRecurringOverEachMonthAndTwoWeeksAddsDaysToStorage(): void
     {
-        $eventBegin = new \DateTime();
+        $eventBegin = new \DateTimeImmutable();
         $eventBegin->modify('midnight');
         $nextEvent = clone $eventBegin;
         $nextEvent->modify('+1 months');
@@ -580,7 +580,7 @@ class DayGeneratorTest extends FunctionalTestCase
      */
     public function initializeWithRecurringAndEqualEventBeginAndEventEndResultsInOneDayInStorage(): void
     {
-        $eventBegin = new \DateTime();
+        $eventBegin = new \DateTimeImmutable();
         $eventBegin->modify('midnight');
         $recurringEnd = clone $eventBegin;
 
@@ -608,7 +608,7 @@ class DayGeneratorTest extends FunctionalTestCase
      */
     public function initializeWithAnEmptySettingForRecurringsResultsInAddDaysForEachDay(): void
     {
-        $eventBegin = new \DateTime();
+        $eventBegin = new \DateTimeImmutable();
         $eventBegin->modify('midnight');
         $recurringEnd = clone $eventBegin;
         $recurringEnd->modify('+14 days');
@@ -644,7 +644,7 @@ class DayGeneratorTest extends FunctionalTestCase
      */
     public function initializeWithGivenWeekdaysResultsInAddedDaysInStorage(): void
     {
-        $eventBegin = new \DateTime();
+        $eventBegin = new \DateTimeImmutable();
         $eventBegin->modify('midnight');
         $eventBegin->modify('next saturday');
         $recurringEnd = clone $eventBegin;
@@ -693,7 +693,7 @@ class DayGeneratorTest extends FunctionalTestCase
     public function initializeWithGivenXthsResultsInAddedDaysInStorage(): void
     {
         // $eventBegin has to start with a month beginning with a thursday
-        $eventBegin = new \DateTime('now');
+        $eventBegin = new \DateTimeImmutable('now');
         $eventBegin->modify('first day of next month');
         while ((int)$eventBegin->format('N') !== 4) {
             $eventBegin->modify('next month');
@@ -739,9 +739,9 @@ class DayGeneratorTest extends FunctionalTestCase
      */
     public function initializeWithEventEndAddsDaysToStorage(): void
     {
-        $eventBegin = new \DateTime();
+        $eventBegin = new \DateTimeImmutable();
         $eventBegin->modify('midnight');
-        $recurringEnd = new \DateTime();
+        $recurringEnd = new \DateTimeImmutable();
         $recurringEnd->modify('midnight');
         $recurringEnd->modify('+4 days');
 
@@ -776,7 +776,7 @@ class DayGeneratorTest extends FunctionalTestCase
      */
     public function initializeWithEventBeginAddsOneDayToStorage(): void
     {
-        $eventBegin = new \DateTime();
+        $eventBegin = new \DateTimeImmutable();
         $eventBegin->modify('midnight');
 
         $event = new Event();
@@ -804,7 +804,7 @@ class DayGeneratorTest extends FunctionalTestCase
      */
     public function initializeWithExceptionsInEventCallsAddExceptions(): void
     {
-        $eventBegin = new \DateTime();
+        $eventBegin = new \DateTimeImmutable();
         $eventBegin->modify('midnight');
 
         $exception = new Exception();
@@ -844,9 +844,9 @@ class DayGeneratorTest extends FunctionalTestCase
      */
     public function initializeWithAddExceptionAddsOneDayInStorage(): void
     {
-        $eventBegin = new \DateTime();
+        $eventBegin = new \DateTimeImmutable();
         $eventBegin->modify('midnight');
-        $recurringEnd = new \DateTime();
+        $recurringEnd = new \DateTimeImmutable();
         $recurringEnd->modify('midnight');
         $recurringEnd->modify('+4 days');
         $tomorrow = clone $eventBegin;
@@ -895,7 +895,7 @@ class DayGeneratorTest extends FunctionalTestCase
         $timestamp = mktime(0, 0, 0);
 
         // These dates will be created with timezone_type = 1, which does know the timezone (+02:00) only from the current date
-        $eventBegin = new \DateTime(date('c', $timestamp));
+        $eventBegin = new \DateTimeImmutable(date('c', $timestamp));
         $lastYear = clone $eventBegin;
         $lastYear->modify('-1 year');
 
@@ -943,7 +943,7 @@ class DayGeneratorTest extends FunctionalTestCase
      */
     public function initializeWithRemoveExceptionRemovesOneDayFromStorage(): void
     {
-        $eventBegin = new \DateTime();
+        $eventBegin = new \DateTimeImmutable();
         $eventBegin->modify('midnight');
         $tomorrow = clone $eventBegin;
         $tomorrow->modify('tomorrow');
@@ -982,7 +982,7 @@ class DayGeneratorTest extends FunctionalTestCase
      */
     public function initializeWithTimeExceptionDoNotAddDayToStorage(): void
     {
-        $eventBegin = new \DateTime();
+        $eventBegin = new \DateTimeImmutable();
         $eventBegin->modify('midnight');
         $tomorrow = clone $eventBegin;
         $tomorrow->modify('tomorrow');
@@ -1021,7 +1021,7 @@ class DayGeneratorTest extends FunctionalTestCase
      */
     public function initializeWithInfoExceptionDoNotAddDayToStorage(): void
     {
-        $eventBegin = new \DateTime();
+        $eventBegin = new \DateTimeImmutable();
         $eventBegin->modify('midnight');
         $tomorrow = clone $eventBegin;
         $tomorrow->modify('tomorrow');
@@ -1062,7 +1062,7 @@ class DayGeneratorTest extends FunctionalTestCase
      */
     public function initializeWithInvalidExceptionThrowsException(): void
     {
-        $eventBegin = new \DateTime();
+        $eventBegin = new \DateTimeImmutable();
         $eventBegin->modify('midnight');
         $tomorrow = clone $eventBegin;
         $tomorrow->modify('tomorrow');

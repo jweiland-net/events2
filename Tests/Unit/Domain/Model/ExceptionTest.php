@@ -64,7 +64,7 @@ class ExceptionTest extends UnitTestCase
      */
     public function setExceptionDateSetsExceptionDate(): void
     {
-        $date = new \DateTime();
+        $date = new \DateTimeImmutable();
         $this->subject->setExceptionDate($date);
 
         self::assertEquals(

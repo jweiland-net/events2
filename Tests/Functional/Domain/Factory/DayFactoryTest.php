@@ -78,7 +78,7 @@ class DayFactoryTest extends FunctionalTestCase
         $location->setPid(11);
         $location->setLocation('Market');
 
-        $eventBegin = new \DateTime('midnight');
+        $eventBegin = new \DateTimeImmutable('midnight');
 
         $eventTime = new Time();
         $eventTime->setPid(11);
@@ -102,7 +102,7 @@ class DayFactoryTest extends FunctionalTestCase
 
         $persistenceManager->add($event);
 
-        $eventBegin = new \DateTime('tomorrow midnight');
+        $eventBegin = new \DateTimeImmutable('tomorrow midnight');
 
         $event = new Event();
         $event->setPid(11);
@@ -122,7 +122,7 @@ class DayFactoryTest extends FunctionalTestCase
 
         $persistenceManager->add($event);
 
-        $eventBegin = new \DateTime('yesterday midnight');
+        $eventBegin = new \DateTimeImmutable('yesterday midnight');
 
         $event = new Event();
         $event->setPid(11);
@@ -145,7 +145,7 @@ class DayFactoryTest extends FunctionalTestCase
         // This date is out of time frame.
         // As day records for event type "single" will always be generated we have to switch to another type.
         // So no day records should be created for that event
-        $eventBegin = new \DateTime('-1 year');
+        $eventBegin = new \DateTimeImmutable('-1 year');
         $recurringEnd = clone $eventBegin;
         $recurringEnd->modify('+2 weeks');
 
@@ -186,7 +186,7 @@ class DayFactoryTest extends FunctionalTestCase
      */
     public function findDayWithDateTimeOfTodayWillFindExactlyMatchingDay(): void
     {
-        $date = new \DateTime('midnight');
+        $date = new \DateTimeImmutable('midnight');
         $date->modify('07:30:00');
 
         $queryFactory = $this->objectManager->get(QueryFactory::class);
@@ -212,7 +212,7 @@ class DayFactoryTest extends FunctionalTestCase
      */
     public function findDayWithDateTimeOfYesterdayWillFindNextMatchingDay(): void
     {
-        $date = new \DateTime('yesterday midnight');
+        $date = new \DateTimeImmutable('yesterday midnight');
         $date->modify('07:30:00');
 
         $queryFactory = $this->objectManager->get(QueryFactory::class);
@@ -239,7 +239,7 @@ class DayFactoryTest extends FunctionalTestCase
      */
     public function findDayWithDateTimeOfTomorrowWillFindPreviousMatchingDay(): void
     {
-        $date = new \DateTime('tomorrow midnight');
+        $date = new \DateTimeImmutable('tomorrow midnight');
         $date->modify('07:30:00');
 
         $queryFactory = $this->objectManager->get(QueryFactory::class);
@@ -266,7 +266,7 @@ class DayFactoryTest extends FunctionalTestCase
      */
     public function findDayWillFindNextMatchingDay(): void
     {
-        $date = new \DateTime('midnight');
+        $date = new \DateTimeImmutable('midnight');
         $date->modify('07:30:00');
 
         $queryFactory = $this->objectManager->get(QueryFactory::class);
@@ -293,7 +293,7 @@ class DayFactoryTest extends FunctionalTestCase
      */
     public function findDayWillFindPreviousNextMatchingDay(): void
     {
-        $date = new \DateTime('midnight');
+        $date = new \DateTimeImmutable('midnight');
         $date->modify('07:30:00');
 
         $queryFactory = $this->objectManager->get(QueryFactory::class);
@@ -320,7 +320,7 @@ class DayFactoryTest extends FunctionalTestCase
      */
     public function findDayWillBuildDayItselfButKeepsTime(): void
     {
-        $date = new \DateTime('midnight');
+        $date = new \DateTimeImmutable('midnight');
         $date->modify('07:30:00');
 
         $queryFactory = $this->objectManager->get(QueryFactory::class);
@@ -337,7 +337,7 @@ class DayFactoryTest extends FunctionalTestCase
         );
         self::assertNull($day->getUid());
 
-        $expectedDate = new \DateTime('midnight');
+        $expectedDate = new \DateTimeImmutable('midnight');
         $expectedDate->modify('-1 year')->modify('07:30:00');
 
         self::assertEquals(

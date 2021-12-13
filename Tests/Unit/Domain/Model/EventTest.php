@@ -135,7 +135,7 @@ class EventTest extends UnitTestCase
      */
     public function setEventBeginSetsEventBegin(): void
     {
-        $date = new \DateTime();
+        $date = new \DateTimeImmutable();
         $this->subject->setEventBegin($date);
 
         self::assertEquals(
@@ -186,8 +186,8 @@ class EventTest extends UnitTestCase
      */
     public function getDaysOfEventsTakingDaysWithEqualDaysReturnsZero(): void
     {
-        $eventBegin = new \DateTime('midnight');
-        $eventEnd = new \DateTime('midnight');
+        $eventBegin = new \DateTimeImmutable('midnight');
+        $eventEnd = new \DateTimeImmutable('midnight');
         $eventEnd->modify('+20 seconds');
         $this->subject->setEventBegin($eventBegin);
         $this->subject->setEventEnd($eventEnd);
@@ -203,7 +203,7 @@ class EventTest extends UnitTestCase
      */
     public function getDaysOfEventsTakingDaysWithNoneEventEndResultsInZero(): void
     {
-        $eventBegin = new \DateTime();
+        $eventBegin = new \DateTimeImmutable();
         $this->subject->setEventBegin($eventBegin);
 
         self::assertSame(
@@ -217,8 +217,8 @@ class EventTest extends UnitTestCase
      */
     public function getDaysOfEventsTakingDaysWithDifferentDatesResultsInFourDays(): void
     {
-        $eventBegin = new \DateTime();
-        $eventEnd = new \DateTime(); // f.e. monday
+        $eventBegin = new \DateTimeImmutable();
+        $eventEnd = new \DateTimeImmutable(); // f.e. monday
         $eventEnd->modify('+4 days'); // mo + 4 = 5 days: mo->tu->we->th->fr
         $this->subject->setEventBegin($eventBegin);
         $this->subject->setEventEnd($eventEnd);
@@ -242,7 +242,7 @@ class EventTest extends UnitTestCase
      */
     public function setEventEndSetsEventEnd(): void
     {
-        $instance = new \DateTime();
+        $instance = new \DateTimeImmutable();
         $this->subject->setEventEnd($instance);
 
         self::assertEquals(
@@ -546,7 +546,7 @@ class EventTest extends UnitTestCase
      */
     public function setRecurringEndSetsRecurringEnd(): void
     {
-        $date = new \DateTime();
+        $date = new \DateTimeImmutable();
         $this->subject->setRecurringEnd($date);
 
         self::assertEquals(
@@ -631,7 +631,7 @@ class EventTest extends UnitTestCase
     {
         self::assertEquals(
             new ObjectStorage(),
-            $this->subject->getExceptionsForDate(new \DateTime())
+            $this->subject->getExceptionsForDate(new \DateTimeImmutable())
         );
     }
 
@@ -640,7 +640,7 @@ class EventTest extends UnitTestCase
      */
     public function getExceptionsForDateWithRemoveExceptionReturnsZeroExceptionsForAdd(): void
     {
-        $date = new \DateTime('midnight');
+        $date = new \DateTimeImmutable('midnight');
 
         $exception = new Exception();
         $exception->setExceptionType('Remove');
@@ -662,7 +662,7 @@ class EventTest extends UnitTestCase
      */
     public function getExceptionsForDateWithRemoveExceptionReturnsOneRemoveException(): void
     {
-        $date = new \DateTime('midnight');
+        $date = new \DateTimeImmutable('midnight');
 
         $exception = new Exception();
         $exception->setExceptionType('Remove');
@@ -688,7 +688,7 @@ class EventTest extends UnitTestCase
      */
     public function getExceptionsForDateWithRemoveExceptionWithNonNormalizedDateReturnsOneRemoveException(): void
     {
-        $date = new \DateTime('now'); // date must be sanitized to midnight in getExceptionsForDate
+        $date = new \DateTimeImmutable('now'); // date must be sanitized to midnight in getExceptionsForDate
 
         $exception = new Exception();
         $exception->setExceptionType('Remove');
@@ -714,7 +714,7 @@ class EventTest extends UnitTestCase
      */
     public function getExceptionsForDateWithDifferentExceptionsReturnsAddException(): void
     {
-        $date = new \DateTime('midnight');
+        $date = new \DateTimeImmutable('midnight');
 
         $removeException = new Exception();
         $removeException->setExceptionType('Remove');
@@ -745,8 +745,8 @@ class EventTest extends UnitTestCase
      */
     public function getExceptionsForDateWithExceptionsOfDifferentDatesReturnsAddException(): void
     {
-        $firstDate = new \DateTime('midnight');
-        $secondDate = new \DateTime('midnight');
+        $firstDate = new \DateTimeImmutable('midnight');
+        $secondDate = new \DateTimeImmutable('midnight');
         $secondDate->modify('tomorrow');
 
         $firstAddException = new Exception();
@@ -780,8 +780,8 @@ class EventTest extends UnitTestCase
      */
     public function getExceptionsForDateWithExceptionsOfDifferentDatesReturnsDifferentExceptions(): void
     {
-        $firstDate = new \DateTime('midnight');
-        $secondDate = new \DateTime('midnight');
+        $firstDate = new \DateTimeImmutable('midnight');
+        $secondDate = new \DateTimeImmutable('midnight');
         $secondDate->modify('tomorrow');
 
         $firstAddException = new Exception();
@@ -1048,20 +1048,20 @@ class EventTest extends UnitTestCase
      */
     public function getFutureDatesGroupedAndSortedReturnsFutureDatesOnly(): void
     {
-        $yesterday = new \DateTime('yesterday');
-        $today = new \DateTime('now');
-        $future = new \DateTime('tomorrow');
+        $yesterday = new \DateTimeImmutable('yesterday');
+        $today = new \DateTimeImmutable('now');
+        $future = new \DateTimeImmutable('tomorrow');
 
         $yesterdayDay = new Day();
-        $yesterdayDay->setDay(new \DateTime('yesterday midnight'));
+        $yesterdayDay->setDay(new \DateTimeImmutable('yesterday midnight'));
         $yesterdayDay->setDayTime($yesterday);
 
         $todayDay = new Day();
-        $todayDay->setDay(new \DateTime('midnight'));
+        $todayDay->setDay(new \DateTimeImmutable('midnight'));
         $todayDay->setDayTime($today);
 
         $futureDay = new Day();
-        $futureDay->setDay(new \DateTime('tomorrow midnight'));
+        $futureDay->setDay(new \DateTimeImmutable('tomorrow midnight'));
         $futureDay->setDayTime($future);
 
         $days = new ObjectStorage();
@@ -1083,25 +1083,25 @@ class EventTest extends UnitTestCase
      */
     public function getFutureDatesGroupedAndSortedReturnsDatesGroupedAndSorted(): void
     {
-        $today1 = new \DateTime('now 12:00:00');
-        $today2 = new \DateTime('now 20:00:00');
-        $future1 = new \DateTime('tomorrow 12:00:00');
-        $future2 = new \DateTime('tomorrow 20:00:00');
+        $today1 = new \DateTimeImmutable('now 12:00:00');
+        $today2 = new \DateTimeImmutable('now 20:00:00');
+        $future1 = new \DateTimeImmutable('tomorrow 12:00:00');
+        $future2 = new \DateTimeImmutable('tomorrow 20:00:00');
 
         $today1Day = new Day();
-        $today1Day->setDay(new \DateTime('midnight'));
+        $today1Day->setDay(new \DateTimeImmutable('midnight'));
         $today1Day->setDayTime($today1);
 
         $today2Day = new Day();
-        $today2Day->setDay(new \DateTime('midnight'));
+        $today2Day->setDay(new \DateTimeImmutable('midnight'));
         $today2Day->setDayTime($today2);
 
         $future1Day = new Day();
-        $future1Day->setDay(new \DateTime('tomorrow midnight'));
+        $future1Day->setDay(new \DateTimeImmutable('tomorrow midnight'));
         $future1Day->setDayTime($future1);
 
         $future2Day = new Day();
-        $future2Day->setDay(new \DateTime('tomorrow midnight'));
+        $future2Day->setDay(new \DateTimeImmutable('tomorrow midnight'));
         $future2Day->setDayTime($future2);
 
         $days = new ObjectStorage();
@@ -1139,32 +1139,32 @@ class EventTest extends UnitTestCase
      */
     public function getFutureDatesIncludingRemovedGroupedAndSortedReturnsFutureDatesSorted(): void
     {
-        $yesterday = new \DateTime('yesterday');
+        $yesterday = new \DateTimeImmutable('yesterday');
 
-        $today1 = new \DateTime('now 12:00:00');
-        $today2 = new \DateTime('now 20:00:00');
+        $today1 = new \DateTimeImmutable('now 12:00:00');
+        $today2 = new \DateTimeImmutable('now 20:00:00');
 
-        $future1 = new \DateTime('tomorrow 12:00:00');
-        $future2 = new \DateTime('tomorrow 20:00:00');
+        $future1 = new \DateTimeImmutable('tomorrow 12:00:00');
+        $future2 = new \DateTimeImmutable('tomorrow 20:00:00');
 
         $yesterdayDay = new Day();
-        $yesterdayDay->setDay(new \DateTime('yesterday midnight'));
+        $yesterdayDay->setDay(new \DateTimeImmutable('yesterday midnight'));
         $yesterdayDay->setDayTime($yesterday);
 
         $today1Day = new Day();
-        $today1Day->setDay(new \DateTime('midnight'));
+        $today1Day->setDay(new \DateTimeImmutable('midnight'));
         $today1Day->setDayTime($today1);
 
         $today2Day = new Day();
-        $today2Day->setDay(new \DateTime('midnight'));
+        $today2Day->setDay(new \DateTimeImmutable('midnight'));
         $today2Day->setDayTime($today2);
 
         $future1Day = new Day();
-        $future1Day->setDay(new \DateTime('tomorrow midnight'));
+        $future1Day->setDay(new \DateTimeImmutable('tomorrow midnight'));
         $future1Day->setDayTime($future1);
 
         $future2Day = new Day();
-        $future2Day->setDay(new \DateTime('tomorrow midnight'));
+        $future2Day->setDay(new \DateTimeImmutable('tomorrow midnight'));
         $future2Day->setDayTime($future2);
 
         $days = new ObjectStorage();
@@ -1176,7 +1176,7 @@ class EventTest extends UnitTestCase
 
         $exception = new Exception();
         $exception->setExceptionType('remove');
-        $exception->setExceptionDate(new \DateTime('tomorrow midnight'));
+        $exception->setExceptionDate(new \DateTimeImmutable('tomorrow midnight'));
 
         $this->subject->setDays($days);
         $this->subject->addException($exception);

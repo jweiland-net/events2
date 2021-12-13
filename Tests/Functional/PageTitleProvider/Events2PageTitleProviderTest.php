@@ -56,7 +56,7 @@ class Events2PageTitleProviderTest extends FunctionalTestCase
         $event->setEventType('single');
         $event->setTopOfList(false);
         $event->setTitle('Nice title for detail page');
-        $event->setEventBegin(new \DateTime('midnight'));
+        $event->setEventBegin(new \DateTimeImmutable('midnight'));
         $event->setXth(0);
         $event->setWeekday(0);
         $event->setEachWeeks(0);
@@ -84,7 +84,7 @@ class Events2PageTitleProviderTest extends FunctionalTestCase
      */
     public function findDayWithDateTimeOfTodayWillFindExactlyMatchingDay(): void
     {
-        $date = new \DateTime('midnight');
+        $date = new \DateTimeImmutable('midnight');
         $_GET['tx_events2_events']['controller'] = 'Event';
         $_GET['tx_events2_events']['action'] = 'show';
         $_GET['tx_events2_events']['event'] = 1;

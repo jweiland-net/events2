@@ -186,7 +186,7 @@ class FindDaysForMonthTest extends FunctionalTestCase
      */
     public function processAjaxRequestWillFindDaysInRangeOfFirstAndLastDateOfMonth(): void
     {
-        $currentDate = new \DateTime('now midnight');
+        $currentDate = new \DateTimeImmutable('now midnight');
         $queryParams = [
             'tx_events2_events' => [
                 'arguments' => [
@@ -217,7 +217,7 @@ class FindDaysForMonthTest extends FunctionalTestCase
      */
     public function processAjaxRequestWillFindDaysInRangeOfFirstAndLastDateOfMonthWithStoragePids(): void
     {
-        $currentDate = new \DateTime('now midnight');
+        $currentDate = new \DateTimeImmutable('now midnight');
         $queryParams = [
             'tx_events2_events' => [
                 'arguments' => [
@@ -250,7 +250,7 @@ class FindDaysForMonthTest extends FunctionalTestCase
      */
     public function processAjaxRequestWillFindDaysInRangeOfFirstAndLastDateOfMonthWithStoragePidsAndCategories(): void
     {
-        $currentDate = new \DateTime('now midnight');
+        $currentDate = new \DateTimeImmutable('now midnight');
         $queryParams = [
             'tx_events2_events' => [
                 'arguments' => [
@@ -284,7 +284,7 @@ class FindDaysForMonthTest extends FunctionalTestCase
      */
     public function processAjaxRequestWillFindDaysInRangeOfEarliestDateAndLastDateOfMonth(): void
     {
-        $currentDate = new \DateTime('-3 months midnight');
+        $currentDate = new \DateTimeImmutable('-3 months midnight');
         $queryParams = [
             'tx_events2_events' => [
                 'arguments' => [
@@ -314,7 +314,7 @@ class FindDaysForMonthTest extends FunctionalTestCase
      */
     public function processAjaxRequestWillFindDaysInRangeOfFirstDateAndLatestDateOfMonth(): void
     {
-        $currentDate = new \DateTime('+6 months midnight');
+        $currentDate = new \DateTimeImmutable('+6 months midnight');
         $queryParams = [
             'tx_events2_events' => [
                 'arguments' => [

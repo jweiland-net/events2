@@ -117,7 +117,7 @@ class SearchTest extends UnitTestCase
         $this->subject->setEventBegin('today');
 
         self::assertEquals(
-            new \DateTime('today'),
+            new \DateTimeImmutable('today'),
             $this->subject->getEventBegin()
         );
     }
@@ -138,7 +138,7 @@ class SearchTest extends UnitTestCase
         $this->subject->setEventEnd('today');
 
         self::assertEquals(
-            new \DateTime('today'),
+            new \DateTimeImmutable('today'),
             $this->subject->getEventEnd()
         );
     }

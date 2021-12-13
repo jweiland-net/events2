@@ -61,7 +61,7 @@ class DayControllerTest extends FunctionalTestCase
         $event = new Event();
         $event->setPid(1);
         $event->setEventType('single');
-        $event->setEventBegin(new \DateTime('midnight'));
+        $event->setEventBegin(new \DateTimeImmutable('midnight'));
         $event->setTitle('Today');
 
         $persistenceManager->add($event);
@@ -75,7 +75,7 @@ class DayControllerTest extends FunctionalTestCase
         $event = new Event();
         $event->setPid(1);
         $event->setEventType('single');
-        $event->setEventBegin(new \DateTime('tomorrow midnight'));
+        $event->setEventBegin(new \DateTimeImmutable('tomorrow midnight'));
         $event->setTitle('Tomorrow');
         $event->addOrganizer($organizer);
 

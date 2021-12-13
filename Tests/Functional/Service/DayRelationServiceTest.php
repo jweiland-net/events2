@@ -154,11 +154,11 @@ class DayRelationServiceTest extends FunctionalTestCase
      */
     public function createDayRelationsWithRecurringEvent(): void
     {
-        $yesterday = new \DateTime();
+        $yesterday = new \DateTimeImmutable();
         $yesterday->modify('yesterday midnight');
-        $today = new \DateTime();
+        $today = new \DateTimeImmutable();
         $today->modify('midnight');
-        $tomorrow = new \DateTime();
+        $tomorrow = new \DateTimeImmutable();
         $tomorrow->modify('tomorrow midnight');
 
         $event = new Event();
@@ -197,22 +197,22 @@ class DayRelationServiceTest extends FunctionalTestCase
      */
     public function createDayRelationsWithRecurringEventAndTime(): void
     {
-        $yesterday = new \DateTime();
+        $yesterday = new \DateTimeImmutable();
         $yesterday->modify('yesterday midnight');
 
-        $yesterdayLaunch = new \DateTime();
+        $yesterdayLaunch = new \DateTimeImmutable();
         $yesterdayLaunch->modify('yesterday 12:30');
 
-        $today = new \DateTime();
+        $today = new \DateTimeImmutable();
         $today->modify('midnight');
 
-        $todayLaunch = new \DateTime();
+        $todayLaunch = new \DateTimeImmutable();
         $todayLaunch->modify('12:30');
 
-        $tomorrow = new \DateTime();
+        $tomorrow = new \DateTimeImmutable();
         $tomorrow->modify('tomorrow midnight');
 
-        $tomorrowLaunch = new \DateTime();
+        $tomorrowLaunch = new \DateTimeImmutable();
         $tomorrowLaunch->modify('tomorrow 12:30');
 
         $time = new Time();
@@ -255,31 +255,31 @@ class DayRelationServiceTest extends FunctionalTestCase
      */
     public function createDayRelationsWithRecurringEventAndMultipleTimesAtSameDay(): void
     {
-        $yesterday = new \DateTime();
+        $yesterday = new \DateTimeImmutable();
         $yesterday->modify('yesterday midnight');
 
-        $yesterdayMorning = new \DateTime();
+        $yesterdayMorning = new \DateTimeImmutable();
         $yesterdayMorning->modify('yesterday 08:00');
 
-        $yesterdayEvening = new \DateTime();
+        $yesterdayEvening = new \DateTimeImmutable();
         $yesterdayEvening->modify('yesterday 20:15');
 
-        $today = new \DateTime();
+        $today = new \DateTimeImmutable();
         $today->modify('midnight');
 
-        $todayMorning = new \DateTime();
+        $todayMorning = new \DateTimeImmutable();
         $todayMorning->modify('08:00');
 
-        $todayEvening = new \DateTime();
+        $todayEvening = new \DateTimeImmutable();
         $todayEvening->modify('20:15');
 
-        $tomorrow = new \DateTime();
+        $tomorrow = new \DateTimeImmutable();
         $tomorrow->modify('tomorrow midnight');
 
-        $tomorrowMorning = new \DateTime();
+        $tomorrowMorning = new \DateTimeImmutable();
         $tomorrowMorning->modify('tomorrow 08:00');
 
-        $tomorrowEvening = new \DateTime();
+        $tomorrowEvening = new \DateTimeImmutable();
         $tomorrowEvening->modify('tomorrow 20:15');
 
         $timeBegin = new Time();
@@ -333,23 +333,23 @@ class DayRelationServiceTest extends FunctionalTestCase
     {
         $this->extConfProphecy->getRecurringPast()->willReturn(0);
 
-        $yesterday = new \DateTime();
+        $yesterday = new \DateTimeImmutable();
         $yesterday->modify('yesterday midnight');
-        $yesterdayMorning = new \DateTime();
+        $yesterdayMorning = new \DateTimeImmutable();
         $yesterdayMorning->modify('yesterday 08:00');
-        $yesterdayEvening = new \DateTime();
+        $yesterdayEvening = new \DateTimeImmutable();
         $yesterdayEvening->modify('yesterday 20:15');
-        $today = new \DateTime();
+        $today = new \DateTimeImmutable();
         $today->modify('midnight');
-        $todayMorning = new \DateTime();
+        $todayMorning = new \DateTimeImmutable();
         $todayMorning->modify('08:00');
-        $todayEvening = new \DateTime();
+        $todayEvening = new \DateTimeImmutable();
         $todayEvening->modify('20:15');
-        $tomorrow = new \DateTime();
+        $tomorrow = new \DateTimeImmutable();
         $tomorrow->modify('tomorrow midnight');
-        $tomorrowMorning = new \DateTime();
+        $tomorrowMorning = new \DateTimeImmutable();
         $tomorrowMorning->modify('tomorrow 08:00');
-        $tomorrowEvening = new \DateTime();
+        $tomorrowEvening = new \DateTimeImmutable();
         $tomorrowEvening->modify('tomorrow 20:15');
 
         $timeBegin = new Time();
@@ -399,7 +399,7 @@ class DayRelationServiceTest extends FunctionalTestCase
      */
     public function createDayRelationsWithRecurringEventAndDifferentTimes(): void
     {
-        $tuesday = new \DateTime();
+        $tuesday = new \DateTimeImmutable();
         $tuesday->modify('last tuesday midnight');
         $tuesdayMorning = clone $tuesday;
         $tuesdayMorning->modify('08:00');
@@ -460,7 +460,7 @@ class DayRelationServiceTest extends FunctionalTestCase
      */
     public function createDayRelationsWithRecurringEventAndExceptionTimes(): void
     {
-        $tuesday = new \DateTime();
+        $tuesday = new \DateTimeImmutable();
         $tuesday->modify('last tuesday midnight');
         $wednesday = clone $tuesday;
         $wednesday->modify('+1 day');
@@ -541,7 +541,7 @@ class DayRelationServiceTest extends FunctionalTestCase
      */
     public function createDayRelationsWithRecurringEventAndMultipleExceptionTimes(): void
     {
-        $tuesday = new \DateTime();
+        $tuesday = new \DateTimeImmutable();
         $tuesday->modify('last tuesday midnight');
         $wednesday = clone $tuesday;
         $wednesday->modify('+1 day');
@@ -629,7 +629,7 @@ class DayRelationServiceTest extends FunctionalTestCase
      */
     public function createDayRelationsWithSingleEvent(): void
     {
-        $nextWeek = new \DateTime();
+        $nextWeek = new \DateTimeImmutable();
         $nextWeek->modify('+1 week midnight');
 
         $event = new Event();
@@ -661,7 +661,7 @@ class DayRelationServiceTest extends FunctionalTestCase
      */
     public function createDayRelationsWithSingleEventAndTime(): void
     {
-        $nextWeek = new \DateTime();
+        $nextWeek = new \DateTimeImmutable();
         $nextWeek->modify('+1 week midnight');
         $nextWeekMidnight = clone $nextWeek;
         $nextWeekMidnight->modify('23:59');
@@ -699,7 +699,7 @@ class DayRelationServiceTest extends FunctionalTestCase
      */
     public function createDayRelationsWithDurationEvent(): void
     {
-        $today = new \DateTime();
+        $today = new \DateTimeImmutable();
         $today->modify('midnight');
         $tomorrow = clone $today;
         $tomorrow->modify('+1 day');
@@ -736,9 +736,9 @@ class DayRelationServiceTest extends FunctionalTestCase
      */
     public function createDayRelationsWithDurationEventWithTime(): void
     {
-        $today = new \DateTime();
+        $today = new \DateTimeImmutable();
         $today->modify('midnight');
-        $todayMorning = new \DateTime();
+        $todayMorning = new \DateTimeImmutable();
         $todayMorning->modify('08:12');
         $tomorrow = clone $today;
         $tomorrow->modify('+1 day');

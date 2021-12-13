@@ -69,7 +69,7 @@ class DatabaseServiceTest extends FunctionalTestCase
         $location->setPid(11);
         $location->setLocation('Market');
 
-        $eventBegin = new \DateTime('midnight');
+        $eventBegin = new \DateTimeImmutable('midnight');
         $eventBegin->modify('first day of this month')->modify('+4 days')->modify('-2 months');
 
         $event = new Event();
@@ -113,9 +113,9 @@ class DatabaseServiceTest extends FunctionalTestCase
      */
     public function getDaysInRangeWillFindDaysForCurrentMonth(): void
     {
-        $eventBegin = new \DateTime('today midnight');
+        $eventBegin = new \DateTimeImmutable('today midnight');
         $eventBegin->modify('first day of this month');
-        $eventEnd = new \DateTime('today midnight');
+        $eventEnd = new \DateTimeImmutable('today midnight');
         $eventEnd->modify('last day of this month');
 
         $databaseService = $this->objectManager->get(DatabaseService::class);
