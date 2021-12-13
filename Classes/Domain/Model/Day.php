@@ -20,58 +20,40 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
  */
 class Day extends AbstractEntity
 {
-    /**
-     * @var \DateTime|\DateTimeImmutable|null
-     */
-    protected ?\DateTimeInterface $crdate;
+    protected ?\DateTimeImmutable $crdate;
 
-    /**
-     * @var \DateTime|\DateTimeImmutable|null
-     */
-    protected ?\DateTimeInterface $tstamp;
+    protected ?\DateTimeImmutable $tstamp;
 
     protected bool $hidden = false;
 
     protected int $cruserId = 0;
 
-    /**
-     * @var \DateTime|\DateTimeImmutable|null
-     */
-    protected ?\DateTimeInterface $day;
+    protected ?\DateTimeImmutable $day;
 
-    /**
-     * @var \DateTime|\DateTimeImmutable|null
-     */
-    protected ?\DateTimeInterface $dayTime;
+    protected ?\DateTimeImmutable $dayTime;
 
-    /**
-     * @var \DateTime|\DateTimeImmutable|null
-     */
-    protected ?\DateTimeInterface $sortDayTime;
+    protected ?\DateTimeImmutable $sortDayTime;
 
-    /**
-     * @var \DateTime|\DateTimeImmutable|null
-     */
-    protected ?\DateTimeInterface $sameDayTime;
+    protected ?\DateTimeImmutable $sameDayTime;
 
     protected ?Event $event;
 
-    public function getCrdate(): ?\DateTimeInterface
+    public function getCrdate(): ?\DateTimeImmutable
     {
         return $this->crdate;
     }
 
-    public function setCrdate(?\DateTimeInterface $crdate = null): void
+    public function setCrdate(?\DateTimeImmutable $crdate = null): void
     {
         $this->crdate = $crdate;
     }
 
-    public function getTstamp(): ?\DateTimeInterface
+    public function getTstamp(): ?\DateTimeImmutable
     {
         return $this->tstamp;
     }
 
-    public function setTstamp(?\DateTimeInterface $tstamp = null): void
+    public function setTstamp(?\DateTimeImmutable $tstamp = null): void
     {
         $this->tstamp = $tstamp;
     }
@@ -96,62 +78,66 @@ class Day extends AbstractEntity
         $this->cruserId = $cruserId;
     }
 
-    public function getDay(): \DateTimeInterface
+    public function getDay(): \DateTimeImmutable
     {
         // Since PHP 7.4 we can not access timezone_type directly anymore.
         // If location is false, timezone_type is 1 or 2, but we need 3
         if ($this->day->getTimezone()->getLocation() === false) {
             $this->day->setTimezone(new \DateTimeZone(date_default_timezone_get()));
         }
+
         return clone $this->day;
     }
 
-    public function setDay(\DateTimeInterface $day): void
+    public function setDay(\DateTimeImmutable $day): void
     {
         $this->day = $day;
     }
 
-    public function getDayTime(): \DateTimeInterface
+    public function getDayTime(): \DateTimeImmutable
     {
         // Since PHP 7.4 we can not access timezone_type directly anymore.
         // If location is false, timezone_type is 1 or 2, but we need 3
         if ($this->dayTime->getTimezone()->getLocation() === false) {
             $this->dayTime->setTimezone(new \DateTimeZone(date_default_timezone_get()));
         }
+
         return clone $this->dayTime;
     }
 
-    public function setDayTime(\DateTimeInterface $dayTime): void
+    public function setDayTime(\DateTimeImmutable $dayTime): void
     {
         $this->dayTime = $dayTime;
     }
 
-    public function getSortDayTime(): \DateTimeInterface
+    public function getSortDayTime(): \DateTimeImmutable
     {
         // Since PHP 7.4 we can not access timezone_type directly anymore.
         // If location is false, timezone_type is 1 or 2, but we need 3
         if ($this->sortDayTime->getTimezone()->getLocation() === false) {
             $this->sortDayTime->setTimezone(new \DateTimeZone(date_default_timezone_get()));
         }
+
         return clone $this->sortDayTime;
     }
 
-    public function setSortDayTime(\DateTimeInterface $sortDayTime): void
+    public function setSortDayTime(\DateTimeImmutable $sortDayTime): void
     {
         $this->sortDayTime = $sortDayTime;
     }
 
-    public function getSameDayTime(): \DateTimeInterface
+    public function getSameDayTime(): \DateTimeImmutable
     {
         // Since PHP 7.4 we can not access timezone_type directly anymore.
         // If location is false, timezone_type is 1 or 2, but we need 3
         if ($this->sameDayTime->getTimezone()->getLocation() === false) {
             $this->sameDayTime->setTimezone(new \DateTimeZone(date_default_timezone_get()));
         }
+
         return clone $this->sameDayTime;
     }
 
-    public function setSameDayTime(\DateTimeInterface $sameDayTime): void
+    public function setSameDayTime(\DateTimeImmutable $sameDayTime): void
     {
         $this->sameDayTime = $sameDayTime;
     }

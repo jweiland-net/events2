@@ -67,14 +67,19 @@ class DayGenerator
             $this->addRecurringEvents($event);
         } elseif (
             $event->getEventType() === 'duration' &&
-            $event->getEventEnd() instanceof \DateTime
+            $event->getEventEnd() instanceof \DateTimeImmutable
         ) {
-            // if we have no recurring defined but event_end, this is also a recurring event and we have to add all days in between
+            // if we have no recurring defined, but event_end, this is also a recurring event, and we have to add all days in between
             $dateToStartCalculatingFrom = $this->getDateToStartCalculatingFrom($event);
             $dateToStopCalculatingTo = $this->getDateToStopCalculatingTo($event);
-            while ($dateToStartCalculatingFrom <= $dateToStopCalculatingTo) {
-                $this->addDayToStorage($dateToStartCalculatingFrom);
-                $dateToStartCalculatingFrom->modify('+1 day');
+            if (
+                $dateToStartCalculatingFrom instanceof \DateTimeImmutable
+                && $dateToStopCalculatingTo instanceof \DateTimeImmutable
+            ) {
+                while ($dateToStartCalculatingFrom <= $dateToStopCalculatingTo) {
+                    $this->addDayToStorage($dateToStartCalculatingFrom);
+                    $dateToStartCalculatingFrom = $dateToStartCalculatingFrom->modify('+1 day');
+                }
             }
         } else {
             // add start day
@@ -104,7 +109,7 @@ class DayGenerator
     /**
      * Return sorted Storage of DateTime objects
      *
-     * @return \DateTime[]
+     * @return \DateTimeImmutable[]
      */
     public function getDateTimeStorage(): array
     {
@@ -117,7 +122,7 @@ class DayGenerator
      * Setter for day storage
      * Needed for UnitTests.
      *
-     * @param \DateTime[] $dateTimeStorage
+     * @param \DateTimeImmutable[] $dateTimeStorage
      */
     public function setDateTimeStorage(array $dateTimeStorage): void
     {
@@ -130,27 +135,16 @@ class DayGenerator
     protected function isValidEvent(Event $event): bool
     {
         // some special fields must be set
-        return !empty($event->getEventType()) && $event->getEventBegin() instanceof \DateTime;
+        return !empty($event->getEventType()) && $event->getEventBegin() instanceof \DateTimeImmutable;
     }
 
-    /**
-     * Add day to day storage.
-     *
-     * @param \DateTime $day Day to add
-     */
-    protected function addDayToStorage(\DateTimeInterface $day): void
+    protected function addDayToStorage(\DateTimeImmutable $day): void
     {
         // group days to make them unique
-        // I don't know why, but $day is a reference, so I clone it here to have individual dates in this array
-        $this->dateTimeStorage[$day->format('U')] = clone $day;
+        $this->dateTimeStorage[$day->format('U')] = $day;
     }
 
-    /**
-     * Remove day from day storage.
-     *
-     * @param \DateTime $day Day to remove
-     */
-    protected function removeDayFromStorage(\DateTimeInterface $day): void
+    protected function removeDayFromStorage(\DateTimeImmutable $day): void
     {
         unset($this->dateTimeStorage[$day->format('U')]);
     }
@@ -159,27 +153,25 @@ class DayGenerator
      * Returns current date added with configured "recurring future" configuration in ExtensionManager.
      * If calculated date is older than eventEnd, it does not make sense to use that date and we
      * will return eventEnd instead.
-     *
-     * @return \DateTime|\DateTimeImmutable
      */
-    protected function getDateToStopCalculatingTo(Event $event): \DateTimeInterface
+    protected function getDateToStopCalculatingTo(Event $event): \DateTimeImmutable
     {
         $today = clone $this->dateTimeUtility->convert('today');
-        $maxEventEnd = $event->getEventBegin();
+        $eventBegin = $event->getEventBegin();
 
         // check, what is more current
-        if ($today > $maxEventEnd) {
-            $maxEventEnd = $today;
+        if ($today > $eventBegin) {
+            $eventBegin = $today;
         }
 
-        $maxEventEnd->modify(sprintf(
+        $maxEventEnd = $eventBegin->modify(sprintf(
             '+%d months',
             $this->extConf->getRecurringFuture()
         ));
 
         $recurringEnd = $event->getEventType() === 'duration' ? $event->getEventEnd() : $event->getRecurringEnd();
 
-        if ($recurringEnd instanceof \DateTime && $recurringEnd < $maxEventEnd) {
+        if ($recurringEnd instanceof \DateTimeImmutable && $recurringEnd < $maxEventEnd) {
             return $this->dateTimeUtility->standardizeDateTimeObject($recurringEnd);
         }
 
@@ -190,17 +182,19 @@ class DayGenerator
      * Returns current date subtracted with configured "recurring past" configuration in ExtensionManager.
      * If calculated date is older than eventBegin, it does not make sense to use that date and we
      * will return eventBegin instead.
-     *
-     * @return \DateTime|\DateTimeImmutable
      */
-    protected function getDateToStartCalculatingFrom(Event $event): \DateTimeInterface
+    protected function getDateToStartCalculatingFrom(Event $event): ?\DateTimeImmutable
     {
-        $earliestDateToStartCalculatingFrom = clone $this->dateTimeUtility->convert('today');
-        $earliestDateToStartCalculatingFrom->modify('-' . $this->extConf->getRecurringPast() . ' months');
+        $today = $this->dateTimeUtility->convert('today');
+        if ($today === null) {
+            return null;
+        }
+
+        $earliestDateToStartCalculatingFrom = $today->modify('-' . $this->extConf->getRecurringPast() . ' months');
 
         $eventBegin = $event->getEventBegin();
         if (
-            $eventBegin instanceof \DateTime
+            $eventBegin instanceof \DateTimeImmutable
             && $earliestDateToStartCalculatingFrom > $eventBegin
         ) {
             $dateToStartCalculatingFrom = $earliestDateToStartCalculatingFrom;
@@ -213,8 +207,8 @@ class DayGenerator
         if ($event->getEachWeeks() || $event->getEachMonths()) {
             $eventBegin = clone $event->getEventBegin();
             while ($eventBegin < $dateToStartCalculatingFrom) {
-                $eventBegin->modify('+' . $event->getEachMonths() . ' months');
-                $eventBegin->modify('+' . $event->getEachWeeks() . ' weeks');
+                $eventBegin = $eventBegin->modify('+' . $event->getEachMonths() . ' months');
+                $eventBegin = $eventBegin->modify('+' . $event->getEachWeeks() . ' weeks');
             }
 
             $dateToStartCalculatingFrom = $eventBegin;
@@ -223,76 +217,33 @@ class DayGenerator
         return $this->dateTimeUtility->standardizeDateTimeObject($dateToStartCalculatingFrom);
     }
 
-    /**
-     * Getter for xth.
-     */
-    protected function getXth(Event $event): array
-    {
-        $result = [];
-        foreach ($this->getItemsFromTca('xth') as $key => $item) {
-            $value = (bool)($event->getXth() & (2 ** $key));
-            $result[$item[1]] = $value;
-        }
-
-        return $result;
-    }
-
-    /**
-     * Getter for weekday.
-     *
-     * @return array<int|string, bool>
-     */
-    protected function getWeekday(Event $event): array
-    {
-        $result = [];
-        foreach ($this->getItemsFromTca('weekday') as $key => $item) {
-            $value = (bool)($event->getWeekday() & (2 ** $key));
-            $result[$item[1]] = $value;
-        }
-
-        return $result;
-    }
-
-    /**
-     * Get items from TCA.
-     */
-    protected function getItemsFromTca(string $field): array
-    {
-        if (!isset($GLOBALS['TCA']['tx_events2_domain_model_event']['columns'][$field]['config']['items'])) {
-            return [];
-        }
-
-        if (!is_array($GLOBALS['TCA']['tx_events2_domain_model_event']['columns'][$field]['config']['items'])) {
-            return [];
-        }
-
-        return $GLOBALS['TCA']['tx_events2_domain_model_event']['columns'][$field]['config']['items'];
-    }
-
-    /**
-     * Add days for recurring events.
-     */
     protected function addRecurringEvents(Event $event): void
     {
         if ($event->getEachWeeks() || $event->getEachMonths()) {
             // add days for each week(s) and/or months
-            $this->addRecurrings($event);
+            $this->addRecurringDays($event);
         } else {
             // add days for xth recurring event
             $dateToStartCalculatingFrom = $this->getDateToStartCalculatingFrom($event);
-            // We need the first day, because January the 30th +1 month results in 02.03.
-            // At that point it is no problem to set the date to the first, because we only need month and year.
-            // You will find the check for the correct date in addDaysForMonth().
-            $dateToStartCalculatingFrom->modify('first day of this month');
 
             $dateToStopCalculatingTo = $this->getDateToStopCalculatingTo($event);
-            while ($dateToStartCalculatingFrom <= $dateToStopCalculatingTo) {
-                $this->addDaysForMonth(
-                    $dateToStartCalculatingFrom->format('F'),
-                    (int)$dateToStartCalculatingFrom->format('Y'),
-                    $event
-                );
-                $dateToStartCalculatingFrom->modify('next month');
+            if (
+                $dateToStartCalculatingFrom instanceof \DateTimeImmutable
+                && $dateToStopCalculatingTo instanceof \DateTimeImmutable
+            ) {
+                // We need the first day, because January the 30th +1 month results in 02.03.
+                // At that point it is no problem to set the date to the first, because we only need month and year.
+                // You will find the check for the correct date in addDaysForMonth().
+                $firstDayOfMonth = $dateToStartCalculatingFrom->modify('first day of this month');
+
+                while ($firstDayOfMonth <= $dateToStopCalculatingTo) {
+                    $this->addDaysForMonth(
+                        $firstDayOfMonth->format('F'),
+                        (int)$firstDayOfMonth->format('Y'),
+                        $event
+                    );
+                    $firstDayOfMonth = $firstDayOfMonth->modify('next month');
+                }
             }
         }
     }
@@ -300,36 +251,59 @@ class DayGenerator
     /**
      * Add days for recurring weeks and/or months.
      */
-    protected function addRecurrings(Event $event): void
+    protected function addRecurringDays(Event $event): void
     {
         $dateToStartCalculatingFrom = $this->getDateToStartCalculatingFrom($event);
         $dateToStopCalculatingTo = $this->getDateToStopCalculatingTo($event);
 
-        while ($dateToStartCalculatingFrom <= $dateToStopCalculatingTo) {
-            $this->addDayToStorage($dateToStartCalculatingFrom);
-            $dateToStartCalculatingFrom->modify('+' . $event->getEachMonths() . ' months');
-            $dateToStartCalculatingFrom->modify('+' . $event->getEachWeeks() . ' weeks');
+        if (
+            $dateToStartCalculatingFrom instanceof \DateTimeImmutable
+            && $dateToStopCalculatingTo instanceof \DateTimeImmutable
+        ) {
+            while ($dateToStartCalculatingFrom <= $dateToStopCalculatingTo) {
+                $this->addDayToStorage($dateToStartCalculatingFrom);
+                $dateToStartCalculatingFrom = $dateToStartCalculatingFrom->modify(
+                    '+' . $event->getEachMonths() . ' months'
+                );
+                $dateToStartCalculatingFrom = $dateToStartCalculatingFrom->modify(
+                    '+' . $event->getEachWeeks() . ' weeks'
+                );
+            }
         }
     }
 
     protected function addDaysForMonth(string $month, int $year, Event $event): void
     {
-        // we need this to have a date where time is set to 00:00:00
-        $day = $this->dateTimeUtility->convert('today');
-        $lastDayOfMonth = $this->dateTimeUtility->convert('today');
-        $lastDayOfMonth->modify('last day of ' . $month . ' ' . $year . ' 23:59:59');
+        $dynamicDateTimeAtMidnight = $this->dateTimeUtility->convert('today');
+        if ($dynamicDateTimeAtMidnight === null) {
+            return;
+        }
+
+        $lastDayOfMonth = $this->dateTimeUtility->convert('last day of ' . $month . ' ' . $year . ' 23:59:59');
+        if ($lastDayOfMonth === null) {
+            return;
+        }
 
         $dateToStartCalculatingFrom = $this->getDateToStartCalculatingFrom($event); // prevent from calling it multiple times in foreach
         $dateToStopCalculatingTo = $this->getDateToStopCalculatingTo($event); // prevent from calling it multiple times in foreach
 
-        foreach ($event->getXth() as $xthIndex => $xth) {
-            foreach ($event->getWeekday() as $weekdayIndex => $weekday) {
-                if ($xth && $weekday) {
-                    // example: 'second wednesday of March 2013'
-                    $modifyString = $xthIndex . ' ' . $weekdayIndex . ' of ' . $month . ' ' . $year;
-                    $day->modify($modifyString);
-                    if ($day >= $dateToStartCalculatingFrom && $day < $lastDayOfMonth && $day <= $dateToStopCalculatingTo) {
-                        $this->addDayToStorage($day);
+        if (
+            $dateToStartCalculatingFrom instanceof \DateTimeImmutable
+            && $dateToStopCalculatingTo instanceof \DateTimeImmutable
+        ) {
+            foreach ($event->getXth() as $xthIndex => $xth) {
+                foreach ($event->getWeekday() as $weekdayIndex => $weekday) {
+                    if ($xth && $weekday) {
+                        // example: 'second wednesday of March 2013'
+                        $modifyString = $xthIndex . ' ' . $weekdayIndex . ' of ' . $month . ' ' . $year;
+                        $dynamicDateTimeAtMidnight = $dynamicDateTimeAtMidnight->modify($modifyString);
+                        if (
+                            $dynamicDateTimeAtMidnight >= $dateToStartCalculatingFrom
+                            && $dynamicDateTimeAtMidnight < $lastDayOfMonth
+                            && $dynamicDateTimeAtMidnight <= $dateToStopCalculatingTo
+                        ) {
+                            $this->addDayToStorage($dynamicDateTimeAtMidnight);
+                        }
                     }
                 }
             }
@@ -366,9 +340,6 @@ class DayGenerator
 
     /**
      * Add exception to dayStorage, if day matches range
-     *
-     * @param Event $event
-     * @param Exception $exception
      */
     protected function addException(Event $event, Exception $exception): void
     {
@@ -376,12 +347,22 @@ class DayGenerator
         $dateToStopCalculatingTo = $this->getDateToStopCalculatingTo($event);
         $day = $this->dateTimeUtility->standardizeDateTimeObject($exception->getExceptionDate());
 
-        if ($day < $dateToStartCalculatingFrom) {
+        if (
+            $dateToStartCalculatingFrom instanceof \DateTimeImmutable
+            && $day < $dateToStartCalculatingFrom
+        ) {
             return;
         }
-        if ($day > $dateToStopCalculatingTo) {
+
+        if (
+            $dateToStopCalculatingTo instanceof \DateTimeImmutable
+            && $day > $dateToStopCalculatingTo
+        ) {
             return;
         }
-        $this->addDayToStorage($day);
+
+        if ($day instanceof \DateTimeImmutable) {
+            $this->addDayToStorage($day);
+        }
     }
 }

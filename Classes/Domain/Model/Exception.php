@@ -23,9 +23,9 @@ class Exception extends AbstractEntity
 
     protected string $exceptionType = '';
 
-    protected \DateTimeInterface $exceptionDate;
+    protected ?\DateTimeImmutable $exceptionDate = null;
 
-    protected ?Time $exceptionTime;
+    protected ?Time $exceptionTime = null;
 
     protected string $exceptionDetails = '';
 
@@ -39,17 +39,12 @@ class Exception extends AbstractEntity
         $this->exceptionType = $exceptionType;
     }
 
-    public function getExceptionDate(): \DateTimeInterface
+    public function getExceptionDate(): \DateTimeImmutable
     {
-        $this->exceptionDate->setTimezone(new \DateTimeZone(date_default_timezone_get()));
-
-        return clone $this->exceptionDate;
+        return $this->exceptionDate->setTimezone(new \DateTimeZone(date_default_timezone_get()));
     }
 
-    /**
-     * @param \DateTime|\DateTimeImmutable $exceptionDate
-     */
-    public function setExceptionDate(\DateTimeInterface $exceptionDate): void
+    public function setExceptionDate(\DateTimeImmutable $exceptionDate): void
     {
         $this->exceptionDate = $exceptionDate;
     }

@@ -45,12 +45,9 @@ class DayRelationService
 
     protected PersistenceManager $persistenceManager;
 
-    /**
-     * @var \DateTime|\DateTimeImmutable|null
-     */
-    protected ?\DateTimeInterface $firstDateTime;
+    protected ?\DateTimeImmutable $firstDateTime = null;
 
-    protected ?Time $firstTime;
+    protected ?Time $firstTime = null;
 
     /**
      * Must be called by ObjectManager, because of EventRepository which has inject methods
@@ -111,10 +108,8 @@ class DayRelationService
     /**
      * Add day to DB
      * Also MM-Tables will be filled.
-     *
-     * @param \DateTime $dateTime
      */
-    public function addDay(Event $event, \DateTimeInterface $dateTime): void
+    public function addDay(Event $event, \DateTimeImmutable $dateTime): void
     {
         // to prevent adding multiple day records for ONE day we set them all to midnight 00:00:00
         $dateTime = $this->dateTimeUtility->standardizeDateTimeObject($dateTime);
@@ -137,10 +132,7 @@ class DayRelationService
         }
     }
 
-    /**
-     * @param \DateTime|\DateTimeImmutable $dateTime
-     */
-    protected function addGeneratedDayToEvent(\DateTimeInterface $dateTime, Event $event, ?Time $time = null): void
+    protected function addGeneratedDayToEvent(\DateTimeImmutable $dateTime, Event $event, ?Time $time = null): void
     {
         [$hour, $minute] = $this->getHourAndMinuteFromTime($time);
 
@@ -174,25 +166,20 @@ class DayRelationService
     }
 
     /**
-     * Get day time
-     * Each individual hour and minute will be added to day
+     * Returns a new DateTime with added hour and minute
      *
      * Day: 17.01.2017 00:00:00 + 8h + 30m
      * Day: 18.01.2017 00:00:00 + 10h + 15m
      * Day: 19.01.2017 00:00:00 + 9h + 25m
      * Day: 20.01.2017 00:00:00 + 14h + 45m
      */
-    protected function getDayTime(\DateTimeInterface $day, int $hour, int $minute): \DateTimeInterface
+    protected function getDayTime(\DateTimeImmutable $day, int $hour, int $minute): \DateTimeImmutable
     {
-        // Don't modify original day
-        $dayTime = clone $day;
-        $dayTime->modify(sprintf(
+        return $day->modify(sprintf(
             '+%d hour +%d minute',
             $hour,
             $minute
         ));
-
-        return $dayTime;
     }
 
     /**
@@ -203,13 +190,12 @@ class DayRelationService
      * Day: 18.01.2017 00:00:00 + 10h + 15m = 17.01.2017 08:30:00
      * Day: 19.01.2017 00:00:00 + 9h + 25m  = 17.01.2017 08:30:00
      * Day: 20.01.2017 00:00:00 + 14h + 45m = 17.01.2017 08:30:00
-     *
-     * @return \DateTime|\DateTimeImmutable
      */
-    protected function getSortDayTime(\DateTimeInterface $day, int $hour, int $minute, Event $event): \DateTimeInterface
+    protected function getSortDayTime(\DateTimeImmutable $day, int $hour, int $minute, Event $event): \DateTimeImmutable
     {
         if ($event->getEventType() === 'duration') {
             [$hour, $minute] = $this->getHourAndMinuteFromTime($this->firstTime);
+
             return $this->getDayTime($this->firstDateTime, $hour, $minute);
         }
 
@@ -217,7 +203,7 @@ class DayRelationService
     }
 
     /**
-     * Get timestamp which is the same for all time records of same day.
+     * Get timestamp which is the same for all-time records of same day.
      * This column is only needed if mergeEventsAtSameTime is set.
      * It helps to GROUP BY these records in SQL statement.
      *
@@ -225,11 +211,8 @@ class DayRelationService
      * Day: 17.01.2017 00:00:00 + 10h + 15m = 17.01.2017 08:30:00
      * Day: 18.01.2017 00:00:00 + 8h + 30m  = 18.01.2017 08:30:00
      * Day: 28.01.2017 00:00:00 + 10h + 15m = 18.01.2017 08:30:00
-     *
-     * @param \DateTime|\DateTimeImmutable $day
-     * @return \DateTime|\DateTimeImmutable
      */
-    protected function getSameDayTime(\DateTimeInterface $day, int $hour, int $minute, Event $event): \DateTimeInterface
+    protected function getSameDayTime(\DateTimeImmutable $day, int $hour, int $minute, Event $event): \DateTimeImmutable
     {
         if ($event->getEventType() !== 'duration') {
             [$hour, $minute] = $this->getHourAndMinuteFromTime($this->firstTime);

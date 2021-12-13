@@ -42,15 +42,15 @@ class Event extends AbstractEntity
     /**
      * @Extbase\Validate("NotEmpty")
      */
-    protected \DateTimeInterface $eventBegin;
+    protected ?\DateTimeImmutable $eventBegin = null;
 
     /**
      * @Extbase\ORM\Cascade("remove")
      * @Extbase\Validate("NotEmpty")
      */
-    protected ?Time $eventTime;
+    protected ?Time $eventTime = null;
 
-    protected ?\DateTimeInterface $eventEnd;
+    protected ?\DateTimeImmutable $eventEnd = null;
 
     protected bool $sameDay = false;
 
@@ -76,7 +76,7 @@ class Event extends AbstractEntity
 
     protected int $eachMonths = 0;
 
-    protected ?\DateTimeInterface $recurringEnd;
+    protected ?\DateTimeImmutable $recurringEnd = null;
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Exception>
@@ -94,7 +94,7 @@ class Event extends AbstractEntity
     /**
      * @Extbase\ORM\Cascade("remove")
      */
-    protected ?Link $ticketLink;
+    protected ?Link $ticketLink = null;
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Category>
@@ -110,7 +110,7 @@ class Event extends AbstractEntity
      */
     protected ObjectStorage $days;
 
-    protected ?Location $location;
+    protected ?Location $location = null;
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Organizer>
@@ -128,7 +128,7 @@ class Event extends AbstractEntity
     /**
      * @Extbase\ORM\Cascade("remove")
      */
-    protected ?Link $videoLink;
+    protected ?Link $videoLink = null;
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Link>
@@ -137,9 +137,9 @@ class Event extends AbstractEntity
      */
     protected ObjectStorage $downloadLinks;
 
-    protected string $importId;
+    protected string $importId = '';
 
-    public function __construct()
+    public function initializeObject(): void
     {
         $this->multipleTimes = new ObjectStorage();
         $this->differentTimes = new ObjectStorage();
@@ -191,7 +191,7 @@ class Event extends AbstractEntity
         $this->pathSegment = $pathSegment;
     }
 
-    public function getEventBegin(): \DateTimeInterface
+    public function getEventBegin(): \DateTimeImmutable
     {
         // Since PHP 7.4 we can not access timezone_type directly anymore.
         // If location is false, timezone_type is 1 or 2, but we need 3
@@ -199,13 +199,13 @@ class Event extends AbstractEntity
             $this->eventBegin->setTimezone(new \DateTimeZone(date_default_timezone_get()));
         }
 
-        return clone $this->eventBegin;
+        return $this->eventBegin;
     }
 
     /**
-     * @param \DateTime|\DateTimeImmutable $eventBegin
+     * @param \DateTimeImmutable $eventBegin
      */
-    public function setEventBegin(\DateTimeInterface $eventBegin): void
+    public function setEventBegin(\DateTimeImmutable $eventBegin): void
     {
         $this->eventBegin = $eventBegin;
     }
@@ -240,24 +240,22 @@ class Event extends AbstractEntity
         return 0;
     }
 
-    public function getEventEnd(): ?\DateTimeInterface
+    public function getEventEnd(): ?\DateTimeImmutable
     {
-        if ($this->eventEnd instanceof \DateTimeInterface) {
+        if ($this->eventEnd instanceof \DateTimeImmutable) {
             // Since PHP 7.4 we can not access timezone_type directly anymore.
             // If location is false, timezone_type is 1 or 2, but we need 3
             if ($this->eventEnd->getTimezone()->getLocation() === false) {
                 $this->eventEnd->setTimezone(new \DateTimeZone(date_default_timezone_get()));
             }
-            return clone $this->eventEnd;
+
+            return $this->eventEnd;
         }
 
         return null;
     }
 
-    /**
-     * @param \DateTime|\DateTimeImmutable|null $eventEnd
-     */
-    public function setEventEnd(?\DateTimeInterface $eventEnd = null): void
+    public function setEventEnd(?\DateTimeImmutable $eventEnd = null): void
     {
         $this->eventEnd = $eventEnd;
     }
@@ -382,23 +380,22 @@ class Event extends AbstractEntity
         $this->eachMonths = $eachMonths;
     }
 
-    public function getRecurringEnd(): ?\DateTimeInterface
+    public function getRecurringEnd(): ?\DateTimeImmutable
     {
-        if ($this->recurringEnd instanceof \DateTimeInterface) {
+        if ($this->recurringEnd instanceof \DateTimeImmutable) {
             // Since PHP 7.4 we can not access timezone_type directly anymore.
             // If location is false, timezone_type is 1 or 2, but we need 3
             if ($this->recurringEnd->getTimezone()->getLocation() === false) {
                 $this->recurringEnd->setTimezone(new \DateTimeZone(date_default_timezone_get()));
             }
+
             return clone $this->recurringEnd;
         }
+
         return null;
     }
 
-    /**
-     * @param \DateTime|\DateTimeImmutable|null $recurringEnd
-     */
-    public function setRecurringEnd(?\DateTimeInterface $recurringEnd = null): void
+    public function setRecurringEnd(?\DateTimeImmutable $recurringEnd): void
     {
         $this->recurringEnd = $recurringEnd;
     }
@@ -443,12 +440,12 @@ class Event extends AbstractEntity
      * Get exceptions for a given date
      * You can limit the result by given exception types.
      *
-     * @param \DateTimeInterface $date
+     * @param \DateTimeImmutable $date
      * @param string $exceptionTypes Type like Add, Remove, Time or Info. If empty add all exceptions
      * @return ObjectStorage|Exception[]
      */
     public function getExceptionsForDate(
-        \DateTimeInterface $date,
+        \DateTimeImmutable $date,
         string $exceptionTypes = ''
     ): ObjectStorage {
         $exceptionsForDate = new ObjectStorage();
@@ -577,12 +574,12 @@ class Event extends AbstractEntity
      * It must be grouped by day (midnight) as we need it to merge it with exceptions
      * which only have a date, but not a time record for comparison.
      *
-     * @return array|\DateTimeInterface[]
+     * @return array|\DateTimeImmutable[]
      */
     public function getFutureDatesGroupedAndSorted(): array
     {
         $dateTimeUtility = GeneralUtility::makeInstance(DateTimeUtility::class);
-        $today = $dateTimeUtility->standardizeDateTimeObject(new \DateTime());
+        $today = $dateTimeUtility->standardizeDateTimeObject(new \DateTimeImmutable());
 
         $futureDates = [];
         foreach ($this->getDays() as $day) {
@@ -603,12 +600,12 @@ class Event extends AbstractEntity
      * It must be grouped by day (midnight) as we need it in FE to show multiple
      * Time records for one day.
      *
-     * @return array<int, array<string, mixed>>
+     * @return array|\DateTimeImmutable[]
      */
     public function getAlternativeTimesGroupedAndSorted(): array
     {
         $dateTimeUtility = GeneralUtility::makeInstance(DateTimeUtility::class);
-        $today = $dateTimeUtility->standardizeDateTimeObject(new \DateTime());
+        $today = $dateTimeUtility->standardizeDateTimeObject(new \DateTimeImmutable());
         $timeFactory = GeneralUtility::makeInstance(TimeFactory::class);
 
         $alternativeDays = [];
@@ -641,12 +638,12 @@ class Event extends AbstractEntity
      * It must be grouped by day (midnight) as we need it to merge it with exceptions
      * which only have a date, but not a time record for comparison.
      *
-     * @return array|\DateTimeInterface[]
+     * @return array|\DateTimeImmutable[]
      */
     public function getFutureDatesIncludingRemovedGroupedAndSorted(): array
     {
         $dateTimeUtility = GeneralUtility::makeInstance(DateTimeUtility::class);
-        $today = $dateTimeUtility->standardizeDateTimeObject(new \DateTime());
+        $today = $dateTimeUtility->standardizeDateTimeObject(new \DateTimeImmutable());
 
         $futureDates = $this->getFutureDatesGroupedAndSorted();
         foreach ($this->getExceptions('remove') as $exception) {
@@ -667,13 +664,13 @@ class Event extends AbstractEntity
      * It must be grouped by day (midnight) as we need it in FE to show multiple
      * Time records for one day.
      *
-     * @return array[]
+     * @return array|\DateTimeImmutable[]
      */
     public function getAlternativeTimesIncludingRemovedGroupedAndSorted(): array
     {
         $alternativeTimes = $this->getAlternativeTimesGroupedAndSorted();
         $dateTimeUtility = GeneralUtility::makeInstance(DateTimeUtility::class);
-        $today = $dateTimeUtility->standardizeDateTimeObject(new \DateTime());
+        $today = $dateTimeUtility->standardizeDateTimeObject(new \DateTimeImmutable());
         $timeFactory = GeneralUtility::makeInstance(TimeFactory::class);
 
         foreach ($this->getExceptions('remove') as $exception) {
