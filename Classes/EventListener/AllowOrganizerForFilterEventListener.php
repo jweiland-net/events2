@@ -11,9 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\EventListener;
 
-use JWeiland\Events2\Domain\Repository\UserRepository;
 use JWeiland\Events2\Event\PreProcessControllerActionEvent;
-use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 
 /**
