@@ -211,10 +211,10 @@ class FindDaysForMonth
     protected function findAllDaysInMonth(int $month, int $year): array
     {
         $earliestAllowedDate = new \DateTimeImmutable('now midnight');
-        $earliestAllowedDate->modify(sprintf('-%d months', $this->extConf->getRecurringPast()));
+        $earliestAllowedDate = $earliestAllowedDate->modify(sprintf('-%d months', $this->extConf->getRecurringPast()));
 
         $latestAllowedDate = new \DateTimeImmutable('now midnight');
-        $latestAllowedDate->modify(sprintf('+%d months', $this->extConf->getRecurringFuture()));
+        $latestAllowedDate = $latestAllowedDate->modify(sprintf('+%d months', $this->extConf->getRecurringFuture()));
 
         // get start and ending of given month
         // j => day without leading 0, n => month without leading 0
