@@ -20,15 +20,15 @@ class Search extends AbstractEntity
 {
     protected string $search = '';
 
-    protected ?Category $mainCategory;
+    protected ?Category $mainCategory = null;
 
-    protected ?Category $subCategory;
+    protected ?Category $subCategory = null;
 
     protected string $eventBegin = '';
 
     protected string $eventEnd = '';
 
-    protected ?Location $location;
+    protected ?Location $location = null;
 
     protected bool $freeEntry = false;
 

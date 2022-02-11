@@ -33,9 +33,9 @@ class Location extends AbstractEntity
 
     protected string $city = '';
 
-    protected ?Country $country;
+    protected ?Country $country = null;
 
-    protected ?Link $link;
+    protected ?Link $link = null;
 
     /**
      * @var \JWeiland\Maps2\Domain\Model\PoiCollection|null

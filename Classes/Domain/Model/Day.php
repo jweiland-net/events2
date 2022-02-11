@@ -20,23 +20,23 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
  */
 class Day extends AbstractEntity
 {
-    protected ?\DateTimeImmutable $crdate;
+    protected ?\DateTimeImmutable $crdate = null;
 
-    protected ?\DateTimeImmutable $tstamp;
+    protected ?\DateTimeImmutable $tstamp = null;
 
     protected bool $hidden = false;
 
     protected int $cruserId = 0;
 
-    protected ?\DateTimeImmutable $day;
+    protected ?\DateTimeImmutable $day = null;
 
-    protected ?\DateTimeImmutable $dayTime;
+    protected ?\DateTimeImmutable $dayTime = null;
 
-    protected ?\DateTimeImmutable $sortDayTime;
+    protected ?\DateTimeImmutable $sortDayTime = null;
 
-    protected ?\DateTimeImmutable $sameDayTime;
+    protected ?\DateTimeImmutable $sameDayTime = null;
 
-    protected Event $event;
+    protected ?Event $event = null;
 
     public function getCrdate(): ?\DateTimeImmutable
     {

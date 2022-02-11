@@ -23,7 +23,7 @@ class Organizer extends AbstractEntity
 
     protected string $organizer = '';
 
-    protected ?Link $link;
+    protected ?Link $link = null;
 
     public function getOrganizer(): string
     {
