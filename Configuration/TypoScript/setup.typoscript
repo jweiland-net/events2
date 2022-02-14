@@ -33,6 +33,7 @@ plugin.tx_events2 {
     partialRootPaths {
       0 = EXT:events2/Resources/Private/Partials/
       1 = {$plugin.tx_events2.view.partialRootPath}
+      2 = EXT:maps2/Resources/Private/Partials/
     }
     layoutRootPaths {
       0 = EXT:events2/Resources/Private/Layouts/

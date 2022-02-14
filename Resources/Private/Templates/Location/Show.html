@@ -9,7 +9,9 @@
 	<h1>{location.location}</h1>
 
 	<f:if condition="{location.txMaps2Uid}">
-		<m2:widget.poiCollection poiCollection="{location.txMaps2Uid}" override="{settings: {mapWidth: '100%', mapHeight: '300', zoom: '14'}}" />
+		<f:render partial="Maps2/PoiCollection"
+							section="showMap"
+							arguments="{poiCollection: location.txMaps2Uid, override: {settings: {mapWidth: '100%', mapHeight: '300', zoom: '14'}}}" />
 	</f:if>
 
 	<address>
