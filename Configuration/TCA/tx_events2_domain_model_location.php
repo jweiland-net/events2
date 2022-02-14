@@ -229,6 +229,7 @@ $tx_events2_domain_model_event = [
                     'showPossibleLocalizationRecords' => 1,
                     'showAllLocalizationLink' => 1,
                 ],
+                'default' => 0
             ],
         ]
     ]
