@@ -362,6 +362,19 @@
 				<source>You're allowed to create event records, but your user record has no relation to an organizer record.</source>
 			</trans-unit>
 
+			<trans-unit id="pageBrowser.first">
+				<source>First</source>
+			</trans-unit>
+			<trans-unit id="pageBrowser.previous">
+				<source>Previous</source>
+			</trans-unit>
+			<trans-unit id="pageBrowser.next">
+				<source>Next</source>
+			</trans-unit>
+			<trans-unit id="pageBrowser.last">
+				<source>Last</source>
+			</trans-unit>
+
 			<trans-unit id="email.subject.create">
 				<source>A new record was created</source>
 			</trans-unit>

@@ -476,6 +476,23 @@
 				<target>Sie haben zwar die Berechtigung Veranstaltungen anzulegen, aber Ihrem Benutzer wurde noch kein Veranstalter zugewiesen.</target>
 			</trans-unit>
 
+			<trans-unit id="pageBrowser.first">
+				<source>First</source>
+				<target>Erste</target>
+			</trans-unit>
+			<trans-unit id="pageBrowser.previous">
+				<source>Previous</source>
+				<target>Vorherige</target>
+			</trans-unit>
+			<trans-unit id="pageBrowser.next">
+				<source>Next</source>
+				<target>Nächste</target>
+			</trans-unit>
+			<trans-unit id="pageBrowser.last">
+				<source>Last</source>
+				<target>Letzte</target>
+			</trans-unit>
+
 			<trans-unit id="email.subject.create">
 				<source>A new record was created</source>
 				<target>Veranstaltung – Ein neuer Datensatz wurde angelegt</target>
