@@ -16,15 +16,15 @@ namespace JWeiland\Events2\Domain\Traits;
  */
 trait Typo3PropertiesTrait
 {
-    protected ?\DateTimeImmutable $crdate;
+    protected ?\DateTimeImmutable $crdate = null;
 
-    protected ?\DateTimeImmutable $tstamp;
+    protected ?\DateTimeImmutable $tstamp = null;
 
     protected int $l10nParent= 0;
 
-    protected ?\DateTimeImmutable $starttime;
+    protected ?\DateTimeImmutable $starttime = null;
 
-    protected ?\DateTimeImmutable $endtime;
+    protected ?\DateTimeImmutable $endtime = null;
 
     protected bool $hidden = false;
 

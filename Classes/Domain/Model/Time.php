@@ -50,11 +50,11 @@ class Time extends AbstractEntity
      * Helpful to use f:format.date()
      */
 
-    protected ?\DateTimeImmutable $timeBeginAsDateTime;
+    protected ?\DateTimeImmutable $timeBeginAsDateTime = null;
 
-    protected ?\DateTimeImmutable $timeEntryAsDateTime;
+    protected ?\DateTimeImmutable $timeEntryAsDateTime = null;
 
-    protected ?\DateTimeImmutable $timeEndAsDateTime;
+    protected ?\DateTimeImmutable $timeEndAsDateTime = null;
 
     public function getWeekday(): string
     {
