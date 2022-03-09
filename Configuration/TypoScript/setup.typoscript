@@ -1,22 +1,23 @@
 page.includeJSFooter {
-  jQueryForEvents2 = https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js
-  jQueryForEvents2.external = 1
-  jQueryForEvents2.if.isTrue = {$plugin.tx_events2.settings.includeJQueryLibrary}
-  jQueryUiForEvents2 = https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js
-  jQueryUiForEvents2.external = 1
-  jQueryUiForEvents2.if.isTrue = {$plugin.tx_events2.settings.includeJQueryUiLibrary}
-  jQueryUiCalendarDe = EXT:events2/Resources/Public/JavaScript/jquery.ui.datepicker-de.js
-  jQueryUiCalendarDe.if.isTrue = {$plugin.tx_events2.settings.includeDeTranslationForCalendar}
+  #jQueryForEvents2 = https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js
+  #jQueryForEvents2.external = 1
+  #jQueryForEvents2.if.isTrue = {$plugin.tx_events2.settings.includeJQueryLibrary}
+  #jQueryUiForEvents2 = https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js
+  #jQueryUiForEvents2.external = 1
+  #jQueryUiForEvents2.if.isTrue = {$plugin.tx_events2.settings.includeJQueryUiLibrary}
+  #jQueryUiCalendarDe = EXT:events2/Resources/Public/JavaScript/jquery.ui.datepicker-de.js
+  #jQueryUiCalendarDe.if.isTrue = {$plugin.tx_events2.settings.includeDeTranslationForCalendar}
   events2 = EXT:events2/Resources/Public/JavaScript/Events2.js
+  events2Litepicker = EXT:events2/Resources/Public/JavaScript/LitePicker.js
   events2Calendar = EXT:events2/Resources/Public/JavaScript/Calendar.js
 }
 
 page.includeCSS {
-  jQueryCssForEvents2 = https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css
-  jQueryCssForEvents2.external = 1
-  jQueryCssForEvents2.excludeFromConcatenation = 1
-  jQueryCssForEvents2.disableCompression = 1
-  jQueryCssForEvents2.if.isTrue = {$plugin.tx_events2.settings.includeJQueryUiCss}
+  #jQueryCssForEvents2 = https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css
+  #jQueryCssForEvents2.external = 1
+  #jQueryCssForEvents2.excludeFromConcatenation = 1
+  #jQueryCssForEvents2.disableCompression = 1
+  #jQueryCssForEvents2.if.isTrue = {$plugin.tx_events2.settings.includeJQueryUiCss}
 }
 
 # search should work with get params of events plugin

@@ -75,15 +75,8 @@ class FindDaysForMonth
         // Save a session for selected month
         $this->userSession->setMonthAndYear($month, $year);
 
-        $dayArray = [];
-        $days = $this->findAllDaysInMonth($month, $year);
-        foreach ($days as $day) {
-            $addDay = [
-                'uid' => $day['uid'],
-                'title' => $day['title']
-            ];
-            $addDay['uri'] = $this->getUriForDay((int)$day['day']);
-
+        $daysOfMonth = [];
+        foreach ($this->findAllDaysInMonth($month, $year) as $day) {
             // generate day of month.
             // Convert int to DateTime like extbase does and set TimezoneType to something like Europe/Berlin
             $date = new \DateTimeImmutable(date('c', (int)$day['day']));
@@ -91,16 +84,19 @@ class FindDaysForMonth
                 $date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
             }
 
-            $dayOfMonth = $date->format('j');
-
-            $dayArray[$dayOfMonth][] = $addDay;
+            $daysOfMonth[] = [
+                'uid' => (int)$day['uid'],
+                'title' => $day['title'],
+                'uri' => $this->getUriForDay((int)$day['day']),
+                'dayOfMonth' => (int)$date->format('j')
+            ];
         }
 
-        $this->addHolidays($dayArray);
+        $this->addHolidays($daysOfMonth);
 
         /** @var ModifyDaysForMonthEvent $event */
         $event = $this->eventDispatcher->dispatch(
-            new ModifyDaysForMonthEvent($dayArray)
+            new ModifyDaysForMonthEvent($daysOfMonth)
         );
 
         return new JsonResponse($event->getDays());
