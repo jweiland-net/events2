@@ -22,13 +22,8 @@ class VideoController extends AbstractController
 {
     protected EventRepository $eventRepository;
 
-    public function __construct(
-        EventRepository $eventRepository,
-        TypoScriptService $typoScriptService,
-        ExtConf $extConf
-    ) {
-        parent::__construct($typoScriptService, $extConf);
-
+    public function injectEventRepository(EventRepository $eventRepository): void
+    {
         $this->eventRepository = $eventRepository;
     }
 

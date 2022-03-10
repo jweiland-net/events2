@@ -34,10 +34,14 @@ class AbstractController extends ActionController
 
     protected ExtConf $extConf;
 
-    public function __construct(TypoScriptService $typoScriptService, ExtConf $extConf)
+    public function injectExtConf(ExtConf $extConf): void
+    {
+        $this->extConf = $extConf;
+    }
+
+    public function injectTypoScriptService(TypoScriptService $typoScriptService): void
     {
         $this->typoScriptService = $typoScriptService;
-        $this->extConf = $extConf;
     }
 
     /**

@@ -28,7 +28,6 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -50,20 +49,29 @@ class DayRepository extends Repository
 
     protected array $settings = [];
 
-    public function __construct(
-        ObjectManagerInterface $objectManager,
-        ExtConf $extConf,
-        DateTimeUtility $dateTimeUtility,
-        DatabaseService $databaseService,
-        DayFactory $dayFactory,
-        EventDispatcher $dispatcher
-    ) {
-        parent::__construct($objectManager);
+    public function injectExtConf(ExtConf $extConf): void
+    {
         $this->extConf = $extConf;
+    }
+
+    public function injectDateTimeUtility(DateTimeUtility $dateTimeUtility): void
+    {
         $this->dateTimeUtility = $dateTimeUtility;
+    }
+
+    public function injectDatabaseService(DatabaseService $databaseService): void
+    {
         $this->databaseService = $databaseService;
+    }
+
+    public function injectDayFactory(DayFactory $dayFactory): void
+    {
         $this->dayFactory = $dayFactory;
-        $this->eventDispatcher = $dispatcher;
+    }
+
+    public function injectEventDispatcher(EventDispatcher $eventDispatcher): void
+    {
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function setSettings(array $settings): void

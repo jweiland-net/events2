@@ -31,15 +31,13 @@ class DayController extends AbstractController
 
     protected OrganizerRepository $organizerRepository;
 
-    public function __construct(
-        DayRepository $dayRepository,
-        OrganizerRepository $organizerRepository,
-        TypoScriptService $typoScriptService,
-        ExtConf $extConf
-    ) {
-        parent::__construct($typoScriptService, $extConf);
-
+    public function injectDayRepository(DayRepository $dayRepository): void
+    {
         $this->dayRepository = $dayRepository;
+    }
+
+    public function injectOrganizerRepository(OrganizerRepository $organizerRepository): void
+    {
         $this->organizerRepository = $organizerRepository;
     }
 

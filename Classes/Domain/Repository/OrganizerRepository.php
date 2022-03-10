@@ -34,6 +34,7 @@ class OrganizerRepository extends Repository
     public function getOrganizersForFilter(): QueryResultInterface
     {
         $query = $this->createQuery();
+
         return $query->matching($query->equals('hide_in_filter', 0))->execute();
     }
 }

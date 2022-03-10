@@ -23,13 +23,8 @@ class CalendarController extends AbstractController
 {
     protected CalendarHelper $calendarHelper;
 
-    public function __construct(
-        CalendarHelper $calendarHelper,
-        TypoScriptService $typoScriptService,
-        ExtConf $extConf
-    ) {
-        parent::__construct($typoScriptService, $extConf);
-
+    public function injectCalendarHelper(CalendarHelper $calendarHelper): void
+    {
         $this->calendarHelper = $calendarHelper;
     }
 

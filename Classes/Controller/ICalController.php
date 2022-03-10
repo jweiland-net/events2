@@ -26,13 +26,18 @@ class ICalController extends ActionController
     protected ICalendarHelper $iCalendarHelper;
     protected DownloadHelper $downloadHelper;
 
-    public function __construct(
-        DayRepository $dayRepository,
-        ICalendarHelper $iCalendarHelper,
-        DownloadHelper $downloadHelper
-    ) {
+    public function injectDayRepository(DayRepository $dayRepository): void
+    {
         $this->dayRepository = $dayRepository;
+    }
+
+    public function injectICalendarHelper(ICalendarHelper $iCalendarHelper): void
+    {
         $this->iCalendarHelper = $iCalendarHelper;
+    }
+
+    public function injectDownloadHelper(DownloadHelper $downloadHelper): void
+    {
         $this->downloadHelper = $downloadHelper;
     }
 

@@ -42,25 +42,34 @@ class EventController extends AbstractController
 
     protected MailMessage $mail;
 
-    public function __construct(
-        EventRepository $eventRepository,
-        CategoryRepository $categoryRepository,
-        LocationRepository $locationRepository,
-        DayRelationService $dayRelationService,
-        PersistenceManagerInterface $persistenceManager,
-        MailMessage $mail,
-        TypoScriptService $typoScriptService,
-        ExtConf $extConf
-    ) {
-        parent::__construct($typoScriptService, $extConf);
-
+    public function injectEventRepository(EventRepository $eventRepository): void
+    {
         $this->eventRepository = $eventRepository;
+    }
+
+    public function injectCategoryRepository(CategoryRepository $categoryRepository): void
+    {
         $this->categoryRepository = $categoryRepository;
+    }
+
+    public function injectLocationRepository(LocationRepository $locationRepository): void
+    {
         $this->locationRepository = $locationRepository;
+    }
+
+    public function injectDayRelationService(DayRelationService $dayRelationService): void
+    {
         $this->dayRelationService = $dayRelationService;
+    }
+
+    public function injectPersistenceManager(PersistenceManagerInterface $persistenceManager): void
+    {
         $this->persistenceManager = $persistenceManager;
-        $this->mail = $mail;
-        $this->typoScriptService = $typoScriptService;
+    }
+
+    public function injectMailMessage(MailMessage $mailMessage): void
+    {
+        $this->mail = $mailMessage;
     }
 
     public function initializeListMyEventsAction(): void

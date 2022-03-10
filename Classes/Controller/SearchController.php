@@ -29,15 +29,13 @@ class SearchController extends AbstractController
 
     protected LocationRepository $locationRepository;
 
-    public function __construct(
-        CategoryRepository $categoryRepository,
-        LocationRepository $locationRepository,
-        TypoScriptService $typoScriptService,
-        ExtConf $extConf
-    ) {
-        parent::__construct($typoScriptService, $extConf);
-
+    public function injectCategoryRepository(CategoryRepository $categoryRepository): void
+    {
         $this->categoryRepository = $categoryRepository;
+    }
+
+    public function injectLocationRepository(LocationRepository $locationRepository): void
+    {
         $this->locationRepository = $locationRepository;
     }
 

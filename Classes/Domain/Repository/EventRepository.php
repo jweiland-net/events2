@@ -15,7 +15,6 @@ use JWeiland\Events2\Domain\Model\Event;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -33,12 +32,8 @@ class EventRepository extends Repository implements HiddenRepositoryInterface
 
     protected UserRepository $userRepository;
 
-    public function __construct(
-        ObjectManagerInterface $objectManager,
-        UserRepository $userRepository
-    ) {
-        parent::__construct($objectManager);
-
+    public function injectUserRepository(UserRepository $userRepository): void
+    {
         $this->userRepository = $userRepository;
     }
 

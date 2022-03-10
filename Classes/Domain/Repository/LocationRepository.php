@@ -32,12 +32,8 @@ class LocationRepository extends Repository
         'location' => QueryInterface::ORDER_ASCENDING,
     ];
 
-    public function __construct(
-        ObjectManagerInterface $objectManager,
-        EventDispatcher $eventDispatcher
-    ) {
-        parent::__construct($objectManager);
-
+    public function injectEventDispatcher(EventDispatcher $eventDispatcher): void
+    {
         $this->eventDispatcher = $eventDispatcher;
     }
 
