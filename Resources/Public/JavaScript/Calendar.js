@@ -5,135 +5,177 @@
  * @param environment contains settings, current PageId, extConf and current tt_content record
  * @constructor
  */
-function Events2Calendar($element, environment) {
+function Events2Calendar ($element, environment) {
+  let me = this;
+
   // 2016-10-24 will be 23.10.2016T22:00:00Z. getDate() returns: 24
-  this.currentDate = new Date(environment.year + "-" + environment.month + "-" + environment.day + "T00:00:00");
-  this.environment = environment;
+  me.currentDate = new Date(environment.year + '-' + environment.month + '-' + environment.day + 'T00:00:00');
+  me.environment = environment;
+  me.allDays = [];
 
-  // getMonth (0-11)
-  var days = this.getDaysForMonth(
-    this.currentDate.getMonth() + 1,
-    this.currentDate.getFullYear(),
-    environment.storagePids,
-    environment.settings.categories,
-    environment.pidOfListPage
-  );
+  /**
+   * Get current URL with additional parameters
+   *
+   * @param {string} additionalParameters
+   * @return string
+   */
+  me.getCurrentUrlWithAdditionalParameters = function (additionalParameters) {
+    if (window.location.origin) {
+      return window.location.origin + window.location.pathname + '?' + additionalParameters;
+    } else {
+      return window.location.protocol + '//' + window.location.host + window.location.pathname + '?' + additionalParameters;
+    }
+  };
 
-  this.activateDatePicker($element, days);
+  /**
+   * get days for month
+   * this starts an ajax call to the server and make them globally available
+   *
+   * @param {object} picker
+   * @param {int} month
+   * @param {int} year
+   * @param {string} storagePages
+   * @param {string} categories
+   * @return void
+   */
+  me.fillPickerWithDaysOfMonth = function (picker, month, year, storagePages, categories) {
+    let additionalParameters = [
+      'month=' + (month + 1),
+      'year=' + year,
+      'categories=' + categories,
+      'storagePages=' + storagePages
+    ];
+
+    fetch(me.getCurrentUrlWithAdditionalParameters(additionalParameters.join('&')), {
+      headers: {
+        'Content-Type': 'application/json',
+        'ext-events2': 'getDaysForMonth'
+      }
+    }).then(response => {
+      if (response.ok && response.status === 200) {
+        return response.json();
+      }
+      return Promise.reject(response);
+    }).then(days => {
+      // make global available. Needed for event render:day
+      me.allDays = days;
+      picker.setHighlightedDays(me.getHighlightedDays(days, month, year));
+    }).catch(error => {
+      console.warn('Request error', error);
+    });
+  };
+
+  /**
+   * Get highlighted days which will be clickable for detailed list-view.
+   * No holidays will be added
+   *
+   * @param {object} days
+   * @param {int} month
+   * @param {int} year
+   * @returns array
+   */
+  me.getHighlightedDays = function (days, month, year) {
+    let highlightedDays = [];
+
+    days.forEach(day => {
+      if (!day.isHoliday) {
+        highlightedDays.push(new Date(year, month, day.dayOfMonth, 0, 0, 0));
+      }
+    });
+
+    return highlightedDays;
+  };
+
+  me.initializeDatePicker = function ($element) {
+    let startDate = new Date(
+      parseInt(me.environment.year),
+      parseInt(me.environment.month) - 1,
+      parseInt(me.environment.day), 0, 0, 0
+    );
+
+    let picker = new Litepicker({
+      element: $element,
+      inlineMode: true,
+      startDate: startDate,
+      lang: 'de-DE',
+      format: 'DD.MM.YYYY'
+    });
+
+    picker.on('change:month', (date, calendarIdx) => {
+      me.fillPickerWithDaysOfMonth(
+        picker,
+        date.getMonth(),
+        date.getFullYear(),
+        me.environment.storagePids,
+        me.environment.settings.categories
+      );
+    });
+
+    picker.on('before:show', (el) => {
+      me.fillPickerWithDaysOfMonth(
+        picker,
+        me.currentDate.getMonth(),
+        me.currentDate.getFullYear(),
+        me.environment.storagePids,
+        me.environment.settings.categories
+      );
+    });
+
+    picker.on('preselect', (date1, date2) => {
+      me.getUriForDayAndRedirect(date1);
+    });
+
+    picker.on('render:day', (dayElement, date) => {
+      if (me.allDays !== []) {
+        me.allDays.forEach(day => {
+          if (day.dayOfMonth === parseInt(dayElement.innerHTML)) {
+            day.additionalClasses.forEach(className => {
+              dayElement.classList.add(className);
+            });
+          }
+        });
+      }
+    });
+
+    // In case of showInline either "show" nor "render" event will be called. Initialize them manually
+    picker.hide();
+    picker.show();
+  };
+
+  me.getUriForDayAndRedirect = function (date) {
+    let additionalParameters = [
+      'day=' + date.getDate(),
+      'month=' + (date.getMonth() + 1),
+      'year=' + date.getFullYear(),
+      'pidOfListPage=' + me.environment.pidOfListPage
+    ];
+
+    fetch(me.getCurrentUrlWithAdditionalParameters(additionalParameters.join('&')), {
+      headers: {
+        'Content-Type': 'application/json',
+        'ext-events2': 'getUriForDay'
+      }
+    }).then(response => {
+      if (response.ok && response.status === 200) {
+        return response.json();
+      }
+      return Promise.reject(response);
+    }).then(data => {
+      if (data.uri !== '') {
+        console.log('Redirect to: ' + data.uri);
+        window.location.href = data.uri;
+      }
+    }).catch(error => {
+      console.warn('Request error', error);
+    });
+  };
+
+  me.initializeDatePicker($element);
 }
 
-Events2Calendar.prototype.activateDatePicker = function($element, days) {
-  var environment = this.environment;
-  var getDaysForMonth = this.getDaysForMonth;
-  var getProperty = this.getProperty;
-
-  if (environment.settings.includeDeTranslationForCalendar) {
-    jQuery.datepicker.setDefaults(jQuery.datepicker.regional["de"]);
-  }
-
-  $element.datepicker({
-    dateFormat: "dd.mm.yy",
-    defaultDate: environment.day + "." + environment.month + "." + environment.year,
-    beforeShowDay: function(date) {
-      if (days === null) {
-        return [false, "", ""];
-      }
-      if (days.hasOwnProperty(date.getDate())) {
-        var title = getProperty(days, date, "title");
-        var className = getProperty(days, date, "class");
-        if (title) {
-          return [true, className, title];
-        } else {
-          return [false, className, ""];
-        }
-      } else {
-        return [false, "", ""];
-      }
-    },
-    onSelect: function(dateText, inst) {
-      if (days !== null && days.hasOwnProperty(inst.currentDay)) {
-        window.location.href = days[inst.currentDay][0]["uri"];
-      }
-    },
-    onChangeMonthYear: function(year, month, inst) {
-      // month (1-12)
-      days = getDaysForMonth(
-        month,
-        year,
-        environment.storagePids,
-        environment.settings.categories,
-        environment.pidOfListPage
-      );
-    }
-  });
-};
-
-/**
- * Get property of event record of a given date
- *
- * @param days
- * @param date
- * @param property
- *
- * @return string
- */
-Events2Calendar.prototype.getProperty = function(days, date, property) {
-  var value = '';
-  for (var i = 0; i < days[date.getDate()].length; i++) {
-    if (days[date.getDate()][i].hasOwnProperty(property)) {
-      value = days[date.getDate()][i][property];
-      break;
-    }
-  }
-  return value;
-};
-
-/**
- * get days for month
- * this starts an ajax call to the server and make them globally available
- *
- * @param month
- * @param year
- * @param storagePids
- * @param categories
- * @param pidOfListPage
- * @return array
- */
-Events2Calendar.prototype.getDaysForMonth = function(month, year, storagePids, categories, pidOfListPage) {
-  var days = null;
-
-  jQuery.ajax({
-    type: 'GET',
-    url: window.location.href,
-    async: false,
-    dataType: 'json',
-    data: {
-      eID: 'events2findDaysForMonth',
-      tx_events2_events: {
-        arguments: {
-          categories: categories,
-          month: month,
-          year: year,
-          storagePids: storagePids,
-          pidOfListPage: pidOfListPage
-        }
-      }
-    },
-    success: function(json) {
-      days = json;
-    },
-    error: function(xhr, error) {
-      console.log(error);
-    }
-  });
-
-  return days;
-};
-
-var $element;
-var environment;
-jQuery("div.events2calendar").each(function() {
-  $element = jQuery(this);
-  var environment = $element.data("environment");
-  new Events2Calendar($element, environment);
+Array.from(document.querySelectorAll('div.events2calendar')).forEach($element => {
+  new Events2Calendar(
+    $element,
+    JSON.parse($element.getAttribute('data-environment'))
+  );
 });
