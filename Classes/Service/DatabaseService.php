@@ -495,24 +495,6 @@ class DatabaseService
         );
     }
 
-    /**
-     * Working with own QueryBuilder queries does not respect showHiddenContent settings of TYPO3, that's why
-     * we have to manually remove Hidden constraint from restriction container.
-     */
-    public function addVisibilityConstraintToQuery(QueryBuilder $queryBuilder): void
-    {
-        $context = GeneralUtility::makeInstance(Context::class);
-        $showHiddenRecords = (bool)$context->getPropertyFromAspect(
-            'visibility',
-            'includeHiddenContent',
-            false
-        );
-
-        if ($showHiddenRecords) {
-            $queryBuilder->getRestrictions()->removeByType(HiddenRestriction::class);
-        }
-    }
-
     protected function getTypoScriptFrontendController(): TypoScriptFrontendController
     {
         if ($GLOBALS['TSFE'] === null) {

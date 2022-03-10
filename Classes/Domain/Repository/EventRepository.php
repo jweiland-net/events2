@@ -12,17 +12,14 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Domain\Repository;
 
 use JWeiland\Events2\Domain\Model\Event;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
-use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /*
  * Repository to get and find event records
  */
-class EventRepository extends Repository implements HiddenRepositoryInterface
+class EventRepository extends AbstractRepository implements HiddenRepositoryInterface
 {
     protected $defaultOrderings = [
         'eventBegin' => QueryInterface::ORDER_ASCENDING,
@@ -70,13 +67,13 @@ class EventRepository extends Repository implements HiddenRepositoryInterface
      */
     public function getEventRecord(int $uid): array
     {
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_event');
+        $queryBuilder = $this->getQueryBuilderForTable('tx_events2_domain_model_event', 'e');
         $event = $queryBuilder
-            ->select('uid', 'title')
+            ->select('e.uid', 'e.title')
             ->from('tx_events2_domain_model_event')
             ->where(
                 $queryBuilder->expr()->eq(
-                    'uid',
+                    'e.uid',
                     $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
                 )
             )
@@ -88,10 +85,5 @@ class EventRepository extends Repository implements HiddenRepositoryInterface
         }
 
         return $event;
-    }
-
-    protected function getConnectionPool(): ConnectionPool
-    {
-        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 }

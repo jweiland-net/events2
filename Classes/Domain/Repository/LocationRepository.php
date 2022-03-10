@@ -16,15 +16,13 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
-use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /*
  * The location repository is used to sort the locations in our create-new-form. Further it will be used in
  * our event importer
  */
-class LocationRepository extends Repository
+class LocationRepository extends AbstractRepository
 {
     protected EventDispatcher $eventDispatcher;
 
@@ -43,21 +41,17 @@ class LocationRepository extends Repository
      */
     public function findLocations(string $search): array
     {
-        $queryBuilder = $this
-            ->getConnectionPool()
-            ->getQueryBuilderForTable('tx_events2_domain_model_location');
-        $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
-
+        $queryBuilder = $this->getQueryBuilderForTable('tx_events2_domain_model_location', 'l');
         $queryBuilder
-            ->select('uid', 'location as label')
+            ->select('l.uid', 'l.location as label')
             ->from('tx_events2_domain_model_location')
             ->where(
                 $queryBuilder->expr()->like(
-                    'location',
+                    'l.location',
                     $queryBuilder->createNamedParameter('%' . $search . '%')
                 )
             )
-            ->orderBy('location', 'ASC');
+            ->orderBy('l.location', 'ASC');
 
         // Remember: column "uid" and "label" are a must have for autocompletion
         // Use CONCAT to add further columns to label. Example:
@@ -74,10 +68,5 @@ class LocationRepository extends Repository
         }
 
         return $locations;
-    }
-
-    protected function getConnectionPool(): ConnectionPool
-    {
-        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 }

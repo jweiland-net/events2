@@ -24,18 +24,16 @@ use JWeiland\Events2\Event\ModifyQueriesOfFindEventsEvent;
 use JWeiland\Events2\Event\ModifyQueriesOfSearchEventsEvent;
 use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Utility\DateTimeUtility;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
-use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /*
  * Repository to get and find day records from storage
  */
-class DayRepository extends Repository
+class DayRepository extends AbstractRepository
 {
     protected DateTimeUtility $dateTimeUtility;
 
@@ -89,8 +87,7 @@ class DayRepository extends Repository
     {
         /** @var Query $extbaseQuery */
         $extbaseQuery = $this->createQuery();
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_day');
-        $this->databaseService->addVisibilityConstraintToQuery($queryBuilder);
+        $queryBuilder = $this->getQueryBuilderForTable('tx_events2_domain_model_day', 'day');
         $subQueryBuilder = $this->getSubQueryBuilder($queryBuilder);
 
         // add storage PID for event and day, but not for sys_category
@@ -135,7 +132,6 @@ class DayRepository extends Repository
 
         $queryBuilder
             ->select('day.*')
-            ->from('tx_events2_domain_model_day', 'day')
             ->leftJoin(
                 'day',
                 'tx_events2_domain_model_event',
@@ -172,9 +168,8 @@ class DayRepository extends Repository
     {
         /** @var Query $extbaseQuery */
         $extbaseQuery = $this->createQuery();
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_day');
-        $this->databaseService->addVisibilityConstraintToQuery($queryBuilder);
-        $subQueryBuilder = $this->getSubQueryBuilder($queryBuilder);
+        $queryBuilder = $this->getQueryBuilderForTable('tx_events2_domain_model_day', 'day', true);
+        $subQueryBuilder = $this->getSubQueryBuilder($queryBuilder, true);
 
         // add storage PID for event and day, but not for sys_category
         $this->databaseService->addConstraintForPid(
@@ -268,7 +263,6 @@ class DayRepository extends Repository
 
         $queryBuilder
             ->select('day.*')
-            ->from('tx_events2_domain_model_day', 'day')
             ->leftJoin(
                 'day',
                 'tx_events2_domain_model_event',
@@ -306,8 +300,7 @@ class DayRepository extends Repository
     {
         /** @var Query $extbaseQuery */
         $extbaseQuery = $this->createQuery();
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_day');
-        $this->databaseService->addVisibilityConstraintToQuery($queryBuilder);
+        $queryBuilder = $this->getQueryBuilderForTable('tx_events2_domain_model_day', 'day');
 
         // add storage PID for event and day, but not for sys_category
         $this->databaseService->addConstraintForPid(
@@ -332,7 +325,6 @@ class DayRepository extends Repository
 
         $queryBuilder
             ->select(...$this->getColumnsForDayTable(['event.top_of_list']))
-            ->from('tx_events2_domain_model_day', 'day')
             ->leftJoin(
                 'day',
                 'tx_events2_domain_model_event',
@@ -419,29 +411,6 @@ class DayRepository extends Repository
     }
 
     /**
-     * Get Sub-QueryBuilder
-     */
-    protected function getSubQueryBuilder(QueryBuilder $queryBuilder): QueryBuilder
-    {
-        $subQueryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_day');
-        $this->databaseService->addVisibilityConstraintToQuery($subQueryBuilder);
-        $subQueryBuilder
-            ->selectLiteral('MIN(day_sub_query.day_time) as next_day_time', 'day_sub_query.event')
-            ->from('tx_events2_domain_model_day', 'day_sub_query')
-            ->leftJoin(
-                'day_sub_query',
-                'tx_events2_domain_model_event',
-                'event_sub_query',
-                $queryBuilder->expr()->eq(
-                    'day_sub_query.event',
-                    $queryBuilder->quoteIdentifier('event_sub_query.uid')
-                )
-            );
-
-        return $subQueryBuilder;
-    }
-
-    /**
      * Find one Day by Event and Timestamp.
      * If timestamp is empty, we try to find next possible day in future/past or build our own one.
      *
@@ -458,17 +427,16 @@ class DayRepository extends Repository
      */
     public function getDayRecord(int $eventUid, int $timestamp): array
     {
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_day');
+        $queryBuilder = $this->getQueryBuilderForTable('tx_events2_domain_model_day', 'day');
         $day = $queryBuilder
-            ->select('event')
-            ->from('tx_events2_domain_model_day')
+            ->select('day.event')
             ->where(
                 $queryBuilder->expr()->eq(
-                    'event',
+                    'day.event',
                     $queryBuilder->createNamedParameter($eventUid, \PDO::PARAM_INT)
                 ),
                 $queryBuilder->expr()->eq(
-                    'day_time',
+                    'day.day_time',
                     $queryBuilder->createNamedParameter($timestamp, \PDO::PARAM_INT)
                 )
             )
@@ -481,8 +449,29 @@ class DayRepository extends Repository
         return $day;
     }
 
-    protected function getConnectionPool(): ConnectionPool
+    /**
+     * Get Sub-QueryBuilder
+     */
+    protected function getSubQueryBuilder(QueryBuilder $queryBuilder, bool $useStrictLang = false): QueryBuilder
     {
-        return GeneralUtility::makeInstance(ConnectionPool::class);
+        $subQueryBuilder = $this->getQueryBuilderForTable(
+            'tx_events2_domain_model_day',
+            'day_sub_query',
+            $useStrictLang
+        );
+
+        $subQueryBuilder
+            ->selectLiteral('MIN(day_sub_query.day_time) as next_day_time', 'day_sub_query.event')
+            ->leftJoin(
+                'day_sub_query',
+                'tx_events2_domain_model_event',
+                'event_sub_query',
+                $queryBuilder->expr()->eq(
+                    'day_sub_query.event',
+                    $queryBuilder->quoteIdentifier('event_sub_query.uid')
+                )
+            );
+
+        return $subQueryBuilder;
     }
 }
