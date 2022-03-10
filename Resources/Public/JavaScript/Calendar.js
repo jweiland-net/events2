@@ -5,129 +5,177 @@
  * @param environment contains settings, current PageId, extConf and current tt_content record
  * @constructor
  */
-function Events2Calendar($element, environment) {
-    let me = this;
+function Events2Calendar ($element, environment) {
+  let me = this;
 
-    // 2016-10-24 will be 23.10.2016T22:00:00Z. getDate() returns: 24
-    me.currentDate = new Date(environment.year + "-" + environment.month + "-" + environment.day + "T00:00:00");
-    me.environment = environment;
+  // 2016-10-24 will be 23.10.2016T22:00:00Z. getDate() returns: 24
+  me.currentDate = new Date(environment.year + '-' + environment.month + '-' + environment.day + 'T00:00:00');
+  me.environment = environment;
+  me.allDays = [];
 
-    /**
-     * get days for month
-     * this starts an ajax call to the server and make them globally available
-     *
-     * @param {object} picker
-     * @param {int} month
-     * @param {int} year
-     * @param {string} storagePids
-     * @param {string} categories
-     * @param {int} pidOfListPage
-     * @return void
-     */
-    me.fillPickerWithDaysOfMonth = function(picker, month, year, storagePids, categories, pidOfListPage) {
-        let additionalParameters = [
-            "eID=events2findDaysForMonth",
-            "tx_events2_events[arguments][categories]=" + categories,
-            "tx_events2_events[arguments][month]=" + (month + 1),
-            "tx_events2_events[arguments][year]=" + year,
-            "tx_events2_events[arguments][storagePids]=" + storagePids,
-            "tx_events2_events[arguments][pidOfListPage]=" + pidOfListPage,
-        ];
-
-        fetch(me.getCurrentUrlWithAdditionalParameters(additionalParameters.join("&")), {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then(response => {
-            if (response.ok && response.status === 200) {
-                return response.json();
-            }
-            return Promise.reject(response);
-        }).then(data => {
-            let highlightedDays = [];
-            data.forEach(entry => {
-                highlightedDays.push(new Date(year, month, entry.dayOfMonth, 0, 0, 0))
-            });
-            picker.setHighlightedDays(highlightedDays)
-        }).catch(error => {
-            console.warn('Request error', error);
-        });
-    };
-
-    me.initializeDatePicker = function($element) {
-        let environment = me.environment;
-
-        let startDate = new Date(
-            parseInt(environment.year),
-            parseInt(environment.month) - 1,
-            parseInt(environment.day), 0, 0, 0
-        );
-
-        let picker = new Litepicker({
-            element: $element,
-            inlineMode: true,
-            startDate: startDate,
-            lang: "de-DE",
-            format: "DD.MM.YYYY"
-        });
-
-        picker.on("change:month", (date, calendarIdx) => {
-            me.fillPickerWithDaysOfMonth(
-                picker,
-                date.getMonth(),
-                date.getFullYear(),
-                environment.storagePids,
-                environment.settings.categories,
-                environment.pidOfListPage
-            );
-        });
-
-        picker.on("before:show", (el) => {
-            me.fillPickerWithDaysOfMonth(
-                picker,
-                me.currentDate.getMonth(),
-                me.currentDate.getFullYear(),
-                environment.storagePids,
-                environment.settings.categories,
-                environment.pidOfListPage
-            );
-        });
-
-        picker.on('preselect', (date1, date2) => {
-            console.log("SELECTED");
-        });
-
-        /*picker.on("render:day", (day, date) => {
-
-            console.log(day);
-        });*/
-
-        // In case of showInline either show nor render event will be called. Initialize them manually
-        picker.hide();
-        picker.show();
-    };
-
-    /**
-     * Get current URL with additional parameters
-     *
-     * @param {string} additionalParameters
-     * @return string
-     */
-    me.getCurrentUrlWithAdditionalParameters = function (additionalParameters) {
-        let href = window.location.href;
-        if (href.indexOf("?") > -1) {
-            return href + "&" + additionalParameters;
-        } else {
-            return href + "?" + additionalParameters;
-        }
+  /**
+   * Get current URL with additional parameters
+   *
+   * @param {string} additionalParameters
+   * @return string
+   */
+  me.getCurrentUrlWithAdditionalParameters = function (additionalParameters) {
+    if (window.location.origin) {
+      return window.location.origin + window.location.pathname + '?' + additionalParameters;
+    } else {
+      return window.location.protocol + '//' + window.location.host + window.location.pathname + '?' + additionalParameters;
     }
+  };
 
-    me.initializeDatePicker($element);
+  /**
+   * get days for month
+   * this starts an ajax call to the server and make them globally available
+   *
+   * @param {object} picker
+   * @param {int} month
+   * @param {int} year
+   * @param {string} storagePages
+   * @param {string} categories
+   * @return void
+   */
+  me.fillPickerWithDaysOfMonth = function (picker, month, year, storagePages, categories) {
+    let additionalParameters = [
+      'month=' + (month + 1),
+      'year=' + year,
+      'categories=' + categories,
+      'storagePages=' + storagePages
+    ];
+
+    fetch(me.getCurrentUrlWithAdditionalParameters(additionalParameters.join('&')), {
+      headers: {
+        'Content-Type': 'application/json',
+        'ext-events2': 'getDaysForMonth'
+      }
+    }).then(response => {
+      if (response.ok && response.status === 200) {
+        return response.json();
+      }
+      return Promise.reject(response);
+    }).then(days => {
+      // make global available. Needed for event render:day
+      me.allDays = days;
+      picker.setHighlightedDays(me.getHighlightedDays(days, month, year));
+    }).catch(error => {
+      console.warn('Request error', error);
+    });
+  };
+
+  /**
+   * Get highlighted days which will be clickable for detailed list-view.
+   * No holidays will be added
+   *
+   * @param {object} days
+   * @param {int} month
+   * @param {int} year
+   * @returns array
+   */
+  me.getHighlightedDays = function (days, month, year) {
+    let highlightedDays = [];
+
+    days.forEach(day => {
+      if (!day.isHoliday) {
+        highlightedDays.push(new Date(year, month, day.dayOfMonth, 0, 0, 0));
+      }
+    });
+
+    return highlightedDays;
+  };
+
+  me.initializeDatePicker = function ($element) {
+    let startDate = new Date(
+      parseInt(me.environment.year),
+      parseInt(me.environment.month) - 1,
+      parseInt(me.environment.day), 0, 0, 0
+    );
+
+    let picker = new Litepicker({
+      element: $element,
+      inlineMode: true,
+      startDate: startDate,
+      lang: 'de-DE',
+      format: 'DD.MM.YYYY'
+    });
+
+    picker.on('change:month', (date, calendarIdx) => {
+      me.fillPickerWithDaysOfMonth(
+        picker,
+        date.getMonth(),
+        date.getFullYear(),
+        me.environment.storagePids,
+        me.environment.settings.categories
+      );
+    });
+
+    picker.on('before:show', (el) => {
+      me.fillPickerWithDaysOfMonth(
+        picker,
+        me.currentDate.getMonth(),
+        me.currentDate.getFullYear(),
+        me.environment.storagePids,
+        me.environment.settings.categories
+      );
+    });
+
+    picker.on('preselect', (date1, date2) => {
+      me.getUriForDayAndRedirect(date1);
+    });
+
+    picker.on('render:day', (dayElement, date) => {
+      if (me.allDays !== []) {
+        me.allDays.forEach(day => {
+          if (day.dayOfMonth === parseInt(dayElement.innerHTML)) {
+            day.additionalClasses.forEach(className => {
+              dayElement.classList.add(className);
+            });
+          }
+        });
+      }
+    });
+
+    // In case of showInline either "show" nor "render" event will be called. Initialize them manually
+    picker.hide();
+    picker.show();
+  };
+
+  me.getUriForDayAndRedirect = function (date) {
+    let additionalParameters = [
+      'day=' + date.getDate(),
+      'month=' + (date.getMonth() + 1),
+      'year=' + date.getFullYear(),
+      'pidOfListPage=' + me.environment.pidOfListPage
+    ];
+
+    fetch(me.getCurrentUrlWithAdditionalParameters(additionalParameters.join('&')), {
+      headers: {
+        'Content-Type': 'application/json',
+        'ext-events2': 'getUriForDay'
+      }
+    }).then(response => {
+      if (response.ok && response.status === 200) {
+        return response.json();
+      }
+      return Promise.reject(response);
+    }).then(data => {
+      if (data.uri !== '') {
+        console.log('Redirect to: ' + data.uri);
+        window.location.href = data.uri;
+      }
+    }).catch(error => {
+      console.warn('Request error', error);
+    });
+  };
+
+  me.initializeDatePicker($element);
 }
 
-Array.from(document.querySelectorAll("div.events2calendar")).forEach($element => {
-    new Events2Calendar(
-        $element,
-        JSON.parse($element.getAttribute('data-environment'))
-    );
+Array.from(document.querySelectorAll('div.events2calendar')).forEach($element => {
+  new Events2Calendar(
+    $element,
+    JSON.parse($element.getAttribute('data-environment'))
+  );
 });

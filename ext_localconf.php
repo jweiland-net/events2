@@ -38,13 +38,11 @@ call_user_func(static function (): void {
         'Events2',
         'Search',
         [
-            \JWeiland\Events2\Controller\SearchController::class => 'show',
-            \JWeiland\Events2\Controller\AjaxController::class => 'callAjaxObject',
+            \JWeiland\Events2\Controller\SearchController::class => 'show'
         ],
         // non-cacheable actions
         [
-            \JWeiland\Events2\Controller\SearchController::class => 'show',
-            \JWeiland\Events2\Controller\AjaxController::class => 'callAjaxObject',
+            \JWeiland\Events2\Controller\SearchController::class => 'show'
         ]
     );
 
@@ -106,7 +104,6 @@ call_user_func(static function (): void {
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('<INCLUDE_TYPOSCRIPT: source="FILE:EXT:events2/Configuration/TSconfig/ContentElementWizard.txt">');
 
     // register eID scripts
-    $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['events2findDaysForMonth'] = \JWeiland\Events2\Ajax\FindDaysForMonth::class . '::processRequest';
     $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['events2findLocations'] = \JWeiland\Events2\Ajax\FindLocations::class . '::processRequest';
 
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['aspects']['TimestampMapper'] = \JWeiland\Events2\Routing\Aspect\TimestampMapper::class;
