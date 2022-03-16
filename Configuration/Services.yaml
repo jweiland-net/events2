@@ -61,7 +61,7 @@ services:
     public: true
 
   # Must be public, because it was called by makeInstance in TYPO3s UpgradeWizardsService
-  JWeiland\Events2\Updater\EventsSlugUpdater:
+  JWeiland\Events2\Upgrade\EventsSlugUpgrade:
     public: true
 
   # Called by makeInstance in event model where constructors are not loaded in some cases

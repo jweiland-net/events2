@@ -3,10 +3,52 @@ if (!defined('TYPO3_MODE')) {
     die('Access denied.');
 }
 
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['events2_events'] = 'select_key';
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['events2_events'] = 'pi_flexform';
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['events2_list'] = 'select_key';
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['events2_list'] = 'pi_flexform';
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-    'events2_events',
+    'events2_list',
+    'FILE:EXT:events2/Configuration/FlexForms/Events.xml'
+);
+
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['events2_listlatest'] = 'select_key';
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['events2_listlatest'] = 'pi_flexform';
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
+    'events2_listlatest',
+    'FILE:EXT:events2/Configuration/FlexForms/Events.xml'
+);
+
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['events2_listtoday'] = 'select_key';
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['events2_listtoday'] = 'pi_flexform';
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
+    'events2_listtoday',
+    'FILE:EXT:events2/Configuration/FlexForms/Events.xml'
+);
+
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['events2_listweek'] = 'select_key';
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['events2_listweek'] = 'pi_flexform';
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
+    'events2_listweek',
+    'FILE:EXT:events2/Configuration/FlexForms/Events.xml'
+);
+
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['events2_listrange'] = 'select_key';
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['events2_listrange'] = 'pi_flexform';
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
+    'events2_listrange',
+    'FILE:EXT:events2/Configuration/FlexForms/Events.xml'
+);
+
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['events2_show'] = 'select_key';
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['events2_show'] = 'pi_flexform';
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
+    'events2_show',
+    'FILE:EXT:events2/Configuration/FlexForms/Events.xml'
+);
+
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['events2_management'] = 'select_key';
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['events2_management'] = 'pi_flexform';
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
+    'events2_management',
     'FILE:EXT:events2/Configuration/FlexForms/Events.xml'
 );
 
@@ -17,17 +59,54 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['events2_cale
     'FILE:EXT:events2/Configuration/FlexForms/Calendar.xml'
 );
 
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['events2_search'] = 'select_key';
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['events2_search'] = 'pi_flexform';
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['events2_searchform'] = 'select_key';
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['events2_searchform'] = 'pi_flexform';
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-    'events2_search',
+    'events2_searchform',
+    'FILE:EXT:events2/Configuration/FlexForms/Search.xml'
+);
+
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['events2_searchresults'] = 'select_key';
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['events2_searchresults'] = 'pi_flexform';
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
+    'events2_searchresults',
     'FILE:EXT:events2/Configuration/FlexForms/Search.xml'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Events2',
-    'Events',
-    'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.events.title'
+    'List',
+    'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.list.title'
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'Events2',
+    'ListLatest',
+    'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.listLatest.title'
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'Events2',
+    'ListToday',
+    'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.listToday.title'
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'Events2',
+    'ListWeek',
+    'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.listWeek.title'
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'Events2',
+    'ListRange',
+    'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.listRange.title'
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'Events2',
+    'Management',
+    'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.management.title'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
@@ -38,6 +117,12 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['events2_sear
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Events2',
-    'Search',
-    'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.search.title'
+    'SearchForm',
+    'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.searchForm.title'
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'Events2',
+    'SearchResults',
+    'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.searchResults.title'
 );

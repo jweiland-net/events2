@@ -3,29 +3,94 @@
 	<file source-language="en" datatype="plaintext" original="messages" date="2013-03-40T10:38:40Z" product-name="events2">
 		<header/>
 		<body>
-			<trans-unit id="plugin.events.title">
-				<source>Events</source>
-				<target>Veranstaltungen</target>
+			<trans-unit id="plugin.list.title">
+				<source>List all events</source>
+				<target>Liste aller Veranstaltungen</target>
 			</trans-unit>
-			<trans-unit id="plugin.events.description">
-				<source>Shows a list of events. You can configure them to show the latest, next or next week events.</source>
-				<target>Zeigt eine Liste von Veranstaltungen an. Sie können angeben, ob Sie die aktuellsten, die nächsten oder die der nächsten Woche anzeigen lassen wollen.</target>
+			<trans-unit id="plugin.list.description">
+				<source>Displays a list of all events. You can reduce this list to appropriate categories and organizers.</source>
+				<target>Zeigt eine Liste von allen Veranstaltungen an. Sie können diese Liste auf entsprechende Kategorien und Veranstalter reduzieren.</target>
 			</trans-unit>
+
+			<trans-unit id="plugin.listLatest.title">
+				<source>List latest events</source>
+				<target>Liste der neuesten Veranstaltungen</target>
+			</trans-unit>
+			<trans-unit id="plugin.listLatest.description">
+				<source>Displays a list of latest events. You can reduce this list to appropriate categories and organizers.</source>
+				<target>Zeigt eine Liste der neuesten Veranstaltungen an. Sie können diese Liste auf entsprechende Kategorien und Veranstalter reduzieren.</target>
+			</trans-unit>
+
+			<trans-unit id="plugin.listToday.title">
+				<source>List of today's events</source>
+				<target>Liste der heutigen Veranstaltungen</target>
+			</trans-unit>
+			<trans-unit id="plugin.listToday.description">
+				<source>Displays a list of today's events. You can reduce this list to appropriate categories and organizers.</source>
+				<target>Zeigt eine Liste der heutigen Veranstaltungen an. Sie können diese Liste auf entsprechende Kategorien und Veranstalter reduzieren.</target>
+			</trans-unit>
+
+			<trans-unit id="plugin.listWeek.title">
+				<source>List of this week's events</source>
+				<target>Liste dieswöchige Veranstaltungen</target>
+			</trans-unit>
+			<trans-unit id="plugin.listWeek.description">
+				<source>Displays a list of this week's events. You can reduce this list to appropriate categories and organizers.</source>
+				<target>Zeigt eine Liste der dieswöchigen Veranstaltungen an. Sie können diese Liste auf entsprechende Kategorien und Veranstalter reduzieren.</target>
+			</trans-unit>
+
+			<trans-unit id="plugin.listRange.title">
+				<source>List events in date range</source>
+				<target>Liste Veranstaltungen im Datumsbereich</target>
+			</trans-unit>
+			<trans-unit id="plugin.listRange.description">
+				<source>Displays a list of events in date range. You can reduce this list to appropriate categories and organizers.</source>
+				<target>Zeigt eine Liste von Veranstaltungen im Datumsbereich. Sie können diese Liste auf entsprechende Kategorien und Veranstalter reduzieren.</target>
+			</trans-unit>
+
+			<trans-unit id="plugin.show.title">
+				<source>Show single event</source>
+				<target>Einzelne Veranstaltung anzeigen</target>
+			</trans-unit>
+			<trans-unit id="plugin.show.description">
+				<source>Use this plugin to display a single event or for the detailed view.</source>
+				<target>Nutzen Sie dieses Plugin, um eine einzelne Veranstaltung anzeigen zu lassen oder für die Detailansicht.</target>
+			</trans-unit>
+
+			<trans-unit id="plugin.management.title">
+				<source>Manage events</source>
+				<target>Veranstaltungen verwalten</target>
+			</trans-unit>
+			<trans-unit id="plugin.management.description">
+				<source>Use this plugin to create, edit and view a user's events.</source>
+				<target>Verwenden Sie dieses Plugin zum Erstellen, Bearbeiten und Anzeigen von Veranstaltungen eines Benutzers.</target>
+			</trans-unit>
+
 			<trans-unit id="plugin.calendar.title">
-				<source>Events: Calendar</source>
-				<target>Veranstaltungen: Kalender</target>
+				<source>Show monthly calendar</source>
+				<target>Zeige Monatskalender</target>
 			</trans-unit>
 			<trans-unit id="plugin.calendar.description">
-				<source>Shows a little calendar. If a day has some events, this day will be highlighted and clickable, so you can open a list of all events for this day.</source>
-				<target>Zeigt einen kleinen Kalender an. Wenn ein Tag Veranstaltungen hat, dann wird der Tag hervorgehoben und mit einem Klick gelangt man auf eine Liste aller Veranstaltungen an diesem Tag.</target>
+				<source>Displays a monthly calendar highlighting days with events. By clicking, events of the selected day are displayed.</source>
+				<target>Zeigt einen Monatskalender an, der Tage mit Veranstaltungen hervorhebt. Mittels Klick werden Veranstaltungen des gewählten Tages angezeigt.</target>
 			</trans-unit>
-			<trans-unit id="plugin.search.title">
-				<source>Events: Search</source>
-				<target>Veranstaltungen: Suche</target>
+
+			<trans-unit id="plugin.searchForm.title">
+				<source>Show search form</source>
+				<target>Zeige Suchformular</target>
 			</trans-unit>
-			<trans-unit id="plugin.search.description">
-				<source>Shows a form to search for events. You should add it to the same page, where you have inserted the event list plugin.</source>
-				<target>Zeigt ein Formular an, um nach Veranstaltungen zu suchen. Fügen Sie dieses Plugin auf die gleiche Seite ein, auf der Sie auch das Plugin für die Veranstaltungsliste eingebunden haben.</target>
+			<trans-unit id="plugin.searchForm.description">
+				<source>Shows the search form for events. Here a visitor can filter the events according to several criteria.</source>
+				<target>Zeigt das Suchformular für Veranstaltungen. Hier kann ein Besucher nach mehrere Kriterien die Veranstaltungen filtern.</target>
+			</trans-unit>
+
+			<trans-unit id="plugin.searchResults.title">
+				<source>Show search results</source>
+				<target>Zeige Suchergebnisse</target>
+			</trans-unit>
+			<trans-unit id="plugin.searchResults.description">
+				<source>Displays the search results for the search form.</source>
+				<target>Zeigt die Suchergebnisse für das Suchformular an.</target>
 			</trans-unit>
 
 			<trans-unit id="tx_events2_tab">

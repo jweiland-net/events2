@@ -6,19 +6,79 @@ if (!defined('TYPO3_MODE')) {
 call_user_func(static function (): void {
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
         'Events2',
-        'Events',
+        'List',
         [
-            \JWeiland\Events2\Controller\DayController::class => 'list, listLatest, listToday, listWeek, listRange, listSearchResults, show, showByTimestamp',
-            \JWeiland\Events2\Controller\EventController::class => 'listMyEvents, new, create, edit, update, delete, activate',
+            \JWeiland\Events2\Controller\DayController::class => 'list, show, showByTimestamp',
             \JWeiland\Events2\Controller\LocationController::class => 'show',
             \JWeiland\Events2\Controller\VideoController::class => 'show',
-            \JWeiland\Events2\Controller\ICalController::class => 'download',
+            \JWeiland\Events2\Controller\ICalController::class => 'download'
+        ],
+    );
+
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+        'Events2',
+        'ListLatest',
+        [
+            \JWeiland\Events2\Controller\DayController::class => 'listLatest, show, showByTimestamp',
+            \JWeiland\Events2\Controller\LocationController::class => 'show',
+            \JWeiland\Events2\Controller\VideoController::class => 'show',
+            \JWeiland\Events2\Controller\ICalController::class => 'download'
+        ],
+    );
+
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+        'Events2',
+        'ListToday',
+        [
+            \JWeiland\Events2\Controller\DayController::class => 'listToday, show, showByTimestamp',
+            \JWeiland\Events2\Controller\LocationController::class => 'show',
+            \JWeiland\Events2\Controller\VideoController::class => 'show',
+            \JWeiland\Events2\Controller\ICalController::class => 'download'
+        ],
+    );
+
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+        'Events2',
+        'ListWeek',
+        [
+            \JWeiland\Events2\Controller\DayController::class => 'listWeek, show, showByTimestamp',
+            \JWeiland\Events2\Controller\LocationController::class => 'show',
+            \JWeiland\Events2\Controller\VideoController::class => 'show',
+            \JWeiland\Events2\Controller\ICalController::class => 'download'
+        ],
+    );
+
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+        'Events2',
+        'ListRange',
+        [
+            \JWeiland\Events2\Controller\DayController::class => 'listRange, show, showByTimestamp',
+            \JWeiland\Events2\Controller\LocationController::class => 'show',
+            \JWeiland\Events2\Controller\VideoController::class => 'show',
+            \JWeiland\Events2\Controller\ICalController::class => 'download'
+        ],
+    );
+
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+        'Events2',
+        'Show',
+        [
+            \JWeiland\Events2\Controller\DayController::class => 'show',
+            \JWeiland\Events2\Controller\LocationController::class => 'show',
+            \JWeiland\Events2\Controller\VideoController::class => 'show',
+            \JWeiland\Events2\Controller\ICalController::class => 'download'
+        ],
+    );
+
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+        'Events2',
+        'Management',
+        [
+            \JWeiland\Events2\Controller\EventController::class => 'listMyEvents, new, create, edit, update, delete, activate'
         ],
         // non-cacheable actions
         [
-            \JWeiland\Events2\Controller\DayController::class => 'listSearchResults',
-            \JWeiland\Events2\Controller\EventController::class => 'create, edit, update, delete, activate',
-            \JWeiland\Events2\Controller\ICalController::class => 'download',
+            \JWeiland\Events2\Controller\EventController::class => 'create, edit, update, delete, activate'
         ]
     );
 
@@ -26,23 +86,31 @@ call_user_func(static function (): void {
         'Events2',
         'Calendar',
         [
-            \JWeiland\Events2\Controller\CalendarController::class => 'show',
+            \JWeiland\Events2\Controller\CalendarController::class => 'show'
         ],
         // non-cacheable actions
         [
-            \JWeiland\Events2\Controller\CalendarController::class => 'show',
+            \JWeiland\Events2\Controller\CalendarController::class => 'show'
         ]
     );
 
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
         'Events2',
-        'Search',
+        'SearchForm',
         [
             \JWeiland\Events2\Controller\SearchController::class => 'show'
         ],
+    );
+
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+        'Events2',
+        'SearchResults',
+        [
+            \JWeiland\Events2\Controller\DayController::class => 'listSearchResults'
+        ],
         // non-cacheable actions
         [
-            \JWeiland\Events2\Controller\SearchController::class => 'show'
+            \JWeiland\Events2\Controller\DayController::class => 'listSearchResults'
         ]
     );
 
@@ -101,7 +169,9 @@ call_user_func(static function (): void {
     }
 
     // Add events2 plugin to new element wizard
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('<INCLUDE_TYPOSCRIPT: source="FILE:EXT:events2/Configuration/TSconfig/ContentElementWizard.txt">');
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig(
+        '<INCLUDE_TYPOSCRIPT: source="FILE:EXT:events2/Configuration/TSconfig/ContentElementWizard.tsconfig">'
+    );
 
     // register eID scripts
     $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['events2findLocations'] = \JWeiland\Events2\Ajax\FindLocations::class . '::processRequest';
@@ -130,9 +200,11 @@ call_user_func(static function (): void {
     ];
 
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['events2UpdateSlug']
-        = \JWeiland\Events2\Updater\EventsSlugUpdater::class;
+        = \JWeiland\Events2\Upgrade\EventsSlugUpgrade::class;
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['events2MigrateOrganizer']
-        = \JWeiland\Events2\Updater\MigrateOrganizerToMMUpdater::class;
+        = \JWeiland\Events2\Upgrade\MigrateOrganizerToMMUpgrade::class;
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['events2MigrateDetailInformations']
-        = \JWeiland\Events2\Updater\MigrateDetailInformationsUpdater::class;
+        = \JWeiland\Events2\Upgrade\MigrateDetailInformationsUpgrade::class;
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['events2MoveFlexFormFields']
+        = \JWeiland\Events2\Upgrade\MoveOldFlexFormSettingsUpgrade::class;
 });

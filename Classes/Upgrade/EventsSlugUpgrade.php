@@ -9,7 +9,7 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace JWeiland\Events2\Updater;
+namespace JWeiland\Events2\Upgrade;
 
 use Doctrine\DBAL\Driver\Statement;
 use JWeiland\Events2\Configuration\ExtConf;
@@ -25,7 +25,7 @@ use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 /*
  * Updater to fill empty slug columns of event records
  */
-class EventsSlugUpdater implements UpgradeWizardInterface
+class EventsSlugUpgrade implements UpgradeWizardInterface
 {
     protected PathSegmentHelper $pathSegmentHelper;
 
