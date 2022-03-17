@@ -3,6 +3,8 @@
 			xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
 			data-namespace-typo3-fluid="true">
 
+<h4>Events2</h4>
+
 <table class="table">
 	<thead>
 	<tr>
@@ -15,12 +17,29 @@
 		<td><strong>Plugin</strong></td>
 		<td>
 			<f:switch expression="{list_type}">
-				<f:case value="events2_search">Events2 Search</f:case>
-				<f:case value="events2_calendar">Events2 Calendar</f:case>
-				<f:defaultCase>Events</f:defaultCase>
+				<f:case value="events2_show">Detail view</f:case>
+				<f:case value="events2_management">Management</f:case>
+				<f:case value="events2_calendar">Calendar</f:case>
+				<f:case value="events2_searchform">Search form</f:case>
+				<f:case value="events2_searchresults">Search results</f:case>
+				<f:defaultCase>List events</f:defaultCase>
 			</f:switch>
 		</td>
 	</tr>
+	<f:if condition="{list_type} == 'events2_list'">
+		<tr>
+			<td><strong>List type</strong></td>
+			<td>
+				<f:switch expression="{pi_flexform_transformed.settings.listType}">
+					<f:case value="listLatest">Latest</f:case>
+					<f:case value="listToday">Today</f:case>
+					<f:case value="listWeek">Week</f:case>
+					<f:case value="listRange">Range</f:case>
+					<f:defaultCase>All</f:defaultCase>
+				</f:switch>
+			</td>
+		</tr>
+	</f:if>
 	<f:if condition="{pi_flexform_transformed.settings.pidOfDetailPage}">
 		<tr>
 			<td><strong>Detail Page</strong></td>
