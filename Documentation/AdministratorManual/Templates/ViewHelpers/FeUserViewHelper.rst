@@ -12,6 +12,6 @@ returns its value. We have removed the *password* property for security reasons.
 Example
 =======
 
-Code: ::
+.. code-block:: html
 
    {e2:feUser(field: 'username')}

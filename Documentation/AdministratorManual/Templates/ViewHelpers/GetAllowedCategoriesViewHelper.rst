@@ -19,7 +19,7 @@ the allowed categories only.
 Example
 =======
 
-Code: ::
+.. code-block:: html
 
    <f:for each="{e2:getAllowedCategories(event: event, pluginCategories: settings.categories)}" as="category" iteration="iterator">
      <f:if condition="{iterator.isFirst}">{category.title}</f:if>

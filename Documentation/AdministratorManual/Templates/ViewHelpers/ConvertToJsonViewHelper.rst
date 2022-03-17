@@ -16,6 +16,6 @@ accessible format for JavaScript.
 Example
 =======
 
-Code: ::
+.. code-block:: html
 
    <div class="events2calendar" data-environment="{environment->e2:convertToJson()}"></div>

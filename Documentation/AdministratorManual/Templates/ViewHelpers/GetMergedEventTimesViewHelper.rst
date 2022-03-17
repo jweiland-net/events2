@@ -19,7 +19,7 @@ the correct time record(s) as array.
 Example
 =======
 
-Code: ::
+.. code-block:: html
 
    <f:alias map="{times: '{e2:getMergedEventTimes(event: day.event, date: date)}'}">
      <f:for each="{times}" as="time">

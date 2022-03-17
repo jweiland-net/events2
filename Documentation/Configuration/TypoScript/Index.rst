@@ -113,15 +113,6 @@ If you use one of the above settings, it would be useful to define the *pidOfLis
 a link back to list works like expected.
 
 
-settings.includeDeTranslationForCalendar
-""""""""""""""""""""""""""""""""""""""""
-
-Default: 0
-
-This is only for our german friends of events2. We are using the calendar of jquery UI Framework, where all
-the month names and weekdays are in english translation only. If you set this to 1, we will include a german
-translation file. Adapt this mechanism for other translations.
-
 settings.userGroup
 """"""""""""""""""
 
