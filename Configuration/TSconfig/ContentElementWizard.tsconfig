@@ -11,42 +11,6 @@ mod.wizards.newContentElement.wizardItems.z-ext-events2 {
         list_type = events2_list
       }
     }
-    events2listlatest {
-      iconIdentifier = ext-events2-wizard-icon
-      title = LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.listLatest.title
-      description = LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.listLatest.description
-      tt_content_defValues {
-        CType = list
-        list_type = events2_listlatest
-      }
-    }
-    events2listtoday {
-      iconIdentifier = ext-events2-wizard-icon
-      title = LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.listToday.title
-      description = LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.listToday.description
-      tt_content_defValues {
-        CType = list
-        list_type = events2_listtoday
-      }
-    }
-    events2listweek {
-      iconIdentifier = ext-events2-wizard-icon
-      title = LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.listWeek.title
-      description = LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.listWeek.description
-      tt_content_defValues {
-        CType = list
-        list_type = events2_listweek
-      }
-    }
-    events2listrange {
-      iconIdentifier = ext-events2-wizard-icon
-      title = LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.listRange.title
-      description = LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.listRange.description
-      tt_content_defValues {
-        CType = list
-        list_type = events2_listrange
-      }
-    }
     events2show {
       iconIdentifier = ext-events2-wizard-icon
       title = LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.show.title
@@ -98,10 +62,6 @@ mod.wizards.newContentElement.wizardItems.z-ext-events2 {
 
 # Add CType Preview
 mod.web_layout.tt_content.preview.list.events2_list = EXT:events2/Resources/Private/Templates/PluginPreview/Events.html
-mod.web_layout.tt_content.preview.list.events2_listlatest = EXT:events2/Resources/Private/Templates/PluginPreview/Events.html
-mod.web_layout.tt_content.preview.list.events2_listtoday = EXT:events2/Resources/Private/Templates/PluginPreview/Events.html
-mod.web_layout.tt_content.preview.list.events2_listweek = EXT:events2/Resources/Private/Templates/PluginPreview/Events.html
-mod.web_layout.tt_content.preview.list.events2_listrange = EXT:events2/Resources/Private/Templates/PluginPreview/Events.html
 mod.web_layout.tt_content.preview.list.events2_show = EXT:events2/Resources/Private/Templates/PluginPreview/Events.html
 mod.web_layout.tt_content.preview.list.events2_management = EXT:events2/Resources/Private/Templates/PluginPreview/Events.html
 mod.web_layout.tt_content.preview.list.events2_calendar = EXT:events2/Resources/Private/Templates/PluginPreview/Events.html

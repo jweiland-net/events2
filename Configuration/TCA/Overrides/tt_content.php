@@ -10,34 +10,6 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['events2_list
     'FILE:EXT:events2/Configuration/FlexForms/Events.xml'
 );
 
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['events2_listlatest'] = 'select_key';
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['events2_listlatest'] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-    'events2_listlatest',
-    'FILE:EXT:events2/Configuration/FlexForms/Events.xml'
-);
-
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['events2_listtoday'] = 'select_key';
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['events2_listtoday'] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-    'events2_listtoday',
-    'FILE:EXT:events2/Configuration/FlexForms/Events.xml'
-);
-
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['events2_listweek'] = 'select_key';
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['events2_listweek'] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-    'events2_listweek',
-    'FILE:EXT:events2/Configuration/FlexForms/Events.xml'
-);
-
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['events2_listrange'] = 'select_key';
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['events2_listrange'] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-    'events2_listrange',
-    'FILE:EXT:events2/Configuration/FlexForms/Events.xml'
-);
-
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['events2_show'] = 'select_key';
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['events2_show'] = 'pi_flexform';
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
@@ -81,26 +53,8 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['events2_sear
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Events2',
-    'ListLatest',
-    'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.listLatest.title'
-);
-
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Events2',
-    'ListToday',
-    'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.listToday.title'
-);
-
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Events2',
-    'ListWeek',
-    'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.listWeek.title'
-);
-
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Events2',
-    'ListRange',
-    'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.listRange.title'
+    'Show',
+    'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.show.title'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
