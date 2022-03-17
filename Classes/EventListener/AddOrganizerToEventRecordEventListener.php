@@ -27,7 +27,7 @@ class AddOrganizerToEventRecordEventListener extends AbstractControllerEventList
     protected UserRepository $userRepository;
 
     protected array $allowedControllerActions = [
-        'Event' => [
+        'Management' => [
             'create'
         ]
     ];

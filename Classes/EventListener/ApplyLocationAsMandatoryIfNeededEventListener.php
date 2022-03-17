@@ -29,7 +29,7 @@ class ApplyLocationAsMandatoryIfNeededEventListener extends AbstractControllerEv
     protected ExtConf $extConf;
 
     protected array $allowedControllerActions = [
-        'Event' => [
+        'Management' => [
             'create',
             'update'
         ]

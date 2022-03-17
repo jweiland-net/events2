@@ -23,7 +23,7 @@ class AddPaginatorEventListener extends AbstractControllerEventListener
     protected int $itemsPerPage = 15;
 
     protected array $allowedControllerActions = [
-        'Day' => [
+        'List' => [
             'list',
             'listLatest',
             'listToday',

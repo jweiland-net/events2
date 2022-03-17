@@ -22,7 +22,7 @@ class RegisterHiddenEventEventListener extends AbstractControllerEventListener
     protected EventRepository $eventRepository;
 
     protected array $allowedControllerActions = [
-        'Event' => [
+        'Management' => [
             'edit',
             'update'
         ]

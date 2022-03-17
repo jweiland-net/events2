@@ -25,7 +25,7 @@ class SetDateFormatForPropertyMappingEventListener extends AbstractControllerEve
     protected string $defaultDateFormat = 'd.m.Y';
 
     protected array $allowedControllerActions = [
-        'Event' => [
+        'Management' => [
             'create',
             'update'
         ]

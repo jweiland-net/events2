@@ -24,7 +24,7 @@ class DeleteVideoLinkIfEmptyEventListener extends AbstractControllerEventListene
     protected LinkRepository $linkRepository;
 
     protected array $allowedControllerActions = [
-        'Event' => [
+        'Management' => [
             'create',
             'update'
         ]

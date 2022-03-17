@@ -26,7 +26,7 @@ class AssignMediaTypeConverterEventListener extends AbstractControllerEventListe
     protected UploadMultipleFilesConverter $uploadMultipleFilesConverter;
 
     protected array $allowedControllerActions = [
-        'Event' => [
+        'Management' => [
             'create',
             'update'
         ]

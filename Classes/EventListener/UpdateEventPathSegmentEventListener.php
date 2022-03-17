@@ -34,7 +34,7 @@ class UpdateEventPathSegmentEventListener extends AbstractControllerEventListene
      * link to the detail page. If it was needed to change the link, please update slug in TYPO3 backend.
      */
     protected array $allowedControllerActions = [
-        'Event' => [
+        'Management' => [
             'create'
         ]
     ];

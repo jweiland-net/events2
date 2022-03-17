@@ -22,10 +22,8 @@ use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 class AllowSearchParameterEventListener extends AbstractControllerEventListener
 {
     protected array $allowedControllerActions = [
-        'Day' => [
-            'listSearchResults'
-        ],
         'Search' => [
+            'listSearchResults',
             'show'
         ]
     ];
