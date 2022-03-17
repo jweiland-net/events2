@@ -165,7 +165,7 @@ class DataHandlerTest extends FunctionalTestCase
             ->from('be_users')
             ->where('uid=2')
             ->execute()
-            ->fetch();
+            ->fetch(\PDO::FETCH_ASSOC);
 
         $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
         $GLOBALS['BE_USER'] = new BackendUserAuthentication();
@@ -210,7 +210,7 @@ class DataHandlerTest extends FunctionalTestCase
                 )
             )
             ->execute()
-            ->fetchColumn(0);
+            ->fetchColumn();
 
         self::assertSame(
             0,
