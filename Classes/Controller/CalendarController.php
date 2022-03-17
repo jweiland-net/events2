@@ -17,7 +17,7 @@ use JWeiland\Events2\Service\TypoScriptService;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 /*
- * Controller to show the jquery UI calendar. Further is stores the selected month in user-session
+ * Controller to show the LiteCalendar. Further, it stores the selected month in user-session
  */
 class CalendarController extends AbstractController
 {
