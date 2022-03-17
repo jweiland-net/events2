@@ -8,51 +8,8 @@ call_user_func(static function (): void {
         'Events2',
         'List',
         [
-            \JWeiland\Events2\Controller\DayController::class => 'list, show, showByTimestamp',
-            \JWeiland\Events2\Controller\LocationController::class => 'show',
-            \JWeiland\Events2\Controller\VideoController::class => 'show',
-            \JWeiland\Events2\Controller\ICalController::class => 'download'
-        ],
-    );
-
-    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-        'Events2',
-        'ListLatest',
-        [
-            \JWeiland\Events2\Controller\DayController::class => 'listLatest, show, showByTimestamp',
-            \JWeiland\Events2\Controller\LocationController::class => 'show',
-            \JWeiland\Events2\Controller\VideoController::class => 'show',
-            \JWeiland\Events2\Controller\ICalController::class => 'download'
-        ],
-    );
-
-    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-        'Events2',
-        'ListToday',
-        [
-            \JWeiland\Events2\Controller\DayController::class => 'listToday, show, showByTimestamp',
-            \JWeiland\Events2\Controller\LocationController::class => 'show',
-            \JWeiland\Events2\Controller\VideoController::class => 'show',
-            \JWeiland\Events2\Controller\ICalController::class => 'download'
-        ],
-    );
-
-    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-        'Events2',
-        'ListWeek',
-        [
-            \JWeiland\Events2\Controller\DayController::class => 'listWeek, show, showByTimestamp',
-            \JWeiland\Events2\Controller\LocationController::class => 'show',
-            \JWeiland\Events2\Controller\VideoController::class => 'show',
-            \JWeiland\Events2\Controller\ICalController::class => 'download'
-        ],
-    );
-
-    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-        'Events2',
-        'ListRange',
-        [
-            \JWeiland\Events2\Controller\DayController::class => 'listRange, show, showByTimestamp',
+            \JWeiland\Events2\Controller\ListController::class => 'list, listLatest, listToday, listWeek, listRange listByTimestamp',
+            \JWeiland\Events2\Controller\DayController::class => 'show',
             \JWeiland\Events2\Controller\LocationController::class => 'show',
             \JWeiland\Events2\Controller\VideoController::class => 'show',
             \JWeiland\Events2\Controller\ICalController::class => 'download'
