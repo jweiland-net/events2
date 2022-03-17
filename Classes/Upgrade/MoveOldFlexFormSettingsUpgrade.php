@@ -226,44 +226,45 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
 
     protected function migrateSwitchableControllerActions(array &$valueFromDatabase, string $ttContentListType): string
     {
-        try {
-            $actions = ArrayUtility::getValueByPath(
-                $valueFromDatabase,
-                'data/sDEF/lDEF/switchableControllerActions/vDEF'
-            );
-
-            if ($ttContentListType === 'events2_events') {
-                $ttContentListType = 'events2_list';
-                switch ($actions) {
-                    case 'Day->listLatest;Day->show;Day->showByTimestamp;Location->show;Video->show':
-                        $listType = 'listLatest';
-                        $ttContentListType = 'events2_list';
-                        break;
-                    case 'Day->listToday;Day->show;Day->showByTimestamp;Location->show;Video->show':
-                        $listType = 'listToday';
-                        $ttContentListType = 'events2_list';
-                        break;
-                    case 'Day->listThisWeek;Day->show;Day->showByTimestamp;Location->show;Video->show':
-                        $listType = 'listWeek';
-                        $ttContentListType = 'events2_list';
-                        break;
-                    case 'Day->listRange;Day->show;Day->showByTimestamp;Location->show;Video->show':
-                        $listType = 'listRange';
-                        $ttContentListType = 'events2_list';
-                        break;
-                    default:
-                        $listType = 'list';
-                }
-                $valueFromDatabase['data']['sDEF']['lDEF']['settings.listType']['vDEF'] = $listType;
-            } elseif ($ttContentListType === 'events2_search') {
-                $ttContentListType = 'events2_searchform';
+        if ($ttContentListType === 'events2_events') {
+            try {
+                $actions = ArrayUtility::getValueByPath(
+                    $valueFromDatabase,
+                    'data/sDEF/lDEF/switchableControllerActions/vDEF'
+                );
+            } catch (MissingArrayPathException $missingArrayPathException) {
+                // Path does not exist in Array.
+                $actions = '';
             }
 
-            // Remove old reference
-            unset($valueFromDatabase['data']['sDEF']['lDEF']['switchableControllerActions']);
-        } catch (MissingArrayPathException $missingArrayPathException) {
-            // Path does not exist in Array. Do not update anything
+            $ttContentListType = 'events2_list';
+            switch ($actions) {
+                case 'Day->listLatest;Day->show;Day->showByTimestamp;Location->show;Video->show':
+                    $listType = 'listLatest';
+                    $ttContentListType = 'events2_list';
+                    break;
+                case 'Day->listToday;Day->show;Day->showByTimestamp;Location->show;Video->show':
+                    $listType = 'listToday';
+                    $ttContentListType = 'events2_list';
+                    break;
+                case 'Day->listThisWeek;Day->show;Day->showByTimestamp;Location->show;Video->show':
+                    $listType = 'listWeek';
+                    $ttContentListType = 'events2_list';
+                    break;
+                case 'Day->listRange;Day->show;Day->showByTimestamp;Location->show;Video->show':
+                    $listType = 'listRange';
+                    $ttContentListType = 'events2_list';
+                    break;
+                default:
+                    $listType = 'list';
+            }
+            $valueFromDatabase['data']['sDEF']['lDEF']['settings.listType']['vDEF'] = $listType;
+        } elseif ($ttContentListType === 'events2_search') {
+            $ttContentListType = 'events2_searchform';
         }
+
+        // Remove old reference
+        unset($valueFromDatabase['data']['sDEF']['lDEF']['switchableControllerActions']);
 
         return $ttContentListType;
     }

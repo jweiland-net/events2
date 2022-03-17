@@ -103,7 +103,7 @@ class PathSegmentHelper
         $newSlug = '';
         $statement = $this->getUniqueSlugStatement($uid, $slug);
         $counter = $this->slugCache[$slug] ?? 1;
-        while ($statement->fetch()) {
+        while ($statement->fetch(\PDO::FETCH_ASSOC)) {
             $newSlug = $slug . '-' . $counter;
             $statement->bindValue(1, $newSlug);
             $statement->execute();

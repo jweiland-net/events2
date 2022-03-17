@@ -99,7 +99,7 @@ class EventsSlugUpgrade implements UpgradeWizardInterface
             ->execute();
 
         $connection = $this->getConnectionPool()->getConnectionForTable($this->tableName);
-        while ($recordToUpdate = $statement->fetch()) {
+        while ($recordToUpdate = $statement->fetch(\PDO::FETCH_ASSOC)) {
             if ((string)$recordToUpdate[$this->titleColumn] !== '') {
                 $connection->update(
                     $this->tableName,
@@ -142,7 +142,7 @@ class EventsSlugUpgrade implements UpgradeWizardInterface
         $newSlug = '';
         $statement = $this->getUniqueSlugStatement($uid, $slug);
         $counter = $this->slugCache[$slug] ?? 1;
-        while ($statement->fetch()) {
+        while ($statement->fetch(\PDO::FETCH_ASSOC)) {
             $newSlug = $slug . '-' . $counter;
             $statement->bindValue(1, $newSlug);
             $statement->execute();

@@ -63,7 +63,7 @@ class LocationRepository extends AbstractRepository
 
         $statement = $queryBuilder->execute();
         $locations = [];
-        while ($location = $statement->fetch()) {
+        while ($location = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $locations[] = $location;
         }
 

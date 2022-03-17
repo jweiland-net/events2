@@ -83,7 +83,7 @@ class DayRepository extends AbstractRepository
      * @return QueryResultInterface|Day[]
      * @throws \Exception
      */
-    public function findEvents(string $type, Filter $filter, int $limit = 0): QueryResultInterface
+    public function getDaysForListType(string $type, Filter $filter, int $limit = 0): QueryResultInterface
     {
         /** @var Query $extbaseQuery */
         $extbaseQuery = $this->createQuery();
@@ -441,7 +441,7 @@ class DayRepository extends AbstractRepository
                 )
             )
             ->execute()
-            ->fetch();
+            ->fetch(\PDO::FETCH_ASSOC);
 
         if (empty($day)) {
             $day = [];

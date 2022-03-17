@@ -16,7 +16,7 @@ use JWeiland\Events2\Session\UserSession;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /*
- * Helper class containing various methods to help building variables for jquery calendar
+ * Helper class containing various methods to help to build variables for LiteCalendar
  */
 class CalendarHelper
 {

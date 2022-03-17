@@ -45,7 +45,7 @@ class DatabaseService
         $output = [];
         $connection = $this->getConnectionPool()->getConnectionForTable($tableName);
         $statement = $connection->query('SHOW FULL COLUMNS FROM `' . $tableName . '`');
-        while ($fieldRow = $statement->fetch()) {
+        while ($fieldRow = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $output[$fieldRow['Field']] = $fieldRow;
         }
 
@@ -103,7 +103,7 @@ class DatabaseService
                 $queryBuilder->expr()->orX(...$orConstraints)
             )
             ->execute()
-            ->fetchAll();
+            ->fetchAll(\PDO::FETCH_ASSOC);
 
         if (empty($events)) {
             $events = [];
@@ -195,7 +195,7 @@ class DatabaseService
         return $queryBuilder
             ->where(...$constraint)
             ->execute()
-            ->fetchAll();
+            ->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     public function getConstraintForSingleEvents(QueryBuilder $queryBuilder): string

@@ -21,7 +21,7 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 
 /*
- * This middleware is needed for jQuery calendar. If you click on a day this class will be called
+ * This middleware is needed for LiteCalendar. If you click on a day this class will be called
  * and returns the URI to the expected events for given day.
  */
 class GetUriForDayMiddleware implements MiddlewareInterface

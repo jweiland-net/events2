@@ -87,7 +87,7 @@ class MigrateOrganizerToMMUpgrade implements UpgradeWizardInterface
 
         $mmConnection = $this->getConnectionPool()->getConnectionForTable('tx_events2_event_organizer_mm');
         $eventConnection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_event');
-        while ($event = $statement->fetch()) {
+        while ($event = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $mmConnection->insert(
                 'tx_events2_event_organizer_mm',
                 [

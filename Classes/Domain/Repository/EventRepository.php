@@ -78,7 +78,7 @@ class EventRepository extends AbstractRepository implements HiddenRepositoryInte
                 )
             )
             ->execute()
-            ->fetch();
+            ->fetch(\PDO::FETCH_ASSOC);
 
         if (empty($event)) {
             $event = [];

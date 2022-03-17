@@ -270,7 +270,7 @@ abstract class AbstractImporter implements ImporterInterface
                 )
             )
             ->execute()
-            ->fetch();
+            ->fetch(\PDO::FETCH_ASSOC);
 
         return $organizer ?: [];
     }
@@ -307,7 +307,7 @@ abstract class AbstractImporter implements ImporterInterface
                 )
             )
             ->execute()
-            ->fetch();
+            ->fetch(\PDO::FETCH_ASSOC);
 
         return $location ?: [];
     }
@@ -329,7 +329,7 @@ abstract class AbstractImporter implements ImporterInterface
                 )
             )
             ->execute()
-            ->fetch();
+            ->fetch(\PDO::FETCH_ASSOC);
 
         return $category ?: [];
     }

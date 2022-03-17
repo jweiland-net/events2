@@ -85,7 +85,7 @@ class MigrateDetailInformationsUpgrade implements UpgradeWizardInterface
             ->execute();
 
         $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_event');
-        while ($event = $statement->fetch()) {
+        while ($event = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $connection->update(
                 'tx_events2_domain_model_event',
                 [

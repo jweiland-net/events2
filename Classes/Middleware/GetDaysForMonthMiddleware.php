@@ -28,7 +28,7 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
 
 /*
- * This middleware is needed for jQuery calendar. If you flip to next month, this
+ * This middleware is needed for LiteCalendar. If you flip to next month, this
  * class will be called and returns the events valid for selected month.
  */
 class GetDaysForMonthMiddleware implements MiddlewareInterface
@@ -124,7 +124,7 @@ class GetDaysForMonthMiddleware implements MiddlewareInterface
             )
             ->execute();
 
-        while ($holiday = $statement->fetch()) {
+        while ($holiday = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $days[] = [
                 'dayOfMonth' => (int)$holiday['day'],
                 'isHoliday' => true,
