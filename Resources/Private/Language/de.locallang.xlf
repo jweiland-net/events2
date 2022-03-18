@@ -355,6 +355,23 @@
 				<target>Freier Eintritt</target>
 			</trans-unit>
 
+			<trans-unit id="pageBrowser.first">
+				<source>First</source>
+				<target>Erste</target>
+			</trans-unit>
+			<trans-unit id="pageBrowser.previous">
+				<source>Previous</source>
+				<target>Vorherige</target>
+			</trans-unit>
+			<trans-unit id="pageBrowser.next">
+				<source>Next</source>
+				<target>Nächste</target>
+			</trans-unit>
+			<trans-unit id="pageBrowser.last">
+				<source>Last</source>
+				<target>Letzte</target>
+			</trans-unit>
+
 			<trans-unit id="newEntry">
 				<source>Insert new Event</source>
 				<target>Neue Veranstaltung anlegen</target>

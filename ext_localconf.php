@@ -12,7 +12,7 @@ call_user_func(static function (): void {
             \JWeiland\Events2\Controller\LocationController::class => 'show',
             \JWeiland\Events2\Controller\VideoController::class => 'show',
             \JWeiland\Events2\Controller\ICalController::class => 'download'
-        ],
+        ]
     );
 
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
@@ -23,7 +23,7 @@ call_user_func(static function (): void {
             \JWeiland\Events2\Controller\LocationController::class => 'show',
             \JWeiland\Events2\Controller\VideoController::class => 'show',
             \JWeiland\Events2\Controller\ICalController::class => 'download'
-        ],
+        ]
     );
 
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
@@ -43,10 +43,6 @@ call_user_func(static function (): void {
         'Calendar',
         [
             \JWeiland\Events2\Controller\CalendarController::class => 'show'
-        ],
-        // non-cacheable actions
-        [
-            \JWeiland\Events2\Controller\CalendarController::class => 'show'
         ]
     );
 
@@ -56,6 +52,10 @@ call_user_func(static function (): void {
         [
             \JWeiland\Events2\Controller\SearchController::class => 'show'
         ],
+        // Needs to be uncached, to show dynamic search values again after reload.
+        [
+            \JWeiland\Events2\Controller\SearchController::class => 'show'
+        ]
     );
 
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
@@ -64,7 +64,7 @@ call_user_func(static function (): void {
         [
             \JWeiland\Events2\Controller\SearchController::class => 'listSearchResults'
         ],
-        // non-cacheable actions
+        // needs to be uncached to show fresh search results
         [
             \JWeiland\Events2\Controller\SearchController::class => 'listSearchResults'
         ]

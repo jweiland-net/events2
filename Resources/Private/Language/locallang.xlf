@@ -271,6 +271,20 @@
 			<trans-unit id="tx_events2_domain_model_search.freeEntry">
 				<source>Free entry</source>
 			</trans-unit>
+
+			<trans-unit id="pageBrowser.first">
+				<source>First</source>
+			</trans-unit>
+			<trans-unit id="pageBrowser.previous">
+				<source>Previous</source>
+			</trans-unit>
+			<trans-unit id="pageBrowser.next">
+				<source>Next</source>
+			</trans-unit>
+			<trans-unit id="pageBrowser.last">
+				<source>Last</source>
+			</trans-unit>
+
 			<trans-unit id="newEntry">
 				<source>Insert new Event</source>
 			</trans-unit>
