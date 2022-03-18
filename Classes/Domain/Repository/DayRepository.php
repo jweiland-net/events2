@@ -22,6 +22,7 @@ use JWeiland\Events2\Domain\Model\Search;
 use JWeiland\Events2\Event\ModifyQueriesOfFindByTimestampEvent;
 use JWeiland\Events2\Event\ModifyQueriesOfFindEventsEvent;
 use JWeiland\Events2\Event\ModifyQueriesOfSearchEventsEvent;
+use JWeiland\Events2\Event\ModifyStartEndDateForListTypeEvent;
 use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
@@ -78,12 +79,10 @@ class DayRepository extends AbstractRepository
     }
 
     /**
-     * Find events
-     *
      * @return QueryResultInterface|Day[]
      * @throws \Exception
      */
-    public function getDaysForListType(string $type, Filter $filter, int $limit = 0): QueryResultInterface
+    public function getDaysForListType(string $listType, Filter $filter, int $limit = 0): QueryResultInterface
     {
         /** @var Query $extbaseQuery */
         $extbaseQuery = $this->createQuery();
@@ -123,9 +122,9 @@ class DayRepository extends AbstractRepository
         }
 
         // add date filter
-        $this->databaseService->addConstraintForDate(
+        $this->addConstraintForDate(
             $subQueryBuilder,
-            $type,
+            $listType,
             $queryBuilder,
             'day_sub_query'
         );
@@ -145,13 +144,13 @@ class DayRepository extends AbstractRepository
             ->addOrderBy('day.sort_day_time', 'ASC')
             ->addOrderBy('day.day_time', 'ASC');
 
-        if (!empty($limit)) {
+        if ($limit !== 0) {
             $queryBuilder->setMaxResults($limit);
         }
 
         $this->addMergeFeatureToQuery($subQueryBuilder);
         $this->eventDispatcher->dispatch(
-            new ModifyQueriesOfFindEventsEvent($queryBuilder, $subQueryBuilder, $type, $filter, $this->settings)
+            new ModifyQueriesOfFindEventsEvent($queryBuilder, $subQueryBuilder, $listType, $filter, $this->settings)
         );
         $this->joinSubQueryIntoQueryBuilder($queryBuilder, $subQueryBuilder);
         $extbaseQuery->statement($queryBuilder);
@@ -345,6 +344,58 @@ class DayRepository extends AbstractRepository
         $extbaseQuery->statement($queryBuilder);
 
         return $extbaseQuery->execute();
+    }
+
+    public function addConstraintForDate(
+        QueryBuilder $queryBuilder,
+        string $listType,
+        QueryBuilder $parentQueryBuilder = null,
+        string $alias = 'day'
+    ): void {
+        $startDateTime = $this->dateTimeUtility->convert('today');
+        $endDateTime = $this->dateTimeUtility->convert('today');
+        if (
+            !$startDateTime instanceof \DateTimeImmutable
+            || !$endDateTime instanceof \DateTimeImmutable
+        ) {
+            return;
+        }
+
+        switch ($listType) {
+            case 'listToday':
+                $endDateTime = $endDateTime->modify('23:59:59');
+                break;
+            case 'listRange':
+                // @ToDo: Implement start-/end-date from settings
+                $endDateTime = $endDateTime->modify('+4 weeks');
+                break;
+            case 'listWeek':
+                // 'first day of' does not work for 'weeks'. Using 'this week' jumps to first day of week. Monday
+                $startDateTime = $startDateTime->modify('this week');
+                $endDateTime = $endDateTime->modify('this week +6 days');
+                break;
+            case 'listLatest':
+            case 'list':
+            default:
+                if ($this->extConf->getRecurringPast() === 0) {
+                    // Use current time as days in past are not allowed to be displayed
+                    $startDateTime = new \DateTimeImmutable('now');
+                }
+                $endDateTime = null;
+        }
+
+        /** @var ModifyStartEndDateForListTypeEvent $event */
+        $event = $this->eventDispatcher->dispatch(
+            new ModifyStartEndDateForListTypeEvent($listType, $startDateTime, $endDateTime, $this->settings)
+        );
+
+        $this->databaseService->addConstraintForDateRange(
+            $queryBuilder,
+            $event->getStartDateTime(),
+            $event->getEndDateTime(),
+            $parentQueryBuilder,
+            $alias
+        );
     }
 
     /**

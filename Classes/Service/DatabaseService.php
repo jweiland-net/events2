@@ -253,47 +253,6 @@ class DatabaseService
         );
     }
 
-    public function addConstraintForDate(
-        QueryBuilder $queryBuilder,
-        string $type,
-        QueryBuilder $parentQueryBuilder = null,
-        string $alias = 'day'
-    ): void {
-        $endDateTime = null;
-
-        switch ($type) {
-            case 'today':
-                $startDateTime = $this->dateTimeUtility->convert('today');
-                $endDateTime = clone $startDateTime;
-                $endDateTime->modify('23:59:59');
-                break;
-            case 'range':
-                $startDateTime = $this->dateTimeUtility->convert('today');
-                $endDateTime = $this->dateTimeUtility->convert('today');
-                $endDateTime->modify('+4 weeks');
-                break;
-            case 'thisWeek':
-                // 'first day of' does not work for 'weeks'. Using 'this week' jumps to first day of week. Monday
-                $startDateTime = $this->dateTimeUtility->convert('today');
-                $startDateTime->modify('this week');
-                $endDateTime = $this->dateTimeUtility->convert('today');
-                $endDateTime->modify('this week +6 days');
-                break;
-            case 'latest':
-            case 'list':
-            default:
-                if ($this->extConf->getRecurringPast() === 0) {
-                    // including current time as events in past are not allowed to be displayed
-                    $startDateTime = new \DateTimeImmutable('now');
-                } else {
-                    // exclude current time. Start with 00:00:00
-                    $startDateTime = $this->dateTimeUtility->convert('today');
-                }
-        }
-
-        $this->addConstraintForDateRange($queryBuilder, $startDateTime, $endDateTime, $parentQueryBuilder, $alias);
-    }
-
     /**
      * @param QueryBuilder $queryBuilder
      * @param \DateTime|\DateTimeImmutable $startDateTime
