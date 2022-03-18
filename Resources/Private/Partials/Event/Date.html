@@ -29,6 +29,7 @@
 		|&nbsp;<f:link.action
 			action="show"
 			controller="Day"
+			pluginName="{f:if(condition: settings.pidOfDetailPage, then: 'show', else: 'list')}"
 			pageUid="{settings.pidOfDetailPage}"
 			arguments="{timestamp: day.dayTimeAsTimestamp, event: day.event}"
 			title="{f:translate(key: 'singleView')}: {day.event.title}"
