@@ -57,8 +57,8 @@
 				<target>PID der Listenansicht. Sinnvoll, wenn auch eine Deteilansicht definiert wurde</target>
 			</trans-unit>
 			<trans-unit id="pidOfLocationPage">
-				<source>PID of location page</source>
-				<target>PID der Seite, auf der die GoogleMaps Karte angezeigt werden soll</target>
+				<source>PID of the site for the event</source>
+				<target>PID der Seite für den Veranstaltungsort</target>
 			</trans-unit>
 			<trans-unit id="pidOfSearchPage">
 				<source>PID of search page</source>

@@ -50,7 +50,7 @@
 				<source>PID of list page</source>
 			</trans-unit>
 			<trans-unit id="pidOfLocationPage">
-				<source>PID of location page</source>
+				<source>PID of the site for the event</source>
 			</trans-unit>
 			<trans-unit id="pidOfSearchPage">
 				<source>PID of search page</source>
