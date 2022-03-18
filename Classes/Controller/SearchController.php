@@ -14,10 +14,13 @@ namespace JWeiland\Events2\Controller;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Search;
 use JWeiland\Events2\Domain\Repository\CategoryRepository;
+use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Service\TypoScriptService;
+use JWeiland\Events2\Utility\CacheUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\Category;
+use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 
 /*
@@ -25,9 +28,16 @@ use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
  */
 class SearchController extends AbstractController
 {
+    protected DayRepository $dayRepository;
+
     protected CategoryRepository $categoryRepository;
 
     protected LocationRepository $locationRepository;
+
+    public function injectDayRepository(DayRepository $dayRepository): void
+    {
+        $this->dayRepository = $dayRepository;
+    }
 
     public function injectCategoryRepository(CategoryRepository $categoryRepository): void
     {
@@ -47,9 +57,7 @@ class SearchController extends AbstractController
     public function showAction(?Search $search = null): void
     {
         // Because of the checkbox in search form we have to create a new empty domain model
-        if ($search === null) {
-            $search = GeneralUtility::makeInstance(Search::class);
-        }
+        $search ??= GeneralUtility::makeInstance(Search::class);
 
         if (!$this->settings['mainCategories']) {
             $this->addFlashMessage('Dear Admin: You have forgotten to define some allowed categories in plugin configuration');
@@ -88,5 +96,23 @@ class SearchController extends AbstractController
                 'search' => $gettableSearchProperties
             ]), JSON_THROW_ON_ERROR),
         ]);
+    }
+
+    public function initializeListSearchResultsAction(): void
+    {
+        $this->preProcessControllerAction();
+    }
+
+    public function listSearchResultsAction(?Search $search = null): void
+    {
+        if ($search instanceof Search) {
+            $days = $this->dayRepository->searchEvents($search);
+
+            $this->postProcessAndAssignFluidVariables([
+                'days' => $days
+            ]);
+
+            CacheUtility::addPageCacheTagsByQuery($days->getQuery());
+        }
     }
 }

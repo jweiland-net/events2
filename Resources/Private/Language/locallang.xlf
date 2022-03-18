@@ -328,8 +328,8 @@
 			<trans-unit id="event_topic">
 				<source>Event List by Topics</source>
 			</trans-unit>
-			<trans-unit id="no_event_today">
-				<source>No events today.</source>
+			<trans-unit id="no_events_found">
+				<source>No events found</source>
 			</trans-unit>
 			<trans-unit id="link.listEvents">
 				<source>Show all events</source>

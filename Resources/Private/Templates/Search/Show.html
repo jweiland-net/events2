@@ -10,8 +10,8 @@
 	<form id="events2SearchForm" class="form-horizontal" method="get" name="search" action="{f:uri.page()}">
 		<input type="hidden" name="id" value="{data.pid}" />
 		<input type="hidden" name="no_cache" value="1" />
-		<input type="hidden" name="tx_events2_events[action]" value="listSearchResults" />
-		<input type="hidden" name="tx_events2_events[controller]" value="Day" />
+		<input type="hidden" name="tx_events2_searchresults[action]" value="listSearchResults" />
+		<input type="hidden" name="tx_events2_searchresults[controller]" value="Search" />
 		<f:render partial="Search/FormFields" arguments="{_all}" />
 		<div class="form-group">
 			<div class="col-sm-offset-3 col-sm-9">

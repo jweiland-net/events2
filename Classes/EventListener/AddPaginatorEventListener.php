@@ -25,6 +25,9 @@ class AddPaginatorEventListener extends AbstractControllerEventListener
     protected array $allowedControllerActions = [
         'Day' => [
             'list'
+        ],
+        'Search' => [
+            'listSearchResults'
         ]
     ];
 
@@ -33,6 +36,8 @@ class AddPaginatorEventListener extends AbstractControllerEventListener
         // Do not show pagination for listLatest
         if (
             $this->isValidRequest($event)
+            && ($days = $event->getFluidVariables()['days'] ?? null)
+            && $days !== null
             && ($event->getSettings()['listType'] ?? 'listLatest') !== 'listLatest'
         ) {
             $paginator = new QueryResultPaginator(

@@ -4,8 +4,8 @@ page.includeJSFooter {
   events2Calendar = EXT:events2/Resources/Public/JavaScript/Calendar.js
 }
 
-# search should work with get params of events plugin
-plugin.tx_events2_search.view.pluginNamespace = tx_events2_events
+# search form should react on $_GET params of SearchResults plugin to show search values again in form.
+plugin.tx_events2_searchform.view.pluginNamespace = tx_events2_searchresults
 # but if there was an action called which is not accessible, then call the default action
 plugin.tx_events2_search.mvc.callDefaultActionIfActionCantBeResolved = 1
 

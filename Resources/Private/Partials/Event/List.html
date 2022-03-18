@@ -3,24 +3,19 @@
 			xmlns:e2="http://typo3.org/ns/JWeiland/Events2/ViewHelpers"
 			data-namespace-typo3-fluid="true">
 
-<f:if condition="{days}">
-	<f:then>
-		<ul class="list-group">
-			<f:for each="{days}" as="day">
-				<li class="list-group-item{f:if(condition: day.event.topOfList, then: 'list-group-item-info')}">
-					<strong><f:render partial="Event/Date" arguments="{day: day}" /></strong>
-					<f:render section="title" arguments="{day: day}" />
-					<p>{day.event.teaser}</p>
-				</li>
-			</f:for>
-		</ul>
-	</f:then>
-	<f:else>
-		<div>
-			<f:translate key="no_event_today" />
-		</div>
-	</f:else>
-</f:if>
+<ul class="list-group">
+	<f:for each="{days}" as="day">
+		<li class="list-group-item{f:if(condition: day.event.topOfList, then: 'list-group-item-info')}">
+			<strong><f:render partial="Event/Date" arguments="{day: day}" /></strong>
+
+			<f:render section="title" arguments="{day: day}" />
+
+			<f:if condition="{day.event.teaser}">
+				<p>{day.event.teaser}</p>
+			</f:if>
+		</li>
+	</f:for>
+</ul>
 
 <f:section name="title">
 	<h5 class="media-heading">

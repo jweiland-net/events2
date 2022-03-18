@@ -255,15 +255,15 @@ class DatabaseService
 
     /**
      * @param QueryBuilder $queryBuilder
-     * @param \DateTime|\DateTimeImmutable $startDateTime
-     * @param \DateTime|\DateTimeImmutable|null $endDateTime
+     * @param \DateTimeImmutable $startDateTime
+     * @param \DateTimeImmutable|null $endDateTime
      * @param QueryBuilder|null $parentQueryBuilder
      * @param string $alias
      */
     public function addConstraintForDateRange(
         QueryBuilder $queryBuilder,
         \DateTimeImmutable $startDateTime,
-        \DateTimeImmutable $endDateTime = null,
+        ?\DateTimeImmutable $endDateTime = null,
         QueryBuilder $parentQueryBuilder = null,
         string $alias = 'day'
     ): void {

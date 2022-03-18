@@ -215,7 +215,7 @@ class DayRepository extends AbstractRepository
                     'event_sub_query'
                 );
             }
-        } elseif ($this->settings['categories']) {
+        } elseif (($this->settings['categories'] ?? '') !== '') {
             // visitor has not selected any category. Search within allowed categories in plugin configuration
             $this->databaseService->addConstraintForCategories(
                 $subQueryBuilder,
@@ -225,18 +225,17 @@ class DayRepository extends AbstractRepository
             );
         }
 
-        $today = $this->dateTimeUtility->convert('today');
-        $startDateTime = $search->getEventBegin() ?: $today;
-        $endDateTime = $search->getEventEnd();
-
-        // add startDate and endDate
-        $this->databaseService->addConstraintForDateRange(
-            $subQueryBuilder,
-            $startDateTime,
-            $endDateTime,
-            $queryBuilder,
-            'day_sub_query'
-        );
+        $startDateTime = $search->getEventBegin() ?: $this->dateTimeUtility->convert('today');
+        if ($startDateTime instanceof \DateTimeImmutable) {
+            // add startDate and endDate
+            $this->databaseService->addConstraintForDateRange(
+                $subQueryBuilder,
+                $startDateTime,
+                $search->getEventEnd(),
+                $queryBuilder,
+                'day_sub_query'
+            );
+        }
 
         // add query for event location
         if ($search->getLocation() instanceof Location) {
@@ -428,21 +427,21 @@ class DayRepository extends AbstractRepository
         return $columns;
     }
 
-    /**
+    /*
      * Apply various merge features to query
      */
     protected function addMergeFeatureToQuery(QueryBuilder $subQueryBuilder): void
     {
-        if ($this->settings['mergeRecurringEvents']) {
+        if (($this->settings['mergeRecurringEvents'] ?? '0') === '1') {
             $subQueryBuilder->groupBy('day_sub_query.event');
-        } elseif ($this->settings['mergeEventsAtSameDay']) {
+        } elseif (($this->settings['mergeEventsAtSameDay'] ?? '0') === '1') {
             $subQueryBuilder->groupBy('day_sub_query.event', 'day_sub_query.same_day_time');
         } else {
             $subQueryBuilder->groupBy('day_sub_query.event', 'day_sub_query.sort_day_time');
         }
     }
 
-    /**
+    /*
      * Join SubQuery as SQL-Part into parent QueryBuilder
      */
     protected function joinSubQueryIntoQueryBuilder(QueryBuilder $queryBuilder, QueryBuilder $subQueryBuilder): void
@@ -478,7 +477,7 @@ class DayRepository extends AbstractRepository
         return $this->dayFactory->findDayByEventAndTimestamp($eventUid, $timestamp, $this->createQuery());
     }
 
-    /**
+    /*
      * Nearly the same as "findDayByEventAndTimestamp", but this method was used by PageTitleProvider
      * which is out of Extbase context. So we are using a plain Doctrine Query here.
      */
@@ -506,7 +505,7 @@ class DayRepository extends AbstractRepository
         return $day;
     }
 
-    /**
+    /*
      * Get Sub-QueryBuilder
      */
     protected function getSubQueryBuilder(QueryBuilder $queryBuilder, bool $useStrictLang = false): QueryBuilder

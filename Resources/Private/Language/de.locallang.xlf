@@ -431,9 +431,9 @@
 				<source>Event List by Topics</source>
 				<target>Veranstaltungen nach Sparten</target>
 			</trans-unit>
-			<trans-unit id="no_event_today">
-				<source>No events today.</source>
-				<target>Heute keine Veranstaltungen.</target>
+			<trans-unit id="no_events_found">
+				<source>No events found</source>
+				<target>Keine Veranstaltungen gefunden</target>
 			</trans-unit>
 			<trans-unit id="link.listEvents">
 				<source>Show all events</source>
