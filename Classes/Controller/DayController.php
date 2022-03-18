@@ -11,9 +11,11 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Controller;
 
+use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Utility\CacheUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 
 /*
@@ -48,17 +50,46 @@ class DayController extends AbstractController
         }
     }
 
-    /**
+    public function initializeListAction(): void
+    {
+        $this->preProcessControllerAction();
+    }
+
+    public function listAction(?Filter $filter = null): void
+    {
+        $filter ??= GeneralUtility::makeInstance(Filter::class);
+        $amountOfRecordsToShow = 0;
+        if ($this->settings['listType'] === 'listLatest') {
+            $amountOfRecordsToShow = (int)$this->settings['latest']['amountOfRecordsToShow'];
+        }
+
+        $days = $this->dayRepository->getDaysForListType(
+            $this->settings['listType'] ?? 'list',
+            $filter,
+            $amountOfRecordsToShow
+        );
+
+        $this->postProcessAndAssignFluidVariables([
+            'days' => $days,
+            'filter' => $filter
+        ]);
+
+        CacheUtility::addPageCacheTagsByQuery($days->getQuery());
+    }
+
+    /*
      * I call showAction with int instead of DomainModel to prevent that recursive validators will be called.
      */
     public function showAction(int $event, int $timestamp = 0): void
     {
         $day = $this->dayRepository->findDayByEventAndTimestamp($event, $timestamp);
+
         $this->postProcessControllerAction($day->getEvent(), $day);
 
         $this->postProcessAndAssignFluidVariables([
             'day' => $day
         ]);
+
         CacheUtility::addCacheTagsByEventRecords([$day->getEvent()]);
     }
 }
