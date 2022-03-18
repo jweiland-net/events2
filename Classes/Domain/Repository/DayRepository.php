@@ -377,11 +377,17 @@ class DayRepository extends AbstractRepository
             case 'listLatest':
             case 'list':
             default:
-                if ($this->extConf->getRecurringPast() === 0) {
-                    // Use current time as days in past are not allowed to be displayed
-                    $startDateTime = new \DateTimeImmutable('now');
-                }
                 $endDateTime = null;
+        }
+
+        // Use current DateTime as StartDateTime, if it is not allowed to have StartDateTime in the past.
+        if (
+            $this->extConf->getRecurringPast() === 0
+            && ($currentDateTime = $this->dateTimeUtility->convert('now'))
+            && $currentDateTime instanceof \DateTimeImmutable
+            && $startDateTime < $currentDateTime
+        ) {
+            $startDateTime = $currentDateTime;
         }
 
         /** @var ModifyStartEndDateForListTypeEvent $event */
