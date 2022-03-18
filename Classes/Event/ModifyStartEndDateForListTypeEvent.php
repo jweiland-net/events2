@@ -20,7 +20,7 @@ class ModifyStartEndDateForListTypeEvent
 
     protected \DateTimeImmutable $startDateTime;
 
-    protected \DateTimeImmutable $endDateTime;
+    protected ?\DateTimeImmutable $endDateTime = null;
 
     protected array $settings = [];
 
