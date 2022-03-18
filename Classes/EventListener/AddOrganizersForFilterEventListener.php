@@ -23,12 +23,8 @@ class AddOrganizersForFilterEventListener extends AbstractControllerEventListene
     protected OrganizerRepository $organizerRepository;
 
     protected array $allowedControllerActions = [
-        'List' => [
+        'Day' => [
             'list',
-            'listLatest',
-            'listToday',
-            'listThisWeek',
-            'listRange',
         ]
     ];
 

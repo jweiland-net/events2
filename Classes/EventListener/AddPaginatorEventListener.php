@@ -23,19 +23,18 @@ class AddPaginatorEventListener extends AbstractControllerEventListener
     protected int $itemsPerPage = 15;
 
     protected array $allowedControllerActions = [
-        'List' => [
-            'list',
-            'listLatest',
-            'listToday',
-            'listThisWeek',
-            'listRange',
-            'listSearchResults'
+        'Day' => [
+            'list'
         ]
     ];
 
     public function __invoke(PostProcessFluidVariablesEvent $event): void
     {
-        if ($this->isValidRequest($event)) {
+        // Do not show pagination for listLatest
+        if (
+            $this->isValidRequest($event)
+            && ($event->getSettings()['listType'] ?? 'listLatest') !== 'listLatest'
+        ) {
             $paginator = new QueryResultPaginator(
                 $event->getFluidVariables()['days'],
                 $this->getCurrentPage($event),
@@ -44,7 +43,7 @@ class AddPaginatorEventListener extends AbstractControllerEventListener
 
             $event->addFluidVariable('actionName', $event->getActionName());
             $event->addFluidVariable('paginator', $paginator);
-            $event->addFluidVariable('paginatedDays', $paginator->getPaginatedItems());
+            $event->addFluidVariable('days', $paginator->getPaginatedItems());
             $event->addFluidVariable('pagination', new GetPostPagination($paginator));
         }
     }
