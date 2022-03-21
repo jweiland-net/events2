@@ -49,14 +49,14 @@ class UpdateEventPathSegmentEventListener extends AbstractControllerEventListene
         $this->persistenceManager = $persistenceManager;
     }
 
-    public function __invoke(PostProcessControllerActionEvent $event): void
+    public function __invoke(PostProcessControllerActionEvent $controllerActionEvent): void
     {
         if (
-            $this->isValidRequest($event)
-            && $event->getEvent() instanceof Event
+            $this->isValidRequest($controllerActionEvent)
+            && $controllerActionEvent->getEvent() instanceof Event
         ) {
-            $this->pathSegmentHelper->updatePathSegmentForEvent($event->getEvent());
-            $pathSegment = $event->getEvent()->getPathSegment();
+            $this->pathSegmentHelper->updatePathSegmentForEvent($controllerActionEvent->getEvent());
+            $pathSegment = $controllerActionEvent->getEvent()->getPathSegment();
 
             if ($pathSegment === '' || $pathSegment === '/') {
                 throw new \Exception(

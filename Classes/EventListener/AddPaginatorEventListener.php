@@ -31,42 +31,42 @@ class AddPaginatorEventListener extends AbstractControllerEventListener
         ]
     ];
 
-    public function __invoke(PostProcessFluidVariablesEvent $event): void
+    public function __invoke(PostProcessFluidVariablesEvent $controllerActionEvent): void
     {
         // Do not show pagination for listLatest
         if (
-            $this->isValidRequest($event)
-            && ($days = $event->getFluidVariables()['days'] ?? null)
+            $this->isValidRequest($controllerActionEvent)
+            && ($days = $controllerActionEvent->getFluidVariables()['days'] ?? null)
             && $days !== null
-            && ($event->getSettings()['listType'] ?? 'listLatest') !== 'listLatest'
+            && ($controllerActionEvent->getSettings()['listType'] ?? 'listLatest') !== 'listLatest'
         ) {
             $paginator = new QueryResultPaginator(
-                $event->getFluidVariables()['days'],
-                $this->getCurrentPage($event),
-                $this->getItemsPerPage($event)
+                $controllerActionEvent->getFluidVariables()['days'],
+                $this->getCurrentPage($controllerActionEvent),
+                $this->getItemsPerPage($controllerActionEvent)
             );
 
-            $event->addFluidVariable('actionName', $event->getActionName());
-            $event->addFluidVariable('paginator', $paginator);
-            $event->addFluidVariable('days', $paginator->getPaginatedItems());
-            $event->addFluidVariable('pagination', new GetPostPagination($paginator));
+            $controllerActionEvent->addFluidVariable('actionName', $controllerActionEvent->getActionName());
+            $controllerActionEvent->addFluidVariable('paginator', $paginator);
+            $controllerActionEvent->addFluidVariable('days', $paginator->getPaginatedItems());
+            $controllerActionEvent->addFluidVariable('pagination', new GetPostPagination($paginator));
         }
     }
 
-    protected function getCurrentPage(PostProcessFluidVariablesEvent $event): int
+    protected function getCurrentPage(PostProcessFluidVariablesEvent $controllerActionEvent): int
     {
         $currentPage = 1;
-        if ($event->getRequest()->hasArgument('currentPage')) {
-            $currentPage = $event->getRequest()->getArgument('currentPage');
+        if ($controllerActionEvent->getRequest()->hasArgument('currentPage')) {
+            $currentPage = $controllerActionEvent->getRequest()->getArgument('currentPage');
         }
         return (int)$currentPage;
     }
 
-    protected function getItemsPerPage(PostProcessFluidVariablesEvent $event): int
+    protected function getItemsPerPage(PostProcessFluidVariablesEvent $controllerActionEvent): int
     {
         $itemsPerPage = $this->itemsPerPage;
-        if (isset($event->getSettings()['pageBrowser']['itemsPerPage'])) {
-            $itemsPerPage = $event->getSettings()['pageBrowser']['itemsPerPage'];
+        if (isset($controllerActionEvent->getSettings()['pageBrowser']['itemsPerPage'])) {
+            $itemsPerPage = $controllerActionEvent->getSettings()['pageBrowser']['itemsPerPage'];
         }
         return (int)$itemsPerPage;
     }

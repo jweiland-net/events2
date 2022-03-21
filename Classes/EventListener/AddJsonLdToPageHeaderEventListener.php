@@ -33,16 +33,16 @@ class AddJsonLdToPageHeaderEventListener extends AbstractControllerEventListener
         $this->jsonLdService = $jsonLdService;
     }
 
-    public function __invoke(PostProcessControllerActionEvent $event): void
+    public function __invoke(PostProcessControllerActionEvent $controllerActionEvent): void
     {
-        if (!$this->isValidRequest($event)) {
+        if (!$this->isValidRequest($controllerActionEvent)) {
             return;
         }
 
-        if (!$event->getDay() instanceof Day) {
+        if (!$controllerActionEvent->getDay() instanceof Day) {
             return;
         }
 
-        $this->jsonLdService->addJsonLdToPageHeader($event->getDay());
+        $this->jsonLdService->addJsonLdToPageHeader($controllerActionEvent->getDay());
     }
 }

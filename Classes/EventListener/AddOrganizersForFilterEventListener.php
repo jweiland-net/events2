@@ -33,21 +33,21 @@ class AddOrganizersForFilterEventListener extends AbstractControllerEventListene
         $this->organizerRepository = $organizerRepository;
     }
 
-    public function __invoke(PostProcessFluidVariablesEvent $event): void
+    public function __invoke(PostProcessFluidVariablesEvent $controllerActionEvent): void
     {
-        if (!$this->isValidRequest($event)) {
+        if (!$this->isValidRequest($controllerActionEvent)) {
             return;
         }
 
-        if (!array_key_exists('showFilterForOrganizerInFrontend', $event->getSettings())) {
+        if (!array_key_exists('showFilterForOrganizerInFrontend', $controllerActionEvent->getSettings())) {
             return;
         }
 
-        if (!$event->getSettings()['showFilterForOrganizerInFrontend'] === '1') {
+        if (!$controllerActionEvent->getSettings()['showFilterForOrganizerInFrontend'] === '1') {
             return;
         }
 
-        $event->addFluidVariable(
+        $controllerActionEvent->addFluidVariable(
             'organizers',
             $this->organizerRepository->getOrganizersForFilter()
         );

@@ -11,18 +11,15 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\EventListener;
 
-use JWeiland\Events2\Domain\Model\Link;
-use JWeiland\Events2\Domain\Repository\LinkRepository;
+use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Event\PostProcessControllerActionEvent;
 
 /*
  * As extbase can not automatically remove a related property if it is empty, we have to remove
- * Link model on our own.
+ * Time model on our own.
  */
-class DeleteVideoLinkIfEmptyEventListener extends AbstractControllerEventListener
+class DeleteEventTimeIfEmptyEventListener extends AbstractControllerEventListener
 {
-    protected LinkRepository $linkRepository;
-
     protected array $allowedControllerActions = [
         'Management' => [
             'create',
@@ -30,21 +27,15 @@ class DeleteVideoLinkIfEmptyEventListener extends AbstractControllerEventListene
         ]
     ];
 
-    public function __construct(LinkRepository $linkRepository)
-    {
-        $this->linkRepository = $linkRepository;
-    }
-
     public function __invoke(PostProcessControllerActionEvent $controllerActionEvent): void
     {
         if (
             $this->isValidRequest($controllerActionEvent)
             && ($eventObject = $controllerActionEvent->getEvent())
-            && $eventObject->getVideoLink() instanceof Link
-            && empty($eventObject->getVideoLink()->getLink())
+            && $eventObject->getEventTime() instanceof Time
+            && $eventObject->getEventTime()->getTimeBegin() === ''
         ) {
-            $this->linkRepository->remove($eventObject->getVideoLink());
-            $eventObject->setVideoLink(null);
+            $eventObject->setEventTime(null);
         }
     }
 }

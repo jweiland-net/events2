@@ -28,10 +28,10 @@ class AllowSearchParameterEventListener extends AbstractControllerEventListener
         ]
     ];
 
-    public function __invoke(PreProcessControllerActionEvent $event): void
+    public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void
     {
-        if ($this->isValidRequest($event)) {
-            $pmc = $event->getArguments()
+        if ($this->isValidRequest($controllerActionEvent)) {
+            $pmc = $controllerActionEvent->getArguments()
                 ->getArgument('search')
                 ->getPropertyMappingConfiguration();
 

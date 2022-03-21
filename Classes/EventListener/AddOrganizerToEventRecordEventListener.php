@@ -37,21 +37,21 @@ class AddOrganizerToEventRecordEventListener extends AbstractControllerEventList
         $this->userRepository = $userRepository;
     }
 
-    public function __invoke(PreProcessControllerActionEvent $event): void
+    public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void
     {
         if (
-            $this->isValidRequest($event)
-            && $event->getRequest()->hasArgument('event')
-            && ($eventRecord = $event->getRequest()->getArgument('event'))
+            $this->isValidRequest($controllerActionEvent)
+            && $controllerActionEvent->getRequest()->hasArgument('event')
+            && ($eventRecord = $controllerActionEvent->getRequest()->getArgument('event'))
             && is_array($eventRecord)
             && !array_key_exists('organizers', $eventRecord)
             && ($organizerOfCurrentUser = $this->userRepository->getFieldFromUser('tx_events2_organizer'))
             && MathUtility::canBeInterpretedAsInteger($organizerOfCurrentUser)
         ) {
-            $this->addOrganizerToEventRecord($eventRecord, (int)$organizerOfCurrentUser, $event);
+            $this->addOrganizerToEventRecord($eventRecord, (int)$organizerOfCurrentUser, $controllerActionEvent);
 
             // Per default it is not allowed to add new arguments manually. So we have to register them.
-            $pmc = $event->getArguments()
+            $pmc = $controllerActionEvent->getArguments()
                 ->getArgument('event')
                 ->getPropertyMappingConfiguration();
 
@@ -71,11 +71,11 @@ class AddOrganizerToEventRecordEventListener extends AbstractControllerEventList
     protected function addOrganizerToEventRecord(
         array &$eventRecord,
         int $organizerUid,
-        PreProcessControllerActionEvent $event
+        PreProcessControllerActionEvent $controllerActionEvent
     ): void {
         $eventRecord['organizers'] = [];
         $eventRecord['organizers'][0] = $organizerUid;
 
-        $event->getRequest()->setArgument('event', $eventRecord);
+        $controllerActionEvent->getRequest()->setArgument('event', $eventRecord);
     }
 }

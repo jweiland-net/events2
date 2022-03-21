@@ -32,12 +32,12 @@ class AddValidationForVideoLinkEventListener extends AbstractControllerEventList
         ]
     ];
 
-    public function __invoke(PreProcessControllerActionEvent $event): void
+    public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void
     {
         if (
-            $this->isValidRequest($event)
-            && $event->getRequest()->hasArgument('event')
-            && ($eventRaw = $event->getRequest()->getArgument('event'))
+            $this->isValidRequest($controllerActionEvent)
+            && $controllerActionEvent->getRequest()->hasArgument('event')
+            && ($eventRaw = $controllerActionEvent->getRequest()->getArgument('event'))
             && empty($eventRaw['videoLink']['link'])
         ) {
             /** @var ValidatorInterface $regExpValidator */
@@ -50,7 +50,7 @@ class AddValidationForVideoLinkEventListener extends AbstractControllerEventList
 
             // modify current validator of event
             /** @var ConjunctionValidator $eventValidator */
-            $eventValidator = $event->getArguments()->getArgument('event')->getValidator();
+            $eventValidator = $controllerActionEvent->getArguments()->getArgument('event')->getValidator();
             $validators = $eventValidator->getValidators();
             $validators->rewind();
             $eventValidator = $validators->current();

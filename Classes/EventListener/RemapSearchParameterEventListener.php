@@ -29,9 +29,9 @@ class RemapSearchParameterEventListener extends AbstractControllerEventListener
         ]
     ];
 
-    public function __invoke(PreProcessControllerActionEvent $event): void
+    public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void
     {
-        if ($this->isValidRequest($event)) {
+        if ($this->isValidRequest($controllerActionEvent)) {
             $foreignPluginContext = GeneralUtility::_POST('tx_events2_events');
             if (isset($foreignPluginContext['search'])) {
                 $search = $foreignPluginContext['search'];
@@ -43,7 +43,7 @@ class RemapSearchParameterEventListener extends AbstractControllerEventListener
                     return;
                 }
 
-                $event->getRequest()->setArgument('search', $search);
+                $controllerActionEvent->getRequest()->setArgument('search', $search);
             }
         }
     }
