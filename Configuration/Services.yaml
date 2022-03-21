@@ -122,6 +122,10 @@ services:
     tags:
       - name: event.listener
         event: JWeiland\Events2\Event\PostProcessControllerActionEvent
+  JWeiland\Events2\EventListener\DeleteEventTimeIfEmptyEventListener:
+    tags:
+    - name: event.listener
+      event: JWeiland\Events2\Event\PostProcessControllerActionEvent
   JWeiland\Events2\EventListener\UpdateEventPathSegmentEventListener:
     tags:
       - name: event.listener
