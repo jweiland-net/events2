@@ -1,6 +1,7 @@
 page.includeJSFooter {
-  events2 = EXT:events2/Resources/Public/JavaScript/Events2.js
+  # LitePicker must be loaded before the other events2 JavaScript, so keep it as first here.
   events2Litepicker = EXT:events2/Resources/Public/JavaScript/LitePicker.js
+  events2 = EXT:events2/Resources/Public/JavaScript/Events2.js
   events2Calendar = EXT:events2/Resources/Public/JavaScript/Calendar.js
 }
 
