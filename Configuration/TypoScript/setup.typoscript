@@ -48,7 +48,7 @@ plugin.tx_events2 {
   settings {
     rootCategory = {$plugin.tx_events2.settings.rootCategory}
     pidOfDetailPage = {$plugin.tx_events2.settings.pidOfDetailPage}
-    pidOfSearchPage = {$plugin.tx_events2.settings.pidOfSearchPage}
+    pidOfSearchResults = {$plugin.tx_events2.settings.pidOfSearchResults}
     pidOfLocationPage = {$plugin.tx_events2.settings.pidOfLocationPage}
     pidOfListPage = {$plugin.tx_events2.settings.pidOfListPage}
     includeDeTranslationForCalendar = {$plugin.tx_events2.settings.includeDeTranslationForCalendar}

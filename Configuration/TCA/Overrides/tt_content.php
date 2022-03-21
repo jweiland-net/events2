@@ -35,7 +35,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['events2_
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['events2_searchform'] = 'pi_flexform';
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
     'events2_searchform',
-    'FILE:EXT:events2/Configuration/FlexForms/Search.xml'
+    'FILE:EXT:events2/Configuration/FlexForms/SearchForm.xml'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(

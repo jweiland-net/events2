@@ -90,12 +90,13 @@ Default: 0
 
 Often it is useful to move the detail view onto a separate page for design/layout reasons.
 
-settings.pidOfSearchPage
-""""""""""""""""""""""""
+settings.pidOfSearchResults
+"""""""""""""""""""""""""""
 
 Default: 0
 
-Often it is useful to move the search view onto a separate page for design/layout reasons.
+If you have plugin for search results on a different page then plugin for search form you can
+set the page UID with search result plugin here.
 
 settings.pidOfLocationPage
 """"""""""""""""""""""""""

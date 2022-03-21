@@ -44,16 +44,16 @@
 				<source>Main Categories: You should only select categories of one level. The UID of their parent should be set in rootCategory of TS-Template.</source>
 			</trans-unit>
 			<trans-unit id="pidOfDetailPage">
-				<source>PID of detail page</source>
+				<source>Page UID of detail page</source>
 			</trans-unit>
 			<trans-unit id="pidOfListPage">
-				<source>PID of list page</source>
+				<source>Page UID of list page</source>
 			</trans-unit>
 			<trans-unit id="pidOfLocationPage">
-				<source>PID of the site for the event</source>
+				<source>Page UID of the site for the event</source>
 			</trans-unit>
-			<trans-unit id="pidOfSearchPage">
-				<source>PID of search page</source>
+			<trans-unit id="pidOfSearchResults">
+				<source>Page UID of the search results</source>
 			</trans-unit>
 			<trans-unit id="amountOfRecordsToShow">
 				<source>List amount of records (only for view: latest events)</source>

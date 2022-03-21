@@ -32,7 +32,7 @@ module.tx_events2 {
   settings {
     rootCategory = 1
     pidOfDetailPage = 2
-    pidOfSearchPage = 3
+    pidOfSearchResults = 3
     pidOfLocationPage = 4
     pidOfListPage = 1
     includeDeTranslationForCalendar = 0

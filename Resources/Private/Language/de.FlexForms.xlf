@@ -49,20 +49,20 @@
 				<target>Auflistung von Terminen dieser Woche</target>
 			</trans-unit>
 			<trans-unit id="pidOfDetailPage">
-				<source>PID of detail page</source>
-				<target>PID der Detailansicht</target>
+				<source>Page UID of detail page</source>
+				<target>Seiten UID der Detailansicht</target>
 			</trans-unit>
 			<trans-unit id="pidOfListPage">
-				<source>PID of list page</source>
-				<target>PID der Listenansicht. Sinnvoll, wenn auch eine Deteilansicht definiert wurde</target>
+				<source>Page UID of list page</source>
+				<target>Seiten UID der Listenansicht. Sinnvoll, wenn auch eine Deteilansicht definiert wurde</target>
 			</trans-unit>
 			<trans-unit id="pidOfLocationPage">
-				<source>PID of the site for the event</source>
-				<target>PID der Seite für den Veranstaltungsort</target>
+				<source>Page UID of the site for the event</source>
+				<target>Seiten UID der Seite für den Veranstaltungsort</target>
 			</trans-unit>
-			<trans-unit id="pidOfSearchPage">
-				<source>PID of search page</source>
-				<target>PID der Suchseite</target>
+			<trans-unit id="pidOfSearchResults">
+				<source>Page UID of the search results</source>
+				<target>Seiten UID der Suchergebnisse</target>
 			</trans-unit>
 			<trans-unit id="categories">
 				<source>Categories</source>

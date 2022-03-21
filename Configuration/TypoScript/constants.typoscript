@@ -16,8 +16,8 @@ plugin.tx_events2 {
     rootCategory =
     # cat=plugin.tx_events2; type=int+; label=PID of Detail page: Leave empty to show details on current page.
     pidOfDetailPage =
-    # cat=plugin.tx_events2; type=int+; label=PID of Search page.
-    pidOfSearchPage =
+    # cat=plugin.tx_events2; type=int+; label=PID of Search results.
+    pidOfSearchResults =
     # cat=plugin.tx_events2; type=int+; label=PID of Location page: Leave empty to show location on current page.
     pidOfLocationPage =
     # cat=plugin.tx_events2; type=int+; label=PID of List page

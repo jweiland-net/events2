@@ -97,6 +97,7 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
             }
 
             $this->moveSheetDefaultToDef($valueFromDatabase);
+            $this->moveFieldFromOldToNewSheet($valueFromDatabase, 'settings.pidOfSearchPage', 'sDEFAULT', 'sDEF', 'settings.pidOfSearchResults');
             $ttContentListType = $this->migrateSwitchableControllerActions($valueFromDatabase, $record['list_type']);
 
             $connection = $this->getConnectionPool()->getConnectionForTable('tt_content');
@@ -193,8 +194,13 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
         array &$valueFromDatabase,
         string $field,
         string $oldSheet,
-        string $newSheet
+        string $newSheet,
+        string $newField = ''
     ): void {
+        if ($newField === '') {
+            $newField = $field;
+        }
+
         try {
             $value = ArrayUtility::getValueByPath(
                 $valueFromDatabase,
@@ -214,7 +220,7 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
 
             // Move field to new location, if not already done
             if (!array_key_exists($field, $valueFromDatabase['data'][$newSheet]['lDEF'])) {
-                $valueFromDatabase['data'][$newSheet]['lDEF'][$field] = $value;
+                $valueFromDatabase['data'][$newSheet]['lDEF'][$newField] = $value;
             }
 
             // Remove old reference

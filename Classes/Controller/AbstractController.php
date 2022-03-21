@@ -86,8 +86,8 @@ class AbstractController extends ActionController implements LoggerAwareInterfac
             $this->settings['pidOfDetailPage'] = null;
         }
 
-        if (empty($this->settings['pidOfSearchPage'])) {
-            $this->settings['pidOfSearchPage'] = null;
+        if (empty($this->settings['pidOfSearchResults'])) {
+            $this->settings['pidOfSearchResults'] = null;
         }
 
         if (empty($this->settings['pidOfLocationPage'])) {

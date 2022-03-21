@@ -77,19 +77,6 @@
 							</config>
 						</TCEforms>
 					</settings.pidOfLocationPage>
-					<settings.pidOfSearchPage>
-						<TCEforms>
-							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:pidOfSearchPage</label>
-							<config>
-								<type>group</type>
-								<internal_type>db</internal_type>
-								<allowed>pages</allowed>
-								<size>1</size>
-								<maxitems>1</maxitems>
-								<minitems>0</minitems>
-							</config>
-						</TCEforms>
-					</settings.pidOfSearchPage>
 					<settings.categories>
 						<TCEforms>
 							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:categories</label>
