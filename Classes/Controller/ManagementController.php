@@ -136,6 +136,9 @@ class ManagementController extends AbstractController
         $this->preProcessControllerAction();
     }
 
+    /**
+     * @TYPO3\CMS\Extbase\Annotation\IgnoreValidation("event")
+     */
     public function editAction(Event $event): void
     {
         $categories = $this->categoryRepository->getCategories(
