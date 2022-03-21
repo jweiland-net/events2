@@ -46,7 +46,6 @@ class Event extends AbstractEntity
 
     /**
      * @Extbase\ORM\Cascade("remove")
-     * @Extbase\Validate("NotEmpty")
      */
     protected ?Time $eventTime = null;
 
