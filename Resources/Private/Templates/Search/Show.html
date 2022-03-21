@@ -8,7 +8,7 @@
 	<f:flashMessages />
 
 	<form id="events2SearchForm" class="form-horizontal" method="get" name="search" action="{f:uri.page()}">
-		<input type="hidden" name="id" value="{data.pid}" />
+		<input type="hidden" name="id" value="{f:if(condition: settings.pidOfSearchResults, then: settings.pidOfSearchResults, else: data.pid)}" />
 		<input type="hidden" name="no_cache" value="1" />
 		<input type="hidden" name="tx_events2_searchresults[action]" value="listSearchResults" />
 		<input type="hidden" name="tx_events2_searchresults[controller]" value="Search" />

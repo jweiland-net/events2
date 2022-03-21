@@ -60,17 +60,17 @@
 			</trans-unit>
 
 			<trans-unit id="plugin.searchForm.title">
-				<source>Show search form</source>
+				<source>Search form</source>
 			</trans-unit>
 			<trans-unit id="plugin.searchForm.description">
 				<source>Shows the search form for events. Here a visitor can filter the events according to several criteria.</source>
 			</trans-unit>
 
 			<trans-unit id="plugin.searchResults.title">
-				<source>Show search results</source>
+				<source>Search results</source>
 			</trans-unit>
 			<trans-unit id="plugin.searchResults.description">
-				<source>Displays the search results for the search form.</source>
+				<source>Displays the event's search results.</source>
 			</trans-unit>
 
 			<trans-unit id="plugin.events.title">

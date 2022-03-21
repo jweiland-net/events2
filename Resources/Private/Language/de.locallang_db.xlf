@@ -76,8 +76,8 @@
 			</trans-unit>
 
 			<trans-unit id="plugin.searchForm.title">
-				<source>Show search form</source>
-				<target>Zeige Suchformular</target>
+				<source>Search form</source>
+				<target>Suchformular</target>
 			</trans-unit>
 			<trans-unit id="plugin.searchForm.description">
 				<source>Shows the search form for events. Here a visitor can filter the events according to several criteria.</source>
@@ -85,12 +85,12 @@
 			</trans-unit>
 
 			<trans-unit id="plugin.searchResults.title">
-				<source>Show search results</source>
-				<target>Zeige Suchergebnisse</target>
+				<source>Search results</source>
+				<target>Suchergebnisse</target>
 			</trans-unit>
 			<trans-unit id="plugin.searchResults.description">
-				<source>Displays the search results for the search form.</source>
-				<target>Zeigt die Suchergebnisse für das Suchformular an.</target>
+				<source>Displays the event's search results.</source>
+				<target>Zeigt die Veranstaltungssuchergebnisse an.</target>
 			</trans-unit>
 
 			<trans-unit id="tx_events2_tab">
