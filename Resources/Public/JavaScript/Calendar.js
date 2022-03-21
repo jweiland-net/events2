@@ -1,4 +1,6 @@
 /**
+ * JavaScript for plugin events2_calendar
+ *
  * Initialize Events2 Calendar
  *
  * @param $element

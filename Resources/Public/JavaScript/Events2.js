@@ -1,3 +1,11 @@
+/**
+ * JavaScript for plugin events2_search and events2_management
+ *
+ * Initialize Events2 in general
+ *
+ * @param $element
+ * @constructor
+ */
 let Events2 = function ($element) {
   let me = this;
 
@@ -11,7 +19,7 @@ let Events2 = function ($element) {
   me.selectorAutoCompleteLocation = '.autoCompleteLocation';
   me.selectorAutoCompleteLocationHelper = '.autoCompleteLocationHelper';
   me.selectorSearchMainCategory = '.searchMainCategory';
-  me.dateFormat = 'dd.mm.yy';
+  me.dateFormat = 'DD.MM.YYYY';
 
   /**
    * Check type of Plugin. Event, Create or Search
@@ -139,12 +147,14 @@ let Events2 = function ($element) {
   };
 
   /**
-   * Initialize DatePicker for elements with class: addDatePicker
+   * Initialize DatePicker for input elements with class: addDatePicker
    */
   me.initializeDatePicker = function () {
-    document.querySelectorAll('.addDatePicker').forEach(picker => {
-      picker({
-        dateFormat: me.dateFormat
+    document.querySelectorAll('.addDatePicker').forEach($inputWithDatePicker => {
+      new Litepicker({
+        element: $inputWithDatePicker,
+        format: me.dateFormat,
+        singleMode: true
       });
     });
   };
@@ -164,11 +174,11 @@ let Events2 = function ($element) {
           $remainingCharsContainer.text(me.pluginVariables.localization.remainingText + ': ' + me.pluginVariables.settings.remainingLetters);
 
           $textarea.addEventListener('keyup', () => {
-            let value = $textarea.val();
+            let value = $textarea.value;
             let len = value.length;
             let maxLength = me.pluginVariables.settings.remainingLetters;
 
-            $textarea.val(value.substring(0, maxLength));
+            $textarea.value = value.substring(0, maxLength);
             $remainingCharsContainer.text(
               me.pluginVariables.localization.remainingText + ': ' + (maxLength - len)
             );
@@ -221,17 +231,17 @@ let Events2 = function ($element) {
               .text('')
               .removeClass('locationOk locationFail')
               .addClass('locationOk');
-            me.$autoCompleteLocationHelper.val(ui.item.uid);
+            me.$autoCompleteLocationHelper.value = ui.item.uid;
           }
         }
       }).focusout(function () {
-        if (me.$autoCompleteLocation.val() === '') {
+        if (me.$autoCompleteLocation.value === '') {
           me.$autoCompleteLocation
             .siblings('.locationStatus')
             .eq(0)
             .text('')
             .removeClass('locationOk locationFail');
-          me.$autoCompleteLocationHelper.val('');
+          me.$autoCompleteLocationHelper.value = '';
         }
       });
     }
@@ -255,7 +265,7 @@ let Events2 = function ($element) {
    */
   me.initializeSubCategoriesForSearch = function () {
     if (me.hasSearchMainCategory()) {
-      me.$searchMainCategory.on('change', function () {
+      me.$searchMainCategory.addEventListener('change', () => {
         me.renderSubCategory();
       });
       me.renderSubCategory();
@@ -266,9 +276,11 @@ let Events2 = function ($element) {
    * Search for sub-categories, if a main category was selected
    */
   me.renderSubCategory = function () {
-    document.querySelector('#searchSubCategory').empty().setAttribute('disabled', 'disabled');
+    if (document.querySelector('#searchSubCategory').value === '') {
+      document.querySelector('#searchSubCategory').setAttribute('disabled', 'disabled');
+    }
 
-    if (me.$searchMainCategory.val() !== '0') {
+    if (me.$searchMainCategory.value !== '0') {
       let siteUrl = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '');
       jQuery.ajax({
         type: 'GET',
@@ -280,7 +292,7 @@ let Events2 = function ($element) {
           tx_events2_events: {
             objectName: 'FindSubCategories',
             arguments: {
-              category: me.$searchMainCategory.val()
+              category: me.$searchMainCategory.value
             }
           }
         }, success: function (categories) {
