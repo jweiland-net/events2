@@ -383,6 +383,10 @@
 				<source>A record was activated</source>
 			</trans-unit>
 
+			<trans-unit id="validator.timeModel.empty">
+				<source>An empty value for "Start" was assigned to the time record. Since this is a required field, your record could not be saved.</source>
+			</trans-unit>
+
 			<trans-unit id="error.upload">
 				<source>Something went wrong with your uploaded files. Please try again. Error: </source>
 			</trans-unit>

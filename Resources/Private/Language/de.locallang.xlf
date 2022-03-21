@@ -502,6 +502,11 @@
 				<target>Veranstaltung - Ein Datensatz wurde aktiviert</target>
 			</trans-unit>
 
+			<trans-unit id="validator.timeModel.empty">
+				<source>An empty value for "Start" was assigned to the time record. Since this is a required field, your record could not be saved.</source>
+				<target>Dem Uhrzeit Datensatz wurde ein leerer Wert für "Beginn" zugewiesen. Da es sich hier um ein Pflichtfeld handelt, konnte Ihr Datensatz nicht gespeichert werden.</target>
+			</trans-unit>
+
 			<trans-unit id="error.upload">
 				<source>Something went wrong with your uploaded files. Please try again. Error: </source>
 				<target>Ein Fehler ist beim Upload der Dateien aufgetreten. Bitte versuchen Sie es zunächst erneut. Fehlermeldung: </target>
