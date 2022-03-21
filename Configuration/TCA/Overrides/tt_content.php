@@ -21,7 +21,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['events2_
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['events2_management'] = 'pi_flexform';
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
     'events2_management',
-    'FILE:EXT:events2/Configuration/FlexForms/Events.xml'
+    'FILE:EXT:events2/Configuration/FlexForms/Management.xml'
 );
 
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['events2_calendar'] = 'select_key';
@@ -35,13 +35,6 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['events2_
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['events2_searchform'] = 'pi_flexform';
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
     'events2_searchform',
-    'FILE:EXT:events2/Configuration/FlexForms/Search.xml'
-);
-
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['events2_searchresults'] = 'select_key';
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['events2_searchresults'] = 'pi_flexform';
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-    'events2_searchresults',
     'FILE:EXT:events2/Configuration/FlexForms/Search.xml'
 );
 

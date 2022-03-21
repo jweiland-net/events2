@@ -26,62 +26,75 @@
 			</f:switch>
 		</td>
 	</tr>
-	<f:if condition="{list_type} == 'events2_list'">
+
+	<f:switch expression="{list_type}">
+		<f:case value="events2_show">
+			<f:render section="renderPidOfDetailPage" arguments="{pidOfDetailPage: pi_flexform_transformed.settings.pidOfDetailPage}" />
+		</f:case>
+		<f:case value="events2_management">
+			<f:render section="renderCategories" arguments="{categories: pi_flexform_transformed.settings.selectableCategoriesForNewEvents}" />
+		</f:case>
+		<f:case value="events2_calendar">
+			<f:render section="renderCategories" arguments="{categories: pi_flexform_transformed.settings.categories}" />
+		</f:case>
+		<f:case value="events2_searchform">
+			<f:render section="renderCategories" arguments="{categories: pi_flexform_transformed.settings.mainCategories}" />
+		</f:case>
+		<f:case value="events2_searchresults" />
+		<f:defaultCase>
+			<tr>
+				<td><strong>List type</strong></td>
+				<td>
+					<f:switch expression="{pi_flexform_transformed.settings.listType}">
+						<f:case value="listLatest">Latest</f:case>
+						<f:case value="listToday">Today</f:case>
+						<f:case value="listWeek">Week</f:case>
+						<f:case value="listRange">Range</f:case>
+						<f:defaultCase>All</f:defaultCase>
+					</f:switch>
+				</td>
+			</tr>
+			<tr>
+				<td><strong>Merge Events same day</strong></td>
+				<td>
+					<f:if condition="{pi_flexform_transformed.settings.mergeEventsAtSameDay}">
+						<f:then><core:icon identifier="actions-check" /></f:then>
+						<f:else><core:icon identifier="actions-message-ok-close" /></f:else>
+					</f:if>
+				</td>
+			</tr>
+			<tr>
+				<td><strong>Merge recurring Events</strong></td>
+				<td>
+					<f:if condition="{pi_flexform_transformed.settings.mergeRecurringEvents}">
+						<f:then><core:icon identifier="actions-check" /></f:then>
+						<f:else><core:icon identifier="actions-message-ok-close" /></f:else>
+					</f:if>
+				</td>
+			</tr>
+			<f:render section="renderCategories" arguments="{categories: pi_flexform_transformed.settings.categories}" />
+		</f:defaultCase>
+	</f:switch>
+	</tbody>
+</table>
+
+<f:section name="renderCategories">
+	<f:if condition="{categories}">
 		<tr>
-			<td><strong>List type</strong></td>
-			<td>
-				<f:switch expression="{pi_flexform_transformed.settings.listType}">
-					<f:case value="listLatest">Latest</f:case>
-					<f:case value="listToday">Today</f:case>
-					<f:case value="listWeek">Week</f:case>
-					<f:case value="listRange">Range</f:case>
-					<f:defaultCase>All</f:defaultCase>
-				</f:switch>
-			</td>
+			<td><strong>Categories</strong></td>
+			<td>{categories}</td>
 		</tr>
 	</f:if>
-	<f:if condition="{pi_flexform_transformed.settings.pidOfDetailPage}">
+</f:section>
+
+<f:section name="renderPidOfDetailPage">
+	<f:if condition="{pidOfDetailPage}">
 		<tr>
 			<td><strong>Detail Page</strong></td>
 			<td>
-				{pi_flexform_transformed.settings.pidOfDetailPage}
+				{pidOfDetailPage}
 			</td>
 		</tr>
 	</f:if>
-	<f:if condition="{pi_flexform_transformed.settings.mergeEventsAtSameDay} != ''">
-		<tr>
-			<td><strong>Merge Events same day</strong></td>
-			<td>
-				<f:if condition="{pi_flexform_transformed.settings.mergeEventsAtSameDay}">
-					<f:then><core:icon identifier="actions-check" /></f:then>
-					<f:else><core:icon identifier="actions-message-ok-close" /></f:else>
-				</f:if>
-			</td>
-		</tr>
-	</f:if>
-	<f:if condition="{pi_flexform_transformed.settings.mergeRecurringEvents} != ''">
-		<tr>
-			<td><strong>Merge recurring Events</strong></td>
-			<td>
-				<f:if condition="{pi_flexform_transformed.settings.mergeRecurringEvents}">
-					<f:then><core:icon identifier="actions-check" /></f:then>
-					<f:else><core:icon identifier="actions-message-ok-close" /></f:else>
-				</f:if>
-			</td>
-		</tr>
-	</f:if>
-	<f:if condition="{pi_flexform_transformed.settings.categories}">
-		<tr>
-			<td><strong>Categories</strong></td>
-			<td>{pi_flexform_transformed.settings.categories}</td>
-		</tr>
-	</f:if>
-	<f:if condition="{pi_flexform_transformed.settings.mainCategories}">
-		<tr>
-			<td><strong>Main Categories</strong></td>
-			<td>{pi_flexform_transformed.settings.mainCategories}</td>
-		</tr>
-	</f:if>
-	</tbody>
-</table>
+</f:section>
 </html>
