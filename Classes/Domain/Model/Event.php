@@ -46,6 +46,7 @@ class Event extends AbstractEntity
 
     /**
      * @Extbase\ORM\Cascade("remove")
+     * @Extbase\Validate("JWeiland\Events2\Validation\Validator\TimeModelValidator")
      */
     protected ?Time $eventTime = null;
 
@@ -214,7 +215,7 @@ class Event extends AbstractEntity
         return $this->eventTime;
     }
 
-    public function setEventTime(?Time $eventTime = null): void
+    public function setEventTime(?Time $eventTime): void
     {
         $this->eventTime = $eventTime;
     }
@@ -254,7 +255,7 @@ class Event extends AbstractEntity
         return null;
     }
 
-    public function setEventEnd(?\DateTimeImmutable $eventEnd = null): void
+    public function setEventEnd(?\DateTimeImmutable $eventEnd): void
     {
         $this->eventEnd = $eventEnd;
     }
@@ -504,7 +505,7 @@ class Event extends AbstractEntity
         return $this->ticketLink;
     }
 
-    public function setTicketLink(?Link $ticketLink = null): void
+    public function setTicketLink(?Link $ticketLink): void
     {
         $this->ticketLink = $ticketLink;
     }

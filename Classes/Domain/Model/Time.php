@@ -116,7 +116,7 @@ class Time extends AbstractEntity
         return $this->timeBeginAsDateTime;
     }
 
-    public function setTimeBeginAsDateTime(\DateTimeImmutable $timeBegin = null): void
+    public function setTimeBeginAsDateTime(\DateTimeImmutable $timeBegin): void
     {
         $this->timeBeginAsDateTime = $timeBegin;
     }
@@ -126,7 +126,7 @@ class Time extends AbstractEntity
         return $this->timeEntryAsDateTime;
     }
 
-    public function setTimeEntryAsDateTime(\DateTimeImmutable $timeEntry = null): void
+    public function setTimeEntryAsDateTime(?\DateTimeImmutable $timeEntry): void
     {
         $this->timeEntryAsDateTime = $timeEntry;
     }
@@ -136,7 +136,7 @@ class Time extends AbstractEntity
         return $this->timeEndAsDateTime;
     }
 
-    public function setTimeEndAsDateTime(\DateTimeImmutable $timeEnd = null): void
+    public function setTimeEndAsDateTime(?\DateTimeImmutable $timeEnd): void
     {
         $this->timeEndAsDateTime = $timeEnd;
     }

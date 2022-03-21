@@ -51,7 +51,7 @@ class Search extends AbstractEntity
         return $this->mainCategory;
     }
 
-    public function setMainCategory(?Category $mainCategory = null): void
+    public function setMainCategory(?Category $mainCategory): void
     {
         $this->mainCategory = $mainCategory;
     }
@@ -64,7 +64,7 @@ class Search extends AbstractEntity
         return $this->subCategory;
     }
 
-    public function setSubCategory(?Category $subCategory = null): void
+    public function setSubCategory(?Category $subCategory): void
     {
         $this->subCategory = $subCategory;
     }
@@ -116,7 +116,7 @@ class Search extends AbstractEntity
         return $this->location;
     }
 
-    public function setLocation(Location $location = null): void
+    public function setLocation(Location $location): void
     {
         $this->location = $location;
     }

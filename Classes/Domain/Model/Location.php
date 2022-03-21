@@ -107,7 +107,7 @@ class Location extends AbstractEntity
         return $this->link;
     }
 
-    public function setLink(?Link $link = null): void
+    public function setLink(?Link $link): void
     {
         $this->link = $link;
     }
@@ -147,7 +147,7 @@ class Location extends AbstractEntity
      *
      * @param PoiCollection|null $txMaps2Uid
      */
-    public function setTxMaps2Uid($txMaps2Uid = null): void
+    public function setTxMaps2Uid($txMaps2Uid): void
     {
         $this->txMaps2Uid = $txMaps2Uid;
     }
