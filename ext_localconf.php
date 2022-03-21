@@ -155,6 +155,8 @@ call_user_func(static function (): void {
         ]
     ];
 
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerTypeConverter(\JWeiland\Events2\Property\TypeConverter\DateTimeImmutableConverter::class);
+
     $GLOBALS['TYPO3_CONF_VARS']['LOG']['JWeiland']['Events2']['writerConfiguration'] = [
         \TYPO3\CMS\Core\Log\LogLevel::WARNING => [
             \TYPO3\CMS\Core\Log\Writer\FileWriter::class => [
