@@ -469,8 +469,8 @@
 				<target>Anlegen</target>
 			</trans-unit>
 			<trans-unit id="update">
-				<source>Edit</source>
-				<target>Bearbeiten</target>
+				<source>Update</source>
+				<target>Aktualisieren</target>
 			</trans-unit>
 			<trans-unit id="save">
 				<source>Save</source>

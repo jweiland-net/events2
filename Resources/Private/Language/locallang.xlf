@@ -358,7 +358,7 @@
 				<source>Create</source>
 			</trans-unit>
 			<trans-unit id="update">
-				<source>Edit</source>
+				<source>Update</source>
 			</trans-unit>
 			<trans-unit id="save">
 				<source>Save</source>
