@@ -1,16 +1,16 @@
 <html lang="en"
 			xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-			xmlns:e2="http://typo3.org/ns/JWeiland/Events2/ViewHelpers"
 			data-namespace-typo3-fluid="true">
 
 <f:layout name="Create" />
 
 <f:section name="main">
+	<f:flashMessages />
+
 	<f:security.ifHasRole role="{settings.userGroup}">
 		<f:then>
 			<f:if condition="{event.isCurrentUserAllowedOrganizer}">
 				<f:then>
-					<f:flashMessages />
 					<f:render partial="FormErrors" arguments="{object:Event}" />
 					<f:form action="update" name="event" object="{event}" enctype="multipart/form-data" class="form-horizontal">
 						<f:render partial="Event/FormFields" arguments="{_all}" />
@@ -27,7 +27,7 @@
 			</f:if>
 		</f:then>
 		<f:else>
-			<div><f:translate key="notAllowedToCreate" /></div>
+			<div>{f:translate(key: 'notAllowedToCreate')}</div>
 		</f:else>
 	</f:security.ifHasRole>
 </f:section>

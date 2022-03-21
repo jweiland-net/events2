@@ -18,6 +18,8 @@ use JWeiland\Events2\Event\PostProcessControllerActionEvent;
 use JWeiland\Events2\Event\PostProcessFluidVariablesEvent;
 use JWeiland\Events2\Event\PreProcessControllerActionEvent;
 use JWeiland\Events2\Service\TypoScriptService;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -28,8 +30,10 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  * A collection of various helper methods to keep
  * our Action Controllers small and clean
  */
-class AbstractController extends ActionController
+class AbstractController extends ActionController implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     protected TypoScriptService $typoScriptService;
 
     protected ExtConf $extConf;
@@ -127,6 +131,35 @@ class AbstractController extends ActionController
         ArrayUtility::mergeRecursiveWithOverrule($jsVariables, $override);
 
         return $jsVariables;
+    }
+
+    protected function getFlattenedValidationErrorMessage(): string
+    {
+        $validationResults = $this->arguments->validate();
+        if ($validationResults->hasErrors()) {
+            $errors = [];
+            foreach ($validationResults->getFlattenedErrors() as $propertyPath => $propertyErrors) {
+                $propertyErrorMessages = [];
+                foreach ($propertyErrors as $propertyError) {
+                    $propertyErrorMessages[] = $propertyError->getMessage();
+                }
+
+                $errors[] = sprintf(
+                    'Property path %s: %s',
+                    $propertyPath,
+                    implode(', ', $propertyErrorMessages)
+                );
+            }
+
+            $this->logger->error(implode(' - ',$errors));
+        }
+
+        return sprintf(
+            'Validation failed for given object while trying to call %s->%s(). %s' . PHP_EOL,
+            static::class,
+            $this->actionMethodName,
+            'Please check events2 log file.'
+        );
     }
 
     protected function postProcessAndAssignFluidVariables(array $variables = []): void

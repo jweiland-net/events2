@@ -11,13 +11,11 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Controller;
 
-use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Service\DayRelationService;
-use JWeiland\Events2\Service\TypoScriptService;
 use JWeiland\Events2\Utility\CacheUtility;
 use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -28,7 +26,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  * The EventController contains actions to search, create, activate, update and delete events.
  * For plain listing of events please visit DayController
  */
-class EventController extends AbstractController
+class ManagementController extends AbstractController
 {
     protected EventRepository $eventRepository;
 

@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Tests\Functional\Controller;
 
-use JWeiland\Events2\Controller\EventController;
+use JWeiland\Events2\Controller\ManagementController;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Organizer;
 use JWeiland\Events2\Domain\Repository\CategoryRepository;
@@ -34,7 +34,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
  */
 class EventControllerTest extends FunctionalTestCase
 {
-    protected EventController $subject;
+    protected ManagementController $subject;
 
     /**
      * @var DayRepository|ObjectProphecy
@@ -116,7 +116,7 @@ class EventControllerTest extends FunctionalTestCase
         $this->request = new Request();
         if (method_exists($this->request, 'setControllerAliasToClassNameMapping')) {
             $this->request->setControllerAliasToClassNameMapping([
-                'Event' => EventController::class
+                'Event' => ManagementController::class
             ]);
         }
 
@@ -127,7 +127,7 @@ class EventControllerTest extends FunctionalTestCase
         $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
 
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->subject = $objectManager->get(EventController::class);
+        $this->subject = $objectManager->get(ManagementController::class);
     }
 
     protected function tearDown(): void

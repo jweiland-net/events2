@@ -30,11 +30,11 @@ call_user_func(static function (): void {
         'Events2',
         'Management',
         [
-            \JWeiland\Events2\Controller\EventController::class => 'listMyEvents, new, create, edit, update, delete, activate'
+            \JWeiland\Events2\Controller\ManagementController::class => 'listMyEvents, new, create, edit, update, delete, activate'
         ],
         // non-cacheable actions
         [
-            \JWeiland\Events2\Controller\EventController::class => 'create, edit, update, delete, activate'
+            \JWeiland\Events2\Controller\ManagementController::class => 'create, edit, update, delete, activate'
         ]
     );
 
@@ -153,6 +153,14 @@ call_user_func(static function (): void {
         'depends' => [
             \TYPO3\CMS\Backend\Form\FormDataProvider\TcaSelectItems::class,
         ]
+    ];
+
+    $GLOBALS['TYPO3_CONF_VARS']['LOG']['JWeiland']['Events2']['writerConfiguration'] = [
+        \TYPO3\CMS\Core\Log\LogLevel::WARNING => [
+            \TYPO3\CMS\Core\Log\Writer\FileWriter::class => [
+                'logFileInfix' => 'events2'
+            ]
+        ],
     ];
 
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['events2UpdateSlug']
