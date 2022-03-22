@@ -46,7 +46,6 @@ class Event extends AbstractEntity
 
     /**
      * @Extbase\ORM\Cascade("remove")
-     * @Extbase\Validate("JWeiland\Events2\Validation\Validator\TimeModelValidator")
      */
     protected ?Time $eventTime = null;
 

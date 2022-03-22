@@ -19,6 +19,7 @@ use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Utility\CacheUtility;
 use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Annotation as Extbase;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
@@ -111,6 +112,9 @@ class ManagementController extends AbstractController
         $this->preProcessControllerAction();
     }
 
+    /**
+     * @Extbase\Validate(param="event", validator="JWeiland\Events2\Domain\Validator\EventValidator")
+     */
     public function createAction(Event $event): void
     {
         $event->setHidden(true);
@@ -137,7 +141,7 @@ class ManagementController extends AbstractController
     }
 
     /**
-     * @TYPO3\CMS\Extbase\Annotation\IgnoreValidation("event")
+     * @Extbase\IgnoreValidation("event")
      */
     public function editAction(Event $event): void
     {
@@ -161,6 +165,9 @@ class ManagementController extends AbstractController
         $this->preProcessControllerAction();
     }
 
+    /**
+     * @Extbase\Validate(param="event", validator="JWeiland\Events2\Domain\Validator\EventValidator")
+     */
     public function updateAction(Event $event): void
     {
         $isHidden = $event->getHidden();

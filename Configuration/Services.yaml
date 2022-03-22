@@ -73,10 +73,6 @@ services:
     tags:
       - name: event.listener
         event: JWeiland\Events2\Event\PreProcessControllerActionEvent
-  JWeiland\Events2\EventListener\AddValidationForVideoLinkEventListener:
-    tags:
-      - name: event.listener
-        event: JWeiland\Events2\Event\PreProcessControllerActionEvent
   JWeiland\Events2\EventListener\AllowSearchParameterEventListener:
     tags:
       - name: event.listener
@@ -117,15 +113,6 @@ services:
       - name: event.listener
         event: JWeiland\Events2\Event\PostProcessFluidVariablesEvent
 
-  # Register EventListeners for controller actions without Fluid variables
-  JWeiland\Events2\EventListener\DeleteVideoLinkIfEmptyEventListener:
-    tags:
-      - name: event.listener
-        event: JWeiland\Events2\Event\PostProcessControllerActionEvent
-  JWeiland\Events2\EventListener\DeleteEventTimeIfEmptyEventListener:
-    tags:
-    - name: event.listener
-      event: JWeiland\Events2\Event\PostProcessControllerActionEvent
   JWeiland\Events2\EventListener\UpdateEventPathSegmentEventListener:
     tags:
       - name: event.listener

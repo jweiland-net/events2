@@ -383,8 +383,8 @@
 				<source>A record was activated</source>
 			</trans-unit>
 
-			<trans-unit id="validator.timeModel.empty">
-				<source>An empty value for "Start" was assigned to the time record. Since this is a required field, your record could not be saved.</source>
+			<trans-unit id="validator.event.videoLink.notYouTube">
+				<source>The URI provided for the video link is not a YouTube link. This form currently only allows YouTube links.</source>
 			</trans-unit>
 
 			<trans-unit id="error.upload">
