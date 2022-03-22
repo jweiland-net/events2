@@ -13,8 +13,6 @@ let Events2 = function ($element) {
   me.selectorCreatePlugin = '.tx-events2-create';
   me.selectorSearchPlugin = '.tx-events2-search';
   me.selectorPluginVariables = '.events2DataElement';
-  me.selectorCshDialog = '.dialogHint';
-  me.selectorCshButton = 'span.csh';
   me.selectorRemainingChars = '.remainingChars';
   me.selectorAutoCompleteLocation = '.autoCompleteLocation';
   me.selectorAutoCompleteLocationHelper = '.autoCompleteLocationHelper';
@@ -106,44 +104,6 @@ let Events2 = function ($element) {
    */
   me.hasSearchMainCategory = function () {
     return !!me.$searchMainCategory.length;
-  };
-
-  /**
-   * Test, if all CSH related elements are defined in DOM
-   *
-   * @returns {boolean}
-   */
-  me.hasCshElements = function () {
-    if (!!me.$cshDialog.length && !!me.$cshButtons.length) {
-      return true;
-    } else {
-      console.log('We are on the create form, but we can not find any CSH buttons or dialogs. Feature deactivated.');
-      return false;
-    }
-  };
-
-  /**
-   * Initialize dialog box for CSH
-   * Currently used in create form for new events
-   */
-  me.initializeDialogBoxForContextSensitiveHelp = function () {
-    if (!me.hasCshElements()) {
-      return;
-    }
-
-    document.querySelector('.hidden').forEach((dialogBox) => {
-      dialogBox.style.display = 'none';
-    });
-
-    me.$cshDialog.dialog({
-      autoOpen: false,
-      height: 150,
-      width: 300,
-      modal: true
-    });
-
-    me.$cshButtons.style.cursor = 'pointer';
-    me.$cshButtons.addEventListener('click', me.attachClickEventToCsh);
   };
 
   /**
@@ -248,19 +208,6 @@ let Events2 = function ($element) {
   };
 
   /**
-   * Attach click event to CSH buttons
-   * It updates the text of the dialog box before it pops up.
-   */
-  me.attachClickEventToCsh = function (event) {
-    let property = jQuery(event.target).getAttribute('data-property');
-    if (!property) {
-      property = jQuery(event.target).parent('.csh').getAttribute('data-property');
-    }
-    me.$cshDialog.querySelector('p').text(document.querySelector('#hidden_' + property).text());
-    me.$cshDialog.dialog('open');
-  };
-
-  /**
    * Initialize sub-categories of search plugin
    */
   me.initializeSubCategoriesForSearch = function () {
@@ -337,12 +284,9 @@ let Events2 = function ($element) {
   me.pluginVariables = $element.querySelector(me.selectorPluginVariables).getAttribute('data-variables');
 
   if (me.isCreatePlugin($element)) {
-    me.$cshDialog = $element.querySelector(me.selectorCshDialog);
-    me.$cshButtons = $element.querySelector(me.selectorCshButton);
     me.$remainingCharsContainer = $element.querySelector(me.selectorRemainingChars);
     me.$autoCompleteLocation = $element.querySelector(me.selectorAutoCompleteLocation);
     me.$autoCompleteLocationHelper = $element.querySelector(me.selectorAutoCompleteLocationHelper);
-    me.initializeDialogBoxForContextSensitiveHelp();
     me.initializeRemainingLetters();
     me.initializeDatePicker();
     me.initializeAutoCompleteForLocation();
