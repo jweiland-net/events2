@@ -14,6 +14,12 @@ return [
                 'typo3/cms-frontend/prepare-tsfe-rendering',
             ],
         ],
+        'jweiland/events2/get-sub-categories' => [
+            'target' => \JWeiland\Events2\Middleware\GetSubCategoriesMiddleware::class,
+            'after' => [
+                'typo3/cms-frontend/prepare-tsfe-rendering',
+            ],
+        ],
         'jweiland/events2/get-locations' => [
             'target' => \JWeiland\Events2\Middleware\GetLocationsMiddleware::class,
             'after' => [

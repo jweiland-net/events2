@@ -153,6 +153,7 @@ let Events2 = function ($element) {
     if (me.hasAutoCompleteLocation()) {
       let siteUrl = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '');
 
+      /* Yes, the constructor was written in lower case */
       const autoCompleteJS = new autoComplete({
         selector: me.selectorAutoCompleteLocation,
         placeHolder: 'Search for Locations...',
@@ -233,28 +234,20 @@ let Events2 = function ($element) {
 
     if (me.$searchMainCategory.value !== '0') {
       let siteUrl = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '');
-      jQuery.ajax({
-        type: 'GET',
-        url: siteUrl,
-        dataType: 'json',
-        data: {
-          id: me.pluginVariables.data.pid,
-          type: 1372255350,
-          tx_events2_events: {
-            objectName: 'FindSubCategories',
-            arguments: {
-              category: me.$searchMainCategory.value
-            }
-          }
-        }, success: function (categories) {
-          me.fillSubCategories(categories);
-        }, error: function (xhr, error) {
-          if (error === 'parsererror') {
-            console.log('It seems that you have activated Debugging mode in TYPO3. Please deactivate it to remove ParseTime from request');
-          } else {
-            console.log(error);
-          }
+      fetch(siteUrl + '?events2Category=' + me.$searchMainCategory.value, {
+        headers: {
+          'Content-Type': 'application/json',
+          'ext-events2': 'getSubCategories'
         }
+      }).then(response => {
+        if (response.ok && response.status === 200) {
+          return response.json();
+        }
+        return Promise.reject(response);
+      }).then(categories => {
+        me.fillSubCategories(categories);
+      }).catch(error => {
+        console.warn('Request error', error);
       });
     }
   };
@@ -266,22 +259,30 @@ let Events2 = function ($element) {
    */
   me.fillSubCategories = function (categories) {
     let count = 0;
+    let option = false;
     let selected = '';
     let $searchSubCategory = document.querySelector('#searchSubCategory');
-    $searchSubCategory.append('<option value="0"></option>');
-    for (let property in categories) {
-      if (categories.hasOwnProperty(property)) {
-        count++;
-        if (me.pluginVariables.search.subCategory !== null && me.pluginVariables.search.subCategory.uid === parseInt(property)) {
-          selected = 'selected="selected"';
-        } else {
-          selected = '';
-        }
-        $searchSubCategory.append('<option ' + selected + ' value="' + property + '">' + categories[property] + '</option>');
+    let firstOption = document.createElement('option');
+
+    firstOption.setAttribute('value', '0');
+    $searchSubCategory.appendChild(firstOption);
+
+    for (let i = 0; i < categories.length; i++) {
+      count++;
+      option = document.createElement('option');
+      if (
+        me.pluginVariables.search.subCategory !== null
+        && me.pluginVariables.search.subCategory.uid === parseInt(categories[i].uid)
+      ) {
+        option.setAttribute('selected', 'selected');
       }
+      option.setAttribute('value', categories[i].uid);
+      option.innerText = categories[i].label;
+      $searchSubCategory.appendChild(option);
     }
+
     if (count) {
-      $searchSubCategory.removeAttr('disabled');
+      $searchSubCategory.removeAttribute('disabled');
     }
   };
 

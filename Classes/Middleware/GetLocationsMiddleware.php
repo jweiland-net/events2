@@ -46,11 +46,11 @@ class GetLocationsMiddleware implements MiddlewareInterface
             $request->getQueryParams()['events2SearchLocation'] ?? ''
         )));
 
-        // keep it in sync to minLength in JS
         if ($search === '') {
             return new JsonResponse();
         }
 
+        // keep it in sync to minLength in JS
         if (strlen($search) <= 2) {
             return new JsonResponse();
         }

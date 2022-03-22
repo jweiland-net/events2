@@ -35,6 +35,9 @@ class CategoryRepository extends \TYPO3\CMS\Extbase\Domain\Repository\CategoryRe
     public function getSubCategories(int $category): QueryResultInterface
     {
         $query = $this->createQuery();
+        $query->setOrderings([
+            'title' => QueryInterface::ORDER_ASCENDING
+        ]);
 
         return $query->matching($query->equals('parent', $category))->execute();
     }
