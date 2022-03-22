@@ -44,7 +44,6 @@ class LocationRepository extends AbstractRepository
         $queryBuilder = $this->getQueryBuilderForTable('tx_events2_domain_model_location', 'l');
         $queryBuilder
             ->select('l.uid', 'l.location as label')
-            ->from('tx_events2_domain_model_location')
             ->where(
                 $queryBuilder->expr()->like(
                     'l.location',
@@ -53,7 +52,7 @@ class LocationRepository extends AbstractRepository
             )
             ->orderBy('l.location', 'ASC');
 
-        // Remember: column "uid" and "label" are a must have for autocompletion
+        // Remember: column "uid" and "label" are a must-have for autocompletion
         // Use CONCAT to add further columns to label. Example:
         // $queryBuilder->add('select', 'uid, CONCAT(location, \', \', street, \' \', house_number, \', \', zip, \' \', city) AS label')
         // Hint: add() overwrites all columns defined by select() by default

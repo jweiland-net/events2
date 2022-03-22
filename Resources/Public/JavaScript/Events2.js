@@ -14,7 +14,7 @@ let Events2 = function ($element) {
   me.selectorSearchPlugin = '.tx-events2-search';
   me.selectorPluginVariables = '.events2DataElement';
   me.selectorRemainingChars = '.remainingChars';
-  me.selectorAutoCompleteLocation = '.autoCompleteLocation';
+  me.selectorAutoCompleteLocation = '#autoCompleteLocation';
   me.selectorAutoCompleteLocationHelper = '.autoCompleteLocationHelper';
   me.selectorSearchMainCategory = '.searchMainCategory';
   me.dateFormat = 'DD.MM.YYYY';
@@ -67,7 +67,7 @@ let Events2 = function ($element) {
    * @returns {boolean}
    */
   me.hasRemainingCharsContainer = function () {
-    return !!me.$remainingCharsContainer.length;
+    return me.$remainingCharsContainer !== null;
   };
 
   /**
@@ -76,7 +76,7 @@ let Events2 = function ($element) {
    * @returns {boolean}
    */
   me.hasAutoCompleteLocation = function () {
-    return !!me.$autoCompleteLocation.length;
+    return me.$autoCompleteLocation !== null;
   };
 
   /**
@@ -103,7 +103,7 @@ let Events2 = function ($element) {
    * @returns {boolean}
    */
   me.hasSearchMainCategory = function () {
-    return !!me.$searchMainCategory.length;
+    return me.$searchMainCategory !== null;
   };
 
   /**
@@ -130,8 +130,8 @@ let Events2 = function ($element) {
         console.log('Variable settings of pluginVariables is not available. Please check your templates');
       } else {
         me.$remainingCharsContainer.forEach($remainingCharsContainer => {
-          let $textarea = document.querySelector('#' + $remainingCharsContainer.data('id'));
-          $remainingCharsContainer.text(me.pluginVariables.localization.remainingText + ': ' + me.pluginVariables.settings.remainingLetters);
+          let $textarea = document.querySelector('#' + $remainingCharsContainer.getAttribute('data-id'));
+          $remainingCharsContainer.innerText = me.pluginVariables.localization.remainingText + ': ' + me.pluginVariables.settings.remainingLetters;
 
           $textarea.addEventListener('keyup', () => {
             let value = $textarea.value;
@@ -139,9 +139,7 @@ let Events2 = function ($element) {
             let maxLength = me.pluginVariables.settings.remainingLetters;
 
             $textarea.value = value.substring(0, maxLength);
-            $remainingCharsContainer.text(
-              me.pluginVariables.localization.remainingText + ': ' + (maxLength - len)
-            );
+            $remainingCharsContainer.innerText = me.pluginVariables.localization.remainingText + ': ' + (maxLength - len);
           });
         });
       }
@@ -153,56 +151,62 @@ let Events2 = function ($element) {
    */
   me.initializeAutoCompleteForLocation = function () {
     if (me.hasAutoCompleteLocation()) {
-      let $locationStatus = document.createElement('span');
-      $locationStatus.setAttribute('class', 'locationStatus');
-      me.$autoCompleteLocation.after($locationStatus);
+      let siteUrl = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '');
 
-      me.$autoCompleteLocation.autocomplete({
-        source: function (request, response) {
-          let siteUrl = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '');
-          $.ajax({
-            url: siteUrl + '?eID=events2findLocations',
-            dataType: 'json',
-            data: {
-              tx_events2_events: {
-                arguments: {
-                  search: request.term
+      const autoCompleteJS = new autoComplete({
+        selector: me.selectorAutoCompleteLocation,
+        placeHolder: 'Search for Locations...',
+        data: {
+          src: async () => {
+            try {
+              // Loading placeholder text
+              me.$autoCompleteLocation.setAttribute('placeholder', 'Loading...');
+              // Fetch External Data Source
+              const source = await fetch(
+                siteUrl + '?events2SearchLocation=' + autoCompleteJS.input.value, {
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'ext-events2': 'getLocations'
+                  }
+                });
+              const locations = await source.json();
+              // Post Loading placeholder text
+              me.$autoCompleteLocation.setAttribute('placeholder', autoCompleteJS.placeHolder);
+              // Returns Fetched data
+              return locations;
+            } catch (error) {
+              return error;
+            }
+          },
+          keys: ['uid', 'label'],
+          cache: false,
+          resultsList: {
+            noResults: false,
+            maxResults: 15,
+            tabSelect: true
+          },
+          resultItem: {
+            highlight: {
+              render: true
+            }
+          },
+          events: {
+            input: {
+              focus: () => {
+                if (autoCompleteJS.input.value.length) {
+                  autoCompleteJS.start();
                 }
               }
-            },
-            success: function (data) {
-              response(data);
             }
-          });
-        }, minLength: 2, response: function (event, ui) {
-          if (ui.content.length === 0) {
-            me.$autoCompleteLocation
-              .siblings('.locationStatus')
-              .eq(0)
-              .text(me.pluginVariables.localization.locationFail)
-              .removeClass('locationOk locationFail')
-              .addClass('locationFail');
-          }
-        }, select: function (event, ui) {
-          if (ui.item) {
-            me.$autoCompleteLocation
-              .siblings('.locationStatus')
-              .eq(0)
-              .text('')
-              .removeClass('locationOk locationFail')
-              .addClass('locationOk');
-            me.$autoCompleteLocationHelper.value = ui.item.uid;
           }
         }
-      }).focusout(function () {
-        if (me.$autoCompleteLocation.value === '') {
-          me.$autoCompleteLocation
-            .siblings('.locationStatus')
-            .eq(0)
-            .text('')
-            .removeClass('locationOk locationFail');
-          me.$autoCompleteLocationHelper.value = '';
-        }
+      });
+
+      autoCompleteJS.input.addEventListener('selection', (event) => {
+        const feedback = event.detail;
+        autoCompleteJS.input.blur();
+        autoCompleteJS.input.value = feedback.selection.value[feedback.selection.key];
+        me.$autoCompleteLocationHelper.value = feedback.selection.value['uid'];
       });
     }
   };
@@ -281,10 +285,12 @@ let Events2 = function ($element) {
     }
   };
 
-  me.pluginVariables = $element.querySelector(me.selectorPluginVariables).getAttribute('data-variables');
+  me.pluginVariables = JSON.parse(
+    $element.querySelector(me.selectorPluginVariables).getAttribute('data-variables')
+  );
 
   if (me.isCreatePlugin($element)) {
-    me.$remainingCharsContainer = $element.querySelector(me.selectorRemainingChars);
+    me.$remainingCharsContainer = $element.querySelectorAll(me.selectorRemainingChars);
     me.$autoCompleteLocation = $element.querySelector(me.selectorAutoCompleteLocation);
     me.$autoCompleteLocationHelper = $element.querySelector(me.selectorAutoCompleteLocationHelper);
     me.initializeRemainingLetters();

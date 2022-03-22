@@ -129,9 +129,6 @@ call_user_func(static function (): void {
         '<INCLUDE_TYPOSCRIPT: source="FILE:EXT:events2/Configuration/TSconfig/ContentElementWizard.tsconfig">'
     );
 
-    // register eID scripts
-    $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['events2findLocations'] = \JWeiland\Events2\Ajax\FindLocations::class . '::processRequest';
-
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['aspects']['TimestampMapper'] = \JWeiland\Events2\Routing\Aspect\TimestampMapper::class;
 
     if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('solr')) {

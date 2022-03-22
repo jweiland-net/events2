@@ -72,8 +72,18 @@
 	<f:render section="renderCsh" arguments="{property: 'location', transKey: 'cshLocation'}" />
 	<div class="col-sm-8">
 		<f:form.hidden class="autoCompleteLocationHelper" property="location" />
-		<input type="text" class="form-control autoCompleteLocation" value="{f:if(condition: event.location, then: event.location.location, else: '')}" />
-		<div><f:link.page pageUid="8460" title="Neuen Veranstaltungsort beantragen">Neuen Ort beantragen</f:link.page></div>
+		<input type="text"
+					 id="autoCompleteLocation"
+					 class="form-control"
+					 autocomplete="off"
+					 data-list="Ada, Java, JavaScript, Brainfuck, LOLCODE, Node.js, Ruby on Rails, PHP"
+					 autocapitalize="off"
+					 value="{f:if(condition: event.location, then: event.location.location, else: '')}" />
+		<div>
+			<f:link.page pageUid="8460" title="Neuen Veranstaltungsort beantragen">
+				Neuen Ort beantragen
+			</f:link.page>
+		</div>
 	</div>
 </div>
 

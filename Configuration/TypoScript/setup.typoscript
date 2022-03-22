@@ -1,17 +1,24 @@
 page.includeCSS {
+  # Only needed for management plugin. If you don't need that plugin you can remove this line.
+  eventsAutoComplete = EXT:events2/Resources/Public/Css/AutoComplete.min.css
+  # Only needed for management plugin. If you don't need that plugin you can remove this line.
   eventsTooltip = EXT:events2/Resources/Public/Css/Tooltip.css
 }
 
 page.includeJSFooter {
-  # LitePicker must be loaded before the other events2 JavaScript, so keep it as first here.
+  # AutoComplete is needed for search and management plugin. If you don't need these plugins you can remove this line.
+  events2AutoComplete = EXT:events2/Resources/Public/JavaScript/AutoComplete.min.js
+  # LitePicker is needed for search and calendar plugin. If you don't need these plugins you can remove this line.
   events2Litepicker = EXT:events2/Resources/Public/JavaScript/LitePicker.js
+  # Only needed for search and management plugin. If you don't need that plugin you can remove this line.
   events2 = EXT:events2/Resources/Public/JavaScript/Events2.js
+  # Only needed for calendar plugin. If you don't need that plugin you can remove this line.
   events2Calendar = EXT:events2/Resources/Public/JavaScript/Calendar.js
 }
 
-# search form should react on $_GET params of SearchResults plugin to show search values again in form.
+# Search form should react on $_GET params of SearchResults plugin to show search values again in form.
 plugin.tx_events2_searchform.view.pluginNamespace = tx_events2_searchresults
-# but if there was an action called which is not accessible, then call the default action
+# If there was an action called which is not accessible, then call the default action
 plugin.tx_events2_search.mvc.callDefaultActionIfActionCantBeResolved = 1
 
 plugin.tx_events2 {
