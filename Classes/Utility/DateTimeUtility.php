@@ -33,7 +33,8 @@ class DateTimeUtility
                 $date = new \DateTimeImmutable($value, $currentTimeZone);
                 $dateTimeObject = $this->standardizeDateTimeObject($date);
             } else {
-                $date = new \DateTimeImmutable(date('Y-m-d H:i:s', $value));
+                $currentTimeZone = new \DateTimeZone(date_default_timezone_get());
+                $date = new \DateTimeImmutable(date('Y-m-d H:i:s', $value), $currentTimeZone);
                 $dateTimeObject = $this->standardizeDateTimeObject($date);
             }
         } catch (\Exception $exception) {

@@ -35,11 +35,9 @@ class RebuildCommand extends Command
      */
     protected int $rowCounter = 0;
 
-    protected ObjectManagerInterface $objectManager;
-
     protected DatabaseService $databaseService;
 
-    protected CacheManager $cacheManager;
+    protected DayRelationService $dayRelationService;
 
     protected OutputInterface $output;
 
@@ -47,16 +45,14 @@ class RebuildCommand extends Command
      * Will be called by DI, so please don't add extbase classes with inject methods here.
      */
     public function __construct(
-        ObjectManagerInterface $objectManager,
         DatabaseService $databaseService,
-        CacheManager $cacheManager,
+        DayRelationService $dayRelationService,
         string $name = null
     ) {
         parent::__construct($name);
 
-        $this->objectManager = $objectManager;
         $this->databaseService = $databaseService;
-        $this->cacheManager = $cacheManager;
+        $this->dayRelationService = $dayRelationService;
     }
 
     protected function configure(): void
@@ -97,42 +93,28 @@ class RebuildCommand extends Command
     {
         $eventCounter = 0;
         $dayCounter = 0;
-        $dayRelations = $this->objectManager->get(DayRelationService::class);
-
         $this->output->writeln('Process each event record');
 
         $rows = $this->databaseService->getCurrentAndFutureEvents();
-        if (!empty($rows)) {
-            $persistenceManager = $this->objectManager->get(PersistenceManagerInterface::class);
-
-            // With each changing PID, pageTSConfigCache will grow by roundabout 200KB, which may exceed memory_limit
-            $runtimeCache = $this->cacheManager->getCache('runtime');
-
-            foreach ($rows as $row) {
-                $event = $dayRelations->createDayRelations((int)$row['uid']);
-                if ($event instanceof Event) {
-                    $this->output->writeln(sprintf(
-                        'Process event UID: %09d, PID: %05d, created: %04d day records, RAM: %d',
-                        $event->getUid(),
-                        $event->getPid(),
-                        $event->getDays()->count(),
-                        memory_get_usage()
-                    ));
-                    ++$eventCounter;
-                    $dayCounter += $event->getDays()->count();
-                } else {
-                    $this->output->writeln(sprintf(
-                        'ERROR event UID: %09d, PID: %05d',
-                        $row['uid'],
-                        $row['pid']
-                    ));
-                }
-
-                // clean up persistence manager to reduce memory usage
-                // it also clears persistence session
-                $persistenceManager->clearState();
-                $runtimeCache->flush();
-                gc_collect_cycles();
+        foreach ($rows as $row) {
+            $eventRecord = $this->dayRelationService->createDayRelations((int)$row['uid']);
+            if ($eventRecord !== []) {
+                $amountOfDayRecords = count($eventRecord['days'] ?? []);
+                $this->output->writeln(sprintf(
+                    'Process event UID: %09d, PID: %05d, created: %04d day records, RAM: %d',
+                    $eventRecord['uid'],
+                    $eventRecord['pid'],
+                    $amountOfDayRecords,
+                    memory_get_usage()
+                ));
+                ++$eventCounter;
+                $dayCounter += $amountOfDayRecords;
+            } else {
+                $this->output->writeln(sprintf(
+                    'ERROR event UID: %09d, PID: %05d',
+                    $row['uid'],
+                    $row['pid']
+                ));
             }
         }
 

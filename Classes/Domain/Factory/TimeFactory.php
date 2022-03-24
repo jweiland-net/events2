@@ -64,7 +64,7 @@ class TimeFactory
 
     /**
      * Each event can have one or more times for one day
-     * This method looks into all-time related records and fetches the times with highest priority.
+     * This method looks into all-time related records and fetches the times with the highest priority.
      *
      * @return \SplObjectStorage|Time[]
      */
@@ -173,7 +173,7 @@ class TimeFactory
     {
         if ($this->removeCurrentDay) {
             // If activated we have to extract the time information from URI parameter "timestamp".
-            // We will remove ALL time records of current day, as ALL time records for current day are
+            // We will remove ALL time-records of current day, as ALL time-records for current day are
             // already visible in event show action. So no need to remove individual time records.
             $uriParameters = GeneralUtility::_GET('tx_events2_list');
             $currentDateMidnight = $this->dateTimeUtility->convert($uriParameters['timestamp']);

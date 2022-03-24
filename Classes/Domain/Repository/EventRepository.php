@@ -21,6 +21,8 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  */
 class EventRepository extends AbstractRepository implements HiddenRepositoryInterface
 {
+    public const TABLE = 'tx_events2_domain_model_event';
+
     protected $defaultOrderings = [
         'eventBegin' => QueryInterface::ORDER_ASCENDING,
     ];
@@ -29,9 +31,16 @@ class EventRepository extends AbstractRepository implements HiddenRepositoryInte
 
     protected UserRepository $userRepository;
 
+    protected ExceptionRepository $exceptionRepository;
+
     public function injectUserRepository(UserRepository $userRepository): void
     {
         $this->userRepository = $userRepository;
+    }
+
+    public function injectExceptionRepository(ExceptionRepository $exceptionRepository): void
+    {
+        $this->exceptionRepository = $exceptionRepository;
     }
 
     /**
@@ -62,28 +71,29 @@ class EventRepository extends AbstractRepository implements HiddenRepositoryInte
     }
 
     /**
-     * Nearly the same as "findByUid", but this method was used by PageTitleProvider
+     * Nearly the same as "findByUid", but this method is used by PageTitleProvider,
      * which is out of Extbase context. So we are using a plain Doctrine Query here.
      */
-    public function getEventRecord(int $uid): array
-    {
-        $queryBuilder = $this->getQueryBuilderForTable('tx_events2_domain_model_event', 'e');
-        $event = $queryBuilder
-            ->select('e.uid', 'e.title')
-            ->from('tx_events2_domain_model_event')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'e.uid',
-                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
-                )
-            )
-            ->execute()
-            ->fetch(\PDO::FETCH_ASSOC);
+    public function getRecord(
+        int $uid,
+        array $select = ['*'],
+        bool $includeHidden = false,
+        bool $includeExceptions = true
+    ): array {
+        $eventRecord = $this->getRecordByUid(
+            self::TABLE,
+            'e',
+            $uid,
+            $select,
+            $includeHidden
+        );
 
-        if (empty($event)) {
-            $event = [];
+        $eventRecord['days'] = [];
+        $eventRecord['exceptions'] = [];
+        if ($includeExceptions) {
+            $eventRecord['exceptions'] = $this->exceptionRepository->getAllByEventRecord($eventRecord);
         }
 
-        return $event;
+        return $eventRecord;
     }
 }

@@ -36,6 +36,8 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  */
 class DayRepository extends AbstractRepository
 {
+    public const TABLE = 'tx_events2_domain_model_day';
+
     protected DateTimeUtility $dateTimeUtility;
 
     protected ExtConf $extConf;
@@ -529,5 +531,48 @@ class DayRepository extends AbstractRepository
             );
 
         return $subQueryBuilder;
+    }
+
+    public function removeAllByEventRecord(array $eventRecord): void
+    {
+        if (!isset($eventRecord['uid'])) {
+            return;
+        }
+        $connection = $this->getConnectionPool()->getConnectionForTable(self::TABLE);
+        $connection->delete(
+            self::TABLE,
+            [
+                'event' => (int)$eventRecord['uid']
+            ]
+        );
+    }
+
+    public function createAll(array $days, array $columnsToWrite = []): void
+    {
+        if ($days === []) {
+            return;
+        }
+
+        $fallbackColumns = [
+            'pid',
+            'tstamp',
+            'crdate',
+            'cruser_id',
+            'hidden',
+            'day',
+            'day_time',
+            'sort_day_time',
+            'same_day_time',
+            'event'
+        ];
+
+        $this
+            ->getConnectionPool()
+            ->getConnectionForTable(self::TABLE)
+            ->bulkInsert(
+                self::TABLE,
+                $days,
+                $columnsToWrite ?: $fallbackColumns
+            );
     }
 }

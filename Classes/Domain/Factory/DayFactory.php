@@ -153,7 +153,7 @@ class DayFactory
 
         if ($event->getDays()->count() === 0) {
             // event seems to be out of time frame. Try to re-generate day records
-            $this->dayRelationService->addDay($event, $event->getEventBegin());
+            $this->dayRelationService->buildDayRecordsForDateTime($event, $event->getEventBegin());
         }
 
         $event->getDays()->rewind();

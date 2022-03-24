@@ -11,11 +11,14 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Domain\Repository;
 
+use Doctrine\DBAL\DBALException;
 use JWeiland\Events2\Helper\OverlayHelper;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\Expression\ExpressionBuilder;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer;
+use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
@@ -52,6 +55,102 @@ class AbstractRepository extends Repository
         $this->overlayHelper->addWhereForOverlay($queryBuilder, $table, $alias, $useLangStrict);
 
         return $queryBuilder;
+    }
+
+    /**
+     * Very simple method to just get a record.
+     * By default, we will do an overlay for you, too.
+     */
+    public function getRecordByUid(
+        string $tableName,
+        string $tableAlias,
+        int $uid,
+        array $select = ['*'],
+        bool $includeHidden = false,
+        bool $doOverlay = true
+    ): array {
+        $queryBuilder = $this->getQueryBuilderForTable($tableName, $tableAlias);
+
+        if ($includeHidden) {
+            $queryBuilder->getRestrictions()->removeByType(HiddenRestriction::class);
+        }
+
+        try {
+            $record = $queryBuilder
+                ->select(...$select)
+                ->where(
+                    $queryBuilder->expr()->eq(
+                        $tableAlias . '.uid',
+                        $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                    )
+                )
+                ->execute()
+                ->fetch(\PDO::FETCH_ASSOC);
+
+            if ($record === false) {
+                return [];
+            }
+        } catch (DBALException $DBALException) {
+            return [];
+        }
+
+        if ($doOverlay) {
+            $record = $this->overlayHelper->doOverlay($tableName, $record);
+        }
+
+        return $record;
+    }
+
+    /**
+     * Very simple method to get records by expression.
+     * By default, we will do an overlay for you, too.
+     */
+    public function getRecordsByExpression(
+        string $tableName,
+        string $tableAlias,
+        array $expressions,
+        array $select = ['*'],
+        bool $includeHidden = false,
+        bool $doOverlay = true
+    ): array {
+        $queryBuilder = $this->getQueryBuilderForTable($tableName, $tableAlias);
+
+        if ($includeHidden) {
+            $queryBuilder->getRestrictions()->removeByType(HiddenRestriction::class);
+        }
+
+        try {
+            $statement = $queryBuilder
+                ->select(...$select)
+                ->where(...$expressions)
+                ->execute();
+
+            $records = [];
+            while ($record = $statement->fetch(\PDO::FETCH_ASSOC)) {
+                if ($doOverlay) {
+                    $record = $this->overlayHelper->doOverlay($tableName, $record);
+                }
+
+                // Do not add empty records, because of overlay
+                if ($record !== []) {
+                    $records[$record['uid']] = $record;
+                }
+            }
+        } catch (DBALException $DBALException) {
+            return [];
+        }
+
+        return $records;
+    }
+
+    /**
+     * Needed to build expressions for ->getRecordsByExpression()
+     */
+    public function getExpressionBuilder(string $tableName): ExpressionBuilder
+    {
+        return $this->getConnectionPool()
+            ->getConnectionForTable($tableName)
+            ->getExpressionBuilder();
     }
 
     protected function getConnectionPool(): ConnectionPool

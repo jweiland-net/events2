@@ -12,25 +12,23 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Service;
 
 use JWeiland\Events2\Configuration\ExtConf;
-use JWeiland\Events2\Domain\Factory\TimeFactory;
-use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
-use JWeiland\Events2\Domain\Model\Time;
+use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
+use JWeiland\Events2\Domain\Repository\TimeRepository;
 use JWeiland\Events2\Utility\DateTimeUtility;
-use TYPO3\CMS\Core\Log\Logger;
-use TYPO3\CMS\Core\Log\LogManager;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
-use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
-use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 
 /*
  * While saving an event in backend, this class generates all the day records
  * and sets them in relation to the event record.
  */
-class DayRelationService
+class DayRelationService implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     protected array $eventRecord = [];
 
     protected ExtConf $extConf;
@@ -39,15 +37,15 @@ class DayRelationService
 
     protected EventRepository $eventRepository;
 
-    protected TimeFactory $timeFactory;
+    protected DayRepository $dayRepository;
+
+    protected TimeRepository $timeRepository;
 
     protected DateTimeUtility $dateTimeUtility;
 
-    protected PersistenceManager $persistenceManager;
-
     protected ?\DateTimeImmutable $firstDateTime = null;
 
-    protected ?Time $firstTime = null;
+    protected ?array $firstTimeRecord = null;
 
     /**
      * Must be called by ObjectManager, because of EventRepository which has inject methods
@@ -55,114 +53,192 @@ class DayRelationService
     public function __construct(
         DayGenerator $dayGenerator,
         EventRepository $eventRepository,
-        TimeFactory $timeFactory,
-        PersistenceManagerInterface $persistenceManager,
+        DayRepository $dayRepository,
+        TimeRepository $timeRepository,
         DateTimeUtility $dateTimeUtility
     ) {
         $this->dayGenerator = $dayGenerator;
         $this->eventRepository = $eventRepository;
-        $this->timeFactory = $timeFactory;
-        $this->persistenceManager = $persistenceManager;
+        $this->dayRepository = $dayRepository;
+        $this->timeRepository = $timeRepository;
         $this->dateTimeUtility = $dateTimeUtility;
     }
 
     /**
      * Delete all related day records of given event and
      * start re-creating the day records.
-     *
-     * @param int $eventUid Event UID. This also can be a hidden event.
-     * @throws \Exception
      */
-    public function createDayRelations(int $eventUid): ?Event
+    public function createDayRelations(int $eventUid): array
     {
         // As create/update action will set event as hidden, we have to search for them, too.
-        $event = $this->eventRepository->findHiddenObject($eventUid);
-        if (!$event instanceof Event) {
-            // write a warning (2) to sys_log
-            $this->getLogger()->warning('Related days could not be created, because of an empty event or a non given event uid or pid.');
+        $eventRecord = $this->eventRepository->getRecord($eventUid, ['*'], true);
+        if ($eventRecord === []) {
+            $this->logger->warning('Related days could not be created, because of an empty eventRecord.');
         } else {
-            // Delete all days from Repo and DB
-            $event->setDays(new ObjectStorage());
-            $this->persistenceManager->update($event);
-            $this->persistenceManager->persistAll();
+            $this->dayRepository->removeAllByEventRecord($eventRecord);
 
-            // Create days from scratch and store to DB
-            $this->dayGenerator->initialize($event);
-            $dateTimeStorage = $this->dayGenerator->getDateTimeStorage();
-            foreach ($dateTimeStorage as $dateTime) {
-                if ($this->firstDateTime === null) {
-                    $this->firstDateTime = $dateTime;
+            try {
+                $days = [];
+                $dateTimeStorage = $this->dayGenerator->getDateTimeStorageForEvent($eventRecord);
+                foreach ($dateTimeStorage as $dateTime) {
+                    if ($this->firstDateTime === null) {
+                        $this->firstDateTime = $dateTime;
+                    }
+
+                    array_push(
+                        $days,
+                        ...$this->buildDayRecordsForDateTime($eventRecord, $dateTime)
+                    );
                 }
 
-                $this->addDay($event, $dateTime);
+                $this->firstDateTime = null;
+                $this->dayRepository->createAll($days);
+                $eventRecord['days'] = $days;
+            } catch (\Exception $exception) {
+                $this->logger->error(sprintf(
+                    'Error while building day records for event: %d. File: %s. Line: %d. Error: %s',
+                    $eventUid,
+                    $exception->getFile(),
+                    $exception->getLine(),
+                    $exception->getMessage()
+                ));
             }
-
-            $this->firstDateTime = null;
-            $this->persistenceManager->update($event);
-            $this->persistenceManager->persistAll();
         }
 
-        return $event;
+        return $eventRecord;
+    }
+
+    public function buildDayRecordsForDateTime(array $eventRecord, \DateTimeImmutable $dateTime): array
+    {
+        $dayRecords = [];
+
+        foreach ($this->getTimeRecordsWithHighestPriority($eventRecord, $dateTime) as $timeRecord) {
+            if ($this->firstTimeRecord === null) {
+                $this->firstTimeRecord = $timeRecord;
+            }
+
+            $dayRecords[] = $this->buildDayRecordForDateTime($dateTime, $eventRecord, $timeRecord);
+        }
+
+        // sort_day_time of all duration days have to be the same value, so do not reset this value in that case.
+        if ($eventRecord['event_type'] !== 'duration') {
+            $this->firstTimeRecord = null;
+        }
+
+        return $dayRecords;
+    }
+
+    protected function getTimeRecordsWithHighestPriority(array $eventRecord, \DateTimeImmutable $dateTime): array
+    {
+        $allTimeRecords = $this->timeRepository->getAllByEventRecord($eventRecord, true);
+        $timeRecords = $this->filterTimeRecords($allTimeRecords, $eventRecord, 'exception_time', $dateTime);
+        if ($timeRecords !== []) {
+            return $timeRecords;
+        }
+
+        $timeRecords = $this->filterTimeRecords($allTimeRecords, $eventRecord, 'different_times', $dateTime);
+        if ($timeRecords !== []) {
+            return $timeRecords;
+        }
+
+        // Following time types have to be merged
+        $filteredTimeRecords = [];
+        $timeRecords = $this->filterTimeRecords($allTimeRecords, $eventRecord, 'event_time', $dateTime);
+        if ($timeRecords !== []) {
+            $filteredTimeRecords = $timeRecords;
+        }
+
+        $timeRecords = $this->filterTimeRecords($allTimeRecords, $eventRecord, 'multiple_times', $dateTime);
+        if ($timeRecords !== []) {
+            array_push($filteredTimeRecords, ...$timeRecords);
+        }
+
+
+        return $filteredTimeRecords;
+    }
+
+    protected function filterTimeRecords(
+        array $allTimeRecords,
+        array $eventRecord,
+        string $recordType,
+        \DateTimeImmutable $dateTime
+    ): array {
+        $filteredTimeRecords = [];
+        foreach ($allTimeRecords as $timeRecord) {
+            if (!isset($timeRecord['type'], $timeRecord['event'], $timeRecord['exception'], $timeRecord['weekday'])) {
+                continue;
+            }
+
+            if (!is_array($timeRecord['event']) || !is_array($timeRecord['exception'])) {
+                continue;
+            }
+
+            if ($timeRecord['type'] !== $recordType) {
+                continue;
+            }
+
+            switch ($recordType) {
+                case 'exception_time':
+                    // Record must match date of exception record
+                    if (
+                        ($exceptionRecord = $eventRecord['exceptions'][$timeRecord['exception']['uid'] ?? 0] ?? [])
+                        && in_array($exceptionRecord['exception_type'] ?? '', ['Add', 'Time'])
+                        && ($exceptionDate = $this->dateTimeUtility->convert($exceptionRecord['exception_date'] ?? 0))
+                        && $exceptionDate == $dateTime // we compare objects here so no === possible
+                    ) {
+                        $filteredTimeRecords[] = $timeRecord;
+                    }
+                    break;
+                case 'different_times':
+                    // Record must match day of week to be added
+                    if (strtolower($timeRecord['weekday']) === strtolower($dateTime->format('l'))) {
+                        $filteredTimeRecords[] = $timeRecord;
+                    }
+                    break;
+                default:
+                    $filteredTimeRecords[] = $timeRecord;
+            }
+        }
+
+        return $filteredTimeRecords;
+    }
+
+    protected function buildDayRecordForDateTime(
+        \DateTimeImmutable $dateTime,
+        array $eventRecord,
+        array $timeRecord
+    ): array {
+        [$hour, $minute] = $this->getHourAndMinuteFromTime($timeRecord);
+
+        return [
+            'pid' => (int)$eventRecord['pid'],
+            'crdate' => time(),
+            'tstamp' => time(),
+            'cruser_id' => $GLOBALS['BE_USER']->user['uid'] ?? 0,
+            'hidden' => $eventRecord['hidden'] ?? 0,
+            'day' => (int)$dateTime->format('U'),
+            'day_time' => (int)$this->getDayTime($dateTime, $hour, $minute)->format('U'),
+            'sort_day_time' => (int)$this->getSortDayTime($dateTime, $hour, $minute, $eventRecord)->format('U'),
+            'same_day_time' => (int)$this->getSameDayTime($dateTime, $hour, $minute, $eventRecord)->format('U'),
+            'event' => $eventRecord['uid']
+        ];
     }
 
     /**
-     * Add day to DB
-     * Also MM-Tables will be filled.
+     * Analyze for valid time value like "21:40" and return exploded time parts: hour (21) and minute (40).
+     * It does not prepend "0" to a value. Time for "08:04" will be returned with hour (8) and minute (4).
      */
-    public function addDay(Event $event, \DateTimeImmutable $dateTime): void
+    protected function getHourAndMinuteFromTime(array $timeRecord): array
     {
-        // to prevent adding multiple day records for ONE day we set them all to midnight 00:00:00
-        $dateTime = $this->dateTimeUtility->standardizeDateTimeObject($dateTime);
-        $times = $this->timeFactory->getTimesForDate($event, $dateTime);
-        if ($times->count() !== 0) {
-            foreach ($times as $time) {
-                if ($this->firstTime === null) {
-                    $this->firstTime = $time;
-                }
-
-                $this->addGeneratedDayToEvent($dateTime, $event, $time);
-            }
-
-            // sort_day_time of all duration days have to be the same value, so do not reset this value in that case.
-            if ($event->getEventType() !== 'duration') {
-                $this->firstTime = null;
-            }
-        } else {
-            $this->addGeneratedDayToEvent($dateTime, $event);
-        }
-    }
-
-    protected function addGeneratedDayToEvent(\DateTimeImmutable $dateTime, Event $event, ?Time $time = null): void
-    {
-        [$hour, $minute] = $this->getHourAndMinuteFromTime($time);
-
-        $day = GeneralUtility::makeInstance(Day::class);
-        $day->setPid($event->getPid());
-        $day->setDay($dateTime);
-        $day->setDayTime($this->getDayTime($dateTime, $hour, $minute));
-        $day->setSortDayTime($this->getSortDayTime($dateTime, $hour, $minute, $event));
-        $day->setSameDayTime($this->getSameDayTime($dateTime, $hour, $minute, $event));
-        $day->setEvent($event);
-
-        $event->addDay($day);
-    }
-
-    /**
-     * Analyze for valid time value like "21:40" and return exploded time parts: hour (21) and minute (40)
-     *
-     * @return array|int[]
-     */
-    protected function getHourAndMinuteFromTime(?Time $time = null): array
-    {
-        if (!$time instanceof Time) {
+        if (!isset($timeRecord['time_begin'])) {
             return [0, 0];
         }
 
-        if (!preg_match('@^([0-1]\d|2[0-3]):[0-5]\d$@', $time->getTimeBegin())) {
+        if (!preg_match('@^([0-1]\d|2[0-3]):[0-5]\d$@', $timeRecord['time_begin'])) {
             return [0, 0];
         }
 
-        return GeneralUtility::intExplode(':', $time->getTimeBegin());
+        return GeneralUtility::intExplode(':', $timeRecord['time_begin']);
     }
 
     /**
@@ -191,10 +267,15 @@ class DayRelationService
      * Day: 19.01.2017 00:00:00 + 9h + 25m  = 17.01.2017 08:30:00
      * Day: 20.01.2017 00:00:00 + 14h + 45m = 17.01.2017 08:30:00
      */
-    protected function getSortDayTime(\DateTimeImmutable $day, int $hour, int $minute, Event $event): \DateTimeImmutable
+    protected function getSortDayTime(
+        \DateTimeImmutable $day,
+        int $hour,
+        int $minute,
+        array $eventRecord
+    ): \DateTimeImmutable
     {
-        if ($event->getEventType() === 'duration') {
-            [$hour, $minute] = $this->getHourAndMinuteFromTime($this->firstTime);
+        if ($eventRecord['event_type'] === 'duration') {
+            [$hour, $minute] = $this->getHourAndMinuteFromTime($this->firstTimeRecord);
 
             return $this->getDayTime($this->firstDateTime, $hour, $minute);
         }
@@ -212,17 +293,16 @@ class DayRelationService
      * Day: 18.01.2017 00:00:00 + 8h + 30m  = 18.01.2017 08:30:00
      * Day: 28.01.2017 00:00:00 + 10h + 15m = 18.01.2017 08:30:00
      */
-    protected function getSameDayTime(\DateTimeImmutable $day, int $hour, int $minute, Event $event): \DateTimeImmutable
-    {
-        if ($event->getEventType() !== 'duration') {
-            [$hour, $minute] = $this->getHourAndMinuteFromTime($this->firstTime);
+    protected function getSameDayTime(
+        \DateTimeImmutable $day,
+        int $hour,
+        int $minute,
+        array $eventRecord
+    ): \DateTimeImmutable {
+        if ($eventRecord['event_type'] !== 'duration') {
+            [$hour, $minute] = $this->getHourAndMinuteFromTime($this->firstTimeRecord);
         }
 
-        return $this->getSortDayTime($day, $hour, $minute, $event);
-    }
-
-    protected function getLogger(): Logger
-    {
-        return GeneralUtility::makeInstance(LogManager::class)->getLogger(self::class);
+        return $this->getSortDayTime($day, $hour, $minute, $eventRecord);
     }
 }

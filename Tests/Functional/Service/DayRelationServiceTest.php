@@ -17,7 +17,9 @@ use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Exception;
 use JWeiland\Events2\Domain\Model\Time;
+use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
+use JWeiland\Events2\Domain\Repository\TimeRepository;
 use JWeiland\Events2\Service\DayGenerator;
 use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Utility\DateTimeUtility;
@@ -36,10 +38,7 @@ class DayRelationServiceTest extends FunctionalTestCase
 {
     protected DayRelationService $subject;
 
-    /**
-     * @var ExtConf|ObjectProphecy
-     */
-    protected $extConfProphecy;
+    protected ExtConf $extConf;
 
     /**
      * @var EventRepository|ObjectProphecy
@@ -47,9 +46,14 @@ class DayRelationServiceTest extends FunctionalTestCase
     protected $eventRepositoryProphecy;
 
     /**
+     * @var DayRepository|ObjectProphecy
+     */
+    protected $dayRepositoryProphecy;
+
+    /**
      * @var PersistenceManager|ObjectProphecy
      */
-    protected $persistenceManagerProphecy;
+    protected $timeRepositoryProphecy;
 
     protected $testExtensionsToLoad = [
         'typo3conf/ext/events2'
@@ -59,9 +63,9 @@ class DayRelationServiceTest extends FunctionalTestCase
     {
         parent::setUp();
 
-        $this->extConfProphecy = $this->prophesize(ExtConf::class);
-        $this->extConfProphecy->getRecurringPast()->willReturn(3);
-        $this->extConfProphecy->getRecurringFuture()->willReturn(6);
+        $this->extConf = GeneralUtility::makeInstance(ExtConf::class);
+        $this->extConf->getRecurringPast()->willReturn(3);
+        $this->extConf->getRecurringFuture()->willReturn(6);
 
         // needed for getItemsFromTca in DayGenerator
         $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['xth']['config']['items'] = [
@@ -82,19 +86,19 @@ class DayRelationServiceTest extends FunctionalTestCase
         ];
 
         $this->eventRepositoryProphecy = $this->prophesize(EventRepository::class);
-        $this->persistenceManagerProphecy = $this->prophesize(PersistenceManager::class);
+        $this->timeRepositoryProphecy = $this->prophesize(TimeRepository::class);
 
         $dayGenerator = new DayGenerator(
             GeneralUtility::makeInstance(EventDispatcher::class),
-            $this->extConfProphecy->reveal(),
+            $this->extConf,
             new DateTimeUtility()
         );
 
         $this->subject = new DayRelationService(
             $dayGenerator,
             $this->eventRepositoryProphecy->reveal(),
-            new TimeFactory(new DateTimeUtility()),
-            $this->persistenceManagerProphecy->reveal(),
+            $this->dayRepositoryProphecy->reveal(),
+            $this->timeRepositoryProphecy->reveal(),
             new DateTimeUtility()
         );
     }
@@ -102,9 +106,10 @@ class DayRelationServiceTest extends FunctionalTestCase
     protected function tearDown(): void
     {
         unset(
-            $this->extConfProphecy,
+            $this->extConf,
             $this->eventRepositoryProphecy,
-            $this->persistenceManagerProphecy,
+            $this->dayRepositoryProphecy,
+            $this->timeRepositoryProphecy,
             $this->subject
         );
 
@@ -116,8 +121,8 @@ class DayRelationServiceTest extends FunctionalTestCase
      */
     public function createDayRelationsWithEmptyEventWillNeverCallAnyQuery(): void
     {
-        $this->persistenceManagerProphecy->update(Argument::cetera())->shouldNotBeCalled();
-        $this->persistenceManagerProphecy->persistAll(Argument::cetera())->shouldNotBeCalled();
+        $this->timeRepositoryProphecy->update(Argument::cetera())->shouldNotBeCalled();
+        $this->timeRepositoryProphecy->persistAll(Argument::cetera())->shouldNotBeCalled();
 
         $this->eventRepositoryProphecy->findHiddenObject(123)->shouldBeCalled()->willReturn(null);
 
@@ -142,8 +147,8 @@ class DayRelationServiceTest extends FunctionalTestCase
         $this->subject->createDayRelations(123);
 
         $event->setDays(new ObjectStorage());
-        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
-        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
+        $this->timeRepositoryProphecy->update($event)->shouldBeCalled();
+        $this->timeRepositoryProphecy->persistAll()->shouldBeCalled();
     }
 
     /**
@@ -173,8 +178,8 @@ class DayRelationServiceTest extends FunctionalTestCase
         $this->eventRepositoryProphecy->findHiddenObject(123)->willReturn($event);
         $this->subject->createDayRelations(123);
 
-        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
-        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
+        $this->timeRepositoryProphecy->update($event)->shouldBeCalled();
+        $this->timeRepositoryProphecy->persistAll()->shouldBeCalled();
         self::assertCount(3, $event->getDays());
 
         $days = ['yesterday', 'today', 'tomorrow'];
@@ -231,8 +236,8 @@ class DayRelationServiceTest extends FunctionalTestCase
         $this->eventRepositoryProphecy->findHiddenObject(123)->willReturn($event);
         $this->subject->createDayRelations(123);
 
-        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
-        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
+        $this->timeRepositoryProphecy->update($event)->shouldBeCalled();
+        $this->timeRepositoryProphecy->persistAll()->shouldBeCalled();
         self::assertCount(3, $event->getDays());
 
         /** @var Day $day */
@@ -306,8 +311,8 @@ class DayRelationServiceTest extends FunctionalTestCase
         $this->eventRepositoryProphecy->findHiddenObject(123)->willReturn($event);
         $this->subject->createDayRelations(123);
 
-        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
-        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
+        $this->timeRepositoryProphecy->update($event)->shouldBeCalled();
+        $this->timeRepositoryProphecy->persistAll()->shouldBeCalled();
 
         self::assertCount(6, $event->getDays());
 
@@ -331,7 +336,7 @@ class DayRelationServiceTest extends FunctionalTestCase
      */
     public function createDayRelationsWithRecurringEventAndMultipleTimesAtSameDayFuture(): void
     {
-        $this->extConfProphecy->getRecurringPast()->willReturn(0);
+        $this->extConf->getRecurringPast()->willReturn(0);
 
         $yesterday = new \DateTimeImmutable();
         $yesterday->modify('yesterday midnight');
@@ -375,8 +380,8 @@ class DayRelationServiceTest extends FunctionalTestCase
         $this->eventRepositoryProphecy->findHiddenObject(123)->willReturn($event);
         $this->subject->createDayRelations(123);
 
-        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
-        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
+        $this->timeRepositoryProphecy->update($event)->shouldBeCalled();
+        $this->timeRepositoryProphecy->persistAll()->shouldBeCalled();
         self::assertCount(4, $event->getDays());
 
         /** @var Day $day */
@@ -436,8 +441,8 @@ class DayRelationServiceTest extends FunctionalTestCase
         $this->eventRepositoryProphecy->findHiddenObject(123)->willReturn($event);
         $this->subject->createDayRelations(123);
 
-        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
-        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
+        $this->timeRepositoryProphecy->update($event)->shouldBeCalled();
+        $this->timeRepositoryProphecy->persistAll()->shouldBeCalled();
         self::assertCount(3, $event->getDays());
 
         /** @var Day $day */
@@ -506,8 +511,8 @@ class DayRelationServiceTest extends FunctionalTestCase
         $this->eventRepositoryProphecy->findHiddenObject(123)->willReturn($event);
         $this->subject->createDayRelations(123);
 
-        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
-        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
+        $this->timeRepositoryProphecy->update($event)->shouldBeCalled();
+        $this->timeRepositoryProphecy->persistAll()->shouldBeCalled();
         self::assertCount(4, $event->getDays());
 
         $days = ['tuesday', 'wednesday', 'thursday', 'friday'];
@@ -595,8 +600,8 @@ class DayRelationServiceTest extends FunctionalTestCase
         $this->eventRepositoryProphecy->findHiddenObject(123)->willReturn($event);
         $this->subject->createDayRelations(123);
 
-        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
-        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
+        $this->timeRepositoryProphecy->update($event)->shouldBeCalled();
+        $this->timeRepositoryProphecy->persistAll()->shouldBeCalled();
         self::assertCount(5, $event->getDays());
 
         $days = ['tuesday', 'wednesday', 'wednesday', 'thursday', 'friday'];
@@ -641,8 +646,8 @@ class DayRelationServiceTest extends FunctionalTestCase
         $this->eventRepositoryProphecy->findHiddenObject(123)->willReturn($event);
         $this->subject->createDayRelations(123);
 
-        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
-        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
+        $this->timeRepositoryProphecy->update($event)->shouldBeCalled();
+        $this->timeRepositoryProphecy->persistAll()->shouldBeCalled();
         self::assertCount(1, $event->getDays());
 
         $days = ['nextWeek'];
@@ -679,8 +684,8 @@ class DayRelationServiceTest extends FunctionalTestCase
         $this->eventRepositoryProphecy->findHiddenObject(123)->willReturn($event);
         $this->subject->createDayRelations(123);
 
-        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
-        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
+        $this->timeRepositoryProphecy->update($event)->shouldBeCalled();
+        $this->timeRepositoryProphecy->persistAll()->shouldBeCalled();
         self::assertCount(1, $event->getDays());
 
         $days = ['nextWeek'];
@@ -716,8 +721,8 @@ class DayRelationServiceTest extends FunctionalTestCase
         $this->eventRepositoryProphecy->findHiddenObject(123)->willReturn($event);
         $this->subject->createDayRelations(123);
 
-        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
-        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
+        $this->timeRepositoryProphecy->update($event)->shouldBeCalled();
+        $this->timeRepositoryProphecy->persistAll()->shouldBeCalled();
         self::assertCount(3, $event->getDays());
 
         $days = ['today', 'tomorrow', 'in2days'];
@@ -763,8 +768,8 @@ class DayRelationServiceTest extends FunctionalTestCase
         $this->eventRepositoryProphecy->findHiddenObject(123)->willReturn($event);
         $this->subject->createDayRelations(123);
 
-        $this->persistenceManagerProphecy->update($event)->shouldBeCalled();
-        $this->persistenceManagerProphecy->persistAll()->shouldBeCalled();
+        $this->timeRepositoryProphecy->update($event)->shouldBeCalled();
+        $this->timeRepositoryProphecy->persistAll()->shouldBeCalled();
         self::assertCount(3, $event->getDays());
 
         $days = ['today', 'tomorrow', 'in2days'];
