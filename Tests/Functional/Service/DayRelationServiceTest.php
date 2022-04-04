@@ -20,7 +20,7 @@ use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Domain\Repository\TimeRepository;
-use JWeiland\Events2\Service\DayGenerator;
+use JWeiland\Events2\Service\DayGeneratorService;
 use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
@@ -88,7 +88,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         $this->eventRepositoryProphecy = $this->prophesize(EventRepository::class);
         $this->timeRepositoryProphecy = $this->prophesize(TimeRepository::class);
 
-        $dayGenerator = new DayGenerator(
+        $dayGenerator = new DayGeneratorService(
             GeneralUtility::makeInstance(EventDispatcher::class),
             $this->extConf,
             new DateTimeUtility()

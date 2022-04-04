@@ -29,12 +29,12 @@ class DateTimeUtility
                 $dateTimeObject = null;
             } elseif (is_string($value) && !MathUtility::canBeInterpretedAsInteger($value)) {
                 // SF: This is my own converter for modifying the date by special formatting values like "today" OR "tomorrow"
-                $currentTimeZone = new \DateTimeZone(date_default_timezone_get());
-                $date = new \DateTimeImmutable($value, $currentTimeZone);
+                $date = new \DateTimeImmutable($value);
+                $date = $date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
                 $dateTimeObject = $this->standardizeDateTimeObject($date);
             } else {
-                $currentTimeZone = new \DateTimeZone(date_default_timezone_get());
-                $date = new \DateTimeImmutable(date('Y-m-d H:i:s', $value), $currentTimeZone);
+                $date = new \DateTimeImmutable(date('Y-m-d H:i:s', $value));
+                $date = $date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
                 $dateTimeObject = $this->standardizeDateTimeObject($date);
             }
         } catch (\Exception $exception) {

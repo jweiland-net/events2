@@ -33,7 +33,7 @@ class DayRelationService implements LoggerAwareInterface
 
     protected ExtConf $extConf;
 
-    protected DayGenerator $dayGenerator;
+    protected DayGeneratorService $dayGenerator;
 
     protected EventRepository $eventRepository;
 
@@ -51,7 +51,7 @@ class DayRelationService implements LoggerAwareInterface
      * Must be called by ObjectManager, because of EventRepository which has inject methods
      */
     public function __construct(
-        DayGenerator $dayGenerator,
+        DayGeneratorService $dayGenerator,
         EventRepository $eventRepository,
         DayRepository $dayRepository,
         TimeRepository $timeRepository,
@@ -70,39 +70,39 @@ class DayRelationService implements LoggerAwareInterface
      */
     public function createDayRelations(int $eventUid): array
     {
-        // As create/update action will set event as hidden, we have to search for them, too.
         $eventRecord = $this->eventRepository->getRecord($eventUid, ['*'], true);
         if ($eventRecord === []) {
             $this->logger->warning('Related days could not be created, because of an empty eventRecord.');
-        } else {
+
+            return $eventRecord;
+        }
+
+        try {
             $this->dayRepository->removeAllByEventRecord($eventRecord);
-
-            try {
-                $days = [];
-                $dateTimeStorage = $this->dayGenerator->getDateTimeStorageForEvent($eventRecord);
-                foreach ($dateTimeStorage as $dateTime) {
-                    if ($this->firstDateTime === null) {
-                        $this->firstDateTime = $dateTime;
-                    }
-
-                    array_push(
-                        $days,
-                        ...$this->buildDayRecordsForDateTime($eventRecord, $dateTime)
-                    );
+            $days = [];
+            $dateTimeStorage = $this->dayGenerator->getDateTimeStorageForEvent($eventRecord);
+            foreach ($dateTimeStorage as $dateTime) {
+                if ($this->firstDateTime === null) {
+                    $this->firstDateTime = $dateTime;
                 }
 
-                $this->firstDateTime = null;
-                $this->dayRepository->createAll($days);
-                $eventRecord['days'] = $days;
-            } catch (\Exception $exception) {
-                $this->logger->error(sprintf(
-                    'Error while building day records for event: %d. File: %s. Line: %d. Error: %s',
-                    $eventUid,
-                    $exception->getFile(),
-                    $exception->getLine(),
-                    $exception->getMessage()
-                ));
+                array_push(
+                    $days,
+                    ...$this->buildDayRecordsForDateTime($eventRecord, $dateTime)
+                );
             }
+
+            $this->firstDateTime = null;
+            $this->dayRepository->createAll($days);
+            $eventRecord['days'] = $days;
+        } catch (\Exception $exception) {
+            $this->logger->error(sprintf(
+                'Error while building day records for event: %d. File: %s. Line: %d. Error: %s',
+                $eventUid,
+                $exception->getFile(),
+                $exception->getLine(),
+                $exception->getMessage()
+            ));
         }
 
         return $eventRecord;
