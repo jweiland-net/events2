@@ -34,8 +34,12 @@ class AbstractRepository extends Repository
         $this->overlayHelper = $overlayHelper;
     }
 
-    protected function getQueryBuilderForTable(string $table, string $alias, bool $useLangStrict = false): QueryBuilder
-    {
+    protected function getQueryBuilderForTable(
+        string $table,
+        string $alias,
+        bool $useLangStrict = false,
+        int $overrideLanguageUid = -1
+    ): QueryBuilder {
         $extbaseQuery = $this->createQuery();
 
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($table);
@@ -52,7 +56,7 @@ class AbstractRepository extends Repository
                 )
             );
 
-        $this->overlayHelper->addWhereForOverlay($queryBuilder, $table, $alias, $useLangStrict);
+        $this->overlayHelper->addWhereForOverlay($queryBuilder, $table, $alias, $useLangStrict, $overrideLanguageUid);
 
         return $queryBuilder;
     }

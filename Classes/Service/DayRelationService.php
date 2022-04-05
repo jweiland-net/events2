@@ -73,7 +73,11 @@ class DayRelationService implements LoggerAwareInterface
         $eventRecord = $this->eventRepository->getRecord($eventUid, ['*'], true);
         if ($eventRecord === []) {
             $this->logger->warning('Related days could not be created, because of an empty eventRecord.');
+            return $eventRecord;
+        }
 
+        if ($eventRecord['sys_language_uid'] > 0) {
+            $this->logger->info('DayRelationService will not build day records for translated events.');
             return $eventRecord;
         }
 

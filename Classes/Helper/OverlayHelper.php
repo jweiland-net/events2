@@ -13,6 +13,7 @@ namespace JWeiland\Events2\Helper;
 
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Context\LanguageAspect;
@@ -40,11 +41,12 @@ class OverlayHelper implements LoggerAwareInterface
         QueryBuilder $queryBuilder,
         string $tableName,
         string $tableAlias,
-        bool $useLangStrict = false
+        bool $useLangStrict = false,
+        int $overrideLanguageUid = -1
     ): void {
         try {
             $this->addWhereForWorkspaces($queryBuilder, $tableName, $tableAlias);
-            $this->addWhereForTranslation($queryBuilder, $tableName, $tableAlias, $useLangStrict);
+            $this->addWhereForTranslation($queryBuilder, $tableName, $tableAlias, $useLangStrict, $overrideLanguageUid);
         } catch (AspectNotFoundException $aspectNotFoundException) {
             $this->logger->error(sprintf(
                 'Aspect for "language" was not found in %s at line %d.',
@@ -109,6 +111,10 @@ class OverlayHelper implements LoggerAwareInterface
         bool $useLangStrict = false,
         int $overrideLanguageUid = -1
     ): void {
+        if (!BackendUtility::isTableLocalizable($tableName)) {
+            return;
+        }
+
         // Column: sys_language_uid
         $languageField = $GLOBALS['TCA'][$tableName]['ctrl']['languageField'];
         // Column: l10n_parent
