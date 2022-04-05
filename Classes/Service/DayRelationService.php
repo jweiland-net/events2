@@ -45,7 +45,7 @@ class DayRelationService implements LoggerAwareInterface
 
     protected ?\DateTimeImmutable $firstDateTime = null;
 
-    protected ?array $firstTimeRecord = null;
+    protected array $firstTimeRecord = [];
 
     /**
      * Must be called by ObjectManager, because of EventRepository which has inject methods
@@ -110,10 +110,17 @@ class DayRelationService implements LoggerAwareInterface
 
     public function buildDayRecordsForDateTime(array $eventRecord, \DateTimeImmutable $dateTime): array
     {
-        $dayRecords = [];
+        // Early return, if no time records were found
+        $timeRecords = $this->getTimeRecordsWithHighestPriority($eventRecord, $dateTime);
+        if ($timeRecords === []) {
+            return [
+                $this->buildDayRecordForDateTime($dateTime, $eventRecord, [])
+            ];
+        }
 
+        $dayRecords = [];
         foreach ($this->getTimeRecordsWithHighestPriority($eventRecord, $dateTime) as $timeRecord) {
-            if ($this->firstTimeRecord === null) {
+            if ($this->firstTimeRecord === []) {
                 $this->firstTimeRecord = $timeRecord;
             }
 
@@ -122,7 +129,7 @@ class DayRelationService implements LoggerAwareInterface
 
         // sort_day_time of all duration days have to be the same value, so do not reset this value in that case.
         if ($eventRecord['event_type'] !== 'duration') {
-            $this->firstTimeRecord = null;
+            $this->firstTimeRecord = [];
         }
 
         return $dayRecords;
@@ -284,7 +291,7 @@ class DayRelationService implements LoggerAwareInterface
     }
 
     /**
-     * Get timestamp which is the same for all-time records of same day.
+     * Get timestamp which is the same for all time-records of same day.
      * This column is only needed if mergeEventsAtSameTime is set.
      * It helps to GROUP BY these records in SQL statement.
      *
