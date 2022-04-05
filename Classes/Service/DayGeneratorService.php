@@ -353,7 +353,7 @@ class DayGeneratorService implements LoggerAwareInterface
     protected function getStartDateForCalculation(array $eventRecord): \DateTimeImmutable
     {
         $eventBegin = $eventRecord['event_begin'];
-        $dateToStartCalculatingFrom = $this->getEarliestDate($eventBegin);
+        $dateToStartCalculatingFrom = $this->getEarliestDateForTimeFrame($eventBegin);
 
         // In case of eachWeeks and eachMonth $dateToStartCalculatingFrom has to be
         // exactly in sync with eventBegin
@@ -375,7 +375,7 @@ class DayGeneratorService implements LoggerAwareInterface
      *
      * @throws \Exception
      */
-    protected function getEarliestDate(\DateTimeImmutable $dateForComparison): \DateTimeImmutable
+    protected function getEarliestDateForTimeFrame(\DateTimeImmutable $dateForComparison): \DateTimeImmutable
     {
         $earliestDateOfTimeFrame = $this->createDateTime(sprintf(
             '-%d months',
