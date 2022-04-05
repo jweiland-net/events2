@@ -430,6 +430,10 @@ class DayGeneratorService implements LoggerAwareInterface
             ? $eventRecord['event_end']
             : $eventRecord['recurring_end'];
 
+        if (!$latestEventDate instanceof \DateTimeImmutable) {
+            return $latestDateOfTimeFrame;
+        }
+
         return $latestEventDate < $latestDateOfTimeFrame ? $latestEventDate : $latestDateOfTimeFrame;
     }
 
