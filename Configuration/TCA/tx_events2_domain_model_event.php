@@ -536,8 +536,6 @@ return [
         ],
         'days' => [
             'exclude' => false,
-            'l10n_display' => 'defaultAsReadonly',
-            'l10n_mode' => 'exclude',
             'config' => [
                 'type' => 'inline',
                 'foreign_table' => 'tx_events2_domain_model_day',
