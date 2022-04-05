@@ -70,10 +70,10 @@ class Events2PageTitleProvider implements PageTitleProviderInterface
             return false;
         }
 
-        if (!isset($gp['controller'], $gp['action'], $gp['timestamp'])) {
+        if (!isset($gp['controller'], $gp['action'], $gp['event'], $gp['timestamp'])) {
             return false;
         }
 
-        return (int)$gp['timestamp'] > 0;
+        return (int)$gp['timestamp'] > 0 && (int)$gp['event'] > 0;
     }
 }
