@@ -714,52 +714,11 @@ class DayGeneratorServiceTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getDateTimeStorageForEventWithExceptionsInEventCallsAddExceptions(): void
-    {
-        $eventBegin = new \DateTimeImmutable();
-        $eventBegin = $eventBegin->modify('midnight');
-
-        $exception = new Exception();
-        $exceptions = new ObjectStorage();
-        $exceptions->attach($exception);
-
-        $eventRecord = [
-            'uid' => 123,
-            'event_type' => 'duration',
-            'event_begin' => (int)$eventBegin->format('U'),
-            'event_end' => 0,
-            'recurring_end' => 0,
-            'xth' => 31,
-            'weekday' => 127,
-            'each_weeks' => 0,
-            'each_months' => 0,
-            'exceptions' => 1,
-        ];
-
-        self::assertSame(
-            [],
-            $this->subject->getDateTimeStorageForEvent($eventRecord)
-        );
-    }
-
-    /**
-     * @test
-     */
     public function getDateTimeStorageForEventWithAddExceptionAddsOneDayInStorage(): void
     {
         $eventBegin = new \DateTimeImmutable('midnight');
-        $recurringEnd = new \DateTimeImmutable('+4 days midnight');
+        $recurringEnd = $eventBegin->modify('+7 days');
         $tomorrow = $eventBegin->modify('tomorrow');
-
-        $exceptionTime = new Time();
-        $exceptionTime->setTimeBegin('18:00');
-
-        $exception = new Exception();
-        $exception->setExceptionType('Add');
-        $exception->setExceptionDate($tomorrow);
-        $exception->setExceptionTime($exceptionTime);
-        $exceptions = new ObjectStorage();
-        $exceptions->attach($exception);
 
         $eventRecord = [
             'uid' => 123,
@@ -769,20 +728,22 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'recurring_end' => (int)$recurringEnd->format('U'),
             'xth' => 31,
             'weekday' => 127,
-            'each_weeks' => 0,
+            'each_weeks' => 1,
             'each_months' => 0,
-            'exceptions' => 1,
+            'exceptions' => [
+                1 => [
+                    'exception_type' => 'Add',
+                    'exception_date' => (int)$tomorrow->format('U'),
+                ]
+            ],
         ];
 
-        $tempDate = $eventBegin;
-        $expectedDays = [];
-        for ($i = 0; $i < 5; ++$i) {
-            $expectedDays[$tempDate->format('U')] = $tempDate;
-            $tempDate = $tempDate->modify('+1 day');
-        }
-
         self::assertEquals(
-            $expectedDays,
+            [
+                $eventBegin->format('U') => $eventBegin,
+                $tomorrow->format('U') => $tomorrow,
+                $recurringEnd->format('U') => $recurringEnd,
+            ],
             $this->subject->getDateTimeStorageForEvent($eventRecord)
         );
     }
@@ -879,6 +840,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
     {
         $eventBegin = new \DateTimeImmutable('midnight');
         $tomorrow = $eventBegin->modify('tomorrow');
+        $exceptionDate = new \DateTimeImmutable('+4 days midnight');
 
         $eventRecord = [
             'uid' => 123,
@@ -893,7 +855,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'exceptions' => [
                 1 => [
                     'exception_type' => 'Time',
-                    'exception_date' => new \DateTimeImmutable('+4 days midnight')
+                    'exception_date' => (int)$exceptionDate->format('U')
                 ]
             ],
         ];
@@ -915,6 +877,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
     {
         $eventBegin = new \DateTimeImmutable('midnight');
         $tomorrow = $eventBegin->modify('tomorrow');
+        $exceptionDate = new \DateTimeImmutable('+4 days midnight');
 
         $eventRecord = [
             'uid' => 123,
@@ -929,7 +892,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'exceptions' => [
                 1 => [
                     'exception_type' => 'Info',
-                    'exception_date' => new \DateTimeImmutable('+4 days midnight')
+                    'exception_date' => (int)$exceptionDate->format('U')
                 ]
             ],
         ];
@@ -960,6 +923,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
 
         $eventBegin = new \DateTimeImmutable('midnight');
         $tomorrow = $eventBegin->modify('tomorrow');
+        $exceptionDate = new \DateTimeImmutable('+4 days midnight');
 
         $eventRecord = [
             'uid' => 123,
@@ -974,7 +938,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'exceptions' => [
                 1 => [
                     'exception_type' => 'Invalid value',
-                    'exception_date' => new \DateTimeImmutable('+4 days midnight')
+                    'exception_date' => (int)$exceptionDate->format('U')
                 ]
             ],
         ];
