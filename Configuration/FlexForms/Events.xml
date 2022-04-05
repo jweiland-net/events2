@@ -27,7 +27,7 @@
 										<numIndex index="1">listToday</numIndex>
 									</numIndex>
 									<numIndex index="3">
-										<numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:listType.listWeek</numIndex>
+										<numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:listType.listThisWeek</numIndex>
 										<numIndex index="1">listWeek</numIndex>
 									</numIndex>
 									<numIndex index="4">
