@@ -64,6 +64,10 @@ class Events2PageTitleProvider implements PageTitleProviderInterface
         return $pageTitle;
     }
 
+    /**
+     * This PageTitleProvider will only work on detail page of events2.
+     * event and timestamp have to be given. Else: Page title will not be overwritten.
+     */
     protected function isValidRequest(array $gp): bool
     {
         if (!is_array($gp)) {
