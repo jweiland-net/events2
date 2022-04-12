@@ -14,7 +14,7 @@ namespace JWeiland\Events2\Helper;
 use JWeiland\Events2\Domain\Factory\TimeFactory;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Time;
-use JWeiland\Events2\Event\PostProcessEventForICalDownloadEvent;
+use JWeiland\Events2\Event\PostProcessICalRowsForICalDownloadEvent;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -56,16 +56,16 @@ class ICalendarHelper
     {
         $this->lineBreak = $parameters['lineBreak'] ?? $this->lineBreak;
 
-        $iCal = [];
-        $this->addICalHeader($iCal);
-        $this->addICalVersion($iCal);
-        $this->addICalProdId($iCal);
+        $iCalRows = [];
+        $this->addICalHeader($iCalRows);
+        $this->addICalVersion($iCalRows);
+        $this->addICalProdId($iCalRows);
 
-        $this->addICalEvent($iCal, $day);
+        $this->addICalEvent($iCalRows, $day);
 
-        $this->addICalFooter($iCal);
+        $this->addICalFooter($iCalRows);
 
-        return implode($this->lineBreak, $iCal);
+        return implode($this->lineBreak, $iCalRows);
     }
 
     protected function addICalHeader(array &$iCal): void
@@ -90,20 +90,20 @@ class ICalendarHelper
 
     protected function addICalEvent(array &$iCal, Day $day): void
     {
-        $event = [];
-        $this->addEventBegin($event);
-        $this->addEventUid($event, $day);
-        $this->addEventDateTime($event, $day);
-        $this->addEventLocation($event, $day);
-        $this->addEventSummary($event, $day);
-        $this->addEventDescription($event, $day);
-        $this->addEventEnd($event);
+        $iCalRowsForAnEvent = [];
+        $this->addEventBegin($iCalRowsForAnEvent);
+        $this->addEventUid($iCalRowsForAnEvent, $day);
+        $this->addEventDateTime($iCalRowsForAnEvent, $day);
+        $this->addEventLocation($iCalRowsForAnEvent, $day);
+        $this->addEventSummary($iCalRowsForAnEvent, $day);
+        $this->addEventDescription($iCalRowsForAnEvent, $day);
+        $this->addEventEnd($iCalRowsForAnEvent);
 
         $this->eventDispatcher->dispatch(
-            new PostProcessEventForICalDownloadEvent($event, $day)
+            new PostProcessICalRowsForICalDownloadEvent($iCalRowsForAnEvent, $day)
         );
 
-        array_push($iCal, ...$event);
+        array_push($iCal, ...$iCalRowsForAnEvent);
     }
 
     protected function addEventBegin(array &$event): void

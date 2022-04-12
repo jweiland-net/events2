@@ -16,7 +16,7 @@ use JWeiland\Events2\Domain\Model\Day;
 /*
  * Use this event, if you want to modify the event before adding it to the iCal download
  */
-class PostProcessEventForICalDownloadEvent
+class PostProcessICalRowsForICalDownloadEvent
 {
     protected array $event = [];
 
