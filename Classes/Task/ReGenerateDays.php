@@ -121,19 +121,6 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
 
         $this->registry->remove('events2TaskCreateUpdate', 'info');
 
-        // remove old iCAL downloads
-        $iCalDirectory = Environment::getPublicPath() . '/' . 'typo3temp/tx_events2/iCal/';
-        if (is_dir($iCalDirectory)) {
-            foreach (new \DirectoryIterator($iCalDirectory) as $fileInfo) {
-                if ($fileInfo->isDot()) {
-                    continue;
-                }
-                if ($fileInfo->isFile() && time() - $fileInfo->getCTime() >= 1 * 24 * 60 * 60) {
-                    unlink($fileInfo->getRealPath());
-                }
-            }
-        }
-
         return true;
     }
 
