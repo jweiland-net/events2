@@ -11,10 +11,12 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Controller;
 
+use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Helper\DownloadHelper;
 use JWeiland\Events2\Helper\ICalendarHelper;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /*
@@ -41,15 +43,23 @@ class ICalController extends ActionController
         $this->downloadHelper = $downloadHelper;
     }
 
-    public function downloadAction(int $event, int $timestamp = 0): ResponseInterface
+    public function downloadAction(int $dayUid): ResponseInterface
     {
-        $day = $this->dayRepository->findDayByEventAndTimestamp($event, $timestamp);
+        $day = $this->dayRepository->findByIdentifier($dayUid);
+        if ($day instanceof Day) {
+            return $this->downloadHelper->forceDownloadFile(
+                null,
+                $this->iCalendarHelper->buildICalExport($day),
+                true,
+                $this->iCalendarHelper->getEventUid($day) . '.ics'
+            );
+        }
 
-        return $this->downloadHelper->forceDownloadFile(
-            null,
-            $this->iCalendarHelper->buildICalExport($day),
-            true,
-            $this->iCalendarHelper->getEventUid($day) . '.ics'
+        return new JsonResponse(
+            [
+                'error' => 'DayRecord ' . $day . ' for iCal download could not be found in our database.'
+            ],
+            500
         );
     }
 }

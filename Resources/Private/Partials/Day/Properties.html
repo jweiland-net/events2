@@ -187,7 +187,7 @@
 		<dt>iCalendar</dt>
 		<dd>
 			<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
-			<f:link.action action="download" controller="ICal" target="_blank" arguments="{event: day.event}">
+			<f:link.action action="download" controller="ICal" target="_blank" arguments="{dayUid: day.uid}">
 				{f:translate(key: 'export')}
 			</f:link.action>
 		</dd>
