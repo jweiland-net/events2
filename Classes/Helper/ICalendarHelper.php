@@ -161,7 +161,7 @@ class ICalendarHelper
         $time = $this->timeFactory->getTimeForDay($day);
         if ($time instanceof Time) {
             $timeStart = $time->getTimeBegin() ? $time->getTimeBegin() . ':00' : $timeStart;
-            $timeEnd = $time->getTimeEnd() ? $time->getTimeEnd() . ':59' : $timeEnd;
+            $timeEnd = $time->getTimeEnd() ? $time->getTimeEnd() . ':00' : $timeEnd;
         }
 
         return [$timeStart, $timeEnd];
