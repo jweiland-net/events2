@@ -117,6 +117,10 @@ services:
       - name: event.listener
         event: JWeiland\Events2\Event\PostProcessFluidVariablesEvent
 
+  JWeiland\Events2\EventListener\AddJsonLdToPageHeaderEventListener:
+    tags:
+      - name: event.listener
+        event: JWeiland\Events2\Event\PostProcessControllerActionEvent
   JWeiland\Events2\EventListener\UpdateEventPathSegmentEventListener:
     tags:
       - name: event.listener
