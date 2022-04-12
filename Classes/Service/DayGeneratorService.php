@@ -461,6 +461,10 @@ class DayGeneratorService implements LoggerAwareInterface
         }
 
         foreach ($eventRecord['exceptions'] as $exceptionRecord) {
+            if ($exceptionRecord['hidden'] ?? 0) {
+                continue;
+            }
+
             switch ($exceptionRecord['exception_type']) {
                 case 'Add':
                     $this->addEventException($eventRecord, $exceptionRecord);

@@ -12,8 +12,6 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Functional\Service;
 
 use JWeiland\Events2\Configuration\ExtConf;
-use JWeiland\Events2\Domain\Model\Exception;
-use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Service\DayGeneratorService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
@@ -24,7 +22,6 @@ use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Test case for class \JWeiland\Events2\Service\DayGeneratorService.
@@ -751,23 +748,47 @@ class DayGeneratorServiceTest extends FunctionalTestCase
     /**
      * @test
      */
+    public function getDateTimeStorageForEventWithHiddenAddExceptionWillNotAddDayInStorage(): void
+    {
+        $eventBegin = new \DateTimeImmutable('midnight');
+        $recurringEnd = $eventBegin->modify('+7 days');
+        $tomorrow = $eventBegin->modify('tomorrow');
+
+        $eventRecord = [
+            'uid' => 123,
+            'event_type' => 'recurring',
+            'event_begin' => (int)$eventBegin->format('U'),
+            'event_end' => 0,
+            'recurring_end' => (int)$recurringEnd->format('U'),
+            'xth' => 31,
+            'weekday' => 127,
+            'each_weeks' => 1,
+            'each_months' => 0,
+            'exceptions' => [
+                1 => [
+                    'exception_type' => 'Add',
+                    'exception_date' => (int)$tomorrow->format('U'),
+                    'hidden' => 1
+                ]
+            ],
+        ];
+
+        self::assertEquals(
+            [
+                $eventBegin->format('U') => $eventBegin,
+                $recurringEnd->format('U') => $recurringEnd,
+            ],
+            $this->subject->getDateTimeStorageForEvent($eventRecord)
+        );
+    }
+
+    /**
+     * @test
+     */
     public function getDateTimeStorageForEventWithAddExceptionOutOfAllowedRangeDoesNotAddDayInStorage(): void
     {
-        $timestamp = mktime(0, 0, 0);
-
-        // These dates will be created with timezone_type = 1, which does know the timezone (+02:00) only from the current date
-        $eventBegin = new \DateTimeImmutable(date('c', $timestamp));
+        $eventBegin = new \DateTimeImmutable('today midnight');
         $lastYear = $eventBegin->modify('-1 year');
-
-        $exceptionTime = new Time();
-        $exceptionTime->setTimeBegin('18:00');
-
-        $exception = new Exception();
-        $exception->setExceptionType('Add');
-        $exception->setExceptionDate($lastYear);
-        $exception->setExceptionTime($exceptionTime);
-        $exceptions = new ObjectStorage();
-        $exceptions->attach($exception);
 
         $eventRecord = [
             'uid' => 123,
@@ -779,7 +800,12 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'weekday' => 127,
             'each_weeks' => 0,
             'each_months' => 0,
-            'exceptions' => 1,
+            'exceptions' => [
+                1 => [
+                    'exception_type' => 'Add',
+                    'exception_date' => (int)$lastYear->format('U'),
+                ]
+            ],
         ];
 
         $expectedDays = [];

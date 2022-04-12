@@ -24,10 +24,11 @@ use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
-use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
+use Psr\Log\LoggerInterface;
+use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
@@ -35,9 +36,16 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  */
 class DayRelationServiceTest extends FunctionalTestCase
 {
+    use ProphecyTrait;
+
     protected DayRelationService $subject;
 
     protected ExtConf $extConf;
+
+    /**
+     * @var DayGeneratorService|ObjectProphecy
+     */
+    protected $dayGeneratorServiceProphecy;
 
     /**
      * @var EventRepository|ObjectProphecy
@@ -50,9 +58,45 @@ class DayRelationServiceTest extends FunctionalTestCase
     protected $dayRepositoryProphecy;
 
     /**
-     * @var PersistenceManager|ObjectProphecy
+     * @var TimeRepository|ObjectProphecy
      */
     protected $timeRepositoryProphecy;
+
+    /**
+     * @var LoggerInterface|ObjectProphecy
+     */
+    protected $loggerProphecy;
+
+    protected array $eventRecord = [
+        'uid' => 123,
+        'pid' => 321,
+        'hidden' => 0,
+        'deleted' => 0,
+        'sys_language_uid' => 0,
+        'event_type' => 'single'
+    ];
+
+    protected array $exceptionRecord = [
+        'uid' => 123,
+        'pid' => 321,
+        'hidden' => 0,
+        'deleted' => 0,
+        'sys_language_uid' => 0,
+        'exception_type' => 'Time',
+        'exception_date' => 0,
+        'exception_time' => []
+    ];
+
+    protected array $timeRecord = [
+        'uid' => 1,
+        'pid' => 321,
+        'hidden' => 0,
+        'type' => 'event_time',
+        'weekday' => 'monday',
+        'time_begin' => '08:12',
+        'event' => [],
+        'exception' => []
+    ];
 
     protected $testExtensionsToLoad = [
         'typo3conf/ext/events2'
@@ -63,43 +107,31 @@ class DayRelationServiceTest extends FunctionalTestCase
         parent::setUp();
 
         $this->extConf = GeneralUtility::makeInstance(ExtConf::class);
-        $this->extConf->getRecurringPast()->willReturn(3);
-        $this->extConf->getRecurringFuture()->willReturn(6);
+        $this->extConf->setRecurringPast(3);
+        $this->extConf->setRecurringFuture(6);
 
-        // needed for getItemsFromTca in DayGenerator
-        $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['xth']['config']['items'] = [
-            ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.xth.first', 'first'],
-            ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.xth.second', 'second'],
-            ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.xth.third', 'third'],
-            ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.xth.fourth', 'fourth'],
-            ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.xth.fifth', 'fifth'],
-        ];
-        $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['weekday']['config']['items'] = [
-            ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.weekday.monday', 'monday'],
-            ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.weekday.tuesday', 'tuesday'],
-            ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.weekday.wednesday', 'wednesday'],
-            ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.weekday.thursday', 'thursday'],
-            ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.weekday.friday', 'friday'],
-            ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.weekday.saturday', 'saturday'],
-            ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.weekday.sunday', 'sunday'],
-        ];
+        $this->dayGeneratorServiceProphecy = $this->prophesize(DayGeneratorService::class);
+        $this->timeRepositoryProphecy = $this->prophesize(TimeRepository::class);
+        $this->loggerProphecy = $this->prophesize(Logger::class);
 
         $this->eventRepositoryProphecy = $this->prophesize(EventRepository::class);
-        $this->timeRepositoryProphecy = $this->prophesize(TimeRepository::class);
+        $this->eventRepositoryProphecy
+            ->getRecord(123, ['*'], true)
+            ->willReturn($this->eventRecord);
 
-        $dayGenerator = new DayGeneratorService(
-            GeneralUtility::makeInstance(EventDispatcher::class),
-            $this->extConf,
-            new DateTimeUtility()
-        );
+        $this->dayRepositoryProphecy = $this->prophesize(DayRepository::class);
+        $this->dayRepositoryProphecy->removeAllByEventRecord(Argument::any());
+        $this->dayRepositoryProphecy->createAll(Argument::any());
 
         $this->subject = new DayRelationService(
-            $dayGenerator,
+            $this->dayGeneratorServiceProphecy->reveal(),
             $this->eventRepositoryProphecy->reveal(),
             $this->dayRepositoryProphecy->reveal(),
             $this->timeRepositoryProphecy->reveal(),
             new DateTimeUtility()
         );
+
+        $this->subject->setLogger($this->loggerProphecy->reveal());
     }
 
     protected function tearDown(): void
@@ -118,279 +150,406 @@ class DayRelationServiceTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function createDayRelationsWithEmptyEventWillNeverCallAnyQuery(): void
+    public function createDayRelationsWithEmptyRecordWillAddLogBecauseOfEmptyEventRecord(): void
     {
-        $this->timeRepositoryProphecy->update(Argument::cetera())->shouldNotBeCalled();
-        $this->timeRepositoryProphecy->persistAll(Argument::cetera())->shouldNotBeCalled();
+        $this->eventRecord = [];
 
-        $this->eventRepositoryProphecy->findHiddenObject(123)->shouldBeCalled()->willReturn(null);
+        $this->eventRepositoryProphecy
+            ->getRecord(123, ['*'], true)
+            ->willReturn($this->eventRecord);
+
+        $this->timeRepositoryProphecy
+            ->getAllByEventRecord($this->eventRecord, true)
+            ->shouldNotBeCalled();
+
+        $this->loggerProphecy
+            ->warning(Argument::containingString('Related days could not be created, because of an empty eventRecord'))
+            ->shouldBeCalled();
 
         $this->subject->createDayRelations(123);
     }
 
     /**
-     * An event with none configured start/end dates will result in zero days
-     * So all related days have to be deleted
-     * But addDay will not be called
-     *
      * @test
      */
-    public function createDayRelationsWithNonConfiguredEventDoesNotCallAddDay(): void
+    public function createDayRelationsWithEmptyRecordWillAddLogBecauseOfInvalidEventRecord(): void
     {
-        $event = new Event();
-        $event->_setProperty('uid', 123);
-        $event->setPid(321);
-        $event->addDay(new Day());
+        unset($this->eventRecord['event_type']);
 
-        $this->eventRepositoryProphecy->findHiddenObject(123)->willReturn($event);
+        $this->eventRepositoryProphecy
+            ->getRecord(123, ['*'], true)
+            ->willReturn($this->eventRecord);
+
+        $this->timeRepositoryProphecy
+            ->getAllByEventRecord($this->eventRecord, true)
+            ->shouldNotBeCalled();
+
+        $this->loggerProphecy
+            ->info(Argument::containingString('DayRelationService will not build day records for invalid events'))
+            ->shouldBeCalled();
+
         $this->subject->createDayRelations(123);
-
-        $event->setDays(new ObjectStorage());
-        $this->timeRepositoryProphecy->update($event)->shouldBeCalled();
-        $this->timeRepositoryProphecy->persistAll()->shouldBeCalled();
     }
 
     /**
-     * Test a simple recurring event with no time/exception and whatever records
-     * In that case day, day_time and sort_day_time will all be equal
+     * @test
+     */
+    public function createDayRelationsWithEventRecordWillAddLogBecauseOfTranslatedEventRecord(): void
+    {
+        $this->eventRecord['sys_language_uid'] = 2;
+
+        $this->eventRepositoryProphecy
+            ->getRecord(123, ['*'], true)
+            ->willReturn($this->eventRecord);
+
+        $this->timeRepositoryProphecy
+            ->getAllByEventRecord($this->eventRecord, true)
+            ->shouldNotBeCalled();
+
+        $this->loggerProphecy
+            ->info(Argument::containingString('DayRelationService will not build day records for translated events'))
+            ->shouldBeCalled();
+
+        $this->subject->createDayRelations(123);
+    }
+
+    /**
+     * @test
+     */
+    public function createDayRelationsWithEmptyDateTimeStorageWillRemoveAddRelatedDayRecords(): void
+    {
+        $this->dayGeneratorServiceProphecy
+            ->getDateTimeStorageForEvent($this->eventRecord)
+            ->shouldBeCalled()
+            ->willReturn([]);
+
+        $this->timeRepositoryProphecy
+            ->getAllByEventRecord($this->eventRecord, true)
+            ->shouldNotBeCalled();
+
+        self::assertSame(
+            [],
+            $this->subject->createDayRelations(123)['days']
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function createDayRelationsWithSingleEventWithoutTimeWillAddDayWithoutTime(): void
+    {
+        $date = new \DateTimeImmutable('today midnight');
+        $this->dayGeneratorServiceProphecy
+            ->getDateTimeStorageForEvent($this->eventRecord)
+            ->shouldBeCalled()
+            ->willReturn([
+                (int)$date->format('U') => $date
+            ]);
+
+        $this->timeRepositoryProphecy
+            ->getAllByEventRecord($this->eventRecord, true)
+            ->shouldBeCalled()
+            ->willReturn([]);
+
+        $days = $this->subject->createDayRelations(123)['days'];
+        self::assertCount(
+            1,
+            $days
+        );
+
+        $firstDay = current($days);
+        self::assertSame(
+            (int)$date->format('U'),
+            $firstDay['day']
+        );
+        self::assertSame(
+            (int)$date->format('U'),
+            $firstDay['day_time']
+        );
+        self::assertSame(
+            (int)$date->format('U'),
+            $firstDay['sort_day_time']
+        );
+        self::assertSame(
+            (int)$date->format('U'),
+            $firstDay['same_day_time']
+        );
+    }
+
+    public function dataProviderForSimpleEventWithTimeForDifferentTypes(): array
+    {
+        return [
+            'Test for time type "event_time"' => ['event_time', '08:00', '08:00:00'],
+            'Test for time type "exception_time"' => ['exception_time', '12:20', '12:20:00'],
+            'Test for time type "different_times"' => ['different_times', '15:30', '15:30:00'],
+            'Test for time type "multiple_times"' => ['multiple_times', '20:15', '20:15:00'],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @dataProvider dataProviderForSimpleEventWithTimeForDifferentTypes
+     */
+    public function createDayRelationsWithSingleEventWithDifferentTimeTypesWillAddDayWithTime(
+        string $timeType,
+        string $timeBegin,
+        string $dateTimeModification
+    ): void {
+        $date = new \DateTimeImmutable('today midnight');
+
+        $this->exceptionRecord['exception_date'] = (int)$date->format('U');
+        $this->eventRecord['exceptions'] = [
+            123 => $this->exceptionRecord
+        ];
+
+        $timeRecord = $this->timeRecord;
+        $timeRecord['type'] = $timeType;
+        $timeRecord['time_begin'] = $timeBegin;
+        $timeRecord['weekday'] = strtolower($date->format('l'));
+        $timeRecord['event'] = $this->eventRecord;
+        $timeRecord['exception'] = $this->exceptionRecord;
+
+        $this->eventRepositoryProphecy
+            ->getRecord(123, ['*'], true)
+            ->willReturn($this->eventRecord);
+
+        $this->dayGeneratorServiceProphecy
+            ->getDateTimeStorageForEvent($this->eventRecord)
+            ->shouldBeCalled()
+            ->willReturn([
+                (int)$date->format('U') => $date
+            ]);
+
+        $this->timeRepositoryProphecy
+            ->getAllByEventRecord($this->eventRecord, true)
+            ->shouldBeCalled()
+            ->willReturn([$timeRecord]);
+
+        $days = $this->subject->createDayRelations(123)['days'];
+        self::assertCount(
+            1,
+            $days
+        );
+
+        $firstDay = current($days);
+        $dateWithTime = $date->modify($dateTimeModification);
+        self::assertSame(
+            (int)$date->format('U'),
+            $firstDay['day']
+        );
+        self::assertSame(
+            (int)$dateWithTime->format('U'),
+            $firstDay['day_time']
+        );
+        self::assertSame(
+            (int)$dateWithTime->format('U'),
+            $firstDay['sort_day_time']
+        );
+        self::assertSame(
+            (int)$dateWithTime->format('U'),
+            $firstDay['same_day_time']
+        );
+    }
+
+    /**
+     * If a time record is given, column day contains the day at midnight 00:00:00
+     * and all other day_* - columns contains day incl. time 08:12:00
      *
      * @test
      */
-    public function createDayRelationsWithRecurringEvent(): void
+    public function createDayRelationsWithRecurringEventWillAddDaysWithTime(): void
     {
-        $yesterday = new \DateTimeImmutable();
-        $yesterday->modify('yesterday midnight');
-        $today = new \DateTimeImmutable();
-        $today->modify('midnight');
-        $tomorrow = new \DateTimeImmutable();
-        $tomorrow->modify('tomorrow midnight');
+        $yesterday = new \DateTimeImmutable('yesterday midnight');
+        $today = new \DateTimeImmutable('today midnight');
+        $tomorrow = new \DateTimeImmutable('tomorrow midnight');
 
-        $event = new Event();
-        $event->_setProperty('uid', 123);
-        $event->setPid(321);
-        $event->setEventType('recurring');
-        $event->setEventBegin($yesterday);
-        $event->setRecurringEnd($tomorrow);
-        $event->setXth(31);
-        $event->setWeekday(127);
+        $dateTimeStorage = [
+            (int)$yesterday->format('U') => $yesterday,
+            (int)$today->format('U') => $today,
+            (int)$tomorrow->format('U') => $tomorrow
+        ];
 
-        $this->eventRepositoryProphecy->findHiddenObject(123)->willReturn($event);
-        $this->subject->createDayRelations(123);
+        $this->dayGeneratorServiceProphecy
+            ->getDateTimeStorageForEvent($this->eventRecord)
+            ->shouldBeCalled()
+            ->willReturn($dateTimeStorage);
 
-        $this->timeRepositoryProphecy->update($event)->shouldBeCalled();
-        $this->timeRepositoryProphecy->persistAll()->shouldBeCalled();
-        self::assertCount(3, $event->getDays());
+        $timeRecord = $this->timeRecord;
+        $timeRecord['event'] = $this->eventRecord;
 
-        $days = ['yesterday', 'today', 'tomorrow'];
+        $this->timeRepositoryProphecy
+            ->getAllByEventRecord($this->eventRecord, true)
+            ->shouldBeCalled()
+            ->willReturn([$timeRecord]);
 
-        /** @var Day $day */
-        foreach ($event->getDays()->toArray() as $key => $day) {
-            self::assertEquals(${$days[$key]}, $day->getDay());
-            self::assertEquals(${$days[$key]}, $day->getDayTime());
-            self::assertEquals(${$days[$key]}, $day->getSortDayTime());
-            self::assertEquals(${$days[$key]}, $day->getSameDayTime());
+        $days = $this->subject->createDayRelations(123)['days'];
+        self::assertCount(
+            3,
+            $days
+        );
+
+        $date = $yesterday;
+        foreach ($days as $day) {
+            $dateWithTime = $date->modify('08:12:00');
+            self::assertSame(
+                (int)$date->format('U'),
+                $day['day']
+            );
+            self::assertSame(
+                (int)$dateWithTime->format('U'),
+                $day['day_time']
+            );
+            self::assertSame(
+                (int)$dateWithTime->format('U'),
+                $day['sort_day_time']
+            );
+            self::assertSame(
+                (int)$dateWithTime->format('U'),
+                $day['same_day_time']
+            );
+            $date = $date->modify('+1 day');
         }
     }
 
     /**
-     * Test a recurring event with time record which is equal for all days
-     * In that case day differs from day_time and sort_day_time
-     * day_time and sort_day_time are equal
+     * If multiple time records are given, column day contains the day at midnight 00:00:00
+     * and all other day_* - columns contains day incl. time 08:12:00
      *
      * @test
      */
-    public function createDayRelationsWithRecurringEventAndTime(): void
+    public function createDayRelationsWithRecurringEventWillAddDaysForMultipleTimes(): void
     {
-        $yesterday = new \DateTimeImmutable();
-        $yesterday->modify('yesterday midnight');
+        $yesterday = new \DateTimeImmutable('yesterday midnight');
+        $today = new \DateTimeImmutable('today midnight');
+        $tomorrow = new \DateTimeImmutable('tomorrow midnight');
 
-        $yesterdayLaunch = new \DateTimeImmutable();
-        $yesterdayLaunch->modify('yesterday 12:30');
+        $dateTimeStorage = [
+            (int)$yesterday->format('U') => $yesterday,
+            (int)$today->format('U') => $today,
+            (int)$tomorrow->format('U') => $tomorrow
+        ];
 
-        $today = new \DateTimeImmutable();
-        $today->modify('midnight');
+        $this->dayGeneratorServiceProphecy
+            ->getDateTimeStorageForEvent($this->eventRecord)
+            ->shouldBeCalled()
+            ->willReturn($dateTimeStorage);
 
-        $todayLaunch = new \DateTimeImmutable();
-        $todayLaunch->modify('12:30');
+        $eventTimeRecord = $this->timeRecord;
+        $eventTimeRecord['type'] = 'event_time';
+        $eventTimeRecord['event'] = $this->eventRecord;
+        $multipleTimesRecord = $this->timeRecord;
+        $multipleTimesRecord['type'] = 'multiple_times';
+        $multipleTimesRecord['time_begin'] = '15:30';
+        $multipleTimesRecord['event'] = $this->eventRecord;
 
-        $tomorrow = new \DateTimeImmutable();
-        $tomorrow->modify('tomorrow midnight');
+        $this->timeRepositoryProphecy
+            ->getAllByEventRecord($this->eventRecord, true)
+            ->shouldBeCalled()
+            ->willReturn([$eventTimeRecord, $multipleTimesRecord]);
 
-        $tomorrowLaunch = new \DateTimeImmutable();
-        $tomorrowLaunch->modify('tomorrow 12:30');
+        $days = $this->subject->createDayRelations(123)['days'];
+        self::assertCount(
+            6,
+            $days
+        );
 
-        $time = new Time();
-        $time->setTimeBegin('12:30');
-
-        $event = new Event();
-        $event->_setProperty('uid', 123);
-        $event->setPid(321);
-        $event->setEventType('recurring');
-        $event->setEventBegin($yesterday);
-        $event->setRecurringEnd($tomorrow);
-        $event->setEventTime($time);
-        $event->setXth(31);
-        $event->setWeekday(127);
-
-        $this->eventRepositoryProphecy->findHiddenObject(123)->willReturn($event);
-        $this->subject->createDayRelations(123);
-
-        $this->timeRepositoryProphecy->update($event)->shouldBeCalled();
-        $this->timeRepositoryProphecy->persistAll()->shouldBeCalled();
-        self::assertCount(3, $event->getDays());
-
-        /** @var Day $day */
-        $days = ['yesterday', 'today', 'tomorrow'];
-        foreach ($event->getDays()->toArray() as $key => $day) {
-            self::assertEquals(${$days[$key]}, $day->getDay());
-            self::assertEquals(${$days[$key] . 'Launch'}, $day->getDayTime());
-            self::assertEquals(${$days[$key] . 'Launch'}, $day->getSortDayTime());
-            self::assertEquals(${$days[$key] . 'Launch'}, $day->getSameDayTime());
+        $date = $yesterday;
+        $switch = true;
+        foreach ($days as $day) {
+            $dateWithTime = $date->modify($switch ? '08:12:00' : '15:30:00');
+            $switch = !$switch;
+            self::assertSame(
+                (int)$date->format('U'),
+                $day['day'],
+                'Column: day - Date: ' . $date->format('d.m.Y H:i:s')
+            );
+            self::assertSame(
+                (int)$dateWithTime->format('U'),
+                $day['day_time'],
+                'Column: day_time - Date: ' . $dateWithTime->format('d.m.Y H:i:s')
+            );
+            self::assertSame(
+                (int)$dateWithTime->format('U'),
+                $day['sort_day_time'],
+                'Column: sort_day_time - Date: ' . $dateWithTime->format('d.m.Y H:i:s')
+            );
+            // Be careful, we have multiple time records! So this one here is day at morning 08:12
+            self::assertSame(
+                (int)$dateWithTime->modify('08:12:00')->format('U'),
+                $day['same_day_time'],
+                'Column: same_day_time - Date: ' . $dateWithTime->modify('08:12:00')->format('d.m.Y H:i:s')
+            );
+            if ($switch) {
+                $date = $date->modify('+1 day');
+            }
         }
     }
 
     /**
-     * Test a recurring event with multiple time records for same day
-     * In that case day is current day at midnight
-     * day_time is current day morning and within a second record current day evening
-     * sort_day_time is current day morning and within a second record current day evening
-     *
      * @test
      */
-    public function createDayRelationsWithRecurringEventAndMultipleTimesAtSameDay(): void
+    public function createDayRelationsWithRecurringEventWillNotAddHiddenTimes(): void
     {
-        $yesterday = new \DateTimeImmutable();
-        $yesterday->modify('yesterday midnight');
+        $yesterday = new \DateTimeImmutable('yesterday midnight');
+        $today = new \DateTimeImmutable('today midnight');
+        $tomorrow = new \DateTimeImmutable('tomorrow midnight');
 
-        $yesterdayMorning = new \DateTimeImmutable();
-        $yesterdayMorning->modify('yesterday 08:00');
+        $dateTimeStorage = [
+            (int)$yesterday->format('U') => $yesterday,
+            (int)$today->format('U') => $today,
+            (int)$tomorrow->format('U') => $tomorrow
+        ];
 
-        $yesterdayEvening = new \DateTimeImmutable();
-        $yesterdayEvening->modify('yesterday 20:15');
+        $this->dayGeneratorServiceProphecy
+            ->getDateTimeStorageForEvent($this->eventRecord)
+            ->shouldBeCalled()
+            ->willReturn($dateTimeStorage);
 
-        $today = new \DateTimeImmutable();
-        $today->modify('midnight');
+        $eventTimeRecord = $this->timeRecord;
+        $eventTimeRecord['type'] = 'event_time';
+        $eventTimeRecord['event'] = $this->eventRecord;
+        $multipleTimesRecord = $this->timeRecord;
+        $multipleTimesRecord['hidden'] = 1;
+        $multipleTimesRecord['type'] = 'multiple_times';
+        $multipleTimesRecord['time_begin'] = '15:30';
+        $multipleTimesRecord['event'] = $this->eventRecord;
 
-        $todayMorning = new \DateTimeImmutable();
-        $todayMorning->modify('08:00');
+        $this->timeRepositoryProphecy
+            ->getAllByEventRecord($this->eventRecord, true)
+            ->shouldBeCalled()
+            ->willReturn([$eventTimeRecord, $multipleTimesRecord]);
 
-        $todayEvening = new \DateTimeImmutable();
-        $todayEvening->modify('20:15');
+        $days = $this->subject->createDayRelations(123)['days'];
+        self::assertCount(
+            3,
+            $days
+        );
 
-        $tomorrow = new \DateTimeImmutable();
-        $tomorrow->modify('tomorrow midnight');
-
-        $tomorrowMorning = new \DateTimeImmutable();
-        $tomorrowMorning->modify('tomorrow 08:00');
-
-        $tomorrowEvening = new \DateTimeImmutable();
-        $tomorrowEvening->modify('tomorrow 20:15');
-
-        $timeBegin = new Time();
-        $timeBegin->setTimeBegin('08:00');
-
-        $timeEvening = new Time();
-        $timeEvening->setTimeBegin('20:15');
-
-        $multipleTimes = new ObjectStorage();
-        $multipleTimes->attach($timeEvening);
-
-        $event = new Event();
-        $event->_setProperty('uid', 123);
-        $event->setPid(321);
-        $event->setEventType('recurring');
-        $event->setEventBegin($yesterday);
-        $event->setRecurringEnd($tomorrow);
-        $event->setEventTime($timeBegin);
-        $event->setSameDay(true);
-        $event->setMultipleTimes($multipleTimes);
-        $event->setXth(31);
-        $event->setWeekday(127);
-
-        $this->eventRepositoryProphecy->findHiddenObject(123)->willReturn($event);
-        $this->subject->createDayRelations(123);
-
-        $this->timeRepositoryProphecy->update($event)->shouldBeCalled();
-        $this->timeRepositoryProphecy->persistAll()->shouldBeCalled();
-
-        self::assertCount(6, $event->getDays());
-
-        /** @var Day $day */
-        $days = ['yesterday', 'yesterday', 'today', 'today', 'tomorrow', 'tomorrow'];
-        foreach ($event->getDays()->toArray() as $key => $day) {
-            $methodName = $key % 2 !== 0 ? 'Evening' : 'Morning';
-            self::assertEquals(${$days[$key]}, $day->getDay());
-            self::assertEquals(${$days[$key] . $methodName}, $day->getDayTime());
-            self::assertEquals(${$days[$key] . $methodName}, $day->getSortDayTime());
-            self::assertEquals(${$days[$key] . 'Morning'}, $day->getSameDayTime());
-        }
-    }
-
-    /**
-     * Test is the same test as above.
-     * But getRecurringPast will return 0 month.
-     * So only future events are allowed
-     *
-     * @test
-     */
-    public function createDayRelationsWithRecurringEventAndMultipleTimesAtSameDayFuture(): void
-    {
-        $this->extConf->getRecurringPast()->willReturn(0);
-
-        $yesterday = new \DateTimeImmutable();
-        $yesterday->modify('yesterday midnight');
-        $yesterdayMorning = new \DateTimeImmutable();
-        $yesterdayMorning->modify('yesterday 08:00');
-        $yesterdayEvening = new \DateTimeImmutable();
-        $yesterdayEvening->modify('yesterday 20:15');
-        $today = new \DateTimeImmutable();
-        $today->modify('midnight');
-        $todayMorning = new \DateTimeImmutable();
-        $todayMorning->modify('08:00');
-        $todayEvening = new \DateTimeImmutable();
-        $todayEvening->modify('20:15');
-        $tomorrow = new \DateTimeImmutable();
-        $tomorrow->modify('tomorrow midnight');
-        $tomorrowMorning = new \DateTimeImmutable();
-        $tomorrowMorning->modify('tomorrow 08:00');
-        $tomorrowEvening = new \DateTimeImmutable();
-        $tomorrowEvening->modify('tomorrow 20:15');
-
-        $timeBegin = new Time();
-        $timeBegin->setTimeBegin('08:00');
-        $timeEvening = new Time();
-        $timeEvening->setTimeBegin('20:15');
-
-        $multipleTimes = new ObjectStorage();
-        $multipleTimes->attach($timeEvening);
-
-        $event = new Event();
-        $event->_setProperty('uid', 123);
-        $event->setPid(321);
-        $event->setEventType('recurring');
-        $event->setEventBegin($yesterday);
-        $event->setRecurringEnd($tomorrow);
-        $event->setEventTime($timeBegin);
-        $event->setSameDay(true);
-        $event->setMultipleTimes($multipleTimes);
-        $event->setXth(31);
-        $event->setWeekday(127);
-
-        $this->eventRepositoryProphecy->findHiddenObject(123)->willReturn($event);
-        $this->subject->createDayRelations(123);
-
-        $this->timeRepositoryProphecy->update($event)->shouldBeCalled();
-        $this->timeRepositoryProphecy->persistAll()->shouldBeCalled();
-        self::assertCount(4, $event->getDays());
-
-        /** @var Day $day */
-        $days = ['today', 'today', 'tomorrow', 'tomorrow'];
-        foreach ($event->getDays()->toArray() as $key => $day) {
-            $methodName = $key % 2 !== 0 ? 'Evening' : 'Morning';
-            self::assertEquals(${$days[$key]}, $day->getDay());
-            self::assertEquals(${$days[$key] . $methodName}, $day->getDayTime());
-            self::assertEquals(${$days[$key] . $methodName}, $day->getSortDayTime());
-            self::assertEquals(${$days[$key] . 'Morning'}, $day->getSameDayTime());
+        $date = $yesterday;
+        foreach ($days as $day) {
+            $dateWithTime = $date->modify('08:12:00');
+            self::assertSame(
+                (int)$date->format('U'),
+                $day['day'],
+                'Column: day - Date: ' . $date->format('d.m.Y H:i:s')
+            );
+            self::assertSame(
+                (int)$dateWithTime->format('U'),
+                $day['day_time'],
+                'Column: day_time - Date: ' . $dateWithTime->format('d.m.Y H:i:s')
+            );
+            self::assertSame(
+                (int)$dateWithTime->format('U'),
+                $day['sort_day_time'],
+                'Column: sort_day_time - Date: ' . $dateWithTime->format('d.m.Y H:i:s')
+            );
+            self::assertSame(
+                (int)$dateWithTime->format('U'),
+                $day['same_day_time'],
+                'Column: same_day_time - Date: ' . $dateWithTime->format('d.m.Y H:i:s')
+            );
+            $date = $date->modify('+1 day');
         }
     }
 
@@ -403,55 +562,67 @@ class DayRelationServiceTest extends FunctionalTestCase
      */
     public function createDayRelationsWithRecurringEventAndDifferentTimes(): void
     {
-        $tuesday = new \DateTimeImmutable();
-        $tuesday->modify('last tuesday midnight');
-        $tuesdayMorning = clone $tuesday;
-        $tuesdayMorning->modify('08:00');
-        $wednesday = clone $tuesday;
-        $wednesday->modify('+1 day');
-        $wednesdayEvening = clone $wednesday;
-        $wednesdayEvening->modify('20:15');
-        $thursday = clone $wednesday;
-        $thursday->modify('+1 day');
-        $thursdayMorning = clone $thursday;
-        $thursdayMorning->modify('08:00');
+        $yesterday = new \DateTimeImmutable('yesterday midnight');
+        $today = new \DateTimeImmutable('today midnight');
+        $tomorrow = new \DateTimeImmutable('tomorrow midnight');
 
-        $timeBegin = new Time();
-        $timeBegin->setTimeBegin('08:00');
-        $timeEvening = new Time();
-        $timeEvening->setTimeBegin('20:15');
-        $timeEvening->setWeekday('wednesday');
+        $dateTimeStorage = [
+            (int)$yesterday->format('U') => $yesterday,
+            (int)$today->format('U') => $today,
+            (int)$tomorrow->format('U') => $tomorrow
+        ];
 
-        $multipleTimes = new ObjectStorage();
-        $multipleTimes->attach($timeEvening);
+        $this->dayGeneratorServiceProphecy
+            ->getDateTimeStorageForEvent($this->eventRecord)
+            ->shouldBeCalled()
+            ->willReturn($dateTimeStorage);
 
-        $event = new Event();
-        $event->_setProperty('uid', 123);
-        $event->setPid(321);
-        $event->setEventType('recurring');
-        $event->setEventBegin($tuesday);
-        $event->setRecurringEnd($thursday);
-        $event->setEventTime($timeBegin);
-        $event->setSameDay(true);
-        $event->setDifferentTimes($multipleTimes);
-        $event->setXth(31);
-        $event->setWeekday(127);
+        $eventTimeRecord = $this->timeRecord;
+        $eventTimeRecord['type'] = 'event_time';
+        $eventTimeRecord['event'] = $this->eventRecord;
+        $differentTimesRecord = $this->timeRecord;
+        $differentTimesRecord['type'] = 'different_times';
+        $differentTimesRecord['weekday'] = strtolower($today->format('l'));
+        $differentTimesRecord['time_begin'] = '15:30';
+        $differentTimesRecord['event'] = $this->eventRecord;
 
-        $this->eventRepositoryProphecy->findHiddenObject(123)->willReturn($event);
-        $this->subject->createDayRelations(123);
+        $this->timeRepositoryProphecy
+            ->getAllByEventRecord($this->eventRecord, true)
+            ->shouldBeCalled()
+            ->willReturn([$eventTimeRecord, $differentTimesRecord]);
 
-        $this->timeRepositoryProphecy->update($event)->shouldBeCalled();
-        $this->timeRepositoryProphecy->persistAll()->shouldBeCalled();
-        self::assertCount(3, $event->getDays());
+        $days = $this->subject->createDayRelations(123)['days'];
+        self::assertCount(
+            3,
+            $days
+        );
 
-        /** @var Day $day */
-        $days = ['tuesday', 'wednesday', 'thursday'];
-        foreach ($event->getDays()->toArray() as $key => $day) {
-            $methodName = $key === 1 ? 'Evening' : 'Morning';
-            self::assertEquals(${$days[$key]}, $day->getDay());
-            self::assertEquals(${$days[$key] . $methodName}, $day->getDayTime());
-            self::assertEquals(${$days[$key] . $methodName}, $day->getSortDayTime());
-            self::assertEquals(${$days[$key] . $methodName}, $day->getSameDayTime());
+        $date = $yesterday;
+        $switch = true;
+        foreach ($days as $day) {
+            $dateWithTime = $date->modify($switch ? '08:12:00' : '15:30:00');
+            $switch = !$switch;
+            self::assertSame(
+                (int)$date->format('U'),
+                $day['day'],
+                'Column: day - Date: ' . $date->format('d.m.Y H:i:s')
+            );
+            self::assertSame(
+                (int)$dateWithTime->format('U'),
+                $day['day_time'],
+                'Column: day_time - Date: ' . $dateWithTime->format('d.m.Y H:i:s')
+            );
+            self::assertSame(
+                (int)$dateWithTime->format('U'),
+                $day['sort_day_time'],
+                'Column: sort_day_time - Date: ' . $dateWithTime->format('d.m.Y H:i:s')
+            );
+            self::assertSame(
+                (int)$dateWithTime->format('U'),
+                $day['same_day_time'],
+                'Column: same_day_time - Date: ' . $dateWithTime->format('d.m.Y H:i:s')
+            );
+            $date = $date->modify('+1 day');
         }
     }
 
@@ -464,74 +635,75 @@ class DayRelationServiceTest extends FunctionalTestCase
      */
     public function createDayRelationsWithRecurringEventAndExceptionTimes(): void
     {
-        $tuesday = new \DateTimeImmutable();
-        $tuesday->modify('last tuesday midnight');
-        $wednesday = clone $tuesday;
-        $wednesday->modify('+1 day');
-        $wednesdayEvening = clone $wednesday;
-        $wednesdayEvening->modify('20:15');
-        $thursday = clone $wednesday;
-        $thursday->modify('+1 day');
-        $friday = clone $thursday;
-        $friday->modify('+1 day');
-        $fridayLaunch = clone $friday;
-        $fridayLaunch->modify('12:30');
+        $yesterday = new \DateTimeImmutable('yesterday midnight');
+        $today = new \DateTimeImmutable('today midnight');
+        $tomorrow = new \DateTimeImmutable('tomorrow midnight');
 
-        $timeLaunch = new Time();
-        $timeLaunch->setTimeBegin('12:30');
-        $timeEvening = new Time();
-        $timeEvening->setTimeBegin('20:15');
-        $timeEvening->setWeekday('wednesday');
+        $this->exceptionRecord['exception_date'] = (int)$today->format('U');
+        $this->eventRecord['exceptions'] = [
+            123 => $this->exceptionRecord
+        ];
 
-        $exception1 = new Exception();
-        $exception1->setExceptionType('Time');
-        $exception1->setExceptionDate($wednesday);
-        $exception1->setExceptionTime($timeEvening);
-        $exception2 = new Exception();
-        $exception2->setExceptionType('Add');
-        $exception2->setExceptionDate($friday);
-        $exception2->setExceptionTime($timeLaunch);
+        $this->eventRepositoryProphecy
+            ->getRecord(123, ['*'], true)
+            ->willReturn($this->eventRecord);
 
-        $exceptions = new ObjectStorage();
-        $exceptions->attach($exception1);
-        $exceptions->attach($exception2);
+        $dateTimeStorage = [
+            (int)$yesterday->format('U') => $yesterday,
+            (int)$today->format('U') => $today,
+            (int)$tomorrow->format('U') => $tomorrow
+        ];
 
-        $event = new Event();
-        $event->_setProperty('uid', 123);
-        $event->setPid(321);
-        $event->setEventType('recurring');
-        $event->setEventBegin($tuesday);
-        $event->setRecurringEnd($friday);
-        $event->setSameDay(true);
-        $event->setXth(31);
-        $event->setWeekday(127);
-        $event->setExceptions($exceptions);
+        $this->dayGeneratorServiceProphecy
+            ->getDateTimeStorageForEvent($this->eventRecord)
+            ->shouldBeCalled()
+            ->willReturn($dateTimeStorage);
 
-        $this->eventRepositoryProphecy->findHiddenObject(123)->willReturn($event);
-        $this->subject->createDayRelations(123);
+        $eventTimeRecord = $this->timeRecord;
+        $eventTimeRecord['type'] = 'event_time';
+        $eventTimeRecord['event'] = $this->eventRecord;
+        $exceptionTimeRecord = $this->timeRecord;
+        $exceptionTimeRecord['type'] = 'exception_time';
+        $exceptionTimeRecord['time_begin'] = '15:30';
+        $exceptionTimeRecord['exception'] = $this->exceptionRecord;
 
-        $this->timeRepositoryProphecy->update($event)->shouldBeCalled();
-        $this->timeRepositoryProphecy->persistAll()->shouldBeCalled();
-        self::assertCount(4, $event->getDays());
+        $this->timeRepositoryProphecy
+            ->getAllByEventRecord($this->eventRecord, true)
+            ->shouldBeCalled()
+            ->willReturn([$eventTimeRecord, $exceptionTimeRecord]);
 
-        $days = ['tuesday', 'wednesday', 'thursday', 'friday'];
+        $days = $this->subject->createDayRelations(123)['days'];
+        self::assertCount(
+            3,
+            $days
+        );
 
-        /** @var Day $day */
-        foreach ($event->getDays()->toArray() as $key => $day) {
-            switch ($key) {
-                case 1:
-                    $methodName = 'Evening';
-                    break;
-                case 3:
-                    $methodName = 'Launch';
-                    break;
-                default:
-                    $methodName = '';
-            }
-            self::assertEquals(${$days[$key]}, $day->getDay());
-            self::assertEquals(${$days[$key] . $methodName}, $day->getDayTime());
-            self::assertEquals(${$days[$key] . $methodName}, $day->getSortDayTime());
-            self::assertEquals(${$days[$key] . $methodName}, $day->getSameDayTime());
+        $date = $yesterday;
+        $switch = true;
+        foreach ($days as $day) {
+            $dateWithTime = $date->modify($switch ? '08:12:00' : '15:30:00');
+            $switch = !$switch;
+            self::assertSame(
+                (int)$date->format('U'),
+                $day['day'],
+                'Column: day - Date: ' . $date->format('d.m.Y H:i:s')
+            );
+            self::assertSame(
+                (int)$dateWithTime->format('U'),
+                $day['day_time'],
+                'Column: day_time - Date: ' . $dateWithTime->format('d.m.Y H:i:s')
+            );
+            self::assertSame(
+                (int)$dateWithTime->format('U'),
+                $day['sort_day_time'],
+                'Column: sort_day_time - Date: ' . $dateWithTime->format('d.m.Y H:i:s')
+            );
+            self::assertSame(
+                (int)$dateWithTime->format('U'),
+                $day['same_day_time'],
+                'Column: same_day_time - Date: ' . $dateWithTime->format('d.m.Y H:i:s')
+            );
+            $date = $date->modify('+1 day');
         }
     }
 
@@ -545,156 +717,102 @@ class DayRelationServiceTest extends FunctionalTestCase
      */
     public function createDayRelationsWithRecurringEventAndMultipleExceptionTimes(): void
     {
-        $tuesday = new \DateTimeImmutable();
-        $tuesday->modify('last tuesday midnight');
-        $wednesday = clone $tuesday;
-        $wednesday->modify('+1 day');
-        $wednesdayMorning = clone $wednesday;
-        $wednesdayMorning->modify('08:00');
-        $wednesdayEvening = clone $wednesday;
-        $wednesdayEvening->modify('20:15');
-        $thursday = clone $wednesday;
-        $thursday->modify('+1 day');
-        $friday = clone $thursday;
-        $friday->modify('+1 day');
-        $fridayLaunch = clone $friday;
-        $fridayLaunch->modify('12:30');
+        $yesterday = new \DateTimeImmutable('yesterday midnight');
+        $today = new \DateTimeImmutable('today midnight');
+        $tomorrow = new \DateTimeImmutable('tomorrow midnight');
 
-        $timeMorning = new Time();
-        $timeMorning->setTimeBegin('08:00');
-        $timeLaunch = new Time();
-        $timeLaunch->setTimeBegin('12:30');
-        $timeEvening = new Time();
-        $timeEvening->setTimeBegin('20:15');
+        $exceptionRecord123 = $this->exceptionRecord;
+        $exceptionRecord123['uid'] = 123;
+        $exceptionRecord123['exception_date'] = (int)$today->format('U');
+        $exceptionRecord124 = $this->exceptionRecord;
+        $exceptionRecord124['uid'] = 124;
+        $exceptionRecord124['exception_date'] = (int)$today->format('U');
 
-        $exception1 = new Exception();
-        $exception1->setExceptionType('Add');
-        $exception1->setExceptionDate($wednesday);
-        $exception1->setExceptionTime($timeMorning);
-        $exception2 = new Exception();
-        $exception2->setExceptionType('Time');
-        $exception2->setExceptionDate($wednesday);
-        $exception2->setExceptionTime($timeEvening);
-        $exception3 = new Exception();
-        $exception3->setExceptionType('Add');
-        $exception3->setExceptionDate($friday);
-        $exception3->setExceptionTime($timeLaunch);
+        $this->eventRecord['exceptions'] = [
+            123 => $exceptionRecord123,
+            124 => $exceptionRecord124
+        ];
 
-        $exceptions = new ObjectStorage();
-        $exceptions->attach($exception1);
-        $exceptions->attach($exception2);
-        $exceptions->attach($exception3);
+        $this->eventRepositoryProphecy
+            ->getRecord(123, ['*'], true)
+            ->willReturn($this->eventRecord);
 
-        $event = new Event();
-        $event->_setProperty('uid', 123);
-        $event->setPid(321);
-        $event->setEventType('recurring');
-        $event->setEventBegin($tuesday);
-        $event->setRecurringEnd($friday);
-        $event->setSameDay(true);
-        $event->setXth(31);
-        $event->setWeekday(127);
-        $event->setExceptions($exceptions);
+        $dateTimeStorage = [
+            (int)$yesterday->format('U') => $yesterday,
+            (int)$today->format('U') => $today,
+            (int)$tomorrow->format('U') => $tomorrow
+        ];
 
-        $this->eventRepositoryProphecy->findHiddenObject(123)->willReturn($event);
-        $this->subject->createDayRelations(123);
+        $this->dayGeneratorServiceProphecy
+            ->getDateTimeStorageForEvent($this->eventRecord)
+            ->shouldBeCalled()
+            ->willReturn($dateTimeStorage);
 
-        $this->timeRepositoryProphecy->update($event)->shouldBeCalled();
-        $this->timeRepositoryProphecy->persistAll()->shouldBeCalled();
-        self::assertCount(5, $event->getDays());
+        $eventTimeRecord = $this->timeRecord;
+        $eventTimeRecord['type'] = 'event_time';
+        $eventTimeRecord['event'] = $this->eventRecord;
+        $exception123TimeRecord = $this->timeRecord;
+        $exception123TimeRecord['type'] = 'exception_time';
+        $exception123TimeRecord['time_begin'] = '15:30';
+        $exception123TimeRecord['exception'] = $exceptionRecord123;
+        $exception124TimeRecord = $this->timeRecord;
+        $exception124TimeRecord['type'] = 'exception_time';
+        $exception124TimeRecord['time_begin'] = '20:15';
+        $exception124TimeRecord['exception'] = $exceptionRecord124;
 
-        $days = ['tuesday', 'wednesday', 'wednesday', 'thursday', 'friday'];
-        $sameDayMethods = ['tuesday', 'wednesdayMorning', 'wednesdayMorning', 'thursday', 'fridayLaunch'];
+        $this->timeRepositoryProphecy
+            ->getAllByEventRecord($this->eventRecord, true)
+            ->shouldBeCalled()
+            ->willReturn([$eventTimeRecord, $exception123TimeRecord, $exception124TimeRecord]);
 
-        /** @var Day $day */
-        foreach ($event->getDays()->toArray() as $key => $day) {
-            switch ($key) {
-                case 1:
-                    $methodName = 'Morning';
-                    break;
-                case 2:
-                    $methodName = 'Evening';
-                    break;
-                case 4:
-                    $methodName = 'Launch';
-                    break;
-                default:
-                    $methodName = '';
+        $days = $this->subject->createDayRelations(123)['days'];
+        self::assertCount(
+            4,
+            $days
+        );
+
+        $date = $yesterday;
+        $switch = true;
+        foreach ($days as $day) {
+            if ($date == $today) {
+                $dateWithTime = $date->modify($switch ? '15:30:00' : '20:15:00');
+                $switch = !$switch;
+            } else {
+                $dateWithTime = $date->modify('08:12:00');
+                $switch = true;
             }
-            self::assertEquals(${$days[$key]}, $day->getDay());
-            self::assertEquals(${$days[$key] . $methodName}, $day->getDayTime());
-            self::assertEquals(${$days[$key] . $methodName}, $day->getSortDayTime());
-            self::assertEquals(${$sameDayMethods[$key]}, $day->getSameDayTime());
-        }
-    }
+            self::assertSame(
+                (int)$date->format('U'),
+                $day['day'],
+                'Column: day - Date: ' . $date->format('d.m.Y H:i:s')
+            );
+            self::assertSame(
+                (int)$dateWithTime->format('U'),
+                $day['day_time'],
+                'Column: day_time - Date: ' . $dateWithTime->format('d.m.Y H:i:s')
+            );
+            self::assertSame(
+                (int)$dateWithTime->format('U'),
+                $day['sort_day_time'],
+                'Column: sort_day_time - Date: ' . $dateWithTime->format('d.m.Y H:i:s')
+            );
 
-    /**
-     * @test
-     */
-    public function createDayRelationsWithSingleEvent(): void
-    {
-        $nextWeek = new \DateTimeImmutable();
-        $nextWeek->modify('+1 week midnight');
-
-        $event = new Event();
-        $event->_setProperty('uid', 123);
-        $event->setPid(321);
-        $event->setEventType('single');
-        $event->setEventBegin($nextWeek);
-
-        $this->eventRepositoryProphecy->findHiddenObject(123)->willReturn($event);
-        $this->subject->createDayRelations(123);
-
-        $this->timeRepositoryProphecy->update($event)->shouldBeCalled();
-        $this->timeRepositoryProphecy->persistAll()->shouldBeCalled();
-        self::assertCount(1, $event->getDays());
-
-        $days = ['nextWeek'];
-
-        /** @var Day $day */
-        foreach ($event->getDays()->toArray() as $key => $day) {
-            self::assertEquals(${$days[$key]}, $day->getDay());
-            self::assertEquals(${$days[$key]}, $day->getDayTime());
-            self::assertEquals(${$days[$key]}, $day->getSortDayTime());
-            self::assertEquals(${$days[$key]}, $day->getSameDayTime());
-        }
-    }
-
-    /**
-     * @test
-     */
-    public function createDayRelationsWithSingleEventAndTime(): void
-    {
-        $nextWeek = new \DateTimeImmutable();
-        $nextWeek->modify('+1 week midnight');
-        $nextWeekMidnight = clone $nextWeek;
-        $nextWeekMidnight->modify('23:59');
-
-        $time = new Time();
-        $time->setTimeBegin('23:59');
-
-        $event = new Event();
-        $event->_setProperty('uid', 123);
-        $event->setPid(321);
-        $event->setEventType('single');
-        $event->setEventBegin($nextWeek);
-        $event->setEventTime($time);
-
-        $this->eventRepositoryProphecy->findHiddenObject(123)->willReturn($event);
-        $this->subject->createDayRelations(123);
-
-        $this->timeRepositoryProphecy->update($event)->shouldBeCalled();
-        $this->timeRepositoryProphecy->persistAll()->shouldBeCalled();
-        self::assertCount(1, $event->getDays());
-
-        $days = ['nextWeek'];
-
-        /** @var Day $day */
-        foreach ($event->getDays()->toArray() as $key => $day) {
-            self::assertEquals(${$days[$key]}, $day->getDay());
-            self::assertEquals(${$days[$key] . 'Midnight'}, $day->getDayTime());
-            self::assertEquals(${$days[$key] . 'Midnight'}, $day->getSortDayTime());
-            self::assertEquals(${$days[$key] . 'Midnight'}, $day->getSameDayTime());
+            if ($date == $today) {
+                self::assertSame(
+                    (int)$dateWithTime->modify('15:30:00')->format('U'),
+                    $day['same_day_time'],
+                    'Column: same_day_time - Date: ' . $dateWithTime->modify('15:30:00')->format('d.m.Y H:i:s')
+                );
+            } else {
+                self::assertSame(
+                    (int)$dateWithTime->format('U'),
+                    $day['same_day_time'],
+                    'Column: same_day_time - Date: ' . $dateWithTime->format('d.m.Y H:i:s')
+                );
+            }
+            if ($switch) {
+                $date = $date->modify('+1 day');
+            }
         }
     }
 
@@ -703,82 +821,66 @@ class DayRelationServiceTest extends FunctionalTestCase
      */
     public function createDayRelationsWithDurationEvent(): void
     {
-        $today = new \DateTimeImmutable();
-        $today->modify('midnight');
-        $tomorrow = clone $today;
-        $tomorrow->modify('+1 day');
-        $in2days = clone $today;
-        $in2days->modify('+2 days');
+        $yesterday = new \DateTimeImmutable('yesterday midnight');
+        $today = new \DateTimeImmutable('today midnight');
+        $tomorrow = new \DateTimeImmutable('tomorrow midnight');
 
-        $event = new Event();
-        $event->_setProperty('uid', 123);
-        $event->setPid(321);
-        $event->setEventType('duration');
-        $event->setEventBegin($today);
-        $event->setEventEnd($in2days);
+        $this->eventRecord['event_type'] = 'duration';
 
-        $this->eventRepositoryProphecy->findHiddenObject(123)->willReturn($event);
-        $this->subject->createDayRelations(123);
+        $this->eventRepositoryProphecy
+            ->getRecord(123, ['*'], true)
+            ->willReturn($this->eventRecord);
 
-        $this->timeRepositoryProphecy->update($event)->shouldBeCalled();
-        $this->timeRepositoryProphecy->persistAll()->shouldBeCalled();
-        self::assertCount(3, $event->getDays());
+        $dateTimeStorage = [
+            (int)$yesterday->format('U') => $yesterday,
+            (int)$today->format('U') => $today,
+            (int)$tomorrow->format('U') => $tomorrow
+        ];
 
-        $days = ['today', 'tomorrow', 'in2days'];
+        $this->dayGeneratorServiceProphecy
+            ->getDateTimeStorageForEvent($this->eventRecord)
+            ->shouldBeCalled()
+            ->willReturn($dateTimeStorage);
 
-        /** @var Day $day */
-        foreach ($event->getDays()->toArray() as $key => $day) {
-            self::assertEquals(${$days[$key]}, $day->getDay());
-            self::assertEquals(${$days[$key]}, $day->getDayTime());
-            self::assertEquals($today, $day->getSortDayTime());
-            self::assertEquals($today, $day->getSameDayTime());
-        }
-    }
+        $eventTimeRecord = $this->timeRecord;
+        $eventTimeRecord['type'] = 'event_time';
+        $eventTimeRecord['event'] = $this->eventRecord;
 
-    /**
-     * @test
-     */
-    public function createDayRelationsWithDurationEventWithTime(): void
-    {
-        $today = new \DateTimeImmutable();
-        $today->modify('midnight');
-        $todayMorning = new \DateTimeImmutable();
-        $todayMorning->modify('08:12');
-        $tomorrow = clone $today;
-        $tomorrow->modify('+1 day');
-        $tomorrowMorning = clone $todayMorning;
-        $tomorrowMorning->modify('+1 day');
-        $in2days = clone $today;
-        $in2days->modify('+2 days');
-        $in2daysMorning = clone $tomorrowMorning;
-        $in2daysMorning->modify('+1 day');
+        $this->timeRepositoryProphecy
+            ->getAllByEventRecord($this->eventRecord, true)
+            ->shouldBeCalled()
+            ->willReturn([$eventTimeRecord]);
 
-        $time = new Time();
-        $time->setTimeBegin('08:12');
+        $days = $this->subject->createDayRelations(123)['days'];
+        self::assertCount(
+            3,
+            $days
+        );
 
-        $event = new Event();
-        $event->_setProperty('uid', 123);
-        $event->setPid(321);
-        $event->setEventType('duration');
-        $event->setEventBegin($today);
-        $event->setEventEnd($in2days);
-        $event->setEventTime($time);
-
-        $this->eventRepositoryProphecy->findHiddenObject(123)->willReturn($event);
-        $this->subject->createDayRelations(123);
-
-        $this->timeRepositoryProphecy->update($event)->shouldBeCalled();
-        $this->timeRepositoryProphecy->persistAll()->shouldBeCalled();
-        self::assertCount(3, $event->getDays());
-
-        $days = ['today', 'tomorrow', 'in2days'];
-
-        /** @var Day $day */
-        foreach ($event->getDays()->toArray() as $key => $day) {
-            self::assertEquals(${$days[$key]}, $day->getDay());
-            self::assertEquals(${$days[$key] . 'Morning'}, $day->getDayTime());
-            self::assertEquals($todayMorning, $day->getSortDayTime());
-            self::assertEquals($todayMorning, $day->getSameDayTime());
+        $date = $yesterday;
+        foreach ($days as $day) {
+            $dateWithTime = $date->modify('08:12:00');
+            self::assertSame(
+                (int)$date->format('U'),
+                $day['day'],
+                'Column: day - Date: ' . $date->format('d.m.Y H:i:s')
+            );
+            self::assertSame(
+                (int)$dateWithTime->format('U'),
+                $day['day_time'],
+                'Column: day_time - Date: ' . $dateWithTime->format('d.m.Y H:i:s')
+            );
+            self::assertSame(
+                (int)$yesterday->modify('08:12:00')->format('U'),
+                $day['sort_day_time'],
+                'Column: sort_day_time - Date: ' . $yesterday->modify('08:12:00')->format('d.m.Y H:i:s')
+            );
+            self::assertSame(
+                (int)$yesterday->modify('08:12:00')->format('U'),
+                $day['same_day_time'],
+                'Column: same_day_time - Date: ' . $yesterday->modify('08:12:00')->format('d.m.Y H:i:s')
+            );
+            $date = $date->modify('+1 day');
         }
     }
 }

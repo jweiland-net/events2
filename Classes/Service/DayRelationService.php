@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Service;
 
 use JWeiland\Events2\Configuration\ExtConf;
-use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Domain\Repository\TimeRepository;
@@ -45,7 +44,7 @@ class DayRelationService implements LoggerAwareInterface
 
     protected ?\DateTimeImmutable $firstDateTime = null;
 
-    protected array $firstTimeRecord = [];
+    protected array $firstTimeRecordForCurrentDateTime = [];
 
     /**
      * Must be called by ObjectManager, because of EventRepository which has inject methods
@@ -73,6 +72,16 @@ class DayRelationService implements LoggerAwareInterface
         $eventRecord = $this->eventRepository->getRecord($eventUid, ['*'], true);
         if ($eventRecord === []) {
             $this->logger->warning('Related days could not be created, because of an empty eventRecord.');
+            return $eventRecord;
+        }
+
+        if (!isset(
+            $eventRecord['uid'],
+            $eventRecord['hidden'],
+            $eventRecord['sys_language_uid'],
+            $eventRecord['event_type']
+        )) {
+            $this->logger->info('DayRelationService will not build day records for invalid events.');
             return $eventRecord;
         }
 
@@ -123,9 +132,9 @@ class DayRelationService implements LoggerAwareInterface
         }
 
         $dayRecords = [];
-        foreach ($this->getTimeRecordsWithHighestPriority($eventRecord, $dateTime) as $timeRecord) {
-            if ($this->firstTimeRecord === []) {
-                $this->firstTimeRecord = $timeRecord;
+        foreach ($timeRecords as $timeRecord) {
+            if ($this->firstTimeRecordForCurrentDateTime === []) {
+                $this->firstTimeRecordForCurrentDateTime = $timeRecord;
             }
 
             $dayRecords[] = $this->buildDayRecordForDateTime($dateTime, $eventRecord, $timeRecord);
@@ -133,7 +142,7 @@ class DayRelationService implements LoggerAwareInterface
 
         // sort_day_time of all duration days have to be the same value, so do not reset this value in that case.
         if ($eventRecord['event_type'] !== 'duration') {
-            $this->firstTimeRecord = [];
+            $this->firstTimeRecordForCurrentDateTime = [];
         }
 
         return $dayRecords;
@@ -164,7 +173,6 @@ class DayRelationService implements LoggerAwareInterface
             array_push($filteredTimeRecords, ...$timeRecords);
         }
 
-
         return $filteredTimeRecords;
     }
 
@@ -176,7 +184,17 @@ class DayRelationService implements LoggerAwareInterface
     ): array {
         $filteredTimeRecords = [];
         foreach ($allTimeRecords as $timeRecord) {
-            if (!isset($timeRecord['type'], $timeRecord['event'], $timeRecord['exception'], $timeRecord['weekday'])) {
+            if (!isset(
+                $timeRecord['type'],
+                $timeRecord['hidden'],
+                $timeRecord['event'],
+                $timeRecord['exception'],
+                $timeRecord['weekday']
+            )) {
+                continue;
+            }
+
+            if ($timeRecord['hidden']) {
                 continue;
             }
 
@@ -193,6 +211,8 @@ class DayRelationService implements LoggerAwareInterface
                     // Record must match date of exception record
                     if (
                         ($exceptionRecord = $eventRecord['exceptions'][$timeRecord['exception']['uid'] ?? 0] ?? [])
+                        && isset($exceptionRecord['hidden'])
+                        && (int)$exceptionRecord['hidden'] === 0
                         && in_array($exceptionRecord['exception_type'] ?? '', ['Add', 'Time'])
                         && ($exceptionDate = $this->dateTimeUtility->convert($exceptionRecord['exception_date'] ?? 0))
                         && $exceptionDate == $dateTime // we compare objects here so no === possible
@@ -286,7 +306,7 @@ class DayRelationService implements LoggerAwareInterface
     ): \DateTimeImmutable
     {
         if ($eventRecord['event_type'] === 'duration') {
-            [$hour, $minute] = $this->getHourAndMinuteFromTime($this->firstTimeRecord);
+            [$hour, $minute] = $this->getHourAndMinuteFromTime($this->firstTimeRecordForCurrentDateTime);
 
             return $this->getDayTime($this->firstDateTime, $hour, $minute);
         }
@@ -311,9 +331,10 @@ class DayRelationService implements LoggerAwareInterface
         array $eventRecord
     ): \DateTimeImmutable {
         if ($eventRecord['event_type'] !== 'duration') {
-            [$hour, $minute] = $this->getHourAndMinuteFromTime($this->firstTimeRecord);
+            [$hour, $minute] = $this->getHourAndMinuteFromTime($this->firstTimeRecordForCurrentDateTime);
         }
 
+        // In case of duration the date is the same for all days.
         return $this->getSortDayTime($day, $hour, $minute, $eventRecord);
     }
 }
