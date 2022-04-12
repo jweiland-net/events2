@@ -123,13 +123,23 @@ class DayRepository extends AbstractRepository
             );
         }
 
-        // add date filter
-        $this->addConstraintForDate(
-            $subQueryBuilder,
-            $listType,
-            $queryBuilder,
-            'day_sub_query'
-        );
+        if ($filter->getTimestamp()) {
+            // Add constraint for a specific day.
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->eq(
+                    'day.day',
+                    $queryBuilder->createNamedParameter($filter->getTimestamp(), \PDO::PARAM_INT)
+                )
+            );
+        } else {
+            // Add constraint for date by given listType
+            $this->addConstraintForDate(
+                $subQueryBuilder,
+                $listType,
+                $queryBuilder,
+                'day_sub_query'
+            );
+        }
 
         $queryBuilder
             ->select('day.*')
@@ -285,63 +295,6 @@ class DayRepository extends AbstractRepository
             new ModifyQueriesOfSearchEventsEvent($queryBuilder, $subQueryBuilder, $search, $this->settings)
         );
         $this->joinSubQueryIntoQueryBuilder($queryBuilder, $subQueryBuilder);
-        $extbaseQuery->statement($queryBuilder);
-
-        return $extbaseQuery->execute();
-    }
-
-    /**
-     * Find all Days for a given Day (Timestamp with time set to 00:00:00).
-     *
-     * @return QueryResultInterface|Day[]
-     * @throws \Exception
-     */
-    public function findByTimestamp(int $timestamp): QueryResultInterface
-    {
-        /** @var Query $extbaseQuery */
-        $extbaseQuery = $this->createQuery();
-        $queryBuilder = $this->getQueryBuilderForTable('tx_events2_domain_model_day', 'day');
-
-        // add storage PID for event and day, but not for sys_category
-        $this->databaseService->addConstraintForPid(
-            $queryBuilder,
-            $extbaseQuery->getQuerySettings()->getStoragePageIds()
-        );
-
-        // add categories
-        if (!empty($this->settings['categories'])) {
-            $this->databaseService->addConstraintForCategories(
-                $queryBuilder,
-                GeneralUtility::trimExplode(',', $this->settings['categories'], true)
-            );
-        }
-
-        $queryBuilder->andWhere(
-            $queryBuilder->expr()->eq(
-                'day.day',
-                $queryBuilder->createNamedParameter($timestamp, \PDO::PARAM_INT)
-            )
-        );
-
-        $queryBuilder
-            ->select(...$this->getColumnsForDayTable(['event.top_of_list']))
-            ->leftJoin(
-                'day',
-                'tx_events2_domain_model_event',
-                'event',
-                $queryBuilder->expr()->eq(
-                    'day.event',
-                    $queryBuilder->quoteIdentifier('event.uid')
-                )
-            )
-            ->orderBy('event.top_of_list', 'DESC')
-            ->addOrderBy('day.sort_day_time', 'ASC')
-            ->addOrderBy('day.day_time', 'ASC')
-            ->groupBy(...$this->getColumnsForDayTable(['event.top_of_list'])); // keep that because of category relation
-
-        $this->eventDispatcher->dispatch(
-            new ModifyQueriesOfFindByTimestampEvent($queryBuilder, $timestamp, $this->settings)
-        );
         $extbaseQuery->statement($queryBuilder);
 
         return $extbaseQuery->execute();

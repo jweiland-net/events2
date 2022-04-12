@@ -21,7 +21,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class GetPostPagination implements PaginationInterface
 {
-    protected string $pluginNamespace = 'tx_events2_events';
+    protected string $pluginNamespace = 'tx_events2_list';
 
     protected PaginatorInterface $paginator;
 

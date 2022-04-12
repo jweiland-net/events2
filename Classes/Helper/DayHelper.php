@@ -35,7 +35,7 @@ class DayHelper
     {
         $day = null;
         // get parameters of event-plugin-namespace
-        $pluginParameters = GeneralUtility::_GPmerged('tx_events2_events');
+        $pluginParameters = GeneralUtility::_GPmerged('tx_events2_list');
         if (
             is_array($pluginParameters) &&
             array_key_exists('day', $pluginParameters) &&

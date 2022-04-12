@@ -85,10 +85,10 @@ class Events2PageTitleProviderTest extends FunctionalTestCase
     public function findDayWithDateTimeOfTodayWillFindExactlyMatchingDay(): void
     {
         $date = new \DateTimeImmutable('midnight');
-        $_GET['tx_events2_events']['controller'] = 'Event';
-        $_GET['tx_events2_events']['action'] = 'show';
-        $_GET['tx_events2_events']['event'] = 1;
-        $_GET['tx_events2_events']['timestamp'] = $date->format('U');
+        $_GET['tx_events2_list']['controller'] = 'Event';
+        $_GET['tx_events2_list']['action'] = 'show';
+        $_GET['tx_events2_list']['event'] = 1;
+        $_GET['tx_events2_list']['timestamp'] = $date->format('U');
 
         self::assertSame(
             'Nice title for detail page - ' . $date->format('d.m.Y'),

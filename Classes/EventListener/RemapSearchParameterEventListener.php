@@ -15,11 +15,11 @@ use JWeiland\Events2\Event\PreProcessControllerActionEvent;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /*
- * Event and Search plugin are two different plugins with different plugin namespaces (events2_events, events2_search).
- * If you submit search form "events2_search" will be used, but as plugin events2_events will show the results, it
+ * Event and Search plugin are two different plugins with different plugin namespaces (events2_list, events2_search).
+ * If you submit search form "events2_search" will be used, but as plugin events2_list will show the results, it
  * will not react on these foreign requests. That why we have switches the plugin namespace of search plugin to
- * "events2_events" in TypoScript. Now all search results are visible, but all search values in form gets lost. With
- * this workaround we fetch the events2_events request and map back the form values to this plugin.
+ * "events2_list" in TypoScript. Now all search results are visible, but all search values in form gets lost. With
+ * this workaround we fetch the events2_list request and map back the form values to this plugin.
  */
 class RemapSearchParameterEventListener extends AbstractControllerEventListener
 {
@@ -32,7 +32,7 @@ class RemapSearchParameterEventListener extends AbstractControllerEventListener
     public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void
     {
         if ($this->isValidRequest($controllerActionEvent)) {
-            $foreignPluginContext = GeneralUtility::_POST('tx_events2_events');
+            $foreignPluginContext = GeneralUtility::_POST('tx_events2_list');
             if (isset($foreignPluginContext['search'])) {
                 $search = $foreignPluginContext['search'];
                 if (!is_array($search)) {

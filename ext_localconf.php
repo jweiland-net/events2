@@ -8,7 +8,7 @@ call_user_func(static function (): void {
         'Events2',
         'List',
         [
-            \JWeiland\Events2\Controller\DayController::class => 'list, listLatest, listToday, listWeek, listRange, listByTimestamp, show',
+            \JWeiland\Events2\Controller\DayController::class => 'list, show',
             \JWeiland\Events2\Controller\LocationController::class => 'show',
             \JWeiland\Events2\Controller\VideoController::class => 'show',
             \JWeiland\Events2\Controller\ICalController::class => 'download'

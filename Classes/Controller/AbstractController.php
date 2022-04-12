@@ -58,7 +58,7 @@ class AbstractController extends ActionController implements LoggerAwareInterfac
         $typoScriptSettings = $this->configurationManager->getConfiguration(
             ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK,
             'events2',
-            'events2_event' // invalid plugin name, to get fresh unmerged settings
+            'events2_invalid' // invalid plugin name, to get fresh unmerged settings
         );
 
         if (empty($typoScriptSettings['settings'])) {

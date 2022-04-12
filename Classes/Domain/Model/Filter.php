@@ -24,6 +24,8 @@ class Filter extends AbstractEntity
 {
     protected ?int $organizer = 0;
 
+    protected int $timestamp = 0;
+
     public function getOrganizer(): ?int
     {
         return $this->organizer;
@@ -32,5 +34,15 @@ class Filter extends AbstractEntity
     public function setOrganizer(?int $organizer): void
     {
         $this->organizer = $organizer;
+    }
+
+    public function getTimestamp(): int
+    {
+        return $this->timestamp;
+    }
+
+    public function setTimestamp(int $timestamp): void
+    {
+        $this->timestamp = $timestamp;
     }
 }

@@ -72,7 +72,7 @@ class DayHelperTest extends FunctionalTestCase
             ]
         );
 
-        $_GET['tx_events2_events']['day'] = '12';
+        $_GET['tx_events2_list']['day'] = '12';
         self::assertNull(
             $this->subject->getDayFromUri()
         );
@@ -92,7 +92,7 @@ class DayHelperTest extends FunctionalTestCase
             ]
         );
 
-        $_GET['tx_events2_events']['day'] = '1';
+        $_GET['tx_events2_list']['day'] = '1';
         $day = $this->subject->getDayFromUri();
 
         self::assertInstanceOf(

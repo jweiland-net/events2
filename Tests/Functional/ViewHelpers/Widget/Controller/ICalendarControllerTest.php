@@ -155,7 +155,7 @@ class ICalendarControllerTest extends FunctionalTestCase
         $widgetContext->setControllerObjectName(ICalendarController::class);
         $widgetContext->setParentExtensionName('events2');
         $widgetContext->setParentPluginName('event');
-        $widgetContext->setParentPluginNamespace('events2_event');
+        $widgetContext->setParentPluginNamespace('events2_list');
         $widgetContext->setWidgetIdentifier('@widget_0');
         $widgetContext->setWidgetConfiguration([
             'day' => $day
@@ -187,7 +187,7 @@ class ICalendarControllerTest extends FunctionalTestCase
         $widgetContext->setControllerObjectName(ICalendarController::class);
         $widgetContext->setParentExtensionName('events2');
         $widgetContext->setParentPluginName('event');
-        $widgetContext->setParentPluginNamespace('events2_event');
+        $widgetContext->setParentPluginNamespace('events2_list');
         $widgetContext->setWidgetIdentifier('@widget_0');
         $widgetContext->setWidgetConfiguration([
             'day' => $day
@@ -238,7 +238,7 @@ class ICalendarControllerTest extends FunctionalTestCase
         $widgetContext->setControllerObjectName(ICalendarController::class);
         $widgetContext->setParentExtensionName('events2');
         $widgetContext->setParentPluginName('event');
-        $widgetContext->setParentPluginNamespace('events2_event');
+        $widgetContext->setParentPluginNamespace('events2_list');
         $widgetContext->setWidgetIdentifier('@widget_0');
         $widgetContext->setWidgetConfiguration([
             'day' => $day
@@ -275,7 +275,7 @@ class ICalendarControllerTest extends FunctionalTestCase
         $widgetContext->setControllerObjectName(ICalendarController::class);
         $widgetContext->setParentExtensionName('events2');
         $widgetContext->setParentPluginName('event');
-        $widgetContext->setParentPluginNamespace('events2_event');
+        $widgetContext->setParentPluginNamespace('events2_list');
         $widgetContext->setWidgetIdentifier('@widget_0');
         $widgetContext->setWidgetConfiguration([
             'day' => $day

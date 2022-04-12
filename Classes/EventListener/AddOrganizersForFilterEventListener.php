@@ -43,7 +43,7 @@ class AddOrganizersForFilterEventListener extends AbstractControllerEventListene
             return;
         }
 
-        if (!$controllerActionEvent->getSettings()['showFilterForOrganizerInFrontend'] === '1') {
+        if ((int)$controllerActionEvent->getSettings()['showFilterForOrganizerInFrontend'] !== 1) {
             return;
         }
 

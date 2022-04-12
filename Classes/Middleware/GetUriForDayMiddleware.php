@@ -110,11 +110,15 @@ class GetUriForDayMiddleware implements MiddlewareInterface
             ->setTargetPageUid($pidOfListPage)
             ->setCreateAbsoluteUri(true)
             ->uriFor(
-                'showByTimestamp',
-                ['timestamp' => $timestamp],
+                'list',
+                [
+                    'filter' => [
+                        'timestamp' => $timestamp
+                    ]
+                ],
                 'Day',
                 'events2',
-                'events'
+                'list'
             );
     }
 }

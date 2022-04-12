@@ -73,6 +73,10 @@ services:
     tags:
       - name: event.listener
         event: JWeiland\Events2\Event\PreProcessControllerActionEvent
+  JWeiland\Events2\EventListener\AllowFilterByGetRequestEventListener:
+    tags:
+      - name: event.listener
+        event: JWeiland\Events2\Event\PreProcessControllerActionEvent
   JWeiland\Events2\EventListener\AllowSearchParameterEventListener:
     tags:
       - name: event.listener

@@ -1011,69 +1011,6 @@ class DayRepositoryTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function findByTimestamp(): void
-    {
-        $this->dayRepository->setSettings([
-            'mergeRecurringEvents' => 1
-        ]);
-
-        $twoWeeks = new \DateTimeImmutable('midnight');
-        $twoWeeks->modify('+2 weeks'); // two birthday records
-
-        $days = $this->dayRepository->findByTimestamp((int)$twoWeeks->format('U'));
-        self::assertGreaterThanOrEqual( // in last week of month we have 3 because of UserGroup
-            2,
-            count($days->toArray())
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function findByTimestampWillFindMergedRecurringEvent(): void
-    {
-        $this->dayRepository->setSettings([
-            'mergeRecurringEvents' => 1
-        ]);
-
-        // Event "Week market" is on friday
-        $friday = new \DateTimeImmutable('midnight');
-        if ($friday->format('N') !== '5') {
-            $friday->modify('next friday');
-        }
-
-        $days = $this->dayRepository->findByTimestamp((int)$friday->format('U'));
-        $events = [];
-        foreach ($days as $day) {
-            $events[$day->getEvent()->getUid()] = 1;
-        }
-        // 1 = week market
-        self::assertArrayHasKey(1, $events);
-    }
-
-    /**
-     * @test
-     */
-    public function findByTimestampAndCategory(): void
-    {
-        $this->dayRepository->setSettings([
-            'mergeRecurringEvents' => 1,
-            'categories' => '1'
-        ]);
-
-        $twoWeeks = new \DateTimeImmutable('midnight');
-        $twoWeeks->modify('+2 weeks'); // two birthday records
-
-        $days = $this->dayRepository->findByTimestamp((int)$twoWeeks->format('U'));
-        self::assertGreaterThanOrEqual( // in last week of month we have 3 because of UserGroup
-            2,
-            count($days->toArray())
-        );
-    }
-
-    /**
-     * @test
-     */
     public function findDayByEventAndTimestamp(): void
     {
         $tomorrow = new \DateTimeImmutable('tomorrow midnight');

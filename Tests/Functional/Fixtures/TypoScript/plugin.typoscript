@@ -1,5 +1,5 @@
 # search should work with get params of events plugin
-module.tx_events2_search.view.pluginNamespace = tx_events2_events
+module.tx_events2_search.view.pluginNamespace = tx_events2_list
 # but if there was an action called which is not accessible, then call the default action
 module.tx_events2_search.mvc.callDefaultActionIfActionCantBeResolved = 1
 
@@ -78,5 +78,5 @@ module.tx_events2 {
   }
 }
 
-module.tx_events2_events.features.requireCHashArgumentForActionArguments = 0
+module.tx_events2_list.features.requireCHashArgumentForActionArguments = 0
 module.tx_events2_search.features.requireCHashArgumentForActionArguments = 0
