@@ -288,6 +288,7 @@ return [
                     'showPossibleLocalizationRecords' => 1,
                     'showAllLocalizationLink' => 1,
                 ],
+                'default' => 0,
             ],
         ],
         'same_day' => [
@@ -331,6 +332,7 @@ return [
                     'showPossibleLocalizationRecords' => 1,
                     'showAllLocalizationLink' => 1,
                 ],
+                'default' => 0,
             ],
         ],
         'xth' => [
@@ -416,6 +418,7 @@ return [
                     'showPossibleLocalizationRecords' => 1,
                     'showAllLocalizationLink' => 1,
                 ],
+                'default' => 0,
             ],
         ],
         'each_weeks' => [
@@ -489,6 +492,7 @@ return [
                     'showPossibleLocalizationRecords' => 1,
                     'showAllLocalizationLink' => 1,
                 ],
+                'default' => 0,
             ],
         ],
         'detail_information' => [
@@ -532,6 +536,7 @@ return [
                     'showPossibleLocalizationRecords' => 1,
                     'showAllLocalizationLink' => 1,
                 ],
+                'default' => 0,
             ],
         ],
         'days' => [
@@ -651,6 +656,7 @@ return [
                     'showPossibleLocalizationRecords' => 1,
                     'showAllLocalizationLink' => 1,
                 ],
+                'default' => 0,
             ],
         ],
         'download_links' => [
@@ -667,7 +673,8 @@ return [
                     'showSynchronizationLink' => 1,
                     'showPossibleLocalizationRecords' => 1,
                     'showAllLocalizationLink' => 1,
-                ]
+                ],
+                'default' => 0,
             ]
         ],
         'import_id' => [
