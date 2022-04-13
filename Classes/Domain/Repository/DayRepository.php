@@ -156,6 +156,12 @@ class DayRepository extends AbstractRepository
             ->addOrderBy('day.sort_day_time', 'ASC')
             ->addOrderBy('day.day_time', 'ASC');
 
+        $this->overlayHelper->addWhereForOverlay(
+            $queryBuilder,
+            'tx_events2_domain_model_event',
+            'event'
+        );
+
         if ($limit !== 0) {
             $queryBuilder->setMaxResults($limit);
         }
@@ -483,19 +489,29 @@ class DayRepository extends AbstractRepository
                 )
             );
 
+        $this->overlayHelper->addWhereForOverlay(
+            $subQueryBuilder,
+            'tx_events2_domain_model_event',
+            'event_sub_query',
+            $useStrictLang
+        );
+
         return $subQueryBuilder;
     }
 
     public function removeAllByEventRecord(array $eventRecord): void
     {
-        if (!isset($eventRecord['uid'])) {
+        $eventUid = (int)($eventRecord['uid'] ?? 0);
+        if ($eventUid === 0) {
             return;
         }
+
         $connection = $this->getConnectionPool()->getConnectionForTable(self::TABLE);
         $connection->delete(
             self::TABLE,
             [
-                'event' => (int)$eventRecord['uid']
+                'event' => $eventUid,
+                't3ver_wsid' => $eventRecord['t3ver_wsid'] ?? 0
             ]
         );
     }
@@ -512,6 +528,7 @@ class DayRepository extends AbstractRepository
             'crdate',
             'cruser_id',
             'hidden',
+            't3ver_wsid',
             'day',
             'day_time',
             'sort_day_time',

@@ -18,6 +18,9 @@ use JWeiland\Events2\Domain\Repository\TimeRepository;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /*
@@ -69,7 +72,8 @@ class DayRelationService implements LoggerAwareInterface
      */
     public function createDayRelations(int $eventUid): array
     {
-        $eventRecord = $this->eventRepository->getRecord($eventUid, ['*'], true);
+        // We are in BE context. Do not overlay.
+        $eventRecord = $this->getEventRecord($eventUid);
         if ($eventRecord === []) {
             $this->logger->warning('Related days could not be created, because of an empty eventRecord.');
             return $eventRecord;
@@ -119,6 +123,74 @@ class DayRelationService implements LoggerAwareInterface
         }
 
         return $eventRecord;
+    }
+
+    protected function getEventRecord(int $eventUid): array
+    {
+        $eventRecord = BackendUtility::getLiveVersionOfRecord('tx_events2_domain_model_event', $eventUid);
+        if (is_array($eventRecord)) {
+            BackendUtility::workspaceOL('tx_events2_domain_model_event', $eventRecord);
+        } else {
+            // We already have a LIVE record. Do overlay.
+            $eventRecord = BackendUtility::getRecordWSOL('tx_events2_domain_model_event', $eventUid);
+        }
+
+        if ($eventRecord === null) {
+            $this->logger->warning('Event record can not be overlayed into current workspace: ' . $eventUid);
+            return [];
+        }
+
+        $this->addExceptionsToEventRecord($eventRecord);
+
+        return $eventRecord;
+    }
+
+    protected function addExceptionsToEventRecord(array &$eventRecord): void
+    {
+        if (!isset($eventRecord['uid'])) {
+            return;
+        }
+
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_exception');
+        $queryBuilder
+            ->getRestrictions()
+            ->removeAll()
+            ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
+
+        $statement = $queryBuilder
+            ->select('*')
+            ->from('tx_events2_domain_model_exception')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'event',
+                    $queryBuilder->createNamedParameter((int)$eventRecord['uid'], \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    't3ver_wsid',
+                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
+                )
+            )
+            ->execute();
+
+        $exceptionRecords = [];
+        while ($exceptionRecord = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            BackendUtility::workspaceOL('tx_events2_domain_model_exception', $exceptionRecord);
+            if ($exceptionRecord === null) {
+                $this->logger->warning(
+                    'Exception record can not be overlayed into current workspace: ' . $exceptionRecord['uid']
+                );
+                continue;
+            }
+
+            $exceptionRecords[(int)$exceptionRecord['uid']] = $exceptionRecord;
+        }
+
+        $eventRecord['exceptions'] = $exceptionRecords;
+    }
+
+    protected function getConnectionPool(): ConnectionPool
+    {
+        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 
     public function buildDayRecordsForDateTime(array $eventRecord, \DateTimeImmutable $dateTime): array
@@ -247,6 +319,7 @@ class DayRelationService implements LoggerAwareInterface
             'tstamp' => time(),
             'cruser_id' => $GLOBALS['BE_USER']->user['uid'] ?? 0,
             'hidden' => $eventRecord['hidden'] ?? 0,
+            't3ver_wsid' => $eventRecord['t3ver_wsid'] ?? 0,
             'day' => (int)$dateTime->format('U'),
             'day_time' => (int)$this->getDayTime($dateTime, $hour, $minute)->format('U'),
             'sort_day_time' => (int)$this->getSortDayTime($dateTime, $hour, $minute, $eventRecord)->format('U'),
