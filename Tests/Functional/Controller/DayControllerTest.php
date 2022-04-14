@@ -12,29 +12,23 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Functional\Controller;
 
 use JWeiland\Events2\Controller\DayController;
-use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Filter;
-use JWeiland\Events2\Domain\Model\Organizer;
 use JWeiland\Events2\Domain\Model\Search;
-use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Service\DayRelationService;
-use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-use TYPO3\CMS\Core\Localization\LanguageService;
+use JWeiland\Events2\Tests\Functional\AbstractFunctionalTestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
+use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\Request;
-use TYPO3\CMS\Extbase\Mvc\Response;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
-use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
+use TYPO3\CMS\Extbase\Core\Bootstrap;
 
 /**
  * Test case.
  */
-class DayControllerTest extends FunctionalTestCase
+class DayControllerTest extends AbstractFunctionalTestCase
 {
-    protected DayController $subject;
+    use ProphecyTrait;
 
-    protected Request $request;
+    protected ServerRequest $serverRequest;
 
     /**
      * @var array
@@ -43,118 +37,134 @@ class DayControllerTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
+    /**
+     * @var string[]
+     */
+    protected $coreExtensionsToLoad = [
+        'fluid_styled_content'
+    ];
+
     protected function setUp(): void
     {
         parent::setUp();
+
         $this->importDataSet('ntf://Database/pages.xml');
-        $this->setUpFrontendRootPage(1, [__DIR__ . '/../Fixtures/TypoScript/plugin.typoscript']);
+        $this->setUpFrontendRootPage(1, [__DIR__ . '/../Fixtures/TypoScript/setup.typoscript']);
 
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $persistenceManager = $objectManager->get(PersistenceManager::class);
-        $dayRelationService = $objectManager->get(DayRelationService::class);
-        $querySettings = $objectManager->get(QuerySettingsInterface::class);
-        $querySettings->setStoragePageIds([1]);
+        $this->serverRequest = $this->getServerRequestForFrontendMode();
 
-        $eventRepository = $objectManager->get(EventRepository::class);
-        $eventRepository->setDefaultQuerySettings($querySettings);
+        $this->getDatabaseConnection()->insertArray(
+            'tx_events2_domain_model_organizer',
+            [
+                'pid' => 1,
+                'organizer' => 'Stefan',
+            ]
+        );
 
-        $event = new Event();
-        $event->setPid(1);
-        $event->setEventType('single');
-        $event->setEventBegin(new \DateTimeImmutable('midnight'));
-        $event->setTitle('Today');
+        $date = new \DateTimeImmutable('midnight');
+        $this->getDatabaseConnection()->insertArray(
+            'tx_events2_domain_model_event',
+            [
+                'pid' => 1,
+                'event_type' => 'single',
+                'event_begin' => (int)$date->format('U'),
+                'title' => 'Today',
+            ]
+        );
 
-        $persistenceManager->add($event);
-        $persistenceManager->persistAll();
+        $date = new \DateTimeImmutable('tomorrow midnight');
+        $this->getDatabaseConnection()->insertArray(
+            'tx_events2_domain_model_event',
+            [
+                'pid' => 1,
+                'event_type' => 'single',
+                'event_begin' => (int)$date->format('U'),
+                'title' => 'Tomorrow',
+                'organizers' => '1'
+            ]
+        );
 
-        $organizer = new Organizer();
-        $organizer->setPid(1);
-        $organizer->setOrganizer('Me');
-        $persistenceManager->add($organizer);
-
-        $event = new Event();
-        $event->setPid(1);
-        $event->setEventType('single');
-        $event->setEventBegin(new \DateTimeImmutable('tomorrow midnight'));
-        $event->setTitle('Tomorrow');
-        $event->addOrganizer($organizer);
-
-        $persistenceManager->add($event);
-        $persistenceManager->persistAll();
-
-        $events = $eventRepository->findAll();
-        foreach ($events as $event) {
-            $dayRelationService->createDayRelations($event->getUid());
+        // ServerRequest is needed for following
+        $GLOBALS['TYPO3_REQUEST'] = $this->serverRequest;
+        $dayRelationService = GeneralUtility::makeInstance(DayRelationService::class);
+        $statement = $this->getDatabaseConnection()->select('*', 'tx_events2_domain_model_event', 'pid=1');
+        while ($eventRecord = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $dayRelationService->createDayRelations($eventRecord['uid']);
         }
-
-        $this->request = new Request();
-        if (method_exists($this->request, 'setControllerAliasToClassNameMapping')) {
-            $this->request->setControllerAliasToClassNameMapping([
-                'Day' => DayController::class
-            ]);
-        }
-        $this->request->setControllerExtensionName('Events2');
-        $this->request->setPluginName('Events');
-        $this->request->setControllerName('Day');
-
-        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
-
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->subject = $objectManager->get(DayController::class);
     }
 
     protected function tearDown(): void
     {
         unset(
             $this->subject,
-            $this->request
+            $this->request,
+            $GLOBALS['TSFE']
         );
 
         parent::tearDown();
     }
 
     /**
-     * @return array<string, array<string>>
+     * @test
      */
-
-    public function listWithEmptyFilterDataProvider(): array
+    public function bootstrapListActionWillListAllEvents(): void
     {
-        return [
-            'Action: list' => ['list'],
-            'Action: list latest' => ['listLatest'],
-            'Action: list today' => ['listToday'],
-            'Action: list this week' => ['listThisWeek'],
-            'Action: list range' => ['listRange'],
-        ];
+        $this->startUpTSFE($this->serverRequest);
+
+        $extbaseBootstrap = GeneralUtility::makeInstance(Bootstrap::class);
+        $content = $extbaseBootstrap->run(
+            '',
+            [
+                'extensionName' => 'Events2',
+                'pluginName' => 'List',
+                'format' => 'txt',
+            ]
+        );
+
+        $this->assertStringContainsString(
+            'Event Title 1: Today',
+            $content
+        );
+        $this->assertStringContainsString(
+            'Event Title 2: Tomorrow',
+            $content
+        );
     }
 
     /**
      * @test
-     *
-     * @dataProvider listWithEmptyFilterDataProvider
      */
-    public function processRequestWithListActionWillValidateAndAssignFilterToView(string $action): void
+    public function bootstrapListActionWillListEventsWithOrganizer(): void
     {
-        $this->request->setControllerActionName($action);
+        $this->startUpTSFE(
+            $this->serverRequest,
+            1,
+            '0',
+            [
+                'tx_events2_list' => [
+                    'filter' => [
+                        'organizer' => '1'
+                    ]
+                ]
+            ]
+        );
 
-        $response = new Response();
-        $this->subject->processRequest($this->request, $response);
-        $content = $response->getContent();
+        $extbaseBootstrap = GeneralUtility::makeInstance(Bootstrap::class);
+        $content = $extbaseBootstrap->run(
+            '',
+            [
+                'extensionName' => 'Events2',
+                'pluginName' => 'List',
+                'format' => 'txt'
+            ]
+        );
 
-        self::assertStringContainsString(
+        $this->assertStringContainsString(
             'Event Title 1: Today',
             $content
         );
-
-        if ($action !== 'listToday') {
-            self::assertStringContainsString(
-                'Event Title 2: Tomorrow',
-                $content
-            );
-        }
-
-        self::assertStringNotContainsString(
-            'Organizer: 1',
+        $this->assertStringContainsString(
+            'Event Title 2: Tomorrow',
             $content
         );
     }
@@ -177,7 +187,8 @@ class DayControllerTest extends FunctionalTestCase
     }
 
     /**
-     * @test
+     * @tester
+     *
      * @dataProvider listWithFilledFilterDataProvider
      */
     public function processRequestWithListActionWillAssignFilterToView(string $action, Filter $filter): void
@@ -204,7 +215,7 @@ class DayControllerTest extends FunctionalTestCase
     }
 
     /**
-     * @test
+     * @tester
      */
     public function processRequestWithListSearchResultsWillSearchForEvents(): void
     {
@@ -228,7 +239,7 @@ class DayControllerTest extends FunctionalTestCase
     }
 
     /**
-     * @test
+     * @tester
      */
     public function processRequestWithListSearchResultsWillSearchEventsBySearch(): void
     {

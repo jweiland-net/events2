@@ -1,9 +1,12 @@
-# search should work with get params of events plugin
-module.tx_events2_search.view.pluginNamespace = tx_events2_list
-# but if there was an action called which is not accessible, then call the default action
-module.tx_events2_search.mvc.callDefaultActionIfActionCantBeResolved = 1
+page = PAGE
+page.typeNum = 0
 
-module.tx_events2 {
+# search should work with get params of events plugin
+plugin.tx_events2_search.view.pluginNamespace = tx_events2_list
+# but if there was an action called which is not accessible, then call the default action
+plugin.tx_events2_search.mvc.callDefaultActionIfActionCantBeResolved = 1
+
+plugin.tx_events2 {
   view {
     templateRootPaths {
       0 = EXT:events2/Resources/Private/Templates/
@@ -78,5 +81,5 @@ module.tx_events2 {
   }
 }
 
-module.tx_events2_list.features.requireCHashArgumentForActionArguments = 0
-module.tx_events2_search.features.requireCHashArgumentForActionArguments = 0
+plugin.tx_events2_list.features.requireCHashArgumentForActionArguments = 0
+plugin.tx_events2_search.features.requireCHashArgumentForActionArguments = 0
