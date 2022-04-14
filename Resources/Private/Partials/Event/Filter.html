@@ -3,10 +3,22 @@
 			data-namespace-typo3-fluid="true">
 
 <f:if condition="{settings.showFilterForOrganizerInFrontend}">
-	<f:if condition="{organizers -> f:count()}>1">
-		<f:form action="{action}" id="eventFilter" name="filter" object="{filter}" noCache="1">
-			<f:form.select id="organizers" additionalAttributes="{onchange: 'this.form.submit()'}" options="{organizers}" property="organizer" size="1" optionLabelField="organizer" optionValueField="uid" sortByOptionLabel="1" prependOptionLabel="" prependOptionValue="" />
-		</f:form>
+	<f:if condition="{organizers -> f:count()} > 1">
+		<form action="{f:uri.action(action: action)}" id="eventFilter" name="filter" method="GET">
+			<select id="organizer" size="1" name="tx_events2_list[filter][organizer]" onchange="this.form.submit();">
+				<option value=""></option>
+				<f:for each="{organizers}" as="organizer">
+					<f:if condition="{filter.organizer} == {organizer.uid}">
+						<f:then>
+							<option value="{organizer.uid}" selected="selected">{organizer.organizer}</option>
+						</f:then>
+						<f:else>
+							<option value="{organizer.uid}">{organizer.organizer}</option>
+						</f:else>
+					</f:if>
+				</f:for>
+			</select>
+		</form>
 	</f:if>
 </f:if>
 </html>
