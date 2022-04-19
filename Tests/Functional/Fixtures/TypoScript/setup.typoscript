@@ -80,6 +80,3 @@ plugin.tx_events2 {
     }
   }
 }
-
-plugin.tx_events2_list.features.requireCHashArgumentForActionArguments = 0
-plugin.tx_events2_search.features.requireCHashArgumentForActionArguments = 0

@@ -107,6 +107,24 @@ let Events2 = function ($element) {
   };
 
   /**
+   * Initialize possible organizer selectbox in events2 list view
+   */
+  me.initializeOrganizerFilters = function () {
+    let $organizerForm = document.querySelector('form#eventFilter');
+    let $organizerSelectBox = $organizerForm.querySelector('select#organizer');
+    if ($organizerSelectBox !== null) {
+      $organizerSelectBox.addEventListener('change', event => {
+        event.preventDefault();
+        if (event.target.value === '') {
+          window.location.href = $organizerForm.getAttribute('action');
+        } else {
+          window.location.href = event.target.value;
+        }
+      });
+    }
+  };
+
+  /**
    * Initialize DatePicker for input elements with class: addDatePicker
    */
   me.initializeDatePicker = function () {
@@ -290,6 +308,7 @@ let Events2 = function ($element) {
     $element.querySelector(me.selectorPluginVariables).getAttribute('data-variables')
   );
 
+  me.initializeOrganizerFilters();
   if (me.isCreatePlugin($element)) {
     me.$remainingCharsContainer = $element.querySelectorAll(me.selectorRemainingChars);
     me.$autoCompleteLocation = $element.querySelector(me.selectorAutoCompleteLocation);

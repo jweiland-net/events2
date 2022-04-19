@@ -107,12 +107,6 @@ plugin.tx_events2 {
   _LOCAL_LANG.default.rightsMessage = I give all rights of this image to...
 }
 
-# TYPO3 8 comes with a new security feature which requires a cHash for all URLs.
-# As we have some individual forms and AjaxCalls, where we can not create an individual cHash
-# we have to disable that feature
-plugin.tx_events2_list.features.requireCHashArgumentForActionArguments = 0
-plugin.tx_events2_search.features.requireCHashArgumentForActionArguments = 0
-
 module.tx_events2 {
   view {
     templateRootPaths {

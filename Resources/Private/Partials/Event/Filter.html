@@ -5,15 +5,16 @@
 <f:if condition="{settings.showFilterForOrganizerInFrontend}">
 	<f:if condition="{organizers -> f:count()} > 1">
 		<form action="{f:uri.action(action: action)}" id="eventFilter" name="filter" method="GET">
-			<select id="organizer" size="1" name="tx_events2_list[filter][organizer]" onchange="this.form.submit();">
+			<label for="organizer">{f:translate(key: 'tx_events2_domain_model_event.organizer')}</label>
+			<select id="organizer" size="1" name="tx_events2_list[filter][organizer]">
 				<option value=""></option>
 				<f:for each="{organizers}" as="organizer">
 					<f:if condition="{filter.organizer} == {organizer.uid}">
 						<f:then>
-							<option value="{organizer.uid}" selected="selected">{organizer.organizer}</option>
+							<option value="{f:uri.action(action: action, controller: 'List', absolute: 1, arguments: {filter: {organizer: organizer.uid}})}" selected="selected">{organizer.organizer}</option>
 						</f:then>
 						<f:else>
-							<option value="{organizer.uid}">{organizer.organizer}</option>
+							<option value="{f:uri.action(action: action, controller: 'List', absolute: 1, arguments: {filter: {organizer: organizer.uid}})}">{organizer.organizer}</option>
 						</f:else>
 					</f:if>
 				</f:for>
