@@ -18,6 +18,7 @@ use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Service\EventService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
@@ -27,6 +28,8 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  */
 class EventServiceTest extends FunctionalTestCase
 {
+    use ProphecyTrait;
+
     protected EventService $subject;
 
     /**
