@@ -16,6 +16,7 @@ use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Helper\HiddenObjectHelper;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Request;
@@ -27,6 +28,8 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Session;
  */
 class HiddenObjectHelperTest extends FunctionalTestCase
 {
+    use ProphecyTrait;
+
     protected HiddenObjectHelper $subject;
 
     protected Session $session;
