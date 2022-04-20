@@ -18,6 +18,7 @@ use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Location;
 use JWeiland\Events2\Domain\Model\Organizer;
 use JWeiland\Events2\Domain\Model\Time;
+use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Service\DayRelationService;
@@ -30,6 +31,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryFactory;
 use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
+use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 
 /**
  * Functional test for DayFactory
@@ -58,15 +60,17 @@ class DayFactoryTest extends FunctionalTestCase
         $persistenceManager = $this->objectManager->get(PersistenceManagerInterface::class);
         $this->querySettings = $this->objectManager->get(QuerySettingsInterface::class);
         $this->querySettings->setStoragePageIds([11, 40]);
-        $dayRelationService = $this->objectManager->get(DayRelationService::class);
+
+        $dayRepository = $this->objectManager->get(DayRepository::class);
+        $dayRepository->setDefaultQuerySettings($this->querySettings);
 
         $eventRepository = $this->objectManager->get(EventRepository::class);
         $eventRepository->setDefaultQuerySettings($this->querySettings);
 
         $this->subject = new DayFactory(
             new DatabaseService(new ExtConf(new ExtensionConfiguration()), new DateTimeUtility()),
-            $eventRepository,
-            $dayRelationService
+            $dayRepository,
+            $eventRepository
         );
 
         // As we need day related records, we can not use XML import functionality
@@ -78,7 +82,7 @@ class DayFactoryTest extends FunctionalTestCase
         $location->setPid(11);
         $location->setLocation('Market');
 
-        $eventBegin = new \DateTimeImmutable('midnight');
+        $eventBegin = new \DateTimeImmutable('today midnight');
 
         $eventTime = new Time();
         $eventTime->setPid(11);
@@ -145,9 +149,8 @@ class DayFactoryTest extends FunctionalTestCase
         // This date is out of time frame.
         // As day records for event type "single" will always be generated we have to switch to another type.
         // So no day records should be created for that event
-        $eventBegin = new \DateTimeImmutable('-1 year');
-        $recurringEnd = clone $eventBegin;
-        $recurringEnd->modify('+2 weeks');
+        $eventBegin = new \DateTimeImmutable('last year midnight');
+        $recurringEnd = $eventBegin->modify('+2 weeks');
 
         $event = new Event();
         $event->setPid(11);
@@ -169,6 +172,7 @@ class DayFactoryTest extends FunctionalTestCase
 
         $persistenceManager->persistAll();
 
+        $dayRelationService = $this->objectManager->get(DayRelationService::class);
         $events = $eventRepository->findAll();
         foreach ($events as $event) {
             $dayRelationService->createDayRelations($event->getUid());
@@ -186,8 +190,7 @@ class DayFactoryTest extends FunctionalTestCase
      */
     public function findDayWithDateTimeOfTodayWillFindExactlyMatchingDay(): void
     {
-        $date = new \DateTimeImmutable('midnight');
-        $date->modify('07:30:00');
+        $date = new \DateTimeImmutable('today 07:30:00');
 
         $queryFactory = $this->objectManager->get(QueryFactory::class);
 
@@ -196,60 +199,11 @@ class DayFactoryTest extends FunctionalTestCase
         $query->setQuerySettings($this->querySettings);
 
         // Try to get exactly matching day record for today
-        $day = $this->subject->findDayByEventAndTimestamp(1, (int)$date->format('U'), $query);
-        self::assertSame(
+        $day = $this->subject->findDayByEventAndTimestamp(
             1,
-            $day->getEvent()->getUid()
+            (int)$date->format('U'),
+            $query
         );
-        self::assertSame(
-            2,
-            $day->getUid()
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function findDayWithDateTimeOfYesterdayWillFindNextMatchingDay(): void
-    {
-        $date = new \DateTimeImmutable('yesterday midnight');
-        $date->modify('07:30:00');
-
-        $queryFactory = $this->objectManager->get(QueryFactory::class);
-
-        /** @var Query $query */
-        $query = $queryFactory->create(Day::class);
-        $query->setQuerySettings($this->querySettings);
-
-        // Try to get a day record for yesterday, where no day for this event exists.
-        $day = $this->subject->findDayByEventAndTimestamp(1, (int)$date->format('U'), $query);
-
-        self::assertSame(
-            1,
-            $day->getEvent()->getUid()
-        );
-        self::assertSame(
-            2,
-            $day->getUid()
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function findDayWithDateTimeOfTomorrowWillFindPreviousMatchingDay(): void
-    {
-        $date = new \DateTimeImmutable('tomorrow midnight');
-        $date->modify('07:30:00');
-
-        $queryFactory = $this->objectManager->get(QueryFactory::class);
-
-        /** @var Query $query */
-        $query = $queryFactory->create(Day::class);
-        $query->setQuerySettings($this->querySettings);
-
-        // Try to get a day record for tomorrow, where no day for this event exists.
-        $day = $this->subject->findDayByEventAndTimestamp(1, (int)$date->format('U'), $query);
 
         self::assertSame(
             1,
@@ -266,9 +220,6 @@ class DayFactoryTest extends FunctionalTestCase
      */
     public function findDayWillFindNextMatchingDay(): void
     {
-        $date = new \DateTimeImmutable('midnight');
-        $date->modify('07:30:00');
-
         $queryFactory = $this->objectManager->get(QueryFactory::class);
 
         /** @var Query $query */
@@ -276,7 +227,11 @@ class DayFactoryTest extends FunctionalTestCase
         $query->setQuerySettings($this->querySettings);
 
         // This Timestamp isn't in DB for event 2
-        $day = $this->subject->findDayByEventAndTimestamp(2, (int)$date->format('U'), $query);
+        $day = $this->subject->findDayByEventAndTimestamp(
+            2,
+            0,
+            $query
+        );
 
         self::assertSame(
             2,
@@ -291,11 +246,8 @@ class DayFactoryTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function findDayWillFindPreviousNextMatchingDay(): void
+    public function findDayWillFindPreviousMatchingDay(): void
     {
-        $date = new \DateTimeImmutable('midnight');
-        $date->modify('07:30:00');
-
         $queryFactory = $this->objectManager->get(QueryFactory::class);
 
         /** @var Query $query */
@@ -303,7 +255,11 @@ class DayFactoryTest extends FunctionalTestCase
         $query->setQuerySettings($this->querySettings);
 
         // This Timestamp isn't in DB for event 3
-        $day = $this->subject->findDayByEventAndTimestamp(3, (int)$date->format('U'), $query);
+        $day = $this->subject->findDayByEventAndTimestamp(
+            3,
+            0,
+            $query
+        );
 
         self::assertSame(
             3,
@@ -320,28 +276,28 @@ class DayFactoryTest extends FunctionalTestCase
      */
     public function findDayWillBuildDayItselfButKeepsTime(): void
     {
-        $date = new \DateTimeImmutable('midnight');
-        $date->modify('07:30:00');
-
         $queryFactory = $this->objectManager->get(QueryFactory::class);
 
         /** @var Query $query */
         $query = $queryFactory->create(Day::class);
         $query->setQuerySettings($this->querySettings);
 
-        $day = $this->subject->findDayByEventAndTimestamp(4, (int)$date->format('U'), $query);
+        $day = $this->subject->findDayByEventAndTimestamp(
+            4,
+            0,
+            $query
+        );
 
         self::assertSame(
             4,
             $day->getEvent()->getUid()
         );
-        self::assertNull($day->getUid());
-
-        $expectedDate = new \DateTimeImmutable('midnight');
-        $expectedDate->modify('-1 year')->modify('07:30:00');
+        self::assertNull(
+            $day->getUid()
+        );
 
         self::assertEquals(
-            $expectedDate,
+            new \DateTimeImmutable('last year 00:00:00'),
             $day->getDayTime()
         );
     }
