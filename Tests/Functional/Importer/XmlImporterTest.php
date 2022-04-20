@@ -20,6 +20,7 @@ use JWeiland\Events2\Helper\PathSegmentHelper;
 use JWeiland\Events2\Importer\XmlImporter;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
@@ -35,6 +36,8 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
  */
 class XmlImporterTest extends FunctionalTestCase
 {
+    use ProphecyTrait;
+
     protected XmlImporter $subject;
 
     protected EventRepository $eventRepository;
@@ -136,7 +139,7 @@ class XmlImporterTest extends FunctionalTestCase
         $this->subject->setStoragePid(12);
 
         self::assertTrue($this->subject->import());
-        self::assertRegExp(
+        self::assertMatchesRegularExpression(
             '/We have processed 3 events/',
             file_get_contents(GeneralUtility::getFileAbsFileName(
                 'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt'
@@ -155,7 +158,7 @@ class XmlImporterTest extends FunctionalTestCase
         $this->subject->setStoragePid(12);
 
         self::assertFalse($this->subject->import());
-        self::assertRegExp(
+        self::assertMatchesRegularExpression(
             '/Missing child element.*?Expected is.*?categories/',
             file_get_contents(GeneralUtility::getFileAbsFileName(
                 'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt'
@@ -176,7 +179,7 @@ class XmlImporterTest extends FunctionalTestCase
         $this->subject->setStoragePid(12);
 
         self::assertFalse($this->subject->import());
-        self::assertRegExp(
+        self::assertMatchesRegularExpression(
             '/Given category "I\'m not in database" does not exist/',
             file_get_contents(GeneralUtility::getFileAbsFileName(
                 'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt'
@@ -195,7 +198,7 @@ class XmlImporterTest extends FunctionalTestCase
         $this->subject->setStoragePid(12);
 
         self::assertFalse($this->subject->import());
-        self::assertRegExp(
+        self::assertMatchesRegularExpression(
             '/Given organizer "AG" does not exist/',
             file_get_contents(GeneralUtility::getFileAbsFileName(
                 'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt'
@@ -215,7 +218,7 @@ class XmlImporterTest extends FunctionalTestCase
         $this->subject->setStoragePid(12);
 
         self::assertFalse($this->subject->import());
-        self::assertRegExp(
+        self::assertMatchesRegularExpression(
             '/Given location "Not existing" does not exist/',
             file_get_contents(GeneralUtility::getFileAbsFileName(
                 'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt'

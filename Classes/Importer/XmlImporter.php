@@ -145,12 +145,11 @@ class XmlImporter extends AbstractImporter
                     // reset all properties and set them again
                     $this->addRootProperties($event, $eventRecord);
 
-                    $event->setEventBegin();
-                    $event->setEventEnd();
-                    $event->setRecurringEnd();
+                    $event->setEventEnd(null);
+                    $event->setRecurringEnd(null);
                     $this->addDateProperties($event, $eventRecord);
 
-                    $event->setEventTime();
+                    $event->setEventTime(null);
                     $event->setMultipleTimes(new ObjectStorage());
                     $event->setDifferentTimes(new ObjectStorage());
                     $this->addTimeProperties($event, $eventRecord);
@@ -158,11 +157,11 @@ class XmlImporter extends AbstractImporter
                     $event->setOrganizers(new ObjectStorage());
                     $this->addOrganizers($event, $eventRecord);
 
-                    $event->setLocation();
+                    $event->setLocation(null);
                     $this->addLocation($event, $eventRecord);
 
-                    $event->setTicketLink();
-                    $event->setvideoLink();
+                    $event->setTicketLink(null);
+                    $event->setvideoLink(null);
                     $event->setDownloadLinks(new ObjectStorage());
                     $this->addLinks($event, $eventRecord);
 

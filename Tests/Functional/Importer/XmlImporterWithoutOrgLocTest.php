@@ -15,6 +15,7 @@ use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Importer\XmlImporter;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -25,6 +26,8 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
  */
 class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
 {
+    use ProphecyTrait;
+
     protected EventRepository $eventRepository;
 
     protected ObjectManager $objectManager;
@@ -90,7 +93,7 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
         $xmlImporter->setStoragePid(12);
 
         self::assertTrue($xmlImporter->import());
-        self::assertRegExp(
+        self::assertMatchesRegularExpression(
             '/We have processed 3 events/',
             file_get_contents(GeneralUtility::getFileAbsFileName(
                 'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt'
