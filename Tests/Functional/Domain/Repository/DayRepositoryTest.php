@@ -9,7 +9,7 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace JWeiland\Events2\Tests\Functional\Repository;
+namespace JWeiland\Events2\Tests\Functional\Domain\Repository;
 
 use JWeiland\Events2\Domain\Model\Category;
 use JWeiland\Events2\Domain\Model\Day;
@@ -89,8 +89,10 @@ class DayRepositoryTest extends FunctionalTestCase
         $location2->setPid(11);
         $location2->setLocation('Hospital');
 
-        $eventBegin = new \DateTimeImmutable('midnight');
-        $eventBegin->modify('first day of this month')->modify('+4 days')->modify('-2 months');
+        $eventBegin = new \DateTimeImmutable('first day of this month midnight');
+        $eventBegin = $eventBegin
+            ->modify('+4 days')
+            ->modify('-2 months');
 
         $eventTime = new Time();
         $eventTime->setPid(11);
@@ -143,8 +145,10 @@ class DayRepositoryTest extends FunctionalTestCase
         $multipleTimes->attach($multipleTime1);
         $multipleTimes->attach($multipleTime2);
 
-        $recurringEnd = new \DateTimeImmutable('midnight');
-        $recurringEnd->modify('first day of this month')->modify('+4 days')->modify('+1 month');
+        $recurringEnd = new \DateTimeImmutable('first day of this month midnight');
+        $recurringEnd = $recurringEnd
+            ->modify('+4 days')
+            ->modify('+1 month');
 
         $categories = new ObjectStorage();
         $categories->attach($category1);
@@ -191,7 +195,8 @@ class DayRepositoryTest extends FunctionalTestCase
         $persistenceManager->add($event);
 
         $eventBegin = new \DateTimeImmutable('midnight');
-        $eventBegin->modify('+2 weeks');
+        $eventBegin = $eventBegin->modify('+2 weeks');
+
         $eventTime = new Time();
         $eventTime->setPid(11);
         $eventTime->setTimeBegin('09:00');
@@ -233,9 +238,9 @@ class DayRepositoryTest extends FunctionalTestCase
         $persistenceManager->add($event);
 
         $eventBegin = new \DateTimeImmutable('midnight');
-        $eventBegin->modify('-3 days');
+        $eventBegin = $eventBegin->modify('-3 days');
         $eventEnd = new \DateTimeImmutable('midnight');
-        $eventEnd->modify('+3 days');
+        $eventEnd = $eventEnd->modify('+3 days');
 
         $categories = new ObjectStorage();
         $categories->attach($mainCategory);
@@ -287,8 +292,10 @@ class DayRepositoryTest extends FunctionalTestCase
 
         $persistenceManager->add($event);
 
-        $recurringEnd = new \DateTimeImmutable('midnight');
-        $recurringEnd->modify('first day of this month')->modify('+4 days')->modify('+3 months');
+        $recurringEnd = new \DateTimeImmutable('first day of this month midnight');
+        $recurringEnd = $recurringEnd
+            ->modify('+4 days')
+            ->modify('+3 months');
 
         $categories = new ObjectStorage();
         $categories->attach($category1);
@@ -351,7 +358,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $persistenceManager->add($event);
 
         $eventBegin = new \DateTimeImmutable('midnight');
-        $eventBegin->modify('+2 days');
+        $eventBegin = $eventBegin->modify('+2 days');
 
         $event = new Event();
         $event->setPid(11);
@@ -369,13 +376,13 @@ class DayRepositoryTest extends FunctionalTestCase
         $persistenceManager->add($event);
 
         $eventBegin = new \DateTimeImmutable('midnight');
-        $eventBegin->modify('+3 days');
+        $eventBegin = $eventBegin->modify('+3 days');
         $eventEnd = new \DateTimeImmutable('midnight');
-        $eventEnd->modify('+5 days');
+        $eventEnd = $eventEnd->modify('+5 days');
         $exceptionDate1 = new \DateTimeImmutable('midnight');
-        $exceptionDate1->modify('+4 days');
+        $exceptionDate1 = $exceptionDate1->modify('+4 days');
         $exceptionDate2 = new \DateTimeImmutable('midnight');
-        $exceptionDate2->modify('+5 days');
+        $exceptionDate2 = $exceptionDate2->modify('+5 days');
         $eventTime = new Time();
         $eventTime->setTimeBegin('18:00');
         $eventTime->setTimeEnd('22:00');
@@ -455,7 +462,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $allDays = $this->dayRepository->getDaysForListType('list', new Filter());
 
         $this->dayRepository->setSettings([
-            'mergeEventsAtSameDay' => 1
+            'mergeEventsAtSameDay' => '1'
         ]);
         $allDaysMergedByTime = $this->dayRepository->getDaysForListType('list', new Filter());
 
@@ -476,13 +483,13 @@ class DayRepositoryTest extends FunctionalTestCase
 
         // These are the days in between
         $this->dayRepository->setSettings([
-            'mergeEventsAtSameDay' => 1
+            'mergeEventsAtSameDay' => '1'
         ]);
         $allDaysMergedByTime = $this->dayRepository->getDaysForListType('list', new Filter());
 
         // This is the minimum
         $this->dayRepository->setSettings([
-            'mergeRecurringEvents' => 1
+            'mergeRecurringEvents' => '1'
         ]);
         $allDaysMergedByEvent = $this->dayRepository->getDaysForListType('list', new Filter());
 
@@ -508,7 +515,7 @@ class DayRepositoryTest extends FunctionalTestCase
     public function findEventsByStoragePids(): void
     {
         $this->dayRepository->setSettings([
-            'mergeRecurringEvents' => 1
+            'mergeRecurringEvents' => '1'
         ]);
 
         $this->querySettings->setStoragePageIds([11]);
@@ -534,7 +541,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $this->setShowHiddenRecords();
 
         $this->dayRepository->setSettings([
-            'mergeRecurringEvents' => 1
+            'mergeRecurringEvents' => '1'
         ]);
 
         $this->querySettings->setStoragePageIds([11]);
@@ -551,7 +558,7 @@ class DayRepositoryTest extends FunctionalTestCase
     public function findEventsByCategories(): void
     {
         $this->dayRepository->setSettings([
-            'mergeRecurringEvents' => 1,
+            'mergeRecurringEvents' => '1',
             'categories' => '1'
         ]);
         $days = $this->dayRepository->getDaysForListType('list', new Filter());
@@ -562,7 +569,7 @@ class DayRepositoryTest extends FunctionalTestCase
         );
 
         $this->dayRepository->setSettings([
-            'mergeRecurringEvents' => 1,
+            'mergeRecurringEvents' => '1',
             'categories' => '2'
         ]);
         $days = $this->dayRepository->getDaysForListType('list', new Filter());
@@ -572,7 +579,7 @@ class DayRepositoryTest extends FunctionalTestCase
         );
 
         $this->dayRepository->setSettings([
-            'mergeRecurringEvents' => 1,
+            'mergeRecurringEvents' => '1',
             'categories' => '3'
         ]);
         $days = $this->dayRepository->getDaysForListType('list', new Filter());
@@ -582,7 +589,7 @@ class DayRepositoryTest extends FunctionalTestCase
         );
 
         $this->dayRepository->setSettings([
-            'mergeRecurringEvents' => 1,
+            'mergeRecurringEvents' => '1',
             'categories' => '1,2,3'
         ]);
         $days = $this->dayRepository->getDaysForListType('list', new Filter());
@@ -599,7 +606,7 @@ class DayRepositoryTest extends FunctionalTestCase
     {
         // Organizer 1 in Filter and Plugin
         $this->dayRepository->setSettings([
-            'mergeRecurringEvents' => 1,
+            'mergeRecurringEvents' => '1',
             'preFilterByOrganizer' => '1'
         ]);
         $days = $this->dayRepository->getDaysForListType('list', new Filter());
@@ -611,7 +618,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $filter = new Filter();
         $filter->setOrganizer(1);
         $this->dayRepository->setSettings([
-            'mergeRecurringEvents' => 1
+            'mergeRecurringEvents' => '1'
         ]);
         $days = $this->dayRepository->getDaysForListType('list', $filter);
         self::assertSame(
@@ -621,7 +628,7 @@ class DayRepositoryTest extends FunctionalTestCase
 
         // Organizer 2 in Filter and Plugin
         $this->dayRepository->setSettings([
-            'mergeRecurringEvents' => 1,
+            'mergeRecurringEvents' => '1',
             'preFilterByOrganizer' => '2'
         ]);
         $days = $this->dayRepository->getDaysForListType('list', new Filter());
@@ -633,7 +640,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $filter = new Filter();
         $filter->setOrganizer(2);
         $this->dayRepository->setSettings([
-            'mergeRecurringEvents' => 1
+            'mergeRecurringEvents' => '1'
         ]);
         $days = $this->dayRepository->getDaysForListType('list', $filter);
         self::assertSame(
@@ -650,7 +657,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $filter = new Filter();
         $filter->setOrganizer(1);
         $this->dayRepository->setSettings([
-            'mergeRecurringEvents' => 1,
+            'mergeRecurringEvents' => '1',
             'preFilterByOrganizer' => '1'
         ]);
         $days = $this->dayRepository->getDaysForListType('list', $filter);
@@ -666,7 +673,7 @@ class DayRepositoryTest extends FunctionalTestCase
     public function findEventsAndLimitResult(): void
     {
         $this->dayRepository->setSettings([
-            'mergeRecurringEvents' => 0
+            'mergeRecurringEvents' => '0'
         ]);
 
         $days = $this->dayRepository->getDaysForListType('list', new Filter(), 5);
@@ -682,7 +689,7 @@ class DayRepositoryTest extends FunctionalTestCase
     public function findEventsByTypeListWithTopOfListRecord(): void
     {
         $this->dayRepository->setSettings([
-            'mergeRecurringEvents' => 0
+            'mergeRecurringEvents' => '0'
         ]);
 
         $days = $this->dayRepository->getDaysForListType('list', new Filter());
@@ -704,10 +711,10 @@ class DayRepositoryTest extends FunctionalTestCase
         $todayStart = new \DateTimeImmutable('midnight');
 
         $this->dayRepository->setSettings([
-            'mergeRecurringEvents' => 0
+            'mergeRecurringEvents' => '0'
         ]);
 
-        $days = $this->dayRepository->getDaysForListType('latest', new Filter(), 7);
+        $days = $this->dayRepository->getDaysForListType('listLatest', new Filter(), 7);
         self::assertCount(
             7,
             $days->toArray()
@@ -730,11 +737,10 @@ class DayRepositoryTest extends FunctionalTestCase
         $todayEnd = new \DateTimeImmutable('tomorrow midnight');
 
         $this->dayRepository->setSettings([
-            'mergeRecurringEvents' => 0
+            'mergeRecurringEvents' => '0'
         ]);
 
-        /** @var Day[] $days */
-        $days = $this->dayRepository->getDaysForListType('today', new Filter());
+        $days = $this->dayRepository->getDaysForListType('listToday', new Filter());
         foreach ($days as $day) {
             self::assertGreaterThanOrEqual(
                 $todayStart,
@@ -754,14 +760,13 @@ class DayRepositoryTest extends FunctionalTestCase
     {
         $dateStart = new \DateTimeImmutable('midnight');
         $dateEnd = new \DateTimeImmutable('tomorrow midnight');
-        $dateEnd->modify('+4 weeks');
+        $dateEnd = $dateEnd->modify('+4 weeks');
 
         $this->dayRepository->setSettings([
-            'mergeRecurringEvents' => 0
+            'mergeRecurringEvents' => '0'
         ]);
 
-        /** @var Day[] $days */
-        $days = $this->dayRepository->getDaysForListType('range', new Filter());
+        $days = $this->dayRepository->getDaysForListType('listRange', new Filter());
         foreach ($days as $day) {
             self::assertGreaterThanOrEqual(
                 $dateStart,
@@ -779,16 +784,15 @@ class DayRepositoryTest extends FunctionalTestCase
      */
     public function findEventsByTypeWeek(): void
     {
-        $dateStart = new \DateTimeImmutable('midnight');
-        $dateStart->modify('this week');
-        $dateEnd = new \DateTimeImmutable('midnight');
-        $dateEnd->modify('this week +7 days'); // Everything LESS THAN Monday next Week 00:00:00
+        $dateStart = new \DateTimeImmutable('this week midnight');
+        $dateEnd = new \DateTimeImmutable('this week midnight');
+        $dateEnd = $dateEnd->modify('+7 days'); // Everything LESS THAN Monday next Week 00:00:00
 
         $this->dayRepository->setSettings([
-            'mergeRecurringEvents' => 0
+            'mergeRecurringEvents' => '0'
         ]);
 
-        $days = $this->dayRepository->getDaysForListType('thisWeek', new Filter());
+        $days = $this->dayRepository->getDaysForListType('listWeek', new Filter());
         foreach ($days as $day) {
             self::assertGreaterThanOrEqual(
                 $dateStart,
@@ -807,7 +811,7 @@ class DayRepositoryTest extends FunctionalTestCase
     public function searchEvents(): void
     {
         $this->dayRepository->setSettings([
-            'mergeRecurringEvents' => 1
+            'mergeRecurringEvents' => '1'
         ]);
 
         $this->querySettings->setStoragePageIds([11]);
@@ -831,7 +835,7 @@ class DayRepositoryTest extends FunctionalTestCase
     public function searchEventsBySearchWord(): void
     {
         $this->dayRepository->setSettings([
-            'mergeRecurringEvents' => 0
+            'mergeRecurringEvents' => '0'
         ]);
 
         $search = new Search();
@@ -850,7 +854,7 @@ class DayRepositoryTest extends FunctionalTestCase
     public function searchEventsBySearchWordTeaser(): void
     {
         $this->dayRepository->setSettings([
-            'mergeRecurringEvents' => 1
+            'mergeRecurringEvents' => '1'
         ]);
 
         $search = new Search();
@@ -869,7 +873,7 @@ class DayRepositoryTest extends FunctionalTestCase
     public function searchEventsByCategory(): void
     {
         $this->dayRepository->setSettings([
-            'mergeRecurringEvents' => 1
+            'mergeRecurringEvents' => '1'
         ]);
 
         $categoryRepository = $this->objectManager->get(CategoryRepository::class);
@@ -900,7 +904,7 @@ class DayRepositoryTest extends FunctionalTestCase
         );
 
         $this->dayRepository->setSettings([
-            'mergeRecurringEvents' => 1,
+            'mergeRecurringEvents' => '1',
             'categories' => '2,3'
         ]);
         $days = $this->dayRepository->searchEvents(new Search());
@@ -916,7 +920,7 @@ class DayRepositoryTest extends FunctionalTestCase
     public function searchEventsByEventBegin(): void
     {
         $this->dayRepository->setSettings([
-            'mergeRecurringEvents' => 1
+            'mergeRecurringEvents' => '1'
         ]);
 
         $tomorrow = new \DateTimeImmutable('tomorrow midnight');
@@ -940,12 +944,11 @@ class DayRepositoryTest extends FunctionalTestCase
     public function searchEventsByEventBeginAndEventEnd(): void
     {
         $this->dayRepository->setSettings([
-            'mergeRecurringEvents' => 1
+            'mergeRecurringEvents' => '1'
         ]);
 
         $tomorrow = new \DateTimeImmutable('tomorrow midnight');
-        $nextMonth = new \DateTimeImmutable('midnight');
-        $nextMonth->modify('next month');
+        $nextMonth = new \DateTimeImmutable('next month midnight');
 
         $search = new Search();
         $search->setEventBegin($tomorrow->format('d.m.Y'));
@@ -971,7 +974,7 @@ class DayRepositoryTest extends FunctionalTestCase
     public function searchEventsByLocation(): void
     {
         $this->dayRepository->setSettings([
-            'mergeRecurringEvents' => 1
+            'mergeRecurringEvents' => '1'
         ]);
 
         $locationRepository = $this->objectManager->get(LocationRepository::class);
@@ -995,7 +998,7 @@ class DayRepositoryTest extends FunctionalTestCase
     public function searchEventsByFreeEntry(): void
     {
         $this->dayRepository->setSettings([
-            'mergeRecurringEvents' => 1
+            'mergeRecurringEvents' => '1'
         ]);
 
         $search = new Search();
