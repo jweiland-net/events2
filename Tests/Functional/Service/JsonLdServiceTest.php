@@ -85,10 +85,11 @@ class JsonLdServiceTest extends FunctionalTestCase
         $location->setZip('70794');
         $location->setCity('Filderstadt');
 
-        $eventBegin = new \DateTimeImmutable('midnight');
-        $eventBegin->modify('first day of this month')->modify('+4 days')->modify('-2 months');
-        $eventEnd = clone $eventBegin;
-        $eventEnd->modify('+1 day');
+        $eventBegin = new \DateTimeImmutable('first day of this month midnight');
+        $eventBegin = $eventBegin
+            ->modify('+4 days')
+            ->modify('-2 months');
+        $eventEnd = $eventBegin->modify('+1 day');
 
         $event = new Event();
         $event->setPid(11);
