@@ -35,13 +35,19 @@ class UserSessionTest extends FunctionalTestCase
         parent::setUp();
 
         $feUser = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
-        $this->subject = new UserSession($feUser);
+        $feUser->initializeUserSessionManager();
+
+        $GLOBALS['TSFE'] = new \stdClass();
+        $GLOBALS['TSFE']->fe_user = $feUser;
+
+        $this->subject = new UserSession();
     }
 
     protected function tearDown(): void
     {
         unset(
-            $this->subject
+            $this->subject,
+            $GLOBALS['TSFE']
         );
 
         parent::tearDown();
