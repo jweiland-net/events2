@@ -6,6 +6,7 @@ services:
 
   JWeiland\Events2\:
     resource: '../Classes/*'
+    exclude: '../Classes/Domain/Model/*'
 
   # Called by makeInstance in eID middleware
   JWeiland\Events2\Ajax\FindDaysForMonth:
@@ -25,6 +26,12 @@ services:
 
   JWeiland\Events2\Domain\Factory\DayFactory:
     public: true
+
+  # Must be public, because of ->initializeObject().
+  # Needed for Tests. In Extbase env the Container class will take care about calling ->initializeObject()
+  JWeiland\Events2\Domain\Model\Event:
+    public: true
+    shared: false
 
   # Called by makeInstance in event model where constructors are not loaded in some cases
   # Called by makeInstance in static GetMergedEventTimesViewHelper
