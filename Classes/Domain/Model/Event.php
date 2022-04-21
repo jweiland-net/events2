@@ -201,9 +201,6 @@ class Event extends AbstractEntity
         return $this->eventBegin;
     }
 
-    /**
-     * @param \DateTimeImmutable $eventBegin
-     */
     public function setEventBegin(\DateTimeImmutable $eventBegin): void
     {
         $this->eventBegin = $eventBegin;
@@ -295,18 +292,9 @@ class Event extends AbstractEntity
         $this->multipleTimes->detach($multipleTime);
     }
 
-    /**
-     * @return array<int|string, int>
-     */
-    public function getXth(): array
+    public function getXth(): int
     {
-        $result = [];
-        $items = $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['xth']['config']['items'];
-        foreach ($items as $key => $item) {
-            $result[$item[1]] = $this->xth & (2 ** $key);
-        }
-
-        return $result;
+        return $this->xth;
     }
 
     public function setXth(int $xth): void
@@ -314,18 +302,9 @@ class Event extends AbstractEntity
         $this->xth = $xth;
     }
 
-    /**
-     * @return array<int|string, int>
-     */
-    public function getWeekday(): array
+    public function getWeekday(): int
     {
-        $result = [];
-        $items = $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['weekday']['config']['items'];
-        foreach ($items as $key => $item) {
-            $result[$item[1]] = $this->weekday & (2 ** $key);
-        }
-
-        return $result;
+        return $this->weekday;
     }
 
     public function setWeekday(int $weekday): void

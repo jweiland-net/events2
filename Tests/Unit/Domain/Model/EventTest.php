@@ -44,6 +44,7 @@ class EventTest extends UnitTestCase
         parent::setUp();
 
         $this->subject = new Event();
+        $this->subject->initializeObject();
     }
 
     protected function tearDown(): void
