@@ -25,7 +25,12 @@ class DateTimeUtility
     public function convert($value): ?\DateTimeImmutable
     {
         try {
-            if (is_bool($value) || empty($value) || $value === '0000-00-00' || $value === '0000-00-00 00:00:00') {
+            if (
+                (!is_string($value) && !is_int($value))
+                ||empty($value)
+                || $value === '0000-00-00'
+                || $value === '0000-00-00 00:00:00'
+            ) {
                 $dateTimeObject = null;
             } elseif (is_string($value) && !MathUtility::canBeInterpretedAsInteger($value)) {
                 // SF: This is my own converter for modifying the date by special formatting values like "today" OR "tomorrow"

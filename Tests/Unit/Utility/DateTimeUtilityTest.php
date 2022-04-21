@@ -76,23 +76,22 @@ class DateTimeUtilityTest extends UnitTestCase
      */
     public function convertInvalidDates($invalidValue): void
     {
-        self::assertNull($this->subject->convert($invalidValue));
+        self::assertNull(
+            $this->subject->convert($invalidValue)
+        );
     }
 
     public function stringDatesDataProvider(): array
     {
         $dateStrings = [];
 
-        $midnight = new \DateTimeImmutable();
-        $midnight->modify('midnight');
+        $midnight = new \DateTimeImmutable('midnight');
         $dateStrings['midnight'] = ['midnight', $midnight];
 
-        $tomorrow = new \DateTimeImmutable();
-        $tomorrow->modify('tomorrow')->modify('midnight');
+        $tomorrow = new \DateTimeImmutable('tomorrow midnight');
         $dateStrings['tomorrow'] = ['tomorrow', $tomorrow];
 
-        $lastDayOfMonth = new \DateTimeImmutable();
-        $lastDayOfMonth->modify('last day of this month')->modify('midnight');
+        $lastDayOfMonth = new \DateTimeImmutable('last day of this month midnight');
         $dateStrings['last day of this month'] = ['last day of this month', $lastDayOfMonth];
 
         return $dateStrings;
