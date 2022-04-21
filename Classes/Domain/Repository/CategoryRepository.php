@@ -12,24 +12,44 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Domain\Repository;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
+use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /*
  * Category Repository to find records for our search form
  */
-class CategoryRepository extends \TYPO3\CMS\Extbase\Domain\Repository\CategoryRepository
+class CategoryRepository extends Repository
 {
     protected $defaultOrderings = [
         'title' => QueryInterface::ORDER_ASCENDING
     ];
 
-    public function getCategories($categoryUids): QueryResultInterface
+    /*
+     * This is a copy of deprecated CategoryRepository of TYPO3 Extbase v11
+     */
+    public function initializeObject(): void
     {
-        $categoryUids = GeneralUtility::intExplode(',', $categoryUids);
+        $querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
+        $querySettings->setRespectStoragePage(false);
+        $this->setDefaultQuerySettings($querySettings);
+    }
+
+    public function getCategories(string $categoryUids): QueryResultInterface
+    {
+        $categoryUids = $categoryUids === '' ? '0' : $categoryUids;
+
         $query = $this->createQuery();
 
-        return $query->matching($query->in('uid', $categoryUids))->execute();
+        return $query
+            ->matching(
+                $query->in(
+                    'uid',
+                    GeneralUtility::intExplode(',', $categoryUids, true)
+                )
+            )
+            ->execute();
     }
 
     public function getSubCategories(int $category): QueryResultInterface
@@ -43,7 +63,7 @@ class CategoryRepository extends \TYPO3\CMS\Extbase\Domain\Repository\CategoryRe
     }
 
     /**
-     * Get all categories given by comma separated list.
+     * Instead of getCategories this method will only select categories of a given parent category
      *
      * @throws \Exception
      */
@@ -52,19 +72,22 @@ class CategoryRepository extends \TYPO3\CMS\Extbase\Domain\Repository\CategoryRe
         // remove empty values
         // convert them to int
         // remove values with 0 (array_filter)
-        // correct keys for unit tests (array_values)
-        $selectedCategories = array_values(array_filter(GeneralUtility::intExplode(',', $categoryUids, true)));
+        $selectedCategories = array_filter(
+            GeneralUtility::intExplode(',', $categoryUids, true)
+        );
+
         $query = $this->createQuery();
         // we have to disable language restrictions as TYPO3 BE saves category relations in default language only
         $query->getQuerySettings()->setRespectSysLanguage(false);
 
         $constraint = [];
-
-        if (!empty($selectedCategories)) {
+        if ($selectedCategories !== []) {
             $constraint[] = $query->in('uid', $selectedCategories);
+            $constraint[] = $query->equals('parent', $parent);
+        } else {
+            // Create constraint which will return a QueryResult with no categories
+            $constraint[] = $query->equals('uid', 0);
         }
-
-        $constraint[] = $query->equals('parent', $parent);
 
         return $query->matching($query->logicalAnd($constraint))->execute();
     }
