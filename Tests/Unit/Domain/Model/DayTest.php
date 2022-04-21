@@ -167,14 +167,6 @@ class DayTest extends UnitTestCase
     /**
      * @test
      */
-    public function getEventInitiallyReturnsNull(): void
-    {
-        self::assertNull($this->subject->getEvent());
-    }
-
-    /**
-     * @test
-     */
     public function setEventSetsEvent(): void
     {
         $instance = new Event();

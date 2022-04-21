@@ -23,6 +23,7 @@ use JWeiland\Events2\Domain\Repository\UserRepository;
 use JWeiland\Events2\Tests\Unit\Domain\Traits\TestTypo3PropertiesTrait;
 use Nimut\TestingFramework\MockObject\AccessibleMockObjectInterface;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
@@ -32,6 +33,8 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  */
 class EventTest extends UnitTestCase
 {
+    use ProphecyTrait;
+
     use TestTypo3PropertiesTrait;
 
     protected Event $subject;
@@ -123,16 +126,6 @@ class EventTest extends UnitTestCase
     /**
      * @test
      */
-    public function getEventBeginInitiallyReturnsNull(): void
-    {
-        self::assertNull(
-            $this->subject->getEventBegin()
-        );
-    }
-
-    /**
-     * @test
-     */
     public function setEventBeginSetsEventBegin(): void
     {
         $date = new \DateTimeImmutable();
@@ -218,8 +211,7 @@ class EventTest extends UnitTestCase
     public function getDaysOfEventsTakingDaysWithDifferentDatesResultsInFourDays(): void
     {
         $eventBegin = new \DateTimeImmutable();
-        $eventEnd = new \DateTimeImmutable(); // f.e. monday
-        $eventEnd->modify('+4 days'); // mo + 4 = 5 days: mo->tu->we->th->fr
+        $eventEnd = new \DateTimeImmutable('+4 days'); // f.e. monday: mo + 4 = 5 days: mo->tu->we->th->fr
         $this->subject->setEventBegin($eventBegin);
         $this->subject->setEventEnd($eventEnd);
 
@@ -301,26 +293,10 @@ class EventTest extends UnitTestCase
     /**
      * @test
      */
-    public function getXthInitiallyResultsInArrayWhereAllValuesAreZero(): void
+    public function getXthInitiallyReturnsZero(): void
     {
-        $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['xth']['config']['items'] = [
-            ['first', 'first'],
-            ['second', 'second'],
-            ['third', 'third'],
-            ['fourth', 'fourth'],
-            ['fifth', 'fifth'],
-        ];
-
-        $expectedArray = [
-            'first' => 0,
-            'second' => 0,
-            'third' => 0,
-            'fourth' => 0,
-            'fifth' => 0,
-        ];
-
-        self::assertSame(
-            $expectedArray,
+        $this->assertSame(
+            0,
             $this->subject->getXth()
         );
     }
@@ -328,27 +304,12 @@ class EventTest extends UnitTestCase
     /**
      * @test
      */
-    public function setXthWithZwentyThreeResultsInArrayWithDifferentValues(): void
+    public function setXthSetsXth(): void
     {
-        $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['xth']['config']['items'] = [
-            ['first', 'first'],
-            ['second', 'second'],
-            ['third', 'third'],
-            ['fourth', 'fourth'],
-            ['fifth', 'fifth'],
-        ];
+        $this->subject->setXth(123456);
 
-        $expectedArray = [
-            'first' => 1,
-            'second' => 2,
-            'third' => 4,
-            'fourth' => 0,
-            'fifth' => 16,
-        ];
-        $this->subject->setXth(23);
-
-        self::assertSame(
-            $expectedArray,
+        $this->assertSame(
+            123456,
             $this->subject->getXth()
         );
     }
@@ -356,30 +317,10 @@ class EventTest extends UnitTestCase
     /**
      * @test
      */
-    public function getWeekdayInitiallyResultsInArrayWhereAllValuesAreZero(): void
+    public function getWeekdayInitiallyReturnsZero(): void
     {
-        $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['weekday']['config']['items'] = [
-            ['monday', 'monday'],
-            ['tuesday', 'tuesday'],
-            ['wednesday', 'wednesday'],
-            ['thursday', 'thursday'],
-            ['friday', 'friday'],
-            ['saturday', 'saturday'],
-            ['sunday', 'sunday'],
-        ];
-
-        $expectedArray = [
-            'monday' => 0,
-            'tuesday' => 0,
-            'wednesday' => 0,
-            'thursday' => 0,
-            'friday' => 0,
-            'saturday' => 0,
-            'sunday' => 0,
-        ];
-
-        self::assertSame(
-            $expectedArray,
+        $this->assertSame(
+            0,
             $this->subject->getWeekday()
         );
     }
@@ -387,31 +328,12 @@ class EventTest extends UnitTestCase
     /**
      * @test
      */
-    public function setWeekdayWithEightySevenResultsInArrayWithDifferentValues(): void
+    public function setWeekdaySetsWeekday(): void
     {
-        $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['weekday']['config']['items'] = [
-            ['monday', 'monday'],
-            ['tuesday', 'tuesday'],
-            ['wednesday', 'wednesday'],
-            ['thursday', 'thursday'],
-            ['friday', 'friday'],
-            ['saturday', 'saturday'],
-            ['sunday', 'sunday'],
-        ];
+        $this->subject->setWeekday(123456);
 
-        $expectedArray = [
-            'monday' => 1,
-            'tuesday' => 2,
-            'wednesday' => 4,
-            'thursday' => 0,
-            'friday' => 16,
-            'saturday' => 0,
-            'sunday' => 64,
-        ];
-        $this->subject->setWeekday(87);
-
-        self::assertSame(
-            $expectedArray,
+        $this->assertSame(
+            123456,
             $this->subject->getWeekday()
         );
     }
@@ -746,8 +668,7 @@ class EventTest extends UnitTestCase
     public function getExceptionsForDateWithExceptionsOfDifferentDatesReturnsAddException(): void
     {
         $firstDate = new \DateTimeImmutable('midnight');
-        $secondDate = new \DateTimeImmutable('midnight');
-        $secondDate->modify('tomorrow');
+        $secondDate = new \DateTimeImmutable('tomorrow midnight');
 
         $firstAddException = new Exception();
         $firstAddException->setExceptionType('Add');
@@ -781,8 +702,7 @@ class EventTest extends UnitTestCase
     public function getExceptionsForDateWithExceptionsOfDifferentDatesReturnsDifferentExceptions(): void
     {
         $firstDate = new \DateTimeImmutable('midnight');
-        $secondDate = new \DateTimeImmutable('midnight');
-        $secondDate->modify('tomorrow');
+        $secondDate = new \DateTimeImmutable('tomorrow midnight');
 
         $firstAddException = new Exception();
         $firstAddException->setExceptionType('Add');

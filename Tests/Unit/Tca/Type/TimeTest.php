@@ -170,7 +170,7 @@ class TimeTest extends UnitTestCase
      *
      * @dataProvider dateProviderForVariousIntegerValues
      */
-    public function evaluateWithInteger(string $intValue, string $expectedTime): void
+    public function evaluateWithInteger(int $intValue, string $expectedTime): void
     {
         self::assertSame(
             $expectedTime,
