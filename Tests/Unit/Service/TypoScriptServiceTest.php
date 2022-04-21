@@ -9,7 +9,7 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace JWeiland\Events2\Tests\Unit\Utility;
+namespace JWeiland\Events2\Tests\Unit\Service;
 
 use JWeiland\Events2\Service\TypoScriptService;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
