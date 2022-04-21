@@ -58,7 +58,7 @@ class FilterTest extends UnitTestCase
      */
     public function setOrganizerWithNullSetsOrganizer(): void
     {
-        $this->subject->setOrganizer();
+        $this->subject->setOrganizer(null);
 
         self::assertNull(
             $this->subject->getOrganizer()

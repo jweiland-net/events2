@@ -22,7 +22,7 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
  */
 class Filter extends AbstractEntity
 {
-    protected ?int $organizer = 0;
+    protected ?int $organizer = null;
 
     protected int $timestamp = 0;
 
