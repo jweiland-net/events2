@@ -111,16 +111,18 @@ let Events2 = function ($element) {
    */
   me.initializeOrganizerFilters = function () {
     let $organizerForm = document.querySelector('form#eventFilter');
-    let $organizerSelectBox = $organizerForm.querySelector('select#organizer');
-    if ($organizerSelectBox !== null) {
-      $organizerSelectBox.addEventListener('change', event => {
-        event.preventDefault();
-        if (event.target.value === '') {
-          window.location.href = $organizerForm.getAttribute('action');
-        } else {
-          window.location.href = event.target.value;
-        }
-      });
+    if ($organizerForm !== null) {
+      let $organizerSelectBox = $organizerForm.querySelector('select#organizer');
+      if ($organizerSelectBox !== null) {
+        $organizerSelectBox.addEventListener('change', event => {
+          event.preventDefault();
+          if (event.target.value === '') {
+            window.location.href = $organizerForm.getAttribute('action');
+          } else {
+            window.location.href = event.target.value;
+          }
+        });
+      }
     }
   };
 
