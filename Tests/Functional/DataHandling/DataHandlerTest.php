@@ -77,7 +77,7 @@ class DataHandlerTest extends FunctionalTestCase
         $eventBegin = new \DateTimeImmutable('midnight');
         $eventBegin->modify('first day of this month')->modify('+4 days')->modify('-2 months');
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setPid(11);
         $event->setEventType('recurring');
         $event->setTopOfList(false);

@@ -83,7 +83,7 @@ class HiddenObjectHelperTest extends FunctionalTestCase
     {
         /** @var LocationRepository|ObjectProphecy $locationRepositoryProphecy */
         $locationRepositoryProphecy = $this->prophesize(LocationRepository::class);
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $this->requestProphecy
             ->getArgument('event')
             ->shouldNotBeCalled();
@@ -104,7 +104,7 @@ class HiddenObjectHelperTest extends FunctionalTestCase
      */
     public function registerWithRepositoryWillAddObjectByArrayToSession(): void
     {
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->_setProperty('uid', 12);
         $event->setTitle('Test Event');
 
@@ -140,7 +140,7 @@ class HiddenObjectHelperTest extends FunctionalTestCase
      */
     public function registerWithRepositoryWillAddObjectByUidToSession(): void
     {
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->_setProperty('uid', 543);
         $event->setTitle('Test Event');
 

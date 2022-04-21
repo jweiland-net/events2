@@ -88,7 +88,7 @@ class DayFactoryTest extends FunctionalTestCase
         $eventTime->setPid(11);
         $eventTime->setTimeBegin('07:30');
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setPid(11);
         $event->setEventType('single');
         $event->setTopOfList(false);
@@ -108,7 +108,7 @@ class DayFactoryTest extends FunctionalTestCase
 
         $eventBegin = new \DateTimeImmutable('tomorrow midnight');
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setPid(11);
         $event->setEventType('single');
         $event->setTopOfList(false);
@@ -128,7 +128,7 @@ class DayFactoryTest extends FunctionalTestCase
 
         $eventBegin = new \DateTimeImmutable('yesterday midnight');
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setPid(11);
         $event->setEventType('single');
         $event->setTopOfList(false);
@@ -152,7 +152,7 @@ class DayFactoryTest extends FunctionalTestCase
         $eventBegin = new \DateTimeImmutable('last year midnight');
         $recurringEnd = $eventBegin->modify('+2 weeks');
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setPid(11);
         $event->setEventType('recurring');
         $event->setTopOfList(false);

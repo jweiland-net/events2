@@ -83,7 +83,7 @@ class EventControllerTest extends FunctionalTestCase
         $eventRepository = $objectManager->get(EventRepository::class);
         $eventRepository->setDefaultQuerySettings($querySettings);
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setPid(1);
         $event->setEventType('single');
         $event->setEventBegin(new \DateTimeImmutable('midnight'));
@@ -98,7 +98,7 @@ class EventControllerTest extends FunctionalTestCase
 
         $persistenceManager->add($organizer);
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setPid(1);
         $event->setEventType('single');
         $event->setEventBegin(new \DateTimeImmutable('tomorrow midnight'));

@@ -95,7 +95,7 @@ class EventServiceTest extends FunctionalTestCase
         $days = new ObjectStorage();
         $days->attach($day);
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setDays($days);
 
         $this->eventRepositoryProphecy
@@ -124,7 +124,7 @@ class EventServiceTest extends FunctionalTestCase
         $days = new ObjectStorage();
         $days->attach($day);
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setDays($days);
 
         $this->eventRepositoryProphecy
@@ -170,7 +170,7 @@ class EventServiceTest extends FunctionalTestCase
         $days->attach($day2);
         $days->attach($day3);
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setEventType('recurring');
         $event->setDays($days);
 
@@ -201,7 +201,7 @@ class EventServiceTest extends FunctionalTestCase
         $days = new ObjectStorage();
         $days->attach($day);
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setDays($days);
 
         $this->eventRepositoryProphecy
@@ -247,7 +247,7 @@ class EventServiceTest extends FunctionalTestCase
         $days->attach($day2);
         $days->attach($day3);
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setEventType('recurring');
         $event->setDays($days);
 

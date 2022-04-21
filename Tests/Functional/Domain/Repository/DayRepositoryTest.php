@@ -115,7 +115,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $categories = new ObjectStorage();
         $categories->attach($category1);
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setPid(11);
         $event->setEventType('recurring');
         $event->setTopOfList(false);
@@ -153,7 +153,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $categories = new ObjectStorage();
         $categories->attach($category1);
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setPid(11);
         $event->setEventType('recurring');
         $event->setTopOfList(false);
@@ -180,7 +180,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $categories = new ObjectStorage();
         $categories->attach($category1);
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setPid(11);
         $event->setEventType('single');
         $event->setTopOfList(false);
@@ -205,7 +205,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $categories->attach($category1);
         $categories->attach($category2);
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setPid(11);
         $event->setEventType('single');
         $event->setTopOfList(false);
@@ -223,7 +223,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $categories = new ObjectStorage();
         $categories->attach($category1);
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setPid(11);
         $event->setEventType('single');
         $event->setTopOfList(false);
@@ -245,7 +245,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $categories = new ObjectStorage();
         $categories->attach($mainCategory);
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setPid(11);
         $event->setEventType('duration');
         $event->setTopOfList(true);
@@ -273,7 +273,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $categories->attach($category1);
         $categories->attach($category2);
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setPid(11);
         $event->setEventType('recurring');
         $event->setTopOfList(true);
@@ -300,7 +300,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $categories = new ObjectStorage();
         $categories->attach($category1);
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setPid(40);
         $event->setEventType('recurring');
         $event->setTopOfList(false);
@@ -318,7 +318,7 @@ class DayRepositoryTest extends FunctionalTestCase
 
         $persistenceManager->add($event);
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setPid(40);
         $event->setEventType('recurring');
         $event->setTopOfList(false);
@@ -338,7 +338,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $categories = new ObjectStorage();
         $categories->attach($category2);
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setPid(11);
         $event->setEventType('recurring');
         $event->setTopOfList(false);
@@ -360,7 +360,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $eventBegin = new \DateTimeImmutable('midnight');
         $eventBegin = $eventBegin->modify('+2 days');
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setPid(11);
         $event->setHidden(true);
         $event->setEventType('single');
@@ -404,7 +404,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $exceptions->attach($exception1);
         $exceptions->attach($exception2);
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setPid(11);
         $event->setEventType('duration');
         $event->setEventTime($eventTime);

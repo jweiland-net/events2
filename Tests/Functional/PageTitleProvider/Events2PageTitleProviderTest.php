@@ -51,7 +51,7 @@ class Events2PageTitleProviderTest extends FunctionalTestCase
         $dayRelationService = $objectManager->get(DayRelationService::class);
         $this->subject = new Events2PageTitleProvider($objectManager);
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setPid($pageId);
         $event->setEventType('single');
         $event->setTopOfList(false);

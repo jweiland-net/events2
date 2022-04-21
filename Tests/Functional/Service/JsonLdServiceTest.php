@@ -29,6 +29,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
+use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 /**
  * Functional test for JsonLdService
@@ -38,8 +39,6 @@ class JsonLdServiceTest extends FunctionalTestCase
     protected DayRepository $dayRepository;
 
     protected QuerySettingsInterface $querySettings;
-
-    protected ObjectManager $objectManager;
 
     /**
      * @var array
@@ -52,21 +51,26 @@ class JsonLdServiceTest extends FunctionalTestCase
     {
         $_SERVER['HTTP_HOST'] = 'example.com';
         $_SERVER['REQUEST_URI'] = 'index.php';
+
         parent::setUp();
+
         $this->importDataSet('ntf://Database/pages.xml');
         $this->setUpFrontendRootPage(1);
 
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->dayRepository = $this->objectManager->get(DayRepository::class);
-        $this->querySettings = $this->objectManager->get(QuerySettingsInterface::class);
+        $this->querySettings = GeneralUtility::makeInstance(QuerySettingsInterface::class);
         $this->querySettings->setStoragePageIds([11, 40]);
+
+        $this->dayRepository = GeneralUtility::makeInstance(DayRepository::class);
         $this->dayRepository->setDefaultQuerySettings($this->querySettings);
 
-        $persistenceManager = $this->objectManager->get(PersistenceManager::class);
-        $dayRelationService = $this->objectManager->get(DayRelationService::class);
+        $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
+        $dayRelationService = GeneralUtility::makeInstance(DayRelationService::class);
 
-        $eventRepository = $this->objectManager->get(EventRepository::class);
+        $eventRepository = GeneralUtility::makeInstance(EventRepository::class);
         $eventRepository->setDefaultQuerySettings($this->querySettings);
+        $eventRepository->setDefaultOrderings([
+            'uid' => QueryInterface::ORDER_ASCENDING
+        ]);
 
         $link = new Link();
         $link->setTitle('TYPO3');
@@ -91,7 +95,7 @@ class JsonLdServiceTest extends FunctionalTestCase
             ->modify('-2 months');
         $eventEnd = $eventBegin->modify('+1 day');
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setPid(11);
         $event->setEventType('duration');
         $event->setTopOfList(false);
@@ -110,7 +114,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         $time->setDuration('02:00');
         $time->setTimeEnd('10:00');
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setPid(11);
         $event->setEventType('single');
         $event->setTopOfList(false);
@@ -129,6 +133,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         $extConf = GeneralUtility::makeInstance(ExtConf::class);
         $extConf->setRecurringPast(3);
         $extConf->setRecurringFuture(6);
+
         $events = $eventRepository->findAll();
         foreach ($events as $event) {
             $dayRelationService->createDayRelations($event->getUid());

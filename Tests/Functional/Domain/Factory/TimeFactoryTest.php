@@ -17,6 +17,7 @@ use JWeiland\Events2\Domain\Model\Exception;
 use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
@@ -68,7 +69,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $exceptions->attach($firstAddException);
         $exceptions->attach($secondAddException);
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setExceptions($exceptions);
 
         $expectedTimes = new \SplObjectStorage();
@@ -104,7 +105,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $exceptions->attach($firstAddException);
         $exceptions->attach($secondAddException);
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setEventType('duration');
         $event->setExceptions($exceptions);
 
@@ -141,7 +142,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $exceptions->attach($firstAddException);
         $exceptions->attach($secondAddException);
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setEventType('recurring');
         $event->setExceptions($exceptions);
 
@@ -168,7 +169,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $times = new ObjectStorage();
         $times->attach($time);
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setEventType('single');
         $event->setDifferentTimes($times);
 
@@ -195,7 +196,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $times = new ObjectStorage();
         $times->attach($time);
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setEventType('recurring');
         $event->setDifferentTimes($times);
 
@@ -221,7 +222,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $times = new ObjectStorage();
         $times->attach($time);
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setEventType('recurring');
         $event->setDifferentTimes($times);
 
@@ -247,7 +248,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $times = new ObjectStorage();
         $times->attach($time);
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setEventType('single');
         $event->setDifferentTimes($times);
         $event->setEventTime($time);
@@ -271,7 +272,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $time = new Time();
         $time->setTimeBegin('10:30');
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setEventType('single');
         $event->setEventTime($time);
 
@@ -307,7 +308,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $exceptions->attach($firstAddException);
         $exceptions->attach($secondAddException);
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setExceptions($exceptions);
         $event->setEventTime($time);
 
@@ -327,7 +328,7 @@ class TimeFactoryTest extends FunctionalTestCase
     {
         $date = new \DateTimeImmutable('midnight');
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
 
         $expectedTimes = new \SplObjectStorage();
 
@@ -347,7 +348,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $time = new Time();
         $time->setTimeBegin('10:30');
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setEventTime($time);
 
         $expectedTimes = new \SplObjectStorage();
@@ -389,7 +390,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $times->attach($time3);
         $times->attach($time4);
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setEventType('recurring');
         $event->setDifferentTimes($times);
 
@@ -450,7 +451,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $exceptions->attach($exception3);
         $exceptions->attach($exception4);
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setEventType('duration');
         $event->setExceptions($exceptions);
 
