@@ -12,12 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Functional\Service;
 
 use JWeiland\Events2\Configuration\ExtConf;
-use JWeiland\Events2\Domain\Model\Day;
-use JWeiland\Events2\Domain\Model\Event;
-use JWeiland\Events2\Domain\Model\Exception;
-use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Domain\Repository\DayRepository;
-use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Domain\Repository\TimeRepository;
 use JWeiland\Events2\Service\DayGeneratorService;
 use JWeiland\Events2\Service\DayRelationService;
@@ -29,7 +24,6 @@ use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Test case for class \JWeiland\Events2\Service\DayRelationService
@@ -46,11 +40,6 @@ class DayRelationServiceTest extends FunctionalTestCase
      * @var DayGeneratorService|ObjectProphecy
      */
     protected $dayGeneratorServiceProphecy;
-
-    /**
-     * @var EventRepository|ObjectProphecy
-     */
-    protected $eventRepositoryProphecy;
 
     /**
      * @var DayRepository|ObjectProphecy
@@ -73,7 +62,8 @@ class DayRelationServiceTest extends FunctionalTestCase
         'hidden' => 0,
         'deleted' => 0,
         'sys_language_uid' => 0,
-        'event_type' => 'single'
+        'event_type' => 'single',
+        'exceptions' => 0
     ];
 
     protected array $exceptionRecord = [
@@ -84,7 +74,8 @@ class DayRelationServiceTest extends FunctionalTestCase
         'sys_language_uid' => 0,
         'exception_type' => 'Time',
         'exception_date' => 0,
-        'exception_time' => []
+        'exception_time' => 0,
+        'event' => 0
     ];
 
     protected array $timeRecord = [
@@ -114,18 +105,12 @@ class DayRelationServiceTest extends FunctionalTestCase
         $this->timeRepositoryProphecy = $this->prophesize(TimeRepository::class);
         $this->loggerProphecy = $this->prophesize(Logger::class);
 
-        $this->eventRepositoryProphecy = $this->prophesize(EventRepository::class);
-        $this->eventRepositoryProphecy
-            ->getRecord(123, ['*'], true)
-            ->willReturn($this->eventRecord);
-
         $this->dayRepositoryProphecy = $this->prophesize(DayRepository::class);
         $this->dayRepositoryProphecy->removeAllByEventRecord(Argument::any());
         $this->dayRepositoryProphecy->createAll(Argument::any());
 
         $this->subject = new DayRelationService(
             $this->dayGeneratorServiceProphecy->reveal(),
-            $this->eventRepositoryProphecy->reveal(),
             $this->dayRepositoryProphecy->reveal(),
             $this->timeRepositoryProphecy->reveal(),
             new DateTimeUtility()
@@ -138,7 +123,6 @@ class DayRelationServiceTest extends FunctionalTestCase
     {
         unset(
             $this->extConf,
-            $this->eventRepositoryProphecy,
             $this->dayRepositoryProphecy,
             $this->timeRepositoryProphecy,
             $this->subject
@@ -153,10 +137,6 @@ class DayRelationServiceTest extends FunctionalTestCase
     public function createDayRelationsWithEmptyRecordWillAddLogBecauseOfEmptyEventRecord(): void
     {
         $this->eventRecord = [];
-
-        $this->eventRepositoryProphecy
-            ->getRecord(123, ['*'], true)
-            ->willReturn($this->eventRecord);
 
         $this->timeRepositoryProphecy
             ->getAllByEventRecord($this->eventRecord, true)
@@ -176,9 +156,10 @@ class DayRelationServiceTest extends FunctionalTestCase
     {
         unset($this->eventRecord['event_type']);
 
-        $this->eventRepositoryProphecy
-            ->getRecord(123, ['*'], true)
-            ->willReturn($this->eventRecord);
+        $this->getDatabaseConnection()->insertArray(
+            'tx_events2_domain_model_event',
+            $this->eventRecord
+        );
 
         $this->timeRepositoryProphecy
             ->getAllByEventRecord($this->eventRecord, true)
@@ -198,9 +179,10 @@ class DayRelationServiceTest extends FunctionalTestCase
     {
         $this->eventRecord['sys_language_uid'] = 2;
 
-        $this->eventRepositoryProphecy
-            ->getRecord(123, ['*'], true)
-            ->willReturn($this->eventRecord);
+        $this->getDatabaseConnection()->insertArray(
+            'tx_events2_domain_model_event',
+            $this->eventRecord
+        );
 
         $this->timeRepositoryProphecy
             ->getAllByEventRecord($this->eventRecord, true)
@@ -218,13 +200,18 @@ class DayRelationServiceTest extends FunctionalTestCase
      */
     public function createDayRelationsWithEmptyDateTimeStorageWillRemoveAddRelatedDayRecords(): void
     {
+        $this->getDatabaseConnection()->insertArray(
+            'tx_events2_domain_model_event',
+            $this->eventRecord
+        );
+
         $this->dayGeneratorServiceProphecy
-            ->getDateTimeStorageForEvent($this->eventRecord)
+            ->getDateTimeStorageForEvent(Argument::withEntry('uid', 123))
             ->shouldBeCalled()
             ->willReturn([]);
 
         $this->timeRepositoryProphecy
-            ->getAllByEventRecord($this->eventRecord, true)
+            ->getAllByEventRecord(Argument::withEntry('uid', 123), true)
             ->shouldNotBeCalled();
 
         self::assertSame(
@@ -238,16 +225,21 @@ class DayRelationServiceTest extends FunctionalTestCase
      */
     public function createDayRelationsWithSingleEventWithoutTimeWillAddDayWithoutTime(): void
     {
+        $this->getDatabaseConnection()->insertArray(
+            'tx_events2_domain_model_event',
+            $this->eventRecord
+        );
+
         $date = new \DateTimeImmutable('today midnight');
         $this->dayGeneratorServiceProphecy
-            ->getDateTimeStorageForEvent($this->eventRecord)
+            ->getDateTimeStorageForEvent(Argument::withEntry('uid', 123))
             ->shouldBeCalled()
             ->willReturn([
                 (int)$date->format('U') => $date
             ]);
 
         $this->timeRepositoryProphecy
-            ->getAllByEventRecord($this->eventRecord, true)
+            ->getAllByEventRecord(Argument::withEntry('uid', 123), true)
             ->shouldBeCalled()
             ->willReturn([]);
 
@@ -260,19 +252,23 @@ class DayRelationServiceTest extends FunctionalTestCase
         $firstDay = current($days);
         self::assertSame(
             (int)$date->format('U'),
-            $firstDay['day']
+            $firstDay['day'],
+            'Column: day - Expected: ' . $date->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $firstDay['day'])
         );
         self::assertSame(
             (int)$date->format('U'),
-            $firstDay['day_time']
+            $firstDay['day_time'],
+            'Column: day_time - Expected: ' . $date->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $firstDay['day_time'])
         );
         self::assertSame(
             (int)$date->format('U'),
-            $firstDay['sort_day_time']
+            $firstDay['sort_day_time'],
+            'Column: sort_day_time - Expected: ' . $date->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $firstDay['sort_day_time'])
         );
         self::assertSame(
             (int)$date->format('U'),
-            $firstDay['same_day_time']
+            $firstDay['same_day_time'],
+            'Column: same_day_time - Expected: ' . $date->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $firstDay['same_day_time'])
         );
     }
 
@@ -298,10 +294,18 @@ class DayRelationServiceTest extends FunctionalTestCase
     ): void {
         $date = new \DateTimeImmutable('today midnight');
 
+        $this->eventRecord['exceptions'] = 1;
+        $this->getDatabaseConnection()->insertArray(
+            'tx_events2_domain_model_event',
+            $this->eventRecord
+        );
+
         $this->exceptionRecord['exception_date'] = (int)$date->format('U');
-        $this->eventRecord['exceptions'] = [
-            123 => $this->exceptionRecord
-        ];
+        $this->exceptionRecord['event'] = $this->getDatabaseConnection()->lastInsertId();
+        $this->getDatabaseConnection()->insertArray(
+            'tx_events2_domain_model_exception',
+            $this->exceptionRecord
+        );
 
         $timeRecord = $this->timeRecord;
         $timeRecord['type'] = $timeType;
@@ -310,19 +314,15 @@ class DayRelationServiceTest extends FunctionalTestCase
         $timeRecord['event'] = $this->eventRecord;
         $timeRecord['exception'] = $this->exceptionRecord;
 
-        $this->eventRepositoryProphecy
-            ->getRecord(123, ['*'], true)
-            ->willReturn($this->eventRecord);
-
         $this->dayGeneratorServiceProphecy
-            ->getDateTimeStorageForEvent($this->eventRecord)
+            ->getDateTimeStorageForEvent(Argument::withEntry('uid', 123))
             ->shouldBeCalled()
             ->willReturn([
                 (int)$date->format('U') => $date
             ]);
 
         $this->timeRepositoryProphecy
-            ->getAllByEventRecord($this->eventRecord, true)
+            ->getAllByEventRecord(Argument::withEntry('uid', 123), true)
             ->shouldBeCalled()
             ->willReturn([$timeRecord]);
 
@@ -336,19 +336,23 @@ class DayRelationServiceTest extends FunctionalTestCase
         $dateWithTime = $date->modify($dateTimeModification);
         self::assertSame(
             (int)$date->format('U'),
-            $firstDay['day']
+            $firstDay['day'],
+            'Column: day - Expected: ' . $date->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $firstDay['day'])
         );
         self::assertSame(
             (int)$dateWithTime->format('U'),
-            $firstDay['day_time']
+            $firstDay['day_time'],
+            'Column: day_time - Expected: ' . $dateWithTime->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $firstDay['day_time'])
         );
         self::assertSame(
             (int)$dateWithTime->format('U'),
-            $firstDay['sort_day_time']
+            $firstDay['sort_day_time'],
+            'Column: sort_day_time - Expected: ' . $dateWithTime->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $firstDay['sort_day_time'])
         );
         self::assertSame(
             (int)$dateWithTime->format('U'),
-            $firstDay['same_day_time']
+            $firstDay['same_day_time'],
+            'Column: same_day_time - Expected: ' . $dateWithTime->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $firstDay['same_day_time'])
         );
     }
 
@@ -360,6 +364,11 @@ class DayRelationServiceTest extends FunctionalTestCase
      */
     public function createDayRelationsWithRecurringEventWillAddDaysWithTime(): void
     {
+        $this->getDatabaseConnection()->insertArray(
+            'tx_events2_domain_model_event',
+            $this->eventRecord
+        );
+
         $yesterday = new \DateTimeImmutable('yesterday midnight');
         $today = new \DateTimeImmutable('today midnight');
         $tomorrow = new \DateTimeImmutable('tomorrow midnight');
@@ -371,7 +380,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         ];
 
         $this->dayGeneratorServiceProphecy
-            ->getDateTimeStorageForEvent($this->eventRecord)
+            ->getDateTimeStorageForEvent(Argument::withEntry('uid', 123))
             ->shouldBeCalled()
             ->willReturn($dateTimeStorage);
 
@@ -379,7 +388,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         $timeRecord['event'] = $this->eventRecord;
 
         $this->timeRepositoryProphecy
-            ->getAllByEventRecord($this->eventRecord, true)
+            ->getAllByEventRecord(Argument::withEntry('uid', 123), true)
             ->shouldBeCalled()
             ->willReturn([$timeRecord]);
 
@@ -394,19 +403,23 @@ class DayRelationServiceTest extends FunctionalTestCase
             $dateWithTime = $date->modify('08:12:00');
             self::assertSame(
                 (int)$date->format('U'),
-                $day['day']
+                $day['day'],
+                'Column: day - Expected: ' . $date->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $day['day'])
             );
             self::assertSame(
                 (int)$dateWithTime->format('U'),
-                $day['day_time']
+                $day['day_time'],
+                'Column: day_time - Expected: ' . $dateWithTime->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $day['day_time'])
             );
             self::assertSame(
                 (int)$dateWithTime->format('U'),
-                $day['sort_day_time']
+                $day['sort_day_time'],
+                'Column: sort_day_time - Expected: ' . $dateWithTime->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $day['sort_day_time'])
             );
             self::assertSame(
                 (int)$dateWithTime->format('U'),
-                $day['same_day_time']
+                $day['same_day_time'],
+                'Column: same_day_time - Expected: ' . $dateWithTime->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $day['same_day_time'])
             );
             $date = $date->modify('+1 day');
         }
@@ -420,6 +433,11 @@ class DayRelationServiceTest extends FunctionalTestCase
      */
     public function createDayRelationsWithRecurringEventWillAddDaysForMultipleTimes(): void
     {
+        $this->getDatabaseConnection()->insertArray(
+            'tx_events2_domain_model_event',
+            $this->eventRecord
+        );
+
         $yesterday = new \DateTimeImmutable('yesterday midnight');
         $today = new \DateTimeImmutable('today midnight');
         $tomorrow = new \DateTimeImmutable('tomorrow midnight');
@@ -431,7 +449,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         ];
 
         $this->dayGeneratorServiceProphecy
-            ->getDateTimeStorageForEvent($this->eventRecord)
+            ->getDateTimeStorageForEvent(Argument::withEntry('uid', 123))
             ->shouldBeCalled()
             ->willReturn($dateTimeStorage);
 
@@ -444,7 +462,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         $multipleTimesRecord['event'] = $this->eventRecord;
 
         $this->timeRepositoryProphecy
-            ->getAllByEventRecord($this->eventRecord, true)
+            ->getAllByEventRecord(Argument::withEntry('uid', 123), true)
             ->shouldBeCalled()
             ->willReturn([$eventTimeRecord, $multipleTimesRecord]);
 
@@ -462,23 +480,23 @@ class DayRelationServiceTest extends FunctionalTestCase
             self::assertSame(
                 (int)$date->format('U'),
                 $day['day'],
-                'Column: day - Date: ' . $date->format('d.m.Y H:i:s')
+                'Column: day - Expected: ' . $date->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $day['day'])
             );
             self::assertSame(
                 (int)$dateWithTime->format('U'),
                 $day['day_time'],
-                'Column: day_time - Date: ' . $dateWithTime->format('d.m.Y H:i:s')
+                'Column: day_time - Expected: ' . $dateWithTime->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $day['day_time'])
             );
             self::assertSame(
                 (int)$dateWithTime->format('U'),
                 $day['sort_day_time'],
-                'Column: sort_day_time - Date: ' . $dateWithTime->format('d.m.Y H:i:s')
+                'Column: sort_day_time - Expected: ' . $dateWithTime->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $day['sort_day_time'])
             );
             // Be careful, we have multiple time records! So this one here is day at morning 08:12
             self::assertSame(
                 (int)$dateWithTime->modify('08:12:00')->format('U'),
                 $day['same_day_time'],
-                'Column: same_day_time - Date: ' . $dateWithTime->modify('08:12:00')->format('d.m.Y H:i:s')
+                'Column: same_day_time - Expected: ' . $dateWithTime->modify('08:12:00')->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $day['same_day_time'])
             );
             if ($switch) {
                 $date = $date->modify('+1 day');
@@ -491,6 +509,11 @@ class DayRelationServiceTest extends FunctionalTestCase
      */
     public function createDayRelationsWithRecurringEventWillNotAddHiddenTimes(): void
     {
+        $this->getDatabaseConnection()->insertArray(
+            'tx_events2_domain_model_event',
+            $this->eventRecord
+        );
+
         $yesterday = new \DateTimeImmutable('yesterday midnight');
         $today = new \DateTimeImmutable('today midnight');
         $tomorrow = new \DateTimeImmutable('tomorrow midnight');
@@ -502,7 +525,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         ];
 
         $this->dayGeneratorServiceProphecy
-            ->getDateTimeStorageForEvent($this->eventRecord)
+            ->getDateTimeStorageForEvent(Argument::withEntry('uid', 123))
             ->shouldBeCalled()
             ->willReturn($dateTimeStorage);
 
@@ -516,7 +539,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         $multipleTimesRecord['event'] = $this->eventRecord;
 
         $this->timeRepositoryProphecy
-            ->getAllByEventRecord($this->eventRecord, true)
+            ->getAllByEventRecord(Argument::withEntry('uid', 123), true)
             ->shouldBeCalled()
             ->willReturn([$eventTimeRecord, $multipleTimesRecord]);
 
@@ -532,22 +555,22 @@ class DayRelationServiceTest extends FunctionalTestCase
             self::assertSame(
                 (int)$date->format('U'),
                 $day['day'],
-                'Column: day - Date: ' . $date->format('d.m.Y H:i:s')
+                'Column: day - Expected: ' . $date->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $day['day'])
             );
             self::assertSame(
                 (int)$dateWithTime->format('U'),
                 $day['day_time'],
-                'Column: day_time - Date: ' . $dateWithTime->format('d.m.Y H:i:s')
+                'Column: day_time - Expected: ' . $dateWithTime->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $day['day_time'])
             );
             self::assertSame(
                 (int)$dateWithTime->format('U'),
                 $day['sort_day_time'],
-                'Column: sort_day_time - Date: ' . $dateWithTime->format('d.m.Y H:i:s')
+                'Column: sort_day_time - Expected: ' . $dateWithTime->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $day['sort_day_time'])
             );
             self::assertSame(
                 (int)$dateWithTime->format('U'),
                 $day['same_day_time'],
-                'Column: same_day_time - Date: ' . $dateWithTime->format('d.m.Y H:i:s')
+                'Column: same_day_time - Expected: ' . $dateWithTime->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $day['same_day_time'])
             );
             $date = $date->modify('+1 day');
         }
@@ -562,6 +585,11 @@ class DayRelationServiceTest extends FunctionalTestCase
      */
     public function createDayRelationsWithRecurringEventAndDifferentTimes(): void
     {
+        $this->getDatabaseConnection()->insertArray(
+            'tx_events2_domain_model_event',
+            $this->eventRecord
+        );
+
         $yesterday = new \DateTimeImmutable('yesterday midnight');
         $today = new \DateTimeImmutable('today midnight');
         $tomorrow = new \DateTimeImmutable('tomorrow midnight');
@@ -573,7 +601,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         ];
 
         $this->dayGeneratorServiceProphecy
-            ->getDateTimeStorageForEvent($this->eventRecord)
+            ->getDateTimeStorageForEvent(Argument::withEntry('uid', 123))
             ->shouldBeCalled()
             ->willReturn($dateTimeStorage);
 
@@ -587,7 +615,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         $differentTimesRecord['event'] = $this->eventRecord;
 
         $this->timeRepositoryProphecy
-            ->getAllByEventRecord($this->eventRecord, true)
+            ->getAllByEventRecord(Argument::withEntry('uid', 123), true)
             ->shouldBeCalled()
             ->willReturn([$eventTimeRecord, $differentTimesRecord]);
 
@@ -605,22 +633,22 @@ class DayRelationServiceTest extends FunctionalTestCase
             self::assertSame(
                 (int)$date->format('U'),
                 $day['day'],
-                'Column: day - Date: ' . $date->format('d.m.Y H:i:s')
+                'Column: day - Expected: ' . $date->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $day['day'])
             );
             self::assertSame(
                 (int)$dateWithTime->format('U'),
                 $day['day_time'],
-                'Column: day_time - Date: ' . $dateWithTime->format('d.m.Y H:i:s')
+                'Column: day_time - Expected: ' . $dateWithTime->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $day['day_time'])
             );
             self::assertSame(
                 (int)$dateWithTime->format('U'),
                 $day['sort_day_time'],
-                'Column: sort_day_time - Date: ' . $dateWithTime->format('d.m.Y H:i:s')
+                'Column: sort_day_time - Expected: ' . $dateWithTime->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $day['sort_day_time'])
             );
             self::assertSame(
                 (int)$dateWithTime->format('U'),
                 $day['same_day_time'],
-                'Column: same_day_time - Date: ' . $dateWithTime->format('d.m.Y H:i:s')
+                'Column: same_day_time - Expected: ' . $dateWithTime->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $day['same_day_time'])
             );
             $date = $date->modify('+1 day');
         }
@@ -639,14 +667,18 @@ class DayRelationServiceTest extends FunctionalTestCase
         $today = new \DateTimeImmutable('today midnight');
         $tomorrow = new \DateTimeImmutable('tomorrow midnight');
 
-        $this->exceptionRecord['exception_date'] = (int)$today->format('U');
-        $this->eventRecord['exceptions'] = [
-            123 => $this->exceptionRecord
-        ];
+        $this->eventRecord['exceptions'] = 1;
+        $this->getDatabaseConnection()->insertArray(
+            'tx_events2_domain_model_event',
+            $this->eventRecord
+        );
 
-        $this->eventRepositoryProphecy
-            ->getRecord(123, ['*'], true)
-            ->willReturn($this->eventRecord);
+        $this->exceptionRecord['exception_date'] = (int)$today->format('U');
+        $this->exceptionRecord['event'] = $this->getDatabaseConnection()->lastInsertId();
+        $this->getDatabaseConnection()->insertArray(
+            'tx_events2_domain_model_exception',
+            $this->exceptionRecord
+        );
 
         $dateTimeStorage = [
             (int)$yesterday->format('U') => $yesterday,
@@ -655,7 +687,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         ];
 
         $this->dayGeneratorServiceProphecy
-            ->getDateTimeStorageForEvent($this->eventRecord)
+            ->getDateTimeStorageForEvent(Argument::withEntry('uid', 123))
             ->shouldBeCalled()
             ->willReturn($dateTimeStorage);
 
@@ -668,7 +700,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         $exceptionTimeRecord['exception'] = $this->exceptionRecord;
 
         $this->timeRepositoryProphecy
-            ->getAllByEventRecord($this->eventRecord, true)
+            ->getAllByEventRecord(Argument::withEntry('uid', 123), true)
             ->shouldBeCalled()
             ->willReturn([$eventTimeRecord, $exceptionTimeRecord]);
 
@@ -686,22 +718,22 @@ class DayRelationServiceTest extends FunctionalTestCase
             self::assertSame(
                 (int)$date->format('U'),
                 $day['day'],
-                'Column: day - Date: ' . $date->format('d.m.Y H:i:s')
+                'Column: day - Expected: ' . $date->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $day['day'])
             );
             self::assertSame(
                 (int)$dateWithTime->format('U'),
                 $day['day_time'],
-                'Column: day_time - Date: ' . $dateWithTime->format('d.m.Y H:i:s')
+                'Column: day_time - Expected: ' . $dateWithTime->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $day['day_time'])
             );
             self::assertSame(
                 (int)$dateWithTime->format('U'),
                 $day['sort_day_time'],
-                'Column: sort_day_time - Date: ' . $dateWithTime->format('d.m.Y H:i:s')
+                'Column: sort_day_time - Expected: ' . $dateWithTime->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $day['sort_day_time'])
             );
             self::assertSame(
                 (int)$dateWithTime->format('U'),
                 $day['same_day_time'],
-                'Column: same_day_time - Date: ' . $dateWithTime->format('d.m.Y H:i:s')
+                'Column: same_day_time - Expected: ' . $dateWithTime->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $day['same_day_time'])
             );
             $date = $date->modify('+1 day');
         }
@@ -721,21 +753,29 @@ class DayRelationServiceTest extends FunctionalTestCase
         $today = new \DateTimeImmutable('today midnight');
         $tomorrow = new \DateTimeImmutable('tomorrow midnight');
 
+        $this->eventRecord['exceptions'] = 2;
+        $this->getDatabaseConnection()->insertArray(
+            'tx_events2_domain_model_event',
+            $this->eventRecord
+        );
+
         $exceptionRecord123 = $this->exceptionRecord;
         $exceptionRecord123['uid'] = 123;
         $exceptionRecord123['exception_date'] = (int)$today->format('U');
+        $exceptionRecord123['event'] = $this->getDatabaseConnection()->lastInsertId();
         $exceptionRecord124 = $this->exceptionRecord;
         $exceptionRecord124['uid'] = 124;
         $exceptionRecord124['exception_date'] = (int)$today->format('U');
+        $exceptionRecord124['event'] = $this->getDatabaseConnection()->lastInsertId();
 
-        $this->eventRecord['exceptions'] = [
-            123 => $exceptionRecord123,
-            124 => $exceptionRecord124
-        ];
-
-        $this->eventRepositoryProphecy
-            ->getRecord(123, ['*'], true)
-            ->willReturn($this->eventRecord);
+        $this->getDatabaseConnection()->insertArray(
+            'tx_events2_domain_model_exception',
+            $exceptionRecord123
+        );
+        $this->getDatabaseConnection()->insertArray(
+            'tx_events2_domain_model_exception',
+            $exceptionRecord124
+        );
 
         $dateTimeStorage = [
             (int)$yesterday->format('U') => $yesterday,
@@ -744,7 +784,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         ];
 
         $this->dayGeneratorServiceProphecy
-            ->getDateTimeStorageForEvent($this->eventRecord)
+            ->getDateTimeStorageForEvent(Argument::withEntry('uid', 123))
             ->shouldBeCalled()
             ->willReturn($dateTimeStorage);
 
@@ -761,7 +801,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         $exception124TimeRecord['exception'] = $exceptionRecord124;
 
         $this->timeRepositoryProphecy
-            ->getAllByEventRecord($this->eventRecord, true)
+            ->getAllByEventRecord(Argument::withEntry('uid', 123), true)
             ->shouldBeCalled()
             ->willReturn([$eventTimeRecord, $exception123TimeRecord, $exception124TimeRecord]);
 
@@ -784,24 +824,24 @@ class DayRelationServiceTest extends FunctionalTestCase
             self::assertSame(
                 (int)$date->format('U'),
                 $day['day'],
-                'Column: day - Date: ' . $date->format('d.m.Y H:i:s')
+                'Column: day - Expected: ' . $date->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $day['day'])
             );
             self::assertSame(
                 (int)$dateWithTime->format('U'),
                 $day['day_time'],
-                'Column: day_time - Date: ' . $dateWithTime->format('d.m.Y H:i:s')
+                'Column: day_time - Expected: ' . $dateWithTime->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $day['day_time'])
             );
             self::assertSame(
                 (int)$dateWithTime->format('U'),
                 $day['sort_day_time'],
-                'Column: sort_day_time - Date: ' . $dateWithTime->format('d.m.Y H:i:s')
+                'Column: sort_day_time - Expected: ' . $dateWithTime->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $day['sort_day_time'])
             );
 
             if ($date == $today) {
                 self::assertSame(
                     (int)$dateWithTime->modify('15:30:00')->format('U'),
                     $day['same_day_time'],
-                    'Column: same_day_time - Date: ' . $dateWithTime->modify('15:30:00')->format('d.m.Y H:i:s')
+                    'Column: same_day_time - Expected: ' . $dateWithTime->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $day['same_day_time'])
                 );
             } else {
                 self::assertSame(
@@ -827,9 +867,10 @@ class DayRelationServiceTest extends FunctionalTestCase
 
         $this->eventRecord['event_type'] = 'duration';
 
-        $this->eventRepositoryProphecy
-            ->getRecord(123, ['*'], true)
-            ->willReturn($this->eventRecord);
+        $this->getDatabaseConnection()->insertArray(
+            'tx_events2_domain_model_event',
+            $this->eventRecord
+        );
 
         $dateTimeStorage = [
             (int)$yesterday->format('U') => $yesterday,
@@ -838,7 +879,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         ];
 
         $this->dayGeneratorServiceProphecy
-            ->getDateTimeStorageForEvent($this->eventRecord)
+            ->getDateTimeStorageForEvent(Argument::withEntry('uid', 123))
             ->shouldBeCalled()
             ->willReturn($dateTimeStorage);
 
@@ -847,7 +888,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         $eventTimeRecord['event'] = $this->eventRecord;
 
         $this->timeRepositoryProphecy
-            ->getAllByEventRecord($this->eventRecord, true)
+            ->getAllByEventRecord(Argument::withEntry('uid', 123), true)
             ->shouldBeCalled()
             ->willReturn([$eventTimeRecord]);
 
@@ -863,22 +904,22 @@ class DayRelationServiceTest extends FunctionalTestCase
             self::assertSame(
                 (int)$date->format('U'),
                 $day['day'],
-                'Column: day - Date: ' . $date->format('d.m.Y H:i:s')
+                'Column: day - Expected: ' . $date->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $day['day'])
             );
             self::assertSame(
                 (int)$dateWithTime->format('U'),
                 $day['day_time'],
-                'Column: day_time - Date: ' . $dateWithTime->format('d.m.Y H:i:s')
+                'Column: day_time - Expected: ' . $dateWithTime->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $day['day_time'])
             );
             self::assertSame(
                 (int)$yesterday->modify('08:12:00')->format('U'),
                 $day['sort_day_time'],
-                'Column: sort_day_time - Date: ' . $yesterday->modify('08:12:00')->format('d.m.Y H:i:s')
+                'Column: sort_day_time - Expected: ' . $yesterday->modify('08:12:00')->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $day['sort_day_time'])
             );
             self::assertSame(
                 (int)$yesterday->modify('08:12:00')->format('U'),
                 $day['same_day_time'],
-                'Column: same_day_time - Date: ' . $yesterday->modify('08:12:00')->format('d.m.Y H:i:s')
+                'Column: same_day_time - Expected: ' . $yesterday->modify('08:12:00')->format('d.m.Y H:i:s') . ' - Current: ' . date('d.m.Y H:i:s', $day['same_day_time'])
             );
             $date = $date->modify('+1 day');
         }

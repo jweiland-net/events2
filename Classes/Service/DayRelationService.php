@@ -13,7 +13,6 @@ namespace JWeiland\Events2\Service;
 
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Repository\DayRepository;
-use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Domain\Repository\TimeRepository;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Psr\Log\LoggerAwareInterface;
@@ -37,8 +36,6 @@ class DayRelationService implements LoggerAwareInterface
 
     protected DayGeneratorService $dayGenerator;
 
-    protected EventRepository $eventRepository;
-
     protected DayRepository $dayRepository;
 
     protected TimeRepository $timeRepository;
@@ -54,13 +51,11 @@ class DayRelationService implements LoggerAwareInterface
      */
     public function __construct(
         DayGeneratorService $dayGenerator,
-        EventRepository $eventRepository,
         DayRepository $dayRepository,
         TimeRepository $timeRepository,
         DateTimeUtility $dateTimeUtility
     ) {
         $this->dayGenerator = $dayGenerator;
-        $this->eventRepository = $eventRepository;
         $this->dayRepository = $dayRepository;
         $this->timeRepository = $timeRepository;
         $this->dateTimeUtility = $dateTimeUtility;
@@ -79,12 +74,7 @@ class DayRelationService implements LoggerAwareInterface
             return $eventRecord;
         }
 
-        if (!isset(
-            $eventRecord['uid'],
-            $eventRecord['hidden'],
-            $eventRecord['sys_language_uid'],
-            $eventRecord['event_type']
-        )) {
+        if ($eventRecord['uid'] === 0 || $eventRecord['event_type'] === '') {
             $this->logger->info('DayRelationService will not build day records for invalid events.');
             return $eventRecord;
         }
@@ -131,6 +121,11 @@ class DayRelationService implements LoggerAwareInterface
         if (is_array($eventRecord)) {
             BackendUtility::workspaceOL('tx_events2_domain_model_event', $eventRecord);
         } else {
+            // BackendUtility::getRecordWSOL does NOT check against missing record. Do it manually:
+            if (BackendUtility::getRecord('tx_events2_domain_model_event', $eventUid) === null) {
+                return [];
+            }
+
             // We already have a LIVE record. Do overlay.
             $eventRecord = BackendUtility::getRecordWSOL('tx_events2_domain_model_event', $eventUid);
         }
@@ -212,10 +207,7 @@ class DayRelationService implements LoggerAwareInterface
             $dayRecords[] = $this->buildDayRecordForDateTime($dateTime, $eventRecord, $timeRecord);
         }
 
-        // sort_day_time of all duration days have to be the same value, so do not reset this value in that case.
-        if ($eventRecord['event_type'] !== 'duration') {
-            $this->firstTimeRecordForCurrentDateTime = [];
-        }
+        $this->firstTimeRecordForCurrentDateTime = [];
 
         return $dayRecords;
     }
