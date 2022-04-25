@@ -30,7 +30,8 @@ class ManagementControllerTest extends AbstractFunctionalTestCase
      * @var array
      */
     protected $testExtensionsToLoad = [
-        'typo3conf/ext/events2'
+        'typo3conf/ext/events2',
+        'typo3conf/ext/static_info_tables'
     ];
 
     protected function setUp(): void
