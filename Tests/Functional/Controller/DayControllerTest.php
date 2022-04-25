@@ -101,7 +101,6 @@ class DayControllerTest extends AbstractFunctionalTestCase
     protected function tearDown(): void
     {
         unset(
-            $this->subject,
             $this->request,
             $GLOBALS['TSFE']
         );

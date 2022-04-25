@@ -14,7 +14,6 @@ namespace JWeiland\Events2\Tests\Functional\Controller;
 use JWeiland\Events2\Controller\ManagementController;
 use JWeiland\Events2\Tests\Functional\AbstractFunctionalTestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
-use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Core\Bootstrap;
@@ -25,8 +24,6 @@ use TYPO3\CMS\Extbase\Core\Bootstrap;
 class ManagementControllerTest extends AbstractFunctionalTestCase
 {
     use ProphecyTrait;
-
-    protected ManagementController $subject;
 
     protected ServerRequest $serverRequest;
 
@@ -87,7 +84,6 @@ class ManagementControllerTest extends AbstractFunctionalTestCase
     protected function tearDown(): void
     {
         unset(
-            $this->subject,
             $this->request,
             $GLOBALS['TSFE']
         );
