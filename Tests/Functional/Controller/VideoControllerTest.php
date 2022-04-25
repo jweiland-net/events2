@@ -11,59 +11,44 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Tests\Functional\Controller;
 
-use JWeiland\Events2\Controller\VideoController;
-use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-use TYPO3\CMS\Core\Localization\LanguageService;
+use JWeiland\Events2\Tests\Functional\AbstractFunctionalTestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
+use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\Request;
-use TYPO3\CMS\Extbase\Mvc\Response;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Core\Bootstrap;
 
 /**
  * Test case.
  */
-class VideoControllerTest extends FunctionalTestCase
+class VideoControllerTest extends AbstractFunctionalTestCase
 {
-    protected VideoController $subject;
+    use ProphecyTrait;
 
-    protected Request $request;
+    protected ServerRequest $serverRequest;
 
     /**
      * @var array
      */
     protected $testExtensionsToLoad = [
-        'typo3conf/ext/events2'
+        'typo3conf/ext/events2',
+        'typo3conf/ext/static_info_tables'
     ];
 
     protected function setUp(): void
     {
         parent::setUp();
+
         $this->importDataSet('ntf://Database/pages.xml');
-        $this->importDataSet(__DIR__ . '/../Fixtures/tx_events2_domain_model_event.xml');
-        $this->setUpFrontendRootPage(1, [__DIR__ . '/../Fixtures/TypoScript/plugin.typoscript']);
+        $this->setUpFrontendRootPage(1, [__DIR__ . '/../Fixtures/TypoScript/setup.typoscript']);
 
-        $this->request = new Request();
-        if (method_exists($this->request, 'setControllerAliasToClassNameMapping')) {
-            $this->request->setControllerAliasToClassNameMapping([
-                'Video' => VideoController::class
-            ]);
-        }
-
-        $this->request->setControllerExtensionName('Events2');
-        $this->request->setPluginName('Events');
-        $this->request->setControllerName('Video');
-
-        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
-
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->subject = $objectManager->get(VideoController::class);
+        $this->serverRequest = $this->getServerRequestForFrontendMode();
     }
 
     protected function tearDown(): void
     {
         unset(
-            $this->subject,
-            $this->request
+            $this->serverRequest,
+            $GLOBALS['TSFE']
         );
 
         parent::tearDown();
@@ -72,46 +57,89 @@ class VideoControllerTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function processRequestWithShowActionWillNotRenderAnyVideo(): void
+    public function bootstrapShowActionWillNotRenderVideoLink(): void
     {
-        $databaseConnection = $this->getDatabaseConnection();
-        $databaseConnection->updateArray(
+        $date = new \DateTimeImmutable('midnight');
+        $this->getDatabaseConnection()->insertArray(
             'tx_events2_domain_model_event',
             [
-                'uid' => '1'
-            ],
-            [
-                'video_link' => 0
+                'pid' => 1,
+                'event_type' => 'single',
+                'event_begin' => (int)$date->format('U'),
+                'title' => 'Today',
             ]
         );
-        $this->request->setControllerActionName('show');
-        $this->request->setArgument('event', 1);
 
-        $response = new Response();
+        $this->startUpTSFE(
+            $this->serverRequest,
+            1,
+            '0',
+            [
+                'tx_events2_list' => [
+                    'controller' => 'Video',
+                    'action' => 'show',
+                    'event' => '1',
+                ]
+            ]
+        );
 
-        $this->subject->processRequest($this->request, $response);
-        $content = trim($response->getContent());
-
-        self::assertSame(
+        $extbaseBootstrap = GeneralUtility::makeInstance(Bootstrap::class);
+        $content = $extbaseBootstrap->run(
             '',
-            $content
+            [
+                'extensionName' => 'Events2',
+                'pluginName' => 'List',
+                'format' => 'txt',
+            ]
+        );
+
+        self::assertStringContainsString(
+            '',
+            trim($content)
         );
     }
 
     /**
      * @test
      */
-    public function processRequestWithShowActionWillConvertYouTubeHashToUrl(): void
+    public function bootstrapShowActionWillRenderVideoLink(): void
     {
         $this->importDataSet(__DIR__ . '/../Fixtures/tx_events2_domain_model_link.xml');
 
-        $this->request->setControllerActionName('show');
-        $this->request->setArgument('event', 1);
+        $date = new \DateTimeImmutable('midnight');
+        $this->getDatabaseConnection()->insertArray(
+            'tx_events2_domain_model_event',
+            [
+                'pid' => 1,
+                'event_type' => 'single',
+                'event_begin' => (int)$date->format('U'),
+                'title' => 'Today',
+                'video_link' => 1
+            ]
+        );
 
-        $response = new Response();
+        $this->startUpTSFE(
+            $this->serverRequest,
+            1,
+            '0',
+            [
+                'tx_events2_list' => [
+                    'controller' => 'Video',
+                    'action' => 'show',
+                    'event' => '1',
+                ]
+            ]
+        );
 
-        $this->subject->processRequest($this->request, $response);
-        $content = trim($response->getContent());
+        $extbaseBootstrap = GeneralUtility::makeInstance(Bootstrap::class);
+        $content = $extbaseBootstrap->run(
+            '',
+            [
+                'extensionName' => 'Events2',
+                'pluginName' => 'List',
+                'format' => 'txt',
+            ]
+        );
 
         self::assertStringContainsString(
             'Header: YouTube',
