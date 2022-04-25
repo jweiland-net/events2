@@ -8,6 +8,20 @@ Updating
 
 If you update EXT:events2 to a newer version, please read this section carefully!
 
+Update to Version 7.1.0
+=======================
+
+As f:widget.paginate is deprecated and POST requests are not allowed anymore in this widget, we have rewritten
+the widget to new TYPO3 Pagination API.
+
+Please remove the f:widget.paginate from Templates and insert this code:
+
+.. code-block:: html
+
+   <f:render partial="Component/Pagination"
+             arguments="{pagination: pagination, paginator: paginator, actionName: actionName}" />
+
+
 Update to Version 7.0.0
 =======================
 

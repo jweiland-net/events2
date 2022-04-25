@@ -338,7 +338,7 @@
 				<target>Veranstaltungsort</target>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.organizers">
-				<source>Organizer</source>
+				<source>Organizers</source>
 				<target>Veranstalter</target>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.images">
