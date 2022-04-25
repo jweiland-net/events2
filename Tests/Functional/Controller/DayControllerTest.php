@@ -11,9 +11,6 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Tests\Functional\Controller;
 
-use JWeiland\Events2\Controller\DayController;
-use JWeiland\Events2\Domain\Model\Filter;
-use JWeiland\Events2\Domain\Model\Search;
 use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Tests\Functional\AbstractFunctionalTestCase;
 use Prophecy\PhpUnit\ProphecyTrait;

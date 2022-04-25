@@ -17,6 +17,7 @@ use TYPO3\CMS\Core\Authentication\Mfa\MfaRequiredException;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
+use TYPO3\CMS\Core\Context\UserAspect;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Error\Http\InternalServerErrorException;
 use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
@@ -63,8 +64,7 @@ class AbstractFunctionalTestCase extends FunctionalTestCase
         );
         $serverRequest = $serverRequest->withAttribute('routing', $pageArguments);
 
-        $frontendUser = $this->createFrontendUser($serverRequest);
-        $context->setAspect('frontend.user', $frontendUser->createUserAspect());
+        $frontendUser = $this->createFrontendUser();
         $serverRequest = $serverRequest->withAttribute('frontend.user', $frontendUser);
 
         $controller = GeneralUtility::makeInstance(
@@ -88,7 +88,8 @@ class AbstractFunctionalTestCase extends FunctionalTestCase
 
     protected function createContext(Site $site): Context
     {
-        $context = new Context();
+        // GM::makeInstance is needed to respect SingletonInterface
+        $context = GeneralUtility::makeInstance(Context::class);
         $context->setAspect(
             'language',
             LanguageAspectFactory::createFromSiteLanguage($site->getDefaultLanguage())
@@ -98,16 +99,37 @@ class AbstractFunctionalTestCase extends FunctionalTestCase
     }
 
     /**
-     * @throws MfaRequiredException
+     * @return ObjectProphecy|FrontendUserAuthentication
      */
-    protected function createFrontendUser(ServerRequest $serverRequest): FrontendUserAuthentication
+    protected function createFrontendUser(bool $loggedIn = true, array $groupIds = [1])
     {
-        $frontendUser = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
-        $frontendUser->start($serverRequest);
-        $frontendUser->unpack_uc();
-        $frontendUser->fetchGroupData($serverRequest);
+        /** @var FrontendUserAuthentication|ObjectProphecy $frontendUserProphecy */
+        $frontendUserProphecy = $this->prophesize(FrontendUserAuthentication::class);
+        $frontendUserProphecy
+            ->createUserAspect(true)
+            ->willReturn($this->createUserAspect($loggedIn, $groupIds));
 
-        return $frontendUser;
+        return $frontendUserProphecy->reveal();
+    }
+
+    /**
+     * @return ObjectProphecy|UserAspect
+     */
+    protected function createUserAspect(bool $loggedIn = true, array $groupIds = [1])
+    {
+        /** @var UserAspect|ObjectProphecy $userAspect */
+        $userAspect = $this->prophesize(UserAspect::class);
+        $userAspect->isUserOrGroupSet()->willReturn(true);
+
+        $userAspect->get('id')->willReturn(1);
+
+        $userAspect->isLoggedIn()->willReturn($loggedIn);
+        $userAspect->get('isLoggedIn')->willReturn($loggedIn);
+
+        $userAspect->getGroupIds()->willReturn($groupIds);
+        $userAspect->get('groupIds')->willReturn($groupIds);
+
+        return $userAspect->reveal();
     }
 
     protected function initializeLanguageService(): void
