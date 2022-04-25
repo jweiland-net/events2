@@ -39,7 +39,7 @@ class DayControllerTest extends AbstractFunctionalTestCase
      * @var string[]
      */
     protected $coreExtensionsToLoad = [
-        'fluid_styled_content'
+        'extensionmanager'
     ];
 
     protected function setUp(): void
