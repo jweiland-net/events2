@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Functional;
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Core\Authentication\Mfa\MfaRequiredException;
 use TYPO3\CMS\Core\Cache\Exception\NoSuchCacheException;

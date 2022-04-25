@@ -12,22 +12,22 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Functional\Controller;
 
 use JWeiland\Events2\Controller\SearchController;
-use JWeiland\Events2\Domain\Model\Search;
-use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-use TYPO3\CMS\Core\Localization\LanguageService;
+use JWeiland\Events2\Service\DayRelationService;
+use JWeiland\Events2\Tests\Functional\AbstractFunctionalTestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
+use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Core\Bootstrap;
 use TYPO3\CMS\Extbase\Mvc\Request;
-use TYPO3\CMS\Extbase\Mvc\Response;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Test case.
  */
-class SearchControllerTest extends FunctionalTestCase
+class SearchControllerTest extends AbstractFunctionalTestCase
 {
-    protected SearchController $subject;
+    use ProphecyTrait;
 
-    protected Request $request;
+    protected ServerRequest $serverRequest;
 
     /**
      * @var array
@@ -39,33 +39,29 @@ class SearchControllerTest extends FunctionalTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->setUpBackendUserFromFixture(1);
+
         $this->importDataSet('ntf://Database/pages.xml');
+        $this->importDataSet(__DIR__ . '/../Fixtures/sys_category.xml');
+        $this->importDataSet(__DIR__ . '/../Fixtures/sys_category_record_mm.xml');
         $this->importDataSet(__DIR__ . '/../Fixtures/tx_events2_domain_model_event.xml');
-        $this->setUpFrontendRootPage(1, [__DIR__ . '/../Fixtures/TypoScript/plugin.typoscript']);
+        $this->setUpFrontendRootPage(1, [__DIR__ . '/../Fixtures/TypoScript/setup.typoscript']);
 
-        $this->request = new Request();
-        if (method_exists($this->request, 'setControllerAliasToClassNameMapping')) {
-            $this->request->setControllerAliasToClassNameMapping([
-                'Search' => SearchController::class
-            ]);
+        $this->serverRequest = $this->getServerRequestForFrontendMode();
+
+        // ServerRequest is needed for following
+        $GLOBALS['TYPO3_REQUEST'] = $this->serverRequest;
+        $dayRelationService = GeneralUtility::makeInstance(DayRelationService::class);
+        $statement = $this->getDatabaseConnection()->select('*', 'tx_events2_domain_model_event', 'pid=1');
+        while ($eventRecord = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $dayRelationService->createDayRelations($eventRecord['uid']);
         }
-
-        $this->request->setControllerExtensionName('Events2');
-        $this->request->setPluginName('Search');
-        $this->request->setControllerName('Search');
-
-        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
-
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->subject = $objectManager->get(SearchController::class);
     }
 
     protected function tearDown(): void
     {
         unset(
-            $this->subject,
-            $this->request
+            $this->serverRequest,
+            $GLOBALS['TSFE']
         );
 
         parent::tearDown();
@@ -76,17 +72,22 @@ class SearchControllerTest extends FunctionalTestCase
      */
     public function processRequestWithShowActionWillAssignEmptySearchObject(): void
     {
-        $this->request->setControllerActionName('show');
+        $this->startUpTSFE($this->serverRequest);
 
-        $response = new Response();
-
-        $this->subject->processRequest($this->request, $response);
-        $content = trim($response->getContent());
-
-        self::assertStringContainsString(
-            'Search:',
-            $content
+        $extbaseBootstrap = GeneralUtility::makeInstance(Bootstrap::class);
+        $content = $extbaseBootstrap->run(
+            '',
+            [
+                'extensionName' => 'Events2',
+                'pluginName' => 'SearchForm',
+                'format' => 'txt',
+                'settings' => [
+                    'rootCategory' => '1',
+                    'mainCategories' => '2,3'
+                ]
+            ]
         );
+
         self::assertStringContainsString(
             'Free entry: no',
             $content
@@ -98,17 +99,33 @@ class SearchControllerTest extends FunctionalTestCase
      */
     public function processRequestWithShowActionWillUpdateFormValues(): void
     {
-        $search = new Search();
-        $search->setSearch('Test');
-        $search->setFreeEntry(true);
+        $this->startUpTSFE(
+            $this->serverRequest,
+            1,
+            '0',
+            [
+                'tx_events2_searchform' => [
+                    'search' => [
+                        'search' => 'Test',
+                        'freeEntry' => '1'
+                    ]
+                ]
+            ]
+        );
 
-        $this->request->setControllerActionName('show');
-        $this->request->setArgument('search', $search);
-
-        $response = new Response();
-
-        $this->subject->processRequest($this->request, $response);
-        $content = trim($response->getContent());
+        $extbaseBootstrap = GeneralUtility::makeInstance(Bootstrap::class);
+        $content = $extbaseBootstrap->run(
+            '',
+            [
+                'extensionName' => 'Events2',
+                'pluginName' => 'SearchForm',
+                'format' => 'txt',
+                'settings' => [
+                    'rootCategory' => '1',
+                    'mainCategories' => '2,3'
+                ]
+            ]
+        );
 
         self::assertStringContainsString(
             'Search: Test',

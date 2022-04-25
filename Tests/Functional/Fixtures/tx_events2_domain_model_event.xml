@@ -18,5 +18,6 @@
 		<detail_information>Detail Event</detail_information>
 		<free_entry>1</free_entry>
 		<video_link>1</video_link>
+		<categories>2</categories>
 	</tx_events2_domain_model_event>
 </dataset>
