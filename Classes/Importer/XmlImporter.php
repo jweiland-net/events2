@@ -59,7 +59,7 @@ class XmlImporter extends AbstractImporter
         }
 
         try {
-            array_map(function (array $eventRecord) : void {
+            array_map(function (array $eventRecord): void {
                 $this->processEvent($eventRecord);
             }, $events);
         } catch (\Exception $e) {

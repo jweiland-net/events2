@@ -151,7 +151,7 @@ class AbstractController extends ActionController implements LoggerAwareInterfac
                 );
             }
 
-            $this->logger->error(implode(' - ',$errors));
+            $this->logger->error(implode(' - ', $errors));
         }
 
         return sprintf(

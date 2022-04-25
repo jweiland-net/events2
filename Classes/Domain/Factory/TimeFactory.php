@@ -130,7 +130,7 @@ class TimeFactory
                 $this->addTimeToObjectStorage($timesForDate, $time);
             }
         }
-     }
+    }
 
     /**
      * Add global event times. This has most less priority
@@ -167,7 +167,7 @@ class TimeFactory
         foreach ($event->getMultipleTimes() as $multipleTime) {
             $this->addTimeToObjectStorage($timesForDate, $multipleTime);
         }
-     }
+    }
 
     protected function addTimeToObjectStorage(\SplObjectStorage $timesForDate, Time $time): void
     {

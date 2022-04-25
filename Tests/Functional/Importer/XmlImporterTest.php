@@ -298,7 +298,6 @@ class XmlImporterTest extends FunctionalTestCase
         );
     }
 
-
     protected function createEventQuery(): QueryInterface
     {
         $query = $this->eventRepository->createQuery();

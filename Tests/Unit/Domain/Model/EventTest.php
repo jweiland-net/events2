@@ -296,7 +296,7 @@ class EventTest extends UnitTestCase
      */
     public function getXthInitiallyReturnsZero(): void
     {
-        $this->assertSame(
+        self::assertSame(
             0,
             $this->subject->getXth()
         );
@@ -309,7 +309,7 @@ class EventTest extends UnitTestCase
     {
         $this->subject->setXth(123456);
 
-        $this->assertSame(
+        self::assertSame(
             123456,
             $this->subject->getXth()
         );
@@ -320,7 +320,7 @@ class EventTest extends UnitTestCase
      */
     public function getWeekdayInitiallyReturnsZero(): void
     {
-        $this->assertSame(
+        self::assertSame(
             0,
             $this->subject->getWeekday()
         );
@@ -333,7 +333,7 @@ class EventTest extends UnitTestCase
     {
         $this->subject->setWeekday(123456);
 
-        $this->assertSame(
+        self::assertSame(
             123456,
             $this->subject->getWeekday()
         );

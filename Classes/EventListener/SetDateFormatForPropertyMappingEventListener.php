@@ -14,7 +14,6 @@ namespace JWeiland\Events2\EventListener;
 use JWeiland\Events2\Event\PreProcessControllerActionEvent;
 use JWeiland\Events2\Property\TypeConverter\DateTimeImmutableConverter;
 use TYPO3\CMS\Extbase\Property\PropertyMappingConfigurationInterface;
-use TYPO3\CMS\Extbase\Property\TypeConverter\DateTimeConverter;
 
 /*
  * Remove videoLink if empty.

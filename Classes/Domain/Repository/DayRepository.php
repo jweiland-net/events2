@@ -19,7 +19,6 @@ use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Model\Location;
 use JWeiland\Events2\Domain\Model\Search;
-use JWeiland\Events2\Event\ModifyQueriesOfFindByTimestampEvent;
 use JWeiland\Events2\Event\ModifyQueriesOfFindEventsEvent;
 use JWeiland\Events2\Event\ModifyQueriesOfSearchEventsEvent;
 use JWeiland\Events2\Event\ModifyStartEndDateForListTypeEvent;
@@ -377,7 +376,7 @@ class DayRepository extends AbstractRepository
         $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_day');
         if ($connection->getSchemaManager() instanceof AbstractSchemaManager) {
             $dayColumns = array_map(
-                static fn($column): string => 'day.' . $column,
+                static fn ($column): string => 'day.' . $column,
                 array_keys(
                     $connection->getSchemaManager()->listTableColumns('tx_events2_domain_model_day') ?? []
                 )

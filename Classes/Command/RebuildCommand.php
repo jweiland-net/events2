@@ -11,15 +11,11 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Command;
 
-use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Service\DayRelationService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use TYPO3\CMS\Core\Cache\CacheManager;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
-use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 
 /*
  * The naming is a little bit miss-understandable. It comes from the early days of development where I had many

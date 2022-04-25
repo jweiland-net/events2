@@ -368,8 +368,7 @@ class DayRelationService implements LoggerAwareInterface
         int $hour,
         int $minute,
         array $eventRecord
-    ): \DateTimeImmutable
-    {
+    ): \DateTimeImmutable {
         if ($eventRecord['event_type'] === 'duration') {
             [$hour, $minute] = $this->getHourAndMinuteFromTime($this->firstTimeRecordForCurrentDateTime);
 

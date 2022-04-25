@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Middleware;
 
 use JWeiland\Events2\Domain\Repository\CategoryRepository;
-use JWeiland\Events2\Domain\Repository\LocationRepository;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;

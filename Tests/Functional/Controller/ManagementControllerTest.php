@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Tests\Functional\Controller;
 
-use JWeiland\Events2\Controller\ManagementController;
 use JWeiland\Events2\Tests\Functional\AbstractFunctionalTestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use TYPO3\CMS\Core\Http\ServerRequest;
@@ -117,11 +116,11 @@ class ManagementControllerTest extends AbstractFunctionalTestCase
             ]
         );
 
-        $this->assertStringContainsString(
+        self::assertStringContainsString(
             'Event Title 1: Today',
             $content
         );
-        $this->assertStringContainsString(
+        self::assertStringContainsString(
             'tx_events2_management%5Baction%5D=edit&amp;tx_events2_management%5Bcontroller%5D=Management',
             $content
         );

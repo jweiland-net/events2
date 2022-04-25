@@ -11,9 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Controller;
 
-use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Helper\CalendarHelper;
-use JWeiland\Events2\Service\TypoScriptService;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 /*

@@ -12,10 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Domain\Repository;
 
 use JWeiland\Events2\Event\ModifyQueriesOfFindLocationsEvent;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 /*

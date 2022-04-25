@@ -125,11 +125,11 @@ class DayControllerTest extends AbstractFunctionalTestCase
             ]
         );
 
-        $this->assertStringContainsString(
+        self::assertStringContainsString(
             'Event Title 1: Today',
             $content
         );
-        $this->assertStringContainsString(
+        self::assertStringContainsString(
             'Event Title 2: Tomorrow',
             $content
         );
@@ -163,7 +163,7 @@ class DayControllerTest extends AbstractFunctionalTestCase
             ]
         );
 
-        $this->assertStringContainsString(
+        self::assertStringContainsString(
             'Event Title 2: Tomorrow',
             $content
         );
@@ -218,7 +218,7 @@ class DayControllerTest extends AbstractFunctionalTestCase
             ]
         );
 
-        $this->assertStringContainsString(
+        self::assertStringContainsString(
             'Event Title 1: Today',
             $content
         );
@@ -253,7 +253,7 @@ class DayControllerTest extends AbstractFunctionalTestCase
             ]
         );
 
-        $this->assertStringContainsString(
+        self::assertStringContainsString(
             'Event Title 1: Today',
             $content
         );
