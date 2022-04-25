@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+	<sys_category_record_mm>
+		<uid_local>2</uid_local>
+		<uid_foreign>1</uid_foreign>
+	</sys_category_record_mm>
+	<sys_category_record_mm>
+		<uid_local>3</uid_local>
+		<uid_foreign>1</uid_foreign>
+	</sys_category_record_mm>
+</dataset>
