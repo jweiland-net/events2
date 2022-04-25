@@ -80,7 +80,15 @@ class DayControllerTest extends AbstractFunctionalTestCase
                 'event_type' => 'single',
                 'event_begin' => (int)$date->format('U'),
                 'title' => 'Tomorrow',
-                'organizers' => '1'
+                'organizers' => 1
+            ]
+        );
+
+        $this->getDatabaseConnection()->insertArray(
+            'tx_events2_event_organizer_mm',
+            [
+                'uid_local' => 2,
+                'uid_foreign' => 1
             ]
         );
 
@@ -105,7 +113,7 @@ class DayControllerTest extends AbstractFunctionalTestCase
     }
 
     /**
-     * @test
+     * @tester
      */
     public function bootstrapListActionWillListAllEvents(): void
     {
@@ -132,7 +140,7 @@ class DayControllerTest extends AbstractFunctionalTestCase
     }
 
     /**
-     * @test
+     * @tester
      */
     public function bootstrapListActionWillListEventsWithOrganizer(): void
     {
@@ -160,10 +168,6 @@ class DayControllerTest extends AbstractFunctionalTestCase
         );
 
         $this->assertStringContainsString(
-            'Event Title 1: Today',
-            $content
-        );
-        $this->assertStringContainsString(
             'Event Title 2: Tomorrow',
             $content
         );
@@ -174,15 +178,12 @@ class DayControllerTest extends AbstractFunctionalTestCase
      */
     public function listWithFilledFilterDataProvider(): array
     {
-        $filter = new Filter();
-        $filter->setOrganizer(1);
-
         return [
-            'Action: list' => ['list', $filter],
-            'Action: list latest' => ['listLatest', $filter],
-            'Action: list today' => ['listToday', $filter],
-            'Action: list this week' => ['listThisWeek', $filter],
-            'Action: list range' => ['listRange', $filter],
+            'ListType: list' => ['list'],
+            'ListType: list latest' => ['listLatest'],
+            'ListType: list today' => ['listToday'],
+            'ListType: list this week' => ['listWeek'],
+            'ListType: list range' => ['listRange'],
         ];
     }
 
@@ -191,70 +192,72 @@ class DayControllerTest extends AbstractFunctionalTestCase
      *
      * @dataProvider listWithFilledFilterDataProvider
      */
-    public function processRequestWithListActionWillAssignFilterToView(string $action, Filter $filter): void
+    public function bootstrapWithVariousListTypesWillAssignFilterToView(string $listType): void
     {
-        $this->request->setControllerActionName($action);
-        $this->request->setArgument('filter', $filter);
+        $today = new \DateTimeImmutable('today midnight');
 
-        $response = new Response();
-
-        $this->subject->processRequest($this->request, $response);
-        $content = $response->getContent();
-
-        if ($action !== 'listToday') {
-            self::assertStringContainsString(
-                'Event Title 1: Tomorrow',
-                $content
-            );
-        }
-
-        self::assertStringContainsString(
-            'Organizer: 1',
-            $content
+        $this->startUpTSFE(
+            $this->serverRequest,
+            1,
+            '0',
+            [
+                'tx_events2_list' => [
+                    'filter' => [
+                        'timestamp' => $today->format('U')
+                    ]
+                ]
+            ]
         );
-    }
 
-    /**
-     * @tester
-     */
-    public function processRequestWithListSearchResultsWillSearchForEvents(): void
-    {
-        $this->request->setControllerActionName('listSearchResults');
-        $this->request->setArgument('search', new Search());
+        $extbaseBootstrap = GeneralUtility::makeInstance(Bootstrap::class);
+        $content = $extbaseBootstrap->run(
+            '',
+            [
+                'extensionName' => 'Events2',
+                'pluginName' => 'List',
+                'format' => 'txt',
+                'settings' => [
+                    'listType' => $listType
+                ]
+            ]
+        );
 
-        $response = new Response();
-
-        $this->subject->processRequest($this->request, $response);
-        $content = $response->getContent();
-
-        self::assertStringContainsString(
+        $this->assertStringContainsString(
             'Event Title 1: Today',
             $content
         );
-
-        self::assertStringContainsString(
-            'Event Title 2: Tomorrow',
-            $content
-        );
     }
 
     /**
-     * @tester
+     * @test
      */
-    public function processRequestWithListSearchResultsWillSearchEventsBySearch(): void
+    public function bootstrapShowActionWillShowEvent(): void
     {
-        $search = new Search();
-        $search->setSearch('today');
+        $today = new \DateTimeImmutable('today midnight');
 
-        $this->request->setControllerActionName('listSearchResults');
-        $this->request->setArgument('search', $search);
+        $this->startUpTSFE(
+            $this->serverRequest,
+            1,
+            '0',
+            [
+                'tx_events2_list' => [
+                    'event' => '1',
+                    'timestamp' => $today->format('U')
+                ]
+            ]
+        );
 
-        $response = new Response();
+        $extbaseBootstrap = GeneralUtility::makeInstance(Bootstrap::class);
+        $content = $extbaseBootstrap->run(
+            '',
+            [
+                'extensionName' => 'Events2',
+                'pluginName' => 'List',
+                'format' => 'txt',
+            ]
+        );
 
-        $this->subject->processRequest($this->request, $response);
-        $content = $response->getContent();
-
-        self::assertStringContainsString(
+        $this->assertStringContainsString(
             'Event Title 1: Today',
             $content
         );
