@@ -28,6 +28,8 @@
 		"roave/security-advisories": "dev-latest",
 		"friendsofphp/php-cs-fixer": "^3.0",
 		"nimut/testing-framework": "^6.0",
+		"phpunit/phpunit": "^9.5",
+		"phpspec/prophecy-phpunit": "^2.0",
 		"typo3/cms-scheduler": "^10.4.14 || ^11.5",
 		"jweiland/maps2": ">=10.0.0"
 	},
