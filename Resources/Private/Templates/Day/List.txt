@@ -1,6 +1,6 @@
 Days:
-<f:for each="{days}" as="day" iteration="iterator">
-Event Title {iterator.cycle}: {day.event.title}
+<f:for each="{days}" as="day">
+Event Title {day.event.uid}: {day.event.title}
 </f:for>
 
 Filter:
