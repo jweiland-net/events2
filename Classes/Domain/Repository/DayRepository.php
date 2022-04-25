@@ -114,10 +114,10 @@ class DayRepository extends AbstractRepository
         }
 
         // add filter for organizer
-        if ($this->settings['preFilterByOrganizer'] || $filter->getOrganizer()) {
+        if (isset($this->settings['preFilterByOrganizer']) || $filter->getOrganizer()) {
             $this->databaseService->addConstraintForOrganizer(
                 $subQueryBuilder,
-                (int)$filter->getOrganizer() ?: (int)$this->settings['preFilterByOrganizer'],
+                (int)($this->settings['preFilterByOrganizer'] ?? $filter->getOrganizer()),
                 $queryBuilder,
                 'event_sub_query'
             );
