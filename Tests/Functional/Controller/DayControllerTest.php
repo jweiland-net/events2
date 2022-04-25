@@ -109,7 +109,7 @@ class DayControllerTest extends AbstractFunctionalTestCase
     }
 
     /**
-     * @tester
+     * @test
      */
     public function bootstrapListActionWillListAllEvents(): void
     {
@@ -136,7 +136,7 @@ class DayControllerTest extends AbstractFunctionalTestCase
     }
 
     /**
-     * @tester
+     * @test
      */
     public function bootstrapListActionWillListEventsWithOrganizer(): void
     {
@@ -184,7 +184,7 @@ class DayControllerTest extends AbstractFunctionalTestCase
     }
 
     /**
-     * @tester
+     * @test
      *
      * @dataProvider listWithFilledFilterDataProvider
      */
