@@ -28,6 +28,7 @@ use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 /**
@@ -56,7 +57,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         $this->importDataSet('ntf://Database/pages.xml');
         $this->setUpFrontendRootPage(1);
 
-        $this->querySettings = GeneralUtility::makeInstance(QuerySettingsInterface::class);
+        $this->querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
         $this->querySettings->setStoragePageIds([11, 40]);
 
         $this->dayRepository = GeneralUtility::makeInstance(DayRepository::class);
