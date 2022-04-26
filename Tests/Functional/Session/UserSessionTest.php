@@ -13,6 +13,7 @@ namespace JWeiland\Events2\Tests\Functional\Session;
 
 use JWeiland\Events2\Session\UserSession;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
@@ -32,6 +33,13 @@ class UserSessionTest extends FunctionalTestCase
 
     protected function setUp(): void
     {
+        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
+        if (version_compare($typo3Version->getBranch(), '11', '<')) {
+            self::markTestSkipped(
+                'Because of missing "initializeUserSessionManager" in TYPO3 10 this test has to be skipped.'
+            );
+        }
+
         parent::setUp();
 
         $feUser = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
