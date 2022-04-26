@@ -85,6 +85,7 @@ class DayRelationService implements LoggerAwareInterface
         }
 
         try {
+            $this->firstTimeRecordForCurrentDateTime = [];
             $this->dayRepository->removeAllByEventRecord($eventRecord);
             $days = [];
             $dateTimeStorage = $this->dayGenerator->getDateTimeStorageForEvent($eventRecord);
@@ -97,6 +98,12 @@ class DayRelationService implements LoggerAwareInterface
                     $days,
                     ...$this->buildDayRecordsForDateTime($eventRecord, $dateTime)
                 );
+
+                // While looping through the DateTime entries the sort_day_time value has to be the same for all
+                // durational events. So, do not reset this value in that case.
+                if ($eventRecord['event_type'] !== 'duration') {
+                    $this->firstTimeRecordForCurrentDateTime = [];
+                }
             }
 
             $this->firstDateTime = null;
@@ -206,8 +213,6 @@ class DayRelationService implements LoggerAwareInterface
 
             $dayRecords[] = $this->buildDayRecordForDateTime($dateTime, $eventRecord, $timeRecord);
         }
-
-        $this->firstTimeRecordForCurrentDateTime = [];
 
         return $dayRecords;
     }
