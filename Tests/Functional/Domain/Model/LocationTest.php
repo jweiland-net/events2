@@ -25,10 +25,7 @@ class LocationTest extends FunctionalTestCase
 {
     use TestTypo3PropertiesTrait;
 
-    /**
-     * @var Location
-     */
-    protected $subject;
+    protected Location $subject;
 
     /**
      * @var array
@@ -38,7 +35,7 @@ class LocationTest extends FunctionalTestCase
         'typo3conf/ext/static_info_tables'
     ];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->importDataSet('ntf://Database/pages.xml');
@@ -47,7 +44,7 @@ class LocationTest extends FunctionalTestCase
         $this->subject = new Location();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset(
             $this->subject

@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace JWeiland\Events2\EventListener;
 
 use JWeiland\Events2\Event\PreProcessControllerActionEvent;
+use JWeiland\Events2\Property\TypeConverter\DateTimeImmutableConverter;
 use TYPO3\CMS\Extbase\Property\PropertyMappingConfigurationInterface;
-use TYPO3\CMS\Extbase\Property\TypeConverter\DateTimeConverter;
 
 /*
  * Remove videoLink if empty.
@@ -22,24 +22,19 @@ use TYPO3\CMS\Extbase\Property\TypeConverter\DateTimeConverter;
  */
 class SetDateFormatForPropertyMappingEventListener extends AbstractControllerEventListener
 {
-    /**
-     * @var string
-     */
-    protected $defaultDateFormat = 'd.m.Y';
+    protected string $defaultDateFormat = 'd.m.Y';
 
-    protected $allowedControllerActions = [
-        'Event' => [
+    protected array $allowedControllerActions = [
+        'Management' => [
             'create',
             'update'
         ]
     ];
 
-    public function __invoke(PreProcessControllerActionEvent $event): void
+    public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void
     {
-        if (
-            $this->isValidRequest($event)
-        ) {
-            $eventMappingConfiguration = $event->getArguments()
+        if ($this->isValidRequest($controllerActionEvent)) {
+            $eventMappingConfiguration = $controllerActionEvent->getArguments()
                 ->getArgument('event')
                 ->getPropertyMappingConfiguration();
 
@@ -55,9 +50,9 @@ class SetDateFormatForPropertyMappingEventListener extends AbstractControllerEve
         $pmc
             ->forProperty($property)
             ->setTypeConverterOption(
-                DateTimeConverter::class,
-                DateTimeConverter::CONFIGURATION_DATE_FORMAT,
-                'd.m.Y'
+                DateTimeImmutableConverter::class,
+                DateTimeImmutableConverter::CONFIGURATION_DATE_FORMAT,
+                $this->defaultDateFormat
             );
     }
 }

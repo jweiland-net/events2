@@ -12,64 +12,61 @@ declare(strict_types=1);
 namespace JWeiland\Events2\EventListener;
 
 use JWeiland\Events2\Event\PostProcessFluidVariablesEvent;
-use JWeiland\Events2\Pagination\RequestPagination;
-use TYPO3\CMS\Core\Utility\MathUtility;
+use JWeiland\Events2\Pagination\GetPostPagination;
 use TYPO3\CMS\Extbase\Pagination\QueryResultPaginator;
 
+/*
+ * Add paginator to fluid template
+ */
 class AddPaginatorEventListener extends AbstractControllerEventListener
 {
-    /**
-     * @var int
-     */
-    protected $itemsPerPage = 15;
+    protected int $itemsPerPage = 15;
 
-    protected $allowedControllerActions = [
+    protected array $allowedControllerActions = [
         'Day' => [
-            'list',
-            'listLatest',
-            'listToday',
-            'listThisWeek',
-            'listRange',
+            'list'
+        ],
+        'Search' => [
             'listSearchResults'
         ]
     ];
 
-    public function __invoke(PostProcessFluidVariablesEvent $event): void
+    public function __invoke(PostProcessFluidVariablesEvent $controllerActionEvent): void
     {
-        if ($this->isValidRequest($event)) {
+        // Do not show pagination for listLatest
+        if (
+            $this->isValidRequest($controllerActionEvent)
+            && ($days = $controllerActionEvent->getFluidVariables()['days'] ?? null)
+            && $days !== null
+            && ($controllerActionEvent->getSettings()['listType'] ?? 'listLatest') !== 'listLatest'
+        ) {
             $paginator = new QueryResultPaginator(
-                $event->getFluidVariables()['days'],
-                $this->getCurrentPage($event),
-                $this->getItemsPerPage($event)
+                $controllerActionEvent->getFluidVariables()['days'],
+                $this->getCurrentPage($controllerActionEvent),
+                $this->getItemsPerPage($controllerActionEvent)
             );
 
-            $event->addFluidVariable('actionName', $event->getActionName());
-            $event->addFluidVariable('paginator', $paginator);
-            $event->addFluidVariable('paginatedDays', $paginator->getPaginatedItems());
-            $event->addFluidVariable('pagination', new RequestPagination($paginator));
+            $controllerActionEvent->addFluidVariable('actionName', $controllerActionEvent->getActionName());
+            $controllerActionEvent->addFluidVariable('paginator', $paginator);
+            $controllerActionEvent->addFluidVariable('days', $paginator->getPaginatedItems());
+            $controllerActionEvent->addFluidVariable('pagination', new GetPostPagination($paginator));
         }
     }
 
-    protected function getCurrentPage(PostProcessFluidVariablesEvent $event): int
+    protected function getCurrentPage(PostProcessFluidVariablesEvent $controllerActionEvent): int
     {
         $currentPage = 1;
-        if ($event->getRequest()->hasArgument('currentPage')) {
-            // $currentPage have to be positive and greater than 0
-            // See: AbstractPaginator::setCurrentPageNumber()
-            $currentPage = MathUtility::forceIntegerInRange(
-                (int)$event->getRequest()->getArgument('currentPage'),
-                1
-            );
+        if ($controllerActionEvent->getRequest()->hasArgument('currentPage')) {
+            $currentPage = $controllerActionEvent->getRequest()->getArgument('currentPage');
         }
-
-        return $currentPage;
+        return (int)$currentPage;
     }
 
-    protected function getItemsPerPage(PostProcessFluidVariablesEvent $event): int
+    protected function getItemsPerPage(PostProcessFluidVariablesEvent $controllerActionEvent): int
     {
         $itemsPerPage = $this->itemsPerPage;
-        if (isset($event->getSettings()['pageBrowser']['itemsPerPage'])) {
-            $itemsPerPage = $event->getSettings()['pageBrowser']['itemsPerPage'];
+        if (isset($controllerActionEvent->getSettings()['pageBrowser']['itemsPerPage'])) {
+            $itemsPerPage = $controllerActionEvent->getSettings()['pageBrowser']['itemsPerPage'];
         }
         return (int)$itemsPerPage;
     }

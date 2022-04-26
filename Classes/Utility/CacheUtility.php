@@ -43,7 +43,7 @@ class CacheUtility
                 $cacheTags[] = 'tx_events2_uid_' . $event->_getProperty('_localizedUid');
             }
         }
-        if (count($cacheTags) > 0) {
+        if ($cacheTags !== []) {
             $GLOBALS['TSFE']->addCacheTags($cacheTags);
         }
     }
@@ -51,8 +51,6 @@ class CacheUtility
     /**
      * Adds page cache tags by used storagePages.
      * This adds tags with the scheme tx_events2_pid_[event:pid]
-     *
-     * @param QueryInterface $query
      */
     public static function addPageCacheTagsByQuery(QueryInterface $query): void
     {
@@ -69,6 +67,7 @@ class CacheUtility
         } else {
             $cacheTags[] = 'tx_events2_domain_model_event';
         }
+
         $GLOBALS['TSFE']->addCacheTags($cacheTags);
     }
 

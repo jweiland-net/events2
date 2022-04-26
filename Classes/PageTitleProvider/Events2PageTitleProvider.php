@@ -25,15 +25,9 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
  */
 class Events2PageTitleProvider implements PageTitleProviderInterface
 {
-    /**
-     * @var EventRepository
-     */
-    protected $eventRepository;
+    protected EventRepository $eventRepository;
 
-    /**
-     * @var DayRepository
-     */
-    protected $dayRepository;
+    protected DayRepository $dayRepository;
 
     public function __construct(ObjectManagerInterface $objectManager)
     {
@@ -44,7 +38,7 @@ class Events2PageTitleProvider implements PageTitleProviderInterface
     public function getTitle(): string
     {
         $pageTitle = '';
-        $gp = GeneralUtility::_GPmerged('tx_events2_events') ?? [];
+        $gp = GeneralUtility::_GPmerged('tx_events2_list') ?? [];
         if ($this->isValidRequest($gp)) {
             $dayRecord = $this->dayRepository->getDayRecord(
                 (int)$gp['event'],
@@ -52,8 +46,8 @@ class Events2PageTitleProvider implements PageTitleProviderInterface
             );
 
             if (!empty($dayRecord)) {
-                $date = new \DateTime(date('c', (int)$gp['timestamp']));
-                $eventRecord = $this->eventRepository->getEventRecord(
+                $date = new \DateTimeImmutable(date('c', (int)$gp['timestamp']));
+                $eventRecord = $this->eventRepository->getRecord(
                     (int)$dayRecord['event']
                 );
 
@@ -70,20 +64,20 @@ class Events2PageTitleProvider implements PageTitleProviderInterface
         return $pageTitle;
     }
 
+    /**
+     * This PageTitleProvider will only work on detail page of events2.
+     * event and timestamp have to be given. Else: Page title will not be overwritten.
+     */
     protected function isValidRequest(array $gp): bool
     {
         if (!is_array($gp)) {
             return false;
         }
 
-        if (!isset($gp['controller'], $gp['action'], $gp['timestamp'])) {
+        if (!isset($gp['controller'], $gp['action'], $gp['event'], $gp['timestamp'])) {
             return false;
         }
 
-        if ((int)$gp['timestamp'] <= 0) {
-            return false;
-        }
-
-        return true;
+        return (int)$gp['timestamp'] > 0 && (int)$gp['event'] > 0;
     }
 }

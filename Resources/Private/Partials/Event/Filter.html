@@ -1,12 +1,25 @@
-<html
-	xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-	data-namespace-typo3-fluid="true"
->
+<html lang="en"
+			xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+			data-namespace-typo3-fluid="true">
+
 <f:if condition="{settings.showFilterForOrganizerInFrontend}">
-	<f:if condition="{organizers->f:count()}>1">
-		<f:form action="{action}" id="eventFilter" name="filter" object="{filter}" noCache="1" noCacheHash="1">
-			<f:form.select id="organizers" additionalAttributes="{onchange: 'this.form.submit()'}" options="{organizers}" property="organizer" size="1" optionLabelField="organizer" optionValueField="uid" sortByOptionLabel="1" prependOptionLabel="" prependOptionValue="" />
-		</f:form>
+	<f:if condition="{organizers -> f:count()} > 1">
+		<form action="{f:uri.action(action: action)}" id="eventFilter" name="filter" method="GET">
+			<label for="organizer">{f:translate(key: 'tx_events2_domain_model_event.organizer')}</label>
+			<select id="organizer" size="1" name="tx_events2_list[filter][organizer]">
+				<option value=""></option>
+				<f:for each="{organizers}" as="organizer">
+					<f:if condition="{filter.organizer} == {organizer.uid}">
+						<f:then>
+							<option value="{f:uri.action(action: action, controller: 'List', absolute: 1, arguments: {filter: {organizer: organizer.uid}})}" selected="selected">{organizer.organizer}</option>
+						</f:then>
+						<f:else>
+							<option value="{f:uri.action(action: action, controller: 'List', absolute: 1, arguments: {filter: {organizer: organizer.uid}})}">{organizer.organizer}</option>
+						</f:else>
+					</f:if>
+				</f:for>
+			</select>
+		</form>
 	</f:if>
 </f:if>
 </html>

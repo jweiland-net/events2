@@ -68,7 +68,7 @@ class ResultsCommandHook implements SearchResultSetProcessor
             $typeField = $searchResult->getField('type');
             if ($typeField['value'] === 'tx_events2_domain_model_event') {
                 $nextDate = $this->eventService->getNextDayForEvent((int)$uidField['value']);
-                if (!$nextDate instanceof \DateTime) {
+                if (!$nextDate instanceof \DateTimeImmutable) {
                     /** @var GarbageCollector $garbageCollector */
                     $garbageCollector = GeneralUtility::makeInstance(GarbageCollector::class);
                     $garbageCollector->collectGarbage('tx_events2_domain_model_event', (int)$uidField['value']);

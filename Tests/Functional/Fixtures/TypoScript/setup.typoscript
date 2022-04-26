@@ -1,0 +1,82 @@
+page = PAGE
+page.typeNum = 0
+
+# search should work with get params of events plugin
+plugin.tx_events2_search.view.pluginNamespace = tx_events2_list
+# but if there was an action called which is not accessible, then call the default action
+plugin.tx_events2_search.mvc.callDefaultActionIfActionCantBeResolved = 1
+
+plugin.tx_events2 {
+  view {
+    templateRootPaths {
+      0 = EXT:events2/Resources/Private/Templates/
+    }
+    partialRootPaths {
+      0 = EXT:events2/Resources/Private/Partials/
+    }
+    layoutRootPaths {
+      0 = EXT:events2/Resources/Private/Layouts/
+    }
+  }
+  persistence {
+    storagePid = 1
+    classes {
+      JWeiland\Events2\Domain\Model\Category {
+        mapping {
+          tableName = sys_category
+          recordType =
+        }
+      }
+    }
+  }
+  mvc {
+    callDefaultActionIfActionCantBeResolved = 1
+  }
+  settings {
+    rootCategory = 1
+    pidOfDetailPage = 2
+    pidOfSearchResults = 3
+    pidOfLocationPage = 4
+    pidOfListPage = 1
+    includeDeTranslationForCalendar = 0
+    userGroup = 1
+    remainingLetters = 250
+    selectableCategoriesForNewEvents = 1,12,123
+    list {
+      image {
+        width = 50c
+        height = 50c
+        maxWidth = 50
+        minWidth = 50
+        maxHeight = 50
+        minHeight = 50
+      }
+    }
+
+    latest {
+      amountOfRecordsToShow = 2
+    }
+
+    new {
+      uploadFolder = 1:user_upload/tx_events2/
+    }
+
+    pageBrowser {
+      itemsPerPage = 2
+      insertAbove = 1
+      insertBelow = 0
+      maximumNumberOfLinks = 3
+    }
+
+    show {
+      image {
+        width = 200c
+        height = 150c
+        maxWidth = 200
+        minWidth = 200
+        maxHeight = 150
+        minHeight = 150
+      }
+    }
+  }
+}

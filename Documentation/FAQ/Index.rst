@@ -63,7 +63,7 @@ Exception thrown in Location/Show.html
 If you have NOT installed maps2 you may get following exception while visiting
 Show template of Location:
 
-Code: ::
+.. code-block:: html
 
    TYPO3Fluid\Fluid\Core\ViewHelper\Exception
    Undeclared arguments passed to ViewHelper
@@ -77,7 +77,7 @@ not be rendered.
 Please copy Location/Show.html into your own SitePackage extension and remove following
 lines:
 
-Code: ::
+.. code-block:: html
 
    <f:if condition="{location.txMaps2Uid}">
      <maps2:widget.poiCollection poiCollection="{location.txMaps2Uid}" override="{settings: {mapWidth: '100%', mapHeight: '300', zoom: '14'}}" />
@@ -89,7 +89,7 @@ File Uploads
 If you need the image rights from the uploader for uploaded images you should install EXT:checkfaluploads and
 add following line into FormFields template:
 
-Code: ::
+.. code-block:: html
 
    <f:form.checkbox value="1" name="event[images][{index}][rights]" checked="" />
 
@@ -97,7 +97,7 @@ In our TypeConverter we check for installed checkfaluploads and add an error mes
 
 If you want to delete an image, you can add following line into FormFields template:
 
-Code: ::
+.. code-block:: html
 
    <f:form.checkbox value="1" name="event[images][{index}][delete]" checked="" />
 

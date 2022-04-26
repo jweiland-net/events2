@@ -271,6 +271,20 @@
 			<trans-unit id="tx_events2_domain_model_search.freeEntry">
 				<source>Free entry</source>
 			</trans-unit>
+
+			<trans-unit id="pageBrowser.first">
+				<source>First</source>
+			</trans-unit>
+			<trans-unit id="pageBrowser.previous">
+				<source>Previous</source>
+			</trans-unit>
+			<trans-unit id="pageBrowser.next">
+				<source>Next</source>
+			</trans-unit>
+			<trans-unit id="pageBrowser.last">
+				<source>Last</source>
+			</trans-unit>
+
 			<trans-unit id="newEntry">
 				<source>Insert new Event</source>
 			</trans-unit>
@@ -331,8 +345,8 @@
 			<trans-unit id="event_topic">
 				<source>Event List by Topics</source>
 			</trans-unit>
-			<trans-unit id="no_event_today">
-				<source>No events today.</source>
+			<trans-unit id="no_events_found">
+				<source>No events found</source>
 			</trans-unit>
 			<trans-unit id="link.listEvents">
 				<source>Show all events</source>
@@ -347,7 +361,7 @@
 				<source>Create</source>
 			</trans-unit>
 			<trans-unit id="update">
-				<source>Edit</source>
+				<source>Update</source>
 			</trans-unit>
 			<trans-unit id="save">
 				<source>Save</source>
@@ -383,6 +397,10 @@
 			</trans-unit>
 			<trans-unit id="email.subject.activate">
 				<source>A record was activated</source>
+			</trans-unit>
+
+			<trans-unit id="validator.event.videoLink.notYouTube">
+				<source>The URI provided for the video link is not a YouTube link. This form currently only allows YouTube links.</source>
 			</trans-unit>
 
 			<trans-unit id="error.upload">

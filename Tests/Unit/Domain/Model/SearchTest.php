@@ -21,17 +21,14 @@ use Nimut\TestingFramework\TestCase\UnitTestCase;
  */
 class SearchTest extends UnitTestCase
 {
-    /**
-     * @var \JWeiland\Events2\Domain\Model\Search
-     */
-    protected $subject;
+    protected Search $subject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->subject = new Search();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset($this->subject);
     }
@@ -120,7 +117,7 @@ class SearchTest extends UnitTestCase
         $this->subject->setEventBegin('today');
 
         self::assertEquals(
-            new \DateTime('today'),
+            new \DateTimeImmutable('today'),
             $this->subject->getEventBegin()
         );
     }
@@ -141,7 +138,7 @@ class SearchTest extends UnitTestCase
         $this->subject->setEventEnd('today');
 
         self::assertEquals(
-            new \DateTime('today'),
+            new \DateTimeImmutable('today'),
             $this->subject->getEventEnd()
         );
     }

@@ -19,17 +19,14 @@ use Nimut\TestingFramework\TestCase\UnitTestCase;
  */
 class TimeToStringConverterTest extends UnitTestCase
 {
-    /**
-     * @var \JWeiland\Events2\Converter\TimeToStringConverter
-     */
-    protected $subject;
+    protected TimeToStringConverter $subject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->subject = new TimeToStringConverter();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset($this->subject);
     }
@@ -37,7 +34,7 @@ class TimeToStringConverterTest extends UnitTestCase
     /**
      * dataProvider for too high int values.
      *
-     * @return array
+     * @return array<string, array<int>>
      */
     public function dataProviderForTooHighIntegerValues(): array
     {
@@ -52,10 +49,9 @@ class TimeToStringConverterTest extends UnitTestCase
     /**
      * @test
      *
-     * @param int $tooHighIntegerValue
      * @dataProvider dataProviderForTooHighIntegerValues
      */
-    public function convertWithTooHighIntergerValues($tooHighIntegerValue): void
+    public function convertWithTooHighIntergerValues(int $tooHighIntegerValue): void
     {
         self::assertSame(
             '23:59',
@@ -66,7 +62,7 @@ class TimeToStringConverterTest extends UnitTestCase
     /**
      * dataProvider for too low int values.
      *
-     * @return array
+     * @return array<string, array<int>>
      */
     public function dataProviderForTooLowIntegerValues(): array
     {
@@ -81,10 +77,9 @@ class TimeToStringConverterTest extends UnitTestCase
     /**
      * @test
      *
-     * @param int $tooLowIntegerValue
      * @dataProvider dataProviderForTooLowIntegerValues
      */
-    public function convertWithTooLowIntergerValues($tooLowIntegerValue): void
+    public function convertWithTooLowIntergerValues(int $tooLowIntegerValue): void
     {
         self::assertSame(
             '00:00',
@@ -95,7 +90,7 @@ class TimeToStringConverterTest extends UnitTestCase
     /**
      * dataProvider for timestamps in allowed range.
      *
-     * @return array
+     * @return array<string, array<int|string>>
      */
     public function dataProviderForTimestampsInAllowedRange(): array
     {
@@ -116,13 +111,11 @@ class TimeToStringConverterTest extends UnitTestCase
     /**
      * @test
      *
-     * @param int    $timestampInRange
-     * @param string $expectedTime
      * @dataProvider dataProviderForTimestampsInAllowedRange
      */
     public function convertWithIntegersInAllowedRangeResultsInStringInterpretation(
-        $timestampInRange,
-        $expectedTime
+        int $timestampInRange,
+        string $expectedTime
     ): void {
         self::assertSame(
             $expectedTime,

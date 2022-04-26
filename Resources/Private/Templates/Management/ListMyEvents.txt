@@ -1,0 +1,13 @@
+<f:security.ifHasRole role="{settings.userGroup}">
+  <f:if condition="{events}">
+  YEAH2
+    <f:for each="{events}" as="event">
+        <f:link.action action="edit"
+                       controller="Management"
+                       arguments="{event: event, timestamp: '0'}">
+          Event Title {event.uid}: {event.title}
+        </f:link.action>
+      </li>
+    </f:for>
+  </f:if>
+</f:security.ifHasRole>

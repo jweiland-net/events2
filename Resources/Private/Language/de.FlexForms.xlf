@@ -3,7 +3,6 @@
 	<file source-language="en" datatype="plaintext" original="messages" date="2013-03-40T10:38:40Z" product-name="events2">
 		<header/>
 		<body>
-
 			<trans-unit id="sheetGeneral" xml:space="preserve">
 				<source>General</source>
 				<target>Allgemein</target>
@@ -25,46 +24,45 @@
 				<target>Neue Veranstaltungen</target>
 			</trans-unit>
 
-			<trans-unit id="chooseAction" xml:space="preserve">
-				<source>Choose view</source>
-				<target>Ansicht wählen</target>
+			<trans-unit id="listType" xml:space="preserve">
+				<source>List Type</source>
+				<target>Listentyp</target>
 			</trans-unit>
-
-			<trans-unit id="list">
+			<trans-unit id="listType.list">
 				<source>List events</source>
 				<target>Auflistung der Termine</target>
 			</trans-unit>
-			<trans-unit id="listLatest">
+			<trans-unit id="listType.listLatest">
 				<source>List latest events</source>
 				<target>Auflistung der aktuellsten Termine</target>
 			</trans-unit>
-			<trans-unit id="listToday">
+			<trans-unit id="listType.listToday">
 				<source>List events of today</source>
 				<target>Auflistung der heutigen Termine</target>
 			</trans-unit>
-			<trans-unit id="listRange">
+			<trans-unit id="listType.listRange">
 				<source>List events for next 4 weeks</source>
 				<target>Auflistung von Terminen der nächsten 4 Wochen</target>
 			</trans-unit>
-			<trans-unit id="listThisWeek">
+			<trans-unit id="listType.listThisWeek">
 				<source>List events for this week</source>
 				<target>Auflistung von Terminen dieser Woche</target>
 			</trans-unit>
 			<trans-unit id="pidOfDetailPage">
-				<source>PID of detail page</source>
-				<target>PID der Detailansicht</target>
+				<source>Page UID of detail page</source>
+				<target>Seiten UID der Detailansicht</target>
 			</trans-unit>
 			<trans-unit id="pidOfListPage">
-				<source>PID of list page</source>
-				<target>PID der Listenansicht. Sinnvoll, wenn auch eine Deteilansicht definiert wurde</target>
+				<source>Page UID of list page</source>
+				<target>Seiten UID der Listenansicht. Sinnvoll, wenn auch eine Deteilansicht definiert wurde</target>
 			</trans-unit>
 			<trans-unit id="pidOfLocationPage">
-				<source>PID of location page</source>
-				<target>PID der Seite, auf der die GoogleMaps Karte angezeigt werden soll</target>
+				<source>Page UID of the site for the event</source>
+				<target>Seiten UID der Seite für den Veranstaltungsort</target>
 			</trans-unit>
-			<trans-unit id="pidOfSearchPage">
-				<source>PID of search page</source>
-				<target>PID der Suchseite</target>
+			<trans-unit id="pidOfSearchResults">
+				<source>Page UID of the search results</source>
+				<target>Seiten UID der Suchergebnisse</target>
 			</trans-unit>
 			<trans-unit id="categories">
 				<source>Categories</source>

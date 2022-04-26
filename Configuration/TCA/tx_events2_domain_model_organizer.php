@@ -21,9 +21,6 @@ return [
         'searchFields' => 'organizer',
         'iconfile' => 'EXT:events2/Resources/Public/Icons/tx_events2_domain_model_organizer.png',
     ],
-    'interface' => [
-        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, organizer, hide_in_filter, link',
-    ],
     'types' => [
         '1' => [
             'showitem' => '--palette--;;languageHidden, l10n_diffsource,

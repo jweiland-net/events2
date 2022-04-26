@@ -1,8 +1,8 @@
-<html
-	xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-	xmlns:e2="http://typo3.org/ns/JWeiland/Events2/ViewHelpers"
-	data-namespace-typo3-fluid="true"
->
+<html lang="en"
+			xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+			xmlns:e2="http://typo3.org/ns/JWeiland/Events2/ViewHelpers"
+			data-namespace-typo3-fluid="true">
+
 <div class="row">
 	<div class="col-md-9">
 		<h1>{day.event.title}</h1>
@@ -187,7 +187,9 @@
 		<dt>iCalendar</dt>
 		<dd>
 			<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
-			<e2:widget.iCalendar day="{day}" />
+			<f:link.action action="download" controller="ICal" target="_blank" arguments="{dayUid: day.uid}">
+				{f:translate(key: 'export')}
+			</f:link.action>
 		</dd>
 	</dl>
 </f:section>

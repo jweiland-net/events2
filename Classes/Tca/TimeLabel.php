@@ -19,24 +19,33 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 class TimeLabel
 {
     /**
-     * add weekday to time records
+     * Add weekday to time records,
      * but only if record is for field different_times.
-     *
-     * @param array $ctrlArray
-     * @param $parentObject
      */
-    public function getTitle(array &$ctrlArray, $parentObject): void
+    public function getTitle(array &$ctrlArray, ?object $parentObject): void
     {
-        if ($ctrlArray['table'] === 'tx_events2_domain_model_time') {
-            // add begin and end to title in general
-            $ctrlArray['title'] = $ctrlArray['row']['time_begin'];
-            $ctrlArray['title'] .= $ctrlArray['row']['time_end'] ? ' - ' . $ctrlArray['row']['time_end'] : '';
+        if ($ctrlArray['table'] !== 'tx_events2_domain_model_time') {
+            return;
+        }
 
-            // if we are in different_time context, we add weekday to time
-            if ($ctrlArray['row']['type'] === 'different_times') {
-                $translationKey = 'tx_events2_domain_model_time.weekday.' . $ctrlArray['row']['weekday'];
-                $ctrlArray['title'] .= ': ' . LocalizationUtility::translate($translationKey, 'events2');
-            }
+        if (!isset($ctrlArray['row']['time_begin'])) {
+            return;
+        }
+
+        // Add time begin
+        $ctrlArray['title'] = $ctrlArray['row']['time_begin'];
+
+        if (isset($ctrlArray['row']['time_end']) && $ctrlArray['row']['time_end'] !== '') {
+            $ctrlArray['title'] .= ' - ' . $ctrlArray['row']['time_end'];
+        }
+
+        // if we are in different_time context, we add weekday to time
+        if (
+            $ctrlArray['row']['type'] === 'different_times'
+            && isset($ctrlArray['row']['weekday'])
+        ) {
+            $translationKey = 'tx_events2_domain_model_time.weekday.' . $ctrlArray['row']['weekday'][0];
+            $ctrlArray['title'] .= ': ' . LocalizationUtility::translate($translationKey, 'events2');
         }
     }
 }

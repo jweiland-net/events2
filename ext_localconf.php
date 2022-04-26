@@ -3,46 +3,70 @@ if (!defined('TYPO3_MODE')) {
     die('Access denied.');
 }
 
-call_user_func(static function () {
+call_user_func(static function (): void {
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-        'JWeiland.events2',
-        'Events',
+        'Events2',
+        'List',
         [
-            'Day' => 'list, listLatest, listToday, listWeek, listRange, listSearchResults, show, showByTimestamp',
-            'Event' => 'listMyEvents, new, create, edit, update, delete, activate',
-            'Location' => 'show',
-            'Video' => 'show',
-        ],
-        // non-cacheable actions
-        [
-            'Day' => 'listSearchResults',
-            'Event' => 'create, edit, update, delete, activate',
+            \JWeiland\Events2\Controller\DayController::class => 'list, show',
+            \JWeiland\Events2\Controller\LocationController::class => 'show',
+            \JWeiland\Events2\Controller\VideoController::class => 'show',
+            \JWeiland\Events2\Controller\ICalController::class => 'download'
         ]
     );
 
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-        'JWeiland.events2',
+        'Events2',
+        'Show',
+        [
+            \JWeiland\Events2\Controller\DayController::class => 'show',
+            \JWeiland\Events2\Controller\LocationController::class => 'show',
+            \JWeiland\Events2\Controller\VideoController::class => 'show',
+            \JWeiland\Events2\Controller\ICalController::class => 'download'
+        ]
+    );
+
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+        'Events2',
+        'Management',
+        [
+            \JWeiland\Events2\Controller\ManagementController::class => 'listMyEvents, new, create, edit, update, delete, activate'
+        ],
+        // non-cacheable actions
+        [
+            \JWeiland\Events2\Controller\ManagementController::class => 'create, edit, update, delete, activate'
+        ]
+    );
+
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+        'Events2',
         'Calendar',
         [
-            'Calendar' => 'show',
-        ],
-        // non-cacheable actions
-        [
-            'Calendar' => 'show',
+            \JWeiland\Events2\Controller\CalendarController::class => 'show'
         ]
     );
 
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-        'JWeiland.events2',
-        'Search',
+        'Events2',
+        'SearchForm',
         [
-            'Search' => 'show',
-            'Ajax' => 'callAjaxObject',
+            \JWeiland\Events2\Controller\SearchController::class => 'show'
         ],
-        // non-cacheable actions
+        // Needs to be uncached, to show dynamic search values again after reload.
         [
-            'Search' => 'show',
-            'Ajax' => 'callAjaxObject',
+            \JWeiland\Events2\Controller\SearchController::class => 'show'
+        ]
+    );
+
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+        'Events2',
+        'SearchResults',
+        [
+            \JWeiland\Events2\Controller\SearchController::class => 'listSearchResults'
+        ],
+        // needs to be uncached to show fresh search results
+        [
+            \JWeiland\Events2\Controller\SearchController::class => 'listSearchResults'
         ]
     );
 
@@ -91,6 +115,7 @@ call_user_func(static function () {
             ['source' => 'EXT:events2/Resources/Public/Icons/' . $fileName]
         );
     }
+
     foreach ($bmpIcons as $identifier => $fileName) {
         $iconRegistry->registerIcon(
             $identifier,
@@ -100,11 +125,9 @@ call_user_func(static function () {
     }
 
     // Add events2 plugin to new element wizard
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('<INCLUDE_TYPOSCRIPT: source="FILE:EXT:events2/Configuration/TSconfig/ContentElementWizard.txt">');
-
-    // register eID scripts
-    $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['events2findDaysForMonth'] = \JWeiland\Events2\Ajax\FindDaysForMonth::class . '::processRequest';
-    $GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['events2findLocations'] = \JWeiland\Events2\Ajax\FindLocations::class . '::processRequest';
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig(
+        '<INCLUDE_TYPOSCRIPT: source="FILE:EXT:events2/Configuration/TSconfig/ContentElementWizard.tsconfig">'
+    );
 
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['aspects']['TimestampMapper'] = \JWeiland\Events2\Routing\Aspect\TimestampMapper::class;
 
@@ -129,10 +152,22 @@ call_user_func(static function () {
         ]
     ];
 
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerTypeConverter(\JWeiland\Events2\Property\TypeConverter\DateTimeImmutableConverter::class);
+
+    $GLOBALS['TYPO3_CONF_VARS']['LOG']['JWeiland']['Events2']['writerConfiguration'] = [
+        \TYPO3\CMS\Core\Log\LogLevel::WARNING => [
+            \TYPO3\CMS\Core\Log\Writer\FileWriter::class => [
+                'logFileInfix' => 'events2'
+            ]
+        ],
+    ];
+
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['events2UpdateSlug']
-        = \JWeiland\Events2\Updater\EventsSlugUpdater::class;
+        = \JWeiland\Events2\Upgrade\EventsSlugUpgrade::class;
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['events2MigrateOrganizer']
-        = \JWeiland\Events2\Updater\MigrateOrganizerToMMUpdater::class;
+        = \JWeiland\Events2\Upgrade\MigrateOrganizerToMMUpgrade::class;
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['events2MigrateDetailInformations']
-        = \JWeiland\Events2\Updater\MigrateDetailInformationsUpdater::class;
+        = \JWeiland\Events2\Upgrade\MigrateDetailInformationsUpgrade::class;
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['events2MoveFlexFormFields']
+        = \JWeiland\Events2\Upgrade\MoveOldFlexFormSettingsUpgrade::class;
 });

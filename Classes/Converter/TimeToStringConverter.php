@@ -43,9 +43,6 @@ class TimeToStringConverter
     /**
      * this method rounds down (floor) the contained hours in $time
      * Hint: Can also return 0. Be careful with this result (division by zero).
-     *
-     * @param int $time
-     * @return float
      */
     protected function getHours(int $time): float
     {
@@ -59,19 +56,11 @@ class TimeToStringConverter
      * 9 * 3.600 = 32.400
      * 33.300 - 32.400 = 900 seconds remaining
      * 900 / 60 = 15 minutes.
-     *
-     * @param int   $time  seconds since midnight
-     * @param float $hours
-     * @return int remaining minutes
      */
     protected function getRemainingMinutes(int $time, float $hours): int
     {
         $seconds = $hours === (float)0 ? $time : $time % ($hours * 3600);
-        if ($seconds) {
-            $minutes = floor($seconds / 60);
-        } else {
-            $minutes = 0;
-        }
+        $minutes = $seconds !== 0 ? floor($seconds / 60) : 0;
 
         return (int)$minutes;
     }

@@ -21,19 +21,17 @@ use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
  */
 class AllowSearchParameterEventListener extends AbstractControllerEventListener
 {
-    protected $allowedControllerActions = [
-        'Day' => [
-            'listSearchResults'
-        ],
+    protected array $allowedControllerActions = [
         'Search' => [
+            'listSearchResults',
             'show'
         ]
     ];
 
-    public function __invoke(PreProcessControllerActionEvent $event): void
+    public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void
     {
-        if ($this->isValidRequest($event)) {
-            $pmc = $event->getArguments()
+        if ($this->isValidRequest($controllerActionEvent)) {
+            $pmc = $controllerActionEvent->getArguments()
                 ->getArgument('search')
                 ->getPropertyMappingConfiguration();
 

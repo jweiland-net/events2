@@ -22,9 +22,6 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  */
 class OrganizerRepository extends Repository
 {
-    /**
-     * @var array
-     */
     protected $defaultOrderings = [
         'organizer' => QueryInterface::ORDER_ASCENDING,
     ];
@@ -37,6 +34,7 @@ class OrganizerRepository extends Repository
     public function getOrganizersForFilter(): QueryResultInterface
     {
         $query = $this->createQuery();
+
         return $query->matching($query->equals('hide_in_filter', 0))->execute();
     }
 }

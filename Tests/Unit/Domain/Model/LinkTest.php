@@ -22,17 +22,14 @@ class LinkTest extends UnitTestCase
 {
     use TestTypo3PropertiesTrait;
 
-    /**
-     * @var \JWeiland\Events2\Domain\Model\Link
-     */
-    protected $subject;
+    protected Link $subject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->subject = new Link();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset($this->subject);
     }

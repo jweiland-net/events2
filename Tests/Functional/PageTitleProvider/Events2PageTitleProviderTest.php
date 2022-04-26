@@ -26,10 +26,7 @@ use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
  */
 class Events2PageTitleProviderTest extends FunctionalTestCase
 {
-    /**
-     * @var Events2PageTitleProvider
-     */
-    protected $subject;
+    protected Events2PageTitleProvider $subject;
 
     /**
      * @var array
@@ -38,7 +35,7 @@ class Events2PageTitleProviderTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -47,23 +44,26 @@ class Events2PageTitleProviderTest extends FunctionalTestCase
         $persistenceManager = $objectManager->get(PersistenceManagerInterface::class);
         $querySettings = $objectManager->get(QuerySettingsInterface::class);
         $querySettings->setStoragePageIds([$pageId]);
+
         $eventRepository = $objectManager->get(EventRepository::class);
         $eventRepository->setDefaultQuerySettings($querySettings);
+
         $dayRelationService = $objectManager->get(DayRelationService::class);
         $this->subject = new Events2PageTitleProvider($objectManager);
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setPid($pageId);
         $event->setEventType('single');
         $event->setTopOfList(false);
         $event->setTitle('Nice title for detail page');
-        $event->setEventBegin(new \DateTime('midnight'));
+        $event->setEventBegin(new \DateTimeImmutable('midnight'));
         $event->setXth(0);
         $event->setWeekday(0);
         $event->setEachWeeks(0);
         $event->setEachMonths(0);
         $event->setRecurringEnd(null);
         $event->setFreeEntry(false);
+
         $persistenceManager->add($event);
         $persistenceManager->persistAll();
 
@@ -73,7 +73,7 @@ class Events2PageTitleProviderTest extends FunctionalTestCase
         }
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset($this->pageTitleProvider);
         parent::tearDown();
@@ -84,17 +84,11 @@ class Events2PageTitleProviderTest extends FunctionalTestCase
      */
     public function findDayWithDateTimeOfTodayWillFindExactlyMatchingDay(): void
     {
-        $record = $this->getDatabaseConnection()->selectSingleRow(
-            '*',
-            'tx_events2_domain_model_day',
-            'event=1'
-        );
-
-        $date = new \DateTime('midnight');
-        $_GET['tx_events2_events']['controller'] = 'Event';
-        $_GET['tx_events2_events']['action'] = 'show';
-        $_GET['tx_events2_events']['event'] = 1;
-        $_GET['tx_events2_events']['timestamp'] = $date->format('U');
+        $date = new \DateTimeImmutable('midnight');
+        $_GET['tx_events2_list']['controller'] = 'Event';
+        $_GET['tx_events2_list']['action'] = 'show';
+        $_GET['tx_events2_list']['event'] = 1;
+        $_GET['tx_events2_list']['timestamp'] = $date->format('U');
 
         self::assertSame(
             'Nice title for detail page - ' . $date->format('d.m.Y'),

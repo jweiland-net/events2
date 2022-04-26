@@ -34,72 +34,34 @@ use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
  */
 abstract class AbstractImporter implements ImporterInterface
 {
-    /**
-     * @var int
-     */
-    protected $storagePid = 0;
+    protected int $storagePid = 0;
 
     /**
      * The file to import
-     *
-     * @var FileInterface
      */
-    protected $file;
+    protected FileInterface $file;
 
-    /**
-     * @var string
-     */
-    protected $logFileName = 'Messages.txt';
+    protected string $logFileName = 'Messages.txt';
 
-    /**
-     * @var array
-     */
-    protected $allowedMimeType = [];
+    protected array $allowedMimeType = [];
 
-    /**
-     * @var PersistenceManagerInterface
-     */
-    protected $persistenceManager;
+    protected PersistenceManagerInterface $persistenceManager;
 
-    /**
-     * @var EventRepository
-     */
-    protected $eventRepository;
+    protected EventRepository $eventRepository;
 
-    /**
-     * @var OrganizerRepository
-     */
-    protected $organizerRepository;
+    protected OrganizerRepository $organizerRepository;
 
-    /**
-     * @var LocationRepository
-     */
-    protected $locationRepository;
+    protected LocationRepository $locationRepository;
 
-    /**
-     * @var CategoryRepository
-     */
-    protected $categoryRepository;
+    protected CategoryRepository $categoryRepository;
 
-    /**
-     * @var PathSegmentHelper
-     */
-    protected $pathSegmentHelper;
+    protected PathSegmentHelper $pathSegmentHelper;
 
-    /**
-     * @var DateTimeUtility
-     */
-    protected $dateTimeUtility;
+    protected DateTimeUtility $dateTimeUtility;
 
-    /**
-     * @var ExtConf
-     */
-    protected $extConf;
+    protected ExtConf $extConf;
 
-    /**
-     * @var \DateTime
-     */
-    protected $today;
+    protected \DateTimeImmutable $today;
 
     public function __construct(
         EventRepository $eventRepository,
@@ -119,7 +81,7 @@ abstract class AbstractImporter implements ImporterInterface
         $this->pathSegmentHelper = $pathSegmentHelper;
         $this->dateTimeUtility = $dateTimeUtility;
         $this->extConf = $extConf;
-        $this->today = new \DateTime('now');
+        $this->today = new \DateTimeImmutable('now');
     }
 
     public function setStoragePid(int $storagePid): void
@@ -151,13 +113,14 @@ abstract class AbstractImporter implements ImporterInterface
                 return true;
             }
         }
+
         return false;
     }
 
     protected function isValidEvent(array $event): bool
     {
         // Is future event?
-        $eventBegin = \DateTime::createFromFormat('Y-m-d', $event['event_begin']);
+        $eventBegin = \DateTimeImmutable::createFromFormat('Y-m-d', $event['event_begin']);
         if ($eventBegin < $this->today) {
             $this->addMessage(
                 sprintf(
@@ -168,6 +131,7 @@ abstract class AbstractImporter implements ImporterInterface
                 ),
                 FlashMessage::ERROR
             );
+
             return false;
         }
 
@@ -175,6 +139,7 @@ abstract class AbstractImporter implements ImporterInterface
             foreach ($event['organizers'] as $organizer) {
                 if ($this->getOrganizer($organizer) === []) {
                     $this->addNotFoundMessage($event, 'organizer', $organizer, $eventBegin);
+
                     return false;
                 }
             }
@@ -182,6 +147,7 @@ abstract class AbstractImporter implements ImporterInterface
 
         if ($this->isLocationProcessable($event) && $this->getLocation($event['location']) === []) {
             $this->addNotFoundMessage($event, 'location', $event['location'], $eventBegin);
+
             return false;
         }
 
@@ -189,57 +155,66 @@ abstract class AbstractImporter implements ImporterInterface
             foreach ($event['categories'] as $title) {
                 if ($this->getCategory($title) === []) {
                     $this->addNotFoundMessage($event, 'category', $title, $eventBegin);
+
                     return false;
                 }
             }
         }
 
         // check for valid image paths
-        if (isset($event['images']) && is_array($event['images'])) {
-            foreach ($event['images'] as $image) {
-                if (!is_array($image)) {
-                    $this->addMessage(
-                        sprintf(
-                            'Event: %s - Date: %s - Error: %s',
-                            $event['title'],
-                            $eventBegin->format('d.m.Y'),
-                            'Image must be of type array'
-                        ),
-                        FlashMessage::ERROR
-                    );
-                    return false;
-                }
-                if (!isset($image['url']) || empty(trim($image['url']))) {
-                    $this->addMessage(
-                        sprintf(
-                            'Event: %s - Date: %s - Error: %s',
-                            $event['title'],
-                            $eventBegin->format('d.m.Y'),
-                            'Array key "url" of image must be set and can not be empty'
-                        ),
-                        FlashMessage::ERROR
-                    );
-                    return false;
-                }
-                if (!filter_var($image['url'], FILTER_VALIDATE_URL)) {
-                    $this->addMessage(
-                        sprintf(
-                            'Event: %s - Date: %s - Error: %s',
-                            $event['title'],
-                            $eventBegin->format('d.m.Y'),
-                            'Image path has to be a valid URL'
-                        ),
-                        FlashMessage::ERROR
-                    );
-                    return false;
-                }
+        if (!isset($event['images'])) {
+            return true;
+        }
+        if (!is_array($event['images'])) {
+            return true;
+        }
+
+        foreach ($event['images'] as $image) {
+            if (!is_array($image)) {
+                $this->addMessage(
+                    sprintf(
+                        'Event: %s - Date: %s - Error: %s',
+                        $event['title'],
+                        $eventBegin->format('d.m.Y'),
+                        'Image must be of type array'
+                    ),
+                    FlashMessage::ERROR
+                );
+
+                return false;
+            }
+            if (!isset($image['url']) || empty(trim($image['url']))) {
+                $this->addMessage(
+                    sprintf(
+                        'Event: %s - Date: %s - Error: %s',
+                        $event['title'],
+                        $eventBegin->format('d.m.Y'),
+                        'Array key "url" of image must be set and can not be empty'
+                    ),
+                    FlashMessage::ERROR
+                );
+
+                return false;
+            }
+            if (!filter_var($image['url'], FILTER_VALIDATE_URL)) {
+                $this->addMessage(
+                    sprintf(
+                        'Event: %s - Date: %s - Error: %s',
+                        $event['title'],
+                        $eventBegin->format('d.m.Y'),
+                        'Image path has to be a valid URL'
+                    ),
+                    FlashMessage::ERROR
+                );
+
+                return false;
             }
         }
 
         return true;
     }
 
-    protected function addNotFoundMessage(array $event, string $property, string $value, \DateTime $date): void
+    protected function addNotFoundMessage(array $event, string $property, string $value, \DateTimeImmutable $date): void
     {
         $this->addMessage(
             sprintf(
@@ -258,7 +233,7 @@ abstract class AbstractImporter implements ImporterInterface
 
     protected function areOrganizersProcessable(array $event): bool
     {
-        if ($this->extConf->getOrganizerIsRequired() === false) {
+        if (!$this->extConf->getOrganizerIsRequired()) {
             return false;
         }
 
@@ -271,6 +246,7 @@ abstract class AbstractImporter implements ImporterInterface
                     return false;
                 }
             }
+
             return true;
         }
 
@@ -294,16 +270,22 @@ abstract class AbstractImporter implements ImporterInterface
                 )
             )
             ->execute()
-            ->fetch();
+            ->fetch(\PDO::FETCH_ASSOC);
 
         return $organizer ?: [];
     }
 
     protected function isLocationProcessable(array $event): bool
     {
-        return $this->extConf->getLocationIsRequired()
-            && array_key_exists('location', $event)
-            && $event['location'] !== '';
+        if (!$this->extConf->getLocationIsRequired()) {
+            return false;
+        }
+
+        if (!array_key_exists('location', $event)) {
+            return false;
+        }
+
+        return $event['location'] !== '';
     }
 
     protected function getLocation(string $title): array
@@ -325,7 +307,7 @@ abstract class AbstractImporter implements ImporterInterface
                 )
             )
             ->execute()
-            ->fetch();
+            ->fetch(\PDO::FETCH_ASSOC);
 
         return $location ?: [];
     }
@@ -347,7 +329,7 @@ abstract class AbstractImporter implements ImporterInterface
                 )
             )
             ->execute()
-            ->fetch();
+            ->fetch(\PDO::FETCH_ASSOC);
 
         return $category ?: [];
     }
@@ -370,15 +352,13 @@ abstract class AbstractImporter implements ImporterInterface
             }
 
             $logFile->setContents($content . $message . LF);
-        } catch (\Exception $e) {
-            $message = $e->getMessage();
+        } catch (\Exception $exception) {
+            $message = $exception->getMessage();
             $severity = FlashMessage::ERROR;
         }
 
         // show messages in TYPO3 BE when started manually
-        /** @var FlashMessage $flashMessage */
         $flashMessage = GeneralUtility::makeInstance(FlashMessage::class, $message, '', $severity);
-        /** @var FlashMessageService $flashMessageService */
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
         $defaultFlashMessageQueue->enqueue($flashMessage);
@@ -388,7 +368,6 @@ abstract class AbstractImporter implements ImporterInterface
      * Get LogFile
      * If it does not exists, we create a new one in same directory of import file
      *
-     * @return AbstractFile
      * @throws \Exception
      */
     protected function getLogFile(): AbstractFile

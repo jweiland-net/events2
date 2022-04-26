@@ -18,9 +18,6 @@ use JWeiland\Events2\Domain\Model\Location;
  */
 class LocationController extends AbstractController
 {
-    /**
-     * @param Location $location
-     */
     public function showAction(Location $location): void
     {
         $this->postProcessAndAssignFluidVariables([

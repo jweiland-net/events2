@@ -19,15 +19,11 @@ use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
  */
 class UserSession
 {
-    /**
-     * @var FrontendUserAuthentication
-     */
-    protected $feUser;
+    protected ?FrontendUserAuthentication $feUser = null;
 
-    public function __construct(FrontendUserAuthentication $feUser)
+    public function __construct()
     {
-        $this->feUser = $feUser;
-        $this->feUser->start();
+        $this->feUser = $GLOBALS['TSFE']->fe_user ?? null;
     }
 
     /**
@@ -38,6 +34,10 @@ class UserSession
      */
     public function getMonthAndYear(): array
     {
+        if ($this->feUser === null) {
+            return [];
+        }
+
         $monthAndYear = $this->feUser->getKey(
             'ses',
             'events2MonthAndYearForCalendar'
@@ -51,6 +51,10 @@ class UserSession
 
     public function setMonthAndYear(int $month, int $year): void
     {
+        if ($this->feUser === null) {
+            return;
+        }
+
         $month = MathUtility::forceIntegerInRange($month, 1, 12);
         $year = MathUtility::forceIntegerInRange($year, 1970);
         $this->feUser->setAndSaveSessionData(

@@ -23,8 +23,8 @@ class TypoScriptService
             if (is_array($value) && is_array($mergedFlexFormSettings[$property])) {
                 $this->override($mergedFlexFormSettings[$property], $value);
             } elseif (
-                $mergedFlexFormSettings[$property] === '0'
-                || !isset($mergedFlexFormSettings[$property])
+                !isset($mergedFlexFormSettings[$property])
+                || $mergedFlexFormSettings[$property] === '0'
                 || (
                     is_string($mergedFlexFormSettings[$property]) &&
                     $mergedFlexFormSettings[$property] === ''

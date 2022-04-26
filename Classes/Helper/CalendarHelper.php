@@ -16,19 +16,13 @@ use JWeiland\Events2\Session\UserSession;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /*
- * Helper class containing various methods to help building variables for jquery calendar
+ * Helper class containing various methods to help to build variables for LiteCalendar
  */
 class CalendarHelper
 {
-    /**
-     * @var DayHelper
-     */
-    protected $dayHelper;
+    protected DayHelper $dayHelper;
 
-    /**
-     * @var UserSession
-     */
-    protected $userSession;
+    protected UserSession $userSession;
 
     public function __construct(
         DayHelper $dayHelper,

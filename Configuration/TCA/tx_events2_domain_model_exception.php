@@ -31,9 +31,6 @@ return [
         'searchFields' => 'exception_details',
         'iconfile' => 'EXT:events2/Resources/Public/Icons/exception_add.png',
     ],
-    'interface' => [
-        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, exception_type, exception_date, exception_time, exception_details',
-    ],
     'types' => [
         'Add' => [
             'showitem' => '--palette--;;exception, sys_language_uid, l10n_parent, l10n_diffsource, exception_time, exception_details,

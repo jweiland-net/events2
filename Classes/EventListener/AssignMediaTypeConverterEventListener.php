@@ -21,18 +21,12 @@ use TYPO3\CMS\Extbase\Property\PropertyMappingConfiguration;
 
 class AssignMediaTypeConverterEventListener extends AbstractControllerEventListener
 {
-    /**
-     * @var EventRepository
-     */
-    protected $eventRepository;
+    protected EventRepository $eventRepository;
 
-    /**
-     * @var UploadMultipleFilesConverter
-     */
-    protected $uploadMultipleFilesConverter;
+    protected UploadMultipleFilesConverter $uploadMultipleFilesConverter;
 
-    protected $allowedControllerActions = [
-        'Event' => [
+    protected array $allowedControllerActions = [
+        'Management' => [
             'create',
             'update'
         ]
@@ -46,41 +40,41 @@ class AssignMediaTypeConverterEventListener extends AbstractControllerEventListe
         $this->uploadMultipleFilesConverter = $uploadMultipleFilesConverter;
     }
 
-    public function __invoke(PreProcessControllerActionEvent $event): void
+    public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void
     {
-        if ($this->isValidRequest($event)) {
-            if ($event->getActionName() === 'create') {
-                $this->assignTypeConverterForCreateAction($event);
+        if ($this->isValidRequest($controllerActionEvent)) {
+            if ($controllerActionEvent->getActionName() === 'create') {
+                $this->assignTypeConverterForCreateAction($controllerActionEvent);
             } else {
-                $this->assignTypeConverterForUpdateAction($event);
+                $this->assignTypeConverterForUpdateAction($controllerActionEvent);
             }
         }
     }
 
-    protected function assignTypeConverterForCreateAction(PreProcessControllerActionEvent $event): void
+    protected function assignTypeConverterForCreateAction(PreProcessControllerActionEvent $controllerActionEvent): void
     {
-        $this->setTypeConverterForProperty('images', null, $event);
+        $this->setTypeConverterForProperty('images', null, $controllerActionEvent);
     }
 
-    protected function assignTypeConverterForUpdateAction(PreProcessControllerActionEvent $event): void
+    protected function assignTypeConverterForUpdateAction(PreProcessControllerActionEvent $controllerActionEvent): void
     {
         // Needed to get the previously stored images
-        /** @var Event $persistedEvent */
+        /** @var Event|null $persistedEvent */
         $persistedEvent = $this->eventRepository->findHiddenObject(
-            (int)$event->getRequest()->getArgument('event')['__identity']
+            (int)$controllerActionEvent->getRequest()->getArgument('event')['__identity']
         );
 
         if ($persistedEvent instanceof Event) {
-            $this->setTypeConverterForProperty('images', $persistedEvent->getOriginalImages(), $event);
+            $this->setTypeConverterForProperty('images', $persistedEvent->getOriginalImages(), $controllerActionEvent);
         }
     }
 
     protected function setTypeConverterForProperty(
         string $property,
         ?ObjectStorage $persistedFiles,
-        PreProcessControllerActionEvent $event
+        PreProcessControllerActionEvent $controllerActionEvent
     ): void {
-        $propertyMappingConfiguration = $this->getPropertyMappingConfigurationForEvent($event)
+        $propertyMappingConfiguration = $this->getPropertyMappingConfigurationForEvent($controllerActionEvent)
             ->forProperty($property)
             ->setTypeConverter($this->uploadMultipleFilesConverter);
 
@@ -88,7 +82,7 @@ class AssignMediaTypeConverterEventListener extends AbstractControllerEventListe
         $this->addOptionToUploadFilesConverter(
             $propertyMappingConfiguration,
             'settings',
-            $event->getSettings()
+            $controllerActionEvent->getSettings()
         );
 
         if ($persistedFiles !== null) {
@@ -101,9 +95,9 @@ class AssignMediaTypeConverterEventListener extends AbstractControllerEventListe
     }
 
     protected function getPropertyMappingConfigurationForEvent(
-        PreProcessControllerActionEvent $event
+        PreProcessControllerActionEvent $controllerActionEvent
     ): MvcPropertyMappingConfiguration {
-        return $event->getArguments()
+        return $controllerActionEvent->getArguments()
             ->getArgument('event')
             ->getPropertyMappingConfiguration();
     }

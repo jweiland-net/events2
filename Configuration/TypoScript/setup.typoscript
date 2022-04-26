@@ -1,27 +1,24 @@
+page.includeCSS {
+  # Only needed for management plugin. If you don't need that plugin you can remove this line.
+  eventsAutoComplete = EXT:events2/Resources/Public/Css/AutoComplete.min.css
+  # Only needed for management plugin. If you don't need that plugin you can remove this line.
+  eventsTooltip = EXT:events2/Resources/Public/Css/Tooltip.css
+}
+
 page.includeJSFooter {
-  jQueryForEvents2 = https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js
-  jQueryForEvents2.external = 1
-  jQueryForEvents2.if.isTrue = {$plugin.tx_events2.settings.includeJQueryLibrary}
-  jQueryUiForEvents2 = https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js
-  jQueryUiForEvents2.external = 1
-  jQueryUiForEvents2.if.isTrue = {$plugin.tx_events2.settings.includeJQueryUiLibrary}
-  jQueryUiCalendarDe = EXT:events2/Resources/Public/JavaScript/jquery.ui.datepicker-de.js
-  jQueryUiCalendarDe.if.isTrue = {$plugin.tx_events2.settings.includeDeTranslationForCalendar}
+  # AutoComplete is needed for search and management plugin. If you don't need these plugins you can remove this line.
+  events2AutoComplete = EXT:events2/Resources/Public/JavaScript/AutoComplete.min.js
+  # LitePicker is needed for search and calendar plugin. If you don't need these plugins you can remove this line.
+  events2Litepicker = EXT:events2/Resources/Public/JavaScript/LitePicker.js
+  # Only needed for search and management plugin. If you don't need that plugin you can remove this line.
   events2 = EXT:events2/Resources/Public/JavaScript/Events2.js
+  # Only needed for calendar plugin. If you don't need that plugin you can remove this line.
   events2Calendar = EXT:events2/Resources/Public/JavaScript/Calendar.js
 }
 
-page.includeCSS {
-  jQueryCssForEvents2 = https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css
-  jQueryCssForEvents2.external = 1
-  jQueryCssForEvents2.excludeFromConcatenation = 1
-  jQueryCssForEvents2.disableCompression = 1
-  jQueryCssForEvents2.if.isTrue = {$plugin.tx_events2.settings.includeJQueryUiCss}
-}
-
-# search should work with get params of events plugin
-plugin.tx_events2_search.view.pluginNamespace = tx_events2_events
-# but if there was an action called which is not accessible, then call the default action
+# Search form should react on $_GET params of SearchResults plugin to show search values again in form.
+plugin.tx_events2_searchform.view.pluginNamespace = tx_events2_searchresults
+# If there was an action called which is not accessible, then call the default action
 plugin.tx_events2_search.mvc.callDefaultActionIfActionCantBeResolved = 1
 
 plugin.tx_events2 {
@@ -33,6 +30,7 @@ plugin.tx_events2 {
     partialRootPaths {
       0 = EXT:events2/Resources/Private/Partials/
       1 = {$plugin.tx_events2.view.partialRootPath}
+      2 = EXT:maps2/Resources/Private/Partials/
     }
     layoutRootPaths {
       0 = EXT:events2/Resources/Private/Layouts/
@@ -62,7 +60,7 @@ plugin.tx_events2 {
   settings {
     rootCategory = {$plugin.tx_events2.settings.rootCategory}
     pidOfDetailPage = {$plugin.tx_events2.settings.pidOfDetailPage}
-    pidOfSearchPage = {$plugin.tx_events2.settings.pidOfSearchPage}
+    pidOfSearchResults = {$plugin.tx_events2.settings.pidOfSearchResults}
     pidOfLocationPage = {$plugin.tx_events2.settings.pidOfLocationPage}
     pidOfListPage = {$plugin.tx_events2.settings.pidOfListPage}
     includeDeTranslationForCalendar = {$plugin.tx_events2.settings.includeDeTranslationForCalendar}
@@ -108,12 +106,6 @@ plugin.tx_events2 {
   _LOCAL_LANG.de.rightsMessage = Hiermit räume ich ... ein einfaches, unbeschränktes Nutzungsrecht an dem hochgeladenen Werk ein. Mit der Nutzung werden keine Rechte von Dritten verletzt.
   _LOCAL_LANG.default.rightsMessage = I give all rights of this image to...
 }
-
-# TYPO3 8 comes with a new security feature which requires a cHash for all URLs.
-# As we have some individual forms and AjaxCalls, where we can not create an individual cHash
-# we have to disable that feature
-plugin.tx_events2_events.features.requireCHashArgumentForActionArguments = 0
-plugin.tx_events2_search.features.requireCHashArgumentForActionArguments = 0
 
 module.tx_events2 {
   view {

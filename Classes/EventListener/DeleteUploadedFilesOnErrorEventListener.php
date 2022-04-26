@@ -22,19 +22,19 @@ use JWeiland\Events2\Event\PostProcessFluidVariablesEvent;
  */
 class DeleteUploadedFilesOnErrorEventListener extends AbstractControllerEventListener
 {
-    protected $allowedControllerActions = [
-        'Event' => [
+    protected array $allowedControllerActions = [
+        'Management' => [
             'new'
         ]
     ];
 
-    public function __invoke(PostProcessFluidVariablesEvent $event): void
+    public function __invoke(PostProcessFluidVariablesEvent $controllerActionEvent): void
     {
         if (
-            $this->isValidRequest($event)
-            && $event->getRequest()->hasArgument('event')
+            $this->isValidRequest($controllerActionEvent)
+            && $controllerActionEvent->getRequest()->hasArgument('event')
         ) {
-            $eventObject = $event->getRequest()->getArgument('event');
+            $eventObject = $controllerActionEvent->getRequest()->getArgument('event');
             if ($eventObject instanceof Event) {
                 $images = $eventObject->getImages();
                 foreach ($images as $image) {

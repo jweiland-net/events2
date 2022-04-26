@@ -19,30 +19,24 @@ use Nimut\TestingFramework\TestCase\UnitTestCase;
  */
 class DateTimeUtilityTest extends UnitTestCase
 {
-    /**
-     * @var \JWeiland\Events2\Utility\DateTimeUtility
-     */
-    protected $subject;
+    protected DateTimeUtility $subject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->subject = new DateTimeUtility();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset($this->subject);
     }
 
-    /**
-     * @return array
-     */
     public function emptyDatesDataProvider(): array
     {
         $emptyDate = [];
-        $emptyDate['empty value: null'] = [null, null];
-        $emptyDate['empty value: 0000-00-00'] = ['0000-00-00', null];
-        $emptyDate['empty value: 0000-00-00 00:00:00'] = ['0000-00-00 00:00:00', null];
+        $emptyDate['empty value: null'] = [null];
+        $emptyDate['empty value: 0000-00-00'] = ['0000-00-00'];
+        $emptyDate['empty value: 0000-00-00 00:00:00'] = ['0000-00-00 00:00:00'];
 
         return $emptyDate;
     }
@@ -50,22 +44,17 @@ class DateTimeUtilityTest extends UnitTestCase
     /**
      * @test
      *
-     * @param $emptyDate
-     * @param $expectedDate
      * @dataProvider emptyDatesDataProvider
      */
-    public function convertEmptyDatesResultsInNull($emptyDate, $expectedDate): void
+    public function convertEmptyDatesResultsInNull(?string $emptyDate): void
     {
-        self::assertSame(
-            $expectedDate,
+        self::assertNull(
             $this->subject->convert($emptyDate)
         );
     }
 
     /**
      * dataProvider with invalid values for DateTime objects.
-     *
-     * @return array
      */
     public function dataProviderWithInvalidValuesForDateTimeObjects(): array
     {
@@ -87,26 +76,22 @@ class DateTimeUtilityTest extends UnitTestCase
      */
     public function convertInvalidDates($invalidValue): void
     {
-        self::assertNull($this->subject->convert($invalidValue));
+        self::assertNull(
+            $this->subject->convert($invalidValue)
+        );
     }
 
-    /**
-     * @return array
-     */
     public function stringDatesDataProvider(): array
     {
         $dateStrings = [];
 
-        $midnight = new \DateTime();
-        $midnight->modify('midnight');
+        $midnight = new \DateTimeImmutable('midnight');
         $dateStrings['midnight'] = ['midnight', $midnight];
 
-        $tomorrow = new \DateTime();
-        $tomorrow->modify('tomorrow')->modify('midnight');
+        $tomorrow = new \DateTimeImmutable('tomorrow midnight');
         $dateStrings['tomorrow'] = ['tomorrow', $tomorrow];
 
-        $lastDayOfMonth = new \DateTime();
-        $lastDayOfMonth->modify('last day of this month')->modify('midnight');
+        $lastDayOfMonth = new \DateTimeImmutable('last day of this month midnight');
         $dateStrings['last day of this month'] = ['last day of this month', $lastDayOfMonth];
 
         return $dateStrings;
@@ -134,14 +119,14 @@ class DateTimeUtilityTest extends UnitTestCase
     {
         $timestamps = [];
         $timestamps['timestamp: 0'] = [0, null];
-        $timestamps['timestamp: 1'] = [1, \DateTime::createFromFormat('d.m.Y H:i:s', '01.01.1970 00:00:00')];
-        $timestamps['timestamp: 12345'] = [12345, \DateTime::createFromFormat('d.m.Y H:i:s', '01.01.1970 00:00:00')];
-        $timestamps['timestamp: 123456789'] = [123456789, \DateTime::createFromFormat('d.m.Y H:i:s', '29.11.1973 00:00:00')];
-        $timestamps['timestamp: 1234567890'] = [1234567890, \DateTime::createFromFormat('d.m.Y H:i:s', '14.02.2009 00:00:00')];
+        $timestamps['timestamp: 1'] = [1, \DateTimeImmutable::createFromFormat('d.m.Y H:i:s', '01.01.1970 00:00:00')];
+        $timestamps['timestamp: 12345'] = [12345, \DateTimeImmutable::createFromFormat('d.m.Y H:i:s', '01.01.1970 00:00:00')];
+        $timestamps['timestamp: 123456789'] = [123456789, \DateTimeImmutable::createFromFormat('d.m.Y H:i:s', '29.11.1973 00:00:00')];
+        $timestamps['timestamp: 1234567890'] = [1234567890, \DateTimeImmutable::createFromFormat('d.m.Y H:i:s', '14.02.2009 00:00:00')];
         if (strlen(decbin(~0)) === 64) {
             // this is only for 64bit OS
-            $timestamps['timestamp: 13000000000'] = [13000000000, \DateTime::createFromFormat('d.m.Y H:i:s', '15.12.2381 00:00:00')];
-            $timestamps['timestamp: 15000000000'] = [15000000000, \DateTime::createFromFormat('d.m.Y H:i:s', '01.05.2445 00:00:00')];
+            $timestamps['timestamp: 13000000000'] = [13000000000, \DateTimeImmutable::createFromFormat('d.m.Y H:i:s', '15.12.2381 00:00:00')];
+            $timestamps['timestamp: 15000000000'] = [15000000000, \DateTimeImmutable::createFromFormat('d.m.Y H:i:s', '01.05.2445 00:00:00')];
         }
 
         return $timestamps;
@@ -157,11 +142,11 @@ class DateTimeUtilityTest extends UnitTestCase
     public function convertTimestamps($timestamp, $expectedDate): void
     {
         $convertedResult = $this->subject->convert($timestamp);
-        if ($convertedResult === null) {
+        if (!$convertedResult instanceof \DateTimeImmutable) {
             self::assertSame($expectedDate, $convertedResult);
         } else {
             self::assertEquals(
-                /* @var \DateTime $expectedDate */
+                /* @var \DateTimeImmutable $expectedDate */
                 $expectedDate->format('U'),
                 $convertedResult->format('U')
             );

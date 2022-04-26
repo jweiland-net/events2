@@ -13,13 +13,12 @@ namespace JWeiland\Events2\Domain\Factory;
 
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
+use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Service\DatabaseService;
-use JWeiland\Events2\Service\DayRelationService;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 /*
@@ -30,25 +29,13 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
  */
 class DayFactory
 {
-    /**
-     * @var DatabaseService
-     */
-    protected $databaseService;
+    protected DatabaseService $databaseService;
 
-    /**
-     * @var EventRepository
-     */
-    protected $eventRepository;
+    protected DayRepository $dayRepository;
 
-    /**
-     * @var DayRelationService
-     */
-    protected $dayRelationService;
+    protected EventRepository $eventRepository;
 
-    /**
-     * @var array
-     */
-    protected $processOrderedMethods = [
+    protected array $processOrderedMethods = [
         'findExactDay',
         'findNextDay',
         'findPreviousDay',
@@ -57,32 +44,27 @@ class DayFactory
 
     public function __construct(
         DatabaseService $databaseService,
-        EventRepository $eventRepository,
-        DayRelationService $dayRelationService
+        DayRepository $dayRepository,
+        EventRepository $eventRepository
     ) {
         $this->databaseService = $databaseService;
+        $this->dayRepository = $dayRepository;
         $this->eventRepository = $eventRepository;
-        $this->dayRelationService = $dayRelationService;
     }
 
     /**
      * Find one Day by Event and Timestamp.
-     *
-     * @param Event $event
-     * @param int $timestamp
-     * @param QueryInterface|Query $query
-     * @return Day
      */
-    public function findDayByEventAndTimestamp(Event $event, int $timestamp, QueryInterface $query): Day
+    public function findDayByEventAndTimestamp(int $eventUid, int $timestamp, QueryInterface $query): Day
     {
         $day = null;
+        $data = [
+            'event' => $eventUid,
+            'timestamp' => $timestamp
+        ];
 
         foreach ($this->processOrderedMethods as $methodName) {
-            if (!method_exists($this, $methodName)) {
-                continue;
-            }
-
-            $day = $this->{$methodName}($event, $timestamp, $query);
+            $day = $this->{$methodName}($data, $query);
             if ($day instanceof Day) {
                 break;
             }
@@ -91,74 +73,76 @@ class DayFactory
         return $day;
     }
 
-    protected function findExactDay(Event $event, int $timestamp, QueryInterface $query): ?Day
+    protected function findExactDay(array $searchValues, QueryInterface $query): ?Day
     {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->getQueryBuilder($query, $searchValues['event']);
         $queryBuilder->andWhere(
             $queryBuilder->expr()->eq(
                 'day.day_time',
                 $queryBuilder->createNamedParameter(
-                    $timestamp,
+                    $searchValues['timestamp'],
                     \PDO::PARAM_INT
                 )
             )
         );
 
-        return $this->findDayByEvent($event, $queryBuilder, $query);
+        return $this->findDayByQueryBuilder($queryBuilder);
     }
 
-    protected function findNextDay(Event $event, int $timestamp, QueryInterface $query): ?Day
+    protected function findNextDay(array $searchValues, QueryInterface $query): ?Day
     {
-        $queryBuilder = $this->getQueryBuilder();
-        $this->databaseService->addConstraintForDateRange(
-            $queryBuilder,
-            new \DateTime('now')
+        $date = new \DateTimeImmutable('now');
+
+        $queryBuilder = $this->getQueryBuilder($query, $searchValues['event']);
+
+        $queryBuilder->expr()->gte(
+            'day.day_time',
+            $queryBuilder->createNamedParameter((int)$date->format('U'), \PDO::PARAM_INT)
         );
 
-        return $this->findDayByEvent($event, $queryBuilder, $query);
+        return $this->findDayByQueryBuilder($queryBuilder);
     }
 
-    protected function findPreviousDay(Event $event, int $timestamp, QueryInterface $query): ?Day
+    protected function findPreviousDay(array $searchValues, QueryInterface $query): ?Day
     {
-        $queryBuilder = $this->getQueryBuilder(QueryInterface::ORDER_DESCENDING);
-        $this->databaseService->addConstraintForDateRange(
-            $queryBuilder,
-            new \DateTime('now')
+        $date = new \DateTimeImmutable('now');
+
+        $queryBuilder = $this->getQueryBuilder($query, $searchValues['event'], QueryInterface::ORDER_DESCENDING);
+
+        $queryBuilder->expr()->lte(
+            'day.day_time',
+            $queryBuilder->createNamedParameter((int)$date->format('U'), \PDO::PARAM_INT)
         );
 
-        return $this->findDayByEvent($event, $queryBuilder, $query);
+        return $this->findDayByQueryBuilder($queryBuilder);
     }
 
     /**
      * Build day object on our own.
      * It will not get an UID or PID
      *
-     * @param Event $event
-     * @param int $timestamp
-     * @param QueryInterface|Query $query
-     * @return Day
      * @throws \Exception
      */
-    protected function buildDay(Event $event, int $timestamp, QueryInterface $query): Day
+    protected function buildDay(array $searchValues): Day
     {
-        if (!$event->getEventBegin() instanceof \DateTime) {
-            // Normally this can't be thrown, as event begin is a required field.
-            throw new \Exception('Given event does not have an event begin date assigned.', 1548927203);
+        /** @var Event|null $event */
+        $event = $this->eventRepository->findByIdentifier($searchValues['event']);
+        if (!$event instanceof Event) {
+            // Normally this can't be thrown, as this class will only be called at a detail page.
+            // So action controller will throw Exception first, if event is not given.
+            throw new \Exception('Given event could not be found in DayFactory', 1548927197);
         }
 
-        $event->getDays()->rewind();
-
-        if (!$event->getDays()->count()) {
-            // event seems to be out of time frame. Try to re-generate day records
-            $this->dayRelationService->addDay($event, $event->getEventBegin());
+        if (!$event->getEventBegin() instanceof \DateTimeImmutable) {
+            // Normally this can't be thrown, as event begin is a required field.
+            throw new \Exception('Given event does not have an event begin date assigned.', 1548927203);
         }
 
         $event->getDays()->rewind();
         $day = $event->getDays()->current();
 
         if (!$day instanceof Day) {
-            // Only a fallback to be really really safe.
-            // Normally this can not be called, as DayRelationService will always assign a Day record to event.
+            // Only a fallback to be really safe.
             $day = new Day();
             $day->setEvent($event);
             $day->setDay($event->getEventBegin());
@@ -171,36 +155,27 @@ class DayFactory
     }
 
     /**
-     * Find Day record by event and by additional where-constraints
-     *
-     * @param Event $event
-     * @param QueryBuilder $queryBuilder
-     * @param QueryInterface|Query $query
-     * @return Day|null
+     * Find Day record by given QueryBuilder constraint
      */
-    protected function findDayByEvent(Event $event, QueryBuilder $queryBuilder, QueryInterface $query): ?Day
+    protected function findDayByQueryBuilder(QueryBuilder $queryBuilder): ?Day
     {
-        $this->addBaseConstraint($queryBuilder, $query, $event->getUid());
+        $dayRecord = $queryBuilder
+            ->execute()
+            ->fetch(\PDO::FETCH_ASSOC);
 
-        $query->statement($queryBuilder);
-
-        $day = $query->execute()->getFirst();
-        if ($day instanceof Day) {
-            return $day;
+        $day = null;
+        if (is_array($dayRecord) && isset($dayRecord['uid'])) {
+            $day = $this->dayRepository->findByIdentifier((int)$dayRecord['uid']);
         }
 
-        return null;
+        return $day instanceof Day ? $day : null;
     }
 
-    /**
-     * Get pre initialized QueryBuilder
-     * Only the where-part has to be added in later process
-     *
-     * @param string $order ASC or DESC
-     * @return QueryBuilder
-     */
-    protected function getQueryBuilder(string $order = QueryInterface::ORDER_ASCENDING): QueryBuilder
-    {
+    protected function getQueryBuilder(
+        QueryInterface $query,
+        int $eventUid,
+        string $order = QueryInterface::ORDER_ASCENDING
+    ): QueryBuilder {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_day');
         $queryBuilder
             ->select('day.*')
@@ -216,19 +191,17 @@ class DayFactory
             )
             ->orderBy('day.day_time', $order);
 
+        $this->addBaseConstraint($queryBuilder, $query, $eventUid);
+
         return $queryBuilder;
     }
 
     /**
      * Add base constraints (pid and event) which are valid for all queries in this class.
-     *
-     * @param QueryBuilder $queryBuilder
-     * @param QueryInterface $query
-     * @param int $eventUid
      */
     protected function addBaseConstraint(QueryBuilder $queryBuilder, QueryInterface $query, int $eventUid): void
     {
-        // Add storage PID for event and day, but not for sys_category
+        // add storage PID for event and day, but not for sys_category
         $this->databaseService->addConstraintForPid(
             $queryBuilder,
             $query->getQuerySettings()->getStoragePageIds()

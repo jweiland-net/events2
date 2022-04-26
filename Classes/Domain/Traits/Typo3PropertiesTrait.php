@@ -16,62 +16,38 @@ namespace JWeiland\Events2\Domain\Traits;
  */
 trait Typo3PropertiesTrait
 {
-    /**
-     * @var \DateTime
-     */
-    protected $crdate;
+    protected ?\DateTimeImmutable $crdate = null;
 
-    /**
-     * @var \DateTime
-     */
-    protected $tstamp;
+    protected ?\DateTimeImmutable $tstamp = null;
 
-    /**
-     * @var int
-     */
-    protected $l10nParent= 0;
+    protected int $l10nParent= 0;
 
-    /**
-     * @var \DateTime
-     */
-    protected $starttime;
+    protected ?\DateTimeImmutable $starttime = null;
 
-    /**
-     * @var \DateTime
-     */
-    protected $endtime;
+    protected ?\DateTimeImmutable $endtime = null;
 
-    /**
-     * @var bool
-     */
-    protected $hidden = false;
+    protected bool $hidden = false;
 
-    /**
-     * @var bool
-     */
-    protected $deleted = false;
+    protected bool $deleted = false;
 
-    /**
-     * @var int
-     */
-    protected $cruserId = 0;
+    protected int $cruserId = 0;
 
-    public function getCrdate(): ?\DateTime
+    public function getCrdate(): ?\DateTimeImmutable
     {
         return $this->crdate;
     }
 
-    public function setCrdate(?\DateTime $crdate = null): void
+    public function setCrdate(?\DateTimeImmutable $crdate): void
     {
         $this->crdate = $crdate;
     }
 
-    public function getTstamp(): ?\DateTime
+    public function getTstamp(): ?\DateTimeImmutable
     {
         return $this->tstamp;
     }
 
-    public function setTstamp(?\DateTime $tstamp = null): void
+    public function setTstamp(?\DateTimeImmutable $tstamp): void
     {
         $this->tstamp = $tstamp;
     }
@@ -96,22 +72,22 @@ trait Typo3PropertiesTrait
         $this->l10nParent = $l10nParent;
     }
 
-    public function getStarttime(): ?\DateTime
+    public function getStarttime(): ?\DateTimeImmutable
     {
         return $this->starttime;
     }
 
-    public function setStarttime(?\DateTime $starttime = null): void
+    public function setStarttime(?\DateTimeImmutable $starttime): void
     {
         $this->starttime = $starttime;
     }
 
-    public function getEndtime(): ?\DateTime
+    public function getEndtime(): ?\DateTimeImmutable
     {
         return $this->endtime;
     }
 
-    public function setEndtime(?\DateTime $endtime = null): void
+    public function setEndtime(?\DateTimeImmutable $endtime): void
     {
         $this->endtime = $endtime;
     }

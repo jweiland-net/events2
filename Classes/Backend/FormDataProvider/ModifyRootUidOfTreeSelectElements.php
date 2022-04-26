@@ -13,6 +13,7 @@ namespace JWeiland\Events2\Backend\FormDataProvider;
 
 use JWeiland\Events2\Configuration\ExtConf;
 use TYPO3\CMS\Backend\Form\FormDataProviderInterface;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /*
@@ -20,10 +21,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class ModifyRootUidOfTreeSelectElements implements FormDataProviderInterface
 {
-    /**
-     * @var ExtConf
-     */
-    protected $extConf;
+    protected ExtConf $extConf;
 
     public function __construct(ExtConf $extConf)
     {
@@ -42,26 +40,27 @@ class ModifyRootUidOfTreeSelectElements implements FormDataProviderInterface
             if (
                 // check global structure
                 isset(
-                    $result['flexParentDatabaseRow'],
+                    $result['flexParentDatabaseRow']['list_type'],
                     $result['processedTca']['columns'][$categoryField]['config']['type'],
                     $result['processedTca']['columns'][$categoryField]['config']['renderMode']
                 )
 
-                // check, if TCA configuration exists
-                && is_array($result['processedTca']['columns'][$categoryField])
-                && is_array($result['processedTca']['columns'][$categoryField]['config'])
-
-                // check, if we have TCA-type "select" defined and it is configured as "tree"
+                // check, if we have TCA-type "select" defined, and it is configured as "tree"
                 && $result['processedTca']['columns'][$categoryField]['config']['type'] === 'select'
                 && $result['processedTca']['columns'][$categoryField]['config']['renderMode'] === 'tree'
 
                 // check if a FlexForm was rendered
                 && $result['tableName'] === 'tt_content'
-                && is_array($result['flexParentDatabaseRow'])
                 && GeneralUtility::isFirstPartOfStr($result['flexParentDatabaseRow']['list_type'], 'events2')
             ) {
-                $result['processedTca']['columns'][$categoryField]['config']['treeConfig']['rootUid']
-                    = $this->extConf->getRootUid();
+                $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
+                if (version_compare($typo3Version->getBranch(), '11.4', '<')) {
+                    $result['processedTca']['columns'][$categoryField]['config']['treeConfig']['rootUid']
+                        = $this->extConf->getRootUid();
+                } else {
+                    $result['processedTca']['columns'][$categoryField]['config']['treeConfig']['startingPoints']
+                        = $this->extConf->getRootUid();
+                }
             }
         }
 

@@ -13,6 +13,7 @@ namespace JWeiland\Events2\Tests\Functional\Session;
 
 use JWeiland\Events2\Session\UserSession;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
@@ -21,10 +22,7 @@ use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
  */
 class UserSessionTest extends FunctionalTestCase
 {
-    /**
-     * @var UserSession
-     */
-    protected $subject;
+    protected UserSession $subject;
 
     /**
      * @var array
@@ -33,18 +31,31 @@ class UserSessionTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
+        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
+        if (version_compare($typo3Version->getBranch(), '11', '<')) {
+            self::markTestSkipped(
+                'Because of missing "initializeUserSessionManager" in TYPO3 10 this test has to be skipped.'
+            );
+        }
+
         parent::setUp();
 
         $feUser = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
-        $this->subject = new UserSession($feUser);
+        $feUser->initializeUserSessionManager();
+
+        $GLOBALS['TSFE'] = new \stdClass();
+        $GLOBALS['TSFE']->fe_user = $feUser;
+
+        $this->subject = new UserSession();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset(
-            $this->subject
+            $this->subject,
+            $GLOBALS['TSFE']
         );
 
         parent::tearDown();
@@ -63,7 +74,7 @@ class UserSessionTest extends FunctionalTestCase
     /**
      * DataProvider for year and month.
      *
-     * @return array
+     * @return array<string, array<int|string>>
      */
     public function yearAndMonthDataProvider(): array
     {
@@ -82,7 +93,7 @@ class UserSessionTest extends FunctionalTestCase
      *
      * @dataProvider yearAndMonthDataProvider
      */
-    public function getMonthAndYearWillReturnMonthAndYear($month, $year, $expectedMonth, $expectedYear): void
+    public function getMonthAndYearWillReturnMonthAndYear(int $month, int $year, string $expectedMonth, string $expectedYear): void
     {
         $this->subject->setMonthAndYear($month, $year);
         self::assertSame(

@@ -9,7 +9,7 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace JWeiland\Events2\Tests\Unit\Utility;
+namespace JWeiland\Events2\Tests\Unit\Service;
 
 use JWeiland\Events2\Service\TypoScriptService;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
@@ -19,17 +19,14 @@ use Nimut\TestingFramework\TestCase\UnitTestCase;
  */
 class TypoScriptServiceTest extends UnitTestCase
 {
-    /**
-     * @var TypoScriptService
-     */
-    protected $subject;
+    protected TypoScriptService $subject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->subject = new TypoScriptService();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset(
             $this->subject

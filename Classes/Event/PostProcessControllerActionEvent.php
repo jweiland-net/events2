@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Event;
 
 use JWeiland\Events2\Controller\DayController;
-use JWeiland\Events2\Controller\EventController;
+use JWeiland\Events2\Controller\ManagementController;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -25,24 +25,15 @@ use TYPO3\CMS\Extbase\Mvc\Request;
 class PostProcessControllerActionEvent implements ControllerActionEventInterface
 {
     /**
-     * @var ActionController|EventController|DayController
+     * @var ActionController|ManagementController|DayController
      */
     protected $controller;
 
-    /**
-     * @var Event|null
-     */
-    protected $event;
+    protected ?Event $event;
 
-    /**
-     * @var Day|null
-     */
-    protected $day;
+    protected ?Day $day;
 
-    /**
-     * @var array
-     */
-    protected $settings;
+    protected array $settings;
 
     public function __construct(
         ActionController $controller,
@@ -61,7 +52,7 @@ class PostProcessControllerActionEvent implements ControllerActionEventInterface
         return $this->controller;
     }
 
-    public function getEventController(): EventController
+    public function getEventController(): ManagementController
     {
         return $this->controller;
     }

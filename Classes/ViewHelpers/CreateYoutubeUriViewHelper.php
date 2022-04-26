@@ -29,12 +29,7 @@ class CreateYoutubeUriViewHelper extends AbstractViewHelper
     }
 
     /**
-     * Extract the youtube ID from link and return the embedded youtube url.
-     *
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return string
+     * Extract the YouTube ID from link and return the embedded YouTube url.
      */
     public static function renderStatic(
         array $arguments,
@@ -42,11 +37,9 @@ class CreateYoutubeUriViewHelper extends AbstractViewHelper
         RenderingContextInterface $renderingContext
     ): string {
         if (preg_match('~^(|http:|https:)//(|www.)youtu(\.be|be)(.*?)(v=|embed/|)([a-zA-Z0-9_-]+)$~i', $arguments['link'], $matches)) {
-            $url = '//www.youtube.com/embed/' . $matches[6];
-        } else {
-            $url = '//www.youtube.com/embed/' . $arguments['link'];
+            return '//www.youtube.com/embed/' . $matches[6];
         }
 
-        return $url;
+        return '//www.youtube.com/embed/' . $arguments['link'];
     }
 }

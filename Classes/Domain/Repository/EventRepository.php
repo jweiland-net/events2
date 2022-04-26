@@ -12,48 +12,39 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Domain\Repository;
 
 use JWeiland\Events2\Domain\Model\Event;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
-use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /*
  * Repository to get and find event records
  */
-class EventRepository extends Repository implements HiddenRepositoryInterface
+class EventRepository extends AbstractRepository implements HiddenRepositoryInterface
 {
-    /**
-     * @var array
-     */
+    public const TABLE = 'tx_events2_domain_model_event';
+
     protected $defaultOrderings = [
         'eventBegin' => QueryInterface::ORDER_ASCENDING,
     ];
 
-    /**
-     * @var array
-     */
-    protected $settings = [];
+    protected array $settings = [];
 
-    /**
-     * @var UserRepository
-     */
-    protected $userRepository;
+    protected UserRepository $userRepository;
 
-    public function __construct(
-        ObjectManagerInterface $objectManager,
-        UserRepository $userRepository
-    ) {
-        parent::__construct($objectManager);
+    protected ExceptionRepository $exceptionRepository;
 
+    public function injectUserRepository(UserRepository $userRepository): void
+    {
         $this->userRepository = $userRepository;
+    }
+
+    public function injectExceptionRepository(ExceptionRepository $exceptionRepository): void
+    {
+        $this->exceptionRepository = $exceptionRepository;
     }
 
     /**
      * @param mixed $value
-     * @param string $property
      * @return AbstractDomainObject|Event|null
      */
     public function findHiddenObject($value, string $property = 'uid'): ?AbstractDomainObject
@@ -80,35 +71,31 @@ class EventRepository extends Repository implements HiddenRepositoryInterface
     }
 
     /**
-     * Nearly the same as "findByUid", but this method was used by PageTitleProvider
+     * Nearly the same as "findByUid", but this method is used by PageTitleProvider,
      * which is out of Extbase context. So we are using a plain Doctrine Query here.
-     *
-     * @param int $uid
-     * @return array
      */
-    public function getEventRecord(int $uid): array
-    {
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_event');
-        $event = $queryBuilder
-            ->select('uid', 'title')
-            ->from('tx_events2_domain_model_event')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'uid',
-                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
-                )
-            )
-            ->execute()
-            ->fetch();
+    public function getRecord(
+        int $uid,
+        array $select = ['*'],
+        bool $includeHidden = false,
+        bool $includeExceptions = true,
+        bool $doOverlay = true
+    ): array {
+        $eventRecord = $this->getRecordByUid(
+            self::TABLE,
+            'e',
+            $uid,
+            $select,
+            $includeHidden,
+            $doOverlay
+        );
 
-        if (empty($event)) {
-            $event = [];
+        $eventRecord['days'] = [];
+        $eventRecord['exceptions'] = [];
+        if ($includeExceptions) {
+            $eventRecord['exceptions'] = $this->exceptionRepository->getAllByEventRecord($eventRecord);
         }
-        return $event;
-    }
 
-    protected function getConnectionPool(): ConnectionPool
-    {
-        return GeneralUtility::makeInstance(ConnectionPool::class);
+        return $eventRecord;
     }
 }

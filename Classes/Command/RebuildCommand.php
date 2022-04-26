@@ -11,15 +11,11 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Command;
 
-use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Service\DayRelationService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use TYPO3\CMS\Core\Cache\CacheManager;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
-use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 
 /*
  * The naming is a little bit miss-understandable. It comes from the early days of development where I had many
@@ -32,50 +28,27 @@ class RebuildCommand extends Command
      * Needed to wrap activity bar:
      * ...........F.......
      * ....N....S.........
-     *
-     * @var int
      */
-    protected $rowCounter = 0;
+    protected int $rowCounter = 0;
 
-    /**
-     * @var ObjectManagerInterface
-     */
-    protected $objectManager;
+    protected DatabaseService $databaseService;
 
-    /**
-     * @var DatabaseService
-     */
-    protected $databaseService;
+    protected DayRelationService $dayRelationService;
 
-    /**
-     * @var CacheManager
-     */
-    protected $cacheManager;
-
-    /**
-     * @var OutputInterface
-     */
-    protected $output;
+    protected OutputInterface $output;
 
     /**
      * Will be called by DI, so please don't add extbase classes with inject methods here.
-     *
-     * @param ObjectManagerInterface $objectManager
-     * @param DatabaseService $databaseService
-     * @param CacheManager $cacheManager
-     * @param string|null $name
      */
     public function __construct(
-        ObjectManagerInterface $objectManager,
         DatabaseService $databaseService,
-        CacheManager $cacheManager,
+        DayRelationService $dayRelationService,
         string $name = null
     ) {
         parent::__construct($name);
 
-        $this->objectManager = $objectManager;
         $this->databaseService = $databaseService;
-        $this->cacheManager = $cacheManager;
+        $this->dayRelationService = $dayRelationService;
     }
 
     protected function configure(): void
@@ -91,10 +64,6 @@ class RebuildCommand extends Command
 
     /**
      * Delete and re-create all day records of events2
-     *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -120,42 +89,28 @@ class RebuildCommand extends Command
     {
         $eventCounter = 0;
         $dayCounter = 0;
-        $dayRelations = $this->objectManager->get(DayRelationService::class);
-
         $this->output->writeln('Process each event record');
 
         $rows = $this->databaseService->getCurrentAndFutureEvents();
-        if (!empty($rows)) {
-            $persistenceManager = $this->objectManager->get(PersistenceManagerInterface::class);
-
-            // With each changing PID, pageTSConfigCache will grow by roundabout 200KB, which may exceed memory_limit
-            $runtimeCache = $this->cacheManager->getCache('runtime');
-
-            foreach ($rows as $row) {
-                $event = $dayRelations->createDayRelations((int)$row['uid']);
-                if ($event instanceof Event) {
-                    $this->output->writeln(sprintf(
-                        'Process event UID: %09d, PID: %05d, created: %04d day records, RAM: %d',
-                        $event->getUid(),
-                        $event->getPid(),
-                        $event->getDays()->count(),
-                        memory_get_usage()
-                    ));
-                    $eventCounter++;
-                    $dayCounter += $event->getDays()->count();
-                } else {
-                    $this->output->writeln(sprintf(
-                        'ERROR event UID: %09d, PID: %05d',
-                        $row['uid'],
-                        $row['pid']
-                    ));
-                }
-
-                // clean up persistence manager to reduce memory usage
-                // it also clears persistence session
-                $persistenceManager->clearState();
-                $runtimeCache->flush();
-                gc_collect_cycles();
+        foreach ($rows as $row) {
+            $eventRecord = $this->dayRelationService->createDayRelations((int)$row['uid']);
+            if ($eventRecord !== []) {
+                $amountOfDayRecords = count($eventRecord['days'] ?? []);
+                $this->output->writeln(sprintf(
+                    'Process event UID: %09d, PID: %05d, created: %04d day records, RAM: %d',
+                    $eventRecord['uid'],
+                    $eventRecord['pid'],
+                    $amountOfDayRecords,
+                    memory_get_usage()
+                ));
+                ++$eventCounter;
+                $dayCounter += $amountOfDayRecords;
+            } else {
+                $this->output->writeln(sprintf(
+                    'ERROR event UID: %09d, PID: %05d',
+                    $row['uid'],
+                    $row['pid']
+                ));
             }
         }
 

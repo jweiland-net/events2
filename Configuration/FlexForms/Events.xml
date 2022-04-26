@@ -7,37 +7,37 @@
 				</TCEforms>
 				<type>array</type>
 				<el>
-					<switchableControllerActions>
+					<settings.listType>
 						<TCEforms>
-							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:chooseAction</label>
+							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:listType</label>
 							<config>
 								<type>select</type>
 								<renderType>selectSingle</renderType>
 								<items>
 									<numIndex index="0">
-										<numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:list</numIndex>
-										<numIndex index="1" />
+										<numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:listType.list</numIndex>
+										<numIndex index="1">list</numIndex>
 									</numIndex>
 									<numIndex index="1">
-										<numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:listLatest</numIndex>
-										<numIndex index="1"><![CDATA[Day->listLatest;Day->show;Day->showByTimestamp;Location->show;Video->show]]></numIndex>
+										<numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:listType.listLatest</numIndex>
+										<numIndex index="1">listLatest</numIndex>
 									</numIndex>
 									<numIndex index="2">
-										<numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:listToday</numIndex>
-										<numIndex index="1"><![CDATA[Day->listToday;Day->show;Day->showByTimestamp;Location->show;Video->show]]></numIndex>
+										<numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:listType.listToday</numIndex>
+										<numIndex index="1">listToday</numIndex>
 									</numIndex>
 									<numIndex index="3">
-										<numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:listThisWeek</numIndex>
-										<numIndex index="1"><![CDATA[Day->listThisWeek;Day->show;Day->showByTimestamp;Location->show;Video->show]]></numIndex>
+										<numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:listType.listThisWeek</numIndex>
+										<numIndex index="1">listWeek</numIndex>
 									</numIndex>
 									<numIndex index="4">
-										<numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:listRange</numIndex>
-										<numIndex index="1"><![CDATA[Day->listRange;Day->show;Day->showByTimestamp;Location->show;Video->show]]></numIndex>
+										<numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:listType.listRange</numIndex>
+										<numIndex index="1">listRange</numIndex>
 									</numIndex>
 								</items>
 							</config>
 						</TCEforms>
-					</switchableControllerActions>
+					</settings.listType>
 					<settings.pidOfDetailPage>
 						<TCEforms>
 							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:pidOfDetailPage</label>
@@ -77,19 +77,6 @@
 							</config>
 						</TCEforms>
 					</settings.pidOfLocationPage>
-					<settings.pidOfSearchPage>
-						<TCEforms>
-							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:pidOfSearchPage</label>
-							<config>
-								<type>group</type>
-								<internal_type>db</internal_type>
-								<allowed>pages</allowed>
-								<size>1</size>
-								<maxitems>1</maxitems>
-								<minitems>0</minitems>
-							</config>
-						</TCEforms>
-					</settings.pidOfSearchPage>
 					<settings.categories>
 						<TCEforms>
 							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:categories</label>
@@ -224,37 +211,5 @@
 				</el>
 			</ROOT>
 		</detail>
-		<new>
-			<ROOT>
-				<TCEforms>
-					<sheetTitle>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:sheetNew</sheetTitle>
-				</TCEforms>
-				<type>array</type>
-				<el>
-					<settings.selectableCategoriesForNewEvents>
-						<TCEforms>
-							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:selectableCategoriesForNewEvents</label>
-							<config>
-								<type>select</type>
-								<renderType>selectTree</renderType>
-								<foreign_table>sys_category</foreign_table>
-								<renderMode>tree</renderMode>
-								<treeConfig>
-									<parentField>parent</parentField>
-									<rootUid>0</rootUid>
-									<appearance>
-										<showHeader>TRUE</showHeader>
-										<expandAll>FALSE</expandAll>
-									</appearance>
-								</treeConfig>
-								<size>15</size>
-								<maxitems>99</maxitems>
-								<minitems>0</minitems>
-							</config>
-						</TCEforms>
-					</settings.selectableCategoriesForNewEvents>
-				</el>
-			</ROOT>
-		</new>
 	</sheets>
 </T3DataStructure>

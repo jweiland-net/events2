@@ -6,6 +6,7 @@ services:
 
   JWeiland\Events2\:
     resource: '../Classes/*'
+    exclude: '../Classes/Domain/Model/*'
 
   # Called by makeInstance in eID middleware
   JWeiland\Events2\Ajax\FindDaysForMonth:
@@ -25,6 +26,12 @@ services:
 
   JWeiland\Events2\Domain\Factory\DayFactory:
     public: true
+
+  # Must be public, because of ->initializeObject().
+  # Needed for Tests. In Extbase env the Container class will take care about calling ->initializeObject()
+  JWeiland\Events2\Domain\Model\Event:
+    public: true
+    shared: false
 
   # Called by makeInstance in event model where constructors are not loaded in some cases
   # Called by makeInstance in static GetMergedEventTimesViewHelper
@@ -61,7 +68,7 @@ services:
     public: true
 
   # Must be public, because it was called by makeInstance in TYPO3s UpgradeWizardsService
-  JWeiland\Events2\Updater\EventsSlugUpdater:
+  JWeiland\Events2\Upgrade\EventsSlugUpgrade:
     public: true
 
   # Called by makeInstance in event model where constructors are not loaded in some cases
@@ -73,7 +80,7 @@ services:
     tags:
       - name: event.listener
         event: JWeiland\Events2\Event\PreProcessControllerActionEvent
-  JWeiland\Events2\EventListener\AddValidationForVideoLinkEventListener:
+  JWeiland\Events2\EventListener\AllowFilterByGetRequestEventListener:
     tags:
       - name: event.listener
         event: JWeiland\Events2\Event\PreProcessControllerActionEvent
@@ -121,8 +128,7 @@ services:
       - name: event.listener
         event: JWeiland\Events2\Event\PostProcessFluidVariablesEvent
 
-  # Register EventListeners for controller actions without Fluid variables
-  JWeiland\Events2\EventListener\DeleteVideoLinkIfEmptyEventListener:
+  JWeiland\Events2\EventListener\AddJsonLdToPageHeaderEventListener:
     tags:
       - name: event.listener
         event: JWeiland\Events2\Event\PostProcessControllerActionEvent

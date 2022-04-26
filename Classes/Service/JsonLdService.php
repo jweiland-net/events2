@@ -30,28 +30,16 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  */
 class JsonLdService
 {
-    /**
-     * @var string
-     */
-    protected $dateFormat = 'Y-m-d';
+    protected string $dateFormat = 'Y-m-d';
 
-    /**
-     * @var string
-     */
-    protected $dateTimeFormat = 'Y-m-d\TH:i:s';
+    protected string $dateTimeFormat = 'Y-m-d\TH:i:s';
 
-    /**
-     * @var array
-     */
-    protected $data = [
+    protected array $data = [
         '@context' => 'http://schema.org',
         '@type' => 'Event'
     ];
 
-    /**
-     * @var TimeFactory
-     */
-    protected $timeFactory;
+    protected TimeFactory $timeFactory;
 
     public function __construct(TimeFactory $timeFactory)
     {
@@ -60,8 +48,6 @@ class JsonLdService
 
     /**
      * Read values from day and event record to build a json-ld string for page header
-     *
-     * @param Day $day
      */
     public function addJsonLdToPageHeader(Day $day): void
     {
@@ -73,7 +59,7 @@ class JsonLdService
         $pageRenderer->addHeaderData(
             sprintf(
                 '<script type="application/ld+json">%s</script>',
-                json_encode($this->data)
+                json_encode($this->data, JSON_THROW_ON_ERROR)
             )
         );
     }
@@ -81,7 +67,7 @@ class JsonLdService
     /**
      * Helper method for PhpUnit
      *
-     * @return array
+     * @return array[]
      */
     public function getCollectedJsonLdData(): array
     {
@@ -100,6 +86,7 @@ class JsonLdService
         } else {
             $this->addStartDateOfEventToData($day->getEvent());
         }
+
         $this->addEndDateOfEventToData($day->getEvent());
         $this->addNameToData($day->getEvent());
         $this->addDescriptionToData($day->getEvent());
@@ -115,11 +102,10 @@ class JsonLdService
      * If an event have a Time record, we add startDate by time_begin column
      *
      * @link: https://schema.org/DateTime
-     * @param Time $time
      */
     protected function addStartDateOfTimeToData(Time $time): void
     {
-        if ($time->getTimeBeginAsDateTime() instanceof \DateTime) {
+        if ($time->getTimeBeginAsDateTime() instanceof \DateTimeImmutable) {
             $this->data['startDate'] = $time->getTimeBeginAsDateTime()->format($this->dateTimeFormat);
         }
     }
@@ -128,11 +114,10 @@ class JsonLdService
      * If an event have a Time record, we add doorTime by time_entry column
      *
      * @link: https://schema.org/DateTime
-     * @param Time $time
      */
     protected function addDoorTimeOfTimeToData(Time $time): void
     {
-        if ($time->getTimeEntryAsDateTime() instanceof \DateTime) {
+        if ($time->getTimeEntryAsDateTime() instanceof \DateTimeImmutable) {
             $this->data['doorTime'] = $time->getTimeEntryAsDateTime()->format($this->dateTimeFormat);
         }
     }
@@ -141,7 +126,6 @@ class JsonLdService
      * Add duration to data
      *
      * @link: https://schema.org/Duration
-     * @param Time $time
      */
     protected function addDurationToData(Time $time): void
     {
@@ -159,11 +143,10 @@ class JsonLdService
      * If an event have a Time record, we add endDate by time_end column
      *
      * @link: https://schema.org/DateTime
-     * @param Time $time
      */
     protected function addEndDateOfTimeToData(Time $time): void
     {
-        if ($time->getTimeEndAsDateTime() instanceof \DateTime) {
+        if ($time->getTimeEndAsDateTime() instanceof \DateTimeImmutable) {
             $this->data['endDate'] = $time->getTimeEndAsDateTime()->format($this->dateTimeFormat);
         }
     }
@@ -172,37 +155,46 @@ class JsonLdService
      * If an event does not have any Time records, we add startDate by event_begin column
      *
      * @link: https://schema.org/Date
-     * @param Event $event
      */
     protected function addStartDateOfEventToData(Event $event): void
     {
-        if (empty($this->data['startDate']) && $event->getEventBegin() instanceof \DateTime) {
-            $this->data['startDate'] = $event->getEventBegin()->format($this->dateFormat);
+        if (!empty($this->data['startDate'])) {
+            return;
         }
+
+        if (!$event->getEventBegin() instanceof \DateTimeImmutable) {
+            return;
+        }
+
+        $this->data['startDate'] = $event->getEventBegin()->format($this->dateFormat);
     }
 
     /**
      * If an event does not have any Time records, we add endDate by event_end column
      *
      * @link: https://schema.org/Date
-     * @param Event $event
      */
     protected function addEndDateOfEventToData(Event $event): void
     {
-        if (
-            empty($this->data['endDate'])
-            && $event->getEventType() === 'duration'
-            && $event->getEventEnd() instanceof \DateTime
-        ) {
-            $this->data['endDate'] = $event->getEventEnd()->format($this->dateFormat);
+        if (!empty($this->data['endDate'])) {
+            return;
         }
+
+        if ($event->getEventType() !== 'duration') {
+            return;
+        }
+
+        if (!$event->getEventEnd() instanceof \DateTimeImmutable) {
+            return;
+        }
+
+        $this->data['endDate'] = $event->getEventEnd()->format($this->dateFormat);
     }
 
     /**
      * Add name to data
      *
      * @link: https://schema.org/name
-     * @param Event $event
      */
     protected function addNameToData(Event $event): void
     {
@@ -213,7 +205,6 @@ class JsonLdService
      * Add description to data
      *
      * @link: https://schema.org/description
-     * @param Event $event
      */
     protected function addDescriptionToData(Event $event): void
     {
@@ -234,7 +225,6 @@ class JsonLdService
      * Add information to data, if event is for free
      *
      * @link: https://schema.org/isAccessibleForFree
-     * @param Event $event
      */
     protected function addIsAccessibleForFreeToData(Event $event): void
     {
@@ -245,7 +235,6 @@ class JsonLdService
      * Add URL for offer to data
      *
      * @link: https://schema.org/Offer
-     * @param Event $event
      */
     protected function addOfferToData(Event $event): void
     {
@@ -265,7 +254,6 @@ class JsonLdService
      *
      * @link: https://schema.org/Place
      * @link: https://schema.org/PostalAddress
-     * @param Event $event
      */
     protected function addLocationToData(Event $event): void
     {
@@ -290,7 +278,6 @@ class JsonLdService
      * Add Organizer to data
      *
      * @link: https://schema.org/Organization
-     * @param Event $event
      */
     protected function addOrganizerToData(Event $event): void
     {
@@ -313,7 +300,6 @@ class JsonLdService
      * Add image to data
      *
      * @link: https://schema.org/ImageObject
-     * @param Event $event
      */
     protected function addImageToData(Event $event): void
     {
@@ -344,9 +330,6 @@ class JsonLdService
 
     /**
      * Create URL from parameter
-     *
-     * @param string $parameter
-     * @return string
      */
     protected function getUrlFromParameter(string $parameter): string
     {

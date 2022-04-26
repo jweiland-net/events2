@@ -23,43 +23,22 @@ class Location extends AbstractEntity
 {
     use Typo3PropertiesTrait;
 
-    /**
-     * @var string
-     */
-    protected $location = '';
+    protected string $location = '';
+
+    protected string  $street = '';
+
+    protected string $houseNumber = '';
+
+    protected string $zip = '';
+
+    protected string $city = '';
+
+    protected ?Country $country = null;
+
+    protected ?Link $link = null;
 
     /**
-     * @var string
-     */
-    protected $street = '';
-
-    /**
-     * @var string
-     */
-    protected $houseNumber = '';
-
-    /**
-     * @var string
-     */
-    protected $zip = '';
-
-    /**
-     * @var string
-     */
-    protected $city = '';
-
-    /**
-     * @var \SJBR\StaticInfoTables\Domain\Model\Country
-     */
-    protected $country;
-
-    /**
-     * @var \JWeiland\Events2\Domain\Model\Link
-     */
-    protected $link;
-
-    /**
-     * @var \JWeiland\Maps2\Domain\Model\PoiCollection
+     * @var \JWeiland\Maps2\Domain\Model\PoiCollection|null
      */
     protected $txMaps2Uid;
 
@@ -128,7 +107,7 @@ class Location extends AbstractEntity
         return $this->link;
     }
 
-    public function setLink(?Link $link = null): void
+    public function setLink(?Link $link): void
     {
         $this->link = $link;
     }
@@ -136,29 +115,28 @@ class Location extends AbstractEntity
     /**
      * Returns the location as string incl. the full address.
      * This is useful for export or LOCATION-part in ICS.
-     *
-     * @return string
      */
     public function getLocationAsString(): string
     {
         $addressParts = [];
-        if ($this->getLocation()) {
+        if ($this->getLocation() !== '') {
             $addressParts[] = $this->getLocation();
         }
-        if ($this->getStreet()) {
+        if ($this->getStreet() !== '') {
             $addressParts[] = trim(sprintf(
                 '%s %s',
                 $this->getStreet(),
                 $this->getHouseNumber()
             ));
         }
-        if ($this->getZip() || $this->getCity()) {
+        if ($this->getZip() !== '' || $this->getCity() !== '') {
             $addressParts[] = trim(sprintf(
                 '%s %s',
                 $this->getZip(),
                 $this->getCity()
             ));
         }
+
         return implode(', ', $addressParts);
     }
 
@@ -169,7 +147,7 @@ class Location extends AbstractEntity
      *
      * @param PoiCollection|null $txMaps2Uid
      */
-    public function setTxMaps2Uid($txMaps2Uid = null): void
+    public function setTxMaps2Uid($txMaps2Uid): void
     {
         $this->txMaps2Uid = $txMaps2Uid;
     }

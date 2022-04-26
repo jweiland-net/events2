@@ -16,6 +16,7 @@ use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Helper\HiddenObjectHelper;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Request;
@@ -27,15 +28,11 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Session;
  */
 class HiddenObjectHelperTest extends FunctionalTestCase
 {
-    /**
-     * @var HiddenObjectHelper
-     */
-    protected $subject;
+    use ProphecyTrait;
 
-    /**
-     * @var Session
-     */
-    protected $session;
+    protected HiddenObjectHelper $subject;
+
+    protected Session $session;
 
     /**
      * @var EventRepository|ObjectProphecy
@@ -54,7 +51,7 @@ class HiddenObjectHelperTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -69,7 +66,7 @@ class HiddenObjectHelperTest extends FunctionalTestCase
         );
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset(
             $this->subject,
@@ -86,7 +83,7 @@ class HiddenObjectHelperTest extends FunctionalTestCase
     {
         /** @var LocationRepository|ObjectProphecy $locationRepositoryProphecy */
         $locationRepositoryProphecy = $this->prophesize(LocationRepository::class);
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $this->requestProphecy
             ->getArgument('event')
             ->shouldNotBeCalled();
@@ -107,7 +104,7 @@ class HiddenObjectHelperTest extends FunctionalTestCase
      */
     public function registerWithRepositoryWillAddObjectByArrayToSession(): void
     {
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->_setProperty('uid', 12);
         $event->setTitle('Test Event');
 
@@ -143,7 +140,7 @@ class HiddenObjectHelperTest extends FunctionalTestCase
      */
     public function registerWithRepositoryWillAddObjectByUidToSession(): void
     {
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->_setProperty('uid', 543);
         $event->setTitle('Test Event');
 

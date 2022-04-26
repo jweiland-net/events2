@@ -168,7 +168,7 @@ In earlier versions you may have done:
 This will not work anymore, as it would be very hard for integrator to place the container for remaining chars
 correctly. Please change this part to:
 
-Code: ::
+.. code-block:: html
 
  <div class="form-group row">
    <div class="col-sm-4"></div>

@@ -23,9 +23,7 @@ class EmStaticInfo
     /**
      * Render our own custom field for static_info_tables
      *
-     * @param array $params
      * @param $configurationForm
-     * @return string
      */
     public function renderDefaultCountry(array $params, $configurationForm): string
     {
@@ -53,7 +51,7 @@ class EmStaticInfo
     /**
      * Get Countries from static_info_table: static_countries
      *
-     * @return array
+     * @return array[]
      */
     protected function getCountries(): array
     {
@@ -61,16 +59,18 @@ class EmStaticInfo
         $queryBuilder->getRestrictions()->removeAll()->add(
             GeneralUtility::makeInstance(DeletedRestriction::class)
         );
+
         $countries = $queryBuilder
             ->select('uid', 'cn_short_en')
             ->from('static_countries')
             ->orderBy('cn_short_en', 'ASC')
             ->execute()
-            ->fetchAll();
+            ->fetchAll(\PDO::FETCH_ASSOC);
 
         if (empty($countries)) {
             $countries = [];
         }
+
         return $countries;
     }
 

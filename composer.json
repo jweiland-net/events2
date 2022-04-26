@@ -20,15 +20,18 @@
 	"require": {
 		"ext-dom": "*",
 		"ext-libxml": "*",
-		"typo3/cms-core": "^10.4.14",
-		"sjbr/static-info-tables": "^6.9"
+		"php": "^7.4 || ^8.0",
+		"typo3/cms-core": "^10.4.19 || ^11.5.0",
+		"sjbr/static-info-tables": "^6.9 || ^11.5"
 	},
 	"require-dev": {
 		"roave/security-advisories": "dev-latest",
-		"friendsofphp/php-cs-fixer": "^2.16",
-		"nimut/testing-framework": "^5.1",
-		"typo3/cms-scheduler": "^10.4.14",
-		"jweiland/maps2": ">=8.0.0"
+		"friendsofphp/php-cs-fixer": "^3.0",
+		"nimut/testing-framework": "^6.0",
+		"phpunit/phpunit": "^9.5",
+		"phpspec/prophecy-phpunit": "^2.0",
+		"typo3/cms-scheduler": "^10.4.14 || ^11.5",
+		"jweiland/maps2": ">=10.0.0"
 	},
 	"autoload": {
 		"psr-4": {
@@ -57,7 +60,7 @@
 	"scripts": {
 		"php:fix": ".build/vendor/bin/php-cs-fixer --config=Build/.php_cs.php fix Classes Tests",
 		"ci:php:lint": "find *.php Classes Configuration Tests -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l",
-		"ci:php:fixer": ".build/vendor/bin/php-cs-fixer --config=Build/.php_cs.php fix --dry-run -v --show-progress=dots --diff-format=udiff Classes Tests",
+		"ci:php:fixer": ".build/vendor/bin/php-cs-fixer --config=Build/.php_cs.php fix --dry-run -v --show-progress=dots --diff Classes Tests",
 		"ci:tests:unit": "php -d date.timezone=Europe/Berlin .build/vendor/bin/phpunit -c .build/vendor/nimut/testing-framework/res/Configuration/UnitTests.xml Tests/Unit",
 		"ci:tests:functional": "find 'Tests/Functional' -wholename '*Test.php' | parallel --gnu 'echo; echo \"Running functional test suite {}\"; php -d date.timezone=Europe/Berlin .build/vendor/bin/phpunit -c .build/vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml {}';",
 		"link-extension": [

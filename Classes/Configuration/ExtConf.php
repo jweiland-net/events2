@@ -19,81 +19,44 @@ use TYPO3\CMS\Core\SingletonInterface;
  */
 class ExtConf implements SingletonInterface
 {
-    /**
-     * @var int
-     */
-    protected $poiCollectionPid = 0;
+    protected int $poiCollectionPid = 0;
 
-    /**
-     * @var int
-     */
-    protected $rootUid = 0;
+    protected int $rootUid = 0;
 
-    /**
-     * @var int
-     */
-    protected $recurringPast = 0;
+    protected int $recurringPast = 0;
 
-    /**
-     * @var int
-     */
-    protected $recurringFuture = 0;
+    protected int $recurringFuture = 0;
 
-    /**
-     * @var string
-     */
-    protected $defaultCountry = '';
+    protected string $defaultCountry = '';
 
-    /**
-     * @var string
-     */
-    protected $xmlImportValidatorPath = '';
+    protected string $xmlImportValidatorPath = '';
 
-    /**
-     * @var bool
-     */
-    protected $organizerIsRequired = false;
+    protected bool $organizerIsRequired = false;
 
-    /**
-     * @var bool
-     */
-    protected $locationIsRequired = false;
+    protected bool $locationIsRequired = false;
 
-    /**
-     * @var string
-     */
-    protected $emailFromAddress = '';
+    protected string $emailFromAddress = '';
 
-    /**
-     * @var string
-     */
-    protected $emailFromName = '';
+    protected string $emailFromName = '';
 
-    /**
-     * @var string
-     */
-    protected $emailToAddress = '';
+    protected string $emailToAddress = '';
 
-    /**
-     * @var string
-     */
-    protected $emailToName = '';
+    protected string $emailToName = '';
 
-    /**
-     * @var string
-     */
-    protected $pathSegmentType = 'empty';
+    protected string $pathSegmentType = 'empty';
 
     public function __construct(ExtensionConfiguration $extensionConfiguration)
     {
         $extConf = $extensionConfiguration->get('events2');
-        if (is_array($extConf) && count($extConf)) {
-            // call setter method foreach configuration entry
-            foreach ($extConf as $key => $value) {
-                $methodName = 'set' . ucfirst($key);
-                if (method_exists($this, $methodName)) {
-                    $this->$methodName($value);
-                }
+        if (!is_array($extConf)) {
+            return;
+        }
+
+        // call setter method foreach configuration entry
+        foreach ($extConf as $key => $value) {
+            $methodName = 'set' . ucfirst($key);
+            if (method_exists($this, $methodName)) {
+                $this->$methodName($value);
             }
         }
     }
@@ -113,6 +76,7 @@ class ExtConf implements SingletonInterface
         if (empty($this->rootUid)) {
             return 0;
         }
+
         return $this->rootUid;
     }
 
@@ -126,6 +90,7 @@ class ExtConf implements SingletonInterface
         if ($this->recurringPast >= 0) {
             return $this->recurringPast;
         }
+
         return 3;
     }
 
@@ -139,6 +104,7 @@ class ExtConf implements SingletonInterface
         if (empty($this->recurringFuture)) {
             return 6;
         }
+
         return $this->recurringFuture;
     }
 
@@ -162,6 +128,7 @@ class ExtConf implements SingletonInterface
         if (empty($this->xmlImportValidatorPath)) {
             $this->xmlImportValidatorPath = 'EXT:events2/Resources/Public/XmlImportValidator.xsd';
         }
+
         return $this->xmlImportValidatorPath;
     }
 
@@ -191,7 +158,6 @@ class ExtConf implements SingletonInterface
     }
 
     /**
-     * @return string
      * @throws \Exception
      */
     public function getEmailFromAddress(): string
@@ -201,8 +167,10 @@ class ExtConf implements SingletonInterface
             if (empty($senderMail)) {
                 throw new \Exception('You have forgotten to set a sender email address in extension configuration or in install tool', 1484823422);
             }
+
             return $senderMail;
         }
+
         return $this->emailFromAddress;
     }
 
@@ -221,8 +189,10 @@ class ExtConf implements SingletonInterface
             if (empty($senderName)) {
                 throw new \Exception('You have forgotten to set a sender name in extension configuration or in install tool', 1484823661);
             }
+
             return $senderName;
         }
+
         return $this->emailFromName;
     }
 

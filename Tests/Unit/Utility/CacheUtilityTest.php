@@ -15,6 +15,7 @@ use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Utility\CacheUtility;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
@@ -29,12 +30,11 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  */
 class CacheUtilityTest extends UnitTestCase
 {
-    /**
-     * @var \JWeiland\Events2\Utility\CacheUtility
-     */
-    protected $subject;
+    use ProphecyTrait;
 
-    public function setUp(): void
+    protected CacheUtility $subject;
+
+    protected function setUp(): void
     {
         /** @var EnvironmentService|ObjectProphecy $environmentServiceProphecy */
         $environmentServiceProphecy = $this->prophesize(EnvironmentService::class);
@@ -48,7 +48,7 @@ class CacheUtilityTest extends UnitTestCase
         $GLOBALS['TSFE'] = $tsfeProphecy->reveal();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset($GLOBALS['TSFE']);
     }

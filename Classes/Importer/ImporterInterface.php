@@ -20,29 +20,21 @@ interface ImporterInterface
 {
     /**
      * Set storage pid
-     *
-     * @param int $storagePid
      */
     public function setStoragePid(int $storagePid): void;
 
     /**
      * Set file to import
-     *
-     * @param FileInterface $file
      */
     public function setFile(FileInterface $file): void;
 
     /**
      * Check, if File is valid for this importer
-     *
-     * @return bool
      */
     public function checkFile(): bool;
 
     /**
      * Import XML file
-     *
-     * @return bool
      */
     public function import(): bool;
 }

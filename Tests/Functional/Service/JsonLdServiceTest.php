@@ -26,29 +26,19 @@ use JWeiland\Events2\Service\JsonLdService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
+use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 /**
  * Functional test for JsonLdService
  */
 class JsonLdServiceTest extends FunctionalTestCase
 {
-    /**
-     * @var DayRepository
-     */
-    protected $dayRepository;
+    protected DayRepository $dayRepository;
 
-    /**
-     * @var QuerySettingsInterface
-     */
-    protected $querySettings;
-
-    /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
+    protected QuerySettingsInterface $querySettings;
 
     /**
      * @var array
@@ -57,23 +47,30 @@ class JsonLdServiceTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $_SERVER['HTTP_HOST'] = 'example.com';
         $_SERVER['REQUEST_URI'] = 'index.php';
+
         parent::setUp();
+
         $this->importDataSet('ntf://Database/pages.xml');
         $this->setUpFrontendRootPage(1);
 
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->dayRepository = $this->objectManager->get(DayRepository::class);
-        $this->querySettings = $this->objectManager->get(QuerySettingsInterface::class);
+        $this->querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
         $this->querySettings->setStoragePageIds([11, 40]);
+
+        $this->dayRepository = GeneralUtility::makeInstance(DayRepository::class);
         $this->dayRepository->setDefaultQuerySettings($this->querySettings);
-        $persistenceManager = $this->objectManager->get(PersistenceManager::class);
-        $dayRelationService = $this->objectManager->get(DayRelationService::class);
-        $eventRepository = $this->objectManager->get(EventRepository::class);
+
+        $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
+        $dayRelationService = GeneralUtility::makeInstance(DayRelationService::class);
+
+        $eventRepository = GeneralUtility::makeInstance(EventRepository::class);
         $eventRepository->setDefaultQuerySettings($this->querySettings);
+        $eventRepository->setDefaultOrderings([
+            'uid' => QueryInterface::ORDER_ASCENDING
+        ]);
 
         $link = new Link();
         $link->setTitle('TYPO3');
@@ -92,12 +89,13 @@ class JsonLdServiceTest extends FunctionalTestCase
         $location->setZip('70794');
         $location->setCity('Filderstadt');
 
-        $eventBegin = new \DateTime('midnight');
-        $eventBegin->modify('first day of this month')->modify('+4 days')->modify('-2 months');
-        $eventEnd = clone $eventBegin;
-        $eventEnd->modify('+1 day');
+        $eventBegin = new \DateTimeImmutable('first day of this month midnight');
+        $eventBegin = $eventBegin
+            ->modify('+4 days')
+            ->modify('-2 months');
+        $eventEnd = $eventBegin->modify('+1 day');
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setPid(11);
         $event->setEventType('duration');
         $event->setTopOfList(false);
@@ -116,7 +114,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         $time->setDuration('02:00');
         $time->setTimeEnd('10:00');
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setPid(11);
         $event->setEventType('single');
         $event->setTopOfList(false);
@@ -135,13 +133,14 @@ class JsonLdServiceTest extends FunctionalTestCase
         $extConf = GeneralUtility::makeInstance(ExtConf::class);
         $extConf->setRecurringPast(3);
         $extConf->setRecurringFuture(6);
+
         $events = $eventRepository->findAll();
         foreach ($events as $event) {
             $dayRelationService->createDayRelations($event->getUid());
         }
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset($this->dayRepository);
         parent::tearDown();

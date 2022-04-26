@@ -1,0 +1,69 @@
+# Starting internal tab identifier with "z" to be one of the last tabs in element wizard
+mod.wizards.newContentElement.wizardItems.z-ext-events2 {
+  header = Events2
+  elements {
+    events2list {
+      iconIdentifier = ext-events2-wizard-icon
+      title = LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.list.title
+      description = LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.list.description
+      tt_content_defValues {
+        CType = list
+        list_type = events2_list
+      }
+    }
+    events2show {
+      iconIdentifier = ext-events2-wizard-icon
+      title = LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.show.title
+      description = LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.show.description
+      tt_content_defValues {
+        CType = list
+        list_type = events2_show
+      }
+    }
+    events2management {
+      iconIdentifier = ext-events2-wizard-icon
+      title = LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.management.title
+      description = LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.management.description
+      tt_content_defValues {
+        CType = list
+        list_type = events2_management
+      }
+    }
+    events2calendar {
+      iconIdentifier = ext-events2-wizard-icon
+      title = LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.calendar.title
+      description = LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.calendar.description
+      tt_content_defValues {
+        CType = list
+        list_type = events2_calendar
+      }
+    }
+    events2searchform {
+      iconIdentifier = ext-events2-wizard-icon
+      title = LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.searchForm.title
+      description = LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.searchForm.description
+      tt_content_defValues {
+        CType = list
+        list_type = events2_searchform
+      }
+    }
+    events2searchresults {
+      iconIdentifier = ext-events2-wizard-icon
+      title = LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.searchResults.title
+      description = LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.searchResults.description
+      tt_content_defValues {
+        CType = list
+        list_type = events2_searchresults
+      }
+    }
+  }
+  show = *
+}
+
+# Add CType Preview
+mod.web_layout.tt_content.preview.list.events2_list = EXT:events2/Resources/Private/Templates/PluginPreview/Events.html
+mod.web_layout.tt_content.preview.list.events2_show = EXT:events2/Resources/Private/Templates/PluginPreview/Events.html
+mod.web_layout.tt_content.preview.list.events2_management = EXT:events2/Resources/Private/Templates/PluginPreview/Events.html
+mod.web_layout.tt_content.preview.list.events2_calendar = EXT:events2/Resources/Private/Templates/PluginPreview/Events.html
+mod.web_layout.tt_content.preview.list.events2_searchform = EXT:events2/Resources/Private/Templates/PluginPreview/Events.html
+mod.web_layout.tt_content.preview.list.events2_searchresults = EXT:events2/Resources/Private/Templates/PluginPreview/Events.html

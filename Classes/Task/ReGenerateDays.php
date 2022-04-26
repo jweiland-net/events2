@@ -14,7 +14,6 @@ namespace JWeiland\Events2\Task;
 use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Service\DayRelationService;
 use TYPO3\CMS\Core\Cache\CacheManager;
-use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
@@ -120,19 +119,6 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
         }
 
         $this->registry->remove('events2TaskCreateUpdate', 'info');
-
-        // remove old iCAL downloads
-        $iCalDirectory = Environment::getPublicPath() . '/' . 'typo3temp/tx_events2/iCal/';
-        if (is_dir($iCalDirectory)) {
-            foreach (new \DirectoryIterator($iCalDirectory) as $fileInfo) {
-                if ($fileInfo->isDot()) {
-                    continue;
-                }
-                if ($fileInfo->isFile() && time() - $fileInfo->getCTime() >= 1 * 24 * 60 * 60) {
-                    unlink($fileInfo->getRealPath());
-                }
-            }
-        }
 
         return true;
     }

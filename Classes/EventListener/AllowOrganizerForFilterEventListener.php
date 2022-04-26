@@ -23,7 +23,7 @@ use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
  */
 class AllowOrganizerForFilterEventListener extends AbstractControllerEventListener
 {
-    protected $allowedControllerActions = [
+    protected array $allowedControllerActions = [
         'Day' => [
             'list',
             'listLatest',

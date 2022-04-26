@@ -12,217 +12,351 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Service;
 
 use JWeiland\Events2\Configuration\ExtConf;
-use JWeiland\Events2\Domain\Factory\TimeFactory;
-use JWeiland\Events2\Domain\Model\Day;
-use JWeiland\Events2\Domain\Model\Event;
-use JWeiland\Events2\Domain\Model\Time;
-use JWeiland\Events2\Domain\Repository\EventRepository;
+use JWeiland\Events2\Domain\Repository\DayRepository;
+use JWeiland\Events2\Domain\Repository\TimeRepository;
 use JWeiland\Events2\Utility\DateTimeUtility;
-use TYPO3\CMS\Core\Log\Logger;
-use TYPO3\CMS\Core\Log\LogManager;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
-use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
-use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 
 /*
  * While saving an event in backend, this class generates all the day records
  * and sets them in relation to the event record.
  */
-class DayRelationService
+class DayRelationService implements LoggerAwareInterface
 {
-    /**
-     * @var array
-     */
-    protected $eventRecord = [];
+    use LoggerAwareTrait;
 
-    /**
-     * @var ExtConf
-     */
-    protected $extConf;
+    protected array $eventRecord = [];
 
-    /**
-     * @var DayGenerator
-     */
-    protected $dayGenerator;
+    protected ExtConf $extConf;
 
-    /**
-     * @var EventRepository
-     */
-    protected $eventRepository;
+    protected DayGeneratorService $dayGenerator;
 
-    /**
-     * @var TimeFactory
-     */
-    protected $timeFactory;
+    protected DayRepository $dayRepository;
 
-    /**
-     * @var DateTimeUtility
-     */
-    protected $dateTimeUtility;
+    protected TimeRepository $timeRepository;
 
-    /**
-     * @var PersistenceManager
-     */
-    protected $persistenceManager;
+    protected DateTimeUtility $dateTimeUtility;
 
-    /**
-     * @var \DateTime
-     */
-    protected $firstDateTime;
+    protected ?\DateTimeImmutable $firstDateTime = null;
 
-    /**
-     * @var Time|null
-     */
-    protected $firstTime;
+    protected array $firstTimeRecordForCurrentDateTime = [];
 
     /**
      * Must be called by ObjectManager, because of EventRepository which has inject methods
-     *
-     * @param DayGenerator $dayGenerator
-     * @param EventRepository $eventRepository
-     * @param TimeFactory $timeFactory
-     * @param PersistenceManagerInterface $persistenceManager
-     * @param DateTimeUtility $dateTimeUtility
      */
     public function __construct(
-        DayGenerator $dayGenerator,
-        EventRepository $eventRepository,
-        TimeFactory $timeFactory,
-        PersistenceManagerInterface $persistenceManager,
+        DayGeneratorService $dayGenerator,
+        DayRepository $dayRepository,
+        TimeRepository $timeRepository,
         DateTimeUtility $dateTimeUtility
     ) {
         $this->dayGenerator = $dayGenerator;
-        $this->eventRepository = $eventRepository;
-        $this->timeFactory = $timeFactory;
-        $this->persistenceManager = $persistenceManager;
+        $this->dayRepository = $dayRepository;
+        $this->timeRepository = $timeRepository;
         $this->dateTimeUtility = $dateTimeUtility;
     }
 
     /**
      * Delete all related day records of given event and
      * start re-creating the day records.
-     *
-     * @param int $eventUid Event UID. This also can be a hidden event.
-     * @return Event
-     * @throws \Exception
      */
-    public function createDayRelations(int $eventUid): ?Event
+    public function createDayRelations(int $eventUid): array
     {
-        // As create/update action will set event as hidden, we have to search for them, too.
-        $event = $this->eventRepository->findHiddenObject($eventUid);
-        if (!$event instanceof Event) {
-            // write a warning (2) to sys_log
-            $this->getLogger()->warning('Related days could not be created, because of an empty event or a non given event uid or pid.');
-        } else {
-            // Delete all days from Repo and DB
-            $event->setDays(new ObjectStorage());
-            $this->persistenceManager->update($event);
-            $this->persistenceManager->persistAll();
+        // We are in BE context. Do not overlay.
+        $eventRecord = $this->getEventRecord($eventUid);
+        if ($eventRecord === []) {
+            $this->logger->warning('Related days could not be created, because of an empty eventRecord.');
+            return $eventRecord;
+        }
 
-            // Create days from scratch and store to DB
-            $this->dayGenerator->initialize($event);
-            $dateTimeStorage = $this->dayGenerator->getDateTimeStorage();
+        if ($eventRecord['uid'] === 0 || $eventRecord['event_type'] === '') {
+            $this->logger->info('DayRelationService will not build day records for invalid events.');
+            return $eventRecord;
+        }
+
+        if ($eventRecord['sys_language_uid'] > 0) {
+            $this->logger->info('DayRelationService will not build day records for translated events.');
+            return $eventRecord;
+        }
+
+        try {
+            $this->firstTimeRecordForCurrentDateTime = [];
+            $this->dayRepository->removeAllByEventRecord($eventRecord);
+            $days = [];
+            $dateTimeStorage = $this->dayGenerator->getDateTimeStorageForEvent($eventRecord);
             foreach ($dateTimeStorage as $dateTime) {
                 if ($this->firstDateTime === null) {
                     $this->firstDateTime = $dateTime;
                 }
-                $this->addDay($event, $dateTime);
-            }
-            $this->firstDateTime = null;
-            $this->persistenceManager->update($event);
-            $this->persistenceManager->persistAll();
-        }
 
-        return $event;
-    }
+                array_push(
+                    $days,
+                    ...$this->buildDayRecordsForDateTime($eventRecord, $dateTime)
+                );
 
-    /**
-     * Add day to DB
-     * Also MM-Tables will be filled.
-     *
-     * @param Event $event
-     * @param \DateTime $dateTime
-     */
-    public function addDay(Event $event, \DateTime $dateTime): void
-    {
-        // to prevent adding multiple day records for ONE day we set them all to midnight 00:00:00
-        $dateTime = $this->dateTimeUtility->standardizeDateTimeObject($dateTime);
-        $times = $this->timeFactory->getTimesForDate($event, $dateTime);
-        if ($times->count()) {
-            foreach ($times as $time) {
-                if ($this->firstTime === null) {
-                    $this->firstTime = $time;
+                // While looping through the DateTime entries the sort_day_time value has to be the same for all
+                // durational events. So, do not reset this value in that case.
+                if ($eventRecord['event_type'] !== 'duration') {
+                    $this->firstTimeRecordForCurrentDateTime = [];
                 }
-                $this->addGeneratedDayToEvent($dateTime, $event, $time);
             }
 
-            // sort_day_time of all duration days have to be the same value, so do not reset this value in that case.
-            if ($event->getEventType() !== 'duration') {
-                $this->firstTime = null;
-            }
+            $this->firstDateTime = null;
+            $this->dayRepository->createAll($days);
+            $eventRecord['days'] = $days;
+        } catch (\Exception $exception) {
+            $this->logger->error(sprintf(
+                'Error while building day records for event: %d. File: %s. Line: %d. Error: %s',
+                $eventUid,
+                $exception->getFile(),
+                $exception->getLine(),
+                $exception->getMessage()
+            ));
+        }
+
+        return $eventRecord;
+    }
+
+    protected function getEventRecord(int $eventUid): array
+    {
+        $eventRecord = BackendUtility::getLiveVersionOfRecord('tx_events2_domain_model_event', $eventUid);
+        if (is_array($eventRecord)) {
+            BackendUtility::workspaceOL('tx_events2_domain_model_event', $eventRecord);
         } else {
-            $this->addGeneratedDayToEvent($dateTime, $event);
+            // BackendUtility::getRecordWSOL does NOT check against missing record. Do it manually:
+            if (BackendUtility::getRecord('tx_events2_domain_model_event', $eventUid) === null) {
+                return [];
+            }
+
+            // We already have a LIVE record. Do overlay.
+            $eventRecord = BackendUtility::getRecordWSOL('tx_events2_domain_model_event', $eventUid);
         }
+
+        if ($eventRecord === null) {
+            $this->logger->warning('Event record can not be overlayed into current workspace: ' . $eventUid);
+            return [];
+        }
+
+        $this->addExceptionsToEventRecord($eventRecord);
+
+        return $eventRecord;
     }
 
-    protected function addGeneratedDayToEvent(\DateTime $dateTime, Event $event, ?Time $time = null): void
+    protected function addExceptionsToEventRecord(array &$eventRecord): void
     {
-        [$hour, $minute] = $this->getHourAndMinuteFromTime($time);
+        if (!isset($eventRecord['uid'])) {
+            return;
+        }
 
-        $day = GeneralUtility::makeInstance(Day::class);
-        $day->setPid($event->getPid());
-        $day->setDay($dateTime);
-        $day->setDayTime($this->getDayTime($dateTime, $hour, $minute));
-        $day->setSortDayTime($this->getSortDayTime($dateTime, $hour, $minute, $event));
-        $day->setSameDayTime($this->getSameDayTime($dateTime, $hour, $minute, $event));
-        $day->setEvent($event);
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_exception');
+        $queryBuilder
+            ->getRestrictions()
+            ->removeAll()
+            ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
 
-        $event->addDay($day);
+        $statement = $queryBuilder
+            ->select('*')
+            ->from('tx_events2_domain_model_exception')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'event',
+                    $queryBuilder->createNamedParameter((int)$eventRecord['uid'], \PDO::PARAM_INT)
+                ),
+                $queryBuilder->expr()->eq(
+                    't3ver_wsid',
+                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
+                )
+            )
+            ->execute();
+
+        $exceptionRecords = [];
+        while ($exceptionRecord = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            BackendUtility::workspaceOL('tx_events2_domain_model_exception', $exceptionRecord);
+            if ($exceptionRecord === null) {
+                $this->logger->warning(
+                    'Exception record can not be overlayed into current workspace: ' . $exceptionRecord['uid']
+                );
+                continue;
+            }
+
+            $exceptionRecords[(int)$exceptionRecord['uid']] = $exceptionRecord;
+        }
+
+        $eventRecord['exceptions'] = $exceptionRecords;
+    }
+
+    protected function getConnectionPool(): ConnectionPool
+    {
+        return GeneralUtility::makeInstance(ConnectionPool::class);
+    }
+
+    public function buildDayRecordsForDateTime(array $eventRecord, \DateTimeImmutable $dateTime): array
+    {
+        // Early return, if no time records were found
+        $timeRecords = $this->getTimeRecordsWithHighestPriority($eventRecord, $dateTime);
+        if ($timeRecords === []) {
+            return [
+                $this->buildDayRecordForDateTime($dateTime, $eventRecord, [])
+            ];
+        }
+
+        $dayRecords = [];
+        foreach ($timeRecords as $timeRecord) {
+            if ($this->firstTimeRecordForCurrentDateTime === []) {
+                $this->firstTimeRecordForCurrentDateTime = $timeRecord;
+            }
+
+            $dayRecords[] = $this->buildDayRecordForDateTime($dateTime, $eventRecord, $timeRecord);
+        }
+
+        return $dayRecords;
+    }
+
+    protected function getTimeRecordsWithHighestPriority(array $eventRecord, \DateTimeImmutable $dateTime): array
+    {
+        $allTimeRecords = $this->timeRepository->getAllByEventRecord($eventRecord, true);
+        $timeRecords = $this->filterTimeRecords($allTimeRecords, $eventRecord, 'exception_time', $dateTime);
+        if ($timeRecords !== []) {
+            return $timeRecords;
+        }
+
+        $timeRecords = $this->filterTimeRecords($allTimeRecords, $eventRecord, 'different_times', $dateTime);
+        if ($timeRecords !== []) {
+            return $timeRecords;
+        }
+
+        // Following time types have to be merged
+        $filteredTimeRecords = [];
+        $timeRecords = $this->filterTimeRecords($allTimeRecords, $eventRecord, 'event_time', $dateTime);
+        if ($timeRecords !== []) {
+            $filteredTimeRecords = $timeRecords;
+        }
+
+        $timeRecords = $this->filterTimeRecords($allTimeRecords, $eventRecord, 'multiple_times', $dateTime);
+        if ($timeRecords !== []) {
+            array_push($filteredTimeRecords, ...$timeRecords);
+        }
+
+        return $filteredTimeRecords;
+    }
+
+    protected function filterTimeRecords(
+        array $allTimeRecords,
+        array $eventRecord,
+        string $recordType,
+        \DateTimeImmutable $dateTime
+    ): array {
+        $filteredTimeRecords = [];
+        foreach ($allTimeRecords as $timeRecord) {
+            if (!isset(
+                $timeRecord['type'],
+                $timeRecord['hidden'],
+                $timeRecord['event'],
+                $timeRecord['exception'],
+                $timeRecord['weekday']
+            )) {
+                continue;
+            }
+
+            if ($timeRecord['hidden']) {
+                continue;
+            }
+
+            if (!is_array($timeRecord['event']) || !is_array($timeRecord['exception'])) {
+                continue;
+            }
+
+            if ($timeRecord['type'] !== $recordType) {
+                continue;
+            }
+
+            switch ($recordType) {
+                case 'exception_time':
+                    // Record must match date of exception record
+                    if (
+                        ($exceptionRecord = $eventRecord['exceptions'][$timeRecord['exception']['uid'] ?? 0] ?? [])
+                        && isset($exceptionRecord['hidden'])
+                        && (int)$exceptionRecord['hidden'] === 0
+                        && in_array($exceptionRecord['exception_type'] ?? '', ['Add', 'Time'])
+                        && ($exceptionDate = $this->dateTimeUtility->convert($exceptionRecord['exception_date'] ?? 0))
+                        && $exceptionDate == $dateTime // we compare objects here so no === possible
+                    ) {
+                        $filteredTimeRecords[] = $timeRecord;
+                    }
+                    break;
+                case 'different_times':
+                    // Record must match day of week to be added
+                    if (strtolower($timeRecord['weekday']) === strtolower($dateTime->format('l'))) {
+                        $filteredTimeRecords[] = $timeRecord;
+                    }
+                    break;
+                default:
+                    $filteredTimeRecords[] = $timeRecord;
+            }
+        }
+
+        return $filteredTimeRecords;
+    }
+
+    protected function buildDayRecordForDateTime(
+        \DateTimeImmutable $dateTime,
+        array $eventRecord,
+        array $timeRecord
+    ): array {
+        [$hour, $minute] = $this->getHourAndMinuteFromTime($timeRecord);
+
+        return [
+            'pid' => (int)$eventRecord['pid'],
+            'crdate' => time(),
+            'tstamp' => time(),
+            'cruser_id' => $GLOBALS['BE_USER']->user['uid'] ?? 0,
+            'hidden' => $eventRecord['hidden'] ?? 0,
+            't3ver_wsid' => $eventRecord['t3ver_wsid'] ?? 0,
+            'day' => (int)$dateTime->format('U'),
+            'day_time' => (int)$this->getDayTime($dateTime, $hour, $minute)->format('U'),
+            'sort_day_time' => (int)$this->getSortDayTime($dateTime, $hour, $minute, $eventRecord)->format('U'),
+            'same_day_time' => (int)$this->getSameDayTime($dateTime, $hour, $minute, $eventRecord)->format('U'),
+            'event' => $eventRecord['uid']
+        ];
     }
 
     /**
-     * Analyze for valid time value like "21:40" and return exploded time parts: hour (21) and minute (40)
-     *
-     * @param Time|null $time
-     * @return array|int[]
+     * Analyze for valid time value like "21:40" and return exploded time parts: hour (21) and minute (40).
+     * It does not prepend "0" to a value. Time for "08:04" will be returned with hour (8) and minute (4).
      */
-    protected function getHourAndMinuteFromTime(?Time $time = null): array
+    protected function getHourAndMinuteFromTime(array $timeRecord): array
     {
-        $hourAndMinute = [0, 0];
-        if (
-            $time instanceof Time &&
-            preg_match('@^([0-1]\d|2[0-3]):[0-5]\d$@', $time->getTimeBegin())
-        ) {
-            $hourAndMinute = GeneralUtility::intExplode(':', $time->getTimeBegin());
+        if (!isset($timeRecord['time_begin'])) {
+            return [0, 0];
         }
-        return $hourAndMinute;
+
+        if (!preg_match('@^([0-1]\d|2[0-3]):[0-5]\d$@', $timeRecord['time_begin'])) {
+            return [0, 0];
+        }
+
+        return GeneralUtility::intExplode(':', $timeRecord['time_begin']);
     }
 
     /**
-     * Get day time
-     * Each individual hour and minute will be added to day
+     * Returns a new DateTime with added hour and minute
      *
      * Day: 17.01.2017 00:00:00 + 8h + 30m
      * Day: 18.01.2017 00:00:00 + 10h + 15m
      * Day: 19.01.2017 00:00:00 + 9h + 25m
      * Day: 20.01.2017 00:00:00 + 14h + 45m
-     *
-     * @param \DateTime $day
-     * @param int $hour
-     * @param int $minute
-     * @return \DateTime
      */
-    protected function getDayTime(\DateTime $day, int $hour, int $minute): \DateTime
+    protected function getDayTime(\DateTimeImmutable $day, int $hour, int $minute): \DateTimeImmutable
     {
-        // Don't modify original day
-        $dayTime = clone $day;
-        $dayTime->modify(sprintf(
+        return $day->modify(sprintf(
             '+%d hour +%d minute',
             $hour,
             $minute
         ));
-        return $dayTime;
     }
 
     /**
@@ -233,27 +367,24 @@ class DayRelationService
      * Day: 18.01.2017 00:00:00 + 10h + 15m = 17.01.2017 08:30:00
      * Day: 19.01.2017 00:00:00 + 9h + 25m  = 17.01.2017 08:30:00
      * Day: 20.01.2017 00:00:00 + 14h + 45m = 17.01.2017 08:30:00
-     *
-     * @param \DateTime $day
-     * @param int $hour
-     * @param int $minute
-     * @param Event $event
-     * @return \DateTime
      */
-    protected function getSortDayTime(\DateTime $day, int $hour, int $minute, Event $event): \DateTime
-    {
-        if ($event->getEventType() === 'duration') {
-            [$hour, $minute] = $this->getHourAndMinuteFromTime($this->firstTime);
-            $sortDayTime = $this->getDayTime($this->firstDateTime, $hour, $minute);
-        } else {
-            $sortDayTime = $this->getDayTime($day, $hour, $minute);
+    protected function getSortDayTime(
+        \DateTimeImmutable $day,
+        int $hour,
+        int $minute,
+        array $eventRecord
+    ): \DateTimeImmutable {
+        if ($eventRecord['event_type'] === 'duration') {
+            [$hour, $minute] = $this->getHourAndMinuteFromTime($this->firstTimeRecordForCurrentDateTime);
+
+            return $this->getDayTime($this->firstDateTime, $hour, $minute);
         }
 
-        return $sortDayTime;
+        return $this->getDayTime($day, $hour, $minute);
     }
 
     /**
-     * Get timestamp which is the same for all time records of same day.
+     * Get timestamp which is the same for all time-records of same day.
      * This column is only needed if mergeEventsAtSameTime is set.
      * It helps to GROUP BY these records in SQL statement.
      *
@@ -261,24 +392,18 @@ class DayRelationService
      * Day: 17.01.2017 00:00:00 + 10h + 15m = 17.01.2017 08:30:00
      * Day: 18.01.2017 00:00:00 + 8h + 30m  = 18.01.2017 08:30:00
      * Day: 28.01.2017 00:00:00 + 10h + 15m = 18.01.2017 08:30:00
-     *
-     * @param \DateTime $day
-     * @param int $hour
-     * @param int $minute
-     * @param Event $event
-     * @return \DateTime
      */
-    protected function getSameDayTime(\DateTime $day, int $hour, int $minute, Event $event): \DateTime
-    {
-        if ($event->getEventType() !== 'duration') {
-            [$hour, $minute] = $this->getHourAndMinuteFromTime($this->firstTime);
+    protected function getSameDayTime(
+        \DateTimeImmutable $day,
+        int $hour,
+        int $minute,
+        array $eventRecord
+    ): \DateTimeImmutable {
+        if ($eventRecord['event_type'] !== 'duration') {
+            [$hour, $minute] = $this->getHourAndMinuteFromTime($this->firstTimeRecordForCurrentDateTime);
         }
 
-        return $this->getSortDayTime($day, $hour, $minute, $event);
-    }
-
-    protected function getLogger(): Logger
-    {
-        return GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+        // In case of duration the date is the same for all days.
+        return $this->getSortDayTime($day, $hour, $minute, $eventRecord);
     }
 }

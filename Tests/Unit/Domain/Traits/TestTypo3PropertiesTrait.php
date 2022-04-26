@@ -31,7 +31,7 @@ trait TestTypo3PropertiesTrait
      */
     public function setCrdateSetsCrdate(): void
     {
-        $date = new \DateTime();
+        $date = new \DateTimeImmutable();
         $this->subject->setCrdate($date);
 
         self::assertSame(
@@ -67,7 +67,7 @@ trait TestTypo3PropertiesTrait
      */
     public function setTstampSetsTstamp(): void
     {
-        $date = new \DateTime();
+        $date = new \DateTimeImmutable();
         $this->subject->setTstamp($date);
 
         self::assertSame(
@@ -150,7 +150,7 @@ trait TestTypo3PropertiesTrait
      */
     public function setStarttimeSetsStarttime(): void
     {
-        $date = new \DateTime();
+        $date = new \DateTimeImmutable();
         $this->subject->setStarttime($date);
 
         self::assertSame(
@@ -186,7 +186,7 @@ trait TestTypo3PropertiesTrait
      */
     public function setEndtimeSetsEndtime(): void
     {
-        $date = new \DateTime();
+        $date = new \DateTimeImmutable();
         $this->subject->setEndtime($date);
 
         self::assertSame(

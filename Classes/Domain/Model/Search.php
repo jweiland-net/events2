@@ -18,50 +18,23 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
  */
 class Search extends AbstractEntity
 {
-    /**
-     * @var string
-     */
-    protected $search = '';
+    protected string $search = '';
 
-    /**
-     * @var \JWeiland\Events2\Domain\Model\Category
-     */
-    protected $mainCategory;
+    protected ?Category $mainCategory = null;
 
-    /**
-     * @var \JWeiland\Events2\Domain\Model\Category
-     */
-    protected $subCategory;
+    protected ?Category $subCategory = null;
 
-    /**
-     * @var string
-     */
-    protected $eventBegin = '';
+    protected string $eventBegin = '';
 
-    /**
-     * @var string
-     */
-    protected $eventEnd = '';
+    protected string $eventEnd = '';
 
-    /**
-     * @var \JWeiland\Events2\Domain\Model\Location
-     */
-    protected $location;
+    protected ?Location $location = null;
 
-    /**
-     * @var bool
-     */
-    protected $freeEntry = false;
+    protected bool $freeEntry = false;
 
-    /**
-     * @var array
-     */
-    protected $storagePids = [];
+    protected array $storagePids = [];
 
-    /**
-     * @var int
-     */
-    protected $limit = 0;
+    protected int $limit = 0;
 
     public function getSearch(): string
     {
@@ -78,7 +51,7 @@ class Search extends AbstractEntity
         return $this->mainCategory;
     }
 
-    public function setMainCategory(?Category $mainCategory = null): void
+    public function setMainCategory(?Category $mainCategory): void
     {
         $this->mainCategory = $mainCategory;
     }
@@ -91,18 +64,19 @@ class Search extends AbstractEntity
         return $this->subCategory;
     }
 
-    public function setSubCategory(?Category $subCategory = null): void
+    public function setSubCategory(?Category $subCategory): void
     {
         $this->subCategory = $subCategory;
     }
 
-    public function getEventBegin(): ?\DateTime
+    public function getEventBegin(): ?\DateTimeImmutable
     {
         if (empty($this->eventBegin)) {
             return null;
         }
+
         try {
-            $date = new \DateTime($this->eventBegin);
+            $date = new \DateTimeImmutable($this->eventBegin);
             $date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
         } catch (\Exception $exception) {
             $date = null;
@@ -116,13 +90,14 @@ class Search extends AbstractEntity
         $this->eventBegin = $eventBegin;
     }
 
-    public function getEventEnd(): ?\DateTime
+    public function getEventEnd(): ?\DateTimeImmutable
     {
         if (empty($this->eventEnd)) {
             return null;
         }
+
         try {
-            $date = new \DateTime($this->eventEnd);
+            $date = new \DateTimeImmutable($this->eventEnd);
             $date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
         } catch (\Exception $exception) {
             $date = null;
@@ -141,7 +116,7 @@ class Search extends AbstractEntity
         return $this->location;
     }
 
-    public function setLocation(Location $location = null): void
+    public function setLocation(?Location $location): void
     {
         $this->location = $location;
     }

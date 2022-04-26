@@ -23,17 +23,14 @@ class OrganizerTest extends UnitTestCase
 {
     use TestTypo3PropertiesTrait;
 
-    /**
-     * @var \JWeiland\Events2\Domain\Model\Organizer
-     */
-    protected $subject;
+    protected Organizer $subject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->subject = new Organizer();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset($this->subject);
     }

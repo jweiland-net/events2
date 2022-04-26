@@ -18,6 +18,6 @@ Embedded link: //www.youtube.com/embed/B5gDI2h0F20
 Basic example
 """""""""""""
 
-Code: ::
+.. code-block:: html
 
    <iframe width="560" height="315" src="{e2:createYoutubeUri(link: event.videoLink.link)}" frameborder="0" allowfullscreen></iframe>

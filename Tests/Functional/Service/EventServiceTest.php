@@ -18,6 +18,7 @@ use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Service\EventService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
@@ -27,10 +28,9 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  */
 class EventServiceTest extends FunctionalTestCase
 {
-    /**
-     * @var EventService
-     */
-    protected $subject;
+    use ProphecyTrait;
+
+    protected EventService $subject;
 
     /**
      * @var EventRepository|ObjectProphecy
@@ -41,7 +41,7 @@ class EventServiceTest extends FunctionalTestCase
         'typo3conf/ext/events2'
     ];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -54,7 +54,7 @@ class EventServiceTest extends FunctionalTestCase
         );
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset(
             $this->subject,
@@ -84,8 +84,8 @@ class EventServiceTest extends FunctionalTestCase
      */
     public function getNextDayForEventWithEventButWithoutFutureDaysReturnsFalse(): void
     {
-        $yesterday = new \DateTime('yesterday midnight');
-        $yesterdayWithTime = new \DateTime('yesterday');
+        $yesterday = new \DateTimeImmutable('yesterday midnight');
+        $yesterdayWithTime = new \DateTimeImmutable('yesterday');
 
         $day = new Day();
         $day->setDay($yesterday);
@@ -95,7 +95,7 @@ class EventServiceTest extends FunctionalTestCase
         $days = new ObjectStorage();
         $days->attach($day);
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setDays($days);
 
         $this->eventRepositoryProphecy
@@ -113,8 +113,8 @@ class EventServiceTest extends FunctionalTestCase
      */
     public function getNextDayForEventWithEventWithFutureDayReturnsDay(): void
     {
-        $tomorrow = new \DateTime('tomorrow midnight');
-        $tomorrowWithTime = new \DateTime('tomorrow');
+        $tomorrow = new \DateTimeImmutable('tomorrow midnight');
+        $tomorrowWithTime = new \DateTimeImmutable('tomorrow');
 
         $day = new Day();
         $day->setDay($tomorrow);
@@ -124,7 +124,7 @@ class EventServiceTest extends FunctionalTestCase
         $days = new ObjectStorage();
         $days->attach($day);
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setDays($days);
 
         $this->eventRepositoryProphecy
@@ -145,12 +145,12 @@ class EventServiceTest extends FunctionalTestCase
      */
     public function getNextDayForEventWithEventWithFutureDaysReturnsNextDay(): void
     {
-        $tomorrow = new \DateTime('tomorrow midnight');
-        $tomorrowWithTime = new \DateTime('tomorrow');
-        $nextWeek = new \DateTime('next week midnight');
-        $nextWeekWithTime = new \DateTime('next week');
-        $nextMonth = new \DateTime('next month midnight');
-        $nextMonthWithTime = new \DateTime('next month');
+        $tomorrow = new \DateTimeImmutable('tomorrow midnight');
+        $tomorrowWithTime = new \DateTimeImmutable('tomorrow');
+        $nextWeek = new \DateTimeImmutable('next week midnight');
+        $nextWeekWithTime = new \DateTimeImmutable('next week');
+        $nextMonth = new \DateTimeImmutable('next month midnight');
+        $nextMonthWithTime = new \DateTimeImmutable('next month');
 
         $day1 = new Day();
         $day1->setDay($nextMonth);
@@ -170,7 +170,7 @@ class EventServiceTest extends FunctionalTestCase
         $days->attach($day2);
         $days->attach($day3);
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setEventType('recurring');
         $event->setDays($days);
 
@@ -190,8 +190,8 @@ class EventServiceTest extends FunctionalTestCase
      */
     public function getLastDayForEventWithEventWithFutureDayReturnsDay(): void
     {
-        $tomorrow = new \DateTime('tomorrow midnight');
-        $tomorrowWithTime = new \DateTime('tomorrow');
+        $tomorrow = new \DateTimeImmutable('tomorrow midnight');
+        $tomorrowWithTime = new \DateTimeImmutable('tomorrow');
 
         $day = new Day();
         $day->setDay($tomorrow);
@@ -201,7 +201,7 @@ class EventServiceTest extends FunctionalTestCase
         $days = new ObjectStorage();
         $days->attach($day);
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setDays($days);
 
         $this->eventRepositoryProphecy
@@ -222,12 +222,12 @@ class EventServiceTest extends FunctionalTestCase
      */
     public function getLastDayForEventWithEventWithFutureDaysReturnsLastDay(): void
     {
-        $tomorrow = new \DateTime('tomorrow midnight');
-        $tomorrowWithTime = new \DateTime('tomorrow');
-        $nextWeek = new \DateTime('next week midnight');
-        $nextWeekWithTime = new \DateTime('next week');
-        $nextMonth = new \DateTime('next month midnight');
-        $nextMonthWithTime = new \DateTime('next month');
+        $tomorrow = new \DateTimeImmutable('tomorrow midnight');
+        $tomorrowWithTime = new \DateTimeImmutable('tomorrow');
+        $nextWeek = new \DateTimeImmutable('next week midnight');
+        $nextWeekWithTime = new \DateTimeImmutable('next week');
+        $nextMonth = new \DateTimeImmutable('next month midnight');
+        $nextMonthWithTime = new \DateTimeImmutable('next month');
 
         $day1 = new Day();
         $day1->setDay($nextMonth);
@@ -247,7 +247,7 @@ class EventServiceTest extends FunctionalTestCase
         $days->attach($day2);
         $days->attach($day3);
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setEventType('recurring');
         $event->setDays($days);
 

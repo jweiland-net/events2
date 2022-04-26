@@ -90,12 +90,13 @@ Default: 0
 
 Often it is useful to move the detail view onto a separate page for design/layout reasons.
 
-settings.pidOfSearchPage
-""""""""""""""""""""""""
+settings.pidOfSearchResults
+"""""""""""""""""""""""""""
 
 Default: 0
 
-Often it is useful to move the search view onto a separate page for design/layout reasons.
+If you have plugin for search results on a different page then plugin for search form you can
+set the page UID with search result plugin here.
 
 settings.pidOfLocationPage
 """"""""""""""""""""""""""
@@ -112,15 +113,6 @@ Default: 0
 If you use one of the above settings, it would be useful to define the *pidOfListPage*, too, so that
 a link back to list works like expected.
 
-
-settings.includeDeTranslationForCalendar
-""""""""""""""""""""""""""""""""""""""""
-
-Default: 0
-
-This is only for our german friends of events2. We are using the calendar of jquery UI Framework, where all
-the month names and weekdays are in english translation only. If you set this to 1, we will include a german
-translation file. Adapt this mechanism for other translations.
 
 settings.userGroup
 """"""""""""""""""

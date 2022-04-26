@@ -31,17 +31,12 @@ class FeUserViewHelper extends AbstractViewHelper
 
     /**
      * Implements a ViewHelper to get values from current logged in fe_user.
-     *
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return mixed
      */
     public static function renderStatic(
         array $arguments,
         \Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
-    ) {
+    ): string {
         $userRepository = GeneralUtility::makeInstance(UserRepository::class);
         return $userRepository->getFieldFromUser($arguments['field']);
     }

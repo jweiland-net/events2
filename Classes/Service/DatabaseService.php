@@ -13,7 +13,6 @@ namespace JWeiland\Events2\Service;
 
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Utility\DateTimeUtility;
-use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
@@ -27,15 +26,9 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  */
 class DatabaseService
 {
-    /**
-     * @var ExtConf
-     */
-    protected $extConf;
+    protected ExtConf $extConf;
 
-    /**
-     * @var DateTimeUtility
-     */
-    protected $dateTimeUtility;
+    protected DateTimeUtility $dateTimeUtility;
 
     public function __construct(ExtConf $extConf, DateTimeUtility $dateTimeUtility)
     {
@@ -45,18 +38,16 @@ class DatabaseService
 
     /**
      * Get column definitions from table
-     *
-     * @param string $tableName
-     * @return array
      */
     public function getColumnsFromTable(string $tableName): array
     {
         $output = [];
         $connection = $this->getConnectionPool()->getConnectionForTable($tableName);
         $statement = $connection->query('SHOW FULL COLUMNS FROM `' . $tableName . '`');
-        while ($fieldRow = $statement->fetch()) {
+        while ($fieldRow = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $output[$fieldRow['Field']] = $fieldRow;
         }
+
         return $output;
     }
 
@@ -67,8 +58,6 @@ class DatabaseService
      * Set $really to true, to do a really TRUNCATE, which also sets starting increment back to 1.
      *
      * @link: https://stackoverflow.com/questions/9686888/how-to-truncate-a-table-using-doctrine-2
-     * @param string $tableName
-     * @param bool $really
      */
     public function truncateTable(string $tableName, bool $really = false): void
     {
@@ -89,7 +78,7 @@ class DatabaseService
      * With this method you get all current and future events of all event types.
      * It does not select hidden records as eventRepository->findByIdentifier will not find them.
      *
-     * @return array
+     * @return array[]
      */
     public function getCurrentAndFutureEvents(): array
     {
@@ -113,7 +102,7 @@ class DatabaseService
                 $queryBuilder->expr()->orX(...$orConstraints)
             )
             ->execute()
-            ->fetchAll();
+            ->fetchAll(\PDO::FETCH_ASSOC);
 
         if (empty($events)) {
             $events = [];
@@ -125,16 +114,10 @@ class DatabaseService
     /**
      * Get days in range.
      * This method was used by Ajax call: findDaysByMonth
-     *
-     * @param \DateTime $startDate
-     * @param \DateTime $endDate
-     * @param array $storagePids
-     * @param array $categories
-     * @return array Days with event UID, event title and day timestamp
      */
     public function getDaysInRange(
-        \DateTime $startDate,
-        \DateTime $endDate,
+        \DateTimeImmutable $startDate,
+        \DateTimeImmutable $endDate,
         array $storagePids = [],
         array $categories = []
     ): array {
@@ -211,7 +194,7 @@ class DatabaseService
         return $queryBuilder
             ->where(...$constraint)
             ->execute()
-            ->fetchAll();
+            ->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     public function getConstraintForSingleEvents(QueryBuilder $queryBuilder): string
@@ -269,51 +252,17 @@ class DatabaseService
         );
     }
 
-    public function addConstraintForDate(
-        QueryBuilder $queryBuilder,
-        string $type,
-        QueryBuilder $parentQueryBuilder = null,
-        string $alias = 'day'
-    ): void {
-        $endDateTime = null;
-
-        switch ($type) {
-            case 'today':
-                $startDateTime = $this->dateTimeUtility->convert('today');
-                $endDateTime = clone $startDateTime;
-                $endDateTime->modify('23:59:59');
-                break;
-            case 'range':
-                $startDateTime = $this->dateTimeUtility->convert('today');
-                $endDateTime = $this->dateTimeUtility->convert('today');
-                $endDateTime->modify('+4 weeks');
-                break;
-            case 'thisWeek':
-                // 'first day of' does not work for 'weeks'. Using 'this week' jumps to first day of week. Monday
-                $startDateTime = $this->dateTimeUtility->convert('today');
-                $startDateTime->modify('this week');
-                $endDateTime = $this->dateTimeUtility->convert('today');
-                $endDateTime->modify('this week +6 days');
-                break;
-            case 'latest':
-            case 'list':
-            default:
-                if ($this->extConf->getRecurringPast() === 0) {
-                    // including current time as events in past are not allowed to be displayed
-                    $startDateTime = new \DateTime('now');
-                } else {
-                    // exclude current time. Start with 00:00:00
-                    $startDateTime = $this->dateTimeUtility->convert('today');
-                }
-        }
-
-        $this->addConstraintForDateRange($queryBuilder, $startDateTime, $endDateTime, $parentQueryBuilder, $alias);
-    }
-
+    /**
+     * @param QueryBuilder $queryBuilder
+     * @param \DateTimeImmutable $startDateTime
+     * @param \DateTimeImmutable|null $endDateTime
+     * @param QueryBuilder|null $parentQueryBuilder
+     * @param string $alias
+     */
     public function addConstraintForDateRange(
         QueryBuilder $queryBuilder,
-        \DateTime $startDateTime,
-        \DateTime $endDateTime = null,
+        \DateTimeImmutable $startDateTime,
+        ?\DateTimeImmutable $endDateTime = null,
         QueryBuilder $parentQueryBuilder = null,
         string $alias = 'day'
     ): void {
@@ -330,14 +279,14 @@ class DatabaseService
             )
         );
 
-        if ($endDateTime instanceof \DateTime) {
-            $endDateTime->modify('23:59:59');
+        if ($endDateTime instanceof \DateTimeImmutable) {
+            $endDateTimeNight = $endDateTime->modify('23:59:59');
             $constraintForDateTime = (string)$queryBuilder->expr()->andX(
                 $constraintForDateTime,
                 $queryBuilder->expr()->lt(
                     $alias . '.day_time',
                     $parentQueryBuilder->createNamedParameter(
-                        $endDateTime->format('U'),
+                        $endDateTimeNight->format('U'),
                         \PDO::PARAM_INT,
                         ':eventEndDate'
                     )
@@ -478,12 +427,8 @@ class DatabaseService
     /**
      * Add Constraint for various columns of event table
      *
-     * @param QueryBuilder $queryBuilder
-     * @param string $column
      * @param mixed $value
-     * @param int $dataType
      * @param QueryBuilder|null $parentQueryBuilder
-     * @param string $alias
      */
     public function addConstraintForEventColumn(
         QueryBuilder $queryBuilder,
@@ -508,26 +453,6 @@ class DatabaseService
         );
     }
 
-    /**
-     * Working with own QueryBuilder queries does not respect showHiddenContent settings of TYPO3, that's why
-     * we have to manually remove Hidden constraint from restriction container.
-     *
-     * @param QueryBuilder $queryBuilder
-     */
-    public function addVisibilityConstraintToQuery(QueryBuilder $queryBuilder): void
-    {
-        $context = GeneralUtility::makeInstance(Context::class);
-        $showHiddenRecords = (bool)$context->getPropertyFromAspect(
-            'visibility',
-            'includeHiddenContent',
-            false
-        );
-
-        if ($showHiddenRecords) {
-            $queryBuilder->getRestrictions()->removeByType(HiddenRestriction::class);
-        }
-    }
-
     protected function getTypoScriptFrontendController(): TypoScriptFrontendController
     {
         if ($GLOBALS['TSFE'] === null) {
@@ -538,6 +463,7 @@ class DatabaseService
                 0
             );
         }
+
         return $GLOBALS['TSFE'];
     }
 

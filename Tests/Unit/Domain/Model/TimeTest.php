@@ -22,17 +22,14 @@ class TimeTest extends UnitTestCase
 {
     use TestTypo3PropertiesTrait;
 
-    /**
-     * @var \JWeiland\Events2\Domain\Model\Time
-     */
-    protected $subject;
+    protected Time $subject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->subject = new Time();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset($this->subject);
     }
@@ -172,7 +169,7 @@ class TimeTest extends UnitTestCase
      */
     public function setTimeEntryAsDateTimeSetsTimeEntryAsDateTime(): void
     {
-        $date = new \DateTime();
+        $date = new \DateTimeImmutable();
         $this->subject->setTimeEntryAsDateTime($date);
 
         self::assertSame(
@@ -196,7 +193,7 @@ class TimeTest extends UnitTestCase
      */
     public function setTimeBeginAsDateTimeSetsTimeBeginAsDateTime(): void
     {
-        $date = new \DateTime();
+        $date = new \DateTimeImmutable();
         $this->subject->setTimeBeginAsDateTime($date);
 
         self::assertSame(
@@ -220,7 +217,7 @@ class TimeTest extends UnitTestCase
      */
     public function setTimeEndAsDateTimeSetsTimeEndAsDateTime(): void
     {
-        $date = new \DateTime();
+        $date = new \DateTimeImmutable();
         $this->subject->setTimeEndAsDateTime($date);
 
         self::assertSame(

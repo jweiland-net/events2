@@ -19,19 +19,16 @@ use Nimut\TestingFramework\TestCase\UnitTestCase;
  */
 class InitializeNewEventRecordTest extends UnitTestCase
 {
-    /**
-     * @var InitializeNewEventRecord
-     */
-    protected $subject;
+    protected InitializeNewEventRecord $subject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->subject = new InitializeNewEventRecord();
 
         $GLOBALS['EXEC_TIME'] = time();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset($this->subject);
     }

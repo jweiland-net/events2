@@ -22,18 +22,27 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
  */
 class Filter extends AbstractEntity
 {
-    /**
-     * @var int|null
-     */
-    protected $organizer;
+    protected ?int $organizer = null;
+
+    protected int $timestamp = 0;
 
     public function getOrganizer(): ?int
     {
         return $this->organizer;
     }
 
-    public function setOrganizer(?int $organizer = null): void
+    public function setOrganizer(?int $organizer): void
     {
         $this->organizer = $organizer;
+    }
+
+    public function getTimestamp(): int
+    {
+        return $this->timestamp;
+    }
+
+    public function setTimestamp(int $timestamp): void
+    {
+        $this->timestamp = $timestamp;
     }
 }

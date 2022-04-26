@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Domain\Model;
 
 use JWeiland\Events2\Domain\Traits\Typo3PropertiesTrait;
+use TYPO3\CMS\Extbase\Annotation as Extbase;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /*
@@ -22,14 +23,11 @@ class Link extends AbstractEntity
     use Typo3PropertiesTrait;
 
     /**
-     * @var string
+     * @Extbase\Validate("NotEmpty")
      */
-    protected $link = '';
+    protected string $link = '';
 
-    /**
-     * @var string
-     */
-    protected $title = 'Video';
+    protected string $title = 'Video';
 
     public function getLink(): string
     {
@@ -38,7 +36,7 @@ class Link extends AbstractEntity
 
     public function setLink(string $link): void
     {
-        $this->link = $link;
+        $this->link = trim($link);
     }
 
     public function getTitle(): string
@@ -48,6 +46,8 @@ class Link extends AbstractEntity
 
     public function setTitle(string $title): void
     {
-        $this->title = $title;
+        if ($title !== '') {
+            $this->title = $title;
+        }
     }
 }

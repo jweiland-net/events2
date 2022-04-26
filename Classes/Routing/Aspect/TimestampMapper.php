@@ -43,10 +43,7 @@ use TYPO3\CMS\Core\Routing\Aspect\StaticMappableAspectInterface;
  */
 class TimestampMapper implements StaticMappableAspectInterface
 {
-    /**
-     * @var array
-     */
-    protected $settings;
+    protected array $settings;
 
     public function __construct(array $settings)
     {
@@ -57,7 +54,7 @@ class TimestampMapper implements StaticMappableAspectInterface
             throw new \InvalidArgumentException('format must be set', 1550748662);
         }
 
-        $date = new \DateTime('now');
+        $date = new \DateTimeImmutable('now');
         if (empty($date->format($settings['format']))) {
             throw new \InvalidArgumentException('format must be valid DateTime value', 1550748750);
         }
@@ -70,10 +67,8 @@ class TimestampMapper implements StaticMappableAspectInterface
      */
     public function generate(string $value): ?string
     {
-        $date = new \DateTime(date('c', (int)$value));
-        if (!$date instanceof \DateTime) {
-            return null;
-        }
+        $date = new \DateTimeImmutable(date('c', (int)$value));
+
         return $date->format($this->settings['format']);
     }
 
@@ -82,10 +77,11 @@ class TimestampMapper implements StaticMappableAspectInterface
      */
     public function resolve(string $value): ?string
     {
-        $date = \DateTime::createFromFormat($this->settings['format'], $value);
-        if (!$date instanceof \DateTime) {
+        $date = \DateTimeImmutable::createFromFormat($this->settings['format'], $value);
+        if (!$date instanceof \DateTimeImmutable) {
             return null;
         }
+
         return $date->format('U');
     }
 }

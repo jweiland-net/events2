@@ -23,10 +23,7 @@ use TYPO3\CMS\Extbase\Persistence\RepositoryInterface;
  */
 class HiddenObjectHelper
 {
-    /**
-     * @var Session
-     */
-    protected $session;
+    protected Session $session;
 
     public function __construct(Session $session)
     {

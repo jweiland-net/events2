@@ -11,28 +11,21 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Tests\Functional\Controller;
 
-use JWeiland\Events2\Controller\LocationController;
-use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-use TYPO3\CMS\Core\Localization\LanguageService;
+use JWeiland\Events2\Tests\Functional\AbstractFunctionalTestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
+use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\Request;
-use TYPO3\CMS\Extbase\Mvc\Response;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Core\Bootstrap;
 
 /**
  * Test case.
  */
-class LocationControllerTest extends FunctionalTestCase
+class LocationControllerTest extends AbstractFunctionalTestCase
 {
-    /**
-     * @var LocationController
-     */
-    protected $subject;
+    use ProphecyTrait;
 
-    /**
-     * @var Request
-     */
-    protected $request;
+    protected ServerRequest $serverRequest;
 
     /**
      * @var array
@@ -42,34 +35,29 @@ class LocationControllerTest extends FunctionalTestCase
         'typo3conf/ext/static_info_tables'
     ];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
+        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
+        if (version_compare($typo3Version->getBranch(), '11', '<')) {
+            self::markTestSkipped(
+                'Because of missing Context class in TYPO3 10 this test has to be skipped.'
+            );
+        }
+
         parent::setUp();
+
         $this->importDataSet('ntf://Database/pages.xml');
         $this->importDataSet(__DIR__ . '/../Fixtures/tx_events2_domain_model_location.xml');
-        $this->setUpFrontendRootPage(1, [__DIR__ . '/../Fixtures/TypoScript/plugin.typoscript']);
+        $this->setUpFrontendRootPage(1, [__DIR__ . '/../Fixtures/TypoScript/setup.typoscript']);
 
-        $this->request = new Request();
-        if (method_exists($this->request, 'setControllerAliasToClassNameMapping')) {
-            $this->request->setControllerAliasToClassNameMapping([
-                'Location' => LocationController::class
-            ]);
-        }
-        $this->request->setControllerExtensionName('Events2');
-        $this->request->setPluginName('Events');
-        $this->request->setControllerName('Location');
-
-        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
-
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->subject = $objectManager->get(LocationController::class);
+        $this->serverRequest = $this->getServerRequestForFrontendMode();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset(
-            $this->subject,
-            $this->request
+            $this->serverRequest,
+            $GLOBALS['TSFE']
         );
 
         parent::tearDown();
@@ -80,13 +68,28 @@ class LocationControllerTest extends FunctionalTestCase
      */
     public function processRequestWithShowActionWillAssignLocationToView(): void
     {
-        $this->request->setControllerActionName('show');
-        $this->request->setArgument('location', 1);
+        $this->startUpTSFE(
+            $this->serverRequest,
+            1,
+            '0',
+            [
+                'tx_events2_list' => [
+                    'controller' => 'Location',
+                    'action' => 'show',
+                    'location' => '1',
+                ]
+            ]
+        );
 
-        $response = new Response();
-
-        $this->subject->processRequest($this->request, $response);
-        $content = $response->getContent();
+        $extbaseBootstrap = GeneralUtility::makeInstance(Bootstrap::class);
+        $content = $extbaseBootstrap->run(
+            '',
+            [
+                'extensionName' => 'Events2',
+                'pluginName' => 'List',
+                'format' => 'txt',
+            ]
+        );
 
         self::assertStringContainsString(
             'Kino',

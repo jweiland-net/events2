@@ -17,18 +17,12 @@ use JWeiland\Events2\Helper\HiddenObjectHelper;
 
 class RegisterHiddenEventEventListener extends AbstractControllerEventListener
 {
-    /**
-     * @var HiddenObjectHelper
-     */
-    protected $hiddenObjectHelper;
+    protected HiddenObjectHelper $hiddenObjectHelper;
 
-    /**
-     * @var EventRepository
-     */
-    protected $eventRepository;
+    protected EventRepository $eventRepository;
 
-    protected $allowedControllerActions = [
-        'Event' => [
+    protected array $allowedControllerActions = [
+        'Management' => [
             'edit',
             'update'
         ]
@@ -42,12 +36,12 @@ class RegisterHiddenEventEventListener extends AbstractControllerEventListener
         $this->eventRepository = $eventRepository;
     }
 
-    public function __invoke(PreProcessControllerActionEvent $event): void
+    public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void
     {
-        if ($this->isValidRequest($event)) {
+        if ($this->isValidRequest($controllerActionEvent)) {
             $this->hiddenObjectHelper->registerHiddenObjectInExtbaseSession(
                 $this->eventRepository,
-                $event->getRequest(),
+                $controllerActionEvent->getRequest(),
                 'event'
             );
         }

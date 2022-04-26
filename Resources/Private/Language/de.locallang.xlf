@@ -355,6 +355,23 @@
 				<target>Freier Eintritt</target>
 			</trans-unit>
 
+			<trans-unit id="pageBrowser.first">
+				<source>First</source>
+				<target>Erste</target>
+			</trans-unit>
+			<trans-unit id="pageBrowser.previous">
+				<source>Previous</source>
+				<target>Vorherige</target>
+			</trans-unit>
+			<trans-unit id="pageBrowser.next">
+				<source>Next</source>
+				<target>Nächste</target>
+			</trans-unit>
+			<trans-unit id="pageBrowser.last">
+				<source>Last</source>
+				<target>Letzte</target>
+			</trans-unit>
+
 			<trans-unit id="newEntry">
 				<source>Insert new Event</source>
 				<target>Neue Veranstaltung anlegen</target>
@@ -435,9 +452,9 @@
 				<source>Event List by Topics</source>
 				<target>Veranstaltungen nach Sparten</target>
 			</trans-unit>
-			<trans-unit id="no_event_today">
-				<source>No events today.</source>
-				<target>Heute keine Veranstaltungen.</target>
+			<trans-unit id="no_events_found">
+				<source>No events found</source>
+				<target>Keine Veranstaltungen gefunden</target>
 			</trans-unit>
 			<trans-unit id="link.listEvents">
 				<source>Show all events</source>
@@ -456,8 +473,8 @@
 				<target>Anlegen</target>
 			</trans-unit>
 			<trans-unit id="update">
-				<source>Edit</source>
-				<target>Bearbeiten</target>
+				<source>Update</source>
+				<target>Aktualisieren</target>
 			</trans-unit>
 			<trans-unit id="save">
 				<source>Save</source>
@@ -504,6 +521,11 @@
 			<trans-unit id="email.subject.activate">
 				<source>A record was activated</source>
 				<target>Veranstaltung - Ein Datensatz wurde aktiviert</target>
+			</trans-unit>
+
+			<trans-unit id="validator.event.videoLink.notYouTube">
+				<source>The URI provided for the video link is not a YouTube link. This form currently only allows YouTube links.</source>
+				<target>Die angegebene URI für den Video-Link ist kein YouTube-Link. Dieses Formular erlaubt derzeit nur YouTube-Links.</target>
 			</trans-unit>
 
 			<trans-unit id="error.upload">

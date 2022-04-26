@@ -13,15 +13,9 @@ namespace JWeiland\Events2\Event;
 
 class GeneratePathSegmentEvent
 {
-    /**
-     * @var array
-     */
-    protected $baseRecord = [];
+    protected array $baseRecord = [];
 
-    /**
-     * @var string
-     */
-    protected $pathSegment = '';
+    protected string $pathSegment = '';
 
     public function __construct(array $baseRecord)
     {

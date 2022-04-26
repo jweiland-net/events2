@@ -18,6 +18,7 @@ use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Location;
 use JWeiland\Events2\Domain\Model\Organizer;
 use JWeiland\Events2\Domain\Model\Time;
+use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Service\DayRelationService;
@@ -36,25 +37,11 @@ use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
  */
 class DayFactoryTest extends FunctionalTestCase
 {
-    /**
-     * @var DayFactory
-     */
-    protected $subject;
+    protected DayFactory $subject;
 
-    /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
+    protected ObjectManager $objectManager;
 
-    /**
-     * @var QuerySettingsInterface
-     */
-    protected $querySettings;
-
-    /**
-     * @var EventRepository
-     */
-    protected $eventRepository;
+    protected QuerySettingsInterface $querySettings;
 
     /**
      * @var array
@@ -64,7 +51,7 @@ class DayFactoryTest extends FunctionalTestCase
         'typo3conf/ext/maps2'
     ];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -72,14 +59,17 @@ class DayFactoryTest extends FunctionalTestCase
         $persistenceManager = $this->objectManager->get(PersistenceManagerInterface::class);
         $this->querySettings = $this->objectManager->get(QuerySettingsInterface::class);
         $this->querySettings->setStoragePageIds([11, 40]);
-        $dayRelationService = $this->objectManager->get(DayRelationService::class);
-        $this->eventRepository = $this->objectManager->get(EventRepository::class);
-        $this->eventRepository->setDefaultQuerySettings($this->querySettings);
+
+        $dayRepository = $this->objectManager->get(DayRepository::class);
+        $dayRepository->setDefaultQuerySettings($this->querySettings);
+
+        $eventRepository = $this->objectManager->get(EventRepository::class);
+        $eventRepository->setDefaultQuerySettings($this->querySettings);
 
         $this->subject = new DayFactory(
             new DatabaseService(new ExtConf(new ExtensionConfiguration()), new DateTimeUtility()),
-            $this->eventRepository,
-            $dayRelationService
+            $dayRepository,
+            $eventRepository
         );
 
         // As we need day related records, we can not use XML import functionality
@@ -91,13 +81,13 @@ class DayFactoryTest extends FunctionalTestCase
         $location->setPid(11);
         $location->setLocation('Market');
 
-        $eventBegin = new \DateTime('midnight');
+        $eventBegin = new \DateTimeImmutable('today midnight');
 
         $eventTime = new Time();
         $eventTime->setPid(11);
         $eventTime->setTimeBegin('07:30');
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setPid(11);
         $event->setEventType('single');
         $event->setTopOfList(false);
@@ -112,11 +102,12 @@ class DayFactoryTest extends FunctionalTestCase
         $event->setFreeEntry(false);
         $event->addOrganizer($organizer);
         $event->setLocation($location);
+
         $persistenceManager->add($event);
 
-        $eventBegin = new \DateTime('tomorrow midnight');
+        $eventBegin = new \DateTimeImmutable('tomorrow midnight');
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setPid(11);
         $event->setEventType('single');
         $event->setTopOfList(false);
@@ -131,11 +122,12 @@ class DayFactoryTest extends FunctionalTestCase
         $event->setFreeEntry(false);
         $event->addOrganizer($organizer);
         $event->setLocation($location);
+
         $persistenceManager->add($event);
 
-        $eventBegin = new \DateTime('yesterday midnight');
+        $eventBegin = new \DateTimeImmutable('yesterday midnight');
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setPid(11);
         $event->setEventType('single');
         $event->setTopOfList(false);
@@ -150,16 +142,16 @@ class DayFactoryTest extends FunctionalTestCase
         $event->setFreeEntry(false);
         $event->addOrganizer($organizer);
         $event->setLocation($location);
+
         $persistenceManager->add($event);
 
         // This date is out of time frame.
         // As day records for event type "single" will always be generated we have to switch to another type.
         // So no day records should be created for that event
-        $eventBegin = new \DateTime('-1 year');
-        $recurringEnd = clone $eventBegin;
-        $recurringEnd->modify('+2 weeks');
+        $eventBegin = new \DateTimeImmutable('last year midnight');
+        $recurringEnd = $eventBegin->modify('+2 weeks');
 
-        $event = new Event();
+        $event = GeneralUtility::makeInstance(Event::class);
         $event->setPid(11);
         $event->setEventType('recurring');
         $event->setTopOfList(false);
@@ -174,17 +166,19 @@ class DayFactoryTest extends FunctionalTestCase
         $event->setFreeEntry(false);
         $event->addOrganizer($organizer);
         $event->setLocation($location);
+
         $persistenceManager->add($event);
 
         $persistenceManager->persistAll();
 
-        $events = $this->eventRepository->findAll();
+        $dayRelationService = $this->objectManager->get(DayRelationService::class);
+        $events = $eventRepository->findAll();
         foreach ($events as $event) {
             $dayRelationService->createDayRelations($event->getUid());
         }
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset($this->dayRepository);
         parent::tearDown();
@@ -195,72 +189,21 @@ class DayFactoryTest extends FunctionalTestCase
      */
     public function findDayWithDateTimeOfTodayWillFindExactlyMatchingDay(): void
     {
-        $date = new \DateTime('midnight');
-        $date->modify('07:30:00');
+        $date = new \DateTimeImmutable('today 07:30:00');
+
         $queryFactory = $this->objectManager->get(QueryFactory::class);
 
         /** @var Query $query */
         $query = $queryFactory->create(Day::class);
         $query->setQuerySettings($this->querySettings);
-
-        $event = $this->eventRepository->findByUid(1);
 
         // Try to get exactly matching day record for today
-        $day = $this->subject->findDayByEventAndTimestamp($event, (int)$date->format('U'), $query);
-        self::assertSame(
+        $day = $this->subject->findDayByEventAndTimestamp(
             1,
-            $day->getEvent()->getUid()
+            (int)$date->format('U'),
+            $query
         );
-        self::assertSame(
-            2,
-            $day->getUid()
-        );
-    }
 
-    /**
-     * @test
-     */
-    public function findDayWithDateTimeOfYesterdayWillFindNextMatchingDay(): void
-    {
-        $date = new \DateTime('yesterday midnight');
-        $date->modify('07:30:00');
-        $queryFactory = $this->objectManager->get(QueryFactory::class);
-
-        /** @var Query $query */
-        $query = $queryFactory->create(Day::class);
-        $query->setQuerySettings($this->querySettings);
-
-        $event = $this->eventRepository->findByUid(1);
-
-        // Try to get a day record for yesterday, where no day for this event exists.
-        $day = $this->subject->findDayByEventAndTimestamp($event, (int)$date->format('U'), $query);
-        self::assertSame(
-            1,
-            $day->getEvent()->getUid()
-        );
-        self::assertSame(
-            2,
-            $day->getUid()
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function findDayWithDateTimeOfTomorrowWillFindPreviousMatchingDay(): void
-    {
-        $date = new \DateTime('tomorrow midnight');
-        $date->modify('07:30:00');
-        $queryFactory = $this->objectManager->get(QueryFactory::class);
-
-        /** @var Query $query */
-        $query = $queryFactory->create(Day::class);
-        $query->setQuerySettings($this->querySettings);
-
-        $event = $this->eventRepository->findByUid(1);
-
-        // Try to get a day record for tomorrow, where no day for this event exists.
-        $day = $this->subject->findDayByEventAndTimestamp($event, (int)$date->format('U'), $query);
         self::assertSame(
             1,
             $day->getEvent()->getUid()
@@ -276,18 +219,19 @@ class DayFactoryTest extends FunctionalTestCase
      */
     public function findDayWillFindNextMatchingDay(): void
     {
-        $date = new \DateTime('midnight');
-        $date->modify('07:30:00');
         $queryFactory = $this->objectManager->get(QueryFactory::class);
 
         /** @var Query $query */
         $query = $queryFactory->create(Day::class);
         $query->setQuerySettings($this->querySettings);
 
-        $event = $this->eventRepository->findByUid(2);
-
         // This Timestamp isn't in DB for event 2
-        $day = $this->subject->findDayByEventAndTimestamp($event, (int)$date->format('U'), $query);
+        $day = $this->subject->findDayByEventAndTimestamp(
+            2,
+            0,
+            $query
+        );
+
         self::assertSame(
             2,
             $day->getEvent()->getUid()
@@ -301,20 +245,21 @@ class DayFactoryTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function findDayWillFindPreviousNextMatchingDay(): void
+    public function findDayWillFindPreviousMatchingDay(): void
     {
-        $date = new \DateTime('midnight');
-        $date->modify('07:30:00');
         $queryFactory = $this->objectManager->get(QueryFactory::class);
 
         /** @var Query $query */
         $query = $queryFactory->create(Day::class);
         $query->setQuerySettings($this->querySettings);
 
-        $event = $this->eventRepository->findByUid(3);
-
         // This Timestamp isn't in DB for event 3
-        $day = $this->subject->findDayByEventAndTimestamp($event, (int)$date->format('U'), $query);
+        $day = $this->subject->findDayByEventAndTimestamp(
+            3,
+            0,
+            $query
+        );
+
         self::assertSame(
             3,
             $day->getEvent()->getUid()
@@ -330,28 +275,28 @@ class DayFactoryTest extends FunctionalTestCase
      */
     public function findDayWillBuildDayItselfButKeepsTime(): void
     {
-        $date = new \DateTime('midnight');
-        $date->modify('07:30:00');
         $queryFactory = $this->objectManager->get(QueryFactory::class);
 
         /** @var Query $query */
         $query = $queryFactory->create(Day::class);
         $query->setQuerySettings($this->querySettings);
 
-        $event = $this->eventRepository->findByUid(4);
+        $day = $this->subject->findDayByEventAndTimestamp(
+            4,
+            0,
+            $query
+        );
 
-        $day = $this->subject->findDayByEventAndTimestamp($event, (int)$date->format('U'), $query);
         self::assertSame(
             4,
             $day->getEvent()->getUid()
         );
-        self::assertNull($day->getUid());
-
-        $expectedDate = new \DateTime('midnight');
-        $expectedDate->modify('-1 year')->modify('07:30:00');
+        self::assertNull(
+            $day->getUid()
+        );
 
         self::assertEquals(
-            $expectedDate,
+            new \DateTimeImmutable('last year 00:00:00'),
             $day->getDayTime()
         );
     }

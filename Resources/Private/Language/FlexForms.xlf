@@ -19,23 +19,22 @@
 				<source>New Events</source>
 			</trans-unit>
 
-			<trans-unit id="chooseAction" xml:space="preserve">
-				<source>Choose view</source>
+			<trans-unit id="listType" xml:space="preserve">
+				<source>List Type</source>
 			</trans-unit>
-
-			<trans-unit id="list">
+			<trans-unit id="listType.list">
 				<source>List events</source>
 			</trans-unit>
-			<trans-unit id="listLatest">
+			<trans-unit id="listType.listLatest">
 				<source>List latest events</source>
 			</trans-unit>
-			<trans-unit id="listToday">
+			<trans-unit id="listType.listToday">
 				<source>List events of today</source>
 			</trans-unit>
-			<trans-unit id="listRange">
+			<trans-unit id="listType.listRange">
 				<source>List events for next 4 weeks</source>
 			</trans-unit>
-			<trans-unit id="listThisWeek">
+			<trans-unit id="listType.listThisWeek">
 				<source>List events for this week</source>
 			</trans-unit>
 			<trans-unit id="categories">
@@ -45,16 +44,16 @@
 				<source>Main Categories: You should only select categories of one level. The UID of their parent should be set in rootCategory of TS-Template.</source>
 			</trans-unit>
 			<trans-unit id="pidOfDetailPage">
-				<source>PID of detail page</source>
+				<source>Page UID of detail page</source>
 			</trans-unit>
 			<trans-unit id="pidOfListPage">
-				<source>PID of list page</source>
+				<source>Page UID of list page</source>
 			</trans-unit>
 			<trans-unit id="pidOfLocationPage">
-				<source>PID of location page</source>
+				<source>Page UID of the site for the event</source>
 			</trans-unit>
-			<trans-unit id="pidOfSearchPage">
-				<source>PID of search page</source>
+			<trans-unit id="pidOfSearchResults">
+				<source>Page UID of the search results</source>
 			</trans-unit>
 			<trans-unit id="amountOfRecordsToShow">
 				<source>List amount of records (only for view: latest events)</source>

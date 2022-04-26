@@ -23,17 +23,14 @@ class ExceptionTest extends UnitTestCase
 {
     use TestTypo3PropertiesTrait;
 
-    /**
-     * @var \JWeiland\Events2\Domain\Model\Exception
-     */
-    protected $subject;
+    protected Exception $subject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->subject = new Exception();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset($this->subject);
     }
@@ -67,7 +64,7 @@ class ExceptionTest extends UnitTestCase
      */
     public function setExceptionDateSetsExceptionDate(): void
     {
-        $date = new \DateTime();
+        $date = new \DateTimeImmutable();
         $this->subject->setExceptionDate($date);
 
         self::assertEquals(

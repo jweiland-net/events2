@@ -13,7 +13,7 @@ date (\DateTime) and you will know, if this event was canceled for specifix date
 Example
 =======
 
-Code: ::
+.. code-block:: html
 
    <strong>
      {f:if(condition: '{e2:isDateMarkedAsCanceled(event: day.event, date: date)}', then: '<s>')}

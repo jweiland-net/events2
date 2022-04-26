@@ -24,18 +24,12 @@ use TYPO3\CMS\Extbase\Validation\ValidatorResolver;
  */
 class ApplyLocationAsMandatoryIfNeededEventListener extends AbstractControllerEventListener
 {
-    /**
-     * @var ObjectManagerInterface
-     */
-    protected $objectManager;
+    protected ObjectManagerInterface $objectManager;
 
-    /**
-     * @var ExtConf
-     */
-    protected $extConf;
+    protected ExtConf $extConf;
 
-    protected $allowedControllerActions = [
-        'Event' => [
+    protected array $allowedControllerActions = [
+        'Management' => [
             'create',
             'update'
         ]
@@ -47,17 +41,17 @@ class ApplyLocationAsMandatoryIfNeededEventListener extends AbstractControllerEv
         $this->extConf = $extConf;
     }
 
-    public function __invoke(PreProcessControllerActionEvent $event): void
+    public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void
     {
         if (
-            $this->isValidRequest($event)
+            $this->isValidRequest($controllerActionEvent)
             && $this->extConf->getLocationIsRequired()
             && ($validatorResolver = $this->objectManager->get(ValidatorResolver::class))
             && ($notEmptyValidator = $validatorResolver->createValidator(NotEmptyValidator::class))
             && $notEmptyValidator instanceof NotEmptyValidator
         ) {
             /** @var ConjunctionValidator $eventValidator */
-            $eventValidator = $event->getArguments()->getArgument('event')->getValidator();
+            $eventValidator = $controllerActionEvent->getArguments()->getArgument('event')->getValidator();
             /** @var ConjunctionValidator $conjunctionValidator */
             $conjunctionValidator = $eventValidator->getValidators()->current();
             /** @var GenericObjectValidator $genericEventValidator */

@@ -15,6 +15,7 @@ use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Importer\XmlImporter;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -25,20 +26,13 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
  */
 class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
 {
-    /**
-     * @var EventRepository
-     */
-    protected $eventRepository;
+    use ProphecyTrait;
 
-    /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
+    protected EventRepository $eventRepository;
 
-    /**
-     * @var ExtConf
-     */
-    protected $extConf;
+    protected ObjectManager $objectManager;
+
+    protected ExtConf $extConf;
 
     /**
      * @var array
@@ -59,7 +53,7 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
     /**
      * I have set the date of the import events to 2025. That should be enough for the next years ;-)
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -75,7 +69,7 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
         $GLOBALS['BE_USER'] = new BackendUserAuthentication();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset(
             $GLOBALS['BE_USER']
@@ -99,7 +93,7 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
         $xmlImporter->setStoragePid(12);
 
         self::assertTrue($xmlImporter->import());
-        self::assertRegExp(
+        self::assertMatchesRegularExpression(
             '/We have processed 3 events/',
             file_get_contents(GeneralUtility::getFileAbsFileName(
                 'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt'

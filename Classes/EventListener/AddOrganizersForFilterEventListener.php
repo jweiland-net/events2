@@ -20,18 +20,11 @@ use JWeiland\Events2\Event\PostProcessFluidVariablesEvent;
  */
 class AddOrganizersForFilterEventListener extends AbstractControllerEventListener
 {
-    /**
-     * @var OrganizerRepository
-     */
-    protected $organizerRepository;
+    protected OrganizerRepository $organizerRepository;
 
-    protected $allowedControllerActions = [
+    protected array $allowedControllerActions = [
         'Day' => [
             'list',
-            'listLatest',
-            'listToday',
-            'listThisWeek',
-            'listRange',
         ]
     ];
 
@@ -40,17 +33,23 @@ class AddOrganizersForFilterEventListener extends AbstractControllerEventListene
         $this->organizerRepository = $organizerRepository;
     }
 
-    public function __invoke(PostProcessFluidVariablesEvent $event): void
+    public function __invoke(PostProcessFluidVariablesEvent $controllerActionEvent): void
     {
-        if (
-            $this->isValidRequest($event)
-            && array_key_exists('showFilterForOrganizerInFrontend', $event->getSettings())
-            && $event->getSettings()['showFilterForOrganizerInFrontend'] === '1'
-        ) {
-            $event->addFluidVariable(
-                'organizers',
-                $this->organizerRepository->getOrganizersForFilter()
-            );
+        if (!$this->isValidRequest($controllerActionEvent)) {
+            return;
         }
+
+        if (!array_key_exists('showFilterForOrganizerInFrontend', $controllerActionEvent->getSettings())) {
+            return;
+        }
+
+        if ((int)$controllerActionEvent->getSettings()['showFilterForOrganizerInFrontend'] !== 1) {
+            return;
+        }
+
+        $controllerActionEvent->addFluidVariable(
+            'organizers',
+            $this->organizerRepository->getOrganizersForFilter()
+        );
     }
 }

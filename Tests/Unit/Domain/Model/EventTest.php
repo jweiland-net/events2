@@ -23,6 +23,7 @@ use JWeiland\Events2\Domain\Repository\UserRepository;
 use JWeiland\Events2\Tests\Unit\Domain\Traits\TestTypo3PropertiesTrait;
 use Nimut\TestingFramework\MockObject\AccessibleMockObjectInterface;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
@@ -32,21 +33,21 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  */
 class EventTest extends UnitTestCase
 {
+    use ProphecyTrait;
+
     use TestTypo3PropertiesTrait;
 
-    /**
-     * @var Event
-     */
-    protected $subject;
+    protected Event $subject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
         $this->subject = new Event();
+        $this->subject->initializeObject();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset($this->subject);
 
@@ -93,6 +94,7 @@ class EventTest extends UnitTestCase
     public function setTopOfListSetsTopOfList(): void
     {
         $this->subject->setTopOfList(true);
+
         self::assertTrue(
             $this->subject->getTopOfList()
         );
@@ -125,19 +127,9 @@ class EventTest extends UnitTestCase
     /**
      * @test
      */
-    public function getEventBeginInitiallyReturnsNull(): void
-    {
-        self::assertNull(
-            $this->subject->getEventBegin()
-        );
-    }
-
-    /**
-     * @test
-     */
     public function setEventBeginSetsEventBegin(): void
     {
-        $date = new \DateTime();
+        $date = new \DateTimeImmutable();
         $this->subject->setEventBegin($date);
 
         self::assertEquals(
@@ -162,6 +154,7 @@ class EventTest extends UnitTestCase
         $time = new Time();
         $time->setTimeBegin('09:34');
         $this->subject->setEventTime($time);
+
         self::assertEquals(
             $time,
             $this->subject->getEventTime()
@@ -187,8 +180,8 @@ class EventTest extends UnitTestCase
      */
     public function getDaysOfEventsTakingDaysWithEqualDaysReturnsZero(): void
     {
-        $eventBegin = new \DateTime('midnight');
-        $eventEnd = new \DateTime('midnight');
+        $eventBegin = new \DateTimeImmutable('midnight');
+        $eventEnd = new \DateTimeImmutable('midnight');
         $eventEnd->modify('+20 seconds');
         $this->subject->setEventBegin($eventBegin);
         $this->subject->setEventEnd($eventEnd);
@@ -204,7 +197,7 @@ class EventTest extends UnitTestCase
      */
     public function getDaysOfEventsTakingDaysWithNoneEventEndResultsInZero(): void
     {
-        $eventBegin = new \DateTime();
+        $eventBegin = new \DateTimeImmutable();
         $this->subject->setEventBegin($eventBegin);
 
         self::assertSame(
@@ -218,9 +211,8 @@ class EventTest extends UnitTestCase
      */
     public function getDaysOfEventsTakingDaysWithDifferentDatesResultsInFourDays(): void
     {
-        $eventBegin = new \DateTime();
-        $eventEnd = new \DateTime(); // f.e. monday
-        $eventEnd->modify('+4 days'); // mo + 4 = 5 days: mo->tu->we->th->fr
+        $eventBegin = new \DateTimeImmutable();
+        $eventEnd = new \DateTimeImmutable('+4 days'); // f.e. monday: mo + 4 = 5 days: mo->tu->we->th->fr
         $this->subject->setEventBegin($eventBegin);
         $this->subject->setEventEnd($eventEnd);
 
@@ -243,7 +235,7 @@ class EventTest extends UnitTestCase
      */
     public function setEventEndSetsEventEnd(): void
     {
-        $instance = new \DateTime();
+        $instance = new \DateTimeImmutable();
         $this->subject->setEventEnd($instance);
 
         self::assertEquals(
@@ -268,6 +260,7 @@ class EventTest extends UnitTestCase
     public function setSameDaySetsSameDay(): void
     {
         $this->subject->setSameDay(true);
+
         self::assertTrue(
             $this->subject->getSameDay()
         );
@@ -301,26 +294,10 @@ class EventTest extends UnitTestCase
     /**
      * @test
      */
-    public function getXthInitiallyResultsInArrayWhereAllValuesAreZero(): void
+    public function getXthInitiallyReturnsZero(): void
     {
-        $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['xth']['config']['items'] = [
-            ['first', 'first'],
-            ['second', 'second'],
-            ['third', 'third'],
-            ['fourth', 'fourth'],
-            ['fifth', 'fifth'],
-        ];
-
-        $expectedArray = [
-            'first' => 0,
-            'second' => 0,
-            'third' => 0,
-            'fourth' => 0,
-            'fifth' => 0,
-        ];
-
         self::assertSame(
-            $expectedArray,
+            0,
             $this->subject->getXth()
         );
     }
@@ -328,27 +305,12 @@ class EventTest extends UnitTestCase
     /**
      * @test
      */
-    public function setXthWithZwentyThreeResultsInArrayWithDifferentValues(): void
+    public function setXthSetsXth(): void
     {
-        $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['xth']['config']['items'] = [
-            ['first', 'first'],
-            ['second', 'second'],
-            ['third', 'third'],
-            ['fourth', 'fourth'],
-            ['fifth', 'fifth'],
-        ];
-
-        $expectedArray = [
-            'first' => 1,
-            'second' => 2,
-            'third' => 4,
-            'fourth' => 0,
-            'fifth' => 16,
-        ];
-        $this->subject->setXth(23);
+        $this->subject->setXth(123456);
 
         self::assertSame(
-            $expectedArray,
+            123456,
             $this->subject->getXth()
         );
     }
@@ -356,30 +318,10 @@ class EventTest extends UnitTestCase
     /**
      * @test
      */
-    public function getWeekdayInitiallyResultsInArrayWhereAllValuesAreZero(): void
+    public function getWeekdayInitiallyReturnsZero(): void
     {
-        $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['weekday']['config']['items'] = [
-            ['monday', 'monday'],
-            ['tuesday', 'tuesday'],
-            ['wednesday', 'wednesday'],
-            ['thursday', 'thursday'],
-            ['friday', 'friday'],
-            ['saturday', 'saturday'],
-            ['sunday', 'sunday'],
-        ];
-
-        $expectedArray = [
-            'monday' => 0,
-            'tuesday' => 0,
-            'wednesday' => 0,
-            'thursday' => 0,
-            'friday' => 0,
-            'saturday' => 0,
-            'sunday' => 0,
-        ];
-
         self::assertSame(
-            $expectedArray,
+            0,
             $this->subject->getWeekday()
         );
     }
@@ -387,31 +329,12 @@ class EventTest extends UnitTestCase
     /**
      * @test
      */
-    public function setWeekdayWithEightySevenResultsInArrayWithDifferentValues(): void
+    public function setWeekdaySetsWeekday(): void
     {
-        $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['weekday']['config']['items'] = [
-            ['monday', 'monday'],
-            ['tuesday', 'tuesday'],
-            ['wednesday', 'wednesday'],
-            ['thursday', 'thursday'],
-            ['friday', 'friday'],
-            ['saturday', 'saturday'],
-            ['sunday', 'sunday'],
-        ];
-
-        $expectedArray = [
-            'monday' => 1,
-            'tuesday' => 2,
-            'wednesday' => 4,
-            'thursday' => 0,
-            'friday' => 16,
-            'saturday' => 0,
-            'sunday' => 64,
-        ];
-        $this->subject->setWeekday(87);
+        $this->subject->setWeekday(123456);
 
         self::assertSame(
-            $expectedArray,
+            123456,
             $this->subject->getWeekday()
         );
     }
@@ -468,8 +391,10 @@ class EventTest extends UnitTestCase
     public function removeDifferentTimeRemovesOneDifferentTime(): void
     {
         $object = new Time();
+
         $objectStorage = new ObjectStorage();
         $objectStorage->attach($object);
+
         $this->subject->setDifferentTimes($objectStorage);
 
         $this->subject->removeDifferentTime($object);
@@ -544,7 +469,7 @@ class EventTest extends UnitTestCase
      */
     public function setRecurringEndSetsRecurringEnd(): void
     {
-        $date = new \DateTime();
+        $date = new \DateTimeImmutable();
         $this->subject->setRecurringEnd($date);
 
         self::assertEquals(
@@ -570,8 +495,10 @@ class EventTest extends UnitTestCase
     public function setExceptionsSetsExceptions(): void
     {
         $object = new Exception();
+
         $objectStorage = new ObjectStorage();
         $objectStorage->attach($object);
+
         $this->subject->setExceptions($objectStorage);
 
         self::assertSame(
@@ -605,8 +532,10 @@ class EventTest extends UnitTestCase
     public function removeExceptionRemovesOneException(): void
     {
         $object = new Exception();
+
         $objectStorage = new ObjectStorage();
         $objectStorage->attach($object);
+
         $this->subject->setExceptions($objectStorage);
 
         $this->subject->removeException($object);
@@ -625,7 +554,7 @@ class EventTest extends UnitTestCase
     {
         self::assertEquals(
             new ObjectStorage(),
-            $this->subject->getExceptionsForDate(new \DateTime())
+            $this->subject->getExceptionsForDate(new \DateTimeImmutable())
         );
     }
 
@@ -634,7 +563,7 @@ class EventTest extends UnitTestCase
      */
     public function getExceptionsForDateWithRemoveExceptionReturnsZeroExceptionsForAdd(): void
     {
-        $date = new \DateTime('midnight');
+        $date = new \DateTimeImmutable('midnight');
 
         $exception = new Exception();
         $exception->setExceptionType('Remove');
@@ -656,7 +585,7 @@ class EventTest extends UnitTestCase
      */
     public function getExceptionsForDateWithRemoveExceptionReturnsOneRemoveException(): void
     {
-        $date = new \DateTime('midnight');
+        $date = new \DateTimeImmutable('midnight');
 
         $exception = new Exception();
         $exception->setExceptionType('Remove');
@@ -682,7 +611,7 @@ class EventTest extends UnitTestCase
      */
     public function getExceptionsForDateWithRemoveExceptionWithNonNormalizedDateReturnsOneRemoveException(): void
     {
-        $date = new \DateTime('now'); // date must be sanitized to midnight in getExceptionsForDate
+        $date = new \DateTimeImmutable('now'); // date must be sanitized to midnight in getExceptionsForDate
 
         $exception = new Exception();
         $exception->setExceptionType('Remove');
@@ -708,11 +637,12 @@ class EventTest extends UnitTestCase
      */
     public function getExceptionsForDateWithDifferentExceptionsReturnsAddException(): void
     {
-        $date = new \DateTime('midnight');
+        $date = new \DateTimeImmutable('midnight');
 
         $removeException = new Exception();
         $removeException->setExceptionType('Remove');
         $removeException->setExceptionDate($date);
+
         $addException = new Exception();
         $addException->setExceptionType('Add');
         $addException->setExceptionDate($date);
@@ -738,13 +668,13 @@ class EventTest extends UnitTestCase
      */
     public function getExceptionsForDateWithExceptionsOfDifferentDatesReturnsAddException(): void
     {
-        $firstDate = new \DateTime('midnight');
-        $secondDate = new \DateTime('midnight');
-        $secondDate->modify('tomorrow');
+        $firstDate = new \DateTimeImmutable('midnight');
+        $secondDate = new \DateTimeImmutable('tomorrow midnight');
 
         $firstAddException = new Exception();
         $firstAddException->setExceptionType('Add');
         $firstAddException->setExceptionDate($firstDate);
+
         $secondAddException = new Exception();
         $secondAddException->setExceptionType('Add');
         $secondAddException->setExceptionDate($secondDate);
@@ -772,19 +702,21 @@ class EventTest extends UnitTestCase
      */
     public function getExceptionsForDateWithExceptionsOfDifferentDatesReturnsDifferentExceptions(): void
     {
-        $firstDate = new \DateTime('midnight');
-        $secondDate = new \DateTime('midnight');
-        $secondDate->modify('tomorrow');
+        $firstDate = new \DateTimeImmutable('midnight');
+        $secondDate = new \DateTimeImmutable('tomorrow midnight');
 
         $firstAddException = new Exception();
         $firstAddException->setExceptionType('Add');
         $firstAddException->setExceptionDate($firstDate);
+
         $secondAddException = new Exception();
         $secondAddException->setExceptionType('Add');
         $secondAddException->setExceptionDate($secondDate);
+
         $timeException = new Exception();
         $timeException->setExceptionType('Time');
         $timeException->setExceptionDate($firstDate);
+
         $infoException = new Exception();
         $infoException->setExceptionType('Info');
         $infoException->setExceptionDate($firstDate);
@@ -849,6 +781,7 @@ class EventTest extends UnitTestCase
     public function setFreeEntrySetsFreeEntry(): void
     {
         $this->subject->setFreeEntry(true);
+
         self::assertTrue(
             $this->subject->getFreeEntry()
         );
@@ -893,8 +826,10 @@ class EventTest extends UnitTestCase
     public function setCategoriesSetsCategories(): void
     {
         $object = new Category();
+
         $objectStorage = new ObjectStorage();
         $objectStorage->attach($object);
+
         $this->subject->setCategories($objectStorage);
 
         self::assertSame(
@@ -928,8 +863,10 @@ class EventTest extends UnitTestCase
     public function removeCategoryRemovesOneCategory(): void
     {
         $object = new Category();
+
         $objectStorage = new ObjectStorage();
         $objectStorage->attach($object);
+
         $this->subject->setCategories($objectStorage);
 
         $this->subject->removeCategory($object);
@@ -946,7 +883,7 @@ class EventTest extends UnitTestCase
      */
     public function getCategoryListReturnsCommaSeparatedList(): void
     {
-        for ($i = 1; $i < 4; $i++) {
+        for ($i = 1; $i < 4; ++$i) {
             /* @var Category|\PHPUnit_Framework_MockObject_MockObject|AccessibleMockObjectInterface $category */
             $category = $this->getAccessibleMock(Category::class, ['dummy']);
             $category->_set('uid', $i);
@@ -975,8 +912,10 @@ class EventTest extends UnitTestCase
     public function setDaysSetsDays(): void
     {
         $object = new Day();
+
         $objectStorage = new ObjectStorage();
         $objectStorage->attach($object);
+
         $this->subject->setDays($objectStorage);
 
         self::assertSame(
@@ -1010,8 +949,10 @@ class EventTest extends UnitTestCase
     public function removeDayRemovesOneDay(): void
     {
         $object = new Day();
+
         $objectStorage = new ObjectStorage();
         $objectStorage->attach($object);
+
         $this->subject->setDays($objectStorage);
 
         $this->subject->removeDay($object);
@@ -1028,18 +969,20 @@ class EventTest extends UnitTestCase
      */
     public function getFutureDatesGroupedAndSortedReturnsFutureDatesOnly(): void
     {
-        $yesterday = new \DateTime('yesterday');
-        $today = new \DateTime('now');
-        $future = new \DateTime('tomorrow');
+        $yesterday = new \DateTimeImmutable('yesterday');
+        $today = new \DateTimeImmutable('now');
+        $future = new \DateTimeImmutable('tomorrow');
 
         $yesterdayDay = new Day();
-        $yesterdayDay->setDay(new \DateTime('yesterday midnight'));
+        $yesterdayDay->setDay(new \DateTimeImmutable('yesterday midnight'));
         $yesterdayDay->setDayTime($yesterday);
+
         $todayDay = new Day();
-        $todayDay->setDay(new \DateTime('midnight'));
+        $todayDay->setDay(new \DateTimeImmutable('midnight'));
         $todayDay->setDayTime($today);
+
         $futureDay = new Day();
-        $futureDay->setDay(new \DateTime('tomorrow midnight'));
+        $futureDay->setDay(new \DateTimeImmutable('tomorrow midnight'));
         $futureDay->setDayTime($future);
 
         $days = new ObjectStorage();
@@ -1061,22 +1004,25 @@ class EventTest extends UnitTestCase
      */
     public function getFutureDatesGroupedAndSortedReturnsDatesGroupedAndSorted(): void
     {
-        $today1 = new \DateTime('now 12:00:00');
-        $today2 = new \DateTime('now 20:00:00');
-        $future1 = new \DateTime('tomorrow 12:00:00');
-        $future2 = new \DateTime('tomorrow 20:00:00');
+        $today1 = new \DateTimeImmutable('now 12:00:00');
+        $today2 = new \DateTimeImmutable('now 20:00:00');
+        $future1 = new \DateTimeImmutable('tomorrow 12:00:00');
+        $future2 = new \DateTimeImmutable('tomorrow 20:00:00');
 
         $today1Day = new Day();
-        $today1Day->setDay(new \DateTime('midnight'));
+        $today1Day->setDay(new \DateTimeImmutable('midnight'));
         $today1Day->setDayTime($today1);
+
         $today2Day = new Day();
-        $today2Day->setDay(new \DateTime('midnight'));
+        $today2Day->setDay(new \DateTimeImmutable('midnight'));
         $today2Day->setDayTime($today2);
+
         $future1Day = new Day();
-        $future1Day->setDay(new \DateTime('tomorrow midnight'));
+        $future1Day->setDay(new \DateTimeImmutable('tomorrow midnight'));
         $future1Day->setDayTime($future1);
+
         $future2Day = new Day();
-        $future2Day->setDay(new \DateTime('tomorrow midnight'));
+        $future2Day->setDay(new \DateTimeImmutable('tomorrow midnight'));
         $future2Day->setDayTime($future2);
 
         $days = new ObjectStorage();
@@ -1114,26 +1060,32 @@ class EventTest extends UnitTestCase
      */
     public function getFutureDatesIncludingRemovedGroupedAndSortedReturnsFutureDatesSorted(): void
     {
-        $yesterday = new \DateTime('yesterday');
-        $today1 = new \DateTime('now 12:00:00');
-        $today2 = new \DateTime('now 20:00:00');
-        $future1 = new \DateTime('tomorrow 12:00:00');
-        $future2 = new \DateTime('tomorrow 20:00:00');
+        $yesterday = new \DateTimeImmutable('yesterday');
+
+        $today1 = new \DateTimeImmutable('now 12:00:00');
+        $today2 = new \DateTimeImmutable('now 20:00:00');
+
+        $future1 = new \DateTimeImmutable('tomorrow 12:00:00');
+        $future2 = new \DateTimeImmutable('tomorrow 20:00:00');
 
         $yesterdayDay = new Day();
-        $yesterdayDay->setDay(new \DateTime('yesterday midnight'));
+        $yesterdayDay->setDay(new \DateTimeImmutable('yesterday midnight'));
         $yesterdayDay->setDayTime($yesterday);
+
         $today1Day = new Day();
-        $today1Day->setDay(new \DateTime('midnight'));
+        $today1Day->setDay(new \DateTimeImmutable('midnight'));
         $today1Day->setDayTime($today1);
+
         $today2Day = new Day();
-        $today2Day->setDay(new \DateTime('midnight'));
+        $today2Day->setDay(new \DateTimeImmutable('midnight'));
         $today2Day->setDayTime($today2);
+
         $future1Day = new Day();
-        $future1Day->setDay(new \DateTime('tomorrow midnight'));
+        $future1Day->setDay(new \DateTimeImmutable('tomorrow midnight'));
         $future1Day->setDayTime($future1);
+
         $future2Day = new Day();
-        $future2Day->setDay(new \DateTime('tomorrow midnight'));
+        $future2Day->setDay(new \DateTimeImmutable('tomorrow midnight'));
         $future2Day->setDayTime($future2);
 
         $days = new ObjectStorage();
@@ -1145,7 +1097,7 @@ class EventTest extends UnitTestCase
 
         $exception = new Exception();
         $exception->setExceptionType('remove');
-        $exception->setExceptionDate(new \DateTime('tomorrow midnight'));
+        $exception->setExceptionDate(new \DateTimeImmutable('tomorrow midnight'));
 
         $this->subject->setDays($days);
         $this->subject->addException($exception);
@@ -1211,8 +1163,10 @@ class EventTest extends UnitTestCase
     public function setOrganizersSetsOrganizers(): void
     {
         $object = new Organizer();
+
         $objectStorage = new ObjectStorage();
         $objectStorage->attach($object);
+
         $this->subject->setOrganizers($objectStorage);
 
         self::assertSame(
@@ -1246,8 +1200,10 @@ class EventTest extends UnitTestCase
     public function removeOrganizerRemovesOneOrganizer(): void
     {
         $object = new Organizer();
+
         $objectStorage = new ObjectStorage();
         $objectStorage->attach($object);
+
         $this->subject->setOrganizers($objectStorage);
 
         $this->subject->removeOrganizer($object);
@@ -1266,10 +1222,12 @@ class EventTest extends UnitTestCase
     {
         $organizer1 = new Organizer();
         $organizer1->setOrganizer('First Organizer');
+
         $this->subject->addOrganizer($organizer1);
 
         $organizer2 = new Organizer();
         $organizer2->setOrganizer('Second Organizer');
+
         $this->subject->addOrganizer($organizer2);
 
         self::assertSame(
@@ -1278,6 +1236,9 @@ class EventTest extends UnitTestCase
         );
     }
 
+    /**
+     * @return array<string, array<int|bool>>
+     */
     public function events2OrganizerDataProvider(): array
     {
         return [
@@ -1301,6 +1262,7 @@ class EventTest extends UnitTestCase
             ->getFieldFromUser('tx_events2_organizer')
             ->shouldBeCalled()
             ->willReturn($organizerUid);
+
         GeneralUtility::addInstance(
             UserRepository::class,
             $userRepositoryProphecy->reveal()
@@ -1309,11 +1271,13 @@ class EventTest extends UnitTestCase
         $organizer1 = new Organizer();
         $organizer1->_setProperty('uid', 1);
         $organizer1->setOrganizer('First Organizer');
+
         $this->subject->addOrganizer($organizer1);
 
         $organizer2 = new Organizer();
         $organizer2->_setProperty('uid', 2);
         $organizer2->setOrganizer('Second Organizer');
+
         $this->subject->addOrganizer($organizer2);
 
         self::assertSame(
@@ -1339,8 +1303,10 @@ class EventTest extends UnitTestCase
     public function setImagesSetsImages(): void
     {
         $object = new Time();
+
         $objectStorage = new ObjectStorage();
         $objectStorage->attach($object);
+
         $this->subject->setImages($objectStorage);
 
         self::assertSame(
@@ -1388,8 +1354,10 @@ class EventTest extends UnitTestCase
     public function setDownloadLinksSetsDownloadLinks(): void
     {
         $object = new Link();
+
         $objectStorage = new ObjectStorage();
         $objectStorage->attach($object);
+
         $this->subject->setDownloadLinks($objectStorage);
 
         self::assertSame(
@@ -1423,8 +1391,10 @@ class EventTest extends UnitTestCase
     public function removeDownloadLinkRemovesOneDownloadLink(): void
     {
         $object = new Link();
+
         $objectStorage = new ObjectStorage();
         $objectStorage->attach($object);
+
         $this->subject->setDownloadLinks($objectStorage);
 
         $this->subject->removeDownloadLink($object);

@@ -18,6 +18,8 @@ use JWeiland\Events2\Event\PostProcessControllerActionEvent;
 use JWeiland\Events2\Event\PostProcessFluidVariablesEvent;
 use JWeiland\Events2\Event\PreProcessControllerActionEvent;
 use JWeiland\Events2\Service\TypoScriptService;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -28,26 +30,25 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  * A collection of various helper methods to keep
  * our Action Controllers small and clean
  */
-class AbstractController extends ActionController
+class AbstractController extends ActionController implements LoggerAwareInterface
 {
-    /**
-     * @var TypoScriptService
-     */
-    protected $typoScriptService;
+    use LoggerAwareTrait;
 
-    /**
-     * @var ExtConf
-     */
-    protected $extConf;
+    protected TypoScriptService $typoScriptService;
 
-    public function __construct(TypoScriptService $typoScriptService, ExtConf $extConf)
+    protected ExtConf $extConf;
+
+    public function injectExtConf(ExtConf $extConf): void
     {
-        $this->typoScriptService = $typoScriptService;
         $this->extConf = $extConf;
     }
 
+    public function injectTypoScriptService(TypoScriptService $typoScriptService): void
+    {
+        $this->typoScriptService = $typoScriptService;
+    }
+
     /**
-     * @param ConfigurationManagerInterface $configurationManager
      * @throws \Exception
      */
     public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager): void
@@ -57,7 +58,7 @@ class AbstractController extends ActionController
         $typoScriptSettings = $this->configurationManager->getConfiguration(
             ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK,
             'events2',
-            'events2_event' // invalid plugin name, to get fresh unmerged settings
+            'events2_invalid' // invalid plugin name, to get fresh unmerged settings
         );
 
         if (empty($typoScriptSettings['settings'])) {
@@ -77,19 +78,22 @@ class AbstractController extends ActionController
         $this->settings = $mergedFlexFormSettings;
     }
 
-    public function initializeAction(): void
+    protected function initializeAction(): void
     {
         // if this value was not set, then it will be filled with 0
         // but that is not good, because UriBuilder accepts 0 as pid, so it's better to set it to NULL
         if (empty($this->settings['pidOfDetailPage'])) {
             $this->settings['pidOfDetailPage'] = null;
         }
-        if (empty($this->settings['pidOfSearchPage'])) {
-            $this->settings['pidOfSearchPage'] = null;
+
+        if (empty($this->settings['pidOfSearchResults'])) {
+            $this->settings['pidOfSearchResults'] = null;
         }
+
         if (empty($this->settings['pidOfLocationPage'])) {
             $this->settings['pidOfLocationPage'] = null;
         }
+
         if (empty($this->settings['pidOfListPage'])) {
             $this->settings['pidOfListPage'] = null;
         }
@@ -99,7 +103,7 @@ class AbstractController extends ActionController
     {
         $this->view->assign('data', $this->configurationManager->getContentObject()->data);
         $this->view->assign('extConf', $this->extConf);
-        $this->view->assign('jsVariables', json_encode($this->getJsVariables()));
+        $this->view->assign('jsVariables', json_encode($this->getJsVariables(), JSON_THROW_ON_ERROR));
     }
 
     /**
@@ -108,8 +112,7 @@ class AbstractController extends ActionController
      * I have separated this method to its own method as we have to override these variables
      * in SearchController and I can read them from View after variables are already assigned.
      *
-     * @param array $override
-     * @return array
+     * @return array[]
      */
     protected function getJsVariables(array $override = []): array
     {
@@ -128,6 +131,35 @@ class AbstractController extends ActionController
         ArrayUtility::mergeRecursiveWithOverrule($jsVariables, $override);
 
         return $jsVariables;
+    }
+
+    protected function getFlattenedValidationErrorMessage(): string
+    {
+        $validationResults = $this->arguments->validate();
+        if ($validationResults->hasErrors()) {
+            $errors = [];
+            foreach ($validationResults->getFlattenedErrors() as $propertyPath => $propertyErrors) {
+                $propertyErrorMessages = [];
+                foreach ($propertyErrors as $propertyError) {
+                    $propertyErrorMessages[] = $propertyError->getMessage();
+                }
+
+                $errors[] = sprintf(
+                    'Property path %s: %s',
+                    $propertyPath,
+                    implode(', ', $propertyErrorMessages)
+                );
+            }
+
+            $this->logger->error(implode(' - ', $errors));
+        }
+
+        return sprintf(
+            'Validation failed for given object while trying to call %s->%s(). %s' . PHP_EOL,
+            static::class,
+            $this->actionMethodName,
+            'Please check events2 log file.'
+        );
     }
 
     protected function postProcessAndAssignFluidVariables(array $variables = []): void

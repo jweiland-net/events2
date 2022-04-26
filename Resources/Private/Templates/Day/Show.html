@@ -7,22 +7,17 @@
 <f:section name="main">
 	<f:flashMessages />
 
-	<f:if condition="{day}">
+	<f:if condition="{0: settings.display}=={0: 'displayImages'}">
 		<f:then>
-			<f:if condition="{0: settings.display}=={0: 'displayImages'}">
-				<f:then>
-					<f:if condition="{day.event.images->f:count}">
-						<f:render partial="Event/Images" arguments="{event: day.event}"/>
-					</f:if>
-				</f:then>
-				<f:else>
-					<f:render section="newEdit" arguments="{event: day.event}" />
-					<f:render partial="Day/Properties" arguments="{day: day}" />
-				</f:else>
+			<f:if condition="{day.event.images->f:count}">
+				<f:render partial="Event/Images" arguments="{event: day.event}"/>
 			</f:if>
 		</f:then>
 		<f:else>
-			<div>{f:translate(key: 'noEventFound')}</div>
+			<f:if condition="{day}">
+				<f:render section="newEdit" arguments="{event: day.event}" />
+				<f:render partial="Day/Properties" arguments="{day: day}" />
+			</f:if>
 		</f:else>
 	</f:if>
 </f:section>

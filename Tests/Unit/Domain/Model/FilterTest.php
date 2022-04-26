@@ -19,17 +19,14 @@ use Nimut\TestingFramework\TestCase\UnitTestCase;
  */
 class FilterTest extends UnitTestCase
 {
-    /**
-     * @var Filter
-     */
-    protected $subject;
+    protected Filter $subject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->subject = new Filter();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         unset($this->subject);
     }
@@ -61,7 +58,7 @@ class FilterTest extends UnitTestCase
      */
     public function setOrganizerWithNullSetsOrganizer(): void
     {
-        $this->subject->setOrganizer();
+        $this->subject->setOrganizer(null);
 
         self::assertNull(
             $this->subject->getOrganizer()

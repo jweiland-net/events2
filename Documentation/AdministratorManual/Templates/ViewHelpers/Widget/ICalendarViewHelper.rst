@@ -31,6 +31,6 @@ Examples
 Basic example
 """""""""""""
 
-Code: ::
+.. code-block:: html
 
   <e2:widget.iCalendar event="{event}" />

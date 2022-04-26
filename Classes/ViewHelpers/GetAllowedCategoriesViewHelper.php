@@ -35,10 +35,7 @@ class GetAllowedCategoriesViewHelper extends AbstractViewHelper
      * Get only categories from event which are allowed by plugin configuration
      * This is the case, if an event has multiple assigned categories
      *
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return array
+     * @return Category[]
      */
     public static function renderStatic(
         array $arguments,
@@ -55,6 +52,7 @@ class GetAllowedCategoriesViewHelper extends AbstractViewHelper
                 }
             }
         }
+
         return $allowedCategories;
     }
 }
