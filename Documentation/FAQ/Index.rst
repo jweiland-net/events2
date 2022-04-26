@@ -21,67 +21,40 @@ can not us f:form, to prevent cutting the URI by Browser restrictions.
 Translations
 ============
 
-Events2 is currently not fully multilingual. Our idea was to have one day record for all translations of an
-event record. That way we have removed all translation columns from TCA of day table. But since TYPO3 8 and especially
-TYPO3 9 the problems in events2 with translation grows.
-With version 5.0.0 we have added these language columns back to day table. Now you can create translatable versions
-of your event records again, but we have deactivated all day record related columns from form of translated record.
-That's because events2 currently does not support multilingual records for day table. That should be OK for
-most cases, but it is not possible to have different dates or date configuration for different translations.
+If you translate an event into a new language, events2 will not create day records for this language. That's because
+you may have changed the `event_type` of an event. In that case events2 can not associate a day record of
+default language to day records of the translated record. As a solution we have disabled the translation feature
+for day table completely.
 
-Wrong links in calendar
-=======================
+This approach has one disadvantage:
 
-We found out that building up to 31 links in Events2 calendar needs nearly 300ms. Incl. 200ms for TYPO3 initialization
-is half a second. With half a second delay swiping through the month feels really slow. That's why we have
-disabled human readable links inside this calendar.
+You currently can't search for translated events in frontend search.
 
-Where are the day records are build?
-====================================
+
+Where are the day records build?
+================================
 
 We build the day records while saving an event record in backend. Further we re-build them while executing
-the scheduler task *Re-Create day records* and while executing the command *events2:rebuild*
+the scheduler task `Re-Create day records` and while executing the command `events2:rebuild`.
+
 
 Can I export events?
 ====================
 
-No. Currently you have to create your own export mechanism
+No. Currently you have to create your own export mechanism. But as we have implemented such a solution already for one
+of our customers you can ask us at: projects@jweiland.net
+
 
 Can I import events?
 ====================
 
-Yes. But currently only XML files are allowed. Please add Scheduler Task *Import events* and set a filepath
+Yes. But currently only XML files are allowed. Please add Scheduler Task `Import events` and set a filepath
 to import. Examples of XML files are available at https://github.com/jweiland-net/events2/tree/master/Tests/Functional/Fixtures/XmlImport.
 
-We will validate the imported file against configuration in EXT:events2/Resources/Public/XmlImportValidator.xsd.
+We will validate the imported file against configuration in `EXT:events2/Resources/Public/XmlImportValidator.xsd`.
 
-All errors will be logged in a Messages.txt in same directory of imported XML file.
+All errors will be logged in a `Messages.txt` in same directory of imported XML file.
 
-Exception thrown in Location/Show.html
-======================================
-
-If you have NOT installed maps2 you may get following exception while visiting
-Show template of Location:
-
-.. code-block:: html
-
-   TYPO3Fluid\Fluid\Core\ViewHelper\Exception
-   Undeclared arguments passed to ViewHelper
-   JWeiland\Maps2\ViewHelpers\Widget\PoiCollectionViewHelper:
-   poiCollection, override. Valid arguments are: customWidgetId
-
-Problem is, that TYPO3 will always parse everything in Fluid-Templates. That's why also
-the maps2 widget will be tried to parse although it is part of a false f:if condition and will
-not be rendered.
-
-Please copy Location/Show.html into your own SitePackage extension and remove following
-lines:
-
-.. code-block:: html
-
-   <f:if condition="{location.txMaps2Uid}">
-     <maps2:widget.poiCollection poiCollection="{location.txMaps2Uid}" override="{settings: {mapWidth: '100%', mapHeight: '300', zoom: '14'}}" />
-   </f:if>
 
 File Uploads
 ============
