@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Tests\Functional\Controller;
 use JWeiland\Events2\Tests\Functional\AbstractFunctionalTestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Core\Bootstrap;
 
@@ -36,6 +37,13 @@ class LocationControllerTest extends AbstractFunctionalTestCase
 
     protected function setUp(): void
     {
+        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
+        if (version_compare($typo3Version->getBranch(), '11', '<')) {
+            $this->markTestSkipped(
+                'Because of missing Context class in TYPO3 10 this test has to be skipped.'
+            );
+        }
+
         parent::setUp();
 
         $this->importDataSet('ntf://Database/pages.xml');
