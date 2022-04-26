@@ -39,7 +39,7 @@ class VideoControllerTest extends AbstractFunctionalTestCase
     {
         $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
         if (version_compare($typo3Version->getBranch(), '11', '<')) {
-            $this->markTestSkipped(
+            self::markTestSkipped(
                 'Because of missing Context class in TYPO3 10 this test has to be skipped.'
             );
         }
