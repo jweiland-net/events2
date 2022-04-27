@@ -12,4 +12,3 @@ This chapter describes some best practice concepts
    :maxdepth: 2
 
    ClearCache/Index
-   Commands/Index
