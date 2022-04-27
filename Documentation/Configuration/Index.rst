@@ -11,7 +11,7 @@ This chapter describes the various configuration settings of events2.
    :maxdepth: 2
 
    Extension/Index
-   Plugin/Flexform
+   Plugins/Index
    TypoScript/Index
    TypoScript/SearchPlugin
    TypoScript/DynamicPageTitle

@@ -2,17 +2,78 @@
 
 .. _update:
 
-========
-Updating
-========
+=======
+Upgrade
+=======
 
-If you update EXT:events2 to a newer version, please read this section carefully!
+If you upgrade/update EXT:events2 to a newer version, please read this section carefully!
+
+
+Update to Version 8.0.0
+=======================
+
+This version is NOT compatible with PHP versions lower than 7.4!
+
+We have updated over 10.000 lines of code. Please click the `flush cache` button in installtool.
+
+New Plugins
+-----------
+
+As `switchableControllerActions` are deprecated since TYPO3 11 we have migrated them to individual plugins.
+Please execute UpgradeWizard `events2MoveFlexFormFields` to migrate existing plugins. Please backup your project
+before executing this Wizard!
+
+With this change we have migrated all list*Actions into one listAction. Please have a look into our templates
+and add the missing conditions to your templates.
+
+We have renamed EventController to ManagementController. So please rename the templates accordingly.
+
+We have split the SearchController into SearchForm- and SearchResultController. So please rename the templates
+accordingly.
+
+https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/10.3/Deprecation-89463-SwitchableControllerActions.html
+
+
+Fluid Widget replacement
+------------------------
+
+Fluid widget functionality was completely removed in TYPO3 11.
+
+Instead of `ICalWidget` please use link to action of our new ICalController:
+
+.. code-block:: html
+
+   <f:link.action action="download" controller="ICal" target="_blank" arguments="{dayUid: day.uid}">
+       {f:translate(key: 'export')}
+   </f:link.action>
+
+Instead of `PoiCollectionWizard` in Location/Show.html please migrate to:
+
+.. code-block:: html
+
+   <f:render partial="Maps2/PoiCollection"
+       section="showMap"
+       arguments="{poiCollections: {0: location.txMaps2Uid}, override: {settings: {mapWidth: '100%', mapHeight: '300', zoom: '14'}}}" />
+
+and check, if path to EXT:maps2 partial still matches your needs:
+
+`plugin.tx_events2.view.partialRootPaths.2 = EXT:maps2/Resources/Private/Partials/`
+
+https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/11.0/Breaking-92529-AllFluidWidgetFunctionalityRemoved.html
+
+
+jquery removed
+--------------
+
+We have removed the use of jquery and migrated all code to VanillaJS. So please check
+`page.includeJSFooter` and `page.includeCSS` if they are matching the needs of your project.
+
 
 Update to Version 7.1.0
 =======================
 
-As f:widget.paginate is deprecated and POST requests are not allowed anymore in this widget, we have rewritten
-the widget to new TYPO3 Pagination API.
+As f:widget.paginate is deprecated and POST requests are not allowed anymore in this widget, we have migrated
+the f:widget.paginate widget to new TYPO3 Pagination API.
 
 Please remove the f:widget.paginate from Templates and insert this code:
 
@@ -22,8 +83,8 @@ Please remove the f:widget.paginate from Templates and insert this code:
              arguments="{pagination: pagination, paginator: paginator, actionName: actionName}" />
 
 
-Update to Version 7.0.0
-=======================
+Upgrade to Version 7.0.0
+========================
 
 Nearly all Controller Actions contains a call to the new TYPO3 EventDispatcher now. That way we have moved a lot of
 logic of the event controllers into EventListeners. All Extbase SignalSlot have been removed.
@@ -79,16 +140,16 @@ Update to Version 6.1.1
 
 We have changed data type of country to INT in DB. Please start compare database in INstalltool.
 
-Update to Version 6.0.0
-=======================
+Upgrade to Version 6.0.0
+========================
 
 With events2 6.0.0 we have removed TYPO3 8 compatibility and add TYPO3 10 compatibility.
 We have not added any new features.
 
 Because of incompatibility we have created a new pageTitleProvider as replacement for pageTitleUserfunc.
 
-Update to Version 5.0.0
-=======================
+Upgrade to Version 5.0.0
+========================
 
 With this release we have implemented a better multilingual support. We are not done, but as long as DayGenerator
 still has problems with languages we have marked a lot of fields in translated events as readonly.
@@ -102,8 +163,8 @@ With version 4.1.0 we have added the path_segment for slugs in event records, bu
 have added the Updater for this field.
 Please visit InstallTool and execute the updater for Slugs in event records.
 
-Update to Version 4.0.0
-=======================
+Upgrade to Version 4.0.0
+========================
 
 If you don't use the event2 API or you don't use your own XmlImporter an Update shouldn't be a problem
 for you.
@@ -180,8 +241,8 @@ correctly. Please change this part to:
 
 Use data-id to relate it to a textarea id-attribute.
 
-Update to Version 3.0.0
-=======================
+Upgrade to Version 3.0.0
+========================
 
 * We have removed GetEventDates VH and implemented a completely new way to get future event dates.
 * We have removed MicroStart VH
@@ -261,8 +322,8 @@ We have moved all email settings in ExtConf to new tab "Email"
 
 EXT maps2 is not a hard-coded dependency to events2 anymore, but we still suggest it in ext_emconf.php.
 
-Update to Version 2.0.0
-=======================
+Upgrade to Version 2.0.0
+========================
 
 Version 2.0.0 will come with some new cols and we have removed some cols. So please be careful while comparing
 database with TCA definition after upgrading.

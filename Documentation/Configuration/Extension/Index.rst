@@ -6,7 +6,7 @@
 Extension Settings
 ==================
 
-Some general settings for events2 can be configured in *Admin Tools -> Settings*.
+Some general settings for events2 can be configured in `Admin Tools` -> `Settings`.
 
 The settings are divided into several tabs and described here in detail:
 
@@ -14,34 +14,40 @@ Tab: Basic
 ==========
 
 poiCollectionPid
-""""""""""""""""
+----------------
 
 Default: 0
 
-Only valid, if you have installed EXT:maps2, too.
+Only valid, if you have installed EXT:maps2.
 
-While creating location records we catch the address and automatically create a maps2 record
-for you. Define a storage PID where we should store these records.
+While creating location records events2 catches the address and automatically creates a maps2 record
+for you. Use this option to define a storage PID, where these records should be stored.
 
 rootUid
-"""""""
+-------
 
 Default: 0
 
 If you have many sys_category records with huge trees in your TYPO3 project, it may make sense to
-reduce the category trees in our Plugins to a parent category UID (root UID).
+reduce the category trees in events2 plugins to a parent category UID (root UID).
+
+.. tip::
+
+   Using TCA option `rootUid` for trees is deprecated since TYPO3 11. `events2` will take care
+   of that and updates the new option `startingPoints` automatically for you, if you set this
+   option here.
 
 recurringPast
-"""""""""""""
+-------------
 
 Default: 3
 
 Our events2 works within a timeframe. This means, that you have to set an earliest start (in months) for generated
 day records in past. A value of 3 means 3 months in past. Older events will not be shown in frontend anymore, but are
-still callable by a Google Search.
+still visible by Google Search.
 
 recurringFuture
-"""""""""""""""
+---------------
 
 Default: 6
 
@@ -50,7 +56,7 @@ day records in future. A value of 6 means 6 months in future. Events above 6 mon
 in frontend.
 
 defaultCountry
-""""""""""""""
+--------------
 
 Default: empty
 
@@ -60,7 +66,7 @@ in backend, it may be helpful to set country property with this default country.
 to add street and city to find a POI. If you need POIs from all over the world, please keep this field empty.
 
 xmlImportValidatorPath
-""""""""""""""""""""""
+----------------------
 
 Default: EXT:events2/Resources/Public/XmlImportValidator.xsd
 
@@ -74,21 +80,21 @@ our XSD file and add the modifications you need and set new file path into this 
 You can prefix the path with EXT:
 
 organizerIsRequired
-"""""""""""""""""""
+-------------------
 
 Default: false
 
 If you want, you can set column *Organizers* as required. That way an editor has to fill this column.
 
 locationIsRequired
-""""""""""""""""""
+------------------
 
 Default: false
 
 If you want, you can set column *Location* as required. That way an editor has to fill this column.
 
 pathSegmentType
-"""""""""""""""
+---------------
 
 Default: Do nothing (Internal: empty)
 
@@ -114,7 +120,7 @@ Tab: Email
 ==========
 
 emailFromAddress
-""""""""""""""""
+----------------
 
 Default: empty (use value from INSTALL_TOOL)
 
@@ -123,7 +129,7 @@ events. These created records will be hidden by default. Add an email address
 of the sender, if a new record was created over the frontend.
 
 emailFromName
-"""""""""""""
+-------------
 
 Default: empty (use value from INSTALL_TOOL)
 
@@ -132,7 +138,7 @@ events. These created records will be hidden by default. Add a name
 of the sender, if a new record was created over the frontend.
 
 emailToAddress
-""""""""""""""
+--------------
 
 Default: empty
 
@@ -141,7 +147,7 @@ events. These created records will be hidden by default. Add an email address
 of the receiver, if a new record was created over the frontend.
 
 emailToName
-"""""""""""
+-----------
 
 Default: empty
 

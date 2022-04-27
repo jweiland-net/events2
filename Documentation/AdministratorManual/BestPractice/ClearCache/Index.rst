@@ -12,7 +12,7 @@ When a list or detail view is rendered on a page, a cache tag in format ``tx_eve
 the uid of the events storage folder) is added. Each time an event record is edited, deleted or created, this
 cache entry is flushed. No additional cache configuration is needed if only the Event plugins are used.
 
-If you use other ways of displaying news records, the cache is not flushed automatically.
+If you use other ways of displaying event records, the cache is not flushed automatically.
 
 This can be done automatically by using this command in the PageTsConfig:
 

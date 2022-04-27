@@ -144,6 +144,8 @@ class DayRelationService implements LoggerAwareInterface
 
         $this->addExceptionsToEventRecord($eventRecord);
 
+        $eventRecord['days'] = [];
+
         return $eventRecord;
     }
 

@@ -18,19 +18,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /*
- * The naming is a little bit miss-understandable. It comes from the early days of development where I had many
- * problems with all these day records.
- * Today this class deletes ALL day records and creates them from scratch.
+ * CLI Command
  */
 class RebuildCommand extends Command
 {
-    /**
-     * Needed to wrap activity bar:
-     * ...........F.......
-     * ....N....S.........
-     */
-    protected int $rowCounter = 0;
-
     protected DatabaseService $databaseService;
 
     protected DayRelationService $dayRelationService;
@@ -54,11 +45,11 @@ class RebuildCommand extends Command
     protected function configure(): void
     {
         $this->setDescription(
-            'Executing this command will delete all day records found in day table. ' .
+            'Executing this command will TRUNCATE (delete) all records from day table. ' .
             'Afterwards, it searches for each current and future event and re-creates all day records again. ' .
             'If you have any problems with created day records, this command is the first place to start. ' .
-            'Please do not start this command by a CronJob each day, as for the time it runs, there ' .
-            'may no events visible in frontend. Please use our Scheduler Task instead.'
+            'Please be careful running this command as a CronJob each day, as for the time it runs, there ' .
+            'may no events visible in frontend. We prefer using the Scheduler Task manually.'
         );
     }
 
@@ -69,7 +60,7 @@ class RebuildCommand extends Command
     {
         $this->output = $output;
 
-        $output->writeln('Start repairing day records of events');
+        $output->writeln('Start re-building day records for each event record');
         $output->writeln('');
         $this->truncateDayTable();
         $output->writeln('');
@@ -95,19 +86,27 @@ class RebuildCommand extends Command
         foreach ($rows as $row) {
             $eventRecord = $this->dayRelationService->createDayRelations((int)$row['uid']);
             if ($eventRecord !== []) {
-                $amountOfDayRecords = count($eventRecord['days'] ?? []);
-                $this->output->writeln(sprintf(
-                    'Process event UID: %09d, PID: %05d, created: %04d day records, RAM: %d',
-                    $eventRecord['uid'],
-                    $eventRecord['pid'],
-                    $amountOfDayRecords,
-                    memory_get_usage()
-                ));
-                ++$eventCounter;
-                $dayCounter += $amountOfDayRecords;
+                if (is_array($eventRecord['days'])) {
+                    $amountOfDayRecords = count($eventRecord['days'] ?? []);
+                    $this->output->writeln(sprintf(
+                        'Process event UID: %09d, PID: %05d, created: %04d day records, RAM: %d',
+                        $eventRecord['uid'],
+                        $eventRecord['pid'],
+                        $amountOfDayRecords,
+                        memory_get_usage()
+                    ));
+                    ++$eventCounter;
+                    $dayCounter += $amountOfDayRecords;
+                } else {
+                    $this->output->writeln(sprintf(
+                        'ERROR event UID: %09d, PID: %05d: array key "days" has to be an array.',
+                        $row['uid'],
+                        $row['pid']
+                    ));
+                }
             } else {
                 $this->output->writeln(sprintf(
-                    'ERROR event UID: %09d, PID: %05d',
+                    'ERROR event UID: %09d, PID: %05d: event record could not be fetched from DB.',
                     $row['uid'],
                     $row['pid']
                 ));

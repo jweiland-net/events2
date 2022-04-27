@@ -40,3 +40,4 @@ This documentation is for the TYPO3 extension events2.
    UserManual/Index
    AdministratorManual/Index
    FAQ/Index
+   ChangeLog/Index

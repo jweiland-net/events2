@@ -57,8 +57,8 @@
 				<target>Seiten UID der Listenansicht. Sinnvoll, wenn auch eine Deteilansicht definiert wurde</target>
 			</trans-unit>
 			<trans-unit id="pidOfLocationPage">
-				<source>Page UID of the site for the event</source>
-				<target>Seiten UID der Seite für den Veranstaltungsort</target>
+				<source>Page UID for the event location</source>
+				<target>Seiten UID für den Veranstaltungsort</target>
 			</trans-unit>
 			<trans-unit id="pidOfSearchResults">
 				<source>Page UID of the search results</source>

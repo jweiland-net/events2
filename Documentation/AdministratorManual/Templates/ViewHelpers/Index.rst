@@ -54,7 +54,6 @@ All ViewHelpers
 .. toctree::
    :maxdepth: 2
 
-   Widget/ICalendarViewHelper
    ConvertToJsonViewHelper
    CreateYoutubeUrlViewHelper
    FeUserViewHelper
