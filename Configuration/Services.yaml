@@ -137,7 +137,9 @@ services:
       - name: event.listener
         event: JWeiland\Events2\Event\PostProcessControllerActionEvent
 
-  # Register commands for events2
+  # Register CLI commands
   JWeiland\Events2\Command\RebuildCommand:
     tags:
-      - { name: 'console.command', command: 'events2:rebuild' }
+    - name: 'console.command'
+      command: 'events2:rebuild'
+      schedulable: true
