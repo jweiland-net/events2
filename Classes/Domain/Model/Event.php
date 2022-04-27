@@ -732,8 +732,11 @@ class Event extends AbstractEntity
     public function getFirstOrganizer(): ?Organizer
     {
         $this->organizers->rewind();
+        if ($this->organizers->count()) {
+            return $this->organizers->current();
+        }
 
-        return $this->organizers->current();
+        return null;
     }
 
     public function getIsCurrentUserAllowedOrganizer(): bool
