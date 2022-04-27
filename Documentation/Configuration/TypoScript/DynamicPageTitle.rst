@@ -6,9 +6,9 @@
 Dynamic page title
 ==================
 
-In normal case you only will see something like "detail view" on detail pages page-title.
-If you want to change that title to current events title incl. its date you can mak use
-of new TYPO3 page-title providers (since TYPO3 9.4). Luckily events2 come with its own provider to
+In normal case you only will see something like "detail view" in title of detail page.
+If you want to change that title to current events title incl. its date you can make use
+of the new TYPO3 page-title providers (since TYPO3 9.4). Luckily events2 comes with its own provider to
 realize a pretty nice detail page-title for you with following TypoScript:
 
 .. code-block:: typoscript

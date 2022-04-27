@@ -38,7 +38,7 @@ class Events2PageTitleProvider implements PageTitleProviderInterface
     public function getTitle(): string
     {
         $pageTitle = '';
-        $gp = GeneralUtility::_GPmerged('tx_events2_list') ?? [];
+        $gp = GeneralUtility::_GPmerged('tx_events2_show') ?? [];
         if ($this->isValidRequest($gp)) {
             $dayRecord = $this->dayRepository->getDayRecord(
                 (int)$gp['event'],
