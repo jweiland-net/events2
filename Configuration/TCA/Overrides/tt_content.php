@@ -14,7 +14,7 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['events2_
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['events2_show'] = 'pi_flexform';
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
     'events2_show',
-    'FILE:EXT:events2/Configuration/FlexForms/Events.xml'
+    'FILE:EXT:events2/Configuration/FlexForms/Show.xml'
 );
 
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['events2_management'] = 'select_key';

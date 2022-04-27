@@ -29,7 +29,9 @@
 
 	<f:switch expression="{list_type}">
 		<f:case value="events2_show">
-			<f:render section="renderPidOfDetailPage" arguments="{pidOfDetailPage: pi_flexform_transformed.settings.pidOfDetailPage}" />
+			<f:render section="renderPidOfListPage" arguments="{pidOfListPage: pi_flexform_transformed.settings.pidOfListPage}" />
+			<f:render section="renderPidOfLocationPage" arguments="{pidOfLocationPage: pi_flexform_transformed.settings.pidOfLocationPage}" />
+			<f:render section="renderDisplayMode" arguments="{displayMode: pi_flexform_transformed.settings.display}" />
 		</f:case>
 		<f:case value="events2_management">
 			<f:render section="renderCategories" arguments="{categories: pi_flexform_transformed.settings.selectableCategoriesForNewEvents}" />
@@ -38,6 +40,7 @@
 			<f:render section="renderCategories" arguments="{categories: pi_flexform_transformed.settings.categories}" />
 		</f:case>
 		<f:case value="events2_searchform">
+			<f:render section="renderPidOfSearchResults" arguments="{pidOfSearchResults: pi_flexform_transformed.settings.pidOfSearchResults}" />
 			<f:render section="renderCategories" arguments="{categories: pi_flexform_transformed.settings.mainCategories}" />
 		</f:case>
 		<f:case value="events2_searchresults" />
@@ -54,6 +57,7 @@
 					</f:switch>
 				</td>
 			</tr>
+			<f:render section="renderPidOfDetailPage" arguments="{pidOfDetailPage: pi_flexform_transformed.settings.pidOfDetailPage}" />
 			<tr>
 				<td><strong>Merge Events same day</strong></td>
 				<td>
@@ -96,5 +100,52 @@
 			</td>
 		</tr>
 	</f:if>
+</f:section>
+
+<f:section name="renderPidOfListPage">
+	<f:if condition="{pidOfListPage}">
+		<tr>
+			<td><strong>List Page</strong></td>
+			<td>
+				{pidOfListPage}
+			</td>
+		</tr>
+	</f:if>
+</f:section>
+
+<f:section name="renderPidOfLocationPage">
+	<f:if condition="{pidOfLocationPage}">
+		<tr>
+			<td><strong>Location Page</strong></td>
+			<td>
+				{pidOfLocationPage}
+			</td>
+		</tr>
+	</f:if>
+</f:section>
+
+<f:section name="renderPidOfSearchResults">
+	<f:if condition="{pidOfSearchResults}">
+		<tr>
+			<td><strong>Search Results Page</strong></td>
+			<td>
+				{pidOfSearchResults}
+			</td>
+		</tr>
+	</f:if>
+</f:section>
+
+<f:section name="renderDisplayMode">
+	<tr>
+		<td><strong>Display Mode</strong></td>
+		<td>
+			<f:switch expression="{displayMode}">
+				<f:case value="displayBoth">Show images and events</f:case>
+				<f:case value="displayImages">Show images only</f:case>
+				<f:case value="displayEvent">Show Event only</f:case>
+				<f:defaultCase />
+			</f:switch>
+		</td>
+	</tr>
 </f:section>
 </html>
