@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Service;
 
 use JWeiland\Events2\Configuration\ExtConf;
+use JWeiland\Events2\Domain\Model\DateTimeEntry;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\TimeRepository;
 use JWeiland\Events2\Utility\DateTimeUtility;
@@ -89,14 +90,14 @@ class DayRelationService implements LoggerAwareInterface
             $this->dayRepository->removeAllByEventRecord($eventRecord);
             $days = [];
             $dateTimeStorage = $this->dayGenerator->getDateTimeStorageForEvent($eventRecord);
-            foreach ($dateTimeStorage as $dateTime) {
+            foreach ($dateTimeStorage as $dateTimeEntry) {
                 if ($this->firstDateTime === null) {
-                    $this->firstDateTime = $dateTime;
+                    $this->firstDateTime = $dateTimeEntry->getDate();
                 }
 
                 array_push(
                     $days,
-                    ...$this->buildDayRecordsForDateTime($eventRecord, $dateTime)
+                    ...$this->buildDayRecordsForDateTime($eventRecord, $dateTimeEntry)
                 );
 
                 // While looping through the DateTime entries the sort_day_time value has to be the same for all
@@ -197,13 +198,13 @@ class DayRelationService implements LoggerAwareInterface
         return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 
-    public function buildDayRecordsForDateTime(array $eventRecord, \DateTimeImmutable $dateTime): array
+    public function buildDayRecordsForDateTime(array $eventRecord, DateTimeEntry $dateTimeEntry): array
     {
         // Early return, if no time records were found
-        $timeRecords = $this->getTimeRecordsWithHighestPriority($eventRecord, $dateTime);
+        $timeRecords = $this->getTimeRecordsWithHighestPriority($eventRecord, $dateTimeEntry->getDate());
         if ($timeRecords === []) {
             return [
-                $this->buildDayRecordForDateTime($dateTime, $eventRecord, [])
+                $this->buildDayRecordForDateTime($dateTimeEntry, $eventRecord, [])
             ];
         }
 
@@ -213,7 +214,7 @@ class DayRelationService implements LoggerAwareInterface
                 $this->firstTimeRecordForCurrentDateTime = $timeRecord;
             }
 
-            $dayRecords[] = $this->buildDayRecordForDateTime($dateTime, $eventRecord, $timeRecord);
+            $dayRecords[] = $this->buildDayRecordForDateTime($dateTimeEntry, $eventRecord, $timeRecord);
         }
 
         return $dayRecords;
@@ -306,7 +307,7 @@ class DayRelationService implements LoggerAwareInterface
     }
 
     protected function buildDayRecordForDateTime(
-        \DateTimeImmutable $dateTime,
+        DateTimeEntry $dateTimeEntry,
         array $eventRecord,
         array $timeRecord
     ): array {
@@ -319,10 +320,11 @@ class DayRelationService implements LoggerAwareInterface
             'cruser_id' => $GLOBALS['BE_USER']->user['uid'] ?? 0,
             'hidden' => $eventRecord['hidden'] ?? 0,
             't3ver_wsid' => $eventRecord['t3ver_wsid'] ?? 0,
-            'day' => (int)$dateTime->format('U'),
-            'day_time' => (int)$this->getDayTime($dateTime, $hour, $minute)->format('U'),
-            'sort_day_time' => (int)$this->getSortDayTime($dateTime, $hour, $minute, $eventRecord)->format('U'),
-            'same_day_time' => (int)$this->getSameDayTime($dateTime, $hour, $minute, $eventRecord)->format('U'),
+            'day' => (int)$dateTimeEntry->getDate()->format('U'),
+            'day_time' => (int)$this->getDayTime($dateTimeEntry->getDate(), $hour, $minute)->format('U'),
+            'sort_day_time' => (int)$this->getSortDayTime($dateTimeEntry->getDate(), $hour, $minute, $eventRecord)->format('U'),
+            'same_day_time' => (int)$this->getSameDayTime($dateTimeEntry->getDate(), $hour, $minute, $eventRecord)->format('U'),
+            'is_removed_date' => (int)$dateTimeEntry->isRemovedDate(),
             'event' => $eventRecord['uid']
         ];
     }

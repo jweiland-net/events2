@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Functional\Service;
 
 use JWeiland\Events2\Configuration\ExtConf;
+use JWeiland\Events2\Domain\Model\DateTimeEntry;
 use JWeiland\Events2\Service\DayGeneratorService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
@@ -241,11 +242,11 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'exceptions' => 0,
         ];
 
-        $days = $this->subject->getDateTimeStorageForEvent($eventRecord);
-        foreach ($days as $day) {
+        $dateTimeEntries = $this->subject->getDateTimeStorageForEvent($eventRecord);
+        foreach ($dateTimeEntries as $dateTimeEntry) {
             self::assertSame(
                 '00:00:00',
-                $day->format('H:i:s')
+                $dateTimeEntry->getDate()->format('H:i:s')
             );
         }
     }
@@ -273,14 +274,14 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         ];
 
         $expectedDays = [];
-        $expectedDays[$eventBegin->format('U')] = $eventBegin;
-        $expectedDays[$nextWeek->format('U')] = $nextWeek;
-        $expectedDays[$recurringEnd->format('U')] = $recurringEnd;
+        $expectedDays[$eventBegin->format('U')] = new DateTimeEntry($eventBegin, false);
+        $expectedDays[$nextWeek->format('U')] = new DateTimeEntry($nextWeek, false);
+        $expectedDays[$recurringEnd->format('U')] = new DateTimeEntry($recurringEnd, false);
 
-        $days = $this->subject->getDateTimeStorageForEvent($eventRecord);
+        $dateTimeEntries = $this->subject->getDateTimeStorageForEvent($eventRecord);
         self::assertEquals(
             $expectedDays,
-            $days
+            $dateTimeEntries
         );
     }
 
@@ -305,10 +306,9 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'exceptions' => 0,
         ];
 
-        $days = $this->subject->getDateTimeStorageForEvent($eventRecord);
-
-        foreach ($days as $day) {
-            self::assertIsArray($day->getTimezone()->getLocation());
+        $dateTimeEntries = $this->subject->getDateTimeStorageForEvent($eventRecord);
+        foreach ($dateTimeEntries as $dateTimeEntry) {
+            self::assertIsArray($dateTimeEntry->getDate()->getTimezone()->getLocation());
         }
     }
 
@@ -334,8 +334,8 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         ];
 
         $expectedDays = [];
-        $expectedDays[$eventBegin->format('U')] = $eventBegin;
-        $expectedDays[$recurringEnd->format('U')] = $recurringEnd;
+        $expectedDays[$eventBegin->format('U')] = new DateTimeEntry($eventBegin, false);
+        $expectedDays[$recurringEnd->format('U')] = new DateTimeEntry($recurringEnd, false);
 
         self::assertEquals(
             $expectedDays,
@@ -379,8 +379,8 @@ class DayGeneratorServiceTest extends FunctionalTestCase
 
         self::assertEquals(
             [
-                $expectedBegin->format('U') => $expectedBegin,
-                $expectedEnd->format('U') => $expectedEnd
+                $expectedBegin->format('U') => new DateTimeEntry($expectedBegin, false),
+                $expectedEnd->format('U') => new DateTimeEntry($expectedEnd, false)
             ],
             $this->subject->getDateTimeStorageForEvent($eventRecord)
         );
@@ -410,21 +410,21 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         ];
 
         $expectedDays = [];
-        $expectedDays[$eventBegin->format('U')] = $eventBegin;
-        $expectedDays[$nextMonth->format('U')] = $nextMonth;
-        $expectedDays[$recurringEnd->format('U')] = $recurringEnd;
+        $expectedDays[$eventBegin->format('U')] = new DateTimeEntry($eventBegin, false);
+        $expectedDays[$nextMonth->format('U')] = new DateTimeEntry($nextMonth, false);
+        $expectedDays[$recurringEnd->format('U')] = new DateTimeEntry($recurringEnd, false);
 
         $this->extConf->setRecurringPast(1);
 
-        $days = $this->subject->getDateTimeStorageForEvent($eventRecord);
+        $dateTimeEntries = $this->subject->getDateTimeStorageForEvent($eventRecord);
         self::assertEquals(
             $expectedDays,
-            $days
+            $dateTimeEntries
         );
 
         // test for correct TimezoneType, else times are not DST save
-        foreach ($days as $day) {
-            self::assertIsArray($day->getTimezone()->getLocation());
+        foreach ($dateTimeEntries as $dateTimeEntry) {
+            self::assertIsArray($dateTimeEntry->getDate()->getTimezone()->getLocation());
         }
     }
 
@@ -450,8 +450,8 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         ];
 
         $expectedDays = [];
-        $expectedDays[$eventBegin->format('U')] = $eventBegin;
-        $expectedDays[$recurringEnd->format('U')] = $recurringEnd;
+        $expectedDays[$eventBegin->format('U')] = new DateTimeEntry($eventBegin, false);
+        $expectedDays[$recurringEnd->format('U')] = new DateTimeEntry($recurringEnd, false);
 
         self::assertEquals(
             $expectedDays,
@@ -485,7 +485,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         ];
 
         $expectedDays = [];
-        $expectedDays[$recurringEnd->format('U')] = $recurringEnd;
+        $expectedDays[$recurringEnd->format('U')] = new DateTimeEntry($recurringEnd, false);
 
         self::assertEquals(
             $expectedDays,
@@ -517,9 +517,9 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         ];
 
         $expectedDays = [];
-        $expectedDays[$eventBegin->format('U')] = $eventBegin;
-        $expectedDays[$nextEvent->format('U')] = $nextEvent;
-        $expectedDays[$lastEvent->format('U')] = $lastEvent;
+        $expectedDays[$eventBegin->format('U')] = new DateTimeEntry($eventBegin, false);
+        $expectedDays[$nextEvent->format('U')] = new DateTimeEntry($nextEvent, false);
+        $expectedDays[$lastEvent->format('U')] = new DateTimeEntry($lastEvent, false);
 
         self::assertEquals(
             $expectedDays,
@@ -548,7 +548,9 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         ];
 
         self::assertEquals(
-            [$eventBegin->format('U') => $eventBegin],
+            [
+                $eventBegin->format('U') => new DateTimeEntry($eventBegin, false)
+            ],
             $this->subject->getDateTimeStorageForEvent($eventRecord)
         );
     }
@@ -577,17 +579,17 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         $tempDate = $eventBegin;
         $expectedDays = [];
         $tempDate = $tempDate->modify('+1 day');
-        $expectedDays[$tempDate->format('U')] = $tempDate; // add sunday
+        $expectedDays[$tempDate->format('U')] = new DateTimeEntry($tempDate, false); // add sunday
         $tempDate = $tempDate->modify('+1 day');
-        $expectedDays[$tempDate->format('U')] = $tempDate; // add monday
+        $expectedDays[$tempDate->format('U')] = new DateTimeEntry($tempDate, false); // add monday
         $tempDate = $tempDate->modify('+1 day');
-        $expectedDays[$tempDate->format('U')] = $tempDate; // add tuesday
+        $expectedDays[$tempDate->format('U')] = new DateTimeEntry($tempDate, false); // add tuesday
         $tempDate = $tempDate->modify('+1 day');
-        $expectedDays[$tempDate->format('U')] = $tempDate; // add wednesday
+        $expectedDays[$tempDate->format('U')] = new DateTimeEntry($tempDate, false); // add wednesday
         $tempDate = $tempDate->modify('+2 day');
-        $expectedDays[$tempDate->format('U')] = $tempDate; // add friday
+        $expectedDays[$tempDate->format('U')] = new DateTimeEntry($tempDate, false); // add friday
         $tempDate = $tempDate->modify('+2 day');
-        $expectedDays[$tempDate->format('U')] = $tempDate; // add sunday
+        $expectedDays[$tempDate->format('U')] = new DateTimeEntry($tempDate, false); // add sunday
         ksort($expectedDays);
 
         self::assertEquals(
@@ -627,13 +629,13 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         $tempDate = $eventBegin;
         $expectedDays = [];
         $tempDate = $tempDate->modify('+3 day');
-        $expectedDays[$tempDate->format('U')] = $tempDate; // add 3rd tuesday 20th of month
+        $expectedDays[$tempDate->format('U')] = new DateTimeEntry($tempDate, false); // add 3rd tuesday 20th of month
         $tempDate = $tempDate->modify('+10 day');
-        $expectedDays[$tempDate->format('U')] = $tempDate; // add 5th friday 30th of month
+        $expectedDays[$tempDate->format('U')] = new DateTimeEntry($tempDate, false); // add 5th friday 30th of month
         $tempDate = $tempDate->modify('+4 day');
-        $expectedDays[$tempDate->format('U')] = $tempDate; // add 1st tuesday 3rd of next month
+        $expectedDays[$tempDate->format('U')] = new DateTimeEntry($tempDate, false); // add 1st tuesday 3rd of next month
         $tempDate = $tempDate->modify('+3 day');
-        $expectedDays[$tempDate->format('U')] = $tempDate; // add 1st friday 6th of next month
+        $expectedDays[$tempDate->format('U')] = new DateTimeEntry($tempDate, false); // add 1st friday 6th of next month
         ksort($expectedDays);
 
         self::assertEquals(
@@ -669,7 +671,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         $tempDate = $eventBegin;
         $expectedDays = [];
         for ($i = 0; $i < 5; ++$i) {
-            $expectedDays[$tempDate->format('U')] = $tempDate;
+            $expectedDays[$tempDate->format('U')] = new DateTimeEntry($tempDate, false);
             $tempDate = $tempDate->modify('+1 day');
         }
 
@@ -700,10 +702,10 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'exceptions' => 0,
         ];
 
-        $expectedDays = [$eventBegin->format('U') => $eventBegin];
-
         self::assertEquals(
-            $expectedDays,
+            [
+                $eventBegin->format('U') => new DateTimeEntry($eventBegin, false)
+            ],
             $this->subject->getDateTimeStorageForEvent($eventRecord)
         );
     }
@@ -729,17 +731,19 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'each_months' => 0,
             'exceptions' => [
                 1 => [
+                    'hidden' => 0,
                     'exception_type' => 'Add',
                     'exception_date' => (int)$tomorrow->format('U'),
+                    'show_anyway' => 0,
                 ]
             ],
         ];
 
         self::assertEquals(
             [
-                $eventBegin->format('U') => $eventBegin,
-                $tomorrow->format('U') => $tomorrow,
-                $recurringEnd->format('U') => $recurringEnd,
+                $eventBegin->format('U') => new DateTimeEntry($eventBegin, false),
+                $tomorrow->format('U') => new DateTimeEntry($tomorrow, false),
+                $recurringEnd->format('U') => new DateTimeEntry($recurringEnd, false),
             ],
             $this->subject->getDateTimeStorageForEvent($eventRecord)
         );
@@ -766,17 +770,18 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'each_months' => 0,
             'exceptions' => [
                 1 => [
+                    'hidden' => 1,
                     'exception_type' => 'Add',
                     'exception_date' => (int)$tomorrow->format('U'),
-                    'hidden' => 1
+                    'show_anyway' => 0,
                 ]
             ],
         ];
 
         self::assertEquals(
             [
-                $eventBegin->format('U') => $eventBegin,
-                $recurringEnd->format('U') => $recurringEnd,
+                $eventBegin->format('U') => new DateTimeEntry($eventBegin, false),
+                $recurringEnd->format('U') => new DateTimeEntry($recurringEnd, false)
             ],
             $this->subject->getDateTimeStorageForEvent($eventRecord)
         );
@@ -802,25 +807,26 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'each_months' => 0,
             'exceptions' => [
                 1 => [
+                    'hidden' => 0,
                     'exception_type' => 'Add',
                     'exception_date' => (int)$lastYear->format('U'),
+                    'show_anyway' => 0,
                 ]
             ],
         ];
 
-        $expectedDays = [];
-        $expectedDays[$eventBegin->format('U')] = $eventBegin;
-
-        $dateTimeStorage = $this->subject->getDateTimeStorageForEvent($eventRecord);
+        $dateTimeEntries = $this->subject->getDateTimeStorageForEvent($eventRecord);
 
         // assertEquals will only check for correct dates, but not for different timezoneTypes
         self::assertEquals(
-            $expectedDays,
-            $dateTimeStorage
+            [
+                $eventBegin->format('U') => new DateTimeEntry($eventBegin, false)
+            ],
+            $dateTimeEntries
         );
 
-        foreach ($dateTimeStorage as $dateTime) {
-            self::assertIsArray($dateTime->getTimezone()->getLocation());
+        foreach ($dateTimeEntries as $dateTimeEntry) {
+            self::assertIsArray($dateTimeEntry->getDate()->getTimezone()->getLocation());
         }
     }
 
@@ -844,17 +850,18 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'each_months' => 0,
             'exceptions' => [
                 1 => [
+                    'hidden' => 0,
                     'exception_type' => 'Remove',
-                    'exception_date' => (int)$eventBegin->format('U')
+                    'exception_date' => (int)$eventBegin->format('U'),
+                    'show_anyway' => 0,
                 ]
             ],
         ];
 
-        $expectedDays = [];
-        $expectedDays[$tomorrow->format('U')] = $tomorrow;
-
         self::assertEquals(
-            $expectedDays,
+            [
+                $tomorrow->format('U') => new DateTimeEntry($tomorrow, false)
+            ],
             $this->subject->getDateTimeStorageForEvent($eventRecord)
         );
     }
@@ -880,15 +887,17 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'each_months' => 0,
             'exceptions' => [
                 1 => [
+                    'hidden' => 0,
                     'exception_type' => 'Time',
-                    'exception_date' => (int)$exceptionDate->format('U')
+                    'exception_date' => (int)$exceptionDate->format('U'),
+                    'show_anyway' => 0,
                 ]
             ],
         ];
 
         $expectedDays = [];
-        $expectedDays[$eventBegin->format('U')] = $eventBegin;
-        $expectedDays[$tomorrow->format('U')] = $tomorrow;
+        $expectedDays[$eventBegin->format('U')] = new DateTimeEntry($eventBegin, false);
+        $expectedDays[$tomorrow->format('U')] = new DateTimeEntry($tomorrow, false);
 
         self::assertEquals(
             $expectedDays,
@@ -917,15 +926,17 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'each_months' => 0,
             'exceptions' => [
                 1 => [
+                    'hidden' => 0,
                     'exception_type' => 'Info',
-                    'exception_date' => (int)$exceptionDate->format('U')
+                    'exception_date' => (int)$exceptionDate->format('U'),
+                    'show_anyway' => 0,
                 ]
             ],
         ];
 
         $expectedDays = [];
-        $expectedDays[$eventBegin->format('U')] = $eventBegin;
-        $expectedDays[$tomorrow->format('U')] = $tomorrow;
+        $expectedDays[$eventBegin->format('U')] = new DateTimeEntry($eventBegin, false);
+        $expectedDays[$tomorrow->format('U')] = new DateTimeEntry($tomorrow, false);
 
         self::assertEquals(
             $expectedDays,
@@ -963,8 +974,10 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'each_months' => 0,
             'exceptions' => [
                 1 => [
+                    'hidden' => 0,
                     'exception_type' => 'Invalid value',
-                    'exception_date' => (int)$exceptionDate->format('U')
+                    'exception_date' => (int)$exceptionDate->format('U'),
+                    'show_anyway' => 0,
                 ]
             ],
         ];

@@ -64,6 +64,12 @@ return [
                 'eval' => 'datetime,int',
             ],
         ],
+        'is_removed_date' => [
+            'label' => 'Is removed date. True, if show_anyway in exception is set.',
+            'config' => [
+                'type' => 'passthrough',
+            ]
+        ],
         'event' => [
             'config' => [
                 'type' => 'select',

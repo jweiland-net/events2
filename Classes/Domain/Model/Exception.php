@@ -29,6 +29,8 @@ class Exception extends AbstractEntity
 
     protected string $exceptionDetails = '';
 
+    protected bool $showAnyway = false;
+
     public function getExceptionType(): string
     {
         return $this->exceptionType;
@@ -67,5 +69,15 @@ class Exception extends AbstractEntity
     public function setExceptionDetails(string $exceptionDetails): void
     {
         $this->exceptionDetails = $exceptionDetails;
+    }
+
+    public function getShowAnyway(): bool
+    {
+        return $this->showAnyway;
+    }
+
+    public function setShowAnyway(bool $showAnyway): void
+    {
+        $this->showAnyway = $showAnyway;
     }
 }
