@@ -538,6 +538,7 @@ class DayRepository extends AbstractRepository
             'day_time',
             'sort_day_time',
             'same_day_time',
+            'is_removed_date',
             'event'
         ];
 

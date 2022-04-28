@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Service;
 
 use JWeiland\Events2\Configuration\ExtConf;
+use JWeiland\Events2\Domain\Model\DateTimeEntry;
 use JWeiland\Events2\Event\PostGenerateDaysEvent;
 use JWeiland\Events2\Tca\BitMask\WeekDayBitMask;
 use JWeiland\Events2\Tca\BitMask\XthBitMask;
@@ -47,6 +48,9 @@ class DayGeneratorService implements LoggerAwareInterface
         $this->dateTimeUtility = $dateTimeUtility;
     }
 
+    /**
+     * @return DateTimeEntry[]
+     */
     public function getDateTimeStorageForEvent(array $eventRecord): array
     {
         $this->dateTimeStorage = [];
@@ -437,13 +441,17 @@ class DayGeneratorService implements LoggerAwareInterface
         return $latestEventDate < $latestDateOfTimeFrame ? $latestEventDate : $latestDateOfTimeFrame;
     }
 
-    protected function addDateTimeToStorage(\DateTimeImmutable $dateTime): void
+    protected function addDateTimeToStorage(\DateTimeImmutable $dateTime, bool $isRemovedDate = false): void
     {
         // To prevent adding multiple day records for ONE day we set them all to midnight 00:00:00
         $dateTime = $this->dateTimeUtility->standardizeDateTimeObject($dateTime);
 
         // group days to make them unique
-        $this->dateTimeStorage[$dateTime->format('U')] = $dateTime;
+        $this->dateTimeStorage[$dateTime->format('U')] = GeneralUtility::makeInstance(
+            DateTimeEntry::class,
+            $dateTime,
+            $isRemovedDate
+        );
     }
 
     protected function removeDayFromStorage(\DateTimeImmutable $day): void
@@ -461,7 +469,9 @@ class DayGeneratorService implements LoggerAwareInterface
         }
 
         foreach ($eventRecord['exceptions'] as $exceptionRecord) {
-            if ($exceptionRecord['hidden'] ?? 0) {
+            $this->checkExceptionRecord($exceptionRecord);
+
+            if ($exceptionRecord['hidden']) {
                 continue;
             }
 
@@ -470,7 +480,12 @@ class DayGeneratorService implements LoggerAwareInterface
                     $this->addEventException($eventRecord, $exceptionRecord);
                     break;
                 case 'Remove':
-                    $this->removeDayFromStorage($exceptionRecord['exception_date']);
+                    // Do not remove DateTime from Storage, if exception records of type "Removed" should be shown in FE anyway
+                    if ($exceptionRecord['show_anyway'] === 0) {
+                        $this->removeDayFromStorage($exceptionRecord['exception_date']);
+                    } else {
+                        $this->addDateTimeToStorage($exceptionRecord['exception_date'], true);
+                    }
                     break;
                 case 'Info':
                 case 'Time':
@@ -514,5 +529,25 @@ class DayGeneratorService implements LoggerAwareInterface
         return is_array($eventRecord['exceptions'])
             && $eventRecord['exceptions'] !== []
             && in_array($eventRecord['event_type'], ['recurring', 'duration']);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    protected function checkExceptionRecord(array $exceptionRecord): void
+    {
+        $isValid = isset(
+            $exceptionRecord['hidden'],
+            $exceptionRecord['exception_type'],
+            $exceptionRecord['exception_date'],
+            $exceptionRecord['show_anyway']
+        );
+
+        if (!$isValid) {
+            throw new \Exception(
+                'Exception record does not contain all needed columns to create DateTime storage',
+                1651151453
+            );
+        }
     }
 }

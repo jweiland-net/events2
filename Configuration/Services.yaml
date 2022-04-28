@@ -33,6 +33,13 @@ services:
     public: true
     shared: false
 
+  # Must be public as this model was created by makeInstance in DayGenerationService
+  JWeiland\Events2\Domain\Model\DateTimeEntry:
+    public: true
+    shared: false
+    autowire: false
+    autoconfigure: false
+
   # Called by makeInstance in event model where constructors are not loaded in some cases
   # Called by makeInstance in static GetMergedEventTimesViewHelper
   JWeiland\Events2\Domain\Factory\TimeFactory:

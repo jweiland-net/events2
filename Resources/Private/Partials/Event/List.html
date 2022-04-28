@@ -5,7 +5,15 @@
 
 <ul class="list-group">
 	<f:for each="{days}" as="day">
-		<li class="list-group-item{f:if(condition: day.event.topOfList, then: ' list-group-item-info')}">
+		<f:variable name="listGroupClasses">list-group-item</f:variable>
+		<f:if condition="{day.event.topOfList}">
+			<f:variable name="listGroupClasses">{listGroupClasses} list-group-item-info</f:variable>
+		</f:if>
+		<f:if condition="{day.isRemovedDate}">
+			<f:variable name="listGroupClasses">{listGroupClasses} list-group-item-danger</f:variable>
+		</f:if>
+
+		<li class="{listGroupClasses}">
 			<strong><f:render partial="Event/Date" arguments="{day: day}" /></strong>
 
 			<f:render section="title" arguments="{day: day}" />

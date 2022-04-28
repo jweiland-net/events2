@@ -36,6 +36,8 @@ class Day extends AbstractEntity
 
     protected ?\DateTimeImmutable $sameDayTime = null;
 
+    protected bool $isRemovedDate = false;
+
     protected ?Event $event = null;
 
     public function getCrdate(): ?\DateTimeImmutable
@@ -144,6 +146,16 @@ class Day extends AbstractEntity
     public function setSameDayTime(\DateTimeImmutable $sameDayTime): void
     {
         $this->sameDayTime = $sameDayTime;
+    }
+
+    public function getIsRemovedDate(): bool
+    {
+        return $this->isRemovedDate;
+    }
+
+    public function setIsRemovedDate(bool $isRemovedDate): void
+    {
+        $this->isRemovedDate = $isRemovedDate;
     }
 
     public function getEvent(): Event

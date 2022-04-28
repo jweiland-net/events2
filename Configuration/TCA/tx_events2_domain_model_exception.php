@@ -38,7 +38,7 @@ return [
             --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access'
         ],
         'Remove' => [
-            'showitem' => '--palette--;;exception, sys_language_uid, l10n_parent, l10n_diffsource,
+            'showitem' => '--palette--;;exception, sys_language_uid, l10n_parent, l10n_diffsource, show_anyway,
             --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access, 
             --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access'
         ],
@@ -222,6 +222,21 @@ return [
                 'softref' => 'typolink_tag,images,email[subst],url',
                 'enableRichtext' => true,
             ],
+        ],
+        'show_anyway' => [
+            'exclude' => true,
+            'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_exception.show_anyway',
+            'config' => [
+                'type' => 'check',
+                'renderType' => 'checkboxToggle',
+                'items' => [
+                    [
+                        0 => '',
+                        1 => '',
+                    ]
+                ],
+                'default' => 0,
+            ]
         ],
         'event' => [
             'config' => [
