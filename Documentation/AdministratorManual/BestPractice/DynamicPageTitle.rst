@@ -3,7 +3,7 @@
 .. _dynamicPageTitle:
 
 ==================
-Dynamic page title
+Dynamic Page Title
 ==================
 
 In normal case you only will see something like "detail view" in title of detail page.
