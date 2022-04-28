@@ -27,7 +27,7 @@ Screenshots
 See events2 in action.
 
 Output Frontend
-"""""""""""""""
+---------------
 
 .. figure:: ../Images/Introduction/events2-list.jpg
    :width: 500px

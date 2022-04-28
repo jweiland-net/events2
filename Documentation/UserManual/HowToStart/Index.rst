@@ -32,12 +32,12 @@ A plugin is used to render a defined selection of records in the frontend.
 Follow this steps to add a plugin to a page:
 
 Events
-""""""
+------
 
 #. Create a new page with a title like "Events" which will be used to show
    your created events records.
 
-#. Add a new content element and select the entry "Insert Plugin"
+#. Add a new content element and select the entry `Insert Plugin`
 
 #. Switch to the tab "Plugin" where you can define the plugin settings and
    set selected plugin to "Events".
@@ -45,12 +45,12 @@ Events
 #. Save the plugin.
 
 Events: Calendar
-""""""""""""""""
+----------------
 
 #. Create a new page with a title like "Events" which will be used to show
    your created events records.
 
-#. Add a new content element and select the entry "Insert Plugin"
+#. Add a new content element and select the entry `Insert Plugin`
 
 #. Switch to the tab "Plugin" where you can define the plugin settings and
    set selected plugin to "Events: Calendar".
@@ -58,12 +58,12 @@ Events: Calendar
 #. Save the plugin.
 
 Events: Search
-""""""""""""""
+--------------
 
 #. Create a new page with a title like "Events" which will be used to show
    your created events records.
 
-#. Add a new content element and select the entry "Insert Plugin"
+#. Add a new content element and select the entry `Insert Plugin`
 
 #. Switch to the tab "Plugin" where you can define the plugin settings and
    set selected plugin to "Events: Search".
