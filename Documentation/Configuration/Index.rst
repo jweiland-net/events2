@@ -13,5 +13,3 @@ This chapter describes the various configuration settings of events2.
    Extension/Index
    Plugins/Index
    TypoScript/Index
-   TypoScript/SearchPlugin
-   TypoScript/DynamicPageTitle

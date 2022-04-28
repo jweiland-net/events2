@@ -56,6 +56,21 @@ We will validate the imported file against configuration in `EXT:events2/Resourc
 All errors will be logged in a `Messages.txt` in same directory of imported XML file.
 
 
+Namespace change of search plugin
+=================================
+
+In Extbase a link will be created by its Plugin Namespace like *tx_events2_calendar* or *tx_events2_list*. As we have
+designed plugin `Search form` as its own Plugin it will only react and build links based on plugin
+namespace `tx_events2_searchform`. But this is a problem. To build correct links within the search results plugin
+which should be compatible with our events2 list Plugin we have to change its plugin namespace to `tx_events2_list`.
+
+That's why we set the plugin namespace of search results plugin back to namespace of events2 list plugin:
+
+plugin.tx_events2_searchresults.view.pluginNamespace = tx_events2_list
+
+We prefer to not change that value.
+
+
 File Uploads
 ============
 
