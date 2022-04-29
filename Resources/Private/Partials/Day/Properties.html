@@ -89,7 +89,7 @@
 		</dt>
 		<dd>
 			<f:render partial="Event/Time" arguments="{time: time}" />
-			<f:for each="{e2:getExceptionsFromEventForSpecificDate(event: day.event, date: date, type: 'add,time,info')}" as="exception">
+			<f:for each="{e2:getExceptionsFromEventForSpecificDate(event: day.event, date: date)}" as="exception">
 				<br><em>{exception.exceptionDetails -> f:format.html(parseFuncTSPath: 'lib.parseFunc') -> f:format.nl2br()}</em>
 			</f:for>
 		</dd>

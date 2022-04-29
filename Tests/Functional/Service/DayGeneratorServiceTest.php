@@ -869,6 +869,43 @@ class DayGeneratorServiceTest extends FunctionalTestCase
     /**
      * @test
      */
+    public function getDateTimeStorageForEventWithRemoveExceptionButShowAnywayWillNotRemoveDayFromStorage(): void
+    {
+        $eventBegin = new \DateTimeImmutable('midnight');
+        $tomorrow = $eventBegin->modify('tomorrow');
+
+        $eventRecord = [
+            'uid' => 123,
+            'event_type' => 'duration',
+            'event_begin' => (int)$eventBegin->format('U'),
+            'event_end' => (int)$tomorrow->format('U'),
+            'recurring_end' => 0,
+            'xth' => 31,
+            'weekday' => 127,
+            'each_weeks' => 0,
+            'each_months' => 0,
+            'exceptions' => [
+                1 => [
+                    'hidden' => 0,
+                    'exception_type' => 'Remove',
+                    'exception_date' => (int)$eventBegin->format('U'),
+                    'show_anyway' => 1,
+                ]
+            ],
+        ];
+
+        self::assertEquals(
+            [
+                $eventBegin->format('U') => new DateTimeEntry($eventBegin, true),
+                $tomorrow->format('U') => new DateTimeEntry($tomorrow, false)
+            ],
+            $this->subject->getDateTimeStorageForEvent($eventRecord)
+        );
+    }
+
+    /**
+     * @test
+     */
     public function getDateTimeStorageForEventWithTimeExceptionWillNotAddDateTimeToStorage(): void
     {
         $eventBegin = new \DateTimeImmutable('midnight');

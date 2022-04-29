@@ -38,7 +38,7 @@ return [
             --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access'
         ],
         'Remove' => [
-            'showitem' => '--palette--;;exception, sys_language_uid, l10n_parent, l10n_diffsource, show_anyway,
+            'showitem' => '--palette--;;exception, sys_language_uid, l10n_parent, l10n_diffsource, show_anyway, exception_details,
             --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access, 
             --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access'
         ],
