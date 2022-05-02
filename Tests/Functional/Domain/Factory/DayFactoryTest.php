@@ -324,35 +324,4 @@ class DayFactoryTest extends FunctionalTestCase
             $day->getUid()
         );
     }
-
-    /**
-     * @test
-     */
-    public function findDayWillBuildDayItselfButKeepsTime(): void
-    {
-        $date = new \DateTime('midnight');
-        $date->modify('07:30:00');
-        $queryFactory = $this->objectManager->get(QueryFactory::class);
-
-        /** @var Query $query */
-        $query = $queryFactory->create(Day::class);
-        $query->setQuerySettings($this->querySettings);
-
-        $event = $this->eventRepository->findByUid(4);
-
-        $day = $this->subject->findDayByEventAndTimestamp($event, (int)$date->format('U'), $query);
-        self::assertSame(
-            4,
-            $day->getEvent()->getUid()
-        );
-        self::assertNull($day->getUid());
-
-        $expectedDate = new \DateTime('midnight');
-        $expectedDate->modify('-1 year')->modify('07:30:00');
-
-        self::assertEquals(
-            $expectedDate,
-            $day->getDayTime()
-        );
-    }
 }
