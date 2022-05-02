@@ -17,6 +17,12 @@ Default: false
 If activated this event will always be on top of list. If you have multiple events marked *top_of_list*
 events2 will order them by title DESC.
 
+.. hint::
+
+   If you mark a recurring event with a lot of dates as `top of list`, this record with ALL of its
+   dates will move to top. So it may happen, that the next event will be shown on page 2 or 3 in PageBrowser.
+   In such cases we prefer to set on of the `merge` Features in plugin configuration.
+
 Title
 -----
 

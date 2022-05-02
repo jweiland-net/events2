@@ -138,8 +138,11 @@ class DayFactory
             throw new \Exception('Given event does not have an event begin date assigned.', 1548927203);
         }
 
-        $event->getDays()->rewind();
-        $day = $event->getDays()->current();
+        $day = null;
+        if ($event->getDays()->count()) {
+            $event->getDays()->rewind();
+            $day = $event->getDays()->current();
+        }
 
         if (!$day instanceof Day) {
             // Only a fallback to be really safe.
