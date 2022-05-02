@@ -83,9 +83,21 @@ class ICalendarController extends AbstractWidgetController
         switch ($day->getEvent()->getEventType()) {
             case 'duration':
                 $firstDay = $this->getFirstDayOfEvent($day->getEvent());
+                if ($firstDay === null) {
+                    $firstDay = new Day();
+                    $firstDay->setEvent($day->getEvent());
+                    $firstDay->setDay($day->getEvent()->getEventBegin());
+                }
+
                 $lastDay = $this->getLastDayOfEvent($day->getEvent());
-                $startTimes = $this->timeFactory->getTimesForDate($firstDay->getEvent(), $firstDay->getDay());
-                $endTimes = $this->timeFactory->getTimesForDate($lastDay->getEvent(), $lastDay->getDay());
+                if ($lastDay === null) {
+                    $lastDay = new Day();
+                    $lastDay->setEvent($day->getEvent());
+                    $lastDay->setDay($day->getEvent()->getEventEnd());
+                }
+
+                $startTimes = $this->timeFactory->getTimesForDate($day->getEvent(), $firstDay->getDay());
+                $endTimes = $this->timeFactory->getTimesForDate($day->getEvent(), $lastDay->getDay());
                 $startTimes->rewind();
                 $startTime = $startTimes->current();
                 $endTimes->rewind();
@@ -130,7 +142,7 @@ class ICalendarController extends AbstractWidgetController
         }
         ksort($days);
 
-        return reset($days);
+        return $days === [] ? null : reset($days);
     }
 
     /**
@@ -148,7 +160,7 @@ class ICalendarController extends AbstractWidgetController
         }
         ksort($days);
 
-        return end($days);
+        return $days === [] ? null : end($days);
     }
 
     /**
