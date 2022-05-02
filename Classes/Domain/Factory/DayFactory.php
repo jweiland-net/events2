@@ -153,8 +153,11 @@ class DayFactory
             $this->dayRelationService->addDay($event, $event->getEventBegin());
         }
 
-        $event->getDays()->rewind();
-        $day = $event->getDays()->current();
+        $day = null;
+        if ($event->getDays()->count()) {
+            $event->getDays()->rewind();
+            $day = $event->getDays()->current();
+        }
 
         if (!$day instanceof Day) {
             // Only a fallback to be really really safe.
