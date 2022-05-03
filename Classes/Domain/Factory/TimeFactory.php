@@ -175,7 +175,7 @@ class TimeFactory
             // If activated, we have to extract the time information from URI parameter "timestamp".
             // We will remove ALL time-records of current day, as ALL time-records for current day are
             // already visible in event show action. So no need to remove individual time records.
-            $uriParameters = GeneralUtility::_GET('tx_events2_list');
+            $uriParameters = GeneralUtility::_GET('tx_events2_show');
             $currentDateMidnight = $this->dateTimeUtility->convert($uriParameters['timestamp'] ?? 0);
             if ($currentDateMidnight instanceof \DateTimeImmutable) {
                 $currentDateMidnight = $this->dateTimeUtility->standardizeDateTimeObject($currentDateMidnight);
