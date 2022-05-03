@@ -542,7 +542,11 @@ return [
         'days' => [
             'exclude' => false,
             'config' => [
-                'type' => 'inline',
+                // Do not set type to 'inline' or 'select'.
+                // If so, DataHandler will try to localize the related records, too.
+                // But day table is NOT localizable until now.
+                // Extbase will only check for foreign_table, but not for type of relation. So passthrough is OK.
+                'type' => 'passthrough',
                 'foreign_table' => 'tx_events2_domain_model_day',
                 'foreign_field' => 'event',
             ],
