@@ -465,4 +465,26 @@ class TimeFactoryTest extends FunctionalTestCase
             $this->subject->getSortedTimesForDate($event, $date)
         );
     }
+
+    /**
+     * @test
+     */
+    public function getTimesForDateWithEventBeginWillRemoveCurrentDay(): void
+    {
+        $eventBegin = new \DateTimeImmutable('midnight');
+        $_GET['tx_events2_show']['timestamp'] = $eventBegin->format('U');
+
+        $time = GeneralUtility::makeInstance(Time::class);
+        $time->setTimeBegin('08:00');
+        $time->setDuration('02:00');
+
+        $event = GeneralUtility::makeInstance(Event::class);
+        $event->setEventBegin($eventBegin);
+        $event->setEventTime($time);
+
+        self::assertEquals(
+            new \SplObjectStorage(),
+            $this->subject->getTimesForDate($event, $eventBegin, true)
+        );
+    }
 }
