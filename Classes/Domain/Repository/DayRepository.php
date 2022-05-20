@@ -533,6 +533,7 @@ class DayRepository extends AbstractRepository
             'crdate',
             'cruser_id',
             'hidden',
+            'fe_group',
             't3ver_wsid',
             'day',
             'day_time',
