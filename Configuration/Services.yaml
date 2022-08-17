@@ -49,6 +49,10 @@ services:
   JWeiland\Events2\Hooks\DataHandler:
     public: true
 
+  # Called by makeInstance from EXT:form
+  JWeiland\Events2\Hooks\Form\PrefillCategoriesHook:
+    public: true
+
   # Called by makeInstance from EXT:solr
   JWeiland\Events2\Hooks\Solr\IndexerHook:
     public: true

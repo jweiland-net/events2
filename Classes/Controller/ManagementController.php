@@ -191,6 +191,11 @@ class ManagementController extends AbstractController
         $this->redirect('listMyEvents', 'Event');
     }
 
+    public function performAction(): void
+    {
+
+    }
+
     public function initializeDeleteAction(): void
     {
         $this->preProcessControllerAction();

@@ -1,0 +1,178 @@
+renderingOptions:
+  submitButtonLabel: Submit
+type: Form
+identifier: newEvent
+label: Create a new event
+prototypeName: standard
+renderables:
+-
+  renderingOptions:
+    previousButtonLabel: ''
+    nextButtonLabel: 'Collect event data'
+  type: Page
+  identifier: radio-choose-event-type
+  label: Choose event type
+  renderables:
+  -
+    properties:
+      options:
+        Single: Single
+        Duration: Duration
+        Recurring: Recurring
+      fluidAdditionalAttributes:
+        required: required
+      validationErrorMessages:
+      -
+        code: 1221560910
+        message: 'Please select an event type first'
+      -
+        code: 1221560718
+        message: 'Please select an event type first'
+      -
+        code: 1347992400
+        message: 'Please select an event type first'
+      -
+        code: 1347992453
+        message: 'Please select an event type first'
+      elementDescription: 'Choose event type'
+    type: RadioButton
+    identifier: radiobutton-1
+    label: 'Radio button'
+    defaultValue: Single
+    validators:
+    -
+      identifier: NotEmpty
+-
+  renderingOptions:
+    previousButtonLabel: 'Choose event type'
+  type: Page
+  identifier: collect-data
+  label: Collect event data
+  renderables:
+  -
+    defaultValue: ''
+    type: Text
+    identifier: title
+    label: Title
+    properties:
+      elementDescription: 'Title'
+      fluidAdditionalAttributes:
+        required: required
+      validationErrorMessages:
+      -
+        code: 1221560910
+        message: 'Title is required'
+      -
+        code: 1221560718
+        message: 'Title is required'
+      -
+        code: 1347992400
+        message: 'Title is required'
+      -
+        code: 1347992453
+        message: 'Title is required'
+    validators:
+    -
+      identifier: NotEmpty
+  -
+    defaultValue: ''
+    type: Date
+    identifier: event-date
+    label: Event date
+    properties:
+      elementDescription: 'Event date'
+      fluidAdditionalAttributes:
+        required: required
+      validationErrorMessages:
+      -
+        code: 1221560910
+        message: 'Event date is required'
+      -
+        code: 1221560718
+        message: 'Event date is required'
+      -
+        code: 1347992400
+        message: 'Event date is required'
+      -
+        code: 1347992453
+        message: 'Event date is required'
+    validators:
+    -
+      identifier: NotEmpty
+  -
+    defaultValue: ''
+    type: Date
+    identifier: event-end-date
+    label: Event end date
+    properties:
+      elementDescription: 'Event end date'
+  -
+    defaultValue: ''
+    type: Textarea
+    identifier: short-description
+    label: 'Short description'
+    properties:
+      elementDescription: 'Short description'
+  -
+    defaultValue: ''
+    type: Textarea
+    identifier: detail-description
+    label: 'Detail description'
+    properties:
+      elementDescription: 'Detail description'
+  -
+    defaultValue: ''
+    type: Text
+    identifier: ticket-link
+    label: Ticket Link
+    properties:
+      elementDescription: 'Ticket Link'
+  -
+    defaultValue: ''
+    type: Text
+    identifier: event-location
+    label: Event Location
+    properties:
+      elementDescription: 'Event Location'
+  -
+    defaultValue: ''
+    type: Text
+    identifier: download-link
+    label: Download Link
+    properties:
+      elementDescription: 'Download Link'
+  -
+    properties:
+      # Do not add options here. They will be added by Hook
+      elementDescription: Please choose at least one category
+      validationErrorMessages:
+      -
+        code: 1221560910
+        message: 'Choose at least one category'
+      -
+        code: 1221560718
+        message: 'Choose at least one category'
+      -
+        code: 1347992400
+        message: 'Choose at least one category'
+      -
+        code: 1347992453
+        message: 'Choose at least one category'
+    type: MultiCheckbox
+    identifier: categories
+    label: Categories
+    validators:
+    -
+      identifier: NotEmpty
+  -
+    properties:
+      saveToFileMount: '1:/user_upload/'
+      allowedMimeTypes:
+      - image/jpg
+      - image/jpeg
+      - image/png
+      elementDescription: 'Select up to 5 images'
+    type: ImageUpload
+    identifier: images
+    label: 'Image upload'
+
