@@ -326,7 +326,6 @@ class SaveEventFinisher extends AbstractFinisher
         return $optionValue;
     }
 
-
     /**
      * Throws an exception if some inconsistent configuration
      * are detected.

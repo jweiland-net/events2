@@ -193,7 +193,6 @@ class ManagementController extends AbstractController
 
     public function performAction(): void
     {
-
     }
 
     public function initializeDeleteAction(): void
