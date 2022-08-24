@@ -28,6 +28,8 @@ plugin.tx_events2 {
     userGroup =
     # cat=plugin.tx_events2; type=int+; label=Remaining letters for field teaser while editing/create events in frontend
     remainingLetters = 250
+    # cat=plugin.tx_events2; type=boolean; label=Use TYPO3 extension "form" to create new event in frontend
+    useExtForm = 0
 
     latest {
       # cat=plugin.tx_events2; type=int+; label=Show records: How many records should be displayed for latest view?

@@ -365,7 +365,7 @@ renderables:
     variants:
     -
       identifier: variant-time-monday
-      condition: '"1" in formValues["weekday"]'
+      condition: 'formValues["weekday"] && "1" in formValues["weekday"]'
       renderingOptions:
         enabled: true
     validators:
@@ -391,7 +391,7 @@ renderables:
     variants:
     -
       identifier: variant-time-tuesday
-      condition: '"2" in formValues["weekday"]'
+      condition: 'formValues["weekday"] && "2" in formValues["weekday"]'
       renderingOptions:
         enabled: true
     validators:
@@ -417,7 +417,7 @@ renderables:
     variants:
     -
       identifier: variant-time-wednesday
-      condition: '"4" in formValues["weekday"]'
+      condition: 'formValues["weekday"] && "4" in formValues["weekday"]'
       renderingOptions:
         enabled: true
     validators:
@@ -443,7 +443,7 @@ renderables:
     variants:
     -
       identifier: variant-time-thursday
-      condition: '"8" in formValues["weekday"]'
+      condition: 'formValues["weekday"] && "8" in formValues["weekday"]'
       renderingOptions:
         enabled: true
     validators:
@@ -469,7 +469,7 @@ renderables:
     variants:
     -
       identifier: variant-time-friday
-      condition: '"16" in formValues["weekday"]'
+      condition: 'formValues["weekday"] && "16" in formValues["weekday"]'
       renderingOptions:
         enabled: true
     validators:
@@ -495,7 +495,7 @@ renderables:
     variants:
     -
       identifier: variant-time-saturday
-      condition: '"32" in formValues["weekday"]'
+      condition: 'formValues["weekday"] && "32" in formValues["weekday"]'
       renderingOptions:
         enabled: true
     validators:
@@ -521,7 +521,7 @@ renderables:
     variants:
     -
       identifier: variant-time-sunday
-      condition: '"64" in formValues["weekday"]'
+      condition: 'formValues["weekday"] && "64" in formValues["weekday"]'
       renderingOptions:
         enabled: true
     validators:
