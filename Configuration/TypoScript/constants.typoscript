@@ -20,6 +20,8 @@ plugin.tx_events2 {
     pidOfSearchResults =
     # cat=plugin.tx_events2; type=int+; label=PID of Location page: Leave empty to show location on current page.
     pidOfLocationPage =
+    # cat=plugin.tx_events2; type=int+; label=PID of a form page to request a new location.
+    pidOfNewLocationPage =
     # cat=plugin.tx_events2; type=int+; label=PID of List page
     pidOfListPage =
     # cat=plugin.tx_events2; type=int+; label=UID of Usergroup, which is allowed to edit/create events in frontend

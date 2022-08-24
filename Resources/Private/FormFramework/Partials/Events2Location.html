@@ -1,0 +1,22 @@
+<html lang="en"
+			xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+			xmlns:formvh="http://typo3.org/ns/TYPO3/CMS/Form/ViewHelpers" data-namespace-typo3-fluid="true">
+
+<formvh:renderRenderable renderable="{element}">
+	<f:render partial="Field/Field" arguments="{element: element}" contentAs="elementContent">
+		<f:form.hidden class="autoCompleteLocationHelper" property="{element.identifier}" />
+		<input type="text"
+					 id="autoCompleteLocation"
+					 class="{element.properties.elementClassAttribute} form-control"
+					 autocomplete="off"
+					 autocapitalize="off"
+					 value="{f:if(condition: event.location, then: event.location.location, else: '')}" />
+
+		<div>
+			<f:link.page pageUid="{element.properties.pidOfNewLocationPage}" title="Neuen Veranstaltungsort beantragen">
+				Neuen Ort beantragen
+			</f:link.page>
+		</div>
+	</f:render>
+</formvh:renderRenderable>
+</html>

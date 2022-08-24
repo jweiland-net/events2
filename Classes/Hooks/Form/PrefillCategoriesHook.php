@@ -27,7 +27,6 @@ use TYPO3\CMS\Form\Domain\Model\Renderable\RenderableInterface;
  */
 class PrefillCategoriesHook
 {
-
     /**
      * @var PageRepository
      */
@@ -84,7 +83,7 @@ class PrefillCategoriesHook
             $categories[$sysCategoryInDefaultLanguage['uid']] = $sysCategoryInDefaultLanguage['title'];
         }
 
-        sort($categories, SORT_LOCALE_STRING);
+        asort($categories, SORT_LOCALE_STRING);
 
         return $categories;
     }

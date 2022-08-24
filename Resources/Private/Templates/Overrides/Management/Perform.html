@@ -11,7 +11,7 @@
 		<f:then>
 			<f:if condition="{e2:feUser(field: 'tx_events2_organizer')}">
 				<f:then>
-					<formvh:render persistenceIdentifier="EXT:events2/Configuration/Form/NewEvent.form.yaml" />
+					<formvh:render persistenceIdentifier="EXT:events2/Configuration/Form/NewEvent.form.yaml" overrideConfiguration="{renderables: {1: {renderables: {8: {properties: {pidOfNewLocationPage: settings.pidOfNewLocationPage}}}}}}" />
 				</f:then>
 				<f:else>
 					<div><f:translate key="missingOrganizerForCreate" /></div>

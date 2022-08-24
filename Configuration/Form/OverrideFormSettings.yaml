@@ -1,0 +1,28 @@
+TYPO3:
+  CMS:
+    Form:
+      prototypes:
+        standard:
+          finishersDefinition:
+            SaveEventFinisher:
+              implementationClassName: 'JWeiland\Events2\Domain\Finisher\SaveEventFinisher'
+          validatorsDefinition:
+            Url:
+              implementationClassName: 'JWeiland\Events2\Domain\Validator\UrlValidator'
+            YouTube:
+              implementationClassName: 'JWeiland\Events2\Domain\Validator\YouTubeValidator'
+          formElementsDefinition:
+            Form:
+              renderingOptions:
+                templateRootPaths:
+                  1661248033: 'EXT:events2/Resources/Private/FormFramework/Templates/'
+                partialRootPaths:
+                  1661248033: 'EXT:events2/Resources/Private/FormFramework/Partials/'
+                layoutRootPaths:
+                  1661248033: 'EXT:events2/Resources/Private/FormFramework/Layouts/'
+            Events2Location:
+              __inheritances:
+                10: 'TYPO3.CMS.Form.mixins.formElementMixins.FormElementMixin'
+      persistenceManager:
+        allowedExtensionPaths:
+          10: EXT:events2/Configuration/Form/

@@ -16,6 +16,10 @@ page.includeJSFooter {
   events2Calendar = EXT:events2/Resources/Public/JavaScript/Calendar.js
 }
 
+plugin.tx_form.settings.yamlConfigurations {
+  1661247670 = EXT:events2/Configuration/Form/OverrideFormSettings.yaml
+}
+
 # Search form should react on $_GET params of SearchResults plugin to show search values again in form.
 plugin.tx_events2_searchform.view.pluginNamespace = tx_events2_searchresults
 # If there was an action called which is not accessible, then call the default action
@@ -25,7 +29,8 @@ plugin.tx_events2 {
   view {
     templateRootPaths {
       0 = EXT:events2/Resources/Private/Templates/
-      1 = {$plugin.tx_events2.view.templateRootPath}
+      1 = EXT:events2/Resources/Private/Templates/Overrides/
+      2 = {$plugin.tx_events2.view.templateRootPath}
     }
     partialRootPaths {
       0 = EXT:events2/Resources/Private/Partials/
@@ -62,6 +67,7 @@ plugin.tx_events2 {
     pidOfDetailPage = {$plugin.tx_events2.settings.pidOfDetailPage}
     pidOfSearchResults = {$plugin.tx_events2.settings.pidOfSearchResults}
     pidOfLocationPage = {$plugin.tx_events2.settings.pidOfLocationPage}
+    pidOfNewLocationPage = {$plugin.tx_events2.settings.pidOfNewLocationPage}
     pidOfListPage = {$plugin.tx_events2.settings.pidOfListPage}
     includeDeTranslationForCalendar = {$plugin.tx_events2.settings.includeDeTranslationForCalendar}
     userGroup = {$plugin.tx_events2.settings.userGroup}

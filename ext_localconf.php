@@ -77,9 +77,12 @@ call_user_func(static function (): void {
     // Clear cache of pages with events, if event was edited/created/deleted in BE
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['clearCachePostProc']['events2_clearcache'] = \JWeiland\Events2\Hooks\DataHandler::class . '->clearCachePostProc';
 
-    # Prefill EXT:form element of type Checkboxes with categories from database
+    // Prefill EXT:form element of type Checkboxes with categories from database
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/form']['initializeFormElement'][1660727041]
         = \JWeiland\Events2\Hooks\Form\PrefillCategoriesHook::class;
+    // Register dynamic validation which depends on other submitted form element values (image -> upload-rights)
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/form']['afterSubmit'][1661258175]
+        = \JWeiland\Events2\Hooks\Form\DynamicValidatorHook::class;
 
     // create scheduler to create/update days with recurrency
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\JWeiland\Events2\Task\ReGenerateDays::class] = [
