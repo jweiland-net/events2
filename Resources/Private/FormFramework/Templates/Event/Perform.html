@@ -1,0 +1,27 @@
+<html lang="en"
+			xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+			xmlns:formvh="http://typo3.org/ns/TYPO3/CMS/Form/ViewHelpers"
+			xmlns:e2="http://typo3.org/ns/JWeiland/Events2/ViewHelpers"
+			data-namespace-typo3-fluid="true">
+
+<f:layout name="Create" />
+
+<f:section name="main">
+	<f:security.ifHasRole role="{settings.userGroup}">
+		<f:then>
+			<f:if condition="{e2:feUser(field: 'tx_events2_organizer')}">
+				<f:then>
+					<formvh:render persistenceIdentifier="EXT:events2/Configuration/Form/NewEvent.form.yaml"
+												 overrideConfiguration="{settings.overrideForm}" />
+				</f:then>
+				<f:else>
+					<div><f:translate key="missingOrganizerForCreate" /></div>
+				</f:else>
+			</f:if>
+		</f:then>
+		<f:else>
+			<div><f:translate key="notAllowedToCreate" /></div>
+		</f:else>
+	</f:security.ifHasRole>
+</f:section>
+</html>

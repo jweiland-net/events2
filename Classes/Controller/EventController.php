@@ -95,6 +95,10 @@ class EventController extends AbstractController
         CacheUtility::addPageCacheTagsByQuery($events->getQuery());
     }
 
+    public function performAction(): void
+    {
+    }
+
     public function initializeNewAction(): void
     {
         $this->preProcessControllerAction();

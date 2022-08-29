@@ -1,0 +1,763 @@
+type: Form
+identifier: newEvent
+label: Create a new event
+prototypeName: standard
+renderingOptions:
+  submitButtonLabel: Submit
+  fluidAdditionalAttributes:
+    class: withtip frame-indent
+renderables:
+-
+  renderingOptions:
+    previousButtonLabel: ''
+    nextButtonLabel: Collect event data
+  type: Page
+  identifier: radio-choose-event-type
+  label: Choose event type
+  renderables:
+  -
+    label: Choose event type
+    type: RadioButton
+    identifier: choose-event-type
+    defaultValue: single
+    properties:
+      options:
+        single: Single
+        duration: Duration
+        recurring: Recurring
+      fluidAdditionalAttributes:
+        required: required
+      elementDescription: 'Choose event type'
+    validators:
+    -
+      identifier: NotEmpty
+-
+  renderingOptions:
+    previousButtonLabel: Choose event type
+    nextButtonLabel: Define event times
+  type: Page
+  identifier: collect-data
+  label: Collect event data
+  renderables:
+  -
+    label: Title
+    type: Text
+    identifier: title
+    defaultValue: ''
+    properties:
+      elementDescription: Title
+      fluidAdditionalAttributes:
+        required: required
+    validators:
+    -
+      identifier: NotEmpty
+  -
+    label: Event date
+    type: Date
+    identifier: event-begin
+    defaultValue: ''
+    properties:
+      elementDescription: Event begin
+      fluidAdditionalAttributes:
+        required: required
+    validators:
+    -
+      identifier: NotEmpty
+  -
+    label: Event end date
+    type: Date
+    identifier: event-end
+    defaultValue: ''
+    properties:
+      elementDescription: Event end date
+    renderingOptions:
+      enabled: false
+    variants:
+    -
+      identifier: show-event-end
+      condition: 'formValues["choose-event-type"] == "duration"'
+      renderingOptions:
+        enabled: true
+  -
+    label: Recurring end date
+    type: Date
+    identifier: recurring-end
+    defaultValue: ''
+    properties:
+      elementDescription: Recurring end date
+    renderingOptions:
+      enabled: false
+    variants:
+    -
+      identifier: show-recurring-end
+      condition: 'formValues["choose-event-type"] == "recurring"'
+      renderingOptions:
+        enabled: true
+  -
+    label: Start time
+    type: Text
+    identifier: time-begin
+    defaultValue: ''
+    properties:
+      elementDescription: 'Enter time in format hh:mm. Example: 12:30'
+      fluidAdditionalAttributes:
+        maxlength: 5
+        placeholder: '08:00'
+    validators:
+    - identifier: StringLength
+      options:
+        minimum: 5
+        maximum: 5
+    - identifier: RegularExpression
+      options:
+        regularExpression: '/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/'
+  -
+    label: Short description
+    type: Textarea
+    identifier: short-description
+    defaultValue: ''
+    properties:
+      elementDescription: Short description
+  -
+    label: 'Detail description'
+    type: Textarea
+    identifier: detail-description
+    defaultValue: ''
+    properties:
+      elementDescription: 'Detail description'
+  -
+    label: Ticket Link
+    type: Text
+    identifier: ticket-link
+    defaultValue: ''
+    properties:
+      elementDescription: 'Ticket Link'
+    validators:
+    - identifier: Url
+  -
+    label: Event Location
+    type: Events2Location
+    identifier: event-location
+    defaultValue: ''
+    properties:
+      elementDescription: 'Event Location'
+    validators:
+    -
+      identifier: NotEmpty
+  -
+    label: Download Link
+    type: Text
+    identifier: download-link
+    defaultValue: ''
+    properties:
+      elementDescription: 'Download Link'
+    validators:
+    - identifier: Url
+  -
+    label: YouTube Link
+    type: Text
+    identifier: youtube-link
+    defaultValue: ''
+    properties:
+      elementDescription: 'Link to a YouTube video'
+    validators:
+    - identifier: YouTube
+  -
+    label: Categories
+    type: MultiCheckbox
+    identifier: categories
+    properties:
+      # Do not add options here. They will be added by Hook
+      elementDescription: Please choose at least one category
+    validators:
+    - identifier: NotEmpty
+    - identifier: Count
+      options:
+        minimum: 1
+        maximum: 3
+  -
+    label: Weekday
+    type: MultiCheckbox
+    identifier: weekday
+    properties:
+      options:
+        1: Monday
+        2: Tuesday
+        4: Wednesday
+        8: Thursday
+        16: Friday
+        32: Saturday
+        64: Sunday
+      elementDescription: Please choose at least one weekday
+    renderingOptions:
+      enabled: false
+    validators:
+    -
+      identifier: NotEmpty
+    variants:
+    -
+      identifier: variant-1
+      condition: 'formValues["choose-event-type"] == "recurring"'
+      renderingOptions:
+        enabled: true
+  -
+    label: 'Image upload'
+    type: ImageUpload
+    identifier: image-1
+    properties:
+      saveToFileMount: '1:/Extensions/events2/'
+      allowedMimeTypes:
+      - image/jpg
+      - image/jpeg
+      - image/png
+      elementDescription: 'Select an image'
+  -
+    type: Checkbox
+    identifier: image-1-userrights
+    label: 'Upload Rights'
+    properties:
+      elementDescription: 'You have to confirm that %s has unrestricted rights to use the files you will upload'
+      # non-official property. Needed for DynamicValidatorHook
+      checkboxType: uploadRights
+      # non-official property. Needed to know which element has to be checked in DynamicValidatorHook
+      referenceUploadIdentifier: image-1
+    validators:
+    # Do not add NotEmpty validator. It will be added dynamically in DynamicValidatorHook
+  -
+    label: 'Image upload'
+    type: ImageUpload
+    identifier: image-2
+    properties:
+      saveToFileMount: '1:/Extensions/events2/'
+      allowedMimeTypes:
+      - image/jpg
+      - image/jpeg
+      - image/png
+      elementDescription: 'Select another image'
+  -
+    type: Checkbox
+    identifier: image-2-userrights
+    label: 'Upload Rights'
+    properties:
+      elementDescription: 'You have to confirm that %s has unrestricted rights to use the files you will upload'
+      # non-official property. Needed for DynamicValidatorHook
+      checkboxType: uploadRights
+      # non-official property. Needed to know which element has to be checked in DynamicValidatorHook
+      referenceUploadIdentifier: image-2
+    validators:
+    # Do not add NotEmpty validator. It will be added dynamically in DynamicValidatorHook
+-
+  type: Page
+  identifier: define-event-times
+  label: Define further event times each weekday
+  renderingOptions:
+    enabled: false
+    previousButtonLabel: Collect event data
+  variants:
+  -
+    identifier: activate-step-3
+    condition: 'formValues["choose-event-type"] == "recurring"'
+    renderingOptions:
+      enabled: true
+  renderables:
+  -
+    label: Different start time for monday
+    type: Text
+    identifier: time-begin-monday
+    defaultValue: ''
+    renderingOptions:
+      enabled: false
+    properties:
+      elementDescription: 'Enter time in format hh:mm. Example: 12:30'
+      fluidAdditionalAttributes:
+        maxlength: 5
+        placeholder: '08:00'
+    variants:
+    -
+      identifier: variant-time-monday
+      condition: 'formValues["weekday"] && "1" in formValues["weekday"]'
+      renderingOptions:
+        enabled: true
+    validators:
+    - identifier: StringLength
+      options:
+        minimum: 5
+        maximum: 5
+    - identifier: RegularExpression
+      options:
+        regularExpression: '/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/'
+  -
+    label: Different start time for tuesday
+    type: Text
+    identifier: time-begin-tuesday
+    defaultValue: ''
+    renderingOptions:
+      enabled: false
+    properties:
+      elementDescription: 'Enter time in format hh:mm. Example: 12:30'
+      fluidAdditionalAttributes:
+        maxlength: 5
+        placeholder: '08:00'
+    variants:
+    -
+      identifier: variant-time-tuesday
+      condition: 'formValues["weekday"] && "2" in formValues["weekday"]'
+      renderingOptions:
+        enabled: true
+    validators:
+    - identifier: StringLength
+      options:
+        minimum: 5
+        maximum: 5
+    - identifier: RegularExpression
+      options:
+        regularExpression: '/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/'
+  -
+    label: Different start time for wednesday
+    type: Text
+    identifier: time-begin-wednesday
+    defaultValue: ''
+    renderingOptions:
+      enabled: false
+    properties:
+      elementDescription: 'Enter time in format hh:mm. Example: 12:30'
+      fluidAdditionalAttributes:
+        maxlength: 5
+        placeholder: '08:00'
+    variants:
+    -
+      identifier: variant-time-wednesday
+      condition: 'formValues["weekday"] && "4" in formValues["weekday"]'
+      renderingOptions:
+        enabled: true
+    validators:
+    - identifier: StringLength
+      options:
+        minimum: 5
+        maximum: 5
+    - identifier: RegularExpression
+      options:
+        regularExpression: '/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/'
+  -
+    label: Different start time for thursday
+    type: Text
+    identifier: time-begin-thursday
+    defaultValue: ''
+    renderingOptions:
+      enabled: false
+    properties:
+      elementDescription: 'Enter time in format hh:mm. Example: 12:30'
+      fluidAdditionalAttributes:
+        maxlength: 5
+        placeholder: '08:00'
+    variants:
+    -
+      identifier: variant-time-thursday
+      condition: 'formValues["weekday"] && "8" in formValues["weekday"]'
+      renderingOptions:
+        enabled: true
+    validators:
+    - identifier: StringLength
+      options:
+        minimum: 5
+        maximum: 5
+    - identifier: RegularExpression
+      options:
+        regularExpression: '/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/'
+  -
+    label: Different start time for friday
+    type: Text
+    identifier: time-begin-friday
+    defaultValue: ''
+    renderingOptions:
+      enabled: false
+    properties:
+      elementDescription: 'Enter time in format hh:mm. Example: 12:30'
+      fluidAdditionalAttributes:
+        maxlength: 5
+        placeholder: '08:00'
+    variants:
+    -
+      identifier: variant-time-friday
+      condition: 'formValues["weekday"] && "16" in formValues["weekday"]'
+      renderingOptions:
+        enabled: true
+    validators:
+    - identifier: StringLength
+      options:
+        minimum: 5
+        maximum: 5
+    - identifier: RegularExpression
+      options:
+        regularExpression: '/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/'
+  -
+    label: Different start time for saturday
+    type: Text
+    identifier: time-begin-saturday
+    defaultValue: ''
+    renderingOptions:
+      enabled: false
+    properties:
+      elementDescription: 'Enter time in format hh:mm. Example: 12:30'
+      fluidAdditionalAttributes:
+        maxlength: 5
+        placeholder: '08:00'
+    variants:
+    -
+      identifier: variant-time-saturday
+      condition: 'formValues["weekday"] && "32" in formValues["weekday"]'
+      renderingOptions:
+        enabled: true
+    validators:
+    - identifier: StringLength
+      options:
+        minimum: 5
+        maximum: 5
+    - identifier: RegularExpression
+      options:
+        regularExpression: '/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/'
+  -
+    label: Different start time for sunday
+    type: Text
+    identifier: time-begin-sunday
+    defaultValue: ''
+    renderingOptions:
+      enabled: false
+    properties:
+      elementDescription: 'Enter time in format hh:mm. Example: 12:30'
+      fluidAdditionalAttributes:
+        maxlength: 5
+        placeholder: '08:00'
+    variants:
+    -
+      identifier: variant-time-sunday
+      condition: 'formValues["weekday"] && "64" in formValues["weekday"]'
+      renderingOptions:
+        enabled: true
+    validators:
+    - identifier: StringLength
+      options:
+        minimum: 5
+        maximum: 5
+    - identifier: RegularExpression
+      options:
+        regularExpression: '/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/'
+finishers:
+  1:
+    identifier: SaveEventFinisher
+    options:
+      1:
+        table: tx_events2_domain_model_link
+        mode: insert
+        elements:
+          youtube-link:
+            mapOnDatabaseColumn: link
+        databaseColumnMappings:
+          pid:
+            value: 8
+          crdate:
+            value: '{__currentTimestamp}'
+          tstamp:
+            value: '{__currentTimestamp}'
+          title:
+            value: 'YouTube Link'
+      2:
+        table: tx_events2_domain_model_link
+        mode: insert
+        elements:
+          download-link:
+            mapOnDatabaseColumn: link
+        databaseColumnMappings:
+          pid:
+            value: 8
+          crdate:
+            value: '{__currentTimestamp}'
+          tstamp:
+            value: '{__currentTimestamp}'
+          title:
+            value: 'Download Link'
+      3:
+        table: tx_events2_domain_model_link
+        mode: insert
+        elements:
+          ticket-link:
+            mapOnDatabaseColumn: link
+        databaseColumnMappings:
+          pid:
+            value: 8
+          crdate:
+            value: '{__currentTimestamp}'
+          tstamp:
+            value: '{__currentTimestamp}'
+          title:
+            value: 'Ticket Link'
+      4:
+        table: tx_events2_domain_model_event
+        mode: insert
+        elements:
+          choose-event-type:
+            mapOnDatabaseColumn: event_type
+          title:
+            mapOnDatabaseColumn: title
+          short-description:
+            mapOnDatabaseColumn: teaser
+          detail-description:
+            mapOnDatabaseColumn: detail_information
+          event-begin:
+            mapOnDatabaseColumn: event_begin
+            dateFormat: U
+          event-end:
+            mapOnDatabaseColumn: event_end
+            dateFormat: U
+          recurring-end:
+            mapOnDatabaseColumn: recurring_end
+            dateFormat: U
+            skipIfValueIsEmpty: true
+          weekday:
+            mapOnDatabaseColumn: weekday
+            useBinary: true
+          event-location:
+            mapOnDatabaseColumn: location
+          image-1:
+            mapOnDatabaseColumn: images
+            skipIfValueIsEmpty: true
+          image-2:
+            mapOnDatabaseColumn: images
+            skipIfValueIsEmpty: true
+        databaseColumnMappings:
+          pid:
+            value: 8
+          crdate:
+            value: '{__currentTimestamp}'
+          tstamp:
+            value: '{__currentTimestamp}'
+          hidden:
+            value: 1
+          event_time:
+            value: 0
+          xth:
+            value: 31
+          weekday:
+            value: 0
+          video_link:
+            value: '{SaveEvent.insertedUids.1}'
+            skipIfValueIsEmpty: true
+          download_links:
+            value: '{SaveEvent.insertedUids.2}'
+            skipIfValueIsEmpty: true
+          ticket_link:
+            value: '{SaveEvent.insertedUids.3}'
+            skipIfValueIsEmpty: true
+      5:
+        table: sys_category_record_mm
+        mode: insert
+        elements:
+          categories:
+            mapOnDatabaseColumn: categories
+        databaseColumnMappings:
+          uid_foreign:
+            value: '{SaveEvent.insertedUids.4}'
+          tablenames:
+            value: tx_events2_domain_model_event
+          fieldname:
+            value: categories
+      6:
+        table: tx_events2_event_organizer_mm
+        mode: insert
+        databaseColumnMappings:
+          uid_local:
+            value: '{SaveEvent.insertedUids.4}'
+          organizers:
+            value: '{__currentOrganizer}'
+      7:
+        table: sys_file_reference
+        mode: insert
+        elements:
+          image-1:
+            mapOnDatabaseColumn: uid_local
+            skipIfValueIsEmpty: true
+        databaseColumnMappings:
+          table_local:
+            value: sys_file
+          tablenames:
+            value: tx_events2_domain_model_event
+          fieldname:
+            value: images
+          tstamp:
+            value: '{__currentTimestamp}'
+          crdate:
+            value: '{__currentTimestamp}'
+          uid_foreign:
+            value: '{SaveEvent.insertedUids.4}'
+      8:
+        table: sys_file_reference
+        mode: insert
+        elements:
+          image-2:
+            mapOnDatabaseColumn: uid_local
+            skipIfValueIsEmpty: true
+        databaseColumnMappings:
+          table_local:
+            value: sys_file
+          tablenames:
+            value: tx_events2_domain_model_event
+          fieldname:
+            value: images
+          tstamp:
+            value: '{__currentTimestamp}'
+          crdate:
+            value: '{__currentTimestamp}'
+          uid_foreign:
+            value: '{SaveEvent.insertedUids.4}'
+      9:
+        table: tx_events2_domain_model_time
+        mode: insert
+        elements:
+          time-begin:
+            mapOnDatabaseColumn: time_begin
+        databaseColumnMappings:
+          pid:
+            value: 8
+          crdate:
+            value: '{__currentTimestamp}'
+          tstamp:
+            value: '{__currentTimestamp}'
+          type:
+            value: 'event_time'
+          weekday:
+            value: '{__currentWeekday}'
+          event:
+            value: '{SaveEvent.insertedUids.4}'
+      10:
+        table: tx_events2_domain_model_time
+        mode: insert
+        elements:
+          time-begin-monday:
+            mapOnDatabaseColumn: time_begin
+        databaseColumnMappings:
+          pid:
+            value: 8
+          crdate:
+            value: '{__currentTimestamp}'
+          tstamp:
+            value: '{__currentTimestamp}'
+          type:
+            value: 'different_times'
+          weekday:
+            value: 'monday'
+          event:
+            value: '{SaveEvent.insertedUids.4}'
+      11:
+        table: tx_events2_domain_model_time
+        mode: insert
+        elements:
+          time-begin-tuesday:
+            mapOnDatabaseColumn: time_begin
+        databaseColumnMappings:
+          pid:
+            value: 8
+          crdate:
+            value: '{__currentTimestamp}'
+          tstamp:
+            value: '{__currentTimestamp}'
+          type:
+            value: 'different_times'
+          weekday:
+            value: 'tuesday'
+          event:
+            value: '{SaveEvent.insertedUids.4}'
+      12:
+        table: tx_events2_domain_model_time
+        mode: insert
+        elements:
+          time-begin-wednesday:
+            mapOnDatabaseColumn: time_begin
+        databaseColumnMappings:
+          pid:
+            value: 8
+          crdate:
+            value: '{__currentTimestamp}'
+          tstamp:
+            value: '{__currentTimestamp}'
+          type:
+            value: 'different_times'
+          weekday:
+            value: 'wednesday'
+          event:
+            value: '{SaveEvent.insertedUids.4}'
+      13:
+        table: tx_events2_domain_model_time
+        mode: insert
+        elements:
+          time-begin-thursday:
+            mapOnDatabaseColumn: time_begin
+        databaseColumnMappings:
+          pid:
+            value: 8
+          crdate:
+            value: '{__currentTimestamp}'
+          tstamp:
+            value: '{__currentTimestamp}'
+          type:
+            value: 'different_times'
+          weekday:
+            value: 'thursday'
+          event:
+            value: '{SaveEvent.insertedUids.4}'
+      14:
+        table: tx_events2_domain_model_time
+        mode: insert
+        elements:
+          time-begin-friday:
+            mapOnDatabaseColumn: time_begin
+        databaseColumnMappings:
+          pid:
+            value: 8
+          crdate:
+            value: '{__currentTimestamp}'
+          tstamp:
+            value: '{__currentTimestamp}'
+          type:
+            value: 'different_times'
+          weekday:
+            value: 'friday'
+          event:
+            value: '{SaveEvent.insertedUids.4}'
+      15:
+        table: tx_events2_domain_model_time
+        mode: insert
+        elements:
+          time-begin-saturday:
+            mapOnDatabaseColumn: time_begin
+        databaseColumnMappings:
+          pid:
+            value: 8
+          crdate:
+            value: '{__currentTimestamp}'
+          tstamp:
+            value: '{__currentTimestamp}'
+          type:
+            value: 'different_times'
+          weekday:
+            value: 'saturday'
+          event:
+            value: '{SaveEvent.insertedUids.4}'
+      16:
+        table: tx_events2_domain_model_time
+        mode: insert
+        elements:
+          time-begin-sunday:
+            mapOnDatabaseColumn: time_begin
+        databaseColumnMappings:
+          pid:
+            value: 8
+          crdate:
+            value: '{__currentTimestamp}'
+          tstamp:
+            value: '{__currentTimestamp}'
+          type:
+            value: 'different_times'
+          weekday:
+            value: 'sunday'
+          event:
+            value: '{SaveEvent.insertedUids.4}'

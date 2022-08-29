@@ -9,14 +9,14 @@ call_user_func(static function () {
         'Events',
         [
             'Day' => 'list, listLatest, listToday, listWeek, listRange, listSearchResults, show, showByTimestamp',
-            'Event' => 'listMyEvents, new, create, edit, update, delete, activate',
+            'Event' => 'listMyEvents, perform, new, create, edit, update, delete, activate',
             'Location' => 'show',
             'Video' => 'show',
         ],
         // non-cacheable actions
         [
             'Day' => 'listSearchResults',
-            'Event' => 'create, edit, update, delete, activate',
+            'Event' => 'perform, create, edit, update, delete, activate',
         ]
     );
 
@@ -52,6 +52,13 @@ call_user_func(static function () {
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['events2_createDayRelations'] = \JWeiland\Events2\Hooks\DataHandler::class;
     // Clear cache of pages with events, if event was edited/created/deleted in BE
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['clearCachePostProc']['events2_clearcache'] = \JWeiland\Events2\Hooks\DataHandler::class . '->clearCachePostProc';
+
+    // Prefill EXT:form element of type Checkboxes with categories from database
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/form']['initializeFormElement'][1660727041]
+        = \JWeiland\Events2\Hooks\Form\PrefillCategoriesHook::class;
+    // Register dynamic validation which depends on other submitted form element values (image -> upload-rights)
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/form']['afterSubmit'][1661258175]
+        = \JWeiland\Events2\Hooks\Form\DynamicValidatorHook::class;
 
     // create scheduler to create/update days with recurrency
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\JWeiland\Events2\Task\ReGenerateDays::class] = [

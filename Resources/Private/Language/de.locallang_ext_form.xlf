@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2022-08-29T10:44:40Z" product-name="events2">
+		<header/>
+		<body>
+			<trans-unit id="element.radio-choose-event-type.properties.label">
+				<source>Event type</source>
+				<target>Veranstaltungstyp</target>
+			</trans-unit>
+			<trans-unit id="element.radio-choose-event-type.renderingOptions.nextButtonLabel">
+				<source>Add event data</source>
+				<target>Veranstaltungsdaten hinzufügen</target>
+			</trans-unit>
+			<trans-unit id="element.choose-event-type.properties.label">
+				<source>Please choose an event type</source>
+				<target>Bitte wählen Sie einen Veranstaltungstypen</target>
+			</trans-unit>
+			<trans-unit id="element.choose-event-type.properties.options.single">
+				<source>Single event</source>
+				<target>Einzelne Veranstaltung</target>
+			</trans-unit>
+			<trans-unit id="element.choose-event-type.properties.options.duration">
+				<source>Durational event</source>
+				<target>Durchgängige Veranstatung</target>
+			</trans-unit>
+			<trans-unit id="element.choose-event-type.properties.options.recurring">
+				<source>Recurring event</source>
+				<target>Wiederkehrende Veranstaltung</target>
+			</trans-unit>
+
+			<trans-unit id="element.collect-data.properties.label">
+				<source>Event data</source>
+				<target>Veranstaltungsdaten</target>
+			</trans-unit>
+			<trans-unit id="element.collect-data.renderingOptions.previousButtonLabel">
+				<source>Event type</source>
+				<target>Veranstaltungstyp</target>
+			</trans-unit>
+			<trans-unit id="element.collect-data.renderingOptions.nextButtonLabel">
+				<source>Add event times</source>
+				<target>Veranstungszeiten hinzufügen</target>
+			</trans-unit>
+			<trans-unit id="element.title.properties.label">
+				<source>Title</source>
+				<target>Title</target>
+			</trans-unit>
+			<trans-unit id="element.event-begin.properties.label">
+				<source>Event begin</source>
+				<target>Start der Veranstaltung</target>
+			</trans-unit>
+			<trans-unit id="element.event-end.properties.label">
+				<source>Event end</source>
+				<target>Ende der Veranstaltung</target>
+			</trans-unit>
+			<trans-unit id="element.recurring-end.properties.label">
+				<source>Last date of recurring event</source>
+				<target>Letztes Datum der wiederkehrenden Veranstaltung</target>
+			</trans-unit>
+			<trans-unit id="element.time-begin.properties.label">
+				<source>Event time</source>
+				<target>Uhrzeit der Veranstaltung</target>
+			</trans-unit>
+			<trans-unit id="element.short-description.properties.label">
+				<source>Teaser</source>
+				<target>Kurzbeschreibung</target>
+			</trans-unit>
+			<trans-unit id="element.detail-description.properties.label">
+				<source>Description</source>
+				<target>Beschreibung</target>
+			</trans-unit>
+			<trans-unit id="element.ticket-link.properties.label">
+				<source>Ticket link</source>
+				<target>Ticket Link</target>
+			</trans-unit>
+			<trans-unit id="element.event-location.properties.label">
+				<source>Event Location</source>
+				<target>Veranstaltungsort</target>
+			</trans-unit>
+			<trans-unit id="element.download-link.properties.label">
+				<source>Download link</source>
+				<target>Download Link</target>
+			</trans-unit>
+			<trans-unit id="element.youtube-link.properties.label">
+				<source>YouTube link</source>
+				<target>YouTube Link</target>
+			</trans-unit>
+			<trans-unit id="element.categories.properties.label">
+				<source>Categories</source>
+				<target>Kategorien</target>
+			</trans-unit>
+			<trans-unit id="element.weekday.properties.label">
+				<source>Weekday</source>
+				<target>Wochentag</target>
+			</trans-unit>
+			<trans-unit id="element.image-1.properties.label">
+				<source>1st image upload</source>
+				<target>1. Bild hochladen</target>
+			</trans-unit>
+			<trans-unit id="element.image-1-userrights.properties.label">
+				<source>Transfer usagerights of first image</source>
+				<target>Nutzungsrecht für erstes Bild übertragen</target>
+			</trans-unit>
+			<trans-unit id="element.image-2.properties.label">
+				<source>2nd image upload</source>
+				<target>2. Bild hochladen</target>
+			</trans-unit>
+			<trans-unit id="element.image-2-userrights.properties.label">
+				<source>Transfer usagerights of second image</source>
+				<target>Nutzungsrecht für zweites Bild übertragen</target>
+			</trans-unit>
+
+			<trans-unit id="element.define-event-times.properties.label">
+				<source>Define further event times each weekday</source>
+				<target>Angabe weiterer Veranstaltungszeiten pro Wochentag</target>
+			</trans-unit>
+			<trans-unit id="element.define-event-times.renderingOptions.previousButtonLabel">
+				<source>Add event data</source>
+				<target>Veranstaltungsdaten hinzufügen</target>
+			</trans-unit>
+			<trans-unit id="element.time-begin-monday.properties.label">
+				<source>Choose another time for monday</source>
+				<target>Wähle eine andere Uhrzeit für Montag</target>
+			</trans-unit>
+			<trans-unit id="element.time-begin-thursday.properties.label">
+				<source>Choose another time for thursday</source>
+				<target>Wähle eine andere Uhrzeit für Dienstag</target>
+			</trans-unit>
+			<trans-unit id="element.time-begin-wednesday.properties.label">
+				<source>Choose another time for wednesday</source>
+				<target>Wähle eine andere Uhrzeit für Mittwoch</target>
+			</trans-unit>
+			<trans-unit id="element.time-begin-thursday.properties.label">
+				<source>Choose another time for thursday</source>
+				<target>Wähle eine andere Uhrzeit für Donnerstag</target>
+			</trans-unit>
+			<trans-unit id="element.time-begin-friday.properties.label">
+				<source>Choose another time for friday</source>
+				<target>Wähle eine andere Uhrzeit für FreitagMontag</target>
+			</trans-unit>
+			<trans-unit id="element.time-begin-suturday.properties.label">
+				<source>Choose another time for saturday</source>
+				<target>Wähle eine andere Uhrzeit für Samstag</target>
+			</trans-unit>
+			<trans-unit id="element.time-begin-sunday.properties.label">
+				<source>Choose another time for sunday</source>
+				<target>Wähle eine andere Uhrzeit für Sonntag</target>
+			</trans-unit>
+
+			<trans-unit id="validation.error.1221560910">
+				<source>This field is a mandatory field!</source>
+				<target>Bei diesem Feld handelt es sich um ein Pflichtfeld!</target>
+			</trans-unit>
+			<trans-unit id="validation.error.1221560718">
+				<source>This field is a mandatory field!</source>
+				<target>Bei diesem Feld handelt es sich um ein Pflichtfeld!</target>
+			</trans-unit>
+			<trans-unit id="validation.error.1347992400">
+				<source>This field is a mandatory field!</source>
+				<target>Bei diesem Feld handelt es sich um ein Pflichtfeld!</target>
+			</trans-unit>
+			<trans-unit id="validation.error.1347992453">
+				<source>This field is a mandatory field!</source>
+				<target>Bei diesem Feld handelt es sich um ein Pflichtfeld!</target>
+			</trans-unit>
+			<trans-unit id="validation.error.1475002994">
+				<source>You must select between %s to %s elements.</source>
+				<target>Sie müssen zwischen %s und %s Elementen auswählen.</target>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

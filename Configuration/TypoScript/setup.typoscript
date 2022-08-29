@@ -11,6 +11,13 @@ page.includeJSFooter {
   events2Calendar = EXT:events2/Resources/Public/JavaScript/Calendar.js
 }
 
+[{$plugin.tx_events2.settings.useExtForm} == "1"]
+  plugin.tx_form.settings.yamlConfigurations.1661247670 = EXT:events2/Configuration/Form/OverrideFormSettings.yaml
+  # This part will be moved back with "if.isTrue" until this patch was fixed: https://forge.typo3.org/issues/98200
+  plugin.tx_events2.view.templateRootPaths.1 = EXT:events2/Resources/Private/FormFramework/Templates/
+  plugin.tx_events2.view.partialRootPaths.1 = EXT:events2/Resources/Private/FormFramework/Partials/
+[GLOBAL]
+
 page.includeCSS {
   jQueryCssForEvents2 = https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css
   jQueryCssForEvents2.external = 1
@@ -28,11 +35,13 @@ plugin.tx_events2 {
   view {
     templateRootPaths {
       0 = EXT:events2/Resources/Private/Templates/
-      1 = {$plugin.tx_events2.view.templateRootPath}
+      # Do not use "1", it may be overwritten by condition above.
+      2 = {$plugin.tx_events2.view.templateRootPath}
     }
     partialRootPaths {
       0 = EXT:events2/Resources/Private/Partials/
-      1 = {$plugin.tx_events2.view.partialRootPath}
+      # Do not use "1", it may be overwritten by condition above.
+      2 = {$plugin.tx_events2.view.partialRootPath}
     }
     layoutRootPaths {
       0 = EXT:events2/Resources/Private/Layouts/
@@ -64,6 +73,7 @@ plugin.tx_events2 {
     pidOfDetailPage = {$plugin.tx_events2.settings.pidOfDetailPage}
     pidOfSearchPage = {$plugin.tx_events2.settings.pidOfSearchPage}
     pidOfLocationPage = {$plugin.tx_events2.settings.pidOfLocationPage}
+    pidOfNewLocationPage = {$plugin.tx_events2.settings.pidOfNewLocationPage}
     pidOfListPage = {$plugin.tx_events2.settings.pidOfListPage}
     includeDeTranslationForCalendar = {$plugin.tx_events2.settings.includeDeTranslationForCalendar}
     userGroup = {$plugin.tx_events2.settings.userGroup}
@@ -85,6 +95,12 @@ plugin.tx_events2 {
 
     new {
       uploadFolder = 1:user_upload/tx_events2/
+    }
+
+    # Special configuration for form based on EXT:form
+    overrideForm {
+      renderables.0.withtip frame-indent
+      renderables.1.renderables.8.properties.pidOfNewLocationPage < plugin.tx_events2.settings.pidOfNewLocationPage
     }
 
     pageBrowser {

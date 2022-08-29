@@ -28,12 +28,16 @@ plugin.tx_events2 {
     pidOfSearchPage =
     # cat=plugin.tx_events2; type=int+; label=PID of Location page: Leave empty to show location on current page.
     pidOfLocationPage =
+    # cat=plugin.tx_events2; type=int+; label=PID of a form page to request a new location.
+    pidOfNewLocationPage =
     # cat=plugin.tx_events2; type=int+; label=PID of List page
     pidOfListPage =
     # cat=plugin.tx_events2; type=int+; label=UID of Usergroup, which is allowed to edit/create events in frontend
     userGroup =
     # cat=plugin.tx_events2; type=int+; label=Remaining letters for field teaser while editing/create events in frontend
     remainingLetters = 250
+    # cat=plugin.tx_events2; type=boolean; label=Use TYPO3 extension "form" to create new event in frontend
+    useExtForm = 0
 
     latest {
       # cat=plugin.tx_events2; type=int+; label=Show records: How many records should be displayed for latest view?
