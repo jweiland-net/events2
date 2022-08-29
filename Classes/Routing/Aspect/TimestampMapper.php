@@ -20,7 +20,8 @@ use TYPO3\CMS\Core\Routing\Aspect\StaticMappableAspectInterface;
  *   Events2ShowPlugin:
  *     type: Extbase
  *     extension: Events2
- *     plugin: Events
+ *     # Use plugin "Show", if you have a seperate detail page with plugin "Events2 Show" inserted
+ *     plugin: List
  *     routes:
  *       -
  *         routePath: '/show/{date}/{event_title}'
