@@ -15,7 +15,7 @@
 
 		<div class="{element.properties.containerClassAttribute}">
 			<f:if condition="{element.properties.elementDescription}">
-				<div role="tooltip" class="tooltip" title="Hinweis" data-property="{element.properties.elementDescription}">
+				<div role="tooltip" class="tooltip" title="Hinweis" data-property="{formvh:translateElementProperty(element: element, property: 'elementDescription')}">
 					<img alt="Tipp" src="/typo3conf/ext/jw5124001pforzheim10/Resources/Public/Icons/warning.svg" width="24" height="24">
 				</div>
 			</f:if>

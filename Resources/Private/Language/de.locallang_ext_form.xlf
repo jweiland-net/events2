@@ -15,6 +15,10 @@
 				<source>Please choose an event type</source>
 				<target>Bitte wählen Sie einen Veranstaltungstypen</target>
 			</trans-unit>
+			<trans-unit id="element.choose-event-type.properties.elementDescription">
+				<source>You must first select an event type so that the corresponding input fields can be displayed on the following pages.</source>
+				<target>Es muss zunächst ein Veranstaltungstyp ausgewählt werden, damit Ihnen auf den folgenden Seiten die entsprechenden Eingabefelder dargestellt werden können.</target>
+			</trans-unit>
 			<trans-unit id="element.choose-event-type.properties.options.single">
 				<source>Single event</source>
 				<target>Einzelne Veranstaltung</target>
@@ -44,57 +48,113 @@
 				<source>Title</source>
 				<target>Title</target>
 			</trans-unit>
+			<trans-unit id="element.title.properties.elementDescription">
+				<source>The title is a mandatory field. It should identify the event as clearly as possible.</source>
+				<target>Bei dem Titel handelt es sich um ein Pflichtfeld. Er sollte die Veranstaltung möglichst eindeutig identifizieren.</target>
+			</trans-unit>
 			<trans-unit id="element.event-begin.properties.label">
 				<source>Event begin</source>
 				<target>Start der Veranstaltung</target>
+			</trans-unit>
+			<trans-unit id="element.event-begin.properties.elementDescription">
+				<source>The start date is a mandatory field. Click on the calendar icon to open the Date Value Wizard.</source>
+				<target>Bei dem Startdatum handelt es sich um ein Pflichtfeld. Klicken Sie auf das Kalender Icon, um den Assistenten für Datumwerte zu öffnen.</target>
 			</trans-unit>
 			<trans-unit id="element.event-end.properties.label">
 				<source>Event end</source>
 				<target>Ende der Veranstaltung</target>
 			</trans-unit>
+			<trans-unit id="element.event-end.properties.elementDescription">
+				<source>For durational events, the event end date is a mandatory field. Click on the calendar icon to open the Date Value Wizard.</source>
+				<target>Für durchgängige Veranstaltungen ist das Veranstaltungsende ein Pflichtfeld. Klicken Sie auf das Kalender Icon, um den Assistenten für Datumwerte zu öffnen.</target>
+			</trans-unit>
 			<trans-unit id="element.recurring-end.properties.label">
 				<source>Last date of recurring event</source>
 				<target>Letztes Datum der wiederkehrenden Veranstaltung</target>
+			</trans-unit>
+			<trans-unit id="element.recurring-end.properties.elementDescription">
+				<source>For recurring events we recommend setting an end date. However, this is not mandatory. Click on the calendar icon to open the Date Value Wizard.</source>
+				<target>Für wiederkehrende Veranstaltungen empfehlen wir das Setzen eines Ende Datums. Dies ist jedoch nicht Pflicht. Klicken Sie auf das Kalender Icon, um den Assistenten für Datumwerte zu öffnen.</target>
 			</trans-unit>
 			<trans-unit id="element.time-begin.properties.label">
 				<source>Event time</source>
 				<target>Uhrzeit der Veranstaltung</target>
 			</trans-unit>
+			<trans-unit id="element.time-begin.properties.elementDescription">
+				<source>Here you can add a start time to the event. Use the format hh:mm. If it is a recurring event, this time will be valid for every day.</source>
+				<target>Hier können Sie der Veranstaltung eine Startzeit hinzufügen. Verwenden Sie das Format hh:mm. Wenn es sich um eine wiederkehrende Veranstaltung handelt, gilt diese Uhrzeit für jeden Tag.</target>
+			</trans-unit>
 			<trans-unit id="element.short-description.properties.label">
 				<source>Teaser</source>
 				<target>Kurzbeschreibung</target>
+			</trans-unit>
+			<trans-unit id="element.short-description.properties.elementDescription">
+				<source>Enter a short description here. This will be used as description text in event overviews.</source>
+				<target>Tragen Sie hier eine kurze Beschreibung ein. Diese wird als Beschreibungstext in Veranstaltungsübersichten verwendet.</target>
 			</trans-unit>
 			<trans-unit id="element.detail-description.properties.label">
 				<source>Description</source>
 				<target>Beschreibung</target>
 			</trans-unit>
+			<trans-unit id="element.detail-description.properties.elementDescription">
+				<source>Enter a detailed description here. This will be displayed as description text in the detail view.</source>
+				<target>Tragen Sie hier eine detaillierte Beschreibung ein. Diese wird als Beschreibungstext in der Detailansicht dargestellt.</target>
+			</trans-unit>
 			<trans-unit id="element.ticket-link.properties.label">
 				<source>Ticket link</source>
 				<target>Ticket Link</target>
+			</trans-unit>
+			<trans-unit id="element.ticket-link.properties.elementDescription">
+				<source>Enter a link to the ticket sale here. Please transfer the complete link incl. https://</source>
+				<target>Tragen Sie hier einen Link zum Ticketverkauf ein. Bitte übernehmen Sie den vollständigen Link inkl. https://</target>
 			</trans-unit>
 			<trans-unit id="element.event-location.properties.label">
 				<source>Event Location</source>
 				<target>Veranstaltungsort</target>
 			</trans-unit>
+			<trans-unit id="element.event-location.properties.elementDescription">
+				<source>The venue is a required field. Please enter the first times of the location in the field and select the appropriate location from the list.</source>
+				<target>Der Veranstaltungsort ist ein Pflichtfeld. Bitte tragen Sie die ersten Zeiten des Ortes in das Feld ein und wählen Sie den entsprechenden Ort aus der Liste.</target>
+			</trans-unit>
 			<trans-unit id="element.download-link.properties.label">
 				<source>Download link</source>
 				<target>Download Link</target>
+			</trans-unit>
+			<trans-unit id="element.download-link.properties.elementDescription">
+				<source>Here you can add a link to a program booklet, for example.</source>
+				<target>Hier können Sie z.B. einen Link zu einem Programmheft hinzufügen.</target>
 			</trans-unit>
 			<trans-unit id="element.youtube-link.properties.label">
 				<source>YouTube link</source>
 				<target>YouTube Link</target>
 			</trans-unit>
+			<trans-unit id="element.youtube-link.properties.elementDescription">
+				<source>Here you can add a link to a YouTube video.</source>
+				<target>Hier können Sie einen Link zu einem YouTube Video hinzufügen.</target>
+			</trans-unit>
 			<trans-unit id="element.categories.properties.label">
 				<source>Categories</source>
 				<target>Kategorien</target>
+			</trans-unit>
+			<trans-unit id="element.categories.properties.elementDescription">
+				<source>Categories are a required field. Select min. 1 but max. 3 categories.</source>
+				<target>Kategorien sind ein Pflichtfeld. Wählen Sie min. 1 jedoch max. 3 Kategorien aus.</target>
 			</trans-unit>
 			<trans-unit id="element.weekday.properties.label">
 				<source>Weekday</source>
 				<target>Wochentag</target>
 			</trans-unit>
+			<trans-unit id="element.weekday.properties.elementDescription">
+				<source>The days of the week are a required field. Select at least one day of the week. The event will then appear every week on the specified weekdays.</source>
+				<target>Die Wochentage sind ein Pflichtfeld. Wählen Sie mindestens einen Wochentag aus. Die Veranstaltung erscheint dann jede Woche zu dem angegebenen Wochentagen.</target>
+			</trans-unit>
 			<trans-unit id="element.image-1.properties.label">
 				<source>1st image upload</source>
 				<target>1. Bild hochladen</target>
+			</trans-unit>
+			<trans-unit id="element.image-1.properties.elementDescription">
+				<source>You can add up to 2 images to the event.</source>
+				<target>Sie können der Veranstaltung bis zu 2 Bilder hinzufügen.</target>
 			</trans-unit>
 			<trans-unit id="element.image-1-userrights.properties.label">
 				<source>Transfer usagerights of first image</source>
@@ -103,6 +163,10 @@
 			<trans-unit id="element.image-2.properties.label">
 				<source>2nd image upload</source>
 				<target>2. Bild hochladen</target>
+			</trans-unit>
+			<trans-unit id="element.image-2.properties.elementDescription">
+				<source>You can add up to 2 images to the event.</source>
+				<target>Sie können der Veranstaltung bis zu 2 Bilder hinzufügen.</target>
 			</trans-unit>
 			<trans-unit id="element.image-2-userrights.properties.label">
 				<source>Transfer usagerights of second image</source>
@@ -118,32 +182,32 @@
 				<target>Veranstaltungsdaten hinzufügen</target>
 			</trans-unit>
 			<trans-unit id="element.time-begin-monday.properties.label">
-				<source>Choose another time for monday</source>
-				<target>Wähle eine andere Uhrzeit für Montag</target>
+				<source>Choose a different start time for events on Monday. Use the format hh:mm.</source>
+				<target>Wähle eine andere Startzeit für Veranstaltungen am Montag. Verwenden Sie das Format hh:mm.</target>
 			</trans-unit>
 			<trans-unit id="element.time-begin-thursday.properties.label">
-				<source>Choose another time for thursday</source>
-				<target>Wähle eine andere Uhrzeit für Dienstag</target>
+				<source>Choose a different start time for events on Thursday. Use the format hh:mm.</source>
+				<target>Wähle eine andere Startzeit für Veranstaltungen am Dienstag. Verwenden Sie das Format hh:mm.</target>
 			</trans-unit>
 			<trans-unit id="element.time-begin-wednesday.properties.label">
-				<source>Choose another time for wednesday</source>
-				<target>Wähle eine andere Uhrzeit für Mittwoch</target>
+				<source>Choose a different start time for events on Wednesday. Use the format hh:mm.</source>
+				<target>Wähle eine andere Startzeit für Veranstaltungen am Mittwoch. Verwenden Sie das Format hh:mm.</target>
 			</trans-unit>
 			<trans-unit id="element.time-begin-thursday.properties.label">
-				<source>Choose another time for thursday</source>
-				<target>Wähle eine andere Uhrzeit für Donnerstag</target>
+				<source>Choose a different start time for events on Thursday. Use the format hh:mm.</source>
+				<target>Wähle eine andere Startzeit für Veranstaltungen am Donnerstag. Verwenden Sie das Format hh:mm.</target>
 			</trans-unit>
 			<trans-unit id="element.time-begin-friday.properties.label">
-				<source>Choose another time for friday</source>
-				<target>Wähle eine andere Uhrzeit für FreitagMontag</target>
+				<source>Choose a different start time for events on Friday. Use the format hh:mm.</source>
+				<target>Wähle eine andere Startzeit für Veranstaltungen am Freitag. Verwenden Sie das Format hh:mm.</target>
 			</trans-unit>
 			<trans-unit id="element.time-begin-suturday.properties.label">
-				<source>Choose another time for saturday</source>
-				<target>Wähle eine andere Uhrzeit für Samstag</target>
+				<source>Choose a different start time for events on Saturday. Use the format hh:mm.</source>
+				<target>Wähle eine andere Startzeit für Veranstaltungen am Samstag. Verwenden Sie das Format hh:mm.</target>
 			</trans-unit>
 			<trans-unit id="element.time-begin-sunday.properties.label">
-				<source>Choose another time for sunday</source>
-				<target>Wähle eine andere Uhrzeit für Sonntag</target>
+				<source>Choose a different start time for events on Sunday. Use the format hh:mm.</source>
+				<target>Wähle eine andere Startzeit für Veranstaltungen am Sonntag. Verwenden Sie das Format hh:mm.</target>
 			</trans-unit>
 
 			<trans-unit id="validation.error.1221560910">
