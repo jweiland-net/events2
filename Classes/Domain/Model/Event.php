@@ -192,7 +192,7 @@ class Event extends AbstractEntity
 
     public function getEventBegin(): ?\DateTimeImmutable
     {
-        if ($this->eventEnd instanceof \DateTimeImmutable) {
+        if ($this->eventBegin instanceof \DateTimeImmutable) {
             // Since PHP 7.4 we can not access timezone_type directly anymore.
             // If location is false, timezone_type is 1 or 2, but we need 3
             if ($this->eventBegin->getTimezone()->getLocation() === false) {
