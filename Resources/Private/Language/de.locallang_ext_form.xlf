@@ -42,7 +42,7 @@
 			</trans-unit>
 			<trans-unit id="element.collect-data.renderingOptions.nextButtonLabel">
 				<source>Add event times</source>
-				<target>Veranstungszeiten hinzufügen</target>
+				<target>Veranstaltungszeiten hinzufügen</target>
 			</trans-unit>
 			<trans-unit id="element.title.properties.label">
 				<source>Title</source>
