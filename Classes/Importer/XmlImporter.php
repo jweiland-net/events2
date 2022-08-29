@@ -194,7 +194,7 @@ class XmlImporter extends AbstractImporter
                 $this->addPathSegment($event);
                 $this->persistenceManager->add($event);
 
-            break;
+                break;
         }
     }
 

@@ -44,7 +44,7 @@ class TimeLabel
             $ctrlArray['row']['type'] === 'different_times'
             && isset($ctrlArray['row']['weekday'])
         ) {
-            $translationKey = 'tx_events2_domain_model_time.weekday.' . $ctrlArray['row']['weekday'][0];
+            $translationKey = 'tx_events2_domain_model_time.weekday.' . $ctrlArray['row']['weekday'];
             $ctrlArray['title'] .= ': ' . LocalizationUtility::translate($translationKey, 'events2');
         }
     }

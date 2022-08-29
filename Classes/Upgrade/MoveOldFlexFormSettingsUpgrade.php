@@ -68,10 +68,10 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
 
             try {
                 if (
-                ArrayUtility::getValueByPath(
-                    $valueFromDatabase,
-                    'data/sDEF/lDEF/switchableControllerActions'
-                )
+                    ArrayUtility::getValueByPath(
+                        $valueFromDatabase,
+                        'data/sDEF/lDEF/switchableControllerActions'
+                    )
                 ) {
                     return true;
                 }

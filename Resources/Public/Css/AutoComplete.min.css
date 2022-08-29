@@ -4,10 +4,10 @@
  *
  * Do NOT use SRI with dynamically generated files! More information: https://www.jsdelivr.com/using-sri-with-dynamic-files
  */
-.autoComplete_wrapper {
+/*.autoComplete_wrapper {
   display: inline-block;
   position: relative
-}
+}*/
 
 /*.autoComplete_wrapper > input {
   width: 370px;
