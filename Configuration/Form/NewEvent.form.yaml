@@ -211,18 +211,6 @@ renderables:
       - image/png
       elementDescription: 'Select an image'
   -
-    type: Checkbox
-    identifier: image-1-userrights
-    label: 'Upload Rights'
-    properties:
-      elementDescription: 'You have to confirm that %s has unrestricted rights to use the files you will upload'
-      # non-official property. Needed for DynamicValidatorHook
-      checkboxType: uploadRights
-      # non-official property. Needed to know which element has to be checked in DynamicValidatorHook
-      referenceUploadIdentifier: image-1
-    validators:
-    # Do not add NotEmpty validator. It will be added dynamically in DynamicValidatorHook
-  -
     label: 'Image upload'
     type: ImageUpload
     identifier: image-2
@@ -233,18 +221,6 @@ renderables:
       - image/jpeg
       - image/png
       elementDescription: 'Select another image'
-  -
-    type: Checkbox
-    identifier: image-2-userrights
-    label: 'Upload Rights'
-    properties:
-      elementDescription: 'You have to confirm that %s has unrestricted rights to use the files you will upload'
-      # non-official property. Needed for DynamicValidatorHook
-      checkboxType: uploadRights
-      # non-official property. Needed to know which element has to be checked in DynamicValidatorHook
-      referenceUploadIdentifier: image-2
-    validators:
-    # Do not add NotEmpty validator. It will be added dynamically in DynamicValidatorHook
 -
   type: Page
   identifier: define-event-times
