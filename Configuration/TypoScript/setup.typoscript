@@ -115,6 +115,8 @@ plugin.tx_events2 {
       finishers.1.options.14.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
       finishers.1.options.15.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
       finishers.1.options.16.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
+
+      finishers.3.options.pageUid = {$plugin.tx_events2.settings.pidOfListPage}
     }
 
     pageBrowser {

@@ -8,8 +8,8 @@
 				<target>Veranstaltungstyp</target>
 			</trans-unit>
 			<trans-unit id="element.radio-choose-event-type.renderingOptions.nextButtonLabel">
-				<source>Add event data</source>
-				<target>Veranstaltungsdaten hinzufügen</target>
+				<source>Next page</source>
+				<target>Nächste Seite</target>
 			</trans-unit>
 			<trans-unit id="element.choose-event-type.properties.label">
 				<source>Please choose an event type</source>
@@ -37,12 +37,12 @@
 				<target>Veranstaltungsdaten</target>
 			</trans-unit>
 			<trans-unit id="element.collect-data.renderingOptions.previousButtonLabel">
-				<source>Event type</source>
-				<target>Veranstaltungstyp</target>
+				<source>Previous page</source>
+				<target>Vorherige Seite</target>
 			</trans-unit>
 			<trans-unit id="element.collect-data.renderingOptions.nextButtonLabel">
-				<source>Add event times</source>
-				<target>Veranstaltungszeiten hinzufügen</target>
+				<source>Next page</source>
+				<target>Nächste Seite</target>
 			</trans-unit>
 			<trans-unit id="element.title.properties.label">
 				<source>Title</source>
@@ -178,8 +178,8 @@
 				<target>Angabe weiterer Veranstaltungszeiten pro Wochentag</target>
 			</trans-unit>
 			<trans-unit id="element.define-event-times.renderingOptions.previousButtonLabel">
-				<source>Add event data</source>
-				<target>Veranstaltungsdaten hinzufügen</target>
+				<source>Previous page</source>
+				<target>Vorherige Seite</target>
 			</trans-unit>
 			<trans-unit id="element.time-begin-monday.properties.label">
 				<source>Choose a different start time for events on Monday. Use the format hh:mm.</source>
