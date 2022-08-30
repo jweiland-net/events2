@@ -9,7 +9,6 @@ renderingOptions:
 renderables:
 -
   renderingOptions:
-    previousButtonLabel: ''
     nextButtonLabel: Collect event data
   type: Page
   identifier: radio-choose-event-type
