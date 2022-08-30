@@ -761,3 +761,9 @@ finishers:
             value: 'sunday'
           event:
             value: '{SaveEvent.insertedUids.4}'
+  2:
+    identifier: FlashMessage
+    options:
+      messageCode: 1661847238
+      messageBody: 'Your new Event was created.'
+      severity: 0

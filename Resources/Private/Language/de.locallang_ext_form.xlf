@@ -230,6 +230,11 @@
 				<source>You must select between %s to %s elements.</source>
 				<target>Sie müssen zwischen %s und %s Elementen auswählen.</target>
 			</trans-unit>
+
+			<trans-unit id="finisher.FlashMessage.messageBody">
+				<source>Your new Event was created.</source>
+				<target>Ihre Veranstaltung wurde eingetragen.</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
