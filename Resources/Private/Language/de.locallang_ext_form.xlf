@@ -46,7 +46,7 @@
 			</trans-unit>
 			<trans-unit id="element.title.properties.label">
 				<source>Title</source>
-				<target>Title</target>
+				<target>Titel</target>
 			</trans-unit>
 			<trans-unit id="element.title.properties.elementDescription">
 				<source>The title is a mandatory field. It should identify the event as clearly as possible.</source>
