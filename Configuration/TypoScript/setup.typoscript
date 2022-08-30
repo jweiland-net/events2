@@ -98,9 +98,23 @@ plugin.tx_events2 {
     }
 
     # Special configuration for form based on EXT:form
+    # See EXT:events2/Configuration/Form/NewEvent.form.yaml which values are possible
     overrideForm {
-      renderables.0.withtip frame-indent
       renderables.1.renderables.8.properties.pidOfNewLocationPage < plugin.tx_events2.settings.pidOfNewLocationPage
+      # Be careful: if you have assigned multiple PIDs to storagePid you have to replace following values with
+      # exact ONE page UID
+      finishers.1.options.1.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
+      finishers.1.options.2.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
+      finishers.1.options.3.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
+      finishers.1.options.4.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
+      finishers.1.options.9.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
+      finishers.1.options.10.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
+      finishers.1.options.11.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
+      finishers.1.options.12.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
+      finishers.1.options.13.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
+      finishers.1.options.14.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
+      finishers.1.options.15.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
+      finishers.1.options.16.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
     }
 
     pageBrowser {

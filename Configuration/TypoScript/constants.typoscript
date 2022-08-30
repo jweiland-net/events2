@@ -10,6 +10,8 @@ plugin.tx_events2 {
   persistence {
     # cat=plugin.tx_events2; type=string; label=Default storage PID
     storagePid =
+    # cat=plugin.tx_events2; type=string; label=Storage PID for created events in frontend form (EXT:form)
+    storagePidForFrontendCreatedEvents =
   }
   settings {
     # cat=plugin.tx_events2; type=boolean; label=Include jQuery
