@@ -140,8 +140,8 @@
 			<trans-unit id="element.time-begin-monday.properties.label">
 				<source>Choose a different start time for events on Monday. Use the format hh:mm.</source>
 			</trans-unit>
-			<trans-unit id="element.time-begin-thursday.properties.label">
-				<source>Choose a different start time for events on Thursday. Use the format hh:mm.</source>
+			<trans-unit id="element.time-begin-tuesday.properties.label">
+				<source>Choose a different start time for events on Tuesday. Use the format hh:mm.</source>
 			</trans-unit>
 			<trans-unit id="element.time-begin-wednesday.properties.label">
 				<source>Choose a different start time for events on Wednesday. Use the format hh:mm.</source>
