@@ -3,6 +3,9 @@
 	<file source-language="en" datatype="plaintext" original="messages" date="2022-08-29T10:44:40Z" product-name="events2">
 		<header/>
 		<body>
+			<trans-unit id="element.newEvent.renderingOptions.submitButtonLabel">
+				<source>Submit</source>
+			</trans-unit>
 			<trans-unit id="element.radio-choose-event-type.properties.label">
 				<source>Event type</source>
 			</trans-unit>
@@ -182,10 +185,10 @@
 			<trans-unit id="element.time-begin-friday.properties.elementDescription">
 				<source>Enter the different start time in the format hh:mm.</source>
 			</trans-unit>
-			<trans-unit id="element.time-begin-suturday.properties.label">
+			<trans-unit id="element.time-begin-saturday.properties.label">
 				<source>Here you can specify a different start time for Saturday.</source>
 			</trans-unit>
-			<trans-unit id="element.time-begin-suturday.properties.elementDescription">
+			<trans-unit id="element.time-begin-saturday.properties.elementDescription">
 				<source>Enter the different start time in the format hh:mm.</source>
 			</trans-unit>
 			<trans-unit id="element.time-begin-sunday.properties.label">
