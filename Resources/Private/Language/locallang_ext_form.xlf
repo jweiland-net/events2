@@ -19,7 +19,7 @@
 				<source>Single event</source>
 			</trans-unit>
 			<trans-unit id="element.choose-event-type.properties.options.duration">
-				<source>Durational event</source>
+				<source>Multiday event</source>
 			</trans-unit>
 			<trans-unit id="element.choose-event-type.properties.options.recurring">
 				<source>Recurring event</source>
@@ -50,10 +50,10 @@
 				<source>Event end</source>
 			</trans-unit>
 			<trans-unit id="element.event-end.properties.elementDescription">
-				<source>For durational events, the event end date is a mandatory field. Click on the calendar icon to open the Date Value Wizard.</source>
+				<source>For multiday events, the event end date is a mandatory field. Click on the calendar icon to open the Date Value Wizard.</source>
 			</trans-unit>
 			<trans-unit id="element.recurring-end.properties.label">
-				<source>Last date of recurring event</source>
+				<source>End of the series of events</source>
 			</trans-unit>
 			<trans-unit id="element.recurring-end.properties.elementDescription">
 				<source>For recurring events we recommend setting an end date. However, this is not mandatory. Click on the calendar icon to open the Date Value Wizard.</source>
@@ -112,23 +112,38 @@
 			<trans-unit id="element.weekday.properties.elementDescription">
 				<source>The days of the week are a required field. Select at least one day of the week. The event will then appear every week on the specified weekdays.</source>
 			</trans-unit>
+			<trans-unit id="element.weekday.properties.options.1">
+				<source>Monday</source>
+			</trans-unit>
+			<trans-unit id="element.weekday.properties.options.2">
+				<source>Tuesday</source>
+			</trans-unit>
+			<trans-unit id="element.weekday.properties.options.4">
+				<source>Wednesday</source>
+			</trans-unit>
+			<trans-unit id="element.weekday.properties.options.8">
+				<source>Thursday</source>
+			</trans-unit>
+			<trans-unit id="element.weekday.properties.options.16">
+				<source>Friday</source>
+			</trans-unit>
+			<trans-unit id="element.weekday.properties.options.32">
+				<source>Saturday</source>
+			</trans-unit>
+			<trans-unit id="element.weekday.properties.options.64">
+				<source>Sunday</source>
+			</trans-unit>
 			<trans-unit id="element.image-1.properties.label">
 				<source>1st image upload</source>
 			</trans-unit>
 			<trans-unit id="element.image-1.properties.elementDescription">
 				<source>You can add up to 2 images to the event.</source>
 			</trans-unit>
-			<trans-unit id="element.image-1-userrights.properties.label">
-				<source>Transfer usagerights of first image</source>
-			</trans-unit>
 			<trans-unit id="element.image-2.properties.label">
 				<source>2nd image upload</source>
 			</trans-unit>
 			<trans-unit id="element.image-2.properties.elementDescription">
 				<source>You can add up to 2 images to the event.</source>
-			</trans-unit>
-			<trans-unit id="element.image-2-userrights.properties.label">
-				<source>Transfer usagerights of second image</source>
 			</trans-unit>
 
 			<trans-unit id="element.define-event-times.properties.label">
@@ -138,25 +153,46 @@
 				<source>Previous page</source>
 			</trans-unit>
 			<trans-unit id="element.time-begin-monday.properties.label">
-				<source>Choose a different start time for events on Monday. Use the format hh:mm.</source>
+				<source>Here you can specify a different start time for Monday.</source>
+			</trans-unit>
+			<trans-unit id="element.time-begin-monday.properties.elementDescription">
+				<source>Enter the different start time in the format hh:mm.</source>
 			</trans-unit>
 			<trans-unit id="element.time-begin-tuesday.properties.label">
-				<source>Choose a different start time for events on Tuesday. Use the format hh:mm.</source>
+				<source>Here you can specify a different start time for Tuesday.</source>
+			</trans-unit>
+			<trans-unit id="element.time-begin-tuesday.properties.elementDescription">
+				<source>Enter the different start time in the format hh:mm.</source>
 			</trans-unit>
 			<trans-unit id="element.time-begin-wednesday.properties.label">
-				<source>Choose a different start time for events on Wednesday. Use the format hh:mm.</source>
+				<source>Here you can specify a different start time for Wednesday.</source>
+			</trans-unit>
+			<trans-unit id="element.time-begin-wednesday.properties.elementDescription">
+				<source>Enter the different start time in the format hh:mm.</source>
 			</trans-unit>
 			<trans-unit id="element.time-begin-thursday.properties.label">
-				<source>Choose a different start time for events on Thursday. Use the format hh:mm.</source>
+				<source>Here you can specify a different start time for Thursday.</source>
+			</trans-unit>
+			<trans-unit id="element.time-begin-thursday.properties.elementDescription">
+				<source>Enter the different start time in the format hh:mm.</source>
 			</trans-unit>
 			<trans-unit id="element.time-begin-friday.properties.label">
-				<source>Choose a different start time for events on Friday. Use the format hh:mm.</source>
+				<source>Here you can specify a different start time for Friday.</source>
+			</trans-unit>
+			<trans-unit id="element.time-begin-friday.properties.elementDescription">
+				<source>Enter the different start time in the format hh:mm.</source>
 			</trans-unit>
 			<trans-unit id="element.time-begin-suturday.properties.label">
-				<source>Choose a different start time for events on Saturday. Use the format hh:mm.</source>
+				<source>Here you can specify a different start time for Saturday.</source>
+			</trans-unit>
+			<trans-unit id="element.time-begin-suturday.properties.elementDescription">
+				<source>Enter the different start time in the format hh:mm.</source>
 			</trans-unit>
 			<trans-unit id="element.time-begin-sunday.properties.label">
-				<source>Choose a different start time for events on Sunday. Use the format hh:mm.</source>
+				<source>Here you can specify a different start time for Sunday.</source>
+			</trans-unit>
+			<trans-unit id="element.time-begin-sunday.properties.elementDescription">
+				<source>Enter the different start time in the format hh:mm.</source>
 			</trans-unit>
 
 			<trans-unit id="validation.error.1221560910">

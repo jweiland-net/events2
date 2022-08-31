@@ -13,7 +13,7 @@
 			</trans-unit>
 			<trans-unit id="element.choose-event-type.properties.label">
 				<source>Please choose an event type</source>
-				<target>Bitte wählen Sie einen Veranstaltungstypen</target>
+				<target>Bitte wählen Sie einen Veranstaltungstyp</target>
 			</trans-unit>
 			<trans-unit id="element.choose-event-type.properties.elementDescription">
 				<source>You must first select an event type so that the corresponding input fields can be displayed on the following pages.</source>
@@ -24,8 +24,8 @@
 				<target>Einzelne Veranstaltung</target>
 			</trans-unit>
 			<trans-unit id="element.choose-event-type.properties.options.duration">
-				<source>Durational event</source>
-				<target>Durchgängige Veranstatung</target>
+				<source>Multiday event</source>
+				<target>Mehrtägige Veranstatung</target>
 			</trans-unit>
 			<trans-unit id="element.choose-event-type.properties.options.recurring">
 				<source>Recurring event</source>
@@ -65,12 +65,12 @@
 				<target>Ende der Veranstaltung</target>
 			</trans-unit>
 			<trans-unit id="element.event-end.properties.elementDescription">
-				<source>For durational events, the event end date is a mandatory field. Click on the calendar icon to open the Date Value Wizard.</source>
-				<target>Für durchgängige Veranstaltungen ist das Veranstaltungsende ein Pflichtfeld. Klicken Sie auf das Kalender Icon, um den Assistenten für Datumwerte zu öffnen.</target>
+				<source>For multiday events, the event end date is a mandatory field. Click on the calendar icon to open the Date Value Wizard.</source>
+				<target>Für mehrtägige Veranstaltungen ist das Veranstaltungsende ein Pflichtfeld. Klicken Sie auf das Kalender Icon, um den Assistenten für Datumwerte zu öffnen.</target>
 			</trans-unit>
 			<trans-unit id="element.recurring-end.properties.label">
-				<source>Last date of recurring event</source>
-				<target>Letztes Datum der wiederkehrenden Veranstaltung</target>
+				<source>End of the series of events</source>
+				<target>Ende der Veranstaltungsreihe</target>
 			</trans-unit>
 			<trans-unit id="element.recurring-end.properties.elementDescription">
 				<source>For recurring events we recommend setting an end date. However, this is not mandatory. Click on the calendar icon to open the Date Value Wizard.</source>
@@ -148,6 +148,34 @@
 				<source>The days of the week are a required field. Select at least one day of the week. The event will then appear every week on the specified weekdays.</source>
 				<target>Die Wochentage sind ein Pflichtfeld. Wählen Sie mindestens einen Wochentag aus. Die Veranstaltung erscheint dann jede Woche zu dem angegebenen Wochentagen.</target>
 			</trans-unit>
+			<trans-unit id="element.weekday.properties.options.1">
+				<source>Monday</source>
+				<target>Montag</target>
+			</trans-unit>
+			<trans-unit id="element.weekday.properties.options.2">
+				<source>Tuesday</source>
+				<target>Dienstag</target>
+			</trans-unit>
+			<trans-unit id="element.weekday.properties.options.4">
+				<source>Wednesday</source>
+				<target>Mittwoch</target>
+			</trans-unit>
+			<trans-unit id="element.weekday.properties.options.8">
+				<source>Thursday</source>
+				<target>Donnerstag</target>
+			</trans-unit>
+			<trans-unit id="element.weekday.properties.options.16">
+				<source>Friday</source>
+				<target>Freitag</target>
+			</trans-unit>
+			<trans-unit id="element.weekday.properties.options.32">
+				<source>Saturday</source>
+				<target>Samstag</target>
+			</trans-unit>
+			<trans-unit id="element.weekday.properties.options.64">
+				<source>Sunday</source>
+				<target>Sonntag</target>
+			</trans-unit>
 			<trans-unit id="element.image-1.properties.label">
 				<source>1st image upload</source>
 				<target>1. Bild hochladen</target>
@@ -156,10 +184,6 @@
 				<source>You can add up to 2 images to the event.</source>
 				<target>Sie können der Veranstaltung bis zu 2 Bilder hinzufügen.</target>
 			</trans-unit>
-			<trans-unit id="element.image-1-userrights.properties.label">
-				<source>Transfer usagerights of first image</source>
-				<target>Nutzungsrecht für erstes Bild übertragen</target>
-			</trans-unit>
 			<trans-unit id="element.image-2.properties.label">
 				<source>2nd image upload</source>
 				<target>2. Bild hochladen</target>
@@ -167,10 +191,6 @@
 			<trans-unit id="element.image-2.properties.elementDescription">
 				<source>You can add up to 2 images to the event.</source>
 				<target>Sie können der Veranstaltung bis zu 2 Bilder hinzufügen.</target>
-			</trans-unit>
-			<trans-unit id="element.image-2-userrights.properties.label">
-				<source>Transfer usagerights of second image</source>
-				<target>Nutzungsrecht für zweites Bild übertragen</target>
 			</trans-unit>
 
 			<trans-unit id="element.define-event-times.properties.label">
@@ -182,32 +202,60 @@
 				<target>Vorherige Seite</target>
 			</trans-unit>
 			<trans-unit id="element.time-begin-monday.properties.label">
-				<source>Choose a different start time for events on Monday. Use the format hh:mm.</source>
-				<target>Wähle eine andere Startzeit für Veranstaltungen am Montag. Verwenden Sie das Format hh:mm.</target>
+				<source>Here you can specify a different start time for Monday.</source>
+				<target>Hier können Sie eine abweichende Startzeit für Montag angeben.</target>
+			</trans-unit>
+			<trans-unit id="element.time-begin-monday.properties.elementDescription">
+				<source>Enter the different start time in the format hh:mm.</source>
+				<target>Tragen Sie die abweichende Startzeit in dem Format hh:mm ein.</target>
 			</trans-unit>
 			<trans-unit id="element.time-begin-tuesday.properties.label">
-				<source>Choose a different start time for events on Tuesday. Use the format hh:mm.</source>
-				<target>Wähle eine andere Startzeit für Veranstaltungen am Dienstag. Verwenden Sie das Format hh:mm.</target>
+				<source>Here you can specify a different start time for Tuesday.</source>
+				<target>Hier können Sie eine abweichende Startzeit für Dienstag angeben.</target>
+			</trans-unit>
+			<trans-unit id="element.time-begin-tuesday.properties.elementDescription">
+				<source>Enter the different start time in the format hh:mm.</source>
+				<target>Tragen Sie die abweichende Startzeit in dem Format hh:mm ein.</target>
 			</trans-unit>
 			<trans-unit id="element.time-begin-wednesday.properties.label">
-				<source>Choose a different start time for events on Wednesday. Use the format hh:mm.</source>
-				<target>Wähle eine andere Startzeit für Veranstaltungen am Mittwoch. Verwenden Sie das Format hh:mm.</target>
+				<source>Here you can specify a different start time for Wednesday.</source>
+				<target>Hier können Sie eine abweichende Startzeit für Mittwoch angeben.</target>
+			</trans-unit>
+			<trans-unit id="element.time-begin-wednesday.properties.elementDescription">
+				<source>Enter the different start time in the format hh:mm.</source>
+				<target>Tragen Sie die abweichende Startzeit in dem Format hh:mm ein.</target>
 			</trans-unit>
 			<trans-unit id="element.time-begin-thursday.properties.label">
-				<source>Choose a different start time for events on Thursday. Use the format hh:mm.</source>
-				<target>Wähle eine andere Startzeit für Veranstaltungen am Donnerstag. Verwenden Sie das Format hh:mm.</target>
+				<source>Here you can specify a different start time for Thursday.</source>
+				<target>Hier können Sie eine abweichende Startzeit für Donnerstag angeben.</target>
+			</trans-unit>
+			<trans-unit id="element.time-begin-thursday.properties.elementDescription">
+				<source>Enter the different start time in the format hh:mm.</source>
+				<target>Tragen Sie die abweichende Startzeit in dem Format hh:mm ein.</target>
 			</trans-unit>
 			<trans-unit id="element.time-begin-friday.properties.label">
-				<source>Choose a different start time for events on Friday. Use the format hh:mm.</source>
-				<target>Wähle eine andere Startzeit für Veranstaltungen am Freitag. Verwenden Sie das Format hh:mm.</target>
+				<source>Here you can specify a different start time for Friday.</source>
+				<target>Hier können Sie eine abweichende Startzeit für Freitag angeben.</target>
+			</trans-unit>
+			<trans-unit id="element.time-begin-friday.properties.elementDescription">
+				<source>Enter the different start time in the format hh:mm.</source>
+				<target>Tragen Sie die abweichende Startzeit in dem Format hh:mm ein.</target>
 			</trans-unit>
 			<trans-unit id="element.time-begin-suturday.properties.label">
-				<source>Choose a different start time for events on Saturday. Use the format hh:mm.</source>
-				<target>Wähle eine andere Startzeit für Veranstaltungen am Samstag. Verwenden Sie das Format hh:mm.</target>
+				<source>Here you can specify a different start time for Saturday.</source>
+				<target>Hier können Sie eine abweichende Startzeit für Samstag angeben.</target>
+			</trans-unit>
+			<trans-unit id="element.time-begin-suturday.properties.elementDescription">
+				<source>Enter the different start time in the format hh:mm.</source>
+				<target>Tragen Sie die abweichende Startzeit in dem Format hh:mm ein.</target>
 			</trans-unit>
 			<trans-unit id="element.time-begin-sunday.properties.label">
-				<source>Choose a different start time for events on Sunday. Use the format hh:mm.</source>
-				<target>Wähle eine andere Startzeit für Veranstaltungen am Sonntag. Verwenden Sie das Format hh:mm.</target>
+				<source>Here you can specify a different start time for Sunday.</source>
+				<target>Hier können Sie eine abweichende Startzeit für Sonntag angeben.</target>
+			</trans-unit>
+			<trans-unit id="element.time-begin-sunday.properties.elementDescription">
+				<source>Enter the different start time in the format hh:mm.</source>
+				<target>Tragen Sie die abweichende Startzeit in dem Format hh:mm ein.</target>
 			</trans-unit>
 
 			<trans-unit id="validation.error.1221560910">
