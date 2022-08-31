@@ -19,7 +19,8 @@ page.includeJSFooter {
 [{$plugin.tx_events2.settings.useExtForm} == "1"]
   plugin.tx_form.settings.yamlConfigurations.1661247670 = EXT:events2/Configuration/Form/OverrideFormSettings.yaml
   # This part will be moved back with "if.isTrue" until this patch was fixed: https://forge.typo3.org/issues/98200
-  plugin.tx_events2.view.templateRootPaths.1 = EXT:events2/Resources/Private/Templates/Overrides/
+  plugin.tx_events2.view.templateRootPaths.1 = EXT:events2/Resources/Private/FormFramework/Templates/
+  plugin.tx_events2.view.partialRootPaths.1 = EXT:events2/Resources/Private/FormFramework/Partials/
 [GLOBAL]
 
 # Search form should react on $_GET params of SearchResults plugin to show search values again in form.
@@ -36,8 +37,9 @@ plugin.tx_events2 {
     }
     partialRootPaths {
       0 = EXT:events2/Resources/Private/Partials/
-      1 = {$plugin.tx_events2.view.partialRootPath}
-      2 = EXT:maps2/Resources/Private/Partials/
+      # Do not use "1", it may be overwritten by condition above.
+      2 = {$plugin.tx_events2.view.partialRootPath}
+      3 = EXT:maps2/Resources/Private/Partials/
     }
     layoutRootPaths {
       0 = EXT:events2/Resources/Private/Layouts/
@@ -91,6 +93,28 @@ plugin.tx_events2 {
 
     new {
       uploadFolder = 1:user_upload/tx_events2/
+    }
+
+    # Special configuration for form based on EXT:form
+    # See EXT:events2/Configuration/Form/NewEvent.form.yaml which values are possible
+    overrideForm {
+      renderables.1.renderables.8.properties.pidOfNewLocationPage < plugin.tx_events2.settings.pidOfNewLocationPage
+      # Be careful: if you have assigned multiple PIDs to storagePid you have to replace following values with
+      # exact ONE page UID
+      finishers.1.options.1.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
+      finishers.1.options.2.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
+      finishers.1.options.3.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
+      finishers.1.options.4.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
+      finishers.1.options.9.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
+      finishers.1.options.10.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
+      finishers.1.options.11.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
+      finishers.1.options.12.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
+      finishers.1.options.13.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
+      finishers.1.options.14.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
+      finishers.1.options.15.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
+      finishers.1.options.16.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
+
+      finishers.3.options.pageUid = {$plugin.tx_events2.settings.pidOfListPage}
     }
 
     pageBrowser {

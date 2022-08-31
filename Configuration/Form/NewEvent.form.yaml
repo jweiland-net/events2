@@ -1,14 +1,13 @@
-renderingOptions:
-  submitButtonLabel: Submit
 type: Form
 identifier: newEvent
 label: Create a new event
 prototypeName: standard
+renderingOptions:
+  submitButtonLabel: Submit
 renderables:
 -
   renderingOptions:
-    previousButtonLabel: ''
-    nextButtonLabel: Collect event data
+    nextButtonLabel: next page
   type: Page
   identifier: radio-choose-event-type
   label: Choose event type
@@ -25,27 +24,14 @@ renderables:
         recurring: Recurring
       fluidAdditionalAttributes:
         required: required
-      validationErrorMessages:
-      -
-        code: 1221560910
-        message: 'Please select an event type first'
-      -
-        code: 1221560718
-        message: 'Please select an event type first'
-      -
-        code: 1347992400
-        message: 'Please select an event type first'
-      -
-        code: 1347992453
-        message: 'Please select an event type first'
       elementDescription: 'Choose event type'
     validators:
     -
       identifier: NotEmpty
 -
   renderingOptions:
-    previousButtonLabel: Choose event type
-    nextButtonLabel: Define event times
+    previousButtonLabel: previous page
+    nextButtonLabel: next page
   type: Page
   identifier: collect-data
   label: Collect event data
@@ -59,19 +45,6 @@ renderables:
       elementDescription: Title
       fluidAdditionalAttributes:
         required: required
-      validationErrorMessages:
-      -
-        code: 1221560910
-        message: 'Title is required'
-      -
-        code: 1221560718
-        message: 'Title is required'
-      -
-        code: 1347992400
-        message: 'Title is required'
-      -
-        code: 1347992453
-        message: 'Title is required'
     validators:
     -
       identifier: NotEmpty
@@ -84,19 +57,6 @@ renderables:
       elementDescription: Event begin
       fluidAdditionalAttributes:
         required: required
-      validationErrorMessages:
-      -
-        code: 1221560910
-        message: 'Event date is required'
-      -
-        code: 1221560718
-        message: 'Event date is required'
-      -
-        code: 1347992400
-        message: 'Event date is required'
-      -
-        code: 1347992453
-        message: 'Event date is required'
     validators:
     -
       identifier: NotEmpty
@@ -178,15 +138,6 @@ renderables:
     defaultValue: ''
     properties:
       elementDescription: 'Event Location'
-      validationErrorMessages:
-      - code: 1221560910
-        message: 'Event location is required. Please use the search box to find event locations'
-      - code: 1221560718
-        message: 'Event location is required. Please use the search box to find event locations'
-      - code: 1347992400
-        message: 'Event location is required. Please use the search box to find event locations'
-      - code: 1347992453
-        message: 'Event location is required. Please use the search box to find event locations'
     validators:
     -
       identifier: NotEmpty
@@ -215,24 +166,11 @@ renderables:
     properties:
       # Do not add options here. They will be added by Hook
       elementDescription: Please choose at least one category
-      validationErrorMessages:
-      -
-        code: 1221560910
-        message: 'Choose at least one category'
-      -
-        code: 1221560718
-        message: 'Choose at least one category'
-      -
-        code: 1347992400
-        message: 'Choose at least one category'
-      -
-        code: 1347992453
-        message: 'Choose at least one category'
     validators:
     - identifier: NotEmpty
     - identifier: Count
       options:
-        minimum: 0
+        minimum: 1
         maximum: 3
   -
     label: Weekday
@@ -248,19 +186,6 @@ renderables:
         32: Saturday
         64: Sunday
       elementDescription: Please choose at least one weekday
-      validationErrorMessages:
-      -
-        code: 1221560910
-        message: 'Choose at least one weekday'
-      -
-        code: 1221560718
-        message: 'Choose at least one weekday'
-      -
-        code: 1347992400
-        message: 'Choose at least one weekday'
-      -
-        code: 1347992453
-        message: 'Choose at least one weekday'
     renderingOptions:
       enabled: false
     validators:
@@ -284,27 +209,6 @@ renderables:
       - image/png
       elementDescription: 'Select an image'
   -
-    type: Checkbox
-    identifier: image-1-userrights
-    label: 'Upload Rights'
-    properties:
-      elementDescription: 'You have to confirm that %s has unrestricted rights to use the files you will upload'
-      # non-official property. Needed for DynamicValidatorHook
-      checkboxType: uploadRights
-      # non-official property. Needed to know which element has to be checked in DynamicValidatorHook
-      referenceUploadIdentifier: image-1
-      validationErrorMessages:
-      - code: 1221560910
-        message: 'It is not allowed to upload files, as long as the checkbox for file rights is not checked'
-      - code: 1221560718
-        message: 'It is not allowed to upload files, as long as the checkbox for file rights is not checked'
-      - code: 1347992400
-        message: 'It is not allowed to upload files, as long as the checkbox for file rights is not checked'
-      - code: 1347992453
-        message: 'It is not allowed to upload files, as long as the checkbox for file rights is not checked'
-    validators:
-    # Do not add NotEmpty validator. It will be added dynamically in DynamicValidatorHook
-  -
     label: 'Image upload'
     type: ImageUpload
     identifier: image-2
@@ -315,34 +219,13 @@ renderables:
       - image/jpeg
       - image/png
       elementDescription: 'Select another image'
-  -
-    type: Checkbox
-    identifier: image-2-userrights
-    label: 'Upload Rights'
-    properties:
-      elementDescription: 'You have to confirm that %s has unrestricted rights to use the files you will upload'
-      # non-official property. Needed for DynamicValidatorHook
-      checkboxType: uploadRights
-      # non-official property. Needed to know which element has to be checked in DynamicValidatorHook
-      referenceUploadIdentifier: image-2
-      validationErrorMessages:
-      - code: 1221560910
-        message: 'It is not allowed to upload files, as long as the checkbox for file rights is not checked'
-      - code: 1221560718
-        message: 'It is not allowed to upload files, as long as the checkbox for file rights is not checked'
-      - code: 1347992400
-        message: 'It is not allowed to upload files, as long as the checkbox for file rights is not checked'
-      - code: 1347992453
-        message: 'It is not allowed to upload files, as long as the checkbox for file rights is not checked'
-    validators:
-      # Do not add NotEmpty validator. It will be added dynamically in DynamicValidatorHook
 -
   type: Page
   identifier: define-event-times
   label: Define further event times each weekday
   renderingOptions:
     enabled: false
-    previousButtonLabel: Collect event data
+    previousButtonLabel: previous page
   variants:
   -
     identifier: activate-step-3
@@ -851,3 +734,13 @@ finishers:
             value: 'sunday'
           event:
             value: '{SaveEvent.insertedUids.4}'
+  2:
+    identifier: FlashMessage
+    options:
+      messageCode: 1661847238
+      messageBody: 'Your new Event was created.'
+      severity: 0
+  3:
+    identifier: Redirect
+    options:
+      pageUid: 1
