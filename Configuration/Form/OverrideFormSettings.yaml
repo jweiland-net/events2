@@ -14,6 +14,9 @@ TYPO3:
           formElementsDefinition:
             Form:
               renderingOptions:
+                translation:
+                  translationFiles:
+                    20: 'EXT:events2/Resources/Private/Language/locallang_ext_form.xlf'
                 templateRootPaths:
                   1661248033: 'EXT:events2/Resources/Private/FormFramework/Templates/'
                 partialRootPaths:

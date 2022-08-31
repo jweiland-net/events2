@@ -1,0 +1,37 @@
+<html lang="en"
+			xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+			xmlns:formvh="http://typo3.org/ns/TYPO3/CMS/Form/ViewHelpers"
+			data-namespace-typo3-fluid="true">
+
+<f:form.validationResults for="{element.rootForm.identifier}.{element.identifier}">
+	<div class="form-group{f:if(condition: '{validationResults.errors.0}', then: ' has-error')}">
+		<f:if condition="{doNotShowLabel} != 1">
+			<label class="control-label" for="{element.uniqueIdentifier}">{formvh:translateElementProperty(element: element, property: 'label')}
+				<f:if condition="{element.required}">
+					<f:render partial="Field/Required"/>
+				</f:if>
+			</label>
+		</f:if>
+
+		<div class="{element.properties.containerClassAttribute}">
+			<f:if condition="{element.properties.elementDescription}">
+				<div role="tooltip" class="tooltip" title="Hinweis" data-property="{formvh:translateElementProperty(element: element, property: 'elementDescription')}">
+					<img alt="Tipp" src="/typo3conf/ext/jw5124001pforzheim10/Resources/Public/Icons/warning.svg" width="24" height="24">
+				</div>
+			</f:if>
+			<f:format.raw>
+				{elementContent}
+				<f:if condition="{validationResults.flattenedErrors}">
+					<div class="ui-state-error">
+						<ul>
+							<f:for each="{validationResults.errors}" as="error">
+								<li><f:format.htmlspecialchars>{formvh:translateElementError(element: element, error: error)}</f:format.htmlspecialchars></li>
+							</f:for>
+						</ul>
+					</div>
+				</f:if>
+			</f:format.raw>
+		</div>
+	</div>
+</f:form.validationResults>
+</html>

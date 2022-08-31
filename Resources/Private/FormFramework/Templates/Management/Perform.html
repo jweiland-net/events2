@@ -7,11 +7,14 @@
 <f:layout name="Create" />
 
 <f:section name="main">
+	<f:flashMessages />
+
 	<f:security.ifHasRole role="{settings.userGroup}">
 		<f:then>
 			<f:if condition="{e2:feUser(field: 'tx_events2_organizer')}">
 				<f:then>
-					<formvh:render persistenceIdentifier="EXT:events2/Configuration/Form/NewEvent.form.yaml" overrideConfiguration="{renderables: {1: {renderables: {8: {properties: {pidOfNewLocationPage: settings.pidOfNewLocationPage}}}}}}" />
+					<formvh:render persistenceIdentifier="EXT:events2/Configuration/Form/NewEvent.form.yaml"
+												 overrideConfiguration="{settings.overrideForm}" />
 				</f:then>
 				<f:else>
 					<div><f:translate key="missingOrganizerForCreate" /></div>
