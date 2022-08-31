@@ -4,8 +4,6 @@ label: Create a new event
 prototypeName: standard
 renderingOptions:
   submitButtonLabel: Submit
-  fluidAdditionalAttributes:
-    class: withtip frame-indent
 renderables:
 -
   renderingOptions:
