@@ -494,16 +494,16 @@
 			</trans-unit>
 
 			<trans-unit id="email.subject.create">
-				<source>A new record was created</source>
-				<target>Veranstaltung – Ein neuer Datensatz wurde angelegt</target>
+				<source>A new event record was created</source>
+				<target>Ein neuer Veranstaltungsdatensatz wurde angelegt</target>
 			</trans-unit>
 			<trans-unit id="email.subject.update">
-				<source>A record was updated</source>
-				<target>Veranstaltung - Ein Datensatz wurde bearbeitet</target>
+				<source>An event record was updated</source>
+				<target>Ein Veranstaltungsdatensatz wurde bearbeitet</target>
 			</trans-unit>
 			<trans-unit id="email.subject.activate">
-				<source>A record was activated</source>
-				<target>Veranstaltung - Ein Datensatz wurde aktiviert</target>
+				<source>The event record was activated</source>
+				<target>Der Veranstaltungsdatensatz wurde aktiviert</target>
 			</trans-unit>
 
 			<trans-unit id="error.upload">

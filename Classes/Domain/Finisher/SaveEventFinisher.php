@@ -203,6 +203,16 @@ class SaveEventFinisher extends AbstractFinisher
                     $insertedUid
                 );
 
+                if ($table === 'tx_events2_domain_model_event') {
+                    // I need event UID for EmailToReceiver. Options are not accessible anymore:
+                    // See: https://forge.typo3.org/issues/98241
+                    $this->finisherContext->getFinisherVariableProvider()->add(
+                        $this->shortFinisherIdentifier,
+                        'insertedUids.tx_events2_domain_model_event',
+                        $insertedUid
+                    );
+                }
+
                 // Update slug for event record
                 if (
                     $table === 'tx_events2_domain_model_event'

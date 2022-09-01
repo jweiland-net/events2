@@ -4,6 +4,12 @@ TYPO3:
       prototypes:
         standard:
           finishersDefinition:
+            EmailToReceiver:
+              implementationClassName: TYPO3\CMS\Form\Domain\Finishers\EmailFinisher
+              options:
+                templateName: '{@format}.html'
+                templateRootPaths:
+                  20: 'EXT:events2/Resources/Private/FormFramework/Templates/Finishers/Email/'
             SaveEventFinisher:
               implementationClassName: 'JWeiland\Events2\Domain\Finisher\SaveEventFinisher'
           validatorsDefinition:
