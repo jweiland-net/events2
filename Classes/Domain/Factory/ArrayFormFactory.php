@@ -34,17 +34,28 @@ class ArrayFormFactory extends \TYPO3\CMS\Form\Domain\Factory\ArrayFormFactory
     /**
      * Build a form definition, depending on some configuration.
      *
-     * @param array $configuration
-     * @param ?string $prototypeName
-     * @return FormDefinition
      * @throws RenderingException
-     * @internal
      */
     public function build(array $configuration, string $prototypeName = null): FormDefinition
     {
+        $this->addEventUidToFormAction($configuration);
         $this->modifyEmailFinisherConfiguration($configuration);
 
         return parent::build($configuration, $prototypeName);
+    }
+
+    /**
+     * I haven't found any solution to add a dynamic GET var into the YAML configuration
+     */
+    protected function addEventUidToFormAction(array &$configuration): void
+    {
+        if (
+            isset($_GET['tx_events2_events']['event'])
+            && !isset($configuration['renderingOptions']['additionalParams']['tx_events2_events']['event'])
+        ) {
+            $configuration['renderingOptions']['additionalParams']['tx_events2_events']['event']
+                = $_GET['tx_events2_events']['event'];
+        }
     }
 
     protected function modifyEmailFinisherConfiguration(array &$configuration): void

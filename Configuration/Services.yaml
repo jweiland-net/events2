@@ -40,6 +40,10 @@ services:
     public: true
 
   # Called by makeInstance from EXT:form
+  JWeiland\Events2\Hooks\Form\PrefillForEditUsageHook:
+    public: true
+
+  # Called by makeInstance from EXT:form
   JWeiland\Events2\Domain\Factory\ArrayFormFactory:
     public: true
 
