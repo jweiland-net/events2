@@ -18,6 +18,8 @@ renderables:
     identifier: choose-event-type
     defaultValue: single
     properties:
+      dbMapping:
+        column: event_type
       options:
         single: Single
         duration: Duration
@@ -42,6 +44,8 @@ renderables:
     identifier: title
     defaultValue: ''
     properties:
+      dbMapping:
+        column: title
       elementDescription: Title
       fluidAdditionalAttributes:
         required: required
@@ -54,6 +58,9 @@ renderables:
     identifier: event-begin
     defaultValue: ''
     properties:
+      dbMapping:
+        column: event_begin
+        dataType: date
       elementDescription: Event begin
       fluidAdditionalAttributes:
         required: required
@@ -66,6 +73,9 @@ renderables:
     identifier: event-end
     defaultValue: ''
     properties:
+      dbMapping:
+        column: event_end
+        dataType: date
       elementDescription: Event end date
     renderingOptions:
       enabled: false
@@ -81,6 +91,9 @@ renderables:
     identifier: recurring-end
     defaultValue: ''
     properties:
+      dbMapping:
+        column: recurring_end
+        dataType: date
       elementDescription: Recurring end date
     renderingOptions:
       enabled: false
@@ -96,6 +109,17 @@ renderables:
     identifier: time-begin
     defaultValue: ''
     properties:
+      dbMapping:
+        relation:
+          labelColumn: time_begin
+          table: tx_events2_domain_model_time
+          expressions:
+            - column: event
+              expression: eq
+              value: '{event:uid}'
+            - column: type
+              expression: eq
+              value: 'event_time'
       elementDescription: 'Enter time in format hh:mm. Example: 12:30'
       fluidAdditionalAttributes:
         maxlength: 5
@@ -114,6 +138,8 @@ renderables:
     identifier: short-description
     defaultValue: ''
     properties:
+      dbMapping:
+        column: teaser
       elementDescription: Short description
   -
     label: 'Detail description'
@@ -121,6 +147,8 @@ renderables:
     identifier: detail-description
     defaultValue: ''
     properties:
+      dbMapping:
+        column: detail_information
       elementDescription: 'Detail description'
   -
     label: Ticket Link
@@ -128,6 +156,14 @@ renderables:
     identifier: ticket-link
     defaultValue: ''
     properties:
+      dbMapping:
+        relation:
+          labelColumn: link
+          table: tx_events2_domain_model_link
+          expressions:
+            - column: uid
+              expression: eq
+              value: '{event:ticket_link}'
       elementDescription: 'Ticket Link'
     validators:
     - identifier: Url
@@ -135,9 +171,11 @@ renderables:
     label: Event Location
     type: Events2Location
     identifier: event-location
-    defaultValue: ''
     properties:
+      dbMapping:
+        column: location
       elementDescription: 'Event Location'
+      pidOfNewLocationPage: 0
     validators:
     -
       identifier: NotEmpty
@@ -147,6 +185,14 @@ renderables:
     identifier: download-link
     defaultValue: ''
     properties:
+      dbMapping:
+        relation:
+          labelColumn: link
+          table: tx_events2_domain_model_link
+          expressions:
+            - column: uid
+              expression: inSet
+              value: '{event:download_links}'
       elementDescription: 'Download Link'
     validators:
     - identifier: Url
@@ -156,6 +202,14 @@ renderables:
     identifier: youtube-link
     defaultValue: ''
     properties:
+      dbMapping:
+        relation:
+          labelColumn: link
+          table: tx_events2_domain_model_link
+          expressions:
+            - column: uid
+              expression: eq
+              value: '{event:video_link}'
       elementDescription: 'Link to a YouTube video'
     validators:
     - identifier: YouTube
@@ -164,6 +218,20 @@ renderables:
     type: MultiCheckbox
     identifier: categories
     properties:
+      dbMapping:
+        relation:
+          valueColumn: uid_local
+          table: sys_category_record_mm
+          expressions:
+          - column: tablenames
+            expression: eq
+            value: tx_events2_domain_model_event
+          - column: fieldname
+            expression: eq
+            value: categories
+          - column: uid_foreign
+            expression: eq
+            value: '{event:uid}'
       # Do not add options here. They will be added by Hook
       elementDescription: Please choose at least one category
     validators:
@@ -177,6 +245,9 @@ renderables:
     type: MultiCheckbox
     identifier: weekday
     properties:
+      dbMapping:
+        column: weekday
+        dataType: binary
       options:
         1: Monday
         2: Tuesday
@@ -202,6 +273,10 @@ renderables:
     type: ImageUpload
     identifier: image-1
     properties:
+      dbMapping:
+        column: images
+        dataType: file
+        position: 1
       saveToFileMount: '1:/Extensions/events2/'
       allowedMimeTypes:
       - image/jpg
@@ -213,6 +288,10 @@ renderables:
     type: ImageUpload
     identifier: image-2
     properties:
+      dbMapping:
+        column: images
+        dataType: file
+        position: 2
       saveToFileMount: '1:/Extensions/events2/'
       allowedMimeTypes:
       - image/jpg
@@ -241,6 +320,20 @@ renderables:
     renderingOptions:
       enabled: false
     properties:
+      dbMapping:
+        relation:
+          labelColumn: time_begin
+          table: tx_events2_domain_model_time
+          expressions:
+          - column: event
+            expression: eq
+            value: '{event:uid}'
+          - column: type
+            expression: eq
+            value: 'different_times'
+          - column: weekday
+            expression: eq
+            value: 'monday'
       elementDescription: 'Enter time in format hh:mm. Example: 12:30'
       fluidAdditionalAttributes:
         maxlength: 5
@@ -267,6 +360,20 @@ renderables:
     renderingOptions:
       enabled: false
     properties:
+      dbMapping:
+        relation:
+          labelColumn: time_begin
+          table: tx_events2_domain_model_time
+          expressions:
+          - column: event
+            expression: eq
+            value: '{event:uid}'
+          - column: type
+            expression: eq
+            value: 'different_times'
+          - column: weekday
+            expression: eq
+            value: 'tuesday'
       elementDescription: 'Enter time in format hh:mm. Example: 12:30'
       fluidAdditionalAttributes:
         maxlength: 5
@@ -293,6 +400,20 @@ renderables:
     renderingOptions:
       enabled: false
     properties:
+      dbMapping:
+        relation:
+          labelColumn: time_begin
+          table: tx_events2_domain_model_time
+          expressions:
+          - column: event
+            expression: eq
+            value: '{event:uid}'
+          - column: type
+            expression: eq
+            value: 'different_times'
+          - column: weekday
+            expression: eq
+            value: 'wednesday'
       elementDescription: 'Enter time in format hh:mm. Example: 12:30'
       fluidAdditionalAttributes:
         maxlength: 5
@@ -319,6 +440,20 @@ renderables:
     renderingOptions:
       enabled: false
     properties:
+      dbMapping:
+        relation:
+          labelColumn: time_begin
+          table: tx_events2_domain_model_time
+          expressions:
+          - column: event
+            expression: eq
+            value: '{event:uid}'
+          - column: type
+            expression: eq
+            value: 'different_times'
+          - column: weekday
+            expression: eq
+            value: 'thursday'
       elementDescription: 'Enter time in format hh:mm. Example: 12:30'
       fluidAdditionalAttributes:
         maxlength: 5
@@ -345,6 +480,20 @@ renderables:
     renderingOptions:
       enabled: false
     properties:
+      dbMapping:
+        relation:
+          labelColumn: time_begin
+          table: tx_events2_domain_model_time
+          expressions:
+          - column: event
+            expression: eq
+            value: '{event:uid}'
+          - column: type
+            expression: eq
+            value: 'different_times'
+          - column: weekday
+            expression: eq
+            value: 'friday'
       elementDescription: 'Enter time in format hh:mm. Example: 12:30'
       fluidAdditionalAttributes:
         maxlength: 5
@@ -371,6 +520,20 @@ renderables:
     renderingOptions:
       enabled: false
     properties:
+      dbMapping:
+        relation:
+          labelColumn: time_begin
+          table: tx_events2_domain_model_time
+          expressions:
+          - column: event
+            expression: eq
+            value: '{event:uid}'
+          - column: type
+            expression: eq
+            value: 'different_times'
+          - column: weekday
+            expression: eq
+            value: 'saturday'
       elementDescription: 'Enter time in format hh:mm. Example: 12:30'
       fluidAdditionalAttributes:
         maxlength: 5
@@ -397,6 +560,20 @@ renderables:
     renderingOptions:
       enabled: false
     properties:
+      dbMapping:
+        relation:
+          labelColumn: time_begin
+          table: tx_events2_domain_model_time
+          expressions:
+          - column: event
+            expression: eq
+            value: '{event:uid}'
+          - column: type
+            expression: eq
+            value: 'different_times'
+          - column: weekday
+            expression: eq
+            value: 'sunday'
       elementDescription: 'Enter time in format hh:mm. Example: 12:30'
       fluidAdditionalAttributes:
         maxlength: 5
@@ -735,12 +912,23 @@ finishers:
           event:
             value: '{SaveEvent.insertedUids.4}'
   2:
+    identifier: EmailToReceiver
+    options:
+      subject: 'Overwrite me with TS or lang file'
+      useFluidEmail: 1
+      # Following values are prefilled with the values from Extension Settings automatically (HOOK)
+      # Activating following settings will deactivate the automatism.
+      #recipients:
+      #  change-me@example.com: 'Change or overwrite me'
+      #senderAddress:
+      #senderName:
+  3:
     identifier: FlashMessage
     options:
       messageCode: 1661847238
       messageBody: 'Your new Event was created.'
       severity: 0
-  3:
+  4:
     identifier: Redirect
     options:
       pageUid: 1

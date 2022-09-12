@@ -19,7 +19,7 @@ use TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
-use TYPO3\CMS\Form\Domain\Model\FormElements\FormElementInterface;
+use TYPO3\CMS\Form\Domain\Model\FormElements\AbstractFormElement;
 use TYPO3\CMS\Form\Domain\Model\Renderable\RenderableInterface;
 
 /*
@@ -54,7 +54,7 @@ class PrefillCategoriesHook
      */
     public function initializeFormElement(RenderableInterface $formElement): void
     {
-        if (!$formElement instanceof FormElementInterface) {
+        if (!$formElement instanceof AbstractFormElement) {
             return;
         }
 
@@ -90,12 +90,19 @@ class PrefillCategoriesHook
 
     protected function getStatementForCategoriesInDefaultLanguage(): Statement
     {
-        $queryBuilder = $this->getQueryBuilderForCategories();
+        $queryBuilder = $this->getQueryBuilderForTable('sys_category');
 
         return $queryBuilder
             ->select('*')
             ->from('sys_category')
             ->where(
+                $queryBuilder->expr()->eq(
+                    'parent',
+                    $queryBuilder->createNamedParameter(
+                        $this->settings['rootCategory'] ?? 0,
+                        \PDO::PARAM_INT
+                    )
+                ),
                 $queryBuilder->expr()->in(
                     'uid',
                     $queryBuilder->createNamedParameter(
@@ -120,9 +127,9 @@ class PrefillCategoriesHook
         return GeneralUtility::intExplode(',', $selectableCategoriesForNewEvents, true);
     }
 
-    protected function getQueryBuilderForCategories(): QueryBuilder
+    protected function getQueryBuilderForTable(string $table): QueryBuilder
     {
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('sys_categories');
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($table);
         $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
 
         return $queryBuilder;
