@@ -23,8 +23,8 @@
 						<ul>
 							<f:for each="{events}" as="event">
 								<li>
-									<f:link.action action="edit"
-																 controller="Management"
+									<f:link.action action="perform"
+																 controller="Event"
 																 arguments="{event: event, timestamp: '0'}">
 										{event.title}
 									</f:link.action>
