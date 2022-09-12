@@ -158,7 +158,8 @@ class SaveEventFinisher extends AbstractFinisher
         return $databaseData;
     }
 
-    protected function processEventTable(int $iterationCount): void {
+    protected function processEventTable(int $iterationCount): void
+    {
         $uid = $_GET['tx_events2_management']['event'] ?? 0;
 
         // I need event UID for EmailToReceiver. Options are not accessible anymore:
