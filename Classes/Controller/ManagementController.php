@@ -237,6 +237,11 @@ class ManagementController extends AbstractController
                 'event' => $eventObject
             ]);
 
+            $this->addFlashMessage(LocalizationUtility::translate(
+                'email.subject.activate',
+                'events2'
+            ));
+
             $this->sendMail('activate');
         }
 
