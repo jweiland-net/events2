@@ -226,8 +226,7 @@ class SaveEventFinisher extends AbstractFinisher
         } elseif ($uid > 0) {
             $this->options['mode'] = 'update';
             $this->options['whereClause'] = [
-                'event' => $databaseData['event'],
-                'type' => $databaseData['type']
+                'uid' => $uid,
             ];
         }
 
