@@ -96,6 +96,13 @@ class PrefillCategoriesHook
             ->select('*')
             ->from('sys_category')
             ->where(
+                $queryBuilder->expr()->eq(
+                    'parent',
+                    $queryBuilder->createNamedParameter(
+                        $this->settings['rootCategory'] ?? 0,
+                        \PDO::PARAM_INT
+                    )
+                ),
                 $queryBuilder->expr()->in(
                     'uid',
                     $queryBuilder->createNamedParameter(
