@@ -80,9 +80,9 @@ call_user_func(static function (): void {
     // Prefill EXT:form element of type Checkboxes with categories from database
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/form']['initializeFormElement'][1660727041]
         = \JWeiland\Events2\Hooks\Form\PrefillCategoriesHook::class;
-    // Register dynamic validation which depends on other submitted form element values (image -> upload-rights)
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/form']['afterSubmit'][1661258175]
-        = \JWeiland\Events2\Hooks\Form\DynamicValidatorHook::class;
+    // Set values from request as default values for edit usage
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/form']['afterBuildingFinished'][1662039121]
+        = \JWeiland\Events2\Hooks\Form\PrefillForEditUsageHook::class;
 
     // create scheduler to create/update days with recurrency
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\JWeiland\Events2\Task\ReGenerateDays::class] = [

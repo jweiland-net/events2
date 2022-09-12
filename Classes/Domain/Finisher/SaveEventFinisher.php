@@ -72,10 +72,8 @@ class SaveEventFinisher extends AbstractFinisher
 
     /**
      * Perform the current database operation
-     *
-     * @param int $iterationCount
      */
-    protected function process(int $iterationCount)
+    protected function process(int $iterationCount): void
     {
         $this->throwExceptionOnInconsistentConfiguration();
 
@@ -102,25 +100,159 @@ class SaveEventFinisher extends AbstractFinisher
 
         $databaseData = $this->prepareData($elementsConfiguration, $databaseData);
 
-        if ($table === 'sys_category_record_mm' && ($databaseData['uid_foreign'] ?? false)) {
-            $this->saveDataForCategories($databaseData, $table, $iterationCount);
+        if ($table === 'tx_events2_domain_model_link') {
+            foreach ($elementsConfiguration as $elementIdentifier => $elementConfiguration) {
+                if ($elementConfiguration['mapOnDatabaseColumn'] !== 'link') {
+                    continue;
+                }
+                $databaseData = $this->processLinkTable($databaseData, $elementIdentifier, $iterationCount);
+            }
+        } elseif ($table === 'tx_events2_domain_model_event') {
+            $this->processEventTable($iterationCount);
+        } elseif ($table === 'sys_category_record_mm') {
+            $databaseData = $this->saveDataForCategories($databaseData, $table, $iterationCount);
         } elseif ($table === 'tx_events2_event_organizer_mm' && ($databaseData['uid_local'] ?? false)) {
-            $this->saveDataForOrganizers($databaseData, $table, $iterationCount);
-        } elseif ($table === 'sys_file_reference' && !isset($databaseData['uid_local'])) {
-            $this->finisherContext->getFinisherVariableProvider()->add(
-                $this->shortFinisherIdentifier,
-                'insertedUids.' . $iterationCount,
-                0
-            );
-        } elseif ($table === 'tx_events2_domain_model_link' && isset($databaseData['link']) && $databaseData['link'] === '') {
-            $this->finisherContext->getFinisherVariableProvider()->add(
-                $this->shortFinisherIdentifier,
-                'insertedUids.' . $iterationCount,
-                0
-            );
-        } else {
-            $this->saveToDatabase($databaseData, $table, $iterationCount);
+            $databaseData = $this->saveDataForOrganizers($databaseData, $table, $iterationCount);
+        } elseif ($table === 'sys_file_reference') {
+            foreach ($elementsConfiguration as $elementIdentifier => $elementConfiguration) {
+                if ($elementConfiguration['mapOnDatabaseColumn'] !== 'uid_local') {
+                    continue;
+                }
+                $databaseData = $this->processSysFileReferenceTable($databaseData);
+            }
+        } elseif ($table === 'tx_events2_domain_model_time') {
+            $elementIdentifier = $this->getIdentifierForColum($elementsConfiguration, 'time_begin');
+            $databaseData = $this->processTimeTable($databaseData, $elementIdentifier, $iterationCount);
         }
+
+        $this->saveToDatabase($databaseData, $table, $iterationCount);
+    }
+
+    protected function processLinkTable(
+        array $databaseData,
+        string $identifier,
+        int $iterationCount
+    ): array {
+        $uid = $this->getElementDefaultValueByIdentifier($identifier);
+
+        $this->finisherContext->getFinisherVariableProvider()->add(
+            $this->shortFinisherIdentifier,
+            'insertedUids.' . $iterationCount,
+            $uid
+        );
+
+        if (!isset($databaseData['link']) || $databaseData['link'] === '') {
+            if ($uid > 0) {
+                $this->deleteRecord('tx_events2_domain_model_link', $uid);
+            }
+
+            // Return empty array to prevent saving again in saveToDatabase()
+            $databaseData = [];
+        } elseif ($uid > 0) {
+            $this->options['mode'] = 'update';
+            $this->options['whereClause'] = [
+                'uid' => $uid
+            ];
+        }
+
+        return $databaseData;
+    }
+
+    protected function processEventTable(int $iterationCount): void
+    {
+        $uid = $_GET['tx_events2_management']['event'] ?? 0;
+
+        // I need event UID for EmailToReceiver. Options are not accessible anymore:
+        // See: https://forge.typo3.org/issues/98241
+        $this->finisherContext->getFinisherVariableProvider()->add(
+            $this->shortFinisherIdentifier,
+            'insertedUids.tx_events2_domain_model_event',
+            $uid
+        );
+
+        $this->finisherContext->getFinisherVariableProvider()->add(
+            $this->shortFinisherIdentifier,
+            'insertedUids.' . $iterationCount,
+            $uid
+        );
+
+        if ($uid > 0) {
+            $this->options['mode'] = 'update';
+            $this->options['whereClause'] = [
+                'uid' => $uid
+            ];
+        }
+    }
+
+    protected function processSysFileReferenceTable(
+        array $databaseData
+    ): array {
+        $sysFileUid = $databaseData['uid_local'] ?? 0;
+
+        // Delete previously stored file references
+        $this->databaseConnection->delete(
+            'sys_file_reference',
+            [
+                'uid_local' => $sysFileUid,
+                'tablenames' => 'tx_events2_domain_model_event',
+                'fieldname' => 'images',
+                'table_local' => 'sys_file',
+            ]
+        );
+
+        return $sysFileUid ? $databaseData : [];
+    }
+
+    protected function processTimeTable(
+        array $databaseData,
+        string $identifier,
+        int $iterationCount
+    ): array {
+        $uid = $this->getElementDefaultValueByIdentifier($identifier);
+
+        $this->finisherContext->getFinisherVariableProvider()->add(
+            $this->shortFinisherIdentifier,
+            'insertedUids.' . $iterationCount,
+            0
+        );
+
+        if (!isset($databaseData['time_begin']) || $databaseData['time_begin'] === '') {
+            if ($uid > 0) {
+                $this->deleteRecord('tx_events2_domain_model_time', $uid);
+            }
+
+            // Return empty array to prevent saving again in saveToDatabase()
+            $databaseData = [];
+        } elseif ($uid > 0) {
+            $this->options['mode'] = 'update';
+            $this->options['whereClause'] = [
+                'event' => $databaseData['event'],
+                'type' => $databaseData['type']
+            ];
+        }
+
+        return $databaseData;
+    }
+
+    protected function deleteRecord(string $table, int $uid): void
+    {
+        $this->databaseConnection->delete(
+            $table,
+            [
+                'uid' => $uid
+            ]
+        );
+    }
+
+    protected function getIdentifierForColum(array $elementsConfiguration, string $column): string
+    {
+        foreach ($elementsConfiguration as $elementIdentifier => $elementConfiguration) {
+            if ($elementConfiguration['mapOnDatabaseColumn'] === $column) {
+                return $elementIdentifier;
+            }
+        }
+
+        return '';
     }
 
     protected function prepareData(array $elementsConfiguration, array $databaseData): array
@@ -159,72 +291,7 @@ class SaveEventFinisher extends AbstractFinisher
         return $databaseData;
     }
 
-    /**
-     * Save or insert the values from $databaseData into the table $table
-     */
-    protected function saveToDatabase(array $databaseData, string $table, int $iterationCount): void
-    {
-        if (
-            $table === 'tx_events2_domain_model_time'
-            && (
-                (
-                    array_key_exists('time_begin', $databaseData)
-                    && $databaseData['time_begin'] === ''
-                )
-                || !array_key_exists('time_begin', $databaseData)
-            )
-        ) {
-            // ToDo: If we implement editing of records in FE in future, we should check for empty time and delete existing time record
-            $this->finisherContext->getFinisherVariableProvider()->add(
-                $this->shortFinisherIdentifier,
-                'insertedUids.' . $iterationCount,
-                0
-            );
-            return;
-        }
-
-        if (!empty($databaseData)) {
-            if ($this->options['mode'] === 'update') {
-                $whereClause = $this->options['whereClause'];
-                foreach ($whereClause as $columnName => $columnValue) {
-                    $whereClause[$columnName] = $this->parseOption('whereClause.' . $columnName);
-                }
-                $this->databaseConnection->update(
-                    $table,
-                    $databaseData,
-                    $whereClause
-                );
-            } else {
-                $this->databaseConnection->insert($table, $databaseData);
-                $insertedUid = (int)$this->databaseConnection->lastInsertId($table);
-                $this->finisherContext->getFinisherVariableProvider()->add(
-                    $this->shortFinisherIdentifier,
-                    'insertedUids.' . $iterationCount,
-                    $insertedUid
-                );
-
-                // Update slug for event record
-                if (
-                    $table === 'tx_events2_domain_model_event'
-                    && array_key_exists('title', $databaseData)
-                    && $databaseData['title'] !== ''
-                ) {
-                    $databaseData['uid'] = $insertedUid;
-                    $this->databaseConnection->update(
-                        'tx_events2_domain_model_event',
-                        [
-                            'path_segment' => $this->pathSegmentHelper->generatePathSegment($databaseData)
-                        ],
-                        [
-                            'uid' => $insertedUid
-                        ]
-                    );
-                }
-            }
-        }
-    }
-
-    protected function saveDataForCategories(array $databaseData, string $table, int $iterationCount): void
+    protected function saveDataForCategories(array $databaseData, string $table, int $iterationCount): array
     {
         // Delete previously stored categories
         $this->databaseConnection->delete(
@@ -256,9 +323,12 @@ class SaveEventFinisher extends AbstractFinisher
                 'uid' => $databaseData['uid_foreign']
             ]
         );
+
+        // Return empty array to prevent saving again in saveToDatabase()
+        return [];
     }
 
-    protected function saveDataForOrganizers(array $databaseData, string $table, int $iterationCount): void
+    protected function saveDataForOrganizers(array $databaseData, string $table, int $iterationCount): array
     {
         // Delete previously stored organizers
         $this->databaseConnection->delete(
@@ -290,6 +360,67 @@ class SaveEventFinisher extends AbstractFinisher
                 'uid' => $databaseData['uid_local']
             ]
         );
+
+        // Return empty array to prevent saving again in saveToDatabase()
+        return [];
+    }
+
+    /**
+     * Save or insert the values from $databaseData into the table $table
+     */
+    protected function saveToDatabase(array $databaseData, string $table, int $iterationCount): void
+    {
+        if ($databaseData === []) {
+            return;
+        }
+
+        if ($this->options['mode'] === 'update') {
+            $whereClause = $this->options['whereClause'];
+            foreach ($whereClause as $columnName => $columnValue) {
+                $whereClause[$columnName] = $this->parseOption('whereClause.' . $columnName);
+            }
+            $this->databaseConnection->update(
+                $table,
+                $databaseData,
+                $whereClause
+            );
+        } else {
+            $this->databaseConnection->insert($table, $databaseData);
+            $insertedUid = (int)$this->databaseConnection->lastInsertId($table);
+            $this->finisherContext->getFinisherVariableProvider()->add(
+                $this->shortFinisherIdentifier,
+                'insertedUids.' . $iterationCount,
+                $insertedUid
+            );
+
+            if ($table === 'tx_events2_domain_model_event') {
+                // I need event UID for EmailToReceiver. Options are not accessible anymore:
+                // See: https://forge.typo3.org/issues/98241
+                $this->finisherContext->getFinisherVariableProvider()->add(
+                    $this->shortFinisherIdentifier,
+                    'insertedUids.tx_events2_domain_model_event',
+                    $insertedUid
+                );
+            }
+
+            // Update slug for event record
+            if (
+                $table === 'tx_events2_domain_model_event'
+                && array_key_exists('title', $databaseData)
+                && $databaseData['title'] !== ''
+            ) {
+                $databaseData['uid'] = $insertedUid;
+                $this->databaseConnection->update(
+                    'tx_events2_domain_model_event',
+                    [
+                        'path_segment' => $this->pathSegmentHelper->generatePathSegment($databaseData)
+                    ],
+                    [
+                        'uid' => $insertedUid
+                    ]
+                );
+            }
+        }
     }
 
     /**
@@ -332,7 +463,7 @@ class SaveEventFinisher extends AbstractFinisher
      *
      * @throws FinisherException
      */
-    protected function throwExceptionOnInconsistentConfiguration()
+    protected function throwExceptionOnInconsistentConfiguration(): void
     {
         if (
             $this->options['mode'] === 'update'
@@ -348,6 +479,18 @@ class SaveEventFinisher extends AbstractFinisher
     protected function getFormValues(): array
     {
         return $this->finisherContext->getFormValues();
+    }
+
+    /**
+     * In PrefillForEditUsageHook I store the UIDs of the related tables as default values in FormDefinition.
+     * Please use this metho for related records, only! That's why I declared return value as "int".
+     */
+    protected function getElementDefaultValueByIdentifier(string $identifier): int
+    {
+        return (int)($this->finisherContext
+            ->getFormRuntime()
+            ->getFormDefinition()
+            ->getElementDefaultValueByIdentifier('events2-' . $identifier . '-uid') ?? 0);
     }
 
     protected function getElementByIdentifier(string $elementIdentifier): ?FormElementInterface
