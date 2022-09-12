@@ -30,8 +30,11 @@ TYPO3:
                 layoutRootPaths:
                   1661248033: 'EXT:events2/Resources/Private/FormFramework/Layouts/'
             Events2Location:
-              __inheritances:
-                10: 'TYPO3.CMS.Form.mixins.formElementMixins.FormElementMixin'
+              implementationClassName: TYPO3\CMS\Form\Domain\Model\FormElements\GenericFormElement
+              properties:
+                containerClassAttribute: input
+                elementClassAttribute: ''
+                elementErrorClassAttribute: error
       persistenceManager:
         allowedExtensionPaths:
           10: EXT:events2/Configuration/Form/
