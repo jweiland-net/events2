@@ -59,6 +59,9 @@ call_user_func(static function () {
     // Set values from request as default values for edit usage
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/form']['afterBuildingFinished'][1662039121]
         = \JWeiland\Events2\Hooks\Form\PrefillForEditUsageHook::class;
+    // Prefill location label, if submitted before
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/form']['beforeRendering'][1663590603]
+        = \JWeiland\Events2\Hooks\Form\PrefillLocationHook::class;
 
     // create scheduler to create/update days with recurrency
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\JWeiland\Events2\Task\ReGenerateDays::class] = [
