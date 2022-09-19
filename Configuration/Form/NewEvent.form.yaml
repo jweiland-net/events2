@@ -4,6 +4,12 @@ label: Create a new event
 prototypeName: standard
 renderingOptions:
   submitButtonLabel: Submit
+variants:
+-
+  identifier: language-variant-submit-button
+  condition: 'siteLanguage("twoLetterIsoCode") == "de"'
+  renderingOptions:
+    submitButtonLabel: Absenden
 renderables:
 -
   renderingOptions:
@@ -11,6 +17,12 @@ renderables:
   type: Page
   identifier: radio-choose-event-type
   label: Choose event type
+  variants:
+  -
+    identifier: language-variant-page1-buttons
+    condition: 'siteLanguage("twoLetterIsoCode") == "de"'
+    renderingOptions:
+      nextButtonLabel: Nächste Seite
   renderables:
   -
     label: Choose event type
@@ -37,6 +49,19 @@ renderables:
   type: Page
   identifier: collect-data
   label: Collect event data
+  variants:
+  -
+    identifier: language-variant-page2-nav-buttons-single
+    condition: 'formValues["choose-event-type"] == "single" && siteLanguage("twoLetterIsoCode") == "de"'
+    renderingOptions:
+      previousButtonLabel: Vorherige Seite
+      nextButtonLabel: Absenden
+  -
+    identifier: language-variant-page2-nav-buttons-others
+    condition: 'formValues["choose-event-type"] != "single" && siteLanguage("twoLetterIsoCode") == "de"'
+    renderingOptions:
+      previousButtonLabel: Vorherige Seite
+      nextButtonLabel: Nächste Seite
   renderables:
   -
     label: Title
@@ -306,6 +331,11 @@ renderables:
     enabled: false
     previousButtonLabel: previous page
   variants:
+  -
+    identifier: language-variant-page3-button
+    condition: 'siteLanguage("twoLetterIsoCode") == "de"'
+    renderingOptions:
+      previousButtonLabel: Vorherige Seite
   -
     identifier: activate-step-3
     condition: 'formValues["choose-event-type"] == "recurring"'
