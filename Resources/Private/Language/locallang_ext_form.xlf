@@ -9,9 +9,6 @@
 			<trans-unit id="element.radio-choose-event-type.properties.label">
 				<source>Event type</source>
 			</trans-unit>
-			<trans-unit id="element.radio-choose-event-type.renderingOptions.nextButtonLabel">
-				<source>Next page</source>
-			</trans-unit>
 			<trans-unit id="element.choose-event-type.properties.label">
 				<source>Please choose an event type</source>
 			</trans-unit>
@@ -30,12 +27,6 @@
 
 			<trans-unit id="element.collect-data.properties.label">
 				<source>Event data</source>
-			</trans-unit>
-			<trans-unit id="element.collect-data.renderingOptions.previousButtonLabel">
-				<source>Previous page</source>
-			</trans-unit>
-			<trans-unit id="element.collect-data.renderingOptions.nextButtonLabel">
-				<source>Next page</source>
 			</trans-unit>
 			<trans-unit id="element.title.properties.label">
 				<source>Title</source>
@@ -151,9 +142,6 @@
 
 			<trans-unit id="element.define-event-times.properties.label">
 				<source>Define further event times each weekday</source>
-			</trans-unit>
-			<trans-unit id="element.define-event-times.renderingOptions.previousButtonLabel">
-				<source>Previous page</source>
 			</trans-unit>
 			<trans-unit id="element.time-begin-monday.properties.label">
 				<source>Here you can specify a different start time for Monday.</source>
