@@ -106,7 +106,7 @@
 			</trans-unit>
 			<trans-unit id="element.event-location.properties.elementDescription">
 				<source>The venue is a required field. Please enter the first times of the location in the field and select the appropriate location from the list.</source>
-				<target>Der Veranstaltungsort ist ein Pflichtfeld. Bitte tragen Sie die ersten Zeiten des Ortes in das Feld ein und wählen Sie den entsprechenden Ort aus der Liste.</target>
+				<target>Der Veranstaltungsort ist ein Pflichtfeld. Bitte tragen Sie die ersten Zeichen des Ortes in das Feld ein und wählen Sie den entsprechenden Ort aus der Liste.</target>
 			</trans-unit>
 			<trans-unit id="element.download-link.properties.label">
 				<source>Download link</source>
