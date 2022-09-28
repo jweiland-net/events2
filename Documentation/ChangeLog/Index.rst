@@ -7,6 +7,10 @@
 ChangeLog
 =========
 
+**Version 8.1.1**
+
+- Start event search uncache (no_cache removed) as search results plugin is uncached by default
+
 **Version 8.1.0**
 
 - Add EXT:form implementation to create events in FE
