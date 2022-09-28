@@ -82,7 +82,7 @@ class SearchController extends AbstractController
         $this->postProcessAndAssignFluidVariables([
             'search' => $search,
             'selectorData' => [
-                'locations' => $this->locationRepository->findAll(),
+                'locations' => $this->locationRepository->getLocationsForSearchSelector(),
                 'categories' => [
                     'main' => $allowedMainCategories,
                     'sub' => []

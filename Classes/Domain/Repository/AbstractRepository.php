@@ -112,7 +112,7 @@ class AbstractRepository extends Repository
     public function getRecordsByExpression(
         string $tableName,
         string $tableAlias,
-        array $expressions,
+        array $expressions = [],
         array $select = ['*'],
         bool $includeHidden = false,
         bool $doOverlay = true
@@ -124,10 +124,13 @@ class AbstractRepository extends Repository
         }
 
         try {
-            $statement = $queryBuilder
-                ->select(...$select)
-                ->where(...$expressions)
-                ->execute();
+            $queryBuilder->select(...$select);
+
+            if ($expressions !== []) {
+                $queryBuilder->where(...$expressions);
+            }
+
+            $statement = $queryBuilder->execute();
 
             $records = [];
             while ($record = $statement->fetch(\PDO::FETCH_ASSOC)) {
