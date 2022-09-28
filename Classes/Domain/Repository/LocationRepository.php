@@ -13,9 +13,7 @@ namespace JWeiland\Events2\Domain\Repository;
 
 use JWeiland\Events2\Event\ModifyQueriesOfFindLocationsEvent;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
-use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
-use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /*
  * The location repository is used to sort the locations in our create-new-form. Further it will be used in
