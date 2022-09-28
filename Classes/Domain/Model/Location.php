@@ -14,7 +14,9 @@ namespace JWeiland\Events2\Domain\Model;
 use JWeiland\Events2\Domain\Traits\Typo3PropertiesTrait;
 use JWeiland\Maps2\Domain\Model\PoiCollection;
 use SJBR\StaticInfoTables\Domain\Model\Country;
+use TYPO3\CMS\Extbase\Annotation as Extbase;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+use TYPO3\CMS\Extbase\Persistence\Generic\LazyLoadingProxy;
 
 /*
  * This class contains all getter and setters for a Location.
@@ -50,16 +52,19 @@ class Location extends AbstractEntity
 
     /**
      * @var \SJBR\StaticInfoTables\Domain\Model\Country
+     * @Extbase\ORM\Lazy
      */
     protected $country;
 
     /**
      * @var \JWeiland\Events2\Domain\Model\Link
+     * @Extbase\ORM\Lazy
      */
     protected $link;
 
     /**
      * @var \JWeiland\Maps2\Domain\Model\PoiCollection
+     * @Extbase\ORM\Lazy
      */
     protected $txMaps2Uid;
 
@@ -115,7 +120,7 @@ class Location extends AbstractEntity
 
     public function getCountry(): ?Country
     {
-        return $this->country;
+        return $this->country instanceof LazyLoadingProxy ? $this->country->_loadRealInstance() : $this->country;
     }
 
     public function setCountry(?Country $country): void
@@ -125,7 +130,7 @@ class Location extends AbstractEntity
 
     public function getLink(): ?Link
     {
-        return $this->link;
+        return $this->link instanceof LazyLoadingProxy ? $this->link->_loadRealInstance() : $this->link;
     }
 
     public function setLink(?Link $link = null): void
@@ -183,6 +188,6 @@ class Location extends AbstractEntity
      */
     public function getTxMaps2Uid()
     {
-        return $this->txMaps2Uid;
+        return $this->txMaps2Uid instanceof LazyLoadingProxy ? $this->txMaps2Uid->_loadRealInstance() : $this->txMaps2Uid;
     }
 }
