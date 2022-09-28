@@ -241,9 +241,9 @@ class Event extends AbstractEntity
         $this->pathSegment = $pathSegment;
     }
 
-    public function getEventBegin(): ?\DateTimeImmutable
+    public function getEventBegin(): ?\DateTime
     {
-        if ($this->eventBegin instanceof \DateTimeImmutable) {
+        if ($this->eventBegin instanceof \DateTime) {
             // Since PHP 7.4 we can not access timezone_type directly anymore.
             // If location is false, timezone_type is 1 or 2, but we need 3
             if ($this->eventBegin->getTimezone()->getLocation() === false) {
