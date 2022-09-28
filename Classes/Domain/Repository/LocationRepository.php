@@ -65,4 +65,17 @@ class LocationRepository extends AbstractRepository
 
         return $locations;
     }
+
+    /**
+     * Use direct DB result to fill the location selector.
+     * ->findAll() will start fetching all related objects, too, which results in hundrets of
+     * additional unneeded DB queries.
+     * ToDo: Switch to LazyLoadingProxy when this patch is merged: https://review.typo3.org/c/Packages/TYPO3.CMS/+/75417
+     *
+     * @return array
+     */
+    public function getLocationsForSearchSelector(): array
+    {
+        return $this->getRecordsByExpression('tx_events2_domain_model_location', 'l');
+    }
 }
