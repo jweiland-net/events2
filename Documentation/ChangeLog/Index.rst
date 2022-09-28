@@ -7,6 +7,15 @@
 ChangeLog
 =========
 
+**Version 8.1.0**
+
+- Add EXT:form implementation to create events in FE
+- Use DB result to render options for location selector in search form
+
+**Version 8.0.1**
+
+- Add flexform for search results plugin
+
 **Version 8.0.0**
 
 - Add TYPO3 10/11 compatibility
