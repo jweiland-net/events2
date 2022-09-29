@@ -250,7 +250,7 @@ class Event extends AbstractEntity
                 $this->eventBegin->setTimezone(new \DateTimeZone(date_default_timezone_get()));
             }
 
-            return $this->eventBegin;
+            return clone $this->eventBegin;
         }
 
         // Can be null, in case of EventController::newAction
