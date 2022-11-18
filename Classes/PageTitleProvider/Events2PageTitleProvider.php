@@ -38,7 +38,7 @@ class Events2PageTitleProvider implements PageTitleProviderInterface
     public function getTitle(): string
     {
         $pageTitle = '';
-        $gp = GeneralUtility::_GPmerged('tx_events2_show') ?? [];
+        $gp = $this->getMergedRequestParameters();
         if ($this->isValidRequest($gp)) {
             $dayRecord = $this->dayRepository->getDayRecord(
                 (int)$gp['event'],
@@ -64,16 +64,22 @@ class Events2PageTitleProvider implements PageTitleProviderInterface
         return $pageTitle;
     }
 
+    protected function getMergedRequestParameters(): array
+    {
+        $gp = GeneralUtility::_GPmerged('tx_events2_show');
+        if ($gp === []) {
+            $gp = GeneralUtility::_GPmerged('tx_events2_list');
+        }
+
+        return $gp;
+    }
+
     /**
      * This PageTitleProvider will only work on detail page of events2.
      * event and timestamp have to be given. Else: Page title will not be overwritten.
      */
     protected function isValidRequest(array $gp): bool
     {
-        if (!is_array($gp)) {
-            return false;
-        }
-
         if (!isset($gp['controller'], $gp['action'], $gp['event'], $gp['timestamp'])) {
             return false;
         }
