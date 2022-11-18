@@ -27,7 +27,7 @@ class ExtConf implements SingletonInterface
 
     protected int $recurringFuture = 0;
 
-    protected string $defaultCountry = '';
+    protected int $defaultCountry = 0;
 
     protected string $xmlImportValidatorPath = '';
 
@@ -113,14 +113,14 @@ class ExtConf implements SingletonInterface
         $this->recurringFuture = (int)$recurringFuture;
     }
 
-    public function getDefaultCountry(): string
+    public function getDefaultCountry(): int
     {
         return $this->defaultCountry;
     }
 
     public function setDefaultCountry(string $defaultCountry): void
     {
-        $this->defaultCountry = $defaultCountry;
+        $this->defaultCountry = (int)$defaultCountry;
     }
 
     public function getXmlImportValidatorPath(): string
