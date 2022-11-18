@@ -19,6 +19,7 @@ $EM_CONF[$_EXTKEY] = [
         'suggests' => [
             'checkfaluploads' => '',
             'maps2' => '10.0.0-0.0.0',
+            'solr' => '11.2.0-0.0.0',
         ],
     ],
 ];

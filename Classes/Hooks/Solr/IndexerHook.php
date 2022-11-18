@@ -41,7 +41,7 @@ class IndexerHook implements PageIndexerDocumentsModifier
      * @param array $documents An array of documents to be indexed
      * @return array An array of modified documents
      */
-    public function modifyDocuments(Item $item, $language, array $documents): array
+    public function modifyDocuments(Item $item, int $language, array $documents): array
     {
         if ($item->getType() === 'tx_events2_domain_model_event') {
             $nextDate = $this->eventService->getNextDayForEvent((int)$item->getRecordUid());
