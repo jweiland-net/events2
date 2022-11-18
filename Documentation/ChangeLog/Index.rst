@@ -10,6 +10,7 @@ ChangeLog
 **Version 8.1.2**
 
 - Bugfix: Events2PageTitleProvider only works on detail plugin
+- Bugfix: getCountry must return country as INT as it contains the record UID
 
 **Version 8.1.1**
 
