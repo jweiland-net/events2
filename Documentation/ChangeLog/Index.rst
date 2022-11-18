@@ -7,6 +7,10 @@
 ChangeLog
 =========
 
+**Version 8.1.2**
+
+- Bugfix: Events2PageTitleProvider only works on detail plugin
+
 **Version 8.1.1**
 
 - Start event search uncache (no_cache removed) as search results plugin is uncached by default
