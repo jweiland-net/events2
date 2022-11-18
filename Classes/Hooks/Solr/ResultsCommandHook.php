@@ -54,14 +54,14 @@ class ResultsCommandHook implements SearchResultSetProcessor
         /** @var SearchResult $searchResult */
         $searchResults = $resultSet->getSearchResults()->getArrayCopy();
         foreach ($searchResults as $key => $searchResult) {
-            $uidField = $searchResult['UID'];
-            $typeField = $searchResult['TYPE'];
-            if ($typeField['value'] === 'tx_events2_domain_model_event') {
-                $nextDate = $this->eventService->getNextDayForEvent((int)$uidField['value']);
+            $uidField = $searchResult['uid'];
+            $typeField = $searchResult['type'];
+            if ($typeField === 'tx_events2_domain_model_event') {
+                $nextDate = $this->eventService->getNextDayForEvent((int)$uidField);
                 if (!$nextDate instanceof \DateTimeImmutable) {
                     /** @var GarbageCollector $garbageCollector */
                     $garbageCollector = GeneralUtility::makeInstance(GarbageCollector::class);
-                    $garbageCollector->collectGarbage('tx_events2_domain_model_event', (int)$uidField['value']);
+                    $garbageCollector->collectGarbage('tx_events2_domain_model_event', (int)$uidField);
                     unset($resultSet->getSearchResults()[$key]);
                 } else {
                     $searchResult->setField('nextDay', (int)$nextDate->format('U'));
