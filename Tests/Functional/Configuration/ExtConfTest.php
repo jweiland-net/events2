@@ -241,10 +241,10 @@ class ExtConfTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function getDefaultCountryInitiallyReturnsEmptyString(): void
+    public function getDefaultCountryInitiallyReturnsZero(): void
     {
         self::assertSame(
-            '',
+            0,
             $this->subject->getDefaultCountry()
         );
     }
@@ -252,12 +252,25 @@ class ExtConfTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function setDefaultCountrySetsDefaultCountry(): void
+    public function setDefaultCountrySetsDefaultCountryAsInteger(): void
     {
-        $this->subject->setDefaultCountry('foo bar');
+        $this->subject->setDefaultCountry('45');
 
         self::assertSame(
-            'foo bar',
+            45,
+            $this->subject->getDefaultCountry()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function setDefaultCountryWithEmptyStringSetsDefaultCountryToZero(): void
+    {
+        $this->subject->setDefaultCountry('');
+
+        self::assertSame(
+            0,
             $this->subject->getDefaultCountry()
         );
     }
