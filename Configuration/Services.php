@@ -13,23 +13,21 @@ return static function (
     // As IndexerHook.php is incompatible with an interface of solr 11.2 we have to exclude both files
     // from "resource" in Services.yaml and load/configure the file individual here.
     if (version_compare($typo3Version->getBranch(), '11.4', '>=')) {
-        $className = \JWeiland\Events2\Hooks\Solr\IndexerHook::class;
-        $absPath = \TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName(
-            'EXT:events2/Classes/Hooks/Solr/IndexerHook.php'
-        );
+        $indexerHookClassName = \JWeiland\Events2\Hooks\Solr\IndexerHook::class;
     } else {
-        $className = \JWeiland\Events2\Hooks\Solr\IndexerHook104::class;
-        $absPath = \TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName(
-            'EXT:events2/Classes/Hooks/Solr/IndexerHook104.php'
-        );
+        $indexerHookClassName = \JWeiland\Events2\Hooks\Solr\IndexerHook104::class;
     }
-    $indexerHookDefinition = new \Symfony\Component\DependencyInjection\Definition($className);
-    $indexerHookDefinition
-        ->setAutowired(true)
-        ->setAutoconfigured(true)
-        ->setPublic(true);
 
-    $containerBuilder
-        ->addResource(new \Symfony\Component\Config\Resource\FileResource($absPath))
-        ->setDefinition($className, $indexerHookDefinition);
+    $indexerHookReflection = $containerBuilder->getReflectionClass($indexerHookClassName);
+    if ($indexerHookReflection instanceof ReflectionClass) {
+        $indexerHookDefinition = new \Symfony\Component\DependencyInjection\Definition($indexerHookClassName);
+        $indexerHookDefinition
+            ->setAutowired(true)
+            ->setAutoconfigured(true)
+            ->setPublic(true);
+
+        $containerBuilder
+            ->addResource(new \Symfony\Component\Config\Resource\FileResource($indexerHookReflection->getFileName()))
+            ->setDefinition($indexerHookClassName, $indexerHookDefinition);
+    }
 };
