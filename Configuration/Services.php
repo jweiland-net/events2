@@ -12,22 +12,25 @@ return static function (
 
     // As IndexerHook.php is incompatible with an interface of solr 11.2 we have to exclude both files
     // from "resource" in Services.yaml and load/configure the file individual here.
-    if (version_compare($typo3Version->getBranch(), '11.4', '>=')) {
-        $indexerHookClassName = \JWeiland\Events2\Hooks\Solr\IndexerHook::class;
-    } else {
-        $indexerHookClassName = \JWeiland\Events2\Hooks\Solr\IndexerHook104::class;
-    }
+    // We can't use EMU::isLoaded() as PackageManager is not loaded until now. Using class_exists()
+    if (class_exists(\ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerDocumentsModifier::class)) {
+        if (version_compare($typo3Version->getBranch(), '11.4', '>=')) {
+            $indexerHookClassName = \JWeiland\Events2\Hooks\Solr\IndexerHook::class;
+        } else {
+            $indexerHookClassName = \JWeiland\Events2\Hooks\Solr\IndexerHook104::class;
+        }
 
-    $indexerHookReflection = $containerBuilder->getReflectionClass($indexerHookClassName);
-    if ($indexerHookReflection instanceof ReflectionClass) {
-        $indexerHookDefinition = new \Symfony\Component\DependencyInjection\Definition($indexerHookClassName);
-        $indexerHookDefinition
-            ->setAutowired(true)
-            ->setAutoconfigured(true)
-            ->setPublic(true);
+        $indexerHookReflection = $containerBuilder->getReflectionClass($indexerHookClassName);
+        if ($indexerHookReflection instanceof ReflectionClass) {
+            $indexerHookDefinition = new \Symfony\Component\DependencyInjection\Definition($indexerHookClassName);
+            $indexerHookDefinition
+                ->setAutowired(true)
+                ->setAutoconfigured(true)
+                ->setPublic(true);
 
-        $containerBuilder
-            ->addResource(new \Symfony\Component\Config\Resource\FileResource($indexerHookReflection->getFileName()))
-            ->setDefinition($indexerHookClassName, $indexerHookDefinition);
+            $containerBuilder
+                ->addResource(new \Symfony\Component\Config\Resource\FileResource($indexerHookReflection->getFileName()))
+                ->setDefinition($indexerHookClassName, $indexerHookDefinition);
+        }
     }
 };
