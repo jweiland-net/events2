@@ -7,6 +7,10 @@
 ChangeLog
 =========
 
+**Version 8.1.4**
+
+- Bugfix: Load IndexerHook for solr individual in Services.php
+
 **Version 8.1.3**
 
 - Bugfix: Add compatibility to solr version 11.2 in IndexerHook
