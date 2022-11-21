@@ -139,14 +139,22 @@ call_user_func(static function (): void {
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['aspects']['TimestampMapper'] = \JWeiland\Events2\Routing\Aspect\TimestampMapper::class;
 
     if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('solr')) {
+        $typo3Version = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            \TYPO3\CMS\Core\Information\Typo3Version::class
+        );
+
         // Remove non current events from resultSet
         // Add nextDay field to SearchResult object
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']['events2_addNextDay'] = \JWeiland\Events2\Hooks\Solr\ResultsCommandHook::class;
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']['events2_addNextDay']
+            = \JWeiland\Events2\Hooks\Solr\ResultsCommandHook::class;
+
         // As we can't create a SQL Query with JOIN in Solr configuration, we have to remove invalid documents on our own
-        if (version_compare(TYPO3_branch, '11.4', '>=')) {
-            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments']['events2_removeInvalidDocs'] = \JWeiland\Events2\Hooks\Solr\IndexerHook::class;
+        if (version_compare($typo3Version->getBranch(), '11.4', '>=')) {
+            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments']['events2_removeInvalidDocs']
+                = \JWeiland\Events2\Hooks\Solr\IndexerHook::class;
         } else {
-            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments']['events2_removeInvalidDocs'] = \JWeiland\Events2\Hooks\Solr\IndexerHook104::class;
+            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments']['events2_removeInvalidDocs']
+                = \JWeiland\Events2\Hooks\Solr\IndexerHook104::class;
         }
     }
 
