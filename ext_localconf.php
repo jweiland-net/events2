@@ -143,7 +143,11 @@ call_user_func(static function (): void {
         // Add nextDay field to SearchResult object
         $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['afterSearch']['events2_addNextDay'] = \JWeiland\Events2\Hooks\Solr\ResultsCommandHook::class;
         // As we can't create a SQL Query with JOIN in Solr configuration, we have to remove invalid documents on our own
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments']['events2_removeInvalidDocs'] = \JWeiland\Events2\Hooks\Solr\IndexerHook::class;
+        if (version_compare(TYPO3_branch, '11.4', '>=')) {
+            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments']['events2_removeInvalidDocs'] = \JWeiland\Events2\Hooks\Solr\IndexerHook::class;
+        } else {
+            $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['solr']['IndexQueueIndexer']['preAddModifyDocuments']['events2_removeInvalidDocs'] = \JWeiland\Events2\Hooks\Solr\IndexerHook104::class;
+        }
     }
 
     // Prefill event_begin with current Timestamp
