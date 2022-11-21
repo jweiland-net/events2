@@ -6,7 +6,9 @@ services:
 
   JWeiland\Events2\:
     resource: '../Classes/*'
-    exclude: '../Classes/Domain/Model/*'
+    exclude:
+      - '../Classes/Domain/Model/*'
+      - '../Classes/Hooks/Solr/{IndexerHook.php,IndexerHook104.php}'
 
   # Called by makeInstance in eID middleware
   JWeiland\Events2\Ajax\FindDaysForMonth:
@@ -55,10 +57,6 @@ services:
 
   # Called by makeInstance from EXT:form
   JWeiland\Events2\Hooks\Form\PrefillCategoriesHook:
-    public: true
-
-  # Called by makeInstance from EXT:solr
-  JWeiland\Events2\Hooks\Solr\IndexerHook:
     public: true
 
   # Called by makeInstance from EXT:solr
