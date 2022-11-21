@@ -7,6 +7,10 @@
 ChangeLog
 =========
 
+**Version 8.1.3**
+
+- Bugfix: Add compatibility to solr version 11.2 in IndexerHook
+
 **Version 8.1.2**
 
 - Bugfix: Events2PageTitleProvider only works on detail plugin
