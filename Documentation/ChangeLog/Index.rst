@@ -7,6 +7,10 @@
 ChangeLog
 =========
 
+**Version 8.1.5**
+
+- Bugfix: Use interface_exists instead of class_exists in Services.php
+
 **Version 8.1.4**
 
 - Bugfix: Load IndexerHook for solr individual in Services.php
