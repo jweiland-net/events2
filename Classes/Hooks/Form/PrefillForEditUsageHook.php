@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Hooks\Form;
 
 use JWeiland\Events2\Domain\Finisher\SaveEventFinisher;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
@@ -187,6 +188,9 @@ class PrefillForEditUsageHook
                 && method_exists($queryBuilder->expr(), $expression['expression'])
             ) {
                 $value = $expression['value'];
+                $stringExplodeValue = isset($expression['strExplodeValue']) && (int)$expression['strExplodeValue'] === 1;
+                $intExplodeValue = isset($expression['intExplodeValue']) && (int)$expression['intExplodeValue'] === 1;
+
                 if (strpos($value, ':') !== false) {
                     [$type, $column] = GeneralUtility::trimExplode(':', trim($value, '{}'));
                     if ($type === 'event') {
@@ -194,10 +198,19 @@ class PrefillForEditUsageHook
                     }
                 }
 
+                $type = \PDO::PARAM_STR;
+                if ($stringExplodeValue) {
+                    $value = GeneralUtility::trimExplode(',', $value, true);
+                    $type = Connection::PARAM_STR_ARRAY;
+                } elseif ($intExplodeValue) {
+                    $value = GeneralUtility::intExplode(',', $value, true);
+                    $type = Connection::PARAM_INT_ARRAY;
+                }
+
                 $constraints[] = call_user_func(
                     [$queryBuilder->expr(), $expression['expression']],
                     $expression['column'],
-                    $queryBuilder->createNamedParameter($value)
+                    $queryBuilder->createNamedParameter($value, $type)
                 );
             }
         }
