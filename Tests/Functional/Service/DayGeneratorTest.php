@@ -303,7 +303,8 @@ class DayGeneratorTest extends FunctionalTestCase
     }
 
     /**
-     * The earliest switch to wintertime for the next 30 years is 25. october
+     * As the earliest date for summer- to wintertime switches is the 25. october,
+     * calculated for the next 30 year, I have chosen the 20.10. to be safe.
      *
      * @test
      *
@@ -311,16 +312,18 @@ class DayGeneratorTest extends FunctionalTestCase
      */
     public function initializeWithRecurringWeeksWillKeepDaylightSavingTime(): void
     {
-        $timestamp = mktime(0, 0, 0, 10, 20, 2017);
-        // this test has to build days in past. To allow this we have to set recurring past to a high value
+        $timestampEventBeginSummerTime = mktime(0, 0, 0, 10, 20, 2017);
+        $timestampRecurringEndWinterTime = mktime(0, 0, 0, 11, 3, 2017);
+
+        // This test has to build days in the past. To allow this we have to set recurring past to a high value.
         // Maybe you have to update this value or the year above in future
+        // ({current year} - {year from above: 2017}) * 12 months + add some extra months = value for recurring past
         $extConf = new ExtConf(new ExtensionConfiguration());
-        $extConf->setRecurringPast(60);
+        $extConf->setRecurringPast(100);
 
         // These dates will be created with timezone_type = 1, which does know the timezone (+02:00) only from the current date
-        $eventBegin = new \DateTime(date('c', $timestamp));
-        $eventEnd = clone $eventBegin;
-        $eventEnd->modify('+14 days');
+        $eventBegin = new \DateTime(date('c', $timestampEventBeginSummerTime));
+        $recurringEnd = new \DateTime(date('c', $timestampRecurringEndWinterTime));
 
         // adding a correct timezone (Europe/Berlin) will know the timezone from now on until forever
         $expectedBegin = clone $eventBegin;
@@ -332,7 +335,7 @@ class DayGeneratorTest extends FunctionalTestCase
         $event->_setProperty('uid', 123);
         $event->setEventType('recurring');
         $event->setEventBegin($eventBegin);
-        $event->setEventEnd($eventEnd);
+        $event->setRecurringEnd($recurringEnd);
         $event->setXth(31);
         $event->setWeekday(127);
         $event->setEachWeeks(2);
@@ -1011,47 +1014,6 @@ class DayGeneratorTest extends FunctionalTestCase
 
         $exception = new Exception();
         $exception->setExceptionType('Info');
-        $exceptions = new ObjectStorage();
-        $exceptions->attach($exception);
-
-        $event = new Event();
-        $event->_setProperty('uid', 123);
-        $event->setEventType('duration');
-        $event->setEventBegin($eventBegin);
-        $event->setEventEnd($tomorrow);
-        $event->setXth(31);
-        $event->setWeekday(127);
-        $event->setEachWeeks(0);
-        $event->setEachMonths(0);
-        $event->setExceptions($exceptions);
-
-        $expectedDays = [];
-        $expectedDays[$eventBegin->format('U')] = $eventBegin;
-        $expectedDays[$tomorrow->format('U')] = $tomorrow;
-
-        self::assertTrue($this->subject->initialize($event));
-        self::assertEquals(
-            $expectedDays,
-            $this->subject->getDateTimeStorage()
-        );
-    }
-
-    /**
-     * @test
-     *
-     * @throws \Exception
-     *
-     * @expectedException \Exception
-     */
-    public function initializeWithInvalidExceptionThrowsException(): void
-    {
-        $eventBegin = new \DateTime();
-        $eventBegin->modify('midnight');
-        $tomorrow = clone $eventBegin;
-        $tomorrow->modify('tomorrow');
-
-        $exception = new Exception();
-        $exception->setExceptionType('Invalid Value');
         $exceptions = new ObjectStorage();
         $exceptions->attach($exception);
 
