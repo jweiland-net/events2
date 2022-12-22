@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Hooks\Form;
 
-use JWeiland\Events2\Domain\Finisher\SaveEventFinisher;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
