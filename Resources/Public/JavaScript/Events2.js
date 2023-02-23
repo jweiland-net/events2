@@ -134,7 +134,8 @@ let Events2 = function ($element) {
       new Litepicker({
         element: $inputWithDatePicker,
         format: me.dateFormat,
-        singleMode: true
+        singleMode: true,
+        resetButton: true
       });
     });
   };
