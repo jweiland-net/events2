@@ -82,7 +82,7 @@ renderables:
     variants:
     -
       identifier: show-event-end
-      condition: 'formValues["choose-event-type"] == "duration"'
+      condition: 'traverse(formValues, "choose-event-type") == "duration"'
       renderingOptions:
         enabled: true
   -
@@ -100,7 +100,7 @@ renderables:
     variants:
     -
       identifier: show-recurring-end
-      condition: 'formValues["choose-event-type"] == "recurring"'
+      condition: 'traverse(formValues, "choose-event-type") == "recurring"'
       renderingOptions:
         enabled: true
   -
@@ -265,7 +265,7 @@ renderables:
     variants:
     -
       identifier: variant-1
-      condition: 'formValues["choose-event-type"] == "recurring"'
+      condition: 'traverse(formValues, "choose-event-type") == "recurring"'
       renderingOptions:
         enabled: true
   -
@@ -308,7 +308,7 @@ renderables:
   variants:
   -
     identifier: activate-step-3
-    condition: 'formValues["choose-event-type"] == "recurring"'
+    condition: 'traverse(formValues, "choose-event-type") == "recurring"'
     renderingOptions:
       enabled: true
   renderables:
@@ -341,7 +341,7 @@ renderables:
     variants:
     -
       identifier: variant-time-monday
-      condition: 'formValues["weekday"] && "1" in formValues["weekday"]'
+      condition: 'traverse(formValues, "weekday") && "1" in formValues["weekday"]'
       renderingOptions:
         enabled: true
     validators:
@@ -381,7 +381,7 @@ renderables:
     variants:
     -
       identifier: variant-time-tuesday
-      condition: 'formValues["weekday"] && "2" in formValues["weekday"]'
+      condition: 'traverse(formValues, "weekday") && "2" in formValues["weekday"]'
       renderingOptions:
         enabled: true
     validators:
@@ -421,7 +421,7 @@ renderables:
     variants:
     -
       identifier: variant-time-wednesday
-      condition: 'formValues["weekday"] && "4" in formValues["weekday"]'
+      condition: 'traverse(formValues, "weekday") && "4" in formValues["weekday"]'
       renderingOptions:
         enabled: true
     validators:
@@ -461,7 +461,7 @@ renderables:
     variants:
     -
       identifier: variant-time-thursday
-      condition: 'formValues["weekday"] && "8" in formValues["weekday"]'
+      condition: 'traverse(formValues, "weekday") && "8" in formValues["weekday"]'
       renderingOptions:
         enabled: true
     validators:
@@ -501,7 +501,7 @@ renderables:
     variants:
     -
       identifier: variant-time-friday
-      condition: 'formValues["weekday"] && "16" in formValues["weekday"]'
+      condition: 'traverse(formValues, "weekday") && "16" in formValues["weekday"]'
       renderingOptions:
         enabled: true
     validators:
@@ -541,7 +541,7 @@ renderables:
     variants:
     -
       identifier: variant-time-saturday
-      condition: 'formValues["weekday"] && "32" in formValues["weekday"]'
+      condition: 'traverse(formValues, "weekday") && "32" in formValues["weekday"]'
       renderingOptions:
         enabled: true
     validators:
@@ -581,7 +581,7 @@ renderables:
     variants:
     -
       identifier: variant-time-sunday
-      condition: 'formValues["weekday"] && "64" in formValues["weekday"]'
+      condition: 'traverse(formValues, "weekday") && "64" in formValues["weekday"]'
       renderingOptions:
         enabled: true
     validators:

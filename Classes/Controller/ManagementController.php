@@ -80,7 +80,7 @@ class ManagementController extends AbstractController
     {
         $events = $this->eventRepository->findMyEvents();
         $this->postProcessAndAssignFluidVariables([
-            'events' => $events
+            'events' => $events,
         ]);
         CacheUtility::addPageCacheTagsByQuery($events->getQuery());
     }
@@ -103,7 +103,7 @@ class ManagementController extends AbstractController
         $this->postProcessAndAssignFluidVariables([
             'event' => GeneralUtility::makeInstance(Event::class),
             'locations' => $this->locationRepository->findAll(),
-            'selectableCategories' => $categories
+            'selectableCategories' => $categories,
         ]);
     }
 
@@ -127,7 +127,7 @@ class ManagementController extends AbstractController
         $this->dayRelationService->createDayRelations($event->getUid());
 
         $this->postProcessAndAssignFluidVariables([
-            'event' => $event
+            'event' => $event,
         ]);
 
         $this->sendMail('create');
@@ -156,7 +156,7 @@ class ManagementController extends AbstractController
         $this->postProcessAndAssignFluidVariables([
             'event' => $event,
             'locations' => $this->locationRepository->findAll(),
-            'selectableCategories' => $categories
+            'selectableCategories' => $categories,
         ]);
     }
 
@@ -180,7 +180,7 @@ class ManagementController extends AbstractController
         $this->dayRelationService->createDayRelations($event->getUid());
 
         $this->postProcessAndAssignFluidVariables([
-            'event' => $event
+            'event' => $event,
         ]);
 
         // if editor edits this hidden record, mail should not be send
@@ -188,7 +188,7 @@ class ManagementController extends AbstractController
             $this->sendMail('update');
         }
         $this->addFlashMessage(LocalizationUtility::translate('eventUpdated', 'events2'));
-        $this->redirect('listMyEvents', 'Event');
+        $this->redirect('listMyEvents', 'Management');
     }
 
     public function performAction(): void
@@ -234,7 +234,7 @@ class ManagementController extends AbstractController
             $this->eventRepository->update($eventObject);
 
             $this->postProcessAndAssignFluidVariables([
-                'event' => $eventObject
+                'event' => $eventObject,
             ]);
 
             $this->addFlashMessage(LocalizationUtility::translate(
