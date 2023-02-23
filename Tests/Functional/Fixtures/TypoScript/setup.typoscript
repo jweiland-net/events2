@@ -38,7 +38,6 @@ plugin.tx_events2 {
     pidOfSearchResults = 3
     pidOfLocationPage = 4
     pidOfListPage = 1
-    includeDeTranslationForCalendar = 0
     userGroup = 1
     remainingLetters = 250
     selectableCategoriesForNewEvents = 1,12,123
