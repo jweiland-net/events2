@@ -73,7 +73,6 @@ plugin.tx_events2 {
     pidOfLocationPage = {$plugin.tx_events2.settings.pidOfLocationPage}
     pidOfNewLocationPage = {$plugin.tx_events2.settings.pidOfNewLocationPage}
     pidOfListPage = {$plugin.tx_events2.settings.pidOfListPage}
-    includeDeTranslationForCalendar = {$plugin.tx_events2.settings.includeDeTranslationForCalendar}
     userGroup = {$plugin.tx_events2.settings.userGroup}
     remainingLetters = {$plugin.tx_events2.settings.remainingLetters}
     list {
