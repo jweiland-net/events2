@@ -56,13 +56,13 @@ class AdditionalFieldsForImport extends AbstractAdditionalFieldProvider
         'path' => [
             'default' => '',
             'attr' => [
-                'placeholder' => '1:/event_import/Import.xml'
+                'placeholder' => '1:/event_import/Import.xml',
             ],
         ],
         'storagePid' => [
             'default' => '0',
             'attr' => [
-                'placeholder' => '123'
+                'placeholder' => '123',
             ],
         ],
     ];
@@ -123,7 +123,7 @@ class AdditionalFieldsForImport extends AbstractAdditionalFieldProvider
             'code'     => $tagBuilder->render(),
             'label'    => LocalizationUtility::translate('scheduler.' . $fieldName, 'Events2'),
             'cshKey'   => '_MOD_events2_scheduler',
-            'cshLabel' => $fieldName
+            'cshLabel' => $fieldName,
         ];
     }
 

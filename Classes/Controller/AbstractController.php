@@ -82,20 +82,24 @@ class AbstractController extends ActionController implements LoggerAwareInterfac
     {
         // if this value was not set, then it will be filled with 0
         // but that is not good, because UriBuilder accepts 0 as pid, so it's better to set it to NULL
-        if (empty($this->settings['pidOfDetailPage'])) {
-            $this->settings['pidOfDetailPage'] = null;
+        if (empty($this->settings['pidOfListPage'])) {
+            $this->settings['pidOfListPage'] = null;
         }
 
-        if (empty($this->settings['pidOfSearchResults'])) {
-            $this->settings['pidOfSearchResults'] = null;
+        if (empty($this->settings['pidOfDetailPage'])) {
+            $this->settings['pidOfDetailPage'] = null;
         }
 
         if (empty($this->settings['pidOfLocationPage'])) {
             $this->settings['pidOfLocationPage'] = null;
         }
 
-        if (empty($this->settings['pidOfListPage'])) {
-            $this->settings['pidOfListPage'] = null;
+        if (empty($this->settings['pidOfManagementPage'])) {
+            $this->settings['pidOfManagementPage'] = null;
+        }
+
+        if (empty($this->settings['pidOfSearchResults'])) {
+            $this->settings['pidOfSearchResults'] = null;
         }
     }
 
@@ -125,8 +129,8 @@ class AbstractController extends ActionController implements LoggerAwareInterfac
             'data' => $data,
             'localization' => [
                 'locationFail' => LocalizationUtility::translate('error.locationFail', 'events2'),
-                'remainingText' => LocalizationUtility::translate('remainingLetters', 'events2')
-            ]
+                'remainingText' => LocalizationUtility::translate('remainingLetters', 'events2'),
+            ],
         ];
         ArrayUtility::mergeRecursiveWithOverrule($jsVariables, $override);
 

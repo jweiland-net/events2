@@ -52,6 +52,9 @@
 			<trans-unit id="pidOfLocationPage">
 				<source>Page UID for the event location</source>
 			</trans-unit>
+			<trans-unit id="pidOfManagementPage">
+				<source>Page UID with events2 plugin to manage event records</source>
+			</trans-unit>
 			<trans-unit id="pidOfSearchResults">
 				<source>Page UID of the search results</source>
 			</trans-unit>

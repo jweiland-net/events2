@@ -31,6 +31,7 @@
 		<f:case value="events2_show">
 			<f:render section="renderPidOfListPage" arguments="{pidOfListPage: pi_flexform_transformed.settings.pidOfListPage}" />
 			<f:render section="renderPidOfLocationPage" arguments="{pidOfLocationPage: pi_flexform_transformed.settings.pidOfLocationPage}" />
+			<f:render section="renderPidOfManagementPage" arguments="{pidOfManagementPage: pi_flexform_transformed.settings.pidOfManagementPage}" />
 			<f:render section="renderDisplayMode" arguments="{displayMode: pi_flexform_transformed.settings.display}" />
 		</f:case>
 		<f:case value="events2_management">
@@ -58,6 +59,7 @@
 				</td>
 			</tr>
 			<f:render section="renderPidOfDetailPage" arguments="{pidOfDetailPage: pi_flexform_transformed.settings.pidOfDetailPage}" />
+			<f:render section="renderPidOfManagementPage" arguments="{pidOfManagementPage: pi_flexform_transformed.settings.pidOfManagementPage}" />
 			<tr>
 				<td><strong>Merge Events same day</strong></td>
 				<td>
@@ -95,9 +97,7 @@
 	<f:if condition="{pidOfDetailPage}">
 		<tr>
 			<td><strong>Detail Page</strong></td>
-			<td>
-				{pidOfDetailPage}
-			</td>
+			<td>{pidOfDetailPage}</td>
 		</tr>
 	</f:if>
 </f:section>
@@ -106,9 +106,7 @@
 	<f:if condition="{pidOfListPage}">
 		<tr>
 			<td><strong>List Page</strong></td>
-			<td>
-				{pidOfListPage}
-			</td>
+			<td>{pidOfListPage}</td>
 		</tr>
 	</f:if>
 </f:section>
@@ -117,9 +115,16 @@
 	<f:if condition="{pidOfLocationPage}">
 		<tr>
 			<td><strong>Location Page</strong></td>
-			<td>
-				{pidOfLocationPage}
-			</td>
+			<td>{pidOfLocationPage}</td>
+		</tr>
+	</f:if>
+</f:section>
+
+<f:section name="renderPidOfManagementPage">
+	<f:if condition="{pidOfManagementPage}">
+		<tr>
+			<td><strong>Management Page</strong></td>
+			<td>{pidOfManagementPage}</td>
 		</tr>
 	</f:if>
 </f:section>
@@ -128,9 +133,7 @@
 	<f:if condition="{pidOfSearchResults}">
 		<tr>
 			<td><strong>Search Results Page</strong></td>
-			<td>
-				{pidOfSearchResults}
-			</td>
+			<td>{pidOfSearchResults}</td>
 		</tr>
 	</f:if>
 </f:section>
