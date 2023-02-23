@@ -11,7 +11,7 @@ call_user_func(static function (): void {
             \JWeiland\Events2\Controller\DayController::class => 'list, show',
             \JWeiland\Events2\Controller\LocationController::class => 'show',
             \JWeiland\Events2\Controller\VideoController::class => 'show',
-            \JWeiland\Events2\Controller\ICalController::class => 'download'
+            \JWeiland\Events2\Controller\ICalController::class => 'download',
         ]
     );
 
@@ -22,7 +22,7 @@ call_user_func(static function (): void {
             \JWeiland\Events2\Controller\DayController::class => 'show',
             \JWeiland\Events2\Controller\LocationController::class => 'show',
             \JWeiland\Events2\Controller\VideoController::class => 'show',
-            \JWeiland\Events2\Controller\ICalController::class => 'download'
+            \JWeiland\Events2\Controller\ICalController::class => 'download',
         ]
     );
 
@@ -30,11 +30,11 @@ call_user_func(static function (): void {
         'Events2',
         'Management',
         [
-            \JWeiland\Events2\Controller\ManagementController::class => 'listMyEvents, new, create, edit, update, perform, delete, activate'
+            \JWeiland\Events2\Controller\ManagementController::class => 'listMyEvents, new, create, edit, update, perform, delete, activate',
         ],
         // non-cacheable actions
         [
-            \JWeiland\Events2\Controller\ManagementController::class => 'create, edit, update, perform, delete, activate'
+            \JWeiland\Events2\Controller\ManagementController::class => 'create, edit, update, perform, delete, activate',
         ]
     );
 
@@ -42,7 +42,7 @@ call_user_func(static function (): void {
         'Events2',
         'Calendar',
         [
-            \JWeiland\Events2\Controller\CalendarController::class => 'show'
+            \JWeiland\Events2\Controller\CalendarController::class => 'show',
         ]
     );
 
@@ -50,11 +50,11 @@ call_user_func(static function (): void {
         'Events2',
         'SearchForm',
         [
-            \JWeiland\Events2\Controller\SearchController::class => 'show'
+            \JWeiland\Events2\Controller\SearchController::class => 'show',
         ],
         // Needs to be uncached, to show dynamic search values again after reload.
         [
-            \JWeiland\Events2\Controller\SearchController::class => 'show'
+            \JWeiland\Events2\Controller\SearchController::class => 'show',
         ]
     );
 
@@ -62,11 +62,11 @@ call_user_func(static function (): void {
         'Events2',
         'SearchResults',
         [
-            \JWeiland\Events2\Controller\SearchController::class => 'listSearchResults'
+            \JWeiland\Events2\Controller\SearchController::class => 'listSearchResults',
         ],
         // needs to be uncached to show fresh search results
         [
-            \JWeiland\Events2\Controller\SearchController::class => 'listSearchResults'
+            \JWeiland\Events2\Controller\SearchController::class => 'listSearchResults',
         ]
     );
 
@@ -162,13 +162,13 @@ call_user_func(static function (): void {
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['formDataGroup']['tcaDatabaseRecord'][\JWeiland\Events2\Backend\FormDataProvider\InitializeNewEventRecord::class] = [
         'depends' => [
             \TYPO3\CMS\Backend\Form\FormDataProvider\DatabaseRowInitializeNew::class,
-        ]
+        ],
     ];
     // Set rootUid of category trees in FlexForms to values of extension configuration
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['formDataGroup']['flexFormSegment'][\JWeiland\Events2\Backend\FormDataProvider\ModifyRootUidOfTreeSelectElements::class] = [
         'depends' => [
             \TYPO3\CMS\Backend\Form\FormDataProvider\TcaSelectItems::class,
-        ]
+        ],
     ];
 
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerTypeConverter(\JWeiland\Events2\Property\TypeConverter\DateTimeImmutableConverter::class);
@@ -176,8 +176,8 @@ call_user_func(static function (): void {
     $GLOBALS['TYPO3_CONF_VARS']['LOG']['JWeiland']['Events2']['writerConfiguration'] = [
         \TYPO3\CMS\Core\Log\LogLevel::WARNING => [
             \TYPO3\CMS\Core\Log\Writer\FileWriter::class => [
-                'logFileInfix' => 'events2'
-            ]
+                'logFileInfix' => 'events2',
+            ],
         ],
     ];
 
