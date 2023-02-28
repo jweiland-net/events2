@@ -38,7 +38,7 @@ Can I import events?
 ====================
 
 Yes. But currently only XML files are allowed. Please add Scheduler Task `Import events` and set a filepath
-to import. Examples of XML files are available at https://github.com/jweiland-net/events2/tree/master/Tests/Functional/Fixtures/XmlImport.
+to import. Examples of XML files are available at https://github.com/jweiland-net/events2/tree/main/Tests/Functional/Fixtures/XmlImport.
 
 We will validate the imported file against configuration in `EXT:events2/Resources/Public/XmlImportValidator.xsd`.
 
