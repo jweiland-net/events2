@@ -1,6 +1,7 @@
-.. include:: ../../../Includes.txt
+..  include:: /Includes.rst.txt
 
-.. _youTubeViewHelper:
+
+..  _youTubeViewHelper:
 
 ==========================
 CreateYoutubeUrlViewHelper
@@ -16,8 +17,8 @@ Youtube ID: B5gDI2h0F20
 Embedded link: //www.youtube.com/embed/B5gDI2h0F20
 
 Basic example
-"""""""""""""
+--------------
 
-.. code-block:: html
+..  code-block:: html
 
-   <iframe width="560" height="315" src="{e2:createYoutubeUri(link: event.videoLink.link)}" frameborder="0" allowfullscreen></iframe>
+    <iframe width="560" height="315" src="{e2:createYoutubeUri(link: event.videoLink.link)}" frameborder="0" allowfullscreen></iframe>

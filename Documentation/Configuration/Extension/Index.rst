@@ -1,6 +1,7 @@
-﻿.. include:: ../../Includes.txt
+﻿..  include:: /Includes.rst.txt
 
-.. _extensionSettings:
+
+..  _extensionSettings:
 
 ==================
 Extension Settings
@@ -31,11 +32,11 @@ Default: 0
 If you have many sys_category records with huge trees in your TYPO3 project, it may make sense to
 reduce the category trees in events2 plugins to a parent category UID (root UID).
 
-.. tip::
+..  tip::
 
-   Using TCA option `rootUid` for trees is deprecated since TYPO3 11. `events2` will take care
-   of that and updates the new option `startingPoints` automatically for you, if you set this
-   option here.
+    Using TCA option `rootUid` for trees is deprecated since TYPO3 11. `events2` will take care
+    of that and updates the new option `startingPoints` automatically for you, if you set this
+    option here.
 
 recurringPast
 -------------

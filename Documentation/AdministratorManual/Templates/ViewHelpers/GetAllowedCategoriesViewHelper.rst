@@ -1,6 +1,7 @@
-.. include:: ../../../Includes.txt
+..  include:: /Includes.rst.txt
 
-.. _getAllowedCategoriesViewHelper:
+
+..  _getAllowedCategoriesViewHelper:
 
 ==============================
 GetAllowedCategoriesViewHelper
@@ -19,8 +20,8 @@ the allowed categories only.
 Example
 =======
 
-.. code-block:: html
+..  code-block:: html
 
-   <f:for each="{e2:getAllowedCategories(event: event, pluginCategories: settings.categories)}" as="category" iteration="iterator">
-     <f:if condition="{iterator.isFirst}">{category.title}</f:if>
-   </f:for>
+    <f:for each="{e2:getAllowedCategories(event: event, pluginCategories: settings.categories)}" as="category" iteration="iterator">
+      <f:if condition="{iterator.isFirst}">{category.title}</f:if>
+    </f:for>

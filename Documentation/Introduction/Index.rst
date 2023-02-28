@@ -1,6 +1,7 @@
-﻿.. include:: ../Includes.txt
+﻿..  include:: /Includes.rst.txt
 
-.. _introduction:
+
+..  _introduction:
 
 ============
 Introduction
@@ -17,9 +18,9 @@ records. If you change a description, one event record will be updated only.
 
 You can create different types of events:
 
-* Single: An event for just one day
-* Duration: An event like 17.07.2020-20.07.2020
-* Recurring: An event like 1st and 3rd monday and friday a month, except 23.07.2020 and different time on friday
+*   Single: An event for just one day
+*   Duration: An event like 17.07.2020-20.07.2020
+*   Recurring: An event like 1st and 3rd monday and friday a month, except 23.07.2020 and different time on friday
 
 Screenshots
 ===========
@@ -29,7 +30,7 @@ See events2 in action.
 Output Frontend
 ---------------
 
-.. figure:: ../Images/Introduction/events2-list.jpg
-   :width: 500px
-   :align: left
-   :alt: Output of list in frontend
+..  figure:: ../Images/Introduction/events2-list.jpg
+    :width: 500px
+    :align: left
+    :alt: Output of list in frontend

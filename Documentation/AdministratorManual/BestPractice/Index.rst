@@ -1,6 +1,7 @@
-.. include:: ../../Includes.txt
+..  include:: /Includes.rst.txt
 
-.. _bestPractice:
+
+..  _bestPractice:
 
 =============
 Best Practice
@@ -8,8 +9,8 @@ Best Practice
 
 This chapter describes some best practice concepts
 
-.. toctree::
-   :maxdepth: 2
+..  toctree::
+    :maxdepth: 2
 
-   ClearCache/Index
-   DynamicPageTitle
+    ClearCache/Index
+    DynamicPageTitle

@@ -1,6 +1,7 @@
-.. include:: ../../../Includes.txt
+..  include:: /Includes.rst.txt
 
-.. _getMergedEventTimesViewHelper:
+
+..  _getMergedEventTimesViewHelper:
 
 =============================
 GetMergedEventTimesViewHelper
@@ -19,10 +20,10 @@ the correct time record(s) as array.
 Example
 =======
 
-.. code-block:: html
+..  code-block:: html
 
-   <f:alias map="{times: '{e2:getMergedEventTimes(event: day.event, date: date)}'}">
-     <f:for each="{times}" as="time">
-       <f:render section="showDateAndTime" arguments="{day: day, date: date, time: time}" />
-     </f:for>
-   </f:alias>
+    <f:alias map="{times: '{e2:getMergedEventTimes(event: day.event, date: date)}'}">
+      <f:for each="{times}" as="time">
+        <f:render section="showDateAndTime" arguments="{day: day, date: date, time: time}" />
+      </f:for>
+    </f:alias>

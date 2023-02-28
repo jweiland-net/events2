@@ -1,43 +1,59 @@
-.. every .rst file should include Includes.txt
-.. use correct path!
+..  include:: /Includes.rst.txt
 
-.. include:: Includes.txt
-
-.. Every manual should have a start label for cross-referencing to
-.. start page. Do not remove this!
 
 .. _start:
 
+========
+Events 2
+========
+
+:Extension key:
+    events2
+
+:Package name:
+    jweiland-net/events2
+
 :Version:
-   8.0
+    |release|
 
 :Language:
-   en
+    en
 
-:Authors:
-   Stefan Froemken
-
-:Email:
-   projects@jweiland.net
+:Author:
+    Stefan Froemken
 
 :License:
-   This extension documentation is published under the
-   `CC BY-NC-SA 4.0 <https://creativecommons.org/licenses/by-nc-sa/4.0/>`__ (Creative Commons)
-   license
+    This document is published under the
+    `Creative Commons BY 4.0 <https://creativecommons.org/licenses/by/4.0/>`__
+    license.
 
-{extension.description}
+:Rendered:
+    |today|
 
-**Extension Manual**
+----
 
-This documentation is for the TYPO3 extension events2.
+Organize your single and recurring events
 
-.. toctree::
-   :maxdepth: 2
+----
 
-   Introduction/Index
-   Installation/Index
-   Configuration/Index
-   UserManual/Index
-   AdministratorManual/Index
-   FAQ/Index
-   ChangeLog/Index
+**Table of Contents:**
+
+..  toctree::
+    :maxdepth: 2
+    :titlesonly:
+
+    Introduction/Index
+    Installation/Index
+    Configuration/Index
+    UserManual/Index
+    AdministratorManual/Index
+    FAQ/Index
+    ChangeLog/Index
+
+..  Meta Menu
+
+..  toctree::
+    :hidden:
+
+    Sitemap
+    genindex

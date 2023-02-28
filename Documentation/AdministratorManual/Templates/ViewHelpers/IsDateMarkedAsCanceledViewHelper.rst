@@ -1,6 +1,7 @@
-.. include:: ../../../Includes.txt
+..  include:: /Includes.rst.txt
 
-.. _isDateMarkedAsCanceledViewHelper:
+
+..  _isDateMarkedAsCanceledViewHelper:
 
 ================================
 IsDateMarkedAsCanceledViewHelper
@@ -13,10 +14,10 @@ date (\DateTime) and you will know, if this event was canceled for specifix date
 Example
 =======
 
-.. code-block:: html
+..  code-block:: html
 
-   <strong>
-     {f:if(condition: '{e2:isDateMarkedAsCanceled(event: day.event, date: date)}', then: '<s>')}
-     {date->f:format.date(format: '%A, %d.%m.%Y')}
-     {f:if(condition: '{e2:isDateMarkedAsCanceled(event: day.event, date: date)}', then: '</s>')}
-   </strong>
+    <strong>
+      {f:if(condition: '{e2:isDateMarkedAsCanceled(event: day.event, date: date)}', then: '<s>')}
+      {date->f:format.date(format: '%A, %d.%m.%Y')}
+      {f:if(condition: '{e2:isDateMarkedAsCanceled(event: day.event, date: date)}', then: '</s>')}
+    </strong>

@@ -1,6 +1,7 @@
-.. include:: ../../Includes.txt
+..  include:: /Includes.rst.txt
 
-.. _typoScript:
+
+..  _typoScript:
 
 ==========
 TypoScript
@@ -50,20 +51,20 @@ Example: `plugin.tx_events2.persistence.storagePid = 12,32,48`
 
 Set this value to a Storage Folder where you have stored the event records.
 
-.. important::
+..  important::
 
-   If you have stored Organizers and Locations in another Storage Folder, you have to add theses
-   PIDs here, too.
+    If you have stored Organizers and Locations in another Storage Folder, you have to add theses
+    PIDs here, too.
 
-.. tip::
+..  tip::
 
-   If you use creation of events over frontend plugin, new records will be stored in first PID found
-   in storagePid. To store record in other storage PIDs you need following configuration
+    If you use creation of events over frontend plugin, new records will be stored in first PID found
+    in storagePid. To store record in other storage PIDs you need following configuration
 
-   .. code-block:: typoscript
+    .. code-block:: typoscript
 
-      plugin.tx_events2.persistence.classes.JWeiland\Events2\Domain\Model\Event.newRecordStoragePid = 34
-      plugin.tx_events2.persistence.classes.JWeiland\Events2\Domain\Model\Location.newRecordStoragePid = 543
+        plugin.tx_events2.persistence.classes.JWeiland\Events2\Domain\Model\Event.newRecordStoragePid = 34
+        plugin.tx_events2.persistence.classes.JWeiland\Events2\Domain\Model\Location.newRecordStoragePid = 543
 
 settings
 ========
@@ -161,10 +162,10 @@ Example: `plugin.tx_events2.settings.latest.amountOfRecordsToShow = 12`
 
 How many records should be displayed in latest view.
 
-.. important::
+..  important::
 
-   There is no PageBrowser for latest view! So please be careful setting this value to a very high value.
-   It can slow down rendering a lot.
+    There is no PageBrowser for latest view! So please be careful setting this value to a very high value.
+    It can slow down rendering a lot.
 
 pageBrowser
 -----------
@@ -179,30 +180,6 @@ Default: 15
 Example: `plugin.tx_events2.settings.pageBrowser.itemsPerPage = 5`
 
 Max amount of records to show for each page in PageBrowser.
-
-insertAbove
-~~~~~~~~~~~
-
-Removed with events2 version 7.0.0.
-
-Please edit fluid template and move PageBrowser on your own.
-
-insertBelow
-~~~~~~~~~~~
-
-Removed with events2 version 7.0.0.
-
-Please edit fluid template and move PageBrowser on your own.
-
-maximumNumberOfLinks
---------------------
-
-Removed with events2 version 7.0.0.
-
-The new PageBrowser does not have any numbered page links like 1, 2, 3, 4.
-
-As a developer you can use `PostProcessFluidVariablesEvent` to implement another
-PageBrowser solution and reactivate this option here.
 
 _LOCAL_LANG
 -----------
