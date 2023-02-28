@@ -1,6 +1,7 @@
-.. include:: ../../../Includes.txt
+..  include:: /Includes.rst.txt
 
-.. _feUserViewHelper:
+
+..  _feUserViewHelper:
 
 ================
 FeUserViewHelper
@@ -12,6 +13,6 @@ returns its value. We have removed the *password* property for security reasons.
 Example
 =======
 
-.. code-block:: html
+..  code-block:: html
 
-   {e2:feUser(field: 'username')}
+    {e2:feUser(field: 'username')}

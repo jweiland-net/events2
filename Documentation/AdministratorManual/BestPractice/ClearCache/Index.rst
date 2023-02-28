@@ -1,6 +1,7 @@
-.. include:: ../../../Includes.txt
+..  include:: /Includes.rst.txt
 
-.. _clearCache:
+
+..  _clearCache:
 
 ========================================
 Clearing the cache after editing records
@@ -16,7 +17,10 @@ If you use other ways of displaying event records, the cache is not flushed auto
 
 This can be done automatically by using this command in the PageTsConfig:
 
-``TCEMAIN.clearCacheCmd = 123,124,125``
+
+..  code-block:: typoscript
+
+    TCEMAIN.clearCacheCmd = 123,124,125
 
 The code needs to be added to the sys folder where the event records are edited. Change the example page ids to
 the ones which should be cleared.

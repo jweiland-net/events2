@@ -1,6 +1,7 @@
-.. include:: ../../Includes.txt
+..  include:: /Includes.rst.txt
 
-.. _update:
+
+..  _upgrade:
 
 =======
 Upgrade
@@ -41,23 +42,25 @@ Fluid widget functionality was completely removed in TYPO3 11.
 
 Instead of `ICalWidget` please use link to action of our new ICalController:
 
-.. code-block:: html
+..  code-block:: html
 
-   <f:link.action action="download" controller="ICal" target="_blank" arguments="{dayUid: day.uid}">
-       {f:translate(key: 'export')}
-   </f:link.action>
+    <f:link.action action="download" controller="ICal" target="_blank" arguments="{dayUid: day.uid}">
+      {f:translate(key: 'export')}
+    </f:link.action>
 
 Instead of `PoiCollectionWizard` in Location/Show.html please migrate to:
 
-.. code-block:: html
+..  code-block:: html
 
-   <f:render partial="Maps2/PoiCollection"
-       section="showMap"
-       arguments="{poiCollections: {0: location.txMaps2Uid}, override: {settings: {mapWidth: '100%', mapHeight: '300', zoom: '14'}}}" />
+    <f:render partial="Maps2/PoiCollection"
+              section="showMap"
+              arguments="{poiCollections: {0: location.txMaps2Uid}, override: {settings: {mapWidth: '100%', mapHeight: '300', zoom: '14'}}}" />
 
 and check, if path to EXT:maps2 partial still matches your needs:
 
-`plugin.tx_events2.view.partialRootPaths.2 = EXT:maps2/Resources/Private/Partials/`
+..  code-block:: typoscript
+
+    plugin.tx_events2.view.partialRootPaths.2 = EXT:maps2/Resources/Private/Partials/
 
 https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/11.0/Breaking-92529-AllFluidWidgetFunctionalityRemoved.html
 
@@ -77,10 +80,10 @@ the f:widget.paginate widget to new TYPO3 Pagination API.
 
 Please remove the f:widget.paginate from Templates and insert this code:
 
-.. code-block:: html
+..  code-block:: html
 
-   <f:render partial="Component/Pagination"
-             arguments="{pagination: pagination, paginator: paginator, actionName: actionName}" />
+    <f:render partial="Component/Pagination"
+              arguments="{pagination: pagination, paginator: paginator, actionName: actionName}" />
 
 
 Upgrade to Version 7.0.0
@@ -112,17 +115,23 @@ executed successfully you can remove the old ``organizer`` column.
 
 Please update following parts in your templates:
 
-<f:if condition="{e2:feUser(field: 'tx_events2_organizer')} == {event.organizer.uid}">
+..  code-block:: html
 
-to ``<f:if condition="{event.isCurrentUserAllowedOrganizer}">``.
+    <f:if condition="{e2:feUser(field: 'tx_events2_organizer')} == {event.organizer.uid}">
 
-We have changed the column ``detail_informations`` of event table to ``detail_information``. Please execute
+to
+
+..  code-block:: html
+
+    <f:if condition="{event.isCurrentUserAllowedOrganizer}">
+
+We have changed the column `detail_informations` of event table to `detail_information`. Please execute
 UpgradeWizard to move all data into this new column. Old calls to getDetailInformations are still possible but
 deprecated and removed with events2 7.0.0.
 
-In XSD file for XML import we have changed ``organizer`` to ``organizers``. Please update your XML file generation
+In XSD file for XML import we have changed `organizer` to `organizers`. Please update your XML file generation
 or load an old XSD file in Extension Settings of Installtool. But with 7.0.0 we will not support the old
-``organizer`` property while XML import anymore.
+`organizer` property while XML import anymore.
 
 Update to Version 6.2.6
 =======================
@@ -185,9 +194,10 @@ Update to Version 3.7.0
 
 New Feature:
 We have added 3 new getters to Time object:
--> getTimeEntryAsDateTime
--> getTimeBeginAsDateTime
--> getTimeEndAsDateTime
+
+*   getTimeEntryAsDateTime
+*   getTimeBeginAsDateTime
+*   getTimeEndAsDateTime
 
 These are very helpful as you now can format them with f:format.date() VH
 
@@ -229,14 +239,14 @@ In earlier versions you may have done:
 This will not work anymore, as it would be very hard for integrator to place the container for remaining chars
 correctly. Please change this part to:
 
-.. code-block:: html
+..  code-block:: html
 
- <div class="form-group row">
-   <div class="col-sm-4"></div>
-   <div class="col-sm-8">
-     <span class="remainingChars" data-id="teaser"></span>
-   </div>
- </div>
+    <div class="form-group row">
+      <div class="col-sm-4"></div>
+      <div class="col-sm-8">
+        <span class="remainingChars" data-id="teaser"></span>
+      </div>
+    </div>
 
 
 Use data-id to relate it to a textarea id-attribute.
@@ -244,10 +254,10 @@ Use data-id to relate it to a textarea id-attribute.
 Upgrade to Version 3.0.0
 ========================
 
-* We have removed GetEventDates VH and implemented a completely new way to get future event dates.
-* We have removed MicroStart VH
-* We have removed MicroStop VH
-* We have removed Sort VH, as sorting in VH is always a bad idea.
+*   We have removed GetEventDates VH and implemented a completely new way to get future event dates.
+*   We have removed MicroStart VH
+*   We have removed MicroStop VH
+*   We have removed Sort VH, as sorting in VH is always a bad idea.
 
 In previous versions we had the problem, that an added day as exception will never be of type Day. It is of
 type Exception with different properties then a Day, which made us many headaches in Fluid-Templates. In
@@ -256,21 +266,21 @@ information. You can't control and you may not understand how this array was bui
 solved this problem and simplified Fluid template a lot. Instead of modifying the DB tables and models we have
 reduced some method-calls down to the DateTime representation of Day and Exception records:
 
-* Renamed EventService::getSortedTimesForDay to EventService::getSortedTimesForDate
-  * Property $day changed from type Day to \DateTime
-* Renamed EventService::getDifferentTimesForDay to EventService::getDifferentTimesForDate
-  * Property $day changed from type Day to \DateTime
-* Renamed EventService::getTimesForDay to EventService::getTimesForDate
-  * Property $day changed from type Day to \DateTime
-* Renamed EventService::getExceptionsForDay to EventService::getExceptionsForDate
-  * Property $day changed from type Day to \DateTime
+*   Renamed EventService::getSortedTimesForDay to EventService::getSortedTimesForDate
+    *   Property $day changed from type Day to \DateTime
+*   Renamed EventService::getDifferentTimesForDay to EventService::getDifferentTimesForDate
+    *   Property $day changed from type Day to \DateTime
+*   Renamed EventService::getTimesForDay to EventService::getTimesForDate
+    *   Property $day changed from type Day to \DateTime
+*   Renamed EventService::getExceptionsForDay to EventService::getExceptionsForDate
+    *   Property $day changed from type Day to \DateTime
 
 So, please check your own extensions, if you make use of these methods. To solve the problem from above, we have
 implemented two new ViewHelpers. Please have a look into our new templates and update your own templates
 to the new structure:
 
-* New VH: GetExceptionsFromEventForSpecificDate
-* New VH: IsDateMarkedAsCanceled
+*   New VH: GetExceptionsFromEventForSpecificDate
+*   New VH: IsDateMarkedAsCanceled
 
 Event property `download_links` can now collect more then one link. Please update DB in Installtool and clear
 system caches.
@@ -292,16 +302,16 @@ With version 2.3.0 we have rewritten the frontend Events2.js completely. Now it 
 it prevents executing JavaScript, if it is not valid for current view. That's why we have some changes in our
 templates:
 
-* Remove all siteId variables. Please use {data.pid} instead
-* Remove all jsSearchVariables. They are now all available in just jsVariables
-* All jsVariables are removed from Templates and Partials and has to be in all Layout file now
-* The <div> for remainingChars has been removed as it will be created dynamically with JS now
-* CSS class addRemainingCharsCheck activates max chars feature for textareas automatically
-* The <span> for locationStatus has been removed as it will be created dynamically with JS now
-* Change CSS class powermail_input to form-control in Event/FormFields Partial
-* Move records for selectboxes in search plugin from {data} to {selectorData}
-* Make data with current tt_content record available in jsVariables, too.
-* We have added two more Layouts. Please adjust the new path in your templates.
+*   Remove all siteId variables. Please use {data.pid} instead
+*   Remove all jsSearchVariables. They are now all available in just jsVariables
+*   All jsVariables are removed from Templates and Partials and has to be in all Layout file now
+*   The <div> for remainingChars has been removed as it will be created dynamically with JS now
+*   CSS class addRemainingCharsCheck activates max chars feature for textareas automatically
+*   The <span> for locationStatus has been removed as it will be created dynamically with JS now
+*   Change CSS class powermail_input to form-control in Event/FormFields Partial
+*   Move records for selectboxes in search plugin from {data} to {selectorData}
+*   Make data with current tt_content record available in jsVariables, too.
+*   We have added two more Layouts. Please adjust the new path in your templates.
 
 We have removed TypoLinkCodecService as it was only needed by our own TypoLink VH and is part of TYPO3
 since TYPO3 7.*.
@@ -310,17 +320,17 @@ Organizer and Location are not required anymore by default. If you still need th
 go into ExtensionManager and set them as required. This change results into some further changes
 to our templates:
 
-* Add if to render section "location" only if a location is available
-* Add if to render section "googleRoute" only if a location is available
-* Add if to render section "organizer" only if a organizer is available
-* Add if to location to prevent rendering footer for each event in list
-* Move <p>-Tag, for editing your own records in FE, inside of the if
-* Add if to organizer and location in Create.html
-* Add if to organizer and location in Update.html
+*   Add if to render section "location" only if a location is available
+*   Add if to render section "googleRoute" only if a location is available
+*   Add if to render section "organizer" only if a organizer is available
+*   Add if to location to prevent rendering footer for each event in list
+*   Move <p>-Tag, for editing your own records in FE, inside of the if
+*   Add if to organizer and location in Create.html
+*   Add if to organizer and location in Update.html
 
 We have moved all email settings in ExtConf to new tab "Email"
 
-EXT maps2 is not a hard-coded dependency to events2 anymore, but we still suggest it in ext_emconf.php.
+EXT `maps2` is not a hard-coded dependency to events2 anymore, but we still suggest it in ext_emconf.php.
 
 Upgrade to Version 2.0.0
 ========================
@@ -328,11 +338,11 @@ Upgrade to Version 2.0.0
 Version 2.0.0 will come with some new cols and we have removed some cols. So please be careful while comparing
 database with TCA definition after upgrading.
 
-.. important::
+..  important::
 
-   Please do **not** delete cols in InstallTool after installing the new version! Only add the new fields,
-   than go into Extensionmanager, select events2 and start the upgrade script. Delete the old cols in InstallTool
-   only, if the upgrade script symbol will not appear in Extensionmanager anymore.
+    Please do **not** delete cols in InstallTool after installing the new version! Only add the new fields,
+    than go into Extensionmanager, select events2 and start the upgrade script. Delete the old cols in InstallTool
+    only, if the upgrade script symbol will not appear in Extensionmanager anymore.
 
 We have removed ShowEventDatesViewHelper, because it was sometimes too hard to change that template. So we have
 moved that widget into a normal ViewHelper. Please use GetEventDatesViewHelper instead, you can find an example in

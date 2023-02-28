@@ -1,6 +1,7 @@
-.. include:: ../Includes.txt
+..  include:: /Includes.rst.txt
 
-.. _configuration:
+
+..  _configuration:
 
 =============
 Configuration
@@ -8,9 +9,9 @@ Configuration
 
 This chapter describes the various configuration settings of events2.
 
-.. toctree::
-   :maxdepth: 2
+..  toctree::
+    :maxdepth: 2
 
-   Extension/Index
-   Plugins/Index
-   TypoScript/Index
+    Extension/Index
+    Plugins/Index
+    TypoScript/Index

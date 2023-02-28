@@ -1,6 +1,7 @@
-.. include:: ../../Includes.txt
+..  include:: /Includes.rst.txt
 
-.. _plugins:
+
+..  _plugins:
 
 ========
 Plugins
@@ -21,11 +22,11 @@ List type
 
 You can choose between following list types:
 
-* List events: Shows a list of events incl. a PageBrowser
-* List latest events: Just the next x events without PageBrowser
-* List events of today: Shows only events of today
-* List events of this week (Mo-Su). On tuesday (Tu-Su). On friday (Fr-Su)
-* List events next 4 weeks: Show events from today until 4 weeks
+*   List events: Shows a list of events incl. a PageBrowser
+*   List latest events: Just the next x events without PageBrowser
+*   List events of today: Shows only events of today
+*   List events of this week (Mo-Su). On tuesday (Tu-Su). On friday (Fr-Su)
+*   List events next 4 weeks: Show events from today until 4 weeks
 
 Page UID of detail page
 -----------------------
@@ -119,9 +120,9 @@ Default: empty
 You can activate an Organizer Selector in Frontend where the website visitor can
 reduce the events to its preferred Organizer.
 
-.. important::
+..  important::
 
-   The Selector is only visible as long as there are at least 2 Organizers available.
+    The Selector is only visible as long as there are at least 2 Organizers available.
 
 Display
 -------

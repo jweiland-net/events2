@@ -1,6 +1,7 @@
-.. include:: ../../Includes.txt
+..  include:: /Includes.rst.txt
 
-.. _commands:
+
+..  _commands:
 
 ========
 Commands
@@ -19,10 +20,10 @@ project/server you just need to execute this command to re-build all missing day
 
 Since `events2` version 8.0.0 this CLI command is also schedulable (can be configured in scheduler module).
 
-.. tip::
+..  tip::
 
-   Instead of the scheduler task `Re-Create day records` this command will additionally TRUNCATE the complete day table!
+    Instead of the scheduler task `Re-Create day records` this command will additionally TRUNCATE the complete day table!
 
-.. important::
+..  important::
 
-   As day table will be TRUNCATED it is possible that there are temporarily no events in frontend visible!
+    As day table will be TRUNCATED it is possible that there are temporarily no events in frontend visible!

@@ -1,6 +1,7 @@
-﻿.. include:: ../Includes.txt
+﻿..  include:: /Includes.rst.txt
 
-.. _faq:
+
+..  _faq:
 
 ===
 FAQ
@@ -54,7 +55,9 @@ which should be compatible with our events2 list Plugin we have to change its pl
 
 That's why we set the plugin namespace of search results plugin back to namespace of events2 list plugin:
 
-plugin.tx_events2_searchresults.view.pluginNamespace = tx_events2_list
+..  code-block:: typoscript
+
+    plugin.tx_events2_searchresults.view.pluginNamespace = tx_events2_list
 
 We prefer to not change that value.
 
@@ -65,15 +68,14 @@ File Uploads
 If you need the image rights from the uploader for uploaded images you should install EXT:checkfaluploads and
 add following line into FormFields template:
 
-.. code-block:: html
+..  code-block:: html
 
-   <f:form.checkbox value="1" name="event[images][{index}][rights]" checked="" />
+    <f:form.checkbox value="1" name="event[images][{index}][rights]" checked="" />
 
 In our TypeConverter we check for installed checkfaluploads and add an error message, if checkbox was not activated
 
 If you want to delete an image, you can add following line into FormFields template:
 
-.. code-block:: html
+..  code-block:: html
 
-   <f:form.checkbox value="1" name="event[images][{index}][delete]" checked="" />
-
+    <f:form.checkbox value="1" name="event[images][{index}][delete]" checked="" />

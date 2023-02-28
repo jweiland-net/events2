@@ -1,6 +1,7 @@
-.. include:: ../../../Includes.txt
+..  include:: /Includes.rst.txt
 
-.. _convertToJsonViewHelper:
+
+..  _convertToJsonViewHelper:
 
 =======================
 ConvertToJsonViewHelper
@@ -16,6 +17,6 @@ accessible format for JavaScript.
 Example
 =======
 
-.. code-block:: html
+..  code-block:: html
 
-   <div class="events2calendar" data-environment="{environment->e2:convertToJson()}"></div>
+    <div class="events2calendar" data-environment="{environment->e2:convertToJson()}"></div>
