@@ -7,6 +7,13 @@
 ChangeLog
 =========
 
+Version 8.1.6
+=============
+
+*   Set indent size of docs to 4 spaces
+*   Apply new steructure to documentation
+*   Add "Reset" Button to LitePicker
+
 Version 8.1.5
 =============
 
