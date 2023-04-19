@@ -535,7 +535,7 @@ return [
                 'type' => 'inline',
                 'foreign_table' => 'tx_events2_domain_model_exception',
                 'foreign_field' => 'event',
-                'foreign_default_sortby' => 'tx_events2_domain_model_exception.exception_date ASC',
+                'foreign_default_sortby' => 'exception_date ASC',
                 'maxitems' => 9999,
                 'appearance' => [
                     'collapseAll' => true,
