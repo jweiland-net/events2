@@ -21,7 +21,7 @@
 		"ext-dom": "*",
 		"ext-libxml": "*",
 		"php": "^7.4 || ^8.0",
-		"typo3/cms-core": "^10.4.19 || ^11.5.0",
+		"typo3/cms-core": "^10.4.36 || ^11.5.23",
 		"sjbr/static-info-tables": "^6.9 || ^11.5"
 	},
 	"require-dev": {
