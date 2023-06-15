@@ -7,6 +7,13 @@
 ChangeLog
 =========
 
+Version 8.2.0
+=============
+
+*   [BUGFIX] Remove tablename from exception TCA to be compatible with
+    TYPO3 update 11.5.26
+*   [FEATURE] Simplify override of pagination in TypoScript
+
 Version 8.1.6
 =============
 

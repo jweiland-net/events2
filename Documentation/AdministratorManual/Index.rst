@@ -14,5 +14,6 @@ This chapter describes how to manage the extension from a superuser point of vie
 
     Templates/Index
     Commands/Index
+    Pagination/Index
     BestPractice/Index
     Upgrade/Index
