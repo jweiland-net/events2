@@ -119,10 +119,8 @@ plugin.tx_events2 {
     }
 
     pageBrowser {
+      class = JWeiland\Events2\Pagination\GetPostPagination
       itemsPerPage = {$plugin.tx_events2.settings.pageBrowser.itemsPerPage}
-      insertAbove = {$plugin.tx_events2.settings.pageBrowser.insertAbove}
-      insertBelow = {$plugin.tx_events2.settings.pageBrowser.insertBelow}
-      maximumNumberOfLinks = {$plugin.tx_events2.settings.pageBrowser.maximumNumberOfLinks}
     }
 
     show {
