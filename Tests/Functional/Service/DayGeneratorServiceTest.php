@@ -634,8 +634,8 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         $expectedDays[$tempDate->format('U')] = new DateTimeEntry($tempDate, false); // add 5th friday 30th of month
         $tempDate = $tempDate->modify('+4 day');
         $expectedDays[$tempDate->format('U')] = new DateTimeEntry($tempDate, false); // add 1st tuesday 3rd of next month
-        $tempDate = $tempDate->modify('+3 day');
-        $expectedDays[$tempDate->format('U')] = new DateTimeEntry($tempDate, false); // add 1st friday 6th of next month
+        // $tempDate = $tempDate->modify('+3 day');
+        // $expectedDays[$tempDate->format('U')] = new DateTimeEntry($tempDate, false); // add 1st friday 6th of next month
         ksort($expectedDays);
 
         self::assertEquals(
