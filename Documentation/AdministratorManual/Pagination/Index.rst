@@ -25,7 +25,7 @@ of Georg Ringers.
 
         ..  code-block:: typoscript
 
-            plugin.tx_events2.pageBrowser.class = GeorgRinger\NumberedPagination\NumberedPagination
+            plugin.tx_events2.settings.pageBrowser.class = GeorgRinger\NumberedPagination\NumberedPagination
 
     3.  Change path to events2 partials
 
