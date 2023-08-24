@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 8.2.1
+=============
+
+*   [BUGFIX] Export data in valid ical format
+
 Version 8.2.0
 =============
 
