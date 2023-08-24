@@ -34,7 +34,7 @@ class ICalendarHelper
 
     protected string $iCalVersion = '2.0';
 
-    protected string $lineBreak = LF;
+    protected string $lineBreak = CRLF;
 
     protected TimeFactory $timeFactory;
 
@@ -52,10 +52,8 @@ class ICalendarHelper
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    public function buildICalExport(Day $day, array $parameters = []): string
+    public function buildICalExport(Day $day): string
     {
-        $this->lineBreak = $parameters['lineBreak'] ?? $this->lineBreak;
-
         $iCalRows = [];
         $this->addICalHeader($iCalRows);
         $this->addICalVersion($iCalRows);
@@ -92,6 +90,9 @@ class ICalendarHelper
     {
         $iCalRowsForAnEvent = [];
         $this->addEventBegin($iCalRowsForAnEvent);
+        $this->addDateTimestamp($iCalRowsForAnEvent);
+        $this->addDateCreated($iCalRowsForAnEvent, $day);
+        $this->addDateLastModified($iCalRowsForAnEvent, $day);
         $this->addEventUid($iCalRowsForAnEvent, $day);
         $this->addEventDateTime($iCalRowsForAnEvent, $day);
         $this->addEventLocation($iCalRowsForAnEvent, $day);
@@ -109,6 +110,67 @@ class ICalendarHelper
     protected function addEventBegin(array &$event): void
     {
         $event[] = 'BEGIN:VEVENT';
+    }
+
+    /**
+     * DTSTAMP property is required
+     * It must be set within VEVENT property
+     * It must be UTC
+     * It represents date/time creating this entry
+     */
+    protected function addDateTimestamp(array &$event): void
+    {
+        $currentDate = new \DateTimeImmutable('now');
+
+        $event[] = sprintf(
+            'DTSTAMP:%s',
+            $this->dateTimeUtility->combineAndFormat(
+                $currentDate,
+                $currentDate->format('H:m')
+            )
+        );
+    }
+
+    /**
+     * CREATED must be set within VEVENT property
+     * CREATED must be UTC
+     * It represents date/time creating the event entry in DB
+     */
+    protected function addDateCreated(array &$event, Day $day): void
+    {
+        $crdate = $day->getCrdate();
+        if (!$crdate instanceof \DateTimeImmutable) {
+            return;
+        }
+
+        $event[] = sprintf(
+            'CREATED:%s',
+            $this->dateTimeUtility->combineAndFormat(
+                $crdate,
+                $crdate->format('H:m')
+            )
+        );
+    }
+
+    /**
+     * LAST-MODIFIED must be set within VEVENT property
+     * LAST-MODIFIED must be UTC
+     * It represents date/time modifying the event entry in DB
+     */
+    protected function addDateLastModified(array &$event, Day $day): void
+    {
+        $lastModified = $day->getTstamp();
+        if (!$lastModified instanceof \DateTimeImmutable) {
+            return;
+        }
+
+        $event[] = sprintf(
+            'LAST-MODIFIED:%s',
+            $this->dateTimeUtility->combineAndFormat(
+                $lastModified,
+                $lastModified->format('H:m')
+            )
+        );
     }
 
     protected function addEventUid(array &$event, Day $day): void
@@ -188,7 +250,6 @@ class ICalendarHelper
      * @link http://tools.ietf.org/html/rfc5545#page-45
      *
      * @param string $content The text to sanitize for *.ics
-     * @return string
      */
     protected function sanitizeString(string $content): string
     {
@@ -197,7 +258,15 @@ class ICalendarHelper
         // some chars have to be escaped. See link above
         $content = preg_replace('/([\\\\,;])/', '\\\$1', $content);
         // sanitize all enter chars (vertical white-spaces) to \n
-        return preg_replace('/\v+/', '\\n', $content);
+        $content = preg_replace('/\v+/', '\\n', $content);
+
+        // Wrap too long content into new line after a limit of max 75 chars
+        return $this->wrapTooLongICalContent($content);
+    }
+
+    protected function wrapTooLongICalContent(string $value): string
+    {
+        return wordwrap($value, 75, "\r\n ", true);
     }
 
     /**

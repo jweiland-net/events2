@@ -92,8 +92,10 @@ class DateTimeUtility
             }
         }
 
-        $dateNewTimezone = $date->setTimezone(new \DateTimeZone($timeZone));
-
-        return $dateNewTimezone->format($format);
+        try {
+            return $date->setTimezone(new \DateTimeZone($timeZone))->format($format);
+        } catch (\Exception $e) {
+            return '';
+        }
     }
 }
