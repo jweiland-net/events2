@@ -21,8 +21,10 @@
 		"ext-dom": "*",
 		"ext-libxml": "*",
 		"php": "^7.4 || ^8.0",
-		"typo3/cms-core": "^11.5.23 || ^12.4.5",
-		"sjbr/static-info-tables": "^11.5 || ^12.4"
+		"typo3/cms-core": "^11.5.23 || ^12.4.5"
+	},
+	"suggest": {
+		"sjbr/static-info-tables": "Package is needed, if you use TYPO3 11."
 	},
 	"require-dev": {
 		"friendsofphp/php-cs-fixer": "^3.0",
