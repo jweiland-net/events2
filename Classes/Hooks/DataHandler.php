@@ -14,20 +14,17 @@ namespace JWeiland\Events2\Hooks;
 use JWeiland\Events2\Service\DayRelationService;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Cache\CacheManager;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /*
  * Hook into DataHandler and clear special caches or re-generate day records after saving an event.
  */
 class DataHandler
 {
-    protected ObjectManagerInterface $objectManager;
-
     protected CacheManager $cacheManager;
 
-    public function __construct(ObjectManagerInterface $objectManager, CacheManager $cacheManager)
+    public function __construct(CacheManager $cacheManager)
     {
-        $this->objectManager = $objectManager;
         $this->cacheManager = $cacheManager;
     }
 
@@ -95,8 +92,7 @@ class DataHandler
      */
     protected function addDayRelationsForEvent(int $eventUid): void
     {
-        $dayRelationService = $this->objectManager->get(DayRelationService::class);
-        $dayRelationService->createDayRelations($eventUid);
+        $this->getDayRelationService()->createDayRelations($eventUid);
     }
 
     /**
@@ -112,5 +108,10 @@ class DataHandler
         }
 
         return (int)$uid;
+    }
+
+    protected function getDayRelationService(): DayRelationService
+    {
+        return GeneralUtility::makeInstance(DayRelationService::class);
     }
 }

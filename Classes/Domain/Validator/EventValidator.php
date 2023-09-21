@@ -15,7 +15,6 @@ use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Link;
 use JWeiland\Events2\Domain\Model\Time;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
 
@@ -91,11 +90,6 @@ class EventValidator extends AbstractValidator
 
     public function getPersistenceManager(): PersistenceManagerInterface
     {
-        return $this->getObjectManager()->get(PersistenceManagerInterface::class);
-    }
-
-    public function getObjectManager(): ObjectManager
-    {
-        return GeneralUtility::makeInstance(ObjectManager::class);
+        return GeneralUtility::makeInstance(PersistenceManagerInterface::class);
     }
 }

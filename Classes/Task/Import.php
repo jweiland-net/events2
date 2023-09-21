@@ -19,7 +19,6 @@ use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\Index\Indexer;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
 /*
@@ -102,8 +101,7 @@ class Import extends AbstractTask
             return false;
         }
 
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $importer = $objectManager->get($className);
+        $importer = GeneralUtility::makeInstance($className);
         if (!$importer instanceof ImporterInterface) {
             $this->addMessage('Importer has to implement ImporterInterface');
             return false;

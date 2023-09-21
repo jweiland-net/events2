@@ -20,8 +20,6 @@ use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\CMS\Scheduler\ProgressProviderInterface;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
@@ -32,11 +30,6 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
  */
 class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
 {
-    /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
-
     /**
      * @var CacheManager
      */
@@ -53,14 +46,12 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
     protected $registry;
 
     public function __construct(
-        ObjectManagerInterface $objectManager,
         CacheManager $cacheManager,
         DatabaseService $databaseService,
         Registry $registry
     ) {
         parent::__construct();
 
-        $this->objectManager = $objectManager;
         $this->cacheManager = $cacheManager;
         $this->databaseService = $databaseService;
         $this->registry = $registry;
@@ -70,8 +61,8 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
     {
         // Do not move these lines of code into constructor.
         // It will break serialization. Error: Serialization of 'Closure' is not allowed
-        $dayRelationService = $this->objectManager->get(DayRelationService::class);
-        $persistenceManager = $this->objectManager->get(PersistenceManagerInterface::class);
+        $dayRelationService = GeneralUtility::makeInstance(DayRelationService::class);
+        $persistenceManager = GeneralUtility::makeInstance(PersistenceManagerInterface::class);
 
         // with each changing PID pageTSConfigCache will grow by roundabout 200KB
         // which may exceed memory_limit

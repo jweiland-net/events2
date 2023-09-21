@@ -47,9 +47,6 @@ class DayRelationService implements LoggerAwareInterface
 
     protected array $firstTimeRecordForCurrentDateTime = [];
 
-    /**
-     * Must be called by ObjectManager, because of EventRepository which has inject methods
-     */
     public function __construct(
         DayGeneratorService $dayGenerator,
         DayRepository $dayRepository,

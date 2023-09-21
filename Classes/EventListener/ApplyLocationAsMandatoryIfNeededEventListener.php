@@ -13,7 +13,6 @@ namespace JWeiland\Events2\EventListener;
 
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Event\PreProcessControllerActionEvent;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Validation\Validator\ConjunctionValidator;
 use TYPO3\CMS\Extbase\Validation\Validator\GenericObjectValidator;
 use TYPO3\CMS\Extbase\Validation\Validator\NotEmptyValidator;
@@ -24,9 +23,9 @@ use TYPO3\CMS\Extbase\Validation\ValidatorResolver;
  */
 class ApplyLocationAsMandatoryIfNeededEventListener extends AbstractControllerEventListener
 {
-    protected ObjectManagerInterface $objectManager;
-
     protected ExtConf $extConf;
+
+    protected ValidatorResolver $validatorResolver;
 
     protected array $allowedControllerActions = [
         'Management' => [
@@ -35,10 +34,10 @@ class ApplyLocationAsMandatoryIfNeededEventListener extends AbstractControllerEv
         ]
     ];
 
-    public function __construct(ObjectManagerInterface $objectManager, ExtConf $extConf)
+    public function __construct(ExtConf $extConf, ValidatorResolver $validatorResolver)
     {
-        $this->objectManager = $objectManager;
         $this->extConf = $extConf;
+        $this->validatorResolver = $validatorResolver;
     }
 
     public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void
@@ -46,8 +45,7 @@ class ApplyLocationAsMandatoryIfNeededEventListener extends AbstractControllerEv
         if (
             $this->isValidRequest($controllerActionEvent)
             && $this->extConf->getLocationIsRequired()
-            && ($validatorResolver = $this->objectManager->get(ValidatorResolver::class))
-            && ($notEmptyValidator = $validatorResolver->createValidator(NotEmptyValidator::class))
+            && ($notEmptyValidator = $this->validatorResolver->createValidator(NotEmptyValidator::class))
             && $notEmptyValidator instanceof NotEmptyValidator
         ) {
             /** @var ConjunctionValidator $eventValidator */

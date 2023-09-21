@@ -15,7 +15,6 @@ use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use TYPO3\CMS\Core\PageTitle\PageTitleProviderInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 /**
  * Instead of just setting the PageTitle to DetailView on Detail Page,
@@ -29,10 +28,10 @@ class Events2PageTitleProvider implements PageTitleProviderInterface
 
     protected DayRepository $dayRepository;
 
-    public function __construct(ObjectManagerInterface $objectManager)
+    public function __construct(EventRepository $eventRepository, DayRepository $dayRepository)
     {
-        $this->eventRepository = $objectManager->get(EventRepository::class);
-        $this->dayRepository = $objectManager->get(DayRepository::class);
+        $this->eventRepository = $eventRepository;
+        $this->dayRepository = $dayRepository;
     }
 
     public function getTitle(): string

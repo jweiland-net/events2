@@ -12,7 +12,6 @@ namespace JWeiland\Events2\Hooks\Solr;
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerDocumentsModifier;
 use JWeiland\Events2\Service\EventService;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 /*
  * As we can't create a SQL Query with JOIN in Solr configuration,
@@ -25,9 +24,9 @@ class IndexerHook implements PageIndexerDocumentsModifier
      */
     protected $eventService;
 
-    public function __construct(ObjectManagerInterface $objectManager)
+    public function __construct(EventService $eventService)
     {
-        $this->eventService = $objectManager->get(EventService::class);
+        $this->eventService = $eventService;
     }
 
     /**
