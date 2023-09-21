@@ -21,8 +21,8 @@
 		"ext-dom": "*",
 		"ext-libxml": "*",
 		"php": "^7.4 || ^8.0",
-		"typo3/cms-core": "^10.4.36 || ^11.5.23",
-		"sjbr/static-info-tables": "^6.9 || ^11.5"
+		"typo3/cms-core": "^11.5.23 || ^12.4.5",
+		"sjbr/static-info-tables": "^11.5 || ^12.4"
 	},
 	"require-dev": {
 		"friendsofphp/php-cs-fixer": "^3.0",
