@@ -131,9 +131,8 @@ return [
             'exclude' => true,
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.starttime',
             'config' => [
-                'type' => 'input',
-                'renderType' => 'inputDateTime',
-                'eval' => 'datetime,int',
+                'type' => 'datetime',
+                'format' => 'datetime',
                 'default' => 0
             ],
             'l10n_mode' => 'exclude',
@@ -143,13 +142,9 @@ return [
             'exclude' => true,
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.endtime',
             'config' => [
-                'type' => 'input',
-                'renderType' => 'inputDateTime',
-                'eval' => 'datetime,int',
+                'type' => 'datetime',
+                'format' => 'datetime',
                 'default' => 0,
-                'range' => [
-                    'upper' => mktime(0, 0, 0, 1, 1, 2038)
-                ]
             ],
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly'
@@ -174,11 +169,9 @@ return [
             'exclude' => true,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_exception.exception_date',
             'config' => [
-                'type' => 'input',
-                'renderType' => 'inputDateTime',
-                'size' => 7,
-                'eval' => 'date,int,required',
-                'checkbox' => 1,
+                'type' => 'datetime',
+                'format' => 'date',
+                'required' => true,
                 'default' => time(),
             ],
         ],

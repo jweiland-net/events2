@@ -144,9 +144,8 @@ return [
             'exclude' => true,
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.starttime',
             'config' => [
-                'type' => 'input',
-                'renderType' => 'inputDateTime',
-                'eval' => 'datetime,int',
+                'type' => 'datetime',
+                'format' => 'datetime',
                 'default' => 0
             ],
             'l10n_mode' => 'exclude',
@@ -156,13 +155,9 @@ return [
             'exclude' => true,
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.endtime',
             'config' => [
-                'type' => 'input',
-                'renderType' => 'inputDateTime',
-                'eval' => 'datetime,int',
+                'type' => 'datetime',
+                'format' => 'datetime',
                 'default' => 0,
-                'range' => [
-                    'upper' => mktime(0, 0, 0, 1, 1, 2038)
-                ]
             ],
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly'
@@ -291,11 +286,10 @@ return [
             'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_begin',
             'config' => [
-                'type' => 'input',
-                'renderType' => 'inputDateTime',
-                'size' => 7,
+                'type' => 'datetime',
+                'format' => 'date',
                 'default' => 0,
-                'eval' => 'date,int,required',
+                'required' => true,
             ],
         ],
         'event_end' => [
@@ -304,11 +298,10 @@ return [
             'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.event_end',
             'config' => [
-                'type' => 'input',
-                'renderType' => 'inputDateTime',
-                'size' => 7,
+                'type' => 'datetime',
+                'format' => 'date',
                 'default' => 0,
-                'eval' => 'date,int,required',
+                'required' => true,
             ],
         ],
         'event_time' => [
@@ -512,11 +505,9 @@ return [
             'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.recurring_end',
             'config' => [
-                'type' => 'input',
-                'renderType' => 'inputDateTime',
-                'size' => 7,
+                'type' => 'datetime',
+                'format' => 'date',
                 'default' => 0,
-                'eval' => 'date,int',
             ],
         ],
         'exceptions' => [

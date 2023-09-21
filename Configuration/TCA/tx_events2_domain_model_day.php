@@ -31,37 +31,33 @@ return [
         'day' => [
             'label' => 'Day',
             'config' => [
-                'type' => 'input',
-                'renderType' => 'inputDateTime',
+                'type' => 'datetime',
+                'format' => 'date',
                 'default' => 0,
-                'eval' => 'date,int',
             ],
         ],
         'day_time' => [
             'label' => 'DayTime',
             'config' => [
-                'type' => 'input',
-                'renderType' => 'inputDateTime',
+                'type' => 'datetime',
+                'format' => 'datetime',
                 'default' => 0,
-                'eval' => 'datetime,int',
             ],
         ],
         'sort_day_time' => [
             'label' => 'DayTime',
             'config' => [
-                'type' => 'input',
-                'renderType' => 'inputDateTime',
+                'type' => 'datetime',
+                'format' => 'datetime',
                 'default' => 0,
-                'eval' => 'datetime,int',
             ],
         ],
         'same_day_time' => [
             'label' => 'DayTime',
             'config' => [
-                'type' => 'input',
-                'renderType' => 'inputDateTime',
+                'type' => 'datetime',
+                'format' => 'datetime',
                 'default' => 0,
-                'eval' => 'datetime,int',
             ],
         ],
         'is_removed_date' => [
