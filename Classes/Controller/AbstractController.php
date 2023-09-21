@@ -21,8 +21,10 @@ use JWeiland\Events2\Service\TypoScriptService;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Extbase\Mvc\Controller\Arguments;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3Fluid\Fluid\View\ViewInterface;
 
@@ -76,6 +78,8 @@ class AbstractController extends ActionController implements LoggerAwareInterfac
         );
 
         $this->settings = $mergedFlexFormSettings;
+        $this->arguments = GeneralUtility::makeInstance(Arguments::class);
+
     }
 
     protected function initializeAction(): void
