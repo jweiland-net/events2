@@ -54,7 +54,7 @@ class Event extends AbstractEntity
     protected bool $sameDay = false;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Time>
+     * @var ObjectStorage<Time>
      * @Extbase\ORM\Cascade("remove")
      * @Extbase\ORM\Lazy
      */
@@ -65,7 +65,7 @@ class Event extends AbstractEntity
     protected int $weekday = 0;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Time>
+     * @var ObjectStorage<Time>
      * @Extbase\ORM\Cascade("remove")
      * @Extbase\ORM\Lazy
      */
@@ -78,7 +78,7 @@ class Event extends AbstractEntity
     protected ?\DateTimeImmutable $recurringEnd = null;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Exception>
+     * @var ObjectStorage<Exception>
      * @Extbase\ORM\Cascade("remove")
      * @Extbase\ORM\Lazy
      */
@@ -96,14 +96,14 @@ class Event extends AbstractEntity
     protected ?Link $ticketLink = null;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Category>
+     * @var ObjectStorage<Category>
      * @Extbase\Validate("JWeiland\Events2\Domain\Validator\CategoryMandatoryValidator")
      * @Extbase\ORM\Lazy
      */
     protected ObjectStorage $categories;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Day>
+     * @var ObjectStorage<Day>
      * @Extbase\ORM\Cascade("remove")
      * @Extbase\ORM\Lazy
      */
@@ -112,13 +112,13 @@ class Event extends AbstractEntity
     protected ?Location $location = null;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Organizer>
+     * @var ObjectStorage<Organizer>
      * @Extbase\ORM\Lazy
      */
     protected ObjectStorage $organizers;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference>
+     * @var ObjectStorage<FileReference>
      * @Extbase\ORM\Cascade("remove")
      * @Extbase\ORM\Lazy
      */
@@ -130,7 +130,7 @@ class Event extends AbstractEntity
     protected ?Link $videoLink = null;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Link>
+     * @var ObjectStorage<Link>
      * @Extbase\ORM\Cascade("remove")
      * @Extbase\ORM\Lazy
      */

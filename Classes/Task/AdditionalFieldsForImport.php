@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Task;
 
-use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Scheduler\AbstractAdditionalFieldProvider;
@@ -165,7 +165,7 @@ class AdditionalFieldsForImport extends AbstractAdditionalFieldProvider
             if (empty($value)) {
                 // Issue error message
                 $errorExists = true;
-                $this->addMessage('Field: ' . $fieldName . ' can not be empty', FlashMessage::ERROR);
+                $this->addMessage('Field: ' . $fieldName . ' can not be empty', AbstractMessage::ERROR);
             } else {
                 $submittedData[$fieldName] = $value;
             }

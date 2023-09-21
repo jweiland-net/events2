@@ -14,7 +14,8 @@ namespace JWeiland\Events2\Controller;
 use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Utility\CacheUtility;
-use TYPO3\CMS\Core\Messaging\FlashMessage;
+use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 
@@ -45,7 +46,7 @@ class DayController extends AbstractController
             $this->addFlashMessage(
                 'Please check content record with UID "' . $data['records'] . '". Column "pages" can not be 0. It must be empty or higher than 0.',
                 'tt_content column pages can not be 0',
-                FlashMessage::WARNING
+                AbstractMessage::WARNING
             );
         }
     }
@@ -55,7 +56,7 @@ class DayController extends AbstractController
         $this->preProcessControllerAction();
     }
 
-    public function listAction(?Filter $filter = null): void
+    public function listAction(?Filter $filter = null): ResponseInterface
     {
         $filter ??= GeneralUtility::makeInstance(Filter::class);
         $amountOfRecordsToShow = 0;
@@ -75,12 +76,14 @@ class DayController extends AbstractController
         ]);
 
         CacheUtility::addPageCacheTagsByQuery($days->getQuery());
+
+        return $this->htmlResponse();
     }
 
     /*
      * I call showAction with int instead of DomainModel to prevent that recursive validators will be called.
      */
-    public function showAction(int $event, int $timestamp = 0): void
+    public function showAction(int $event, int $timestamp = 0): ResponseInterface
     {
         $day = $this->dayRepository->findDayByEventAndTimestamp($event, $timestamp);
 
@@ -91,5 +94,7 @@ class DayController extends AbstractController
         ]);
 
         CacheUtility::addCacheTagsByEventRecords([$day->getEvent()]);
+
+        return $this->htmlResponse();
     }
 }

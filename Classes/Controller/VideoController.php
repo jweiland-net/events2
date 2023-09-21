@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Controller;
 
 use JWeiland\Events2\Domain\Repository\EventRepository;
+use Psr\Http\Message\ResponseInterface;
 
 /*
  * A simple controller to show video-link as YouTube-Implementation
@@ -25,10 +26,12 @@ class VideoController extends AbstractController
         $this->eventRepository = $eventRepository;
     }
 
-    public function showAction(int $event): void
+    public function showAction(int $event): ResponseInterface
     {
         $this->postProcessAndAssignFluidVariables([
             'event' => $this->eventRepository->findByIdentifier($event)
         ]);
+
+        return $this->htmlResponse();
     }
 }

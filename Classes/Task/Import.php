@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Task;
 
 use JWeiland\Events2\Importer\ImporterInterface;
+use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Resource\File;
@@ -57,18 +58,18 @@ class Import extends AbstractTask
                 ->retrieveFileOrFolderObject($this->path);
             if ($file instanceof File) {
                 if ($file->isMissing()) {
-                    $this->addMessage('The defined file seems to be missing. Please check, if file is still at its place', FlashMessage::ERROR);
+                    $this->addMessage('The defined file seems to be missing. Please check, if file is still at its place', AbstractMessage::ERROR);
                     return false;
                 }
                 // File can be updated by (S)FTP. So we have to update its properties first.
                 $indexer = GeneralUtility::makeInstance(Indexer::class, $file->getStorage());
                 $indexer->updateIndexEntry($file);
             } else {
-                $this->addMessage('The defined file is not a valid file. Maybe you have defined a folder. Please re-check file path', FlashMessage::ERROR);
+                $this->addMessage('The defined file is not a valid file. Maybe you have defined a folder. Please re-check file path', AbstractMessage::ERROR);
                 return false;
             }
         } catch (\Exception $e) {
-            $this->addMessage('Currently no file for import found.', FlashMessage::INFO);
+            $this->addMessage('Currently no file for import found.', AbstractMessage::INFO);
             return true;
         }
 
@@ -122,7 +123,7 @@ class Import extends AbstractTask
      * @param int $severity Message level (according to \TYPO3\CMS\Core\Messaging\FlashMessage class constants)
      * @throws \Exception
      */
-    public function addMessage(string $message, int $severity = FlashMessage::OK): void
+    public function addMessage(string $message, int $severity = AbstractMessage::OK): void
     {
         $flashMessage = GeneralUtility::makeInstance(FlashMessage::class, $message, '', $severity);
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);

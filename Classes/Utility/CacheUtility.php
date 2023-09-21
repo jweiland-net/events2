@@ -11,10 +11,9 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Utility;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
-use TYPO3\CMS\Extbase\Service\EnvironmentService;
 
 /*
  * Cache Utility class
@@ -30,7 +29,7 @@ class CacheUtility
      */
     public static function addCacheTagsByEventRecords($eventRecords): void
     {
-        if (!self::getEnvironmentService()->isEnvironmentInFrontendMode()) {
+        if (!ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend()) {
             return;
         }
 
@@ -54,7 +53,7 @@ class CacheUtility
      */
     public static function addPageCacheTagsByQuery(QueryInterface $query): void
     {
-        if (!self::getEnvironmentService()->isEnvironmentInFrontendMode()) {
+        if (!ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend()) {
             return;
         }
 
@@ -69,10 +68,5 @@ class CacheUtility
         }
 
         $GLOBALS['TSFE']->addCacheTags($cacheTags);
-    }
-
-    protected static function getEnvironmentService(): EnvironmentService
-    {
-        return GeneralUtility::makeInstance(EnvironmentService::class);
     }
 }

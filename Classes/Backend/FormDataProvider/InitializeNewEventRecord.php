@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Backend\FormDataProvider;
 
 use TYPO3\CMS\Backend\Form\FormDataProviderInterface;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /*
  * This class sets some dynamic default values (like event_begin) for event record
@@ -31,9 +33,17 @@ class InitializeNewEventRecord implements FormDataProviderInterface
         }
 
         if ($result['command'] === 'new') {
-            $result['databaseRow']['event_begin'] = $GLOBALS['EXEC_TIME'];
+            $result['databaseRow']['event_begin'] = $this->getContext()->getPropertyFromAspect(
+                'date',
+                'timestamp'
+            );
         }
 
         return $result;
+    }
+
+    protected function getContext(): Context
+    {
+        return GeneralUtility::makeInstance(Context::class);
     }
 }

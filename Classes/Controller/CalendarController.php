@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Controller;
 
 use JWeiland\Events2\Helper\CalendarHelper;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 /*
@@ -26,7 +27,7 @@ class CalendarController extends AbstractController
         $this->calendarHelper = $calendarHelper;
     }
 
-    public function showAction(): void
+    public function showAction(): ResponseInterface
     {
         $frameworkConfiguration = $this->configurationManager->getConfiguration(
             ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK
@@ -40,5 +41,7 @@ class CalendarController extends AbstractController
         $this->postProcessAndAssignFluidVariables([
             'environment' => $calendarVariables
         ]);
+
+        return $this->htmlResponse();
     }
 }

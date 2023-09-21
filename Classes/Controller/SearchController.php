@@ -16,6 +16,7 @@ use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Utility\CacheUtility;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\Category;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
@@ -51,7 +52,7 @@ class SearchController extends AbstractController
         $this->preProcessControllerAction();
     }
 
-    public function showAction(?Search $search = null): void
+    public function showAction(?Search $search = null): ResponseInterface
     {
         // Because of the checkbox in search form we have to create a new empty domain model
         $search ??= GeneralUtility::makeInstance(Search::class);
@@ -93,6 +94,8 @@ class SearchController extends AbstractController
                 'search' => $gettableSearchProperties
             ]), JSON_THROW_ON_ERROR),
         ]);
+
+        return $this->htmlResponse();
     }
 
     public function initializeListSearchResultsAction(): void
@@ -100,7 +103,7 @@ class SearchController extends AbstractController
         $this->preProcessControllerAction();
     }
 
-    public function listSearchResultsAction(?Search $search = null): void
+    public function listSearchResultsAction(?Search $search = null): ResponseInterface
     {
         if ($search instanceof Search) {
             $days = $this->dayRepository->searchEvents($search);
@@ -111,5 +114,7 @@ class SearchController extends AbstractController
 
             CacheUtility::addPageCacheTagsByQuery($days->getQuery());
         }
+
+        return $this->htmlResponse();
     }
 }
