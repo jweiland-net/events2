@@ -191,7 +191,8 @@ class AbstractController extends ActionController implements LoggerAwareInterfac
                 $this,
                 $event,
                 $day,
-                $this->settings
+                $this->settings,
+                $this->request
             )
         );
     }
