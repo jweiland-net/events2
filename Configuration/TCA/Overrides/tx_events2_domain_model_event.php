@@ -8,23 +8,10 @@ call_user_func(static function (): void {
         \JWeiland\Events2\Configuration\ExtConf::class
     );
 
-    $fieldConfigurationForCategories = [
-        'foreign_table_where' => ' AND sys_category.sys_language_uid IN (-1, 0) ORDER BY sys_category.title ASC',
-    ];
-
-    // check, if categories are required
+    // check, if category is required
     if ($extConf->getCategoryIsRequired()) {
-        $fieldConfigurationForCategories['minitems'] = 1;
+        $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['categories']['config']['minitems'] = 1;
     }
-
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::makeCategorizable(
-        'events2',
-        'tx_events2_domain_model_event',
-        'categories',
-        [
-            'fieldConfiguration' => $fieldConfigurationForCategories,
-        ]
-    );
 
     // check, if organizer is required
     if ($extConf->getOrganizerIsRequired()) {
