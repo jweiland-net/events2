@@ -6,7 +6,6 @@ return [
         'label' => 'title',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
-        'cruser_id' => 'cruser_id',
         'type' => 'event_type',
         'typeicon_column' => 'event_type',
         'typeicon_classes' => [
@@ -121,12 +120,6 @@ return [
                         'invertStateDisplay' => true
                     ]
                 ],
-            ]
-        ],
-        'cruser_id' => [
-            'label' => 'cruser_id',
-            'config' => [
-                'type' => 'passthrough'
             ]
         ],
         'pid' => [

@@ -5,7 +5,6 @@ return [
         'label' => 'day',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
-        'cruser_id' => 'cruser_id',
         'hideTable' => true,
         'versioningWS' => true,
         // Do not add 'deleted'. Else table will grow very fast.

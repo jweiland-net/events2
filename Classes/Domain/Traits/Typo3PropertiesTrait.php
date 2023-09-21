@@ -30,8 +30,6 @@ trait Typo3PropertiesTrait
 
     protected bool $deleted = false;
 
-    protected int $cruserId = 0;
-
     public function getCrdate(): ?\DateTimeImmutable
     {
         return $this->crdate;
@@ -110,15 +108,5 @@ trait Typo3PropertiesTrait
     public function setDeleted(bool $deleted): void
     {
         $this->deleted = $deleted;
-    }
-
-    public function getCruserId(): int
-    {
-        return $this->cruserId;
-    }
-
-    public function setCruserId(int $cruserId): void
-    {
-        $this->cruserId = $cruserId;
     }
 }

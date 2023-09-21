@@ -5,7 +5,6 @@ return [
         'label' => 'organizer',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
-        'cruser_id' => 'cruser_id',
         'default_sortby' => 'ORDER BY organizer',
         'versioningWS' => true,
         'origUid' => 't3_origuid',
@@ -25,7 +24,7 @@ return [
         '1' => [
             'showitem' => '--palette--;;languageHidden, l10n_diffsource,
             --palette--;;organizerFilter, link,
-            --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access, 
+            --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access,
             --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access'
         ],
     ],
@@ -85,12 +84,6 @@ return [
                         'invertStateDisplay' => true
                     ]
                 ],
-            ]
-        ],
-        'cruser_id' => [
-            'label' => 'cruser_id',
-            'config' => [
-                'type' => 'passthrough'
             ]
         ],
         'pid' => [

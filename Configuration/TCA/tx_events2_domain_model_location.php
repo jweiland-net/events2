@@ -10,7 +10,6 @@ $tx_events2_domain_model_event = [
         'label' => 'location',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
-        'cruser_id' => 'cruser_id',
         'default_sortby' => 'ORDER BY location',
         'versioningWS' => true,
         'origUid' => 't3_origuid',
@@ -32,7 +31,7 @@ $tx_events2_domain_model_event = [
             --palette--;;streetHouseNumber,
             --palette--;;zipCity,
             country, link,
-            --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access, 
+            --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access,
             --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access'
         ],
     ],
@@ -93,12 +92,6 @@ $tx_events2_domain_model_event = [
                         'invertStateDisplay' => true
                     ]
                 ],
-            ]
-        ],
-        'cruser_id' => [
-            'label' => 'cruser_id',
-            'config' => [
-                'type' => 'passthrough'
             ]
         ],
         'pid' => [

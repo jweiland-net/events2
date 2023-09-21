@@ -248,28 +248,4 @@ trait TestTypo3PropertiesTrait
             $this->subject->getDeleted()
         );
     }
-
-    /**
-     * @test
-     */
-    public function getCruserIdInitiallyReturnsZero(): void
-    {
-        self::assertSame(
-            0,
-            $this->subject->getCruserId()
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function setCruserIdSetsCruserId(): void
-    {
-        $this->subject->setCruserId(123456);
-
-        self::assertSame(
-            123456,
-            $this->subject->getCruserId()
-        );
-    }
 }

@@ -10,6 +10,16 @@ Upgrade
 If you upgrade/update EXT:events2 to a newer version, please read this section carefully!
 
 
+Update to Version 9.0.0
+=======================
+
+This version is NOT compatible with TYPO3 10 anymore.
+
+TCA option `cruser_id` has been removed with TYPO3 12. As we have also removed
+that field from all EXT:events2 tables, you will not see who has created
+a record on TYPO3 11 instances. PLease use events2 8.* if you still need
+that information.
+
 Update to Version 8.0.0
 =======================
 

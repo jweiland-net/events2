@@ -6,7 +6,6 @@ return [
         'label_userFunc' => \JWeiland\Events2\Tca\TimeLabel::class . '->getTitle',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
-        'cruser_id' => 'cruser_id',
         'hideTable' => true,
         'default_sortby' => 'ORDER BY time_begin',
         'versioningWS' => true,
@@ -25,7 +24,7 @@ return [
     'types' => [
         '1' => [
             'showitem' => '--palette--;;language, type, --palette--;;times,
-            --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access, 
+            --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access,
             --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access'
         ],
     ],
@@ -85,12 +84,6 @@ return [
                         'invertStateDisplay' => true
                     ]
                 ],
-            ]
-        ],
-        'cruser_id' => [
-            'label' => 'cruser_id',
-            'config' => [
-                'type' => 'passthrough'
             ]
         ],
         'pid' => [
