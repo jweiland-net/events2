@@ -314,7 +314,6 @@ class DayRelationService implements LoggerAwareInterface
             'pid' => (int)$eventRecord['pid'],
             'crdate' => time(),
             'tstamp' => time(),
-            'cruser_id' => $GLOBALS['BE_USER']->user['uid'] ?? 0,
             'hidden' => $eventRecord['hidden'] ?? 0,
             'fe_group' => $eventRecord['fe_group'] ?? 0,
             't3ver_wsid' => $eventRecord['t3ver_wsid'] ?? 0,

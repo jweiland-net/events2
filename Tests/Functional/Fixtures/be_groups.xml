@@ -9,7 +9,6 @@
 		<pagetypes_select>1,254</pagetypes_select>
 		<tables_modify>pages,tx_events2_domain_model_event</tables_modify>
 		<crdate>1551969803</crdate>
-		<cruser_id>1</cruser_id>
 		<groupMods>web_layout,web_list</groupMods>
 		<hidden>0</hidden>
 		<deleted>0</deleted>
@@ -21,7 +20,6 @@
 		<title>Pagetreerights</title>
 		<tstamp>1551970527</tstamp>
 		<crdate>1551970527</crdate>
-		<cruser_id>1</cruser_id>
 		<hidden>0</hidden>
 		<deleted>0</deleted>
 	</be_groups>

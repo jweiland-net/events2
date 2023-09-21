@@ -26,8 +26,6 @@ class Day extends AbstractEntity
 
     protected bool $hidden = false;
 
-    protected int $cruserId = 0;
-
     protected ?\DateTimeImmutable $day = null;
 
     protected ?\DateTimeImmutable $dayTime = null;
@@ -68,16 +66,6 @@ class Day extends AbstractEntity
     public function setHidden(bool $hidden): void
     {
         $this->hidden = $hidden;
-    }
-
-    public function getCruserId(): int
-    {
-        return $this->cruserId;
-    }
-
-    public function setCruserId(int $cruserId): void
-    {
-        $this->cruserId = $cruserId;
     }
 
     public function getDay(): \DateTimeImmutable

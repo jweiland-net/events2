@@ -5,7 +5,6 @@ return [
         'label' => 'title',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
-        'cruser_id' => 'cruser_id',
         'hideTable' => true,
         'default_sortby' => 'ORDER BY title',
         'versioningWS' => true,
@@ -25,7 +24,7 @@ return [
     'types' => [
         '1' => [
             'showitem' => '--palette--;;languageHidden, l10n_diffsource, title, link,
-            --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access, 
+            --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access,
             --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access'
         ],
     ],
@@ -84,12 +83,6 @@ return [
                         'invertStateDisplay' => true
                     ]
                 ],
-            ]
-        ],
-        'cruser_id' => [
-            'label' => 'cruser_id',
-            'config' => [
-                'type' => 'passthrough'
             ]
         ],
         'pid' => [

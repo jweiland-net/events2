@@ -5,7 +5,6 @@ return [
         'label' => 'title',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
-        'cruser_id' => 'cruser_id',
         'rootLevel' => 1,
         'versioningWS' => true,
         'origUid' => 't3_origuid',
@@ -22,8 +21,8 @@ return [
         'iconfile' => 'EXT:events2/Resources/Public/Icons/tx_events2_domain_model_holiday.svg',
     ],
     'types' => [
-        '1' => ['showitem' => '--palette--;;languageHidden, l10n_diffsource, 
-            title, 
+        '1' => ['showitem' => '--palette--;;languageHidden, l10n_diffsource,
+            title,
             --palette--;;dayMonth'
         ],
     ],
@@ -80,12 +79,6 @@ return [
                         'invertStateDisplay' => true
                     ]
                 ],
-            ]
-        ],
-        'cruser_id' => [
-            'label' => 'cruser_id',
-            'config' => [
-                'type' => 'passthrough'
             ]
         ],
         'pid' => [
