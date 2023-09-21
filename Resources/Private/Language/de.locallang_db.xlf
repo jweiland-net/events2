@@ -353,6 +353,10 @@
 				<source>Download links</source>
 				<target>Download Link</target>
 			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.categories">
+				<source>Categories</source>
+				<target>Kategorien</target>
+			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.import_id">
 				<source>Import ID</source>
 				<target>Import ID</target>

@@ -279,6 +279,9 @@
 			<trans-unit id="tx_events2_domain_model_event.download_links">
 				<source>Download links</source>
 			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.categories">
+				<source>Categories</source>
+			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.import_id">
 				<source>Import ID</source>
 			</trans-unit>
