@@ -641,7 +641,6 @@ return [
                     'foreign_match_fields' => [
                         'fieldname' => 'images',
                         'tablenames' => 'tx_events2_domain_model_event',
-                        'table_local' => 'sys_file',
                     ],
                     'behaviour' => [
                         'allowLanguageSynchronization' => true,

@@ -196,7 +196,6 @@ class SaveEventFinisher extends AbstractFinisher
                 'uid_local' => $sysFileUid,
                 'tablenames' => 'tx_events2_domain_model_event',
                 'fieldname' => 'images',
-                'table_local' => 'sys_file',
             ]
         );
 
