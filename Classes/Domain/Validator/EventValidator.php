@@ -29,7 +29,7 @@ class EventValidator extends AbstractValidator
      *
      * @param mixed $value
      */
-    public function isValid($value)
+    public function isValid($value): void
     {
         if (!$value instanceof Event) {
             return;
