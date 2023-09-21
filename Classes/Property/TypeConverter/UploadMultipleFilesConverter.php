@@ -84,7 +84,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Error\Error|mixed|\TYPO3\CMS\Extbase\Persistence\ObjectStorage
+     * @return Error|mixed|ObjectStorage
      */
     public function convertFrom(
         $source,

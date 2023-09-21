@@ -14,7 +14,6 @@ namespace JWeiland\Events2\Hooks;
 use JWeiland\Events2\Service\DayRelationService;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Cache\CacheManager;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 /*
@@ -108,7 +107,7 @@ class DataHandler
      */
     protected function getRealUid($uid, \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): int
     {
-        if (GeneralUtility::isFirstPartOfStr($uid, 'NEW')) {
+        if (\str_starts_with($uid, 'NEW')) {
             $uid = $dataHandler->substNEWwithIDs[$uid];
         }
 

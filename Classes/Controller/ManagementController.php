@@ -17,6 +17,7 @@ use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Utility\CacheUtility;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Annotation as Extbase;
@@ -76,13 +77,15 @@ class ManagementController extends AbstractController
         $this->preProcessControllerAction();
     }
 
-    public function listMyEventsAction(): void
+    public function listMyEventsAction(): ResponseInterface
     {
         $events = $this->eventRepository->findMyEvents();
         $this->postProcessAndAssignFluidVariables([
             'events' => $events,
         ]);
         CacheUtility::addPageCacheTagsByQuery($events->getQuery());
+
+        return $this->htmlResponse();
     }
 
     public function initializeNewAction(): void
@@ -90,7 +93,7 @@ class ManagementController extends AbstractController
         $this->preProcessControllerAction();
     }
 
-    public function newAction(): void
+    public function newAction(): ResponseInterface
     {
         $categories = $this->categoryRepository->getCategories(
             $this->settings['selectableCategoriesForNewEvents']
@@ -105,6 +108,8 @@ class ManagementController extends AbstractController
             'locations' => $this->locationRepository->findAll(),
             'selectableCategories' => $categories,
         ]);
+
+        return $this->htmlResponse();
     }
 
     public function initializeCreateAction(): void
@@ -143,7 +148,7 @@ class ManagementController extends AbstractController
     /**
      * @Extbase\IgnoreValidation("event")
      */
-    public function editAction(Event $event): void
+    public function editAction(Event $event): ResponseInterface
     {
         $categories = $this->categoryRepository->getCategories(
             $this->settings['selectableCategoriesForNewEvents']
@@ -158,6 +163,8 @@ class ManagementController extends AbstractController
             'locations' => $this->locationRepository->findAll(),
             'selectableCategories' => $categories,
         ]);
+
+        return $this->htmlResponse();
     }
 
     public function initializeUpdateAction(): void
@@ -191,8 +198,9 @@ class ManagementController extends AbstractController
         $this->redirect('listMyEvents', 'Management');
     }
 
-    public function performAction(): void
+    public function performAction(): ResponseInterface
     {
+        return $this->htmlResponse();
     }
 
     public function initializeDeleteAction(): void

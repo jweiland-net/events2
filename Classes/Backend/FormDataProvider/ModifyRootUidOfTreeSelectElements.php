@@ -51,7 +51,7 @@ class ModifyRootUidOfTreeSelectElements implements FormDataProviderInterface
 
                 // check if a FlexForm was rendered
                 && $result['tableName'] === 'tt_content'
-                && GeneralUtility::isFirstPartOfStr($result['flexParentDatabaseRow']['list_type'], 'events2')
+                && \str_starts_with($result['flexParentDatabaseRow']['list_type'], 'events2')
             ) {
                 $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
                 if (version_compare($typo3Version->getBranch(), '11.4', '<')) {
