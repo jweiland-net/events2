@@ -23,8 +23,8 @@ use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
-use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3Fluid\Fluid\View\ViewInterface;
 
 /*
  * A collection of various helper methods to keep

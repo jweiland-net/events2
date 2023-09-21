@@ -17,7 +17,7 @@ use JWeiland\Events2\Utility\CacheUtility;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
+use TYPO3Fluid\Fluid\View\ViewInterface;
 
 /*
  * The DayController contains actions to show a day record
