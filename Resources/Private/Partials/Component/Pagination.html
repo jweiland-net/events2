@@ -35,7 +35,7 @@
 
 <f:section name="renderPageLink">
 	<f:variable name="actionName">{f:if(condition: actionName, then: actionName, else: 'list')}</f:variable>
-	<f:link.action action="{actionName}" addQueryString="1" addQueryStringMethod="GET" arguments="{linkArguments}">
+	<f:link.action action="{actionName}" addQueryString="1" arguments="{linkArguments}">
 		{f:if(condition: value, then: value, else: '{f:translate(key: transKey)}')}
 	</f:link.action>
 </f:section>
