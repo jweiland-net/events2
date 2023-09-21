@@ -107,11 +107,11 @@ class DayGeneratorService implements LoggerAwareInterface
                 continue;
             }
 
-            if (!isset($GLOBALS['TCA'][$table]['columns'][$column]['config']['renderType'])) {
+            if (!isset($GLOBALS['TCA'][$table]['columns'][$column]['config']['type'])) {
                 continue;
             }
 
-            if ($GLOBALS['TCA'][$table]['columns'][$column]['config']['renderType'] === 'inputDateTime') {
+            if ($GLOBALS['TCA'][$table]['columns'][$column]['config']['type'] === 'datetime') {
                 $record[$column] = $this->dateTimeUtility->convert($value);
             }
         }
