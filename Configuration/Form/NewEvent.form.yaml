@@ -727,8 +727,6 @@ finishers:
             mapOnDatabaseColumn: uid_local
             skipIfValueIsEmpty: true
         databaseColumnMappings:
-          table_local:
-            value: sys_file
           tablenames:
             value: tx_events2_domain_model_event
           fieldname:
@@ -747,8 +745,6 @@ finishers:
             mapOnDatabaseColumn: uid_local
             skipIfValueIsEmpty: true
         databaseColumnMappings:
-          table_local:
-            value: sys_file
           tablenames:
             value: tx_events2_domain_model_event
           fieldname:
