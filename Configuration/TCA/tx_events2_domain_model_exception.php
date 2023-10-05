@@ -219,7 +219,7 @@ return [
                 'cols' => 40,
                 'rows' => 15,
                 'eval' => 'trim',
-                'softref' => 'typolink_tag,images,email[subst],url',
+                'softref' => 'typolink_tag,email[subst],url',
                 'enableRichtext' => true,
             ],
         ],
