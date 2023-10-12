@@ -25,7 +25,6 @@
 		"sjbr/static-info-tables": "^6.9 || ^11.5"
 	},
 	"require-dev": {
-		"roave/security-advisories": "dev-latest",
 		"friendsofphp/php-cs-fixer": "^3.0",
 		"nimut/testing-framework": "^6.0",
 		"phpunit/phpunit": "^9.5",
