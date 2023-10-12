@@ -402,6 +402,9 @@
 			<trans-unit id="validator.event.videoLink.notYouTube">
 				<source>The URI provided for the video link is not a YouTube link. This form currently only allows YouTube links.</source>
 			</trans-unit>
+			<trans-unit id="validator.event.categories.isMandatory">
+				<source>Property "categories" is defined to be mandatory. Please select at least one category.</source>
+			</trans-unit>
 
 			<trans-unit id="error.upload">
 				<source>Something went wrong with your uploaded files. Please try again. Error: </source>

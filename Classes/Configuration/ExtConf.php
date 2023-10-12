@@ -35,6 +35,10 @@ class ExtConf implements SingletonInterface
 
     protected bool $locationIsRequired = false;
 
+    protected bool $categoryIsRequired = false;
+
+    protected string $pathSegmentType = 'empty';
+
     protected string $emailFromAddress = '';
 
     protected string $emailFromName = '';
@@ -42,8 +46,6 @@ class ExtConf implements SingletonInterface
     protected string $emailToAddress = '';
 
     protected string $emailToName = '';
-
-    protected string $pathSegmentType = 'empty';
 
     public function __construct(ExtensionConfiguration $extensionConfiguration)
     {
@@ -157,6 +159,30 @@ class ExtConf implements SingletonInterface
         $this->locationIsRequired = (bool)$locationIsRequired;
     }
 
+    public function getCategoryIsRequired(): bool
+    {
+        return $this->categoryIsRequired;
+    }
+
+    public function setCategoryIsRequired($categoryIsRequired): void
+    {
+        $this->categoryIsRequired = (bool)$categoryIsRequired;
+    }
+
+    public function getPathSegmentType(): string
+    {
+        if (empty($this->pathSegmentType)) {
+            $this->pathSegmentType = 'empty';
+        }
+
+        return $this->pathSegmentType;
+    }
+
+    public function setPathSegmentType(string $pathSegmentType): void
+    {
+        $this->pathSegmentType = $pathSegmentType;
+    }
+
     /**
      * @throws \Exception
      */
@@ -218,19 +244,5 @@ class ExtConf implements SingletonInterface
     public function setEmailToName(string $emailToName): void
     {
         $this->emailToName = $emailToName;
-    }
-
-    public function getPathSegmentType(): string
-    {
-        if (empty($this->pathSegmentType)) {
-            $this->pathSegmentType = 'empty';
-        }
-
-        return $this->pathSegmentType;
-    }
-
-    public function setPathSegmentType(string $pathSegmentType): void
-    {
-        $this->pathSegmentType = $pathSegmentType;
     }
 }

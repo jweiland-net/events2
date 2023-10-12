@@ -14,6 +14,8 @@ xmlImportValidatorPath = EXT:events2/Resources/Public/XmlImportValidator.xsd
 organizerIsRequired =
 # cat=basic; type=boolean; label=LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:locationIsRequired
 locationIsRequired =
+# cat=basic; type=boolean; label=LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:categoryIsRequired
+categoryIsRequired =
 # cat=basic; type=options[Do nothing=empty,RealUrl=realurl,Title incl. UID=uid]; label=LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:pathSegmentType
 pathSegmentType = empty
 

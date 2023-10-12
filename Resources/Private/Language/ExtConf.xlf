@@ -27,6 +27,9 @@
 			<trans-unit id="locationIsRequired">
 				<source>Is location required: By default it is not needed to explicit set a location. But, if you want, you can set location as a required property with activating this checkbox</source>
 			</trans-unit>
+			<trans-unit id="categoryIsRequired">
+				<source>Is category required: By default it is not needed to explicit set a category. But, if you want, you can set catgeory as a required property with activating this checkbox</source>
+			</trans-unit>
 			<trans-unit id="pathSegmentType" xml:space="preserve">
 				<source>Path Segment type: Set path segment type for frontend created events and PathSegment UpdateWizard. Set to "Do nothing" to keep path_segment untouched. Set to "RealUrl" to add a counter on duplicates (swimm, swimm-1, swimm-2). Set to "UID" to build a path segment based on title and uid.</source>
 			</trans-unit>
