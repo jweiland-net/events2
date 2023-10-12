@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 8.3.0
+=============
+
+*   [FEATURE] Add new setting to configure property "categories" as mandatory.
+
 Version 8.2.1
 =============
 

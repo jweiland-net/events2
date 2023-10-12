@@ -94,6 +94,13 @@ Default: false
 
 If you want, you can set column *Location* as required. That way an editor has to fill this column.
 
+categoryIsRequired
+------------------
+
+Default: false
+
+If you want, you can set column *Categories* as required. That way an editor has to fill this column.
+
 pathSegmentType
 ---------------
 
