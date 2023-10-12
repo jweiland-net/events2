@@ -97,7 +97,7 @@ class Event extends AbstractEntity
 
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Category>
-     * @Extbase\Validate("NotEmpty")
+     * @Extbase\Validate("JWeiland\Events2\Domain\Validator\CategoryMandatoryValidator")
      * @Extbase\ORM\Lazy
      */
     protected ObjectStorage $categories;
@@ -394,8 +394,8 @@ class Event extends AbstractEntity
     }
 
     /**
-     * Without argument it returns all exceptions.
-     * Additionally you can filter exceptions by type
+     * Without argument, it returns all exceptions.
+     * Additionally, you can filter exceptions by type
      * Types: add, remove, time, info
      *
      * @param string $exceptionTypes Comma-separated list of exception types

@@ -20,7 +20,7 @@ use TYPO3\CMS\Extbase\Validation\Validator\NotEmptyValidator;
 use TYPO3\CMS\Extbase\Validation\ValidatorResolver;
 
 /**
- * Add validator for event location in event forms, if it is was configured in extension settings.
+ * Add validator for event location in event forms, if it was configured in extension settings.
  */
 class ApplyLocationAsMandatoryIfNeededEventListener extends AbstractControllerEventListener
 {
