@@ -57,9 +57,9 @@ class LocationRepository extends AbstractRepository
             new ModifyQueriesOfFindLocationsEvent($queryBuilder, $search)
         );
 
-        $statement = $queryBuilder->execute();
+        $result = $queryBuilder->executeQuery();
         $locations = [];
-        while ($location = $statement->fetch(\PDO::FETCH_ASSOC)) {
+        while ($location = $result->fetchAssociative()) {
             $locations[] = $location;
         }
 

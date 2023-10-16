@@ -159,7 +159,7 @@ class DayRelationService implements LoggerAwareInterface
             ->removeAll()
             ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
 
-        $statement = $queryBuilder
+        $queryResult = $queryBuilder
             ->select('*')
             ->from('tx_events2_domain_model_exception')
             ->where(
@@ -172,10 +172,10 @@ class DayRelationService implements LoggerAwareInterface
                     $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
                 )
             )
-            ->execute();
+            ->executeQuery();
 
         $exceptionRecords = [];
-        while ($exceptionRecord = $statement->fetch(\PDO::FETCH_ASSOC)) {
+        while ($exceptionRecord = $queryResult->fetchAssociative()) {
             BackendUtility::workspaceOL('tx_events2_domain_model_exception', $exceptionRecord);
             if ($exceptionRecord === null) {
                 $this->logger->warning(

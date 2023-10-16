@@ -112,7 +112,7 @@ class GetDaysForMonthMiddleware implements MiddlewareInterface
     protected function addHolidays(array &$days, int $month): void
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_holiday');
-        $statement = $queryBuilder
+        $queryResult = $queryBuilder
             ->select('day')
             ->from('tx_events2_domain_model_holiday')
             ->where(
@@ -121,9 +121,9 @@ class GetDaysForMonthMiddleware implements MiddlewareInterface
                     $queryBuilder->createNamedParameter($month, \PDO::PARAM_INT)
                 )
             )
-            ->execute();
+            ->executeQuery();
 
-        while ($holiday = $statement->fetch(\PDO::FETCH_ASSOC)) {
+        while ($holiday = $queryResult->fetchAssociative()) {
             $days[] = [
                 'dayOfMonth' => (int)$holiday['day'],
                 'isHoliday' => true,

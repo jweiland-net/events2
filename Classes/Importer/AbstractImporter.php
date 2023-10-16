@@ -270,8 +270,8 @@ abstract class AbstractImporter implements ImporterInterface
                     $queryBuilder->createNamedParameter($title)
                 )
             )
-            ->execute()
-            ->fetch(\PDO::FETCH_ASSOC);
+            ->executeQuery()
+            ->fetchAssociative();
 
         return $organizer ?: [];
     }
@@ -307,8 +307,8 @@ abstract class AbstractImporter implements ImporterInterface
                     $queryBuilder->createNamedParameter($title)
                 )
             )
-            ->execute()
-            ->fetch(\PDO::FETCH_ASSOC);
+            ->executeQuery()
+            ->fetchAssociative();
 
         return $location ?: [];
     }
@@ -329,8 +329,8 @@ abstract class AbstractImporter implements ImporterInterface
                     $queryBuilder->createNamedParameter($title)
                 )
             )
-            ->execute()
-            ->fetch(\PDO::FETCH_ASSOC);
+            ->executeQuery()
+            ->fetchAssociative();
 
         return $category ?: [];
     }

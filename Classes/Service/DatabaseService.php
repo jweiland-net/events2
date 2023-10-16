@@ -71,7 +71,7 @@ class DatabaseService
             $queryBuilder
                 ->delete($tableName)
                 ->from($tableName)
-                ->execute();
+                ->executeStatement();
         }
     }
 
@@ -119,10 +119,10 @@ class DatabaseService
             ->select('uid', 'pid')
             ->from('tx_events2_domain_model_event')
             ->where(
-                $queryBuilder->expr()->orX(...$orConstraints)
+                $queryBuilder->expr()->or(...$orConstraints)
             )
-            ->execute()
-            ->fetchAll(\PDO::FETCH_ASSOC);
+            ->executeQuery()
+            ->fetchAllAssociative();
 
         if (empty($events)) {
             $events = [];
@@ -213,8 +213,8 @@ class DatabaseService
 
         return $queryBuilder
             ->where(...$constraint)
-            ->execute()
-            ->fetchAll(\PDO::FETCH_ASSOC);
+            ->executeQuery()
+            ->fetchAllAssociative();
     }
 
     /**

@@ -64,8 +64,8 @@ class EmStaticInfo
             ->select('uid', 'cn_short_en')
             ->from('static_countries')
             ->orderBy('cn_short_en', 'ASC')
-            ->execute()
-            ->fetchAll(\PDO::FETCH_ASSOC);
+            ->executeQuery()
+            ->fetchAllAssociative();
 
         if (empty($countries)) {
             $countries = [];

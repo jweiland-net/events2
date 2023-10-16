@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Helper;
 
 use Doctrine\DBAL\Driver\Statement;
+use Doctrine\DBAL\Result;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Event\GeneratePathSegmentEvent;
@@ -95,12 +96,13 @@ class PathSegmentHelper
     protected function getUniqueValue(int $uid, string $slug): string
     {
         $newSlug = '';
-        $statement = $this->getUniqueSlugStatement($uid, $slug);
+        $queryResult = $this->getUniqueSlugQueryResult($uid, $slug);
         $counter = $this->slugCache[$slug] ?? 1;
-        while ($statement->fetch(\PDO::FETCH_ASSOC)) {
+        while ($queryResult->fetchAssociative()) {
             $newSlug = $slug . '-' . $counter;
-            $statement->bindValue(1, $newSlug);
-            $statement->execute();
+            // ToDo: Needs a new solution
+            $queryResult->bindValue(1, $newSlug);
+            $queryResult->execute();
 
             // Do not cache every slug, because of memory consumption. I think 5 is a good value to start caching.
             if ($counter > 5) {
@@ -112,7 +114,7 @@ class PathSegmentHelper
         return $newSlug ?? $slug;
     }
 
-    protected function getUniqueSlugStatement(int $uid, string $slug): Statement
+    protected function getUniqueSlugQueryResult(int $uid, string $slug): Result
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($this->tableName);
         $queryBuilder->getRestrictions()->removeAll();
@@ -131,7 +133,7 @@ class PathSegmentHelper
                     $queryBuilder->createPositionalParameter($uid, Connection::PARAM_INT)
                 )
             )
-            ->execute();
+            ->executeQuery();
     }
 
     protected function getSlugHelper(): SlugHelper

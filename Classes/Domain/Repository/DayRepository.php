@@ -462,12 +462,13 @@ class DayRepository extends AbstractRepository
                     $queryBuilder->createNamedParameter($timestamp, \PDO::PARAM_INT)
                 )
             )
-            ->execute()
-            ->fetch(\PDO::FETCH_ASSOC);
+            ->executeQuery()
+            ->fetchAssociative();
 
         if (empty($day)) {
             $day = [];
         }
+
         return $day;
     }
 
