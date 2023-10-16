@@ -91,8 +91,8 @@ return [
                 'renderType' => 'checkboxToggle',
                 'items' => [
                     [
-                        0 => '',
-                        1 => '',
+                        'label' => '',
+                        'value' => '',
                         'invertStateDisplay' => true
                     ]
                 ],
@@ -146,10 +146,26 @@ return [
                 'renderType' => 'selectSingle',
                 'size' => 1,
                 'items' => [
-                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_exception.exception_type.Add', 'Add', 'ext-events2-exception-add'],
-                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_exception.exception_type.Remove', 'Remove', 'ext-events2-exception-remove'],
-                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_exception.exception_type.Time', 'Time', 'ext-events2-exception-time'],
-                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_exception.exception_type.Info', 'Info', 'ext-events2-exception-info'],
+                    [
+                        'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_exception.exception_type.Add',
+                        'value' => 'Add',
+                        'icon' => 'ext-events2-exception-add',
+                    ],
+                    [
+                        'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_exception.exception_type.Remove',
+                        'value' => 'Remove',
+                        'icon' => 'ext-events2-exception-remove',
+                    ],
+                    [
+                        'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_exception.exception_type.Time',
+                        'value' => 'Time',
+                        'icon' => 'ext-events2-exception-time',
+                    ],
+                    [
+                        'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_exception.exception_type.Info',
+                        'value' => 'Info',
+                        'icon' => 'ext-events2-exception-info',
+                    ],
                 ],
                 'default' => 'Add',
             ],
@@ -206,8 +222,8 @@ return [
                 'renderType' => 'checkboxToggle',
                 'items' => [
                     [
-                        0 => '',
-                        1 => '',
+                        'label' => '',
+                        'value' => '',
                     ]
                 ],
                 'default' => 0,
