@@ -15,6 +15,7 @@ use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
+use JWeiland\Events2\Domain\Validator\EventValidator;
 use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Utility\CacheUtility;
 use Psr\Http\Message\ResponseInterface;
@@ -117,9 +118,7 @@ class ManagementController extends AbstractController
         $this->preProcessControllerAction();
     }
 
-    /**
-     * @Extbase\Validate(param="event", validator="JWeiland\Events2\Domain\Validator\EventValidator")
-     */
+    #[Extbase\Validate(['param' => 'event', 'validator' => EventValidator::class])]
     public function createAction(Event $event): void
     {
         $event->setHidden(true);
@@ -145,9 +144,7 @@ class ManagementController extends AbstractController
         $this->preProcessControllerAction();
     }
 
-    /**
-     * @Extbase\IgnoreValidation("event")
-     */
+    #[Extbase\IgnoreValidation(['value' => 'event'])]
     public function editAction(Event $event): ResponseInterface
     {
         $categories = $this->categoryRepository->getCategories(
@@ -172,9 +169,7 @@ class ManagementController extends AbstractController
         $this->preProcessControllerAction();
     }
 
-    /**
-     * @Extbase\Validate(param="event", validator="JWeiland\Events2\Domain\Validator\EventValidator")
-     */
+    #[Extbase\Validate(['param' => 'event', 'validator' => EventValidator::class])]
     public function updateAction(Event $event): void
     {
         $isHidden = $event->getHidden();
