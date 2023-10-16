@@ -32,21 +32,15 @@ class Event extends AbstractEntity
 
     protected bool $topOfList = false;
 
-    /**
-     * @Extbase\Validate("NotEmpty")
-     */
+    #[Extbase\Validate(['validator' => 'NotEmpty'])]
     protected string $title = '';
 
     protected string $pathSegment = '';
 
-    /**
-     * @Extbase\Validate("NotEmpty")
-     */
+    #[Extbase\Validate(['validator' => 'NotEmpty'])]
     protected ?\DateTimeImmutable $eventBegin = null;
 
-    /**
-     * @Extbase\ORM\Cascade("remove")
-     */
+    #[Extbase\ORM\Cascade(['value' => 'remove'])]
     protected ?Time $eventTime = null;
 
     protected ?\DateTimeImmutable $eventEnd = null;
@@ -55,9 +49,9 @@ class Event extends AbstractEntity
 
     /**
      * @var ObjectStorage<Time>
-     * @Extbase\ORM\Cascade("remove")
-     * @Extbase\ORM\Lazy
      */
+    #[Extbase\ORM\Cascade(['value' => 'remove'])]
+    #[Extbase\ORM\Lazy]
     protected ObjectStorage $multipleTimes;
 
     protected int $xth = 0;
@@ -66,9 +60,9 @@ class Event extends AbstractEntity
 
     /**
      * @var ObjectStorage<Time>
-     * @Extbase\ORM\Cascade("remove")
-     * @Extbase\ORM\Lazy
      */
+    #[Extbase\ORM\Cascade(['value' => 'remove'])]
+    #[Extbase\ORM\Lazy]
     protected ObjectStorage $differentTimes;
 
     protected int $eachWeeks = 0;
@@ -79,9 +73,9 @@ class Event extends AbstractEntity
 
     /**
      * @var ObjectStorage<Exception>
-     * @Extbase\ORM\Cascade("remove")
-     * @Extbase\ORM\Lazy
      */
+    #[Extbase\ORM\Cascade(['value' => 'remove'])]
+    #[Extbase\ORM\Lazy]
     protected ObjectStorage $exceptions;
 
     protected string $teaser = '';
@@ -90,50 +84,46 @@ class Event extends AbstractEntity
 
     protected bool $freeEntry = false;
 
-    /**
-     * @Extbase\ORM\Cascade("remove")
-     */
+    #[Extbase\ORM\Cascade(['value' => 'remove'])]
     protected ?Link $ticketLink = null;
 
     /**
      * @var ObjectStorage<Category>
-     * @Extbase\Validate("JWeiland\Events2\Domain\Validator\CategoryMandatoryValidator")
-     * @Extbase\ORM\Lazy
      */
+    #[Extbase\Validate(['value' => 'JWeiland\Events2\Domain\Validator\CategoryMandatoryValidator'])]
+    #[Extbase\ORM\Lazy]
     protected ObjectStorage $categories;
 
     /**
      * @var ObjectStorage<Day>
-     * @Extbase\ORM\Cascade("remove")
-     * @Extbase\ORM\Lazy
      */
+    #[Extbase\ORM\Cascade(['value' => 'remove'])]
+    #[Extbase\ORM\Lazy]
     protected ObjectStorage $days;
 
     protected ?Location $location = null;
 
     /**
      * @var ObjectStorage<Organizer>
-     * @Extbase\ORM\Lazy
      */
+    #[Extbase\ORM\Lazy]
     protected ObjectStorage $organizers;
 
     /**
      * @var ObjectStorage<FileReference>
-     * @Extbase\ORM\Cascade("remove")
-     * @Extbase\ORM\Lazy
      */
+    #[Extbase\ORM\Cascade(['value' => 'remove'])]
+    #[Extbase\ORM\Lazy]
     protected ObjectStorage $images;
 
-    /**
-     * @Extbase\ORM\Cascade("remove")
-     */
+    #[Extbase\ORM\Cascade(['value' => 'remove'])]
     protected ?Link $videoLink = null;
 
     /**
      * @var ObjectStorage<Link>
-     * @Extbase\ORM\Cascade("remove")
-     * @Extbase\ORM\Lazy
      */
+    #[Extbase\ORM\Cascade(['value' => 'remove'])]
+    #[Extbase\ORM\Lazy]
     protected ObjectStorage $downloadLinks;
 
     protected string $importId = '';

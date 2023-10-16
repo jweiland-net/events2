@@ -38,7 +38,7 @@ class Location extends AbstractEntity
     protected ?Link $link = null;
 
     /**
-     * @var \JWeiland\Maps2\Domain\Model\PoiCollection|null
+     * @var PoiCollection|null
      */
     protected $txMaps2Uid;
 
