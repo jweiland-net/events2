@@ -74,11 +74,13 @@ class DateTimeImmutableConverter extends AbstractTypeConverter
 
     /**
      * @var string[]
+     * @deprecated will be removed in TYPO3 v13.0, as this is defined in Services.yaml.
      */
     protected $sourceTypes = ['string', 'integer', 'array'];
 
     /**
      * @var string
+     * @deprecated will be removed in TYPO3 v13.0, as this is defined in Services.yaml.
      */
     protected $targetType = \DateTimeImmutable::class;
 
@@ -87,6 +89,7 @@ class DateTimeImmutableConverter extends AbstractTypeConverter
      * in future the version of TYPO3 has priority.
      *
      * @var int
+     * @deprecated will be removed in TYPO3 v13.0, as this is defined in Services.yaml.
      */
     protected $priority = 1;
 
