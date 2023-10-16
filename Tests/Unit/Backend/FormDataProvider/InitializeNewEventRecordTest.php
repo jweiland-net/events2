@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Tests\Unit\Backend\FormDataProvider;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Context\Context;
 use JWeiland\Events2\Backend\FormDataProvider\InitializeNewEventRecord;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 
@@ -24,8 +26,6 @@ class InitializeNewEventRecordTest extends UnitTestCase
     protected function setUp(): void
     {
         $this->subject = new InitializeNewEventRecord();
-
-        $GLOBALS['EXEC_TIME'] = time();
     }
 
     protected function tearDown(): void
@@ -75,7 +75,7 @@ class InitializeNewEventRecordTest extends UnitTestCase
         ];
 
         $expected['databaseRow'] = [
-            'event_begin' => $GLOBALS['EXEC_TIME']
+            'event_begin' => GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('date', 'timestamp')
         ];
 
         self::assertSame(
