@@ -123,8 +123,9 @@ return [
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_holiday.day',
             'config' => [
                 'type' => 'input',
+                'required' => true,
                 'size' => 2,
-                'eval' => 'int,required'
+                'eval' => 'int'
             ],
         ],
         'month' => [
@@ -132,8 +133,9 @@ return [
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_holiday.month',
             'config' => [
                 'type' => 'input',
+                'required' => true,
                 'size' => 2,
-                'eval' => 'int,required'
+                'eval' => 'int'
             ]
         ]
     ]

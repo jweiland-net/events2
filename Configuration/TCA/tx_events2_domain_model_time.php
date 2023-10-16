@@ -126,6 +126,7 @@ return [
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
+                'required' => true,
                 'items' => [
                     [
                         'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_time.weekday.monday',
@@ -156,7 +157,6 @@ return [
                         'value' => 'sunday',
                     ],
                 ],
-                'eval' => 'required',
                 'default' => strtolower(date('l')),
             ],
         ],
