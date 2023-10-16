@@ -12,7 +12,6 @@
 							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:pidOfListPage</label>
 							<config>
 								<type>group</type>
-								<internal_type>db</internal_type>
 								<allowed>pages</allowed>
 								<size>1</size>
 								<maxitems>1</maxitems>
@@ -25,7 +24,6 @@
 							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:pidOfLocationPage</label>
 							<config>
 								<type>group</type>
-								<internal_type>db</internal_type>
 								<allowed>pages</allowed>
 								<size>1</size>
 								<maxitems>1</maxitems>
@@ -38,7 +36,6 @@
 							<label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:pidOfManagementPage</label>
 							<config>
 								<type>group</type>
-								<internal_type>db</internal_type>
 								<allowed>pages</allowed>
 								<size>1</size>
 								<maxitems>1</maxitems>

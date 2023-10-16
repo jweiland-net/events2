@@ -84,7 +84,6 @@ return [
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.l18n_parent',
             'config' => [
                 'type' => 'group',
-                'internal_type' => 'db',
                 'allowed' => 'tx_events2_domain_model_event',
                 'size' => 1,
                 'maxitems' => 1,
@@ -582,7 +581,6 @@ return [
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.location',
             'config' => [
                 'type' => 'group',
-                'internal_type' => 'db',
                 'allowed' => 'tx_events2_domain_model_location',
                 'foreign_table' => 'tx_events2_domain_model_location',
                 'size' => 1,

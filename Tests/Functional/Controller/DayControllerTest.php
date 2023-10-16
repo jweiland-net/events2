@@ -178,9 +178,6 @@ class DayControllerTest extends AbstractFunctionalTestCase
         );
     }
 
-    /**
-     * @return array<string, array<string|\JWeiland\Events2\Domain\Model\Filter>>
-     */
     public function listWithFilledFilterDataProvider(): array
     {
         return [

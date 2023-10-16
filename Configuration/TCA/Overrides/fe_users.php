@@ -11,7 +11,6 @@ if (!defined('TYPO3')) {
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_organizer',
             'config' => [
                 'type' => 'group',
-                'internal_type' => 'db',
                 'allowed' => 'tx_events2_domain_model_organizer',
                 'prepend_tname' => false,
                 'size' => 1,
