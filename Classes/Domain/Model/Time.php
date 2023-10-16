@@ -24,25 +24,17 @@ class Time extends AbstractEntity
 
     protected string $weekday = '';
 
-    /**
-     * @Extbase\Validate("NotEmpty")
-     * @Extbase\Validate("RegularExpression", options={"regularExpression": "/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/"})
-     */
+    #[Extbase\Validate(['validator' => 'NotEmpty'])]
+    #[Extbase\Validate(['validator' => 'RegularExpression', 'options' => ['regularExpression' => '/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/']])]
     protected string $timeBegin = '';
 
-    /**
-     * @Extbase\Validate("RegularExpression", options={"regularExpression": "/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/"})
-     */
+    #[Extbase\Validate(['validator' => 'RegularExpression', 'options' => ['regularExpression' => '/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/']])]
     protected string $timeEntry = '';
 
-    /**
-     * @Extbase\Validate("RegularExpression", options={"regularExpression": "/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/"})
-     */
+    #[Extbase\Validate(['validator' => 'RegularExpression', 'options' => ['regularExpression' => '/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/']])]
     protected string $duration = '';
 
-    /**
-     * @Extbase\Validate("RegularExpression", options={"regularExpression": "/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/"})
-     */
+    #[Extbase\Validate(['validator' => 'RegularExpression', 'options' => ['regularExpression' => '/(2[0-4]{1}|[0-1]{1}\d{1}):[0-5]{1}\d{1}/']])]
     protected string $timeEnd = '';
 
     /*
