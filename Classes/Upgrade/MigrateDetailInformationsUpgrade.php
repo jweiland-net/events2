@@ -65,8 +65,8 @@ class MigrateDetailInformationsUpgrade implements UpgradeWizardInterface
                     $queryBuilder->quoteIdentifier('e.detail_information')
                 )
             )
-            ->execute()
-            ->fetchColumn();
+            ->executeQuery()
+            ->fetchOne();
 
         return $amountOfMigratedRecords === 0;
     }
@@ -80,12 +80,12 @@ class MigrateDetailInformationsUpgrade implements UpgradeWizardInterface
     {
         $queryBuilder = $this->getQueryBuilder();
 
-        $statement = $queryBuilder
+        $queryResult = $queryBuilder
             ->select('e.uid', 'e.detail_informations')
-            ->execute();
+            ->executeQuery();
 
         $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_event');
-        while ($event = $statement->fetch(\PDO::FETCH_ASSOC)) {
+        while ($event = $queryResult->fetchAssociative()) {
             $connection->update(
                 'tx_events2_domain_model_event',
                 [

@@ -164,8 +164,8 @@ class DataHandlerTest extends FunctionalTestCase
             ->select('*')
             ->from('be_users')
             ->where('uid=2')
-            ->execute()
-            ->fetch(\PDO::FETCH_ASSOC);
+            ->executeQuery()
+            ->fetchAssociative();
 
         $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
         $GLOBALS['BE_USER'] = new BackendUserAuthentication();
@@ -209,8 +209,8 @@ class DataHandlerTest extends FunctionalTestCase
                     $queryBuilder->createNamedParameter($eventEnd->format('U'), \PDO::PARAM_INT)
                 )
             )
-            ->execute()
-            ->fetchColumn();
+            ->executeQuery()
+            ->fetchOne();
 
         self::assertSame(
             0,

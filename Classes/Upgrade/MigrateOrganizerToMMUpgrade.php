@@ -66,8 +66,8 @@ class MigrateOrganizerToMMUpgrade implements UpgradeWizardInterface
                     $queryBuilder->quoteIdentifier('eo_mm.uid_local')
                 )
             )
-            ->execute()
-            ->fetchColumn();
+            ->executeQuery()
+            ->fetchOne();
 
         return $amountOfMigratedRecords === 0;
     }
@@ -81,13 +81,13 @@ class MigrateOrganizerToMMUpgrade implements UpgradeWizardInterface
     {
         $queryBuilder = $this->getQueryBuilder();
 
-        $statement = $queryBuilder
+        $queryResult = $queryBuilder
             ->select('e.uid', 'e.organizer')
-            ->execute();
+            ->executeQuery();
 
         $mmConnection = $this->getConnectionPool()->getConnectionForTable('tx_events2_event_organizer_mm');
         $eventConnection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_event');
-        while ($event = $statement->fetch(\PDO::FETCH_ASSOC)) {
+        while ($event = $queryResult->fetchAssociative()) {
             $mmConnection->insert(
                 'tx_events2_event_organizer_mm',
                 [

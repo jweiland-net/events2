@@ -13,6 +13,7 @@ namespace JWeiland\Events2\Hooks\Form;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\Statement;
+use Doctrine\DBAL\Result;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer;
@@ -69,7 +70,7 @@ class PrefillCategoriesHook
     protected function getCategories(): array
     {
         $categories = [];
-        $statement = $this->getStatementForCategoriesInDefaultLanguage();
+        $statement = $this->getQueryResultForCategoriesInDefaultLanguage();
         while ($sysCategoryInDefaultLanguage = $statement->fetch()) {
             $sysCategoryTranslated = $this->pageRepository->getLanguageOverlay(
                 'sys_category',
@@ -88,7 +89,7 @@ class PrefillCategoriesHook
         return $categories;
     }
 
-    protected function getStatementForCategoriesInDefaultLanguage(): Statement
+    protected function getQueryResultForCategoriesInDefaultLanguage(): Result
     {
         $queryBuilder = $this->getQueryBuilderForTable('sys_category');
 
@@ -115,7 +116,7 @@ class PrefillCategoriesHook
                     $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
                 )
             )
-            ->execute();
+            ->executeQuery();
     }
 
     protected function getSelectableCategoriesForNewEvents(): array

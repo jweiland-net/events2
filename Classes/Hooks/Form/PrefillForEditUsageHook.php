@@ -135,8 +135,8 @@ class PrefillForEditUsageHook
         $this->resolveExpressions($queryBuilder, $eventRecord, $expressions);
 
         $record = $queryBuilder
-            ->execute()
-            ->fetch();
+            ->executeQuery()
+            ->fetchAssociative();
 
         if (!is_array($record)) {
             return '';
@@ -161,10 +161,10 @@ class PrefillForEditUsageHook
             ->select($valueColumn);
 
         $this->resolveExpressions($queryBuilder, $eventRecord, $expressions);
-        $statement = $queryBuilder->execute();
+        $queryResult = $queryBuilder->executeQuery();
 
         $values = [];
-        while ($record = $statement->fetch()) {
+        while ($record = $queryResult->fetchAssociative()) {
             $values[] = $record[$valueColumn];
         }
 
@@ -222,7 +222,7 @@ class PrefillForEditUsageHook
     protected function getFileReference(int $eventUid, int $position): ?FileReference
     {
         $queryBuilder = $this->getQueryBuilderForTable('sys_file_reference');
-        $statement = $queryBuilder
+        $queryResult = $queryBuilder
             ->select('uid')
             ->where(
                 $queryBuilder->expr()->eq(
@@ -239,11 +239,11 @@ class PrefillForEditUsageHook
                 )
             )
             ->orderBy('sorting_foreign', 'ASC')
-            ->execute();
+            ->executeQuery();
 
         $coreReferences = [];
         $counter = 1;
-        while ($coreReferenceRecord = $statement->fetch()) {
+        while ($coreReferenceRecord = $queryResult->fetchAssociative()) {
             $coreReferences[$counter] = $coreReferenceRecord['uid'];
             $counter++;
         }
@@ -277,8 +277,8 @@ class PrefillForEditUsageHook
                     $queryBuilder->createNamedParameter($eventUid, \PDO::PARAM_INT)
                 )
             )
-            ->execute()
-            ->fetch();
+            ->executeQuery()
+            ->fetchAssociative();
 
         return $record ?: [];
     }

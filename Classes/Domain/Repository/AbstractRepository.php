@@ -88,8 +88,8 @@ class AbstractRepository extends Repository
                         $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
                     )
                 )
-                ->execute()
-                ->fetch(\PDO::FETCH_ASSOC);
+                ->executeQuery()
+                ->fetchAssociative();
 
             if ($record === false) {
                 return [];
@@ -130,10 +130,10 @@ class AbstractRepository extends Repository
                 $queryBuilder->where(...$expressions);
             }
 
-            $statement = $queryBuilder->execute();
+            $queryResult = $queryBuilder->executeQuery();
 
             $records = [];
-            while ($record = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            while ($record = $queryResult->fetchAssociative()) {
                 if ($doOverlay) {
                     $record = $this->overlayHelper->doOverlay($tableName, $record);
                 }

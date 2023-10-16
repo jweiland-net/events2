@@ -163,8 +163,8 @@ class DayFactory
     protected function findDayByQueryBuilder(QueryBuilder $queryBuilder): ?Day
     {
         $dayRecord = $queryBuilder
-            ->execute()
-            ->fetch(\PDO::FETCH_ASSOC);
+            ->executeQuery()
+            ->fetchAssociative();
 
         $day = null;
         if (is_array($dayRecord) && isset($dayRecord['uid'])) {

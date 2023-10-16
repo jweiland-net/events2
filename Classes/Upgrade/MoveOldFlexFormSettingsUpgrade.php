@@ -139,7 +139,7 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tt_content');
         $queryBuilder->getRestrictions()->removeAll();
 
-        $statement = $queryBuilder
+        $queryResult = $queryBuilder
             ->select('uid', 'list_type', 'pi_flexform')
             ->from('tt_content')
             ->where(
@@ -162,10 +162,10 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
                     )
                 )
             )
-            ->execute();
+            ->executeQuery();
 
         $records = [];
-        while ($record = $statement->fetch(\PDO::FETCH_ASSOC)) {
+        while ($record = $queryResult->fetchAssociative()) {
             $records[] = $record;
         }
 
