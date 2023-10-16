@@ -88,6 +88,13 @@ services:
   JWeiland\Events2\Utility\DateTimeUtility:
     public: true
 
+  JWeiland\Events2\Property\TypeConverter\DateTimeImmutableConverter:
+    tags:
+      - name: extbase.type_converter
+        priority: 1
+        target: DateTimeImmutable
+        sources: string,integer,array
+
   # Register EventListeners for initialize*Actions
   JWeiland\Events2\EventListener\AddOrganizerToEventRecordEventListener:
     tags:
