@@ -246,8 +246,9 @@ return [
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.title',
             'config' => [
                 'type' => 'input',
+                'required' => true,
                 'size' => 30,
-                'eval' => 'trim,required',
+                'eval' => 'trim',
             ],
         ],
         'path_segment' => [
