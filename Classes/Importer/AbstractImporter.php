@@ -20,13 +20,13 @@ use JWeiland\Events2\Domain\Repository\OrganizerRepository;
 use JWeiland\Events2\Helper\PathSegmentHelper;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Resource\AbstractFile;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 
@@ -101,7 +101,7 @@ abstract class AbstractImporter implements ImporterInterface
 
         if (!in_array($this->file->getMimeType(), $this->allowedMimeType, true)) {
             $isValid = false;
-            $this->addMessage('MimeType of file is not allowed', AbstractMessage::ERROR);
+            $this->addMessage('MimeType of file is not allowed', ContextualFeedbackSeverity::ERROR);
         }
 
         return $isValid;
@@ -130,7 +130,7 @@ abstract class AbstractImporter implements ImporterInterface
                     $eventBegin->format('d.m.Y'),
                     'event_begin can not be in past'
                 ),
-                AbstractMessage::ERROR
+                ContextualFeedbackSeverity::ERROR
             );
 
             return false;
@@ -179,7 +179,7 @@ abstract class AbstractImporter implements ImporterInterface
                         $eventBegin->format('d.m.Y'),
                         'Image must be of type array'
                     ),
-                    AbstractMessage::ERROR
+                    ContextualFeedbackSeverity::ERROR
                 );
 
                 return false;
@@ -192,7 +192,7 @@ abstract class AbstractImporter implements ImporterInterface
                         $eventBegin->format('d.m.Y'),
                         'Array key "url" of image must be set and can not be empty'
                     ),
-                    AbstractMessage::ERROR
+                    ContextualFeedbackSeverity::ERROR
                 );
 
                 return false;
@@ -205,7 +205,7 @@ abstract class AbstractImporter implements ImporterInterface
                         $eventBegin->format('d.m.Y'),
                         'Image path has to be a valid URL'
                     ),
-                    AbstractMessage::ERROR
+                    ContextualFeedbackSeverity::ERROR
                 );
 
                 return false;
@@ -228,7 +228,7 @@ abstract class AbstractImporter implements ImporterInterface
                     $value
                 )
             ),
-            AbstractMessage::ERROR
+            ContextualFeedbackSeverity::ERROR
         );
     }
 
@@ -335,7 +335,7 @@ abstract class AbstractImporter implements ImporterInterface
         return $category ?: [];
     }
 
-    protected function addMessage(string $message, int $severity = AbstractMessage::OK): void
+    protected function addMessage(string $message, ContextualFeedbackSeverity $severity = ContextualFeedbackSeverity::OK): void
     {
         static $firstMessage = true;
         /** @var AbstractFile $logFile */
@@ -355,7 +355,7 @@ abstract class AbstractImporter implements ImporterInterface
             $logFile->setContents($content . $message . LF);
         } catch (\Exception $exception) {
             $message = $exception->getMessage();
-            $severity = AbstractMessage::ERROR;
+            $severity = ContextualFeedbackSeverity::ERROR;
         }
 
         // show messages in TYPO3 BE when started manually

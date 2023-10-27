@@ -15,7 +15,7 @@ use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Utility\CacheUtility;
 use Psr\Http\Message\ResponseInterface;
-use TYPO3\CMS\Core\Messaging\AbstractMessage;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\View\ViewInterface;
 
@@ -46,7 +46,7 @@ class DayController extends AbstractController
             $this->addFlashMessage(
                 'Please check content record with UID "' . $data['records'] . '". Column "pages" can not be 0. It must be empty or higher than 0.',
                 'tt_content column pages can not be 0',
-                AbstractMessage::WARNING
+                ContextualFeedbackSeverity::WARNING
             );
         }
     }

@@ -15,10 +15,10 @@ use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Service\DayRelationService;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Registry;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\CMS\Scheduler\ProgressProviderInterface;
@@ -95,7 +95,7 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
                     $e->getMessage(),
                     $e->getFile(),
                     $e->getLine()
-                ), AbstractMessage::ERROR);
+                ), ContextualFeedbackSeverity::ERROR);
                 return false;
             }
 
@@ -166,10 +166,10 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
      * This method is used to add a message to the internal queue
      *
      * @param string $message The message itself
-     * @param int $severity Message level (according to \TYPO3\CMS\Core\Messaging\FlashMessage class constants)
+     * @param ContextualFeedbackSeverity $severity Message level (according to ContextualFeedbackSeverity class enum types)
      * @throws \Exception
      */
-    public function addMessage(string $message, int $severity = AbstractMessage::OK): void
+    public function addMessage(string $message, ContextualFeedbackSeverity $severity = ContextualFeedbackSeverity::OK): void
     {
         $flashMessage = GeneralUtility::makeInstance(FlashMessage::class, $message, '', $severity);
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);

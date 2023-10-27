@@ -12,12 +12,12 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Task;
 
 use JWeiland\Events2\Importer\ImporterInterface;
-use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\Index\Indexer;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
@@ -57,18 +57,18 @@ class Import extends AbstractTask
                 ->retrieveFileOrFolderObject($this->path);
             if ($file instanceof File) {
                 if ($file->isMissing()) {
-                    $this->addMessage('The defined file seems to be missing. Please check, if file is still at its place', AbstractMessage::ERROR);
+                    $this->addMessage('The defined file seems to be missing. Please check, if file is still at its place', ContextualFeedbackSeverity::ERROR);
                     return false;
                 }
                 // File can be updated by (S)FTP. So we have to update its properties first.
                 $indexer = GeneralUtility::makeInstance(Indexer::class, $file->getStorage());
                 $indexer->updateIndexEntry($file);
             } else {
-                $this->addMessage('The defined file is not a valid file. Maybe you have defined a folder. Please re-check file path', AbstractMessage::ERROR);
+                $this->addMessage('The defined file is not a valid file. Maybe you have defined a folder. Please re-check file path', ContextualFeedbackSeverity::ERROR);
                 return false;
             }
         } catch (\Exception $e) {
-            $this->addMessage('Currently no file for import found.', AbstractMessage::INFO);
+            $this->addMessage('Currently no file for import found.', ContextualFeedbackSeverity::INFO);
             return true;
         }
 
@@ -118,10 +118,10 @@ class Import extends AbstractTask
      * This method is used to add a message to the internal queue
      *
      * @param string $message The message itself
-     * @param int $severity Message level (according to \TYPO3\CMS\Core\Messaging\FlashMessage class constants)
+     * @param ContextualFeedbackSeverity $severity Message level (according to ContextualFeedbackSeverity class enum types)
      * @throws \Exception
      */
-    public function addMessage(string $message, int $severity = AbstractMessage::OK): void
+    public function addMessage(string $message, ContextualFeedbackSeverity $severity = ContextualFeedbackSeverity::OK): void
     {
         $flashMessage = GeneralUtility::makeInstance(FlashMessage::class, $message, '', $severity);
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);

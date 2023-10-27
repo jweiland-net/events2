@@ -20,10 +20,10 @@ use JWeiland\Events2\Domain\Model\Organizer;
 use JWeiland\Events2\Domain\Model\Time;
 use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Core\Environment;
-use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
@@ -65,7 +65,7 @@ class XmlImporter extends AbstractImporter
         } catch (\Exception $e) {
             $this->addMessage(
                 $e->getMessage(),
-                AbstractMessage::ERROR
+                ContextualFeedbackSeverity::ERROR
             );
             return false;
         }
@@ -98,7 +98,7 @@ class XmlImporter extends AbstractImporter
                             $error->message,
                             $error->line
                         ),
-                        AbstractMessage::ERROR
+                        ContextualFeedbackSeverity::ERROR
                     );
                 }
 
@@ -107,11 +107,11 @@ class XmlImporter extends AbstractImporter
         } catch (\Exception $e) {
             $this->addMessage(
                 'XML does not comply with XmlImportValidator.xml.',
-                AbstractMessage::ERROR
+                ContextualFeedbackSeverity::ERROR
             );
             $this->addMessage(
                 $e->getMessage(),
-                AbstractMessage::ERROR
+                ContextualFeedbackSeverity::ERROR
             );
 
             return false;
@@ -474,7 +474,7 @@ class XmlImporter extends AbstractImporter
                         $this->addMessage(sprintf(
                             'Given image was NOT added to event. Error: %s',
                             $report['message']
-                        ), AbstractMessage::NOTICE);
+                        ), ContextualFeedbackSeverity::NOTICE);
                         continue;
                     }
 
