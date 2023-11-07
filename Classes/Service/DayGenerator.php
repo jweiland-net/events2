@@ -99,7 +99,7 @@ class DayGenerator
 
             if (
                 $event->getEventBegin() > $earliestDateToStartCalculatingFrom
-                && $event->getEventBegin() > $latestDateToStopCalculatingTo
+                && $event->getEventBegin() < $latestDateToStopCalculatingTo
             ) {
                 $this->addDayToStorage($event->getEventBegin());
             }
