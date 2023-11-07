@@ -11,10 +11,8 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Service;
 
-use Doctrine\DBAL\Driver\Statement;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Utility\DateTimeUtility;
-use org\bovigo\vfs\vfsStreamContainerIterator;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
