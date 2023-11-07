@@ -16,6 +16,7 @@ use JWeiland\Events2\Service\DayRelationService;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Registry;
@@ -73,66 +74,59 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
         $dayRelationService = $this->objectManager->get(DayRelationService::class);
         $persistenceManager = $this->objectManager->get(PersistenceManagerInterface::class);
 
-        // with each changing PID pageTSConfigCache will grow by roundabout 200KB
-        // which may exceed memory_limit
+        // With each changing PID pageTSConfigCache will grow by roundabout 200KB
+        // which may exceed PHP_memory_limit
         $runtimeCache = $this->cacheManager->getCache('runtime');
 
         $this->registry->removeAllByNamespace('events2TaskCreateUpdate');
 
-        $events = $this->databaseService->getCurrentAndFutureEvents();
-        if (!empty($events)) {
-            $counter = 0;
-            foreach ($events as $event) {
-                $counter++;
-                $this->registry->set('events2TaskCreateUpdate', 'info', [
-                    'uid' => $event['uid'],
-                    'pid' => $event['pid']
-                ]);
+        $amountOfEventRecordsToProcess = $this->getAmountOfEventRecordsToProcess();
+        $statement = $this->databaseService
+            ->getQueryBuilderForAllEvents()
+            ->select('uid', 'pid')
+            ->execute();
 
-                try {
-                    $dayRelationService->createDayRelations((int)$event['uid']);
-                } catch (\Exception $e) {
-                    $this->addMessage(sprintf(
-                        'Event UID: %d, PID: %d, Error: %s, File: %s, Line: %d',
-                        $event['uid'],
-                        $event['pid'],
-                        $e->getMessage(),
-                        $e->getFile(),
-                        $e->getLine()
-                    ), FlashMessage::ERROR);
-                    return false;
-                }
+        $counter = 0;
+        while ($eventRecord = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $counter++;
+            $this->registry->set('events2TaskCreateUpdate', 'info', [
+                'uid' => $eventRecord['uid'],
+                'pid' => $eventRecord['pid']
+            ]);
 
-                // clean up persistence manager to reduce in-memory
-                $persistenceManager->clearState();
-
-                $this->registry->set('events2TaskCreateUpdate', 'progress', [
-                    'records' => count($events),
-                    'counter' => $counter
-                ]);
-
-                // clean up persistence manager to reduce memory usage
-                // it also clears persistence session
-                $persistenceManager->clearState();
-                $runtimeCache->flush();
-                gc_collect_cycles();
+            try {
+                // Remove all day records and create new ones
+                $dayRelationService->createDayRelations((int)$eventRecord['uid']);
+            } catch (\Exception $e) {
+                $this->addMessage(sprintf(
+                    'Event UID: %d, PID: %d, Error: %s, File: %s, Line: %d',
+                    $eventRecord['uid'],
+                    $eventRecord['pid'],
+                    $e->getMessage(),
+                    $e->getFile(),
+                    $e->getLine()
+                ), AbstractMessage::ERROR);
+                return false;
             }
+
+            // clean up persistence manager to reduce in-memory
+            $persistenceManager->clearState();
+
+            $this->registry->set('events2TaskCreateUpdate', 'progress', [
+                'records' => $amountOfEventRecordsToProcess,
+                'counter' => $counter
+            ]);
+
+            // clean up persistence manager to reduce memory usage
+            // it also clears persistence session
+            $persistenceManager->clearState();
+            $runtimeCache->flush();
+            gc_collect_cycles();
         }
 
         $this->registry->remove('events2TaskCreateUpdate', 'info');
 
-        // remove old iCAL downloads
-        $iCalDirectory = Environment::getPublicPath() . '/' . 'typo3temp/tx_events2/iCal/';
-        if (is_dir($iCalDirectory)) {
-            foreach (new \DirectoryIterator($iCalDirectory) as $fileInfo) {
-                if ($fileInfo->isDot()) {
-                    continue;
-                }
-                if ($fileInfo->isFile() && time() - $fileInfo->getCTime() >= 1 * 24 * 60 * 60) {
-                    unlink($fileInfo->getRealPath());
-                }
-            }
-        }
+        $this->cleanUpICalDirectory();
 
         return true;
     }
@@ -157,6 +151,7 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
                 memory_get_usage()
             );
         }
+
         return $content;
     }
 
@@ -174,6 +169,31 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
         return 0.0;
     }
 
+    protected function cleanUpICalDirectory(): void
+    {
+        $iCalDirectory = Environment::getPublicPath() . '/' . 'typo3temp/tx_events2/iCal/';
+        if (is_dir($iCalDirectory)) {
+            foreach (new \DirectoryIterator($iCalDirectory) as $fileInfo) {
+                if ($fileInfo->isDot()) {
+                    continue;
+                }
+
+                if ($fileInfo->isFile() && time() - $fileInfo->getCTime() >= (24 * 60 * 60)) {
+                    unlink($fileInfo->getRealPath());
+                }
+            }
+        }
+    }
+
+    protected function getAmountOfEventRecordsToProcess(): int
+    {
+        $queryBuilder = $this->databaseService->getQueryBuilderForAllEvents();
+        return (int)$queryBuilder
+            ->count('*')
+            ->execute()
+            ->fetchColumn();
+    }
+
     /**
      * This method is used to add a message to the internal queue
      *
@@ -181,7 +201,7 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
      * @param int $severity Message level (according to \TYPO3\CMS\Core\Messaging\FlashMessage class constants)
      * @throws \Exception
      */
-    public function addMessage(string $message, int $severity = FlashMessage::OK): void
+    public function addMessage(string $message, int $severity = AbstractMessage::OK): void
     {
         $flashMessage = GeneralUtility::makeInstance(FlashMessage::class, $message, '', $severity);
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);

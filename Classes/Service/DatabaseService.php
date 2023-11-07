@@ -11,13 +11,16 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Service;
 
+use Doctrine\DBAL\Driver\Statement;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Utility\DateTimeUtility;
+use org\bovigo\vfs\vfsStreamContainerIterator;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
+use TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -86,13 +89,32 @@ class DatabaseService
     }
 
     /**
+     * Returns a QueryBuilder to work on all event records.
+     * Will be used in services and commands to update/delete the day records.
+     */
+    public function getQueryBuilderForAllEvents(): QueryBuilder
+    {
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_event');
+
+        // Updating the day records is needed for frontend
+        $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
+
+        return $queryBuilder->from('tx_events2_domain_model_event');
+    }
+
+    /**
      * With this method you get all current and future events of all event types.
      * It does not select hidden records as eventRepository->findByIdentifier will not find them.
      *
-     * @return array
+     * @deprecated
      */
     public function getCurrentAndFutureEvents(): array
     {
+        trigger_error(
+            'Using \JWeiland\Events2\Service\DatabaseService::getCurrentAndFutureEvents is deprecated, please use getQueryBuilderForAllEvents.',
+            E_USER_DEPRECATED
+        );
+
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_event');
 
         $queryBuilder->getRestrictions()
@@ -101,7 +123,6 @@ class DatabaseService
             ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
 
         $orConstraints = [];
-
         $orConstraints[] = $this->getConstraintForSingleEvents($queryBuilder);
         $orConstraints[] = $this->getConstraintForDurationEvents($queryBuilder);
         $orConstraints[] = $this->getConstraintForRecurringEvents($queryBuilder);
@@ -214,8 +235,18 @@ class DatabaseService
             ->fetchAll();
     }
 
+    /**
+     * @param QueryBuilder $queryBuilder
+     * @return string
+     * @deprecated
+     */
     public function getConstraintForSingleEvents(QueryBuilder $queryBuilder): string
     {
+        trigger_error(
+            'Using \JWeiland\Events2\Service\DatabaseService::getConstraintForSingleEvents is deprecated, please use getQueryBuilderForAllEvents.',
+            E_USER_DEPRECATED
+        );
+
         // add where clause for single events
         return (string)$queryBuilder->expr()->andX(
             $queryBuilder->expr()->eq(
@@ -229,8 +260,18 @@ class DatabaseService
         );
     }
 
+    /**
+     * @param QueryBuilder $queryBuilder
+     * @return string
+     * @deprecated
+     */
     public function getConstraintForDurationEvents(QueryBuilder $queryBuilder): string
     {
+        trigger_error(
+            'Using \JWeiland\Events2\Service\DatabaseService::getConstraintForDurationEvents is deprecated, please use getQueryBuilderForAllEvents.',
+            E_USER_DEPRECATED
+        );
+
         return (string)$queryBuilder->expr()->andX(
             $queryBuilder->expr()->eq(
                 'event_type',
@@ -249,8 +290,18 @@ class DatabaseService
         );
     }
 
+    /**
+     * @param QueryBuilder $queryBuilder
+     * @return string
+     * @deprecated
+     */
     public function getConstraintForRecurringEvents(QueryBuilder $queryBuilder): string
     {
+        trigger_error(
+            'Using \JWeiland\Events2\Service\DatabaseService::getConstraintForRecurringEvents is deprecated, please use getQueryBuilderForAllEvents.',
+            E_USER_DEPRECATED
+        );
+
         return (string)$queryBuilder->expr()->andX(
             $queryBuilder->expr()->eq(
                 'event_type',

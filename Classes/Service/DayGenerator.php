@@ -90,8 +90,19 @@ class DayGenerator
                 $dateToStartCalculatingFrom->modify('+1 day');
             }
         } else {
-            // add start day
-            $this->addDayToStorage($event->getEventBegin());
+            // Add single date
+            $earliestDateToStartCalculatingFrom = clone $this->dateTimeUtility->convert('today');
+            $earliestDateToStartCalculatingFrom->modify('-' . $this->extConf->getRecurringPast() . ' months');
+
+            $latestDateToStopCalculatingTo = clone $this->dateTimeUtility->convert('today');
+            $latestDateToStopCalculatingTo->modify('+' . $this->extConf->getRecurringFuture() . ' months');
+
+            if (
+                $event->getEventBegin() > $earliestDateToStartCalculatingFrom
+                && $event->getEventBegin() > $latestDateToStopCalculatingTo
+            ) {
+                $this->addDayToStorage($event->getEventBegin());
+            }
         }
 
         // exclude or include further days for events of type recurring or duration
