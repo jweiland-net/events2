@@ -78,45 +78,56 @@ class RebuildCommand extends Command
 
     protected function reGenerateDayRelations(): void
     {
-        $eventCounter = 0;
         $dayCounter = 0;
         $this->output->writeln('Process each event record');
 
-        $rows = $this->databaseService->getCurrentAndFutureEvents();
-        foreach ($rows as $row) {
-            $eventRecord = $this->dayRelationService->createDayRelations((int)$row['uid']);
-            if ($eventRecord !== []) {
-                if (is_array($eventRecord['days'])) {
-                    $amountOfDayRecords = count($eventRecord['days'] ?? []);
+        $statement = $this->databaseService
+            ->getQueryBuilderForAllEvents()
+            ->select('uid', 'pid')
+            ->executeQuery();
+
+        while ($simpleEventRecord = $statement->fetchAssociative()) {
+            $fullEventRecord = $this->dayRelationService->createDayRelations((int)$simpleEventRecord['uid']);
+            if ($fullEventRecord !== []) {
+                if (is_array($fullEventRecord['days'])) {
+                    $amountOfDayRecords = count($fullEventRecord['days']);
                     $this->output->writeln(sprintf(
                         'Process event UID: %09d, PID: %05d, created: %04d day records, RAM: %d',
-                        $eventRecord['uid'],
-                        $eventRecord['pid'],
+                        $fullEventRecord['uid'],
+                        $fullEventRecord['pid'],
                         $amountOfDayRecords,
                         memory_get_usage()
                     ));
-                    ++$eventCounter;
                     $dayCounter += $amountOfDayRecords;
                 } else {
                     $this->output->writeln(sprintf(
                         'ERROR event UID: %09d, PID: %05d: array key "days" has to be an array.',
-                        $row['uid'],
-                        $row['pid']
+                        $simpleEventRecord['uid'],
+                        $simpleEventRecord['pid']
                     ));
                 }
             } else {
                 $this->output->writeln(sprintf(
                     'ERROR event UID: %09d, PID: %05d: event record could not be fetched from DB.',
-                    $row['uid'],
-                    $row['pid']
+                    $simpleEventRecord['uid'],
+                    $simpleEventRecord['pid']
                 ));
             }
         }
 
         $this->output->writeln(sprintf(
             'We have recreated the day records for %d event records and %d day records in total',
-            $eventCounter,
+            $this->getAmountOfEventRecordsToProcess(),
             $dayCounter
         ));
+    }
+
+    protected function getAmountOfEventRecordsToProcess(): int
+    {
+        $queryBuilder = $this->databaseService->getQueryBuilderForAllEvents();
+        return (int)$queryBuilder
+            ->count('*')
+            ->executeQuery()
+            ->fetchOne();
     }
 }
