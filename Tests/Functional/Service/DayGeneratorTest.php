@@ -681,7 +681,10 @@ class DayGeneratorTest extends FunctionalTestCase
         // $eventBegin has to start with a month beginning with a thursday
         $eventBegin = new \DateTime('now');
         $eventBegin->modify('first day of next month');
-        while ((int)$eventBegin->format('N') !== 4) {
+        while (
+            (int)$eventBegin->format('N') !== 4
+            || (int)$eventBegin->format('n') === 2
+        ) {
             $eventBegin->modify('next month');
         }
         $eventBegin->modify('midnight');
