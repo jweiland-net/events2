@@ -24,7 +24,6 @@
 		"sjbr/static-info-tables": "^6.9"
 	},
 	"require-dev": {
-		"roave/security-advisories": "dev-latest",
 		"friendsofphp/php-cs-fixer": "^2.16",
 		"nimut/testing-framework": "^5.1",
 		"typo3/cms-scheduler": "^10.4.14",
