@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 8.3.1
+=============
+
+*   [BUGFIX] Never add day records of simple events if out of timeframe
+
 Version 8.3.0
 =============
 
