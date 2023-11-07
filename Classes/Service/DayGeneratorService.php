@@ -73,7 +73,7 @@ class DayGeneratorService implements LoggerAwareInterface
                     $this->addEventExceptions($eventRecord);
                     break;
                 case 'single':
-                    $this->addDateTimeToStorage($eventRecord['event_begin']);
+                    $this->addDaysForSingleEvent($eventRecord);
                     break;
                 default:
             }
@@ -237,6 +237,32 @@ class DayGeneratorService implements LoggerAwareInterface
         while ($dateToStartCalculatingFrom <= $dateToStopCalculatingTo) {
             $this->addDateTimeToStorage($dateToStartCalculatingFrom);
             $dateToStartCalculatingFrom = $dateToStartCalculatingFrom->modify('+1 day');
+        }
+    }
+
+    /**
+     * @throws \Exception
+     */
+    protected function addDaysForSingleEvent(array $eventRecord): void
+    {
+        $earliestDateOfTimeFrame = $this->createDateTime(sprintf(
+            '-%d months',
+            $this->extConf->getRecurringPast()
+        ));
+
+        $latestDateOfTimeFrame = $this->modifyDateTime(
+            $eventRecord['event_begin'],
+            sprintf(
+                '+%d months 23:59:59',
+                $this->extConf->getRecurringFuture()
+            )
+        );
+
+        if (
+            $eventRecord['event_begin'] > $earliestDateOfTimeFrame
+            && $eventRecord['event_begin'] < $latestDateOfTimeFrame
+        ) {
+            $this->addDateTimeToStorage($eventRecord['event_begin']);
         }
     }
 
