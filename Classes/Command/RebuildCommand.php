@@ -118,21 +118,24 @@ class RebuildCommand extends Command
 
     protected function reGenerateDayRelations(): void
     {
-        $eventCounter = 0;
         $dayCounter = 0;
         $dayRelations = $this->objectManager->get(DayRelationService::class);
 
+        $persistenceManager = $this->objectManager->get(PersistenceManagerInterface::class);
+
+        // With each changing PID, pageTSConfigCache will grow by roundabout 200KB, which may exceed memory_limit
+        $runtimeCache = $this->cacheManager->getCache('runtime');
+
         $this->output->writeln('Process each event record');
 
-        $rows = $this->databaseService->getCurrentAndFutureEvents();
-        if (!empty($rows)) {
-            $persistenceManager = $this->objectManager->get(PersistenceManagerInterface::class);
+        $statement = $this->databaseService
+            ->getQueryBuilderForAllEvents()
+            ->select('uid', 'pid')
+            ->execute();
 
-            // With each changing PID, pageTSConfigCache will grow by roundabout 200KB, which may exceed memory_limit
-            $runtimeCache = $this->cacheManager->getCache('runtime');
-
-            foreach ($rows as $row) {
-                $event = $dayRelations->createDayRelations((int)$row['uid']);
+        while ($eventRecord = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            try {
+                $event = $dayRelations->createDayRelations((int)$eventRecord['uid']);
                 if ($event instanceof Event) {
                     $this->output->writeln(sprintf(
                         'Process event UID: %09d, PID: %05d, created: %04d day records, RAM: %d',
@@ -141,28 +144,36 @@ class RebuildCommand extends Command
                         $event->getDays()->count(),
                         memory_get_usage()
                     ));
-                    $eventCounter++;
                     $dayCounter += $event->getDays()->count();
-                } else {
-                    $this->output->writeln(sprintf(
-                        'ERROR event UID: %09d, PID: %05d',
-                        $row['uid'],
-                        $row['pid']
-                    ));
                 }
-
-                // clean up persistence manager to reduce memory usage
-                // it also clears persistence session
-                $persistenceManager->clearState();
-                $runtimeCache->flush();
-                gc_collect_cycles();
+            } catch (\Exception $e) {
+                $this->output->writeln(sprintf(
+                    'ERROR event UID: %09d, PID: %05d',
+                    $eventRecord['uid'],
+                    $eventRecord['pid']
+                ));
             }
+
+            // clean up persistence manager to reduce memory usage
+            // it also clears persistence session
+            $persistenceManager->clearState();
+            $runtimeCache->flush();
+            gc_collect_cycles();
         }
 
         $this->output->writeln(sprintf(
             'We have recreated the day records for %d event records and %d day records in total',
-            $eventCounter,
+            $this->getAmountOfEventRecordsToProcess(),
             $dayCounter
         ));
+    }
+
+    protected function getAmountOfEventRecordsToProcess(): int
+    {
+        $queryBuilder = $this->databaseService->getQueryBuilderForAllEvents();
+        return (int)$queryBuilder
+            ->count('*')
+            ->execute()
+            ->fetchColumn();
     }
 }
