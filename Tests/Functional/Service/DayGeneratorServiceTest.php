@@ -607,7 +607,10 @@ class DayGeneratorServiceTest extends FunctionalTestCase
     {
         // $eventBegin has to start with a month beginning with a thursday
         $eventBegin = new \DateTimeImmutable('first day of next month midnight');
-        while ((int)$eventBegin->format('N') !== 4) {
+        while (
+            (int)$eventBegin->format('N') !== 4
+            || (int)$eventBegin->format('n') === 2
+        ) {
             $eventBegin = $eventBegin->modify('next month');
         }
         $eventBegin = $eventBegin->modify('+16 days'); // first day of month (1) + 16 = 17. of month. Must be saturday
