@@ -12,8 +12,6 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Domain\Validator;
 
 use JWeiland\Events2\Configuration\ExtConf;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
 
@@ -22,16 +20,17 @@ use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
  */
 class CategoryMandatoryValidator extends AbstractValidator
 {
-    /**
-     * @param mixed $value
-     */
-    public function isValid($value): void
+    public function __construct(protected readonly ExtConf $extConf)
+    {
+    }
+
+    protected function isValid(mixed $value): void
     {
         if (!$value instanceof ObjectStorage) {
             return;
         }
 
-        if (!$this->getExtConf()->getCategoryIsRequired()) {
+        if (!$this->extConf->getCategoryIsRequired()) {
             return;
         }
 
@@ -44,15 +43,5 @@ class CategoryMandatoryValidator extends AbstractValidator
                 1697100735
             );
         }
-    }
-
-    public function getExtConf(): ExtConf
-    {
-        return GeneralUtility::makeInstance(ExtConf::class);
-    }
-
-    public function getObjectManager(): ObjectManager
-    {
-        return GeneralUtility::makeInstance(ObjectManager::class);
     }
 }
