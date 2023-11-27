@@ -47,9 +47,6 @@ class SettingsFormatViewHelper extends AbstractViewHelper
         );
     }
 
-    /**
-     * @return string
-     */
     public static function renderStatic(
         array $arguments,
         \Closure $renderChildrenClosure,
@@ -57,9 +54,10 @@ class SettingsFormatViewHelper extends AbstractViewHelper
     ): string {
         $content = $arguments['content'];
         $glue = $arguments['glue'];
-        $limit = $arguments['limit'] ?? MathUtility::forceIntegerInRange($arguments['limit'], 0);
-        $moreLabel = $arguments['limit'] ? LocalizationUtility::translate('plugin.settings.moreLabel', 'events2') : '';
-        $output = array_slice(explode($glue, (string)$content), 0, $limit);
+        $limit = $arguments['limit'] ?? MathUtility::forceIntegerInRange($arguments['limit'], 1);
+        $explodedStringArray = explode($glue, (string)$content);
+        $moreLabel = (count($explodedStringArray) > $arguments['limit']) ? LocalizationUtility::translate('plugin.settings.moreLabel', 'events2') : '';
+        $output = array_slice($explodedStringArray, 0, $limit);
 
         return implode(', ', $output) . $moreLabel;
     }
