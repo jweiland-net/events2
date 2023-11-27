@@ -11,9 +11,11 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\ViewHelpers;
 
+use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * SettingsFormatViewHelper ViewHelper
@@ -22,6 +24,8 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class SettingsFormatViewHelper extends AbstractViewHelper
 {
+    use CompileWithRenderStatic;
+
     public function initializeArguments(): void
     {
         $this->registerArgument('content', 'string', 'String to be formatted by limit if set');
@@ -39,22 +43,22 @@ class SettingsFormatViewHelper extends AbstractViewHelper
             'with the last element containing the rest of string. If the limit parameter is negative, all ' .
             'components except the last-limit are returned. If the limit parameter is zero, then this is treated as 1.',
             false,
-            PHP_INT_MAX
+            10
         );
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public static function renderStatic(
         array $arguments,
         \Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
-    ) {
+    ): string {
         $content = $arguments['content'];
         $glue = $arguments['glue'];
-        $limit = $arguments['limit'] ?? PHP_INT_MAX;
-        $moreLabel = $arguments['limit'] ? LocalizationUtility::translate('plugin.settings.moreLabel', 'events2') : null;
+        $limit = $arguments['limit'] ?? MathUtility::forceIntegerInRange($arguments['limit'], 0);
+        $moreLabel = $arguments['limit'] ? LocalizationUtility::translate('plugin.settings.moreLabel', 'events2') : '';
         $output = array_slice(explode($glue, (string)$content), 0, $limit);
 
         return implode(', ', $output) . $moreLabel;

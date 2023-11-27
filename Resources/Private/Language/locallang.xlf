@@ -4,7 +4,7 @@
 		<header/>
 		<body>
 			<trans-unit id="plugin.settings.moreLabel">
-				<source>...Edit for more</source>
+				<source>", ...</source>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event">
 				<source>Event</source>
