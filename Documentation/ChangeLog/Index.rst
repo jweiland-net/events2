@@ -7,6 +7,12 @@
 ChangeLog
 =========
 
+Version 8.3.2
+=============
+
+*   [BUGFIX] fixed broken backend template preview if more than 10 categories
+    selected
+
 Version 8.3.1
 =============
 
