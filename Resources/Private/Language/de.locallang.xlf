@@ -3,6 +3,10 @@
 	<file source-language="en" datatype="plaintext" original="messages" date="2013-03-40T10:38:40Z" product-name="events2">
 		<header/>
 		<body>
+			<trans-unit id="plugin.settings.moreLabel">
+				<source>...Edit for more</source>
+				<target>...Bearbeiten für mehr</target>
+			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event">
 				<source>Event</source>
 				<target>Veranstaltung</target>
