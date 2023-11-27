@@ -55,7 +55,7 @@ class SettingsFormatViewHelper extends AbstractViewHelper
         $glue = $arguments['glue'];
         $limit = $arguments['limit'] ?? PHP_INT_MAX;
         $moreLabel = $arguments['limit'] ? LocalizationUtility::translate('plugin.settings.moreLabel', 'events2') : null;
-        $output = array_slice(explode($glue, (string) $content), 0, $limit);
+        $output = array_slice(explode($glue, (string)$content), 0, $limit);
 
         return implode(', ', $output) . $moreLabel;
     }
