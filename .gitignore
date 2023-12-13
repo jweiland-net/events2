@@ -1,11 +1,46 @@
+########################
+# jweiland.net Events2
+# global ignore file
+########################
+
+# ignore generated documentation
+*GENERATED*
+/docker-compose.yaml
+/docker-compose.yml
+
+# Ignore environment files
+.env
+
+# ignore typical clutter of IDEs and editors (this could be added in .git/info/exclude,
+#  but we add it here for convenience)
 *~
-.idea/
-nbproject/
-.DS_Store
 *.bak
 *.idea
 *.project
 *.swp
 .project
 .webprj
+nbproject
+
+# Ignore temporary files
+*.DS_Store
+
+# Ignore composer stuff
+bin/*
+vendor/*
+.build
 composer.lock
+
+# Temporary files and folders
+/.cache
+.php_cs.cache
+.php-cs-fixer.cache
+.sass-cache
+.session
+*.log
+
+
+# Ignore testing stuff
+/.Build
+/composer.json.orig
+/composer.json.testing
