@@ -201,6 +201,21 @@ class Event extends AbstractEntity
         $this->downloadLinks = new ObjectStorage();
     }
 
+    /**
+     * Called again with initialize object, as fetching an entity from the DB does not use the constructor
+     */
+    public function initializeObject()
+    {
+        $this->multipleTimes = $this->multipleTimes ?? new ObjectStorage();
+        $this->differentTimes = $this->differentTimes ?? new ObjectStorage();
+        $this->exceptions = $this->exceptions ?? new ObjectStorage();
+        $this->categories = $this->categories ?? new ObjectStorage();
+        $this->days = $this->days ?? new ObjectStorage();
+        $this->organizers = $this->organizers ?? new ObjectStorage();
+        $this->images = $this->images ?? new ObjectStorage();
+        $this->downloadLinks = $this->downloadLinks ?? new ObjectStorage();
+    }
+
     public function getEventType(): string
     {
         return $this->eventType;
