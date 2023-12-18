@@ -41,7 +41,7 @@ class EmStaticInfo
 
         return sprintf(
             '<select id="%s" class="%s" name="%s">%s</select>',
-            'em-' . $params['propertyName'],
+            'em-' . $params['fieldName'],
             'form-control',
             $params['fieldName'],
             implode(LF, $options)
