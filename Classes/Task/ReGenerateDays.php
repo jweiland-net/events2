@@ -84,7 +84,7 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
 
         // We order event records by PID for better pageTSConfig cache usage
         $statement = $this->databaseService
-            ->getQueryBuilderForAllEvents()
+            ->getQueryBuilderForEventsInTimeframe()
             ->select('uid', 'pid')
             ->orderBy('pid', 'ASC')
             ->execute();
@@ -191,7 +191,7 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
 
     protected function getAmountOfEventRecordsToProcess(): int
     {
-        $queryBuilder = $this->databaseService->getQueryBuilderForAllEvents();
+        $queryBuilder = $this->databaseService->getQueryBuilderForEventsInTimeframe();
         return (int)$queryBuilder
             ->count('*')
             ->execute()
