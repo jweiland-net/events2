@@ -88,7 +88,6 @@ class DatabaseService
 
     /**
      * Returns a QueryBuilder to work on all event records.
-     * Will be used in services and commands to update/delete the day records.
      */
     public function getQueryBuilderForAllEvents(): QueryBuilder
     {
@@ -96,6 +95,110 @@ class DatabaseService
 
         // Updating the day records is needed for frontend
         $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
+
+        return $queryBuilder->from('tx_events2_domain_model_event');
+    }
+
+    /**
+     * Returns a QueryBuilder to work on all event records in configured timeframe (ExtConf).
+     * Will be used in services and commands to update/delete the day records.
+     */
+    public function getQueryBuilderForEventsInTimeframe(): QueryBuilder
+    {
+        $earliestDateToStartCalculatingFrom = clone $this->dateTimeUtility->convert('today');
+        $earliestDateToStartCalculatingFrom->modify('-' . $this->extConf->getRecurringPast() . ' months');
+
+        $latestDateToStopCalculatingTo = clone $this->dateTimeUtility->convert('today');
+        $latestDateToStopCalculatingTo->modify('+' . $this->extConf->getRecurringFuture() . ' months');
+
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_event');
+
+        // Updating the day records is needed for just the frontend
+        $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
+
+        $queryBuilder->orWhere(
+        // Add OR constraint for single events
+            $queryBuilder->expr()->andX(
+                $queryBuilder->expr()->eq(
+                    'event_type',
+                    $queryBuilder->createNamedParameter('single')
+                ),
+                $queryBuilder->expr()->gt(
+                    'event_begin',
+                    $queryBuilder->createNamedParameter(
+                        (int)$earliestDateToStartCalculatingFrom->format('U'),
+                        \PDO::PARAM_INT
+                    )
+                ),
+                $queryBuilder->expr()->lt(
+                    'event_begin',
+                    $queryBuilder->createNamedParameter(
+                        (int)$latestDateToStopCalculatingTo->format('U'),
+                        \PDO::PARAM_INT
+                    )
+                )
+            ),
+            // Add OR constraint for durational events
+            $queryBuilder->expr()->andX(
+                $queryBuilder->expr()->eq(
+                    'event_type',
+                    $queryBuilder->createNamedParameter('duration')
+                ),
+                $queryBuilder->expr()->lt(
+                    'event_begin',
+                    $queryBuilder->createNamedParameter(
+                        (int)$latestDateToStopCalculatingTo->format('U'),
+                        \PDO::PARAM_INT
+                    )
+                ),
+                $queryBuilder->expr()->orX(
+                    $queryBuilder->expr()->eq(
+                        'event_end',
+                        $queryBuilder->createNamedParameter(
+                            0,
+                            \PDO::PARAM_INT
+                        )
+                    ),
+                    $queryBuilder->expr()->gt(
+                        'event_end',
+                        $queryBuilder->createNamedParameter(
+                            (int)$earliestDateToStartCalculatingFrom->format('U'),
+                            \PDO::PARAM_INT
+                        )
+                    )
+                )
+            ),
+            // Add OR constraint for recurring events
+            $queryBuilder->expr()->andX(
+                $queryBuilder->expr()->eq(
+                    'event_type',
+                    $queryBuilder->createNamedParameter('recurring')
+                ),
+                $queryBuilder->expr()->lt(
+                    'event_begin',
+                    $queryBuilder->createNamedParameter(
+                        (int)$latestDateToStopCalculatingTo->format('U'),
+                        \PDO::PARAM_INT
+                    )
+                ),
+                $queryBuilder->expr()->orX(
+                    $queryBuilder->expr()->eq(
+                        'recurring_end',
+                        $queryBuilder->createNamedParameter(
+                            0,
+                            \PDO::PARAM_INT
+                        )
+                    ),
+                    $queryBuilder->expr()->gt(
+                        'recurring_end',
+                        $queryBuilder->createNamedParameter(
+                            (int)$earliestDateToStartCalculatingFrom->format('U'),
+                            \PDO::PARAM_INT
+                        )
+                    )
+                )
+            )
+        );
 
         return $queryBuilder->from('tx_events2_domain_model_event');
     }

@@ -19,6 +19,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Annotation as Extbase;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+use TYPO3\CMS\Extbase\Persistence\Generic\LazyLoadingProxy;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /*
@@ -136,6 +137,7 @@ class Event extends AbstractEntity
     /**
      * @var \JWeiland\Events2\Domain\Model\Link
      * @Extbase\ORM\Cascade("remove")
+     * @Extbase\ORM\Lazy
      */
     protected $ticketLink;
 
@@ -155,6 +157,7 @@ class Event extends AbstractEntity
 
     /**
      * @var \JWeiland\Events2\Domain\Model\Location
+     * @Extbase\ORM\Lazy
      */
     protected $location;
 
@@ -174,6 +177,7 @@ class Event extends AbstractEntity
     /**
      * @var \JWeiland\Events2\Domain\Model\Link
      * @Extbase\ORM\Cascade("remove")
+     * @Extbase\ORM\Lazy
      */
     protected $videoLink;
 
@@ -551,7 +555,9 @@ class Event extends AbstractEntity
 
     public function getTicketLink(): ?Link
     {
-        return $this->ticketLink;
+        return $this->ticketLink instanceof LazyLoadingProxy
+            ? $this->ticketLink->_loadRealInstance()
+            : $this->ticketLink;
     }
 
     public function setTicketLink(?Link $ticketLink = null): void
@@ -750,7 +756,9 @@ class Event extends AbstractEntity
      */
     public function getLocation(): ?Location
     {
-        return $this->location;
+        return $this->location instanceof LazyLoadingProxy
+            ? $this->location->_loadRealInstance()
+            : $this->location;
     }
 
     /**
@@ -847,7 +855,9 @@ class Event extends AbstractEntity
 
     public function getVideoLink(): ?Link
     {
-        return $this->videoLink;
+        return $this->videoLink instanceof LazyLoadingProxy
+            ? $this->videoLink->_loadRealInstance()
+            : $this->videoLink;
     }
 
     public function setVideoLink(?Link $videoLink = null): void

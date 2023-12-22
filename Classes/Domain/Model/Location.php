@@ -120,7 +120,9 @@ class Location extends AbstractEntity
 
     public function getCountry(): ?Country
     {
-        return $this->country instanceof LazyLoadingProxy ? $this->country->_loadRealInstance() : $this->country;
+        return $this->country instanceof LazyLoadingProxy
+            ? $this->country->_loadRealInstance()
+            : $this->country;
     }
 
     public function setCountry(?Country $country): void
@@ -130,7 +132,9 @@ class Location extends AbstractEntity
 
     public function getLink(): ?Link
     {
-        return $this->link instanceof LazyLoadingProxy ? $this->link->_loadRealInstance() : $this->link;
+        return $this->link instanceof LazyLoadingProxy
+            ? $this->link->_loadRealInstance()
+            : $this->link;
     }
 
     public function setLink(?Link $link = null): void
@@ -188,6 +192,8 @@ class Location extends AbstractEntity
      */
     public function getTxMaps2Uid()
     {
-        return $this->txMaps2Uid instanceof LazyLoadingProxy ? $this->txMaps2Uid->_loadRealInstance() : $this->txMaps2Uid;
+        return $this->txMaps2Uid instanceof LazyLoadingProxy
+            ? $this->txMaps2Uid->_loadRealInstance()
+            : $this->txMaps2Uid;
     }
 }

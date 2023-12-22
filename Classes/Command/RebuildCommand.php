@@ -120,20 +120,29 @@ class RebuildCommand extends Command
     {
         $dayCounter = 0;
         $dayRelations = $this->objectManager->get(DayRelationService::class);
-
         $persistenceManager = $this->objectManager->get(PersistenceManagerInterface::class);
-
-        // With each changing PID, pageTSConfigCache will grow by roundabout 200KB, which may exceed memory_limit
-        $runtimeCache = $this->cacheManager->getCache('runtime');
 
         $this->output->writeln('Process each event record');
 
+        // Each time when the PID changes in loop, TYPO3 will build up and cache pageTSConfig which needs
+        // roundabout 200KB each PID. This may exceed PHP:memory_limit on TYPO3 instances with a lot of different
+        // storage folders for event records.
+        $runtimeCache = $this->cacheManager->getCache('runtime');
+
+        // We order event records by PID for better pageTSConfig cache usage
         $statement = $this->databaseService
-            ->getQueryBuilderForAllEvents()
+            ->getQueryBuilderForEventsInTimeframe()
             ->select('uid', 'pid')
+            ->orderBy('pid', 'ASC')
             ->execute();
 
+        $currentPid = 0;
         while ($eventRecord = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            // Flush cache, if PID changes. See comments above
+            if ($currentPid !== $eventRecord['pid']) {
+                $runtimeCache->flush();
+            }
+
             try {
                 $event = $dayRelations->createDayRelations((int)$eventRecord['uid']);
                 if ($event instanceof Event) {
@@ -154,11 +163,8 @@ class RebuildCommand extends Command
                 ));
             }
 
-            // clean up persistence manager to reduce memory usage
-            // it also clears persistence session
+            // Flush cache of Extbase PersistenceManager. It also flushes the Extbase Session cache.
             $persistenceManager->clearState();
-            $runtimeCache->flush();
-            gc_collect_cycles();
         }
 
         $this->output->writeln(sprintf(

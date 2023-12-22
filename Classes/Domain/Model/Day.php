@@ -13,7 +13,9 @@ namespace JWeiland\Events2\Domain\Model;
 
 use JWeiland\Events2\Domain\Factory\TimeFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Annotation as Extbase;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+use TYPO3\CMS\Extbase\Persistence\Generic\LazyLoadingProxy;
 
 /*
  * This class contains all getter and setters for a Day.
@@ -62,6 +64,7 @@ class Day extends AbstractEntity
 
     /**
      * @var \JWeiland\Events2\Domain\Model\Event
+     * @Extbase\ORM\Lazy
      */
     protected $event;
 
@@ -167,7 +170,9 @@ class Day extends AbstractEntity
 
     public function getEvent(): ?Event
     {
-        return $this->event;
+        return $this->event instanceof LazyLoadingProxy
+            ? $this->event->_loadRealInstance()
+            : $this->event;
     }
 
     public function setEvent(?Event $event = null): void
