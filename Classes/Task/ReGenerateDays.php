@@ -82,18 +82,12 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
         // storage folders for event records.
         $runtimeCache = $this->cacheManager->getCache('runtime');
 
-        // We order event records by PID for better pageTSConfig cache usage
-        $statement = $this->databaseService
-            ->getQueryBuilderForEventsInTimeframe()
-            ->select('uid', 'pid')
-            ->orderBy('pid', 'ASC')
-            ->execute();
-
         $counter = 0;
         $currentPid = 0;
-        while ($eventRecord = $statement->fetch(\PDO::FETCH_ASSOC)) {
+        foreach ($this->getEventRecords() as $eventRecord) {
             // Flush cache, if PID changes. See comments above
             if ($currentPid !== $eventRecord['pid']) {
+                $currentPid = $eventRecord['pid'];
                 $runtimeCache->flush();
             }
 
@@ -101,7 +95,9 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
 
             $this->registry->set('events2TaskCreateUpdate', 'info', [
                 'uid' => $eventRecord['uid'],
-                'pid' => $eventRecord['pid']
+                'pid' => $eventRecord['pid'],
+                'curMem' => memory_get_usage(),
+                'peakMem' => memory_get_peak_usage(),
             ]);
 
             try {
@@ -135,6 +131,20 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
         return true;
     }
 
+    protected function getEventRecords(): \Generator
+    {
+        // We order event records by PID for better pageTSConfig cache usage
+        $statement = $this->databaseService
+            ->getQueryBuilderForEventsInTimeframe()
+            ->select('uid', 'pid')
+            ->orderBy('pid', 'ASC')
+            ->execute();
+
+        while ($eventRecord = $statement->fetch()) {
+            yield $eventRecord;
+        }
+    }
+
     /**
      * This method is designed to return some additional information about the task,
      * that may help to set it apart from other tasks from the same class
@@ -147,12 +157,13 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
     {
         $content = '';
         $info = $this->registry->get('events2TaskCreateUpdate', 'info');
-        if ($info) {
+        if (is_array($info)) {
             $content = sprintf(
-                'Current event: uid: %d, pid: %d, memory: %d.',
-                $info['uid'],
-                $info['pid'],
-                memory_get_usage()
+                'Current event: uid: %d, pid: %d, cur. memory: %s, peak memory: %s',
+                $info['uid'] ?? 0,
+                $info['pid'] ?? 0,
+                GeneralUtility::formatSize($info['curMem'] ?? memory_get_usage()),
+                GeneralUtility::formatSize($info['peakMem'] ?? memory_get_peak_usage())
             );
         }
 
