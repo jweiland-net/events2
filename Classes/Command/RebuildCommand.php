@@ -129,17 +129,11 @@ class RebuildCommand extends Command
         // storage folders for event records.
         $runtimeCache = $this->cacheManager->getCache('runtime');
 
-        // We order event records by PID for better pageTSConfig cache usage
-        $statement = $this->databaseService
-            ->getQueryBuilderForEventsInTimeframe()
-            ->select('uid', 'pid')
-            ->orderBy('pid', 'ASC')
-            ->execute();
-
         $currentPid = 0;
-        while ($eventRecord = $statement->fetch(\PDO::FETCH_ASSOC)) {
+        foreach ($this->getEventRecords() as $eventRecord) {
             // Flush cache, if PID changes. See comments above
             if ($currentPid !== $eventRecord['pid']) {
+                $currentPid = $eventRecord['pid'];
                 $runtimeCache->flush();
             }
 
@@ -172,6 +166,20 @@ class RebuildCommand extends Command
             $this->getAmountOfEventRecordsToProcess(),
             $dayCounter
         ));
+    }
+
+    protected function getEventRecords(): \Generator
+    {
+        // We order event records by PID for better pageTSConfig cache usage
+        $statement = $this->databaseService
+            ->getQueryBuilderForEventsInTimeframe()
+            ->select('uid', 'pid')
+            ->orderBy('pid', 'ASC')
+            ->execute();
+
+        while ($eventRecord = $statement->fetch()) {
+            yield $eventRecord;
+        }
     }
 
     protected function getAmountOfEventRecordsToProcess(): int
