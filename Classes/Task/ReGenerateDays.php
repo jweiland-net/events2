@@ -87,6 +87,7 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
         foreach ($this->getEventRecords() as $eventRecord) {
             // Flush cache, if PID changes. See comments above
             if ($currentPid !== $eventRecord['pid']) {
+                $currentPid = $eventRecord['pid'];
                 $runtimeCache->flush();
             }
 
@@ -95,8 +96,8 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
             $this->registry->set('events2TaskCreateUpdate', 'info', [
                 'uid' => $eventRecord['uid'],
                 'pid' => $eventRecord['pid'],
-                'curMem' => memory_get_usage(true),
-                'peakMem' => memory_get_peak_usage(true),
+                'curMem' => memory_get_usage(),
+                'peakMem' => memory_get_peak_usage(),
             ]);
 
             try {
@@ -161,8 +162,8 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
                 'Current event: uid: %d, pid: %d, cur. memory: %s, peak memory: %s',
                 $info['uid'] ?? 0,
                 $info['pid'] ?? 0,
-                GeneralUtility::formatSize($info['curMem'] ?? memory_get_usage(true)),
-                GeneralUtility::formatSize($info['peakMem'] ?? memory_get_peak_usage(true))
+                GeneralUtility::formatSize($info['curMem'] ?? memory_get_usage()),
+                GeneralUtility::formatSize($info['peakMem'] ?? memory_get_peak_usage())
             );
         }
 
