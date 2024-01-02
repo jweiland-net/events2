@@ -101,7 +101,9 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
 
             $this->registry->set('events2TaskCreateUpdate', 'info', [
                 'uid' => $eventRecord['uid'],
-                'pid' => $eventRecord['pid']
+                'pid' => $eventRecord['pid'],
+                'curMem' => memory_get_usage(true),
+                'peakMem' => memory_get_peak_usage(true),
             ]);
 
             try {
@@ -147,12 +149,13 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
     {
         $content = '';
         $info = $this->registry->get('events2TaskCreateUpdate', 'info');
-        if ($info) {
+        if (is_array($info)) {
             $content = sprintf(
-                'Current event: uid: %d, pid: %d, memory: %d.',
-                $info['uid'],
-                $info['pid'],
-                memory_get_usage()
+                'Current event: uid: %d, pid: %d, cur. memory: %s, peak memory: %s',
+                $info['uid'] ?? 0,
+                $info['pid'] ?? 0,
+                GeneralUtility::formatSize($info['curMem'] ?? memory_get_usage(true)),
+                GeneralUtility::formatSize($info['peakMem'] ?? memory_get_peak_usage(true))
             );
         }
 
