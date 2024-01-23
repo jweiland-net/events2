@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 8.3.2
+=============
+
+*   [BUGFIX] Use sDEF instead of sDEFAULT
+
 Version 8.3.1
 =============
 

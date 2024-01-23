@@ -10,8 +10,16 @@ Upgrade
 If you upgrade/update EXT:events2 to a newer version, please read this section carefully!
 
 
-Update to Version 8.0.0
+Update to Version 8.3.2
 =======================
+
+There is an UpgradeWizard to convert `sDEFAULT` in FlexForms to `sDEF`, but
+with each uupdate of an events2 plugin `sDEFAULT` was written to DB again. We
+have updated that page name to `sDEF` in our FlexForms, now. Please execute the
+UpgradeWizard again.
+
+Upgrade to Version 8.0.0
+========================
 
 This version is NOT compatible with PHP versions lower than 7.4!
 
