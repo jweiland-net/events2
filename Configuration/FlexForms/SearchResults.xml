@@ -1,6 +1,6 @@
 <T3DataStructure>
 	<sheets>
-		<sDEFAULT>
+		<sDEF>
 			<ROOT>
 				<TCEforms>
 					<sheetTitle>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:sheetGeneral</sheetTitle>
@@ -22,6 +22,6 @@
 					</settings.pidOfDetailPage>
 				</el>
 			</ROOT>
-		</sDEFAULT>
+		</sDEF>
 	</sheets>
 </T3DataStructure>

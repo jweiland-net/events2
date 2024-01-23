@@ -97,7 +97,13 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
             }
 
             $this->moveSheetDefaultToDef($valueFromDatabase);
-            $this->moveFieldFromOldToNewSheet($valueFromDatabase, 'settings.pidOfSearchPage', 'sDEFAULT', 'sDEF', 'settings.pidOfSearchResults');
+            $this->moveFieldFromOldToNewSheet(
+                $valueFromDatabase,
+                'settings.pidOfSearchPage',
+                'sDEFAULT',
+                'sDEF',
+                'settings.pidOfSearchResults'
+            );
             $ttContentListType = $this->migrateSwitchableControllerActions($valueFromDatabase, $record['list_type']);
 
             $connection = $this->getConnectionPool()->getConnectionForTable('tt_content');
