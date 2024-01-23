@@ -14,7 +14,7 @@ Update to Version 8.3.2
 =======================
 
 There is an UpgradeWizard to convert `sDEFAULT` in FlexForms to `sDEF`, but
-with each uupdate of an events2 plugin `sDEFAULT` was written to DB again. We
+with each update of an events2 plugin `sDEFAULT` was written to DB again. We
 have updated that page name to `sDEF` in our FlexForms, now. Please execute the
 UpgradeWizard again.
 
