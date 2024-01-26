@@ -14,6 +14,7 @@ function Events2Calendar ($element, environment) {
   me.currentDate = new Date(environment.year + '-' + environment.month + '-' + environment.day + 'T00:00:00');
   me.environment = environment;
   me.allDays = [];
+  me.highlightedDays = [];
 
   /**
    * Get current URL with additional parameters
@@ -61,6 +62,7 @@ function Events2Calendar ($element, environment) {
     }).then(days => {
       // make global available. Needed for event render:day
       me.allDays = days;
+      me.highlightedDays = Array.from(me.allDays, (day) => day.dayOfMonth);
       picker.setHighlightedDays(me.getHighlightedDays(days, month, year));
     }).catch(error => {
       console.warn('Request error', error);
@@ -144,32 +146,39 @@ function Events2Calendar ($element, environment) {
     picker.show();
   };
 
-  me.getUriForDayAndRedirect = function (date) {
-    let additionalParameters = [
-      'day=' + date.getDate(),
-      'month=' + (date.getMonth() + 1),
-      'year=' + date.getFullYear(),
-      'pidOfListPage=' + me.environment.pidOfListPage
-    ];
+  me.isInHighlightedDays = function (date) {
+    let checkDay = date.getDate();
+    return me.highlightedDays.includes(checkDay);
+  }
 
-    fetch(me.getCurrentUrlWithAdditionalParameters(additionalParameters.join('&')), {
-      headers: {
-        'Content-Type': 'application/json',
-        'ext-events2': 'getUriForDay'
-      }
-    }).then(response => {
-      if (response.ok && response.status === 200) {
-        return response.json();
-      }
-      return Promise.reject(response);
-    }).then(data => {
-      if (data.uri !== '') {
-        console.log('Redirect to: ' + data.uri);
-        window.location.href = data.uri;
-      }
-    }).catch(error => {
-      console.warn('Request error', error);
-    });
+  me.getUriForDayAndRedirect = function (date) {
+   if (me.isInHighlightedDays(date)) {
+     let additionalParameters = [
+       'day=' + date.getDate(),
+       'month=' + (date.getMonth() + 1),
+       'year=' + date.getFullYear(),
+       'pidOfListPage=' + me.environment.pidOfListPage
+     ];
+
+     fetch(me.getCurrentUrlWithAdditionalParameters(additionalParameters.join('&')), {
+        headers: {
+          'Content-Type': 'application/json',
+          'ext-events2': 'getUriForDay'
+        }
+      }).then(response => {
+        if (response.ok && response.status === 200) {
+          return response.json();
+        }
+        return Promise.reject(response);
+      }).then(data => {
+        if (data.uri !== '') {
+          console.log('Redirect to: ' + data.uri);
+          window.location.href = data.uri;
+        }
+      }).catch(error => {
+        console.warn('Request error', error);
+      });
+    }
   };
 
   me.initializeDatePicker($element);
