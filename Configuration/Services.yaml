@@ -18,6 +18,10 @@ services:
   JWeiland\Events2\Ajax\FindLocations:
     public: true
 
+  # Called by makeInstance in FormDataGroup/OrderedProviderList
+  JWeiland\Events2\Backend\FormDataProvider\InitializeNewEventRecord:
+    public: true
+
   # Called by makeInstance in BE form FormDataGroup/OrderedProviderList
   JWeiland\Events2\Backend\FormDataProvider\ModifyRootUidOfTreeSelectElements:
     public: true

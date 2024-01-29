@@ -13,18 +13,22 @@ namespace JWeiland\Events2\Backend\FormDataProvider;
 
 use TYPO3\CMS\Backend\Form\FormDataProviderInterface;
 use TYPO3\CMS\Core\Context\Context;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 
 /*
  * This class sets some dynamic default values (like event_begin) for event record
  */
 class InitializeNewEventRecord implements FormDataProviderInterface
 {
+    private Context $context;
+
+    public function __construct(Context $context)
+    {
+        $this->context = $context;
+    }
+
     /**
-     * Prefill event_begin with current date
-     *
-     * @param array $result Initialized result array
-     * @return array Do not add as strict type because of Interface
+     * Prefill column "event_begin" with current date
      */
     public function addData(array $result): array
     {
@@ -33,17 +37,15 @@ class InitializeNewEventRecord implements FormDataProviderInterface
         }
 
         if ($result['command'] === 'new') {
-            $result['databaseRow']['event_begin'] = $this->getContext()->getPropertyFromAspect(
-                'date',
-                'timestamp'
-            );
+            try {
+                $result['databaseRow']['event_begin'] = $this->context->getPropertyFromAspect(
+                    'date',
+                    'timestamp'
+                );
+            } catch (AspectNotFoundException $e) {
+            }
         }
 
         return $result;
-    }
-
-    protected function getContext(): Context
-    {
-        return GeneralUtility::makeInstance(Context::class);
     }
 }
