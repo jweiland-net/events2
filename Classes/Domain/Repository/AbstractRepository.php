@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Domain\Repository;
 
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\DBALException;
 use JWeiland\Events2\Helper\OverlayHelper;
 use TYPO3\CMS\Core\Database\Connection;
@@ -51,7 +52,7 @@ class AbstractRepository extends Repository
                     $alias . '.pid',
                     $queryBuilder->createNamedParameter(
                         $extbaseQuery->getQuerySettings()->getStoragePageIds(),
-                        Connection::PARAM_INT_ARRAY
+                        ArrayParameterType::INTEGER
                     )
                 )
             );

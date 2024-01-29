@@ -364,14 +364,14 @@ class DatabaseService
                     'day' . $postAlias . '.pid',
                     $parentQueryBuilder->createNamedParameter(
                         $storagePageIds,
-                        Connection::PARAM_INT_ARRAY
+                        ArrayParameterType::INTEGER
                     )
                 ),
                 $queryBuilder->expr()->in(
                     'event' . $postAlias . '.pid',
                     $parentQueryBuilder->createNamedParameter(
                         $storagePageIds,
-                        Connection::PARAM_INT_ARRAY
+                        ArrayParameterType::INTEGER
                     )
                 )
             )
@@ -417,7 +417,7 @@ class DatabaseService
                 'category_mm.uid_local',
                 $parentQueryBuilder->createNamedParameter(
                     $categories,
-                    Connection::PARAM_INT_ARRAY
+                    ArrayParameterType::INTEGER
                 )
             )
         );
