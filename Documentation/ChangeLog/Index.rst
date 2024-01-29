@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 8.3.3
+=============
+
+*   [BUGFIX] Initialize properties of event for better PHP 7.4 compatibility
+
 Version 8.3.2
 =============
 
