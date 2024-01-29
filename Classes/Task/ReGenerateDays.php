@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Task;
 
+use Doctrine\DBAL\Exception;
 use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Service\DayRelationService;
 use TYPO3\CMS\Core\Cache\CacheManager;
@@ -155,11 +156,15 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
 
     protected function getAmountOfEventRecordsToProcess(): int
     {
-        $queryBuilder = $this->databaseService->getQueryBuilderForAllEvents();
-        return (int)$queryBuilder
-            ->count('*')
-            ->executeQuery()
-            ->fetchOne();
+        try {
+            return (int)$this->databaseService->getQueryBuilderForAllEvents()
+                ->count('*')
+                ->executeQuery()
+                ->fetchOne();
+        } catch (Exception $e) {
+        }
+
+        return 0;
     }
 
     /**

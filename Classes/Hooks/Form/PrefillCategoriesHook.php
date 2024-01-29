@@ -70,8 +70,8 @@ class PrefillCategoriesHook
     protected function getCategories(): array
     {
         $categories = [];
-        $statement = $this->getQueryResultForCategoriesInDefaultLanguage();
-        while ($sysCategoryInDefaultLanguage = $statement->fetch()) {
+        $queryResult = $this->getQueryResultForCategoriesInDefaultLanguage();
+        while ($sysCategoryInDefaultLanguage = $queryResult->fetchAssociative()) {
             $sysCategoryTranslated = $this->pageRepository->getLanguageOverlay(
                 'sys_category',
                 $sysCategoryInDefaultLanguage

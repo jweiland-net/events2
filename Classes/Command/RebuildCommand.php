@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Command;
 
+use Doctrine\DBAL\Exception;
 use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Service\DayRelationService;
 use Symfony\Component\Console\Command\Command;
@@ -81,12 +82,12 @@ class RebuildCommand extends Command
         $dayCounter = 0;
         $this->output->writeln('Process each event record');
 
-        $statement = $this->databaseService
+        $queryResult = $this->databaseService
             ->getQueryBuilderForAllEvents()
             ->select('uid', 'pid')
             ->executeQuery();
 
-        while ($simpleEventRecord = $statement->fetchAssociative()) {
+        while ($simpleEventRecord = $queryResult->fetchAssociative()) {
             $fullEventRecord = $this->dayRelationService->createDayRelations((int)$simpleEventRecord['uid']);
             if ($fullEventRecord !== []) {
                 if (is_array($fullEventRecord['days'])) {
@@ -124,10 +125,14 @@ class RebuildCommand extends Command
 
     protected function getAmountOfEventRecordsToProcess(): int
     {
-        $queryBuilder = $this->databaseService->getQueryBuilderForAllEvents();
-        return (int)$queryBuilder
-            ->count('*')
-            ->executeQuery()
-            ->fetchOne();
+        try {
+            return (int)$this->databaseService->getQueryBuilderForAllEvents()
+                ->count('*')
+                ->executeQuery()
+                ->fetchOne();
+        } catch (Exception $e) {
+        }
+
+        return 0;
     }
 }

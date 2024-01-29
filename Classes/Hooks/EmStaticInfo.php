@@ -60,18 +60,12 @@ class EmStaticInfo
             GeneralUtility::makeInstance(DeletedRestriction::class)
         );
 
-        $countries = $queryBuilder
+        return $queryBuilder
             ->select('uid', 'cn_short_en')
             ->from('static_countries')
             ->orderBy('cn_short_en', 'ASC')
             ->executeQuery()
             ->fetchAllAssociative();
-
-        if (empty($countries)) {
-            $countries = [];
-        }
-
-        return $countries;
     }
 
     protected function wrapOption(string $value, string $label, bool $selected): string
