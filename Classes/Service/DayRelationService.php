@@ -19,6 +19,7 @@ use JWeiland\Events2\Utility\DateTimeUtility;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -165,11 +166,11 @@ class DayRelationService implements LoggerAwareInterface
             ->where(
                 $queryBuilder->expr()->eq(
                     'event',
-                    $queryBuilder->createNamedParameter((int)$eventRecord['uid'], \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter((int)$eventRecord['uid'], Connection::PARAM_INT)
                 ),
                 $queryBuilder->expr()->eq(
                     't3ver_wsid',
-                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
                 )
             )
             ->executeQuery();

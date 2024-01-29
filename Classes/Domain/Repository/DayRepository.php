@@ -24,6 +24,7 @@ use JWeiland\Events2\Event\ModifyQueriesOfSearchEventsEvent;
 use JWeiland\Events2\Event\ModifyStartEndDateForListTypeEvent;
 use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Utility\DateTimeUtility;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -133,7 +134,7 @@ class DayRepository extends AbstractRepository
             $queryBuilder->andWhere(
                 $queryBuilder->expr()->eq(
                     'day.day',
-                    $queryBuilder->createNamedParameter($filter->getTimestamp(), \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($filter->getTimestamp(), Connection::PARAM_INT)
                 )
             );
         } else {
@@ -276,7 +277,7 @@ class DayRepository extends AbstractRepository
                 $subQueryBuilder,
                 'free_entry',
                 $search->getFreeEntry(),
-                \PDO::PARAM_INT,
+                Connection::PARAM_INT,
                 $queryBuilder,
                 'event_sub_query'
             );
@@ -455,11 +456,11 @@ class DayRepository extends AbstractRepository
             ->where(
                 $queryBuilder->expr()->eq(
                     'day.event',
-                    $queryBuilder->createNamedParameter($eventUid, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($eventUid, Connection::PARAM_INT)
                 ),
                 $queryBuilder->expr()->eq(
                     'day.day_time',
-                    $queryBuilder->createNamedParameter($timestamp, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($timestamp, Connection::PARAM_INT)
                 )
             )
             ->executeQuery()

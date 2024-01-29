@@ -11,9 +11,9 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Hooks\Form;
 
-use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver\Statement;
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Result;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer;
@@ -101,19 +101,19 @@ class PrefillCategoriesHook
                     'parent',
                     $queryBuilder->createNamedParameter(
                         $this->settings['rootCategory'] ?? 0,
-                        \PDO::PARAM_INT
+                        Connection::PARAM_INT
                     )
                 ),
                 $queryBuilder->expr()->in(
                     'uid',
                     $queryBuilder->createNamedParameter(
                         $this->getSelectableCategoriesForNewEvents(),
-                        Connection::PARAM_INT_ARRAY
+                        ArrayParameterType::INTEGER
                     )
                 ),
                 $queryBuilder->expr()->eq(
                     $GLOBALS['TCA']['sys_category']['ctrl']['languageField'],
-                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
                 )
             )
             ->executeQuery();

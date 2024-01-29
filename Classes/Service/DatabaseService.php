@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Service;
 
+use Doctrine\DBAL\ArrayParameterType;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Database\Connection;
@@ -45,7 +46,7 @@ class DatabaseService
         $output = [];
         $connection = $this->getConnectionPool()->getConnectionForTable($tableName);
         $statement = $connection->query('SHOW FULL COLUMNS FROM `' . $tableName . '`');
-        while ($fieldRow = $statement->fetch(\PDO::FETCH_ASSOC)) {
+        while ($fieldRow = $statement->fetchAssociative()) {
             $output[$fieldRow['Field']] = $fieldRow;
         }
 
@@ -187,7 +188,7 @@ class DatabaseService
 
             $constraint[] = $queryBuilder->expr()->in(
                 'category_mm.uid_local',
-                $queryBuilder->createNamedParameter($categories, Connection::PARAM_INT_ARRAY)
+                $queryBuilder->createNamedParameter($categories, ArrayParameterType::INTEGER)
             );
         }
 
@@ -195,20 +196,20 @@ class DatabaseService
         if (!empty($storagePids)) {
             $constraint[] = $queryBuilder->expr()->in(
                 'event.pid',
-                $queryBuilder->createNamedParameter($storagePids, Connection::PARAM_INT_ARRAY)
+                $queryBuilder->createNamedParameter($storagePids, ArrayParameterType::INTEGER)
             );
         }
 
         // Get days greater than first date of month
         $constraint[] = $queryBuilder->expr()->gte(
             'day.day',
-            $queryBuilder->createNamedParameter($startDate->format('U'), \PDO::PARAM_INT)
+            $queryBuilder->createNamedParameter($startDate->format('U'), Connection::PARAM_INT)
         );
 
         // Get days lower than last date of month
         $constraint[] = $queryBuilder->expr()->lt(
             'day.day',
-            $queryBuilder->createNamedParameter($endDate->format('U'), \PDO::PARAM_INT)
+            $queryBuilder->createNamedParameter($endDate->format('U'), Connection::PARAM_INT)
         );
 
         return $queryBuilder
@@ -237,7 +238,7 @@ class DatabaseService
             ),
             $queryBuilder->expr()->gt(
                 'event_begin',
-                $queryBuilder->createNamedParameter(time(), \PDO::PARAM_INT)
+                $queryBuilder->createNamedParameter(time(), Connection::PARAM_INT)
             )
         );
     }
@@ -262,11 +263,11 @@ class DatabaseService
             $queryBuilder->expr()->orX(
                 $queryBuilder->expr()->eq(
                     'event_end',
-                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
                 ),
                 $queryBuilder->expr()->gt(
                     'event_end',
-                    $queryBuilder->createNamedParameter(time(), \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter(time(), Connection::PARAM_INT)
                 )
             )
         );
@@ -292,11 +293,11 @@ class DatabaseService
             $queryBuilder->expr()->orX(
                 $queryBuilder->expr()->eq(
                     'recurring_end',
-                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
                 ),
                 $queryBuilder->expr()->gt(
                     'recurring_end',
-                    $queryBuilder->createNamedParameter(time(), \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter(time(), Connection::PARAM_INT)
                 )
             )
         );
@@ -324,7 +325,7 @@ class DatabaseService
             $alias . '.day_time',
             $parentQueryBuilder->createNamedParameter(
                 $startDateTime->format('U'),
-                \PDO::PARAM_INT,
+                Connection::PARAM_INT,
                 ':eventStartDate'
             )
         );
@@ -337,7 +338,7 @@ class DatabaseService
                     $alias . '.day_time',
                     $parentQueryBuilder->createNamedParameter(
                         $endDateTimeNight->format('U'),
-                        \PDO::PARAM_INT,
+                        Connection::PARAM_INT,
                         ':eventEndDate'
                     )
                 )
@@ -447,7 +448,7 @@ class DatabaseService
                     'eo_mm.uid_foreign',
                     $parentQueryBuilder->createNamedParameter(
                         $organizer,
-                        \PDO::PARAM_INT
+                        Connection::PARAM_INT
                     )
                 )
             );
@@ -468,7 +469,7 @@ class DatabaseService
                 $alias . '.location',
                 $parentQueryBuilder->createNamedParameter(
                     $location,
-                    \PDO::PARAM_INT
+                    Connection::PARAM_INT
                 )
             )
         );
@@ -484,7 +485,7 @@ class DatabaseService
         QueryBuilder $queryBuilder,
         string $column,
         $value,
-        int $dataType = \PDO::PARAM_STR,
+        int $dataType = Connection::PARAM_STR,
         QueryBuilder $parentQueryBuilder = null,
         string $alias = 'event'
     ): void {

@@ -59,7 +59,7 @@ class SearchControllerTest extends AbstractFunctionalTestCase
         $GLOBALS['TYPO3_REQUEST'] = $this->serverRequest;
         $dayRelationService = GeneralUtility::makeInstance(DayRelationService::class);
         $statement = $this->getDatabaseConnection()->select('*', 'tx_events2_domain_model_event', 'pid=1');
-        while ($eventRecord = $statement->fetch(\PDO::FETCH_ASSOC)) {
+        while ($eventRecord = $statement->fetchAssociative()) {
             $dayRelationService->createDayRelations($eventRecord['uid']);
         }
     }

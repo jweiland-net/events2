@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Upgrade;
 
 use TYPO3\CMS\Core\Configuration\FlexForm\FlexFormTools;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\Exception\MissingArrayPathException;
@@ -117,7 +118,7 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
                     'uid' => (int)$record['uid']
                 ],
                 [
-                    'pi_flexform' => \PDO::PARAM_STR
+                    'pi_flexform' => Connection::PARAM_STR
                 ]
             );
         }

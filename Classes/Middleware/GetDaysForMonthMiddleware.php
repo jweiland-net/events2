@@ -20,6 +20,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Http\JsonResponse;
@@ -118,7 +119,7 @@ class GetDaysForMonthMiddleware implements MiddlewareInterface
             ->where(
                 $queryBuilder->expr()->eq(
                     'month',
-                    $queryBuilder->createNamedParameter($month, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($month, Connection::PARAM_INT)
                 )
             )
             ->executeQuery();

@@ -16,6 +16,7 @@ use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Service\DatabaseService;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -81,7 +82,7 @@ class DayFactory
                 'day.day_time',
                 $queryBuilder->createNamedParameter(
                     $searchValues['timestamp'],
-                    \PDO::PARAM_INT
+                    Connection::PARAM_INT
                 )
             )
         );
@@ -97,7 +98,7 @@ class DayFactory
 
         $queryBuilder->expr()->gte(
             'day.day_time',
-            $queryBuilder->createNamedParameter((int)$date->format('U'), \PDO::PARAM_INT)
+            $queryBuilder->createNamedParameter((int)$date->format('U'), Connection::PARAM_INT)
         );
 
         return $this->findDayByQueryBuilder($queryBuilder);
@@ -111,7 +112,7 @@ class DayFactory
 
         $queryBuilder->expr()->lte(
             'day.day_time',
-            $queryBuilder->createNamedParameter((int)$date->format('U'), \PDO::PARAM_INT)
+            $queryBuilder->createNamedParameter((int)$date->format('U'), Connection::PARAM_INT)
         );
 
         return $this->findDayByQueryBuilder($queryBuilder);
@@ -213,7 +214,7 @@ class DayFactory
         $queryBuilder->andWhere(
             $queryBuilder->expr()->eq(
                 'day.event',
-                $queryBuilder->createNamedParameter($eventUid, \PDO::PARAM_INT)
+                $queryBuilder->createNamedParameter($eventUid, Connection::PARAM_INT)
             )
         );
     }

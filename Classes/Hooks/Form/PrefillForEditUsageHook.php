@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Hooks\Form;
 
+use Doctrine\DBAL\ArrayParameterType;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
@@ -197,13 +198,13 @@ class PrefillForEditUsageHook
                     }
                 }
 
-                $type = \PDO::PARAM_STR;
+                $type = Connection::PARAM_STR;
                 if ($stringExplodeValue) {
                     $value = GeneralUtility::trimExplode(',', $value, true);
-                    $type = Connection::PARAM_STR_ARRAY;
+                    $type = ArrayParameterType::STRING;
                 } elseif ($intExplodeValue) {
                     $value = GeneralUtility::intExplode(',', $value, true);
-                    $type = Connection::PARAM_INT_ARRAY;
+                    $type = ArrayParameterType::INTEGER;
                 }
 
                 $constraints[] = call_user_func(
@@ -227,15 +228,15 @@ class PrefillForEditUsageHook
             ->where(
                 $queryBuilder->expr()->eq(
                     'tablenames',
-                    $queryBuilder->createNamedParameter('tx_events2_domain_model_event', \PDO::PARAM_STR)
+                    $queryBuilder->createNamedParameter('tx_events2_domain_model_event')
                 ),
                 $queryBuilder->expr()->eq(
                     'fieldname',
-                    $queryBuilder->createNamedParameter('images', \PDO::PARAM_STR)
+                    $queryBuilder->createNamedParameter('images')
                 ),
                 $queryBuilder->expr()->eq(
                     'uid_foreign',
-                    $queryBuilder->createNamedParameter($eventUid, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($eventUid, Connection::PARAM_INT)
                 )
             )
             ->orderBy('sorting_foreign', 'ASC')
@@ -274,7 +275,7 @@ class PrefillForEditUsageHook
             ->where(
                 $queryBuilder->expr()->eq(
                     'uid',
-                    $queryBuilder->createNamedParameter($eventUid, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($eventUid, Connection::PARAM_INT)
                 )
             )
             ->executeQuery()

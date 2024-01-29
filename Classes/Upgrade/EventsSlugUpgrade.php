@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Upgrade;
 
-use Doctrine\DBAL\Driver\Statement;
 use Doctrine\DBAL\Result;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Helper\PathSegmentHelper;
@@ -100,7 +99,7 @@ class EventsSlugUpgrade implements UpgradeWizardInterface
             ->executeQuery();
 
         $connection = $this->getConnectionPool()->getConnectionForTable($this->tableName);
-        while ($recordToUpdate = $queryResult->fetch(\PDO::FETCH_ASSOC)) {
+        while ($recordToUpdate = $queryResult->fetchAssociative()) {
             if ((string)$recordToUpdate[$this->titleColumn] !== '') {
                 $connection->update(
                     $this->tableName,

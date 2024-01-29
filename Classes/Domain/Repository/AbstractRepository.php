@@ -85,7 +85,7 @@ class AbstractRepository extends Repository
                 ->where(
                     $queryBuilder->expr()->eq(
                         $tableAlias . '.uid',
-                        $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                        $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT)
                     )
                 )
                 ->executeQuery()

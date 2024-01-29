@@ -19,6 +19,7 @@ use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Service\DayRelationService;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Localization\LanguageService;
@@ -202,11 +203,11 @@ class DataHandlerTest extends FunctionalTestCase
             ->where(
                 $queryBuilder->expr()->gte(
                     'day',
-                    $queryBuilder->createNamedParameter($eventBegin->format('U'), \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($eventBegin->format('U'), Connection::PARAM_INT)
                 ),
                 $queryBuilder->expr()->lt(
                     'day',
-                    $queryBuilder->createNamedParameter($eventEnd->format('U'), \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($eventEnd->format('U'), Connection::PARAM_INT)
                 )
             )
             ->executeQuery()
