@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 8.3.5
+=============
+
+*   [BUGFIX] Search for events2 plugins with LIKE search
+
 Version 8.3.4
 =============
 
