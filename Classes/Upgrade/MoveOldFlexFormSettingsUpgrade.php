@@ -141,11 +141,9 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
                     'CType',
                     $queryBuilder->createNamedParameter('list')
                 ),
-                $queryBuilder->expr()->orX(
-                    $queryBuilder->expr()->eq(
-                        'list_type',
-                        $queryBuilder->createNamedParameter('events2_%')
-                    )
+                $queryBuilder->expr()->like(
+                    'list_type',
+                    $queryBuilder->createNamedParameter('events2_%')
                 )
             )
             ->execute();
