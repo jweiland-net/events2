@@ -126,19 +126,7 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
     }
 
     /**
-     * @return array<class-string<DatabaseUpdatedPrerequisite>>
-     */
-    public function getPrerequisites(): array
-    {
-        return [
-            DatabaseUpdatedPrerequisite::class
-        ];
-    }
-
-    /**
-     * Get all (incl. deleted/hidden) tt_content records with plugin maps2_maps2
-     *
-     * @return array
+     * Get all (incl. deleted/hidden) tt_content records with events2 plugin
      */
     protected function getTtContentRecordsWithEvents2Plugin(): array
     {
@@ -156,15 +144,7 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
                 $queryBuilder->expr()->orX(
                     $queryBuilder->expr()->eq(
                         'list_type',
-                        $queryBuilder->createNamedParameter('events2_events')
-                    ),
-                    $queryBuilder->expr()->eq(
-                        'list_type',
-                        $queryBuilder->createNamedParameter('events2_calendar')
-                    ),
-                    $queryBuilder->expr()->eq(
-                        'list_type',
-                        $queryBuilder->createNamedParameter('events2_search')
+                        $queryBuilder->createNamedParameter('events2_%')
                     )
                 )
             )
@@ -293,5 +273,15 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
     protected function getConnectionPool(): ConnectionPool
     {
         return GeneralUtility::makeInstance(ConnectionPool::class);
+    }
+
+    /**
+     * @return array<class-string<DatabaseUpdatedPrerequisite>>
+     */
+    public function getPrerequisites(): array
+    {
+        return [
+            DatabaseUpdatedPrerequisite::class
+        ];
     }
 }
