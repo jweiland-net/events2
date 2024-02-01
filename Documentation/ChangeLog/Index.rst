@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 8.3.4
+=============
+
+*   [BUGFIX] Check migration of sDEFAULT to sDEF for all possible plugins
+
 Version 8.3.3
 =============
 
