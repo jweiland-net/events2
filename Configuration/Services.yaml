@@ -166,4 +166,5 @@ services:
     tags:
     - name: 'console.command'
       command: 'events2:rebuild'
+      description: 'This command will TRUNCATE (delete) all day records found in day table and will re-create all day records afterwards'
       schedulable: true
