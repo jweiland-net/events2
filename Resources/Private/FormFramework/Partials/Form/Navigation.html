@@ -1,7 +1,7 @@
 <html lang="en"
-			xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-			xmlns:formvh="http://typo3.org/ns/TYPO3/CMS/Form/ViewHelpers"
-			data-namespace-typo3-fluid="true">
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:formvh="http://typo3.org/ns/TYPO3/CMS/Form/ViewHelpers"
+      data-namespace-typo3-fluid="true">
 
 <f:comment><!-- Copy of original Navigation.html. Just changed css class of previous button to: btn btn-secondary--></f:comment>
 <nav class="form-navigation">
@@ -9,23 +9,23 @@
         <div class="btn-group" role="group">
             <f:if condition="{form.previousPage}">
                 <span class="btn-group previous">
-                    <f:form.hidden property="__currentPage" value="{form.previousPage.index}" />
+                    <f:form.hidden property="__currentPage" value="{form.previousPage.index}"/>
                     <f:form.button type="button"
-																	 onclick="document.forms['{form.formDefinition.identifier}'].submit();"
-																	 class="btn btn-secondary"
-																	 formnovalidate="formnovalidate">
-											{formvh:translateElementProperty(element: form.currentPage, renderingOptionProperty: 'previousButtonLabel')}
-										</f:form.button>
+                                   onclick="document.forms['{form.formDefinition.identifier}'].submit();"
+                                   class="btn btn-secondary"
+                                   formnovalidate="formnovalidate">
+                        {formvh:translateElementProperty(element: form.currentPage, renderingOptionProperty: 'previousButtonLabel')}
+                    </f:form.button>
                 </span>
             </f:if>
             <f:if condition="{form.nextPage}">
                 <f:then>
                     <span class="btn-group next">
                         <f:form.button property="__currentPage"
-																			 value="{form.nextPage.index}"
-																			 class="btn btn-primary">
-													{formvh:translateElementProperty(element: form.currentPage, renderingOptionProperty: 'nextButtonLabel')}
-												</f:form.button>
+                                       value="{form.nextPage.index}"
+                                       class="btn btn-primary">
+                            {formvh:translateElementProperty(element: form.currentPage, renderingOptionProperty: 'nextButtonLabel')}
+                        </f:form.button>
                     </span>
                 </f:then>
                 <f:else>
