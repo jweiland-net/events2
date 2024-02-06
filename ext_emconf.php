@@ -11,15 +11,15 @@ $EM_CONF[$_EXTKEY] = [
     'constraints' => [
         'depends' => [
             'php' => '7.4.0-8.99.99',
-            'typo3' => '11.5.23-12.4.99',
+            'typo3' => '12.4.5-12.4.99',
         ],
         'conflicts' => [
         ],
         'suggests' => [
             'checkfaluploads' => '',
-            'maps2' => '10.0.0-0.0.0',
+            'maps2' => '11.0.0-0.0.0',
             'solr' => '11.2.0-0.0.0',
-            'static_info_tables' => '11.5.0-11.5.99',
+            'static_info_tables' => '12.4.0-12.4.99',
         ],
     ],
 ];
