@@ -20,6 +20,7 @@ use JWeiland\Events2\Event\PreProcessControllerActionEvent;
 use JWeiland\Events2\Service\TypoScriptService;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
@@ -43,6 +44,21 @@ class AbstractController extends ActionController implements LoggerAwareInterfac
     public function injectExtConf(ExtConf $extConf): void
     {
         $this->extConf = $extConf;
+    }
+
+    public function getMembersFromQueryResult()
+    {
+        return $this->getConnectionPool()->getConnectionForTable($table)->executeQuery($query)->fetchAllAssociative();
+    }
+
+    public function getQueryBuilderForTable(string $table)
+    {
+        return $this->getConnectionPool()->getQueryBuilderForTable($table);
+    }
+
+    public function getConnectionPool()
+    {
+        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 
     public function injectTypoScriptService(TypoScriptService $typoScriptService): void

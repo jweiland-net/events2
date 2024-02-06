@@ -34,15 +34,9 @@ class SaveEventFinisher extends AbstractFinisher
         'pid' => 'tx_formtools_requests',
     ];
 
-    /**
-     * @var Connection
-     */
-    protected $databaseConnection;
+    protected Connection $databaseConnection;
 
-    /**
-     * @var PathSegmentHelper
-     */
-    protected $pathSegmentHelper;
+    protected PathSegmentHelper $pathSegmentHelper;
 
     public function injectPathSegmentHelper(PathSegmentHelper $pathSegmentHelper): void
     {

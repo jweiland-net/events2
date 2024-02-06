@@ -23,14 +23,10 @@ class GetPostPagination implements PaginationInterface
 {
     protected string $pluginNamespace = 'tx_events2_list';
 
-    protected PaginatorInterface $paginator;
-
     protected array $arguments = [];
 
-    public function __construct(PaginatorInterface $paginator)
+    public function __construct(protected readonly PaginatorInterface $paginator)
     {
-        $this->paginator = $paginator;
-
         foreach (GeneralUtility::_GPmerged($this->pluginNamespace) as $argumentName => $argument) {
             if ($argumentName[0] === '_' && $argumentName[1] === '_') {
                 continue;

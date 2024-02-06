@@ -466,7 +466,7 @@ class DayRepository extends AbstractRepository
             ->executeQuery()
             ->fetchAssociative();
 
-        if (empty($day)) {
+        if ($day === false) {
             $day = [];
         }
 

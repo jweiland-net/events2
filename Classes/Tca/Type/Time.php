@@ -20,11 +20,8 @@ use TYPO3\CMS\Core\Utility\MathUtility;
  */
 class Time
 {
-    protected TimeToStringConverter $timeToStringConverter;
-
-    public function __construct(TimeToStringConverter $timeToStringConverter)
+    public function __construct(protected readonly TimeToStringConverter $timeToStringConverter)
     {
-        $this->timeToStringConverter = $timeToStringConverter;
     }
 
     /**

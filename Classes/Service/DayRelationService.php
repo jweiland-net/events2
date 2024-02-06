@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Service;
 
-use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\DateTimeEntry;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\TimeRepository;
@@ -34,30 +33,16 @@ class DayRelationService implements LoggerAwareInterface
 
     protected array $eventRecord = [];
 
-    protected ExtConf $extConf;
-
-    protected DayGeneratorService $dayGenerator;
-
-    protected DayRepository $dayRepository;
-
-    protected TimeRepository $timeRepository;
-
-    protected DateTimeUtility $dateTimeUtility;
-
     protected ?\DateTimeImmutable $firstDateTime = null;
 
     protected array $firstTimeRecordForCurrentDateTime = [];
 
     public function __construct(
-        DayGeneratorService $dayGenerator,
-        DayRepository $dayRepository,
-        TimeRepository $timeRepository,
-        DateTimeUtility $dateTimeUtility
+        protected readonly DayGeneratorService $dayGenerator,
+        protected readonly DayRepository $dayRepository,
+        protected readonly TimeRepository $timeRepository,
+        protected readonly DateTimeUtility $dateTimeUtility
     ) {
-        $this->dayGenerator = $dayGenerator;
-        $this->dayRepository = $dayRepository;
-        $this->timeRepository = $timeRepository;
-        $this->dateTimeUtility = $dateTimeUtility;
     }
 
     /**

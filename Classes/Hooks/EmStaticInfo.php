@@ -22,8 +22,6 @@ class EmStaticInfo
 {
     /**
      * Render our own custom field for static_info_tables
-     *
-     * @param $configurationForm
      */
     public function renderDefaultCountry(array $params, $configurationForm): string
     {

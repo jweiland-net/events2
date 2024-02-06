@@ -32,20 +32,11 @@ class DayGeneratorService implements LoggerAwareInterface
 
     protected array $dateTimeStorage = [];
 
-    protected ExtConf $extConf;
-
-    protected DateTimeUtility $dateTimeUtility;
-
-    protected EventDispatcher $eventDispatcher;
-
     public function __construct(
-        EventDispatcher $eventDispatcher,
-        ExtConf $extConf,
-        DateTimeUtility $dateTimeUtility
+        protected readonly EventDispatcher $eventDispatcher,
+        protected readonly ExtConf $extConf,
+        protected readonly DateTimeUtility $dateTimeUtility
     ) {
-        $this->eventDispatcher = $eventDispatcher;
-        $this->extConf = $extConf;
-        $this->dateTimeUtility = $dateTimeUtility;
     }
 
     /**

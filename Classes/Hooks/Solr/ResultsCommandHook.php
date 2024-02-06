@@ -24,16 +24,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class ResultsCommandHook implements SearchResultSetProcessor
 {
     /**
-     * @var EventService
-     */
-    protected $eventService;
-
-    /**
      * Do not add GarbageCollector, as DI autowire wont find the file, if solr is not installed
      */
-    public function __construct(EventService $eventService)
+    public function __construct(protected readonly EventService $eventService)
     {
-        $this->eventService = $eventService;
     }
 
     /**

@@ -26,19 +26,10 @@ use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
  */
 class GetUriForDayMiddleware implements MiddlewareInterface
 {
-    protected UriBuilder $uriBuilder;
-
-    protected DateTimeUtility $dateTimeUtility;
-
-    /**
-     * Will be called by call_user_func_array, so don't add Extbase classes with inject methods as argument
-     */
     public function __construct(
-        UriBuilder $uriBuilder,
-        DateTimeUtility $dateTimeUtility
+        protected readonly UriBuilder $uriBuilder,
+        protected readonly DateTimeUtility $dateTimeUtility
     ) {
-        $this->uriBuilder = $uriBuilder;
-        $this->dateTimeUtility = $dateTimeUtility;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface

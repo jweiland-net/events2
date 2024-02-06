@@ -33,31 +33,13 @@ use TYPO3\CMS\Core\Utility\MathUtility;
  */
 class GetDaysForMonthMiddleware implements MiddlewareInterface
 {
-    protected ExtConf $extConf;
-
-    protected DateTimeUtility $dateTimeUtility;
-
-    protected UserSession $userSession;
-
-    protected DatabaseService $databaseService;
-
-    protected EventDispatcher $eventDispatcher;
-
-    /**
-     * Will be called by call_user_func_array, so don't add Extbase classes with inject methods as argument
-     */
     public function __construct(
-        ExtConf $extConf,
-        DateTimeUtility $dateTimeUtility,
-        UserSession $userSession,
-        DatabaseService $databaseService,
-        EventDispatcher $eventDispatcher
+        protected readonly ExtConf $extConf,
+        protected readonly DateTimeUtility $dateTimeUtility,
+        protected UserSession $userSession,
+        protected readonly DatabaseService $databaseService,
+        protected readonly EventDispatcher $eventDispatcher
     ) {
-        $this->extConf = $extConf;
-        $this->dateTimeUtility = $dateTimeUtility;
-        $this->userSession = $userSession;
-        $this->databaseService = $databaseService;
-        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface

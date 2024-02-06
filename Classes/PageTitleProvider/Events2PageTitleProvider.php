@@ -24,14 +24,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Events2PageTitleProvider implements PageTitleProviderInterface
 {
-    protected EventRepository $eventRepository;
-
-    protected DayRepository $dayRepository;
-
-    public function __construct(EventRepository $eventRepository, DayRepository $dayRepository)
-    {
-        $this->eventRepository = $eventRepository;
-        $this->dayRepository = $dayRepository;
+    public function __construct(
+        protected readonly EventRepository $eventRepository,
+        protected readonly DayRepository $dayRepository
+    ) {
     }
 
     public function getTitle(): string

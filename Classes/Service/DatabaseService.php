@@ -28,14 +28,10 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  */
 class DatabaseService
 {
-    protected ExtConf $extConf;
-
-    protected DateTimeUtility $dateTimeUtility;
-
-    public function __construct(ExtConf $extConf, DateTimeUtility $dateTimeUtility)
-    {
-        $this->extConf = $extConf;
-        $this->dateTimeUtility = $dateTimeUtility;
+    public function __construct(
+        protected readonly ExtConf $extConf,
+        protected readonly DateTimeUtility $dateTimeUtility
+    ) {
     }
 
     /**

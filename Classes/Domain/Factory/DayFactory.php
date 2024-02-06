@@ -30,12 +30,6 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
  */
 class DayFactory
 {
-    protected DatabaseService $databaseService;
-
-    protected DayRepository $dayRepository;
-
-    protected EventRepository $eventRepository;
-
     protected array $processOrderedMethods = [
         'findExactDay',
         'findNextDay',
@@ -44,13 +38,10 @@ class DayFactory
     ];
 
     public function __construct(
-        DatabaseService $databaseService,
-        DayRepository $dayRepository,
-        EventRepository $eventRepository
+        protected readonly DatabaseService $databaseService,
+        protected readonly DayRepository $dayRepository,
+        protected readonly EventRepository $eventRepository
     ) {
-        $this->databaseService = $databaseService;
-        $this->dayRepository = $dayRepository;
-        $this->eventRepository = $eventRepository;
     }
 
     /**

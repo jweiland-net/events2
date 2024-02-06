@@ -19,10 +19,7 @@ use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
  */
 class YouTubeValidator extends AbstractValidator
 {
-    /**
-     * @param mixed $value
-     */
-    public function isValid($value): void
+    public function isValid(mixed $value): void
     {
         if (!preg_match('~^(|http:|https:)//(|www.)youtu(\.be|be)(.*?)(v=|embed/|)([a-zA-Z0-9_-]+)$~i', $value)) {
             $this->addError(

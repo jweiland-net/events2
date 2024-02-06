@@ -28,18 +28,14 @@ class Import extends AbstractTask
 {
     /**
      * Full path from document root. F.e. /fileadmin/events_import/Import.xml
-     *
-     * @var string
      */
-    public $path = '';
+    public string $path = '';
 
     /**
      * It's public and will be set externally by scheduler.
      * Internally it's INT, but the form-value is string.
-     *
-     * @var int|string
      */
-    public $storagePid = 0;
+    public string|int $storagePid = 0;
 
     /**
      * This is the main method that is called when a task is executed

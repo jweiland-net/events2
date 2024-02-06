@@ -31,31 +31,12 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
  */
 class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
 {
-    /**
-     * @var CacheManager
-     */
-    protected $cacheManager;
-
-    /**
-     * @var DatabaseService
-     */
-    protected $databaseService;
-
-    /**
-     * @var Registry
-     */
-    protected $registry;
-
     public function __construct(
-        CacheManager $cacheManager,
-        DatabaseService $databaseService,
-        Registry $registry
+        protected readonly CacheManager $cacheManager,
+        protected readonly DatabaseService $databaseService,
+        protected readonly Registry $registry
     ) {
         parent::__construct();
-
-        $this->cacheManager = $cacheManager;
-        $this->databaseService = $databaseService;
-        $this->registry = $registry;
     }
 
     public function execute(): bool

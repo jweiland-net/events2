@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Domain\Repository;
 
 use Doctrine\DBAL\ArrayParameterType;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception;
 use JWeiland\Events2\Helper\OverlayHelper;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -95,7 +95,7 @@ class AbstractRepository extends Repository
             if ($record === false) {
                 return [];
             }
-        } catch (DBALException $DBALException) {
+        } catch (Exception $e) {
             return [];
         }
 
@@ -144,7 +144,7 @@ class AbstractRepository extends Repository
                     $records[$record['uid']] = $record;
                 }
             }
-        } catch (DBALException $DBALException) {
+        } catch (Exception $e) {
             return [];
         }
 

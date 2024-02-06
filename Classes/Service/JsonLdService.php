@@ -39,11 +39,8 @@ class JsonLdService
         '@type' => 'Event'
     ];
 
-    protected TimeFactory $timeFactory;
-
-    public function __construct(TimeFactory $timeFactory)
+    public function __construct(protected readonly TimeFactory $timeFactory)
     {
-        $this->timeFactory = $timeFactory;
     }
 
     /**

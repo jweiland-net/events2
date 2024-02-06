@@ -17,7 +17,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use TYPO3\CMS\Core\Http\JsonResponse;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /*
  * This middleware is needed for management plugin. It is needed to show a list of location titles
@@ -25,14 +24,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class GetLocationsMiddleware implements MiddlewareInterface
 {
-    protected LocationRepository $locationRepository;
-
     /**
      * Will be called by call_user_func_array, so don't add Extbase classes with inject methods as argument
      */
-    public function __construct()
+    public function __construct(protected readonly LocationRepository $locationRepository)
     {
-        $this->locationRepository = GeneralUtility::makeInstance(LocationRepository::class);
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface

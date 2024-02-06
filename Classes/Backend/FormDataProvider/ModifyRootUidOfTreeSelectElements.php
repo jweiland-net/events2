@@ -21,18 +21,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class ModifyRootUidOfTreeSelectElements implements FormDataProviderInterface
 {
-    protected ExtConf $extConf;
-
-    public function __construct(ExtConf $extConf)
+    public function __construct(private readonly ExtConf $extConf)
     {
-        $this->extConf = $extConf;
     }
 
     /**
      * Set rootUid of tree select elements of FlexForms to root category declared in EM
-     *
-     * @param array $result Initialized result array
-     * @return array Do not add as strict type because of Interface
      */
     public function addData(array $result): array
     {

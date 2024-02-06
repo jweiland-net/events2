@@ -28,20 +28,10 @@ use TYPO3\CMS\Form\Domain\Model\Renderable\RenderableInterface;
  */
 class PrefillCategoriesHook
 {
-    /**
-     * @var PageRepository
-     */
-    protected $pageRepository;
+    protected array $settings = [];
 
-    /**
-     * @var array
-     */
-    protected $settings = [];
-
-    public function __construct(PageRepository $pageRepository, ConfigurationManagerInterface $configurationManager)
+    public function __construct(protected readonly PageRepository $pageRepository, ConfigurationManagerInterface $configurationManager)
     {
-        $this->pageRepository = $pageRepository;
-
         $this->settings = $configurationManager->getConfiguration(
             ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS,
             'Events2',

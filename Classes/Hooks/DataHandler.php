@@ -21,11 +21,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class DataHandler
 {
-    protected CacheManager $cacheManager;
-
-    public function __construct(CacheManager $cacheManager)
+    public function __construct(protected CacheManager $cacheManager)
     {
-        $this->cacheManager = $cacheManager;
     }
 
     /**
@@ -81,8 +78,7 @@ class DataHandler
         return
             !$isTableLocalizable
             || (
-                $isTableLocalizable
-                && ($languageField = $GLOBALS['TCA'][$tableName]['ctrl']['languageField'])
+                ($languageField = $GLOBALS['TCA'][$tableName]['ctrl']['languageField'])
                 && array_key_exists($languageField, $recordFromRequest)
             );
     }

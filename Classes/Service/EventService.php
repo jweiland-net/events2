@@ -22,16 +22,10 @@ use JWeiland\Events2\Domain\Repository\EventRepository;
  */
 class EventService
 {
-    protected EventRepository $eventRepository;
-
-    protected TimeFactory $timeFactory;
-
     public function __construct(
-        EventRepository $eventRepository,
-        TimeFactory $timeFactory
+        protected readonly EventRepository $eventRepository,
+        protected readonly TimeFactory $timeFactory
     ) {
-        $this->eventRepository = $eventRepository;
-        $this->timeFactory = $timeFactory;
     }
 
     public function getNextDayForEvent(int $eventUid): ?\DateTimeImmutable

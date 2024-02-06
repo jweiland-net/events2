@@ -23,24 +23,17 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class RebuildCommand extends Command
 {
-    protected DatabaseService $databaseService;
-
-    protected DayRelationService $dayRelationService;
-
     protected OutputInterface $output;
 
     /**
      * Will be called by DI, so please don't add extbase classes with inject methods here.
      */
     public function __construct(
-        DatabaseService $databaseService,
-        DayRelationService $dayRelationService,
+        protected readonly DatabaseService $databaseService,
+        protected readonly DayRelationService $dayRelationService,
         string $name = null
     ) {
         parent::__construct($name);
-
-        $this->databaseService = $databaseService;
-        $this->dayRelationService = $dayRelationService;
     }
 
     protected function configure(): void

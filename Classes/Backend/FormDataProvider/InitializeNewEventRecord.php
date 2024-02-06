@@ -20,11 +20,8 @@ use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
  */
 class InitializeNewEventRecord implements FormDataProviderInterface
 {
-    private Context $context;
-
-    public function __construct(Context $context)
+    public function __construct(private readonly Context $context)
     {
-        $this->context = $context;
     }
 
     /**

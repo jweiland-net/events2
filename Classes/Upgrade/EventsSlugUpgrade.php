@@ -27,10 +27,6 @@ use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
  */
 class EventsSlugUpgrade implements UpgradeWizardInterface
 {
-    protected PathSegmentHelper $pathSegmentHelper;
-
-    protected ExtConf $extConf;
-
     protected string $tableName = 'tx_events2_domain_model_event';
 
     protected string $slugColumn = 'path_segment';
@@ -42,10 +38,10 @@ class EventsSlugUpgrade implements UpgradeWizardInterface
      */
     protected array $slugCache = [];
 
-    public function __construct(PathSegmentHelper $pathSegmentHelper, ExtConf $extConf)
-    {
-        $this->pathSegmentHelper = $pathSegmentHelper;
-        $this->extConf = $extConf;
+    public function __construct(
+        protected readonly PathSegmentHelper $pathSegmentHelper,
+        protected readonly ExtConf $extConf
+    ) {
     }
 
     /**

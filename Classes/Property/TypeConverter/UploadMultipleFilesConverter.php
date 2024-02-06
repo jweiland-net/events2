@@ -51,18 +51,13 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
 
     protected PropertyMappingConfigurationInterface $converterConfiguration;
 
-    protected EventDispatcher $eventDispatcher;
-
     /**
      * Do not inject this property, as EXT:checkfaluploads may not be loaded
-     *
-     * @var FalUploadService
      */
-    protected $falUploadService;
+    protected FalUploadService $falUploadService;
 
-    public function __construct(EventDispatcher $eventDispatcher)
+    public function __construct(protected readonly EventDispatcher $eventDispatcher)
     {
-        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function canConvertFrom($source, string $targetType): bool

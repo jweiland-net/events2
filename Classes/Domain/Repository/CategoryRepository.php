@@ -89,6 +89,6 @@ class CategoryRepository extends Repository
             $constraint[] = $query->equals('uid', 0);
         }
 
-        return $query->matching($query->logicalAnd($constraint))->execute();
+        return $query->matching($query->logicalAnd(...$constraint))->execute();
     }
 }

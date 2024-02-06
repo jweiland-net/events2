@@ -25,10 +25,8 @@ class EventValidator extends AbstractValidator
 {
     /**
      * Checks, if the given time model is empty or its sub-property timeBegin is filled.
-     *
-     * @param mixed $value
      */
-    public function isValid($value): void
+    public function isValid(mixed $value): void
     {
         if (!$value instanceof Event) {
             return;

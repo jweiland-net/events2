@@ -21,14 +21,8 @@ use TYPO3\CMS\Form\Domain\Model\FormDefinition;
  */
 class ArrayFormFactory extends \TYPO3\CMS\Form\Domain\Factory\ArrayFormFactory
 {
-    /**
-     * @var ExtConf
-     */
-    protected $extConf;
-
-    public function __construct(ExtConf $extConf)
+    public function __construct(protected readonly ExtConf $extConf)
     {
-        $this->extConf = $extConf;
     }
 
     /**

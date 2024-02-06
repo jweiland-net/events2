@@ -22,7 +22,7 @@ class DateTimeUtility
      *
      * @param mixed $value Unix timestamp or date/datetime value
      */
-    public function convert($value): ?\DateTimeImmutable
+    public function convert(mixed $value): ?\DateTimeImmutable
     {
         try {
             if (
