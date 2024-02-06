@@ -185,7 +185,7 @@ class ManagementController extends AbstractController
             'event' => $event,
         ]);
 
-        // if editor edits this hidden record, mail should not be send
+        // if editor edits this hidden record, mail should not be sent
         if (!$isHidden) {
             $this->sendMail('update');
         }
