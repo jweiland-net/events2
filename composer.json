@@ -21,18 +21,16 @@
 		"ext-dom": "*",
 		"ext-libxml": "*",
 		"php": "^7.4 || ^8.0",
-		"typo3/cms-core": "^11.5.23 || ^12.4.5"
-	},
-	"suggest": {
-		"sjbr/static-info-tables": "Package is needed, if you use TYPO3 11."
+		"typo3/cms-core": "^12.4.5",
+		"sjbr/static-info-tables": "^12.4"
 	},
 	"require-dev": {
 		"friendsofphp/php-cs-fixer": "^3.0",
 		"nimut/testing-framework": "^6.0",
 		"phpunit/phpunit": "^9.5",
 		"phpspec/prophecy-phpunit": "^2.0",
-		"typo3/cms-scheduler": "^10.4.14 || ^11.5",
-		"jweiland/maps2": ">=10.0.0"
+		"typo3/cms-scheduler": "^12.4.5",
+		"jweiland/maps2": ">=11.0.0"
 	},
 	"autoload": {
 		"psr-4": {
