@@ -1,7 +1,7 @@
 <html lang="en"
-			xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-			data-namespace-typo3-fluid="true">
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
 
-<f:translate key="tx_events2_domain_model_exception.exception_type.{exception.exceptionType}" />:<br/>
+<f:translate key="tx_events2_domain_model_exception.exception_type.{exception.exceptionType}"/>:<br/>
 {exception.exceptionDetails -> f:format.html(parseFuncTSPath: 'lib.parseFunc') -> f:format.nl2br()}
 </html>

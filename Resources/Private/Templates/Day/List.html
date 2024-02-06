@@ -1,32 +1,32 @@
 <html lang="en"
-			xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-			data-namespace-typo3-fluid="true">
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
 
-<f:layout name="Default" />
+<f:layout name="Default"/>
 
 <f:section name="main">
-	<f:flashMessages />
-	<f:flashMessages queueIdentifier="extbase.flashmessages.tx_events2_management" />
+    <f:flashMessages/>
+    <f:flashMessages queueIdentifier="extbase.flashmessages.tx_events2_management"/>
 
-	<f:if condition="{days}">
-		<f:then>
-			<f:if condition="{settings.listType} != 'listLatest'">
-				<f:render partial="Management/UserEditLinks" />
-			</f:if>
+    <f:if condition="{days}">
+        <f:then>
+            <f:if condition="{settings.listType} != 'listLatest'">
+                <f:render partial="Management/UserEditLinks"/>
+            </f:if>
 
-			<f:if condition="{settings.listType} == 'list'">
-				<f:render partial="Event/Filter" arguments="{action: 'list', organizers: organizers, filter: filter}" />
-			</f:if>
+            <f:if condition="{settings.listType} == 'list'">
+                <f:render partial="Event/Filter" arguments="{action: 'list', organizers: organizers, filter: filter}"/>
+            </f:if>
 
-			<div class="list scroll-container">
-				<f:render partial="Event/List" arguments="{days: days, extConf: extConf}" />
-				<f:render partial="Component/Pagination"
-									arguments="{pagination: pagination, paginator: paginator, actionName: actionName}" />
-			</div>
-		</f:then>
-		<f:else>
-			<div>{f:translate(key: 'no_events_found')}</div>
-		</f:else>
-	</f:if>
+            <div class="list scroll-container">
+                <f:render partial="Event/List" arguments="{days: days, extConf: extConf}"/>
+                <f:render partial="Component/Pagination"
+                          arguments="{pagination: pagination, paginator: paginator, actionName: actionName}"/>
+            </div>
+        </f:then>
+        <f:else>
+            <div>{f:translate(key: 'no_events_found')}</div>
+        </f:else>
+    </f:if>
 </f:section>
 </html>

@@ -1,159 +1,161 @@
 <html lang="en"
-			xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-			xmlns:e2="http://typo3.org/ns/JWeiland/Events2/ViewHelpers"
-			data-namespace-typo3-fluid="true">
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:e2="http://typo3.org/ns/JWeiland/Events2/ViewHelpers"
+      data-namespace-typo3-fluid="true">
 
-<f:render section="renderTextfield" arguments="{property: 'title', transKey: 'cshTitle', required: 1}" />
+<f:render section="renderTextfield" arguments="{property: 'title', transKey: 'cshTitle', required: 1}"/>
 
 <div class="form-group row">
-	<f:render section="renderLabel" arguments="{property: 'teaser', required: required}" />
-	<f:render section="renderCsh" arguments="{property: 'teaser', transKey: 'cshTeaser'}" />
-	<div class="col-sm-8">
-		<f:form.textarea class="form-control" id="teaser" property="teaser" rows="5" cols="50" />
-	</div>
+    <f:render section="renderLabel" arguments="{property: 'teaser', required: required}"/>
+    <f:render section="renderCsh" arguments="{property: 'teaser', transKey: 'cshTeaser'}"/>
+    <div class="col-sm-8">
+        <f:form.textarea class="form-control" id="teaser" property="teaser" rows="5" cols="50"/>
+    </div>
 </div>
 <div class="form-group row">
-	<div class="col-sm-4"></div>
-	<div class="col-sm-8">
-		<span class="remainingChars" data-id="teaser"></span>
-	</div>
+    <div class="col-sm-4"></div>
+    <div class="col-sm-8">
+        <span class="remainingChars" data-id="teaser"></span>
+    </div>
 </div>
 
-<f:render section="renderTextarea" arguments="{property: 'detailInformation', transKeyLabel: 'detail_information'}" />
+<f:render section="renderTextarea" arguments="{property: 'detailInformation', transKeyLabel: 'detail_information'}"/>
 
 <div class="form-group row">
-	<f:render section="renderLabel" arguments="{property: 'eventBegin', transKey: 'event_begin', required: 1}" />
-	<f:render section="renderCsh" arguments="{property: 'eventBegin', transKey: 'cshEventBegin'}" />
-	<div class="col-sm-8">
-		<f:if condition="{event.eventBegin}">
-			<f:then>
-				<f:form.textfield class="form-control addDatePicker" placeholder="tt.mm.jjjj" id="eventBegin" property="eventBegin" value="{event.eventBegin -> f:format.date(format: 'd.m.Y')}" />
-			</f:then>
-			<f:else>
-				<f:form.textfield class="form-control addDatePicker" placeholder="tt.mm.jjjj" id="eventBegin" property="eventBegin" />
-			</f:else>
-		</f:if>
-	</div>
-</div>
-
-<div class="form-group row">
-	<f:render section="renderLabel" arguments="{property: 'eventEnd', transKey: 'event_end'}" />
-	<f:render section="renderCsh" arguments="{property: 'eventEnd', transKey: 'cshEventEnd'}" />
-	<div class="col-sm-8">
-		<f:if condition="{event.eventEnd}">
-			<f:then>
-				<f:form.textfield class="form-control addDatePicker" placeholder="tt.mm.jjjj" id="eventEnd" property="eventEnd" value="{event.eventEnd -> f:format.date(format: 'd.m.Y')}" />
-			</f:then>
-			<f:else>
-				<f:form.textfield class="form-control addDatePicker" placeholder="tt.mm.jjjj" id="eventEnd" property="eventEnd" />
-			</f:else>
-		</f:if>
-	</div>
+    <f:render section="renderLabel" arguments="{property: 'eventBegin', transKey: 'event_begin', required: 1}"/>
+    <f:render section="renderCsh" arguments="{property: 'eventBegin', transKey: 'cshEventBegin'}"/>
+    <div class="col-sm-8">
+        <f:if condition="{event.eventBegin}">
+            <f:then>
+                <f:form.textfield class="form-control addDatePicker" placeholder="tt.mm.jjjj" id="eventBegin" property="eventBegin" value="{event.eventBegin -> f:format.date(format: 'd.m.Y')}"/>
+            </f:then>
+            <f:else>
+                <f:form.textfield class="form-control addDatePicker" placeholder="tt.mm.jjjj" id="eventBegin" property="eventBegin"/>
+            </f:else>
+        </f:if>
+    </div>
 </div>
 
 <div class="form-group row">
-	<f:render section="renderLabel" arguments="{property: 'timeBegin', transKey: 'time_begin', table: 'tx_events2_domain_model_time', required: 1}" />
-	<f:render section="renderCsh" arguments="{property: 'timeBegin', transKey: 'cshTimeBegin'}" />
-	<div class="col-sm-8">
-		<f:form.textfield class="form-control" placeholder="ss:mm" id="timeBegin" property="eventTime.timeBegin" />
-	</div>
+    <f:render section="renderLabel" arguments="{property: 'eventEnd', transKey: 'event_end'}"/>
+    <f:render section="renderCsh" arguments="{property: 'eventEnd', transKey: 'cshEventEnd'}"/>
+    <div class="col-sm-8">
+        <f:if condition="{event.eventEnd}">
+            <f:then>
+                <f:form.textfield class="form-control addDatePicker" placeholder="tt.mm.jjjj" id="eventEnd" property="eventEnd" value="{event.eventEnd -> f:format.date(format: 'd.m.Y')}"/>
+            </f:then>
+            <f:else>
+                <f:form.textfield class="form-control addDatePicker" placeholder="tt.mm.jjjj" id="eventEnd" property="eventEnd"/>
+            </f:else>
+        </f:if>
+    </div>
 </div>
 
 <div class="form-group row">
-	<f:render section="renderLabel" arguments="{property: 'categories', required: 1}" />
-	<f:render section="renderCsh" arguments="{property: 'categories', transKey: 'cshCategories'}" />
-	<div class="col-sm-8">
-		<f:form.select id="categories" class="form-control" options="{selectableCategories}" property="categories" size="7" multiple="1" optionLabelField="title" optionValueField="uid" sortByOptionLabel="1" />
-	</div>
+    <f:render section="renderLabel" arguments="{property: 'timeBegin', transKey: 'time_begin', table: 'tx_events2_domain_model_time', required: 1}"/>
+    <f:render section="renderCsh" arguments="{property: 'timeBegin', transKey: 'cshTimeBegin'}"/>
+    <div class="col-sm-8">
+        <f:form.textfield class="form-control" placeholder="ss:mm" id="timeBegin" property="eventTime.timeBegin"/>
+    </div>
 </div>
 
 <div class="form-group row">
-	<f:render section="renderLabel" arguments="{property: 'location', required: 1}" />
-	<f:render section="renderCsh" arguments="{property: 'location', transKey: 'cshLocation'}" />
-	<div class="col-sm-8">
-		<f:form.hidden class="autoCompleteLocationHelper" property="location" />
-		<input type="text"
-					 id="autoCompleteLocation"
-					 class="form-control"
-					 autocomplete="off"
-					 data-list="Ada, Java, JavaScript, Brainfuck, LOLCODE, Node.js, Ruby on Rails, PHP"
-					 autocapitalize="off"
-					 value="{f:if(condition: event.location, then: event.location.location, else: '')}" />
-		<div>
-			<f:link.page pageUid="8460" title="Neuen Veranstaltungsort beantragen">
-				Neuen Ort beantragen
-			</f:link.page>
-		</div>
-	</div>
+    <f:render section="renderLabel" arguments="{property: 'categories', required: 1}"/>
+    <f:render section="renderCsh" arguments="{property: 'categories', transKey: 'cshCategories'}"/>
+    <div class="col-sm-8">
+        <f:form.select id="categories" class="form-control" options="{selectableCategories}" property="categories" size="7" multiple="1" optionLabelField="title" optionValueField="uid" sortByOptionLabel="1"/>
+    </div>
 </div>
 
 <div class="form-group row">
-	<f:render section="renderLabel" arguments="{property: 'video', transKey: 'video_link'}" />
-	<f:render section="renderCsh" arguments="{property: 'video', transKey: 'cshVideo'}" />
-	<div class="col-sm-8">
-		<f:form.textfield class="form-control" id="video" property="videoLink.link" />
-	</div>
+    <f:render section="renderLabel" arguments="{property: 'location', required: 1}"/>
+    <f:render section="renderCsh" arguments="{property: 'location', transKey: 'cshLocation'}"/>
+    <div class="col-sm-8">
+        <f:form.hidden class="autoCompleteLocationHelper" property="location"/>
+        <input type="text"
+               id="autoCompleteLocation"
+               class="form-control"
+               autocomplete="off"
+               data-list="Ada, Java, JavaScript, Brainfuck, LOLCODE, Node.js, Ruby on Rails, PHP"
+               autocapitalize="off"
+               value="{f:if(condition: event.location, then: event.location.location, else: '')}"/>
+        <div>
+            <f:link.page pageUid="8460" title="Neuen Veranstaltungsort beantragen">
+                Neuen Ort beantragen
+            </f:link.page>
+        </div>
+    </div>
 </div>
 
 <div class="form-group row">
-	<f:render section="renderLabel" arguments="{property: 'images'}" />
-	<f:render section="renderCsh" arguments="{property: 'images', transKey: 'cshImages'}" />
-	<div class="col-sm-8">
-		<f:render section="uploadImage" arguments="{image: event.images.0, index: '0', position: '1'}" />
-		<f:render section="uploadImage" arguments="{image: event.images.1, index: '1', position: '2'}" />
-		<f:render section="uploadImage" arguments="{image: event.images.2, index: '2', position: '3'}" />
-		<f:render section="uploadImage" arguments="{image: event.images.3, index: '3', position: '4'}" />
-		<f:render section="uploadImage" arguments="{image: event.images.4, index: '4', position: '5'}" />
-	</div>
+    <f:render section="renderLabel" arguments="{property: 'video', transKey: 'video_link'}"/>
+    <f:render section="renderCsh" arguments="{property: 'video', transKey: 'cshVideo'}"/>
+    <div class="col-sm-8">
+        <f:form.textfield class="form-control" id="video" property="videoLink.link"/>
+    </div>
+</div>
+
+<div class="form-group row">
+    <f:render section="renderLabel" arguments="{property: 'images'}"/>
+    <f:render section="renderCsh" arguments="{property: 'images', transKey: 'cshImages'}"/>
+    <div class="col-sm-8">
+        <f:render section="uploadImage" arguments="{image: event.images.0, index: '0', position: '1'}"/>
+        <f:render section="uploadImage" arguments="{image: event.images.1, index: '1', position: '2'}"/>
+        <f:render section="uploadImage" arguments="{image: event.images.2, index: '2', position: '3'}"/>
+        <f:render section="uploadImage" arguments="{image: event.images.3, index: '3', position: '4'}"/>
+        <f:render section="uploadImage" arguments="{image: event.images.4, index: '4', position: '5'}"/>
+    </div>
 </div>
 
 <f:section name="renderTextfield">
-	<div class="form-group row">
-		<f:render section="renderLabel" arguments="{property: property, required: required, transKey: transKeyLabel}" />
-		<f:render section="renderCsh" arguments="{property: property, transKey: transKey}" />
-		<div class="col-sm-8">
-			<f:form.textfield class="form-control" id="{property}" property="{property}" />
-		</div>
-	</div>
+    <div class="form-group row">
+        <f:render section="renderLabel" arguments="{property: property, required: required, transKey: transKeyLabel}"/>
+        <f:render section="renderCsh" arguments="{property: property, transKey: transKey}"/>
+        <div class="col-sm-8">
+            <f:form.textfield class="form-control" id="{property}" property="{property}"/>
+        </div>
+    </div>
 </f:section>
 
 <f:section name="renderTextarea">
-	<div class="form-group row">
-		<f:render section="renderLabel" arguments="{property: property, required: required, transKey: transKeyLabel}" />
-		<f:render section="renderCsh" arguments="{property: property, transKey: transKeyCsh}" />
-		<div class="col-sm-8">
-			<f:form.textfield class="form-control" id="{property}" property="{property}" />
-		</div>
-	</div>
+    <div class="form-group row">
+        <f:render section="renderLabel" arguments="{property: property, required: required, transKey: transKeyLabel}"/>
+        <f:render section="renderCsh" arguments="{property: property, transKey: transKeyCsh}"/>
+        <div class="col-sm-8">
+            <f:form.textfield class="form-control" id="{property}" property="{property}"/>
+        </div>
+    </div>
 </f:section>
 
 <f:section name="uploadImage">
-	<f:if condition="{image}"><f:image image="{image}" alt="Bild{position}" width="{settings.show.image.width}" height="{settings.show.image.height}" minWidth="{settings.show.image.minWidth}" maxWidth="{settings.show.image.maxWidth}" minHeight="{settings.show.image.minHeight}" maxHeight="{settings.show.image.maxHeight}" /></f:if>
-	<f:form.upload id="images_{index}" name="event[images][{index}]" />
+    <f:if condition="{image}">
+        <f:image image="{image}" alt="Bild{position}" width="{settings.show.image.width}" height="{settings.show.image.height}" minWidth="{settings.show.image.minWidth}" maxWidth="{settings.show.image.maxWidth}" minHeight="{settings.show.image.minHeight}" maxHeight="{settings.show.image.maxHeight}"/>
+    </f:if>
+    <f:form.upload id="images_{index}" name="event[images][{index}]"/>
 </f:section>
 
 <f:section name="renderLabel">
-	<f:alias map="{table: '{f:if(condition: table, then: table, else: \'tx_events2_domain_model_event\')}'}">
-		<div class="col-sm-3 text-right">
-			<label for="{property}" class="control-label">
-				<f:translate key="tx_events2_domain_model_event.{property}" default="{f:translate(key: '{table}.{transKey}')}" />
-				<f:if condition="{required}">
-					<span class="required">*</span>
-				</f:if>
-			</label>
-		</div>
-	</f:alias>
+    <f:alias map="{table: '{f:if(condition: table, then: table, else: \'tx_events2_domain_model_event\')}'}">
+        <div class="col-sm-3 text-right">
+            <label for="{property}" class="control-label">
+                <f:translate key="tx_events2_domain_model_event.{property}" default="{f:translate(key: '{table}.{transKey}')}"/>
+                <f:if condition="{required}">
+                    <span class="required">*</span>
+                </f:if>
+            </label>
+        </div>
+    </f:alias>
 </f:section>
 
 <f:section name="renderCsh">
-	<div class="col-sm-1 text-right">
-		<f:if condition="{transKey}">
-			<span class="badge csh" aria-label="{f:translate(key: transKey)}" data-microtip-position="top" role="tooltip">
-				<svg class="bi bi-info-fill" width="20px" height="20px" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-					<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.93-9.412l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533l1.002-4.705zM10 7.5a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
-				</svg>
-			</span>
-		</f:if>
-	</div>
+    <div class="col-sm-1 text-right">
+        <f:if condition="{transKey}">
+            <span class="badge csh" aria-label="{f:translate(key: transKey)}" data-microtip-position="top" role="tooltip">
+                <svg class="bi bi-info-fill" width="20px" height="20px" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.93-9.412l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533l1.002-4.705zM10 7.5a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
+                </svg>
+            </span>
+        </f:if>
+    </div>
 </f:section>
 </html>

@@ -1,120 +1,120 @@
 <html lang="en"
-			xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-			data-namespace-typo3-fluid="true">
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
 
 <div class="form-group">
-	<label for="searchEvent" class="col-sm-3 control-label">
-		{f:translate(key: 'tx_events2_domain_model_search.search')}
-	</label>
-	<div class="col-sm-9">
-		<input id="searchEvent"
-					 class="form-control"
-					 type="text"
-					 name="tx_events2_searchresults[search][search]"
-					 value="{search.search}" />
-	</div>
+    <label for="searchEvent" class="col-sm-3 control-label">
+        {f:translate(key: 'tx_events2_domain_model_search.search')}
+    </label>
+    <div class="col-sm-9">
+        <input id="searchEvent"
+               class="form-control"
+               type="text"
+               name="tx_events2_searchresults[search][search]"
+               value="{search.search}"/>
+    </div>
 </div>
 
 <div class="form-group">
-	<label for="searchMainCategory" class="col-sm-3 control-label">
-		{f:translate(key: 'tx_events2_domain_model_search.mainCategory')}
-	</label>
-	<div class="col-sm-9">
-		<select id="searchMainCategory" class="form-control searchMainCategory" name="tx_events2_searchresults[search][mainCategory]">
-			<option value="0"></option>
-			<f:for each="{selectorData.categories.main}" as="category">
-				<f:if condition="{category.uid} == {search.mainCategory.uid}">
-					<f:then>
-						<option value="{category.uid}" selected="selected">{category.title}</option>
-					</f:then>
-					<f:else>
-						<option value="{category.uid}">{category.title}</option>
-					</f:else>
-				</f:if>
-			</f:for>
-		</select>
-	</div>
+    <label for="searchMainCategory" class="col-sm-3 control-label">
+        {f:translate(key: 'tx_events2_domain_model_search.mainCategory')}
+    </label>
+    <div class="col-sm-9">
+        <select id="searchMainCategory" class="form-control searchMainCategory" name="tx_events2_searchresults[search][mainCategory]">
+            <option value="0"></option>
+            <f:for each="{selectorData.categories.main}" as="category">
+                <f:if condition="{category.uid} == {search.mainCategory.uid}">
+                    <f:then>
+                        <option value="{category.uid}" selected="selected">{category.title}</option>
+                    </f:then>
+                    <f:else>
+                        <option value="{category.uid}">{category.title}</option>
+                    </f:else>
+                </f:if>
+            </f:for>
+        </select>
+    </div>
 </div>
 
 <div class="form-group">
-	<label for="searchSubCategory" class="col-sm-3 control-label">
-		{f:translate(key: 'tx_events2_domain_model_search.subCategory')}
-	</label>
-	<div class="col-sm-9">
-		<select id="searchSubCategory"
-						class="form-control"
-						name="tx_events2_searchresults[search][subCategory]"
-						disabled="disabled"></select>
-	</div>
+    <label for="searchSubCategory" class="col-sm-3 control-label">
+        {f:translate(key: 'tx_events2_domain_model_search.subCategory')}
+    </label>
+    <div class="col-sm-9">
+        <select id="searchSubCategory"
+                class="form-control"
+                name="tx_events2_searchresults[search][subCategory]"
+                disabled="disabled"></select>
+    </div>
 </div>
 
 <div class="form-group">
-	<label for="searchEventBegin" class="col-sm-3 control-label">
-		{f:translate(key: 'tx_events2_domain_model_search.eventBegin')}
-	</label>
-	<div class="col-sm-9">
-		<input id="searchEventBegin"
-					 class="form-control addDatePicker"
-					 type="text"
-					 name="tx_events2_searchresults[search][eventBegin]"
-					 value="{search.eventBegin -> f:format.date(format: 'd.m.Y')}" />
-	</div>
+    <label for="searchEventBegin" class="col-sm-3 control-label">
+        {f:translate(key: 'tx_events2_domain_model_search.eventBegin')}
+    </label>
+    <div class="col-sm-9">
+        <input id="searchEventBegin"
+               class="form-control addDatePicker"
+               type="text"
+               name="tx_events2_searchresults[search][eventBegin]"
+               value="{search.eventBegin -> f:format.date(format: 'd.m.Y')}"/>
+    </div>
 </div>
 
 <div class="form-group">
-	<label for="searchEventEnd" class="col-sm-3 control-label">
-		{f:translate(key: 'tx_events2_domain_model_search.eventEnd')}
-	</label>
-	<div class="col-sm-9">
-		<input id="searchEventEnd"
-					 class="form-control addDatePicker"
-					 type="text"
-					 name="tx_events2_searchresults[search][eventEnd]"
-					 value="{search.eventEnd -> f:format.date(format: 'd.m.Y')}" />
-	</div>
+    <label for="searchEventEnd" class="col-sm-3 control-label">
+        {f:translate(key: 'tx_events2_domain_model_search.eventEnd')}
+    </label>
+    <div class="col-sm-9">
+        <input id="searchEventEnd"
+               class="form-control addDatePicker"
+               type="text"
+               name="tx_events2_searchresults[search][eventEnd]"
+               value="{search.eventEnd -> f:format.date(format: 'd.m.Y')}"/>
+    </div>
 </div>
 
 <div class="form-group">
-	<label for="searchLocation" class="col-sm-3 control-label">
-		{f:translate(key: 'tx_events2_domain_model_search.location')}
-	</label>
-	<div class="col-sm-9">
-		<select id="searchLocation" class="form-control" name="tx_events2_searchresults[search][location]">
-			<option value="0"></option>
-			<f:for each="{selectorData.locations}" as="location">
-				<f:if condition="{location.uid} == {search.location.uid}">
-					<f:then>
-						<option value="{location.uid}" selected="selected">{location.location}</option>
-					</f:then>
-					<f:else>
-						<option value="{location.uid}">{location.location}</option>
-					</f:else>
-				</f:if>
-			</f:for>
-		</select>
-	</div>
+    <label for="searchLocation" class="col-sm-3 control-label">
+        {f:translate(key: 'tx_events2_domain_model_search.location')}
+    </label>
+    <div class="col-sm-9">
+        <select id="searchLocation" class="form-control" name="tx_events2_searchresults[search][location]">
+            <option value="0"></option>
+            <f:for each="{selectorData.locations}" as="location">
+                <f:if condition="{location.uid} == {search.location.uid}">
+                    <f:then>
+                        <option value="{location.uid}" selected="selected">{location.location}</option>
+                    </f:then>
+                    <f:else>
+                        <option value="{location.uid}">{location.location}</option>
+                    </f:else>
+                </f:if>
+            </f:for>
+        </select>
+    </div>
 </div>
 
 <div class="form-group">
-	<label for="searchFreeEntry" class="col-sm-3 control-label">
-		{f:translate(key: 'tx_events2_domain_model_search.freeEntry')}
-	</label>
-	<div class="col-sm-9">
-		<f:if condition="{search.freeEntry}">
-			<f:then>
-				<input id="searchFreeEntry"
-							 type="checkbox"
-							 name="tx_events2_searchresults[search][freeEntry]"
-							 value="1"
-							 checked="checked" />
-			</f:then>
-			<f:else>
-				<input id="searchFreeEntry"
-							 type="checkbox"
-							 name="tx_events2_searchresults[search][freeEntry]"
-							 value="1" />
-			</f:else>
-		</f:if>
-	</div>
+    <label for="searchFreeEntry" class="col-sm-3 control-label">
+        {f:translate(key: 'tx_events2_domain_model_search.freeEntry')}
+    </label>
+    <div class="col-sm-9">
+        <f:if condition="{search.freeEntry}">
+            <f:then>
+                <input id="searchFreeEntry"
+                       type="checkbox"
+                       name="tx_events2_searchresults[search][freeEntry]"
+                       value="1"
+                       checked="checked"/>
+            </f:then>
+            <f:else>
+                <input id="searchFreeEntry"
+                       type="checkbox"
+                       name="tx_events2_searchresults[search][freeEntry]"
+                       value="1"/>
+            </f:else>
+        </f:if>
+    </div>
 </div>
 </html>

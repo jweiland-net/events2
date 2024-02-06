@@ -1,23 +1,23 @@
 <html lang="en"
-			xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-			data-namespace-typo3-fluid="true">
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
 
-<f:layout name="Search" />
+<f:layout name="Search"/>
 
 <f:section name="main">
-	<f:flashMessages />
-	<f:flashMessages queueIdentifier="extbase.flashmessages.tx_events2_management" />
+    <f:flashMessages/>
+    <f:flashMessages queueIdentifier="extbase.flashmessages.tx_events2_management"/>
 
-	<form id="events2SearchForm" class="form-horizontal" method="get" name="search" action="{f:uri.page()}">
-		<input type="hidden" name="id" value="{f:if(condition: settings.pidOfSearchResults, then: settings.pidOfSearchResults, else: data.pid)}" />
-		<input type="hidden" name="tx_events2_searchresults[action]" value="listSearchResults" />
-		<input type="hidden" name="tx_events2_searchresults[controller]" value="Search" />
-		<f:render partial="Search/FormFields" arguments="{_all}" />
-		<div class="form-group">
-			<div class="col-sm-offset-3 col-sm-9">
-				<input type="submit" class="btn btn-default" value="{f:translate(key: 'search')}" />
-			</div>
-		</div>
-	</form>
+    <form id="events2SearchForm" class="form-horizontal" method="get" name="search" action="{f:uri.page()}">
+        <input type="hidden" name="id" value="{f:if(condition: settings.pidOfSearchResults, then: settings.pidOfSearchResults, else: data.pid)}"/>
+        <input type="hidden" name="tx_events2_searchresults[action]" value="listSearchResults"/>
+        <input type="hidden" name="tx_events2_searchresults[controller]" value="Search"/>
+        <f:render partial="Search/FormFields" arguments="{_all}"/>
+        <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-9">
+                <input type="submit" class="btn btn-default" value="{f:translate(key: 'search')}"/>
+            </div>
+        </div>
+    </form>
 </f:section>
 </html>

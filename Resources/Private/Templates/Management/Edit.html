@@ -1,36 +1,36 @@
 <html lang="en"
-			xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-			data-namespace-typo3-fluid="true">
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
 
-<f:layout name="Create" />
+<f:layout name="Create"/>
 
 <f:section name="main">
-	<f:flashMessages />
+    <f:flashMessages/>
 
-	<f:security.ifHasRole role="{settings.userGroup}">
-		<f:then>
-			<f:if condition="{event.isCurrentUserAllowedOrganizer}">
-				<f:then>
-					<f:render partial="FormErrors" arguments="{object: Event}" />
+    <f:security.ifHasRole role="{settings.userGroup}">
+        <f:then>
+            <f:if condition="{event.isCurrentUserAllowedOrganizer}">
+                <f:then>
+                    <f:render partial="FormErrors" arguments="{object: Event}"/>
 
-					<f:form action="update" name="event" object="{event}" enctype="multipart/form-data" class="form-horizontal">
-						<f:render partial="Management/FormFields" arguments="{_all}" />
+                    <f:form action="update" name="event" object="{event}" enctype="multipart/form-data" class="form-horizontal">
+                        <f:render partial="Management/FormFields" arguments="{_all}"/>
 
-						<div class="form-group">
-							<div class="col-sm-offset-4 col-sm-8">
-								<f:form.submit class="btn btn-default" value="{f:translate(key: 'update')}" />
-							</div>
-						</div>
-					</f:form>
-				</f:then>
-				<f:else>
-					<div><f:translate key="missingOrganizerForCreate" /></div>
-				</f:else>
-			</f:if>
-		</f:then>
-		<f:else>
-			<div>{f:translate(key: 'notAllowedToCreate')}</div>
-		</f:else>
-	</f:security.ifHasRole>
+                        <div class="form-group">
+                            <div class="col-sm-offset-4 col-sm-8">
+                                <f:form.submit class="btn btn-default" value="{f:translate(key: 'update')}"/>
+                            </div>
+                        </div>
+                    </f:form>
+                </f:then>
+                <f:else>
+                    <div><f:translate key="missingOrganizerForCreate"/></div>
+                </f:else>
+            </f:if>
+        </f:then>
+        <f:else>
+            <div>{f:translate(key: 'notAllowedToCreate')}</div>
+        </f:else>
+    </f:security.ifHasRole>
 </f:section>
 </html>

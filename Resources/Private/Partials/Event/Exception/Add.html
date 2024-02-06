@@ -1,11 +1,12 @@
 <html lang="en"
-			xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-			data-namespace-typo3-fluid="true">
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
 
 <f:if condition="{exception.exceptionTime}">
-	<f:render partial="Event/Time" arguments="{time: exception.exceptionTime}" /><br/>
+    <f:render partial="Event/Time" arguments="{time: exception.exceptionTime}"/>
+    <br/>
 </f:if>
 <f:if condition="{exception.exceptionDetails}">
-	{exception.exceptionDetails -> f:format.html(parseFuncTSPath: 'lib.parseFunc') -> f:format.nl2br()}
+    {exception.exceptionDetails -> f:format.html(parseFuncTSPath: 'lib.parseFunc') -> f:format.nl2br()}
 </f:if>
 </html>
