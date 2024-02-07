@@ -119,7 +119,7 @@ class ManagementController extends AbstractController
     }
 
     #[Extbase\Validate(['param' => 'event', 'validator' => EventValidator::class])]
-    public function createAction(Event $event): void
+    public function createAction(Event $event): ResponseInterface
     {
         $event->setHidden(true);
         $event->setEventType($event->getEventEnd() !== null ? 'duration' : 'single');
@@ -135,7 +135,9 @@ class ManagementController extends AbstractController
         ]);
 
         $this->sendMail('create');
+
         $this->addFlashMessage(LocalizationUtility::translate('eventCreated', 'events2'));
+
         $this->redirect('list', 'Day');
     }
 
@@ -170,7 +172,7 @@ class ManagementController extends AbstractController
     }
 
     #[Extbase\Validate(['param' => 'event', 'validator' => EventValidator::class])]
-    public function updateAction(Event $event): void
+    public function updateAction(Event $event): ResponseInterface
     {
         $isHidden = $event->getHidden();
         $event->setHidden(true);
@@ -189,8 +191,10 @@ class ManagementController extends AbstractController
         if (!$isHidden) {
             $this->sendMail('update');
         }
+
         $this->addFlashMessage(LocalizationUtility::translate('eventUpdated', 'events2'));
-        $this->redirect('listMyEvents', 'Management');
+
+        return $this->redirect('listMyEvents', 'Management');
     }
 
     public function performAction(): ResponseInterface
@@ -208,7 +212,7 @@ class ManagementController extends AbstractController
      * working with Event model here.
      * As this is not a form request, we can be sure that we will get a valid event from database.
      */
-    public function deleteAction(int $event): void
+    public function deleteAction(int $event): ResponseInterface
     {
         $eventObject = $this->eventRepository->findByIdentifier($event);
         if ($eventObject instanceof Event) {
@@ -216,7 +220,7 @@ class ManagementController extends AbstractController
             $this->addFlashMessage(LocalizationUtility::translate('eventDeleted', 'events2'));
         }
 
-        $this->redirect('list', 'Day');
+        return $this->redirect('list', 'Day');
     }
 
     public function initializeActivateAction(): void
@@ -229,7 +233,7 @@ class ManagementController extends AbstractController
      * working with Event model here.
      * As this is not a form request, we can be sure that we will get a valid event from database.
      */
-    public function activateAction(int $event): void
+    public function activateAction(int $event): ResponseInterface
     {
         $eventObject = $this->eventRepository->findHiddenObject($event);
         if ($eventObject instanceof Event) {
@@ -248,7 +252,7 @@ class ManagementController extends AbstractController
             $this->sendMail('activate');
         }
 
-        $this->redirect('list', 'Day');
+        return $this->redirect('list', 'Day');
     }
 
     protected function sendMail(string $subjectKey): bool
