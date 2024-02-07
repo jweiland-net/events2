@@ -13,7 +13,7 @@ namespace JWeiland\Events2\Domain\Finisher;
 
 use JWeiland\Events2\Domain\Repository\UserRepository;
 use JWeiland\Events2\Helper\PathSegmentHelper;
-use TYPO3\CMS\Core\Database\Connection;
+use JWeiland\Events2\Service\DayRelationService;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
@@ -34,22 +34,20 @@ class SaveEventFinisher extends AbstractFinisher
         'pid' => 'tx_formtools_requests',
     ];
 
-    protected Connection $databaseConnection;
-
-    protected PathSegmentHelper $pathSegmentHelper;
-
-    public function injectPathSegmentHelper(PathSegmentHelper $pathSegmentHelper): void
-    {
-        $this->pathSegmentHelper = $pathSegmentHelper;
+    public function __construct(
+        readonly protected ConnectionPool $connectionPool,
+        readonly protected PathSegmentHelper $pathSegmentHelper,
+        readonly protected DayRelationService $dayRelationService
+    ) {
     }
 
     /**
      * Executes this finisher
      *
-     * @see AbstractFinisher::execute()
      * @throws FinisherException
+     * @see AbstractFinisher::execute()
      */
-    protected function executeInternal()
+    protected function executeInternal(): void
     {
         $options = [];
         if (isset($this->options['table'])) {
@@ -66,6 +64,8 @@ class SaveEventFinisher extends AbstractFinisher
 
     /**
      * Perform the current database operation
+     *
+     * @throws FinisherException
      */
     protected function process(int $iterationCount): void
     {
@@ -77,14 +77,12 @@ class SaveEventFinisher extends AbstractFinisher
         $elementsConfiguration = is_array($elementsConfiguration) ? $elementsConfiguration : [];
         $databaseColumnMappingsConfiguration = $this->parseOption('databaseColumnMappings');
 
-        $this->databaseConnection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($table);
-
         $databaseData = [];
         foreach ($databaseColumnMappingsConfiguration as $databaseColumnName => $databaseColumnConfiguration) {
             $value = $this->parseOption('databaseColumnMappings.' . $databaseColumnName . '.value');
             if (
                 empty($value)
-                && $databaseColumnConfiguration['skipIfValueIsEmpty'] === true
+                && ($databaseColumnConfiguration['skipIfValueIsEmpty'] ?? false) === true
             ) {
                 continue;
             }
@@ -184,7 +182,7 @@ class SaveEventFinisher extends AbstractFinisher
         $sysFileUid = $databaseData['uid_local'] ?? 0;
 
         // Delete previously stored file references
-        $this->databaseConnection->delete(
+        $this->connectionPool->getConnectionForTable('sys_file_reference')->delete(
             'sys_file_reference',
             [
                 'uid_local' => $sysFileUid,
@@ -228,7 +226,7 @@ class SaveEventFinisher extends AbstractFinisher
 
     protected function deleteRecord(string $table, int $uid): void
     {
-        $this->databaseConnection->delete(
+        $this->connectionPool->getConnectionForTable($table)->delete(
             $table,
             [
                 'uid' => $uid
@@ -286,7 +284,7 @@ class SaveEventFinisher extends AbstractFinisher
     protected function saveDataForCategories(array $databaseData, string $table, int $iterationCount): array
     {
         // Delete previously stored categories
-        $this->databaseConnection->delete(
+        $this->connectionPool->getConnectionForTable($table)->delete(
             $table,
             [
                 'uid_foreign' => $databaseData['uid_foreign']
@@ -306,7 +304,7 @@ class SaveEventFinisher extends AbstractFinisher
         }
 
         // Update count in event table
-        $this->databaseConnection->update(
+        $this->connectionPool->getConnectionForTable('tx_events2_domain_model_event')->update(
             'tx_events2_domain_model_event',
             [
                 'categories' => $sorting
@@ -323,7 +321,7 @@ class SaveEventFinisher extends AbstractFinisher
     protected function saveDataForOrganizers(array $databaseData, string $table, int $iterationCount): array
     {
         // Delete previously stored organizers
-        $this->databaseConnection->delete(
+        $this->connectionPool->getConnectionForTable($table)->delete(
             $table,
             [
                 'uid_local' => $databaseData['uid_local']
@@ -343,7 +341,7 @@ class SaveEventFinisher extends AbstractFinisher
         }
 
         // Update count in event table
-        $this->databaseConnection->update(
+        $this->connectionPool->getConnectionForTable('tx_events2_domain_model_event')->update(
             'tx_events2_domain_model_event',
             [
                 'organizers' => $sorting
@@ -371,18 +369,19 @@ class SaveEventFinisher extends AbstractFinisher
             foreach ($whereClause as $columnName => $columnValue) {
                 $whereClause[$columnName] = $this->parseOption('whereClause.' . $columnName);
             }
-            $this->databaseConnection->update(
+            $this->connectionPool->getConnectionForTable($table)->update(
                 $table,
                 $databaseData,
                 $whereClause
             );
         } else {
-            $this->databaseConnection->insert($table, $databaseData);
-            $insertedUid = (int)$this->databaseConnection->lastInsertId($table);
+            $databaseConnection = $this->connectionPool->getConnectionForTable($table);
+            $databaseConnection->insert($table, $databaseData);
+            $lastInsertId = (int)$databaseConnection->lastInsertId($table);
             $this->finisherContext->getFinisherVariableProvider()->add(
                 $this->shortFinisherIdentifier,
                 'insertedUids.' . $iterationCount,
-                $insertedUid
+                $lastInsertId
             );
 
             if ($table === 'tx_events2_domain_model_event') {
@@ -391,7 +390,7 @@ class SaveEventFinisher extends AbstractFinisher
                 $this->finisherContext->getFinisherVariableProvider()->add(
                     $this->shortFinisherIdentifier,
                     'insertedUids.tx_events2_domain_model_event',
-                    $insertedUid
+                    $lastInsertId
                 );
             }
 
@@ -401,17 +400,25 @@ class SaveEventFinisher extends AbstractFinisher
                 && array_key_exists('title', $databaseData)
                 && $databaseData['title'] !== ''
             ) {
-                $databaseData['uid'] = $insertedUid;
-                $this->databaseConnection->update(
+                $databaseData['uid'] = $lastInsertId;
+                $this->connectionPool->getConnectionForTable('tx_events2_domain_model_event')->update(
                     'tx_events2_domain_model_event',
                     [
                         'path_segment' => $this->pathSegmentHelper->generatePathSegment($databaseData)
                     ],
                     [
-                        'uid' => $insertedUid
+                        'uid' => $lastInsertId
                     ]
                 );
             }
+        }
+
+        // Create day records while insert/update the event
+        if (
+            $table === 'tx_events2_domain_model_event'
+            && $eventUid = (int)($lastInsertId ?? $this->options['whereClause']['uid'] ?? 0)
+        ) {
+            $this->dayRelationService->createDayRelations($eventUid);
         }
     }
 
@@ -422,11 +429,8 @@ class SaveEventFinisher extends AbstractFinisher
      * Then translate the value.
      *
      * If $optionName was not found, the corresponding default option is returned (from $this->defaultOptions)
-     *
-     * @param string $optionName
-     * @return string|array|null
      */
-    protected function parseOption(string $optionName)
+    protected function parseOption(string $optionName): string|array|int|null
     {
         $optionValue = parent::parseOption($optionName);
 
@@ -475,7 +479,7 @@ class SaveEventFinisher extends AbstractFinisher
 
     /**
      * In PrefillForEditUsageHook I store the UIDs of the related tables as default values in FormDefinition.
-     * Please use this metho for related records, only! That's why I declared return value as "int".
+     * Please use this method for related records, only! That's why I declared return value as "int".
      */
     protected function getElementDefaultValueByIdentifier(string $identifier): int
     {
