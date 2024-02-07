@@ -18,18 +18,15 @@ use TYPO3\CMS\Core\Database\Query\QueryBuilder;
  */
 class ModifyQueriesOfFindByTimestampEvent
 {
-    protected QueryBuilder $queryBuilder;
-
     protected int $timestamp = 0;
 
     protected array $settings = [];
 
     public function __construct(
-        QueryBuilder $queryBuilder,
+        protected readonly QueryBuilder $queryBuilder,
         int $timestamp,
         array $settings
     ) {
-        $this->queryBuilder = $queryBuilder;
         $this->timestamp = $timestamp;
         $this->settings = $settings;
     }

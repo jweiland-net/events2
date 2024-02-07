@@ -46,42 +46,18 @@ abstract class AbstractImporter implements ImporterInterface
 
     protected array $allowedMimeType = [];
 
-    protected PersistenceManagerInterface $persistenceManager;
-
-    protected EventRepository $eventRepository;
-
-    protected OrganizerRepository $organizerRepository;
-
-    protected LocationRepository $locationRepository;
-
-    protected CategoryRepository $categoryRepository;
-
-    protected PathSegmentHelper $pathSegmentHelper;
-
-    protected DateTimeUtility $dateTimeUtility;
-
-    protected ExtConf $extConf;
-
     protected \DateTimeImmutable $today;
 
     public function __construct(
-        EventRepository $eventRepository,
-        OrganizerRepository $organizerRepository,
-        LocationRepository $locationRepository,
-        CategoryRepository $categoryRepository,
-        PersistenceManagerInterface $persistenceManager,
-        PathSegmentHelper $pathSegmentHelper,
-        DateTimeUtility $dateTimeUtility,
-        ExtConf $extConf
+        protected readonly EventRepository $eventRepository,
+        protected readonly OrganizerRepository $organizerRepository,
+        protected readonly LocationRepository $locationRepository,
+        protected readonly CategoryRepository $categoryRepository,
+        protected readonly PersistenceManagerInterface $persistenceManager,
+        protected readonly PathSegmentHelper $pathSegmentHelper,
+        protected readonly DateTimeUtility $dateTimeUtility,
+        protected readonly ExtConf $extConf
     ) {
-        $this->eventRepository = $eventRepository;
-        $this->organizerRepository = $organizerRepository;
-        $this->locationRepository = $locationRepository;
-        $this->categoryRepository = $categoryRepository;
-        $this->persistenceManager = $persistenceManager;
-        $this->pathSegmentHelper = $pathSegmentHelper;
-        $this->dateTimeUtility = $dateTimeUtility;
-        $this->extConf = $extConf;
         $this->today = new \DateTimeImmutable('now');
     }
 

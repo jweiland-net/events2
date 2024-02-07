@@ -37,16 +37,10 @@ class PathSegmentHelper
 
     protected array $slugCache = [];
 
-    protected ExtConf $extConf;
-
-    protected EventDispatcher $eventDispatcher;
-
     public function __construct(
-        ExtConf $extConf,
-        EventDispatcher $eventDispatcher
+        protected readonly ExtConf $extConf,
+        protected readonly EventDispatcher $eventDispatcher
     ) {
-        $this->extConf = $extConf;
-        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function generatePathSegment(array $baseRecord): string

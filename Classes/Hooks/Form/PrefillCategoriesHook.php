@@ -30,8 +30,10 @@ class PrefillCategoriesHook
 {
     protected array $settings = [];
 
-    public function __construct(protected readonly PageRepository $pageRepository, ConfigurationManagerInterface $configurationManager)
-    {
+    public function __construct(
+        protected readonly PageRepository $pageRepository,
+        protected readonly ConfigurationManagerInterface $configurationManager
+    ) {
         $this->settings = $configurationManager->getConfiguration(
             ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS,
             'Events2',

@@ -21,10 +21,6 @@ use TYPO3\CMS\Extbase\Property\PropertyMappingConfiguration;
 
 class AssignMediaTypeConverterEventListener extends AbstractControllerEventListener
 {
-    protected EventRepository $eventRepository;
-
-    protected UploadMultipleFilesConverter $uploadMultipleFilesConverter;
-
     protected array $allowedControllerActions = [
         'Management' => [
             'create',
@@ -33,11 +29,9 @@ class AssignMediaTypeConverterEventListener extends AbstractControllerEventListe
     ];
 
     public function __construct(
-        EventRepository $eventRepository,
-        UploadMultipleFilesConverter $uploadMultipleFilesConverter
+        protected readonly EventRepository $eventRepository,
+        protected readonly UploadMultipleFilesConverter $uploadMultipleFilesConverter
     ) {
-        $this->eventRepository = $eventRepository;
-        $this->uploadMultipleFilesConverter = $uploadMultipleFilesConverter;
     }
 
     public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void

@@ -36,20 +36,11 @@ class ICalendarHelper
 
     protected string $lineBreak = CRLF;
 
-    protected TimeFactory $timeFactory;
-
-    protected DateTimeUtility $dateTimeUtility;
-
-    protected EventDispatcher $eventDispatcher;
-
     public function __construct(
-        TimeFactory $eventService,
-        DateTimeUtility $dateTimeUtility,
-        EventDispatcher $eventDispatcher
+        protected readonly TimeFactory $eventService,
+        protected readonly DateTimeUtility $dateTimeUtility,
+        protected readonly EventDispatcher $eventDispatcher
     ) {
-        $this->timeFactory = $eventService;
-        $this->dateTimeUtility = $dateTimeUtility;
-        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function buildICalExport(Day $day): string

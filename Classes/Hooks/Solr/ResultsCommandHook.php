@@ -24,7 +24,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class ResultsCommandHook implements SearchResultSetProcessor
 {
     /**
-     * Do not add GarbageCollector, as DI autowire wont find the file, if solr is not installed
+     * Do not add GarbageCollector, as DI autowire won't find the file, if solr is not installed
      */
     public function __construct(protected readonly EventService $eventService)
     {

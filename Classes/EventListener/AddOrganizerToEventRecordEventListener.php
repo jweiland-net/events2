@@ -24,17 +24,14 @@ use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
  */
 class AddOrganizerToEventRecordEventListener extends AbstractControllerEventListener
 {
-    protected UserRepository $userRepository;
-
     protected array $allowedControllerActions = [
         'Management' => [
             'create'
         ]
     ];
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(protected readonly UserRepository $userRepository)
     {
-        $this->userRepository = $userRepository;
     }
 
     public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void

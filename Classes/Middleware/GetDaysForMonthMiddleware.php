@@ -36,7 +36,7 @@ class GetDaysForMonthMiddleware implements MiddlewareInterface
     public function __construct(
         protected readonly ExtConf $extConf,
         protected readonly DateTimeUtility $dateTimeUtility,
-        protected UserSession $userSession,
+        protected readonly UserSession $userSession,
         protected readonly DatabaseService $databaseService,
         protected readonly EventDispatcher $eventDispatcher
     ) {

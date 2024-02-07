@@ -20,17 +20,14 @@ use JWeiland\Events2\Service\JsonLdService;
  */
 class AddJsonLdToPageHeaderEventListener extends AbstractControllerEventListener
 {
-    protected JsonLdService $jsonLdService;
-
     protected array $allowedControllerActions = [
         'Day' => [
             'show'
         ]
     ];
 
-    public function __construct(JsonLdService $jsonLdService)
+    public function __construct(protected readonly JsonLdService $jsonLdService)
     {
-        $this->jsonLdService = $jsonLdService;
     }
 
     public function __invoke(PostProcessControllerActionEvent $controllerActionEvent): void

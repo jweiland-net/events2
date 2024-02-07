@@ -20,16 +20,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class CalendarHelper
 {
-    protected DayHelper $dayHelper;
-
-    protected UserSession $userSession;
-
     public function __construct(
-        DayHelper $dayHelper,
-        UserSession $userSession
+        protected readonly DayHelper $dayHelper,
+        protected readonly UserSession $userSession
     ) {
-        $this->dayHelper = $dayHelper;
-        $this->userSession = $userSession;
     }
 
     public function getCalendarVariables(): array

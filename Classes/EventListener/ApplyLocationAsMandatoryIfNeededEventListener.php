@@ -23,10 +23,6 @@ use TYPO3\CMS\Extbase\Validation\ValidatorResolver;
  */
 class ApplyLocationAsMandatoryIfNeededEventListener extends AbstractControllerEventListener
 {
-    protected ExtConf $extConf;
-
-    protected ValidatorResolver $validatorResolver;
-
     protected array $allowedControllerActions = [
         'Management' => [
             'create',
@@ -34,10 +30,10 @@ class ApplyLocationAsMandatoryIfNeededEventListener extends AbstractControllerEv
         ]
     ];
 
-    public function __construct(ExtConf $extConf, ValidatorResolver $validatorResolver)
-    {
-        $this->extConf = $extConf;
-        $this->validatorResolver = $validatorResolver;
+    public function __construct(
+        protected readonly ExtConf $extConf,
+        protected readonly ValidatorResolver $validatorResolver
+    ) {
     }
 
     public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void

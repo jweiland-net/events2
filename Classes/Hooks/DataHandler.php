@@ -21,7 +21,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class DataHandler
 {
-    public function __construct(protected CacheManager $cacheManager)
+    public function __construct(protected readonly CacheManager $cacheManager)
     {
     }
 

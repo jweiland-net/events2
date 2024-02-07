@@ -19,14 +19,8 @@ use JWeiland\Events2\Service\EventService;
  */
 class IndexerHook implements PageIndexerDocumentsModifier
 {
-    /**
-     * @var EventService
-     */
-    protected $eventService;
-
-    public function __construct(EventService $eventService)
+    public function __construct(protected readonly EventService $eventService)
     {
-        $this->eventService = $eventService;
     }
 
     /**

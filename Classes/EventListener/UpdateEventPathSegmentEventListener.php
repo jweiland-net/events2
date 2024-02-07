@@ -23,12 +23,6 @@ use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
  */
 class UpdateEventPathSegmentEventListener extends AbstractControllerEventListener
 {
-    protected PathSegmentHelper $pathSegmentHelper;
-
-    protected EventRepository $eventRepository;
-
-    protected PersistenceManagerInterface $persistenceManager;
-
     /**
      * It should never be possible for a FE user to generate slug while update request. This would also change the
      * link to the detail page. If it was needed to change the link, please update slug in TYPO3 backend.
@@ -40,13 +34,10 @@ class UpdateEventPathSegmentEventListener extends AbstractControllerEventListene
     ];
 
     public function __construct(
-        PathSegmentHelper $pathSegmentHelper,
-        EventRepository $eventRepository,
-        PersistenceManagerInterface $persistenceManager
+        protected readonly PathSegmentHelper $pathSegmentHelper,
+        protected readonly EventRepository $eventRepository,
+        protected readonly PersistenceManagerInterface $persistenceManager
     ) {
-        $this->pathSegmentHelper = $pathSegmentHelper;
-        $this->eventRepository = $eventRepository;
-        $this->persistenceManager = $persistenceManager;
     }
 
     public function __invoke(PostProcessControllerActionEvent $controllerActionEvent): void
