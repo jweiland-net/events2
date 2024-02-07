@@ -5,16 +5,17 @@
 
     <p>Hallo,</p>
     <p>
-        <f:link.action action="perform" controller="Management" extensionName="Events2" pluginName="Management" absolute="1" arguments="{event: event, timestamp: '0'}">
+        <f:link.action pageUid="{pidOfManagementPid}" action="perform" controller="Management" extensionName="Events2" pluginName="Management" absolute="1" arguments="{event: event, timestamp: '0'}">
             Datensatz bearbeiten
         </f:link.action>
     </p>
     <p>
-        <f:link.action action="activate" controller="Management" extensionName="Events2" pluginName="Management" absolute="1" arguments="{event: event, timestamp: '0'}">
+        <f:link.action pageUid="{pidOfManagementPid}" action="activate" controller="Management" extensionName="Events2" pluginName="Management" absolute="1" arguments="{event: event, timestamp: '0'}">
             Datensatz freischalten
         </f:link.action>
     </p>
-    <p>hier die Daten des neu angelegten Datensatzes:</p>
+
+    <p>Hier die Daten des neu angelegten Datensatzes:</p>
 
     <table>
         <formvh:renderAllFormValues renderable="{form.formDefinition}" as="formValue">

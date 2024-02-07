@@ -22,6 +22,8 @@ plugin.tx_events2 {
     pidOfSearchResults =
     # cat=plugin.tx_events2; type=int+; label=PID of Location page: Leave empty to show location on current page.
     pidOfLocationPage =
+    # cat=plugin.tx_events2; type=int+; label=PID of Management page: This value is mandatory for correct linking in activation mail after insert/update events in frontend
+    pidOfManagementPage = 0
     # cat=plugin.tx_events2; type=int+; label=PID of a form page to request a new location.
     pidOfNewLocationPage =
     # cat=plugin.tx_events2; type=int+; label=PID of List page
