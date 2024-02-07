@@ -125,7 +125,7 @@ class AbstractController extends ActionController implements LoggerAwareInterfac
 
     protected function initializeView(ViewInterface $view): void
     {
-        $this->view->assign('data', $this->configurationManager->getContentObject()->data);
+        $this->view->assign('data', $this->request->getAttribute('currentContentObject')->data);
         $this->view->assign('extConf', $this->extConf);
         $this->view->assign('jsVariables', json_encode($this->getJsVariables(), JSON_THROW_ON_ERROR));
     }
@@ -141,7 +141,7 @@ class AbstractController extends ActionController implements LoggerAwareInterfac
     protected function getJsVariables(array $override = []): array
     {
         // Remove pi_flexform from data, as it contains XML/HTML which can be indexed through Solr
-        $data = $this->configurationManager->getContentObject()->data;
+        $data = $this->request->getAttribute('currentContentObject')->data;
         unset($data['pi_flexform']);
 
         $jsVariables = [

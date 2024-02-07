@@ -41,7 +41,7 @@ class DayController extends AbstractController
         parent::initializeView($view);
 
         // This is a very seldom problem. It appears, when you save tt_content by a hook and cast value of pages to int before save.
-        $data = $this->configurationManager->getContentObject()->data;
+        $data = $this->request->getAttribute('currentContentObject')->data;
         if ($data['pages'] === '0') {
             $this->addFlashMessage(
                 'Please check content record with UID "' . $data['records'] . '". Column "pages" can not be 0. It must be empty or higher than 0.',
