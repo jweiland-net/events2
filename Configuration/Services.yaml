@@ -99,67 +99,68 @@ services:
         target: DateTimeImmutable
         sources: string,integer,array
 
-  # Register EventListeners for initialize*Actions
   JWeiland\Events2\EventListener\AddOrganizerToEventRecordEventListener:
     tags:
-      - name: event.listener
+      - name: 'event.listener'
+        identifier: 'addOrganizerToEventRecord'
         event: JWeiland\Events2\Event\PreProcessControllerActionEvent
   JWeiland\Events2\EventListener\AllowFilterByGetRequestEventListener:
     tags:
-      - name: event.listener
-        event: JWeiland\Events2\Event\PreProcessControllerActionEvent
+      - name: 'event.listener'
+        identifier: 'allowFilterByGetRequest'
   JWeiland\Events2\EventListener\AllowOrganizerForFilterEventListener:
     tags:
-      - name: event.listener
-        event: JWeiland\Events2\Event\PreProcessControllerActionEvent
+      - name: 'event.listener'
+        identifier: 'allowOrganizerForFilter'
   JWeiland\Events2\EventListener\AllowSearchParameterEventListener:
     tags:
-      - name: event.listener
-        event: JWeiland\Events2\Event\PreProcessControllerActionEvent
+      - name: 'event.listener'
+        identifier: 'allowSearchParameter'
   JWeiland\Events2\EventListener\ApplyLocationAsMandatoryIfNeededEventListener:
     tags:
-      - name: event.listener
-        event: JWeiland\Events2\Event\PreProcessControllerActionEvent
+      - name: 'event.listener'
+        identifier: 'applyLocationAsMandatoryIfNeeded'
   JWeiland\Events2\EventListener\AssignMediaTypeConverterEventListener:
     tags:
-      - name: event.listener
-        event: JWeiland\Events2\Event\PreProcessControllerActionEvent
+      - name: 'event.listener'
+        identifier: 'assignMediaTypeConverter'
   JWeiland\Events2\EventListener\RegisterHiddenEventEventListener:
     tags:
-      - name: event.listener
-        event: JWeiland\Events2\Event\PreProcessControllerActionEvent
+      - name: 'event.listener'
+        identifier: 'registerHiddenEvent'
   JWeiland\Events2\EventListener\RemapSearchParameterEventListener:
     tags:
-      - name: event.listener
-        event: JWeiland\Events2\Event\PreProcessControllerActionEvent
-        before: JWeiland\Events2\EventListener\AllowSearchParameterEventListener
+      - name: 'event.listener'
+        identifier: 'remapSearchParameter'
+        before: 'allowSearchParameter'
   JWeiland\Events2\EventListener\SetDateFormatForPropertyMappingEventListener:
     tags:
-      - name: event.listener
-        event: JWeiland\Events2\Event\PreProcessControllerActionEvent
-
-  # Register EventListeners for controller actions incl. Fluid variables
+      - name: 'event.listener'
+        identifier: 'setDateFormatForPropertyMapping'
+  JWeiland\Events2\EventListener\ActivateHiddenDayRecordsEventListener:
+    tags:
+      - name: 'event.listener'
+        identifier: 'activateHiddenDayRecords'
   JWeiland\Events2\EventListener\AddOrganizersForFilterEventListener:
     tags:
-      - name: event.listener
-        event: JWeiland\Events2\Event\PostProcessFluidVariablesEvent
+      - name: 'event.listener'
+        identifier: 'addOrganizersForFilter'
   JWeiland\Events2\EventListener\AddPaginatorEventListener:
     tags:
-      - name: event.listener
-        event: JWeiland\Events2\Event\PostProcessFluidVariablesEvent
+      - name: 'event.listener'
+        identifier: 'addPaginator'
   JWeiland\Events2\EventListener\DeleteUploadedFilesOnErrorEventListener:
     tags:
-      - name: event.listener
-        event: JWeiland\Events2\Event\PostProcessFluidVariablesEvent
-
+      - name: 'event.listener'
+        identifier: 'deleteUploadedFilesOnError'
   JWeiland\Events2\EventListener\AddJsonLdToPageHeaderEventListener:
     tags:
-      - name: event.listener
-        event: JWeiland\Events2\Event\PostProcessControllerActionEvent
+      - name: 'event.listener'
+        identifier: 'addJsonLdToPageHeader'
   JWeiland\Events2\EventListener\UpdateEventPathSegmentEventListener:
     tags:
-      - name: event.listener
-        event: JWeiland\Events2\Event\PostProcessControllerActionEvent
+      - name: 'event.listener'
+        identifier: 'updateEventPathSegment'
 
   # Register CLI commands
   JWeiland\Events2\Command\RebuildCommand:
