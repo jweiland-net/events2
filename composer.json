@@ -20,8 +20,7 @@
 	"require": {
 		"ext-dom": "*",
 		"ext-libxml": "*",
-		"php": "^7.4 || ^8.0",
-		"typo3/cms-core": "^12.4.5",
+		"typo3/cms-core": "^12.4.8",
 		"sjbr/static-info-tables": "^12.4"
 	},
 	"require-dev": {
