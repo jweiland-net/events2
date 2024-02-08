@@ -55,12 +55,6 @@ plugin.tx_events2 {
       JWeiland\Events2\Domain\Model\Organizer {
         newRecordStoragePid =
       }
-      JWeiland\Events2\Domain\Model\Category {
-        mapping {
-          tableName = sys_category
-          recordType =
-        }
-      }
     }
   }
   mvc {
