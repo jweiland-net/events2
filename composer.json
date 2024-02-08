@@ -28,7 +28,7 @@
 		"nimut/testing-framework": "^6.0",
 		"phpunit/phpunit": "^9.5",
 		"phpspec/prophecy-phpunit": "^2.0",
-		"typo3/cms-scheduler": "^12.4.5",
+		"typo3/cms-scheduler": "^12.4.8",
 		"jweiland/maps2": ">=11.0.0"
 	},
 	"autoload": {
