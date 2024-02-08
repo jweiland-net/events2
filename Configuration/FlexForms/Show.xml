@@ -50,16 +50,16 @@
                             <type>radio</type>
                             <items>
                                 <numIndex index="0">
-                                    <numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:displayBoth</numIndex>
-                                    <numIndex index="1">displayBoth</numIndex>
+                                    <label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:displayBoth</label>
+                                    <value>displayBoth</value>
                                 </numIndex>
                                 <numIndex index="1">
-                                    <numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:displayImages</numIndex>
-                                    <numIndex index="1">displayImages</numIndex>
+                                    <label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:displayImages</label>
+                                    <value>displayImages</value>
                                 </numIndex>
                                 <numIndex index="2">
-                                    <numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:displayEvent</numIndex>
-                                    <numIndex index="1">displayEvent</numIndex>
+                                    <label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:displayEvent</label>
+                                    <value>displayEvent</value>
                                 </numIndex>
                             </items>
                             <default>displayBoth</default>

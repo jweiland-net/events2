@@ -12,24 +12,24 @@
                             <renderType>selectSingle</renderType>
                             <items>
                                 <numIndex index="0">
-                                    <numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:listType.list</numIndex>
-                                    <numIndex index="1">list</numIndex>
+                                    <label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:listType.list</label>
+                                    <value>list</value>
                                 </numIndex>
                                 <numIndex index="1">
-                                    <numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:listType.listLatest</numIndex>
-                                    <numIndex index="1">listLatest</numIndex>
+                                    <label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:listType.listLatest</label>
+                                    <value>listLatest</value>
                                 </numIndex>
                                 <numIndex index="2">
-                                    <numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:listType.listToday</numIndex>
-                                    <numIndex index="1">listToday</numIndex>
+                                    <label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:listType.listToday</label>
+                                    <value>listToday</value>
                                 </numIndex>
                                 <numIndex index="3">
-                                    <numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:listType.listThisWeek</numIndex>
-                                    <numIndex index="1">listWeek</numIndex>
+                                    <label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:listType.listThisWeek</label>
+                                    <value>listWeek</value>
                                 </numIndex>
                                 <numIndex index="4">
-                                    <numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:listType.listRange</numIndex>
-                                    <numIndex index="1">listRange</numIndex>
+                                    <label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:listType.listRange</label>
+                                    <value>listRange</value>
                                 </numIndex>
                             </items>
                         </config>
@@ -139,8 +139,8 @@
                             <foreign_table_where> AND (###PAGE_TSCONFIG_ID### = 0 OR tx_events2_domain_model_organizer.pid = ###PAGE_TSCONFIG_ID###) ORDER BY tx_events2_domain_model_organizer.organizer</foreign_table_where>
                             <items>
                                 <numIndex index="0">
-                                    <numIndex index="0" />
-                                    <numIndex index="1" />
+                                    <label/>
+                                    <value/>
                                 </numIndex>
                             </items>
                             <size>1</size>
@@ -172,16 +172,16 @@
                             <type>radio</type>
                             <items>
                                 <numIndex index="0">
-                                    <numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:displayBoth</numIndex>
-                                    <numIndex index="1">displayBoth</numIndex>
+                                    <label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:displayBoth</label>
+                                    <value>displayBoth</value>
                                 </numIndex>
                                 <numIndex index="1">
-                                    <numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:displayImages</numIndex>
-                                    <numIndex index="1">displayImages</numIndex>
+                                    <label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:displayImages</label>
+                                    <value>displayImages</value>
                                 </numIndex>
                                 <numIndex index="2">
-                                    <numIndex index="0">LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:displayEvent</numIndex>
-                                    <numIndex index="1">displayEvent</numIndex>
+                                    <label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:displayEvent</label>
+                                    <value>displayEvent</value>
                                 </numIndex>
                             </items>
                             <default>displayBoth</default>
