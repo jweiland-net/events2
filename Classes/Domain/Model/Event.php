@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Domain\Model;
 use JWeiland\Events2\Domain\Factory\TimeFactory;
 use JWeiland\Events2\Domain\Repository\UserRepository;
 use JWeiland\Events2\Domain\Traits\Typo3PropertiesTrait;
+use JWeiland\Events2\Domain\Validator\CategoryMandatoryValidator;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Annotation as Extbase;
@@ -90,7 +91,7 @@ class Event extends AbstractEntity
     /**
      * @var ObjectStorage<Category>
      */
-    #[Extbase\Validate(['value' => 'JWeiland\Events2\Domain\Validator\CategoryMandatoryValidator'])]
+    #[Extbase\Validate(['value' => CategoryMandatoryValidator::class])]
     #[Extbase\ORM\Lazy]
     protected ObjectStorage $categories;
 
