@@ -46,11 +46,6 @@ class AbstractController extends ActionController implements LoggerAwareInterfac
         $this->extConf = $extConf;
     }
 
-    public function getMembersFromQueryResult()
-    {
-        return $this->getConnectionPool()->getConnectionForTable($table)->executeQuery($query)->fetchAllAssociative();
-    }
-
     public function getQueryBuilderForTable(string $table)
     {
         return $this->getConnectionPool()->getQueryBuilderForTable($table);

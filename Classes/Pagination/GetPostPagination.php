@@ -11,9 +11,10 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Pagination;
 
+use JWeiland\Events2\Traits\TypoScriptFrontendControllerTrait;
 use TYPO3\CMS\Core\Pagination\PaginationInterface;
 use TYPO3\CMS\Core\Pagination\PaginatorInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
 
 /**
  * This Pagination respects also existing POST data from search form to keep filter while
@@ -21,13 +22,22 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class GetPostPagination implements PaginationInterface
 {
+    use TypoScriptFrontendControllerTrait;
+
     protected string $pluginNamespace = 'tx_events2_list';
 
     protected array $arguments = [];
 
     public function __construct(protected readonly PaginatorInterface $paginator)
     {
-        foreach (GeneralUtility::_GPmerged($this->pluginNamespace) as $argumentName => $argument) {
+        $request = $this->getTypo3Request();
+        $getMergedWithPost = $request->getQueryParams()[$this->pluginNamespace];
+        ArrayUtility::mergeRecursiveWithOverrule(
+            $getMergedWithPost,
+            $request->getParsedBody()[$this->pluginNamespace]
+        );
+
+        foreach ($getMergedWithPost as $argumentName => $argument) {
             if ($argumentName[0] === '_' && $argumentName[1] === '_') {
                 continue;
             }

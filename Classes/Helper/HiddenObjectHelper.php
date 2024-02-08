@@ -43,7 +43,7 @@ class HiddenObjectHelper
             }
 
             if ($object instanceof AbstractDomainObject) {
-                $this->session->registerObject($object, $object->getUid());
+                $this->session->registerObject($object, (string)$object->getUid());
             }
         }
     }

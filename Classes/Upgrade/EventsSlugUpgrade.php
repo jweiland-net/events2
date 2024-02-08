@@ -135,26 +135,26 @@ class EventsSlugUpgrade implements UpgradeWizardInterface
 
     protected function getUniqueValue(int $uid, string $slug): string
     {
-        $newSlug = '';
-        $queryResult = $this->getUniqueSlugQueryResult($uid, $slug);
-        $counter = $this->slugCache[$slug] ?? 1;
-        while ($queryResult->fetchAssociative()) {
-            $newSlug = $slug . '-' . $counter;
-            // ToDo: Find a new solution for these methods
-            $queryResult->bindValue(1, $newSlug);
-            $queryResult->execute();
-
-            // Do not cache every slug, because of memory consumption. I think 5 is a good value to start caching.
-            if ($counter > 5) {
-                $this->slugCache[$slug] = $counter;
+        $queryBuilder = $this->getUniqueSlugQueryBuilder($uid, $slug);
+        $statement = $queryBuilder->prepare();
+        $queryResult = $statement->executeQuery();
+        if ($queryResult->fetchOne()) {
+            for ($counter = 1; $counter <= 100; $counter++) {
+                $queryResult->free();
+                $newSlug = $slug . '-' . $counter;
+                $statement->bindValue(1, $newSlug);
+                $queryResult = $statement->executeQuery();
+                if (!$queryResult->fetchOne()) {
+                    break;
+                }
             }
-            ++$counter;
+            $queryResult->free();
         }
 
         return $newSlug ?? $slug;
     }
 
-    protected function getUniqueSlugQueryResult(int $uid, string $slug): Result
+    protected function getUniqueSlugQueryBuilder(int $uid, string $slug): QueryBuilder
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($this->tableName);
         $queryBuilder->getRestrictions()->removeAll();
@@ -172,8 +172,7 @@ class EventsSlugUpgrade implements UpgradeWizardInterface
                     'uid',
                     $queryBuilder->createPositionalParameter($uid, Connection::PARAM_INT)
                 )
-            )
-            ->executeQuery();
+            );
     }
 
     /**

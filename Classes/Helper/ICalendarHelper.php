@@ -37,7 +37,7 @@ class ICalendarHelper
     protected string $lineBreak = CRLF;
 
     public function __construct(
-        protected readonly TimeFactory $eventService,
+        protected readonly TimeFactory $timeFactory,
         protected readonly DateTimeUtility $dateTimeUtility,
         protected readonly EventDispatcher $eventDispatcher
     ) {

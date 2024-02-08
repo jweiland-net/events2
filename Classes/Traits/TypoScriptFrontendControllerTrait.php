@@ -19,8 +19,9 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  */
 trait TypoScriptFrontendControllerTrait
 {
-    protected function getTypoScriptFrontendController(?ServerRequestInterface $request = null): TypoScriptFrontendController
-    {
+    protected function getTypoScriptFrontendController(
+        ?ServerRequestInterface $request = null
+    ): TypoScriptFrontendController {
         $request ??= $this->getTypo3Request();
 
         return $request->getAttribute('frontend.controller');
