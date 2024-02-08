@@ -139,8 +139,8 @@
                             <foreign_table_where> AND (###PAGE_TSCONFIG_ID### = 0 OR tx_events2_domain_model_organizer.pid = ###PAGE_TSCONFIG_ID###) ORDER BY tx_events2_domain_model_organizer.organizer</foreign_table_where>
                             <items>
                                 <numIndex index="0">
-                                    <label/>
-                                    <value/>
+                                    <label></label>
+                                    <value></value>
                                 </numIndex>
                             </items>
                             <size>1</size>
