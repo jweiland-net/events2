@@ -90,7 +90,7 @@ class SearchController extends AbstractController
                 ]
             ],
             'jsVariables' => json_encode($this->getJsVariables([
-                'siteId' => $GLOBALS['TSFE']->id,
+                'siteId' => $this->request->getAttribute('frontend.controller')->id,
                 'search' => $gettableSearchProperties
             ]), JSON_THROW_ON_ERROR),
         ]);

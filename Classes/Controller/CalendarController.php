@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Controller;
 
 use JWeiland\Events2\Helper\CalendarHelper;
+use JWeiland\Events2\Traits\TypoScriptFrontendControllerTrait;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
@@ -20,6 +21,8 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
  */
 class CalendarController extends AbstractController
 {
+    use TypoScriptFrontendControllerTrait;
+
     protected CalendarHelper $calendarHelper;
 
     public function injectCalendarHelper(CalendarHelper $calendarHelper): void
@@ -35,8 +38,11 @@ class CalendarController extends AbstractController
 
         $calendarVariables = $this->calendarHelper->getCalendarVariables();
         $calendarVariables['settings'] = $this->settings;
-        $calendarVariables['pidOfListPage'] = $this->settings['pidOfListPage'] ?: $GLOBALS['TSFE']->id;
         $calendarVariables['storagePids'] = $frameworkConfiguration['persistence']['storagePid'];
+        $calendarVariables['pidOfListPage'] = $this->settings['pidOfListPage'];
+        if (!$calendarVariables['pidOfListPage']) {
+            $calendarVariables['pidOfListPage'] = $this->getTypoScriptFrontendController($this->request)->id;
+        }
 
         $this->postProcessAndAssignFluidVariables([
             'environment' => $calendarVariables

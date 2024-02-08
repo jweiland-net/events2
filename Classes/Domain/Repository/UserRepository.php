@@ -15,18 +15,25 @@ namespace JWeiland\Events2\Domain\Repository;
  * This repository is not connected to the extbase system. So saving does not work.
  * It creates readOnly access to the user values in $GLOBALS.
  */
+
+use JWeiland\Events2\Traits\TypoScriptFrontendControllerTrait;
+
 class UserRepository
 {
+    use TypoScriptFrontendControllerTrait;
+
     /**
      * Get currently logged-in user.
      */
     public function getUser(): array
     {
-        if (is_array($GLOBALS['TSFE']->fe_user->user) && (int)$GLOBALS['TSFE']->fe_user->user['uid'] > 0) {
-            // remove password for security reasons
-            unset($GLOBALS['TSFE']->fe_user->user['password']);
+        $tsfe = $this->getTypoScriptFrontendController();
 
-            return $GLOBALS['TSFE']->fe_user->user;
+        if (is_array($tsfe->fe_user->user) && (int)$tsfe->fe_user->user['uid'] > 0) {
+            // remove password for security reasons
+            unset($tsfe->fe_user->user['password']);
+
+            return $tsfe->fe_user->user;
         }
 
         return [];

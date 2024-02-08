@@ -11,9 +11,11 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Utility;
 
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /*
  * Cache Utility class
@@ -29,7 +31,7 @@ class CacheUtility
      */
     public static function addCacheTagsByEventRecords($eventRecords): void
     {
-        if (!ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend()) {
+        if (!ApplicationType::fromRequest(self::getTypo3Request())->isFrontend()) {
             return;
         }
 
@@ -43,7 +45,7 @@ class CacheUtility
             }
         }
         if ($cacheTags !== []) {
-            $GLOBALS['TSFE']->addCacheTags($cacheTags);
+            self::getTypoScriptFrontendController()->addCacheTags($cacheTags);
         }
     }
 
@@ -53,7 +55,7 @@ class CacheUtility
      */
     public static function addPageCacheTagsByQuery(QueryInterface $query): void
     {
-        if (!ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend()) {
+        if (!ApplicationType::fromRequest(self::getTypo3Request())->isFrontend()) {
             return;
         }
 
@@ -67,6 +69,16 @@ class CacheUtility
             $cacheTags[] = 'tx_events2_domain_model_event';
         }
 
-        $GLOBALS['TSFE']->addCacheTags($cacheTags);
+        self::getTypoScriptFrontendController()->addCacheTags($cacheTags);
+    }
+
+    private static function getTypoScriptFrontendController(): TypoScriptFrontendController
+    {
+        return self::getTypo3Request()->getAttribute('frontend.controller');
+    }
+
+    private static function getTypo3Request(): ServerRequestInterface
+    {
+        return $GLOBALS['TYPO3_REQUEST'];
     }
 }

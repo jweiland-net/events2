@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Session;
 
+use JWeiland\Events2\Traits\TypoScriptFrontendControllerTrait;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
@@ -19,11 +20,13 @@ use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
  */
 class UserSession
 {
+    use TypoScriptFrontendControllerTrait;
+
     protected ?FrontendUserAuthentication $feUser = null;
 
     public function __construct()
     {
-        $this->feUser = $GLOBALS['TSFE']->fe_user ?? null;
+        $this->feUser = $this->getTypoScriptFrontendController()->fe_user ?? null;
     }
 
     /**

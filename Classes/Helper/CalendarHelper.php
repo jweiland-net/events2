@@ -13,6 +13,7 @@ namespace JWeiland\Events2\Helper;
 
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Session\UserSession;
+use JWeiland\Events2\Traits\TypoScriptFrontendControllerTrait;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /*
@@ -20,6 +21,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class CalendarHelper
 {
+    use TypoScriptFrontendControllerTrait;
+
     public function __construct(
         protected readonly DayHelper $dayHelper,
         protected readonly UserSession $userSession
@@ -40,7 +43,7 @@ class CalendarHelper
     {
         return [
             'siteUrl' => $this->getTypo3SiteUrl(),
-            'siteId' => $GLOBALS['TSFE']->id
+            'siteId' => $this->getTypoScriptFrontendController()->id
         ];
     }
 
