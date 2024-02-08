@@ -167,9 +167,9 @@ class DateTimeImmutableConverter extends AbstractTypeConverter
             } catch (\Exception $e) {
                 throw new TypeConverterException('The specified timezone "' . $source['timezone'] . '" is invalid.', 1308240974);
             }
-            $date = $targetType::createFromFormat($dateFormat, $dateAsString, $timezone);
+            $date = \DateTimeImmutable::createFromFormat($dateFormat, $dateAsString, $timezone);
         } else {
-            $date = $targetType::createFromFormat($dateFormat, $dateAsString);
+            $date = \DateTimeImmutable::createFromFormat($dateFormat, $dateAsString);
         }
         if ($date === false) {
             return new \TYPO3\CMS\Extbase\Validation\Error('The date "%s" was not recognized (for format "%s").', 1307719788, [$dateAsString, $dateFormat]);
