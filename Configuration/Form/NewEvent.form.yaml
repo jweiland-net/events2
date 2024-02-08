@@ -6,12 +6,12 @@ renderingOptions:
   submitButtonLabel: Submit
 renderables:
   - renderingOptions:
-      nextButtonLabel: next page
+      nextButtonLabel: 'next page'
     type: Page
     identifier: radio-choose-event-type
-    label: Choose event type
+    label: 'Choose event type'
     renderables:
-      - label: Choose event type
+      - label: 'Choose event type'
         type: RadioButton
         identifier: choose-event-type
         defaultValue: single
@@ -28,11 +28,11 @@ renderables:
         validators:
           - identifier: NotEmpty
   - renderingOptions:
-      previousButtonLabel: previous page
-      nextButtonLabel: next page
+      previousButtonLabel: 'previous page'
+      nextButtonLabel: 'next page'
     type: Page
     identifier: collect-data
-    label: Collect event data
+    label: 'Collect event data'
     renderables:
       - label: Title
         type: Text
@@ -46,7 +46,7 @@ renderables:
             required: required
         validators:
           - identifier: NotEmpty
-      - label: Event date
+      - label: 'Event date'
         type: Date
         identifier: event-begin
         defaultValue: ''
@@ -54,12 +54,12 @@ renderables:
           dbMapping:
             column: event_begin
             dataType: date
-          elementDescription: Event begin
+          elementDescription: 'Event begin'
           fluidAdditionalAttributes:
             required: required
         validators:
           - identifier: NotEmpty
-      - label: Event end date
+      - label: 'Event end date'
         type: Date
         identifier: event-end
         defaultValue: ''
@@ -67,7 +67,7 @@ renderables:
           dbMapping:
             column: event_end
             dataType: date
-          elementDescription: Event end date
+          elementDescription: 'Event end date'
         renderingOptions:
           enabled: false
         variants:
@@ -75,7 +75,7 @@ renderables:
             condition: 'traverse(formValues, "choose-event-type") == "duration"'
             renderingOptions:
               enabled: true
-      - label: Recurring end date
+      - label: 'Recurring end date'
         type: Date
         identifier: recurring-end
         defaultValue: ''
@@ -83,7 +83,7 @@ renderables:
           dbMapping:
             column: recurring_end
             dataType: date
-          elementDescription: Recurring end date
+          elementDescription: 'Recurring end date'
         renderingOptions:
           enabled: false
         variants:
@@ -91,7 +91,7 @@ renderables:
             condition: 'traverse(formValues, "choose-event-type") == "recurring"'
             renderingOptions:
               enabled: true
-      - label: Start time
+      - label: 'Start time'
         type: Text
         identifier: time-begin
         defaultValue: ''
@@ -119,14 +119,14 @@ renderables:
           - identifier: RegularExpression
             options:
               regularExpression: '/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/'
-      - label: Short description
+      - label: 'Short description'
         type: Textarea
         identifier: short-description
         defaultValue: ''
         properties:
           dbMapping:
             column: teaser
-          elementDescription: Short description
+          elementDescription: 'Short description'
       - label: 'Detail description'
         type: Textarea
         identifier: detail-description
@@ -135,7 +135,7 @@ renderables:
           dbMapping:
             column: detail_information
           elementDescription: 'Detail description'
-      - label: Ticket Link
+      - label: 'Ticket Link'
         type: Text
         identifier: ticket-link
         defaultValue: ''
@@ -151,7 +151,7 @@ renderables:
           elementDescription: 'Ticket Link'
         validators:
           - identifier: Url
-      - label: Event Location
+      - label: 'Event Location'
         type: Events2Location
         identifier: event-location
         properties:
@@ -161,7 +161,7 @@ renderables:
           pidOfNewLocationPage: 0
         validators:
           - identifier: NotEmpty
-      - label: Download Link
+      - label: 'Download Link'
         type: Text
         identifier: download-link
         defaultValue: ''
@@ -177,7 +177,7 @@ renderables:
           elementDescription: 'Download Link'
         validators:
           - identifier: Url
-      - label: YouTube Link
+      - label: 'YouTube Link'
         type: Text
         identifier: youtube-link
         defaultValue: ''
@@ -212,7 +212,7 @@ renderables:
                   expression: eq
                   value: '{event:uid}'
           # Do not add options here. They will be added by Hook
-          elementDescription: Please choose at least one category
+          elementDescription: 'Please choose at least one category'
         validators:
           - identifier: NotEmpty
           - identifier: Count
@@ -234,7 +234,7 @@ renderables:
             16: Friday
             32: Saturday
             64: Sunday
-          elementDescription: Please choose at least one weekday
+          elementDescription: 'Please choose at least one weekday'
         renderingOptions:
           enabled: false
         validators:
@@ -274,7 +274,7 @@ renderables:
           elementDescription: 'Select another image'
   - type: Page
     identifier: define-event-times
-    label: Define further event times each weekday
+    label: 'Define further event times each weekday'
     renderingOptions:
       enabled: false
       previousButtonLabel: previous page
@@ -284,7 +284,7 @@ renderables:
         renderingOptions:
           enabled: true
     renderables:
-      - label: Different start time for monday
+      - label: 'Different start time for monday'
         type: Text
         identifier: time-begin-monday
         defaultValue: ''
@@ -301,10 +301,10 @@ renderables:
                   value: '{event:uid}'
                 - column: type
                   expression: eq
-                  value: 'different_times'
+                  value: different_times
                 - column: weekday
                   expression: eq
-                  value: 'monday'
+                  value: monday
           elementDescription: 'Enter time in format hh:mm. Example: 12:30'
           fluidAdditionalAttributes:
             maxlength: 5
@@ -322,7 +322,7 @@ renderables:
           - identifier: RegularExpression
             options:
               regularExpression: '/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/'
-      - label: Different start time for tuesday
+      - label: 'Different start time for tuesday'
         type: Text
         identifier: time-begin-tuesday
         defaultValue: ''
@@ -339,10 +339,10 @@ renderables:
                   value: '{event:uid}'
                 - column: type
                   expression: eq
-                  value: 'different_times'
+                  value: different_times
                 - column: weekday
                   expression: eq
-                  value: 'tuesday'
+                  value: tuesday
           elementDescription: 'Enter time in format hh:mm. Example: 12:30'
           fluidAdditionalAttributes:
             maxlength: 5
@@ -360,7 +360,7 @@ renderables:
           - identifier: RegularExpression
             options:
               regularExpression: '/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/'
-      - label: Different start time for wednesday
+      - label: 'Different start time for wednesday'
         type: Text
         identifier: time-begin-wednesday
         defaultValue: ''
@@ -377,10 +377,10 @@ renderables:
                   value: '{event:uid}'
                 - column: type
                   expression: eq
-                  value: 'different_times'
+                  value: different_times
                 - column: weekday
                   expression: eq
-                  value: 'wednesday'
+                  value: wednesday
           elementDescription: 'Enter time in format hh:mm. Example: 12:30'
           fluidAdditionalAttributes:
             maxlength: 5
@@ -398,7 +398,7 @@ renderables:
           - identifier: RegularExpression
             options:
               regularExpression: '/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/'
-      - label: Different start time for thursday
+      - label: 'Different start time for thursday'
         type: Text
         identifier: time-begin-thursday
         defaultValue: ''
@@ -415,10 +415,10 @@ renderables:
                   value: '{event:uid}'
                 - column: type
                   expression: eq
-                  value: 'different_times'
+                  value: different_times
                 - column: weekday
                   expression: eq
-                  value: 'thursday'
+                  value: thursday
           elementDescription: 'Enter time in format hh:mm. Example: 12:30'
           fluidAdditionalAttributes:
             maxlength: 5
@@ -436,7 +436,7 @@ renderables:
           - identifier: RegularExpression
             options:
               regularExpression: '/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/'
-      - label: Different start time for friday
+      - label: 'Different start time for friday'
         type: Text
         identifier: time-begin-friday
         defaultValue: ''
@@ -453,10 +453,10 @@ renderables:
                   value: '{event:uid}'
                 - column: type
                   expression: eq
-                  value: 'different_times'
+                  value: different_times
                 - column: weekday
                   expression: eq
-                  value: 'friday'
+                  value: friday
           elementDescription: 'Enter time in format hh:mm. Example: 12:30'
           fluidAdditionalAttributes:
             maxlength: 5
@@ -474,7 +474,7 @@ renderables:
           - identifier: RegularExpression
             options:
               regularExpression: '/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/'
-      - label: Different start time for saturday
+      - label: 'Different start time for saturday'
         type: Text
         identifier: time-begin-saturday
         defaultValue: ''
@@ -491,10 +491,10 @@ renderables:
                   value: '{event:uid}'
                 - column: type
                   expression: eq
-                  value: 'different_times'
+                  value: different_times
                 - column: weekday
                   expression: eq
-                  value: 'saturday'
+                  value: saturday
           elementDescription: 'Enter time in format hh:mm. Example: 12:30'
           fluidAdditionalAttributes:
             maxlength: 5
@@ -512,7 +512,7 @@ renderables:
           - identifier: RegularExpression
             options:
               regularExpression: '/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/'
-      - label: Different start time for sunday
+      - label: 'Different start time for sunday'
         type: Text
         identifier: time-begin-sunday
         defaultValue: ''
@@ -529,10 +529,10 @@ renderables:
                   value: '{event:uid}'
                 - column: type
                   expression: eq
-                  value: 'different_times'
+                  value: different_times
                 - column: weekday
                   expression: eq
-                  value: 'sunday'
+                  value: sunday
           elementDescription: 'Enter time in format hh:mm. Example: 12:30'
           fluidAdditionalAttributes:
             maxlength: 5
@@ -746,7 +746,7 @@ finishers:
           tstamp:
             value: '{__currentTimestamp}'
           type:
-            value: 'different_times'
+            value: different_times
           weekday:
             value: 'monday'
           event:
@@ -765,7 +765,7 @@ finishers:
           tstamp:
             value: '{__currentTimestamp}'
           type:
-            value: 'different_times'
+            value: different_times
           weekday:
             value: 'tuesday'
           event:
@@ -784,7 +784,7 @@ finishers:
           tstamp:
             value: '{__currentTimestamp}'
           type:
-            value: 'different_times'
+            value: different_times
           weekday:
             value: 'wednesday'
           event:
@@ -803,7 +803,7 @@ finishers:
           tstamp:
             value: '{__currentTimestamp}'
           type:
-            value: 'different_times'
+            value: different_times
           weekday:
             value: 'thursday'
           event:
@@ -822,7 +822,7 @@ finishers:
           tstamp:
             value: '{__currentTimestamp}'
           type:
-            value: 'different_times'
+            value: different_times
           weekday:
             value: 'friday'
           event:
@@ -841,7 +841,7 @@ finishers:
           tstamp:
             value: '{__currentTimestamp}'
           type:
-            value: 'different_times'
+            value: different_times
           weekday:
             value: 'saturday'
           event:
@@ -860,7 +860,7 @@ finishers:
           tstamp:
             value: '{__currentTimestamp}'
           type:
-            value: 'different_times'
+            value: different_times
           weekday:
             value: 'sunday'
           event:
