@@ -748,7 +748,7 @@ finishers:
           type:
             value: different_times
           weekday:
-            value: 'monday'
+            value: monday
           event:
             value: '{SaveEvent.insertedUids.4}'
       11:
@@ -767,7 +767,7 @@ finishers:
           type:
             value: different_times
           weekday:
-            value: 'tuesday'
+            value: tuesday
           event:
             value: '{SaveEvent.insertedUids.4}'
       12:
@@ -786,7 +786,7 @@ finishers:
           type:
             value: different_times
           weekday:
-            value: 'wednesday'
+            value: wednesday
           event:
             value: '{SaveEvent.insertedUids.4}'
       13:
@@ -805,7 +805,7 @@ finishers:
           type:
             value: different_times
           weekday:
-            value: 'thursday'
+            value: thursday
           event:
             value: '{SaveEvent.insertedUids.4}'
       14:
@@ -824,7 +824,7 @@ finishers:
           type:
             value: different_times
           weekday:
-            value: 'friday'
+            value: friday
           event:
             value: '{SaveEvent.insertedUids.4}'
       15:
@@ -843,7 +843,7 @@ finishers:
           type:
             value: different_times
           weekday:
-            value: 'saturday'
+            value: saturday
           event:
             value: '{SaveEvent.insertedUids.4}'
       16:
@@ -862,7 +862,7 @@ finishers:
           type:
             value: different_times
           weekday:
-            value: 'sunday'
+            value: sunday
           event:
             value: '{SaveEvent.insertedUids.4}'
   2:
