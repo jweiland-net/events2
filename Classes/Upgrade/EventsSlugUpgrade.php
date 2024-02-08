@@ -121,7 +121,7 @@ class EventsSlugUpgrade implements UpgradeWizardInterface
         return $queryBuilder
             ->from($this->tableName)
             ->where(
-                $queryBuilder->expr()->orX(
+                $queryBuilder->expr()->or(
                     $queryBuilder->expr()->eq(
                         $this->slugColumn,
                         $queryBuilder->createNamedParameter('', Connection::PARAM_STR)

@@ -205,7 +205,7 @@ class DayRepository extends AbstractRepository
         // add query for search string
         if ($search->getSearch() !== '') {
             $subQueryBuilder->andWhere(
-                (string)$subQueryBuilder->expr()->orX(
+                (string)$subQueryBuilder->expr()->or(
                     $queryBuilder->expr()->like(
                         'event_sub_query.title',
                         $queryBuilder->quote('%' . $search->getSearch() . '%')
@@ -420,7 +420,7 @@ class DayRepository extends AbstractRepository
                 $subQueryBuilder->getSQL()
             ),
             $queryBuilder->quoteIdentifier('day_sub_group'),
-            $queryBuilder->expr()->andX(
+            $queryBuilder->expr()->and(
                 $queryBuilder->expr()->eq(
                     'day.event',
                     $queryBuilder->quoteIdentifier('day_sub_group.event')

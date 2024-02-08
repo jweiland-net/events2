@@ -162,7 +162,7 @@ class DatabaseService
                     'event',
                     'sys_category_record_mm',
                     'category_mm',
-                    (string)$queryBuilder->expr()->andX(
+                    (string)$queryBuilder->expr()->and(
                         $queryBuilder->expr()->eq(
                             'event.uid',
                             $queryBuilder->quoteIdentifier('category_mm.uid_foreign')
@@ -227,7 +227,7 @@ class DatabaseService
         );
 
         // add where clause for single events
-        return (string)$queryBuilder->expr()->andX(
+        return (string)$queryBuilder->expr()->and(
             $queryBuilder->expr()->eq(
                 'event_type',
                 $queryBuilder->createNamedParameter('single')
@@ -251,12 +251,12 @@ class DatabaseService
             E_USER_DEPRECATED
         );
 
-        return (string)$queryBuilder->expr()->andX(
+        return (string)$queryBuilder->expr()->and(
             $queryBuilder->expr()->eq(
                 'event_type',
                 $queryBuilder->createNamedParameter('duration')
             ),
-            $queryBuilder->expr()->orX(
+            $queryBuilder->expr()->or(
                 $queryBuilder->expr()->eq(
                     'event_end',
                     $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
@@ -281,12 +281,12 @@ class DatabaseService
             E_USER_DEPRECATED
         );
 
-        return (string)$queryBuilder->expr()->andX(
+        return (string)$queryBuilder->expr()->and(
             $queryBuilder->expr()->eq(
                 'event_type',
                 $queryBuilder->createNamedParameter('recurring')
             ),
-            $queryBuilder->expr()->orX(
+            $queryBuilder->expr()->or(
                 $queryBuilder->expr()->eq(
                     'recurring_end',
                     $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
@@ -328,7 +328,7 @@ class DatabaseService
 
         if ($endDateTime instanceof \DateTimeImmutable) {
             $endDateTimeNight = $endDateTime->modify('23:59:59');
-            $constraintForDateTime = (string)$queryBuilder->expr()->andX(
+            $constraintForDateTime = (string)$queryBuilder->expr()->and(
                 $constraintForDateTime,
                 $queryBuilder->expr()->lt(
                     $alias . '.day_time',
@@ -355,7 +355,7 @@ class DatabaseService
         }
 
         $queryBuilder->andWhere(
-            (string)$queryBuilder->expr()->andX(
+            (string)$queryBuilder->expr()->and(
                 $queryBuilder->expr()->in(
                     'day' . $postAlias . '.pid',
                     $parentQueryBuilder->createNamedParameter(
@@ -388,7 +388,7 @@ class DatabaseService
             $alias,
             'sys_category_record_mm',
             'category_mm',
-            (string)$queryBuilder->expr()->andX(
+            (string)$queryBuilder->expr()->and(
                 $queryBuilder->expr()->eq(
                     $alias . '.uid',
                     $queryBuilder->quoteIdentifier('category_mm.uid_foreign')
