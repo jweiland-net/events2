@@ -1,8 +1,13 @@
 <?php
-/** @var \JWeiland\Events2\Configuration\ExtConf $extConf */
-$extConf = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\JWeiland\Events2\Configuration\ExtConf::class);
-$staticInfoItemProcessor = \SJBR\StaticInfoTables\Hook\Backend\Form\FormDataProvider\TcaSelectItemsProcessor::class . '->translateCountriesSelector';
-$staticInfoSuggestReceiver = \SJBR\StaticInfoTables\Hook\Backend\Form\Wizard\SuggestReceiver::class;
+
+use JWeiland\Events2\Configuration\ExtConf;
+use SJBR\StaticInfoTables\Hook\Backend\Form\FormDataProvider\TcaSelectItemsProcessor;
+use SJBR\StaticInfoTables\Hook\Backend\Form\Wizard\SuggestReceiver;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
+$extConf = GeneralUtility::makeInstance(ExtConf::class);
+$staticInfoItemProcessor = TcaSelectItemsProcessor::class . '->translateCountriesSelector';
+$staticInfoSuggestReceiver = SuggestReceiver::class;
 
 $tx_events2_domain_model_event = [
     'ctrl' => [
@@ -214,5 +219,6 @@ $tx_events2_domain_model_event = [
         ]
     ]
 ];
+
 unset($extConf, $staticInfoItemProcessor, $staticInfoSuggestReceiver);
 return $tx_events2_domain_model_event;

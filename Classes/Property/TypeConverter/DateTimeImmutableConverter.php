@@ -126,11 +126,14 @@ class DateTimeImmutableConverter extends AbstractTypeConverter
      * @param string $targetType must be "DateTimeImmutable"
      * @param array $convertedChildProperties not used currently
      * @param ?PropertyMappingConfigurationInterface $configuration
-     * @return \DateTime|Error|null
      * @throws TypeConverterException|InvalidPropertyMappingConfigurationException
      */
-    public function convertFrom($source, string $targetType, array $convertedChildProperties = [], PropertyMappingConfigurationInterface $configuration = null): ?object
-    {
+    public function convertFrom(
+        $source,
+        string $targetType,
+        array $convertedChildProperties = [],
+        PropertyMappingConfigurationInterface $configuration = null
+    ): ?object {
         $dateFormat = $this->getDefaultDateFormat($configuration);
         if (is_string($source)) {
             $dateAsString = $source;

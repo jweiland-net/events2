@@ -1,11 +1,15 @@
 <?php
+
 if (!defined('TYPO3')) {
     die('Access denied.');
 }
 
+use JWeiland\Maps2\Tca\Maps2Registry;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+
 // Add tx_maps2_uid column to events2 location table
-if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('maps2')) {
-    \JWeiland\Maps2\Tca\Maps2Registry::getInstance()->add(
+if (ExtensionManagementUtility::isLoaded('maps2')) {
+    Maps2Registry::getInstance()->add(
         'events2',
         'tx_events2_domain_model_location',
         [

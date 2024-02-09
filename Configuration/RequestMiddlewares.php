@@ -1,27 +1,32 @@
 <?php
 
+use JWeiland\Events2\Middleware\GetDaysForMonthMiddleware;
+use JWeiland\Events2\Middleware\GetLocationsMiddleware;
+use JWeiland\Events2\Middleware\GetSubCategoriesMiddleware;
+use JWeiland\Events2\Middleware\GetUriForDayMiddleware;
+
 return [
     'frontend' => [
         'jweiland/events2/get-days-for-month' => [
-            'target' => \JWeiland\Events2\Middleware\GetDaysForMonthMiddleware::class,
+            'target' => GetDaysForMonthMiddleware::class,
             'after' => [
                 'typo3/cms-frontend/prepare-tsfe-rendering',
             ],
         ],
         'jweiland/events2/get-uri-for-day' => [
-            'target' => \JWeiland\Events2\Middleware\GetUriForDayMiddleware::class,
+            'target' => GetUriForDayMiddleware::class,
             'after' => [
                 'typo3/cms-frontend/prepare-tsfe-rendering',
             ],
         ],
         'jweiland/events2/get-sub-categories' => [
-            'target' => \JWeiland\Events2\Middleware\GetSubCategoriesMiddleware::class,
+            'target' => GetSubCategoriesMiddleware::class,
             'after' => [
                 'typo3/cms-frontend/prepare-tsfe-rendering',
             ],
         ],
         'jweiland/events2/get-locations' => [
-            'target' => \JWeiland\Events2\Middleware\GetLocationsMiddleware::class,
+            'target' => GetLocationsMiddleware::class,
             'after' => [
                 'typo3/cms-frontend/prepare-tsfe-rendering',
             ],

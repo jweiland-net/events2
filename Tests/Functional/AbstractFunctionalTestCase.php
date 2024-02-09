@@ -106,7 +106,7 @@ class AbstractFunctionalTestCase extends FunctionalTestCase
         /** @var FrontendUserAuthentication|ObjectProphecy $frontendUserProphecy */
         $frontendUserProphecy = $this->prophesize(FrontendUserAuthentication::class);
         $frontendUserProphecy
-            ->createUserAspect(true)
+            ->createUserAspect()
             ->willReturn($this->createUserAspect($loggedIn, $groupIds));
 
         return $frontendUserProphecy->reveal();

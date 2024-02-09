@@ -1,11 +1,15 @@
 <?php
+
 if (!defined('TYPO3')) {
     die('Access denied.');
 }
 
+use JWeiland\Events2\Configuration\ExtConf;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 call_user_func(static function (): void {
-    $extConf = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-        \JWeiland\Events2\Configuration\ExtConf::class
+    $extConf = GeneralUtility::makeInstance(
+        ExtConf::class
     );
 
     // check, if category is required

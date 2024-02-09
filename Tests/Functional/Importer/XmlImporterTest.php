@@ -91,7 +91,6 @@ class XmlImporterTest extends FunctionalTestCase
         $this->eventDispatcherProphecy = $this->prophesize(EventDispatcher::class);
 
         $this->pathSegmentHelper = new PathSegmentHelper(
-            $this->objectManager,
             $this->extConf,
             $this->eventDispatcherProphecy->reveal()
         );

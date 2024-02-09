@@ -106,7 +106,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
                 continue;
             }
             // Check if uploaded file returns an error
-            if (!$uploadedFile['error'] === 0) {
+            if ($uploadedFile['error'] !== 0) {
                 return new Error(
                     LocalizationUtility::translate('error.upload', 'events2') . $uploadedFile['error'],
                     1396957314

@@ -1,0 +1,2 @@
+# Add events2 plugins_cns to new content element wizard
+@import 'EXT:mediaconsent/Configuration/TSconfig/NewContentElementWizard.tsconfig'

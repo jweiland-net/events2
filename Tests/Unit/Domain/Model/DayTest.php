@@ -62,7 +62,7 @@ class DayTest extends UnitTestCase
      */
     public function setCrdateWithNullSetsCrdate(): void
     {
-        $this->subject->setCrdate(null);
+        $this->subject->setCrdate();
 
         self::assertNull(
             $this->subject->getCrdate()
@@ -98,7 +98,7 @@ class DayTest extends UnitTestCase
      */
     public function setTstampWithNullSetsTstamp(): void
     {
-        $this->subject->setTstamp(null);
+        $this->subject->setTstamp();
 
         self::assertNull(
             $this->subject->getTstamp()

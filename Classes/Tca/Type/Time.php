@@ -47,7 +47,7 @@ class Time
                 $value = str_pad((string)$value, 2, '0', STR_PAD_LEFT) . ':00';
             } else {
                 // this is only for backwards compatibility. In earlier versions we calculated these values with int
-                return $this->timeToStringConverter->convert((int)$value);
+                return $this->timeToStringConverter->convert($value);
             }
         }
 

@@ -229,22 +229,13 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
             }
 
             $ttContentListType = 'events2_list';
-            switch ($actions) {
-                case 'Day->listLatest;Day->show;Day->showByTimestamp;Location->show;Video->show':
-                    $listType = 'listLatest';
-                    break;
-                case 'Day->listToday;Day->show;Day->showByTimestamp;Location->show;Video->show':
-                    $listType = 'listToday';
-                    break;
-                case 'Day->listThisWeek;Day->show;Day->showByTimestamp;Location->show;Video->show':
-                    $listType = 'listWeek';
-                    break;
-                case 'Day->listRange;Day->show;Day->showByTimestamp;Location->show;Video->show':
-                    $listType = 'listRange';
-                    break;
-                default:
-                    $listType = 'list';
-            }
+            $listType = match ($actions) {
+                'Day->listLatest;Day->show;Day->showByTimestamp;Location->show;Video->show' => 'listLatest',
+                'Day->listToday;Day->show;Day->showByTimestamp;Location->show;Video->show' => 'listToday',
+                'Day->listThisWeek;Day->show;Day->showByTimestamp;Location->show;Video->show' => 'listWeek',
+                'Day->listRange;Day->show;Day->showByTimestamp;Location->show;Video->show' => 'listRange',
+                default => 'list',
+            };
             $valueFromDatabase['data']['sDEF']['lDEF']['settings.listType']['vDEF'] = $listType;
         } elseif ($ttContentListType === 'events2_search') {
             $ttContentListType = 'events2_searchform';

@@ -43,10 +43,6 @@ class EventRepository extends AbstractRepository implements HiddenRepositoryInte
         $this->exceptionRepository = $exceptionRepository;
     }
 
-    /**
-     * @param mixed $value
-     * @return AbstractDomainObject|Event|null
-     */
     public function findHiddenObject(mixed $value, string $property = 'uid'): ?AbstractDomainObject
     {
         $query = $this->createQuery();

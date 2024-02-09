@@ -63,9 +63,6 @@ class TimestampMapper implements StaticMappableAspectInterface
         $this->settings = $settings;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generate(string $value): ?string
     {
         $date = new \DateTimeImmutable(date('c', (int)$value));
@@ -73,9 +70,6 @@ class TimestampMapper implements StaticMappableAspectInterface
         return $date->format($this->settings['format']);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function resolve(string $value): ?string
     {
         $date = \DateTimeImmutable::createFromFormat($this->settings['format'], $value);
