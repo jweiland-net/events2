@@ -79,7 +79,6 @@ class AbstractController extends ActionController implements LoggerAwareInterfac
 
         $this->settings = $mergedFlexFormSettings;
         $this->arguments = GeneralUtility::makeInstance(Arguments::class);
-
     }
 
     protected function initializeAction(): void
