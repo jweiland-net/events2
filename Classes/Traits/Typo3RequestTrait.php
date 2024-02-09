@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Traits;
 
 use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -59,6 +60,13 @@ trait Typo3RequestTrait
         );
 
         return $getMergedWithPost;
+    }
+
+    private function isFrontendRequest(?ServerRequestInterface $request = null): bool
+    {
+        $request ??= $this->getTypo3Request();
+
+        return ApplicationType::fromRequest($request)->isFrontend();
     }
 
     protected function getTypo3Request(): ServerRequestInterface

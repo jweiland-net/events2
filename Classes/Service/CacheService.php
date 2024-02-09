@@ -9,27 +9,28 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace JWeiland\Events2\Utility;
+namespace JWeiland\Events2\Service;
 
-use Psr\Http\Message\ServerRequestInterface;
-use TYPO3\CMS\Core\Http\ApplicationType;
+use JWeiland\Events2\Traits\Typo3RequestTrait;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
- * Cache Utility class
+ * Cache service for tagging pages and content with specific events2 cache tags to clear cache while creating/updating
+ * event records.
  */
-class CacheUtility
+class CacheService
 {
+    use Typo3RequestTrait;
+
     /**
      * Adds cache tags to page cache by event-records.
      * Following cache tags will be added to TSFE:
      * "tx_events2_uid_[event:uid]"
      */
-    public static function addCacheTagsByEventRecords(QueryResultInterface|array $eventRecords): void
+    public function addCacheTagsByEventRecords(QueryResultInterface|array $eventRecords): void
     {
-        if (!self::isFrontendRequest()) {
+        if (!$this->isFrontendRequest()) {
             return;
         }
 
@@ -43,7 +44,7 @@ class CacheUtility
             }
         }
         if ($cacheTags !== []) {
-            self::getTypoScriptFrontendController()->addCacheTags($cacheTags);
+            $this->getTypoScriptFrontendController()->addCacheTags($cacheTags);
         }
     }
 
@@ -51,9 +52,9 @@ class CacheUtility
      * Adds page cache tags by used storagePages.
      * This adds tags with the scheme tx_events2_pid_[event:pid]
      */
-    public static function addPageCacheTagsByQuery(QueryInterface $query): void
+    public function addPageCacheTagsByQuery(QueryInterface $query): void
     {
-        if (!self::isFrontendRequest()) {
+        if (!$this->isFrontendRequest()) {
             return;
         }
 
@@ -67,21 +68,6 @@ class CacheUtility
             $cacheTags[] = 'tx_events2_domain_model_event';
         }
 
-        self::getTypoScriptFrontendController()->addCacheTags($cacheTags);
-    }
-
-    private static function getTypoScriptFrontendController(): TypoScriptFrontendController
-    {
-        return self::getTypo3Request()->getAttribute('frontend.controller');
-    }
-
-    private static function isFrontendRequest(): bool
-    {
-        return ApplicationType::fromRequest(self::getTypo3Request())->isFrontend();
-    }
-
-    private static function getTypo3Request(): ServerRequestInterface
-    {
-        return $GLOBALS['TYPO3_REQUEST'];
+        $this->getTypoScriptFrontendController()->addCacheTags($cacheTags);
     }
 }

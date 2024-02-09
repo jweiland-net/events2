@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Unit\Utility;
 
 use JWeiland\Events2\Domain\Model\Event;
-use JWeiland\Events2\Utility\CacheUtility;
+use JWeiland\Events2\Service\CacheService;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
@@ -28,11 +28,11 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 /**
  * Test case.
  */
-class CacheUtilityTest extends UnitTestCase
+class CacheServiceTest extends UnitTestCase
 {
     use ProphecyTrait;
 
-    protected CacheUtility $subject;
+    protected CacheService $subject;
 
     protected function setUp(): void
     {
@@ -65,7 +65,7 @@ class CacheUtilityTest extends UnitTestCase
 
         $GLOBALS['TSFE'] = $tsfeProphecy->reveal();
 
-        CacheUtility::addCacheTagsByEventRecords([]);
+        CacheService::addCacheTagsByEventRecords([]);
     }
 
     /**
@@ -83,7 +83,7 @@ class CacheUtilityTest extends UnitTestCase
 
         $GLOBALS['TSFE'] = $tsfeProphecy->reveal();
 
-        CacheUtility::addCacheTagsByEventRecords([$event]);
+        CacheService::addCacheTagsByEventRecords([$event]);
     }
 
     /**
@@ -102,7 +102,7 @@ class CacheUtilityTest extends UnitTestCase
 
         $GLOBALS['TSFE'] = $tsfeProphecy->reveal();
 
-        CacheUtility::addCacheTagsByEventRecords([$event]);
+        CacheService::addCacheTagsByEventRecords([$event]);
     }
 
     /**
@@ -126,7 +126,7 @@ class CacheUtilityTest extends UnitTestCase
             ->shouldBeCalled()
             ->willReturn($querySettingsProphecy->reveal());
 
-        CacheUtility::addPageCacheTagsByQuery($queryProphecy->reveal());
+        CacheService::addPageCacheTagsByQuery($queryProphecy->reveal());
     }
 
     /**
@@ -154,6 +154,6 @@ class CacheUtilityTest extends UnitTestCase
             ->shouldBeCalled()
             ->willReturn($querySettingsProphecy->reveal());
 
-        CacheUtility::addPageCacheTagsByQuery($queryProphecy->reveal());
+        CacheService::addPageCacheTagsByQuery($queryProphecy->reveal());
     }
 }

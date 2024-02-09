@@ -13,6 +13,7 @@ namespace JWeiland\Events2\Controller;
 
 use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Repository\DayRepository;
+use JWeiland\Events2\Traits\InjectCacheServiceTrait;
 use JWeiland\Events2\Utility\CacheUtility;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
@@ -24,6 +25,8 @@ use TYPO3Fluid\Fluid\View\ViewInterface;
  */
 class DayController extends AbstractController
 {
+    use InjectCacheServiceTrait;
+
     protected DayRepository $dayRepository;
 
     public function injectDayRepository(DayRepository $dayRepository): void
@@ -75,7 +78,7 @@ class DayController extends AbstractController
             'filter' => $filter,
         ]);
 
-        CacheUtility::addPageCacheTagsByQuery($days->getQuery());
+        $this->cacheService->addPageCacheTagsByQuery($days->getQuery());
 
         return $this->htmlResponse();
     }
@@ -93,7 +96,7 @@ class DayController extends AbstractController
             'day' => $day,
         ]);
 
-        CacheUtility::addCacheTagsByEventRecords([$day->getEvent()]);
+        $this->cacheService->addCacheTagsByEventRecords([$day->getEvent()]);
 
         return $this->htmlResponse();
     }

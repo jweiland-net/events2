@@ -15,7 +15,7 @@ use JWeiland\Events2\Domain\Model\Search;
 use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
-use JWeiland\Events2\Utility\CacheUtility;
+use JWeiland\Events2\Traits\InjectCacheServiceTrait;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\Category;
@@ -26,6 +26,8 @@ use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
  */
 class SearchController extends AbstractController
 {
+    use InjectCacheServiceTrait;
+
     protected DayRepository $dayRepository;
 
     protected CategoryRepository $categoryRepository;
@@ -112,7 +114,7 @@ class SearchController extends AbstractController
                 'days' => $days,
             ]);
 
-            CacheUtility::addPageCacheTagsByQuery($days->getQuery());
+            $this->cacheService->addPageCacheTagsByQuery($days->getQuery());
         }
 
         return $this->htmlResponse();

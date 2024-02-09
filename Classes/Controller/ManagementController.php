@@ -17,7 +17,7 @@ use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Domain\Validator\EventValidator;
 use JWeiland\Events2\Service\DayRelationService;
-use JWeiland\Events2\Utility\CacheUtility;
+use JWeiland\Events2\Traits\InjectCacheServiceTrait;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -31,6 +31,8 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  */
 class ManagementController extends AbstractController
 {
+    use InjectCacheServiceTrait;
+
     protected EventRepository $eventRepository;
 
     protected CategoryRepository $categoryRepository;
@@ -84,7 +86,7 @@ class ManagementController extends AbstractController
         $this->postProcessAndAssignFluidVariables([
             'events' => $events,
         ]);
-        CacheUtility::addPageCacheTagsByQuery($events->getQuery());
+        $this->cacheService->addPageCacheTagsByQuery($events->getQuery());
 
         return $this->htmlResponse();
     }
