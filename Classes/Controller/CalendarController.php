@@ -32,9 +32,7 @@ class CalendarController extends AbstractController
 
     public function showAction(): ResponseInterface
     {
-        $frameworkConfiguration = $this->configurationManager->getConfiguration(
-            ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK
-        );
+        $frameworkConfiguration = $this->getMergedFrameworkConfiguration();
 
         $calendarVariables = $this->calendarHelper->getCalendarVariables();
         $calendarVariables['settings'] = $this->settings;
@@ -49,5 +47,15 @@ class CalendarController extends AbstractController
         ]);
 
         return $this->htmlResponse();
+    }
+
+    /**
+     * Returns the merged (TypoScript + FlexForm) plugin configuration
+     */
+    protected function getMergedFrameworkConfiguration(): array
+    {
+        return $this->configurationManager->getConfiguration(
+            ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK
+        );
     }
 }

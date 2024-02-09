@@ -14,15 +14,16 @@ namespace JWeiland\Events2\Backend\FormDataProvider;
 use JWeiland\Events2\Configuration\ExtConf;
 use TYPO3\CMS\Backend\Form\FormDataProviderInterface;
 use TYPO3\CMS\Core\Information\Typo3Version;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /*
  * Reduce amount of categories to given root category declared in extension configuration
  */
 class ModifyRootUidOfTreeSelectElements implements FormDataProviderInterface
 {
-    public function __construct(private readonly ExtConf $extConf)
-    {
+    public function __construct(
+        private readonly ExtConf $extConf,
+        private readonly Typo3Version $typo3Version
+    ) {
     }
 
     /**
@@ -47,8 +48,7 @@ class ModifyRootUidOfTreeSelectElements implements FormDataProviderInterface
                 && $result['tableName'] === 'tt_content'
                 && \str_starts_with($result['flexParentDatabaseRow']['list_type'], 'events2')
             ) {
-                $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
-                if (version_compare($typo3Version->getBranch(), '11.4', '<')) {
+                if (version_compare($this->typo3Version->getBranch(), '11.4', '<')) {
                     $result['processedTca']['columns'][$categoryField]['config']['treeConfig']['rootUid']
                         = $this->extConf->getRootUid();
                 } else {
