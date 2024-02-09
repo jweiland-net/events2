@@ -11,13 +11,13 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Controller;
 
-use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Event\PostProcessControllerActionEvent;
 use JWeiland\Events2\Event\PostProcessFluidVariablesEvent;
 use JWeiland\Events2\Event\PreProcessControllerActionEvent;
-use JWeiland\Events2\Service\TypoScriptService;
+use JWeiland\Events2\Traits\InjectExtConfTrait;
+use JWeiland\Events2\Traits\InjectTypoScriptServiceTrait;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
@@ -34,21 +34,9 @@ use TYPO3Fluid\Fluid\View\ViewInterface;
  */
 class AbstractController extends ActionController implements LoggerAwareInterface
 {
+    use InjectExtConfTrait;
+    use InjectTypoScriptServiceTrait;
     use LoggerAwareTrait;
-
-    protected TypoScriptService $typoScriptService;
-
-    protected ExtConf $extConf;
-
-    public function injectExtConf(ExtConf $extConf): void
-    {
-        $this->extConf = $extConf;
-    }
-
-    public function injectTypoScriptService(TypoScriptService $typoScriptService): void
-    {
-        $this->typoScriptService = $typoScriptService;
-    }
 
     /**
      * @throws \Exception

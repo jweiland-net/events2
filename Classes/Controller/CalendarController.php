@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Controller;
 
-use JWeiland\Events2\Helper\CalendarHelper;
+use JWeiland\Events2\Traits\InjectCalendarHelperTrait;
 use JWeiland\Events2\Traits\Typo3RequestTrait;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
@@ -21,14 +21,8 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
  */
 class CalendarController extends AbstractController
 {
+    use InjectCalendarHelperTrait;
     use Typo3RequestTrait;
-
-    protected CalendarHelper $calendarHelper;
-
-    public function injectCalendarHelper(CalendarHelper $calendarHelper): void
-    {
-        $this->calendarHelper = $calendarHelper;
-    }
 
     public function showAction(): ResponseInterface
     {

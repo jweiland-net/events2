@@ -12,17 +12,17 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Controller;
 
 use JWeiland\Events2\Domain\Model\Event;
-use JWeiland\Events2\Domain\Repository\CategoryRepository;
-use JWeiland\Events2\Domain\Repository\EventRepository;
-use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Domain\Validator\EventValidator;
-use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Traits\InjectCacheServiceTrait;
+use JWeiland\Events2\Traits\InjectCategoryRepositoryTrait;
+use JWeiland\Events2\Traits\InjectDayRelationServiceTrait;
+use JWeiland\Events2\Traits\InjectEventRepositoryTrait;
+use JWeiland\Events2\Traits\InjectLocationRepositoryTrait;
+use JWeiland\Events2\Traits\InjectMailMessageTrait;
+use JWeiland\Events2\Traits\InjectPersistenceManagerTrait;
 use Psr\Http\Message\ResponseInterface;
-use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Annotation as Extbase;
-use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
@@ -32,48 +32,12 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 class ManagementController extends AbstractController
 {
     use InjectCacheServiceTrait;
-
-    protected EventRepository $eventRepository;
-
-    protected CategoryRepository $categoryRepository;
-
-    protected LocationRepository $locationRepository;
-
-    protected DayRelationService $dayRelationService;
-
-    protected PersistenceManagerInterface $persistenceManager;
-
-    protected MailMessage $mail;
-
-    public function injectEventRepository(EventRepository $eventRepository): void
-    {
-        $this->eventRepository = $eventRepository;
-    }
-
-    public function injectCategoryRepository(CategoryRepository $categoryRepository): void
-    {
-        $this->categoryRepository = $categoryRepository;
-    }
-
-    public function injectLocationRepository(LocationRepository $locationRepository): void
-    {
-        $this->locationRepository = $locationRepository;
-    }
-
-    public function injectDayRelationService(DayRelationService $dayRelationService): void
-    {
-        $this->dayRelationService = $dayRelationService;
-    }
-
-    public function injectPersistenceManager(PersistenceManagerInterface $persistenceManager): void
-    {
-        $this->persistenceManager = $persistenceManager;
-    }
-
-    public function injectMailMessage(MailMessage $mailMessage): void
-    {
-        $this->mail = $mailMessage;
-    }
+    use InjectCategoryRepositoryTrait;
+    use InjectDayRelationServiceTrait;
+    use InjectEventRepositoryTrait;
+    use InjectLocationRepositoryTrait;
+    use InjectMailMessageTrait;
+    use InjectPersistenceManagerTrait;
 
     public function initializeListMyEventsAction(): void
     {
@@ -259,17 +223,17 @@ class ManagementController extends AbstractController
 
     protected function sendMail(string $subjectKey): bool
     {
-        $this->mail->setFrom($this->extConf->getEmailFromAddress(), $this->extConf->getEmailFromName());
-        $this->mail->setTo($this->extConf->getEmailToAddress(), $this->extConf->getEmailToName());
-        $this->mail->setSubject(
+        $this->mailMessage->setFrom($this->extConf->getEmailFromAddress(), $this->extConf->getEmailFromName());
+        $this->mailMessage->setTo($this->extConf->getEmailToAddress(), $this->extConf->getEmailToName());
+        $this->mailMessage->setSubject(
             LocalizationUtility::translate(
                 'email.subject.' . $subjectKey,
                 'events2'
             )
         );
 
-        $this->mail->html($this->view->render());
+        $this->mailMessage->html($this->view->render());
 
-        return $this->mail->send();
+        return $this->mailMessage->send();
     }
 }

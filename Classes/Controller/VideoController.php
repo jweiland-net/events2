@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Controller;
 
-use JWeiland\Events2\Domain\Repository\EventRepository;
+use JWeiland\Events2\Traits\InjectEventRepositoryTrait;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -19,12 +19,7 @@ use Psr\Http\Message\ResponseInterface;
  */
 class VideoController extends AbstractController
 {
-    protected EventRepository $eventRepository;
-
-    public function injectEventRepository(EventRepository $eventRepository): void
-    {
-        $this->eventRepository = $eventRepository;
-    }
+    use InjectEventRepositoryTrait;
 
     public function showAction(int $event): ResponseInterface
     {

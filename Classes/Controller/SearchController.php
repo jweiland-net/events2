@@ -12,10 +12,10 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Controller;
 
 use JWeiland\Events2\Domain\Model\Search;
-use JWeiland\Events2\Domain\Repository\CategoryRepository;
-use JWeiland\Events2\Domain\Repository\DayRepository;
-use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Traits\InjectCacheServiceTrait;
+use JWeiland\Events2\Traits\InjectCategoryRepositoryTrait;
+use JWeiland\Events2\Traits\InjectDayRepositoryTrait;
+use JWeiland\Events2\Traits\InjectLocationRepositoryTrait;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\Category;
@@ -27,27 +27,9 @@ use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 class SearchController extends AbstractController
 {
     use InjectCacheServiceTrait;
-
-    protected DayRepository $dayRepository;
-
-    protected CategoryRepository $categoryRepository;
-
-    protected LocationRepository $locationRepository;
-
-    public function injectDayRepository(DayRepository $dayRepository): void
-    {
-        $this->dayRepository = $dayRepository;
-    }
-
-    public function injectCategoryRepository(CategoryRepository $categoryRepository): void
-    {
-        $this->categoryRepository = $categoryRepository;
-    }
-
-    public function injectLocationRepository(LocationRepository $locationRepository): void
-    {
-        $this->locationRepository = $locationRepository;
-    }
+    use InjectCategoryRepositoryTrait;
+    use InjectDayRepositoryTrait;
+    use InjectLocationRepositoryTrait;
 
     public function initializeShowAction(): void
     {
