@@ -56,5 +56,5 @@
 			"extension-key": "events2",
 			"web-dir": ".Build/Web"
 		}
-	},
+	}
 }
