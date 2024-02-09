@@ -128,11 +128,6 @@ services:
     tags:
       - name: 'event.listener'
         identifier: 'registerHiddenEvent'
-  JWeiland\Events2\EventListener\RemapSearchParameterEventListener:
-    tags:
-      - name: 'event.listener'
-        identifier: 'remapSearchParameter'
-        before: 'allowSearchParameter'
   JWeiland\Events2\EventListener\SetDateFormatForPropertyMappingEventListener:
     tags:
       - name: 'event.listener'
