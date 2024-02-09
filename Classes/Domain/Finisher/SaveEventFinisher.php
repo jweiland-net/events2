@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Domain\Finisher;
 use JWeiland\Events2\Domain\Repository\UserRepository;
 use JWeiland\Events2\Helper\PathSegmentHelper;
 use JWeiland\Events2\Service\DayRelationService;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
@@ -181,7 +182,7 @@ class SaveEventFinisher extends AbstractFinisher
         $sysFileUid = $databaseData['uid_local'] ?? 0;
 
         // Delete previously stored file references
-        $this->connectionPool->getConnectionForTable('sys_file_reference')->delete(
+        $this->getConnectionForTable('sys_file_reference')->delete(
             'sys_file_reference',
             [
                 'uid_local' => $sysFileUid,
@@ -225,7 +226,7 @@ class SaveEventFinisher extends AbstractFinisher
 
     protected function deleteRecord(string $table, int $uid): void
     {
-        $this->connectionPool->getConnectionForTable($table)->delete(
+        $this->getConnectionForTable($table)->delete(
             $table,
             [
                 'uid' => $uid,
@@ -283,7 +284,7 @@ class SaveEventFinisher extends AbstractFinisher
     protected function saveDataForCategories(array $databaseData, string $table, int $iterationCount): array
     {
         // Delete previously stored categories
-        $this->connectionPool->getConnectionForTable($table)->delete(
+        $this->getConnectionForTable($table)->delete(
             $table,
             [
                 'uid_foreign' => $databaseData['uid_foreign'],
@@ -303,7 +304,7 @@ class SaveEventFinisher extends AbstractFinisher
         }
 
         // Update count in event table
-        $this->connectionPool->getConnectionForTable('tx_events2_domain_model_event')->update(
+        $this->getConnectionForTable('tx_events2_domain_model_event')->update(
             'tx_events2_domain_model_event',
             [
                 'categories' => $sorting,
@@ -320,7 +321,7 @@ class SaveEventFinisher extends AbstractFinisher
     protected function saveDataForOrganizers(array $databaseData, string $table, int $iterationCount): array
     {
         // Delete previously stored organizers
-        $this->connectionPool->getConnectionForTable($table)->delete(
+        $this->getConnectionForTable($table)->delete(
             $table,
             [
                 'uid_local' => $databaseData['uid_local'],
@@ -340,7 +341,7 @@ class SaveEventFinisher extends AbstractFinisher
         }
 
         // Update count in event table
-        $this->connectionPool->getConnectionForTable('tx_events2_domain_model_event')->update(
+        $this->getConnectionForTable('tx_events2_domain_model_event')->update(
             'tx_events2_domain_model_event',
             [
                 'organizers' => $sorting,
@@ -368,13 +369,13 @@ class SaveEventFinisher extends AbstractFinisher
             foreach ($whereClause as $columnName => $columnValue) {
                 $whereClause[$columnName] = $this->parseOption('whereClause.' . $columnName);
             }
-            $this->connectionPool->getConnectionForTable($table)->update(
+            $this->getConnectionForTable($table)->update(
                 $table,
                 $databaseData,
                 $whereClause
             );
         } else {
-            $databaseConnection = $this->connectionPool->getConnectionForTable($table);
+            $databaseConnection = $this->getConnectionForTable($table);
             $databaseConnection->insert($table, $databaseData);
             $lastInsertId = (int)$databaseConnection->lastInsertId($table);
             $this->finisherContext->getFinisherVariableProvider()->add(
@@ -400,7 +401,7 @@ class SaveEventFinisher extends AbstractFinisher
                 && $databaseData['title'] !== ''
             ) {
                 $databaseData['uid'] = $lastInsertId;
-                $this->connectionPool->getConnectionForTable('tx_events2_domain_model_event')->update(
+                $this->getConnectionForTable('tx_events2_domain_model_event')->update(
                     'tx_events2_domain_model_event',
                     [
                         'path_segment' => $this->pathSegmentHelper->generatePathSegment($databaseData),
@@ -495,5 +496,10 @@ class SaveEventFinisher extends AbstractFinisher
             ->getFormRuntime()
             ->getFormDefinition()
             ->getElementByIdentifier($elementIdentifier);
+    }
+
+    protected function getConnectionForTable(string $table): Connection
+    {
+        return $this->connectionPool->getConnectionForTable($table);
     }
 }
