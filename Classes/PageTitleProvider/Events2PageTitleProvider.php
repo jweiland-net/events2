@@ -15,7 +15,6 @@ use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Traits\Typo3RequestTrait;
 use TYPO3\CMS\Core\PageTitle\PageTitleProviderInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Instead of just setting the PageTitle to DetailView on Detail Page,

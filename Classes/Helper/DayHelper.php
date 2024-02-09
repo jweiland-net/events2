@@ -14,7 +14,6 @@ namespace JWeiland\Events2\Helper;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Traits\Typo3RequestTrait;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**

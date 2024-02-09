@@ -14,7 +14,6 @@ namespace JWeiland\Events2\Pagination;
 use JWeiland\Events2\Traits\Typo3RequestTrait;
 use TYPO3\CMS\Core\Pagination\PaginationInterface;
 use TYPO3\CMS\Core\Pagination\PaginatorInterface;
-use TYPO3\CMS\Core\Utility\ArrayUtility;
 
 /**
  * This Pagination respects also existing POST data from search form to keep filter while

@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Upgrade;
 
-use Doctrine\DBAL\Result;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Helper\PathSegmentHelper;
 use TYPO3\CMS\Core\Database\Connection;

@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace JWeiland\Events2\EventListener;
 
 use JWeiland\Events2\Event\PreProcessControllerActionEvent;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Event and Search plugin are two different plugins with different plugin namespaces (events2_list, events2_search).
