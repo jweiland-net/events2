@@ -29,7 +29,7 @@ class CacheUtility
      */
     public static function addCacheTagsByEventRecords(QueryResultInterface|array $eventRecords): void
     {
-        if (!ApplicationType::fromRequest(self::getTypo3Request())->isFrontend()) {
+        if (!self::isFrontendRequest()) {
             return;
         }
 
@@ -53,7 +53,7 @@ class CacheUtility
      */
     public static function addPageCacheTagsByQuery(QueryInterface $query): void
     {
-        if (!ApplicationType::fromRequest(self::getTypo3Request())->isFrontend()) {
+        if (!self::isFrontendRequest()) {
             return;
         }
 
@@ -73,6 +73,11 @@ class CacheUtility
     private static function getTypoScriptFrontendController(): TypoScriptFrontendController
     {
         return self::getTypo3Request()->getAttribute('frontend.controller');
+    }
+
+    private static function isFrontendRequest(): bool
+    {
+        return ApplicationType::fromRequest(self::getTypo3Request())->isFrontend();
     }
 
     private static function getTypo3Request(): ServerRequestInterface
