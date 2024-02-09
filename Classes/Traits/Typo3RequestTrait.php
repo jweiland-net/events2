@@ -32,7 +32,7 @@ trait Typo3RequestTrait
     {
         $request ??= $this->getTypo3Request();
 
-        return $request->getParsedBody();
+        return is_array($request->getParsedBody()) ? $request->getParsedBody() : [];
     }
 
     protected function getGetFromRequest(?ServerRequestInterface $request = null): array
