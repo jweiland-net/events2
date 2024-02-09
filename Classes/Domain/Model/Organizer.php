@@ -14,7 +14,7 @@ namespace JWeiland\Events2\Domain\Model;
 use JWeiland\Events2\Domain\Traits\Typo3PropertiesTrait;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
-/*
+/**
  * This class contains all getter and setters for an Organizer.
  */
 class Organizer extends AbstractEntity

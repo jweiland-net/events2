@@ -15,7 +15,7 @@ use JWeiland\Events2\Domain\Traits\Typo3PropertiesTrait;
 use TYPO3\CMS\Extbase\Annotation as Extbase;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
-/*
+/**
  * This class contains all getter and setters for a Link.
  */
 class Link extends AbstractEntity

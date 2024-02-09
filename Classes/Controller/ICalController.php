@@ -19,7 +19,7 @@ use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
-/*
+/**
  * Controller to deliver an iCal download
  */
 class ICalController extends ActionController

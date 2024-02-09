@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Upgrade;
 
+use Doctrine\DBAL\Exception;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
@@ -19,7 +20,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
 use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 
-/*
+/**
  * Updater to migrate organizer into MM table
  */
 class MigrateOrganizerToMMUpgrade implements UpgradeWizardInterface
@@ -46,8 +47,10 @@ class MigrateOrganizerToMMUpgrade implements UpgradeWizardInterface
     public function updateNecessary(): bool
     {
         $queryBuilder = $this->getQueryBuilder();
-        $schemaManager = $queryBuilder->getConnection()->getSchemaManager();
-        if ($schemaManager === null) {
+
+        try {
+            $schemaManager = $queryBuilder->getConnection()->createSchemaManager();
+        } catch (Exception $e) {
             return false;
         }
 
@@ -123,7 +126,7 @@ class MigrateOrganizerToMMUpgrade implements UpgradeWizardInterface
             ->where(
                 $queryBuilder->expr()->gt(
                     'e.organizer',
-                    $queryBuilder->createNamedParameter(0, Connection::PARAM_STR)
+                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
                 )
             );
     }

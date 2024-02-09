@@ -21,7 +21,7 @@ use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
-/*
+/**
  * Task to import events by various file formats like XML
  */
 class Import extends AbstractTask

@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Domain\Model;
 
-/*
+/**
  * We extend the original category class here, because we have some additional methods to find
  * categories in CategoryRepository.
  *

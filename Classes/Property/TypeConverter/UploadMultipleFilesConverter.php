@@ -27,7 +27,7 @@ use TYPO3\CMS\Extbase\Property\PropertyMappingConfigurationInterface;
 use TYPO3\CMS\Extbase\Property\TypeConverter\AbstractTypeConverter;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
-/*
+/**
  * A for PropertyMapper to convert multiple file uploads into an array
  */
 class UploadMultipleFilesConverter extends AbstractTypeConverter
@@ -54,7 +54,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
     /**
      * Do not inject this property, as EXT:checkfaluploads may not be loaded
      */
-    protected FalUploadService $falUploadService;
+    protected ?FalUploadService $falUploadService = null;
 
     public function __construct(protected readonly EventDispatcher $eventDispatcher)
     {
@@ -78,15 +78,12 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
         return true;
     }
 
-    /**
-     * @return Error|mixed|ObjectStorage
-     */
     public function convertFrom(
         $source,
         string $targetType,
         array $convertedChildProperties = [],
         PropertyMappingConfigurationInterface $configuration = null
-    ) {
+    ): Error|ObjectStorage {
         $this->initialize($configuration);
         $originalSource = $source;
         foreach ($originalSource as $key => $uploadedFile) {

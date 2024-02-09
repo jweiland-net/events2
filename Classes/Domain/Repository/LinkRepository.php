@@ -13,7 +13,7 @@ namespace JWeiland\Events2\Domain\Repository;
 
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
-/*
+/**
  * We need the link repository in AbstractController to remove video link objects, if link itself is empty.
  */
 class LinkRepository extends Repository

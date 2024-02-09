@@ -22,7 +22,7 @@ use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/*
+/**
  * Class to generate all day records for an event within a configured range (ExtensionManager).
  * It does now respect time information, just days. The time records will be processed later.
  */
@@ -439,7 +439,7 @@ class DayGeneratorService implements LoggerAwareInterface
         $today = $this->createDateTime('today');
         $eventBegin = $eventRecord['event_begin'];
         $latestDateOfTimeFrame = $this->modifyDateTime(
-            $today > $eventBegin ? $today : $eventBegin,
+            max($today, $eventBegin),
             sprintf(
                 '+%d months 23:59:59',
                 $this->extConf->getRecurringFuture()

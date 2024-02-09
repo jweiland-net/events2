@@ -11,16 +11,16 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Session;
 
-use JWeiland\Events2\Traits\TypoScriptFrontendControllerTrait;
+use JWeiland\Events2\Traits\Typo3RequestTrait;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
-/*
+/**
  * Methods to access current FE User Session
  */
 class UserSession
 {
-    use TypoScriptFrontendControllerTrait;
+    use Typo3RequestTrait;
 
     protected ?FrontendUserAuthentication $feUser = null;
 

@@ -13,7 +13,7 @@ use ApacheSolrForTypo3\Solr\IndexQueue\Item;
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerDocumentsModifier;
 use JWeiland\Events2\Service\EventService;
 
-/*
+/**
  * As we can't create a SQL Query with JOIN in Solr configuration,
  * we have to remove invalid documents on our own here
  */
@@ -37,7 +37,7 @@ class IndexerHook implements PageIndexerDocumentsModifier
     public function modifyDocuments(Item $item, int $language, array $documents): array
     {
         if ($item->getType() === 'tx_events2_domain_model_event') {
-            $nextDate = $this->eventService->getNextDayForEvent((int)$item->getRecordUid());
+            $nextDate = $this->eventService->getNextDayForEvent($item->getRecordUid());
             if (!$nextDate instanceof \DateTimeImmutable) {
                 // clear document array, if there are no further dates in future
                 $documents = [];

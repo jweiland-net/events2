@@ -16,7 +16,7 @@ use JWeiland\Maps2\Domain\Model\PoiCollection;
 use SJBR\StaticInfoTables\Domain\Model\Country;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
-/*
+/**
  * This class contains all getter and setters for a Location.
  */
 class Location extends AbstractEntity

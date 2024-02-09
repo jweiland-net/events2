@@ -15,7 +15,7 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/*
+/**
  * Render a selectbox with countries from static_info_tables within ExtensionManager configuration for events2
  */
 class EmStaticInfo

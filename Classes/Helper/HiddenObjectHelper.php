@@ -17,7 +17,7 @@ use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Session;
 use TYPO3\CMS\Extbase\Persistence\RepositoryInterface;
 
-/*
+/**
  * Helper class to register hidden objects in extbase session container.
  * That way it's possible to call Controller Actions with hidden objects.
  */

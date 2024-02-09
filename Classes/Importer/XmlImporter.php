@@ -28,7 +28,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
-/*
+/**
  * Imports event records by a XML file
  */
 class XmlImporter extends AbstractImporter
@@ -468,18 +468,8 @@ class XmlImporter extends AbstractImporter
                         $targetFolder->getCombinedIdentifier() . $filename
                     );
                 } else {
-                    $report = [];
-                    $content = GeneralUtility::getUrl($image['url']);
-                    if (!empty($report['error'])) {
-                        $this->addMessage(sprintf(
-                            'Given image was NOT added to event. Error: %s',
-                            $report['message']
-                        ), ContextualFeedbackSeverity::NOTICE);
-                        continue;
-                    }
-
                     $file = $targetFolder->createFile($filename);
-                    $file->setContents($content);
+                    $file->setContents(GeneralUtility::getUrl($image['url']));
                 }
 
                 // Create new FileReference

@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Pagination;
 
-use JWeiland\Events2\Traits\TypoScriptFrontendControllerTrait;
+use JWeiland\Events2\Traits\Typo3RequestTrait;
 use TYPO3\CMS\Core\Pagination\PaginationInterface;
 use TYPO3\CMS\Core\Pagination\PaginatorInterface;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
@@ -22,7 +22,7 @@ use TYPO3\CMS\Core\Utility\ArrayUtility;
  */
 class GetPostPagination implements PaginationInterface
 {
-    use TypoScriptFrontendControllerTrait;
+    use Typo3RequestTrait;
 
     protected string $pluginNamespace = 'tx_events2_list';
 
@@ -30,12 +30,7 @@ class GetPostPagination implements PaginationInterface
 
     public function __construct(protected readonly PaginatorInterface $paginator)
     {
-        $request = $this->getTypo3Request();
-        $getMergedWithPost = $request->getQueryParams()[$this->pluginNamespace];
-        ArrayUtility::mergeRecursiveWithOverrule(
-            $getMergedWithPost,
-            $request->getParsedBody()[$this->pluginNamespace]
-        );
+        $getMergedWithPost = $this->getMergedWithPostFromRequest($this->pluginNamespace);
 
         foreach ($getMergedWithPost as $argumentName => $argument) {
             if ($argumentName[0] === '_' && $argumentName[1] === '_') {

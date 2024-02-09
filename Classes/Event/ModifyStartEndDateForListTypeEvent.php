@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Event;
 
-/*
+/**
  * Use this event, if you want to modify or create your own start-/end-date for a given listType
  */
 class ModifyStartEndDateForListTypeEvent

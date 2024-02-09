@@ -15,7 +15,7 @@ use JWeiland\Events2\Converter\TimeToStringConverter;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
-/*
+/**
  * This class checks, if given time entry like 08:34 is valid in TCA.
  */
 class Time
@@ -35,10 +35,8 @@ class Time
 
     /**
      * This method converts the value into a unique time format: 21:23.
-     *
-     * @param mixed $value
      */
-    public function evaluateFieldValue($value): string
+    public function evaluateFieldValue(mixed $value): string
     {
         if (MathUtility::canBeInterpretedAsInteger($value)) {
             $value = (int)$value;

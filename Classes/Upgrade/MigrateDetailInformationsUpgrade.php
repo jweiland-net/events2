@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Upgrade;
 
+use Doctrine\DBAL\Exception;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
@@ -18,7 +19,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
 use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 
-/*
+/**
  * Updater to migrate column detail_informations to detail_information
  */
 class MigrateDetailInformationsUpgrade implements UpgradeWizardInterface
@@ -45,8 +46,10 @@ class MigrateDetailInformationsUpgrade implements UpgradeWizardInterface
     public function updateNecessary(): bool
     {
         $queryBuilder = $this->getQueryBuilder();
-        $schemaManager = $queryBuilder->getConnection()->getSchemaManager();
-        if ($schemaManager === null) {
+
+        try {
+            $schemaManager = $queryBuilder->getConnection()->createSchemaManager();
+        } catch (Exception $e) {
             return false;
         }
 

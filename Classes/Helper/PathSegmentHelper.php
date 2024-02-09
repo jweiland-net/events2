@@ -23,7 +23,7 @@ use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 
-/*
+/**
  * Helper class to generate a path segment (slug) for an event record.
  * Used while executing the UpgradeWizard and saving records in frontend.
  */

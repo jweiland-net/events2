@@ -15,7 +15,7 @@ use TYPO3\CMS\Backend\Form\FormDataProviderInterface;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 
-/*
+/**
  * This class sets some dynamic default values (like event_begin) for event record
  */
 class InitializeNewEventRecord implements FormDataProviderInterface

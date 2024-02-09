@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Domain\Traits;
 
-/*
+/**
  * A Trait which contains all getters and setters for TYPO3 columns
  */
 trait Typo3PropertiesTrait

@@ -16,7 +16,7 @@ use JWeiland\Events2\Event\PostProcessFluidVariablesEvent;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 
-/*
+/**
  * After activating an event via the link of activation mail (frontend created events) just the event itself
  * will be activated while the day records are still hidden. We can't loop through $event->getDays() as at that point
  * the day records are still hidden and are not found by the internals of DayRepository.

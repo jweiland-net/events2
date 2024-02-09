@@ -25,7 +25,7 @@ use TYPO3\CMS\Extbase\Annotation as Extbase;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
-/*
+/**
  * The EventController contains actions to search, create, activate, update and delete events.
  * For plain listing of events please visit DayController
  */
@@ -138,7 +138,7 @@ class ManagementController extends AbstractController
 
         $this->addFlashMessage(LocalizationUtility::translate('eventCreated', 'events2'));
 
-        $this->redirect('list', 'Day');
+        return $this->redirect('list', 'Day');
     }
 
     public function initializeEditAction(): void

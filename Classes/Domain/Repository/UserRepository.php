@@ -11,16 +11,15 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Domain\Repository;
 
-/*
+use JWeiland\Events2\Traits\Typo3RequestTrait;
+
+/**
  * This repository is not connected to the extbase system. So saving does not work.
  * It creates readOnly access to the user values in $GLOBALS.
  */
-
-use JWeiland\Events2\Traits\TypoScriptFrontendControllerTrait;
-
 class UserRepository
 {
-    use TypoScriptFrontendControllerTrait;
+    use Typo3RequestTrait;
 
     /**
      * Get currently logged-in user.

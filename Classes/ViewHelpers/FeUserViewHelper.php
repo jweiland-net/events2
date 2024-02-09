@@ -17,7 +17,7 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
-/*
+/**
  * This VH returns values from current logged in frontend user array
  */
 class FeUserViewHelper extends AbstractViewHelper

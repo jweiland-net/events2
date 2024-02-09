@@ -15,7 +15,7 @@ use JWeiland\Events2\Domain\Factory\TimeFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
-/*
+/**
  * This class contains all getter and setters for a Day.
  */
 class Day extends AbstractEntity

@@ -13,7 +13,7 @@ namespace JWeiland\Events2\Event;
 
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 
-/*
+/**
  * Use this event, if you want to modify the queries of LocationRepository::findLocations.
  */
 class ModifyQueriesOfFindLocationsEvent

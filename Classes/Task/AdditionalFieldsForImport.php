@@ -19,7 +19,7 @@ use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 use TYPO3Fluid\Fluid\Core\ViewHelper\TagBuilder;
 
-/*
+/**
  * Additional FieldProvider for events2 Importer
  */
 class AdditionalFieldsForImport extends AbstractAdditionalFieldProvider

@@ -14,7 +14,7 @@ namespace JWeiland\Events2\Event;
 use JWeiland\Events2\Domain\Model\Search;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 
-/*
+/**
  * Use this event, if you want to modify the queries of DayRepository::searchEvents.
  */
 class ModifyQueriesOfSearchEventsEvent

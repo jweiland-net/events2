@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Domain\Model;
 
-/*
+/**
  * This class was used by DateTimeGenerator and represents a DateTime object and the information, if this date is
  * marked as removed or not.
  */

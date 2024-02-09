@@ -203,13 +203,16 @@ class DateTimeImmutableConverter extends AbstractTypeConverter
             // todo: type converters are never called without a property mapping configuration
             return self::DEFAULT_DATE_FORMAT;
         }
+
         $dateFormat = $configuration->getConfigurationValue(DateTimeImmutableConverter::class, self::CONFIGURATION_DATE_FORMAT);
         if ($dateFormat === null) {
             return self::DEFAULT_DATE_FORMAT;
         }
-        if ($dateFormat !== null && !is_string($dateFormat)) {
+
+        if (!is_string($dateFormat)) {
             throw new InvalidPropertyMappingConfigurationException('CONFIGURATION_DATE_FORMAT must be of type string, "' . (is_object($dateFormat) ? get_class($dateFormat) : gettype($dateFormat)) . '" given', 1307719569);
         }
+
         return $dateFormat;
     }
 

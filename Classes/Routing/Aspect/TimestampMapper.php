@@ -13,7 +13,7 @@ namespace JWeiland\Events2\Routing\Aspect;
 
 use TYPO3\CMS\Core\Routing\Aspect\StaticMappableAspectInterface;
 
-/*
+/**
  * Mapper to map a timestamp to a formatted value and back to a timestamp.
  *
  * routeEnhancers:

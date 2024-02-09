@@ -19,7 +19,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
-/*
+/**
  * This middleware is needed for management plugin. It is needed to get the sub-categories of a selected
  * main category.
  */

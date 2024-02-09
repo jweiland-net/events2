@@ -16,7 +16,7 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
-/*
+/**
  * Check, if there is an exceptions of type "remove" for specified date
  */
 class IsDateMarkedAsCanceledViewHelper extends AbstractViewHelper

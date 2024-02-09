@@ -30,7 +30,7 @@ use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 
-/*
+/**
  * Abstract Importer which will keep most methods for all importer scripts
  */
 abstract class AbstractImporter implements ImporterInterface

@@ -22,7 +22,7 @@ use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
-/*
+/**
  * This class contains all getter and setters for an Event.
  */
 class Event extends AbstractEntity
@@ -579,7 +579,6 @@ class Event extends AbstractEntity
         }
 
         ksort($futureDates);
-        reset($futureDates);
 
         return $futureDates;
     }
@@ -616,7 +615,6 @@ class Event extends AbstractEntity
         }
 
         ksort($alternativeDays);
-        reset($alternativeDays);
 
         return $alternativeDays;
     }
@@ -643,7 +641,6 @@ class Event extends AbstractEntity
         }
 
         ksort($futureDates);
-        reset($futureDates);
 
         return $futureDates;
     }
@@ -680,7 +677,6 @@ class Event extends AbstractEntity
         }
 
         ksort($alternativeTimes);
-        reset($alternativeTimes);
 
         return $alternativeTimes;
     }

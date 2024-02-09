@@ -232,19 +232,15 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
             switch ($actions) {
                 case 'Day->listLatest;Day->show;Day->showByTimestamp;Location->show;Video->show':
                     $listType = 'listLatest';
-                    $ttContentListType = 'events2_list';
                     break;
                 case 'Day->listToday;Day->show;Day->showByTimestamp;Location->show;Video->show':
                     $listType = 'listToday';
-                    $ttContentListType = 'events2_list';
                     break;
                 case 'Day->listThisWeek;Day->show;Day->showByTimestamp;Location->show;Video->show':
                     $listType = 'listWeek';
-                    $ttContentListType = 'events2_list';
                     break;
                 case 'Day->listRange;Day->show;Day->showByTimestamp;Location->show;Video->show':
                     $listType = 'listRange';
-                    $ttContentListType = 'events2_list';
                     break;
                 default:
                     $listType = 'list';

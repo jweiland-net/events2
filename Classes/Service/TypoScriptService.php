@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Service;
 
-/*
+/**
  * A Service to merge the TypoScript Settings (Framework) into the merged Settings (inkl. FlexForm),
  * if these are empty or 0
  */
@@ -25,10 +25,7 @@ class TypoScriptService
             } elseif (
                 !isset($mergedFlexFormSettings[$property])
                 || $mergedFlexFormSettings[$property] === '0'
-                || (
-                    is_string($mergedFlexFormSettings[$property]) &&
-                    $mergedFlexFormSettings[$property] === ''
-                )
+                || $mergedFlexFormSettings[$property] === ''
             ) {
                 $mergedFlexFormSettings[$property] = $value;
             }

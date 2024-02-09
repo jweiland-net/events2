@@ -18,7 +18,7 @@ use ApacheSolrForTypo3\Solr\GarbageCollector;
 use JWeiland\Events2\Service\EventService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/*
+/**
  * Remove event records from result set, if they are not current anymore.
  */
 class ResultsCommandHook implements SearchResultSetProcessor

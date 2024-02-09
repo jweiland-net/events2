@@ -14,7 +14,7 @@ namespace JWeiland\Events2\EventListener;
 use JWeiland\Events2\Event\PreProcessControllerActionEvent;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 
-/*
+/**
  * We have build our own form-tag for search plugin, so extbase will not configure PropertyMappingConfiguration
  * automatically. We have to do it manually here.
  * With fluid-form-VHs the $_GET request in browser URL will get extremely long.

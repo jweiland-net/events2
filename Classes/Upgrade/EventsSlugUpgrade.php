@@ -22,7 +22,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
 use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 
-/*
+/**
  * Updater to fill empty slug columns of event records
  */
 class EventsSlugUpgrade implements UpgradeWizardInterface
@@ -124,7 +124,7 @@ class EventsSlugUpgrade implements UpgradeWizardInterface
                 $queryBuilder->expr()->or(
                     $queryBuilder->expr()->eq(
                         $this->slugColumn,
-                        $queryBuilder->createNamedParameter('', Connection::PARAM_STR)
+                        $queryBuilder->createNamedParameter('')
                     ),
                     $queryBuilder->expr()->isNull(
                         $this->slugColumn
@@ -166,7 +166,7 @@ class EventsSlugUpgrade implements UpgradeWizardInterface
             ->where(
                 $queryBuilder->expr()->eq(
                     $this->slugColumn,
-                    $queryBuilder->createPositionalParameter($slug, Connection::PARAM_STR)
+                    $queryBuilder->createPositionalParameter($slug)
                 ),
                 $queryBuilder->expr()->neq(
                     'uid',

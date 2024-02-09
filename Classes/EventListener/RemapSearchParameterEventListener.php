@@ -14,7 +14,7 @@ namespace JWeiland\Events2\EventListener;
 use JWeiland\Events2\Event\PreProcessControllerActionEvent;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/*
+/**
  * Event and Search plugin are two different plugins with different plugin namespaces (events2_list, events2_search).
  * If you submit search form "events2_search" will be used, but as plugin events2_list will show the results, it
  * will not react on these foreign requests. That why we have switches the plugin namespace of search plugin to

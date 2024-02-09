@@ -19,7 +19,7 @@ use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\View\ViewInterface;
 
-/*
+/**
  * The DayController contains actions to show a day record
  */
 class DayController extends AbstractController
@@ -80,7 +80,7 @@ class DayController extends AbstractController
         return $this->htmlResponse();
     }
 
-    /*
+    /**
      * I call showAction with int instead of DomainModel to prevent that recursive validators will be called.
      */
     public function showAction(int $event, int $timestamp = 0): ResponseInterface

@@ -31,8 +31,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
-/*
+/**
  * Repository to get and find day records from storage
+ *
+ * @method Day findByIdentifier(int $dayUid)
  */
 class DayRepository extends AbstractRepository
 {
@@ -375,26 +377,21 @@ class DayRepository extends AbstractRepository
      * where only_full_group_by is activated.
      *
      * @param array $additionalColumns Must contain table: [table].[column]
-     * @return array
      */
     protected function getColumnsForDayTable(array $additionalColumns = []): array
     {
-        $columns = [];
         $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_day');
-        if ($connection->getSchemaManager() instanceof AbstractSchemaManager) {
-            $dayColumns = array_map(
-                static fn ($column): string => 'day.' . $column,
-                array_keys(
-                    $connection->getSchemaManager()->listTableColumns('tx_events2_domain_model_day') ?? []
-                )
-            );
-            $columns = array_merge($dayColumns, $additionalColumns);
-        }
+        $dayColumns = array_map(
+            static fn ($column): string => 'day.' . $column,
+            array_keys(
+                $connection->createSchemaManager()->listTableColumns('tx_events2_domain_model_day') ?? []
+            )
+        );
 
-        return $columns;
+        return array_merge($dayColumns, $additionalColumns);
     }
 
-    /*
+    /**
      * Apply various merge features to query
      */
     protected function addMergeFeatureToQuery(QueryBuilder $subQueryBuilder): void
@@ -408,7 +405,7 @@ class DayRepository extends AbstractRepository
         }
     }
 
-    /*
+    /**
      * Join SubQuery as SQL-Part into parent QueryBuilder
      */
     protected function joinSubQueryIntoQueryBuilder(QueryBuilder $queryBuilder, QueryBuilder $subQueryBuilder): void
@@ -444,7 +441,7 @@ class DayRepository extends AbstractRepository
         return $this->dayFactory->findDayByEventAndTimestamp($eventUid, $timestamp, $this->createQuery());
     }
 
-    /*
+    /**
      * Nearly the same as "findDayByEventAndTimestamp", but this method was used by PageTitleProvider
      * which is out of Extbase context. So we are using a plain Doctrine Query here.
      */
@@ -473,7 +470,7 @@ class DayRepository extends AbstractRepository
         return $day;
     }
 
-    /*
+    /**
      * Get Sub-QueryBuilder
      */
     protected function getSubQueryBuilder(QueryBuilder $queryBuilder, bool $useStrictLang = false): QueryBuilder

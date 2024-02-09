@@ -16,7 +16,7 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
-/*
+/**
  * The organizer repository is used to sort the organizers in our create-new-form. Further it will be used in
  * our event importer
  */

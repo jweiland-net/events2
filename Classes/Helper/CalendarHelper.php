@@ -13,15 +13,15 @@ namespace JWeiland\Events2\Helper;
 
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Session\UserSession;
-use JWeiland\Events2\Traits\TypoScriptFrontendControllerTrait;
+use JWeiland\Events2\Traits\Typo3RequestTrait;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/*
+/**
  * Helper class containing various methods to help to build variables for LiteCalendar
  */
 class CalendarHelper
 {
-    use TypoScriptFrontendControllerTrait;
+    use Typo3RequestTrait;
 
     public function __construct(
         protected readonly DayHelper $dayHelper,
@@ -49,9 +49,9 @@ class CalendarHelper
 
     protected function addCalendarVariablesByUserSession(array &$variables): void
     {
-        // 1st priority. If an user session was found we will use stored month/year from session
+        // 1st priority. If a user session was found we will use stored month/year from session
         $monthAndYear = $this->userSession->getMonthAndYear();
-        if (is_array($monthAndYear) && !empty($monthAndYear)) {
+        if ($monthAndYear !== []) {
             $variables['day'] = '01';
             $variables['month'] = (string)$monthAndYear['month'];
             $variables['year'] = (string)$monthAndYear['year'];

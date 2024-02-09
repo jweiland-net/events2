@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Domain\Repository;
 
-/*
+/**
  * Repository to get exception records
  */
 class ExceptionRepository extends AbstractRepository

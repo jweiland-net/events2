@@ -18,7 +18,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use TYPO3\CMS\Core\Http\JsonResponse;
 
-/*
+/**
  * This middleware is needed for management plugin. It is needed to show a list of location titles
  * in AutoComplete input box.
  */

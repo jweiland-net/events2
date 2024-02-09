@@ -25,7 +25,7 @@ use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
-/*
+/**
  * Extract various information from an event/day to build a json-ld string
  */
 class JsonLdService
@@ -312,7 +312,7 @@ class JsonLdService
             }
 
             $url = GeneralUtility::locationHeaderUrl(PathUtility::getAbsoluteWebPath(Environment::getPublicPath()));
-            $url .= $resource->getPublicUrl(false);
+            $url .= $resource->getPublicUrl();
 
             $this->data['image'] = [
                 '@type' => 'ImageObject',

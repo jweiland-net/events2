@@ -21,7 +21,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\Category;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 
-/*
+/**
  * This controller shows the search-form and search-results.
  */
 class SearchController extends AbstractController

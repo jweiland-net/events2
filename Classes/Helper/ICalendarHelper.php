@@ -19,7 +19,7 @@ use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/*
+/**
  * Helper class to build an ical export
  */
 class ICalendarHelper

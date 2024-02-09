@@ -23,7 +23,7 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Form\Domain\Model\FormElements\AbstractFormElement;
 use TYPO3\CMS\Form\Domain\Model\Renderable\RenderableInterface;
 
-/*
+/**
  * Prefill EXT:form element of type checkboxes with categories from database
  */
 class PrefillCategoriesHook

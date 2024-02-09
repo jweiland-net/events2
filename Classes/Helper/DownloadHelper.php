@@ -17,7 +17,7 @@ use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Http\Stream;
 use TYPO3\CMS\Core\Resource\FileInterface;
 
-/*
+/**
  * Helper class to provide a string or file as download
  */
 class DownloadHelper

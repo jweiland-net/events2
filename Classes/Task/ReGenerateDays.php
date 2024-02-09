@@ -25,7 +25,7 @@ use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\CMS\Scheduler\ProgressProviderInterface;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
-/*
+/**
  * This class loops through all events and re-creates the day records.
  * Instead of the RepairCommand, this class does NOT truncate the whole day table.
  */
@@ -126,12 +126,13 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
      *
      * @return float Progress of the task as a two decimal precision float. f.e. 44.87
      */
-    public function getProgress()
+    public function getProgress(): float
     {
         $progress = $this->registry->get('events2TaskCreateUpdate', 'progress');
         if ($progress) {
-            return 100 / $progress['records'] * $progress['counter'];
+            return (float)(100 / $progress['records'] * $progress['counter']);
         }
+
         return 0.0;
     }
 

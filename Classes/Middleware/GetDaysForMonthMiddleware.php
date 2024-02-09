@@ -27,7 +27,7 @@ use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
-/*
+/**
  * This middleware is needed for LiteCalendar. If you flip to next month, this
  * class will be called and returns the events valid for selected month.
  */
@@ -56,7 +56,6 @@ class GetDaysForMonthMiddleware implements MiddlewareInterface
             ], 400);
         }
 
-        $getParameters = $request->getQueryParams();
         $month = MathUtility::forceIntegerInRange($getParameters['month'], 1, 12);
         $year = MathUtility::forceIntegerInRange($getParameters['year'], 1500, 2500);
         $categories = GeneralUtility::intExplode(',', $getParameters['categories'], true);

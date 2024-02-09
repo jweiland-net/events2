@@ -17,7 +17,7 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
-/*
+/**
  * Category Repository to find records for our search form
  */
 class CategoryRepository extends Repository
@@ -26,7 +26,7 @@ class CategoryRepository extends Repository
         'title' => QueryInterface::ORDER_ASCENDING
     ];
 
-    /*
+    /**
      * This is a copy of deprecated CategoryRepository of TYPO3 Extbase v11
      */
     public function initializeObject(): void

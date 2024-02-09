@@ -13,7 +13,7 @@ namespace JWeiland\Events2\Tca;
 
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
-/*
+/**
  * This class adds the time and weekday to label of time-records in TCA.
  */
 class TimeLabel

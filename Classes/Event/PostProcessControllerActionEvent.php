@@ -25,10 +25,7 @@ use TYPO3\CMS\Extbase\Mvc\RequestInterface;
  */
 class PostProcessControllerActionEvent implements ControllerActionEventInterface
 {
-    /**
-     * @var ActionController|ManagementController|DayController
-     */
-    protected $controller;
+    protected ActionController|DayController|ManagementController $controller;
 
     protected ?Event $event;
 

@@ -169,6 +169,9 @@ class OverlayHelper implements LoggerAwareInterface
      */
     protected function getLanguageAspect(): LanguageAspect
     {
-        return $this->context->getAspect('language');
+        /** @var LanguageAspect $languageAspect */
+        $languageAspect = $this->context->getAspect('language');
+
+        return $languageAspect;
     }
 }

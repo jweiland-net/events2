@@ -15,7 +15,7 @@ use JWeiland\Events2\Configuration\ExtConf;
 use TYPO3\CMS\Backend\Form\FormDataProviderInterface;
 use TYPO3\CMS\Core\Information\Typo3Version;
 
-/*
+/**
  * Reduce amount of categories to given root category declared in extension configuration
  */
 class ModifyRootUidOfTreeSelectElements implements FormDataProviderInterface

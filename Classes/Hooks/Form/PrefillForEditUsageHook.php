@@ -23,7 +23,7 @@ use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Form\Domain\Model\FormElements\AbstractFormElement;
 use TYPO3\CMS\Form\Domain\Model\Renderable\RenderableInterface;
 
-/*
+/**
  * Prefill EXT:form element of type checkboxes with categories from database
  */
 class PrefillForEditUsageHook
@@ -191,7 +191,7 @@ class PrefillForEditUsageHook
                 $stringExplodeValue = isset($expression['strExplodeValue']) && (int)$expression['strExplodeValue'] === 1;
                 $intExplodeValue = isset($expression['intExplodeValue']) && (int)$expression['intExplodeValue'] === 1;
 
-                if (strpos($value, ':') !== false) {
+                if (str_contains($value, ':')) {
                     [$type, $column] = GeneralUtility::trimExplode(':', trim($value, '{}'));
                     if ($type === 'event') {
                         $value = $eventRecord[$column] ?? '';

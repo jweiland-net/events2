@@ -11,13 +11,12 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Domain\Repository;
 
-/*
+use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
+
+/**
  * Interface to identify Repositories which can find hidden objects
  * Currently used in HiddenObjectsHelper
  */
-
-use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
-
 interface HiddenRepositoryInterface
 {
     /**
@@ -25,5 +24,5 @@ interface HiddenRepositoryInterface
      *
      * @param mixed $value The Value to compare against $property
      */
-    public function findHiddenObject($value, string $property = 'uid'): ?AbstractDomainObject;
+    public function findHiddenObject(mixed $value, string $property = 'uid'): ?AbstractDomainObject;
 }

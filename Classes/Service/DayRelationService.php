@@ -23,7 +23,7 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/*
+/**
  * While saving an event in backend, this class generates all the day records
  * and sets them in relation to the event record.
  */

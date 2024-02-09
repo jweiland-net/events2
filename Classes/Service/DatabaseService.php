@@ -22,7 +22,7 @@ use TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/*
+/**
  * A little helper to organize our DB queries
  */
 class DatabaseService
@@ -40,7 +40,7 @@ class DatabaseService
     {
         $output = [];
         $connection = $this->getConnectionPool()->getConnectionForTable($tableName);
-        $statement = $connection->query('SHOW FULL COLUMNS FROM `' . $tableName . '`');
+        $statement = $connection->executeQuery('SHOW FULL COLUMNS FROM `' . $tableName . '`');
         while ($fieldRow = $statement->fetchAssociative()) {
             $output[$fieldRow['Field']] = $fieldRow;
         }
@@ -472,14 +472,11 @@ class DatabaseService
 
     /**
      * Add Constraint for various columns of event table
-     *
-     * @param mixed $value
-     * @param QueryBuilder|null $parentQueryBuilder
      */
     public function addConstraintForEventColumn(
         QueryBuilder $queryBuilder,
         string $column,
-        $value,
+        mixed $value,
         int $dataType = Connection::PARAM_STR,
         QueryBuilder $parentQueryBuilder = null,
         string $alias = 'event'

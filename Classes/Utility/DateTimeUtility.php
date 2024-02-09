@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -11,7 +13,7 @@ namespace JWeiland\Events2\Utility;
 
 use TYPO3\CMS\Core\Utility\MathUtility;
 
-/*
+/**
  * With this class you can convert various strings and integers into a DateTime object.
  */
 class DateTimeUtility

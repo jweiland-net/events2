@@ -17,7 +17,7 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
-/*
+/**
  * Cache Utility class
  */
 class CacheUtility
@@ -26,10 +26,8 @@ class CacheUtility
      * Adds cache tags to page cache by event-records.
      * Following cache tags will be added to TSFE:
      * "tx_events2_uid_[event:uid]"
-     *
-     * @param array|QueryResultInterface $eventRecords
      */
-    public static function addCacheTagsByEventRecords($eventRecords): void
+    public static function addCacheTagsByEventRecords(QueryResultInterface|array $eventRecords): void
     {
         if (!ApplicationType::fromRequest(self::getTypo3Request())->isFrontend()) {
             return;
@@ -37,7 +35,7 @@ class CacheUtility
 
         $cacheTags = [];
         foreach ($eventRecords as $event) {
-            // cache tag for each event record
+            // Cache tag for each event record
             $cacheTags[] = 'tx_events2_uid_' . $event->getUid();
 
             if ($event->_getProperty('_localizedUid')) {

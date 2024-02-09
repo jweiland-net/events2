@@ -28,7 +28,7 @@ use TYPO3\CMS\Extbase\Mvc\Controller\Arguments;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3Fluid\Fluid\View\ViewInterface;
 
-/*
+/**
  * A collection of various helper methods to keep
  * our Action Controllers small and clean
  */

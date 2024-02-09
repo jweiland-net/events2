@@ -12,16 +12,16 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Controller;
 
 use JWeiland\Events2\Helper\CalendarHelper;
-use JWeiland\Events2\Traits\TypoScriptFrontendControllerTrait;
+use JWeiland\Events2\Traits\Typo3RequestTrait;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
-/*
+/**
  * Controller to show the LiteCalendar. Further, it stores the selected month in user-session
  */
 class CalendarController extends AbstractController
 {
-    use TypoScriptFrontendControllerTrait;
+    use Typo3RequestTrait;
 
     protected CalendarHelper $calendarHelper;
 

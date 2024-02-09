@@ -22,7 +22,7 @@ use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
-/*
+/**
  * This class contains methods to find a day by a given event and exact timestamp.
  * If day was not found it will automatically search for next day.
  * If day was not found it will automatically search for previous day.

@@ -19,7 +19,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Pagination\QueryResultPaginator;
 
-/*
+/**
  * Add paginator to fluid template
  */
 class AddPaginatorEventListener extends AbstractControllerEventListener
