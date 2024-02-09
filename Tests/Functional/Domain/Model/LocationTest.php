@@ -32,7 +32,7 @@ class LocationTest extends FunctionalTestCase
      */
     protected $testExtensionsToLoad = [
         'typo3conf/ext/maps2',
-        'typo3conf/ext/static_info_tables'
+        'typo3conf/ext/static_info_tables',
     ];
 
     protected function setUp(): void

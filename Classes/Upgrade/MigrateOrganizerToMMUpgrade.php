@@ -97,17 +97,17 @@ class MigrateOrganizerToMMUpgrade implements UpgradeWizardInterface
                     'uid_local' => (int)$event['uid'],
                     'uid_foreign' => (int)$event['organizer'],
                     'sorting' => 1,
-                    'sorting_foreign' => 0
+                    'sorting_foreign' => 0,
                 ]
             );
             // event->organizer was an 1:1 relation, so organizer = 1 should be OK here
             $eventConnection->update(
                 'tx_events2_domain_model_event',
                 [
-                    'organizers' => 1
+                    'organizers' => 1,
                 ],
                 [
-                    'uid' => (int)$event['uid']
+                    'uid' => (int)$event['uid'],
                 ]
             );
         }
@@ -137,7 +137,7 @@ class MigrateOrganizerToMMUpgrade implements UpgradeWizardInterface
     public function getPrerequisites(): array
     {
         return [
-            DatabaseUpdatedPrerequisite::class
+            DatabaseUpdatedPrerequisite::class,
         ];
     }
 

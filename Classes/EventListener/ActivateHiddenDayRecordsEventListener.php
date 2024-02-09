@@ -31,9 +31,7 @@ class ActivateHiddenDayRecordsEventListener extends AbstractControllerEventListe
         ],
     ];
 
-    public function __construct(readonly private ConnectionPool $connectionPool)
-    {
-    }
+    public function __construct(readonly private ConnectionPool $connectionPool) {}
 
     public function __invoke(PostProcessFluidVariablesEvent $controllerActionEvent): void
     {

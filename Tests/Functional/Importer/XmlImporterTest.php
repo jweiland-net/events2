@@ -58,7 +58,7 @@ class XmlImporterTest extends FunctionalTestCase
      */
     protected $coreExtensionsToLoad = [
         'extensionmanager',
-        'scheduler'
+        'scheduler',
     ];
 
     /**

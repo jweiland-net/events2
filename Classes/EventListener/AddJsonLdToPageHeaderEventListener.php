@@ -22,13 +22,11 @@ class AddJsonLdToPageHeaderEventListener extends AbstractControllerEventListener
 {
     protected array $allowedControllerActions = [
         'Day' => [
-            'show'
-        ]
+            'show',
+        ],
     ];
 
-    public function __construct(protected readonly JsonLdService $jsonLdService)
-    {
-    }
+    public function __construct(protected readonly JsonLdService $jsonLdService) {}
 
     public function __invoke(PostProcessControllerActionEvent $controllerActionEvent): void
     {

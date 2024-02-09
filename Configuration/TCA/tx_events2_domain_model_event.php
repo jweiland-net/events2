@@ -36,7 +36,7 @@ return [
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.event_details, --palette--;;teaserFreeEntry, detail_information, ticket_link, alternative_times, location, organizers,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.media, images, video_link, download_links, categories,
             --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access,
-            --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access'
+            --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access',
         ],
         'recurring' => [
             'showitem' => '--palette--;;language, --palette--;;eventTypeHiddenTopOfList, title, path_segment,
@@ -46,7 +46,7 @@ return [
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.event_details, --palette--;;teaserFreeEntry, detail_information, ticket_link, alternative_times, location, organizers,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.media,--palette--;;newline, images, video_link, download_links, categories,
             --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access,
-            --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access'
+            --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access',
         ],
         'duration' => [
             'showitem' => '--palette--;;language, --palette--;;eventTypeHiddenTopOfList, title, path_segment, --palette--;;eventBeginEnd, event_time,
@@ -54,7 +54,7 @@ return [
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.event_details, --palette--;;teaserFreeEntry, detail_information, ticket_link, alternative_times, location, organizers,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.media,--palette--;;newline, images, video_link, download_links, categories,
             --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access,
-            --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access'
+            --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access',
         ],
     ],
     'palettes' => [
@@ -69,7 +69,7 @@ return [
             --linebreak--,
             fe_group;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:fe_group_formlabel,
             --linebreak--,editlock',
-        ]
+        ],
     ],
     'columns' => [
         'sys_language_uid' => [
@@ -89,12 +89,12 @@ return [
                 'maxitems' => 1,
                 'minitems' => 0,
                 'default' => 0,
-            ]
+            ],
         ],
         'l10n_source' => [
             'config' => [
-                'type' => 'passthrough'
-            ]
+                'type' => 'passthrough',
+            ],
         ],
         'hidden' => [
             'exclude' => true,
@@ -106,28 +106,28 @@ return [
                     [
                         'label' => '',
                         'value' => '',
-                        'invertStateDisplay' => true
-                    ]
+                        'invertStateDisplay' => true,
+                    ],
                 ],
-            ]
+            ],
         ],
         'pid' => [
             'label' => 'pid',
             'config' => [
-                'type' => 'passthrough'
-            ]
+                'type' => 'passthrough',
+            ],
         ],
         'crdate' => [
             'label' => 'crdate',
             'config' => [
                 'type' => 'passthrough',
-            ]
+            ],
         ],
         'tstamp' => [
             'label' => 'tstamp',
             'config' => [
                 'type' => 'passthrough',
-            ]
+            ],
         ],
         'starttime' => [
             'exclude' => true,
@@ -135,10 +135,10 @@ return [
             'config' => [
                 'type' => 'datetime',
                 'format' => 'datetime',
-                'default' => 0
+                'default' => 0,
             ],
             'l10n_mode' => 'exclude',
-            'l10n_display' => 'defaultAsReadonly'
+            'l10n_display' => 'defaultAsReadonly',
         ],
         'endtime' => [
             'exclude' => true,
@@ -149,7 +149,7 @@ return [
                 'default' => 0,
             ],
             'l10n_mode' => 'exclude',
-            'l10n_display' => 'defaultAsReadonly'
+            'l10n_display' => 'defaultAsReadonly',
         ],
         'fe_group' => [
             'exclude' => true,
@@ -194,9 +194,9 @@ return [
                     [
                         'label' => '',
                         'value' => '',
-                    ]
+                    ],
                 ],
-            ]
+            ],
         ],
         'event_type' => [
             'exclude' => true,
@@ -224,7 +224,7 @@ return [
                     ],
                 ],
                 'default' => 'single',
-            ]
+            ],
         ],
         'top_of_list' => [
             'exclude' => true,
@@ -236,10 +236,10 @@ return [
                     [
                         'label' => '',
                         'value' => '',
-                        'invertStateDisplay' => false
-                    ]
+                        'invertStateDisplay' => false,
+                    ],
                 ],
-            ]
+            ],
         ],
         'title' => [
             'exclude' => true,
@@ -263,13 +263,13 @@ return [
                     'prefixParentPageSlug' => false,
                     'fieldSeparator' => '-',
                     'replacements' => [
-                        '/' => '-'
+                        '/' => '-',
                     ],
                 ],
                 'fallbackCharacter' => '-',
                 'eval' => 'unique',
-                'default' => ''
-            ]
+                'default' => '',
+            ],
         ],
         'teaser' => [
             'exclude' => true,
@@ -344,10 +344,10 @@ return [
                     [
                         'label' => '',
                         'value' => '',
-                        'invertStateDisplay' => false
-                    ]
+                        'invertStateDisplay' => false,
+                    ],
                 ],
-            ]
+            ],
         ],
         'multiple_times' => [
             'exclude' => true,
@@ -383,7 +383,7 @@ return [
                 'AND' => [
                     'FIELD:each_weeks:=:0',
                     'FIELD:each_months:=:0',
-                ]
+                ],
             ],
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.xth',
             'config' => [
@@ -397,7 +397,7 @@ return [
                     [
                         'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.xth.second',
                         'value' => 'second',
-                        ],
+                    ],
                     [
                         'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.xth.third',
                         'value' => 'third',
@@ -422,7 +422,7 @@ return [
                 'AND' => [
                     'FIELD:each_weeks:=:0',
                     'FIELD:each_months:=:0',
-                ]
+                ],
             ],
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.weekday',
             'config' => [
@@ -469,7 +469,7 @@ return [
                 'AND' => [
                     'FIELD:each_weeks:=:0',
                     'FIELD:each_months:=:0',
-                ]
+                ],
             ],
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.different_times',
             'config' => [
@@ -479,7 +479,7 @@ return [
                 'overrideChildTca' => [
                     'types' => [
                         '1' => ['showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, weekday, --palette--;;times,--div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.access,starttime, endtime'],
-                    ]
+                    ],
                 ],
                 'foreign_match_fields' => [
                     'type' => 'different_times',
@@ -626,10 +626,10 @@ return [
                     [
                         'label' => '',
                         'value' => '',
-                        'invertStateDisplay' => false
-                    ]
+                        'invertStateDisplay' => false,
+                    ],
                 ],
-            ]
+            ],
         ],
         'ticket_link' => [
             'exclude' => true,
@@ -738,7 +738,7 @@ return [
                     'showAllLocalizationLink' => 1,
                 ],
                 'default' => 0,
-            ]
+            ],
         ],
         'categories' => [
             'exclude' => true,
@@ -746,7 +746,7 @@ return [
             'config' => [
                 'type' => 'category',
                 'foreign_table_where' => ' AND sys_category.sys_language_uid IN (-1, 0) ORDER BY sys_category.title ASC',
-            ]
+            ],
         ],
         'import_id' => [
             'config' => [

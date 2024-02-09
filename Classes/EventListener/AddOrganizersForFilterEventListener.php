@@ -23,12 +23,10 @@ class AddOrganizersForFilterEventListener extends AbstractControllerEventListene
     protected array $allowedControllerActions = [
         'Day' => [
             'list',
-        ]
+        ],
     ];
 
-    public function __construct(protected readonly OrganizerRepository $organizerRepository)
-    {
-    }
+    public function __construct(protected readonly OrganizerRepository $organizerRepository) {}
 
     public function __invoke(PostProcessFluidVariablesEvent $controllerActionEvent): void
     {

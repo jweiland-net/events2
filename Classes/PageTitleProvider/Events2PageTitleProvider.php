@@ -29,8 +29,7 @@ class Events2PageTitleProvider implements PageTitleProviderInterface
     public function __construct(
         protected readonly EventRepository $eventRepository,
         protected readonly DayRepository $dayRepository
-    ) {
-    }
+    ) {}
 
     public function getTitle(): string
     {

@@ -17,6 +17,4 @@ namespace JWeiland\Events2\Domain\Model;
  *
  * It will be used by Ajax calls and while building the search form.
  */
-class Category extends \TYPO3\CMS\Extbase\Domain\Model\Category
-{
-}
+class Category extends \TYPO3\CMS\Extbase\Domain\Model\Category {}

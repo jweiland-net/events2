@@ -23,7 +23,7 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
 class CategoryRepository extends Repository
 {
     protected $defaultOrderings = [
-        'title' => QueryInterface::ORDER_ASCENDING
+        'title' => QueryInterface::ORDER_ASCENDING,
     ];
 
     /**
@@ -56,7 +56,7 @@ class CategoryRepository extends Repository
     {
         $query = $this->createQuery();
         $query->setOrderings([
-            'title' => QueryInterface::ORDER_ASCENDING
+            'title' => QueryInterface::ORDER_ASCENDING,
         ]);
 
         return $query->matching($query->equals('parent', $category))->execute();

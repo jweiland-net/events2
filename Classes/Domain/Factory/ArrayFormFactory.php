@@ -21,9 +21,7 @@ use TYPO3\CMS\Form\Domain\Model\FormDefinition;
  */
 class ArrayFormFactory extends \TYPO3\CMS\Form\Domain\Factory\ArrayFormFactory
 {
-    public function __construct(protected readonly ExtConf $extConf)
-    {
-    }
+    public function __construct(protected readonly ExtConf $extConf) {}
 
     /**
      * Build a form definition, depending on some configuration.
@@ -76,7 +74,7 @@ class ArrayFormFactory extends \TYPO3\CMS\Form\Domain\Factory\ArrayFormFactory
                     }
                     if (!isset($finisherConfiguration['options']['recipients'])) {
                         $finisherConfiguration['options']['recipients'] = [
-                            $this->extConf->getEmailToAddress() => $this->extConf->getEmailToName()
+                            $this->extConf->getEmailToAddress() => $this->extConf->getEmailToName(),
                         ];
                     }
                 }

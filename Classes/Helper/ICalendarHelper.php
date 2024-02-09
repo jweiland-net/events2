@@ -25,11 +25,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class ICalendarHelper
 {
     protected array $iCalHeader = [
-        0 => 'BEGIN:VCALENDAR'
+        0 => 'BEGIN:VCALENDAR',
     ];
 
     protected array $iCalFooter = [
-        0 => 'END:VCALENDAR'
+        0 => 'END:VCALENDAR',
     ];
 
     protected string $iCalVersion = '2.0';
@@ -40,8 +40,7 @@ class ICalendarHelper
         protected readonly TimeFactory $timeFactory,
         protected readonly DateTimeUtility $dateTimeUtility,
         protected readonly EventDispatcher $eventDispatcher
-    ) {
-    }
+    ) {}
 
     public function buildICalExport(Day $day): string
     {

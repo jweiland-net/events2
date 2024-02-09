@@ -28,7 +28,7 @@ class UserSessionTest extends FunctionalTestCase
      * @var array
      */
     protected $testExtensionsToLoad = [
-        'typo3conf/ext/events2'
+        'typo3conf/ext/events2',
     ];
 
     protected function setUp(): void
@@ -99,7 +99,7 @@ class UserSessionTest extends FunctionalTestCase
         self::assertSame(
             [
                 'month' => $expectedMonth,
-                'year' => $expectedYear
+                'year' => $expectedYear,
             ],
             $this->subject->getMonthAndYear()
         );

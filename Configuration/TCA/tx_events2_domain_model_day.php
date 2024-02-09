@@ -1,4 +1,5 @@
 <?php
+
 return [
     'ctrl' => [
         'title' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_day',
@@ -26,7 +27,7 @@ return [
         'hidden' => [
             'config' => [
                 'type' => 'passthrough',
-            ]
+            ],
         ],
         'day' => [
             'label' => 'Day',
@@ -64,14 +65,14 @@ return [
             'label' => 'Is removed date. True, if show_anyway in exception is set.',
             'config' => [
                 'type' => 'passthrough',
-            ]
+            ],
         ],
         'event' => [
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'foreign_table' => 'tx_events2_domain_model_event',
-            ]
-        ]
-    ]
+            ],
+        ],
+    ],
 ];

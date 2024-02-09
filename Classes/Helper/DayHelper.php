@@ -23,9 +23,7 @@ class DayHelper
 {
     use Typo3RequestTrait;
 
-    public function __construct(protected readonly DayRepository $dayRepository)
-    {
-    }
+    public function __construct(protected readonly DayRepository $dayRepository) {}
 
     /**
      * Get day from URI

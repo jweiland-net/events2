@@ -24,15 +24,14 @@ class AssignMediaTypeConverterEventListener extends AbstractControllerEventListe
     protected array $allowedControllerActions = [
         'Management' => [
             'create',
-            'update'
-        ]
+            'update',
+        ],
     ];
 
     public function __construct(
         protected readonly EventRepository $eventRepository,
         protected readonly UploadMultipleFilesConverter $uploadMultipleFilesConverter
-    ) {
-    }
+    ) {}
 
     public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void
     {

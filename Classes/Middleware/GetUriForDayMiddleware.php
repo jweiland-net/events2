@@ -29,8 +29,7 @@ class GetUriForDayMiddleware implements MiddlewareInterface
     public function __construct(
         protected readonly UriBuilder $uriBuilder,
         protected readonly DateTimeUtility $dateTimeUtility
-    ) {
-    }
+    ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -41,7 +40,7 @@ class GetUriForDayMiddleware implements MiddlewareInterface
         $startDate = $this->getStartDateFromRequest($request);
         if ($startDate === null) {
             return new JsonResponse([
-                'error' => 'Date can not be generated. Missing day, month or year in request.'
+                'error' => 'Date can not be generated. Missing day, month or year in request.',
             ], 400);
         }
 
@@ -49,13 +48,13 @@ class GetUriForDayMiddleware implements MiddlewareInterface
 
         if ($uri === '[MISSING]') {
             return new JsonResponse([
-                'errors' => 'URI can not be build, as pidOfListPage is missing in request.'
+                'errors' => 'URI can not be build, as pidOfListPage is missing in request.',
             ], 400);
         }
 
         if ($uri === '[0]') {
             return new JsonResponse([
-                'errors' => 'pidOfListPage in request can not be 0.'
+                'errors' => 'pidOfListPage in request can not be 0.',
             ], 400);
         }
 
@@ -104,8 +103,8 @@ class GetUriForDayMiddleware implements MiddlewareInterface
                 'list',
                 [
                     'filter' => [
-                        'timestamp' => $timestamp
-                    ]
+                        'timestamp' => $timestamp,
+                    ],
                 ],
                 'Day',
                 'events2',

@@ -381,7 +381,7 @@ class DayRepository extends AbstractRepository
     {
         $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_day');
         $dayColumns = array_map(
-            static fn ($column): string => 'day.' . $column,
+            static fn($column): string => 'day.' . $column,
             array_keys(
                 $connection->createSchemaManager()->listTableColumns('tx_events2_domain_model_day') ?? []
             )
@@ -514,7 +514,7 @@ class DayRepository extends AbstractRepository
             self::TABLE,
             [
                 'event' => $eventUid,
-                't3ver_wsid' => $eventRecord['t3ver_wsid'] ?? 0
+                't3ver_wsid' => $eventRecord['t3ver_wsid'] ?? 0,
             ]
         );
     }
@@ -537,7 +537,7 @@ class DayRepository extends AbstractRepository
             'sort_day_time',
             'same_day_time',
             'is_removed_date',
-            'event'
+            'event',
         ];
 
         $this

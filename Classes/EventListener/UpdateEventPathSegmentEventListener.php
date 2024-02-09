@@ -29,16 +29,15 @@ class UpdateEventPathSegmentEventListener extends AbstractControllerEventListene
      */
     protected array $allowedControllerActions = [
         'Management' => [
-            'create'
-        ]
+            'create',
+        ],
     ];
 
     public function __construct(
         protected readonly PathSegmentHelper $pathSegmentHelper,
         protected readonly EventRepository $eventRepository,
         protected readonly PersistenceManagerInterface $persistenceManager
-    ) {
-    }
+    ) {}
 
     public function __invoke(PostProcessControllerActionEvent $controllerActionEvent): void
     {

@@ -30,8 +30,8 @@ class AllowOrganizerForFilterEventListener extends AbstractControllerEventListen
             'listToday',
             'listThisWeek',
             'listRange',
-            'listSearchResults'
-        ]
+            'listSearchResults',
+        ],
     ];
 
     public function __invoke(PreProcessControllerActionEvent $event): void

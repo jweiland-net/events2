@@ -29,7 +29,7 @@ class DateTimeUtility
         try {
             if (
                 (!is_string($value) && !is_int($value))
-                ||empty($value)
+                || empty($value)
                 || $value === '0000-00-00'
                 || $value === '0000-00-00 00:00:00'
             ) {

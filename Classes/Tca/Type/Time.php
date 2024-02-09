@@ -20,9 +20,7 @@ use TYPO3\CMS\Core\Utility\MathUtility;
  */
 class Time
 {
-    public function __construct(protected readonly TimeToStringConverter $timeToStringConverter)
-    {
-    }
+    public function __construct(protected readonly TimeToStringConverter $timeToStringConverter) {}
 
     /**
      * This method returns js code to check if valid time was entered

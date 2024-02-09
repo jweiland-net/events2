@@ -56,9 +56,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
      */
     protected ?FalUploadService $falUploadService = null;
 
-    public function __construct(protected readonly EventDispatcher $eventDispatcher)
-    {
-    }
+    public function __construct(protected readonly EventDispatcher $eventDispatcher) {}
 
     public function canConvertFrom($source, string $targetType): bool
     {
@@ -121,7 +119,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
                         'error.fileExtension',
                         'events2',
                         [
-                            $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']
+                            $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'],
                         ]
                     ),
                     1402981282

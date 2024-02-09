@@ -35,7 +35,7 @@ class TimeRepository extends AbstractRepository
             $expressionBuilder->eq(
                 $tableAlias . '.event',
                 $eventRecord['uid']
-            )
+            ),
         ];
 
         $timeRecords = $this->getRecordsByExpression(
@@ -80,7 +80,7 @@ class TimeRepository extends AbstractRepository
             $expressionBuilder->eq(
                 $tableAlias . '.exception',
                 $exceptionRecord['uid']
-            )
+            ),
         ];
 
         $timeRecords = $this->getRecordsByExpression(

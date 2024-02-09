@@ -608,7 +608,7 @@ class Event extends AbstractEntity
                 if ($times->count()) {
                     $alternativeDays[$alternativeDay->getDayAsTimestamp()] = [
                         'date' => $alternativeDay->getDay(),
-                        'times' => $times
+                        'times' => $times,
                     ];
                 }
             }
@@ -670,7 +670,7 @@ class Event extends AbstractEntity
                 if ($times->count()) {
                     $alternativeTimes[$exceptionDate->format('U')] = [
                         'date' => $exceptionDate,
-                        'times' => $times
+                        'times' => $times,
                     ];
                 }
             }
@@ -844,7 +844,7 @@ class Event extends AbstractEntity
         return [
             'uid' => $this->getUid(),
             'pid' => $this->getPid(),
-            'title' => $this->getTitle()
+            'title' => $this->getTitle(),
         ];
     }
 }

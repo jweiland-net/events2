@@ -36,8 +36,7 @@ class DayGeneratorService implements LoggerAwareInterface
         protected readonly EventDispatcher $eventDispatcher,
         protected readonly ExtConf $extConf,
         protected readonly DateTimeUtility $dateTimeUtility
-    ) {
-    }
+    ) {}
 
     /**
      * @return DateTimeEntry[]
@@ -134,7 +133,7 @@ class DayGeneratorService implements LoggerAwareInterface
             'xth',
             'weekday',
             'recurring_end',
-            'exceptions'
+            'exceptions',
         ];
 
         foreach ($neededProperties as $neededProperty) {

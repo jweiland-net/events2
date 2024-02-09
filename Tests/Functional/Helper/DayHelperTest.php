@@ -28,7 +28,7 @@ class DayHelperTest extends FunctionalTestCase
      * @var array
      */
     protected $testExtensionsToLoad = [
-        'typo3conf/ext/events2'
+        'typo3conf/ext/events2',
     ];
 
     protected function setUp(): void
@@ -68,7 +68,7 @@ class DayHelperTest extends FunctionalTestCase
             'tx_events2_domain_model_day',
             [
                 'uid' => 1,
-                'pid' => 1
+                'pid' => 1,
             ]
         );
 
@@ -88,7 +88,7 @@ class DayHelperTest extends FunctionalTestCase
             'tx_events2_domain_model_day',
             [
                 'uid' => 1,
-                'pid' => 1
+                'pid' => 1,
             ]
         );
 

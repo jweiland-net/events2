@@ -32,7 +32,7 @@ class ExceptionRepository extends AbstractRepository
             $expressionBuilder->eq(
                 $tableAlias . '.event',
                 $eventRecord['uid']
-            )
+            ),
         ];
 
         return $this->getRecordsByExpression(

@@ -20,9 +20,7 @@ use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
  */
 class CategoryMandatoryValidator extends AbstractValidator
 {
-    public function __construct(protected readonly ExtConf $extConf)
-    {
-    }
+    public function __construct(protected readonly ExtConf $extConf) {}
 
     protected function isValid(mixed $value): void
     {

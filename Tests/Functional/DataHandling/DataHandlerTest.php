@@ -44,7 +44,7 @@ class DataHandlerTest extends FunctionalTestCase
      */
     protected $testExtensionsToLoad = [
         'typo3conf/ext/events2',
-        'typo3conf/ext/maps2'
+        'typo3conf/ext/maps2',
     ];
 
     protected function setUp(): void
@@ -124,9 +124,9 @@ class DataHandlerTest extends FunctionalTestCase
             [
                 'tx_events2_domain_model_event' => [
                     1 => [
-                        'delete' => 1
-                    ]
-                ]
+                        'delete' => 1,
+                    ],
+                ],
             ]
         );
         $dataHandler->process_datamap();
@@ -180,9 +180,9 @@ class DataHandlerTest extends FunctionalTestCase
             [
                 'tx_events2_domain_model_event' => [
                     1 => [
-                        'delete' => 1
-                    ]
-                ]
+                        'delete' => 1,
+                    ],
+                ],
             ]
         );
         $dataHandler->process_datamap();

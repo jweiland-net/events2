@@ -32,7 +32,7 @@ class ManagementControllerTest extends AbstractFunctionalTestCase
      */
     protected $testExtensionsToLoad = [
         'typo3conf/ext/events2',
-        'typo3conf/ext/static_info_tables'
+        'typo3conf/ext/static_info_tables',
     ];
 
     protected function setUp(): void
@@ -84,7 +84,7 @@ class ManagementControllerTest extends AbstractFunctionalTestCase
             'tx_events2_event_organizer_mm',
             [
                 'uid_local' => 1,
-                'uid_foreign' => 1
+                'uid_foreign' => 1,
             ]
         );
     }
@@ -120,8 +120,8 @@ class ManagementControllerTest extends AbstractFunctionalTestCase
                 'pluginName' => 'Management',
                 'format' => 'txt',
                 'settings' => [
-                    'userGroup' => '1'
-                ]
+                    'userGroup' => '1',
+                ],
             ]
         );
 

@@ -112,13 +112,13 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
                 'tt_content',
                 [
                     'list_type' => $ttContentListType,
-                    'pi_flexform' => $this->checkValue_flexArray2Xml($valueFromDatabase)
+                    'pi_flexform' => $this->checkValue_flexArray2Xml($valueFromDatabase),
                 ],
                 [
-                    'uid' => (int)$record['uid']
+                    'uid' => (int)$record['uid'],
                 ],
                 [
-                    'pi_flexform' => Connection::PARAM_STR
+                    'pi_flexform' => Connection::PARAM_STR,
                 ]
             );
         }
@@ -199,7 +199,7 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
             // Create base sheet, if not exist
             if (!array_key_exists($newSheet, $valueFromDatabase['data'])) {
                 $valueFromDatabase['data'][$newSheet] = [
-                    'lDEF' => []
+                    'lDEF' => [],
                 ];
             }
 
@@ -267,7 +267,7 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
     public function getPrerequisites(): array
     {
         return [
-            DatabaseUpdatedPrerequisite::class
+            DatabaseUpdatedPrerequisite::class,
         ];
     }
 }

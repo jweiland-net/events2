@@ -30,8 +30,7 @@ class DatabaseService
     public function __construct(
         protected readonly ExtConf $extConf,
         protected readonly DateTimeUtility $dateTimeUtility
-    ) {
-    }
+    ) {}
 
     /**
      * Get column definitions from table

@@ -25,8 +25,7 @@ class EventService
     public function __construct(
         protected readonly EventRepository $eventRepository,
         protected readonly TimeFactory $timeFactory
-    ) {
-    }
+    ) {}
 
     public function getNextDayForEvent(int $eventUid): ?\DateTimeImmutable
     {

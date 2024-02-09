@@ -30,8 +30,7 @@ class OverlayHelper implements LoggerAwareInterface
     public function __construct(
         protected readonly Context $context,
         protected readonly PageRepository $pageRepository
-    ) {
-    }
+    ) {}
 
     public function addWhereForOverlay(
         QueryBuilder $queryBuilder,

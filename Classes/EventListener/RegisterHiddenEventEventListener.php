@@ -20,15 +20,14 @@ class RegisterHiddenEventEventListener extends AbstractControllerEventListener
     protected array $allowedControllerActions = [
         'Management' => [
             'edit',
-            'update'
-        ]
+            'update',
+        ],
     ];
 
     public function __construct(
         protected readonly HiddenObjectHelper $hiddenObjectHelper,
         protected readonly EventRepository $eventRepository
-    ) {
-    }
+    ) {}
 
     public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void
     {

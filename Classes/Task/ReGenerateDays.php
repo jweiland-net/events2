@@ -63,7 +63,7 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
             $counter++;
             $this->registry->set('events2TaskCreateUpdate', 'info', [
                 'uid' => $eventRecord['uid'],
-                'pid' => $eventRecord['pid']
+                'pid' => $eventRecord['pid'],
             ]);
 
             try {
@@ -83,7 +83,7 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
 
             $this->registry->set('events2TaskCreateUpdate', 'progress', [
                 'records' => $amountOfEventRecordsToProcess,
-                'counter' => $counter
+                'counter' => $counter,
             ]);
 
             // clean up persistence manager to reduce memory usage

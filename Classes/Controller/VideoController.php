@@ -29,7 +29,7 @@ class VideoController extends AbstractController
     public function showAction(int $event): ResponseInterface
     {
         $this->postProcessAndAssignFluidVariables([
-            'event' => $this->eventRepository->findByIdentifier($event)
+            'event' => $this->eventRepository->findByIdentifier($event),
         ]);
 
         return $this->htmlResponse();

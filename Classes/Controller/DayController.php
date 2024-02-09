@@ -72,7 +72,7 @@ class DayController extends AbstractController
 
         $this->postProcessAndAssignFluidVariables([
             'days' => $days,
-            'filter' => $filter
+            'filter' => $filter,
         ]);
 
         CacheUtility::addPageCacheTagsByQuery($days->getQuery());
@@ -90,7 +90,7 @@ class DayController extends AbstractController
         $this->postProcessControllerAction($day->getEvent(), $day);
 
         $this->postProcessAndAssignFluidVariables([
-            'day' => $day
+            'day' => $day,
         ]);
 
         CacheUtility::addCacheTagsByEventRecords([$day->getEvent()]);

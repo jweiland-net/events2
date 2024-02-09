@@ -24,8 +24,8 @@ class AllowSearchParameterEventListener extends AbstractControllerEventListener
     protected array $allowedControllerActions = [
         'Search' => [
             'listSearchResults',
-            'show'
-        ]
+            'show',
+        ],
     ];
 
     public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void

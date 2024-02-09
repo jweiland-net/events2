@@ -39,7 +39,7 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
      */
     protected $coreExtensionsToLoad = [
         'extensionmanager',
-        'scheduler'
+        'scheduler',
     ];
 
     /**

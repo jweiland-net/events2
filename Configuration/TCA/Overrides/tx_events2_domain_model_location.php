@@ -17,18 +17,18 @@ if (ExtensionManagementUtility::isLoaded('maps2')) {
             'countryColumn' => 'country',
             'defaultStoragePid' => [
                 'extKey' => 'events2',
-                'property' => 'poiCollectionPid'
+                'property' => 'poiCollectionPid',
             ],
             'synchronizeColumns' => [
                 [
                     'foreignColumnName' => 'location',
-                    'poiCollectionColumnName' => 'title'
+                    'poiCollectionColumnName' => 'title',
                 ],
                 [
                     'foreignColumnName' => 'hidden',
-                    'poiCollectionColumnName' => 'hidden'
-                ]
-            ]
+                    'poiCollectionColumnName' => 'hidden',
+                ],
+            ],
         ]
     );
 }

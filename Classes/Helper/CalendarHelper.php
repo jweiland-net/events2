@@ -26,8 +26,7 @@ class CalendarHelper
     public function __construct(
         protected readonly DayHelper $dayHelper,
         protected readonly UserSession $userSession
-    ) {
-    }
+    ) {}
 
     public function getCalendarVariables(): array
     {
@@ -43,7 +42,7 @@ class CalendarHelper
     {
         return [
             'siteUrl' => $this->getTypo3SiteUrl(),
-            'siteId' => $this->getTypoScriptFrontendController()->id
+            'siteId' => $this->getTypoScriptFrontendController()->id,
         ];
     }
 

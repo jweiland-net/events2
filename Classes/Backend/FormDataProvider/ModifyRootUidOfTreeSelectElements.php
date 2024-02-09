@@ -23,8 +23,7 @@ class ModifyRootUidOfTreeSelectElements implements FormDataProviderInterface
     public function __construct(
         private readonly ExtConf $extConf,
         private readonly Typo3Version $typo3Version
-    ) {
-    }
+    ) {}
 
     /**
      * Set rootUid of tree select elements of FlexForms to root category declared in EM

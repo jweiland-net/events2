@@ -27,8 +27,8 @@ class SetDateFormatForPropertyMappingEventListener extends AbstractControllerEve
     protected array $allowedControllerActions = [
         'Management' => [
             'create',
-            'update'
-        ]
+            'update',
+        ],
     ];
 
     public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void

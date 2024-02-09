@@ -35,7 +35,7 @@ class XmlImporter extends AbstractImporter
 {
     protected array $allowedMimeType = [
         'text/xml',
-        'application/xml'
+        'application/xml',
     ];
 
     /**
@@ -479,7 +479,7 @@ class XmlImporter extends AbstractImporter
                     [
                         'uid_local' => $file->getUid(),
                         'uid_foreign' => uniqid('NEW_', true),
-                        'uid' => uniqid('NEW_', true)
+                        'uid' => uniqid('NEW_', true),
                     ]
                 ));
 

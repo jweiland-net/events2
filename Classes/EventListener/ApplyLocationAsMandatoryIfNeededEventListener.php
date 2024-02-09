@@ -26,15 +26,14 @@ class ApplyLocationAsMandatoryIfNeededEventListener extends AbstractControllerEv
     protected array $allowedControllerActions = [
         'Management' => [
             'create',
-            'update'
-        ]
+            'update',
+        ],
     ];
 
     public function __construct(
         protected readonly ExtConf $extConf,
         protected readonly ValidatorResolver $validatorResolver
-    ) {
-    }
+    ) {}
 
     public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void
     {

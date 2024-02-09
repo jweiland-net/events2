@@ -42,8 +42,7 @@ class DayRelationService implements LoggerAwareInterface
         protected readonly DayRepository $dayRepository,
         protected readonly TimeRepository $timeRepository,
         protected readonly DateTimeUtility $dateTimeUtility
-    ) {
-    }
+    ) {}
 
     /**
      * Delete all related day records of given event and
@@ -187,7 +186,7 @@ class DayRelationService implements LoggerAwareInterface
         $timeRecords = $this->getTimeRecordsWithHighestPriority($eventRecord, $dateTimeEntry->getDate());
         if ($timeRecords === []) {
             return [
-                $this->buildDayRecordForDateTime($dateTimeEntry, $eventRecord, [])
+                $this->buildDayRecordForDateTime($dateTimeEntry, $eventRecord, []),
             ];
         }
 
@@ -308,7 +307,7 @@ class DayRelationService implements LoggerAwareInterface
             'sort_day_time' => (int)$this->getSortDayTime($dateTimeEntry->getDate(), $hour, $minute, $eventRecord)->format('U'),
             'same_day_time' => (int)$this->getSameDayTime($dateTimeEntry->getDate(), $hour, $minute, $eventRecord)->format('U'),
             'is_removed_date' => (int)$dateTimeEntry->isRemovedDate(),
-            'event' => $eventRecord['uid']
+            'event' => $eventRecord['uid'],
         ];
     }
 

@@ -40,8 +40,7 @@ class EventsSlugUpgrade implements UpgradeWizardInterface
     public function __construct(
         protected readonly PathSegmentHelper $pathSegmentHelper,
         protected readonly ExtConf $extConf
-    ) {
-    }
+    ) {}
 
     /**
      * Return the identifier for this wizard
@@ -99,10 +98,10 @@ class EventsSlugUpgrade implements UpgradeWizardInterface
                 $connection->update(
                     $this->tableName,
                     [
-                        $this->slugColumn => $this->pathSegmentHelper->generatePathSegment($recordToUpdate)
+                        $this->slugColumn => $this->pathSegmentHelper->generatePathSegment($recordToUpdate),
                     ],
                     [
-                        'uid' => (int)$recordToUpdate['uid']
+                        'uid' => (int)$recordToUpdate['uid'],
                     ]
                 );
             }
@@ -180,7 +179,7 @@ class EventsSlugUpgrade implements UpgradeWizardInterface
     public function getPrerequisites(): array
     {
         return [
-            DatabaseUpdatedPrerequisite::class
+            DatabaseUpdatedPrerequisite::class,
         ];
     }
 

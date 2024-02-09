@@ -20,9 +20,7 @@ use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
  */
 class InitializeNewEventRecord implements FormDataProviderInterface
 {
-    public function __construct(private readonly Context $context)
-    {
-    }
+    public function __construct(private readonly Context $context) {}
 
     /**
      * Prefill column "event_begin" with current date

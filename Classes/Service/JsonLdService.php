@@ -36,12 +36,10 @@ class JsonLdService
 
     protected array $data = [
         '@context' => 'http://schema.org',
-        '@type' => 'Event'
+        '@type' => 'Event',
     ];
 
-    public function __construct(protected readonly TimeFactory $timeFactory)
-    {
-    }
+    public function __construct(protected readonly TimeFactory $timeFactory) {}
 
     /**
      * Read values from day and event record to build a json-ld string for page header
@@ -240,8 +238,8 @@ class JsonLdService
                 0 => [
                     '@type' => 'Offer',
                     'name' => $event->getTicketLink()->getTitle(),
-                    'url' => $this->getUrlFromParameter($event->getTicketLink()->getLink())
-                ]
+                    'url' => $this->getUrlFromParameter($event->getTicketLink()->getLink()),
+                ],
             ];
         }
     }
@@ -262,8 +260,8 @@ class JsonLdService
                     '@type' => 'PostalAddress',
                     'streetAddress' => $event->getLocation()->getStreet() . ' ' . $event->getLocation()->getHouseNumber(),
                     'postalCode' => $event->getLocation()->getZip(),
-                    'addressLocality' => $event->getLocation()->getCity()
-                ]
+                    'addressLocality' => $event->getLocation()->getCity(),
+                ],
             ];
             if ($event->getLocation()->getLink() instanceof Link) {
                 $this->data['location']['url'] = $this->getUrlFromParameter($event->getLocation()->getLink()->getLink());
@@ -320,7 +318,7 @@ class JsonLdService
                 'contentSize' => $resource->getSize(),
                 'contentUrl' => $url,
                 'url' => rawurldecode(GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL')),
-                'description' => $resource->getDescription()
+                'description' => $resource->getDescription(),
             ];
         }
     }
@@ -334,7 +332,7 @@ class JsonLdService
         return $contentObject->typoLink_URL(
             [
                 'parameter' => $parameter,
-                'forceAbsoluteUrl' => true
+                'forceAbsoluteUrl' => true,
             ]
         );
     }

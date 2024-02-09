@@ -64,7 +64,7 @@ class UserSession
             'events2MonthAndYearForCalendar',
             [
                 'month' => str_pad((string)$month, 2, '0', STR_PAD_LEFT),
-                'year' => (string)$year
+                'year' => (string)$year,
             ]
         );
     }

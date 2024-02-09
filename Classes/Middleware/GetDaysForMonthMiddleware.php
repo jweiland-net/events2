@@ -39,8 +39,7 @@ class GetDaysForMonthMiddleware implements MiddlewareInterface
         protected readonly UserSession $userSession,
         protected readonly DatabaseService $databaseService,
         protected readonly EventDispatcher $eventDispatcher
-    ) {
-    }
+    ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -52,7 +51,7 @@ class GetDaysForMonthMiddleware implements MiddlewareInterface
 
         if (!isset($getParameters['month'], $getParameters['year'], $getParameters['categories'], $getParameters['storagePages'])) {
             return new JsonResponse([
-                'error' => 'Request uncompleted. Missing month, year, categories or storagePages in request.'
+                'error' => 'Request uncompleted. Missing month, year, categories or storagePages in request.',
             ], 400);
         }
 
@@ -77,7 +76,7 @@ class GetDaysForMonthMiddleware implements MiddlewareInterface
                 'uid' => (int)$day['uid'],
                 'isHoliday' => false,
                 'additionalClasses' => [],
-                'dayOfMonth' => (int)$date->format('j')
+                'dayOfMonth' => (int)$date->format('j'),
             ];
         }
 
@@ -109,7 +108,7 @@ class GetDaysForMonthMiddleware implements MiddlewareInterface
             $days[] = [
                 'dayOfMonth' => (int)$holiday['day'],
                 'isHoliday' => true,
-                'additionalClasses' => ['holiday']
+                'additionalClasses' => ['holiday'],
             ];
         }
     }

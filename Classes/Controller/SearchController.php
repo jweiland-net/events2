@@ -86,12 +86,12 @@ class SearchController extends AbstractController
                 'locations' => $this->locationRepository->getLocationsForSearchSelector(),
                 'categories' => [
                     'main' => $allowedMainCategories,
-                    'sub' => []
-                ]
+                    'sub' => [],
+                ],
             ],
             'jsVariables' => json_encode($this->getJsVariables([
                 'siteId' => $this->request->getAttribute('frontend.controller')->id,
-                'search' => $gettableSearchProperties
+                'search' => $gettableSearchProperties,
             ]), JSON_THROW_ON_ERROR),
         ]);
 
@@ -109,7 +109,7 @@ class SearchController extends AbstractController
             $days = $this->dayRepository->searchEvents($search);
 
             $this->postProcessAndAssignFluidVariables([
-                'days' => $days
+                'days' => $days,
             ]);
 
             CacheUtility::addPageCacheTagsByQuery($days->getQuery());

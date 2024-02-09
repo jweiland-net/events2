@@ -38,8 +38,7 @@ class SaveEventFinisher extends AbstractFinisher
         readonly protected ConnectionPool $connectionPool,
         readonly protected PathSegmentHelper $pathSegmentHelper,
         readonly protected DayRelationService $dayRelationService
-    ) {
-    }
+    ) {}
 
     /**
      * Executes this finisher
@@ -143,7 +142,7 @@ class SaveEventFinisher extends AbstractFinisher
         } elseif ($uid > 0) {
             $this->options['mode'] = 'update';
             $this->options['whereClause'] = [
-                'uid' => $uid
+                'uid' => $uid,
             ];
         }
 
@@ -171,7 +170,7 @@ class SaveEventFinisher extends AbstractFinisher
         if ($uid > 0) {
             $this->options['mode'] = 'update';
             $this->options['whereClause'] = [
-                'uid' => $uid
+                'uid' => $uid,
             ];
         }
     }
@@ -229,7 +228,7 @@ class SaveEventFinisher extends AbstractFinisher
         $this->connectionPool->getConnectionForTable($table)->delete(
             $table,
             [
-                'uid' => $uid
+                'uid' => $uid,
             ]
         );
     }
@@ -287,7 +286,7 @@ class SaveEventFinisher extends AbstractFinisher
         $this->connectionPool->getConnectionForTable($table)->delete(
             $table,
             [
-                'uid_foreign' => $databaseData['uid_foreign']
+                'uid_foreign' => $databaseData['uid_foreign'],
             ]
         );
 
@@ -307,10 +306,10 @@ class SaveEventFinisher extends AbstractFinisher
         $this->connectionPool->getConnectionForTable('tx_events2_domain_model_event')->update(
             'tx_events2_domain_model_event',
             [
-                'categories' => $sorting
+                'categories' => $sorting,
             ],
             [
-                'uid' => $databaseData['uid_foreign']
+                'uid' => $databaseData['uid_foreign'],
             ]
         );
 
@@ -324,7 +323,7 @@ class SaveEventFinisher extends AbstractFinisher
         $this->connectionPool->getConnectionForTable($table)->delete(
             $table,
             [
-                'uid_local' => $databaseData['uid_local']
+                'uid_local' => $databaseData['uid_local'],
             ]
         );
 
@@ -344,10 +343,10 @@ class SaveEventFinisher extends AbstractFinisher
         $this->connectionPool->getConnectionForTable('tx_events2_domain_model_event')->update(
             'tx_events2_domain_model_event',
             [
-                'organizers' => $sorting
+                'organizers' => $sorting,
             ],
             [
-                'uid' => $databaseData['uid_local']
+                'uid' => $databaseData['uid_local'],
             ]
         );
 
@@ -404,10 +403,10 @@ class SaveEventFinisher extends AbstractFinisher
                 $this->connectionPool->getConnectionForTable('tx_events2_domain_model_event')->update(
                     'tx_events2_domain_model_event',
                     [
-                        'path_segment' => $this->pathSegmentHelper->generatePathSegment($databaseData)
+                        'path_segment' => $this->pathSegmentHelper->generatePathSegment($databaseData),
                     ],
                     [
-                        'uid' => $lastInsertId
+                        'uid' => $lastInsertId,
                     ]
                 );
             }

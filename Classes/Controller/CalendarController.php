@@ -43,7 +43,7 @@ class CalendarController extends AbstractController
         }
 
         $this->postProcessAndAssignFluidVariables([
-            'environment' => $calendarVariables
+            'environment' => $calendarVariables,
         ]);
 
         return $this->htmlResponse();

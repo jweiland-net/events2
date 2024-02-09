@@ -22,7 +22,7 @@ class LocationController extends AbstractController
     public function showAction(Location $location): ResponseInterface
     {
         $this->postProcessAndAssignFluidVariables([
-            'location' => $location
+            'location' => $location,
         ]);
 
         return $this->htmlResponse();

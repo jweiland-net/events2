@@ -57,7 +57,7 @@ class ICalController extends ActionController
 
         return new JsonResponse(
             [
-                'error' => 'DayRecord ' . $day . ' for iCal download could not be found in our database.'
+                'error' => 'DayRecord ' . $day . ' for iCal download could not be found in our database.',
             ],
             500
         );

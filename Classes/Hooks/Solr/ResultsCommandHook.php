@@ -26,9 +26,7 @@ class ResultsCommandHook implements SearchResultSetProcessor
     /**
      * Do not add GarbageCollector, as DI autowire won't find the file, if solr is not installed
      */
-    public function __construct(protected readonly EventService $eventService)
-    {
-    }
+    public function __construct(protected readonly EventService $eventService) {}
 
     /**
      * Remove event records from result set, if they are not current anymore.

@@ -24,8 +24,8 @@ class RemapSearchParameterEventListener extends AbstractControllerEventListener
 {
     protected array $allowedControllerActions = [
         'Search' => [
-            'show'
-        ]
+            'show',
+        ],
     ];
 
     public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void

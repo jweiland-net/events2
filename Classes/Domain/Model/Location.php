@@ -25,7 +25,7 @@ class Location extends AbstractEntity
 
     protected string $location = '';
 
-    protected string  $street = '';
+    protected string $street = '';
 
     protected string $houseNumber = '';
 

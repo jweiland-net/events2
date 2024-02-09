@@ -33,14 +33,14 @@ class DayControllerTest extends AbstractFunctionalTestCase
      */
     protected $testExtensionsToLoad = [
         'typo3conf/ext/events2',
-        'typo3conf/ext/static_info_tables'
+        'typo3conf/ext/static_info_tables',
     ];
 
     /**
      * @var string[]
      */
     protected $coreExtensionsToLoad = [
-        'extensionmanager'
+        'extensionmanager',
     ];
 
     protected function setUp(): void
@@ -86,7 +86,7 @@ class DayControllerTest extends AbstractFunctionalTestCase
                 'event_type' => 'single',
                 'event_begin' => (int)$date->format('U'),
                 'title' => 'Tomorrow',
-                'organizers' => 1
+                'organizers' => 1,
             ]
         );
 
@@ -94,7 +94,7 @@ class DayControllerTest extends AbstractFunctionalTestCase
             'tx_events2_event_organizer_mm',
             [
                 'uid_local' => 2,
-                'uid_foreign' => 1
+                'uid_foreign' => 1,
             ]
         );
 
@@ -156,9 +156,9 @@ class DayControllerTest extends AbstractFunctionalTestCase
             [
                 'tx_events2_list' => [
                     'filter' => [
-                        'organizer' => '1'
-                    ]
-                ]
+                        'organizer' => '1',
+                    ],
+                ],
             ]
         );
 
@@ -168,7 +168,7 @@ class DayControllerTest extends AbstractFunctionalTestCase
             [
                 'extensionName' => 'Events2',
                 'pluginName' => 'List',
-                'format' => 'txt'
+                'format' => 'txt',
             ]
         );
 
@@ -205,9 +205,9 @@ class DayControllerTest extends AbstractFunctionalTestCase
             [
                 'tx_events2_list' => [
                     'filter' => [
-                        'timestamp' => $today->format('U')
-                    ]
-                ]
+                        'timestamp' => $today->format('U'),
+                    ],
+                ],
             ]
         );
 
@@ -219,8 +219,8 @@ class DayControllerTest extends AbstractFunctionalTestCase
                 'pluginName' => 'List',
                 'format' => 'txt',
                 'settings' => [
-                    'listType' => $listType
-                ]
+                    'listType' => $listType,
+                ],
             ]
         );
 
@@ -244,8 +244,8 @@ class DayControllerTest extends AbstractFunctionalTestCase
             [
                 'tx_events2_list' => [
                     'event' => '1',
-                    'timestamp' => $today->format('U')
-                ]
+                    'timestamp' => $today->format('U'),
+                ],
             ]
         );
 

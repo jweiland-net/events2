@@ -26,13 +26,11 @@ class AddOrganizerToEventRecordEventListener extends AbstractControllerEventList
 {
     protected array $allowedControllerActions = [
         'Management' => [
-            'create'
-        ]
+            'create',
+        ],
     ];
 
-    public function __construct(protected readonly UserRepository $userRepository)
-    {
-    }
+    public function __construct(protected readonly UserRepository $userRepository) {}
 
     public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void
     {

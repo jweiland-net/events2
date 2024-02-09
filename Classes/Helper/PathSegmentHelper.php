@@ -40,8 +40,7 @@ class PathSegmentHelper
     public function __construct(
         protected readonly ExtConf $extConf,
         protected readonly EventDispatcher $eventDispatcher
-    ) {
-    }
+    ) {}
 
     public function generatePathSegment(array $baseRecord): string
     {

@@ -92,10 +92,10 @@ class MigrateDetailInformationsUpgrade implements UpgradeWizardInterface
             $connection->update(
                 'tx_events2_domain_model_event',
                 [
-                    'detail_information' => $event['detail_informations']
+                    'detail_information' => $event['detail_informations'],
                 ],
                 [
-                    'uid' => (int)$event['uid']
+                    'uid' => (int)$event['uid'],
                 ]
             );
         }
@@ -118,7 +118,7 @@ class MigrateDetailInformationsUpgrade implements UpgradeWizardInterface
     public function getPrerequisites(): array
     {
         return [
-            DatabaseUpdatedPrerequisite::class
+            DatabaseUpdatedPrerequisite::class,
         ];
     }
 

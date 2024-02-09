@@ -22,7 +22,7 @@ ExtensionManagementUtility::addTCAcolumns(
                 'suggestOptions' => [
                     'default' => [
                         'searchWholePhrase' => true,
-                        'searchCondition' => 'tx_events2_domain_model_organizer.sys_language_uid IN (-1,0)'
+                        'searchCondition' => 'tx_events2_domain_model_organizer.sys_language_uid IN (-1,0)',
                     ],
                 ],
             ],

@@ -37,7 +37,7 @@ $tx_events2_domain_model_event = [
             --palette--;;zipCity,
             country, link,
             --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access,
-            --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access'
+            --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access',
         ],
     ],
     'palettes' => [
@@ -45,7 +45,7 @@ $tx_events2_domain_model_event = [
         'streetHouseNumber' => ['showitem' => 'street, house_number'],
         'zipCity' => ['showitem' => 'zip, city'],
         'access' => [
-            'showitem' => 'starttime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:starttime_formlabel,endtime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:endtime_formlabel'
+            'showitem' => 'starttime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:starttime_formlabel,endtime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:endtime_formlabel',
         ],
     ],
     'columns' => [
@@ -54,7 +54,7 @@ $tx_events2_domain_model_event = [
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.language',
             'config' => [
                 'type' => 'language',
-            ]
+            ],
         ],
         'l10n_parent' => [
             'displayCond' => 'FIELD:sys_language_uid:>:0',
@@ -66,12 +66,12 @@ $tx_events2_domain_model_event = [
                 'maxitems' => 1,
                 'minitems' => 0,
                 'default' => 0,
-            ]
+            ],
         ],
         'l10n_source' => [
             'config' => [
-                'type' => 'passthrough'
-            ]
+                'type' => 'passthrough',
+            ],
         ],
         'hidden' => [
             'exclude' => true,
@@ -83,28 +83,28 @@ $tx_events2_domain_model_event = [
                     [
                         'label' => '',
                         'value' => '',
-                        'invertStateDisplay' => true
-                    ]
+                        'invertStateDisplay' => true,
+                    ],
                 ],
-            ]
+            ],
         ],
         'pid' => [
             'label' => 'pid',
             'config' => [
-                'type' => 'passthrough'
-            ]
+                'type' => 'passthrough',
+            ],
         ],
         'crdate' => [
             'label' => 'crdate',
             'config' => [
                 'type' => 'passthrough',
-            ]
+            ],
         ],
         'tstamp' => [
             'label' => 'tstamp',
             'config' => [
                 'type' => 'passthrough',
-            ]
+            ],
         ],
         'starttime' => [
             'exclude' => true,
@@ -112,10 +112,10 @@ $tx_events2_domain_model_event = [
             'config' => [
                 'type' => 'datetime',
                 'format' => 'datetime',
-                'default' => 0
+                'default' => 0,
             ],
             'l10n_mode' => 'exclude',
-            'l10n_display' => 'defaultAsReadonly'
+            'l10n_display' => 'defaultAsReadonly',
         ],
         'endtime' => [
             'exclude' => true,
@@ -126,7 +126,7 @@ $tx_events2_domain_model_event = [
                 'default' => 0,
             ],
             'l10n_mode' => 'exclude',
-            'l10n_display' => 'defaultAsReadonly'
+            'l10n_display' => 'defaultAsReadonly',
         ],
         'location' => [
             'exclude' => true,
@@ -194,7 +194,7 @@ $tx_events2_domain_model_event = [
                 'default' => $extConf->getDefaultCountry(),
                 'suggestOptions' => [
                     'default' => [
-                        'receiverClass' => $staticInfoSuggestReceiver
+                        'receiverClass' => $staticInfoSuggestReceiver,
                     ],
                 ],
             ],
@@ -214,10 +214,10 @@ $tx_events2_domain_model_event = [
                     'showPossibleLocalizationRecords' => 1,
                     'showAllLocalizationLink' => 1,
                 ],
-                'default' => 0
+                'default' => 0,
             ],
-        ]
-    ]
+        ],
+    ],
 ];
 
 unset($extConf, $staticInfoItemProcessor, $staticInfoSuggestReceiver);

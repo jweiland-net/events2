@@ -20,7 +20,7 @@ trait Typo3PropertiesTrait
 
     protected ?\DateTimeImmutable $tstamp = null;
 
-    protected int $l10nParent= 0;
+    protected int $l10nParent = 0;
 
     protected ?\DateTimeImmutable $starttime = null;
 

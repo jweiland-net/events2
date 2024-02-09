@@ -41,8 +41,7 @@ class DayFactory
         protected readonly DatabaseService $databaseService,
         protected readonly DayRepository $dayRepository,
         protected readonly EventRepository $eventRepository
-    ) {
-    }
+    ) {}
 
     /**
      * Find one Day by Event and Timestamp.
@@ -52,7 +51,7 @@ class DayFactory
         $day = null;
         $data = [
             'event' => $eventUid,
-            'timestamp' => $timestamp
+            'timestamp' => $timestamp,
         ];
 
         foreach ($this->processOrderedMethods as $methodName) {

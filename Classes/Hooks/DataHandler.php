@@ -21,9 +21,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class DataHandler
 {
-    public function __construct(protected readonly CacheManager $cacheManager)
-    {
-    }
+    public function __construct(protected readonly CacheManager $cacheManager) {}
 
     /**
      * Flushes the cache if an event record was edited.
