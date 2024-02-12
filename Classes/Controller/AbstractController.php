@@ -59,8 +59,8 @@ class AbstractController extends ActionController implements LoggerAwareInterfac
             'events2'
         ) ?? [];
 
-        // start override
-        $this->typoScriptService->override(
+        // Start override
+        $this->getTypoScriptService()->override(
             $mergedFlexFormSettings,
             $typoScriptSettings['settings']
         );
