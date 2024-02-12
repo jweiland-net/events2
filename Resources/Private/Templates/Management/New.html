@@ -5,7 +5,7 @@
 
 <f:layout name="Create"/>
 
-<f:section name="main">
+<f:section name="Main">
     <f:security.ifHasRole role="{settings.userGroup}">
         <f:then>
             <f:if condition="{e2:feUser(field: 'tx_events2_organizer')}">
