@@ -9,10 +9,10 @@
             <li>
                 <f:if condition="{settings.displayImages}">
                     <f:then>
-                        <f:render section="renderImagesOnly" arguments="{image: image}"/>
+                        <f:render section="RenderImagesOnly" arguments="{image: image}"/>
                     </f:then>
                     <f:else>
-                        <f:render section="renderResource" arguments="{image: image}"/>
+                        <f:render section="RenderResource" arguments="{image: image}"/>
                     </f:else>
                 </f:if>
             </li>
@@ -20,7 +20,7 @@
     </f:for>
 </ul>
 
-<f:section name="renderImagesOnly">
+<f:section name="RenderImagesOnly">
     <f:comment><!-- In most cases this will be used as SlideShow. So no Videos or Audios are allowed here.--></f:comment>
     <f:if condition="{image.type} == 2">
         <f:image image="{image}"
@@ -35,7 +35,7 @@
     </f:if>
 </f:section>
 
-<f:section name="renderResource">
+<f:section name="RenderResource">
     <f:switch expression="{image.type}">
         <f:case value="3">
             <f:media file="{image}"

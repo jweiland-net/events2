@@ -7,25 +7,25 @@
         <ul class="f3-widget-paginator">
             <f:if condition="{paginator.currentPageNumber} > 1">
                 <li class="first">
-                    <f:render section="renderPageLink"
+                    <f:render section="RenderPageLink"
                               arguments="{linkArguments: pagination.firstPageArguments, transKey: 'pageBrowser.first', actionName: actionName}"/>
                 </li>
             </f:if>
             <f:if condition="{pagination.previousPageNumber}">
                 <li class="previous">
-                    <f:render section="renderPageLink"
+                    <f:render section="RenderPageLink"
                               arguments="{linkArguments: pagination.previousPageArguments, transKey: 'pageBrowser.previous', actionName: actionName}"/>
                 </li>
             </f:if>
             <f:if condition="{pagination.nextPageNumber}">
                 <li class="next">
-                    <f:render section="renderPageLink"
+                    <f:render section="RenderPageLink"
                               arguments="{linkArguments: pagination.nextPageArguments, transKey: 'pageBrowser.next', actionName: actionName}"/>
                 </li>
             </f:if>
             <f:if condition="{paginator.currentPageNumber} < {pagination.lastPageNumber}">
                 <li class="last">
-                    <f:render section="renderPageLink"
+                    <f:render section="RenderPageLink"
                               arguments="{linkArguments: pagination.lastPageArguments, transKey: 'pageBrowser.last', actionName: actionName}"/>
                 </li>
             </f:if>
@@ -33,7 +33,7 @@
     </nav>
 </f:if>
 
-<f:section name="renderPageLink">
+<f:section name="RenderPageLink">
     <f:variable name="actionName">{f:if(condition: actionName, then: actionName, else: 'list')}</f:variable>
     <f:link.action action="{actionName}" addQueryString="1" arguments="{linkArguments}">
         {f:if(condition: value, then: value, else: '{f:translate(key: transKey)}')}

@@ -6,35 +6,35 @@
 <div class="row">
     <div class="col-md-9">
         <h1>{day.event.title}</h1>
-        <f:render section="renderImages" arguments="{event: day.event}"/>
-        <f:render section="videoLink" arguments="{event: day.event}"/>
+        <f:render section="RenderImages" arguments="{event: day.event}"/>
+        <f:render section="VideoLink" arguments="{event: day.event}"/>
         <p class="lead">{day.event.teaser}</p>
         <f:format.html>{day.event.detailInformation}</f:format.html>
-        <f:render section="downloadLinks" arguments="{event: day.event}"/>
+        <f:render section="DownloadLinks" arguments="{event: day.event}"/>
     </div>
     <div class="col-md-3">
-        <f:render section="showDateAndTimes" arguments="{day: day, date: day.day, times: day.times}"/>
+        <f:render section="ShowDateAndTimes" arguments="{day: day, date: day.day, times: day.times}"/>
         <f:if condition="{day.event.location}">
-            <f:render section="location" arguments="{event: day.event}"/>
-            <f:render section="googleRoute" arguments="{event: day.event}"/>
+            <f:render section="Location" arguments="{event: day.event}"/>
+            <f:render section="GoogleRoute" arguments="{event: day.event}"/>
         </f:if>
         <f:if condition="{day.event.organizers}">
-            <f:render section="organizers" arguments="{event: day.event}"/>
+            <f:render section="Organizers" arguments="{event: day.event}"/>
         </f:if>
-        <f:render section="ticketLink" arguments="{event: day.event}"/>
-        <f:render section="freeEntry" arguments="{event: day.event}"/>
-        <f:render section="iCalendar" arguments="{day: day}"/>
+        <f:render section="TicketLink" arguments="{event: day.event}"/>
+        <f:render section="FreeEntry" arguments="{event: day.event}"/>
+        <f:render section="ICalendar" arguments="{day: day}"/>
 
         <f:if condition="{day.event.alternativeTimesIncludingRemovedGroupedAndSorted}">
             <p class="lead">{f:translate(key: "alternativeEventDates")}</p>
             <f:for each="{day.event.alternativeTimesIncludingRemovedGroupedAndSorted}" as="alternatives">
-                <f:render section="showDateAndTimes" arguments="{day: day, date: alternatives.date, times: alternatives.times}"/>
+                <f:render section="ShowDateAndTimes" arguments="{day: day, date: alternatives.date, times: alternatives.times}"/>
             </f:for>
         </f:if>
     </div>
 </div>
 
-<f:section name="renderImages">
+<f:section name="RenderImages">
     <f:if condition="{0: settings.display}!={0: 'displayEvent'}">
         <f:if condition="{event.images}">
             <f:render partial="Event/Images" arguments="{event: event}"/>
@@ -42,7 +42,7 @@
     </f:if>
 </f:section>
 
-<f:section name="videoLink">
+<f:section name="VideoLink">
     <f:if condition="{event.videoLink}">
         <f:link.action action="show" controller="Video" arguments="{event: event}">
             <span class="glyphicon glyphicon-film" aria-hidden="true"></span>
@@ -51,7 +51,7 @@
     </f:if>
 </f:section>
 
-<f:section name="downloadLinks">
+<f:section name="DownloadLinks">
     <f:if condition="{event.downloadLinks}">
         <ul>
             <f:for each="{event.downloadLinks}" as="downloadLink">
@@ -65,20 +65,20 @@
     </f:if>
 </f:section>
 
-<f:section name="showDateAndTimes">
+<f:section name="ShowDateAndTimes">
     <f:if condition="{times -> f:count()}">
         <f:then>
             <f:for each="{times}" as="time">
-                <f:render section="showDateAndTime" arguments="{day: day, date: date, time: time}"/>
+                <f:render section="ShowDateAndTime" arguments="{day: day, date: date, time: time}"/>
             </f:for>
         </f:then>
         <f:else>
-            <f:render section="showDateAndTime" arguments="{day: day, date: date}"/>
+            <f:render section="ShowDateAndTime" arguments="{day: day, date: date}"/>
         </f:else>
     </f:if>
 </f:section>
 
-<f:section name="showDateAndTime">
+<f:section name="ShowDateAndTime">
     <dl>
         <dt>
             <strong>
@@ -96,7 +96,7 @@
     </dl>
 </f:section>
 
-<f:section name="location">
+<f:section name="Location">
     <dl>
         <dt><f:translate key="tx_events2_domain_model_event.location"/></dt>
         <f:if condition="{event.location.link}">
@@ -135,7 +135,7 @@
     </dl>
 </f:section>
 
-<f:section name="googleRoute">
+<f:section name="GoogleRoute">
     <f:if condition="{event.location.street}">
         <dl>
             <dt><f:translate key="routePlanner"/></dt>
@@ -149,16 +149,16 @@
     </f:if>
 </f:section>
 
-<f:section name="organizers">
+<f:section name="Organizers">
     <dl>
         <dt><f:translate key="tx_events2_domain_model_event.organizers"/></dt>
         <f:for each="{event.organizers}" as="organizer">
-            <f:render section="organizer" arguments="{organizer: organizer}"/>
+            <f:render section="Organizer" arguments="{organizer: organizer}"/>
         </f:for>
     </dl>
 </f:section>
 
-<f:section name="organizer">
+<f:section name="Organizer">
     <dd>
         <f:if condition="{organizer.link}">
             <f:then>
@@ -174,7 +174,7 @@
     </dd>
 </f:section>
 
-<f:section name="freeEntry">
+<f:section name="FreeEntry">
     <f:if condition="{event.freeEntry}">
         <dl class="extdl marginbottom2">
             <dt><f:translate key="tx_events2_domain_model_event.free_entry"/></dt>
@@ -183,7 +183,7 @@
     </f:if>
 </f:section>
 
-<f:section name="iCalendar">
+<f:section name="ICalendar">
     <dl>
         <dt>iCalendar</dt>
         <dd>
@@ -195,7 +195,7 @@
     </dl>
 </f:section>
 
-<f:section name="ticketLink">
+<f:section name="TicketLink">
     <f:if condition="{event.ticketLink.link}">
         <dl>
             <dt>Ticket Link</dt>

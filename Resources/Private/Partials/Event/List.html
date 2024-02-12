@@ -18,7 +18,7 @@
                 <f:render partial="Event/Date" arguments="{day: day}"/>
             </strong>
 
-            <f:render section="title" arguments="{day: day}"/>
+            <f:render section="Title" arguments="{day: day}"/>
 
             <f:if condition="{day.event.teaser}">
                 <p>{day.event.teaser}</p>
@@ -27,7 +27,7 @@
     </f:for>
 </ul>
 
-<f:section name="title">
+<f:section name="Title">
     <h5 class="media-heading">
         <f:link.action
             action="show"
@@ -43,7 +43,7 @@
 
 <f:comment><!-- Following sections are not used, but you can use them, if you want --></f:comment>
 
-<f:section name="location">
+<f:section name="Location">
     <f:if condition="{event.location}">
         <f:alias map="{class: '{f:if(condition: event.topOfList, then: \'list-group-item list-group-item-info\', else: \'list-group-item\')}'}">
             <li class="{class}">
@@ -60,7 +60,7 @@
     </f:if>
 </f:section>
 
-<f:section name="category">
+<f:section name="Category">
     <f:alias map="{class: '{f:if(condition: event.topOfList, then: \'list-group-item list-group-item-info\', else: \'list-group-item\')}'}">
         <f:if condition="{settings.categories}">
             <f:then>
@@ -83,7 +83,7 @@
     </f:alias>
 </f:section>
 
-<f:section name="firstImage">
+<f:section name="FirstImage">
     <f:if condition="{event.images -> f:count()}">
         <f:for each="{event.images}" as="image" iteration="iterator">
             <f:if condition="{iterator.isFirst}">
