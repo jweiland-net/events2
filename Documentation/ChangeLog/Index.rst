@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 9.0.1
+=============
+
+*    Bugfix: Repair scheduler task for re-generate day records
+
 Version 9.0.0
 =============
 
