@@ -26,7 +26,7 @@ class AdditionalFieldsForImport extends AbstractAdditionalFieldProvider
 {
     protected array $taskInfo = [];
 
-    protected AbstractTask|Import $task;
+    protected AbstractTask|Import|null $task = null;
 
     protected SchedulerModuleController $schedulerModule;
 
