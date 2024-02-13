@@ -782,6 +782,16 @@ class Event extends AbstractEntity
         return $references;
     }
 
+    public function getFirstImage(): ?FileReference
+    {
+        $this->images->rewind();
+        if ($this->images->count()) {
+            return $this->images->current();
+        }
+
+        return null;
+    }
+
     public function setImages(ObjectStorage $images): void
     {
         $this->images = $images;
