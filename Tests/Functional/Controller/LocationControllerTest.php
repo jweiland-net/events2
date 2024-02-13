@@ -32,7 +32,7 @@ class LocationControllerTest extends AbstractFunctionalTestCase
      */
     protected $testExtensionsToLoad = [
         'typo3conf/ext/events2',
-        'typo3conf/ext/static_info_tables'
+        'typo3conf/ext/static_info_tables',
     ];
 
     protected function setUp(): void
@@ -77,7 +77,7 @@ class LocationControllerTest extends AbstractFunctionalTestCase
                     'controller' => 'Location',
                     'action' => 'show',
                     'location' => '1',
-                ]
+                ],
             ]
         );
 

@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Helper;
 
-use Doctrine\DBAL\Driver\Statement;
+use Doctrine\DBAL\Statement;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Event\GeneratePathSegmentEvent;
@@ -21,10 +21,9 @@ use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\DataHandling\SlugHelper;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 
-/*
+/**
  * Helper class to generate a path segment (slug) for an event record.
  * Used while executing the UpgradeWizard and saving records in frontend.
  */
@@ -38,21 +37,10 @@ class PathSegmentHelper
 
     protected array $slugCache = [];
 
-    protected ObjectManagerInterface $objectManager;
-
-    protected ExtConf $extConf;
-
-    protected EventDispatcher $eventDispatcher;
-
     public function __construct(
-        ObjectManagerInterface $objectManager,
-        ExtConf $extConf,
-        EventDispatcher $eventDispatcher
-    ) {
-        $this->objectManager = $objectManager;
-        $this->extConf = $extConf;
-        $this->eventDispatcher = $eventDispatcher;
-    }
+        protected readonly ExtConf $extConf,
+        protected readonly EventDispatcher $eventDispatcher
+    ) {}
 
     public function generatePathSegment(array $baseRecord): string
     {
@@ -87,8 +75,7 @@ class PathSegmentHelper
     {
         // First of all, we have to check, if an UID is available
         if (!$event->getUid()) {
-            $persistenceManager = $this->objectManager->get(PersistenceManagerInterface::class);
-            $persistenceManager->persistAll();
+            $this->getPersistenceManager()->persistAll();
         }
 
         $event->setPathSegment(
@@ -100,29 +87,36 @@ class PathSegmentHelper
 
     protected function getUniqueValue(int $uid, string $slug): string
     {
-        $newSlug = '';
+        $newSlug = null;
         $statement = $this->getUniqueSlugStatement($uid, $slug);
-        $counter = $this->slugCache[$slug] ?? 1;
-        while ($statement->fetch(\PDO::FETCH_ASSOC)) {
-            $newSlug = $slug . '-' . $counter;
-            $statement->bindValue(1, $newSlug);
-            $statement->execute();
-
-            // Do not cache every slug, because of memory consumption. I think 5 is a good value to start caching.
-            if ($counter > 5) {
-                $this->slugCache[$slug] = $counter;
+        $queryResult = $statement->executeQuery();
+        if ($queryResult->fetchOne()) {
+            for ($counter = 1; $counter <= 100; $counter++) {
+                $queryResult->free();
+                $newSlug = $slug . '-' . $counter;
+                $statement->bindValue(1, $newSlug);
+                $result = $statement->executeQuery();
+                if (!$result->fetchOne()) {
+                    break;
+                }
             }
-            ++$counter;
+            $result->free();
         }
 
         return $newSlug ?? $slug;
     }
 
+    /**
+     * Returns a query statement to test, if given slug is already in database. If yes, we will use the statement
+     * again, to check against various slug-[counter]. If no, we will just return the just generated slug.
+     */
     protected function getUniqueSlugStatement(int $uid, string $slug): Statement
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($this->tableName);
-        $queryBuilder->getRestrictions()->removeAll();
-        $queryBuilder->getRestrictions()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
+        $queryBuilder
+            ->getRestrictions()
+            ->removeAll()
+            ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
 
         return $queryBuilder
             ->select('uid')
@@ -130,14 +124,14 @@ class PathSegmentHelper
             ->where(
                 $queryBuilder->expr()->eq(
                     $this->slugColumn,
-                    $queryBuilder->createPositionalParameter($slug, Connection::PARAM_STR)
+                    $queryBuilder->createPositionalParameter($slug)
                 ),
                 $queryBuilder->expr()->neq(
                     'uid',
                     $queryBuilder->createPositionalParameter($uid, Connection::PARAM_INT)
                 )
             )
-            ->execute();
+            ->prepare();
     }
 
     protected function getSlugHelper(): SlugHelper
@@ -154,6 +148,11 @@ class PathSegmentHelper
             $this->slugColumn,
             $config
         );
+    }
+
+    protected function getPersistenceManager(): PersistenceManagerInterface
+    {
+        return GeneralUtility::makeInstance(PersistenceManagerInterface::class);
     }
 
     protected function getConnectionPool(): ConnectionPool

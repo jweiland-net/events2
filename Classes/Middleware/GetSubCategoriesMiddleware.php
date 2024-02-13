@@ -17,24 +17,15 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use TYPO3\CMS\Core\Http\JsonResponse;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
-/*
+/**
  * This middleware is needed for management plugin. It is needed to get the sub-categories of a selected
  * main category.
  */
 class GetSubCategoriesMiddleware implements MiddlewareInterface
 {
-    protected CategoryRepository $categoryRepository;
-
-    /**
-     * Will be called by call_user_func_array, so don't add Extbase classes with inject methods as argument
-     */
-    public function __construct()
-    {
-        $this->categoryRepository = GeneralUtility::makeInstance(CategoryRepository::class);
-    }
+    public function __construct(protected readonly CategoryRepository $categoryRepository) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -61,7 +52,7 @@ class GetSubCategoriesMiddleware implements MiddlewareInterface
         foreach ($categories as $category) {
             $response[] = [
                 'uid' => $category->getUid(),
-                'label' => $category->getTitle()
+                'label' => $category->getTitle(),
             ];
         }
 

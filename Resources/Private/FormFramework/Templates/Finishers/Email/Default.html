@@ -1,64 +1,65 @@
 <f:layout name="SystemEmail"/>
 <f:section name="Title">{title}</f:section>
 <f:section name="Main">
-	<f:variable name="event">{finisherVariableProvider.SaveEvent.insertedUids.tx_events2_domain_model_event}</f:variable>
+    <f:variable name="event">{finisherVariableProvider.SaveEvent.insertedUids.tx_events2_domain_model_event}</f:variable>
 
-	<p>Hallo,</p>
-	<p>
-		<f:link.action action="perform" controller="Management" extensionName="Events2" pluginName="Management" absolute="1" arguments="{event: event, timestamp: '0'}">
-			Datensatz bearbeiten
-		</f:link.action>
-	</p>
-	<p>
-		<f:link.action action="activate" controller="Management" extensionName="Events2" pluginName="Management" absolute="1" arguments="{event: event, timestamp: '0'}">
-			Datensatz freischalten
-		</f:link.action>
-	</p>
-	<p>hier die Daten des neu angelegten Datensatzes:</p>
+    <p>Hallo,</p>
+    <p>
+        <f:link.action pageUid="{pidOfManagementPage}" action="perform" controller="Management" extensionName="Events2" pluginName="Management" absolute="1" arguments="{event: event, timestamp: '0'}">
+            Datensatz bearbeiten
+        </f:link.action>
+    </p>
+    <p>
+        <f:link.action pageUid="{pidOfManagementPage}" action="activate" controller="Management" extensionName="Events2" pluginName="Management" absolute="1" arguments="{event: event, timestamp: '0'}">
+            Datensatz freischalten
+        </f:link.action>
+    </p>
 
-	<table>
-		<formvh:renderAllFormValues renderable="{form.formDefinition}" as="formValue">
-			<tr>
-				<f:if condition="{formValue.isSection}">
-					<f:then>
-						<td colspan="2"><b>{formvh:translateElementProperty(element: formValue.element, property: 'label')}</b></td>
-					</f:then>
-					<f:else>
-						<td valign="top" align="left">{formvh:translateElementProperty(element: formValue.element, property:
-							'label')}
-						</td>
-						<td valign="top" align="left">
-							<f:if condition="{formValue.value}">
-								<f:then>
-									<f:if condition="{formValue.isMultiValue}">
-										<f:then>
-											<table cellspacing="0" border="0">
-												<f:for each="{formValue.processedValue}" as="value">
-													<tr>
-														<td>{value}</td>
-													</tr>
-												</f:for>
-											</table>
-										</f:then>
-										<f:else>
-											<table cellspacing="0" border="0">
-												<tr>
-													<td>
-														<f:format.nl2br>{formValue.processedValue}</f:format.nl2br>
-													</td>
-												</tr>
-											</table>
-										</f:else>
-									</f:if>
-								</f:then>
-								<f:else>
-									-
-								</f:else>
-							</f:if>
-						</td>
-					</f:else>
-				</f:if>
-			</tr>
-		</formvh:renderAllFormValues>
-	</table>
+    <p>Hier die Daten des neu angelegten Datensatzes:</p>
+
+    <table>
+        <formvh:renderAllFormValues renderable="{form.formDefinition}" as="formValue">
+            <tr>
+                <f:if condition="{formValue.isSection}">
+                    <f:then>
+                        <td colspan="2"><b>{formvh:translateElementProperty(element: formValue.element, property: 'label')}</b></td>
+                    </f:then>
+                    <f:else>
+                        <td valign="top" align="left">{formvh:translateElementProperty(element: formValue.element, property:
+                            'label')}
+                        </td>
+                        <td valign="top" align="left">
+                            <f:if condition="{formValue.value}">
+                                <f:then>
+                                    <f:if condition="{formValue.isMultiValue}">
+                                        <f:then>
+                                            <table cellspacing="0" border="0">
+                                                <f:for each="{formValue.processedValue}" as="value">
+                                                    <tr>
+                                                        <td>{value}</td>
+                                                    </tr>
+                                                </f:for>
+                                            </table>
+                                        </f:then>
+                                        <f:else>
+                                            <table cellspacing="0" border="0">
+                                                <tr>
+                                                    <td>
+                                                        <f:format.nl2br>{formValue.processedValue}</f:format.nl2br>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </f:else>
+                                    </f:if>
+                                </f:then>
+                                <f:else>
+                                    -
+                                </f:else>
+                            </f:if>
+                        </td>
+                    </f:else>
+                </f:if>
+            </tr>
+        </formvh:renderAllFormValues>
+    </table>
 </f:section>

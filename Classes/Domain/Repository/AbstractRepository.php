@@ -11,7 +11,8 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Domain\Repository;
 
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\ArrayParameterType;
+use Doctrine\DBAL\Exception;
 use JWeiland\Events2\Helper\OverlayHelper;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -22,7 +23,7 @@ use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
-/*
+/**
  * Abstract repository with helpful methods for all repos
  */
 class AbstractRepository extends Repository
@@ -51,7 +52,7 @@ class AbstractRepository extends Repository
                     $alias . '.pid',
                     $queryBuilder->createNamedParameter(
                         $extbaseQuery->getQuerySettings()->getStoragePageIds(),
-                        Connection::PARAM_INT_ARRAY
+                        ArrayParameterType::INTEGER
                     )
                 )
             );
@@ -85,16 +86,16 @@ class AbstractRepository extends Repository
                 ->where(
                     $queryBuilder->expr()->eq(
                         $tableAlias . '.uid',
-                        $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                        $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT)
                     )
                 )
-                ->execute()
-                ->fetch(\PDO::FETCH_ASSOC);
+                ->executeQuery()
+                ->fetchAssociative();
 
             if ($record === false) {
                 return [];
             }
-        } catch (DBALException $DBALException) {
+        } catch (Exception $e) {
             return [];
         }
 
@@ -130,10 +131,10 @@ class AbstractRepository extends Repository
                 $queryBuilder->where(...$expressions);
             }
 
-            $statement = $queryBuilder->execute();
+            $queryResult = $queryBuilder->executeQuery();
 
             $records = [];
-            while ($record = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            while ($record = $queryResult->fetchAssociative()) {
                 if ($doOverlay) {
                     $record = $this->overlayHelper->doOverlay($tableName, $record);
                 }
@@ -143,7 +144,7 @@ class AbstractRepository extends Repository
                     $records[$record['uid']] = $record;
                 }
             }
-        } catch (DBALException $DBALException) {
+        } catch (Exception $e) {
             return [];
         }
 

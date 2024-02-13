@@ -20,18 +20,13 @@ use JWeiland\Events2\Event\PostProcessFluidVariablesEvent;
  */
 class AddOrganizersForFilterEventListener extends AbstractControllerEventListener
 {
-    protected OrganizerRepository $organizerRepository;
-
     protected array $allowedControllerActions = [
         'Day' => [
             'list',
-        ]
+        ],
     ];
 
-    public function __construct(OrganizerRepository $organizerRepository)
-    {
-        $this->organizerRepository = $organizerRepository;
-    }
+    public function __construct(protected readonly OrganizerRepository $organizerRepository) {}
 
     public function __invoke(PostProcessFluidVariablesEvent $controllerActionEvent): void
     {

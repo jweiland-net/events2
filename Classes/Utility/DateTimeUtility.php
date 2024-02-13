@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -11,7 +13,7 @@ namespace JWeiland\Events2\Utility;
 
 use TYPO3\CMS\Core\Utility\MathUtility;
 
-/*
+/**
  * With this class you can convert various strings and integers into a DateTime object.
  */
 class DateTimeUtility
@@ -22,12 +24,12 @@ class DateTimeUtility
      *
      * @param mixed $value Unix timestamp or date/datetime value
      */
-    public function convert($value): ?\DateTimeImmutable
+    public function convert(mixed $value): ?\DateTimeImmutable
     {
         try {
             if (
                 (!is_string($value) && !is_int($value))
-                ||empty($value)
+                || empty($value)
                 || $value === '0000-00-00'
                 || $value === '0000-00-00 00:00:00'
             ) {

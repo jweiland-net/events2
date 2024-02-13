@@ -16,7 +16,7 @@ use JWeiland\Maps2\Domain\Model\PoiCollection;
 use SJBR\StaticInfoTables\Domain\Model\Country;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
-/*
+/**
  * This class contains all getter and setters for a Location.
  */
 class Location extends AbstractEntity
@@ -25,7 +25,7 @@ class Location extends AbstractEntity
 
     protected string $location = '';
 
-    protected string  $street = '';
+    protected string $street = '';
 
     protected string $houseNumber = '';
 
@@ -38,7 +38,7 @@ class Location extends AbstractEntity
     protected ?Link $link = null;
 
     /**
-     * @var \JWeiland\Maps2\Domain\Model\PoiCollection|null
+     * @var PoiCollection|null
      */
     protected $txMaps2Uid;
 

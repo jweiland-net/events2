@@ -1,0 +1,22 @@
+name: TYPO3 12
+
+on: [pull_request]
+
+jobs:
+  CGL:
+    name: Coding Style Check (TYPO3 Community CGL)
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Composer
+        run: Build/Scripts/runTests.sh -t 12 -p 8.1 -s composerUpdate
+
+      - name: Lint PHP
+        run: Build/Scripts/runTests.sh -t 12 -p 8.1 -s lint
+
+      - name: Validate code against CGL
+        run: Build/Scripts/runTests.sh -t 12 -p 8.1 -s cgl -n

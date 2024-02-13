@@ -14,14 +14,16 @@ namespace JWeiland\Events2\Domain\Factory;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Time;
+use JWeiland\Events2\Traits\Typo3RequestTrait;
 use JWeiland\Events2\Utility\DateTimeUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/*
+/**
  * Use this factory to get an ObjectStorage of Time Models valid for a given event and date
  */
 class TimeFactory
 {
+    use Typo3RequestTrait;
+
     /**
      * The Date to retrieve the Time records for.
      */
@@ -32,12 +34,7 @@ class TimeFactory
      */
     protected bool $removeCurrentDay = false;
 
-    protected DateTimeUtility $dateTimeUtility;
-
-    public function __construct(DateTimeUtility $dateTimeUtility)
-    {
-        $this->dateTimeUtility = $dateTimeUtility;
-    }
+    public function __construct(protected readonly DateTimeUtility $dateTimeUtility) {}
 
     public function getSortedTimesForDate(
         Event $event,
@@ -175,7 +172,7 @@ class TimeFactory
             // If activated, we have to extract the time information from URI parameter "timestamp".
             // We will remove ALL time-records of current day, as ALL time-records for current day are
             // already visible in event show action. So no need to remove individual time records.
-            $uriParameters = GeneralUtility::_GET('tx_events2_show');
+            $uriParameters = $this->getGetFromRequest()['tx_events2_show'];
             $currentDateMidnight = $this->dateTimeUtility->convert($uriParameters['timestamp'] ?? 0);
             if ($currentDateMidnight instanceof \DateTimeImmutable) {
                 $currentDateMidnight = $this->dateTimeUtility->standardizeDateTimeObject($currentDateMidnight);

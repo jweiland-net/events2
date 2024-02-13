@@ -11,12 +11,11 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Domain\Repository;
 
-use JWeiland\Events2\Domain\Model\Event;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
-/*
+/**
  * Repository to get and find event records
  */
 class EventRepository extends AbstractRepository implements HiddenRepositoryInterface
@@ -43,11 +42,7 @@ class EventRepository extends AbstractRepository implements HiddenRepositoryInte
         $this->exceptionRepository = $exceptionRepository;
     }
 
-    /**
-     * @param mixed $value
-     * @return AbstractDomainObject|Event|null
-     */
-    public function findHiddenObject($value, string $property = 'uid'): ?AbstractDomainObject
+    public function findHiddenObject(mixed $value, string $property = 'uid'): ?AbstractDomainObject
     {
         $query = $this->createQuery();
         $query->getQuerySettings()->setIgnoreEnableFields(true);

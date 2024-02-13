@@ -32,7 +32,7 @@ class VideoControllerTest extends AbstractFunctionalTestCase
      */
     protected $testExtensionsToLoad = [
         'typo3conf/ext/events2',
-        'typo3conf/ext/static_info_tables'
+        'typo3conf/ext/static_info_tables',
     ];
 
     protected function setUp(): void
@@ -87,7 +87,7 @@ class VideoControllerTest extends AbstractFunctionalTestCase
                     'controller' => 'Video',
                     'action' => 'show',
                     'event' => '1',
-                ]
+                ],
             ]
         );
 
@@ -122,7 +122,7 @@ class VideoControllerTest extends AbstractFunctionalTestCase
                 'event_type' => 'single',
                 'event_begin' => (int)$date->format('U'),
                 'title' => 'Today',
-                'video_link' => 1
+                'video_link' => 1,
             ]
         );
 
@@ -135,7 +135,7 @@ class VideoControllerTest extends AbstractFunctionalTestCase
                     'controller' => 'Video',
                     'action' => 'show',
                     'event' => '1',
-                ]
+                ],
             ]
         );
 

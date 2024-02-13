@@ -27,7 +27,7 @@ use TYPO3\CMS\Extbase\Property\PropertyMappingConfigurationInterface;
 use TYPO3\CMS\Extbase\Property\TypeConverter\AbstractTypeConverter;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
-/*
+/**
  * A for PropertyMapper to convert multiple file uploads into an array
  */
 class UploadMultipleFilesConverter extends AbstractTypeConverter
@@ -51,19 +51,12 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
 
     protected PropertyMappingConfigurationInterface $converterConfiguration;
 
-    protected EventDispatcher $eventDispatcher;
-
     /**
      * Do not inject this property, as EXT:checkfaluploads may not be loaded
-     *
-     * @var FalUploadService
      */
-    protected $falUploadService;
+    protected ?FalUploadService $falUploadService = null;
 
-    public function __construct(EventDispatcher $eventDispatcher)
-    {
-        $this->eventDispatcher = $eventDispatcher;
-    }
+    public function __construct(protected readonly EventDispatcher $eventDispatcher) {}
 
     public function canConvertFrom($source, string $targetType): bool
     {
@@ -83,15 +76,12 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
         return true;
     }
 
-    /**
-     * @return \TYPO3\CMS\Extbase\Error\Error|mixed|\TYPO3\CMS\Extbase\Persistence\ObjectStorage
-     */
     public function convertFrom(
         $source,
         string $targetType,
         array $convertedChildProperties = [],
         PropertyMappingConfigurationInterface $configuration = null
-    ) {
+    ): Error|ObjectStorage {
         $this->initialize($configuration);
         $originalSource = $source;
         foreach ($originalSource as $key => $uploadedFile) {
@@ -114,7 +104,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
                 continue;
             }
             // Check if uploaded file returns an error
-            if (!$uploadedFile['error'] === 0) {
+            if ($uploadedFile['error'] !== 0) {
                 return new Error(
                     LocalizationUtility::translate('error.upload', 'events2') . $uploadedFile['error'],
                     1396957314
@@ -129,7 +119,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
                         'error.fileExtension',
                         'events2',
                         [
-                            $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']
+                            $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'],
                         ]
                     ),
                     1402981282

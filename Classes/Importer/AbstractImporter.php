@@ -26,10 +26,11 @@ use TYPO3\CMS\Core\Resource\AbstractFile;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 
-/*
+/**
  * Abstract Importer which will keep most methods for all importer scripts
  */
 abstract class AbstractImporter implements ImporterInterface
@@ -45,42 +46,18 @@ abstract class AbstractImporter implements ImporterInterface
 
     protected array $allowedMimeType = [];
 
-    protected PersistenceManagerInterface $persistenceManager;
-
-    protected EventRepository $eventRepository;
-
-    protected OrganizerRepository $organizerRepository;
-
-    protected LocationRepository $locationRepository;
-
-    protected CategoryRepository $categoryRepository;
-
-    protected PathSegmentHelper $pathSegmentHelper;
-
-    protected DateTimeUtility $dateTimeUtility;
-
-    protected ExtConf $extConf;
-
     protected \DateTimeImmutable $today;
 
     public function __construct(
-        EventRepository $eventRepository,
-        OrganizerRepository $organizerRepository,
-        LocationRepository $locationRepository,
-        CategoryRepository $categoryRepository,
-        PersistenceManagerInterface $persistenceManager,
-        PathSegmentHelper $pathSegmentHelper,
-        DateTimeUtility $dateTimeUtility,
-        ExtConf $extConf
+        protected readonly EventRepository $eventRepository,
+        protected readonly OrganizerRepository $organizerRepository,
+        protected readonly LocationRepository $locationRepository,
+        protected readonly CategoryRepository $categoryRepository,
+        protected readonly PersistenceManagerInterface $persistenceManager,
+        protected readonly PathSegmentHelper $pathSegmentHelper,
+        protected readonly DateTimeUtility $dateTimeUtility,
+        protected readonly ExtConf $extConf
     ) {
-        $this->eventRepository = $eventRepository;
-        $this->organizerRepository = $organizerRepository;
-        $this->locationRepository = $locationRepository;
-        $this->categoryRepository = $categoryRepository;
-        $this->persistenceManager = $persistenceManager;
-        $this->pathSegmentHelper = $pathSegmentHelper;
-        $this->dateTimeUtility = $dateTimeUtility;
-        $this->extConf = $extConf;
         $this->today = new \DateTimeImmutable('now');
     }
 
@@ -100,7 +77,7 @@ abstract class AbstractImporter implements ImporterInterface
 
         if (!in_array($this->file->getMimeType(), $this->allowedMimeType, true)) {
             $isValid = false;
-            $this->addMessage('MimeType of file is not allowed', FlashMessage::ERROR);
+            $this->addMessage('MimeType of file is not allowed', ContextualFeedbackSeverity::ERROR);
         }
 
         return $isValid;
@@ -129,7 +106,7 @@ abstract class AbstractImporter implements ImporterInterface
                     $eventBegin->format('d.m.Y'),
                     'event_begin can not be in past'
                 ),
-                FlashMessage::ERROR
+                ContextualFeedbackSeverity::ERROR
             );
 
             return false;
@@ -178,7 +155,7 @@ abstract class AbstractImporter implements ImporterInterface
                         $eventBegin->format('d.m.Y'),
                         'Image must be of type array'
                     ),
-                    FlashMessage::ERROR
+                    ContextualFeedbackSeverity::ERROR
                 );
 
                 return false;
@@ -191,7 +168,7 @@ abstract class AbstractImporter implements ImporterInterface
                         $eventBegin->format('d.m.Y'),
                         'Array key "url" of image must be set and can not be empty'
                     ),
-                    FlashMessage::ERROR
+                    ContextualFeedbackSeverity::ERROR
                 );
 
                 return false;
@@ -204,7 +181,7 @@ abstract class AbstractImporter implements ImporterInterface
                         $eventBegin->format('d.m.Y'),
                         'Image path has to be a valid URL'
                     ),
-                    FlashMessage::ERROR
+                    ContextualFeedbackSeverity::ERROR
                 );
 
                 return false;
@@ -227,7 +204,7 @@ abstract class AbstractImporter implements ImporterInterface
                     $value
                 )
             ),
-            FlashMessage::ERROR
+            ContextualFeedbackSeverity::ERROR
         );
     }
 
@@ -269,8 +246,8 @@ abstract class AbstractImporter implements ImporterInterface
                     $queryBuilder->createNamedParameter($title)
                 )
             )
-            ->execute()
-            ->fetch(\PDO::FETCH_ASSOC);
+            ->executeQuery()
+            ->fetchAssociative();
 
         return $organizer ?: [];
     }
@@ -306,8 +283,8 @@ abstract class AbstractImporter implements ImporterInterface
                     $queryBuilder->createNamedParameter($title)
                 )
             )
-            ->execute()
-            ->fetch(\PDO::FETCH_ASSOC);
+            ->executeQuery()
+            ->fetchAssociative();
 
         return $location ?: [];
     }
@@ -328,13 +305,13 @@ abstract class AbstractImporter implements ImporterInterface
                     $queryBuilder->createNamedParameter($title)
                 )
             )
-            ->execute()
-            ->fetch(\PDO::FETCH_ASSOC);
+            ->executeQuery()
+            ->fetchAssociative();
 
         return $category ?: [];
     }
 
-    protected function addMessage(string $message, int $severity = FlashMessage::OK): void
+    protected function addMessage(string $message, ContextualFeedbackSeverity $severity = ContextualFeedbackSeverity::OK): void
     {
         static $firstMessage = true;
         /** @var AbstractFile $logFile */
@@ -354,7 +331,7 @@ abstract class AbstractImporter implements ImporterInterface
             $logFile->setContents($content . $message . LF);
         } catch (\Exception $exception) {
             $message = $exception->getMessage();
-            $severity = FlashMessage::ERROR;
+            $severity = ContextualFeedbackSeverity::ERROR;
         }
 
         // show messages in TYPO3 BE when started manually

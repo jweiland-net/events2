@@ -15,15 +15,13 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/*
+/**
  * Render a selectbox with countries from static_info_tables within ExtensionManager configuration for events2
  */
 class EmStaticInfo
 {
     /**
      * Render our own custom field for static_info_tables
-     *
-     * @param $configurationForm
      */
     public function renderDefaultCountry(array $params, $configurationForm): string
     {
@@ -41,7 +39,7 @@ class EmStaticInfo
 
         return sprintf(
             '<select id="%s" class="%s" name="%s">%s</select>',
-            'em-' . $params['propertyName'],
+            'em-' . $params['fieldName'],
             'form-control',
             $params['fieldName'],
             implode(LF, $options)
@@ -60,18 +58,12 @@ class EmStaticInfo
             GeneralUtility::makeInstance(DeletedRestriction::class)
         );
 
-        $countries = $queryBuilder
+        return $queryBuilder
             ->select('uid', 'cn_short_en')
             ->from('static_countries')
             ->orderBy('cn_short_en', 'ASC')
-            ->execute()
-            ->fetchAll(\PDO::FETCH_ASSOC);
-
-        if (empty($countries)) {
-            $countries = [];
-        }
-
-        return $countries;
+            ->executeQuery()
+            ->fetchAllAssociative();
     }
 
     protected function wrapOption(string $value, string $label, bool $selected): string

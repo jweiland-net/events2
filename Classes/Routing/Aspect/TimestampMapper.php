@@ -13,14 +13,14 @@ namespace JWeiland\Events2\Routing\Aspect;
 
 use TYPO3\CMS\Core\Routing\Aspect\StaticMappableAspectInterface;
 
-/*
+/**
  * Mapper to map a timestamp to a formatted value and back to a timestamp.
  *
  * routeEnhancers:
  *   Events2ShowPlugin:
  *     type: Extbase
  *     extension: Events2
- *     # Use plugin "Show", if you have a seperate detail page with plugin "Events2 Show" inserted
+ *     # Use plugin "Show", if you have a separate detail page with plugin "Events2 Show" inserted
  *     plugin: List
  *     routes:
  *       -
@@ -63,9 +63,6 @@ class TimestampMapper implements StaticMappableAspectInterface
         $this->settings = $settings;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generate(string $value): ?string
     {
         $date = new \DateTimeImmutable(date('c', (int)$value));
@@ -73,9 +70,6 @@ class TimestampMapper implements StaticMappableAspectInterface
         return $date->format($this->settings['format']);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function resolve(string $value): ?string
     {
         $date = \DateTimeImmutable::createFromFormat($this->settings['format'], $value);

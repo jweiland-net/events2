@@ -1,60 +1,67 @@
 <p>Hallo,</p>
-<p><f:link.action action="edit" controller="Management" absolute="1" arguments="{event: event, timestamp: '0'}">Datensatz bearbeiten</f:link.action></p>
-<p><f:link.action action="activate" controller="Management" absolute="1" arguments="{event: event, timestamp: '0'}">Datensatz freischalten</f:link.action></p>
+
+<p>
+    <f:link.action pageUid="{settings.pidOfManagementPage}" action="edit" controller="Management" absolute="1" arguments="{event: event, timestamp: '0'}">Datensatz bearbeiten</f:link.action>
+</p>
+<p>
+    <f:link.action pageUid="{settings.pidOfManagementPage}" action="activate" controller="Management" absolute="1" arguments="{event: event, timestamp: '0'}">Datensatz freischalten</f:link.action>
+</p>
+
 <p>hier die Daten des bearbeiteten Datensatzes:</p>
+
 <table>
-	<tr>
-		<th>Eigenschaft</th>
-		<th>Wert</th>
-	</tr>
-	<tr>
-		<td><f:translate key="tx_events2_domain_model_event.title" /></td>
-		<td>{event.title}</td>
-	</tr>
-	<tr>
-		<td><f:translate key="tx_events2_domain_model_event.teaser" /></td>
-		<td>{event.teaser}</td>
-	</tr>
-	<tr>
-		<td><f:translate key="tx_events2_domain_model_event.detail_information" /></td>
-		<td>{event.detailInformation}</td>
-	</tr>
-	<tr>
-		<td><f:translate key="tx_events2_domain_model_event.event_begin" /></td>
-		<td>{event.eventBegin -> f:format.date(format: 'd.m.Y')}</td>
-	</tr>
-	<tr>
-		<td><f:translate key="tx_events2_domain_model_event.event_end" /></td>
-		<td>{event.eventEnd -> f:format.date(format: 'd.m.Y')}</td>
-	</tr>
-	<tr>
-		<td><f:translate key="tx_events2_domain_model_event.event_time" /></td>
-		<td>{event.eventTime.timeBegin}</td>
-	</tr>
-	<tr>
-		<td><f:translate key="tx_events2_domain_model_event.categories" /></td>
-		<td>
-			<ul>
-				<f:for each="{event.categories}" as="category">
-					<li>{category.title}</li>
-				</f:for>
-			</ul>
-		</td>
-	</tr>
-	<f:if condition="{event.location}">
-		<tr>
-			<td><f:translate key="tx_events2_domain_model_event.location" /></td>
-			<td>{event.location.location}</td>
-		</tr>
-	</f:if>
-	<tr>
-		<td><f:translate key="tx_events2_domain_model_event.video_link" /></td>
-		<td>{event.videoLink.link}</td>
-	</tr>
-	<f:if condition="{event.organizer}">
-		<tr>
-			<td><f:translate key="tx_events2_domain_model_event.organizer" /></td>
-			<td>{event.organizer.organizer}</td>
-		</tr>
-	</f:if>
+    <tr>
+        <th>Eigenschaft</th>
+        <th>Wert</th>
+    </tr>
+    <tr>
+        <td><f:translate key="tx_events2_domain_model_event.title"/></td>
+        <td>{event.title}</td>
+    </tr>
+    <tr>
+        <td><f:translate key="tx_events2_domain_model_event.teaser"/></td>
+        <td>{event.teaser}</td>
+    </tr>
+    <tr>
+        <td><f:translate key="tx_events2_domain_model_event.detail_information"/></td>
+        <td>{event.detailInformation}</td>
+    </tr>
+    <tr>
+        <td><f:translate key="tx_events2_domain_model_event.event_begin"/></td>
+        <td>{event.eventBegin -> f:format.date(format: 'd.m.Y')}</td>
+    </tr>
+    <tr>
+        <td><f:translate key="tx_events2_domain_model_event.event_end"/></td>
+        <td>{event.eventEnd -> f:format.date(format: 'd.m.Y')}</td>
+    </tr>
+    <tr>
+        <td><f:translate key="tx_events2_domain_model_event.event_time"/></td>
+        <td>{event.eventTime.timeBegin}</td>
+    </tr>
+    <tr>
+        <td><f:translate key="tx_events2_domain_model_event.categories"/></td>
+        <td>
+            <ul>
+                <f:for each="{event.categories}" as="category">
+                    <li>{category.title}</li>
+                </f:for>
+            </ul>
+        </td>
+    </tr>
+    <f:if condition="{event.location}">
+        <tr>
+            <td><f:translate key="tx_events2_domain_model_event.location"/></td>
+            <td>{event.location.location}</td>
+        </tr>
+    </f:if>
+    <tr>
+        <td><f:translate key="tx_events2_domain_model_event.video_link"/></td>
+        <td>{event.videoLink.link}</td>
+    </tr>
+    <f:if condition="{event.organizer}">
+        <tr>
+            <td><f:translate key="tx_events2_domain_model_event.organizer"/></td>
+            <td>{event.organizer.organizer}</td>
+        </tr>
+    </f:if>
 </table>

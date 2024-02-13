@@ -1,9 +1,9 @@
 <html lang="en"
-			xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-			data-namespace-typo3-fluid="true">
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
 
 <f:if condition="{event.teaser}">
-	<f:then><p>{event.teaser -> f:format.html(parseFuncTSPath: 'lib.parseFunc') -> f:format.nl2br()}</p></f:then>
-	<f:else><p>{event.detailInformation -> f:format.crop(maxCharacters: 100) -> f:format.html(parseFuncTSPath:'lib.parseFunc') -> f:format.nl2br()}</p></f:else>
+    <f:then><p>{event.teaser -> f:format.html(parseFuncTSPath: 'lib.parseFunc') -> f:format.nl2br()}</p></f:then>
+    <f:else><p>{event.detailInformation -> f:format.crop(maxCharacters: 100) -> f:format.html(parseFuncTSPath:'lib.parseFunc') -> f:format.nl2br()}</p></f:else>
 </f:if>
 </html>

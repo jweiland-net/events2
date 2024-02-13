@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Service;
 
-use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\DateTimeEntry;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\TimeRepository;
@@ -19,11 +18,12 @@ use JWeiland\Events2\Utility\DateTimeUtility;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/*
+/**
  * While saving an event in backend, this class generates all the day records
  * and sets them in relation to the event record.
  */
@@ -33,34 +33,16 @@ class DayRelationService implements LoggerAwareInterface
 
     protected array $eventRecord = [];
 
-    protected ExtConf $extConf;
-
-    protected DayGeneratorService $dayGenerator;
-
-    protected DayRepository $dayRepository;
-
-    protected TimeRepository $timeRepository;
-
-    protected DateTimeUtility $dateTimeUtility;
-
     protected ?\DateTimeImmutable $firstDateTime = null;
 
     protected array $firstTimeRecordForCurrentDateTime = [];
 
-    /**
-     * Must be called by ObjectManager, because of EventRepository which has inject methods
-     */
     public function __construct(
-        DayGeneratorService $dayGenerator,
-        DayRepository $dayRepository,
-        TimeRepository $timeRepository,
-        DateTimeUtility $dateTimeUtility
-    ) {
-        $this->dayGenerator = $dayGenerator;
-        $this->dayRepository = $dayRepository;
-        $this->timeRepository = $timeRepository;
-        $this->dateTimeUtility = $dateTimeUtility;
-    }
+        protected readonly DayGeneratorService $dayGenerator,
+        protected readonly DayRepository $dayRepository,
+        protected readonly TimeRepository $timeRepository,
+        protected readonly DateTimeUtility $dateTimeUtility
+    ) {}
 
     /**
      * Delete all related day records of given event and
@@ -162,23 +144,23 @@ class DayRelationService implements LoggerAwareInterface
             ->removeAll()
             ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
 
-        $statement = $queryBuilder
+        $queryResult = $queryBuilder
             ->select('*')
             ->from('tx_events2_domain_model_exception')
             ->where(
                 $queryBuilder->expr()->eq(
                     'event',
-                    $queryBuilder->createNamedParameter((int)$eventRecord['uid'], \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter((int)$eventRecord['uid'], Connection::PARAM_INT)
                 ),
                 $queryBuilder->expr()->eq(
                     't3ver_wsid',
-                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
                 )
             )
-            ->execute();
+            ->executeQuery();
 
         $exceptionRecords = [];
-        while ($exceptionRecord = $statement->fetch(\PDO::FETCH_ASSOC)) {
+        while ($exceptionRecord = $queryResult->fetchAssociative()) {
             BackendUtility::workspaceOL('tx_events2_domain_model_exception', $exceptionRecord);
             if ($exceptionRecord === null) {
                 $this->logger->warning(
@@ -204,7 +186,7 @@ class DayRelationService implements LoggerAwareInterface
         $timeRecords = $this->getTimeRecordsWithHighestPriority($eventRecord, $dateTimeEntry->getDate());
         if ($timeRecords === []) {
             return [
-                $this->buildDayRecordForDateTime($dateTimeEntry, $eventRecord, [])
+                $this->buildDayRecordForDateTime($dateTimeEntry, $eventRecord, []),
             ];
         }
 
@@ -317,7 +299,6 @@ class DayRelationService implements LoggerAwareInterface
             'pid' => (int)$eventRecord['pid'],
             'crdate' => time(),
             'tstamp' => time(),
-            'cruser_id' => $GLOBALS['BE_USER']->user['uid'] ?? 0,
             'hidden' => $eventRecord['hidden'] ?? 0,
             'fe_group' => $eventRecord['fe_group'] ?? 0,
             't3ver_wsid' => $eventRecord['t3ver_wsid'] ?? 0,
@@ -326,7 +307,7 @@ class DayRelationService implements LoggerAwareInterface
             'sort_day_time' => (int)$this->getSortDayTime($dateTimeEntry->getDate(), $hour, $minute, $eventRecord)->format('U'),
             'same_day_time' => (int)$this->getSameDayTime($dateTimeEntry->getDate(), $hour, $minute, $eventRecord)->format('U'),
             'is_removed_date' => (int)$dateTimeEntry->isRemovedDate(),
-            'event' => $eventRecord['uid']
+            'event' => $eventRecord['uid'],
         ];
     }
 

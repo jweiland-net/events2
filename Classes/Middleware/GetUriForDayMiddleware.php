@@ -20,26 +20,16 @@ use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 
-/*
+/**
  * This middleware is needed for LiteCalendar. If you click on a day this class will be called
  * and returns the URI to the expected events for given day.
  */
 class GetUriForDayMiddleware implements MiddlewareInterface
 {
-    protected UriBuilder $uriBuilder;
-
-    protected DateTimeUtility $dateTimeUtility;
-
-    /**
-     * Will be called by call_user_func_array, so don't add Extbase classes with inject methods as argument
-     */
     public function __construct(
-        UriBuilder $uriBuilder,
-        DateTimeUtility $dateTimeUtility
-    ) {
-        $this->uriBuilder = $uriBuilder;
-        $this->dateTimeUtility = $dateTimeUtility;
-    }
+        protected readonly UriBuilder $uriBuilder,
+        protected readonly DateTimeUtility $dateTimeUtility
+    ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -50,7 +40,7 @@ class GetUriForDayMiddleware implements MiddlewareInterface
         $startDate = $this->getStartDateFromRequest($request);
         if ($startDate === null) {
             return new JsonResponse([
-                'error' => 'Date can not be generated. Missing day, month or year in request.'
+                'error' => 'Date can not be generated. Missing day, month or year in request.',
             ], 400);
         }
 
@@ -58,13 +48,13 @@ class GetUriForDayMiddleware implements MiddlewareInterface
 
         if ($uri === '[MISSING]') {
             return new JsonResponse([
-                'errors' => 'URI can not be build, as pidOfListPage is missing in request.'
+                'errors' => 'URI can not be build, as pidOfListPage is missing in request.',
             ], 400);
         }
 
         if ($uri === '[0]') {
             return new JsonResponse([
-                'errors' => 'pidOfListPage in request can not be 0.'
+                'errors' => 'pidOfListPage in request can not be 0.',
             ], 400);
         }
 
@@ -113,8 +103,8 @@ class GetUriForDayMiddleware implements MiddlewareInterface
                 'list',
                 [
                     'filter' => [
-                        'timestamp' => $timestamp
-                    ]
+                        'timestamp' => $timestamp,
+                    ],
                 ],
                 'Day',
                 'events2',

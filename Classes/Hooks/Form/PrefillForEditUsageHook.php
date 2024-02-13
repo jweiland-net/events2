@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Hooks\Form;
 
+use Doctrine\DBAL\ArrayParameterType;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
@@ -22,7 +23,7 @@ use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Form\Domain\Model\FormElements\AbstractFormElement;
 use TYPO3\CMS\Form\Domain\Model\Renderable\RenderableInterface;
 
-/*
+/**
  * Prefill EXT:form element of type checkboxes with categories from database
  */
 class PrefillForEditUsageHook
@@ -135,8 +136,8 @@ class PrefillForEditUsageHook
         $this->resolveExpressions($queryBuilder, $eventRecord, $expressions);
 
         $record = $queryBuilder
-            ->execute()
-            ->fetch();
+            ->executeQuery()
+            ->fetchAssociative();
 
         if (!is_array($record)) {
             return '';
@@ -161,10 +162,10 @@ class PrefillForEditUsageHook
             ->select($valueColumn);
 
         $this->resolveExpressions($queryBuilder, $eventRecord, $expressions);
-        $statement = $queryBuilder->execute();
+        $queryResult = $queryBuilder->executeQuery();
 
         $values = [];
-        while ($record = $statement->fetch()) {
+        while ($record = $queryResult->fetchAssociative()) {
             $values[] = $record[$valueColumn];
         }
 
@@ -190,20 +191,20 @@ class PrefillForEditUsageHook
                 $stringExplodeValue = isset($expression['strExplodeValue']) && (int)$expression['strExplodeValue'] === 1;
                 $intExplodeValue = isset($expression['intExplodeValue']) && (int)$expression['intExplodeValue'] === 1;
 
-                if (strpos($value, ':') !== false) {
+                if (str_contains($value, ':')) {
                     [$type, $column] = GeneralUtility::trimExplode(':', trim($value, '{}'));
                     if ($type === 'event') {
                         $value = $eventRecord[$column] ?? '';
                     }
                 }
 
-                $type = \PDO::PARAM_STR;
+                $type = Connection::PARAM_STR;
                 if ($stringExplodeValue) {
                     $value = GeneralUtility::trimExplode(',', $value, true);
-                    $type = Connection::PARAM_STR_ARRAY;
+                    $type = ArrayParameterType::STRING;
                 } elseif ($intExplodeValue) {
                     $value = GeneralUtility::intExplode(',', $value, true);
-                    $type = Connection::PARAM_INT_ARRAY;
+                    $type = ArrayParameterType::INTEGER;
                 }
 
                 $constraints[] = call_user_func(
@@ -222,28 +223,28 @@ class PrefillForEditUsageHook
     protected function getFileReference(int $eventUid, int $position): ?FileReference
     {
         $queryBuilder = $this->getQueryBuilderForTable('sys_file_reference');
-        $statement = $queryBuilder
+        $queryResult = $queryBuilder
             ->select('uid')
             ->where(
                 $queryBuilder->expr()->eq(
                     'tablenames',
-                    $queryBuilder->createNamedParameter('tx_events2_domain_model_event', \PDO::PARAM_STR)
+                    $queryBuilder->createNamedParameter('tx_events2_domain_model_event')
                 ),
                 $queryBuilder->expr()->eq(
                     'fieldname',
-                    $queryBuilder->createNamedParameter('images', \PDO::PARAM_STR)
+                    $queryBuilder->createNamedParameter('images')
                 ),
                 $queryBuilder->expr()->eq(
                     'uid_foreign',
-                    $queryBuilder->createNamedParameter($eventUid, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($eventUid, Connection::PARAM_INT)
                 )
             )
             ->orderBy('sorting_foreign', 'ASC')
-            ->execute();
+            ->executeQuery();
 
         $coreReferences = [];
         $counter = 1;
-        while ($coreReferenceRecord = $statement->fetch()) {
+        while ($coreReferenceRecord = $queryResult->fetchAssociative()) {
             $coreReferences[$counter] = $coreReferenceRecord['uid'];
             $counter++;
         }
@@ -274,11 +275,11 @@ class PrefillForEditUsageHook
             ->where(
                 $queryBuilder->expr()->eq(
                     'uid',
-                    $queryBuilder->createNamedParameter($eventUid, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($eventUid, Connection::PARAM_INT)
                 )
             )
-            ->execute()
-            ->fetch();
+            ->executeQuery()
+            ->fetchAssociative();
 
         return $record ?: [];
     }

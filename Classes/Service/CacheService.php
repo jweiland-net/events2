@@ -9,34 +9,34 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace JWeiland\Events2\Utility;
+namespace JWeiland\Events2\Service;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use JWeiland\Events2\Traits\Typo3RequestTrait;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
-use TYPO3\CMS\Extbase\Service\EnvironmentService;
 
-/*
- * Cache Utility class
+/**
+ * Cache service for tagging pages and content with specific events2 cache tags to clear cache while creating/updating
+ * event records.
  */
-class CacheUtility
+class CacheService
 {
+    use Typo3RequestTrait;
+
     /**
      * Adds cache tags to page cache by event-records.
      * Following cache tags will be added to TSFE:
      * "tx_events2_uid_[event:uid]"
-     *
-     * @param array|QueryResultInterface $eventRecords
      */
-    public static function addCacheTagsByEventRecords($eventRecords): void
+    public function addCacheTagsByEventRecords(QueryResultInterface|array $eventRecords): void
     {
-        if (!self::getEnvironmentService()->isEnvironmentInFrontendMode()) {
+        if (!$this->isFrontendRequest()) {
             return;
         }
 
         $cacheTags = [];
         foreach ($eventRecords as $event) {
-            // cache tag for each event record
+            // Cache tag for each event record
             $cacheTags[] = 'tx_events2_uid_' . $event->getUid();
 
             if ($event->_getProperty('_localizedUid')) {
@@ -44,7 +44,7 @@ class CacheUtility
             }
         }
         if ($cacheTags !== []) {
-            $GLOBALS['TSFE']->addCacheTags($cacheTags);
+            $this->getTypoScriptFrontendController()->addCacheTags($cacheTags);
         }
     }
 
@@ -52,9 +52,9 @@ class CacheUtility
      * Adds page cache tags by used storagePages.
      * This adds tags with the scheme tx_events2_pid_[event:pid]
      */
-    public static function addPageCacheTagsByQuery(QueryInterface $query): void
+    public function addPageCacheTagsByQuery(QueryInterface $query): void
     {
-        if (!self::getEnvironmentService()->isEnvironmentInFrontendMode()) {
+        if (!$this->isFrontendRequest()) {
             return;
         }
 
@@ -68,11 +68,6 @@ class CacheUtility
             $cacheTags[] = 'tx_events2_domain_model_event';
         }
 
-        $GLOBALS['TSFE']->addCacheTags($cacheTags);
-    }
-
-    protected static function getEnvironmentService(): EnvironmentService
-    {
-        return GeneralUtility::makeInstance(EnvironmentService::class);
+        $this->getTypoScriptFrontendController()->addCacheTags($cacheTags);
     }
 }

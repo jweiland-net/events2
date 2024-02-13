@@ -24,18 +24,15 @@ use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
  */
 class AddOrganizerToEventRecordEventListener extends AbstractControllerEventListener
 {
-    protected UserRepository $userRepository;
-
     protected array $allowedControllerActions = [
         'Management' => [
-            'create'
-        ]
+            'create',
+        ],
     ];
 
-    public function __construct(UserRepository $userRepository)
-    {
-        $this->userRepository = $userRepository;
-    }
+    public function __construct(
+        protected readonly UserRepository $userRepository
+    ) {}
 
     public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void
     {
@@ -44,13 +41,10 @@ class AddOrganizerToEventRecordEventListener extends AbstractControllerEventList
             && $controllerActionEvent->getRequest()->hasArgument('event')
             && ($eventRecord = $controllerActionEvent->getRequest()->getArgument('event'))
             && is_array($eventRecord)
-            && !array_key_exists('organizers', $eventRecord)
             && ($organizerOfCurrentUser = $this->userRepository->getFieldFromUser('tx_events2_organizer'))
             && MathUtility::canBeInterpretedAsInteger($organizerOfCurrentUser)
         ) {
-            $this->addOrganizerToEventRecord($eventRecord, (int)$organizerOfCurrentUser, $controllerActionEvent);
-
-            // Per default it is not allowed to add new arguments manually. So we have to register them.
+            // Per default, it is not allowed to add new arguments manually. So we have to register them.
             $pmc = $controllerActionEvent->getArguments()
                 ->getArgument('event')
                 ->getPropertyMappingConfiguration();
@@ -66,16 +60,5 @@ class AddOrganizerToEventRecordEventListener extends AbstractControllerEventList
                     true
                 );
         }
-    }
-
-    protected function addOrganizerToEventRecord(
-        array &$eventRecord,
-        int $organizerUid,
-        PreProcessControllerActionEvent $controllerActionEvent
-    ): void {
-        $eventRecord['organizers'] = [];
-        $eventRecord['organizers'][0] = $organizerUid;
-
-        $controllerActionEvent->getRequest()->setArgument('event', $eventRecord);
     }
 }

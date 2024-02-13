@@ -16,12 +16,13 @@ use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Service\DatabaseService;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
-/*
+/**
  * This class contains methods to find a day by a given event and exact timestamp.
  * If day was not found it will automatically search for next day.
  * If day was not found it will automatically search for previous day.
@@ -29,12 +30,6 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
  */
 class DayFactory
 {
-    protected DatabaseService $databaseService;
-
-    protected DayRepository $dayRepository;
-
-    protected EventRepository $eventRepository;
-
     protected array $processOrderedMethods = [
         'findExactDay',
         'findNextDay',
@@ -43,14 +38,10 @@ class DayFactory
     ];
 
     public function __construct(
-        DatabaseService $databaseService,
-        DayRepository $dayRepository,
-        EventRepository $eventRepository
-    ) {
-        $this->databaseService = $databaseService;
-        $this->dayRepository = $dayRepository;
-        $this->eventRepository = $eventRepository;
-    }
+        protected readonly DatabaseService $databaseService,
+        protected readonly DayRepository $dayRepository,
+        protected readonly EventRepository $eventRepository
+    ) {}
 
     /**
      * Find one Day by Event and Timestamp.
@@ -60,7 +51,7 @@ class DayFactory
         $day = null;
         $data = [
             'event' => $eventUid,
-            'timestamp' => $timestamp
+            'timestamp' => $timestamp,
         ];
 
         foreach ($this->processOrderedMethods as $methodName) {
@@ -81,7 +72,7 @@ class DayFactory
                 'day.day_time',
                 $queryBuilder->createNamedParameter(
                     $searchValues['timestamp'],
-                    \PDO::PARAM_INT
+                    Connection::PARAM_INT
                 )
             )
         );
@@ -97,7 +88,7 @@ class DayFactory
 
         $queryBuilder->expr()->gte(
             'day.day_time',
-            $queryBuilder->createNamedParameter((int)$date->format('U'), \PDO::PARAM_INT)
+            $queryBuilder->createNamedParameter((int)$date->format('U'), Connection::PARAM_INT)
         );
 
         return $this->findDayByQueryBuilder($queryBuilder);
@@ -111,7 +102,7 @@ class DayFactory
 
         $queryBuilder->expr()->lte(
             'day.day_time',
-            $queryBuilder->createNamedParameter((int)$date->format('U'), \PDO::PARAM_INT)
+            $queryBuilder->createNamedParameter((int)$date->format('U'), Connection::PARAM_INT)
         );
 
         return $this->findDayByQueryBuilder($queryBuilder);
@@ -163,8 +154,8 @@ class DayFactory
     protected function findDayByQueryBuilder(QueryBuilder $queryBuilder): ?Day
     {
         $dayRecord = $queryBuilder
-            ->execute()
-            ->fetch(\PDO::FETCH_ASSOC);
+            ->executeQuery()
+            ->fetchAssociative();
 
         $day = null;
         if (is_array($dayRecord) && isset($dayRecord['uid'])) {
@@ -213,7 +204,7 @@ class DayFactory
         $queryBuilder->andWhere(
             $queryBuilder->expr()->eq(
                 'day.event',
-                $queryBuilder->createNamedParameter($eventUid, \PDO::PARAM_INT)
+                $queryBuilder->createNamedParameter($eventUid, Connection::PARAM_INT)
             )
         );
     }

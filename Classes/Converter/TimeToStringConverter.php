@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Converter;
 
-/*
+/**
  * With this class you can convert seconds from midnight into a time format like 08:34.
  *
  * ToDo: I remember we have implemented it as backwards compatibility where we have entered duration with
@@ -59,7 +59,7 @@ class TimeToStringConverter
      */
     protected function getRemainingMinutes(int $time, float $hours): int
     {
-        $seconds = $hours === (float)0 ? $time : $time % ($hours * 3600);
+        $seconds = $hours === 0.0 ? $time : $time % ($hours * 3600);
         $minutes = $seconds !== 0 ? floor($seconds / 60) : 0;
 
         return (int)$minutes;

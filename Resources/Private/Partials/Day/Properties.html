@@ -1,209 +1,210 @@
 <html lang="en"
-			xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-			xmlns:e2="http://typo3.org/ns/JWeiland/Events2/ViewHelpers"
-			data-namespace-typo3-fluid="true">
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:e2="http://typo3.org/ns/JWeiland/Events2/ViewHelpers"
+      data-namespace-typo3-fluid="true">
 
 <div class="row">
-	<div class="col-md-9">
-		<h1>{day.event.title}</h1>
-		<f:render section="renderImages" arguments="{event: day.event}" />
-		<f:render section="videoLink" arguments="{event: day.event}" />
-		<p class="lead">{day.event.teaser}</p>
-		<f:format.html>{day.event.detailInformation}</f:format.html>
-		<f:render section="downloadLinks" arguments="{event: day.event}" />
-	</div>
-	<div class="col-md-3">
-		<f:render section="showDateAndTimes" arguments="{day: day, date: day.day, times: day.times}" />
-		<f:if condition="{day.event.location}">
-			<f:render section="location" arguments="{event: day.event}" />
-			<f:render section="googleRoute" arguments="{event: day.event}" />
-		</f:if>
-		<f:if condition="{day.event.organizers}">
-			<f:render section="organizers" arguments="{event: day.event}" />
-		</f:if>
-		<f:render section="ticketLink" arguments="{event: day.event}" />
-		<f:render section="freeEntry" arguments="{event: day.event}" />
-		<f:render section="iCalendar" arguments="{day: day}" />
+    <div class="col-md-9">
+        <h1>{day.event.title}</h1>
+        <f:render section="RenderImages" arguments="{event: day.event}"/>
+        <f:render section="VideoLink" arguments="{event: day.event}"/>
+        <p class="lead">{day.event.teaser}</p>
+        <f:format.html>{day.event.detailInformation}</f:format.html>
+        <f:render section="DownloadLinks" arguments="{event: day.event}"/>
+    </div>
+    <div class="col-md-3">
+        <f:render section="ShowDateAndTimes" arguments="{day: day, date: day.day, times: day.times}"/>
+        <f:if condition="{day.event.location}">
+            <f:render section="Location" arguments="{event: day.event}"/>
+            <f:render section="GoogleRoute" arguments="{event: day.event}"/>
+        </f:if>
+        <f:if condition="{day.event.organizers}">
+            <f:render section="Organizers" arguments="{event: day.event}"/>
+        </f:if>
+        <f:render section="TicketLink" arguments="{event: day.event}"/>
+        <f:render section="FreeEntry" arguments="{event: day.event}"/>
+        <f:render section="ICalendar" arguments="{day: day}"/>
 
-		<f:if condition="{day.event.alternativeTimesIncludingRemovedGroupedAndSorted}">
-			<p class="lead">{f:translate(key: "alternativeEventDates")}</p>
-			<f:for each="{day.event.alternativeTimesIncludingRemovedGroupedAndSorted}" as="alternatives">
-				<f:render section="showDateAndTimes" arguments="{day: day, date: alternatives.date, times: alternatives.times}" />
-			</f:for>
-		</f:if>
-	</div>
+        <f:if condition="{day.event.alternativeTimesIncludingRemovedGroupedAndSorted}">
+            <p class="lead">{f:translate(key: "alternativeEventDates")}</p>
+            <f:for each="{day.event.alternativeTimesIncludingRemovedGroupedAndSorted}" as="alternatives">
+                <f:render section="ShowDateAndTimes" arguments="{day: day, date: alternatives.date, times: alternatives.times}"/>
+            </f:for>
+        </f:if>
+    </div>
 </div>
 
-<f:section name="renderImages">
-	<f:if condition="{0: settings.display}!={0: 'displayEvent'}">
-		<f:if condition="{event.images}">
-			<f:render partial="Event/Images" arguments="{event: event}"/>
-		</f:if>
-	</f:if>
+<f:section name="RenderImages">
+    <f:if condition="{0: settings.display}!={0: 'displayEvent'}">
+        <f:if condition="{event.images}">
+            <f:render partial="Event/Images" arguments="{event: event}"/>
+        </f:if>
+    </f:if>
 </f:section>
 
-<f:section name="videoLink">
-	<f:if condition="{event.videoLink}">
-		<f:link.action action="show" controller="Video" arguments="{event: event}">
-			<span class="glyphicon glyphicon-film" aria-hidden="true"></span>
-			{f:if(condition: event.videoLink.title, then: event.videoLink.title, else: 'Video')}
-		</f:link.action>
-	</f:if>
+<f:section name="VideoLink">
+    <f:if condition="{event.videoLink}">
+        <f:link.action action="show" controller="Video" arguments="{event: event}">
+            <span class="glyphicon glyphicon-film" aria-hidden="true"></span>
+            {f:if(condition: event.videoLink.title, then: event.videoLink.title, else: 'Video')}
+        </f:link.action>
+    </f:if>
 </f:section>
 
-<f:section name="downloadLinks">
-	<f:if condition="{event.downloadLinks}">
-		<ul>
-			<f:for each="{event.downloadLinks}" as="downloadLink">
-				<li>
-					<f:link.typolink parameter="{downloadLink.link}" title="{downloadLink.title}">
-						<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>&nbsp;{downloadLink.title}
-					</f:link.typolink>
-				</li>
-			</f:for>
-		</ul>
-	</f:if>
+<f:section name="DownloadLinks">
+    <f:if condition="{event.downloadLinks}">
+        <ul>
+            <f:for each="{event.downloadLinks}" as="downloadLink">
+                <li>
+                    <f:link.typolink parameter="{downloadLink.link}" title="{downloadLink.title}">
+                        <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>&nbsp;{downloadLink.title}
+                    </f:link.typolink>
+                </li>
+            </f:for>
+        </ul>
+    </f:if>
 </f:section>
 
-<f:section name="showDateAndTimes">
-	<f:if condition="{times -> f:count()}">
-		<f:then>
-			<f:for each="{times}" as="time">
-				<f:render section="showDateAndTime" arguments="{day: day, date: date, time: time}" />
-			</f:for>
-		</f:then>
-		<f:else>
-			<f:render section="showDateAndTime" arguments="{day: day, date: date}" />
-		</f:else>
-	</f:if>
+<f:section name="ShowDateAndTimes">
+    <f:if condition="{times -> f:count()}">
+        <f:then>
+            <f:for each="{times}" as="time">
+                <f:render section="ShowDateAndTime" arguments="{day: day, date: date, time: time}"/>
+            </f:for>
+        </f:then>
+        <f:else>
+            <f:render section="ShowDateAndTime" arguments="{day: day, date: date}"/>
+        </f:else>
+    </f:if>
 </f:section>
 
-<f:section name="showDateAndTime">
-	<dl>
-		<dt>
-			<strong>
-				{f:if(condition: '{e2:isDateMarkedAsCanceled(event: day.event, date: date)}', then: '<s>')}
-				{date -> f:format.date(format: '%A, %d.%m.%Y')}
-				{f:if(condition: '{e2:isDateMarkedAsCanceled(event: day.event, date: date)}', then: '</s>')}
-			</strong>
-		</dt>
-		<dd>
-			<f:render partial="Event/Time" arguments="{time: time}" />
-			<f:for each="{e2:getExceptionsFromEventForSpecificDate(event: day.event, date: date)}" as="exception">
-				<br><em>{exception.exceptionDetails -> f:format.html(parseFuncTSPath: 'lib.parseFunc') -> f:format.nl2br()}</em>
-			</f:for>
-		</dd>
-	</dl>
+<f:section name="ShowDateAndTime">
+    <dl>
+        <dt>
+            <strong>
+                {f:if(condition: '{e2:isDateMarkedAsCanceled(event: day.event, date: date)}', then: '<s>')}
+                {date -> f:format.date(format: '%A, %d.%m.%Y')}
+                {f:if(condition: '{e2:isDateMarkedAsCanceled(event: day.event, date: date)}', then: '</s>')}
+            </strong>
+        </dt>
+        <dd>
+            <f:render partial="Event/Time" arguments="{time: time}"/>
+            <f:for each="{e2:getExceptionsFromEventForSpecificDate(event: day.event, date: date)}" as="exception">
+                <br><em>{exception.exceptionDetails -> f:format.html(parseFuncTSPath: 'lib.parseFunc') -> f:format.nl2br()}</em>
+            </f:for>
+        </dd>
+    </dl>
 </f:section>
 
-<f:section name="location">
-	<dl>
-		<dt><f:translate key="tx_events2_domain_model_event.location"/></dt>
-			<f:if condition="{event.location.link}">
-				<f:then>
-					<dd>
-						<f:if condition="{event.location.link.title}">
-							<f:then>
-								<f:link.typolink parameter="{event.location.link.link}" title="{event.location.link.title}">{event.location.link.title}</f:link.typolink>
-							</f:then>
-							<f:else>
-								<f:link.typolink parameter="{event.location.link.link}" title="{event.location.location}">{event.location.location}</f:link.typolink>
-							</f:else>
-						</f:if>
-					</dd>
-				</f:then>
-				<f:else>
-					<dd>
-						<f:link.action
-							action="show"
-							controller="Location"
-							pageUid="{settings.pidOfLocationPage}"
-							arguments="{location: event.location}"
-							title="{event.location.location}"
-						>{event.location.location}</f:link.action>
-					</dd>
-					<dd>
-						<figure>
-							<f:link.action action="show" controller="Location" pageUid="{settings.pidOfLocationPage}" arguments="{location: event.location}" title="{f:translate(key: 'altTextMapImg')}">
-								<f:image src="{f:uri.resource(path: 'Icons/thumbmaps.png')}" alt="{f:translate(key: 'altTextMapImg')}"/>
-							</f:link.action>
-						</figure>
-					</dd>
-				</f:else>
-			</f:if>
-	</dl>
+<f:section name="Location">
+    <dl>
+        <dt><f:translate key="tx_events2_domain_model_event.location"/></dt>
+        <f:if condition="{event.location.link}">
+            <f:then>
+                <dd>
+                    <f:if condition="{event.location.link.title}">
+                        <f:then>
+                            <f:link.typolink parameter="{event.location.link.link}" title="{event.location.link.title}">{event.location.link.title}</f:link.typolink>
+                        </f:then>
+                        <f:else>
+                            <f:link.typolink parameter="{event.location.link.link}" title="{event.location.location}">{event.location.location}</f:link.typolink>
+                        </f:else>
+                    </f:if>
+                </dd>
+            </f:then>
+            <f:else>
+                <dd>
+                    <f:link.action
+                        action="show"
+                        controller="Location"
+                        pageUid="{settings.pidOfLocationPage}"
+                        arguments="{location: event.location}"
+                        title="{event.location.location}"
+                    >{event.location.location}
+                    </f:link.action>
+                </dd>
+                <dd>
+                    <figure>
+                        <f:link.action action="show" controller="Location" pageUid="{settings.pidOfLocationPage}" arguments="{location: event.location}" title="{f:translate(key: 'altTextMapImg')}">
+                            <f:image src="{f:uri.resource(path: 'Icons/thumbmaps.png')}" alt="{f:translate(key: 'altTextMapImg')}"/>
+                        </f:link.action>
+                    </figure>
+                </dd>
+            </f:else>
+        </f:if>
+    </dl>
 </f:section>
 
-<f:section name="googleRoute">
-	<f:if condition="{event.location.street}">
-		<dl>
-			<dt><f:translate key="routePlanner"/></dt>
-			<dd>
-				<f:alias map="{address: '{event.location.street} {event.location.houseNumber} {event.location.zip} {event.location.city}'}">
-					<span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>
-					<f:link.external target="_blank" uri="https://www.google.de/maps/dir//{address->f:format.urlencode()}">Google Maps</f:link.external>
-				</f:alias>
-			</dd>
-		</dl>
-	</f:if>
+<f:section name="GoogleRoute">
+    <f:if condition="{event.location.street}">
+        <dl>
+            <dt><f:translate key="routePlanner"/></dt>
+            <dd>
+                <f:alias map="{address: '{event.location.street} {event.location.houseNumber} {event.location.zip} {event.location.city}'}">
+                    <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>
+                    <f:link.external target="_blank" uri="https://www.google.de/maps/dir//{address->f:format.urlencode()}">Google Maps</f:link.external>
+                </f:alias>
+            </dd>
+        </dl>
+    </f:if>
 </f:section>
 
-<f:section name="organizers">
-	<dl>
-		<dt><f:translate key="tx_events2_domain_model_event.organizers" /></dt>
-		<f:for each="{event.organizers}" as="organizer">
-			<f:render section="organizer" arguments="{organizer: organizer}" />
-		</f:for>
-	</dl>
+<f:section name="Organizers">
+    <dl>
+        <dt><f:translate key="tx_events2_domain_model_event.organizers"/></dt>
+        <f:for each="{event.organizers}" as="organizer">
+            <f:render section="Organizer" arguments="{organizer: organizer}"/>
+        </f:for>
+    </dl>
 </f:section>
 
-<f:section name="organizer">
-	<dd>
-		<f:if condition="{organizer.link}">
-			<f:then>
-				<f:link.typolink parameter="{organizer.link.link}" target="_blank" title="{organizer.organizer}">
-					{organizer.organizer}
-					<f:if condition="{organizer.link.title}"><br />({organizer.link.title})</f:if>
-				</f:link.typolink>
-			</f:then>
-			<f:else>
-				{organizer.organizer}
-			</f:else>
-		</f:if>
-	</dd>
+<f:section name="Organizer">
+    <dd>
+        <f:if condition="{organizer.link}">
+            <f:then>
+                <f:link.typolink parameter="{organizer.link.link}" target="_blank" title="{organizer.organizer}">
+                    {organizer.organizer}
+                    <f:if condition="{organizer.link.title}"><br>({organizer.link.title})</f:if>
+                </f:link.typolink>
+            </f:then>
+            <f:else>
+                {organizer.organizer}
+            </f:else>
+        </f:if>
+    </dd>
 </f:section>
 
-<f:section name="freeEntry">
-	<f:if condition="{event.freeEntry}">
-		<dl class="extdl marginbottom2">
-			<dt><f:translate key="tx_events2_domain_model_event.free_entry" /></dt>
-			<dd><f:translate key="yes" /></dd>
-		</dl>
-	</f:if>
+<f:section name="FreeEntry">
+    <f:if condition="{event.freeEntry}">
+        <dl class="extdl marginbottom2">
+            <dt><f:translate key="tx_events2_domain_model_event.free_entry"/></dt>
+            <dd><f:translate key="yes"/></dd>
+        </dl>
+    </f:if>
 </f:section>
 
-<f:section name="iCalendar">
-	<dl>
-		<dt>iCalendar</dt>
-		<dd>
-			<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
-			<f:link.action action="download" controller="ICal" target="_blank" arguments="{dayUid: day.uid}">
-				{f:translate(key: 'export')}
-			</f:link.action>
-		</dd>
-	</dl>
+<f:section name="ICalendar">
+    <dl>
+        <dt>iCalendar</dt>
+        <dd>
+            <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+            <f:link.action action="download" controller="ICal" target="_blank" arguments="{dayUid: day.uid}">
+                {f:translate(key: 'export')}
+            </f:link.action>
+        </dd>
+    </dl>
 </f:section>
 
-<f:section name="ticketLink">
-	<f:if condition="{event.ticketLink.link}">
-		<dl>
-			<dt>Ticket Link</dt>
-			<dd>
-				<f:link.typolink parameter="{event.ticketLink.link}" title="{f:translate(key: 'tx_events2_domain_model_event.ticket_link')}" target="_blank">
-					{f:if(condition: event.ticketLink.title, then: event.ticketLink.title, else: event.ticketLink.link)}
-				</f:link.typolink>
-			</dd>
-		</dl>
-	</f:if>
+<f:section name="TicketLink">
+    <f:if condition="{event.ticketLink.link}">
+        <dl>
+            <dt>Ticket Link</dt>
+            <dd>
+                <f:link.typolink parameter="{event.ticketLink.link}" title="{f:translate(key: 'tx_events2_domain_model_event.ticket_link')}" target="_blank">
+                    {f:if(condition: event.ticketLink.title, then: event.ticketLink.title, else: event.ticketLink.link)}
+                </f:link.typolink>
+            </dd>
+        </dl>
+    </f:if>
 </f:section>
 </html>

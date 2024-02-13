@@ -19,38 +19,28 @@ use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/*
+/**
  * Helper class to build an ical export
  */
 class ICalendarHelper
 {
     protected array $iCalHeader = [
-        0 => 'BEGIN:VCALENDAR'
+        0 => 'BEGIN:VCALENDAR',
     ];
 
     protected array $iCalFooter = [
-        0 => 'END:VCALENDAR'
+        0 => 'END:VCALENDAR',
     ];
 
     protected string $iCalVersion = '2.0';
 
     protected string $lineBreak = CRLF;
 
-    protected TimeFactory $timeFactory;
-
-    protected DateTimeUtility $dateTimeUtility;
-
-    protected EventDispatcher $eventDispatcher;
-
     public function __construct(
-        TimeFactory $eventService,
-        DateTimeUtility $dateTimeUtility,
-        EventDispatcher $eventDispatcher
-    ) {
-        $this->timeFactory = $eventService;
-        $this->dateTimeUtility = $dateTimeUtility;
-        $this->eventDispatcher = $eventDispatcher;
-    }
+        protected readonly TimeFactory $timeFactory,
+        protected readonly DateTimeUtility $dateTimeUtility,
+        protected readonly EventDispatcher $eventDispatcher
+    ) {}
 
     public function buildICalExport(Day $day): string
     {

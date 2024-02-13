@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Event;
 
-/*
+/**
  * Use this event, if you want to add further modifications to the generated days
  */
 class PostGenerateDaysEvent

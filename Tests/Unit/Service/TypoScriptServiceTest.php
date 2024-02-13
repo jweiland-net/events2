@@ -55,13 +55,13 @@ class TypoScriptServiceTest extends UnitTestCase
     {
         $flexFormSettings = [];
         $typoScriptSettings = [
-            'foo' => 'bar'
+            'foo' => 'bar',
         ];
         $this->subject->override($flexFormSettings, $typoScriptSettings);
 
         self::assertSame(
             [
-                'foo' => 'bar'
+                'foo' => 'bar',
             ],
             $flexFormSettings
         );
@@ -73,16 +73,16 @@ class TypoScriptServiceTest extends UnitTestCase
     public function overrideWithZeroFlexFormSettingWillUseValueOfTypoScript(): void
     {
         $flexFormSettings = [
-            'foo' => '0'
+            'foo' => '0',
         ];
         $typoScriptSettings = [
-            'foo' => 'bar'
+            'foo' => 'bar',
         ];
         $this->subject->override($flexFormSettings, $typoScriptSettings);
 
         self::assertSame(
             [
-                'foo' => 'bar'
+                'foo' => 'bar',
             ],
             $flexFormSettings
         );
@@ -94,16 +94,16 @@ class TypoScriptServiceTest extends UnitTestCase
     public function overrideWithEmptyFlexFormSettingWillUseValueOfTypoScript(): void
     {
         $flexFormSettings = [
-            'foo' => ''
+            'foo' => '',
         ];
         $typoScriptSettings = [
-            'foo' => 'bar'
+            'foo' => 'bar',
         ];
         $this->subject->override($flexFormSettings, $typoScriptSettings);
 
         self::assertSame(
             [
-                'foo' => 'bar'
+                'foo' => 'bar',
             ],
             $flexFormSettings
         );
@@ -117,15 +117,15 @@ class TypoScriptServiceTest extends UnitTestCase
         $flexFormSettings = [
             'foo' => 'hello',
             'user' => [
-                'first' => ''
-            ]
+                'first' => '',
+            ],
         ];
         $typoScriptSettings = [
             'foo' => 'bar',
             'user' => [
                 'first' => 'Stefan',
                 'last' => 'Froemken',
-            ]
+            ],
         ];
         $this->subject->override($flexFormSettings, $typoScriptSettings);
 
@@ -135,7 +135,7 @@ class TypoScriptServiceTest extends UnitTestCase
                 'user' => [
                     'first' => 'Stefan',
                     'last' => 'Froemken',
-                ]
+                ],
             ],
             $flexFormSettings
         );

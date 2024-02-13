@@ -64,7 +64,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         'deleted' => 0,
         'sys_language_uid' => 0,
         'event_type' => 'single',
-        'exceptions' => 0
+        'exceptions' => 0,
     ];
 
     protected array $exceptionRecord = [
@@ -76,7 +76,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         'exception_type' => 'Time',
         'exception_date' => 0,
         'exception_time' => 0,
-        'event' => 0
+        'event' => 0,
     ];
 
     protected array $timeRecord = [
@@ -87,11 +87,11 @@ class DayRelationServiceTest extends FunctionalTestCase
         'weekday' => 'monday',
         'time_begin' => '08:12',
         'event' => [],
-        'exception' => []
+        'exception' => [],
     ];
 
     protected $testExtensionsToLoad = [
-        'typo3conf/ext/events2'
+        'typo3conf/ext/events2',
     ];
 
     protected function setUp(): void
@@ -236,7 +236,7 @@ class DayRelationServiceTest extends FunctionalTestCase
             ->getDateTimeStorageForEvent(Argument::withEntry('uid', 123))
             ->shouldBeCalled()
             ->willReturn([
-                (int)$date->format('U') => new DateTimeEntry($date, false)
+                (int)$date->format('U') => new DateTimeEntry($date, false),
             ]);
 
         $this->timeRepositoryProphecy
@@ -319,7 +319,7 @@ class DayRelationServiceTest extends FunctionalTestCase
             ->getDateTimeStorageForEvent(Argument::withEntry('uid', 123))
             ->shouldBeCalled()
             ->willReturn([
-                (int)$date->format('U') => new DateTimeEntry($date, false)
+                (int)$date->format('U') => new DateTimeEntry($date, false),
             ]);
 
         $this->timeRepositoryProphecy
@@ -377,7 +377,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         $dateTimeStorage = [
             (int)$yesterday->format('U') => new DateTimeEntry($yesterday, false),
             (int)$today->format('U') => new DateTimeEntry($today, false),
-            (int)$tomorrow->format('U') => new DateTimeEntry($tomorrow, false)
+            (int)$tomorrow->format('U') => new DateTimeEntry($tomorrow, false),
         ];
 
         $this->dayGeneratorServiceProphecy
@@ -446,7 +446,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         $dateTimeStorage = [
             (int)$yesterday->format('U') => new DateTimeEntry($yesterday, false),
             (int)$today->format('U') => new DateTimeEntry($today, false),
-            (int)$tomorrow->format('U') => new DateTimeEntry($tomorrow, false)
+            (int)$tomorrow->format('U') => new DateTimeEntry($tomorrow, false),
         ];
 
         $this->dayGeneratorServiceProphecy
@@ -522,7 +522,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         $dateTimeStorage = [
             (int)$yesterday->format('U') => new DateTimeEntry($yesterday, false),
             (int)$today->format('U') => new DateTimeEntry($today, false),
-            (int)$tomorrow->format('U') => new DateTimeEntry($tomorrow, false)
+            (int)$tomorrow->format('U') => new DateTimeEntry($tomorrow, false),
         ];
 
         $this->dayGeneratorServiceProphecy
@@ -598,7 +598,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         $dateTimeStorage = [
             (int)$yesterday->format('U') => new DateTimeEntry($yesterday, false),
             (int)$today->format('U') => new DateTimeEntry($today, false),
-            (int)$tomorrow->format('U') => new DateTimeEntry($tomorrow, false)
+            (int)$tomorrow->format('U') => new DateTimeEntry($tomorrow, false),
         ];
 
         $this->dayGeneratorServiceProphecy
@@ -684,7 +684,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         $dateTimeStorage = [
             (int)$yesterday->format('U') => new DateTimeEntry($yesterday, false),
             (int)$today->format('U') => new DateTimeEntry($today, false),
-            (int)$tomorrow->format('U') => new DateTimeEntry($tomorrow, false)
+            (int)$tomorrow->format('U') => new DateTimeEntry($tomorrow, false),
         ];
 
         $this->dayGeneratorServiceProphecy
@@ -781,7 +781,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         $dateTimeStorage = [
             (int)$yesterday->format('U') => new DateTimeEntry($yesterday, false),
             (int)$today->format('U') => new DateTimeEntry($today, false),
-            (int)$tomorrow->format('U') => new DateTimeEntry($tomorrow, false)
+            (int)$tomorrow->format('U') => new DateTimeEntry($tomorrow, false),
         ];
 
         $this->dayGeneratorServiceProphecy
@@ -876,7 +876,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         $dateTimeStorage = [
             (int)$yesterday->format('U') => new DateTimeEntry($yesterday, false),
             (int)$today->format('U') => new DateTimeEntry($today, false),
-            (int)$tomorrow->format('U') => new DateTimeEntry($tomorrow, false)
+            (int)$tomorrow->format('U') => new DateTimeEntry($tomorrow, false),
         ];
 
         $this->dayGeneratorServiceProphecy

@@ -13,6 +13,8 @@ namespace JWeiland\Events2\Tests\Unit\Backend\FormDataProvider;
 
 use JWeiland\Events2\Backend\FormDataProvider\InitializeNewEventRecord;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Test case.
@@ -24,8 +26,6 @@ class InitializeNewEventRecordTest extends UnitTestCase
     protected function setUp(): void
     {
         $this->subject = new InitializeNewEventRecord();
-
-        $GLOBALS['EXEC_TIME'] = time();
     }
 
     protected function tearDown(): void
@@ -39,7 +39,7 @@ class InitializeNewEventRecordTest extends UnitTestCase
     public function addDataWithWrongTableNameWillNotModifyResult(): void
     {
         $result = [
-            'tableName' => 'WhatEver'
+            'tableName' => 'WhatEver',
         ];
 
         self::assertSame(
@@ -55,7 +55,7 @@ class InitializeNewEventRecordTest extends UnitTestCase
     {
         $result = [
             'tableName' => 'tx_events2_domain_model_event',
-            'command' => 'edit'
+            'command' => 'edit',
         ];
 
         self::assertSame(
@@ -71,11 +71,11 @@ class InitializeNewEventRecordTest extends UnitTestCase
     {
         $expected = $result = [
             'tableName' => 'tx_events2_domain_model_event',
-            'command' => 'new'
+            'command' => 'new',
         ];
 
         $expected['databaseRow'] = [
-            'event_begin' => $GLOBALS['EXEC_TIME']
+            'event_begin' => GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('date', 'timestamp'),
         ];
 
         self::assertSame(

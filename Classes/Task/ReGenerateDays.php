@@ -11,67 +11,40 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Task;
 
+use Doctrine\DBAL\Exception;
 use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Service\DayRelationService;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Registry;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\CMS\Scheduler\ProgressProviderInterface;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
-/*
+/**
  * This class loops through all events and re-creates the day records.
  * Instead of the RepairCommand, this class does NOT truncate the whole day table.
  */
 class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
 {
-    /**
-     * @var ObjectManager
-     */
-    protected $objectManager;
-
-    /**
-     * @var CacheManager
-     */
-    protected $cacheManager;
-
-    /**
-     * @var DatabaseService
-     */
-    protected $databaseService;
-
-    /**
-     * @var Registry
-     */
-    protected $registry;
-
     public function __construct(
-        ObjectManagerInterface $objectManager,
-        CacheManager $cacheManager,
-        DatabaseService $databaseService,
-        Registry $registry
+        protected readonly CacheManager $cacheManager,
+        protected readonly DatabaseService $databaseService,
+        protected readonly Registry $registry
     ) {
         parent::__construct();
-
-        $this->objectManager = $objectManager;
-        $this->cacheManager = $cacheManager;
-        $this->databaseService = $databaseService;
-        $this->registry = $registry;
     }
 
     public function execute(): bool
     {
         // Do not move these lines of code into constructor.
         // It will break serialization. Error: Serialization of 'Closure' is not allowed
-        $dayRelationService = $this->objectManager->get(DayRelationService::class);
-        $persistenceManager = $this->objectManager->get(PersistenceManagerInterface::class);
+        $dayRelationService = GeneralUtility::makeInstance(DayRelationService::class);
+        $persistenceManager = GeneralUtility::makeInstance(PersistenceManagerInterface::class);
 
         // with each changing PID pageTSConfigCache will grow by roundabout 200KB
         // which may exceed memory_limit
@@ -90,7 +63,7 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
             $counter++;
             $this->registry->set('events2TaskCreateUpdate', 'info', [
                 'uid' => $eventRecord['uid'],
-                'pid' => $eventRecord['pid']
+                'pid' => $eventRecord['pid'],
             ]);
 
             try {
@@ -104,13 +77,13 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
                     $e->getMessage(),
                     $e->getFile(),
                     $e->getLine()
-                ), AbstractMessage::ERROR);
+                ), ContextualFeedbackSeverity::ERROR);
                 return false;
             }
 
             $this->registry->set('events2TaskCreateUpdate', 'progress', [
                 'records' => $amountOfEventRecordsToProcess,
-                'counter' => $counter
+                'counter' => $counter,
             ]);
 
             // clean up persistence manager to reduce memory usage
@@ -153,32 +126,37 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
      *
      * @return float Progress of the task as a two decimal precision float. f.e. 44.87
      */
-    public function getProgress()
+    public function getProgress(): float
     {
         $progress = $this->registry->get('events2TaskCreateUpdate', 'progress');
         if ($progress) {
-            return 100 / $progress['records'] * $progress['counter'];
+            return (float)(100 / $progress['records'] * $progress['counter']);
         }
+
         return 0.0;
     }
 
     protected function getAmountOfEventRecordsToProcess(): int
     {
-        $queryBuilder = $this->databaseService->getQueryBuilderForAllEvents();
-        return (int)$queryBuilder
-            ->count('*')
-            ->executeQuery()
-            ->fetchOne();
+        try {
+            return (int)$this->databaseService->getQueryBuilderForAllEvents()
+                ->count('*')
+                ->executeQuery()
+                ->fetchOne();
+        } catch (Exception $e) {
+        }
+
+        return 0;
     }
 
     /**
      * This method is used to add a message to the internal queue
      *
      * @param string $message The message itself
-     * @param int $severity Message level (according to \TYPO3\CMS\Core\Messaging\FlashMessage class constants)
+     * @param ContextualFeedbackSeverity $severity Message level (according to ContextualFeedbackSeverity class enum types)
      * @throws \Exception
      */
-    public function addMessage(string $message, int $severity = FlashMessage::OK): void
+    public function addMessage(string $message, ContextualFeedbackSeverity $severity = ContextualFeedbackSeverity::OK): void
     {
         $flashMessage = GeneralUtility::makeInstance(FlashMessage::class, $message, '', $severity);
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);

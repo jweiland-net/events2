@@ -14,25 +14,19 @@ namespace JWeiland\Events2\Backend\FormDataProvider;
 use JWeiland\Events2\Configuration\ExtConf;
 use TYPO3\CMS\Backend\Form\FormDataProviderInterface;
 use TYPO3\CMS\Core\Information\Typo3Version;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/*
+/**
  * Reduce amount of categories to given root category declared in extension configuration
  */
 class ModifyRootUidOfTreeSelectElements implements FormDataProviderInterface
 {
-    protected ExtConf $extConf;
-
-    public function __construct(ExtConf $extConf)
-    {
-        $this->extConf = $extConf;
-    }
+    public function __construct(
+        private readonly ExtConf $extConf,
+        private readonly Typo3Version $typo3Version
+    ) {}
 
     /**
      * Set rootUid of tree select elements of FlexForms to root category declared in EM
-     *
-     * @param array $result Initialized result array
-     * @return array Do not add as strict type because of Interface
      */
     public function addData(array $result): array
     {
@@ -51,10 +45,9 @@ class ModifyRootUidOfTreeSelectElements implements FormDataProviderInterface
 
                 // check if a FlexForm was rendered
                 && $result['tableName'] === 'tt_content'
-                && GeneralUtility::isFirstPartOfStr($result['flexParentDatabaseRow']['list_type'], 'events2')
+                && \str_starts_with($result['flexParentDatabaseRow']['list_type'], 'events2')
             ) {
-                $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
-                if (version_compare($typo3Version->getBranch(), '11.4', '<')) {
+                if (version_compare($this->typo3Version->getBranch(), '11.4', '<')) {
                     $result['processedTca']['columns'][$categoryField]['config']['treeConfig']['rootUid']
                         = $this->extConf->getRootUid();
                 } else {

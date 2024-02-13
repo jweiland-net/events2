@@ -12,23 +12,20 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Controller;
 
 use JWeiland\Events2\Domain\Model\Filter;
-use JWeiland\Events2\Domain\Repository\DayRepository;
-use JWeiland\Events2\Utility\CacheUtility;
-use TYPO3\CMS\Core\Messaging\FlashMessage;
+use JWeiland\Events2\Traits\InjectCacheServiceTrait;
+use JWeiland\Events2\Traits\InjectDayRepositoryTrait;
+use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
+use TYPO3Fluid\Fluid\View\ViewInterface;
 
-/*
+/**
  * The DayController contains actions to show a day record
  */
 class DayController extends AbstractController
 {
-    protected DayRepository $dayRepository;
-
-    public function injectDayRepository(DayRepository $dayRepository): void
-    {
-        $this->dayRepository = $dayRepository;
-    }
+    use InjectCacheServiceTrait;
+    use InjectDayRepositoryTrait;
 
     public function initializeObject(): void
     {
@@ -40,12 +37,12 @@ class DayController extends AbstractController
         parent::initializeView($view);
 
         // This is a very seldom problem. It appears, when you save tt_content by a hook and cast value of pages to int before save.
-        $data = $this->configurationManager->getContentObject()->data;
+        $data = $this->request->getAttribute('currentContentObject')->data;
         if ($data['pages'] === '0') {
             $this->addFlashMessage(
                 'Please check content record with UID "' . $data['records'] . '". Column "pages" can not be 0. It must be empty or higher than 0.',
                 'tt_content column pages can not be 0',
-                FlashMessage::WARNING
+                ContextualFeedbackSeverity::WARNING
             );
         }
     }
@@ -55,7 +52,7 @@ class DayController extends AbstractController
         $this->preProcessControllerAction();
     }
 
-    public function listAction(?Filter $filter = null): void
+    public function listAction(?Filter $filter = null): ResponseInterface
     {
         $filter ??= GeneralUtility::makeInstance(Filter::class);
         $amountOfRecordsToShow = 0;
@@ -71,25 +68,29 @@ class DayController extends AbstractController
 
         $this->postProcessAndAssignFluidVariables([
             'days' => $days,
-            'filter' => $filter
+            'filter' => $filter,
         ]);
 
-        CacheUtility::addPageCacheTagsByQuery($days->getQuery());
+        $this->cacheService->addPageCacheTagsByQuery($days->getQuery());
+
+        return $this->htmlResponse();
     }
 
-    /*
+    /**
      * I call showAction with int instead of DomainModel to prevent that recursive validators will be called.
      */
-    public function showAction(int $event, int $timestamp = 0): void
+    public function showAction(int $event, int $timestamp = 0): ResponseInterface
     {
         $day = $this->dayRepository->findDayByEventAndTimestamp($event, $timestamp);
 
         $this->postProcessControllerAction($day->getEvent(), $day);
 
         $this->postProcessAndAssignFluidVariables([
-            'day' => $day
+            'day' => $day,
         ]);
 
-        CacheUtility::addCacheTagsByEventRecords([$day->getEvent()]);
+        $this->cacheService->addCacheTagsByEventRecords([$day->getEvent()]);
+
+        return $this->htmlResponse();
     }
 }

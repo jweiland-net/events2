@@ -1,20 +1,20 @@
 <html lang="en"
-			xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-			xmlns:e2="http://typo3.org/ns/JWeiland/Events2/ViewHelpers"
-			data-namespace-typo3-fluid="true">
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:e2="http://typo3.org/ns/JWeiland/Events2/ViewHelpers"
+      data-namespace-typo3-fluid="true">
 
 <f:if condition="{settings.categories}">
-	<f:then>
-		<f:for each="{e2:getAllowedCategories(event: event, pluginCategories: settings.categories)}" as="category" iteration="iterator">
-			<f:if condition="{iterator.isFirst}">{category.title}</f:if>
-		</f:for>
-	</f:then>
-	<f:else>
-		<f:if condition="{event.categories->f:count()}">
-			<f:for each="{event.categories}" as="category" iteration="iterator">
-				<f:if condition="{iterator.isFirst}">{category.title}</f:if>
-			</f:for>
-		</f:if>
-	</f:else>
+    <f:then>
+        <f:for each="{e2:getAllowedCategories(event: event, pluginCategories: settings.categories)}" as="category" iteration="iterator">
+            <f:if condition="{iterator.isFirst}">{category.title}</f:if>
+        </f:for>
+    </f:then>
+    <f:else>
+        <f:if condition="{event.categories->f:count()}">
+            <f:for each="{event.categories}" as="category" iteration="iterator">
+                <f:if condition="{iterator.isFirst}">{category.title}</f:if>
+            </f:for>
+        </f:if>
+    </f:else>
 </f:if>
 </html>

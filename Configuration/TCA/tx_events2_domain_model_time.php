@@ -1,12 +1,15 @@
 <?php
+
+use JWeiland\Events2\Tca\TimeLabel;
+use JWeiland\Events2\Tca\Type\Time;
+
 return [
     'ctrl' => [
         'title' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_time',
         'label' => 'time_begin',
-        'label_userFunc' => \JWeiland\Events2\Tca\TimeLabel::class . '->getTitle',
+        'label_userFunc' => TimeLabel::class . '->getTitle',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
-        'cruser_id' => 'cruser_id',
         'hideTable' => true,
         'default_sortby' => 'ORDER BY time_begin',
         'versioningWS' => true,
@@ -25,8 +28,8 @@ return [
     'types' => [
         '1' => [
             'showitem' => '--palette--;;language, type, --palette--;;times,
-            --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access, 
-            --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access'
+            --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access,
+            --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access',
         ],
     ],
     'palettes' => [
@@ -34,43 +37,32 @@ return [
         'times' => ['showitem' => 'time_begin, duration, time_entry, time_end'],
         'access' => [
             'showitem' => 'starttime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:starttime_formlabel,endtime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:endtime_formlabel',
-        ]
+        ],
     ],
     'columns' => [
         'sys_language_uid' => [
             'exclude' => true,
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.language',
             'config' => [
-                'type' => 'select',
-                'renderType' => 'selectSingle',
-                'special' => 'languages',
-                'items' => [
-                    [
-                        'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.allLanguages',
-                        -1,
-                        'flags-multiple'
-                    ],
-                ],
-                'default' => 0,
-            ]
+                'type' => 'language',
+            ],
         ],
         'l10n_parent' => [
             'displayCond' => 'FIELD:sys_language_uid:>:0',
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.l18n_parent',
             'config' => [
                 'type' => 'group',
-                'internal_type' => 'db',
                 'allowed' => 'tx_events2_domain_model_time',
                 'size' => 1,
                 'maxitems' => 1,
                 'minitems' => 0,
                 'default' => 0,
-            ]
+            ],
         ],
         'l10n_source' => [
             'config' => [
-                'type' => 'passthrough'
-            ]
+                'type' => 'passthrough',
+            ],
         ],
         'hidden' => [
             'exclude' => true,
@@ -80,63 +72,52 @@ return [
                 'renderType' => 'checkboxToggle',
                 'items' => [
                     [
-                        0 => '',
-                        1 => '',
-                        'invertStateDisplay' => true
-                    ]
+                        'label' => '',
+                        'value' => '',
+                        'invertStateDisplay' => true,
+                    ],
                 ],
-            ]
-        ],
-        'cruser_id' => [
-            'label' => 'cruser_id',
-            'config' => [
-                'type' => 'passthrough'
-            ]
+            ],
         ],
         'pid' => [
             'label' => 'pid',
             'config' => [
-                'type' => 'passthrough'
-            ]
+                'type' => 'passthrough',
+            ],
         ],
         'crdate' => [
             'label' => 'crdate',
             'config' => [
                 'type' => 'passthrough',
-            ]
+            ],
         ],
         'tstamp' => [
             'label' => 'tstamp',
             'config' => [
                 'type' => 'passthrough',
-            ]
+            ],
         ],
         'starttime' => [
             'exclude' => true,
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.starttime',
             'config' => [
-                'type' => 'input',
-                'renderType' => 'inputDateTime',
-                'eval' => 'datetime,int',
-                'default' => 0
+                'type' => 'datetime',
+                'format' => 'datetime',
+                'default' => 0,
             ],
             'l10n_mode' => 'exclude',
-            'l10n_display' => 'defaultAsReadonly'
+            'l10n_display' => 'defaultAsReadonly',
         ],
         'endtime' => [
             'exclude' => true,
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.endtime',
             'config' => [
-                'type' => 'input',
-                'renderType' => 'inputDateTime',
-                'eval' => 'datetime,int',
+                'type' => 'datetime',
+                'format' => 'datetime',
                 'default' => 0,
-                'range' => [
-                    'upper' => mktime(0, 0, 0, 1, 1, 2038)
-                ]
             ],
             'l10n_mode' => 'exclude',
-            'l10n_display' => 'defaultAsReadonly'
+            'l10n_display' => 'defaultAsReadonly',
         ],
         'type' => [
             'config' => [
@@ -149,16 +130,37 @@ return [
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
+                'required' => true,
                 'items' => [
-                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_time.weekday.monday', 'monday'],
-                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_time.weekday.tuesday', 'tuesday'],
-                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_time.weekday.wednesday', 'wednesday'],
-                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_time.weekday.thursday', 'thursday'],
-                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_time.weekday.friday', 'friday'],
-                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_time.weekday.saturday', 'saturday'],
-                    ['LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_time.weekday.sunday', 'sunday'],
+                    [
+                        'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_time.weekday.monday',
+                        'value' => 'monday',
+                    ],
+                    [
+                        'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_time.weekday.tuesday',
+                        'value' => 'tuesday',
+                    ],
+                    [
+                        'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_time.weekday.wednesday',
+                        'value' => 'wednesday',
+                    ],
+                    [
+                        'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_time.weekday.thursday',
+                        'value' => 'thursday',
+                    ],
+                    [
+                        'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_time.weekday.friday',
+                        'value' => 'friday',
+                    ],
+                    [
+                        'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_time.weekday.saturday',
+                        'value' => 'saturday',
+                    ],
+                    [
+                        'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_time.weekday.sunday',
+                        'value' => 'sunday',
+                    ],
                 ],
-                'eval' => 'required',
                 'default' => strtolower(date('l')),
             ],
         ],
@@ -171,7 +173,7 @@ return [
                 'max' => 5,
                 'checkbox' => 1,
                 'default' => '08:00',
-                'eval' => \JWeiland\Events2\Tca\Type\Time::class,
+                'eval' => Time::class,
             ],
         ],
         'time_entry' => [
@@ -184,7 +186,7 @@ return [
                 'checkbox' => 1,
                 'default' => '',
                 'placeholder' => '07:30',
-                'eval' => \JWeiland\Events2\Tca\Type\Time::class,
+                'eval' => Time::class,
             ],
         ],
         'duration' => [
@@ -197,7 +199,7 @@ return [
                 'checkbox' => 1,
                 'default' => '',
                 'placeholder' => '02:30',
-                'eval' => \JWeiland\Events2\Tca\Type\Time::class,
+                'eval' => Time::class,
             ],
         ],
         'time_end' => [
@@ -210,7 +212,7 @@ return [
                 'checkbox' => 1,
                 'default' => '',
                 'placeholder' => '14:00',
-                'eval' => \JWeiland\Events2\Tca\Type\Time::class,
+                'eval' => Time::class,
             ],
         ],
         'event' => [
@@ -221,7 +223,7 @@ return [
         'exception' => [
             'config' => [
                 'type' => 'passthrough',
-            ]
-        ]
-    ]
+            ],
+        ],
+    ],
 ];

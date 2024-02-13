@@ -20,10 +20,7 @@ use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
  */
 class UrlValidator extends AbstractValidator
 {
-    /**
-     * @param mixed $value
-     */
-    public function isValid($value): void
+    public function isValid(mixed $value): void
     {
         if (!GeneralUtility::isValidUrl($value)) {
             $this->addError(

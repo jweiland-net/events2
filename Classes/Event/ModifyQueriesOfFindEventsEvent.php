@@ -14,15 +14,11 @@ namespace JWeiland\Events2\Event;
 use JWeiland\Events2\Domain\Model\Filter;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 
-/*
+/**
  * Use this event, if you want to modify the queries of DayRepository::findEvents.
  */
 class ModifyQueriesOfFindEventsEvent
 {
-    protected QueryBuilder $queryBuilder;
-
-    protected QueryBuilder $subQueryBuilder;
-
     protected string $type = '';
 
     protected Filter $filter;
@@ -30,14 +26,12 @@ class ModifyQueriesOfFindEventsEvent
     protected array $settings = [];
 
     public function __construct(
-        QueryBuilder $queryBuilder,
-        QueryBuilder $subQueryBuilder,
+        protected readonly QueryBuilder $queryBuilder,
+        protected readonly QueryBuilder $subQueryBuilder,
         string $type,
         Filter $filter,
         array $settings
     ) {
-        $this->queryBuilder = $queryBuilder;
-        $this->subQueryBuilder = $subQueryBuilder;
         $this->type = $type;
         $this->filter = $filter;
         $this->settings = $settings;

@@ -1,154 +1,162 @@
 <html lang="en"
-			xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-			xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
-			data-namespace-typo3-fluid="true">
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+      data-namespace-typo3-fluid="true">
 
 <h4>Events2</h4>
 
 <table class="table">
-	<thead>
-	<tr>
-		<th>Config</th>
-		<th>Value</th>
-	</tr>
-	</thead>
-	<tbody>
-	<tr>
-		<td><strong>Plugin</strong></td>
-		<td>
-			<f:switch expression="{list_type}">
-				<f:case value="events2_show">Detail view</f:case>
-				<f:case value="events2_management">Management</f:case>
-				<f:case value="events2_calendar">Calendar</f:case>
-				<f:case value="events2_searchform">Search form</f:case>
-				<f:case value="events2_searchresults">Search results</f:case>
-				<f:defaultCase>List events</f:defaultCase>
-			</f:switch>
-		</td>
-	</tr>
+    <thead>
+    <tr>
+        <th>Config</th>
+        <th>Value</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><strong>Plugin</strong></td>
+        <td>
+            <f:switch expression="{list_type}">
+                <f:case value="events2_show">Detail view</f:case>
+                <f:case value="events2_management">Management</f:case>
+                <f:case value="events2_calendar">Calendar</f:case>
+                <f:case value="events2_searchform">Search form</f:case>
+                <f:case value="events2_searchresults">Search results</f:case>
+                <f:defaultCase>List events</f:defaultCase>
+            </f:switch>
+        </td>
+    </tr>
 
-	<f:switch expression="{list_type}">
-		<f:case value="events2_show">
-			<f:render section="renderPidOfListPage" arguments="{pidOfListPage: pi_flexform_transformed.settings.pidOfListPage}" />
-			<f:render section="renderPidOfLocationPage" arguments="{pidOfLocationPage: pi_flexform_transformed.settings.pidOfLocationPage}" />
-			<f:render section="renderPidOfManagementPage" arguments="{pidOfManagementPage: pi_flexform_transformed.settings.pidOfManagementPage}" />
-			<f:render section="renderDisplayMode" arguments="{displayMode: pi_flexform_transformed.settings.display}" />
-		</f:case>
-		<f:case value="events2_management">
-			<f:render section="renderCategories" arguments="{categories: pi_flexform_transformed.settings.selectableCategoriesForNewEvents}" />
-		</f:case>
-		<f:case value="events2_calendar">
-			<f:render section="renderCategories" arguments="{categories: pi_flexform_transformed.settings.categories}" />
-		</f:case>
-		<f:case value="events2_searchform">
-			<f:render section="renderPidOfSearchResults" arguments="{pidOfSearchResults: pi_flexform_transformed.settings.pidOfSearchResults}" />
-			<f:render section="renderCategories" arguments="{categories: pi_flexform_transformed.settings.mainCategories}" />
-		</f:case>
-		<f:case value="events2_searchresults" />
-		<f:defaultCase>
-			<tr>
-				<td><strong>List type</strong></td>
-				<td>
-					<f:switch expression="{pi_flexform_transformed.settings.listType}">
-						<f:case value="listLatest">Latest</f:case>
-						<f:case value="listToday">Today</f:case>
-						<f:case value="listWeek">Week</f:case>
-						<f:case value="listRange">Range</f:case>
-						<f:defaultCase>All</f:defaultCase>
-					</f:switch>
-				</td>
-			</tr>
-			<f:render section="renderPidOfDetailPage" arguments="{pidOfDetailPage: pi_flexform_transformed.settings.pidOfDetailPage}" />
-			<f:render section="renderPidOfManagementPage" arguments="{pidOfManagementPage: pi_flexform_transformed.settings.pidOfManagementPage}" />
-			<tr>
-				<td><strong>Merge Events same day</strong></td>
-				<td>
-					<f:if condition="{pi_flexform_transformed.settings.mergeEventsAtSameDay}">
-						<f:then><core:icon identifier="actions-check" /></f:then>
-						<f:else><core:icon identifier="actions-message-ok-close" /></f:else>
-					</f:if>
-				</td>
-			</tr>
-			<tr>
-				<td><strong>Merge recurring Events</strong></td>
-				<td>
-					<f:if condition="{pi_flexform_transformed.settings.mergeRecurringEvents}">
-						<f:then><core:icon identifier="actions-check" /></f:then>
-						<f:else><core:icon identifier="actions-message-ok-close" /></f:else>
-					</f:if>
-				</td>
-			</tr>
-			<f:render section="renderCategories" arguments="{categories: pi_flexform_transformed.settings.categories}" />
-		</f:defaultCase>
-	</f:switch>
-	</tbody>
+    <f:switch expression="{list_type}">
+        <f:case value="events2_show">
+            <f:render section="RenderPidOfListPage" arguments="{pidOfListPage: pi_flexform_transformed.settings.pidOfListPage}"/>
+            <f:render section="RenderPidOfLocationPage" arguments="{pidOfLocationPage: pi_flexform_transformed.settings.pidOfLocationPage}"/>
+            <f:render section="RenderPidOfManagementPage" arguments="{pidOfManagementPage: pi_flexform_transformed.settings.pidOfManagementPage}"/>
+            <f:render section="RenderDisplayMode" arguments="{displayMode: pi_flexform_transformed.settings.display}"/>
+        </f:case>
+        <f:case value="events2_management">
+            <f:render section="RenderCategories" arguments="{categories: pi_flexform_transformed.settings.selectableCategoriesForNewEvents}"/>
+        </f:case>
+        <f:case value="events2_calendar">
+            <f:render section="RenderCategories" arguments="{categories: pi_flexform_transformed.settings.categories}"/>
+        </f:case>
+        <f:case value="events2_searchform">
+            <f:render section="RenderPidOfSearchResults" arguments="{pidOfSearchResults: pi_flexform_transformed.settings.pidOfSearchResults}"/>
+            <f:render section="RenderCategories" arguments="{categories: pi_flexform_transformed.settings.mainCategories}"/>
+        </f:case>
+        <f:case value="events2_searchresults"/>
+        <f:defaultCase>
+            <tr>
+                <td><strong>List type</strong></td>
+                <td>
+                    <f:switch expression="{pi_flexform_transformed.settings.listType}">
+                        <f:case value="listLatest">Latest</f:case>
+                        <f:case value="listToday">Today</f:case>
+                        <f:case value="listWeek">Week</f:case>
+                        <f:case value="listRange">Range</f:case>
+                        <f:defaultCase>All</f:defaultCase>
+                    </f:switch>
+                </td>
+            </tr>
+            <f:render section="RenderPidOfDetailPage" arguments="{pidOfDetailPage: pi_flexform_transformed.settings.pidOfDetailPage}"/>
+            <f:render section="RenderPidOfManagementPage" arguments="{pidOfManagementPage: pi_flexform_transformed.settings.pidOfManagementPage}"/>
+            <tr>
+                <td><strong>Merge Events same day</strong></td>
+                <td>
+                    <f:if condition="{pi_flexform_transformed.settings.mergeEventsAtSameDay}">
+                        <f:then>
+                            <core:icon identifier="actions-check"/>
+                        </f:then>
+                        <f:else>
+                            <core:icon identifier="actions-message-ok-close"/>
+                        </f:else>
+                    </f:if>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Merge recurring Events</strong></td>
+                <td>
+                    <f:if condition="{pi_flexform_transformed.settings.mergeRecurringEvents}">
+                        <f:then>
+                            <core:icon identifier="actions-check"/>
+                        </f:then>
+                        <f:else>
+                            <core:icon identifier="actions-message-ok-close"/>
+                        </f:else>
+                    </f:if>
+                </td>
+            </tr>
+            <f:render section="RenderCategories" arguments="{categories: pi_flexform_transformed.settings.categories}"/>
+        </f:defaultCase>
+    </f:switch>
+    </tbody>
 </table>
 
-<f:section name="renderCategories">
-	<f:if condition="{categories}">
-		<tr>
-			<td><strong>Categories</strong></td>
-			<td>{categories}</td>
-		</tr>
-	</f:if>
+<f:section name="RenderCategories">
+    <f:if condition="{categories}">
+        <tr>
+            <td><strong>Categories</strong></td>
+            <td>{categories}</td>
+        </tr>
+    </f:if>
 </f:section>
 
-<f:section name="renderPidOfDetailPage">
-	<f:if condition="{pidOfDetailPage}">
-		<tr>
-			<td><strong>Detail Page</strong></td>
-			<td>{pidOfDetailPage}</td>
-		</tr>
-	</f:if>
+<f:section name="RenderPidOfDetailPage">
+    <f:if condition="{pidOfDetailPage}">
+        <tr>
+            <td><strong>Detail Page</strong></td>
+            <td>{pidOfDetailPage}</td>
+        </tr>
+    </f:if>
 </f:section>
 
-<f:section name="renderPidOfListPage">
-	<f:if condition="{pidOfListPage}">
-		<tr>
-			<td><strong>List Page</strong></td>
-			<td>{pidOfListPage}</td>
-		</tr>
-	</f:if>
+<f:section name="RenderPidOfListPage">
+    <f:if condition="{pidOfListPage}">
+        <tr>
+            <td><strong>List Page</strong></td>
+            <td>{pidOfListPage}</td>
+        </tr>
+    </f:if>
 </f:section>
 
-<f:section name="renderPidOfLocationPage">
-	<f:if condition="{pidOfLocationPage}">
-		<tr>
-			<td><strong>Location Page</strong></td>
-			<td>{pidOfLocationPage}</td>
-		</tr>
-	</f:if>
+<f:section name="RenderPidOfLocationPage">
+    <f:if condition="{pidOfLocationPage}">
+        <tr>
+            <td><strong>Location Page</strong></td>
+            <td>{pidOfLocationPage}</td>
+        </tr>
+    </f:if>
 </f:section>
 
-<f:section name="renderPidOfManagementPage">
-	<f:if condition="{pidOfManagementPage}">
-		<tr>
-			<td><strong>Management Page</strong></td>
-			<td>{pidOfManagementPage}</td>
-		</tr>
-	</f:if>
+<f:section name="RenderPidOfManagementPage">
+    <f:if condition="{pidOfManagementPage}">
+        <tr>
+            <td><strong>Management Page</strong></td>
+            <td>{pidOfManagementPage}</td>
+        </tr>
+    </f:if>
 </f:section>
 
-<f:section name="renderPidOfSearchResults">
-	<f:if condition="{pidOfSearchResults}">
-		<tr>
-			<td><strong>Search Results Page</strong></td>
-			<td>{pidOfSearchResults}</td>
-		</tr>
-	</f:if>
+<f:section name="RenderPidOfSearchResults">
+    <f:if condition="{pidOfSearchResults}">
+        <tr>
+            <td><strong>Search Results Page</strong></td>
+            <td>{pidOfSearchResults}</td>
+        </tr>
+    </f:if>
 </f:section>
 
-<f:section name="renderDisplayMode">
-	<tr>
-		<td><strong>Display Mode</strong></td>
-		<td>
-			<f:switch expression="{displayMode}">
-				<f:case value="displayBoth">Show images and events</f:case>
-				<f:case value="displayImages">Show images only</f:case>
-				<f:case value="displayEvent">Show Event only</f:case>
-				<f:defaultCase />
-			</f:switch>
-		</td>
-	</tr>
+<f:section name="RenderDisplayMode">
+    <tr>
+        <td><strong>Display Mode</strong></td>
+        <td>
+            <f:switch expression="{displayMode}">
+                <f:case value="displayBoth">Show images and events</f:case>
+                <f:case value="displayImages">Show images only</f:case>
+                <f:case value="displayEvent">Show Event only</f:case>
+                <f:defaultCase/>
+            </f:switch>
+        </td>
+    </tr>
 </f:section>
 </html>

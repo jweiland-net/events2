@@ -33,7 +33,7 @@ class SearchControllerTest extends AbstractFunctionalTestCase
      */
     protected $testExtensionsToLoad = [
         'typo3conf/ext/events2',
-        'typo3conf/ext/static_info_tables'
+        'typo3conf/ext/static_info_tables',
     ];
 
     protected function setUp(): void
@@ -59,7 +59,7 @@ class SearchControllerTest extends AbstractFunctionalTestCase
         $GLOBALS['TYPO3_REQUEST'] = $this->serverRequest;
         $dayRelationService = GeneralUtility::makeInstance(DayRelationService::class);
         $statement = $this->getDatabaseConnection()->select('*', 'tx_events2_domain_model_event', 'pid=1');
-        while ($eventRecord = $statement->fetch(\PDO::FETCH_ASSOC)) {
+        while ($eventRecord = $statement->fetchAssociative()) {
             $dayRelationService->createDayRelations($eventRecord['uid']);
         }
     }
@@ -90,8 +90,8 @@ class SearchControllerTest extends AbstractFunctionalTestCase
                 'format' => 'txt',
                 'settings' => [
                     'rootCategory' => '1',
-                    'mainCategories' => '2,3'
-                ]
+                    'mainCategories' => '2,3',
+                ],
             ]
         );
 
@@ -114,9 +114,9 @@ class SearchControllerTest extends AbstractFunctionalTestCase
                 'tx_events2_searchform' => [
                     'search' => [
                         'search' => 'Test',
-                        'freeEntry' => '1'
-                    ]
-                ]
+                        'freeEntry' => '1',
+                    ],
+                ],
             ]
         );
 
@@ -129,8 +129,8 @@ class SearchControllerTest extends AbstractFunctionalTestCase
                 'format' => 'txt',
                 'settings' => [
                     'rootCategory' => '1',
-                    'mainCategories' => '2,3'
-                ]
+                    'mainCategories' => '2,3',
+                ],
             ]
         );
 

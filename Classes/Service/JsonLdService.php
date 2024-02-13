@@ -25,7 +25,7 @@ use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
-/*
+/**
  * Extract various information from an event/day to build a json-ld string
  */
 class JsonLdService
@@ -36,15 +36,10 @@ class JsonLdService
 
     protected array $data = [
         '@context' => 'http://schema.org',
-        '@type' => 'Event'
+        '@type' => 'Event',
     ];
 
-    protected TimeFactory $timeFactory;
-
-    public function __construct(TimeFactory $timeFactory)
-    {
-        $this->timeFactory = $timeFactory;
-    }
+    public function __construct(protected readonly TimeFactory $timeFactory) {}
 
     /**
      * Read values from day and event record to build a json-ld string for page header
@@ -243,8 +238,8 @@ class JsonLdService
                 0 => [
                     '@type' => 'Offer',
                     'name' => $event->getTicketLink()->getTitle(),
-                    'url' => $this->getUrlFromParameter($event->getTicketLink()->getLink())
-                ]
+                    'url' => $this->getUrlFromParameter($event->getTicketLink()->getLink()),
+                ],
             ];
         }
     }
@@ -265,8 +260,8 @@ class JsonLdService
                     '@type' => 'PostalAddress',
                     'streetAddress' => $event->getLocation()->getStreet() . ' ' . $event->getLocation()->getHouseNumber(),
                     'postalCode' => $event->getLocation()->getZip(),
-                    'addressLocality' => $event->getLocation()->getCity()
-                ]
+                    'addressLocality' => $event->getLocation()->getCity(),
+                ],
             ];
             if ($event->getLocation()->getLink() instanceof Link) {
                 $this->data['location']['url'] = $this->getUrlFromParameter($event->getLocation()->getLink()->getLink());
@@ -315,7 +310,7 @@ class JsonLdService
             }
 
             $url = GeneralUtility::locationHeaderUrl(PathUtility::getAbsoluteWebPath(Environment::getPublicPath()));
-            $url .= $resource->getPublicUrl(false);
+            $url .= $resource->getPublicUrl();
 
             $this->data['image'] = [
                 '@type' => 'ImageObject',
@@ -323,7 +318,7 @@ class JsonLdService
                 'contentSize' => $resource->getSize(),
                 'contentUrl' => $url,
                 'url' => rawurldecode(GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL')),
-                'description' => $resource->getDescription()
+                'description' => $resource->getDescription(),
             ];
         }
     }
@@ -337,7 +332,7 @@ class JsonLdService
         return $contentObject->typoLink_URL(
             [
                 'parameter' => $parameter,
-                'forceAbsoluteUrl' => true
+                'forceAbsoluteUrl' => true,
             ]
         );
     }

@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Domain\Model;
 use JWeiland\Events2\Domain\Factory\TimeFactory;
 use JWeiland\Events2\Domain\Repository\UserRepository;
 use JWeiland\Events2\Domain\Traits\Typo3PropertiesTrait;
+use JWeiland\Events2\Domain\Validator\CategoryMandatoryValidator;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Annotation as Extbase;
@@ -21,7 +22,7 @@ use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
-/*
+/**
  * This class contains all getter and setters for an Event.
  */
 class Event extends AbstractEntity
@@ -32,21 +33,15 @@ class Event extends AbstractEntity
 
     protected bool $topOfList = false;
 
-    /**
-     * @Extbase\Validate("NotEmpty")
-     */
+    #[Extbase\Validate(['validator' => 'NotEmpty'])]
     protected string $title = '';
 
     protected string $pathSegment = '';
 
-    /**
-     * @Extbase\Validate("NotEmpty")
-     */
+    #[Extbase\Validate(['validator' => 'NotEmpty'])]
     protected ?\DateTimeImmutable $eventBegin = null;
 
-    /**
-     * @Extbase\ORM\Cascade("remove")
-     */
+    #[Extbase\ORM\Cascade(['value' => 'remove'])]
     protected ?Time $eventTime = null;
 
     protected ?\DateTimeImmutable $eventEnd = null;
@@ -54,10 +49,10 @@ class Event extends AbstractEntity
     protected bool $sameDay = false;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Time>
-     * @Extbase\ORM\Cascade("remove")
-     * @Extbase\ORM\Lazy
+     * @var ObjectStorage<Time>
      */
+    #[Extbase\ORM\Cascade(['value' => 'remove'])]
+    #[Extbase\ORM\Lazy]
     protected ObjectStorage $multipleTimes;
 
     protected int $xth = 0;
@@ -65,10 +60,10 @@ class Event extends AbstractEntity
     protected int $weekday = 0;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Time>
-     * @Extbase\ORM\Cascade("remove")
-     * @Extbase\ORM\Lazy
+     * @var ObjectStorage<Time>
      */
+    #[Extbase\ORM\Cascade(['value' => 'remove'])]
+    #[Extbase\ORM\Lazy]
     protected ObjectStorage $differentTimes;
 
     protected int $eachWeeks = 0;
@@ -78,10 +73,10 @@ class Event extends AbstractEntity
     protected ?\DateTimeImmutable $recurringEnd = null;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Exception>
-     * @Extbase\ORM\Cascade("remove")
-     * @Extbase\ORM\Lazy
+     * @var ObjectStorage<Exception>
      */
+    #[Extbase\ORM\Cascade(['value' => 'remove'])]
+    #[Extbase\ORM\Lazy]
     protected ObjectStorage $exceptions;
 
     protected string $teaser = '';
@@ -90,50 +85,46 @@ class Event extends AbstractEntity
 
     protected bool $freeEntry = false;
 
-    /**
-     * @Extbase\ORM\Cascade("remove")
-     */
+    #[Extbase\ORM\Cascade(['value' => 'remove'])]
     protected ?Link $ticketLink = null;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Category>
-     * @Extbase\Validate("JWeiland\Events2\Domain\Validator\CategoryMandatoryValidator")
-     * @Extbase\ORM\Lazy
+     * @var ObjectStorage<Category>
      */
+    #[Extbase\Validate(['value' => CategoryMandatoryValidator::class])]
+    #[Extbase\ORM\Lazy]
     protected ObjectStorage $categories;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Day>
-     * @Extbase\ORM\Cascade("remove")
-     * @Extbase\ORM\Lazy
+     * @var ObjectStorage<Day>
      */
+    #[Extbase\ORM\Cascade(['value' => 'remove'])]
+    #[Extbase\ORM\Lazy]
     protected ObjectStorage $days;
 
     protected ?Location $location = null;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Organizer>
-     * @Extbase\ORM\Lazy
+     * @var ObjectStorage<Organizer>
      */
+    #[Extbase\ORM\Lazy]
     protected ObjectStorage $organizers;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference>
-     * @Extbase\ORM\Cascade("remove")
-     * @Extbase\ORM\Lazy
+     * @var ObjectStorage<FileReference>
      */
+    #[Extbase\ORM\Cascade(['value' => 'remove'])]
+    #[Extbase\ORM\Lazy]
     protected ObjectStorage $images;
 
-    /**
-     * @Extbase\ORM\Cascade("remove")
-     */
+    #[Extbase\ORM\Cascade(['value' => 'remove'])]
     protected ?Link $videoLink = null;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\JWeiland\Events2\Domain\Model\Link>
-     * @Extbase\ORM\Cascade("remove")
-     * @Extbase\ORM\Lazy
+     * @var ObjectStorage<Link>
      */
+    #[Extbase\ORM\Cascade(['value' => 'remove'])]
+    #[Extbase\ORM\Lazy]
     protected ObjectStorage $downloadLinks;
 
     protected string $importId = '';
@@ -588,7 +579,6 @@ class Event extends AbstractEntity
         }
 
         ksort($futureDates);
-        reset($futureDates);
 
         return $futureDates;
     }
@@ -618,14 +608,13 @@ class Event extends AbstractEntity
                 if ($times->count()) {
                     $alternativeDays[$alternativeDay->getDayAsTimestamp()] = [
                         'date' => $alternativeDay->getDay(),
-                        'times' => $times
+                        'times' => $times,
                     ];
                 }
             }
         }
 
         ksort($alternativeDays);
-        reset($alternativeDays);
 
         return $alternativeDays;
     }
@@ -652,7 +641,6 @@ class Event extends AbstractEntity
         }
 
         ksort($futureDates);
-        reset($futureDates);
 
         return $futureDates;
     }
@@ -682,14 +670,13 @@ class Event extends AbstractEntity
                 if ($times->count()) {
                     $alternativeTimes[$exceptionDate->format('U')] = [
                         'date' => $exceptionDate,
-                        'times' => $times
+                        'times' => $times,
                     ];
                 }
             }
         }
 
         ksort($alternativeTimes);
-        reset($alternativeTimes);
 
         return $alternativeTimes;
     }
@@ -857,7 +844,7 @@ class Event extends AbstractEntity
         return [
             'uid' => $this->getUid(),
             'pid' => $this->getPid(),
-            'title' => $this->getTitle()
+            'title' => $this->getTitle(),
         ];
     }
 }

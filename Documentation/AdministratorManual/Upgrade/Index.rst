@@ -10,6 +10,14 @@ Upgrade
 If you upgrade/update EXT:events2 to a newer version, please read this section carefully!
 
 
+Update to Version 9.0.0
+=======================
+
+This version is NOT compatible with TYPO3 10 and TYPO3 11 anymore.
+
+We have upper case first char of all fluid sections `<f:section name="Date">`.
+Please make sure to adopt that in your extending templates.
+
 Update to Version 8.3.2
 =======================
 

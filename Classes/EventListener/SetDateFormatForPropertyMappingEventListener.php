@@ -15,7 +15,7 @@ use JWeiland\Events2\Event\PreProcessControllerActionEvent;
 use JWeiland\Events2\Property\TypeConverter\DateTimeImmutableConverter;
 use TYPO3\CMS\Extbase\Property\PropertyMappingConfigurationInterface;
 
-/*
+/**
  * Remove videoLink if empty.
  * Add special validation for VideoLink id exists.
  * I can't add this validation to LinkModel, as such a validation would be also valid for organizer link.
@@ -27,8 +27,8 @@ class SetDateFormatForPropertyMappingEventListener extends AbstractControllerEve
     protected array $allowedControllerActions = [
         'Management' => [
             'create',
-            'update'
-        ]
+            'update',
+        ],
     ];
 
     public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void

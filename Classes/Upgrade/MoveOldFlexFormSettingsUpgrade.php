@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Upgrade;
 
 use TYPO3\CMS\Core\Configuration\FlexForm\FlexFormTools;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\Exception\MissingArrayPathException;
@@ -111,13 +112,13 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
                 'tt_content',
                 [
                     'list_type' => $ttContentListType,
-                    'pi_flexform' => $this->checkValue_flexArray2Xml($valueFromDatabase)
+                    'pi_flexform' => $this->checkValue_flexArray2Xml($valueFromDatabase),
                 ],
                 [
-                    'uid' => (int)$record['uid']
+                    'uid' => (int)$record['uid'],
                 ],
                 [
-                    'pi_flexform' => \PDO::PARAM_STR
+                    'pi_flexform' => Connection::PARAM_STR,
                 ]
             );
         }
@@ -133,7 +134,7 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tt_content');
         $queryBuilder->getRestrictions()->removeAll();
 
-        $statement = $queryBuilder
+        $queryResult = $queryBuilder
             ->select('uid', 'list_type', 'pi_flexform')
             ->from('tt_content')
             ->where(
@@ -146,10 +147,10 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
                     $queryBuilder->createNamedParameter('events2_%')
                 )
             )
-            ->execute();
+            ->executeQuery();
 
         $records = [];
-        while ($record = $statement->fetch(\PDO::FETCH_ASSOC)) {
+        while ($record = $queryResult->fetchAssociative()) {
             $records[] = $record;
         }
 
@@ -198,7 +199,7 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
             // Create base sheet, if not exist
             if (!array_key_exists($newSheet, $valueFromDatabase['data'])) {
                 $valueFromDatabase['data'][$newSheet] = [
-                    'lDEF' => []
+                    'lDEF' => [],
                 ];
             }
 
@@ -228,26 +229,13 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
             }
 
             $ttContentListType = 'events2_list';
-            switch ($actions) {
-                case 'Day->listLatest;Day->show;Day->showByTimestamp;Location->show;Video->show':
-                    $listType = 'listLatest';
-                    $ttContentListType = 'events2_list';
-                    break;
-                case 'Day->listToday;Day->show;Day->showByTimestamp;Location->show;Video->show':
-                    $listType = 'listToday';
-                    $ttContentListType = 'events2_list';
-                    break;
-                case 'Day->listThisWeek;Day->show;Day->showByTimestamp;Location->show;Video->show':
-                    $listType = 'listWeek';
-                    $ttContentListType = 'events2_list';
-                    break;
-                case 'Day->listRange;Day->show;Day->showByTimestamp;Location->show;Video->show':
-                    $listType = 'listRange';
-                    $ttContentListType = 'events2_list';
-                    break;
-                default:
-                    $listType = 'list';
-            }
+            $listType = match ($actions) {
+                'Day->listLatest;Day->show;Day->showByTimestamp;Location->show;Video->show' => 'listLatest',
+                'Day->listToday;Day->show;Day->showByTimestamp;Location->show;Video->show' => 'listToday',
+                'Day->listThisWeek;Day->show;Day->showByTimestamp;Location->show;Video->show' => 'listWeek',
+                'Day->listRange;Day->show;Day->showByTimestamp;Location->show;Video->show' => 'listRange',
+                default => 'list',
+            };
             $valueFromDatabase['data']['sDEF']['lDEF']['settings.listType']['vDEF'] = $listType;
         } elseif ($ttContentListType === 'events2_search') {
             $ttContentListType = 'events2_searchform';
@@ -279,7 +267,7 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
     public function getPrerequisites(): array
     {
         return [
-            DatabaseUpdatedPrerequisite::class
+            DatabaseUpdatedPrerequisite::class,
         ];
     }
 }

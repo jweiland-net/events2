@@ -20,22 +20,22 @@ use JWeiland\Events2\Domain\Model\Organizer;
 use JWeiland\Events2\Domain\Model\Time;
 use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Core\Environment;
-use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
-/*
+/**
  * Imports event records by a XML file
  */
 class XmlImporter extends AbstractImporter
 {
     protected array $allowedMimeType = [
         'text/xml',
-        'application/xml'
+        'application/xml',
     ];
 
     /**
@@ -65,7 +65,7 @@ class XmlImporter extends AbstractImporter
         } catch (\Exception $e) {
             $this->addMessage(
                 $e->getMessage(),
-                FlashMessage::ERROR
+                ContextualFeedbackSeverity::ERROR
             );
             return false;
         }
@@ -98,7 +98,7 @@ class XmlImporter extends AbstractImporter
                             $error->message,
                             $error->line
                         ),
-                        FlashMessage::ERROR
+                        ContextualFeedbackSeverity::ERROR
                     );
                 }
 
@@ -107,11 +107,11 @@ class XmlImporter extends AbstractImporter
         } catch (\Exception $e) {
             $this->addMessage(
                 'XML does not comply with XmlImportValidator.xml.',
-                FlashMessage::ERROR
+                ContextualFeedbackSeverity::ERROR
             );
             $this->addMessage(
                 $e->getMessage(),
-                FlashMessage::ERROR
+                ContextualFeedbackSeverity::ERROR
             );
 
             return false;
@@ -468,18 +468,8 @@ class XmlImporter extends AbstractImporter
                         $targetFolder->getCombinedIdentifier() . $filename
                     );
                 } else {
-                    $report = [];
-                    $content = GeneralUtility::getUrl($image['url']);
-                    if (!empty($report['error'])) {
-                        $this->addMessage(sprintf(
-                            'Given image was NOT added to event. Error: %s',
-                            $report['message']
-                        ), FlashMessage::NOTICE);
-                        continue;
-                    }
-
                     $file = $targetFolder->createFile($filename);
-                    $file->setContents($content);
+                    $file->setContents(GeneralUtility::getUrl($image['url']));
                 }
 
                 // Create new FileReference
@@ -489,7 +479,7 @@ class XmlImporter extends AbstractImporter
                     [
                         'uid_local' => $file->getUid(),
                         'uid_foreign' => uniqid('NEW_', true),
-                        'uid' => uniqid('NEW_', true)
+                        'uid' => uniqid('NEW_', true),
                     ]
                 ));
 

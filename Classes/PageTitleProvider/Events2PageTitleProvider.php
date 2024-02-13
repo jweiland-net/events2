@@ -13,9 +13,8 @@ namespace JWeiland\Events2\PageTitleProvider;
 
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
+use JWeiland\Events2\Traits\Typo3RequestTrait;
 use TYPO3\CMS\Core\PageTitle\PageTitleProviderInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 /**
  * Instead of just setting the PageTitle to DetailView on Detail Page,
@@ -25,15 +24,12 @@ use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
  */
 class Events2PageTitleProvider implements PageTitleProviderInterface
 {
-    protected EventRepository $eventRepository;
+    use Typo3RequestTrait;
 
-    protected DayRepository $dayRepository;
-
-    public function __construct(ObjectManagerInterface $objectManager)
-    {
-        $this->eventRepository = $objectManager->get(EventRepository::class);
-        $this->dayRepository = $objectManager->get(DayRepository::class);
-    }
+    public function __construct(
+        protected readonly EventRepository $eventRepository,
+        protected readonly DayRepository $dayRepository
+    ) {}
 
     public function getTitle(): string
     {
@@ -66,12 +62,12 @@ class Events2PageTitleProvider implements PageTitleProviderInterface
 
     protected function getMergedRequestParameters(): array
     {
-        $gp = GeneralUtility::_GPmerged('tx_events2_show');
-        if ($gp === []) {
-            $gp = GeneralUtility::_GPmerged('tx_events2_list');
+        $getMergedWithPost = $this->getMergedWithPostFromRequest('tx_events2_show');
+        if ($getMergedWithPost === []) {
+            $getMergedWithPost = $this->getMergedWithPostFromRequest('tx_events2_list');
         }
 
-        return $gp;
+        return $getMergedWithPost;
     }
 
     /**

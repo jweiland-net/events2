@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Upgrade;
 
-use Doctrine\DBAL\Driver\Statement;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Helper\PathSegmentHelper;
 use TYPO3\CMS\Core\Database\Connection;
@@ -22,15 +21,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
 use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 
-/*
+/**
  * Updater to fill empty slug columns of event records
  */
 class EventsSlugUpgrade implements UpgradeWizardInterface
 {
-    protected PathSegmentHelper $pathSegmentHelper;
-
-    protected ExtConf $extConf;
-
     protected string $tableName = 'tx_events2_domain_model_event';
 
     protected string $slugColumn = 'path_segment';
@@ -42,11 +37,10 @@ class EventsSlugUpgrade implements UpgradeWizardInterface
      */
     protected array $slugCache = [];
 
-    public function __construct(PathSegmentHelper $pathSegmentHelper, ExtConf $extConf)
-    {
-        $this->pathSegmentHelper = $pathSegmentHelper;
-        $this->extConf = $extConf;
-    }
+    public function __construct(
+        protected readonly PathSegmentHelper $pathSegmentHelper,
+        protected readonly ExtConf $extConf
+    ) {}
 
     /**
      * Return the identifier for this wizard
@@ -76,8 +70,8 @@ class EventsSlugUpgrade implements UpgradeWizardInterface
         $queryBuilder = $this->getQueryBuilder();
         $amountOfRecordsWithEmptySlug = $queryBuilder
             ->count('*')
-            ->execute()
-            ->fetchColumn();
+            ->executeQuery()
+            ->fetchOne();
 
         return (bool)$amountOfRecordsWithEmptySlug;
     }
@@ -94,20 +88,20 @@ class EventsSlugUpgrade implements UpgradeWizardInterface
         }
 
         $queryBuilder = $this->getQueryBuilder();
-        $statement = $queryBuilder
+        $queryResult = $queryBuilder
             ->select('uid', 'pid', $this->titleColumn)
-            ->execute();
+            ->executeQuery();
 
         $connection = $this->getConnectionPool()->getConnectionForTable($this->tableName);
-        while ($recordToUpdate = $statement->fetch(\PDO::FETCH_ASSOC)) {
+        while ($recordToUpdate = $queryResult->fetchAssociative()) {
             if ((string)$recordToUpdate[$this->titleColumn] !== '') {
                 $connection->update(
                     $this->tableName,
                     [
-                        $this->slugColumn => $this->pathSegmentHelper->generatePathSegment($recordToUpdate)
+                        $this->slugColumn => $this->pathSegmentHelper->generatePathSegment($recordToUpdate),
                     ],
                     [
-                        'uid' => (int)$recordToUpdate['uid']
+                        'uid' => (int)$recordToUpdate['uid'],
                     ]
                 );
             }
@@ -125,10 +119,10 @@ class EventsSlugUpgrade implements UpgradeWizardInterface
         return $queryBuilder
             ->from($this->tableName)
             ->where(
-                $queryBuilder->expr()->orX(
+                $queryBuilder->expr()->or(
                     $queryBuilder->expr()->eq(
                         $this->slugColumn,
-                        $queryBuilder->createNamedParameter('', Connection::PARAM_STR)
+                        $queryBuilder->createNamedParameter('')
                     ),
                     $queryBuilder->expr()->isNull(
                         $this->slugColumn
@@ -139,25 +133,26 @@ class EventsSlugUpgrade implements UpgradeWizardInterface
 
     protected function getUniqueValue(int $uid, string $slug): string
     {
-        $newSlug = '';
-        $statement = $this->getUniqueSlugStatement($uid, $slug);
-        $counter = $this->slugCache[$slug] ?? 1;
-        while ($statement->fetch(\PDO::FETCH_ASSOC)) {
-            $newSlug = $slug . '-' . $counter;
-            $statement->bindValue(1, $newSlug);
-            $statement->execute();
-
-            // Do not cache every slug, because of memory consumption. I think 5 is a good value to start caching.
-            if ($counter > 5) {
-                $this->slugCache[$slug] = $counter;
+        $queryBuilder = $this->getUniqueSlugQueryBuilder($uid, $slug);
+        $statement = $queryBuilder->prepare();
+        $queryResult = $statement->executeQuery();
+        if ($queryResult->fetchOne()) {
+            for ($counter = 1; $counter <= 100; $counter++) {
+                $queryResult->free();
+                $newSlug = $slug . '-' . $counter;
+                $statement->bindValue(1, $newSlug);
+                $queryResult = $statement->executeQuery();
+                if (!$queryResult->fetchOne()) {
+                    break;
+                }
             }
-            ++$counter;
+            $queryResult->free();
         }
 
         return $newSlug ?? $slug;
     }
 
-    protected function getUniqueSlugStatement(int $uid, string $slug): Statement
+    protected function getUniqueSlugQueryBuilder(int $uid, string $slug): QueryBuilder
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($this->tableName);
         $queryBuilder->getRestrictions()->removeAll();
@@ -169,14 +164,13 @@ class EventsSlugUpgrade implements UpgradeWizardInterface
             ->where(
                 $queryBuilder->expr()->eq(
                     $this->slugColumn,
-                    $queryBuilder->createPositionalParameter($slug, Connection::PARAM_STR)
+                    $queryBuilder->createPositionalParameter($slug)
                 ),
                 $queryBuilder->expr()->neq(
                     'uid',
                     $queryBuilder->createPositionalParameter($uid, Connection::PARAM_INT)
                 )
-            )
-            ->execute();
+            );
     }
 
     /**
@@ -185,7 +179,7 @@ class EventsSlugUpgrade implements UpgradeWizardInterface
     public function getPrerequisites(): array
     {
         return [
-            DatabaseUpdatedPrerequisite::class
+            DatabaseUpdatedPrerequisite::class,
         ];
     }
 

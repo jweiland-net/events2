@@ -12,46 +12,31 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Controller;
 
 use JWeiland\Events2\Domain\Model\Search;
-use JWeiland\Events2\Domain\Repository\CategoryRepository;
-use JWeiland\Events2\Domain\Repository\DayRepository;
-use JWeiland\Events2\Domain\Repository\LocationRepository;
-use JWeiland\Events2\Utility\CacheUtility;
+use JWeiland\Events2\Traits\InjectCacheServiceTrait;
+use JWeiland\Events2\Traits\InjectCategoryRepositoryTrait;
+use JWeiland\Events2\Traits\InjectDayRepositoryTrait;
+use JWeiland\Events2\Traits\InjectLocationRepositoryTrait;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\Category;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
 
-/*
+/**
  * This controller shows the search-form and search-results.
  */
 class SearchController extends AbstractController
 {
-    protected DayRepository $dayRepository;
-
-    protected CategoryRepository $categoryRepository;
-
-    protected LocationRepository $locationRepository;
-
-    public function injectDayRepository(DayRepository $dayRepository): void
-    {
-        $this->dayRepository = $dayRepository;
-    }
-
-    public function injectCategoryRepository(CategoryRepository $categoryRepository): void
-    {
-        $this->categoryRepository = $categoryRepository;
-    }
-
-    public function injectLocationRepository(LocationRepository $locationRepository): void
-    {
-        $this->locationRepository = $locationRepository;
-    }
+    use InjectCacheServiceTrait;
+    use InjectCategoryRepositoryTrait;
+    use InjectDayRepositoryTrait;
+    use InjectLocationRepositoryTrait;
 
     public function initializeShowAction(): void
     {
         $this->preProcessControllerAction();
     }
 
-    public function showAction(?Search $search = null): void
+    public function showAction(?Search $search = null): ResponseInterface
     {
         // Because of the checkbox in search form we have to create a new empty domain model
         $search ??= GeneralUtility::makeInstance(Search::class);
@@ -85,14 +70,16 @@ class SearchController extends AbstractController
                 'locations' => $this->locationRepository->getLocationsForSearchSelector(),
                 'categories' => [
                     'main' => $allowedMainCategories,
-                    'sub' => []
-                ]
+                    'sub' => [],
+                ],
             ],
             'jsVariables' => json_encode($this->getJsVariables([
-                'siteId' => $GLOBALS['TSFE']->id,
-                'search' => $gettableSearchProperties
+                'siteId' => $this->request->getAttribute('frontend.controller')->id,
+                'search' => $gettableSearchProperties,
             ]), JSON_THROW_ON_ERROR),
         ]);
+
+        return $this->htmlResponse();
     }
 
     public function initializeListSearchResultsAction(): void
@@ -100,16 +87,18 @@ class SearchController extends AbstractController
         $this->preProcessControllerAction();
     }
 
-    public function listSearchResultsAction(?Search $search = null): void
+    public function listSearchResultsAction(?Search $search = null): ResponseInterface
     {
         if ($search instanceof Search) {
             $days = $this->dayRepository->searchEvents($search);
 
             $this->postProcessAndAssignFluidVariables([
-                'days' => $days
+                'days' => $days,
             ]);
 
-            CacheUtility::addPageCacheTagsByQuery($days->getQuery());
+            $this->cacheService->addPageCacheTagsByQuery($days->getQuery());
         }
+
+        return $this->htmlResponse();
     }
 }

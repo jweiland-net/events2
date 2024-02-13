@@ -11,8 +11,9 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Hooks\Form;
 
-use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver\Statement;
+use Doctrine\DBAL\ArrayParameterType;
+use Doctrine\DBAL\Result;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer;
@@ -22,25 +23,17 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Form\Domain\Model\FormElements\AbstractFormElement;
 use TYPO3\CMS\Form\Domain\Model\Renderable\RenderableInterface;
 
-/*
+/**
  * Prefill EXT:form element of type checkboxes with categories from database
  */
 class PrefillCategoriesHook
 {
-    /**
-     * @var PageRepository
-     */
-    protected $pageRepository;
+    protected array $settings = [];
 
-    /**
-     * @var array
-     */
-    protected $settings = [];
-
-    public function __construct(PageRepository $pageRepository, ConfigurationManagerInterface $configurationManager)
-    {
-        $this->pageRepository = $pageRepository;
-
+    public function __construct(
+        protected readonly PageRepository $pageRepository,
+        protected readonly ConfigurationManagerInterface $configurationManager
+    ) {
         $this->settings = $configurationManager->getConfiguration(
             ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS,
             'Events2',
@@ -69,8 +62,8 @@ class PrefillCategoriesHook
     protected function getCategories(): array
     {
         $categories = [];
-        $statement = $this->getStatementForCategoriesInDefaultLanguage();
-        while ($sysCategoryInDefaultLanguage = $statement->fetch()) {
+        $queryResult = $this->getQueryResultForCategoriesInDefaultLanguage();
+        while ($sysCategoryInDefaultLanguage = $queryResult->fetchAssociative()) {
             $sysCategoryTranslated = $this->pageRepository->getLanguageOverlay(
                 'sys_category',
                 $sysCategoryInDefaultLanguage
@@ -88,7 +81,7 @@ class PrefillCategoriesHook
         return $categories;
     }
 
-    protected function getStatementForCategoriesInDefaultLanguage(): Statement
+    protected function getQueryResultForCategoriesInDefaultLanguage(): Result
     {
         $queryBuilder = $this->getQueryBuilderForTable('sys_category');
 
@@ -100,22 +93,22 @@ class PrefillCategoriesHook
                     'parent',
                     $queryBuilder->createNamedParameter(
                         $this->settings['rootCategory'] ?? 0,
-                        \PDO::PARAM_INT
+                        Connection::PARAM_INT
                     )
                 ),
                 $queryBuilder->expr()->in(
                     'uid',
                     $queryBuilder->createNamedParameter(
                         $this->getSelectableCategoriesForNewEvents(),
-                        Connection::PARAM_INT_ARRAY
+                        ArrayParameterType::INTEGER
                     )
                 ),
                 $queryBuilder->expr()->eq(
                     $GLOBALS['TCA']['sys_category']['ctrl']['languageField'],
-                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
                 )
             )
-            ->execute();
+            ->executeQuery();
     }
 
     protected function getSelectableCategoriesForNewEvents(): array

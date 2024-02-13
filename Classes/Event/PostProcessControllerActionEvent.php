@@ -17,6 +17,7 @@ use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Request;
+use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 
 /**
  * Post process controller actions which does not assign any variables to view.
@@ -24,10 +25,7 @@ use TYPO3\CMS\Extbase\Mvc\Request;
  */
 class PostProcessControllerActionEvent implements ControllerActionEventInterface
 {
-    /**
-     * @var ActionController|ManagementController|DayController
-     */
-    protected $controller;
+    protected ActionController|DayController|ManagementController $controller;
 
     protected ?Event $event;
 
@@ -35,16 +33,20 @@ class PostProcessControllerActionEvent implements ControllerActionEventInterface
 
     protected array $settings;
 
+    protected RequestInterface $request;
+
     public function __construct(
         ActionController $controller,
         ?Event $event,
         ?Day $day,
-        array $settings
+        array $settings,
+        RequestInterface $request
     ) {
         $this->controller = $controller;
         $this->event = $event;
         $this->day = $day;
         $this->settings = $settings;
+        $this->request = $request;
     }
 
     public function getController(): ActionController
@@ -64,7 +66,7 @@ class PostProcessControllerActionEvent implements ControllerActionEventInterface
 
     public function getRequest(): Request
     {
-        return $this->getController()->getControllerContext()->getRequest();
+        return $this->request;
     }
 
     public function getControllerName(): string

@@ -17,18 +17,13 @@ use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Session;
 use TYPO3\CMS\Extbase\Persistence\RepositoryInterface;
 
-/*
+/**
  * Helper class to register hidden objects in extbase session container.
  * That way it's possible to call Controller Actions with hidden objects.
  */
 class HiddenObjectHelper
 {
-    protected Session $session;
-
-    public function __construct(Session $session)
-    {
-        $this->session = $session;
-    }
+    public function __construct(protected readonly Session $session) {}
 
     public function registerHiddenObjectInExtbaseSession(
         RepositoryInterface $repository,
@@ -46,7 +41,7 @@ class HiddenObjectHelper
             }
 
             if ($object instanceof AbstractDomainObject) {
-                $this->session->registerObject($object, $object->getUid());
+                $this->session->registerObject($object, (string)$object->getUid());
             }
         }
     }

@@ -14,27 +14,21 @@ namespace JWeiland\Events2\Event;
 use JWeiland\Events2\Domain\Model\Search;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 
-/*
+/**
  * Use this event, if you want to modify the queries of DayRepository::searchEvents.
  */
 class ModifyQueriesOfSearchEventsEvent
 {
-    protected QueryBuilder $queryBuilder;
-
-    protected QueryBuilder $subQueryBuilder;
-
     protected Search $search;
 
     protected array $settings = [];
 
     public function __construct(
-        QueryBuilder $queryBuilder,
-        QueryBuilder $subQueryBuilder,
+        protected readonly QueryBuilder $queryBuilder,
+        protected readonly QueryBuilder $subQueryBuilder,
         Search $search,
         array $settings
     ) {
-        $this->queryBuilder = $queryBuilder;
-        $this->subQueryBuilder = $subQueryBuilder;
         $this->search = $search;
         $this->settings = $settings;
     }

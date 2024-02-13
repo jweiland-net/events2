@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Upgrade;
 
+use Doctrine\DBAL\Exception;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
@@ -19,7 +20,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
 use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 
-/*
+/**
  * Updater to migrate organizer into MM table
  */
 class MigrateOrganizerToMMUpgrade implements UpgradeWizardInterface
@@ -46,8 +47,10 @@ class MigrateOrganizerToMMUpgrade implements UpgradeWizardInterface
     public function updateNecessary(): bool
     {
         $queryBuilder = $this->getQueryBuilder();
-        $schemaManager = $queryBuilder->getConnection()->getSchemaManager();
-        if ($schemaManager === null) {
+
+        try {
+            $schemaManager = $queryBuilder->getConnection()->createSchemaManager();
+        } catch (Exception $e) {
             return false;
         }
 
@@ -66,8 +69,8 @@ class MigrateOrganizerToMMUpgrade implements UpgradeWizardInterface
                     $queryBuilder->quoteIdentifier('eo_mm.uid_local')
                 )
             )
-            ->execute()
-            ->fetchColumn();
+            ->executeQuery()
+            ->fetchOne();
 
         return $amountOfMigratedRecords === 0;
     }
@@ -81,30 +84,30 @@ class MigrateOrganizerToMMUpgrade implements UpgradeWizardInterface
     {
         $queryBuilder = $this->getQueryBuilder();
 
-        $statement = $queryBuilder
+        $queryResult = $queryBuilder
             ->select('e.uid', 'e.organizer')
-            ->execute();
+            ->executeQuery();
 
         $mmConnection = $this->getConnectionPool()->getConnectionForTable('tx_events2_event_organizer_mm');
         $eventConnection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_event');
-        while ($event = $statement->fetch(\PDO::FETCH_ASSOC)) {
+        while ($event = $queryResult->fetchAssociative()) {
             $mmConnection->insert(
                 'tx_events2_event_organizer_mm',
                 [
                     'uid_local' => (int)$event['uid'],
                     'uid_foreign' => (int)$event['organizer'],
                     'sorting' => 1,
-                    'sorting_foreign' => 0
+                    'sorting_foreign' => 0,
                 ]
             );
             // event->organizer was an 1:1 relation, so organizer = 1 should be OK here
             $eventConnection->update(
                 'tx_events2_domain_model_event',
                 [
-                    'organizers' => 1
+                    'organizers' => 1,
                 ],
                 [
-                    'uid' => (int)$event['uid']
+                    'uid' => (int)$event['uid'],
                 ]
             );
         }
@@ -123,7 +126,7 @@ class MigrateOrganizerToMMUpgrade implements UpgradeWizardInterface
             ->where(
                 $queryBuilder->expr()->gt(
                     'e.organizer',
-                    $queryBuilder->createNamedParameter(0, Connection::PARAM_STR)
+                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
                 )
             );
     }
@@ -134,7 +137,7 @@ class MigrateOrganizerToMMUpgrade implements UpgradeWizardInterface
     public function getPrerequisites(): array
     {
         return [
-            DatabaseUpdatedPrerequisite::class
+            DatabaseUpdatedPrerequisite::class,
         ];
     }
 

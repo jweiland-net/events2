@@ -11,35 +11,29 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Command;
 
+use Doctrine\DBAL\Exception;
 use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Service\DayRelationService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/*
+/**
  * CLI Command
  */
 class RebuildCommand extends Command
 {
-    protected DatabaseService $databaseService;
-
-    protected DayRelationService $dayRelationService;
-
     protected OutputInterface $output;
 
     /**
      * Will be called by DI, so please don't add extbase classes with inject methods here.
      */
     public function __construct(
-        DatabaseService $databaseService,
-        DayRelationService $dayRelationService,
+        protected readonly DatabaseService $databaseService,
+        protected readonly DayRelationService $dayRelationService,
         string $name = null
     ) {
         parent::__construct($name);
-
-        $this->databaseService = $databaseService;
-        $this->dayRelationService = $dayRelationService;
     }
 
     protected function configure(): void
@@ -81,12 +75,12 @@ class RebuildCommand extends Command
         $dayCounter = 0;
         $this->output->writeln('Process each event record');
 
-        $statement = $this->databaseService
+        $queryResult = $this->databaseService
             ->getQueryBuilderForAllEvents()
             ->select('uid', 'pid')
             ->executeQuery();
 
-        while ($simpleEventRecord = $statement->fetchAssociative()) {
+        while ($simpleEventRecord = $queryResult->fetchAssociative()) {
             $fullEventRecord = $this->dayRelationService->createDayRelations((int)$simpleEventRecord['uid']);
             if ($fullEventRecord !== []) {
                 if (is_array($fullEventRecord['days'])) {
@@ -124,10 +118,14 @@ class RebuildCommand extends Command
 
     protected function getAmountOfEventRecordsToProcess(): int
     {
-        $queryBuilder = $this->databaseService->getQueryBuilderForAllEvents();
-        return (int)$queryBuilder
-            ->count('*')
-            ->executeQuery()
-            ->fetchOne();
+        try {
+            return (int)$this->databaseService->getQueryBuilderForAllEvents()
+                ->count('*')
+                ->executeQuery()
+                ->fetchOne();
+        } catch (Exception $e) {
+        }
+
+        return 0;
     }
 }

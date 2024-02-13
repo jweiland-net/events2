@@ -15,17 +15,12 @@ use JWeiland\Events2\Converter\TimeToStringConverter;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
-/*
+/**
  * This class checks, if given time entry like 08:34 is valid in TCA.
  */
 class Time
 {
-    protected TimeToStringConverter $timeToStringConverter;
-
-    public function __construct(TimeToStringConverter $timeToStringConverter)
-    {
-        $this->timeToStringConverter = $timeToStringConverter;
-    }
+    public function __construct(protected readonly TimeToStringConverter $timeToStringConverter) {}
 
     /**
      * This method returns js code to check if valid time was entered
@@ -38,10 +33,8 @@ class Time
 
     /**
      * This method converts the value into a unique time format: 21:23.
-     *
-     * @param mixed $value
      */
-    public function evaluateFieldValue($value): string
+    public function evaluateFieldValue(mixed $value): string
     {
         if (MathUtility::canBeInterpretedAsInteger($value)) {
             $value = (int)$value;
@@ -52,7 +45,7 @@ class Time
                 $value = str_pad((string)$value, 2, '0', STR_PAD_LEFT) . ':00';
             } else {
                 // this is only for backwards compatibility. In earlier versions we calculated these values with int
-                return $this->timeToStringConverter->convert((int)$value);
+                return $this->timeToStringConverter->convert($value);
             }
         }
 

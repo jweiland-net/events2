@@ -55,12 +55,6 @@ plugin.tx_events2 {
       JWeiland\Events2\Domain\Model\Organizer {
         newRecordStoragePid =
       }
-      JWeiland\Events2\Domain\Model\Category {
-        mapping {
-          tableName = sys_category
-          recordType =
-        }
-      }
     }
   }
   mvc {
@@ -71,6 +65,7 @@ plugin.tx_events2 {
     pidOfDetailPage = {$plugin.tx_events2.settings.pidOfDetailPage}
     pidOfSearchResults = {$plugin.tx_events2.settings.pidOfSearchResults}
     pidOfLocationPage = {$plugin.tx_events2.settings.pidOfLocationPage}
+    pidOfManagementPage = {$plugin.tx_events2.settings.pidOfManagementPage}
     pidOfNewLocationPage = {$plugin.tx_events2.settings.pidOfNewLocationPage}
     pidOfListPage = {$plugin.tx_events2.settings.pidOfListPage}
     userGroup = {$plugin.tx_events2.settings.userGroup}
@@ -114,6 +109,7 @@ plugin.tx_events2 {
       finishers.1.options.16.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
 
       finishers.2.options.subject = A new event record was created
+      finishers.2.options.variables.pidOfManagementPage = {$plugin.tx_events2.settings.pidOfManagementPage}
 
       finishers.4.options.pageUid = {$plugin.tx_events2.settings.pidOfListPage}
     }

@@ -15,27 +15,17 @@ use JWeiland\Events2\Domain\Factory\TimeFactory;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 
-/*
+/**
  * f.e. the time domain model can be connected 4 times with an event (exceptionTimes, differentTimes, MultipleTimes and eventTime)
  * So which time has priority, which time has to be merged
  * This Utility tries to help you/me to make life easier with events2.
  */
 class EventService
 {
-    protected EventRepository $eventRepository;
-
-    protected TimeFactory $timeFactory;
-
-    /**
-     * Must be called by ObjectManager, because of EventRepository which has inject methods
-     */
     public function __construct(
-        EventRepository $eventRepository,
-        TimeFactory $timeFactory
-    ) {
-        $this->eventRepository = $eventRepository;
-        $this->timeFactory = $timeFactory;
-    }
+        protected readonly EventRepository $eventRepository,
+        protected readonly TimeFactory $timeFactory
+    ) {}
 
     public function getNextDayForEvent(int $eventUid): ?\DateTimeImmutable
     {
@@ -64,8 +54,8 @@ class EventService
         /** @var Event $event */
         $event = $this->eventRepository->findByIdentifier($eventUid);
         $days = $event->getFutureDatesGroupedAndSorted();
+
         krsort($days);
-        reset($days);
 
         $day = current($days);
         return $day ?: null;

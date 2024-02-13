@@ -23,7 +23,7 @@ class AllowFilterByGetRequestEventListener extends AbstractControllerEventListen
     protected array $allowedControllerActions = [
         'Day' => [
             'list',
-        ]
+        ],
     ];
 
     public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void

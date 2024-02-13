@@ -44,7 +44,7 @@ class JsonLdServiceTest extends FunctionalTestCase
      * @var array
      */
     protected $testExtensionsToLoad = [
-        'typo3conf/ext/events2'
+        'typo3conf/ext/events2',
     ];
 
     protected function setUp(): void
@@ -69,7 +69,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         $eventRepository = GeneralUtility::makeInstance(EventRepository::class);
         $eventRepository->setDefaultQuerySettings($this->querySettings);
         $eventRepository->setDefaultOrderings([
-            'uid' => QueryInterface::ORDER_ASCENDING
+            'uid' => QueryInterface::ORDER_ASCENDING,
         ]);
 
         $link = new Link();

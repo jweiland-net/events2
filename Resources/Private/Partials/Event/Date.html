@@ -1,49 +1,52 @@
 <html lang="en"
-			xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-			xmlns:e2="http://typo3.org/ns/JWeiland/Events2/ViewHelpers"
-			data-namespace-typo3-fluid="true">
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:e2="http://typo3.org/ns/JWeiland/Events2/ViewHelpers"
+      data-namespace-typo3-fluid="true">
 
 <f:switch expression="{day.event.eventType}">
-	<f:case value="duration">
-		<f:render section="date" arguments="{day: day.event.eventBegin}" />
-		- <f:render section="date" arguments="{day: day.event.eventEnd}" />
-	</f:case>
-	<f:case value="recurring">
-		<f:if condition="{settings.mergeRecurringEvents} && {day.event.recurringEnd}">
-			<f:then>
-				<f:render section="date" arguments="{day: day.event.eventBegin}" />
-				- <f:render section="date" arguments="{day: day.event.recurringEnd}" />
-			</f:then>
-			<f:else>
-				<f:render section="date" arguments="{day: day.day}" />
-			</f:else>
-		</f:if>
-	</f:case>
-	<f:defaultCase>
-		<f:render section="date" arguments="{day: day.day}" />
-	</f:defaultCase>
+    <f:case value="duration">
+        <f:render section="Date" arguments="{day: day.event.eventBegin}"/>
+        -
+        <f:render section="Date" arguments="{day: day.event.eventEnd}"/>
+    </f:case>
+    <f:case value="recurring">
+        <f:if condition="{settings.mergeRecurringEvents} && {day.event.recurringEnd}">
+            <f:then>
+                <f:render section="Date" arguments="{day: day.event.eventBegin}"/>
+                -
+                <f:render section="Date" arguments="{day: day.event.recurringEnd}"/>
+            </f:then>
+            <f:else>
+                <f:render section="Date" arguments="{day: day.day}"/>
+            </f:else>
+        </f:if>
+    </f:case>
+    <f:defaultCase>
+        <f:render section="Date" arguments="{day: day.day}"/>
+    </f:defaultCase>
 </f:switch>
 
 <f:if condition="({settings.mergeEventsAtSameDay} || {settings.mergeRecurringEvents}) && {e2:getMergedEventTimes(date: day.day, event: day.event)->f:count()} > 1">
-	<f:then>
-		|&nbsp;<f:link.action
-			action="show"
-			controller="Day"
-			pluginName="{f:if(condition: settings.pidOfDetailPage, then: 'show', else: 'list')}"
-			pageUid="{settings.pidOfDetailPage}"
-			arguments="{timestamp: day.dayTimeAsTimestamp, event: day.event}"
-			title="{f:translate(key: 'singleView')}: {day.event.title}"
-		>{f:translate(key: 'showDetailview')}</f:link.action>
-	</f:then>
-	<f:else>
-		<f:comment>If sortDayTime is higher than current day 00:00:00 we can be sure that a time record was created</f:comment>
-		<f:if condition="{day.sortDayTime} > {day.day}">
-			|&nbsp;<f:translate key="tx_events2_domain_model_time.time_begin" />: {f:format.date(date: day.sortDayTime, format: 'H:i')}
-		</f:if>
-	</f:else>
+    <f:then>
+        |&nbsp;<f:link.action
+        action="show"
+        controller="Day"
+        pluginName="{f:if(condition: settings.pidOfDetailPage, then: 'show', else: 'list')}"
+        pageUid="{settings.pidOfDetailPage}"
+        arguments="{timestamp: day.dayTimeAsTimestamp, event: day.event}"
+        title="{f:translate(key: 'singleView')}: {day.event.title}"
+    >{f:translate(key: 'showDetailview')}
+    </f:link.action>
+    </f:then>
+    <f:else>
+        <f:comment>If sortDayTime is higher than current day 00:00:00 we can be sure that a time record was created</f:comment>
+        <f:if condition="{day.sortDayTime} > {day.day}">
+            |&nbsp;<f:translate key="tx_events2_domain_model_time.time_begin"/>: {f:format.date(date: day.sortDayTime, format: 'H:i')}
+        </f:if>
+    </f:else>
 </f:if>
 
-<f:section name="date">
-	{day->f:format.date(format: '%a %d. %b %Y')}
+<f:section name="Date">
+    {day->f:format.date(format: '%a %d. %b %Y')}
 </f:section>
 </html>

@@ -17,25 +17,16 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSetProcessor;
 use ApacheSolrForTypo3\Solr\GarbageCollector;
 use JWeiland\Events2\Service\EventService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
-/*
+/**
  * Remove event records from result set, if they are not current anymore.
  */
 class ResultsCommandHook implements SearchResultSetProcessor
 {
     /**
-     * @var EventService
+     * Do not add GarbageCollector, as DI autowire won't find the file, if solr is not installed
      */
-    protected $eventService;
-
-    /**
-     * Do not add GarbageCollector, as DI autowire wont find the file, if solr is not installed
-     */
-    public function __construct(ObjectManagerInterface $objectManager)
-    {
-        $this->eventService = $objectManager->get(EventService::class);
-    }
+    public function __construct(protected readonly EventService $eventService) {}
 
     /**
      * Remove event records from result set, if they are not current anymore.

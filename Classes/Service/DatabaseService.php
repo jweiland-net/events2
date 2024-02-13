@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Service;
 
+use Doctrine\DBAL\ArrayParameterType;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Database\Connection;
@@ -20,22 +21,16 @@ use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
-/*
+/**
  * A little helper to organize our DB queries
  */
 class DatabaseService
 {
-    protected ExtConf $extConf;
-
-    protected DateTimeUtility $dateTimeUtility;
-
-    public function __construct(ExtConf $extConf, DateTimeUtility $dateTimeUtility)
-    {
-        $this->extConf = $extConf;
-        $this->dateTimeUtility = $dateTimeUtility;
-    }
+    public function __construct(
+        protected readonly ExtConf $extConf,
+        protected readonly DateTimeUtility $dateTimeUtility
+    ) {}
 
     /**
      * Get column definitions from table
@@ -44,8 +39,8 @@ class DatabaseService
     {
         $output = [];
         $connection = $this->getConnectionPool()->getConnectionForTable($tableName);
-        $statement = $connection->query('SHOW FULL COLUMNS FROM `' . $tableName . '`');
-        while ($fieldRow = $statement->fetch(\PDO::FETCH_ASSOC)) {
+        $statement = $connection->executeQuery('SHOW FULL COLUMNS FROM `' . $tableName . '`');
+        while ($fieldRow = $statement->fetchAssociative()) {
             $output[$fieldRow['Field']] = $fieldRow;
         }
 
@@ -71,7 +66,7 @@ class DatabaseService
             $queryBuilder
                 ->delete($tableName)
                 ->from($tableName)
-                ->execute();
+                ->executeStatement();
         }
     }
 
@@ -119,10 +114,10 @@ class DatabaseService
             ->select('uid', 'pid')
             ->from('tx_events2_domain_model_event')
             ->where(
-                $queryBuilder->expr()->orX(...$orConstraints)
+                $queryBuilder->expr()->or(...$orConstraints)
             )
-            ->execute()
-            ->fetchAll(\PDO::FETCH_ASSOC);
+            ->executeQuery()
+            ->fetchAllAssociative();
 
         if (empty($events)) {
             $events = [];
@@ -165,7 +160,7 @@ class DatabaseService
                     'event',
                     'sys_category_record_mm',
                     'category_mm',
-                    (string)$queryBuilder->expr()->andX(
+                    (string)$queryBuilder->expr()->and(
                         $queryBuilder->expr()->eq(
                             'event.uid',
                             $queryBuilder->quoteIdentifier('category_mm.uid_foreign')
@@ -187,7 +182,7 @@ class DatabaseService
 
             $constraint[] = $queryBuilder->expr()->in(
                 'category_mm.uid_local',
-                $queryBuilder->createNamedParameter($categories, Connection::PARAM_INT_ARRAY)
+                $queryBuilder->createNamedParameter($categories, ArrayParameterType::INTEGER)
             );
         }
 
@@ -195,26 +190,26 @@ class DatabaseService
         if (!empty($storagePids)) {
             $constraint[] = $queryBuilder->expr()->in(
                 'event.pid',
-                $queryBuilder->createNamedParameter($storagePids, Connection::PARAM_INT_ARRAY)
+                $queryBuilder->createNamedParameter($storagePids, ArrayParameterType::INTEGER)
             );
         }
 
         // Get days greater than first date of month
         $constraint[] = $queryBuilder->expr()->gte(
             'day.day',
-            $queryBuilder->createNamedParameter($startDate->format('U'), \PDO::PARAM_INT)
+            $queryBuilder->createNamedParameter($startDate->format('U'), Connection::PARAM_INT)
         );
 
         // Get days lower than last date of month
         $constraint[] = $queryBuilder->expr()->lt(
             'day.day',
-            $queryBuilder->createNamedParameter($endDate->format('U'), \PDO::PARAM_INT)
+            $queryBuilder->createNamedParameter($endDate->format('U'), Connection::PARAM_INT)
         );
 
         return $queryBuilder
             ->where(...$constraint)
-            ->execute()
-            ->fetchAll(\PDO::FETCH_ASSOC);
+            ->executeQuery()
+            ->fetchAllAssociative();
     }
 
     /**
@@ -230,14 +225,14 @@ class DatabaseService
         );
 
         // add where clause for single events
-        return (string)$queryBuilder->expr()->andX(
+        return (string)$queryBuilder->expr()->and(
             $queryBuilder->expr()->eq(
                 'event_type',
                 $queryBuilder->createNamedParameter('single')
             ),
             $queryBuilder->expr()->gt(
                 'event_begin',
-                $queryBuilder->createNamedParameter(time(), \PDO::PARAM_INT)
+                $queryBuilder->createNamedParameter(time(), Connection::PARAM_INT)
             )
         );
     }
@@ -254,19 +249,19 @@ class DatabaseService
             E_USER_DEPRECATED
         );
 
-        return (string)$queryBuilder->expr()->andX(
+        return (string)$queryBuilder->expr()->and(
             $queryBuilder->expr()->eq(
                 'event_type',
                 $queryBuilder->createNamedParameter('duration')
             ),
-            $queryBuilder->expr()->orX(
+            $queryBuilder->expr()->or(
                 $queryBuilder->expr()->eq(
                     'event_end',
-                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
                 ),
                 $queryBuilder->expr()->gt(
                     'event_end',
-                    $queryBuilder->createNamedParameter(time(), \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter(time(), Connection::PARAM_INT)
                 )
             )
         );
@@ -284,19 +279,19 @@ class DatabaseService
             E_USER_DEPRECATED
         );
 
-        return (string)$queryBuilder->expr()->andX(
+        return (string)$queryBuilder->expr()->and(
             $queryBuilder->expr()->eq(
                 'event_type',
                 $queryBuilder->createNamedParameter('recurring')
             ),
-            $queryBuilder->expr()->orX(
+            $queryBuilder->expr()->or(
                 $queryBuilder->expr()->eq(
                     'recurring_end',
-                    $queryBuilder->createNamedParameter(0, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
                 ),
                 $queryBuilder->expr()->gt(
                     'recurring_end',
-                    $queryBuilder->createNamedParameter(time(), \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter(time(), Connection::PARAM_INT)
                 )
             )
         );
@@ -324,20 +319,20 @@ class DatabaseService
             $alias . '.day_time',
             $parentQueryBuilder->createNamedParameter(
                 $startDateTime->format('U'),
-                \PDO::PARAM_INT,
+                Connection::PARAM_INT,
                 ':eventStartDate'
             )
         );
 
         if ($endDateTime instanceof \DateTimeImmutable) {
             $endDateTimeNight = $endDateTime->modify('23:59:59');
-            $constraintForDateTime = (string)$queryBuilder->expr()->andX(
+            $constraintForDateTime = (string)$queryBuilder->expr()->and(
                 $constraintForDateTime,
                 $queryBuilder->expr()->lt(
                     $alias . '.day_time',
                     $parentQueryBuilder->createNamedParameter(
                         $endDateTimeNight->format('U'),
-                        \PDO::PARAM_INT,
+                        Connection::PARAM_INT,
                         ':eventEndDate'
                     )
                 )
@@ -358,19 +353,19 @@ class DatabaseService
         }
 
         $queryBuilder->andWhere(
-            (string)$queryBuilder->expr()->andX(
+            (string)$queryBuilder->expr()->and(
                 $queryBuilder->expr()->in(
                     'day' . $postAlias . '.pid',
                     $parentQueryBuilder->createNamedParameter(
                         $storagePageIds,
-                        Connection::PARAM_INT_ARRAY
+                        ArrayParameterType::INTEGER
                     )
                 ),
                 $queryBuilder->expr()->in(
                     'event' . $postAlias . '.pid',
                     $parentQueryBuilder->createNamedParameter(
                         $storagePageIds,
-                        Connection::PARAM_INT_ARRAY
+                        ArrayParameterType::INTEGER
                     )
                 )
             )
@@ -391,7 +386,7 @@ class DatabaseService
             $alias,
             'sys_category_record_mm',
             'category_mm',
-            (string)$queryBuilder->expr()->andX(
+            (string)$queryBuilder->expr()->and(
                 $queryBuilder->expr()->eq(
                     $alias . '.uid',
                     $queryBuilder->quoteIdentifier('category_mm.uid_foreign')
@@ -416,7 +411,7 @@ class DatabaseService
                 'category_mm.uid_local',
                 $parentQueryBuilder->createNamedParameter(
                     $categories,
-                    Connection::PARAM_INT_ARRAY
+                    ArrayParameterType::INTEGER
                 )
             )
         );
@@ -447,7 +442,7 @@ class DatabaseService
                     'eo_mm.uid_foreign',
                     $parentQueryBuilder->createNamedParameter(
                         $organizer,
-                        \PDO::PARAM_INT
+                        Connection::PARAM_INT
                     )
                 )
             );
@@ -468,7 +463,7 @@ class DatabaseService
                 $alias . '.location',
                 $parentQueryBuilder->createNamedParameter(
                     $location,
-                    \PDO::PARAM_INT
+                    Connection::PARAM_INT
                 )
             )
         );
@@ -476,15 +471,12 @@ class DatabaseService
 
     /**
      * Add Constraint for various columns of event table
-     *
-     * @param mixed $value
-     * @param QueryBuilder|null $parentQueryBuilder
      */
     public function addConstraintForEventColumn(
         QueryBuilder $queryBuilder,
         string $column,
-        $value,
-        int $dataType = \PDO::PARAM_STR,
+        mixed $value,
+        int $dataType = Connection::PARAM_STR,
         QueryBuilder $parentQueryBuilder = null,
         string $alias = 'event'
     ): void {
@@ -501,20 +493,6 @@ class DatabaseService
                 )
             )
         );
-    }
-
-    protected function getTypoScriptFrontendController(): TypoScriptFrontendController
-    {
-        if ($GLOBALS['TSFE'] === null) {
-            $GLOBALS['TSFE'] = GeneralUtility::makeInstance(
-                TypoScriptFrontendController::class,
-                [],
-                1,
-                0
-            );
-        }
-
-        return $GLOBALS['TSFE'];
     }
 
     protected function getConnectionPool(): ConnectionPool

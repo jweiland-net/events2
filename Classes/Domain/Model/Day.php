@@ -15,7 +15,7 @@ use JWeiland\Events2\Domain\Factory\TimeFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
-/*
+/**
  * This class contains all getter and setters for a Day.
  */
 class Day extends AbstractEntity
@@ -25,8 +25,6 @@ class Day extends AbstractEntity
     protected ?\DateTimeImmutable $tstamp = null;
 
     protected bool $hidden = false;
-
-    protected int $cruserId = 0;
 
     protected ?\DateTimeImmutable $day = null;
 
@@ -68,16 +66,6 @@ class Day extends AbstractEntity
     public function setHidden(bool $hidden): void
     {
         $this->hidden = $hidden;
-    }
-
-    public function getCruserId(): int
-    {
-        return $this->cruserId;
-    }
-
-    public function setCruserId(int $cruserId): void
-    {
-        $this->cruserId = $cruserId;
     }
 
     public function getDay(): \DateTimeImmutable

@@ -17,29 +17,25 @@ use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\Index\Indexer;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
-/*
+/**
  * Task to import events by various file formats like XML
  */
 class Import extends AbstractTask
 {
     /**
      * Full path from document root. F.e. /fileadmin/events_import/Import.xml
-     *
-     * @var string
      */
-    public $path = '';
+    public string $path = '';
 
     /**
      * It's public and will be set externally by scheduler.
      * Internally it's INT, but the form-value is string.
-     *
-     * @var int|string
      */
-    public $storagePid = 0;
+    public string|int $storagePid = 0;
 
     /**
      * This is the main method that is called when a task is executed
@@ -57,18 +53,18 @@ class Import extends AbstractTask
                 ->retrieveFileOrFolderObject($this->path);
             if ($file instanceof File) {
                 if ($file->isMissing()) {
-                    $this->addMessage('The defined file seems to be missing. Please check, if file is still at its place', FlashMessage::ERROR);
+                    $this->addMessage('The defined file seems to be missing. Please check, if file is still at its place', ContextualFeedbackSeverity::ERROR);
                     return false;
                 }
                 // File can be updated by (S)FTP. So we have to update its properties first.
                 $indexer = GeneralUtility::makeInstance(Indexer::class, $file->getStorage());
                 $indexer->updateIndexEntry($file);
             } else {
-                $this->addMessage('The defined file is not a valid file. Maybe you have defined a folder. Please re-check file path', FlashMessage::ERROR);
+                $this->addMessage('The defined file is not a valid file. Maybe you have defined a folder. Please re-check file path', ContextualFeedbackSeverity::ERROR);
                 return false;
             }
         } catch (\Exception $e) {
-            $this->addMessage('Currently no file for import found.', FlashMessage::INFO);
+            $this->addMessage('Currently no file for import found.', ContextualFeedbackSeverity::INFO);
             return true;
         }
 
@@ -101,8 +97,7 @@ class Import extends AbstractTask
             return false;
         }
 
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $importer = $objectManager->get($className);
+        $importer = GeneralUtility::makeInstance($className);
         if (!$importer instanceof ImporterInterface) {
             $this->addMessage('Importer has to implement ImporterInterface');
             return false;
@@ -119,10 +114,10 @@ class Import extends AbstractTask
      * This method is used to add a message to the internal queue
      *
      * @param string $message The message itself
-     * @param int $severity Message level (according to \TYPO3\CMS\Core\Messaging\FlashMessage class constants)
+     * @param ContextualFeedbackSeverity $severity Message level (according to ContextualFeedbackSeverity class enum types)
      * @throws \Exception
      */
-    public function addMessage(string $message, int $severity = FlashMessage::OK): void
+    public function addMessage(string $message, ContextualFeedbackSeverity $severity = ContextualFeedbackSeverity::OK): void
     {
         $flashMessage = GeneralUtility::makeInstance(FlashMessage::class, $message, '', $severity);
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);

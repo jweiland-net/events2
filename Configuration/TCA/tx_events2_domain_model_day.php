@@ -1,11 +1,11 @@
 <?php
+
 return [
     'ctrl' => [
         'title' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_day',
         'label' => 'day',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
-        'cruser_id' => 'cruser_id',
         'hideTable' => true,
         'versioningWS' => true,
         // Do not add 'deleted'. Else table will grow very fast.
@@ -27,56 +27,52 @@ return [
         'hidden' => [
             'config' => [
                 'type' => 'passthrough',
-            ]
+            ],
         ],
         'day' => [
             'label' => 'Day',
             'config' => [
-                'type' => 'input',
-                'renderType' => 'inputDateTime',
+                'type' => 'datetime',
+                'format' => 'date',
                 'default' => 0,
-                'eval' => 'date,int',
             ],
         ],
         'day_time' => [
             'label' => 'DayTime',
             'config' => [
-                'type' => 'input',
-                'renderType' => 'inputDateTime',
+                'type' => 'datetime',
+                'format' => 'datetime',
                 'default' => 0,
-                'eval' => 'datetime,int',
             ],
         ],
         'sort_day_time' => [
             'label' => 'DayTime',
             'config' => [
-                'type' => 'input',
-                'renderType' => 'inputDateTime',
+                'type' => 'datetime',
+                'format' => 'datetime',
                 'default' => 0,
-                'eval' => 'datetime,int',
             ],
         ],
         'same_day_time' => [
             'label' => 'DayTime',
             'config' => [
-                'type' => 'input',
-                'renderType' => 'inputDateTime',
+                'type' => 'datetime',
+                'format' => 'datetime',
                 'default' => 0,
-                'eval' => 'datetime,int',
             ],
         ],
         'is_removed_date' => [
             'label' => 'Is removed date. True, if show_anyway in exception is set.',
             'config' => [
                 'type' => 'passthrough',
-            ]
+            ],
         ],
         'event' => [
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'foreign_table' => 'tx_events2_domain_model_event',
-            ]
-        ]
-    ]
+            ],
+        ],
+    ],
 ];

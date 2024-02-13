@@ -24,8 +24,8 @@ class DeleteUploadedFilesOnErrorEventListener extends AbstractControllerEventLis
 {
     protected array $allowedControllerActions = [
         'Management' => [
-            'new'
-        ]
+            'new',
+        ],
     ];
 
     public function __invoke(PostProcessFluidVariablesEvent $controllerActionEvent): void

@@ -20,44 +20,26 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
-/*
+/**
  * This middleware is needed for LiteCalendar. If you flip to next month, this
  * class will be called and returns the events valid for selected month.
  */
 class GetDaysForMonthMiddleware implements MiddlewareInterface
 {
-    protected ExtConf $extConf;
-
-    protected DateTimeUtility $dateTimeUtility;
-
-    protected UserSession $userSession;
-
-    protected DatabaseService $databaseService;
-
-    protected EventDispatcher $eventDispatcher;
-
-    /**
-     * Will be called by call_user_func_array, so don't add Extbase classes with inject methods as argument
-     */
     public function __construct(
-        ExtConf $extConf,
-        DateTimeUtility $dateTimeUtility,
-        UserSession $userSession,
-        DatabaseService $databaseService,
-        EventDispatcher $eventDispatcher
-    ) {
-        $this->extConf = $extConf;
-        $this->dateTimeUtility = $dateTimeUtility;
-        $this->userSession = $userSession;
-        $this->databaseService = $databaseService;
-        $this->eventDispatcher = $eventDispatcher;
-    }
+        protected readonly ExtConf $extConf,
+        protected readonly DateTimeUtility $dateTimeUtility,
+        protected readonly UserSession $userSession,
+        protected readonly DatabaseService $databaseService,
+        protected readonly EventDispatcher $eventDispatcher
+    ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -69,11 +51,10 @@ class GetDaysForMonthMiddleware implements MiddlewareInterface
 
         if (!isset($getParameters['month'], $getParameters['year'], $getParameters['categories'], $getParameters['storagePages'])) {
             return new JsonResponse([
-                'error' => 'Request uncompleted. Missing month, year, categories or storagePages in request.'
+                'error' => 'Request uncompleted. Missing month, year, categories or storagePages in request.',
             ], 400);
         }
 
-        $getParameters = $request->getQueryParams();
         $month = MathUtility::forceIntegerInRange($getParameters['month'], 1, 12);
         $year = MathUtility::forceIntegerInRange($getParameters['year'], 1500, 2500);
         $categories = GeneralUtility::intExplode(',', $getParameters['categories'], true);
@@ -95,7 +76,7 @@ class GetDaysForMonthMiddleware implements MiddlewareInterface
                 'uid' => (int)$day['uid'],
                 'isHoliday' => false,
                 'additionalClasses' => [],
-                'dayOfMonth' => (int)$date->format('j')
+                'dayOfMonth' => (int)$date->format('j'),
             ];
         }
 
@@ -112,22 +93,22 @@ class GetDaysForMonthMiddleware implements MiddlewareInterface
     protected function addHolidays(array &$days, int $month): void
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_holiday');
-        $statement = $queryBuilder
+        $queryResult = $queryBuilder
             ->select('day')
             ->from('tx_events2_domain_model_holiday')
             ->where(
                 $queryBuilder->expr()->eq(
                     'month',
-                    $queryBuilder->createNamedParameter($month, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($month, Connection::PARAM_INT)
                 )
             )
-            ->execute();
+            ->executeQuery();
 
-        while ($holiday = $statement->fetch(\PDO::FETCH_ASSOC)) {
+        while ($holiday = $queryResult->fetchAssociative()) {
             $days[] = [
                 'dayOfMonth' => (int)$holiday['day'],
                 'isHoliday' => true,
-                'additionalClasses' => ['holiday']
+                'additionalClasses' => ['holiday'],
             ];
         }
     }

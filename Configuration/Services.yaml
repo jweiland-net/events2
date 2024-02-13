@@ -18,19 +18,28 @@ services:
   JWeiland\Events2\Ajax\FindLocations:
     public: true
 
-  # Called by makeInstance in BE form FormDataGroup/OrderedProviderList
-  JWeiland\Events2\Backend\FormDataProvider\ModifyRootUidOfTreeSelectElements:
+  # Called by makeInstance in FormDataGroup/OrderedProviderList
+  JWeiland\Events2\Backend\FormDataProvider\InitializeNewEventRecord:
     public: true
 
-  # Called by container->get in FormRequestHandler::buildFormDefinition of EXT:form
-  JWeiland\Events2\Domain\Factory\ArrayFormFactory:
+  # Called by makeInstance in BE form FormDataGroup/OrderedProviderList
+  JWeiland\Events2\Backend\FormDataProvider\ModifyRootUidOfTreeSelectElements:
     public: true
 
   # Called by makeInstance TCA overrides of location
   JWeiland\Events2\Configuration\ExtConf:
     public: true
 
+  # Called by container->get in FormRequestHandler::buildFormDefinition of EXT:form
+  JWeiland\Events2\Domain\Factory\ArrayFormFactory:
+    public: true
+
   JWeiland\Events2\Domain\Factory\DayFactory:
+    public: true
+
+  # Called by makeInstance in event model where constructors are not loaded in some cases
+  # Called by makeInstance in static GetMergedEventTimesViewHelper
+  JWeiland\Events2\Domain\Factory\TimeFactory:
     public: true
 
   # Must be public, because of ->initializeObject().
@@ -45,11 +54,6 @@ services:
     shared: false
     autowire: false
     autoconfigure: false
-
-  # Called by makeInstance in event model where constructors are not loaded in some cases
-  # Called by makeInstance in static GetMergedEventTimesViewHelper
-  JWeiland\Events2\Domain\Factory\TimeFactory:
-    public: true
 
   # Called by makeInstance in TYPO3s DataHandler
   JWeiland\Events2\Hooks\DataHandler:
@@ -88,71 +92,75 @@ services:
   JWeiland\Events2\Utility\DateTimeUtility:
     public: true
 
-  # Register EventListeners for initialize*Actions
+  JWeiland\Events2\Property\TypeConverter\DateTimeImmutableConverter:
+    tags:
+      - name: extbase.type_converter
+        priority: 1
+        target: DateTimeImmutable
+        sources: string,integer,array
+
   JWeiland\Events2\EventListener\AddOrganizerToEventRecordEventListener:
     tags:
-      - name: event.listener
+      - name: 'event.listener'
+        identifier: 'addOrganizerToEventRecord'
         event: JWeiland\Events2\Event\PreProcessControllerActionEvent
   JWeiland\Events2\EventListener\AllowFilterByGetRequestEventListener:
     tags:
-      - name: event.listener
-        event: JWeiland\Events2\Event\PreProcessControllerActionEvent
+      - name: 'event.listener'
+        identifier: 'allowFilterByGetRequest'
   JWeiland\Events2\EventListener\AllowOrganizerForFilterEventListener:
     tags:
-      - name: event.listener
-        event: JWeiland\Events2\Event\PreProcessControllerActionEvent
+      - name: 'event.listener'
+        identifier: 'allowOrganizerForFilter'
   JWeiland\Events2\EventListener\AllowSearchParameterEventListener:
     tags:
-      - name: event.listener
-        event: JWeiland\Events2\Event\PreProcessControllerActionEvent
+      - name: 'event.listener'
+        identifier: 'allowSearchParameter'
   JWeiland\Events2\EventListener\ApplyLocationAsMandatoryIfNeededEventListener:
     tags:
-      - name: event.listener
-        event: JWeiland\Events2\Event\PreProcessControllerActionEvent
+      - name: 'event.listener'
+        identifier: 'applyLocationAsMandatoryIfNeeded'
   JWeiland\Events2\EventListener\AssignMediaTypeConverterEventListener:
     tags:
-      - name: event.listener
-        event: JWeiland\Events2\Event\PreProcessControllerActionEvent
+      - name: 'event.listener'
+        identifier: 'assignMediaTypeConverter'
   JWeiland\Events2\EventListener\RegisterHiddenEventEventListener:
     tags:
-      - name: event.listener
-        event: JWeiland\Events2\Event\PreProcessControllerActionEvent
-  JWeiland\Events2\EventListener\RemapSearchParameterEventListener:
-    tags:
-      - name: event.listener
-        event: JWeiland\Events2\Event\PreProcessControllerActionEvent
-        before: JWeiland\Events2\EventListener\AllowSearchParameterEventListener
+      - name: 'event.listener'
+        identifier: 'registerHiddenEvent'
   JWeiland\Events2\EventListener\SetDateFormatForPropertyMappingEventListener:
     tags:
-      - name: event.listener
-        event: JWeiland\Events2\Event\PreProcessControllerActionEvent
-
-  # Register EventListeners for controller actions incl. Fluid variables
+      - name: 'event.listener'
+        identifier: 'setDateFormatForPropertyMapping'
+  JWeiland\Events2\EventListener\ActivateHiddenDayRecordsEventListener:
+    tags:
+      - name: 'event.listener'
+        identifier: 'activateHiddenDayRecords'
   JWeiland\Events2\EventListener\AddOrganizersForFilterEventListener:
     tags:
-      - name: event.listener
-        event: JWeiland\Events2\Event\PostProcessFluidVariablesEvent
+      - name: 'event.listener'
+        identifier: 'addOrganizersForFilter'
   JWeiland\Events2\EventListener\AddPaginatorEventListener:
     tags:
-      - name: event.listener
-        event: JWeiland\Events2\Event\PostProcessFluidVariablesEvent
+      - name: 'event.listener'
+        identifier: 'addPaginator'
   JWeiland\Events2\EventListener\DeleteUploadedFilesOnErrorEventListener:
     tags:
-      - name: event.listener
-        event: JWeiland\Events2\Event\PostProcessFluidVariablesEvent
-
+      - name: 'event.listener'
+        identifier: 'deleteUploadedFilesOnError'
   JWeiland\Events2\EventListener\AddJsonLdToPageHeaderEventListener:
     tags:
-      - name: event.listener
-        event: JWeiland\Events2\Event\PostProcessControllerActionEvent
+      - name: 'event.listener'
+        identifier: 'addJsonLdToPageHeader'
   JWeiland\Events2\EventListener\UpdateEventPathSegmentEventListener:
     tags:
-      - name: event.listener
-        event: JWeiland\Events2\Event\PostProcessControllerActionEvent
+      - name: 'event.listener'
+        identifier: 'updateEventPathSegment'
 
   # Register CLI commands
   JWeiland\Events2\Command\RebuildCommand:
     tags:
     - name: 'console.command'
       command: 'events2:rebuild'
+      description: 'This command will TRUNCATE (delete) all day records found in day table and will re-create all day records afterwards'
       schedulable: true

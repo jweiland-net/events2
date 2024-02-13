@@ -17,24 +17,17 @@ use JWeiland\Events2\Helper\HiddenObjectHelper;
 
 class RegisterHiddenEventEventListener extends AbstractControllerEventListener
 {
-    protected HiddenObjectHelper $hiddenObjectHelper;
-
-    protected EventRepository $eventRepository;
-
     protected array $allowedControllerActions = [
         'Management' => [
             'edit',
-            'update'
-        ]
+            'update',
+        ],
     ];
 
     public function __construct(
-        HiddenObjectHelper $hiddenObjectHelper,
-        EventRepository $eventRepository
-    ) {
-        $this->hiddenObjectHelper = $hiddenObjectHelper;
-        $this->eventRepository = $eventRepository;
-    }
+        protected readonly HiddenObjectHelper $hiddenObjectHelper,
+        protected readonly EventRepository $eventRepository
+    ) {}
 
     public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void
     {

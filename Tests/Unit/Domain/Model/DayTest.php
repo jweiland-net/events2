@@ -62,7 +62,7 @@ class DayTest extends UnitTestCase
      */
     public function setCrdateWithNullSetsCrdate(): void
     {
-        $this->subject->setCrdate(null);
+        $this->subject->setCrdate();
 
         self::assertNull(
             $this->subject->getCrdate()
@@ -98,7 +98,7 @@ class DayTest extends UnitTestCase
      */
     public function setTstampWithNullSetsTstamp(): void
     {
-        $this->subject->setTstamp(null);
+        $this->subject->setTstamp();
 
         self::assertNull(
             $this->subject->getTstamp()
@@ -123,30 +123,6 @@ class DayTest extends UnitTestCase
         $this->subject->setHidden(true);
         self::assertTrue(
             $this->subject->getHidden()
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function getCruserIdInitiallyReturnsZero(): void
-    {
-        self::assertSame(
-            0,
-            $this->subject->getCruserId()
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function setCruserIdSetsCruserId(): void
-    {
-        $this->subject->setCruserId(123456);
-
-        self::assertSame(
-            123456,
-            $this->subject->getCruserId()
         );
     }
 

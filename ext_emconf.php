@@ -7,19 +7,18 @@ $EM_CONF[$_EXTKEY] = [
     'author_email' => 'projects@jweiland.net',
     'author_company' => 'jweiland.net',
     'state' => 'stable',
-    'version' => '8.3.5',
+    'version' => '9.0.0',
     'constraints' => [
         'depends' => [
-            'php' => '7.4.0-8.99.99',
-            'typo3' => '10.4.36-11.5.99',
-            'static_info_tables' => '6.9.0-11.5.99',
+            'typo3' => '12.4.8-12.4.99',
         ],
         'conflicts' => [
         ],
         'suggests' => [
             'checkfaluploads' => '',
-            'maps2' => '10.0.0-0.0.0',
+            'maps2' => '11.0.0-0.0.0',
             'solr' => '11.2.0-0.0.0',
+            'static_info_tables' => '12.4.0-12.4.99',
         ],
     ],
 ];

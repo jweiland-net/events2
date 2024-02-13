@@ -15,7 +15,7 @@ use JWeiland\Events2\Event\ModifyQueriesOfFindLocationsEvent;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
-/*
+/**
  * The location repository is used to sort the locations in our create-new-form. Further it will be used in
  * our event importer
  */
@@ -57,9 +57,9 @@ class LocationRepository extends AbstractRepository
             new ModifyQueriesOfFindLocationsEvent($queryBuilder, $search)
         );
 
-        $statement = $queryBuilder->execute();
+        $queryResult = $queryBuilder->executeQuery();
         $locations = [];
-        while ($location = $statement->fetch(\PDO::FETCH_ASSOC)) {
+        while ($location = $queryResult->fetchAssociative()) {
             $locations[] = $location;
         }
 

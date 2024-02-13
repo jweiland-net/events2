@@ -15,22 +15,13 @@ use JWeiland\Events2\Service\DayRelationService;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
-/*
+/**
  * Hook into DataHandler and clear special caches or re-generate day records after saving an event.
  */
 class DataHandler
 {
-    protected ObjectManagerInterface $objectManager;
-
-    protected CacheManager $cacheManager;
-
-    public function __construct(ObjectManagerInterface $objectManager, CacheManager $cacheManager)
-    {
-        $this->objectManager = $objectManager;
-        $this->cacheManager = $cacheManager;
-    }
+    public function __construct(protected readonly CacheManager $cacheManager) {}
 
     /**
      * Flushes the cache if an event record was edited.
@@ -85,8 +76,7 @@ class DataHandler
         return
             !$isTableLocalizable
             || (
-                $isTableLocalizable
-                && ($languageField = $GLOBALS['TCA'][$tableName]['ctrl']['languageField'])
+                ($languageField = $GLOBALS['TCA'][$tableName]['ctrl']['languageField'])
                 && array_key_exists($languageField, $recordFromRequest)
             );
     }
@@ -96,22 +86,24 @@ class DataHandler
      */
     protected function addDayRelationsForEvent(int $eventUid): void
     {
-        $dayRelationService = $this->objectManager->get(DayRelationService::class);
-        $dayRelationService->createDayRelations($eventUid);
+        $this->getDayRelationService()->createDayRelations($eventUid);
     }
 
     /**
      * If a record was new, its uid is not an int. It's a string starting with "NEW"
      * This method returns the real uid as int.
-     *
-     * @param int|string $uid
      */
-    protected function getRealUid($uid, \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): int
+    protected function getRealUid(int|string $uid, \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): int
     {
-        if (GeneralUtility::isFirstPartOfStr($uid, 'NEW')) {
+        if (\str_starts_with((string)$uid, 'NEW')) {
             $uid = $dataHandler->substNEWwithIDs[$uid];
         }
 
         return (int)$uid;
+    }
+
+    protected function getDayRelationService(): DayRelationService
+    {
+        return GeneralUtility::makeInstance(DayRelationService::class);
     }
 }

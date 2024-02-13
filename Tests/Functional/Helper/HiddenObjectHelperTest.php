@@ -48,7 +48,7 @@ class HiddenObjectHelperTest extends FunctionalTestCase
      * @var array
      */
     protected $testExtensionsToLoad = [
-        'typo3conf/ext/events2'
+        'typo3conf/ext/events2',
     ];
 
     protected function setUp(): void
@@ -112,7 +112,7 @@ class HiddenObjectHelperTest extends FunctionalTestCase
             ->getArgument('event')
             ->shouldBeCalled()
             ->willReturn([
-                '__identity' => '12'
+                '__identity' => '12',
             ]);
 
         $this->eventRepositoryProphecy

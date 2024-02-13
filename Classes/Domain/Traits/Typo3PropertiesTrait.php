@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Domain\Traits;
 
-/*
+/**
  * A Trait which contains all getters and setters for TYPO3 columns
  */
 trait Typo3PropertiesTrait
@@ -20,7 +20,7 @@ trait Typo3PropertiesTrait
 
     protected ?\DateTimeImmutable $tstamp = null;
 
-    protected int $l10nParent= 0;
+    protected int $l10nParent = 0;
 
     protected ?\DateTimeImmutable $starttime = null;
 
@@ -29,8 +29,6 @@ trait Typo3PropertiesTrait
     protected bool $hidden = false;
 
     protected bool $deleted = false;
-
-    protected int $cruserId = 0;
 
     public function getCrdate(): ?\DateTimeImmutable
     {
@@ -110,15 +108,5 @@ trait Typo3PropertiesTrait
     public function setDeleted(bool $deleted): void
     {
         $this->deleted = $deleted;
-    }
-
-    public function getCruserId(): int
-    {
-        return $this->cruserId;
-    }
-
-    public function setCruserId(int $cruserId): void
-    {
-        $this->cruserId = $cruserId;
     }
 }

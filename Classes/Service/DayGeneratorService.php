@@ -22,7 +22,7 @@ use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-/*
+/**
  * Class to generate all day records for an event within a configured range (ExtensionManager).
  * It does now respect time information, just days. The time records will be processed later.
  */
@@ -32,21 +32,11 @@ class DayGeneratorService implements LoggerAwareInterface
 
     protected array $dateTimeStorage = [];
 
-    protected ExtConf $extConf;
-
-    protected DateTimeUtility $dateTimeUtility;
-
-    protected EventDispatcher $eventDispatcher;
-
     public function __construct(
-        EventDispatcher $eventDispatcher,
-        ExtConf $extConf,
-        DateTimeUtility $dateTimeUtility
-    ) {
-        $this->eventDispatcher = $eventDispatcher;
-        $this->extConf = $extConf;
-        $this->dateTimeUtility = $dateTimeUtility;
-    }
+        protected readonly EventDispatcher $eventDispatcher,
+        protected readonly ExtConf $extConf,
+        protected readonly DateTimeUtility $dateTimeUtility
+    ) {}
 
     /**
      * @return DateTimeEntry[]
@@ -107,11 +97,11 @@ class DayGeneratorService implements LoggerAwareInterface
                 continue;
             }
 
-            if (!isset($GLOBALS['TCA'][$table]['columns'][$column]['config']['renderType'])) {
+            if (!isset($GLOBALS['TCA'][$table]['columns'][$column]['config']['type'])) {
                 continue;
             }
 
-            if ($GLOBALS['TCA'][$table]['columns'][$column]['config']['renderType'] === 'inputDateTime') {
+            if ($GLOBALS['TCA'][$table]['columns'][$column]['config']['type'] === 'datetime') {
                 $record[$column] = $this->dateTimeUtility->convert($value);
             }
         }
@@ -143,7 +133,7 @@ class DayGeneratorService implements LoggerAwareInterface
             'xth',
             'weekday',
             'recurring_end',
-            'exceptions'
+            'exceptions',
         ];
 
         foreach ($neededProperties as $neededProperty) {
@@ -448,7 +438,7 @@ class DayGeneratorService implements LoggerAwareInterface
         $today = $this->createDateTime('today');
         $eventBegin = $eventRecord['event_begin'];
         $latestDateOfTimeFrame = $this->modifyDateTime(
-            $today > $eventBegin ? $today : $eventBegin,
+            max($today, $eventBegin),
             sprintf(
                 '+%d months 23:59:59',
                 $this->extConf->getRecurringFuture()

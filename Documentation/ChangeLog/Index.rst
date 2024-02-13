@@ -7,6 +7,15 @@
 ChangeLog
 =========
 
+Version 9.0.0
+=============
+
+This is just a plain upgrade without any new features
+
+*   [TASK] Add TYPO3 12 compatibility
+*   [TASK] Remove TYPO3 11 compatibility
+*   [TASK] Remove TYPO3 10 compatibility
+
 Version 8.3.5
 =============
 

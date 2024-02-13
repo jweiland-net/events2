@@ -11,34 +11,45 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Controller;
 
-use JWeiland\Events2\Helper\CalendarHelper;
+use JWeiland\Events2\Traits\InjectCalendarHelperTrait;
+use JWeiland\Events2\Traits\Typo3RequestTrait;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
-/*
+/**
  * Controller to show the LiteCalendar. Further, it stores the selected month in user-session
  */
 class CalendarController extends AbstractController
 {
-    protected CalendarHelper $calendarHelper;
+    use InjectCalendarHelperTrait;
+    use Typo3RequestTrait;
 
-    public function injectCalendarHelper(CalendarHelper $calendarHelper): void
+    public function showAction(): ResponseInterface
     {
-        $this->calendarHelper = $calendarHelper;
-    }
-
-    public function showAction(): void
-    {
-        $frameworkConfiguration = $this->configurationManager->getConfiguration(
-            ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK
-        );
+        $frameworkConfiguration = $this->getMergedFrameworkConfiguration();
 
         $calendarVariables = $this->calendarHelper->getCalendarVariables();
         $calendarVariables['settings'] = $this->settings;
-        $calendarVariables['pidOfListPage'] = $this->settings['pidOfListPage'] ?: $GLOBALS['TSFE']->id;
         $calendarVariables['storagePids'] = $frameworkConfiguration['persistence']['storagePid'];
+        $calendarVariables['pidOfListPage'] = $this->settings['pidOfListPage'];
+        if (!$calendarVariables['pidOfListPage']) {
+            $calendarVariables['pidOfListPage'] = $this->getTypoScriptFrontendController($this->request)->id;
+        }
 
         $this->postProcessAndAssignFluidVariables([
-            'environment' => $calendarVariables
+            'environment' => $calendarVariables,
         ]);
+
+        return $this->htmlResponse();
+    }
+
+    /**
+     * Returns the merged (TypoScript + FlexForm) plugin configuration
+     */
+    protected function getMergedFrameworkConfiguration(): array
+    {
+        return $this->configurationManager->getConfiguration(
+            ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK
+        );
     }
 }

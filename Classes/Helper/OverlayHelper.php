@@ -27,15 +27,10 @@ class OverlayHelper implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
 
-    protected Context $context;
-
-    protected PageRepository $pageRepository;
-
-    public function __construct(Context $context, PageRepository $pageRepository)
-    {
-        $this->context = $context;
-        $this->pageRepository = $pageRepository;
-    }
+    public function __construct(
+        protected readonly Context $context,
+        protected readonly PageRepository $pageRepository
+    ) {}
 
     public function addWhereForOverlay(
         QueryBuilder $queryBuilder,
@@ -173,6 +168,9 @@ class OverlayHelper implements LoggerAwareInterface
      */
     protected function getLanguageAspect(): LanguageAspect
     {
-        return $this->context->getAspect('language');
+        /** @var LanguageAspect $languageAspect */
+        $languageAspect = $this->context->getAspect('language');
+
+        return $languageAspect;
     }
 }

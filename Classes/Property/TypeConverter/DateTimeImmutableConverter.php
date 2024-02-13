@@ -74,11 +74,13 @@ class DateTimeImmutableConverter extends AbstractTypeConverter
 
     /**
      * @var string[]
+     * @deprecated will be removed in TYPO3 v13.0, as this is defined in Services.yaml.
      */
     protected $sourceTypes = ['string', 'integer', 'array'];
 
     /**
      * @var string
+     * @deprecated will be removed in TYPO3 v13.0, as this is defined in Services.yaml.
      */
     protected $targetType = \DateTimeImmutable::class;
 
@@ -87,6 +89,7 @@ class DateTimeImmutableConverter extends AbstractTypeConverter
      * in future the version of TYPO3 has priority.
      *
      * @var int
+     * @deprecated will be removed in TYPO3 v13.0, as this is defined in Services.yaml.
      */
     protected $priority = 1;
 
@@ -123,11 +126,14 @@ class DateTimeImmutableConverter extends AbstractTypeConverter
      * @param string $targetType must be "DateTimeImmutable"
      * @param array $convertedChildProperties not used currently
      * @param ?PropertyMappingConfigurationInterface $configuration
-     * @return \DateTime|Error|null
      * @throws TypeConverterException|InvalidPropertyMappingConfigurationException
      */
-    public function convertFrom($source, string $targetType, array $convertedChildProperties = [], PropertyMappingConfigurationInterface $configuration = null): ?object
-    {
+    public function convertFrom(
+        $source,
+        string $targetType,
+        array $convertedChildProperties = [],
+        PropertyMappingConfigurationInterface $configuration = null
+    ): ?object {
         $dateFormat = $this->getDefaultDateFormat($configuration);
         if (is_string($source)) {
             $dateAsString = $source;
@@ -164,9 +170,9 @@ class DateTimeImmutableConverter extends AbstractTypeConverter
             } catch (\Exception $e) {
                 throw new TypeConverterException('The specified timezone "' . $source['timezone'] . '" is invalid.', 1308240974);
             }
-            $date = $targetType::createFromFormat($dateFormat, $dateAsString, $timezone);
+            $date = \DateTimeImmutable::createFromFormat($dateFormat, $dateAsString, $timezone);
         } else {
-            $date = $targetType::createFromFormat($dateFormat, $dateAsString);
+            $date = \DateTimeImmutable::createFromFormat($dateFormat, $dateAsString);
         }
         if ($date === false) {
             return new \TYPO3\CMS\Extbase\Validation\Error('The date "%s" was not recognized (for format "%s").', 1307719788, [$dateAsString, $dateFormat]);
@@ -200,13 +206,16 @@ class DateTimeImmutableConverter extends AbstractTypeConverter
             // todo: type converters are never called without a property mapping configuration
             return self::DEFAULT_DATE_FORMAT;
         }
+
         $dateFormat = $configuration->getConfigurationValue(DateTimeImmutableConverter::class, self::CONFIGURATION_DATE_FORMAT);
         if ($dateFormat === null) {
             return self::DEFAULT_DATE_FORMAT;
         }
-        if ($dateFormat !== null && !is_string($dateFormat)) {
+
+        if (!is_string($dateFormat)) {
             throw new InvalidPropertyMappingConfigurationException('CONFIGURATION_DATE_FORMAT must be of type string, "' . (is_object($dateFormat) ? get_class($dateFormat) : gettype($dateFormat)) . '" given', 1307719569);
         }
+
         return $dateFormat;
     }
 

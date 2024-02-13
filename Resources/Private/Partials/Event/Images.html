@@ -1,75 +1,75 @@
 <html lang="en"
-			xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-			data-namespace-typo3-fluid="true">
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
 
 <ul>
-	<f:for each="{event.images}" as="extbaseResource" iteration="iterator">
-		<f:if condition="{extbaseResource.originalResource}">
-			<f:variable name="image" value="{extbaseResource.originalResource}" />
-			<li>
-				<f:if condition="{settings.displayImages}">
-					<f:then>
-						<f:render section="renderImagesOnly" arguments="{image: image}" />
-					</f:then>
-					<f:else>
-						<f:render section="renderResource" arguments="{image: image}" />
-					</f:else>
-				</f:if>
-			</li>
-		</f:if>
-	</f:for>
+    <f:for each="{event.images}" as="extbaseResource" iteration="iterator">
+        <f:if condition="{extbaseResource.originalResource}">
+            <f:variable name="image" value="{extbaseResource.originalResource}"/>
+            <li>
+                <f:if condition="{settings.displayImages}">
+                    <f:then>
+                        <f:render section="RenderImagesOnly" arguments="{image: image}"/>
+                    </f:then>
+                    <f:else>
+                        <f:render section="RenderResource" arguments="{image: image}"/>
+                    </f:else>
+                </f:if>
+            </li>
+        </f:if>
+    </f:for>
 </ul>
 
-<f:section name="renderImagesOnly">
-	<f:comment><!-- In most cases this will be used as SlideShow. So no Videos or Audios are allowed here.--></f:comment>
-	<f:if condition="{image.type} == 2">
-		<f:image image="{image}"
-						 class="img-responsive img-thumbnail"
-						 alt="{f:if(condition: image.title, then: '{image.title}', else: '{event.title}-{iterator.cycle}')}"
-						 width="1016c"
-						 height="448c"
-						 minWidth="1016"
-						 maxWidth="1016"
-						 minHeight="448"
-						 maxHeight="448" />
-	</f:if>
+<f:section name="RenderImagesOnly">
+    <f:comment><!-- In most cases this will be used as SlideShow. So no Videos or Audios are allowed here.--></f:comment>
+    <f:if condition="{image.type} == 2">
+        <f:image image="{image}"
+                 class="img-responsive img-thumbnail"
+                 alt="{f:if(condition: image.title, then: '{image.title}', else: '{event.title}-{iterator.cycle}')}"
+                 width="1016c"
+                 height="448c"
+                 minWidth="1016"
+                 maxWidth="1016"
+                 minHeight="448"
+                 maxHeight="448"/>
+    </f:if>
 </f:section>
 
-<f:section name="renderResource">
-	<f:switch expression="{image.type}">
-		<f:case value="3">
-			<f:media file="{image}"
-							 class="audio-embed-item"
-							 alt="{f:if(condition: image.title, then: '{image.title}', else: event.title)}"
-							 width="{settings.show.image.width}"
-							 height="{settings.show.image.height}" />
-		</f:case>
-		<f:case value="4">
-			<figure class="video">
-				<div class="video-embed">
-					<f:media file="{image}"
-									 alt="{f:if(condition: image.title, then: '{image.title}', else: event.title)}"
-									 width="{settings.show.image.width}"
-									 height="{settings.show.image.height}" />
-				</div>
-				<f:if condition="{image.description}">
-					<figcaption class="video-caption">
-						{image.description}
-					</figcaption>
-				</f:if>
-			</figure>
-		</f:case>
-		<f:defaultCase>
-			<f:image image="{image}"
-							 class="img-responsive img-thumbnail"
-							 alt="{f:if(condition: image.title, then: '{image.title}', else: '{event.title}-{iterator.cycle}')}"
-							 width="{settings.show.image.width}"
-							 height="{settings.show.image.height}"
-							 minWidth="{settings.show.image.minWidth}"
-							 maxWidth="{settings.show.image.maxWidth}"
-							 minHeight="{settings.show.image.minHeight}"
-							 maxHeight="{settings.show.image.maxHeight}" />
-		</f:defaultCase>
-	</f:switch>
+<f:section name="RenderResource">
+    <f:switch expression="{image.type}">
+        <f:case value="3">
+            <f:media file="{image}"
+                     class="audio-embed-item"
+                     alt="{f:if(condition: image.title, then: '{image.title}', else: event.title)}"
+                     width="{settings.show.image.width}"
+                     height="{settings.show.image.height}"/>
+        </f:case>
+        <f:case value="4">
+            <figure class="video">
+                <div class="video-embed">
+                    <f:media file="{image}"
+                             alt="{f:if(condition: image.title, then: '{image.title}', else: event.title)}"
+                             width="{settings.show.image.width}"
+                             height="{settings.show.image.height}"/>
+                </div>
+                <f:if condition="{image.description}">
+                    <figcaption class="video-caption">
+                        {image.description}
+                    </figcaption>
+                </f:if>
+            </figure>
+        </f:case>
+        <f:defaultCase>
+            <f:image image="{image}"
+                     class="img-responsive img-thumbnail"
+                     alt="{f:if(condition: image.title, then: '{image.title}', else: '{event.title}-{iterator.cycle}')}"
+                     width="{settings.show.image.width}"
+                     height="{settings.show.image.height}"
+                     minWidth="{settings.show.image.minWidth}"
+                     maxWidth="{settings.show.image.maxWidth}"
+                     minHeight="{settings.show.image.minHeight}"
+                     maxHeight="{settings.show.image.maxHeight}"/>
+        </f:defaultCase>
+    </f:switch>
 </f:section>
 </html>

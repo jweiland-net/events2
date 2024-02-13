@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Domain\Repository;
 
-use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Factory\DayFactory;
 use JWeiland\Events2\Domain\Model\Category;
@@ -24,14 +23,17 @@ use JWeiland\Events2\Event\ModifyQueriesOfSearchEventsEvent;
 use JWeiland\Events2\Event\ModifyStartEndDateForListTypeEvent;
 use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Utility\DateTimeUtility;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
-/*
+/**
  * Repository to get and find day records from storage
+ *
+ * @method Day findByIdentifier(int $dayUid)
  */
 class DayRepository extends AbstractRepository
 {
@@ -133,7 +135,7 @@ class DayRepository extends AbstractRepository
             $queryBuilder->andWhere(
                 $queryBuilder->expr()->eq(
                     'day.day',
-                    $queryBuilder->createNamedParameter($filter->getTimestamp(), \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($filter->getTimestamp(), Connection::PARAM_INT)
                 )
             );
         } else {
@@ -204,7 +206,7 @@ class DayRepository extends AbstractRepository
         // add query for search string
         if ($search->getSearch() !== '') {
             $subQueryBuilder->andWhere(
-                (string)$subQueryBuilder->expr()->orX(
+                (string)$subQueryBuilder->expr()->or(
                     $queryBuilder->expr()->like(
                         'event_sub_query.title',
                         $queryBuilder->quote('%' . $search->getSearch() . '%')
@@ -276,7 +278,7 @@ class DayRepository extends AbstractRepository
                 $subQueryBuilder,
                 'free_entry',
                 $search->getFreeEntry(),
-                \PDO::PARAM_INT,
+                Connection::PARAM_INT,
                 $queryBuilder,
                 'event_sub_query'
             );
@@ -374,26 +376,21 @@ class DayRepository extends AbstractRepository
      * where only_full_group_by is activated.
      *
      * @param array $additionalColumns Must contain table: [table].[column]
-     * @return array
      */
     protected function getColumnsForDayTable(array $additionalColumns = []): array
     {
-        $columns = [];
         $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_day');
-        if ($connection->getSchemaManager() instanceof AbstractSchemaManager) {
-            $dayColumns = array_map(
-                static fn ($column): string => 'day.' . $column,
-                array_keys(
-                    $connection->getSchemaManager()->listTableColumns('tx_events2_domain_model_day') ?? []
-                )
-            );
-            $columns = array_merge($dayColumns, $additionalColumns);
-        }
+        $dayColumns = array_map(
+            static fn($column): string => 'day.' . $column,
+            array_keys(
+                $connection->createSchemaManager()->listTableColumns('tx_events2_domain_model_day') ?? []
+            )
+        );
 
-        return $columns;
+        return array_merge($dayColumns, $additionalColumns);
     }
 
-    /*
+    /**
      * Apply various merge features to query
      */
     protected function addMergeFeatureToQuery(QueryBuilder $subQueryBuilder): void
@@ -407,7 +404,7 @@ class DayRepository extends AbstractRepository
         }
     }
 
-    /*
+    /**
      * Join SubQuery as SQL-Part into parent QueryBuilder
      */
     protected function joinSubQueryIntoQueryBuilder(QueryBuilder $queryBuilder, QueryBuilder $subQueryBuilder): void
@@ -419,7 +416,7 @@ class DayRepository extends AbstractRepository
                 $subQueryBuilder->getSQL()
             ),
             $queryBuilder->quoteIdentifier('day_sub_group'),
-            $queryBuilder->expr()->andX(
+            $queryBuilder->expr()->and(
                 $queryBuilder->expr()->eq(
                     'day.event',
                     $queryBuilder->quoteIdentifier('day_sub_group.event')
@@ -443,7 +440,7 @@ class DayRepository extends AbstractRepository
         return $this->dayFactory->findDayByEventAndTimestamp($eventUid, $timestamp, $this->createQuery());
     }
 
-    /*
+    /**
      * Nearly the same as "findDayByEventAndTimestamp", but this method was used by PageTitleProvider
      * which is out of Extbase context. So we are using a plain Doctrine Query here.
      */
@@ -455,23 +452,24 @@ class DayRepository extends AbstractRepository
             ->where(
                 $queryBuilder->expr()->eq(
                     'day.event',
-                    $queryBuilder->createNamedParameter($eventUid, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($eventUid, Connection::PARAM_INT)
                 ),
                 $queryBuilder->expr()->eq(
                     'day.day_time',
-                    $queryBuilder->createNamedParameter($timestamp, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($timestamp, Connection::PARAM_INT)
                 )
             )
-            ->execute()
-            ->fetch(\PDO::FETCH_ASSOC);
+            ->executeQuery()
+            ->fetchAssociative();
 
-        if (empty($day)) {
+        if ($day === false) {
             $day = [];
         }
+
         return $day;
     }
 
-    /*
+    /**
      * Get Sub-QueryBuilder
      */
     protected function getSubQueryBuilder(QueryBuilder $queryBuilder, bool $useStrictLang = false): QueryBuilder
@@ -516,7 +514,7 @@ class DayRepository extends AbstractRepository
             self::TABLE,
             [
                 'event' => $eventUid,
-                't3ver_wsid' => $eventRecord['t3ver_wsid'] ?? 0
+                't3ver_wsid' => $eventRecord['t3ver_wsid'] ?? 0,
             ]
         );
     }
@@ -531,7 +529,6 @@ class DayRepository extends AbstractRepository
             'pid',
             'tstamp',
             'crdate',
-            'cruser_id',
             'hidden',
             'fe_group',
             't3ver_wsid',
@@ -540,7 +537,7 @@ class DayRepository extends AbstractRepository
             'sort_day_time',
             'same_day_time',
             'is_removed_date',
-            'event'
+            'event',
         ];
 
         $this

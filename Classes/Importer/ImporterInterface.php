@@ -13,7 +13,7 @@ namespace JWeiland\Events2\Importer;
 
 use TYPO3\CMS\Core\Resource\FileInterface;
 
-/*
+/**
  * An Interface as base for all event importer classes
  */
 interface ImporterInterface

@@ -1,6 +1,9 @@
 <?php
+
+use JWeiland\Events2\Domain\Model\Category;
+
 return [
-    \JWeiland\Events2\Domain\Model\Category::class => [
+    Category::class => [
         'tableName' => 'sys_category',
     ],
 ];
