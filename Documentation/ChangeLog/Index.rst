@@ -7,10 +7,13 @@
 ChangeLog
 =========
 
+*   [BUGFIX] fixed broken backend template preview if more than 10 categories
+    selected
+
 Version 9.0.1
 =============
 
-*    Bugfix: Repair scheduler task for re-generate day records
+*   Bugfix: Repair scheduler task for re-generate day records
 
 Version 9.0.0
 =============

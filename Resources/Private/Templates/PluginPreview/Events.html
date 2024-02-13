@@ -1,6 +1,7 @@
 <html lang="en"
       xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
       xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+      xmlns:e2="http://typo3.org/ns/JWeiland/Events2/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
 <h4>Events2</h4>
@@ -96,7 +97,7 @@
     <f:if condition="{categories}">
         <tr>
             <td><strong>Categories</strong></td>
-            <td>{categories}</td>
+            <td>{e2:settingsFormat(content: '{categories}', glue: ',')}</td>
         </tr>
     </f:if>
 </f:section>
