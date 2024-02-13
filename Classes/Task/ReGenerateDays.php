@@ -21,6 +21,7 @@ use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\CMS\Scheduler\ProgressProviderInterface;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
@@ -31,29 +32,22 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
  */
 class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
 {
-    public function __construct(
-        protected readonly CacheManager $cacheManager,
-        protected readonly DatabaseService $databaseService,
-        protected readonly Registry $registry
-    ) {
-        parent::__construct();
-    }
-
     public function execute(): bool
     {
         // Do not move these lines of code into constructor.
         // It will break serialization. Error: Serialization of 'Closure' is not allowed
-        $dayRelationService = GeneralUtility::makeInstance(DayRelationService::class);
-        $persistenceManager = GeneralUtility::makeInstance(PersistenceManagerInterface::class);
+        $dayRelationService = $this->getDayRelationService();
+        $persistenceManager = $this->getPersistenceManager();
+        $registry = $this->getRegistry();
 
         // with each changing PID pageTSConfigCache will grow by roundabout 200KB
         // which may exceed memory_limit
-        $runtimeCache = $this->cacheManager->getCache('runtime');
+        $runtimeCache = $this->getCacheManager()->getCache('runtime');
 
-        $this->registry->removeAllByNamespace('events2TaskCreateUpdate');
+        $registry->removeAllByNamespace('events2TaskCreateUpdate');
 
         $amountOfEventRecordsToProcess = $this->getAmountOfEventRecordsToProcess();
-        $queryResult = $this->databaseService
+        $queryResult = $this->getDatabaseService()
             ->getQueryBuilderForAllEvents()
             ->select('uid', 'pid')
             ->executeQuery();
@@ -61,7 +55,7 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
         $counter = 0;
         while ($eventRecord = $queryResult->fetchAssociative()) {
             $counter++;
-            $this->registry->set('events2TaskCreateUpdate', 'info', [
+            $registry->set('events2TaskCreateUpdate', 'info', [
                 'uid' => $eventRecord['uid'],
                 'pid' => $eventRecord['pid'],
             ]);
@@ -81,7 +75,7 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
                 return false;
             }
 
-            $this->registry->set('events2TaskCreateUpdate', 'progress', [
+            $registry->set('events2TaskCreateUpdate', 'progress', [
                 'records' => $amountOfEventRecordsToProcess,
                 'counter' => $counter,
             ]);
@@ -93,7 +87,7 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
             gc_collect_cycles();
         }
 
-        $this->registry->remove('events2TaskCreateUpdate', 'info');
+        $registry->remove('events2TaskCreateUpdate', 'info');
 
         return true;
     }
@@ -109,7 +103,7 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
     public function getAdditionalInformation(): string
     {
         $content = '';
-        $info = $this->registry->get('events2TaskCreateUpdate', 'info');
+        $info = $this->getRegistry()->get('events2TaskCreateUpdate', 'info');
         if ($info) {
             $content = sprintf(
                 'Current event: uid: %d, pid: %d, memory: %d.',
@@ -128,7 +122,7 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
      */
     public function getProgress(): float
     {
-        $progress = $this->registry->get('events2TaskCreateUpdate', 'progress');
+        $progress = $this->getRegistry()->get('events2TaskCreateUpdate', 'progress');
         if ($progress) {
             return (float)(100 / $progress['records'] * $progress['counter']);
         }
@@ -139,7 +133,7 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
     protected function getAmountOfEventRecordsToProcess(): int
     {
         try {
-            return (int)$this->databaseService->getQueryBuilderForAllEvents()
+            return (int)$this->getDatabaseService()->getQueryBuilderForAllEvents()
                 ->count('*')
                 ->executeQuery()
                 ->fetchOne();
@@ -164,9 +158,34 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
         $defaultFlashMessageQueue->enqueue($flashMessage);
     }
 
+    protected function getCacheManager(): CacheManager
+    {
+        return GeneralUtility::makeInstance(CacheManager::class);
+    }
+
     protected function getConnectionPool(): ConnectionPool
     {
         return GeneralUtility::makeInstance(ConnectionPool::class);
+    }
+
+    protected function getDatabaseService(): DatabaseService
+    {
+        return GeneralUtility::makeInstance(DatabaseService::class);
+    }
+
+    protected function getDayRelationService(): DayRelationService
+    {
+        return GeneralUtility::makeInstance(DayRelationService::class);
+    }
+
+    protected function getPersistenceManager(): PersistenceManagerInterface
+    {
+        return GeneralUtility::makeInstance(PersistenceManager::class);
+    }
+
+    protected function getRegistry(): Registry
+    {
+        return GeneralUtility::makeInstance(Registry::class);
     }
 
     public function __sleep()
