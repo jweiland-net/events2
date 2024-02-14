@@ -34,7 +34,7 @@ call_user_func(static function (): void {
         ],
         // non-cacheable actions
         [
-            \JWeiland\Events2\Controller\ManagementController::class => 'create, edit, update, perform, delete, activate',
+            \JWeiland\Events2\Controller\ManagementController::class => 'listMyEvents, create, edit, update, perform, delete, activate',
         ]
     );
 
