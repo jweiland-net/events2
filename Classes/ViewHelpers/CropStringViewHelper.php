@@ -63,7 +63,7 @@ class CropStringViewHelper extends AbstractViewHelper
     ): string {
         $content = $arguments['content'];
         $glue = $arguments['glue'];
-        $limit = $arguments['limit'] ?? 10;
+        $limit = (int)$arguments['limit'];
 
         $explodedStringArray = explode($glue, (string)$content);
 
