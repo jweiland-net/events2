@@ -97,7 +97,7 @@
     <f:if condition="{categories}">
         <tr>
             <td><strong>Categories</strong></td>
-            <td>{e2:settingsFormat(content: '{categories}', glue: ',')}</td>
+            <td>{e2:cropString(content: categories, glue: ',')}</td>
         </tr>
     </f:if>
 </f:section>
