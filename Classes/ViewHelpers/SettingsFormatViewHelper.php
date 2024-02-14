@@ -38,9 +38,10 @@ class SettingsFormatViewHelper extends AbstractViewHelper
         $this->registerArgument(
             'limit',
             'int',
-            'If limit is set and positive, the returned array will contain a maximum of limit elements ' .
-            'with the last element containing the rest of string. If the limit parameter is negative, all ' .
-            'components except the last-limit are returned. If the limit parameter is zero, then this is treated as 1.',
+            'If limit is set and positive, only the first few values are combined into a new '.
+            'comma-separated string and appended with "...". If the limit parameter is negative, '.
+            'only the last few values are combined into a new comma-separated string with APPENDED?!!! "...". '.
+            'If the limit parameter is zero, it is treated as 1, so only ONE element is shown with APPENDED "...".',
             false,
             10
         );
