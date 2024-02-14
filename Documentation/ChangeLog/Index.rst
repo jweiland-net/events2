@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 9.0.3
+=============
+
+*   [BUGFIX] Define action listMyEvents as uncached
+
 Version 9.0.2
 =============
 
