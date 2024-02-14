@@ -7,10 +7,17 @@
 ChangeLog
 =========
 
+Version 9.0.2
+=============
+
+*   [BUGFIX] fixed broken backend template preview if more than 10 categories
+    selected
+*   [TASK] Added GetFirstImage function in Event Model to avoid iteration in Fluid
+
 Version 9.0.1
 =============
 
-*    Bugfix: Repair scheduler task for re-generate day records
+*   Bugfix: Repair scheduler task for re-generate day records
 
 Version 9.0.0
 =============

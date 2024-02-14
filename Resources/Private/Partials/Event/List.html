@@ -85,23 +85,19 @@
 
 <f:section name="FirstImage">
     <f:if condition="{event.images -> f:count()}">
-        <f:for each="{event.images}" as="image" iteration="iterator">
-            <f:if condition="{iterator.isFirst}">
-                <figure>
-                    <f:image
-                        image="{image}"
-                        alt="{event.title}"
-                        title="{event.title}"
-                        width="{settings.list.image.width}"
-                        height="{settings.list.image.height}"
-                        minWidth="{settings.list.image.minWidth}"
-                        maxWidth="{settings.list.image.maxWidth}"
-                        minHeight="{settings.list.image.minHeight}"
-                        maxHeight="{settings.list.image.maxHeight}"
-                    />
-                </figure>
-            </f:if>
-        </f:for>
+            <figure>
+                <f:image
+                    image="{event.firstImage}"
+                    alt="{event.title}"
+                    title="{event.title}"
+                    width="{settings.list.image.width}"
+                    height="{settings.list.image.height}"
+                    minWidth="{settings.list.image.minWidth}"
+                    maxWidth="{settings.list.image.maxWidth}"
+                    minHeight="{settings.list.image.minHeight}"
+                    maxHeight="{settings.list.image.maxHeight}"
+                />
+            </figure>
     </f:if>
 </f:section>
 </html>
