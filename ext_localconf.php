@@ -16,7 +16,7 @@ call_user_func(static function () {
         // non-cacheable actions
         [
             'Day' => 'listSearchResults',
-            'Event' => 'perform, create, edit, update, delete, activate',
+            'Event' => 'listMyEvents, perform, create, edit, update, delete, activate',
         ]
     );
 
