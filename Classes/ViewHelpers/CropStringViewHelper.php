@@ -48,8 +48,8 @@ class CropStringViewHelper extends AbstractViewHelper
             'int',
             'If the limit is higher than the given content (array of categories) count it will just return the comma ' .
             'seperated values. If the limit is set and positive, only the first few values are combined into a new ' .
-            'comma-separated string, for example "75,44,62,...". If the limit parameter is negative, ' .
-            'only the last few values are combined into a new comma-separated string, for example "...,1,56,7". ' .
+            'comma-separated string, for example "75, 44, 62,...". If the limit parameter is negative, ' .
+            'only the last few values are combined into a new comma-separated string, for example "..., 1, 56, 7". ' .
             'If the limit parameter is zero, it is treated as 1, so only ONE element is shown, for example  "75".',
             false,
             10
@@ -69,19 +69,19 @@ class CropStringViewHelper extends AbstractViewHelper
 
         // return the imploded content with glue if limit is higher than the given content count
         if ($limit > count($explodedStringArray)) {
-            return implode($glue, $explodedStringArray);
+            return implode($glue . ' ', $explodedStringArray);
         }
 
-        // return the imploded content with glue if limit is set and positive with limit  given or default 10 and  post fix the content with "..."
+        // return the imploded content with glue if limit is set and positive with limit given or default 10 and  post fix the content with ",..."
         if ($limit > 0) {
             $output = array_slice($explodedStringArray, 0, $limit);
-            return implode($glue, $output) . '...';
+            return implode($glue . ' ', $output) . ',...';
         }
 
-        // return the imploded content with glue if limit is set and negative with limit  given or default 10 and  pre fix the content with "..."
+        // return the imploded content with glue if limit is set and negative with limit given or default 10 and  pre fix the content with "...,"
         if ($limit < 0) {
             $output = array_slice($explodedStringArray, $limit);
-            return '...' . implode($glue, $output);
+            return '...,' . implode($glue . ' ', $output);
         }
 
         // return the first element of the exploded content if limit is set to 0
