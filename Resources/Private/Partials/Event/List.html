@@ -21,7 +21,6 @@
             <f:render section="Title" arguments="{day: day}"/>
 
             <f:if condition="{day.event.teaser}">
-                <f:render section="FirstImage" arguments="{event:day.event}"/>
                 <p>{day.event.teaser}</p>
             </f:if>
         </li>
