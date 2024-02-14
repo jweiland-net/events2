@@ -38,9 +38,9 @@ class SettingsFormatViewHelper extends AbstractViewHelper
         $this->registerArgument(
             'limit',
             'int',
-            'If limit is set and positive, only the first few values are combined into a new '.
-            'comma-separated string and appended with "...". If the limit parameter is negative, '.
-            'only the last few values are combined into a new comma-separated string with APPENDED?!!! "...". '.
+            'If limit is set and positive, only the first few values are combined into a new ' .
+            'comma-separated string and appended with "...". If the limit parameter is negative, ' .
+            'only the last few values are combined into a new comma-separated string with APPENDED?!!! "...". ' .
             'If the limit parameter is zero, it is treated as 1, so only ONE element is shown with APPENDED "...".',
             false,
             10
