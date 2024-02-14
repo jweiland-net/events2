@@ -40,7 +40,7 @@ class DateTimeUtility
                 $date = $date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
                 $dateTimeObject = $this->standardizeDateTimeObject($date);
             } else {
-                $date = new \DateTimeImmutable(date('Y-m-d H:i:s', $value));
+                $date = new \DateTimeImmutable(date('Y-m-d H:i:s', (int)$value));
                 $date = $date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
                 $dateTimeObject = $this->standardizeDateTimeObject($date);
             }
