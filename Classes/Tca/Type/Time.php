@@ -23,15 +23,6 @@ class Time
     public function __construct(protected readonly TimeToStringConverter $timeToStringConverter) {}
 
     /**
-     * This method returns js code to check if valid time was entered
-     * JS Validation does not work in IRRE context. So we have to validate by PHP.
-     */
-    public function returnFieldJS(): string
-    {
-        return 'return value;';
-    }
-
-    /**
      * This method converts the value into a unique time format: 21:23.
      */
     public function evaluateFieldValue(mixed $value): string
