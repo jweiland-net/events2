@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 8.3.6
+=============
+
+*   [BUGFIX] Define action listMyEvents as uncached
+
 Version 8.3.5
 =============
 
