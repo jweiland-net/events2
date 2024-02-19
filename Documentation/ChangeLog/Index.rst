@@ -7,6 +7,12 @@
 ChangeLog
 =========
 
+Version 9.0.4
+=============
+
+*   [BUGFIX] Fixed issue with timestamp string to int casting in TimeFactory
+*   [BUGFIX] Fixed issue with plugin if detail page is not selected
+
 Version 9.0.3
 =============
 
