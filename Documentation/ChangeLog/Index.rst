@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 8.3.7
+=============
+
+*   [TASK] Slow COUNT query. Update booster index.
+
 Version 8.3.6
 =============
 
