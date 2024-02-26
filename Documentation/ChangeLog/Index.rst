@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 9.0.5
+=============
+
+*   [TASK] Slow COUNT query. Update booster index.
+
 Version 9.0.4
 =============
 
