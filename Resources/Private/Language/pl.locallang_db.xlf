@@ -1,0 +1,544 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<xliff version="1.0">
+  <file source-language="en" datatype="plaintext" original="messages" date="2013-03-40T10:38:40Z" product-name="events2" target-language="pl">
+    <header/>
+    <body>
+      <trans-unit id="plugin.list.title">
+        <source>List all events</source>
+        <target state="needs-translation">List all events</target>
+      </trans-unit>
+      <trans-unit id="plugin.list.description">
+        <source>Displays a list of all events. You can reduce this list to appropriate categories and organizers.</source>
+        <target state="needs-translation">Displays a list of all events. You can reduce this list to appropriate categories and organizers.</target>
+      </trans-unit>
+      <trans-unit id="plugin.listLatest.title">
+        <source>List latest events</source>
+        <target state="needs-translation">List latest events</target>
+      </trans-unit>
+      <trans-unit id="plugin.listLatest.description">
+        <source>Displays a list of latest events. You can reduce this list to appropriate categories and organizers.</source>
+        <target state="needs-translation">Displays a list of latest events. You can reduce this list to appropriate categories and organizers.</target>
+      </trans-unit>
+      <trans-unit id="plugin.listToday.title">
+        <source>List of today's events</source>
+        <target state="needs-translation">List of today's events</target>
+      </trans-unit>
+      <trans-unit id="plugin.listToday.description">
+        <source>Displays a list of today's events. You can reduce this list to appropriate categories and organizers.</source>
+        <target state="needs-translation">Displays a list of today's events. You can reduce this list to appropriate categories and organizers.</target>
+      </trans-unit>
+      <trans-unit id="plugin.listWeek.title">
+        <source>List of this week's events</source>
+        <target state="needs-translation">List of this week's events</target>
+      </trans-unit>
+      <trans-unit id="plugin.listWeek.description">
+        <source>Displays a list of this week's events. You can reduce this list to appropriate categories and organizers.</source>
+        <target state="needs-translation">Displays a list of this week's events. You can reduce this list to appropriate categories and organizers.</target>
+      </trans-unit>
+      <trans-unit id="plugin.listRange.title">
+        <source>List events in date range</source>
+        <target state="needs-translation">List events in date range</target>
+      </trans-unit>
+      <trans-unit id="plugin.listRange.description">
+        <source>Displays a list of events in date range. You can reduce this list to appropriate categories and organizers.</source>
+        <target state="needs-translation">Displays a list of events in date range. You can reduce this list to appropriate categories and organizers.</target>
+      </trans-unit>
+      <trans-unit id="plugin.show.title">
+        <source>Show single event</source>
+        <target state="needs-translation">Show single event</target>
+      </trans-unit>
+      <trans-unit id="plugin.show.description">
+        <source>Use this plugin to display a single event or for the detailed view.</source>
+        <target state="needs-translation">Use this plugin to display a single event or for the detailed view.</target>
+      </trans-unit>
+      <trans-unit id="plugin.management.title">
+        <source>Manage events</source>
+        <target state="needs-translation">Manage events</target>
+      </trans-unit>
+      <trans-unit id="plugin.management.description">
+        <source>Use this plugin to create, edit and view a user's events.</source>
+        <target state="needs-translation">Use this plugin to create, edit and view a user's events.</target>
+      </trans-unit>
+      <trans-unit id="plugin.calendar.title">
+        <source>Show monthly calendar</source>
+        <target state="needs-translation">Show monthly calendar</target>
+      </trans-unit>
+      <trans-unit id="plugin.calendar.description">
+        <source>Displays a monthly calendar highlighting days with events. By clicking, events of the selected day are displayed.</source>
+        <target state="needs-translation">Displays a monthly calendar highlighting days with events. By clicking, events of the selected day are displayed.</target>
+      </trans-unit>
+      <trans-unit id="plugin.searchForm.title">
+        <source>Search form</source>
+        <target state="needs-translation">Search form</target>
+      </trans-unit>
+      <trans-unit id="plugin.searchForm.description">
+        <source>Shows the search form for events. Here a visitor can filter the events according to several criteria.</source>
+        <target state="needs-translation">Shows the search form for events. Here a visitor can filter the events according to several criteria.</target>
+      </trans-unit>
+      <trans-unit id="plugin.searchResults.title">
+        <source>Search results</source>
+        <target state="needs-translation">Search results</target>
+      </trans-unit>
+      <trans-unit id="plugin.searchResults.description">
+        <source>Displays the event's search results.</source>
+        <target state="needs-translation">Displays the event's search results.</target>
+      </trans-unit>
+      <trans-unit id="plugin.events.title">
+        <source>Events</source>
+        <target state="needs-translation">Events</target>
+      </trans-unit>
+      <trans-unit id="plugin.calendar.title">
+        <source>Events: Calendar</source>
+        <target state="needs-translation">Show monthly calendar</target>
+      </trans-unit>
+      <trans-unit id="plugin.search.title">
+        <source>Events: Search</source>
+        <target state="needs-translation">Events: Search</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_tab">
+        <source>Events</source>
+        <target state="needs-translation">Events</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_organizer">
+        <source>Organizer</source>
+        <target state="needs-translation">Organizer</target>
+      </trans-unit>
+      <trans-unit id="createNewRelationForTime">
+        <source>Create new time</source>
+        <target state="needs-translation">Create new time</target>
+      </trans-unit>
+      <trans-unit id="task.reCreateDays.title">
+        <source>Re-Create day records</source>
+        <target state="needs-translation">Re-Create day records</target>
+      </trans-unit>
+      <trans-unit id="task.reCreateDays.description">
+        <source>Loops through all current and future events to delete and recreate their day records. Further it cleans up all the old iCal export files.</source>
+        <target state="needs-translation">Loops through all current and future events to delete and recreate their day records. Further it cleans up all the old iCal export files.</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event">
+        <source>Event</source>
+        <target state="needs-translation">Event</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.image.add">
+        <source>Add image</source>
+        <target state="needs-translation">Add image</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.tab.recurring_event">
+        <source>Recurring Event</source>
+        <target state="needs-translation">Recurring Event</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.tab.exceptions">
+        <source>Exceptions</source>
+        <target state="needs-translation">Exceptions</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.tab.event_details">
+        <source>Event Details</source>
+        <target state="needs-translation">Event Details</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.tab.media">
+        <source>Media</source>
+        <target state="needs-translation">Media</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.event_type">
+        <source>Event type</source>
+        <target state="needs-translation">Event type</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.event_type.single">
+        <source>Single</source>
+        <target state="needs-translation">Single</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.event_type.recurring">
+        <source>Recurring</source>
+        <target state="needs-translation">Recurring</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.event_type.duration">
+        <source>Duration</source>
+        <target state="needs-translation">Duration</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.top_of_list">
+        <source>Top of list</source>
+        <target state="needs-translation">Top of list</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.title">
+        <source>Title</source>
+        <target state="needs-translation">Title</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.path_segment">
+        <source>Speaking URL path segment</source>
+        <target state="needs-translation">Speaking URL path segment</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.teaser">
+        <source>Teaser</source>
+        <target state="needs-translation">Teaser</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.event_begin">
+        <source>Event Begin</source>
+        <target state="needs-translation">Event Begin</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.event_end">
+        <source>Last Event</source>
+        <target state="needs-translation">Last Event</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.event_time">
+        <source>Time</source>
+        <target state="needs-translation">Time</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.same_day">
+        <source>Same Day</source>
+        <target state="needs-translation">Same Day</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.multiple_times">
+        <source>Multiple times on same day</source>
+        <target state="needs-translation">Multiple times on same day</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.xth">
+        <source>Recurring</source>
+        <target state="needs-translation">Recurring</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.xth.first">
+        <source>1st</source>
+        <target state="needs-translation">1st</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.xth.second">
+        <source>2nd</source>
+        <target state="needs-translation">2nd</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.xth.third">
+        <source>3rd</source>
+        <target state="needs-translation">3rd</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.xth.fourth">
+        <source>4th</source>
+        <target state="needs-translation">4th</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.xth.fifth">
+        <source>5th</source>
+        <target state="needs-translation">5th</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.weekday">
+        <source>Weekday</source>
+        <target state="needs-translation">Weekday</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.weekday.monday">
+        <source>Mo</source>
+        <target state="needs-translation">Mo</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.weekday.tuesday">
+        <source>Tu</source>
+        <target state="needs-translation">Tu</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.weekday.wednesday">
+        <source>We</source>
+        <target state="needs-translation">We</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.weekday.thursday">
+        <source>Th</source>
+        <target state="needs-translation">Th</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.weekday.friday">
+        <source>Fr</source>
+        <target state="needs-translation">Fr</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.weekday.saturday">
+        <source>Sa</source>
+        <target state="needs-translation">Sa</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.weekday.sunday">
+        <source>Su</source>
+        <target state="needs-translation">Su</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.different_times">
+        <source>Different times for each weekday</source>
+        <target state="needs-translation">Different times for each weekday</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.each_weeks">
+        <source>Recurring weeks</source>
+        <target state="needs-translation">Recurring weeks</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.each_weeks.0">
+        <source>Don't repeat in weeks. Use settings above.</source>
+        <target state="needs-translation">Don't repeat in weeks. Use settings above.</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.each_weeks.1">
+        <source>Each week</source>
+        <target state="needs-translation">Each week</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.each_weeks.2">
+        <source>Each 2 weeks</source>
+        <target state="needs-translation">Each 2 weeks</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.each_weeks.3">
+        <source>Each 3 weeks</source>
+        <target state="needs-translation">Each 3 weeks</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.each_weeks.4">
+        <source>Each 4 weeks</source>
+        <target state="needs-translation">Each 4 weeks</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.each_months">
+        <source>Recurring months</source>
+        <target state="needs-translation">Recurring months</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.each_months.0">
+        <source>Don't repeat in months. Use settings above.</source>
+        <target state="needs-translation">Don't repeat in months. Use settings above.</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.each_months.1">
+        <source>Each month</source>
+        <target state="needs-translation">Each month</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.each_months.2">
+        <source>Each 2 months</source>
+        <target state="needs-translation">Each 2 months</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.each_months.3">
+        <source>Each 3 months</source>
+        <target state="needs-translation">Each 3 months</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.each_months.4">
+        <source>Each 4 months</source>
+        <target state="needs-translation">Each 4 months</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.each_months.5">
+        <source>Each 5 months</source>
+        <target state="needs-translation">Each 5 months</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.each_months.6">
+        <source>Each 6 months</source>
+        <target state="needs-translation">Each 6 months</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.recurring_end">
+        <source>End of recurring</source>
+        <target state="needs-translation">End of recurring</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.exceptions">
+        <source>Exceptions</source>
+        <target state="needs-translation">Exceptions</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.detail_information">
+        <source>Detail Information</source>
+        <target state="needs-translation">Detail Information</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.free_entry">
+        <source>Free Entry</source>
+        <target state="needs-translation">Free Entry</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.ticket_link">
+        <source>Ticket Link</source>
+        <target state="needs-translation">Ticket Link</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.days">
+        <source>Days</source>
+        <target state="needs-translation">Days</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.location">
+        <source>Location</source>
+        <target state="needs-translation">Location</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.organizers">
+        <source>Organizers</source>
+        <target state="needs-translation">Organizers</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.images">
+        <source>Images</source>
+        <target state="needs-translation">Images</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.video_link">
+        <source>Link to Youtube</source>
+        <target state="needs-translation">Link to Youtube</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.download_links">
+        <source>Download links</source>
+        <target state="needs-translation">Download links</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.categories">
+        <source>Categories</source>
+        <target state="needs-translation">Categories</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.import_id">
+        <source>Import ID</source>
+        <target state="needs-translation">Import ID</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_day">
+        <source>Day</source>
+        <target state="needs-translation">Day</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_day.day">
+        <source>Day</source>
+        <target state="needs-translation">Day</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time">
+        <source>Time</source>
+        <target state="needs-translation">Time</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.type">
+        <source>Type</source>
+        <target state="needs-translation">Type</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.weekday">
+        <source>Weekday</source>
+        <target state="needs-translation">Weekday</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.weekday.monday">
+        <source>Monday</source>
+        <target state="needs-translation">Monday</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.weekday.tuesday">
+        <source>Tuesday</source>
+        <target state="needs-translation">Tuesday</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.weekday.wednesday">
+        <source>Wednesday</source>
+        <target state="needs-translation">Wednesday</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.weekday.thursday">
+        <source>Thursday</source>
+        <target state="needs-translation">Thursday</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.weekday.friday">
+        <source>Friday</source>
+        <target state="needs-translation">Friday</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.weekday.saturday">
+        <source>Saturday</source>
+        <target state="needs-translation">Saturday</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.weekday.sunday">
+        <source>Sunday</source>
+        <target state="needs-translation">Sunday</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.time_begin">
+        <source>Time Begin (Format: hh:mm)</source>
+        <target state="needs-translation">Time Begin (Format: hh:mm)</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.time_entry">
+        <source>Time Entry (Format: hh:mm)</source>
+        <target state="needs-translation">Time Entry (Format: hh:mm)</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.duration">
+        <source>Duration (Format: hh:mm)</source>
+        <target state="needs-translation">Duration (Format: hh:mm)</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.time_end">
+        <source>Time End (Format: hh:mm)</source>
+        <target state="needs-translation">Time End (Format: hh:mm)</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_exception">
+        <source>Exception</source>
+        <target state="needs-translation">Exception</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_exception.exception_type">
+        <source>Type</source>
+        <target state="needs-translation">Type</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_exception.exception_type.Add">
+        <source>Add</source>
+        <target state="needs-translation">Add</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_exception.exception_type.Remove">
+        <source>Remove</source>
+        <target state="needs-translation">Remove</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_exception.exception_type.Time">
+        <source>Time</source>
+        <target state="needs-translation">Time</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_exception.exception_type.Info">
+        <source>Info</source>
+        <target state="needs-translation">Info</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_exception.exception_date">
+        <source>Date</source>
+        <target state="needs-translation">Date</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_exception.exception_time">
+        <source>Time</source>
+        <target state="needs-translation">Time</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_exception.exception_details">
+        <source>Details</source>
+        <target state="needs-translation">Details</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_exception.show_anyway">
+        <source>Show removed date in list and detail view anyway</source>
+        <target state="needs-translation">Show removed date in list and detail view anyway</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_location">
+        <source>Location</source>
+        <target state="needs-translation">Location</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_location.location">
+        <source>Location</source>
+        <target state="needs-translation">Location</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_location.street">
+        <source>Street</source>
+        <target state="needs-translation">Street</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_location.house_number">
+        <source>Number</source>
+        <target state="needs-translation">Number</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_location.zip">
+        <source>Zip</source>
+        <target state="needs-translation">Zip</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_location.city">
+        <source>City</source>
+        <target state="needs-translation">City</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_location.country">
+        <source>Country</source>
+        <target state="needs-translation">Country</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_location.link">
+        <source>Link</source>
+        <target state="needs-translation">Link</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_organizer">
+        <source>Organizer</source>
+        <target state="needs-translation">Organizer</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_organizer.organizer">
+        <source>Organizer</source>
+        <target state="needs-translation">Organizer</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_organizer.hide_in_filter">
+        <source>Hide in filter</source>
+        <target state="needs-translation">Hide in filter</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_organizer.link">
+        <source>Link</source>
+        <target state="needs-translation">Link</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_link">
+        <source>Link</source>
+        <target state="needs-translation">Link</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_link.title">
+        <source>Title</source>
+        <target state="needs-translation">Title</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_link.link">
+        <source>Link</source>
+        <target state="needs-translation">Link</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_holiday">
+        <source>Holiday</source>
+        <target state="needs-translation">Holiday</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_holiday.title">
+        <source>Title</source>
+        <target state="needs-translation">Title</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_holiday.day">
+        <source>Day</source>
+        <target state="needs-translation">Day</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_holiday.month">
+        <source>Month</source>
+        <target state="needs-translation">Month</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
