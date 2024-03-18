@@ -3,17 +3,17 @@
   <file source-language="en" datatype="plaintext" original="messages" date="2017-08-25T10:38:40Z" product-name="events2" target-language="de">
     <header/>
     <body>
-      <trans-unit id="organizer.description">
+      <trans-unit id="organizer.description" approved="yes">
         <source>Name of the organizer</source>
-        <target state="needs-translation">Name of the organizer</target>
+        <target state="final">Name des Organisators</target>
       </trans-unit>
-      <trans-unit id="hide_in_filter.description">
+      <trans-unit id="hide_in_filter.description" approved="yes">
         <source>In plugin configuration you have the possibility to show all organizers als selectbox in frontend. If you don't want this organizer in that list you have to activate that option</source>
-        <target state="needs-translation">In plugin configuration you have the possibility to show all organizers als selectbox in frontend. If you don't want this organizer in that list you have to activate that option</target>
+        <target state="final">In der Plugin-Konfiguration haben Sie die Möglichkeit, alle Organisatoren als Auswahlbox im Frontend anzuzeigen. Wenn Sie diesen Organisator nicht in dieser Liste haben möchten, müssen Sie diese Option aktivieren</target>
       </trans-unit>
-      <trans-unit id="link.description">
+      <trans-unit id="link.description" approved="yes">
         <source>Create a link to the organizers website</source>
-        <target state="needs-translation">Create a link to the organizers website</target>
+        <target state="final">Einen Link zur Organisator-Webseite erstellen</target>
       </trans-unit>
     </body>
   </file>
