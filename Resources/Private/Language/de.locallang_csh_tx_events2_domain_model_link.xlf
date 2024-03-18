@@ -3,13 +3,13 @@
   <file source-language="en" datatype="plaintext" original="messages" date="2017-08-25T10:38:40Z" product-name="events2" target-language="de">
     <header/>
     <body>
-      <trans-unit id="title.description">
+      <trans-unit id="title.description" approved="yes">
         <source>A title for the link</source>
-        <target state="needs-translation">A title for the link</target>
+        <target state="final">Ein Titel für den Link</target>
       </trans-unit>
-      <trans-unit id="link.description">
+      <trans-unit id="link.description" approved="yes">
         <source>The link to the website</source>
-        <target state="needs-translation">The link to the website</target>
+        <target state="final">Der Link zur Webseite</target>
       </trans-unit>
     </body>
   </file>
