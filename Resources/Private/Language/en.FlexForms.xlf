@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<xliff version="1.0">
+  <file source-language="en" datatype="plaintext" original="messages" date="2013-03-40T10:38:40Z" product-name="events2" target-language="en">
+    <header/>
+    <body>
+      <trans-unit id="sheetGeneral" xml:space="preserve">
+				<source>General</source>
+			<target state="needs-translation">General</target></trans-unit>
+      <trans-unit id="sheetList" xml:space="preserve">
+				<source>Listview general</source>
+			<target state="needs-translation">Listview general</target></trans-unit>
+      <trans-unit id="sheetListLatest" xml:space="preserve">
+				<source>Listview for latest</source>
+			<target state="needs-translation">Listview for latest</target></trans-unit>
+      <trans-unit id="sheetDetail" xml:space="preserve">
+				<source>Detailview</source>
+			<target state="needs-translation">Detailview</target></trans-unit>
+      <trans-unit id="sheetNew" xml:space="preserve">
+				<source>New Events</source>
+			<target state="needs-translation">New Events</target></trans-unit>
+      <trans-unit id="listType" xml:space="preserve">
+				<source>List Type</source>
+			<target state="needs-translation">List Type</target></trans-unit>
+      <trans-unit id="listType.list">
+        <source>List events</source>
+        <target state="needs-translation">List events</target>
+      </trans-unit>
+      <trans-unit id="listType.listLatest">
+        <source>List latest events</source>
+        <target state="needs-translation">List latest events</target>
+      </trans-unit>
+      <trans-unit id="listType.listToday">
+        <source>List events of today</source>
+        <target state="needs-translation">List events of today</target>
+      </trans-unit>
+      <trans-unit id="listType.listRange">
+        <source>List events for next 4 weeks</source>
+        <target state="needs-translation">List events for next 4 weeks</target>
+      </trans-unit>
+      <trans-unit id="listType.listThisWeek">
+        <source>List events for this week</source>
+        <target state="needs-translation">List events for this week</target>
+      </trans-unit>
+      <trans-unit id="categories">
+        <source>Categories</source>
+        <target state="needs-translation">Categories</target>
+      </trans-unit>
+      <trans-unit id="mainCategories">
+        <source>Main Categories: You should only select categories of one level. The UID of their parent should be set in rootCategory of TS-Template.</source>
+        <target state="needs-translation">Main Categories: You should only select categories of one level. The UID of their parent should be set in rootCategory of TS-Template.</target>
+      </trans-unit>
+      <trans-unit id="pidOfDetailPage">
+        <source>Page UID of detail page</source>
+        <target state="needs-translation">Page UID of detail page</target>
+      </trans-unit>
+      <trans-unit id="pidOfListPage">
+        <source>Page UID of list page</source>
+        <target state="needs-translation">Page UID of list page</target>
+      </trans-unit>
+      <trans-unit id="pidOfLocationPage">
+        <source>Page UID for the event location</source>
+        <target state="needs-translation">Page UID for the event location</target>
+      </trans-unit>
+      <trans-unit id="pidOfManagementPage">
+        <source>Page UID with events2 plugin to manage event records</source>
+        <target state="needs-translation">Page UID with events2 plugin to manage event records</target>
+      </trans-unit>
+      <trans-unit id="pidOfSearchResults">
+        <source>Page UID of the search results</source>
+        <target state="needs-translation">Page UID of the search results</target>
+      </trans-unit>
+      <trans-unit id="amountOfRecordsToShow">
+        <source>List amount of records (only for view: latest events)</source>
+        <target state="needs-translation">List amount of records (only for view: latest events)</target>
+      </trans-unit>
+      <trans-unit id="mergeEventsAtSameDay">
+        <source>Merge events with multiple times at same day to one entry</source>
+        <target state="needs-translation">Merge events with multiple times at same day to one entry</target>
+      </trans-unit>
+      <trans-unit id="mergeEventsAtSameDay.description">
+        <source>Example: 17.07.2020 08:00 and 20:00 will be merged to just one entry without any time information, but with a hint, that there are multiple time entries available in detail view.</source>
+        <target state="needs-translation">Example: 17.07.2020 08:00 and 20:00 will be merged to just one entry without any time information, but with a hint, that there are multiple time entries available in detail view.</target>
+      </trans-unit>
+      <trans-unit id="mergeRecurringEvents">
+        <source>Merge recurring events to one entry</source>
+        <target state="needs-translation">Merge recurring events to one entry</target>
+      </trans-unit>
+      <trans-unit id="mergeRecurringEvents.description">
+        <source>Example: 17.07., 18.07., 22.07. will be merged to 17.07.-22.07. with a hint to look into detail view for exact dates.</source>
+        <target state="needs-translation">Example: 17.07., 18.07., 22.07. will be merged to 17.07.-22.07. with a hint to look into detail view for exact dates.</target>
+      </trans-unit>
+      <trans-unit id="preFilterByOrganizer">
+        <source>Pre filter events by organizer</source>
+        <target state="needs-translation">Pre filter events by organizer</target>
+      </trans-unit>
+      <trans-unit id="showFilterForOrganizerInFrontend">
+        <source>Show a filter selection for organizers in Frontend</source>
+        <target state="needs-translation">Show a filter selection for organizers in Frontend</target>
+      </trans-unit>
+      <trans-unit id="showFilterForOrganizerInFrontend.description">
+        <source>Filter will only be displayed, if there are at least 2 Organizers available</source>
+        <target state="needs-translation">Filter will only be displayed, if there are at least 2 Organizers available</target>
+      </trans-unit>
+      <trans-unit id="display">
+        <source>Display</source>
+        <target state="needs-translation">Display</target>
+      </trans-unit>
+      <trans-unit id="display.description">
+        <source>It's possible to cut the output into two peaces. That way you can display images on top of page, the event output at bottom and other content in between.</source>
+        <target state="needs-translation">It's possible to cut the output into two peaces. That way you can display images on top of page, the event output at bottom and other content in between.</target>
+      </trans-unit>
+      <trans-unit id="displayBoth">
+        <source>Show images and events</source>
+        <target state="needs-translation">Show images and events</target>
+      </trans-unit>
+      <trans-unit id="displayImages">
+        <source>Show images only</source>
+        <target state="needs-translation">Show images only</target>
+      </trans-unit>
+      <trans-unit id="displayEvent">
+        <source>Show Event only</source>
+        <target state="needs-translation">Show Event only</target>
+      </trans-unit>
+      <trans-unit id="selectableCategoriesForNewEvents">
+        <source>Selectable categories for new events in Frontend</source>
+        <target state="needs-translation">Selectable categories for new events in Frontend</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

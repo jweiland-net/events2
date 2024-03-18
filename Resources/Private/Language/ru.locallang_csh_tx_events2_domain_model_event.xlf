@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<xliff version="1.0">
+  <file source-language="en" datatype="plaintext" original="messages" date="2013-03-40T10:38:40Z" product-name="events2" target-language="ru">
+    <header/>
+    <body>
+      <trans-unit id="event_type.description">
+        <source>Choose type of event</source>
+        <target state="needs-translation">Choose type of event</target>
+      </trans-unit>
+      <trans-unit id="event_type.details">
+        <source>
+					Currently we have 3 event types:
+					1. simple: The event will only be shown at one date.
+					2. recurring: The most complex event. You have the possibility to configure nearly everything of this event.
+					3. duration: The event has a fixed start and end. Good for trips/travelling tours.
+				</source>
+        <target state="needs-translation">
+					Currently we have 3 event types:
+					1. simple: The event will only be shown at one date.
+					2. recurring: The most complex event. You have the possibility to configure nearly everything of this event.
+					3. duration: The event has a fixed start and end. Good for trips/travelling tours.
+				</target>
+      </trans-unit>
+      <trans-unit id="top_of_list.description">
+        <source>Move event on top of list</source>
+        <target state="needs-translation">Move event on top of list</target>
+      </trans-unit>
+      <trans-unit id="title.description">
+        <source>This is the title of the event</source>
+        <target state="needs-translation">This is the title of the event</target>
+      </trans-unit>
+      <trans-unit id="title.details">
+        <source>This is the title of the event. It will be displayed as header for each event in frontend.</source>
+        <target state="needs-translation">This is the title of the event. It will be displayed as header for each event in frontend.</target>
+      </trans-unit>
+      <trans-unit id="teaser.description">
+        <source>A short teaser for this event</source>
+        <target state="needs-translation">A short teaser for this event</target>
+      </trans-unit>
+      <trans-unit id="teaser.details">
+        <source>
+					A little teaser for this event.
+					It will be used to show just 1 or 2 sentences in list view instead of a cropped text of full description.
+				</source>
+        <target state="needs-translation">
+					A little teaser for this event.
+					It will be used to show just 1 or 2 sentences in list view instead of a cropped text of full description.
+				</target>
+      </trans-unit>
+      <trans-unit id="event_begin.description">
+        <source>When does the event begin?</source>
+        <target state="needs-translation">When does the event begin?</target>
+      </trans-unit>
+      <trans-unit id="event_begin.details">
+        <source>
+					Please choose an event date in the near future or in the early past.
+					That's because of a configuration in ExtensionManager for this extension.
+					There you can configure an amount of months for calculating day records in past and future.
+					Default: 3 month past. 6 month future. It's up to the admin to change these values.
+					If you enter a date with 6 month in past, no day record will be created. So this date will not be displayed in frontend.
+				</source>
+        <target state="needs-translation">
+					Please choose an event date in the near future or in the early past.
+					That's because of a configuration in ExtensionManager for this extension.
+					There you can configure an amount of months for calculating day records in past and future.
+					Default: 3 month past. 6 month future. It's up to the admin to change these values.
+					If you enter a date with 6 month in past, no day record will be created. So this date will not be displayed in frontend.
+				</target>
+      </trans-unit>
+      <trans-unit id="event_end.description">
+        <source>When does the event end?</source>
+        <target state="needs-translation">When does the event end?</target>
+      </trans-unit>
+      <trans-unit id="event_end.details">
+        <source>
+					This is a special date for events of type "duration" and defines, when an event ends.
+					It is a required field.
+				</source>
+        <target state="needs-translation">
+					This is a special date for events of type "duration" and defines, when an event ends.
+					It is a required field.
+				</target>
+      </trans-unit>
+      <trans-unit id="event_time.description">
+        <source>When does the event starts?</source>
+        <target state="needs-translation">When does the event starts?</target>
+      </trans-unit>
+      <trans-unit id="event_time.details">
+        <source>
+					This is the basic time for all generated day records.
+					It can be overridden with individual times defined here in this record.
+				</source>
+        <target state="needs-translation">
+					This is the basic time for all generated day records.
+					It can be overridden with individual times defined here in this record.
+				</target>
+      </trans-unit>
+      <trans-unit id="same_day.description">
+        <source>This event starts multiple times at one day.</source>
+        <target state="needs-translation">This event starts multiple times at one day.</target>
+      </trans-unit>
+      <trans-unit id="same_day.details">
+        <source>Activate this option to add further time records for this event.</source>
+        <target state="needs-translation">Activate this option to add further time records for this event.</target>
+      </trans-unit>
+      <trans-unit id="multiple_times.description">
+        <source>Add further time records</source>
+        <target state="needs-translation">Add further time records</target>
+      </trans-unit>
+      <trans-unit id="multiple_times.details">
+        <source>
+					The added time records will be appended to basic event time record.
+					In frontend you will see all time records for this event.
+				</source>
+        <target state="needs-translation">
+					The added time records will be appended to basic event time record.
+					In frontend you will see all time records for this event.
+				</target>
+      </trans-unit>
+      <trans-unit id="xth.description">
+        <source>Repeat each x th week of month</source>
+        <target state="needs-translation">Repeat each x th week of month</target>
+      </trans-unit>
+      <trans-unit id="xth.details">
+        <source>
+					This option is always a combination between the fields xth and weekday.
+					If you keep xth and/or weekday empty NO day record will be generated. The frondend will not display this event.
+				</source>
+        <target state="needs-translation">
+					This option is always a combination between the fields xth and weekday.
+					If you keep xth and/or weekday empty NO day record will be generated. The frondend will not display this event.
+				</target>
+      </trans-unit>
+      <trans-unit id="weekday.description">
+        <source>Repeat each defined weekday</source>
+        <target state="needs-translation">Repeat each defined weekday</target>
+      </trans-unit>
+      <trans-unit id="weekday.details">
+        <source>
+					This option is always a combination between the fields xth and weekday.
+					If you keep xth and/or weekday empty NO day record will be generated. The frondend will not display this event.
+				</source>
+        <target state="needs-translation">
+					This option is always a combination between the fields xth and weekday.
+					If you keep xth and/or weekday empty NO day record will be generated. The frondend will not display this event.
+				</target>
+      </trans-unit>
+      <trans-unit id="different_times.description">
+        <source>Create time records for a special weekday</source>
+        <target state="needs-translation">Create time records for a special weekday</target>
+      </trans-unit>
+      <trans-unit id="different_times.details">
+        <source>This option will override multiple_times for one day and event_time completely.</source>
+        <target state="needs-translation">This option will override multiple_times for one day and event_time completely.</target>
+      </trans-unit>
+      <trans-unit id="each_weeks.description">
+        <source>Let event repeat each, seconds, third or forth week</source>
+        <target state="needs-translation">Let event repeat each, seconds, third or forth week</target>
+      </trans-unit>
+      <trans-unit id="recurring_end.description">
+        <source>A special date when repeating an event should end.</source>
+        <target state="needs-translation">A special date when repeating an event should end.</target>
+      </trans-unit>
+      <trans-unit id="recurring_end.details">
+        <source>If you do not enter a date, a date from ExtensionManager configuration will be used. Default +12 month.</source>
+        <target state="needs-translation">If you do not enter a date, a date from ExtensionManager configuration will be used. Default +12 month.</target>
+      </trans-unit>
+      <trans-unit id="exceptions.description">
+        <source>Special definitions for a defined date</source>
+        <target state="needs-translation">Special definitions for a defined date</target>
+      </trans-unit>
+      <trans-unit id="exceptions.details">
+        <source>
+					Add an additional date.
+					Add another time record for a special date.
+					Mark a date as removed.
+					Add further information for a special date.
+				</source>
+        <target state="needs-translation">
+					Add an additional date.
+					Add another time record for a special date.
+					Mark a date as removed.
+					Add further information for a special date.
+				</target>
+      </trans-unit>
+      <trans-unit id="detail_information.description">
+        <source>Explain on detail what happens at that event</source>
+        <target state="needs-translation">Explain on detail what happens at that event</target>
+      </trans-unit>
+      <trans-unit id="free_entry.description">
+        <source>Activate, if this is a cost free event</source>
+        <target state="needs-translation">Activate, if this is a cost free event</target>
+      </trans-unit>
+      <trans-unit id="ticket_link.description">
+        <source>Create a ticket link record</source>
+        <target state="needs-translation">Create a ticket link record</target>
+      </trans-unit>
+      <trans-unit id="location.description">
+        <source>Create a location record. This is a requirement.</source>
+        <target state="needs-translation">Create a location record. This is a requirement.</target>
+      </trans-unit>
+      <trans-unit id="organizer.description">
+        <source>Create an organizer record. This is a requirement.</source>
+        <target state="needs-translation">Create an organizer record. This is a requirement.</target>
+      </trans-unit>
+      <trans-unit id="images.description">
+        <source>You can define some images here, which you can see in detail view of your event</source>
+        <target state="needs-translation">You can define some images here, which you can see in detail view of your event</target>
+      </trans-unit>
+      <trans-unit id="video_link.description">
+        <source>Do you have a YouTube video link, which will describe this event. Add it here.</source>
+        <target state="needs-translation">Do you have a YouTube video link, which will describe this event. Add it here.</target>
+      </trans-unit>
+      <trans-unit id="download_links.description">
+        <source>Do you have some information as PDF? Add them here.</source>
+        <target state="needs-translation">Do you have some information as PDF? Add them here.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
