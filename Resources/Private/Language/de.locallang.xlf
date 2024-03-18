@@ -3,593 +3,593 @@
   <file source-language="en" datatype="plaintext" original="messages" date="2013-03-40T10:38:40Z" product-name="events2" target-language="de">
     <header/>
     <body>
-      <trans-unit id="tx_events2_domain_model_event">
+      <trans-unit id="tx_events2_domain_model_event" approved="yes">
         <source>Event</source>
-        <target state="translated">Veranstaltung</target>
+        <target state="final">Veranstaltung</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.top_of_list">
+      <trans-unit id="tx_events2_domain_model_event.top_of_list" approved="yes">
         <source>Top of list</source>
-        <target state="translated">Am Anfang der Liste</target>
+        <target state="final">Am Anfang der Liste</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.title">
+      <trans-unit id="tx_events2_domain_model_event.title" approved="yes">
         <source>Title</source>
-        <target state="translated">Titel</target>
+        <target state="final">Titel</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.teaser">
+      <trans-unit id="tx_events2_domain_model_event.teaser" approved="yes">
         <source>Teaser</source>
-        <target state="translated">Kurzbeschreibung</target>
+        <target state="final">Kurzbeschreibung</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.event_begin">
+      <trans-unit id="tx_events2_domain_model_event.event_begin" approved="yes">
         <source>Event begin</source>
-        <target state="translated">Veranstaltungsbeginn</target>
+        <target state="final">Veranstaltungsbeginn</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.event_begin2">
+      <trans-unit id="tx_events2_domain_model_event.event_begin2" approved="yes">
         <source>Date of Events</source>
-        <target state="translated">Datum der Veranstaltung</target>
+        <target state="final">Datum der Veranstaltung</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.event_time">
+      <trans-unit id="tx_events2_domain_model_event.event_time" approved="yes">
         <source>Time</source>
-        <target state="translated">Zeit</target>
+        <target state="final">Zeit</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.event_end">
+      <trans-unit id="tx_events2_domain_model_event.event_end" approved="yes">
         <source>Last event</source>
-        <target state="translated">Letzte Veranstaltung</target>
+        <target state="final">Letzte Veranstaltung</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.same_day">
+      <trans-unit id="tx_events2_domain_model_event.same_day" approved="yes">
         <source>Same day</source>
-        <target state="translated">Am selben Tag</target>
+        <target state="final">Am selben Tag</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.multiple_times">
+      <trans-unit id="tx_events2_domain_model_event.multiple_times" approved="yes">
         <source>Multiple times on same day</source>
-        <target state="translated">Mehrere Zeiten am selben Tag</target>
+        <target state="final">Mehrere Zeiten am selben Tag</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.xth">
+      <trans-unit id="tx_events2_domain_model_event.xth" approved="yes">
         <source>Recurring</source>
-        <target state="translated">Wiederkehrend</target>
+        <target state="final">Wiederkehrend</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.xth.first">
+      <trans-unit id="tx_events2_domain_model_event.xth.first" approved="yes">
         <source>1st</source>
-        <target state="translated">1.</target>
+        <target state="final">1.</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.xth.second">
+      <trans-unit id="tx_events2_domain_model_event.xth.second" approved="yes">
         <source>2nd</source>
-        <target state="translated">2.</target>
+        <target state="final">2.</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.xth.third">
+      <trans-unit id="tx_events2_domain_model_event.xth.third" approved="yes">
         <source>3rd</source>
-        <target state="translated">3.</target>
+        <target state="final">3.</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.xth.fourth">
+      <trans-unit id="tx_events2_domain_model_event.xth.fourth" approved="yes">
         <source>4th</source>
-        <target state="translated">4.</target>
+        <target state="final">4.</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.xth.fifth">
+      <trans-unit id="tx_events2_domain_model_event.xth.fifth" approved="yes">
         <source>5th</source>
-        <target state="translated">5.</target>
+        <target state="final">5.</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.weekday">
+      <trans-unit id="tx_events2_domain_model_event.weekday" approved="yes">
         <source>Weekday</source>
-        <target state="translated">Wochentag</target>
+        <target state="final">Wochentag</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.weekday.monday">
+      <trans-unit id="tx_events2_domain_model_event.weekday.monday" approved="yes">
         <source>Mo</source>
-        <target state="translated">Mo</target>
+        <target state="final">Mo</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.weekday.tuesday">
+      <trans-unit id="tx_events2_domain_model_event.weekday.tuesday" approved="yes">
         <source>Tu</source>
-        <target state="translated">Di</target>
+        <target state="final">Di</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.weekday.wednesday">
+      <trans-unit id="tx_events2_domain_model_event.weekday.wednesday" approved="yes">
         <source>We</source>
-        <target state="translated">Mi</target>
+        <target state="final">Mi</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.weekday.thursday">
+      <trans-unit id="tx_events2_domain_model_event.weekday.thursday" approved="yes">
         <source>Th</source>
-        <target state="translated">Do</target>
+        <target state="final">Do</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.weekday.friday">
+      <trans-unit id="tx_events2_domain_model_event.weekday.friday" approved="yes">
         <source>Fr</source>
-        <target state="translated">Fr</target>
+        <target state="final">Fr</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.weekday.saturday">
+      <trans-unit id="tx_events2_domain_model_event.weekday.saturday" approved="yes">
         <source>Sa</source>
-        <target state="translated">Sa</target>
+        <target state="final">Sa</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.weekday.sunday">
+      <trans-unit id="tx_events2_domain_model_event.weekday.sunday" approved="yes">
         <source>Su</source>
-        <target state="translated">So</target>
+        <target state="final">So</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.different_times">
+      <trans-unit id="tx_events2_domain_model_event.different_times" approved="yes">
         <source>Different times for each weekday</source>
-        <target state="translated">Unterschiedliche Zeiten für jeden Wochentag</target>
+        <target state="final">Unterschiedliche Zeiten für jeden Wochentag</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.each_weeks">
+      <trans-unit id="tx_events2_domain_model_event.each_weeks" approved="yes">
         <source>Recurring weeks</source>
-        <target state="translated">Wiederkehrende Wochen</target>
+        <target state="final">Wiederkehrende Wochen</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.each_weeks.0">
+      <trans-unit id="tx_events2_domain_model_event.each_weeks.0" approved="yes">
         <source>Don't repeat in weeks. Use settings above.</source>
-        <target state="translated">Wiederholt sich nicht in Wochen. Verwenden Sie die Einstellungen oben.</target>
+        <target state="final">Wiederholt sich nicht in Wochen. Verwenden Sie die Einstellungen oben.</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.each_weeks.1">
+      <trans-unit id="tx_events2_domain_model_event.each_weeks.1" approved="yes">
         <source>Each week</source>
-        <target state="translated">Jede Woche</target>
+        <target state="final">Jede Woche</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.each_weeks.2">
+      <trans-unit id="tx_events2_domain_model_event.each_weeks.2" approved="yes">
         <source>Each 2 weeks</source>
-        <target state="translated">Alle 2 Wochen</target>
+        <target state="final">Alle 2 Wochen</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.each_weeks.3">
+      <trans-unit id="tx_events2_domain_model_event.each_weeks.3" approved="yes">
         <source>Each 3 weeks</source>
-        <target state="translated">Alle 3 Wochen</target>
+        <target state="final">Alle 3 Wochen</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.each_weeks.4">
+      <trans-unit id="tx_events2_domain_model_event.each_weeks.4" approved="yes">
         <source>Each 4 weeks</source>
-        <target state="translated">Alle 4 Wochen</target>
+        <target state="final">Alle 4 Wochen</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.exceptions">
+      <trans-unit id="tx_events2_domain_model_event.exceptions" approved="yes">
         <source>Exceptions</source>
-        <target state="translated">Ausnahmen</target>
+        <target state="final">Ausnahmen</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.detail_information">
+      <trans-unit id="tx_events2_domain_model_event.detail_information" approved="yes">
         <source>Detail information</source>
-        <target state="translated">Detailinformationen</target>
+        <target state="final">Detailinformationen</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.free_entry">
+      <trans-unit id="tx_events2_domain_model_event.free_entry" approved="yes">
         <source>free entry</source>
-        <target state="translated">freier Eintritt</target>
+        <target state="final">freier Eintritt</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.ticket_link">
+      <trans-unit id="tx_events2_domain_model_event.ticket_link" approved="yes">
         <source>Ticket link</source>
-        <target state="translated">Ticket-Link</target>
+        <target state="final">Ticket-Link</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.days">
+      <trans-unit id="tx_events2_domain_model_event.days" approved="yes">
         <source>Days</source>
-        <target state="translated">Tage</target>
+        <target state="final">Tage</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.location">
+      <trans-unit id="tx_events2_domain_model_event.location" approved="yes">
         <source>Location</source>
-        <target state="translated">Veranstaltungsort</target>
+        <target state="final">Veranstaltungsort</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.organizer">
+      <trans-unit id="tx_events2_domain_model_event.organizer" approved="yes">
         <source>Organizer</source>
-        <target state="translated">Veranstalter</target>
+        <target state="final">Veranstalter</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.organizers">
+      <trans-unit id="tx_events2_domain_model_event.organizers" approved="yes">
         <source>Organizers</source>
-        <target state="translated">Veranstalter</target>
+        <target state="final">Veranstalter</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.images">
+      <trans-unit id="tx_events2_domain_model_event.images" approved="yes">
         <source>Images</source>
-        <target state="translated">Bilder</target>
+        <target state="final">Bilder</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.video_link">
+      <trans-unit id="tx_events2_domain_model_event.video_link" approved="yes">
         <source>Link to Youtube</source>
-        <target state="translated">Link zu Youtube</target>
+        <target state="final">Link zu Youtube</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.download_links">
+      <trans-unit id="tx_events2_domain_model_event.download_links" approved="yes">
         <source>Download links</source>
-        <target state="translated">Download-Links</target>
+        <target state="final">Download-Links</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.categories">
+      <trans-unit id="tx_events2_domain_model_event.categories" approved="yes">
         <source>Categories</source>
-        <target state="translated">Kategorien</target>
+        <target state="final">Kategorien</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_day">
+      <trans-unit id="tx_events2_domain_model_day" approved="yes">
         <source>Day</source>
-        <target state="translated">Tag</target>
+        <target state="final">Tag</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_day.day">
+      <trans-unit id="tx_events2_domain_model_day.day" approved="yes">
         <source>Day</source>
-        <target state="translated">Tag</target>
+        <target state="final">Tag</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_time">
+      <trans-unit id="tx_events2_domain_model_time" approved="yes">
         <source>Time</source>
-        <target state="translated">Zeit</target>
+        <target state="final">Zeit</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_time.type">
+      <trans-unit id="tx_events2_domain_model_time.type" approved="yes">
         <source>Type</source>
-        <target state="translated">Typ</target>
+        <target state="final">Typ</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_time.weekday">
+      <trans-unit id="tx_events2_domain_model_time.weekday" approved="yes">
         <source>Weekday</source>
-        <target state="translated">Wochentag</target>
+        <target state="final">Wochentag</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_time.weekday.monday">
+      <trans-unit id="tx_events2_domain_model_time.weekday.monday" approved="yes">
         <source>Monday</source>
-        <target state="translated">Montag</target>
+        <target state="final">Montag</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_time.weekday.tuesday">
+      <trans-unit id="tx_events2_domain_model_time.weekday.tuesday" approved="yes">
         <source>Tuesday</source>
-        <target state="translated">Dienstag</target>
+        <target state="final">Dienstag</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_time.weekday.wednesday">
+      <trans-unit id="tx_events2_domain_model_time.weekday.wednesday" approved="yes">
         <source>Wednesday</source>
-        <target state="needs-translation">Wednesday</target>
+        <target state="final">Mittwoch</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_time.weekday.thursday">
+      <trans-unit id="tx_events2_domain_model_time.weekday.thursday" approved="yes">
         <source>Thursday</source>
-        <target state="needs-translation">Thursday</target>
+        <target state="final">Donnerstag</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_time.weekday.friday">
+      <trans-unit id="tx_events2_domain_model_time.weekday.friday" approved="yes">
         <source>Friday</source>
-        <target state="needs-translation">Friday</target>
+        <target state="final">Freitag</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_time.weekday.saturday">
+      <trans-unit id="tx_events2_domain_model_time.weekday.saturday" approved="yes">
         <source>Saturday</source>
-        <target state="needs-translation">Saturday</target>
+        <target state="final">Samstag</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_time.weekday.sunday">
+      <trans-unit id="tx_events2_domain_model_time.weekday.sunday" approved="yes">
         <source>Sunday</source>
-        <target state="needs-translation">Sunday</target>
+        <target state="final">Sonntag</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_time.time_begin">
+      <trans-unit id="tx_events2_domain_model_time.time_begin" approved="yes">
         <source>Time Begin</source>
-        <target state="needs-translation">Time Begin</target>
+        <target state="final">Beginn</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_time.time_entry">
+      <trans-unit id="tx_events2_domain_model_time.time_entry" approved="yes">
         <source>Time Entry</source>
-        <target state="needs-translation">Time Entry</target>
+        <target state="final">Einlass</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_time.duration">
+      <trans-unit id="tx_events2_domain_model_time.duration" approved="yes">
         <source>Duration</source>
-        <target state="needs-translation">Duration</target>
+        <target state="final">Dauer</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_time.time_end">
+      <trans-unit id="tx_events2_domain_model_time.time_end" approved="yes">
         <source>Time End</source>
-        <target state="needs-translation">Time End</target>
+        <target state="final">Ende</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_exception">
+      <trans-unit id="tx_events2_domain_model_exception" approved="yes">
         <source>Exception</source>
-        <target state="needs-translation">Exception</target>
+        <target state="final">Ausnahme</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_exception.exception_type">
+      <trans-unit id="tx_events2_domain_model_exception.exception_type" approved="yes">
         <source>Type</source>
-        <target state="needs-translation">Type</target>
+        <target state="final">Typ</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_exception.exception_type.Add">
+      <trans-unit id="tx_events2_domain_model_exception.exception_type.Add" approved="yes">
         <source>Add</source>
-        <target state="needs-translation">Add</target>
+        <target state="final">Zusatztermin</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_exception.exception_type.Remove">
+      <trans-unit id="tx_events2_domain_model_exception.exception_type.Remove" approved="yes">
         <source>Remove</source>
-        <target state="needs-translation">Remove</target>
+        <target state="final">Ausfall</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_exception.exception_type.Time">
+      <trans-unit id="tx_events2_domain_model_exception.exception_type.Time" approved="yes">
         <source>Time</source>
-        <target state="needs-translation">Time</target>
+        <target state="final">andere Uhrzeit</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_exception.exception_type.Info">
+      <trans-unit id="tx_events2_domain_model_exception.exception_type.Info" approved="yes">
         <source>Info</source>
-        <target state="needs-translation">Info</target>
+        <target state="final">Zusatzinformationen</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_exception.exception_date">
+      <trans-unit id="tx_events2_domain_model_exception.exception_date" approved="yes">
         <source>Date</source>
-        <target state="needs-translation">Date</target>
+        <target state="final">Datum</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_exception.exception_time">
+      <trans-unit id="tx_events2_domain_model_exception.exception_time" approved="yes">
         <source>Time</source>
-        <target state="needs-translation">Time</target>
+        <target state="final">Zeit</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_exception.exception_details">
+      <trans-unit id="tx_events2_domain_model_exception.exception_details" approved="yes">
         <source>Details</source>
-        <target state="needs-translation">Details</target>
+        <target state="final">Details</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_location">
+      <trans-unit id="tx_events2_domain_model_location" approved="yes">
         <source>Location</source>
-        <target state="needs-translation">Location</target>
+        <target state="final">Ort</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_location.location">
+      <trans-unit id="tx_events2_domain_model_location.location" approved="yes">
         <source>Location</source>
-        <target state="needs-translation">Location</target>
+        <target state="final">Ort</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_location.street">
+      <trans-unit id="tx_events2_domain_model_location.street" approved="yes">
         <source>Street</source>
-        <target state="needs-translation">Street</target>
+        <target state="final">Straße</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_location.house_number">
+      <trans-unit id="tx_events2_domain_model_location.house_number" approved="yes">
         <source>Number</source>
-        <target state="needs-translation">Number</target>
+        <target state="final">Nummer</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_location.zip">
+      <trans-unit id="tx_events2_domain_model_location.zip" approved="yes">
         <source>Zip</source>
-        <target state="needs-translation">Zip</target>
+        <target state="final">PLZ</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_location.city">
+      <trans-unit id="tx_events2_domain_model_location.city" approved="yes">
         <source>City</source>
-        <target state="needs-translation">City</target>
+        <target state="final">Stadt</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_organizer">
+      <trans-unit id="tx_events2_domain_model_organizer" approved="yes">
         <source>Organizer</source>
-        <target state="needs-translation">Organizer</target>
+        <target state="final">Veranstalter</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_organizer.organizer">
+      <trans-unit id="tx_events2_domain_model_organizer.organizer" approved="yes">
         <source>Organizer</source>
-        <target state="needs-translation">Organizer</target>
+        <target state="final">Veranstalter</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_organizer.link">
+      <trans-unit id="tx_events2_domain_model_organizer.link" approved="yes">
         <source>Link</source>
-        <target state="needs-translation">Link</target>
+        <target state="final">Link</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_link">
+      <trans-unit id="tx_events2_domain_model_link" approved="yes">
         <source>Link</source>
-        <target state="needs-translation">Link</target>
+        <target state="final">Link</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_link.title">
+      <trans-unit id="tx_events2_domain_model_link.title" approved="yes">
         <source>Title</source>
-        <target state="needs-translation">Title</target>
+        <target state="final">Titel</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_link.link">
+      <trans-unit id="tx_events2_domain_model_link.link" approved="yes">
         <source>Link</source>
-        <target state="needs-translation">Link</target>
+        <target state="final">Link</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_search.search">
+      <trans-unit id="tx_events2_domain_model_search.search" approved="yes">
         <source>Searchword</source>
-        <target state="needs-translation">Searchword</target>
+        <target state="final">Suchwort</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_search.mainCategory">
+      <trans-unit id="tx_events2_domain_model_search.mainCategory" approved="yes">
         <source>Main category</source>
-        <target state="needs-translation">Main category</target>
+        <target state="final">Hauptkategorie</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_search.subCategory">
+      <trans-unit id="tx_events2_domain_model_search.subCategory" approved="yes">
         <source>Sub category</source>
-        <target state="needs-translation">Sub category</target>
+        <target state="final">Unterkategorie</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_search.eventBegin">
+      <trans-unit id="tx_events2_domain_model_search.eventBegin" approved="yes">
         <source>Event begin</source>
-        <target state="needs-translation">Event begin</target>
+        <target state="final">Veranstaltungsbeginn</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_search.eventEnd">
+      <trans-unit id="tx_events2_domain_model_search.eventEnd" approved="yes">
         <source>Event end</source>
-        <target state="needs-translation">Event end</target>
+        <target state="final">Veranstaltungsende</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_search.location">
+      <trans-unit id="tx_events2_domain_model_search.location" approved="yes">
         <source>Location</source>
-        <target state="needs-translation">Location</target>
+        <target state="final">Ort</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_search.freeEntry">
+      <trans-unit id="tx_events2_domain_model_search.freeEntry" approved="yes">
         <source>Free entry</source>
-        <target state="needs-translation">Free entry</target>
+        <target state="final">Freier Eintritt</target>
       </trans-unit>
-      <trans-unit id="pageBrowser.first">
+      <trans-unit id="pageBrowser.first" approved="yes">
         <source>First</source>
-        <target state="needs-translation">First</target>
+        <target state="final">Erste</target>
       </trans-unit>
-      <trans-unit id="pageBrowser.previous">
+      <trans-unit id="pageBrowser.previous" approved="yes">
         <source>Previous</source>
-        <target state="needs-translation">Previous</target>
+        <target state="final">Vorherige</target>
       </trans-unit>
-      <trans-unit id="pageBrowser.next">
+      <trans-unit id="pageBrowser.next" approved="yes">
         <source>Next</source>
-        <target state="needs-translation">Next</target>
+        <target state="final">Nächste</target>
       </trans-unit>
-      <trans-unit id="pageBrowser.last">
+      <trans-unit id="pageBrowser.last" approved="yes">
         <source>Last</source>
-        <target state="needs-translation">Last</target>
+        <target state="final">Letzte</target>
       </trans-unit>
-      <trans-unit id="newEntry">
+      <trans-unit id="newEntry" approved="yes">
         <source>Insert new Event</source>
-        <target state="needs-translation">Insert new Event</target>
+        <target state="final">Neue Veranstaltung einfügen</target>
       </trans-unit>
-      <trans-unit id="listMyEvents">
+      <trans-unit id="listMyEvents" approved="yes">
         <source>List my events</source>
-        <target state="needs-translation">List my events</target>
+        <target state="final">Meine Veranstaltungen auflisten</target>
       </trans-unit>
-      <trans-unit id="eventCreated">
+      <trans-unit id="eventCreated" approved="yes">
         <source>Your new Event was created.</source>
-        <target state="needs-translation">Your new Event was created.</target>
+        <target state="final">Ihre neue Veranstaltung wurde erstellt.</target>
       </trans-unit>
-      <trans-unit id="eventUpdated">
+      <trans-unit id="eventUpdated" approved="yes">
         <source>Your Event has been updated.</source>
-        <target state="needs-translation">Your Event has been updated.</target>
+        <target state="final">Ihre Veranstaltung wurde aktualisiert.</target>
       </trans-unit>
-      <trans-unit id="eventDeleted">
+      <trans-unit id="eventDeleted" approved="yes">
         <source>Your Event has been removed.</source>
-        <target state="needs-translation">Your Event has been removed.</target>
+        <target state="final">Ihre Veranstaltung wurde entfernt.</target>
       </trans-unit>
-      <trans-unit id="showDetailview">
+      <trans-unit id="showDetailview" approved="yes">
         <source>See Single View</source>
-        <target state="needs-translation">See Single View</target>
+        <target state="final">Siehe Einzelansicht</target>
       </trans-unit>
-      <trans-unit id="multipleTimesAssigned">
+      <trans-unit id="multipleTimesAssigned" approved="yes">
         <source>Multiple times assigned</source>
-        <target state="needs-translation">Multiple times assigned</target>
+        <target state="final">Mehrere Zeiten zugewiesen</target>
       </trans-unit>
-      <trans-unit id="routePlanner">
+      <trans-unit id="routePlanner" approved="yes">
         <source>Routeplanner</source>
-        <target state="needs-translation">Routeplanner</target>
+        <target state="final">Routenplaner</target>
       </trans-unit>
-      <trans-unit id="alternativeEventDates">
+      <trans-unit id="alternativeEventDates" approved="yes">
         <source>Alternative event dates</source>
-        <target state="needs-translation">Alternative event dates</target>
+        <target state="final">Alternative Veranstaltungsdaten</target>
       </trans-unit>
-      <trans-unit id="singleView">
+      <trans-unit id="singleView" approved="yes">
         <source>Single View</source>
-        <target state="translated">Einzelansicht</target>
+        <target state="final">Einzelansicht</target>
       </trans-unit>
-      <trans-unit id="search">
+      <trans-unit id="search" approved="yes">
         <source>Search</source>
-        <target state="needs-translation">Search</target>
+        <target state="final">Suche</target>
       </trans-unit>
-      <trans-unit id="yes">
+      <trans-unit id="yes" approved="yes">
         <source>yes</source>
-        <target state="needs-translation">yes</target>
+        <target state="final">ja</target>
       </trans-unit>
-      <trans-unit id="no">
+      <trans-unit id="no" approved="yes">
         <source>no</source>
-        <target state="needs-translation">no</target>
+        <target state="final">nein</target>
       </trans-unit>
-      <trans-unit id="noEventFound">
+      <trans-unit id="noEventFound" approved="yes">
         <source>The requested event could not be found. It may have already been deleted.</source>
-        <target state="needs-translation">The requested event could not be found. It may have already been deleted.</target>
+        <target state="final">Der angeforderte Termin konnte nicht gefunden werden. Möglicherweise wurde er bereits gelöscht.</target>
       </trans-unit>
-      <trans-unit id="noResults">
+      <trans-unit id="noResults" approved="yes">
         <source>Today there are no events</source>
-        <target state="needs-translation">Today there are no events</target>
+        <target state="final">Heute gibt es keine Veranstaltungen</target>
       </trans-unit>
-      <trans-unit id="export">
+      <trans-unit id="export" approved="yes">
         <source>Export date</source>
-        <target state="needs-translation">Export date</target>
+        <target state="final">Termin exportieren</target>
       </trans-unit>
-      <trans-unit id="widget.pagination.previous">
+      <trans-unit id="widget.pagination.previous" approved="yes">
         <source>previous</source>
-        <target state="needs-translation">previous</target>
+        <target state="final">vorherige</target>
       </trans-unit>
-      <trans-unit id="widget.pagination.next">
+      <trans-unit id="widget.pagination.next" approved="yes">
         <source>next</source>
-        <target state="needs-translation">next</target>
+        <target state="final">nächste</target>
       </trans-unit>
-      <trans-unit id="event_schedule">
+      <trans-unit id="event_schedule" approved="yes">
         <source>Event Schedule</source>
-        <target state="needs-translation">Event Schedule</target>
+        <target state="final">Terminplan</target>
       </trans-unit>
-      <trans-unit id="event_topic">
+      <trans-unit id="event_topic" approved="yes">
         <source>Event List by Topics</source>
-        <target state="needs-translation">Event List by Topics</target>
+        <target state="final">Veranstaltungsliste nach Themen</target>
       </trans-unit>
-      <trans-unit id="no_events_found">
+      <trans-unit id="no_events_found" approved="yes">
         <source>No events found</source>
-        <target state="needs-translation">No events found</target>
+        <target state="final">Keine Veranstaltungen vorhanden</target>
       </trans-unit>
-      <trans-unit id="link.listEvents">
+      <trans-unit id="link.listEvents" approved="yes">
         <source>Show all events</source>
-        <target state="needs-translation">Show all events</target>
+        <target state="final">Alle Veranstaltungen anzeigen</target>
       </trans-unit>
-      <trans-unit id="required">
+      <trans-unit id="required" approved="yes">
         <source>required</source>
-        <target state="needs-translation">required</target>
+        <target state="final">erforderlich</target>
       </trans-unit>
-      <trans-unit id="hint">
+      <trans-unit id="hint" approved="yes">
         <source>Hint</source>
-        <target state="needs-translation">Hint</target>
+        <target state="final">Hinweis</target>
       </trans-unit>
-      <trans-unit id="create">
+      <trans-unit id="create" approved="yes">
         <source>Create</source>
-        <target state="needs-translation">Create</target>
+        <target state="final">Erstellen</target>
       </trans-unit>
-      <trans-unit id="update">
+      <trans-unit id="update" approved="yes">
         <source>Update</source>
-        <target state="needs-translation">Update</target>
+        <target state="final">Aktualisieren</target>
       </trans-unit>
-      <trans-unit id="save">
+      <trans-unit id="save" approved="yes">
         <source>Save</source>
-        <target state="needs-translation">Save</target>
+        <target state="final">Speichern</target>
       </trans-unit>
-      <trans-unit id="remainingLetters">
+      <trans-unit id="remainingLetters" approved="yes">
         <source>Remaining letters</source>
-        <target state="needs-translation">Remaining letters</target>
+        <target state="final">Verbleibende Zeichen</target>
       </trans-unit>
-      <trans-unit id="notAllowedToCreate">
+      <trans-unit id="notAllowedToCreate" approved="yes">
         <source>You're not allowed to create event records.</source>
-        <target state="needs-translation">You're not allowed to create event records.</target>
+        <target state="final">Sie sind nicht berechtigt, Veranstaltungen zu erstellen.</target>
       </trans-unit>
-      <trans-unit id="missingOrganizerForCreate">
+      <trans-unit id="missingOrganizerForCreate" approved="yes">
         <source>You're allowed to create event records, but your user record has no relation to an organizer record.</source>
-        <target state="needs-translation">You're allowed to create event records, but your user record has no relation to an organizer record.</target>
+        <target state="final">Sie dürfen Veranstaltungen erstellen, aber Ihr Benutzereintrag hat keine Beziehung zu einem Organisator.</target>
       </trans-unit>
-      <trans-unit id="pageBrowser.first">
+      <trans-unit id="pageBrowser.first" approved="yes">
         <source>First</source>
-        <target state="needs-translation">First</target>
+        <target state="final">Erste</target>
       </trans-unit>
-      <trans-unit id="pageBrowser.previous">
+      <trans-unit id="pageBrowser.previous" approved="yes">
         <source>Previous</source>
-        <target state="needs-translation">Previous</target>
+        <target state="final">Vorherige</target>
       </trans-unit>
-      <trans-unit id="pageBrowser.next">
+      <trans-unit id="pageBrowser.next" approved="yes">
         <source>Next</source>
-        <target state="needs-translation">Next</target>
+        <target state="final">Nächste</target>
       </trans-unit>
-      <trans-unit id="pageBrowser.last">
+      <trans-unit id="pageBrowser.last" approved="yes">
         <source>Last</source>
-        <target state="needs-translation">Last</target>
+        <target state="final">Letzte</target>
       </trans-unit>
-      <trans-unit id="email.subject.create">
+      <trans-unit id="email.subject.create" approved="yes">
         <source>A new record was created</source>
-        <target state="needs-translation">A new record was created</target>
+        <target state="final">Ein neuer Datensatz wurde erstellt</target>
       </trans-unit>
-      <trans-unit id="email.subject.update">
+      <trans-unit id="email.subject.update" approved="yes">
         <source>A record was updated</source>
-        <target state="needs-translation">A record was updated</target>
+        <target state="final">Ein Datensatz wurde aktualisiert</target>
       </trans-unit>
-      <trans-unit id="email.subject.activate">
+      <trans-unit id="email.subject.activate" approved="yes">
         <source>A record was activated</source>
-        <target state="needs-translation">A record was activated</target>
+        <target state="final">Ein Datensatz wurde aktiviert</target>
       </trans-unit>
-      <trans-unit id="validator.event.videoLink.notYouTube">
+      <trans-unit id="validator.event.videoLink.notYouTube" approved="yes">
         <source>The URI provided for the video link is not a YouTube link. This form currently only allows YouTube links.</source>
-        <target state="needs-translation">The URI provided for the video link is not a YouTube link. This form currently only allows YouTube links.</target>
+        <target state="final">Die URI für den Video-Link ist kein YouTube-Link. Dieses Formular erlaubt derzeit nur YouTube-Links.</target>
       </trans-unit>
-      <trans-unit id="validator.event.categories.isMandatory">
+      <trans-unit id="validator.event.categories.isMandatory" approved="yes">
         <source>Property "categories" is defined to be mandatory. Please select at least one category.</source>
-        <target state="needs-translation">Property "categories" is defined to be mandatory. Please select at least one category.</target>
+        <target state="final">Die Eigenschaft "Kategorien" ist als obligatorisch definiert. Bitte wählen Sie mindestens eine Kategorie.</target>
       </trans-unit>
-      <trans-unit id="error.upload">
+      <trans-unit id="error.upload" approved="yes">
         <source>Something went wrong with your uploaded files. Please try again. Error: </source>
-        <target state="needs-translation">Something went wrong with your uploaded files. Please try again. Error: </target>
+        <target state="final">Etwas ist mit Ihren hochgeladenen Dateien schief gelaufen. Bitte versuchen Sie es erneut. Fehler: </target>
       </trans-unit>
-      <trans-unit id="error.uploadRights">
+      <trans-unit id="error.uploadRights" approved="yes">
         <source>You don\'t have checked the box for upload rights. So upload stops here</source>
-        <target state="needs-translation">You don\'t have checked the box for upload rights. So upload stops here</target>
+        <target state="final">Sie haben das Feld für Upload-Rechte nicht ausgewählt. Der Upload wurde abgebrochen</target>
       </trans-unit>
-      <trans-unit id="error.fileExtension">
+      <trans-unit id="error.fileExtension" approved="yes">
         <source>You only can upload files with following file extensions: %1$s</source>
-        <target state="needs-translation">You only can upload files with following file extensions: %1$s</target>
+        <target state="final">Sie können nur Dateien mit folgenden Dateiendungen hochladen: %1$s</target>
       </trans-unit>
-      <trans-unit id="error.locationFail">
+      <trans-unit id="error.locationFail" approved="yes">
         <source>The given location does not exist in our database. Please choose another one</source>
-        <target state="needs-translation">The given location does not exist in our database. Please choose another one</target>
+        <target state="final">Der angegebene Standort existiert nicht in unserer Datenbank. Bitte wählen Sie einen anderen</target>
       </trans-unit>
-      <trans-unit id="cshTitle">
+      <trans-unit id="cshTitle" approved="yes">
         <source>The title is mandatory</source>
-        <target state="needs-translation">The title is mandatory</target>
+        <target state="final">Der Titel ist ein Pflichfeld</target>
       </trans-unit>
-      <trans-unit id="cshTeaser">
+      <trans-unit id="cshTeaser" approved="yes">
         <source>The teaser is a short description and will be displayed on list views</source>
-        <target state="needs-translation">The teaser is a short description and will be displayed on list views</target>
+        <target state="final">Der Teaser ist eine kurze Beschreibung und wird in Listenansichten angezeigt</target>
       </trans-unit>
-      <trans-unit id="cshEventBegin">
+      <trans-unit id="cshEventBegin" approved="yes">
         <source>This date must be filled in following format: dd.mm.yyyy</source>
-        <target state="needs-translation">This date must be filled in following format: dd.mm.yyyy</target>
+        <target state="final">Dieses Datum muss im folgenden Format ausgefüllt werden: dd.mm.yyy</target>
       </trans-unit>
-      <trans-unit id="cshEventEnd">
+      <trans-unit id="cshEventEnd" approved="yes">
         <source>This date must be filled in following format: dd.mm.yyyy</source>
-        <target state="needs-translation">This date must be filled in following format: dd.mm.yyyy</target>
+        <target state="final">Dieses Datum muss im folgenden Format ausgefüllt werden: dd.mm.yyy</target>
       </trans-unit>
-      <trans-unit id="cshTimeBegin">
+      <trans-unit id="cshTimeBegin" approved="yes">
         <source>The time of the event has to be fill in following format: hh:mm</source>
-        <target state="needs-translation">The time of the event has to be fill in following format: hh:mm</target>
+        <target state="final">Die Zeit der Veranstaltung muss im folgenden Format ausgefüllt werden: hh:mm</target>
       </trans-unit>
-      <trans-unit id="cshCategories">
+      <trans-unit id="cshCategories" approved="yes">
         <source>The categories are mandatory. Please hold down STRG or CMD on your keyboard to select multiple categories.</source>
-        <target state="needs-translation">The categories are mandatory. Please hold down STRG or CMD on your keyboard to select multiple categories.</target>
+        <target state="final">Die Kategorien sind obligatorisch. Bitte drücken Sie STRG oder CMD auf Ihrer Tastatur, um mehrere Kategorien auszuwählen.</target>
       </trans-unit>
-      <trans-unit id="cshLocation">
+      <trans-unit id="cshLocation" approved="yes">
         <source>The location is mandatory</source>
-        <target state="needs-translation">The location is mandatory</target>
+        <target state="final">Der Ort ist obligatorisch</target>
       </trans-unit>
-      <trans-unit id="cshVideo">
+      <trans-unit id="cshVideo" approved="yes">
         <source>Insert here the link to a video film</source>
-        <target state="needs-translation">Insert here the link to a video film</target>
+        <target state="final">Füge hier den Link zu einem Videofilm ein</target>
       </trans-unit>
-      <trans-unit id="cshImages">
+      <trans-unit id="cshImages" approved="yes">
         <source>Upload max. 5 image files (jpg,gif,png). Please use the same image dimensions (i.e. 3:2, 3:4) if uploading more than one image.Be sure to set the image rights. Otherwise the image will not be uploaded.</source>
-        <target state="needs-translation">Upload max. 5 image files (jpg,gif,png). Please use the same image dimensions (i.e. 3:2, 3:4) if uploading more than one image.Be sure to set the image rights. Otherwise the image will not be uploaded.</target>
+        <target state="final">Laden Sie max. 5 Bilddateien hoch (jpg,gif,png). Bitte verwenden Sie die gleiche Bildgröße (z.B. 3:2, 3:4) wenn mehr als ein Bild hochgeladen wird. Stellen Sie sicher, dass Sie die Rechte des Bildes besitzen. Andernfalls wird das Bild nicht hochgeladen.</target>
       </trans-unit>
-      <trans-unit id="rightsMessage">
+      <trans-unit id="rightsMessage" approved="yes">
         <source>Dear Admin: Please override this label with help of TypoScript</source>
-        <target state="needs-translation">Dear Admin: Please override this label with help of TypoScript</target>
+        <target state="final">Lieber Admin: Bitte überschreiben Sie dieses Label mit Hilfe von TypoScript</target>
       </trans-unit>
-      <trans-unit id="altTextMapImg">
+      <trans-unit id="altTextMapImg" approved="yes">
         <source>Map</source>
-        <target state="needs-translation">Map</target>
+        <target state="final">Karte</target>
       </trans-unit>
-      <trans-unit id="scheduler.path">
+      <trans-unit id="scheduler.path" approved="yes">
         <source>Path of file to import</source>
-        <target state="needs-translation">Path of file to import</target>
+        <target state="final">Pfad der zu importierenden Datei</target>
       </trans-unit>
-      <trans-unit id="scheduler.storagePid">
+      <trans-unit id="scheduler.storagePid" approved="yes">
         <source>Storage PID</source>
-        <target state="needs-translation">Storage PID</target>
+        <target state="final">Speicher-PID</target>
       </trans-unit>
     </body>
   </file>
