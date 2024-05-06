@@ -375,6 +375,9 @@
 			<trans-unit id="missingOrganizerForCreate">
 				<source>You're allowed to create event records, but your user record has no relation to an organizer record.</source>
 			</trans-unit>
+			<trans-unit id="unauthorizedOrganizerForEdit">
+				<source>You are not allowed to edit events that do not correspond to your assigned organizer.</source>
+			</trans-unit>
 
 			<trans-unit id="pageBrowser.first">
 				<source>First</source>

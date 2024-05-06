@@ -492,6 +492,10 @@
 				<source>You're allowed to create event records, but your user record has no relation to an organizer record.</source>
 				<target>Sie haben zwar die Berechtigung Veranstaltungen anzulegen, aber Ihrem Benutzer wurde noch kein Veranstalter zugewiesen.</target>
 			</trans-unit>
+			<trans-unit id="unauthorizedOrganizerForEdit">
+				<source>You are not allowed to edit events that do not correspond to your assigned organizer.</source>
+				<target>Es ist Ihnen nicht erlaubt Veranstaltungen zu bearbeiten, die nicht Ihrem zugewiesenen Veranstalter entsprechen.</target>
+			</trans-unit>
 
 			<trans-unit id="pageBrowser.first">
 				<source>First</source>
