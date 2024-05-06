@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Domain\Repository;
 
+use JWeiland\Events2\Traits\InjectUserRepositoryTrait;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
@@ -20,6 +21,8 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  */
 class EventRepository extends AbstractRepository implements HiddenRepositoryInterface
 {
+    use InjectUserRepositoryTrait;
+
     public const TABLE = 'tx_events2_domain_model_event';
 
     protected $defaultOrderings = [
@@ -28,14 +31,7 @@ class EventRepository extends AbstractRepository implements HiddenRepositoryInte
 
     protected array $settings = [];
 
-    protected UserRepository $userRepository;
-
     protected ExceptionRepository $exceptionRepository;
-
-    public function injectUserRepository(UserRepository $userRepository): void
-    {
-        $this->userRepository = $userRepository;
-    }
 
     public function injectExceptionRepository(ExceptionRepository $exceptionRepository): void
     {

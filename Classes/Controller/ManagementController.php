@@ -20,7 +20,9 @@ use JWeiland\Events2\Traits\InjectEventRepositoryTrait;
 use JWeiland\Events2\Traits\InjectLocationRepositoryTrait;
 use JWeiland\Events2\Traits\InjectMailMessageTrait;
 use JWeiland\Events2\Traits\InjectPersistenceManagerTrait;
+use JWeiland\Events2\Traits\InjectUserRepositoryTrait;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Http\HtmlResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Annotation as Extbase;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -38,6 +40,7 @@ class ManagementController extends AbstractController
     use InjectLocationRepositoryTrait;
     use InjectMailMessageTrait;
     use InjectPersistenceManagerTrait;
+    use InjectUserRepositoryTrait;
 
     public function initializeListMyEventsAction(): void
     {
@@ -163,8 +166,20 @@ class ManagementController extends AbstractController
         return $this->redirect('listMyEvents', 'Management');
     }
 
-    public function performAction(): ResponseInterface
+    public function performAction(?Event $event = null): ResponseInterface
     {
+        if ((int)($this->settings['userGroup'] ?? 0) === 0) {
+            return new HtmlResponse(LocalizationUtility::translate('notAllowedToCreate', 'events2'));
+        }
+
+        if ($this->userRepository->getFieldFromUser('tx_events2_organizer') === '') {
+            return new HtmlResponse(LocalizationUtility::translate('missingOrganizerForCreate', 'events2'));
+        }
+
+        if ($event instanceof Event && $event->getIsCurrentUserAllowedOrganizer() === false) {
+            return new HtmlResponse(LocalizationUtility::translate('unauthorizedOrganizerForEdit', 'events2'));
+        }
+
         return $this->htmlResponse();
     }
 
