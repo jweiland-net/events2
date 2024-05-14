@@ -18,6 +18,7 @@ use JWeiland\Events2\Hooks\Form\PrefillCategoriesHook;
 use JWeiland\Events2\Hooks\Form\PrefillForEditUsageHook;
 use JWeiland\Events2\Hooks\Solr\IndexerHook;
 use JWeiland\Events2\Hooks\Solr\ResultsCommandHook;
+use JWeiland\Events2\Routing\Aspect\PersistedHiddenAliasMapper;
 use JWeiland\Events2\Routing\Aspect\TimestampMapper;
 use JWeiland\Events2\Task\AdditionalFieldsForImport;
 use JWeiland\Events2\Task\Import;
@@ -132,6 +133,7 @@ call_user_func(static function (): void {
     ];
 
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['aspects']['TimestampMapper'] = TimestampMapper::class;
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['aspects']['PersistedHiddenAliasMapper'] = PersistedHiddenAliasMapper::class;
 
     if (ExtensionManagementUtility::isLoaded('solr')) {
         // Remove non-current events from resultSet

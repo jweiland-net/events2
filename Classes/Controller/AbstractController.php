@@ -18,8 +18,10 @@ use JWeiland\Events2\Event\PostProcessFluidVariablesEvent;
 use JWeiland\Events2\Event\PreProcessControllerActionEvent;
 use JWeiland\Events2\Traits\InjectExtConfTrait;
 use JWeiland\Events2\Traits\InjectTypoScriptServiceTrait;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
@@ -128,8 +130,9 @@ class AbstractController extends ActionController implements LoggerAwareInterfac
         return $jsVariables;
     }
 
-    protected function getFlattenedValidationErrorMessage(): string
+    protected function errorAction(): ResponseInterface
     {
+        // Log error messages to /var/log/
         $validationResults = $this->arguments->validate();
         if ($validationResults->hasErrors()) {
             $errors = [];
@@ -149,12 +152,16 @@ class AbstractController extends ActionController implements LoggerAwareInterfac
             $this->logger->error(implode(' - ', $errors));
         }
 
-        return sprintf(
-            'Validation failed for given object while trying to call %s->%s(). %s' . PHP_EOL,
-            static::class,
-            $this->actionMethodName,
-            'Please check events2 log file.'
-        );
+        $this->addErrorFlashMessage();
+
+        if (($response = $this->forwardToReferringRequest()) !== null) {
+            return $response->withStatus(400);
+        }
+
+        // Without any argument htmlResponse will render Error.html Fluid Template
+        $response = $this->htmlResponse();
+
+        return $response->withStatus(400);
     }
 
     protected function postProcessAndAssignFluidVariables(array $variables = []): void
@@ -186,12 +193,15 @@ class AbstractController extends ActionController implements LoggerAwareInterfac
 
     protected function preProcessControllerAction(): void
     {
-        $this->eventDispatcher->dispatch(
-            new PreProcessControllerActionEvent(
-                $this->request,
-                $this->arguments,
-                $this->settings
-            )
+        $actionEvent = new PreProcessControllerActionEvent(
+            $this->request,
+            $this->arguments,
+            $this->settings
         );
+        $this->eventDispatcher->dispatch($actionEvent);
+
+        $this->request = $actionEvent->getRequest();
+        $this->arguments = $actionEvent->getArguments();
+        $this->actionMethodName = $this->resolveActionMethodName();
     }
 }

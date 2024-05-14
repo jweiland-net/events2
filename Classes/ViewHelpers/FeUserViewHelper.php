@@ -19,6 +19,8 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * This VH returns values from current logged in frontend user array
+ *
+ * @deprecated Will be removed with next major upgrade. Access restriction will be caught in RestrictAccessEventListener now
  */
 class FeUserViewHelper extends AbstractViewHelper
 {
