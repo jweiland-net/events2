@@ -37,6 +37,11 @@ class PreProcessControllerActionEvent implements ControllerActionEventInterface
         return $this->request;
     }
 
+    public function setRequest(Request $request): void
+    {
+        $this->request = $request;
+    }
+
     public function getControllerName(): string
     {
         return $this->request->getControllerName();
@@ -50,6 +55,11 @@ class PreProcessControllerActionEvent implements ControllerActionEventInterface
     public function getArguments(): Arguments
     {
         return $this->arguments;
+    }
+
+    public function setArguments(Arguments $arguments): void
+    {
+        $this->arguments = $arguments;
     }
 
     public function getSettings(): array

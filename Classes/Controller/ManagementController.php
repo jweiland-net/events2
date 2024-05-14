@@ -199,22 +199,13 @@ class ManagementController extends AbstractController
         $this->redirect('listMyEvents', 'Management');
     }
 
-    public function performAction(?Event $event = null): string
+    public function initializePerformAction(): void
     {
-        if ((int)($this->settings['userGroup'] ?? 0) === 0) {
-            return LocalizationUtility::translate('notAllowedToCreate', 'events2');
-        }
+        $this->preProcessControllerAction();
+    }
 
-        if ($this->userRepository->getFieldFromUser('tx_events2_organizer') === '') {
-            return LocalizationUtility::translate('missingOrganizerForCreate', 'events2');
-        }
-
-        if ($event instanceof Event && $event->getIsCurrentUserAllowedOrganizer() === false) {
-            return LocalizationUtility::translate('unauthorizedOrganizerForEdit', 'events2');
-        }
-
-        return $this->view->render();
-
+    public function performAction(): void
+    {
     }
 
     public function initializeDeleteAction(): void

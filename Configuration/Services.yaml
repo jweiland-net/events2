@@ -113,6 +113,10 @@ services:
     tags:
       - name: event.listener
         event: JWeiland\Events2\Event\PreProcessControllerActionEvent
+  JWeiland\Events2\EventListener\RestrictAccessEventListener:
+    tags:
+      - name: event.listener
+        event: JWeiland\Events2\Event\PreProcessControllerActionEvent
   JWeiland\Events2\EventListener\RegisterHiddenEventEventListener:
     tags:
       - name: event.listener

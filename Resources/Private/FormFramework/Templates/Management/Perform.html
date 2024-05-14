@@ -9,22 +9,8 @@
 <f:section name="main">
 	<f:flashMessages />
 
-	<f:security.ifHasRole role="{settings.userGroup}">
-		<f:then>
-			<f:if condition="{e2:feUser(field: 'tx_events2_organizer')}">
-				<f:then>
-					<formvh:render persistenceIdentifier="EXT:events2/Configuration/Form/NewEvent.form.yaml"
-												 factoryClass="JWeiland\\Events2\\Domain\\Factory\\ArrayFormFactory"
-												 overrideConfiguration="{settings.overrideForm}" />
-				</f:then>
-				<f:else>
-					<div><f:translate key="missingOrganizerForCreate" /></div>
-				</f:else>
-			</f:if>
-		</f:then>
-		<f:else>
-			<div><f:translate key="notAllowedToCreate" /></div>
-		</f:else>
-	</f:security.ifHasRole>
+    <formvh:render persistenceIdentifier="EXT:events2/Configuration/Form/NewEvent.form.yaml"
+                                 factoryClass="JWeiland\\Events2\\Domain\\Factory\\ArrayFormFactory"
+                                 overrideConfiguration="{settings.overrideForm}" />
 </f:section>
 </html>

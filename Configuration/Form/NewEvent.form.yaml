@@ -682,7 +682,7 @@ finishers:
           tstamp:
             value: '{__currentTimestamp}'
           hidden:
-            value: 1
+            value: 0
           event_time:
             value: 0
           xth:
@@ -923,12 +923,26 @@ finishers:
       #senderAddress:
       #senderName:
   3:
+    # Hide event record after creation.
+    # It must be hidden in a separate step.
+    # Else link generation in EmailToReceiver finisher will not work correctly.
+    identifier: SaveEventFinisher
+    options:
+      1:
+        table: tx_events2_domain_model_event
+        mode: update
+        whereClause:
+          - uid: '{SaveEvent.insertedUids.4}'
+        databaseColumnMappings:
+          hidden:
+            value: 1
+  4:
     identifier: FlashMessage
     options:
       messageCode: 1661847238
       messageBody: 'Your new Event was created.'
       severity: 0
-  4:
+  5:
     identifier: Redirect
     options:
       pageUid: 1
