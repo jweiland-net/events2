@@ -44,7 +44,7 @@ class LocationRepository extends AbstractRepository
             ->where(
                 $queryBuilder->expr()->like(
                     'l.location',
-                    $queryBuilder->createNamedParameter('%' . $search . '%')
+                    $queryBuilder->createNamedParameter('%' . $queryBuilder->escapeLikeWildcards($search) . '%')
                 )
             )
             ->orderBy('l.location', 'ASC');
