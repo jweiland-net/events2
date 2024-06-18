@@ -7,6 +7,12 @@
 ChangeLog
 =========
 
+Version 8.3.8
+=============
+
+*   [SECURITY] Cached Action -> possible sensitive information disclosure
+*   [TASK] Escape % in LIKE queries
+
 Version 8.3.7
 =============
 
