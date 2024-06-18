@@ -137,8 +137,9 @@ class AbstractController extends ActionController implements LoggerAwareInterfac
         return $jsVariables;
     }
 
-    protected function getFlattenedValidationErrorMessage(): string
+    protected function errorAction(): void
     {
+        // Log error messages to /var/log/
         $validationResults = $this->arguments->validate();
         if ($validationResults->hasErrors()) {
             $errors = [];
@@ -158,12 +159,8 @@ class AbstractController extends ActionController implements LoggerAwareInterfac
             $this->logger->error(implode(' - ', $errors));
         }
 
-        return sprintf(
-            'Validation failed for given object while trying to call %s->%s(). %s' . PHP_EOL,
-            static::class,
-            $this->actionMethodName,
-            'Please check events2 log file.'
-        );
+        $this->addErrorFlashMessage();
+        $this->forwardToReferringRequest();
     }
 
     protected function postProcessAndAssignFluidVariables(array $variables = []): void
@@ -194,12 +191,15 @@ class AbstractController extends ActionController implements LoggerAwareInterfac
 
     protected function preProcessControllerAction(): void
     {
-        $this->eventDispatcher->dispatch(
-            new PreProcessControllerActionEvent(
-                $this->request,
-                $this->arguments,
-                $this->settings
-            )
+        $actionEvent = new PreProcessControllerActionEvent(
+            $this->request,
+            $this->arguments,
+            $this->settings
         );
+        $this->eventDispatcher->dispatch($actionEvent);
+
+        $this->request = $actionEvent->getRequest();
+        $this->arguments = $actionEvent->getArguments();
+        $this->actionMethodName = $this->resolveActionMethodName();
     }
 }

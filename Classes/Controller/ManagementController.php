@@ -15,6 +15,7 @@ use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
+use JWeiland\Events2\Domain\Repository\UserRepository;
 use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Utility\CacheUtility;
 use TYPO3\CMS\Core\Mail\MailMessage;
@@ -38,6 +39,8 @@ class ManagementController extends AbstractController
     protected DayRelationService $dayRelationService;
 
     protected PersistenceManagerInterface $persistenceManager;
+
+    protected UserRepository $userRepository;
 
     protected MailMessage $mail;
 
@@ -64,6 +67,11 @@ class ManagementController extends AbstractController
     public function injectPersistenceManager(PersistenceManagerInterface $persistenceManager): void
     {
         $this->persistenceManager = $persistenceManager;
+    }
+
+    public function injectUserRepository(UserRepository $userRepository): void
+    {
+        $this->userRepository = $userRepository;
     }
 
     public function injectMailMessage(MailMessage $mailMessage): void
@@ -189,6 +197,11 @@ class ManagementController extends AbstractController
         }
         $this->addFlashMessage(LocalizationUtility::translate('eventUpdated', 'events2'));
         $this->redirect('listMyEvents', 'Management');
+    }
+
+    public function initializePerformAction(): void
+    {
+        $this->preProcessControllerAction();
     }
 
     public function performAction(): void

@@ -115,7 +115,7 @@ plugin.tx_events2 {
 
       finishers.2.options.subject = A new event record was created
 
-      finishers.4.options.pageUid = {$plugin.tx_events2.settings.pidOfListPage}
+      finishers.5.options.pageUid = {$plugin.tx_events2.settings.pidOfListPage}
     }
 
     pageBrowser {
