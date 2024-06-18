@@ -1,35 +1,20 @@
 <html lang="en"
       xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-      xmlns:e2="http://typo3.org/ns/JWeiland/Events2/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
 <f:layout name="Create"/>
 
 <f:section name="Main">
-    <f:security.ifHasRole role="{settings.userGroup}">
-        <f:then>
-            <f:if condition="{e2:feUser(field: 'tx_events2_organizer')}">
-                <f:then>
-                    <f:flashMessages/>
-                    <f:render partial="FormErrors" arguments="{object:Event}"/>
-                    <f:form action="create" name="event" object="{event}" enctype="multipart/form-data" class="form-horizontal">
-                        <legend><f:translate key="newEntry"/></legend>
-                        <f:render partial="Management/FormFields" arguments="{_all}"/>
-                        <div class="form-group">
-                            <div class="col-sm-offset-4 col-sm-8">
-                                <f:form.submit class="btn btn-default" value="{f:translate(key: 'create')}"/>
-                            </div>
-                        </div>
-                    </f:form>
-                </f:then>
-                <f:else>
-                    <div><f:translate key="missingOrganizerForCreate"/></div>
-                </f:else>
-            </f:if>
-        </f:then>
-        <f:else>
-            <div><f:translate key="notAllowedToCreate"/></div>
-        </f:else>
-    </f:security.ifHasRole>
+    <f:flashMessages/>
+    <f:render partial="FormErrors" arguments="{object:Event}"/>
+    <f:form action="create" name="event" object="{event}" enctype="multipart/form-data" class="form-horizontal">
+        <legend><f:translate key="newEntry"/></legend>
+        <f:render partial="Management/FormFields" arguments="{_all}"/>
+        <div class="form-group">
+            <div class="col-sm-offset-4 col-sm-8">
+                <f:form.submit class="btn btn-default" value="{f:translate(key: 'create')}"/>
+            </div>
+        </div>
+    </f:form>
 </f:section>
 </html>

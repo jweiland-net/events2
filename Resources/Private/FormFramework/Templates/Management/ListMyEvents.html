@@ -7,41 +7,34 @@
 <f:section name="Main">
     <f:flashMessages/>
 
-    <f:security.ifHasRole role="{settings.userGroup}">
-        <f:then>
-            <p class="align-right info-box">
-                <f:link.action action="perform"
-                               controller="Management"
-                               title="{f:translate(key: 'newEntry')}">
-                    <span>{f:translate(key: 'newEntry')}</span>
-                    <span aria-hidden="true" class="icon-arrowright"></span>
-                </f:link.action>
-            </p>
+    <p class="align-right info-box">
+        <f:link.action action="perform"
+                       controller="Management"
+                       title="{f:translate(key: 'newEntry')}">
+            <span>{f:translate(key: 'newEntry')}</span>
+            <span aria-hidden="true" class="icon-arrowright"></span>
+        </f:link.action>
+    </p>
 
-            <f:if condition="{events}">
-                <f:then>
-                    <div class="list scroll-container">
-                        <ul>
-                            <f:for each="{events}" as="event">
-                                <li>
-                                    <f:link.action action="perform"
-                                                   controller="Management"
-                                                   arguments="{event: event, timestamp: '0'}">
-                                        {event.title}
-                                    </f:link.action>
-                                </li>
-                            </f:for>
-                        </ul>
-                    </div>
-                </f:then>
-                <f:else>
-                    <div>{f:translate(key: 'no_events_found')}</div>
-                </f:else>
-            </f:if>
+    <f:if condition="{events}">
+        <f:then>
+            <div class="list scroll-container">
+                <ul>
+                    <f:for each="{events}" as="event">
+                        <li>
+                            <f:link.action action="perform"
+                                           controller="Management"
+                                           arguments="{event: event, timestamp: '0'}">
+                                {event.title}
+                            </f:link.action>
+                        </li>
+                    </f:for>
+                </ul>
+            </div>
         </f:then>
         <f:else>
-            <div>{f:translate(key: 'notAllowedToCreate')}</div>
+            <div>{f:translate(key: 'no_events_found')}</div>
         </f:else>
-    </f:security.ifHasRole>
+    </f:if>
 </f:section>
 </html>

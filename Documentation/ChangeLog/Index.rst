@@ -7,6 +7,12 @@
 ChangeLog
 =========
 
+Version 9.0.6
+=============
+
+*   [SECURITY] Cached Action -> possible sensitive information disclosure
+*   [TASK] Escape % in LIKE queries
+
 Version 9.0.5
 =============
 

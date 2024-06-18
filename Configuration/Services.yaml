@@ -124,6 +124,10 @@ services:
     tags:
       - name: 'event.listener'
         identifier: 'assignMediaTypeConverter'
+  JWeiland\Events2\EventListener\RestrictAccessEventListener:
+    tags:
+      - name: 'event.listener'
+        identifier: 'restrictAccess'
   JWeiland\Events2\EventListener\RegisterHiddenEventEventListener:
     tags:
       - name: 'event.listener'

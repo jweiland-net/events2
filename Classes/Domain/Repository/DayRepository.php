@@ -195,7 +195,7 @@ class DayRepository extends AbstractRepository
         $queryBuilder = $this->getQueryBuilderForTable('tx_events2_domain_model_day', 'day', true);
         $subQueryBuilder = $this->getSubQueryBuilder($queryBuilder, true);
 
-        // add storage PID for event and day, but not for sys_category
+        // Add storage PID for event and day, but not for sys_category
         $this->databaseService->addConstraintForPid(
             $subQueryBuilder,
             $search->getStoragePids() ?: $extbaseQuery->getQuerySettings()->getStoragePageIds(),
@@ -209,15 +209,15 @@ class DayRepository extends AbstractRepository
                 (string)$subQueryBuilder->expr()->or(
                     $queryBuilder->expr()->like(
                         'event_sub_query.title',
-                        $queryBuilder->quote('%' . $search->getSearch() . '%')
+                        $queryBuilder->quote('%' . $queryBuilder->escapeLikeWildcards($search->getSearch()) . '%')
                     ),
                     $subQueryBuilder->expr()->like(
                         'event_sub_query.teaser',
-                        $queryBuilder->quote('%' . $search->getSearch() . '%')
+                        $queryBuilder->quote('%' . $queryBuilder->escapeLikeWildcards($search->getSearch()) . '%')
                     ),
                     $subQueryBuilder->expr()->like(
                         'event_sub_query.detail_information',
-                        $queryBuilder->quote('%' . $search->getSearch() . '%')
+                        $queryBuilder->quote('%' . $queryBuilder->escapeLikeWildcards($search->getSearch()) . '%')
                     )
                 )
             );

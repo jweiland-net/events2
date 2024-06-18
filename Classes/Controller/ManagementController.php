@@ -20,6 +20,7 @@ use JWeiland\Events2\Traits\InjectEventRepositoryTrait;
 use JWeiland\Events2\Traits\InjectLocationRepositoryTrait;
 use JWeiland\Events2\Traits\InjectMailMessageTrait;
 use JWeiland\Events2\Traits\InjectPersistenceManagerTrait;
+use JWeiland\Events2\Traits\InjectUserRepositoryTrait;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Annotation as Extbase;
@@ -38,6 +39,7 @@ class ManagementController extends AbstractController
     use InjectLocationRepositoryTrait;
     use InjectMailMessageTrait;
     use InjectPersistenceManagerTrait;
+    use InjectUserRepositoryTrait;
 
     public function initializeListMyEventsAction(): void
     {
@@ -163,7 +165,12 @@ class ManagementController extends AbstractController
         return $this->redirect('listMyEvents', 'Management');
     }
 
-    public function performAction(): ResponseInterface
+    public function initializePerformAction(): void
+    {
+        $this->preProcessControllerAction();
+    }
+
+    public function performAction(?Event $event = null): ResponseInterface
     {
         return $this->htmlResponse();
     }

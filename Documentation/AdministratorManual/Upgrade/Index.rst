@@ -7,8 +7,57 @@
 Upgrade
 =======
 
-If you upgrade/update EXT:events2 to a newer version, please read this section carefully!
+If you upgrade/update EXT:events2 to a newer version, please read this
+section carefully!
 
+
+Update to Version 9.0.4
+=======================
+
+We have marked the FeUser ViewHelper as deprecated. As a replacement for
+access restrictions there is a new `AccessRightsEventListener` catching
+invalid requests. You should update your own templates accordingly.
+
+Because of an "edit" and "activate" linking problem in information mail, we
+had to store the event non-hidden in database first and had to hide the event
+after the mailing in a second step. Else the event slug can not be added to
+route enhancer. Please make sure that your own modifications
+to `plugin.tx_events.settings.overrideForm.finishers.*` configuration is still
+working.
+
+There is a new `PersistedHiddenAliasMapper` available to allow generating
+slugs to hidden event records. Needed for info mails.
+
+..  code-block:: yaml
+
+    Events2Management:
+      type: Extbase
+      extension: Events2
+      plugin: Management
+      routes:
+        - routePath: '/events/m/lme'
+          _controller: 'Management::listMyEvents'
+        - routePath: '/events/m/p'
+          _controller: 'Management::perform'
+        -
+          routePath: '/event/m/p/{event_title}'
+          _controller: 'Management::perform'
+          _arguments:
+            event_title: event
+        -
+          routePath: '/event/m/a/{event_title}'
+          _controller: 'Management::activate'
+          _arguments:
+            event_title: event
+      defaultController: 'Management::listMyEvents'
+      aspects:
+        event_title:
+          type: PersistedHiddenAliasMapper
+          tableName: tx_events2_domain_model_event
+          routeFieldName: path_segment
+
+We render our own template for `errorAction` which results in much nicer
+flash messages output. Please be prepared to override them accordingly.
 
 Update to Version 9.0.0
 =======================
