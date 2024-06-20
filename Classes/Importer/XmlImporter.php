@@ -293,10 +293,10 @@ class XmlImporter extends AbstractImporter
         if (isset($eventRecord['event_time']) && is_array($eventRecord['event_time'])) {
             $eventTime = GeneralUtility::makeInstance(Time::class);
             $eventTime->setPid($this->storagePid);
-            $eventTime->setTimeBegin($eventRecord['event_time']['time_begin'] ?: '');
-            $eventTime->setTimeEntry($eventRecord['event_time']['time_entry'] ?: '');
-            $eventTime->setTimeEnd($eventRecord['event_time']['time_end'] ?: '');
-            $eventTime->setDuration($eventRecord['event_time']['duration'] ?: '');
+            $eventTime->setTimeBegin($eventRecord['event_time']['time_begin'] ?? '');
+            $eventTime->setTimeEntry($eventRecord['event_time']['time_entry'] ?? '');
+            $eventTime->setTimeEnd($eventRecord['event_time']['time_end'] ?? '');
+            $eventTime->setDuration($eventRecord['event_time']['duration'] ?? '');
             $event->setEventTime($eventTime);
         }
 
@@ -309,10 +309,10 @@ class XmlImporter extends AbstractImporter
             foreach ($eventRecord['multiple_times'] as $multipleTime) {
                 $newTime = GeneralUtility::makeInstance(Time::class);
                 $newTime->setPid($this->storagePid);
-                $newTime->setTimeBegin($multipleTime['time_begin'] ?: '');
-                $newTime->setTimeEntry($multipleTime['time_entry'] ?: '');
-                $newTime->setTimeEnd($multipleTime['time_end'] ?: '');
-                $newTime->setDuration($multipleTime['duration'] ?: '');
+                $newTime->setTimeBegin($multipleTime['time_begin'] ?? '');
+                $newTime->setTimeEntry($multipleTime['time_entry'] ?? '');
+                $newTime->setTimeEnd($multipleTime['time_end'] ?? '');
+                $newTime->setDuration($multipleTime['duration'] ?? '');
                 $event->addMultipleTime($newTime);
             }
         }
@@ -330,10 +330,10 @@ class XmlImporter extends AbstractImporter
             $newTime = GeneralUtility::makeInstance(Time::class);
             $newTime->setPid($this->storagePid);
             $newTime->setWeekday($differentTime['weekday']);
-            $newTime->setTimeBegin($differentTime['time_begin'] ?: '');
-            $newTime->setTimeEntry($differentTime['time_entry'] ?: '');
-            $newTime->setTimeEnd($differentTime['time_end'] ?: '');
-            $newTime->setDuration($differentTime['duration'] ?: '');
+            $newTime->setTimeBegin($differentTime['time_begin'] ?? '');
+            $newTime->setTimeEntry($differentTime['time_entry'] ?? '');
+            $newTime->setTimeEnd($differentTime['time_end'] ?? '');
+            $newTime->setDuration($differentTime['duration'] ?? '');
             $event->addDifferentTime($newTime);
         }
     }
@@ -409,10 +409,10 @@ class XmlImporter extends AbstractImporter
             if (isset($exception['exception_time'])) {
                 $newTime = GeneralUtility::makeInstance(Time::class);
                 $newTime->setPid($this->storagePid);
-                $newTime->setTimeBegin($exception['exception_time']['time_begin'] ?: '');
-                $newTime->setTimeEntry($exception['exception_time']['time_entry'] ?: '');
-                $newTime->setTimeEnd($exception['exception_time']['time_end'] ?: '');
-                $newTime->setDuration($exception['exception_time']['duration'] ?: '');
+                $newTime->setTimeBegin($exception['exception_time']['time_begin'] ?? '');
+                $newTime->setTimeEntry($exception['exception_time']['time_entry'] ?? '');
+                $newTime->setTimeEnd($exception['exception_time']['time_end'] ?? '');
+                $newTime->setDuration($exception['exception_time']['duration'] ?? '');
                 $newException->setExceptionTime($newTime);
             }
 
