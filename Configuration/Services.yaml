@@ -67,6 +67,11 @@ services:
   JWeiland\Events2\Hooks\Solr\ResultsCommandHook:
     public: true
 
+  # Importer classes will be called by GU::makeInstance in Task\Import
+  JWeiland\Events2\Importer\:
+    resource: '../Classes/Importer/*Importer.php'
+    public: true
+
   # Called by makeInstance out of TypoScript
   JWeiland\Events2\PageTitleProvider\Events2PageTitleProvider:
     public: true

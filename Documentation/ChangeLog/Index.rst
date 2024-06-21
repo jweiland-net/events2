@@ -7,6 +7,12 @@
 ChangeLog
 =========
 
+Version 9.0.7
+=============
+
+*   [TASK] Check array keys before access in XmlImporter
+*   [TASK] Mark Importer classes as public: true in Services.yaml
+
 Version 9.0.6
 =============
 
