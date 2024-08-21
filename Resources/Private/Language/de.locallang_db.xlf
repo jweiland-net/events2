@@ -463,9 +463,17 @@
         <source>Show removed date in list and detail view anyway</source>
         <target state="final">Entferntes Datum in der Listen- und Detailansicht dennoch anzeigen</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_exception.is_primer">
-        <source>Show as Primer</source>
-        <target state="needs-translation">Show as Primer</target>
+      <trans-unit id="tx_events2_domain_model_exception.mark_as">
+        <source>Mark as</source>
+        <target state="needs-translation">Mark as</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_exception.mark_as.primer">
+        <source>Primer</source>
+        <target state="needs-translation">Primer</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_exception.mark_as.resumption">
+        <source>Resumption</source>
+        <target state="needs-translation">Resumption</target>
       </trans-unit>
       <trans-unit id="tx_events2_domain_model_location" approved="yes">
         <source>Location</source>
