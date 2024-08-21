@@ -1,37 +1,17 @@
 <?php
 
-/*
- * This file is part of the package jweiland/events2.
- *
- * For the full copyright and license information, please read the
- * LICENSE file that was distributed with this source code.
- */
+declare(strict_types=1);
 
 use PhpCsFixer\Config;
-
-if (PHP_SAPI !== 'cli') {
-    die('This script supports command line usage only. Please check your command.');
-}
-
-$headerComment = <<<COMMENT
-This file is part of the package jweiland/events2.
-
-For the full copyright and license information, please read the
-LICENSE file that was distributed with this source code.
-COMMENT;
+use PhpCsFixer\Finder;
 
 return (new Config())
     ->setFinder(
-        (new PhpCsFixer\Finder())
-            ->ignoreVCSIgnored(true)
-            ->in([
-                __DIR__ . '/../../Build/',
-                __DIR__ . '/../../Classes/',
-                __DIR__ . '/../../Configuration/',
-                __DIR__ . '/../../Tests/',
-            ])
+        (new Finder())
+            ->in(__DIR__ . '/../../')
+            ->exclude(__DIR__ . '/../../.Build')
+            ->exclude(__DIR__ . '/../../var')
     )
-    ->setUsingCache(false)
     ->setRiskyAllowed(true)
     ->setRules([
         '@DoctrineAnnotation' => true,
@@ -71,7 +51,6 @@ return (new Config())
         'no_trailing_comma_in_singleline' => true,
         'no_unneeded_control_parentheses' => true,
         'no_unused_imports' => true,
-        'no_useless_else' => true,
         'no_useless_nullsafe_operator' => true,
         'ordered_imports' => ['imports_order' => ['class', 'function', 'const'], 'sort_algorithm' => 'alpha'],
         'php_unit_construct' => ['assertions' => ['assertEquals', 'assertSame', 'assertNotEquals', 'assertNotSame']],
@@ -90,7 +69,13 @@ return (new Config())
         'single_line_comment_style' => ['comment_types' => ['hash']],
         // @todo: Can be dropped once we enable @PER-CS2.0
         'single_line_empty_body' => true,
-        'trailing_comma_in_multiline' => ['elements' => ['arrays']],
+        'trailing_comma_in_multiline' => ['elements' => ['arguments', 'arrays', 'match', 'parameters']],
         'whitespace_after_comma_in_array' => ['ensure_single_space' => true],
         'yoda_style' => ['equal' => false, 'identical' => false, 'less_and_greater' => false],
+
+        // We need this for documentation!
+        'no_useless_else' => false, // We want to preserve else with comments only
+
+        // Add this rule to convert FQCN to use statements
+        'full_opening_tag' => true,
     ]);
