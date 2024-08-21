@@ -247,16 +247,16 @@ return [
                 'size' => 1,
                 'items' => [
                     [
-                        'label' => '',
-                        'value' => '',
+                        '',
+                        '',
                     ],
                     [
-                        'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_exception.mark_as.primer',
-                        'value' => 'primer',
+                        'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_exception.mark_as.primer',
+                        'primer',
                     ],
                     [
-                        'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_exception.mark_as.resumption',
-                        'value' => 'resumption',
+                        'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_exception.mark_as.resumption',
+                        'resumption',
                     ],
                 ],
                 'default' => '',
