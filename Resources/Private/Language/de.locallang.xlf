@@ -279,9 +279,9 @@
         <source>Primer</source>
         <target state="final">Premiere</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_exception.resumption">
+      <trans-unit id="tx_events2_domain_model_exception.resumption" approved="yes">
         <source>Resumption</source>
-        <target state="needs-translation">Resumption</target>
+        <target state="final">Wiederaufnahme</target>
       </trans-unit>
       <trans-unit id="tx_events2_domain_model_location" approved="yes">
         <source>Location</source>
