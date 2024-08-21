@@ -182,7 +182,7 @@ class Day extends AbstractEntity
 
         return $timeFactory->getSortedTimesForDate(
             $this->getEvent(),
-            $this->getDay()
+            $this->getDay(),
         );
     }
 }

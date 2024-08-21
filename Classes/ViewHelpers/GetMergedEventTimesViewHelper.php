@@ -38,12 +38,12 @@ class GetMergedEventTimesViewHelper extends AbstractViewHelper
     public static function renderStatic(
         array $arguments,
         \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
+        RenderingContextInterface $renderingContext,
     ): \SplObjectStorage {
         $timeFactory = GeneralUtility::makeInstance(TimeFactory::class);
         return $timeFactory->getSortedTimesForDate(
             $arguments['event'],
-            $arguments['date']
+            $arguments['date'],
         );
     }
 }

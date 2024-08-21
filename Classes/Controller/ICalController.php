@@ -36,7 +36,7 @@ class ICalController extends ActionController
                 null,
                 $this->iCalendarHelper->buildICalExport($day),
                 true,
-                $this->iCalendarHelper->getEventUid($day) . '.ics'
+                $this->iCalendarHelper->getEventUid($day) . '.ics',
             );
         }
 
@@ -44,7 +44,7 @@ class ICalController extends ActionController
             [
                 'error' => 'DayRecord ' . $day . ' for iCal download could not be found in our database.',
             ],
-            500
+            500,
         );
     }
 }

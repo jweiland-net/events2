@@ -31,28 +31,28 @@ class ExceptionRepository extends AbstractRepository
         $expressions = [
             $expressionBuilder->eq(
                 $tableAlias . '.event',
-                $eventRecord['uid']
+                $eventRecord['uid'],
             ),
         ];
 
         return $this->getRecordsByExpression(
             self::TABLE,
             $tableAlias,
-            $expressions
+            $expressions,
         );
     }
 
     public function getRecord(
         int $uid,
         array $select = ['*'],
-        bool $includeHidden = false
+        bool $includeHidden = false,
     ): array {
         return $this->getRecordByUid(
             self::TABLE,
             'ex',
             $uid,
             $select,
-            $includeHidden
+            $includeHidden,
         );
     }
 }

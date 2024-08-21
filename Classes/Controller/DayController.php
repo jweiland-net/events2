@@ -42,7 +42,7 @@ class DayController extends AbstractController
             $this->addFlashMessage(
                 'Please check content record with UID "' . $data['records'] . '". Column "pages" can not be 0. It must be empty or higher than 0.',
                 'tt_content column pages can not be 0',
-                ContextualFeedbackSeverity::WARNING
+                ContextualFeedbackSeverity::WARNING,
             );
         }
     }
@@ -63,7 +63,7 @@ class DayController extends AbstractController
         $days = $this->dayRepository->getDaysForListType(
             $this->settings['listType'] ?? 'list',
             $filter,
-            $amountOfRecordsToShow
+            $amountOfRecordsToShow,
         );
 
         $this->postProcessAndAssignFluidVariables([

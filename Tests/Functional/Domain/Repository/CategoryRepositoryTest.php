@@ -44,7 +44,7 @@ class CategoryRepositoryTest extends FunctionalTestCase
     protected function tearDown(): void
     {
         unset(
-            $this->subject
+            $this->subject,
         );
 
         parent::tearDown();
@@ -59,7 +59,7 @@ class CategoryRepositoryTest extends FunctionalTestCase
 
         self::assertSame(
             [],
-            $queryResult->toArray()
+            $queryResult->toArray(),
         );
     }
 
@@ -73,13 +73,13 @@ class CategoryRepositoryTest extends FunctionalTestCase
 
         self::assertCount(
             1,
-            $categories
+            $categories,
         );
 
         $category = current($categories);
         self::assertSame(
             'Audi',
-            $category->getTitle()
+            $category->getTitle(),
         );
     }
 
@@ -93,18 +93,18 @@ class CategoryRepositoryTest extends FunctionalTestCase
 
         self::assertCount(
             2,
-            $categories
+            $categories,
         );
 
         $category = current($categories);
         self::assertSame(
             'Audi',
-            $category->getTitle()
+            $category->getTitle(),
         );
         $category = next($categories);
         self::assertSame(
             'BMW',
-            $category->getTitle()
+            $category->getTitle(),
         );
     }
 
@@ -118,23 +118,23 @@ class CategoryRepositoryTest extends FunctionalTestCase
 
         self::assertCount(
             3,
-            $categories
+            $categories,
         );
 
         $category = current($categories);
         self::assertSame(
             'Audi',
-            $category->getTitle()
+            $category->getTitle(),
         );
         $category = next($categories);
         self::assertSame(
             'BMW',
-            $category->getTitle()
+            $category->getTitle(),
         );
         $category = next($categories);
         self::assertSame(
             'Cars',
-            $category->getTitle()
+            $category->getTitle(),
         );
     }
 
@@ -148,13 +148,13 @@ class CategoryRepositoryTest extends FunctionalTestCase
 
         self::assertCount(
             1,
-            $categories
+            $categories,
         );
 
         $category = current($categories);
         self::assertSame(
             'Cars',
-            $category->getTitle()
+            $category->getTitle(),
         );
     }
 
@@ -168,18 +168,18 @@ class CategoryRepositoryTest extends FunctionalTestCase
 
         self::assertCount(
             2,
-            $categories
+            $categories,
         );
 
         $category = current($categories);
         self::assertSame(
             'Audi',
-            $category->getTitle()
+            $category->getTitle(),
         );
         $category = next($categories);
         self::assertSame(
             'BMW',
-            $category->getTitle()
+            $category->getTitle(),
         );
     }
 
@@ -192,7 +192,7 @@ class CategoryRepositoryTest extends FunctionalTestCase
 
         self::assertSame(
             [],
-            $queryResult->toArray()
+            $queryResult->toArray(),
         );
     }
 
@@ -206,13 +206,13 @@ class CategoryRepositoryTest extends FunctionalTestCase
 
         self::assertCount(
             1,
-            $categories
+            $categories,
         );
 
         $category = current($categories);
         self::assertSame(
             'Cars',
-            $category->getTitle()
+            $category->getTitle(),
         );
     }
 
@@ -226,13 +226,13 @@ class CategoryRepositoryTest extends FunctionalTestCase
 
         self::assertCount(
             1,
-            $categories
+            $categories,
         );
 
         $category = current($categories);
         self::assertSame(
             'BMW',
-            $category->getTitle()
+            $category->getTitle(),
         );
     }
 
@@ -246,7 +246,7 @@ class CategoryRepositoryTest extends FunctionalTestCase
 
         self::assertCount(
             0,
-            $categories
+            $categories,
         );
     }
 }

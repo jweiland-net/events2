@@ -62,7 +62,7 @@ class HiddenObjectHelperTest extends FunctionalTestCase
 
         $this->subject = GeneralUtility::makeInstance(
             HiddenObjectHelper::class,
-            $this->session
+            $this->session,
         );
     }
 
@@ -70,7 +70,7 @@ class HiddenObjectHelperTest extends FunctionalTestCase
     {
         unset(
             $this->subject,
-            $this->session
+            $this->session,
         );
 
         parent::tearDown();
@@ -91,11 +91,11 @@ class HiddenObjectHelperTest extends FunctionalTestCase
         $this->subject->registerHiddenObjectInExtbaseSession(
             $locationRepositoryProphecy->reveal(),
             $this->requestProphecy->reveal(),
-            'event'
+            'event',
         );
 
         self::assertFalse(
-            $this->session->hasObject($event)
+            $this->session->hasObject($event),
         );
     }
 
@@ -123,15 +123,15 @@ class HiddenObjectHelperTest extends FunctionalTestCase
         $this->subject->registerHiddenObjectInExtbaseSession(
             $this->eventRepositoryProphecy->reveal(),
             $this->requestProphecy->reveal(),
-            'event'
+            'event',
         );
 
         self::assertTrue(
-            $this->session->hasObject($event)
+            $this->session->hasObject($event),
         );
         self::assertSame(
             $event,
-            $this->session->getObjectByIdentifier(12, Event::class)
+            $this->session->getObjectByIdentifier(12, Event::class),
         );
     }
 
@@ -157,15 +157,15 @@ class HiddenObjectHelperTest extends FunctionalTestCase
         $this->subject->registerHiddenObjectInExtbaseSession(
             $this->eventRepositoryProphecy->reveal(),
             $this->requestProphecy->reveal(),
-            'event'
+            'event',
         );
 
         self::assertTrue(
-            $this->session->hasObject($event)
+            $this->session->hasObject($event),
         );
         self::assertSame(
             $event,
-            $this->session->getObjectByIdentifier(543, Event::class)
+            $this->session->getObjectByIdentifier(543, Event::class),
         );
     }
 }

@@ -95,13 +95,13 @@ class DayRepository extends AbstractRepository
         // add storage PID for event and day, but not for sys_category
         $this->databaseService->addConstraintForPid(
             $queryBuilder,
-            $extbaseQuery->getQuerySettings()->getStoragePageIds()
+            $extbaseQuery->getQuerySettings()->getStoragePageIds(),
         );
         $this->databaseService->addConstraintForPid(
             $subQueryBuilder,
             $extbaseQuery->getQuerySettings()->getStoragePageIds(),
             $queryBuilder,
-            '_sub_query'
+            '_sub_query',
         );
 
         // add categories
@@ -110,7 +110,7 @@ class DayRepository extends AbstractRepository
                 $subQueryBuilder,
                 GeneralUtility::trimExplode(',', $this->settings['categories'], true),
                 $queryBuilder,
-                'event_sub_query'
+                'event_sub_query',
             );
         }
 
@@ -126,7 +126,7 @@ class DayRepository extends AbstractRepository
                 $subQueryBuilder,
                 (int)($this->settings['preFilterByOrganizer'] ?: $filter->getOrganizer()),
                 $queryBuilder,
-                'event_sub_query'
+                'event_sub_query',
             );
         }
 
@@ -135,8 +135,8 @@ class DayRepository extends AbstractRepository
             $queryBuilder->andWhere(
                 $queryBuilder->expr()->eq(
                     'day.day',
-                    $queryBuilder->createNamedParameter($filter->getTimestamp(), Connection::PARAM_INT)
-                )
+                    $queryBuilder->createNamedParameter($filter->getTimestamp(), Connection::PARAM_INT),
+                ),
             );
         } else {
             // Add constraint for date by given listType
@@ -144,7 +144,7 @@ class DayRepository extends AbstractRepository
                 $subQueryBuilder,
                 $listType,
                 $queryBuilder,
-                'day_sub_query'
+                'day_sub_query',
             );
         }
 
@@ -156,8 +156,8 @@ class DayRepository extends AbstractRepository
                 'event',
                 $queryBuilder->expr()->eq(
                     'day.event',
-                    $queryBuilder->quoteIdentifier('event.uid')
-                )
+                    $queryBuilder->quoteIdentifier('event.uid'),
+                ),
             )
             ->orderBy('event.top_of_list', 'DESC')
             ->addOrderBy('day.sort_day_time', 'ASC')
@@ -166,7 +166,7 @@ class DayRepository extends AbstractRepository
         $this->overlayHelper->addWhereForOverlay(
             $queryBuilder,
             'tx_events2_domain_model_event',
-            'event'
+            'event',
         );
 
         if ($limit !== 0) {
@@ -175,7 +175,7 @@ class DayRepository extends AbstractRepository
 
         $this->addMergeFeatureToQuery($subQueryBuilder);
         $this->eventDispatcher->dispatch(
-            new ModifyQueriesOfFindEventsEvent($queryBuilder, $subQueryBuilder, $listType, $filter, $this->settings)
+            new ModifyQueriesOfFindEventsEvent($queryBuilder, $subQueryBuilder, $listType, $filter, $this->settings),
         );
         $this->joinSubQueryIntoQueryBuilder($queryBuilder, $subQueryBuilder);
         $extbaseQuery->statement($queryBuilder);
@@ -200,7 +200,7 @@ class DayRepository extends AbstractRepository
             $subQueryBuilder,
             $search->getStoragePids() ?: $extbaseQuery->getQuerySettings()->getStoragePageIds(),
             $queryBuilder,
-            '_sub_query'
+            '_sub_query',
         );
 
         // add query for search string
@@ -209,17 +209,17 @@ class DayRepository extends AbstractRepository
                 (string)$subQueryBuilder->expr()->or(
                     $queryBuilder->expr()->like(
                         'event_sub_query.title',
-                        $queryBuilder->quote('%' . $queryBuilder->escapeLikeWildcards($search->getSearch()) . '%')
+                        $queryBuilder->quote('%' . $queryBuilder->escapeLikeWildcards($search->getSearch()) . '%'),
                     ),
                     $subQueryBuilder->expr()->like(
                         'event_sub_query.teaser',
-                        $queryBuilder->quote('%' . $queryBuilder->escapeLikeWildcards($search->getSearch()) . '%')
+                        $queryBuilder->quote('%' . $queryBuilder->escapeLikeWildcards($search->getSearch()) . '%'),
                     ),
                     $subQueryBuilder->expr()->like(
                         'event_sub_query.detail_information',
-                        $queryBuilder->quote('%' . $queryBuilder->escapeLikeWildcards($search->getSearch()) . '%')
-                    )
-                )
+                        $queryBuilder->quote('%' . $queryBuilder->escapeLikeWildcards($search->getSearch()) . '%'),
+                    ),
+                ),
             );
         }
 
@@ -230,14 +230,14 @@ class DayRepository extends AbstractRepository
                     $subQueryBuilder,
                     [$search->getSubCategory()->getUid()],
                     $queryBuilder,
-                    'event_sub_query'
+                    'event_sub_query',
                 );
             } else {
                 $this->databaseService->addConstraintForCategories(
                     $subQueryBuilder,
                     [$search->getMainCategory()->getUid()],
                     $queryBuilder,
-                    'event_sub_query'
+                    'event_sub_query',
                 );
             }
         } elseif (($this->settings['categories'] ?? '') !== '') {
@@ -246,7 +246,7 @@ class DayRepository extends AbstractRepository
                 $subQueryBuilder,
                 GeneralUtility::trimExplode(',', $this->settings['categories']),
                 $queryBuilder,
-                'event_sub_query'
+                'event_sub_query',
             );
         }
 
@@ -258,7 +258,7 @@ class DayRepository extends AbstractRepository
                 $startDateTime,
                 $search->getEventEnd(),
                 $queryBuilder,
-                'day_sub_query'
+                'day_sub_query',
             );
         }
 
@@ -268,7 +268,7 @@ class DayRepository extends AbstractRepository
                 $subQueryBuilder,
                 $search->getLocation()->getUid(),
                 $queryBuilder,
-                'event_sub_query'
+                'event_sub_query',
             );
         }
 
@@ -280,7 +280,7 @@ class DayRepository extends AbstractRepository
                 $search->getFreeEntry(),
                 Connection::PARAM_INT,
                 $queryBuilder,
-                'event_sub_query'
+                'event_sub_query',
             );
         }
 
@@ -292,8 +292,8 @@ class DayRepository extends AbstractRepository
                 'event',
                 $queryBuilder->expr()->eq(
                     'day.event',
-                    $queryBuilder->quoteIdentifier('event.uid')
-                )
+                    $queryBuilder->quoteIdentifier('event.uid'),
+                ),
             )
             ->orderBy('event.top_of_list', 'DESC')
             ->addOrderBy('day.sort_day_time', 'ASC')
@@ -305,7 +305,7 @@ class DayRepository extends AbstractRepository
 
         $this->addMergeFeatureToQuery($subQueryBuilder);
         $this->eventDispatcher->dispatch(
-            new ModifyQueriesOfSearchEventsEvent($queryBuilder, $subQueryBuilder, $search, $this->settings)
+            new ModifyQueriesOfSearchEventsEvent($queryBuilder, $subQueryBuilder, $search, $this->settings),
         );
         $this->joinSubQueryIntoQueryBuilder($queryBuilder, $subQueryBuilder);
         $extbaseQuery->statement($queryBuilder);
@@ -317,7 +317,7 @@ class DayRepository extends AbstractRepository
         QueryBuilder $queryBuilder,
         string $listType,
         QueryBuilder $parentQueryBuilder = null,
-        string $alias = 'day'
+        string $alias = 'day',
     ): void {
         $startDateTime = $this->dateTimeUtility->convert('today');
         $endDateTime = $this->dateTimeUtility->convert('today');
@@ -359,7 +359,7 @@ class DayRepository extends AbstractRepository
 
         /** @var ModifyStartEndDateForListTypeEvent $event */
         $event = $this->eventDispatcher->dispatch(
-            new ModifyStartEndDateForListTypeEvent($listType, $startDateTime, $endDateTime, $this->settings)
+            new ModifyStartEndDateForListTypeEvent($listType, $startDateTime, $endDateTime, $this->settings),
         );
 
         $this->databaseService->addConstraintForDateRange(
@@ -367,7 +367,7 @@ class DayRepository extends AbstractRepository
             $event->getStartDateTime(),
             $event->getEndDateTime(),
             $parentQueryBuilder,
-            $alias
+            $alias,
         );
     }
 
@@ -383,8 +383,8 @@ class DayRepository extends AbstractRepository
         $dayColumns = array_map(
             static fn($column): string => 'day.' . $column,
             array_keys(
-                $connection->createSchemaManager()->listTableColumns('tx_events2_domain_model_day') ?? []
-            )
+                $connection->createSchemaManager()->listTableColumns('tx_events2_domain_model_day') ?? [],
+            ),
         );
 
         return array_merge($dayColumns, $additionalColumns);
@@ -413,19 +413,19 @@ class DayRepository extends AbstractRepository
             $queryBuilder->quoteIdentifier('day'),
             sprintf(
                 '(%s)',
-                $subQueryBuilder->getSQL()
+                $subQueryBuilder->getSQL(),
             ),
             $queryBuilder->quoteIdentifier('day_sub_group'),
             $queryBuilder->expr()->and(
                 $queryBuilder->expr()->eq(
                     'day.event',
-                    $queryBuilder->quoteIdentifier('day_sub_group.event')
+                    $queryBuilder->quoteIdentifier('day_sub_group.event'),
                 ),
                 $queryBuilder->expr()->eq(
                     'day.day_time',
-                    $queryBuilder->quoteIdentifier('day_sub_group.next_day_time')
-                )
-            )
+                    $queryBuilder->quoteIdentifier('day_sub_group.next_day_time'),
+                ),
+            ),
         );
     }
 
@@ -452,12 +452,12 @@ class DayRepository extends AbstractRepository
             ->where(
                 $queryBuilder->expr()->eq(
                     'day.event',
-                    $queryBuilder->createNamedParameter($eventUid, Connection::PARAM_INT)
+                    $queryBuilder->createNamedParameter($eventUid, Connection::PARAM_INT),
                 ),
                 $queryBuilder->expr()->eq(
                     'day.day_time',
-                    $queryBuilder->createNamedParameter($timestamp, Connection::PARAM_INT)
-                )
+                    $queryBuilder->createNamedParameter($timestamp, Connection::PARAM_INT),
+                ),
             )
             ->executeQuery()
             ->fetchAssociative();
@@ -477,7 +477,7 @@ class DayRepository extends AbstractRepository
         $subQueryBuilder = $this->getQueryBuilderForTable(
             'tx_events2_domain_model_day',
             'day_sub_query',
-            $useStrictLang
+            $useStrictLang,
         );
 
         $subQueryBuilder
@@ -488,15 +488,15 @@ class DayRepository extends AbstractRepository
                 'event_sub_query',
                 $queryBuilder->expr()->eq(
                     'day_sub_query.event',
-                    $queryBuilder->quoteIdentifier('event_sub_query.uid')
-                )
+                    $queryBuilder->quoteIdentifier('event_sub_query.uid'),
+                ),
             );
 
         $this->overlayHelper->addWhereForOverlay(
             $subQueryBuilder,
             'tx_events2_domain_model_event',
             'event_sub_query',
-            $useStrictLang
+            $useStrictLang,
         );
 
         return $subQueryBuilder;
@@ -515,7 +515,7 @@ class DayRepository extends AbstractRepository
             [
                 'event' => $eventUid,
                 't3ver_wsid' => $eventRecord['t3ver_wsid'] ?? 0,
-            ]
+            ],
         );
     }
 
@@ -546,7 +546,7 @@ class DayRepository extends AbstractRepository
             ->bulkInsert(
                 self::TABLE,
                 $days,
-                $columnsToWrite ?: $fallbackColumns
+                $columnsToWrite ?: $fallbackColumns,
             );
     }
 }

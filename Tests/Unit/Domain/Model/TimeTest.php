@@ -41,7 +41,7 @@ class TimeTest extends UnitTestCase
     {
         self::assertSame(
             '',
-            $this->subject->getWeekday()
+            $this->subject->getWeekday(),
         );
     }
 
@@ -54,7 +54,7 @@ class TimeTest extends UnitTestCase
 
         self::assertSame(
             'foo bar',
-            $this->subject->getWeekday()
+            $this->subject->getWeekday(),
         );
     }
 
@@ -65,7 +65,7 @@ class TimeTest extends UnitTestCase
     {
         self::assertSame(
             '',
-            $this->subject->getTimeBegin()
+            $this->subject->getTimeBegin(),
         );
     }
 
@@ -78,7 +78,7 @@ class TimeTest extends UnitTestCase
 
         self::assertSame(
             'foo bar',
-            $this->subject->getTimeBegin()
+            $this->subject->getTimeBegin(),
         );
     }
 
@@ -89,7 +89,7 @@ class TimeTest extends UnitTestCase
     {
         self::assertSame(
             '',
-            $this->subject->getTimeEntry()
+            $this->subject->getTimeEntry(),
         );
     }
 
@@ -102,7 +102,7 @@ class TimeTest extends UnitTestCase
 
         self::assertSame(
             'foo bar',
-            $this->subject->getTimeEntry()
+            $this->subject->getTimeEntry(),
         );
     }
 
@@ -113,7 +113,7 @@ class TimeTest extends UnitTestCase
     {
         self::assertSame(
             '',
-            $this->subject->getDuration()
+            $this->subject->getDuration(),
         );
     }
 
@@ -126,7 +126,7 @@ class TimeTest extends UnitTestCase
 
         self::assertSame(
             'foo bar',
-            $this->subject->getDuration()
+            $this->subject->getDuration(),
         );
     }
 
@@ -137,7 +137,7 @@ class TimeTest extends UnitTestCase
     {
         self::assertSame(
             '',
-            $this->subject->getTimeEnd()
+            $this->subject->getTimeEnd(),
         );
     }
 
@@ -150,7 +150,7 @@ class TimeTest extends UnitTestCase
 
         self::assertSame(
             'foo bar',
-            $this->subject->getTimeEnd()
+            $this->subject->getTimeEnd(),
         );
     }
 
@@ -160,7 +160,7 @@ class TimeTest extends UnitTestCase
     public function getTimeEntryAsDateTimeInitiallyReturnsNull(): void
     {
         self::assertNull(
-            $this->subject->getTimeEntryAsDateTime()
+            $this->subject->getTimeEntryAsDateTime(),
         );
     }
 
@@ -174,7 +174,7 @@ class TimeTest extends UnitTestCase
 
         self::assertSame(
             $date,
-            $this->subject->getTimeEntryAsDateTime()
+            $this->subject->getTimeEntryAsDateTime(),
         );
     }
 
@@ -184,7 +184,7 @@ class TimeTest extends UnitTestCase
     public function getTimeBeginAsDateTimeInitiallyReturnsNull(): void
     {
         self::assertNull(
-            $this->subject->getTimeBeginAsDateTime()
+            $this->subject->getTimeBeginAsDateTime(),
         );
     }
 
@@ -198,7 +198,7 @@ class TimeTest extends UnitTestCase
 
         self::assertSame(
             $date,
-            $this->subject->getTimeBeginAsDateTime()
+            $this->subject->getTimeBeginAsDateTime(),
         );
     }
 
@@ -208,7 +208,7 @@ class TimeTest extends UnitTestCase
     public function getTimeEndAsDateTimeInitiallyReturnsNull(): void
     {
         self::assertNull(
-            $this->subject->getTimeEndAsDateTime()
+            $this->subject->getTimeEndAsDateTime(),
         );
     }
 
@@ -222,7 +222,7 @@ class TimeTest extends UnitTestCase
 
         self::assertSame(
             $date,
-            $this->subject->getTimeEndAsDateTime()
+            $this->subject->getTimeEndAsDateTime(),
         );
     }
 }

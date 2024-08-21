@@ -43,7 +43,7 @@ class UserSession
 
         $monthAndYear = $this->feUser->getKey(
             'ses',
-            'events2MonthAndYearForCalendar'
+            'events2MonthAndYearForCalendar',
         );
         if (!is_array($monthAndYear)) {
             $monthAndYear = [];
@@ -65,7 +65,7 @@ class UserSession
             [
                 'month' => str_pad((string)$month, 2, '0', STR_PAD_LEFT),
                 'year' => (string)$year,
-            ]
+            ],
         );
     }
 }

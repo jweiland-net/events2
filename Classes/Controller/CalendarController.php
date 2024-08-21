@@ -49,7 +49,7 @@ class CalendarController extends AbstractController
     protected function getMergedFrameworkConfiguration(): array
     {
         return $this->configurationManager->getConfiguration(
-            ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK
+            ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK,
         );
     }
 }

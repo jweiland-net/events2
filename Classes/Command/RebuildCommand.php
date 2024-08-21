@@ -31,7 +31,7 @@ class RebuildCommand extends Command
     public function __construct(
         protected readonly DatabaseService $databaseService,
         protected readonly DayRelationService $dayRelationService,
-        string $name = null
+        string $name = null,
     ) {
         parent::__construct($name);
     }
@@ -43,7 +43,7 @@ class RebuildCommand extends Command
             'Afterwards, it searches for each current and future event and re-creates all day records again. ' .
             'If you have any problems with created day records, this command is the first place to start. ' .
             'Please be careful running this command as a CronJob each day, as for the time it runs, there ' .
-            'may no events visible in frontend. We prefer using the Scheduler Task manually.'
+            'may no events visible in frontend. We prefer using the Scheduler Task manually.',
         );
     }
 
@@ -90,21 +90,21 @@ class RebuildCommand extends Command
                         $fullEventRecord['uid'],
                         $fullEventRecord['pid'],
                         $amountOfDayRecords,
-                        memory_get_usage()
+                        memory_get_usage(),
                     ));
                     $dayCounter += $amountOfDayRecords;
                 } else {
                     $this->output->writeln(sprintf(
                         'ERROR event UID: %09d, PID: %05d: array key "days" has to be an array.',
                         $simpleEventRecord['uid'],
-                        $simpleEventRecord['pid']
+                        $simpleEventRecord['pid'],
                     ));
                 }
             } else {
                 $this->output->writeln(sprintf(
                     'ERROR event UID: %09d, PID: %05d: event record could not be fetched from DB.',
                     $simpleEventRecord['uid'],
-                    $simpleEventRecord['pid']
+                    $simpleEventRecord['pid'],
                 ));
             }
         }
@@ -112,7 +112,7 @@ class RebuildCommand extends Command
         $this->output->writeln(sprintf(
             'We have recreated the day records for %d event records and %d day records in total',
             $this->getAmountOfEventRecordsToProcess(),
-            $dayCounter
+            $dayCounter,
         ));
     }
 

@@ -46,8 +46,8 @@ class CategoryRepository extends Repository
             ->matching(
                 $query->in(
                     'uid',
-                    GeneralUtility::intExplode(',', $categoryUids, true)
-                )
+                    GeneralUtility::intExplode(',', $categoryUids, true),
+                ),
             )
             ->execute();
     }
@@ -73,7 +73,7 @@ class CategoryRepository extends Repository
         // convert them to int
         // remove values with 0 (array_filter)
         $selectedCategories = array_filter(
-            GeneralUtility::intExplode(',', $categoryUids, true)
+            GeneralUtility::intExplode(',', $categoryUids, true),
         );
 
         $query = $this->createQuery();

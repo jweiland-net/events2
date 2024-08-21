@@ -22,7 +22,7 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 trait Typo3RequestTrait
 {
     protected function getTypoScriptFrontendController(
-        ?ServerRequestInterface $request = null
+        ?ServerRequestInterface $request = null,
     ): TypoScriptFrontendController {
         $request ??= $this->getTypo3Request();
 
@@ -49,14 +49,14 @@ trait Typo3RequestTrait
      */
     protected function getMergedWithPostFromRequest(
         string $argument,
-        ?ServerRequestInterface $request = null
+        ?ServerRequestInterface $request = null,
     ): array {
         $request ??= $this->getTypo3Request();
 
         $getMergedWithPost = $request->getQueryParams()[$argument] ?? [];
         ArrayUtility::mergeRecursiveWithOverrule(
             $getMergedWithPost,
-            ($request->getParsedBody()[$argument] ?? [])
+            ($request->getParsedBody()[$argument] ?? []),
         );
 
         return $getMergedWithPost;

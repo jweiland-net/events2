@@ -90,7 +90,7 @@ class Import extends AbstractTask
     {
         $className = sprintf(
             'JWeiland\\Events2\\Importer\\%sImporter',
-            ucfirst(strtolower($file->getExtension()))
+            ucfirst(strtolower($file->getExtension())),
         );
         if (!class_exists($className)) {
             $this->addMessage('There is no class to handler files of type: ' . $file->getExtension());

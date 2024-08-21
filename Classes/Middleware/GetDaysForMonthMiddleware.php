@@ -38,7 +38,7 @@ class GetDaysForMonthMiddleware implements MiddlewareInterface
         protected readonly DateTimeUtility $dateTimeUtility,
         protected readonly UserSession $userSession,
         protected readonly DatabaseService $databaseService,
-        protected readonly EventDispatcher $eventDispatcher
+        protected readonly EventDispatcher $eventDispatcher,
     ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -84,7 +84,7 @@ class GetDaysForMonthMiddleware implements MiddlewareInterface
 
         /** @var ModifyDaysForMonthEvent $event */
         $event = $this->eventDispatcher->dispatch(
-            new ModifyDaysForMonthEvent($daysOfMonth)
+            new ModifyDaysForMonthEvent($daysOfMonth),
         );
 
         return new JsonResponse($event->getDays());
@@ -99,8 +99,8 @@ class GetDaysForMonthMiddleware implements MiddlewareInterface
             ->where(
                 $queryBuilder->expr()->eq(
                     'month',
-                    $queryBuilder->createNamedParameter($month, Connection::PARAM_INT)
-                )
+                    $queryBuilder->createNamedParameter($month, Connection::PARAM_INT),
+                ),
             )
             ->executeQuery();
 
@@ -127,7 +127,7 @@ class GetDaysForMonthMiddleware implements MiddlewareInterface
         // get start and ending of given month
         // j => day without leading 0, n => month without leading 0
         $firstDayOfMonth = $this->dateTimeUtility->standardizeDateTimeObject(
-            \DateTimeImmutable::createFromFormat('j.n.Y', '1.' . $month . '.' . $year)
+            \DateTimeImmutable::createFromFormat('j.n.Y', '1.' . $month . '.' . $year),
         );
         $lastDayOfMonth = $firstDayOfMonth->modify('last day of this month');
 
@@ -157,7 +157,7 @@ class GetDaysForMonthMiddleware implements MiddlewareInterface
             $firstDayOfMonth,
             $lastDayOfMonth->modify('tomorrow'),
             $storagePages,
-            $categories
+            $categories,
         );
     }
 

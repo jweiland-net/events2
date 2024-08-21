@@ -70,7 +70,7 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
                     $eventRecord['pid'],
                     $e->getMessage(),
                     $e->getFile(),
-                    $e->getLine()
+                    $e->getLine(),
                 ), ContextualFeedbackSeverity::ERROR);
                 return false;
             }
@@ -109,7 +109,7 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
                 'Current event: uid: %d, pid: %d, memory: %d.',
                 $info['uid'],
                 $info['pid'],
-                memory_get_usage()
+                memory_get_usage(),
             );
         }
         return $content;

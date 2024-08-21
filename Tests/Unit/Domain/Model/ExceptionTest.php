@@ -42,7 +42,7 @@ class ExceptionTest extends UnitTestCase
     {
         self::assertSame(
             '',
-            $this->subject->getExceptionType()
+            $this->subject->getExceptionType(),
         );
     }
 
@@ -55,7 +55,7 @@ class ExceptionTest extends UnitTestCase
 
         self::assertSame(
             'foo bar',
-            $this->subject->getExceptionType()
+            $this->subject->getExceptionType(),
         );
     }
 
@@ -69,7 +69,7 @@ class ExceptionTest extends UnitTestCase
 
         self::assertEquals(
             $date,
-            $this->subject->getExceptionDate()
+            $this->subject->getExceptionDate(),
         );
     }
 
@@ -91,7 +91,7 @@ class ExceptionTest extends UnitTestCase
 
         self::assertSame(
             $instance,
-            $this->subject->getExceptionTime()
+            $this->subject->getExceptionTime(),
         );
     }
 
@@ -102,7 +102,7 @@ class ExceptionTest extends UnitTestCase
     {
         self::assertSame(
             '',
-            $this->subject->getExceptionDetails()
+            $this->subject->getExceptionDetails(),
         );
     }
 
@@ -115,7 +115,7 @@ class ExceptionTest extends UnitTestCase
 
         self::assertSame(
             'foo bar',
-            $this->subject->getExceptionDetails()
+            $this->subject->getExceptionDetails(),
         );
     }
 }

@@ -36,7 +36,7 @@ class UserSessionTest extends FunctionalTestCase
         $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
         if (version_compare($typo3Version->getBranch(), '11', '<')) {
             self::markTestSkipped(
-                'Because of missing "initializeUserSessionManager" in TYPO3 10 this test has to be skipped.'
+                'Because of missing "initializeUserSessionManager" in TYPO3 10 this test has to be skipped.',
             );
         }
 
@@ -55,7 +55,7 @@ class UserSessionTest extends FunctionalTestCase
     {
         unset(
             $this->subject,
-            $GLOBALS['TSFE']
+            $GLOBALS['TSFE'],
         );
 
         parent::tearDown();
@@ -67,7 +67,7 @@ class UserSessionTest extends FunctionalTestCase
     public function getMonthAndYearWillReturnEmptyArray(): void
     {
         self::assertEmpty(
-            $this->subject->getMonthAndYear()
+            $this->subject->getMonthAndYear(),
         );
     }
 
@@ -101,7 +101,7 @@ class UserSessionTest extends FunctionalTestCase
                 'month' => $expectedMonth,
                 'year' => $expectedYear,
             ],
-            $this->subject->getMonthAndYear()
+            $this->subject->getMonthAndYear(),
         );
     }
 }

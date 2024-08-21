@@ -37,7 +37,7 @@ class FeUserViewHelper extends AbstractViewHelper
     public static function renderStatic(
         array $arguments,
         \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
+        RenderingContextInterface $renderingContext,
     ): string {
         $userRepository = GeneralUtility::makeInstance(UserRepository::class);
         return $userRepository->getFieldFromUser($arguments['field']);

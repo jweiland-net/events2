@@ -37,7 +37,7 @@ class GetLocationsMiddleware implements MiddlewareInterface
 
         // Hint: search may fail with "&" in $search
         $search = trim(htmlspecialchars(strip_tags(
-            $request->getQueryParams()['events2SearchLocation'] ?? ''
+            $request->getQueryParams()['events2SearchLocation'] ?? '',
         )));
 
         if ($search === '') {

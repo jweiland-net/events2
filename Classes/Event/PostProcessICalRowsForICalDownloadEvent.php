@@ -24,7 +24,7 @@ class PostProcessICalRowsForICalDownloadEvent
 
     public function __construct(
         array $event,
-        Day $day
+        Day $day,
     ) {
         $this->event = $event;
         $this->day = $day;

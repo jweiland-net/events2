@@ -22,7 +22,7 @@ class ModifyQueriesOfFindLocationsEvent
 
     public function __construct(
         protected readonly QueryBuilder $queryBuilder,
-        string $search
+        string $search,
     ) {
         $this->search = $search;
     }

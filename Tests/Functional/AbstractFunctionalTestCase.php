@@ -60,7 +60,7 @@ class AbstractFunctionalTestCase extends FunctionalTestCase
             PageArguments::class,
             $pageUid,
             $pageType,
-            $arguments
+            $arguments,
         );
         $serverRequest = $serverRequest->withAttribute('routing', $pageArguments);
 
@@ -73,7 +73,7 @@ class AbstractFunctionalTestCase extends FunctionalTestCase
             $site,
             $site->getDefaultLanguage(),
             $pageArguments,
-            $frontendUser
+            $frontendUser,
         );
         $controller->no_cache = true; // Do not cache in case of testing
         $controller->determineId($serverRequest);
@@ -92,7 +92,7 @@ class AbstractFunctionalTestCase extends FunctionalTestCase
         $context = GeneralUtility::makeInstance(Context::class);
         $context->setAspect(
             'language',
-            LanguageAspectFactory::createFromSiteLanguage($site->getDefaultLanguage())
+            LanguageAspectFactory::createFromSiteLanguage($site->getDefaultLanguage()),
         );
 
         return $context;

@@ -44,7 +44,7 @@ class TimeFactoryTest extends FunctionalTestCase
     protected function tearDown(): void
     {
         unset(
-            $this->subject
+            $this->subject,
         );
         parent::tearDown();
     }
@@ -76,7 +76,7 @@ class TimeFactoryTest extends FunctionalTestCase
 
         self::assertEquals(
             $expectedTimes,
-            $this->subject->getTimesForDate($event, $firstDate)
+            $this->subject->getTimesForDate($event, $firstDate),
         );
     }
 
@@ -114,7 +114,7 @@ class TimeFactoryTest extends FunctionalTestCase
 
         self::assertEquals(
             $expectedTimes,
-            $this->subject->getTimesForDate($event, $firstDate)
+            $this->subject->getTimesForDate($event, $firstDate),
         );
     }
 
@@ -152,7 +152,7 @@ class TimeFactoryTest extends FunctionalTestCase
 
         self::assertEquals(
             $expectedTimes,
-            $this->subject->getTimesForDate($event, $firstDate)
+            $this->subject->getTimesForDate($event, $firstDate),
         );
     }
 
@@ -177,7 +177,7 @@ class TimeFactoryTest extends FunctionalTestCase
 
         self::assertEquals(
             $expectedTimes,
-            $this->subject->getTimesForDate($event, $firstDate)
+            $this->subject->getTimesForDate($event, $firstDate),
         );
     }
 
@@ -204,7 +204,7 @@ class TimeFactoryTest extends FunctionalTestCase
 
         self::assertEquals(
             $expectedTimes,
-            $this->subject->getTimesForDate($event, $firstDate)
+            $this->subject->getTimesForDate($event, $firstDate),
         );
     }
 
@@ -231,7 +231,7 @@ class TimeFactoryTest extends FunctionalTestCase
 
         self::assertEquals(
             $expectedTimes,
-            $this->subject->getTimesForDate($event, $firstDate)
+            $this->subject->getTimesForDate($event, $firstDate),
         );
     }
 
@@ -258,7 +258,7 @@ class TimeFactoryTest extends FunctionalTestCase
 
         self::assertEquals(
             $expectedTimes,
-            $this->subject->getTimesForDate($event, $firstDate)
+            $this->subject->getTimesForDate($event, $firstDate),
         );
     }
 
@@ -281,7 +281,7 @@ class TimeFactoryTest extends FunctionalTestCase
 
         self::assertEquals(
             $expectedTimes,
-            $this->subject->getTimesForDate($event, $firstDate)
+            $this->subject->getTimesForDate($event, $firstDate),
         );
     }
 
@@ -317,7 +317,7 @@ class TimeFactoryTest extends FunctionalTestCase
 
         self::assertEquals(
             $expectedTimes,
-            $this->subject->getTimesForDate($event, $firstDate)
+            $this->subject->getTimesForDate($event, $firstDate),
         );
     }
 
@@ -334,7 +334,7 @@ class TimeFactoryTest extends FunctionalTestCase
 
         self::assertEquals(
             $expectedTimes,
-            $this->subject->getSortedTimesForDate($event, $date)
+            $this->subject->getSortedTimesForDate($event, $date),
         );
     }
 
@@ -356,7 +356,7 @@ class TimeFactoryTest extends FunctionalTestCase
 
         self::assertEquals(
             $expectedTimes,
-            $this->subject->getSortedTimesForDate($event, $date)
+            $this->subject->getSortedTimesForDate($event, $date),
         );
     }
 
@@ -401,7 +401,7 @@ class TimeFactoryTest extends FunctionalTestCase
 
         self::assertEquals(
             $expectedTimes,
-            $this->subject->getSortedTimesForDate($event, $date)
+            $this->subject->getSortedTimesForDate($event, $date),
         );
     }
 
@@ -462,7 +462,7 @@ class TimeFactoryTest extends FunctionalTestCase
 
         self::assertEquals(
             $expectedTimes,
-            $this->subject->getSortedTimesForDate($event, $date)
+            $this->subject->getSortedTimesForDate($event, $date),
         );
     }
 
@@ -484,7 +484,7 @@ class TimeFactoryTest extends FunctionalTestCase
 
         self::assertEquals(
             new \SplObjectStorage(),
-            $this->subject->getTimesForDate($event, $eventBegin, true)
+            $this->subject->getTimesForDate($event, $eventBegin, true),
         );
     }
 }

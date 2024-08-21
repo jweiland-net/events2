@@ -56,7 +56,7 @@ abstract class AbstractImporter implements ImporterInterface
         protected readonly PersistenceManagerInterface $persistenceManager,
         protected readonly PathSegmentHelper $pathSegmentHelper,
         protected readonly DateTimeUtility $dateTimeUtility,
-        protected readonly ExtConf $extConf
+        protected readonly ExtConf $extConf,
     ) {
         $this->today = new \DateTimeImmutable('now');
     }
@@ -104,9 +104,9 @@ abstract class AbstractImporter implements ImporterInterface
                     'Event: %s - Date: %s - Error: %s',
                     $event['title'],
                     $eventBegin->format('d.m.Y'),
-                    'event_begin can not be in past'
+                    'event_begin can not be in past',
                 ),
-                ContextualFeedbackSeverity::ERROR
+                ContextualFeedbackSeverity::ERROR,
             );
 
             return false;
@@ -153,9 +153,9 @@ abstract class AbstractImporter implements ImporterInterface
                         'Event: %s - Date: %s - Error: %s',
                         $event['title'],
                         $eventBegin->format('d.m.Y'),
-                        'Image must be of type array'
+                        'Image must be of type array',
                     ),
-                    ContextualFeedbackSeverity::ERROR
+                    ContextualFeedbackSeverity::ERROR,
                 );
 
                 return false;
@@ -166,9 +166,9 @@ abstract class AbstractImporter implements ImporterInterface
                         'Event: %s - Date: %s - Error: %s',
                         $event['title'],
                         $eventBegin->format('d.m.Y'),
-                        'Array key "url" of image must be set and can not be empty'
+                        'Array key "url" of image must be set and can not be empty',
                     ),
-                    ContextualFeedbackSeverity::ERROR
+                    ContextualFeedbackSeverity::ERROR,
                 );
 
                 return false;
@@ -179,9 +179,9 @@ abstract class AbstractImporter implements ImporterInterface
                         'Event: %s - Date: %s - Error: %s',
                         $event['title'],
                         $eventBegin->format('d.m.Y'),
-                        'Image path has to be a valid URL'
+                        'Image path has to be a valid URL',
                     ),
-                    ContextualFeedbackSeverity::ERROR
+                    ContextualFeedbackSeverity::ERROR,
                 );
 
                 return false;
@@ -201,10 +201,10 @@ abstract class AbstractImporter implements ImporterInterface
                 sprintf(
                     'Given %s "%s" does not exist in our database',
                     $property,
-                    $value
-                )
+                    $value,
+                ),
             ),
-            ContextualFeedbackSeverity::ERROR
+            ContextualFeedbackSeverity::ERROR,
         );
     }
 
@@ -243,8 +243,8 @@ abstract class AbstractImporter implements ImporterInterface
             ->where(
                 $queryBuilder->expr()->eq(
                     'organizer',
-                    $queryBuilder->createNamedParameter($title)
-                )
+                    $queryBuilder->createNamedParameter($title),
+                ),
             )
             ->executeQuery()
             ->fetchAssociative();
@@ -280,8 +280,8 @@ abstract class AbstractImporter implements ImporterInterface
             ->where(
                 $queryBuilder->expr()->eq(
                     'location',
-                    $queryBuilder->createNamedParameter($title)
-                )
+                    $queryBuilder->createNamedParameter($title),
+                ),
             )
             ->executeQuery()
             ->fetchAssociative();
@@ -302,8 +302,8 @@ abstract class AbstractImporter implements ImporterInterface
             ->where(
                 $queryBuilder->expr()->eq(
                     'title',
-                    $queryBuilder->createNamedParameter($title)
-                )
+                    $queryBuilder->createNamedParameter($title),
+                ),
             )
             ->executeQuery()
             ->fetchAssociative();
@@ -356,7 +356,7 @@ abstract class AbstractImporter implements ImporterInterface
                 $logFile = $folder->createFile($this->logFileName);
             } else {
                 $logFile = GeneralUtility::makeInstance(ResourceFactory::class)->retrieveFileOrFolderObject(
-                    $folder->getCombinedIdentifier() . $this->logFileName
+                    $folder->getCombinedIdentifier() . $this->logFileName,
                 );
             }
         } catch (\Exception $e) {

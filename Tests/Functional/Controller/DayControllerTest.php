@@ -48,7 +48,7 @@ class DayControllerTest extends AbstractFunctionalTestCase
         $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
         if (version_compare($typo3Version->getBranch(), '11', '<')) {
             self::markTestSkipped(
-                'Because of missing Context class in TYPO3 10 this test has to be skipped.'
+                'Because of missing Context class in TYPO3 10 this test has to be skipped.',
             );
         }
 
@@ -64,7 +64,7 @@ class DayControllerTest extends AbstractFunctionalTestCase
             [
                 'pid' => 1,
                 'organizer' => 'Stefan',
-            ]
+            ],
         );
 
         $date = new \DateTimeImmutable('midnight');
@@ -75,7 +75,7 @@ class DayControllerTest extends AbstractFunctionalTestCase
                 'event_type' => 'single',
                 'event_begin' => (int)$date->format('U'),
                 'title' => 'Today',
-            ]
+            ],
         );
 
         $date = new \DateTimeImmutable('tomorrow midnight');
@@ -87,7 +87,7 @@ class DayControllerTest extends AbstractFunctionalTestCase
                 'event_begin' => (int)$date->format('U'),
                 'title' => 'Tomorrow',
                 'organizers' => 1,
-            ]
+            ],
         );
 
         $this->getDatabaseConnection()->insertArray(
@@ -95,7 +95,7 @@ class DayControllerTest extends AbstractFunctionalTestCase
             [
                 'uid_local' => 2,
                 'uid_foreign' => 1,
-            ]
+            ],
         );
 
         // ServerRequest is needed for following
@@ -111,7 +111,7 @@ class DayControllerTest extends AbstractFunctionalTestCase
     {
         unset(
             $this->request,
-            $GLOBALS['TSFE']
+            $GLOBALS['TSFE'],
         );
 
         parent::tearDown();
@@ -131,16 +131,16 @@ class DayControllerTest extends AbstractFunctionalTestCase
                 'extensionName' => 'Events2',
                 'pluginName' => 'List',
                 'format' => 'txt',
-            ]
+            ],
         );
 
         self::assertStringContainsString(
             'Event Title 1: Today',
-            $content
+            $content,
         );
         self::assertStringContainsString(
             'Event Title 2: Tomorrow',
-            $content
+            $content,
         );
     }
 
@@ -159,7 +159,7 @@ class DayControllerTest extends AbstractFunctionalTestCase
                         'organizer' => '1',
                     ],
                 ],
-            ]
+            ],
         );
 
         $extbaseBootstrap = GeneralUtility::makeInstance(Bootstrap::class);
@@ -169,12 +169,12 @@ class DayControllerTest extends AbstractFunctionalTestCase
                 'extensionName' => 'Events2',
                 'pluginName' => 'List',
                 'format' => 'txt',
-            ]
+            ],
         );
 
         self::assertStringContainsString(
             'Event Title 2: Tomorrow',
-            $content
+            $content,
         );
     }
 
@@ -208,7 +208,7 @@ class DayControllerTest extends AbstractFunctionalTestCase
                         'timestamp' => $today->format('U'),
                     ],
                 ],
-            ]
+            ],
         );
 
         $extbaseBootstrap = GeneralUtility::makeInstance(Bootstrap::class);
@@ -221,12 +221,12 @@ class DayControllerTest extends AbstractFunctionalTestCase
                 'settings' => [
                     'listType' => $listType,
                 ],
-            ]
+            ],
         );
 
         self::assertStringContainsString(
             'Event Title 1: Today',
-            $content
+            $content,
         );
     }
 
@@ -246,7 +246,7 @@ class DayControllerTest extends AbstractFunctionalTestCase
                     'event' => '1',
                     'timestamp' => $today->format('U'),
                 ],
-            ]
+            ],
         );
 
         $extbaseBootstrap = GeneralUtility::makeInstance(Bootstrap::class);
@@ -256,12 +256,12 @@ class DayControllerTest extends AbstractFunctionalTestCase
                 'extensionName' => 'Events2',
                 'pluginName' => 'List',
                 'format' => 'txt',
-            ]
+            ],
         );
 
         self::assertStringContainsString(
             'Event Title 1: Today',
-            $content
+            $content,
         );
     }
 }

@@ -28,7 +28,7 @@ class Events2PageTitleProvider implements PageTitleProviderInterface
 
     public function __construct(
         protected readonly EventRepository $eventRepository,
-        protected readonly DayRepository $dayRepository
+        protected readonly DayRepository $dayRepository,
     ) {}
 
     public function getTitle(): string
@@ -38,20 +38,20 @@ class Events2PageTitleProvider implements PageTitleProviderInterface
         if ($this->isValidRequest($gp)) {
             $dayRecord = $this->dayRepository->getDayRecord(
                 (int)$gp['event'],
-                (int)$gp['timestamp']
+                (int)$gp['timestamp'],
             );
 
             if (!empty($dayRecord)) {
                 $date = new \DateTimeImmutable(date('c', (int)$gp['timestamp']));
                 $eventRecord = $this->eventRepository->getRecord(
-                    (int)$dayRecord['event']
+                    (int)$dayRecord['event'],
                 );
 
                 if (!empty($eventRecord)) {
                     $pageTitle = sprintf(
                         '%s - %s',
                         trim($eventRecord['title']),
-                        $date->format('d.m.Y')
+                        $date->format('d.m.Y'),
                     );
                 }
             }

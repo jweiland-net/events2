@@ -123,7 +123,7 @@ class DatabaseServiceTest extends FunctionalTestCase
 
         self::assertGreaterThanOrEqual(
             3,
-            count($days)
+            count($days),
         );
     }
 }

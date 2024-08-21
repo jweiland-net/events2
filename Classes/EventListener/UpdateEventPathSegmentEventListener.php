@@ -36,7 +36,7 @@ class UpdateEventPathSegmentEventListener extends AbstractControllerEventListene
     public function __construct(
         protected readonly PathSegmentHelper $pathSegmentHelper,
         protected readonly EventRepository $eventRepository,
-        protected readonly PersistenceManagerInterface $persistenceManager
+        protected readonly PersistenceManagerInterface $persistenceManager,
     ) {}
 
     public function __invoke(PostProcessControllerActionEvent $controllerActionEvent): void
@@ -51,7 +51,7 @@ class UpdateEventPathSegmentEventListener extends AbstractControllerEventListene
             if ($pathSegment === '' || $pathSegment === '/') {
                 throw new \Exception(
                     'Path Segment of event is empty. Please check pathSegmentType in Extension Settings',
-                    1611157656
+                    1611157656,
                 );
             }
         }

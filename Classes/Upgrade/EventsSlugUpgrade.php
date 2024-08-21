@@ -39,7 +39,7 @@ class EventsSlugUpgrade implements UpgradeWizardInterface
 
     public function __construct(
         protected readonly PathSegmentHelper $pathSegmentHelper,
-        protected readonly ExtConf $extConf
+        protected readonly ExtConf $extConf,
     ) {}
 
     /**
@@ -102,7 +102,7 @@ class EventsSlugUpgrade implements UpgradeWizardInterface
                     ],
                     [
                         'uid' => (int)$recordToUpdate['uid'],
-                    ]
+                    ],
                 );
             }
         }
@@ -122,12 +122,12 @@ class EventsSlugUpgrade implements UpgradeWizardInterface
                 $queryBuilder->expr()->or(
                     $queryBuilder->expr()->eq(
                         $this->slugColumn,
-                        $queryBuilder->createNamedParameter('')
+                        $queryBuilder->createNamedParameter(''),
                     ),
                     $queryBuilder->expr()->isNull(
-                        $this->slugColumn
-                    )
-                )
+                        $this->slugColumn,
+                    ),
+                ),
             );
     }
 
@@ -164,12 +164,12 @@ class EventsSlugUpgrade implements UpgradeWizardInterface
             ->where(
                 $queryBuilder->expr()->eq(
                     $this->slugColumn,
-                    $queryBuilder->createPositionalParameter($slug)
+                    $queryBuilder->createPositionalParameter($slug),
                 ),
                 $queryBuilder->expr()->neq(
                     'uid',
-                    $queryBuilder->createPositionalParameter($uid, Connection::PARAM_INT)
-                )
+                    $queryBuilder->createPositionalParameter($uid, Connection::PARAM_INT),
+                ),
             );
     }
 

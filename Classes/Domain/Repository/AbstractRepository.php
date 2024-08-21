@@ -39,7 +39,7 @@ class AbstractRepository extends Repository
         string $table,
         string $alias,
         bool $useLangStrict = false,
-        int $overrideLanguageUid = -1
+        int $overrideLanguageUid = -1,
     ): QueryBuilder {
         $extbaseQuery = $this->createQuery();
 
@@ -52,9 +52,9 @@ class AbstractRepository extends Repository
                     $alias . '.pid',
                     $queryBuilder->createNamedParameter(
                         $extbaseQuery->getQuerySettings()->getStoragePageIds(),
-                        ArrayParameterType::INTEGER
-                    )
-                )
+                        ArrayParameterType::INTEGER,
+                    ),
+                ),
             );
 
         $this->overlayHelper->addWhereForOverlay($queryBuilder, $table, $alias, $useLangStrict, $overrideLanguageUid);
@@ -72,7 +72,7 @@ class AbstractRepository extends Repository
         int $uid,
         array $select = ['*'],
         bool $includeHidden = false,
-        bool $doOverlay = true
+        bool $doOverlay = true,
     ): array {
         $queryBuilder = $this->getQueryBuilderForTable($tableName, $tableAlias);
 
@@ -86,8 +86,8 @@ class AbstractRepository extends Repository
                 ->where(
                     $queryBuilder->expr()->eq(
                         $tableAlias . '.uid',
-                        $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT)
-                    )
+                        $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT),
+                    ),
                 )
                 ->executeQuery()
                 ->fetchAssociative();
@@ -116,7 +116,7 @@ class AbstractRepository extends Repository
         array $expressions = [],
         array $select = ['*'],
         bool $includeHidden = false,
-        bool $doOverlay = true
+        bool $doOverlay = true,
     ): array {
         $queryBuilder = $this->getQueryBuilderForTable($tableName, $tableAlias);
 

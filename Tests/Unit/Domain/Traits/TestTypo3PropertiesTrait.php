@@ -22,7 +22,7 @@ trait TestTypo3PropertiesTrait
     public function getCrdateInitiallyReturnsNull(): void
     {
         self::assertNull(
-            $this->subject->getCrdate()
+            $this->subject->getCrdate(),
         );
     }
 
@@ -36,7 +36,7 @@ trait TestTypo3PropertiesTrait
 
         self::assertSame(
             $date,
-            $this->subject->getCrdate()
+            $this->subject->getCrdate(),
         );
     }
 
@@ -48,7 +48,7 @@ trait TestTypo3PropertiesTrait
         $this->subject->setCrdate(null);
 
         self::assertNull(
-            $this->subject->getCrdate()
+            $this->subject->getCrdate(),
         );
     }
 
@@ -58,7 +58,7 @@ trait TestTypo3PropertiesTrait
     public function getTstampInitiallyReturnsNull(): void
     {
         self::assertNull(
-            $this->subject->getTstamp()
+            $this->subject->getTstamp(),
         );
     }
 
@@ -72,7 +72,7 @@ trait TestTypo3PropertiesTrait
 
         self::assertSame(
             $date,
-            $this->subject->getTstamp()
+            $this->subject->getTstamp(),
         );
     }
 
@@ -84,7 +84,7 @@ trait TestTypo3PropertiesTrait
         $this->subject->setTstamp(null);
 
         self::assertNull(
-            $this->subject->getTstamp()
+            $this->subject->getTstamp(),
         );
     }
 
@@ -94,7 +94,7 @@ trait TestTypo3PropertiesTrait
     public function getSysLanguageUidInitiallyReturnsNull(): void
     {
         self::assertNull(
-            $this->subject->getSysLanguageUid()
+            $this->subject->getSysLanguageUid(),
         );
     }
 
@@ -107,7 +107,7 @@ trait TestTypo3PropertiesTrait
 
         self::assertSame(
             123456,
-            $this->subject->getSysLanguageUid()
+            $this->subject->getSysLanguageUid(),
         );
     }
 
@@ -118,7 +118,7 @@ trait TestTypo3PropertiesTrait
     {
         self::assertSame(
             0,
-            $this->subject->getL10nParent()
+            $this->subject->getL10nParent(),
         );
     }
 
@@ -131,7 +131,7 @@ trait TestTypo3PropertiesTrait
 
         self::assertSame(
             123456,
-            $this->subject->getL10nParent()
+            $this->subject->getL10nParent(),
         );
     }
 
@@ -141,7 +141,7 @@ trait TestTypo3PropertiesTrait
     public function getStarttimeInitiallyReturnsNull(): void
     {
         self::assertNull(
-            $this->subject->getStarttime()
+            $this->subject->getStarttime(),
         );
     }
 
@@ -155,7 +155,7 @@ trait TestTypo3PropertiesTrait
 
         self::assertSame(
             $date,
-            $this->subject->getStarttime()
+            $this->subject->getStarttime(),
         );
     }
 
@@ -167,7 +167,7 @@ trait TestTypo3PropertiesTrait
         $this->subject->setStarttime(null);
 
         self::assertNull(
-            $this->subject->getStarttime()
+            $this->subject->getStarttime(),
         );
     }
 
@@ -177,7 +177,7 @@ trait TestTypo3PropertiesTrait
     public function getEndtimeInitiallyReturnsNull(): void
     {
         self::assertNull(
-            $this->subject->getEndtime()
+            $this->subject->getEndtime(),
         );
     }
 
@@ -191,7 +191,7 @@ trait TestTypo3PropertiesTrait
 
         self::assertSame(
             $date,
-            $this->subject->getEndtime()
+            $this->subject->getEndtime(),
         );
     }
 
@@ -203,7 +203,7 @@ trait TestTypo3PropertiesTrait
         $this->subject->setEndtime(null);
 
         self::assertNull(
-            $this->subject->getEndtime()
+            $this->subject->getEndtime(),
         );
     }
 
@@ -213,7 +213,7 @@ trait TestTypo3PropertiesTrait
     public function getHiddenInitiallyReturnsFalse(): void
     {
         self::assertFalse(
-            $this->subject->getHidden()
+            $this->subject->getHidden(),
         );
     }
 
@@ -224,7 +224,7 @@ trait TestTypo3PropertiesTrait
     {
         $this->subject->setHidden(true);
         self::assertTrue(
-            $this->subject->getHidden()
+            $this->subject->getHidden(),
         );
     }
 
@@ -234,7 +234,7 @@ trait TestTypo3PropertiesTrait
     public function getDeletedInitiallyReturnsFalse(): void
     {
         self::assertFalse(
-            $this->subject->getDeleted()
+            $this->subject->getDeleted(),
         );
     }
 
@@ -245,7 +245,7 @@ trait TestTypo3PropertiesTrait
     {
         $this->subject->setDeleted(true);
         self::assertTrue(
-            $this->subject->getDeleted()
+            $this->subject->getDeleted(),
         );
     }
 }

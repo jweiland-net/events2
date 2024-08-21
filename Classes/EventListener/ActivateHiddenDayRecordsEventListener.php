@@ -54,7 +54,7 @@ class ActivateHiddenDayRecordsEventListener extends AbstractControllerEventListe
             ],
             [
                 Connection::PARAM_INT,
-            ]
+            ],
         );
     }
 

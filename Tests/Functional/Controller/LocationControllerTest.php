@@ -40,7 +40,7 @@ class LocationControllerTest extends AbstractFunctionalTestCase
         $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
         if (version_compare($typo3Version->getBranch(), '11', '<')) {
             self::markTestSkipped(
-                'Because of missing Context class in TYPO3 10 this test has to be skipped.'
+                'Because of missing Context class in TYPO3 10 this test has to be skipped.',
             );
         }
 
@@ -57,7 +57,7 @@ class LocationControllerTest extends AbstractFunctionalTestCase
     {
         unset(
             $this->serverRequest,
-            $GLOBALS['TSFE']
+            $GLOBALS['TSFE'],
         );
 
         parent::tearDown();
@@ -78,7 +78,7 @@ class LocationControllerTest extends AbstractFunctionalTestCase
                     'action' => 'show',
                     'location' => '1',
                 ],
-            ]
+            ],
         );
 
         $extbaseBootstrap = GeneralUtility::makeInstance(Bootstrap::class);
@@ -88,20 +88,20 @@ class LocationControllerTest extends AbstractFunctionalTestCase
                 'extensionName' => 'Events2',
                 'pluginName' => 'List',
                 'format' => 'txt',
-            ]
+            ],
         );
 
         self::assertStringContainsString(
             'Kino',
-            $content
+            $content,
         );
         self::assertStringContainsString(
             'Cinemastreet 42',
-            $content
+            $content,
         );
         self::assertStringContainsString(
             '12345 Everywhere',
-            $content
+            $content,
         );
     }
 }

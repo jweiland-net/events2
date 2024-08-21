@@ -11,7 +11,7 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 
 return static function (
     ContainerConfigurator $container,
-    ContainerBuilder $containerBuilder
+    ContainerBuilder $containerBuilder,
 ) {
     // As IndexerHook.php is incompatible with an interface of solr 11.2 we have to exclude both files
     // from "resource" in Services.yaml and load/configure the file individual here.

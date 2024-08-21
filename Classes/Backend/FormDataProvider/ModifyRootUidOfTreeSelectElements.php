@@ -22,7 +22,7 @@ class ModifyRootUidOfTreeSelectElements implements FormDataProviderInterface
 {
     public function __construct(
         private readonly ExtConf $extConf,
-        private readonly Typo3Version $typo3Version
+        private readonly Typo3Version $typo3Version,
     ) {}
 
     /**
@@ -36,7 +36,7 @@ class ModifyRootUidOfTreeSelectElements implements FormDataProviderInterface
                 isset(
                     $result['flexParentDatabaseRow']['list_type'],
                     $result['processedTca']['columns'][$categoryField]['config']['type'],
-                    $result['processedTca']['columns'][$categoryField]['config']['renderMode']
+                    $result['processedTca']['columns'][$categoryField]['config']['renderMode'],
                 )
 
                 // check, if we have TCA-type "select" defined, and it is configured as "tree"

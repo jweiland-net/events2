@@ -39,7 +39,7 @@ class PathSegmentHelper
 
     public function __construct(
         protected readonly ExtConf $extConf,
-        protected readonly EventDispatcher $eventDispatcher
+        protected readonly EventDispatcher $eventDispatcher,
     ) {}
 
     public function generatePathSegment(array $baseRecord): string
@@ -47,20 +47,20 @@ class PathSegmentHelper
         if ($this->extConf->getPathSegmentType() === 'empty') {
             /** @var GeneratePathSegmentEvent $generatePathSegmentEvent */
             $generatePathSegmentEvent = $this->eventDispatcher->dispatch(
-                new GeneratePathSegmentEvent($baseRecord)
+                new GeneratePathSegmentEvent($baseRecord),
             );
             $pathSegment = $generatePathSegmentEvent->getPathSegment();
             if ($pathSegment === '' || $pathSegment === '/') {
                 throw new \Exception(
                     'You have configured "empty" in Extension Settings for path segment generation. Please check your configured Event or change path generation to "realurl" or "uid"',
-                    1623682407
+                    1623682407,
                 );
             }
         } else {
             // We configure path segment type "uid" in getSlugHelper()
             $pathSegment = $this->getSlugHelper()->generate(
                 $baseRecord,
-                (int)$baseRecord['pid']
+                (int)$baseRecord['pid'],
             );
 
             if ($this->extConf->getPathSegmentType() === 'realurl') {
@@ -80,8 +80,8 @@ class PathSegmentHelper
 
         $event->setPathSegment(
             $this->generatePathSegment(
-                $event->getBaseRecordForPathSegment()
-            )
+                $event->getBaseRecordForPathSegment(),
+            ),
         );
     }
 
@@ -124,12 +124,12 @@ class PathSegmentHelper
             ->where(
                 $queryBuilder->expr()->eq(
                     $this->slugColumn,
-                    $queryBuilder->createPositionalParameter($slug)
+                    $queryBuilder->createPositionalParameter($slug),
                 ),
                 $queryBuilder->expr()->neq(
                     'uid',
-                    $queryBuilder->createPositionalParameter($uid, Connection::PARAM_INT)
-                )
+                    $queryBuilder->createPositionalParameter($uid, Connection::PARAM_INT),
+                ),
             )
             ->prepare();
     }
@@ -146,7 +146,7 @@ class PathSegmentHelper
             SlugHelper::class,
             $this->tableName,
             $this->slugColumn,
-            $config
+            $config,
         );
     }
 

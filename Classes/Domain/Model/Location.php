@@ -126,14 +126,14 @@ class Location extends AbstractEntity
             $addressParts[] = trim(sprintf(
                 '%s %s',
                 $this->getStreet(),
-                $this->getHouseNumber()
+                $this->getHouseNumber(),
             ));
         }
         if ($this->getZip() !== '' || $this->getCity() !== '') {
             $addressParts[] = trim(sprintf(
                 '%s %s',
                 $this->getZip(),
-                $this->getCity()
+                $this->getCity(),
             ));
         }
 

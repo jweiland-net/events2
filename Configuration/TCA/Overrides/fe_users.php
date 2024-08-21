@@ -27,10 +27,10 @@ ExtensionManagementUtility::addTCAcolumns(
                 ],
             ],
         ],
-    ]
+    ],
 );
 
 ExtensionManagementUtility::addToAllTCAtypes(
     'fe_users',
-    '--div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_tab,tx_events2_organizer'
+    '--div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_tab,tx_events2_organizer',
 );

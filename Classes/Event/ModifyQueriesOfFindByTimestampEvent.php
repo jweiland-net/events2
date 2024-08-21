@@ -25,7 +25,7 @@ class ModifyQueriesOfFindByTimestampEvent
     public function __construct(
         protected readonly QueryBuilder $queryBuilder,
         int $timestamp,
-        array $settings
+        array $settings,
     ) {
         $this->timestamp = $timestamp;
         $this->settings = $settings;

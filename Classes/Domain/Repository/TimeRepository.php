@@ -34,14 +34,14 @@ class TimeRepository extends AbstractRepository
         $expressions = [
             $expressionBuilder->eq(
                 $tableAlias . '.event',
-                $eventRecord['uid']
+                $eventRecord['uid'],
             ),
         ];
 
         $timeRecords = $this->getRecordsByExpression(
             self::TABLE,
             $tableAlias,
-            $expressions
+            $expressions,
         );
 
         $timeRecords = array_map(static function ($timeRecord) use ($eventRecord): array {
@@ -58,7 +58,7 @@ class TimeRepository extends AbstractRepository
             foreach ($eventRecord['exceptions'] as $exceptionRecord) {
                 array_push(
                     $timeRecords,
-                    ...$this->getAllByExceptionRecord($exceptionRecord)
+                    ...$this->getAllByExceptionRecord($exceptionRecord),
                 );
             }
         }
@@ -79,14 +79,14 @@ class TimeRepository extends AbstractRepository
         $expressions = [
             $expressionBuilder->eq(
                 $tableAlias . '.exception',
-                $exceptionRecord['uid']
+                $exceptionRecord['uid'],
             ),
         ];
 
         $timeRecords = $this->getRecordsByExpression(
             self::TABLE,
             $tableAlias,
-            $expressions
+            $expressions,
         );
 
         return array_map(static function ($timeRecord) use ($exceptionRecord): array {
@@ -99,14 +99,14 @@ class TimeRepository extends AbstractRepository
     public function getRecord(
         int $uid,
         array $select = ['*'],
-        bool $includeHidden = false
+        bool $includeHidden = false,
     ): array {
         return $this->getRecordByUid(
             self::TABLE,
             't',
             $uid,
             $select,
-            $includeHidden
+            $includeHidden,
         );
     }
 }

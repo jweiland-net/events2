@@ -28,12 +28,12 @@ class AbstractControllerEventListener
         return
             array_key_exists(
                 $event->getControllerName(),
-                $this->allowedControllerActions
+                $this->allowedControllerActions,
             )
             && in_array(
                 $event->getActionName(),
                 $this->allowedControllerActions[$event->getControllerName()],
-                true
+                true,
             );
     }
 }

@@ -41,7 +41,7 @@ class SearchControllerTest extends AbstractFunctionalTestCase
         $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
         if (version_compare($typo3Version->getBranch(), '11', '<')) {
             self::markTestSkipped(
-                'Because of missing Context class in TYPO3 10 this test has to be skipped.'
+                'Because of missing Context class in TYPO3 10 this test has to be skipped.',
             );
         }
 
@@ -68,7 +68,7 @@ class SearchControllerTest extends AbstractFunctionalTestCase
     {
         unset(
             $this->serverRequest,
-            $GLOBALS['TSFE']
+            $GLOBALS['TSFE'],
         );
 
         parent::tearDown();
@@ -92,12 +92,12 @@ class SearchControllerTest extends AbstractFunctionalTestCase
                     'rootCategory' => '1',
                     'mainCategories' => '2,3',
                 ],
-            ]
+            ],
         );
 
         self::assertStringContainsString(
             'Free entry: no',
-            $content
+            $content,
         );
     }
 
@@ -117,7 +117,7 @@ class SearchControllerTest extends AbstractFunctionalTestCase
                         'freeEntry' => '1',
                     ],
                 ],
-            ]
+            ],
         );
 
         $extbaseBootstrap = GeneralUtility::makeInstance(Bootstrap::class);
@@ -131,16 +131,16 @@ class SearchControllerTest extends AbstractFunctionalTestCase
                     'rootCategory' => '1',
                     'mainCategories' => '2,3',
                 ],
-            ]
+            ],
         );
 
         self::assertStringContainsString(
             'Search: Test',
-            $content
+            $content,
         );
         self::assertStringContainsString(
             'Free entry: yes',
-            $content
+            $content,
         );
     }
 }

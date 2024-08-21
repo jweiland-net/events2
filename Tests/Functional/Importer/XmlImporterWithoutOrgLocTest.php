@@ -72,10 +72,10 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
     protected function tearDown(): void
     {
         unset(
-            $GLOBALS['BE_USER']
+            $GLOBALS['BE_USER'],
         );
         unlink(GeneralUtility::getFileAbsFileName(
-            'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt'
+            'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt',
         ));
         parent::tearDown();
     }
@@ -96,8 +96,8 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
         self::assertMatchesRegularExpression(
             '/We have processed 3 events/',
             file_get_contents(GeneralUtility::getFileAbsFileName(
-                'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt'
-            ))
+                'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt',
+            )),
         );
 
         self::assertSame(
@@ -105,8 +105,8 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
             $this->getDatabaseConnection()
                 ->selectCount(
                     '*',
-                    'tx_events2_domain_model_event'
-                )
+                    'tx_events2_domain_model_event',
+                ),
         );
 
         // Check, if path_segment is set for all three records
@@ -114,7 +114,7 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
             ->select(
                 '*',
                 'tx_events2_domain_model_event',
-                '1=1'
+                '1=1',
             );
 
         while ($eventRecord = $statement->fetch()) {

@@ -36,9 +36,9 @@ class CategoryMandatoryValidator extends AbstractValidator
             $this->addError(
                 $this->translateErrorMessage(
                     'validator.event.categories.isMandatory',
-                    'events2'
+                    'events2',
                 ),
-                1697100735
+                1697100735,
             );
         }
     }

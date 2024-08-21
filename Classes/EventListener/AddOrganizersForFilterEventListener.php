@@ -44,7 +44,7 @@ class AddOrganizersForFilterEventListener extends AbstractControllerEventListene
 
         $controllerActionEvent->addFluidVariable(
             'organizers',
-            $this->organizerRepository->getOrganizersForFilter()
+            $this->organizerRepository->getOrganizersForFilter(),
         );
     }
 }

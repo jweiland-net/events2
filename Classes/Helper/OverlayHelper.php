@@ -29,7 +29,7 @@ class OverlayHelper implements LoggerAwareInterface
 
     public function __construct(
         protected readonly Context $context,
-        protected readonly PageRepository $pageRepository
+        protected readonly PageRepository $pageRepository,
     ) {}
 
     public function addWhereForOverlay(
@@ -37,7 +37,7 @@ class OverlayHelper implements LoggerAwareInterface
         string $tableName,
         string $tableAlias,
         bool $useLangStrict = false,
-        int $overrideLanguageUid = -1
+        int $overrideLanguageUid = -1,
     ): void {
         try {
             $this->addWhereForWorkspaces($queryBuilder, $tableName, $tableAlias);
@@ -46,7 +46,7 @@ class OverlayHelper implements LoggerAwareInterface
             $this->logger->error(sprintf(
                 'Aspect for "language" was not found in %s at line %d.',
                 $aspectNotFoundException->getFile(),
-                $aspectNotFoundException->getLine()
+                $aspectNotFoundException->getLine(),
             ));
             return;
         }
@@ -62,7 +62,7 @@ class OverlayHelper implements LoggerAwareInterface
     {
         return $this->doLanguageOverlay(
             $tableName,
-            $this->doWorkspaceOverlay($tableName, $record)
+            $this->doWorkspaceOverlay($tableName, $record),
         );
     }
 
@@ -77,7 +77,7 @@ class OverlayHelper implements LoggerAwareInterface
     {
         return $this->pageRepository->getLanguageOverlay(
             $tableName,
-            $record
+            $record,
         ) ?: [];
     }
 
@@ -98,7 +98,7 @@ class OverlayHelper implements LoggerAwareInterface
 
         if ($GLOBALS['TCA'][$tableName]['ctrl']['versioningWS']) {
             $queryBuilder->andWhere(
-                $queryBuilder->expr()->eq($tableAlias . '.t3ver_wsid', $workspace)
+                $queryBuilder->expr()->eq($tableAlias . '.t3ver_wsid', $workspace),
             );
         }
     }
@@ -117,7 +117,7 @@ class OverlayHelper implements LoggerAwareInterface
         string $tableName,
         string $tableAlias,
         bool $useLangStrict = false,
-        int $overrideLanguageUid = -1
+        int $overrideLanguageUid = -1,
     ): void {
         if (!BackendUtility::isTableLocalizable($tableName)) {
             return;
@@ -134,12 +134,12 @@ class OverlayHelper implements LoggerAwareInterface
             $queryBuilder->andWhere(
                 $queryBuilder->expr()->in(
                     $tableAlias . '.' . $languageField,
-                    [0, -1]
+                    [0, -1],
                 ),
                 $queryBuilder->expr()->eq(
                     $tableAlias . '.' . $transOrigPointerField,
-                    0
-                )
+                    0,
+                ),
             );
         } elseif ($useLangStrict && $overrideLanguageUid >= 0) {
             // Strict mode for f.e. backend (TCEFORM)
@@ -148,8 +148,8 @@ class OverlayHelper implements LoggerAwareInterface
             $queryBuilder->andWhere(
                 $queryBuilder->expr()->in(
                     $tableAlias . '.' . $languageField,
-                    [$overrideLanguageUid]
-                )
+                    [$overrideLanguageUid],
+                ),
             );
         } else {
             // strict mode
@@ -157,8 +157,8 @@ class OverlayHelper implements LoggerAwareInterface
             $queryBuilder->andWhere(
                 $queryBuilder->expr()->in(
                     $tableAlias . '.' . $languageField,
-                    [$this->getLanguageAspect()->getContentId(), -1]
-                )
+                    [$this->getLanguageAspect()->getContentId(), -1],
+                ),
             );
         }
     }

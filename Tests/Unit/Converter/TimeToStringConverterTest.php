@@ -55,7 +55,7 @@ class TimeToStringConverterTest extends UnitTestCase
     {
         self::assertSame(
             '23:59',
-            $this->subject->convert($tooHighIntegerValue)
+            $this->subject->convert($tooHighIntegerValue),
         );
     }
 
@@ -83,7 +83,7 @@ class TimeToStringConverterTest extends UnitTestCase
     {
         self::assertSame(
             '00:00',
-            $this->subject->convert($tooLowIntegerValue)
+            $this->subject->convert($tooLowIntegerValue),
         );
     }
 
@@ -115,11 +115,11 @@ class TimeToStringConverterTest extends UnitTestCase
      */
     public function convertWithIntegersInAllowedRangeResultsInStringInterpretation(
         int $timestampInRange,
-        string $expectedTime
+        string $expectedTime,
     ): void {
         self::assertSame(
             $expectedTime,
-            $this->subject->convert($timestampInRange)
+            $this->subject->convert($timestampInRange),
         );
     }
 }

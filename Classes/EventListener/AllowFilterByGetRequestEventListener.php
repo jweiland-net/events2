@@ -47,7 +47,7 @@ class AllowFilterByGetRequestEventListener extends AbstractControllerEventListen
             PersistentObjectConverter::class,
             [
                 PersistentObjectConverter::CONFIGURATION_CREATION_ALLOWED => true,
-            ]
+            ],
         );
     }
 }

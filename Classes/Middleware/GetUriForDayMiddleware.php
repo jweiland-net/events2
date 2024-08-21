@@ -28,7 +28,7 @@ class GetUriForDayMiddleware implements MiddlewareInterface
 {
     public function __construct(
         protected readonly UriBuilder $uriBuilder,
-        protected readonly DateTimeUtility $dateTimeUtility
+        protected readonly DateTimeUtility $dateTimeUtility,
     ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -75,9 +75,9 @@ class GetUriForDayMiddleware implements MiddlewareInterface
                 '%d.%d.%d 00:00:00',
                 MathUtility::forceIntegerInRange($getParameters['day'], 1, 31),
                 MathUtility::forceIntegerInRange($getParameters['month'], 1, 12),
-                (int)$getParameters['year']
+                (int)$getParameters['year'],
             ),
-            new \DateTimeZone(date_default_timezone_get())
+            new \DateTimeZone(date_default_timezone_get()),
         );
     }
 
@@ -108,7 +108,7 @@ class GetUriForDayMiddleware implements MiddlewareInterface
                 ],
                 'Day',
                 'events2',
-                'list'
+                'list',
             );
     }
 }

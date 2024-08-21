@@ -71,7 +71,7 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
                 if (
                     ArrayUtility::getValueByPath(
                         $valueFromDatabase,
-                        'data/sDEF/lDEF/switchableControllerActions'
+                        'data/sDEF/lDEF/switchableControllerActions',
                     )
                 ) {
                     return true;
@@ -103,7 +103,7 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
                 'settings.pidOfSearchPage',
                 'sDEFAULT',
                 'sDEF',
-                'settings.pidOfSearchResults'
+                'settings.pidOfSearchResults',
             );
             $ttContentListType = $this->migrateSwitchableControllerActions($valueFromDatabase, $record['list_type']);
 
@@ -119,7 +119,7 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
                 ],
                 [
                     'pi_flexform' => Connection::PARAM_STR,
-                ]
+                ],
             );
         }
 
@@ -140,12 +140,12 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
             ->where(
                 $queryBuilder->expr()->eq(
                     'CType',
-                    $queryBuilder->createNamedParameter('list')
+                    $queryBuilder->createNamedParameter('list'),
                 ),
                 $queryBuilder->expr()->like(
                     'list_type',
-                    $queryBuilder->createNamedParameter('events2_%')
-                )
+                    $queryBuilder->createNamedParameter('events2_%'),
+                ),
             )
             ->executeQuery();
 
@@ -180,7 +180,7 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
         string $field,
         string $oldSheet,
         string $newSheet,
-        string $newField = ''
+        string $newField = '',
     ): void {
         if ($newField === '') {
             $newField = $field;
@@ -192,8 +192,8 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
                 sprintf(
                     'data/%s/lDEF/%s',
                     $oldSheet,
-                    $field
-                )
+                    $field,
+                ),
             );
 
             // Create base sheet, if not exist
@@ -221,7 +221,7 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
             try {
                 $actions = ArrayUtility::getValueByPath(
                     $valueFromDatabase,
-                    'data/sDEF/lDEF/switchableControllerActions/vDEF'
+                    'data/sDEF/lDEF/switchableControllerActions/vDEF',
                 );
             } catch (MissingArrayPathException $missingArrayPathException) {
                 // Path does not exist in Array.

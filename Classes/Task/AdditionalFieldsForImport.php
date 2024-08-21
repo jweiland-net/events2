@@ -85,7 +85,7 @@ class AdditionalFieldsForImport extends AbstractAdditionalFieldProvider
     protected function initialize(
         array $taskInfo,
         ?AbstractTask $task,
-        SchedulerModuleController $schedulerModule
+        SchedulerModuleController $schedulerModule,
     ): void {
         $this->taskInfo = $taskInfo;
         $this->task = $task;

@@ -28,7 +28,7 @@ class PostProcessFluidVariablesEvent implements ControllerActionEventInterface
     public function __construct(
         Request $request,
         array $settings,
-        array $fluidVariables
+        array $fluidVariables,
     ) {
         $this->request = $request;
         $this->settings = $settings;

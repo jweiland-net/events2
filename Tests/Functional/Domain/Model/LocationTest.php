@@ -47,7 +47,7 @@ class LocationTest extends FunctionalTestCase
     protected function tearDown(): void
     {
         unset(
-            $this->subject
+            $this->subject,
         );
 
         parent::tearDown();
@@ -60,7 +60,7 @@ class LocationTest extends FunctionalTestCase
     {
         self::assertSame(
             '',
-            $this->subject->getLocation()
+            $this->subject->getLocation(),
         );
     }
 
@@ -73,7 +73,7 @@ class LocationTest extends FunctionalTestCase
 
         self::assertSame(
             'foo bar',
-            $this->subject->getLocation()
+            $this->subject->getLocation(),
         );
     }
 
@@ -84,7 +84,7 @@ class LocationTest extends FunctionalTestCase
     {
         self::assertSame(
             '',
-            $this->subject->getStreet()
+            $this->subject->getStreet(),
         );
     }
 
@@ -97,7 +97,7 @@ class LocationTest extends FunctionalTestCase
 
         self::assertSame(
             'foo bar',
-            $this->subject->getStreet()
+            $this->subject->getStreet(),
         );
     }
 
@@ -108,7 +108,7 @@ class LocationTest extends FunctionalTestCase
     {
         self::assertSame(
             '',
-            $this->subject->getHouseNumber()
+            $this->subject->getHouseNumber(),
         );
     }
 
@@ -121,7 +121,7 @@ class LocationTest extends FunctionalTestCase
 
         self::assertSame(
             'foo bar',
-            $this->subject->getHouseNumber()
+            $this->subject->getHouseNumber(),
         );
     }
 
@@ -132,7 +132,7 @@ class LocationTest extends FunctionalTestCase
     {
         self::assertSame(
             '',
-            $this->subject->getZip()
+            $this->subject->getZip(),
         );
     }
 
@@ -145,7 +145,7 @@ class LocationTest extends FunctionalTestCase
 
         self::assertSame(
             'foo bar',
-            $this->subject->getZip()
+            $this->subject->getZip(),
         );
     }
 
@@ -156,7 +156,7 @@ class LocationTest extends FunctionalTestCase
     {
         self::assertSame(
             '',
-            $this->subject->getCity()
+            $this->subject->getCity(),
         );
     }
 
@@ -169,7 +169,7 @@ class LocationTest extends FunctionalTestCase
 
         self::assertSame(
             'foo bar',
-            $this->subject->getCity()
+            $this->subject->getCity(),
         );
     }
 
@@ -191,7 +191,7 @@ class LocationTest extends FunctionalTestCase
 
         self::assertSame(
             $instance,
-            $this->subject->getCountry()
+            $this->subject->getCountry(),
         );
     }
 
@@ -213,7 +213,7 @@ class LocationTest extends FunctionalTestCase
 
         self::assertSame(
             $instance,
-            $this->subject->getLink()
+            $this->subject->getLink(),
         );
     }
 
@@ -235,7 +235,7 @@ class LocationTest extends FunctionalTestCase
 
         self::assertSame(
             $instance,
-            $this->subject->getTxMaps2Uid()
+            $this->subject->getTxMaps2Uid(),
         );
     }
 }

@@ -40,7 +40,7 @@ class PostProcessControllerActionEvent implements ControllerActionEventInterface
         ?Event $event,
         ?Day $day,
         array $settings,
-        RequestInterface $request
+        RequestInterface $request,
     ) {
         $this->controller = $controller;
         $this->event = $event;
