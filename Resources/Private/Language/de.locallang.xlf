@@ -278,6 +278,10 @@
 				<source>Primer</source>
 				<target>Premiere</target>
 			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_exception.resumption">
+				<source>Resumption</source>
+				<target>Wiederaufnahme</target>
+			</trans-unit>
 
 			<trans-unit id="tx_events2_domain_model_location">
 				<source>Location</source>
