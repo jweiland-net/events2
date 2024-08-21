@@ -275,9 +275,13 @@
         <source>Details</source>
         <target state="final">Details</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_exception.primer">
+      <trans-unit id="tx_events2_domain_model_exception.primer" approved="yes">
         <source>Primer</source>
-        <target state="needs-translation">Primer</target>
+        <target state="final">Premiere</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_exception.resumption">
+        <source>Resumption</source>
+        <target state="needs-translation">Resumption</target>
       </trans-unit>
       <trans-unit id="tx_events2_domain_model_location" approved="yes">
         <source>Location</source>
@@ -491,9 +495,9 @@
         <source>You're allowed to create event records, but your user record has no relation to an organizer record.</source>
         <target state="final">Sie dürfen Veranstaltungen erstellen, aber Ihr Benutzereintrag hat keine Beziehung zu einem Organisator.</target>
       </trans-unit>
-      <trans-unit id="unauthorizedOrganizerForEdit">
+      <trans-unit id="unauthorizedOrganizerForEdit" approved="yes">
         <source>You are not allowed to edit events that do not correspond to your assigned organizer.</source>
-        <target state="needs-translation">You are not allowed to edit events that do not correspond to your assigned organizer.</target>
+        <target state="final">Sie sind nicht berechtigt, Termine zu bearbeiten, die nicht Ihrem zugewiesenen Veranstalter entsprechen.</target>
       </trans-unit>
       <trans-unit id="pageBrowser.first" approved="yes">
         <source>First</source>
