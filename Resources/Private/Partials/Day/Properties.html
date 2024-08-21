@@ -81,8 +81,8 @@
 <f:section name="showDateAndTime">
 	<dl>
         <f:for each="{e2:getExceptionsFromEventForSpecificDate(event: day.event, date: date)}" as="exception">
-            <f:if condition="{exception.primer}">
-                <dt>{f:translate(key: 'tx_events2_domain_model_exception.primer')}</dt>
+            <f:if condition="{exception.markAs}">
+                <dt>{f:translate(key: 'tx_events2_domain_model_exception.{exception.markAs}')}</dt>
             </f:if>
         </f:for>
 		<dt>

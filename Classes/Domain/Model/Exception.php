@@ -31,7 +31,7 @@ class Exception extends AbstractEntity
 
     protected bool $showAnyway = false;
 
-    protected bool $primer = false;
+    protected string $markAs = '';
 
     public function getExceptionType(): string
     {
@@ -83,13 +83,13 @@ class Exception extends AbstractEntity
         $this->showAnyway = $showAnyway;
     }
 
-    public function isPrimer(): bool
+    public function getMarkAs(): string
     {
-        return $this->primer;
+        return $this->markAs;
     }
 
-    public function setPrimer(bool $primer): void
+    public function setMarkAs(string $markAs): void
     {
-        $this->primer = $primer;
+        $this->markAs = $markAs;
     }
 }
