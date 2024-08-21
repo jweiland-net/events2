@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<xliff version="1.0">
+  <file source-language="en" datatype="plaintext" original="messages" date="2017-08-25T10:38:40Z" product-name="events2" target-language="vi">
+    <header/>
+    <body>
+      <trans-unit id="location.description">
+        <source>Name of the location</source>
+        <target state="needs-translation">Name of the location</target>
+      </trans-unit>
+      <trans-unit id="street.description">
+        <source>Add the street of the location</source>
+        <target state="needs-translation">Add the street of the location</target>
+      </trans-unit>
+      <trans-unit id="house_number.description">
+        <source>Add the house number of the location</source>
+        <target state="needs-translation">Add the house number of the location</target>
+      </trans-unit>
+      <trans-unit id="zip.description">
+        <source>Add the zip of the location</source>
+        <target state="needs-translation">Add the zip of the location</target>
+      </trans-unit>
+      <trans-unit id="city.description">
+        <source>Add the city of the location</source>
+        <target state="needs-translation">Add the city of the location</target>
+      </trans-unit>
+      <trans-unit id="country.description">
+        <source>Add the country of the location</source>
+        <target state="needs-translation">Add the country of the location</target>
+      </trans-unit>
+      <trans-unit id="tx_maps2_uid.description">
+        <source>Relate a maps2 record with this location. Or save this record and a new maps2 record will be created automatically</source>
+        <target state="needs-translation">Relate a maps2 record with this location. Or save this record and a new maps2 record will be created automatically</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
