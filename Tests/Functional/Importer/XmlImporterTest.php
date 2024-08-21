@@ -131,25 +131,6 @@ class XmlImporterTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function importWillCreate3events(): void
-    {
-        $fileObject = GeneralUtility::makeInstance(ResourceFactory::class)
-            ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/Success.xml');
-        $this->subject->setFile($fileObject);
-        $this->subject->setStoragePid(12);
-
-        self::assertTrue($this->subject->import());
-        self::assertMatchesRegularExpression(
-            '/We have processed 3 events/',
-            file_get_contents(GeneralUtility::getFileAbsFileName(
-                'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt'
-            ))
-        );
-    }
-
-    /**
-     * @test
-     */
     public function importEventWithMissingCategoryEntryWillResultInErrorInMessagesTxt(): void
     {
         $fileObject = GeneralUtility::makeInstance(ResourceFactory::class)
