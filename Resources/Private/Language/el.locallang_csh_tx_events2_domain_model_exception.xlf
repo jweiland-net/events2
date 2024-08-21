@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<xliff version="1.0">
+  <file source-language="en" datatype="plaintext" original="messages" date="2017-08-25T10:38:40Z" product-name="events2" target-language="el">
+    <header/>
+    <body>
+      <trans-unit id="exception_type.description">
+        <source>Special definitions for a defined date</source>
+        <target state="needs-translation">Special definitions for a defined date</target>
+      </trans-unit>
+      <trans-unit id="exception_type.details">
+        <source>
+					Add an additional date.
+					Add another time record for a special date.
+					Mark a date as removed.
+					Add further information for a special date.
+				</source>
+        <target state="needs-translation">
+					Add an additional date.
+					Add another time record for a special date.
+					Mark a date as removed.
+					Add further information for a special date.
+				</target>
+      </trans-unit>
+      <trans-unit id="exception_date.description">
+        <source>Create special definition for this date</source>
+        <target state="needs-translation">Create special definition for this date</target>
+      </trans-unit>
+      <trans-unit id="exception_time.description">
+        <source>Override all previously created time records for a defined date with this time record</source>
+        <target state="needs-translation">Override all previously created time records for a defined date with this time record</target>
+      </trans-unit>
+      <trans-unit id="exception_details.description">
+        <source>Create an additional information for a defined date</source>
+        <target state="needs-translation">Create an additional information for a defined date</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
