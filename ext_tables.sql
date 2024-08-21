@@ -73,6 +73,7 @@ CREATE TABLE tx_events2_domain_model_exception (
   exception_time int(11) unsigned DEFAULT '0',
   exception_details text,
   show_anyway tinyint(1) unsigned DEFAULT '0' NOT NULL,
+  is_primer tinyint(1) unsigned DEFAULT '0' NOT NULL,
   event int(11) unsigned DEFAULT '0' NOT NULL,
 
   KEY events (event)

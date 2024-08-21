@@ -31,6 +31,8 @@ class Exception extends AbstractEntity
 
     protected bool $showAnyway = false;
 
+    protected bool $primer = false;
+
     public function getExceptionType(): string
     {
         return $this->exceptionType;
@@ -79,5 +81,15 @@ class Exception extends AbstractEntity
     public function setShowAnyway(bool $showAnyway): void
     {
         $this->showAnyway = $showAnyway;
+    }
+
+    public function isPrimer(): bool
+    {
+        return $this->primer;
+    }
+
+    public function setPrimer(bool $primer): void
+    {
+        $this->primer = $primer;
     }
 }
