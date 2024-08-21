@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<xliff version="1.0">
+  <file source-language="en" datatype="plaintext" original="messages" date="2017-08-25T10:38:40Z" product-name="events2" target-language="cs">
+    <header/>
+    <body>
+      <trans-unit id="title.description">
+        <source>A name for the holiday date. Something like x-mas</source>
+        <target state="needs-translation">A name for the holiday date. Something like x-mas</target>
+      </trans-unit>
+      <trans-unit id="day.description">
+        <source>At which day the holiday is taking place? Valid value between 1 and 31</source>
+        <target state="needs-translation">At which day the holiday is taking place? Valid value between 1 and 31</target>
+      </trans-unit>
+      <trans-unit id="month.description">
+        <source>At which month the holiday is taking place? Valid value between 1 and 12</source>
+        <target state="needs-translation">At which month the holiday is taking place? Valid value between 1 and 12</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
