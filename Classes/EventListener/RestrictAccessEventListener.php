@@ -58,7 +58,7 @@ class RestrictAccessEventListener extends AbstractControllerEventListener
         EventRepository $eventRepository,
         UserRepository $userRepository,
         ExtensionService $extensionService,
-        FlashMessageService $flashMessageService
+        FlashMessageService $flashMessageService,
     ) {
         $this->eventRepository = $eventRepository;
         $this->userRepository = $userRepository;
@@ -80,7 +80,7 @@ class RestrictAccessEventListener extends AbstractControllerEventListener
 
         // Redirect request to errorAction
         $controllerActionEvent->setRequest(
-            $controllerActionEvent->getRequest()->withControllerActionName('error')
+            $controllerActionEvent->getRequest()->withControllerActionName('error'),
         );
 
         // Reset any Extbase Arguments to be NOT processed
@@ -120,7 +120,7 @@ class RestrictAccessEventListener extends AbstractControllerEventListener
             (string)$messageBody,
             '',
             AbstractMessage::ERROR,
-            true
+            true,
         );
 
         $this->getFlashMessageQueue()->enqueue($flashMessage);
@@ -131,7 +131,7 @@ class RestrictAccessEventListener extends AbstractControllerEventListener
         if ($identifier === null) {
             $pluginNamespace = $this->extensionService->getPluginNamespace(
                 $this->request->getControllerExtensionName(),
-                $this->request->getPluginName()
+                $this->request->getPluginName(),
             );
             $identifier = 'extbase.flashmessages.' . $pluginNamespace;
         }

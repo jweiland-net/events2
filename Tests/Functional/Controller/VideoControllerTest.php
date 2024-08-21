@@ -40,7 +40,7 @@ class VideoControllerTest extends AbstractFunctionalTestCase
         $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
         if (version_compare($typo3Version->getBranch(), '11', '<')) {
             self::markTestSkipped(
-                'Because of missing Context class in TYPO3 10 this test has to be skipped.'
+                'Because of missing Context class in TYPO3 10 this test has to be skipped.',
             );
         }
 
@@ -56,7 +56,7 @@ class VideoControllerTest extends AbstractFunctionalTestCase
     {
         unset(
             $this->serverRequest,
-            $GLOBALS['TSFE']
+            $GLOBALS['TSFE'],
         );
 
         parent::tearDown();
@@ -75,7 +75,7 @@ class VideoControllerTest extends AbstractFunctionalTestCase
                 'event_type' => 'single',
                 'event_begin' => (int)$date->format('U'),
                 'title' => 'Today',
-            ]
+            ],
         );
 
         $this->startUpTSFE(
@@ -88,7 +88,7 @@ class VideoControllerTest extends AbstractFunctionalTestCase
                     'action' => 'show',
                     'event' => '1',
                 ],
-            ]
+            ],
         );
 
         $extbaseBootstrap = GeneralUtility::makeInstance(Bootstrap::class);
@@ -98,12 +98,12 @@ class VideoControllerTest extends AbstractFunctionalTestCase
                 'extensionName' => 'Events2',
                 'pluginName' => 'List',
                 'format' => 'txt',
-            ]
+            ],
         );
 
         self::assertStringContainsString(
             '',
-            trim($content)
+            trim($content),
         );
     }
 
@@ -123,7 +123,7 @@ class VideoControllerTest extends AbstractFunctionalTestCase
                 'event_begin' => (int)$date->format('U'),
                 'title' => 'Today',
                 'video_link' => 1,
-            ]
+            ],
         );
 
         $this->startUpTSFE(
@@ -136,7 +136,7 @@ class VideoControllerTest extends AbstractFunctionalTestCase
                     'action' => 'show',
                     'event' => '1',
                 ],
-            ]
+            ],
         );
 
         $extbaseBootstrap = GeneralUtility::makeInstance(Bootstrap::class);
@@ -146,16 +146,16 @@ class VideoControllerTest extends AbstractFunctionalTestCase
                 'extensionName' => 'Events2',
                 'pluginName' => 'List',
                 'format' => 'txt',
-            ]
+            ],
         );
 
         self::assertStringContainsString(
             'Header: YouTube',
-            $content
+            $content,
         );
         self::assertStringContainsString(
             'YouTube URL: //www.youtube.com/embed/5Xqo_SPiHlY',
-            $content
+            $content,
         );
     }
 }

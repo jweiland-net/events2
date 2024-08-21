@@ -26,7 +26,7 @@ class RegisterHiddenEventEventListener extends AbstractControllerEventListener
 
     public function __construct(
         protected readonly HiddenObjectHelper $hiddenObjectHelper,
-        protected readonly EventRepository $eventRepository
+        protected readonly EventRepository $eventRepository,
     ) {}
 
     public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void
@@ -35,7 +35,7 @@ class RegisterHiddenEventEventListener extends AbstractControllerEventListener
             $this->hiddenObjectHelper->registerHiddenObjectInExtbaseSession(
                 $this->eventRepository,
                 $controllerActionEvent->getRequest(),
-                'event'
+                'event',
             );
         }
     }

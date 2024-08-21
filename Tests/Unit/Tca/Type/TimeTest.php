@@ -58,7 +58,7 @@ class TimeTest extends UnitTestCase
     {
         self::assertSame(
             $unmodifiedTime,
-            $this->subject->evaluateFieldValue($unmodifiedTime)
+            $this->subject->evaluateFieldValue($unmodifiedTime),
         );
     }
 
@@ -87,7 +87,7 @@ class TimeTest extends UnitTestCase
     {
         self::assertSame(
             $paddedTimes,
-            $this->subject->evaluateFieldValue($unpaddedTimes)
+            $this->subject->evaluateFieldValue($unpaddedTimes),
         );
     }
 
@@ -116,7 +116,7 @@ class TimeTest extends UnitTestCase
     {
         self::assertSame(
             $normalizedTime,
-            $this->subject->evaluateFieldValue($tooHighTime)
+            $this->subject->evaluateFieldValue($tooHighTime),
         );
     }
 
@@ -141,7 +141,7 @@ class TimeTest extends UnitTestCase
     {
         self::assertSame(
             $expectedTime,
-            $this->subject->evaluateFieldValue($invalidTime)
+            $this->subject->evaluateFieldValue($invalidTime),
         );
     }
 
@@ -174,7 +174,7 @@ class TimeTest extends UnitTestCase
     {
         self::assertSame(
             $expectedTime,
-            $this->subject->evaluateFieldValue($intValue)
+            $this->subject->evaluateFieldValue($intValue),
         );
     }
 }

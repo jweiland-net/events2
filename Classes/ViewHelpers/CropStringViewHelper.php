@@ -41,7 +41,7 @@ class CropStringViewHelper extends AbstractViewHelper
             'string',
             'String "glue" that separates values. If you need a constant (like PHP_EOL)',
             false,
-            ','
+            ',',
         );
         $this->registerArgument(
             'limit',
@@ -52,14 +52,14 @@ class CropStringViewHelper extends AbstractViewHelper
             'only the last few values are combined into a new comma-separated string, for example "..., 1, 56, 7". ' .
             'If the limit parameter is zero, it is treated as 1, so only ONE element is shown, for example  "75".',
             false,
-            10
+            10,
         );
     }
 
     public static function renderStatic(
         array $arguments,
         \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
+        RenderingContextInterface $renderingContext,
     ): string {
         $content = $arguments['content'];
         $glue = $arguments['glue'];

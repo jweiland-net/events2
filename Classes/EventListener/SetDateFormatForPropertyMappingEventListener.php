@@ -45,14 +45,14 @@ class SetDateFormatForPropertyMappingEventListener extends AbstractControllerEve
 
     protected function setDatePropertyFormat(
         string $property,
-        PropertyMappingConfigurationInterface $pmc
+        PropertyMappingConfigurationInterface $pmc,
     ): void {
         $pmc
             ->forProperty($property)
             ->setTypeConverterOption(
                 DateTimeImmutableConverter::class,
                 DateTimeImmutableConverter::CONFIGURATION_DATE_FORMAT,
-                $this->defaultDateFormat
+                $this->defaultDateFormat,
             );
     }
 }

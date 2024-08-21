@@ -39,7 +39,7 @@ class DayTest extends UnitTestCase
     public function getCrdateInitiallyReturnsNull(): void
     {
         self::assertNull(
-            $this->subject->getCrdate()
+            $this->subject->getCrdate(),
         );
     }
 
@@ -53,7 +53,7 @@ class DayTest extends UnitTestCase
 
         self::assertSame(
             $date,
-            $this->subject->getCrdate()
+            $this->subject->getCrdate(),
         );
     }
 
@@ -65,7 +65,7 @@ class DayTest extends UnitTestCase
         $this->subject->setCrdate();
 
         self::assertNull(
-            $this->subject->getCrdate()
+            $this->subject->getCrdate(),
         );
     }
 
@@ -75,7 +75,7 @@ class DayTest extends UnitTestCase
     public function getTstampInitiallyReturnsNull(): void
     {
         self::assertNull(
-            $this->subject->getTstamp()
+            $this->subject->getTstamp(),
         );
     }
 
@@ -89,7 +89,7 @@ class DayTest extends UnitTestCase
 
         self::assertSame(
             $date,
-            $this->subject->getTstamp()
+            $this->subject->getTstamp(),
         );
     }
 
@@ -101,7 +101,7 @@ class DayTest extends UnitTestCase
         $this->subject->setTstamp();
 
         self::assertNull(
-            $this->subject->getTstamp()
+            $this->subject->getTstamp(),
         );
     }
 
@@ -111,7 +111,7 @@ class DayTest extends UnitTestCase
     public function getHiddenInitiallyReturnsFalse(): void
     {
         self::assertFalse(
-            $this->subject->getHidden()
+            $this->subject->getHidden(),
         );
     }
 
@@ -122,7 +122,7 @@ class DayTest extends UnitTestCase
     {
         $this->subject->setHidden(true);
         self::assertTrue(
-            $this->subject->getHidden()
+            $this->subject->getHidden(),
         );
     }
 
@@ -136,7 +136,7 @@ class DayTest extends UnitTestCase
 
         self::assertEquals(
             $date,
-            $this->subject->getDay()
+            $this->subject->getDay(),
         );
     }
 
@@ -150,7 +150,7 @@ class DayTest extends UnitTestCase
 
         self::assertSame(
             $instance,
-            $this->subject->getEvent()
+            $this->subject->getEvent(),
         );
     }
 
@@ -165,7 +165,7 @@ class DayTest extends UnitTestCase
 
         self::assertSame(
             (int)$date->format('U'),
-            $this->subject->getDayTimeAsTimestamp()
+            $this->subject->getDayTimeAsTimestamp(),
         );
     }
 
@@ -180,7 +180,7 @@ class DayTest extends UnitTestCase
 
         self::assertSame(
             (int)$date->format('U'),
-            $this->subject->getSortDayTimeAsTimestamp()
+            $this->subject->getSortDayTimeAsTimestamp(),
         );
     }
 
@@ -195,7 +195,7 @@ class DayTest extends UnitTestCase
 
         self::assertSame(
             (int)$date->format('U'),
-            $this->subject->getSameDayTimeAsTimestamp()
+            $this->subject->getSameDayTimeAsTimestamp(),
         );
     }
 }

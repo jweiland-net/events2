@@ -92,7 +92,7 @@ class Events2PageTitleProviderTest extends FunctionalTestCase
 
         self::assertSame(
             'Nice title for detail page - ' . $date->format('d.m.Y'),
-            $this->subject->getTitle()
+            $this->subject->getTitle(),
         );
     }
 }

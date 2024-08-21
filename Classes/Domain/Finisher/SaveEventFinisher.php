@@ -38,7 +38,7 @@ class SaveEventFinisher extends AbstractFinisher
     public function __construct(
         readonly protected ConnectionPool $connectionPool,
         readonly protected PathSegmentHelper $pathSegmentHelper,
-        readonly protected DayRelationService $dayRelationService
+        readonly protected DayRelationService $dayRelationService,
     ) {}
 
     /**
@@ -123,14 +123,14 @@ class SaveEventFinisher extends AbstractFinisher
     protected function processLinkTable(
         array $databaseData,
         string $identifier,
-        int $iterationCount
+        int $iterationCount,
     ): array {
         $uid = $this->getElementDefaultValueByIdentifier($identifier);
 
         $this->finisherContext->getFinisherVariableProvider()->add(
             $this->shortFinisherIdentifier,
             'insertedUids.' . $iterationCount,
-            $uid
+            $uid,
         );
 
         if (!isset($databaseData['link']) || $databaseData['link'] === '') {
@@ -159,13 +159,13 @@ class SaveEventFinisher extends AbstractFinisher
         $this->finisherContext->getFinisherVariableProvider()->add(
             $this->shortFinisherIdentifier,
             'insertedUids.tx_events2_domain_model_event',
-            $uid
+            $uid,
         );
 
         $this->finisherContext->getFinisherVariableProvider()->add(
             $this->shortFinisherIdentifier,
             'insertedUids.' . $iterationCount,
-            $uid
+            $uid,
         );
 
         if ($uid > 0) {
@@ -177,7 +177,7 @@ class SaveEventFinisher extends AbstractFinisher
     }
 
     protected function processSysFileReferenceTable(
-        array $databaseData
+        array $databaseData,
     ): array {
         $sysFileUid = $databaseData['uid_local'] ?? 0;
 
@@ -188,7 +188,7 @@ class SaveEventFinisher extends AbstractFinisher
                 'uid_local' => $sysFileUid,
                 'tablenames' => 'tx_events2_domain_model_event',
                 'fieldname' => 'images',
-            ]
+            ],
         );
 
         return $sysFileUid ? $databaseData : [];
@@ -197,14 +197,14 @@ class SaveEventFinisher extends AbstractFinisher
     protected function processTimeTable(
         array $databaseData,
         string $identifier,
-        int $iterationCount
+        int $iterationCount,
     ): array {
         $uid = $this->getElementDefaultValueByIdentifier($identifier);
 
         $this->finisherContext->getFinisherVariableProvider()->add(
             $this->shortFinisherIdentifier,
             'insertedUids.' . $iterationCount,
-            0
+            0,
         );
 
         if (!isset($databaseData['time_begin']) || $databaseData['time_begin'] === '') {
@@ -230,7 +230,7 @@ class SaveEventFinisher extends AbstractFinisher
             $table,
             [
                 'uid' => $uid,
-            ]
+            ],
         );
     }
 
@@ -288,7 +288,7 @@ class SaveEventFinisher extends AbstractFinisher
             $table,
             [
                 'uid_foreign' => $databaseData['uid_foreign'],
-            ]
+            ],
         );
 
         // Store new category relations
@@ -311,7 +311,7 @@ class SaveEventFinisher extends AbstractFinisher
             ],
             [
                 'uid' => $databaseData['uid_foreign'],
-            ]
+            ],
         );
 
         // Return empty array to prevent saving again in saveToDatabase()
@@ -325,7 +325,7 @@ class SaveEventFinisher extends AbstractFinisher
             $table,
             [
                 'uid_local' => $databaseData['uid_local'],
-            ]
+            ],
         );
 
         // Store new organizers relations
@@ -348,7 +348,7 @@ class SaveEventFinisher extends AbstractFinisher
             ],
             [
                 'uid' => $databaseData['uid_local'],
-            ]
+            ],
         );
 
         // Return empty array to prevent saving again in saveToDatabase()
@@ -372,7 +372,7 @@ class SaveEventFinisher extends AbstractFinisher
             $this->getConnectionForTable($table)->update(
                 $table,
                 $databaseData,
-                $whereClause
+                $whereClause,
             );
         } else {
             $databaseConnection = $this->getConnectionForTable($table);
@@ -381,7 +381,7 @@ class SaveEventFinisher extends AbstractFinisher
             $this->finisherContext->getFinisherVariableProvider()->add(
                 $this->shortFinisherIdentifier,
                 'insertedUids.' . $iterationCount,
-                $lastInsertId
+                $lastInsertId,
             );
 
             if ($table === 'tx_events2_domain_model_event') {
@@ -390,7 +390,7 @@ class SaveEventFinisher extends AbstractFinisher
                 $this->finisherContext->getFinisherVariableProvider()->add(
                     $this->shortFinisherIdentifier,
                     'insertedUids.tx_events2_domain_model_event',
-                    $lastInsertId
+                    $lastInsertId,
                 );
             }
 
@@ -408,7 +408,7 @@ class SaveEventFinisher extends AbstractFinisher
                     ],
                     [
                         'uid' => $lastInsertId,
-                    ]
+                    ],
                 );
             }
         }
@@ -467,7 +467,7 @@ class SaveEventFinisher extends AbstractFinisher
         ) {
             throw new FinisherException(
                 'An empty option "whereClause" is not allowed in update mode.',
-                1480469086
+                1480469086,
             );
         }
     }

@@ -33,7 +33,7 @@ class TimeToStringConverter
             $time = sprintf(
                 '%s:%s',
                 str_pad((string)$hours, 2, '0', STR_PAD_LEFT),
-                str_pad((string)$minutes, 2, '0', STR_PAD_LEFT)
+                str_pad((string)$minutes, 2, '0', STR_PAD_LEFT),
             );
         }
 

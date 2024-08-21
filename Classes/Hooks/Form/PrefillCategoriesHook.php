@@ -32,12 +32,12 @@ class PrefillCategoriesHook
 
     public function __construct(
         protected readonly PageRepository $pageRepository,
-        protected readonly ConfigurationManagerInterface $configurationManager
+        protected readonly ConfigurationManagerInterface $configurationManager,
     ) {
         $this->settings = $configurationManager->getConfiguration(
             ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS,
             'Events2',
-            'Management'
+            'Management',
         );
     }
 
@@ -54,7 +54,7 @@ class PrefillCategoriesHook
         if ($formElement->getUniqueIdentifier() === 'newEvent-categories') {
             $formElement->setProperty(
                 'options',
-                $this->getCategories()
+                $this->getCategories(),
             );
         }
     }
@@ -66,7 +66,7 @@ class PrefillCategoriesHook
         while ($sysCategoryInDefaultLanguage = $queryResult->fetchAssociative()) {
             $sysCategoryTranslated = $this->pageRepository->getLanguageOverlay(
                 'sys_category',
-                $sysCategoryInDefaultLanguage
+                $sysCategoryInDefaultLanguage,
             );
 
             if ($sysCategoryTranslated === null) {
@@ -93,20 +93,20 @@ class PrefillCategoriesHook
                     'parent',
                     $queryBuilder->createNamedParameter(
                         $this->settings['rootCategory'] ?? 0,
-                        Connection::PARAM_INT
-                    )
+                        Connection::PARAM_INT,
+                    ),
                 ),
                 $queryBuilder->expr()->in(
                     'uid',
                     $queryBuilder->createNamedParameter(
                         $this->getSelectableCategoriesForNewEvents(),
-                        ArrayParameterType::INTEGER
-                    )
+                        ArrayParameterType::INTEGER,
+                    ),
                 ),
                 $queryBuilder->expr()->eq(
                     $GLOBALS['TCA']['sys_category']['ctrl']['languageField'],
-                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
-                )
+                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT),
+                ),
             )
             ->executeQuery();
     }

@@ -127,7 +127,7 @@ class DataHandlerTest extends FunctionalTestCase
                         'delete' => 1,
                     ],
                 ],
-            ]
+            ],
         );
         $dataHandler->process_datamap();
         $dataHandler->process_cmdmap();
@@ -144,13 +144,13 @@ class DataHandlerTest extends FunctionalTestCase
             sprintf(
                 'day >= %d AND day < %d',
                 $eventBegin->format('U'),
-                $eventEnd->format('U')
-            )
+                $eventEnd->format('U'),
+            ),
         );
 
         self::assertSame(
             0,
-            $amountOfDeletedDays
+            $amountOfDeletedDays,
         );
     }
 
@@ -183,7 +183,7 @@ class DataHandlerTest extends FunctionalTestCase
                         'delete' => 1,
                     ],
                 ],
-            ]
+            ],
         );
         $dataHandler->process_datamap();
         $dataHandler->process_cmdmap();
@@ -203,19 +203,19 @@ class DataHandlerTest extends FunctionalTestCase
             ->where(
                 $queryBuilder->expr()->gte(
                     'day',
-                    $queryBuilder->createNamedParameter($eventBegin->format('U'), Connection::PARAM_INT)
+                    $queryBuilder->createNamedParameter($eventBegin->format('U'), Connection::PARAM_INT),
                 ),
                 $queryBuilder->expr()->lt(
                     'day',
-                    $queryBuilder->createNamedParameter($eventEnd->format('U'), Connection::PARAM_INT)
-                )
+                    $queryBuilder->createNamedParameter($eventEnd->format('U'), Connection::PARAM_INT),
+                ),
             )
             ->executeQuery()
             ->fetchOne();
 
         self::assertSame(
             0,
-            $amountOfDeletedDays
+            $amountOfDeletedDays,
         );
     }
 }

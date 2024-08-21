@@ -32,7 +32,7 @@ class ApplyLocationAsMandatoryIfNeededEventListener extends AbstractControllerEv
 
     public function __construct(
         protected readonly ExtConf $extConf,
-        protected readonly ValidatorResolver $validatorResolver
+        protected readonly ValidatorResolver $validatorResolver,
     ) {}
 
     public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void
@@ -51,7 +51,7 @@ class ApplyLocationAsMandatoryIfNeededEventListener extends AbstractControllerEv
             $genericEventValidator = $conjunctionValidator->getValidators()->current();
             $genericEventValidator->addPropertyValidator(
                 'location',
-                $notEmptyValidator
+                $notEmptyValidator,
             );
         }
     }

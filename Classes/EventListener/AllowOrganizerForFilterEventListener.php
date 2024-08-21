@@ -47,7 +47,7 @@ class AllowOrganizerForFilterEventListener extends AbstractControllerEventListen
             $pmc->setTypeConverterOption(
                 PersistentObjectConverter::class,
                 PersistentObjectConverter::CONFIGURATION_CREATION_ALLOWED,
-                true
+                true,
             );
 
             // Allow mapping of organizers

@@ -30,7 +30,7 @@ class AssignMediaTypeConverterEventListener extends AbstractControllerEventListe
 
     public function __construct(
         protected readonly EventRepository $eventRepository,
-        protected readonly UploadMultipleFilesConverter $uploadMultipleFilesConverter
+        protected readonly UploadMultipleFilesConverter $uploadMultipleFilesConverter,
     ) {}
 
     public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void
@@ -54,7 +54,7 @@ class AssignMediaTypeConverterEventListener extends AbstractControllerEventListe
         // Needed to get the previously stored images
         /** @var Event|null $persistedEvent */
         $persistedEvent = $this->eventRepository->findHiddenObject(
-            (int)$controllerActionEvent->getRequest()->getArgument('event')['__identity']
+            (int)$controllerActionEvent->getRequest()->getArgument('event')['__identity'],
         );
 
         if ($persistedEvent instanceof Event) {
@@ -65,7 +65,7 @@ class AssignMediaTypeConverterEventListener extends AbstractControllerEventListe
     protected function setTypeConverterForProperty(
         string $property,
         ?ObjectStorage $persistedFiles,
-        PreProcessControllerActionEvent $controllerActionEvent
+        PreProcessControllerActionEvent $controllerActionEvent,
     ): void {
         $propertyMappingConfiguration = $this->getPropertyMappingConfigurationForEvent($controllerActionEvent)
             ->forProperty($property)
@@ -75,20 +75,20 @@ class AssignMediaTypeConverterEventListener extends AbstractControllerEventListe
         $this->addOptionToUploadFilesConverter(
             $propertyMappingConfiguration,
             'settings',
-            $controllerActionEvent->getSettings()
+            $controllerActionEvent->getSettings(),
         );
 
         if ($persistedFiles !== null) {
             $this->addOptionToUploadFilesConverter(
                 $propertyMappingConfiguration,
                 'IMAGES',
-                $persistedFiles
+                $persistedFiles,
             );
         }
     }
 
     protected function getPropertyMappingConfigurationForEvent(
-        PreProcessControllerActionEvent $controllerActionEvent
+        PreProcessControllerActionEvent $controllerActionEvent,
     ): MvcPropertyMappingConfiguration {
         return $controllerActionEvent->getArguments()
             ->getArgument('event')
@@ -98,12 +98,12 @@ class AssignMediaTypeConverterEventListener extends AbstractControllerEventListe
     protected function addOptionToUploadFilesConverter(
         PropertyMappingConfiguration $propertyMappingConfiguration,
         string $optionKey,
-        $optionValue
+        $optionValue,
     ): void {
         $propertyMappingConfiguration->setTypeConverterOption(
             UploadMultipleFilesConverter::class,
             $optionKey,
-            $optionValue
+            $optionValue,
         );
     }
 }

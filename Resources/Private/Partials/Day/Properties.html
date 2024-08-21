@@ -80,6 +80,11 @@
 
 <f:section name="ShowDateAndTime">
     <dl>
+        <f:for each="{e2:getExceptionsFromEventForSpecificDate(event: day.event, date: date)}" as="exception">
+            <f:if condition="{exception.primer}">
+                <dt>{f:translate(key: 'tx_events2_domain_model_exception.primer')}</dt>
+            </f:if>
+        </f:for>
         <dt>
             <strong>
                 {f:if(condition: '{e2:isDateMarkedAsCanceled(event: day.event, date: date)}', then: '<s>')}

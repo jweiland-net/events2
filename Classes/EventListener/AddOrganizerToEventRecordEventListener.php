@@ -31,7 +31,7 @@ class AddOrganizerToEventRecordEventListener extends AbstractControllerEventList
     ];
 
     public function __construct(
-        protected readonly UserRepository $userRepository
+        protected readonly UserRepository $userRepository,
     ) {}
 
     public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void
@@ -57,7 +57,7 @@ class AddOrganizerToEventRecordEventListener extends AbstractControllerEventList
                 ->setTypeConverterOption(
                     PersistentObjectConverter::class,
                     PersistentObjectConverter::CONFIGURATION_CREATION_ALLOWED,
-                    true
+                    true,
                 );
         }
     }

@@ -25,7 +25,7 @@ class UrlValidator extends AbstractValidator
         if (!GeneralUtility::isValidUrl($value)) {
             $this->addError(
                 'The URL is invalid. Please insert full URL like https:://example.com/target.html',
-                1660809223
+                1660809223,
             );
         }
     }

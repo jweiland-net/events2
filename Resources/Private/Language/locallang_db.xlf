@@ -366,6 +366,9 @@
 			<trans-unit id="tx_events2_domain_model_exception.show_anyway">
 				<source>Show removed date in list and detail view anyway</source>
 			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_exception.is_primer">
+				<source>Show as Primer</source>
+			</trans-unit>
 
 			<trans-unit id="tx_events2_domain_model_location">
 				<source>Location</source>

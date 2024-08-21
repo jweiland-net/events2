@@ -92,7 +92,7 @@ class XmlImporterTest extends FunctionalTestCase
 
         $this->pathSegmentHelper = new PathSegmentHelper(
             $this->extConf,
-            $this->eventDispatcherProphecy->reveal()
+            $this->eventDispatcherProphecy->reveal(),
         );
 
         $this->subject = new XmlImporter(
@@ -103,7 +103,7 @@ class XmlImporterTest extends FunctionalTestCase
             $this->objectManager->get(PersistenceManagerInterface::class),
             $this->pathSegmentHelper,
             new DateTimeUtility(),
-            $this->extConf
+            $this->extConf,
         );
 
         $GLOBALS['BE_USER'] = new BackendUserAuthentication();
@@ -117,11 +117,11 @@ class XmlImporterTest extends FunctionalTestCase
             $this->objectManager,
             $this->extConf,
             $this->eventDispatcherProphecy,
-            $this->subject
+            $this->subject,
         );
 
         unlink(GeneralUtility::getFileAbsFileName(
-            'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt'
+            'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt',
         ));
 
         parent::tearDown();
@@ -141,8 +141,8 @@ class XmlImporterTest extends FunctionalTestCase
         self::assertMatchesRegularExpression(
             '/We have processed 3 events/',
             file_get_contents(GeneralUtility::getFileAbsFileName(
-                'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt'
-            ))
+                'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt',
+            )),
         );
     }
 
@@ -160,8 +160,8 @@ class XmlImporterTest extends FunctionalTestCase
         self::assertMatchesRegularExpression(
             '/Missing child element.*?Expected is.*?categories/',
             file_get_contents(GeneralUtility::getFileAbsFileName(
-                'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt'
-            ))
+                'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt',
+            )),
         );
     }
 
@@ -181,8 +181,8 @@ class XmlImporterTest extends FunctionalTestCase
         self::assertMatchesRegularExpression(
             '/Given category "I\'m not in database" does not exist/',
             file_get_contents(GeneralUtility::getFileAbsFileName(
-                'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt'
-            ))
+                'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt',
+            )),
         );
     }
 
@@ -200,8 +200,8 @@ class XmlImporterTest extends FunctionalTestCase
         self::assertMatchesRegularExpression(
             '/Given organizer "AG" does not exist/',
             file_get_contents(GeneralUtility::getFileAbsFileName(
-                'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt'
-            ))
+                'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt',
+            )),
         );
     }
 
@@ -220,8 +220,8 @@ class XmlImporterTest extends FunctionalTestCase
         self::assertMatchesRegularExpression(
             '/Given location "Not existing" does not exist/',
             file_get_contents(GeneralUtility::getFileAbsFileName(
-                'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt'
-            ))
+                'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt',
+            )),
         );
     }
 
@@ -251,18 +251,18 @@ class XmlImporterTest extends FunctionalTestCase
         $events = $this->createEventQuery()->execute(true);
         self::assertCount(
             1,
-            $events
+            $events,
         );
         $event = current($events);
 
         // Test values of event
         self::assertSame(
             'Bearbeiteter Termin',
-            $event['title']
+            $event['title'],
         );
         self::assertSame(
             1762902000, // Dienstag, 12. November 2019 00:00:00 GMT+01:00
-            $event['event_begin']
+            $event['event_begin'],
         );
     }
 
@@ -293,7 +293,7 @@ class XmlImporterTest extends FunctionalTestCase
         $events = $this->createEventQuery()->execute(true);
         self::assertCount(
             1,
-            $events
+            $events,
         );
     }
 

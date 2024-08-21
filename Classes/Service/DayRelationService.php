@@ -41,7 +41,7 @@ class DayRelationService implements LoggerAwareInterface
         protected readonly DayGeneratorService $dayGenerator,
         protected readonly DayRepository $dayRepository,
         protected readonly TimeRepository $timeRepository,
-        protected readonly DateTimeUtility $dateTimeUtility
+        protected readonly DateTimeUtility $dateTimeUtility,
     ) {}
 
     /**
@@ -79,7 +79,7 @@ class DayRelationService implements LoggerAwareInterface
 
                 array_push(
                     $days,
-                    ...$this->buildDayRecordsForDateTime($eventRecord, $dateTimeEntry)
+                    ...$this->buildDayRecordsForDateTime($eventRecord, $dateTimeEntry),
                 );
 
                 // While looping through the DateTime entries the sort_day_time value has to be the same for all
@@ -98,7 +98,7 @@ class DayRelationService implements LoggerAwareInterface
                 $eventUid,
                 $exception->getFile(),
                 $exception->getLine(),
-                $exception->getMessage()
+                $exception->getMessage(),
             ));
         }
 
@@ -150,12 +150,12 @@ class DayRelationService implements LoggerAwareInterface
             ->where(
                 $queryBuilder->expr()->eq(
                     'event',
-                    $queryBuilder->createNamedParameter((int)$eventRecord['uid'], Connection::PARAM_INT)
+                    $queryBuilder->createNamedParameter((int)$eventRecord['uid'], Connection::PARAM_INT),
                 ),
                 $queryBuilder->expr()->eq(
                     't3ver_wsid',
-                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
-                )
+                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT),
+                ),
             )
             ->executeQuery();
 
@@ -164,7 +164,7 @@ class DayRelationService implements LoggerAwareInterface
             BackendUtility::workspaceOL('tx_events2_domain_model_exception', $exceptionRecord);
             if ($exceptionRecord === null) {
                 $this->logger->warning(
-                    'Exception record can not be overlayed into current workspace: ' . $exceptionRecord['uid']
+                    'Exception record can not be overlayed into current workspace: ' . $exceptionRecord['uid'],
                 );
                 continue;
             }
@@ -234,7 +234,7 @@ class DayRelationService implements LoggerAwareInterface
         array $allTimeRecords,
         array $eventRecord,
         string $recordType,
-        \DateTimeImmutable $dateTime
+        \DateTimeImmutable $dateTime,
     ): array {
         $filteredTimeRecords = [];
         foreach ($allTimeRecords as $timeRecord) {
@@ -243,7 +243,7 @@ class DayRelationService implements LoggerAwareInterface
                 $timeRecord['hidden'],
                 $timeRecord['event'],
                 $timeRecord['exception'],
-                $timeRecord['weekday']
+                $timeRecord['weekday'],
             )) {
                 continue;
             }
@@ -291,7 +291,7 @@ class DayRelationService implements LoggerAwareInterface
     protected function buildDayRecordForDateTime(
         DateTimeEntry $dateTimeEntry,
         array $eventRecord,
-        array $timeRecord
+        array $timeRecord,
     ): array {
         [$hour, $minute] = $this->getHourAndMinuteFromTime($timeRecord);
 
@@ -341,7 +341,7 @@ class DayRelationService implements LoggerAwareInterface
         return $day->modify(sprintf(
             '+%d hour +%d minute',
             $hour,
-            $minute
+            $minute,
         ));
     }
 
@@ -358,7 +358,7 @@ class DayRelationService implements LoggerAwareInterface
         \DateTimeImmutable $day,
         int $hour,
         int $minute,
-        array $eventRecord
+        array $eventRecord,
     ): \DateTimeImmutable {
         if ($eventRecord['event_type'] === 'duration') {
             [$hour, $minute] = $this->getHourAndMinuteFromTime($this->firstTimeRecordForCurrentDateTime);
@@ -383,7 +383,7 @@ class DayRelationService implements LoggerAwareInterface
         \DateTimeImmutable $day,
         int $hour,
         int $minute,
-        array $eventRecord
+        array $eventRecord,
     ): \DateTimeImmutable {
         if ($eventRecord['event_type'] !== 'duration') {
             [$hour, $minute] = $this->getHourAndMinuteFromTime($this->firstTimeRecordForCurrentDateTime);

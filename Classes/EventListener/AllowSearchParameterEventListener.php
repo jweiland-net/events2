@@ -41,7 +41,7 @@ class AllowSearchParameterEventListener extends AbstractControllerEventListener
                 PersistentObjectConverter::class,
                 [
                     PersistentObjectConverter::CONFIGURATION_CREATION_ALLOWED => true,
-                ]
+                ],
             );
         }
     }

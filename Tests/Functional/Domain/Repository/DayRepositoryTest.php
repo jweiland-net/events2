@@ -437,7 +437,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $context = GeneralUtility::makeInstance(Context::class);
         $context->setAspect(
             'visibility',
-            GeneralUtility::makeInstance(VisibilityAspect::class, false, true)
+            GeneralUtility::makeInstance(VisibilityAspect::class, false, true),
         );
     }
 
@@ -450,7 +450,7 @@ class DayRepositoryTest extends FunctionalTestCase
 
         self::assertInstanceOf(
             Day::class,
-            $day
+            $day,
         );
     }
 
@@ -469,7 +469,7 @@ class DayRepositoryTest extends FunctionalTestCase
         // if merge has worked we MUST have less records now
         self::assertLessThan(
             $allDays->count(),
-            $allDaysMergedByTime->count()
+            $allDaysMergedByTime->count(),
         );
     }
 
@@ -495,17 +495,17 @@ class DayRepositoryTest extends FunctionalTestCase
 
         self::assertLessThan(
             $allDays->count(),
-            $allDaysMergedByTime->count()
+            $allDaysMergedByTime->count(),
         );
 
         self::assertLessThan(
             $allDays->count(),
-            $allDaysMergedByEvent->count()
+            $allDaysMergedByEvent->count(),
         );
 
         self::assertGreaterThan(
             $allDaysMergedByEvent->count(),
-            $allDaysMergedByTime->count()
+            $allDaysMergedByTime->count(),
         );
     }
 
@@ -522,14 +522,14 @@ class DayRepositoryTest extends FunctionalTestCase
         $days = $this->dayRepository->getDaysForListType('list', new Filter());
         self::assertSame(
             9,
-            $days->count()
+            $days->count(),
         );
 
         $this->querySettings->setStoragePageIds([40]);
         $days = $this->dayRepository->getDaysForListType('list', new Filter());
         self::assertSame(
             2,
-            $days->count()
+            $days->count(),
         );
     }
 
@@ -548,7 +548,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $days = $this->dayRepository->getDaysForListType('list', new Filter());
         self::assertSame(
             10,
-            $days->count()
+            $days->count(),
         );
     }
 
@@ -565,7 +565,7 @@ class DayRepositoryTest extends FunctionalTestCase
 
         self::assertCount(
             7,
-            $days->toArray()
+            $days->toArray(),
         );
 
         $this->dayRepository->setSettings([
@@ -575,7 +575,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $days = $this->dayRepository->getDaysForListType('list', new Filter());
         self::assertCount(
             1,
-            $days
+            $days,
         );
 
         $this->dayRepository->setSettings([
@@ -585,7 +585,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $days = $this->dayRepository->getDaysForListType('list', new Filter());
         self::assertSame(
             3,
-            $days->count()
+            $days->count(),
         );
 
         $this->dayRepository->setSettings([
@@ -595,7 +595,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $days = $this->dayRepository->getDaysForListType('list', new Filter());
         self::assertCount(
             9,
-            $days->toArray()
+            $days->toArray(),
         );
     }
 
@@ -612,7 +612,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $days = $this->dayRepository->getDaysForListType('list', new Filter());
         self::assertSame(
             7,
-            $days->count()
+            $days->count(),
         );
 
         $filter = new Filter();
@@ -623,7 +623,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $days = $this->dayRepository->getDaysForListType('list', $filter);
         self::assertSame(
             7,
-            $days->count()
+            $days->count(),
         );
 
         // Organizer 2 in Filter and Plugin
@@ -634,7 +634,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $days = $this->dayRepository->getDaysForListType('list', new Filter());
         self::assertSame(
             3,
-            $days->count()
+            $days->count(),
         );
 
         $filter = new Filter();
@@ -645,7 +645,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $days = $this->dayRepository->getDaysForListType('list', $filter);
         self::assertSame(
             3,
-            $days->count()
+            $days->count(),
         );
     }
 
@@ -663,7 +663,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $days = $this->dayRepository->getDaysForListType('list', $filter);
         self::assertSame(
             7,
-            $days->count()
+            $days->count(),
         );
     }
 
@@ -679,7 +679,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $days = $this->dayRepository->getDaysForListType('list', new Filter(), 5);
         self::assertCount(
             5,
-            $days->toArray()
+            $days->toArray(),
         );
     }
 
@@ -699,7 +699,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $day = $days->current();
 
         self::assertTrue(
-            $day->getEvent()->getTopOfList()
+            $day->getEvent()->getTopOfList(),
         );
     }
 
@@ -717,13 +717,13 @@ class DayRepositoryTest extends FunctionalTestCase
         $days = $this->dayRepository->getDaysForListType('listLatest', new Filter(), 7);
         self::assertCount(
             7,
-            $days->toArray()
+            $days->toArray(),
         );
 
         foreach ($days as $day) {
             self::assertGreaterThanOrEqual(
                 $todayStart,
-                $day->getDayTime()
+                $day->getDayTime(),
             );
         }
     }
@@ -744,11 +744,11 @@ class DayRepositoryTest extends FunctionalTestCase
         foreach ($days as $day) {
             self::assertGreaterThanOrEqual(
                 $todayStart,
-                $day->getDayTime()
+                $day->getDayTime(),
             );
             self::assertLessThan(
                 $todayEnd,
-                $day->getDayTime()
+                $day->getDayTime(),
             );
         }
     }
@@ -770,11 +770,11 @@ class DayRepositoryTest extends FunctionalTestCase
         foreach ($days as $day) {
             self::assertGreaterThanOrEqual(
                 $dateStart,
-                $day->getDayTime()
+                $day->getDayTime(),
             );
             self::assertLessThan(
                 $dateEnd,
-                $day->getDayTime()
+                $day->getDayTime(),
             );
         }
     }
@@ -796,11 +796,11 @@ class DayRepositoryTest extends FunctionalTestCase
         foreach ($days as $day) {
             self::assertGreaterThanOrEqual(
                 $dateStart,
-                $day->getDayTime()
+                $day->getDayTime(),
             );
             self::assertLessThan(
                 $dateEnd,
-                $day->getDayTime()
+                $day->getDayTime(),
             );
         }
     }
@@ -818,14 +818,14 @@ class DayRepositoryTest extends FunctionalTestCase
         $days = $this->dayRepository->searchEvents(new Search());
         self::assertCount(
             9,
-            $days->toArray()
+            $days->toArray(),
         );
 
         $this->querySettings->setStoragePageIds([40]);
         $days = $this->dayRepository->searchEvents(new Search());
         self::assertCount(
             2,
-            $days->toArray()
+            $days->toArray(),
         );
     }
 
@@ -844,7 +844,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $days = $this->dayRepository->searchEvents($search);
         self::assertCount(
             2,
-            $days->toArray()
+            $days->toArray(),
         );
     }
 
@@ -863,7 +863,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $days = $this->dayRepository->searchEvents($search);
         self::assertCount(
             1,
-            $days->toArray()
+            $days->toArray(),
         );
     }
 
@@ -887,7 +887,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $days = $this->dayRepository->searchEvents($search);
         self::assertCount(
             1,
-            $days->toArray()
+            $days->toArray(),
         );
 
         /** @var Category $subCategory */
@@ -900,7 +900,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $days = $this->dayRepository->searchEvents($search);
         self::assertCount(
             7,
-            $days->toArray()
+            $days->toArray(),
         );
 
         $this->dayRepository->setSettings([
@@ -910,7 +910,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $days = $this->dayRepository->searchEvents(new Search());
         self::assertCount(
             4,
-            $days->toArray()
+            $days->toArray(),
         );
     }
 
@@ -933,7 +933,7 @@ class DayRepositoryTest extends FunctionalTestCase
         foreach ($days as $day) {
             self::assertGreaterThanOrEqual(
                 $tomorrow,
-                $day->getDayTime()
+                $day->getDayTime(),
             );
         }
     }
@@ -959,11 +959,11 @@ class DayRepositoryTest extends FunctionalTestCase
         foreach ($days as $day) {
             self::assertGreaterThanOrEqual(
                 $tomorrow,
-                $day->getDayTime()
+                $day->getDayTime(),
             );
             self::assertLessThanOrEqual(
                 $nextMonth,
-                $day->getDayTime()
+                $day->getDayTime(),
             );
         }
     }
@@ -988,7 +988,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $days = $this->dayRepository->searchEvents($search);
         self::assertCount(
             8,
-            $days->toArray()
+            $days->toArray(),
         );
     }
 
@@ -1007,7 +1007,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $days = $this->dayRepository->searchEvents($search);
         self::assertCount(
             1,
-            $days->toArray()
+            $days->toArray(),
         );
     }
 
@@ -1022,7 +1022,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $day = $this->dayRepository->findDayByEventAndTimestamp(3, (int)$tomorrow->format('U'));
         self::assertSame(
             'Morgen',
-            $day->getEvent()->getTitle()
+            $day->getEvent()->getTitle(),
         );
     }
 
@@ -1043,7 +1043,7 @@ class DayRepositoryTest extends FunctionalTestCase
         }
         self::assertSame(
             2,
-            $counter
+            $counter,
         );
     }
 }

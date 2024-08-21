@@ -41,7 +41,7 @@ class LinkTest extends UnitTestCase
     {
         self::assertSame(
             '',
-            $this->subject->getLink()
+            $this->subject->getLink(),
         );
     }
 
@@ -54,7 +54,7 @@ class LinkTest extends UnitTestCase
 
         self::assertSame(
             'foo bar',
-            $this->subject->getLink()
+            $this->subject->getLink(),
         );
     }
 
@@ -65,7 +65,7 @@ class LinkTest extends UnitTestCase
     {
         self::assertSame(
             'Video',
-            $this->subject->getTitle()
+            $this->subject->getTitle(),
         );
     }
 
@@ -78,7 +78,7 @@ class LinkTest extends UnitTestCase
 
         self::assertSame(
             'foo bar',
-            $this->subject->getTitle()
+            $this->subject->getTitle(),
         );
     }
 
@@ -88,7 +88,7 @@ class LinkTest extends UnitTestCase
     public function getDeletedInitiallyReturnsFalse(): void
     {
         self::assertFalse(
-            $this->subject->getDeleted()
+            $this->subject->getDeleted(),
         );
     }
 
@@ -99,7 +99,7 @@ class LinkTest extends UnitTestCase
     {
         $this->subject->setDeleted(true);
         self::assertTrue(
-            $this->subject->getDeleted()
+            $this->subject->getDeleted(),
         );
     }
 }

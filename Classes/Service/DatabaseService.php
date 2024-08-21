@@ -29,7 +29,7 @@ class DatabaseService
 {
     public function __construct(
         protected readonly ExtConf $extConf,
-        protected readonly DateTimeUtility $dateTimeUtility
+        protected readonly DateTimeUtility $dateTimeUtility,
     ) {}
 
     /**
@@ -94,7 +94,7 @@ class DatabaseService
     {
         trigger_error(
             'Using \JWeiland\Events2\Service\DatabaseService::getConstraintForSingleEvents is deprecated, please use getQueryBuilderForAllEvents.',
-            E_USER_DEPRECATED
+            E_USER_DEPRECATED,
         );
 
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_event');
@@ -114,7 +114,7 @@ class DatabaseService
             ->select('uid', 'pid')
             ->from('tx_events2_domain_model_event')
             ->where(
-                $queryBuilder->expr()->or(...$orConstraints)
+                $queryBuilder->expr()->or(...$orConstraints),
             )
             ->executeQuery()
             ->fetchAllAssociative();
@@ -134,7 +134,7 @@ class DatabaseService
         \DateTimeImmutable $startDate,
         \DateTimeImmutable $endDate,
         array $storagePids = [],
-        array $categories = []
+        array $categories = [],
     ): array {
         $constraint = [];
 
@@ -149,8 +149,8 @@ class DatabaseService
                 'event',
                 $queryBuilder->expr()->eq(
                     'day.event',
-                    $queryBuilder->quoteIdentifier('event.uid')
-                )
+                    $queryBuilder->quoteIdentifier('event.uid'),
+                ),
             );
 
         // Add relation to sys_category_record_mm only if categories were set
@@ -163,26 +163,26 @@ class DatabaseService
                     (string)$queryBuilder->expr()->and(
                         $queryBuilder->expr()->eq(
                             'event.uid',
-                            $queryBuilder->quoteIdentifier('category_mm.uid_foreign')
+                            $queryBuilder->quoteIdentifier('category_mm.uid_foreign'),
                         ),
                         $queryBuilder->expr()->eq(
                             'category_mm.tablenames',
                             $queryBuilder->createNamedParameter(
-                                'tx_events2_domain_model_event'
-                            )
+                                'tx_events2_domain_model_event',
+                            ),
                         ),
                         $queryBuilder->expr()->eq(
                             'category_mm.fieldname',
                             $queryBuilder->createNamedParameter(
-                                'categories'
-                            )
-                        )
-                    )
+                                'categories',
+                            ),
+                        ),
+                    ),
                 );
 
             $constraint[] = $queryBuilder->expr()->in(
                 'category_mm.uid_local',
-                $queryBuilder->createNamedParameter($categories, ArrayParameterType::INTEGER)
+                $queryBuilder->createNamedParameter($categories, ArrayParameterType::INTEGER),
             );
         }
 
@@ -190,20 +190,20 @@ class DatabaseService
         if (!empty($storagePids)) {
             $constraint[] = $queryBuilder->expr()->in(
                 'event.pid',
-                $queryBuilder->createNamedParameter($storagePids, ArrayParameterType::INTEGER)
+                $queryBuilder->createNamedParameter($storagePids, ArrayParameterType::INTEGER),
             );
         }
 
         // Get days greater than first date of month
         $constraint[] = $queryBuilder->expr()->gte(
             'day.day',
-            $queryBuilder->createNamedParameter($startDate->format('U'), Connection::PARAM_INT)
+            $queryBuilder->createNamedParameter($startDate->format('U'), Connection::PARAM_INT),
         );
 
         // Get days lower than last date of month
         $constraint[] = $queryBuilder->expr()->lt(
             'day.day',
-            $queryBuilder->createNamedParameter($endDate->format('U'), Connection::PARAM_INT)
+            $queryBuilder->createNamedParameter($endDate->format('U'), Connection::PARAM_INT),
         );
 
         return $queryBuilder
@@ -221,19 +221,19 @@ class DatabaseService
     {
         trigger_error(
             'Using \JWeiland\Events2\Service\DatabaseService::getConstraintForSingleEvents is deprecated, please use getQueryBuilderForAllEvents.',
-            E_USER_DEPRECATED
+            E_USER_DEPRECATED,
         );
 
         // add where clause for single events
         return (string)$queryBuilder->expr()->and(
             $queryBuilder->expr()->eq(
                 'event_type',
-                $queryBuilder->createNamedParameter('single')
+                $queryBuilder->createNamedParameter('single'),
             ),
             $queryBuilder->expr()->gt(
                 'event_begin',
-                $queryBuilder->createNamedParameter(time(), Connection::PARAM_INT)
-            )
+                $queryBuilder->createNamedParameter(time(), Connection::PARAM_INT),
+            ),
         );
     }
 
@@ -246,24 +246,24 @@ class DatabaseService
     {
         trigger_error(
             'Using \JWeiland\Events2\Service\DatabaseService::getConstraintForSingleEvents is deprecated, please use getQueryBuilderForAllEvents.',
-            E_USER_DEPRECATED
+            E_USER_DEPRECATED,
         );
 
         return (string)$queryBuilder->expr()->and(
             $queryBuilder->expr()->eq(
                 'event_type',
-                $queryBuilder->createNamedParameter('duration')
+                $queryBuilder->createNamedParameter('duration'),
             ),
             $queryBuilder->expr()->or(
                 $queryBuilder->expr()->eq(
                     'event_end',
-                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
+                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT),
                 ),
                 $queryBuilder->expr()->gt(
                     'event_end',
-                    $queryBuilder->createNamedParameter(time(), Connection::PARAM_INT)
-                )
-            )
+                    $queryBuilder->createNamedParameter(time(), Connection::PARAM_INT),
+                ),
+            ),
         );
     }
 
@@ -276,24 +276,24 @@ class DatabaseService
     {
         trigger_error(
             'Using \JWeiland\Events2\Service\DatabaseService::getConstraintForSingleEvents is deprecated, please use getQueryBuilderForAllEvents.',
-            E_USER_DEPRECATED
+            E_USER_DEPRECATED,
         );
 
         return (string)$queryBuilder->expr()->and(
             $queryBuilder->expr()->eq(
                 'event_type',
-                $queryBuilder->createNamedParameter('recurring')
+                $queryBuilder->createNamedParameter('recurring'),
             ),
             $queryBuilder->expr()->or(
                 $queryBuilder->expr()->eq(
                     'recurring_end',
-                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
+                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT),
                 ),
                 $queryBuilder->expr()->gt(
                     'recurring_end',
-                    $queryBuilder->createNamedParameter(time(), Connection::PARAM_INT)
-                )
-            )
+                    $queryBuilder->createNamedParameter(time(), Connection::PARAM_INT),
+                ),
+            ),
         );
     }
 
@@ -309,7 +309,7 @@ class DatabaseService
         \DateTimeImmutable $startDateTime,
         ?\DateTimeImmutable $endDateTime = null,
         QueryBuilder $parentQueryBuilder = null,
-        string $alias = 'day'
+        string $alias = 'day',
     ): void {
         if ($parentQueryBuilder === null) {
             $parentQueryBuilder = $queryBuilder;
@@ -320,8 +320,8 @@ class DatabaseService
             $parentQueryBuilder->createNamedParameter(
                 $startDateTime->format('U'),
                 Connection::PARAM_INT,
-                ':eventStartDate'
-            )
+                ':eventStartDate',
+            ),
         );
 
         if ($endDateTime instanceof \DateTimeImmutable) {
@@ -333,9 +333,9 @@ class DatabaseService
                     $parentQueryBuilder->createNamedParameter(
                         $endDateTimeNight->format('U'),
                         Connection::PARAM_INT,
-                        ':eventEndDate'
-                    )
-                )
+                        ':eventEndDate',
+                    ),
+                ),
             );
         }
 
@@ -346,7 +346,7 @@ class DatabaseService
         QueryBuilder $queryBuilder,
         array $storagePageIds,
         QueryBuilder $parentQueryBuilder = null,
-        string $postAlias = ''
+        string $postAlias = '',
     ): void {
         if ($parentQueryBuilder === null) {
             $parentQueryBuilder = $queryBuilder;
@@ -358,17 +358,17 @@ class DatabaseService
                     'day' . $postAlias . '.pid',
                     $parentQueryBuilder->createNamedParameter(
                         $storagePageIds,
-                        ArrayParameterType::INTEGER
-                    )
+                        ArrayParameterType::INTEGER,
+                    ),
                 ),
                 $queryBuilder->expr()->in(
                     'event' . $postAlias . '.pid',
                     $parentQueryBuilder->createNamedParameter(
                         $storagePageIds,
-                        ArrayParameterType::INTEGER
-                    )
-                )
-            )
+                        ArrayParameterType::INTEGER,
+                    ),
+                ),
+            ),
         );
     }
 
@@ -376,7 +376,7 @@ class DatabaseService
         QueryBuilder $queryBuilder,
         array $categories,
         QueryBuilder $parentQueryBuilder = null,
-        string $alias = 'event'
+        string $alias = 'event',
     ): void {
         if ($parentQueryBuilder === null) {
             $parentQueryBuilder = $queryBuilder;
@@ -389,21 +389,21 @@ class DatabaseService
             (string)$queryBuilder->expr()->and(
                 $queryBuilder->expr()->eq(
                     $alias . '.uid',
-                    $queryBuilder->quoteIdentifier('category_mm.uid_foreign')
+                    $queryBuilder->quoteIdentifier('category_mm.uid_foreign'),
                 ),
                 $queryBuilder->expr()->eq(
                     'category_mm.tablenames',
                     $parentQueryBuilder->createNamedParameter(
-                        'tx_events2_domain_model_event'
-                    )
+                        'tx_events2_domain_model_event',
+                    ),
                 ),
                 $queryBuilder->expr()->eq(
                     'category_mm.fieldname',
                     $parentQueryBuilder->createNamedParameter(
-                        'categories'
-                    )
-                )
-            )
+                        'categories',
+                    ),
+                ),
+            ),
         );
 
         $queryBuilder->andWhere(
@@ -411,9 +411,9 @@ class DatabaseService
                 'category_mm.uid_local',
                 $parentQueryBuilder->createNamedParameter(
                     $categories,
-                    ArrayParameterType::INTEGER
-                )
-            )
+                    ArrayParameterType::INTEGER,
+                ),
+            ),
         );
     }
 
@@ -421,7 +421,7 @@ class DatabaseService
         QueryBuilder $queryBuilder,
         int $organizer,
         QueryBuilder $parentQueryBuilder = null,
-        string $alias = 'event'
+        string $alias = 'event',
     ): void {
         if ($parentQueryBuilder === null) {
             $parentQueryBuilder = $queryBuilder;
@@ -434,17 +434,17 @@ class DatabaseService
                 'eo_mm',
                 $queryBuilder->expr()->eq(
                     $alias . '.uid',
-                    $queryBuilder->quoteIdentifier('eo_mm.uid_local')
-                )
+                    $queryBuilder->quoteIdentifier('eo_mm.uid_local'),
+                ),
             )
             ->andWhere(
                 $queryBuilder->expr()->eq(
                     'eo_mm.uid_foreign',
                     $parentQueryBuilder->createNamedParameter(
                         $organizer,
-                        Connection::PARAM_INT
-                    )
-                )
+                        Connection::PARAM_INT,
+                    ),
+                ),
             );
     }
 
@@ -452,7 +452,7 @@ class DatabaseService
         QueryBuilder $queryBuilder,
         int $location,
         QueryBuilder $parentQueryBuilder = null,
-        string $alias = 'event'
+        string $alias = 'event',
     ): void {
         if ($parentQueryBuilder === null) {
             $parentQueryBuilder = $queryBuilder;
@@ -463,9 +463,9 @@ class DatabaseService
                 $alias . '.location',
                 $parentQueryBuilder->createNamedParameter(
                     $location,
-                    Connection::PARAM_INT
-                )
-            )
+                    Connection::PARAM_INT,
+                ),
+            ),
         );
     }
 
@@ -478,7 +478,7 @@ class DatabaseService
         mixed $value,
         int $dataType = Connection::PARAM_STR,
         QueryBuilder $parentQueryBuilder = null,
-        string $alias = 'event'
+        string $alias = 'event',
     ): void {
         if ($parentQueryBuilder === null) {
             $parentQueryBuilder = $queryBuilder;
@@ -489,9 +489,9 @@ class DatabaseService
                 $alias . '.' . $column,
                 $parentQueryBuilder->createNamedParameter(
                     $value,
-                    $dataType
-                )
-            )
+                    $dataType,
+                ),
+            ),
         );
     }
 

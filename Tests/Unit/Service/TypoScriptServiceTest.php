@@ -29,7 +29,7 @@ class TypoScriptServiceTest extends UnitTestCase
     protected function tearDown(): void
     {
         unset(
-            $this->subject
+            $this->subject,
         );
     }
 
@@ -44,7 +44,7 @@ class TypoScriptServiceTest extends UnitTestCase
 
         self::assertSame(
             [],
-            $flexFormSettings
+            $flexFormSettings,
         );
     }
 
@@ -63,7 +63,7 @@ class TypoScriptServiceTest extends UnitTestCase
             [
                 'foo' => 'bar',
             ],
-            $flexFormSettings
+            $flexFormSettings,
         );
     }
 
@@ -84,7 +84,7 @@ class TypoScriptServiceTest extends UnitTestCase
             [
                 'foo' => 'bar',
             ],
-            $flexFormSettings
+            $flexFormSettings,
         );
     }
 
@@ -105,7 +105,7 @@ class TypoScriptServiceTest extends UnitTestCase
             [
                 'foo' => 'bar',
             ],
-            $flexFormSettings
+            $flexFormSettings,
         );
     }
 
@@ -137,7 +137,7 @@ class TypoScriptServiceTest extends UnitTestCase
                     'last' => 'Froemken',
                 ],
             ],
-            $flexFormSettings
+            $flexFormSettings,
         );
     }
 }

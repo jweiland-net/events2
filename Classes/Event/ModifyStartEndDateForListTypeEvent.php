@@ -28,7 +28,7 @@ class ModifyStartEndDateForListTypeEvent
         string $listType,
         \DateTimeImmutable $startDateTime,
         ?\DateTimeImmutable $endDateTime = null,
-        array $settings = []
+        array $settings = [],
     ) {
         $this->listType = $listType;
         $this->startDateTime = $startDateTime;

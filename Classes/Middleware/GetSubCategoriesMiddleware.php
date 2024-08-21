@@ -39,7 +39,7 @@ class GetSubCategoriesMiddleware implements MiddlewareInterface
         }
 
         return new JsonResponse($this->reduceCategoryData(
-            $this->categoryRepository->getSubCategories($categoryUid)
+            $this->categoryRepository->getSubCategories($categoryUid),
         ));
     }
 

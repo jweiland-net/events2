@@ -159,7 +159,7 @@ class JsonLdServiceTest extends FunctionalTestCase
 
         self::assertSame(
             $day->getEvent()->getEventBegin()->format('Y-m-d'),
-            $jsonLdService->getCollectedJsonLdData()['startDate']
+            $jsonLdService->getCollectedJsonLdData()['startDate'],
         );
     }
 
@@ -176,7 +176,7 @@ class JsonLdServiceTest extends FunctionalTestCase
 
         self::assertSame(
             $day->getEvent()->getEventEnd()->format('Y-m-d'),
-            $jsonLdService->getCollectedJsonLdData()['endDate']
+            $jsonLdService->getCollectedJsonLdData()['endDate'],
         );
     }
 
@@ -193,7 +193,7 @@ class JsonLdServiceTest extends FunctionalTestCase
 
         self::assertSame(
             $day->getEvent()->getEventTime()->getTimeBeginAsDateTime()->format('Y-m-d\TH:i:s'),
-            $jsonLdService->getCollectedJsonLdData()['startDate']
+            $jsonLdService->getCollectedJsonLdData()['startDate'],
         );
     }
 
@@ -210,7 +210,7 @@ class JsonLdServiceTest extends FunctionalTestCase
 
         self::assertSame(
             $day->getEvent()->getEventTime()->getTimeEntryAsDateTime()->format('Y-m-d\TH:i:s'),
-            $jsonLdService->getCollectedJsonLdData()['doorTime']
+            $jsonLdService->getCollectedJsonLdData()['doorTime'],
         );
     }
 
@@ -227,12 +227,12 @@ class JsonLdServiceTest extends FunctionalTestCase
 
         [$hours, $minutes] = GeneralUtility::trimExplode(
             ':',
-            $day->getEvent()->getEventTime()->getDuration()
+            $day->getEvent()->getEventTime()->getDuration(),
         );
 
         self::assertSame(
             'PT' . (int)$hours . 'H' . (int)$minutes . 'M',
-            $jsonLdService->getCollectedJsonLdData()['duration']
+            $jsonLdService->getCollectedJsonLdData()['duration'],
         );
     }
 
@@ -249,7 +249,7 @@ class JsonLdServiceTest extends FunctionalTestCase
 
         self::assertSame(
             $day->getEvent()->getEventTime()->getTimeEndAsDateTime()->format('Y-m-d\TH:i:s'),
-            $jsonLdService->getCollectedJsonLdData()['endDate']
+            $jsonLdService->getCollectedJsonLdData()['endDate'],
         );
     }
 
@@ -266,7 +266,7 @@ class JsonLdServiceTest extends FunctionalTestCase
 
         self::assertSame(
             $day->getEvent()->getTitle(),
-            $jsonLdService->getCollectedJsonLdData()['name']
+            $jsonLdService->getCollectedJsonLdData()['name'],
         );
     }
 
@@ -283,7 +283,7 @@ class JsonLdServiceTest extends FunctionalTestCase
 
         self::assertSame(
             $day->getEvent()->getDetailInformation(),
-            $jsonLdService->getCollectedJsonLdData()['description']
+            $jsonLdService->getCollectedJsonLdData()['description'],
         );
     }
 
@@ -300,7 +300,7 @@ class JsonLdServiceTest extends FunctionalTestCase
 
         self::assertStringStartsWith(
             'http',
-            $jsonLdService->getCollectedJsonLdData()['url']
+            $jsonLdService->getCollectedJsonLdData()['url'],
         );
     }
 
@@ -317,7 +317,7 @@ class JsonLdServiceTest extends FunctionalTestCase
 
         self::assertSame(
             'True',
-            $jsonLdService->getCollectedJsonLdData()['isAccessibleForFree']
+            $jsonLdService->getCollectedJsonLdData()['isAccessibleForFree'],
         );
 
         /** @var Day $day */
@@ -328,7 +328,7 @@ class JsonLdServiceTest extends FunctionalTestCase
 
         self::assertSame(
             'False',
-            $jsonLdService->getCollectedJsonLdData()['isAccessibleForFree']
+            $jsonLdService->getCollectedJsonLdData()['isAccessibleForFree'],
         );
     }
 
@@ -347,15 +347,15 @@ class JsonLdServiceTest extends FunctionalTestCase
 
         self::assertSame(
             'Offer',
-            $offer['@type']
+            $offer['@type'],
         );
         self::assertSame(
             'TYPO3',
-            $offer['name']
+            $offer['name'],
         );
         self::assertSame(
             'https://www.typo3.org',
-            $offer['url']
+            $offer['url'],
         );
     }
 
@@ -374,27 +374,27 @@ class JsonLdServiceTest extends FunctionalTestCase
 
         self::assertSame(
             'Place',
-            $location['@type']
+            $location['@type'],
         );
         self::assertSame(
             'jweiland.net',
-            $location['name']
+            $location['name'],
         );
         self::assertSame(
             'PostalAddress',
-            $location['address']['@type']
+            $location['address']['@type'],
         );
         self::assertSame(
             'Echterdinger Straße 57',
-            $location['address']['streetAddress']
+            $location['address']['streetAddress'],
         );
         self::assertSame(
             '70794',
-            $location['address']['postalCode']
+            $location['address']['postalCode'],
         );
         self::assertSame(
             'Filderstadt',
-            $location['address']['addressLocality']
+            $location['address']['addressLocality'],
         );
     }
 
@@ -413,15 +413,15 @@ class JsonLdServiceTest extends FunctionalTestCase
 
         self::assertSame(
             'Organization',
-            $organizer['@type']
+            $organizer['@type'],
         );
         self::assertSame(
             'Stefan',
-            $organizer['name']
+            $organizer['name'],
         );
         self::assertSame(
             'https://www.typo3.org',
-            $organizer['url']
+            $organizer['url'],
         );
     }
 }

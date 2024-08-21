@@ -54,8 +54,8 @@ class JsonLdService
         $pageRenderer->addHeaderData(
             sprintf(
                 '<script type="application/ld+json">%s</script>',
-                json_encode($this->data, JSON_THROW_ON_ERROR)
-            )
+                json_encode($this->data, JSON_THROW_ON_ERROR),
+            ),
         );
     }
 
@@ -129,7 +129,7 @@ class JsonLdService
             $this->data['duration'] = sprintf(
                 'PT%dH%dM',
                 (int)$hours,
-                (int)$minutes
+                (int)$minutes,
             );
         }
     }
@@ -285,7 +285,7 @@ class JsonLdService
                 $this->data['organizer']['url'] = $this->getUrlFromParameter(
                     $event->getFirstOrganizer()
                         ->getLink()
-                        ->getLink()
+                        ->getLink(),
                 );
             }
         }
@@ -333,7 +333,7 @@ class JsonLdService
             [
                 'parameter' => $parameter,
                 'forceAbsoluteUrl' => true,
-            ]
+            ],
         );
     }
 }

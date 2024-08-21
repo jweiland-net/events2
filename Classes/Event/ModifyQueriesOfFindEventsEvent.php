@@ -30,7 +30,7 @@ class ModifyQueriesOfFindEventsEvent
         protected readonly QueryBuilder $subQueryBuilder,
         string $type,
         Filter $filter,
-        array $settings
+        array $settings,
     ) {
         $this->type = $type;
         $this->filter = $filter;

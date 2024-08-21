@@ -40,7 +40,7 @@ class ManagementControllerTest extends AbstractFunctionalTestCase
         $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
         if (version_compare($typo3Version->getBranch(), '11', '<')) {
             self::markTestSkipped(
-                'Because of missing Context class in TYPO3 10 this test has to be skipped.'
+                'Because of missing Context class in TYPO3 10 this test has to be skipped.',
             );
         }
 
@@ -57,7 +57,7 @@ class ManagementControllerTest extends AbstractFunctionalTestCase
                 'pid' => 1,
                 'username' => 'froemken',
                 'tx_events2_organizer' => 1,
-            ]
+            ],
         );
 
         $this->getDatabaseConnection()->insertArray(
@@ -65,7 +65,7 @@ class ManagementControllerTest extends AbstractFunctionalTestCase
             [
                 'pid' => 1,
                 'organizer' => 'Stefan',
-            ]
+            ],
         );
 
         $date = new \DateTimeImmutable('midnight');
@@ -77,7 +77,7 @@ class ManagementControllerTest extends AbstractFunctionalTestCase
                 'event_begin' => (int)$date->format('U'),
                 'title' => 'Today',
                 'organizers' => '1',
-            ]
+            ],
         );
 
         $this->getDatabaseConnection()->insertArray(
@@ -85,7 +85,7 @@ class ManagementControllerTest extends AbstractFunctionalTestCase
             [
                 'uid_local' => 1,
                 'uid_foreign' => 1,
-            ]
+            ],
         );
     }
 
@@ -93,7 +93,7 @@ class ManagementControllerTest extends AbstractFunctionalTestCase
     {
         unset(
             $this->request,
-            $GLOBALS['TSFE']
+            $GLOBALS['TSFE'],
         );
 
         parent::tearDown();
@@ -109,7 +109,7 @@ class ManagementControllerTest extends AbstractFunctionalTestCase
         $GLOBALS['TSFE']->fe_user->user = $this->getDatabaseConnection()->selectSingleRow(
             '*',
             'fe_users',
-            'uid = 1'
+            'uid = 1',
         );
 
         $extbaseBootstrap = GeneralUtility::makeInstance(Bootstrap::class);
@@ -122,16 +122,16 @@ class ManagementControllerTest extends AbstractFunctionalTestCase
                 'settings' => [
                     'userGroup' => '1',
                 ],
-            ]
+            ],
         );
 
         self::assertStringContainsString(
             'Event Title 1: Today',
-            $content
+            $content,
         );
         self::assertStringContainsString(
             'tx_events2_management%5Baction%5D=edit&amp;tx_events2_management%5Bcontroller%5D=Management',
-            $content
+            $content,
         );
     }
 }

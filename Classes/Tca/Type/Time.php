@@ -50,13 +50,13 @@ class Time
                 (string)MathUtility::forceIntegerInRange($parts[0], 0, 23),
                 2,
                 '0',
-                STR_PAD_LEFT
+                STR_PAD_LEFT,
             );
             $parts[1] = str_pad(
                 (string)MathUtility::forceIntegerInRange($parts[1], 0, 59),
                 2,
                 '0',
-                STR_PAD_LEFT
+                STR_PAD_LEFT,
             );
 
             return $parts[0] . ':' . $parts[1];

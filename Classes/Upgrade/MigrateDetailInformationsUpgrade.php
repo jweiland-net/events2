@@ -61,12 +61,12 @@ class MigrateDetailInformationsUpgrade implements UpgradeWizardInterface
             ->count('*')
             ->where(
                 $queryBuilder->expr()->isNotNull(
-                    'e.detail_informations'
+                    'e.detail_informations',
                 ),
                 $queryBuilder->expr()->neq(
                     'e.detail_informations',
-                    $queryBuilder->quoteIdentifier('e.detail_information')
-                )
+                    $queryBuilder->quoteIdentifier('e.detail_information'),
+                ),
             )
             ->executeQuery()
             ->fetchOne();
@@ -96,7 +96,7 @@ class MigrateDetailInformationsUpgrade implements UpgradeWizardInterface
                 ],
                 [
                     'uid' => (int)$event['uid'],
-                ]
+                ],
             );
         }
 

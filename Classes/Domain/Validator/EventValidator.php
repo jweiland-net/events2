@@ -72,15 +72,15 @@ class EventValidator extends AbstractValidator
             if (
                 !preg_match(
                     '~^(|http:|https:)//(|www.)youtube(.*?)(v=|embed/)([a-zA-Z0-9_-]+)~i',
-                    $uri
+                    $uri,
                 )
             ) {
                 $this->addError(
                     $this->translateErrorMessage(
                         'validator.event.videoLink.notYouTube',
-                        'events2'
+                        'events2',
                     ),
-                    1647875338
+                    1647875338,
                 );
             }
         }

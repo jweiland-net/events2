@@ -49,7 +49,7 @@ class FilterTest extends UnitTestCase
 
         self::assertSame(
             $organizer,
-            $this->subject->getOrganizer()
+            $this->subject->getOrganizer(),
         );
     }
 
@@ -61,7 +61,7 @@ class FilterTest extends UnitTestCase
         $this->subject->setOrganizer(null);
 
         self::assertNull(
-            $this->subject->getOrganizer()
+            $this->subject->getOrganizer(),
         );
     }
 }

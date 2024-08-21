@@ -40,7 +40,7 @@ class SearchTest extends UnitTestCase
     {
         self::assertSame(
             '',
-            $this->subject->getSearch()
+            $this->subject->getSearch(),
         );
     }
 
@@ -53,7 +53,7 @@ class SearchTest extends UnitTestCase
 
         self::assertSame(
             'foo bar',
-            $this->subject->getSearch()
+            $this->subject->getSearch(),
         );
     }
 
@@ -75,7 +75,7 @@ class SearchTest extends UnitTestCase
 
         self::assertSame(
             $instance,
-            $this->subject->getMainCategory()
+            $this->subject->getMainCategory(),
         );
     }
 
@@ -97,7 +97,7 @@ class SearchTest extends UnitTestCase
 
         self::assertSame(
             $instance,
-            $this->subject->getSubCategory()
+            $this->subject->getSubCategory(),
         );
     }
 
@@ -118,7 +118,7 @@ class SearchTest extends UnitTestCase
 
         self::assertEquals(
             new \DateTimeImmutable('today'),
-            $this->subject->getEventBegin()
+            $this->subject->getEventBegin(),
         );
     }
 
@@ -139,7 +139,7 @@ class SearchTest extends UnitTestCase
 
         self::assertEquals(
             new \DateTimeImmutable('today'),
-            $this->subject->getEventEnd()
+            $this->subject->getEventEnd(),
         );
     }
 
@@ -161,7 +161,7 @@ class SearchTest extends UnitTestCase
 
         self::assertSame(
             $instance,
-            $this->subject->getLocation()
+            $this->subject->getLocation(),
         );
     }
 
@@ -171,7 +171,7 @@ class SearchTest extends UnitTestCase
     public function getFreeEntryInitiallyReturnsFalse(): void
     {
         self::assertFalse(
-            $this->subject->getFreeEntry()
+            $this->subject->getFreeEntry(),
         );
     }
 
@@ -182,7 +182,7 @@ class SearchTest extends UnitTestCase
     {
         $this->subject->setFreeEntry(true);
         self::assertTrue(
-            $this->subject->getFreeEntry()
+            $this->subject->getFreeEntry(),
         );
     }
 }

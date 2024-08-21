@@ -53,18 +53,18 @@ class AddPaginatorEventListener extends AbstractControllerEventListener
             $paginator = new QueryResultPaginator(
                 $controllerActionEvent->getFluidVariables()[$this->fluidVariableForPaginatedRecords],
                 $this->getCurrentPage($controllerActionEvent),
-                $this->getItemsPerPage($controllerActionEvent)
+                $this->getItemsPerPage($controllerActionEvent),
             );
 
             $controllerActionEvent->addFluidVariable('actionName', $controllerActionEvent->getActionName());
             $controllerActionEvent->addFluidVariable('paginator', $paginator);
             $controllerActionEvent->addFluidVariable(
                 $this->fluidVariableForPaginatedRecords,
-                $paginator->getPaginatedItems()
+                $paginator->getPaginatedItems(),
             );
             $controllerActionEvent->addFluidVariable(
                 'pagination',
-                $this->getPagination($controllerActionEvent, $paginator)
+                $this->getPagination($controllerActionEvent, $paginator),
             );
         }
     }
@@ -77,7 +77,7 @@ class AddPaginatorEventListener extends AbstractControllerEventListener
             // See: AbstractPaginator::setCurrentPageNumber()
             $currentPage = MathUtility::forceIntegerInRange(
                 (int)$controllerActionEvent->getRequest()->getArgument('currentPage'),
-                1
+                1,
             );
         }
 
@@ -91,7 +91,7 @@ class AddPaginatorEventListener extends AbstractControllerEventListener
 
     protected function getPagination(
         PostProcessFluidVariablesEvent $event,
-        PaginatorInterface $paginator
+        PaginatorInterface $paginator,
     ): PaginationInterface {
         $paginationClass = $event->getSettings()['pageBrowser']['class'] ?? $this->fallbackPaginationClass;
 

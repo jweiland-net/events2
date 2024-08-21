@@ -29,6 +29,6 @@ if (ExtensionManagementUtility::isLoaded('maps2')) {
                     'poiCollectionColumnName' => 'hidden',
                 ],
             ],
-        ]
+        ],
     );
 }

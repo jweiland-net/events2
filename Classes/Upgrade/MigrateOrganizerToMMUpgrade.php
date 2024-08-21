@@ -66,8 +66,8 @@ class MigrateOrganizerToMMUpgrade implements UpgradeWizardInterface
                 'eo_mm',
                 $queryBuilder->expr()->eq(
                     'e.organizer',
-                    $queryBuilder->quoteIdentifier('eo_mm.uid_local')
-                )
+                    $queryBuilder->quoteIdentifier('eo_mm.uid_local'),
+                ),
             )
             ->executeQuery()
             ->fetchOne();
@@ -98,7 +98,7 @@ class MigrateOrganizerToMMUpgrade implements UpgradeWizardInterface
                     'uid_foreign' => (int)$event['organizer'],
                     'sorting' => 1,
                     'sorting_foreign' => 0,
-                ]
+                ],
             );
             // event->organizer was an 1:1 relation, so organizer = 1 should be OK here
             $eventConnection->update(
@@ -108,7 +108,7 @@ class MigrateOrganizerToMMUpgrade implements UpgradeWizardInterface
                 ],
                 [
                     'uid' => (int)$event['uid'],
-                ]
+                ],
             );
         }
 
@@ -126,8 +126,8 @@ class MigrateOrganizerToMMUpgrade implements UpgradeWizardInterface
             ->where(
                 $queryBuilder->expr()->gt(
                     'e.organizer',
-                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
-                )
+                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT),
+                ),
             );
     }
 

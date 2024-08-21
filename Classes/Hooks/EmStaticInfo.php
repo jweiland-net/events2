@@ -33,7 +33,7 @@ class EmStaticInfo
             $options[] = $this->wrapOption(
                 (string)(int)$country['uid'],
                 $country['cn_short_en'],
-                (int)$params['fieldValue'] === (int)$country['uid']
+                (int)$params['fieldValue'] === (int)$country['uid'],
             );
         }
 
@@ -42,7 +42,7 @@ class EmStaticInfo
             'em-' . $params['fieldName'],
             'form-control',
             $params['fieldName'],
-            implode(LF, $options)
+            implode(LF, $options),
         );
     }
 
@@ -55,7 +55,7 @@ class EmStaticInfo
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('static_countries');
         $queryBuilder->getRestrictions()->removeAll()->add(
-            GeneralUtility::makeInstance(DeletedRestriction::class)
+            GeneralUtility::makeInstance(DeletedRestriction::class),
         );
 
         return $queryBuilder
@@ -72,7 +72,7 @@ class EmStaticInfo
             '<option value="%s"%s>%s</option>',
             $value,
             $selected ? ' selected="selected"' : '',
-            $label
+            $label,
         );
     }
 

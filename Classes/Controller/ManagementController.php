@@ -65,7 +65,7 @@ class ManagementController extends AbstractController
     public function newAction(): ResponseInterface
     {
         $categories = $this->categoryRepository->getCategories(
-            $this->settings['selectableCategoriesForNewEvents']
+            $this->settings['selectableCategoriesForNewEvents'],
         );
 
         if ($categories->count() === 0) {
@@ -118,7 +118,7 @@ class ManagementController extends AbstractController
     public function editAction(Event $event): ResponseInterface
     {
         $categories = $this->categoryRepository->getCategories(
-            $this->settings['selectableCategoriesForNewEvents']
+            $this->settings['selectableCategoriesForNewEvents'],
         );
 
         if ($categories->count() === 0) {
@@ -219,7 +219,7 @@ class ManagementController extends AbstractController
 
             $this->addFlashMessage(LocalizationUtility::translate(
                 'email.subject.activate',
-                'events2'
+                'events2',
             ));
 
             $this->sendMail('activate');
@@ -235,8 +235,8 @@ class ManagementController extends AbstractController
         $this->mailMessage->setSubject(
             LocalizationUtility::translate(
                 'email.subject.' . $subjectKey,
-                'events2'
-            )
+                'events2',
+            ),
         );
 
         $this->mailMessage->html($this->view->render());

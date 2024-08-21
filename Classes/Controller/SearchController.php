@@ -47,7 +47,7 @@ class SearchController extends AbstractController
 
         $allowedMainCategories = $this->categoryRepository->getSelectedCategories(
             (string)$this->settings['mainCategories'],
-            (int)$this->settings['rootCategory']
+            (int)$this->settings['rootCategory'],
         );
 
         if ($allowedMainCategories->count() === 0) {

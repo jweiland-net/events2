@@ -40,7 +40,7 @@ class DayFactory
     public function __construct(
         protected readonly DatabaseService $databaseService,
         protected readonly DayRepository $dayRepository,
-        protected readonly EventRepository $eventRepository
+        protected readonly EventRepository $eventRepository,
     ) {}
 
     /**
@@ -72,9 +72,9 @@ class DayFactory
                 'day.day_time',
                 $queryBuilder->createNamedParameter(
                     $searchValues['timestamp'],
-                    Connection::PARAM_INT
-                )
-            )
+                    Connection::PARAM_INT,
+                ),
+            ),
         );
 
         return $this->findDayByQueryBuilder($queryBuilder);
@@ -88,7 +88,7 @@ class DayFactory
 
         $queryBuilder->expr()->gte(
             'day.day_time',
-            $queryBuilder->createNamedParameter((int)$date->format('U'), Connection::PARAM_INT)
+            $queryBuilder->createNamedParameter((int)$date->format('U'), Connection::PARAM_INT),
         );
 
         return $this->findDayByQueryBuilder($queryBuilder);
@@ -102,7 +102,7 @@ class DayFactory
 
         $queryBuilder->expr()->lte(
             'day.day_time',
-            $queryBuilder->createNamedParameter((int)$date->format('U'), Connection::PARAM_INT)
+            $queryBuilder->createNamedParameter((int)$date->format('U'), Connection::PARAM_INT),
         );
 
         return $this->findDayByQueryBuilder($queryBuilder);
@@ -168,7 +168,7 @@ class DayFactory
     protected function getQueryBuilder(
         QueryInterface $query,
         int $eventUid,
-        string $order = QueryInterface::ORDER_ASCENDING
+        string $order = QueryInterface::ORDER_ASCENDING,
     ): QueryBuilder {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_day');
         $queryBuilder
@@ -180,8 +180,8 @@ class DayFactory
                 'event',
                 $queryBuilder->expr()->eq(
                     'day.event',
-                    $queryBuilder->quoteIdentifier('event.uid')
-                )
+                    $queryBuilder->quoteIdentifier('event.uid'),
+                ),
             )
             ->orderBy('day.day_time', $order);
 
@@ -198,14 +198,14 @@ class DayFactory
         // add storage PID for event and day, but not for sys_category
         $this->databaseService->addConstraintForPid(
             $queryBuilder,
-            $query->getQuerySettings()->getStoragePageIds()
+            $query->getQuerySettings()->getStoragePageIds(),
         );
 
         $queryBuilder->andWhere(
             $queryBuilder->expr()->eq(
                 'day.event',
-                $queryBuilder->createNamedParameter($eventUid, Connection::PARAM_INT)
-            )
+                $queryBuilder->createNamedParameter($eventUid, Connection::PARAM_INT),
+            ),
         );
     }
 

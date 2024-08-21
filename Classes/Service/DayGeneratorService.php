@@ -35,7 +35,7 @@ class DayGeneratorService implements LoggerAwareInterface
     public function __construct(
         protected readonly EventDispatcher $eventDispatcher,
         protected readonly ExtConf $extConf,
-        protected readonly DateTimeUtility $dateTimeUtility
+        protected readonly DateTimeUtility $dateTimeUtility,
     ) {}
 
     /**
@@ -69,14 +69,14 @@ class DayGeneratorService implements LoggerAwareInterface
             }
 
             $this->eventDispatcher->dispatch(
-                new PostGenerateDaysEvent($eventRecord)
+                new PostGenerateDaysEvent($eventRecord),
             );
         } catch (\Exception $exception) {
             $this->logger->error(sprintf(
                 'Error occurred while building DateTime objects in DayGeneratorService at line %d: %s: %d',
                 $exception->getLine(),
                 $exception->getMessage(),
-                $exception->getCode()
+                $exception->getCode(),
             ));
 
             return [];
@@ -110,7 +110,7 @@ class DayGeneratorService implements LoggerAwareInterface
             foreach ($record['exceptions'] as &$exceptionRecord) {
                 $this->addDateTimeObjectsToRecord(
                     $exceptionRecord,
-                    'tx_events2_domain_model_exception'
+                    'tx_events2_domain_model_exception',
                 );
             }
         }
@@ -140,7 +140,7 @@ class DayGeneratorService implements LoggerAwareInterface
             if (!array_key_exists($neededProperty, $eventRecord)) {
                 throw new \Exception(sprintf(
                     'Invalid event record. It does not contain mandatory property: %s.',
-                    $neededProperty
+                    $neededProperty,
                 ), 1649074484);
             }
         }
@@ -148,7 +148,7 @@ class DayGeneratorService implements LoggerAwareInterface
         if ($eventRecord['event_type'] === '') {
             throw new \Exception(
                 'Invalid event record: Column "event_type" can not be empty.',
-                1649074506
+                1649074506,
             );
         }
 
@@ -158,14 +158,14 @@ class DayGeneratorService implements LoggerAwareInterface
         ) {
             throw new \Exception(
                 'Invalid event record: If event_type is set to "duration" column "event_end" has to be set.',
-                1649074514
+                1649074514,
             );
         }
 
         if (!$eventRecord['event_begin'] instanceof \DateTimeImmutable) {
             throw new \Exception(
                 'Invalid event record: Column "event_begin" can not be empty.',
-                1649074525
+                1649074525,
             );
         }
 
@@ -173,7 +173,7 @@ class DayGeneratorService implements LoggerAwareInterface
             if (!$exceptionRecord['exception_date'] instanceof \DateTimeImmutable) {
                 throw new \Exception(
                     'Invalid exception record: Column "exception_date" can not be empty.',
-                    1649139356
+                    1649139356,
                 );
             }
         }
@@ -203,14 +203,14 @@ class DayGeneratorService implements LoggerAwareInterface
     {
         $dateToStopCalculatingTo = $this->getEndDateForCalculation($eventRecord);
         $firstDayOfMonth = $this->resetDateTimeToFirstDayOfMonth(
-            $this->getStartDateForCalculation($eventRecord)
+            $this->getStartDateForCalculation($eventRecord),
         );
 
         while ($firstDayOfMonth <= $dateToStopCalculatingTo) {
             $this->addDaysForMonth(
                 $firstDayOfMonth->format('F'),
                 (int)$firstDayOfMonth->format('Y'),
-                $eventRecord
+                $eventRecord,
             );
             $firstDayOfMonth = $this->modifyDateTime($firstDayOfMonth, 'next month');
         }
@@ -237,15 +237,15 @@ class DayGeneratorService implements LoggerAwareInterface
     {
         $earliestDateOfTimeFrame = $this->createDateTime(sprintf(
             '-%d months',
-            $this->extConf->getRecurringPast()
+            $this->extConf->getRecurringPast(),
         ));
 
         $latestDateOfTimeFrame = $this->modifyDateTime(
             $eventRecord['event_begin'],
             sprintf(
                 '+%d months 23:59:59',
-                $this->extConf->getRecurringFuture()
-            )
+                $this->extConf->getRecurringFuture(),
+            ),
         );
 
         if (
@@ -267,10 +267,10 @@ class DayGeneratorService implements LoggerAwareInterface
         while ($dateToStartCalculatingFrom <= $dateToStopCalculatingTo) {
             $this->addDateTimeToStorage($dateToStartCalculatingFrom);
             $dateToStartCalculatingFrom = $dateToStartCalculatingFrom->modify(
-                '+' . $eventRecord['each_months'] . ' months'
+                '+' . $eventRecord['each_months'] . ' months',
             );
             $dateToStartCalculatingFrom = $dateToStartCalculatingFrom->modify(
-                '+' . $eventRecord['each_weeks'] . ' weeks'
+                '+' . $eventRecord['each_weeks'] . ' weeks',
             );
         }
     }
@@ -313,7 +313,7 @@ class DayGeneratorService implements LoggerAwareInterface
         // Do not reset time to midnight, as we want to keep given time.
         return $this->createDateTime(
             'last day of ' . $month . ' ' . $year . ' 23:59:59',
-            false
+            false,
         );
     }
 
@@ -327,7 +327,7 @@ class DayGeneratorService implements LoggerAwareInterface
     {
         return $this->modifyDateTime(
             $date,
-            'first day of this month'
+            'first day of this month',
         );
     }
 
@@ -346,7 +346,7 @@ class DayGeneratorService implements LoggerAwareInterface
         } catch (\Exception $exception) {
             throw new \Exception(sprintf(
                 'Creation of new DateTime object with modifier "%s" failed.',
-                $modifier
+                $modifier,
             ), 1649066132);
         }
 
@@ -363,7 +363,7 @@ class DayGeneratorService implements LoggerAwareInterface
         } catch (\Exception $exception) {
             throw new \Exception(sprintf(
                 'Given DateTime object could not be modified with modifier "%s"',
-                $modifier
+                $modifier,
             ), 1649066006);
         }
 
@@ -416,7 +416,7 @@ class DayGeneratorService implements LoggerAwareInterface
     {
         $earliestDateOfTimeFrame = $this->createDateTime(sprintf(
             '-%d months',
-            $this->extConf->getRecurringPast()
+            $this->extConf->getRecurringPast(),
         ));
 
         if ($earliestDateOfTimeFrame > $dateForComparison) {
@@ -441,8 +441,8 @@ class DayGeneratorService implements LoggerAwareInterface
             max($today, $eventBegin),
             sprintf(
                 '+%d months 23:59:59',
-                $this->extConf->getRecurringFuture()
-            )
+                $this->extConf->getRecurringFuture(),
+            ),
         );
 
         /** @var ?\DateTimeImmutable $latestEventDate recurring_end can be null! */
@@ -466,7 +466,7 @@ class DayGeneratorService implements LoggerAwareInterface
         $this->dateTimeStorage[$dateTime->format('U')] = GeneralUtility::makeInstance(
             DateTimeEntry::class,
             $dateTime,
-            $isRemovedDate
+            $isRemovedDate,
         );
     }
 
@@ -510,9 +510,9 @@ class DayGeneratorService implements LoggerAwareInterface
                     throw new \Exception(
                         sprintf(
                             'Type "%s" is no valid exception type',
-                            $exceptionRecord['exception_type']
+                            $exceptionRecord['exception_type'],
                         ),
-                        1370003254
+                        1370003254,
                     );
             }
         }
@@ -556,13 +556,13 @@ class DayGeneratorService implements LoggerAwareInterface
             $exceptionRecord['hidden'],
             $exceptionRecord['exception_type'],
             $exceptionRecord['exception_date'],
-            $exceptionRecord['show_anyway']
+            $exceptionRecord['show_anyway'],
         );
 
         if (!$isValid) {
             throw new \Exception(
                 'Exception record does not contain all needed columns to create DateTime storage',
-                1651151453
+                1651151453,
             );
         }
     }

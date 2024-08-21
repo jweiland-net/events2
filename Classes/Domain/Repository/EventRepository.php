@@ -70,7 +70,7 @@ class EventRepository extends AbstractRepository implements HiddenRepositoryInte
         array $select = ['*'],
         bool $includeHidden = false,
         bool $includeExceptions = true,
-        bool $doOverlay = true
+        bool $doOverlay = true,
     ): array {
         $eventRecord = $this->getRecordByUid(
             self::TABLE,
@@ -78,7 +78,7 @@ class EventRepository extends AbstractRepository implements HiddenRepositoryInte
             $uid,
             $select,
             $includeHidden,
-            $doOverlay
+            $doOverlay,
         );
 
         $eventRecord['days'] = [];

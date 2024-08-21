@@ -42,7 +42,7 @@ class OrganizerTest extends UnitTestCase
     {
         self::assertSame(
             '',
-            $this->subject->getOrganizer()
+            $this->subject->getOrganizer(),
         );
     }
 
@@ -55,7 +55,7 @@ class OrganizerTest extends UnitTestCase
 
         self::assertSame(
             'foo bar',
-            $this->subject->getOrganizer()
+            $this->subject->getOrganizer(),
         );
     }
 
@@ -77,7 +77,7 @@ class OrganizerTest extends UnitTestCase
 
         self::assertSame(
             $instance,
-            $this->subject->getLink()
+            $this->subject->getLink(),
         );
     }
 }

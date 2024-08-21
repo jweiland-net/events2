@@ -46,7 +46,7 @@ class PrefillForEditUsageHook
         ) {
             $formElement->getRootForm()->addElementDefaultValue(
                 'events2-event-uid',
-                (int)$_GET['tx_events2_management']['event']
+                (int)$_GET['tx_events2_management']['event'],
             );
             $this->setFormDefaultValues($formElement, $eventRecord);
         }
@@ -65,7 +65,7 @@ class PrefillForEditUsageHook
         } elseif (
             isset(
                 $properties['dbMapping']['relation']['table'],
-                $properties['dbMapping']['relation']['expressions']
+                $properties['dbMapping']['relation']['expressions'],
             )
             && $properties['dbMapping']['relation']['table'] !== ''
             && is_array($properties['dbMapping']['relation']['expressions'])
@@ -79,7 +79,7 @@ class PrefillForEditUsageHook
                     $properties['dbMapping']['relation']['table'],
                     $properties['dbMapping']['relation']['labelColumn'],
                     $eventRecord,
-                    $properties['dbMapping']['relation']['expressions']
+                    $properties['dbMapping']['relation']['expressions'],
                 );
             } elseif (
                 isset($properties['dbMapping']['relation']['valueColumn'])
@@ -89,7 +89,7 @@ class PrefillForEditUsageHook
                     $properties['dbMapping']['relation']['table'],
                     $properties['dbMapping']['relation']['valueColumn'],
                     $eventRecord,
-                    $properties['dbMapping']['relation']['expressions']
+                    $properties['dbMapping']['relation']['expressions'],
                 );
             }
         }
@@ -127,7 +127,7 @@ class PrefillForEditUsageHook
         string $table,
         string $labelColumn,
         array $eventRecord,
-        array $expressions = []
+        array $expressions = [],
     ): string {
         $queryBuilder = $this
             ->getQueryBuilderForTable($table)
@@ -145,7 +145,7 @@ class PrefillForEditUsageHook
 
         $formElement->getRootForm()->addElementDefaultValue(
             'events2-' . $formElement->getIdentifier() . '-uid',
-            (int)$record['uid']
+            (int)$record['uid'],
         );
 
         return $record[$labelColumn];
@@ -155,7 +155,7 @@ class PrefillForEditUsageHook
         string $table,
         string $valueColumn,
         array $eventRecord,
-        array $expressions = []
+        array $expressions = [],
     ): array {
         $queryBuilder = $this
             ->getQueryBuilderForTable($table)
@@ -175,7 +175,7 @@ class PrefillForEditUsageHook
     protected function resolveExpressions(
         QueryBuilder $queryBuilder,
         array $eventRecord,
-        array $expressions
+        array $expressions,
     ): void {
         $constraints = [];
         foreach ($expressions as $expression) {
@@ -183,7 +183,7 @@ class PrefillForEditUsageHook
                 isset(
                     $expression['column'],
                     $expression['expression'],
-                    $expression['value']
+                    $expression['value'],
                 )
                 && method_exists($queryBuilder->expr(), $expression['expression'])
             ) {
@@ -210,7 +210,7 @@ class PrefillForEditUsageHook
                 $constraints[] = call_user_func(
                     [$queryBuilder->expr(), $expression['expression']],
                     $expression['column'],
-                    $queryBuilder->createNamedParameter($value, $type)
+                    $queryBuilder->createNamedParameter($value, $type),
                 );
             }
         }
@@ -228,16 +228,16 @@ class PrefillForEditUsageHook
             ->where(
                 $queryBuilder->expr()->eq(
                     'tablenames',
-                    $queryBuilder->createNamedParameter('tx_events2_domain_model_event')
+                    $queryBuilder->createNamedParameter('tx_events2_domain_model_event'),
                 ),
                 $queryBuilder->expr()->eq(
                     'fieldname',
-                    $queryBuilder->createNamedParameter('images')
+                    $queryBuilder->createNamedParameter('images'),
                 ),
                 $queryBuilder->expr()->eq(
                     'uid_foreign',
-                    $queryBuilder->createNamedParameter($eventUid, Connection::PARAM_INT)
-                )
+                    $queryBuilder->createNamedParameter($eventUid, Connection::PARAM_INT),
+                ),
             )
             ->orderBy('sorting_foreign', 'ASC')
             ->executeQuery();
@@ -275,8 +275,8 @@ class PrefillForEditUsageHook
             ->where(
                 $queryBuilder->expr()->eq(
                     'uid',
-                    $queryBuilder->createNamedParameter($eventUid, Connection::PARAM_INT)
-                )
+                    $queryBuilder->createNamedParameter($eventUid, Connection::PARAM_INT),
+                ),
             )
             ->executeQuery()
             ->fetchAssociative();

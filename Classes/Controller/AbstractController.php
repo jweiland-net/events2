@@ -49,7 +49,7 @@ class AbstractController extends ActionController implements LoggerAwareInterfac
         $typoScriptSettings = $this->configurationManager->getConfiguration(
             ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK,
             'events2',
-            'events2_invalid' // invalid plugin name, to get fresh unmerged settings
+            'events2_invalid', // invalid plugin name, to get fresh unmerged settings
         );
 
         if (empty($typoScriptSettings['settings'])) {
@@ -57,13 +57,13 @@ class AbstractController extends ActionController implements LoggerAwareInterfac
         }
         $mergedFlexFormSettings = $this->configurationManager->getConfiguration(
             ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS,
-            'events2'
+            'events2',
         ) ?? [];
 
         // Start override
         $this->getTypoScriptService()->override(
             $mergedFlexFormSettings,
-            $typoScriptSettings['settings']
+            $typoScriptSettings['settings'],
         );
 
         $this->settings = $mergedFlexFormSettings;
@@ -144,7 +144,7 @@ class AbstractController extends ActionController implements LoggerAwareInterfac
                 $errors[] = sprintf(
                     'Property path %s: %s',
                     $propertyPath,
-                    implode(', ', $propertyErrorMessages)
+                    implode(', ', $propertyErrorMessages),
                 );
             }
 
@@ -170,8 +170,8 @@ class AbstractController extends ActionController implements LoggerAwareInterfac
             new PostProcessFluidVariablesEvent(
                 $this->request,
                 $this->settings,
-                $variables
-            )
+                $variables,
+            ),
         );
 
         $this->view->assignMultiple($event->getFluidVariables());
@@ -185,8 +185,8 @@ class AbstractController extends ActionController implements LoggerAwareInterfac
                 $event,
                 $day,
                 $this->settings,
-                $this->request
-            )
+                $this->request,
+            ),
         );
     }
 
@@ -195,7 +195,7 @@ class AbstractController extends ActionController implements LoggerAwareInterfac
         $actionEvent = new PreProcessControllerActionEvent(
             $this->request,
             $this->arguments,
-            $this->settings
+            $this->settings,
         );
         $this->eventDispatcher->dispatch($actionEvent);
 

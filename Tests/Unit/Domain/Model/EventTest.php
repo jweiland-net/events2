@@ -61,7 +61,7 @@ class EventTest extends UnitTestCase
     {
         self::assertSame(
             '',
-            $this->subject->getTitle()
+            $this->subject->getTitle(),
         );
     }
 
@@ -74,7 +74,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             'foo bar',
-            $this->subject->getTitle()
+            $this->subject->getTitle(),
         );
     }
 
@@ -84,7 +84,7 @@ class EventTest extends UnitTestCase
     public function getTopOfListInitiallyReturnsFalse(): void
     {
         self::assertFalse(
-            $this->subject->getTopOfList()
+            $this->subject->getTopOfList(),
         );
     }
 
@@ -96,7 +96,7 @@ class EventTest extends UnitTestCase
         $this->subject->setTopOfList(true);
 
         self::assertTrue(
-            $this->subject->getTopOfList()
+            $this->subject->getTopOfList(),
         );
     }
 
@@ -107,7 +107,7 @@ class EventTest extends UnitTestCase
     {
         self::assertSame(
             '',
-            $this->subject->getTeaser()
+            $this->subject->getTeaser(),
         );
     }
 
@@ -120,7 +120,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             'foo bar',
-            $this->subject->getTeaser()
+            $this->subject->getTeaser(),
         );
     }
 
@@ -134,7 +134,7 @@ class EventTest extends UnitTestCase
 
         self::assertEquals(
             $date,
-            $this->subject->getEventBegin()
+            $this->subject->getEventBegin(),
         );
     }
 
@@ -157,7 +157,7 @@ class EventTest extends UnitTestCase
 
         self::assertEquals(
             $time,
-            $this->subject->getEventTime()
+            $this->subject->getEventTime(),
         );
     }
 
@@ -171,7 +171,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             $instance,
-            $this->subject->getEventTime()
+            $this->subject->getEventTime(),
         );
     }
 
@@ -188,7 +188,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             0,
-            $this->subject->getDaysOfEventsTakingDays()
+            $this->subject->getDaysOfEventsTakingDays(),
         );
     }
 
@@ -202,7 +202,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             0,
-            $this->subject->getDaysOfEventsTakingDays()
+            $this->subject->getDaysOfEventsTakingDays(),
         );
     }
 
@@ -218,7 +218,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             5,
-            $this->subject->getDaysOfEventsTakingDays()
+            $this->subject->getDaysOfEventsTakingDays(),
         );
     }
 
@@ -240,7 +240,7 @@ class EventTest extends UnitTestCase
 
         self::assertEquals(
             $instance,
-            $this->subject->getEventEnd()
+            $this->subject->getEventEnd(),
         );
     }
 
@@ -250,7 +250,7 @@ class EventTest extends UnitTestCase
     public function getSameDayInitiallyReturnsFalse(): void
     {
         self::assertFalse(
-            $this->subject->getSameDay()
+            $this->subject->getSameDay(),
         );
     }
 
@@ -262,7 +262,7 @@ class EventTest extends UnitTestCase
         $this->subject->setSameDay(true);
 
         self::assertTrue(
-            $this->subject->getSameDay()
+            $this->subject->getSameDay(),
         );
     }
 
@@ -273,7 +273,7 @@ class EventTest extends UnitTestCase
     {
         self::assertEquals(
             new ObjectStorage(),
-            $this->subject->getMultipleTimes()
+            $this->subject->getMultipleTimes(),
         );
     }
 
@@ -287,7 +287,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             $instance,
-            $this->subject->getMultipleTimes()
+            $this->subject->getMultipleTimes(),
         );
     }
 
@@ -298,7 +298,7 @@ class EventTest extends UnitTestCase
     {
         self::assertSame(
             0,
-            $this->subject->getXth()
+            $this->subject->getXth(),
         );
     }
 
@@ -311,7 +311,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             123456,
-            $this->subject->getXth()
+            $this->subject->getXth(),
         );
     }
 
@@ -322,7 +322,7 @@ class EventTest extends UnitTestCase
     {
         self::assertSame(
             0,
-            $this->subject->getWeekday()
+            $this->subject->getWeekday(),
         );
     }
 
@@ -335,7 +335,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             123456,
-            $this->subject->getWeekday()
+            $this->subject->getWeekday(),
         );
     }
 
@@ -346,7 +346,7 @@ class EventTest extends UnitTestCase
     {
         self::assertEquals(
             new ObjectStorage(),
-            $this->subject->getDifferentTimes()
+            $this->subject->getDifferentTimes(),
         );
     }
 
@@ -362,7 +362,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             $objectStorage,
-            $this->subject->getDifferentTimes()
+            $this->subject->getDifferentTimes(),
         );
     }
 
@@ -381,7 +381,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             $objectStorage,
-            $this->subject->getDifferentTimes()
+            $this->subject->getDifferentTimes(),
         );
     }
 
@@ -402,7 +402,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             $objectStorage,
-            $this->subject->getDifferentTimes()
+            $this->subject->getDifferentTimes(),
         );
     }
 
@@ -413,7 +413,7 @@ class EventTest extends UnitTestCase
     {
         self::assertSame(
             0,
-            $this->subject->getEachWeeks()
+            $this->subject->getEachWeeks(),
         );
     }
 
@@ -426,7 +426,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             123456,
-            $this->subject->getEachWeeks()
+            $this->subject->getEachWeeks(),
         );
     }
 
@@ -437,7 +437,7 @@ class EventTest extends UnitTestCase
     {
         self::assertSame(
             0,
-            $this->subject->getEachMonths()
+            $this->subject->getEachMonths(),
         );
     }
 
@@ -450,7 +450,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             123456,
-            $this->subject->getEachMonths()
+            $this->subject->getEachMonths(),
         );
     }
 
@@ -460,7 +460,7 @@ class EventTest extends UnitTestCase
     public function getRecurringEndInitiallyReturnsNull(): void
     {
         self::assertNull(
-            $this->subject->getRecurringEnd()
+            $this->subject->getRecurringEnd(),
         );
     }
 
@@ -474,7 +474,7 @@ class EventTest extends UnitTestCase
 
         self::assertEquals(
             $date,
-            $this->subject->getRecurringEnd()
+            $this->subject->getRecurringEnd(),
         );
     }
 
@@ -485,7 +485,7 @@ class EventTest extends UnitTestCase
     {
         self::assertEquals(
             new ObjectStorage(),
-            $this->subject->getExceptions()
+            $this->subject->getExceptions(),
         );
     }
 
@@ -503,7 +503,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             $objectStorage,
-            $this->subject->getExceptions()
+            $this->subject->getExceptions(),
         );
     }
 
@@ -522,7 +522,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             $objectStorage,
-            $this->subject->getExceptions()
+            $this->subject->getExceptions(),
         );
     }
 
@@ -543,7 +543,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             $objectStorage,
-            $this->subject->getExceptions()
+            $this->subject->getExceptions(),
         );
     }
 
@@ -554,7 +554,7 @@ class EventTest extends UnitTestCase
     {
         self::assertEquals(
             new ObjectStorage(),
-            $this->subject->getExceptionsForDate(new \DateTimeImmutable())
+            $this->subject->getExceptionsForDate(new \DateTimeImmutable()),
         );
     }
 
@@ -576,7 +576,7 @@ class EventTest extends UnitTestCase
 
         self::assertEquals(
             new ObjectStorage(),
-            $this->subject->getExceptionsForDate($date, 'Add')
+            $this->subject->getExceptionsForDate($date, 'Add'),
         );
     }
 
@@ -602,7 +602,7 @@ class EventTest extends UnitTestCase
 
         self::assertEquals(
             $expectedExceptions,
-            $this->subject->getExceptionsForDate($date, 'Remove')
+            $this->subject->getExceptionsForDate($date, 'Remove'),
         );
     }
 
@@ -628,7 +628,7 @@ class EventTest extends UnitTestCase
 
         self::assertEquals(
             $expectedExceptions,
-            $this->subject->getExceptionsForDate($date, 'Remove')
+            $this->subject->getExceptionsForDate($date, 'Remove'),
         );
     }
 
@@ -659,7 +659,7 @@ class EventTest extends UnitTestCase
 
         self::assertEquals(
             $expectedAddExceptions,
-            $this->subject->getExceptionsForDate($date, 'Add')
+            $this->subject->getExceptionsForDate($date, 'Add'),
         );
     }
 
@@ -691,7 +691,7 @@ class EventTest extends UnitTestCase
 
         self::assertEquals(
             $expectedAddExceptions,
-            $this->subject->getExceptionsForDate($firstDate, 'Add')
+            $this->subject->getExceptionsForDate($firstDate, 'Add'),
         );
     }
 
@@ -737,7 +737,7 @@ class EventTest extends UnitTestCase
 
         self::assertEquals(
             $expectedExceptions,
-            $this->subject->getExceptionsForDate($firstDate, 'add, time,  info')
+            $this->subject->getExceptionsForDate($firstDate, 'add, time,  info'),
         );
     }
 
@@ -748,7 +748,7 @@ class EventTest extends UnitTestCase
     {
         self::assertSame(
             '',
-            $this->subject->getDetailInformation()
+            $this->subject->getDetailInformation(),
         );
     }
 
@@ -761,7 +761,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             'foo bar',
-            $this->subject->getDetailInformation()
+            $this->subject->getDetailInformation(),
         );
     }
 
@@ -771,7 +771,7 @@ class EventTest extends UnitTestCase
     public function getFreeEntryInitiallyReturnsFalse(): void
     {
         self::assertFalse(
-            $this->subject->getFreeEntry()
+            $this->subject->getFreeEntry(),
         );
     }
 
@@ -783,7 +783,7 @@ class EventTest extends UnitTestCase
         $this->subject->setFreeEntry(true);
 
         self::assertTrue(
-            $this->subject->getFreeEntry()
+            $this->subject->getFreeEntry(),
         );
     }
 
@@ -805,7 +805,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             $instance,
-            $this->subject->getTicketLink()
+            $this->subject->getTicketLink(),
         );
     }
 
@@ -816,7 +816,7 @@ class EventTest extends UnitTestCase
     {
         self::assertEquals(
             new ObjectStorage(),
-            $this->subject->getCategories()
+            $this->subject->getCategories(),
         );
     }
 
@@ -834,7 +834,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             $objectStorage,
-            $this->subject->getCategories()
+            $this->subject->getCategories(),
         );
     }
 
@@ -853,7 +853,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             $objectStorage,
-            $this->subject->getCategories()
+            $this->subject->getCategories(),
         );
     }
 
@@ -874,7 +874,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             $objectStorage,
-            $this->subject->getCategories()
+            $this->subject->getCategories(),
         );
     }
 
@@ -891,7 +891,7 @@ class EventTest extends UnitTestCase
         }
         self::assertSame(
             [1, 2, 3],
-            $this->subject->getCategoryUids()
+            $this->subject->getCategoryUids(),
         );
     }
 
@@ -902,7 +902,7 @@ class EventTest extends UnitTestCase
     {
         self::assertEquals(
             new ObjectStorage(),
-            $this->subject->getDays()
+            $this->subject->getDays(),
         );
     }
 
@@ -920,7 +920,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             $objectStorage,
-            $this->subject->getDays()
+            $this->subject->getDays(),
         );
     }
 
@@ -939,7 +939,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             $objectStorage,
-            $this->subject->getDays()
+            $this->subject->getDays(),
         );
     }
 
@@ -960,7 +960,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             $objectStorage,
-            $this->subject->getDays()
+            $this->subject->getDays(),
         );
     }
 
@@ -995,7 +995,7 @@ class EventTest extends UnitTestCase
 
         self::assertCount(
             2,
-            $futureDays
+            $futureDays,
         );
     }
 
@@ -1036,22 +1036,22 @@ class EventTest extends UnitTestCase
 
         self::assertCount(
             2,
-            $futureDays
+            $futureDays,
         );
 
         self::assertSame(
             sprintf(
                 '%d,%d',
                 $today1->modify('midnight')->format('U'),
-                $future1->modify('midnight')->format('U')
+                $future1->modify('midnight')->format('U'),
             ),
-            implode(',', array_keys($futureDays))
+            implode(',', array_keys($futureDays)),
         );
 
         // Check, if pointer of array was moved to position 1
         self::assertEquals(
             $today1->modify('midnight'),
-            current($futureDays)
+            current($futureDays),
         );
     }
 
@@ -1105,22 +1105,22 @@ class EventTest extends UnitTestCase
 
         self::assertCount(
             2,
-            $futureDays
+            $futureDays,
         );
 
         self::assertSame(
             sprintf(
                 '%d,%d',
                 $today1->modify('midnight')->format('U'),
-                $future1->modify('midnight')->format('U')
+                $future1->modify('midnight')->format('U'),
             ),
-            implode(',', array_keys($futureDays))
+            implode(',', array_keys($futureDays)),
         );
 
         // Check, if pointer of array was moved to position 1
         self::assertEquals(
             $today1->modify('midnight'),
-            current($futureDays)
+            current($futureDays),
         );
     }
 
@@ -1142,7 +1142,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             $instance,
-            $this->subject->getLocation()
+            $this->subject->getLocation(),
         );
     }
 
@@ -1153,7 +1153,7 @@ class EventTest extends UnitTestCase
     {
         self::assertEquals(
             new ObjectStorage(),
-            $this->subject->getOrganizers()
+            $this->subject->getOrganizers(),
         );
     }
 
@@ -1171,7 +1171,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             $objectStorage,
-            $this->subject->getOrganizers()
+            $this->subject->getOrganizers(),
         );
     }
 
@@ -1190,7 +1190,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             $objectStorage,
-            $this->subject->getOrganizers()
+            $this->subject->getOrganizers(),
         );
     }
 
@@ -1211,7 +1211,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             $objectStorage,
-            $this->subject->getOrganizers()
+            $this->subject->getOrganizers(),
         );
     }
 
@@ -1232,7 +1232,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             $organizer1,
-            $this->subject->getFirstOrganizer()
+            $this->subject->getFirstOrganizer(),
         );
     }
 
@@ -1254,7 +1254,7 @@ class EventTest extends UnitTestCase
      */
     public function isCurrentUserAllowedOrganizerReturnsTrue(
         int $organizerUid,
-        bool $expected
+        bool $expected,
     ): void {
         /** @var UserRepository|ObjectProphecy $userRepositoryProphecy */
         $userRepositoryProphecy = $this->prophesize(UserRepository::class);
@@ -1265,7 +1265,7 @@ class EventTest extends UnitTestCase
 
         GeneralUtility::addInstance(
             UserRepository::class,
-            $userRepositoryProphecy->reveal()
+            $userRepositoryProphecy->reveal(),
         );
 
         $organizer1 = new Organizer();
@@ -1282,7 +1282,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             $expected,
-            $this->subject->getIsCurrentUserAllowedOrganizer()
+            $this->subject->getIsCurrentUserAllowedOrganizer(),
         );
     }
 
@@ -1293,7 +1293,7 @@ class EventTest extends UnitTestCase
     {
         self::assertEquals(
             [],
-            $this->subject->getImages()
+            $this->subject->getImages(),
         );
     }
 
@@ -1311,7 +1311,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             [0 => $object],
-            $this->subject->getImages()
+            $this->subject->getImages(),
         );
     }
 
@@ -1333,7 +1333,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             $instance,
-            $this->subject->getVideoLink()
+            $this->subject->getVideoLink(),
         );
     }
 
@@ -1344,7 +1344,7 @@ class EventTest extends UnitTestCase
     {
         self::assertEquals(
             new ObjectStorage(),
-            $this->subject->getDownloadLinks()
+            $this->subject->getDownloadLinks(),
         );
     }
 
@@ -1362,7 +1362,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             $objectStorage,
-            $this->subject->getDownloadLinks()
+            $this->subject->getDownloadLinks(),
         );
     }
 
@@ -1381,7 +1381,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             $objectStorage,
-            $this->subject->getDownloadLinks()
+            $this->subject->getDownloadLinks(),
         );
     }
 
@@ -1402,7 +1402,7 @@ class EventTest extends UnitTestCase
 
         self::assertSame(
             $objectStorage,
-            $this->subject->getDownloadLinks()
+            $this->subject->getDownloadLinks(),
         );
     }
 }

@@ -50,7 +50,7 @@ class EventServiceTest extends FunctionalTestCase
         $this->subject = GeneralUtility::makeInstance(
             EventService::class,
             $this->eventRepositoryProphecy->reveal(),
-            new TimeFactory(new DateTimeUtility())
+            new TimeFactory(new DateTimeUtility()),
         );
     }
 
@@ -58,7 +58,7 @@ class EventServiceTest extends FunctionalTestCase
     {
         unset(
             $this->subject,
-            $this->eventRepositoryProphecy
+            $this->eventRepositoryProphecy,
         );
 
         parent::tearDown();
@@ -75,7 +75,7 @@ class EventServiceTest extends FunctionalTestCase
             ->willReturn(null);
 
         self::assertNull(
-            $this->subject->getNextDayForEvent(1)
+            $this->subject->getNextDayForEvent(1),
         );
     }
 
@@ -104,7 +104,7 @@ class EventServiceTest extends FunctionalTestCase
             ->willReturn(null);
 
         self::assertNull(
-            $this->subject->getNextDayForEvent(1)
+            $this->subject->getNextDayForEvent(1),
         );
     }
 
@@ -134,7 +134,7 @@ class EventServiceTest extends FunctionalTestCase
 
         self::assertEquals(
             $day->getDay(),
-            $this->subject->getNextDayForEvent(1)
+            $this->subject->getNextDayForEvent(1),
         );
     }
 
@@ -181,7 +181,7 @@ class EventServiceTest extends FunctionalTestCase
 
         self::assertEquals(
             $day3->getDay(),
-            $this->subject->getNextDayForEvent(1)
+            $this->subject->getNextDayForEvent(1),
         );
     }
 
@@ -211,7 +211,7 @@ class EventServiceTest extends FunctionalTestCase
 
         self::assertEquals(
             $day->getDay(),
-            $this->subject->getLastDayForEvent(1)
+            $this->subject->getLastDayForEvent(1),
         );
     }
 
@@ -258,7 +258,7 @@ class EventServiceTest extends FunctionalTestCase
 
         self::assertEquals(
             $day1->getDay(),
-            $this->subject->getLastDayForEvent(1)
+            $this->subject->getLastDayForEvent(1),
         );
     }
 }

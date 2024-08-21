@@ -44,7 +44,7 @@ class InitializeNewEventRecordTest extends UnitTestCase
 
         self::assertSame(
             $result,
-            $this->subject->addData($result)
+            $this->subject->addData($result),
         );
     }
 
@@ -60,7 +60,7 @@ class InitializeNewEventRecordTest extends UnitTestCase
 
         self::assertSame(
             $result,
-            $this->subject->addData($result)
+            $this->subject->addData($result),
         );
     }
 
@@ -80,7 +80,7 @@ class InitializeNewEventRecordTest extends UnitTestCase
 
         self::assertSame(
             $expected,
-            $this->subject->addData($result)
+            $this->subject->addData($result),
         );
     }
 }

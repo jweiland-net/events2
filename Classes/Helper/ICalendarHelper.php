@@ -39,7 +39,7 @@ class ICalendarHelper
     public function __construct(
         protected readonly TimeFactory $timeFactory,
         protected readonly DateTimeUtility $dateTimeUtility,
-        protected readonly EventDispatcher $eventDispatcher
+        protected readonly EventDispatcher $eventDispatcher,
     ) {}
 
     public function buildICalExport(Day $day): string
@@ -91,7 +91,7 @@ class ICalendarHelper
         $this->addEventEnd($iCalRowsForAnEvent);
 
         $this->eventDispatcher->dispatch(
-            new PostProcessICalRowsForICalDownloadEvent($iCalRowsForAnEvent, $day)
+            new PostProcessICalRowsForICalDownloadEvent($iCalRowsForAnEvent, $day),
         );
 
         array_push($iCal, ...$iCalRowsForAnEvent);
@@ -116,8 +116,8 @@ class ICalendarHelper
             'DTSTAMP:%s',
             $this->dateTimeUtility->combineAndFormat(
                 $currentDate,
-                $currentDate->format('H:m')
-            )
+                $currentDate->format('H:m'),
+            ),
         );
     }
 
@@ -137,8 +137,8 @@ class ICalendarHelper
             'CREATED:%s',
             $this->dateTimeUtility->combineAndFormat(
                 $crdate,
-                $crdate->format('H:m')
-            )
+                $crdate->format('H:m'),
+            ),
         );
     }
 
@@ -158,8 +158,8 @@ class ICalendarHelper
             'LAST-MODIFIED:%s',
             $this->dateTimeUtility->combineAndFormat(
                 $lastModified,
-                $lastModified->format('H:m')
-            )
+                $lastModified->format('H:m'),
+            ),
         );
     }
 

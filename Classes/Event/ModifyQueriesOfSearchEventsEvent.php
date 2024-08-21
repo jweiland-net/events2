@@ -27,7 +27,7 @@ class ModifyQueriesOfSearchEventsEvent
         protected readonly QueryBuilder $queryBuilder,
         protected readonly QueryBuilder $subQueryBuilder,
         Search $search,
-        array $settings
+        array $settings,
     ) {
         $this->search = $search;
         $this->settings = $settings;

@@ -27,7 +27,7 @@ class DownloadHelper
         string $body = '',
         bool $asDownload = false,
         string $alternativeFilename = null,
-        string $overrideMimeType = null
+        string $overrideMimeType = null,
     ): ResponseInterface {
         if ($file === null && $body === '') {
             throw new \InvalidArgumentException('Please provide either a file object or a string to download', 1639401496);
@@ -68,11 +68,11 @@ class DownloadHelper
         string $body = '',
         bool $asDownload = false,
         string $alternativeFilename = null,
-        string $overrideMimeType = null
+        string $overrideMimeType = null,
     ): Response {
         throw new ImmediateResponseException(
             $this->downloadFile($file, $body, $asDownload, $alternativeFilename, $overrideMimeType),
-            1639402254
+            1639402254,
         );
     }
 }

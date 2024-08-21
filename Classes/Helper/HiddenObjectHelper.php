@@ -28,7 +28,7 @@ class HiddenObjectHelper
     public function registerHiddenObjectInExtbaseSession(
         RepositoryInterface $repository,
         RequestInterface $request,
-        string $argumentName
+        string $argumentName,
     ): void {
         if ($repository instanceof HiddenRepositoryInterface) {
             $objectRaw = $request->getArgument($argumentName);

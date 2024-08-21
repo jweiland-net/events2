@@ -44,8 +44,8 @@ class LocationRepository extends AbstractRepository
             ->where(
                 $queryBuilder->expr()->like(
                     'l.location',
-                    $queryBuilder->createNamedParameter('%' . $queryBuilder->escapeLikeWildcards($search) . '%')
-                )
+                    $queryBuilder->createNamedParameter('%' . $queryBuilder->escapeLikeWildcards($search) . '%'),
+                ),
             )
             ->orderBy('l.location', 'ASC');
 
@@ -54,7 +54,7 @@ class LocationRepository extends AbstractRepository
         // $queryBuilder->add('select', 'uid, CONCAT(location, \', \', street, \' \', house_number, \', \', zip, \' \', city) AS label')
         // Hint: add() overwrites all columns defined by select() by default
         $this->eventDispatcher->dispatch(
-            new ModifyQueriesOfFindLocationsEvent($queryBuilder, $search)
+            new ModifyQueriesOfFindLocationsEvent($queryBuilder, $search),
         );
 
         $queryResult = $queryBuilder->executeQuery();

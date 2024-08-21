@@ -78,7 +78,7 @@ class DateTimeUtility
         \DateTimeImmutable $date,
         string $time = '',
         string $format = 'ical',
-        string $timeZone = 'UTC'
+        string $timeZone = 'UTC',
     ): string {
         if ($format === '') {
             return '';

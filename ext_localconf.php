@@ -44,7 +44,7 @@ call_user_func(static function (): void {
             LocationController::class => 'show',
             VideoController::class => 'show',
             ICalController::class => 'download',
-        ]
+        ],
     );
 
     ExtensionUtility::configurePlugin(
@@ -55,7 +55,7 @@ call_user_func(static function (): void {
             LocationController::class => 'show',
             VideoController::class => 'show',
             ICalController::class => 'download',
-        ]
+        ],
     );
 
     ExtensionUtility::configurePlugin(
@@ -67,7 +67,7 @@ call_user_func(static function (): void {
         // non-cacheable actions
         [
             ManagementController::class => 'listMyEvents, create, edit, update, perform, delete, activate',
-        ]
+        ],
     );
 
     ExtensionUtility::configurePlugin(
@@ -75,7 +75,7 @@ call_user_func(static function (): void {
         'Calendar',
         [
             CalendarController::class => 'show',
-        ]
+        ],
     );
 
     ExtensionUtility::configurePlugin(
@@ -87,7 +87,7 @@ call_user_func(static function (): void {
         // Needs to be uncached, to show dynamic search values again after reload.
         [
             SearchController::class => 'show',
-        ]
+        ],
     );
 
     ExtensionUtility::configurePlugin(
@@ -99,7 +99,7 @@ call_user_func(static function (): void {
         // needs to be uncached to show fresh search results
         [
             SearchController::class => 'listSearchResults',
-        ]
+        ],
     );
 
     // register an eval function to check for time

@@ -69,7 +69,7 @@ class DayFactoryTest extends FunctionalTestCase
         $this->subject = new DayFactory(
             new DatabaseService(new ExtConf(new ExtensionConfiguration()), new DateTimeUtility()),
             $dayRepository,
-            $eventRepository
+            $eventRepository,
         );
 
         // As we need day related records, we can not use XML import functionality
@@ -201,16 +201,16 @@ class DayFactoryTest extends FunctionalTestCase
         $day = $this->subject->findDayByEventAndTimestamp(
             1,
             (int)$date->format('U'),
-            $query
+            $query,
         );
 
         self::assertSame(
             1,
-            $day->getEvent()->getUid()
+            $day->getEvent()->getUid(),
         );
         self::assertSame(
             2,
-            $day->getUid()
+            $day->getUid(),
         );
     }
 
@@ -229,16 +229,16 @@ class DayFactoryTest extends FunctionalTestCase
         $day = $this->subject->findDayByEventAndTimestamp(
             2,
             0,
-            $query
+            $query,
         );
 
         self::assertSame(
             2,
-            $day->getEvent()->getUid()
+            $day->getEvent()->getUid(),
         );
         self::assertSame(
             3,
-            $day->getUid()
+            $day->getUid(),
         );
     }
 
@@ -257,16 +257,16 @@ class DayFactoryTest extends FunctionalTestCase
         $day = $this->subject->findDayByEventAndTimestamp(
             3,
             0,
-            $query
+            $query,
         );
 
         self::assertSame(
             3,
-            $day->getEvent()->getUid()
+            $day->getEvent()->getUid(),
         );
         self::assertSame(
             1,
-            $day->getUid()
+            $day->getUid(),
         );
     }
 
@@ -284,20 +284,20 @@ class DayFactoryTest extends FunctionalTestCase
         $day = $this->subject->findDayByEventAndTimestamp(
             4,
             0,
-            $query
+            $query,
         );
 
         self::assertSame(
             4,
-            $day->getEvent()->getUid()
+            $day->getEvent()->getUid(),
         );
         self::assertNull(
-            $day->getUid()
+            $day->getUid(),
         );
 
         self::assertEquals(
             new \DateTimeImmutable('last year 00:00:00'),
-            $day->getDayTime()
+            $day->getDayTime(),
         );
     }
 }

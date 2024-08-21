@@ -42,7 +42,7 @@ class DayHelperTest extends FunctionalTestCase
     protected function tearDown(): void
     {
         unset(
-            $this->subject
+            $this->subject,
         );
 
         parent::tearDown();
@@ -54,7 +54,7 @@ class DayHelperTest extends FunctionalTestCase
     public function getDayFromUriReturnsNull(): void
     {
         self::assertNull(
-            $this->subject->getDayFromUri()
+            $this->subject->getDayFromUri(),
         );
     }
 
@@ -69,12 +69,12 @@ class DayHelperTest extends FunctionalTestCase
             [
                 'uid' => 1,
                 'pid' => 1,
-            ]
+            ],
         );
 
         $_GET['tx_events2_list']['day'] = '12';
         self::assertNull(
-            $this->subject->getDayFromUri()
+            $this->subject->getDayFromUri(),
         );
     }
 
@@ -89,7 +89,7 @@ class DayHelperTest extends FunctionalTestCase
             [
                 'uid' => 1,
                 'pid' => 1,
-            ]
+            ],
         );
 
         $_GET['tx_events2_list']['day'] = '1';
@@ -97,11 +97,11 @@ class DayHelperTest extends FunctionalTestCase
 
         self::assertInstanceOf(
             Day::class,
-            $day
+            $day,
         );
         self::assertSame(
             1,
-            $day->getUid()
+            $day->getUid(),
         );
     }
 }

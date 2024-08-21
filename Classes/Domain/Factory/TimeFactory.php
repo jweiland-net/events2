@@ -39,7 +39,7 @@ class TimeFactory
     public function getSortedTimesForDate(
         Event $event,
         \DateTimeImmutable $date,
-        bool $removeCurrentDay = false
+        bool $removeCurrentDay = false,
     ): \SplObjectStorage {
         $this->date = $date;
         $this->removeCurrentDay = $removeCurrentDay;
@@ -92,7 +92,7 @@ class TimeFactory
      */
     protected function addExceptionTimes(
         \SplObjectStorage $timesForDate,
-        Event $event
+        Event $event,
     ): void {
         $timesFromExceptions = $event->getExceptionsForDate($this->date, 'add, time');
         foreach ($timesFromExceptions as $exception) {
@@ -134,7 +134,7 @@ class TimeFactory
      */
     protected function addEventTimes(
         \SplObjectStorage $timesForDate,
-        Event $event
+        Event $event,
     ): void {
         if ($timesForDate->count() === 0) {
             $eventTime = $event->getEventTime();
@@ -219,8 +219,8 @@ class TimeFactory
                 $date->format('d'),
                 $date->format('m'),
                 $date->format('Y'),
-                $time
-            )
+                $time,
+            ),
         );
     }
 

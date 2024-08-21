@@ -435,7 +435,7 @@ class Event extends AbstractEntity
      */
     public function getExceptionsForDate(
         \DateTimeImmutable $date,
-        string $exceptionTypes = ''
+        string $exceptionTypes = '',
     ): ObjectStorage {
         $exceptionsForDate = new ObjectStorage();
         if (in_array($this->getEventType(), ['recurring', 'duration']) && $this->getExceptions()->count()) {
@@ -603,7 +603,7 @@ class Event extends AbstractEntity
                 $times = $timeFactory->getSortedTimesForDate(
                     $this,
                     $alternativeDay->getDay(),
-                    true
+                    true,
                 );
                 if ($times->count()) {
                     $alternativeDays[$alternativeDay->getDayAsTimestamp()] = [
@@ -665,7 +665,7 @@ class Event extends AbstractEntity
                 $times = $timeFactory->getSortedTimesForDate(
                     $this,
                     $exceptionDate,
-                    true
+                    true,
                 );
                 if ($times->count()) {
                     $alternativeTimes[$exceptionDate->format('U')] = [

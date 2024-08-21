@@ -65,7 +65,7 @@ class XmlImporter extends AbstractImporter
         } catch (\Exception $e) {
             $this->addMessage(
                 $e->getMessage(),
-                ContextualFeedbackSeverity::ERROR
+                ContextualFeedbackSeverity::ERROR,
             );
             return false;
         }
@@ -88,7 +88,7 @@ class XmlImporter extends AbstractImporter
             $domDoc->loadXML($file->getContents());
             if (
                 !$domDoc->schemaValidate(
-                    GeneralUtility::getFileAbsFileName($this->extConf->getXmlImportValidatorPath())
+                    GeneralUtility::getFileAbsFileName($this->extConf->getXmlImportValidatorPath()),
                 )
             ) {
                 foreach (libxml_get_errors() as $error) {
@@ -96,9 +96,9 @@ class XmlImporter extends AbstractImporter
                         sprintf(
                             'Error: %s - Line: %d',
                             $error->message,
-                            $error->line
+                            $error->line,
                         ),
-                        ContextualFeedbackSeverity::ERROR
+                        ContextualFeedbackSeverity::ERROR,
                     );
                 }
 
@@ -107,11 +107,11 @@ class XmlImporter extends AbstractImporter
         } catch (\Exception $e) {
             $this->addMessage(
                 'XML does not comply with XmlImportValidator.xml.',
-                ContextualFeedbackSeverity::ERROR
+                ContextualFeedbackSeverity::ERROR,
             );
             $this->addMessage(
                 $e->getMessage(),
-                ContextualFeedbackSeverity::ERROR
+                ContextualFeedbackSeverity::ERROR,
             );
 
             return false;
@@ -135,7 +135,7 @@ class XmlImporter extends AbstractImporter
                 } else {
                     throw new \Exception(sprintf(
                         'Can not delete event with import-ID %s, as it does not exist in our database.',
-                        $eventRecord['import_id']
+                        $eventRecord['import_id'],
                     ));
                 }
 
@@ -180,7 +180,7 @@ class XmlImporter extends AbstractImporter
                 } else {
                     throw new \Exception(sprintf(
                         'Can not edit event with import-ID %s, as it does not exist in our database.',
-                        $eventRecord['import_id']
+                        $eventRecord['import_id'],
                     ));
                 }
 
@@ -445,7 +445,7 @@ class XmlImporter extends AbstractImporter
                 $fileParts = GeneralUtility::split_fileref($filePath);
                 $filename = $csConverter->specCharsToASCII(
                     'utf-8',
-                    rawurldecode($fileParts['file'])
+                    rawurldecode($fileParts['file']),
                 );
 
                 /** @var Folder $rootFolder */
@@ -455,17 +455,17 @@ class XmlImporter extends AbstractImporter
                     $this->today->format('Y'),
                     $this->today->format('m'),
                     $this->today->format('d'),
-                    $this->today->format('His')
+                    $this->today->format('His'),
                 );
                 $targetDirectoryPath = Environment::getPublicPath() . '/' . $rootFolder->getPublicUrl() . $relativeTargetDirectoryPath;
                 GeneralUtility::mkdir_deep($targetDirectoryPath);
 
                 $targetFolder = $resourceFactory->getFolderObjectFromCombinedIdentifier(
-                    $rootFolder->getCombinedIdentifier() . $relativeTargetDirectoryPath
+                    $rootFolder->getCombinedIdentifier() . $relativeTargetDirectoryPath,
                 );
                 if ($targetFolder->hasFile($filename)) {
                     $file = $resourceFactory->retrieveFileOrFolderObject(
-                        $targetFolder->getCombinedIdentifier() . $filename
+                        $targetFolder->getCombinedIdentifier() . $filename,
                     );
                 } else {
                     $file = $targetFolder->createFile($filename);
@@ -480,7 +480,7 @@ class XmlImporter extends AbstractImporter
                         'uid_local' => $file->getUid(),
                         'uid_foreign' => uniqid('NEW_', true),
                         'uid' => uniqid('NEW_', true),
-                    ]
+                    ],
                 ));
 
                 $images->attach($extbaseFileReference);

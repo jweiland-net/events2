@@ -32,7 +32,7 @@ class PersistedHiddenAliasMapper extends PersistedAliasMapper
             ->from($this->tableName);
 
         $queryBuilder->setRestrictions(
-            GeneralUtility::makeInstance(FrontendRestrictionContainer::class, $this->context)
+            GeneralUtility::makeInstance(FrontendRestrictionContainer::class, $this->context),
         );
 
         // Frontend Groups are not available at this time (initialized via TSFE->determineId)

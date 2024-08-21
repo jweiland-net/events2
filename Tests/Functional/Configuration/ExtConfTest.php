@@ -51,7 +51,7 @@ class ExtConfTest extends FunctionalTestCase
     {
         self::assertSame(
             0,
-            $this->subject->getPoiCollectionPid()
+            $this->subject->getPoiCollectionPid(),
         );
     }
 
@@ -64,7 +64,7 @@ class ExtConfTest extends FunctionalTestCase
 
         self::assertSame(
             123456,
-            $this->subject->getPoiCollectionPid()
+            $this->subject->getPoiCollectionPid(),
         );
     }
 
@@ -77,7 +77,7 @@ class ExtConfTest extends FunctionalTestCase
 
         self::assertSame(
             123,
-            $this->subject->getPoiCollectionPid()
+            $this->subject->getPoiCollectionPid(),
         );
     }
 
@@ -90,7 +90,7 @@ class ExtConfTest extends FunctionalTestCase
 
         self::assertSame(
             1,
-            $this->subject->getPoiCollectionPid()
+            $this->subject->getPoiCollectionPid(),
         );
     }
 
@@ -101,7 +101,7 @@ class ExtConfTest extends FunctionalTestCase
     {
         self::assertSame(
             0,
-            $this->subject->getRootUid()
+            $this->subject->getRootUid(),
         );
     }
 
@@ -114,7 +114,7 @@ class ExtConfTest extends FunctionalTestCase
 
         self::assertSame(
             123456,
-            $this->subject->getRootUid()
+            $this->subject->getRootUid(),
         );
     }
 
@@ -127,7 +127,7 @@ class ExtConfTest extends FunctionalTestCase
 
         self::assertSame(
             123,
-            $this->subject->getRootUid()
+            $this->subject->getRootUid(),
         );
     }
 
@@ -140,7 +140,7 @@ class ExtConfTest extends FunctionalTestCase
 
         self::assertSame(
             1,
-            $this->subject->getRootUid()
+            $this->subject->getRootUid(),
         );
     }
 
@@ -151,7 +151,7 @@ class ExtConfTest extends FunctionalTestCase
     {
         self::assertSame(
             3,
-            $this->subject->getRecurringPast()
+            $this->subject->getRecurringPast(),
         );
     }
 
@@ -163,7 +163,7 @@ class ExtConfTest extends FunctionalTestCase
         $this->subject->setRecurringPast(6);
         self::assertSame(
             6,
-            $this->subject->getRecurringPast()
+            $this->subject->getRecurringPast(),
         );
     }
 
@@ -175,7 +175,7 @@ class ExtConfTest extends FunctionalTestCase
         $this->subject->setRecurringPast('6');
         self::assertSame(
             6,
-            $this->subject->getRecurringPast()
+            $this->subject->getRecurringPast(),
         );
     }
 
@@ -187,7 +187,7 @@ class ExtConfTest extends FunctionalTestCase
         $this->subject->setRecurringPast('invalidValue');
         self::assertSame(
             0,
-            $this->subject->getRecurringPast()
+            $this->subject->getRecurringPast(),
         );
     }
 
@@ -198,7 +198,7 @@ class ExtConfTest extends FunctionalTestCase
     {
         self::assertSame(
             6,
-            $this->subject->getRecurringFuture()
+            $this->subject->getRecurringFuture(),
         );
     }
 
@@ -210,7 +210,7 @@ class ExtConfTest extends FunctionalTestCase
         $this->subject->setRecurringFuture(12);
         self::assertSame(
             12,
-            $this->subject->getRecurringFuture()
+            $this->subject->getRecurringFuture(),
         );
     }
 
@@ -222,7 +222,7 @@ class ExtConfTest extends FunctionalTestCase
         $this->subject->setRecurringFuture('12');
         self::assertSame(
             12,
-            $this->subject->getRecurringFuture()
+            $this->subject->getRecurringFuture(),
         );
     }
 
@@ -234,7 +234,7 @@ class ExtConfTest extends FunctionalTestCase
         $this->subject->setRecurringFuture('invalidValue');
         self::assertSame(
             6,
-            $this->subject->getRecurringFuture()
+            $this->subject->getRecurringFuture(),
         );
     }
 
@@ -245,7 +245,7 @@ class ExtConfTest extends FunctionalTestCase
     {
         self::assertSame(
             0,
-            $this->subject->getDefaultCountry()
+            $this->subject->getDefaultCountry(),
         );
     }
 
@@ -258,7 +258,7 @@ class ExtConfTest extends FunctionalTestCase
 
         self::assertSame(
             45,
-            $this->subject->getDefaultCountry()
+            $this->subject->getDefaultCountry(),
         );
     }
 
@@ -271,7 +271,7 @@ class ExtConfTest extends FunctionalTestCase
 
         self::assertSame(
             0,
-            $this->subject->getDefaultCountry()
+            $this->subject->getDefaultCountry(),
         );
     }
 
@@ -282,7 +282,7 @@ class ExtConfTest extends FunctionalTestCase
     {
         self::assertSame(
             'EXT:events2/Resources/Public/XmlImportValidator.xsd',
-            $this->subject->getXmlImportValidatorPath()
+            $this->subject->getXmlImportValidatorPath(),
         );
     }
 
@@ -295,7 +295,7 @@ class ExtConfTest extends FunctionalTestCase
 
         self::assertSame(
             'foo bar',
-            $this->subject->getXmlImportValidatorPath()
+            $this->subject->getXmlImportValidatorPath(),
         );
     }
 
@@ -305,7 +305,7 @@ class ExtConfTest extends FunctionalTestCase
     public function getOrganizerIsRequiredInitiallyReturnsFalse(): void
     {
         self::assertFalse(
-            $this->subject->getOrganizerIsRequired()
+            $this->subject->getOrganizerIsRequired(),
         );
     }
 
@@ -316,7 +316,7 @@ class ExtConfTest extends FunctionalTestCase
     {
         $this->subject->setOrganizerIsRequired(true);
         self::assertTrue(
-            $this->subject->getOrganizerIsRequired()
+            $this->subject->getOrganizerIsRequired(),
         );
     }
 
@@ -344,7 +344,7 @@ class ExtConfTest extends FunctionalTestCase
     public function getLocationIsRequiredInitiallyReturnsFalse(): void
     {
         self::assertFalse(
-            $this->subject->getLocationIsRequired()
+            $this->subject->getLocationIsRequired(),
         );
     }
 
@@ -355,7 +355,7 @@ class ExtConfTest extends FunctionalTestCase
     {
         $this->subject->setLocationIsRequired(true);
         self::assertTrue(
-            $this->subject->getLocationIsRequired()
+            $this->subject->getLocationIsRequired(),
         );
     }
 
@@ -387,7 +387,7 @@ class ExtConfTest extends FunctionalTestCase
 
         self::assertSame(
             '',
-            $this->subject->getEmailFromAddress()
+            $this->subject->getEmailFromAddress(),
         );
     }
 
@@ -400,7 +400,7 @@ class ExtConfTest extends FunctionalTestCase
 
         self::assertSame(
             'foo bar',
-            $this->subject->getEmailFromAddress()
+            $this->subject->getEmailFromAddress(),
         );
     }
 
@@ -414,7 +414,7 @@ class ExtConfTest extends FunctionalTestCase
 
         self::assertSame(
             '',
-            $this->subject->getEmailFromName()
+            $this->subject->getEmailFromName(),
         );
     }
 
@@ -427,7 +427,7 @@ class ExtConfTest extends FunctionalTestCase
 
         self::assertSame(
             'foo bar',
-            $this->subject->getEmailFromName()
+            $this->subject->getEmailFromName(),
         );
     }
 
@@ -438,7 +438,7 @@ class ExtConfTest extends FunctionalTestCase
     {
         self::assertSame(
             '',
-            $this->subject->getEmailToAddress()
+            $this->subject->getEmailToAddress(),
         );
     }
 
@@ -451,7 +451,7 @@ class ExtConfTest extends FunctionalTestCase
 
         self::assertSame(
             'foo bar',
-            $this->subject->getEmailToAddress()
+            $this->subject->getEmailToAddress(),
         );
     }
 
@@ -462,7 +462,7 @@ class ExtConfTest extends FunctionalTestCase
     {
         self::assertSame(
             '',
-            $this->subject->getEmailToName()
+            $this->subject->getEmailToName(),
         );
     }
 
@@ -475,7 +475,7 @@ class ExtConfTest extends FunctionalTestCase
 
         self::assertSame(
             'foo bar',
-            $this->subject->getEmailToName()
+            $this->subject->getEmailToName(),
         );
     }
 }

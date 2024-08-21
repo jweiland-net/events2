@@ -25,7 +25,7 @@ class CalendarHelper
 
     public function __construct(
         protected readonly DayHelper $dayHelper,
-        protected readonly UserSession $userSession
+        protected readonly UserSession $userSession,
     ) {}
 
     public function getCalendarVariables(): array

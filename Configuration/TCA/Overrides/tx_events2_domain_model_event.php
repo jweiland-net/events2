@@ -9,7 +9,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 call_user_func(static function (): void {
     $extConf = GeneralUtility::makeInstance(
-        ExtConf::class
+        ExtConf::class,
     );
 
     // check, if category is required

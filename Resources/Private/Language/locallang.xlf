@@ -210,6 +210,9 @@
 			<trans-unit id="tx_events2_domain_model_exception.exception_details">
 				<source>Details</source>
 			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_exception.primer">
+				<source>Primer</source>
+			</trans-unit>
 
 			<trans-unit id="tx_events2_domain_model_location">
 				<source>Location</source>

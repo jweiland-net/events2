@@ -49,7 +49,7 @@ class DateTimeUtilityTest extends UnitTestCase
     public function convertEmptyDatesResultsInNull(?string $emptyDate): void
     {
         self::assertNull(
-            $this->subject->convert($emptyDate)
+            $this->subject->convert($emptyDate),
         );
     }
 
@@ -77,7 +77,7 @@ class DateTimeUtilityTest extends UnitTestCase
     public function convertInvalidDates($invalidValue): void
     {
         self::assertNull(
-            $this->subject->convert($invalidValue)
+            $this->subject->convert($invalidValue),
         );
     }
 
@@ -108,7 +108,7 @@ class DateTimeUtilityTest extends UnitTestCase
     {
         self::assertEquals(
             $expectedDate,
-            $this->subject->convert($stringDate)
+            $this->subject->convert($stringDate),
         );
     }
 
@@ -148,7 +148,7 @@ class DateTimeUtilityTest extends UnitTestCase
             self::assertEquals(
                 /* @var \DateTimeImmutable $expectedDate */
                 $expectedDate->format('U'),
-                $convertedResult->format('U')
+                $convertedResult->format('U'),
             );
         }
     }
