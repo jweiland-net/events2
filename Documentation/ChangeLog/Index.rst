@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 8.3.9
+=============
+
+*   [BUGFIX] Change executeQuery back to execute for TYPO3 10 compatibility
+
 Version 8.3.8
 =============
 
