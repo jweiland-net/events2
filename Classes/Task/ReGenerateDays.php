@@ -83,10 +83,10 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
         $queryResult = $this->databaseService
             ->getQueryBuilderForAllEvents()
             ->select('uid', 'pid')
-            ->executeQuery();
+            ->execute();
 
         $counter = 0;
-        while ($eventRecord = $queryResult->fetchAssociative()) {
+        while ($eventRecord = $queryResult->fetch(\PDO::FETCH_ASSOC)) {
             $counter++;
             $this->registry->set('events2TaskCreateUpdate', 'info', [
                 'uid' => $eventRecord['uid'],
@@ -167,8 +167,8 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
         $queryBuilder = $this->databaseService->getQueryBuilderForAllEvents();
         return (int)$queryBuilder
             ->count('*')
-            ->executeQuery()
-            ->fetchOne();
+            ->execute()
+            ->fetchColumn();
     }
 
     /**
