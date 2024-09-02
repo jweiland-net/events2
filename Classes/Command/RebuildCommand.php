@@ -84,9 +84,9 @@ class RebuildCommand extends Command
         $statement = $this->databaseService
             ->getQueryBuilderForAllEvents()
             ->select('uid', 'pid')
-            ->executeQuery();
+            ->execute();
 
-        while ($simpleEventRecord = $statement->fetchAssociative()) {
+        while ($simpleEventRecord = $statement->fetch()) {
             $fullEventRecord = $this->dayRelationService->createDayRelations((int)$simpleEventRecord['uid']);
             if ($fullEventRecord !== []) {
                 if (is_array($fullEventRecord['days'])) {
@@ -127,7 +127,7 @@ class RebuildCommand extends Command
         $queryBuilder = $this->databaseService->getQueryBuilderForAllEvents();
         return (int)$queryBuilder
             ->count('*')
-            ->executeQuery()
-            ->fetchOne();
+            ->execute()
+            ->fetchColumn();
     }
 }
