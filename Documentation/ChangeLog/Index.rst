@@ -7,6 +7,13 @@
 ChangeLog
 =========
 
+Version 8.3.10
+=============
+
+*   [BUGFIX] Creating events in FE results into error because of wrong whereClause
+*   [BUGFIX] Make sure building unique path segments while importing events
+*   [BUGFIX] Allow BE admins to activate FE edited event records
+
 Version 8.3.9
 =============
 

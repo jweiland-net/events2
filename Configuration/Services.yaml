@@ -22,12 +22,12 @@ services:
   JWeiland\Events2\Backend\FormDataProvider\ModifyRootUidOfTreeSelectElements:
     public: true
 
-  # Called by container->get in FormRequestHandler::buildFormDefinition of EXT:form
-  JWeiland\Events2\Domain\Factory\ArrayFormFactory:
+  # Called by makeInstance and is stateful
+  JWeiland\Events2\Configuration\ExtConf:
     public: true
 
-  # Called by makeInstance TCA overrides of location
-  JWeiland\Events2\Configuration\ExtConf:
+  # Called by container->get in FormRequestHandler::buildFormDefinition of EXT:form
+  JWeiland\Events2\Domain\Factory\ArrayFormFactory:
     public: true
 
   JWeiland\Events2\Domain\Factory\DayFactory:
@@ -51,16 +51,20 @@ services:
   JWeiland\Events2\Domain\Factory\TimeFactory:
     public: true
 
-  # Called by makeInstance in TYPO3s DataHandler
-  JWeiland\Events2\Hooks\DataHandler:
-    public: true
-
   # Called by makeInstance from EXT:form
   JWeiland\Events2\Hooks\Form\PrefillCategoriesHook:
     public: true
 
   # Called by makeInstance from EXT:solr
   JWeiland\Events2\Hooks\Solr\ResultsCommandHook:
+    public: true
+
+  # Called by makeInstance in TYPO3s DataHandler
+  JWeiland\Events2\Hooks\DataHandler:
+    public: true
+
+  # Called by makeInstance in PathSegmentHelper
+  JWeiland\Events2\Hooks\SlugPostModifierHook:
     public: true
 
   # Called by makeInstance out of TypoScript

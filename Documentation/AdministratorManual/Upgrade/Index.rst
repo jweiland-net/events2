@@ -10,6 +10,15 @@ Upgrade
 If you upgrade/update EXT:events2 to a newer version, please read this section carefully!
 
 
+Update to Version 8.3.10
+========================
+
+Because of missing uniqueness while generating path segments for imported
+event records we had to update the constructor arguments of
+GeneratePathSegmentEvent. First argument has be be array of
+parameters we get from SlugHelper->generate and second argument
+is the SlugHelper itself.
+
 Update to Version 8.3.2
 =======================
 

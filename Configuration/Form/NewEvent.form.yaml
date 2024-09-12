@@ -932,7 +932,7 @@ finishers:
         table: tx_events2_domain_model_event
         mode: update
         whereClause:
-          - uid: '{SaveEvent.insertedUids.4}'
+          uid: '{SaveEvent.insertedUids.4}'
         databaseColumnMappings:
           hidden:
             value: 1
