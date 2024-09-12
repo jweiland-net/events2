@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Helper;
 
+use Doctrine\DBAL\Driver\Exception;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Helper\Exception\NoUniquePathSegmentException;
@@ -19,7 +20,6 @@ use TYPO3\CMS\Core\DataHandling\SlugHelper;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 
 /*
@@ -32,18 +32,14 @@ class PathSegmentHelper
 
     protected const SLUG_COLUMN = 'path_segment';
 
-    protected ObjectManagerInterface $objectManager;
-
     protected ExtConf $extConf;
 
     protected EventDispatcher $eventDispatcher;
 
     public function __construct(
-        ObjectManagerInterface $objectManager,
         ExtConf $extConf,
         EventDispatcher $eventDispatcher
     ) {
-        $this->objectManager = $objectManager;
         $this->extConf = $extConf;
         $this->eventDispatcher = $eventDispatcher;
     }
@@ -77,7 +73,7 @@ class PathSegmentHelper
     {
         // We have to make sure we are working with stored records here. Column "uid" is not 0.
         if (!$event->getUid()) {
-            $persistenceManager = $this->objectManager->get(PersistenceManagerInterface::class);
+            $persistenceManager = $this->getPersistenceManager();
             $persistenceManager->persistAll();
         }
 

@@ -28,10 +28,15 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SlugPostModifierHook
 {
-    public function __construct(
-        protected readonly EventDispatcherInterface $eventDispatcher,
-        protected readonly LoggerInterface $logger
-    ) {}
+    protected EventDispatcherInterface $eventDispatcher;
+
+    protected LoggerInterface $logger;
+
+    public function __construct(EventDispatcherInterface $eventDispatcher, LoggerInterface $logger)
+    {
+        $this->eventDispatcher = $eventDispatcher;
+        $this->logger = $logger;
+    }
 
     /**
      * @param array{
@@ -49,11 +54,17 @@ class SlugPostModifierHook
      */
     public function modify(array $parameters, SlugHelper $slugHelper): string
     {
-        $newSlug = match ($this->getExtConf()->getPathSegmentType()) {
-            'uid' => $this->getPathSegmentWithAdditionalUid($parameters),
-            'realurl' => $this->getPathSegmentWithIncrement($parameters, $slugHelper),
-            default => $this->getPathSegmentByEventListener($parameters, $slugHelper),
-        };
+        switch ($this->getExtConf()->getPathSegmentType()) {
+            case 'uid':
+                $newSlug = $this->getPathSegmentWithAdditionalUid($parameters);
+                break;
+            case 'realurl':
+                $newSlug = $this->getPathSegmentWithIncrement($parameters, $slugHelper);
+                break;
+            default:
+                $newSlug = $this->getPathSegmentByEventListener($parameters, $slugHelper);
+                break;
+        }
 
         $newSlug = trim($newSlug);
 
@@ -90,7 +101,7 @@ class SlugPostModifierHook
             $this->logger->error(
                 'While importing event records the generated slug with your own EventListener returns an empty slug. '
                 . 'We fall back to the TYPO3 generated slug',
-                 $parameters
+                $parameters
             );
             $pathSegment = $parameters['slug'];
         }
