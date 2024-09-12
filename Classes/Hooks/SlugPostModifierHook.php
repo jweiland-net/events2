@@ -129,7 +129,7 @@ class SlugPostModifierHook
     protected function getRecordState(array $parameters): ?RecordState
     {
         $baseRecord = (array)($parameters['record'] ?? []);
-        $table = (string)($parameters['string'] ?? '');
+        $table = (string)($parameters['tableName'] ?? '');
         $pid = (int)($parameters['pid'] ?? 0);
         $uid = (int)($baseRecord['uid'] ?? 0);
 

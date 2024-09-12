@@ -106,7 +106,9 @@ class PathSegmentHelper
     protected function getSlugHelper(): SlugHelper
     {
         $config = $GLOBALS['TCA'][self::TABLE]['columns'][self::SLUG_COLUMN]['config'];
-        $config['generatorOptions']['postModifiers'] = \JWeiland\Events2\Hooks\SlugPostModifierHook::class . '->modify';
+
+        $config['generatorOptions']['postModifiers']['events2-post-modifier']
+            = \JWeiland\Events2\Hooks\SlugPostModifierHook::class . '->modify';
 
         // Make sure column "uid" is appended in list of generator fields, if "uid" is set in extension settings
         if (
