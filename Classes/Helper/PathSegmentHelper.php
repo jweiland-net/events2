@@ -32,16 +32,16 @@ class PathSegmentHelper
 
     protected const SLUG_COLUMN = 'path_segment';
 
-    protected ExtConf $extConf;
-
     protected EventDispatcher $eventDispatcher;
 
+    protected ConnectionPool $connectionPool;
+
     public function __construct(
-        ExtConf $extConf,
-        EventDispatcher $eventDispatcher
+        EventDispatcher $eventDispatcher,
+        ConnectionPool $connectionPool
     ) {
-        $this->extConf = $extConf;
         $this->eventDispatcher = $eventDispatcher;
+        $this->connectionPool = $connectionPool;
     }
 
     /**
@@ -139,11 +139,6 @@ class PathSegmentHelper
     {
         return GeneralUtility::makeInstance(ObjectManager::class)
             ->get(PersistenceManagerInterface::class);
-    }
-
-    protected function getConnectionPool(): ConnectionPool
-    {
-        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 
     protected function getExtConf(): ExtConf
