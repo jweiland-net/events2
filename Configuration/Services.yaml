@@ -22,12 +22,12 @@ services:
   JWeiland\Events2\Backend\FormDataProvider\ModifyRootUidOfTreeSelectElements:
     public: true
 
-  # Called by container->get in FormRequestHandler::buildFormDefinition of EXT:form
-  JWeiland\Events2\Domain\Factory\ArrayFormFactory:
+  # Called by makeInstance and is stateful
+  JWeiland\Events2\Configuration\ExtConf:
     public: true
 
-  # Called by makeInstance TCA overrides of location
-  JWeiland\Events2\Configuration\ExtConf:
+  # Called by container->get in FormRequestHandler::buildFormDefinition of EXT:form
+  JWeiland\Events2\Domain\Factory\ArrayFormFactory:
     public: true
 
   JWeiland\Events2\Domain\Factory\DayFactory:
