@@ -21,20 +21,16 @@ use JWeiland\Events2\Domain\Model\Organizer;
 use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Domain\Repository\UserRepository;
 use JWeiland\Events2\Tests\Unit\Domain\Traits\TestTypo3PropertiesTrait;
-use Nimut\TestingFramework\MockObject\AccessibleMockObjectInterface;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Prophecy\Prophecy\ObjectProphecy;
+use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * Test case.
  */
 class EventTest extends UnitTestCase
 {
-    use ProphecyTrait;
-
     use TestTypo3PropertiesTrait;
 
     protected Event $subject;
@@ -49,7 +45,9 @@ class EventTest extends UnitTestCase
 
     protected function tearDown(): void
     {
-        unset($this->subject);
+        unset(
+            $this->subject,
+        );
 
         parent::tearDown();
     }
@@ -884,9 +882,8 @@ class EventTest extends UnitTestCase
     public function getCategoryListReturnsCommaSeparatedList(): void
     {
         for ($i = 1; $i < 4; ++$i) {
-            /* @var Category|\PHPUnit_Framework_MockObject_MockObject|AccessibleMockObjectInterface $category */
-            $category = $this->getAccessibleMock(Category::class, ['dummy']);
-            $category->_set('uid', $i);
+            $category = new Category();
+            $category->_setProperty('uid', $i);
             $this->subject->addCategory($category);
         }
         self::assertSame(
@@ -1256,16 +1253,17 @@ class EventTest extends UnitTestCase
         int $organizerUid,
         bool $expected,
     ): void {
-        /** @var UserRepository|ObjectProphecy $userRepositoryProphecy */
-        $userRepositoryProphecy = $this->prophesize(UserRepository::class);
-        $userRepositoryProphecy
-            ->getFieldFromUser('tx_events2_organizer')
-            ->shouldBeCalled()
-            ->willReturn($organizerUid);
+        /** @var UserRepository|MockObject $userRepositoryMock */
+        $userRepositoryMock = $this->createMock(UserRepository::class);
+        $userRepositoryMock
+            ->expects(self::atLeastOnce())
+            ->method('getFieldFromUser')
+            ->with('tx_events2_organizer')
+            ->willReturn((string)$organizerUid);
 
         GeneralUtility::addInstance(
             UserRepository::class,
-            $userRepositoryProphecy->reveal(),
+            $userRepositoryMock,
         );
 
         $organizer1 = new Organizer();

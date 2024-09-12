@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Functional\Configuration;
 
 use JWeiland\Events2\Configuration\ExtConf;
-use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
  * Test case.
@@ -22,11 +22,8 @@ class ExtConfTest extends FunctionalTestCase
 {
     protected ExtConf $subject;
 
-    /**
-     * @var array
-     */
-    protected $testExtensionsToLoad = [
-        'typo3conf/ext/events2',
+    protected array $testExtensionsToLoad = [
+        'jweiland/events2',
     ];
 
     protected function setUp(): void
@@ -40,7 +37,10 @@ class ExtConfTest extends FunctionalTestCase
 
     protected function tearDown(): void
     {
-        unset($this->subject);
+        unset(
+            $this->subject,
+        );
+
         parent::tearDown();
     }
 

@@ -842,19 +842,4 @@ class Event extends AbstractEntity
     {
         $this->importId = $importId;
     }
-
-    /**
-     * Helper method to build a baseRecord for path_segment
-     * Needed in PathSegmentHelper
-     *
-     * @return array<string, int>|array<string, string>|array<string, null>
-     */
-    public function getBaseRecordForPathSegment(): array
-    {
-        return [
-            'uid' => $this->getUid(),
-            'pid' => $this->getPid(),
-            'title' => $this->getTitle(),
-        ];
-    }
 }

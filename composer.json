@@ -1,10 +1,14 @@
 {
 	"name": "jweiland/events2",
-	"type": "typo3-cms-extension",
 	"description": "Organize your single and recurring events",
 	"license": "GPL-2.0-or-later",
-	"keywords": ["typo3", "TYPO3 CMS", "event", "events2"],
-	"homepage": "https://jweiland.net",
+	"type": "typo3-cms-extension",
+	"keywords": [
+		"typo3",
+		"TYPO3 CMS",
+		"event",
+		"events2"
+	],
 	"authors": [
 		{
 			"name": "Stefan Froemken",
@@ -12,6 +16,7 @@
 			"role": "Lead Developer"
 		}
 	],
+	"homepage": "https://jweiland.net",
 	"support": {
 		"email": "projects@jweiland.net",
 		"issues": "https://github.com/jweiland-net/events2/issues",
@@ -20,16 +25,18 @@
 	"require": {
 		"ext-dom": "*",
 		"ext-libxml": "*",
-		"typo3/cms-core": "^12.4.8",
-		"sjbr/static-info-tables": "^12.4"
+		"sjbr/static-info-tables": "^12.4",
+		"typo3/cms-core": "^12.4.8"
 	},
 	"require-dev": {
 		"ergebnis/composer-normalize": "~2.42.0",
 		"friendsofphp/php-cs-fixer": "^3.14",
-		"phpstan/phpstan": "^1.10",
 		"phpunit/phpunit": "^9.6",
-		"typo3/coding-standards": "^0.6",
-		"typo3/testing-framework": "^7.1.0"
+		"roave/security-advisories": "dev-latest",
+		"typo3/testing-framework": "^7.0.2"
+	},
+	"replace": {
+		"typo3-ter/events2": "self.version"
 	},
 	"autoload": {
 		"psr-4": {
@@ -40,9 +47,6 @@
 		"psr-4": {
 			"JWeiland\\Events2\\Tests\\": "Tests"
 		}
-	},
-	"replace": {
-		"typo3-ter/events2": "self.version"
 	},
 	"config": {
 		"allow-plugins": {

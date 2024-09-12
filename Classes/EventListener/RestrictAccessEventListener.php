@@ -15,6 +15,8 @@ use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Domain\Repository\UserRepository;
 use JWeiland\Events2\Event\PreProcessControllerActionEvent;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
@@ -89,6 +91,13 @@ class RestrictAccessEventListener extends AbstractControllerEventListener
 
     protected function isAccessAllowed(PreProcessControllerActionEvent $controllerActionEvent): bool
     {
+        try {
+            if ($this->getContext()->getPropertyFromAspect('backend.user', 'isAdmin', false)) {
+                return true;
+            }
+        } catch (AspectNotFoundException $e) {
+        }
+
         if ((int)($controllerActionEvent->getSettings()['userGroup'] ?? 0) === 0) {
             $this->addFlashMessage(LocalizationUtility::translate('notAllowedToCreate', 'events2'));
             return false;
@@ -137,5 +146,10 @@ class RestrictAccessEventListener extends AbstractControllerEventListener
         }
 
         return $this->flashMessageService->getMessageQueueByIdentifier($identifier);
+    }
+
+    protected function getContext(): Context
+    {
+        return GeneralUtility::makeInstance(Context::class);
     }
 }

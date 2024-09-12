@@ -13,44 +13,43 @@ namespace JWeiland\Events2\Tests\Unit\Utility;
 
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Service\CacheService;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
-use Prophecy\Argument;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Prophecy\Prophecy\ObjectProphecy;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use PHPUnit\Framework\MockObject\MockObject;
+use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
+use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
-use TYPO3\CMS\Extbase\Service\EnvironmentService;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * Test case.
  */
 class CacheServiceTest extends UnitTestCase
 {
-    use ProphecyTrait;
-
     protected CacheService $subject;
+
+    protected ServerRequestInterface $request;
 
     protected function setUp(): void
     {
-        /** @var EnvironmentService|ObjectProphecy $environmentServiceProphecy */
-        $environmentServiceProphecy = $this->prophesize(EnvironmentService::class);
-        $environmentServiceProphecy
-            ->isEnvironmentInFrontendMode()
-            ->shouldBeCalled()
-            ->willReturn(true);
-        GeneralUtility::setSingletonInstance(EnvironmentService::class, $environmentServiceProphecy->reveal());
+        $this->request = new ServerRequest('https://www.example.com', 'GET');
+        $this->request = $this->request->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE);
 
-        $tsfeProphecy = $this->prophesize(TypoScriptFrontendController::class);
-        $GLOBALS['TSFE'] = $tsfeProphecy->reveal();
+        $this->cacheService = new CacheService();
     }
 
     protected function tearDown(): void
     {
-        unset($GLOBALS['TSFE']);
+        unset(
+            $this->cacheService,
+            $this->request,
+            $GLOBALS['TYPO3_REQUEST'],
+        );
+
+        parent::tearDown();
     }
 
     /**
@@ -58,14 +57,17 @@ class CacheServiceTest extends UnitTestCase
      */
     public function addCacheTagsByEventRecordsWithoutEventsWillNotAddCacheTags(): void
     {
-        $tsfeProphecy = $this->prophesize(TypoScriptFrontendController::class);
-        $tsfeProphecy
-            ->addCacheTags(Argument::any())
-            ->shouldNotBeCalled();
+        $typoScriptFrontendControllerMock = $this->createMock(TypoScriptFrontendController::class);
+        $typoScriptFrontendControllerMock
+            ->expects(self::never())
+            ->method('addCacheTags');
 
-        $GLOBALS['TSFE'] = $tsfeProphecy->reveal();
+        $GLOBALS['TYPO3_REQUEST'] = $this->request->withAttribute(
+            'frontend.controller',
+            $typoScriptFrontendControllerMock,
+        );
 
-        CacheService::addCacheTagsByEventRecords([]);
+        $this->cacheService->addCacheTagsByEventRecords([]);
     }
 
     /**
@@ -76,14 +78,18 @@ class CacheServiceTest extends UnitTestCase
         $event = new Event();
         $event->_setProperty('uid', 123);
 
-        $tsfeProphecy = $this->prophesize(TypoScriptFrontendController::class);
-        $tsfeProphecy
-            ->addCacheTags(['tx_events2_uid_123'])
-            ->shouldBeCalled();
+        $typoScriptFrontendControllerMock = $this->createMock(TypoScriptFrontendController::class);
+        $typoScriptFrontendControllerMock
+            ->expects(self::atLeastOnce())
+            ->method('addCacheTags')
+            ->with(['tx_events2_uid_123']);
 
-        $GLOBALS['TSFE'] = $tsfeProphecy->reveal();
+        $GLOBALS['TYPO3_REQUEST'] = $this->request->withAttribute(
+            'frontend.controller',
+            $typoScriptFrontendControllerMock,
+        );
 
-        CacheService::addCacheTagsByEventRecords([$event]);
+        $this->cacheService->addCacheTagsByEventRecords([$event]);
     }
 
     /**
@@ -95,14 +101,18 @@ class CacheServiceTest extends UnitTestCase
         $event->_setProperty('uid', 123);
         $event->_setProperty('_localizedUid', 321);
 
-        $tsfeProphecy = $this->prophesize(TypoScriptFrontendController::class);
-        $tsfeProphecy
-            ->addCacheTags(['tx_events2_uid_123', 'tx_events2_uid_321'])
-            ->shouldBeCalled();
+        $typoScriptFrontendControllerMock = $this->createMock(TypoScriptFrontendController::class);
+        $typoScriptFrontendControllerMock
+            ->expects(self::atLeastOnce())
+            ->method('addCacheTags')
+            ->with(['tx_events2_uid_123', 'tx_events2_uid_321']);
 
-        $GLOBALS['TSFE'] = $tsfeProphecy->reveal();
+        $GLOBALS['TYPO3_REQUEST'] = $this->request->withAttribute(
+            'frontend.controller',
+            $typoScriptFrontendControllerMock,
+        );
 
-        CacheService::addCacheTagsByEventRecords([$event]);
+        $this->cacheService->addCacheTagsByEventRecords([$event]);
     }
 
     /**
@@ -110,23 +120,28 @@ class CacheServiceTest extends UnitTestCase
      */
     public function addPageCacheTagsByQueryWithoutStoragePidsWillAddTableNameAsCacheTag(): void
     {
-        $tsfeProphecy = $this->prophesize(TypoScriptFrontendController::class);
-        $tsfeProphecy
-            ->addCacheTags(['tx_events2_domain_model_event'])
-            ->shouldBeCalled();
+        $typoScriptFrontendControllerMock = $this->createMock(TypoScriptFrontendController::class);
+        $typoScriptFrontendControllerMock
+            ->expects(self::atLeastOnce())
+            ->method('addCacheTags')
+            ->with(['tx_events2_domain_model_event']);
 
-        $GLOBALS['TSFE'] = $tsfeProphecy->reveal();
+        $GLOBALS['TYPO3_REQUEST'] = $this->request->withAttribute(
+            'frontend.controller',
+            $typoScriptFrontendControllerMock,
+        );
 
-        /** @var QuerySettingsInterface|ObjectProphecy $querySettingsProphecy */
-        $querySettingsProphecy = $this->prophesize(Typo3QuerySettings::class);
-        /** @var QueryInterface|ObjectProphecy $queryProphecy */
-        $queryProphecy = $this->prophesize(Query::class);
-        $queryProphecy
-            ->getQuerySettings()
-            ->shouldBeCalled()
-            ->willReturn($querySettingsProphecy->reveal());
+        /** @var QuerySettingsInterface|MockObject $querySettingsMock */
+        $querySettingsMock = $this->createMock(Typo3QuerySettings::class);
 
-        CacheService::addPageCacheTagsByQuery($queryProphecy->reveal());
+        /** @var QueryInterface|MockObject $queryMock */
+        $queryMock = $this->createMock(Query::class);
+        $queryMock
+            ->expects(self::atLeastOnce())
+            ->method('getQuerySettings')
+            ->willReturn($querySettingsMock);
+
+        $this->cacheService->addPageCacheTagsByQuery($queryMock);
     }
 
     /**
@@ -134,26 +149,31 @@ class CacheServiceTest extends UnitTestCase
      */
     public function addPageCacheTagsByQueryWithStoragePidsWillAddStoragePidCacheTags(): void
     {
-        $tsfeProphecy = $this->prophesize(TypoScriptFrontendController::class);
-        $tsfeProphecy
-            ->addCacheTags(['tx_events2_pid_123', 'tx_events2_pid_234'])
-            ->shouldBeCalled();
+        $typoScriptFrontendControllerMock = $this->createMock(TypoScriptFrontendController::class);
+        $typoScriptFrontendControllerMock
+            ->expects(self::atLeastOnce())
+            ->method('addCacheTags')
+            ->with(['tx_events2_pid_123', 'tx_events2_pid_234']);
 
-        $GLOBALS['TSFE'] = $tsfeProphecy->reveal();
+        $GLOBALS['TYPO3_REQUEST'] = $this->request->withAttribute(
+            'frontend.controller',
+            $typoScriptFrontendControllerMock,
+        );
 
-        /** @var QuerySettingsInterface|ObjectProphecy $querySettingsProphecy */
-        $querySettingsProphecy = $this->prophesize(Typo3QuerySettings::class);
-        $querySettingsProphecy
-            ->getStoragePageIds()
-            ->shouldBeCalled()
+        /** @var QuerySettingsInterface|MockObject $querySettingsMock */
+        $querySettingsMock = $this->createMock(Typo3QuerySettings::class);
+        $querySettingsMock
+            ->expects(self::atLeastOnce())
+            ->method('getStoragePageIds')
             ->willReturn([123, 234]);
-        /** @var QueryInterface|ObjectProphecy $queryProphecy */
-        $queryProphecy = $this->prophesize(Query::class);
-        $queryProphecy
-            ->getQuerySettings()
-            ->shouldBeCalled()
-            ->willReturn($querySettingsProphecy->reveal());
 
-        CacheService::addPageCacheTagsByQuery($queryProphecy->reveal());
+        /** @var QueryInterface|MockObject $queryMock */
+        $queryMock = $this->createMock(Query::class);
+        $queryMock
+            ->expects(self::atLeastOnce())
+            ->method('getQuerySettings')
+            ->willReturn($querySettingsMock);
+
+        $this->cacheService->addPageCacheTagsByQuery($queryMock);
     }
 }

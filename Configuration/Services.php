@@ -2,6 +2,13 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the package jweiland/events2.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE file that was distributed with this source code.
+ */
+
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerDocumentsModifier;
 use JWeiland\Events2\Hooks\Solr\IndexerHook;
 use Symfony\Component\Config\Resource\FileResource;

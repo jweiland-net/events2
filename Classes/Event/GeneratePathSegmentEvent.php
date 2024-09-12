@@ -11,20 +11,53 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Event;
 
+use TYPO3\CMS\Core\DataHandling\SlugHelper;
+
 class GeneratePathSegmentEvent
 {
+    protected array $parameters = [];
+
     protected array $baseRecord = [];
 
     protected string $pathSegment = '';
 
-    public function __construct(array $baseRecord)
+    protected SlugHelper $slugHelper;
+
+    public function __construct(array $parameters, SlugHelper $slugHelper)
     {
-        $this->baseRecord = $baseRecord;
+        $this->parameters = $parameters;
+        $this->baseRecord = (array)($parameters['record'] ?? []);
+        $this->slugHelper = $slugHelper;
     }
 
+    /**
+     * @return array{
+     *     slug: string,
+     *     workspaceId: int,
+     *     configuration: array<mixed>,
+     *     record: array<mixed>,
+     *     pid: int,
+     *     prefix: string,
+     *     tableName: string,
+     *     fieldName: string
+     * }
+     */
+    public function getParameters(): array
+    {
+        return $this->parameters;
+    }
+
+    /**
+     * @deprecated Please use 'record' from getParameters
+     */
     public function getBaseRecord(): array
     {
         return $this->baseRecord;
+    }
+
+    public function getSlugHelper(): SlugHelper
+    {
+        return $this->slugHelper;
     }
 
     public function getPathSegment(): string

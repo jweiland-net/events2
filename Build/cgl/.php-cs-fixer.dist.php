@@ -5,6 +5,24 @@ declare(strict_types=1);
 use PhpCsFixer\Config;
 use PhpCsFixer\Finder;
 
+/*
+ * This file is part of the package jweiland/events2.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE file that was distributed with this source code.
+ */
+
+if (PHP_SAPI !== 'cli') {
+    die('This script supports command line usage only. Please check your command.');
+}
+
+$headerComment = <<<COMMENT
+This file is part of the package jweiland/events2.
+
+For the full copyright and license information, please read the
+LICENSE file that was distributed with this source code.
+COMMENT;
+
 return (new Config())
     ->setFinder(
         (new Finder())
@@ -15,6 +33,9 @@ return (new Config())
     ->setRiskyAllowed(true)
     ->setRules([
         '@DoctrineAnnotation' => true,
+        'header_comment' => [
+            'header' => $headerComment,
+        ],
         // @todo: Switch to @PER-CS2.0 once php-cs-fixer's todo list is done: https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/issues/7247
         '@PER-CS1.0' => true,
         'array_indentation' => true,

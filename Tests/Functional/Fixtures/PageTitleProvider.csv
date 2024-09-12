@@ -1,0 +1,7 @@
+"tx_events2_domain_model_event",,,,,,,,,,,
+,"uid","pid","tstamp","sys_language_uid","l10n_parent","title","event_type","event_begin","days","location","organizers"
+,1,11,1715299200,0,0,"Nice title for detail page","single",1715299200,0,0,0
+
+"tx_events2_domain_model_day",,,,,,,,,
+,"uid","pid","tstamp","crdate","day","day_time","sort_day_time","same_day_time","event"
+,1,11,1715299200,1715299200,1715299200,1715299200,1715299200,1715299200,1

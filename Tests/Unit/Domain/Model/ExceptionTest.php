@@ -14,7 +14,7 @@ namespace JWeiland\Events2\Tests\Unit\Domain\Model;
 use JWeiland\Events2\Domain\Model\Exception;
 use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Tests\Unit\Domain\Traits\TestTypo3PropertiesTrait;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * Test case.
@@ -32,7 +32,11 @@ class ExceptionTest extends UnitTestCase
 
     protected function tearDown(): void
     {
-        unset($this->subject);
+        unset(
+            $this->subject,
+        );
+
+        parent::tearDown();
     }
 
     /**

@@ -26,7 +26,7 @@ services:
   JWeiland\Events2\Backend\FormDataProvider\ModifyRootUidOfTreeSelectElements:
     public: true
 
-  # Called by makeInstance TCA overrides of location
+  # Called by makeInstance and is stateful
   JWeiland\Events2\Configuration\ExtConf:
     public: true
 
@@ -55,16 +55,20 @@ services:
     autowire: false
     autoconfigure: false
 
-  # Called by makeInstance in TYPO3s DataHandler
-  JWeiland\Events2\Hooks\DataHandler:
-    public: true
-
   # Called by makeInstance from EXT:form
   JWeiland\Events2\Hooks\Form\PrefillCategoriesHook:
     public: true
 
   # Called by makeInstance from EXT:solr
   JWeiland\Events2\Hooks\Solr\ResultsCommandHook:
+    public: true
+
+  # Called by makeInstance in TYPO3s DataHandler
+  JWeiland\Events2\Hooks\DataHandler:
+    public: true
+
+  # Called by makeInstance in PathSegmentHelper
+  JWeiland\Events2\Hooks\SlugPostModifierHook:
     public: true
 
   # Importer classes will be called by GU::makeInstance in Task\Import
