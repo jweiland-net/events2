@@ -14,4 +14,6 @@ namespace JWeiland\Events2\Helper\Exception;
 /**
  * This exception will be thrown, if no unique or empty path_segment could be generated
  */
-class NoUniquePathSegmentException extends \InvalidArgumentException {}
+class NoUniquePathSegmentException extends \InvalidArgumentException
+{
+}
