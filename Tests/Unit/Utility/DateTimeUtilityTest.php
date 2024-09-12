@@ -156,8 +156,6 @@ class DateTimeUtilityTest extends UnitTestCase
         if (!$convertedResult instanceof \DateTimeImmutable) {
             self::assertSame($expectedDate, $convertedResult);
         } else {
-            var_dump($convertedResult);
-            var_dump($expectedDate);
             self::assertEquals(
                 /* @var \DateTimeImmutable $expectedDate */
                 $expectedDate->format('U'),
