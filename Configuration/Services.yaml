@@ -26,7 +26,7 @@ services:
   JWeiland\Events2\Backend\FormDataProvider\ModifyRootUidOfTreeSelectElements:
     public: true
 
-  # Called by makeInstance TCA overrides of location
+  # Called by makeInstance and is stateful
   JWeiland\Events2\Configuration\ExtConf:
     public: true
 
