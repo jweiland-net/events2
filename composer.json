@@ -31,10 +31,9 @@
 	"require-dev": {
 		"ergebnis/composer-normalize": "~2.42.0",
 		"friendsofphp/php-cs-fixer": "^3.14",
-		"phpstan/phpstan": "^1.10",
 		"phpunit/phpunit": "^9.6",
-		"typo3/coding-standards": "^0.6",
-		"typo3/testing-framework": "^7.1.0"
+		"roave/security-advisories": "dev-latest",
+		"typo3/testing-framework": "^7.0.2"
 	},
 	"replace": {
 		"typo3-ter/events2": "self.version"
