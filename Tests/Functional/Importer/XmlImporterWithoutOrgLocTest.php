@@ -50,7 +50,7 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
         parent::setUp();
 
         $this->extConf = GeneralUtility::makeInstance(ExtConf::class);
-        $this->extConf->setXmlImportValidatorPath('EXT:events2/Resources/Public/XmlImportWithoutRelationsValidator.xsd');
+        $this->extConf->setXmlImportValidatorPath($this->instancePath . 'typo3conf/ext/events2/Resources/Public/XmlImportWithoutRelationsValidator.xsd');
         $this->extConf->setOrganizerIsRequired(false);
         $this->extConf->setLocationIsRequired(false);
         $this->extConf->setPathSegmentType('uid');
@@ -68,7 +68,7 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
         );
 
         unlink(GeneralUtility::getFileAbsFileName(
-            'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt',
+            $this->instancePath . 'typo3conf/ext/events2/Tests/Functional/Fixtures/XmlImport/Messages.txt',
         ));
 
         parent::tearDown();
@@ -80,7 +80,7 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
     public function importWillCreate3events(): void
     {
         $fileObject = GeneralUtility::makeInstance(ResourceFactory::class)
-            ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/SuccessMissingOrganizerLocation.xml');
+            ->retrieveFileOrFolderObject($this->instancePath . 'typo3conf/ext/events2/Tests/Functional/Fixtures/XmlImport/SuccessMissingOrganizerLocation.xml');
 
         $xmlImporter = $this->objectManager->get(XmlImporter::class);
         $xmlImporter->setFile($fileObject);
@@ -90,7 +90,7 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
         self::assertMatchesRegularExpression(
             '/We have processed 3 events/',
             file_get_contents(GeneralUtility::getFileAbsFileName(
-                'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt',
+                $this->instancePath . 'typo3conf/ext/events2/Tests/Functional/Fixtures/XmlImport/Messages.txt',
             )),
         );
 

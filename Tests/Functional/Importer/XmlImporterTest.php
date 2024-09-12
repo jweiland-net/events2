@@ -113,7 +113,7 @@ class XmlImporterTest extends FunctionalTestCase
         );
 
         unlink(GeneralUtility::getFileAbsFileName(
-            'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt',
+            $this->instancePath . 'typo3conf/ext/events2/Tests/Functional/Fixtures/XmlImport/Messages.txt',
         ));
 
         parent::tearDown();
@@ -125,7 +125,7 @@ class XmlImporterTest extends FunctionalTestCase
     public function importWillCreate3events(): void
     {
         $fileObject = GeneralUtility::makeInstance(ResourceFactory::class)
-            ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/Success.xml');
+            ->retrieveFileOrFolderObject($this->instancePath . 'typo3conf/ext/events2/Tests/Functional/Fixtures/XmlImport/Success.xml');
         $this->subject->setFile($fileObject);
         $this->subject->setStoragePid(12);
 
@@ -133,7 +133,7 @@ class XmlImporterTest extends FunctionalTestCase
         self::assertMatchesRegularExpression(
             '/We have processed 3 events/',
             file_get_contents(GeneralUtility::getFileAbsFileName(
-                'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt',
+                $this->instancePath . 'typo3conf/ext/events2/Tests/Functional/Fixtures/XmlImport/Messages.txt',
             )),
         );
     }
@@ -144,7 +144,7 @@ class XmlImporterTest extends FunctionalTestCase
     public function importEventWithMissingCategoryEntryWillResultInErrorInMessagesTxt(): void
     {
         $fileObject = GeneralUtility::makeInstance(ResourceFactory::class)
-            ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/MissingCategoryEntryEvent.xml');
+            ->retrieveFileOrFolderObject($this->instancePath . 'typo3conf/ext/events2/Tests/Functional/Fixtures/XmlImport/MissingCategoryEntryEvent.xml');
         $this->subject->setFile($fileObject);
         $this->subject->setStoragePid(12);
 
@@ -152,7 +152,7 @@ class XmlImporterTest extends FunctionalTestCase
         self::assertMatchesRegularExpression(
             '/Missing child element.*?Expected is.*?categories/',
             file_get_contents(GeneralUtility::getFileAbsFileName(
-                'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt',
+                $this->instancePath . 'typo3conf/ext/events2/Tests/Functional/Fixtures/XmlImport/Messages.txt',
             )),
         );
     }
@@ -163,7 +163,7 @@ class XmlImporterTest extends FunctionalTestCase
     public function importEventWithNotExistingCategoryInDatabaseWillResultInErrorInMessagesTxt(): void
     {
         $fileObject = GeneralUtility::makeInstance(ResourceFactory::class)
-            ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/NotExistingCategoriesEvent.xml');
+            ->retrieveFileOrFolderObject($this->instancePath . 'typo3conf/ext/events2/Tests/Functional/Fixtures/XmlImport/NotExistingCategoriesEvent.xml');
         $this->extConf->setLocationIsRequired(false);
         $this->extConf->setOrganizerIsRequired(false);
         $this->subject->setFile($fileObject);
@@ -173,7 +173,7 @@ class XmlImporterTest extends FunctionalTestCase
         self::assertMatchesRegularExpression(
             '/Given category "I\'m not in database" does not exist/',
             file_get_contents(GeneralUtility::getFileAbsFileName(
-                'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt',
+                $this->instancePath . 'typo3conf/ext/events2/Tests/Functional/Fixtures/XmlImport/Messages.txt',
             )),
         );
     }
@@ -184,7 +184,7 @@ class XmlImporterTest extends FunctionalTestCase
     public function importEventWithNotExistingOrganizerInDatabaseWillResultInErrorInMessagesTxt(): void
     {
         $fileObject = GeneralUtility::makeInstance(ResourceFactory::class)
-            ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/NotExistingOrganizerEvent.xml');
+            ->retrieveFileOrFolderObject($this->instancePath . 'typo3conf/ext/events2/Tests/Functional/Fixtures/XmlImport/NotExistingOrganizerEvent.xml');
         $this->subject->setFile($fileObject);
         $this->subject->setStoragePid(12);
 
@@ -192,7 +192,7 @@ class XmlImporterTest extends FunctionalTestCase
         self::assertMatchesRegularExpression(
             '/Given organizer "AG" does not exist/',
             file_get_contents(GeneralUtility::getFileAbsFileName(
-                'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt',
+                $this->instancePath . 'typo3conf/ext/events2/Tests/Functional/Fixtures/XmlImport/Messages.txt',
             )),
         );
     }
@@ -203,7 +203,7 @@ class XmlImporterTest extends FunctionalTestCase
     public function importEventWithNotExistingLocationInDatabaseWillResultInErrorInMessagesTxt(): void
     {
         $fileObject = GeneralUtility::makeInstance(ResourceFactory::class)
-            ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/NotExistingLocationEvent.xml');
+            ->retrieveFileOrFolderObject($this->instancePath . 'typo3conf/ext/events2/Tests/Functional/Fixtures/XmlImport/NotExistingLocationEvent.xml');
         $this->extConf->setOrganizerIsRequired(false);
         $this->subject->setFile($fileObject);
         $this->subject->setStoragePid(12);
@@ -212,7 +212,7 @@ class XmlImporterTest extends FunctionalTestCase
         self::assertMatchesRegularExpression(
             '/Given location "Not existing" does not exist/',
             file_get_contents(GeneralUtility::getFileAbsFileName(
-                'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt',
+                $this->instancePath . 'typo3conf/ext/events2/Tests/Functional/Fixtures/XmlImport/Messages.txt',
             )),
         );
     }
@@ -224,7 +224,7 @@ class XmlImporterTest extends FunctionalTestCase
     {
         // Add simple event
         $fileObject = GeneralUtility::makeInstance(ResourceFactory::class)
-            ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/SimpleEvent.xml');
+            ->retrieveFileOrFolderObject($this->instancePath . 'typo3conf/ext/events2/Tests/Functional/Fixtures/XmlImport/SimpleEvent.xml');
         $this->extConf->setLocationIsRequired(false);
         $this->extConf->setOrganizerIsRequired(false);
 
@@ -234,7 +234,7 @@ class XmlImporterTest extends FunctionalTestCase
 
         // Override simple event
         $fileObject = GeneralUtility::makeInstance(ResourceFactory::class)
-            ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/ModifySimpleEvent.xml');
+            ->retrieveFileOrFolderObject($this->instancePath . 'typo3conf/ext/events2/Tests/Functional/Fixtures/XmlImport/ModifySimpleEvent.xml');
         $this->subject->setFile($fileObject);
         $this->subject->setStoragePid(12);
         self::assertTrue($this->subject->import());
@@ -265,7 +265,7 @@ class XmlImporterTest extends FunctionalTestCase
     {
         // Add 2 simple events
         $fileObject = GeneralUtility::makeInstance(ResourceFactory::class)
-            ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/SimpleEvent.xml');
+            ->retrieveFileOrFolderObject($this->instancePath . 'typo3conf/ext/events2/Tests/Functional/Fixtures/XmlImport/SimpleEvent.xml');
         $this->extConf->setLocationIsRequired(false);
         $this->extConf->setOrganizerIsRequired(false);
 
@@ -276,7 +276,7 @@ class XmlImporterTest extends FunctionalTestCase
 
         // Delete one simple event
         $fileObject = GeneralUtility::makeInstance(ResourceFactory::class)
-            ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/DeleteSimpleEvent.xml');
+            ->retrieveFileOrFolderObject($this->instancePath . 'typo3conf/ext/events2/Tests/Functional/Fixtures/XmlImport/DeleteSimpleEvent.xml');
         $this->subject->setFile($fileObject);
         $this->subject->setStoragePid(12);
         self::assertTrue($this->subject->import());
