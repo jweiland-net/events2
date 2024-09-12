@@ -13,7 +13,7 @@ namespace JWeiland\Events2\Tests\Unit\Tca\Type;
 
 use JWeiland\Events2\Converter\TimeToStringConverter;
 use JWeiland\Events2\Tca\Type\Time;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * Test case.
@@ -29,7 +29,11 @@ class TimeTest extends UnitTestCase
 
     protected function tearDown(): void
     {
-        unset($this->subject);
+        unset(
+            $this->subject
+        );
+
+        parent::tearDown();
     }
 
     /**

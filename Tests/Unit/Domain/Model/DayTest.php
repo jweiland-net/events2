@@ -13,7 +13,7 @@ namespace JWeiland\Events2\Tests\Unit\Domain\Model;
 
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * Test case.
@@ -30,7 +30,11 @@ class DayTest extends UnitTestCase
 
     protected function tearDown(): void
     {
-        unset($this->subject);
+        unset(
+            $this->subject
+        );
+
+        parent::tearDown();
     }
 
     /**

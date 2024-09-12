@@ -14,7 +14,7 @@ namespace JWeiland\Events2\Tests\Unit\Domain\Model;
 use JWeiland\Events2\Domain\Model\Category;
 use JWeiland\Events2\Domain\Model\Location;
 use JWeiland\Events2\Domain\Model\Search;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * Test case.
@@ -30,7 +30,11 @@ class SearchTest extends UnitTestCase
 
     protected function tearDown(): void
     {
-        unset($this->subject);
+        unset(
+            $this->subject
+        );
+
+        parent::tearDown();
     }
 
     /**

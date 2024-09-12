@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Unit\Service;
 
 use JWeiland\Events2\Service\TypoScriptService;
-use Nimut\TestingFramework\TestCase\UnitTestCase;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * Test case.
@@ -31,6 +31,8 @@ class TypoScriptServiceTest extends UnitTestCase
         unset(
             $this->subject,
         );
+
+        parent::tearDown();
     }
 
     /**
