@@ -41,7 +41,7 @@ class Events2PageTitleProvider implements PageTitleProviderInterface
                 (int)$gp['timestamp'],
             );
 
-            if (!empty($dayRecord)) {
+            if ($dayRecord !== []) {
                 $date = new \DateTimeImmutable(date('c', (int)$gp['timestamp']));
                 $eventRecord = $this->eventRepository->getRecord(
                     (int)$dayRecord['event'],
@@ -76,7 +76,7 @@ class Events2PageTitleProvider implements PageTitleProviderInterface
      */
     protected function isValidRequest(array $gp): bool
     {
-        if (!isset($gp['controller'], $gp['action'], $gp['event'], $gp['timestamp'])) {
+        if (!isset($gp['event'], $gp['timestamp'])) {
             return false;
         }
 
