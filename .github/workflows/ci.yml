@@ -38,3 +38,12 @@ jobs:
 
       - name: 'Execute unit tests'
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s unit
+
+      - name: 'Execute functional tests with MariaDB'
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -d mariadb -s functional
+
+      - name: 'Execute functional tests with SQLite'
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -d sqlite -s sqlite
+
+      - name: 'Execute functional tests with Postgres'
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -d postgres -s functional
