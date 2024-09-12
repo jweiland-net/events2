@@ -63,7 +63,7 @@ class Events2PageTitleProviderTest extends FunctionalTestCase
                 'action' => 'show',
                 'event' => '1',
                 'timestamp' => '1715299200',
-            ]
+            ],
         ]);
         $GLOBALS['TYPO3_REQUEST'] = $request->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE);
 
