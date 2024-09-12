@@ -30,7 +30,7 @@ class SlugPostModifierHook
 {
     public function __construct(
         protected readonly EventDispatcherInterface $eventDispatcher,
-        protected readonly LoggerInterface $logger
+        protected readonly LoggerInterface $logger,
     ) {}
 
     /**
@@ -90,7 +90,7 @@ class SlugPostModifierHook
             $this->logger->error(
                 'While importing event records the generated slug with your own EventListener returns an empty slug. '
                 . 'We fall back to the TYPO3 generated slug',
-                 $parameters
+                $parameters,
             );
             $pathSegment = $parameters['slug'];
         }
@@ -107,7 +107,7 @@ class SlugPostModifierHook
             $this->logger->error(
                 'While importing this event record there is no UID given. '
                 . 'Please make sure you have stored the record before building a slug',
-                $parameters
+                $parameters,
             );
             return '';
         }
@@ -118,7 +118,7 @@ class SlugPostModifierHook
         try {
             $uniqueSlug = $slugHelper->buildSlugForUniqueInTable(
                 $originalSlug,
-                $recordState
+                $recordState,
             );
         } catch (SiteNotFoundException $e) {
         }

@@ -54,7 +54,7 @@ class PathSegmentHelper
         if ($uniquePathSegment === '') {
             throw new NoUniquePathSegmentException(
                 'Generated path segment is not unique, please have a look into logs for more details',
-                1726125713
+                1726125713,
             );
         }
 
