@@ -15,10 +15,10 @@ use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Helper\Exception\NoUniquePathSegmentException;
 use JWeiland\Events2\Helper\PathSegmentHelper;
+use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
  * Functional test
@@ -29,15 +29,18 @@ class PathSegmentHelperTest extends FunctionalTestCase
 
     protected ExtConf $extConf;
 
-    protected array $testExtensionsToLoad = [
-        'jweiland/events2',
+    /**
+     * @var array
+     */
+    protected $testExtensionsToLoad = [
+        'typo3conf/ext/events2',
     ];
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->importCSVDataSet(__DIR__ . '/../Fixtures/PathSegmentHelper.csv');
+        $this->importDataSet(__DIR__ . '/../Fixtures/PathSegmentHelper.xml');
 
         $this->extConf = GeneralUtility::makeInstance(ExtConf::class);
 
