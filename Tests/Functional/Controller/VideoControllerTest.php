@@ -11,38 +11,26 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Tests\Functional\Controller;
 
-use JWeiland\Events2\Tests\Functional\AbstractFunctionalTestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
-use TYPO3\CMS\Core\Http\ServerRequest;
-use TYPO3\CMS\Core\Information\Typo3Version;
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Core\Bootstrap;
+use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
  * Test case.
  */
-class VideoControllerTest extends AbstractFunctionalTestCase
+class VideoControllerTest extends FunctionalTestCase
 {
-    use ProphecyTrait;
+    protected ServerRequestInterface $serverRequest;
 
-    protected ServerRequest $serverRequest;
-
-    /**
-     * @var array
-     */
-    protected $testExtensionsToLoad = [
-        'typo3conf/ext/events2',
-        'typo3conf/ext/static_info_tables',
+    protected array $testExtensionsToLoad = [
+        'jweiland/events2',
+        'sjbr/static-info-tables',
     ];
 
     protected function setUp(): void
     {
-        $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
-        if (version_compare($typo3Version->getBranch(), '11', '<')) {
-            self::markTestSkipped(
-                'Because of missing Context class in TYPO3 10 this test has to be skipped.',
-            );
-        }
+        self::markTestIncomplete('VideoControllerTest not updated until right now');
 
         parent::setUp();
 

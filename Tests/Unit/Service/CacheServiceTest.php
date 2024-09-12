@@ -59,12 +59,12 @@ class CacheServiceTest extends UnitTestCase
     {
         $typoScriptFrontendControllerMock = $this->createMock(TypoScriptFrontendController::class);
         $typoScriptFrontendControllerMock
-            ->expects($this->never())
+            ->expects(self::never())
             ->method('addCacheTags');
 
         $GLOBALS['TYPO3_REQUEST'] = $this->request->withAttribute(
             'frontend.controller',
-            $typoScriptFrontendControllerMock
+            $typoScriptFrontendControllerMock,
         );
 
         $this->cacheService->addCacheTagsByEventRecords([]);
@@ -80,13 +80,13 @@ class CacheServiceTest extends UnitTestCase
 
         $typoScriptFrontendControllerMock = $this->createMock(TypoScriptFrontendController::class);
         $typoScriptFrontendControllerMock
-            ->expects($this->atLeastOnce())
+            ->expects(self::atLeastOnce())
             ->method('addCacheTags')
             ->with(['tx_events2_uid_123']);
 
         $GLOBALS['TYPO3_REQUEST'] = $this->request->withAttribute(
             'frontend.controller',
-            $typoScriptFrontendControllerMock
+            $typoScriptFrontendControllerMock,
         );
 
         $this->cacheService->addCacheTagsByEventRecords([$event]);
@@ -103,13 +103,13 @@ class CacheServiceTest extends UnitTestCase
 
         $typoScriptFrontendControllerMock = $this->createMock(TypoScriptFrontendController::class);
         $typoScriptFrontendControllerMock
-            ->expects($this->atLeastOnce())
+            ->expects(self::atLeastOnce())
             ->method('addCacheTags')
             ->with(['tx_events2_uid_123', 'tx_events2_uid_321']);
 
         $GLOBALS['TYPO3_REQUEST'] = $this->request->withAttribute(
             'frontend.controller',
-            $typoScriptFrontendControllerMock
+            $typoScriptFrontendControllerMock,
         );
 
         $this->cacheService->addCacheTagsByEventRecords([$event]);
@@ -122,13 +122,13 @@ class CacheServiceTest extends UnitTestCase
     {
         $typoScriptFrontendControllerMock = $this->createMock(TypoScriptFrontendController::class);
         $typoScriptFrontendControllerMock
-            ->expects($this->atLeastOnce())
+            ->expects(self::atLeastOnce())
             ->method('addCacheTags')
             ->with(['tx_events2_domain_model_event']);
 
         $GLOBALS['TYPO3_REQUEST'] = $this->request->withAttribute(
             'frontend.controller',
-            $typoScriptFrontendControllerMock
+            $typoScriptFrontendControllerMock,
         );
 
         /** @var QuerySettingsInterface|MockObject $querySettingsMock */
@@ -137,7 +137,7 @@ class CacheServiceTest extends UnitTestCase
         /** @var QueryInterface|MockObject $queryMock */
         $queryMock = $this->createMock(Query::class);
         $queryMock
-            ->expects($this->atLeastOnce())
+            ->expects(self::atLeastOnce())
             ->method('getQuerySettings')
             ->willReturn($querySettingsMock);
 
@@ -151,26 +151,26 @@ class CacheServiceTest extends UnitTestCase
     {
         $typoScriptFrontendControllerMock = $this->createMock(TypoScriptFrontendController::class);
         $typoScriptFrontendControllerMock
-            ->expects($this->atLeastOnce())
+            ->expects(self::atLeastOnce())
             ->method('addCacheTags')
             ->with(['tx_events2_pid_123', 'tx_events2_pid_234']);
 
         $GLOBALS['TYPO3_REQUEST'] = $this->request->withAttribute(
             'frontend.controller',
-            $typoScriptFrontendControllerMock
+            $typoScriptFrontendControllerMock,
         );
 
         /** @var QuerySettingsInterface|MockObject $querySettingsMock */
         $querySettingsMock = $this->createMock(Typo3QuerySettings::class);
         $querySettingsMock
-            ->expects($this->atLeastOnce())
+            ->expects(self::atLeastOnce())
             ->method('getStoragePageIds')
             ->willReturn([123, 234]);
 
         /** @var QueryInterface|MockObject $queryMock */
         $queryMock = $this->createMock(Query::class);
         $queryMock
-            ->expects($this->atLeastOnce())
+            ->expects(self::atLeastOnce())
             ->method('getQuerySettings')
             ->willReturn($querySettingsMock);
 

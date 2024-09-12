@@ -46,7 +46,7 @@ class EventTest extends UnitTestCase
     protected function tearDown(): void
     {
         unset(
-            $this->subject
+            $this->subject,
         );
 
         parent::tearDown();
@@ -883,7 +883,7 @@ class EventTest extends UnitTestCase
     {
         for ($i = 1; $i < 4; ++$i) {
             $category = new Category();
-            $category->_setProperty('uid',  $i);
+            $category->_setProperty('uid', $i);
             $this->subject->addCategory($category);
         }
         self::assertSame(
@@ -1256,7 +1256,7 @@ class EventTest extends UnitTestCase
         /** @var UserRepository|MockObject $userRepositoryMock */
         $userRepositoryMock = $this->createMock(UserRepository::class);
         $userRepositoryMock
-            ->expects($this->atLeastOnce())
+            ->expects(self::atLeastOnce())
             ->method('getFieldFromUser')
             ->with('tx_events2_organizer')
             ->willReturn((string)$organizerUid);

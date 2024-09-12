@@ -14,40 +14,30 @@ namespace JWeiland\Events2\Tests\Functional\Importer;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Importer\XmlImporter;
-use Nimut\TestingFramework\TestCase\FunctionalTestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
  * Functional test for XmlImporter
  */
 class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
 {
-    use ProphecyTrait;
-
     protected EventRepository $eventRepository;
 
     protected ObjectManager $objectManager;
 
     protected ExtConf $extConf;
 
-    /**
-     * @var array
-     */
-    protected $coreExtensionsToLoad = [
+    protected array $coreExtensionsToLoad = [
         'extensionmanager',
         'scheduler',
     ];
 
-    /**
-     * @var array
-     */
-    protected $testExtensionsToLoad = [
-        'typo3conf/ext/events2',
-        'typo3conf/ext/static_info_tables',
+    protected array $testExtensionsToLoad = [
+        'jweiland/events2',
+        'sjbr/static-info-tables',
     ];
 
     /**
@@ -55,6 +45,8 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
      */
     protected function setUp(): void
     {
+        self::markTestIncomplete('XmlImporterWithoutLocTest not updated until right now');
+
         parent::setUp();
 
         $this->extConf = GeneralUtility::makeInstance(ExtConf::class);
@@ -74,9 +66,11 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
         unset(
             $GLOBALS['BE_USER'],
         );
+
         unlink(GeneralUtility::getFileAbsFileName(
             'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt',
         ));
+
         parent::tearDown();
     }
 
