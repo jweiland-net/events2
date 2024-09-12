@@ -7,6 +7,15 @@
 ChangeLog
 =========
 
+Version 9.0.8
+=============
+
+*   [BUGFIX] Creating events in FE results into error because of wrong whereClause
+*   [BUGFIX] Make sure building unique path segments while importing events
+*   [BUGFIX] Allow BE admins to activate FE edited event records
+*   [TASK] Repair and re-activate unit tests
+*   [TASK] Start repairing some func tests
+
 Version 9.0.7
 =============
 
