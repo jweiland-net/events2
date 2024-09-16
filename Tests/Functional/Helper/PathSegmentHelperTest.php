@@ -175,6 +175,9 @@ class PathSegmentHelperTest extends FunctionalTestCase
         );
     }
 
+    /**
+     * @test
+     */
     public function updatePathSegmentForEventUpdatesPathSegment(): void
     {
         $this->extConf->setPathSegmentType('uid');
