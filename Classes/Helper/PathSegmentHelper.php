@@ -74,6 +74,9 @@ class PathSegmentHelper
         // We have to make sure we are working with stored records here. Column "uid" is not 0.
         if (!$event->getUid()) {
             $persistenceManager = $this->getPersistenceManager();
+            if ($persistenceManager->isNewObject($event)) {
+                $persistenceManager->add($event);
+            }
             $persistenceManager->persistAll();
         }
 
@@ -90,7 +93,7 @@ class PathSegmentHelper
      */
     protected function getEventRecord(int $eventUid): array
     {
-        $connection = $this->getConnectionPool()->getConnectionForTable(self::TABLE);
+        $connection = $this->connectionPool->getConnectionForTable(self::TABLE);
 
         $queryResult = $connection->select(['*'], self::TABLE, ['uid' => $eventUid]);
 
