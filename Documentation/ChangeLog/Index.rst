@@ -7,8 +7,15 @@
 ChangeLog
 =========
 
+Version 8.3.11
+==============
+
+*   [BUGFIX] Mark a missing functional test as test
+*   [BUGFIX] Register event in persistence before ->persistAll
+*   [BUGFIX] Use class property instead of missing getConnectionPool()
+
 Version 8.3.10
-=============
+==============
 
 *   [BUGFIX] Creating events in FE results into error because of wrong whereClause
 *   [BUGFIX] Make sure building unique path segments while importing events
