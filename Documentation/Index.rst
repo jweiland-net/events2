@@ -56,4 +56,3 @@ Organize your single and recurring events
     :hidden:
 
     Sitemap
-    genindex
