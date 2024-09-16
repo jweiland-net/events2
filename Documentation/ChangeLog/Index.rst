@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 9.0.9
+=============
+
+*   [BUGFIX] Missed to mark a functional test as "test"
+
 Version 9.0.8
 =============
 

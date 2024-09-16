@@ -65,7 +65,11 @@ class PathSegmentHelper
     {
         // We have to make sure we are working with stored records here. Column "uid" is not 0.
         if (!$event->getUid()) {
-            $this->getPersistenceManager()->persistAll();
+            $persistenceManager = $this->getPersistenceManager();
+            if ($persistenceManager->isNewObject($event)) {
+                $persistenceManager->add($event);
+            }
+            $persistenceManager->persistAll();
         }
 
         $event->setPathSegment(
