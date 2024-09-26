@@ -2,10 +2,11 @@
 
 [![Latest Stable Version](https://poser.pugx.org/jweiland/events2/v/stable.svg)](https://packagist.org/packages/jweiland/events2)
 [![TYPO3 12.4](https://img.shields.io/badge/TYPO3-12.4-green.svg)](https://get.typo3.org/version/12)
-[![License](http://poser.pugx.org/jweiland/events2/license)](https://packagist.org/packages/jweiland/events2)
+[![License](https://img.shields.io/github/license/jweiland-net/events2.svg)](https://packagist.org/packages/jweiland/events2)
 [![Total Downloads](https://poser.pugx.org/jweiland/events2/downloads.svg)](https://packagist.org/packages/jweiland/events2)
 [![Monthly Downloads](https://poser.pugx.org/jweiland/events2/d/monthly)](https://packagist.org/packages/jweiland/events2)
-![Build Status](https://github.com/jweiland-net/events2/actions/workflows/typo3_12.yml/badge.svg)
+
+![Build Status](https://github.com/jweiland-net/events2/actions/workflows/ci.yml/badge.svg)
 
 Events2 is an extension for TYPO3 CMS. It shows you a list of event entries incl.
 detail view.
