@@ -231,11 +231,10 @@ return [
                 'renderType' => 'checkboxToggle',
                 'items' => [
                     [
-                        'label' => '',
-                        'value' => '',
+                        0 => '',
+                        1 => '',
                     ],
                 ],
-                'default' => 0,
             ],
         ],
         'mark_as' => [

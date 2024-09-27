@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 8.3.12
+==============
+
+*   [BUGFIX] Repair TCA for exception:show_anyway
+
 Version 8.3.11
 ==============
 
