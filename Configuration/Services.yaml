@@ -71,9 +71,8 @@ services:
   JWeiland\Events2\Hooks\SlugPostModifierHook:
     public: true
 
-  # Importer classes will be called by GU::makeInstance in Task\Import
-  JWeiland\Events2\Importer\:
-    resource: '../Classes/Importer/*Importer.php'
+  # XML importer class will be called by GU::makeInstance in Task\Import
+  JWeiland\Events2\Importer\XmlImporter:
     public: true
 
   # Called by makeInstance out of TypoScript
