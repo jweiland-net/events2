@@ -25,7 +25,7 @@ if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('reactions')) {
 
 $GLOBALS['TCA']['sys_reaction']['palettes']['setStorage'] = [
     'label' => 'LLL:EXT:reactions/Resources/Private/Language/locallang_db.xlf:palette.additional',
-    'showitem' => 'storage_pid',
+    'showitem' => 'storage_pid, impersonate_user',
 ];
 
 $GLOBALS['TCA']['sys_reaction']['types'][\JWeiland\Events2\Reaction\ImportEventsReaction::getType()] = [
@@ -37,6 +37,11 @@ $GLOBALS['TCA']['sys_reaction']['types'][\JWeiland\Events2\Reaction\ImportEvents
         --palette--;;access',
     'columnsOverrides' => [
         'storage_pid' => [
+            'config' => [
+                'required' => true,
+            ],
+        ],
+        'impersonate_user' => [
             'config' => [
                 'required' => true,
             ],
