@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Reaction;
 
+use JWeiland\Events2\Configuration\ImportConfiguration;
 use JWeiland\Events2\Importer\JsonImporter;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -58,7 +59,9 @@ class ImportEventsReaction implements ReactionInterface
             return $this->jsonResponse($statusData);
         }
 
-        $statusData['success'] = $this->jsonImporter->import($payload);
+        $statusData['success'] = $this->jsonImporter->import(
+            new ImportConfiguration($storagePid, $payload)
+        );
 
         if ($statusData['success'] === false) {
             $statusData['error'] = 'Error while importing events';
