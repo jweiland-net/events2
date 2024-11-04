@@ -35,4 +35,11 @@ $GLOBALS['TCA']['sys_reaction']['types'][\JWeiland\Events2\Reaction\ImportEvents
         --palette--;;setStorage,
         --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,
         --palette--;;access',
+    'columnsOverrides' => [
+        'storage_pid' => [
+            'config' => [
+                'required' => true,
+            ],
+        ],
+    ],
 ];
