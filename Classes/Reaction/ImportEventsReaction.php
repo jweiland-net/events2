@@ -47,19 +47,24 @@ class ImportEventsReaction implements ReactionInterface
 
     public function react(ServerRequestInterface $request, array $payload, ReactionInstruction $reaction): ResponseInterface
     {
-        $success = $this->jsonImporter->import($payload);
+        $statusData = [];
 
-        $data = [
-            'success' => $success,
-        ];
+        $storagePid = $this->getStoragePid($reaction);
 
-        if ($success) {
-            return $this->jsonResponse($data);
+        // Early return, if storage PID is 0
+        if ($storagePid === 0) {
+            $statusData['success'] = false;
+            $statusData['error'] = 'Storage pid can not be empty';
+            return $this->jsonResponse($statusData);
         }
 
-        $data['error'] = 'Error while importing events';
+        $statusData['success'] = $this->jsonImporter->import($payload);
 
-        return $this->jsonResponse($data);
+        if ($statusData['success'] === false) {
+            $statusData['error'] = 'Error while importing events';
+        }
+
+        return $this->jsonResponse($statusData);
     }
 
     protected function jsonResponse(array $data, int $statusCode = 200): ResponseInterface
@@ -68,5 +73,10 @@ class ImportEventsReaction implements ReactionInterface
             ->createResponse($statusCode)
             ->withHeader('Content-Type', 'application/json')
             ->withBody($this->streamFactory->createStream((string)json_encode($data)));
+    }
+
+    protected function getStoragePid(ReactionInstruction $reaction): int
+    {
+        return (int)($reaction->toArray()['storage_pid'] ?? 0);
     }
 }
