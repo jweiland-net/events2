@@ -65,6 +65,8 @@ class ImportEventsReaction implements ReactionInterface
 
         if ($statusData['success'] === false) {
             $statusData['error'] = 'Error while importing events';
+        } else {
+            $statusData['message'] = 'Records for EXT:events2 successfully imported';
         }
 
         return $this->jsonResponse($statusData);

@@ -19,6 +19,7 @@ use JWeiland\Events2\Domain\Model\Location;
 use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Service\EventService;
 use JWeiland\Events2\Utility\DateTimeUtility;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\LinkHandling\Exception\UnknownLinkHandlerException;
@@ -37,7 +38,7 @@ class EventsExporter
     ) {
     }
 
-    public function export(ExporterConfiguration $configuration): bool
+    public function export(ExporterConfiguration $configuration): ResponseInterface
     {
         $preparedEvents = $this->getPreparedEvents(
             $this->eventService->getEventsForExport(
@@ -48,7 +49,7 @@ class EventsExporter
         );
 
         try {
-            $response = $this->requestFactory->request(
+            return $this->requestFactory->request(
                 $configuration->getUrl(),
                 'POST',
                 [
@@ -59,8 +60,6 @@ class EventsExporter
                     'body' => json_encode($preparedEvents, JSON_THROW_ON_ERROR),
                 ]
             );
-
-            return $response->getStatusCode() !== 200;
         } catch (\JsonException|GuzzleException $e) {
         }
 

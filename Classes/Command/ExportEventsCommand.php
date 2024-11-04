@@ -62,7 +62,27 @@ class ExportEventsCommand extends Command
             $this->getStoragePages($input),
         );
 
-        return $this->eventsExporter->export($configuration) ? Command::SUCCESS : Command::FAILURE;
+        $response = $this->eventsExporter->export($configuration);
+        $body = (string)$response->getBody();
+        if (!\json_validate($body)) {
+            $output->writeln('<error>Invalid JSON response</error>');
+            return Command::FAILURE;
+        }
+
+        try {
+            $status = \json_decode($body, true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            $output->writeln('<error>JSON string can not be decoded</error>');
+            return Command::FAILURE;
+        }
+
+        if ($response->getStatusCode() !== 200 || $status['success'] === false) {
+            $output->writeln('<error>' . $status['error'] . '</error>');
+            return Command::FAILURE;
+        }
+
+        $output->writeln('<info>' . $status['message'] . '</info>');
+        return Command::SUCCESS;
     }
 
     protected function getStoragePages(InputInterface $input): array
