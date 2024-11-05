@@ -24,10 +24,11 @@ class ImportConfiguration
 
     private string $storageFolder;
 
-    public function __construct(ReactionInstruction $reactionInstruction)
+    public function __construct(array $payload, ReactionInstruction $reactionInstruction)
     {
         $reactionRecord = $reactionInstruction->toArray();
-        $this->payload = $reactionRecord['payload'] ?? [];
+
+        $this->payload = $payload;
         $this->storagePid = (int)($reactionRecord['storage_pid'] ?? 0);
         $this->storageFolder = $reactionRecord['storage_folder'] ?? '';
     }

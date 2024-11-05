@@ -49,7 +49,7 @@ class ImportEventsReaction implements ReactionInterface
     public function react(ServerRequestInterface $request, array $payload, ReactionInstruction $reaction): ResponseInterface
     {
         $statusData = [];
-        $statusData['success'] = $this->jsonImporter->import(new ImportConfiguration($reaction));
+        $statusData['success'] = $this->jsonImporter->import(new ImportConfiguration($payload, $reaction));
 
         if ($statusData['success'] === false) {
             $statusData['error'] = 'Error while importing events';
