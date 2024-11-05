@@ -88,7 +88,7 @@ class EventService
                 'd',
                 $queryBuilder->expr()->eq(
                     'e.uid',
-                    $queryBuilder->quoteIdentifier('d.event')
+                    $queryBuilder->quoteIdentifier('d.event'),
                 ),
             )
             ->where(
