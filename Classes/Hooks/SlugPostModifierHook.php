@@ -28,6 +28,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SlugPostModifierHook
 {
+    private const TABLE = 'tx_events2_domain_model_event';
+    private const FIELD = 'path_segment';
+
     public function __construct(
         protected readonly EventDispatcherInterface $eventDispatcher,
         protected readonly LoggerInterface $logger,
@@ -49,6 +52,14 @@ class SlugPostModifierHook
      */
     public function modify(array $parameters, SlugHelper $slugHelper): string
     {
+        // Prevent executing this Hook for tables of other extensions
+        if (
+            ($parameters['tableName'] ?? '') !== self::TABLE
+            || ($parameters['fieldName'] ?? '') !== self::FIELD
+        ) {
+            return $parameters['slug'];
+        }
+
         $newSlug = match ($this->getExtConf()->getPathSegmentType()) {
             'uid' => $this->getPathSegmentWithAdditionalUid($parameters),
             'realurl' => $this->getPathSegmentWithIncrement($parameters, $slugHelper),
