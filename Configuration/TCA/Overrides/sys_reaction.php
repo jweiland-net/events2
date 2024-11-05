@@ -21,30 +21,46 @@ if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('reactions')) {
             'icon' => \JWeiland\Events2\Reaction\ImportEventsReaction::getIconIdentifier(),
         ]
     );
-}
 
-$GLOBALS['TCA']['sys_reaction']['palettes']['setStorage'] = [
-    'label' => 'LLL:EXT:reactions/Resources/Private/Language/locallang_db.xlf:palette.additional',
-    'showitem' => 'storage_pid, impersonate_user',
-];
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns(
+        'sys_reaction',
+        [
+            'storage_folder' => [
+                'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:sys_reactions.storage_folder',
+                'description' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:sys_reactions.storage_folder.description',
+                'config' => [
+                    'type' => 'folder',
+                    'required' => true,
+                    'maxitems' => 1,
+                    'size' => 1,
+                ],
+            ],
+        ]
+    );
 
-$GLOBALS['TCA']['sys_reaction']['types'][\JWeiland\Events2\Reaction\ImportEventsReaction::getType()] = [
-    'showitem' => '
+    $GLOBALS['TCA']['sys_reaction']['palettes']['setStorage'] = [
+        'label' => 'LLL:EXT:reactions/Resources/Private/Language/locallang_db.xlf:palette.additional',
+        'showitem' => 'storage_pid, impersonate_user, --linebreak--, storage_folder',
+    ];
+
+    $GLOBALS['TCA']['sys_reaction']['types'][\JWeiland\Events2\Reaction\ImportEventsReaction::getType()] = [
+        'showitem' => '
         --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
         --palette--;;config,
         --palette--;;setStorage,
         --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,
         --palette--;;access',
-    'columnsOverrides' => [
-        'storage_pid' => [
-            'config' => [
-                'required' => true,
+        'columnsOverrides' => [
+            'storage_pid' => [
+                'config' => [
+                    'required' => true,
+                ],
+            ],
+            'impersonate_user' => [
+                'config' => [
+                    'required' => true,
+                ],
             ],
         ],
-        'impersonate_user' => [
-            'config' => [
-                'required' => true,
-            ],
-        ],
-    ],
-];
+    ];
+}

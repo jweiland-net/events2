@@ -554,6 +554,15 @@
 				<source>Month</source>
 				<target>Monat</target>
 			</trans-unit>
+
+			<trans-unit id="sys_reactions.storage_folder">
+				<source>Storage location for images</source>
+				<target>Speicherort für Bilder</target>
+			</trans-unit>
+			<trans-unit id="sys_reactions.storage_folder.description">
+				<source>Select a storage location for the images to be imported</source>
+				<target>Wähle einen Speicherort für die zu importierenden Bilder</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

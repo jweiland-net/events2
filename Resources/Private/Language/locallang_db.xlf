@@ -441,6 +441,12 @@
 				<source>Month</source>
 			</trans-unit>
 
+			<trans-unit id="sys_reactions.storage_folder">
+				<source>Storage location for images</source>
+			</trans-unit>
+			<trans-unit id="sys_reactions.storage_folder.description">
+				<source>Select a storage location for the images to be imported</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
