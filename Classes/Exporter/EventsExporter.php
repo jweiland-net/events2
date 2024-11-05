@@ -21,6 +21,7 @@ use JWeiland\Events2\Service\EventService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\LinkHandling\Exception\UnknownLinkHandlerException;
 use TYPO3\CMS\Core\LinkHandling\LinkService;
@@ -63,7 +64,10 @@ class EventsExporter
         } catch (\JsonException|GuzzleException $e) {
         }
 
-        return false;
+        return new JsonResponse([
+            'success' => false,
+            'error' => $e->getMessage(),
+        ], 500);
     }
 
     protected function getMaxDateForEventsExport(): ?\DateTimeImmutable
