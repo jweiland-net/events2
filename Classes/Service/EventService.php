@@ -89,17 +89,17 @@ class EventService
                 $queryBuilder->expr()->eq(
                     'e.uid',
                     $queryBuilder->quoteIdentifier('d.event')
-                )
+                ),
             )
             ->where(
                 $queryBuilder->expr()->gte(
                     'd.day',
-                    $queryBuilder->createNamedParameter(time(), Connection::PARAM_INT)
+                    $queryBuilder->createNamedParameter(time(), Connection::PARAM_INT),
                 ),
                 $queryBuilder->expr()->lte(
                     'd.day',
-                    $queryBuilder->createNamedParameter((int)$endDate->format('U'), Connection::PARAM_INT)
-                )
+                    $queryBuilder->createNamedParameter((int)$endDate->format('U'), Connection::PARAM_INT),
+                ),
             );
 
         if ($storagePages !== []) {
@@ -107,8 +107,8 @@ class EventService
                 ->andWhere(
                     $queryBuilder->expr()->in(
                         'e.pid',
-                        $queryBuilder->createNamedParameter($storagePages, ArrayParameterType::INTEGER)
-                    )
+                        $queryBuilder->createNamedParameter($storagePages, ArrayParameterType::INTEGER),
+                    ),
                 );
         }
 

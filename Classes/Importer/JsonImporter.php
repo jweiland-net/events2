@@ -43,8 +43,7 @@ class JsonImporter
         protected readonly LocationService $locationService,
         protected readonly OrganizerService $organizerService,
         protected readonly ResourceFactory $resourceFactory,
-    ) {
-    }
+    ) {}
 
     public function import(ImportConfiguration $importConfiguration): bool
     {
@@ -56,7 +55,7 @@ class JsonImporter
                     $this->updateDataMapForEventImport(
                         $eventImportData,
                         $importConfiguration,
-                        $dataMap
+                        $dataMap,
                     );
                 }
 
@@ -88,7 +87,7 @@ class JsonImporter
     protected function updateDataMapForEventImport(
         array $eventImportData,
         ImportConfiguration $configuration,
-        array &$dataMap
+        array &$dataMap,
     ): void {
         $eventRecord = $this->getEventRecordByImportId($eventImportData['uid']);
 
@@ -248,7 +247,7 @@ class JsonImporter
                 'exception_time' => $this->migrateTimeRecordToDataMap($importExceptionRecord['exception_time'], $storagePid, $dataMap),
                 'exception_details' => $importExceptionRecord['exception_details'],
                 'show_anyway' => $importExceptionRecord['show_anyway'] ? 1 : 0,
-                'mark_as' =>$importExceptionRecord['mark_as'],
+                'mark_as' => $importExceptionRecord['mark_as'],
             ];
 
             $exceptionUidCollection[] = $exceptionUid;
@@ -352,7 +351,7 @@ class JsonImporter
         array $importImageRecords,
         string $eventUid,
         ImportConfiguration $configuration,
-        array &$dataMap
+        array &$dataMap,
     ): string {
         if ($importImageRecords === []) {
             return '0';
@@ -365,7 +364,7 @@ class JsonImporter
             }
 
             $resourceStorage = $this->resourceFactory->getStorageObjectFromCombinedIdentifier(
-                $configuration->getStorageFolder()
+                $configuration->getStorageFolder(),
             );
             $folder = $this->resourceFactory->getFolderObjectFromCombinedIdentifier($configuration->getStorageFolder());
             $filename = $resourceStorage->sanitizeFileName(pathinfo($imageRecord['url'], PATHINFO_BASENAME));
@@ -379,7 +378,7 @@ class JsonImporter
                     $fileObject = $resourceStorage->addFile(
                         $tempImagePath,
                         $folder,
-                        $filename
+                        $filename,
                     );
                 } catch (ExistingTargetFileNameException $e) {
                     continue;
@@ -416,16 +415,16 @@ class JsonImporter
                 ->where(
                     $queryBuilder->expr()->eq(
                         'import_id',
-                        $queryBuilder->createNamedParameter($importId, Connection::PARAM_INT)
+                        $queryBuilder->createNamedParameter($importId, Connection::PARAM_INT),
                     ),
                     $queryBuilder->expr()->eq(
                         'sys_language_uid',
-                        $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
+                        $queryBuilder->createNamedParameter(0, Connection::PARAM_INT),
                     ),
                     $queryBuilder->expr()->eq(
                         'l10n_parent',
-                        $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
-                    )
+                        $queryBuilder->createNamedParameter(0, Connection::PARAM_INT),
+                    ),
                 )
                 ->executeQuery()
                 ->fetchAssociative();
@@ -462,7 +461,7 @@ class JsonImporter
                 ],
                 [
                     'uid' => (int)$eventUid,
-                ]
+                ],
             );
         }
     }

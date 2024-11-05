@@ -36,17 +36,16 @@ class EventsExporter
         protected readonly RequestFactory $requestFactory,
         protected readonly LinkService $linkService,
         protected readonly DateTimeUtility $dateTimeUtility,
-    ) {
-    }
+    ) {}
 
     public function export(ExporterConfiguration $configuration): ResponseInterface
     {
         $preparedEvents = $this->getPreparedEvents(
             $this->eventService->getEventsForExport(
                 $configuration->getStoragePages(),
-                $this->getMaxDateForEventsExport()
+                $this->getMaxDateForEventsExport(),
             ),
-            $configuration->getStoragePages()
+            $configuration->getStoragePages(),
         );
 
         try {
@@ -59,7 +58,7 @@ class EventsExporter
                         'x-api-key' => $configuration->getSecret(),
                     ],
                     'body' => json_encode($preparedEvents, JSON_THROW_ON_ERROR),
-                ]
+                ],
             );
         } catch (\JsonException|GuzzleException $e) {
         }
@@ -251,7 +250,7 @@ class EventsExporter
                 $publicLink = sprintf(
                     '%s/%s',
                     $baseUrl,
-                    $fileReference->getOriginalResource()->getOriginalFile()->getPublicUrl()
+                    $fileReference->getOriginalResource()->getOriginalFile()->getPublicUrl(),
                 );
                 $images[] = [
                     'url' => $publicLink,

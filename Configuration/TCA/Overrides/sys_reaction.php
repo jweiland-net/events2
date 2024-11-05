@@ -19,7 +19,7 @@ if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('reactions')) {
             'label' => \JWeiland\Events2\Reaction\ImportEventsReaction::getDescription(),
             'value' => \JWeiland\Events2\Reaction\ImportEventsReaction::getType(),
             'icon' => \JWeiland\Events2\Reaction\ImportEventsReaction::getIconIdentifier(),
-        ]
+        ],
     );
 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns(
@@ -35,7 +35,7 @@ if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('reactions')) {
                     'size' => 1,
                 ],
             ],
-        ]
+        ],
     );
 
     $GLOBALS['TCA']['sys_reaction']['palettes']['setStorage'] = [

@@ -34,12 +34,12 @@ class OrganizerService
                 ->where(
                     $queryBuilder->expr()->eq(
                         'organizer',
-                        $queryBuilder->createNamedParameter($title)
+                        $queryBuilder->createNamedParameter($title),
                     ),
                     $queryBuilder->expr()->eq(
                         'sys_language_uid',
-                        $queryBuilder->createNamedParameter($language, Connection::PARAM_INT)
-                    )
+                        $queryBuilder->createNamedParameter($language, Connection::PARAM_INT),
+                    ),
                 )
                 ->executeQuery()
                 ->fetchAssociative();
