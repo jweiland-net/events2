@@ -26,13 +26,16 @@ class ExportEventsCommand extends Command
 {
     protected OutputInterface $output;
 
+    protected EventsExporter $eventsExporter;
+
     /**
      * Will be called by DI, so please don't add extbase classes with inject methods here.
      */
-    public function __construct(
-        protected readonly EventsExporter $eventsExporter,
-    ) {
+    public function __construct(EventsExporter $eventsExporter)
+    {
         parent::__construct();
+
+        $this->eventsExporter = $eventsExporter;
     }
 
     protected function configure(): void
@@ -64,10 +67,6 @@ class ExportEventsCommand extends Command
 
         $response = $this->eventsExporter->export($configuration);
         $body = (string)$response->getBody();
-        if (!\json_validate($body)) {
-            $output->writeln('<error>Invalid JSON response</error>');
-            return Command::FAILURE;
-        }
 
         try {
             $status = \json_decode($body, true, 512, JSON_THROW_ON_ERROR);

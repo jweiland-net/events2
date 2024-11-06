@@ -13,11 +13,18 @@ namespace JWeiland\Events2\Exporter;
 
 class ExporterConfiguration
 {
-    public function __construct(
-        private readonly string $url,
-        private readonly string $secret,
-        private readonly array $storagePages,
-    ) {}
+    private string $url;
+
+    private string $secret;
+
+    private array $storagePages;
+
+    public function __construct(string $url, string $secret, array $storagePages)
+    {
+        $this->url = $url;
+        $this->secret = $secret;
+        $this->storagePages = $storagePages;
+    }
 
     public function getUrl(): string
     {

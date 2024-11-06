@@ -29,14 +29,33 @@ use TYPO3\CMS\Core\Site\SiteFinder;
 
 class EventsExporter
 {
+    protected EventService $eventService;
+
+    protected SiteFinder $siteFinder;
+
+    protected TimeFactory $timeFactory;
+
+    protected RequestFactory $requestFactory;
+
+    protected LinkService $linkService;
+
+    protected DateTimeUtility $dateTimeUtility;
+
     public function __construct(
-        protected readonly EventService $eventService,
-        protected readonly SiteFinder $siteFinder,
-        protected readonly TimeFactory $timeFactory,
-        protected readonly RequestFactory $requestFactory,
-        protected readonly LinkService $linkService,
-        protected readonly DateTimeUtility $dateTimeUtility,
-    ) {}
+        EventService $eventService,
+        SiteFinder $siteFinder,
+        TimeFactory $timeFactory,
+        RequestFactory $requestFactory,
+        LinkService $linkService,
+        DateTimeUtility $dateTimeUtility
+    ) {
+        $this->eventService = $eventService;
+        $this->siteFinder = $siteFinder;
+        $this->timeFactory = $timeFactory;
+        $this->requestFactory = $requestFactory;
+        $this->linkService = $linkService;
+        $this->dateTimeUtility = $dateTimeUtility;
+    }
 
     public function export(ExporterConfiguration $configuration): ResponseInterface
     {
@@ -72,8 +91,11 @@ class EventsExporter
     protected function getMaxDateForEventsExport(): ?\DateTimeImmutable
     {
         $endRange = $this->dateTimeUtility->convert('today');
+        if ($endRange instanceof \DateTimeImmutable) {
+            return $endRange->modify('+1 year');
+        }
 
-        return $endRange?->modify('+1 year');
+        return null;
     }
 
     protected function getPreparedEvents(array $events, array $storagePages): array
