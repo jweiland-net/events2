@@ -717,7 +717,7 @@ class Event extends AbstractEntity
     }
 
     /**
-     * @return ObjectStorage<Event>
+     * @return ObjectStorage<Organizer>
      */
     public function getOrganizers(): ObjectStorage
     {
