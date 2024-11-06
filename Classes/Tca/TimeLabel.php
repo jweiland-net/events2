@@ -45,7 +45,7 @@ class TimeLabel
             && isset($ctrlArray['row']['weekday'])
         ) {
             $weekday = $ctrlArray['row']['weekday'];
-            if(is_array($weekday)) {
+            if (is_array($weekday)) {
                 $weekday = reset($weekday);
             }
             $translationKey = 'tx_events2_domain_model_time.weekday.' . $weekday;
