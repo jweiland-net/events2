@@ -7,6 +7,12 @@
 ChangeLog
 =========
 
+Version 9.1.0
+=============
+
+*   [FEATURE] Add events2 exporter
+*   [FEATURE] Add events2 JSON importer
+
 Version 9.0.9
 =============
 
