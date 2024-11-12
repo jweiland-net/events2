@@ -11,18 +11,19 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Task;
 
-use JWeiland\Events2\Importer\ImporterInterface;
+use JWeiland\Events2\Importer\XmlImporter;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\Index\Indexer;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\CMS\Core\Resource\ResourceStorage;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 
 /**
- * Task to import events by various file formats like XML
+ * Task to import events by an XML file
  */
 class Import extends AbstractTask
 {
@@ -49,16 +50,14 @@ class Import extends AbstractTask
     public function execute(): bool
     {
         try {
-            $file = GeneralUtility::makeInstance(ResourceFactory::class)
-                ->retrieveFileOrFolderObject($this->path);
+            $file = $this->getResourceFactory()->retrieveFileOrFolderObject($this->path);
             if ($file instanceof File) {
                 if ($file->isMissing()) {
                     $this->addMessage('The defined file seems to be missing. Please check, if file is still at its place', ContextualFeedbackSeverity::ERROR);
                     return false;
                 }
-                // File can be updated by (S)FTP. So we have to update its properties first.
-                $indexer = GeneralUtility::makeInstance(Indexer::class, $file->getStorage());
-                $indexer->updateIndexEntry($file);
+
+                $this->updateFalIndexEntry($file);
             } else {
                 $this->addMessage('The defined file is not a valid file. Maybe you have defined a folder. Please re-check file path', ContextualFeedbackSeverity::ERROR);
                 return false;
@@ -73,40 +72,24 @@ class Import extends AbstractTask
                 $file->delete();
                 return true;
             }
-            return false;
         } catch (\Exception $e) {
-            return false;
         }
+
+        return false;
     }
 
     /**
-     * Import file
-     *
-     * @param File $file
-     * @return bool
      * @throws \Exception
      */
     protected function importFile(File $file): bool
     {
-        $className = sprintf(
-            'JWeiland\\Events2\\Importer\\%sImporter',
-            ucfirst(strtolower($file->getExtension())),
-        );
-        if (!class_exists($className)) {
-            $this->addMessage('There is no class to handler files of type: ' . $file->getExtension());
-            return false;
-        }
-
-        $importer = GeneralUtility::makeInstance($className);
-        if (!$importer instanceof ImporterInterface) {
-            $this->addMessage('Importer has to implement ImporterInterface');
-            return false;
-        }
+        $importer = $this->getXmlImporter();
         $importer->setStoragePid($this->getStoragePid());
         $importer->setFile($file);
         if (!$importer->checkFile()) {
             return false;
         }
+
         return $importer->import();
     }
 
@@ -125,8 +108,32 @@ class Import extends AbstractTask
         $defaultFlashMessageQueue->enqueue($flashMessage);
     }
 
+    /**
+     * The used file may be overwritten via FTP or SCP in storage.
+     * So, before using it, we should update file information in FAL first
+     */
+    protected function updateFalIndexEntry(File $file): void
+    {
+        $this->getFalIndexer($file->getStorage())->updateIndexEntry($file);
+    }
+
     protected function getStoragePid(): int
     {
         return (int)$this->storagePid;
+    }
+
+    protected function getXmlImporter(): XmlImporter
+    {
+        return GeneralUtility::makeInstance(XmlImporter::class);
+    }
+
+    protected function getResourceFactory(): ResourceFactory
+    {
+        return GeneralUtility::makeInstance(ResourceFactory::class);
+    }
+
+    protected function getFalIndexer(ResourceStorage $resourceStorage): Indexer
+    {
+        return GeneralUtility::makeInstance(Indexer::class, $resourceStorage);
     }
 }

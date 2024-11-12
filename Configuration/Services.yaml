@@ -8,6 +8,7 @@ services:
     resource: '../Classes/*'
     exclude:
       - '../Classes/Domain/Model/*'
+      - '../Classes/Exporter/ExporterConfiguration.php'
       - '../Classes/Hooks/Solr/{IndexerHook.php,IndexerHook104.php}'
 
   # Called by makeInstance in eID middleware
@@ -71,9 +72,8 @@ services:
   JWeiland\Events2\Hooks\SlugPostModifierHook:
     public: true
 
-  # Importer classes will be called by GU::makeInstance in Task\Import
-  JWeiland\Events2\Importer\:
-    resource: '../Classes/Importer/*Importer.php'
+  # XML importer class will be called by GU::makeInstance in Task\Import
+  JWeiland\Events2\Importer\XmlImporter:
     public: true
 
   # Called by makeInstance out of TypoScript
@@ -176,4 +176,10 @@ services:
     - name: 'console.command'
       command: 'events2:rebuild'
       description: 'This command will TRUNCATE (delete) all day records found in day table and will re-create all day records afterwards'
+      schedulable: true
+  JWeiland\Events2\Command\ExportEventsCommand:
+    tags:
+    - name: 'console.command'
+      command: 'events2:export'
+      description: 'This command will prepare events2 records for export to by imported via another TYPO3 instance with activated EXT:reactions'
       schedulable: true

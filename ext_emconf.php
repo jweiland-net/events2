@@ -19,12 +19,14 @@ $EM_CONF[$_EXTKEY] = [
     'constraints' => [
         'depends' => [
             'typo3' => '12.4.8-12.4.99',
+            'reactions' => '12.4.8-12.4.99',
         ],
         'conflicts' => [
         ],
         'suggests' => [
             'checkfaluploads' => '',
             'maps2' => '11.0.0-0.0.0',
+            'reactions' => '12.4.0-12.4.99',
             'solr' => '11.2.0-0.0.0',
             'static_info_tables' => '12.4.0-12.4.99',
         ],

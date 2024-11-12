@@ -101,6 +101,10 @@
 				<source>Loops through all current and future events to delete and recreate their day records. Further it cleans up all the old iCal export files.</source>
 			</trans-unit>
 
+			<trans-unit id="sys_reaction.reaction_type.import_events2_records">
+				<source>Import events2 records</source>
+			</trans-unit>
+
 			<trans-unit id="tx_events2_domain_model_event">
 				<source>Event</source>
 			</trans-unit>
@@ -437,6 +441,12 @@
 				<source>Month</source>
 			</trans-unit>
 
+			<trans-unit id="sys_reactions.storage_folder">
+				<source>Storage location for images</source>
+			</trans-unit>
+			<trans-unit id="sys_reactions.storage_folder.description">
+				<source>Select a storage location for the images to be imported</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
