@@ -21,6 +21,7 @@ use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
@@ -50,7 +51,8 @@ class EventServiceTest extends FunctionalTestCase
         $this->subject = GeneralUtility::makeInstance(
             EventService::class,
             $this->eventRepositoryProphecy->reveal(),
-            new TimeFactory(new DateTimeUtility())
+            new TimeFactory(new DateTimeUtility()),
+            $this->prophesize(DataMapper::class)->reveal()
         );
     }
 

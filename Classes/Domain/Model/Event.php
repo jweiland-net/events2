@@ -519,7 +519,7 @@ class Event extends AbstractEntity
     }
 
     /**
-     * @return ObjectStorage|Category[]
+     * @return ObjectStorage<Category>
      */
     public function getCategories(): ObjectStorage
     {
@@ -729,6 +729,9 @@ class Event extends AbstractEntity
         $this->location = $location;
     }
 
+    /**
+     * @return ObjectStorage<Organizer>
+     */
     public function getOrganizers(): ObjectStorage
     {
         return $this->organizers;
