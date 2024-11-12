@@ -26,15 +26,16 @@
 		"ext-dom": "*",
 		"ext-libxml": "*",
 		"sjbr/static-info-tables": "^12.4",
-		"typo3/cms-core": "12.4.22",
-		"typo3/cms-reactions": "12.4.22"
+		"typo3/cms-core": "^12.4.15",
+		"typo3/cms-reactions": "^12.4.15"
 	},
 	"require-dev": {
 		"ergebnis/composer-normalize": "~2.42.0",
 		"friendsofphp/php-cs-fixer": "^3.14",
 		"phpunit/phpunit": "^9.6",
 		"roave/security-advisories": "dev-latest",
-		"typo3/testing-framework": "^7.0.2"
+		"typo3/testing-framework": "^7.0.2",
+		"phpstan/phpdoc-parser": "^1.33"
 	},
 	"replace": {
 		"typo3-ter/events2": "self.version"
