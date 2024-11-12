@@ -48,25 +48,7 @@ class EventsExporter
             $configuration->getStoragePages(),
         );
 
-        try {
-            return $this->requestFactory->request(
-                $configuration->getUrl(),
-                'POST',
-                [
-                    'headers' => [
-                        'Accept' => 'application/json',
-                        'x-api-key' => $configuration->getSecret(),
-                    ],
-                    'body' => json_encode($preparedEvents, JSON_THROW_ON_ERROR),
-                ],
-            );
-        } catch (\JsonException|GuzzleException $e) {
-        }
-
-        return new JsonResponse([
-            'success' => false,
-            'error' => $e->getMessage(),
-        ], 500);
+        return $this->sendPreparedEventsToApiEndpoint($preparedEvents, $configuration);
     }
 
     protected function getMaxDateForEventsExport(): ?\DateTimeImmutable
@@ -88,6 +70,29 @@ class EventsExporter
         }
 
         return $preparedEvents;
+    }
+
+    protected function sendPreparedEventsToApiEndpoint(array $preparedEvents, ExporterConfiguration $configuration): ResponseInterface
+    {
+        try {
+            return $this->requestFactory->request(
+                $configuration->getUrl(),
+                'POST',
+                [
+                    'headers' => [
+                        'Accept' => 'application/json',
+                        'x-api-key' => $configuration->getSecret(),
+                    ],
+                    'body' => json_encode($preparedEvents, JSON_THROW_ON_ERROR),
+                ],
+            );
+        } catch (\JsonException|GuzzleException $e) {
+        }
+
+        return new JsonResponse([
+            'success' => false,
+            'error' => $e->getMessage(),
+        ], 500);
     }
 
     /**
