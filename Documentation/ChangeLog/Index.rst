@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 8.4.0
+=============
+
+*   [FEATURE] Add events2 JSON exporter
+
 Version 8.3.12
 ==============
 
