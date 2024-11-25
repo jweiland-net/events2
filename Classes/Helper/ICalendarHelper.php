@@ -90,11 +90,12 @@ class ICalendarHelper
         $this->addEventDescription($iCalRowsForAnEvent, $day);
         $this->addEventEnd($iCalRowsForAnEvent);
 
-        $this->eventDispatcher->dispatch(
+        /** @var PostProcessICalRowsForICalDownloadEvent $postProcessEvent */
+        $postProcessEvent = $this->eventDispatcher->dispatch(
             new PostProcessICalRowsForICalDownloadEvent($iCalRowsForAnEvent, $day),
         );
 
-        array_push($iCal, ...$iCalRowsForAnEvent);
+        array_push($iCal, ...$postProcessEvent->getEvent());
     }
 
     protected function addEventBegin(array &$event): void
