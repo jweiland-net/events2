@@ -20,6 +20,7 @@ $EM_CONF[$_EXTKEY] = [
         'depends' => [
             'typo3' => '12.4.15-12.4.99',
             'reactions' => '12.4.15-12.4.99',
+            'static_info_tables' => '12.4.0-12.4.99',
         ],
         'conflicts' => [
         ],
@@ -28,7 +29,6 @@ $EM_CONF[$_EXTKEY] = [
             'maps2' => '11.0.0-0.0.0',
             'reactions' => '12.4.0-12.4.99',
             'solr' => '11.2.0-0.0.0',
-            'static_info_tables' => '12.4.0-12.4.99',
         ],
     ],
 ];
