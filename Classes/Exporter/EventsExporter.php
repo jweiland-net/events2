@@ -25,6 +25,7 @@ use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\LinkHandling\Exception\UnknownLinkHandlerException;
 use TYPO3\CMS\Core\LinkHandling\LinkService;
+use TYPO3\CMS\Core\LinkHandling\TypoLinkCodecService;
 use TYPO3\CMS\Core\Site\SiteFinder;
 
 class EventsExporter
@@ -36,6 +37,7 @@ class EventsExporter
         protected readonly RequestFactory $requestFactory,
         protected readonly LinkService $linkService,
         protected readonly DateTimeUtility $dateTimeUtility,
+        protected readonly TypoLinkCodecService $typoLinkCodecService,
     ) {}
 
     public function export(ExporterConfiguration $configuration): ResponseInterface
@@ -309,7 +311,8 @@ class EventsExporter
         ];
 
         try {
-            $linkInformation = $this->linkService->resolve($link->getLink());
+            $typoLinkParts = $this->typoLinkCodecService->decode($link->getLink());
+            $linkInformation = $this->linkService->resolve($typoLinkParts['url']);
             switch ($linkInformation['type']) {
                 case 'url':
                     $linkRecord['link'] = $linkInformation['url'];
@@ -327,18 +330,6 @@ class EventsExporter
         }
 
         return $linkRecord;
-    }
-
-    protected function getFormattedHourMinute(\DateTimeImmutable $eventBegin, string $time): string
-    {
-        $time = trim($time);
-        if ($time === '' || !strpos($time, ':')) {
-            return '';
-        }
-
-        [$hour, $minute] = explode(':', $time);
-
-        return $eventBegin->format('Ymd') . $hour . $minute . '00';
     }
 
     protected function getBaseUrlForImages(array $storagePages): string
