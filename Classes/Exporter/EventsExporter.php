@@ -26,6 +26,8 @@ use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\LinkHandling\Exception\UnknownLinkHandlerException;
 use TYPO3\CMS\Core\LinkHandling\LinkService;
 use TYPO3\CMS\Core\Site\SiteFinder;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Service\TypoLinkCodecService;
 
 class EventsExporter
 {
@@ -41,13 +43,16 @@ class EventsExporter
 
     protected DateTimeUtility $dateTimeUtility;
 
+    protected TypoLinkCodecService $typoLinkCodecService;
+
     public function __construct(
         EventService $eventService,
         SiteFinder $siteFinder,
         TimeFactory $timeFactory,
         RequestFactory $requestFactory,
         LinkService $linkService,
-        DateTimeUtility $dateTimeUtility
+        DateTimeUtility $dateTimeUtility,
+        TypoLinkCodecService $typoLinkCodecService
     ) {
         $this->eventService = $eventService;
         $this->siteFinder = $siteFinder;
@@ -55,6 +60,7 @@ class EventsExporter
         $this->requestFactory = $requestFactory;
         $this->linkService = $linkService;
         $this->dateTimeUtility = $dateTimeUtility;
+        $this->typoLinkCodecService = $typoLinkCodecService;
     }
 
     public function export(ExporterConfiguration $configuration): ResponseInterface
@@ -326,7 +332,8 @@ class EventsExporter
         ];
 
         try {
-            $linkInformation = $this->linkService->resolve($link->getLink());
+            $typoLinkParts = $this->typoLinkCodecService->decode($link->getLink());
+            $linkInformation = $this->linkService->resolve($typoLinkParts['url']);
             switch ($linkInformation['type']) {
                 case 'url':
                     $linkRecord['link'] = $linkInformation['url'];
@@ -344,18 +351,6 @@ class EventsExporter
         }
 
         return $linkRecord;
-    }
-
-    protected function getFormattedHourMinute(\DateTimeImmutable $eventBegin, string $time): string
-    {
-        $time = trim($time);
-        if ($time === '' || !strpos($time, ':')) {
-            return '';
-        }
-
-        [$hour, $minute] = explode(':', $time);
-
-        return $eventBegin->format('Ymd') . $hour . $minute . '00';
     }
 
     protected function getBaseUrlForImages(array $storagePages): string
