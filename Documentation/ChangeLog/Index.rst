@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 8.4.1
+=============
+
+*   [BUGFIX] Decode typolink before resolving file UID
+
 Version 8.4.0
 =============
 
