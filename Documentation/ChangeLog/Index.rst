@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 8.4.2
+=============
+
+*   [BUGFIX] Convert start-end-time to ISO before export
+
 Version 8.4.1
 =============
 
