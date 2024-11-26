@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 9.1.1
+=============
+
+*   [BUGFIX] Decode typolink before resolving file UID
+
 Version 9.1.0
 =============
 
