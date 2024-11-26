@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 9.1.2
+=============
+
+*   [BUGFIX] Convert start-end-time to ISO before export
+
 Version 9.1.1
 =============
 
