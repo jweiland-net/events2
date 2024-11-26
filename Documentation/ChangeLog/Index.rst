@@ -7,6 +7,12 @@
 ChangeLog
 =========
 
+Version 9.1.3
+=============
+
+*   [BUGFIX] Do not import category start/end time, as it was not part of
+             extbase category model
+
 Version 9.1.2
 =============
 
