@@ -272,9 +272,6 @@ class JsonImporter
                     'pid' => $storagePid,
                     'crdate' => time(),
                     'tstamp' => time(),
-                    'starttime' => $this->migrateDateToTimestamp($importCategoryRecord['starttime']),
-                    'endtime' => $this->migrateDateToTimestamp($importCategoryRecord['endtime']),
-                    'hidden' => $importCategoryRecord['hidden'] ? 1 : 0,
                     'title' => $importCategoryRecord['title'],
                     'parent' => 0,
                 ];
