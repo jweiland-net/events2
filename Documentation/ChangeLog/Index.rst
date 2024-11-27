@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 9.1.4
+=============
+
+*   [TASK] Add a lot more logging information for event export
+
 Version 9.1.3
 =============
 

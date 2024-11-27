@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Exporter;
 
-use GuzzleHttp\Exception\GuzzleException;
 use JWeiland\Events2\Domain\Factory\TimeFactory;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Link;
@@ -20,6 +19,7 @@ use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Service\EventService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Http\RequestFactory;
@@ -38,45 +38,20 @@ class EventsExporter
         protected readonly LinkService $linkService,
         protected readonly DateTimeUtility $dateTimeUtility,
         protected readonly TypoLinkCodecService $typoLinkCodecService,
+        protected readonly LoggerInterface $logger,
     ) {}
 
     public function export(ExporterConfiguration $configuration): ResponseInterface
     {
-        $preparedEvents = $this->getPreparedEvents(
-            $this->eventService->getEventsForExport(
-                $configuration->getStoragePages(),
-                $this->getMaxDateForEventsExport(),
-            ),
-            $configuration->getStoragePages(),
-        );
-
-        return $this->sendPreparedEventsToApiEndpoint($preparedEvents, $configuration);
-    }
-
-    protected function getMaxDateForEventsExport(): ?\DateTimeImmutable
-    {
-        $endRange = $this->dateTimeUtility->convert('today');
-
-        return $endRange?->modify('+1 year');
-    }
-
-    protected function getPreparedEvents(array $events, array $storagePages): array
-    {
-        $preparedEvents = [];
-        foreach ($events as $event) {
-            $preparedEvent = $this->getEventPreparedForExport($event, $storagePages);
-            if ($preparedEvent === []) {
-                continue;
-            }
-            $preparedEvents[] = $preparedEvent;
-        }
-
-        return $preparedEvents;
-    }
-
-    protected function sendPreparedEventsToApiEndpoint(array $preparedEvents, ExporterConfiguration $configuration): ResponseInterface
-    {
         try {
+            $preparedEvents = $this->getPreparedEvents(
+                $this->eventService->getEventsForExport(
+                    $configuration->getStoragePages(),
+                    $this->getMaxDateForEventsExport(),
+                ),
+                $configuration->getStoragePages(),
+            );
+
             return $this->requestFactory->request(
                 $configuration->getUrl(),
                 'POST',
@@ -88,13 +63,40 @@ class EventsExporter
                     'body' => json_encode($preparedEvents, JSON_THROW_ON_ERROR),
                 ],
             );
-        } catch (\JsonException|GuzzleException $e) {
+        } catch (\Exception $e) {
         }
+
+        $this->logger->error($e->getMessage());
 
         return new JsonResponse([
             'success' => false,
             'error' => $e->getMessage(),
         ], 500);
+    }
+
+    protected function getMaxDateForEventsExport(): ?\DateTimeImmutable
+    {
+        $endRange = $this->dateTimeUtility->convert('today');
+
+        return $endRange?->modify('+1 year');
+    }
+
+    /**
+     * @param Event[] $events
+     */
+    protected function getPreparedEvents(array $events, array $storagePages): array
+    {
+        $preparedEvents = [];
+        foreach ($events as $event) {
+            $preparedEvent = $this->getEventPreparedForExport($event, $storagePages);
+            if ($preparedEvent === []) {
+                continue;
+            }
+
+            $preparedEvents[] = $preparedEvent;
+        }
+
+        return $preparedEvents;
     }
 
     /**
@@ -107,6 +109,7 @@ class EventsExporter
 
         // Early return, if there is no event begin
         if ($eventBegin === null) {
+            $this->logger->warning('Event begin is empty. Skipping event record: ' . $event->getUid());
             return [];
         }
 
@@ -263,6 +266,13 @@ class EventsExporter
                     'url' => $publicLink,
                 ];
             } catch (\Exception $e) {
+                $this->logger->error(
+                    $e->getMessage(),
+                    [
+                        'event' => $event->getUid(),
+                        'file_ref' => $fileReference->getUid(),
+                    ],
+                );
                 continue;
             }
         }
@@ -326,6 +336,12 @@ class EventsExporter
                     break;
             }
         } catch (UnknownLinkHandlerException $e) {
+            $this->logger->error(
+                $e->getMessage(),
+                [
+                    'link' => $link->getUid(),
+                ],
+            );
             $linkRecord = [];
         }
 
@@ -348,6 +364,9 @@ class EventsExporter
 
             return $baseUrl;
         } catch (SiteNotFoundException $e) {
+            $this->logger->error($e->getMessage(), [
+                'firstStoragePage' => $firstStoragePage,
+            ]);
         }
 
         return '';

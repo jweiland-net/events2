@@ -17,7 +17,10 @@ class ExporterConfiguration
         private readonly string $url,
         private readonly string $secret,
         private readonly array $storagePages,
-    ) {}
+    ) {
+        $this->url = trim($url);
+        $this->secret = trim($secret);
+    }
 
     public function getUrl(): string
     {
