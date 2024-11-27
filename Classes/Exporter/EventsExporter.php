@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Exporter;
 
-use GuzzleHttp\Exception\GuzzleException;
 use JWeiland\Events2\Domain\Factory\TimeFactory;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Link;
