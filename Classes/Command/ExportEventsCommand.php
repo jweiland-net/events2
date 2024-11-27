@@ -13,6 +13,7 @@ namespace JWeiland\Events2\Command;
 
 use JWeiland\Events2\Exporter\EventsExporter;
 use JWeiland\Events2\Exporter\ExporterConfiguration;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -28,14 +29,17 @@ class ExportEventsCommand extends Command
 
     protected EventsExporter $eventsExporter;
 
+    protected LoggerInterface $logger;
+
     /**
      * Will be called by DI, so please don't add extbase classes with inject methods here.
      */
-    public function __construct(EventsExporter $eventsExporter)
+    public function __construct(EventsExporter $eventsExporter, LoggerInterface $logger)
     {
         parent::__construct();
 
         $this->eventsExporter = $eventsExporter;
+        $this->logger = $logger;
     }
 
     protected function configure(): void
@@ -71,16 +75,20 @@ class ExportEventsCommand extends Command
         try {
             $status = \json_decode($body, true, 512, JSON_THROW_ON_ERROR);
         } catch (\JsonException $e) {
-            $output->writeln('<error>JSON string can not be decoded</error>');
+            $this->logger->error('JSON string from importing server can not be decoded');
+            $output->writeln('<error>JSON string from importing server can not be decoded</error>');
             return Command::FAILURE;
         }
 
         if ($response->getStatusCode() !== 200 || $status['success'] === false) {
+            $this->logger->error($status['error']);
             $output->writeln('<error>' . $status['error'] . '</error>');
             return Command::FAILURE;
         }
 
+        $this->logger->info($status['message']);
         $output->writeln('<info>' . $status['message'] . '</info>');
+
         return Command::SUCCESS;
     }
 
