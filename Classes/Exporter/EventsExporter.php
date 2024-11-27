@@ -272,7 +272,7 @@ class EventsExporter
                     [
                         'event' => $event->getUid(),
                         'file_ref' => $fileReference->getUid(),
-                    ]
+                    ],
                 );
                 continue;
             }
@@ -341,7 +341,7 @@ class EventsExporter
                 $e->getMessage(),
                 [
                     'link' => $link->getUid(),
-                ]
+                ],
             );
             $linkRecord = [];
         }
