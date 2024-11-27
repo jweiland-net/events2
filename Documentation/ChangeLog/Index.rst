@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 8.4.4
+=============
+
+*   [BUGFIX] Add start/end time to location export
+
 Version 8.4.3
 =============
 
