@@ -21,8 +21,8 @@ class ExporterConfiguration
 
     public function __construct(string $url, string $secret, array $storagePages)
     {
-        $this->url = $url;
-        $this->secret = $secret;
+        $this->url = trim($url);
+        $this->secret = trim($secret);
         $this->storagePages = $storagePages;
     }
 
