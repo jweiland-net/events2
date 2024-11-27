@@ -256,6 +256,12 @@ class EventsExporter
         if ($event->getLocation() instanceof Location) {
             $eventRecord['location'] = [
                 'uid' => $event->getLocation()->getUid(),
+                'crdate' => $this->formatDateToISO($event->getLocation()->getCrdate()),
+                'tstamp' => $this->formatDateToISO($event->getLocation()->getTstamp()),
+                'starttime' => $event->getLocation()->getStarttime(),
+                'endtime' => $event->getLocation()->getEndtime(),
+                'hidden' => $event->getLocation()->getHidden(),
+                'deleted' => $event->getLocation()->getDeleted(),
                 'location' => $event->getLocation()->getLocation(),
                 'street' => $event->getLocation()->getStreet(),
                 'houseNumber' => $event->getLocation()->getHouseNumber(),
