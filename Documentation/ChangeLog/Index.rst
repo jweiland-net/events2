@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 8.4.3
+=============
+
+*   [TASK] Add a lot more logging information for event export
+
 Version 8.4.2
 =============
 
