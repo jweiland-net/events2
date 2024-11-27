@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Service;
 
+use Doctrine\DBAL\DBALException;
 use JWeiland\Events2\Domain\Factory\TimeFactory;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Repository\EventRepository;
@@ -123,11 +124,15 @@ class EventService
                 );
         }
 
-        $statement = $queryBuilder->execute();
-
         $events = [];
-        while ($event = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            $events[$event['uid']] = current($this->dataMapper->map(Event::class, [$event]));
+
+        try {
+            $statement = $queryBuilder->execute();
+            while ($event = $statement->fetch(\PDO::FETCH_ASSOC)) {
+                $events[$event['uid']] = current($this->dataMapper->map(Event::class, [$event]));
+            }
+        } catch (DBALException $e) {
+            return [];
         }
 
         return $events;
