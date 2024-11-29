@@ -268,7 +268,7 @@ class JsonImporter
             if ($categoryRecord === null) {
                 $categoryUid = $this->getUniqueIdForNewRecords();
 
-                $dataMap['tx_events2_domain_model_location'][$categoryUid] = [
+                $dataMap['sys_category'][$categoryUid] = [
                     'pid' => $storagePid,
                     'crdate' => time(),
                     'tstamp' => time(),
