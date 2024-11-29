@@ -14,6 +14,7 @@ Version 9.1.6
 *   [BUGFIX] Import categories into table sys_category
 *   [BUGFIX] Add import_id to imported event records
 *   [BUGFIX] Also find hidden events while import to prevent duplicates
+*   [BUGFIX] Use 0 for timestamp if date is empty string while importing events
 
 Version 9.1.5
 =============
