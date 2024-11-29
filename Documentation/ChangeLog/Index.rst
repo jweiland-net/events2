@@ -12,6 +12,7 @@ Version 9.1.6
 
 *   [BUGFIX] Prevent double slash in public image URI while export
 *   [BUGFIX] Import categories into table sys_category
+*   [BUGFIX] Add import_id to imported event records
 
 Version 9.1.5
 =============
