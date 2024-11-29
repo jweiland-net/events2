@@ -22,7 +22,6 @@ use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
-use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Resource\Exception\ExistingTargetFileNameException;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
@@ -101,6 +100,7 @@ class JsonImporter
         $eventUid = $this->getUniqueIdForNewRecords();
 
         $dataMap['tx_events2_domain_model_event'][$eventUid] = [
+            'import_id' => (int)$eventImportData['uid'],
             'pid' => $configuration->getStoragePid(),
             'crdate' => time(),
             'tstamp' => time(),
@@ -138,6 +138,10 @@ class JsonImporter
     protected function migrateDateToTimestamp(?string $date): int
     {
         if ($date === null) {
+            return 0;
+        }
+
+        if ($date === '') {
             return 0;
         }
 
@@ -264,11 +268,19 @@ class JsonImporter
 
         $categoryUidCollection = [];
         foreach ($importCategoryRecords as $importCategoryRecord) {
+            foreach ($dataMap['sys_category'] ?? [] as $uid => $categoryRecord) {
+                if ($categoryRecord['title'] === $importCategoryRecord['title']) {
+                    $categoryUidCollection[] = $uid;
+                    continue 2;
+                }
+            }
+
             $categoryRecord = $this->categoryService->getCategoryRecordByTitle($importCategoryRecord['title'] ?? '');
+
             if ($categoryRecord === null) {
                 $categoryUid = $this->getUniqueIdForNewRecords();
 
-                $dataMap['tx_events2_domain_model_location'][$categoryUid] = [
+                $dataMap['sys_category'][$categoryUid] = [
                     'pid' => $storagePid,
                     'crdate' => time(),
                     'tstamp' => time(),
@@ -289,6 +301,13 @@ class JsonImporter
     {
         if ($importLocationRecord === []) {
             return '';
+        }
+
+        // Early return, if location was already registered in DataMap
+        foreach ($dataMap['tx_events2_domain_model_location'] ?? [] as $uid => $locationRecord) {
+            if ($locationRecord['location'] === $importLocationRecord['location']) {
+                return $uid;
+            }
         }
 
         $locationRecord = $this->locationService->getLocationRecordByTitle($importLocationRecord['location'] ?? '');
@@ -320,7 +339,15 @@ class JsonImporter
 
         $organizerUidCollection = [];
         foreach ($importOrganizerRecords as $importOrganizerRecord) {
+            foreach ($dataMap['tx_events2_domain_model_organizer'] ?? [] as $uid => $organizerRecord) {
+                if ($organizerRecord['organizer'] === $importOrganizerRecord['organizer']) {
+                    $organizerUidCollection[] = $uid;
+                    continue 2;
+                }
+            }
+
             $organizerRecord = $this->organizerService->getOrganizerRecordByTitle($importOrganizerRecord['organizer'] ?? '');
+
             if ($organizerRecord === null) {
                 $organizerUid = $this->getUniqueIdForNewRecords();
 
@@ -463,15 +490,11 @@ class JsonImporter
         }
     }
 
-    protected function getQueryBuilderForTable(string $table, bool $allowHidden = false): QueryBuilder
+    protected function getQueryBuilderForTable(string $table): QueryBuilder
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($table);
         $queryBuilder->getRestrictions()->removeAll();
         $queryBuilder->getRestrictions()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
-
-        if (!$allowHidden) {
-            $queryBuilder->getRestrictions()->add(GeneralUtility::makeInstance(HiddenRestriction::class));
-        }
 
         return $queryBuilder;
     }
