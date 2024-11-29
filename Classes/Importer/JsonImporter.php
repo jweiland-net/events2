@@ -101,6 +101,7 @@ class JsonImporter
         $eventUid = $this->getUniqueIdForNewRecords();
 
         $dataMap['tx_events2_domain_model_event'][$eventUid] = [
+            'import_id' => (int)$eventImportData['uid'],
             'pid' => $configuration->getStoragePid(),
             'crdate' => time(),
             'tstamp' => time(),
