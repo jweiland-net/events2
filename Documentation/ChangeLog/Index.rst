@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 9.1.6
+=============
+
+*   [BUGFIX] Prevent double slash in public image URI while export
+
 Version 9.1.5
 =============
 
