@@ -142,6 +142,10 @@ class JsonImporter
             return 0;
         }
 
+        if ($date === '') {
+            return 0;
+        }
+
         try {
             $date = new \DateTime($date);
         } catch (\DateMalformedStringException $e) {
