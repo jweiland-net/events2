@@ -15,6 +15,7 @@ Version 9.1.6
 *   [BUGFIX] Add import_id to imported event records
 *   [BUGFIX] Also find hidden events while import to prevent duplicates
 *   [BUGFIX] Use 0 for timestamp if date is empty string while importing events
+*   [BUGFIX] Check datamap before importing category/organizer/location again
 
 Version 9.1.5
 =============
