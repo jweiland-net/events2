@@ -464,15 +464,11 @@ class JsonImporter
         }
     }
 
-    protected function getQueryBuilderForTable(string $table, bool $allowHidden = false): QueryBuilder
+    protected function getQueryBuilderForTable(string $table): QueryBuilder
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($table);
         $queryBuilder->getRestrictions()->removeAll();
         $queryBuilder->getRestrictions()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
-
-        if (!$allowHidden) {
-            $queryBuilder->getRestrictions()->add(GeneralUtility::makeInstance(HiddenRestriction::class));
-        }
 
         return $queryBuilder;
     }
