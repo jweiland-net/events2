@@ -296,7 +296,7 @@ class EventsExporter
         foreach ($event->getImages() as $fileReference) {
             try {
                 $publicLink = sprintf(
-                    '%s/%s',
+                    '%s%s',
                     $baseUrl,
                     $fileReference->getOriginalResource()->getOriginalFile()->getPublicUrl(),
                 );
