@@ -269,7 +269,15 @@ class JsonImporter
 
         $categoryUidCollection = [];
         foreach ($importCategoryRecords as $importCategoryRecord) {
+            foreach ($dataMap['sys_category'] ?? [] as $uid => $categoryRecord) {
+                if ($categoryRecord['title'] === $importCategoryRecord['title']) {
+                    $categoryUidCollection[] = $uid;
+                    continue 2;
+                }
+            }
+
             $categoryRecord = $this->categoryService->getCategoryRecordByTitle($importCategoryRecord['title'] ?? '');
+
             if ($categoryRecord === null) {
                 $categoryUid = $this->getUniqueIdForNewRecords();
 
@@ -294,6 +302,13 @@ class JsonImporter
     {
         if ($importLocationRecord === []) {
             return '';
+        }
+
+        // Early return, if location was already registered in DataMap
+        foreach ($dataMap['tx_events2_domain_model_location'] ?? [] as $uid => $locationRecord) {
+            if ($locationRecord['location'] === $importLocationRecord['location']) {
+                return $uid;
+            }
         }
 
         $locationRecord = $this->locationService->getLocationRecordByTitle($importLocationRecord['location'] ?? '');
@@ -325,7 +340,15 @@ class JsonImporter
 
         $organizerUidCollection = [];
         foreach ($importOrganizerRecords as $importOrganizerRecord) {
+            foreach ($dataMap['tx_events2_domain_model_organizer'] ?? [] as $uid => $organizerRecord) {
+                if ($organizerRecord['organizer'] === $importOrganizerRecord['organizer']) {
+                    $organizerUidCollection[] = $uid;
+                    continue 2;
+                }
+            }
+
             $organizerRecord = $this->organizerService->getOrganizerRecordByTitle($importOrganizerRecord['organizer'] ?? '');
+
             if ($organizerRecord === null) {
                 $organizerUid = $this->getUniqueIdForNewRecords();
 
