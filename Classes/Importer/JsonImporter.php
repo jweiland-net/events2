@@ -107,6 +107,8 @@ class JsonImporter
             'starttime' => $this->migrateDateToTimestamp($eventImportData['starttime']),
             'endtime' => $this->migrateDateToTimestamp($eventImportData['endtime']),
             'hidden' => $eventImportData['hidden'] ? 1 : 0,
+            'sys_language_uid' => $eventImportData['sys_language_uid'] ?? 0,
+            'l10n_parent' => $eventImportData['l10n_parent'] ?? 0,
             'event_type' => $eventImportData['event_type'],
             'top_of_list' => $eventImportData['top_of_list'] ? 1 : 0,
             'title' => $eventImportData['title'],
@@ -267,7 +269,7 @@ class JsonImporter
         }
 
         $categoryUidCollection = [];
-        foreach ($importCategoryRecords as $importCategoryRecord) {
+        foreach ($importCategoryRecords ?? [] as $importCategoryRecord) {
             foreach ($dataMap['sys_category'] ?? [] as $uid => $categoryRecord) {
                 if ($categoryRecord['title'] === $importCategoryRecord['title']) {
                     $categoryUidCollection[] = $uid;
