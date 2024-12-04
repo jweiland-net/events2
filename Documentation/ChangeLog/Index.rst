@@ -7,6 +7,13 @@
 ChangeLog
 =========
 
+Version 8.4.6
+=============
+
+*   [BUGFIX] Add needed language columns to event export. This will allow
+             DayRelationService to create the needed day records on foreign
+             importing server.
+
 Version 8.4.5
 =============
 
