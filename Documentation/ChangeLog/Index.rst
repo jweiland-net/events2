@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 9.1.8
+=============
+
+*   [BUGFIX] Make sure to have just one / between base URL and public image URL
+
 Version 9.1.7
 =============
 
