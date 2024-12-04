@@ -7,6 +7,12 @@
 ChangeLog
 =========
 
+Version 9.1.7
+=============
+
+*   [BUGFIX] Add needed language columns to event export. This will allow
+             DayRelationService to create the needed day records.
+
 Version 9.1.6
 =============
 

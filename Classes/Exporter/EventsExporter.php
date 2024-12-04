@@ -121,6 +121,8 @@ class EventsExporter
             'endtime' => $this->formatDateToISO($event->getEndtime()),
             'hidden' => $event->getHidden(),
             'deleted' => $event->getDeleted(),
+            'sys_language_uid' => $event->getSysLanguageUid(),
+            'l10n_parent' => $event->getL10nParent(),
             'event_type' => $event->getEventType(),
             'top_of_list' => $event->getTopOfList(),
             'title' => $event->getTitle(),
