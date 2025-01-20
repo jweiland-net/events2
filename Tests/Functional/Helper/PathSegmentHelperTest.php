@@ -15,7 +15,6 @@ use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Helper\Exception\NoUniquePathSegmentException;
 use JWeiland\Events2\Helper\PathSegmentHelper;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
