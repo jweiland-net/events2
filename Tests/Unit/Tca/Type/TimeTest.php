@@ -154,7 +154,7 @@ class TimeTest extends UnitTestCase
     /**
      * @return array<string, array<int|string>>
      */
-    public function dateProviderForVariousIntegerValues(): array
+    public static function dataProviderForVariousIntegerValues(): array
     {
         $timestamps = [];
         $timestamps['edge case with zero'] = [0, '00:00'];
@@ -174,7 +174,7 @@ class TimeTest extends UnitTestCase
     /**
      * @test
      *
-     * @dataProvider dateProviderForVariousIntegerValues
+     * @dataProvider dataProviderForVariousIntegerValues
      */
     public function evaluateWithInteger(int $intValue, string $expectedTime): void
     {
