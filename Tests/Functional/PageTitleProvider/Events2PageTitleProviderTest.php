@@ -26,7 +26,13 @@ class Events2PageTitleProviderTest extends FunctionalTestCase
 {
     protected Events2PageTitleProvider $subject;
 
+    protected array $coreExtensionsToLoad = [
+        'extensionmanager',
+        'reactions',
+    ];
+
     protected array $testExtensionsToLoad = [
+        'sjbr/static-info-tables',
         'jweiland/events2',
     ];
 

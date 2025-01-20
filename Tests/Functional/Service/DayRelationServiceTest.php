@@ -86,7 +86,13 @@ class DayRelationServiceTest extends FunctionalTestCase
         'exception' => [],
     ];
 
+    protected array $coreExtensionsToLoad = [
+        'extensionmanager',
+        'reactions',
+    ];
+
     protected array $testExtensionsToLoad = [
+        'sjbr/static-info-tables',
         'jweiland/events2',
     ];
 
@@ -271,7 +277,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         );
     }
 
-    public function dataProviderForSimpleEventWithTimeForDifferentTypes(): array
+    public static function dataProviderForSimpleEventWithTimeForDifferentTypes(): array
     {
         return [
             'Test for time type "event_time"' => ['event_time', '08:00', '08:00:00'],

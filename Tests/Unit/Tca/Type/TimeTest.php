@@ -24,6 +24,8 @@ class TimeTest extends UnitTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->subject = new Time(new TimeToStringConverter());
     }
 
@@ -41,7 +43,7 @@ class TimeTest extends UnitTestCase
      *
      * @return array<string, array<string>>
      */
-    public function unmodifiedTimesDataProvider(): array
+    public static function unmodifiedTimesDataProvider(): array
     {
         $times = [];
         $times['empty values'] = [''];
@@ -69,7 +71,7 @@ class TimeTest extends UnitTestCase
     /**
      * @return array<string, array<string>>
      */
-    public function unpaddedTimesDataProvider(): array
+    public static function unpaddedTimesDataProvider(): array
     {
         $times = [];
         $times['zero values'] = ['0:0', '00:00'];
@@ -98,7 +100,7 @@ class TimeTest extends UnitTestCase
     /**
      * @return array<string, array<string>>
      */
-    public function tooHighTimesDataProvider(): array
+    public static function tooHighTimesDataProvider(): array
     {
         $times = [];
         $times['edge case midnight'] = ['24:00', '24:00'];
@@ -127,7 +129,7 @@ class TimeTest extends UnitTestCase
     /**
      * @return array<string, array<string>>
      */
-    public function invalidTimesDataProvider(): array
+    public static function invalidTimesDataProvider(): array
     {
         $times = [];
         $times['invalid value: Stefan'] = ['Stefan', ''];
@@ -152,7 +154,7 @@ class TimeTest extends UnitTestCase
     /**
      * @return array<string, array<int|string>>
      */
-    public function dateProviderForVariousIntegerValues(): array
+    public static function dataProviderForVariousIntegerValues(): array
     {
         $timestamps = [];
         $timestamps['edge case with zero'] = [0, '00:00'];
@@ -172,7 +174,7 @@ class TimeTest extends UnitTestCase
     /**
      * @test
      *
-     * @dataProvider dateProviderForVariousIntegerValues
+     * @dataProvider dataProviderForVariousIntegerValues
      */
     public function evaluateWithInteger(int $intValue, string $expectedTime): void
     {

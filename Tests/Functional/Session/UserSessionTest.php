@@ -23,7 +23,13 @@ class UserSessionTest extends FunctionalTestCase
 {
     protected UserSession $subject;
 
+    protected array $coreExtensionsToLoad = [
+        'extensionmanager',
+        'reactions',
+    ];
+
     protected array $testExtensionsToLoad = [
+        'sjbr/static-info-tables',
         'jweiland/events2',
     ];
 
@@ -67,7 +73,7 @@ class UserSessionTest extends FunctionalTestCase
      *
      * @return array<string, array<int|string>>
      */
-    public function yearAndMonthDataProvider(): array
+    public static function yearAndMonthDataProvider(): array
     {
         return [
             'empty month and year' => [0, 0, '01', '1970'],

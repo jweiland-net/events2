@@ -212,7 +212,7 @@ class Event extends AbstractEntity
         return null;
     }
 
-    public function setEventBegin(\DateTimeImmutable $eventBegin): void
+    public function setEventBegin(?\DateTimeImmutable $eventBegin): void
     {
         $this->eventBegin = $eventBegin;
     }

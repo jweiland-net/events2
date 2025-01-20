@@ -4,7 +4,7 @@
 
 <f:security.ifHasRole role="{settings.userGroup}">
     <p class="align-right info-box">
-        <f:link.action action="perform" controller="Management" pageUid="{settings.pidOfDetailPage}" title="{f:translate(key: 'newEntry')}">
+        <f:link.action action="perform" controller="Management" pageUid="{settings.pidOfManagementPage}" title="{f:translate(key: 'newEntry')}">
             <span>{f:translate(key: 'newEntry')}</span>
             <span aria-hidden="true" class="icon-arrowright"></span>
         </f:link.action>

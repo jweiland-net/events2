@@ -67,17 +67,19 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
                 return true;
             }
 
-            try {
-                if (
-                    ArrayUtility::getValueByPath(
-                        $valueFromDatabase,
-                        'data/sDEF/lDEF/switchableControllerActions',
-                    )
-                ) {
-                    return true;
+            $checkSettings = [
+                'data/sDEF/lDEF/switchableControllerActions',
+                'data/sDEF/lDEF/settings.selectableCategoriesForNewEvents',
+            ];
+
+            foreach ($checkSettings as $checkSetting) {
+                try {
+                    if (ArrayUtility::getValueByPath($valueFromDatabase, $checkSetting)) {
+                        return true;
+                    }
+                } catch (MissingArrayPathException $missingArrayPathException) {
+                    // If value does not exist, check further requirements
                 }
-            } catch (MissingArrayPathException $missingArrayPathException) {
-                // If value does not exist, check further requirements
             }
         }
 
@@ -98,6 +100,7 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
             }
 
             $this->moveSheetDefaultToDef($valueFromDatabase);
+
             $this->moveFieldFromOldToNewSheet(
                 $valueFromDatabase,
                 'settings.pidOfSearchPage',
@@ -105,6 +108,15 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
                 'sDEF',
                 'settings.pidOfSearchResults',
             );
+
+            $this->moveFieldFromOldToNewSheet(
+                $valueFromDatabase,
+                'settings.selectableCategoriesForNewEvents',
+                'sDEF',
+                'sDEF',
+                'settings.new.selectableCategoriesForNewEvents',
+            );
+
             $ttContentListType = $this->migrateSwitchableControllerActions($valueFromDatabase, $record['list_type']);
 
             $connection = $this->getConnectionPool()->getConnectionForTable('tt_content');
@@ -204,7 +216,7 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
             }
 
             // Move field to new location, if not already done
-            if (!array_key_exists($field, $valueFromDatabase['data'][$newSheet]['lDEF'])) {
+            if (!array_key_exists($newField, $valueFromDatabase['data'][$newSheet]['lDEF'])) {
                 $valueFromDatabase['data'][$newSheet]['lDEF'][$newField] = $value;
             }
 

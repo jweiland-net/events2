@@ -30,12 +30,12 @@
 		"typo3/cms-reactions": "^12.4.15"
 	},
 	"require-dev": {
-		"ergebnis/composer-normalize": "~2.42.0",
-		"friendsofphp/php-cs-fixer": "^3.14",
-		"phpunit/phpunit": "^9.6",
+		"ergebnis/composer-normalize": "^2.44",
+		"friendsofphp/php-cs-fixer": "^3.65",
+		"phpstan/phpdoc-parser": "^1.33",
 		"roave/security-advisories": "dev-latest",
-		"typo3/testing-framework": "^7.0.2",
-		"phpstan/phpdoc-parser": "^1.33"
+		"typo3/coding-standards": "^0.8",
+		"typo3/testing-framework": "^8.2"
 	},
 	"replace": {
 		"typo3-ter/events2": "self.version"

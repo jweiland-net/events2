@@ -15,7 +15,9 @@ use Doctrine\DBAL\Exception;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Helper\Exception\NoUniquePathSegmentException;
-use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\DataHandling\SlugHelper;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -33,7 +35,9 @@ class PathSegmentHelper
 
     public function __construct(
         protected readonly EventDispatcher $eventDispatcher,
-        protected readonly ConnectionPool $connectionPool,
+        protected readonly PersistenceManagerInterface $persistenceManager,
+        protected readonly QueryBuilder $queryBuilder,
+        protected readonly ExtConf $extConf,
     ) {}
 
     /**
@@ -48,7 +52,7 @@ class PathSegmentHelper
         // Normally "generate" will not build unique slugs, but because of our registered modifier hook it will.
         $uniquePathSegment = $this->getSlugHelper()->generate(
             $baseRecord,
-            (int)$baseRecord['pid'],
+            (int)($baseRecord['pid'] ?? 0),
         );
 
         if ($uniquePathSegment === '') {
@@ -65,11 +69,10 @@ class PathSegmentHelper
     {
         // We have to make sure we are working with stored records here. Column "uid" is not 0.
         if (!$event->getUid()) {
-            $persistenceManager = $this->getPersistenceManager();
-            if ($persistenceManager->isNewObject($event)) {
-                $persistenceManager->add($event);
+            if ($this->persistenceManager->isNewObject($event)) {
+                $this->persistenceManager->add($event);
             }
-            $persistenceManager->persistAll();
+            $this->persistenceManager->persistAll();
         }
 
         $event->setPathSegment(
@@ -77,6 +80,10 @@ class PathSegmentHelper
                 $this->getEventRecord($event->getUid()),
             ),
         );
+
+        // Persist updated path segment
+        $this->persistenceManager->update($event);
+        $this->persistenceManager->persistAll();
     }
 
     /**
@@ -85,11 +92,23 @@ class PathSegmentHelper
      */
     protected function getEventRecord(int $eventUid): array
     {
-        $connection = $this->connectionPool->getConnectionForTable(self::TABLE);
-
-        $queryResult = $connection->select(['*'], self::TABLE, ['uid' => $eventUid]);
+        // Event is hidden while creation. Remove enableFields, except deleted
+        $queryBuilder = $this->queryBuilder;
+        $queryBuilder->getRestrictions()->removeAll();
+        $queryBuilder->getRestrictions()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
 
         try {
+            $queryResult = $queryBuilder
+                ->select('*')
+                ->from(self::TABLE)
+                ->where(
+                    $queryBuilder->expr()->eq(
+                        'uid',
+                        $queryBuilder->createNamedParameter($eventUid, Connection::PARAM_INT),
+                    ),
+                )
+                ->executeQuery();
+
             return $queryResult->fetchAssociative() ?: [];
         } catch (Exception $e) {
         }
@@ -116,7 +135,7 @@ class PathSegmentHelper
 
         // Make sure column "uid" is appended in list of generator fields, if "uid" is set in extension settings
         if (
-            $this->getExtConf()->getPathSegmentType() === 'uid'
+            $this->extConf->getPathSegmentType() === 'uid'
             && !in_array('uid', $config['generatorOptions']['fields'], true)
         ) {
             $config['generatorOptions']['fields'][] = 'uid';
@@ -128,15 +147,5 @@ class PathSegmentHelper
             self::SLUG_COLUMN,
             $config,
         );
-    }
-
-    protected function getPersistenceManager(): PersistenceManagerInterface
-    {
-        return GeneralUtility::makeInstance(PersistenceManagerInterface::class);
-    }
-
-    protected function getExtConf(): ExtConf
-    {
-        return GeneralUtility::makeInstance(ExtConf::class);
     }
 }

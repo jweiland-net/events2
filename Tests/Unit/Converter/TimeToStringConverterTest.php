@@ -23,6 +23,8 @@ class TimeToStringConverterTest extends UnitTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->subject = new TimeToStringConverter();
     }
 
@@ -40,7 +42,7 @@ class TimeToStringConverterTest extends UnitTestCase
      *
      * @return array<string, array<int>>
      */
-    public function dataProviderForTooHighIntegerValues(): array
+    public static function dataProviderForTooHighIntegerValues(): array
     {
         $timestamps = [];
         $timestamps['one second too high'] = [60 * 60 * 24];
@@ -55,7 +57,7 @@ class TimeToStringConverterTest extends UnitTestCase
      *
      * @dataProvider dataProviderForTooHighIntegerValues
      */
-    public function convertWithTooHighIntergerValues(int $tooHighIntegerValue): void
+    public function convertWithTooHighIntegerValues(int $tooHighIntegerValue): void
     {
         self::assertSame(
             '23:59',
@@ -68,7 +70,7 @@ class TimeToStringConverterTest extends UnitTestCase
      *
      * @return array<string, array<int>>
      */
-    public function dataProviderForTooLowIntegerValues(): array
+    public static function dataProviderForTooLowIntegerValues(): array
     {
         $timestamps = [];
         $timestamps['edge case with zero'] = [0];
@@ -96,7 +98,7 @@ class TimeToStringConverterTest extends UnitTestCase
      *
      * @return array<string, array<int|string>>
      */
-    public function dataProviderForTimestampsInAllowedRange(): array
+    public static function dataProviderForTimestampsInAllowedRange(): array
     {
         $timestamps = [];
         $timestamps['edge case with zero'] = [0, '00:00'];

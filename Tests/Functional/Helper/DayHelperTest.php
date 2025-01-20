@@ -23,7 +23,13 @@ class DayHelperTest extends FunctionalTestCase
 {
     protected DayHelper $subject;
 
+    protected array $coreExtensionsToLoad = [
+        'extensionmanager',
+        'reactions',
+    ];
+
     protected array $testExtensionsToLoad = [
+        'sjbr/static-info-tables',
         'jweiland/events2',
     ];
 

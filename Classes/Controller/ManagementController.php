@@ -64,13 +64,17 @@ class ManagementController extends AbstractController
 
     public function newAction(): ResponseInterface
     {
-        $categories = $this->categoryRepository->getCategories(
-            $this->settings['selectableCategoriesForNewEvents'],
-        );
-
-        if ($categories->count() === 0) {
-            $this->addFlashMessage('Dear Admin: You have forgotten to define some allowed categories in plugin configuration');
+        if (isset($this->settings['selectableCategoriesForNewEvents'])) {
+            trigger_error(
+                'settings.selectableCategoriesForNewEvents is deprecated. Please of settings.new.selectableCategoriesForNewEvents instead.',
+                E_USER_DEPRECATED,
+            );
+            $selectableCategories = $this->settings['new']['selectableCategoriesForNewEvents'] ?? $this->settings['selectableCategoriesForNewEvents'];
+        } else {
+            $selectableCategories = $this->settings['new']['selectableCategoriesForNewEvents'];
         }
+
+        $categories = $this->categoryRepository->getCategories($selectableCategories);
 
         $this->postProcessAndAssignFluidVariables([
             'event' => GeneralUtility::makeInstance(Event::class),

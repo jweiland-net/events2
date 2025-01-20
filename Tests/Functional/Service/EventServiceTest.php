@@ -34,7 +34,13 @@ class EventServiceTest extends FunctionalTestCase
      */
     protected $eventRepositoryMock;
 
+    protected array $coreExtensionsToLoad = [
+        'extensionmanager',
+        'reactions',
+    ];
+
     protected array $testExtensionsToLoad = [
+        'sjbr/static-info-tables',
         'jweiland/events2',
     ];
 

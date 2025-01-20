@@ -24,9 +24,14 @@ class SearchControllerTest extends FunctionalTestCase
 {
     protected ServerRequestInterface $serverRequest;
 
+    protected array $coreExtensionsToLoad = [
+        'extensionmanager',
+        'reactions',
+    ];
+
     protected array $testExtensionsToLoad = [
-        'jweiland/events2',
         'sjbr/static-info-tables',
+        'jweiland/events2',
     ];
 
     protected function setUp(): void

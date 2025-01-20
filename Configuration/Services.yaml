@@ -11,6 +11,11 @@ services:
       - '../Classes/Exporter/ExporterConfiguration.php'
       - '../Classes/Hooks/Solr/{IndexerHook.php,IndexerHook104.php}'
 
+  qb.event:
+    class: TYPO3\CMS\Core\Database\Query\QueryBuilder
+    factory: ['@TYPO3\CMS\Core\Database\ConnectionPool', 'getQueryBuilderForTable']
+    arguments: ['tx_events2_domain_model_event']
+
   # Called by makeInstance in eID middleware
   JWeiland\Events2\Ajax\FindDaysForMonth:
     public: true
@@ -55,6 +60,10 @@ services:
     shared: false
     autowire: false
     autoconfigure: false
+
+  JWeiland\Events2\Helper\PathSegmentHelper:
+    arguments:
+      $queryBuilder: '@qb.event'
 
   # Called by makeInstance from EXT:form
   JWeiland\Events2\Hooks\Form\PrefillCategoriesHook:

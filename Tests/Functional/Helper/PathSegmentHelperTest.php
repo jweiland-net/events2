@@ -15,9 +15,9 @@ use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Helper\Exception\NoUniquePathSegmentException;
 use JWeiland\Events2\Helper\PathSegmentHelper;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
@@ -25,11 +25,15 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
  */
 class PathSegmentHelperTest extends FunctionalTestCase
 {
-    protected PathSegmentHelper $pathSegmentHelper;
-
     protected ExtConf $extConf;
 
+    protected array $coreExtensionsToLoad = [
+        'extensionmanager',
+        'reactions',
+    ];
+
     protected array $testExtensionsToLoad = [
+        'sjbr/static-info-tables',
         'jweiland/events2',
     ];
 
@@ -43,7 +47,9 @@ class PathSegmentHelperTest extends FunctionalTestCase
 
         $this->subject = new PathSegmentHelper(
             GeneralUtility::makeInstance(EventDispatcher::class),
-            GeneralUtility::makeInstance(ConnectionPool::class),
+            GeneralUtility::makeInstance(PersistenceManagerInterface::class),
+            $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_event'),
+            $this->extConf,
         );
     }
 
@@ -56,7 +62,7 @@ class PathSegmentHelperTest extends FunctionalTestCase
         parent::tearDown();
     }
 
-    public function getPathSegmentTypesSlugTypes(): array
+    public static function getPathSegmentTypesSlugTypes(): array
     {
         return [
             'empty' => ['empty', 'default-'],

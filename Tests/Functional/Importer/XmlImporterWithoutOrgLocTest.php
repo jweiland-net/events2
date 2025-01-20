@@ -32,12 +32,13 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
 
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
+        'reactions',
         'scheduler',
     ];
 
     protected array $testExtensionsToLoad = [
-        'jweiland/events2',
         'sjbr/static-info-tables',
+        'jweiland/events2',
     ];
 
     /**

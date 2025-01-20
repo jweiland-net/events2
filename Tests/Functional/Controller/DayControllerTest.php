@@ -26,9 +26,11 @@ class DayControllerTest extends FunctionalTestCase
 
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
+        'reactions',
     ];
 
     protected array $testExtensionsToLoad = [
+        'sjbr/static-info-tables',
         'jweiland/events2',
     ];
 
@@ -162,7 +164,7 @@ class DayControllerTest extends FunctionalTestCase
         );
     }
 
-    public function listWithFilledFilterDataProvider(): array
+    public static function listWithFilledFilterDataProvider(): array
     {
         return [
             'ListType: list' => ['list'],
