@@ -10,6 +10,12 @@ Upgrade
 If you upgrade/update EXT:events2 to a newer version, please read this
 section carefully!
 
+Update to Version 9.1.9
+=======================
+
+We have moved TypoScript setting `settings.selectableCategoriesForNewEvents`
+ into `settings.new.selectableCategoriesForNewEvents`. If you have defined
+ that setting in management plugin please execute the events2 upgrade wizard.
 
 Update to Version 9.0.8
 =======================

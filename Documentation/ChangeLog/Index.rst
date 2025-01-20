@@ -7,6 +7,16 @@
 ChangeLog
 =========
 
+Version 9.1.9
+=============
+
+*   [BUGFIX] Correct overwriting partial template of UserEditLinks
+*   [BUGFIX] Allow creation of path segment also for hidden event records
+*   [BUGFIX] Repair validation of event begin
+*   [TASK] Deprecate `settings.selectableCategoriesForNewEvents`
+*   [FEATURE] Implement new setting `settings.new.selectableCategoriesForNewEvents`
+*   [TASK] Repair func. and unit tests
+
 Version 9.1.8
 =============
 
