@@ -113,9 +113,19 @@ class PrefillCategoriesHook
 
     protected function getSelectableCategoriesForNewEvents(): array
     {
-        $selectableCategoriesForNewEvents = $this->settings['selectableCategoriesForNewEvents'] === ''
+        if (isset($this->settings['selectableCategoriesForNewEvents'])) {
+            trigger_error(
+                'settings.selectableCategoriesForNewEvents is deprecated. Please of settings.new.selectableCategoriesForNewEvents instead.',
+                E_USER_DEPRECATED
+            );
+            $selectableCategories = $this->settings['new']['selectableCategoriesForNewEvents'] ?? $this->settings['selectableCategoriesForNewEvents'];
+        } else {
+            $selectableCategories = $this->settings['new']['selectableCategoriesForNewEvents'];
+        }
+
+        $selectableCategoriesForNewEvents = $selectableCategories === ''
             ? '0'
-            : $this->settings['selectableCategoriesForNewEvents'];
+            : $selectableCategories;
 
         return GeneralUtility::intExplode(',', $selectableCategoriesForNewEvents, true);
     }
@@ -126,11 +136,6 @@ class PrefillCategoriesHook
         $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
 
         return $queryBuilder;
-    }
-
-    protected function getPageRepository(): PageRepository
-    {
-        return GeneralUtility::makeInstance(PageRepository::class);
     }
 
     protected function getConnectionPool(): ConnectionPool

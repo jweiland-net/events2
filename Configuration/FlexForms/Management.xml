@@ -5,7 +5,7 @@
                 <sheetTitle>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:sheetGeneral</sheetTitle>
                 <type>array</type>
                 <el>
-                    <settings.selectableCategoriesForNewEvents>
+                    <settings.new.selectableCategoriesForNewEvents>
                         <label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:selectableCategoriesForNewEvents</label>
                         <config>
                             <type>select</type>
@@ -24,7 +24,7 @@
                             <maxitems>99</maxitems>
                             <minitems>0</minitems>
                         </config>
-                    </settings.selectableCategoriesForNewEvents>
+                    </settings.new.selectableCategoriesForNewEvents>
                 </el>
             </ROOT>
         </sDEF>

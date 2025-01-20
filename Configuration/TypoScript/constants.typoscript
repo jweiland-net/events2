@@ -40,6 +40,11 @@ plugin.tx_events2 {
       amountOfRecordsToShow = 7
     }
 
+    new {
+      # cat=plugin.tx_events2; type=string; label=Allowed categories for FE form: Define the selectable categories to be used in form of frontend management
+      selectableCategoriesForNewEvents =
+    }
+
     pageBrowser {
       # cat=plugin.tx_events2/basic/dims; type=int+; label=Items per page: How many items should be displayed on one page
       itemsPerPage = 15
