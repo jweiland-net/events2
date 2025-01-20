@@ -56,15 +56,8 @@ use TYPO3\TestingFramework\Core\Testbase;
     // We can use the "typo3/cms-composer-installers" constant "TYPO3_COMPOSER_MODE" to determine composer mode.
     // This should be always true except for TYPO3 mono repository.
     $composerMode = defined('TYPO3_COMPOSER_MODE') && TYPO3_COMPOSER_MODE === true;
-
-    // @todo: Remove else branch when dropping support for v12
-    $hasConsolidatedHttpEntryPoint = class_exists(CoreHttpApplication::class);
-    if ($hasConsolidatedHttpEntryPoint) {
-        SystemEnvironmentBuilder::run(0, \TYPO3\CMS\Core\Core\SystemEnvironmentBuilder::REQUESTTYPE_CLI, $composerMode);
-    } else {
-        $requestType = \TYPO3\CMS\Core\Core\SystemEnvironmentBuilder::REQUESTTYPE_BE | \TYPO3\CMS\Core\Core\SystemEnvironmentBuilder::REQUESTTYPE_CLI;
-        SystemEnvironmentBuilder::run(0, $requestType, $composerMode);
-    }
+    $requestType = \TYPO3\CMS\Core\Core\SystemEnvironmentBuilder::REQUESTTYPE_BE | \TYPO3\CMS\Core\Core\SystemEnvironmentBuilder::REQUESTTYPE_CLI;
+    SystemEnvironmentBuilder::run(0, $requestType, $composerMode);
 
     $testbase->createDirectory(Environment::getPublicPath() . '/typo3conf/ext');
     $testbase->createDirectory(Environment::getPublicPath() . '/typo3temp/assets');
