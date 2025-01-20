@@ -31,6 +31,7 @@ class Events2PageTitleProviderTest extends FunctionalTestCase
     ];
 
     protected array $testExtensionsToLoad = [
+        'sjbr/static-info-tables',
         'jweiland/events2',
     ];
 

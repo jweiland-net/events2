@@ -45,8 +45,9 @@ class DayFactoryTest extends FunctionalTestCase
     ];
 
     protected array $testExtensionsToLoad = [
-        'jweiland/events2',
+        'sjbr/static-info-tables',
         'jweiland/maps2',
+        'jweiland/events2',
     ];
 
     protected function setUp(): void

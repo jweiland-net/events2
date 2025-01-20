@@ -56,8 +56,8 @@ class XmlImporterTest extends FunctionalTestCase
     ];
 
     protected array $testExtensionsToLoad = [
-        'jweiland/events2',
         'sjbr/static-info-tables',
+        'jweiland/events2',
     ];
 
     /**
