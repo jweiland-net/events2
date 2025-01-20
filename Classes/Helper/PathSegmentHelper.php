@@ -81,7 +81,7 @@ class PathSegmentHelper
             ),
         );
 
-        // Persis updated path segment
+        // Persist updated path segment
         $this->persistenceManager->update($event);
         $this->persistenceManager->persistAll();
     }
@@ -102,7 +102,6 @@ class PathSegmentHelper
                 ->select('*')
                 ->from(self::TABLE)
                 ->where(
-                    'uid',
                     $queryBuilder->expr()->eq(
                         'uid',
                         $queryBuilder->createNamedParameter($eventUid, Connection::PARAM_INT),

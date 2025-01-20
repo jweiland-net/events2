@@ -26,8 +26,6 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
  */
 class PathSegmentHelperTest extends FunctionalTestCase
 {
-    protected PathSegmentHelper $pathSegmentHelper;
-
     protected ExtConf $extConf;
 
     protected array $coreExtensionsToLoad = [
@@ -51,7 +49,7 @@ class PathSegmentHelperTest extends FunctionalTestCase
         $this->subject = new PathSegmentHelper(
             GeneralUtility::makeInstance(EventDispatcher::class),
             GeneralUtility::makeInstance(PersistenceManagerInterface::class),
-            $this->createMock(QueryBuilder::class),
+            $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_event'),
             $this->extConf,
         );
     }
