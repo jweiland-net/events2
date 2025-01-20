@@ -27,6 +27,10 @@ class LocationTest extends FunctionalTestCase
 
     protected Location $subject;
 
+    protected array $coreExtensionsToLoad = [
+        'reactions',
+    ];
+
     protected array $testExtensionsToLoad = [
         'jweiland/events2',
         'sjbr/static-info-tables',

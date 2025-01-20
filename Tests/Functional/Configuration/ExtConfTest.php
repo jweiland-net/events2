@@ -22,6 +22,10 @@ class ExtConfTest extends FunctionalTestCase
 {
     protected ExtConf $subject;
 
+    protected array $coreExtensionsToLoad = [
+        'reactions',
+    ];
+
     protected array $testExtensionsToLoad = [
         'jweiland/events2',
     ];

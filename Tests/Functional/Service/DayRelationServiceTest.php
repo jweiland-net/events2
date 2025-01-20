@@ -86,6 +86,10 @@ class DayRelationServiceTest extends FunctionalTestCase
         'exception' => [],
     ];
 
+    protected array $coreExtensionsToLoad = [
+        'reactions',
+    ];
+
     protected array $testExtensionsToLoad = [
         'jweiland/events2',
     ];

@@ -51,6 +51,7 @@ class XmlImporterTest extends FunctionalTestCase
 
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
+        'reactions',
         'scheduler',
     ];
 

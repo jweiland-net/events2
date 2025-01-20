@@ -40,6 +40,10 @@ class HiddenObjectHelperTest extends FunctionalTestCase
      */
     protected $requestMock;
 
+    protected array $coreExtensionsToLoad = [
+        'reactions',
+    ];
+
     protected array $testExtensionsToLoad = [
         'jweiland/events2',
     ];

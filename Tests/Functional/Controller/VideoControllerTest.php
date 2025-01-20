@@ -23,6 +23,10 @@ class VideoControllerTest extends FunctionalTestCase
 {
     protected ServerRequestInterface $serverRequest;
 
+    protected array $coreExtensionsToLoad = [
+        'reactions',
+    ];
+
     protected array $testExtensionsToLoad = [
         'jweiland/events2',
         'sjbr/static-info-tables',

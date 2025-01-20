@@ -23,6 +23,10 @@ class UserSessionTest extends FunctionalTestCase
 {
     protected UserSession $subject;
 
+    protected array $coreExtensionsToLoad = [
+        'reactions',
+    ];
+
     protected array $testExtensionsToLoad = [
         'jweiland/events2',
     ];

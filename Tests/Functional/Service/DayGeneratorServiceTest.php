@@ -36,6 +36,10 @@ class DayGeneratorServiceTest extends FunctionalTestCase
      */
     protected $loggerMock;
 
+    protected array $coreExtensionsToLoad = [
+        'reactions',
+    ];
+
     protected array $testExtensionsToLoad = [
         'jweiland/events2',
     ];

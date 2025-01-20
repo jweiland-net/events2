@@ -40,6 +40,10 @@ class JsonLdServiceTest extends FunctionalTestCase
 
     protected QuerySettingsInterface $querySettings;
 
+    protected array $coreExtensionsToLoad = [
+        'reactions',
+    ];
+
     protected array $testExtensionsToLoad = [
         'jweiland/events2',
     ];

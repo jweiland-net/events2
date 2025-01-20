@@ -27,6 +27,10 @@ class TimeFactoryTest extends FunctionalTestCase
 {
     protected TimeFactory $subject;
 
+    protected array $coreExtensionsToLoad = [
+        'reactions',
+    ];
+
     protected array $testExtensionsToLoad = [
         'jweiland/events2',
     ];

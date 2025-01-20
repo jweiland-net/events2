@@ -36,6 +36,10 @@ class DataHandlerTest extends FunctionalTestCase
 
     protected QuerySettingsInterface $querySettings;
 
+    protected array $coreExtensionsToLoad = [
+        'reactions',
+    ];
+
     protected array $testExtensionsToLoad = [
         'jweiland/events2',
         'jweiland/maps2',

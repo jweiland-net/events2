@@ -29,6 +29,10 @@ class PathSegmentHelperTest extends FunctionalTestCase
 
     protected ExtConf $extConf;
 
+    protected array $coreExtensionsToLoad = [
+        'reactions',
+    ];
+
     protected array $testExtensionsToLoad = [
         'jweiland/events2',
     ];

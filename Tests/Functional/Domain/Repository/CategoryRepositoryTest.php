@@ -22,6 +22,10 @@ class CategoryRepositoryTest extends FunctionalTestCase
 {
     protected CategoryRepository $subject;
 
+    protected array $coreExtensionsToLoad = [
+        'reactions',
+    ];
+
     protected array $testExtensionsToLoad = [
         'jweiland/events2',
     ];

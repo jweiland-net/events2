@@ -44,6 +44,10 @@ class DayRepositoryTest extends FunctionalTestCase
 
     protected ObjectManager $objectManager;
 
+    protected array $coreExtensionsToLoad = [
+        'reactions',
+    ];
+
     protected array $testExtensionsToLoad = [
         'jweiland/events2',
         'jweiland/maps2',
