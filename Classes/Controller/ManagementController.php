@@ -22,7 +22,6 @@ use JWeiland\Events2\Traits\InjectMailMessageTrait;
 use JWeiland\Events2\Traits\InjectPersistenceManagerTrait;
 use JWeiland\Events2\Traits\InjectUserRepositoryTrait;
 use Psr\Http\Message\ResponseInterface;
-use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Annotation as Extbase;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
