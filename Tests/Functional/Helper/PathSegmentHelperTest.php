@@ -52,7 +52,7 @@ class PathSegmentHelperTest extends FunctionalTestCase
             GeneralUtility::makeInstance(EventDispatcher::class),
             GeneralUtility::makeInstance(PersistenceManagerInterface::class),
             $this->createMock(QueryBuilder::class),
-            GeneralUtility::makeInstance($this->extConf),
+            $this->extConf,
         );
     }
 
