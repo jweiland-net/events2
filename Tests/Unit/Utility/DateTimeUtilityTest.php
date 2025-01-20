@@ -23,6 +23,8 @@ class DateTimeUtilityTest extends UnitTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         // The resulting dates expecting dates for germany
         date_default_timezone_set('Europe/Berlin');
 

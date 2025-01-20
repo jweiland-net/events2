@@ -35,6 +35,8 @@ class CacheServiceTest extends UnitTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->request = new ServerRequest('https://www.example.com', 'GET');
         $this->request = $this->request->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE);
 
