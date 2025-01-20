@@ -23,6 +23,7 @@ class ExtConfTest extends FunctionalTestCase
     protected ExtConf $subject;
 
     protected array $coreExtensionsToLoad = [
+        'extensionmanager',
         'reactions',
     ];
 

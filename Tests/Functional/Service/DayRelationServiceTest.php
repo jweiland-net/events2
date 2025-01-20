@@ -87,6 +87,7 @@ class DayRelationServiceTest extends FunctionalTestCase
     ];
 
     protected array $coreExtensionsToLoad = [
+        'extensionmanager',
         'reactions',
     ];
 

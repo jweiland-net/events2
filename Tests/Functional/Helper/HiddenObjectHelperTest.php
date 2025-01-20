@@ -41,6 +41,7 @@ class HiddenObjectHelperTest extends FunctionalTestCase
     protected $requestMock;
 
     protected array $coreExtensionsToLoad = [
+        'extensionmanager',
         'reactions',
     ];
 

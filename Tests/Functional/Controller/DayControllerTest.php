@@ -26,6 +26,7 @@ class DayControllerTest extends FunctionalTestCase
 
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
+        'reactions',
     ];
 
     protected array $testExtensionsToLoad = [

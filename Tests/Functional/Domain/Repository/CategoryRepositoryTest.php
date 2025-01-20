@@ -23,6 +23,7 @@ class CategoryRepositoryTest extends FunctionalTestCase
     protected CategoryRepository $subject;
 
     protected array $coreExtensionsToLoad = [
+        'extensionmanager',
         'reactions',
     ];
 

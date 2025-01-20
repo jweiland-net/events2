@@ -37,6 +37,7 @@ class DataHandlerTest extends FunctionalTestCase
     protected QuerySettingsInterface $querySettings;
 
     protected array $coreExtensionsToLoad = [
+        'extensionmanager',
         'reactions',
     ];
 

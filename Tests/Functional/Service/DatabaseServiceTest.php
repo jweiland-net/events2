@@ -36,6 +36,7 @@ class DatabaseServiceTest extends FunctionalTestCase
     protected ObjectManager $objectManager;
 
     protected array $coreExtensionsToLoad = [
+        'extensionmanager',
         'reactions',
     ];
 

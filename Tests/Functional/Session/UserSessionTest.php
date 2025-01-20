@@ -24,6 +24,7 @@ class UserSessionTest extends FunctionalTestCase
     protected UserSession $subject;
 
     protected array $coreExtensionsToLoad = [
+        'extensionmanager',
         'reactions',
     ];
 

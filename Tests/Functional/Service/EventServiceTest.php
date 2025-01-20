@@ -35,6 +35,7 @@ class EventServiceTest extends FunctionalTestCase
     protected $eventRepositoryMock;
 
     protected array $coreExtensionsToLoad = [
+        'extensionmanager',
         'reactions',
     ];
 

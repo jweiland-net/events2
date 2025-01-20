@@ -41,6 +41,7 @@ class JsonLdServiceTest extends FunctionalTestCase
     protected QuerySettingsInterface $querySettings;
 
     protected array $coreExtensionsToLoad = [
+        'extensionmanager',
         'reactions',
     ];
 

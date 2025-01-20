@@ -24,6 +24,7 @@ class DayHelperTest extends FunctionalTestCase
     protected DayHelper $subject;
 
     protected array $coreExtensionsToLoad = [
+        'extensionmanager',
         'reactions',
     ];
 

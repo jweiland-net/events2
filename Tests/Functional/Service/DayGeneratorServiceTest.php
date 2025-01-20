@@ -37,6 +37,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
     protected $loggerMock;
 
     protected array $coreExtensionsToLoad = [
+        'extensionmanager',
         'reactions',
     ];
 

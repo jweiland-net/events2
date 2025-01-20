@@ -24,6 +24,7 @@ class VideoControllerTest extends FunctionalTestCase
     protected ServerRequestInterface $serverRequest;
 
     protected array $coreExtensionsToLoad = [
+        'extensionmanager',
         'reactions',
     ];
 

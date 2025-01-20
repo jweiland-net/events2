@@ -28,6 +28,7 @@ class TimeFactoryTest extends FunctionalTestCase
     protected TimeFactory $subject;
 
     protected array $coreExtensionsToLoad = [
+        'extensionmanager',
         'reactions',
     ];
 

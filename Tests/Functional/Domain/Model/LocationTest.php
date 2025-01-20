@@ -28,6 +28,7 @@ class LocationTest extends FunctionalTestCase
     protected Location $subject;
 
     protected array $coreExtensionsToLoad = [
+        'extensionmanager',
         'reactions',
     ];
 

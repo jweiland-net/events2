@@ -30,6 +30,7 @@ class PathSegmentHelperTest extends FunctionalTestCase
     protected ExtConf $extConf;
 
     protected array $coreExtensionsToLoad = [
+        'extensionmanager',
         'reactions',
     ];
 
