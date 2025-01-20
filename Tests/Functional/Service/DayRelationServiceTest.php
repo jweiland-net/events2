@@ -271,7 +271,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         );
     }
 
-    public function dataProviderForSimpleEventWithTimeForDifferentTypes(): array
+    public static function dataProviderForSimpleEventWithTimeForDifferentTypes(): array
     {
         return [
             'Test for time type "event_time"' => ['event_time', '08:00', '08:00:00'],

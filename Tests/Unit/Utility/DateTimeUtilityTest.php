@@ -38,7 +38,7 @@ class DateTimeUtilityTest extends UnitTestCase
         parent::tearDown();
     }
 
-    public function emptyDatesDataProvider(): array
+    public static function emptyDatesDataProvider(): array
     {
         $emptyDate = [];
         $emptyDate['empty value: null'] = [null];
@@ -63,7 +63,7 @@ class DateTimeUtilityTest extends UnitTestCase
     /**
      * dataProvider with invalid values for DateTime objects.
      */
-    public function dataProviderWithInvalidValuesForDateTimeObjects(): array
+    public static function dataProviderWithInvalidValuesForDateTimeObjects(): array
     {
         $invalidValues = [];
         $invalidValues['string'] = ['Hello'];
@@ -88,7 +88,7 @@ class DateTimeUtilityTest extends UnitTestCase
         );
     }
 
-    public function stringDatesDataProvider(): array
+    public static function stringDatesDataProvider(): array
     {
         $dateTimeZone = new \DateTimeZone('Europe/Berlin');
 
@@ -124,7 +124,7 @@ class DateTimeUtilityTest extends UnitTestCase
     /**
      * @return array
      */
-    public function timestampDataProvider(): array
+    public static function timestampDataProvider(): array
     {
         $dateTimeZone = new \DateTimeZone('Europe/Berlin');
 

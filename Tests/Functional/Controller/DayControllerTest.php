@@ -162,7 +162,7 @@ class DayControllerTest extends FunctionalTestCase
         );
     }
 
-    public function listWithFilledFilterDataProvider(): array
+    public static function listWithFilledFilterDataProvider(): array
     {
         return [
             'ListType: list' => ['list'],

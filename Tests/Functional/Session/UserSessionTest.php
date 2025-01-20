@@ -67,7 +67,7 @@ class UserSessionTest extends FunctionalTestCase
      *
      * @return array<string, array<int|string>>
      */
-    public function yearAndMonthDataProvider(): array
+    public static function yearAndMonthDataProvider(): array
     {
         return [
             'empty month and year' => [0, 0, '01', '1970'],

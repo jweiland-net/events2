@@ -41,7 +41,7 @@ class TimeTest extends UnitTestCase
      *
      * @return array<string, array<string>>
      */
-    public function unmodifiedTimesDataProvider(): array
+    public static function unmodifiedTimesDataProvider(): array
     {
         $times = [];
         $times['empty values'] = [''];
@@ -69,7 +69,7 @@ class TimeTest extends UnitTestCase
     /**
      * @return array<string, array<string>>
      */
-    public function unpaddedTimesDataProvider(): array
+    public static function unpaddedTimesDataProvider(): array
     {
         $times = [];
         $times['zero values'] = ['0:0', '00:00'];
@@ -98,7 +98,7 @@ class TimeTest extends UnitTestCase
     /**
      * @return array<string, array<string>>
      */
-    public function tooHighTimesDataProvider(): array
+    public static function tooHighTimesDataProvider(): array
     {
         $times = [];
         $times['edge case midnight'] = ['24:00', '24:00'];
@@ -127,7 +127,7 @@ class TimeTest extends UnitTestCase
     /**
      * @return array<string, array<string>>
      */
-    public function invalidTimesDataProvider(): array
+    public static function invalidTimesDataProvider(): array
     {
         $times = [];
         $times['invalid value: Stefan'] = ['Stefan', ''];

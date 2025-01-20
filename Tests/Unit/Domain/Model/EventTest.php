@@ -1236,7 +1236,7 @@ class EventTest extends UnitTestCase
     /**
      * @return array<string, array<int|bool>>
      */
-    public function events2OrganizerDataProvider(): array
+    public static function events2OrganizerDataProvider(): array
     {
         return [
             'User with valid organizer will return true' => [2, true],
