@@ -116,7 +116,7 @@ class PrefillCategoriesHook
         if (isset($this->settings['selectableCategoriesForNewEvents'])) {
             trigger_error(
                 'settings.selectableCategoriesForNewEvents is deprecated. Please of settings.new.selectableCategoriesForNewEvents instead.',
-                E_USER_DEPRECATED
+                E_USER_DEPRECATED,
             );
             $selectableCategories = $this->settings['new']['selectableCategoriesForNewEvents'] ?? $this->settings['selectableCategoriesForNewEvents'];
         } else {
