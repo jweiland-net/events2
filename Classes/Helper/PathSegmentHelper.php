@@ -106,7 +106,7 @@ class PathSegmentHelper
                     $queryBuilder->expr()->eq(
                         'uid',
                         $queryBuilder->createNamedParameter($eventUid, Connection::PARAM_INT),
-                    )
+                    ),
                 )
                 ->executeQuery();
 
