@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 9.1.10
+==============
+
+*   [BUGFIX] Add management PID to userEditLinks partial when using EXT:form
+
 Version 9.1.9
 =============
 
