@@ -11,6 +11,7 @@ Version 9.1.10
 ==============
 
 *   [BUGFIX] Add management PID to userEditLinks partial when using EXT:form
+*   [BUGFIX] Declare sys_language_uid editable for everyone
 
 Version 9.1.9
 =============
