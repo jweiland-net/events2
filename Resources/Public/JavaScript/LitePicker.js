@@ -487,9 +487,9 @@ var Litepicker = function (t) {
         D.className = a.monthItemYear, D.innerHTML = String(t.getFullYear()), h.appendChild(D);
       }
       var w = document.createElement('button');
-      w.type = 'button', w.className = a.buttonPreviousMonth, w.innerHTML = this.options.buttonText.previousMonth;
+      w.type = 'button', w.className = a.buttonPreviousMonth, w.setAttribute('aria-label', this.options.buttonText.previousMonthLabel), w.innerHTML = this.options.buttonText.previousMonth;
       var x = document.createElement('button');
-      x.type = 'button', x.className = a.buttonNextMonth, x.innerHTML = this.options.buttonText.nextMonth, c.appendChild(w), c.appendChild(h), c.appendChild(x), this.options.minDate && n.isSameOrBefore(new r.DateTime(this.options.minDate), 'month') && s.classList.add(a.noPreviousMonth), this.options.maxDate && n.isSameOrAfter(new r.DateTime(this.options.maxDate), 'month') && s.classList.add(a.noNextMonth);
+      x.type = 'button', x.className = a.buttonNextMonth, x.setAttribute('aria-label', this.options.buttonText.nextMonthLabel), x.innerHTML = this.options.buttonText.nextMonth, c.appendChild(w), c.appendChild(h), c.appendChild(x), this.options.minDate && n.isSameOrBefore(new r.DateTime(this.options.minDate), 'month') && s.classList.add(a.noPreviousMonth), this.options.maxDate && n.isSameOrAfter(new r.DateTime(this.options.maxDate), 'month') && s.classList.add(a.noNextMonth);
       var M = document.createElement('div');
       M.className = a.monthItemWeekdaysRow, this.options.showWeekNumbers && (M.innerHTML = '<div>W</div>');
       for (var _ = 1; _ <= 7; _ += 1) {
@@ -605,7 +605,9 @@ var Litepicker = function (t) {
           apply: 'Apply',
           cancel: 'Cancel',
           previousMonth: '<svg width="11" height="16" xmlns="http://www.w3.org/2000/svg"><path d="M7.919 0l2.748 2.667L5.333 8l5.334 5.333L7.919 16 0 8z" fill-rule="nonzero"/></svg>',
+          previousMonthLabel: 'Switch to previous month',
           nextMonth: '<svg width="11" height="16" xmlns="http://www.w3.org/2000/svg"><path d="M2.748 16L0 13.333 5.333 8 0 2.667 2.748 0l7.919 8z" fill-rule="nonzero"/></svg>',
+          nextMonthLabel: 'Switch to next month',
           reset: '<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">\n        <path d="M0 0h24v24H0z" fill="none"/>\n        <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/>\n      </svg>'
         },
         tooltipText: { one: 'day', other: 'days' }

@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 9.1.11
+==============
+
+*   [FEATURE] Accessibility: Add aria-label to calendar button next/previous
+
 Version 9.1.10
 ==============
 
