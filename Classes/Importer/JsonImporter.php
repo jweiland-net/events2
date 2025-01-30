@@ -90,10 +90,6 @@ class JsonImporter
     ): void {
         $eventRecord = $this->getEventRecordByImportId($eventImportData['uid']);
 
-        if ($eventImportData['title'] === '5. Sinfoniekonzert „Aus der neuen Welt“') {
-            $tmp = '';
-        }
-
         // Early return, if record was already imported.
         // We don't try to update the record, as we had to add an import_id column to each events2 table.
         // Possible, yes, but too much work right now.
@@ -132,7 +128,7 @@ class JsonImporter
             'detail_information' => $eventImportData['detail_information'],
             'free_entry' => $eventImportData['free_entry'] ? 1 : 0,
             'ticket_link' => $this->migrateLinkRecordToDataMap($eventImportData['ticket_link'], $configuration->getStoragePid(), $dataMap),
-            'categories' => $this->migrateCategoryRecordsToDataMap($eventImportData['categories'], $configuration->getStoragePid(), $dataMap),
+            'categories' => $this->migrateCategoryRecordsToDataMap($eventImportData['categories'], $configuration, $dataMap),
             'location' => $this->migrateLocationRecordToDataMap($eventImportData['location'], $configuration->getStoragePid(), $dataMap),
             'organizers' => $this->migrateOrganizerRecordsToDataMap($eventImportData['organizers'], $configuration->getStoragePid(), $dataMap),
             'images' => $this->migrateImageRecordsToDataMap($eventImportData['images'], $eventUid, $configuration, $dataMap),
@@ -266,7 +262,7 @@ class JsonImporter
         return implode(',', $exceptionUidCollection);
     }
 
-    protected function migrateCategoryRecordsToDataMap(array $importCategoryRecords, int $storagePid, array &$dataMap): string
+    protected function migrateCategoryRecordsToDataMap(array $importCategoryRecords, ImportConfiguration $configuration, array &$dataMap): string
     {
         if ($importCategoryRecords === []) {
             return '0';
@@ -288,11 +284,11 @@ class JsonImporter
                 $categoryUid = $this->getUniqueIdForNewRecords();
 
                 $dataMap['sys_category'][$categoryUid] = [
-                    'pid' => $storagePid,
+                    'pid' => $configuration->getStoragePid(),
                     'crdate' => time(),
                     'tstamp' => time(),
                     'title' => $importCategoryRecord['title'],
-                    'parent' => 0,
+                    'parent' => $configuration->getParentCategory(),
                 ];
             } else {
                 $categoryUid = (string)$categoryRecord['uid'];

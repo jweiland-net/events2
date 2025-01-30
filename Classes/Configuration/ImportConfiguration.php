@@ -24,6 +24,8 @@ class ImportConfiguration
 
     private string $storageFolder;
 
+    private int $parentCategory;
+
     public function __construct(array $payload, ReactionInstruction $reactionInstruction)
     {
         $reactionRecord = $reactionInstruction->toArray();
@@ -31,6 +33,7 @@ class ImportConfiguration
         $this->payload = $payload;
         $this->storagePid = (int)($reactionRecord['storage_pid'] ?? 0);
         $this->storageFolder = $reactionRecord['storage_folder'] ?? '';
+        $this->parentCategory = (int)($reactionRecord['parent_category'] ?? 0);
     }
 
     public function getPayload(): array
@@ -46,5 +49,10 @@ class ImportConfiguration
     public function getStorageFolder(): string
     {
         return $this->storageFolder;
+    }
+
+    public function getParentCategory(): int
+    {
+        return $this->parentCategory;
     }
 }

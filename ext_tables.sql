@@ -153,5 +153,6 @@ CREATE TABLE fe_users
 #
 CREATE TABLE sys_reaction
 (
-	storage_folder varchar(255) DEFAULT '' NOT NULL
+	storage_folder varchar(255) DEFAULT '' NOT NULL,
+	parent_category int(10) DEFAULT '0' NOT NULL
 );
