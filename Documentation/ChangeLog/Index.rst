@@ -11,6 +11,7 @@ Version 9.1.11
 ==============
 
 *   [FEATURE] Accessibility: Add aria-label to calendar button next/previous
+*   [BUGFIX] Import: Keep category UID of importing server, if found
 
 Version 9.1.10
 ==============

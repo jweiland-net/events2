@@ -90,6 +90,10 @@ class JsonImporter
     ): void {
         $eventRecord = $this->getEventRecordByImportId($eventImportData['uid']);
 
+        if ($eventImportData['title'] === '5. Sinfoniekonzert „Aus der neuen Welt“') {
+            $tmp = '';
+        }
+
         // Early return, if record was already imported.
         // We don't try to update the record, as we had to add an import_id column to each events2 table.
         // Possible, yes, but too much work right now.
@@ -269,7 +273,8 @@ class JsonImporter
         }
 
         $categoryUidCollection = [];
-        foreach ($importCategoryRecords ?? [] as $importCategoryRecord) {
+        foreach ($importCategoryRecords as $importCategoryRecord) {
+            // Add UID of already imported category to category collection list
             foreach ($dataMap['sys_category'] ?? [] as $uid => $categoryRecord) {
                 if ($categoryRecord['title'] === $importCategoryRecord['title']) {
                     $categoryUidCollection[] = $uid;
@@ -290,7 +295,7 @@ class JsonImporter
                     'parent' => 0,
                 ];
             } else {
-                $categoryUid = (string)$importCategoryRecord['uid'];
+                $categoryUid = (string)$categoryRecord['uid'];
             }
 
             $categoryUidCollection[] = $categoryUid;
