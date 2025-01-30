@@ -36,6 +36,7 @@ class EventService
         protected readonly EventRepository $eventRepository,
         protected readonly TimeFactory $timeFactory,
         protected readonly DataMapper $dataMapper,
+        protected readonly DatabaseService $databaseService,
     ) {}
 
     public function getNextDayForEvent(int $eventUid): ?\DateTimeImmutable
@@ -76,8 +77,11 @@ class EventService
     /**
      * @return Event[]
      */
-    public function getEventsForExport(array $storagePages, \DateTimeImmutable $endDate): array
-    {
+    public function getEventsForExport(
+        array $storagePages,
+        array $categoryUids,
+        \DateTimeImmutable $endDate
+    ): array {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder
             ->selectLiteral('DISTINCT e.*')
@@ -110,6 +114,15 @@ class EventService
                         $queryBuilder->createNamedParameter($storagePages, ArrayParameterType::INTEGER),
                     ),
                 );
+        }
+
+        if ($categoryUids !== []) {
+            $this->databaseService->addConstraintForCategories(
+                $queryBuilder,
+                $categoryUids,
+                null,
+                'e'
+            );
         }
 
         $queryResult = $queryBuilder->executeQuery();

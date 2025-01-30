@@ -7,12 +7,13 @@
 ChangeLog
 =========
 
-Version 9.1.11
-==============
+Version 9.2.0
+=============
 
 *   [FEATURE] Accessibility: Add aria-label to calendar button next/previous
 *   [BUGFIX] Import: Keep category UID of importing server, if found
 *   [FEATURE] You can now define a parent category for imported categories
+*   [FEATURE] Allow filtering exported events by category UIDs
 
 Version 9.1.10
 ==============
