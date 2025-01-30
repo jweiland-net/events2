@@ -128,7 +128,7 @@ class JsonImporter
             'detail_information' => $eventImportData['detail_information'],
             'free_entry' => $eventImportData['free_entry'] ? 1 : 0,
             'ticket_link' => $this->migrateLinkRecordToDataMap($eventImportData['ticket_link'], $configuration->getStoragePid(), $dataMap),
-            'categories' => $this->migrateCategoryRecordsToDataMap($eventImportData['categories'], $configuration->getStoragePid(), $dataMap),
+            'categories' => $this->migrateCategoryRecordsToDataMap($eventImportData['categories'], $configuration, $dataMap),
             'location' => $this->migrateLocationRecordToDataMap($eventImportData['location'], $configuration->getStoragePid(), $dataMap),
             'organizers' => $this->migrateOrganizerRecordsToDataMap($eventImportData['organizers'], $configuration->getStoragePid(), $dataMap),
             'images' => $this->migrateImageRecordsToDataMap($eventImportData['images'], $eventUid, $configuration, $dataMap),
@@ -262,14 +262,15 @@ class JsonImporter
         return implode(',', $exceptionUidCollection);
     }
 
-    protected function migrateCategoryRecordsToDataMap(array $importCategoryRecords, int $storagePid, array &$dataMap): string
+    protected function migrateCategoryRecordsToDataMap(array $importCategoryRecords, ImportConfiguration $configuration, array &$dataMap): string
     {
         if ($importCategoryRecords === []) {
             return '0';
         }
 
         $categoryUidCollection = [];
-        foreach ($importCategoryRecords ?? [] as $importCategoryRecord) {
+        foreach ($importCategoryRecords as $importCategoryRecord) {
+            // Add UID of already imported category to category collection list
             foreach ($dataMap['sys_category'] ?? [] as $uid => $categoryRecord) {
                 if ($categoryRecord['title'] === $importCategoryRecord['title']) {
                     $categoryUidCollection[] = $uid;
@@ -283,14 +284,14 @@ class JsonImporter
                 $categoryUid = $this->getUniqueIdForNewRecords();
 
                 $dataMap['sys_category'][$categoryUid] = [
-                    'pid' => $storagePid,
+                    'pid' => $configuration->getStoragePid(),
                     'crdate' => time(),
                     'tstamp' => time(),
                     'title' => $importCategoryRecord['title'],
-                    'parent' => 0,
+                    'parent' => $configuration->getParentCategory(),
                 ];
             } else {
-                $categoryUid = (string)$importCategoryRecord['uid'];
+                $categoryUid = (string)$categoryRecord['uid'];
             }
 
             $categoryUidCollection[] = $categoryUid;
