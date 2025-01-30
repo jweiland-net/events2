@@ -37,17 +37,21 @@ class EventService
 
     protected DataMapper $dataMapper;
 
+    protected DatabaseService $databaseService;
+
     /**
      * Must be called by ObjectManager, because of EventRepository which has inject methods
      */
     public function __construct(
         EventRepository $eventRepository,
         TimeFactory $timeFactory,
-        DataMapper $dataMapper
+        DataMapper $dataMapper,
+        DatabaseService $databaseService
     ) {
         $this->eventRepository = $eventRepository;
         $this->timeFactory = $timeFactory;
         $this->dataMapper = $dataMapper;
+        $this->databaseService = $databaseService;
     }
 
     public function getNextDayForEvent(int $eventUid): ?\DateTimeImmutable
@@ -88,8 +92,11 @@ class EventService
     /**
      * @return Event[]
      */
-    public function getEventsForExport(array $storagePages, \DateTimeImmutable $endDate): array
-    {
+    public function getEventsForExport(
+        array $storagePages,
+        array $categoryUids,
+        \DateTimeImmutable $endDate
+    ): array {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder
             ->selectLiteral('DISTINCT e.*')
@@ -122,6 +129,15 @@ class EventService
                         $queryBuilder->createNamedParameter($storagePages, Connection::PARAM_INT_ARRAY),
                     ),
                 );
+        }
+
+        if ($categoryUids !== []) {
+            $this->databaseService->addConstraintForCategories(
+                $queryBuilder,
+                $categoryUids,
+                null,
+                'e'
+            );
         }
 
         $events = [];

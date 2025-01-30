@@ -72,6 +72,7 @@ class EventsExporter
             $preparedEvents = $this->getPreparedEvents(
                 $this->eventService->getEventsForExport(
                     $configuration->getStoragePages(),
+                    $configuration->getCategoryUids(),
                     $this->getMaxDateForEventsExport(),
                 ),
                 $configuration->getStoragePages(),

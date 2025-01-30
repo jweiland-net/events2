@@ -17,6 +17,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -59,6 +60,12 @@ class ExportEventsCommand extends Command
             InputArgument::REQUIRED,
             'Set storage page UIDs to collect events from. Divide multiple storages with comma',
         );
+        $this->addOption(
+            'categories',
+            'c',
+            InputOption::VALUE_OPTIONAL,
+            'Set category UIDs to filter collected events. Divide multiple category UIDs with comma',
+        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -67,6 +74,7 @@ class ExportEventsCommand extends Command
             (string)$input->getArgument('url'),
             (string)$input->getArgument('secret'),
             $this->getStoragePages($input),
+            $this->getCategoryUids($input),
         );
 
         $response = $this->eventsExporter->export($configuration);
@@ -97,5 +105,12 @@ class ExportEventsCommand extends Command
         $storagePages = (string)$input->getArgument('storagePages');
 
         return GeneralUtility::intExplode(',', $storagePages, true);
+    }
+
+    protected function getCategoryUids(InputInterface $input): array
+    {
+        $categoryUids = (string)$input->getOption('categories');
+
+        return GeneralUtility::intExplode(',', $categoryUids, true);
     }
 }
