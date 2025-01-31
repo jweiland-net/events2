@@ -15,6 +15,7 @@ use JWeiland\Events2\Domain\Factory\TimeFactory;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Repository\EventRepository;
+use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Service\EventService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
@@ -52,7 +53,8 @@ class EventServiceTest extends FunctionalTestCase
             EventService::class,
             $this->eventRepositoryProphecy->reveal(),
             new TimeFactory(new DateTimeUtility()),
-            $this->prophesize(DataMapper::class)->reveal()
+            $this->prophesize(DataMapper::class)->reveal(),
+            $this->prophesize(DatabaseService::class)->reveal()
         );
     }
 
