@@ -19,11 +19,18 @@ class ExporterConfiguration
 
     private array $storagePages;
 
-    public function __construct(string $url, string $secret, array $storagePages)
-    {
+    private array $categoryUids;
+
+    public function __construct(
+        string $url,
+        string $secret,
+        array $storagePages,
+        array $categoryUids
+    ) {
         $this->url = trim($url);
         $this->secret = trim($secret);
         $this->storagePages = $storagePages;
+        $this->categoryUids = $categoryUids;
     }
 
     public function getUrl(): string
@@ -39,5 +46,10 @@ class ExporterConfiguration
     public function getStoragePages(): array
     {
         return $this->storagePages;
+    }
+
+    public function getCategoryUids(): array
+    {
+        return $this->categoryUids;
     }
 }

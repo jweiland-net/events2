@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 8.4.8
+=============
+
+*   [FEATURE] Allow filtering exported events by category UIDs
+
 Version 8.4.7
 =============
 
