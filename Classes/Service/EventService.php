@@ -80,7 +80,7 @@ class EventService
     public function getEventsForExport(
         array $storagePages,
         array $categoryUids,
-        \DateTimeImmutable $endDate
+        \DateTimeImmutable $endDate,
     ): array {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder
@@ -121,7 +121,7 @@ class EventService
                 $queryBuilder,
                 $categoryUids,
                 null,
-                'e'
+                'e',
             );
         }
 
