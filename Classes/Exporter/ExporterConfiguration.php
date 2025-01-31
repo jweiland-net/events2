@@ -17,23 +17,26 @@ class ExporterConfiguration
         private readonly string $url,
         private readonly string $secret,
         private readonly array $storagePages,
-    ) {
-        $this->url = trim($url);
-        $this->secret = trim($secret);
-    }
+        private readonly array $categoryUids,
+    ) {}
 
     public function getUrl(): string
     {
-        return $this->url;
+        return trim($this->url);
     }
 
     public function getSecret(): string
     {
-        return $this->secret;
+        return trim($this->secret);
     }
 
     public function getStoragePages(): array
     {
         return $this->storagePages;
+    }
+
+    public function getCategoryUids(): array
+    {
+        return $this->categoryUids;
     }
 }
