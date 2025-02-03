@@ -129,11 +129,23 @@ class DayRepository extends AbstractRepository
         }
 
         if ($filter->getTimestamp()) {
-            // Add constraint for a specific day.
+            // Modified constraint to include events spanning multiple days
             $queryBuilder->andWhere(
-                $queryBuilder->expr()->eq(
-                    'day.day',
-                    $queryBuilder->createNamedParameter($filter->getTimestamp(), \PDO::PARAM_INT)
+                $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->lte(
+                        'day.day',
+                        $queryBuilder->createNamedParameter($filter->getTimestamp(), \PDO::PARAM_INT)
+                    ),
+                    $queryBuilder->expr()->orX(
+                        $queryBuilder->expr()->eq(
+                            'day.day',
+                            $queryBuilder->createNamedParameter($filter->getTimestamp(), \PDO::PARAM_INT)
+                        ),
+                        $queryBuilder->expr()->gt(
+                            'event.event_end',
+                            $queryBuilder->createNamedParameter($filter->getTimestamp(), \PDO::PARAM_INT)
+                        )
+                    )
                 )
             );
         } else {
