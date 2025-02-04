@@ -15,7 +15,7 @@
     />
     <project title="Events2"
              release="9.2"
-             version="9.2.0"
+             version="9.2.1"
              copyright="by jweiland.net"
     />
     <inventory id="t3coreapi"
