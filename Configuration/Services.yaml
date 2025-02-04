@@ -16,6 +16,11 @@ services:
     factory: ['@TYPO3\CMS\Core\Database\ConnectionPool', 'getQueryBuilderForTable']
     arguments: ['tx_events2_domain_model_event']
 
+  qb.category_mm:
+    class: TYPO3\CMS\Core\Database\Query\QueryBuilder
+    factory: ['@TYPO3\CMS\Core\Database\ConnectionPool', 'getQueryBuilderForTable']
+    arguments: ['sys_category_record_mm']
+
   # Called by makeInstance in eID middleware
   JWeiland\Events2\Ajax\FindDaysForMonth:
     public: true
@@ -88,6 +93,10 @@ services:
   # Called by makeInstance out of TypoScript
   JWeiland\Events2\PageTitleProvider\Events2PageTitleProvider:
     public: true
+
+  JWeiland\Events2\Reaction\ImportEventsReaction:
+    arguments:
+      $queryBuilder: '@qb.category_mm'
 
   # Contains public API for other extension developers. Keep public.
   JWeiland\Events2\Service\:

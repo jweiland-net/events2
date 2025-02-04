@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 9.2.1
+=============
+
+*   [BUGFIX] Use category UID from sys_category_record_mm instead of sys_reaction
+
 Version 9.2.0
 =============
 

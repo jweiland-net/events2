@@ -26,14 +26,14 @@ class ImportConfiguration
 
     private int $parentCategory;
 
-    public function __construct(array $payload, ReactionInstruction $reactionInstruction)
+    public function __construct(array $payload, ReactionInstruction $reactionInstruction, int $parentCategory)
     {
         $reactionRecord = $reactionInstruction->toArray();
 
         $this->payload = $payload;
         $this->storagePid = (int)($reactionRecord['storage_pid'] ?? 0);
         $this->storageFolder = $reactionRecord['storage_folder'] ?? '';
-        $this->parentCategory = (int)($reactionRecord['parent_category'] ?? 0);
+        $this->parentCategory = $parentCategory;
     }
 
     public function getPayload(): array
