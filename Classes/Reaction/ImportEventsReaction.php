@@ -56,7 +56,7 @@ class ImportEventsReaction implements ReactionInterface
     {
         $statusData = [];
         $statusData['success'] = $this->jsonImporter->import(
-            new ImportConfiguration($payload, $reaction, $this->getParentCategory($reaction))
+            new ImportConfiguration($payload, $reaction, $this->getParentCategory($reaction)),
         );
 
         if ($statusData['success'] === false) {
@@ -83,15 +83,15 @@ class ImportEventsReaction implements ReactionInterface
                 ->where(
                     $queryBuilder->expr()->eq(
                         'uid_foreign',
-                        $queryBuilder->createNamedParameter($reaction->getUid(), Connection::PARAM_INT)
+                        $queryBuilder->createNamedParameter($reaction->getUid(), Connection::PARAM_INT),
                     ),
                     $queryBuilder->expr()->eq(
                         'fieldname',
-                        $queryBuilder->createNamedParameter('parent_category')
+                        $queryBuilder->createNamedParameter('parent_category'),
                     ),
                     $queryBuilder->expr()->eq(
                         'tablenames',
-                        $queryBuilder->createNamedParameter('sys_reaction')
+                        $queryBuilder->createNamedParameter('sys_reaction'),
                     ),
                 )
                 ->executeQuery()
