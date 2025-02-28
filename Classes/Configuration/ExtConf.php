@@ -32,7 +32,7 @@ final readonly class ExtConf implements SingletonInterface
         'recurringPast' => 3,
         'recurringFuture' => 6,
         'defaultCountry' => 0,
-        'xmlImportValidatorPath' => '',
+        'xmlImportValidatorPath' => 'EXT:events2/Resources/Public/XmlImportValidator.xsd',
         'organizerIsRequired' => false,
         'locationIsRequired' => false,
         'categoryIsRequired' => false,
