@@ -11,15 +11,10 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Tests\Functional\PageTitleProvider;
 
-use JWeiland\Events2\Domain\Repository\DayRepository;
-use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\PageTitleProvider\Events2PageTitleProvider;
-use JWeiland\Events2\Service\Record\DayRecordService;
-use JWeiland\Events2\Service\Record\EventRecordService;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Http\ServerRequest;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
