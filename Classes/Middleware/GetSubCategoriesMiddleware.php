@@ -23,9 +23,11 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  * This middleware is needed for management plugin. It is needed to get the sub-categories of a selected
  * main category.
  */
-class GetSubCategoriesMiddleware implements MiddlewareInterface
+final readonly class GetSubCategoriesMiddleware implements MiddlewareInterface
 {
-    public function __construct(protected readonly CategoryRepository $categoryRepository) {}
+    public function __construct(
+        protected CategoryRepository $categoryRepository,
+    ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {

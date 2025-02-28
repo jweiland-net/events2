@@ -14,19 +14,26 @@ namespace JWeiland\Events2\EventListener;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Event\PostProcessControllerActionEvent;
 use JWeiland\Events2\Service\JsonLdService;
+use JWeiland\Events2\Traits\IsValidEventListenerRequestTrait;
+use TYPO3\CMS\Core\Attribute\AsEventListener;
 
 /**
  * Add JSON-LD information to page header
  */
-class AddJsonLdToPageHeaderEventListener extends AbstractControllerEventListener
+#[AsEventListener('events2/addJsonLdToPageHeader')]
+final readonly class AddJsonLdToPageHeaderEventListener
 {
-    protected array $allowedControllerActions = [
+    use IsValidEventListenerRequestTrait;
+
+    protected const ALLOWED_CONTROLLER_ACTIONS = [
         'Day' => [
             'show',
         ],
     ];
 
-    public function __construct(protected readonly JsonLdService $jsonLdService) {}
+    public function __construct(
+        private JsonLdService $jsonLdService,
+    ) {}
 
     public function __invoke(PostProcessControllerActionEvent $controllerActionEvent): void
     {

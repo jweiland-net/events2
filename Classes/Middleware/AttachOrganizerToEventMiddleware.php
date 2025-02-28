@@ -29,12 +29,12 @@ use TYPO3\CMS\Core\Utility\MathUtility;
  * There is no need to update the organizer in edit/update process. The organizer will stay the same.
  * There is no need to adopt that for our EXT:form solution. It will be attached via {__currentOrganizer} there.
  */
-class AttachOrganizerToEventMiddleware implements MiddlewareInterface
+final readonly class AttachOrganizerToEventMiddleware implements MiddlewareInterface
 {
     use Typo3RequestTrait;
 
     public function __construct(
-        protected readonly UserRepository $userRepository,
+        protected UserRepository $userRepository,
     ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface

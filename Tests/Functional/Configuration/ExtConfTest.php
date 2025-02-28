@@ -13,6 +13,7 @@ namespace JWeiland\Events2\Tests\Functional\Configuration;
 
 use JWeiland\Events2\Configuration\ExtConf;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -21,7 +22,7 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
  */
 class ExtConfTest extends FunctionalTestCase
 {
-    protected ExtConf $subject;
+    public ExtensionConfiguration|MockObject $extensionConfigurationMock;
 
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
@@ -37,15 +38,13 @@ class ExtConfTest extends FunctionalTestCase
     {
         parent::setUp();
 
-        $this->subject = new ExtConf(new ExtensionConfiguration());
-        $this->subject->setRecurringPast('3');
-        $this->subject->setRecurringFuture('6');
+        $this->extensionConfigurationMock = $this->createMock(ExtensionConfiguration::class);
     }
 
     protected function tearDown(): void
     {
         unset(
-            $this->subject,
+            $this->extensionConfigurationMock,
         );
 
         parent::tearDown();
@@ -54,361 +53,451 @@ class ExtConfTest extends FunctionalTestCase
     #[Test]
     public function getPoiCollectionPidInitiallyReturnsZero(): void
     {
+        $config = [];
+        $subject = new ExtConf(...$config);
+
         self::assertSame(
             0,
-            $this->subject->getPoiCollectionPid(),
+            $subject->getPoiCollectionPid(),
         );
     }
 
     #[Test]
     public function setPoiCollectionPidSetsPoiCollectionPid(): void
     {
-        $this->subject->setPoiCollectionPid(123456);
+        $config = [
+            'poiCollectionPid' => 123456,
+        ];
+        $subject = new ExtConf(...$config);
 
         self::assertSame(
             123456,
-            $this->subject->getPoiCollectionPid(),
+            $subject->getPoiCollectionPid(),
         );
     }
 
     #[Test]
     public function setPoiCollectionPidWithStringResultsInInteger(): void
     {
-        $this->subject->setPoiCollectionPid('123Test');
+        $this->extensionConfigurationMock
+            ->expects(self::once())
+            ->method('get')
+            ->with('events2')
+            ->willReturn([
+                'poiCollectionPid' => '123Test',
+            ]);
+
+        $subject = ExtConf::create($this->extensionConfigurationMock);
 
         self::assertSame(
             123,
-            $this->subject->getPoiCollectionPid(),
-        );
-    }
-
-    #[Test]
-    public function setPoiCollectionPidWithBooleanResultsInInteger(): void
-    {
-        $this->subject->setPoiCollectionPid(true);
-
-        self::assertSame(
-            1,
-            $this->subject->getPoiCollectionPid(),
+            $subject->getPoiCollectionPid(),
         );
     }
 
     #[Test]
     public function getRootUidInitiallyReturnsZero(): void
     {
+        $config = [];
+        $subject = new ExtConf(...$config);
+
         self::assertSame(
             0,
-            $this->subject->getRootUid(),
+            $subject->getRootUid(),
         );
     }
 
     #[Test]
     public function setRootUidSetsRootUid(): void
     {
-        $this->subject->setRootUid(123456);
+        $config = [
+            'rootUid' => 123456,
+        ];
+        $subject = new ExtConf(...$config);
 
         self::assertSame(
             123456,
-            $this->subject->getRootUid(),
+            $subject->getRootUid(),
         );
     }
 
     #[Test]
     public function setRootUidWithStringResultsInInteger(): void
     {
-        $this->subject->setRootUid('123Test');
+        $this->extensionConfigurationMock
+            ->expects(self::once())
+            ->method('get')
+            ->with('events2')
+            ->willReturn([
+                'rootUid' => '123Test',
+            ]);
+
+        $subject = ExtConf::create($this->extensionConfigurationMock);
 
         self::assertSame(
             123,
-            $this->subject->getRootUid(),
-        );
-    }
-
-    #[Test]
-    public function setRootUidWithBooleanResultsInInteger(): void
-    {
-        $this->subject->setRootUid(true);
-
-        self::assertSame(
-            1,
-            $this->subject->getRootUid(),
+            $subject->getRootUid(),
         );
     }
 
     #[Test]
     public function getRecurringPastReturns3monthAsDefault(): void
     {
+        $config = [];
+        $subject = new ExtConf(...$config);
+
         self::assertSame(
             3,
-            $this->subject->getRecurringPast(),
+            $subject->getRecurringPast(),
         );
     }
 
     #[Test]
     public function setRecurringPastWithIntegerWillReturnSameInGetter(): void
     {
-        $this->subject->setRecurringPast(6);
+        $config = [
+            'recurringPast' => 6,
+        ];
+        $subject = new ExtConf(...$config);
+
         self::assertSame(
             6,
-            $this->subject->getRecurringPast(),
+            $subject->getRecurringPast(),
         );
     }
 
     #[Test]
     public function setRecurringPastWithStringWillReturnIntegerInGetter(): void
     {
-        $this->subject->setRecurringPast('6');
+        $this->extensionConfigurationMock
+            ->expects(self::once())
+            ->method('get')
+            ->with('events2')
+            ->willReturn([
+                'recurringPast' => '6',
+            ]);
+
+        $subject = ExtConf::create($this->extensionConfigurationMock);
+
         self::assertSame(
             6,
-            $this->subject->getRecurringPast(),
-        );
-    }
-
-    #[Test]
-    public function setRecurringPastWithInvalidValueWillReturnIntCastedValueInGetter(): void
-    {
-        $this->subject->setRecurringPast('invalidValue');
-        self::assertSame(
-            0,
-            $this->subject->getRecurringPast(),
+            $subject->getRecurringPast(),
         );
     }
 
     #[Test]
     public function getRecurringFutureReturns6monthAsDefault(): void
     {
+        $config = [];
+        $subject = new ExtConf(...$config);
+
         self::assertSame(
             6,
-            $this->subject->getRecurringFuture(),
+            $subject->getRecurringFuture(),
         );
     }
 
     #[Test]
     public function setRecurringFutureWithIntegerWillReturnSameInGetter(): void
     {
-        $this->subject->setRecurringFuture(12);
+        $config = [
+            'recurringFuture' => 12,
+        ];
+        $subject = new ExtConf(...$config);
+
         self::assertSame(
             12,
-            $this->subject->getRecurringFuture(),
+            $subject->getRecurringFuture(),
         );
     }
 
     #[Test]
     public function setRecurringFutureWithStringWillReturnIntegerInGetter(): void
     {
-        $this->subject->setRecurringFuture('12');
+        $this->extensionConfigurationMock
+            ->expects(self::once())
+            ->method('get')
+            ->with('events2')
+            ->willReturn([
+                'recurringFuture' => '12',
+            ]);
+
+        $subject = ExtConf::create($this->extensionConfigurationMock);
+
         self::assertSame(
             12,
-            $this->subject->getRecurringFuture(),
-        );
-    }
-
-    #[Test]
-    public function setRecurringFutureWithInvalidValueWillReturnDefaultValueInGetter(): void
-    {
-        $this->subject->setRecurringFuture('invalidValue');
-        self::assertSame(
-            6,
-            $this->subject->getRecurringFuture(),
+            $subject->getRecurringFuture(),
         );
     }
 
     #[Test]
     public function getDefaultCountryInitiallyReturnsZero(): void
     {
+        $config = [];
+        $subject = new ExtConf(...$config);
+
         self::assertSame(
             0,
-            $this->subject->getDefaultCountry(),
+            $subject->getDefaultCountry(),
         );
     }
 
     #[Test]
     public function setDefaultCountrySetsDefaultCountryAsInteger(): void
     {
-        $this->subject->setDefaultCountry('45');
+        $this->extensionConfigurationMock
+            ->expects(self::once())
+            ->method('get')
+            ->with('events2')
+            ->willReturn([
+                'defaultCountry' => '45',
+            ]);
+
+        $subject = ExtConf::create($this->extensionConfigurationMock);
 
         self::assertSame(
             45,
-            $this->subject->getDefaultCountry(),
+            $subject->getDefaultCountry(),
         );
     }
 
     #[Test]
     public function setDefaultCountryWithEmptyStringSetsDefaultCountryToZero(): void
     {
-        $this->subject->setDefaultCountry('');
+        $this->extensionConfigurationMock
+            ->expects(self::once())
+            ->method('get')
+            ->with('events2')
+            ->willReturn([
+                'defaultCountry' => '',
+            ]);
+
+        $subject = ExtConf::create($this->extensionConfigurationMock);
 
         self::assertSame(
             0,
-            $this->subject->getDefaultCountry(),
+            $subject->getDefaultCountry(),
         );
     }
 
     #[Test]
     public function getXmlImportValidatorPathInitiallyReturnsDefaultXsdPath(): void
     {
+        $config = [];
+        $subject = new ExtConf(...$config);
+
         self::assertSame(
             'EXT:events2/Resources/Public/XmlImportValidator.xsd',
-            $this->subject->getXmlImportValidatorPath(),
+            $subject->getXmlImportValidatorPath(),
         );
     }
 
     #[Test]
     public function setXmlImportValidatorPathSetsXmlImportValidatorPath(): void
     {
-        $this->subject->setXmlImportValidatorPath('foo bar');
+        $this->extensionConfigurationMock
+            ->expects(self::once())
+            ->method('get')
+            ->with('events2')
+            ->willReturn([
+                'xmlImportValidatorPath' => 'foo bar',
+            ]);
+
+        $subject = ExtConf::create($this->extensionConfigurationMock);
 
         self::assertSame(
             'foo bar',
-            $this->subject->getXmlImportValidatorPath(),
+            $subject->getXmlImportValidatorPath(),
         );
     }
 
     #[Test]
     public function getOrganizerIsRequiredInitiallyReturnsFalse(): void
     {
+        $config = [];
+        $subject = new ExtConf(...$config);
+
         self::assertFalse(
-            $this->subject->getOrganizerIsRequired(),
+            $subject->getOrganizerIsRequired(),
         );
     }
 
     #[Test]
     public function setOrganizerIsRequiredSetsOrganizerIsRequired(): void
     {
-        $this->subject->setOrganizerIsRequired(true);
-        self::assertTrue(
-            $this->subject->getOrganizerIsRequired(),
-        );
-    }
+        $config = [
+            'organizerIsRequired' => true,
+        ];
+        $subject = new ExtConf(...$config);
 
-    #[Test]
-    public function setOrganizerIsRequiredWithStringReturnsTrue(): void
-    {
-        $this->subject->setOrganizerIsRequired('foo bar');
-        self::assertTrue($this->subject->getOrganizerIsRequired());
+        self::assertTrue(
+            $subject->getOrganizerIsRequired(),
+        );
     }
 
     #[Test]
     public function setOrganizerIsRequiredWithZeroReturnsFalse(): void
     {
-        $this->subject->setOrganizerIsRequired(0);
-        self::assertFalse($this->subject->getOrganizerIsRequired());
+        $this->extensionConfigurationMock
+            ->expects(self::once())
+            ->method('get')
+            ->with('events2')
+            ->willReturn([
+                'organizerIsRequired' => 0,
+            ]);
+
+        $subject = ExtConf::create($this->extensionConfigurationMock);
+
+        self::assertFalse($subject->getOrganizerIsRequired());
     }
 
     #[Test]
     public function getLocationIsRequiredInitiallyReturnsFalse(): void
     {
+        $config = [];
+        $subject = new ExtConf(...$config);
+
         self::assertFalse(
-            $this->subject->getLocationIsRequired(),
+            $subject->getLocationIsRequired(),
         );
     }
 
     #[Test]
     public function setLocationIsRequiredSetsLocationIsRequired(): void
     {
-        $this->subject->setLocationIsRequired(true);
-        self::assertTrue(
-            $this->subject->getLocationIsRequired(),
-        );
-    }
+        $config = [
+            'locationIsRequired' => true,
+        ];
+        $subject = new ExtConf(...$config);
 
-    #[Test]
-    public function setLocationIsRequiredWithStringReturnsTrue(): void
-    {
-        $this->subject->setLocationIsRequired('foo bar');
-        self::assertTrue($this->subject->getLocationIsRequired());
+        self::assertTrue(
+            $subject->getLocationIsRequired(),
+        );
     }
 
     #[Test]
     public function setLocationIsRequiredWithZeroReturnsFalse(): void
     {
-        $this->subject->setLocationIsRequired(0);
-        self::assertFalse($this->subject->getLocationIsRequired());
+        $this->extensionConfigurationMock
+            ->expects(self::once())
+            ->method('get')
+            ->with('events2')
+            ->willReturn([
+                'locationIsRequired' => 0,
+            ]);
+
+        $subject = ExtConf::create($this->extensionConfigurationMock);
+
+        self::assertFalse($subject->getLocationIsRequired());
     }
 
     #[Test]
     public function getEmailFromAddressInitiallyReturnsEmptyString(): void
     {
+        $config = [];
+        $subject = new ExtConf(...$config);
+
         $this->expectException(\Exception::class);
         $this->expectExceptionCode(1484823422);
 
         self::assertSame(
             '',
-            $this->subject->getEmailFromAddress(),
+            $subject->getEmailFromAddress(),
         );
     }
 
     #[Test]
     public function setEmailFromAddressSetsEmailFromAddress(): void
     {
-        $this->subject->setEmailFromAddress('foo bar');
+        $config = [
+            'emailFromAddress' => 'foo bar',
+        ];
+        $subject = new ExtConf(...$config);
 
         self::assertSame(
             'foo bar',
-            $this->subject->getEmailFromAddress(),
+            $subject->getEmailFromAddress(),
         );
     }
 
     #[Test]
     public function getEmailFromNameInitiallyReturnsEmptyString(): void
     {
+        $config = [];
+        $subject = new ExtConf(...$config);
+
         $this->expectException(\Exception::class);
         $this->expectExceptionCode(1484823661);
 
         self::assertSame(
             '',
-            $this->subject->getEmailFromName(),
+            $subject->getEmailFromName(),
         );
     }
 
     #[Test]
     public function setEmailFromNameSetsEmailFromName(): void
     {
-        $this->subject->setEmailFromName('foo bar');
+        $config = [
+            'emailFromName' => 'foo bar',
+        ];
+        $subject = new ExtConf(...$config);
 
         self::assertSame(
             'foo bar',
-            $this->subject->getEmailFromName(),
+            $subject->getEmailFromName(),
         );
     }
 
     #[Test]
     public function getEmailToAddressInitiallyReturnsEmptyString(): void
     {
+        $config = [];
+        $subject = new ExtConf(...$config);
+
         self::assertSame(
             '',
-            $this->subject->getEmailToAddress(),
+            $subject->getEmailToAddress(),
         );
     }
 
     #[Test]
     public function setEmailToAddressSetsEmailToAddress(): void
     {
-        $this->subject->setEmailToAddress('foo bar');
+        $config = [
+            'emailToAddress' => 'foo bar',
+        ];
+        $subject = new ExtConf(...$config);
 
         self::assertSame(
             'foo bar',
-            $this->subject->getEmailToAddress(),
+            $subject->getEmailToAddress(),
         );
     }
 
     #[Test]
     public function getEmailToNameInitiallyReturnsEmptyString(): void
     {
+        $config = [];
+        $subject = new ExtConf(...$config);
+
         self::assertSame(
             '',
-            $this->subject->getEmailToName(),
+            $subject->getEmailToName(),
         );
     }
 
     #[Test]
     public function setEmailToNameSetsEmailToName(): void
     {
-        $this->subject->setEmailToName('foo bar');
+        $config = [
+            'emailToName' => 'foo bar',
+        ];
+        $subject = new ExtConf(...$config);
 
         self::assertSame(
             'foo bar',
-            $this->subject->getEmailToName(),
+            $subject->getEmailToName(),
         );
     }
 }

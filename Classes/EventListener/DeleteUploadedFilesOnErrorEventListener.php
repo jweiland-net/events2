@@ -13,6 +13,8 @@ namespace JWeiland\Events2\EventListener;
 
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Event\PostProcessFluidVariablesEvent;
+use JWeiland\Events2\Traits\IsValidEventListenerRequestTrait;
+use TYPO3\CMS\Core\Attribute\AsEventListener;
 
 /**
  * Files will be uploaded in our own UploadMultipleFiles-TypeConverter.
@@ -20,9 +22,12 @@ use JWeiland\Events2\Event\PostProcessFluidVariablesEvent;
  *
  * @ToDo: I still need a solution for editAction
  */
-class DeleteUploadedFilesOnErrorEventListener extends AbstractControllerEventListener
+#[AsEventListener('events2/deleteUploadedFilesOnError')]
+final readonly class DeleteUploadedFilesOnErrorEventListener
 {
-    protected array $allowedControllerActions = [
+    use IsValidEventListenerRequestTrait;
+
+    protected const ALLOWED_CONTROLLER_ACTIONS = [
         'Management' => [
             'new',
         ],

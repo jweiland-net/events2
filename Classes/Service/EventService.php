@@ -28,15 +28,15 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
  * Get next possible day by event.
  * Get events for export.
  */
-class EventService
+readonly class EventService
 {
     private const TABLE = 'tx_events2_domain_model_event';
 
     public function __construct(
-        protected readonly EventRepository $eventRepository,
-        protected readonly TimeFactory $timeFactory,
-        protected readonly DataMapper $dataMapper,
-        protected readonly DatabaseService $databaseService,
+        protected EventRepository $eventRepository,
+        protected TimeFactory $timeFactory,
+        protected DataMapper $dataMapper,
+        protected DatabaseService $databaseService,
     ) {}
 
     public function getNextDayForEvent(int $eventUid): ?\DateTimeImmutable

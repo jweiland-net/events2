@@ -31,14 +31,14 @@ use TYPO3\CMS\Core\Utility\MathUtility;
  * This middleware is needed for LiteCalendar. If you flip to next month, this
  * class will be called and returns the events valid for selected month.
  */
-class GetDaysForMonthMiddleware implements MiddlewareInterface
+final readonly class GetDaysForMonthMiddleware implements MiddlewareInterface
 {
     public function __construct(
-        protected readonly ExtConf $extConf,
-        protected readonly DateTimeUtility $dateTimeUtility,
-        protected readonly UserSession $userSession,
-        protected readonly DatabaseService $databaseService,
-        protected readonly EventDispatcher $eventDispatcher,
+        protected ExtConf $extConf,
+        protected DateTimeUtility $dateTimeUtility,
+        protected UserSession $userSession,
+        protected DatabaseService $databaseService,
+        protected EventDispatcher $eventDispatcher,
     ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface

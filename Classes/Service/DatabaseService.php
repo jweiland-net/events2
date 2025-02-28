@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Service;
 
 use Doctrine\DBAL\ArrayParameterType;
+use Doctrine\DBAL\ParameterType;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Database\Connection;
@@ -25,11 +26,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * A little helper to organize our DB queries
  */
-class DatabaseService
+readonly class DatabaseService
 {
     public function __construct(
-        protected readonly ExtConf $extConf,
-        protected readonly DateTimeUtility $dateTimeUtility,
+        protected ExtConf $extConf,
+        protected DateTimeUtility $dateTimeUtility,
     ) {}
 
     /**
@@ -476,7 +477,7 @@ class DatabaseService
         QueryBuilder $queryBuilder,
         string $column,
         mixed $value,
-        int $dataType = Connection::PARAM_STR,
+        ParameterType $dataType = Connection::PARAM_STR,
         QueryBuilder $parentQueryBuilder = null,
         string $alias = 'event',
     ): void {

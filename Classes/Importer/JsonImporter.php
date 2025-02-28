@@ -33,15 +33,15 @@ use TYPO3\CMS\Reactions\Authentication\ReactionUserAuthentication;
  * Use this importer, if you have data which represents events2 database structure. If you need something simpler try
  * XmlImporter which has a much simpler structure.
  */
-class JsonImporter
+readonly class JsonImporter
 {
     public function __construct(
-        protected readonly LoggerInterface $logger,
-        protected readonly PathSegmentHelper $pathSegmentHelper,
-        protected readonly CategoryService $categoryService,
-        protected readonly LocationService $locationService,
-        protected readonly OrganizerService $organizerService,
-        protected readonly ResourceFactory $resourceFactory,
+        protected LoggerInterface $logger,
+        protected PathSegmentHelper $pathSegmentHelper,
+        protected CategoryService $categoryService,
+        protected LocationService $locationService,
+        protected OrganizerService $organizerService,
+        protected ResourceFactory $resourceFactory,
     ) {}
 
     public function import(ImportConfiguration $importConfiguration): bool

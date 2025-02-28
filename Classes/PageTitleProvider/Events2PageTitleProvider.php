@@ -22,13 +22,13 @@ use TYPO3\CMS\Core\PageTitle\PageTitleProviderInterface;
  *
  * Please use config.pageTitleProviders.* to use our PageTitleProvider.
  */
-class Events2PageTitleProvider implements PageTitleProviderInterface
+final readonly class Events2PageTitleProvider implements PageTitleProviderInterface
 {
     use Typo3RequestTrait;
 
     public function __construct(
-        protected readonly EventRecordService $eventRecordService,
-        protected readonly DayRecordService $dayRecordService,
+        protected EventRecordService $eventRecordService,
+        protected DayRecordService $dayRecordService,
     ) {}
 
     public function getTitle(): string
@@ -44,7 +44,6 @@ class Events2PageTitleProvider implements PageTitleProviderInterface
             if ($dayRecord !== []) {
                 $date = new \DateTimeImmutable(date('c', (int)$gp['timestamp']));
                 $eventRecord = $this->eventRecordService->findByUid((int)$dayRecord['event']);
-                var_dump($eventRecord);
 
                 if ($eventRecord !== []) {
                     $pageTitle = sprintf(

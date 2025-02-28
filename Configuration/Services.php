@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 
 use ApacheSolrForTypo3\Solr\IndexQueue\PageIndexerDocumentsModifier;
-use JWeiland\Events2\Hooks\Solr\IndexerHook;
+use JWeiland\Events2\Hook\Solr\IndexerHook;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;

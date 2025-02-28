@@ -9,7 +9,7 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace JWeiland\Events2\Hooks\Form;
+namespace JWeiland\Events2\Hook\Form;
 
 use Doctrine\DBAL\ArrayParameterType;
 use TYPO3\CMS\Core\Database\Connection;
@@ -26,7 +26,7 @@ use TYPO3\CMS\Form\Domain\Model\Renderable\RenderableInterface;
 /**
  * Prefill EXT:form elements with values from requested event record
  */
-class PrefillForEditUsageHook
+readonly class PrefillForEditUsageHook
 {
     /**
      * This method will be called by Form Framework.

@@ -16,7 +16,7 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 /**
  * With this class you can convert various strings and integers into a DateTime object.
  */
-class DateTimeUtility
+readonly class DateTimeUtility
 {
     /**
      * Creates a DateTime from an unix timestamp or date/datetime value.

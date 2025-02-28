@@ -9,30 +9,22 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace JWeiland\Events2\EventListener;
+namespace JWeiland\Events2\Traits;
 
 use JWeiland\Events2\Event\ControllerActionEventInterface;
 
 /**
- * Abstract EventListener just for action controllers.
+ * Trait to validate, if incoming request is valid for specific EventListener
  */
-class AbstractControllerEventListener
+trait IsValidEventListenerRequestTrait
 {
-    /**
-     * Only execute this EventListener if controller and action matches
-     */
-    protected array $allowedControllerActions = [];
-
     protected function isValidRequest(ControllerActionEventInterface $event): bool
     {
         return
-            array_key_exists(
-                $event->getControllerName(),
-                $this->allowedControllerActions,
-            )
+            array_key_exists($event->getControllerName(), self::ALLOWED_CONTROLLER_ACTIONS)
             && in_array(
                 $event->getActionName(),
-                $this->allowedControllerActions[$event->getControllerName()],
+                self::ALLOWED_CONTROLLER_ACTIONS[$event->getControllerName()],
                 true,
             );
     }

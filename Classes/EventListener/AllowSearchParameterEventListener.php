@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace JWeiland\Events2\EventListener;
 
 use JWeiland\Events2\Event\PreProcessControllerActionEvent;
+use JWeiland\Events2\Traits\IsValidEventListenerRequestTrait;
+use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 
 /**
@@ -19,9 +21,12 @@ use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
  * automatically. We have to do it manually here.
  * With fluid-form-VHs the $_GET request in browser URL will get extremely long.
  */
-class AllowSearchParameterEventListener extends AbstractControllerEventListener
+#[AsEventListener('events2/allowSearchParameter')]
+final readonly class AllowSearchParameterEventListener
 {
-    protected array $allowedControllerActions = [
+    use IsValidEventListenerRequestTrait;
+
+    protected const ALLOWED_CONTROLLER_ACTIONS = [
         'Search' => [
             'listSearchResults',
             'show',

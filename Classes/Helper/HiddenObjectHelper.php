@@ -21,9 +21,11 @@ use TYPO3\CMS\Extbase\Persistence\RepositoryInterface;
  * Helper class to register hidden objects in extbase session container.
  * That way it's possible to call Controller Actions with hidden objects.
  */
-class HiddenObjectHelper
+readonly class HiddenObjectHelper
 {
-    public function __construct(protected readonly Session $session) {}
+    public function __construct(
+        protected Session $session,
+    ) {}
 
     public function registerHiddenObjectInExtbaseSession(
         RepositoryInterface $repository,

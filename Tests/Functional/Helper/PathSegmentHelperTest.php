@@ -12,11 +12,11 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Functional\Helper;
 
 use JWeiland\Events2\Configuration\ExtConf;
-use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Helper\Exception\NoUniquePathSegmentException;
 use JWeiland\Events2\Helper\PathSegmentHelper;
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\MockObject\MockObject;
+use TYPO3\CMS\Core\DataHandling\SlugHelper;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
@@ -27,9 +27,7 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
  */
 class PathSegmentHelperTest extends FunctionalTestCase
 {
-    protected PathSegmentHelper $subject;
-
-    protected ExtConf $extConf;
+    protected SlugHelper|MockObject $slugHelperMock;
 
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
@@ -47,149 +45,78 @@ class PathSegmentHelperTest extends FunctionalTestCase
 
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/PathSegmentHelper.csv');
 
-        $this->extConf = GeneralUtility::makeInstance(ExtConf::class);
-
-        $this->subject = new PathSegmentHelper(
-            GeneralUtility::makeInstance(EventDispatcher::class),
-            GeneralUtility::makeInstance(PersistenceManagerInterface::class),
-            $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_event'),
-            $this->extConf,
-        );
+        $this->slugHelperMock = $this->createMock(SlugHelper::class);
     }
 
     protected function tearDown(): void
     {
         unset(
-            $this->subject,
+            $this->slugHelperMock,
         );
 
         parent::tearDown();
     }
 
-    public static function getPathSegmentTypesSlugTypes(): array
+    #[Test]
+    public function generatePathSegmentWithEmptyBaseRecordThrowsException(): void
     {
-        return [
-            'empty' => ['empty', 'default-'],
-            'uid' => ['uid', 'default-'],
-            'realurl' => ['realurl', ''],
+        $this->slugHelperMock
+            ->expects(self::once())
+            ->method('generate')
+            ->with(
+                self::identicalTo([]),
+                self::identicalTo(0),
+            )
+            ->willReturn('');
+
+        GeneralUtility::addInstance(SlugHelper::class, $this->slugHelperMock);
+
+        $this->expectException(NoUniquePathSegmentException::class);
+
+        $subject = $this->getSubject(
+            new ExtConf(pathSegmentType: 'uid'),
+        );
+
+        $subject->generatePathSegment([]);
+    }
+
+    #[Test]
+    public function generatePathSegmentWillReturnSlug(): void
+    {
+        $baseRecord = [
+            'uid' => 2,
+            'pid' => 12,
+            'title' => 'Weekly market',
         ];
-    }
 
-    #[Test]
-    #[DataProvider('getPathSegmentTypesSlugTypes')]
-    public function generatePathSegmentWithEmptyBaseRecordWillGenerateDefaultSlug(string $pathSegmentType, $expectedPrefix): void
-    {
-        $this->extConf->setPathSegmentType($pathSegmentType);
+        $this->slugHelperMock
+            ->expects(self::once())
+            ->method('generate')
+            ->with(
+                self::identicalTo($baseRecord),
+                self::identicalTo(12),
+            )
+            ->willReturn('weekly-market-2');
 
-        if ($pathSegmentType === 'realurl') {
-            $this->expectException(NoUniquePathSegmentException::class);
-        }
+        GeneralUtility::addInstance(SlugHelper::class, $this->slugHelperMock);
 
-        self::assertStringStartsWith(
-            $expectedPrefix,
-            $this->subject->generatePathSegment([]),
+        $subject = $this->getSubject(
+            new ExtConf(pathSegmentType: 'uid'),
         );
-    }
-
-    #[Test]
-    #[DataProvider('getPathSegmentTypesSlugTypes')]
-    public function generatePathSegmentWithMissingRecordUidWillGenerateDefaultSlug(string $pathSegmentType, $expectedPrefix): void
-    {
-        $this->extConf->setPathSegmentType($pathSegmentType);
-
-        if ($pathSegmentType === 'realurl') {
-            $this->expectException(NoUniquePathSegmentException::class);
-        }
-
-        self::assertStringStartsWith(
-            $expectedPrefix,
-            $this->subject->generatePathSegment([
-                'pid' => 11,
-            ]),
-        );
-    }
-
-    #[Test]
-    #[DataProvider('getPathSegmentTypesSlugTypes')]
-    public function generatePathSegmentWithEmptyRecordUidWillGenerateDefaultSlug(string $pathSegmentType, $expectedPrefix): void
-    {
-        $this->extConf->setPathSegmentType($pathSegmentType);
-
-        if ($pathSegmentType === 'realurl') {
-            $this->expectException(NoUniquePathSegmentException::class);
-        }
-
-        self::assertStringStartsWith(
-            $expectedPrefix,
-            $this->subject->generatePathSegment([
-                'uid' => 0,
-                'pid' => 11,
-            ]),
-        );
-    }
-
-    #[Test]
-    public function generatePathSegmentWithTypeUidWillGenerateSlug(): void
-    {
-        $this->extConf->setPathSegmentType('uid');
 
         self::assertSame(
-            'hello-typo3-134',
-            $this->subject->generatePathSegment([
-                'uid' => 134,
-                'title' => 'Hello TYPO3',
-                'pid' => 11,
-            ]),
+            'weekly-market-2',
+            $subject->generatePathSegment($baseRecord),
         );
     }
 
-    #[Test]
-    public function generatePathSegmentWithTypeRealurlWillGenerateSlug(): void
+    protected function getSubject(ExtConf $extConf): PathSegmentHelper
     {
-        $this->extConf->setPathSegmentType('realurl');
-
-        self::assertSame(
-            'hello-typo3',
-            $this->subject->generatePathSegment([
-                'uid' => 2,
-                'title' => 'Hello TYPO3',
-                'pid' => 11,
-            ]),
-        );
-    }
-
-    #[Test]
-    public function generatePathSegmentWithTypeRealurlWillGenerateSlugWithIncrement(): void
-    {
-        $this->extConf->setPathSegmentType('realurl');
-
-        self::assertSame(
-            'weekmarket-1',
-            $this->subject->generatePathSegment([
-                'uid' => 2,
-                'title' => 'Weekmarket',
-                'pid' => 11,
-            ]),
-        );
-    }
-
-    #[Test]
-    public function updatePathSegmentForEventUpdatesPathSegment(): void
-    {
-        $this->extConf->setPathSegmentType('uid');
-
-        $event = new Event();
-        $event->setEventType('simple');
-        $event->setPid(11);
-        $event->setTitle('Gaming');
-        $event->setEventBegin(new \DateTimeImmutable('now'));
-
-        $this->subject->updatePathSegmentForEvent($event);
-
-        // We already have one record in DB, so next increment/UID is 2
-        self::assertSame(
-            'gaming-2',
-            $event->getPathSegment(),
+        return new PathSegmentHelper(
+            GeneralUtility::makeInstance(EventDispatcher::class),
+            GeneralUtility::makeInstance(PersistenceManagerInterface::class),
+            $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_event'),
+            $extConf,
         );
     }
 }

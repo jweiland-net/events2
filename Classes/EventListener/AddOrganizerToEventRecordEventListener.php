@@ -13,6 +13,8 @@ namespace JWeiland\Events2\EventListener;
 
 use JWeiland\Events2\Domain\Repository\UserRepository;
 use JWeiland\Events2\Event\PreProcessControllerActionEvent;
+use JWeiland\Events2\Traits\IsValidEventListenerRequestTrait;
+use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 
@@ -22,16 +24,19 @@ use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
  * As it is possible for a hacker to change the user/organizer in source code of event form (FE)
  * I prefer adding the organizer manually here in PHP
  */
-class AddOrganizerToEventRecordEventListener extends AbstractControllerEventListener
+#[AsEventListener('events2/addOrganizerToEventRecord')]
+final readonly class AddOrganizerToEventRecordEventListener
 {
-    protected array $allowedControllerActions = [
+    use IsValidEventListenerRequestTrait;
+
+    protected const ALLOWED_CONTROLLER_ACTIONS = [
         'Management' => [
             'create',
         ],
     ];
 
     public function __construct(
-        protected readonly UserRepository $userRepository,
+        private UserRepository $userRepository,
     ) {}
 
     public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void

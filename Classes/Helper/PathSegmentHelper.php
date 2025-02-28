@@ -27,17 +27,17 @@ use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
  * Helper class to generate a path segment (slug) for an event record.
  * Used while executing the UpgradeWizard and saving records in frontend.
  */
-class PathSegmentHelper
+readonly class PathSegmentHelper
 {
     protected const TABLE = 'tx_events2_domain_model_event';
 
     protected const SLUG_COLUMN = 'path_segment';
 
     public function __construct(
-        protected readonly EventDispatcher $eventDispatcher,
-        protected readonly PersistenceManagerInterface $persistenceManager,
-        protected readonly QueryBuilder $queryBuilder,
-        protected readonly ExtConf $extConf,
+        protected EventDispatcher $eventDispatcher,
+        protected PersistenceManagerInterface $persistenceManager,
+        protected QueryBuilder $queryBuilder,
+        protected ExtConf $extConf,
     ) {}
 
     /**
@@ -131,7 +131,7 @@ class PathSegmentHelper
         $config = $GLOBALS['TCA'][self::TABLE]['columns'][self::SLUG_COLUMN]['config'];
 
         $config['generatorOptions']['postModifiers']['events2-post-modifier']
-            = \JWeiland\Events2\Hooks\SlugPostModifierHook::class . '->modify';
+            = \JWeiland\Events2\Hook\SlugPostModifierHook::class . '->modify';
 
         // Make sure column "uid" is appended in list of generator fields, if "uid" is set in extension settings
         if (

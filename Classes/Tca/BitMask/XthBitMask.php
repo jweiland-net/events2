@@ -26,7 +26,7 @@ class XthBitMask extends BitSet
     public const FOURTH = 8;
     public const FIFTH = 16;
 
-    protected array $xth = [
+    private const XTH = [
         'first' => self::FIRST,
         'second' => self::SECOND,
         'third' => self::THIRD,
@@ -36,7 +36,7 @@ class XthBitMask extends BitSet
 
     public function getSelectedWeeks(): array
     {
-        return array_filter($this->xth, function ($value): bool {
+        return array_filter(self::XTH, function ($value): bool {
             return $this->get($value);
         });
     }

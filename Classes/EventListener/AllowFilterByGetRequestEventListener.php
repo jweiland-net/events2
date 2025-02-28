@@ -12,15 +12,20 @@ declare(strict_types=1);
 namespace JWeiland\Events2\EventListener;
 
 use JWeiland\Events2\Event\PreProcessControllerActionEvent;
+use JWeiland\Events2\Traits\IsValidEventListenerRequestTrait;
+use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 
 /**
  * If you work with the calendar plugin the timestamp will be given by $_GET. In that case "timestamp" has to be
  * allowed in PropertyMapper to be added into filter object.
  */
-class AllowFilterByGetRequestEventListener extends AbstractControllerEventListener
+#[AsEventListener('events2/allowFilterByGetRequest')]
+final readonly class AllowFilterByGetRequestEventListener
 {
-    protected array $allowedControllerActions = [
+    use IsValidEventListenerRequestTrait;
+
+    protected const ALLOWED_CONTROLLER_ACTIONS = [
         'Day' => [
             'list',
         ],

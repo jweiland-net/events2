@@ -19,7 +19,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Helper class containing various methods to help to build variables for LiteCalendar
  */
-class CalendarHelper
+readonly class CalendarHelper
 {
     use Typo3RequestTrait;
 

@@ -13,6 +13,8 @@ namespace JWeiland\Events2\EventListener;
 
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Event\PostProcessFluidVariablesEvent;
+use JWeiland\Events2\Traits\IsValidEventListenerRequestTrait;
+use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 
@@ -23,9 +25,12 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
  *
  * This EventListener will find these hidden day records and activates them.
  */
-class ActivateHiddenDayRecordsEventListener extends AbstractControllerEventListener
+#[AsEventListener('events2/activateHiddenDayRecords')]
+final readonly class ActivateHiddenDayRecordsEventListener
 {
-    protected array $allowedControllerActions = [
+    use IsValidEventListenerRequestTrait;
+
+    protected const ALLOWED_CONTROLLER_ACTIONS = [
         'Management' => [
             'activate',
         ],

@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace JWeiland\Events2\EventListener;
 
 use JWeiland\Events2\Event\PreProcessControllerActionEvent;
+use JWeiland\Events2\Traits\IsValidEventListenerRequestTrait;
+use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
 
 /**
@@ -21,9 +23,12 @@ use TYPO3\CMS\Extbase\Property\TypeConverter\PersistentObjectConverter;
  * for PropertyMapper. As Extbase Pagination was removed and does not support POST requests anymore
  * we need to add organizer manually.
  */
-class AllowOrganizerForFilterEventListener extends AbstractControllerEventListener
+#[AsEventListener('events2/allowOrganizerForFilter')]
+final readonly class AllowOrganizerForFilterEventListener
 {
-    protected array $allowedControllerActions = [
+    use IsValidEventListenerRequestTrait;
+
+    protected const ALLOWED_CONTROLLER_ACTIONS = [
         'Day' => [
             'list',
             'listLatest',

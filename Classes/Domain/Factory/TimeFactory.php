@@ -34,7 +34,9 @@ class TimeFactory
      */
     protected bool $removeCurrentDay = false;
 
-    public function __construct(protected readonly DateTimeUtility $dateTimeUtility) {}
+    public function __construct(
+        protected readonly DateTimeUtility $dateTimeUtility,
+    ) {}
 
     public function getSortedTimesForDate(
         Event $event,
