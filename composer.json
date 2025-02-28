@@ -31,12 +31,8 @@
 	},
 	"require-dev": {
 		"ergebnis/composer-normalize": "^2.44",
-		"friendsofphp/php-cs-fixer": "^3.14",
-		"phpstan/phpdoc-parser": "^1.33",
-		"phpstan/phpstan": "1.10",
-		"roave/security-advisories": "dev-latest",
 		"typo3/coding-standards": "^0.8",
-		"typo3/testing-framework": "^9.0.1"
+		"typo3/testing-framework": "^9.1.2"
 	},
 	"replace": {
 		"typo3-ter/events2": "self.version"
