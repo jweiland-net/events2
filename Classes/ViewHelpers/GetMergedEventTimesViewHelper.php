@@ -27,13 +27,13 @@ final class GetMergedEventTimesViewHelper extends AbstractViewHelper
             'event',
             Event::class,
             'The event to get the times from',
-            true
+            true,
         );
         $this->registerArgument(
             'date',
             \DateTimeImmutable::class,
             'The date to get the times from',
-            true
+            true,
         );
     }
 

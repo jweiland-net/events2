@@ -23,8 +23,19 @@ final class GetAllowedCategoriesViewHelper extends AbstractViewHelper
 {
     public function initializeArguments(): void
     {
-        $this->registerArgument('event', Event::class, 'The Event from where we should extract the categories', true);
-        $this->registerArgument('pluginCategories', 'string', 'A comma separated list of categories. Normally we use the categories from plugin FlexForm', false, '');
+        $this->registerArgument(
+            'event',
+            Event::class,
+            'The Event from where we should extract the categories',
+            true,
+        );
+        $this->registerArgument(
+            'pluginCategories',
+            'string',
+            'A comma separated list of categories. Normally we use the categories from plugin FlexForm',
+            false,
+            '',
+        );
     }
 
     /**

@@ -32,7 +32,7 @@ final readonly class AddJsonLdToPageHeaderEventListener
     ];
 
     public function __construct(
-        private JsonLdService $jsonLdService
+        private JsonLdService $jsonLdService,
     ) {}
 
     public function __invoke(PostProcessControllerActionEvent $controllerActionEvent): void

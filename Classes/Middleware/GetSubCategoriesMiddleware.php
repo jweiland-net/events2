@@ -26,7 +26,7 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 final readonly class GetSubCategoriesMiddleware implements MiddlewareInterface
 {
     public function __construct(
-        protected CategoryRepository $categoryRepository
+        protected CategoryRepository $categoryRepository,
     ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface

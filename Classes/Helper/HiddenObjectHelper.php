@@ -24,7 +24,7 @@ use TYPO3\CMS\Extbase\Persistence\RepositoryInterface;
 readonly class HiddenObjectHelper
 {
     public function __construct(
-        protected Session $session
+        protected Session $session,
     ) {}
 
     public function registerHiddenObjectInExtbaseSession(

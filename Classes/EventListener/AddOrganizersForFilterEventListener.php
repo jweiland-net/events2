@@ -32,7 +32,7 @@ final readonly class AddOrganizersForFilterEventListener
     ];
 
     public function __construct(
-        private OrganizerRepository $organizerRepository
+        private OrganizerRepository $organizerRepository,
     ) {}
 
     public function __invoke(PostProcessFluidVariablesEvent $controllerActionEvent): void

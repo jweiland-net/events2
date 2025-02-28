@@ -26,20 +26,20 @@ final class GetExceptionsFromEventForSpecificDateViewHelper extends AbstractView
             'event',
             Event::class,
             'Get the exceptions from event',
-            true
+            true,
         );
         $this->registerArgument(
             'date',
             \DateTimeImmutable::class,
             'Get the exceptions from event to this specific date',
-            true
+            true,
         );
         $this->registerArgument(
             'type',
             'string',
             'Get exceptions of specified type. remove, add, time or info. You can combine them with comma',
             false,
-            ''
+            '',
         );
     }
 

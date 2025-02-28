@@ -24,7 +24,7 @@ readonly class DayHelper
     use Typo3RequestTrait;
 
     public function __construct(
-        protected readonly DayRepository $dayRepository
+        protected DayRepository $dayRepository,
     ) {}
 
     /**

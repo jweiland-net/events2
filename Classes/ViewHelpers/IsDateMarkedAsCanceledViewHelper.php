@@ -25,13 +25,13 @@ final class IsDateMarkedAsCanceledViewHelper extends AbstractViewHelper
             'event',
             Event::class,
             'Get the exceptions from event',
-            true
+            true,
         );
         $this->registerArgument(
             'date',
             \DateTimeImmutable::class,
             'Get the exceptions from event to this specific date',
-            true
+            true,
         );
     }
 
