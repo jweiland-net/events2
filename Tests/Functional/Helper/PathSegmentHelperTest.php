@@ -12,10 +12,8 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Functional\Helper;
 
 use JWeiland\Events2\Configuration\ExtConf;
-use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Helper\Exception\NoUniquePathSegmentException;
 use JWeiland\Events2\Helper\PathSegmentHelper;
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\DataHandling\SlugHelper;
@@ -60,13 +58,14 @@ class PathSegmentHelperTest extends FunctionalTestCase
     }
 
     #[Test]
-    public function generatePathSegmentWithEmptyBaseRecordThrowsException(): void {
+    public function generatePathSegmentWithEmptyBaseRecordThrowsException(): void
+    {
         $this->slugHelperMock
             ->expects(self::once())
             ->method('generate')
             ->with(
                 self::identicalTo([]),
-                self::identicalTo(0)
+                self::identicalTo(0),
             )
             ->willReturn('');
 
@@ -75,14 +74,15 @@ class PathSegmentHelperTest extends FunctionalTestCase
         $this->expectException(NoUniquePathSegmentException::class);
 
         $subject = $this->getSubject(
-            new ExtConf(pathSegmentType: 'uid')
+            new ExtConf(pathSegmentType: 'uid'),
         );
 
         $subject->generatePathSegment([]);
     }
 
     #[Test]
-    public function generatePathSegmentWillReturnSlug(): void {
+    public function generatePathSegmentWillReturnSlug(): void
+    {
         $baseRecord = [
             'uid' => 2,
             'pid' => 12,
@@ -94,19 +94,19 @@ class PathSegmentHelperTest extends FunctionalTestCase
             ->method('generate')
             ->with(
                 self::identicalTo($baseRecord),
-                self::identicalTo(12)
+                self::identicalTo(12),
             )
             ->willReturn('weekly-market-2');
 
         GeneralUtility::addInstance(SlugHelper::class, $this->slugHelperMock);
 
         $subject = $this->getSubject(
-            new ExtConf(pathSegmentType: 'uid')
+            new ExtConf(pathSegmentType: 'uid'),
         );
 
         self::assertSame(
             'weekly-market-2',
-            $subject->generatePathSegment($baseRecord)
+            $subject->generatePathSegment($baseRecord),
         );
     }
 
