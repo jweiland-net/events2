@@ -1,0 +1,7 @@
+# Add CType Preview
+mod.web_layout.tt_content.preview.events2_list = EXT:events2/Resources/Private/Templates/PluginPreview/Events.html
+mod.web_layout.tt_content.preview.events2_show = EXT:events2/Resources/Private/Templates/PluginPreview/Events.html
+mod.web_layout.tt_content.preview.events2_management = EXT:events2/Resources/Private/Templates/PluginPreview/Events.html
+mod.web_layout.tt_content.preview.events2_calendar = EXT:events2/Resources/Private/Templates/PluginPreview/Events.html
+mod.web_layout.tt_content.preview.events2_searchform = EXT:events2/Resources/Private/Templates/PluginPreview/Events.html
+mod.web_layout.tt_content.preview.events2_searchresults = EXT:events2/Resources/Private/Templates/PluginPreview/Events.html

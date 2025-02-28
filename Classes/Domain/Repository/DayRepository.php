@@ -23,9 +23,9 @@ use JWeiland\Events2\Event\ModifyQueriesOfSearchEventsEvent;
 use JWeiland\Events2\Event\ModifyStartEndDateForListTypeEvent;
 use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Utility\DateTimeUtility;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
-use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
@@ -47,7 +47,7 @@ class DayRepository extends AbstractRepository
 
     protected DayFactory $dayFactory;
 
-    protected EventDispatcher $eventDispatcher;
+    protected EventDispatcherInterface $eventDispatcher;
 
     protected array $settings = [];
 
@@ -71,7 +71,7 @@ class DayRepository extends AbstractRepository
         $this->dayFactory = $dayFactory;
     }
 
-    public function injectEventDispatcher(EventDispatcher $eventDispatcher): void
+    public function injectEventDispatcher(EventDispatcherInterface $eventDispatcher): void
     {
         $this->eventDispatcher = $eventDispatcher;
     }
@@ -416,7 +416,7 @@ class DayRepository extends AbstractRepository
                 $subQueryBuilder->getSQL(),
             ),
             $queryBuilder->quoteIdentifier('day_sub_group'),
-            $queryBuilder->expr()->and(
+            (string)$queryBuilder->expr()->and(
                 $queryBuilder->expr()->eq(
                     'day.event',
                     $queryBuilder->quoteIdentifier('day_sub_group.event'),

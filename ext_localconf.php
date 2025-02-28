@@ -52,6 +52,8 @@ call_user_func(static function (): void {
             VideoController::class => 'show',
             ICalController::class => 'download',
         ],
+        [],
+        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
     );
 
     ExtensionUtility::configurePlugin(
@@ -63,6 +65,8 @@ call_user_func(static function (): void {
             VideoController::class => 'show',
             ICalController::class => 'download',
         ],
+        [],
+        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
     );
 
     ExtensionUtility::configurePlugin(
@@ -75,6 +79,7 @@ call_user_func(static function (): void {
         [
             ManagementController::class => 'listMyEvents, create, edit, update, perform, delete, activate',
         ],
+        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
     );
 
     ExtensionUtility::configurePlugin(
@@ -83,6 +88,8 @@ call_user_func(static function (): void {
         [
             CalendarController::class => 'show',
         ],
+        [],
+        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
     );
 
     ExtensionUtility::configurePlugin(
@@ -95,6 +102,7 @@ call_user_func(static function (): void {
         [
             SearchController::class => 'show',
         ],
+        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
     );
 
     ExtensionUtility::configurePlugin(
@@ -107,6 +115,7 @@ call_user_func(static function (): void {
         [
             SearchController::class => 'listSearchResults',
         ],
+        ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
     );
 
     // register an eval function to check for time

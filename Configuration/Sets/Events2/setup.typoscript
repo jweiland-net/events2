@@ -16,7 +16,7 @@ page.includeJSFooter {
   events2Calendar = EXT:events2/Resources/Public/JavaScript/Calendar.js
 }
 
-[{$plugin.tx_events2.settings.useExtForm} == "1"]
+[{$events2.form.useExtForm} == true]
   plugin.tx_form.settings.yamlConfigurations.1661247670 = EXT:events2/Configuration/Form/OverrideFormSettings.yaml
   # This part will be moved back with "if.isTrue" until this patch was fixed: https://forge.typo3.org/issues/98200
   plugin.tx_events2.view.templateRootPaths.1 = EXT:events2/Resources/Private/FormFramework/Templates/
@@ -33,21 +33,22 @@ plugin.tx_events2 {
     templateRootPaths {
       0 = EXT:events2/Resources/Private/Templates/
       # Do not use "1", it may be overwritten by condition above.
-      2 = {$plugin.tx_events2.view.templateRootPath}
+      2 = {$events2.templateRootPath}
     }
     partialRootPaths {
       0 = EXT:events2/Resources/Private/Partials/
       # Do not use "1", it may be overwritten by condition above.
-      2 = {$plugin.tx_events2.view.partialRootPath}
+      2 = {$events2.partialRootPath}
       3 = EXT:maps2/Resources/Private/Partials/
     }
     layoutRootPaths {
       0 = EXT:events2/Resources/Private/Layouts/
-      1 = {$plugin.tx_events2.view.layoutRootPath}
+      1 = {$events2.layoutRootPath}
     }
   }
+
   persistence {
-    storagePid = {$plugin.tx_events2.persistence.storagePid}
+    storagePid = {$events2.storagePid}
     classes {
       JWeiland\Events2\Domain\Model\Location {
         newRecordStoragePid =
@@ -57,19 +58,20 @@ plugin.tx_events2 {
       }
     }
   }
+
   mvc {
     callDefaultActionIfActionCantBeResolved = 1
   }
   settings {
-    rootCategory = {$plugin.tx_events2.settings.rootCategory}
-    pidOfDetailPage = {$plugin.tx_events2.settings.pidOfDetailPage}
-    pidOfSearchResults = {$plugin.tx_events2.settings.pidOfSearchResults}
-    pidOfLocationPage = {$plugin.tx_events2.settings.pidOfLocationPage}
-    pidOfManagementPage = {$plugin.tx_events2.settings.pidOfManagementPage}
-    pidOfNewLocationPage = {$plugin.tx_events2.settings.pidOfNewLocationPage}
-    pidOfListPage = {$plugin.tx_events2.settings.pidOfListPage}
-    userGroup = {$plugin.tx_events2.settings.userGroup}
-    remainingLetters = {$plugin.tx_events2.settings.remainingLetters}
+    rootCategory = {$events2.form.rootCategory}
+    pidOfDetailPage = {$events2.pidOfDetailPage}
+    pidOfSearchResults = {$events2.pidOfSearchResults}
+    pidOfLocationPage = {$events2.pidOfLocationPage}
+    pidOfManagementPage = {$events2.pidOfManagementPage}
+    pidOfNewLocationPage = {$events2.pidOfNewLocationPage}
+    pidOfListPage = {$events2.pidOfListPage}
+    userGroup = {$events2.form.userGroup}
+    remainingLetters = {$events2.form.remainingLetters}
     list {
       image {
         width = 50c
@@ -82,11 +84,11 @@ plugin.tx_events2 {
     }
 
     latest {
-      amountOfRecordsToShow = {$plugin.tx_events2.settings.latest.amountOfRecordsToShow}
+      amountOfRecordsToShow = {$events2.latest.amountOfRecordsToShow}
     }
 
     new {
-      selectableCategoriesForNewEvents = {$plugin.tx_events2.settings.new.selectableCategoriesForNewEvents}
+      selectableCategoriesForNewEvents = {$events2.form.selectableCategoriesForNewEvents}
       uploadFolder = 1:user_upload/tx_events2/
     }
 
@@ -96,28 +98,28 @@ plugin.tx_events2 {
       renderables.1.renderables.8.properties.pidOfNewLocationPage < plugin.tx_events2.settings.pidOfNewLocationPage
       # Be careful: if you have assigned multiple PIDs to storagePid you have to replace following values with
       # exact ONE page UID
-      finishers.1.options.1.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
-      finishers.1.options.2.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
-      finishers.1.options.3.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
-      finishers.1.options.4.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
-      finishers.1.options.9.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
-      finishers.1.options.10.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
-      finishers.1.options.11.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
-      finishers.1.options.12.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
-      finishers.1.options.13.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
-      finishers.1.options.14.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
-      finishers.1.options.15.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
-      finishers.1.options.16.databaseColumnMappings.pid.value = {$plugin.tx_events2.persistence.storagePidForFrontendCreatedEvents}
+      finishers.1.options.1.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
+      finishers.1.options.2.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
+      finishers.1.options.3.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
+      finishers.1.options.4.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
+      finishers.1.options.9.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
+      finishers.1.options.10.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
+      finishers.1.options.11.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
+      finishers.1.options.12.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
+      finishers.1.options.13.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
+      finishers.1.options.14.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
+      finishers.1.options.15.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
+      finishers.1.options.16.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
 
       finishers.2.options.subject = A new event record was created
-      finishers.2.options.variables.pidOfManagementPage = {$plugin.tx_events2.settings.pidOfManagementPage}
+      finishers.2.options.variables.pidOfManagementPage = {$events2.pidOfManagementPage}
 
-      finishers.5.options.pageUid = {$plugin.tx_events2.settings.pidOfListPage}
+      finishers.5.options.pageUid = {$events2.pidOfListPage}
     }
 
     pageBrowser {
       class = JWeiland\Events2\Pagination\GetPostPagination
-      itemsPerPage = {$plugin.tx_events2.settings.pageBrowser.itemsPerPage}
+      itemsPerPage = {$events2.pageBrowser.itemsPerPage}
     }
 
     show {
@@ -133,24 +135,6 @@ plugin.tx_events2 {
   }
   _LOCAL_LANG.de.rightsMessage = Hiermit räume ich ... ein einfaches, unbeschränktes Nutzungsrecht an dem hochgeladenen Werk ein. Mit der Nutzung werden keine Rechte von Dritten verletzt.
   _LOCAL_LANG.default.rightsMessage = I give all rights of this image to...
-}
-
-module.tx_events2 {
-  view {
-    templateRootPaths {
-      0 = EXT:events2/Resources/Private/Backend/Templates/
-      1 = {$module.tx_events2.view.templateRootPath}
-    }
-    partialRootPaths {
-      0 = EXT:events2/Resources/Private/Backend/Partials/
-      1 = {$module.tx_events2.view.partialRootPath}
-    }
-    layoutRootPaths {
-      0 = EXT:events2/Resources/Private/Backend/Layouts/
-      1 = {$module.tx_events2.view.layoutRootPath}
-    }
-  }
-  persistence < plugin.tx_events2.persistence
 }
 
 plugin.tx_events2._CSS_DEFAULT_STYLE (

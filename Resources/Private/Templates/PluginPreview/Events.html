@@ -17,7 +17,7 @@
     <tr>
         <td><strong>Plugin</strong></td>
         <td>
-            <f:switch expression="{list_type}">
+            <f:switch expression="{CType}">
                 <f:case value="events2_show">Detail view</f:case>
                 <f:case value="events2_management">Management</f:case>
                 <f:case value="events2_calendar">Calendar</f:case>
@@ -28,7 +28,7 @@
         </td>
     </tr>
 
-    <f:switch expression="{list_type}">
+    <f:switch expression="{CType}">
         <f:case value="events2_show">
             <f:render section="RenderPidOfListPage" arguments="{pidOfListPage: pi_flexform_transformed.settings.pidOfListPage}"/>
             <f:render section="RenderPidOfLocationPage" arguments="{pidOfLocationPage: pi_flexform_transformed.settings.pidOfLocationPage}"/>
