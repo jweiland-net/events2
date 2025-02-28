@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Unit\Backend\FormDataProvider;
 
 use JWeiland\Events2\Backend\FormDataProvider\InitializeNewEventRecord;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
@@ -25,8 +26,6 @@ class InitializeNewEventRecordTest extends UnitTestCase
 
     /**
      * This tests works with Context class which is a Singleton. These must be deleted while tearDown.
-     *
-     * @var bool
      */
     protected bool $resetSingletonInstances = true;
 
@@ -34,7 +33,9 @@ class InitializeNewEventRecordTest extends UnitTestCase
     {
         parent::setUp();
 
-        $this->subject = new InitializeNewEventRecord(GeneralUtility::makeInstance(Context::class));
+        $this->subject = new InitializeNewEventRecord(
+            GeneralUtility::makeInstance(Context::class)
+        );
     }
 
     protected function tearDown(): void
@@ -46,9 +47,7 @@ class InitializeNewEventRecordTest extends UnitTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addDataWithWrongTableNameWillNotModifyResult(): void
     {
         $result = [
@@ -61,9 +60,7 @@ class InitializeNewEventRecordTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addDataWillNotModifyResultIfRecordIsNotNew(): void
     {
         $result = [
@@ -77,9 +74,7 @@ class InitializeNewEventRecordTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addDataWithEventTableAndNewRecordWillModifyEventBegin(): void
     {
         $expected = $result = [

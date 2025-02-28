@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Unit\Converter;
 
 use JWeiland\Events2\Converter\TimeToStringConverter;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -52,11 +54,8 @@ class TimeToStringConverterTest extends UnitTestCase
         return $timestamps;
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider dataProviderForTooHighIntegerValues
-     */
+    #[Test]
+    #[DataProvider('dataProviderForTooHighIntegerValues')]
     public function convertWithTooHighIntegerValues(int $tooHighIntegerValue): void
     {
         self::assertSame(
@@ -80,11 +79,8 @@ class TimeToStringConverterTest extends UnitTestCase
         return $timestamps;
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider dataProviderForTooLowIntegerValues
-     */
+    #[Test]
+    #[DataProvider('dataProviderForTooLowIntegerValues')]
     public function convertWithTooLowIntergerValues(int $tooLowIntegerValue): void
     {
         self::assertSame(
@@ -114,11 +110,8 @@ class TimeToStringConverterTest extends UnitTestCase
         return $timestamps;
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider dataProviderForTimestampsInAllowedRange
-     */
+    #[Test]
+    #[DataProvider('dataProviderForTimestampsInAllowedRange')]
     public function convertWithIntegersInAllowedRangeResultsInStringInterpretation(
         int $timestampInRange,
         string $expectedTime,

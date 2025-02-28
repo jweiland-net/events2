@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Tests\Unit\Domain\Model;
 use JWeiland\Events2\Domain\Model\Link;
 use JWeiland\Events2\Domain\Model\Organizer;
 use JWeiland\Events2\Tests\Unit\Domain\Traits\TestTypo3PropertiesTrait;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -41,9 +42,7 @@ class OrganizerTest extends UnitTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getOrganizerInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
@@ -52,9 +51,7 @@ class OrganizerTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setOrganizerSetsOrganizer(): void
     {
         $this->subject->setOrganizer('foo bar');
@@ -65,17 +62,13 @@ class OrganizerTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getLinkInitiallyReturnsNull(): void
     {
         self::assertNull($this->subject->getLink());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setLinkSetsLink(): void
     {
         $instance = new Link();

@@ -13,6 +13,8 @@ namespace JWeiland\Events2\Tests\Unit\Tca\Type;
 
 use JWeiland\Events2\Converter\TimeToStringConverter;
 use JWeiland\Events2\Tca\Type\Time;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -54,12 +56,8 @@ class TimeTest extends UnitTestCase
         return $times;
     }
 
-    /**
-     * @test
-     *
-     * @param $unmodifiedTime
-     * @dataProvider unmodifiedTimesDataProvider
-     */
+    #[Test]
+    #[DataProvider('unmodifiedTimesDataProvider')]
     public function evaluateWithTimesWhichWillNotBeModified($unmodifiedTime): void
     {
         self::assertSame(
@@ -82,13 +80,8 @@ class TimeTest extends UnitTestCase
         return $times;
     }
 
-    /**
-     * @test
-     *
-     * @param $unpaddedTimes
-     * @param $paddedTimes
-     * @dataProvider unpaddedTimesDataProvider
-     */
+    #[Test]
+    #[DataProvider('unpaddedTimesDataProvider')]
     public function evaluateWithTimesWhichWillAddPaddings($unpaddedTimes, $paddedTimes): void
     {
         self::assertSame(
@@ -113,11 +106,8 @@ class TimeTest extends UnitTestCase
         return $times;
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider tooHighTimesDataProvider
-     */
+    #[Test]
+    #[DataProvider('tooHighTimesDataProvider')]
     public function evaluateWithTooHighTimeValues(string $tooHighTime, string $normalizedTime): void
     {
         self::assertSame(
@@ -138,11 +128,8 @@ class TimeTest extends UnitTestCase
         return $times;
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider invalidTimesDataProvider
-     */
+    #[Test]
+    #[DataProvider('invalidTimesDataProvider')]
     public function evaluateWithInvalidValues($invalidTime, $expectedTime): void
     {
         self::assertSame(
@@ -171,11 +158,8 @@ class TimeTest extends UnitTestCase
         return $timestamps;
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider dataProviderForVariousIntegerValues
-     */
+    #[Test]
+    #[DataProvider('dataProviderForVariousIntegerValues')]
     public function evaluateWithInteger(int $intValue, string $expectedTime): void
     {
         self::assertSame(

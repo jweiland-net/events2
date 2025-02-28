@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Tests\Unit\Domain\Model;
 use JWeiland\Events2\Domain\Model\Category;
 use JWeiland\Events2\Domain\Model\Location;
 use JWeiland\Events2\Domain\Model\Search;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -39,9 +40,7 @@ class SearchTest extends UnitTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getSearchInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
@@ -50,9 +49,7 @@ class SearchTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setSearchSetsSearch(): void
     {
         $this->subject->setSearch('foo bar');
@@ -63,17 +60,13 @@ class SearchTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getMainCategoryInitiallyReturnsNull(): void
     {
         self::assertNull($this->subject->getMainCategory());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setMainCategorySetsMainCategory(): void
     {
         $instance = new Category();
@@ -85,17 +78,13 @@ class SearchTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getSubCategoryInitiallyReturnsNull(): void
     {
         self::assertNull($this->subject->getSubCategory());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setSubCategorySetsSubCategory(): void
     {
         $instance = new Category();
@@ -107,17 +96,13 @@ class SearchTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getEventBeginInitiallyReturnsNULL(): void
     {
         self::assertNull($this->subject->getEventBegin());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setEventBeginSetsEventBegin(): void
     {
         $this->subject->setEventBegin('today');
@@ -128,17 +113,13 @@ class SearchTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getEventEndInitiallyReturnsNull(): void
     {
         self::assertNull($this->subject->getEventEnd());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setEventEndSetsEventEnd(): void
     {
         $this->subject->setEventEnd('today');
@@ -149,17 +130,13 @@ class SearchTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getLocationInitiallyReturnsNull(): void
     {
         self::assertNull($this->subject->getLocation());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setLocationSetsLocation(): void
     {
         $instance = new Location();
@@ -171,9 +148,7 @@ class SearchTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getFreeEntryInitiallyReturnsFalse(): void
     {
         self::assertFalse(
@@ -181,9 +156,7 @@ class SearchTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setFreeEntrySetsFreeEntry(): void
     {
         $this->subject->setFreeEntry(true);

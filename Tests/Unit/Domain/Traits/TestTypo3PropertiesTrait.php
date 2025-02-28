@@ -11,14 +11,14 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Tests\Unit\Domain\Traits;
 
+use PHPUnit\Framework\Attributes\Test;
+
 /**
  * Test case.
  */
 trait TestTypo3PropertiesTrait
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function getCrdateInitiallyReturnsNull(): void
     {
         self::assertNull(
@@ -26,9 +26,7 @@ trait TestTypo3PropertiesTrait
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setCrdateSetsCrdate(): void
     {
         $date = new \DateTimeImmutable();
@@ -40,9 +38,7 @@ trait TestTypo3PropertiesTrait
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setCrdateWithNullSetsCrdate(): void
     {
         $this->subject->setCrdate(null);
@@ -52,9 +48,7 @@ trait TestTypo3PropertiesTrait
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getTstampInitiallyReturnsNull(): void
     {
         self::assertNull(
@@ -62,9 +56,7 @@ trait TestTypo3PropertiesTrait
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setTstampSetsTstamp(): void
     {
         $date = new \DateTimeImmutable();
@@ -76,9 +68,7 @@ trait TestTypo3PropertiesTrait
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setTstampWithNullSetsTstamp(): void
     {
         $this->subject->setTstamp(null);
@@ -88,9 +78,7 @@ trait TestTypo3PropertiesTrait
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getSysLanguageUidInitiallyReturnsNull(): void
     {
         self::assertNull(
@@ -98,9 +86,7 @@ trait TestTypo3PropertiesTrait
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setSysLanguageUidSetsSysLanguageUid(): void
     {
         $this->subject->setSysLanguageUid(123456);
@@ -111,9 +97,7 @@ trait TestTypo3PropertiesTrait
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getL10nParentInitiallyReturnsZero(): void
     {
         self::assertSame(
@@ -122,9 +106,7 @@ trait TestTypo3PropertiesTrait
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setL10nParentSetsL10nParent(): void
     {
         $this->subject->setL10nParent(123456);
@@ -135,9 +117,7 @@ trait TestTypo3PropertiesTrait
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getStarttimeInitiallyReturnsNull(): void
     {
         self::assertNull(
@@ -145,9 +125,7 @@ trait TestTypo3PropertiesTrait
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setStarttimeSetsStarttime(): void
     {
         $date = new \DateTimeImmutable();
@@ -159,9 +137,7 @@ trait TestTypo3PropertiesTrait
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setStarttimeWithNullSetsStarttime(): void
     {
         $this->subject->setStarttime(null);
@@ -171,9 +147,7 @@ trait TestTypo3PropertiesTrait
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getEndtimeInitiallyReturnsNull(): void
     {
         self::assertNull(
@@ -181,9 +155,7 @@ trait TestTypo3PropertiesTrait
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setEndtimeSetsEndtime(): void
     {
         $date = new \DateTimeImmutable();
@@ -195,9 +167,7 @@ trait TestTypo3PropertiesTrait
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setEndtimeWithNullSetsEndtime(): void
     {
         $this->subject->setEndtime(null);
@@ -207,9 +177,7 @@ trait TestTypo3PropertiesTrait
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getHiddenInitiallyReturnsFalse(): void
     {
         self::assertFalse(
@@ -217,9 +185,7 @@ trait TestTypo3PropertiesTrait
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setHiddenSetsHidden(): void
     {
         $this->subject->setHidden(true);
@@ -228,9 +194,7 @@ trait TestTypo3PropertiesTrait
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDeletedInitiallyReturnsFalse(): void
     {
         self::assertFalse(
@@ -238,9 +202,7 @@ trait TestTypo3PropertiesTrait
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setDeletedSetsDeleted(): void
     {
         $this->subject->setDeleted(true);

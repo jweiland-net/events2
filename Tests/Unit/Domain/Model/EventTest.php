@@ -21,6 +21,8 @@ use JWeiland\Events2\Domain\Model\Organizer;
 use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Domain\Repository\UserRepository;
 use JWeiland\Events2\Tests\Unit\Domain\Traits\TestTypo3PropertiesTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
@@ -52,9 +54,7 @@ class EventTest extends UnitTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getTitleInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
@@ -63,9 +63,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setTitleSetsTitle(): void
     {
         $this->subject->setTitle('foo bar');
@@ -76,9 +74,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getTopOfListInitiallyReturnsFalse(): void
     {
         self::assertFalse(
@@ -86,9 +82,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setTopOfListSetsTopOfList(): void
     {
         $this->subject->setTopOfList(true);
@@ -98,9 +92,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getTeaserInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
@@ -109,9 +101,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setTeaserSetsTeaser(): void
     {
         $this->subject->setTeaser('foo bar');
@@ -122,9 +112,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setEventBeginSetsEventBegin(): void
     {
         $date = new \DateTimeImmutable();
@@ -136,17 +124,13 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getEventTimeInitiallyReturnsNull(): void
     {
         self::assertNull($this->subject->getEventTime());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getEventTimeWithoutAnyTimesInAnyRelationsResultsInTimeOfCurrentEvent(): void
     {
         $time = new Time();
@@ -159,9 +143,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setEventTimeSetsEventTime(): void
     {
         $instance = new Time();
@@ -173,9 +155,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDaysOfEventsTakingDaysWithEqualDaysReturnsZero(): void
     {
         $eventBegin = new \DateTimeImmutable('midnight');
@@ -190,9 +170,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDaysOfEventsTakingDaysWithNoneEventEndResultsInZero(): void
     {
         $eventBegin = new \DateTimeImmutable();
@@ -204,9 +182,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDaysOfEventsTakingDaysWithDifferentDatesResultsInFourDays(): void
     {
         $eventBegin = new \DateTimeImmutable();
@@ -220,17 +196,13 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getEventEndInitiallyReturnsNull(): void
     {
         self::assertNull($this->subject->getEventEnd());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setEventEndSetsEventEnd(): void
     {
         $instance = new \DateTimeImmutable();
@@ -242,9 +214,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getSameDayInitiallyReturnsFalse(): void
     {
         self::assertFalse(
@@ -252,9 +222,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setSameDaySetsSameDay(): void
     {
         $this->subject->setSameDay(true);
@@ -264,9 +232,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getMultipleTimesInitiallyReturnsObjectStorage(): void
     {
         self::assertEquals(
@@ -275,9 +241,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setMultipleTimesSetsMultipleTimes(): void
     {
         $instance = new ObjectStorage();
@@ -289,9 +253,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getXthInitiallyReturnsZero(): void
     {
         self::assertSame(
@@ -300,9 +262,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setXthSetsXth(): void
     {
         $this->subject->setXth(123456);
@@ -313,9 +273,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getWeekdayInitiallyReturnsZero(): void
     {
         self::assertSame(
@@ -324,9 +282,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setWeekdaySetsWeekday(): void
     {
         $this->subject->setWeekday(123456);
@@ -337,9 +293,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDifferentTimesInitiallyReturnsObjectStorage(): void
     {
         self::assertEquals(
@@ -348,9 +302,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setDifferentTimesSetsDifferentTimes(): void
     {
         $object = new Time();
@@ -364,9 +316,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addDifferentTimeAddsOneDifferentTime(): void
     {
         $objectStorage = new ObjectStorage();
@@ -383,9 +333,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function removeDifferentTimeRemovesOneDifferentTime(): void
     {
         $object = new Time();
@@ -404,9 +352,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getEachWeeksInitiallyReturnsZero(): void
     {
         self::assertSame(
@@ -415,9 +361,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setEachWeeksSetsEachWeeks(): void
     {
         $this->subject->setEachWeeks(123456);
@@ -428,9 +372,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getEachMonthsInitiallyReturnsZero(): void
     {
         self::assertSame(
@@ -439,9 +381,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setEachMonthsSetsEachMonths(): void
     {
         $this->subject->setEachMonths(123456);
@@ -452,9 +392,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getRecurringEndInitiallyReturnsNull(): void
     {
         self::assertNull(
@@ -462,9 +400,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setRecurringEndSetsRecurringEnd(): void
     {
         $date = new \DateTimeImmutable();
@@ -476,9 +412,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getExceptionsInitiallyReturnsObjectStorage(): void
     {
         self::assertEquals(
@@ -487,9 +421,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setExceptionsSetsExceptions(): void
     {
         $object = new Exception();
@@ -505,9 +437,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addExceptionAddsOneDifferentTime(): void
     {
         $objectStorage = new ObjectStorage();
@@ -524,9 +454,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function removeExceptionRemovesOneException(): void
     {
         $object = new Exception();
@@ -545,9 +473,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getExceptionsForDateReturnZeroExceptions(): void
     {
         self::assertEquals(
@@ -556,9 +482,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getExceptionsForDateWithRemoveExceptionReturnsZeroExceptionsForAdd(): void
     {
         $date = new \DateTimeImmutable('midnight');
@@ -578,9 +502,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getExceptionsForDateWithRemoveExceptionReturnsOneRemoveException(): void
     {
         $date = new \DateTimeImmutable('midnight');
@@ -604,9 +526,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getExceptionsForDateWithRemoveExceptionWithNonNormalizedDateReturnsOneRemoveException(): void
     {
         $date = new \DateTimeImmutable('now'); // date must be sanitized to midnight in getExceptionsForDate
@@ -630,9 +550,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getExceptionsForDateWithDifferentExceptionsReturnsAddException(): void
     {
         $date = new \DateTimeImmutable('midnight');
@@ -661,9 +579,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getExceptionsForDateWithExceptionsOfDifferentDatesReturnsAddException(): void
     {
         $firstDate = new \DateTimeImmutable('midnight');
@@ -695,9 +611,8 @@ class EventTest extends UnitTestCase
 
     /**
      * This test also checks against lowercased and multiple spaces in list of exception types
-     *
-     * @test
      */
+    #[Test]
     public function getExceptionsForDateWithExceptionsOfDifferentDatesReturnsDifferentExceptions(): void
     {
         $firstDate = new \DateTimeImmutable('midnight');
@@ -739,9 +654,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDetailInformationInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
@@ -750,9 +663,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setDetailInformationSetsDetailInformation(): void
     {
         $this->subject->setDetailInformation('foo bar');
@@ -763,9 +674,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getFreeEntryInitiallyReturnsFalse(): void
     {
         self::assertFalse(
@@ -773,9 +682,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setFreeEntrySetsFreeEntry(): void
     {
         $this->subject->setFreeEntry(true);
@@ -785,17 +692,13 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getTicketLinkInitiallyReturnsNull(): void
     {
         self::assertNull($this->subject->getTicketLink());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setTicketLinkSetsTicketLink(): void
     {
         $instance = new Link();
@@ -807,9 +710,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getCategoriesInitiallyReturnsObjectStorage(): void
     {
         self::assertEquals(
@@ -818,9 +719,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setCategoriesSetsCategories(): void
     {
         $object = new Category();
@@ -836,9 +735,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addCategoryAddsOneCategory(): void
     {
         $objectStorage = new ObjectStorage();
@@ -855,9 +752,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function removeCategoryRemovesOneCategory(): void
     {
         $object = new Category();
@@ -876,9 +771,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getCategoryListReturnsCommaSeparatedList(): void
     {
         for ($i = 1; $i < 4; ++$i) {
@@ -892,9 +785,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDaysInitiallyReturnsObjectStorage(): void
     {
         self::assertEquals(
@@ -903,9 +794,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setDaysSetsDays(): void
     {
         $object = new Day();
@@ -921,9 +810,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addDayAddsOneDifferentTime(): void
     {
         $objectStorage = new ObjectStorage();
@@ -940,9 +827,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function removeDayRemovesOneDay(): void
     {
         $object = new Day();
@@ -961,9 +846,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getFutureDatesGroupedAndSortedReturnsFutureDatesOnly(): void
     {
         $yesterday = new \DateTimeImmutable('yesterday');
@@ -996,9 +879,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getFutureDatesGroupedAndSortedReturnsDatesGroupedAndSorted(): void
     {
         $today1 = new \DateTimeImmutable('now 12:00:00');
@@ -1052,9 +933,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getFutureDatesIncludingRemovedGroupedAndSortedReturnsFutureDatesSorted(): void
     {
         $yesterday = new \DateTimeImmutable('yesterday');
@@ -1121,17 +1000,13 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getLocationInitiallyReturnsNull(): void
     {
         self::assertNull($this->subject->getLocation());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setLocationSetsLocation(): void
     {
         $instance = new Location();
@@ -1143,9 +1018,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getOrganizersInitiallyReturnsObjectStorage(): void
     {
         self::assertEquals(
@@ -1154,9 +1027,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setOrganizersSetsOrganizers(): void
     {
         $object = new Organizer();
@@ -1172,9 +1043,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addOrganizerAddsOneOrganizer(): void
     {
         $objectStorage = new ObjectStorage();
@@ -1191,9 +1060,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function removeOrganizerRemovesOneOrganizer(): void
     {
         $object = new Organizer();
@@ -1212,9 +1079,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getFirstOrganizerWillReturnFirstOrganizer(): void
     {
         $organizer1 = new Organizer();
@@ -1245,10 +1110,8 @@ class EventTest extends UnitTestCase
         ];
     }
 
-    /**
-     * @test
-     * @dataProvider events2OrganizerDataProvider
-     */
+    #[Test]
+    #[DataProvider('events2OrganizerDataProvider')]
     public function isCurrentUserAllowedOrganizerReturnsTrue(
         int $organizerUid,
         bool $expected,
@@ -1284,9 +1147,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getImagesInitiallyReturnsArray(): void
     {
         self::assertEquals(
@@ -1295,9 +1156,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setImagesSetsImages(): void
     {
         $object = new Time();
@@ -1313,17 +1172,13 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getVideoLinkInitiallyReturnsNull(): void
     {
         self::assertNull($this->subject->getVideoLink());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setVideoLinkSetsVideoLink(): void
     {
         $instance = new Link();
@@ -1335,9 +1190,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDownloadLinksInitiallyReturnsObjectStorage(): void
     {
         self::assertEquals(
@@ -1346,9 +1199,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setDownloadLinksSetsDownloadLinks(): void
     {
         $object = new Link();
@@ -1364,9 +1215,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addDownloadLinkAddsOneDownloadLink(): void
     {
         $objectStorage = new ObjectStorage();
@@ -1383,9 +1232,7 @@ class EventTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function removeDownloadLinkRemovesOneDownloadLink(): void
     {
         $object = new Link();

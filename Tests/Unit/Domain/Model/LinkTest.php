@@ -13,6 +13,7 @@ namespace JWeiland\Events2\Tests\Unit\Domain\Model;
 
 use JWeiland\Events2\Domain\Model\Link;
 use JWeiland\Events2\Tests\Unit\Domain\Traits\TestTypo3PropertiesTrait;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -40,9 +41,7 @@ class LinkTest extends UnitTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getLinkInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
@@ -51,9 +50,7 @@ class LinkTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setLinkSetsLink(): void
     {
         $this->subject->setLink('foo bar');
@@ -64,9 +61,7 @@ class LinkTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getTitleInitiallyReturnsVideo(): void
     {
         self::assertSame(
@@ -75,9 +70,7 @@ class LinkTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setTitleSetsTitle(): void
     {
         $this->subject->setTitle('foo bar');
@@ -88,9 +81,7 @@ class LinkTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDeletedInitiallyReturnsFalse(): void
     {
         self::assertFalse(
@@ -98,9 +89,7 @@ class LinkTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setDeletedSetsDeleted(): void
     {
         $this->subject->setDeleted(true);
