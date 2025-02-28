@@ -17,6 +17,7 @@ use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Service\EventService;
 use JWeiland\Events2\Utility\DateTimeUtility;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
@@ -69,9 +70,7 @@ class EventServiceTest extends FunctionalTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getNextDayForEventWithoutEventReturnsFalse(): void
     {
         $this->eventRepositoryMock
@@ -84,9 +83,7 @@ class EventServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getNextDayForEventWithEventButWithoutFutureDaysReturnsFalse(): void
     {
         $yesterday = new \DateTimeImmutable('yesterday midnight');
@@ -113,9 +110,7 @@ class EventServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getNextDayForEventWithEventWithFutureDayReturnsDay(): void
     {
         $tomorrow = new \DateTimeImmutable('tomorrow midnight');
@@ -145,9 +140,8 @@ class EventServiceTest extends FunctionalTestCase
 
     /**
      * This test also tests re-sorting of days
-     *
-     * @test
      */
+    #[Test]
     public function getNextDayForEventWithEventWithFutureDaysReturnsNextDay(): void
     {
         $tomorrow = new \DateTimeImmutable('tomorrow midnight');
@@ -190,9 +184,7 @@ class EventServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getLastDayForEventWithEventWithFutureDayReturnsDay(): void
     {
         $tomorrow = new \DateTimeImmutable('tomorrow midnight');
@@ -222,9 +214,8 @@ class EventServiceTest extends FunctionalTestCase
 
     /**
      * This test also tests re-sorting of days
-     *
-     * @test
      */
+    #[Test]
     public function getLastDayForEventWithEventWithFutureDaysReturnsLastDay(): void
     {
         $tomorrow = new \DateTimeImmutable('tomorrow midnight');

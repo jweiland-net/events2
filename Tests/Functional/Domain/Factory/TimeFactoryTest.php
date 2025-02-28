@@ -16,6 +16,7 @@ use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Exception;
 use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Utility\DateTimeUtility;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
@@ -55,9 +56,7 @@ class TimeFactoryTest extends FunctionalTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getTimesForDateWithoutAnyTimesReturnsNoTimes(): void
     {
         $firstDate = new \DateTimeImmutable('midnight');
@@ -86,9 +85,7 @@ class TimeFactoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getTimesForDateWithExceptionsWithTimeReturnsTimes(): void
     {
         $firstDate = new \DateTimeImmutable('midnight');
@@ -124,9 +121,7 @@ class TimeFactoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getTimesForDateWithDifferentExceptionTypesWithTimeReturnsTimes(): void
     {
         $firstDate = new \DateTimeImmutable('midnight');
@@ -162,9 +157,7 @@ class TimeFactoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getTimesForDateWithDifferentTimesAndSingleEventReturnsNoTimes(): void
     {
         $firstDate = new \DateTimeImmutable('midnight');
@@ -187,9 +180,7 @@ class TimeFactoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getTimesForDateWithDifferentTimesOnDifferentWeekdayAndRecurringEventReturnsNoTimes(): void
     {
         $firstDate = new \DateTimeImmutable('midnight');
@@ -214,9 +205,7 @@ class TimeFactoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getTimesForDateWithDifferentTimesAndRecurringEventReturnsTimes(): void
     {
         $firstDate = new \DateTimeImmutable('midnight');
@@ -241,9 +230,7 @@ class TimeFactoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getTimesForDateWithDifferentTimesAndSingleEventReturnsOneTime(): void
     {
         $firstDate = new \DateTimeImmutable('midnight');
@@ -268,9 +255,7 @@ class TimeFactoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getTimesForDateWithEventTimeReturnsOneTime(): void
     {
         $firstDate = new \DateTimeImmutable('midnight');
@@ -291,9 +276,7 @@ class TimeFactoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getTimesForDateWithExceptionsWithoutTimesButWithEventTimeReturnsOneTime(): void
     {
         $firstDate = new \DateTimeImmutable('midnight');
@@ -327,9 +310,7 @@ class TimeFactoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getSortedTimesForDateWithoutTimesReturnsEmptyStorage(): void
     {
         $date = new \DateTimeImmutable('midnight');
@@ -344,9 +325,7 @@ class TimeFactoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getSortedTimesForDateWithEventTimeReturnsOneSortedTime(): void
     {
         $date = new \DateTimeImmutable('midnight');
@@ -366,9 +345,7 @@ class TimeFactoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getSortedTimesForDateWithDifferentTimesReturnsSortedTimes(): void
     {
         $date = new \DateTimeImmutable('midnight');
@@ -411,9 +388,7 @@ class TimeFactoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getSortedTimesForDateWithTimeExceptionsReturnsSortedTimes(): void
     {
         $date = new \DateTimeImmutable('midnight');
@@ -472,9 +447,7 @@ class TimeFactoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getTimesForDateWithEventBeginWillRemoveCurrentDay(): void
     {
         $eventBegin = new \DateTimeImmutable('midnight');

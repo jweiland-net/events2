@@ -18,6 +18,8 @@ use JWeiland\Events2\Domain\Repository\TimeRepository;
 use JWeiland\Events2\Service\DayGeneratorService;
 use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Utility\DateTimeUtility;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Log\Logger;
@@ -136,9 +138,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function createDayRelationsWithEmptyRecordWillAddLogBecauseOfEmptyEventRecord(): void
     {
         $this->eventRecord = [];
@@ -154,9 +154,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         $this->subject->createDayRelations(123);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function createDayRelationsWithEmptyRecordWillAddLogBecauseOfInvalidEventRecord(): void
     {
         unset($this->eventRecord['event_type']);
@@ -177,9 +175,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         $this->subject->createDayRelations(123);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function createDayRelationsWithEventRecordWillAddLogBecauseOfTranslatedEventRecord(): void
     {
         $this->eventRecord['sys_language_uid'] = 2;
@@ -200,9 +196,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         $this->subject->createDayRelations(123);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function createDayRelationsWithEmptyDateTimeStorageWillRemoveAddRelatedDayRecords(): void
     {
         $this->getDatabaseConnection()->insertArray(
@@ -225,9 +219,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function createDayRelationsWithSingleEventWithoutTimeWillAddDayWithoutTime(): void
     {
         $this->getDatabaseConnection()->insertArray(
@@ -287,11 +279,8 @@ class DayRelationServiceTest extends FunctionalTestCase
         ];
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider dataProviderForSimpleEventWithTimeForDifferentTypes
-     */
+    #[Test]
+    #[DataProvider('dataProviderForSimpleEventWithTimeForDifferentTypes')]
     public function createDayRelationsWithSingleEventWithDifferentTimeTypesWillAddDayWithTime(
         string $timeType,
         string $timeBegin,
@@ -364,9 +353,8 @@ class DayRelationServiceTest extends FunctionalTestCase
     /**
      * If a time record is given, column day contains the day at midnight 00:00:00
      * and all other day_* - columns contains day incl. time 08:12:00
-     *
-     * @test
      */
+    #[Test]
     public function createDayRelationsWithRecurringEventWillAddDaysWithTime(): void
     {
         $this->getDatabaseConnection()->insertArray(
@@ -433,9 +421,8 @@ class DayRelationServiceTest extends FunctionalTestCase
     /**
      * If multiple time records are given, column day contains the day at midnight 00:00:00
      * and all other day_* - columns contains day incl. time 08:12:00
-     *
-     * @test
      */
+    #[Test]
     public function createDayRelationsWithRecurringEventWillAddDaysForMultipleTimes(): void
     {
         $this->getDatabaseConnection()->insertArray(
@@ -509,9 +496,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function createDayRelationsWithRecurringEventWillNotAddHiddenTimes(): void
     {
         $this->getDatabaseConnection()->insertArray(
@@ -585,9 +570,8 @@ class DayRelationServiceTest extends FunctionalTestCase
      * Test a recurring event with different times for weekday
      * In that case day is current day at midnight
      * day_time and sort_day_time are equal
-     *
-     * @test
      */
+    #[Test]
     public function createDayRelationsWithRecurringEventAndDifferentTimes(): void
     {
         $this->getDatabaseConnection()->insertArray(
@@ -663,9 +647,8 @@ class DayRelationServiceTest extends FunctionalTestCase
      * Test a recurring event with exception times for one special day
      * In that case day is current day at midnight
      * day_time and sort_day_time are equal
-     *
-     * @test
      */
+    #[Test]
     public function createDayRelationsWithRecurringEventAndExceptionTimes(): void
     {
         $yesterday = new \DateTimeImmutable('yesterday midnight');
@@ -749,9 +732,8 @@ class DayRelationServiceTest extends FunctionalTestCase
      * In that case day is current day at midnight
      * day_time is current day + specified time
      * sort_day_time is current day + specified time
-     *
-     * @test
      */
+    #[Test]
     public function createDayRelationsWithRecurringEventAndMultipleExceptionTimes(): void
     {
         $yesterday = new \DateTimeImmutable('yesterday midnight');
@@ -861,9 +843,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function createDayRelationsWithDurationEvent(): void
     {
         $yesterday = new \DateTimeImmutable('yesterday midnight');

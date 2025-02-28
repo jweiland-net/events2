@@ -17,6 +17,7 @@ use JWeiland\Events2\Domain\Model\Organizer;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Service\DayRelationService;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -115,9 +116,7 @@ class DataHandlerTest extends FunctionalTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function deleteEventByAdminWillRemoveDayRecords(): void
     {
         $this->setUpBackendUserFromFixture(1);
@@ -159,9 +158,7 @@ class DataHandlerTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function deleteEventByEditorWillRemoveDayRecords(): void
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)

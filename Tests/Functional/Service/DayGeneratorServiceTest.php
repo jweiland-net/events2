@@ -15,6 +15,7 @@ use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\DateTimeEntry;
 use JWeiland\Events2\Service\DayGeneratorService;
 use JWeiland\Events2\Utility\DateTimeUtility;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
@@ -77,9 +78,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDateTimeStorageForEventWithMissingEventTypeThrowsException(): void
     {
         $this->loggerMock
@@ -101,9 +100,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDateTimeStorageForEventWithMissingEventBeginThrowsException(): void
     {
         $this->loggerMock
@@ -126,9 +123,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDateTimeStorageForEventWithEmptyEventTypeThrowsException(): void
     {
         $this->loggerMock
@@ -159,9 +154,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDateTimeStorageForEventWithEmptyEventEndForDurationalEventsThrowsException(): void
     {
         $this->loggerMock
@@ -192,9 +185,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDateTimeStorageForEventWithEmptyEventBeginThrowsException(): void
     {
         $this->loggerMock
@@ -225,9 +216,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDateTimeStorageForEventWithRecurringWeeksResetsTimeToMidnight(): void
     {
         $eventBegin = new \DateTimeImmutable('yesterday 15:38:24');
@@ -254,9 +243,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDateTimeStorageForEventWithRecurringOverEachWeekAddsThreeDaysToStorage(): void
     {
         $eventBegin = new \DateTimeImmutable('midnight');
@@ -288,9 +275,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDateTimeStorageForEventWithRecurringOverEachWeekReturnsDateTimesWithTimezoneType3(): void
     {
         $eventBegin = new \DateTimeImmutable('midnight');
@@ -315,9 +300,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDateTimeStorageForEventWithRecurringOverTwoWeeksAddsDaysToStorage(): void
     {
         $eventBegin = new \DateTimeImmutable('midnight');
@@ -349,9 +332,8 @@ class DayGeneratorServiceTest extends FunctionalTestCase
     /**
      * As the earliest date for summer- to wintertime switches is the 25. october,
      * calculated for the next 30 year, I have chosen the 20.10. to be safe.
-     *
-     * @test
      */
+    #[Test]
     public function getDateTimeStorageForEventWithRecurringWeeksWillKeepDaylightSavingTime(): void
     {
         $timestampEventBeginSummerTime = mktime(0, 0, 0, 10, 20, 2017);
@@ -389,9 +371,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDateTimeStorageForEventWithRecurringOverEachMonthAddsThreeDaysToStorage(): void
     {
         $eventBegin = new \DateTimeImmutable('first day of this month midnight');
@@ -431,9 +411,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDateTimeStorageForEventWithRecurringOverTwoMonthsAddsDaysToStorage(): void
     {
         $eventBegin = new \DateTimeImmutable('midnight');
@@ -464,9 +442,8 @@ class DayGeneratorServiceTest extends FunctionalTestCase
 
     /**
      * There is a special condition in DayGenerator::getDateToStartCalculatingFrom why we have to do this test
-     *
-     * @test
      */
+    #[Test]
     public function getDateTimeStorageForEventWithRecurringOverTwoMonthsAndVeryEarlyEventDateAddsDayToStorage(): void
     {
         $this->extConf->setRecurringPast(3);
@@ -496,9 +473,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDateTimeStorageForEventWithRecurringOverEachMonthAndTwoWeeksAddsDaysToStorage(): void
     {
         $eventBegin = new \DateTimeImmutable('midnight');
@@ -530,9 +505,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDateTimeStorageForEventWithRecurringAndEqualEventBeginAndEventEndResultsInOneDayInStorage(): void
     {
         $eventBegin = new \DateTimeImmutable('midnight');
@@ -558,9 +531,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDateTimeStorageForEventWithGivenWeekdaysResultsInAddedDaysInStorage(): void
     {
         $eventBegin = new \DateTimeImmutable('next saturday midnight');
@@ -603,9 +574,8 @@ class DayGeneratorServiceTest extends FunctionalTestCase
 
     /**
      * This test also checks for leap years.
-     *
-     * @test
      */
+    #[Test]
     public function getDateTimeStorageForEventWithGivenXthsResultsInAddedDaysInStorage(): void
     {
         // $eventBegin has to start with a month beginning with a thursday
@@ -650,9 +620,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDateTimeStorageForEventWithEventEndAddsDaysToStorage(): void
     {
         $eventBegin = new \DateTimeImmutable();
@@ -687,9 +655,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDateTimeStorageForEventWithEventBeginAddsOneDayToStorage(): void
     {
         $eventBegin = new \DateTimeImmutable();
@@ -716,9 +682,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDateTimeStorageForEventWithAddExceptionAddsOneDayInStorage(): void
     {
         $eventBegin = new \DateTimeImmutable('midnight');
@@ -755,9 +719,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDateTimeStorageForEventWithHiddenAddExceptionWillNotAddDayInStorage(): void
     {
         $eventBegin = new \DateTimeImmutable('midnight');
@@ -793,9 +755,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDateTimeStorageForEventWithAddExceptionOutOfAllowedRangeDoesNotAddDayInStorage(): void
     {
         $eventBegin = new \DateTimeImmutable('today midnight');
@@ -836,9 +796,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDateTimeStorageForEventWithRemoveExceptionRemovesOneDayFromStorage(): void
     {
         $eventBegin = new \DateTimeImmutable('midnight');
@@ -872,9 +830,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDateTimeStorageForEventWithRemoveExceptionButShowAnywayWillNotRemoveDayFromStorage(): void
     {
         $eventBegin = new \DateTimeImmutable('midnight');
@@ -909,9 +865,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDateTimeStorageForEventWithTimeExceptionWillNotAddDateTimeToStorage(): void
     {
         $eventBegin = new \DateTimeImmutable('midnight');
@@ -948,9 +902,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDateTimeStorageForEventWithInfoExceptionWillNotAddDateTimeToStorage(): void
     {
         $eventBegin = new \DateTimeImmutable('midnight');
@@ -987,9 +939,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDateTimeStorageForEventWithInvalidExceptionThrowsException(): void
     {
         $this->loggerMock

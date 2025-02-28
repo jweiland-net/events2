@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Tests\Functional\Importer;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Importer\XmlImporter;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -75,9 +76,7 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function importWillCreate3events(): void
     {
         $fileObject = GeneralUtility::makeInstance(ResourceFactory::class)

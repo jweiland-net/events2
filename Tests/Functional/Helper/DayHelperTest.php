@@ -13,6 +13,7 @@ namespace JWeiland\Events2\Tests\Functional\Helper;
 
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Helper\DayHelper;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -52,9 +53,7 @@ class DayHelperTest extends FunctionalTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDayFromUriReturnsNull(): void
     {
         self::assertNull(
@@ -62,9 +61,7 @@ class DayHelperTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDayFromUriWithInvalidDayReturnsNull(): void
     {
         $databaseConnection = $this->getDatabaseConnection();
@@ -82,9 +79,7 @@ class DayHelperTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDayFromUriWithValidDayReturnsDay(): void
     {
         $databaseConnection = $this->getDatabaseConnection();

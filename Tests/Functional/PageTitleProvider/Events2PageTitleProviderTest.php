@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Tests\Functional\PageTitleProvider;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\PageTitleProvider\Events2PageTitleProvider;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -57,9 +58,7 @@ class Events2PageTitleProviderTest extends FunctionalTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function findDayWithDateTimeOfTodayWillFindExactlyMatchingDay(): void
     {
         $request = new ServerRequest('https://www.example.com', 'GET');

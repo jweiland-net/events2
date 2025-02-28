@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Functional\Domain\Repository;
 
 use JWeiland\Events2\Domain\Repository\CategoryRepository;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -52,9 +53,7 @@ class CategoryRepositoryTest extends FunctionalTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getCategoriesWithEmptyStringWillReturnQueryResultWithNoCategories(): void
     {
         $queryResult = $this->subject->getCategories('');
@@ -65,9 +64,7 @@ class CategoryRepositoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getCategoriesWithOneUidWillReturnQueryResultWithOneCategories(): void
     {
         $queryResult = $this->subject->getCategories('2');
@@ -85,9 +82,7 @@ class CategoryRepositoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getCategoriesWithTwoUidsWillReturnQueryResultWithTwoCategories(): void
     {
         $queryResult = $this->subject->getCategories('2,3');
@@ -110,9 +105,7 @@ class CategoryRepositoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getCategoriesWithMultipleUidsWillReturnQueryResultWithSortedCategories(): void
     {
         $queryResult = $this->subject->getCategories('1,2,3');
@@ -140,9 +133,7 @@ class CategoryRepositoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getSubCategoriesWithZeroWillReturnQueryResultWithRootCategory(): void
     {
         $queryResult = $this->subject->getSubCategories(0);
@@ -160,9 +151,7 @@ class CategoryRepositoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getSubCategoriesWithOneWillReturnQueryResultWithSubCategories(): void
     {
         $queryResult = $this->subject->getSubCategories(1);
@@ -185,9 +174,7 @@ class CategoryRepositoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getSelectedCategoriesWillNotSelectCategoriesByInvalidValues(): void
     {
         $queryResult = $this->subject->getSelectedCategories('two,,0');
@@ -198,9 +185,7 @@ class CategoryRepositoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getSelectedCategoriesWillSelectRootCategory(): void
     {
         $queryResult = $this->subject->getSelectedCategories('1');
@@ -218,9 +203,7 @@ class CategoryRepositoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getSelectedCategoriesWillSelectOneSubCategory(): void
     {
         $queryResult = $this->subject->getSelectedCategories('3', 1);
@@ -238,9 +221,7 @@ class CategoryRepositoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getSelectedCategoriesWillNotFindSubCategoriesOnRootLevel(): void
     {
         $queryResult = $this->subject->getSelectedCategories('2,3');

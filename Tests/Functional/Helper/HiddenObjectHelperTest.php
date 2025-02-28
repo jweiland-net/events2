@@ -15,6 +15,7 @@ use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Helper\HiddenObjectHelper;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Request;
@@ -77,9 +78,7 @@ class HiddenObjectHelperTest extends FunctionalTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function registerWithInvalidRepositoryWillNotAddObjectToSession(): void
     {
         /** @var LocationRepository|MockObject $locationRepositoryMock */
@@ -100,9 +99,7 @@ class HiddenObjectHelperTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function registerWithRepositoryWillAddObjectByArrayToSession(): void
     {
         $event = GeneralUtility::makeInstance(Event::class);
@@ -136,9 +133,7 @@ class HiddenObjectHelperTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function registerWithRepositoryWillAddObjectByUidToSession(): void
     {
         $event = GeneralUtility::makeInstance(Event::class);

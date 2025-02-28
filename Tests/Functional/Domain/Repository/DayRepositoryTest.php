@@ -25,6 +25,7 @@ use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Service\DayRelationService;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\VisibilityAspect;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -448,9 +449,7 @@ class DayRepositoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function findDayByIdentifier(): void
     {
         $day = $this->dayRepository->findByIdentifier(1);
@@ -461,9 +460,7 @@ class DayRepositoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function findEventsWillFindLessRecordsIfMergeEventsAtSameDayIsActivated(): void
     {
         $allDays = $this->dayRepository->getDaysForListType('list', new Filter());
@@ -480,9 +477,7 @@ class DayRepositoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function findEventsWillFindLessRecordsIfMergeRecurringEventsIsActivatedAbutMoreIfMergeEventsAtSameDayIsActivated(): void
     {
         // This is the maximum
@@ -516,9 +511,7 @@ class DayRepositoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function findEventsByStoragePids(): void
     {
         $this->dayRepository->setSettings([
@@ -540,9 +533,7 @@ class DayRepositoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function findHiddenEventsByStoragePids(): void
     {
         $this->setShowHiddenRecords();
@@ -559,9 +550,7 @@ class DayRepositoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function findEventsByCategories(): void
     {
         $this->dayRepository->setSettings([
@@ -606,9 +595,7 @@ class DayRepositoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function findEventsByOrganizer(): void
     {
         // Organizer 1 in Filter and Plugin
@@ -656,9 +643,7 @@ class DayRepositoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function findEventsWithFilterAndTsPreFilterWillFindDaysByFilter(): void
     {
         $filter = new Filter();
@@ -674,9 +659,7 @@ class DayRepositoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function findEventsAndLimitResult(): void
     {
         $this->dayRepository->setSettings([
@@ -690,9 +673,7 @@ class DayRepositoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function findEventsByTypeListWithTopOfListRecord(): void
     {
         $this->dayRepository->setSettings([
@@ -710,9 +691,7 @@ class DayRepositoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function findEventsByTypeLatest(): void
     {
         $todayStart = new \DateTimeImmutable('midnight');
@@ -735,9 +714,7 @@ class DayRepositoryTest extends FunctionalTestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function findEventsByTypeToday(): void
     {
         $todayStart = new \DateTimeImmutable('midnight');
@@ -760,9 +737,7 @@ class DayRepositoryTest extends FunctionalTestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function findEventsByTypeRange(): void
     {
         $dateStart = new \DateTimeImmutable('midnight');
@@ -786,9 +761,7 @@ class DayRepositoryTest extends FunctionalTestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function findEventsByTypeWeek(): void
     {
         $dateStart = new \DateTimeImmutable('this week midnight');
@@ -812,9 +785,7 @@ class DayRepositoryTest extends FunctionalTestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function searchEvents(): void
     {
         $this->dayRepository->setSettings([
@@ -836,9 +807,7 @@ class DayRepositoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function searchEventsBySearchWord(): void
     {
         $this->dayRepository->setSettings([
@@ -855,9 +824,7 @@ class DayRepositoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function searchEventsBySearchWordTeaser(): void
     {
         $this->dayRepository->setSettings([
@@ -874,9 +841,7 @@ class DayRepositoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function searchEventsByCategory(): void
     {
         $this->dayRepository->setSettings([
@@ -921,9 +886,7 @@ class DayRepositoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function searchEventsByEventBegin(): void
     {
         $this->dayRepository->setSettings([
@@ -945,9 +908,7 @@ class DayRepositoryTest extends FunctionalTestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function searchEventsByEventBeginAndEventEnd(): void
     {
         $this->dayRepository->setSettings([
@@ -975,9 +936,7 @@ class DayRepositoryTest extends FunctionalTestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function searchEventsByLocation(): void
     {
         $this->dayRepository->setSettings([
@@ -999,9 +958,7 @@ class DayRepositoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function searchEventsByFreeEntry(): void
     {
         $this->dayRepository->setSettings([
@@ -1018,9 +975,7 @@ class DayRepositoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function findDayByEventAndTimestamp(): void
     {
         $tomorrow = new \DateTimeImmutable('tomorrow midnight');
@@ -1035,9 +990,8 @@ class DayRepositoryTest extends FunctionalTestCase
 
     /**
      * In case of duration events, the column sort_day_time has to be the same for all generated day records.
-     *
-     * @test
      */
+    #[Test]
     public function additionalTimeExceptionsForDurationEventsWillNotCreateNewEntryInListView(): void
     {
         $this->querySettings->setStoragePageIds([11]);
