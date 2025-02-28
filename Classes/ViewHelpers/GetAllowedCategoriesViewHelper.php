@@ -50,7 +50,7 @@ final class GetAllowedCategoriesViewHelper extends AbstractViewHelper
         $pluginCategories = GeneralUtility::intExplode(
             ',',
             trim($this->arguments['pluginCategories']),
-            true
+            true,
         );
 
         foreach ($pluginCategories as $pluginCategory) {
