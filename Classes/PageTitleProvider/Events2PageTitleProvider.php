@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\PageTitleProvider;
 
-use JWeiland\Events2\Domain\Repository\DayRepository;
-use JWeiland\Events2\Domain\Repository\EventRepository;
+use JWeiland\Events2\Service\Record\DayRecordService;
+use JWeiland\Events2\Service\Record\EventRecordService;
 use JWeiland\Events2\Traits\Typo3RequestTrait;
 use TYPO3\CMS\Core\PageTitle\PageTitleProviderInterface;
 
@@ -27,8 +27,8 @@ class Events2PageTitleProvider implements PageTitleProviderInterface
     use Typo3RequestTrait;
 
     public function __construct(
-        protected readonly EventRepository $eventRepository,
-        protected readonly DayRepository $dayRepository,
+        protected readonly EventRecordService $eventRecordService,
+        protected readonly DayRecordService $dayRecordService,
     ) {}
 
     public function getTitle(): string
@@ -36,18 +36,17 @@ class Events2PageTitleProvider implements PageTitleProviderInterface
         $pageTitle = '';
         $gp = $this->getMergedRequestParameters();
         if ($this->isValidRequest($gp)) {
-            $dayRecord = $this->dayRepository->getDayRecord(
+            $dayRecord = $this->dayRecordService->getByEventAndTime(
                 (int)$gp['event'],
                 (int)$gp['timestamp'],
             );
 
             if ($dayRecord !== []) {
                 $date = new \DateTimeImmutable(date('c', (int)$gp['timestamp']));
-                $eventRecord = $this->eventRepository->getRecord(
-                    (int)$dayRecord['event'],
-                );
+                $eventRecord = $this->eventRecordService->findByUid((int)$dayRecord['event']);
+                var_dump($eventRecord);
 
-                if (!empty($eventRecord)) {
+                if ($eventRecord !== []) {
                     $pageTitle = sprintf(
                         '%s - %s',
                         trim($eventRecord['title']),

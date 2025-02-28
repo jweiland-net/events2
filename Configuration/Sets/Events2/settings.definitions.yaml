@@ -1,0 +1,132 @@
+categories:
+  events2:
+    label: 'Events2'
+  events2.templates:
+    label: 'Templates'
+    parent: 'events2'
+  events2.storages:
+    label: 'Storages'
+    parent: 'events2'
+  events2.pages:
+    label: 'Pages'
+    parent: 'events2'
+  events2.pageBrowser:
+    label: 'Page Browser'
+    parent: 'events2'
+  events2.form:
+    label: 'Form'
+    parent: 'events2'
+
+settings:
+  events2.templateRootPath:
+    label: 'Templates'
+    category: 'events2.templates'
+    description: 'Path to template root'
+    type: string
+    default: 'EXT:events2/Resources/Private/Templates/'
+  events2.partialRootPath:
+    label: 'Partials'
+    category: 'events2.templates'
+    description: 'Path to partial root'
+    type: string
+    default: 'EXT:events2/Resources/Private/Partials/'
+  events2.layoutRootPath:
+    label: 'Layouts'
+    category: 'events2.templates'
+    description: 'Path to layout root'
+    type: string
+    default: 'EXT:events2/Resources/Private/Layouts/'
+  events2.latest.amountOfRecordsToShow:
+    label: 'Events in latest view'
+    category: 'events2.templates'
+    description: 'Amount of event records to show in latest list view'
+    type: int
+    default: 7
+
+  events2.storagePid:
+    label: 'Default storage PID'
+    category: 'events2.storages'
+    description: 'Folder that stores all POIs'
+    type: int
+    default: 0
+  events2.storagePidForFrontendCreatedEvents:
+    label: 'Storage PID for FE created events'
+    category: 'events2.storages'
+    description: 'Storage PID for created events in frontend form (EXT:form)'
+    type: int
+    default: 0
+
+  events2.pidOfDetailPage:
+    label: 'Detail Page'
+    category: 'events2.pages'
+    description: 'Page UID with events2 plugin to show a single event'
+    type: int
+    default: 0
+  events2.pidOfSearchResults:
+    label: 'Search Results Page'
+    category: 'events2.pages'
+    description: 'Page UID with events2 plugin to show search results'
+    type: int
+    default: 0
+  events2.pidOfLocationPage:
+    label: 'Location Page'
+    category: 'events2.pages'
+    description: 'Page UID with events2 plugin to show event location'
+    type: int
+    default: 0
+  events2.pidOfManagementPage:
+    label: 'Management Page'
+    category: 'events2.pages'
+    description: 'Page UID with events2 plugin to manage events'
+    type: int
+    default: 0
+  events2.pidOfNewLocationPage:
+    label: 'Request new Location Page'
+    category: 'events2.pages'
+    description: 'Page UID with a form element to request a new event location'
+    type: int
+    default: 0
+  events2.pidOfListPage:
+    label: 'List Page'
+    category: 'events2.pages'
+    description: 'Page UID with events2 plugin to show list of events'
+    type: int
+    default: 0
+
+  events2.pageBrowser.itemsPerPage:
+    label: 'Events per Page'
+    category: 'events2.pageBrowser'
+    description: 'Define, how any event records should be shown on a list view page'
+    type: int
+    default: 15
+
+  events2.form.rootCategory:
+    label: 'Root Category'
+    category: 'events2.form'
+    description: 'The BE editor can select various categories in plugin, but only categories which are direct children of this root category are allowed and listed in frontend.'
+    type: int
+    default: 0
+  events2.form.selectableCategoriesForNewEvents:
+    label: 'Selectable Categories'
+    category: 'events2.form'
+    description: 'Define the selectable categories to be used in form of frontend management. Their parent category UID must match with root category defined above'
+    type: string
+    default: ''
+  events2.form.userGroup:
+    label: 'User group UID'
+    category: 'events2.form'
+    description: 'UID of user group, which is allowed to edit/create events in frontend'
+    type: int
+    default: 0
+  events2.form.remainingLetters:
+    label: 'Remaining Letters'
+    category: 'events2.form'
+    description: 'Remaining letters for field "teaser" while editing/creating events in frontend'
+    type: int
+    default: 250
+  events2.form.useExtForm:
+    label: 'Use EXT:form'
+    category: 'events2.form'
+    description: 'Use TYPO3 extension "form" instead of Extbase forms to create new events in frontend'
+    type: bool
+    default: true

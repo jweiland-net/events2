@@ -25,17 +25,14 @@
 	"require": {
 		"ext-dom": "*",
 		"ext-libxml": "*",
-		"sjbr/static-info-tables": "^12.4",
-		"typo3/cms-core": "^12.4.15",
-		"typo3/cms-reactions": "^12.4.15"
+		"sjbr/static-info-tables": "^13.4",
+		"typo3/cms-core": "^13.4.3",
+		"typo3/cms-reactions": "^13.4.3"
 	},
 	"require-dev": {
 		"ergebnis/composer-normalize": "^2.44",
-		"friendsofphp/php-cs-fixer": "^3.65",
-		"phpstan/phpdoc-parser": "^1.33",
-		"roave/security-advisories": "dev-latest",
 		"typo3/coding-standards": "^0.8",
-		"typo3/testing-framework": "^8.2"
+		"typo3/testing-framework": "^9.1.2"
 	},
 	"replace": {
 		"typo3-ter/events2": "self.version"

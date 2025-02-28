@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Unit\Domain\Model;
 
 use JWeiland\Events2\Domain\Model\Filter;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -37,17 +38,13 @@ class FilterTest extends UnitTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getOrganizerInitiallyReturnsNull(): void
     {
         self::assertNull($this->subject->getOrganizer());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setOrganizerSetsOrganizer(): void
     {
         $organizer = 34;
@@ -59,9 +56,7 @@ class FilterTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setOrganizerWithNullSetsOrganizer(): void
     {
         $this->subject->setOrganizer(null);

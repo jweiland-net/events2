@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Domain\Repository;
 
 use JWeiland\Events2\Event\ModifyQueriesOfFindLocationsEvent;
-use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 /**
@@ -21,13 +21,13 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
  */
 class LocationRepository extends AbstractRepository
 {
-    protected EventDispatcher $eventDispatcher;
+    protected EventDispatcherInterface $eventDispatcher;
 
     protected $defaultOrderings = [
         'location' => QueryInterface::ORDER_ASCENDING,
     ];
 
-    public function injectEventDispatcher(EventDispatcher $eventDispatcher): void
+    public function injectEventDispatcher(EventDispatcherInterface $eventDispatcher): void
     {
         $this->eventDispatcher = $eventDispatcher;
     }

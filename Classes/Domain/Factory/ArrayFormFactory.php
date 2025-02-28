@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Domain\Factory;
 
 use JWeiland\Events2\Configuration\ExtConf;
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Form\Domain\Exception\RenderingException;
 use TYPO3\CMS\Form\Domain\Model\FormDefinition;
 
@@ -28,12 +29,15 @@ class ArrayFormFactory extends \TYPO3\CMS\Form\Domain\Factory\ArrayFormFactory
      *
      * @throws RenderingException
      */
-    public function build(array $configuration, string $prototypeName = null): FormDefinition
-    {
+    public function build(
+        array $configuration,
+        string $prototypeName = null,
+        ?ServerRequestInterface $request = null,
+    ): FormDefinition {
         $this->addEventUidToFormAction($configuration);
         $this->modifyEmailFinisherConfiguration($configuration);
 
-        return parent::build($configuration, $prototypeName);
+        return parent::build($configuration, $prototypeName, $request);
     }
 
     /**

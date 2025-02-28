@@ -15,6 +15,7 @@ use JWeiland\Events2\Domain\Model\Link;
 use JWeiland\Events2\Domain\Model\Location;
 use JWeiland\Events2\Tests\Unit\Domain\Traits\TestTypo3PropertiesTrait;
 use JWeiland\Maps2\Domain\Model\PoiCollection;
+use PHPUnit\Framework\Attributes\Test;
 use SJBR\StaticInfoTables\Domain\Model\Country;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -58,9 +59,7 @@ class LocationTest extends FunctionalTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getLocationInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
@@ -69,9 +68,7 @@ class LocationTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setLocationSetsLocation(): void
     {
         $this->subject->setLocation('foo bar');
@@ -82,9 +79,7 @@ class LocationTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getStreetInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
@@ -93,9 +88,7 @@ class LocationTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setStreetSetsStreet(): void
     {
         $this->subject->setStreet('foo bar');
@@ -106,9 +99,7 @@ class LocationTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getHouseNumberInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
@@ -117,9 +108,7 @@ class LocationTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setHouseNumberSetsHouseNumber(): void
     {
         $this->subject->setHouseNumber('foo bar');
@@ -130,9 +119,7 @@ class LocationTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getZipInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
@@ -141,9 +128,7 @@ class LocationTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setZipSetsZip(): void
     {
         $this->subject->setZip('foo bar');
@@ -154,9 +139,7 @@ class LocationTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getCityInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
@@ -165,9 +148,7 @@ class LocationTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setCitySetsCity(): void
     {
         $this->subject->setCity('foo bar');
@@ -178,17 +159,13 @@ class LocationTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getCountryInitiallyReturnsNull(): void
     {
         self::assertNull($this->subject->getCountry());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setCountrySetsCountry(): void
     {
         $instance = new Country();
@@ -200,17 +177,13 @@ class LocationTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getLinkInitiallyReturnsNull(): void
     {
         self::assertNull($this->subject->getLink());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setLinkSetsLink(): void
     {
         $instance = new Link();
@@ -222,17 +195,13 @@ class LocationTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getTxMaps2UidInitiallyReturnsNull(): void
     {
         self::assertNull($this->subject->getTxMaps2Uid());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setTxMaps2UidSetsTxMaps2Uid(): void
     {
         $instance = new PoiCollection();

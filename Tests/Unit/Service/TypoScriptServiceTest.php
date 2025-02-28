@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Unit\Service;
 
 use JWeiland\Events2\Service\TypoScriptService;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -37,9 +38,7 @@ class TypoScriptServiceTest extends UnitTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function overrideWithEmptyValuesDoesNotOverrideAnything(): void
     {
         $flexFormSettings = [];
@@ -52,9 +51,7 @@ class TypoScriptServiceTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function overrideWithNonSetFlexFormSettingWillUseValueOfTypoScript(): void
     {
         $flexFormSettings = [];
@@ -71,9 +68,7 @@ class TypoScriptServiceTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function overrideWithZeroFlexFormSettingWillUseValueOfTypoScript(): void
     {
         $flexFormSettings = [
@@ -92,9 +87,7 @@ class TypoScriptServiceTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function overrideWithEmptyFlexFormSettingWillUseValueOfTypoScript(): void
     {
         $flexFormSettings = [
@@ -113,9 +106,7 @@ class TypoScriptServiceTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function overrideWithFilledFlexFormAndTypoScriptSettingWillOverride(): void
     {
         $flexFormSettings = [

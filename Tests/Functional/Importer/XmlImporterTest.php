@@ -19,6 +19,7 @@ use JWeiland\Events2\Domain\Repository\OrganizerRepository;
 use JWeiland\Events2\Helper\PathSegmentHelper;
 use JWeiland\Events2\Importer\XmlImporter;
 use JWeiland\Events2\Utility\DateTimeUtility;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
@@ -120,9 +121,7 @@ class XmlImporterTest extends FunctionalTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function importWillCreate3events(): void
     {
         $fileObject = GeneralUtility::makeInstance(ResourceFactory::class)
@@ -139,9 +138,7 @@ class XmlImporterTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function importEventWithMissingCategoryEntryWillResultInErrorInMessagesTxt(): void
     {
         $fileObject = GeneralUtility::makeInstance(ResourceFactory::class)
@@ -158,9 +155,7 @@ class XmlImporterTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function importEventWithNotExistingCategoryInDatabaseWillResultInErrorInMessagesTxt(): void
     {
         $fileObject = GeneralUtility::makeInstance(ResourceFactory::class)
@@ -179,9 +174,7 @@ class XmlImporterTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function importEventWithNotExistingOrganizerInDatabaseWillResultInErrorInMessagesTxt(): void
     {
         $fileObject = GeneralUtility::makeInstance(ResourceFactory::class)
@@ -198,9 +191,7 @@ class XmlImporterTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function importEventWithNotExistingLocationInDatabaseWillResultInErrorInMessagesTxt(): void
     {
         $fileObject = GeneralUtility::makeInstance(ResourceFactory::class)
@@ -218,9 +209,7 @@ class XmlImporterTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function modifySimpleEvent(): void
     {
         // Add simple event
@@ -259,9 +248,7 @@ class XmlImporterTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function deleteSimpleEvent(): void
     {
         // Add 2 simple events

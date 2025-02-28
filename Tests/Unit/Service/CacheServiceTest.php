@@ -9,10 +9,11 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace JWeiland\Events2\Tests\Unit\Utility;
+namespace JWeiland\Events2\Tests\Unit\Service;
 
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Service\CacheService;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
@@ -40,13 +41,13 @@ class CacheServiceTest extends UnitTestCase
         $this->request = new ServerRequest('https://www.example.com', 'GET');
         $this->request = $this->request->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE);
 
-        $this->cacheService = new CacheService();
+        $this->subject = new CacheService();
     }
 
     protected function tearDown(): void
     {
         unset(
-            $this->cacheService,
+            $this->subject,
             $this->request,
             $GLOBALS['TYPO3_REQUEST'],
         );
@@ -54,9 +55,7 @@ class CacheServiceTest extends UnitTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addCacheTagsByEventRecordsWithoutEventsWillNotAddCacheTags(): void
     {
         $typoScriptFrontendControllerMock = $this->createMock(TypoScriptFrontendController::class);
@@ -69,12 +68,10 @@ class CacheServiceTest extends UnitTestCase
             $typoScriptFrontendControllerMock,
         );
 
-        $this->cacheService->addCacheTagsByEventRecords([]);
+        $this->subject->addCacheTagsByEventRecords([]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addCacheTagsByEventRecordsWithEventsWillAddCacheTags(): void
     {
         $event = new Event();
@@ -91,12 +88,10 @@ class CacheServiceTest extends UnitTestCase
             $typoScriptFrontendControllerMock,
         );
 
-        $this->cacheService->addCacheTagsByEventRecords([$event]);
+        $this->subject->addCacheTagsByEventRecords([$event]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addCacheTagsByEventRecordsWithLocalizedEventsWillAddCacheTags(): void
     {
         $event = new Event();
@@ -114,12 +109,10 @@ class CacheServiceTest extends UnitTestCase
             $typoScriptFrontendControllerMock,
         );
 
-        $this->cacheService->addCacheTagsByEventRecords([$event]);
+        $this->subject->addCacheTagsByEventRecords([$event]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addPageCacheTagsByQueryWithoutStoragePidsWillAddTableNameAsCacheTag(): void
     {
         $typoScriptFrontendControllerMock = $this->createMock(TypoScriptFrontendController::class);
@@ -143,12 +136,10 @@ class CacheServiceTest extends UnitTestCase
             ->method('getQuerySettings')
             ->willReturn($querySettingsMock);
 
-        $this->cacheService->addPageCacheTagsByQuery($queryMock);
+        $this->subject->addPageCacheTagsByQuery($queryMock);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addPageCacheTagsByQueryWithStoragePidsWillAddStoragePidCacheTags(): void
     {
         $typoScriptFrontendControllerMock = $this->createMock(TypoScriptFrontendController::class);
@@ -176,6 +167,6 @@ class CacheServiceTest extends UnitTestCase
             ->method('getQuerySettings')
             ->willReturn($querySettingsMock);
 
-        $this->cacheService->addPageCacheTagsByQuery($queryMock);
+        $this->subject->addPageCacheTagsByQuery($queryMock);
     }
 }

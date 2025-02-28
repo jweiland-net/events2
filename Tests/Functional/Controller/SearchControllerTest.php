@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Functional\Controller;
 
 use JWeiland\Events2\Service\DayRelationService;
+use PHPUnit\Framework\Attributes\Test;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Core\Bootstrap;
@@ -67,9 +68,7 @@ class SearchControllerTest extends FunctionalTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function processRequestWithShowActionWillAssignEmptySearchObject(): void
     {
         $this->startUpTSFE($this->serverRequest);
@@ -94,9 +93,7 @@ class SearchControllerTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function processRequestWithShowActionWillUpdateFormValues(): void
     {
         $this->startUpTSFE(

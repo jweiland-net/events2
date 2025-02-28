@@ -34,7 +34,7 @@ class ModifyRootUidOfTreeSelectElements implements FormDataProviderInterface
             if (
                 // check global structure
                 isset(
-                    $result['flexParentDatabaseRow']['list_type'],
+                    $result['flexParentDatabaseRow']['CType'],
                     $result['processedTca']['columns'][$categoryField]['config']['type'],
                     $result['processedTca']['columns'][$categoryField]['config']['renderMode'],
                 )
@@ -45,7 +45,7 @@ class ModifyRootUidOfTreeSelectElements implements FormDataProviderInterface
 
                 // check if a FlexForm was rendered
                 && $result['tableName'] === 'tt_content'
-                && \str_starts_with($result['flexParentDatabaseRow']['list_type'], 'events2')
+                && \str_starts_with($result['flexParentDatabaseRow']['CType'], 'events2')
             ) {
                 if (version_compare($this->typo3Version->getBranch(), '11.4', '<')) {
                     $result['processedTca']['columns'][$categoryField]['config']['treeConfig']['rootUid']

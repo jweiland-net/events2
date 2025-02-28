@@ -15,6 +15,8 @@ use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Helper\Exception\NoUniquePathSegmentException;
 use JWeiland\Events2\Helper\PathSegmentHelper;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
@@ -25,6 +27,8 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
  */
 class PathSegmentHelperTest extends FunctionalTestCase
 {
+    protected PathSegmentHelper $subject;
+
     protected ExtConf $extConf;
 
     protected array $coreExtensionsToLoad = [
@@ -71,10 +75,8 @@ class PathSegmentHelperTest extends FunctionalTestCase
         ];
     }
 
-    /**
-     * @test
-     * @dataProvider getPathSegmentTypesSlugTypes
-     */
+    #[Test]
+    #[DataProvider('getPathSegmentTypesSlugTypes')]
     public function generatePathSegmentWithEmptyBaseRecordWillGenerateDefaultSlug(string $pathSegmentType, $expectedPrefix): void
     {
         $this->extConf->setPathSegmentType($pathSegmentType);
@@ -89,10 +91,8 @@ class PathSegmentHelperTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     * @dataProvider getPathSegmentTypesSlugTypes
-     */
+    #[Test]
+    #[DataProvider('getPathSegmentTypesSlugTypes')]
     public function generatePathSegmentWithMissingRecordUidWillGenerateDefaultSlug(string $pathSegmentType, $expectedPrefix): void
     {
         $this->extConf->setPathSegmentType($pathSegmentType);
@@ -109,10 +109,8 @@ class PathSegmentHelperTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     * @dataProvider getPathSegmentTypesSlugTypes
-     */
+    #[Test]
+    #[DataProvider('getPathSegmentTypesSlugTypes')]
     public function generatePathSegmentWithEmptyRecordUidWillGenerateDefaultSlug(string $pathSegmentType, $expectedPrefix): void
     {
         $this->extConf->setPathSegmentType($pathSegmentType);
@@ -130,9 +128,7 @@ class PathSegmentHelperTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function generatePathSegmentWithTypeUidWillGenerateSlug(): void
     {
         $this->extConf->setPathSegmentType('uid');
@@ -147,9 +143,7 @@ class PathSegmentHelperTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function generatePathSegmentWithTypeRealurlWillGenerateSlug(): void
     {
         $this->extConf->setPathSegmentType('realurl');
@@ -164,9 +158,7 @@ class PathSegmentHelperTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function generatePathSegmentWithTypeRealurlWillGenerateSlugWithIncrement(): void
     {
         $this->extConf->setPathSegmentType('realurl');
@@ -181,9 +173,7 @@ class PathSegmentHelperTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function updatePathSegmentForEventUpdatesPathSegment(): void
     {
         $this->extConf->setPathSegmentType('uid');

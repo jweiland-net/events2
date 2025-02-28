@@ -24,6 +24,7 @@ use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Service\JsonLdService;
 use JWeiland\Events2\Utility\DateTimeUtility;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
@@ -154,9 +155,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addJsonLdAddsEventBeginDate(): void
     {
         /** @var Day $day */
@@ -171,9 +170,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addJsonLdAddsEventEndDate(): void
     {
         /** @var Day $day */
@@ -188,9 +185,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addJsonLdAddsTimeStartDate(): void
     {
         /** @var Day $day */
@@ -205,9 +200,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addJsonLdAddsTimeEntryDate(): void
     {
         /** @var Day $day */
@@ -222,9 +215,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addJsonLdAddsDuration(): void
     {
         /** @var Day $day */
@@ -244,9 +235,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addJsonLdAddsTimeEndDate(): void
     {
         /** @var Day $day */
@@ -261,9 +250,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addJsonLdAddsEventTitle(): void
     {
         /** @var Day $day */
@@ -278,9 +265,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addJsonLdAddsEventDescription(): void
     {
         /** @var Day $day */
@@ -295,9 +280,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addJsonLdAddsEventUrl(): void
     {
         /** @var Day $day */
@@ -312,9 +295,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addJsonLdAddsEventFreeEntry(): void
     {
         /** @var Day $day */
@@ -340,9 +321,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addJsonLdAddsEventOffer(): void
     {
         /** @var Day $day */
@@ -367,9 +346,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addJsonLdAddsEventLocation(): void
     {
         /** @var Day $day */
@@ -406,9 +383,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function addJsonLdAddsEventOrganizer(): void
     {
         /** @var Day $day */

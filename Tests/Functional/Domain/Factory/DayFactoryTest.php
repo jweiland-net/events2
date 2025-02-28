@@ -23,6 +23,7 @@ use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Utility\DateTimeUtility;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
@@ -189,9 +190,7 @@ class DayFactoryTest extends FunctionalTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function findDayWithDateTimeOfTodayWillFindExactlyMatchingDay(): void
     {
         $date = new \DateTimeImmutable('today 07:30:00');
@@ -219,9 +218,7 @@ class DayFactoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function findDayWillFindNextMatchingDay(): void
     {
         $queryFactory = $this->objectManager->get(QueryFactory::class);
@@ -247,9 +244,7 @@ class DayFactoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function findDayWillFindPreviousMatchingDay(): void
     {
         $queryFactory = $this->objectManager->get(QueryFactory::class);
@@ -275,9 +270,7 @@ class DayFactoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function findDayWillBuildDayItselfButKeepsTime(): void
     {
         $queryFactory = $this->objectManager->get(QueryFactory::class);

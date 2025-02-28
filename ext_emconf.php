@@ -15,20 +15,19 @@ $EM_CONF[$_EXTKEY] = [
     'author_email' => 'projects@jweiland.net',
     'author_company' => 'jweiland.net',
     'state' => 'stable',
-    'version' => '9.2.1',
+    'version' => '10.0.0',
     'constraints' => [
         'depends' => [
-            'typo3' => '12.4.15-12.4.99',
-            'reactions' => '12.4.15-12.4.99',
-            'static_info_tables' => '12.4.0-12.4.99',
+            'typo3' => '13.4.3-13.4.99',
+            'reactions' => '13.4.3-13.4.99',
+            'static_info_tables' => '13.4.0-13.4.99',
         ],
         'conflicts' => [
         ],
         'suggests' => [
             'checkfaluploads' => '',
-            'maps2' => '11.0.0-0.0.0',
-            'reactions' => '12.4.0-12.4.99',
-            'solr' => '11.2.0-0.0.0',
+            'maps2' => '12.0.0-0.0.0',
+            'solr' => '13.0.1-0.0.0',
         ],
     ],
 ];

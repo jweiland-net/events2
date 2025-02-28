@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Unit\Utility;
 
 use JWeiland\Events2\Utility\DateTimeUtility;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -50,11 +52,8 @@ class DateTimeUtilityTest extends UnitTestCase
         return $emptyDate;
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider emptyDatesDataProvider
-     */
+    #[Test]
+    #[DataProvider('emptyDatesDataProvider')]
     public function convertEmptyDatesResultsInNull(?string $emptyDate): void
     {
         self::assertNull(
@@ -77,12 +76,8 @@ class DateTimeUtilityTest extends UnitTestCase
         return $invalidValues;
     }
 
-    /**
-     * @test
-     *
-     * @param mixed $invalidValue
-     * @dataProvider dataProviderWithInvalidValuesForDateTimeObjects
-     */
+    #[Test]
+    #[DataProvider('dataProviderWithInvalidValuesForDateTimeObjects')]
     public function convertInvalidDates($invalidValue): void
     {
         self::assertNull(
@@ -108,13 +103,8 @@ class DateTimeUtilityTest extends UnitTestCase
         return $dateStrings;
     }
 
-    /**
-     * @test
-     *
-     * @param $stringDate
-     * @param $expectedDate
-     * @dataProvider stringDatesDataProvider
-     */
+    #[Test]
+    #[DataProvider('stringDatesDataProvider')]
     public function convertWithStringDates($stringDate, $expectedDate): void
     {
         self::assertEquals(
@@ -145,13 +135,8 @@ class DateTimeUtilityTest extends UnitTestCase
         return $timestamps;
     }
 
-    /**
-     * @test
-     *
-     * @param $timestamp
-     * @param $expectedDate
-     * @dataProvider timestampDataProvider
-     */
+    #[Test]
+    #[DataProvider('timestampDataProvider')]
     public function convertTimestamps($timestamp, $expectedDate): void
     {
         $convertedResult = $this->subject->convert($timestamp);

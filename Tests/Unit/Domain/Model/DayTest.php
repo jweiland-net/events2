@@ -13,6 +13,7 @@ namespace JWeiland\Events2\Tests\Unit\Domain\Model;
 
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -39,9 +40,7 @@ class DayTest extends UnitTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getCrdateInitiallyReturnsNull(): void
     {
         self::assertNull(
@@ -49,9 +48,7 @@ class DayTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setCrdateSetsCrdate(): void
     {
         $date = new \DateTimeImmutable();
@@ -63,9 +60,7 @@ class DayTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setCrdateWithNullSetsCrdate(): void
     {
         $this->subject->setCrdate();
@@ -75,9 +70,7 @@ class DayTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getTstampInitiallyReturnsNull(): void
     {
         self::assertNull(
@@ -85,9 +78,7 @@ class DayTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setTstampSetsTstamp(): void
     {
         $date = new \DateTimeImmutable();
@@ -99,9 +90,7 @@ class DayTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setTstampWithNullSetsTstamp(): void
     {
         $this->subject->setTstamp();
@@ -111,9 +100,7 @@ class DayTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getHiddenInitiallyReturnsFalse(): void
     {
         self::assertFalse(
@@ -121,9 +108,7 @@ class DayTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setHiddenSetsHidden(): void
     {
         $this->subject->setHidden(true);
@@ -132,9 +117,7 @@ class DayTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setDaySetsDay(): void
     {
         $date = new \DateTimeImmutable();
@@ -146,9 +129,7 @@ class DayTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setEventSetsEvent(): void
     {
         $instance = new Event();
@@ -160,9 +141,7 @@ class DayTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDayTimeAsTimestampWillReturnDayTimeAsInt(): void
     {
         $date = new \DateTimeImmutable('today midnight');
@@ -175,9 +154,7 @@ class DayTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getSortDayTimeAsTimestampWillReturnSortDayTimeAsInt(): void
     {
         $date = new \DateTimeImmutable('today midnight');
@@ -190,9 +167,7 @@ class DayTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getSameDayTimeAsTimestampWillReturnSameDayTimeAsInt(): void
     {
         $date = new \DateTimeImmutable('today midnight');

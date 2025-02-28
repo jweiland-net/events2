@@ -11,12 +11,10 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Tests\Functional\PageTitleProvider;
 
-use JWeiland\Events2\Domain\Repository\DayRepository;
-use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\PageTitleProvider\Events2PageTitleProvider;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Http\ServerRequest;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
@@ -42,10 +40,7 @@ class Events2PageTitleProviderTest extends FunctionalTestCase
 
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/PageTitleProvider.csv');
 
-        $this->subject = new Events2PageTitleProvider(
-            GeneralUtility::makeInstance(EventRepository::class),
-            GeneralUtility::makeInstance(DayRepository::class),
-        );
+        $this->subject = $this->getContainer()->get(Events2PageTitleProvider::class);
     }
 
     protected function tearDown(): void
@@ -57,9 +52,7 @@ class Events2PageTitleProviderTest extends FunctionalTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function findDayWithDateTimeOfTodayWillFindExactlyMatchingDay(): void
     {
         $request = new ServerRequest('https://www.example.com', 'GET');

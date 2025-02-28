@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Functional\Configuration;
 
 use JWeiland\Events2\Configuration\ExtConf;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -50,9 +51,7 @@ class ExtConfTest extends FunctionalTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getPoiCollectionPidInitiallyReturnsZero(): void
     {
         self::assertSame(
@@ -61,9 +60,7 @@ class ExtConfTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setPoiCollectionPidSetsPoiCollectionPid(): void
     {
         $this->subject->setPoiCollectionPid(123456);
@@ -74,9 +71,7 @@ class ExtConfTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setPoiCollectionPidWithStringResultsInInteger(): void
     {
         $this->subject->setPoiCollectionPid('123Test');
@@ -87,9 +82,7 @@ class ExtConfTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setPoiCollectionPidWithBooleanResultsInInteger(): void
     {
         $this->subject->setPoiCollectionPid(true);
@@ -100,9 +93,7 @@ class ExtConfTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getRootUidInitiallyReturnsZero(): void
     {
         self::assertSame(
@@ -111,9 +102,7 @@ class ExtConfTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setRootUidSetsRootUid(): void
     {
         $this->subject->setRootUid(123456);
@@ -124,9 +113,7 @@ class ExtConfTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setRootUidWithStringResultsInInteger(): void
     {
         $this->subject->setRootUid('123Test');
@@ -137,9 +124,7 @@ class ExtConfTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setRootUidWithBooleanResultsInInteger(): void
     {
         $this->subject->setRootUid(true);
@@ -150,9 +135,7 @@ class ExtConfTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getRecurringPastReturns3monthAsDefault(): void
     {
         self::assertSame(
@@ -161,9 +144,7 @@ class ExtConfTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setRecurringPastWithIntegerWillReturnSameInGetter(): void
     {
         $this->subject->setRecurringPast(6);
@@ -173,9 +154,7 @@ class ExtConfTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setRecurringPastWithStringWillReturnIntegerInGetter(): void
     {
         $this->subject->setRecurringPast('6');
@@ -185,9 +164,7 @@ class ExtConfTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setRecurringPastWithInvalidValueWillReturnIntCastedValueInGetter(): void
     {
         $this->subject->setRecurringPast('invalidValue');
@@ -197,9 +174,7 @@ class ExtConfTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getRecurringFutureReturns6monthAsDefault(): void
     {
         self::assertSame(
@@ -208,9 +183,7 @@ class ExtConfTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setRecurringFutureWithIntegerWillReturnSameInGetter(): void
     {
         $this->subject->setRecurringFuture(12);
@@ -220,9 +193,7 @@ class ExtConfTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setRecurringFutureWithStringWillReturnIntegerInGetter(): void
     {
         $this->subject->setRecurringFuture('12');
@@ -232,9 +203,7 @@ class ExtConfTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setRecurringFutureWithInvalidValueWillReturnDefaultValueInGetter(): void
     {
         $this->subject->setRecurringFuture('invalidValue');
@@ -244,9 +213,7 @@ class ExtConfTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDefaultCountryInitiallyReturnsZero(): void
     {
         self::assertSame(
@@ -255,9 +222,7 @@ class ExtConfTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setDefaultCountrySetsDefaultCountryAsInteger(): void
     {
         $this->subject->setDefaultCountry('45');
@@ -268,9 +233,7 @@ class ExtConfTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setDefaultCountryWithEmptyStringSetsDefaultCountryToZero(): void
     {
         $this->subject->setDefaultCountry('');
@@ -281,9 +244,7 @@ class ExtConfTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getXmlImportValidatorPathInitiallyReturnsDefaultXsdPath(): void
     {
         self::assertSame(
@@ -292,9 +253,7 @@ class ExtConfTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setXmlImportValidatorPathSetsXmlImportValidatorPath(): void
     {
         $this->subject->setXmlImportValidatorPath('foo bar');
@@ -305,9 +264,7 @@ class ExtConfTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getOrganizerIsRequiredInitiallyReturnsFalse(): void
     {
         self::assertFalse(
@@ -315,9 +272,7 @@ class ExtConfTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setOrganizerIsRequiredSetsOrganizerIsRequired(): void
     {
         $this->subject->setOrganizerIsRequired(true);
@@ -326,27 +281,21 @@ class ExtConfTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setOrganizerIsRequiredWithStringReturnsTrue(): void
     {
         $this->subject->setOrganizerIsRequired('foo bar');
         self::assertTrue($this->subject->getOrganizerIsRequired());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setOrganizerIsRequiredWithZeroReturnsFalse(): void
     {
         $this->subject->setOrganizerIsRequired(0);
         self::assertFalse($this->subject->getOrganizerIsRequired());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getLocationIsRequiredInitiallyReturnsFalse(): void
     {
         self::assertFalse(
@@ -354,9 +303,7 @@ class ExtConfTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setLocationIsRequiredSetsLocationIsRequired(): void
     {
         $this->subject->setLocationIsRequired(true);
@@ -365,27 +312,21 @@ class ExtConfTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setLocationIsRequiredWithStringReturnsTrue(): void
     {
         $this->subject->setLocationIsRequired('foo bar');
         self::assertTrue($this->subject->getLocationIsRequired());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setLocationIsRequiredWithZeroReturnsFalse(): void
     {
         $this->subject->setLocationIsRequired(0);
         self::assertFalse($this->subject->getLocationIsRequired());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getEmailFromAddressInitiallyReturnsEmptyString(): void
     {
         $this->expectException(\Exception::class);
@@ -397,9 +338,7 @@ class ExtConfTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setEmailFromAddressSetsEmailFromAddress(): void
     {
         $this->subject->setEmailFromAddress('foo bar');
@@ -410,9 +349,7 @@ class ExtConfTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getEmailFromNameInitiallyReturnsEmptyString(): void
     {
         $this->expectException(\Exception::class);
@@ -424,9 +361,7 @@ class ExtConfTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setEmailFromNameSetsEmailFromName(): void
     {
         $this->subject->setEmailFromName('foo bar');
@@ -437,9 +372,7 @@ class ExtConfTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getEmailToAddressInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
@@ -448,9 +381,7 @@ class ExtConfTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setEmailToAddressSetsEmailToAddress(): void
     {
         $this->subject->setEmailToAddress('foo bar');
@@ -461,9 +392,7 @@ class ExtConfTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getEmailToNameInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
@@ -472,9 +401,7 @@ class ExtConfTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setEmailToNameSetsEmailToName(): void
     {
         $this->subject->setEmailToName('foo bar');

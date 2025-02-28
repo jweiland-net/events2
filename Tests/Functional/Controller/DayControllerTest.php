@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Functional\Controller;
 
 use JWeiland\Events2\Service\DayRelationService;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Core\Bootstrap;
@@ -103,9 +105,7 @@ class DayControllerTest extends FunctionalTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function bootstrapListActionWillListAllEvents(): void
     {
         $this->startUpTSFE($this->serverRequest);
@@ -130,9 +130,7 @@ class DayControllerTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function bootstrapListActionWillListEventsWithOrganizer(): void
     {
         $this->startUpTSFE(
@@ -175,11 +173,8 @@ class DayControllerTest extends FunctionalTestCase
         ];
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider listWithFilledFilterDataProvider
-     */
+    #[Test]
+    #[DataProvider('listWithFilledFilterDataProvider')]
     public function bootstrapWithVariousListTypesWillAssignFilterToView(string $listType): void
     {
         $today = new \DateTimeImmutable('today midnight');
@@ -216,9 +211,7 @@ class DayControllerTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function bootstrapShowActionWillShowEvent(): void
     {
         $today = new \DateTimeImmutable('today midnight');

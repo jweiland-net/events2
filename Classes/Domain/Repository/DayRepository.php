@@ -23,9 +23,9 @@ use JWeiland\Events2\Event\ModifyQueriesOfSearchEventsEvent;
 use JWeiland\Events2\Event\ModifyStartEndDateForListTypeEvent;
 use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Utility\DateTimeUtility;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
-use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
@@ -47,7 +47,7 @@ class DayRepository extends AbstractRepository
 
     protected DayFactory $dayFactory;
 
-    protected EventDispatcher $eventDispatcher;
+    protected EventDispatcherInterface $eventDispatcher;
 
     protected array $settings = [];
 
@@ -71,7 +71,7 @@ class DayRepository extends AbstractRepository
         $this->dayFactory = $dayFactory;
     }
 
-    public function injectEventDispatcher(EventDispatcher $eventDispatcher): void
+    public function injectEventDispatcher(EventDispatcherInterface $eventDispatcher): void
     {
         $this->eventDispatcher = $eventDispatcher;
     }
@@ -372,25 +372,6 @@ class DayRepository extends AbstractRepository
     }
 
     /**
-     * ->select() and ->groupBy() has to be the same in DB configuration
-     * where only_full_group_by is activated.
-     *
-     * @param array $additionalColumns Must contain table: [table].[column]
-     */
-    protected function getColumnsForDayTable(array $additionalColumns = []): array
-    {
-        $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_day');
-        $dayColumns = array_map(
-            static fn($column): string => 'day.' . $column,
-            array_keys(
-                $connection->createSchemaManager()->listTableColumns('tx_events2_domain_model_day') ?? [],
-            ),
-        );
-
-        return array_merge($dayColumns, $additionalColumns);
-    }
-
-    /**
      * Apply various merge features to query
      */
     protected function addMergeFeatureToQuery(QueryBuilder $subQueryBuilder): void
@@ -416,7 +397,7 @@ class DayRepository extends AbstractRepository
                 $subQueryBuilder->getSQL(),
             ),
             $queryBuilder->quoteIdentifier('day_sub_group'),
-            $queryBuilder->expr()->and(
+            (string)$queryBuilder->expr()->and(
                 $queryBuilder->expr()->eq(
                     'day.event',
                     $queryBuilder->quoteIdentifier('day_sub_group.event'),
@@ -438,35 +419,6 @@ class DayRepository extends AbstractRepository
     public function findDayByEventAndTimestamp(int $eventUid, int $timestamp = 0): Day
     {
         return $this->dayFactory->findDayByEventAndTimestamp($eventUid, $timestamp, $this->createQuery());
-    }
-
-    /**
-     * Nearly the same as "findDayByEventAndTimestamp", but this method was used by PageTitleProvider
-     * which is out of Extbase context. So we are using a plain Doctrine Query here.
-     */
-    public function getDayRecord(int $eventUid, int $timestamp): array
-    {
-        $queryBuilder = $this->getQueryBuilderForTable('tx_events2_domain_model_day', 'day');
-        $day = $queryBuilder
-            ->select('day.event')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'day.event',
-                    $queryBuilder->createNamedParameter($eventUid, Connection::PARAM_INT),
-                ),
-                $queryBuilder->expr()->eq(
-                    'day.day_time',
-                    $queryBuilder->createNamedParameter($timestamp, Connection::PARAM_INT),
-                ),
-            )
-            ->executeQuery()
-            ->fetchAssociative();
-
-        if ($day === false) {
-            $day = [];
-        }
-
-        return $day;
     }
 
     /**

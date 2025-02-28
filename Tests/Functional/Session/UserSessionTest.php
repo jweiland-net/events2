@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Functional\Session;
 
 use JWeiland\Events2\Session\UserSession;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
@@ -58,9 +60,7 @@ class UserSessionTest extends FunctionalTestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getMonthAndYearWillReturnEmptyArray(): void
     {
         self::assertEmpty(
@@ -85,11 +85,8 @@ class UserSessionTest extends FunctionalTestCase
         ];
     }
 
-    /**
-     * @test
-     *
-     * @dataProvider yearAndMonthDataProvider
-     */
+    #[Test]
+    #[DataProvider('yearAndMonthDataProvider')]
     public function getMonthAndYearWillReturnMonthAndYear(int $month, int $year, string $expectedMonth, string $expectedYear): void
     {
         $this->subject->setMonthAndYear($month, $year);
