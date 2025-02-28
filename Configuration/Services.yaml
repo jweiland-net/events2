@@ -11,15 +11,20 @@ services:
       - '../Classes/Exporter/ExporterConfiguration.php'
       - '../Classes/Hooks/Solr/{IndexerHook.php,IndexerHook104.php}'
 
-  qb.event:
-    class: TYPO3\CMS\Core\Database\Query\QueryBuilder
-    factory: ['@TYPO3\CMS\Core\Database\ConnectionPool', 'getQueryBuilderForTable']
-    arguments: ['tx_events2_domain_model_event']
-
   qb.category_mm:
     class: TYPO3\CMS\Core\Database\Query\QueryBuilder
     factory: ['@TYPO3\CMS\Core\Database\ConnectionPool', 'getQueryBuilderForTable']
     arguments: ['sys_category_record_mm']
+
+  qb.day:
+    class: TYPO3\CMS\Core\Database\Query\QueryBuilder
+    factory: ['@TYPO3\CMS\Core\Database\ConnectionPool', 'getQueryBuilderForTable']
+    arguments: ['tx_events2_domain_model_day']
+
+  qb.event:
+    class: TYPO3\CMS\Core\Database\Query\QueryBuilder
+    factory: ['@TYPO3\CMS\Core\Database\ConnectionPool', 'getQueryBuilderForTable']
+    arguments: ['tx_events2_domain_model_event']
 
   # Called by makeInstance in eID middleware
   JWeiland\Events2\Ajax\FindDaysForMonth:
@@ -102,6 +107,14 @@ services:
   JWeiland\Events2\Service\:
     resource: '../Classes/Service/*'
     public: true
+
+  JWeiland\Events2\Service\Record\DayRecordService:
+    arguments:
+      $queryBuilder: '@qb.day'
+
+  JWeiland\Events2\Service\Record\EventRecordService:
+    arguments:
+      $queryBuilder: '@qb.event'
 
   # Called by makeInstance in SchedulerModuleController
   JWeiland\Events2\Task\ReGenerateDays:

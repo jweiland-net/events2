@@ -14,6 +14,8 @@ namespace JWeiland\Events2\Tests\Functional\PageTitleProvider;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\PageTitleProvider\Events2PageTitleProvider;
+use JWeiland\Events2\Service\Record\DayRecordService;
+use JWeiland\Events2\Service\Record\EventRecordService;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Http\ServerRequest;
@@ -43,10 +45,7 @@ class Events2PageTitleProviderTest extends FunctionalTestCase
 
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/PageTitleProvider.csv');
 
-        $this->subject = new Events2PageTitleProvider(
-            GeneralUtility::makeInstance(EventRepository::class),
-            GeneralUtility::makeInstance(DayRepository::class),
-        );
+        $this->subject = $this->getContainer()->get(Events2PageTitleProvider::class);
     }
 
     protected function tearDown(): void
