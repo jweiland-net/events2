@@ -34,7 +34,7 @@ class InitializeNewEventRecordTest extends UnitTestCase
         parent::setUp();
 
         $this->subject = new InitializeNewEventRecord(
-            GeneralUtility::makeInstance(Context::class)
+            GeneralUtility::makeInstance(Context::class),
         );
     }
 
