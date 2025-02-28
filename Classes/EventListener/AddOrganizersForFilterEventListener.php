@@ -13,20 +13,27 @@ namespace JWeiland\Events2\EventListener;
 
 use JWeiland\Events2\Domain\Repository\OrganizerRepository;
 use JWeiland\Events2\Event\PostProcessFluidVariablesEvent;
+use JWeiland\Events2\Traits\IsValidEventListenerRequestTrait;
+use TYPO3\CMS\Core\Attribute\AsEventListener;
 
 /**
  * Add organizer for selector in list views.
  * Selector will only be shown if there are more than 1 organizers assigned
  */
-class AddOrganizersForFilterEventListener extends AbstractControllerEventListener
+#[AsEventListener('events2/addOrganizersForFilter')]
+final readonly class AddOrganizersForFilterEventListener
 {
-    protected array $allowedControllerActions = [
+    use IsValidEventListenerRequestTrait;
+
+    protected const ALLOWED_CONTROLLER_ACTIONS = [
         'Day' => [
             'list',
         ],
     ];
 
-    public function __construct(protected readonly OrganizerRepository $organizerRepository) {}
+    public function __construct(
+        private OrganizerRepository $organizerRepository
+    ) {}
 
     public function __invoke(PostProcessFluidVariablesEvent $controllerActionEvent): void
     {

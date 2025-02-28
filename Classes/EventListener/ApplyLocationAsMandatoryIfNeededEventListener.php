@@ -13,6 +13,8 @@ namespace JWeiland\Events2\EventListener;
 
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Event\PreProcessControllerActionEvent;
+use JWeiland\Events2\Traits\IsValidEventListenerRequestTrait;
+use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Extbase\Validation\Validator\ConjunctionValidator;
 use TYPO3\CMS\Extbase\Validation\Validator\GenericObjectValidator;
 use TYPO3\CMS\Extbase\Validation\Validator\NotEmptyValidator;
@@ -21,9 +23,12 @@ use TYPO3\CMS\Extbase\Validation\ValidatorResolver;
 /**
  * Add validator for event location in event forms, if it was configured in extension settings.
  */
-class ApplyLocationAsMandatoryIfNeededEventListener extends AbstractControllerEventListener
+#[AsEventListener('events2/applyLocationAsMandatoryIfNeeded')]
+final readonly class ApplyLocationAsMandatoryIfNeededEventListener
 {
-    protected array $allowedControllerActions = [
+    use IsValidEventListenerRequestTrait;
+
+    protected const ALLOWED_CONTROLLER_ACTIONS = [
         'Management' => [
             'create',
             'update',
@@ -31,8 +36,8 @@ class ApplyLocationAsMandatoryIfNeededEventListener extends AbstractControllerEv
     ];
 
     public function __construct(
-        protected readonly ExtConf $extConf,
-        protected readonly ValidatorResolver $validatorResolver,
+        private ExtConf $extConf,
+        private ValidatorResolver $validatorResolver,
     ) {}
 
     public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void

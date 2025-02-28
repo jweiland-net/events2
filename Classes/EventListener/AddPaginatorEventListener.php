@@ -13,6 +13,8 @@ namespace JWeiland\Events2\EventListener;
 
 use JWeiland\Events2\Event\PostProcessFluidVariablesEvent;
 use JWeiland\Events2\Pagination\GetPostPagination;
+use JWeiland\Events2\Traits\IsValidEventListenerRequestTrait;
+use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Core\Pagination\PaginationInterface;
 use TYPO3\CMS\Core\Pagination\PaginatorInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -22,18 +24,21 @@ use TYPO3\CMS\Extbase\Pagination\QueryResultPaginator;
 /**
  * Add paginator to fluid template
  */
-class AddPaginatorEventListener extends AbstractControllerEventListener
+#[AsEventListener('events2/addPaginator')]
+final readonly class AddPaginatorEventListener
 {
-    protected int $itemsPerPage = 15;
+    use IsValidEventListenerRequestTrait;
+
+    private const ITEMS_PER_PAGE = 15;
 
     /**
      * Fluid variable name for paginated records
      */
-    protected string $fluidVariableForPaginatedRecords = 'days';
+    private const FLUID_VARIABLE_NAME = 'days';
 
-    protected string $fallbackPaginationClass = GetPostPagination::class;
+    private const FALLBACK_CLASS = GetPostPagination::class;
 
-    protected array $allowedControllerActions = [
+    protected const ALLOWED_CONTROLLER_ACTIONS = [
         'Day' => [
             'list',
         ],
@@ -47,11 +52,11 @@ class AddPaginatorEventListener extends AbstractControllerEventListener
         // Do not show pagination for listLatest
         if (
             $this->isValidRequest($controllerActionEvent)
-            && ($controllerActionEvent->getFluidVariables()[$this->fluidVariableForPaginatedRecords] ?? null)
+            && ($controllerActionEvent->getFluidVariables()[self::FLUID_VARIABLE_NAME] ?? null)
             && ($controllerActionEvent->getSettings()['listType'] ?? 'listLatest') !== 'listLatest'
         ) {
             $paginator = new QueryResultPaginator(
-                $controllerActionEvent->getFluidVariables()[$this->fluidVariableForPaginatedRecords],
+                $controllerActionEvent->getFluidVariables()[self::FLUID_VARIABLE_NAME],
                 $this->getCurrentPage($controllerActionEvent),
                 $this->getItemsPerPage($controllerActionEvent),
             );
@@ -59,7 +64,7 @@ class AddPaginatorEventListener extends AbstractControllerEventListener
             $controllerActionEvent->addFluidVariable('actionName', $controllerActionEvent->getActionName());
             $controllerActionEvent->addFluidVariable('paginator', $paginator);
             $controllerActionEvent->addFluidVariable(
-                $this->fluidVariableForPaginatedRecords,
+                self::FLUID_VARIABLE_NAME,
                 $paginator->getPaginatedItems(),
             );
             $controllerActionEvent->addFluidVariable(
@@ -69,7 +74,7 @@ class AddPaginatorEventListener extends AbstractControllerEventListener
         }
     }
 
-    protected function getCurrentPage(PostProcessFluidVariablesEvent $controllerActionEvent): int
+    private function getCurrentPage(PostProcessFluidVariablesEvent $controllerActionEvent): int
     {
         $currentPage = 1;
         if ($controllerActionEvent->getRequest()->hasArgument('currentPage')) {
@@ -84,23 +89,23 @@ class AddPaginatorEventListener extends AbstractControllerEventListener
         return $currentPage;
     }
 
-    protected function getItemsPerPage(PostProcessFluidVariablesEvent $event): int
+    private function getItemsPerPage(PostProcessFluidVariablesEvent $event): int
     {
-        return (int)($event->getSettings()['pageBrowser']['itemsPerPage'] ?? $this->itemsPerPage);
+        return (int)($event->getSettings()['pageBrowser']['itemsPerPage'] ?? self::ITEMS_PER_PAGE);
     }
 
-    protected function getPagination(
+    private function getPagination(
         PostProcessFluidVariablesEvent $event,
         PaginatorInterface $paginator,
     ): PaginationInterface {
-        $paginationClass = $event->getSettings()['pageBrowser']['class'] ?? $this->fallbackPaginationClass;
+        $paginationClass = $event->getSettings()['pageBrowser']['class'] ?? self::FALLBACK_CLASS;
 
         if (!class_exists($paginationClass)) {
-            $paginationClass = $this->fallbackPaginationClass;
+            $paginationClass = self::FALLBACK_CLASS;
         }
 
         if (!is_subclass_of($paginationClass, PaginationInterface::class)) {
-            $paginationClass = $this->fallbackPaginationClass;
+            $paginationClass = self::FALLBACK_CLASS;
         }
 
         return GeneralUtility::makeInstance($paginationClass, $paginator);

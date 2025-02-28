@@ -15,28 +15,33 @@ use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Event\PostProcessControllerActionEvent;
 use JWeiland\Events2\Helper\PathSegmentHelper;
+use JWeiland\Events2\Traits\IsValidEventListenerRequestTrait;
+use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 
 /**
  * Update path_segment of event.
  * Please check, if this EventListener was loaded before other redirecting EventListeners.
  */
-class UpdateEventPathSegmentEventListener extends AbstractControllerEventListener
+#[AsEventListener('events2/updateEventPathSegment')]
+final readonly class UpdateEventPathSegmentEventListener
 {
+    use IsValidEventListenerRequestTrait;
+
     /**
      * It should never be possible for a FE user to generate slug while update request. This would also change the
      * link to the detail page. If it was needed to change the link, please update slug in TYPO3 backend.
      */
-    protected array $allowedControllerActions = [
+    protected const ALLOWED_CONTROLLER_ACTIONS = [
         'Management' => [
             'create',
         ],
     ];
 
     public function __construct(
-        protected readonly PathSegmentHelper $pathSegmentHelper,
-        protected readonly EventRepository $eventRepository,
-        protected readonly PersistenceManagerInterface $persistenceManager,
+        private PathSegmentHelper $pathSegmentHelper,
+        private EventRepository $eventRepository,
+        private PersistenceManagerInterface $persistenceManager,
     ) {}
 
     public function __invoke(PostProcessControllerActionEvent $controllerActionEvent): void

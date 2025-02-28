@@ -13,6 +13,8 @@ namespace JWeiland\Events2\EventListener;
 
 use JWeiland\Events2\Event\PreProcessControllerActionEvent;
 use JWeiland\Events2\Property\TypeConverter\DateTimeImmutableConverter;
+use JWeiland\Events2\Traits\IsValidEventListenerRequestTrait;
+use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Extbase\Property\PropertyMappingConfigurationInterface;
 
 /**
@@ -20,11 +22,14 @@ use TYPO3\CMS\Extbase\Property\PropertyMappingConfigurationInterface;
  * Add special validation for VideoLink id exists.
  * I can't add this validation to LinkModel, as such a validation would be also valid for organizer link.
  */
-class SetDateFormatForPropertyMappingEventListener extends AbstractControllerEventListener
+#[AsEventListener('events2/setDateFormatForPropertyMapping')]
+final readonly class SetDateFormatForPropertyMappingEventListener
 {
-    protected string $defaultDateFormat = 'd.m.Y';
+    use IsValidEventListenerRequestTrait;
 
-    protected array $allowedControllerActions = [
+    private const DEFAULT_DATE_FORMAT = 'd.m.Y';
+
+    protected const ALLOWED_CONTROLLER_ACTIONS = [
         'Management' => [
             'create',
             'update',
@@ -43,7 +48,7 @@ class SetDateFormatForPropertyMappingEventListener extends AbstractControllerEve
         }
     }
 
-    protected function setDatePropertyFormat(
+    private function setDatePropertyFormat(
         string $property,
         PropertyMappingConfigurationInterface $pmc,
     ): void {
@@ -52,7 +57,7 @@ class SetDateFormatForPropertyMappingEventListener extends AbstractControllerEve
             ->setTypeConverterOption(
                 DateTimeImmutableConverter::class,
                 DateTimeImmutableConverter::CONFIGURATION_DATE_FORMAT,
-                $this->defaultDateFormat,
+                self::DEFAULT_DATE_FORMAT,
             );
     }
 }

@@ -14,10 +14,15 @@ namespace JWeiland\Events2\EventListener;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Event\PreProcessControllerActionEvent;
 use JWeiland\Events2\Helper\HiddenObjectHelper;
+use JWeiland\Events2\Traits\IsValidEventListenerRequestTrait;
+use TYPO3\CMS\Core\Attribute\AsEventListener;
 
-class RegisterHiddenEventEventListener extends AbstractControllerEventListener
+#[AsEventListener('events2/registerHiddenEvent')]
+final readonly class RegisterHiddenEventEventListener
 {
-    protected array $allowedControllerActions = [
+    use IsValidEventListenerRequestTrait;
+
+    protected const ALLOWED_CONTROLLER_ACTIONS = [
         'Management' => [
             'edit',
             'update',
@@ -25,8 +30,8 @@ class RegisterHiddenEventEventListener extends AbstractControllerEventListener
     ];
 
     public function __construct(
-        protected readonly HiddenObjectHelper $hiddenObjectHelper,
-        protected readonly EventRepository $eventRepository,
+        private HiddenObjectHelper $hiddenObjectHelper,
+        private EventRepository $eventRepository,
     ) {}
 
     public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void

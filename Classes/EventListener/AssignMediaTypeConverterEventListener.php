@@ -15,13 +15,18 @@ use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Event\PreProcessControllerActionEvent;
 use JWeiland\Events2\Property\TypeConverter\UploadMultipleFilesConverter;
+use JWeiland\Events2\Traits\IsValidEventListenerRequestTrait;
+use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Extbase\Mvc\Controller\MvcPropertyMappingConfiguration;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Extbase\Property\PropertyMappingConfiguration;
 
-class AssignMediaTypeConverterEventListener extends AbstractControllerEventListener
+#[AsEventListener('events2/assignMediaTypeConverter')]
+final readonly class AssignMediaTypeConverterEventListener
 {
-    protected array $allowedControllerActions = [
+    use IsValidEventListenerRequestTrait;
+
+    protected const ALLOWED_CONTROLLER_ACTIONS = [
         'Management' => [
             'create',
             'update',
@@ -29,8 +34,8 @@ class AssignMediaTypeConverterEventListener extends AbstractControllerEventListe
     ];
 
     public function __construct(
-        protected readonly EventRepository $eventRepository,
-        protected readonly UploadMultipleFilesConverter $uploadMultipleFilesConverter,
+        private EventRepository $eventRepository,
+        private UploadMultipleFilesConverter $uploadMultipleFilesConverter,
     ) {}
 
     public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void
@@ -44,12 +49,12 @@ class AssignMediaTypeConverterEventListener extends AbstractControllerEventListe
         }
     }
 
-    protected function assignTypeConverterForCreateAction(PreProcessControllerActionEvent $controllerActionEvent): void
+    private function assignTypeConverterForCreateAction(PreProcessControllerActionEvent $controllerActionEvent): void
     {
         $this->setTypeConverterForProperty('images', null, $controllerActionEvent);
     }
 
-    protected function assignTypeConverterForUpdateAction(PreProcessControllerActionEvent $controllerActionEvent): void
+    private function assignTypeConverterForUpdateAction(PreProcessControllerActionEvent $controllerActionEvent): void
     {
         // Needed to get the previously stored images
         /** @var Event|null $persistedEvent */
@@ -62,7 +67,7 @@ class AssignMediaTypeConverterEventListener extends AbstractControllerEventListe
         }
     }
 
-    protected function setTypeConverterForProperty(
+    private function setTypeConverterForProperty(
         string $property,
         ?ObjectStorage $persistedFiles,
         PreProcessControllerActionEvent $controllerActionEvent,
@@ -87,7 +92,7 @@ class AssignMediaTypeConverterEventListener extends AbstractControllerEventListe
         }
     }
 
-    protected function getPropertyMappingConfigurationForEvent(
+    private function getPropertyMappingConfigurationForEvent(
         PreProcessControllerActionEvent $controllerActionEvent,
     ): MvcPropertyMappingConfiguration {
         return $controllerActionEvent->getArguments()
@@ -95,7 +100,7 @@ class AssignMediaTypeConverterEventListener extends AbstractControllerEventListe
             ->getPropertyMappingConfiguration();
     }
 
-    protected function addOptionToUploadFilesConverter(
+    private function addOptionToUploadFilesConverter(
         PropertyMappingConfiguration $propertyMappingConfiguration,
         string $optionKey,
         $optionValue,

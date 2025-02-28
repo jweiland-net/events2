@@ -15,6 +15,8 @@ use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Domain\Repository\UserRepository;
 use JWeiland\Events2\Event\PreProcessControllerActionEvent;
+use JWeiland\Events2\Traits\IsValidEventListenerRequestTrait;
+use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Messaging\AbstractMessage;
@@ -31,19 +33,22 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  * Restrict access to controller actions, if current logged-in user tries to access records of other users.
  * We will remove the event argument from request which will result in calling the errorAction of the ActionController.
  */
-class RestrictAccessEventListener extends AbstractControllerEventListener
+#[AsEventListener('events2/restrictAccess')]
+final readonly class RestrictAccessEventListener
 {
-    protected EventRepository $eventRepository;
+    use IsValidEventListenerRequestTrait;
 
-    protected UserRepository $userRepository;
+    private EventRepository $eventRepository;
 
-    protected ExtensionService $extensionService;
+    private UserRepository $userRepository;
 
-    protected FlashMessageService $flashMessageService;
+    private ExtensionService $extensionService;
 
-    protected Request $request;
+    private FlashMessageService $flashMessageService;
 
-    protected array $allowedControllerActions = [
+    private Request $request;
+
+    protected const ALLOWED_CONTROLLER_ACTIONS = [
         'Management' => [
             'new',
             'create',
@@ -89,7 +94,7 @@ class RestrictAccessEventListener extends AbstractControllerEventListener
         $controllerActionEvent->setArguments(GeneralUtility::makeInstance(Arguments::class));
     }
 
-    protected function isAccessAllowed(PreProcessControllerActionEvent $controllerActionEvent): bool
+    private function isAccessAllowed(PreProcessControllerActionEvent $controllerActionEvent): bool
     {
         try {
             if ($this->getContext()->getPropertyFromAspect('backend.user', 'isAdmin', false)) {
@@ -122,7 +127,7 @@ class RestrictAccessEventListener extends AbstractControllerEventListener
         return true;
     }
 
-    protected function addFlashMessage($messageBody): void
+    private function addFlashMessage($messageBody): void
     {
         $flashMessage = GeneralUtility::makeInstance(
             FlashMessage::class,
@@ -135,7 +140,7 @@ class RestrictAccessEventListener extends AbstractControllerEventListener
         $this->getFlashMessageQueue()->enqueue($flashMessage);
     }
 
-    protected function getFlashMessageQueue(string $identifier = null): FlashMessageQueue
+    private function getFlashMessageQueue(string $identifier = null): FlashMessageQueue
     {
         if ($identifier === null) {
             $pluginNamespace = $this->extensionService->getPluginNamespace(
@@ -148,7 +153,7 @@ class RestrictAccessEventListener extends AbstractControllerEventListener
         return $this->flashMessageService->getMessageQueueByIdentifier($identifier);
     }
 
-    protected function getContext(): Context
+    private function getContext(): Context
     {
         return GeneralUtility::makeInstance(Context::class);
     }
