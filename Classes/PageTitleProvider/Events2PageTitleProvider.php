@@ -44,7 +44,6 @@ final readonly class Events2PageTitleProvider implements PageTitleProviderInterf
             if ($dayRecord !== []) {
                 $date = new \DateTimeImmutable(date('c', (int)$gp['timestamp']));
                 $eventRecord = $this->eventRecordService->findByUid((int)$dayRecord['event']);
-                var_dump($eventRecord);
 
                 if ($eventRecord !== []) {
                     $pageTitle = sprintf(

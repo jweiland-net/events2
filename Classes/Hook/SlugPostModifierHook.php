@@ -9,7 +9,7 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace JWeiland\Events2\Hooks;
+namespace JWeiland\Events2\Hook;
 
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Event\GeneratePathSegmentEvent;
@@ -19,7 +19,6 @@ use TYPO3\CMS\Core\DataHandling\Model\RecordState;
 use TYPO3\CMS\Core\DataHandling\Model\RecordStateFactory;
 use TYPO3\CMS\Core\DataHandling\SlugHelper;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * This hook will be executed just while generating a slug with TYPO3 API (SlugHelper). Problem with this API is, that
@@ -33,6 +32,7 @@ readonly class SlugPostModifierHook
 
     public function __construct(
         protected EventDispatcherInterface $eventDispatcher,
+        protected ExtConf $extConf,
         protected LoggerInterface $logger,
     ) {}
 
@@ -60,7 +60,7 @@ readonly class SlugPostModifierHook
             return $parameters['slug'];
         }
 
-        $newSlug = match ($this->getExtConf()->getPathSegmentType()) {
+        $newSlug = match ($this->extConf->getPathSegmentType()) {
             'uid' => $this->getPathSegmentWithAdditionalUid($parameters),
             'realurl' => $this->getPathSegmentWithIncrement($parameters, $slugHelper),
             default => $this->getPathSegmentByEventListener($parameters, $slugHelper),
@@ -150,10 +150,5 @@ readonly class SlugPostModifierHook
         }
 
         return RecordStateFactory::forName($table)->fromArray($baseRecord, $pid, $uid);
-    }
-
-    protected function getExtConf(): ExtConf
-    {
-        return GeneralUtility::makeInstance(ExtConf::class);
     }
 }

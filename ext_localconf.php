@@ -20,11 +20,11 @@ use JWeiland\Events2\Controller\LocationController;
 use JWeiland\Events2\Controller\ManagementController;
 use JWeiland\Events2\Controller\SearchController;
 use JWeiland\Events2\Controller\VideoController;
-use JWeiland\Events2\Hooks\DataHandler;
-use JWeiland\Events2\Hooks\Form\PrefillCategoriesHook;
-use JWeiland\Events2\Hooks\Form\PrefillForEditUsageHook;
-use JWeiland\Events2\Hooks\Solr\IndexerHook;
-use JWeiland\Events2\Hooks\Solr\ResultsCommandHook;
+use JWeiland\Events2\Hook\Events2DataHandler;
+use JWeiland\Events2\Hook\Form\PrefillCategoriesHook;
+use JWeiland\Events2\Hook\Form\PrefillForEditUsageHook;
+use JWeiland\Events2\Hook\Solr\IndexerHook;
+use JWeiland\Events2\Hook\Solr\ResultsCommandHook;
 use JWeiland\Events2\Routing\Aspect\PersistedHiddenAliasMapper;
 use JWeiland\Events2\Routing\Aspect\TimestampMapper;
 use JWeiland\Events2\Task\AdditionalFieldsForImport;
@@ -121,9 +121,9 @@ call_user_func(static function (): void {
     // register an eval function to check for time
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tce']['formevals'][Time::class] = '';
     // delete and recreate day relations for an event while saving
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['events2_createDayRelations'] = DataHandler::class;
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['events2_createDayRelations'] = Events2DataHandler::class;
     // Clear cache of pages with events, if event was edited/created/deleted in BE
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['clearCachePostProc']['events2_clearcache'] = DataHandler::class . '->clearCachePostProc';
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['clearCachePostProc']['events2_clearcache'] = Events2DataHandler::class . '->clearCachePostProc';
 
     // Prefill EXT:form element of type Checkboxes with categories from database
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/form']['initializeFormElement'][1660727041]

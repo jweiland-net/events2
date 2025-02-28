@@ -21,7 +21,7 @@ use TYPO3\CMS\Core\SingletonInterface;
  * This class streamlines all settings from extension manager
  */
 #[Autoconfigure(constructor: 'create')]
-final readonly class ExtConf implements SingletonInterface
+readonly class ExtConf implements SingletonInterface
 {
     private const EXT_KEY = 'events2';
 

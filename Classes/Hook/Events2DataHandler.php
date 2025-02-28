@@ -9,7 +9,7 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace JWeiland\Events2\Hooks;
+namespace JWeiland\Events2\Hook;
 
 use JWeiland\Events2\Service\DayRelationService;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -19,7 +19,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Hook into DataHandler and clear special caches or re-generate day records after saving an event.
  */
-readonly class DataHandler
+readonly class Events2DataHandler
 {
     public function __construct(
         protected CacheManager $cacheManager,
