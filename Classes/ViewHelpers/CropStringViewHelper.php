@@ -11,9 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\ViewHelpers;
 
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * This ViewHelper explodes a string by a specified glue and limits the output to a specified number of elements.
@@ -31,8 +29,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  */
 final class CropStringViewHelper extends AbstractViewHelper
 {
-    use CompileWithRenderStatic;
-
     public function initializeArguments(): void
     {
         $this->registerArgument('content', 'string', 'String to be formatted by limit if set');
@@ -56,14 +52,11 @@ final class CropStringViewHelper extends AbstractViewHelper
         );
     }
 
-    public static function renderStatic(
-        array $arguments,
-        \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext,
-    ): string {
-        $content = $arguments['content'];
-        $glue = $arguments['glue'];
-        $limit = (int)$arguments['limit'];
+    public function render(): string
+    {
+        $content = $this->arguments['content'];
+        $glue = $this->arguments['glue'];
+        $limit = (int)$this->arguments['limit'];
 
         $explodedStringArray = explode($glue, (string)$content);
 
@@ -85,8 +78,6 @@ final class CropStringViewHelper extends AbstractViewHelper
         }
 
         // return the first element of the exploded content if limit is set to 0
-        if ($limit === 0) {
-            return $explodedStringArray[0];
-        }
+        return $explodedStringArray[0];
     }
 }

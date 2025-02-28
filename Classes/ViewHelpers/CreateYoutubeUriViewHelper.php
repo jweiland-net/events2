@@ -11,9 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\ViewHelpers;
 
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * This VH checks if given URI is a valid YouTube-Link
@@ -21,7 +19,7 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  */
 final class CreateYoutubeUriViewHelper extends AbstractViewHelper
 {
-    use CompileWithRenderStatic;
+    private const PATTERN = '~^(|http:|https:)//(|www.)youtu(\.be|be)(.*?)(v=|embed/|)([a-zA-Z0-9_-]+)$~i';
 
     public function initializeArguments(): void
     {
@@ -31,15 +29,12 @@ final class CreateYoutubeUriViewHelper extends AbstractViewHelper
     /**
      * Extract the YouTube ID from link and return the embedded YouTube url.
      */
-    public static function renderStatic(
-        array $arguments,
-        \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext,
-    ): string {
-        if (preg_match('~^(|http:|https:)//(|www.)youtu(\.be|be)(.*?)(v=|embed/|)([a-zA-Z0-9_-]+)$~i', $arguments['link'], $matches)) {
+    public function render(): string
+    {
+        if (preg_match(self::PATTERN, $this->arguments['link'], $matches)) {
             return '//www.youtube.com/embed/' . $matches[6];
         }
 
-        return '//www.youtube.com/embed/' . $arguments['link'];
+        return '//www.youtube.com/embed/' . $this->arguments['link'];
     }
 }
