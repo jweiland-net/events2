@@ -15,7 +15,7 @@ namespace JWeiland\Events2\Service;
  * A Service to merge the TypoScript Settings (Framework) into the merged Settings (inkl. FlexForm),
  * if these are empty or 0
  */
-class TypoScriptService
+readonly class TypoScriptService
 {
     public function override(array &$mergedFlexFormSettings, array $typoScriptSettings): void
     {

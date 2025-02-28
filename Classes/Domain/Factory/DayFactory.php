@@ -17,9 +17,7 @@ use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Service\DatabaseService;
 use TYPO3\CMS\Core\Database\Connection;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 /**
@@ -30,7 +28,7 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
  */
 class DayFactory
 {
-    protected array $processOrderedMethods = [
+    private const PROCESS_METHODS = [
         'findExactDay',
         'findNextDay',
         'findPreviousDay',
@@ -41,6 +39,7 @@ class DayFactory
         protected readonly DatabaseService $databaseService,
         protected readonly DayRepository $dayRepository,
         protected readonly EventRepository $eventRepository,
+        protected readonly QueryBuilder $queryBuilder,
     ) {}
 
     /**
@@ -54,7 +53,7 @@ class DayFactory
             'timestamp' => $timestamp,
         ];
 
-        foreach ($this->processOrderedMethods as $methodName) {
+        foreach (self::PROCESS_METHODS as $methodName) {
             $day = $this->{$methodName}($data, $query);
             if ($day instanceof Day) {
                 break;
@@ -170,7 +169,7 @@ class DayFactory
         int $eventUid,
         string $order = QueryInterface::ORDER_ASCENDING,
     ): QueryBuilder {
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_day');
+        $queryBuilder = $this->queryBuilder;
         $queryBuilder
             ->select('day.*')
             ->from('tx_events2_domain_model_day', 'day')
@@ -207,10 +206,5 @@ class DayFactory
                 $queryBuilder->createNamedParameter($eventUid, Connection::PARAM_INT),
             ),
         );
-    }
-
-    protected function getConnectionPool(): ConnectionPool
-    {
-        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 }

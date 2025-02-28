@@ -18,9 +18,11 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 /**
  * This class checks, if given time entry like 08:34 is valid in TCA.
  */
-class Time
+readonly class Time
 {
-    public function __construct(protected readonly TimeToStringConverter $timeToStringConverter) {}
+    public function __construct(
+        protected TimeToStringConverter $timeToStringConverter,
+    ) {}
 
     /**
      * This method converts the value into a unique time format: 21:23.

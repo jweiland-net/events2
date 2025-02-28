@@ -26,14 +26,14 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * a call to "generate" will not consider the uniqueness options in "eval". There are further API calls you have to
  * call to take this option into account. Thanks to this hook we solve that in one run.
  */
-class SlugPostModifierHook
+readonly class SlugPostModifierHook
 {
     private const TABLE = 'tx_events2_domain_model_event';
     private const FIELD = 'path_segment';
 
     public function __construct(
-        protected readonly EventDispatcherInterface $eventDispatcher,
-        protected readonly LoggerInterface $logger,
+        protected EventDispatcherInterface $eventDispatcher,
+        protected LoggerInterface $logger,
     ) {}
 
     /**

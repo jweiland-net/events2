@@ -22,12 +22,14 @@ use TYPO3\CMS\Core\Http\JsonResponse;
  * This middleware is needed for management plugin. It is needed to show a list of location titles
  * in AutoComplete input box.
  */
-class GetLocationsMiddleware implements MiddlewareInterface
+final readonly class GetLocationsMiddleware implements MiddlewareInterface
 {
     /**
      * Will be called by call_user_func_array, so don't add Extbase classes with inject methods as argument
      */
-    public function __construct(protected readonly LocationRepository $locationRepository) {}
+    public function __construct(
+        protected LocationRepository $locationRepository
+    ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {

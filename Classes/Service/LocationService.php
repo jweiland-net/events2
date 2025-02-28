@@ -21,7 +21,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Service to work with EXT:events2 location records.
  */
-class LocationService
+readonly class LocationService
 {
     private const TABLE = 'tx_events2_domain_model_location';
 

@@ -19,7 +19,7 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  * Cache service for tagging pages and content with specific events2 cache tags to clear cache while creating/updating
  * event records.
  */
-class CacheService
+readonly class CacheService
 {
     use Typo3RequestTrait;
 

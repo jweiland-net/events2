@@ -19,9 +19,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Hook into DataHandler and clear special caches or re-generate day records after saving an event.
  */
-class DataHandler
+readonly class DataHandler
 {
-    public function __construct(protected readonly CacheManager $cacheManager) {}
+    public function __construct(
+        protected CacheManager $cacheManager,
+    ) {}
 
     /**
      * Flushes the cache if an event record was edited.

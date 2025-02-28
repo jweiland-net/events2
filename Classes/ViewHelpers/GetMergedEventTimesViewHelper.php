@@ -21,7 +21,7 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 /**
  * Returns sorted time records for a given event and date
  */
-class GetMergedEventTimesViewHelper extends AbstractViewHelper
+final class GetMergedEventTimesViewHelper extends AbstractViewHelper
 {
     use CompileWithRenderStatic;
 

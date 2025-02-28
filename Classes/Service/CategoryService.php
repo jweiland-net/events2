@@ -21,7 +21,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Service to work with TYPO3 sys_category records.
  */
-class CategoryService
+readonly class CategoryService
 {
     private const TABLE = 'sys_category';
 

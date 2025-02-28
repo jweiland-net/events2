@@ -20,7 +20,7 @@ use TYPO3\CMS\Core\Resource\FileInterface;
 /**
  * Helper class to provide a string or file as download
  */
-class DownloadHelper
+readonly class DownloadHelper
 {
     public function downloadFile(
         FileInterface $file = null,

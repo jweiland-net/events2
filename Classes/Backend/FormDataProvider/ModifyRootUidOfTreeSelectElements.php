@@ -18,11 +18,11 @@ use TYPO3\CMS\Core\Information\Typo3Version;
 /**
  * Reduce amount of categories to given root category declared in extension configuration
  */
-class ModifyRootUidOfTreeSelectElements implements FormDataProviderInterface
+readonly class ModifyRootUidOfTreeSelectElements implements FormDataProviderInterface
 {
     public function __construct(
-        private readonly ExtConf $extConf,
-        private readonly Typo3Version $typo3Version,
+        private ExtConf $extConf,
+        private Typo3Version $typo3Version,
     ) {}
 
     /**

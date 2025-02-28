@@ -20,7 +20,7 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 /**
  * Get exceptions from an event to a specific date
  */
-class GetExceptionsFromEventForSpecificDateViewHelper extends AbstractViewHelper
+final class GetExceptionsFromEventForSpecificDateViewHelper extends AbstractViewHelper
 {
     use CompileWithRenderStatic;
 

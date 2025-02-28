@@ -17,9 +17,9 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * This VH is designed to convert PoiCollection record into JSON.
- * But, of cause, you can use it for all other arrays, too.
+ * But, you can use it for all other arrays, too.
  */
-class ConvertToJsonViewHelper extends AbstractViewHelper
+final class ConvertToJsonViewHelper extends AbstractViewHelper
 {
     use CompileWithRenderStatic;
 

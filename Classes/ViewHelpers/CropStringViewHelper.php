@@ -29,7 +29,7 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  * and return the first 5 elements as a comma-separated string. If there are more than 5 elements,
  * it will append "..." to the end of the string.
  */
-class CropStringViewHelper extends AbstractViewHelper
+final class CropStringViewHelper extends AbstractViewHelper
 {
     use CompileWithRenderStatic;
 

@@ -17,9 +17,9 @@ use JWeiland\Events2\Service\EventService;
  * As we can't create a SQL Query with JOIN in Solr configuration,
  * we have to remove invalid documents on our own here
  */
-class IndexerHook implements PageIndexerDocumentsModifier
+readonly class IndexerHook implements PageIndexerDocumentsModifier
 {
-    public function __construct(protected readonly EventService $eventService) {}
+    public function __construct(protected EventService $eventService) {}
 
     /**
      * Modifies the given documents

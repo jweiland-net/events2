@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Configuration;
 
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
@@ -19,52 +20,83 @@ use TYPO3\CMS\Core\SingletonInterface;
 /**
  * This class streamlines all settings from extension manager
  */
-class ExtConf implements SingletonInterface
+#[Autoconfigure(constructor: 'create')]
+final readonly class ExtConf implements SingletonInterface
 {
-    protected int $poiCollectionPid = 0;
+    private const EXT_KEY = 'events2';
 
-    protected int $rootUid = 0;
+    private const DEFAULT_SETTINGS = [
+        // general
+        'poiCollectionPid' => 0,
+        'rootUid' => 0,
+        'recurringPast' => 3,
+        'recurringFuture' => 6,
+        'defaultCountry' => 0,
+        'xmlImportValidatorPath' => '',
+        'organizerIsRequired' => false,
+        'locationIsRequired' => false,
+        'categoryIsRequired' => false,
+        'pathSegmentType' => 'empty',
 
-    protected int $recurringPast = 0;
+        // email
+        'emailFromAddress' => '',
+        'emailFromName' => '',
+        'emailToAddress' => '',
+        'emailToName' => '',
+    ];
 
-    protected int $recurringFuture = 0;
+    public function __construct(
+        // general
+        private int $poiCollectionPid = self::DEFAULT_SETTINGS['poiCollectionPid'],
+        private int $rootUid = self::DEFAULT_SETTINGS['rootUid'],
+        private int $recurringPast = self::DEFAULT_SETTINGS['recurringPast'],
+        private int $recurringFuture = self::DEFAULT_SETTINGS['recurringFuture'],
+        private int $defaultCountry = self::DEFAULT_SETTINGS['defaultCountry'],
+        private string $xmlImportValidatorPath = self::DEFAULT_SETTINGS['xmlImportValidatorPath'],
+        private bool $organizerIsRequired = self::DEFAULT_SETTINGS['organizerIsRequired'],
+        private bool $locationIsRequired = self::DEFAULT_SETTINGS['locationIsRequired'],
+        private bool $categoryIsRequired = self::DEFAULT_SETTINGS['categoryIsRequired'],
+        private string $pathSegmentType = self::DEFAULT_SETTINGS['pathSegmentType'],
 
-    protected int $defaultCountry = 0;
+        // email
+        private string $emailFromAddress = self::DEFAULT_SETTINGS['emailFromAddress'],
+        private string $emailFromName = self::DEFAULT_SETTINGS['emailFromName'],
+        private string $emailToAddress = self::DEFAULT_SETTINGS['emailToAddress'],
+        private string $emailToName = self::DEFAULT_SETTINGS['emailToName'],
+    ) {}
 
-    protected string $xmlImportValidatorPath = '';
-
-    protected bool $organizerIsRequired = false;
-
-    protected bool $locationIsRequired = false;
-
-    protected bool $categoryIsRequired = false;
-
-    protected string $pathSegmentType = 'empty';
-
-    protected string $emailFromAddress = '';
-
-    protected string $emailFromName = '';
-
-    protected string $emailToAddress = '';
-
-    protected string $emailToName = '';
-
-    public function __construct(ExtensionConfiguration $extensionConfiguration)
+    public static function create(ExtensionConfiguration $extensionConfiguration): self
     {
-        try {
-            $extConf = $extensionConfiguration->get('events2');
-            if (!is_array($extConf)) {
-                return;
-            }
+        $extensionSettings = self::DEFAULT_SETTINGS;
 
-            foreach ($extConf as $key => $value) {
-                $methodName = 'set' . ucfirst($key);
-                if (method_exists($this, $methodName)) {
-                    $this->$methodName($value);
-                }
-            }
-        } catch (ExtensionConfigurationExtensionNotConfiguredException | ExtensionConfigurationPathDoesNotExistException $e) {
+        // Overwrite default extension settings with values from EXT_CONF
+        try {
+            $extensionSettings = array_merge(
+                $extensionSettings,
+                $extensionConfiguration->get(self::EXT_KEY),
+            );
+        } catch (ExtensionConfigurationExtensionNotConfiguredException|ExtensionConfigurationPathDoesNotExistException) {
         }
+
+        return new self(
+            // general
+            poiCollectionPid: (int)$extensionSettings['poiCollectionPid'],
+            rootUid: (int)$extensionSettings['rootUid'],
+            recurringPast: (int)$extensionSettings['recurringPast'],
+            recurringFuture: (int)$extensionSettings['recurringFuture'],
+            defaultCountry: (int)$extensionSettings['defaultCountry'],
+            xmlImportValidatorPath: (string)$extensionSettings['xmlImportValidatorPath'],
+            organizerIsRequired: (bool)$extensionSettings['organizerIsRequired'],
+            locationIsRequired: (bool)$extensionSettings['locationIsRequired'],
+            categoryIsRequired: (bool)$extensionSettings['categoryIsRequired'],
+            pathSegmentType: (string)$extensionSettings['pathSegmentType'],
+
+            // email
+            emailFromAddress: (string)$extensionSettings['emailFromAddress'],
+            emailFromName: (string)$extensionSettings['emailFromName'],
+            emailToAddress: (string)$extensionSettings['emailToAddress'],
+            emailToName: (string)$extensionSettings['emailToName'],
+        );
     }
 
     public function getPoiCollectionPid(): int
@@ -72,51 +104,19 @@ class ExtConf implements SingletonInterface
         return $this->poiCollectionPid;
     }
 
-    public function setPoiCollectionPid($poiCollectionPid): void
-    {
-        $this->poiCollectionPid = (int)$poiCollectionPid;
-    }
-
     public function getRootUid(): int
     {
-        if (empty($this->rootUid)) {
-            return 0;
-        }
-
         return $this->rootUid;
-    }
-
-    public function setRootUid($rootUid): void
-    {
-        $this->rootUid = (int)$rootUid;
     }
 
     public function getRecurringPast(): int
     {
-        if ($this->recurringPast >= 0) {
-            return $this->recurringPast;
-        }
-
-        return 3;
-    }
-
-    public function setRecurringPast($recurringPast): void
-    {
-        $this->recurringPast = (int)$recurringPast;
+        return $this->recurringPast;
     }
 
     public function getRecurringFuture(): int
     {
-        if (empty($this->recurringFuture)) {
-            return 6;
-        }
-
         return $this->recurringFuture;
-    }
-
-    public function setRecurringFuture($recurringFuture): void
-    {
-        $this->recurringFuture = (int)$recurringFuture;
     }
 
     public function getDefaultCountry(): int
@@ -124,23 +124,9 @@ class ExtConf implements SingletonInterface
         return $this->defaultCountry;
     }
 
-    public function setDefaultCountry(string $defaultCountry): void
-    {
-        $this->defaultCountry = (int)$defaultCountry;
-    }
-
     public function getXmlImportValidatorPath(): string
     {
-        if (empty($this->xmlImportValidatorPath)) {
-            $this->xmlImportValidatorPath = 'EXT:events2/Resources/Public/XmlImportValidator.xsd';
-        }
-
         return $this->xmlImportValidatorPath;
-    }
-
-    public function setXmlImportValidatorPath(string $xmlImportValidatorPath): void
-    {
-        $this->xmlImportValidatorPath = $xmlImportValidatorPath;
     }
 
     public function getOrganizerIsRequired(): bool
@@ -148,19 +134,9 @@ class ExtConf implements SingletonInterface
         return $this->organizerIsRequired;
     }
 
-    public function setOrganizerIsRequired($organizerIsRequired): void
-    {
-        $this->organizerIsRequired = (bool)$organizerIsRequired;
-    }
-
     public function getLocationIsRequired(): bool
     {
         return $this->locationIsRequired;
-    }
-
-    public function setLocationIsRequired($locationIsRequired): void
-    {
-        $this->locationIsRequired = (bool)$locationIsRequired;
     }
 
     public function getCategoryIsRequired(): bool
@@ -168,23 +144,9 @@ class ExtConf implements SingletonInterface
         return $this->categoryIsRequired;
     }
 
-    public function setCategoryIsRequired($categoryIsRequired): void
-    {
-        $this->categoryIsRequired = (bool)$categoryIsRequired;
-    }
-
     public function getPathSegmentType(): string
     {
-        if (empty($this->pathSegmentType)) {
-            $this->pathSegmentType = 'empty';
-        }
-
         return $this->pathSegmentType;
-    }
-
-    public function setPathSegmentType(string $pathSegmentType): void
-    {
-        $this->pathSegmentType = $pathSegmentType;
     }
 
     /**
@@ -204,11 +166,6 @@ class ExtConf implements SingletonInterface
         return $this->emailFromAddress;
     }
 
-    public function setEmailFromAddress(string $emailFromAddress): void
-    {
-        $this->emailFromAddress = $emailFromAddress;
-    }
-
     /**
      * @throws \Exception
      */
@@ -226,27 +183,13 @@ class ExtConf implements SingletonInterface
         return $this->emailFromName;
     }
 
-    public function setEmailFromName(string $emailFromName): void
-    {
-        $this->emailFromName = $emailFromName;
-    }
-
     public function getEmailToAddress(): string
     {
         return $this->emailToAddress;
     }
 
-    public function setEmailToAddress(string $emailToAddress): void
-    {
-        $this->emailToAddress = $emailToAddress;
-    }
     public function getEmailToName(): string
     {
         return $this->emailToName;
-    }
-
-    public function setEmailToName(string $emailToName): void
-    {
-        $this->emailToName = $emailToName;
     }
 }

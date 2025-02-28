@@ -11,8 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Helper;
 
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
@@ -23,13 +22,12 @@ use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 /**
  * Helper to add where clause for translations and workspaces to QueryBuilder
  */
-class OverlayHelper implements LoggerAwareInterface
+readonly class OverlayHelper
 {
-    use LoggerAwareTrait;
-
     public function __construct(
-        protected readonly Context $context,
-        protected readonly PageRepository $pageRepository,
+        protected Context $context,
+        protected PageRepository $pageRepository,
+        protected LoggerInterface $logger,
     ) {}
 
     public function addWhereForOverlay(

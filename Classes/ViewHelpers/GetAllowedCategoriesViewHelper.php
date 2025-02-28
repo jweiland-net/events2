@@ -21,7 +21,7 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 /**
  * Reduce categories of an event to the allowed ones configured in Plugin FlexForm.
  */
-class GetAllowedCategoriesViewHelper extends AbstractViewHelper
+final class GetAllowedCategoriesViewHelper extends AbstractViewHelper
 {
     use CompileWithRenderStatic;
 

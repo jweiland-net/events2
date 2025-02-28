@@ -28,7 +28,7 @@ class WeekDayBitMask extends BitSet
     public const SATURDAY = 32;
     public const SUNDAY = 64;
 
-    protected array $weekdays = [
+    private const WEEKDAYS = [
         'monday' => self::MONDAY,
         'tuesday' => self::TUESDAY,
         'wednesday' => self::WEDNESDAY,
@@ -40,7 +40,7 @@ class WeekDayBitMask extends BitSet
 
     public function getSelectedWeekdays(): array
     {
-        return array_filter($this->weekdays, function ($value): bool {
+        return array_filter(self::WEEKDAYS, function ($value): bool {
             return $this->get($value);
         });
     }

@@ -17,7 +17,7 @@ namespace JWeiland\Events2\Converter;
  * ToDo: I remember we have implemented it as backwards compatibility where we have entered duration with
  * ToDo: seconds after midnight. Maybe we can remove that class with next major release.
  */
-class TimeToStringConverter
+readonly class TimeToStringConverter
 {
     public function convert(int $timestamp): string
     {

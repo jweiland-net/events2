@@ -26,7 +26,7 @@ use TYPO3\CMS\Form\Domain\Model\Renderable\RenderableInterface;
 /**
  * Prefill EXT:form elements with values from requested event record
  */
-class PrefillForEditUsageHook
+readonly class PrefillForEditUsageHook
 {
     /**
      * This method will be called by Form Framework.

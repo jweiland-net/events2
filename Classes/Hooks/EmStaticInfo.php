@@ -18,7 +18,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Render a selectbox with countries from static_info_tables within ExtensionManager configuration for events2
  */
-class EmStaticInfo
+readonly class EmStaticInfo
 {
     /**
      * Render our own custom field for static_info_tables

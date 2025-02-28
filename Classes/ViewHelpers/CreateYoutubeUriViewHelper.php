@@ -19,7 +19,7 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  * This VH checks if given URI is a valid YouTube-Link
  * and returns a special YouTube embed URI.
  */
-class CreateYoutubeUriViewHelper extends AbstractViewHelper
+final class CreateYoutubeUriViewHelper extends AbstractViewHelper
 {
     use CompileWithRenderStatic;
 

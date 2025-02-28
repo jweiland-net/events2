@@ -11,13 +11,13 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Exporter;
 
-class ExporterConfiguration
+readonly class ExporterConfiguration
 {
     public function __construct(
-        private readonly string $url,
-        private readonly string $secret,
-        private readonly array $storagePages,
-        private readonly array $categoryUids,
+        private string $url,
+        private string $secret,
+        private array $storagePages,
+        private array $categoryUids,
     ) {}
 
     public function getUrl(): string

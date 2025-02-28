@@ -24,11 +24,11 @@ use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
  * This middleware is needed for LiteCalendar. If you click on a day this class will be called
  * and returns the URI to the expected events for given day.
  */
-class GetUriForDayMiddleware implements MiddlewareInterface
+final readonly class GetUriForDayMiddleware implements MiddlewareInterface
 {
     public function __construct(
-        protected readonly UriBuilder $uriBuilder,
-        protected readonly DateTimeUtility $dateTimeUtility,
+        protected UriBuilder $uriBuilder,
+        protected DateTimeUtility $dateTimeUtility,
     ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface

@@ -28,17 +28,17 @@ use TYPO3\CMS\Core\LinkHandling\LinkService;
 use TYPO3\CMS\Core\LinkHandling\TypoLinkCodecService;
 use TYPO3\CMS\Core\Site\SiteFinder;
 
-class EventsExporter
+readonly class EventsExporter
 {
     public function __construct(
-        protected readonly EventService $eventService,
-        protected readonly SiteFinder $siteFinder,
-        protected readonly TimeFactory $timeFactory,
-        protected readonly RequestFactory $requestFactory,
-        protected readonly LinkService $linkService,
-        protected readonly DateTimeUtility $dateTimeUtility,
-        protected readonly TypoLinkCodecService $typoLinkCodecService,
-        protected readonly LoggerInterface $logger,
+        protected EventService $eventService,
+        protected SiteFinder $siteFinder,
+        protected TimeFactory $timeFactory,
+        protected RequestFactory $requestFactory,
+        protected LinkService $linkService,
+        protected DateTimeUtility $dateTimeUtility,
+        protected TypoLinkCodecService $typoLinkCodecService,
+        protected LoggerInterface $logger,
     ) {}
 
     public function export(ExporterConfiguration $configuration): ResponseInterface
