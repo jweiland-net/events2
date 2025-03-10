@@ -21,9 +21,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 readonly class Events2DataHandler
 {
-    public function __construct(
-        protected CacheManager $cacheManager,
-    ) {}
+
 
     /**
      * Flushes the cache if an event record was edited.
@@ -40,9 +38,9 @@ readonly class Events2DataHandler
             if (isset($params['uid_page'])) {
                 $cacheTagsToFlush[] = 'tx_events2_pid_' . $params['uid_page'];
             }
-
+            $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
             foreach ($cacheTagsToFlush as $cacheTag) {
-                $this->cacheManager->flushCachesInGroupByTag('pages', $cacheTag);
+                $cacheManager->flushCachesInGroupByTag('pages', $cacheTag);
             }
         }
     }
