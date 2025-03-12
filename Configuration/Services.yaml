@@ -78,19 +78,19 @@ services:
       $queryBuilder: '@qb.event'
 
   # Called by makeInstance from EXT:form
-  JWeiland\Events2\Hooks\Form\PrefillCategoriesHook:
+  JWeiland\Events2\Hook\Form\PrefillCategoriesHook:
     public: true
 
   # Called by makeInstance from EXT:solr
-  JWeiland\Events2\Hooks\Solr\ResultsCommandHook:
+  JWeiland\Events2\Hook\Solr\ResultsCommandHook:
     public: true
 
   # Called by makeInstance in TYPO3s DataHandler
-  JWeiland\Events2\Hooks\DataHandler:
+  JWeiland\Events2\Hook\DataHandler:
     public: true
 
   # Called by makeInstance in PathSegmentHelper
-  JWeiland\Events2\Hooks\SlugPostModifierHook:
+  JWeiland\Events2\Hook\SlugPostModifierHook:
     public: true
 
   # XML importer class will be called by GU::makeInstance in Task\Import
