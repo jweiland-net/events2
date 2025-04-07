@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 9.2.2
+=============
+
+*   [TASK] Add INDEX for exceptions and time type
+
 Version 9.2.1
 =============
 
