@@ -9,7 +9,7 @@ services:
     exclude:
       - '../Classes/Domain/Model/*'
       - '../Classes/Exporter/ExporterConfiguration.php'
-      - '../Classes/Hooks/Solr/{IndexerHook.php,IndexerHook104.php}'
+      - '../Classes/Hook/Solr/{IndexerHook.php,IndexerHook104.php}'
 
   qb.category_mm:
     class: TYPO3\CMS\Core\Database\Query\QueryBuilder
