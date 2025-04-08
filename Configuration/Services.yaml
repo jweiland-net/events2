@@ -86,7 +86,7 @@ services:
     public: true
 
   # Called by makeInstance in TYPO3s DataHandler
-  JWeiland\Events2\Hook\DataHandler:
+  JWeiland\Events2\Hook\Events2DataHandler:
     public: true
 
   # Called by makeInstance in PathSegmentHelper
