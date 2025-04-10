@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 8.4.10
+==============
+
+*   [TASK] Add pidOfListPage to calendar plugin
+
 Version 8.4.9
 =============
 
