@@ -16,6 +16,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Scheduler\AbstractAdditionalFieldProvider;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
+use TYPO3\CMS\Scheduler\SchedulerManagementAction;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 use TYPO3Fluid\Fluid\Core\ViewHelper\TagBuilder;
 
@@ -121,12 +122,12 @@ class AdditionalFieldsForImport extends AbstractAdditionalFieldProvider
         if (empty($this->taskInfo[$fieldName])) {
             if (
                 isset($configuration['default'])
-                && $this->schedulerModule->getCurrentAction()->equals('add')
+                && $this->schedulerModule->getCurrentAction() === SchedulerManagementAction::ADD
             ) {
                 // In case of new task override value with value from configuration
                 $value = $configuration['default'];
             }
-            if ($this->schedulerModule->getCurrentAction()->equals('edit')) {
+            if ($this->schedulerModule->getCurrentAction() === SchedulerManagementAction::EDIT) {
                 // In case of edit, set to internal value
                 $value = $this->task->$fieldName;
             }
