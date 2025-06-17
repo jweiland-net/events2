@@ -13,10 +13,10 @@ namespace JWeiland\Events2\Tests\Functional\Service;
 
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\DateTimeEntry;
-use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\TimeRepository;
 use JWeiland\Events2\Service\DayGeneratorService;
 use JWeiland\Events2\Service\DayRelationService;
+use JWeiland\Events2\Service\Record\DayRecordService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -41,9 +41,9 @@ class DayRelationServiceTest extends FunctionalTestCase
     protected $dayGeneratorServiceMock;
 
     /**
-     * @var DayRepository|MockObject
+     * @var DayRecordService|MockObject
      */
-    protected $dayRepositoryMock;
+    protected $dayRecordServiceMock;
 
     /**
      * @var TimeRepository|MockObject
@@ -112,25 +112,24 @@ class DayRelationServiceTest extends FunctionalTestCase
         $this->timeRepositoryMock = $this->createMock(TimeRepository::class);
         $this->loggerMock = $this->createMock(Logger::class);
 
-        $this->dayRepositoryMock = $this->createMock(DayRepository::class);
-        $this->dayRepositoryMock->removeAllByEventRecord(Argument::any());
-        $this->dayRepositoryMock->createAll(Argument::any());
+        $this->dayRecordServiceMock = $this->createMock(DayRecordService::class);
+        $this->dayRecordServiceMock->removeAllByEventRecord(Argument::any());
+        $this->dayRecordServiceMock->createAll(Argument::any());
 
         $this->subject = new DayRelationService(
             $this->dayGeneratorServiceMock,
-            $this->dayRepositoryMock,
+            $this->dayRecordServiceMock,
             $this->timeRepositoryMock,
             new DateTimeUtility(),
+            $this->loggerMock,
         );
-
-        $this->subject->setLogger($this->loggerMock);
     }
 
     protected function tearDown(): void
     {
         unset(
             $this->extConf,
-            $this->dayRepositoryMock,
+            $this->dayRecordServiceMock,
             $this->timeRepositoryMock,
             $this->subject,
         );

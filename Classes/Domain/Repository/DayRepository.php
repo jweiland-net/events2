@@ -262,7 +262,7 @@ class DayRepository extends AbstractRepository
             );
         }
 
-        // add query for event location
+        // add a query for the event location
         if ($search->getLocation() instanceof Location) {
             $this->databaseService->addConstraintForLocation(
                 $subQueryBuilder,
@@ -272,7 +272,7 @@ class DayRepository extends AbstractRepository
             );
         }
 
-        // add query for free entry
+        // add a query for free entry
         if ($search->getFreeEntry()) {
             $this->databaseService->addConstraintForEventColumn(
                 $subQueryBuilder,
@@ -469,36 +469,5 @@ class DayRepository extends AbstractRepository
                 't3ver_wsid' => $eventRecord['t3ver_wsid'] ?? 0,
             ],
         );
-    }
-
-    public function createAll(array $days, array $columnsToWrite = []): void
-    {
-        if ($days === []) {
-            return;
-        }
-
-        $fallbackColumns = [
-            'pid',
-            'tstamp',
-            'crdate',
-            'hidden',
-            'fe_group',
-            't3ver_wsid',
-            'day',
-            'day_time',
-            'sort_day_time',
-            'same_day_time',
-            'is_removed_date',
-            'event',
-        ];
-
-        $this
-            ->getConnectionPool()
-            ->getConnectionForTable(self::TABLE)
-            ->bulkInsert(
-                self::TABLE,
-                $days,
-                $columnsToWrite ?: $fallbackColumns,
-            );
     }
 }

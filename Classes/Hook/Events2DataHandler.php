@@ -48,7 +48,7 @@ readonly class Events2DataHandler
     }
 
     /**
-     * Add day relations to event record(s) while creating or updating them in backend.
+     * Add day relations to event record(s) while creating or updating them in the backend.
      */
     public function processDatamap_afterAllOperations(\TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): void
     {

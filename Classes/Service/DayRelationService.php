@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Service;
 
 use JWeiland\Events2\Domain\Model\DateTimeEntry;
-use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\TimeRepository;
+use JWeiland\Events2\Service\Record\DayRecordService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -28,15 +28,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class DayRelationService
 {
-    protected array $eventRecord = [];
-
     protected ?\DateTimeImmutable $firstDateTime = null;
 
     protected array $firstTimeRecordForCurrentDateTime = [];
 
     public function __construct(
         protected readonly DayGeneratorService $dayGenerator,
-        protected readonly DayRepository $dayRepository,
+        protected readonly DayRecordService $dayRecordService,
         protected readonly TimeRepository $timeRepository,
         protected readonly DateTimeUtility $dateTimeUtility,
         protected readonly LoggerInterface $logger,
@@ -67,7 +65,7 @@ class DayRelationService
 
         try {
             $this->firstTimeRecordForCurrentDateTime = [];
-            $this->dayRepository->removeAllByEventRecord($eventRecord);
+            $this->dayRecordService->removeAllByEventRecord($eventRecord);
             $days = [];
             $dateTimeStorage = $this->dayGenerator->getDateTimeStorageForEvent($eventRecord);
             foreach ($dateTimeStorage as $dateTimeEntry) {
@@ -80,7 +78,7 @@ class DayRelationService
                     ...$this->buildDayRecordsForDateTime($eventRecord, $dateTimeEntry),
                 );
 
-                // While looping through the DateTime entries the sort_day_time value has to be the same for all
+                // While looping through the DateTime entries, the sort_day_time value has to be the same for all
                 // durational events. So, do not reset this value in that case.
                 if ($eventRecord['event_type'] !== 'duration') {
                     $this->firstTimeRecordForCurrentDateTime = [];
@@ -88,7 +86,7 @@ class DayRelationService
             }
 
             $this->firstDateTime = null;
-            $this->dayRepository->createAll($days);
+            $this->dayRecordService->createAll($days);
             $eventRecord['days'] = $days;
         } catch (\Exception $exception) {
             $this->logger->error(sprintf(
