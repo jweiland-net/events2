@@ -64,7 +64,8 @@ class Events2PageTitleProviderTest extends FunctionalTestCase
                 'timestamp' => '1715299200',
             ],
         ]);
-        $GLOBALS['TYPO3_REQUEST'] = $request->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE);
+
+        $this->subject->setRequest($request->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE));
 
         self::assertSame(
             'Nice title for detail page - 10.05.2024',
