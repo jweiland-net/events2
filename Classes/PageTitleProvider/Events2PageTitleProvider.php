@@ -14,7 +14,9 @@ namespace JWeiland\Events2\PageTitleProvider;
 use JWeiland\Events2\Service\Record\DayRecordService;
 use JWeiland\Events2\Service\Record\EventRecordService;
 use JWeiland\Events2\Traits\Typo3RequestTrait;
-use TYPO3\CMS\Core\PageTitle\PageTitleProviderInterface;
+use TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer;
+use TYPO3\CMS\Core\PageTitle\AbstractPageTitleProvider;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Instead of just setting the PageTitle to DetailView on Detail Page,
@@ -22,7 +24,7 @@ use TYPO3\CMS\Core\PageTitle\PageTitleProviderInterface;
  *
  * Please use config.pageTitleProviders.* to use our PageTitleProvider.
  */
-final readonly class Events2PageTitleProvider implements PageTitleProviderInterface
+final class Events2PageTitleProvider extends AbstractPageTitleProvider
 {
     use Typo3RequestTrait;
 
@@ -35,6 +37,7 @@ final readonly class Events2PageTitleProvider implements PageTitleProviderInterf
     {
         $pageTitle = '';
         $gp = $this->getMergedRequestParameters();
+
         if ($this->isValidRequest($gp)) {
             $dayRecord = $this->dayRecordService->getByEventAndTime(
                 (int)$gp['event'],
@@ -43,9 +46,8 @@ final readonly class Events2PageTitleProvider implements PageTitleProviderInterf
 
             if ($dayRecord !== []) {
                 $date = new \DateTimeImmutable(date('c', (int)$gp['timestamp']));
-                $eventRecord = $this->eventRecordService->findByUid((int)$dayRecord['event']);
 
-                if ($eventRecord !== []) {
+                if (($eventRecord = $this->getEventRecord((int)$dayRecord['event'])) && $eventRecord !== []) {
                     $pageTitle = sprintf(
                         '%s - %s',
                         trim($eventRecord['title']),
@@ -58,18 +60,27 @@ final readonly class Events2PageTitleProvider implements PageTitleProviderInterf
         return $pageTitle;
     }
 
+    protected function getEventRecord(int $eventUid): array
+    {
+        return $this->eventRecordService->findByUid(
+            $eventUid,
+            true,
+            GeneralUtility::makeInstance(FrontendRestrictionContainer::class),
+        );
+    }
+
     protected function getMergedRequestParameters(): array
     {
-        $getMergedWithPost = $this->getMergedWithPostFromRequest('tx_events2_show');
+        $getMergedWithPost = $this->getMergedWithPostFromRequest('tx_events2_show', $this->request);
         if ($getMergedWithPost === []) {
-            $getMergedWithPost = $this->getMergedWithPostFromRequest('tx_events2_list');
+            $getMergedWithPost = $this->getMergedWithPostFromRequest('tx_events2_list', $this->request);
         }
 
         return $getMergedWithPost;
     }
 
     /**
-     * This PageTitleProvider will only work on detail page of events2.
+     * This PageTitleProvider will only work on the detail page of events2.
      * event and timestamp have to be given. Else: Page title will not be overwritten.
      */
     protected function isValidRequest(array $gp): bool

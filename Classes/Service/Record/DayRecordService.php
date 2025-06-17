@@ -35,28 +35,24 @@ readonly class DayRecordService
         try {
             $day = $queryBuilder
                 ->select('*')
-                ->from(self::TABLE)
+                ->from(self::TABLE, 'd')
                 ->where(
                     $queryBuilder->expr()->eq(
-                        'event',
+                        'd.event',
                         $queryBuilder->createNamedParameter($eventUid, Connection::PARAM_INT),
                     ),
                     $queryBuilder->expr()->eq(
-                        'day_time',
+                        'd.day_time',
                         $queryBuilder->createNamedParameter($timestamp, Connection::PARAM_INT),
                     ),
                 )
                 ->executeQuery()
                 ->fetchAssociative();
-        } catch (Exception $e) {
+        } catch (Exception) {
             return [];
         }
 
-        if ($day === false) {
-            $day = [];
-        }
-
-        return $day;
+        return is_array($day) ? $day : [];
     }
 
     public function removeAllByEventRecord(array $eventRecord): void
