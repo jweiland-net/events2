@@ -114,7 +114,7 @@ class DayRelationServiceTest extends FunctionalTestCase
 
         $this->dayRecordServiceMock = $this->createMock(DayRecordService::class);
         $this->dayRecordServiceMock->removeAllByEventRecord(Argument::any());
-        $this->dayRecordServiceMock->createAll(Argument::any());
+        $this->dayRecordServiceMock->bulkInsertAllDayRecords(Argument::any());
 
         $this->subject = new DayRelationService(
             $this->dayGeneratorServiceMock,

@@ -77,7 +77,7 @@ readonly class DayRecordService
         );
     }
 
-    public function createAll(array $days, array $columnsToWrite = []): void
+    public function bulkInsertAllDayRecords(array $days, array $columnsToWrite = []): void
     {
         if ($days === []) {
             return;

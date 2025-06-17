@@ -86,7 +86,7 @@ class DayRelationService
             }
 
             $this->firstDateTime = null;
-            $this->dayRecordService->createAll($days);
+            $this->dayRecordService->bulkInsertAllDayRecords($days);
             $eventRecord['days'] = $days;
         } catch (\Exception $exception) {
             $this->logger->error(sprintf(
