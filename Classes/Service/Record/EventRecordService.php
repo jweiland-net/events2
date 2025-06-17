@@ -32,7 +32,7 @@ class EventRecordService
     public function findByUid(
         int $eventUid,
         bool $doLanguageOverlay = true,
-        QueryRestrictionContainerInterface $restrictionContainer = null
+        QueryRestrictionContainerInterface $restrictionContainer = null,
     ): array {
         $eventUidOfLiveVersion = $this->getLiveVersionOfEventUid($eventUid);
 
