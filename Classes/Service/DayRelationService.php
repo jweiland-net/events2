@@ -15,8 +15,7 @@ use JWeiland\Events2\Domain\Model\DateTimeEntry;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\TimeRepository;
 use JWeiland\Events2\Utility\DateTimeUtility;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -24,13 +23,11 @@ use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * While saving an event in backend, this class generates all the day records
+ * While saving an event in the backend, this class generates all the day records
  * and sets them in relation to the event record.
  */
-class DayRelationService implements LoggerAwareInterface
+class DayRelationService
 {
-    use LoggerAwareTrait;
-
     protected array $eventRecord = [];
 
     protected ?\DateTimeImmutable $firstDateTime = null;
@@ -42,10 +39,11 @@ class DayRelationService implements LoggerAwareInterface
         protected readonly DayRepository $dayRepository,
         protected readonly TimeRepository $timeRepository,
         protected readonly DateTimeUtility $dateTimeUtility,
+        protected readonly LoggerInterface $logger,
     ) {}
 
     /**
-     * Delete all related day records of given event and
+     * Delete all related day records of a given event and
      * start re-creating the day records.
      */
     public function createDayRelations(int $eventUid): array
@@ -215,7 +213,7 @@ class DayRelationService implements LoggerAwareInterface
             return $timeRecords;
         }
 
-        // Following time types have to be merged
+        // The following time types have to be merged
         $filteredTimeRecords = [];
         $timeRecords = $this->filterTimeRecords($allTimeRecords, $eventRecord, 'event_time', $dateTime);
         if ($timeRecords !== []) {
