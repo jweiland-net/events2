@@ -77,7 +77,6 @@ readonly class DayRecordService
         );
     }
 
-
     public function createAll(array $days, array $columnsToWrite = []): void
     {
         if ($days === []) {
