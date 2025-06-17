@@ -455,7 +455,7 @@ class DayGeneratorService
     protected function addDateTimeToStorage(
         array &$dateTimeStorage,
         \DateTimeImmutable $dateTime,
-        bool $isRemovedDate = false
+        bool $isRemovedDate = false,
     ): void {
         // To prevent adding multiple day records for ONE day we set them all to midnight 00:00:00
         $dateTime = $this->dateTimeUtility->standardizeDateTimeObject($dateTime);
