@@ -27,7 +27,22 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class DayGeneratorService
 {
-    protected array $dateTimeStorage = [];
+    private const EVENT_TABLE = 'tx_events2_domain_model_event';
+
+    private const EXCEPTION_TABLE = 'tx_events2_domain_model_exception';
+
+    private const REQUIRED_EVENT_COLUMN = [
+        'event_type',
+        'event_begin',
+        'event_end',
+        'recurring_end',
+        'each_weeks',
+        'each_months',
+        'xth',
+        'weekday',
+        'recurring_end',
+        'exceptions',
+    ];
 
     public function __construct(
         protected readonly EventDispatcher $eventDispatcher,
@@ -41,34 +56,36 @@ class DayGeneratorService
      */
     public function getDateTimeStorageForEvent(array $eventRecord): array
     {
-        $this->dateTimeStorage = [];
+        $dateTimeStorage = [];
 
         try {
-            $this->addDateTimeObjectsToRecord($eventRecord, 'tx_events2_domain_model_event');
+            $this->addDateTimeObjectsToRecord($eventRecord, self::EVENT_TABLE);
             $this->checkEventRecord($eventRecord);
 
             switch ($eventRecord['event_type']) {
                 case 'recurring':
                     if ($eventRecord['each_weeks'] !== 0 || $eventRecord['each_months'] !== 0) {
-                        $this->addDaysForWeeklyAndMonthlyEvent($eventRecord);
+                        $this->addDaysForWeeklyAndMonthlyEvent($dateTimeStorage, $eventRecord);
                     } else {
-                        $this->addDaysForRecurringEvent($eventRecord);
+                        $this->addDaysForRecurringEvent($dateTimeStorage, $eventRecord);
                     }
-                    $this->addEventExceptions($eventRecord);
+                    $this->addEventExceptions($dateTimeStorage, $eventRecord);
                     break;
                 case 'duration':
-                    $this->addDaysForDurationalEvent($eventRecord);
-                    $this->addEventExceptions($eventRecord);
+                    $this->addDaysForDurationalEvent($dateTimeStorage, $eventRecord);
+                    $this->addEventExceptions($dateTimeStorage, $eventRecord);
                     break;
                 case 'single':
-                    $this->addDaysForSingleEvent($eventRecord);
+                    $this->addDaysForSingleEvent($dateTimeStorage, $eventRecord);
                     break;
                 default:
             }
 
-            $this->eventDispatcher->dispatch(
-                new PostGenerateDaysEvent($eventRecord),
+            /** @var PostGenerateDaysEvent $postGenerateDaysEvent */
+            $postGenerateDaysEvent = $this->eventDispatcher->dispatch(
+                new PostGenerateDaysEvent($dateTimeStorage, $eventRecord),
             );
+            $dateTimeStorage = $postGenerateDaysEvent->getDateTimeStorage();
         } catch (\Exception $exception) {
             $this->logger->error(sprintf(
                 'Error occurred while building DateTime objects in DayGeneratorService at line %d: %s: %d',
@@ -80,9 +97,9 @@ class DayGeneratorService
             return [];
         }
 
-        ksort($this->dateTimeStorage);
+        ksort($dateTimeStorage);
 
-        return $this->dateTimeStorage;
+        return $dateTimeStorage;
     }
 
     /**
@@ -91,24 +108,16 @@ class DayGeneratorService
     protected function addDateTimeObjectsToRecord(array &$record, string $table): void
     {
         foreach ($record as $column => $value) {
-            if (!isset($GLOBALS['TCA'][$table]['columns'][$column])) {
-                continue;
-            }
-
-            if (!isset($GLOBALS['TCA'][$table]['columns'][$column]['config']['type'])) {
-                continue;
-            }
-
-            if ($GLOBALS['TCA'][$table]['columns'][$column]['config']['type'] === 'datetime') {
+            if (($GLOBALS['TCA'][$table]['columns'][$column]['config']['type'] ?? '') === 'datetime') {
                 $record[$column] = $this->dateTimeUtility->convert($value);
             }
         }
 
-        if ($table === 'tx_events2_domain_model_event') {
+        if ($table === self::EVENT_TABLE) {
             foreach ($record['exceptions'] as &$exceptionRecord) {
                 $this->addDateTimeObjectsToRecord(
                     $exceptionRecord,
-                    'tx_events2_domain_model_exception',
+                    self::EXCEPTION_TABLE,
                 );
             }
         }
@@ -121,24 +130,11 @@ class DayGeneratorService
      */
     protected function checkEventRecord(array $eventRecord): void
     {
-        $neededProperties = [
-            'event_type',
-            'event_begin',
-            'event_end',
-            'recurring_end',
-            'each_weeks',
-            'each_months',
-            'xth',
-            'weekday',
-            'recurring_end',
-            'exceptions',
-        ];
-
-        foreach ($neededProperties as $neededProperty) {
-            if (!array_key_exists($neededProperty, $eventRecord)) {
+        foreach (self::REQUIRED_EVENT_COLUMN as $requiredColumn) {
+            if (!array_key_exists($requiredColumn, $eventRecord)) {
                 throw new \Exception(sprintf(
                     'Invalid event record. It does not contain mandatory property: %s.',
-                    $neededProperty,
+                    $requiredColumn,
                 ), 1649074484);
             }
         }
@@ -197,7 +193,7 @@ class DayGeneratorService
     /**
      * @throws \Exception
      */
-    protected function addDaysForRecurringEvent(array $eventRecord): void
+    protected function addDaysForRecurringEvent(array &$dateTimeStorage, array $eventRecord): void
     {
         $dateToStopCalculatingTo = $this->getEndDateForCalculation($eventRecord);
         $firstDayOfMonth = $this->resetDateTimeToFirstDayOfMonth(
@@ -206,6 +202,7 @@ class DayGeneratorService
 
         while ($firstDayOfMonth <= $dateToStopCalculatingTo) {
             $this->addDaysForMonth(
+                $dateTimeStorage,
                 $firstDayOfMonth->format('F'),
                 (int)$firstDayOfMonth->format('Y'),
                 $eventRecord,
@@ -217,13 +214,13 @@ class DayGeneratorService
     /**
      * @throws \Exception
      */
-    protected function addDaysForDurationalEvent(array $eventRecord): void
+    protected function addDaysForDurationalEvent(array &$dateTimeStorage, array $eventRecord): void
     {
         $dateToStartCalculatingFrom = $this->getStartDateForCalculation($eventRecord);
         $dateToStopCalculatingTo = $this->getEndDateForCalculation($eventRecord);
 
         while ($dateToStartCalculatingFrom <= $dateToStopCalculatingTo) {
-            $this->addDateTimeToStorage($dateToStartCalculatingFrom);
+            $this->addDateTimeToStorage($dateTimeStorage, $dateToStartCalculatingFrom);
             $dateToStartCalculatingFrom = $dateToStartCalculatingFrom->modify('+1 day');
         }
     }
@@ -231,7 +228,7 @@ class DayGeneratorService
     /**
      * @throws \Exception
      */
-    protected function addDaysForSingleEvent(array $eventRecord): void
+    protected function addDaysForSingleEvent(array &$dateTimeStorage, array $eventRecord): void
     {
         $earliestDateOfTimeFrame = $this->createDateTime(sprintf(
             '-%d months',
@@ -250,20 +247,20 @@ class DayGeneratorService
             $eventRecord['event_begin'] > $earliestDateOfTimeFrame
             && $eventRecord['event_begin'] < $latestDateOfTimeFrame
         ) {
-            $this->addDateTimeToStorage($eventRecord['event_begin']);
+            $this->addDateTimeToStorage($dateTimeStorage, $eventRecord['event_begin']);
         }
     }
 
     /**
      * @throws \Exception
      */
-    protected function addDaysForWeeklyAndMonthlyEvent(array $eventRecord): void
+    protected function addDaysForWeeklyAndMonthlyEvent(array &$dateTimeStorage, array $eventRecord): void
     {
         $dateToStartCalculatingFrom = $this->getStartDateForCalculation($eventRecord);
         $dateToStopCalculatingTo = $this->getEndDateForCalculation($eventRecord);
 
         while ($dateToStartCalculatingFrom <= $dateToStopCalculatingTo) {
-            $this->addDateTimeToStorage($dateToStartCalculatingFrom);
+            $this->addDateTimeToStorage($dateTimeStorage, $dateToStartCalculatingFrom);
             $dateToStartCalculatingFrom = $dateToStartCalculatingFrom->modify(
                 '+' . $eventRecord['each_months'] . ' months',
             );
@@ -276,7 +273,7 @@ class DayGeneratorService
     /**
      * @throws \Exception
      */
-    protected function addDaysForMonth(string $month, int $year, array $eventRecord): void
+    protected function addDaysForMonth(array &$dateTimeStorage, string $month, int $year, array $eventRecord): void
     {
         $dynamicDateTimeAtMidnight = $this->getDateTimeForToday();
         $lastDayOfMonth = $this->getLastDateTimeOfMonthAndYear($month, $year);
@@ -297,7 +294,7 @@ class DayGeneratorService
                     && $dynamicDateTimeAtMidnight < $lastDayOfMonth
                     && $dynamicDateTimeAtMidnight <= $dateToStopCalculatingTo
                 ) {
-                    $this->addDateTimeToStorage($dynamicDateTimeAtMidnight);
+                    $this->addDateTimeToStorage($dateTimeStorage, $dynamicDateTimeAtMidnight);
                 }
             }
         }
@@ -341,7 +338,7 @@ class DayGeneratorService
             if ($resetToMidnight) {
                 $newDateTime = $this->dateTimeUtility->standardizeDateTimeObject($newDateTime);
             }
-        } catch (\Exception $exception) {
+        } catch (\Exception) {
             throw new \Exception(sprintf(
                 'Creation of new DateTime object with modifier "%s" failed.',
                 $modifier,
@@ -358,7 +355,7 @@ class DayGeneratorService
     {
         try {
             $modifiedDateTime = $dateTime->modify($modifier);
-        } catch (\Exception $exception) {
+        } catch (\Exception) {
             throw new \Exception(sprintf(
                 'Given DateTime object could not be modified with modifier "%s"',
                 $modifier,
@@ -380,7 +377,7 @@ class DayGeneratorService
 
     /**
      * Returns current date subtracted with configured "recurring past" configuration in ExtensionManager.
-     * If calculated date is older than eventBegin, it does not make sense to use that date, and we
+     * If the calculated date is older than eventBegin, it does not make sense to use that date, and we
      * will return eventBegin instead.
      *
      * @throws \Exception
@@ -390,7 +387,7 @@ class DayGeneratorService
         $eventBegin = $eventRecord['event_begin'];
         $dateToStartCalculatingFrom = $this->getEarliestDateForTimeFrame($eventBegin);
 
-        // In case of eachWeeks and eachMonth $dateToStartCalculatingFrom has to be
+        // In the case of eachWeeks and eachMonth $dateToStartCalculatingFrom has to be
         // exactly in sync with eventBegin
         if ($eventRecord['each_weeks'] !== 0 || $eventRecord['each_months'] !== 0) {
             while ($eventBegin < $dateToStartCalculatingFrom) {
@@ -426,7 +423,7 @@ class DayGeneratorService
 
     /**
      * Returns current date added with configured "recurring future" configuration in ExtensionManager.
-     * If calculated date is older than eventEnd, it does not make sense to use that date, and we
+     * If the calculated date is older than eventEnd, it does not make sense to use that date, and we
      * will return eventEnd instead.
      *
      * @throws \Exception
@@ -455,28 +452,31 @@ class DayGeneratorService
         return $latestEventDate < $latestDateOfTimeFrame ? $latestEventDate : $latestDateOfTimeFrame;
     }
 
-    protected function addDateTimeToStorage(\DateTimeImmutable $dateTime, bool $isRemovedDate = false): void
-    {
+    protected function addDateTimeToStorage(
+        array &$dateTimeStorage,
+        \DateTimeImmutable $dateTime,
+        bool $isRemovedDate = false
+    ): void {
         // To prevent adding multiple day records for ONE day we set them all to midnight 00:00:00
         $dateTime = $this->dateTimeUtility->standardizeDateTimeObject($dateTime);
 
         // group days to make them unique
-        $this->dateTimeStorage[$dateTime->format('U')] = GeneralUtility::makeInstance(
+        $dateTimeStorage[$dateTime->format('U')] = GeneralUtility::makeInstance(
             DateTimeEntry::class,
             $dateTime,
             $isRemovedDate,
         );
     }
 
-    protected function removeDayFromStorage(\DateTimeImmutable $day): void
+    protected function removeDayFromStorage(array &$dateTimeStorage, \DateTimeImmutable $day): void
     {
-        unset($this->dateTimeStorage[$day->format('U')]);
+        unset($dateTimeStorage[$day->format('U')]);
     }
 
     /**
      * @throws \Exception
      */
-    protected function addEventExceptions(array $eventRecord): void
+    protected function addEventExceptions(array &$dateTimeStorage, array $eventRecord): void
     {
         if (!$this->hasEventExceptions($eventRecord)) {
             return;
@@ -491,14 +491,14 @@ class DayGeneratorService
 
             switch ($exceptionRecord['exception_type']) {
                 case 'Add':
-                    $this->addEventException($eventRecord, $exceptionRecord);
+                    $this->addEventException($dateTimeStorage, $eventRecord, $exceptionRecord);
                     break;
                 case 'Remove':
-                    // Do not remove DateTime from Storage, if exception records of type "Removed" should be shown in FE anyway
+                    // Do not remove DateTime from Storage if exception records of type "Removed" should be shown in FE anyway
                     if ($exceptionRecord['show_anyway'] === 0) {
-                        $this->removeDayFromStorage($exceptionRecord['exception_date']);
+                        $this->removeDayFromStorage($dateTimeStorage, $exceptionRecord['exception_date']);
                     } else {
-                        $this->addDateTimeToStorage($exceptionRecord['exception_date'], true);
+                        $this->addDateTimeToStorage($dateTimeStorage, $exceptionRecord['exception_date'], true);
                     }
                     break;
                 case 'Info':
@@ -519,7 +519,7 @@ class DayGeneratorService
     /**
      * @throws \Exception
      */
-    protected function addEventException(array $eventRecord, array $exceptionRecord): void
+    protected function addEventException(array &$dateTimeStorage, array $eventRecord, array $exceptionRecord): void
     {
         $dateToStartCalculatingFrom = $this->getStartDateForCalculation($eventRecord);
         $dateToStopCalculatingTo = $this->getEndDateForCalculation($eventRecord);
@@ -534,7 +534,7 @@ class DayGeneratorService
         }
 
         if ($exceptionDate instanceof \DateTimeImmutable) {
-            $this->addDateTimeToStorage($exceptionDate);
+            $this->addDateTimeToStorage($dateTimeStorage, $exceptionDate);
         }
     }
 

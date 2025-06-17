@@ -12,15 +12,28 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Event;
 
 /**
- * Use this event, if you want to add further modifications to the generated days
+ * Use this event if you want to add further modifications to the generated days
  */
-class PostGenerateDaysEvent
+final class PostGenerateDaysEvent
 {
-    protected array $eventRecord;
+    private array $dateTimeStorage;
 
-    public function __construct(array $eventRecord)
+    private array $eventRecord;
+
+    public function __construct(array $dateTimeStorage, array $eventRecord)
     {
+        $this->dateTimeStorage = $dateTimeStorage;
         $this->eventRecord = $eventRecord;
+    }
+
+    public function getDateTimeStorage(): array
+    {
+        return $this->dateTimeStorage;
+    }
+
+    public function setDateTimeStorage(array $dateTimeStorage): void
+    {
+        $this->dateTimeStorage = $dateTimeStorage;
     }
 
     public function getEventRecord(): array

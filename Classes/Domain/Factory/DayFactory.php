@@ -21,10 +21,10 @@ use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 /**
- * This class contains methods to find a day by a given event and exact timestamp.
- * If day was not found it will automatically search for next day.
- * If day was not found it will automatically search for previous day.
- * If day was not found it will automatically build a temporary day without any DateTime-Objects.
+ * This class contains methods to find a day by a given event and an exact timestamp.
+ * If a day was not found, it will automatically search for the next day.
+ * If a day was not found, it will automatically search for the previous day.
+ * If day was not found, it will automatically build a temporary day without any DateTime-Objects.
  */
 class DayFactory
 {
