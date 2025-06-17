@@ -17,25 +17,23 @@ use JWeiland\Events2\Event\PostGenerateDaysEvent;
 use JWeiland\Events2\Tca\BitMask\WeekDayBitMask;
 use JWeiland\Events2\Tca\BitMask\XthBitMask;
 use JWeiland\Events2\Utility\DateTimeUtility;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Class to generate all day records for an event within a configured range (ExtensionManager).
+ * Class to generate all-day records for an event within a configured range (ExtensionManager).
  * It does now respect time information, just days. The time records will be processed later.
  */
-class DayGeneratorService implements LoggerAwareInterface
+class DayGeneratorService
 {
-    use LoggerAwareTrait;
-
     protected array $dateTimeStorage = [];
 
     public function __construct(
         protected readonly EventDispatcher $eventDispatcher,
         protected readonly ExtConf $extConf,
         protected readonly DateTimeUtility $dateTimeUtility,
+        protected readonly LoggerInterface $logger,
     ) {}
 
     /**
@@ -117,7 +115,7 @@ class DayGeneratorService implements LoggerAwareInterface
     }
 
     /**
-     * Check, if event record contains all needed properties to process.
+     * Check if the event record contains all necessary properties to process.
      *
      * @throws \Exception
      */
