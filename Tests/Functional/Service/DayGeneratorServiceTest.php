@@ -96,7 +96,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
 
         self::assertSame(
             [],
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDateTimeStorageForEventRecord($eventRecord),
         );
     }
 
@@ -119,7 +119,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
 
         self::assertSame(
             [],
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDateTimeStorageForEventRecord($eventRecord),
         );
     }
 
@@ -150,7 +150,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
 
         self::assertSame(
             [],
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDateTimeStorageForEventRecord($eventRecord),
         );
     }
 
@@ -181,7 +181,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
 
         self::assertSame(
             [],
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDateTimeStorageForEventRecord($eventRecord),
         );
     }
 
@@ -212,7 +212,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
 
         self::assertSame(
             [],
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDateTimeStorageForEventRecord($eventRecord),
         );
     }
 
@@ -234,7 +234,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'exceptions' => 0,
         ];
 
-        $dateTimeEntries = $this->subject->getDateTimeStorageForEvent($eventRecord);
+        $dateTimeEntries = $this->subject->getDateTimeStorageForEventRecord($eventRecord);
         foreach ($dateTimeEntries as $dateTimeEntry) {
             self::assertSame(
                 '00:00:00',
@@ -268,7 +268,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         $expectedDays[$nextWeek->format('U')] = new DateTimeEntry($nextWeek, false);
         $expectedDays[$recurringEnd->format('U')] = new DateTimeEntry($recurringEnd, false);
 
-        $dateTimeEntries = $this->subject->getDateTimeStorageForEvent($eventRecord);
+        $dateTimeEntries = $this->subject->getDateTimeStorageForEventRecord($eventRecord);
         self::assertEquals(
             $expectedDays,
             $dateTimeEntries,
@@ -294,7 +294,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'exceptions' => 0,
         ];
 
-        $dateTimeEntries = $this->subject->getDateTimeStorageForEvent($eventRecord);
+        $dateTimeEntries = $this->subject->getDateTimeStorageForEventRecord($eventRecord);
         foreach ($dateTimeEntries as $dateTimeEntry) {
             self::assertIsArray($dateTimeEntry->getDate()->getTimezone()->getLocation());
         }
@@ -325,7 +325,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
 
         self::assertEquals(
             $expectedDays,
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDateTimeStorageForEventRecord($eventRecord),
         );
     }
 
@@ -367,7 +367,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
                 $expectedBegin->format('U') => new DateTimeEntry($expectedBegin, false),
                 $expectedEnd->format('U') => new DateTimeEntry($expectedEnd, false),
             ],
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDateTimeStorageForEventRecord($eventRecord),
         );
     }
 
@@ -399,7 +399,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
 
         $this->extConf->setRecurringPast(1);
 
-        $dateTimeEntries = $this->subject->getDateTimeStorageForEvent($eventRecord);
+        $dateTimeEntries = $this->subject->getDateTimeStorageForEventRecord($eventRecord);
         self::assertEquals(
             $expectedDays,
             $dateTimeEntries,
@@ -436,7 +436,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
 
         self::assertEquals(
             $expectedDays,
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDateTimeStorageForEventRecord($eventRecord),
         );
     }
 
@@ -469,7 +469,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
 
         self::assertEquals(
             $expectedDays,
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDateTimeStorageForEventRecord($eventRecord),
         );
     }
 
@@ -501,7 +501,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
 
         self::assertEquals(
             $expectedDays,
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDateTimeStorageForEventRecord($eventRecord),
         );
     }
 
@@ -527,7 +527,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             [
                 $eventBegin->format('U') => new DateTimeEntry($eventBegin, false),
             ],
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDateTimeStorageForEventRecord($eventRecord),
         );
     }
 
@@ -568,7 +568,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
 
         self::assertEquals(
             $expectedDays,
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDateTimeStorageForEventRecord($eventRecord),
         );
     }
 
@@ -616,7 +616,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
 
         self::assertEquals(
             $expectedDays,
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDateTimeStorageForEventRecord($eventRecord),
         );
     }
 
@@ -651,7 +651,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
 
         self::assertEquals(
             $expectedDays,
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDateTimeStorageForEventRecord($eventRecord),
         );
     }
 
@@ -678,7 +678,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             [
                 $eventBegin->format('U') => new DateTimeEntry($eventBegin, false),
             ],
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDateTimeStorageForEventRecord($eventRecord),
         );
     }
 
@@ -715,7 +715,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
                 $tomorrow->format('U') => new DateTimeEntry($tomorrow, false),
                 $recurringEnd->format('U') => new DateTimeEntry($recurringEnd, false),
             ],
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDateTimeStorageForEventRecord($eventRecord),
         );
     }
 
@@ -751,7 +751,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
                 $eventBegin->format('U') => new DateTimeEntry($eventBegin, false),
                 $recurringEnd->format('U') => new DateTimeEntry($recurringEnd, false),
             ],
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDateTimeStorageForEventRecord($eventRecord),
         );
     }
 
@@ -781,7 +781,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             ],
         ];
 
-        $dateTimeEntries = $this->subject->getDateTimeStorageForEvent($eventRecord);
+        $dateTimeEntries = $this->subject->getDateTimeStorageForEventRecord($eventRecord);
 
         // assertEquals will only check for correct dates, but not for different timezoneTypes
         self::assertEquals(
@@ -826,7 +826,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             [
                 $tomorrow->format('U') => new DateTimeEntry($tomorrow, false),
             ],
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDateTimeStorageForEventRecord($eventRecord),
         );
     }
 
@@ -861,7 +861,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
                 $eventBegin->format('U') => new DateTimeEntry($eventBegin, true),
                 $tomorrow->format('U') => new DateTimeEntry($tomorrow, false),
             ],
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDateTimeStorageForEventRecord($eventRecord),
         );
     }
 
@@ -898,7 +898,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
 
         self::assertEquals(
             $expectedDays,
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDateTimeStorageForEventRecord($eventRecord),
         );
     }
 
@@ -935,7 +935,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
 
         self::assertEquals(
             $expectedDays,
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDateTimeStorageForEventRecord($eventRecord),
         );
     }
 
@@ -977,7 +977,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
 
         self::assertEquals(
             [],
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDateTimeStorageForEventRecord($eventRecord),
         );
     }
 }

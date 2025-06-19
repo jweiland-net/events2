@@ -15,11 +15,12 @@ use JWeiland\Events2\Traits\InjectUserRepositoryTrait;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
+use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
  * Repository to get and find event records
  */
-class EventRepository extends AbstractRepository implements HiddenRepositoryInterface
+class EventRepository extends Repository implements HiddenRepositoryInterface
 {
     use InjectUserRepositoryTrait;
 
@@ -30,13 +31,6 @@ class EventRepository extends AbstractRepository implements HiddenRepositoryInte
     ];
 
     protected array $settings = [];
-
-    protected ExceptionRepository $exceptionRepository;
-
-    public function injectExceptionRepository(ExceptionRepository $exceptionRepository): void
-    {
-        $this->exceptionRepository = $exceptionRepository;
-    }
 
     public function findHiddenObject(mixed $value, string $property = 'uid'): ?AbstractDomainObject
     {
@@ -59,34 +53,5 @@ class EventRepository extends AbstractRepository implements HiddenRepositoryInte
         $query = $this->createQuery();
 
         return $query->matching($query->equals('organizers.uid', $organizer))->execute();
-    }
-
-    /**
-     * Nearly the same as "findByUid", but this method is used by PageTitleProvider,
-     * which is out of Extbase context. So we are using a plain Doctrine Query here.
-     */
-    public function getRecord(
-        int $uid,
-        array $select = ['*'],
-        bool $includeHidden = false,
-        bool $includeExceptions = true,
-        bool $doOverlay = true,
-    ): array {
-        $eventRecord = $this->getRecordByUid(
-            self::TABLE,
-            'e',
-            $uid,
-            $select,
-            $includeHidden,
-            $doOverlay,
-        );
-
-        $eventRecord['days'] = [];
-        $eventRecord['exceptions'] = [];
-        if ($includeExceptions) {
-            $eventRecord['exceptions'] = $this->exceptionRepository->getAllByEventRecord($eventRecord);
-        }
-
-        return $eventRecord;
     }
 }

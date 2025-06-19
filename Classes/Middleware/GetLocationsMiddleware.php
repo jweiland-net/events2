@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Middleware;
 
-use JWeiland\Events2\Domain\Repository\LocationRepository;
+use JWeiland\Events2\Service\Record\LocationRecordService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -19,7 +19,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use TYPO3\CMS\Core\Http\JsonResponse;
 
 /**
- * This middleware is needed for management plugin. It is needed to show a list of location titles
+ * This middleware is needed for the management plugin. It is necessary to show a list of location titles
  * in AutoComplete input box.
  */
 final readonly class GetLocationsMiddleware implements MiddlewareInterface
@@ -28,7 +28,7 @@ final readonly class GetLocationsMiddleware implements MiddlewareInterface
      * Will be called by call_user_func_array, so don't add Extbase classes with inject methods as argument
      */
     public function __construct(
-        protected LocationRepository $locationRepository,
+        protected LocationRecordService $locationRecordService,
     ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -51,6 +51,6 @@ final readonly class GetLocationsMiddleware implements MiddlewareInterface
             return new JsonResponse();
         }
 
-        return new JsonResponse($this->locationRepository->findLocations($search));
+        return new JsonResponse($this->locationRecordService->findLocations($search));
     }
 }

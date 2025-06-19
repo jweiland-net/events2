@@ -13,10 +13,10 @@ namespace JWeiland\Events2\Tests\Functional\Service;
 
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\DateTimeEntry;
-use JWeiland\Events2\Domain\Repository\TimeRepository;
 use JWeiland\Events2\Service\DayGeneratorService;
 use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Service\Record\DayRecordService;
+use JWeiland\Events2\Service\Record\TimeRecordService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -46,9 +46,9 @@ class DayRelationServiceTest extends FunctionalTestCase
     protected $dayRecordServiceMock;
 
     /**
-     * @var TimeRepository|MockObject
+     * @var TimeRecordService|MockObject
      */
-    protected $timeRepositoryMock;
+    protected $timeRecordServiceMock;
 
     /**
      * @var LoggerInterface|MockObject
@@ -109,7 +109,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         $this->extConf->setRecurringFuture(6);
 
         $this->dayGeneratorServiceMock = $this->createMock(DayGeneratorService::class);
-        $this->timeRepositoryMock = $this->createMock(TimeRepository::class);
+        $this->timeRecordServiceMock = $this->createMock(TimeRecordService::class);
         $this->loggerMock = $this->createMock(Logger::class);
 
         $this->dayRecordServiceMock = $this->createMock(DayRecordService::class);
@@ -119,7 +119,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         $this->subject = new DayRelationService(
             $this->dayGeneratorServiceMock,
             $this->dayRecordServiceMock,
-            $this->timeRepositoryMock,
+            $this->timeRecordServiceMock,
             new DateTimeUtility(),
             $this->loggerMock,
         );
@@ -130,7 +130,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         unset(
             $this->extConf,
             $this->dayRecordServiceMock,
-            $this->timeRepositoryMock,
+            $this->timeRecordServiceMock,
             $this->subject,
         );
 
@@ -142,7 +142,7 @@ class DayRelationServiceTest extends FunctionalTestCase
     {
         $this->eventRecord = [];
 
-        $this->timeRepositoryMock
+        $this->timeRecordServiceMock
             ->getAllByEventRecord($this->eventRecord, true)
             ->shouldNotBeCalled();
 
@@ -163,7 +163,7 @@ class DayRelationServiceTest extends FunctionalTestCase
             $this->eventRecord,
         );
 
-        $this->timeRepositoryMock
+        $this->timeRecordServiceMock
             ->getAllByEventRecord($this->eventRecord, true)
             ->shouldNotBeCalled();
 
@@ -184,7 +184,7 @@ class DayRelationServiceTest extends FunctionalTestCase
             $this->eventRecord,
         );
 
-        $this->timeRepositoryMock
+        $this->timeRecordServiceMock
             ->getAllByEventRecord($this->eventRecord, true)
             ->shouldNotBeCalled();
 
@@ -204,11 +204,11 @@ class DayRelationServiceTest extends FunctionalTestCase
         );
 
         $this->dayGeneratorServiceMock
-            ->getDateTimeStorageForEvent(Argument::withEntry('uid', 123))
+            ->getDateTimeStorageForEventRecord(Argument::withEntry('uid', 123))
             ->shouldBeCalled()
             ->willReturn([]);
 
-        $this->timeRepositoryMock
+        $this->timeRecordServiceMock
             ->getAllByEventRecord(Argument::withEntry('uid', 123), true)
             ->shouldNotBeCalled();
 
@@ -228,13 +228,13 @@ class DayRelationServiceTest extends FunctionalTestCase
 
         $date = new \DateTimeImmutable('today midnight');
         $this->dayGeneratorServiceMock
-            ->getDateTimeStorageForEvent(Argument::withEntry('uid', 123))
+            ->getDateTimeStorageForEventRecord(Argument::withEntry('uid', 123))
             ->shouldBeCalled()
             ->willReturn([
                 (int)$date->format('U') => new DateTimeEntry($date, false),
             ]);
 
-        $this->timeRepositoryMock
+        $this->timeRecordServiceMock
             ->getAllByEventRecord(Argument::withEntry('uid', 123), true)
             ->shouldBeCalled()
             ->willReturn([]);
@@ -308,13 +308,13 @@ class DayRelationServiceTest extends FunctionalTestCase
         $timeRecord['exception'] = $this->exceptionRecord;
 
         $this->dayGeneratorServiceMock
-            ->getDateTimeStorageForEvent(Argument::withEntry('uid', 123))
+            ->getDateTimeStorageForEventRecord(Argument::withEntry('uid', 123))
             ->shouldBeCalled()
             ->willReturn([
                 (int)$date->format('U') => new DateTimeEntry($date, false),
             ]);
 
-        $this->timeRepositoryMock
+        $this->timeRecordServiceMock
             ->getAllByEventRecord(Argument::withEntry('uid', 123), true)
             ->shouldBeCalled()
             ->willReturn([$timeRecord]);
@@ -372,14 +372,14 @@ class DayRelationServiceTest extends FunctionalTestCase
         ];
 
         $this->dayGeneratorServiceMock
-            ->getDateTimeStorageForEvent(Argument::withEntry('uid', 123))
+            ->getDateTimeStorageForEventRecord(Argument::withEntry('uid', 123))
             ->shouldBeCalled()
             ->willReturn($dateTimeStorage);
 
         $timeRecord = $this->timeRecord;
         $timeRecord['event'] = $this->eventRecord;
 
-        $this->timeRepositoryMock
+        $this->timeRecordServiceMock
             ->getAllByEventRecord(Argument::withEntry('uid', 123), true)
             ->shouldBeCalled()
             ->willReturn([$timeRecord]);
@@ -440,7 +440,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         ];
 
         $this->dayGeneratorServiceMock
-            ->getDateTimeStorageForEvent(Argument::withEntry('uid', 123))
+            ->getDateTimeStorageForEventRecord(Argument::withEntry('uid', 123))
             ->shouldBeCalled()
             ->willReturn($dateTimeStorage);
 
@@ -452,7 +452,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         $multipleTimesRecord['time_begin'] = '15:30';
         $multipleTimesRecord['event'] = $this->eventRecord;
 
-        $this->timeRepositoryMock
+        $this->timeRecordServiceMock
             ->getAllByEventRecord(Argument::withEntry('uid', 123), true)
             ->shouldBeCalled()
             ->willReturn([$eventTimeRecord, $multipleTimesRecord]);
@@ -514,7 +514,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         ];
 
         $this->dayGeneratorServiceMock
-            ->getDateTimeStorageForEvent(Argument::withEntry('uid', 123))
+            ->getDateTimeStorageForEventRecord(Argument::withEntry('uid', 123))
             ->shouldBeCalled()
             ->willReturn($dateTimeStorage);
 
@@ -527,7 +527,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         $multipleTimesRecord['time_begin'] = '15:30';
         $multipleTimesRecord['event'] = $this->eventRecord;
 
-        $this->timeRepositoryMock
+        $this->timeRecordServiceMock
             ->getAllByEventRecord(Argument::withEntry('uid', 123), true)
             ->shouldBeCalled()
             ->willReturn([$eventTimeRecord, $multipleTimesRecord]);
@@ -589,7 +589,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         ];
 
         $this->dayGeneratorServiceMock
-            ->getDateTimeStorageForEvent(Argument::withEntry('uid', 123))
+            ->getDateTimeStorageForEventRecord(Argument::withEntry('uid', 123))
             ->shouldBeCalled()
             ->willReturn($dateTimeStorage);
 
@@ -602,7 +602,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         $differentTimesRecord['time_begin'] = '15:30';
         $differentTimesRecord['event'] = $this->eventRecord;
 
-        $this->timeRepositoryMock
+        $this->timeRecordServiceMock
             ->getAllByEventRecord(Argument::withEntry('uid', 123), true)
             ->shouldBeCalled()
             ->willReturn([$eventTimeRecord, $differentTimesRecord]);
@@ -674,7 +674,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         ];
 
         $this->dayGeneratorServiceMock
-            ->getDateTimeStorageForEvent(Argument::withEntry('uid', 123))
+            ->getDateTimeStorageForEventRecord(Argument::withEntry('uid', 123))
             ->shouldBeCalled()
             ->willReturn($dateTimeStorage);
 
@@ -686,7 +686,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         $exceptionTimeRecord['time_begin'] = '15:30';
         $exceptionTimeRecord['exception'] = $this->exceptionRecord;
 
-        $this->timeRepositoryMock
+        $this->timeRecordServiceMock
             ->getAllByEventRecord(Argument::withEntry('uid', 123), true)
             ->shouldBeCalled()
             ->willReturn([$eventTimeRecord, $exceptionTimeRecord]);
@@ -770,7 +770,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         ];
 
         $this->dayGeneratorServiceMock
-            ->getDateTimeStorageForEvent(Argument::withEntry('uid', 123))
+            ->getDateTimeStorageForEventRecord(Argument::withEntry('uid', 123))
             ->shouldBeCalled()
             ->willReturn($dateTimeStorage);
 
@@ -786,7 +786,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         $exception124TimeRecord['time_begin'] = '20:15';
         $exception124TimeRecord['exception'] = $exceptionRecord124;
 
-        $this->timeRepositoryMock
+        $this->timeRecordServiceMock
             ->getAllByEventRecord(Argument::withEntry('uid', 123), true)
             ->shouldBeCalled()
             ->willReturn([$eventTimeRecord, $exception123TimeRecord, $exception124TimeRecord]);
@@ -863,7 +863,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         ];
 
         $this->dayGeneratorServiceMock
-            ->getDateTimeStorageForEvent(Argument::withEntry('uid', 123))
+            ->getDateTimeStorageForEventRecord(Argument::withEntry('uid', 123))
             ->shouldBeCalled()
             ->willReturn($dateTimeStorage);
 
@@ -871,7 +871,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         $eventTimeRecord['type'] = 'event_time';
         $eventTimeRecord['event'] = $this->eventRecord;
 
-        $this->timeRepositoryMock
+        $this->timeRecordServiceMock
             ->getAllByEventRecord(Argument::withEntry('uid', 123), true)
             ->shouldBeCalled()
             ->willReturn([$eventTimeRecord]);

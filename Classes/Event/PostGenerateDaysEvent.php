@@ -11,29 +11,21 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Event;
 
+use JWeiland\Events2\Service\Result\DayGeneratorResult;
+
 /**
  * Use this event if you want to add further modifications to the generated days
  */
-final class PostGenerateDaysEvent
+final readonly class PostGenerateDaysEvent
 {
-    private array $dateTimeStorage;
+    public function __construct(
+        private DayGeneratorResult $dayGeneratorResult,
+        private array $eventRecord,
+    ) {}
 
-    private array $eventRecord;
-
-    public function __construct(array $dateTimeStorage, array $eventRecord)
+    public function getDayGeneratorResult(): DayGeneratorResult
     {
-        $this->dateTimeStorage = $dateTimeStorage;
-        $this->eventRecord = $eventRecord;
-    }
-
-    public function getDateTimeStorage(): array
-    {
-        return $this->dateTimeStorage;
-    }
-
-    public function setDateTimeStorage(array $dateTimeStorage): void
-    {
-        $this->dateTimeStorage = $dateTimeStorage;
+        return $this->dayGeneratorResult;
     }
 
     public function getEventRecord(): array

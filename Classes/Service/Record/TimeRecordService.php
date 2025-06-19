@@ -9,14 +9,13 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace JWeiland\Events2\Domain\Repository;
+namespace JWeiland\Events2\Service\Record;
 
-/**
- * Repository to get time records
- */
-class TimeRepository extends AbstractRepository
+class TimeRecordService
 {
-    public const TABLE = 'tx_events2_domain_model_time';
+    use RecordServiceTrait;
+
+    private const TABLE = 'tx_events2_domain_model_time';
 
     /**
      * If you activate $includeExceptionTimes be sure to have exceptionRecords in $eventRecord['exceptions']
@@ -27,20 +26,18 @@ class TimeRepository extends AbstractRepository
             return [];
         }
 
-        $tableAlias = 't';
         $expressionBuilder = $this->getExpressionBuilder(self::TABLE);
 
         // event -> time is an inline relation, so we have to use the original event UID for relation.
         $expressions = [
             $expressionBuilder->eq(
-                $tableAlias . '.event',
+                'event',
                 $eventRecord['uid'],
             ),
         ];
 
         $timeRecords = $this->getRecordsByExpression(
             self::TABLE,
-            $tableAlias,
             $expressions,
         );
 
@@ -72,20 +69,18 @@ class TimeRepository extends AbstractRepository
             return [];
         }
 
-        $tableAlias = 't';
         $expressionBuilder = $this->getExpressionBuilder(self::TABLE);
 
-        // exception -> time is an inline relation, so we have to use the original event UID for relation.
+        // exception -> time is an inline relation, so we have to use the original event UID for the relation.
         $expressions = [
             $expressionBuilder->eq(
-                $tableAlias . '.exception',
+                'exception',
                 $exceptionRecord['uid'],
             ),
         ];
 
         $timeRecords = $this->getRecordsByExpression(
             self::TABLE,
-            $tableAlias,
             $expressions,
         );
 
@@ -103,7 +98,6 @@ class TimeRepository extends AbstractRepository
     ): array {
         return $this->getRecordByUid(
             self::TABLE,
-            't',
             $uid,
             $select,
             $includeHidden,

@@ -108,6 +108,8 @@ services:
   # Contains public API for other extension developers. Keep public.
   JWeiland\Events2\Service\:
     resource: '../Classes/Service/*'
+    exclude:
+      - '../Classes/Service/Result/*'
     public: true
 
   JWeiland\Events2\Service\Record\DayRecordService:

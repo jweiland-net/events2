@@ -15,7 +15,7 @@ use JWeiland\Events2\Domain\Model\Search;
 use JWeiland\Events2\Traits\InjectCacheServiceTrait;
 use JWeiland\Events2\Traits\InjectCategoryRepositoryTrait;
 use JWeiland\Events2\Traits\InjectDayRepositoryTrait;
-use JWeiland\Events2\Traits\InjectLocationRepositoryTrait;
+use JWeiland\Events2\Traits\InjectLocationRecordServiceTrait;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\Category;
@@ -29,7 +29,7 @@ class SearchController extends AbstractController
     use InjectCacheServiceTrait;
     use InjectCategoryRepositoryTrait;
     use InjectDayRepositoryTrait;
-    use InjectLocationRepositoryTrait;
+    use InjectLocationRecordServiceTrait;
 
     public function initializeShowAction(): void
     {
@@ -67,7 +67,7 @@ class SearchController extends AbstractController
         $this->postProcessAndAssignFluidVariables([
             'search' => $search,
             'selectorData' => [
-                'locations' => $this->locationRepository->getLocationsForSearchSelector(),
+                'locations' => $this->locationRecordService->getLocationsForSearchSelector(),
                 'categories' => [
                     'main' => $allowedMainCategories,
                     'sub' => [],

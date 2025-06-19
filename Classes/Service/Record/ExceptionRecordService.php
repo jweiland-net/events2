@@ -9,14 +9,13 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace JWeiland\Events2\Domain\Repository;
+namespace JWeiland\Events2\Service\Record;
 
-/**
- * Repository to get exception records
- */
-class ExceptionRepository extends AbstractRepository
+class ExceptionRecordService
 {
-    public const TABLE = 'tx_events2_domain_model_exception';
+    use RecordServiceTrait;
+
+    private const TABLE = 'tx_events2_domain_model_exception';
 
     public function getAllByEventRecord(array $eventRecord): array
     {
@@ -24,20 +23,18 @@ class ExceptionRepository extends AbstractRepository
             return [];
         }
 
-        $tableAlias = 'ex';
         $expressionBuilder = $this->getExpressionBuilder(self::TABLE);
 
         // event -> exception is an inline relation, so we have to use the original event UID for relation.
         $expressions = [
             $expressionBuilder->eq(
-                $tableAlias . '.event',
+                'event',
                 $eventRecord['uid'],
             ),
         ];
 
         return $this->getRecordsByExpression(
             self::TABLE,
-            $tableAlias,
             $expressions,
         );
     }
@@ -49,7 +46,6 @@ class ExceptionRepository extends AbstractRepository
     ): array {
         return $this->getRecordByUid(
             self::TABLE,
-            'ex',
             $uid,
             $select,
             $includeHidden,

@@ -18,9 +18,11 @@ use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Model\Location;
 use JWeiland\Events2\Domain\Model\Search;
+use JWeiland\Events2\Domain\Traits\ExtbaseQueryBuilderTrait;
 use JWeiland\Events2\Event\ModifyQueriesOfFindEventsEvent;
 use JWeiland\Events2\Event\ModifyQueriesOfSearchEventsEvent;
 use JWeiland\Events2\Event\ModifyStartEndDateForListTypeEvent;
+use JWeiland\Events2\Helper\OverlayHelper;
 use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -29,14 +31,17 @@ use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
+use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
  * Repository to get and find day records from storage
  *
  * @method Day findByIdentifier(int $dayUid)
  */
-class DayRepository extends AbstractRepository
+class DayRepository extends Repository
 {
+    use ExtbaseQueryBuilderTrait;
+
     public const TABLE = 'tx_events2_domain_model_day';
 
     protected DateTimeUtility $dateTimeUtility;
@@ -452,22 +457,5 @@ class DayRepository extends AbstractRepository
         );
 
         return $subQueryBuilder;
-    }
-
-    public function removeAllByEventRecord(array $eventRecord): void
-    {
-        $eventUid = (int)($eventRecord['uid'] ?? 0);
-        if ($eventUid === 0) {
-            return;
-        }
-
-        $connection = $this->getConnectionPool()->getConnectionForTable(self::TABLE);
-        $connection->delete(
-            self::TABLE,
-            [
-                'event' => $eventUid,
-                't3ver_wsid' => $eventRecord['t3ver_wsid'] ?? 0,
-            ],
-        );
     }
 }
