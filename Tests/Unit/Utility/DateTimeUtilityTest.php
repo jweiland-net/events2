@@ -28,7 +28,7 @@ class DateTimeUtilityTest extends UnitTestCase
         parent::setUp();
 
         // The resulting dates expecting dates for germany
-        date_default_timezone_set('Europe/Berlin');
+        date_default_timezone_set(date_default_timezone_get());
 
         $this->subject = new DateTimeUtility();
     }
@@ -87,7 +87,7 @@ class DateTimeUtilityTest extends UnitTestCase
 
     public static function stringDatesDataProvider(): array
     {
-        $dateTimeZone = new \DateTimeZone('Europe/Berlin');
+        $dateTimeZone = new \DateTimeZone(date_default_timezone_get());
 
         $dateStrings = [];
 
@@ -118,7 +118,7 @@ class DateTimeUtilityTest extends UnitTestCase
      */
     public static function timestampDataProvider(): array
     {
-        $dateTimeZone = new \DateTimeZone('Europe/Berlin');
+        $dateTimeZone = new \DateTimeZone(date_default_timezone_get());
 
         $timestamps = [];
         $timestamps['timestamp: 0'] = [0, null];

@@ -46,10 +46,10 @@ class DayGeneratorService
     ];
 
     public function __construct(
-        protected readonly EventDispatcher $eventDispatcher,
+        protected readonly TimeService $timeService,
         protected readonly ExtConf $extConf,
         protected readonly DateTimeUtility $dateTimeUtility,
-        protected readonly TimeService $timeService,
+        protected readonly EventDispatcher $eventDispatcher,
         protected readonly LoggerInterface $logger,
     ) {}
 
@@ -110,7 +110,7 @@ class DayGeneratorService
             }
         }
 
-        if ($table === self::EVENT_TABLE) {
+        if ($table === self::EVENT_TABLE && is_array($record['exceptions'] ?? false)) {
             foreach ($record['exceptions'] as &$exceptionRecord) {
                 $this->addDateTimeObjectsToRecord(
                     $exceptionRecord,
@@ -157,6 +157,13 @@ class DayGeneratorService
             throw new \Exception(
                 'Invalid event record: Column "event_begin" can not be empty.',
                 1649074525,
+            );
+        }
+
+        if (is_array($eventRecord['exceptions'] ?? false) === false) {
+            throw new \Exception(
+                'Array key "exception" of event record is not of type array.',
+                1750425425,
             );
         }
 
@@ -540,7 +547,7 @@ class DayGeneratorService
 
     protected function hasEventExceptions(array $eventRecord): bool
     {
-        return is_array($eventRecord['exceptions'])
+        return is_array($eventRecord['exceptions'] ?? false)
             && $eventRecord['exceptions'] !== []
             && in_array($eventRecord['event_type'], ['recurring', 'duration']);
     }
