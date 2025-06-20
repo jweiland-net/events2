@@ -22,7 +22,6 @@ use JWeiland\Events2\Domain\Traits\ExtbaseQueryBuilderTrait;
 use JWeiland\Events2\Event\ModifyQueriesOfFindEventsEvent;
 use JWeiland\Events2\Event\ModifyQueriesOfSearchEventsEvent;
 use JWeiland\Events2\Event\ModifyStartEndDateForListTypeEvent;
-use JWeiland\Events2\Helper\OverlayHelper;
 use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Psr\EventDispatcher\EventDispatcherInterface;

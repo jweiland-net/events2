@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Functional\Service;
 
 use JWeiland\Events2\Configuration\ExtConf;
-use JWeiland\Events2\Service\Result\DateTimeResult;
 use JWeiland\Events2\Service\DayGeneratorService;
+use JWeiland\Events2\Service\Result\DateTimeResult;
 use JWeiland\Events2\Service\TimeService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use PHPUnit\Framework\Attributes\Test;

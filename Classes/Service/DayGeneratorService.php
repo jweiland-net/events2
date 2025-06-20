@@ -281,7 +281,7 @@ class DayGeneratorService
         DayGeneratorResult $dayGeneratorResult,
         string $month,
         int $year,
-        array $eventRecord
+        array $eventRecord,
     ): void {
         $dynamicDateTimeAtMidnight = $this->getDateTimeForToday();
         $lastDayOfMonth = $this->getLastDateTimeOfMonthAndYear($month, $year);

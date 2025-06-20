@@ -13,7 +13,6 @@ namespace JWeiland\Events2\Tests\Functional\Service;
 
 use JWeiland\Events2\Service\DayGeneratorService;
 use JWeiland\Events2\Service\DayRecordBuilderService;
-use JWeiland\Events2\Service\Result\DayGeneratorResult;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
@@ -95,7 +94,7 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
             [
                 'tstamp',
                 'crdate',
-            ]
+            ],
         );
     }
 
@@ -146,7 +145,7 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
             [
                 'tstamp',
                 'crdate',
-            ]
+            ],
         );
     }
 
@@ -198,7 +197,7 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
             [
                 'tstamp',
                 'crdate',
-            ]
+            ],
         );
 
         self::assertArrayIsIdenticalToArrayIgnoringListOfKeys(
@@ -218,7 +217,7 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
             [
                 'tstamp',
                 'crdate',
-            ]
+            ],
         );
 
         self::assertArrayIsIdenticalToArrayIgnoringListOfKeys(
@@ -238,7 +237,7 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
             [
                 'tstamp',
                 'crdate',
-            ]
+            ],
         );
     }
 }

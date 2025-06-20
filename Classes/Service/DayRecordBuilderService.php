@@ -2,6 +2,13 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the package jweiland/events2.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE file that was distributed with this source code.
+ */
+
 namespace JWeiland\Events2\Service;
 
 use JWeiland\Events2\Service\Result\DateTimeResult;
@@ -14,14 +21,14 @@ readonly class DayRecordBuilderService
     {
         foreach ($dayGeneratorResult->getDateTimeResultStorageSorted() as $dateTimeResult) {
             $dayGeneratorResult->addDayRecords(
-                $this->buildRecordsForDateTimeResult($dateTimeResult, $dayGeneratorResult)
+                $this->buildRecordsForDateTimeResult($dateTimeResult, $dayGeneratorResult),
             );
         }
     }
 
     protected function buildRecordsForDateTimeResult(
         DateTimeResult $dateTimeResult,
-        DayGeneratorResult $dayGeneratorResult
+        DayGeneratorResult $dayGeneratorResult,
     ): array {
         if ($dateTimeResult->getTimeResultStorage()->count() === 0) {
             return [$this->buildDayRecord($dateTimeResult, $dayGeneratorResult, new TimeResult())];
@@ -38,7 +45,7 @@ readonly class DayRecordBuilderService
     protected function buildDayRecord(
         DateTimeResult $dateTimeResult,
         DayGeneratorResult $dayGeneratorResult,
-        TimeResult $timeResult
+        TimeResult $timeResult,
     ): array {
         $baseDate = $dateTimeResult->getDate();
         $eventRecord = $dayGeneratorResult->getEventRecord();
@@ -55,10 +62,10 @@ readonly class DayRecordBuilderService
             'day' => (int)$baseDate->format('U'),
             'day_time' => (int)$dayTime->format('U'),
             'sort_day_time' => (int)$this->getSortDayTime($dateTimeResult, $dayGeneratorResult, $timeResult)->format(
-                'U'
+                'U',
             ),
             'same_day_time' => (int)$this->getSameDayTime($dateTimeResult, $dayGeneratorResult, $timeResult)->format(
-                'U'
+                'U',
             ),
             'is_removed_date' => (int)$dateTimeResult->isRemovedDate(),
             'event' => $eventRecord['uid'],
@@ -68,7 +75,7 @@ readonly class DayRecordBuilderService
     protected function getSortDayTime(
         DateTimeResult $dateTimeResult,
         DayGeneratorResult $dayGeneratorResult,
-        TimeResult $timeResult
+        TimeResult $timeResult,
     ): \DateTimeImmutable {
         $eventRecord = $dayGeneratorResult->getEventRecord();
         $firstDate = $dayGeneratorResult->getFirstDateTimeResult();
@@ -77,20 +84,20 @@ readonly class DayRecordBuilderService
             $firstTime = $firstDate->getFirstTimeResult();
             if ($firstTime !== null) {
                 return $firstDate->getDate()->modify(
-                    sprintf('+%d hour +%d minute', $firstTime->getHour(), $firstTime->getMinute())
+                    sprintf('+%d hour +%d minute', $firstTime->getHour(), $firstTime->getMinute()),
                 );
             }
         }
 
         return $dateTimeResult->getDate()->modify(
-            sprintf('+%d hour +%d minute', $timeResult->getHour(), $timeResult->getMinute())
+            sprintf('+%d hour +%d minute', $timeResult->getHour(), $timeResult->getMinute()),
         );
     }
 
     protected function getSameDayTime(
         DateTimeResult $dateTimeResult,
         DayGeneratorResult $dayGeneratorResult,
-        TimeResult $timeResult
+        TimeResult $timeResult,
     ): \DateTimeImmutable {
         return $this->getSortDayTime($dateTimeResult, $dayGeneratorResult, $timeResult);
     }

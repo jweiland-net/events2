@@ -11,9 +11,9 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Service;
 
+use JWeiland\Events2\Service\Record\DayRecordService;
 use JWeiland\Events2\Service\Record\EventRecordService;
 use JWeiland\Events2\Service\Record\ExceptionRecordService;
-use JWeiland\Events2\Service\Record\DayRecordService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -59,7 +59,7 @@ readonly class DayRelationService
             $this->logger->error(sprintf(
                 'Error while building day records for event %d: %s',
                 $eventUid,
-                $exception->getMessage()
+                $exception->getMessage(),
             ));
         }
 
@@ -72,7 +72,6 @@ readonly class DayRelationService
             || $eventRecord['event_type'] === ''
             || $eventRecord['sys_language_uid'] > 0;
     }
-
 
     protected function getEventRecord(int $eventUid): array
     {

@@ -50,7 +50,7 @@ readonly class CacheService
 
         if ($cacheTags !== []) {
             $this->getCacheDataCollector()->addCacheTags(
-                ...array_map(fn(string $cacheTag) => new CacheTag($cacheTag), $cacheTags)
+                ...array_map(fn(string $cacheTag) => new CacheTag($cacheTag), $cacheTags),
             );
         }
     }
@@ -76,7 +76,7 @@ readonly class CacheService
         }
 
         $this->getCacheDataCollector()->addCacheTags(
-            ...array_map(fn(string $cacheTag) => new CacheTag($cacheTag), $cacheTags)
+            ...array_map(fn(string $cacheTag) => new CacheTag($cacheTag), $cacheTags),
         );
     }
 }
