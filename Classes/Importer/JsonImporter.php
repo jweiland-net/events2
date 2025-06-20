@@ -13,9 +13,9 @@ namespace JWeiland\Events2\Importer;
 
 use JWeiland\Events2\Configuration\ImportConfiguration;
 use JWeiland\Events2\Helper\PathSegmentHelper;
-use JWeiland\Events2\Service\CategoryService;
 use JWeiland\Events2\Service\LocationService;
 use JWeiland\Events2\Service\OrganizerService;
+use JWeiland\Events2\Service\Record\CategoryRecordService;
 use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\Connection;
@@ -38,7 +38,7 @@ readonly class JsonImporter
     public function __construct(
         protected LoggerInterface $logger,
         protected PathSegmentHelper $pathSegmentHelper,
-        protected CategoryService $categoryService,
+        protected CategoryRecordService $categoryService,
         protected LocationService $locationService,
         protected OrganizerService $organizerService,
         protected ResourceFactory $resourceFactory,

@@ -9,7 +9,7 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace JWeiland\Events2\Service;
+namespace JWeiland\Events2\Service\Record;
 
 use Doctrine\DBAL\Exception;
 use TYPO3\CMS\Core\Database\Connection;
@@ -21,7 +21,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Service to work with TYPO3 sys_category records.
  */
-readonly class CategoryService
+readonly class CategoryRecordService
 {
     private const TABLE = 'sys_category';
 
@@ -43,7 +43,7 @@ readonly class CategoryService
                 )
                 ->executeQuery()
                 ->fetchAssociative();
-        } catch (Exception $e) {
+        } catch (Exception) {
             return null;
         }
 
