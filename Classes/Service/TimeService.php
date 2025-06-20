@@ -11,9 +11,9 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Service;
 
+use JWeiland\Events2\Service\Record\TimeRecordService;
 use JWeiland\Events2\Service\Result\DateTimeResult;
 use JWeiland\Events2\Service\Result\DayGeneratorResult;
-use JWeiland\Events2\Service\Record\TimeRecordService;
 use JWeiland\Events2\Service\Result\TimeResult;
 use JWeiland\Events2\Utility\DateTimeUtility;
 

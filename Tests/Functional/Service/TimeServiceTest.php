@@ -13,7 +13,6 @@ namespace JWeiland\Events2\Tests\Functional\Service;
 
 use JWeiland\Events2\Service\DayRecordBuilderService;
 use JWeiland\Events2\Service\Record\TimeRecordService;
-use JWeiland\Events2\Service\Result\DayGeneratorResult;
 use JWeiland\Events2\Service\TimeService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use PHPUnit\Framework\Attributes\Test;
