@@ -13,13 +13,13 @@ readonly class DayRecordBuilderService
     public function buildDayRecordsFor(DayGeneratorResult $dayGeneratorResult): void
     {
         foreach ($dayGeneratorResult->getDateTimeResultStorageSorted() as $dateTimeResult) {
-            $dayGeneratorResult->setDayRecords(
+            $dayGeneratorResult->addDayRecords(
                 $this->buildRecordsForDateTimeResult($dateTimeResult, $dayGeneratorResult)
             );
         }
     }
 
-    private function buildRecordsForDateTimeResult(
+    protected function buildRecordsForDateTimeResult(
         DateTimeResult $dateTimeResult,
         DayGeneratorResult $dayGeneratorResult
     ): array {
@@ -35,7 +35,7 @@ readonly class DayRecordBuilderService
         return $records;
     }
 
-    private function buildDayRecord(
+    protected function buildDayRecord(
         DateTimeResult $dateTimeResult,
         DayGeneratorResult $dayGeneratorResult,
         TimeResult $timeResult
@@ -65,7 +65,7 @@ readonly class DayRecordBuilderService
         ];
     }
 
-    private function getSortDayTime(
+    protected function getSortDayTime(
         DateTimeResult $dateTimeResult,
         DayGeneratorResult $dayGeneratorResult,
         TimeResult $timeResult
@@ -87,7 +87,7 @@ readonly class DayRecordBuilderService
         );
     }
 
-    private function getSameDayTime(
+    protected function getSameDayTime(
         DateTimeResult $dateTimeResult,
         DayGeneratorResult $dayGeneratorResult,
         TimeResult $timeResult

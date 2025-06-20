@@ -75,8 +75,8 @@ final class DayGeneratorResult
         return $this->dayRecords;
     }
 
-    public function setDayRecords(array $dayRecords): void
+    public function addDayRecords(array ...$dayRecords): void
     {
-        $this->dayRecords = $dayRecords;
+        $this->dayRecords = array_merge($this->dayRecords, ...$dayRecords);
     }
 }
