@@ -13,16 +13,16 @@ namespace JWeiland\Events2\Service;
 
 use JWeiland\Events2\Service\Result\DateTimeResult;
 use JWeiland\Events2\Service\Result\DayGeneratorResult;
-use JWeiland\Events2\Service\Result\TimeResult;
 use JWeiland\Events2\Service\Record\TimeRecordService;
+use JWeiland\Events2\Service\Result\TimeResult;
 use JWeiland\Events2\Utility\DateTimeUtility;
 
 readonly class TimeService
 {
-    private const TYPE_EXCEPTION_TIME   = 'exception_time';
-    private const TYPE_DIFFERENT_TIMES  = 'different_times';
-    private const TYPE_EVENT_TIME       = 'event_time';
-    private const TYPE_MULTIPLE_TIMES   = 'multiple_times';
+    private const TYPE_EXCEPTION_TIME = 'exception_time';
+    private const TYPE_DIFFERENT_TIMES = 'different_times';
+    private const TYPE_EVENT_TIME = 'event_time';
+    private const TYPE_MULTIPLE_TIMES = 'multiple_times';
 
     public function __construct(
         private TimeRecordService $timeRecordService,
@@ -39,7 +39,7 @@ readonly class TimeService
         $this->dayRecordBuilderService->buildDayRecordsFor($dayGeneratorResult);
     }
 
-    private function applyTimeResultsToDateTimeResult(DateTimeResult $dateTimeResult, array $eventRecord): void
+    protected function applyTimeResultsToDateTimeResult(DateTimeResult $dateTimeResult, array $eventRecord): void
     {
         $allTimeRecords = $this->timeRecordService->getAllByEventRecord($eventRecord, true);
 
@@ -53,17 +53,17 @@ readonly class TimeService
     /**
      * Selects the best matching time records by priority.
      */
-    private function getMatchingTimeRecords(
+    protected function getMatchingTimeRecords(
         array $allTimeRecords,
         array $eventRecord,
-        DateTimeResult $dateTimeResult
+        DateTimeResult $dateTimeResult,
     ): array {
         // Priority 1: Exception time
         $timeRecords = $this->filterTimeRecords(
             $allTimeRecords,
             $eventRecord,
             self::TYPE_EXCEPTION_TIME,
-            $dateTimeResult
+            $dateTimeResult,
         );
 
         // Priority 2: Different weekday times
@@ -72,7 +72,7 @@ readonly class TimeService
                 $allTimeRecords,
                 $eventRecord,
                 self::TYPE_DIFFERENT_TIMES,
-                $dateTimeResult
+                $dateTimeResult,
             );
         }
 
@@ -82,13 +82,13 @@ readonly class TimeService
                 $allTimeRecords,
                 $eventRecord,
                 self::TYPE_EVENT_TIME,
-                $dateTimeResult
+                $dateTimeResult,
             );
             $multipleTimes = $this->filterTimeRecords(
                 $allTimeRecords,
                 $eventRecord,
                 self::TYPE_MULTIPLE_TIMES,
-                $dateTimeResult
+                $dateTimeResult,
             );
             $timeRecords = [...$eventTimes, ...$multipleTimes];
         }
@@ -99,11 +99,11 @@ readonly class TimeService
     /**
      * Filters the given time records by type and date/time logic.
      */
-    private function filterTimeRecords(
+    protected function filterTimeRecords(
         array $allTimeRecords,
         array $eventRecord,
         string $recordType,
-        DateTimeResult $dateTimeResult
+        DateTimeResult $dateTimeResult,
     ): array {
         return array_values(array_filter($allTimeRecords, function (array $timeRecord) use (
             $eventRecord,
@@ -131,10 +131,10 @@ readonly class TimeService
     /**
      * Check if exception time matches the given date.
      */
-    private function isMatchingExceptionTime(
+    protected function isMatchingExceptionTime(
         array $eventRecord,
         array $timeRecord,
-        DateTimeResult $dateTimeResult
+        DateTimeResult $dateTimeResult,
     ): bool {
         $exceptionUid = $timeRecord['exception']['uid'] ?? 0;
         $exceptionRecord = $eventRecord['exceptions'][$exceptionUid] ?? [];
@@ -154,7 +154,7 @@ readonly class TimeService
     /**
      * Check if weekday matches for different_times.
      */
-    private function isMatchingWeekday(array $timeRecord, DateTimeResult $dateTimeResult): bool
+    protected function isMatchingWeekday(array $timeRecord, DateTimeResult $dateTimeResult): bool
     {
         return strtolower((string)($timeRecord['weekday'] ?? '')) === strtolower($dateTimeResult->getDate()->format('l'));
     }
