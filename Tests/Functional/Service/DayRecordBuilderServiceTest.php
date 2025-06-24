@@ -174,11 +174,6 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
         $this->dayRecordBuilderService->buildDayRecordsFor($dayGeneratorResult);
 
         $dayRecords = $dayGeneratorResult->getDayRecords();
-        var_dump($dayGeneratorResult->getDateTimeResultStorageSorted()->getArrayCopy());
-
-        var_dump(reset($dayRecords));
-        var_dump(next($dayRecords));
-        var_dump(next($dayRecords));
 
         self::assertArrayIsIdenticalToArrayIgnoringListOfKeys(
             [
