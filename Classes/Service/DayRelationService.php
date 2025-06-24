@@ -17,7 +17,6 @@ use JWeiland\Events2\Service\Record\ExceptionRecordService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DefaultRestrictionContainer;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -35,7 +34,6 @@ readonly class DayRelationService
         protected ExceptionRecordService $exceptionRecordService,
         protected TimeService $timeService,
         protected DateTimeUtility $dateTimeUtility,
-        protected ConnectionPool $connectionPool,
         protected LoggerInterface $logger,
     ) {}
 
@@ -47,7 +45,7 @@ readonly class DayRelationService
     {
         $eventRecord = $this->getEventRecord($eventUid);
         if ($eventRecord === [] || $this->shouldSkip($eventRecord)) {
-            return $eventRecord;
+            return [];
         }
 
         try {
@@ -68,6 +66,11 @@ readonly class DayRelationService
 
     private function shouldSkip(array $eventRecord): bool
     {
+        if (!isset($eventRecord['uid'], $eventRecord['event_type'], $eventRecord['sys_language_uid'])) {
+            $this->logger->error('Missing required columns [uid, event_type, sys_language_uid] in event record: ' . $eventRecord['uid'] ?? 0);
+            return true;
+        }
+
         return $eventRecord['uid'] === 0
             || $eventRecord['event_type'] === ''
             || $eventRecord['sys_language_uid'] > 0;
@@ -80,15 +83,19 @@ readonly class DayRelationService
         $restriction->removeAll()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
 
         $eventRecord = $this->eventRecordService->findByUid($eventUid, true, $restriction);
+        if ($eventRecord === []) {
+            $this->logger->warning('Event record could not be found: ' . $eventUid);
+            return [];
+        }
+
         BackendUtility::workspaceOL('tx_events2_domain_model_event', $eventRecord);
 
-        if ($eventRecord === null) {
+        if (!$eventRecord) {
             $this->logger->warning('Event record can not be overlayed into current workspace: ' . $eventUid);
             return [];
         }
 
         $eventRecord['exceptions'] = $this->exceptionRecordService->getAllByEventRecord($eventRecord);
-        $eventRecord['days'] = [];
 
         return $eventRecord;
     }
