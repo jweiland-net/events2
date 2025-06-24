@@ -14,7 +14,6 @@ namespace JWeiland\Events2\Service;
 use JWeiland\Events2\Service\Record\DayRecordService;
 use JWeiland\Events2\Service\Record\EventRecordService;
 use JWeiland\Events2\Service\Record\ExceptionRecordService;
-use JWeiland\Events2\Utility\DateTimeUtility;
 use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\Query\Restriction\DefaultRestrictionContainer;
@@ -32,8 +31,6 @@ readonly class DayRelationService
         protected DayRecordService $dayRecordService,
         protected EventRecordService $eventRecordService,
         protected ExceptionRecordService $exceptionRecordService,
-        protected TimeService $timeService,
-        protected DateTimeUtility $dateTimeUtility,
         protected LoggerInterface $logger,
     ) {}
 

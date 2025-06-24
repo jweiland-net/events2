@@ -18,8 +18,6 @@ use JWeiland\Events2\Service\DayGeneratorService;
 use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Service\Record\DayRecordService;
 use JWeiland\Events2\Service\Result\DayGeneratorResult;
-use JWeiland\Events2\Service\TimeService;
-use JWeiland\Events2\Utility\DateTimeUtility;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
@@ -42,8 +40,6 @@ class DayRelationServiceTest extends FunctionalTestCase
     protected EventRecordService|MockObject $eventRecordServiceMock;
 
     protected ExceptionRecordService|MockObject $exceptionRecordServiceMock;
-
-    protected TimeService|MockObject $timeServiceMock;
 
     protected LoggerInterface|MockObject $loggerMock;
 
@@ -70,7 +66,6 @@ class DayRelationServiceTest extends FunctionalTestCase
         $this->dayRecordServiceMock = $this->createMock(DayRecordService::class);
         $this->eventRecordServiceMock = $this->createMock(EventRecordService::class);
         $this->exceptionRecordServiceMock = $this->createMock(ExceptionRecordService::class);
-        $this->timeServiceMock = $this->createMock(TimeService::class);
         $this->loggerMock = $this->createMock(Logger::class);
 
         $this->subject = new DayRelationService(
@@ -78,8 +73,6 @@ class DayRelationServiceTest extends FunctionalTestCase
             $this->dayRecordServiceMock,
             $this->eventRecordServiceMock,
             $this->exceptionRecordServiceMock,
-            $this->timeServiceMock,
-            new DateTimeUtility(),
             $this->loggerMock,
         );
     }
