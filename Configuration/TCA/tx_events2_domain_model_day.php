@@ -15,8 +15,12 @@ return [
         'crdate' => 'crdate',
         'hideTable' => true,
         'versioningWS' => true,
+        'origUid' => 't3_origuid',
+        'languageField' => 'sys_language_uid',
+        'transOrigPointerField' => 'l10n_parent',
+        'transOrigDiffSourceField' => 'l10n_diffsource',
         // Do not add 'deleted'. Else table will grow very fast.
-        // There is no need to un-delete a day-record. Save an event in BE and you're done.
+        // There is no need to undelete a day-record. Save an event in BE and you're done.
         'enablecolumns' => [
             'disabled' => 'hidden',
             'starttime' => 'starttime',
