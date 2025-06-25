@@ -12,12 +12,12 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Functional\Service;
 
 use JWeiland\Events2\Configuration\ExtConf;
-use JWeiland\Events2\Service\Record\EventRecordService;
-use JWeiland\Events2\Service\Record\ExceptionRecordService;
 use JWeiland\Events2\Service\DayGeneratorService;
 use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Service\Record\DayRecordService;
 use JWeiland\Events2\Service\Result\DayGeneratorResult;
+use JWeiland\Events2\Service\Record\EventRecordService;
+use JWeiland\Events2\Service\Record\ExceptionRecordService;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
@@ -198,7 +198,7 @@ class DayRelationServiceTest extends FunctionalTestCase
                 [
                     'exceptions' => [],
                     'days' => $dayRecord,
-                ]
+                ],
             ),
             $this->subject->createDayRelations(123),
         );
