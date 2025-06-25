@@ -90,7 +90,9 @@ trait RecordServiceTrait
         }
 
         try {
-            $queryBuilder->select(...$select);
+            $queryBuilder
+                ->select(...$select)
+                ->from($tableName);
 
             if ($expressions !== []) {
                 $queryBuilder->where(...$expressions);
@@ -109,7 +111,7 @@ trait RecordServiceTrait
                     $records[$record['uid']] = $record;
                 }
             }
-        } catch (Exception $e) {
+        } catch (Exception) {
             return [];
         }
 

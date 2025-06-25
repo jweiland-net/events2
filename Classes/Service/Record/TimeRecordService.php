@@ -28,7 +28,7 @@ class TimeRecordService
 
         $expressionBuilder = $this->getExpressionBuilder(self::TABLE);
 
-        // event -> time is an inline relation, so we have to use the original event UID for relation.
+        // event -> time is an inline relation, so we have to use the original event UID for the relation.
         $expressions = [
             $expressionBuilder->eq(
                 'event',
@@ -47,11 +47,7 @@ class TimeRecordService
             return $timeRecord;
         }, $timeRecords);
 
-        if (
-            $includeExceptionTimeRecords
-            && isset($eventRecord['exceptions'])
-            && is_array($eventRecord['exceptions'])
-        ) {
+        if ($includeExceptionTimeRecords && $timeRecords !== [] && isset($eventRecord['exceptions'])) {
             foreach ($eventRecord['exceptions'] as $exceptionRecord) {
                 array_push(
                     $timeRecords,
