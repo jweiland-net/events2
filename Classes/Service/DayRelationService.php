@@ -61,6 +61,10 @@ readonly class DayRelationService
         return $eventRecord;
     }
 
+    /**
+     * All date-related columns are copied by the DataHandler during translation.
+     * Do not create entries for translated event records.
+     */
     private function shouldSkip(array $eventRecord): bool
     {
         if (!isset($eventRecord['uid'], $eventRecord['event_type'], $eventRecord['sys_language_uid'])) {
@@ -69,7 +73,8 @@ readonly class DayRelationService
         }
 
         return $eventRecord['uid'] === 0
-            || $eventRecord['event_type'] === '';
+            || $eventRecord['event_type'] === ''
+            || $eventRecord['sys_language_uid'] > 0;
     }
 
     protected function getEventRecord(int $eventUid): array
