@@ -69,8 +69,7 @@ readonly class DayRelationService
         }
 
         return $eventRecord['uid'] === 0
-            || $eventRecord['event_type'] === ''
-            || $eventRecord['sys_language_uid'] > 0;
+            || $eventRecord['event_type'] === '';
     }
 
     protected function getEventRecord(int $eventUid): array
