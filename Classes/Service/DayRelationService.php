@@ -34,22 +34,33 @@ readonly class DayRelationService
         protected LoggerInterface $logger,
     ) {}
 
+    public function getDayRecords(array $eventRecord, array $exceptionRecords = []): array
+    {
+        $eventRecord['exceptions'] = $exceptionRecords;
+
+        return $this->dayGenerator->getDateTimeStorageForEventRecord($eventRecord)->getDayRecords();
+    }
+
     /**
      * Delete all related day records of a given event and
      * start re-creating the day records.
      */
     public function createDayRelations(int $eventUid): array
     {
-        $eventRecord = $this->getEventRecord($eventUid);
-        if ($eventRecord === [] || $this->shouldSkip($eventRecord)) {
+        $eventRecordInDefaultLanguage = $this->getEventRecord($eventUid);
+        if ($eventRecordInDefaultLanguage === [] || $this->shouldSkip($eventRecordInDefaultLanguage)) {
             return [];
         }
 
         try {
-            $this->dayRecordService->removeAllByEventRecord($eventRecord);
-            $dayRecords = $this->dayGenerator->getDateTimeStorageForEventRecord($eventRecord)->getDayRecords();
-            $this->dayRecordService->bulkInsertAllDayRecords($dayRecords);
-            $eventRecord['days'] = $dayRecords;
+            $this->dayRecordService->removeAllByEventRecord($eventRecordInDefaultLanguage);
+            $dayRecords = $this->dayGenerator->getDateTimeStorageForEventRecord($eventRecordInDefaultLanguage)->getDayRecords();
+            $this->dayRecordService->bulkInsertAllDayRecords(
+                $dayRecords,
+                $eventRecordInDefaultLanguage,
+                $this->eventRecordService->getLanguageUidsOfTranslatedEventRecords($eventRecordInDefaultLanguage)
+            );
+            $eventRecordInDefaultLanguage['days'] = $dayRecords;
         } catch (\Throwable $exception) {
             $this->logger->error(sprintf(
                 'Error while building day records for event %d: %s',
@@ -58,7 +69,7 @@ readonly class DayRelationService
             ));
         }
 
-        return $eventRecord;
+        return $eventRecordInDefaultLanguage;
     }
 
     /**
@@ -83,7 +94,7 @@ readonly class DayRelationService
         $restriction = GeneralUtility::makeInstance(DefaultRestrictionContainer::class);
         $restriction->removeAll()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
 
-        $eventRecord = $this->eventRecordService->findByUid($eventUid, true, $restriction);
+        $eventRecord = $this->eventRecordService->findByUid($eventUid, true, true, $restriction);
         if ($eventRecord === []) {
             $this->logger->warning('Event record could not be found: ' . $eventUid);
             return [];

@@ -53,35 +53,35 @@ class DayGeneratorService
         protected readonly LoggerInterface $logger,
     ) {}
 
-    public function getDateTimeStorageForEventRecord(array $eventRecord): DayGeneratorResult
+    public function getDateTimeStorageForEventRecord(array $eventRecordInDefaultLanguage): DayGeneratorResult
     {
-        $dayGeneratorResult = new DayGeneratorResult($eventRecord);
+        $dayGeneratorResult = new DayGeneratorResult($eventRecordInDefaultLanguage);
 
         try {
-            $this->addDateTimeObjectsToRecord($eventRecord, self::EVENT_TABLE);
-            $this->checkEventRecord($eventRecord);
+            $this->addDateTimeObjectsToRecord($eventRecordInDefaultLanguage, self::EVENT_TABLE);
+            $this->checkEventRecord($eventRecordInDefaultLanguage);
 
-            switch ($eventRecord['event_type']) {
+            switch ($eventRecordInDefaultLanguage['event_type']) {
                 case 'recurring':
-                    if ($eventRecord['each_weeks'] !== 0 || $eventRecord['each_months'] !== 0) {
-                        $this->addDaysForWeeklyAndMonthlyEvent($dayGeneratorResult, $eventRecord);
+                    if ((int)$eventRecordInDefaultLanguage['each_weeks'] !== 0 || (int)$eventRecordInDefaultLanguage['each_months'] !== 0) {
+                        $this->addDaysForWeeklyAndMonthlyEvent($dayGeneratorResult, $eventRecordInDefaultLanguage);
                     } else {
-                        $this->addDaysForRecurringEvent($dayGeneratorResult, $eventRecord);
+                        $this->addDaysForRecurringEvent($dayGeneratorResult, $eventRecordInDefaultLanguage);
                     }
-                    $this->addEventExceptions($dayGeneratorResult, $eventRecord);
+                    $this->addEventExceptions($dayGeneratorResult, $eventRecordInDefaultLanguage);
                     break;
                 case 'duration':
-                    $this->addDaysForDurationalEvent($dayGeneratorResult, $eventRecord);
-                    $this->addEventExceptions($dayGeneratorResult, $eventRecord);
+                    $this->addDaysForDurationalEvent($dayGeneratorResult, $eventRecordInDefaultLanguage);
+                    $this->addEventExceptions($dayGeneratorResult, $eventRecordInDefaultLanguage);
                     break;
                 case 'single':
-                    $this->addDaysForSingleEvent($dayGeneratorResult, $eventRecord);
+                    $this->addDaysForSingleEvent($dayGeneratorResult, $eventRecordInDefaultLanguage);
                     break;
                 default:
             }
 
             $this->eventDispatcher->dispatch(
-                new PostGenerateDaysEvent($dayGeneratorResult, $eventRecord),
+                new PostGenerateDaysEvent($dayGeneratorResult, $eventRecordInDefaultLanguage),
             );
         } catch (\Exception $exception) {
             $this->logger->error(sprintf(
@@ -91,7 +91,7 @@ class DayGeneratorService
                 $exception->getCode(),
             ));
 
-            return new DayGeneratorResult($eventRecord);
+            return new DayGeneratorResult($eventRecordInDefaultLanguage);
         }
 
         $this->timeService->enrichWithTimeAndBuildDayRecords($dayGeneratorResult);
@@ -288,8 +288,8 @@ class DayGeneratorService
         $dateToStartCalculatingFrom = $this->getStartDateForCalculation($eventRecord);
         $dateToStopCalculatingTo = $this->getEndDateForCalculation($eventRecord);
 
-        $xthBitMask = GeneralUtility::makeInstance(XthBitMask::class, $eventRecord['xth']);
-        $weekDayBitMask = GeneralUtility::makeInstance(WeekDayBitMask::class, $eventRecord['weekday']);
+        $xthBitMask = GeneralUtility::makeInstance(XthBitMask::class, (int)$eventRecord['xth']);
+        $weekDayBitMask = GeneralUtility::makeInstance(WeekDayBitMask::class, (int)$eventRecord['weekday']);
 
         foreach ($xthBitMask->getSelectedWeeks() as $xthIndex => $xth) {
             foreach ($weekDayBitMask->getSelectedWeekdays() as $weekdayIndex => $weekday) {
@@ -397,7 +397,7 @@ class DayGeneratorService
 
         // In the case of eachWeeks and eachMonth $dateToStartCalculatingFrom has to be
         // exactly in sync with eventBegin
-        if ($eventRecord['each_weeks'] !== 0 || $eventRecord['each_months'] !== 0) {
+        if ((int)$eventRecord['each_weeks'] !== 0 || (int)$eventRecord['each_months'] !== 0) {
             while ($eventBegin < $dateToStartCalculatingFrom) {
                 $eventBegin = $eventBegin->modify('+' . $eventRecord['each_months'] . ' months');
                 $eventBegin = $eventBegin->modify('+' . $eventRecord['each_weeks'] . ' weeks');

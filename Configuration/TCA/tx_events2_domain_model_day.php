@@ -85,5 +85,10 @@ return [
                 'foreign_table' => 'tx_events2_domain_model_event',
             ],
         ],
+        'def_lang_event_uid' => [
+            'config' => [
+                'type' => 'passthrough',
+            ],
+        ],
     ],
 ];

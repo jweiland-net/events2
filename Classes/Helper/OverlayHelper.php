@@ -38,7 +38,6 @@ readonly class OverlayHelper
         int $overrideLanguageUid = -1,
     ): void {
         try {
-            $this->addWhereForWorkspaces($queryBuilder, $tableName, $tableAlias);
             $this->addWhereForTranslation($queryBuilder, $tableName, $tableAlias, $useLangStrict, $overrideLanguageUid);
         } catch (AspectNotFoundException $aspectNotFoundException) {
             $this->logger->error(sprintf(
@@ -77,28 +76,6 @@ readonly class OverlayHelper
             $tableName,
             $record,
         ) ?: [];
-    }
-
-    protected function addWhereForWorkspaces(QueryBuilder $queryBuilder, string $tableName, string $tableAlias): void
-    {
-        $workspace = 0;
-        if (
-            $tableName === 'tx_events2_domain_model_day'
-            && isset($GLOBALS['BE_USER'])
-            && $GLOBALS['BE_USER']->workspace
-        ) {
-            // Changing the event parameters can result in completely different day records.
-            // Single event has one day record. A recurring event can have over 30 day records.
-            // You see: overlay (t3ver_oid) is NOT possible for day-table.
-            // We have to set workspace id for t3ver_wsid on our own here for day-table
-            $workspace = (int)$GLOBALS['BE_USER']->workspace;
-        }
-
-        if ($GLOBALS['TCA'][$tableName]['ctrl']['versioningWS']) {
-            $queryBuilder->andWhere(
-                $queryBuilder->expr()->eq($tableAlias . '.t3ver_wsid', $workspace),
-            );
-        }
     }
 
     /**

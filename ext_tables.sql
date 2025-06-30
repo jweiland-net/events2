@@ -39,15 +39,16 @@ CREATE TABLE tx_events2_domain_model_event
 #
 CREATE TABLE tx_events2_domain_model_day
 (
-	day             int(11) unsigned DEFAULT '0' NOT NULL,
-	day_time        int(11) unsigned DEFAULT '0' NOT NULL,
-	sort_day_time   int(11) unsigned DEFAULT '0' NOT NULL,
-	same_day_time   int(11) unsigned DEFAULT '0' NOT NULL,
-	is_removed_date tinyint(1) unsigned DEFAULT '0' NOT NULL,
-	event           int(11) unsigned DEFAULT '0' NOT NULL,
+	day                int(11) unsigned DEFAULT '0' NOT NULL,
+	day_time           int(11) unsigned DEFAULT '0' NOT NULL,
+	sort_day_time      int(11) unsigned DEFAULT '0' NOT NULL,
+	same_day_time      int(11) unsigned DEFAULT '0' NOT NULL,
+	is_removed_date    tinyint(1) unsigned DEFAULT '0' NOT NULL,
+	event              int(11) unsigned DEFAULT '0' NOT NULL,
+	def_lang_event_uid int(11) unsigned DEFAULT '0' NOT NULL,
 
-	KEY             keyForDay (day),
-	KEY             booster (event,pid,hidden,day,sort_day_time,day_time,tstamp,crdate,uid)
+	KEY                keyForDay (day),
+	KEY                booster (event,pid,hidden,day,sort_day_time,day_time,tstamp,crdate,uid)
 );
 
 #
@@ -154,6 +155,6 @@ CREATE TABLE fe_users
 #
 CREATE TABLE sys_reaction
 (
-	storage_folder varchar(255) DEFAULT '' NOT NULL,
+	storage_folder  varchar(255) DEFAULT '' NOT NULL,
 	parent_category int(10) DEFAULT '0' NOT NULL
 );

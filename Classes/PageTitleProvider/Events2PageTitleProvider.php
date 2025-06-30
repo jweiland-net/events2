@@ -65,6 +65,7 @@ final class Events2PageTitleProvider extends AbstractPageTitleProvider
         return $this->eventRecordService->findByUid(
             $eventUid,
             true,
+            true,
             GeneralUtility::makeInstance(FrontendRestrictionContainer::class),
         );
     }
