@@ -12,29 +12,29 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Service\Record;
 
 use Doctrine\DBAL\Exception;
-use Psr\Log\LoggerInterface;
+use JWeiland\Events2\Traits\RelationHandlerTrait;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
-use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer;
-use TYPO3\CMS\Core\DataHandling\DataHandler;
-use TYPO3\CMS\Core\Domain\Repository\PageRepository;
+use TYPO3\CMS\Core\Database\ReferenceIndex;
+use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\StringUtility;
 use TYPO3\CMS\Core\Versioning\VersionState;
 
 readonly class DayRecordService
 {
+    use RelationHandlerTrait;
+
     private const TABLE = 'tx_events2_domain_model_day';
 
     public function __construct(
         private QueryBuilder $queryBuilder,
         private ConnectionPool $connectionPool,
-        private PageRepository $pageRepository,
-        private LoggerInterface $logger,
+        private TcaSchemaFactory $tcaSchemaFactory,
+        private ReferenceIndex $referenceIndex,
     ) {}
 
     public function getByEventAndTime(int $eventUid, int $timestamp): array
@@ -70,183 +70,197 @@ readonly class DayRecordService
      * only day records within the same workspace will be deleted. Since the "event" column may contain
      * various translated or versioned event UIDs, the more stable "def_lang_event_uid" column is used instead,
      * as it consistently references the event UID in the default workspace and default language.
+     *
+     * @param int $eventUid Provide the UID of the event record in the default language of the current workspace
      */
-    public function removeAllByEventRecord(array $eventRecordInDefaultLanguage): void
+    public function removeAllByEventUid(int $eventUid): void
     {
-        $eventUid = (int)($eventRecordInDefaultLanguage['uid'] ?? 0);
-        if ($eventUid === 0) {
-            return;
-        }
-
         $connection = $this->connectionPool->getConnectionForTable(self::TABLE);
-        $connection->delete(
-            self::TABLE,
-            [
-                'def_lang_event_uid' => $eventUid,
-                't3ver_wsid' => $eventRecordInDefaultLanguage['t3ver_wsid'] ?? 0,
-            ],
-        );
+        try {
+            $dayRecordsToDelete = $connection->select(
+                ['uid'],
+                self::TABLE,
+                [
+                    'def_lang_event_uid' => $eventUid,
+                    't3ver_wsid' => $this->getBackendUser()->workspace,
+                ]
+            )->fetchAllAssociative();
+
+            foreach ($dayRecordsToDelete as $dayRecordToDelete) {
+                $connection->delete(self::TABLE, ['uid' => $dayRecordToDelete['uid']]);
+                $this->referenceIndex->updateRefIndexTable(self::TABLE, $dayRecordToDelete['uid'], false, $this->getBackendUser()->workspace);
+            }
+        } catch (Exception) {
+        }
     }
 
-    public function bulkInsertAllDayRecords(
-        array $dayRecords,
-        array $eventRecordInDefaultLanguage,
-        array $languageUids
-    ): void {
+    public function bulkInsertAllDayRecords(array $dayRecords, int $eventUid, array $languageUids): void
+    {
         if ($dayRecords === []) {
             return;
         }
 
-        $this->createDayRecordInDefaultLanguage($dayRecords, $eventRecordInDefaultLanguage);
-        $this->translateDayRecords($eventRecordInDefaultLanguage, $languageUids);
-    }
+        $this->createVersionRecords($dayRecords, $eventUid);
 
-    protected function createDayRecordInDefaultLanguage(array $dayRecords, array $eventRecordInDefaultLanguage): void
-    {
-        if ($eventRecordInDefaultLanguage['t3ver_wsid'] > 0) {
-            $this->createVersionRecords($dayRecords, $eventRecordInDefaultLanguage);
-        } else {
-            foreach (array_chunk($dayRecords, 10) as $dayRecordsChunk) {
-                $dataMap = [];
-                foreach ($dayRecordsChunk as $dayRecord) {
-                    $dataMap[self::TABLE][StringUtility::getUniqueId('NEW')] = $dayRecord;
-                }
-
-                $this->processWithDataHandler($dataMap);
-            }
+        foreach ($languageUids as $languageUid) {
+            $this->createVersionRecords($dayRecords, $eventUid, $languageUid);
         }
     }
 
-    protected function translateDayRecords(array $eventRecordInDefaultLanguage, array $languageUids): void
+    protected function createVersionRecords(array $newDayRecords, int $eventUid, int $languageUid = 0): void
     {
-        // The $dayRecords from self::bulkInsertAllDayRecords cannot be reused here because they do not contain a UID
-        $dayRecords = $this->getDayRecordsByEvent(
-            $eventRecordInDefaultLanguage,
-            (int)($eventRecordInDefaultLanguage['t3ver_wsid'] ?? 0)
+        $connection = $this->connectionPool->getConnectionForTable(self::TABLE);
+
+        if ($languageUid > 0) {
+            $eventLocalizations = BackendUtility::getRecordLocalization('tx_events2_domain_model_event', $eventUid, $languageUid, 'AND t3ver_oid=0');
+            $eventRecord = reset($eventLocalizations);
+        } else {
+            $eventRecord = BackendUtility::getRecord('tx_events2_domain_model_event', $eventUid);
+        }
+
+        // The day records in the default language are required solely for populating the l10n_parent field
+        // in translated records.
+        $dayRecordsInDefaultLanguage = [];
+        if ($languageUid > 0) {
+            $dayRecordsInDefaultLanguage = $connection->select(
+                ['*'],
+                self::TABLE,
+                [
+                    'sys_language_uid' => 0,
+                    't3ver_wsid' => $this->getBackendUser()->workspace,
+                ]
+            )->fetchAllAssociative();
+        }
+
+        // To fill up the t3ver_oid and t3_origuid we need the day records from LIVE workspace
+        $existingLiveDayRecords = $this->getExistingDayRecords((int)$eventRecord['uid'], 0);
+
+        $lastDayRecordKey = $this->enrichNewDayRecords(
+            $newDayRecords,
+            $dayRecordsInDefaultLanguage,
+            $existingLiveDayRecords,
+            $eventRecord,
+            $eventUid,
+            $languageUid,
         );
 
-        if ($eventRecordInDefaultLanguage['t3ver_wsid'] > 0) {
-            // For workspaces, the "localize" (see "else" below) method cannot be used, as it would create a new
-            // translated AND versioned record with t3ver_state set to NEW instead of DEFAULT.
-            foreach ($languageUids as $languageUid) {
-                $this->createVersionRecords($dayRecords, $eventRecordInDefaultLanguage, $languageUid);
-            }
-        } else {
-            // Translate day records
-            foreach ($languageUids as $languageUid) {
-                foreach (array_chunk($dayRecords, 10) as $dayRecordsChunk) {
-                    $cmdMap = [];
-                    foreach ($dayRecordsChunk as $dayRecord) {
-                        $cmdMap[self::TABLE][$dayRecord['uid']]['localize'] = $languageUid;
-                    }
+        if ($newDayRecords !== []) {
+            $connection->bulkInsert(
+                self::TABLE,
+                $newDayRecords,
+                array_keys(current($newDayRecords)),
+            );
 
-                    $this->processWithDataHandler([], $cmdMap);
-                }
-            }
-        }
-    }
-
-    protected function createVersionRecords(array $newDayRecords, array $eventRecord): void
-    {
-        $dataHandler = $this->getDataHandler();
-        $dayRecordsOfLive = $this->getDayRecordsByEvent($eventRecord, 0);
-        $newDayRecordKey = 0;
-
-        $workspaceOptions = [
-            'label' => 'Auto-created by events2 for WS #' . $this->getBackendUser()->workspace,
-            'delete' => false,
-        ];
-
-        foreach ($newDayRecords as $newDayRecordKey => $newDayRecord) {
-            $overrideArray = [
-                't3ver_wsid' => $this->getBackendUser()->workspace,
-                't3ver_stage' => 0,
-            ];
-
-            // Verify whether an active LIVE record exists to which a new relation can be established
-            if (array_key_exists($newDayRecordKey, $dayRecordsOfLive)) {
-                $uidOfLiveRecord = (int)$dayRecordsOfLive[$newDayRecordKey];
-                $overrideArray['t3ver_oid'] = $uidOfLiveRecord;
-                $overrideArray['t3ver_state'] = VersionState::DEFAULT_STATE->value;
-
-                $dataHandler->copyRecord_raw(self::TABLE, $uidOfLiveRecord, (int)$eventRecord['pid'], $overrideArray, $workspaceOptions);
-            } else {
-                // There are more new day records than currently available in the LIVE workspace. Create new day
-                // records here without an associated relational record in the LIVE workspace.
-                $newDayRecord['t3ver_oid'] = 0;
-                $newDayRecord['t3ver_state'] = VersionState::NEW_PLACEHOLDER->value;
-                $newDayRecord['t3ver_wsid'] = $this->getBackendUser()->workspace;
-
-                $dataHandler->insertDB(self::TABLE, StringUtility::getUniqueId('NEW'), $newDayRecord);
+            // Update the reference index to ensure that the Workspace module correctly reflects recent modifications
+            foreach ($this->getExistingDayRecords((int)$eventRecord['uid']) as $newDayRecord) {
+                $this->referenceIndex->updateRefIndexTable(self::TABLE, $newDayRecord['uid'], false, $this->getBackendUser()->workspace);
             }
         }
 
         // If there are fewer new day records compared to the LIVE workspace, versioned day records must be added
         // to mark the day record as DELETED.
-        foreach (array_filter($dayRecordsOfLive, fn ($dayRecordOfLive, $dayRecordKeyOfLive) => $dayRecordKeyOfLive > $newDayRecordKey,ARRAY_FILTER_USE_BOTH) as $dayRecordOfLive) {
-            $dataHandler->versionizeRecord(self::TABLE, (int)$dayRecordOfLive['uid'], 'Auto-created by events2 for WS #' . $this->getBackendUser()->workspace, true);
+        $existingLiveDayRecordsToBeMarkedAsDeleted = array_filter(
+            $existingLiveDayRecords,
+            fn($dayRecordOfLive, $dayRecordKeyOfLive) => $dayRecordKeyOfLive > $lastDayRecordKey,
+            ARRAY_FILTER_USE_BOTH
+        );
+
+        foreach ($existingLiveDayRecordsToBeMarkedAsDeleted as $existingLiveDayRecord) {
+            $existingLiveDayRecord['t3_origuid'] = (int)$existingLiveDayRecord['uid'];
+            $existingLiveDayRecord['t3ver_oid'] = (int)$existingLiveDayRecord['uid'];
+            $existingLiveDayRecord['t3ver_wsid'] = $this->getBackendUser()->workspace;
+            $existingLiveDayRecord['t3ver_state'] = VersionState::DELETE_PLACEHOLDER->value;
+            unset($existingLiveDayRecord['uid']);
+
+            $this->referenceIndex->updateRefIndexTable(
+                self::TABLE,
+                $connection->insert(self::TABLE, $existingLiveDayRecord),
+                false,
+                $this->getBackendUser()->workspace
+            );
+        }
+
+        // Multiple day records associated with the event have been removed and added. Reference index has been updated accordingly.
+        $workspaceVersionOfEventRecord = $eventRecord;
+        BackendUtility::workspaceOL('tx_events2_domain_model_event', $workspaceVersionOfEventRecord);
+
+        if (is_array($workspaceVersionOfEventRecord)) {
+            $this->referenceIndex->updateRefIndexTable(
+                'tx_events2_domain_model_event',
+                (int)($workspaceVersionOfEventRecord['_ORIG_uid'] ?? $workspaceVersionOfEventRecord['uid']),
+                false,
+                $this->getBackendUser()->workspace
+            );
         }
     }
 
-    protected function processWithDataHandler(array $dataMap = [], $cmdMap = []): void
-    {
-        $dataHandler = $this->getDataHandler();
-        $dataHandler->start($dataMap, $cmdMap, $this->getBackendUser());
-        $dataHandler->process_datamap();
-        $dataHandler->process_cmdmap();
+    /**
+     * @param array $eventRecord This is the event record from LIVE workspace. Maybe translated. Be careful: $eventUid may differ
+     * @param int $eventUid This is the event UID of the default language in LIVE workspace
+     */
+    protected function enrichNewDayRecords(
+        array &$newDayRecords,
+        array $dayRecordsInDefaultLanguage,
+        array $existingLiveDayRecords,
+        array $eventRecord,
+        int $eventUid,
+        int $languageUid,
+    ): int {
+        $newDayRecordKey = 0;
 
-        if ($dataHandler->errorLog !== []) {
-            foreach ($dataHandler->errorLog as $errorLog) {
-                $this->logger->error('DataHandler Log: ' . $errorLog);
+        foreach ($newDayRecords as $newDayRecordKey => &$newDayRecord) {
+            $l10nParent = 0;
+            if ($dayRecordsInDefaultLanguage !== []) {
+                $l10nParent = array_key_exists(
+                    $newDayRecordKey,
+                    $dayRecordsInDefaultLanguage
+                ) ? (int)$dayRecordsInDefaultLanguage[$newDayRecordKey]['uid'] : 0;
+            }
+
+            $newDayRecord['tstamp'] = time();
+            $newDayRecord['crdate'] = time();
+            $newDayRecord['event'] = (int)$eventRecord['uid'];
+            $newDayRecord['def_lang_event_uid'] = $eventUid;
+            $newDayRecord['t3ver_wsid'] = $this->getBackendUser()->workspace;
+            $newDayRecord['t3ver_stage'] = 0;
+            $newDayRecord['sys_language_uid'] = $languageUid;
+            $newDayRecord['l10n_parent'] = $l10nParent;
+
+            // Verify whether an active LIVE record exists to which a new relation can be established
+            if (array_key_exists($newDayRecordKey, $existingLiveDayRecords)) {
+                $existingLiveDayRecord = $existingLiveDayRecords[$newDayRecordKey];
+                $newDayRecord['t3_origuid'] = (int)$existingLiveDayRecord['uid'];
+                $newDayRecord['t3ver_oid'] = (int)$existingLiveDayRecord['uid'];
+                $newDayRecord['t3ver_state'] = VersionState::DEFAULT_STATE->value;
+            } else {
+                // There are more new day records than currently available in the LIVE workspace. Create new day
+                // records here without an associated relational record in the LIVE workspace.
+                $newDayRecord['t3_origuid'] = 0;
+                $newDayRecord['t3ver_oid'] = 0;
+                $newDayRecord['t3ver_state'] = VersionState::NEW_PLACEHOLDER->value;
             }
         }
+
+        return $newDayRecordKey;
     }
 
-    public function getDayRecordsByEvent(
-        array $eventRecordInDefaultLanguage,
-        int $workspaceUid,
-    ): array {
-        $queryBuilder = $this->queryBuilder;
-        $queryBuilder->getRestrictions()->removeAll()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
+    protected function getExistingDayRecords(int $eventUid, int $workspace = null): array
+    {
+        $schema = $this->tcaSchemaFactory->get('tx_events2_domain_model_event');
 
-        $eventUid = (int)($eventRecordInDefaultLanguage['_ORIG_uid'] ?? $eventRecordInDefaultLanguage['uid']);
+        $relationHandler = $this->createRelationHandlerInstance($workspace);
+        $relationHandler->initializeForField(
+            'tx_events2_domain_model_event',
+            $schema->getField('days'),
+            $eventUid,
+        );
 
-        $queryResult = $queryBuilder
-            ->select('*')
-            ->from(self::TABLE)
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'event',
-                    $queryBuilder->createNamedParameter($eventUid, Connection::PARAM_INT),
-                ),
-                $queryBuilder->expr()->eq(
-                    't3ver_wsid',
-                    $queryBuilder->createNamedParameter($workspaceUid, Connection::PARAM_INT),
-                ),
-                $queryBuilder->expr()->eq(
-                    $GLOBALS['TCA'][self::TABLE]['ctrl']['languageField'],
-                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
-                )
-            )
-            ->executeQuery();
-
-        $dayRecordsInDefaultLanguage = [];
-        while ($dayRecordInDefaultLanguage = $queryResult->fetchAssociative()) {
-            $dayRecordsInDefaultLanguage[] = $dayRecordInDefaultLanguage;
+        $dayRecords = [];
+        foreach ($relationHandler->getValueArray() as $dayUid) {
+            $dayRecords[] = BackendUtility::getRecord(self::TABLE, (int)$dayUid);
         }
 
-        return $dayRecordsInDefaultLanguage;
-    }
-
-    protected function getDataHandler(): DataHandler
-    {
-        /** @var DataHandler $dataHandler */
-        $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
-
-        // Since we are using copyRecord_raw, the DataHandler must be initialized beforehand
-        $dataHandler->start([], []);
-
-        return $dataHandler;
+        return $dayRecords;
     }
 
     private function getBackendUser(): BackendUserAuthentication

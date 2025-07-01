@@ -16,9 +16,7 @@ use JWeiland\Events2\Service\Record\EventRecordService;
 use JWeiland\Events2\Service\Record\ExceptionRecordService;
 use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Database\Query\Restriction\DefaultRestrictionContainer;
-use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Database\ReferenceIndex;
 
 /**
  * While saving an event in the backend, this class generates all the day records
@@ -31,36 +29,33 @@ readonly class DayRelationService
         protected DayRecordService $dayRecordService,
         protected EventRecordService $eventRecordService,
         protected ExceptionRecordService $exceptionRecordService,
+        protected ReferenceIndex $referenceIndex,
         protected LoggerInterface $logger,
     ) {}
-
-    public function getDayRecords(array $eventRecord, array $exceptionRecords = []): array
-    {
-        $eventRecord['exceptions'] = $exceptionRecords;
-
-        return $this->dayGenerator->getDateTimeStorageForEventRecord($eventRecord)->getDayRecords();
-    }
 
     /**
      * Delete all related day records of a given event and
      * start re-creating the day records.
      */
-    public function createDayRelations(int $eventUid): array
+    public function createDayRelations(int $eventUid): void
     {
+        // Always operate on the LIVE version. If a record is required in a different workspace, handle it accordingly.
+        $eventUid = BackendUtility::getLiveVersionIdOfRecord('tx_events2_domain_model_event', $eventUid) ?? $eventUid;
+
+        // Early return if certain event columns are missing or if the event record is a translation.
         $eventRecordInDefaultLanguage = $this->getEventRecord($eventUid);
         if ($eventRecordInDefaultLanguage === [] || $this->shouldSkip($eventRecordInDefaultLanguage)) {
-            return [];
+            return;
         }
 
         try {
-            $this->dayRecordService->removeAllByEventRecord($eventRecordInDefaultLanguage);
-            $dayRecords = $this->dayGenerator->getDateTimeStorageForEventRecord($eventRecordInDefaultLanguage)->getDayRecords();
+            $this->dayRecordService->removeAllByEventUid($eventUid);
+
             $this->dayRecordService->bulkInsertAllDayRecords(
-                $dayRecords,
-                $eventRecordInDefaultLanguage,
+                $this->dayGenerator->getDateTimeStorageForEventRecord($eventRecordInDefaultLanguage)->getDayRecords(),
+                $eventUid,
                 $this->eventRecordService->getLanguageUidsOfTranslatedEventRecords($eventRecordInDefaultLanguage)
             );
-            $eventRecordInDefaultLanguage['days'] = $dayRecords;
         } catch (\Throwable $exception) {
             $this->logger->error(sprintf(
                 'Error while building day records for event %d: %s',
@@ -68,8 +63,6 @@ readonly class DayRelationService
                 $exception->getMessage(),
             ));
         }
-
-        return $eventRecordInDefaultLanguage;
     }
 
     /**
@@ -90,24 +83,13 @@ readonly class DayRelationService
 
     protected function getEventRecord(int $eventUid): array
     {
-        /** @var DefaultRestrictionContainer $restriction */
-        $restriction = GeneralUtility::makeInstance(DefaultRestrictionContainer::class);
-        $restriction->removeAll()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
-
-        $eventRecord = $this->eventRecordService->findByUid($eventUid, true, true, $restriction);
-        if ($eventRecord === []) {
+        $eventRecord = BackendUtility::getRecordWSOL('tx_events2_domain_model_event', $eventUid);
+        if ($eventRecord === null) {
             $this->logger->warning('Event record could not be found: ' . $eventUid);
             return [];
         }
 
-        BackendUtility::workspaceOL('tx_events2_domain_model_event', $eventRecord);
-
-        if (!$eventRecord) {
-            $this->logger->warning('Event record can not be overlayed into current workspace: ' . $eventUid);
-            return [];
-        }
-
-        $eventRecord['exceptions'] = $this->exceptionRecordService->getAllByEventRecord($eventRecord);
+        $eventRecord['exceptions'] = $this->exceptionRecordService->findAllByEventUid($eventUid);
 
         return $eventRecord;
     }

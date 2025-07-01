@@ -27,7 +27,7 @@ class EventRecordService
 
     public function __construct(
         private readonly QueryBuilder $queryBuilder,
-        protected PageRepository $pageRepository,
+        private readonly PageRepository $pageRepository,
     ) {}
 
     public function findByUid(

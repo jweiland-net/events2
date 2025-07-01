@@ -11,44 +11,38 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Service\Record;
 
+use JWeiland\Events2\Traits\RelationHandlerTrait;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
+
 class ExceptionRecordService
 {
-    use RecordServiceTrait;
+    use RelationHandlerTrait;
 
     private const TABLE = 'tx_events2_domain_model_exception';
 
-    public function getAllByEventRecord(array $eventRecord): array
+    public function __construct(
+        private readonly TcaSchemaFactory $tcaSchemaFactory,
+    ) {}
+
+    public function findAllByEventUid(int $eventUid): array
     {
-        if (!isset($eventRecord['uid'])) {
-            return [];
+        $schema = $this->tcaSchemaFactory->get('tx_events2_domain_model_event');
+
+        $relationHandler = $this->createRelationHandlerInstance();
+        $relationHandler->initializeForField(
+            'tx_events2_domain_model_event',
+            $schema->getField('exceptions'),
+            $eventUid,
+        );
+
+        $exceptionRecords = [];
+        foreach ($relationHandler->getValueArray() as $exceptionUid) {
+            if ($exceptionRecord = BackendUtility::getRecordWSOL(self::TABLE, (int)$exceptionUid)) {
+                $exceptionRecords[] = $exceptionRecord;
+            }
         }
 
-        $expressionBuilder = $this->getExpressionBuilder(self::TABLE);
-
-        // event -> exception is an inline relation, so we have to use the original event UID for relation.
-        $expressions = [
-            $expressionBuilder->eq(
-                'event',
-                $eventRecord['uid'],
-            ),
-        ];
-
-        return $this->getRecordsByExpression(
-            self::TABLE,
-            $expressions,
-        );
-    }
-
-    public function getRecord(
-        int $uid,
-        array $select = ['*'],
-        bool $includeHidden = false,
-    ): array {
-        return $this->getRecordByUid(
-            self::TABLE,
-            $uid,
-            $select,
-            $includeHidden,
-        );
+        return $exceptionRecords;
     }
 }
