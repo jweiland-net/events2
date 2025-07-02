@@ -52,7 +52,7 @@ readonly class DayRelationService
             $this->dayRecordService->removeAllByEventUid($eventUid);
 
             $this->dayRecordService->bulkInsertAllDayRecords(
-                $this->dayGeneratorService->getDateTimeStorageForEventRecord($eventRecordInDefaultLanguage)->getDayRecords(),
+                $this->dayGeneratorService->getDayGeneratorResultForEventRecord($eventRecordInDefaultLanguage)->getDayRecords(),
                 $eventUid,
                 $this->eventRecordService->getLanguageUidsOfTranslatedEventRecords($eventRecordInDefaultLanguage),
             );

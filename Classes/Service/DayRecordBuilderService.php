@@ -11,27 +11,22 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Service;
 
-use JWeiland\Events2\Service\Record\DayRecordService;
 use JWeiland\Events2\Service\Result\DateTimeResult;
 use JWeiland\Events2\Service\Result\DayGeneratorResult;
 use JWeiland\Events2\Service\Result\TimeResult;
 
 readonly class DayRecordBuilderService
 {
-    public function __construct(
-        protected DayRecordService $dayRecordService,
-    ) {}
-
     public function buildDayRecordsFor(DayGeneratorResult $dayGeneratorResult): void
     {
         foreach ($dayGeneratorResult->getDateTimeResultStorageSorted() as $dateTimeResult) {
             $dayGeneratorResult->addDayRecords(
-                $this->buildRecordsForDateTimeResult($dateTimeResult, $dayGeneratorResult),
+                $this->buildDayRecordsForDateTimeResult($dateTimeResult, $dayGeneratorResult),
             );
         }
     }
 
-    protected function buildRecordsForDateTimeResult(
+    protected function buildDayRecordsForDateTimeResult(
         DateTimeResult $dateTimeResult,
         DayGeneratorResult $dayGeneratorResult,
     ): array {
@@ -39,12 +34,12 @@ readonly class DayRecordBuilderService
             return [$this->buildDayRecord($dateTimeResult, $dayGeneratorResult, new TimeResult())];
         }
 
-        $records = [];
+        $dayRecords = [];
         foreach ($dateTimeResult->getTimeResultStorage() as $timeResult) {
-            $records[] = $this->buildDayRecord($dateTimeResult, $dayGeneratorResult, $timeResult);
+            $dayRecords[] = $this->buildDayRecord($dateTimeResult, $dayGeneratorResult, $timeResult);
         }
 
-        return $records;
+        return $dayRecords;
     }
 
     protected function buildDayRecord(

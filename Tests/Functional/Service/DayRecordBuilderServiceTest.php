@@ -11,10 +11,15 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Tests\Functional\Service;
 
+use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Service\DayGeneratorService;
 use JWeiland\Events2\Service\DayRecordBuilderService;
+use JWeiland\Events2\Service\TimeService;
+use JWeiland\Events2\Utility\DateTimeUtility;
 use PHPUnit\Framework\Attributes\Test;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use PHPUnit\Framework\MockObject\MockObject;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
+use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
@@ -22,9 +27,11 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
  */
 class DayRecordBuilderServiceTest extends FunctionalTestCase
 {
-    protected DayRecordBuilderService $dayRecordBuilderService;
+    protected DayRecordBuilderService $subject;
 
     protected DayGeneratorService $dayGeneratorService;
+
+    protected TimeService|MockObject $timeServiceMock;
 
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
@@ -40,15 +47,28 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
     {
         parent::setUp();
 
-        $this->dayGeneratorService = GeneralUtility::makeInstance(DayGeneratorService::class);
+        $this->timeServiceMock = $this->createMock(TimeService::class);
 
-        $this->dayRecordBuilderService = new DayRecordBuilderService();
+        $this->dayGeneratorService = new DayGeneratorService(
+            $this->timeServiceMock,
+            new ExtConf(
+                recurringPast: 3,
+                recurringFuture: 6,
+            ),
+            new DateTimeUtility(),
+            $this->createMock(EventDispatcher::class),
+            $this->createMock(Logger::class),
+        );
+
+        $this->subject = new DayRecordBuilderService();
     }
 
     protected function tearDown(): void
     {
         unset(
-            $this->dayRecordBuilderService,
+            $this->timeServiceMock,
+            $this->dayGeneratorService,
+            $this->subject,
         );
 
         parent::tearDown();
@@ -57,8 +77,7 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
     #[Test]
     public function buildDayRecordsWithSingleEventWillCreateDayRecordForSingleEvents(): void
     {
-        $eventBegin = new \DateTimeImmutable();
-        $eventBegin = $eventBegin->modify('midnight');
+        $eventBegin = new \DateTimeImmutable('midnight');
 
         $eventRecord = [
             'uid' => 123,
@@ -73,22 +92,20 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
             'exceptions' => [],
         ];
 
-        $dayGeneratorResult = $this->dayGeneratorService->getDateTimeStorageForEventRecord($eventRecord);
+        $dayGeneratorResult = $this->dayGeneratorService->getDayGeneratorResultForEventRecord($eventRecord);
 
-        $this->dayRecordBuilderService->buildDayRecordsFor($dayGeneratorResult);
+        $this->subject->buildDayRecordsFor($dayGeneratorResult);
 
         self::assertArrayIsIdenticalToArrayIgnoringListOfKeys(
             [
                 'pid' => 0,
                 'hidden' => 0,
                 'fe_group' => 0,
-                't3ver_wsid' => 0,
                 'day' => (int)$eventBegin->format('U'),
                 'day_time' => (int)$eventBegin->format('U'),
                 'sort_day_time' => (int)$eventBegin->format('U'),
                 'same_day_time' => (int)$eventBegin->format('U'),
                 'is_removed_date' => 0,
-                'event' => 123,
             ],
             current($dayGeneratorResult->getDayRecords()),
             [
@@ -124,22 +141,20 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
             ],
         ];
 
-        $dayGeneratorResult = $this->dayGeneratorService->getDateTimeStorageForEventRecord($eventRecord);
+        $dayGeneratorResult = $this->dayGeneratorService->getDayGeneratorResultForEventRecord($eventRecord);
 
-        $this->dayRecordBuilderService->buildDayRecordsFor($dayGeneratorResult);
+        $this->subject->buildDayRecordsFor($dayGeneratorResult);
 
         self::assertArrayIsIdenticalToArrayIgnoringListOfKeys(
             [
                 'pid' => 0,
                 'hidden' => 0,
                 'fe_group' => 0,
-                't3ver_wsid' => 0,
                 'day' => (int)$tomorrow->format('U'),
                 'day_time' => (int)$tomorrow->format('U'),
                 'sort_day_time' => (int)$tomorrow->format('U'),
                 'same_day_time' => (int)$tomorrow->format('U'),
                 'is_removed_date' => 0,
-                'event' => 123,
             ],
             current($dayGeneratorResult->getDayRecords()),
             [
@@ -169,9 +184,9 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
             'exceptions' => [],
         ];
 
-        $dayGeneratorResult = $this->dayGeneratorService->getDateTimeStorageForEventRecord($eventRecord);
+        $dayGeneratorResult = $this->dayGeneratorService->getDayGeneratorResultForEventRecord($eventRecord);
 
-        $this->dayRecordBuilderService->buildDayRecordsFor($dayGeneratorResult);
+        $this->subject->buildDayRecordsFor($dayGeneratorResult);
 
         $dayRecords = $dayGeneratorResult->getDayRecords();
 
@@ -180,13 +195,11 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
                 'pid' => 0,
                 'hidden' => 0,
                 'fe_group' => 0,
-                't3ver_wsid' => 0,
                 'day' => (int)$eventBegin->format('U'),
                 'day_time' => (int)$eventBegin->format('U'),
                 'sort_day_time' => (int)$eventBegin->format('U'),
                 'same_day_time' => (int)$eventBegin->format('U'),
                 'is_removed_date' => 0,
-                'event' => 123,
             ],
             reset($dayRecords),
             [
@@ -200,13 +213,11 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
                 'pid' => 0,
                 'hidden' => 0,
                 'fe_group' => 0,
-                't3ver_wsid' => 0,
                 'day' => (int)$nextWeek->format('U'),
                 'day_time' => (int)$nextWeek->format('U'),
                 'sort_day_time' => (int)$nextWeek->format('U'),
                 'same_day_time' => (int)$nextWeek->format('U'),
                 'is_removed_date' => 0,
-                'event' => 123,
             ],
             next($dayRecords),
             [
@@ -220,13 +231,11 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
                 'pid' => 0,
                 'hidden' => 0,
                 'fe_group' => 0,
-                't3ver_wsid' => 0,
                 'day' => (int)$recurringEnd->format('U'),
                 'day_time' => (int)$recurringEnd->format('U'),
                 'sort_day_time' => (int)$recurringEnd->format('U'),
                 'same_day_time' => (int)$recurringEnd->format('U'),
                 'is_removed_date' => 0,
-                'event' => 123,
             ],
             next($dayRecords),
             [

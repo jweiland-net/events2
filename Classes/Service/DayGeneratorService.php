@@ -53,7 +53,7 @@ class DayGeneratorService
         protected readonly LoggerInterface $logger,
     ) {}
 
-    public function getDateTimeStorageForEventRecord(array $eventRecordInDefaultLanguage): DayGeneratorResult
+    public function getDayGeneratorResultForEventRecord(array $eventRecordInDefaultLanguage): DayGeneratorResult
     {
         $dayGeneratorResult = new DayGeneratorResult($eventRecordInDefaultLanguage);
 

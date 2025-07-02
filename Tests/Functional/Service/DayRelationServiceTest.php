@@ -180,7 +180,7 @@ class DayRelationServiceTest extends FunctionalTestCase
 
         $this->dayGeneratorServiceMock
             ->expects(self::once())
-            ->method('getDateTimeStorageForEventRecord')
+            ->method('getDayGeneratorResultForEventRecord')
             ->with(self::identicalTo($eventRecord))
             ->willReturn($dayGeneratorResult);
 
