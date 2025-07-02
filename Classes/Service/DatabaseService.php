@@ -18,9 +18,7 @@ use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
-use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer;
-use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -32,21 +30,6 @@ readonly class DatabaseService
         protected ExtConf $extConf,
         protected DateTimeUtility $dateTimeUtility,
     ) {}
-
-    /**
-     * Get column definitions from table
-     */
-    public function getColumnsFromTable(string $tableName): array
-    {
-        $output = [];
-        $connection = $this->getConnectionPool()->getConnectionForTable($tableName);
-        $statement = $connection->executeQuery('SHOW FULL COLUMNS FROM `' . $tableName . '`');
-        while ($fieldRow = $statement->fetchAssociative()) {
-            $output[$fieldRow['Field']] = $fieldRow;
-        }
-
-        return $output;
-    }
 
     /**
      * Truncate table by TableName
@@ -86,48 +69,6 @@ readonly class DatabaseService
     }
 
     /**
-     * With this method you get all current and future events of all event types.
-     * It does not select hidden records as eventRepository->findByIdentifier will not find them.
-     *
-     * @deprecated
-     */
-    public function getCurrentAndFutureEvents(): array
-    {
-        trigger_error(
-            'Using \JWeiland\Events2\Service\DatabaseService::getConstraintForSingleEvents is deprecated, please use getQueryBuilderForAllEvents.',
-            E_USER_DEPRECATED,
-        );
-
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_event');
-
-        $queryBuilder->getRestrictions()
-            ->removeAll()
-            ->add(GeneralUtility::makeInstance(HiddenRestriction::class))
-            ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
-
-        $orConstraints = [];
-
-        $orConstraints[] = $this->getConstraintForSingleEvents($queryBuilder);
-        $orConstraints[] = $this->getConstraintForDurationEvents($queryBuilder);
-        $orConstraints[] = $this->getConstraintForRecurringEvents($queryBuilder);
-
-        $events = $queryBuilder
-            ->select('uid', 'pid')
-            ->from('tx_events2_domain_model_event')
-            ->where(
-                $queryBuilder->expr()->or(...$orConstraints),
-            )
-            ->executeQuery()
-            ->fetchAllAssociative();
-
-        if (empty($events)) {
-            $events = [];
-        }
-
-        return $events;
-    }
-
-    /**
      * Get days in range.
      * This method was used by Ajax call: findDaysByMonth
      */
@@ -139,7 +80,7 @@ readonly class DatabaseService
     ): array {
         $constraint = [];
 
-        // Create basic query with QueryBuilder. Where-clause will be added dynamically
+        // Create a basic query with QueryBuilder. Where-clause will be added dynamically
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_day');
         $queryBuilder = $queryBuilder
             ->select('event.uid', 'event.title', 'day.day')
@@ -211,91 +152,6 @@ readonly class DatabaseService
             ->where(...$constraint)
             ->executeQuery()
             ->fetchAllAssociative();
-    }
-
-    /**
-     * @param QueryBuilder $queryBuilder
-     * @return string
-     * @deprecated
-     */
-    public function getConstraintForSingleEvents(QueryBuilder $queryBuilder): string
-    {
-        trigger_error(
-            'Using \JWeiland\Events2\Service\DatabaseService::getConstraintForSingleEvents is deprecated, please use getQueryBuilderForAllEvents.',
-            E_USER_DEPRECATED,
-        );
-
-        // add where clause for single events
-        return (string)$queryBuilder->expr()->and(
-            $queryBuilder->expr()->eq(
-                'event_type',
-                $queryBuilder->createNamedParameter('single'),
-            ),
-            $queryBuilder->expr()->gt(
-                'event_begin',
-                $queryBuilder->createNamedParameter(time(), Connection::PARAM_INT),
-            ),
-        );
-    }
-
-    /**
-     * @param QueryBuilder $queryBuilder
-     * @return string
-     * @deprecated
-     */
-    public function getConstraintForDurationEvents(QueryBuilder $queryBuilder): string
-    {
-        trigger_error(
-            'Using \JWeiland\Events2\Service\DatabaseService::getConstraintForSingleEvents is deprecated, please use getQueryBuilderForAllEvents.',
-            E_USER_DEPRECATED,
-        );
-
-        return (string)$queryBuilder->expr()->and(
-            $queryBuilder->expr()->eq(
-                'event_type',
-                $queryBuilder->createNamedParameter('duration'),
-            ),
-            $queryBuilder->expr()->or(
-                $queryBuilder->expr()->eq(
-                    'event_end',
-                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT),
-                ),
-                $queryBuilder->expr()->gt(
-                    'event_end',
-                    $queryBuilder->createNamedParameter(time(), Connection::PARAM_INT),
-                ),
-            ),
-        );
-    }
-
-    /**
-     * @param QueryBuilder $queryBuilder
-     * @return string
-     * @deprecated
-     */
-    public function getConstraintForRecurringEvents(QueryBuilder $queryBuilder): string
-    {
-        trigger_error(
-            'Using \JWeiland\Events2\Service\DatabaseService::getConstraintForSingleEvents is deprecated, please use getQueryBuilderForAllEvents.',
-            E_USER_DEPRECATED,
-        );
-
-        return (string)$queryBuilder->expr()->and(
-            $queryBuilder->expr()->eq(
-                'event_type',
-                $queryBuilder->createNamedParameter('recurring'),
-            ),
-            $queryBuilder->expr()->or(
-                $queryBuilder->expr()->eq(
-                    'recurring_end',
-                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT),
-                ),
-                $queryBuilder->expr()->gt(
-                    'recurring_end',
-                    $queryBuilder->createNamedParameter(time(), Connection::PARAM_INT),
-                ),
-            ),
-        );
     }
 
     /**
@@ -471,7 +327,7 @@ readonly class DatabaseService
     }
 
     /**
-     * Add Constraint for various columns of event table
+     * Add Constraint for various columns of the event table
      */
     public function addConstraintForEventColumn(
         QueryBuilder $queryBuilder,

@@ -19,7 +19,9 @@ use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Service\DayRelationService;
+use JWeiland\Events2\Utility\DateTimeUtility;
 use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
@@ -32,10 +34,6 @@ class DatabaseServiceTest extends FunctionalTestCase
 {
     protected DayRepository $dayRepository;
 
-    protected QuerySettingsInterface $querySettings;
-
-    protected ObjectManager $objectManager;
-
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
         'reactions',
@@ -44,27 +42,25 @@ class DatabaseServiceTest extends FunctionalTestCase
     protected array $testExtensionsToLoad = [
         'sjbr/static-info-tables',
         'jweiland/events2',
-        'jweiland/maps2',
     ];
 
     protected function setUp(): void
     {
-        self::markTestIncomplete('DatabaseServiceTest not updated until right now');
-
         parent::setUp();
 
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->dayRepository = $this->objectManager->get(DayRepository::class);
+        $GLOBALS['BE_USER'] = new BackendUserAuthentication();
 
-        $this->querySettings = $this->objectManager->get(QuerySettingsInterface::class);
-        $this->querySettings->setStoragePageIds([11, 40]);
+        $this->dayRepository = GeneralUtility::makeInstance(DayRepository::class);
 
-        $this->dayRepository->setDefaultQuerySettings($this->querySettings);
-        $persistenceManager = $this->objectManager->get(PersistenceManager::class);
-        $dayRelationService = $this->objectManager->get(DayRelationService::class);
+        $querySettings = GeneralUtility::makeInstance(QuerySettingsInterface::class);
+        $querySettings->setStoragePageIds([11, 40]);
 
-        $eventRepository = $this->objectManager->get(EventRepository::class);
-        $eventRepository->setDefaultQuerySettings($this->querySettings);
+        $this->dayRepository->setDefaultQuerySettings($querySettings);
+        $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
+        $dayRelationService = GeneralUtility::makeInstance(DayRelationService::class);
+
+        $eventRepository = GeneralUtility::makeInstance(EventRepository::class);
+        $eventRepository->setDefaultQuerySettings($querySettings);
 
         $organizer = new Organizer();
         $organizer->setPid(11);
@@ -99,10 +95,6 @@ class DatabaseServiceTest extends FunctionalTestCase
 
         $persistenceManager->persistAll();
 
-        $extConf = GeneralUtility::makeInstance(ExtConf::class);
-        $extConf->setRecurringPast(3);
-        $extConf->setRecurringFuture(6);
-
         $events = $eventRepository->findAll();
         foreach ($events as $event) {
             $dayRelationService->createDayRelations($event->getUid());
@@ -124,7 +116,14 @@ class DatabaseServiceTest extends FunctionalTestCase
         $eventBegin = new \DateTimeImmutable('first day of this month midnight');
         $eventEnd = new \DateTimeImmutable('last day of this month midnight');
 
-        $databaseService = $this->objectManager->get(DatabaseService::class);
+        $databaseService = new DatabaseService(
+            new ExtConf(
+                recurringPast: 3,
+                recurringFuture: 6,
+            ),
+            new DateTimeUtility(),
+        );
+
         $days = $databaseService->getDaysInRange($eventBegin, $eventEnd, [11]);
 
         self::assertGreaterThanOrEqual(
