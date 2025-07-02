@@ -25,7 +25,7 @@ use TYPO3\CMS\Core\Database\ReferenceIndex;
 readonly class DayRelationService
 {
     public function __construct(
-        protected DayGeneratorService $dayGenerator,
+        protected DayGeneratorService $dayGeneratorService,
         protected DayRecordService $dayRecordService,
         protected EventRecordService $eventRecordService,
         protected ExceptionRecordService $exceptionRecordService,
@@ -52,7 +52,7 @@ readonly class DayRelationService
             $this->dayRecordService->removeAllByEventUid($eventUid);
 
             $this->dayRecordService->bulkInsertAllDayRecords(
-                $this->dayGenerator->getDateTimeStorageForEventRecord($eventRecordInDefaultLanguage)->getDayRecords(),
+                $this->dayGeneratorService->getDateTimeStorageForEventRecord($eventRecordInDefaultLanguage)->getDayRecords(),
                 $eventUid,
                 $this->eventRecordService->getLanguageUidsOfTranslatedEventRecords($eventRecordInDefaultLanguage)
             );
@@ -71,11 +71,6 @@ readonly class DayRelationService
      */
     private function shouldSkip(array $eventRecord): bool
     {
-        if (!isset($eventRecord['uid'], $eventRecord['event_type'], $eventRecord['sys_language_uid'])) {
-            $this->logger->error('Missing required columns [uid, event_type, sys_language_uid] in event record: ' . $eventRecord['uid'] ?? 0);
-            return true;
-        }
-
         return $eventRecord['uid'] === 0
             || $eventRecord['event_type'] === ''
             || $eventRecord['sys_language_uid'] > 0;

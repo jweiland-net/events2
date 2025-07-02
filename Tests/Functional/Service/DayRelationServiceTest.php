@@ -21,6 +21,7 @@ use JWeiland\Events2\Service\Result\DayGeneratorResult;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
+use TYPO3\CMS\Core\Database\ReferenceIndex;
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -41,6 +42,8 @@ class DayRelationServiceTest extends FunctionalTestCase
 
     protected ExceptionRecordService|MockObject $exceptionRecordServiceMock;
 
+    protected ReferenceIndex|MockObject $referenceIndexMock;
+
     protected LoggerInterface|MockObject $loggerMock;
 
     protected array $coreExtensionsToLoad = [
@@ -57,15 +60,11 @@ class DayRelationServiceTest extends FunctionalTestCase
     {
         parent::setUp();
 
-        $this->extConf = new ExtConf(
-            recurringPast: 3,
-            recurringFuture: 6,
-        );
-
         $this->dayGeneratorServiceMock = $this->createMock(DayGeneratorService::class);
         $this->dayRecordServiceMock = $this->createMock(DayRecordService::class);
         $this->eventRecordServiceMock = $this->createMock(EventRecordService::class);
         $this->exceptionRecordServiceMock = $this->createMock(ExceptionRecordService::class);
+        $this->referenceIndexMock = $this->createMock(ReferenceIndex::class);
         $this->loggerMock = $this->createMock(Logger::class);
 
         $this->subject = new DayRelationService(
@@ -73,6 +72,7 @@ class DayRelationServiceTest extends FunctionalTestCase
             $this->dayRecordServiceMock,
             $this->eventRecordServiceMock,
             $this->exceptionRecordServiceMock,
+            $this->referenceIndexMock,
             $this->loggerMock,
         );
     }
@@ -80,7 +80,7 @@ class DayRelationServiceTest extends FunctionalTestCase
     protected function tearDown(): void
     {
         unset(
-            $this->extConf,
+            $this->referenceIndexMock,
             $this->exceptionRecordServiceMock,
             $this->eventRecordServiceMock,
             $this->dayRecordServiceMock,
@@ -92,14 +92,8 @@ class DayRelationServiceTest extends FunctionalTestCase
     }
 
     #[Test]
-    public function createDayRelationsWithEmptyRecordWillNotAddDays(): void
+    public function createDayRelationsWithMissingRecordWillSkipProcess(): void
     {
-        $this->eventRecordServiceMock
-            ->expects(self::atLeastOnce())
-            ->method('findByUid')
-            ->with(self::identicalTo(123))
-            ->willReturn([]);
-
         $this->loggerMock
             ->expects(self::atLeastOnce())
             ->method('warning')
@@ -107,100 +101,115 @@ class DayRelationServiceTest extends FunctionalTestCase
                 [self::stringContains('Event record could not be found'), null],
             ]);
 
-        self::assertSame(
-            [],
-            $this->subject->createDayRelations(123),
-        );
+        $this->dayRecordServiceMock
+            ->expects(self::never())
+            ->method('removeAllByEventUid');
+
+        $this->subject->createDayRelations(123);
     }
 
     #[Test]
-    public function createDayRelationsWithMissingEventColumnsWillNotAddDays(): void
+    public function createDayRelationsWithEmptyEventTypeWillSkipProcess(): void
     {
-        $this->eventRecordServiceMock
-            ->expects(self::atLeastOnce())
-            ->method('findByUid')
-            ->with(self::identicalTo(123))
-            ->willReturn([
+        $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_event');
+        $connection->insert(
+            'tx_events2_domain_model_event',
+            [
                 'uid' => 123,
-                'event_type' => 'single',
-            ]);
-
-        $this->loggerMock
-            ->expects(self::atLeastOnce())
-            ->method('error')
-            ->willReturnMap([
-                [self::stringContains('Missing required columns'), null],
-            ]);
-
-        self::assertSame(
-            [],
-            $this->subject->createDayRelations(123),
+                'event_type' => '',
+            ]
         );
+
+        $this->dayRecordServiceMock
+            ->expects(self::never())
+            ->method('removeAllByEventUid');
+
+        $this->subject->createDayRelations(123);
     }
 
     #[Test]
-    public function createDayRelationsWithInvalidEventWillNotAddDays(): void
+    public function createDayRelationsWithTranslatedEventWillSkipProcess(): void
     {
-        $this->eventRecordServiceMock
-            ->expects(self::atLeastOnce())
-            ->method('findByUid')
-            ->with(self::identicalTo(123))
-            ->willReturn([
+        $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_event');
+        $connection->insert(
+            'tx_events2_domain_model_event',
+            [
                 'uid' => 123,
-                'event_type' => 'single',
-                'sys_language_uid' => 2,
-            ]);
-
-        self::assertSame(
-            [],
-            $this->subject->createDayRelations(123),
+                'sys_language_uid' => 3,
+            ]
         );
+
+        $this->dayRecordServiceMock
+            ->expects(self::never())
+            ->method('removeAllByEventUid');
+
+        $this->subject->createDayRelations(123);
     }
 
     #[Test]
     public function createDayRelationsWillAddDays(): void
     {
-        $dayRecord = [
-            'uid' => 321,
-        ];
+        $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_event');
+        $connection->insert(
+            'tx_events2_domain_model_event',
+            [
+                'uid' => 123,
+                'event_type' => 'single',
+                'sys_language_uid' => 0,
+            ]
+        );
 
-        $eventRecord = [
-            'uid' => 123,
-            'event_type' => 'single',
-            'sys_language_uid' => 0,
+        $eventRecord = $connection->select(
+            ['*'],
+            'tx_events2_domain_model_event',
+            [
+                'uid' => 123,
+            ]
+        )->fetchAssociative();
+        $eventRecord['exceptions'] = [];
+
+        $dayRecords = [
+            [
+                'uid' => 1,
+                'pid' => 1,
+            ]
         ];
 
         $dayGeneratorResult = new DayGeneratorResult($eventRecord);
-        $dayGeneratorResult->addDayRecords($dayRecord);
-
-        $this->dayRecordServiceMock
-            ->expects(self::atLeastOnce())
-            ->method('removeAllByEventRecord');
+        $dayGeneratorResult->addDayRecords($dayRecords);
 
         $this->dayGeneratorServiceMock
-            ->expects(self::atLeastOnce())
+            ->expects(self::once())
             ->method('getDateTimeStorageForEventRecord')
+            ->with(self::identicalTo($eventRecord))
             ->willReturn($dayGeneratorResult);
 
-        $this->dayRecordServiceMock
-            ->expects(self::atLeastOnce())
-            ->method('bulkInsertAllDayRecords');
-
         $this->eventRecordServiceMock
-            ->expects(self::atLeastOnce())
-            ->method('findByUid')
-            ->with(self::identicalTo(123))
-            ->willReturn($eventRecord);
+            ->expects(self::once())
+            ->method('getLanguageUidsOfTranslatedEventRecords')
+            ->with(self::identicalTo($eventRecord))
+            ->willReturn([1, 2]);
 
-        self::assertSame(
-            array_merge(
-                $eventRecord,
-                [
-                    'exceptions' => [],
-                    'days' => $dayRecord,
-                ],
-            ),
-            $this->subject->createDayRelations(123),
-        );
+        $this->exceptionRecordServiceMock
+            ->expects(self::once())
+            ->method('findAllByEventUid')
+            ->with(self::identicalTo(123))
+            ->willReturn([]);
+
+        $this->dayRecordServiceMock
+            ->expects(self::once())
+            ->method('removeAllByEventUid')
+            ->with(self::identicalTo(123));
+
+        $this->dayRecordServiceMock
+            ->expects(self::once())
+            ->method('bulkInsertAllDayRecords')
+            ->with(
+                self::identicalTo($dayRecords),
+                self::identicalTo(123),
+                self::identicalTo([1, 2]),
+            );
+
+        $this->subject->createDayRelations(123);
     }
 }
