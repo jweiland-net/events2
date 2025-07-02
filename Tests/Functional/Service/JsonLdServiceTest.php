@@ -66,7 +66,7 @@ class JsonLdServiceTest extends FunctionalTestCase
                 'pid' => 11,
                 'title' => 'TYPO3',
                 'link' => 'https://www.typo3.org',
-            ]
+            ],
         );
         $linkUid = (int)$connection->lastInsertId();
 
@@ -77,7 +77,7 @@ class JsonLdServiceTest extends FunctionalTestCase
                 'pid' => 11,
                 'organizer' => 'Stefan',
                 'link' => $linkUid,
-            ]
+            ],
         );
         $organizerUid = (int)$connection->lastInsertId();
 
@@ -91,7 +91,7 @@ class JsonLdServiceTest extends FunctionalTestCase
                 'house_number' => '57',
                 'zip' => '70794',
                 'city' => 'Filderstadt',
-            ]
+            ],
         );
         $locationUid = (int)$connection->lastInsertId();
 
@@ -116,7 +116,7 @@ class JsonLdServiceTest extends FunctionalTestCase
                 'free_entry' => 1,
                 'organizers' => 1,
                 'location' => $locationUid,
-            ]
+            ],
         );
         $eventUid = (int)$connection->lastInsertId();
 
@@ -126,7 +126,7 @@ class JsonLdServiceTest extends FunctionalTestCase
             [
                 'uid_local' => $eventUid,
                 'uid_foreign' => $organizerUid,
-            ]
+            ],
         );
 
         $dayRelationService->createDayRelations($eventUid);
@@ -146,7 +146,7 @@ class JsonLdServiceTest extends FunctionalTestCase
                 'free_entry' => 0,
                 'organizers' => 1,
                 'location' => $locationUid,
-            ]
+            ],
         );
         $eventUid = (int)$connection->lastInsertId();
 
@@ -161,7 +161,7 @@ class JsonLdServiceTest extends FunctionalTestCase
                 'duration' => '02:00',
                 'time_end' => '10:00',
                 'event' => $eventUid,
-            ]
+            ],
         );
 
         $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_event_organizer_mm');
@@ -170,7 +170,7 @@ class JsonLdServiceTest extends FunctionalTestCase
             [
                 'uid_local' => $eventUid,
                 'uid_foreign' => $organizerUid,
-            ]
+            ],
         );
 
         $dayRelationService->createDayRelations($eventUid);
