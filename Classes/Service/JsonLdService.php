@@ -61,8 +61,6 @@ class JsonLdService
 
     /**
      * Helper method for PhpUnit
-     *
-     * @return array[]
      */
     public function getCollectedJsonLdData(): array
     {

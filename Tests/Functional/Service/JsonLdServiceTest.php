@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Tests\Functional\Service;
 
-use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Factory\TimeFactory;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
@@ -25,6 +24,9 @@ use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Service\JsonLdService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
+use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
@@ -53,15 +55,12 @@ class JsonLdServiceTest extends FunctionalTestCase
 
     protected function setUp(): void
     {
-        self::markTestIncomplete('JsonLdServiceTest not updated until right now');
-
-        $_SERVER['HTTP_HOST'] = 'example.com';
-        $_SERVER['REQUEST_URI'] = 'index.php';
-
         parent::setUp();
 
-        $this->importDataSet('ntf://Database/pages.xml');
-        $this->setUpFrontendRootPage(1);
+        $GLOBALS['BE_USER'] = new BackendUserAuthentication();
+
+        $request = new ServerRequest('https://www.example.com/typo3', 'GET');
+        $GLOBALS['TYPO3_REQUEST'] = $request->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_BE);
 
         $this->querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
         $this->querySettings->setStoragePageIds([11, 40]);
@@ -136,10 +135,6 @@ class JsonLdServiceTest extends FunctionalTestCase
 
         $persistenceManager->persistAll();
 
-        $extConf = GeneralUtility::makeInstance(ExtConf::class);
-        $extConf->setRecurringPast(3);
-        $extConf->setRecurringFuture(6);
-
         $events = $eventRepository->findAll();
         foreach ($events as $event) {
             $dayRelationService->createDayRelations($event->getUid());
@@ -158,7 +153,6 @@ class JsonLdServiceTest extends FunctionalTestCase
     #[Test]
     public function addJsonLdAddsEventBeginDate(): void
     {
-        /** @var Day $day */
         $day = $this->dayRepository->findByIdentifier(1);
 
         $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
@@ -173,7 +167,6 @@ class JsonLdServiceTest extends FunctionalTestCase
     #[Test]
     public function addJsonLdAddsEventEndDate(): void
     {
-        /** @var Day $day */
         $day = $this->dayRepository->findByIdentifier(1);
 
         $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
@@ -188,7 +181,6 @@ class JsonLdServiceTest extends FunctionalTestCase
     #[Test]
     public function addJsonLdAddsTimeStartDate(): void
     {
-        /** @var Day $day */
         $day = $this->dayRepository->findByIdentifier(3);
 
         $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
@@ -203,7 +195,6 @@ class JsonLdServiceTest extends FunctionalTestCase
     #[Test]
     public function addJsonLdAddsTimeEntryDate(): void
     {
-        /** @var Day $day */
         $day = $this->dayRepository->findByIdentifier(3);
 
         $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
@@ -218,7 +209,6 @@ class JsonLdServiceTest extends FunctionalTestCase
     #[Test]
     public function addJsonLdAddsDuration(): void
     {
-        /** @var Day $day */
         $day = $this->dayRepository->findByIdentifier(3);
 
         $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
@@ -238,7 +228,6 @@ class JsonLdServiceTest extends FunctionalTestCase
     #[Test]
     public function addJsonLdAddsTimeEndDate(): void
     {
-        /** @var Day $day */
         $day = $this->dayRepository->findByIdentifier(3);
 
         $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
@@ -253,7 +242,6 @@ class JsonLdServiceTest extends FunctionalTestCase
     #[Test]
     public function addJsonLdAddsEventTitle(): void
     {
-        /** @var Day $day */
         $day = $this->dayRepository->findByIdentifier(3);
 
         $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
@@ -268,7 +256,6 @@ class JsonLdServiceTest extends FunctionalTestCase
     #[Test]
     public function addJsonLdAddsEventDescription(): void
     {
-        /** @var Day $day */
         $day = $this->dayRepository->findByIdentifier(3);
 
         $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
@@ -283,7 +270,6 @@ class JsonLdServiceTest extends FunctionalTestCase
     #[Test]
     public function addJsonLdAddsEventUrl(): void
     {
-        /** @var Day $day */
         $day = $this->dayRepository->findByIdentifier(3);
 
         $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
@@ -298,7 +284,6 @@ class JsonLdServiceTest extends FunctionalTestCase
     #[Test]
     public function addJsonLdAddsEventFreeEntry(): void
     {
-        /** @var Day $day */
         $day = $this->dayRepository->findByIdentifier(1);
 
         $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
@@ -309,7 +294,6 @@ class JsonLdServiceTest extends FunctionalTestCase
             $jsonLdService->getCollectedJsonLdData()['isAccessibleForFree'],
         );
 
-        /** @var Day $day */
         $day = $this->dayRepository->findByIdentifier(3);
 
         $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
@@ -324,7 +308,6 @@ class JsonLdServiceTest extends FunctionalTestCase
     #[Test]
     public function addJsonLdAddsEventOffer(): void
     {
-        /** @var Day $day */
         $day = $this->dayRepository->findByIdentifier(3);
 
         $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
@@ -349,7 +332,6 @@ class JsonLdServiceTest extends FunctionalTestCase
     #[Test]
     public function addJsonLdAddsEventLocation(): void
     {
-        /** @var Day $day */
         $day = $this->dayRepository->findByIdentifier(3);
 
         $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
@@ -386,7 +368,6 @@ class JsonLdServiceTest extends FunctionalTestCase
     #[Test]
     public function addJsonLdAddsEventOrganizer(): void
     {
-        /** @var Day $day */
         $day = $this->dayRepository->findByIdentifier(3);
 
         $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
