@@ -54,7 +54,7 @@ readonly class DayRelationService
             $this->dayRecordService->bulkInsertAllDayRecords(
                 $this->dayGeneratorService->getDateTimeStorageForEventRecord($eventRecordInDefaultLanguage)->getDayRecords(),
                 $eventUid,
-                $this->eventRecordService->getLanguageUidsOfTranslatedEventRecords($eventRecordInDefaultLanguage)
+                $this->eventRecordService->getLanguageUidsOfTranslatedEventRecords($eventRecordInDefaultLanguage),
             );
         } catch (\Throwable $exception) {
             $this->logger->error(sprintf(

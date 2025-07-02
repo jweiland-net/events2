@@ -57,7 +57,7 @@ readonly class DayRecordBuilderService
         $dayTime = $baseDate->modify(sprintf(
             '+%d hour +%d minute',
             $timeResult->getHour(),
-            $timeResult->getMinute()
+            $timeResult->getMinute(),
         ));
 
         return [

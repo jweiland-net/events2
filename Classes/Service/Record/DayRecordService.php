@@ -83,7 +83,7 @@ readonly class DayRecordService
                 [
                     'def_lang_event_uid' => $eventUid,
                     't3ver_wsid' => $this->getBackendUser()->workspace,
-                ]
+                ],
             )->fetchAllAssociative();
 
             foreach ($dayRecordsToDelete as $dayRecordToDelete) {
@@ -128,7 +128,7 @@ readonly class DayRecordService
                 [
                     'sys_language_uid' => 0,
                     't3ver_wsid' => $this->getBackendUser()->workspace,
-                ]
+                ],
             )->fetchAllAssociative();
         }
 
@@ -162,7 +162,7 @@ readonly class DayRecordService
         $existingLiveDayRecordsToBeMarkedAsDeleted = array_filter(
             $existingLiveDayRecords,
             fn($dayRecordOfLive, $dayRecordKeyOfLive) => $dayRecordKeyOfLive > $lastDayRecordKey,
-            ARRAY_FILTER_USE_BOTH
+            ARRAY_FILTER_USE_BOTH,
         );
 
         foreach ($existingLiveDayRecordsToBeMarkedAsDeleted as $existingLiveDayRecord) {
@@ -176,7 +176,7 @@ readonly class DayRecordService
                 self::TABLE,
                 $connection->insert(self::TABLE, $existingLiveDayRecord),
                 false,
-                $this->getBackendUser()->workspace
+                $this->getBackendUser()->workspace,
             );
         }
 
@@ -189,7 +189,7 @@ readonly class DayRecordService
                 'tx_events2_domain_model_event',
                 (int)($workspaceVersionOfEventRecord['_ORIG_uid'] ?? $workspaceVersionOfEventRecord['uid']),
                 false,
-                $this->getBackendUser()->workspace
+                $this->getBackendUser()->workspace,
             );
         }
     }
@@ -213,7 +213,7 @@ readonly class DayRecordService
             if ($dayRecordsInDefaultLanguage !== []) {
                 $l10nParent = array_key_exists(
                     $newDayRecordKey,
-                    $dayRecordsInDefaultLanguage
+                    $dayRecordsInDefaultLanguage,
                 ) ? (int)$dayRecordsInDefaultLanguage[$newDayRecordKey]['uid'] : 0;
             }
 

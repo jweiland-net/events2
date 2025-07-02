@@ -117,7 +117,7 @@ class DayRelationServiceTest extends FunctionalTestCase
             [
                 'uid' => 123,
                 'event_type' => '',
-            ]
+            ],
         );
 
         $this->dayRecordServiceMock
@@ -136,7 +136,7 @@ class DayRelationServiceTest extends FunctionalTestCase
             [
                 'uid' => 123,
                 'sys_language_uid' => 3,
-            ]
+            ],
         );
 
         $this->dayRecordServiceMock
@@ -156,7 +156,7 @@ class DayRelationServiceTest extends FunctionalTestCase
                 'uid' => 123,
                 'event_type' => 'single',
                 'sys_language_uid' => 0,
-            ]
+            ],
         );
 
         $eventRecord = $connection->select(
@@ -164,7 +164,7 @@ class DayRelationServiceTest extends FunctionalTestCase
             'tx_events2_domain_model_event',
             [
                 'uid' => 123,
-            ]
+            ],
         )->fetchAssociative();
         $eventRecord['exceptions'] = [];
 
@@ -172,7 +172,7 @@ class DayRelationServiceTest extends FunctionalTestCase
             [
                 'uid' => 1,
                 'pid' => 1,
-            ]
+            ],
         ];
 
         $dayGeneratorResult = new DayGeneratorResult($eventRecord);

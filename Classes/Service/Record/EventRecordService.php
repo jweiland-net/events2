@@ -83,16 +83,16 @@ class EventRecordService
             ->where(
                 $queryBuilder->expr()->eq(
                     't3ver_wsid',
-                    $queryBuilder->createNamedParameter($eventRecordInDefaultLanguage['t3ver_wsid'] ?? 0, Connection::PARAM_INT)
+                    $queryBuilder->createNamedParameter($eventRecordInDefaultLanguage['t3ver_wsid'] ?? 0, Connection::PARAM_INT),
                 ),
                 $queryBuilder->expr()->eq(
                     $GLOBALS['TCA'][self::TABLE]['ctrl']['transOrigPointerField'],
-                    $queryBuilder->createNamedParameter($eventRecordInDefaultLanguage['uid'], Connection::PARAM_INT)
+                    $queryBuilder->createNamedParameter($eventRecordInDefaultLanguage['uid'], Connection::PARAM_INT),
                 ),
                 $queryBuilder->expr()->neq(
                     $GLOBALS['TCA'][self::TABLE]['ctrl']['languageField'],
-                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT)
-                )
+                    $queryBuilder->createNamedParameter(0, Connection::PARAM_INT),
+                ),
             )
             ->executeQuery();
 
@@ -103,7 +103,6 @@ class EventRecordService
 
         return $sysLanguageUids;
     }
-
 
     protected function getQueryBuilder(QueryRestrictionContainerInterface $restrictionContainer = null): QueryBuilder
     {
