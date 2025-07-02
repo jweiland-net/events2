@@ -23,7 +23,7 @@ class DateTimeResult
 
     public function __construct(
         private readonly \DateTimeImmutable $date,
-        private bool $isRemovedDate = false,
+        private readonly bool $isRemovedDate = false,
         private ?TimeResult $firstTimeResult = null,
     ) {
         $this->timeResultStorage = new \ArrayObject();
@@ -45,11 +45,6 @@ class DateTimeResult
     public function isRemovedDate(): bool
     {
         return $this->isRemovedDate;
-    }
-
-    public function setIsRemovedDate(bool $isRemovedDate): void
-    {
-        $this->isRemovedDate = $isRemovedDate;
     }
 
     /**

@@ -140,12 +140,11 @@ readonly class TimeService
         $exceptionRecord = $eventRecord['exceptions'][$exceptionUid] ?? [];
 
         if (
-            isset($exceptionRecord['hidden'])
-            && (int)$exceptionRecord['hidden'] === 0
+            (int)($exceptionRecord['hidden'] ?? 1) === 0
             && in_array($exceptionRecord['exception_type'] ?? '', ['Add', 'Time'], true)
         ) {
             $exceptionDate = $this->dateTimeUtility->convert($exceptionRecord['exception_date'] ?? 0);
-            return $exceptionDate != null && $exceptionDate == $dateTimeResult->getDate(); // comparing object values
+            return $exceptionDate !== null && $exceptionDate == $dateTimeResult->getDate(); // comparing object values
         }
 
         return false;
