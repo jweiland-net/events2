@@ -173,6 +173,7 @@ class DataHandlerTest extends FunctionalTestCase
         $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
         $GLOBALS['BE_USER'] = new BackendUserAuthentication();
         $GLOBALS['BE_USER']->user = $user;
+        $GLOBALS['BE_USER']->workspace = 0;
         $GLOBALS['BE_USER']->fetchGroupData();
 
         $dataHandler = new DataHandler();

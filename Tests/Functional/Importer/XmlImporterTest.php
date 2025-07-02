@@ -101,6 +101,7 @@ class XmlImporterTest extends FunctionalTestCase
         );
 
         $GLOBALS['BE_USER'] = new BackendUserAuthentication();
+        $GLOBALS['BE_USER']->workspace = 0;
     }
 
     protected function tearDown(): void

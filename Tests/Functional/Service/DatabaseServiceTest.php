@@ -49,6 +49,7 @@ class DatabaseServiceTest extends FunctionalTestCase
         parent::setUp();
 
         $GLOBALS['BE_USER'] = new BackendUserAuthentication();
+        $GLOBALS['BE_USER']->workspace = 0;
 
         $this->dayRepository = GeneralUtility::makeInstance(DayRepository::class);
 
