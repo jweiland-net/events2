@@ -50,7 +50,7 @@ class TimeServiceTest extends FunctionalTestCase
         $this->timeRecordServiceMock = $this->createMock(TimeRecordService::class);
         $this->dayRecordBuilderServiceMock = $this->createMock(DayRecordBuilderService::class);
         $this->dayRecordBuilderServiceMock
-            ->expects($this->once())
+            ->expects(self::once())
             ->method('buildDayRecordsFor');
 
         $this->subject = new TimeService(
@@ -81,7 +81,7 @@ class TimeServiceTest extends FunctionalTestCase
 
         $dateTimeResult = new DateTimeResult(
             new \DateTimeImmutable('midnight'),
-            false
+            false,
         );
 
         $dayGeneratorResult = new DayGeneratorResult($eventRecord);
@@ -92,7 +92,7 @@ class TimeServiceTest extends FunctionalTestCase
         foreach ($dayGeneratorResult->getDateTimeResultStorageSorted() as $dateTimeResult) {
             self::assertCount(
                 0,
-                $dateTimeResult->getTimeResultStorage()
+                $dateTimeResult->getTimeResultStorage(),
             );
         }
     }
@@ -181,7 +181,7 @@ class TimeServiceTest extends FunctionalTestCase
 
         $dateTimeResult = new DateTimeResult(
             new \DateTimeImmutable('midnight'),
-            false
+            false,
         );
 
         $dayGeneratorResult = new DayGeneratorResult($eventRecord);
@@ -201,7 +201,7 @@ class TimeServiceTest extends FunctionalTestCase
         foreach ($dayGeneratorResult->getDateTimeResultStorageSorted() as $dateTimeResult) {
             self::assertCount(
                 0,
-                $dateTimeResult->getTimeResultStorage()
+                $dateTimeResult->getTimeResultStorage(),
             );
         }
     }
@@ -254,12 +254,12 @@ class TimeServiceTest extends FunctionalTestCase
         foreach ($dayGeneratorResult->getDateTimeResultStorageSorted() as $dateTimeResult) {
             self::assertCount(
                 1,
-                $dateTimeResult->getTimeResultStorage()
+                $dateTimeResult->getTimeResultStorage(),
             );
             foreach ($dateTimeResult->getTimeResultStorage() as $timeResult) {
                 self::assertEquals(
                     $exceptionTimeRecord,
-                    $timeResult->getTimeRecord()
+                    $timeResult->getTimeRecord(),
                 );
             }
         }
@@ -333,12 +333,12 @@ class TimeServiceTest extends FunctionalTestCase
         foreach ($dayGeneratorResult->getDateTimeResultStorageSorted() as $dateTimeResult) {
             self::assertCount(
                 1,
-                $dateTimeResult->getTimeResultStorage()
+                $dateTimeResult->getTimeResultStorage(),
             );
             foreach ($dateTimeResult->getTimeResultStorage() as $timeResult) {
                 self::assertEquals(
                     $exceptionTimeRecordMatching,
-                    $timeResult->getTimeRecord()
+                    $timeResult->getTimeRecord(),
                 );
             }
         }
@@ -411,12 +411,12 @@ class TimeServiceTest extends FunctionalTestCase
         foreach ($dayGeneratorResult->getDateTimeResultStorageSorted() as $dateTimeResult) {
             self::assertCount(
                 1,
-                $dateTimeResult->getTimeResultStorage()
+                $dateTimeResult->getTimeResultStorage(),
             );
             foreach ($dateTimeResult->getTimeResultStorage() as $timeResult) {
                 self::assertEquals(
                     $exceptionTimeRecordMatching,
-                    $timeResult->getTimeRecord()
+                    $timeResult->getTimeRecord(),
                 );
             }
         }
@@ -489,12 +489,12 @@ class TimeServiceTest extends FunctionalTestCase
         foreach ($dayGeneratorResult->getDateTimeResultStorageSorted() as $dateTimeResult) {
             self::assertCount(
                 1,
-                $dateTimeResult->getTimeResultStorage()
+                $dateTimeResult->getTimeResultStorage(),
             );
             foreach ($dateTimeResult->getTimeResultStorage() as $timeResult) {
                 self::assertEquals(
                     $exceptionTimeRecordMatching,
-                    $timeResult->getTimeRecord()
+                    $timeResult->getTimeRecord(),
                 );
             }
         }
@@ -539,7 +539,7 @@ class TimeServiceTest extends FunctionalTestCase
         foreach ($dayGeneratorResult->getDateTimeResultStorageSorted() as $dateTimeResult) {
             self::assertCount(
                 0,
-                $dateTimeResult->getTimeResultStorage()
+                $dateTimeResult->getTimeResultStorage(),
             );
         }
     }
@@ -582,12 +582,12 @@ class TimeServiceTest extends FunctionalTestCase
         foreach ($dayGeneratorResult->getDateTimeResultStorageSorted() as $dateTimeResult) {
             self::assertCount(
                 1,
-                $dateTimeResult->getTimeResultStorage()
+                $dateTimeResult->getTimeResultStorage(),
             );
             foreach ($dateTimeResult->getTimeResultStorage() as $timeResult) {
                 self::assertEquals(
                     $differentTimeRecord,
-                    $timeResult->getTimeRecord()
+                    $timeResult->getTimeRecord(),
                 );
             }
         }
@@ -631,12 +631,12 @@ class TimeServiceTest extends FunctionalTestCase
         foreach ($dayGeneratorResult->getDateTimeResultStorageSorted() as $dateTimeResult) {
             self::assertCount(
                 1,
-                $dateTimeResult->getTimeResultStorage()
+                $dateTimeResult->getTimeResultStorage(),
             );
             foreach ($dateTimeResult->getTimeResultStorage() as $timeResult) {
                 self::assertEquals(
                     $eventTimeRecord,
-                    $timeResult->getTimeRecord()
+                    $timeResult->getTimeRecord(),
                 );
             }
         }
@@ -680,12 +680,12 @@ class TimeServiceTest extends FunctionalTestCase
         foreach ($dayGeneratorResult->getDateTimeResultStorageSorted() as $dateTimeResult) {
             self::assertCount(
                 1,
-                $dateTimeResult->getTimeResultStorage()
+                $dateTimeResult->getTimeResultStorage(),
             );
             foreach ($dateTimeResult->getTimeResultStorage() as $timeResult) {
                 self::assertEquals(
                     $multipleTimeRecord,
-                    $timeResult->getTimeRecord()
+                    $timeResult->getTimeRecord(),
                 );
             }
         }
@@ -739,7 +739,7 @@ class TimeServiceTest extends FunctionalTestCase
         foreach ($dayGeneratorResult->getDateTimeResultStorageSorted() as $dateTimeResult) {
             self::assertCount(
                 2,
-                $dateTimeResult->getTimeResultStorage()
+                $dateTimeResult->getTimeResultStorage(),
             );
         }
     }
