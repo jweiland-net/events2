@@ -30,16 +30,18 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  */
 class JsonLdService
 {
-    protected string $dateFormat = 'Y-m-d';
+    protected const DATE_FORMAT = 'Y-m-d';
 
-    protected string $dateTimeFormat = 'Y-m-d\TH:i:s';
+    protected const DATE_TIME_FORMAT = 'Y-m-d\TH:i:s';
 
     protected array $data = [
         '@context' => 'http://schema.org',
         '@type' => 'Event',
     ];
 
-    public function __construct(protected readonly TimeFactory $timeFactory) {}
+    public function __construct(
+        protected readonly TimeFactory $timeFactory,
+    ) {}
 
     /**
      * Read values from day and event record to build a json-ld string for page header
@@ -49,7 +51,7 @@ class JsonLdService
         $this->collectData($day);
 
         $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
-        // as long as all JS methods will render a script-tag with type "text/javascript", we have to
+        // as long as all JS methods will render a script-tag with the type "text/javascript", we have to
         // add our own script-Tag
         $pageRenderer->addHeaderData(
             sprintf(
@@ -92,26 +94,26 @@ class JsonLdService
     }
 
     /**
-     * If an event have a Time record, we add startDate by time_begin column
+     * If an event has a Time record, we add startDate by time_begin column
      *
      * @link: https://schema.org/DateTime
      */
     protected function addStartDateOfTimeToData(Time $time): void
     {
         if ($time->getTimeBeginAsDateTime() instanceof \DateTimeImmutable) {
-            $this->data['startDate'] = $time->getTimeBeginAsDateTime()->format($this->dateTimeFormat);
+            $this->data['startDate'] = $time->getTimeBeginAsDateTime()->format(self::DATE_TIME_FORMAT);
         }
     }
 
     /**
-     * If an event have a Time record, we add doorTime by time_entry column
+     * If an event has a Time record, we add doorTime by time_entry column
      *
      * @link: https://schema.org/DateTime
      */
     protected function addDoorTimeOfTimeToData(Time $time): void
     {
         if ($time->getTimeEntryAsDateTime() instanceof \DateTimeImmutable) {
-            $this->data['doorTime'] = $time->getTimeEntryAsDateTime()->format($this->dateTimeFormat);
+            $this->data['doorTime'] = $time->getTimeEntryAsDateTime()->format(self::DATE_TIME_FORMAT);
         }
     }
 
@@ -133,14 +135,14 @@ class JsonLdService
     }
 
     /**
-     * If an event have a Time record, we add endDate by time_end column
+     * If an event has a Time record, we add endDate by time_end column
      *
      * @link: https://schema.org/DateTime
      */
     protected function addEndDateOfTimeToData(Time $time): void
     {
         if ($time->getTimeEndAsDateTime() instanceof \DateTimeImmutable) {
-            $this->data['endDate'] = $time->getTimeEndAsDateTime()->format($this->dateTimeFormat);
+            $this->data['endDate'] = $time->getTimeEndAsDateTime()->format(self::DATE_TIME_FORMAT);
         }
     }
 
@@ -159,7 +161,7 @@ class JsonLdService
             return;
         }
 
-        $this->data['startDate'] = $event->getEventBegin()->format($this->dateFormat);
+        $this->data['startDate'] = $event->getEventBegin()->format(self::DATE_FORMAT);
     }
 
     /**
@@ -181,7 +183,7 @@ class JsonLdService
             return;
         }
 
-        $this->data['endDate'] = $event->getEventEnd()->format($this->dateFormat);
+        $this->data['endDate'] = $event->getEventEnd()->format(self::DATE_FORMAT);
     }
 
     /**
@@ -215,7 +217,7 @@ class JsonLdService
     }
 
     /**
-     * Add information to data, if event is for free
+     * Add information to data if event is for free
      *
      * @link: https://schema.org/isAccessibleForFree
      */

@@ -16,7 +16,7 @@ use TYPO3\CMS\Extbase\Annotation as Extbase;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /**
- * This class contains all getter and setters for a Time.
+ * This class contains all getters and setters for a Time.
  */
 class Time extends AbstractEntity
 {

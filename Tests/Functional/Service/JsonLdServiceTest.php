@@ -12,13 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Functional\Service;
 
 use JWeiland\Events2\Domain\Factory\TimeFactory;
-use JWeiland\Events2\Domain\Model\Event;
-use JWeiland\Events2\Domain\Model\Link;
-use JWeiland\Events2\Domain\Model\Location;
-use JWeiland\Events2\Domain\Model\Organizer;
-use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Domain\Repository\DayRepository;
-use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Service\JsonLdService;
 use JWeiland\Events2\Utility\DateTimeUtility;
@@ -27,10 +21,7 @@ use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
-use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
-use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
@@ -39,8 +30,6 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 class JsonLdServiceTest extends FunctionalTestCase
 {
     protected DayRepository $dayRepository;
-
-    protected QuerySettingsInterface $querySettings;
 
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
@@ -57,87 +46,134 @@ class JsonLdServiceTest extends FunctionalTestCase
         parent::setUp();
 
         $GLOBALS['BE_USER'] = new BackendUserAuthentication();
+        $GLOBALS['BE_USER']->workspace = 0;
 
         $request = new ServerRequest('https://www.example.com/typo3', 'GET');
         $GLOBALS['TYPO3_REQUEST'] = $request->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_BE);
 
-        $this->querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
-        $this->querySettings->setStoragePageIds([11, 40]);
+        $querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
+        $querySettings->setStoragePageIds([11, 40]);
 
         $this->dayRepository = GeneralUtility::makeInstance(DayRepository::class);
-        $this->dayRepository->setDefaultQuerySettings($this->querySettings);
+        $this->dayRepository->setDefaultQuerySettings($querySettings);
 
-        $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
         $dayRelationService = GeneralUtility::makeInstance(DayRelationService::class);
 
-        $eventRepository = GeneralUtility::makeInstance(EventRepository::class);
-        $eventRepository->setDefaultQuerySettings($this->querySettings);
-        $eventRepository->setDefaultOrderings([
-            'uid' => QueryInterface::ORDER_ASCENDING,
-        ]);
+        $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_link');
+        $connection->insert(
+            'tx_events2_domain_model_link',
+            [
+                'pid' => 11,
+                'title' => 'TYPO3',
+                'link' => 'https://www.typo3.org',
+            ]
+        );
+        $linkUid = (int)$connection->lastInsertId();
 
-        $link = new Link();
-        $link->setTitle('TYPO3');
-        $link->setLink('https://www.typo3.org');
+        $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_organizer');
+        $connection->insert(
+            'tx_events2_domain_model_organizer',
+            [
+                'pid' => 11,
+                'organizer' => 'Stefan',
+                'link' => $linkUid,
+            ]
+        );
+        $organizerUid = (int)$connection->lastInsertId();
 
-        $organizer = new Organizer();
-        $organizer->setPid(11);
-        $organizer->setOrganizer('Stefan');
-        $organizer->setLink($link);
-
-        $location = new Location();
-        $location->setPid(11);
-        $location->setLocation('jweiland.net');
-        $location->setStreet('Echterdinger Straße');
-        $location->setHouseNumber('57');
-        $location->setZip('70794');
-        $location->setCity('Filderstadt');
+        $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_location');
+        $connection->insert(
+            'tx_events2_domain_model_location',
+            [
+                'pid' => 11,
+                'location' => 'jweiland.net',
+                'street' => 'Echterdinger Straße',
+                'house_number' => '57',
+                'zip' => '70794',
+                'city' => 'Filderstadt',
+            ]
+        );
+        $locationUid = (int)$connection->lastInsertId();
 
         $eventBegin = new \DateTimeImmutable('first day of this month midnight');
         $eventBegin = $eventBegin
             ->modify('+4 days')
             ->modify('-2 months');
+
         $eventEnd = $eventBegin->modify('+1 day');
 
-        $event = GeneralUtility::makeInstance(Event::class);
-        $event->setPid(11);
-        $event->setEventType('duration');
-        $event->setTopOfList(false);
-        $event->setTitle('Week market');
-        $event->setTeaser('');
-        $event->setEventBegin($eventBegin);
-        $event->setEventEnd($eventEnd);
-        $event->setFreeEntry(true);
-        $event->addOrganizer($organizer);
-        $event->setLocation($location);
-        $persistenceManager->add($event);
+        $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_event');
+        $connection->insert(
+            'tx_events2_domain_model_event',
+            [
+                'pid' => 11,
+                'event_type' => 'duration',
+                'top_of_list' => 0,
+                'title' => 'Week market',
+                'teaser' => '',
+                'event_begin' => (int)$eventBegin->format('U'),
+                'event_end' => (int)$eventEnd->format('U'),
+                'free_entry' => 1,
+                'organizers' => 1,
+                'location' => $locationUid,
+            ]
+        );
+        $eventUid = (int)$connection->lastInsertId();
 
-        $time = new Time();
-        $time->setTimeBegin('08:00');
-        $time->setTimeEntry('07:00');
-        $time->setDuration('02:00');
-        $time->setTimeEnd('10:00');
+        $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_event_organizer_mm');
+        $connection->insert(
+            'tx_events2_event_organizer_mm',
+            [
+                'uid_local' => $eventUid,
+                'uid_foreign' => $organizerUid,
+            ]
+        );
 
-        $event = GeneralUtility::makeInstance(Event::class);
-        $event->setPid(11);
-        $event->setEventType('single');
-        $event->setTopOfList(false);
-        $event->setTitle('Birthday');
-        $event->setDetailInformation('Happy birthday to you, happy birthday to you, ...');
-        $event->setEventBegin($eventBegin);
-        $event->setEventTime($time);
-        $event->setTicketLink($link);
-        $event->setFreeEntry(false);
-        $event->addOrganizer($organizer);
-        $event->setLocation($location);
-        $persistenceManager->add($event);
+        $dayRelationService->createDayRelations($eventUid);
 
-        $persistenceManager->persistAll();
+        $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_event');
+        $connection->insert(
+            'tx_events2_domain_model_event',
+            [
+                'pid' => 11,
+                'event_type' => 'single',
+                'top_of_list' => 0,
+                'title' => 'Birthday',
+                'detail_information' => 'Happy birthday to you, happy birthday to you, ...',
+                'event_begin' => (int)$eventBegin->format('U'),
+                'event_time' => 1,
+                'ticket_link' => $linkUid,
+                'free_entry' => 0,
+                'organizers' => 1,
+                'location' => $locationUid,
+            ]
+        );
+        $eventUid = (int)$connection->lastInsertId();
 
-        $events = $eventRepository->findAll();
-        foreach ($events as $event) {
-            $dayRelationService->createDayRelations($event->getUid());
-        }
+        $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_time');
+        $connection->insert(
+            'tx_events2_domain_model_time',
+            [
+                'pid' => 11,
+                'type' => 'event_time',
+                'time_begin' => '08:00',
+                'time_entry' => '07:00',
+                'duration' => '02:00',
+                'time_end' => '10:00',
+                'event' => $eventUid,
+            ]
+        );
+
+        $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_event_organizer_mm');
+        $connection->insert(
+            'tx_events2_event_organizer_mm',
+            [
+                'uid_local' => $eventUid,
+                'uid_foreign' => $organizerUid,
+            ]
+        );
+
+        $dayRelationService->createDayRelations($eventUid);
     }
 
     protected function tearDown(): void
