@@ -11,11 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Tests\Functional\DataHandling;
 
-use JWeiland\Events2\Domain\Model\Event;
-use JWeiland\Events2\Domain\Model\Location;
-use JWeiland\Events2\Domain\Model\Organizer;
 use JWeiland\Events2\Domain\Repository\DayRepository;
-use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Service\DayRelationService;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
@@ -23,8 +19,8 @@ use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -44,67 +40,89 @@ class DataHandlerTest extends FunctionalTestCase
 
     protected array $testExtensionsToLoad = [
         'sjbr/static-info-tables',
-        'jweiland/maps2',
         'jweiland/events2',
     ];
 
     protected function setUp(): void
     {
-        self::markTestIncomplete('DataHandlerTest not updated until right now');
-
         parent::setUp();
 
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->dayRepository = $this->objectManager->get(DayRepository::class);
-        $this->querySettings = $this->objectManager->get(QuerySettingsInterface::class);
+        $GLOBALS['BE_USER'] = new BackendUserAuthentication();
+        $GLOBALS['BE_USER']->user['username'] = 'acceptanceTestSetup';
+        $GLOBALS['BE_USER']->user['admin'] = 1;
+        $GLOBALS['BE_USER']->user['uid'] = 1;
+        $GLOBALS['BE_USER']->workspace = 0;
+
+        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->createFromUserPreferences($GLOBALS['BE_USER']);
+
+        $this->querySettings = GeneralUtility::makeInstance(QuerySettingsInterface::class);
         $this->querySettings->setStoragePageIds([11, 40]);
+
+        $this->dayRepository = GeneralUtility::makeInstance(DayRepository::class);
         $this->dayRepository->setDefaultQuerySettings($this->querySettings);
 
-        $persistenceManager = $this->objectManager->get(PersistenceManager::class);
-        $dayRelationService = $this->objectManager->get(DayRelationService::class);
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/pages.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/be_groups.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/be_users.csv');
 
-        $eventRepository = $this->objectManager->get(EventRepository::class);
-        $eventRepository->setDefaultQuerySettings($this->querySettings);
+        $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_organizer');
+        $connection->insert(
+            'tx_events2_domain_model_organizer',
+            [
+                'pid' => 11,
+                'organizer' => 'Stefan',
+            ],
+        );
+        $organizerUid = (int)$connection->lastInsertId();
 
-        $this->importDataSet(__DIR__ . '/../Fixtures/pages.xml');
-        $this->importDataSet(__DIR__ . '/../Fixtures/be_groups.xml');
-        $this->importDataSet(__DIR__ . '/../Fixtures/be_users.xml');
-
-        $organizer = new Organizer();
-        $organizer->setPid(11);
-        $organizer->setOrganizer('Stefan');
-
-        $location = new Location();
-        $location->setPid(11);
-        $location->setLocation('Market');
+        $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_location');
+        $connection->insert(
+            'tx_events2_domain_model_location',
+            [
+                'pid' => 11,
+                'location' => 'Market',
+            ],
+        );
+        $locationUid = (int)$connection->lastInsertId();
 
         $eventBegin = new \DateTimeImmutable('midnight');
-        $eventBegin->modify('first day of this month')->modify('+4 days')->modify('-2 months');
+        $eventBegin = $eventBegin->modify('first day of this month');
+        $eventBegin = $eventBegin->modify('+4 days');
+        $eventBegin = $eventBegin->modify('-2 months');
 
-        $event = GeneralUtility::makeInstance(Event::class);
-        $event->setPid(11);
-        $event->setEventType('recurring');
-        $event->setTopOfList(false);
-        $event->setTitle('Week market');
-        $event->setTeaser('');
-        $event->setEventBegin($eventBegin);
-        $event->setXth(31);
-        $event->setWeekday(16);
-        $event->setEachWeeks(0);
-        $event->setEachMonths(0);
-        $event->setRecurringEnd(null);
-        $event->setFreeEntry(false);
-        $event->addOrganizer($organizer);
-        $event->setLocation($location);
+        $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_event');
+        $connection->insert(
+            'tx_events2_domain_model_event',
+            [
+                'pid' => 11,
+                'event_type' => 'recurring',
+                'top_of_list' => 0,
+                'title' => 'Week market',
+                'teaser' => '',
+                'event_begin' => (int)$eventBegin->format('U'),
+                'xth' => 31,
+                'weekday' => 16,
+                'each_weeks' => 0,
+                'each_months' => 0,
+                'recurring_end' => 0,
+                'free_entry' => 0,
+                'organizers' => 1,
+                'location' => $locationUid,
+            ],
+        );
+        $eventUid = (int)$connection->lastInsertId();
 
-        $persistenceManager->add($event);
+        $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_event_organizer_mm');
+        $connection->insert(
+            'tx_events2_event_organizer_mm',
+            [
+                'uid_local' => $eventUid,
+                'uid_foreign' => $organizerUid,
+            ],
+        );
 
-        $persistenceManager->persistAll();
-
-        $events = $eventRepository->findAll();
-        foreach ($events as $event) {
-            $dayRelationService->createDayRelations($event->getUid());
-        }
+        $dayRelationService = GeneralUtility::makeInstance(DayRelationService::class);
+        $dayRelationService->createDayRelations($eventUid);
     }
 
     protected function tearDown(): void
@@ -119,10 +137,8 @@ class DataHandlerTest extends FunctionalTestCase
     #[Test]
     public function deleteEventByAdminWillRemoveDayRecords(): void
     {
-        $this->setUpBackendUserFromFixture(1);
-        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
-
-        $dataHandler = new DataHandler();
+        /** @var DataHandler $dataHandler */
+        $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
         $dataHandler->start(
             [],
             [
@@ -137,47 +153,56 @@ class DataHandlerTest extends FunctionalTestCase
         $dataHandler->process_cmdmap();
 
         $eventBegin = new \DateTimeImmutable('today midnight');
-        $eventBegin->modify('first day of this month');
+        $eventBegin = $eventBegin->modify('first day of this month');
 
         $eventEnd = new \DateTimeImmutable('today midnight');
-        $eventEnd->modify('last day of this month');
+        $eventEnd = $eventEnd->modify('last day of this month');
 
-        $amountOfDeletedDays = $this->getDatabaseConnection()->selectCount(
-            '*',
-            'tx_events2_domain_model_day',
-            sprintf(
-                'day >= %d AND day < %d',
-                $eventBegin->format('U'),
-                $eventEnd->format('U'),
-            ),
-        );
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_day');
+        $numberOfDeletedDays = $queryBuilder
+            ->count('*')
+            ->from('tx_events2_domain_model_day')
+            ->where(
+                $queryBuilder->expr()->gte(
+                    'day',
+                    $queryBuilder->createNamedParameter($eventBegin->format('U'), Connection::PARAM_INT),
+                ),
+                $queryBuilder->expr()->lte(
+                    'day',
+                    $queryBuilder->createNamedParameter($eventEnd->format('U'), Connection::PARAM_INT),
+                )
+            )
+            ->executeQuery()
+            ->fetchOne();
 
         self::assertSame(
             0,
-            $amountOfDeletedDays,
+            $numberOfDeletedDays,
         );
     }
 
     #[Test]
     public function deleteEventByEditorWillRemoveDayRecords(): void
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('be_users');
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('be_users');
         $user = $queryBuilder
             ->select('*')
             ->from('be_users')
-            ->where('uid=2')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid',
+                    $queryBuilder->createNamedParameter(2, Connection::PARAM_INT),
+                )
+            )
             ->executeQuery()
             ->fetchAssociative();
 
-        $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageService::class);
-        $GLOBALS['BE_USER'] = new BackendUserAuthentication();
         $GLOBALS['BE_USER']->user = $user;
         $GLOBALS['BE_USER']->workspace = 0;
         $GLOBALS['BE_USER']->fetchGroupData();
 
-        $dataHandler = new DataHandler();
-        $dataHandler->admin = 0;
+        $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
+        $dataHandler->admin = false;
         $dataHandler->start(
             [],
             [
@@ -192,13 +217,12 @@ class DataHandlerTest extends FunctionalTestCase
         $dataHandler->process_cmdmap();
 
         $eventBegin = new \DateTimeImmutable('today midnight');
-        $eventBegin->modify('first day of this month');
+        $eventBegin = $eventBegin->modify('first day of this month');
 
         $eventEnd = new \DateTimeImmutable('today midnight');
-        $eventEnd->modify('last day of this month');
+        $eventEnd = $eventEnd->modify('last day of this month');
 
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_events2_domain_model_day');
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_day');
         $queryBuilder->getRestrictions()->removeAll();
         $amountOfDeletedDays = $queryBuilder
             ->count('*')
