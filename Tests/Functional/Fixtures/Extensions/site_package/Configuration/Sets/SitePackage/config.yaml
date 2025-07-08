@@ -1,0 +1,5 @@
+name: jweiland/sitepackage
+label: Site Package
+
+dependencies:
+  - typo3/fluid-styled-content-css

@@ -1,3 +1,5 @@
+config.spamProtectEmailAddresses = 5
+
 page = PAGE
 page.typeNum = 0
 page.10 < styles.content.get

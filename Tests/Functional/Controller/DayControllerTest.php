@@ -12,11 +12,12 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Functional\Controller;
 
 use JWeiland\Events2\Service\DayRelationService;
+use JWeiland\Events2\Tests\Functional\SiteHandling\SiteBasedTestTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
-use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Core\Bootstrap;
+use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
@@ -24,7 +25,7 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
  */
 class DayControllerTest extends FunctionalTestCase
 {
-    protected ServerRequestInterface $serverRequest;
+    use SiteBasedTestTrait;
 
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
@@ -32,34 +33,43 @@ class DayControllerTest extends FunctionalTestCase
     ];
 
     protected array $testExtensionsToLoad = [
+        __DIR__ . '/../Fixtures/Extensions/site_package',
         'sjbr/static-info-tables',
         'jweiland/events2',
     ];
 
+    protected const LANGUAGE_PRESETS = [
+        'EN' => [
+            'id' => 0,
+            'title' => 'English',
+            'locale' => 'en_US.UTF8',
+            'iso' => 'en'
+        ],
+    ];
+
     protected function setUp(): void
     {
-        self::markTestIncomplete('DayControllerTest not updated until right now');
-
         parent::setUp();
 
-        $this->importCSVDataSet('ntf://Database/pages.xml');
-        $this->setUpFrontendRootPage(1, [__DIR__ . '/../Fixtures/TypoScript/setup.typoscript']);
+        $GLOBALS['BE_USER'] = new BackendUserAuthentication();
+        $GLOBALS['BE_USER']->workspace = 0;
 
-        $this->serverRequest = $this->getServerRequestForFrontendMode();
-
-        $this->getDatabaseConnection()->insertArray(
+        $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_organizer');
+        $connection->insert(
             'tx_events2_domain_model_organizer',
             [
-                'pid' => 1,
+                'pid' => 11,
                 'organizer' => 'Stefan',
             ],
         );
 
         $date = new \DateTimeImmutable('midnight');
-        $this->getDatabaseConnection()->insertArray(
+
+        $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_event');
+        $connection->insert(
             'tx_events2_domain_model_event',
             [
-                'pid' => 1,
+                'pid' => 11,
                 'event_type' => 'single',
                 'event_begin' => (int)$date->format('U'),
                 'title' => 'Today',
@@ -67,10 +77,11 @@ class DayControllerTest extends FunctionalTestCase
         );
 
         $date = new \DateTimeImmutable('tomorrow midnight');
-        $this->getDatabaseConnection()->insertArray(
+
+        $connection->insert(
             'tx_events2_domain_model_event',
             [
-                'pid' => 1,
+                'pid' => 11,
                 'event_type' => 'single',
                 'event_begin' => (int)$date->format('U'),
                 'title' => 'Tomorrow',
@@ -78,7 +89,8 @@ class DayControllerTest extends FunctionalTestCase
             ],
         );
 
-        $this->getDatabaseConnection()->insertArray(
+        $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_event_organizer_mm');
+        $connection->insert(
             'tx_events2_event_organizer_mm',
             [
                 'uid_local' => 2,
@@ -86,39 +98,41 @@ class DayControllerTest extends FunctionalTestCase
             ],
         );
 
-        // ServerRequest is needed for following
-        $GLOBALS['TYPO3_REQUEST'] = $this->serverRequest;
         $dayRelationService = GeneralUtility::makeInstance(DayRelationService::class);
-        $statement = $this->getDatabaseConnection()->select('*', 'tx_events2_domain_model_event', 'pid=1');
-        while ($eventRecord = $statement->fetchAssociative()) {
-            $dayRelationService->createDayRelations($eventRecord['uid']);
+
+        $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_event');
+        $queryResult = $connection->select(
+            ['*'],
+            'tx_events2_domain_model_event',
+            [
+                'pid' => 11,
+            ],
+        );
+
+        while ($eventRecord = $queryResult->fetchAssociative()) {
+            $dayRelationService->createDayRelations((int)$eventRecord['uid']);
         }
     }
 
-    protected function tearDown(): void
-    {
-        unset(
-            $this->request,
-            $GLOBALS['TSFE'],
-        );
-
-        parent::tearDown();
-    }
-
     #[Test]
-    public function bootstrapListActionWillListAllEvents(): void
+    public function listActionWillListAllEvents(): void
     {
-        $this->startUpTSFE($this->serverRequest);
-
-        $extbaseBootstrap = GeneralUtility::makeInstance(Bootstrap::class);
-        $content = $extbaseBootstrap->run(
-            '',
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Events2PageTree.csv');
+        $this->writeSiteConfiguration(
+            'events2-controller-test',
+            $this->buildSiteConfiguration(1, '/'),
             [
-                'extensionName' => 'Events2',
-                'pluginName' => 'List',
-                'format' => 'txt',
+                $this->buildDefaultLanguageConfiguration('EN', '/'),
             ],
+            [],
+            ['jweiland/sitepackage'],
         );
+
+        $response = $this->executeFrontendSubRequest(
+            (new InternalRequest())->withPageId(2)
+        );
+
+        $content = (string)$response->getBody();
 
         self::assertStringContainsString(
             'Event Title 1: Today',
@@ -131,30 +145,13 @@ class DayControllerTest extends FunctionalTestCase
     }
 
     #[Test]
-    public function bootstrapListActionWillListEventsWithOrganizer(): void
+    public function listActionWillListEventsWithOrganizer(): void
     {
-        $this->startUpTSFE(
-            $this->serverRequest,
-            1,
-            '0',
-            [
-                'tx_events2_list' => [
-                    'filter' => [
-                        'organizer' => '1',
-                    ],
-                ],
-            ],
+        $response = $this->executeFrontendSubRequest(
+            (new InternalRequest())->withPageId(2)
         );
 
-        $extbaseBootstrap = GeneralUtility::makeInstance(Bootstrap::class);
-        $content = $extbaseBootstrap->run(
-            '',
-            [
-                'extensionName' => 'Events2',
-                'pluginName' => 'List',
-                'format' => 'txt',
-            ],
-        );
+        $content = (string)$response->getBody();
 
         self::assertStringContainsString(
             'Event Title 2: Tomorrow',
@@ -175,35 +172,15 @@ class DayControllerTest extends FunctionalTestCase
 
     #[Test]
     #[DataProvider('listWithFilledFilterDataProvider')]
-    public function bootstrapWithVariousListTypesWillAssignFilterToView(string $listType): void
+    public function variousListTypesWillAssignFilterToView(string $listType): void
     {
         $today = new \DateTimeImmutable('today midnight');
 
-        $this->startUpTSFE(
-            $this->serverRequest,
-            1,
-            '0',
-            [
-                'tx_events2_list' => [
-                    'filter' => [
-                        'timestamp' => $today->format('U'),
-                    ],
-                ],
-            ],
+        $response = $this->executeFrontendSubRequest(
+            (new InternalRequest())->withPageId(2)
         );
 
-        $extbaseBootstrap = GeneralUtility::makeInstance(Bootstrap::class);
-        $content = $extbaseBootstrap->run(
-            '',
-            [
-                'extensionName' => 'Events2',
-                'pluginName' => 'List',
-                'format' => 'txt',
-                'settings' => [
-                    'listType' => $listType,
-                ],
-            ],
-        );
+        $content = (string)$response->getBody();
 
         self::assertStringContainsString(
             'Event Title 1: Today',
@@ -212,31 +189,15 @@ class DayControllerTest extends FunctionalTestCase
     }
 
     #[Test]
-    public function bootstrapShowActionWillShowEvent(): void
+    public function showActionWillShowEvent(): void
     {
         $today = new \DateTimeImmutable('today midnight');
 
-        $this->startUpTSFE(
-            $this->serverRequest,
-            1,
-            '0',
-            [
-                'tx_events2_list' => [
-                    'event' => '1',
-                    'timestamp' => $today->format('U'),
-                ],
-            ],
+        $response = $this->executeFrontendSubRequest(
+            (new InternalRequest())->withPageId(2)
         );
 
-        $extbaseBootstrap = GeneralUtility::makeInstance(Bootstrap::class);
-        $content = $extbaseBootstrap->run(
-            '',
-            [
-                'extensionName' => 'Events2',
-                'pluginName' => 'List',
-                'format' => 'txt',
-            ],
-        );
+        $content = (string)$response->getBody();
 
         self::assertStringContainsString(
             'Event Title 1: Today',

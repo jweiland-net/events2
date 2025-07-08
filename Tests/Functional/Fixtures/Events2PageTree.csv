@@ -1,0 +1,10 @@
+"pages"
+,"uid","pid","title","slug","crdate","tstamp","hidden","deleted","doktype","is_siteroot"
+,1,0,"Root","/",1551167909,1551167936,0,0,1,1
+,2,1,"Events2 List","events2-list",1551167909,1551167936,0,0,1,0
+,3,2,"Events2 Show","events2-show",1551167909,1551167936,0,0,1,0
+,11,2,"Storage for events2","events2-storage",1551167909,1551167936,0,0,254,0
+"tt_content"
+,"uid","pid","CType","header","hidden","deleted"
+,1,2,"events2_list","Events2 List",0,0
+,2,3,"events2_show","Events2 Show",0,0
