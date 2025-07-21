@@ -36,9 +36,9 @@ class SaveEventFinisher extends AbstractFinisher
     ];
 
     public function __construct(
-        readonly protected ConnectionPool $connectionPool,
-        readonly protected PathSegmentHelper $pathSegmentHelper,
-        readonly protected DayRelationService $dayRelationService,
+        protected readonly ConnectionPool $connectionPool,
+        protected readonly PathSegmentHelper $pathSegmentHelper,
+        protected readonly DayRelationService $dayRelationService,
     ) {}
 
     /**

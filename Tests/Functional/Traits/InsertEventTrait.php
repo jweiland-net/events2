@@ -21,7 +21,7 @@ trait InsertEventTrait
         string $title,
         \DateTimeImmutable $eventBegin,
         string $timeBegin = '',
-        string $organizer = ''
+        string $organizer = '',
     ): void {
         $eventRecord = [
             'pid' => Events2Constants::PAGE_STORAGE,
@@ -69,7 +69,7 @@ trait InsertEventTrait
                 'tx_events2_event_organizer_mm',
                 [
                     'uid_local' => $eventUid,
-                    'uid_foreign' => $organizerUid
+                    'uid_foreign' => $organizerUid,
                 ],
             );
         }

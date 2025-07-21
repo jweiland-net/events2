@@ -48,7 +48,7 @@ class DayControllerTest extends FunctionalTestCase
             'id' => 0,
             'title' => 'English',
             'locale' => 'en_US.UTF8',
-            'iso' => 'en'
+            'iso' => 'en',
         ],
     ];
 
@@ -77,16 +77,16 @@ class DayControllerTest extends FunctionalTestCase
     {
         $this->insertEvent(
             title: 'Event Title 1: Today',
-            eventBegin: new \DateTimeImmutable('today midnight')
+            eventBegin: new \DateTimeImmutable('today midnight'),
         );
         $this->insertEvent(
             title: 'Event Title 2: Tomorrow',
-            eventBegin: new \DateTimeImmutable('tomorrow midnight')
+            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
         );
         $this->createDayRelations();
 
         $content = (string)$this->executeFrontendSubRequest(
-            (new InternalRequest())->withPageId(Events2Constants::PAGE_LIST)
+            (new InternalRequest())->withPageId(Events2Constants::PAGE_LIST),
         )->getBody();
 
         self::assertStringContainsString(
@@ -103,27 +103,27 @@ class DayControllerTest extends FunctionalTestCase
     public function listActionWithTypeListLatestWillListSevenEvents(): void
     {
         $eventBegin = new \DateTimeImmutable('today midnight');
-        for ($i = 1; $i <= 10; $i++ ) {
+        for ($i = 1; $i <= 10; $i++) {
             $this->insertEvent(
                 title: 'Event Title ' . $i,
-                eventBegin: $eventBegin
+                eventBegin: $eventBegin,
             );
             $eventBegin = $eventBegin->modify('+1 day');
         }
         $this->createDayRelations();
 
         $content = (string)$this->executeFrontendSubRequest(
-            (new InternalRequest())->withPageId(Events2Constants::PAGE_LIST_LATEST)
+            (new InternalRequest())->withPageId(Events2Constants::PAGE_LIST_LATEST),
         )->getBody();
 
-        for ($i = 1; $i <= 7; $i++ ) {
+        for ($i = 1; $i <= 7; $i++) {
             self::assertStringContainsString(
                 'Event Title ' . $i,
                 $content,
             );
         }
 
-        for ($i = 8; $i <= 10; $i++ ) {
+        for ($i = 8; $i <= 10; $i++) {
             self::assertStringNotContainsString(
                 'Event Title ' . $i,
                 $content,
@@ -136,20 +136,20 @@ class DayControllerTest extends FunctionalTestCase
     {
         $this->insertEvent(
             title: 'Event Title Yesterday',
-            eventBegin: new \DateTimeImmutable('yesterday midnight')
+            eventBegin: new \DateTimeImmutable('yesterday midnight'),
         );
         $this->insertEvent(
             title: 'Event Title Today',
-            eventBegin: new \DateTimeImmutable('today midnight')
+            eventBegin: new \DateTimeImmutable('today midnight'),
         );
         $this->insertEvent(
             title: 'Event Title Tomorrow',
-            eventBegin: new \DateTimeImmutable('tomorrow midnight')
+            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
         );
         $this->createDayRelations();
 
         $content = (string)$this->executeFrontendSubRequest(
-            (new InternalRequest())->withPageId(Events2Constants::PAGE_LIST_TODAY)
+            (new InternalRequest())->withPageId(Events2Constants::PAGE_LIST_TODAY),
         )->getBody();
 
         self::assertStringContainsString(
@@ -171,24 +171,24 @@ class DayControllerTest extends FunctionalTestCase
     {
         $this->insertEvent(
             title: 'Event Title last week',
-            eventBegin: new \DateTimeImmutable('monday last week midnight')
+            eventBegin: new \DateTimeImmutable('monday last week midnight'),
         );
         $this->insertEvent(
             title: 'Event Title Tuesday',
-            eventBegin: new \DateTimeImmutable('tuesday this week midnight')
+            eventBegin: new \DateTimeImmutable('tuesday this week midnight'),
         );
         $this->insertEvent(
             title: 'Event Title Friday',
-            eventBegin: new \DateTimeImmutable('friday this week midnight')
+            eventBegin: new \DateTimeImmutable('friday this week midnight'),
         );
         $this->insertEvent(
             title: 'Event Title next week',
-            eventBegin: new \DateTimeImmutable('wednesday next week midnight')
+            eventBegin: new \DateTimeImmutable('wednesday next week midnight'),
         );
         $this->createDayRelations();
 
         $content = (string)$this->executeFrontendSubRequest(
-            (new InternalRequest())->withPageId(Events2Constants::PAGE_LIST_THIS_WEEK)
+            (new InternalRequest())->withPageId(Events2Constants::PAGE_LIST_THIS_WEEK),
         )->getBody();
 
         self::assertStringContainsString(
@@ -214,24 +214,24 @@ class DayControllerTest extends FunctionalTestCase
     {
         $this->insertEvent(
             title: 'Event Title last 2 months',
-            eventBegin: new \DateTimeImmutable('-2 months midnight')
+            eventBegin: new \DateTimeImmutable('-2 months midnight'),
         );
         $this->insertEvent(
             title: 'Event Title Tuesday',
-            eventBegin: new \DateTimeImmutable('tuesday this week midnight')
+            eventBegin: new \DateTimeImmutable('tuesday this week midnight'),
         );
         $this->insertEvent(
             title: 'Event Title next week',
-            eventBegin: new \DateTimeImmutable('wednesday next week midnight')
+            eventBegin: new \DateTimeImmutable('wednesday next week midnight'),
         );
         $this->insertEvent(
             title: 'Event Title next 2 months',
-            eventBegin: new \DateTimeImmutable('+2 months midnight')
+            eventBegin: new \DateTimeImmutable('+2 months midnight'),
         );
         $this->createDayRelations();
 
         $content = (string)$this->executeFrontendSubRequest(
-            (new InternalRequest())->withPageId(Events2Constants::PAGE_LIST_NEXT_4_WEEKS)
+            (new InternalRequest())->withPageId(Events2Constants::PAGE_LIST_NEXT_4_WEEKS),
         )->getBody();
 
         self::assertStringContainsString(
@@ -257,12 +257,12 @@ class DayControllerTest extends FunctionalTestCase
     {
         $this->insertEvent(
             title: 'Event Title without organizer',
-            eventBegin: new \DateTimeImmutable('today midnight')
+            eventBegin: new \DateTimeImmutable('today midnight'),
         );
         $this->insertEvent(
             title: 'Event Title with organizer',
             eventBegin: new \DateTimeImmutable('tomorrow midnight'),
-            organizer: 'jweiland.net'
+            organizer: 'jweiland.net',
         );
         $this->createDayRelations();
 
@@ -270,8 +270,8 @@ class DayControllerTest extends FunctionalTestCase
             'tx_events2_list' => [
                 'filter' => [
                     'organizer' => 1,
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $content = (string)$this->executeFrontendSubRequest(
@@ -299,7 +299,7 @@ class DayControllerTest extends FunctionalTestCase
 
         $this->insertEvent(
             title: 'Event Title Yesterday',
-            eventBegin: new \DateTimeImmutable('yesterday midnight')
+            eventBegin: new \DateTimeImmutable('yesterday midnight'),
         );
         $this->insertEvent(
             title: 'Event Title Today 08:00',
@@ -313,7 +313,7 @@ class DayControllerTest extends FunctionalTestCase
         );
         $this->insertEvent(
             title: 'Event Title Tomorrow',
-            eventBegin: new \DateTimeImmutable('tomorrow midnight')
+            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
         );
         $this->createDayRelations();
 
@@ -321,8 +321,8 @@ class DayControllerTest extends FunctionalTestCase
             'tx_events2_list' => [
                 'filter' => [
                     'timestamp' => $todayMidnight->format('U'),
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $content = (string)$this->executeFrontendSubRequest(
@@ -368,7 +368,7 @@ class DayControllerTest extends FunctionalTestCase
             'tx_events2_show' => [
                 'event' => '1',
                 'timestamp' => $tomorrowMidnight->format('U'),
-            ]
+            ],
         ];
 
         $cacheHashCalculator = GeneralUtility::makeInstance(CacheHashCalculator::class);
@@ -377,7 +377,7 @@ class DayControllerTest extends FunctionalTestCase
         $hashParameters['id'] = Events2Constants::PAGE_SHOW;
         $uri = http_build_query($hashParameters, '', '&', PHP_QUERY_RFC3986);
         $parameters['cHash'] = $cacheHashCalculator->calculateCacheHash(
-            $cacheHashCalculator->getRelevantParameters($uri)
+            $cacheHashCalculator->getRelevantParameters($uri),
         );
 
         $content = (string)$this->executeFrontendSubRequest(

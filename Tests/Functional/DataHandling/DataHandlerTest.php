@@ -169,7 +169,7 @@ class DataHandlerTest extends FunctionalTestCase
                 $queryBuilder->expr()->lte(
                     'day',
                     $queryBuilder->createNamedParameter($eventEnd->format('U'), Connection::PARAM_INT),
-                )
+                ),
             )
             ->executeQuery()
             ->fetchOne();
@@ -191,7 +191,7 @@ class DataHandlerTest extends FunctionalTestCase
                 $queryBuilder->expr()->eq(
                     'uid',
                     $queryBuilder->createNamedParameter(2, Connection::PARAM_INT),
-                )
+                ),
             )
             ->executeQuery()
             ->fetchAssociative();

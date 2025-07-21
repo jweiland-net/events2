@@ -36,7 +36,7 @@ trait SiteBasedTestTrait
 
         static::fail(
             'Array was not empty as expected, but contained these items:' . LF
-            . '* ' . implode(LF . '* ', $items)
+            . '* ' . implode(LF . '* ', $items),
         );
     }
 
@@ -69,7 +69,7 @@ trait SiteBasedTestTrait
 
     protected function mergeSiteConfiguration(
         string $identifier,
-        array $overrides
+        array $overrides,
     ): void {
         $siteConfiguration = $this->get(SiteConfiguration::class);
         $siteWriter = $this->get(SiteWriter::class);
@@ -84,7 +84,7 @@ trait SiteBasedTestTrait
 
     protected function buildSiteConfiguration(
         int $rootPageId,
-        string $base = ''
+        string $base = '',
     ): array {
         return [
             'rootPageId' => $rootPageId,
@@ -94,7 +94,7 @@ trait SiteBasedTestTrait
 
     protected function buildDefaultLanguageConfiguration(
         string $identifier,
-        string $base
+        string $base,
     ): array {
         $configuration = $this->buildLanguageConfiguration($identifier, $base);
         $configuration['flag'] = 'global';
@@ -106,7 +106,7 @@ trait SiteBasedTestTrait
         string $identifier,
         string $base,
         array $fallbackIdentifiers = [],
-        ?string $fallbackType = null
+        ?string $fallbackType = null,
     ): array {
         $preset = $this->resolveLanguagePreset($identifier);
 
@@ -127,7 +127,7 @@ trait SiteBasedTestTrait
                     $preset = $this->resolveLanguagePreset($fallbackIdentifier);
                     return $preset['id'];
                 },
-                $fallbackIdentifiers
+                $fallbackIdentifiers,
             );
             $configuration['fallbackType'] = $fallbackType ?? 'fallback';
             $configuration['fallbacks'] = implode(',', $fallbackIds);
@@ -144,7 +144,7 @@ trait SiteBasedTestTrait
         if (!isset(static::LANGUAGE_PRESETS[$identifier])) {
             throw new \LogicException(
                 sprintf('Undefined preset identifier "%s"', $identifier),
-                1533893665
+                1533893665,
             );
         }
         return static::LANGUAGE_PRESETS[$identifier];
@@ -162,7 +162,7 @@ trait SiteBasedTestTrait
             if (isset($modifiedInstructions[$identifier]) || $request->getInstruction($identifier) !== null) {
                 $modifiedInstructions[$identifier] = $this->mergeInstruction(
                     $modifiedInstructions[$identifier] ?? $request->getInstruction($identifier),
-                    $instruction
+                    $instruction,
                 );
             } else {
                 $modifiedInstructions[$identifier] = $instruction;
@@ -182,11 +182,11 @@ trait SiteBasedTestTrait
             /** @var TypoScriptInstruction $other */
             $typoScript = array_replace_recursive(
                 $current->getTypoScript() ?? [],
-                $other->getTypoScript() ?? []
+                $other->getTypoScript() ?? [],
             );
             $constants = array_replace_recursive(
                 $current->getConstants() ?? [],
-                $other->getConstants() ?? []
+                $other->getConstants() ?? [],
             );
             if ($typoScript !== []) {
                 $current = $current->withTypoScript($typoScript);
