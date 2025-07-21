@@ -15,6 +15,7 @@ use JWeiland\Events2\Domain\Factory\TimeFactory;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Service\JsonLdService;
+use JWeiland\Events2\Tests\Functional\Events2Constants;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
@@ -63,7 +64,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         $connection->insert(
             'tx_events2_domain_model_link',
             [
-                'pid' => 11,
+                'pid' => Events2Constants::PAGE_STORAGE,
                 'title' => 'TYPO3',
                 'link' => 'https://www.typo3.org',
             ],
@@ -74,7 +75,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         $connection->insert(
             'tx_events2_domain_model_organizer',
             [
-                'pid' => 11,
+                'pid' => Events2Constants::PAGE_STORAGE,
                 'organizer' => 'Stefan',
                 'link' => $linkUid,
             ],
@@ -85,7 +86,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         $connection->insert(
             'tx_events2_domain_model_location',
             [
-                'pid' => 11,
+                'pid' => Events2Constants::PAGE_STORAGE,
                 'location' => 'jweiland.net',
                 'street' => 'Echterdinger Straße',
                 'house_number' => '57',
@@ -106,7 +107,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         $connection->insert(
             'tx_events2_domain_model_event',
             [
-                'pid' => 11,
+                'pid' => Events2Constants::PAGE_STORAGE,
                 'event_type' => 'duration',
                 'top_of_list' => 0,
                 'title' => 'Week market',
@@ -135,7 +136,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         $connection->insert(
             'tx_events2_domain_model_event',
             [
-                'pid' => 11,
+                'pid' => Events2Constants::PAGE_STORAGE,
                 'event_type' => 'single',
                 'top_of_list' => 0,
                 'title' => 'Birthday',
@@ -154,7 +155,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         $connection->insert(
             'tx_events2_domain_model_time',
             [
-                'pid' => 11,
+                'pid' => Events2Constants::PAGE_STORAGE,
                 'type' => 'event_time',
                 'time_begin' => '08:00',
                 'time_entry' => '07:00',

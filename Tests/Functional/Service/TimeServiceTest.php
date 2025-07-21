@@ -16,6 +16,7 @@ use JWeiland\Events2\Service\Record\TimeRecordService;
 use JWeiland\Events2\Service\Result\DateTimeResult;
 use JWeiland\Events2\Service\Result\DayGeneratorResult;
 use JWeiland\Events2\Service\TimeService;
+use JWeiland\Events2\Tests\Functional\Events2Constants;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -76,7 +77,7 @@ class TimeServiceTest extends FunctionalTestCase
     {
         $eventRecord = [
             'uid' => 1,
-            'pid' => 7,
+            'pid' => Events2Constants::PAGE_STORAGE,
         ];
 
         $dateTimeResult = new DateTimeResult(
@@ -102,7 +103,7 @@ class TimeServiceTest extends FunctionalTestCase
         return [
             'Missing type' => [[
                 'uid' => 1,
-                'pid' => 7,
+                'pid' => Events2Constants::PAGE_STORAGE,
                 'hidden' => 0,
                 'event' => 0,
                 'exception' => 0,
@@ -110,7 +111,7 @@ class TimeServiceTest extends FunctionalTestCase
             ]],
             'Missing hidden' => [[
                 'uid' => 1,
-                'pid' => 7,
+                'pid' => Events2Constants::PAGE_STORAGE,
                 'type' => 0,
                 'event' => 0,
                 'exception' => 0,
@@ -118,7 +119,7 @@ class TimeServiceTest extends FunctionalTestCase
             ]],
             'Missing event' => [[
                 'uid' => 1,
-                'pid' => 7,
+                'pid' => Events2Constants::PAGE_STORAGE,
                 'type' => 0,
                 'hidden' => 0,
                 'exception' => 0,
@@ -126,7 +127,7 @@ class TimeServiceTest extends FunctionalTestCase
             ]],
             'Missing exception' => [[
                 'uid' => 1,
-                'pid' => 7,
+                'pid' => Events2Constants::PAGE_STORAGE,
                 'type' => 0,
                 'hidden' => 0,
                 'event' => 0,
@@ -134,7 +135,7 @@ class TimeServiceTest extends FunctionalTestCase
             ]],
             'Missing weekday' => [[
                 'uid' => 1,
-                'pid' => 7,
+                'pid' => Events2Constants::PAGE_STORAGE,
                 'type' => 0,
                 'hidden' => 0,
                 'event' => 0,
@@ -142,7 +143,7 @@ class TimeServiceTest extends FunctionalTestCase
             ]],
             'hidden time record' => [[
                 'uid' => 1,
-                'pid' => 7,
+                'pid' => Events2Constants::PAGE_STORAGE,
                 'type' => 0,
                 'hidden' => 1,
                 'event' => [],
@@ -151,7 +152,7 @@ class TimeServiceTest extends FunctionalTestCase
             ]],
             'event is no array' => [[
                 'uid' => 1,
-                'pid' => 7,
+                'pid' => Events2Constants::PAGE_STORAGE,
                 'type' => 0,
                 'hidden' => 0,
                 'event' => 0,
@@ -160,7 +161,7 @@ class TimeServiceTest extends FunctionalTestCase
             ]],
             'exception is no array' => [[
                 'uid' => 1,
-                'pid' => 7,
+                'pid' => Events2Constants::PAGE_STORAGE,
                 'type' => 0,
                 'hidden' => 0,
                 'event' => [],
@@ -176,7 +177,7 @@ class TimeServiceTest extends FunctionalTestCase
     {
         $eventRecord = [
             'uid' => 1,
-            'pid' => 7,
+            'pid' => Events2Constants::PAGE_STORAGE,
         ];
 
         $dateTimeResult = new DateTimeResult(
@@ -213,7 +214,7 @@ class TimeServiceTest extends FunctionalTestCase
 
         $exceptionRecord = [
             'uid' => 1,
-            'pid' => 7,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'hidden' => 0,
             'exception_type' => 'Add',
             'exception_date' => (int)$dateTime->format('U'),
@@ -221,7 +222,7 @@ class TimeServiceTest extends FunctionalTestCase
 
         $eventRecord = [
             'uid' => 1,
-            'pid' => 7,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'exceptions' => [
                 1 => $exceptionRecord,
             ],
@@ -229,7 +230,7 @@ class TimeServiceTest extends FunctionalTestCase
 
         $exceptionTimeRecord = [
             'uid' => 1,
-            'pid' => 7,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'type' => 'exception_time',
             'hidden' => 0,
             'event' => [],
@@ -273,7 +274,7 @@ class TimeServiceTest extends FunctionalTestCase
 
         $exceptionRecordMatching = [
             'uid' => 1,
-            'pid' => 7,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'hidden' => 0,
             'exception_type' => 'Add',
             'exception_date' => (int)$dateTime->format('U'),
@@ -281,7 +282,7 @@ class TimeServiceTest extends FunctionalTestCase
 
         $exceptionRecordNonMatching = [
             'uid' => 2,
-            'pid' => 7,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'hidden' => 0,
             'exception_type' => 'Add',
             'exception_date' => (int)$dateTimeYesterday->format('U'),
@@ -289,7 +290,7 @@ class TimeServiceTest extends FunctionalTestCase
 
         $eventRecord = [
             'uid' => 1,
-            'pid' => 7,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'exceptions' => [
                 1 => $exceptionRecordMatching,
                 2 => $exceptionRecordNonMatching,
@@ -298,7 +299,7 @@ class TimeServiceTest extends FunctionalTestCase
 
         $exceptionTimeRecordMatching = [
             'uid' => 1,
-            'pid' => 7,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'type' => 'exception_time',
             'hidden' => 0,
             'event' => [],
@@ -308,7 +309,7 @@ class TimeServiceTest extends FunctionalTestCase
 
         $exceptionTimeRecordNonMatching = [
             'uid' => 2,
-            'pid' => 7,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'type' => 'exception_time',
             'hidden' => 0,
             'event' => [],
@@ -351,7 +352,7 @@ class TimeServiceTest extends FunctionalTestCase
 
         $exceptionRecordMatching = [
             'uid' => 1,
-            'pid' => 7,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'hidden' => 0,
             'exception_type' => 'Add',
             'exception_date' => (int)$dateTime->format('U'),
@@ -359,7 +360,7 @@ class TimeServiceTest extends FunctionalTestCase
 
         $exceptionRecordNonMatching = [
             'uid' => 2,
-            'pid' => 7,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'hidden' => 1,
             'exception_type' => 'Add',
             'exception_date' => (int)$dateTime->format('U'),
@@ -367,7 +368,7 @@ class TimeServiceTest extends FunctionalTestCase
 
         $eventRecord = [
             'uid' => 1,
-            'pid' => 7,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'exceptions' => [
                 1 => $exceptionRecordMatching,
                 2 => $exceptionRecordNonMatching,
@@ -376,7 +377,7 @@ class TimeServiceTest extends FunctionalTestCase
 
         $exceptionTimeRecordMatching = [
             'uid' => 1,
-            'pid' => 7,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'type' => 'exception_time',
             'hidden' => 0,
             'event' => [],
@@ -386,7 +387,7 @@ class TimeServiceTest extends FunctionalTestCase
 
         $exceptionTimeRecordNonMatching = [
             'uid' => 2,
-            'pid' => 7,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'type' => 'exception_time',
             'hidden' => 0,
             'event' => [],
@@ -429,7 +430,7 @@ class TimeServiceTest extends FunctionalTestCase
 
         $exceptionRecordMatching = [
             'uid' => 1,
-            'pid' => 7,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'hidden' => 0,
             'exception_type' => 'Time',
             'exception_date' => (int)$dateTime->format('U'),
@@ -437,7 +438,7 @@ class TimeServiceTest extends FunctionalTestCase
 
         $exceptionRecordNonMatching = [
             'uid' => 2,
-            'pid' => 7,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'hidden' => 0,
             'exception_type' => 'Removed',
             'exception_date' => (int)$dateTime->format('U'),
@@ -445,7 +446,7 @@ class TimeServiceTest extends FunctionalTestCase
 
         $eventRecord = [
             'uid' => 1,
-            'pid' => 7,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'exceptions' => [
                 1 => $exceptionRecordMatching,
                 2 => $exceptionRecordNonMatching,
@@ -454,7 +455,7 @@ class TimeServiceTest extends FunctionalTestCase
 
         $exceptionTimeRecordMatching = [
             'uid' => 1,
-            'pid' => 7,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'type' => 'exception_time',
             'hidden' => 0,
             'event' => [],
@@ -464,7 +465,7 @@ class TimeServiceTest extends FunctionalTestCase
 
         $exceptionTimeRecordNonMatching = [
             'uid' => 2,
-            'pid' => 7,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'type' => 'exception_time',
             'hidden' => 0,
             'event' => [],
@@ -508,13 +509,13 @@ class TimeServiceTest extends FunctionalTestCase
 
         $eventRecord = [
             'uid' => 1,
-            'pid' => 7,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'exceptions' => [],
         ];
 
         $differentTimeRecord = [
             'uid' => 1,
-            'pid' => 7,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'type' => 'different_times',
             'hidden' => 0,
             'event' => [],
@@ -551,13 +552,13 @@ class TimeServiceTest extends FunctionalTestCase
 
         $eventRecord = [
             'uid' => 1,
-            'pid' => 7,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'exceptions' => [],
         ];
 
         $differentTimeRecord = [
             'uid' => 1,
-            'pid' => 7,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'type' => 'different_times',
             'hidden' => 0,
             'event' => [],
@@ -600,13 +601,13 @@ class TimeServiceTest extends FunctionalTestCase
 
         $eventRecord = [
             'uid' => 1,
-            'pid' => 7,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'exceptions' => [],
         ];
 
         $eventTimeRecord = [
             'uid' => 1,
-            'pid' => 7,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'type' => 'event_time',
             'hidden' => 0,
             'event' => [],
@@ -649,13 +650,13 @@ class TimeServiceTest extends FunctionalTestCase
 
         $eventRecord = [
             'uid' => 1,
-            'pid' => 7,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'exceptions' => [],
         ];
 
         $multipleTimeRecord = [
             'uid' => 1,
-            'pid' => 7,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'type' => 'multiple_times',
             'hidden' => 0,
             'event' => [],
@@ -698,13 +699,13 @@ class TimeServiceTest extends FunctionalTestCase
 
         $eventRecord = [
             'uid' => 1,
-            'pid' => 7,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'exceptions' => [],
         ];
 
         $eventTimeRecord = [
             'uid' => 1,
-            'pid' => 7,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'type' => 'event_time',
             'hidden' => 0,
             'event' => [],
@@ -714,7 +715,7 @@ class TimeServiceTest extends FunctionalTestCase
 
         $multipleTimeRecord = [
             'uid' => 1,
-            'pid' => 7,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'type' => 'multiple_times',
             'hidden' => 0,
             'event' => [],

@@ -128,7 +128,7 @@ class DayRepository extends Repository
         ) {
             $this->databaseService->addConstraintForOrganizer(
                 $subQueryBuilder,
-                (int)($this->settings['preFilterByOrganizer'] ?: $filter->getOrganizer()),
+                (int)(($this->settings['preFilterByOrganizer'] ?? 0) ?: $filter->getOrganizer()),
                 $queryBuilder,
                 'event_sub_query',
             );

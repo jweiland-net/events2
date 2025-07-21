@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Tests\Functional\Hook;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Event\GeneratePathSegmentEvent;
 use JWeiland\Events2\Hook\SlugPostModifierHook;
+use JWeiland\Events2\Tests\Functional\Events2Constants;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -168,7 +169,7 @@ class SlugPostModifierHookTest extends FunctionalTestCase
             'slug' => 'hello-world',
             'tableName' => 'tx_events2_domain_model_event',
             'fieldName' => 'path_segment',
-            'pid' => 12,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'record' => [
                 'uid' => 2,
             ],
@@ -198,7 +199,7 @@ class SlugPostModifierHookTest extends FunctionalTestCase
             'slug' => 'hello-world',
             'tableName' => 'tx_events2_domain_model_event',
             'fieldName' => 'path_segment',
-            'pid' => 12,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'record' => [
                 'uid' => 2,
             ],

@@ -13,6 +13,7 @@ namespace JWeiland\Events2\Tests\Functional\Helper;
 
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Helper\DayHelper;
+use JWeiland\Events2\Tests\Functional\Events2Constants;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
@@ -69,7 +70,7 @@ class DayHelperTest extends FunctionalTestCase
             'tx_events2_domain_model_day',
             [
                 'uid' => 1,
-                'pid' => 1,
+                'pid' => Events2Constants::PAGE_STORAGE,
             ],
         );
 
@@ -87,7 +88,7 @@ class DayHelperTest extends FunctionalTestCase
             'tx_events2_domain_model_day',
             [
                 'uid' => 1,
-                'pid' => 1,
+                'pid' => Events2Constants::PAGE_STORAGE,
             ],
         );
 

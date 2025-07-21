@@ -3,3 +3,4 @@ label: Site Package
 
 dependencies:
   - typo3/fluid-styled-content-css
+  - jweiland/events2

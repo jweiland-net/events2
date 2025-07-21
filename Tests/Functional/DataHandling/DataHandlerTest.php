@@ -13,12 +13,11 @@ namespace JWeiland\Events2\Tests\Functional\DataHandling;
 
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Service\DayRelationService;
+use JWeiland\Events2\Tests\Functional\Events2Constants;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Database\Connection;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
-use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
@@ -61,7 +60,7 @@ class DataHandlerTest extends FunctionalTestCase
         $this->dayRepository = GeneralUtility::makeInstance(DayRepository::class);
         $this->dayRepository->setDefaultQuerySettings($this->querySettings);
 
-        $this->importCSVDataSet(__DIR__ . '/../Fixtures/pages.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Events2PageTree.csv');
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/be_groups.csv');
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/be_users.csv');
 
@@ -69,7 +68,7 @@ class DataHandlerTest extends FunctionalTestCase
         $connection->insert(
             'tx_events2_domain_model_organizer',
             [
-                'pid' => 11,
+                'pid' => Events2Constants::PAGE_STORAGE,
                 'organizer' => 'Stefan',
             ],
         );
@@ -79,7 +78,7 @@ class DataHandlerTest extends FunctionalTestCase
         $connection->insert(
             'tx_events2_domain_model_location',
             [
-                'pid' => 11,
+                'pid' => Events2Constants::PAGE_STORAGE,
                 'location' => 'Market',
             ],
         );
@@ -94,7 +93,7 @@ class DataHandlerTest extends FunctionalTestCase
         $connection->insert(
             'tx_events2_domain_model_event',
             [
-                'pid' => 11,
+                'pid' => Events2Constants::PAGE_STORAGE,
                 'event_type' => 'recurring',
                 'top_of_list' => 0,
                 'title' => 'Week market',

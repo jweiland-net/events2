@@ -15,6 +15,7 @@ use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Service\DayGeneratorService;
 use JWeiland\Events2\Service\DayRecordBuilderService;
 use JWeiland\Events2\Service\TimeService;
+use JWeiland\Events2\Tests\Functional\Events2Constants;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -98,7 +99,7 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
 
         self::assertArrayIsIdenticalToArrayIgnoringListOfKeys(
             [
-                'pid' => 0,
+                'pid' => Events2Constants::PAGE_STORAGE,
                 'hidden' => 0,
                 'fe_group' => 0,
                 'day' => (int)$eventBegin->format('U'),
@@ -147,7 +148,7 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
 
         self::assertArrayIsIdenticalToArrayIgnoringListOfKeys(
             [
-                'pid' => 0,
+                'pid' => Events2Constants::PAGE_STORAGE,
                 'hidden' => 0,
                 'fe_group' => 0,
                 'day' => (int)$tomorrow->format('U'),
@@ -192,7 +193,7 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
 
         self::assertArrayIsIdenticalToArrayIgnoringListOfKeys(
             [
-                'pid' => 0,
+                'pid' => Events2Constants::PAGE_STORAGE,
                 'hidden' => 0,
                 'fe_group' => 0,
                 'day' => (int)$eventBegin->format('U'),
@@ -210,7 +211,7 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
 
         self::assertArrayIsIdenticalToArrayIgnoringListOfKeys(
             [
-                'pid' => 0,
+                'pid' => Events2Constants::PAGE_STORAGE,
                 'hidden' => 0,
                 'fe_group' => 0,
                 'day' => (int)$nextWeek->format('U'),
@@ -228,7 +229,7 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
 
         self::assertArrayIsIdenticalToArrayIgnoringListOfKeys(
             [
-                'pid' => 0,
+                'pid' => Events2Constants::PAGE_STORAGE,
                 'hidden' => 0,
                 'fe_group' => 0,
                 'day' => (int)$recurringEnd->format('U'),

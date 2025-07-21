@@ -89,8 +89,7 @@ final readonly class GetUriForDayMiddleware implements MiddlewareInterface
             return '[MISSING]';
         }
 
-        $pidOfListPage = MathUtility::convertToPositiveInteger($getParameters['pidOfListPage']);
-
+        $pidOfListPage = MathUtility::forceIntegerInRange($getParameters['pidOfListPage'], 0);
         if ($pidOfListPage === 0) {
             return '[0]';
         }

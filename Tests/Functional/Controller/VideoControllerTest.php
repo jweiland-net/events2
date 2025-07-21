@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Tests\Functional\Controller;
 
+use JWeiland\Events2\Tests\Functional\Events2Constants;
 use PHPUnit\Framework\Attributes\Test;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -63,7 +64,7 @@ class VideoControllerTest extends FunctionalTestCase
         $this->getDatabaseConnection()->insertArray(
             'tx_events2_domain_model_event',
             [
-                'pid' => 1,
+                'pid' => Events2Constants::PAGE_STORAGE,
                 'event_type' => 'single',
                 'event_begin' => (int)$date->format('U'),
                 'title' => 'Today',
@@ -108,7 +109,7 @@ class VideoControllerTest extends FunctionalTestCase
         $this->getDatabaseConnection()->insertArray(
             'tx_events2_domain_model_event',
             [
-                'pid' => 1,
+                'pid' => Events2Constants::PAGE_STORAGE,
                 'event_type' => 'single',
                 'event_begin' => (int)$date->format('U'),
                 'title' => 'Today',

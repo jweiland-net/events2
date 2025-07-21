@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Tests\Functional\Controller;
 
+use JWeiland\Events2\Tests\Functional\Events2Constants;
 use PHPUnit\Framework\Attributes\Test;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -48,7 +49,7 @@ class ManagementControllerTest extends FunctionalTestCase
         $this->getDatabaseConnection()->insertArray(
             'fe_users',
             [
-                'pid' => 1,
+                'pid' => Events2Constants::PAGE_STORAGE,
                 'username' => 'froemken',
                 'tx_events2_organizer' => 1,
             ],
@@ -57,7 +58,7 @@ class ManagementControllerTest extends FunctionalTestCase
         $this->getDatabaseConnection()->insertArray(
             'tx_events2_domain_model_organizer',
             [
-                'pid' => 1,
+                'pid' => Events2Constants::PAGE_STORAGE,
                 'organizer' => 'Stefan',
             ],
         );
@@ -66,7 +67,7 @@ class ManagementControllerTest extends FunctionalTestCase
         $this->getDatabaseConnection()->insertArray(
             'tx_events2_domain_model_event',
             [
-                'pid' => 1,
+                'pid' => Events2Constants::PAGE_STORAGE,
                 'event_type' => 'single',
                 'event_begin' => (int)$date->format('U'),
                 'title' => 'Today',

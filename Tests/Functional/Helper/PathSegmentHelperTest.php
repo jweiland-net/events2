@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Tests\Functional\Helper;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Helper\Exception\NoUniquePathSegmentException;
 use JWeiland\Events2\Helper\PathSegmentHelper;
+use JWeiland\Events2\Tests\Functional\Events2Constants;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\DataHandling\SlugHelper;
@@ -85,7 +86,7 @@ class PathSegmentHelperTest extends FunctionalTestCase
     {
         $baseRecord = [
             'uid' => 2,
-            'pid' => 12,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'title' => 'Weekly market',
         ];
 

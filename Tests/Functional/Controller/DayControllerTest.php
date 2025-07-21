@@ -11,12 +11,14 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Tests\Functional\Controller;
 
-use JWeiland\Events2\Service\DayRelationService;
-use JWeiland\Events2\Tests\Functional\SiteHandling\SiteBasedTestTrait;
-use PHPUnit\Framework\Attributes\DataProvider;
+use JWeiland\Events2\Tests\Functional\Events2Constants;
+use JWeiland\Events2\Tests\Functional\Traits\CreatePostStreamBodyTrait;
+use JWeiland\Events2\Tests\Functional\Traits\InsertEventTrait;
+use JWeiland\Events2\Tests\Functional\Traits\SiteBasedTestTrait;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -25,17 +27,20 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
  */
 class DayControllerTest extends FunctionalTestCase
 {
+    use CreatePostStreamBodyTrait;
+    use InsertEventTrait;
     use SiteBasedTestTrait;
 
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
+        'fluid_styled_content',
         'reactions',
     ];
 
     protected array $testExtensionsToLoad = [
-        __DIR__ . '/../Fixtures/Extensions/site_package',
         'sjbr/static-info-tables',
         'jweiland/events2',
+        __DIR__ . '/../Fixtures/Extensions/site_package',
     ];
 
     protected const LANGUAGE_PRESETS = [
@@ -54,70 +59,8 @@ class DayControllerTest extends FunctionalTestCase
         $GLOBALS['BE_USER'] = new BackendUserAuthentication();
         $GLOBALS['BE_USER']->workspace = 0;
 
-        $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_organizer');
-        $connection->insert(
-            'tx_events2_domain_model_organizer',
-            [
-                'pid' => 11,
-                'organizer' => 'Stefan',
-            ],
-        );
-
-        $date = new \DateTimeImmutable('midnight');
-
-        $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_event');
-        $connection->insert(
-            'tx_events2_domain_model_event',
-            [
-                'pid' => 11,
-                'event_type' => 'single',
-                'event_begin' => (int)$date->format('U'),
-                'title' => 'Today',
-            ],
-        );
-
-        $date = new \DateTimeImmutable('tomorrow midnight');
-
-        $connection->insert(
-            'tx_events2_domain_model_event',
-            [
-                'pid' => 11,
-                'event_type' => 'single',
-                'event_begin' => (int)$date->format('U'),
-                'title' => 'Tomorrow',
-                'organizers' => 1,
-            ],
-        );
-
-        $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_event_organizer_mm');
-        $connection->insert(
-            'tx_events2_event_organizer_mm',
-            [
-                'uid_local' => 2,
-                'uid_foreign' => 1,
-            ],
-        );
-
-        $dayRelationService = GeneralUtility::makeInstance(DayRelationService::class);
-
-        $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_event');
-        $queryResult = $connection->select(
-            ['*'],
-            'tx_events2_domain_model_event',
-            [
-                'pid' => 11,
-            ],
-        );
-
-        while ($eventRecord = $queryResult->fetchAssociative()) {
-            $dayRelationService->createDayRelations((int)$eventRecord['uid']);
-        }
-    }
-
-    #[Test]
-    public function listActionWillListAllEvents(): void
-    {
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/Events2PageTree.csv');
+
         $this->writeSiteConfiguration(
             'events2-controller-test',
             $this->buildSiteConfiguration(1, '/'),
@@ -127,12 +70,24 @@ class DayControllerTest extends FunctionalTestCase
             [],
             ['jweiland/sitepackage'],
         );
+    }
 
-        $response = $this->executeFrontendSubRequest(
-            (new InternalRequest())->withPageId(2)
+    #[Test]
+    public function listActionWithTypeListWillListAllEvents(): void
+    {
+        $this->insertEvent(
+            title: 'Event Title 1: Today',
+            eventBegin: new \DateTimeImmutable('today midnight')
         );
+        $this->insertEvent(
+            title: 'Event Title 2: Tomorrow',
+            eventBegin: new \DateTimeImmutable('tomorrow midnight')
+        );
+        $this->createDayRelations();
 
-        $content = (string)$response->getBody();
+        $content = (string)$this->executeFrontendSubRequest(
+            (new InternalRequest())->withPageId(Events2Constants::PAGE_LIST)
+        )->getBody();
 
         self::assertStringContainsString(
             'Event Title 1: Today',
@@ -145,62 +100,302 @@ class DayControllerTest extends FunctionalTestCase
     }
 
     #[Test]
-    public function listActionWillListEventsWithOrganizer(): void
+    public function listActionWithTypeListLatestWillListSevenEvents(): void
     {
-        $response = $this->executeFrontendSubRequest(
-            (new InternalRequest())->withPageId(2)
-        );
+        $eventBegin = new \DateTimeImmutable('today midnight');
+        for ($i = 1; $i <= 10; $i++ ) {
+            $this->insertEvent(
+                title: 'Event Title ' . $i,
+                eventBegin: $eventBegin
+            );
+            $eventBegin = $eventBegin->modify('+1 day');
+        }
+        $this->createDayRelations();
 
-        $content = (string)$response->getBody();
+        $content = (string)$this->executeFrontendSubRequest(
+            (new InternalRequest())->withPageId(Events2Constants::PAGE_LIST_LATEST)
+        )->getBody();
+
+        for ($i = 1; $i <= 7; $i++ ) {
+            self::assertStringContainsString(
+                'Event Title ' . $i,
+                $content,
+            );
+        }
+
+        for ($i = 8; $i <= 10; $i++ ) {
+            self::assertStringNotContainsString(
+                'Event Title ' . $i,
+                $content,
+            );
+        }
+    }
+
+    #[Test]
+    public function listActionWithTypeListTodayWillListTodayEvent(): void
+    {
+        $this->insertEvent(
+            title: 'Event Title Yesterday',
+            eventBegin: new \DateTimeImmutable('yesterday midnight')
+        );
+        $this->insertEvent(
+            title: 'Event Title Today',
+            eventBegin: new \DateTimeImmutable('today midnight')
+        );
+        $this->insertEvent(
+            title: 'Event Title Tomorrow',
+            eventBegin: new \DateTimeImmutable('tomorrow midnight')
+        );
+        $this->createDayRelations();
+
+        $content = (string)$this->executeFrontendSubRequest(
+            (new InternalRequest())->withPageId(Events2Constants::PAGE_LIST_TODAY)
+        )->getBody();
 
         self::assertStringContainsString(
-            'Event Title 2: Tomorrow',
+            'Event Title Today',
+            $content,
+        );
+        self::assertStringNotContainsString(
+            'Event Title Yesterday',
+            $content,
+        );
+        self::assertStringNotContainsString(
+            'Event Title Tomorrow',
             $content,
         );
     }
 
-    public static function listWithFilledFilterDataProvider(): array
+    #[Test]
+    public function listActionWithTypeListThisWeekWillListThisWeeksEvents(): void
     {
-        return [
-            'ListType: list' => ['list'],
-            'ListType: list latest' => ['listLatest'],
-            'ListType: list today' => ['listToday'],
-            'ListType: list this week' => ['listWeek'],
-            'ListType: list range' => ['listRange'],
+        $this->insertEvent(
+            title: 'Event Title last week',
+            eventBegin: new \DateTimeImmutable('monday last week midnight')
+        );
+        $this->insertEvent(
+            title: 'Event Title Tuesday',
+            eventBegin: new \DateTimeImmutable('tuesday this week midnight')
+        );
+        $this->insertEvent(
+            title: 'Event Title Friday',
+            eventBegin: new \DateTimeImmutable('friday this week midnight')
+        );
+        $this->insertEvent(
+            title: 'Event Title next week',
+            eventBegin: new \DateTimeImmutable('wednesday next week midnight')
+        );
+        $this->createDayRelations();
+
+        $content = (string)$this->executeFrontendSubRequest(
+            (new InternalRequest())->withPageId(Events2Constants::PAGE_LIST_THIS_WEEK)
+        )->getBody();
+
+        self::assertStringContainsString(
+            'Event Title Tuesday',
+            $content,
+        );
+        self::assertStringContainsString(
+            'Event Title Friday',
+            $content,
+        );
+        self::assertStringNotContainsString(
+            'Event Title last week',
+            $content,
+        );
+        self::assertStringNotContainsString(
+            'Event Title next week',
+            $content,
+        );
+    }
+
+    #[Test]
+    public function listActionWithTypeListNextFourWeeksWillListEventsOfNextFourWeeks(): void
+    {
+        $this->insertEvent(
+            title: 'Event Title last 2 months',
+            eventBegin: new \DateTimeImmutable('-2 months midnight')
+        );
+        $this->insertEvent(
+            title: 'Event Title Tuesday',
+            eventBegin: new \DateTimeImmutable('tuesday this week midnight')
+        );
+        $this->insertEvent(
+            title: 'Event Title next week',
+            eventBegin: new \DateTimeImmutable('wednesday next week midnight')
+        );
+        $this->insertEvent(
+            title: 'Event Title next 2 months',
+            eventBegin: new \DateTimeImmutable('+2 months midnight')
+        );
+        $this->createDayRelations();
+
+        $content = (string)$this->executeFrontendSubRequest(
+            (new InternalRequest())->withPageId(Events2Constants::PAGE_LIST_NEXT_4_WEEKS)
+        )->getBody();
+
+        self::assertStringContainsString(
+            'Event Title Tuesday',
+            $content,
+        );
+        self::assertStringContainsString(
+            'Event Title next week',
+            $content,
+        );
+        self::assertStringNotContainsString(
+            'Event Title last 2 months',
+            $content,
+        );
+        self::assertStringNotContainsString(
+            'Event Title next 2 months',
+            $content,
+        );
+    }
+
+    #[Test]
+    public function listActionWithTypeListWillOnlyShowEventsWithSelectedOrganizer(): void
+    {
+        $this->insertEvent(
+            title: 'Event Title without organizer',
+            eventBegin: new \DateTimeImmutable('today midnight')
+        );
+        $this->insertEvent(
+            title: 'Event Title with organizer',
+            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
+            organizer: 'jweiland.net'
+        );
+        $this->createDayRelations();
+
+        $body = $this->createBodyFromArray([
+            'tx_events2_list' => [
+                'filter' => [
+                    'organizer' => 1,
+                ]
+            ]
+        ]);
+
+        $content = (string)$this->executeFrontendSubRequest(
+            (new InternalRequest())
+                ->withPageId(Events2Constants::PAGE_LIST)
+                ->withMethod('POST')
+                ->withAddedHeader('Content-type', 'application/x-www-form-urlencoded')
+                ->withBody($body),
+        )->getBody();
+
+        self::assertStringContainsString(
+            'Event Title with organizer',
+            $content,
+        );
+        self::assertStringNotContainsString(
+            'Event Title without organizer',
+            $content,
+        );
+    }
+
+    #[Test]
+    public function listActionWithTypeListWillOnlyShowEventsOfGivenTimestamp(): void
+    {
+        $todayMidnight = new \DateTimeImmutable('today midnight');
+
+        $this->insertEvent(
+            title: 'Event Title Yesterday',
+            eventBegin: new \DateTimeImmutable('yesterday midnight')
+        );
+        $this->insertEvent(
+            title: 'Event Title Today 08:00',
+            eventBegin: $todayMidnight,
+            timeBegin: '08:00',
+        );
+        $this->insertEvent(
+            title: 'Event Title Today 16:00',
+            eventBegin: $todayMidnight,
+            timeBegin: '16:00',
+        );
+        $this->insertEvent(
+            title: 'Event Title Tomorrow',
+            eventBegin: new \DateTimeImmutable('tomorrow midnight')
+        );
+        $this->createDayRelations();
+
+        $body = $this->createBodyFromArray([
+            'tx_events2_list' => [
+                'filter' => [
+                    'timestamp' => $todayMidnight->format('U'),
+                ]
+            ]
+        ]);
+
+        $content = (string)$this->executeFrontendSubRequest(
+            (new InternalRequest())
+                ->withPageId(Events2Constants::PAGE_LIST)
+                ->withMethod('POST')
+                ->withAddedHeader('Content-type', 'application/x-www-form-urlencoded')
+                ->withBody($body),
+        )->getBody();
+
+        self::assertStringContainsString(
+            'Event Title Today 08:00',
+            $content,
+        );
+        self::assertStringContainsString(
+            'Event Title Today 16:00',
+            $content,
+        );
+        self::assertStringNotContainsString(
+            'Event Title Yesterday',
+            $content,
+        );
+        self::assertStringNotContainsString(
+            'Event Title Tomorrow',
+            $content,
+        );
+    }
+
+    #[Test]
+    public function showActionShowsEvent(): void
+    {
+        $tomorrowMidnight = new \DateTimeImmutable('tomorrow midnight');
+
+        $this->insertEvent(
+            title: 'Event Title Tomorrow',
+            eventBegin: $tomorrowMidnight,
+            timeBegin: '08:15',
+            organizer: 'jweiland.net',
+        );
+        $this->createDayRelations();
+
+        $parameters = [
+            'tx_events2_show' => [
+                'event' => '1',
+                'timestamp' => $tomorrowMidnight->format('U'),
+            ]
         ];
-    }
 
-    #[Test]
-    #[DataProvider('listWithFilledFilterDataProvider')]
-    public function variousListTypesWillAssignFilterToView(string $listType): void
-    {
-        $today = new \DateTimeImmutable('today midnight');
+        $cacheHashCalculator = GeneralUtility::makeInstance(CacheHashCalculator::class);
 
-        $response = $this->executeFrontendSubRequest(
-            (new InternalRequest())->withPageId(2)
+        $hashParameters = $parameters;
+        $hashParameters['id'] = Events2Constants::PAGE_SHOW;
+        $uri = http_build_query($hashParameters, '', '&', PHP_QUERY_RFC3986);
+        $parameters['cHash'] = $cacheHashCalculator->calculateCacheHash(
+            $cacheHashCalculator->getRelevantParameters($uri)
         );
 
-        $content = (string)$response->getBody();
+        $content = (string)$this->executeFrontendSubRequest(
+            (new InternalRequest())
+                ->withPageId(Events2Constants::PAGE_SHOW)
+                ->withQueryParams($parameters),
+        )->getBody();
 
         self::assertStringContainsString(
-            'Event Title 1: Today',
+            'Event Title Tomorrow',
             $content,
         );
-    }
-
-    #[Test]
-    public function showActionWillShowEvent(): void
-    {
-        $today = new \DateTimeImmutable('today midnight');
-
-        $response = $this->executeFrontendSubRequest(
-            (new InternalRequest())->withPageId(2)
-        );
-
-        $content = (string)$response->getBody();
-
         self::assertStringContainsString(
-            'Event Title 1: Today',
+            '08:15',
+            $content,
+        );
+        self::assertStringContainsString(
+            'jweiland.net',
             $content,
         );
     }

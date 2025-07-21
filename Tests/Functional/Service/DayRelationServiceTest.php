@@ -18,6 +18,7 @@ use JWeiland\Events2\Service\Record\DayRecordService;
 use JWeiland\Events2\Service\Record\EventRecordService;
 use JWeiland\Events2\Service\Record\ExceptionRecordService;
 use JWeiland\Events2\Service\Result\DayGeneratorResult;
+use JWeiland\Events2\Tests\Functional\Events2Constants;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
@@ -171,7 +172,7 @@ class DayRelationServiceTest extends FunctionalTestCase
         $dayRecords = [
             [
                 'uid' => 1,
-                'pid' => 1,
+                'pid' => Events2Constants::PAGE_STORAGE,
             ],
         ];
 
