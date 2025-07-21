@@ -25,6 +25,7 @@ use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Service\DayRelationService;
+use JWeiland\Events2\Tests\Functional\Events2Constants;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\VisibilityAspect;
@@ -66,7 +67,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $this->dayRepository = $this->objectManager->get(DayRepository::class);
 
         $this->querySettings = $this->objectManager->get(QuerySettingsInterface::class);
-        $this->querySettings->setStoragePageIds([11, 40]);
+        $this->querySettings->setStoragePageIds([Events2Constants::PAGE_STORAGE]);
         $this->querySettings->setIgnoreEnableFields(true);
         $this->querySettings->setEnableFieldsToBeIgnored(['disabled']); // needed to create hidden events, too
 
@@ -79,19 +80,19 @@ class DayRepositoryTest extends FunctionalTestCase
 
         // As we need day related records, we can not use XML import functionality
         $organizer1 = new Organizer();
-        $organizer1->setPid(11);
+        $organizer1->setPid(Events2Constants::PAGE_STORAGE);
         $organizer1->setOrganizer('Stefan');
 
         $organizer2 = new Organizer();
-        $organizer2->setPid(11);
+        $organizer2->setPid(Events2Constants::PAGE_STORAGE);
         $organizer2->setOrganizer('Petra');
 
         $location1 = new Location();
-        $location1->setPid(11);
+        $location1->setPid(Events2Constants::PAGE_STORAGE);
         $location1->setLocation('Market');
 
         $location2 = new Location();
-        $location2->setPid(11);
+        $location2->setPid(Events2Constants::PAGE_STORAGE);
         $location2->setLocation('Hospital');
 
         $eventBegin = new \DateTimeImmutable('first day of this month midnight');
@@ -100,20 +101,20 @@ class DayRepositoryTest extends FunctionalTestCase
             ->modify('-2 months');
 
         $eventTime = new Time();
-        $eventTime->setPid(11);
+        $eventTime->setPid(Events2Constants::PAGE_STORAGE);
         $eventTime->setTimeBegin('07:30');
 
         $mainCategory = new Category();
-        $mainCategory->setPid(11);
+        $mainCategory->setPid(Events2Constants::PAGE_STORAGE);
         $mainCategory->setTitle('Cars');
 
         $category1 = new Category();
-        $category1->setPid(11);
+        $category1->setPid(Events2Constants::PAGE_STORAGE);
         $category1->setParent($mainCategory);
         $category1->setTitle('Audi');
 
         $category2 = new Category();
-        $category2->setPid(11);
+        $category2->setPid(Events2Constants::PAGE_STORAGE);
         $category2->setParent($mainCategory);
         $category2->setTitle('BMW');
 
@@ -121,7 +122,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $categories->attach($category1);
 
         $event = GeneralUtility::makeInstance(Event::class);
-        $event->setPid(11);
+        $event->setPid(Events2Constants::PAGE_STORAGE);
         $event->setEventType('recurring');
         $event->setTopOfList(false);
         $event->setTitle('Week market');
@@ -141,10 +142,10 @@ class DayRepositoryTest extends FunctionalTestCase
         $persistenceManager->add($event);
 
         $multipleTime1 = new Time();
-        $multipleTime1->setPid(11);
+        $multipleTime1->setPid(Events2Constants::PAGE_STORAGE);
         $multipleTime1->setTimeBegin('12:00');
         $multipleTime2 = new Time();
-        $multipleTime2->setPid(11);
+        $multipleTime2->setPid(Events2Constants::PAGE_STORAGE);
         $multipleTime2->setTimeBegin('20:00');
         $multipleTimes = new ObjectStorage();
         $multipleTimes->attach($multipleTime1);
@@ -159,7 +160,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $categories->attach($category1);
 
         $event = GeneralUtility::makeInstance(Event::class);
-        $event->setPid(11);
+        $event->setPid(Events2Constants::PAGE_STORAGE);
         $event->setEventType('recurring');
         $event->setTopOfList(false);
         $event->setTitle('Multiple times same day');
@@ -186,7 +187,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $categories->attach($category1);
 
         $event = GeneralUtility::makeInstance(Event::class);
-        $event->setPid(11);
+        $event->setPid(Events2Constants::PAGE_STORAGE);
         $event->setEventType('single');
         $event->setTopOfList(false);
         $event->setTitle('Morgen');
@@ -203,7 +204,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $eventBegin = $eventBegin->modify('+2 weeks');
 
         $eventTime = new Time();
-        $eventTime->setPid(11);
+        $eventTime->setPid(Events2Constants::PAGE_STORAGE);
         $eventTime->setTimeBegin('09:00');
 
         $categories = new ObjectStorage();
@@ -211,7 +212,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $categories->attach($category2);
 
         $event = GeneralUtility::makeInstance(Event::class);
-        $event->setPid(11);
+        $event->setPid(Events2Constants::PAGE_STORAGE);
         $event->setEventType('single');
         $event->setTopOfList(false);
         $event->setTitle('Birthday with time');
@@ -229,7 +230,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $categories->attach($category1);
 
         $event = GeneralUtility::makeInstance(Event::class);
-        $event->setPid(11);
+        $event->setPid(Events2Constants::PAGE_STORAGE);
         $event->setEventType('single');
         $event->setTopOfList(false);
         $event->setTitle('Birthday without time');
@@ -251,7 +252,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $categories->attach($mainCategory);
 
         $event = GeneralUtility::makeInstance(Event::class);
-        $event->setPid(11);
+        $event->setPid(Events2Constants::PAGE_STORAGE);
         $event->setEventType('duration');
         $event->setTopOfList(true);
         $event->setTitle('Holiday');
@@ -268,7 +269,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $eventBegin = new \DateTimeImmutable('midnight');
 
         $eventTime = new Time();
-        $eventTime->setPid(11);
+        $eventTime->setPid(Events2Constants::PAGE_STORAGE);
         $eventTime->setTimeBegin('17:00');
         $eventTime->setTimeEntry('16:30');
         $eventTime->setDuration('03:00');
@@ -279,7 +280,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $categories->attach($category2);
 
         $event = GeneralUtility::makeInstance(Event::class);
-        $event->setPid(11);
+        $event->setPid(Events2Constants::PAGE_STORAGE);
         $event->setEventType('recurring');
         $event->setTopOfList(true);
         $event->setTitle('UserGroup');
@@ -306,7 +307,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $categories->attach($category1);
 
         $event = GeneralUtility::makeInstance(Event::class);
-        $event->setPid(40);
+        $event->setPid(Events2Constants::PAGE_STORAGE);
         $event->setEventType('recurring');
         $event->setTopOfList(false);
         $event->setTitle('EachMonth');
@@ -324,7 +325,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $persistenceManager->add($event);
 
         $event = GeneralUtility::makeInstance(Event::class);
-        $event->setPid(40);
+        $event->setPid(Events2Constants::PAGE_STORAGE);
         $event->setEventType('recurring');
         $event->setTopOfList(false);
         $event->setTitle('EachSecondWeek');
@@ -344,7 +345,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $categories->attach($category2);
 
         $event = GeneralUtility::makeInstance(Event::class);
-        $event->setPid(11);
+        $event->setPid(Events2Constants::PAGE_STORAGE);
         $event->setEventType('recurring');
         $event->setTopOfList(false);
         $event->setTitle('Recurring event with end');
@@ -366,7 +367,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $eventBegin = $eventBegin->modify('+2 days');
 
         $event = GeneralUtility::makeInstance(Event::class);
-        $event->setPid(11);
+        $event->setPid(Events2Constants::PAGE_STORAGE);
         $event->setHidden(true);
         $event->setEventType('single');
         $event->setTopOfList(false);
@@ -410,7 +411,7 @@ class DayRepositoryTest extends FunctionalTestCase
         $exceptions->attach($exception2);
 
         $event = GeneralUtility::makeInstance(Event::class);
-        $event->setPid(11);
+        $event->setPid(Events2Constants::PAGE_STORAGE);
         $event->setEventType('duration');
         $event->setEventTime($eventTime);
         $event->setTopOfList(true);
@@ -518,14 +519,14 @@ class DayRepositoryTest extends FunctionalTestCase
             'mergeRecurringEvents' => '1',
         ]);
 
-        $this->querySettings->setStoragePageIds([11]);
+        $this->querySettings->setStoragePageIds([Events2Constants::PAGE_STORAGE]);
         $days = $this->dayRepository->getDaysForListType('list', new Filter());
         self::assertSame(
             9,
             $days->count(),
         );
 
-        $this->querySettings->setStoragePageIds([40]);
+        $this->querySettings->setStoragePageIds([Events2Constants::PAGE_STORAGE]);
         $days = $this->dayRepository->getDaysForListType('list', new Filter());
         self::assertSame(
             2,
@@ -542,7 +543,7 @@ class DayRepositoryTest extends FunctionalTestCase
             'mergeRecurringEvents' => '1',
         ]);
 
-        $this->querySettings->setStoragePageIds([11]);
+        $this->querySettings->setStoragePageIds([Events2Constants::PAGE_STORAGE]);
         $days = $this->dayRepository->getDaysForListType('list', new Filter());
         self::assertSame(
             10,
@@ -792,14 +793,14 @@ class DayRepositoryTest extends FunctionalTestCase
             'mergeRecurringEvents' => '1',
         ]);
 
-        $this->querySettings->setStoragePageIds([11]);
+        $this->querySettings->setStoragePageIds([Events2Constants::PAGE_STORAGE]);
         $days = $this->dayRepository->searchEvents(new Search());
         self::assertCount(
             9,
             $days->toArray(),
         );
 
-        $this->querySettings->setStoragePageIds([40]);
+        $this->querySettings->setStoragePageIds([Events2Constants::PAGE_STORAGE]);
         $days = $this->dayRepository->searchEvents(new Search());
         self::assertCount(
             2,
@@ -994,7 +995,7 @@ class DayRepositoryTest extends FunctionalTestCase
     #[Test]
     public function additionalTimeExceptionsForDurationEventsWillNotCreateNewEntryInListView(): void
     {
-        $this->querySettings->setStoragePageIds([11]);
+        $this->querySettings->setStoragePageIds([Events2Constants::PAGE_STORAGE]);
         $days = $this->dayRepository->getDaysForListType('list', new Filter());
         $counter = 0;
         foreach ($days as $day) {

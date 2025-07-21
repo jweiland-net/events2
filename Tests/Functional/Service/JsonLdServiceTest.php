@@ -53,7 +53,7 @@ class JsonLdServiceTest extends FunctionalTestCase
         $GLOBALS['TYPO3_REQUEST'] = $request->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_BE);
 
         $querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
-        $querySettings->setStoragePageIds([11, 40]);
+        $querySettings->setStoragePageIds([Events2Constants::PAGE_STORAGE]);
 
         $this->dayRepository = GeneralUtility::makeInstance(DayRepository::class);
         $this->dayRepository->setDefaultQuerySettings($querySettings);

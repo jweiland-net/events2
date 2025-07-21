@@ -95,7 +95,7 @@ class PathSegmentHelperTest extends FunctionalTestCase
             ->method('generate')
             ->with(
                 self::identicalTo($baseRecord),
-                self::identicalTo(12),
+                self::identicalTo(20),
             )
             ->willReturn('weekly-market-2');
 
@@ -116,7 +116,7 @@ class PathSegmentHelperTest extends FunctionalTestCase
         return new PathSegmentHelper(
             GeneralUtility::makeInstance(EventDispatcher::class),
             GeneralUtility::makeInstance(PersistenceManagerInterface::class),
-            $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_event'),
+            $this->getConnectionPool(),
             $extConf,
         );
     }

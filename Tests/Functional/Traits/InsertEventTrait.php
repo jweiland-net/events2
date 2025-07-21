@@ -13,6 +13,7 @@ namespace JWeiland\Events2\Tests\Functional\Traits;
 
 use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Tests\Functional\Events2Constants;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 trait InsertEventTrait
@@ -22,7 +23,22 @@ trait InsertEventTrait
         \DateTimeImmutable $eventBegin,
         string $timeBegin = '',
         string $organizer = '',
+        string $location = '',
+        array $additionalFields = [],
     ): void {
+        $locationUid = 0;
+        if ($location !== '') {
+            $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_location');
+            $connection->insert(
+                'tx_events2_domain_model_location',
+                [
+                    'pid' => Events2Constants::PAGE_STORAGE,
+                    'location' => $location,
+                ],
+            );
+            $locationUid = (int)$connection->lastInsertId();
+        }
+
         $eventRecord = [
             'pid' => Events2Constants::PAGE_STORAGE,
             'event_type' => 'single',
@@ -30,14 +46,17 @@ trait InsertEventTrait
             'event_time' => $timeBegin !== '' ? 1 : 0,
             'title' => $title,
             'organizers' => $organizer !== '' ? 1 : 0,
+            'location' => $locationUid,
         ];
+
+        ArrayUtility::mergeRecursiveWithOverrule($eventRecord, $additionalFields);
 
         $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_event');
         $connection->insert(
             'tx_events2_domain_model_event',
             $eventRecord,
         );
-        $eventUid = $connection->lastInsertId();
+        $eventUid = (int)$connection->lastInsertId();
 
         if ($timeBegin !== '') {
             $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_time');
@@ -62,7 +81,7 @@ trait InsertEventTrait
                     'organizer' => $organizer,
                 ],
             );
-            $organizerUid = $connection->lastInsertId();
+            $organizerUid = (int)$connection->lastInsertId();
 
             $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_event_organizer_mm');
             $connection->insert(

@@ -22,6 +22,7 @@ use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Service\DayRelationService;
+use JWeiland\Events2\Tests\Functional\Events2Constants;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
@@ -61,7 +62,7 @@ class DayFactoryTest extends FunctionalTestCase
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $persistenceManager = $this->objectManager->get(PersistenceManagerInterface::class);
         $this->querySettings = $this->objectManager->get(QuerySettingsInterface::class);
-        $this->querySettings->setStoragePageIds([11, 40]);
+        $this->querySettings->setStoragePageIds([Events2Constants::PAGE_STORAGE]);
 
         $dayRepository = $this->objectManager->get(DayRepository::class);
         $dayRepository->setDefaultQuerySettings($this->querySettings);
@@ -77,21 +78,21 @@ class DayFactoryTest extends FunctionalTestCase
 
         // As we need day related records, we can not use XML import functionality
         $organizer = new Organizer();
-        $organizer->setPid(11);
+        $organizer->setPid(Events2Constants::PAGE_STORAGE);
         $organizer->setOrganizer('Stefan');
 
         $location = new Location();
-        $location->setPid(11);
+        $location->setPid(Events2Constants::PAGE_STORAGE);
         $location->setLocation('Market');
 
         $eventBegin = new \DateTimeImmutable('today midnight');
 
         $eventTime = new Time();
-        $eventTime->setPid(11);
+        $eventTime->setPid(Events2Constants::PAGE_STORAGE);
         $eventTime->setTimeBegin('07:30');
 
         $event = GeneralUtility::makeInstance(Event::class);
-        $event->setPid(11);
+        $event->setPid(Events2Constants::PAGE_STORAGE);
         $event->setEventType('single');
         $event->setTopOfList(false);
         $event->setTitle('Exactly match');
@@ -111,7 +112,7 @@ class DayFactoryTest extends FunctionalTestCase
         $eventBegin = new \DateTimeImmutable('tomorrow midnight');
 
         $event = GeneralUtility::makeInstance(Event::class);
-        $event->setPid(11);
+        $event->setPid(Events2Constants::PAGE_STORAGE);
         $event->setEventType('single');
         $event->setTopOfList(false);
         $event->setTitle('Next match');
@@ -131,7 +132,7 @@ class DayFactoryTest extends FunctionalTestCase
         $eventBegin = new \DateTimeImmutable('yesterday midnight');
 
         $event = GeneralUtility::makeInstance(Event::class);
-        $event->setPid(11);
+        $event->setPid(Events2Constants::PAGE_STORAGE);
         $event->setEventType('single');
         $event->setTopOfList(false);
         $event->setTitle('Previous match');
@@ -155,7 +156,7 @@ class DayFactoryTest extends FunctionalTestCase
         $recurringEnd = $eventBegin->modify('+2 weeks');
 
         $event = GeneralUtility::makeInstance(Event::class);
-        $event->setPid(11);
+        $event->setPid(Events2Constants::PAGE_STORAGE);
         $event->setEventType('recurring');
         $event->setTopOfList(false);
         $event->setTitle('Previous match');

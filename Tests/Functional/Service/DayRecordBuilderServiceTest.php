@@ -82,6 +82,7 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
 
         $eventRecord = [
             'uid' => 123,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'event_type' => 'single',
             'event_begin' => (int)$eventBegin->format('U'),
             'event_end' => 0,
@@ -124,6 +125,7 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
 
         $eventRecord = [
             'uid' => 123,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'event_type' => 'duration',
             'event_begin' => (int)$eventBegin->format('U'),
             'event_end' => (int)$tomorrow->format('U'),
@@ -174,6 +176,7 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
 
         $eventRecord = [
             'uid' => 123,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'event_type' => 'recurring',
             'event_begin' => (int)$eventBegin->format('U'),
             'event_end' => 0,

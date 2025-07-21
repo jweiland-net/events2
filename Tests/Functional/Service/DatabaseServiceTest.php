@@ -19,6 +19,7 @@ use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Service\DayRelationService;
+use JWeiland\Events2\Tests\Functional\Events2Constants;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
@@ -54,7 +55,7 @@ class DatabaseServiceTest extends FunctionalTestCase
         $this->dayRepository = GeneralUtility::makeInstance(DayRepository::class);
 
         $querySettings = GeneralUtility::makeInstance(QuerySettingsInterface::class);
-        $querySettings->setStoragePageIds([11, 40]);
+        $querySettings->setStoragePageIds([Events2Constants::PAGE_STORAGE]);
 
         $this->dayRepository->setDefaultQuerySettings($querySettings);
         $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
@@ -64,11 +65,11 @@ class DatabaseServiceTest extends FunctionalTestCase
         $eventRepository->setDefaultQuerySettings($querySettings);
 
         $organizer = new Organizer();
-        $organizer->setPid(11);
+        $organizer->setPid(Events2Constants::PAGE_STORAGE);
         $organizer->setOrganizer('Stefan');
 
         $location = new Location();
-        $location->setPid(11);
+        $location->setPid(Events2Constants::PAGE_STORAGE);
         $location->setLocation('Market');
 
         $eventBegin = new \DateTimeImmutable('first day of this month midnight');
@@ -77,7 +78,7 @@ class DatabaseServiceTest extends FunctionalTestCase
             ->modify('-2 months');
 
         $event = GeneralUtility::makeInstance(Event::class);
-        $event->setPid(11);
+        $event->setPid(Events2Constants::PAGE_STORAGE);
         $event->setEventType('recurring');
         $event->setTopOfList(false);
         $event->setTitle('Week market');
@@ -125,7 +126,7 @@ class DatabaseServiceTest extends FunctionalTestCase
             new DateTimeUtility(),
         );
 
-        $days = $databaseService->getDaysInRange($eventBegin, $eventEnd, [11]);
+        $days = $databaseService->getDaysInRange($eventBegin, $eventEnd, [Events2Constants::PAGE_STORAGE]);
 
         self::assertGreaterThanOrEqual(
             3,

@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Tests\Functional\DataHandling;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Tests\Functional\Events2Constants;
+use JWeiland\Events2\Tests\Functional\Traits\InsertEventTrait;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Database\Connection;
@@ -28,6 +29,8 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
  */
 class DataHandlerTest extends FunctionalTestCase
 {
+    use InsertEventTrait;
+
     protected DayRepository $dayRepository;
 
     protected QuerySettingsInterface $querySettings;
@@ -55,7 +58,7 @@ class DataHandlerTest extends FunctionalTestCase
         $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->createFromUserPreferences($GLOBALS['BE_USER']);
 
         $this->querySettings = GeneralUtility::makeInstance(QuerySettingsInterface::class);
-        $this->querySettings->setStoragePageIds([11, 40]);
+        $this->querySettings->setStoragePageIds([Events2Constants::PAGE_STORAGE]);
 
         $this->dayRepository = GeneralUtility::makeInstance(DayRepository::class);
         $this->dayRepository->setDefaultQuerySettings($this->querySettings);
@@ -64,64 +67,25 @@ class DataHandlerTest extends FunctionalTestCase
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/be_groups.csv');
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/be_users.csv');
 
-        $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_organizer');
-        $connection->insert(
-            'tx_events2_domain_model_organizer',
-            [
-                'pid' => Events2Constants::PAGE_STORAGE,
-                'organizer' => 'Stefan',
-            ],
-        );
-        $organizerUid = (int)$connection->lastInsertId();
-
-        $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_location');
-        $connection->insert(
-            'tx_events2_domain_model_location',
-            [
-                'pid' => Events2Constants::PAGE_STORAGE,
-                'location' => 'Market',
-            ],
-        );
-        $locationUid = (int)$connection->lastInsertId();
-
         $eventBegin = new \DateTimeImmutable('midnight');
         $eventBegin = $eventBegin->modify('first day of this month');
         $eventBegin = $eventBegin->modify('+4 days');
         $eventBegin = $eventBegin->modify('-2 months');
 
-        $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_event');
-        $connection->insert(
-            'tx_events2_domain_model_event',
-            [
-                'pid' => Events2Constants::PAGE_STORAGE,
+        $this->insertEvent(
+            title: 'Week market',
+            eventBegin: $eventBegin,
+            organizer: 'Stefan',
+            location: 'Market',
+            additionalFields: [
                 'event_type' => 'recurring',
-                'top_of_list' => 0,
-                'title' => 'Week market',
-                'teaser' => '',
-                'event_begin' => (int)$eventBegin->format('U'),
                 'xth' => 31,
                 'weekday' => 16,
                 'each_weeks' => 0,
                 'each_months' => 0,
                 'recurring_end' => 0,
-                'free_entry' => 0,
-                'organizers' => 1,
-                'location' => $locationUid,
             ],
         );
-        $eventUid = (int)$connection->lastInsertId();
-
-        $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_event_organizer_mm');
-        $connection->insert(
-            'tx_events2_event_organizer_mm',
-            [
-                'uid_local' => $eventUid,
-                'uid_foreign' => $organizerUid,
-            ],
-        );
-
-        $dayRelationService = GeneralUtility::makeInstance(DayRelationService::class);
-        $dayRelationService->createDayRelations($eventUid);
     }
 
     protected function tearDown(): void
