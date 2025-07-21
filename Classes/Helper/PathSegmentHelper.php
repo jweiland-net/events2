@@ -16,6 +16,7 @@ use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Helper\Exception\NoUniquePathSegmentException;
 use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\DataHandling\SlugHelper;
@@ -25,7 +26,7 @@ use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 
 /**
  * Helper class to generate a path segment (slug) for an event record.
- * Used while executing the UpgradeWizard and saving records in frontend.
+ * Used while executing the UpgradeWizard and saving records in the frontend.
  */
 readonly class PathSegmentHelper
 {
@@ -36,7 +37,7 @@ readonly class PathSegmentHelper
     public function __construct(
         protected EventDispatcher $eventDispatcher,
         protected PersistenceManagerInterface $persistenceManager,
-        protected QueryBuilder $queryBuilder,
+        protected ConnectionPool $connectionPool,
         protected ExtConf $extConf,
     ) {}
 
@@ -81,23 +82,19 @@ readonly class PathSegmentHelper
             ),
         );
 
-        // Persist updated path segment
+        // Persist the updated path segment
         $this->persistenceManager->update($event);
         $this->persistenceManager->persistAll();
     }
 
     /**
-     * For generating unique slugs the SlugHelper needs specific TYPO3 internal (workspace/language) columns which we
+     * For generating unique slugs, the SlugHelper needs specific TYPO3 internal (workspace/language) columns which we
      * do not provide within our Event model. That's why we do an additional select here.
      */
     protected function getEventRecord(int $eventUid): array
     {
-        // Event is hidden while creation. Remove enableFields, except deleted
-        $queryBuilder = $this->queryBuilder;
-        $queryBuilder->getRestrictions()->removeAll();
-        $queryBuilder->getRestrictions()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
-
         try {
+            $queryBuilder = $this->getQueryBuilder();
             $queryResult = $queryBuilder
                 ->select('*')
                 ->from(self::TABLE)
@@ -133,7 +130,7 @@ readonly class PathSegmentHelper
         $config['generatorOptions']['postModifiers']['events2-post-modifier']
             = \JWeiland\Events2\Hook\SlugPostModifierHook::class . '->modify';
 
-        // Make sure column "uid" is appended in list of generator fields, if "uid" is set in extension settings
+        // Make sure the column "uid" is appended in the list of generator fields if "uid" is set in extension settings
         if (
             $this->extConf->getPathSegmentType() === 'uid'
             && !in_array('uid', $config['generatorOptions']['fields'], true)
@@ -147,5 +144,17 @@ readonly class PathSegmentHelper
             self::SLUG_COLUMN,
             $config,
         );
+    }
+
+    protected function getQueryBuilder(): QueryBuilder
+    {
+        // Event is hidden while creation. Remove enableFields, except deleted
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable(self::TABLE);
+        $queryBuilder
+            ->getRestrictions()
+            ->removeAll()
+            ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
+
+        return $queryBuilder;
     }
 }

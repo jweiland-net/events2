@@ -18,7 +18,7 @@ use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\SingletonInterface;
 
 /**
- * This class streamlines all settings from extension manager
+ * This class streamlines all settings from the extension manager
  */
 #[Autoconfigure(constructor: 'create')]
 readonly class ExtConf implements SingletonInterface

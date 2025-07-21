@@ -416,7 +416,7 @@ class DayRepository extends Repository
 
     /**
      * Find one Day by Event and Timestamp.
-     * If timestamp is empty, we try to find next possible day in future/past or build our own one.
+     * If the timestamp is empty, we try to find the next possible day in the future / past or build our own one.
      *
      * @throws \Exception
      */

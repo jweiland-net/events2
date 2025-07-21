@@ -17,6 +17,7 @@ use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Service\DatabaseService;
 use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
@@ -39,7 +40,7 @@ class DayFactory
         protected readonly DatabaseService $databaseService,
         protected readonly DayRepository $dayRepository,
         protected readonly EventRepository $eventRepository,
-        protected readonly QueryBuilder $queryBuilder,
+        protected readonly ConnectionPool $connectionPool,
     ) {}
 
     /**
@@ -108,7 +109,7 @@ class DayFactory
     }
 
     /**
-     * Build day object on our own.
+     * Build a day object on our own.
      * It will not get an UID or PID
      *
      * @throws \Exception
@@ -119,7 +120,7 @@ class DayFactory
         $event = $this->eventRepository->findByIdentifier($searchValues['event']);
         if (!$event instanceof Event) {
             // Normally this can't be thrown, as this class will only be called at a detail page.
-            // So action controller will throw Exception first, if event is not given.
+            // So the action controller will throw Exception first if the event is not given.
             throw new \Exception('Given event could not be found in DayFactory', 1548927197);
         }
 
@@ -169,7 +170,7 @@ class DayFactory
         int $eventUid,
         string $order = QueryInterface::ORDER_ASCENDING,
     ): QueryBuilder {
-        $queryBuilder = $this->queryBuilder;
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('tx_events2_domain_model_day');
         $queryBuilder
             ->select('day.*')
             ->from('tx_events2_domain_model_day', 'day')

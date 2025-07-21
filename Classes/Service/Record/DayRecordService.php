@@ -31,7 +31,6 @@ readonly class DayRecordService
     private const TABLE = 'tx_events2_domain_model_day';
 
     public function __construct(
-        private QueryBuilder $queryBuilder,
         private ConnectionPool $connectionPool,
         private TcaSchemaFactory $tcaSchemaFactory,
         private ReferenceIndex $referenceIndex,
@@ -39,8 +38,7 @@ readonly class DayRecordService
 
     public function getByEventAndTime(int $eventUid, int $timestamp): array
     {
-        $queryBuilder = $this->queryBuilder;
-        $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
+        $queryBuilder = $this->getQueryBuilder();
 
         try {
             $day = $queryBuilder
@@ -261,6 +259,14 @@ readonly class DayRecordService
         }
 
         return $dayRecords;
+    }
+
+    protected function getQueryBuilder(): QueryBuilder
+    {
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable(self::TABLE);
+        $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
+
+        return $queryBuilder;
     }
 
     private function getBackendUser(): BackendUserAuthentication

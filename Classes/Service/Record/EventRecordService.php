@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Service\Record;
 use Doctrine\DBAL\Exception;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DefaultRestrictionContainer;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
@@ -26,8 +27,8 @@ class EventRecordService
     private const TABLE = 'tx_events2_domain_model_event';
 
     public function __construct(
-        private readonly QueryBuilder $queryBuilder,
         private readonly PageRepository $pageRepository,
+        private readonly ConnectionPool $connectionPool,
     ) {}
 
     public function findByUid(
@@ -72,8 +73,9 @@ class EventRecordService
      */
     public function getLanguageUidsOfTranslatedEventRecords(array $eventRecordInDefaultLanguage): array
     {
-        $queryBuilder = $this->queryBuilder;
-        $queryBuilder->getRestrictions()
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder
+            ->getRestrictions()
             ->removeAll()
             ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
 
@@ -106,7 +108,7 @@ class EventRecordService
 
     protected function getQueryBuilder(QueryRestrictionContainerInterface $restrictionContainer = null): QueryBuilder
     {
-        $queryBuilder = $this->queryBuilder;
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable(self::TABLE);
 
         if ($restrictionContainer instanceof QueryRestrictionContainerInterface) {
             $queryBuilder->setRestrictions($restrictionContainer);
