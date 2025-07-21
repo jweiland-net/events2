@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Functional\DataHandling;
 
 use JWeiland\Events2\Domain\Repository\DayRepository;
-use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Tests\Functional\Events2Constants;
 use JWeiland\Events2\Tests\Functional\Traits\InsertEventTrait;
 use PHPUnit\Framework\Attributes\Test;
