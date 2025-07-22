@@ -33,7 +33,7 @@ class UserSession
      * EID script saved selected month and year in the user session
      * this method returns these values to set calendar to this date.
      *
-     * @return array contains month and year OR empty array
+     * @return array contains a month and a year OR an empty array
      */
     public function getMonthAndYear(): array
     {
