@@ -73,13 +73,27 @@ class ManagementControllerTest extends FunctionalTestCase
     }
 
     #[Test]
-    public function listMyEventsWillShowRestriction(): void
+    public function listMyEventsWithoutLoggedInUserWillShowLoginMessage(): void
+    {
+        $content = (string)$this->executeFrontendSubRequest(
+            (new InternalRequest())
+                ->withPageId(Events2Constants::PAGE_MANAGEMENT),
+        )->getBody();
+
+        self::assertStringContainsString(
+            'This page is restricted. Please log in to access the Events Management area.',
+            $content,
+        );
+    }
+
+    #[Test]
+    public function listMyEventsWithUserOfWrongGroupWillShowRestrictionMessage(): void
     {
         $content = (string)$this->executeFrontendSubRequest(
             (new InternalRequest())
                 ->withPageId(Events2Constants::PAGE_MANAGEMENT),
             (new InternalRequestContext())
-                ->withFrontendUserId(3)
+                ->withFrontendUserId(3),
         )->getBody();
 
         self::assertStringContainsString(
@@ -89,13 +103,13 @@ class ManagementControllerTest extends FunctionalTestCase
     }
 
     #[Test]
-    public function listMyEventsWillShowNoEventsFound(): void
+    public function listMyEventsWithUserWithoutOrganizerWillShowMissingOrganizerMessage(): void
     {
         $content = (string)$this->executeFrontendSubRequest(
             (new InternalRequest())
                 ->withPageId(Events2Constants::PAGE_MANAGEMENT),
             (new InternalRequestContext())
-                ->withFrontendUserId(2)
+                ->withFrontendUserId(2),
         )->getBody();
 
         self::assertStringContainsString(
@@ -107,22 +121,39 @@ class ManagementControllerTest extends FunctionalTestCase
     #[Test]
     public function listMyEventsWillShowEventsOfCurrentUser(): void
     {
-        $tomorrowMidnight = new \DateTimeImmutable('tomorrow midnight');
-
         $this->insertEvent(
-            title: 'Event Title Tomorrow',
-            eventBegin: $tomorrowMidnight,
-            location: 'Marketplace',
+            title: 'Event without organizer will not be shown in general',
+            eventBegin: new \DateTimeImmutable('yesterday midnight'),
+        );
+        $this->insertEvent(
+            title: 'Event with user defined organizer',
+            eventBegin: new \DateTimeImmutable('today midnight'),
+            organizer: 'jweiland.net',
+        );
+        $this->insertEvent(
+            title: 'Event with non user defined organizer',
+            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
+            organizer: 'TYPO3',
         );
         $this->createDayRelations();
 
         $content = (string)$this->executeFrontendSubRequest(
             (new InternalRequest())
-                ->withPageId(Events2Constants::PAGE_MANAGEMENT)
+                ->withPageId(Events2Constants::PAGE_MANAGEMENT),
+            (new InternalRequestContext())
+                ->withFrontendUserId(1),
         )->getBody();
 
         self::assertStringContainsString(
-            'Marketplace',
+            'Event with user defined organizer',
+            $content,
+        );
+        self::assertStringNotContainsString(
+            'Event without organizer will not be shown in general',
+            $content,
+        );
+        self::assertStringNotContainsString(
+            'Event with non user defined organizer',
             $content,
         );
     }

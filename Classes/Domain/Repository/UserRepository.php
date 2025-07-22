@@ -26,20 +26,20 @@ class UserRepository
      */
     public function getUser(): array
     {
-        $tsfe = $this->getTypoScriptFrontendController();
+        $frontendUser = $this->getFrontendUserAuthentication();
 
-        if (is_array($tsfe->fe_user->user) && (int)$tsfe->fe_user->user['uid'] > 0) {
+        if (is_array($frontendUser->user) && (int)$frontendUser->user['uid'] > 0) {
             // remove password for security reasons
-            unset($tsfe->fe_user->user['password']);
+            unset($frontendUser->user['password']);
 
-            return $tsfe->fe_user->user;
+            return $frontendUser->user;
         }
 
         return [];
     }
 
     /**
-     * Get a special field from user.
+     * Get a special field from the user.
      *
      * @param string $field Return only the specified field instead of full user data
      * @return string The requested user data

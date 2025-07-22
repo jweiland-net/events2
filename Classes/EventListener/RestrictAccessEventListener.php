@@ -119,7 +119,7 @@ final readonly class RestrictAccessEventListener
             return false;
         }
 
-        if ($this->userRepository->getFieldFromUser('tx_events2_organizer') === '') {
+        if ((int)$this->userRepository->getFieldFromUser('tx_events2_organizer') === 0) {
             $this->addFlashMessage(LocalizationUtility::translate('missingOrganizerForCreate', 'events2'));
             return false;
         }

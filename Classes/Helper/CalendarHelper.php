@@ -24,8 +24,8 @@ readonly class CalendarHelper
     use Typo3RequestTrait;
 
     public function __construct(
-        protected readonly DayHelper $dayHelper,
-        protected readonly UserSession $userSession,
+        protected DayHelper $dayHelper,
+        protected UserSession $userSession,
     ) {}
 
     public function getCalendarVariables(): array
@@ -42,14 +42,15 @@ readonly class CalendarHelper
     {
         return [
             'siteUrl' => $this->getTypo3SiteUrl(),
-            'siteId' => $this->getTypoScriptFrontendController()->id,
+            'siteId' => $this->getPageArguments()->getPageId(),
         ];
     }
 
     protected function addCalendarVariablesByUserSession(array &$variables): void
     {
-        // 1st priority. If a user session was found we will use stored month/year from session
+        // 1st priority. If a user session was found, we will use stored month/year from session
         $monthAndYear = $this->userSession->getMonthAndYear();
+
         if ($monthAndYear !== []) {
             $variables['day'] = '01';
             $variables['month'] = (string)$monthAndYear['month'];
@@ -59,8 +60,9 @@ readonly class CalendarHelper
 
     protected function addCalendarVariablesByDayParameterFromUrl(array &$variables): void
     {
-        // 2nd priority. If a day parameter was found in current URL use that
+        // 2nd priority. If a day parameter was found in the current URL, use that
         $day = $this->dayHelper->getDayFromUri();
+
         if ($day instanceof Day) {
             $variables['day'] = $day->getDay()->format('d');
             $variables['month'] = $day->getDay()->format('m');
@@ -70,7 +72,7 @@ readonly class CalendarHelper
 
     protected function addDefaultCalendarVariables(array &$variables): void
     {
-        // lowest priority. Will be overwritten, if day oder user session exists
+        // Lowest priority. Will be overwritten if day oder user session exists
         $variables['day'] = date('d');
         $variables['month'] = date('m');
         $variables['year'] = date('Y');
