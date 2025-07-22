@@ -77,7 +77,7 @@ class LocationControllerTest extends FunctionalTestCase
 
     #[Test]
     #[DataProvider('pluginTypeDataProvider')]
-    public function showActionOfPluginShowShowsLocation(string $pluginNamespace, int $pageUid): void
+    public function showActionShowsLocation(string $pluginNamespace, int $pageUid): void
     {
         $tomorrowMidnight = new \DateTimeImmutable('tomorrow midnight');
 

@@ -24,6 +24,7 @@ trait InsertEventTrait
         \DateTimeImmutable $eventBegin,
         string $timeBegin = '',
         string $ticketLink = '',
+        string $videoLink = '',
         array $additionalFields = [],
         string $organizer = '',
         string $organizerLink = '',
@@ -61,6 +62,20 @@ trait InsertEventTrait
             $ticketLinkUid = (int)$connection->lastInsertId();
         }
 
+        $videoLinkUid = 0;
+        if ($videoLink) {
+            $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_link');
+            $connection->insert(
+                'tx_events2_domain_model_link',
+                [
+                    'pid' => Events2Constants::PAGE_STORAGE,
+                    'title' => 'Video Link',
+                    'link' => $videoLink,
+                ],
+            );
+            $videoLinkUid = (int)$connection->lastInsertId();
+        }
+
         $eventRecord = [
             'pid' => Events2Constants::PAGE_STORAGE,
             'event_type' => 'single',
@@ -70,6 +85,7 @@ trait InsertEventTrait
             'organizers' => $organizer !== '' ? 1 : 0,
             'location' => $locationUid,
             'ticket_link' => $ticketLinkUid,
+            'video_link' => $videoLinkUid,
         ];
 
         ArrayUtility::mergeRecursiveWithOverrule($eventRecord, $additionalFields);
