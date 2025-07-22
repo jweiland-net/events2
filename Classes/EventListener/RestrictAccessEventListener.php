@@ -104,6 +104,17 @@ final readonly class RestrictAccessEventListener
         }
 
         if ((int)($controllerActionEvent->getSettings()['userGroup'] ?? 0) === 0) {
+            $this->addFlashMessage(LocalizationUtility::translate('userGroupNotConfigured', 'events2'));
+            return false;
+        }
+
+        $userAspect = GeneralUtility::makeInstance(Context::class)->getAspect('frontend.user');
+        if (!$userAspect->isLoggedIn()) {
+            $this->addFlashMessage(LocalizationUtility::translate('pluginNeedsLogin', 'events2'));
+            return false;
+        }
+
+        if (!in_array((int)($controllerActionEvent->getSettings()['userGroup'] ?? 0), $userAspect->getGroupIds(), true)) {
             $this->addFlashMessage(LocalizationUtility::translate('notAllowedToCreate', 'events2'));
             return false;
         }
