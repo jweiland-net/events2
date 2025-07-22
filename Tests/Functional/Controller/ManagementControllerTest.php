@@ -12,10 +12,13 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Functional\Controller;
 
 use JWeiland\Events2\Tests\Functional\Events2Constants;
+use JWeiland\Events2\Tests\Functional\Traits\CacheHashTrait;
+use JWeiland\Events2\Tests\Functional\Traits\InsertEventTrait;
+use JWeiland\Events2\Tests\Functional\Traits\SiteBasedTestTrait;
 use PHPUnit\Framework\Attributes\Test;
-use Psr\Http\Message\ServerRequestInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Core\Bootstrap;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
+use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequestContext;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
@@ -23,107 +26,103 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
  */
 class ManagementControllerTest extends FunctionalTestCase
 {
-    protected ServerRequestInterface $serverRequest;
+    use CacheHashTrait;
+    use InsertEventTrait;
+    use SiteBasedTestTrait;
 
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
+        'fluid_styled_content',
         'reactions',
     ];
 
     protected array $testExtensionsToLoad = [
         'sjbr/static-info-tables',
         'jweiland/events2',
+        __DIR__ . '/../Fixtures/Extensions/site_package',
+    ];
+
+    protected const LANGUAGE_PRESETS = [
+        'EN' => [
+            'id' => 0,
+            'title' => 'English',
+            'locale' => 'en_US.UTF8',
+            'iso' => 'en',
+        ],
     ];
 
     protected function setUp(): void
     {
-        self::markTestIncomplete('ManagementControllerTest not updated until right now');
-
         parent::setUp();
 
-        $this->importDataSet('ntf://Database/pages.xml');
-        $this->setUpFrontendRootPage(1, [__DIR__ . '/../Fixtures/TypoScript/setup.typoscript']);
+        $GLOBALS['BE_USER'] = new BackendUserAuthentication();
+        $GLOBALS['BE_USER']->workspace = 0;
 
-        $this->serverRequest = $this->getServerRequestForFrontendMode();
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Events2PageTree.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/fe_users.csv');
 
-        $this->getDatabaseConnection()->insertArray(
-            'fe_users',
+        $this->writeSiteConfiguration(
+            'events2-controller-test',
+            $this->buildSiteConfiguration(1, '/'),
             [
-                'pid' => Events2Constants::PAGE_STORAGE,
-                'username' => 'froemken',
-                'tx_events2_organizer' => 1,
+                $this->buildDefaultLanguageConfiguration('EN', '/'),
             ],
+            [],
+            ['jweiland/sitepackage'],
         );
-
-        $this->getDatabaseConnection()->insertArray(
-            'tx_events2_domain_model_organizer',
-            [
-                'pid' => Events2Constants::PAGE_STORAGE,
-                'organizer' => 'Stefan',
-            ],
-        );
-
-        $date = new \DateTimeImmutable('midnight');
-        $this->getDatabaseConnection()->insertArray(
-            'tx_events2_domain_model_event',
-            [
-                'pid' => Events2Constants::PAGE_STORAGE,
-                'event_type' => 'single',
-                'event_begin' => (int)$date->format('U'),
-                'title' => 'Today',
-                'organizers' => '1',
-            ],
-        );
-
-        $this->getDatabaseConnection()->insertArray(
-            'tx_events2_event_organizer_mm',
-            [
-                'uid_local' => 1,
-                'uid_foreign' => 1,
-            ],
-        );
-    }
-
-    protected function tearDown(): void
-    {
-        unset(
-            $this->request,
-            $GLOBALS['TSFE'],
-        );
-
-        parent::tearDown();
     }
 
     #[Test]
-    public function processRequestWithNewActionWillCollectSelectableCategories(): void
+    public function listMyEventsWillShowRestriction(): void
     {
-        $this->startUpTSFE($this->serverRequest);
-
-        $GLOBALS['TSFE']->fe_user->user = $this->getDatabaseConnection()->selectSingleRow(
-            '*',
-            'fe_users',
-            'uid = 1',
-        );
-
-        $extbaseBootstrap = GeneralUtility::makeInstance(Bootstrap::class);
-        $content = $extbaseBootstrap->run(
-            '',
-            [
-                'extensionName' => 'Events2',
-                'pluginName' => 'Management',
-                'format' => 'txt',
-                'settings' => [
-                    'userGroup' => '1',
-                ],
-            ],
-        );
+        $content = (string)$this->executeFrontendSubRequest(
+            (new InternalRequest())
+                ->withPageId(Events2Constants::PAGE_MANAGEMENT),
+            (new InternalRequestContext())
+                ->withFrontendUserId(3)
+        )->getBody();
 
         self::assertStringContainsString(
-            'Event Title 1: Today',
+            'You\'re not allowed to create event records',
             $content,
         );
+    }
+
+    #[Test]
+    public function listMyEventsWillShowNoEventsFound(): void
+    {
+        $content = (string)$this->executeFrontendSubRequest(
+            (new InternalRequest())
+                ->withPageId(Events2Constants::PAGE_MANAGEMENT),
+            (new InternalRequestContext())
+                ->withFrontendUserId(2)
+        )->getBody();
+
         self::assertStringContainsString(
-            'tx_events2_management%5Baction%5D=edit&amp;tx_events2_management%5Bcontroller%5D=Management',
+            'You\'re allowed to create event records, but your user record has no relation to an organizer record.',
+            $content,
+        );
+    }
+
+    #[Test]
+    public function listMyEventsWillShowEventsOfCurrentUser(): void
+    {
+        $tomorrowMidnight = new \DateTimeImmutable('tomorrow midnight');
+
+        $this->insertEvent(
+            title: 'Event Title Tomorrow',
+            eventBegin: $tomorrowMidnight,
+            location: 'Marketplace',
+        );
+        $this->createDayRelations();
+
+        $content = (string)$this->executeFrontendSubRequest(
+            (new InternalRequest())
+                ->withPageId(Events2Constants::PAGE_MANAGEMENT)
+        )->getBody();
+
+        self::assertStringContainsString(
+            'Marketplace',
             $content,
         );
     }

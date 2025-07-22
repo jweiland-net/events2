@@ -28,7 +28,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
  * The EventController contains actions to search, create, activate, update and delete events.
- * For plain listing of events please visit DayController
+ * For a plain listing of events, please visit DayController
  */
 class ManagementController extends AbstractController
 {
