@@ -12,13 +12,12 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Functional\Controller;
 
 use JWeiland\Events2\Tests\Functional\Events2Constants;
+use JWeiland\Events2\Tests\Functional\Traits\CacheHashTrait;
 use JWeiland\Events2\Tests\Functional\Traits\CreatePostStreamBodyTrait;
 use JWeiland\Events2\Tests\Functional\Traits\InsertEventTrait;
 use JWeiland\Events2\Tests\Functional\Traits\SiteBasedTestTrait;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Page\CacheHashCalculator;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -27,6 +26,7 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
  */
 class DayControllerTest extends FunctionalTestCase
 {
+    use CacheHashTrait;
     use CreatePostStreamBodyTrait;
     use InsertEventTrait;
     use SiteBasedTestTrait;
@@ -366,19 +366,12 @@ class DayControllerTest extends FunctionalTestCase
 
         $parameters = [
             'tx_events2_show' => [
-                'event' => '1',
+                'event' => 1,
                 'timestamp' => $tomorrowMidnight->format('U'),
             ],
         ];
 
-        $cacheHashCalculator = GeneralUtility::makeInstance(CacheHashCalculator::class);
-
-        $hashParameters = $parameters;
-        $hashParameters['id'] = Events2Constants::PAGE_SHOW;
-        $uri = http_build_query($hashParameters, '', '&', PHP_QUERY_RFC3986);
-        $parameters['cHash'] = $cacheHashCalculator->calculateCacheHash(
-            $cacheHashCalculator->getRelevantParameters($uri),
-        );
+        $parameters['cHash'] = $this->generateCacheHash($parameters, Events2Constants::PAGE_SHOW);
 
         $content = (string)$this->executeFrontendSubRequest(
             (new InternalRequest())
