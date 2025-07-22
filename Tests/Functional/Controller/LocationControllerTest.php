@@ -15,6 +15,7 @@ use JWeiland\Events2\Tests\Functional\Events2Constants;
 use JWeiland\Events2\Tests\Functional\Traits\CacheHashTrait;
 use JWeiland\Events2\Tests\Functional\Traits\InsertEventTrait;
 use JWeiland\Events2\Tests\Functional\Traits\SiteBasedTestTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
@@ -70,32 +71,40 @@ class LocationControllerTest extends FunctionalTestCase
         );
     }
 
+    public static function pluginTypeDataProvider(): array
+    {
+        return [
+            'Page with events2 plugin: events2_list' => ['tx_events2_list', Events2Constants::PAGE_LIST],
+            'Page with events2 plugin: events2_show' => ['tx_events2_show', Events2Constants::PAGE_SHOW],
+        ];
+    }
+
     #[Test]
-    public function showActionShowsEvent(): void
+    #[DataProvider('pluginTypeDataProvider')]
+    public function showActionOfPluginShowShowsLocation(string $pluginNamespace, int $pageUid): void
     {
         $tomorrowMidnight = new \DateTimeImmutable('tomorrow midnight');
 
         $this->insertEvent(
             title: 'Event Title Tomorrow',
             eventBegin: $tomorrowMidnight,
-            timeBegin: '08:15',
             location: 'Marketplace',
         );
         $this->createDayRelations();
 
         $parameters = [
-            'tx_events2_show' => [
+            $pluginNamespace => [
                 'controller' => 'Location',
                 'action' => 'show',
                 'location' => 1,
             ],
         ];
 
-        $parameters['cHash'] = $this->generateCacheHash($parameters, Events2Constants::PAGE_SHOW);
+        $parameters['cHash'] = $this->generateCacheHash($parameters, $pageUid);
 
         $content = (string)$this->executeFrontendSubRequest(
             (new InternalRequest())
-                ->withPageId(Events2Constants::PAGE_SHOW)
+                ->withPageId($pageUid)
                 ->withQueryParams($parameters),
         )->getBody();
 
