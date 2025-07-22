@@ -30,8 +30,8 @@ use TYPO3\CMS\Extbase\Service\ExtensionService;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
- * Restrict access to controller actions, if current logged-in user tries to access records of other users.
- * We will remove the event argument from request which will result in calling the errorAction of the ActionController.
+ * Restrict access to controller actions if the current logged-in user tries to access records of other users.
+ * We will remove the event argument from the request, which will result in calling the errorAction of the ActionController.
  */
 #[AsEventListener('events2/restrictAccess')]
 final readonly class RestrictAccessEventListener
