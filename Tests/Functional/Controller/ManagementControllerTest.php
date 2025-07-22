@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Functional\Controller;
 
 use JWeiland\Events2\Tests\Functional\Events2Constants;
-use JWeiland\Events2\Tests\Functional\Traits\CacheHashTrait;
 use JWeiland\Events2\Tests\Functional\Traits\InsertEventTrait;
 use JWeiland\Events2\Tests\Functional\Traits\SiteBasedTestTrait;
 use PHPUnit\Framework\Attributes\Test;
@@ -25,7 +24,6 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
  */
 class ManagementControllerTest extends FunctionalTestCase
 {
-    use CacheHashTrait;
     use InsertEventTrait;
     use SiteBasedTestTrait;
 
