@@ -31,15 +31,9 @@ class HiddenObjectHelperTest extends FunctionalTestCase
 
     protected Session $session;
 
-    /**
-     * @var EventRepository|MockObject
-     */
-    protected $eventRepositoryMock;
+    protected EventRepository|MockObject $eventRepositoryMock;
 
-    /**
-     * @var Request|MockObject
-     */
-    protected $requestMock;
+    protected Request|MockObject $requestMock;
 
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
@@ -53,12 +47,9 @@ class HiddenObjectHelperTest extends FunctionalTestCase
 
     protected function setUp(): void
     {
-        self::markTestIncomplete('HiddenObjectHelperTest not updated until right now');
-
         parent::setUp();
 
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->session = $objectManager->get(Session::class);
+        $this->session = $this->get(Session::class);
         $this->eventRepositoryMock = $this->createMock(EventRepository::class);
         $this->requestMock = $this->createMock(Request::class);
 
@@ -83,10 +74,13 @@ class HiddenObjectHelperTest extends FunctionalTestCase
     {
         /** @var LocationRepository|MockObject $locationRepositoryMock */
         $locationRepositoryMock = $this->createMock(LocationRepository::class);
-        $event = GeneralUtility::makeInstance(Event::class);
+
+        $event = new Event();
+
         $this->requestMock
-            ->getArgument('event')
-            ->shouldNotBeCalled();
+            ->expects(self::never())
+            ->method('getArgument')
+            ->with(self::identicalTo('event'));
 
         $this->subject->registerHiddenObjectInExtbaseSession(
             $locationRepositoryMock,
@@ -102,20 +96,22 @@ class HiddenObjectHelperTest extends FunctionalTestCase
     #[Test]
     public function registerWithRepositoryWillAddObjectByArrayToSession(): void
     {
-        $event = GeneralUtility::makeInstance(Event::class);
+        $event = new Event();
         $event->_setProperty('uid', 12);
         $event->setTitle('Test Event');
 
         $this->requestMock
-            ->getArgument('event')
-            ->shouldBeCalled()
+            ->expects(self::atLeastOnce())
+            ->method('getArgument')
+            ->with(self::identicalTo('event'))
             ->willReturn([
                 '__identity' => '12',
             ]);
 
         $this->eventRepositoryMock
-            ->findHiddenObject(12)
-            ->shouldBeCalled()
+            ->expects(self::atLeastOnce())
+            ->method('findHiddenObject')
+            ->with(self::identicalTo(12))
             ->willReturn($event);
 
         $this->subject->registerHiddenObjectInExtbaseSession(
@@ -129,25 +125,27 @@ class HiddenObjectHelperTest extends FunctionalTestCase
         );
         self::assertSame(
             $event,
-            $this->session->getObjectByIdentifier(12, Event::class),
+            $this->session->getObjectByIdentifier('12', Event::class),
         );
     }
 
     #[Test]
     public function registerWithRepositoryWillAddObjectByUidToSession(): void
     {
-        $event = GeneralUtility::makeInstance(Event::class);
+        $event = new Event();
         $event->_setProperty('uid', 543);
         $event->setTitle('Test Event');
 
         $this->requestMock
-            ->getArgument('event')
-            ->shouldBeCalled()
+            ->expects(self::atLeastOnce())
+            ->method('getArgument')
+            ->with(self::identicalTo('event'))
             ->willReturn('543');
 
         $this->eventRepositoryMock
-            ->findHiddenObject(543)
-            ->shouldBeCalled()
+            ->expects(self::atLeastOnce())
+            ->method('findHiddenObject')
+            ->with(self::identicalTo(543))
             ->willReturn($event);
 
         $this->subject->registerHiddenObjectInExtbaseSession(
@@ -161,7 +159,7 @@ class HiddenObjectHelperTest extends FunctionalTestCase
         );
         self::assertSame(
             $event,
-            $this->session->getObjectByIdentifier(543, Event::class),
+            $this->session->getObjectByIdentifier('543', Event::class),
         );
     }
 }
