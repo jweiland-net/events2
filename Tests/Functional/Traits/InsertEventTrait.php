@@ -28,6 +28,7 @@ trait InsertEventTrait
         string $organizer = '',
         string $organizerLink = '',
         string $location = '',
+        array $categories = [],
     ): void {
         $locationUid = 0;
         if ($location !== '') {
@@ -131,6 +132,21 @@ trait InsertEventTrait
                     'uid_foreign' => $organizerUid,
                 ],
             );
+        }
+
+        if ($categories !== []) {
+            foreach ($categories as $category) {
+                $connection = $this->getConnectionPool()->getConnectionForTable('sys_category_record_mm');
+                $connection->insert(
+                    'sys_category_record_mm',
+                    [
+                        'uid_local' => $category,
+                        'uid_foreign' => $eventUid,
+                        'tablenames' => 'tx_events2_domain_model_event',
+                        'fieldname' => 'categories',
+                    ],
+                );
+            }
         }
     }
 

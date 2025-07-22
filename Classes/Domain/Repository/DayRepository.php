@@ -207,7 +207,7 @@ class DayRepository extends Repository
             '_sub_query',
         );
 
-        // add query for search string
+        // add a query for search string
         if ($search->getSearch() !== '') {
             $subQueryBuilder->andWhere(
                 (string)$subQueryBuilder->expr()->or(
@@ -227,7 +227,7 @@ class DayRepository extends Repository
             );
         }
 
-        // add query for categories
+        // add a query for categories
         if ($search->getMainCategory() instanceof Category) {
             if ($search->getSubCategory() instanceof Category) {
                 $this->databaseService->addConstraintForCategories(
@@ -245,7 +245,7 @@ class DayRepository extends Repository
                 );
             }
         } elseif (($this->settings['categories'] ?? '') !== '') {
-            // visitor has not selected any category. Search within allowed categories in plugin configuration
+            // Visitor has not selected any category. Search within allowed categories in plugin configuration
             $this->databaseService->addConstraintForCategories(
                 $subQueryBuilder,
                 GeneralUtility::trimExplode(',', $this->settings['categories']),

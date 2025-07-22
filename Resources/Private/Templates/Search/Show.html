@@ -8,10 +8,7 @@
     <f:flashMessages/>
     <f:flashMessages queueIdentifier="extbase.flashmessages.tx_events2_management"/>
 
-    <form id="events2SearchForm" class="form-horizontal" method="get" name="search" action="{f:uri.page()}">
-        <input type="hidden" name="id" value="{f:if(condition: settings.pidOfSearchResults, then: settings.pidOfSearchResults, else: data.pid)}"/>
-        <input type="hidden" name="tx_events2_searchresults[action]" value="listSearchResults"/>
-        <input type="hidden" name="tx_events2_searchresults[controller]" value="Search"/>
+    <form id="events2SearchForm" class="form-horizontal" method="get" name="search" action="{f:uri.page(pageUid: settings.pidOfSearchResults)}">
         <f:render partial="Search/FormFields" arguments="{_all}"/>
         <div class="form-group">
             <div class="col-sm-offset-3 col-sm-9">
