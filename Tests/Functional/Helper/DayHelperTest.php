@@ -15,7 +15,10 @@ use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Helper\DayHelper;
 use JWeiland\Events2\Tests\Functional\Events2Constants;
 use PHPUnit\Framework\Attributes\Test;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
+use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\TypoScript\AST\Node\RootNode;
+use TYPO3\CMS\Core\TypoScript\FrontendTypoScript;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
@@ -37,12 +40,9 @@ class DayHelperTest extends FunctionalTestCase
 
     protected function setUp(): void
     {
-        self::markTestIncomplete('DayHelperTest not updated until right now');
-
         parent::setUp();
 
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->subject = $objectManager->get(DayHelper::class);
+        $this->subject = $this->get(DayHelper::class);
     }
 
     protected function tearDown(): void
@@ -57,6 +57,15 @@ class DayHelperTest extends FunctionalTestCase
     #[Test]
     public function getDayFromUriReturnsNull(): void
     {
+        $frontendTypoScript = new FrontendTypoScript(new RootNode(), [], [], []);
+        $frontendTypoScript->setSetupArray([]);
+
+        $request = new ServerRequest('https://www.example.com/', 'GET');
+        $request = $request->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE);
+        $request = $request->withAttribute('frontend.typoscript', $frontendTypoScript);
+
+        $GLOBALS['TYPO3_REQUEST'] = $request;
+
         self::assertNull(
             $this->subject->getDayFromUri(),
         );
@@ -65,8 +74,8 @@ class DayHelperTest extends FunctionalTestCase
     #[Test]
     public function getDayFromUriWithInvalidDayReturnsNull(): void
     {
-        $databaseConnection = $this->getDatabaseConnection();
-        $databaseConnection->insertArray(
+        $databaseConnection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_day');
+        $databaseConnection->insert(
             'tx_events2_domain_model_day',
             [
                 'uid' => 1,
@@ -74,7 +83,20 @@ class DayHelperTest extends FunctionalTestCase
             ],
         );
 
-        $_GET['tx_events2_list']['day'] = '12';
+        $frontendTypoScript = new FrontendTypoScript(new RootNode(), [], [], []);
+        $frontendTypoScript->setSetupArray([]);
+
+        $request = new ServerRequest('https://www.example.com/', 'GET');
+        $request = $request->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE);
+        $request = $request->withAttribute('frontend.typoscript', $frontendTypoScript);
+        $request = $request->withQueryParams([
+            'tx_events2_list' => [
+                'day' => '12',
+            ],
+        ]);
+
+        $GLOBALS['TYPO3_REQUEST'] = $request;
+
         self::assertNull(
             $this->subject->getDayFromUri(),
         );
@@ -83,8 +105,8 @@ class DayHelperTest extends FunctionalTestCase
     #[Test]
     public function getDayFromUriWithValidDayReturnsDay(): void
     {
-        $databaseConnection = $this->getDatabaseConnection();
-        $databaseConnection->insertArray(
+        $databaseConnection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_day');
+        $databaseConnection->insert(
             'tx_events2_domain_model_day',
             [
                 'uid' => 1,
@@ -92,7 +114,20 @@ class DayHelperTest extends FunctionalTestCase
             ],
         );
 
-        $_GET['tx_events2_list']['day'] = '1';
+        $frontendTypoScript = new FrontendTypoScript(new RootNode(), [], [], []);
+        $frontendTypoScript->setSetupArray([]);
+
+        $request = new ServerRequest('https://www.example.com/', 'GET');
+        $request = $request->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE);
+        $request = $request->withAttribute('frontend.typoscript', $frontendTypoScript);
+        $request = $request->withQueryParams([
+            'tx_events2_list' => [
+                'day' => '1',
+            ],
+        ]);
+
+        $GLOBALS['TYPO3_REQUEST'] = $request;
+
         $day = $this->subject->getDayFromUri();
 
         self::assertInstanceOf(
