@@ -14,9 +14,7 @@ namespace JWeiland\Events2\Tests\Functional\Domain\Model;
 use JWeiland\Events2\Domain\Model\Link;
 use JWeiland\Events2\Domain\Model\Location;
 use JWeiland\Events2\Tests\Unit\Domain\Traits\TestTypo3PropertiesTrait;
-use JWeiland\Maps2\Domain\Model\PoiCollection;
 use PHPUnit\Framework\Attributes\Test;
-use SJBR\StaticInfoTables\Domain\Model\Country;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
@@ -40,12 +38,7 @@ class LocationTest extends FunctionalTestCase
 
     protected function setUp(): void
     {
-        self::markTestIncomplete('LocationTest not updated until right now');
-
         parent::setUp();
-
-        $this->importDataSet('ntf://Database/pages.xml');
-        $this->setUpFrontendRootPage(1);
 
         $this->subject = new Location();
     }
@@ -160,24 +153,6 @@ class LocationTest extends FunctionalTestCase
     }
 
     #[Test]
-    public function getCountryInitiallyReturnsNull(): void
-    {
-        self::assertNull($this->subject->getCountry());
-    }
-
-    #[Test]
-    public function setCountrySetsCountry(): void
-    {
-        $instance = new Country();
-        $this->subject->setCountry($instance);
-
-        self::assertSame(
-            $instance,
-            $this->subject->getCountry(),
-        );
-    }
-
-    #[Test]
     public function getLinkInitiallyReturnsNull(): void
     {
         self::assertNull($this->subject->getLink());
@@ -192,24 +167,6 @@ class LocationTest extends FunctionalTestCase
         self::assertSame(
             $instance,
             $this->subject->getLink(),
-        );
-    }
-
-    #[Test]
-    public function getTxMaps2UidInitiallyReturnsNull(): void
-    {
-        self::assertNull($this->subject->getTxMaps2Uid());
-    }
-
-    #[Test]
-    public function setTxMaps2UidSetsTxMaps2Uid(): void
-    {
-        $instance = new PoiCollection();
-        $this->subject->setTxMaps2Uid($instance);
-
-        self::assertSame(
-            $instance,
-            $this->subject->getTxMaps2Uid(),
         );
     }
 }
