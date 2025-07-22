@@ -19,10 +19,10 @@ use JWeiland\Events2\Traits\IsValidEventListenerRequestTrait;
 use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
-use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\Arguments;
 use TYPO3\CMS\Extbase\Mvc\Request;
@@ -133,7 +133,7 @@ final readonly class RestrictAccessEventListener
             FlashMessage::class,
             (string)$messageBody,
             '',
-            AbstractMessage::ERROR,
+            ContextualFeedbackSeverity::ERROR,
             true,
         );
 
