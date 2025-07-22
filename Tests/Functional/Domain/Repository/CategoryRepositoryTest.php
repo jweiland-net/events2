@@ -35,11 +35,9 @@ class CategoryRepositoryTest extends FunctionalTestCase
 
     protected function setUp(): void
     {
-        self::markTestIncomplete('CategoryRepositoryTest not updated until right now');
-
         parent::setUp();
 
-        $this->importDataSet(__DIR__ . '/../../Fixtures/sys_category.xml');
+        $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Events2PageTree.csv');
 
         $this->subject = GeneralUtility::makeInstance(CategoryRepository::class);
     }
