@@ -99,9 +99,6 @@ class XmlImporterTest extends FunctionalTestCase
             new DateTimeUtility(),
             $this->extConf,
         );
-
-        $GLOBALS['BE_USER'] = new BackendUserAuthentication();
-        $GLOBALS['BE_USER']->workspace = 0;
     }
 
     protected function tearDown(): void

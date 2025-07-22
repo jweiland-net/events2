@@ -12,20 +12,11 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Functional\Service;
 
 use JWeiland\Events2\Configuration\ExtConf;
-use JWeiland\Events2\Domain\Model\Event;
-use JWeiland\Events2\Domain\Model\Location;
-use JWeiland\Events2\Domain\Model\Organizer;
-use JWeiland\Events2\Domain\Repository\DayRepository;
-use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Service\DatabaseService;
-use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Tests\Functional\Events2Constants;
+use JWeiland\Events2\Tests\Functional\Traits\InsertEventTrait;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use PHPUnit\Framework\Attributes\Test;
-use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
-use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
@@ -33,7 +24,7 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
  */
 class DatabaseServiceTest extends FunctionalTestCase
 {
-    protected DayRepository $dayRepository;
+    use InsertEventTrait;
 
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
@@ -49,67 +40,24 @@ class DatabaseServiceTest extends FunctionalTestCase
     {
         parent::setUp();
 
-        $GLOBALS['BE_USER'] = new BackendUserAuthentication();
-        $GLOBALS['BE_USER']->workspace = 0;
-
-        $this->dayRepository = GeneralUtility::makeInstance(DayRepository::class);
-
-        $querySettings = GeneralUtility::makeInstance(QuerySettingsInterface::class);
-        $querySettings->setStoragePageIds([Events2Constants::PAGE_STORAGE]);
-
-        $this->dayRepository->setDefaultQuerySettings($querySettings);
-        $persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
-        $dayRelationService = GeneralUtility::makeInstance(DayRelationService::class);
-
-        $eventRepository = GeneralUtility::makeInstance(EventRepository::class);
-        $eventRepository->setDefaultQuerySettings($querySettings);
-
-        $organizer = new Organizer();
-        $organizer->setPid(Events2Constants::PAGE_STORAGE);
-        $organizer->setOrganizer('Stefan');
-
-        $location = new Location();
-        $location->setPid(Events2Constants::PAGE_STORAGE);
-        $location->setLocation('Market');
-
         $eventBegin = new \DateTimeImmutable('first day of this month midnight');
         $eventBegin = $eventBegin
             ->modify('+4 days')
             ->modify('-2 months');
 
-        $event = GeneralUtility::makeInstance(Event::class);
-        $event->setPid(Events2Constants::PAGE_STORAGE);
-        $event->setEventType('recurring');
-        $event->setTopOfList(false);
-        $event->setTitle('Week market');
-        $event->setTeaser('');
-        $event->setEventBegin($eventBegin);
-        $event->setXth(31);
-        $event->setWeekday(16);
-        $event->setEachWeeks(0);
-        $event->setEachMonths(0);
-        $event->setRecurringEnd(null);
-        $event->setFreeEntry(false);
-        $event->addOrganizer($organizer);
-        $event->setLocation($location);
-
-        $persistenceManager->add($event);
-
-        $persistenceManager->persistAll();
-
-        $events = $eventRepository->findAll();
-        foreach ($events as $event) {
-            $dayRelationService->createDayRelations($event->getUid());
-        }
-    }
-
-    protected function tearDown(): void
-    {
-        unset(
-            $this->dayRepository,
+        $this->insertEvent(
+            title: 'Week market',
+            eventBegin: $eventBegin,
+            additionalFields: [
+                'event_type' => 'recurring',
+                'xth' => 31,
+                'weekday' => 16,
+            ],
+            organizer: 'Stefan',
+            location: 'Market',
         );
 
-        parent::tearDown();
+        $this->createDayRelations();
     }
 
     #[Test]

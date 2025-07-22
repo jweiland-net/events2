@@ -13,6 +13,7 @@ namespace JWeiland\Events2\Tests\Functional\Traits;
 
 use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Tests\Functional\Events2Constants;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -22,9 +23,11 @@ trait InsertEventTrait
         string $title,
         \DateTimeImmutable $eventBegin,
         string $timeBegin = '',
-        string $organizer = '',
-        string $location = '',
+        string $ticketLink = '',
         array $additionalFields = [],
+        string $organizer = '',
+        string $organizerLink = '',
+        string $location = '',
     ): void {
         $locationUid = 0;
         if ($location !== '') {
@@ -34,9 +37,27 @@ trait InsertEventTrait
                 [
                     'pid' => Events2Constants::PAGE_STORAGE,
                     'location' => $location,
+                    'street' => 'Echterdinger Straße',
+                    'house_number' => '57',
+                    'zip' => '70794',
+                    'city' => 'Filderstadt',
                 ],
             );
             $locationUid = (int)$connection->lastInsertId();
+        }
+
+        $ticketLinkUid = 0;
+        if ($ticketLink) {
+            $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_link');
+            $connection->insert(
+                'tx_events2_domain_model_link',
+                [
+                    'pid' => Events2Constants::PAGE_STORAGE,
+                    'title' => 'Ticket Link',
+                    'link' => $ticketLink,
+                ],
+            );
+            $ticketLinkUid = (int)$connection->lastInsertId();
         }
 
         $eventRecord = [
@@ -47,6 +68,7 @@ trait InsertEventTrait
             'title' => $title,
             'organizers' => $organizer !== '' ? 1 : 0,
             'location' => $locationUid,
+            'ticket_link' => $ticketLinkUid,
         ];
 
         ArrayUtility::mergeRecursiveWithOverrule($eventRecord, $additionalFields);
@@ -66,6 +88,9 @@ trait InsertEventTrait
                     'pid' => Events2Constants::PAGE_STORAGE,
                     'type' => 'event_time',
                     'time_begin' => $timeBegin,
+                    'time_entry' => '19:00',
+                    'duration' => '02:00',
+                    'time_end' => '22:00',
                     'event' => $eventUid,
                     'exception' => 0,
                 ],
@@ -73,12 +98,27 @@ trait InsertEventTrait
         }
 
         if ($organizer !== '') {
+            $organizerLinkUid = 0;
+            if ($organizerLink) {
+                $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_link');
+                $connection->insert(
+                    'tx_events2_domain_model_link',
+                    [
+                        'pid' => Events2Constants::PAGE_STORAGE,
+                        'title' => 'Organizer Link',
+                        'link' => $organizerLink,
+                    ],
+                );
+                $organizerLinkUid = (int)$connection->lastInsertId();
+            }
+
             $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_organizer');
             $connection->insert(
                 'tx_events2_domain_model_organizer',
                 [
                     'pid' => Events2Constants::PAGE_STORAGE,
                     'organizer' => $organizer,
+                    'link' => $organizerLinkUid,
                 ],
             );
             $organizerUid = (int)$connection->lastInsertId();
@@ -94,8 +134,14 @@ trait InsertEventTrait
         }
     }
 
-    protected function createDayRelations(): void
+    protected function createDayRelations(int $workspace = 0, bool $isAdmin = true): void
     {
+        $GLOBALS['BE_USER'] = new BackendUserAuthentication();
+        $GLOBALS['BE_USER']->user['username'] = 'acceptanceTestSetup';
+        $GLOBALS['BE_USER']->user['admin'] = (int)$isAdmin;
+        $GLOBALS['BE_USER']->user['uid'] = 1;
+        $GLOBALS['BE_USER']->workspace = $workspace;
+
         $dayRelationService = GeneralUtility::makeInstance(DayRelationService::class);
 
         $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_event');

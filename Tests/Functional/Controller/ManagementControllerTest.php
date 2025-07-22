@@ -55,9 +55,6 @@ class ManagementControllerTest extends FunctionalTestCase
     {
         parent::setUp();
 
-        $GLOBALS['BE_USER'] = new BackendUserAuthentication();
-        $GLOBALS['BE_USER']->workspace = 0;
-
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/Events2PageTree.csv');
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/fe_users.csv');
 

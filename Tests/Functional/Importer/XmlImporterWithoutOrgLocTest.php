@@ -59,9 +59,6 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
 
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $this->eventRepository = $this->objectManager->get(EventRepository::class);
-
-        $GLOBALS['BE_USER'] = new BackendUserAuthentication();
-        $GLOBALS['BE_USER']->workspace = 0;
     }
 
     protected function tearDown(): void

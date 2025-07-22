@@ -11,8 +11,6 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Tests\Functional\DataHandling;
 
-use JWeiland\Events2\Domain\Repository\DayRepository;
-use JWeiland\Events2\Tests\Functional\Events2Constants;
 use JWeiland\Events2\Tests\Functional\Traits\InsertEventTrait;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
@@ -20,7 +18,6 @@ use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
@@ -29,10 +26,6 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 class DataHandlerTest extends FunctionalTestCase
 {
     use InsertEventTrait;
-
-    protected DayRepository $dayRepository;
-
-    protected QuerySettingsInterface $querySettings;
 
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
@@ -49,18 +42,9 @@ class DataHandlerTest extends FunctionalTestCase
         parent::setUp();
 
         $GLOBALS['BE_USER'] = new BackendUserAuthentication();
-        $GLOBALS['BE_USER']->user['username'] = 'acceptanceTestSetup';
-        $GLOBALS['BE_USER']->user['admin'] = 1;
-        $GLOBALS['BE_USER']->user['uid'] = 1;
         $GLOBALS['BE_USER']->workspace = 0;
 
         $GLOBALS['LANG'] = GeneralUtility::makeInstance(LanguageServiceFactory::class)->createFromUserPreferences($GLOBALS['BE_USER']);
-
-        $this->querySettings = GeneralUtility::makeInstance(QuerySettingsInterface::class);
-        $this->querySettings->setStoragePageIds([Events2Constants::PAGE_STORAGE]);
-
-        $this->dayRepository = GeneralUtility::makeInstance(DayRepository::class);
-        $this->dayRepository->setDefaultQuerySettings($this->querySettings);
 
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/Events2PageTree.csv');
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/be_groups.csv');
@@ -74,8 +58,6 @@ class DataHandlerTest extends FunctionalTestCase
         $this->insertEvent(
             title: 'Week market',
             eventBegin: $eventBegin,
-            organizer: 'Stefan',
-            location: 'Market',
             additionalFields: [
                 'event_type' => 'recurring',
                 'xth' => 31,
@@ -84,21 +66,20 @@ class DataHandlerTest extends FunctionalTestCase
                 'each_months' => 0,
                 'recurring_end' => 0,
             ],
+            organizer: 'Stefan',
+            location: 'Market',
         );
-    }
-
-    protected function tearDown(): void
-    {
-        unset(
-            $this->dayRepository,
-        );
-
-        parent::tearDown();
     }
 
     #[Test]
     public function deleteEventByAdminWillRemoveDayRecords(): void
     {
+        $GLOBALS['BE_USER'] = new BackendUserAuthentication();
+        $GLOBALS['BE_USER']->user['username'] = 'acceptanceTestSetup';
+        $GLOBALS['BE_USER']->user['admin'] = 1;
+        $GLOBALS['BE_USER']->user['uid'] = 1;
+        $GLOBALS['BE_USER']->workspace = 0;
+
         /** @var DataHandler $dataHandler */
         $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
         $dataHandler->start(
@@ -159,6 +140,7 @@ class DataHandlerTest extends FunctionalTestCase
             ->executeQuery()
             ->fetchAssociative();
 
+        $GLOBALS['BE_USER'] = new BackendUserAuthentication();
         $GLOBALS['BE_USER']->user = $user;
         $GLOBALS['BE_USER']->workspace = 0;
         $GLOBALS['BE_USER']->fetchGroupData();
