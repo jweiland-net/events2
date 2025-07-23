@@ -468,6 +468,14 @@ class XmlImporter
 
     protected function addCategories(Event $event, array $eventRecord): void
     {
+        if (!isset($eventRecord['categories'])) {
+            return;
+        }
+
+        if (!is_array($eventRecord['categories'])) {
+            return;
+        }
+
         foreach ($eventRecord['categories'] as $title) {
             $dbCategory = $this->getCategory($title);
             /** @var Category $category */
@@ -478,60 +486,66 @@ class XmlImporter
 
     protected function addImages(Event $event, array $eventRecord): void
     {
+        if (!isset($eventRecord['images'])) {
+            return;
+        }
+
+        if (!is_array($eventRecord['images'])) {
+            return;
+        }
+
         $resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);
-        if (isset($eventRecord['images']) && is_array($eventRecord['images'])) {
-            $images = new ObjectStorage();
-            /** @var CharsetConverter $csConverter */
-            $csConverter = GeneralUtility::makeInstance(CharsetConverter::class);
-            foreach ($eventRecord['images'] as $image) {
-                // we try to keep the original structure from origin server to prevent duplicate filenames
-                $filePath = parse_url($image['url'], PHP_URL_PATH);
-                $fileParts = GeneralUtility::split_fileref($filePath);
-                $filename = $csConverter->specCharsToASCII(
-                    'utf-8',
-                    rawurldecode($fileParts['file']),
+        $images = new ObjectStorage();
+        /** @var CharsetConverter $csConverter */
+        $csConverter = GeneralUtility::makeInstance(CharsetConverter::class);
+        foreach ($eventRecord['images'] as $image) {
+            // we try to keep the original structure from origin server to prevent duplicate filenames
+            $filePath = parse_url($image['url'], PHP_URL_PATH);
+            $fileParts = GeneralUtility::split_fileref($filePath);
+            $filename = $csConverter->specCharsToASCII(
+                'utf-8',
+                rawurldecode($fileParts['file']),
+            );
+
+            /** @var Folder $rootFolder */
+            $rootFolder = $this->file->getParentFolder();
+            $relativeTargetDirectoryPath = sprintf(
+                'Images/%d/%d/%d/%s',
+                $this->today->format('Y'),
+                $this->today->format('m'),
+                $this->today->format('d'),
+                $this->today->format('His'),
+            );
+            $targetDirectoryPath = Environment::getPublicPath() . '/' . $rootFolder->getPublicUrl() . $relativeTargetDirectoryPath;
+            GeneralUtility::mkdir_deep($targetDirectoryPath);
+
+            $targetFolder = $resourceFactory->getFolderObjectFromCombinedIdentifier(
+                $rootFolder->getCombinedIdentifier() . $relativeTargetDirectoryPath,
+            );
+            if ($targetFolder->hasFile($filename)) {
+                $file = $resourceFactory->retrieveFileOrFolderObject(
+                    $targetFolder->getCombinedIdentifier() . $filename,
                 );
-
-                /** @var Folder $rootFolder */
-                $rootFolder = $this->file->getParentFolder();
-                $relativeTargetDirectoryPath = sprintf(
-                    'Images/%d/%d/%d/%s',
-                    $this->today->format('Y'),
-                    $this->today->format('m'),
-                    $this->today->format('d'),
-                    $this->today->format('His'),
-                );
-                $targetDirectoryPath = Environment::getPublicPath() . '/' . $rootFolder->getPublicUrl() . $relativeTargetDirectoryPath;
-                GeneralUtility::mkdir_deep($targetDirectoryPath);
-
-                $targetFolder = $resourceFactory->getFolderObjectFromCombinedIdentifier(
-                    $rootFolder->getCombinedIdentifier() . $relativeTargetDirectoryPath,
-                );
-                if ($targetFolder->hasFile($filename)) {
-                    $file = $resourceFactory->retrieveFileOrFolderObject(
-                        $targetFolder->getCombinedIdentifier() . $filename,
-                    );
-                } else {
-                    $file = $targetFolder->createFile($filename);
-                    $file->setContents(GeneralUtility::getUrl($image['url']));
-                }
-
-                // Create new FileReference
-                $extbaseFileReference = GeneralUtility::makeInstance(FileReference::class);
-                $extbaseFileReference->setPid($this->storagePid);
-                $extbaseFileReference->setOriginalResource($resourceFactory->createFileReferenceObject(
-                    [
-                        'uid_local' => $file->getUid(),
-                        'uid_foreign' => uniqid('NEW_', true),
-                        'uid' => uniqid('NEW_', true),
-                    ],
-                ));
-
-                $images->attach($extbaseFileReference);
+            } else {
+                $file = $targetFolder->createFile($filename);
+                $file->setContents(GeneralUtility::getUrl($image['url']));
             }
 
-            $event->setImages($images);
+            // Create new FileReference
+            $extbaseFileReference = GeneralUtility::makeInstance(FileReference::class);
+            $extbaseFileReference->setPid($this->storagePid);
+            $extbaseFileReference->setOriginalResource($resourceFactory->createFileReferenceObject(
+                [
+                    'uid_local' => $file->getUid(),
+                    'uid_foreign' => uniqid('NEW_', true),
+                    'uid' => uniqid('NEW_', true),
+                ],
+            ));
+
+            $images->attach($extbaseFileReference);
         }
+
+        $event->setImages($images);
     }
 
     public function setStoragePid(int $storagePid): void

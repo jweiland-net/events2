@@ -76,7 +76,7 @@ class XmlImporterTest extends FunctionalTestCase
                 'house_number' => '42',
                 'zip' => '12345',
                 'city' => 'Everywhere',
-            ]
+            ],
         );
 
         $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_organizer');
@@ -86,7 +86,7 @@ class XmlImporterTest extends FunctionalTestCase
                 'uid' => 1,
                 'pid' => Events2Constants::PAGE_STORAGE,
                 'organizer' => 'GmbH',
-            ]
+            ],
         );
         $connection->insert(
             'tx_events2_domain_model_organizer',
@@ -94,7 +94,7 @@ class XmlImporterTest extends FunctionalTestCase
                 'uid' => 2,
                 'pid' => Events2Constants::PAGE_STORAGE,
                 'organizer' => 'Co. KG',
-            ]
+            ],
         );
 
         $this->eventRepository = $this->get(EventRepository::class);
@@ -296,11 +296,11 @@ class XmlImporterTest extends FunctionalTestCase
         $this->subject->setStoragePid(Events2Constants::PAGE_STORAGE);
 
         self::assertTrue(
-            $this->subject->import()
+            $this->subject->import(),
         );
 
         // Test, if we still have exactly one event
-        $queryBuilder= $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_event');
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_event');
         $queryBuilder->getRestrictions()->removeByType(HiddenRestriction::class);
         $events = $queryBuilder
             ->select('*')
@@ -361,7 +361,7 @@ class XmlImporterTest extends FunctionalTestCase
         self::assertTrue($this->subject->import());
 
         // Test, if we still have exactly one event
-        $queryBuilder= $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_event');
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_event');
         $queryBuilder->getRestrictions()->removeByType(HiddenRestriction::class);
         $numberOfEvents = $queryBuilder
             ->count('*')

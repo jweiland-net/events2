@@ -12,11 +12,19 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Functional\Importer;
 
 use JWeiland\Events2\Configuration\ExtConf;
+use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
+use JWeiland\Events2\Domain\Repository\LocationRepository;
+use JWeiland\Events2\Domain\Repository\OrganizerRepository;
+use JWeiland\Events2\Helper\PathSegmentHelper;
 use JWeiland\Events2\Importer\XmlImporter;
+use JWeiland\Events2\Tests\Functional\Events2Constants;
+use JWeiland\Events2\Utility\DateTimeUtility;
 use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
@@ -31,7 +39,6 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
         'reactions',
-        'scheduler',
     ];
 
     protected array $testExtensionsToLoad = [
@@ -47,26 +54,16 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
         parent::setUp();
 
         date_default_timezone_set('Europe/Berlin');
-
-        $this->extConf = GeneralUtility::makeInstance(ExtConf::class);
-        $this->extConf->setXmlImportValidatorPath($this->instancePath . 'typo3conf/ext/events2/Resources/Public/XmlImportWithoutRelationsValidator.xsd');
-        $this->extConf->setOrganizerIsRequired(false);
-        $this->extConf->setLocationIsRequired(false);
-        $this->extConf->setPathSegmentType('uid');
-
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->eventRepository = $this->objectManager->get(EventRepository::class);
     }
 
     protected function tearDown(): void
     {
-        unset(
-            $GLOBALS['BE_USER'],
+        $messagesFile = GeneralUtility::getFileAbsFileName(
+            'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt',
         );
-
-        unlink(GeneralUtility::getFileAbsFileName(
-            $this->instancePath . 'typo3conf/ext/events2/Tests/Functional/Fixtures/XmlImport/Messages.txt',
-        ));
+        if (is_file($messagesFile)) {
+            unlink($messagesFile);
+        }
 
         parent::tearDown();
     }
@@ -75,38 +72,59 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
     public function importWillCreate3events(): void
     {
         $fileObject = GeneralUtility::makeInstance(ResourceFactory::class)
-            ->retrieveFileOrFolderObject($this->instancePath . 'typo3conf/ext/events2/Tests/Functional/Fixtures/XmlImport/SuccessMissingOrganizerLocation.xml');
+            ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/SuccessMissingOrganizerLocation.xml');
 
-        $xmlImporter = $this->objectManager->get(XmlImporter::class);
+        $this->extConf = new ExtConf(
+            xmlImportValidatorPath: 'EXT:events2/Resources/Public/XmlImportWithoutRelationsValidator.xsd',
+            organizerIsRequired: false,
+            locationIsRequired: false,
+            pathSegmentType: 'uid',
+        );
+
+        $xmlImporter = new XmlImporter(
+            $this->get(EventRepository::class),
+            $this->get(OrganizerRepository::class),
+            $this->get(LocationRepository::class),
+            $this->get(CategoryRepository::class),
+            $this->get(PersistenceManagerInterface::class),
+            $this->get(PathSegmentHelper::class),
+            new DateTimeUtility(),
+            $this->extConf,
+        );
+
         $xmlImporter->setFile($fileObject);
-        $xmlImporter->setStoragePid(12);
+        $xmlImporter->setStoragePid(Events2Constants::PAGE_STORAGE);
 
         self::assertTrue($xmlImporter->import());
         self::assertMatchesRegularExpression(
             '/We have processed 3 events/',
             file_get_contents(GeneralUtility::getFileAbsFileName(
-                $this->instancePath . 'typo3conf/ext/events2/Tests/Functional/Fixtures/XmlImport/Messages.txt',
+                'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt',
             )),
         );
 
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_event');
+        $queryBuilder->getRestrictions()->removeByType(HiddenRestriction::class);
+        $numberOfEvents = $queryBuilder
+            ->count('*')
+            ->from('tx_events2_domain_model_event')
+            ->executeQuery()
+            ->fetchOne();
+
         self::assertSame(
             3,
-            $this->getDatabaseConnection()
-                ->selectCount(
-                    '*',
-                    'tx_events2_domain_model_event',
-                ),
+            $numberOfEvents,
         );
 
-        // Check, if path_segment is set for all three records
-        $statement = $this->getDatabaseConnection()
-            ->select(
-                '*',
-                'tx_events2_domain_model_event',
-                '1=1',
-            );
+        // Check if path_segment is set for all three records
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_event');
+        $queryBuilder->getRestrictions()->removeByType(HiddenRestriction::class);
+        $queryResult = $queryBuilder
+            ->select('*')
+            ->from('tx_events2_domain_model_event')
+            ->executeQuery();
 
-        while ($eventRecord = $statement->fetch()) {
+        while ($eventRecord = $queryResult->fetchAssociative()) {
             self::assertNotSame('/', $eventRecord['path_segment']);
             self::assertNotSame('', $eventRecord['path_segment']);
         }
