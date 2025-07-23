@@ -30,7 +30,7 @@ trait InsertEventTrait
         string $organizerLink = '',
         string $location = '',
         array $categories = [],
-    ): void {
+    ): int {
         $locationUid = 0;
         if ($location !== '') {
             $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_location');
@@ -164,6 +164,8 @@ trait InsertEventTrait
                 );
             }
         }
+
+        return $eventUid;
     }
 
     protected function createDayRelations(int $workspace = 0, bool $isAdmin = true): void

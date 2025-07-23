@@ -317,7 +317,7 @@ class DayRepository extends Repository
         return $extbaseQuery->execute();
     }
 
-    public function addConstraintForDate(
+    protected function addConstraintForDate(
         QueryBuilder $queryBuilder,
         string $listType,
         QueryBuilder $parentQueryBuilder = null,
@@ -412,17 +412,6 @@ class DayRepository extends Repository
                 ),
             ),
         );
-    }
-
-    /**
-     * Find one Day by Event and Timestamp.
-     * If the timestamp is empty, we try to find the next possible day in the future / past or build our own one.
-     *
-     * @throws \Exception
-     */
-    public function findDayByEventAndTimestamp(int $eventUid, int $timestamp = 0): Day
-    {
-        return $this->dayFactory->findDayByEventAndTimestamp($eventUid, $timestamp, $this->createQuery());
     }
 
     /**

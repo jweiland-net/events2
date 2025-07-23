@@ -13,6 +13,7 @@ namespace JWeiland\Events2\Controller;
 
 use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Traits\InjectCacheServiceTrait;
+use JWeiland\Events2\Traits\InjectDayFactoryTrait;
 use JWeiland\Events2\Traits\InjectDayRepositoryTrait;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
@@ -25,6 +26,7 @@ use TYPO3Fluid\Fluid\View\ViewInterface;
 class DayController extends AbstractController
 {
     use InjectCacheServiceTrait;
+    use InjectDayFactoryTrait;
     use InjectDayRepositoryTrait;
 
     public function initializeObject(): void
@@ -81,7 +83,7 @@ class DayController extends AbstractController
      */
     public function showAction(int $event, int $timestamp = 0): ResponseInterface
     {
-        $day = $this->dayRepository->findDayByEventAndTimestamp($event, $timestamp);
+        $day = $this->dayFactory->findDayByEventAndTimestamp($event, $timestamp, $this->dayRepository->createQuery());
 
         $this->postProcessControllerAction($day->getEvent(), $day);
 
