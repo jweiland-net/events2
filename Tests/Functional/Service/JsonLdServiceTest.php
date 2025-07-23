@@ -20,6 +20,8 @@ use JWeiland\Events2\Utility\DateTimeUtility;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\TypoScript\AST\Node\RootNode;
+use TYPO3\CMS\Core\TypoScript\FrontendTypoScript;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
@@ -47,49 +49,29 @@ class JsonLdServiceTest extends FunctionalTestCase
     {
         parent::setUp();
 
-        $request = new ServerRequest('https://www.example.com/typo3', 'GET');
-        $GLOBALS['TYPO3_REQUEST'] = $request->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_BE);
+        $frontendTypoScript = new FrontendTypoScript(new RootNode(), [], [], []);
+        $frontendTypoScript->setConfigArray([]);
+        $frontendTypoScript->setSetupArray([
+            'config.' => [
+                'tx_extbase.' => [
+                    'persistence.' => [
+                        'storagePid' => Events2Constants::PAGE_STORAGE,
+                    ],
+                ],
+            ],
+        ]);
+
+        $request = new ServerRequest('https://www.example.com/', 'GET');
+        $request = $request->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE);
+        $request = $request->withAttribute('frontend.typoscript', $frontendTypoScript);
+
+        $GLOBALS['TYPO3_REQUEST'] = $request;
 
         $querySettings = GeneralUtility::makeInstance(Typo3QuerySettings::class);
         $querySettings->setStoragePageIds([Events2Constants::PAGE_STORAGE]);
 
         $this->dayRepository = GeneralUtility::makeInstance(DayRepository::class);
         $this->dayRepository->setDefaultQuerySettings($querySettings);
-
-        $eventBegin = new \DateTimeImmutable('first day of this month midnight');
-        $eventBegin = $eventBegin
-            ->modify('+4 days')
-            ->modify('-2 months');
-
-        $eventEnd = $eventBegin->modify('+1 day');
-
-        $this->insertEvent(
-            title: 'Week market',
-            eventBegin: $eventBegin,
-            additionalFields: [
-                'event_type' => 'duration',
-                'event_end' => (int)$eventEnd->format('U'),
-                'free_entry' => 1,
-            ],
-            organizer: 'Stefan',
-            organizerLink: 'https://www.typo3.org',
-            location: 'jweiland.net',
-        );
-
-        $this->insertEvent(
-            title: 'Birthday',
-            eventBegin: $eventBegin,
-            timeBegin: '08:00',
-            ticketLink: 'https://example.com',
-            additionalFields: [
-                'detail_information' => 'Happy birthday to you, happy birthday to you, ...',
-            ],
-            organizer: 'Jochen',
-            organizerLink: 'https://jweiland.net',
-            location: 'jweiland.net',
-        );
-
-        $this->createDayRelations();
     }
 
     protected function tearDown(): void
@@ -104,7 +86,9 @@ class JsonLdServiceTest extends FunctionalTestCase
     #[Test]
     public function addJsonLdAddsEventBeginDate(): void
     {
-        $day = $this->dayRepository->findByIdentifier(1);
+        $this->createDurationalEvent();
+
+        $day = $this->dayRepository->findByIdentifier(2);
 
         $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
         $jsonLdService->addJsonLdToPageHeader($day);
@@ -118,7 +102,9 @@ class JsonLdServiceTest extends FunctionalTestCase
     #[Test]
     public function addJsonLdAddsEventEndDate(): void
     {
-        $day = $this->dayRepository->findByIdentifier(1);
+        $this->createDurationalEvent();
+
+        $day = $this->dayRepository->findByIdentifier(2);
 
         $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
         $jsonLdService->addJsonLdToPageHeader($day);
@@ -132,7 +118,9 @@ class JsonLdServiceTest extends FunctionalTestCase
     #[Test]
     public function addJsonLdAddsTimeStartDate(): void
     {
-        $day = $this->dayRepository->findByIdentifier(3);
+        $this->createSingleEvent();
+
+        $day = $this->dayRepository->findByIdentifier(1);
 
         $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
         $jsonLdService->addJsonLdToPageHeader($day);
@@ -146,7 +134,9 @@ class JsonLdServiceTest extends FunctionalTestCase
     #[Test]
     public function addJsonLdAddsTimeEntryDate(): void
     {
-        $day = $this->dayRepository->findByIdentifier(3);
+        $this->createSingleEvent();
+
+        $day = $this->dayRepository->findByIdentifier(1);
 
         $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
         $jsonLdService->addJsonLdToPageHeader($day);
@@ -160,7 +150,9 @@ class JsonLdServiceTest extends FunctionalTestCase
     #[Test]
     public function addJsonLdAddsDuration(): void
     {
-        $day = $this->dayRepository->findByIdentifier(3);
+        $this->createSingleEvent();
+
+        $day = $this->dayRepository->findByIdentifier(1);
 
         $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
         $jsonLdService->addJsonLdToPageHeader($day);
@@ -179,7 +171,9 @@ class JsonLdServiceTest extends FunctionalTestCase
     #[Test]
     public function addJsonLdAddsTimeEndDate(): void
     {
-        $day = $this->dayRepository->findByIdentifier(3);
+        $this->createSingleEvent();
+
+        $day = $this->dayRepository->findByIdentifier(1);
 
         $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
         $jsonLdService->addJsonLdToPageHeader($day);
@@ -193,7 +187,9 @@ class JsonLdServiceTest extends FunctionalTestCase
     #[Test]
     public function addJsonLdAddsEventTitle(): void
     {
-        $day = $this->dayRepository->findByIdentifier(3);
+        $this->createSingleEvent();
+
+        $day = $this->dayRepository->findByIdentifier(1);
 
         $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
         $jsonLdService->addJsonLdToPageHeader($day);
@@ -207,7 +203,9 @@ class JsonLdServiceTest extends FunctionalTestCase
     #[Test]
     public function addJsonLdAddsEventDescription(): void
     {
-        $day = $this->dayRepository->findByIdentifier(3);
+        $this->createSingleEvent();
+
+        $day = $this->dayRepository->findByIdentifier(1);
 
         $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
         $jsonLdService->addJsonLdToPageHeader($day);
@@ -221,7 +219,9 @@ class JsonLdServiceTest extends FunctionalTestCase
     #[Test]
     public function addJsonLdAddsEventUrl(): void
     {
-        $day = $this->dayRepository->findByIdentifier(3);
+        $this->createSingleEvent();
+
+        $day = $this->dayRepository->findByIdentifier(1);
 
         $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
         $jsonLdService->addJsonLdToPageHeader($day);
@@ -233,9 +233,11 @@ class JsonLdServiceTest extends FunctionalTestCase
     }
 
     #[Test]
-    public function addJsonLdAddsEventFreeEntry(): void
+    public function addJsonLdWithDurationEventWillReturnFreeEntry(): void
     {
-        $day = $this->dayRepository->findByIdentifier(1);
+        $this->createDurationalEvent();
+
+        $day = $this->dayRepository->findByIdentifier(2);
 
         $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
         $jsonLdService->addJsonLdToPageHeader($day);
@@ -244,8 +246,14 @@ class JsonLdServiceTest extends FunctionalTestCase
             'True',
             $jsonLdService->getCollectedJsonLdData()['isAccessibleForFree'],
         );
+    }
 
-        $day = $this->dayRepository->findByIdentifier(3);
+    #[Test]
+    public function addJsonLdWithSingleEventWillReturnPaidEntry(): void
+    {
+        $this->createSingleEvent();
+
+        $day = $this->dayRepository->findByIdentifier(1);
 
         $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
         $jsonLdService->addJsonLdToPageHeader($day);
@@ -259,7 +267,9 @@ class JsonLdServiceTest extends FunctionalTestCase
     #[Test]
     public function addJsonLdAddsEventOffer(): void
     {
-        $day = $this->dayRepository->findByIdentifier(3);
+        $this->createSingleEvent();
+
+        $day = $this->dayRepository->findByIdentifier(1);
 
         $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
         $jsonLdService->addJsonLdToPageHeader($day);
@@ -283,7 +293,9 @@ class JsonLdServiceTest extends FunctionalTestCase
     #[Test]
     public function addJsonLdAddsEventLocation(): void
     {
-        $day = $this->dayRepository->findByIdentifier(3);
+        $this->createSingleEvent();
+
+        $day = $this->dayRepository->findByIdentifier(1);
 
         $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
         $jsonLdService->addJsonLdToPageHeader($day);
@@ -319,7 +331,9 @@ class JsonLdServiceTest extends FunctionalTestCase
     #[Test]
     public function addJsonLdAddsEventOrganizer(): void
     {
-        $day = $this->dayRepository->findByIdentifier(3);
+        $this->createSingleEvent();
+
+        $day = $this->dayRepository->findByIdentifier(1);
 
         $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
         $jsonLdService->addJsonLdToPageHeader($day);
@@ -338,5 +352,53 @@ class JsonLdServiceTest extends FunctionalTestCase
             'https://jweiland.net',
             $organizer['url'],
         );
+    }
+
+    protected function createSingleEvent(): void
+    {
+        $eventBegin = new \DateTimeImmutable('first day of this month midnight');
+        $eventBegin = $eventBegin
+            ->modify('+4 days')
+            ->modify('-2 months');
+
+        $this->insertEvent(
+            title: 'Birthday',
+            eventBegin: $eventBegin,
+            timeBegin: '08:00',
+            ticketLink: 'https://example.com',
+            additionalFields: [
+                'detail_information' => 'Happy birthday to you, happy birthday to you, ...',
+            ],
+            organizer: 'Jochen',
+            organizerLink: 'https://jweiland.net',
+            location: 'jweiland.net',
+        );
+
+        $this->createDayRelations();
+    }
+
+    protected function createDurationalEvent(): void
+    {
+        $eventBegin = new \DateTimeImmutable('first day of this month midnight');
+        $eventBegin = $eventBegin
+            ->modify('+4 days')
+            ->modify('-2 months');
+
+        $eventEnd = $eventBegin->modify('+1 day');
+
+        $this->insertEvent(
+            title: 'Week market',
+            eventBegin: $eventBegin,
+            additionalFields: [
+                'event_type' => 'duration',
+                'event_end' => (int)$eventEnd->format('U'),
+                'free_entry' => 1,
+            ],
+            organizer: 'Stefan',
+            organizerLink: 'https://www.typo3.org',
+            location: 'jweiland.net',
+        );
+
+        $this->createDayRelations();
     }
 }

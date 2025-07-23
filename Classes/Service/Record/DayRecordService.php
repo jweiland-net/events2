@@ -224,18 +224,20 @@ readonly class DayRecordService
             $newDayRecord['sys_language_uid'] = $languageUid;
             $newDayRecord['l10n_parent'] = $l10nParent;
 
-            // Verify whether an active LIVE record exists to which a new relation can be established
-            if (array_key_exists($newDayRecordKey, $existingLiveDayRecords)) {
-                $existingLiveDayRecord = $existingLiveDayRecords[$newDayRecordKey];
-                $newDayRecord['t3_origuid'] = (int)$existingLiveDayRecord['uid'];
-                $newDayRecord['t3ver_oid'] = (int)$existingLiveDayRecord['uid'];
-                $newDayRecord['t3ver_state'] = VersionState::DEFAULT_STATE->value;
-            } else {
-                // There are more new day records than currently available in the LIVE workspace. Create new day
-                // records here without an associated relational record in the LIVE workspace.
-                $newDayRecord['t3_origuid'] = 0;
-                $newDayRecord['t3ver_oid'] = 0;
-                $newDayRecord['t3ver_state'] = VersionState::NEW_PLACEHOLDER->value;
+            if ($this->getBackendUser()->workspace > 0) {
+                // Verify whether an active LIVE record exists to which a new relation can be established
+                if (array_key_exists($newDayRecordKey, $existingLiveDayRecords)) {
+                    $existingLiveDayRecord = $existingLiveDayRecords[$newDayRecordKey];
+                    $newDayRecord['t3_origuid'] = (int)$existingLiveDayRecord['uid'];
+                    $newDayRecord['t3ver_oid'] = (int)$existingLiveDayRecord['uid'];
+                    $newDayRecord['t3ver_state'] = VersionState::DEFAULT_STATE->value;
+                } else {
+                    // There are more new day records than currently available in the LIVE workspace. Create new day
+                    // records here without an associated relational record in the LIVE workspace.
+                    $newDayRecord['t3_origuid'] = 0;
+                    $newDayRecord['t3ver_oid'] = 0;
+                    $newDayRecord['t3ver_state'] = VersionState::NEW_PLACEHOLDER->value;
+                }
             }
         }
 
