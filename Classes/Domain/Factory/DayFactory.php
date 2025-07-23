@@ -13,9 +13,11 @@ namespace JWeiland\Events2\Domain\Factory;
 
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
+use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Service\DatabaseService;
+use JWeiland\Events2\Service\Result\TimeResult;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
@@ -27,7 +29,7 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
  * If a day was not found, it will automatically search for the previous day.
  * If day was not found, it will automatically build a temporary day without any DateTime-Objects.
  */
-class DayFactory
+readonly class DayFactory
 {
     private const PROCESS_METHODS = [
         'findExactDay',
@@ -37,10 +39,10 @@ class DayFactory
     ];
 
     public function __construct(
-        protected readonly DatabaseService $databaseService,
-        protected readonly DayRepository $dayRepository,
-        protected readonly EventRepository $eventRepository,
-        protected readonly ConnectionPool $connectionPool,
+        protected DatabaseService $databaseService,
+        protected DayRepository $dayRepository,
+        protected EventRepository $eventRepository,
+        protected ConnectionPool $connectionPool,
     ) {}
 
     /**
@@ -137,12 +139,24 @@ class DayFactory
 
         if (!$day instanceof Day) {
             // Only a fallback to be really safe.
+            $dayTime = $event->getEventBegin();
+            if ($event->getEventTime() instanceof Time) {
+                $timeResult = new TimeResult([
+                    'time_begin' => $event->getEventTime()->getTimeBegin(),
+                ]);
+                $dayTime = $dayTime->modify(sprintf(
+                    '+%d hour +%d minute',
+                    $timeResult->getHour(),
+                    $timeResult->getMinute(),
+                ));
+            }
+
             $day = new Day();
             $day->setEvent($event);
             $day->setDay($event->getEventBegin());
-            $day->setDayTime($event->getEventBegin());
-            $day->setSortDayTime($event->getEventBegin());
-            $day->setSameDayTime($event->getEventBegin());
+            $day->setDayTime($dayTime);
+            $day->setSortDayTime($dayTime);
+            $day->setSameDayTime($dayTime);
         }
 
         return $day;
