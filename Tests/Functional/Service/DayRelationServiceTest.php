@@ -61,6 +61,8 @@ class DayRelationServiceTest extends FunctionalTestCase
     {
         parent::setUp();
 
+        date_default_timezone_set('Europe/Berlin');
+
         $this->dayGeneratorServiceMock = $this->createMock(DayGeneratorService::class);
         $this->dayRecordServiceMock = $this->createMock(DayRecordService::class);
         $this->eventRecordServiceMock = $this->createMock(EventRecordService::class);

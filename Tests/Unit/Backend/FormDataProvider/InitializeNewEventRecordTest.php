@@ -33,6 +33,8 @@ class InitializeNewEventRecordTest extends UnitTestCase
     {
         parent::setUp();
 
+        date_default_timezone_set('Europe/Berlin');
+
         $this->subject = new InitializeNewEventRecord(
             GeneralUtility::makeInstance(Context::class),
         );

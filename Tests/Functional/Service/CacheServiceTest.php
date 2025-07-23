@@ -48,6 +48,8 @@ class CacheServiceTest extends FunctionalTestCase
     {
         parent::setUp();
 
+        date_default_timezone_set('Europe/Berlin');
+
         $this->cacheDataCollector = GeneralUtility::makeInstance(CacheDataCollector::class);
 
         $request = new ServerRequest('https://www.example.com', 'GET');

@@ -40,6 +40,8 @@ class LocationTest extends FunctionalTestCase
     {
         parent::setUp();
 
+        date_default_timezone_set('Europe/Berlin');
+
         $this->subject = new Location();
     }
 

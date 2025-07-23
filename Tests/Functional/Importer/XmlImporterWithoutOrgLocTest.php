@@ -26,8 +26,6 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
 {
     protected EventRepository $eventRepository;
 
-    protected ObjectManager $objectManager;
-
     protected ExtConf $extConf;
 
     protected array $coreExtensionsToLoad = [
@@ -46,9 +44,9 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
      */
     protected function setUp(): void
     {
-        self::markTestIncomplete('XmlImporterWithoutLocTest not updated until right now');
-
         parent::setUp();
+
+        date_default_timezone_set('Europe/Berlin');
 
         $this->extConf = GeneralUtility::makeInstance(ExtConf::class);
         $this->extConf->setXmlImportValidatorPath($this->instancePath . 'typo3conf/ext/events2/Resources/Public/XmlImportWithoutRelationsValidator.xsd');

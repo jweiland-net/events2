@@ -40,6 +40,8 @@ class DatabaseServiceTest extends FunctionalTestCase
     {
         parent::setUp();
 
+        date_default_timezone_set('Europe/Berlin');
+
         $eventBegin = new \DateTimeImmutable('first day of this month midnight');
         $eventBegin = $eventBegin
             ->modify('+4 days')

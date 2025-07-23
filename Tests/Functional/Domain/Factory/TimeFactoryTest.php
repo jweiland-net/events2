@@ -43,6 +43,8 @@ class TimeFactoryTest extends FunctionalTestCase
     {
         parent::setUp();
 
+        date_default_timezone_set('Europe/Berlin');
+
         $this->subject = new TimeFactory(new DateTimeUtility());
     }
 

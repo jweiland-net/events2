@@ -29,6 +29,8 @@ class LinkTest extends UnitTestCase
     {
         parent::setUp();
 
+        date_default_timezone_set('Europe/Berlin');
+
         $this->subject = new Link();
     }
 

@@ -41,6 +41,8 @@ class UserSessionTest extends FunctionalTestCase
     {
         parent::setUp();
 
+        date_default_timezone_set('Europe/Berlin');
+
         $frontendUserAuthentication = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
         $frontendUserAuthentication->initializeUserSessionManager();
 

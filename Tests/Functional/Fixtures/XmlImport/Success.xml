@@ -19,7 +19,7 @@
 			<organizer index="0">GmbH</organizer>
 			<organizer index="1">Co. KG</organizer>
 		</organizers>
-		<location>Kino</location>
+		<location>Cinema</location>
 		<images />
 		<categories>
 			<category index="0">Audi</category>
@@ -42,7 +42,7 @@
 		<organizers>
 			<organizer index="0">GmbH</organizer>
 		</organizers>
-		<location>Kino</location>
+		<location>Cinema</location>
 		<images />
 		<categories>
 			<category index="0">Audi</category>
@@ -63,7 +63,7 @@
 		<organizers>
 			<organizer index="0">Co. KG</organizer>
 		</organizers>
-		<location>Kino</location>
+		<location>Cinema</location>
 		<images />
 		<categories>
 			<category index="0">Audi</category>

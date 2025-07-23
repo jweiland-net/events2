@@ -53,6 +53,8 @@ class SearchControllerTest extends FunctionalTestCase
     {
         parent::setUp();
 
+        date_default_timezone_set('Europe/Berlin');
+
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/Events2PageTree.csv');
 
         $this->writeSiteConfiguration(

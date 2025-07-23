@@ -38,6 +38,8 @@ class Events2PageTitleProviderTest extends FunctionalTestCase
     {
         parent::setUp();
 
+        date_default_timezone_set('Europe/Berlin');
+
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/PageTitleProvider.csv');
 
         $this->subject = $this->getContainer()->get(Events2PageTitleProvider::class);

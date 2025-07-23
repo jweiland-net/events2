@@ -47,6 +47,8 @@ class DayGeneratorServiceTest extends FunctionalTestCase
     {
         parent::setUp();
 
+        date_default_timezone_set('Europe/Berlin');
+
         $this->loggerMock = $this->createMock(Logger::class);
 
         $this->assignSubject(new ExtConf(

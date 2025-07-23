@@ -49,6 +49,8 @@ class HiddenObjectHelperTest extends FunctionalTestCase
     {
         parent::setUp();
 
+        date_default_timezone_set('Europe/Berlin');
+
         $this->session = $this->get(Session::class);
         $this->eventRepositoryMock = $this->createMock(EventRepository::class);
         $this->requestMock = $this->createMock(Request::class);

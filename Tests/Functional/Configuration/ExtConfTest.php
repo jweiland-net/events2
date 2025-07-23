@@ -38,6 +38,8 @@ class ExtConfTest extends FunctionalTestCase
     {
         parent::setUp();
 
+        date_default_timezone_set('Europe/Berlin');
+
         $this->extensionConfigurationMock = $this->createMock(ExtensionConfiguration::class);
     }
 

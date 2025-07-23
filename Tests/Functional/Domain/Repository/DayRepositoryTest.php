@@ -46,6 +46,8 @@ class DayRepositoryTest extends FunctionalTestCase
     {
         parent::setUp();
 
+        date_default_timezone_set('Europe/Berlin');
+
         $querySettings = $this->get(QuerySettingsInterface::class);
         $querySettings->setStoragePageIds([Events2Constants::PAGE_STORAGE]);
 

@@ -51,6 +51,8 @@ class EventServiceTest extends FunctionalTestCase
     {
         parent::setUp();
 
+        date_default_timezone_set('Europe/Berlin');
+
         $this->eventRepositoryMock = $this->createMock(EventRepository::class);
         $this->dataMapperMock = $this->createMock(DataMapper::class);
         $this->databaseServiceMock = $this->createMock(DatabaseService::class);

@@ -37,6 +37,8 @@ class SlugPostModifierHookTest extends FunctionalTestCase
     {
         parent::setUp();
 
+        date_default_timezone_set('Europe/Berlin');
+
         $this->eventDispatcherMock = $this->createMock(EventDispatcher::class);
         $this->slugHelperMock = $this->createMock(SlugHelper::class);
     }

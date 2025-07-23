@@ -42,6 +42,8 @@ class DayHelperTest extends FunctionalTestCase
     {
         parent::setUp();
 
+        date_default_timezone_set('Europe/Berlin');
+
         $this->subject = $this->get(DayHelper::class);
     }
 

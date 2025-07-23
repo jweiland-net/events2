@@ -49,6 +49,8 @@ class JsonLdServiceTest extends FunctionalTestCase
     {
         parent::setUp();
 
+        date_default_timezone_set('Europe/Berlin');
+
         $frontendTypoScript = new FrontendTypoScript(new RootNode(), [], [], []);
         $frontendTypoScript->setConfigArray([]);
         $frontendTypoScript->setSetupArray([

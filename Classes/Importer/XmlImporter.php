@@ -160,13 +160,18 @@ class XmlImporter
     }
 
     /**
-     * Check, if an event has to be created/updated/deleted
+     * Check if an event has to be created/updated/deleted
      *
      * @throws \Exception
      */
     protected function processEvent(array $eventRecord): void
     {
-        $event = $this->eventRepository->findHiddenObject((int)$eventRecord['import_id'], 'importId');
+        $event = null;
+        $importId = (string)($eventRecord['import_id'] ?? '');
+        if ($importId !== '') {
+            $event = $this->eventRepository->findHiddenObject($importId, 'importId');
+        }
+
         switch ($this->getProcessAs($eventRecord)) {
             case 'delete':
                 if ($event instanceof Event) {
@@ -174,7 +179,7 @@ class XmlImporter
                 } else {
                     throw new \Exception(sprintf(
                         'Can not delete event with import-ID %s, as it does not exist in our database.',
-                        $eventRecord['import_id'],
+                        $importId,
                     ));
                 }
 
@@ -227,7 +232,7 @@ class XmlImporter
             case 'new':
             default:
                 $event = $this->createEvent($eventRecord);
-                $event->setImportId($eventRecord['import_id'] ?: '');
+                $event->setImportId($importId);
                 $event->setHidden(true);
                 $event->setPid($this->storagePid);
                 $this->addPathSegment($event);
@@ -239,7 +244,7 @@ class XmlImporter
 
     protected function getProcessAs(array $eventRecord): string
     {
-        $processAs = $eventRecord['process_as'] ?: 'new';
+        $processAs = (string)($eventRecord['process_as'] ?? 'new');
         $processAs = strtolower($processAs);
         if (!in_array($processAs, ['new', 'edit', 'delete'], true)) {
             $processAs = 'new';
@@ -782,20 +787,20 @@ class XmlImporter
     protected function addMessage(string $message, ContextualFeedbackSeverity $severity = ContextualFeedbackSeverity::OK): void
     {
         static $firstMessage = true;
-        /** @var AbstractFile $logFile */
-        static $logFile = null;
 
         try {
             $content = '';
+            $logFile = $this->getLogFile();
+
             if ($firstMessage) {
                 // truncate LogFile
-                $logFile = $this->getLogFile();
                 $logFile->setContents($content);
                 $firstMessage = false;
             } else {
                 $content = $logFile->getContents();
             }
 
+            $logFile->getStorage()->setEvaluatePermissions(false);
             $logFile->setContents($content . $message . LF);
         } catch (\Exception $exception) {
             $message = $exception->getMessage();
