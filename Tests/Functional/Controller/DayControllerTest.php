@@ -33,6 +33,7 @@ class DayControllerTest extends FunctionalTestCase
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
         'fluid_styled_content',
+        'form',
         'reactions',
     ];
 
