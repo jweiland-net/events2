@@ -213,12 +213,12 @@ class DayControllerTest extends FunctionalTestCase
             eventBegin: new \DateTimeImmutable('-2 months midnight'),
         );
         $this->insertEvent(
-            title: 'Event Title Tuesday',
-            eventBegin: new \DateTimeImmutable('tuesday this week midnight'),
+            title: 'Event Title next week',
+            eventBegin: new \DateTimeImmutable('+1 week midnight'),
         );
         $this->insertEvent(
-            title: 'Event Title next week',
-            eventBegin: new \DateTimeImmutable('wednesday next week midnight'),
+            title: 'Event Title next two weeks',
+            eventBegin: new \DateTimeImmutable('+2 weeks midnight'),
         );
         $this->insertEvent(
             title: 'Event Title next 2 months',
@@ -231,11 +231,11 @@ class DayControllerTest extends FunctionalTestCase
         )->getBody();
 
         self::assertStringContainsString(
-            'Event Title Tuesday',
+            'Event Title next week',
             $content,
         );
         self::assertStringContainsString(
-            'Event Title next week',
+            'Event Title next two weeks',
             $content,
         );
         self::assertStringNotContainsString(
