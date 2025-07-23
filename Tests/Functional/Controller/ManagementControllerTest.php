@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Functional\Controller;
 
 use JWeiland\Events2\Tests\Functional\Events2Constants;
+use JWeiland\Events2\Tests\Functional\Traits\CacheHashTrait;
 use JWeiland\Events2\Tests\Functional\Traits\InsertEventTrait;
 use JWeiland\Events2\Tests\Functional\Traits\SiteBasedTestTrait;
 use PHPUnit\Framework\Attributes\Test;
@@ -24,12 +25,14 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
  */
 class ManagementControllerTest extends FunctionalTestCase
 {
+    use CacheHashTrait;
     use InsertEventTrait;
     use SiteBasedTestTrait;
 
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
         'fluid_styled_content',
+        'form',
         'reactions',
     ];
 
@@ -37,6 +40,21 @@ class ManagementControllerTest extends FunctionalTestCase
         'sjbr/static-info-tables',
         'jweiland/events2',
         __DIR__ . '/../Fixtures/Extensions/site_package',
+    ];
+
+    protected array $configurationToUseInTestInstance = [
+        'EXTENSIONS' => [
+            'events2' => [
+                'emailFromAddress' => 'projects@jweiland.net',
+                'emailFromName' => 'Stefan Froemken',
+                'emailToAddress' => 'hosting@jweiland.net',
+                'emailToName' => 'Stefan Froemken',
+            ],
+        ],
+    ];
+
+    protected array $additionalFoldersToCreate = [
+        'fileadmin/Extensions/events2',
     ];
 
     protected const LANGUAGE_PRESETS = [
@@ -150,6 +168,40 @@ class ManagementControllerTest extends FunctionalTestCase
         );
         self::assertStringNotContainsString(
             'Event with non user defined organizer',
+            $content,
+        );
+    }
+
+    #[Test]
+    public function performWillShowExtForm(): void
+    {
+        $parameters = [
+            'tx_events2_management' => [
+                'controller' => 'Management',
+                'action' => 'perform',
+            ],
+        ];
+
+        $parameters['cHash'] = $this->generateCacheHash($parameters, Events2Constants::PAGE_MANAGEMENT);
+
+        $content = (string)$this->executeFrontendSubRequest(
+            (new InternalRequest())
+                ->withPageId(Events2Constants::PAGE_MANAGEMENT)
+                ->withQueryParams($parameters),
+            (new InternalRequestContext())
+                ->withFrontendUserId(1),
+        )->getBody();
+
+        self::assertStringContainsString(
+            'Single event',
+            $content,
+        );
+        self::assertStringContainsString(
+            'Multiday event',
+            $content,
+        );
+        self::assertStringContainsString(
+            'Recurring event',
             $content,
         );
     }
