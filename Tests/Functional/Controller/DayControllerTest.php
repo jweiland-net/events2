@@ -17,7 +17,9 @@ use JWeiland\Events2\Tests\Functional\Traits\CreatePostStreamBodyTrait;
 use JWeiland\Events2\Tests\Functional\Traits\InsertEventTrait;
 use JWeiland\Events2\Tests\Functional\Traits\SiteBasedTestTrait;
 use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Core\Versioning\VersionState;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
+use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequestContext;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
@@ -35,6 +37,7 @@ class DayControllerTest extends FunctionalTestCase
         'fluid_styled_content',
         'form',
         'reactions',
+        'workspaces',
     ];
 
     protected array $testExtensionsToLoad = [
@@ -59,6 +62,9 @@ class DayControllerTest extends FunctionalTestCase
         date_default_timezone_set('Europe/Berlin');
 
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/Events2PageTree.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/be_groups.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/be_users.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/sys_workspace.csv');
 
         $this->writeSiteConfiguration(
             'events2-controller-test',
@@ -346,6 +352,111 @@ class DayControllerTest extends FunctionalTestCase
         );
         self::assertStringNotContainsString(
             'Event Title Tomorrow',
+            $content,
+        );
+    }
+
+    #[Test]
+    public function listActionWithReplacedSingleEventWillListVersionedEvents(): void
+    {
+        $eventUid = $this->insertEvent(
+            title: 'Event in LIVE workspace',
+            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
+        );
+        $this->createDayRelations(eventUids: [1]);
+
+        $this->insertEvent(
+            title: 'Event in EDIT workspace',
+            eventBegin: new \DateTimeImmutable('+1 week midnight'),
+            additionalFields: [
+                't3ver_wsid' => 1,
+                't3ver_state' => VersionState::DEFAULT_STATE->value,
+                't3ver_oid' => $eventUid,
+            ],
+        );
+        $this->createDayRelations(workspace: 1, eventUids: [2]);
+
+        $content = (string)$this->executeFrontendSubRequest(
+            (new InternalRequest())
+                ->withPageId(Events2Constants::PAGE_LIST),
+            (new InternalRequestContext())
+                ->withBackendUserId(2)
+                ->withWorkspaceId(1),
+        )->getBody();
+
+        self::assertStringContainsString(
+            'Event in EDIT workspace',
+            $content,
+        );
+        self::assertStringNotContainsString(
+            'Event in LIVE workspace',
+            $content,
+        );
+    }
+
+    #[Test]
+    public function listActionWithReplacedRecurringEventWillListVersionedEvents(): void
+    {
+        $eventBegin = new \DateTimeImmutable('today midnight');
+        $nextWeek = $eventBegin->modify('+7 days');
+        $recurringEnd = $eventBegin->modify('+14 days');
+
+        $eventUid = $this->insertEvent(
+            title: 'Recurring Event in LIVE workspace',
+            eventBegin: $eventBegin,
+            additionalFields: [
+                'event_type' => 'recurring',
+                'recurring_end' => (int)$recurringEnd->format('U'),
+                'xth' => 0,
+                'weekday' => 0,
+                'each_weeks' => 1,
+                'each_months' => 0,
+            ],
+        );
+        $this->createDayRelations(eventUids: [1]);
+
+        $inOneMonth = new \DateTimeImmutable('+1 month midnight');
+        $this->insertEvent(
+            title: 'Single Event in EDIT workspace',
+            eventBegin: $inOneMonth,
+            additionalFields: [
+                't3ver_wsid' => 1,
+                't3ver_state' => VersionState::DEFAULT_STATE->value,
+                't3ver_oid' => $eventUid,
+            ],
+        );
+        $this->createDayRelations(workspace: 1, eventUids: [2]);
+
+        $content = (string)$this->executeFrontendSubRequest(
+            (new InternalRequest())
+                ->withPageId(Events2Constants::PAGE_LIST),
+            (new InternalRequestContext())
+                ->withBackendUserId(2)
+                ->withWorkspaceId(1),
+        )->getBody();
+
+        self::assertStringContainsString(
+            'Single Event in EDIT workspace',
+            $content,
+        );
+        self::assertStringContainsString(
+            $inOneMonth->format('D d. M Y'),
+            $content,
+        );
+        self::assertStringNotContainsString(
+            'Recurring Event in LIVE workspace',
+            $content,
+        );
+        self::assertStringNotContainsString(
+            $eventBegin->format('D d. M Y'),
+            $content,
+        );
+        self::assertStringNotContainsString(
+            $nextWeek->format('D d. M Y'),
+            $content,
+        );
+        self::assertStringNotContainsString(
+            $recurringEnd->format('D d. M Y'),
             $content,
         );
     }

@@ -220,7 +220,7 @@ readonly class DayRecordService
             $newDayRecord['event'] = (int)$eventRecord['uid'];
             $newDayRecord['def_lang_event_uid'] = $eventUid;
             $newDayRecord['t3ver_wsid'] = $this->getBackendUser()->workspace;
-            $newDayRecord['t3ver_stage'] = 0;
+            $newDayRecord['t3ver_stage'] = VersionState::DEFAULT_STATE->value;
             $newDayRecord['sys_language_uid'] = $languageUid;
             $newDayRecord['l10n_parent'] = $l10nParent;
 

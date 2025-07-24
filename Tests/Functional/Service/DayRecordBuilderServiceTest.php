@@ -153,7 +153,7 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
             'exceptions' => [],
             't3ver_wsid' => 1,
             't3ver_oid' => $eventUid,
-            't3ver_state' => VersionState::DELETE_PLACEHOLDER,
+            't3ver_state' => VersionState::DELETE_PLACEHOLDER->value,
         ];
 
         $dayGeneratorResult = $this->dayGeneratorService->getDayGeneratorResultForEventRecord($eventRecord);

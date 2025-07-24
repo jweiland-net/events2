@@ -168,7 +168,7 @@ trait InsertEventTrait
         return $eventUid;
     }
 
-    protected function createDayRelations(int $workspace = 0, bool $isAdmin = true): void
+    protected function createDayRelations(int $workspace = 0, bool $isAdmin = true, array $eventUids = []): void
     {
         $GLOBALS['BE_USER'] = new BackendUserAuthentication();
         $GLOBALS['BE_USER']->user['username'] = 'acceptanceTestSetup';
@@ -178,17 +178,24 @@ trait InsertEventTrait
 
         $dayRelationService = GeneralUtility::makeInstance(DayRelationService::class);
 
-        $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_event');
-        $queryResult = $connection->select(
-            ['*'],
-            'tx_events2_domain_model_event',
-            [
-                'pid' => Events2Constants::PAGE_STORAGE,
-            ],
-        );
+        if ($eventUids === []) {
+            $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_event');
+            $queryResult = $connection->select(
+                ['*'],
+                'tx_events2_domain_model_event',
+                [
+                    'pid' => Events2Constants::PAGE_STORAGE,
+                ],
+            );
 
-        while ($eventRecord = $queryResult->fetchAssociative()) {
-            $dayRelationService->createDayRelations((int)$eventRecord['uid']);
+            while ($eventRecord = $queryResult->fetchAssociative()) {
+                $dayRelationService->createDayRelations((int)$eventRecord['uid']);
+            }
+        } else {
+            foreach ($eventUids as $eventUid) {
+                $dayRelationService->createDayRelations((int)$eventUid);
+
+            }
         }
     }
 }
