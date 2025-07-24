@@ -35,14 +35,16 @@ readonly class InitializeNewEventRecord implements FormDataProviderInterface
             return $result;
         }
 
-        if ($result['command'] === 'new') {
-            try {
-                $result['databaseRow']['event_begin'] = $this->context->getPropertyFromAspect(
-                    'date',
-                    'timestamp',
-                );
-            } catch (AspectNotFoundException) {
-            }
+        if ($result['command'] !== 'new') {
+            return $result;
+        }
+
+        try {
+            $result['databaseRow']['event_begin'] = $this->context->getPropertyFromAspect(
+                'date',
+                'timestamp',
+            );
+        } catch (AspectNotFoundException) {
         }
 
         return $result;
