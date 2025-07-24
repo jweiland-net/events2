@@ -23,8 +23,11 @@ use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Class to generate all-day records for an event within a configured range (ExtensionManager).
- * It does now respect time information, just days. The time records will be processed later.
+ * This service class is responsible for generating all possible event dates (as DateTime objects, set to midnight 00:00:00)
+ * for a given event record within the TYPO3 extension "events2". The DayGenerator processes event records based on their type
+ * ("single", "duration", or "recurring") and considers both inclusion and exclusion rules, such as exceptions, to calculate
+ * the correct set of possible days for an event. At this stage, only date information (without time) is generated; associated
+ * time data is collected separately and does not influence the DateTime objects within this service.
  */
 class DayGeneratorService
 {
