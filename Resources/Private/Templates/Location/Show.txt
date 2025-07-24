@@ -1,4 +1,0 @@
-{location.location}
-
-{location.street} {location.houseNumber}
-{location.zip} {location.city}
