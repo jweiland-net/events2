@@ -16,11 +16,14 @@ use JWeiland\Events2\Service\DayGeneratorService;
 use JWeiland\Events2\Service\DayRecordBuilderService;
 use JWeiland\Events2\Service\TimeService;
 use JWeiland\Events2\Tests\Functional\Events2Constants;
+use JWeiland\Events2\Tests\Functional\Traits\InsertEventTrait;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Log\Logger;
+use TYPO3\CMS\Core\Versioning\VersionState;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
@@ -28,6 +31,8 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
  */
 class DayRecordBuilderServiceTest extends FunctionalTestCase
 {
+    use InsertEventTrait;
+
     protected DayRecordBuilderService $subject;
 
     protected DayGeneratorService $dayGeneratorService;
@@ -89,11 +94,66 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
             'event_begin' => (int)$eventBegin->format('U'),
             'event_end' => 0,
             'recurring_end' => 0,
-            'xth' => 31,
-            'weekday' => 127,
+            'xth' => 0,
+            'weekday' => 0,
             'each_weeks' => 0,
             'each_months' => 0,
             'exceptions' => [],
+        ];
+
+        $dayGeneratorResult = $this->dayGeneratorService->getDayGeneratorResultForEventRecord($eventRecord);
+
+        $this->subject->buildDayRecordsFor($dayGeneratorResult);
+
+        self::assertArrayIsIdenticalToArrayIgnoringListOfKeys(
+            [
+                'pid' => Events2Constants::PAGE_STORAGE,
+                'hidden' => 0,
+                'fe_group' => 0,
+                'day' => (int)$eventBegin->format('U'),
+                'day_time' => (int)$eventBegin->format('U'),
+                'sort_day_time' => (int)$eventBegin->format('U'),
+                'same_day_time' => (int)$eventBegin->format('U'),
+                'is_removed_date' => 0,
+            ],
+            current($dayGeneratorResult->getDayRecords()),
+            [
+                'tstamp',
+                'crdate',
+            ],
+        );
+    }
+
+    #[Test]
+    public function buildDayRecordsWithSingleEventWillCreateDayRecordForSingleEventsInWorkspace(): void
+    {
+        $eventBegin = new \DateTimeImmutable('midnight');
+
+        $eventUid = $this->insertEvent(
+            title: 'Week market',
+            eventBegin: $eventBegin,
+        );
+        $this->createDayRelations(1);
+
+        $GLOBALS['BE_USER'] = new BackendUserAuthentication();
+        $GLOBALS['BE_USER']->workspace = 0;
+
+        $eventRecord = [
+            'uid' => 123,
+            'pid' => Events2Constants::PAGE_STORAGE,
+            'title' => 'TYPO3',
+            'event_type' => 'single',
+            'event_begin' => (int)$eventBegin->format('U'),
+            'event_end' => 0,
+            'recurring_end' => 0,
+            'xth' => 0,
+            'weekday' => 0,
+            'each_weeks' => 0,
+            'each_months' => 0,
+            'exceptions' => [],
+            't3ver_wsid' => 1,
+            't3ver_oid' => $eventUid,
+            't3ver_state' => VersionState::DELETE_PLACEHOLDER,
         ];
 
         $dayGeneratorResult = $this->dayGeneratorService->getDayGeneratorResultForEventRecord($eventRecord);
@@ -132,8 +192,8 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
             'event_begin' => (int)$eventBegin->format('U'),
             'event_end' => (int)$tomorrow->format('U'),
             'recurring_end' => 0,
-            'xth' => 31,
-            'weekday' => 127,
+            'xth' => 0,
+            'weekday' => 0,
             'each_weeks' => 0,
             'each_months' => 0,
             'exceptions' => [
@@ -183,8 +243,8 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
             'event_begin' => (int)$eventBegin->format('U'),
             'event_end' => 0,
             'recurring_end' => (int)$recurringEnd->format('U'),
-            'xth' => 31,
-            'weekday' => 127,
+            'xth' => 0,
+            'weekday' => 0,
             'each_weeks' => 1,
             'each_months' => 0,
             'exceptions' => [],
