@@ -11,6 +11,27 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Service\Result;
 
+/**
+ * Represents the result of the DayGeneratorService processing for an event.
+ *
+ * This class stores the possible event days for a given event record, as determined by the DayGeneratorService.
+ * Each detected event day is initially stored as a DateTimeResult object in the $dateTimeResultStorage property.
+ * For each specific day (DateTimeResult), the corresponding possible time records (TimeResult objects) are later assigned.
+ *
+ * The $dayRecords property is populated subsequently by the DayRecordBuilderService,
+ * which computes comprehensive day records for each day/time combination after all times have been added.
+ *
+ * Responsibilities:
+ * - Hold the event record data.
+ * - Collect all possible event days as DateTimeResult objects.
+ * - Allow addition and access to both date and time results per day.
+ * - Store finalized day records, each reflecting a concrete occurrence with all relevant attributes for the TYPO3 events2 extension.
+ *
+ * Typical usage in the events2 context:
+ * 1. DayGeneratorService populates $dateTimeResultStorage with possible event days.
+ * 2. For each day, possible times are added as TimeResult objects.
+ * 3. DayRecordBuilderService processes days and times, populating $dayRecords with all calculated day/time combinations.
+ */
 final class DayGeneratorResult
 {
     /**

@@ -15,6 +15,29 @@ use JWeiland\Events2\Service\Result\DateTimeResult;
 use JWeiland\Events2\Service\Result\DayGeneratorResult;
 use JWeiland\Events2\Service\Result\TimeResult;
 
+/**
+ * This service is part of the TYPO3 extension "events2" and is responsible for constructing preliminary day records
+ * for event days to be persisted in the database table `tx_events2_domain_model_day`. It receives a {@see DayGeneratorResult}
+ * from the {@see DayGeneratorService}, iterates over its internal storage of event day objects, and augments each with
+ * precise time information based on the attached {@see TimeResult} objects.
+ *
+ * The resulting day record includes standard information such as storage PID, hidden/visible flag, and frontend user
+ * group for access control. In addition, four calculated fields are added for each event day:
+ *   - `day`: The event date as a \DateTime object at midnight (00:00:00).
+ *   - `day_time`: The event date and the exact calculated time as a \DateTime object (i.e., included hour and minute).
+ *   - `sort_day_time`: Especially for "duration" events, all affected event days (and their times) are normalized
+ *                     to the timestamp of the very first event day. This ensures that, for such events, participants
+ *                     cannot join after the start, and sorting reflects the true event begin.
+ *   - `same_day_time`: For events with multiple times on the same day, all corresponding \DateTime values are set to
+ *                      the earliest time on that day. This allows aggregation (e.g., SQL GROUP BY) of such overlapping events.
+ *
+ * This service acts as the bridge between abstract event planning results and the actual data structure required by the database,
+ * ensuring that all business logic related to time calculation and event structure is centrally encapsulated for maintainability
+ * and extensibility.
+ *
+ * **Note:** The further processing of these day records—such as localization, workspace/versioning handling, and the actual
+ * bulk insertion into the database—is handled separately in {@see DayRecordService::bulkInsertAllDayRecords()}.
+ */
 readonly class DayRecordBuilderService
 {
     public function buildDayRecordsFor(DayGeneratorResult $dayGeneratorResult): void
