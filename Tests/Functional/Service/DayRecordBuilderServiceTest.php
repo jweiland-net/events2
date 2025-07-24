@@ -120,7 +120,7 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
     }
 
     #[Test]
-    public function buildDayRecordsWithSingleEventWillCreateDayRecordForDurationEvents(): void
+    public function buildDayRecordsWithDurationEventWillCreateDayRecordForDurationEvents(): void
     {
         $eventBegin = new \DateTimeImmutable('midnight');
         $tomorrow = $eventBegin->modify('tomorrow');
@@ -170,7 +170,7 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
     }
 
     #[Test]
-    public function buildDayRecordsWithSingleEventWillCreateDayRecordForRecurringEvents(): void
+    public function buildDayRecordsWithRecurringEventWillCreateDayRecordForRecurringEvents(): void
     {
         $eventBegin = new \DateTimeImmutable('midnight');
         $nextWeek = $eventBegin->modify('+7 days');
