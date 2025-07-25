@@ -29,6 +29,15 @@ class VideoControllerTest extends FunctionalTestCase
     use InsertEventTrait;
     use SiteBasedTestTrait;
 
+    protected const LANGUAGE_PRESETS = [
+        'EN' => [
+            'id' => 0,
+            'title' => 'English',
+            'locale' => 'en_US.UTF8',
+            'iso' => 'en',
+        ],
+    ];
+
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
         'fluid_styled_content',
@@ -42,20 +51,15 @@ class VideoControllerTest extends FunctionalTestCase
         __DIR__ . '/../Fixtures/Extensions/site_package',
     ];
 
-    protected const LANGUAGE_PRESETS = [
-        'EN' => [
-            'id' => 0,
-            'title' => 'English',
-            'locale' => 'en_US.UTF8',
-            'iso' => 'en',
+    protected array $configurationToUseInTestInstance = [
+        'SYS' => [
+            'phpTimeZone' => Events2Constants::PHP_TIMEZONE,
         ],
     ];
 
     protected function setUp(): void
     {
         parent::setUp();
-
-        date_default_timezone_set('Europe/Berlin');
 
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/Events2PageTree.csv');
 

@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Functional\Domain\Repository;
 
 use JWeiland\Events2\Domain\Repository\CategoryRepository;
+use JWeiland\Events2\Tests\Functional\Events2Constants;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
@@ -33,11 +34,15 @@ class CategoryRepositoryTest extends FunctionalTestCase
         'jweiland/events2',
     ];
 
+    protected array $configurationToUseInTestInstance = [
+        'SYS' => [
+            'phpTimeZone' => Events2Constants::PHP_TIMEZONE,
+        ],
+    ];
+
     protected function setUp(): void
     {
         parent::setUp();
-
-        date_default_timezone_set('Europe/Berlin');
 
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Events2PageTree.csv');
 

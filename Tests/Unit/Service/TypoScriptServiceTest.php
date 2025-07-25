@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Unit\Service;
 
 use JWeiland\Events2\Service\TypoScriptService;
+use JWeiland\Events2\Tests\Functional\Events2Constants;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -26,7 +27,7 @@ class TypoScriptServiceTest extends UnitTestCase
     {
         parent::setUp();
 
-        date_default_timezone_set('Europe/Berlin');
+        date_default_timezone_set(Events2Constants::PHP_TIMEZONE);
 
         $this->subject = new TypoScriptService();
     }

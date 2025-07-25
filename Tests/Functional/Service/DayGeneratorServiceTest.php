@@ -15,6 +15,7 @@ use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Service\DayGeneratorService;
 use JWeiland\Events2\Service\Result\DateTimeResult;
 use JWeiland\Events2\Service\TimeService;
+use JWeiland\Events2\Tests\Functional\Events2Constants;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -43,11 +44,15 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         'jweiland/events2',
     ];
 
+    protected array $configurationToUseInTestInstance = [
+        'SYS' => [
+            'phpTimeZone' => Events2Constants::PHP_TIMEZONE,
+        ],
+    ];
+
     protected function setUp(): void
     {
         parent::setUp();
-
-        date_default_timezone_set('Europe/Berlin');
 
         $this->loggerMock = $this->createMock(Logger::class);
 

@@ -46,14 +46,18 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
         'jweiland/events2',
     ];
 
+    protected array $configurationToUseInTestInstance = [
+        'SYS' => [
+            'phpTimeZone' => Events2Constants::PHP_TIMEZONE,
+        ],
+    ];
+
     /**
      * I have set the date of the import events to 2025. That should be enough for the next years ;-)
      */
     protected function setUp(): void
     {
         parent::setUp();
-
-        date_default_timezone_set('Europe/Berlin');
     }
 
     protected function tearDown(): void

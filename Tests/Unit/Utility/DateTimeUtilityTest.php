@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Tests\Unit\Utility;
 
+use JWeiland\Events2\Tests\Functional\Events2Constants;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -27,7 +28,7 @@ class DateTimeUtilityTest extends UnitTestCase
     {
         parent::setUp();
 
-        date_default_timezone_set('Europe/Berlin');
+        date_default_timezone_set(Events2Constants::PHP_TIMEZONE);
 
         $this->subject = new DateTimeUtility();
     }
@@ -86,7 +87,7 @@ class DateTimeUtilityTest extends UnitTestCase
 
     public static function stringDatesDataProvider(): array
     {
-        date_default_timezone_set('Europe/Berlin');
+        date_default_timezone_set(Events2Constants::PHP_TIMEZONE);
         $dateTimeZone = new \DateTimeZone(date_default_timezone_get());
 
         $dateStrings = [];
@@ -118,7 +119,7 @@ class DateTimeUtilityTest extends UnitTestCase
      */
     public static function timestampDataProvider(): array
     {
-        date_default_timezone_set('Europe/Berlin');
+        date_default_timezone_set(Events2Constants::PHP_TIMEZONE);
         $dateTimeZone = new \DateTimeZone(date_default_timezone_get());
 
         $timestamps = [];

@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Unit\Domain\Model;
 
 use JWeiland\Events2\Domain\Model\Time;
+use JWeiland\Events2\Tests\Functional\Events2Constants;
 use JWeiland\Events2\Tests\Unit\Domain\Traits\TestTypo3PropertiesTrait;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
@@ -29,7 +30,7 @@ class TimeTest extends UnitTestCase
     {
         parent::setUp();
 
-        date_default_timezone_set('Europe/Berlin');
+        date_default_timezone_set(Events2Constants::PHP_TIMEZONE);
 
         $this->subject = new Time();
     }

@@ -13,6 +13,7 @@ namespace JWeiland\Events2\Tests\Functional\Service;
 
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Service\CacheService;
+use JWeiland\Events2\Tests\Functional\Events2Constants;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Cache\CacheDataCollector;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
@@ -44,11 +45,15 @@ class CacheServiceTest extends FunctionalTestCase
         'jweiland/events2',
     ];
 
+    protected array $configurationToUseInTestInstance = [
+        'SYS' => [
+            'phpTimeZone' => Events2Constants::PHP_TIMEZONE,
+        ],
+    ];
+
     protected function setUp(): void
     {
         parent::setUp();
-
-        date_default_timezone_set('Europe/Berlin');
 
         $this->cacheDataCollector = GeneralUtility::makeInstance(CacheDataCollector::class);
 

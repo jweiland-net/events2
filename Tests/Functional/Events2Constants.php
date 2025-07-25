@@ -13,6 +13,8 @@ namespace JWeiland\Events2\Tests\Functional;
 
 class Events2Constants
 {
+    public const PHP_TIMEZONE = 'Europe/Berlin';
+
     public const PLUGIN_LIST = 'events2_list';
 
     public const PLUGIN_SHOW = 'events2_show';

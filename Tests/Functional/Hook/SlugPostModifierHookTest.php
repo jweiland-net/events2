@@ -33,11 +33,15 @@ class SlugPostModifierHookTest extends FunctionalTestCase
 
     protected SlugHelper|MockObject $slugHelperMock;
 
+    protected array $configurationToUseInTestInstance = [
+        'SYS' => [
+            'phpTimeZone' => Events2Constants::PHP_TIMEZONE,
+        ],
+    ];
+
     protected function setUp(): void
     {
         parent::setUp();
-
-        date_default_timezone_set('Europe/Berlin');
 
         $this->eventDispatcherMock = $this->createMock(EventDispatcher::class);
         $this->slugHelperMock = $this->createMock(SlugHelper::class);

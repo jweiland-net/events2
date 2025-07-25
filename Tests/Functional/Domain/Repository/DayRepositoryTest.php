@@ -42,11 +42,15 @@ class DayRepositoryTest extends FunctionalTestCase
         'jweiland/events2',
     ];
 
+    protected array $configurationToUseInTestInstance = [
+        'SYS' => [
+            'phpTimeZone' => Events2Constants::PHP_TIMEZONE,
+        ],
+    ];
+
     protected function setUp(): void
     {
         parent::setUp();
-
-        date_default_timezone_set('Europe/Berlin');
 
         $querySettings = $this->get(QuerySettingsInterface::class);
         $querySettings->setStoragePageIds([Events2Constants::PAGE_STORAGE]);

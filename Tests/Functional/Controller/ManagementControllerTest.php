@@ -29,6 +29,15 @@ class ManagementControllerTest extends FunctionalTestCase
     use InsertEventTrait;
     use SiteBasedTestTrait;
 
+    protected const LANGUAGE_PRESETS = [
+        'EN' => [
+            'id' => 0,
+            'title' => 'English',
+            'locale' => 'en_US.UTF8',
+            'iso' => 'en',
+        ],
+    ];
+
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
         'fluid_styled_content',
@@ -51,26 +60,18 @@ class ManagementControllerTest extends FunctionalTestCase
                 'emailToName' => 'Stefan Froemken',
             ],
         ],
+        'SYS' => [
+            'phpTimeZone' => Events2Constants::PHP_TIMEZONE,
+        ],
     ];
 
     protected array $additionalFoldersToCreate = [
         'fileadmin/Extensions/events2',
     ];
 
-    protected const LANGUAGE_PRESETS = [
-        'EN' => [
-            'id' => 0,
-            'title' => 'English',
-            'locale' => 'en_US.UTF8',
-            'iso' => 'en',
-        ],
-    ];
-
     protected function setUp(): void
     {
         parent::setUp();
-
-        date_default_timezone_set('Europe/Berlin');
 
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/Events2PageTree.csv');
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/fe_users.csv');
