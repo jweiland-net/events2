@@ -13,6 +13,7 @@ namespace JWeiland\Events2\Tests\Unit\Domain\Model;
 
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
+use JWeiland\Events2\Tests\Functional\Events2Constants;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -26,6 +27,8 @@ class DayTest extends UnitTestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        date_default_timezone_set(Events2Constants::PHP_TIMEZONE);
 
         $this->subject = new Day();
         $this->subject->setDay(new \DateTimeImmutable());

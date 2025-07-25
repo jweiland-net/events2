@@ -1,11 +1,11 @@
 <T3DataStructure>
-	<sheets>
-		<sDEF>
-			<ROOT>
+    <sheets>
+        <sDEF>
+            <ROOT>
                 <sheetTitle>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:sheetGeneral</sheetTitle>
-				<type>array</type>
-				<el>
-					<settings.pidOfSearchResults>
+                <type>array</type>
+                <el>
+                    <settings.pidOfSearchResults>
                         <label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:pidOfSearchResults</label>
                         <config>
                             <type>group</type>
@@ -14,8 +14,8 @@
                             <maxitems>1</maxitems>
                             <minitems>0</minitems>
                         </config>
-					</settings.pidOfSearchResults>
-					<settings.mainCategories>
+                    </settings.pidOfSearchResults>
+                    <settings.mainCategories>
                         <label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:mainCategories</label>
                         <config>
                             <type>select</type>
@@ -35,9 +35,9 @@
                             <maxitems>99</maxitems>
                             <minitems>0</minitems>
                         </config>
-					</settings.mainCategories>
-				</el>
-			</ROOT>
-		</sDEF>
-	</sheets>
+                    </settings.mainCategories>
+                </el>
+            </ROOT>
+        </sDEF>
+    </sheets>
 </T3DataStructure>

@@ -1,0 +1,9 @@
+config.spamProtectEmailAddresses = 5
+
+plugin.tx_events2.persistence.storagePid = 20
+plugin.tx_events2.settings.userGroup = 1
+plugin.tx_events2.settings.rootCategory = 1
+
+page = PAGE
+page.typeNum = 0
+page.10 < styles.content.get

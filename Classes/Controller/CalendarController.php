@@ -33,7 +33,7 @@ class CalendarController extends AbstractController
         $calendarVariables['storagePids'] = $frameworkConfiguration['persistence']['storagePid'];
         $calendarVariables['pidOfListPage'] = $this->settings['pidOfListPage'];
         if (!$calendarVariables['pidOfListPage']) {
-            $calendarVariables['pidOfListPage'] = $this->getTypoScriptFrontendController($this->request)->id;
+            $calendarVariables['pidOfListPage'] = $this->getPageArguments($this->request)->getPageId();
         }
 
         $this->postProcessAndAssignFluidVariables([

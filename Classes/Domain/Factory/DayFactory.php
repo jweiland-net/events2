@@ -13,20 +13,23 @@ namespace JWeiland\Events2\Domain\Factory;
 
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
+use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Service\DatabaseService;
+use JWeiland\Events2\Service\Result\TimeResult;
 use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 /**
- * This class contains methods to find a day by a given event and exact timestamp.
- * If day was not found it will automatically search for next day.
- * If day was not found it will automatically search for previous day.
- * If day was not found it will automatically build a temporary day without any DateTime-Objects.
+ * This class contains methods to find a day by a given event and an exact timestamp.
+ * If a day was not found, it will automatically search for the next day.
+ * If a day was not found, it will automatically search for the previous day.
+ * If day was not found, it will automatically build a temporary day without any DateTime-Objects.
  */
-class DayFactory
+readonly class DayFactory
 {
     private const PROCESS_METHODS = [
         'findExactDay',
@@ -36,10 +39,10 @@ class DayFactory
     ];
 
     public function __construct(
-        protected readonly DatabaseService $databaseService,
-        protected readonly DayRepository $dayRepository,
-        protected readonly EventRepository $eventRepository,
-        protected readonly QueryBuilder $queryBuilder,
+        protected DatabaseService $databaseService,
+        protected DayRepository $dayRepository,
+        protected EventRepository $eventRepository,
+        protected ConnectionPool $connectionPool,
     ) {}
 
     /**
@@ -108,7 +111,7 @@ class DayFactory
     }
 
     /**
-     * Build day object on our own.
+     * Build a day object on our own.
      * It will not get an UID or PID
      *
      * @throws \Exception
@@ -119,7 +122,7 @@ class DayFactory
         $event = $this->eventRepository->findByIdentifier($searchValues['event']);
         if (!$event instanceof Event) {
             // Normally this can't be thrown, as this class will only be called at a detail page.
-            // So action controller will throw Exception first, if event is not given.
+            // So the action controller will throw Exception first if the event is not given.
             throw new \Exception('Given event could not be found in DayFactory', 1548927197);
         }
 
@@ -136,12 +139,24 @@ class DayFactory
 
         if (!$day instanceof Day) {
             // Only a fallback to be really safe.
+            $dayTime = $event->getEventBegin();
+            if ($event->getEventTime() instanceof Time) {
+                $timeResult = new TimeResult([
+                    'time_begin' => $event->getEventTime()->getTimeBegin(),
+                ]);
+                $dayTime = $dayTime->modify(sprintf(
+                    '+%d hour +%d minute',
+                    $timeResult->getHour(),
+                    $timeResult->getMinute(),
+                ));
+            }
+
             $day = new Day();
             $day->setEvent($event);
             $day->setDay($event->getEventBegin());
-            $day->setDayTime($event->getEventBegin());
-            $day->setSortDayTime($event->getEventBegin());
-            $day->setSameDayTime($event->getEventBegin());
+            $day->setDayTime($dayTime);
+            $day->setSortDayTime($dayTime);
+            $day->setSameDayTime($dayTime);
         }
 
         return $day;
@@ -169,7 +184,7 @@ class DayFactory
         int $eventUid,
         string $order = QueryInterface::ORDER_ASCENDING,
     ): QueryBuilder {
-        $queryBuilder = $this->queryBuilder;
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('tx_events2_domain_model_day');
         $queryBuilder
             ->select('day.*')
             ->from('tx_events2_domain_model_day', 'day')

@@ -1,5 +1,0 @@
-Event Title: <{event.title}>
-
-<f:for each="{locations}" as="location" iteration="iterator">
-Location Title {iterator.cycle}: <{location.location}>
-</f:for>

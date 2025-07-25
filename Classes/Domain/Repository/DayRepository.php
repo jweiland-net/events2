@@ -18,6 +18,7 @@ use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Model\Location;
 use JWeiland\Events2\Domain\Model\Search;
+use JWeiland\Events2\Domain\Traits\ExtbaseQueryBuilderTrait;
 use JWeiland\Events2\Event\ModifyQueriesOfFindEventsEvent;
 use JWeiland\Events2\Event\ModifyQueriesOfSearchEventsEvent;
 use JWeiland\Events2\Event\ModifyStartEndDateForListTypeEvent;
@@ -29,14 +30,17 @@ use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
+use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
  * Repository to get and find day records from storage
  *
  * @method Day findByIdentifier(int $dayUid)
  */
-class DayRepository extends AbstractRepository
+class DayRepository extends Repository
 {
+    use ExtbaseQueryBuilderTrait;
+
     public const TABLE = 'tx_events2_domain_model_day';
 
     protected DateTimeUtility $dateTimeUtility;
@@ -124,7 +128,7 @@ class DayRepository extends AbstractRepository
         ) {
             $this->databaseService->addConstraintForOrganizer(
                 $subQueryBuilder,
-                (int)($this->settings['preFilterByOrganizer'] ?: $filter->getOrganizer()),
+                (int)(($this->settings['preFilterByOrganizer'] ?? 0) ?: $filter->getOrganizer()),
                 $queryBuilder,
                 'event_sub_query',
             );
@@ -203,7 +207,7 @@ class DayRepository extends AbstractRepository
             '_sub_query',
         );
 
-        // add query for search string
+        // add a query for search string
         if ($search->getSearch() !== '') {
             $subQueryBuilder->andWhere(
                 (string)$subQueryBuilder->expr()->or(
@@ -223,7 +227,7 @@ class DayRepository extends AbstractRepository
             );
         }
 
-        // add query for categories
+        // add a query for categories
         if ($search->getMainCategory() instanceof Category) {
             if ($search->getSubCategory() instanceof Category) {
                 $this->databaseService->addConstraintForCategories(
@@ -241,7 +245,7 @@ class DayRepository extends AbstractRepository
                 );
             }
         } elseif (($this->settings['categories'] ?? '') !== '') {
-            // visitor has not selected any category. Search within allowed categories in plugin configuration
+            // Visitor has not selected any category. Search within allowed categories in plugin configuration
             $this->databaseService->addConstraintForCategories(
                 $subQueryBuilder,
                 GeneralUtility::trimExplode(',', $this->settings['categories']),
@@ -262,7 +266,7 @@ class DayRepository extends AbstractRepository
             );
         }
 
-        // add query for event location
+        // add a query for the event location
         if ($search->getLocation() instanceof Location) {
             $this->databaseService->addConstraintForLocation(
                 $subQueryBuilder,
@@ -272,7 +276,7 @@ class DayRepository extends AbstractRepository
             );
         }
 
-        // add query for free entry
+        // add a query for free entry
         if ($search->getFreeEntry()) {
             $this->databaseService->addConstraintForEventColumn(
                 $subQueryBuilder,
@@ -313,7 +317,7 @@ class DayRepository extends AbstractRepository
         return $extbaseQuery->execute();
     }
 
-    public function addConstraintForDate(
+    protected function addConstraintForDate(
         QueryBuilder $queryBuilder,
         string $listType,
         QueryBuilder $parentQueryBuilder = null,
@@ -411,17 +415,6 @@ class DayRepository extends AbstractRepository
     }
 
     /**
-     * Find one Day by Event and Timestamp.
-     * If timestamp is empty, we try to find next possible day in future/past or build our own one.
-     *
-     * @throws \Exception
-     */
-    public function findDayByEventAndTimestamp(int $eventUid, int $timestamp = 0): Day
-    {
-        return $this->dayFactory->findDayByEventAndTimestamp($eventUid, $timestamp, $this->createQuery());
-    }
-
-    /**
      * Get Sub-QueryBuilder
      */
     protected function getSubQueryBuilder(QueryBuilder $queryBuilder, bool $useStrictLang = false): QueryBuilder
@@ -452,53 +445,5 @@ class DayRepository extends AbstractRepository
         );
 
         return $subQueryBuilder;
-    }
-
-    public function removeAllByEventRecord(array $eventRecord): void
-    {
-        $eventUid = (int)($eventRecord['uid'] ?? 0);
-        if ($eventUid === 0) {
-            return;
-        }
-
-        $connection = $this->getConnectionPool()->getConnectionForTable(self::TABLE);
-        $connection->delete(
-            self::TABLE,
-            [
-                'event' => $eventUid,
-                't3ver_wsid' => $eventRecord['t3ver_wsid'] ?? 0,
-            ],
-        );
-    }
-
-    public function createAll(array $days, array $columnsToWrite = []): void
-    {
-        if ($days === []) {
-            return;
-        }
-
-        $fallbackColumns = [
-            'pid',
-            'tstamp',
-            'crdate',
-            'hidden',
-            'fe_group',
-            't3ver_wsid',
-            'day',
-            'day_time',
-            'sort_day_time',
-            'same_day_time',
-            'is_removed_date',
-            'event',
-        ];
-
-        $this
-            ->getConnectionPool()
-            ->getConnectionForTable(self::TABLE)
-            ->bulkInsert(
-                self::TABLE,
-                $days,
-                $columnsToWrite ?: $fallbackColumns,
-            );
     }
 }

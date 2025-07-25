@@ -13,9 +13,9 @@ namespace JWeiland\Events2\Importer;
 
 use JWeiland\Events2\Configuration\ImportConfiguration;
 use JWeiland\Events2\Helper\PathSegmentHelper;
-use JWeiland\Events2\Service\CategoryService;
 use JWeiland\Events2\Service\LocationService;
 use JWeiland\Events2\Service\OrganizerService;
+use JWeiland\Events2\Service\Record\CategoryRecordService;
 use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\Connection;
@@ -26,6 +26,7 @@ use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Resource\Exception\ExistingTargetFileNameException;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\StringUtility;
 use TYPO3\CMS\Reactions\Authentication\ReactionUserAuthentication;
 
 /**
@@ -38,7 +39,7 @@ readonly class JsonImporter
     public function __construct(
         protected LoggerInterface $logger,
         protected PathSegmentHelper $pathSegmentHelper,
-        protected CategoryService $categoryService,
+        protected CategoryRecordService $categoryService,
         protected LocationService $locationService,
         protected OrganizerService $organizerService,
         protected ResourceFactory $resourceFactory,
@@ -97,7 +98,7 @@ readonly class JsonImporter
             return;
         }
 
-        $eventUid = $this->getUniqueIdForNewRecords();
+        $eventUid = StringUtility::getUniqueId('NEW');
 
         $dataMap['tx_events2_domain_model_event'][$eventUid] = [
             'import_id' => (int)$eventImportData['uid'],
@@ -176,7 +177,7 @@ readonly class JsonImporter
             return '0';
         }
 
-        $timeUid = $this->getUniqueIdForNewRecords();
+        $timeUid = StringUtility::getUniqueId('NEW');
 
         $dataMap['tx_events2_domain_model_time'][$timeUid] = [
             'pid' => $storagePid,
@@ -215,7 +216,7 @@ readonly class JsonImporter
             return '';
         }
 
-        $linkUid = $this->getUniqueIdForNewRecords();
+        $linkUid = StringUtility::getUniqueId('NEW');
 
         $dataMap['tx_events2_domain_model_link'][$linkUid] = [
             'pid' => $storagePid,
@@ -239,7 +240,7 @@ readonly class JsonImporter
 
         $exceptionUidCollection = [];
         foreach ($importExceptionRecords as $importExceptionRecord) {
-            $exceptionUid = $this->getUniqueIdForNewRecords();
+            $exceptionUid = StringUtility::getUniqueId('NEW');
 
             $dataMap['tx_events2_domain_model_exception'][$exceptionUid] = [
                 'pid' => $storagePid,
@@ -281,7 +282,7 @@ readonly class JsonImporter
             $categoryRecord = $this->categoryService->getCategoryRecordByTitle($importCategoryRecord['title'] ?? '');
 
             if ($categoryRecord === null) {
-                $categoryUid = $this->getUniqueIdForNewRecords();
+                $categoryUid = StringUtility::getUniqueId('NEW');
 
                 $dataMap['sys_category'][$categoryUid] = [
                     'pid' => $configuration->getStoragePid(),
@@ -316,7 +317,7 @@ readonly class JsonImporter
         $locationRecord = $this->locationService->getLocationRecordByTitle($importLocationRecord['location'] ?? '');
 
         if ($locationRecord === null) {
-            $locationUid = $this->getUniqueIdForNewRecords();
+            $locationUid = StringUtility::getUniqueId('NEW');
 
             $dataMap['tx_events2_domain_model_location'][$locationUid] = [
                 'pid' => $storagePid,
@@ -352,7 +353,7 @@ readonly class JsonImporter
             $organizerRecord = $this->organizerService->getOrganizerRecordByTitle($importOrganizerRecord['organizer'] ?? '');
 
             if ($organizerRecord === null) {
-                $organizerUid = $this->getUniqueIdForNewRecords();
+                $organizerUid = StringUtility::getUniqueId('NEW');
 
                 $dataMap['tx_events2_domain_model_organizer'][$organizerUid] = [
                     'pid' => $storagePid,
@@ -412,7 +413,7 @@ readonly class JsonImporter
                 }
             }
 
-            $sysFileReferenceUid = $this->getUniqueIdForNewRecords();
+            $sysFileReferenceUid = StringUtility::getUniqueId('NEW');
 
             $dataMap['sys_file_reference'][$sysFileReferenceUid] = [
                 'uid_local' => $fileObject->getUid(),
@@ -500,11 +501,6 @@ readonly class JsonImporter
         $queryBuilder->getRestrictions()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
 
         return $queryBuilder;
-    }
-
-    private function getUniqueIdForNewRecords(): string
-    {
-        return str_replace('.', '', uniqid('NEW', true));
     }
 
     protected function getDataHandler(): DataHandler

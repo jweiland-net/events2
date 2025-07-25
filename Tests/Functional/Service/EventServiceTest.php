@@ -15,11 +15,13 @@ use JWeiland\Events2\Domain\Factory\TimeFactory;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Repository\EventRepository;
+use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Service\EventService;
+use JWeiland\Events2\Tests\Functional\Events2Constants;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -30,10 +32,11 @@ class EventServiceTest extends FunctionalTestCase
 {
     protected EventService $subject;
 
-    /**
-     * @var EventRepository|MockObject
-     */
-    protected $eventRepositoryMock;
+    protected EventRepository|MockObject $eventRepositoryMock;
+
+    protected DataMapper|MockObject $dataMapperMock;
+
+    protected DatabaseService|MockObject $databaseServiceMock;
 
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
@@ -45,26 +48,35 @@ class EventServiceTest extends FunctionalTestCase
         'jweiland/events2',
     ];
 
+    protected array $configurationToUseInTestInstance = [
+        'SYS' => [
+            'phpTimeZone' => Events2Constants::PHP_TIMEZONE,
+        ],
+    ];
+
     protected function setUp(): void
     {
-        self::markTestIncomplete('EventServiceTest not updated until right now');
-
         parent::setUp();
 
         $this->eventRepositoryMock = $this->createMock(EventRepository::class);
+        $this->dataMapperMock = $this->createMock(DataMapper::class);
+        $this->databaseServiceMock = $this->createMock(DatabaseService::class);
 
-        $this->subject = GeneralUtility::makeInstance(
-            EventService::class,
+        $this->subject = new EventService(
             $this->eventRepositoryMock,
             new TimeFactory(new DateTimeUtility()),
+            $this->dataMapperMock,
+            $this->databaseServiceMock,
         );
     }
 
     protected function tearDown(): void
     {
         unset(
-            $this->subject,
+            $this->databaseServiceMock,
+            $this->dataMapperMock,
             $this->eventRepositoryMock,
+            $this->subject,
         );
 
         parent::tearDown();
@@ -74,8 +86,9 @@ class EventServiceTest extends FunctionalTestCase
     public function getNextDayForEventWithoutEventReturnsFalse(): void
     {
         $this->eventRepositoryMock
-            ->findByIdentifier(1)
-            ->shouldBeCalled()
+            ->expects(self::once())
+            ->method('findByIdentifier')
+            ->with(self::identicalTo(1))
             ->willReturn(null);
 
         self::assertNull(
@@ -97,13 +110,14 @@ class EventServiceTest extends FunctionalTestCase
         $days = new ObjectStorage();
         $days->attach($day);
 
-        $event = GeneralUtility::makeInstance(Event::class);
+        $event = new Event();
         $event->setDays($days);
 
         $this->eventRepositoryMock
-            ->findByIdentifier(1)
-            ->shouldBeCalled()
-            ->willReturn(null);
+            ->expects(self::once())
+            ->method('findByIdentifier')
+            ->with(self::identicalTo(1))
+            ->willReturn($event);
 
         self::assertNull(
             $this->subject->getNextDayForEvent(1),
@@ -124,12 +138,13 @@ class EventServiceTest extends FunctionalTestCase
         $days = new ObjectStorage();
         $days->attach($day);
 
-        $event = GeneralUtility::makeInstance(Event::class);
+        $event = new Event();
         $event->setDays($days);
 
         $this->eventRepositoryMock
-            ->findByIdentifier(1)
-            ->shouldBeCalled()
+            ->expects(self::once())
+            ->method('findByIdentifier')
+            ->with(self::identicalTo(1))
             ->willReturn($event);
 
         self::assertEquals(
@@ -169,13 +184,14 @@ class EventServiceTest extends FunctionalTestCase
         $days->attach($day2);
         $days->attach($day3);
 
-        $event = GeneralUtility::makeInstance(Event::class);
+        $event = new Event();
         $event->setEventType('recurring');
         $event->setDays($days);
 
         $this->eventRepositoryMock
-            ->findByIdentifier(1)
-            ->shouldBeCalled()
+            ->expects(self::once())
+            ->method('findByIdentifier')
+            ->with(self::identicalTo(1))
             ->willReturn($event);
 
         self::assertEquals(
@@ -198,12 +214,13 @@ class EventServiceTest extends FunctionalTestCase
         $days = new ObjectStorage();
         $days->attach($day);
 
-        $event = GeneralUtility::makeInstance(Event::class);
+        $event = new Event();
         $event->setDays($days);
 
         $this->eventRepositoryMock
-            ->findByIdentifier(1)
-            ->shouldBeCalled()
+            ->expects(self::once())
+            ->method('findByIdentifier')
+            ->with(self::identicalTo(1))
             ->willReturn($event);
 
         self::assertEquals(
@@ -243,13 +260,14 @@ class EventServiceTest extends FunctionalTestCase
         $days->attach($day2);
         $days->attach($day3);
 
-        $event = GeneralUtility::makeInstance(Event::class);
+        $event = new Event();
         $event->setEventType('recurring');
         $event->setDays($days);
 
         $this->eventRepositoryMock
-            ->findByIdentifier(1)
-            ->shouldBeCalled()
+            ->expects(self::once())
+            ->method('findByIdentifier')
+            ->with(self::identicalTo(1))
             ->willReturn($event);
 
         self::assertEquals(

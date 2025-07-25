@@ -12,8 +12,11 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Functional\Session;
 
 use JWeiland\Events2\Session\UserSession;
+use JWeiland\Events2\Tests\Functional\Events2Constants;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
+use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
@@ -35,17 +38,24 @@ class UserSessionTest extends FunctionalTestCase
         'jweiland/events2',
     ];
 
+    protected array $configurationToUseInTestInstance = [
+        'SYS' => [
+            'phpTimeZone' => Events2Constants::PHP_TIMEZONE,
+        ],
+    ];
+
     protected function setUp(): void
     {
-        self::markTestIncomplete('UserSessionTest not updated until right now');
-
         parent::setUp();
 
-        $feUser = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
-        $feUser->initializeUserSessionManager();
+        $frontendUserAuthentication = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
+        $frontendUserAuthentication->initializeUserSessionManager();
 
-        $GLOBALS['TSFE'] = new \stdClass();
-        $GLOBALS['TSFE']->fe_user = $feUser;
+        $request = new ServerRequest('https://www.example.com/', 'GET');
+        $request = $request->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE);
+        $request = $request->withAttribute('frontend.user', $frontendUserAuthentication);
+
+        $GLOBALS['TYPO3_REQUEST'] = $request;
 
         $this->subject = new UserSession();
     }
@@ -54,7 +64,6 @@ class UserSessionTest extends FunctionalTestCase
     {
         unset(
             $this->subject,
-            $GLOBALS['TSFE'],
         );
 
         parent::tearDown();

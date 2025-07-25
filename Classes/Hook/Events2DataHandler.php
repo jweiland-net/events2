@@ -12,9 +12,9 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Hook;
 
 use JWeiland\Events2\Service\DayRelationService;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Cache\CacheManager;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
  * Hook into DataHandler and clear special caches or re-generate day records after saving an event.
@@ -22,6 +22,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 readonly class Events2DataHandler
 {
     public function __construct(
+        protected DayRelationService $dayRelationService,
         protected CacheManager $cacheManager,
     ) {}
 
@@ -47,65 +48,29 @@ readonly class Events2DataHandler
         }
     }
 
-    /**
-     * Add day relations to event record(s) while creating or updating them in backend.
-     */
-    public function processDatamap_afterAllOperations(\TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): void
+    public function processDatamap_afterAllOperations(DataHandler $dataHandler): void
     {
-        if (array_key_exists('tx_events2_domain_model_event', $dataHandler->datamap)) {
-            foreach ($dataHandler->datamap['tx_events2_domain_model_event'] as $eventUid => $eventRecord) {
-                if (!$this->isValidRecord($eventRecord, 'tx_events2_domain_model_event')) {
-                    continue;
-                }
+        if (!array_key_exists('tx_events2_domain_model_event', $dataHandler->datamap)) {
+            return;
+        }
 
-                $this->addDayRelationsForEvent($this->getRealUid($eventUid, $dataHandler));
-            }
+        if (!$dataHandler->isOuterMostInstance()) {
+            return;
+        }
+
+        foreach ($dataHandler->datamap['tx_events2_domain_model_event'] as $id => $incomingFieldArray) {
+            $this->dayRelationService->createDayRelations($this->getEventUid($id, $dataHandler));
         }
     }
 
-    /**
-     * TYPO3 adds parts of translated records to DataMap while saving a record in default language.
-     * See: DataMapProcessor::instance(x, y, z)->process(); in DataHandler::process_datamap().
-     *
-     * These translated records contains all columns configured with l10n_mode=exclude like "starttime" and "endtime".
-     * As these translated records leads to duplicates while saving an event record we have to prevent processing
-     * such kind of records.
-     */
-    protected function isValidRecord(array $recordFromRequest, string $tableName): bool
+    private function getEventUid(int|string $id, DataHandler $dataHandler): int
     {
-        $isTableLocalizable = BackendUtility::isTableLocalizable($tableName);
-
-        return
-            !$isTableLocalizable
-            || (
-                ($languageField = $GLOBALS['TCA'][$tableName]['ctrl']['languageField'])
-                && array_key_exists($languageField, $recordFromRequest)
-            );
-    }
-
-    /**
-     * Add day relations to event record
-     */
-    protected function addDayRelationsForEvent(int $eventUid): void
-    {
-        $this->getDayRelationService()->createDayRelations($eventUid);
-    }
-
-    /**
-     * If a record was new, its uid is not an int. It's a string starting with "NEW"
-     * This method returns the real uid as int.
-     */
-    protected function getRealUid(int|string $uid, \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): int
-    {
-        if (\str_starts_with((string)$uid, 'NEW')) {
-            $uid = $dataHandler->substNEWwithIDs[$uid];
+        if (MathUtility::canBeInterpretedAsInteger($id)) {
+            $eventUid = $id;
+        } else {
+            $eventUid = $dataHandler->substNEWwithIDs[$id];
         }
 
-        return (int)$uid;
-    }
-
-    protected function getDayRelationService(): DayRelationService
-    {
-        return GeneralUtility::makeInstance(DayRelationService::class);
+        return (int)$eventUid;
     }
 }

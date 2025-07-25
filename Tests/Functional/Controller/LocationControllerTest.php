@@ -11,10 +11,13 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Tests\Functional\Controller;
 
+use JWeiland\Events2\Tests\Functional\Events2Constants;
+use JWeiland\Events2\Tests\Functional\Traits\CacheHashTrait;
+use JWeiland\Events2\Tests\Functional\Traits\InsertEventTrait;
+use JWeiland\Events2\Tests\Functional\Traits\SiteBasedTestTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
-use Psr\Http\Message\ServerRequestInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Core\Bootstrap;
+use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
@@ -22,77 +25,94 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
  */
 class LocationControllerTest extends FunctionalTestCase
 {
-    protected ServerRequestInterface $serverRequest;
+    use CacheHashTrait;
+    use InsertEventTrait;
+    use SiteBasedTestTrait;
+
+    protected const LANGUAGE_PRESETS = [
+        'EN' => [
+            'id' => 0,
+            'title' => 'English',
+            'locale' => 'en_US.UTF8',
+            'iso' => 'en',
+        ],
+    ];
 
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
+        'fluid_styled_content',
+        'form',
         'reactions',
     ];
 
     protected array $testExtensionsToLoad = [
         'sjbr/static-info-tables',
         'jweiland/events2',
+        __DIR__ . '/../Fixtures/Extensions/site_package',
+    ];
+
+    protected array $configurationToUseInTestInstance = [
+        'SYS' => [
+            'phpTimeZone' => Events2Constants::PHP_TIMEZONE,
+        ],
     ];
 
     protected function setUp(): void
     {
-        self::markTestIncomplete('LocationControllerTest not updated until right now');
-
         parent::setUp();
 
-        $this->importDataSet('ntf://Database/pages.xml');
-        $this->importDataSet(__DIR__ . '/../Fixtures/tx_events2_domain_model_location.xml');
-        $this->setUpFrontendRootPage(1, [__DIR__ . '/../Fixtures/TypoScript/setup.typoscript']);
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Events2PageTree.csv');
 
-        $this->serverRequest = $this->getServerRequestForFrontendMode();
+        $this->writeSiteConfiguration(
+            'events2-controller-test',
+            $this->buildSiteConfiguration(1, '/'),
+            [
+                $this->buildDefaultLanguageConfiguration('EN', '/'),
+            ],
+            [],
+            ['jweiland/sitepackage'],
+        );
     }
 
-    protected function tearDown(): void
+    public static function pluginTypeDataProvider(): array
     {
-        unset(
-            $this->serverRequest,
-            $GLOBALS['TSFE'],
-        );
-
-        parent::tearDown();
+        return [
+            'Page with events2 plugin: events2_list' => ['tx_events2_list', Events2Constants::PAGE_LIST],
+            'Page with events2 plugin: events2_show' => ['tx_events2_show', Events2Constants::PAGE_SHOW],
+        ];
     }
 
     #[Test]
-    public function processRequestWithShowActionWillAssignLocationToView(): void
+    #[DataProvider('pluginTypeDataProvider')]
+    public function showActionShowsLocation(string $pluginNamespace, int $pageUid): void
     {
-        $this->startUpTSFE(
-            $this->serverRequest,
-            1,
-            '0',
-            [
-                'tx_events2_list' => [
-                    'controller' => 'Location',
-                    'action' => 'show',
-                    'location' => '1',
-                ],
-            ],
-        );
+        $tomorrowMidnight = new \DateTimeImmutable('tomorrow midnight');
 
-        $extbaseBootstrap = GeneralUtility::makeInstance(Bootstrap::class);
-        $content = $extbaseBootstrap->run(
-            '',
-            [
-                'extensionName' => 'Events2',
-                'pluginName' => 'List',
-                'format' => 'txt',
-            ],
+        $this->insertEvent(
+            title: 'Event Title Tomorrow',
+            eventBegin: $tomorrowMidnight,
+            location: 'Marketplace',
         );
+        $this->createDayRelations();
+
+        $parameters = [
+            $pluginNamespace => [
+                'controller' => 'Location',
+                'action' => 'show',
+                'location' => 1,
+            ],
+        ];
+
+        $parameters['cHash'] = $this->generateCacheHash($parameters, $pageUid);
+
+        $content = (string)$this->executeFrontendSubRequest(
+            (new InternalRequest())
+                ->withPageId($pageUid)
+                ->withQueryParams($parameters),
+        )->getBody();
 
         self::assertStringContainsString(
-            'Kino',
-            $content,
-        );
-        self::assertStringContainsString(
-            'Cinemastreet 42',
-            $content,
-        );
-        self::assertStringContainsString(
-            '12345 Everywhere',
+            'Marketplace',
             $content,
         );
     }

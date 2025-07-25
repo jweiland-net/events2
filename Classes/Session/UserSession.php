@@ -16,35 +16,32 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
 /**
- * Methods to access current FE User Session
+ * Methods to access the current FE User Session
  */
 class UserSession
 {
     use Typo3RequestTrait;
 
-    protected ?FrontendUserAuthentication $feUser = null;
+    protected FrontendUserAuthentication $feUser;
 
     public function __construct()
     {
-        $this->feUser = $this->getTypoScriptFrontendController()->fe_user ?? null;
+        $this->feUser = $this->getFrontendUserAuthentication();
     }
 
     /**
-     * Selected month and year was saved in user session by eID script
+     * EID script saved selected month and year in the user session
      * this method returns these values to set calendar to this date.
      *
-     * @return array contains month and year OR empty array
+     * @return array contains a month and a year OR an empty array
      */
     public function getMonthAndYear(): array
     {
-        if ($this->feUser === null) {
-            return [];
-        }
-
         $monthAndYear = $this->feUser->getKey(
             'ses',
             'events2MonthAndYearForCalendar',
         );
+
         if (!is_array($monthAndYear)) {
             $monthAndYear = [];
         }
@@ -54,12 +51,9 @@ class UserSession
 
     public function setMonthAndYear(int $month, int $year): void
     {
-        if ($this->feUser === null) {
-            return;
-        }
-
         $month = MathUtility::forceIntegerInRange($month, 1, 12);
         $year = MathUtility::forceIntegerInRange($year, 1970);
+
         $this->feUser->setAndSaveSessionData(
             'events2MonthAndYearForCalendar',
             [

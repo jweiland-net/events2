@@ -18,6 +18,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Http\ResponseFactory;
@@ -33,7 +34,7 @@ class ImportEventsReaction implements ReactionInterface
     public function __construct(
         private readonly JsonImporter $jsonImporter,
         private readonly ResponseFactory $responseFactory,
-        private readonly QueryBuilder $queryBuilder,
+        private readonly ConnectionPool $connectionPool,
         private readonly StreamFactoryInterface $streamFactory,
     ) {}
 
@@ -70,13 +71,8 @@ class ImportEventsReaction implements ReactionInterface
 
     protected function getParentCategory(ReactionInstruction $reaction): int
     {
-        $queryBuilder = $this->queryBuilder;
-        $queryBuilder
-            ->getRestrictions()
-            ->removeAll()
-            ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
-
         try {
+            $queryBuilder = $this->getQueryBuilder();
             $categoryMmRecord = $queryBuilder
                 ->select('uid_local')
                 ->from('sys_category_record_mm')
@@ -109,5 +105,16 @@ class ImportEventsReaction implements ReactionInterface
             ->createResponse($statusCode)
             ->withHeader('Content-Type', 'application/json')
             ->withBody($this->streamFactory->createStream((string)json_encode($data)));
+    }
+
+    protected function getQueryBuilder(): QueryBuilder
+    {
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('sys_category_record_mm');
+        $queryBuilder
+            ->getRestrictions()
+            ->removeAll()
+            ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
+
+        return $queryBuilder;
     }
 }

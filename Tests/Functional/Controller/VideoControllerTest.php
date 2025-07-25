@@ -11,10 +11,13 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Tests\Functional\Controller;
 
+use JWeiland\Events2\Tests\Functional\Events2Constants;
+use JWeiland\Events2\Tests\Functional\Traits\CacheHashTrait;
+use JWeiland\Events2\Tests\Functional\Traits\InsertEventTrait;
+use JWeiland\Events2\Tests\Functional\Traits\SiteBasedTestTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
-use Psr\Http\Message\ServerRequestInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Core\Bootstrap;
+use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
@@ -22,129 +25,99 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
  */
 class VideoControllerTest extends FunctionalTestCase
 {
-    protected ServerRequestInterface $serverRequest;
+    use CacheHashTrait;
+    use InsertEventTrait;
+    use SiteBasedTestTrait;
+
+    protected const LANGUAGE_PRESETS = [
+        'EN' => [
+            'id' => 0,
+            'title' => 'English',
+            'locale' => 'en_US.UTF8',
+            'iso' => 'en',
+        ],
+    ];
 
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
+        'fluid_styled_content',
+        'form',
         'reactions',
     ];
 
     protected array $testExtensionsToLoad = [
         'sjbr/static-info-tables',
         'jweiland/events2',
+        __DIR__ . '/../Fixtures/Extensions/site_package',
+    ];
+
+    protected array $configurationToUseInTestInstance = [
+        'SYS' => [
+            'phpTimeZone' => Events2Constants::PHP_TIMEZONE,
+        ],
     ];
 
     protected function setUp(): void
     {
-        self::markTestIncomplete('VideoControllerTest not updated until right now');
-
         parent::setUp();
 
-        $this->importDataSet('ntf://Database/pages.xml');
-        $this->setUpFrontendRootPage(1, [__DIR__ . '/../Fixtures/TypoScript/setup.typoscript']);
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Events2PageTree.csv');
 
-        $this->serverRequest = $this->getServerRequestForFrontendMode();
+        $this->writeSiteConfiguration(
+            'events2-controller-test',
+            $this->buildSiteConfiguration(1, '/'),
+            [
+                $this->buildDefaultLanguageConfiguration('EN', '/'),
+            ],
+            [],
+            ['jweiland/sitepackage'],
+        );
     }
 
-    protected function tearDown(): void
+    public static function pluginTypeDataProvider(): array
     {
-        unset(
-            $this->serverRequest,
-            $GLOBALS['TSFE'],
-        );
-
-        parent::tearDown();
-    }
-
-    #[Test]
-    public function bootstrapShowActionWillNotRenderVideoLink(): void
-    {
-        $date = new \DateTimeImmutable('midnight');
-        $this->getDatabaseConnection()->insertArray(
-            'tx_events2_domain_model_event',
-            [
-                'pid' => 1,
-                'event_type' => 'single',
-                'event_begin' => (int)$date->format('U'),
-                'title' => 'Today',
-            ],
-        );
-
-        $this->startUpTSFE(
-            $this->serverRequest,
-            1,
-            '0',
-            [
-                'tx_events2_list' => [
-                    'controller' => 'Video',
-                    'action' => 'show',
-                    'event' => '1',
-                ],
-            ],
-        );
-
-        $extbaseBootstrap = GeneralUtility::makeInstance(Bootstrap::class);
-        $content = $extbaseBootstrap->run(
-            '',
-            [
-                'extensionName' => 'Events2',
-                'pluginName' => 'List',
-                'format' => 'txt',
-            ],
-        );
-
-        self::assertStringContainsString(
-            '',
-            trim($content),
-        );
+        return [
+            'Page with events2 plugin: events2_list' => ['tx_events2_list', Events2Constants::PAGE_LIST],
+            'Page with events2 plugin: events2_show' => ['tx_events2_show', Events2Constants::PAGE_SHOW],
+        ];
     }
 
     #[Test]
-    public function bootstrapShowActionWillRenderVideoLink(): void
+    #[DataProvider('pluginTypeDataProvider')]
+    public function showActionShowsLocation(string $pluginNamespace, int $pageUid): void
     {
-        $this->importDataSet(__DIR__ . '/../Fixtures/tx_events2_domain_model_link.xml');
+        $videoId = 'bIuds49uJEg';
+        $tomorrowMidnight = new \DateTimeImmutable('tomorrow midnight');
 
-        $date = new \DateTimeImmutable('midnight');
-        $this->getDatabaseConnection()->insertArray(
-            'tx_events2_domain_model_event',
-            [
-                'pid' => 1,
-                'event_type' => 'single',
-                'event_begin' => (int)$date->format('U'),
-                'title' => 'Today',
-                'video_link' => 1,
-            ],
+        $this->insertEvent(
+            title: 'Event Title Tomorrow',
+            eventBegin: $tomorrowMidnight,
+            videoLink: 'https://www.youtube.com/watch?v=' . $videoId,
         );
+        $this->createDayRelations();
 
-        $this->startUpTSFE(
-            $this->serverRequest,
-            1,
-            '0',
-            [
-                'tx_events2_list' => [
-                    'controller' => 'Video',
-                    'action' => 'show',
-                    'event' => '1',
-                ],
+        $parameters = [
+            $pluginNamespace => [
+                'controller' => 'Video',
+                'action' => 'show',
+                'event' => 1,
             ],
-        );
+        ];
 
-        $extbaseBootstrap = GeneralUtility::makeInstance(Bootstrap::class);
-        $content = $extbaseBootstrap->run(
-            '',
-            [
-                'extensionName' => 'Events2',
-                'pluginName' => 'List',
-                'format' => 'txt',
-            ],
-        );
+        $parameters['cHash'] = $this->generateCacheHash($parameters, $pageUid);
+
+        $content = (string)$this->executeFrontendSubRequest(
+            (new InternalRequest())
+                ->withPageId($pageUid)
+                ->withQueryParams($parameters),
+        )->getBody();
 
         self::assertStringContainsString(
-            'Header: YouTube',
+            'Video Link',
             $content,
         );
         self::assertStringContainsString(
-            'YouTube URL: //www.youtube.com/embed/5Xqo_SPiHlY',
+            '<iframe width="560" height="315" src="//www.youtube.com/embed/' . $videoId . '" frameborder="0" allowfullscreen></iframe>',
             $content,
         );
     }

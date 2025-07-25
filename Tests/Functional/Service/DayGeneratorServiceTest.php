@@ -12,8 +12,10 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Functional\Service;
 
 use JWeiland\Events2\Configuration\ExtConf;
-use JWeiland\Events2\Domain\Model\DateTimeEntry;
 use JWeiland\Events2\Service\DayGeneratorService;
+use JWeiland\Events2\Service\Result\DateTimeResult;
+use JWeiland\Events2\Service\TimeService;
+use JWeiland\Events2\Tests\Functional\Events2Constants;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -30,12 +32,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
 {
     protected DayGeneratorService $subject;
 
-    protected ExtConf $extConf;
-
-    /**
-     * @var LoggerInterface|MockObject
-     */
-    protected $loggerMock;
+    protected LoggerInterface|MockObject $loggerMock;
 
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
@@ -47,31 +44,42 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         'jweiland/events2',
     ];
 
+    protected array $configurationToUseInTestInstance = [
+        'SYS' => [
+            'phpTimeZone' => Events2Constants::PHP_TIMEZONE,
+        ],
+    ];
+
     protected function setUp(): void
     {
-        self::markTestIncomplete('DayGeneratorServiceTest not updated until right now');
-
         parent::setUp();
-
-        // We have to use GeneralUtility::makeInstance here because constructor arguments
-        $this->extConf = GeneralUtility::makeInstance(ExtConf::class);
-        $this->extConf->setRecurringFuture(12);
 
         $this->loggerMock = $this->createMock(Logger::class);
 
-        // We have to use GeneralUtility::makeInstance here because of LoggerAwareInterface
-        $this->subject = new DayGeneratorService(
-            GeneralUtility::makeInstance(EventDispatcher::class),
-            $this->extConf,
-            new DateTimeUtility(),
-        );
+        $this->assignSubject(new ExtConf(
+            recurringFuture: 12,
+        ));
+    }
 
-        $this->subject->setLogger($this->loggerMock);
+    /**
+     * As we use original extConf instead of MockObject we cannot change this object afterward.
+     * Use this method with your preferred ExtConf to assign it again to $this->subject
+     */
+    protected function assignSubject(ExtConf $extConf): void
+    {
+        $this->subject = new DayGeneratorService(
+            $this->createMock(TimeService::class),
+            $extConf,
+            new DateTimeUtility(),
+            GeneralUtility::makeInstance(EventDispatcher::class),
+            $this->loggerMock,
+        );
     }
 
     protected function tearDown(): void
     {
         unset(
+            $this->loggerMock,
             $this->subject,
         );
 
@@ -82,13 +90,12 @@ class DayGeneratorServiceTest extends FunctionalTestCase
     public function getDateTimeStorageForEventWithMissingEventTypeThrowsException(): void
     {
         $this->loggerMock
-            ->error(
-                Argument::allOf(
-                    Argument::containingString('Error occurred while building DateTime objects'),
-                    Argument::containingString('It does not contain mandatory property: event_type'),
-                ),
-            )
-            ->shouldBeCalled();
+            ->expects(self::atLeastOnce())
+            ->method('error')
+            ->willReturnMap([
+                [self::stringContains('Error occurred while building DateTime objects'), null],
+                [self::stringContains('It does not contain mandatory property: event_type'), null],
+            ]);
 
         $eventRecord = [
             'uid' => 123,
@@ -96,7 +103,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
 
         self::assertSame(
             [],
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
         );
     }
 
@@ -104,13 +111,12 @@ class DayGeneratorServiceTest extends FunctionalTestCase
     public function getDateTimeStorageForEventWithMissingEventBeginThrowsException(): void
     {
         $this->loggerMock
-            ->error(
-                Argument::allOf(
-                    Argument::containingString('Error occurred while building DateTime objects'),
-                    Argument::containingString('It does not contain mandatory property: event_begin'),
-                ),
-            )
-            ->shouldBeCalled();
+            ->expects(self::atLeastOnce())
+            ->method('error')
+            ->willReturnMap([
+                [self::stringContains('Error occurred while building DateTime objects'), null],
+                [self::stringContains('It does not contain mandatory property: event_begin'), null],
+            ]);
 
         $eventRecord = [
             'uid' => 123,
@@ -119,7 +125,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
 
         self::assertSame(
             [],
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
         );
     }
 
@@ -127,13 +133,12 @@ class DayGeneratorServiceTest extends FunctionalTestCase
     public function getDateTimeStorageForEventWithEmptyEventTypeThrowsException(): void
     {
         $this->loggerMock
-            ->error(
-                Argument::allOf(
-                    Argument::containingString('Error occurred while building DateTime objects'),
-                    Argument::containingString('Column "event_type" can not be empty'),
-                ),
-            )
-            ->shouldBeCalled();
+            ->expects(self::atLeastOnce())
+            ->method('error')
+            ->willReturnMap([
+                [self::stringContains('Error occurred while building DateTime objects'), null],
+                [self::stringContains('Column "event_type" can not be empty'), null],
+            ]);
 
         $eventRecord = [
             'uid' => 123,
@@ -145,12 +150,12 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'weekday' => 127,
             'each_weeks' => 0,
             'each_months' => 0,
-            'exceptions' => 0,
+            'exceptions' => [],
         ];
 
         self::assertSame(
             [],
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
         );
     }
 
@@ -158,13 +163,12 @@ class DayGeneratorServiceTest extends FunctionalTestCase
     public function getDateTimeStorageForEventWithEmptyEventEndForDurationalEventsThrowsException(): void
     {
         $this->loggerMock
-            ->error(
-                Argument::allOf(
-                    Argument::containingString('Error occurred while building DateTime objects'),
-                    Argument::containingString('If event_type is set to "duration" column "event_end" has to be set'),
-                ),
-            )
-            ->shouldBeCalled();
+            ->expects(self::atLeastOnce())
+            ->method('error')
+            ->willReturnMap([
+                [self::stringContains('Error occurred while building DateTime objects'), null],
+                [self::stringContains('If event_type is set to "duration" column "event_end" has to be set'), null],
+            ]);
 
         $eventRecord = [
             'uid' => 123,
@@ -176,12 +180,12 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'weekday' => 127,
             'each_weeks' => 0,
             'each_months' => 0,
-            'exceptions' => 0,
+            'exceptions' => [],
         ];
 
         self::assertSame(
             [],
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
         );
     }
 
@@ -189,13 +193,12 @@ class DayGeneratorServiceTest extends FunctionalTestCase
     public function getDateTimeStorageForEventWithEmptyEventBeginThrowsException(): void
     {
         $this->loggerMock
-            ->error(
-                Argument::allOf(
-                    Argument::containingString('Error occurred while building DateTime objects'),
-                    Argument::containingString('Column "event_begin" can not be empty'),
-                ),
-            )
-            ->shouldBeCalled();
+            ->expects(self::atLeastOnce())
+            ->method('error')
+            ->willReturnMap([
+                [self::stringContains('Error occurred while building DateTime objects'), null],
+                [self::stringContains('Column "event_begin" can not be empty'), null],
+            ]);
 
         $eventRecord = [
             'uid' => 123,
@@ -207,12 +210,12 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'weekday' => 127,
             'each_weeks' => 0,
             'each_months' => 0,
-            'exceptions' => 0,
+            'exceptions' => [],
         ];
 
         self::assertSame(
             [],
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
         );
     }
 
@@ -231,14 +234,15 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'weekday' => 127,
             'each_weeks' => 1,
             'each_months' => 0,
-            'exceptions' => 0,
+            'exceptions' => [],
         ];
 
-        $dateTimeEntries = $this->subject->getDateTimeStorageForEvent($eventRecord);
-        foreach ($dateTimeEntries as $dateTimeEntry) {
+        $dateTimeEntries = $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy();
+
+        foreach ($dateTimeEntries as $dateTimeResult) {
             self::assertSame(
                 '00:00:00',
-                $dateTimeEntry->getDate()->format('H:i:s'),
+                $dateTimeResult->getDate()->format('H:i:s'),
             );
         }
     }
@@ -260,15 +264,15 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'weekday' => 127,
             'each_weeks' => 1,
             'each_months' => 0,
-            'exceptions' => 0,
+            'exceptions' => [],
         ];
 
         $expectedDays = [];
-        $expectedDays[$eventBegin->format('U')] = new DateTimeEntry($eventBegin, false);
-        $expectedDays[$nextWeek->format('U')] = new DateTimeEntry($nextWeek, false);
-        $expectedDays[$recurringEnd->format('U')] = new DateTimeEntry($recurringEnd, false);
+        $expectedDays[$eventBegin->format('U')] = new DateTimeResult($eventBegin, false);
+        $expectedDays[$nextWeek->format('U')] = new DateTimeResult($nextWeek, false);
+        $expectedDays[$recurringEnd->format('U')] = new DateTimeResult($recurringEnd, false);
 
-        $dateTimeEntries = $this->subject->getDateTimeStorageForEvent($eventRecord);
+        $dateTimeEntries = $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy();
         self::assertEquals(
             $expectedDays,
             $dateTimeEntries,
@@ -291,12 +295,12 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'weekday' => 127,
             'each_weeks' => 1,
             'each_months' => 0,
-            'exceptions' => 0,
+            'exceptions' => [],
         ];
 
-        $dateTimeEntries = $this->subject->getDateTimeStorageForEvent($eventRecord);
-        foreach ($dateTimeEntries as $dateTimeEntry) {
-            self::assertIsArray($dateTimeEntry->getDate()->getTimezone()->getLocation());
+        $dateTimeEntries = $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy();
+        foreach ($dateTimeEntries as $dateTimeResult) {
+            self::assertIsArray($dateTimeResult->getDate()->getTimezone()->getLocation());
         }
     }
 
@@ -316,33 +320,38 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'weekday' => 127,
             'each_weeks' => 2,
             'each_months' => 0,
-            'exceptions' => 0,
+            'exceptions' => [],
         ];
 
         $expectedDays = [];
-        $expectedDays[$eventBegin->format('U')] = new DateTimeEntry($eventBegin, false);
-        $expectedDays[$recurringEnd->format('U')] = new DateTimeEntry($recurringEnd, false);
+        $expectedDays[$eventBegin->format('U')] = new DateTimeResult($eventBegin, false);
+        $expectedDays[$recurringEnd->format('U')] = new DateTimeResult($recurringEnd, false);
 
         self::assertEquals(
             $expectedDays,
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
         );
     }
 
     /**
-     * As the earliest date for summer- to wintertime switches is the 25. october,
-     * calculated for the next 30 year, I have chosen the 20.10. to be safe.
+     * As the earliest date for summer- to wintertime switches is the 25. October,
+     * calculated for the next 30 years, I have chosen the 20.10. To be safe.
      */
     #[Test]
     public function getDateTimeStorageForEventWithRecurringWeeksWillKeepDaylightSavingTime(): void
     {
-        $timestampEventBeginSummerTime = mktime(0, 0, 0, 10, 20, 2017);
-        $timestampRecurringEndWinterTime = mktime(0, 0, 0, 11, 3, 2017);
+        $timestampEventBeginSummerTime = mktime(0, 0, 0, 10, 27, 2024);
+        $timestampRecurringEndWinterTime = mktime(0, 0, 0, 11, 10, 2024);
 
-        // This test has to build days in the past. To allow this we have to set recurring past to a high value.
-        // Maybe you have to update this value or the year above in future
-        // ({current year} - {year from above: 2017}) * 12 months + add some extra months = value for recurring past
-        $this->extConf->setRecurringPast(100);
+        // Note: Either increase the "recurringPast" value to allow event generation for more months in the past,
+        // or update the test's initial event dates (e.g., to a more recent year or to properly reflect daylight saving time changes).
+        // Reason: As time progresses, the current date moves forward and the gap between 'now' and the hardcoded start date widens.
+        // If (current year - event start year) * 12 exceeds the configured "recurringPast" limit (e.g., after 9 years = 108 months),
+        // the system will not generate daily records for past events, causing this test to fail due to insufficient history coverage.
+        $this->assignSubject(new ExtConf(
+            recurringPast: 12,
+            recurringFuture: 12,
+        ));
 
         $eventRecord = [
             'uid' => 123,
@@ -354,20 +363,19 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'weekday' => 127,
             'each_weeks' => 2,
             'each_months' => 0,
-            'exceptions' => 0,
+            'exceptions' => [],
         ];
 
-        // Adding the correct timezone (Europe/Berlin). It will know the timezone from now on until forever
         $expectedBegin = new \DateTimeImmutable(date('c', $timestampEventBeginSummerTime));
-        $expectedBegin = $expectedBegin->setTimezone(new \DateTimeZone('Europe/Berlin'));
+        $expectedBegin = $expectedBegin->setTimezone(new \DateTimeZone(date_default_timezone_get()));
         $expectedEnd = $expectedBegin->modify('+14 days');
 
         self::assertEquals(
             [
-                $expectedBegin->format('U') => new DateTimeEntry($expectedBegin, false),
-                $expectedEnd->format('U') => new DateTimeEntry($expectedEnd, false),
+                $expectedBegin->format('U') => new DateTimeResult($expectedBegin, false),
+                $expectedEnd->format('U') => new DateTimeResult($expectedEnd, false),
             ],
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
         );
     }
 
@@ -389,25 +397,28 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'weekday' => 127,
             'each_weeks' => 0,
             'each_months' => 1,
-            'exceptions' => 0,
+            'exceptions' => [],
         ];
 
         $expectedDays = [];
-        $expectedDays[$eventBegin->format('U')] = new DateTimeEntry($eventBegin, false);
-        $expectedDays[$nextMonth->format('U')] = new DateTimeEntry($nextMonth, false);
-        $expectedDays[$recurringEnd->format('U')] = new DateTimeEntry($recurringEnd, false);
+        $expectedDays[$eventBegin->format('U')] = new DateTimeResult($eventBegin, false);
+        $expectedDays[$nextMonth->format('U')] = new DateTimeResult($nextMonth, false);
+        $expectedDays[$recurringEnd->format('U')] = new DateTimeResult($recurringEnd, false);
 
-        $this->extConf->setRecurringPast(1);
+        $this->assignSubject(new ExtConf(
+            recurringPast: 1,
+            recurringFuture: 12,
+        ));
 
-        $dateTimeEntries = $this->subject->getDateTimeStorageForEvent($eventRecord);
+        $dateTimeEntries = $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy();
         self::assertEquals(
             $expectedDays,
             $dateTimeEntries,
         );
 
-        // test for correct TimezoneType, else times are not DST save
-        foreach ($dateTimeEntries as $dateTimeEntry) {
-            self::assertIsArray($dateTimeEntry->getDate()->getTimezone()->getLocation());
+        // test for the correct TimezoneType, else times are not DST save
+        foreach ($dateTimeEntries as $dateTimeResult) {
+            self::assertIsArray($dateTimeResult->getDate()->getTimezone()->getLocation());
         }
     }
 
@@ -427,16 +438,16 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'weekday' => 127,
             'each_weeks' => 0,
             'each_months' => 2,
-            'exceptions' => 0,
+            'exceptions' => [],
         ];
 
         $expectedDays = [];
-        $expectedDays[$eventBegin->format('U')] = new DateTimeEntry($eventBegin, false);
-        $expectedDays[$recurringEnd->format('U')] = new DateTimeEntry($recurringEnd, false);
+        $expectedDays[$eventBegin->format('U')] = new DateTimeResult($eventBegin, false);
+        $expectedDays[$recurringEnd->format('U')] = new DateTimeResult($recurringEnd, false);
 
         self::assertEquals(
             $expectedDays,
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
         );
     }
 
@@ -446,7 +457,10 @@ class DayGeneratorServiceTest extends FunctionalTestCase
     #[Test]
     public function getDateTimeStorageForEventWithRecurringOverTwoMonthsAndVeryEarlyEventDateAddsDayToStorage(): void
     {
-        $this->extConf->setRecurringPast(3);
+        $this->assignSubject(new ExtConf(
+            recurringPast: 3,
+            recurringFuture: 12,
+        ));
 
         $eventBegin = new \DateTimeImmutable('-4 months midnight');
         $recurringEnd = $eventBegin->modify('+2 months');
@@ -461,15 +475,15 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'weekday' => 127,
             'each_weeks' => 0,
             'each_months' => 2,
-            'exceptions' => 0,
+            'exceptions' => [],
         ];
 
         $expectedDays = [];
-        $expectedDays[$recurringEnd->format('U')] = new DateTimeEntry($recurringEnd, false);
+        $expectedDays[$recurringEnd->format('U')] = new DateTimeResult($recurringEnd, false);
 
         self::assertEquals(
             $expectedDays,
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
         );
     }
 
@@ -491,17 +505,17 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'weekday' => 127,
             'each_weeks' => 2,
             'each_months' => 1,
-            'exceptions' => 0,
+            'exceptions' => [],
         ];
 
         $expectedDays = [];
-        $expectedDays[$eventBegin->format('U')] = new DateTimeEntry($eventBegin, false);
-        $expectedDays[$nextEvent->format('U')] = new DateTimeEntry($nextEvent, false);
-        $expectedDays[$lastEvent->format('U')] = new DateTimeEntry($lastEvent, false);
+        $expectedDays[$eventBegin->format('U')] = new DateTimeResult($eventBegin, false);
+        $expectedDays[$nextEvent->format('U')] = new DateTimeResult($nextEvent, false);
+        $expectedDays[$lastEvent->format('U')] = new DateTimeResult($lastEvent, false);
 
         self::assertEquals(
             $expectedDays,
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
         );
     }
 
@@ -520,14 +534,14 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'weekday' => 127,
             'each_weeks' => 0,
             'each_months' => 0,
-            'exceptions' => 0,
+            'exceptions' => [],
         ];
 
         self::assertEquals(
             [
-                $eventBegin->format('U') => new DateTimeEntry($eventBegin, false),
+                $eventBegin->format('U') => new DateTimeResult($eventBegin, false),
             ],
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
         );
     }
 
@@ -547,28 +561,28 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'weekday' => 87, // mo, tu, we, fr, su
             'each_weeks' => 0,
             'each_months' => 0,
-            'exceptions' => 0,
+            'exceptions' => [],
         ];
 
         $tempDate = $eventBegin;
         $expectedDays = [];
         $tempDate = $tempDate->modify('+1 day');
-        $expectedDays[$tempDate->format('U')] = new DateTimeEntry($tempDate, false); // add sunday
+        $expectedDays[$tempDate->format('U')] = new DateTimeResult($tempDate, false); // add sunday
         $tempDate = $tempDate->modify('+1 day');
-        $expectedDays[$tempDate->format('U')] = new DateTimeEntry($tempDate, false); // add monday
+        $expectedDays[$tempDate->format('U')] = new DateTimeResult($tempDate, false); // add monday
         $tempDate = $tempDate->modify('+1 day');
-        $expectedDays[$tempDate->format('U')] = new DateTimeEntry($tempDate, false); // add tuesday
+        $expectedDays[$tempDate->format('U')] = new DateTimeResult($tempDate, false); // add tuesday
         $tempDate = $tempDate->modify('+1 day');
-        $expectedDays[$tempDate->format('U')] = new DateTimeEntry($tempDate, false); // add wednesday
+        $expectedDays[$tempDate->format('U')] = new DateTimeResult($tempDate, false); // add wednesday
         $tempDate = $tempDate->modify('+2 day');
-        $expectedDays[$tempDate->format('U')] = new DateTimeEntry($tempDate, false); // add friday
+        $expectedDays[$tempDate->format('U')] = new DateTimeResult($tempDate, false); // add friday
         $tempDate = $tempDate->modify('+2 day');
-        $expectedDays[$tempDate->format('U')] = new DateTimeEntry($tempDate, false); // add sunday
+        $expectedDays[$tempDate->format('U')] = new DateTimeResult($tempDate, false); // add sunday
         ksort($expectedDays);
 
         self::assertEquals(
             $expectedDays,
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
         );
     }
 
@@ -578,7 +592,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
     #[Test]
     public function getDateTimeStorageForEventWithGivenXthsResultsInAddedDaysInStorage(): void
     {
-        // $eventBegin has to start with a month beginning with a thursday
+        // $eventBegin has to start with a month beginning with a Thursday
         $eventBegin = new \DateTimeImmutable('first day of next month midnight');
         while (
             (int)$eventBegin->format('N') !== 4
@@ -586,8 +600,8 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         ) {
             $eventBegin = $eventBegin->modify('next month');
         }
-        $eventBegin = $eventBegin->modify('+16 days'); // first day of month (1) + 16 = 17. of month. Must be saturday
-        $recurringEnd = $eventBegin->modify('+22 days'); // 07th or 08th of next month. Regarding, if month has 30 or 31 days
+        $eventBegin = $eventBegin->modify('+16 days'); // First day of the month (1) + 16 = 17. Of month. Must be Saturday
+        $recurringEnd = $eventBegin->modify('+22 days'); // 07th or 08th of next month. Regarding if the month has 30 or 31 days
 
         $eventRecord = [
             'uid' => 123,
@@ -596,27 +610,27 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'event_end' => 0,
             'recurring_end' => (int)$recurringEnd->format('U'),
             'xth' => 21, // 1st, 3rd, 5th
-            'weekday' => 18, // tuesday, friday
+            'weekday' => 18, // Tuesday, Friday
             'each_weeks' => 0,
             'each_months' => 0,
-            'exceptions' => 0,
+            'exceptions' => [],
         ];
 
         $tempDate = $eventBegin;
         $expectedDays = [];
         $tempDate = $tempDate->modify('+3 day');
-        $expectedDays[$tempDate->format('U')] = new DateTimeEntry($tempDate, false); // add 3rd tuesday 20th of month
+        $expectedDays[$tempDate->format('U')] = new DateTimeResult($tempDate, false); // add 3rd Tuesday 20th of the month
         $tempDate = $tempDate->modify('+10 day');
-        $expectedDays[$tempDate->format('U')] = new DateTimeEntry($tempDate, false); // add 5th friday 30th of month
+        $expectedDays[$tempDate->format('U')] = new DateTimeResult($tempDate, false); // add 5th Friday 30th of the month
         $tempDate = $tempDate->modify('+4 day');
-        $expectedDays[$tempDate->format('U')] = new DateTimeEntry($tempDate, false); // add 1st tuesday 3rd of next month
+        $expectedDays[$tempDate->format('U')] = new DateTimeResult($tempDate, false); // add 1st Tuesday 3rd of the next month
         $tempDate = $tempDate->modify('+3 day');
-        $expectedDays[$tempDate->format('U')] = new DateTimeEntry($tempDate, false); // add 1st friday 6th of next month
+        $expectedDays[$tempDate->format('U')] = new DateTimeResult($tempDate, false); // add 1st Friday 6th of the next month
         ksort($expectedDays);
 
         self::assertEquals(
             $expectedDays,
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
         );
     }
 
@@ -639,19 +653,19 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'weekday' => 127,
             'each_weeks' => 0,
             'each_months' => 0,
-            'exceptions' => 0,
+            'exceptions' => [],
         ];
 
         $tempDate = $eventBegin;
         $expectedDays = [];
         for ($i = 0; $i < 5; ++$i) {
-            $expectedDays[$tempDate->format('U')] = new DateTimeEntry($tempDate, false);
+            $expectedDays[$tempDate->format('U')] = new DateTimeResult($tempDate, false);
             $tempDate = $tempDate->modify('+1 day');
         }
 
         self::assertEquals(
             $expectedDays,
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
         );
     }
 
@@ -671,14 +685,14 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'weekday' => 127,
             'each_weeks' => 0,
             'each_months' => 0,
-            'exceptions' => 0,
+            'exceptions' => [],
         ];
 
         self::assertEquals(
             [
-                $eventBegin->format('U') => new DateTimeEntry($eventBegin, false),
+                $eventBegin->format('U') => new DateTimeResult($eventBegin, false),
             ],
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
         );
     }
 
@@ -711,11 +725,11 @@ class DayGeneratorServiceTest extends FunctionalTestCase
 
         self::assertEquals(
             [
-                $eventBegin->format('U') => new DateTimeEntry($eventBegin, false),
-                $tomorrow->format('U') => new DateTimeEntry($tomorrow, false),
-                $recurringEnd->format('U') => new DateTimeEntry($recurringEnd, false),
+                $eventBegin->format('U') => new DateTimeResult($eventBegin, false),
+                $tomorrow->format('U') => new DateTimeResult($tomorrow, false),
+                $recurringEnd->format('U') => new DateTimeResult($recurringEnd, false),
             ],
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
         );
     }
 
@@ -748,10 +762,10 @@ class DayGeneratorServiceTest extends FunctionalTestCase
 
         self::assertEquals(
             [
-                $eventBegin->format('U') => new DateTimeEntry($eventBegin, false),
-                $recurringEnd->format('U') => new DateTimeEntry($recurringEnd, false),
+                $eventBegin->format('U') => new DateTimeResult($eventBegin, false),
+                $recurringEnd->format('U') => new DateTimeResult($recurringEnd, false),
             ],
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
         );
     }
 
@@ -781,18 +795,18 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             ],
         ];
 
-        $dateTimeEntries = $this->subject->getDateTimeStorageForEvent($eventRecord);
+        $dateTimeEntries = $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy();
 
         // assertEquals will only check for correct dates, but not for different timezoneTypes
         self::assertEquals(
             [
-                $eventBegin->format('U') => new DateTimeEntry($eventBegin, false),
+                $eventBegin->format('U') => new DateTimeResult($eventBegin, false),
             ],
             $dateTimeEntries,
         );
 
-        foreach ($dateTimeEntries as $dateTimeEntry) {
-            self::assertIsArray($dateTimeEntry->getDate()->getTimezone()->getLocation());
+        foreach ($dateTimeEntries as $dateTimeResult) {
+            self::assertIsArray($dateTimeResult->getDate()->getTimezone()->getLocation());
         }
     }
 
@@ -824,9 +838,9 @@ class DayGeneratorServiceTest extends FunctionalTestCase
 
         self::assertEquals(
             [
-                $tomorrow->format('U') => new DateTimeEntry($tomorrow, false),
+                $tomorrow->format('U') => new DateTimeResult($tomorrow, false),
             ],
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
         );
     }
 
@@ -858,10 +872,10 @@ class DayGeneratorServiceTest extends FunctionalTestCase
 
         self::assertEquals(
             [
-                $eventBegin->format('U') => new DateTimeEntry($eventBegin, true),
-                $tomorrow->format('U') => new DateTimeEntry($tomorrow, false),
+                $eventBegin->format('U') => new DateTimeResult($eventBegin, true),
+                $tomorrow->format('U') => new DateTimeResult($tomorrow, false),
             ],
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
         );
     }
 
@@ -893,12 +907,12 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         ];
 
         $expectedDays = [];
-        $expectedDays[$eventBegin->format('U')] = new DateTimeEntry($eventBegin, false);
-        $expectedDays[$tomorrow->format('U')] = new DateTimeEntry($tomorrow, false);
+        $expectedDays[$eventBegin->format('U')] = new DateTimeResult($eventBegin, false);
+        $expectedDays[$tomorrow->format('U')] = new DateTimeResult($tomorrow, false);
 
         self::assertEquals(
             $expectedDays,
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
         );
     }
 
@@ -930,12 +944,12 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         ];
 
         $expectedDays = [];
-        $expectedDays[$eventBegin->format('U')] = new DateTimeEntry($eventBegin, false);
-        $expectedDays[$tomorrow->format('U')] = new DateTimeEntry($tomorrow, false);
+        $expectedDays[$eventBegin->format('U')] = new DateTimeResult($eventBegin, false);
+        $expectedDays[$tomorrow->format('U')] = new DateTimeResult($tomorrow, false);
 
         self::assertEquals(
             $expectedDays,
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
         );
     }
 
@@ -943,13 +957,12 @@ class DayGeneratorServiceTest extends FunctionalTestCase
     public function getDateTimeStorageForEventWithInvalidExceptionThrowsException(): void
     {
         $this->loggerMock
-            ->error(
-                Argument::allOf(
-                    Argument::containingString('Error occurred while building DateTime objects'),
-                    Argument::containingString('Type "Invalid value" is no valid exception type'),
-                ),
-            )
-            ->shouldBeCalled();
+            ->expects(self::atLeastOnce())
+            ->method('error')
+            ->willReturnMap([
+                [self::stringContains('Error occurred while building DateTime objects'), null],
+                [self::stringContains('Type "Invalid value" is no valid exception type'), null],
+            ]);
 
         $eventBegin = new \DateTimeImmutable('midnight');
         $tomorrow = $eventBegin->modify('tomorrow');
@@ -977,7 +990,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
 
         self::assertEquals(
             [],
-            $this->subject->getDateTimeStorageForEvent($eventRecord),
+            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
         );
     }
 }

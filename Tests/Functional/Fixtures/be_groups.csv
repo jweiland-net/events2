@@ -1,0 +1,4 @@
+"be_groups",,,,,,,,,,,,
+,"uid","pid","title","tstamp","db_mountpoints","pagetypes_select","tables_modify","crdate","groupMods","hidden","deleted","subgroup"
+,1,0,"Editor",1551970534,11,"1,254","pages,tx_events2_domain_model_event",1551969803,"web_layout,web_list",0,0,2
+,2,0,"Pagetreerights",1551970527,11,"","",1551970527,"",0,0,0

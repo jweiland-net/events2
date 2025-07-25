@@ -106,8 +106,7 @@
                     <settings.latest.amountOfRecordsToShow>
                         <label>LLL:EXT:events2/Resources/Private/Language/FlexForms.xlf:amountOfRecordsToShow</label>
                         <config>
-                            <type>input</type>
-                            <eval>int</eval>
+                            <type>number</type>
                             <size>5</size>
                             <default>0</default>
                         </config>

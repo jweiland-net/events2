@@ -25,7 +25,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 
 /**
  * Service to handle event data.
- * Get next possible day by event.
+ * Get the next possible day by event.
  * Get events for export.
  */
 readonly class EventService
@@ -49,8 +49,8 @@ readonly class EventService
 
         $days = $event->getFutureDatesGroupedAndSorted();
 
-        if (!empty($days)) {
-            return current($days);
+        if ($days !== []) {
+            return reset($days);
         }
 
         return null;
@@ -58,7 +58,7 @@ readonly class EventService
 
     /**
      * Get last day for event
-     * Useful to check, if an event is over.
+     * Useful to check if an event is over.
      * Needed by SolrIndexer, as we can't create JOIN Queries in Solr configuration
      */
     public function getLastDayForEvent(int $eventUid): ?\DateTimeImmutable

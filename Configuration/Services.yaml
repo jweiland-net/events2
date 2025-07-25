@@ -11,21 +11,6 @@ services:
       - '../Classes/Exporter/ExporterConfiguration.php'
       - '../Classes/Hook/Solr/{IndexerHook.php,IndexerHook104.php}'
 
-  qb.category_mm:
-    class: TYPO3\CMS\Core\Database\Query\QueryBuilder
-    factory: ['@TYPO3\CMS\Core\Database\ConnectionPool', 'getQueryBuilderForTable']
-    arguments: ['sys_category_record_mm']
-
-  qb.day:
-    class: TYPO3\CMS\Core\Database\Query\QueryBuilder
-    factory: ['@TYPO3\CMS\Core\Database\ConnectionPool', 'getQueryBuilderForTable']
-    arguments: ['tx_events2_domain_model_day']
-
-  qb.event:
-    class: TYPO3\CMS\Core\Database\Query\QueryBuilder
-    factory: ['@TYPO3\CMS\Core\Database\ConnectionPool', 'getQueryBuilderForTable']
-    arguments: ['tx_events2_domain_model_event']
-
   # Called by makeInstance in eID middleware
   JWeiland\Events2\Ajax\FindDaysForMonth:
     public: true
@@ -50,11 +35,6 @@ services:
   JWeiland\Events2\Domain\Factory\ArrayFormFactory:
     public: true
 
-  JWeiland\Events2\Domain\Factory\DayFactory:
-    public: true
-    arguments:
-      $queryBuilder: '@qb.day'
-
   # Called by makeInstance in event model where constructors are not loaded in some cases
   # Called by makeInstance in static GetMergedEventTimesViewHelper
   JWeiland\Events2\Domain\Factory\TimeFactory:
@@ -72,10 +52,6 @@ services:
     shared: false
     autowire: false
     autoconfigure: false
-
-  JWeiland\Events2\Helper\PathSegmentHelper:
-    arguments:
-      $queryBuilder: '@qb.event'
 
   # Called by makeInstance from EXT:form
   JWeiland\Events2\Hook\Form\PrefillCategoriesHook:
@@ -101,22 +77,12 @@ services:
   JWeiland\Events2\PageTitleProvider\Events2PageTitleProvider:
     public: true
 
-  JWeiland\Events2\Reaction\ImportEventsReaction:
-    arguments:
-      $queryBuilder: '@qb.category_mm'
-
   # Contains public API for other extension developers. Keep public.
   JWeiland\Events2\Service\:
     resource: '../Classes/Service/*'
+    exclude:
+      - '../Classes/Service/Result/*'
     public: true
-
-  JWeiland\Events2\Service\Record\DayRecordService:
-    arguments:
-      $queryBuilder: '@qb.day'
-
-  JWeiland\Events2\Service\Record\EventRecordService:
-    arguments:
-      $queryBuilder: '@qb.event'
 
   # Called by makeInstance in SchedulerModuleController
   JWeiland\Events2\Task\ReGenerateDays:

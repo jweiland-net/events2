@@ -7,6 +7,30 @@
 ChangeLog
 =========
 
+Version 10.0.0
+==============
+
+This version adds TYPO3 13 compatibility with various improvements
+and modernizations.
+
+Breaking Changes
+----------------
+
+*   [!!!] Remove TYPO3 12 LTS compatibility
+*   [!!!] Raise minimum PHP version to match TYPO3 13 requirements
+
+Features and Improvements
+-----------------------
+
+*   [FEATURE] Add TYPO3 13 LTS compatibility
+*   [TASK] Improve testing suite with workspace and versioning tests
+*   [TASK] Add various functional tests for improved stability
+*   [TASK] Optimize timezone handling in tests using TYPO3 configuration
+*   [TASK] Improve code quality with early returns and better class documentation
+
+Note: This version requires TYPO3 13 LTS and drops support for previous TYPO3 versions.
+If you need TYPO3 12 LTS compatibility, please use events2 version 9.x
+
 Version 9.2.1
 =============
 

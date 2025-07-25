@@ -1,0 +1,9 @@
+"fe_groups"
+,"uid","title"
+,1,"events2"
+,2,"maps2"
+"fe_users"
+,"uid","username","description","password","usergroup","tx_events2_organizer"
+,1,"sfroemken","Events2 Organizer","do-not-use-as-pw","1",1
+,2,"mmustermann","Events2 No Organizer","do-not-use-as-pw","1",0
+,3,"jdoe","Maps2 User","do-not-use-as-pw","2",0

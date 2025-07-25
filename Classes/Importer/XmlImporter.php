@@ -160,13 +160,18 @@ class XmlImporter
     }
 
     /**
-     * Check, if an event has to be created/updated/deleted
+     * Check if an event has to be created/updated/deleted
      *
      * @throws \Exception
      */
     protected function processEvent(array $eventRecord): void
     {
-        $event = $this->eventRepository->findHiddenObject((int)$eventRecord['import_id'], 'importId');
+        $event = null;
+        $importId = (string)($eventRecord['import_id'] ?? '');
+        if ($importId !== '') {
+            $event = $this->eventRepository->findHiddenObject($importId, 'importId');
+        }
+
         switch ($this->getProcessAs($eventRecord)) {
             case 'delete':
                 if ($event instanceof Event) {
@@ -174,7 +179,7 @@ class XmlImporter
                 } else {
                     throw new \Exception(sprintf(
                         'Can not delete event with import-ID %s, as it does not exist in our database.',
-                        $eventRecord['import_id'],
+                        $importId,
                     ));
                 }
 
@@ -227,7 +232,7 @@ class XmlImporter
             case 'new':
             default:
                 $event = $this->createEvent($eventRecord);
-                $event->setImportId($eventRecord['import_id'] ?: '');
+                $event->setImportId($importId);
                 $event->setHidden(true);
                 $event->setPid($this->storagePid);
                 $this->addPathSegment($event);
@@ -239,7 +244,7 @@ class XmlImporter
 
     protected function getProcessAs(array $eventRecord): string
     {
-        $processAs = $eventRecord['process_as'] ?: 'new';
+        $processAs = (string)($eventRecord['process_as'] ?? 'new');
         $processAs = strtolower($processAs);
         if (!in_array($processAs, ['new', 'edit', 'delete'], true)) {
             $processAs = 'new';
@@ -463,6 +468,14 @@ class XmlImporter
 
     protected function addCategories(Event $event, array $eventRecord): void
     {
+        if (!isset($eventRecord['categories'])) {
+            return;
+        }
+
+        if (!is_array($eventRecord['categories'])) {
+            return;
+        }
+
         foreach ($eventRecord['categories'] as $title) {
             $dbCategory = $this->getCategory($title);
             /** @var Category $category */
@@ -473,60 +486,66 @@ class XmlImporter
 
     protected function addImages(Event $event, array $eventRecord): void
     {
+        if (!isset($eventRecord['images'])) {
+            return;
+        }
+
+        if (!is_array($eventRecord['images'])) {
+            return;
+        }
+
         $resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);
-        if (isset($eventRecord['images']) && is_array($eventRecord['images'])) {
-            $images = new ObjectStorage();
-            /** @var CharsetConverter $csConverter */
-            $csConverter = GeneralUtility::makeInstance(CharsetConverter::class);
-            foreach ($eventRecord['images'] as $image) {
-                // we try to keep the original structure from origin server to prevent duplicate filenames
-                $filePath = parse_url($image['url'], PHP_URL_PATH);
-                $fileParts = GeneralUtility::split_fileref($filePath);
-                $filename = $csConverter->specCharsToASCII(
-                    'utf-8',
-                    rawurldecode($fileParts['file']),
+        $images = new ObjectStorage();
+        /** @var CharsetConverter $csConverter */
+        $csConverter = GeneralUtility::makeInstance(CharsetConverter::class);
+        foreach ($eventRecord['images'] as $image) {
+            // we try to keep the original structure from origin server to prevent duplicate filenames
+            $filePath = parse_url($image['url'], PHP_URL_PATH);
+            $fileParts = GeneralUtility::split_fileref($filePath);
+            $filename = $csConverter->specCharsToASCII(
+                'utf-8',
+                rawurldecode($fileParts['file']),
+            );
+
+            /** @var Folder $rootFolder */
+            $rootFolder = $this->file->getParentFolder();
+            $relativeTargetDirectoryPath = sprintf(
+                'Images/%d/%d/%d/%s',
+                $this->today->format('Y'),
+                $this->today->format('m'),
+                $this->today->format('d'),
+                $this->today->format('His'),
+            );
+            $targetDirectoryPath = Environment::getPublicPath() . '/' . $rootFolder->getPublicUrl() . $relativeTargetDirectoryPath;
+            GeneralUtility::mkdir_deep($targetDirectoryPath);
+
+            $targetFolder = $resourceFactory->getFolderObjectFromCombinedIdentifier(
+                $rootFolder->getCombinedIdentifier() . $relativeTargetDirectoryPath,
+            );
+            if ($targetFolder->hasFile($filename)) {
+                $file = $resourceFactory->retrieveFileOrFolderObject(
+                    $targetFolder->getCombinedIdentifier() . $filename,
                 );
-
-                /** @var Folder $rootFolder */
-                $rootFolder = $this->file->getParentFolder();
-                $relativeTargetDirectoryPath = sprintf(
-                    'Images/%d/%d/%d/%s',
-                    $this->today->format('Y'),
-                    $this->today->format('m'),
-                    $this->today->format('d'),
-                    $this->today->format('His'),
-                );
-                $targetDirectoryPath = Environment::getPublicPath() . '/' . $rootFolder->getPublicUrl() . $relativeTargetDirectoryPath;
-                GeneralUtility::mkdir_deep($targetDirectoryPath);
-
-                $targetFolder = $resourceFactory->getFolderObjectFromCombinedIdentifier(
-                    $rootFolder->getCombinedIdentifier() . $relativeTargetDirectoryPath,
-                );
-                if ($targetFolder->hasFile($filename)) {
-                    $file = $resourceFactory->retrieveFileOrFolderObject(
-                        $targetFolder->getCombinedIdentifier() . $filename,
-                    );
-                } else {
-                    $file = $targetFolder->createFile($filename);
-                    $file->setContents(GeneralUtility::getUrl($image['url']));
-                }
-
-                // Create new FileReference
-                $extbaseFileReference = GeneralUtility::makeInstance(FileReference::class);
-                $extbaseFileReference->setPid($this->storagePid);
-                $extbaseFileReference->setOriginalResource($resourceFactory->createFileReferenceObject(
-                    [
-                        'uid_local' => $file->getUid(),
-                        'uid_foreign' => uniqid('NEW_', true),
-                        'uid' => uniqid('NEW_', true),
-                    ],
-                ));
-
-                $images->attach($extbaseFileReference);
+            } else {
+                $file = $targetFolder->createFile($filename);
+                $file->setContents(GeneralUtility::getUrl($image['url']));
             }
 
-            $event->setImages($images);
+            // Create new FileReference
+            $extbaseFileReference = GeneralUtility::makeInstance(FileReference::class);
+            $extbaseFileReference->setPid($this->storagePid);
+            $extbaseFileReference->setOriginalResource($resourceFactory->createFileReferenceObject(
+                [
+                    'uid_local' => $file->getUid(),
+                    'uid_foreign' => uniqid('NEW_', true),
+                    'uid' => uniqid('NEW_', true),
+                ],
+            ));
+
+            $images->attach($extbaseFileReference);
         }
+
+        $event->setImages($images);
     }
 
     public function setStoragePid(int $storagePid): void
@@ -782,20 +801,20 @@ class XmlImporter
     protected function addMessage(string $message, ContextualFeedbackSeverity $severity = ContextualFeedbackSeverity::OK): void
     {
         static $firstMessage = true;
-        /** @var AbstractFile $logFile */
-        static $logFile = null;
 
         try {
             $content = '';
+            $logFile = $this->getLogFile();
+
             if ($firstMessage) {
                 // truncate LogFile
-                $logFile = $this->getLogFile();
                 $logFile->setContents($content);
                 $firstMessage = false;
             } else {
                 $content = $logFile->getContents();
             }
 
+            $logFile->getStorage()->setEvaluatePermissions(false);
             $logFile->setContents($content . $message . LF);
         } catch (\Exception $exception) {
             $message = $exception->getMessage();

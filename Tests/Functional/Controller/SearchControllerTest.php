@@ -11,11 +11,12 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Tests\Functional\Controller;
 
-use JWeiland\Events2\Service\DayRelationService;
+use JWeiland\Events2\Tests\Functional\Events2Constants;
+use JWeiland\Events2\Tests\Functional\Traits\CreatePostStreamBodyTrait;
+use JWeiland\Events2\Tests\Functional\Traits\InsertEventTrait;
+use JWeiland\Events2\Tests\Functional\Traits\SiteBasedTestTrait;
 use PHPUnit\Framework\Attributes\Test;
-use Psr\Http\Message\ServerRequestInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Core\Bootstrap;
+use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
@@ -23,113 +24,385 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
  */
 class SearchControllerTest extends FunctionalTestCase
 {
-    protected ServerRequestInterface $serverRequest;
+    use CreatePostStreamBodyTrait;
+    use InsertEventTrait;
+    use SiteBasedTestTrait;
+
+    protected const LANGUAGE_PRESETS = [
+        'EN' => [
+            'id' => 0,
+            'title' => 'English',
+            'locale' => 'en_US.UTF8',
+            'iso' => 'en',
+        ],
+    ];
 
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
+        'fluid_styled_content',
+        'form',
         'reactions',
     ];
 
     protected array $testExtensionsToLoad = [
         'sjbr/static-info-tables',
         'jweiland/events2',
+        __DIR__ . '/../Fixtures/Extensions/site_package',
+    ];
+
+    protected array $configurationToUseInTestInstance = [
+        'SYS' => [
+            'phpTimeZone' => Events2Constants::PHP_TIMEZONE,
+        ],
     ];
 
     protected function setUp(): void
     {
-        self::markTestIncomplete('SearchControllerTest not updated until right now');
-
         parent::setUp();
 
-        $this->importDataSet('ntf://Database/pages.xml');
-        $this->importDataSet(__DIR__ . '/../Fixtures/sys_category.xml');
-        $this->importDataSet(__DIR__ . '/../Fixtures/sys_category_record_mm.xml');
-        $this->importDataSet(__DIR__ . '/../Fixtures/tx_events2_domain_model_event.xml');
-        $this->setUpFrontendRootPage(1, [__DIR__ . '/../Fixtures/TypoScript/setup.typoscript']);
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Events2PageTree.csv');
 
-        $this->serverRequest = $this->getServerRequestForFrontendMode();
-
-        // ServerRequest is needed for following
-        $GLOBALS['TYPO3_REQUEST'] = $this->serverRequest;
-        $dayRelationService = GeneralUtility::makeInstance(DayRelationService::class);
-        $statement = $this->getDatabaseConnection()->select('*', 'tx_events2_domain_model_event', 'pid=1');
-        while ($eventRecord = $statement->fetchAssociative()) {
-            $dayRelationService->createDayRelations($eventRecord['uid']);
-        }
-    }
-
-    protected function tearDown(): void
-    {
-        unset(
-            $this->serverRequest,
-            $GLOBALS['TSFE'],
+        $this->writeSiteConfiguration(
+            'events2-controller-test',
+            $this->buildSiteConfiguration(1, '/'),
+            [
+                $this->buildDefaultLanguageConfiguration('EN', '/'),
+            ],
+            [],
+            ['jweiland/sitepackage'],
         );
-
-        parent::tearDown();
     }
 
     #[Test]
-    public function processRequestWithShowActionWillAssignEmptySearchObject(): void
+    public function showWillShowSearchForm(): void
     {
-        $this->startUpTSFE($this->serverRequest);
-
-        $extbaseBootstrap = GeneralUtility::makeInstance(Bootstrap::class);
-        $content = $extbaseBootstrap->run(
-            '',
-            [
-                'extensionName' => 'Events2',
-                'pluginName' => 'SearchForm',
-                'format' => 'txt',
-                'settings' => [
-                    'rootCategory' => '1',
-                    'mainCategories' => '2,3',
-                ],
-            ],
-        );
+        $content = (string)$this->executeFrontendSubRequest(
+            (new InternalRequest())
+                ->withPageId(Events2Constants::PAGE_SEARCH_FORM),
+        )->getBody();
 
         self::assertStringContainsString(
-            'Free entry: no',
+            'method="get" name="search" action="/events2-searchresults"',
+            $content,
+        );
+        self::assertStringContainsString(
+            'searchEvent',
+            $content,
+        );
+        self::assertStringContainsString(
+            'searchMainCategory',
+            $content,
+        );
+        self::assertStringContainsString(
+            'searchSubCategory',
+            $content,
+        );
+        self::assertStringContainsString(
+            'searchEventBegin',
+            $content,
+        );
+        self::assertStringContainsString(
+            'searchEventEnd',
+            $content,
+        );
+        self::assertStringContainsString(
+            'searchLocation',
+            $content,
+        );
+        self::assertStringContainsString(
+            'searchFreeEntry',
+            $content,
+        );
+        self::assertStringContainsString(
+            '<input type="submit" class="btn btn-default" value="Search"/>',
+            $content,
+        );
+        self::assertStringContainsString(
+            '<option value="2">Audi</option>',
+            $content,
+        );
+        self::assertStringContainsString(
+            '<option value="3">BMW</option>',
+            $content,
+        );
+        self::assertStringNotContainsString(
+            '<option value="1">Cars</option>',
             $content,
         );
     }
 
     #[Test]
-    public function processRequestWithShowActionWillUpdateFormValues(): void
+    public function showWillShowLocations(): void
     {
-        $this->startUpTSFE(
-            $this->serverRequest,
-            1,
-            '0',
-            [
-                'tx_events2_searchform' => [
-                    'search' => [
-                        'search' => 'Test',
-                        'freeEntry' => '1',
-                    ],
-                ],
-            ],
+        $this->insertEvent(
+            title: 'Event with Location: Stuttgart',
+            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
+            location: 'Stuttgart',
         );
+        $this->insertEvent(
+            title: 'Event with Location: Filderstadt',
+            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
+            location: 'Filderstadt',
+        );
+        $this->createDayRelations();
 
-        $extbaseBootstrap = GeneralUtility::makeInstance(Bootstrap::class);
-        $content = $extbaseBootstrap->run(
-            '',
-            [
-                'extensionName' => 'Events2',
-                'pluginName' => 'SearchForm',
-                'format' => 'txt',
-                'settings' => [
-                    'rootCategory' => '1',
-                    'mainCategories' => '2,3',
-                ],
-            ],
-        );
+        $content = (string)$this->executeFrontendSubRequest(
+            (new InternalRequest())
+                ->withPageId(Events2Constants::PAGE_SEARCH_FORM),
+        )->getBody();
 
         self::assertStringContainsString(
-            'Search: Test',
+            '<option value="1">Stuttgart</option>',
             $content,
         );
         self::assertStringContainsString(
-            'Free entry: yes',
+            '<option value="2">Filderstadt</option>',
+            $content,
+        );
+    }
+
+    #[Test]
+    public function listSearchResultsWillShowNoResults(): void
+    {
+        $content = (string)$this->executeFrontendSubRequest(
+            (new InternalRequest())
+                ->withPageId(Events2Constants::PAGE_SEARCH_RESULTS),
+        )->getBody();
+
+        self::assertStringContainsString(
+            'No events found',
+            $content,
+        );
+    }
+
+    #[Test]
+    public function listSearchResultsWithoutEventsWillShowNoResults(): void
+    {
+        $body = $this->createBodyFromArray([
+            'tx_events2_searchresults' => [
+                'search' => [],
+            ],
+        ]);
+
+        $content = (string)$this->executeFrontendSubRequest(
+            (new InternalRequest())
+                ->withPageId(Events2Constants::PAGE_SEARCH_RESULTS)
+                ->withMethod('POST')
+                ->withAddedHeader('Content-type', 'application/x-www-form-urlencoded')
+                ->withBody($body),
+        )->getBody();
+
+        self::assertStringContainsString(
+            'No events found',
+            $content,
+        );
+    }
+
+    #[Test]
+    public function listSearchResultsWillShowFutureResultsByDefault(): void
+    {
+        $this->insertEvent(
+            title: 'Event Yesterday',
+            eventBegin: new \DateTimeImmutable('yesterday midnight'),
+        );
+        $this->insertEvent(
+            title: 'Event Tomorrow',
+            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
+        );
+        $this->createDayRelations();
+
+        $body = $this->createBodyFromArray([
+            'tx_events2_searchresults' => [
+                'search' => [
+                    'search' => 'event',
+                ],
+            ],
+        ]);
+
+        $content = (string)$this->executeFrontendSubRequest(
+            (new InternalRequest())
+                ->withPageId(Events2Constants::PAGE_SEARCH_RESULTS)
+                ->withMethod('POST')
+                ->withAddedHeader('Content-type', 'application/x-www-form-urlencoded')
+                ->withBody($body),
+        )->getBody();
+
+        self::assertStringContainsString(
+            'Event Tomorrow',
+            $content,
+        );
+        self::assertStringNotContainsString(
+            'Event Yesterday',
+            $content,
+        );
+    }
+
+    #[Test]
+    public function listSearchResultsWillShowOldResults(): void
+    {
+        $this->insertEvent(
+            title: 'Event Yesterday',
+            eventBegin: new \DateTimeImmutable('yesterday midnight'),
+        );
+        $this->insertEvent(
+            title: 'Event Tomorrow',
+            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
+        );
+        $this->createDayRelations();
+
+        $body = $this->createBodyFromArray([
+            'tx_events2_searchresults' => [
+                'search' => [
+                    'search' => 'event',
+                    'eventBegin' => (new \DateTimeImmutable('-1 week midnight'))->format('d.m.Y'),
+                ],
+            ],
+        ]);
+
+        $content = (string)$this->executeFrontendSubRequest(
+            (new InternalRequest())
+                ->withPageId(Events2Constants::PAGE_SEARCH_RESULTS)
+                ->withMethod('POST')
+                ->withAddedHeader('Content-type', 'application/x-www-form-urlencoded')
+                ->withBody($body),
+        )->getBody();
+
+        self::assertStringContainsString(
+            'Event Tomorrow',
+            $content,
+        );
+        self::assertStringContainsString(
+            'Event Yesterday',
+            $content,
+        );
+    }
+
+    #[Test]
+    public function listSearchResultsWillShowResultsOfLocation(): void
+    {
+        $this->insertEvent(
+            title: 'Event Stuttgart',
+            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
+            location: 'Stuttgart',
+        );
+        $this->insertEvent(
+            title: 'Event Filderstadt',
+            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
+            location: 'Filderstadt',
+        );
+        $this->createDayRelations();
+
+        $body = $this->createBodyFromArray([
+            'tx_events2_searchresults' => [
+                'search' => [
+                    'search' => 'event',
+                    'location' => 2,
+                ],
+            ],
+        ]);
+
+        $content = (string)$this->executeFrontendSubRequest(
+            (new InternalRequest())
+                ->withPageId(Events2Constants::PAGE_SEARCH_RESULTS)
+                ->withMethod('POST')
+                ->withAddedHeader('Content-type', 'application/x-www-form-urlencoded')
+                ->withBody($body),
+        )->getBody();
+
+        self::assertStringContainsString(
+            'Event Filderstadt',
+            $content,
+        );
+        self::assertStringNotContainsString(
+            'Event Stuttgart',
+            $content,
+        );
+    }
+
+    #[Test]
+    public function listSearchResultsWillShowResultsOfCategory(): void
+    {
+        $this->insertEvent(
+            title: 'Event Audi',
+            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
+            categories: [2],
+        );
+        $this->insertEvent(
+            title: 'Event BMW',
+            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
+            categories: [3],
+        );
+        $this->createDayRelations();
+
+        $body = $this->createBodyFromArray([
+            'tx_events2_searchresults' => [
+                'search' => [
+                    'search' => 'event',
+                    'mainCategory' => 2,
+                ],
+            ],
+        ]);
+
+        $content = (string)$this->executeFrontendSubRequest(
+            (new InternalRequest())
+                ->withPageId(Events2Constants::PAGE_SEARCH_RESULTS)
+                ->withMethod('POST')
+                ->withAddedHeader('Content-type', 'application/x-www-form-urlencoded')
+                ->withBody($body),
+        )->getBody();
+
+        self::assertStringContainsString(
+            'Event Audi',
+            $content,
+        );
+        self::assertStringNotContainsString(
+            'Event BMW',
+            $content,
+        );
+    }
+
+    #[Test]
+    public function listSearchResultsWillShowResultsWithFreeEntry(): void
+    {
+        $this->insertEvent(
+            title: 'Event Free',
+            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
+            additionalFields: [
+                'free_entry' => 1,
+            ],
+        );
+        $this->insertEvent(
+            title: 'Event Paid',
+            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
+            additionalFields: [
+                'free_entry' => 0,
+            ],
+        );
+        $this->createDayRelations();
+
+        $body = $this->createBodyFromArray([
+            'tx_events2_searchresults' => [
+                'search' => [
+                    'search' => 'event',
+                    'freeEntry' => 1,
+                ],
+            ],
+        ]);
+
+        $content = (string)$this->executeFrontendSubRequest(
+            (new InternalRequest())
+                ->withPageId(Events2Constants::PAGE_SEARCH_RESULTS)
+                ->withMethod('POST')
+                ->withAddedHeader('Content-type', 'application/x-www-form-urlencoded')
+                ->withBody($body),
+        )->getBody();
+
+        self::assertStringContainsString(
+            'Event Free',
+            $content,
+        );
+        self::assertStringNotContainsString(
+            'Event Paid',
             $content,
         );
     }

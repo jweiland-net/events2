@@ -15,9 +15,11 @@ use JWeiland\Events2\Domain\Factory\TimeFactory;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Exception;
 use JWeiland\Events2\Domain\Model\Time;
+use JWeiland\Events2\Tests\Functional\Events2Constants;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use PHPUnit\Framework\Attributes\Test;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
+use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -38,10 +40,14 @@ class TimeFactoryTest extends FunctionalTestCase
         'jweiland/events2',
     ];
 
+    protected array $configurationToUseInTestInstance = [
+        'SYS' => [
+            'phpTimeZone' => Events2Constants::PHP_TIMEZONE,
+        ],
+    ];
+
     protected function setUp(): void
     {
-        self::markTestIncomplete('TimeFactoryTest not updated until right now');
-
         parent::setUp();
 
         $this->subject = new TimeFactory(new DateTimeUtility());
@@ -74,7 +80,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $exceptions->attach($firstAddException);
         $exceptions->attach($secondAddException);
 
-        $event = GeneralUtility::makeInstance(Event::class);
+        $event = new Event();
         $event->setExceptions($exceptions);
 
         $expectedTimes = new \SplObjectStorage();
@@ -108,7 +114,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $exceptions->attach($firstAddException);
         $exceptions->attach($secondAddException);
 
-        $event = GeneralUtility::makeInstance(Event::class);
+        $event = new Event();
         $event->setEventType('duration');
         $event->setExceptions($exceptions);
 
@@ -143,7 +149,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $exceptions->attach($firstAddException);
         $exceptions->attach($secondAddException);
 
-        $event = GeneralUtility::makeInstance(Event::class);
+        $event = new Event();
         $event->setEventType('recurring');
         $event->setExceptions($exceptions);
 
@@ -168,7 +174,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $times = new ObjectStorage();
         $times->attach($time);
 
-        $event = GeneralUtility::makeInstance(Event::class);
+        $event = new Event();
         $event->setEventType('single');
         $event->setDifferentTimes($times);
 
@@ -193,7 +199,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $times = new ObjectStorage();
         $times->attach($time);
 
-        $event = GeneralUtility::makeInstance(Event::class);
+        $event = new Event();
         $event->setEventType('recurring');
         $event->setDifferentTimes($times);
 
@@ -217,7 +223,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $times = new ObjectStorage();
         $times->attach($time);
 
-        $event = GeneralUtility::makeInstance(Event::class);
+        $event = new Event();
         $event->setEventType('recurring');
         $event->setDifferentTimes($times);
 
@@ -241,7 +247,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $times = new ObjectStorage();
         $times->attach($time);
 
-        $event = GeneralUtility::makeInstance(Event::class);
+        $event = new Event();
         $event->setEventType('single');
         $event->setDifferentTimes($times);
         $event->setEventTime($time);
@@ -263,7 +269,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $time = new Time();
         $time->setTimeBegin('10:30');
 
-        $event = GeneralUtility::makeInstance(Event::class);
+        $event = new Event();
         $event->setEventType('single');
         $event->setEventTime($time);
 
@@ -297,7 +303,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $exceptions->attach($firstAddException);
         $exceptions->attach($secondAddException);
 
-        $event = GeneralUtility::makeInstance(Event::class);
+        $event = new Event();
         $event->setExceptions($exceptions);
         $event->setEventTime($time);
 
@@ -315,7 +321,7 @@ class TimeFactoryTest extends FunctionalTestCase
     {
         $date = new \DateTimeImmutable('midnight');
 
-        $event = GeneralUtility::makeInstance(Event::class);
+        $event = new Event();
 
         $expectedTimes = new \SplObjectStorage();
 
@@ -333,7 +339,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $time = new Time();
         $time->setTimeBegin('10:30');
 
-        $event = GeneralUtility::makeInstance(Event::class);
+        $event = new Event();
         $event->setEventTime($time);
 
         $expectedTimes = new \SplObjectStorage();
@@ -373,7 +379,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $times->attach($time3);
         $times->attach($time4);
 
-        $event = GeneralUtility::makeInstance(Event::class);
+        $event = new Event();
         $event->setEventType('recurring');
         $event->setDifferentTimes($times);
 
@@ -432,7 +438,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $exceptions->attach($exception3);
         $exceptions->attach($exception4);
 
-        $event = GeneralUtility::makeInstance(Event::class);
+        $event = new Event();
         $event->setEventType('duration');
         $event->setExceptions($exceptions);
 
@@ -451,13 +457,22 @@ class TimeFactoryTest extends FunctionalTestCase
     public function getTimesForDateWithEventBeginWillRemoveCurrentDay(): void
     {
         $eventBegin = new \DateTimeImmutable('midnight');
-        $_GET['tx_events2_show']['timestamp'] = $eventBegin->format('U');
 
-        $time = GeneralUtility::makeInstance(Time::class);
+        $request = new ServerRequest('https://www.example.com/', 'GET');
+        $request = $request->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE);
+        $request = $request->withQueryParams([
+            'tx_events2_show' => [
+                'timestamp' => $eventBegin->format('U'),
+            ],
+        ]);
+
+        $GLOBALS['TYPO3_REQUEST'] = $request;
+
+        $time = new Time();
         $time->setTimeBegin('08:00');
         $time->setDuration('02:00');
 
-        $event = GeneralUtility::makeInstance(Event::class);
+        $event = new Event();
         $event->setEventBegin($eventBegin);
         $event->setEventTime($time);
 

@@ -1,72 +1,73 @@
-<?xml version="1.0" encoding="utf-8" ?><events>
-	<event index="0">
-		<event_type>single</event_type>
-		<title>Einfacher Termin</title>
-		<teaser>Einfacher Termin an einem Montag um 16:30</teaser>
-		<event_begin>2025-11-11</event_begin>
-		<event_time>
-			<weekday>monday</weekday>
-			<time_begin>16:30</time_begin>
-			<duration>60</duration>
-		</event_time>
-		<same_day>true</same_day>
-		<detail_information />
-		<ticket_link>
-			<title>Tickets</title>
-			<uri>https://www.jweiland.net</uri>
-		</ticket_link>
-		<organizers>
-			<organizer index="0">GmbH</organizer>
-			<organizer index="1">Co. KG</organizer>
-		</organizers>
-		<location>Kino</location>
-		<images />
-		<categories>
-			<category index="0">Audi</category>
-		</categories>
-	</event>
+<?xml version="1.0" encoding="utf-8" ?>
+<events>
+    <event index="0">
+        <event_type>single</event_type>
+        <title>Einfacher Termin</title>
+        <teaser>Einfacher Termin an einem Montag um 16:30</teaser>
+        <event_begin>2025-11-11</event_begin>
+        <event_time>
+            <weekday>monday</weekday>
+            <time_begin>16:30</time_begin>
+            <duration>60</duration>
+        </event_time>
+        <same_day>true</same_day>
+        <detail_information/>
+        <ticket_link>
+            <title>Tickets</title>
+            <uri>https://www.jweiland.net</uri>
+        </ticket_link>
+        <organizers>
+            <organizer index="0">GmbH</organizer>
+            <organizer index="1">Co. KG</organizer>
+        </organizers>
+        <location>Cinema</location>
+        <images/>
+        <categories>
+            <category index="0">Audi</category>
+        </categories>
+    </event>
 
-	<event index="1">
-		<import_id>387</import_id>
-		<event_type>recurring</event_type>
-		<title>Wiederkehrender Termin</title>
-		<teaser>Wiederkehrender Termin jeden Montag und Donnerstag um 15:00 Uhr</teaser>
-		<event_begin>2025-11-11</event_begin>
-		<recurring_end>2025-12-31</recurring_end>
-		<event_time>
-			<time_begin>15:00</time_begin>
-		</event_time>
-		<xth>2</xth>
-		<weekday>9</weekday>
-		<detail_information />
-		<organizers>
-			<organizer index="0">GmbH</organizer>
-		</organizers>
-		<location>Kino</location>
-		<images />
-		<categories>
-			<category index="0">Audi</category>
-		</categories>
-	</event>
+    <event index="1">
+        <import_id>387</import_id>
+        <event_type>recurring</event_type>
+        <title>Wiederkehrender Termin</title>
+        <teaser>Wiederkehrender Termin jeden Montag und Donnerstag um 15:00 Uhr</teaser>
+        <event_begin>2025-11-11</event_begin>
+        <recurring_end>2025-12-31</recurring_end>
+        <event_time>
+            <time_begin>15:00</time_begin>
+        </event_time>
+        <xth>2</xth>
+        <weekday>9</weekday>
+        <detail_information/>
+        <organizers>
+            <organizer index="0">GmbH</organizer>
+        </organizers>
+        <location>Cinema</location>
+        <images/>
+        <categories>
+            <category index="0">Audi</category>
+        </categories>
+    </event>
 
-	<event index="2">
-		<process_as>new</process_as>
-		<event_type>duration</event_type>
-		<title>Durchgängiger Termin</title>
-		<teaser>Durchgängiger Termin Montag bis Donnerstag ab 12:30 Uhr</teaser>
-		<event_begin>2025-11-18</event_begin>
-		<event_end>2025-11-21</event_end>
-		<event_time>
-			<time_begin>12:30</time_begin>
-		</event_time>
-		<detail_information />
-		<organizers>
-			<organizer index="0">Co. KG</organizer>
-		</organizers>
-		<location>Kino</location>
-		<images />
-		<categories>
-			<category index="0">Audi</category>
-		</categories>
-	</event>
+    <event index="2">
+        <process_as>new</process_as>
+        <event_type>duration</event_type>
+        <title>Durchgängiger Termin</title>
+        <teaser>Durchgängiger Termin Montag bis Donnerstag ab 12:30 Uhr</teaser>
+        <event_begin>2025-11-18</event_begin>
+        <event_end>2025-11-21</event_end>
+        <event_time>
+            <time_begin>12:30</time_begin>
+        </event_time>
+        <detail_information/>
+        <organizers>
+            <organizer index="0">Co. KG</organizer>
+        </organizers>
+        <location>Cinema</location>
+        <images/>
+        <categories>
+            <category index="0">Audi</category>
+        </categories>
+    </event>
 </events>

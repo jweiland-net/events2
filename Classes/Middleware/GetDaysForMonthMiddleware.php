@@ -28,8 +28,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
- * This middleware is needed for LiteCalendar. If you flip to next month, this
- * class will be called and returns the events valid for selected month.
+ * This middleware is needed for LiteCalendar. If you flip to the next month, this
+ * class will be called and return the events valid for the selected month.
  */
 final readonly class GetDaysForMonthMiddleware implements MiddlewareInterface
 {
@@ -60,12 +60,12 @@ final readonly class GetDaysForMonthMiddleware implements MiddlewareInterface
         $categories = GeneralUtility::intExplode(',', $getParameters['categories'], true);
         $storagePages = GeneralUtility::intExplode(',', $getParameters['storagePages'], true);
 
-        // Save a session for selected month
+        // Save a session for a selected month
         $this->userSession->setMonthAndYear($month, $year);
 
         $daysOfMonth = [];
         foreach ($this->findAllDaysInMonth($month, $year, $categories, $storagePages) as $day) {
-            // generate day of month.
+            // generate day of the month.
             // Convert int to DateTime like extbase does and set TimezoneType to something like Europe/Berlin
             $date = new \DateTimeImmutable(date('c', (int)$day['day']));
             if ($date->getTimezone()->getLocation() === false) {
@@ -124,7 +124,7 @@ final readonly class GetDaysForMonthMiddleware implements MiddlewareInterface
         $latestAllowedDate = new \DateTimeImmutable('now midnight');
         $latestAllowedDate = $latestAllowedDate->modify(sprintf('+%d months', $this->extConf->getRecurringFuture()));
 
-        // get start and ending of given month
+        // get start and ending of a given month
         // j => day without leading 0, n => month without leading 0
         $firstDayOfMonth = $this->dateTimeUtility->standardizeDateTimeObject(
             \DateTimeImmutable::createFromFormat('j.n.Y', '1.' . $month . '.' . $year),
@@ -136,14 +136,14 @@ final readonly class GetDaysForMonthMiddleware implements MiddlewareInterface
             $earliestAllowedDate->format('mY') === $firstDayOfMonth->format('mY')
         ) {
             // if $earliestAllowedDate 17.01.2008 is greater than $firstDayOfMonth (01.01.2008)
-            // and both dates are in same month, then set date to $earliestAllowedDate 17.01.2008
+            // and both dates are in the same month, then set the date to $earliestAllowedDate 17.01.2008
             $firstDayOfMonth = $earliestAllowedDate;
         } elseif (
             $latestAllowedDate < $lastDayOfMonth &&
             $latestAllowedDate->format('mY') === $lastDayOfMonth->format('mY')
         ) {
             // if $latestAllowedDate 23.09.2008 is lower than $lastDayOfMonth (30.09.2008)
-            // and both dates are in same month, then set date to $latestAllowedDate 23.09.2008
+            // and both dates are in the same month, then set the date to $latestAllowedDate 23.09.2008
             $lastDayOfMonth = $latestAllowedDate;
         } elseif (
             $earliestAllowedDate > $firstDayOfMonth ||

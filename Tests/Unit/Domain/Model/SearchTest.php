@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Tests\Unit\Domain\Model;
 use JWeiland\Events2\Domain\Model\Category;
 use JWeiland\Events2\Domain\Model\Location;
 use JWeiland\Events2\Domain\Model\Search;
+use JWeiland\Events2\Tests\Functional\Events2Constants;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -27,6 +28,8 @@ class SearchTest extends UnitTestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        date_default_timezone_set(Events2Constants::PHP_TIMEZONE);
 
         $this->subject = new Search();
     }

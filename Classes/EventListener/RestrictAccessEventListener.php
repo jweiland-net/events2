@@ -19,10 +19,10 @@ use JWeiland\Events2\Traits\IsValidEventListenerRequestTrait;
 use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
-use TYPO3\CMS\Core\Messaging\AbstractMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\Arguments;
 use TYPO3\CMS\Extbase\Mvc\Request;
@@ -30,8 +30,8 @@ use TYPO3\CMS\Extbase\Service\ExtensionService;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
- * Restrict access to controller actions, if current logged-in user tries to access records of other users.
- * We will remove the event argument from request which will result in calling the errorAction of the ActionController.
+ * Restrict access to controller actions if the current logged-in user tries to access records of other users.
+ * We will remove the event argument from the request, which will result in calling the errorAction of the ActionController.
  */
 #[AsEventListener('events2/restrictAccess')]
 final readonly class RestrictAccessEventListener
@@ -104,11 +104,22 @@ final readonly class RestrictAccessEventListener
         }
 
         if ((int)($controllerActionEvent->getSettings()['userGroup'] ?? 0) === 0) {
+            $this->addFlashMessage(LocalizationUtility::translate('userGroupNotConfigured', 'events2'));
+            return false;
+        }
+
+        $userAspect = GeneralUtility::makeInstance(Context::class)->getAspect('frontend.user');
+        if (!$userAspect->isLoggedIn()) {
+            $this->addFlashMessage(LocalizationUtility::translate('pluginNeedsLogin', 'events2'));
+            return false;
+        }
+
+        if (!in_array((int)($controllerActionEvent->getSettings()['userGroup'] ?? 0), $userAspect->getGroupIds(), true)) {
             $this->addFlashMessage(LocalizationUtility::translate('notAllowedToCreate', 'events2'));
             return false;
         }
 
-        if ($this->userRepository->getFieldFromUser('tx_events2_organizer') === '') {
+        if ((int)$this->userRepository->getFieldFromUser('tx_events2_organizer') === 0) {
             $this->addFlashMessage(LocalizationUtility::translate('missingOrganizerForCreate', 'events2'));
             return false;
         }
@@ -133,7 +144,7 @@ final readonly class RestrictAccessEventListener
             FlashMessage::class,
             (string)$messageBody,
             '',
-            AbstractMessage::ERROR,
+            ContextualFeedbackSeverity::ERROR,
             true,
         );
 

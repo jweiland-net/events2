@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Unit\Backend\FormDataProvider;
 
 use JWeiland\Events2\Backend\FormDataProvider\InitializeNewEventRecord;
+use JWeiland\Events2\Tests\Functional\Events2Constants;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -32,6 +33,8 @@ class InitializeNewEventRecordTest extends UnitTestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        date_default_timezone_set(Events2Constants::PHP_TIMEZONE);
 
         $this->subject = new InitializeNewEventRecord(
             GeneralUtility::makeInstance(Context::class),

@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Functional\PageTitleProvider;
 
 use JWeiland\Events2\PageTitleProvider\Events2PageTitleProvider;
+use JWeiland\Events2\Tests\Functional\Events2Constants;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Http\ServerRequest;
@@ -32,6 +33,12 @@ class Events2PageTitleProviderTest extends FunctionalTestCase
     protected array $testExtensionsToLoad = [
         'sjbr/static-info-tables',
         'jweiland/events2',
+    ];
+
+    protected array $configurationToUseInTestInstance = [
+        'SYS' => [
+            'phpTimeZone' => Events2Constants::PHP_TIMEZONE,
+        ],
     ];
 
     protected function setUp(): void
@@ -64,7 +71,8 @@ class Events2PageTitleProviderTest extends FunctionalTestCase
                 'timestamp' => '1715299200',
             ],
         ]);
-        $GLOBALS['TYPO3_REQUEST'] = $request->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE);
+
+        $this->subject->setRequest($request->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE));
 
         self::assertSame(
             'Nice title for detail page - 10.05.2024',

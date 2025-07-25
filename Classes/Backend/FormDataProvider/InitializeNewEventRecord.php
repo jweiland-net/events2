@@ -20,27 +20,31 @@ use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
  */
 readonly class InitializeNewEventRecord implements FormDataProviderInterface
 {
+    private const TABLE = 'tx_events2_domain_model_event';
+
     public function __construct(
         private Context $context,
     ) {}
 
     /**
-     * Prefill column "event_begin" with current date
+     * Prefill the column "event_begin" with the current date
      */
     public function addData(array $result): array
     {
-        if ($result['tableName'] !== 'tx_events2_domain_model_event') {
+        if ($result['tableName'] !== self::TABLE) {
             return $result;
         }
 
-        if ($result['command'] === 'new') {
-            try {
-                $result['databaseRow']['event_begin'] = $this->context->getPropertyFromAspect(
-                    'date',
-                    'timestamp',
-                );
-            } catch (AspectNotFoundException $e) {
-            }
+        if ($result['command'] !== 'new') {
+            return $result;
+        }
+
+        try {
+            $result['databaseRow']['event_begin'] = $this->context->getPropertyFromAspect(
+                'date',
+                'timestamp',
+            );
+        } catch (AspectNotFoundException) {
         }
 
         return $result;

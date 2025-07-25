@@ -17,7 +17,7 @@ use JWeiland\Events2\Traits\InjectCacheServiceTrait;
 use JWeiland\Events2\Traits\InjectCategoryRepositoryTrait;
 use JWeiland\Events2\Traits\InjectDayRelationServiceTrait;
 use JWeiland\Events2\Traits\InjectEventRepositoryTrait;
-use JWeiland\Events2\Traits\InjectLocationRepositoryTrait;
+use JWeiland\Events2\Traits\InjectLocationRecordServiceTrait;
 use JWeiland\Events2\Traits\InjectMailMessageTrait;
 use JWeiland\Events2\Traits\InjectPersistenceManagerTrait;
 use JWeiland\Events2\Traits\InjectUserRepositoryTrait;
@@ -28,7 +28,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
  * The EventController contains actions to search, create, activate, update and delete events.
- * For plain listing of events please visit DayController
+ * For a plain listing of events, please visit DayController
  */
 class ManagementController extends AbstractController
 {
@@ -36,7 +36,7 @@ class ManagementController extends AbstractController
     use InjectCategoryRepositoryTrait;
     use InjectDayRelationServiceTrait;
     use InjectEventRepositoryTrait;
-    use InjectLocationRepositoryTrait;
+    use InjectLocationRecordServiceTrait;
     use InjectMailMessageTrait;
     use InjectPersistenceManagerTrait;
     use InjectUserRepositoryTrait;
@@ -78,7 +78,7 @@ class ManagementController extends AbstractController
 
         $this->postProcessAndAssignFluidVariables([
             'event' => GeneralUtility::makeInstance(Event::class),
-            'locations' => $this->locationRepository->findAll(),
+            'locations' => $this->locationRecordService->findAll(),
             'selectableCategories' => $categories,
         ]);
 
@@ -131,7 +131,7 @@ class ManagementController extends AbstractController
 
         $this->postProcessAndAssignFluidVariables([
             'event' => $event,
-            'locations' => $this->locationRepository->findAll(),
+            'locations' => $this->locationRecordService->findAll(),
             'selectableCategories' => $categories,
         ]);
 

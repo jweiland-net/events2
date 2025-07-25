@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Tests\Functional\Helper;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Helper\Exception\NoUniquePathSegmentException;
 use JWeiland\Events2\Helper\PathSegmentHelper;
+use JWeiland\Events2\Tests\Functional\Events2Constants;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\DataHandling\SlugHelper;
@@ -37,6 +38,12 @@ class PathSegmentHelperTest extends FunctionalTestCase
     protected array $testExtensionsToLoad = [
         'sjbr/static-info-tables',
         'jweiland/events2',
+    ];
+
+    protected array $configurationToUseInTestInstance = [
+        'SYS' => [
+            'phpTimeZone' => Events2Constants::PHP_TIMEZONE,
+        ],
     ];
 
     protected function setUp(): void
@@ -85,7 +92,7 @@ class PathSegmentHelperTest extends FunctionalTestCase
     {
         $baseRecord = [
             'uid' => 2,
-            'pid' => 12,
+            'pid' => Events2Constants::PAGE_STORAGE,
             'title' => 'Weekly market',
         ];
 
@@ -94,7 +101,7 @@ class PathSegmentHelperTest extends FunctionalTestCase
             ->method('generate')
             ->with(
                 self::identicalTo($baseRecord),
-                self::identicalTo(12),
+                self::identicalTo(20),
             )
             ->willReturn('weekly-market-2');
 
@@ -115,7 +122,7 @@ class PathSegmentHelperTest extends FunctionalTestCase
         return new PathSegmentHelper(
             GeneralUtility::makeInstance(EventDispatcher::class),
             GeneralUtility::makeInstance(PersistenceManagerInterface::class),
-            $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_event'),
+            $this->getConnectionPool(),
             $extConf,
         );
     }

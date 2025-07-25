@@ -11,16 +11,21 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Event;
 
-/**
- * Use this event, if you want to add further modifications to the generated days
- */
-class PostGenerateDaysEvent
-{
-    protected array $eventRecord;
+use JWeiland\Events2\Service\Result\DayGeneratorResult;
 
-    public function __construct(array $eventRecord)
+/**
+ * Use this event if you want to add further modifications to the generated days
+ */
+final readonly class PostGenerateDaysEvent
+{
+    public function __construct(
+        private DayGeneratorResult $dayGeneratorResult,
+        private array $eventRecord,
+    ) {}
+
+    public function getDayGeneratorResult(): DayGeneratorResult
     {
-        $this->eventRecord = $eventRecord;
+        return $this->dayGeneratorResult;
     }
 
     public function getEventRecord(): array

@@ -11,40 +11,47 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Service;
 
+use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Traits\Typo3RequestTrait;
+use TYPO3\CMS\Core\Cache\CacheTag;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
- * Cache service for tagging pages and content with specific events2 cache tags to clear cache while creating/updating
- * event records.
+ * Cache service for assigning events2 cache tags to pages and content,
+ * ensuring targeted cache invalidation when creating or updating event records.
  */
 readonly class CacheService
 {
     use Typo3RequestTrait;
 
     /**
-     * Adds cache tags to page cache by event-records.
-     * Following cache tags will be added to TSFE:
+     * Enriches the page cache with cache tags based on event records.
+     * The following cache tags will be added to the CacheDataCollector:
      * "tx_events2_uid_[event:uid]"
+     *
+     * @param QueryResultInterface<Event>|array<Event> $events Collection of event records used to generate cache tags.
      */
-    public function addCacheTagsByEventRecords(QueryResultInterface|array $eventRecords): void
+    public function addCacheTagsByEventRecords(QueryResultInterface|array $events): void
     {
         if (!$this->isFrontendRequest()) {
             return;
         }
 
         $cacheTags = [];
-        foreach ($eventRecords as $event) {
+        foreach ($events as $event) {
             // Cache tag for each event record
             $cacheTags[] = 'tx_events2_uid_' . $event->getUid();
 
-            if ($event->_getProperty('_localizedUid')) {
-                $cacheTags[] = 'tx_events2_uid_' . $event->_getProperty('_localizedUid');
+            if ($localizedUid = $event->_getProperty('_localizedUid')) {
+                $cacheTags[] = 'tx_events2_uid_' . $localizedUid;
             }
         }
+
         if ($cacheTags !== []) {
-            $this->getTypoScriptFrontendController()->addCacheTags($cacheTags);
+            $this->getCacheDataCollector()->addCacheTags(
+                ...array_map(fn(string $cacheTag) => new CacheTag($cacheTag), $cacheTags),
+            );
         }
     }
 
@@ -68,6 +75,8 @@ readonly class CacheService
             $cacheTags[] = 'tx_events2_domain_model_event';
         }
 
-        $this->getTypoScriptFrontendController()->addCacheTags($cacheTags);
+        $this->getCacheDataCollector()->addCacheTags(
+            ...array_map(fn(string $cacheTag) => new CacheTag($cacheTag), $cacheTags),
+        );
     }
 }

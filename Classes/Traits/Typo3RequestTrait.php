@@ -12,22 +12,40 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Traits;
 
 use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Cache\CacheDataCollector;
 use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Http\ServerRequestFactory;
+use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
 /**
  * Trait to handle $_GET, $_POST and request attributes
  */
 trait Typo3RequestTrait
 {
-    protected function getTypoScriptFrontendController(
+    protected function getPageArguments(
         ?ServerRequestInterface $request = null,
-    ): TypoScriptFrontendController {
+    ): PageArguments {
         $request ??= $this->getTypo3Request();
 
-        return $request->getAttribute('frontend.controller');
+        return $request->getAttribute('routing');
+    }
+
+    protected function getFrontendUserAuthentication(
+        ?ServerRequestInterface $request = null,
+    ): FrontendUserAuthentication {
+        $request ??= $this->getTypo3Request();
+
+        return $request->getAttribute('frontend.user');
+    }
+
+    protected function getCacheDataCollector(
+        ?ServerRequestInterface $request = null,
+    ): CacheDataCollector {
+        $request ??= $this->getTypo3Request();
+
+        return $request->getAttribute('frontend.cache.collector');
     }
 
     protected function getPostFromRequest(?ServerRequestInterface $request = null): array
@@ -45,7 +63,7 @@ trait Typo3RequestTrait
     }
 
     /**
-     * Merge given argument with value from GET with value from POST.
+     * Merge a given argument with value from GET with value from POST.
      * Replacement for old GeneralUtility::_GPmerged
      */
     protected function getMergedWithPostFromRequest(
