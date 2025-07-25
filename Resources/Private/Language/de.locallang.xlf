@@ -487,6 +487,14 @@
         <source>Remaining letters</source>
         <target state="final">Verbleibende Zeichen</target>
       </trans-unit>
+      <trans-unit id="userGroupNotConfigured">
+        <source>Please assign a user group (userGroup property) in the site settings to restrict access to this page.</source>
+        <target state="needs-translation">Please assign a user group (userGroup property) in the site settings to restrict access to this page.</target>
+      </trans-unit>
+      <trans-unit id="pluginNeedsLogin">
+        <source>This page is restricted. Please log in to access the Events Management area.</source>
+        <target state="needs-translation">This page is restricted. Please log in to access the Events Management area.</target>
+      </trans-unit>
       <trans-unit id="notAllowedToCreate" approved="yes">
         <source>You're not allowed to create event records.</source>
         <target state="final">Sie sind nicht berechtigt, Veranstaltungen zu erstellen.</target>
