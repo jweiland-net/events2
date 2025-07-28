@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 10.0.1
+==============
+
+*   Add plugin to ContentElement UpgradeWizard
+
 Version 10.0.0
 ==============
 
