@@ -38,9 +38,28 @@ See events2 in action:
 Frontend Output
 ---------------
 ..  figure:: ../Images/Introduction/month-calendar-view.png
-    :width: 500px
+    :width: 300px
     :align: left
     :alt: Month calendar view, days with events in bold, current day highlighted
+Month calendar view, days with events in bold, current day highlighted
+
+..  figure:: ../Images/Introduction/list-view.png
+    :width: 500px
+    :align: left
+    :alt: List view of events
+List view of events
+
+..  figure:: ../Images/Introduction/single-view.png
+    :width: 500px
+    :align: left
+    :alt: Detail view of an event
+Detail view of an event
+
+..  figure:: ../Images/Introduction/search-box.png
+    :width: 300px
+    :align: left
+    :alt: Search form for events
+Search form for events
 
 ..  figure:: ../Images/Introduction/events2-list.jpg
     :width: 500px
