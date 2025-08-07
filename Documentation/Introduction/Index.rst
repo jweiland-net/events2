@@ -33,10 +33,14 @@ Examples of websites which use this extension
 Screenshots
 ===========
 
-See events2 in action.
+See events2 in action:
 
-Output Frontend
+Frontend Output
 ---------------
+..  figure:: ../Images/Introduction/month-calendar-view.png
+    :width: 500px
+    :align: left
+    :alt: Month calendar view, days with events in bold, current day highlighted
 
 ..  figure:: ../Images/Introduction/events2-list.jpg
     :width: 500px
