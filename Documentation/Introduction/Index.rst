@@ -41,27 +41,40 @@ Frontend Output
     :width: 300px
     :align: left
     :alt: Month calendar view, days with events in bold, current day highlighted
+
 Month calendar view, days with events in bold, current day highlighted
 
 ..  figure:: ../Images/Introduction/list-view.png
     :width: 500px
     :align: left
     :alt: List view of events
+
 List view of events
 
 ..  figure:: ../Images/Introduction/single-view.png
     :width: 500px
     :align: left
     :alt: Detail view of an event
+
 Detail view of an event
 
 ..  figure:: ../Images/Introduction/search-box.png
     :width: 300px
     :align: left
     :alt: Search form for events
+
 Search form for events
 
-..  figure:: ../Images/Introduction/events2-list.jpg
-    :width: 500px
+..  figure:: ../Images/Introduction/recurring-event-form.png
+    :width: 300px
     :align: left
-    :alt: Output of list in frontend
+    :alt: Form to enter recurring events
+
+Backend form to enter recurring events
+
+..  figure:: ../Images/Introduction/event-detail-form.png
+    :width: 300px
+    :align: left
+    :alt: Form to enter recurring events
+
+Backend form to enter event details
