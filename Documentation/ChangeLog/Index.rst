@@ -11,6 +11,7 @@ Version 10.0.1
 ==============
 
 *   Add plugin to ContentElement UpgradeWizard
+*   Allow comma seperated list of storage PIDs
 
 Version 10.0.0
 ==============
