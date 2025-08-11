@@ -44,11 +44,11 @@ settings:
     default: 7
 
   events2.storagePid:
-    label: 'Default storage PID'
+    label: 'Default storage PIDs'
     category: 'events2.storages'
-    description: 'Folder that stores all POIs'
-    type: int
-    default: 0
+    description: 'Folder(s) that stores all POIs (comma seperated)'
+    type: string
+    default: '0'
   events2.storagePidForFrontendCreatedEvents:
     label: 'Storage PID for FE created events'
     category: 'events2.storages'
