@@ -5,7 +5,7 @@ CREATE TABLE tx_events2_domain_model_event
 (
 	import_id varchar(255) DEFAULT '' NOT NULL,
 
-	KEY       path_segment (path_segment(185), uid)
+	KEY language_identifier (l10n_parent, sys_language_uid, t3ver_wsid, deleted)
 );
 
 #
