@@ -7,6 +7,13 @@
 ChangeLog
 =========
 
+Version 10.0.2
+==============
+
+*   Do not respect BE_USER workspace in CLI environment
+*   Improve performance a lot while re-creating day-records (CLI)
+*   Prevent usage of Extbase UriBuilder in events2 middleware
+
 Version 10.0.1
 ==============
 
