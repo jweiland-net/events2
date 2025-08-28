@@ -17,17 +17,17 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use TYPO3\CMS\Core\Http\JsonResponse;
+use TYPO3\CMS\Core\Routing\RouterInterface;
+use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 
 /**
- * This middleware is needed for LiteCalendar. If you click on a day this class will be called
- * and returns the URI to the expected events for given day.
+ * This middleware is needed for LiteCalendar. If you click on a day, this class will be called
+ * and returns the URI to the expected events for a given day.
  */
 final readonly class GetUriForDayMiddleware implements MiddlewareInterface
 {
     public function __construct(
-        protected UriBuilder $uriBuilder,
         protected DateTimeUtility $dateTimeUtility,
     ) {}
 
@@ -94,20 +94,29 @@ final readonly class GetUriForDayMiddleware implements MiddlewareInterface
             return '[0]';
         }
 
-        return $this->uriBuilder
-            ->reset()
-            ->setTargetPageUid($pidOfListPage)
-            ->setCreateAbsoluteUri(true)
-            ->uriFor(
-                'list',
-                [
+        $router = $this->getRouter($request);
+
+        return (string)$router->generateUri(
+            $pidOfListPage,
+            [
+                'tx_events2_list' => [
+                    'action' => 'list',
+                    'controller' => 'Day',
                     'filter' => [
                         'timestamp' => $timestamp,
                     ],
                 ],
-                'Day',
-                'events2',
-                'list',
-            );
+            ],
+        );
+    }
+
+    private function getRouter(ServerRequestInterface $request): RouterInterface
+    {
+        return $this->getSite($request)->getRouter();
+    }
+
+    private function getSite(ServerRequestInterface $request): Site
+    {
+        return $request->getAttribute('site');
     }
 }

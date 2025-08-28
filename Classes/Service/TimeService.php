@@ -129,7 +129,7 @@ readonly class TimeService
     }
 
     /**
-     * Check if exception time matches the given date.
+     * Check if the exception time matches the given date.
      */
     protected function isMatchingExceptionTime(
         array $eventRecord,
