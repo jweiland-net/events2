@@ -106,7 +106,7 @@ final readonly class GetUriForDayMiddleware implements MiddlewareInterface
                         'timestamp' => $timestamp,
                     ],
                 ],
-            ]
+            ],
         );
     }
 
