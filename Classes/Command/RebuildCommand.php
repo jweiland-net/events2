@@ -15,13 +15,13 @@ use Doctrine\DBAL\Exception;
 use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Service\DayRelationService;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 class RebuildCommand extends Command
 {
-    protected OutputInterface $output;
-
     /**
      * Will be called by DI, so please don't add extbase classes with inject methods here.
      */
@@ -35,41 +35,48 @@ class RebuildCommand extends Command
     protected function configure(): void
     {
         $this->setDescription(
-            'Executing this command will TRUNCATE (delete) all records from day table. ' .
-            'Afterwards, it searches for each current and future event and re-creates all day records again. ' .
-            'If you have any problems with created day records, this command is the first place to start. ' .
-            'Please be careful running this command as a CronJob each day, as for the time it runs, there ' .
-            'may no events visible in frontend. We prefer using the Scheduler Task manually.',
+            'Executing this command will TRUNCATE (delete) all records from day table. '
+            . 'Afterwards, it searches for each current and future event and re-creates all day records again. '
+            . 'If you have any problems with created day records, this command is the first place to start. '
+            . 'Please be careful running this command as a CronJob each day, as for the time it runs, there '
+            . 'may no events visible in frontend. We prefer using the Scheduler Task instead.',
         );
     }
 
     /**
-     * Delete and re-create all day records of events2
+     * Delete and re-create all day-records of events2
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->output = $output;
+        $io = new SymfonyStyle($input, $output);
 
-        $output->writeln('Start re-building day records for each event record');
-        $output->writeln('');
-        $this->truncateDayTable();
-        $output->writeln('');
-        $this->reGenerateDayRelations();
-        $output->writeln('');
+        $io->title('Recreating Day Records: Truncating and Rebuilding Day-Table');
+
+        $this->truncateDayTable($io);
+        $this->reGenerateDayRelations($io);
 
         return 0;
     }
 
-    protected function truncateDayTable(): void
+    protected function truncateDayTable(SymfonyStyle $io): void
     {
+        $io->section('Truncating Day Table');
         $this->databaseService->truncateTable('tx_events2_domain_model_day', true);
-        $this->output->writeln('I have truncated the day table');
+        $io->info('Day table truncated');
     }
 
-    protected function reGenerateDayRelations(): void
+    protected function reGenerateDayRelations(SymfonyStyle $io): void
     {
-        $dayCounter = 0;
-        $this->output->writeln('Process each event record');
+        // Add Message to the ProgressBar. Formats copied from ProgressBar class.
+        ProgressBar::setFormatDefinition(ProgressBar::FORMAT_NORMAL, ' %current%/%max% [%bar%] %percent:3s%% -- %message%');
+        ProgressBar::setFormatDefinition(ProgressBar::FORMAT_VERBOSE, ' %current%/%max% [%bar%] %percent:3s%% %elapsed:6s% -- %message%');
+        ProgressBar::setFormatDefinition(ProgressBar::FORMAT_VERY_VERBOSE, ' %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% -- %message%');
+        ProgressBar::setFormatDefinition(ProgressBar::FORMAT_DEBUG, ' %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% %memory:6s% -- %message%');
+
+        $io->section('Creating day records');
+
+        $progressBar = $io->createProgressBar($this->getAmountOfEventRecordsToProcess());
+        $progressBar->start();
 
         $queryResult = $this->databaseService
             ->getQueryBuilderForAllEvents()
@@ -77,39 +84,20 @@ class RebuildCommand extends Command
             ->executeQuery();
 
         while ($simpleEventRecord = $queryResult->fetchAssociative()) {
-            $fullEventRecord = $this->dayRelationService->createDayRelations((int)$simpleEventRecord['uid']);
-            if ($fullEventRecord !== []) {
-                if (is_array($fullEventRecord['days'])) {
-                    $amountOfDayRecords = count($fullEventRecord['days']);
-                    $this->output->writeln(sprintf(
-                        'Process event UID: %09d, PID: %05d, created: %04d day records, RAM: %d',
-                        $fullEventRecord['uid'],
-                        $fullEventRecord['pid'],
-                        $amountOfDayRecords,
-                        memory_get_usage(),
-                    ));
-                    $dayCounter += $amountOfDayRecords;
-                } else {
-                    $this->output->writeln(sprintf(
-                        'ERROR event UID: %09d, PID: %05d: array key "days" has to be an array.',
-                        $simpleEventRecord['uid'],
-                        $simpleEventRecord['pid'],
-                    ));
-                }
-            } else {
-                $this->output->writeln(sprintf(
-                    'ERROR event UID: %09d, PID: %05d: event record could not be fetched from DB.',
-                    $simpleEventRecord['uid'],
-                    $simpleEventRecord['pid'],
-                ));
-            }
+            $this->dayRelationService->createDayRelations((int)$simpleEventRecord['uid']);
+
+            $progressBar->setMessage(sprintf(
+                'Process event UID: %09d, PID: %05d',
+                (int)$simpleEventRecord['uid'],
+                (int)$simpleEventRecord['pid'],
+            ));
+
+            $progressBar->advance();
         }
 
-        $this->output->writeln(sprintf(
-            'We have recreated the day records for %d event records and %d day records in total',
-            $this->getAmountOfEventRecordsToProcess(),
-            $dayCounter,
-        ));
+        $progressBar->finish();
+
+        $io->info('Day records created');
     }
 
     protected function getAmountOfEventRecordsToProcess(): int
