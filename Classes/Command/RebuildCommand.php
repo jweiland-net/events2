@@ -19,6 +19,7 @@ use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use TYPO3\CMS\Core\Database\Connection;
 
 class RebuildCommand extends Command
 {
@@ -78,8 +79,8 @@ class RebuildCommand extends Command
         $progressBar = $io->createProgressBar($this->getAmountOfEventRecordsToProcess());
         $progressBar->start();
 
-        $queryResult = $this->databaseService
-            ->getQueryBuilderForAllEvents()
+        $queryBuilder = $this->databaseService->getQueryBuilderForAllEvents();
+        $queryResult = $queryBuilder
             ->select('uid', 'pid')
             ->executeQuery();
 

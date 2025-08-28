@@ -80,13 +80,13 @@ readonly class DayRecordService
                 self::TABLE,
                 [
                     'def_lang_event_uid' => $eventUid,
-                    't3ver_wsid' => $this->getBackendUser()->workspace,
+                    't3ver_wsid' => $this->getWorkspaceUidFromBackendUser(),
                 ],
             )->fetchAllAssociative();
 
             foreach ($dayRecordsToDelete as $dayRecordToDelete) {
                 $connection->delete(self::TABLE, ['uid' => $dayRecordToDelete['uid']]);
-                $this->referenceIndex->updateRefIndexTable(self::TABLE, $dayRecordToDelete['uid'], false, $this->getBackendUser()->workspace);
+                $this->referenceIndex->updateRefIndexTable(self::TABLE, $dayRecordToDelete['uid'], false, $this->getWorkspaceUidFromBackendUser());
             }
         } catch (Exception) {
         }
@@ -125,7 +125,7 @@ readonly class DayRecordService
                 self::TABLE,
                 [
                     'sys_language_uid' => 0,
-                    't3ver_wsid' => $this->getBackendUser()->workspace,
+                    't3ver_wsid' => $this->getWorkspaceUidFromBackendUser(),
                 ],
             )->fetchAllAssociative();
         }
@@ -151,7 +151,7 @@ readonly class DayRecordService
 
             // Update the reference index to ensure that the Workspace module correctly reflects recent modifications
             foreach ($this->getExistingDayRecords((int)$eventRecord['uid']) as $newDayRecord) {
-                $this->referenceIndex->updateRefIndexTable(self::TABLE, $newDayRecord['uid'], false, $this->getBackendUser()->workspace);
+                $this->referenceIndex->updateRefIndexTable(self::TABLE, $newDayRecord['uid'], false, $this->getWorkspaceUidFromBackendUser());
             }
         }
 
@@ -166,7 +166,7 @@ readonly class DayRecordService
         foreach ($existingLiveDayRecordsToBeMarkedAsDeleted as $existingLiveDayRecord) {
             $existingLiveDayRecord['t3_origuid'] = (int)$existingLiveDayRecord['uid'];
             $existingLiveDayRecord['t3ver_oid'] = (int)$existingLiveDayRecord['uid'];
-            $existingLiveDayRecord['t3ver_wsid'] = $this->getBackendUser()->workspace;
+            $existingLiveDayRecord['t3ver_wsid'] = $this->getWorkspaceUidFromBackendUser();
             $existingLiveDayRecord['t3ver_state'] = VersionState::DELETE_PLACEHOLDER->value;
             unset($existingLiveDayRecord['uid']);
 
@@ -174,7 +174,7 @@ readonly class DayRecordService
                 self::TABLE,
                 $connection->insert(self::TABLE, $existingLiveDayRecord),
                 false,
-                $this->getBackendUser()->workspace,
+                $this->getWorkspaceUidFromBackendUser(),
             );
         }
 
@@ -187,7 +187,7 @@ readonly class DayRecordService
                 'tx_events2_domain_model_event',
                 (int)($workspaceVersionOfEventRecord['_ORIG_uid'] ?? $workspaceVersionOfEventRecord['uid']),
                 false,
-                $this->getBackendUser()->workspace,
+                $this->getWorkspaceUidFromBackendUser(),
             );
         }
     }
@@ -219,12 +219,12 @@ readonly class DayRecordService
             $newDayRecord['crdate'] = time();
             $newDayRecord['event'] = (int)$eventRecord['uid'];
             $newDayRecord['def_lang_event_uid'] = $eventUid;
-            $newDayRecord['t3ver_wsid'] = $this->getBackendUser()->workspace;
+            $newDayRecord['t3ver_wsid'] = $this->getWorkspaceUidFromBackendUser();
             $newDayRecord['t3ver_stage'] = VersionState::DEFAULT_STATE->value;
             $newDayRecord['sys_language_uid'] = $languageUid;
             $newDayRecord['l10n_parent'] = $l10nParent;
 
-            if ($this->getBackendUser()->workspace > 0) {
+            if ($this->getWorkspaceUidFromBackendUser() > 0) {
                 // Verify whether an active LIVE record exists to which a new relation can be established
                 if (array_key_exists($newDayRecordKey, $existingLiveDayRecords)) {
                     $existingLiveDayRecord = $existingLiveDayRecords[$newDayRecordKey];
@@ -269,6 +269,16 @@ readonly class DayRecordService
         $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
 
         return $queryBuilder;
+    }
+
+    /**
+     * In CLI and scheduler context the BE_USER's workspace may be initialized with workspace -99.
+     * In this context we will only operate on LIVE workspace.
+     * We cannot use -99 as a valid workspace as 't3ver_wsid'-columns do not allow storing negative values.
+     */
+    private function getWorkspaceUidFromBackendUser(): int
+    {
+        return max($this->getBackendUser()->workspace, 0);
     }
 
     private function getBackendUser(): BackendUserAuthentication
