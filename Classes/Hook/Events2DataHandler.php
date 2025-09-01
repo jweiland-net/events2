@@ -13,7 +13,10 @@ namespace JWeiland\Events2\Hook;
 
 use JWeiland\Events2\Service\DayRelationService;
 use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
@@ -61,6 +64,25 @@ readonly class Events2DataHandler
         foreach ($dataHandler->datamap['tx_events2_domain_model_event'] as $id => $incomingFieldArray) {
             $this->dayRelationService->createDayRelations($this->getEventUid($id, $dataHandler));
         }
+    }
+
+    public function processCmdmap_postProcess(string $command, $table, $id, $value, DataHandler $dataHandler, $pasteUpdate, $pasteDatamap)
+    {
+        if ($table !== 'tx_events2_domain_model_event' || $command !== 'copy') {
+            return;
+        }
+
+        $newId = $dataHandler->copyMappingArray['tx_events2_domain_model_event'][$id];
+
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_events2_domain_model_day');
+        $queryBuilder
+            ->update('tx_events2_domain_model_day')
+            ->set('def_lang_event_uid', $newId)
+            ->where(
+                $queryBuilder->expr()->eq('event', $queryBuilder->createNamedParameter($newId, Connection::PARAM_INT))
+            )
+            ->executeStatement();
     }
 
     private function getEventUid(int|string $id, DataHandler $dataHandler): int
