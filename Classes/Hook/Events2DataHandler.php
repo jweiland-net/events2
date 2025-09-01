@@ -86,7 +86,7 @@ readonly class Events2DataHandler
             'tx_events2_domain_model_day',
             [
                 'uid' => $dayRecordUid,
-            ]
+            ],
         );
     }
 
