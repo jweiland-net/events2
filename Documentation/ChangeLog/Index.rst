@@ -7,6 +7,12 @@
 ChangeLog
 =========
 
+Version 10.0.3
+==============
+
+*   Never let DataHandler create day records in any case
+*   Add startingpoint to events2 plugins
+
 Version 10.0.2
 ==============
 

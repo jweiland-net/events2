@@ -70,7 +70,7 @@ ExtensionUtility::registerPlugin(
 
 ExtensionManagementUtility::addToAllTCAtypes(
     'tt_content',
-    '--div--;Configuration,pi_flexform',
+    '--div--;Configuration,pi_flexform,pages',
     'events2_list',
     'after:subheader',
 );
@@ -82,7 +82,7 @@ ExtensionManagementUtility::addPiFlexFormValue(
 
 ExtensionManagementUtility::addToAllTCAtypes(
     'tt_content',
-    '--div--;Configuration,pi_flexform',
+    '--div--;Configuration,pi_flexform,pages',
     'events2_show',
     'after:subheader',
 );
@@ -94,7 +94,7 @@ ExtensionManagementUtility::addPiFlexFormValue(
 
 ExtensionManagementUtility::addToAllTCAtypes(
     'tt_content',
-    '--div--;Configuration,pi_flexform',
+    '--div--;Configuration,pi_flexform,pages',
     'events2_management',
     'after:subheader',
 );
@@ -106,7 +106,7 @@ ExtensionManagementUtility::addPiFlexFormValue(
 
 ExtensionManagementUtility::addToAllTCAtypes(
     'tt_content',
-    '--div--;Configuration,pi_flexform',
+    '--div--;Configuration,pi_flexform,pages',
     'events2_calendar',
     'after:subheader',
 );
@@ -118,7 +118,7 @@ ExtensionManagementUtility::addPiFlexFormValue(
 
 ExtensionManagementUtility::addToAllTCAtypes(
     'tt_content',
-    '--div--;Configuration,pi_flexform',
+    '--div--;Configuration,pi_flexform,pages',
     'events2_searchform',
     'after:subheader',
 );
@@ -130,7 +130,7 @@ ExtensionManagementUtility::addPiFlexFormValue(
 
 ExtensionManagementUtility::addToAllTCAtypes(
     'tt_content',
-    '--div--;Configuration,pi_flexform',
+    '--div--;Configuration,pi_flexform,pages',
     'events2_searchresults',
     'after:subheader',
 );
