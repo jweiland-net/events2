@@ -13,6 +13,7 @@ namespace JWeiland\Events2\Hook;
 
 use JWeiland\Events2\Service\DayRelationService;
 use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
@@ -24,6 +25,7 @@ readonly class Events2DataHandler
     public function __construct(
         protected DayRelationService $dayRelationService,
         protected CacheManager $cacheManager,
+        protected ConnectionPool $connectionPool,
     ) {}
 
     /**
@@ -50,27 +52,52 @@ readonly class Events2DataHandler
 
     public function processDatamap_afterAllOperations(DataHandler $dataHandler): void
     {
-        if (!array_key_exists('tx_events2_domain_model_event', $dataHandler->datamap)) {
-            return;
-        }
-
         if (!$dataHandler->isOuterMostInstance()) {
             return;
         }
 
-        foreach ($dataHandler->datamap['tx_events2_domain_model_event'] as $id => $incomingFieldArray) {
-            $this->dayRelationService->createDayRelations($this->getEventUid($id, $dataHandler));
+        if (array_key_exists('tx_events2_domain_model_day', $dataHandler->datamap)) {
+            foreach ($dataHandler->datamap['tx_events2_domain_model_day'] as $id => $incomingFieldArray) {
+                $this->deleteDayRecord($this->getRecordUid($id, $dataHandler));
+            }
+        }
+
+        if (array_key_exists('tx_events2_domain_model_event', $dataHandler->datamap)) {
+            foreach ($dataHandler->datamap['tx_events2_domain_model_event'] as $id => $incomingFieldArray) {
+                $this->dayRelationService->createDayRelations($this->getRecordUid($id, $dataHandler));
+            }
         }
     }
 
-    private function getEventUid(int|string $id, DataHandler $dataHandler): int
+    /**
+     * Prevent the DataHandler from creating any day records. The relationship between
+     * the day and event tables is highly specific. An event in the LIVE workspace
+     * may have a different number of associated day records compared to the same
+     * event record in a different workspace (> 0). This discrepancy can occur
+     * when, for example, the event type is changed from "single" to "recurring".
+     *
+     * Only our DayRelationService will create valid translated/versionized day records
+     * for an event
+     */
+    private function deleteDayRecord(int $dayRecordUid): void
+    {
+        $connection = $this->connectionPool->getConnectionForTable('tx_events2_domain_model_day');
+        $connection->delete(
+            'tx_events2_domain_model_day',
+            [
+                'uid' => $dayRecordUid,
+            ]
+        );
+    }
+
+    private function getRecordUid(int|string $id, DataHandler $dataHandler): int
     {
         if (MathUtility::canBeInterpretedAsInteger($id)) {
-            $eventUid = $id;
+            $recordUid = $id;
         } else {
-            $eventUid = $dataHandler->substNEWwithIDs[$id];
+            $recordUid = $dataHandler->substNEWwithIDs[$id];
         }
 
-        return (int)$eventUid;
+        return (int)$recordUid;
     }
 }
