@@ -30,16 +30,17 @@ class LocationRecordService
      */
     public function findLocations(string $search): array
     {
-        $queryBuilder = $this->getQueryBuilderForTable('tx_events2_domain_model_location', 'l');
+        $queryBuilder = $this->getQueryBuilderForTable(self::TABLE);
         $queryBuilder
-            ->select('l.uid', 'l.location as label')
+            ->select('uid', 'location as label')
+            ->from(self::TABLE)
             ->where(
                 $queryBuilder->expr()->like(
-                    'l.location',
+                    'location',
                     $queryBuilder->createNamedParameter('%' . $queryBuilder->escapeLikeWildcards($search) . '%'),
                 ),
             )
-            ->orderBy('l.location', 'ASC');
+            ->orderBy('location', 'ASC');
 
         // Remember: column "uid" and "label" are a must-have for autocompletion
         // Use CONCAT to add further columns to the label. Example:
@@ -51,12 +52,12 @@ class LocationRecordService
 
         $queryResult = $queryBuilder->executeQuery();
 
-        $locations = [];
-        while ($location = $queryResult->fetchAssociative()) {
-            $locations[] = $location;
+        $locationOptions = [];
+        while ($locationRecord = $queryResult->fetchAssociative()) {
+            $locationOptions[] = $locationRecord;
         }
 
-        return $locations;
+        return $locationOptions;
     }
 
     /**

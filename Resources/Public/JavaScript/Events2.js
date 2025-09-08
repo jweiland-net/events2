@@ -185,11 +185,15 @@ let Events2 = function ($element) {
               me.$autoCompleteLocation.setAttribute('placeholder', 'Loading...');
               // Fetch External Data Source
               const source = await fetch(
-                siteUrl + '?events2SearchLocation=' + autoCompleteJS.input.value, {
+                siteUrl, {
                   headers: {
                     'Content-Type': 'application/json',
                     'ext-events2': 'getLocations'
-                  }
+                  },
+                  method: 'POST',
+                  body: JSON.stringify({
+                    events2SearchLocation: autoCompleteJS.input.value,
+                  }),
                 });
               const locations = await source.json();
               // Post Loading placeholder text

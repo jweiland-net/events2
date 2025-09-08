@@ -20,7 +20,7 @@ use TYPO3\CMS\Core\Http\JsonResponse;
 
 /**
  * This middleware is needed for the management plugin. It is necessary to show a list of location titles
- * in AutoComplete input box.
+ * in the AutoComplete input box.
  */
 final readonly class GetLocationsMiddleware implements MiddlewareInterface
 {
@@ -38,8 +38,14 @@ final readonly class GetLocationsMiddleware implements MiddlewareInterface
         }
 
         // Hint: search may fail with "&" in $search
+        $json = (string)$request->getBody();
+        if (json_validate($json) !== true) {
+            return new JsonResponse();
+        }
+
+        $data = json_decode($json, true);
         $search = trim(htmlspecialchars(strip_tags(
-            $request->getQueryParams()['events2SearchLocation'] ?? '',
+            $data['events2SearchLocation'] ?? '',
         )));
 
         if ($search === '') {
