@@ -54,7 +54,7 @@ final readonly class GetUriForDayMiddleware implements MiddlewareInterface
         $uri = $this->getUriWithTimestamp(
             (int)$startDate->format('U'),
             $postData,
-            $request
+            $request,
         );
 
         if ($uri === '[MISSING]') {
@@ -93,7 +93,7 @@ final readonly class GetUriForDayMiddleware implements MiddlewareInterface
     protected function getUriWithTimestamp(
         int $timestamp,
         array $postData,
-        ServerRequestInterface $request
+        ServerRequestInterface $request,
     ): string {
         if (!isset($postData['pidOfListPage'])) {
             return '[MISSING]';
