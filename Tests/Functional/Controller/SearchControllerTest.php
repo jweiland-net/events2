@@ -82,7 +82,7 @@ class SearchControllerTest extends FunctionalTestCase
         )->getBody();
 
         self::assertStringContainsString(
-            'method="get" name="search" action="/events2-searchresults"',
+            'method="post" name="search" action="/events2-searchresults"',
             $content,
         );
         self::assertStringContainsString(

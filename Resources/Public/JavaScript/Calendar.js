@@ -19,14 +19,13 @@ function Events2Calendar ($element, environment) {
   /**
    * Get current URL with additional parameters
    *
-   * @param {string} additionalParameters
    * @return string
    */
-  me.getCurrentUrlWithAdditionalParameters = function (additionalParameters) {
+  me.getCurrentUrl = function () {
     if (window.location.origin) {
-      return window.location.origin + window.location.pathname + '?' + additionalParameters;
+      return window.location.origin;
     } else {
-      return window.location.protocol + '//' + window.location.host + window.location.pathname + '?' + additionalParameters;
+      return window.location.protocol + '//' + window.location.host;
     }
   };
 
@@ -42,18 +41,20 @@ function Events2Calendar ($element, environment) {
    * @return void
    */
   me.fillPickerWithDaysOfMonth = function (picker, month, year, storagePages, categories) {
-    let additionalParameters = [
-      'month=' + (month + 1),
-      'year=' + year,
-      'categories=' + categories,
-      'storagePages=' + storagePages
-    ];
+    let additionalParameters = {
+      'month': month + 1,
+      'year': year,
+      'categories': categories,
+      'storagePages': storagePages
+    };
 
-    fetch(me.getCurrentUrlWithAdditionalParameters(additionalParameters.join('&')), {
+    fetch(me.getCurrentUrl(), {
       headers: {
         'Content-Type': 'application/json',
         'ext-events2': 'getDaysForMonth'
-      }
+      },
+      method: 'POST',
+      body: JSON.stringify(additionalParameters)
     }).then(response => {
       if (response.ok && response.status === 200) {
         return response.json();
@@ -149,22 +150,24 @@ function Events2Calendar ($element, environment) {
   me.isInHighlightedDays = function (date) {
     let checkDay = date.getDate();
     return me.highlightedDays.includes(checkDay);
-  }
+  };
 
   me.getUriForDayAndRedirect = function (date) {
-   if (me.isInHighlightedDays(date)) {
-     let additionalParameters = [
-       'day=' + date.getDate(),
-       'month=' + (date.getMonth() + 1),
-       'year=' + date.getFullYear(),
-       'pidOfListPage=' + me.environment.pidOfListPage
-     ];
+    if (me.isInHighlightedDays(date)) {
+      let additionalParameters = {
+        'day': date.getDate(),
+        'month': (date.getMonth() + 1),
+        'year': date.getFullYear(),
+        'pidOfListPage': me.environment.pidOfListPage
+      };
 
-     fetch(me.getCurrentUrlWithAdditionalParameters(additionalParameters.join('&')), {
+      fetch(me.getCurrentUrl(), {
         headers: {
           'Content-Type': 'application/json',
           'ext-events2': 'getUriForDay'
-        }
+        },
+        method: 'POST',
+        body: JSON.stringify(additionalParameters)
       }).then(response => {
         if (response.ok && response.status === 200) {
           return response.json();

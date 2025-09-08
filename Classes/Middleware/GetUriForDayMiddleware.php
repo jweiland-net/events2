@@ -37,14 +37,25 @@ final readonly class GetUriForDayMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
 
-        $startDate = $this->getStartDateFromRequest($request);
+        $json = (string)$request->getBody();
+        if (json_validate($json) !== true) {
+            return new JsonResponse();
+        }
+
+        $postData = json_decode($json, true);
+
+        $startDate = $this->getStartDateFromPostData($postData);
         if ($startDate === null) {
             return new JsonResponse([
                 'error' => 'Date can not be generated. Missing day, month or year in request.',
             ], 400);
         }
 
-        $uri = $this->getUriWithTimestamp((int)$startDate->format('U'), $request);
+        $uri = $this->getUriWithTimestamp(
+            (int)$startDate->format('U'),
+            $postData,
+            $request,
+        );
 
         if ($uri === '[MISSING]') {
             return new JsonResponse([
@@ -61,11 +72,9 @@ final readonly class GetUriForDayMiddleware implements MiddlewareInterface
         return new JsonResponse(['uri' => $uri]);
     }
 
-    protected function getStartDateFromRequest(ServerRequestInterface $request): ?\DateTimeImmutable
+    protected function getStartDateFromPostData(array $postData): ?\DateTimeImmutable
     {
-        $getParameters = $request->getQueryParams();
-
-        if (!isset($getParameters['day'], $getParameters['month'], $getParameters['year'])) {
+        if (!isset($postData['day'], $postData['month'], $postData['year'])) {
             return null;
         }
 
@@ -73,23 +82,24 @@ final readonly class GetUriForDayMiddleware implements MiddlewareInterface
             'j.n.Y H:i:s',
             sprintf(
                 '%d.%d.%d 00:00:00',
-                MathUtility::forceIntegerInRange($getParameters['day'], 1, 31),
-                MathUtility::forceIntegerInRange($getParameters['month'], 1, 12),
-                (int)$getParameters['year'],
+                MathUtility::forceIntegerInRange($postData['day'], 1, 31),
+                MathUtility::forceIntegerInRange($postData['month'], 1, 12),
+                (int)$postData['year'],
             ),
             new \DateTimeZone(date_default_timezone_get()),
         );
     }
 
-    protected function getUriWithTimestamp(int $timestamp, ServerRequestInterface $request): string
-    {
-        $getParameters = $request->getQueryParams();
-
-        if (!isset($getParameters['pidOfListPage'])) {
+    protected function getUriWithTimestamp(
+        int $timestamp,
+        array $postData,
+        ServerRequestInterface $request,
+    ): string {
+        if (!isset($postData['pidOfListPage'])) {
             return '[MISSING]';
         }
 
-        $pidOfListPage = MathUtility::forceIntegerInRange($getParameters['pidOfListPage'], 0);
+        $pidOfListPage = MathUtility::forceIntegerInRange($postData['pidOfListPage'], 0);
         if ($pidOfListPage === 0) {
             return '[0]';
         }

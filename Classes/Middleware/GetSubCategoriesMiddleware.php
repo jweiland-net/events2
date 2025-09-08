@@ -35,7 +35,13 @@ final readonly class GetSubCategoriesMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
 
-        $categoryUid = (int)($request->getQueryParams()['events2Category'] ?? 0);
+        $json = (string)$request->getBody();
+        if (json_validate($json) !== true) {
+            return new JsonResponse();
+        }
+
+        $postData = json_decode($json, true);
+        $categoryUid = (int)($postData['events2Category'] ?? 0);
         if ($categoryUid === 0) {
             return new JsonResponse();
         }

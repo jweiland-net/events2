@@ -17,7 +17,7 @@ use JWeiland\Events2\Traits\InjectCacheServiceTrait;
 use JWeiland\Events2\Traits\InjectCategoryRepositoryTrait;
 use JWeiland\Events2\Traits\InjectDayRelationServiceTrait;
 use JWeiland\Events2\Traits\InjectEventRepositoryTrait;
-use JWeiland\Events2\Traits\InjectLocationRecordServiceTrait;
+use JWeiland\Events2\Traits\InjectLocationRepositoryTrait;
 use JWeiland\Events2\Traits\InjectMailMessageTrait;
 use JWeiland\Events2\Traits\InjectPersistenceManagerTrait;
 use JWeiland\Events2\Traits\InjectUserRepositoryTrait;
@@ -36,7 +36,7 @@ class ManagementController extends AbstractController
     use InjectCategoryRepositoryTrait;
     use InjectDayRelationServiceTrait;
     use InjectEventRepositoryTrait;
-    use InjectLocationRecordServiceTrait;
+    use InjectLocationRepositoryTrait;
     use InjectMailMessageTrait;
     use InjectPersistenceManagerTrait;
     use InjectUserRepositoryTrait;
@@ -78,7 +78,7 @@ class ManagementController extends AbstractController
 
         $this->postProcessAndAssignFluidVariables([
             'event' => GeneralUtility::makeInstance(Event::class),
-            'locations' => $this->locationRecordService->findAll(),
+            'locations' => $this->locationRepository->findAll(),
             'selectableCategories' => $categories,
         ]);
 
@@ -131,7 +131,7 @@ class ManagementController extends AbstractController
 
         $this->postProcessAndAssignFluidVariables([
             'event' => $event,
-            'locations' => $this->locationRecordService->findAll(),
+            'locations' => $this->locationRepository->findAll(),
             'selectableCategories' => $categories,
         ]);
 
@@ -159,7 +159,7 @@ class ManagementController extends AbstractController
             'event' => $event,
         ]);
 
-        // if editor edits this hidden record, mail should not be sent
+        // If an editor edits this hidden record, mail should not be sent
         if (!$isHidden) {
             $this->sendMail('update');
         }
@@ -186,7 +186,7 @@ class ManagementController extends AbstractController
 
     /**
      * We work with event UID here to prevent calling event validators which will perform much better than
-     * working with Event model here.
+     * working with an Event model here.
      * As this is not a form request, we can be sure that we will get a valid event from database.
      */
     public function deleteAction(int $event): ResponseInterface
@@ -206,8 +206,8 @@ class ManagementController extends AbstractController
     }
 
     /**
-     * We work with event UID here to prevent calling event validators which will perform much better than
-     * working with Event model here.
+     * We work with event UID here to prevent calling event validators, which will perform much better than
+     * working with an Event model here.
      * As this is not a form request, we can be sure that we will get a valid event from database.
      */
     public function activateAction(int $event): ResponseInterface

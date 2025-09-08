@@ -8,7 +8,7 @@
     <f:flashMessages/>
     <f:flashMessages queueIdentifier="extbase.flashmessages.tx_events2_management"/>
 
-    <form id="events2SearchForm" class="form-horizontal" method="get" name="search" action="{f:uri.page(pageUid: settings.pidOfSearchResults)}">
+    <form id="events2SearchForm" class="form-horizontal" method="post" name="search" action="{f:uri.page(pageUid: settings.pidOfSearchResults)}">
         <f:render partial="Search/FormFields" arguments="{_all}"/>
         <div class="form-group">
             <div class="col-sm-offset-3 col-sm-9">
