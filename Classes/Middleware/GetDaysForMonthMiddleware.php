@@ -47,18 +47,22 @@ final readonly class GetDaysForMonthMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
 
-        $getParameters = $request->getQueryParams();
+        $json = (string)$request->getBody();
+        if (json_validate($json) !== true) {
+            return new JsonResponse();
+        }
 
-        if (!isset($getParameters['month'], $getParameters['year'], $getParameters['categories'], $getParameters['storagePages'])) {
+        $data = json_decode($json, true);
+        if (!isset($data['month'], $data['year'], $data['categories'], $data['storagePages'])) {
             return new JsonResponse([
                 'error' => 'Request uncompleted. Missing month, year, categories or storagePages in request.',
             ], 400);
         }
 
-        $month = MathUtility::forceIntegerInRange($getParameters['month'], 1, 12);
-        $year = MathUtility::forceIntegerInRange($getParameters['year'], 1500, 2500);
-        $categories = GeneralUtility::intExplode(',', $getParameters['categories'], true);
-        $storagePages = GeneralUtility::intExplode(',', $getParameters['storagePages'], true);
+        $month = MathUtility::forceIntegerInRange($data['month'], 1, 12);
+        $year = MathUtility::forceIntegerInRange($data['year'], 1500, 2500);
+        $categories = GeneralUtility::intExplode(',', $data['categories'], true);
+        $storagePages = GeneralUtility::intExplode(',', $data['storagePages'], true);
 
         // Save a session for a selected month
         $this->userSession->setMonthAndYear($month, $year);
