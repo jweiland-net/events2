@@ -7,6 +7,17 @@
 ChangeLog
 =========
 
+Version 10.0.4
+==============
+
+*   Set search form results to POST request
+*   Repair sub-category, location and get-days AJAX calls
+*   Repair JS to show/click on events in calendar
+*   Repair GetLocations middleware
+*   Do not mark RestrictAccessEventListener as readonly
+*   Repair warning icon in form templates
+*   Use findAll from LocationRepo in ManagementController
+
 Version 10.0.3
 ==============
 
