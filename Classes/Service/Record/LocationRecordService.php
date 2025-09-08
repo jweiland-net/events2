@@ -42,7 +42,7 @@ class LocationRecordService
             ->orderBy('l.location', 'ASC');
 
         // Remember: column "uid" and "label" are a must-have for autocompletion
-        // Use CONCAT to add further columns to label. Example:
+        // Use CONCAT to add further columns to the label. Example:
         // $queryBuilder->add('select', 'uid, CONCAT(location, \', \', street, \' \', house_number, \', \', zip, \' \', city) AS label')
         // Hint: add() overwrites all columns defined by select() by default
         $this->eventDispatcher->dispatch(
