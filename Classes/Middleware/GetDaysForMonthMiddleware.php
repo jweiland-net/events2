@@ -52,17 +52,17 @@ final readonly class GetDaysForMonthMiddleware implements MiddlewareInterface
             return new JsonResponse();
         }
 
-        $data = json_decode($json, true);
-        if (!isset($data['month'], $data['year'], $data['categories'], $data['storagePages'])) {
+        $postData = json_decode($json, true);
+        if (!isset($postData['month'], $postData['year'], $postData['categories'], $postData['storagePages'])) {
             return new JsonResponse([
                 'error' => 'Request uncompleted. Missing month, year, categories or storagePages in request.',
             ], 400);
         }
 
-        $month = MathUtility::forceIntegerInRange($data['month'], 1, 12);
-        $year = MathUtility::forceIntegerInRange($data['year'], 1500, 2500);
-        $categories = GeneralUtility::intExplode(',', $data['categories'], true);
-        $storagePages = GeneralUtility::intExplode(',', $data['storagePages'], true);
+        $month = MathUtility::forceIntegerInRange($postData['month'], 1, 12);
+        $year = MathUtility::forceIntegerInRange($postData['year'], 1500, 2500);
+        $categories = GeneralUtility::intExplode(',', $postData['categories'], true);
+        $storagePages = GeneralUtility::intExplode(',', $postData['storagePages'], true);
 
         // Save a session for a selected month
         $this->userSession->setMonthAndYear($month, $year);

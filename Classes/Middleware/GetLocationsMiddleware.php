@@ -43,9 +43,9 @@ final readonly class GetLocationsMiddleware implements MiddlewareInterface
             return new JsonResponse();
         }
 
-        $data = json_decode($json, true);
+        $postData = json_decode($json, true);
         $search = trim(htmlspecialchars(strip_tags(
-            $data['events2SearchLocation'] ?? '',
+            $postData['events2SearchLocation'] ?? '',
         )));
 
         if ($search === '') {

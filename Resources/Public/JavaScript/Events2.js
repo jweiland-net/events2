@@ -259,11 +259,15 @@ let Events2 = function ($element) {
 
     if (me.$searchMainCategory.value !== '0') {
       let siteUrl = location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '');
-      fetch(siteUrl + '?events2Category=' + me.$searchMainCategory.value, {
+      fetch(siteUrl, {
         headers: {
           'Content-Type': 'application/json',
           'ext-events2': 'getSubCategories'
-        }
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          events2Category: me.$searchMainCategory.value,
+        }),
       }).then(response => {
         if (response.ok && response.status === 200) {
           return response.json();
