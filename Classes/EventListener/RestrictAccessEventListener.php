@@ -34,7 +34,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  * We will remove the event argument from the request, which will result in calling the errorAction of the ActionController.
  */
 #[AsEventListener('events2/restrictAccess')]
-final readonly class RestrictAccessEventListener
+final class RestrictAccessEventListener
 {
     use IsValidEventListenerRequestTrait;
 
