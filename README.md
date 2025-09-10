@@ -43,3 +43,9 @@ Download and install `events2` with the extension manager module.
 1) Include the static TypoScript of the extension.
 2) Create event2 records on a sysfolder.
 3) Create a plugin on a page and select at least the sysfolder as startingpoint.
+
+## 3 Support
+
+Free Support is available via [Github Issue Tracker](https://github.com/jweiland-net/events2/issues).
+
+For commercial support, please contact us at [support@jweiland.net](support@jweiland.net).
