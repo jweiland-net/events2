@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Traits;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Cache\CacheDataCollector;
 use TYPO3\CMS\Core\Http\ApplicationType;
+use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Http\ServerRequestFactory;
 use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
@@ -90,6 +91,10 @@ trait Typo3RequestTrait
 
     protected function getTypo3Request(): ServerRequestInterface
     {
-        return $GLOBALS['TYPO3_REQUEST'] ?? ServerRequestFactory::fromGlobals();
+        if (isset($GLOBALS['TYPO3_REQUEST'])) {
+            return $GLOBALS['TYPO3_REQUEST'];
+        }
+
+        return new ServerRequest('https://jweiland.net', 'GET');
     }
 }
