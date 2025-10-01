@@ -36,6 +36,7 @@
 	},
 	"require-dev": {
 		"ergebnis/composer-normalize": "^2.44",
+		"symfony/dependency-injection": "!=7.3.4",
 		"typo3/coding-standards": "^0.8",
 		"typo3/testing-framework": "^9.1.2",
 		"typo3/cms-fluid-styled-content": "^13.4.12",
