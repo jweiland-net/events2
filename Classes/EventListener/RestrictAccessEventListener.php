@@ -103,7 +103,7 @@ class RestrictAccessEventListener extends AbstractControllerEventListener
             return false;
         }
 
-        if ($this->userRepository->getFieldFromUser('tx_events2_organizer') === '') {
+        if ($this->userRepository->getFieldFromUser('tx_events2_organizer') === '0') {
             $this->addFlashMessage(LocalizationUtility::translate('missingOrganizerForCreate', 'events2'));
             return false;
         }
