@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 9.2.4
+=============
+
+*   [TASK] Check tx_events2_organizer on 0 instead of empty string
+
 Version 9.2.3
 =============
 
