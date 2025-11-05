@@ -343,13 +343,13 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         $timestampEventBeginSummerTime = mktime(0, 0, 0, 10, 27, 2024);
         $timestampRecurringEndWinterTime = mktime(0, 0, 0, 11, 10, 2024);
 
-        // Note: Either increase the "recurringPast" value to allow event generation for more months in the past,
+        // Note: Either increase the "recurringPast" value to allow event generation for more months in the past
         // or update the test's initial event dates (e.g., to a more recent year or to properly reflect daylight saving time changes).
         // Reason: As time progresses, the current date moves forward and the gap between 'now' and the hardcoded start date widens.
         // If (current year - event start year) * 12 exceeds the configured "recurringPast" limit (e.g., after 9 years = 108 months),
         // the system will not generate daily records for past events, causing this test to fail due to insufficient history coverage.
         $this->assignSubject(new ExtConf(
-            recurringPast: 12,
+            recurringPast: 24,
             recurringFuture: 12,
         ));
 
