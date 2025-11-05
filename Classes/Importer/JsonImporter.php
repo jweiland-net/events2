@@ -31,18 +31,21 @@ use TYPO3\CMS\Reactions\Authentication\ReactionUserAuthentication;
 
 /**
  * Import event records via JSON.
- * Use this importer, if you have data which represents events2 database structure. If you need something simpler try
- * XmlImporter which has a much simpler structure.
+ * Use this importer if you have data which represents events2 database structure. If you need something simpler,
+ * try XML importer, which has a much simpler structure.
  */
 readonly class JsonImporter
 {
+    protected const TABLE = 'tx_events2_domain_model_event';
+
     public function __construct(
-        protected LoggerInterface $logger,
         protected PathSegmentHelper $pathSegmentHelper,
         protected CategoryRecordService $categoryService,
         protected LocationService $locationService,
         protected OrganizerService $organizerService,
         protected ResourceFactory $resourceFactory,
+        protected ConnectionPool $connectionPool,
+        protected LoggerInterface $logger,
     ) {}
 
     public function import(ImportConfiguration $importConfiguration): bool
@@ -91,7 +94,7 @@ readonly class JsonImporter
     ): void {
         $eventRecord = $this->getEventRecordByImportId($eventImportData['uid']);
 
-        // Early return, if record was already imported.
+        // Early return, if the record was already imported.
         // We don't try to update the record, as we had to add an import_id column to each events2 table.
         // Possible, yes, but too much work right now.
         if (is_array($eventRecord)) {
@@ -307,7 +310,7 @@ readonly class JsonImporter
             return '';
         }
 
-        // Early return, if location was already registered in DataMap
+        // Early return, if the location was already registered in DataMap
         foreach ($dataMap['tx_events2_domain_model_location'] ?? [] as $uid => $locationRecord) {
             if ($locationRecord['location'] === $importLocationRecord['location']) {
                 return $uid;
@@ -391,10 +394,8 @@ readonly class JsonImporter
                 continue;
             }
 
-            $resourceStorage = $this->resourceFactory->getStorageObjectFromCombinedIdentifier(
-                $configuration->getStorageFolder(),
-            );
             $folder = $this->resourceFactory->getFolderObjectFromCombinedIdentifier($configuration->getStorageFolder());
+            $resourceStorage = $folder->getStorage();
             $filename = $resourceStorage->sanitizeFileName(pathinfo($imageRecord['url'], PATHINFO_BASENAME));
 
             if ($folder->hasFile($filename)) {
@@ -431,15 +432,15 @@ readonly class JsonImporter
 
     /**
      * Get event record by import_id.
-     * Will only return event records of default language
+     * Will only return event records of the default language
      */
     protected function getEventRecordByImportId(int $importId): ?array
     {
-        $queryBuilder = $this->getQueryBuilderForTable('tx_events2_domain_model_event');
+        $queryBuilder = $this->getQueryBuilderForTable(self::TABLE);
         try {
             $eventRecord = $queryBuilder
                 ->select('*')
-                ->from('tx_events2_domain_model_event')
+                ->from(self::TABLE)
                 ->where(
                     $queryBuilder->expr()->eq(
                         'import_id',
@@ -468,9 +469,9 @@ readonly class JsonImporter
      */
     protected function updateSlugs(DataHandler $dataHandler): void
     {
-        // Collect all NEW[hash] values valid for event table
+        // Collect all NEW[hash] values valid for the event table
         $eventNEWidValues = array_filter($dataHandler->substNEWwithIDs_table, static function (string $table): bool {
-            return $table === 'tx_events2_domain_model_event';
+            return $table === self::TABLE;
         });
 
         // Get real event INSERT ID for NEW[hash] values
@@ -478,12 +479,12 @@ readonly class JsonImporter
             return array_key_exists($newId, $eventNEWidValues);
         }, ARRAY_FILTER_USE_KEY);
 
-        $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_event');
+        $connection = $this->connectionPool->getConnectionForTable(self::TABLE);
         foreach ($eventUidValues as $eventUid) {
-            $eventRecord = BackendUtility::getRecord('tx_events2_domain_model_event', (int)$eventUid);
+            $eventRecord = BackendUtility::getRecord(self::TABLE, (int)$eventUid);
             $uniqueSlug = $this->pathSegmentHelper->generatePathSegment($eventRecord);
             $connection->update(
-                'tx_events2_domain_model_event',
+                self::TABLE,
                 [
                     'path_segment' => $uniqueSlug,
                 ],
@@ -496,9 +497,11 @@ readonly class JsonImporter
 
     protected function getQueryBuilderForTable(string $table): QueryBuilder
     {
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($table);
-        $queryBuilder->getRestrictions()->removeAll();
-        $queryBuilder->getRestrictions()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable($table);
+        $queryBuilder
+            ->getRestrictions()
+            ->removeAll()
+            ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
 
         return $queryBuilder;
     }
@@ -511,10 +514,5 @@ readonly class JsonImporter
     private function getBackendUser(): ReactionUserAuthentication
     {
         return $GLOBALS['BE_USER'];
-    }
-
-    protected function getConnectionPool(): ConnectionPool
-    {
-        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 }
