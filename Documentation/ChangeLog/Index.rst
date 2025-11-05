@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 10.0.6
+==============
+
+*   Upgrade removed TYPO3 core method in JSON importer
+
 Version 10.0.5
 ==============
 
