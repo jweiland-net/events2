@@ -14,7 +14,7 @@ namespace JWeiland\Events2\Configuration;
 use TYPO3\CMS\Reactions\Model\ReactionInstruction;
 
 /**
- * This configuration contains all needed data to start an event2 record import
+ * This configuration contains all necessary data to start an event2 record import
  */
 class ImportConfiguration
 {
