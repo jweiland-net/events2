@@ -487,13 +487,13 @@
         <source>Remaining letters</source>
         <target state="final">Verbleibende Zeichen</target>
       </trans-unit>
-      <trans-unit id="userGroupNotConfigured">
+      <trans-unit id="userGroupNotConfigured" approved="yes">
         <source>Please assign a user group (userGroup property) in the site settings to restrict access to this page.</source>
-        <target state="needs-translation">Please assign a user group (userGroup property) in the site settings to restrict access to this page.</target>
+        <target state="final">Bitte weise in den Website-Einstellungen eine Benutzergruppe (Eigenschaft „userGroup“) zu, um den Zugriff auf diese Seite zu beschränken.</target>
       </trans-unit>
-      <trans-unit id="pluginNeedsLogin">
+      <trans-unit id="pluginNeedsLogin" approved="yes">
         <source>This page is restricted. Please log in to access the Events Management area.</source>
-        <target state="needs-translation">This page is restricted. Please log in to access the Events Management area.</target>
+        <target state="final">Diese Seite ist eingeschränkt. Bitte melde dich an, um auf den Bereich Veranstaltungsmanagement zuzugreifen.</target>
       </trans-unit>
       <trans-unit id="notAllowedToCreate" approved="yes">
         <source>You're not allowed to create event records.</source>
@@ -581,7 +581,7 @@
       </trans-unit>
       <trans-unit id="cshCategories" approved="yes">
         <source>The categories are mandatory. Please hold down STRG or CMD on your keyboard to select multiple categories.</source>
-        <target state="final">Die Kategorien sind obligatorisch. Bitte drücken Sie STRG oder CMD auf Ihrer Tastatur, um mehrere Kategorien auszuwählen.</target>
+        <target state="final">Die Kategorien sind obligatorisch. Bitte drücke STRG oder CMD auf deiner Tastatur, um mehrere Kategorien auszuwählen.</target>
       </trans-unit>
       <trans-unit id="cshLocation" approved="yes">
         <source>The location is mandatory</source>
@@ -593,11 +593,11 @@
       </trans-unit>
       <trans-unit id="cshImages" approved="yes">
         <source>Upload max. 5 image files (jpg,gif,png). Please use the same image dimensions (i.e. 3:2, 3:4) if uploading more than one image.Be sure to set the image rights. Otherwise the image will not be uploaded.</source>
-        <target state="final">Laden Sie max. 5 Bilddateien hoch (jpg,gif,png). Bitte verwenden Sie die gleiche Bildgröße (z.B. 3:2, 3:4) wenn mehr als ein Bild hochgeladen wird. Stellen Sie sicher, dass Sie die Rechte des Bildes besitzen. Andernfalls wird das Bild nicht hochgeladen.</target>
+        <target state="final">Lade max. 5 Bilddateien hoch (jpg,gif,png). Bitte verwende die gleiche Bildgröße (z.B. 3:2, 3:4), wenn mehr als ein Bild hochgeladen wird. Stelle sicher, dass du die Rechte des Bildes besitzen. Andernfalls wird das Bild nicht hochgeladen.</target>
       </trans-unit>
       <trans-unit id="rightsMessage" approved="yes">
         <source>Dear Admin: Please override this label with help of TypoScript</source>
-        <target state="final">Lieber Admin: Bitte überschreiben Sie dieses Label mit Hilfe von TypoScript</target>
+        <target state="final">Lieber Admin: Bitte überschreibe dieses Label mit Hilfe von TypoScript</target>
       </trans-unit>
       <trans-unit id="altTextMapImg" approved="yes">
         <source>Map</source>
