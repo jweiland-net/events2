@@ -60,9 +60,9 @@
 					If you enter a date with 6 month in past, no day record will be created. So this date will not be displayed in frontend.
 				</source>
         <target state="final">
-					Bitte wählen Sie ein Veranstaltungsdatum in naher Zukunft oder in der frühen Vergangenheit.
+					Bitte wähle ein Veranstaltungsdatum in naher Zukunft oder in der frühen Vergangenheit.
 					Das liegt an einer Konfiguration im Extensioneinstellungen von events2.
-					Dort können Sie eine Anzahl von Monaten für die Berechnung von Tagesdatensätzen in der Vergangenheit und Zukunft konfigurieren.
+					Dort kannst du eine Anzahl von Monaten für die Berechnung von Tagesdatensätzen in der Vergangenheit und Zukunft konfigurieren.
 					Standard: 3 Monate in die Vergangenheit. 6 Monate in die Zukunft. Es obliegt dem Administrator, diese Werte zu ändern.
 					Wenn Sie ein Veranstaltungsdatum mit 6 Monaten in der Vergangenheit angeben, wird kein Tagesdatensatz erstellt. Dieses Datum wird also nicht im Frontend angezeigt.
 				</target>
@@ -114,7 +114,7 @@
 				</source>
         <target state="final">
 					Die Uhrzeit der Veranstaltung wird diesen hier hinzugefügten Uhrzeiten hinzugefügt.
-					Im Frontend sehen Sie alle Uhrzeiten pro Veranstaltung.
+					Im Frontend siehst du alle Uhrzeiten pro Veranstaltung.
 				</target>
       </trans-unit>
       <trans-unit id="xth.description" approved="yes">
@@ -185,7 +185,7 @@
       </trans-unit>
       <trans-unit id="detail_information.description" approved="yes">
         <source>Explain on detail what happens at that event</source>
-        <target state="final">Erläutern Sie im Detail, was bei dieser Veranstaltung passiert</target>
+        <target state="final">Erläuter im Detail, was bei dieser Veranstaltung passiert</target>
       </trans-unit>
       <trans-unit id="free_entry.description" approved="yes">
         <source>Activate, if this is a cost free event</source>
@@ -205,15 +205,15 @@
       </trans-unit>
       <trans-unit id="images.description" approved="yes">
         <source>You can define some images here, which you can see in detail view of your event</source>
-        <target state="final">Sie können hier einige Bilder angeben, die Sie in der Detailansicht Ihrer Veranstaltung sehen können</target>
+        <target state="final">Du kannst hier einige Bilder angeben, die du in der Detailansicht deiner Veranstaltung sehen können</target>
       </trans-unit>
       <trans-unit id="video_link.description" approved="yes">
         <source>Do you have a YouTube video link, which will describe this event. Add it here.</source>
-        <target state="final">Haben Sie einen YouTube-Video-Link, der dieses Ereignis beschreibt? Fügen Sie ihn hier hinzu.</target>
+        <target state="final">Hast du einen YouTube-Video-Link, der dieses Ereignis beschreibt? Füge ihn hier hinzu.</target>
       </trans-unit>
       <trans-unit id="download_links.description" approved="yes">
         <source>Do you have some information as PDF? Add them here.</source>
-        <target state="final">Haben Sie Informationen als PDF? Fügen Sie sie hier hinzu.</target>
+        <target state="final">Hast du Informationen als PDF? Füge ihn hier hinzu.</target>
       </trans-unit>
     </body>
   </file>
