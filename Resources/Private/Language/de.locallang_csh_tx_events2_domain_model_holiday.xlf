@@ -5,7 +5,7 @@
     <body>
       <trans-unit id="title.description" approved="yes">
         <source>A name for the holiday date. Something like x-mas</source>
-        <target state="final">Geben Sie dem Feiertag einen Namen wie z.B. Weihnachten</target>
+        <target state="final">Gib dem Feiertag einen Namen wie z.  B. Weihnachten</target>
       </trans-unit>
       <trans-unit id="day.description" approved="yes">
         <source>At which day the holiday is taking place? Valid value between 1 and 31</source>
