@@ -29,7 +29,7 @@
       </trans-unit>
       <trans-unit id="tx_maps2_uid.description" approved="yes">
         <source>Relate a maps2 record with this location. Or save this record and a new maps2 record will be created automatically</source>
-        <target state="final">Verknüpfen Sie einen maps2-Eintrag mit diesem Standort. Oder speichern Sie diesen Datensatz und ein neuer maps2-Datensatz wird automatisch erstellt</target>
+        <target state="final">Verknüpfe einen maps2-Eintrag mit diesem Standort. Oder speichere diesen Datensatz und ein neuer maps2-Datensatz wird automatisch erstellt</target>
       </trans-unit>
     </body>
   </file>
