@@ -107,7 +107,7 @@
       </trans-unit>
       <trans-unit id="display.description" approved="yes">
         <source>It's possible to cut the output into two peaces. That way you can display images on top of page, the event output at bottom and other content in between.</source>
-        <target state="final">Es ist möglich, die Ausgabe in zwei Abschnitte zu unterteilen. Auf diese Weise können Sie Bilder oben auf der Seite, die Liste der Veranstaltungen jedoch unterhalb ausgeben lassen und Fremdinhalte dazwischen.</target>
+        <target state="final">Es ist möglich, die Ausgabe in zwei Abschnitte zu unterteilen. Auf diese Weise kannst du Bilder oben auf der Seite, die Liste der Veranstaltungen jedoch unterhalb ausgeben lassen und Fremdinhalte dazwischen.</target>
       </trans-unit>
       <trans-unit id="displayBoth" approved="yes">
         <source>Show images and events</source>
