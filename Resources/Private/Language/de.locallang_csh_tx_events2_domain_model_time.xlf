@@ -5,7 +5,7 @@
     <body>
       <trans-unit id="weekday.description" approved="yes">
         <source>This value is only available in case of time records for a specified weekday. Choose weekday for which this time record should be valid.</source>
-        <target state="final">Dieser Wert kann nur angegeben werden, wenn eine Uhrzeit für einen bestimmten Wochentag konfiguriert werden soll. Wählen Sie einen Wochentag für den diese Uhrzeit gültig sein soll.</target>
+        <target state="final">Dieser Wert kann nur angegeben werden, wenn eine Uhrzeit für einen bestimmten Wochentag konfiguriert werden soll. Wähle einen Wochentag für den diese Uhrzeit gültig sein soll.</target>
       </trans-unit>
       <trans-unit id="time_begin.description" approved="yes">
         <source>When does the event starts?</source>
@@ -13,7 +13,7 @@
       </trans-unit>
       <trans-unit id="time_entry.description" approved="yes">
         <source>When does you open the doors for visitors?</source>
-        <target state="final">Wann öffnen Sie die Türen für Besucher?</target>
+        <target state="final">Wann öffnet ihr die Türen für Besucher?</target>
       </trans-unit>
       <trans-unit id="duration.description" approved="yes">
         <source>How long does this event takes?</source>
