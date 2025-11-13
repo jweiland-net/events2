@@ -9,7 +9,7 @@
       </trans-unit>
       <trans-unit id="hide_in_filter.description" approved="yes">
         <source>In plugin configuration you have the possibility to show all organizers als selectbox in frontend. If you don't want this organizer in that list you have to activate that option</source>
-        <target state="final">In der Plugin-Konfiguration haben Sie die Möglichkeit, alle Organisatoren als Auswahlbox im Frontend anzuzeigen. Wenn Sie diesen Organisator nicht in dieser Liste haben möchten, müssen Sie diese Option aktivieren</target>
+        <target state="final">In der Plugin-Konfiguration hast du die Möglichkeit, alle Organisatoren als Auswahlbox im Frontend anzuzeigen. Wenn du diesen Organisator nicht in dieser Liste haben möchtest, musst du diese Option aktivieren</target>
       </trans-unit>
       <trans-unit id="link.description" approved="yes">
         <source>Create a link to the organizers website</source>
