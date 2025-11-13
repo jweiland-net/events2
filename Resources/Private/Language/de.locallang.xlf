@@ -545,19 +545,19 @@
       </trans-unit>
       <trans-unit id="error.upload" approved="yes">
         <source>Something went wrong with your uploaded files. Please try again. Error: </source>
-        <target state="final">Etwas ist mit Ihren hochgeladenen Dateien schief gelaufen. Bitte versuchen Sie es erneut. Fehler: </target>
+        <target state="final">Etwas ist mit deinen hochgeladenen Dateien schief gelaufen. Bitte versuche es erneut. Fehler: </target>
       </trans-unit>
       <trans-unit id="error.uploadRights" approved="yes">
         <source>You don\'t have checked the box for upload rights. So upload stops here</source>
-        <target state="final">Sie haben das Feld für Upload-Rechte nicht ausgewählt. Der Upload wurde abgebrochen</target>
+        <target state="final">Du hast das Feld für Upload-Rechte nicht ausgewählt. Der Upload wurde abgebrochen</target>
       </trans-unit>
       <trans-unit id="error.fileExtension" approved="yes">
         <source>You only can upload files with following file extensions: %1$s</source>
-        <target state="final">Sie können nur Dateien mit folgenden Dateiendungen hochladen: %1$s</target>
+        <target state="final">Du kannst nur Dateien mit folgenden Dateiendungen hochladen: %1$s</target>
       </trans-unit>
       <trans-unit id="error.locationFail" approved="yes">
         <source>The given location does not exist in our database. Please choose another one</source>
-        <target state="final">Der angegebene Standort existiert nicht in unserer Datenbank. Bitte wählen Sie einen anderen</target>
+        <target state="final">Der angegebene Standort existiert nicht in unserer Datenbank. Bitte wähle einen anderen</target>
       </trans-unit>
       <trans-unit id="cshTitle" approved="yes">
         <source>The title is mandatory</source>
