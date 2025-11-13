@@ -41,7 +41,7 @@
       </trans-unit>
       <trans-unit id="plugin.listRange.description" approved="yes">
         <source>Displays a list of events in date range. You can reduce this list to appropriate categories and organizers.</source>
-        <target state="final">Zeigt eine Liste der Veranstaltungen im Datumsbereich an. Sie können diese Liste auf passende Kategorien und Organisatoren reduzieren.</target>
+        <target state="final">Zeigt eine Liste der Veranstaltungen im Datumsbereich an. Du kannst diese Liste auf passende Kategorien und Organisatoren reduzieren.</target>
       </trans-unit>
       <trans-unit id="plugin.show.title" approved="yes">
         <source>Show single event</source>
@@ -57,7 +57,7 @@
       </trans-unit>
       <trans-unit id="plugin.management.description" approved="yes">
         <source>Use this plugin to create, edit and view a user's events.</source>
-        <target state="final">Verwenden Sie dieses Plugin, um Veranstaltungen eines Benutzers zu erstellen, zu bearbeiten und anzusehen.</target>
+        <target state="final">Verwende dieses Plugin, um Veranstaltungen eines Benutzers zu erstellen, zu bearbeiten und anzusehen.</target>
       </trans-unit>
       <trans-unit id="plugin.calendar.title" approved="yes">
         <source>Show monthly calendar</source>
@@ -115,9 +115,9 @@
         <source>Loops through all current and future events to delete and recreate their day records. Further it cleans up all the old iCal export files.</source>
         <target state="final">Lässt alle aktuellen und zukünftigen Ereignisse durchlaufen, um Tagesdatensätze zu löschen und neu zu erstellen. Darüber hinaus werden alle alten iCal Exportdateien bereinigt.</target>
       </trans-unit>
-      <trans-unit id="sys_reaction.reaction_type.import_events2_records">
+      <trans-unit id="sys_reaction.reaction_type.import_events2_records" approved="yes">
         <source>Import events2 records</source>
-        <target state="needs-translation">Import events2 records</target>
+        <target state="final">Importiere events2 Datensätze</target>
       </trans-unit>
       <trans-unit id="tx_events2_domain_model_event" approved="yes">
         <source>Event</source>
@@ -555,13 +555,13 @@
         <source>Month</source>
         <target state="final">Monat</target>
       </trans-unit>
-      <trans-unit id="sys_reactions.storage_folder">
+      <trans-unit id="sys_reactions.storage_folder" approved="yes">
         <source>Storage location for images</source>
-        <target state="needs-translation">Storage location for images</target>
+        <target state="final">Speicherort für Bilder</target>
       </trans-unit>
-      <trans-unit id="sys_reactions.storage_folder.description">
+      <trans-unit id="sys_reactions.storage_folder.description" approved="yes">
         <source>Select a storage location for the images to be imported</source>
-        <target state="needs-translation">Select a storage location for the images to be imported</target>
+        <target state="final">Wähle einen Speicherort für die zu importierenden Bilder aus</target>
       </trans-unit>
     </body>
   </file>
