@@ -126,6 +126,7 @@ readonly class DayRecordService
                 [
                     'sys_language_uid' => 0,
                     't3ver_wsid' => $this->getWorkspaceUidFromBackendUser(),
+                    'def_lang_event_uid' => $eventUid,
                 ],
             )->fetchAllAssociative();
         }
