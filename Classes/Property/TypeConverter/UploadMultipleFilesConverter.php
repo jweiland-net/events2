@@ -83,8 +83,21 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
         PropertyMappingConfigurationInterface $configuration = null,
     ): Error|ObjectStorage {
         $this->initialize($configuration);
-        $originalSource = $source;
-        foreach ($originalSource as $key => $uploadedFile) {
+        $filesToProcess = [];
+        $rightsConfiguration = [];
+
+        foreach ($source as $sourceItem) {
+            if ($sourceItem instanceof UploadedFile) {
+                $filesToProcess[] = $sourceItem;
+            } elseif (is_array($sourceItem)) {
+                // Check if this array looks like the 'rights' container
+                if (isset($sourceItem['rights'])) {
+                    $rightsConfiguration[] = $sourceItem;
+                }
+            }
+        }
+
+        foreach ($filesToProcess as $key => $uploadedFile) {
             $alreadyPersistedImage = $this->getAlreadyPersistedFileReferenceByPosition(
                 $this->getAlreadyPersistedImages(),
                 $key,
@@ -126,9 +139,14 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
                 );
             }
 
+            $rights = null;
+            if (isset($rightsConfiguration[$key]['rights'])) {
+                $rights = $rightsConfiguration[$key];
+            }
+
             if (
                 ExtensionManagementUtility::isLoaded('checkfaluploads')
-                && $error = $this->getFalUploadService()->checkFile($uploadedFile)
+                && $error = $this->getFalUploadService()->checkFile($uploadedFile, $rights)
             ) {
                 return $error;
             }
