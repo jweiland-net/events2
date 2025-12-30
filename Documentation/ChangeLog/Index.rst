@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 10.0.7
+==============
+
+*   [BUGFIX] Fixed Property Mapper with CheckFal validation issues
+
 Version 10.0.6
 ==============
 
