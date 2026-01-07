@@ -4,7 +4,7 @@
         <event_type>single</event_type>
         <title>Einfacher Termin</title>
         <teaser>Einfacher Termin an einem Montag um 16:30</teaser>
-        <event_begin>2025-11-11</event_begin>
+        <event_begin>2030-11-11</event_begin>
         <event_time>
             <weekday>monday</weekday>
             <time_begin>16:30</time_begin>
@@ -25,8 +25,8 @@
         <event_type>recurring</event_type>
         <title>Wiederkehrender Termin</title>
         <teaser>Wiederkehrender Termin jeden Montag und Donnerstag um 15:00 Uhr</teaser>
-        <event_begin>2025-11-11</event_begin>
-        <recurring_end>2025-12-31</recurring_end>
+        <event_begin>2030-11-11</event_begin>
+        <recurring_end>2030-12-31</recurring_end>
         <event_time>
             <time_begin>15:00</time_begin>
         </event_time>
@@ -42,8 +42,8 @@
         <event_type>duration</event_type>
         <title>Durchgängiger Termin</title>
         <teaser>Durchgängiger Termin Montag bis Donnerstag ab 12:30 Uhr</teaser>
-        <event_begin>2025-11-18</event_begin>
-        <event_end>2025-11-21</event_end>
+        <event_begin>2030-11-18</event_begin>
+        <event_end>2030-11-21</event_end>
         <event_time>
             <time_begin>12:30</time_begin>
         </event_time>
