@@ -377,7 +377,7 @@ class SaveEventFinisher extends AbstractFinisher
         } else {
             $databaseConnection = $this->getConnectionForTable($table);
             $databaseConnection->insert($table, $databaseData);
-            $lastInsertId = (int)$databaseConnection->lastInsertId($table);
+            $lastInsertId = (int)$databaseConnection->lastInsertId();
             $this->finisherContext->getFinisherVariableProvider()->add(
                 $this->shortFinisherIdentifier,
                 'insertedUids.' . $iterationCount,
