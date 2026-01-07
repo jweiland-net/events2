@@ -16,23 +16,16 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Install\Attribute\UpgradeWizard;
 use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
 use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 
 /**
  * Updater to migrate column detail_informations to detail_information
  */
+#[UpgradeWizard('events2_migrateDetailInformations')]
 class MigrateDetailInformationsUpgrade implements UpgradeWizardInterface
 {
-    /**
-     * Return the identifier for this wizard
-     * This should be the same string as used in the ext_localconf class registration
-     */
-    public function getIdentifier(): string
-    {
-        return 'events2MigrateDetailInformations';
-    }
-
     public function getTitle(): string
     {
         return '[events2] Migrate column detail_informations';

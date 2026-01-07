@@ -18,12 +18,14 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Install\Attribute\UpgradeWizard;
 use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
 use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 
 /**
  * Updater to fill empty slug columns of event records
  */
+#[UpgradeWizard('events2_updateSlug')]
 class EventsSlugUpgrade implements UpgradeWizardInterface
 {
     protected string $tableName = 'tx_events2_domain_model_event';
@@ -41,15 +43,6 @@ class EventsSlugUpgrade implements UpgradeWizardInterface
         protected readonly PathSegmentHelper $pathSegmentHelper,
         protected readonly ExtConf $extConf,
     ) {}
-
-    /**
-     * Return the identifier for this wizard
-     * This should be the same string as used in the ext_localconf class registration
-     */
-    public function getIdentifier(): string
-    {
-        return 'events2UpdateSlug';
-    }
 
     public function getTitle(): string
     {

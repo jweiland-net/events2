@@ -31,10 +31,6 @@ use JWeiland\Events2\Task\AdditionalFieldsForImport;
 use JWeiland\Events2\Task\Import;
 use JWeiland\Events2\Task\ReGenerateDays;
 use JWeiland\Events2\Tca\Type\Time;
-use JWeiland\Events2\Upgrade\EventsSlugUpgrade;
-use JWeiland\Events2\Upgrade\MigrateDetailInformationsUpgrade;
-use JWeiland\Events2\Upgrade\MigrateOrganizerToMMUpgrade;
-use JWeiland\Events2\Upgrade\MoveOldFlexFormSettingsUpgrade;
 use Psr\Log\LogLevel;
 use TYPO3\CMS\Backend\Form\FormDataProvider\DatabaseRowInitializeNew;
 use TYPO3\CMS\Backend\Form\FormDataProvider\TcaSelectItems;
@@ -181,12 +177,3 @@ $GLOBALS['TYPO3_CONF_VARS']['LOG']['JWeiland']['Events2']['writerConfiguration']
         ],
     ],
 ];
-
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['events2UpdateSlug']
-    = EventsSlugUpgrade::class;
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['events2MigrateOrganizer']
-    = MigrateOrganizerToMMUpgrade::class;
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['events2MigrateDetailInformations']
-    = MigrateDetailInformationsUpgrade::class;
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update']['events2MoveFlexFormFields']
-    = MoveOldFlexFormSettingsUpgrade::class;

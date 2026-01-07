@@ -17,23 +17,16 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Install\Attribute\UpgradeWizard;
 use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
 use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 
 /**
  * Updater to migrate organizer into MM table
  */
+#[UpgradeWizard('events2_migrateOrganizer')]
 class MigrateOrganizerToMMUpgrade implements UpgradeWizardInterface
 {
-    /**
-     * Return the identifier for this wizard
-     * This should be the same string as used in the ext_localconf class registration
-     */
-    public function getIdentifier(): string
-    {
-        return 'events2MigrateOrganizer';
-    }
-
     public function getTitle(): string
     {
         return '[events2] Migrate organizer';
