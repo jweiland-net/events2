@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 10.0.9
+==============
+
+*   [BUGFIX] "Wrap doctrine lastInsertId in try/catch
+
 Version 10.0.8
 ==============
 
