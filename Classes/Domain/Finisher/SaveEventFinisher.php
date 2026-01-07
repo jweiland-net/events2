@@ -377,7 +377,13 @@ class SaveEventFinisher extends AbstractFinisher
         } else {
             $databaseConnection = $this->getConnectionForTable($table);
             $databaseConnection->insert($table, $databaseData);
-            $lastInsertId = (int)$databaseConnection->lastInsertId();
+            try {
+                $lastInsertId = (int)$databaseConnection->lastInsertId();
+            } catch (\Exception $e) {
+                // Newer doctrine/dbal packages are stricter and throw an exception,
+                // if a table does not have an AUTO_INCREMENT column like MM tables.
+                $lastInsertId = 0;
+            }
             $this->finisherContext->getFinisherVariableProvider()->add(
                 $this->shortFinisherIdentifier,
                 'insertedUids.' . $iterationCount,
