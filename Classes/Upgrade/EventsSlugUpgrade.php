@@ -34,11 +34,6 @@ class EventsSlugUpgrade implements UpgradeWizardInterface
 
     protected string $titleColumn = 'title';
 
-    /**
-     * Cache to boost incrementation of slugs
-     */
-    protected array $slugCache = [];
-
     public function __construct(
         protected readonly PathSegmentHelper $pathSegmentHelper,
         protected readonly ExtConf $extConf,
@@ -46,7 +41,7 @@ class EventsSlugUpgrade implements UpgradeWizardInterface
 
     public function getTitle(): string
     {
-        return 'Update Slug of events2 records';
+        return '[events2] Update Slugs of event records';
     }
 
     public function getDescription(): string
