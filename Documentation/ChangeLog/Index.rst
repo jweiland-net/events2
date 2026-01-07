@@ -7,10 +7,15 @@
 ChangeLog
 =========
 
+Version 10.0.10
+===============
+
+*   [TASK] Prefix all upgrade wizards with [events2]
+
 Version 10.0.9
 ==============
 
-*   [BUGFIX] "Wrap doctrine lastInsertId in try/catch
+*   [BUGFIX] Wrap doctrine lastInsertId in try/catch
 
 Version 10.0.8
 ==============
