@@ -323,7 +323,7 @@ class XmlImporterTest extends FunctionalTestCase
             $events[0]['title'],
         );
         self::assertSame(
-            1762902000, // Dienstag, 12. November 2019 00:00:00 GMT+01:00
+            1920668400, // Dienstag, 12. November 2030 00:00:00 GMT+01:00
             $events[0]['event_begin'],
         );
     }

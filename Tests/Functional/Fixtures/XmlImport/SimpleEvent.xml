@@ -6,7 +6,7 @@
         <event_type>single</event_type>
         <title>Einfacher Termin</title>
         <teaser>Einfacher Termin an einem Montag um 16:30</teaser>
-        <event_begin>2025-11-11</event_begin>
+        <event_begin>2030-11-11</event_begin>
         <event_time>
             <time_begin>16:30</time_begin>
             <duration>60</duration>

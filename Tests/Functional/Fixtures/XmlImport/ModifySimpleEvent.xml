@@ -6,7 +6,7 @@
         <event_type>single</event_type>
         <title>Bearbeiteter Termin</title>
         <teaser>Bearbeiteter Termin an einem Dienstag um 12:45</teaser>
-        <event_begin>2025-11-12</event_begin>
+        <event_begin>2030-11-12</event_begin>
         <event_time>
             <time_begin>12:45</time_begin>
             <duration>60</duration>
