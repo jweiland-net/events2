@@ -17,6 +17,7 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\Exception\MissingArrayPathException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Install\Attribute\UpgradeWizard;
 use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
 use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 
@@ -24,13 +25,9 @@ use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
  * With events2 8.0.0 we have moved some FlexForm Settings to another sheet.
  * To prevent duplicates in DB, this update wizard removes old settings from FlexForm.
  */
+#[UpgradeWizard('events2_moveFlexFormFields')]
 class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
 {
-    public function getIdentifier(): string
-    {
-        return 'events2MoveFlexFormFields';
-    }
-
     public function getTitle(): string
     {
         return '[events2] Move old FlexForm fields to new FlexForm sheet';
@@ -46,7 +43,10 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
     {
         $records = $this->getTtContentRecordsWithEvents2Plugin();
         foreach ($records as $record) {
-            $valueFromDatabase = (string)$record['pi_flexform'] !== '' ? GeneralUtility::xml2array($record['pi_flexform']) : [];
+            $valueFromDatabase = (string)$record['pi_flexform'] !== ''
+                ? GeneralUtility::xml2array($record['pi_flexform'])
+                : [];
+
             if (!is_array($valueFromDatabase)) {
                 continue;
             }
@@ -68,7 +68,6 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
             }
 
             $checkSettings = [
-                'data/sDEF/lDEF/switchableControllerActions',
                 'data/sDEF/lDEF/settings.selectableCategoriesForNewEvents',
             ];
 
@@ -90,7 +89,10 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
     {
         $records = $this->getTtContentRecordsWithEvents2Plugin();
         foreach ($records as $record) {
-            $valueFromDatabase = (string)$record['pi_flexform'] !== '' ? GeneralUtility::xml2array($record['pi_flexform']) : [];
+            $valueFromDatabase = (string)$record['pi_flexform'] !== ''
+                ? GeneralUtility::xml2array($record['pi_flexform'])
+                : [];
+
             if (!is_array($valueFromDatabase)) {
                 continue;
             }
@@ -117,13 +119,10 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
                 'settings.new.selectableCategoriesForNewEvents',
             );
 
-            $ttContentListType = $this->migrateSwitchableControllerActions($valueFromDatabase, $record['list_type']);
-
             $connection = $this->getConnectionPool()->getConnectionForTable('tt_content');
             $connection->update(
                 'tt_content',
                 [
-                    'list_type' => $ttContentListType,
                     'pi_flexform' => $this->checkValue_flexArray2Xml($valueFromDatabase),
                 ],
                 [
@@ -147,15 +146,11 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
         $queryBuilder->getRestrictions()->removeAll();
 
         $queryResult = $queryBuilder
-            ->select('uid', 'list_type', 'pi_flexform')
+            ->select('uid', 'CType', 'pi_flexform')
             ->from('tt_content')
             ->where(
-                $queryBuilder->expr()->eq(
-                    'CType',
-                    $queryBuilder->createNamedParameter('list'),
-                ),
                 $queryBuilder->expr()->like(
-                    'list_type',
+                    'CType',
                     $queryBuilder->createNamedParameter('events2_%'),
                 ),
             )
@@ -170,7 +165,7 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
     }
 
     /**
-     * It's not a must-have, but sDEF seems to be more default than sDEFAULT as first sheet name in TYPO3
+     * It's not a must-have, but sDEF seems to be more default than sDEFAULT as the first sheet name in TYPO3
      */
     protected function moveSheetDefaultToDef(array &$valueFromDatabase): void
     {
@@ -185,7 +180,7 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
     }
 
     /**
-     * Move field from one sheet to another and remove field from old location
+     * Move a field from one sheet to another and remove field from old location
      */
     protected function moveFieldFromOldToNewSheet(
         array &$valueFromDatabase,
@@ -225,38 +220,6 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
         } catch (MissingArrayPathException $missingArrayPathException) {
             // Path does not exist in Array. Do not update anything
         }
-    }
-
-    protected function migrateSwitchableControllerActions(array &$valueFromDatabase, string $ttContentListType): string
-    {
-        if ($ttContentListType === 'events2_events') {
-            try {
-                $actions = ArrayUtility::getValueByPath(
-                    $valueFromDatabase,
-                    'data/sDEF/lDEF/switchableControllerActions/vDEF',
-                );
-            } catch (MissingArrayPathException $missingArrayPathException) {
-                // Path does not exist in Array.
-                $actions = '';
-            }
-
-            $ttContentListType = 'events2_list';
-            $listType = match ($actions) {
-                'Day->listLatest;Day->show;Day->showByTimestamp;Location->show;Video->show' => 'listLatest',
-                'Day->listToday;Day->show;Day->showByTimestamp;Location->show;Video->show' => 'listToday',
-                'Day->listThisWeek;Day->show;Day->showByTimestamp;Location->show;Video->show' => 'listWeek',
-                'Day->listRange;Day->show;Day->showByTimestamp;Location->show;Video->show' => 'listRange',
-                default => 'list',
-            };
-            $valueFromDatabase['data']['sDEF']['lDEF']['settings.listType']['vDEF'] = $listType;
-        } elseif ($ttContentListType === 'events2_search') {
-            $ttContentListType = 'events2_searchform';
-        }
-
-        // Remove old reference
-        unset($valueFromDatabase['data']['sDEF']['lDEF']['switchableControllerActions']);
-
-        return $ttContentListType;
     }
 
     /**
