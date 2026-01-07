@@ -7,6 +7,12 @@
 ChangeLog
 =========
 
+Version 10.0.8
+==============
+
+*   [BUGFIX] Register UpgradeWizards via DI
+*   [TASK] Remove Upgrade of SwitchableControllerActions
+
 Version 10.0.7
 ==============
 
