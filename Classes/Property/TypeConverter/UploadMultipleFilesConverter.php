@@ -243,7 +243,6 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
      */
     protected function isValidUploadFile(UploadedFile $uploadedFile): bool
     {
-
         // upload must be successful
         if ($uploadedFile->getError() !== UPLOAD_ERR_OK) {
             return false;
