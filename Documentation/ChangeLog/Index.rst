@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 10.0.11
+===============
+
+*   [BUGFIX] Fixed File TypeConverter by handling UploadedFile instead of array
+
 Version 10.0.10
 ===============
 
