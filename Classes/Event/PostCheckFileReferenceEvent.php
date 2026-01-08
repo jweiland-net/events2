@@ -11,7 +11,9 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Event;
 
+use TYPO3\CMS\Core\Http\UploadedFile;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
+use TYPO3\CMS\Extbase\Error\Error;
 
 /**
  * Use this event, if you want to add further checks for uploaded images of events2 frontend form
@@ -37,15 +39,17 @@ class PostCheckFileReferenceEvent
 
     /**
      * This is the value of the currently looped uploaded file.
-     * It contains one file out of $_FILES
+     * It contains one file out of UploadedFile Object
      */
-    protected array $uploadedFile = [];
+    protected ?UploadedFile $uploadedFile = null;
+
+    protected ?Error $error;
 
     public function __construct(
         array $source,
         int $key,
         ?FileReference $alreadyPersistedImage,
-        array $uploadedFile,
+        ?UploadedFile $uploadedFile = null,
     ) {
         $this->source = $source;
         $this->key = $key;
@@ -68,8 +72,18 @@ class PostCheckFileReferenceEvent
         return $this->alreadyPersistedImage;
     }
 
-    public function getUploadedFile(): array
+    public function getUploadedFile(): UploadedFile
     {
         return $this->uploadedFile;
+    }
+
+    public function getError(): ?Error
+    {
+        return $this->error;
+    }
+
+    public function setError(Error $error): void
+    {
+        $this->error = $error;
     }
 }
