@@ -120,7 +120,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
             // Check if uploaded file returns an error
             if ($uploadedFile->getError() !== UPLOAD_ERR_OK) {
                 return new Error(
-                    LocalizationUtility::translate('error.upload', 'clubdirectory') . $uploadedFile->getError(),
+                    LocalizationUtility::translate('error.upload', 'events2') . $uploadedFile->getError(),
                     1396957314,
                 );
             }
@@ -131,7 +131,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
                 return new Error(
                     LocalizationUtility::translate(
                         'error.fileExtension',
-                        'clubdirectory',
+                        'events2',
                         [
                             $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext'],
                         ],
@@ -220,7 +220,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
         $combinedUploadFolderIdentifier = $this->getTypoScriptPluginSettings()['new']['uploadFolder'] ?? '';
         if ($combinedUploadFolderIdentifier === '') {
             throw new \InvalidArgumentException(
-                'You have forgotten to set an Upload Folder in TypoScript for clubdirectory',
+                'You have forgotten to set an Upload Folder in TypoScript for events2',
                 1603808777,
             );
         }
