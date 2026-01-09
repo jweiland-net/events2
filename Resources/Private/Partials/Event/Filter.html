@@ -5,8 +5,8 @@
 <f:if condition="{settings.showFilterForOrganizerInFrontend}">
     <f:if condition="{organizers -> f:count()} > 1">
         <form action="{f:uri.action(action: action)}" id="eventFilter" name="filter" method="GET">
-            <label for="organizer">{f:translate(key: 'tx_events2_domain_model_event.organizer')}</label>
-            <select id="organizer" size="1" name="tx_events2_list[filter][organizer]">
+            <label for="organize">{f:translate(key: 'tx_events2_domain_model_event.organizer')}</label>
+            <select id="organize" size="1" name="tx_events2_list[filter][organizer]">
                 <option value=""></option>
                 <f:for each="{organizers}" as="organizer">
                     <f:if condition="{filter.organizer} == {organizer.uid}">
