@@ -54,7 +54,7 @@ class DayRelationServiceTest extends FunctionalTestCase
     {
         parent::setUp();
 
-        $this->referenceIndexMock = $this->createStub(ReferenceIndex::class);
+        $this->referenceIndexMock = self::createStub(ReferenceIndex::class);
     }
 
     protected function tearDown(): void
@@ -83,10 +83,10 @@ class DayRelationServiceTest extends FunctionalTestCase
             ->method('removeAllByEventUid');
 
         $subject = new DayRelationService(
-            $this->createStub(DayGeneratorService::class),
+            self::createStub(DayGeneratorService::class),
             $dayRecordServiceMock,
-            $this->createStub(EventRecordService::class),
-            $this->createStub(ExceptionRecordService::class),
+            self::createStub(EventRecordService::class),
+            self::createStub(ExceptionRecordService::class),
             $this->referenceIndexMock,
             $loggerMock,
         );
@@ -112,12 +112,12 @@ class DayRelationServiceTest extends FunctionalTestCase
             ->method('removeAllByEventUid');
 
         $subject = new DayRelationService(
-            $this->createStub(DayGeneratorService::class),
+            self::createStub(DayGeneratorService::class),
             $dayRecordServiceMock,
-            $this->createStub(EventRecordService::class),
-            $this->createStub(ExceptionRecordService::class),
+            self::createStub(EventRecordService::class),
+            self::createStub(ExceptionRecordService::class),
             $this->referenceIndexMock,
-            $this->createStub(Logger::class),
+            self::createStub(Logger::class),
         );
 
         $subject->createDayRelations(123);
@@ -141,12 +141,12 @@ class DayRelationServiceTest extends FunctionalTestCase
             ->method('removeAllByEventUid');
 
         $subject = new DayRelationService(
-            $this->createStub(DayGeneratorService::class),
+            self::createStub(DayGeneratorService::class),
             $dayRecordServiceMock,
-            $this->createStub(EventRecordService::class),
-            $this->createStub(ExceptionRecordService::class),
+            self::createStub(EventRecordService::class),
+            self::createStub(ExceptionRecordService::class),
             $this->referenceIndexMock,
-            $this->createStub(Logger::class),
+            self::createStub(Logger::class),
         );
 
         $subject->createDayRelations(123);
@@ -226,7 +226,7 @@ class DayRelationServiceTest extends FunctionalTestCase
             $eventRecordServiceMock,
             $exceptionRecordServiceMock,
             $this->referenceIndexMock,
-            $this->createStub(Logger::class),
+            self::createStub(Logger::class),
         );
 
         $subject->createDayRelations(123);

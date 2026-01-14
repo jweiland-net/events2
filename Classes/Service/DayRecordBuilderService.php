@@ -74,7 +74,7 @@ readonly class DayRecordBuilderService
                 '+%d hour +%d minute',
                 $timeResult->getHour(),
                 $timeResult->getMinute(),
-            )
+            ),
         );
 
         return [
@@ -118,7 +118,7 @@ readonly class DayRecordBuilderService
                         '+%d hour +%d minute',
                         $timeResult->getHour(),
                         $timeResult->getMinute(),
-                    )
+                    ),
                 );
             }
         }
@@ -128,7 +128,7 @@ readonly class DayRecordBuilderService
                 '+%d hour +%d minute',
                 $timeResult->getHour(),
                 $timeResult->getMinute(),
-            )
+            ),
         );
     }
 

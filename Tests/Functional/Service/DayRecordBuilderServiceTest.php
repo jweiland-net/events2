@@ -59,7 +59,7 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
     {
         parent::setUp();
 
-        $this->timeServiceMock = $this->createStub(TimeService::class);
+        $this->timeServiceMock = self::createStub(TimeService::class);
 
         $this->dayGeneratorService = new DayGeneratorService(
             $this->timeServiceMock,
@@ -68,8 +68,8 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
                 recurringFuture: 6,
             ),
             new DateTimeUtility(),
-            $this->createStub(EventDispatcher::class),
-            $this->createStub(Logger::class),
+            self::createStub(EventDispatcher::class),
+            self::createStub(Logger::class),
         );
 
         $this->subject = new DayRecordBuilderService();

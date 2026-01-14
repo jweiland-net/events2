@@ -78,7 +78,7 @@ class HiddenObjectHelperTest extends FunctionalTestCase
     public function registerWithInvalidRepositoryWillNotAddObjectToSession(): void
     {
         /** @var LocationRepository|MockObject $locationRepositoryMock */
-        $locationRepositoryMock = $this->createStub(LocationRepository::class);
+        $locationRepositoryMock = self::createStub(LocationRepository::class);
 
         $event = new Event();
 
