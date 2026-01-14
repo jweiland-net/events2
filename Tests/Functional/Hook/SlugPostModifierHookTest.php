@@ -29,32 +29,11 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
  */
 class SlugPostModifierHookTest extends FunctionalTestCase
 {
-    protected EventDispatcherInterface|MockObject $eventDispatcherMock;
-
-    protected SlugHelper|MockObject $slugHelperMock;
-
     protected array $configurationToUseInTestInstance = [
         'SYS' => [
             'phpTimeZone' => Events2Constants::PHP_TIMEZONE,
         ],
     ];
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->eventDispatcherMock = $this->createMock(EventDispatcher::class);
-        $this->slugHelperMock = $this->createMock(SlugHelper::class);
-    }
-
-    protected function tearDown(): void
-    {
-        unset(
-            $this->slugHelperMock,
-        );
-
-        parent::tearDown();
-    }
 
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
@@ -76,7 +55,7 @@ class SlugPostModifierHookTest extends FunctionalTestCase
 
         self::assertSame(
             'hello-world',
-            $subject->modify($parameters, $this->slugHelperMock),
+            $subject->modify($parameters, $this->createStub(SlugHelper::class)),
         );
     }
 
@@ -91,7 +70,7 @@ class SlugPostModifierHookTest extends FunctionalTestCase
 
         self::assertSame(
             'hello-world',
-            $subject->modify($parameters, $this->slugHelperMock),
+            $subject->modify($parameters, $this->createStub(SlugHelper::class)),
         );
     }
 
@@ -107,7 +86,7 @@ class SlugPostModifierHookTest extends FunctionalTestCase
 
         self::assertSame(
             'hello-world',
-            $subject->modify($parameters, $this->slugHelperMock),
+            $subject->modify($parameters, $this->createStub(SlugHelper::class)),
         );
     }
 
@@ -123,7 +102,7 @@ class SlugPostModifierHookTest extends FunctionalTestCase
 
         self::assertSame(
             'hello-world',
-            $subject->modify($parameters, $this->slugHelperMock),
+            $subject->modify($parameters, $this->createStub(SlugHelper::class)),
         );
     }
 
@@ -141,7 +120,7 @@ class SlugPostModifierHookTest extends FunctionalTestCase
 
         self::assertSame(
             'hello-world-1',
-            $subject->modify($parameters, $this->slugHelperMock),
+            $subject->modify($parameters, $this->createStub(SlugHelper::class)),
         );
     }
 
@@ -156,13 +135,14 @@ class SlugPostModifierHookTest extends FunctionalTestCase
             'fieldName' => 'path_segment',
         ];
 
-        $this->slugHelperMock
+        $slugHelperMock = $this->createMock(SlugHelper::class);
+        $slugHelperMock
             ->expects(self::never())
             ->method('buildSlugForUniqueInTable');
 
         self::assertSame(
             '',
-            $subject->modify($parameters, $this->slugHelperMock),
+            $subject->modify($parameters, $slugHelperMock),
         );
     }
 
@@ -181,7 +161,8 @@ class SlugPostModifierHookTest extends FunctionalTestCase
             ],
         ];
 
-        $this->slugHelperMock
+        $slugHelperMock = $this->createMock(SlugHelper::class);
+        $slugHelperMock
             ->expects(self::once())
             ->method('buildSlugForUniqueInTable')
             ->with(
@@ -192,15 +173,13 @@ class SlugPostModifierHookTest extends FunctionalTestCase
 
         self::assertSame(
             'hello-world-1',
-            $subject->modify($parameters, $this->slugHelperMock),
+            $subject->modify($parameters, $slugHelperMock),
         );
     }
 
     #[Test]
     public function modifyWithDefaultWillReturnSlugFromEventListener(): void
     {
-        $subject = $this->getSubject(new ExtConf(pathSegmentType: 'empty'));
-
         $parameters = [
             'slug' => 'hello-world',
             'tableName' => 'tx_events2_domain_model_event',
@@ -211,10 +190,11 @@ class SlugPostModifierHookTest extends FunctionalTestCase
             ],
         ];
 
-        $generatePathSegmentHelper = new GeneratePathSegmentEvent($parameters, $this->slugHelperMock);
+        $generatePathSegmentHelper = new GeneratePathSegmentEvent($parameters, $this->createStub(SlugHelper::class));
         $generatePathSegmentHelper->setPathSegment('another-slug');
 
-        $this->eventDispatcherMock
+        $eventDispatcherMock = $this->createMock(EventDispatcher::class);
+        $eventDispatcherMock
             ->expects(self::once())
             ->method('dispatch')
             ->with(
@@ -222,18 +202,26 @@ class SlugPostModifierHookTest extends FunctionalTestCase
             )
             ->willReturn($generatePathSegmentHelper);
 
+        $subject = new SlugPostModifierHook(
+            $eventDispatcherMock,
+            new ExtConf(
+                pathSegmentType: 'empty',
+            ),
+            $this->createStub(Logger::class),
+        );
+
         self::assertSame(
             'another-slug',
-            $subject->modify($parameters, $this->slugHelperMock),
+            $subject->modify($parameters, $this->createStub(SlugHelper::class)),
         );
     }
 
     private function getSubject(ExtConf $extConf): SlugPostModifierHook
     {
         return new SlugPostModifierHook(
-            $this->eventDispatcherMock,
+            $this->createStub(EventDispatcher::class),
             $extConf,
-            $this->createMock(Logger::class),
+            $this->createStub(Logger::class),
         );
     }
 }
