@@ -32,8 +32,6 @@ class HiddenObjectHelperTest extends FunctionalTestCase
 
     protected Session $session;
 
-    protected EventRepository|MockObject $eventRepositoryMock;
-
     protected Request|MockObject $requestMock;
 
     protected array $coreExtensionsToLoad = [
@@ -57,7 +55,6 @@ class HiddenObjectHelperTest extends FunctionalTestCase
         parent::setUp();
 
         $this->session = $this->get(Session::class);
-        $this->eventRepositoryMock = $this->createMock(EventRepository::class);
         $this->requestMock = $this->createMock(Request::class);
 
         $this->subject = GeneralUtility::makeInstance(
@@ -69,8 +66,9 @@ class HiddenObjectHelperTest extends FunctionalTestCase
     protected function tearDown(): void
     {
         unset(
-            $this->subject,
             $this->session,
+            $this->requestMock,
+            $this->subject,
         );
 
         parent::tearDown();
@@ -80,7 +78,7 @@ class HiddenObjectHelperTest extends FunctionalTestCase
     public function registerWithInvalidRepositoryWillNotAddObjectToSession(): void
     {
         /** @var LocationRepository|MockObject $locationRepositoryMock */
-        $locationRepositoryMock = $this->createMock(LocationRepository::class);
+        $locationRepositoryMock = $this->createStub(LocationRepository::class);
 
         $event = new Event();
 
@@ -115,14 +113,15 @@ class HiddenObjectHelperTest extends FunctionalTestCase
                 '__identity' => '12',
             ]);
 
-        $this->eventRepositoryMock
+        $eventRepositoryMock = $this->createMock(EventRepository::class);
+        $eventRepositoryMock
             ->expects(self::atLeastOnce())
             ->method('findHiddenObject')
             ->with(self::identicalTo(12))
             ->willReturn($event);
 
         $this->subject->registerHiddenObjectInExtbaseSession(
-            $this->eventRepositoryMock,
+            $eventRepositoryMock,
             $this->requestMock,
             'event',
         );
@@ -149,14 +148,15 @@ class HiddenObjectHelperTest extends FunctionalTestCase
             ->with(self::identicalTo('event'))
             ->willReturn('543');
 
-        $this->eventRepositoryMock
+        $eventRepositoryMock = $this->createMock(EventRepository::class);
+        $eventRepositoryMock
             ->expects(self::atLeastOnce())
             ->method('findHiddenObject')
             ->with(self::identicalTo(543))
             ->willReturn($event);
 
         $this->subject->registerHiddenObjectInExtbaseSession(
-            $this->eventRepositoryMock,
+            $eventRepositoryMock,
             $this->requestMock,
             'event',
         );
