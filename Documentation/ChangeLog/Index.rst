@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 10.0.11
+===============
+
+*   [BUGFIX] Correct day_time_sort column entry while processing duration events
+
 Version 10.0.10
 ===============
 
