@@ -1033,6 +1033,47 @@ class DayGeneratorServiceTest extends FunctionalTestCase
     }
 
     #[Test]
+    public function getDateTimeStorageForDurationalEvents(): void
+    {
+        $eventBegin = new \DateTimeImmutable('midnight');
+        $tomorrow = $eventBegin->modify('tomorrow');
+
+        $eventRecord = [
+            'uid' => 123,
+            'event_type' => 'duration',
+            'event_begin' => (int)$eventBegin->format('U'),
+            'event_end' => (int)$tomorrow->format('U'),
+            'recurring_end' => 0,
+            'xth' => 31,
+            'weekday' => 127,
+            'each_weeks' => 0,
+            'each_months' => 0,
+            'exceptions' => [],
+        ];
+
+        $subject = new DayGeneratorService(
+            $this->createStub(TimeService::class),
+            new ExtConf(
+                recurringFuture: 12,
+            ),
+            new DateTimeUtility(),
+            GeneralUtility::makeInstance(EventDispatcher::class),
+            $this->createStub(Logger::class),
+        );
+
+        self::assertEquals(
+            [
+                $eventBegin->format('U') => new DateTimeResult($eventBegin, false),
+                $tomorrow->format('U') => new DateTimeResult($tomorrow, false),
+            ],
+            $subject
+                ->getDayGeneratorResultForEventRecord($eventRecord)
+                ->getDateTimeResultStorageSorted()
+                ->getArrayCopy(),
+        );
+    }
+
+    #[Test]
     public function getDateTimeStorageForEventWithRemoveExceptionRemovesOneDayFromStorage(): void
     {
         $eventBegin = new \DateTimeImmutable('midnight');
