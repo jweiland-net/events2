@@ -110,6 +110,12 @@ readonly class DayRecordBuilderService
     ): \DateTimeImmutable {
         if ($dayGeneratorResult->getEventRecord()['event_type'] === 'duration') {
             $timeResult = $dateTimeResult->getFirstTimeResult() ?? $timeResult;
+
+            return $dayGeneratorResult->getFirstDateTimeResult()->getDate()->modify(sprintf(
+                '+%d hour +%d minute',
+                $timeResult->getHour(),
+                $timeResult->getMinute(),
+            ));
         }
 
         return $dateTimeResult->getDate()->modify(sprintf(
