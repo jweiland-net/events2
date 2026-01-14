@@ -93,7 +93,7 @@ class CacheServiceTest extends FunctionalTestCase
     #[Test]
     public function addCacheTagsWithEmptyQueryResultWillNotAddCacheTags(): void
     {
-        $persistenceManagerMock = $this->createMock(PersistenceManager::class);
+        $persistenceManagerMock = $this->createStub(PersistenceManager::class);
 
         $dataMapperMock = $this->createMock(DataMapper::class);
         $dataMapperMock
