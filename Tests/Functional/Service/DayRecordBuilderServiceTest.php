@@ -188,13 +188,14 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
     {
         $eventBegin = new \DateTimeImmutable('midnight');
         $tomorrow = $eventBegin->modify('tomorrow');
+        $inTwoDays = $eventBegin->modify('+2 days midnight');
 
         $eventRecord = [
             'uid' => 123,
             'pid' => Events2Constants::PAGE_STORAGE,
             'event_type' => 'duration',
             'event_begin' => (int)$eventBegin->format('U'),
-            'event_end' => (int)$tomorrow->format('U'),
+            'event_end' => (int)$inTwoDays->format('U'),
             'recurring_end' => 0,
             'xth' => 0,
             'weekday' => 0,
@@ -216,16 +217,28 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
 
         self::assertArrayIsIdenticalToArrayIgnoringListOfKeys(
             [
-                'pid' => Events2Constants::PAGE_STORAGE,
-                'hidden' => 0,
-                'fe_group' => 0,
-                'day' => (int)$tomorrow->format('U'),
-                'day_time' => (int)$tomorrow->format('U'),
-                'sort_day_time' => (int)$tomorrow->format('U'),
-                'same_day_time' => (int)$tomorrow->format('U'),
-                'is_removed_date' => 0,
+                [
+                    'pid' => Events2Constants::PAGE_STORAGE,
+                    'hidden' => 0,
+                    'fe_group' => 0,
+                    'day' => (int)$tomorrow->format('U'),
+                    'day_time' => (int)$tomorrow->format('U'),
+                    'sort_day_time' => (int)$tomorrow->format('U'),
+                    'same_day_time' => (int)$tomorrow->format('U'),
+                    'is_removed_date' => 0,
+                ],
+                [
+                    'pid' => Events2Constants::PAGE_STORAGE,
+                    'hidden' => 0,
+                    'fe_group' => 0,
+                    'day' => (int)$inTwoDays->format('U'),
+                    'day_time' => (int)$inTwoDays->format('U'),
+                    'sort_day_time' => (int)$tomorrow->format('U'),
+                    'same_day_time' => (int)$tomorrow->format('U'),
+                    'is_removed_date' => 0,
+                ],
             ],
-            current($dayGeneratorResult->getDayRecords()),
+            $dayGeneratorResult->getDayRecords(),
             [
                 'tstamp',
                 'crdate',
