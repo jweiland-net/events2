@@ -81,6 +81,11 @@ class TimeServiceTest extends FunctionalTestCase
     #[Test]
     public function enrichWithNoTimeRecordsWillNotAddTimeResult(): void
     {
+        $this->timeRecordServiceMock
+            ->expects(self::once())
+            ->method('getAllByEventRecord')
+            ->willReturn([]);
+
         $eventRecord = [
             'uid' => 1,
             'pid' => Events2Constants::PAGE_STORAGE,

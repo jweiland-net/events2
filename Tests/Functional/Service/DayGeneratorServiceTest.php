@@ -18,8 +18,6 @@ use JWeiland\Events2\Service\TimeService;
 use JWeiland\Events2\Tests\Functional\Events2Constants;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\MockObject\MockObject;
-use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -30,10 +28,6 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
  */
 class DayGeneratorServiceTest extends FunctionalTestCase
 {
-    protected DayGeneratorService $subject;
-
-    protected LoggerInterface|MockObject $loggerMock;
-
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
         'reactions',
@@ -50,46 +44,11 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         ],
     ];
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->loggerMock = $this->createMock(Logger::class);
-
-        $this->assignSubject(new ExtConf(
-            recurringFuture: 12,
-        ));
-    }
-
-    /**
-     * As we use original extConf instead of MockObject we cannot change this object afterward.
-     * Use this method with your preferred ExtConf to assign it again to $this->subject
-     */
-    protected function assignSubject(ExtConf $extConf): void
-    {
-        $this->subject = new DayGeneratorService(
-            $this->createMock(TimeService::class),
-            $extConf,
-            new DateTimeUtility(),
-            GeneralUtility::makeInstance(EventDispatcher::class),
-            $this->loggerMock,
-        );
-    }
-
-    protected function tearDown(): void
-    {
-        unset(
-            $this->loggerMock,
-            $this->subject,
-        );
-
-        parent::tearDown();
-    }
-
     #[Test]
     public function getDateTimeStorageForEventWithMissingEventTypeThrowsException(): void
     {
-        $this->loggerMock
+        $loggerMock = $this->createMock(Logger::class);
+        $loggerMock
             ->expects(self::atLeastOnce())
             ->method('error')
             ->willReturnMap([
@@ -101,16 +60,28 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'uid' => 123,
         ];
 
+        $subject = new DayGeneratorService(
+            $this->createStub(TimeService::class),
+            new ExtConf(recurringFuture: 12),
+            new DateTimeUtility(),
+            GeneralUtility::makeInstance(EventDispatcher::class),
+            $loggerMock,
+        );
+
         self::assertSame(
             [],
-            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
+            $subject
+                ->getDayGeneratorResultForEventRecord($eventRecord)
+                ->getDateTimeResultStorageSorted()
+                ->getArrayCopy(),
         );
     }
 
     #[Test]
     public function getDateTimeStorageForEventWithMissingEventBeginThrowsException(): void
     {
-        $this->loggerMock
+        $loggerMock = $this->createMock(Logger::class);
+        $loggerMock
             ->expects(self::atLeastOnce())
             ->method('error')
             ->willReturnMap([
@@ -123,16 +94,28 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'event_type' => 'duration',
         ];
 
+        $subject = new DayGeneratorService(
+            $this->createStub(TimeService::class),
+            new ExtConf(recurringFuture: 12),
+            new DateTimeUtility(),
+            GeneralUtility::makeInstance(EventDispatcher::class),
+            $loggerMock,
+        );
+
         self::assertSame(
             [],
-            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
+            $subject
+                ->getDayGeneratorResultForEventRecord($eventRecord)
+                ->getDateTimeResultStorageSorted()
+                ->getArrayCopy(),
         );
     }
 
     #[Test]
     public function getDateTimeStorageForEventWithEmptyEventTypeThrowsException(): void
     {
-        $this->loggerMock
+        $loggerMock = $this->createMock(Logger::class);
+        $loggerMock
             ->expects(self::atLeastOnce())
             ->method('error')
             ->willReturnMap([
@@ -153,16 +136,28 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'exceptions' => [],
         ];
 
+        $subject = new DayGeneratorService(
+            $this->createStub(TimeService::class),
+            new ExtConf(recurringFuture: 12),
+            new DateTimeUtility(),
+            GeneralUtility::makeInstance(EventDispatcher::class),
+            $loggerMock,
+        );
+
         self::assertSame(
             [],
-            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
+            $subject
+                ->getDayGeneratorResultForEventRecord($eventRecord)
+                ->getDateTimeResultStorageSorted()
+                ->getArrayCopy(),
         );
     }
 
     #[Test]
     public function getDateTimeStorageForEventWithEmptyEventEndForDurationalEventsThrowsException(): void
     {
-        $this->loggerMock
+        $loggerMock = $this->createMock(Logger::class);
+        $loggerMock
             ->expects(self::atLeastOnce())
             ->method('error')
             ->willReturnMap([
@@ -183,16 +178,27 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'exceptions' => [],
         ];
 
+        $subject = new DayGeneratorService(
+            $this->createStub(TimeService::class),
+            new ExtConf(recurringFuture: 12),
+            new DateTimeUtility(),
+            GeneralUtility::makeInstance(EventDispatcher::class),
+            $loggerMock,
+        );
+
         self::assertSame(
             [],
-            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
+            $subject->getDayGeneratorResultForEventRecord($eventRecord)
+                ->getDateTimeResultStorageSorted()
+                ->getArrayCopy(),
         );
     }
 
     #[Test]
     public function getDateTimeStorageForEventWithEmptyEventBeginThrowsException(): void
     {
-        $this->loggerMock
+        $loggerMock = $this->createMock(Logger::class);
+        $loggerMock
             ->expects(self::atLeastOnce())
             ->method('error')
             ->willReturnMap([
@@ -213,9 +219,20 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'exceptions' => [],
         ];
 
+        $subject = new DayGeneratorService(
+            $this->createStub(TimeService::class),
+            new ExtConf(recurringFuture: 12),
+            new DateTimeUtility(),
+            GeneralUtility::makeInstance(EventDispatcher::class),
+            $loggerMock,
+        );
+
         self::assertSame(
             [],
-            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
+            $subject
+                ->getDayGeneratorResultForEventRecord($eventRecord)
+                ->getDateTimeResultStorageSorted()
+                ->getArrayCopy(),
         );
     }
 
@@ -237,7 +254,18 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'exceptions' => [],
         ];
 
-        $dateTimeEntries = $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy();
+        $subject = new DayGeneratorService(
+            $this->createStub(TimeService::class),
+            new ExtConf(recurringFuture: 12),
+            new DateTimeUtility(),
+            GeneralUtility::makeInstance(EventDispatcher::class),
+            $this->createStub(Logger::class),
+        );
+
+        $dateTimeEntries = $subject
+            ->getDayGeneratorResultForEventRecord($eventRecord)
+            ->getDateTimeResultStorageSorted()
+            ->getArrayCopy();
 
         foreach ($dateTimeEntries as $dateTimeResult) {
             self::assertSame(
@@ -267,12 +295,24 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'exceptions' => [],
         ];
 
+        $subject = new DayGeneratorService(
+            $this->createStub(TimeService::class),
+            new ExtConf(recurringFuture: 12),
+            new DateTimeUtility(),
+            GeneralUtility::makeInstance(EventDispatcher::class),
+            $this->createStub(Logger::class),
+        );
+
         $expectedDays = [];
         $expectedDays[$eventBegin->format('U')] = new DateTimeResult($eventBegin, false);
         $expectedDays[$nextWeek->format('U')] = new DateTimeResult($nextWeek, false);
         $expectedDays[$recurringEnd->format('U')] = new DateTimeResult($recurringEnd, false);
 
-        $dateTimeEntries = $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy();
+        $dateTimeEntries = $subject
+            ->getDayGeneratorResultForEventRecord($eventRecord)
+            ->getDateTimeResultStorageSorted()
+            ->getArrayCopy();
+
         self::assertEquals(
             $expectedDays,
             $dateTimeEntries,
@@ -298,7 +338,19 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'exceptions' => [],
         ];
 
-        $dateTimeEntries = $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy();
+        $subject = new DayGeneratorService(
+            $this->createStub(TimeService::class),
+            new ExtConf(recurringFuture: 12),
+            new DateTimeUtility(),
+            GeneralUtility::makeInstance(EventDispatcher::class),
+            $this->createStub(Logger::class),
+        );
+
+        $dateTimeEntries = $subject
+            ->getDayGeneratorResultForEventRecord($eventRecord)
+            ->getDateTimeResultStorageSorted()
+            ->getArrayCopy();
+
         foreach ($dateTimeEntries as $dateTimeResult) {
             self::assertIsArray($dateTimeResult->getDate()->getTimezone()->getLocation());
         }
@@ -323,13 +375,24 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'exceptions' => [],
         ];
 
+        $subject = new DayGeneratorService(
+            $this->createStub(TimeService::class),
+            new ExtConf(recurringFuture: 12),
+            new DateTimeUtility(),
+            GeneralUtility::makeInstance(EventDispatcher::class),
+            $this->createStub(Logger::class),
+        );
+
         $expectedDays = [];
         $expectedDays[$eventBegin->format('U')] = new DateTimeResult($eventBegin, false);
         $expectedDays[$recurringEnd->format('U')] = new DateTimeResult($recurringEnd, false);
 
         self::assertEquals(
             $expectedDays,
-            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
+            $subject
+                ->getDayGeneratorResultForEventRecord($eventRecord)
+                ->getDateTimeResultStorageSorted()
+                ->getArrayCopy(),
         );
     }
 
@@ -343,15 +406,6 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         $timestampEventBeginSummerTime = mktime(0, 0, 0, 10, 27, 2024);
         $timestampRecurringEndWinterTime = mktime(0, 0, 0, 11, 10, 2024);
 
-        // Note: Either increase the "recurringPast" value to allow event generation for more months in the past
-        // or update the test's initial event dates (e.g., to a more recent year or to properly reflect daylight saving time changes).
-        // Reason: As time progresses, the current date moves forward and the gap between 'now' and the hardcoded start date widens.
-        // If (current year - event start year) * 12 exceeds the configured "recurringPast" limit (e.g., after 9 years = 108 months),
-        // the system will not generate daily records for past events, causing this test to fail due to insufficient history coverage.
-        $this->assignSubject(new ExtConf(
-            recurringPast: 24,
-            recurringFuture: 12,
-        ));
 
         $eventRecord = [
             'uid' => 123,
@@ -366,6 +420,22 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'exceptions' => [],
         ];
 
+        // Note: Either increase the "recurringPast" value to allow event generation for more months in the past
+        // or update the test's initial event dates (e.g., to a more recent year or to properly reflect daylight saving time changes).
+        // Reason: As time progresses, the current date moves forward and the gap between 'now' and the hardcoded start date widens.
+        // If (current year - event start year) * 12 exceeds the configured "recurringPast" limit (e.g., after 9 years = 108 months),
+        // the system will not generate daily records for past events, causing this test to fail due to insufficient history coverage.
+        $subject = new DayGeneratorService(
+            $this->createStub(TimeService::class),
+            new ExtConf(
+                recurringPast: 24,
+                recurringFuture: 12,
+            ),
+            new DateTimeUtility(),
+            GeneralUtility::makeInstance(EventDispatcher::class),
+            $this->createStub(Logger::class),
+        );
+
         $expectedBegin = new \DateTimeImmutable(date('c', $timestampEventBeginSummerTime));
         $expectedBegin = $expectedBegin->setTimezone(new \DateTimeZone(date_default_timezone_get()));
         $expectedEnd = $expectedBegin->modify('+14 days');
@@ -375,7 +445,10 @@ class DayGeneratorServiceTest extends FunctionalTestCase
                 $expectedBegin->format('U') => new DateTimeResult($expectedBegin, false),
                 $expectedEnd->format('U') => new DateTimeResult($expectedEnd, false),
             ],
-            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
+            $subject
+                ->getDayGeneratorResultForEventRecord($eventRecord)
+                ->getDateTimeResultStorageSorted()
+                ->getArrayCopy(),
         );
     }
 
@@ -405,12 +478,22 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         $expectedDays[$nextMonth->format('U')] = new DateTimeResult($nextMonth, false);
         $expectedDays[$recurringEnd->format('U')] = new DateTimeResult($recurringEnd, false);
 
-        $this->assignSubject(new ExtConf(
-            recurringPast: 1,
-            recurringFuture: 12,
-        ));
+        $subject = new DayGeneratorService(
+            $this->createStub(TimeService::class),
+            new ExtConf(
+                recurringPast: 1,
+                recurringFuture: 12,
+            ),
+            new DateTimeUtility(),
+            GeneralUtility::makeInstance(EventDispatcher::class),
+            $this->createStub(Logger::class),
+        );
 
-        $dateTimeEntries = $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy();
+        $dateTimeEntries = $subject
+            ->getDayGeneratorResultForEventRecord($eventRecord)
+            ->getDateTimeResultStorageSorted()
+            ->getArrayCopy();
+
         self::assertEquals(
             $expectedDays,
             $dateTimeEntries,
@@ -445,9 +528,22 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         $expectedDays[$eventBegin->format('U')] = new DateTimeResult($eventBegin, false);
         $expectedDays[$recurringEnd->format('U')] = new DateTimeResult($recurringEnd, false);
 
+        $subject = new DayGeneratorService(
+            $this->createStub(TimeService::class),
+            new ExtConf(
+                recurringFuture: 12,
+            ),
+            new DateTimeUtility(),
+            GeneralUtility::makeInstance(EventDispatcher::class),
+            $this->createStub(Logger::class),
+        );
+
         self::assertEquals(
             $expectedDays,
-            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
+            $subject
+                ->getDayGeneratorResultForEventRecord($eventRecord)
+                ->getDateTimeResultStorageSorted()
+                ->getArrayCopy(),
         );
     }
 
@@ -457,11 +553,6 @@ class DayGeneratorServiceTest extends FunctionalTestCase
     #[Test]
     public function getDateTimeStorageForEventWithRecurringOverTwoMonthsAndVeryEarlyEventDateAddsDayToStorage(): void
     {
-        $this->assignSubject(new ExtConf(
-            recurringPast: 3,
-            recurringFuture: 12,
-        ));
-
         $eventBegin = new \DateTimeImmutable('-4 months midnight');
         $recurringEnd = $eventBegin->modify('+2 months');
 
@@ -481,9 +572,23 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         $expectedDays = [];
         $expectedDays[$recurringEnd->format('U')] = new DateTimeResult($recurringEnd, false);
 
+        $subject = new DayGeneratorService(
+            $this->createStub(TimeService::class),
+            new ExtConf(
+                recurringPast: 3,
+                recurringFuture: 12,
+            ),
+            new DateTimeUtility(),
+            GeneralUtility::makeInstance(EventDispatcher::class),
+            $this->createStub(Logger::class),
+        );
+
         self::assertEquals(
             $expectedDays,
-            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
+            $subject
+                ->getDayGeneratorResultForEventRecord($eventRecord)
+                ->getDateTimeResultStorageSorted()
+                ->getArrayCopy(),
         );
     }
 
@@ -513,9 +618,22 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         $expectedDays[$nextEvent->format('U')] = new DateTimeResult($nextEvent, false);
         $expectedDays[$lastEvent->format('U')] = new DateTimeResult($lastEvent, false);
 
+        $subject = new DayGeneratorService(
+            $this->createStub(TimeService::class),
+            new ExtConf(
+                recurringFuture: 12,
+            ),
+            new DateTimeUtility(),
+            GeneralUtility::makeInstance(EventDispatcher::class),
+            $this->createStub(Logger::class),
+        );
+
         self::assertEquals(
             $expectedDays,
-            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
+            $subject
+                ->getDayGeneratorResultForEventRecord($eventRecord)
+                ->getDateTimeResultStorageSorted()
+                ->getArrayCopy(),
         );
     }
 
@@ -537,11 +655,24 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'exceptions' => [],
         ];
 
+        $subject = new DayGeneratorService(
+            $this->createStub(TimeService::class),
+            new ExtConf(
+                recurringFuture: 12,
+            ),
+            new DateTimeUtility(),
+            GeneralUtility::makeInstance(EventDispatcher::class),
+            $this->createStub(Logger::class),
+        );
+
         self::assertEquals(
             [
                 $eventBegin->format('U') => new DateTimeResult($eventBegin, false),
             ],
-            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
+            $subject
+                ->getDayGeneratorResultForEventRecord($eventRecord)
+                ->getDateTimeResultStorageSorted()
+                ->getArrayCopy(),
         );
     }
 
@@ -580,9 +711,22 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         $expectedDays[$tempDate->format('U')] = new DateTimeResult($tempDate, false); // add sunday
         ksort($expectedDays);
 
+        $subject = new DayGeneratorService(
+            $this->createStub(TimeService::class),
+            new ExtConf(
+                recurringFuture: 12,
+            ),
+            new DateTimeUtility(),
+            GeneralUtility::makeInstance(EventDispatcher::class),
+            $this->createStub(Logger::class),
+        );
+
         self::assertEquals(
             $expectedDays,
-            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
+            $subject
+                ->getDayGeneratorResultForEventRecord($eventRecord)
+                ->getDateTimeResultStorageSorted()
+                ->getArrayCopy(),
         );
     }
 
@@ -628,9 +772,22 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         $expectedDays[$tempDate->format('U')] = new DateTimeResult($tempDate, false); // add 1st Friday 6th of the next month
         ksort($expectedDays);
 
+        $subject = new DayGeneratorService(
+            $this->createStub(TimeService::class),
+            new ExtConf(
+                recurringFuture: 12,
+            ),
+            new DateTimeUtility(),
+            GeneralUtility::makeInstance(EventDispatcher::class),
+            $this->createStub(Logger::class),
+        );
+
         self::assertEquals(
             $expectedDays,
-            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
+            $subject
+                ->getDayGeneratorResultForEventRecord($eventRecord)
+                ->getDateTimeResultStorageSorted()
+                ->getArrayCopy(),
         );
     }
 
@@ -663,9 +820,22 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             $tempDate = $tempDate->modify('+1 day');
         }
 
+        $subject = new DayGeneratorService(
+            $this->createStub(TimeService::class),
+            new ExtConf(
+                recurringFuture: 12,
+            ),
+            new DateTimeUtility(),
+            GeneralUtility::makeInstance(EventDispatcher::class),
+            $this->createStub(Logger::class),
+        );
+
         self::assertEquals(
             $expectedDays,
-            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
+            $subject
+                ->getDayGeneratorResultForEventRecord($eventRecord)
+                ->getDateTimeResultStorageSorted()
+                ->getArrayCopy(),
         );
     }
 
@@ -688,11 +858,24 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'exceptions' => [],
         ];
 
+        $subject = new DayGeneratorService(
+            $this->createStub(TimeService::class),
+            new ExtConf(
+                recurringFuture: 12,
+            ),
+            new DateTimeUtility(),
+            GeneralUtility::makeInstance(EventDispatcher::class),
+            $this->createStub(Logger::class),
+        );
+
         self::assertEquals(
             [
                 $eventBegin->format('U') => new DateTimeResult($eventBegin, false),
             ],
-            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
+            $subject
+                ->getDayGeneratorResultForEventRecord($eventRecord)
+                ->getDateTimeResultStorageSorted()
+                ->getArrayCopy(),
         );
     }
 
@@ -723,13 +906,26 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             ],
         ];
 
+        $subject = new DayGeneratorService(
+            $this->createStub(TimeService::class),
+            new ExtConf(
+                recurringFuture: 12,
+            ),
+            new DateTimeUtility(),
+            GeneralUtility::makeInstance(EventDispatcher::class),
+            $this->createStub(Logger::class),
+        );
+
         self::assertEquals(
             [
                 $eventBegin->format('U') => new DateTimeResult($eventBegin, false),
                 $tomorrow->format('U') => new DateTimeResult($tomorrow, false),
                 $recurringEnd->format('U') => new DateTimeResult($recurringEnd, false),
             ],
-            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
+            $subject
+                ->getDayGeneratorResultForEventRecord($eventRecord)
+                ->getDateTimeResultStorageSorted()
+                ->getArrayCopy(),
         );
     }
 
@@ -760,12 +956,25 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             ],
         ];
 
+        $subject = new DayGeneratorService(
+            $this->createStub(TimeService::class),
+            new ExtConf(
+                recurringFuture: 12,
+            ),
+            new DateTimeUtility(),
+            GeneralUtility::makeInstance(EventDispatcher::class),
+            $this->createStub(Logger::class),
+        );
+
         self::assertEquals(
             [
                 $eventBegin->format('U') => new DateTimeResult($eventBegin, false),
                 $recurringEnd->format('U') => new DateTimeResult($recurringEnd, false),
             ],
-            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
+            $subject
+                ->getDayGeneratorResultForEventRecord($eventRecord)
+                ->getDateTimeResultStorageSorted()
+                ->getArrayCopy(),
         );
     }
 
@@ -795,7 +1004,20 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             ],
         ];
 
-        $dateTimeEntries = $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy();
+        $subject = new DayGeneratorService(
+            $this->createStub(TimeService::class),
+            new ExtConf(
+                recurringFuture: 12,
+            ),
+            new DateTimeUtility(),
+            GeneralUtility::makeInstance(EventDispatcher::class),
+            $this->createStub(Logger::class),
+        );
+
+        $dateTimeEntries = $subject
+            ->getDayGeneratorResultForEventRecord($eventRecord)
+            ->getDateTimeResultStorageSorted()
+            ->getArrayCopy();
 
         // assertEquals will only check for correct dates, but not for different timezoneTypes
         self::assertEquals(
@@ -836,11 +1058,24 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             ],
         ];
 
+        $subject = new DayGeneratorService(
+            $this->createStub(TimeService::class),
+            new ExtConf(
+                recurringFuture: 12,
+            ),
+            new DateTimeUtility(),
+            GeneralUtility::makeInstance(EventDispatcher::class),
+            $this->createStub(Logger::class),
+        );
+
         self::assertEquals(
             [
                 $tomorrow->format('U') => new DateTimeResult($tomorrow, false),
             ],
-            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
+            $subject
+                ->getDayGeneratorResultForEventRecord($eventRecord)
+                ->getDateTimeResultStorageSorted()
+                ->getArrayCopy(),
         );
     }
 
@@ -870,12 +1105,25 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             ],
         ];
 
+        $subject = new DayGeneratorService(
+            $this->createStub(TimeService::class),
+            new ExtConf(
+                recurringFuture: 12,
+            ),
+            new DateTimeUtility(),
+            GeneralUtility::makeInstance(EventDispatcher::class),
+            $this->createStub(Logger::class),
+        );
+
         self::assertEquals(
             [
                 $eventBegin->format('U') => new DateTimeResult($eventBegin, true),
                 $tomorrow->format('U') => new DateTimeResult($tomorrow, false),
             ],
-            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
+            $subject
+                ->getDayGeneratorResultForEventRecord($eventRecord)
+                ->getDateTimeResultStorageSorted()
+                ->getArrayCopy(),
         );
     }
 
@@ -910,9 +1158,22 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         $expectedDays[$eventBegin->format('U')] = new DateTimeResult($eventBegin, false);
         $expectedDays[$tomorrow->format('U')] = new DateTimeResult($tomorrow, false);
 
+        $subject = new DayGeneratorService(
+            $this->createStub(TimeService::class),
+            new ExtConf(
+                recurringFuture: 12,
+            ),
+            new DateTimeUtility(),
+            GeneralUtility::makeInstance(EventDispatcher::class),
+            $this->createStub(Logger::class),
+        );
+
         self::assertEquals(
             $expectedDays,
-            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
+            $subject
+                ->getDayGeneratorResultForEventRecord($eventRecord)
+                ->getDateTimeResultStorageSorted()
+                ->getArrayCopy(),
         );
     }
 
@@ -947,16 +1208,30 @@ class DayGeneratorServiceTest extends FunctionalTestCase
         $expectedDays[$eventBegin->format('U')] = new DateTimeResult($eventBegin, false);
         $expectedDays[$tomorrow->format('U')] = new DateTimeResult($tomorrow, false);
 
+        $subject = new DayGeneratorService(
+            $this->createStub(TimeService::class),
+            new ExtConf(
+                recurringFuture: 12,
+            ),
+            new DateTimeUtility(),
+            GeneralUtility::makeInstance(EventDispatcher::class),
+            $this->createStub(Logger::class),
+        );
+
         self::assertEquals(
             $expectedDays,
-            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
+            $subject
+                ->getDayGeneratorResultForEventRecord($eventRecord)
+                ->getDateTimeResultStorageSorted()
+                ->getArrayCopy(),
         );
     }
 
     #[Test]
     public function getDateTimeStorageForEventWithInvalidExceptionThrowsException(): void
     {
-        $this->loggerMock
+        $loggerMock = $this->createMock(Logger::class);
+        $loggerMock
             ->expects(self::atLeastOnce())
             ->method('error')
             ->willReturnMap([
@@ -988,9 +1263,22 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             ],
         ];
 
+        $subject = new DayGeneratorService(
+            $this->createStub(TimeService::class),
+            new ExtConf(
+                recurringFuture: 12,
+            ),
+            new DateTimeUtility(),
+            GeneralUtility::makeInstance(EventDispatcher::class),
+            $loggerMock,
+        );
+
         self::assertEquals(
             [],
-            $this->subject->getDayGeneratorResultForEventRecord($eventRecord)->getDateTimeResultStorageSorted()->getArrayCopy(),
+            $subject
+                ->getDayGeneratorResultForEventRecord($eventRecord)
+                ->getDateTimeResultStorageSorted()
+                ->getArrayCopy(),
         );
     }
 }

@@ -59,8 +59,8 @@ class EventServiceTest extends FunctionalTestCase
         parent::setUp();
 
         $this->eventRepositoryMock = $this->createMock(EventRepository::class);
-        $this->dataMapperMock = $this->createMock(DataMapper::class);
-        $this->databaseServiceMock = $this->createMock(DatabaseService::class);
+        $this->dataMapperMock = $this->createStub(DataMapper::class);
+        $this->databaseServiceMock = $this->createStub(DatabaseService::class);
 
         $this->subject = new EventService(
             $this->eventRepositoryMock,
