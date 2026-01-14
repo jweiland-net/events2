@@ -16,8 +16,6 @@ use JWeiland\Events2\Event\GeneratePathSegmentEvent;
 use JWeiland\Events2\Hook\SlugPostModifierHook;
 use JWeiland\Events2\Tests\Functional\Events2Constants;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\MockObject\MockObject;
-use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\DataHandling\Model\RecordState;
 use TYPO3\CMS\Core\DataHandling\SlugHelper;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
@@ -55,7 +53,7 @@ class SlugPostModifierHookTest extends FunctionalTestCase
 
         self::assertSame(
             'hello-world',
-            $subject->modify($parameters, $this->createStub(SlugHelper::class)),
+            $subject->modify($parameters, self::createStub(SlugHelper::class)),
         );
     }
 
@@ -70,7 +68,7 @@ class SlugPostModifierHookTest extends FunctionalTestCase
 
         self::assertSame(
             'hello-world',
-            $subject->modify($parameters, $this->createStub(SlugHelper::class)),
+            $subject->modify($parameters, self::createStub(SlugHelper::class)),
         );
     }
 
@@ -86,7 +84,7 @@ class SlugPostModifierHookTest extends FunctionalTestCase
 
         self::assertSame(
             'hello-world',
-            $subject->modify($parameters, $this->createStub(SlugHelper::class)),
+            $subject->modify($parameters, self::createStub(SlugHelper::class)),
         );
     }
 
@@ -102,7 +100,7 @@ class SlugPostModifierHookTest extends FunctionalTestCase
 
         self::assertSame(
             'hello-world',
-            $subject->modify($parameters, $this->createStub(SlugHelper::class)),
+            $subject->modify($parameters, self::createStub(SlugHelper::class)),
         );
     }
 
@@ -120,7 +118,7 @@ class SlugPostModifierHookTest extends FunctionalTestCase
 
         self::assertSame(
             'hello-world-1',
-            $subject->modify($parameters, $this->createStub(SlugHelper::class)),
+            $subject->modify($parameters, self::createStub(SlugHelper::class)),
         );
     }
 
@@ -190,7 +188,7 @@ class SlugPostModifierHookTest extends FunctionalTestCase
             ],
         ];
 
-        $generatePathSegmentHelper = new GeneratePathSegmentEvent($parameters, $this->createStub(SlugHelper::class));
+        $generatePathSegmentHelper = new GeneratePathSegmentEvent($parameters, self::createStub(SlugHelper::class));
         $generatePathSegmentHelper->setPathSegment('another-slug');
 
         $eventDispatcherMock = $this->createMock(EventDispatcher::class);
@@ -207,21 +205,21 @@ class SlugPostModifierHookTest extends FunctionalTestCase
             new ExtConf(
                 pathSegmentType: 'empty',
             ),
-            $this->createStub(Logger::class),
+            self::createStub(Logger::class),
         );
 
         self::assertSame(
             'another-slug',
-            $subject->modify($parameters, $this->createStub(SlugHelper::class)),
+            $subject->modify($parameters, self::createStub(SlugHelper::class)),
         );
     }
 
     private function getSubject(ExtConf $extConf): SlugPostModifierHook
     {
         return new SlugPostModifierHook(
-            $this->createStub(EventDispatcher::class),
+            self::createStub(EventDispatcher::class),
             $extConf,
-            $this->createStub(Logger::class),
+            self::createStub(Logger::class),
         );
     }
 }
