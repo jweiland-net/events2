@@ -143,17 +143,17 @@
         <source>Ticket link</source>
         <target state="final">Ticket-Link</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.attendance_mode">
+      <trans-unit id="tx_events2_domain_model_event.attendance_mode" approved="yes">
         <source>Attendance Mode</source>
-        <target state="needs-translation">Attendance Mode</target>
+        <target state="final">Durchführungsform</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.attendance_mode.in_person">
+      <trans-unit id="tx_events2_domain_model_event.attendance_mode.in_person" approved="yes">
         <source>In-person (on-site)</source>
-        <target state="needs-translation">In-person (on-site)</target>
+        <target state="final">Präsenz (vor Ort)</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_event.attendance_mode.online">
+      <trans-unit id="tx_events2_domain_model_event.attendance_mode.online" approved="yes">
         <source>Online (virtual)</source>
-        <target state="needs-translation">Online (virtual)</target>
+        <target state="final">Online (virtuell)</target>
       </trans-unit>
       <trans-unit id="tx_events2_domain_model_event.days" approved="yes">
         <source>Days</source>
@@ -367,17 +367,17 @@
         <source>Location</source>
         <target state="final">Ort</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_search.attendance_mode">
+      <trans-unit id="tx_events2_domain_model_search.attendance_mode" approved="yes">
         <source>Attendance Mode</source>
-        <target state="needs-translation">Attendance Mode</target>
+        <target state="final">Durchführungsform</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_search.attendance_mode.in_person">
+      <trans-unit id="tx_events2_domain_model_search.attendance_mode.in_person" approved="yes">
         <source>In-person (on-site)</source>
-        <target state="needs-translation">In-person (on-site)</target>
+        <target state="final">Präsenz (vor Ort)</target>
       </trans-unit>
-      <trans-unit id="tx_events2_domain_model_search.attendance_mode.online">
+      <trans-unit id="tx_events2_domain_model_search.attendance_mode.online" approved="yes">
         <source>Online (virtual)</source>
-        <target state="needs-translation">Online (virtual)</target>
+        <target state="final">Online (virtuell)</target>
       </trans-unit>
       <trans-unit id="tx_events2_domain_model_search.freeEntry" approved="yes">
         <source>Free entry</source>
