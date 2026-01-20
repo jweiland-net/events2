@@ -86,7 +86,7 @@ class DayRepository extends Repository
     }
 
     /**
-     * @return QueryResultInterface|Day[]
+     * @return QueryResultInterface<Day>
      * @throws \Exception
      */
     public function getDaysForListType(string $listType, Filter $filter, int $limit = 0): QueryResultInterface
@@ -273,6 +273,19 @@ class DayRepository extends Repository
                 $search->getLocation()->getUid(),
                 $queryBuilder,
                 'event_sub_query',
+            );
+        }
+
+        // add a query for attendance mode
+        if ($search->getAttendanceMode()) {
+            $subQueryBuilder->andWhere(
+                $subQueryBuilder->expr()->in(
+                    'event_sub_query.attendance_mode',
+                    $queryBuilder->createNamedParameter(
+                        [$search->getAttendanceMode(), 3],
+                        Connection::PARAM_INT_ARRAY,
+                    ),
+                ),
             );
         }
 
