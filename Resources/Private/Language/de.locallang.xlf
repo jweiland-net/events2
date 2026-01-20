@@ -143,6 +143,18 @@
 				<source>Ticket link</source>
 				<target>Zum Ticketverkauf</target>
 			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.attendance_mode">
+				<source>Attendance Mode</source>
+				<target>Durchführungsform</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.attendance_mode.in_person">
+				<source>In-person (on-site)</source>
+				<target>Präsenz (vor Ort)</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.attendance_mode.online">
+				<source>Online (virtual)</source>
+				<target>Online (virtuell)</target>
+			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.days">
 				<source>Days</source>
 				<target>Tage</target>
@@ -357,6 +369,18 @@
 			<trans-unit id="tx_events2_domain_model_search.location">
 				<source>Location</source>
 				<target>Ort</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_search.attendance_mode">
+				<source>Attendance Mode</source>
+				<target>Durchführungsform</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_search.attendance_mode.in_person">
+				<source>In-person (on-site)</source>
+				<target>Präsenz (vor Ort)</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_search.attendance_mode.online">
+				<source>Online (virtual)</source>
+				<target>Online (virtuell)</target>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_search.freeEntry">
 				<source>Free entry</source>

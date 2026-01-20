@@ -30,6 +30,8 @@ class Search extends AbstractEntity
 
     protected ?Location $location = null;
 
+    protected int $attendanceMode = 0;
+
     protected bool $freeEntry = false;
 
     protected array $storagePids = [];
@@ -119,6 +121,16 @@ class Search extends AbstractEntity
     public function setLocation(?Location $location): void
     {
         $this->location = $location;
+    }
+
+    public function getAttendanceMode(): int
+    {
+        return $this->attendanceMode;
+    }
+
+    public function setAttendanceMode(int $attendanceMode): void
+    {
+        $this->attendanceMode = $attendanceMode;
     }
 
     public function getFreeEntry(): bool
