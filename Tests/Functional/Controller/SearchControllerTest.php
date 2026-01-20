@@ -114,7 +114,11 @@ class SearchControllerTest extends FunctionalTestCase
             $content,
         );
         self::assertStringContainsString(
-            '<input type="submit" class="btn btn-default" value="Search"/>',
+            'searchAttendanceMode',
+            $content,
+        );
+        self::assertStringContainsString(
+            '<input type="submit" class="btn btn-primary" value="Search"/>',
             $content,
         );
         self::assertStringContainsString(
