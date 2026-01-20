@@ -768,6 +768,30 @@ class EventTest extends UnitTestCase
     /**
      * @test
      */
+    public function getAttendanceModeInitiallyReturnsZero(): void
+    {
+        self::assertSame(
+            0,
+            $this->subject->getAttendanceMode(),
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function setAttendanceModeSetsAttendanceMode(): void
+    {
+        $this->subject->setAttendanceMode(2);
+
+        self::assertSame(
+            2,
+            $this->subject->getAttendanceMode(),
+        );
+    }
+
+    /**
+     * @test
+     */
     public function getFreeEntryInitiallyReturnsFalse(): void
     {
         self::assertFalse(
