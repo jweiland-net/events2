@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Domain\Repository;
 
+use Doctrine\DBAL\ArrayParameterType;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Factory\DayFactory;
 use JWeiland\Events2\Domain\Model\Category;
@@ -279,7 +280,7 @@ class DayRepository extends AbstractRepository
                     'event_sub_query.attendance_mode',
                     $queryBuilder->createNamedParameter(
                         [$search->getAttendanceMode(), 3],
-                        Connection::PARAM_INT_ARRAY,
+                        ArrayParameterType::INTEGER,
                     ),
                 ),
             );
