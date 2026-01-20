@@ -700,6 +700,58 @@ class DayRepositoryTest extends FunctionalTestCase
     }
 
     #[Test]
+    public function searchEventsWithInPersonAttendanceWillReturnDays(): void
+    {
+        $this->insertEvent(
+            title: 'Event No Attendance',
+            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
+            additionalFields: [
+                'attendance_mode' => 0,
+            ],
+        );
+        $this->insertEvent(
+            title: 'Event In Person',
+            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
+            additionalFields: [
+                'attendance_mode' => 1,
+            ],
+        );
+        $this->insertEvent(
+            title: 'Event Online',
+            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
+            additionalFields: [
+                'attendance_mode' => 2,
+            ],
+        );
+        $this->insertEvent(
+            title: 'Event BOTH',
+            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
+            additionalFields: [
+                'attendance_mode' => 3,
+            ],
+        );
+        $this->createDayRelations();
+
+        $search = new Search();
+        $search->setAttendanceMode(1);
+
+        $days = $this->dayRepository->searchEvents($search)->toArray();
+
+        self::assertCount(
+            2,
+            $days,
+        );
+        self::assertSame(
+            'Event In Person',
+            $days[0]->getEvent()->getTitle(),
+        );
+        self::assertSame(
+            'Event BOTH',
+            $days[1]->getEvent()->getTitle(),
+        );
+    }
+
+    #[Test]
     public function searchEventsWithFreeEntryWillReturnDays(): void
     {
         $this->insertEvent(
