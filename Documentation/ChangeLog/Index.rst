@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 10.1.0
+==============
+
+*   [FEATURE] Add property "attendance mode" to event
+
 Version 10.0.11
 ===============
 
