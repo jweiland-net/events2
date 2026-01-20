@@ -22,6 +22,7 @@ CREATE TABLE tx_events2_domain_model_event (
   detail_information text,
   free_entry tinyint(1) unsigned DEFAULT '0' NOT NULL,
   ticket_link varchar(11) DEFAULT '' NOT NULL,
+	attendance_mode int(11) DEFAULT '0' NOT NULL,
   days int(11) unsigned DEFAULT '0' NOT NULL,
   location int(11) unsigned DEFAULT '0',
   organizers int(11) unsigned DEFAULT '0',
