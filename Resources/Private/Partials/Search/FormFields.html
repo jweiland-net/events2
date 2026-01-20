@@ -96,6 +96,19 @@
 </div>
 
 <div class="form-group">
+    <label for="searchAttendanceMode" class="col-sm-3 control-label">
+        {f:translate(key: 'tx_events2_domain_model_search.attendance_mode')}
+    </label>
+    <div class="col-sm-9">
+        <select id="searchAttendanceMode" class="form-control" name="tx_events2_searchresults[search][attendanceMode]">
+            <option value="0"></option>
+            <option value="1">{f:translate(key: 'tx_events2_domain_model_search.attendance_mode.in_person')}</option>
+            <option value="2">{f:translate(key: 'tx_events2_domain_model_search.attendance_mode.online')}</option>
+        </select>
+    </div>
+</div>
+
+<div class="form-group">
     <label for="searchFreeEntry" class="col-sm-3 control-label">
         {f:translate(key: 'tx_events2_domain_model_search.freeEntry')}
     </label>
