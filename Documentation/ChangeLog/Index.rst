@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 8.5.0
+=============
+
+*   [FEATURE] Add property "attendance mode" to event
+
 Version 8.4.10
 ==============
 
