@@ -83,6 +83,8 @@ class Event extends AbstractEntity
 
     protected string $detailInformation = '';
 
+    protected int $attendanceMode = 0;
+
     protected bool $freeEntry = false;
 
     #[Extbase\ORM\Cascade(['value' => 'remove'])]
@@ -477,6 +479,16 @@ class Event extends AbstractEntity
     public function setDetailInformation(string $detailInformation): void
     {
         $this->detailInformation = $detailInformation;
+    }
+
+    public function getAttendanceMode(): int
+    {
+        return $this->attendanceMode;
+    }
+
+    public function setAttendanceMode(int $attendanceMode): void
+    {
+        $this->attendanceMode = $attendanceMode;
     }
 
     public function getFreeEntry(): bool
