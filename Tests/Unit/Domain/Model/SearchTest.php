@@ -152,6 +152,26 @@ class SearchTest extends UnitTestCase
     }
 
     #[Test]
+    public function getAttendanceModeInitiallyReturnsZero(): void
+    {
+        self::assertSame(
+            0,
+            $this->subject->getAttendanceMode(),
+        );
+    }
+
+    #[Test]
+    public function setAttendanceModeSetsAttendanceMode(): void
+    {
+        $this->subject->setAttendanceMode(2);
+
+        self::assertSame(
+            2,
+            $this->subject->getAttendanceMode(),
+        );
+    }
+
+    #[Test]
     public function getFreeEntryInitiallyReturnsFalse(): void
     {
         self::assertFalse(
