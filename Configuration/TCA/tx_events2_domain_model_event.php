@@ -599,12 +599,12 @@ return [
                 'cols' => 1,
                 'items' => [
                     [
-                        'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.attendance_mode.in_person',
-                        'value' => 'in_person',
+                        0 => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.attendance_mode.in_person',
+                        1 => 'in_person',
                     ],
                     [
-                        'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.attendance_mode.online',
-                        'value' => 'online',
+                        0 => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.attendance_mode.online',
+                        1 => 'online',
                     ],
                 ],
                 'default' => 0,
