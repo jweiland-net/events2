@@ -80,7 +80,7 @@ class DayRepository extends AbstractRepository
     }
 
     /**
-     * @return QueryResultInterface|Day[]
+     * @return QueryResultInterface<Day>
      * @throws \Exception
      */
     public function getDaysForListType(string $listType, Filter $filter, int $limit = 0): QueryResultInterface
@@ -270,7 +270,20 @@ class DayRepository extends AbstractRepository
             );
         }
 
-        // add query for free entry
+        // add a query for attendance mode
+        if ($search->getAttendanceMode()) {
+            $subQueryBuilder->andWhere(
+                $subQueryBuilder->expr()->in(
+                    'event_sub_query.attendance_mode',
+                    $queryBuilder->createNamedParameter(
+                        [$search->getAttendanceMode(), 3],
+                        Connection::PARAM_INT_ARRAY,
+                    ),
+                ),
+            );
+        }
+
+        // add a query for free entry
         if ($search->getFreeEntry()) {
             $this->databaseService->addConstraintForEventColumn(
                 $subQueryBuilder,

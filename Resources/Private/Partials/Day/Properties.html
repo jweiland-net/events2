@@ -22,6 +22,7 @@
 			<f:render section="organizers" arguments="{event: day.event}" />
 		</f:if>
 		<f:render section="ticketLink" arguments="{event: day.event}" />
+        <f:render section="AttendanceMode" arguments="{event: day.event}"/>
 		<f:render section="freeEntry" arguments="{event: day.event}" />
 		<f:render section="iCalendar" arguments="{day: day}" />
 
@@ -210,5 +211,29 @@
 			</dd>
 		</dl>
 	</f:if>
+</f:section>
+
+<f:section name="AttendanceMode">
+    <f:if condition="{event.attendanceMode}">
+        <dl>
+            <dt>{f:translate(key: 'tx_events2_domain_model_event.attendance_mode')}</dt>
+            <dd>
+                <ul>
+                    <f:switch expression="{event.attendanceMode}">
+                        <f:case value="1">
+                            <li>{f:translate(key: 'tx_events2_domain_model_event.attendance_mode.in_person')}</li>
+                        </f:case>
+                        <f:case value="2">
+                            <li>{f:translate(key: 'tx_events2_domain_model_event.attendance_mode.online')}</li>
+                        </f:case>
+                        <f:case value="3">
+                            <li>{f:translate(key: 'tx_events2_domain_model_event.attendance_mode.in_person')}</li>
+                            <li>{f:translate(key: 'tx_events2_domain_model_event.attendance_mode.online')}</li>
+                        </f:case>
+                    </f:switch>
+                </ul>
+            </dd>
+        </dl>
+    </f:if>
 </f:section>
 </html>

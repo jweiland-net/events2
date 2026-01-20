@@ -108,6 +108,15 @@
 			<trans-unit id="tx_events2_domain_model_event.ticket_link">
 				<source>Ticket link</source>
 			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.attendance_mode">
+				<source>Attendance Mode</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.attendance_mode.in_person">
+				<source>In-person (on-site)</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.attendance_mode.online">
+				<source>Online (virtual)</source>
+			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.days">
 				<source>Days</source>
 			</trans-unit>
@@ -273,6 +282,15 @@
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_search.location">
 				<source>Location</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_search.attendance_mode">
+				<source>Attendance Mode</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_search.attendance_mode.in_person">
+				<source>In-person (on-site)</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_search.attendance_mode.online">
+				<source>Online (virtual)</source>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_search.freeEntry">
 				<source>Free entry</source>
