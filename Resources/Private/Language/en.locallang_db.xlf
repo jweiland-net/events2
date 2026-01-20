@@ -331,6 +331,18 @@
         <source>Ticket Link</source>
         <target state="needs-translation">Ticket Link</target>
       </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.attendance_mode">
+        <source>Attendance Mode</source>
+        <target state="needs-translation">Attendance Mode</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.attendance_mode.in_person">
+        <source>In-person (on-site)</source>
+        <target state="needs-translation">In-person (on-site)</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.attendance_mode.online">
+        <source>Online (virtual)</source>
+        <target state="needs-translation">Online (virtual)</target>
+      </trans-unit>
       <trans-unit id="tx_events2_domain_model_event.days">
         <source>Days</source>
         <target state="needs-translation">Days</target>
