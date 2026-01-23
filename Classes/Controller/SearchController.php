@@ -31,6 +31,11 @@ class SearchController extends AbstractController
     use InjectDayRepositoryTrait;
     use InjectLocationRecordServiceTrait;
 
+    public function initializeObject(): void
+    {
+        $this->dayRepository->setSettings($this->settings);
+    }
+
     public function initializeShowAction(): void
     {
         $this->preProcessControllerAction();
