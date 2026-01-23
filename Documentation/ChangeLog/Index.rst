@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 10.1.1
+==============
+
+*   [BUGFIX] Skip imported image, if not exits on remote host (XML Importer)
+
 Version 10.1.0
 ==============
 
