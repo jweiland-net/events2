@@ -15,7 +15,7 @@ Update to Version 10.0.0
 
 Because of the new column `def_lang_event_uid` in `tx_events2_domain_model_day`
 you will get various duplicate event records in your list views. Please
-execute the scheduler task `events2:rebuild` after the update to fix this issue!
+execute the command `events2:rebuild` after the update to fix this issue!
 
 Update to Version 9.1.9
 =======================
