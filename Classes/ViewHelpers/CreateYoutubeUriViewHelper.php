@@ -23,22 +23,37 @@ final class CreateYoutubeUriViewHelper extends AbstractViewHelper
 
     public function initializeArguments(): void
     {
-        $this->registerArgument('link', 'string', 'Insert the YouTube-Link', true);
+        $this->registerArgument(
+            'link',
+            'string',
+            'Insert the YouTube-Link',
+            true,
+        );
     }
 
     /**
      * Extracts the YouTube ID from a link and returns the embedded YouTube URL.
-     * * @return string The formatted embed URL
+     *
+     * @return string The formatted embed URL
      */
     public function render(): string
     {
-        $subject = trim($this->arguments['link']);
+        // If the 'link' argument is null,
+        // try to get value from tag content {link -> e2:createYoutubeUri()}
+        $link = $this->arguments['link'] ?? $this->renderChildren();
 
-        if (preg_match(self::YOUTUBE_PATTERN, $subject, $matches)) {
+        if ($link === null) {
+            return '';
+        }
+
+        $link = trim((string)$link);
+
+        if (preg_match(self::YOUTUBE_PATTERN, $link, $matches)) {
             // Since all preceding groups are non-capturing (?:), the ID is always at index 1.
             return '//www.youtube.com/embed/' . $matches[1];
         }
 
         // Fallback: Assume the input is a raw ID if regex doesn't match
-        return '//www.youtube.com/embed/' . htmlspecialchars($subject, ENT_QUOTES, 'UTF-8');
-    }}
+        return '//www.youtube.com/embed/' . $link;
+    }
+}
