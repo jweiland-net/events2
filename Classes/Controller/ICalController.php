@@ -28,6 +28,11 @@ class ICalController extends ActionController
     use InjectDownloadHelperTrait;
     use InjectICalendarHelperTrait;
 
+    public function initializeObject(): void
+    {
+        $this->dayRepository->setSettings($this->settings);
+    }
+
     public function downloadAction(int $dayUid): ResponseInterface
     {
         $day = $this->dayRepository->findByIdentifier($dayUid);
