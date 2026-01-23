@@ -528,7 +528,15 @@ class XmlImporter
                 );
             } else {
                 $file = $targetFolder->createFile($filename);
-                $file->setContents(GeneralUtility::getUrl($image['url']));
+                $imageContent = GeneralUtility::getUrl($image['url']);
+                if (is_string($imageContent)) {
+                    $file->setContents($imageContent);
+                } else {
+                    $this->addMessage(
+                        'Image could not be downloaded (skipping): ' . $image['url'],
+                        ContextualFeedbackSeverity::ERROR,
+                    );
+                }
             }
 
             // Create new FileReference
