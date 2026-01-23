@@ -7,6 +7,15 @@
 ChangeLog
 =========
 
+Version 10.1.2
+==============
+
+*   [TASK] Add functional test for CreateYoutubeUri class
+*   [TASK] Update createYouTubeVH to allow further YouTube URLs
+*   [TASK] Add setSettings to ICalController and SearchController, too
+*   [DOCS] It is the events2:rebuild command. Update upgrade instruction.
+*   [DOCS] Add info for events2 10.0 to upgrade section
+
 Version 10.1.1
 ==============
 
