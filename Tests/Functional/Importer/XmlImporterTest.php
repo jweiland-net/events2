@@ -265,6 +265,55 @@ class XmlImporterTest extends FunctionalTestCase
     }
 
     #[Test]
+    public function importWillAddMessageOnNonExistingRemoteImage(): void
+    {
+        // Add a simple event
+        $fileObject = GeneralUtility::makeInstance(ResourceFactory::class)
+            ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/SimpleEventWithInvalidImageUrl.xml');
+
+        $this->extConf = new ExtConf(
+            organizerIsRequired: false,
+            locationIsRequired: false,
+            pathSegmentType: 'uid',
+        );
+
+        $this->subject = new XmlImporter(
+            $this->get(EventRepository::class),
+            $this->get(OrganizerRepository::class),
+            $this->get(LocationRepository::class),
+            $this->get(CategoryRepository::class),
+            $this->get(PersistenceManagerInterface::class),
+            $this->get(PathSegmentHelper::class),
+            new DateTimeUtility(),
+            $this->extConf,
+        );
+
+        $this->subject->setFile($fileObject);
+        $this->subject->setStoragePid(Events2Constants::PAGE_STORAGE);
+        self::assertTrue($this->subject->import());
+
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_event');
+        $queryBuilder->getRestrictions()->removeByType(HiddenRestriction::class);
+        $events = $queryBuilder
+            ->select('*')
+            ->from('tx_events2_domain_model_event')
+            ->executeQuery()
+            ->fetchAllAssociative();
+
+        self::assertCount(
+            1,
+            $events,
+        );
+
+        self::assertMatchesRegularExpression(
+            '/Image could not be downloaded/',
+            file_get_contents(GeneralUtility::getFileAbsFileName(
+                'EXT:events2/Tests/Functional/Fixtures/XmlImport/Messages.txt',
+            )),
+        );
+    }
+
+    #[Test]
     public function importWillModifyPreviouslyImportedEventByImportId(): void
     {
         // Add a simple event
