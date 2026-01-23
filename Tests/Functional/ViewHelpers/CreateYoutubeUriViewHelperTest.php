@@ -35,28 +35,28 @@ class CreateYoutubeUriViewHelperTest extends FunctionalTestCase
         return [
             'Standard URL' => [
                 'https://www.youtube.com/watch?v=Sql0rc86rQ8',
-                '//www.youtube.com/embed/Sql0rc86rQ8'
+                '//www.youtube.com/embed/Sql0rc86rQ8',
             ],
             'Short URL with tracking' => [
                 'https://youtu.be/E01tqcTwplA?si=qOrHia518c9sMdiD',
-                '//www.youtube.com/embed/E01tqcTwplA'
+                '//www.youtube.com/embed/E01tqcTwplA',
             ],
             'Short URL with feature param' => [
                 'https://youtu.be/Sql0rc86rQ8?feature=shared',
-                '//www.youtube.com/embed/Sql0rc86rQ8'
+                '//www.youtube.com/embed/Sql0rc86rQ8',
             ],
             'Shorts URL' => [
                 'https://www.youtube.com/shorts/Sql0rc86rQ8',
-                '//www.youtube.com/embed/Sql0rc86rQ8'
+                '//www.youtube.com/embed/Sql0rc86rQ8',
             ],
             'Live URL' => [
                 'https://www.youtube.com/live/Sql0rc86rQ8',
-                '//www.youtube.com/embed/Sql0rc86rQ8'
+                '//www.youtube.com/embed/Sql0rc86rQ8',
             ],
             'Raw ID Fallback' => [
                 'Sql0rc86rQ8',
-                '//www.youtube.com/embed/Sql0rc86rQ8'
-            ]
+                '//www.youtube.com/embed/Sql0rc86rQ8',
+            ],
         ];
     }
 
