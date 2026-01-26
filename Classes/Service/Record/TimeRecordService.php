@@ -47,7 +47,7 @@ class TimeRecordService
             return $timeRecord;
         }, $timeRecords);
 
-        if ($includeExceptionTimeRecords && $timeRecords !== [] && isset($eventRecord['exceptions'])) {
+        if ($includeExceptionTimeRecords && ($eventRecord['exceptions'] ?? []) !== []) {
             foreach ($eventRecord['exceptions'] as $exceptionRecord) {
                 array_push(
                     $timeRecords,
