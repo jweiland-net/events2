@@ -49,6 +49,10 @@ class TimeRecordService
 
         if ($includeExceptionTimeRecords && ($eventRecord['exceptions'] ?? []) !== []) {
             foreach ($eventRecord['exceptions'] as $exceptionRecord) {
+                if ((int)($exceptionRecord['hidden'] ?? 1) === 1) {
+                    continue;
+                }
+
                 array_push(
                     $timeRecords,
                     ...$this->getAllByExceptionRecord($exceptionRecord),
