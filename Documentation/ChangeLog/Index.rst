@@ -7,6 +7,12 @@
 ChangeLog
 =========
 
+Version 10.1.3
+==============
+
+*   [TASK] Do not collect hidden time records from exceptions
+*   [BUGFIX] Show time from event exception record in frontend
+
 Version 10.1.2
 ==============
 
