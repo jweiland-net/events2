@@ -39,7 +39,7 @@ class ExceptionRecordService
         $exceptionRecords = [];
         foreach ($relationHandler->getValueArray() as $exceptionUid) {
             if ($exceptionRecord = BackendUtility::getRecordWSOL(self::TABLE, (int)$exceptionUid)) {
-                $exceptionRecords[] = $exceptionRecord;
+                $exceptionRecords[$exceptionRecord['uid']] = $exceptionRecord;
             }
         }
 
