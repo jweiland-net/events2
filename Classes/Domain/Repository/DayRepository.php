@@ -19,6 +19,7 @@ use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Model\Location;
 use JWeiland\Events2\Domain\Model\Search;
+use JWeiland\Events2\Event\ModifyDayRepositoryQueryBuilderEvent;
 use JWeiland\Events2\Event\ModifyQueriesOfFindEventsEvent;
 use JWeiland\Events2\Event\ModifyQueriesOfSearchEventsEvent;
 use JWeiland\Events2\Event\ModifyStartEndDateForListTypeEvent;
@@ -445,6 +446,11 @@ class DayRepository extends Repository
 
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($table);
         $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
+
+        $this->eventDispatcher->dispatch(
+            new ModifyDayRepositoryQueryBuilderEvent($queryBuilder, $table, $alias, $this->settings),
+        );
+
         $queryBuilder
             ->from($table, $alias)
             ->andWhere(
