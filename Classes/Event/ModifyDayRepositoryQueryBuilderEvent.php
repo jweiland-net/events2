@@ -49,7 +49,7 @@ class ModifyDayRepositoryQueryBuilderEvent
         QueryBuilder $queryBuilder,
         string $table,
         string $alias,
-        array $settings = [],
+        array $settings = []
     ) {
         $this->queryBuilder = $queryBuilder;
         $this->table = $table;
