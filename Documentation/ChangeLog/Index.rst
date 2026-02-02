@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 8.6.0
+=============
+
+*   [FEATURE] PSR-14 event: allow early QueryBuilder modification in DayRepository
+
 Version 8.5.0
 =============
 

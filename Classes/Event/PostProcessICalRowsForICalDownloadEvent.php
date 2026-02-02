@@ -14,7 +14,7 @@ namespace JWeiland\Events2\Event;
 use JWeiland\Events2\Domain\Model\Day;
 
 /*
- * Use this event, if you want to modify the event before adding it to the iCal download
+ * Use this event if you want to modify the event before adding it to the iCal download
  */
 class PostProcessICalRowsForICalDownloadEvent
 {

@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Domain\Repository;
 
 use Doctrine\DBAL\DBALException;
+use JWeiland\Events2\Event\ModifyDayRepositoryQueryBuilderEvent;
 use JWeiland\Events2\Helper\OverlayHelper;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -19,6 +20,7 @@ use TYPO3\CMS\Core\Database\Query\Expression\ExpressionBuilder;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
@@ -29,9 +31,18 @@ class AbstractRepository extends Repository
 {
     protected OverlayHelper $overlayHelper;
 
+    protected EventDispatcher $eventDispatcher;
+
+    protected array $settings = [];
+
     public function injectOverlayHelper(OverlayHelper $overlayHelper): void
     {
         $this->overlayHelper = $overlayHelper;
+    }
+
+    public function injectEventDispatcher(EventDispatcher $eventDispatcher): void
+    {
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     protected function getQueryBuilderForTable(
@@ -44,6 +55,11 @@ class AbstractRepository extends Repository
 
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($table);
         $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
+
+        $this->eventDispatcher->dispatch(
+            new ModifyDayRepositoryQueryBuilderEvent($queryBuilder, $table, $alias, $this->settings),
+        );
+
         $queryBuilder
             ->from($table, $alias)
             ->andWhere(

@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Event;
 
 /*
- * Use this event, if you want to modify or extend the array for possible days in month of event calendar
+ * Use this event if you want to modify or extend the array for possible days in month of event calendar
  */
 class ModifyDaysForMonthEvent
 {
