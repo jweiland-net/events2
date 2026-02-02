@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Domain\Repository;
 
+use Doctrine\DBAL\ArrayParameterType;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Factory\DayFactory;
 use JWeiland\Events2\Domain\Model\Category;
@@ -18,15 +19,18 @@ use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Model\Location;
 use JWeiland\Events2\Domain\Model\Search;
-use JWeiland\Events2\Domain\Traits\ExtbaseQueryBuilderTrait;
+use JWeiland\Events2\Event\ModifyDayRepositoryQueryBuilderEvent;
 use JWeiland\Events2\Event\ModifyQueriesOfFindEventsEvent;
 use JWeiland\Events2\Event\ModifyQueriesOfSearchEventsEvent;
 use JWeiland\Events2\Event\ModifyStartEndDateForListTypeEvent;
+use JWeiland\Events2\Helper\OverlayHelper;
 use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Generic\Query;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
@@ -39,8 +43,6 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  */
 class DayRepository extends Repository
 {
-    use ExtbaseQueryBuilderTrait;
-
     public const TABLE = 'tx_events2_domain_model_day';
 
     protected DateTimeUtility $dateTimeUtility;
@@ -50,6 +52,8 @@ class DayRepository extends Repository
     protected DatabaseService $databaseService;
 
     protected DayFactory $dayFactory;
+
+    protected OverlayHelper $overlayHelper;
 
     protected EventDispatcherInterface $eventDispatcher;
 
@@ -73,6 +77,11 @@ class DayRepository extends Repository
     public function injectDayFactory(DayFactory $dayFactory): void
     {
         $this->dayFactory = $dayFactory;
+    }
+
+    public function injectOverlayHelper(OverlayHelper $overlayHelper): void
+    {
+        $this->overlayHelper = $overlayHelper;
     }
 
     public function injectEventDispatcher(EventDispatcherInterface $eventDispatcher): void
@@ -427,6 +436,38 @@ class DayRepository extends Repository
         );
     }
 
+    protected function getQueryBuilderForTable(
+        string $table,
+        string $alias,
+        bool $useLangStrict = false,
+        int $overrideLanguageUid = -1,
+    ): QueryBuilder {
+        $extbaseQuery = $this->createQuery();
+
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($table);
+        $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
+
+        $this->eventDispatcher->dispatch(
+            new ModifyDayRepositoryQueryBuilderEvent($queryBuilder, $table, $alias, $this->settings),
+        );
+
+        $queryBuilder
+            ->from($table, $alias)
+            ->andWhere(
+                $queryBuilder->expr()->in(
+                    $alias . '.pid',
+                    $queryBuilder->createNamedParameter(
+                        $extbaseQuery->getQuerySettings()->getStoragePageIds(),
+                        ArrayParameterType::INTEGER,
+                    ),
+                ),
+            );
+
+        $this->overlayHelper->addWhereForOverlay($queryBuilder, $table, $alias, $useLangStrict, $overrideLanguageUid);
+
+        return $queryBuilder;
+    }
+
     /**
      * Get Sub-QueryBuilder
      */
@@ -458,5 +499,10 @@ class DayRepository extends Repository
         );
 
         return $subQueryBuilder;
+    }
+
+    protected function getConnectionPool(): ConnectionPool
+    {
+        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 }
