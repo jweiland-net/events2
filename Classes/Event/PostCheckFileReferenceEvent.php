@@ -14,7 +14,7 @@ namespace JWeiland\Events2\Event;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 
 /**
- * Use this event, if you want to add further checks for uploaded images of events2 frontend form
+ * Use this event if you want to add further checks for uploaded images of events2 frontend form
  */
 class PostCheckFileReferenceEvent
 {
