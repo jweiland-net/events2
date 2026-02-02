@@ -15,7 +15,7 @@ use JWeiland\Events2\Domain\Model\Filter;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 
 /**
- * Use this event, if you want to modify the queries of DayRepository::findEvents.
+ * Use this event if you want to modify the queries of DayRepository::findEvents.
  */
 class ModifyQueriesOfFindEventsEvent
 {
