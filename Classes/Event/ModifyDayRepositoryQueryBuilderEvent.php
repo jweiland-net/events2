@@ -35,14 +35,27 @@ use TYPO3\CMS\Core\Database\Query\QueryBuilder;
  * - changing filters that are applied later by the repository logic
  * - modifying the sub-query builders used for list/search (use the dedicated later events instead)
  */
-readonly class ModifyDayRepositoryQueryBuilderEvent
+class ModifyDayRepositoryQueryBuilderEvent
 {
+    private QueryBuilder $queryBuilder;
+
+    private string $table;
+
+    private string $alias;
+
+    private array $settings;
+
     public function __construct(
-        private QueryBuilder $queryBuilder,
-        private string $table,
-        private string $alias,
-        private array $settings = [],
-    ) {}
+        QueryBuilder $queryBuilder,
+        string $table,
+        string $alias,
+        array $settings = [],
+    ) {
+        $this->queryBuilder = $queryBuilder;
+        $this->table = $table;
+        $this->alias = $alias;
+        $this->settings = $settings;
+    }
 
     public function getQueryBuilder(): QueryBuilder
     {
