@@ -659,16 +659,24 @@ return [
             'exclude' => true,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.attendance_mode',
             'config' => [
-                'type' => 'check',
+                'type' => 'radio',
                 'cols' => 1,
                 'items' => [
                     [
+                        'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.attendance_mode.empty',
+                        'value' => \JWeiland\Events2\Domain\Model\Enums\AttendanceModeEnum::EMPTY->value,
+                    ],
+                    [
                         'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.attendance_mode.in_person',
-                        'value' => 'in_person',
+                        'value' => \JWeiland\Events2\Domain\Model\Enums\AttendanceModeEnum::IN_PERSON->value,
                     ],
                     [
                         'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.attendance_mode.online',
-                        'value' => 'online',
+                        'value' => \JWeiland\Events2\Domain\Model\Enums\AttendanceModeEnum::ONLINE->value,
+                    ],
+                    [
+                        'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.attendance_mode.hybrid',
+                        'value' => \JWeiland\Events2\Domain\Model\Enums\AttendanceModeEnum::HYBRID->value,
                     ],
                 ],
                 'default' => 0,
