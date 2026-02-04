@@ -335,6 +335,10 @@
         <source>Attendance Mode</source>
         <target state="final">Durchführungsform</target>
       </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.attendance_mode.empty">
+        <source>Not specified</source>
+        <target state="needs-translation">Not specified</target>
+      </trans-unit>
       <trans-unit id="tx_events2_domain_model_event.attendance_mode.in_person" approved="yes">
         <source>In-person (on-site)</source>
         <target state="final">Präsenz (vor Ort)</target>
@@ -342,6 +346,10 @@
       <trans-unit id="tx_events2_domain_model_event.attendance_mode.online" approved="yes">
         <source>Online (virtual)</source>
         <target state="final">Online (virtuell)</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.attendance_mode.hybrid">
+        <source>Hybrid</source>
+        <target state="needs-translation">Hybrid</target>
       </trans-unit>
       <trans-unit id="tx_events2_domain_model_event.days" approved="yes">
         <source>Days</source>
