@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 8.6.1
+=============
+
+*   [TASK] Migrate attendance mode to TCA type "radio"
+
 Version 8.6.0
 =============
 
