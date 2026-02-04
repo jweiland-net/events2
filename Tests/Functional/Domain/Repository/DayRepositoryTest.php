@@ -13,6 +13,7 @@ namespace JWeiland\Events2\Tests\Functional\Domain\Repository;
 
 use JWeiland\Events2\Domain\Model\Category;
 use JWeiland\Events2\Domain\Model\Day;
+use JWeiland\Events2\Domain\Model\Enums\AttendanceModeEnum;
 use JWeiland\Events2\Domain\Model\Filter;
 use JWeiland\Events2\Domain\Model\Location;
 use JWeiland\Events2\Domain\Model\Search;
@@ -706,48 +707,37 @@ class DayRepositoryTest extends FunctionalTestCase
             title: 'Event No Attendance',
             eventBegin: new \DateTimeImmutable('tomorrow midnight'),
             additionalFields: [
-                'attendance_mode' => 0,
+                'attendance_mode' => AttendanceModeEnum::EMPTY->value,
             ],
         );
         $this->insertEvent(
             title: 'Event In Person',
             eventBegin: new \DateTimeImmutable('tomorrow midnight'),
             additionalFields: [
-                'attendance_mode' => 1,
+                'attendance_mode' => AttendanceModeEnum::IN_PERSON->value,
             ],
         );
         $this->insertEvent(
             title: 'Event Online',
             eventBegin: new \DateTimeImmutable('tomorrow midnight'),
             additionalFields: [
-                'attendance_mode' => 2,
-            ],
-        );
-        $this->insertEvent(
-            title: 'Event BOTH',
-            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
-            additionalFields: [
-                'attendance_mode' => 3,
+                'attendance_mode' => AttendanceModeEnum::ONLINE->value,
             ],
         );
         $this->createDayRelations();
 
         $search = new Search();
-        $search->setAttendanceMode(1);
+        $search->setAttendanceMode(AttendanceModeEnum::IN_PERSON);
 
         $days = $this->dayRepository->searchEvents($search)->toArray();
 
         self::assertCount(
-            2,
+            1,
             $days,
         );
         self::assertSame(
             'Event In Person',
             $days[0]->getEvent()->getTitle(),
-        );
-        self::assertSame(
-            'Event BOTH',
-            $days[1]->getEvent()->getTitle(),
         );
     }
 
