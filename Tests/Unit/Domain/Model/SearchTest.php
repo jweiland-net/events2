@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Unit\Domain\Model;
 
 use JWeiland\Events2\Domain\Model\Category;
+use JWeiland\Events2\Domain\Model\Enums\AttendanceModeEnum;
 use JWeiland\Events2\Domain\Model\Location;
 use JWeiland\Events2\Domain\Model\Search;
 use JWeiland\Events2\Tests\Functional\Events2Constants;
@@ -152,10 +153,10 @@ class SearchTest extends UnitTestCase
     }
 
     #[Test]
-    public function getAttendanceModeInitiallyReturnsZero(): void
+    public function getAttendanceModeInitiallyReturnsEmpty(): void
     {
         self::assertSame(
-            0,
+            AttendanceModeEnum::EMPTY,
             $this->subject->getAttendanceMode(),
         );
     }
@@ -163,10 +164,10 @@ class SearchTest extends UnitTestCase
     #[Test]
     public function setAttendanceModeSetsAttendanceMode(): void
     {
-        $this->subject->setAttendanceMode(2);
+        $this->subject->setAttendanceMode(AttendanceModeEnum::ONLINE);
 
         self::assertSame(
-            2,
+            AttendanceModeEnum::ONLINE,
             $this->subject->getAttendanceMode(),
         );
     }
