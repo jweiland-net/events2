@@ -595,16 +595,24 @@ return [
             'exclude' => true,
             'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.attendance_mode',
             'config' => [
-                'type' => 'check',
+                'type' => 'radio',
                 'cols' => 1,
                 'items' => [
                     [
+                        0 => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.attendance_mode.empty',
+                        1 => 0,
+                    ],
+                    [
                         0 => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.attendance_mode.in_person',
-                        1 => 'in_person',
+                        1 => 1,
                     ],
                     [
                         0 => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.attendance_mode.online',
-                        1 => 'online',
+                        1 => 2,
+                    ],
+                    [
+                        0 => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.attendance_mode.hybrid',
+                        1 => 3,
                     ],
                 ],
                 'default' => 0,

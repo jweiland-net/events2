@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Domain\Repository;
 
-use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Factory\DayFactory;
@@ -273,14 +272,13 @@ class DayRepository extends AbstractRepository
 
         // add a query for attendance mode
         if ($search->getAttendanceMode()) {
-            $subQueryBuilder->andWhere(
-                $subQueryBuilder->expr()->in(
-                    'event_sub_query.attendance_mode',
-                    $queryBuilder->createNamedParameter(
-                        [$search->getAttendanceMode(), 3],
-                        Connection::PARAM_INT_ARRAY,
-                    ),
-                ),
+            $this->databaseService->addConstraintForEventColumn(
+                $subQueryBuilder,
+                'attendance_mode',
+                $search->getAttendanceMode(),
+                \PDO::PARAM_INT,
+                $queryBuilder,
+                'event_sub_query',
             );
         }
 
@@ -311,7 +309,7 @@ class DayRepository extends AbstractRepository
             ->addOrderBy('day.sort_day_time', 'ASC')
             ->addOrderBy('day.day_time', 'ASC');
 
-        if (!empty($search->getLimit())) {
+        if ($search->getLimit() > 0) {
             $queryBuilder->setMaxResults($search->getLimit());
         }
 

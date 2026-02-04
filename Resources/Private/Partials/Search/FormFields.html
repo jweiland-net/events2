@@ -101,9 +101,16 @@
     </label>
     <div class="col-sm-9">
         <select id="searchAttendanceMode" class="form-control" name="tx_events2_searchresults[search][attendanceMode]">
-            <option value="0"></option>
-            <option value="1">{f:translate(key: 'tx_events2_domain_model_search.attendance_mode.in_person')}</option>
-            <option value="2">{f:translate(key: 'tx_events2_domain_model_search.attendance_mode.online')}</option>
+            <f:for each="{selectorData.attendanceModes}" as="attendanceMode" key="attendanceModeKey">
+                <f:if condition="{attendanceModeKey} == {search.attendanceMode}">
+                    <f:then>
+                        <option value="{attendanceModeKey}" selected="selected">{attendanceMode}</option>
+                    </f:then>
+                    <f:else>
+                        <option value="{attendanceModeKey}">{attendanceMode}</option>
+                    </f:else>
+                </f:if>
+            </f:for>
         </select>
     </div>
 </div>

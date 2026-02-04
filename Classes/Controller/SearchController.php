@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Controller;
 
+use JWeiland\Events2\Domain\Model\Enums\AttendanceModeEnum;
 use JWeiland\Events2\Domain\Model\Search;
 use JWeiland\Events2\Domain\Repository\CategoryRepository;
 use JWeiland\Events2\Domain\Repository\DayRepository;
@@ -19,6 +20,7 @@ use JWeiland\Events2\Utility\CacheUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\Category;
 use TYPO3\CMS\Extbase\Reflection\ObjectAccess;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /*
  * This controller shows the search-form and search-results.
@@ -69,7 +71,7 @@ class SearchController extends AbstractController
             $this->addFlashMessage('Dear Admin: Please check if you have set rootCategory correctly as parent of your defined mainCategories.');
         }
 
-        // Convert sub-properties to array
+        // Convert subproperties to array
         $gettableSearchProperties = ObjectAccess::getGettableProperties($search);
         if ($search->getMainCategory() instanceof Category) {
             $gettableSearchProperties['mainCategory'] = ObjectAccess::getGettableProperties($search->getMainCategory());
@@ -85,8 +87,14 @@ class SearchController extends AbstractController
                 'locations' => $this->locationRepository->getLocationsForSearchSelector(),
                 'categories' => [
                     'main' => $allowedMainCategories,
-                    'sub' => []
-                ]
+                    'sub' => [],
+                ],
+                'attendanceModes' => [
+                    0 => '',
+                    1 => LocalizationUtility::translate('tx_events2_domain_model_event.attendance_mode.in_person', 'events2'),
+                    2 => LocalizationUtility::translate('tx_events2_domain_model_event.attendance_mode.online', 'events2'),
+                    3 => LocalizationUtility::translate('tx_events2_domain_model_event.attendance_mode.hybrid', 'events2'),
+                ],
             ],
             'jsVariables' => json_encode($this->getJsVariables([
                 'siteId' => $GLOBALS['TSFE']->id,

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Domain\Model;
 
+use JWeiland\Events2\Domain\Model\Enums\AttendanceModeEnum;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /*
@@ -30,7 +31,7 @@ class Search extends AbstractEntity
 
     protected ?Location $location = null;
 
-    protected int $attendanceMode = 0;
+    protected AttendanceModeEnum $attendanceMode = AttendanceModeEnum::EMPTY;
 
     protected bool $freeEntry = false;
 
@@ -123,12 +124,12 @@ class Search extends AbstractEntity
         $this->location = $location;
     }
 
-    public function getAttendanceMode(): int
+    public function getAttendanceMode(): AttendanceModeEnum
     {
         return $this->attendanceMode;
     }
 
-    public function setAttendanceMode(int $attendanceMode): void
+    public function setAttendanceMode(AttendanceModeEnum $attendanceMode): void
     {
         $this->attendanceMode = $attendanceMode;
     }
