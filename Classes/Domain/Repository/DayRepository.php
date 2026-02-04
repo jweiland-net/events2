@@ -274,15 +274,14 @@ class DayRepository extends AbstractRepository
         }
 
         // add a query for attendance mode
-        if ($search->getAttendanceMode()) {
-            $subQueryBuilder->andWhere(
-                $subQueryBuilder->expr()->in(
-                    'event_sub_query.attendance_mode',
-                    $queryBuilder->createNamedParameter(
-                        [$search->getAttendanceMode(), 3],
-                        ArrayParameterType::INTEGER,
-                    ),
-                ),
+        if ($search->getAttendanceMode()->value) {
+            $this->databaseService->addConstraintForEventColumn(
+                $subQueryBuilder,
+                'attendance_mode',
+                $search->getAttendanceMode()->value,
+                Connection::PARAM_INT,
+                $queryBuilder,
+                'event_sub_query',
             );
         }
 
@@ -313,7 +312,7 @@ class DayRepository extends AbstractRepository
             ->addOrderBy('day.sort_day_time', 'ASC')
             ->addOrderBy('day.day_time', 'ASC');
 
-        if (!empty($search->getLimit())) {
+        if ($search->getLimit() > 0) {
             $queryBuilder->setMaxResults($search->getLimit());
         }
 
