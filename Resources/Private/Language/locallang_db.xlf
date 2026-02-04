@@ -264,11 +264,17 @@
 			<trans-unit id="tx_events2_domain_model_event.attendance_mode">
 				<source>Attendance Mode</source>
 			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.attendance_mode.empty">
+				<source>Not specified</source>
+			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.attendance_mode.in_person">
 				<source>In-person (on-site)</source>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.attendance_mode.online">
 				<source>Online (virtual)</source>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.attendance_mode.hybrid">
+				<source>Hybrid</source>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.days">
 				<source>Days</source>
