@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 10.2.1
+==============
+
+*   [TASK] Migrate attendance mode to TCA type "radio"
+
 Version 10.2.0
 ==============
 
