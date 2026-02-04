@@ -155,6 +155,10 @@
         <source>Online (virtual)</source>
         <target state="needs-translation">Online (virtual)</target>
       </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.attendance_mode.hybrid">
+        <source>Hybrid</source>
+        <target state="needs-translation">Hybrid</target>
+      </trans-unit>
       <trans-unit id="tx_events2_domain_model_event.days">
         <source>Days</source>
         <target state="needs-translation">Days</target>
