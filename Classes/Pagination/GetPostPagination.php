@@ -23,7 +23,7 @@ class GetPostPagination implements PaginationInterface
 {
     use Typo3RequestTrait;
 
-    protected string $pluginNamespace = 'tx_events2_list';
+    protected string $pluginNamespace = 'tx_events2_searchresults';
 
     protected array $arguments = [];
 
