@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 10.2.2
+==============
+
+*   [TASK] Respect search form values in paginator of search results
+
 Version 10.2.1
 ==============
 
