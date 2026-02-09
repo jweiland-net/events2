@@ -341,7 +341,7 @@ class DayRepository extends Repository
     protected function addConstraintForDate(
         QueryBuilder $queryBuilder,
         string $listType,
-        QueryBuilder $parentQueryBuilder = null,
+        ?QueryBuilder $parentQueryBuilder = null,
         string $alias = 'day',
     ): void {
         $startDateTime = $this->dateTimeUtility->convert('today');

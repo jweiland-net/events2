@@ -55,7 +55,7 @@ trait Typo3PropertiesTrait
         return $this->_languageUid;
     }
 
-    public function setSysLanguageUid(int $sysLanguageUid = null): void
+    public function setSysLanguageUid(?int $sysLanguageUid = null): void
     {
         $this->_languageUid = $sysLanguageUid;
     }

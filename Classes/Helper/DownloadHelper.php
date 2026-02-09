@@ -23,11 +23,11 @@ use TYPO3\CMS\Core\Resource\FileInterface;
 readonly class DownloadHelper
 {
     public function downloadFile(
-        FileInterface $file = null,
+        ?FileInterface $file = null,
         string $body = '',
         bool $asDownload = false,
-        string $alternativeFilename = null,
-        string $overrideMimeType = null,
+        ?string $alternativeFilename = null,
+        ?string $overrideMimeType = null,
     ): ResponseInterface {
         if ($file === null && $body === '') {
             throw new \InvalidArgumentException('Please provide either a file object or a string to download', 1639401496);
@@ -64,11 +64,11 @@ readonly class DownloadHelper
      * @throws ImmediateResponseException
      */
     public function forceDownloadFile(
-        FileInterface $file = null,
+        ?FileInterface $file = null,
         string $body = '',
         bool $asDownload = false,
-        string $alternativeFilename = null,
-        string $overrideMimeType = null,
+        ?string $alternativeFilename = null,
+        ?string $overrideMimeType = null,
     ): Response {
         throw new ImmediateResponseException(
             $this->downloadFile($file, $body, $asDownload, $alternativeFilename, $overrideMimeType),
