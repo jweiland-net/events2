@@ -35,7 +35,7 @@ class EventRecordService
         int $eventUid,
         bool $doVersioning = true,
         bool $doLanguageOverlay = true,
-        QueryRestrictionContainerInterface $restrictionContainer = null,
+        ?QueryRestrictionContainerInterface $restrictionContainer = null,
     ): array {
         $eventUidOfLiveVersion = $this->getLiveVersionOfEventUid($eventUid);
 
@@ -106,7 +106,7 @@ class EventRecordService
         return $sysLanguageUids;
     }
 
-    protected function getQueryBuilder(QueryRestrictionContainerInterface $restrictionContainer = null): QueryBuilder
+    protected function getQueryBuilder(?QueryRestrictionContainerInterface $restrictionContainer = null): QueryBuilder
     {
         $queryBuilder = $this->connectionPool->getQueryBuilderForTable(self::TABLE);
 

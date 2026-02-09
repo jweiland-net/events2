@@ -33,7 +33,7 @@ class ArrayFormFactory extends \TYPO3\CMS\Form\Domain\Factory\ArrayFormFactory
      */
     public function build(
         array $configuration,
-        string $prototypeName = null,
+        ?string $prototypeName = null,
         ?ServerRequestInterface $request = null,
     ): FormDefinition {
         $this->addEventUidToFormAction($configuration);

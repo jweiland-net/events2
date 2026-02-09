@@ -132,7 +132,7 @@ class DateTimeImmutableConverter extends AbstractTypeConverter
         $source,
         string $targetType,
         array $convertedChildProperties = [],
-        PropertyMappingConfigurationInterface $configuration = null,
+        ?PropertyMappingConfigurationInterface $configuration = null,
     ): ?object {
         $dateFormat = $this->getDefaultDateFormat($configuration);
         if (is_string($source)) {

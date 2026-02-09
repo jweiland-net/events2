@@ -245,7 +245,7 @@ readonly class DayRecordService
         return $newDayRecordKey;
     }
 
-    protected function getExistingDayRecords(int $eventUid, int $workspace = null): array
+    protected function getExistingDayRecords(int $eventUid, ?int $workspace = null): array
     {
         $schema = $this->tcaSchemaFactory->get('tx_events2_domain_model_event');
 
