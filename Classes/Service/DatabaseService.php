@@ -165,7 +165,7 @@ readonly class DatabaseService
         QueryBuilder $queryBuilder,
         \DateTimeImmutable $startDateTime,
         ?\DateTimeImmutable $endDateTime = null,
-        QueryBuilder $parentQueryBuilder = null,
+        ?QueryBuilder $parentQueryBuilder = null,
         string $alias = 'day',
     ): void {
         if ($parentQueryBuilder === null) {
@@ -202,7 +202,7 @@ readonly class DatabaseService
     public function addConstraintForPid(
         QueryBuilder $queryBuilder,
         array $storagePageIds,
-        QueryBuilder $parentQueryBuilder = null,
+        ?QueryBuilder $parentQueryBuilder = null,
         string $postAlias = '',
     ): void {
         if ($parentQueryBuilder === null) {
@@ -232,7 +232,7 @@ readonly class DatabaseService
     public function addConstraintForCategories(
         QueryBuilder $queryBuilder,
         array $categories,
-        QueryBuilder $parentQueryBuilder = null,
+        ?QueryBuilder $parentQueryBuilder = null,
         string $alias = 'event',
     ): void {
         if ($parentQueryBuilder === null) {
@@ -277,7 +277,7 @@ readonly class DatabaseService
     public function addConstraintForOrganizer(
         QueryBuilder $queryBuilder,
         int $organizer,
-        QueryBuilder $parentQueryBuilder = null,
+        ?QueryBuilder $parentQueryBuilder = null,
         string $alias = 'event',
     ): void {
         if ($parentQueryBuilder === null) {
@@ -308,7 +308,7 @@ readonly class DatabaseService
     public function addConstraintForLocation(
         QueryBuilder $queryBuilder,
         int $location,
-        QueryBuilder $parentQueryBuilder = null,
+        ?QueryBuilder $parentQueryBuilder = null,
         string $alias = 'event',
     ): void {
         if ($parentQueryBuilder === null) {
@@ -334,7 +334,7 @@ readonly class DatabaseService
         string $column,
         mixed $value,
         ParameterType $dataType = Connection::PARAM_STR,
-        QueryBuilder $parentQueryBuilder = null,
+        ?QueryBuilder $parentQueryBuilder = null,
         string $alias = 'event',
     ): void {
         if ($parentQueryBuilder === null) {
