@@ -17,6 +17,8 @@ CREATE TABLE tx_events2_domain_model_day
 	def_lang_event_uid int(11) unsigned DEFAULT '0' NOT NULL,
 
 	KEY                keyForDay (day),
+	KEY                keyForEvent (event),
+	KEY                keyForDefLang (def_lang_event_uid),
 	KEY                booster (event,pid,hidden,day,sort_day_time,day_time,tstamp,crdate,uid)
 );
 
