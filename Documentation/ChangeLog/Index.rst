@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 10.2.3
+==============
+
+*   [TASK] Add additional database indexes for events table
+
 Version 10.2.2
 ==============
 
