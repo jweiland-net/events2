@@ -1,6 +1,6 @@
 {
 	"name": "jweiland/events2",
-	"description": "Organize your single and recurring events",
+	"description": "Events 2 - Create single and recurring events",
 	"license": "GPL-2.0-or-later",
 	"type": "typo3-cms-extension",
 	"keywords": [
