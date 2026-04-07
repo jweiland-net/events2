@@ -179,6 +179,7 @@ return [
                 'size' => 5,
                 'max' => 5,
                 'default' => '08:00',
+                'placeholder' => '08:00',
                 'eval' => Time::class,
             ],
         ],
