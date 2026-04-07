@@ -16,7 +16,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
- * This class checks, if given time entry like 08:34 is valid in TCA.
+ * This class checks if given time entry like 08:34 is valid in TCA.
  */
 readonly class Time
 {
