@@ -80,7 +80,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
         $source,
         string $targetType,
         array $convertedChildProperties = [],
-        PropertyMappingConfigurationInterface $configuration = null,
+        ?PropertyMappingConfigurationInterface $configuration = null,
     ): Error|ObjectStorage {
         $this->initialize($configuration);
         $filesToProcess = [];

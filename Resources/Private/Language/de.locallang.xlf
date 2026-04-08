@@ -144,6 +144,10 @@
 				<target>Zum Ticketverkauf</target>
 			</trans-unit>
 			<trans-unit id="tx_events2_domain_model_event.attendance_mode">
+				<source>Attendance Mode</source>
+				<target>Durchführungsform</target>
+			</trans-unit>
+			<trans-unit id="tx_events2_domain_model_event.attendance_mode.empty">
 				<source>Not specified</source>
 				<target>Keine Angabe</target>
 			</trans-unit>

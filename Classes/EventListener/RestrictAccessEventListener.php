@@ -151,7 +151,7 @@ final class RestrictAccessEventListener
         $this->getFlashMessageQueue()->enqueue($flashMessage);
     }
 
-    private function getFlashMessageQueue(string $identifier = null): FlashMessageQueue
+    private function getFlashMessageQueue(?string $identifier = null): FlashMessageQueue
     {
         if ($identifier === null) {
             $pluginNamespace = $this->extensionService->getPluginNamespace(

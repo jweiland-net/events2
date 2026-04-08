@@ -18,7 +18,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 trait RelationHandlerTrait
 {
-    private function createRelationHandlerInstance(int $workspace = null): RelationHandler
+    private function createRelationHandlerInstance(?int $workspace = null): RelationHandler
     {
         $isWorkspacesLoaded = ExtensionManagementUtility::isLoaded('workspaces');
 
