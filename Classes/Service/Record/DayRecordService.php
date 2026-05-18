@@ -88,7 +88,7 @@ readonly class DayRecordService
                     $queryBuilder->expr()->eq(
                         't3ver_wsid',
                         $queryBuilder->createNamedParameter($this->getWorkspaceUidFromBackendUser(), Connection::PARAM_INT),
-                    )
+                    ),
                 )
                 ->executeQuery();
 
