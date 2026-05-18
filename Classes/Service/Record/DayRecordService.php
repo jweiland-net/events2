@@ -73,20 +73,34 @@ readonly class DayRecordService
      */
     public function removeAllByEventUid(int $eventUid): void
     {
-        $connection = $this->connectionPool->getConnectionForTable(self::TABLE);
-        try {
-            $dayRecordsToDelete = $connection->select(
-                ['uid'],
-                self::TABLE,
-                [
-                    'def_lang_event_uid' => $eventUid,
-                    't3ver_wsid' => $this->getWorkspaceUidFromBackendUser(),
-                ],
-            )->fetchAllAssociative();
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable(self::TABLE);
+        $queryBuilder->getRestrictions()->removeAll();
 
-            foreach ($dayRecordsToDelete as $dayRecordToDelete) {
+        try {
+            $queryResult = $queryBuilder
+                ->select('uid')
+                ->from(self::TABLE)
+                ->where(
+                    $queryBuilder->expr()->eq(
+                        'def_lang_event_uid',
+                        $queryBuilder->createNamedParameter($eventUid, Connection::PARAM_INT),
+                    ),
+                    $queryBuilder->expr()->eq(
+                        't3ver_wsid',
+                        $queryBuilder->createNamedParameter($this->getWorkspaceUidFromBackendUser(), Connection::PARAM_INT),
+                    )
+                )
+                ->executeQuery();
+
+            $connection = $this->connectionPool->getConnectionForTable(self::TABLE);
+            while ($dayRecordToDelete = $queryResult->fetchAssociative()) {
                 $connection->delete(self::TABLE, ['uid' => $dayRecordToDelete['uid']]);
-                $this->referenceIndex->updateRefIndexTable(self::TABLE, $dayRecordToDelete['uid'], false, $this->getWorkspaceUidFromBackendUser());
+                $this->referenceIndex->updateRefIndexTable(
+                    self::TABLE,
+                    $dayRecordToDelete['uid'],
+                    false,
+                    $this->getWorkspaceUidFromBackendUser(),
+                );
             }
         } catch (Exception) {
         }
