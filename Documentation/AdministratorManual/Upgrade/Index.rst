@@ -10,6 +10,22 @@ Upgrade
 If you upgrade/update EXT:events2 to a newer version, please read this
 section carefully!
 
+Update to Version 10.2.4
+========================
+
+Due to an issue in the DayRecordService, records in the day table that use
+enable fields, such as `hidden`, `starttime`, or `endtime`, were not removed
+when new day records were generated for a given event. As a result, the day
+table grows significantly with each execution of the `Re-Create day records`
+scheduler task.
+
+After updating to version 10.2.4, please run the
+TYPO3 command `events2:rebuild`.
+
+If you are not familiar with the CLI, you can alternatively truncate
+the `tx_events2_domain_model_day` table and then run
+the `Re-Create day records` scheduler task again.
+
 Update to Version 10.0.0
 ========================
 

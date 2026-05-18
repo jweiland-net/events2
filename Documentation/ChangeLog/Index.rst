@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 10.2.4
+==============
+
+*   [BUGFIX] Prevent duplicate day records when rebuilding event days
+
 Version 10.2.3
 ==============
 
