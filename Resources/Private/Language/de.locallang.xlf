@@ -147,6 +147,10 @@
         <source>Attendance Mode</source>
         <target state="final">Durchführungsform</target>
       </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.attendance_mode.empty">
+        <source>Not specified</source>
+        <target state="needs-translation">Not specified</target>
+      </trans-unit>
       <trans-unit id="tx_events2_domain_model_event.attendance_mode.in_person" approved="yes">
         <source>In-person (on-site)</source>
         <target state="final">Präsenz (vor Ort)</target>
