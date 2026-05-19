@@ -253,8 +253,9 @@ let Events2 = function ($element) {
    * Search for sub-categories, if a main category was selected
    */
   me.renderSubCategory = function () {
-    if (document.querySelector('#searchSubCategory').value === '') {
-      document.querySelector('#searchSubCategory').setAttribute('disabled', 'disabled');
+    const subCategoryElement = document.querySelector('#searchSubCategory');
+    if (subCategoryElement?.value === '') {
+      subCategoryElement.setAttribute('disabled', 'disabled');
     }
 
     if (me.$searchMainCategory.value !== '0') {
@@ -292,6 +293,10 @@ let Events2 = function ($element) {
     let selected = '';
     let $searchSubCategory = document.querySelector('#searchSubCategory');
     let firstOption = document.createElement('option');
+
+    if (!$searchSubCategory) {
+      return;
+    }
 
     firstOption.setAttribute('value', '0');
     $searchSubCategory.appendChild(firstOption);
