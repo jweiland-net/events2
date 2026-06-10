@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 8.6.2
+=============
+
+*   [BUGFIX] Resolve serialization error in ReGenerateDays scheduler task
+
 Version 8.6.1
 =============
 
