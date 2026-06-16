@@ -70,6 +70,75 @@ readonly class Events2DataHandler
     }
 
     /**
+     * Handles copy commands for event records and prevents TYPO3 from copying
+     * the existing day relation records.
+     *
+     * The events2 extension manages records of the table tx_events2_domain_model_day
+     * itself. These day records are derived from the event record and must be
+     * generated for the concrete event record they belong to.
+     *
+     * During TYPO3's default copy process, the relation field "days" of an event
+     * record would be copied as well. This creates copies of the related day records,
+     * but those copied day records still contain the UID of the original event record.
+     * As a result, the copied event would not receive a clean and valid set of day
+     * records pointing to its own UID.
+     *
+     * Ideally, the "days" field would be excluded before TYPO3 starts copying the
+     * record. DataHandler::copyRecord() supports this via its excludeFields argument.
+     * However, the core command processing calls copyRecord() with a hard-coded empty
+     * exclude field list. The same applies to the override values argument, which is
+     * also passed as an empty array and therefore cannot be used from the outside in
+     * this situation.
+     *
+     * To work around this limitation, this hook intercepts copy commands for event
+     * records, performs the copy operation manually and passes "days" as excluded
+     * field to DataHandler::copyRecord(). After the event record was copied
+     * successfully, the day relations are generated explicitly for the newly created
+     * event record. Finally, the command is marked as processed so TYPO3 does not run
+     * its default copy handling again.
+     */
+    public function processCmdmap(
+        string $command,
+        string $table,
+        string|int $id,
+        mixed $value,
+        bool &$commandIsProcessed,
+        DataHandler $dataHandler,
+        mixed $pasteUpdate,
+    ): void {
+        if ($command !== 'copy') {
+            return;
+        }
+
+        if ($table !== 'tx_events2_domain_model_event') {
+            return;
+        }
+
+        $target = $value['target'] ?? $value;
+        $ignoreLocalization = (bool)($value['ignoreLocalization'] ?? false);
+
+        $dataHandler->copyRecord(
+            $table,
+            $id,
+            $target,
+            true,
+            [],
+            'days',
+            0,
+            $ignoreLocalization,
+        );
+
+        if ($dataHandler->errorLog === [] && isset($dataHandler->copyMappingArray[$table][$id])) {
+            $this->dayRelationService->createDayRelations($this->getRecordUid(
+                (int)$dataHandler->copyMappingArray[$table][$id],
+                $dataHandler,
+            ));
+
+            $commandIsProcessed = true;
+        }
+    }
+
+    /**
      * Prevent the DataHandler from creating any day records. The relationship between
      * the day and event tables is highly specific. An event in the LIVE workspace
      * may have a different number of associated day records compared to the same
