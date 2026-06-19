@@ -1,0 +1,53 @@
+name: ter-release.yml
+
+on:
+  release:
+    types: [published]
+
+jobs:
+
+  publish:
+    name: Publish Extension to TYPO3 Extension Repository (TER)
+    runs-on: ubuntu-latest
+
+    env:
+      TYPO3_EXTENSION_KEY: ${{ secrets.TYPO3_EXTENSION_KEY }}
+      TYPO3_REPOSITORY_URL: ${{ secrets.TYPO3_REPOSITORY_URL }}
+      TYPO3_API_TOKEN: ${{ secrets.TYPO3_API_TOKEN }}
+      TYPO3_API_USERNAME: ${{ secrets.TYPO3_API_USERNAME }}
+      TYPO3_API_PASSWORD: ${{ secrets.TYPO3_API_PASSWORD }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get version and description
+        id: prep
+        run: |
+          # 1. Clean the version tag (removes 'v' prefix if present, e.g., v1.0.0 -> 1.0.0)
+          RAW_VERSION="${{ github.event.release.tag_name }}"
+          VERSION=${RAW_VERSION#v}
+          echo "VERSION=$VERSION" >> "$GITHUB_OUTPUT"
+
+          # 2. Safely capture the multi-line release body as an ENV variable
+          echo "RELEASE_NOTES<<EOF" >> $GITHUB_ENV
+          echo "${{ github.event.release.body }}" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: intl, mbstring, json, libxml, xml, zip, curl
+          tools: composer:v2
+
+      - name: Install TYPO3 Tailor Extension
+        run: composer global require typo3/tailor --prefer-dist --no-progress --no-suggest
+
+      - name: Release to TER
+        run: |
+          # Use the VERSION from steps and RELEASE_NOTES from env
+          # We use double quotes around env.RELEASE_NOTES to handle the multi-line content
+          php ~/.composer/vendor/bin/tailor ter:publish ${{ steps.prep.outputs.VERSION }} \
+            --artefact=${{ env.TYPO3_REPOSITORY_URL }}/archive/${{ github.event.release.tag_name }}.zip \
+            --comment="${{ env.RELEASE_NOTES }}"
