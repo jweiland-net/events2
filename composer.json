@@ -48,7 +48,7 @@
 		"typo3-ter/events2": "self.version"
 	},
 	"suggest": {
-		"jweiland/cms-reactions": "Allows importing events2 records from aother TYPO3 systems or any other request"
+		"jweiland/cms-reactions": "Allows importing events2 records from another TYPO3 systems or any other request"
 	},
 	"autoload": {
 		"psr-4": {

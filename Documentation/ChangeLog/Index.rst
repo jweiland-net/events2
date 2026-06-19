@@ -7,6 +7,12 @@
 ChangeLog
 =========
 
+Version 10.2.6
+==============
+
+*   [BUGFIX] Prevent copied event records from reusing day relations of the
+    original event
+
 Version 10.2.5
 ==============
 

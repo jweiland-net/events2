@@ -115,8 +115,11 @@ ExtensionUtility::configurePlugin(
 
 // register an eval function to check for time
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tce']['formevals'][Time::class] = '';
-// delete and recreate day relations for an event while saving
+
+// delete and recreate day relations for an event while saving/copying
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['events2_createDayRelations'] = Events2DataHandler::class;
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['events2_createDayRelations'] = Events2DataHandler::class;
+
 // Clear the cache of pages with events if the event was edited/created/deleted in BE
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['clearCachePostProc']['events2_clearcache'] = Events2DataHandler::class . '->clearCachePostProc';
 
