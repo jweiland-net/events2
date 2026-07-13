@@ -7,6 +7,13 @@
 ChangeLog
 =========
 
+Version 10.2.7
+==============
+
+*   [BUGFIX] Fix organizer select id to match JavaScript filter
+*   [BUGFIX] Keep filter and search arguments during pagination
+*   [TASK] Turn plugin namespaces into a class constant in GetPostPagination
+
 Version 10.2.6
 ==============
 
