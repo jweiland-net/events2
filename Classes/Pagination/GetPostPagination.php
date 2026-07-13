@@ -29,7 +29,7 @@ class GetPostPagination implements PaginationInterface
 {
     use Typo3RequestTrait;
 
-    protected array $pluginNamespaces = [
+    protected const PLUGIN_NAMESPACES = [
         'tx_events2_list',
         'tx_events2_searchresults',
     ];
@@ -38,8 +38,12 @@ class GetPostPagination implements PaginationInterface
 
     public function __construct(protected readonly PaginatorInterface $paginator)
     {
-        foreach ($this->pluginNamespaces as $pluginNamespace) {
+        foreach (self::PLUGIN_NAMESPACES as $pluginNamespace) {
             $getMergedWithPost = $this->getMergedWithPostFromRequest($pluginNamespace);
+
+            if ($getMergedWithPost === []) {
+                continue;
+            }
 
             foreach ($getMergedWithPost as $argumentName => $argument) {
                 if ($argumentName[0] === '_' && $argumentName[1] === '_') {
@@ -54,6 +58,10 @@ class GetPostPagination implements PaginationInterface
 
                 $this->arguments[$argumentName] = $argument;
             }
+
+            // Only one plugin namespace is ever populated per request, so stop here to
+            // guarantee $this->arguments can never be filled from more than one of them.
+            break;
         }
     }
 
