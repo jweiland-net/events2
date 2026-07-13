@@ -18,31 +18,42 @@ use TYPO3\CMS\Core\Pagination\PaginatorInterface;
 /**
  * This Pagination respects also existing POST data from search form to keep filter while
  * navigation through result pages.
+ *
+ * This class is shared by the "List" plugin (Day::list, filtered by organizer, argument
+ * namespace "tx_events2_list") and the "SearchResults" plugin (Search::listSearchResults,
+ * argument namespace "tx_events2_searchresults"). Both namespaces have to be merged here,
+ * as only one of them is populated at a time, depending on which plugin rendered the
+ * current page.
  */
 class GetPostPagination implements PaginationInterface
 {
     use Typo3RequestTrait;
 
-    protected string $pluginNamespace = 'tx_events2_searchresults';
+    protected array $pluginNamespaces = [
+        'tx_events2_list',
+        'tx_events2_searchresults',
+    ];
 
     protected array $arguments = [];
 
     public function __construct(protected readonly PaginatorInterface $paginator)
     {
-        $getMergedWithPost = $this->getMergedWithPostFromRequest($this->pluginNamespace);
+        foreach ($this->pluginNamespaces as $pluginNamespace) {
+            $getMergedWithPost = $this->getMergedWithPostFromRequest($pluginNamespace);
 
-        foreach ($getMergedWithPost as $argumentName => $argument) {
-            if ($argumentName[0] === '_' && $argumentName[1] === '_') {
-                continue;
-            }
-            if (in_array($argumentName, ['@extension', '@subpackage', '@controller', '@action', '@format'], true)) {
-                continue;
-            }
-            if (in_array($argumentName, ['extension', 'plugin', 'controller', 'action'], true)) {
-                continue;
-            }
+            foreach ($getMergedWithPost as $argumentName => $argument) {
+                if ($argumentName[0] === '_' && $argumentName[1] === '_') {
+                    continue;
+                }
+                if (in_array($argumentName, ['@extension', '@subpackage', '@controller', '@action', '@format'], true)) {
+                    continue;
+                }
+                if (in_array($argumentName, ['extension', 'plugin', 'controller', 'action'], true)) {
+                    continue;
+                }
 
-            $this->arguments[$argumentName] = $argument;
+                $this->arguments[$argumentName] = $argument;
+            }
         }
     }
 
