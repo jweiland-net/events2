@@ -46,3 +46,6 @@ composer.lock
 /.Build
 /composer.json.orig
 /composer.json.testing
+
+# Ignore images downloaded by functional XmlImporter tests
+/Tests/Functional/Fixtures/XmlImport/Images/
