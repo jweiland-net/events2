@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 10.2.8
+==============
+
+*   [BUGFIX] Resolve selectable categories in editAction like newAction
+
 Version 10.2.7
 ==============
 

@@ -66,7 +66,7 @@ class ManagementController extends AbstractController
     {
         if (isset($this->settings['selectableCategoriesForNewEvents'])) {
             trigger_error(
-                'settings.selectableCategoriesForNewEvents is deprecated. Please of settings.new.selectableCategoriesForNewEvents instead.',
+                'settings.selectableCategoriesForNewEvents is deprecated. Please use settings.new.selectableCategoriesForNewEvents instead.',
                 E_USER_DEPRECATED,
             );
             $selectableCategories = $this->settings['new']['selectableCategoriesForNewEvents'] ?? $this->settings['selectableCategoriesForNewEvents'];
@@ -123,7 +123,7 @@ class ManagementController extends AbstractController
     {
         if (isset($this->settings['selectableCategoriesForNewEvents'])) {
             trigger_error(
-                'settings.selectableCategoriesForNewEvents is deprecated. Please of settings.new.selectableCategoriesForNewEvents instead.',
+                'settings.selectableCategoriesForNewEvents is deprecated. Please use settings.new.selectableCategoriesForNewEvents instead.',
                 E_USER_DEPRECATED,
             );
             $selectableCategories = $this->settings['new']['selectableCategoriesForNewEvents'] ?? $this->settings['selectableCategoriesForNewEvents'];
