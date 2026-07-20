@@ -10,7 +10,9 @@ ChangeLog
 Version 10.2.8
 ==============
 
-*   [TASK] Fix grammar in deprecation message for selectableCategoriesForNewEvents
+*   [TASK] Fix grammar in deprecation message for selectableCategoriesForNewEvents,
+    which was added to editAction by community member Sai Asish Y in
+    commit 404269ab
 
 Version 10.2.7
 ==============
