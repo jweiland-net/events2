@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 10.2.8
+==============
+
+*   [TASK] Fix grammar in deprecation message for selectableCategoriesForNewEvents
+
 Version 10.2.7
 ==============
 
