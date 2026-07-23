@@ -25,6 +25,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class PersistedHiddenAliasMapper extends PersistedAliasMapper
 {
+    public $context;
+    #[\Override]
     protected function createQueryBuilder(): QueryBuilder
     {
         $queryBuilder = $this->getConnectionPool()

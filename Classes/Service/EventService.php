@@ -30,13 +30,14 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
  */
 readonly class EventService
 {
-    private const TABLE = 'tx_events2_domain_model_event';
+    private const string TABLE = 'tx_events2_domain_model_event';
 
     public function __construct(
         protected EventRepository $eventRepository,
         protected TimeFactory $timeFactory,
         protected DataMapper $dataMapper,
         protected DatabaseService $databaseService,
+        private ConnectionPool $connectionPool,
     ) {}
 
     public function getNextDayForEvent(int $eventUid): ?\DateTimeImmutable
@@ -132,7 +133,7 @@ readonly class EventService
             while ($event = $queryResult->fetchAssociative()) {
                 $events[$event['uid']] = current($this->dataMapper->map(Event::class, [$event]));
             }
-        } catch (Exception $e) {
+        } catch (Exception) {
         }
 
         return $events;
@@ -148,6 +149,6 @@ readonly class EventService
 
     protected function getConnectionPool(): ConnectionPool
     {
-        return GeneralUtility::makeInstance(ConnectionPool::class);
+        return $this->connectionPool;
     }
 }

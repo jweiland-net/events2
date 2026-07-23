@@ -31,7 +31,7 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
  */
 readonly class DayFactory
 {
-    private const PROCESS_METHODS = [
+    private const array PROCESS_METHODS = [
         'findExactDay',
         'findNextDay',
         'findPreviousDay',
@@ -132,7 +132,7 @@ readonly class DayFactory
         }
 
         $day = null;
-        if ($event->getDays()->count()) {
+        if ($event->getDays()->count() !== 0) {
             $event->getDays()->rewind();
             $day = $event->getDays()->current();
         }

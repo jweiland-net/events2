@@ -30,13 +30,13 @@ final readonly class ActivateHiddenDayRecordsEventListener
 {
     use IsValidEventListenerRequestTrait;
 
-    protected const ALLOWED_CONTROLLER_ACTIONS = [
+    protected const array ALLOWED_CONTROLLER_ACTIONS = [
         'Management' => [
             'activate',
         ],
     ];
 
-    public function __construct(private readonly ConnectionPool $connectionPool) {}
+    public function __construct(private ConnectionPool $connectionPool) {}
 
     public function __invoke(PostProcessFluidVariablesEvent $controllerActionEvent): void
     {

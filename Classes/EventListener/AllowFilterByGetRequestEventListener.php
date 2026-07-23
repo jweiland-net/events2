@@ -25,7 +25,7 @@ final readonly class AllowFilterByGetRequestEventListener
 {
     use IsValidEventListenerRequestTrait;
 
-    protected const ALLOWED_CONTROLLER_ACTIONS = [
+    protected const array ALLOWED_CONTROLLER_ACTIONS = [
         'Day' => [
             'list',
         ],

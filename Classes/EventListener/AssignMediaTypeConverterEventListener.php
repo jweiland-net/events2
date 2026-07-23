@@ -26,7 +26,7 @@ final readonly class AssignMediaTypeConverterEventListener
 {
     use IsValidEventListenerRequestTrait;
 
-    protected const ALLOWED_CONTROLLER_ACTIONS = [
+    protected const array ALLOWED_CONTROLLER_ACTIONS = [
         'Management' => [
             'create',
             'update',
@@ -83,7 +83,7 @@ final readonly class AssignMediaTypeConverterEventListener
             $controllerActionEvent->getSettings(),
         );
 
-        if ($persistedFiles !== null) {
+        if ($persistedFiles instanceof ObjectStorage) {
             $this->addOptionToUploadFilesConverter(
                 $propertyMappingConfiguration,
                 'IMAGES',
@@ -103,7 +103,7 @@ final readonly class AssignMediaTypeConverterEventListener
     private function addOptionToUploadFilesConverter(
         PropertyMappingConfiguration $propertyMappingConfiguration,
         string $optionKey,
-        $optionValue,
+        array|ObjectStorage $optionValue,
     ): void {
         $propertyMappingConfiguration->setTypeConverterOption(
             UploadMultipleFilesConverter::class,

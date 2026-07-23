@@ -31,6 +31,7 @@ class ArrayFormFactory extends \TYPO3\CMS\Form\Domain\Factory\ArrayFormFactory
      *
      * @throws RenderingException
      */
+    #[\Override]
     public function build(
         array $configuration,
         ?string $prototypeName = null,

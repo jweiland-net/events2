@@ -58,6 +58,13 @@ class DayRepository extends Repository
     protected EventDispatcherInterface $eventDispatcher;
 
     protected array $settings = [];
+    /**
+     * Constructs a new Repository
+     */
+    public function __construct(private readonly ConnectionPool $connectionPool)
+    {
+        parent::__construct();
+    }
 
     public function injectExtConf(ExtConf $extConf): void
     {
@@ -84,6 +91,7 @@ class DayRepository extends Repository
         $this->overlayHelper = $overlayHelper;
     }
 
+    #[\Override]
     public function injectEventDispatcher(EventDispatcherInterface $eventDispatcher): void
     {
         $this->eventDispatcher = $eventDispatcher;
@@ -143,7 +151,7 @@ class DayRepository extends Repository
             );
         }
 
-        if ($filter->getTimestamp()) {
+        if ($filter->getTimestamp() !== 0) {
             // Add constraint for a specific day.
             $queryBuilder->andWhere(
                 $queryBuilder->expr()->eq(
@@ -502,6 +510,6 @@ class DayRepository extends Repository
 
     protected function getConnectionPool(): ConnectionPool
     {
-        return GeneralUtility::makeInstance(ConnectionPool::class);
+        return $this->connectionPool;
     }
 }

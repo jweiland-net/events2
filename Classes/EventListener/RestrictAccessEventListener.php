@@ -38,17 +38,9 @@ final class RestrictAccessEventListener
 {
     use IsValidEventListenerRequestTrait;
 
-    private EventRepository $eventRepository;
-
-    private UserRepository $userRepository;
-
-    private ExtensionService $extensionService;
-
-    private FlashMessageService $flashMessageService;
-
     private Request $request;
 
-    protected const ALLOWED_CONTROLLER_ACTIONS = [
+    protected const array ALLOWED_CONTROLLER_ACTIONS = [
         'Management' => [
             'new',
             'create',
@@ -61,16 +53,8 @@ final class RestrictAccessEventListener
         ],
     ];
 
-    public function __construct(
-        EventRepository $eventRepository,
-        UserRepository $userRepository,
-        ExtensionService $extensionService,
-        FlashMessageService $flashMessageService,
-    ) {
-        $this->eventRepository = $eventRepository;
-        $this->userRepository = $userRepository;
-        $this->extensionService = $extensionService;
-        $this->flashMessageService = $flashMessageService;
+    public function __construct(private EventRepository $eventRepository, private UserRepository $userRepository, private ExtensionService $extensionService, private FlashMessageService $flashMessageService, private readonly Context $context)
+    {
     }
 
     public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void
@@ -100,7 +84,7 @@ final class RestrictAccessEventListener
             if ($this->getContext()->getPropertyFromAspect('backend.user', 'isAdmin', false)) {
                 return true;
             }
-        } catch (AspectNotFoundException $e) {
+        } catch (AspectNotFoundException) {
         }
 
         if ((int)($controllerActionEvent->getSettings()['userGroup'] ?? 0) === 0) {
@@ -108,7 +92,7 @@ final class RestrictAccessEventListener
             return false;
         }
 
-        $userAspect = GeneralUtility::makeInstance(Context::class)->getAspect('frontend.user');
+        $userAspect = $this->context->getAspect('frontend.user');
         if (!$userAspect->isLoggedIn()) {
             $this->addFlashMessage(LocalizationUtility::translate('pluginNeedsLogin', 'events2'));
             return false;
@@ -138,7 +122,7 @@ final class RestrictAccessEventListener
         return true;
     }
 
-    private function addFlashMessage($messageBody): void
+    private function addFlashMessage(?string $messageBody): void
     {
         $flashMessage = GeneralUtility::makeInstance(
             FlashMessage::class,
@@ -166,6 +150,6 @@ final class RestrictAccessEventListener
 
     private function getContext(): Context
     {
-        return GeneralUtility::makeInstance(Context::class);
+        return $this->context;
     }
 }

@@ -17,7 +17,7 @@ use JWeiland\Events2\Domain\Traits\Typo3PropertiesTrait;
 use JWeiland\Events2\Domain\Validator\CategoryMandatoryValidator;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Annotation as Extbase;
+use TYPO3\CMS\Extbase\Attribute as Extbase;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
@@ -148,14 +148,14 @@ class Event extends AbstractEntity
      */
     public function initializeObject(): void
     {
-        $this->multipleTimes = $this->multipleTimes ?? new ObjectStorage();
-        $this->differentTimes = $this->differentTimes ?? new ObjectStorage();
-        $this->exceptions = $this->exceptions ?? new ObjectStorage();
-        $this->categories = $this->categories ?? new ObjectStorage();
-        $this->days = $this->days ?? new ObjectStorage();
-        $this->organizers = $this->organizers ?? new ObjectStorage();
-        $this->images = $this->images ?? new ObjectStorage();
-        $this->downloadLinks = $this->downloadLinks ?? new ObjectStorage();
+        $this->multipleTimes ??= new ObjectStorage();
+        $this->differentTimes ??= new ObjectStorage();
+        $this->exceptions ??= new ObjectStorage();
+        $this->categories ??= new ObjectStorage();
+        $this->days ??= new ObjectStorage();
+        $this->organizers ??= new ObjectStorage();
+        $this->images ??= new ObjectStorage();
+        $this->downloadLinks ??= new ObjectStorage();
     }
 
     public function getEventType(): string
@@ -236,9 +236,9 @@ class Event extends AbstractEntity
         $eventBegin = $dateTimeUtility->standardizeDateTimeObject($this->getEventBegin());
         $eventEnd = $dateTimeUtility->standardizeDateTimeObject($this->getEventEnd());
         if (
-            $eventBegin !== null
-            && $eventEnd !== null
-            && $eventEnd <> $eventBegin
+            $eventBegin instanceof \DateTimeImmutable
+            && $eventEnd instanceof \DateTimeImmutable
+            && $eventEnd != $eventBegin
         ) {
             $diff = $eventBegin->diff($eventEnd);
 
@@ -414,7 +414,7 @@ class Event extends AbstractEntity
         $exceptions = new ObjectStorage();
         $exceptionTypes = GeneralUtility::trimExplode(',', strtolower($exceptionTypes), true);
 
-        if (empty($exceptionTypes)) {
+        if ($exceptionTypes === []) {
             $exceptions = $this->exceptions;
         } else {
             foreach ($this->exceptions as $exception) {
@@ -617,7 +617,7 @@ class Event extends AbstractEntity
                     $alternativeDay->getDay(),
                     true,
                 );
-                if ($times->count()) {
+                if ($times->count() !== 0) {
                     $alternativeDays[$alternativeDay->getDayAsTimestamp()] = [
                         'date' => $alternativeDay->getDay(),
                         'times' => $times,
@@ -679,7 +679,7 @@ class Event extends AbstractEntity
                     $exceptionDate,
                     true,
                 );
-                if ($times->count()) {
+                if ($times->count() !== 0) {
                     $alternativeTimes[$exceptionDate->format('U')] = [
                         'date' => $exceptionDate,
                         'times' => $times,
@@ -754,7 +754,7 @@ class Event extends AbstractEntity
     public function getFirstOrganizer(): ?Organizer
     {
         $this->organizers->rewind();
-        if ($this->organizers->count()) {
+        if ($this->organizers->count() !== 0) {
             return $this->organizers->current();
         }
 
@@ -800,7 +800,7 @@ class Event extends AbstractEntity
     public function getFirstImage(): ?FileReference
     {
         $this->images->rewind();
-        if ($this->images->count()) {
+        if ($this->images->count() !== 0) {
             return $this->images->current();
         }
 

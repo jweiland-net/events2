@@ -27,9 +27,9 @@ final readonly class SetDateFormatForPropertyMappingEventListener
 {
     use IsValidEventListenerRequestTrait;
 
-    private const DEFAULT_DATE_FORMAT = 'd.m.Y';
+    private const string DEFAULT_DATE_FORMAT = 'd.m.Y';
 
-    protected const ALLOWED_CONTROLLER_ACTIONS = [
+    protected const array ALLOWED_CONTROLLER_ACTIONS = [
         'Management' => [
             'create',
             'update',

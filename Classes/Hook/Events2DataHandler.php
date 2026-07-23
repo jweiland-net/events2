@@ -57,13 +57,13 @@ readonly class Events2DataHandler
         }
 
         if (array_key_exists('tx_events2_domain_model_day', $dataHandler->datamap)) {
-            foreach ($dataHandler->datamap['tx_events2_domain_model_day'] as $id => $incomingFieldArray) {
+            foreach (array_keys($dataHandler->datamap['tx_events2_domain_model_day']) as $id) {
                 $this->deleteDayRecord($this->getRecordUid($id, $dataHandler));
             }
         }
 
         if (array_key_exists('tx_events2_domain_model_event', $dataHandler->datamap)) {
-            foreach ($dataHandler->datamap['tx_events2_domain_model_event'] as $id => $incomingFieldArray) {
+            foreach (array_keys($dataHandler->datamap['tx_events2_domain_model_event']) as $id) {
                 $this->dayRelationService->createDayRelations($this->getRecordUid($id, $dataHandler));
             }
         }
@@ -124,8 +124,6 @@ readonly class Events2DataHandler
             true,
             [],
             'days',
-            0,
-            $ignoreLocalization,
         );
 
         if ($dataHandler->errorLog === [] && isset($dataHandler->copyMappingArray[$table][$id])) {

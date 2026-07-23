@@ -15,7 +15,7 @@ class TimeRecordService
 {
     use RecordServiceTrait;
 
-    private const TABLE = 'tx_events2_domain_model_time';
+    private const string TABLE = 'tx_events2_domain_model_time';
 
     /**
      * If you activate $includeExceptionTimes be sure to have exceptionRecords in $eventRecord['exceptions']
@@ -41,7 +41,7 @@ class TimeRecordService
             $expressions,
         );
 
-        $timeRecords = array_map(static function ($timeRecord) use ($eventRecord): array {
+        $timeRecords = array_map(static function (array $timeRecord) use ($eventRecord): array {
             $timeRecord['event'] = $eventRecord;
             $timeRecord['exception'] = [];
             return $timeRecord;
@@ -84,7 +84,7 @@ class TimeRecordService
             $expressions,
         );
 
-        return array_map(static function ($timeRecord) use ($exceptionRecord): array {
+        return array_map(static function (array $timeRecord) use ($exceptionRecord): array {
             $timeRecord['event'] = [];
             $timeRecord['exception'] = $exceptionRecord;
             return $timeRecord;

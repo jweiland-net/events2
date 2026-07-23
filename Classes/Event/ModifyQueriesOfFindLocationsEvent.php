@@ -18,13 +18,8 @@ use TYPO3\CMS\Core\Database\Query\QueryBuilder;
  */
 class ModifyQueriesOfFindLocationsEvent
 {
-    protected string $search = '';
-
-    public function __construct(
-        protected readonly QueryBuilder $queryBuilder,
-        string $search,
-    ) {
-        $this->search = $search;
+    public function __construct(protected readonly QueryBuilder $queryBuilder, protected string $search)
+    {
     }
 
     public function getQueryBuilder(): QueryBuilder

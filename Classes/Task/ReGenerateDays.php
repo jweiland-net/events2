@@ -32,6 +32,10 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
  */
 class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
 {
+    public function __construct(private readonly FlashMessageService $flashMessageService, private readonly CacheManager $cacheManager, private readonly ConnectionPool $connectionPool, private readonly PersistenceManager $persistenceManager, private readonly Registry $registry)
+    {
+        parent::__construct();
+    }
     public function execute(): bool
     {
         // Do not move these lines of code into constructor.
@@ -100,6 +104,7 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
      *
      * @return string Information to display
      */
+    #[\Override]
     public function getAdditionalInformation(): string
     {
         $content = '';
@@ -124,7 +129,7 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
     {
         $progress = $this->getRegistry()->get('events2TaskCreateUpdate', 'progress');
         if ($progress) {
-            return (float)(100 / $progress['records'] * $progress['counter']);
+            return (100 / $progress['records'] * $progress['counter']);
         }
 
         return 0.0;
@@ -137,7 +142,7 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
                 ->count('*')
                 ->executeQuery()
                 ->fetchOne();
-        } catch (Exception $e) {
+        } catch (Exception) {
         }
 
         return 0;
@@ -153,19 +158,19 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
     public function addMessage(string $message, ContextualFeedbackSeverity $severity = ContextualFeedbackSeverity::OK): void
     {
         $flashMessage = GeneralUtility::makeInstance(FlashMessage::class, $message, '', $severity);
-        $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
+        $flashMessageService = $this->flashMessageService;
         $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
         $defaultFlashMessageQueue->enqueue($flashMessage);
     }
 
     protected function getCacheManager(): CacheManager
     {
-        return GeneralUtility::makeInstance(CacheManager::class);
+        return $this->cacheManager;
     }
 
     protected function getConnectionPool(): ConnectionPool
     {
-        return GeneralUtility::makeInstance(ConnectionPool::class);
+        return $this->connectionPool;
     }
 
     protected function getDatabaseService(): DatabaseService
@@ -180,16 +185,29 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
 
     protected function getPersistenceManager(): PersistenceManagerInterface
     {
-        return GeneralUtility::makeInstance(PersistenceManager::class);
+        return $this->persistenceManager;
     }
 
     protected function getRegistry(): Registry
     {
-        return GeneralUtility::makeInstance(Registry::class);
+        return $this->registry;
     }
 
-    public function __sleep()
+    /**
+     * @return array<string, mixed>
+     */
+    public function __serialize(): array
     {
-        return array_keys(get_object_vars($this));
+        return get_object_vars($this);
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     */
+    public function __unserialize(array $data): void
+    {
+        foreach ($data as $property => $value) {
+            $this->{$property} = $value;
+        }
     }
 }

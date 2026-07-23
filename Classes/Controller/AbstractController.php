@@ -22,10 +22,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
-use TYPO3\CMS\Extbase\Mvc\Controller\Arguments;
+use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3Fluid\Fluid\View\ViewInterface;
 
@@ -38,37 +36,6 @@ class AbstractController extends ActionController implements LoggerAwareInterfac
     use InjectExtConfTrait;
     use InjectTypoScriptServiceTrait;
     use LoggerAwareTrait;
-
-    /**
-     * @throws \Exception
-     */
-    public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager): void
-    {
-        $this->configurationManager = $configurationManager;
-
-        $typoScriptSettings = $this->configurationManager->getConfiguration(
-            ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK,
-            'events2',
-            'events2_invalid', // invalid plugin name, to get fresh unmerged settings
-        );
-
-        if (empty($typoScriptSettings['settings'])) {
-            throw new \Exception('You have forgotten to add TS-Template of events2', 1580294227);
-        }
-        $mergedFlexFormSettings = $this->configurationManager->getConfiguration(
-            ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS,
-            'events2',
-        ) ?? [];
-
-        // Start override
-        $this->getTypoScriptService()->override(
-            $mergedFlexFormSettings,
-            $typoScriptSettings['settings'],
-        );
-
-        $this->settings = $mergedFlexFormSettings;
-        $this->arguments = GeneralUtility::makeInstance(Arguments::class);
-    }
 
     protected function initializeAction(): void
     {
@@ -129,6 +96,7 @@ class AbstractController extends ActionController implements LoggerAwareInterfac
         return $jsVariables;
     }
 
+    #[\Override]
     protected function errorAction(): ResponseInterface
     {
         // Log error messages to /var/log/
@@ -153,7 +121,7 @@ class AbstractController extends ActionController implements LoggerAwareInterfac
 
         $this->addErrorFlashMessage();
 
-        if (($response = $this->forwardToReferringRequest()) !== null) {
+        if (($response = $this->forwardToReferringRequest()) instanceof ResponseInterface) {
             return $response->withStatus(400);
         }
 

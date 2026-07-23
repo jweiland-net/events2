@@ -1,12 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
+use JWeiland\Events2\Domain\Model\Enums\AttendanceModeEnum;
+
 /*
  * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
-
 return [
     'ctrl' => [
         'title' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event',
@@ -35,15 +38,14 @@ return [
             'endtime' => 'endtime',
             'fe_group' => 'fe_group',
         ],
-        'searchFields' => 'title,teaser,event_begin,event_end,detail_information,',
     ],
     'types' => [
         'single' => [
             'showitem' => '--palette--;;language, --palette--;;eventTypeHiddenTopOfList, title, path_segment, event_begin, event_time,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.event_details, --palette--;;teaserFreeEntry, detail_information, ticket_link, attendance_mode, alternative_times, location, organizers,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.media, images, video_link, download_links,
-            --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:categories, categories,
-            --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access,
+            --div--;core.form.tabs:categories, categories,
+            --div--;core.form.tabs:access,
             --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access',
         ],
         'recurring' => [
@@ -53,8 +55,8 @@ return [
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.exceptions, exceptions,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.event_details, --palette--;;teaserFreeEntry, detail_information, ticket_link, attendance_mode, alternative_times, location, organizers,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.media,--palette--;;newline, images, video_link, download_links,
-            --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:categories, categories,
-            --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access,
+            --div--;core.form.tabs:categories, categories,
+            --div--;core.form.tabs:access,
             --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access',
         ],
         'duration' => [
@@ -62,8 +64,8 @@ return [
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.exceptions, exceptions,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.event_details, --palette--;;teaserFreeEntry, detail_information, ticket_link, attendance_mode, alternative_times, location, organizers,
             --div--;LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.tab.media,--palette--;;newline, images, video_link, download_links,
-            --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:categories, categories,
-            --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access,
+            --div--;core.form.tabs:categories, categories,
+            --div--;core.form.tabs:access,
             --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access',
         ],
     ],
@@ -75,9 +77,9 @@ return [
         'recurringWeekMonth' => ['showitem' => 'each_weeks, each_months'],
         'teaserFreeEntry' => ['showitem' => 'teaser, free_entry'],
         'access' => [
-            'showitem' => 'starttime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:starttime_formlabel,endtime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:endtime_formlabel,
+            'showitem' => 'starttime;core.db.general:starttime,endtime;core.db.general:endtime,
             --linebreak--,
-            fe_group;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:fe_group_formlabel,
+            fe_group;core.db.general:fe_group,
             --linebreak--,editlock',
         ],
     ],
@@ -114,7 +116,6 @@ return [
                 'items' => [
                     [
                         'label' => '',
-                        'value' => '',
                         'invertStateDisplay' => true,
                     ],
                 ],
@@ -145,6 +146,7 @@ return [
                 'type' => 'datetime',
                 'format' => 'datetime',
                 'default' => 0,
+                'searchable' => false,
             ],
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
@@ -156,6 +158,7 @@ return [
                 'type' => 'datetime',
                 'format' => 'datetime',
                 'default' => 0,
+                'searchable' => false,
             ],
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
@@ -199,12 +202,6 @@ return [
                 'type' => 'check',
                 'renderType' => 'checkboxToggle',
                 'default' => 0,
-                'items' => [
-                    [
-                        'label' => '',
-                        'value' => '',
-                    ],
-                ],
             ],
         ],
         'event_type' => [
@@ -244,7 +241,6 @@ return [
                 'items' => [
                     [
                         'label' => '',
-                        'value' => '',
                         'invertStateDisplay' => false,
                     ],
                 ],
@@ -278,6 +274,7 @@ return [
                 'fallbackCharacter' => '-',
                 'eval' => 'unique',
                 'default' => '',
+                'searchable' => false,
             ],
         ],
         'teaser' => [
@@ -352,7 +349,6 @@ return [
                 'items' => [
                     [
                         'label' => '',
-                        'value' => '',
                         'invertStateDisplay' => false,
                     ],
                 ],
@@ -591,6 +587,7 @@ return [
                 'type' => 'datetime',
                 'format' => 'date',
                 'default' => 0,
+                'searchable' => false,
             ],
         ],
         'exceptions' => [
@@ -634,7 +631,6 @@ return [
                 'items' => [
                     [
                         'label' => '',
-                        'value' => '',
                         'invertStateDisplay' => false,
                     ],
                 ],
@@ -667,19 +663,19 @@ return [
                 'items' => [
                     [
                         'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.attendance_mode.empty',
-                        'value' => \JWeiland\Events2\Domain\Model\Enums\AttendanceModeEnum::EMPTY->value,
+                        'value' => AttendanceModeEnum::EMPTY->value,
                     ],
                     [
                         'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.attendance_mode.in_person',
-                        'value' => \JWeiland\Events2\Domain\Model\Enums\AttendanceModeEnum::IN_PERSON->value,
+                        'value' => AttendanceModeEnum::IN_PERSON->value,
                     ],
                     [
                         'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.attendance_mode.online',
-                        'value' => \JWeiland\Events2\Domain\Model\Enums\AttendanceModeEnum::ONLINE->value,
+                        'value' => AttendanceModeEnum::ONLINE->value,
                     ],
                     [
                         'label' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_event.attendance_mode.hybrid',
-                        'value' => \JWeiland\Events2\Domain\Model\Enums\AttendanceModeEnum::HYBRID->value,
+                        'value' => AttendanceModeEnum::HYBRID->value,
                     ],
                 ],
                 'default' => 0,

@@ -19,7 +19,7 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 final class CreateYoutubeUriViewHelper extends AbstractViewHelper
 {
-    private const YOUTUBE_PATTERN = '~^(?:https?:)?//(?:www\.)?youtu(?:be\.com|\.be)/(?:watch\?v=|embed/|live/|v/|shorts/|)?([a-zA-Z0-9_-]{11})(?:[?&].*)?$~i';
+    private const string YOUTUBE_PATTERN = '~^(?:https?:)?//(?:www\.)?youtu(?:be\.com|\.be)/(?:watch\?v=|embed/|live/|v/|shorts/|)?([a-zA-Z0-9_-]{11})(?:[?&].*)?$~i';
 
     public function initializeArguments(): void
     {

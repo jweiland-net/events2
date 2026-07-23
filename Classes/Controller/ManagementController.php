@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Controller;
 
+use TYPO3\CMS\Core\Mail\MailerInterface;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Validator\EventValidator;
 use JWeiland\Events2\Traits\InjectCacheServiceTrait;
@@ -23,7 +24,7 @@ use JWeiland\Events2\Traits\InjectPersistenceManagerTrait;
 use JWeiland\Events2\Traits\InjectUserRepositoryTrait;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Annotation as Extbase;
+use TYPO3\CMS\Extbase\Attribute as Extbase;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
@@ -40,6 +41,9 @@ class ManagementController extends AbstractController
     use InjectMailMessageTrait;
     use InjectPersistenceManagerTrait;
     use InjectUserRepositoryTrait;
+    public function __construct(private readonly MailerInterface $mailer)
+    {
+    }
 
     public function initializeListMyEventsAction(): void
     {
@@ -94,7 +98,7 @@ class ManagementController extends AbstractController
     public function createAction(Event $event): ResponseInterface
     {
         $event->setHidden(true);
-        $event->setEventType($event->getEventEnd() !== null ? 'duration' : 'single');
+        $event->setEventType($event->getEventEnd() instanceof \DateTimeImmutable ? 'duration' : 'single');
         $this->eventRepository->add($event);
         $this->postProcessControllerAction($event);
 
@@ -253,6 +257,11 @@ class ManagementController extends AbstractController
 
         $this->mailMessage->html($this->view->render());
 
-        return $this->mailMessage->send();
+        try {
+            $this->mailer->send($this->mailMessage);
+            return true;
+        } catch (\Throwable $exception) {
+            return false;
+        }
     }
 }

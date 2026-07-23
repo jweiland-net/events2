@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Domain\Model;
 
 use JWeiland\Events2\Domain\Traits\Typo3PropertiesTrait;
-use TYPO3\CMS\Extbase\Annotation as Extbase;
+use TYPO3\CMS\Extbase\Attribute as Extbase;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /**

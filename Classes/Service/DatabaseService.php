@@ -29,6 +29,7 @@ readonly class DatabaseService
     public function __construct(
         protected ExtConf $extConf,
         protected DateTimeUtility $dateTimeUtility,
+        private ConnectionPool $connectionPool,
     ) {}
 
     /**
@@ -96,7 +97,7 @@ readonly class DatabaseService
             );
 
         // Add relation to sys_category_record_mm only if categories were set
-        if (!empty($categories)) {
+        if ($categories !== []) {
             $queryBuilder = $queryBuilder
                 ->leftJoin(
                     'event',
@@ -129,7 +130,7 @@ readonly class DatabaseService
         }
 
         // Reduce ResultSet to configured StoragePids
-        if (!empty($storagePids)) {
+        if ($storagePids !== []) {
             $constraint[] = $queryBuilder->expr()->in(
                 'event.pid',
                 $queryBuilder->createNamedParameter($storagePids, ArrayParameterType::INTEGER),
@@ -168,7 +169,7 @@ readonly class DatabaseService
         ?QueryBuilder $parentQueryBuilder = null,
         string $alias = 'day',
     ): void {
-        if ($parentQueryBuilder === null) {
+        if (!$parentQueryBuilder instanceof QueryBuilder) {
             $parentQueryBuilder = $queryBuilder;
         }
 
@@ -205,7 +206,7 @@ readonly class DatabaseService
         ?QueryBuilder $parentQueryBuilder = null,
         string $postAlias = '',
     ): void {
-        if ($parentQueryBuilder === null) {
+        if (!$parentQueryBuilder instanceof QueryBuilder) {
             $parentQueryBuilder = $queryBuilder;
         }
 
@@ -235,7 +236,7 @@ readonly class DatabaseService
         ?QueryBuilder $parentQueryBuilder = null,
         string $alias = 'event',
     ): void {
-        if ($parentQueryBuilder === null) {
+        if (!$parentQueryBuilder instanceof QueryBuilder) {
             $parentQueryBuilder = $queryBuilder;
         }
 
@@ -280,7 +281,7 @@ readonly class DatabaseService
         ?QueryBuilder $parentQueryBuilder = null,
         string $alias = 'event',
     ): void {
-        if ($parentQueryBuilder === null) {
+        if (!$parentQueryBuilder instanceof QueryBuilder) {
             $parentQueryBuilder = $queryBuilder;
         }
 
@@ -311,7 +312,7 @@ readonly class DatabaseService
         ?QueryBuilder $parentQueryBuilder = null,
         string $alias = 'event',
     ): void {
-        if ($parentQueryBuilder === null) {
+        if (!$parentQueryBuilder instanceof QueryBuilder) {
             $parentQueryBuilder = $queryBuilder;
         }
 
@@ -337,7 +338,7 @@ readonly class DatabaseService
         ?QueryBuilder $parentQueryBuilder = null,
         string $alias = 'event',
     ): void {
-        if ($parentQueryBuilder === null) {
+        if (!$parentQueryBuilder instanceof QueryBuilder) {
             $parentQueryBuilder = $queryBuilder;
         }
 
@@ -354,6 +355,6 @@ readonly class DatabaseService
 
     protected function getConnectionPool(): ConnectionPool
     {
-        return GeneralUtility::makeInstance(ConnectionPool::class);
+        return $this->connectionPool;
     }
 }

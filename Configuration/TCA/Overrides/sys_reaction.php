@@ -1,5 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use JWeiland\Events2\Reaction\ImportEventsReaction;
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -11,18 +16,18 @@ if (!defined('TYPO3')) {
     die('Access denied.');
 }
 
-if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('reactions')) {
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTcaSelectItem(
+if (ExtensionManagementUtility::isLoaded('reactions')) {
+    ExtensionManagementUtility::addTcaSelectItem(
         'sys_reaction',
         'reaction_type',
         [
-            'label' => \JWeiland\Events2\Reaction\ImportEventsReaction::getDescription(),
-            'value' => \JWeiland\Events2\Reaction\ImportEventsReaction::getType(),
-            'icon' => \JWeiland\Events2\Reaction\ImportEventsReaction::getIconIdentifier(),
+            'label' => ImportEventsReaction::getDescription(),
+            'value' => ImportEventsReaction::getType(),
+            'icon' => ImportEventsReaction::getIconIdentifier(),
         ],
     );
 
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns(
+    ExtensionManagementUtility::addTCAcolumns(
         'sys_reaction',
         [
             'storage_folder' => [
@@ -49,16 +54,16 @@ if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('reactions')) {
     );
 
     $GLOBALS['TCA']['sys_reaction']['palettes']['setStorage'] = [
-        'label' => 'LLL:EXT:reactions/Resources/Private/Language/locallang_db.xlf:palette.additional',
+        'label' => 'reactions.db:palette.additional',
         'showitem' => 'storage_pid, impersonate_user, --linebreak--, storage_folder, --linebreak--, parent_category',
     ];
 
-    $GLOBALS['TCA']['sys_reaction']['types'][\JWeiland\Events2\Reaction\ImportEventsReaction::getType()] = [
+    $GLOBALS['TCA']['sys_reaction']['types'][ImportEventsReaction::getType()] = [
         'showitem' => '
-        --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
+        --div--;core.form.tabs:general,
         --palette--;;config,
         --palette--;;setStorage,
-        --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,
+        --div--;core.form.tabs:access,
         --palette--;;access',
         'columnsOverrides' => [
             'storage_pid' => [

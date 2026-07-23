@@ -55,7 +55,7 @@ class TimeFactory
 
         $sortedTimeStorage = new \SplObjectStorage();
         foreach ($sortedTimes as $time) {
-            $sortedTimeStorage->attach($time);
+            $sortedTimeStorage->offsetSet($time);
         }
 
         return $sortedTimeStorage;
@@ -182,10 +182,10 @@ class TimeFactory
             }
 
             if ($this->date != $currentDateMidnight) {
-                $timesForDate->attach($time);
+                $timesForDate->offsetSet($time);
             }
         } else {
-            $timesForDate->attach($time);
+            $timesForDate->offsetSet($time);
         }
     }
 

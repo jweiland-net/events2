@@ -33,6 +33,7 @@ class PrefillCategoriesHook
     public function __construct(
         protected readonly PageRepository $pageRepository,
         protected readonly ConfigurationManagerInterface $configurationManager,
+        private readonly ConnectionPool $connectionPool,
     ) {
         $this->settings = $configurationManager->getConfiguration(
             ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS,
@@ -140,6 +141,6 @@ class PrefillCategoriesHook
 
     protected function getConnectionPool(): ConnectionPool
     {
-        return GeneralUtility::makeInstance(ConnectionPool::class);
+        return $this->connectionPool;
     }
 }

@@ -153,7 +153,7 @@ readonly class JsonImporter
 
         try {
             $date = new \DateTime($date);
-        } catch (\DateMalformedStringException $e) {
+        } catch (\DateMalformedStringException) {
             return 0;
         }
 
@@ -409,7 +409,7 @@ readonly class JsonImporter
                         $folder,
                         $filename,
                     );
-                } catch (ExistingTargetFileNameException $e) {
+                } catch (ExistingTargetFileNameException) {
                     continue;
                 }
             }
@@ -457,7 +457,7 @@ readonly class JsonImporter
                 )
                 ->executeQuery()
                 ->fetchAssociative();
-        } catch (\Doctrine\DBAL\Exception $e) {
+        } catch (\Doctrine\DBAL\Exception) {
             $eventRecord = null;
         }
 
@@ -470,14 +470,10 @@ readonly class JsonImporter
     protected function updateSlugs(DataHandler $dataHandler): void
     {
         // Collect all NEW[hash] values valid for the event table
-        $eventNEWidValues = array_filter($dataHandler->substNEWwithIDs_table, static function (string $table): bool {
-            return $table === self::TABLE;
-        });
+        $eventNEWidValues = array_filter($dataHandler->substNEWwithIDs_table, static fn(string $table): bool => $table === self::TABLE);
 
         // Get real event INSERT ID for NEW[hash] values
-        $eventUidValues = array_filter($dataHandler->substNEWwithIDs, static function (string $newId) use ($eventNEWidValues): bool {
-            return array_key_exists($newId, $eventNEWidValues);
-        }, ARRAY_FILTER_USE_KEY);
+        $eventUidValues = array_filter($dataHandler->substNEWwithIDs, static fn(string $newId): bool => array_key_exists($newId, $eventNEWidValues), ARRAY_FILTER_USE_KEY);
 
         $connection = $this->connectionPool->getConnectionForTable(self::TABLE);
         foreach ($eventUidValues as $eventUid) {

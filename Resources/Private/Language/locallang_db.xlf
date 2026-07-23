@@ -100,6 +100,12 @@
 			<trans-unit id="task.reCreateDays.description">
 				<source>Loops through all current and future events to delete and recreate their day records. Further it cleans up all the old iCal export files.</source>
 			</trans-unit>
+			<trans-unit id="task.import.title">
+				<source>Import events</source>
+			</trans-unit>
+			<trans-unit id="task.import.description">
+				<source>Import events from an XML interface or email.</source>
+			</trans-unit>
 
 			<trans-unit id="sys_reaction.reaction_type.import_events2_records">
 				<source>Import events2 records</source>

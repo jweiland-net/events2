@@ -29,16 +29,16 @@ final readonly class AddPaginatorEventListener
 {
     use IsValidEventListenerRequestTrait;
 
-    private const ITEMS_PER_PAGE = 15;
+    private const int ITEMS_PER_PAGE = 15;
 
     /**
      * Fluid variable name for paginated records
      */
-    private const FLUID_VARIABLE_NAME = 'days';
+    private const string FLUID_VARIABLE_NAME = 'days';
 
-    private const FALLBACK_CLASS = GetPostPagination::class;
+    private const string FALLBACK_CLASS = GetPostPagination::class;
 
-    protected const ALLOWED_CONTROLLER_ACTIONS = [
+    protected const array ALLOWED_CONTROLLER_ACTIONS = [
         'Day' => [
             'list',
         ],

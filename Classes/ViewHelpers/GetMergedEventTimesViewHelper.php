@@ -43,9 +43,7 @@ final class GetMergedEventTimesViewHelper extends AbstractViewHelper
      */
     public function render(): \SplObjectStorage
     {
-        $timeFactory = GeneralUtility::makeInstance(TimeFactory::class);
-
-        return $timeFactory->getSortedTimesForDate(
+        return GeneralUtility::makeInstance(TimeFactory::class)->getSortedTimesForDate(
             $this->arguments['event'],
             $this->arguments['date'],
         );

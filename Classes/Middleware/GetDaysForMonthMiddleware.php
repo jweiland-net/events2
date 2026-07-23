@@ -39,6 +39,7 @@ final readonly class GetDaysForMonthMiddleware implements MiddlewareInterface
         protected UserSession $userSession,
         protected DatabaseService $databaseService,
         protected EventDispatcher $eventDispatcher,
+        private ConnectionPool $connectionPool,
     ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -48,7 +49,7 @@ final readonly class GetDaysForMonthMiddleware implements MiddlewareInterface
         }
 
         $json = (string)$request->getBody();
-        if (json_validate($json) !== true) {
+        if (!json_validate($json)) {
             return new JsonResponse();
         }
 
@@ -167,6 +168,6 @@ final readonly class GetDaysForMonthMiddleware implements MiddlewareInterface
 
     protected function getConnectionPool(): ConnectionPool
     {
-        return GeneralUtility::makeInstance(ConnectionPool::class);
+        return $this->connectionPool;
     }
 }

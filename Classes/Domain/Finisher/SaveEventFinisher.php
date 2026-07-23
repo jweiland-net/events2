@@ -81,7 +81,7 @@ class SaveEventFinisher extends AbstractFinisher
         foreach ($databaseColumnMappingsConfiguration as $databaseColumnName => $databaseColumnConfiguration) {
             $value = $this->parseOption('databaseColumnMappings.' . $databaseColumnName . '.value');
             if (
-                empty($value)
+                ($value === [] || $value === 0 || ($value === '' || $value === '0') || $value === null)
                 && ($databaseColumnConfiguration['skipIfValueIsEmpty'] ?? false) === true
             ) {
                 continue;
@@ -267,7 +267,7 @@ class SaveEventFinisher extends AbstractFinisher
             if ($elementValue instanceof FileReference) {
                 $elementValue = $elementValue->getOriginalResource()->getProperty('uid_local');
             } elseif ($elementsConfiguration[$elementIdentifier]['useBinary'] ?? false) {
-                $elementValue = (int)array_sum(array_map('intval', $elementValue));
+                $elementValue = (int)array_sum(array_map(intval(...), $elementValue));
             } elseif (is_array($elementValue)) {
                 $elementValue = implode(',', $elementValue);
             } elseif ($elementValue instanceof \DateTimeInterface) {
@@ -379,7 +379,7 @@ class SaveEventFinisher extends AbstractFinisher
             $databaseConnection->insert($table, $databaseData);
             try {
                 $lastInsertId = (int)$databaseConnection->lastInsertId();
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 // Newer doctrine/dbal packages are stricter and throw an exception,
                 // if a table does not have an AUTO_INCREMENT column like MM tables.
                 $lastInsertId = 0;
@@ -436,6 +436,7 @@ class SaveEventFinisher extends AbstractFinisher
      *
      * If $optionName was not found, the corresponding default option is returned (from $this->defaultOptions)
      */
+    #[\Override]
     protected function parseOption(string $optionName): string|array|int|null
     {
         $optionValue = parent::parseOption($optionName);

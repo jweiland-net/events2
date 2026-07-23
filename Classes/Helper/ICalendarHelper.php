@@ -15,15 +15,18 @@ use JWeiland\Events2\Domain\Factory\TimeFactory;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Time;
 use JWeiland\Events2\Event\PostProcessICalRowsForICalDownloadEvent;
+use JWeiland\Events2\Traits\Typo3RequestTrait;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Http\NormalizedParams;
 
 /**
  * Helper class to build an ical export
  */
 class ICalendarHelper
 {
+    use Typo3RequestTrait;
+
     protected array $iCalHeader = [
         0 => 'BEGIN:VCALENDAR',
     ];
@@ -68,7 +71,10 @@ class ICalendarHelper
 
     protected function addICalProdId(array &$iCal): void
     {
-        $iCal[] = 'PRODID:' . GeneralUtility::getIndpEnv('TYPO3_SITE_URL');
+        /** @var NormalizedParams $normalizedParams */
+        $normalizedParams = $this->getTypo3Request()->getAttribute('normalizedParams');
+
+        $iCal[] = 'PRODID:' . $normalizedParams->getSiteUrl();
     }
 
     protected function addICalFooter(array &$iCal): void
@@ -181,7 +187,7 @@ class ICalendarHelper
 
     protected function addEventLocation(array &$event, Day $day): void
     {
-        if ($day->getEvent()->getLocationAsString()) {
+        if ($day->getEvent()->getLocationAsString() !== '' && $day->getEvent()->getLocationAsString() !== '0') {
             $event[] = 'LOCATION:' . $day->getEvent()->getLocationAsString();
         }
     }
@@ -194,7 +200,7 @@ class ICalendarHelper
     protected function addEventDescription(array &$event, Day $day): void
     {
         $description = $this->sanitizeString($day->getEvent()->getDetailInformation());
-        if ($description) {
+        if ($description !== '' && $description !== '0') {
             $event[] = 'DESCRIPTION:' . $this->sanitizeString($day->getEvent()->getDetailInformation());
         }
     }
@@ -213,8 +219,8 @@ class ICalendarHelper
         $timeEnd = '23:59:59';
         $time = $this->timeFactory->getTimeForDay($day);
         if ($time instanceof Time) {
-            $timeStart = $time->getTimeBegin() ? $time->getTimeBegin() . ':00' : $timeStart;
-            $timeEnd = $time->getTimeEnd() ? $time->getTimeEnd() . ':00' : $timeEnd;
+            $timeStart = $time->getTimeBegin() !== '' && $time->getTimeBegin() !== '0' ? $time->getTimeBegin() . ':00' : $timeStart;
+            $timeEnd = $time->getTimeEnd() !== '' && $time->getTimeEnd() !== '0' ? $time->getTimeEnd() . ':00' : $timeEnd;
         }
 
         return [$timeStart, $timeEnd];
@@ -249,7 +255,7 @@ class ICalendarHelper
         // some chars have to be escaped. See link above
         $content = preg_replace('/([\\\\,;])/', '\\\$1', $content);
         // sanitize all enter chars (vertical white-spaces) to \n
-        $content = preg_replace('/\v+/', '\\n', $content);
+        $content = preg_replace('/\v+/', '\\n', (string) $content);
 
         // Wrap too long content into new line after a limit of max 75 chars
         return $this->wrapTooLongICalContent($content);

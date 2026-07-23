@@ -21,7 +21,7 @@ class YouTubeValidator extends AbstractValidator
 {
     public function isValid(mixed $value): void
     {
-        if (!preg_match('~^(|http:|https:)//(|www.)youtu(\.be|be)(.*?)(v=|embed/|)([a-zA-Z0-9_-]+)$~i', $value)) {
+        if (!preg_match('~^(|http:|https:)//(|www.)youtu(\.be|be)(.*?)(v=|embed/|)([a-zA-Z0-9_-]+)$~i', (string) $value)) {
             $this->addError(
                 'The YouTube URL is invalid. Please insert full URL like https://www.youtube.com/watch?v=qzqEUgQu67Q or https://youtu.be/qzqEUgQu67Q',
                 1660809641,

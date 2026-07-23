@@ -37,6 +37,26 @@ class Import extends AbstractTask
      * Internally it's INT, but the form-value is string.
      */
     public string|int $storagePid = 0;
+    public function __construct(private readonly FlashMessageService $flashMessageService, private readonly ResourceFactory $resourceFactory)
+    {
+        parent::__construct();
+    }
+
+    #[\Override]
+    public function getTaskParameters(): array
+    {
+        return [
+            'events2_import_path' => $this->path,
+            'events2_import_storage_pid' => $this->storagePid,
+        ];
+    }
+
+    #[\Override]
+    public function setTaskParameters(array $parameters): void
+    {
+        $this->path = (string)($parameters['events2_import_path'] ?? $parameters['path'] ?? '');
+        $this->storagePid = (int)($parameters['events2_import_storage_pid'] ?? $parameters['storagePid'] ?? 0);
+    }
 
     /**
      * This is the main method that is called when a task is executed
@@ -72,7 +92,7 @@ class Import extends AbstractTask
                 $file->delete();
                 return true;
             }
-        } catch (\Exception $e) {
+        } catch (\Exception) {
         }
 
         return false;
@@ -103,7 +123,7 @@ class Import extends AbstractTask
     public function addMessage(string $message, ContextualFeedbackSeverity $severity = ContextualFeedbackSeverity::OK): void
     {
         $flashMessage = GeneralUtility::makeInstance(FlashMessage::class, $message, '', $severity);
-        $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
+        $flashMessageService = $this->flashMessageService;
         $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
         $defaultFlashMessageQueue->enqueue($flashMessage);
     }
@@ -129,7 +149,7 @@ class Import extends AbstractTask
 
     protected function getResourceFactory(): ResourceFactory
     {
-        return GeneralUtility::makeInstance(ResourceFactory::class);
+        return $this->resourceFactory;
     }
 
     protected function getFalIndexer(ResourceStorage $resourceStorage): Indexer

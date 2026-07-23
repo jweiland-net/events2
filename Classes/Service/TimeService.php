@@ -19,10 +19,10 @@ use JWeiland\Events2\Utility\DateTimeUtility;
 
 readonly class TimeService
 {
-    private const TYPE_EXCEPTION_TIME = 'exception_time';
-    private const TYPE_DIFFERENT_TIMES = 'different_times';
-    private const TYPE_EVENT_TIME = 'event_time';
-    private const TYPE_MULTIPLE_TIMES = 'multiple_times';
+    private const string TYPE_EXCEPTION_TIME = 'exception_time';
+    private const string TYPE_DIFFERENT_TIMES = 'different_times';
+    private const string TYPE_EVENT_TIME = 'event_time';
+    private const string TYPE_MULTIPLE_TIMES = 'multiple_times';
 
     public function __construct(
         private TimeRecordService $timeRecordService,
@@ -144,7 +144,7 @@ readonly class TimeService
             && in_array($exceptionRecord['exception_type'] ?? '', ['Add', 'Time'], true)
         ) {
             $exceptionDate = $this->dateTimeUtility->convert($exceptionRecord['exception_date'] ?? 0);
-            return $exceptionDate !== null && $exceptionDate == $dateTimeResult->getDate(); // comparing object values
+            return $exceptionDate instanceof \DateTimeImmutable && $exceptionDate == $dateTimeResult->getDate(); // comparing object values
         }
 
         return false;

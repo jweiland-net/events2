@@ -28,7 +28,7 @@ final readonly class ApplyLocationAsMandatoryIfNeededEventListener
 {
     use IsValidEventListenerRequestTrait;
 
-    protected const ALLOWED_CONTROLLER_ACTIONS = [
+    protected const array ALLOWED_CONTROLLER_ACTIONS = [
         'Management' => [
             'create',
             'update',

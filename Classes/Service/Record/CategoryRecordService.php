@@ -23,7 +23,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 readonly class CategoryRecordService
 {
-    private const TABLE = 'sys_category';
+    private const string TABLE = 'sys_category';
+    public function __construct(private ConnectionPool $connectionPool)
+    {
+    }
 
     public function getCategoryRecordByTitle(string $title, int $language = 0): ?array
     {
@@ -60,6 +63,6 @@ readonly class CategoryRecordService
 
     protected function getConnectionPool(): ConnectionPool
     {
-        return GeneralUtility::makeInstance(ConnectionPool::class);
+        return $this->connectionPool;
     }
 }

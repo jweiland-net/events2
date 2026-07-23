@@ -24,7 +24,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class EventRecordService
 {
-    private const TABLE = 'tx_events2_domain_model_event';
+    private const string TABLE = 'tx_events2_domain_model_event';
 
     public function __construct(
         private readonly PageRepository $pageRepository,
@@ -57,11 +57,11 @@ class EventRecordService
             return [];
         }
 
-        if ($doVersioning === true) {
+        if ($doVersioning) {
             $this->pageRepository->versionOL(self::TABLE, $eventRecord);
         }
 
-        if ($doLanguageOverlay === true) {
+        if ($doLanguageOverlay) {
             $this->pageRepository->getLanguageOverlay(self::TABLE, $eventRecord);
         }
 
