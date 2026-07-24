@@ -32,7 +32,7 @@ readonly class PrefillForEditUsageHook
         private ResourceFactory $resourceFactory,
         private ConnectionPool $connectionPool
     ) {}
-    
+
     /**
      * This method will be called by Form Framework.
      * It was checked by method_exists() before
