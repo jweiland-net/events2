@@ -132,7 +132,7 @@ readonly class DayFactory
         }
 
         $day = null;
-        if ($event->getDays()->count()) {
+        if ($event->getDays()->count() !== 0) {
             $event->getDays()->rewind();
             $day = $event->getDays()->current();
         }

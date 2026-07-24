@@ -144,7 +144,7 @@ readonly class TimeService
             && in_array($exceptionRecord['exception_type'] ?? '', ['Add', 'Time'], true)
         ) {
             $exceptionDate = $this->dateTimeUtility->convert($exceptionRecord['exception_date'] ?? 0);
-            return $exceptionDate !== null && $exceptionDate == $dateTimeResult->getDate(); // comparing object values
+            return $exceptionDate instanceof \DateTimeImmutable && $exceptionDate == $dateTimeResult->getDate(); // comparing object values
         }
 
         return false;

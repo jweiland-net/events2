@@ -5,13 +5,15 @@ prototypeName: standard
 renderingOptions:
   submitButtonLabel: Submit
 renderables:
-  - renderingOptions:
+  -
+    renderingOptions:
       nextButtonLabel: 'next page'
     type: Page
     identifier: radio-choose-event-type
     label: 'Choose event type'
     renderables:
-      - label: 'Choose event type'
+      -
+        label: 'Choose event type'
         type: RadioButton
         identifier: choose-event-type
         defaultValue: single
@@ -26,15 +28,18 @@ renderables:
             required: required
           elementDescription: 'Choose event type'
         validators:
-          - identifier: NotEmpty
-  - renderingOptions:
+          -
+            identifier: NotEmpty
+  -
+    renderingOptions:
       previousButtonLabel: 'previous page'
       nextButtonLabel: 'next page'
     type: Page
     identifier: collect-data
     label: 'Collect event data'
     renderables:
-      - label: Title
+      -
+        label: Title
         type: Text
         identifier: title
         defaultValue: ''
@@ -45,8 +50,10 @@ renderables:
           fluidAdditionalAttributes:
             required: required
         validators:
-          - identifier: NotEmpty
-      - label: 'Event date'
+          -
+            identifier: NotEmpty
+      -
+        label: 'Event date'
         type: Date
         identifier: event-begin
         defaultValue: ''
@@ -58,8 +65,10 @@ renderables:
           fluidAdditionalAttributes:
             required: required
         validators:
-          - identifier: NotEmpty
-      - label: 'Event end date'
+          -
+            identifier: NotEmpty
+      -
+        label: 'Event end date'
         type: Date
         identifier: event-end
         defaultValue: ''
@@ -71,11 +80,13 @@ renderables:
         renderingOptions:
           enabled: false
         variants:
-          - identifier: show-event-end
+          -
+            identifier: show-event-end
             condition: 'traverse(formValues, "choose-event-type") == "duration"'
             renderingOptions:
               enabled: true
-      - label: 'Recurring end date'
+      -
+        label: 'Recurring end date'
         type: Date
         identifier: recurring-end
         defaultValue: ''
@@ -87,11 +98,13 @@ renderables:
         renderingOptions:
           enabled: false
         variants:
-          - identifier: show-recurring-end
+          -
+            identifier: show-recurring-end
             condition: 'traverse(formValues, "choose-event-type") == "recurring"'
             renderingOptions:
               enabled: true
-      - label: 'Start time'
+      -
+        label: 'Start time'
         type: Text
         identifier: time-begin
         defaultValue: ''
@@ -101,25 +114,30 @@ renderables:
               labelColumn: time_begin
               table: tx_events2_domain_model_time
               expressions:
-                - column: event
+                -
+                  column: event
                   expression: eq
                   value: '{event:uid}'
-                - column: type
+                -
+                  column: type
                   expression: eq
-                  value: 'event_time'
+                  value: event_time
           elementDescription: 'Enter time in format hh:mm. Example: 12:30'
           fluidAdditionalAttributes:
             maxlength: 5
             placeholder: '08:00'
         validators:
-          - identifier: StringLength
+          -
+            identifier: StringLength
             options:
               minimum: 5
               maximum: 5
-          - identifier: RegularExpression
+          -
+            identifier: RegularExpression
             options:
               regularExpression: '/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/'
-      - label: 'Short description'
+      -
+        label: 'Short description'
         type: Textarea
         identifier: short-description
         defaultValue: ''
@@ -127,7 +145,8 @@ renderables:
           dbMapping:
             column: teaser
           elementDescription: 'Short description'
-      - label: 'Detail description'
+      -
+        label: 'Detail description'
         type: Textarea
         identifier: detail-description
         defaultValue: ''
@@ -135,7 +154,8 @@ renderables:
           dbMapping:
             column: detail_information
           elementDescription: 'Detail description'
-      - label: 'Ticket Link'
+      -
+        label: 'Ticket Link'
         type: Text
         identifier: ticket-link
         defaultValue: ''
@@ -145,13 +165,16 @@ renderables:
               labelColumn: link
               table: tx_events2_domain_model_link
               expressions:
-                - column: uid
+                -
+                  column: uid
                   expression: eq
                   value: '{event:ticket_link}'
           elementDescription: 'Ticket Link'
         validators:
-          - identifier: Url
-      - label: 'Event Location'
+          -
+            identifier: Url
+      -
+        label: 'Event Location'
         type: Events2Location
         identifier: event-location
         properties:
@@ -167,8 +190,10 @@ renderables:
           elementDescription: 'Event Location'
           pidOfNewLocationPage: 0
         validators:
-          - identifier: NotEmpty
-      - label: 'Download Link'
+          -
+            identifier: NotEmpty
+      -
+        label: 'Download Link'
         type: Text
         identifier: download-link
         defaultValue: ''
@@ -178,13 +203,16 @@ renderables:
               labelColumn: link
               table: tx_events2_domain_model_link
               expressions:
-                - column: uid
+                -
+                  column: uid
                   expression: inSet
                   value: '{event:download_links}'
           elementDescription: 'Download Link'
         validators:
-          - identifier: Url
-      - label: 'YouTube Link'
+          -
+            identifier: Url
+      -
+        label: 'YouTube Link'
         type: Text
         identifier: youtube-link
         defaultValue: ''
@@ -194,13 +222,16 @@ renderables:
               labelColumn: link
               table: tx_events2_domain_model_link
               expressions:
-                - column: uid
+                -
+                  column: uid
                   expression: eq
                   value: '{event:video_link}'
           elementDescription: 'Link to a YouTube video'
         validators:
-          - identifier: YouTube
-      - label: Categories
+          -
+            identifier: YouTube
+      -
+        label: Categories
         type: MultiCheckbox
         identifier: categories
         properties:
@@ -209,24 +240,29 @@ renderables:
               valueColumn: uid_local
               table: sys_category_record_mm
               expressions:
-                - column: tablenames
+                -
+                  column: tablenames
                   expression: eq
                   value: tx_events2_domain_model_event
-                - column: fieldname
+                -
+                  column: fieldname
                   expression: eq
                   value: categories
-                - column: uid_foreign
+                -
+                  column: uid_foreign
                   expression: eq
                   value: '{event:uid}'
-          # Do not add options here. They will be added by Hook
           elementDescription: 'Please choose at least one category'
         validators:
-          - identifier: NotEmpty
-          - identifier: Count
+          -
+            identifier: NotEmpty
+          -
+            identifier: Count
             options:
               minimum: 1
               maximum: 3
-      - label: Weekday
+      -
+        label: Weekday
         type: MultiCheckbox
         identifier: weekday
         properties:
@@ -245,13 +281,16 @@ renderables:
         renderingOptions:
           enabled: false
         validators:
-          - identifier: NotEmpty
+          -
+            identifier: NotEmpty
         variants:
-          - identifier: variant-1
+          -
+            identifier: variant-1
             condition: 'traverse(formValues, "choose-event-type") == "recurring"'
             renderingOptions:
               enabled: true
-      - label: 'Image upload'
+      -
+        label: 'Image upload'
         type: ImageUpload
         identifier: image-1
         properties:
@@ -265,7 +304,8 @@ renderables:
             - image/jpeg
             - image/png
           elementDescription: 'Select an image'
-      - label: 'Image upload'
+      -
+        label: 'Image upload'
         type: ImageUpload
         identifier: image-2
         properties:
@@ -279,19 +319,22 @@ renderables:
             - image/jpeg
             - image/png
           elementDescription: 'Select another image'
-  - type: Page
+  -
+    type: Page
     identifier: define-event-times
     label: 'Define further event times each weekday'
     renderingOptions:
       enabled: false
-      previousButtonLabel: previous page
+      previousButtonLabel: 'previous page'
     variants:
-      - identifier: activate-step-3
+      -
+        identifier: activate-step-3
         condition: 'traverse(formValues, "choose-event-type") == "recurring"'
         renderingOptions:
           enabled: true
     renderables:
-      - label: 'Different start time for monday'
+      -
+        label: 'Different start time for monday'
         type: Text
         identifier: time-begin-monday
         defaultValue: ''
@@ -303,13 +346,16 @@ renderables:
               labelColumn: time_begin
               table: tx_events2_domain_model_time
               expressions:
-                - column: event
+                -
+                  column: event
                   expression: eq
                   value: '{event:uid}'
-                - column: type
+                -
+                  column: type
                   expression: eq
                   value: different_times
-                - column: weekday
+                -
+                  column: weekday
                   expression: eq
                   value: monday
           elementDescription: 'Enter time in format hh:mm. Example: 12:30'
@@ -317,19 +363,23 @@ renderables:
             maxlength: 5
             placeholder: '08:00'
         variants:
-          - identifier: variant-time-monday
+          -
+            identifier: variant-time-monday
             condition: 'traverse(formValues, "weekday") && "1" in formValues["weekday"]'
             renderingOptions:
               enabled: true
         validators:
-          - identifier: StringLength
+          -
+            identifier: StringLength
             options:
               minimum: 5
               maximum: 5
-          - identifier: RegularExpression
+          -
+            identifier: RegularExpression
             options:
               regularExpression: '/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/'
-      - label: 'Different start time for tuesday'
+      -
+        label: 'Different start time for tuesday'
         type: Text
         identifier: time-begin-tuesday
         defaultValue: ''
@@ -341,13 +391,16 @@ renderables:
               labelColumn: time_begin
               table: tx_events2_domain_model_time
               expressions:
-                - column: event
+                -
+                  column: event
                   expression: eq
                   value: '{event:uid}'
-                - column: type
+                -
+                  column: type
                   expression: eq
                   value: different_times
-                - column: weekday
+                -
+                  column: weekday
                   expression: eq
                   value: tuesday
           elementDescription: 'Enter time in format hh:mm. Example: 12:30'
@@ -355,19 +408,23 @@ renderables:
             maxlength: 5
             placeholder: '08:00'
         variants:
-          - identifier: variant-time-tuesday
+          -
+            identifier: variant-time-tuesday
             condition: 'traverse(formValues, "weekday") && "2" in formValues["weekday"]'
             renderingOptions:
               enabled: true
         validators:
-          - identifier: StringLength
+          -
+            identifier: StringLength
             options:
               minimum: 5
               maximum: 5
-          - identifier: RegularExpression
+          -
+            identifier: RegularExpression
             options:
               regularExpression: '/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/'
-      - label: 'Different start time for wednesday'
+      -
+        label: 'Different start time for wednesday'
         type: Text
         identifier: time-begin-wednesday
         defaultValue: ''
@@ -379,13 +436,16 @@ renderables:
               labelColumn: time_begin
               table: tx_events2_domain_model_time
               expressions:
-                - column: event
+                -
+                  column: event
                   expression: eq
                   value: '{event:uid}'
-                - column: type
+                -
+                  column: type
                   expression: eq
                   value: different_times
-                - column: weekday
+                -
+                  column: weekday
                   expression: eq
                   value: wednesday
           elementDescription: 'Enter time in format hh:mm. Example: 12:30'
@@ -393,19 +453,23 @@ renderables:
             maxlength: 5
             placeholder: '08:00'
         variants:
-          - identifier: variant-time-wednesday
+          -
+            identifier: variant-time-wednesday
             condition: 'traverse(formValues, "weekday") && "4" in formValues["weekday"]'
             renderingOptions:
               enabled: true
         validators:
-          - identifier: StringLength
+          -
+            identifier: StringLength
             options:
               minimum: 5
               maximum: 5
-          - identifier: RegularExpression
+          -
+            identifier: RegularExpression
             options:
               regularExpression: '/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/'
-      - label: 'Different start time for thursday'
+      -
+        label: 'Different start time for thursday'
         type: Text
         identifier: time-begin-thursday
         defaultValue: ''
@@ -417,13 +481,16 @@ renderables:
               labelColumn: time_begin
               table: tx_events2_domain_model_time
               expressions:
-                - column: event
+                -
+                  column: event
                   expression: eq
                   value: '{event:uid}'
-                - column: type
+                -
+                  column: type
                   expression: eq
                   value: different_times
-                - column: weekday
+                -
+                  column: weekday
                   expression: eq
                   value: thursday
           elementDescription: 'Enter time in format hh:mm. Example: 12:30'
@@ -431,19 +498,23 @@ renderables:
             maxlength: 5
             placeholder: '08:00'
         variants:
-          - identifier: variant-time-thursday
+          -
+            identifier: variant-time-thursday
             condition: 'traverse(formValues, "weekday") && "8" in formValues["weekday"]'
             renderingOptions:
               enabled: true
         validators:
-          - identifier: StringLength
+          -
+            identifier: StringLength
             options:
               minimum: 5
               maximum: 5
-          - identifier: RegularExpression
+          -
+            identifier: RegularExpression
             options:
               regularExpression: '/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/'
-      - label: 'Different start time for friday'
+      -
+        label: 'Different start time for friday'
         type: Text
         identifier: time-begin-friday
         defaultValue: ''
@@ -455,13 +526,16 @@ renderables:
               labelColumn: time_begin
               table: tx_events2_domain_model_time
               expressions:
-                - column: event
+                -
+                  column: event
                   expression: eq
                   value: '{event:uid}'
-                - column: type
+                -
+                  column: type
                   expression: eq
                   value: different_times
-                - column: weekday
+                -
+                  column: weekday
                   expression: eq
                   value: friday
           elementDescription: 'Enter time in format hh:mm. Example: 12:30'
@@ -469,19 +543,23 @@ renderables:
             maxlength: 5
             placeholder: '08:00'
         variants:
-          - identifier: variant-time-friday
+          -
+            identifier: variant-time-friday
             condition: 'traverse(formValues, "weekday") && "16" in formValues["weekday"]'
             renderingOptions:
               enabled: true
         validators:
-          - identifier: StringLength
+          -
+            identifier: StringLength
             options:
               minimum: 5
               maximum: 5
-          - identifier: RegularExpression
+          -
+            identifier: RegularExpression
             options:
               regularExpression: '/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/'
-      - label: 'Different start time for saturday'
+      -
+        label: 'Different start time for saturday'
         type: Text
         identifier: time-begin-saturday
         defaultValue: ''
@@ -493,13 +571,16 @@ renderables:
               labelColumn: time_begin
               table: tx_events2_domain_model_time
               expressions:
-                - column: event
+                -
+                  column: event
                   expression: eq
                   value: '{event:uid}'
-                - column: type
+                -
+                  column: type
                   expression: eq
                   value: different_times
-                - column: weekday
+                -
+                  column: weekday
                   expression: eq
                   value: saturday
           elementDescription: 'Enter time in format hh:mm. Example: 12:30'
@@ -507,19 +588,23 @@ renderables:
             maxlength: 5
             placeholder: '08:00'
         variants:
-          - identifier: variant-time-saturday
+          -
+            identifier: variant-time-saturday
             condition: 'traverse(formValues, "weekday") && "32" in formValues["weekday"]'
             renderingOptions:
               enabled: true
         validators:
-          - identifier: StringLength
+          -
+            identifier: StringLength
             options:
               minimum: 5
               maximum: 5
-          - identifier: RegularExpression
+          -
+            identifier: RegularExpression
             options:
               regularExpression: '/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/'
-      - label: 'Different start time for sunday'
+      -
+        label: 'Different start time for sunday'
         type: Text
         identifier: time-begin-sunday
         defaultValue: ''
@@ -531,13 +616,16 @@ renderables:
               labelColumn: time_begin
               table: tx_events2_domain_model_time
               expressions:
-                - column: event
+                -
+                  column: event
                   expression: eq
                   value: '{event:uid}'
-                - column: type
+                -
+                  column: type
                   expression: eq
                   value: different_times
-                - column: weekday
+                -
+                  column: weekday
                   expression: eq
                   value: sunday
           elementDescription: 'Enter time in format hh:mm. Example: 12:30'
@@ -545,16 +633,19 @@ renderables:
             maxlength: 5
             placeholder: '08:00'
         variants:
-          - identifier: variant-time-sunday
+          -
+            identifier: variant-time-sunday
             condition: 'traverse(formValues, "weekday") && "64" in formValues["weekday"]'
             renderingOptions:
               enabled: true
         validators:
-          - identifier: StringLength
+          -
+            identifier: StringLength
             options:
               minimum: 5
               maximum: 5
-          - identifier: RegularExpression
+          -
+            identifier: RegularExpression
             options:
               regularExpression: '/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/'
 finishers:
@@ -736,7 +827,7 @@ finishers:
           tstamp:
             value: '{__currentTimestamp}'
           type:
-            value: 'event_time'
+            value: event_time
           weekday:
             value: '{__currentWeekday}'
           event:
@@ -879,16 +970,8 @@ finishers:
     options:
       subject: 'Overwrite me with TS or lang file'
       useFluidEmail: 1
-      # Following values are prefilled with the values from Extension Settings automatically (HOOK)
-      # Activating following settings will deactivate the automatism.
-      #recipients:
-      #  change-me@example.com: 'Change or overwrite me'
-      #senderAddress:
-      #senderName:
+      recipients: {  }
   3:
-    # Hide event record after creation.
-    # It must be hidden in a separate step.
-    # Else link generation in EmailToReceiver finisher will not work correctly.
     identifier: SaveEventFinisher
     options:
       1:

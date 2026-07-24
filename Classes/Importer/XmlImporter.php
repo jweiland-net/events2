@@ -73,6 +73,9 @@ class XmlImporter
         protected readonly PathSegmentHelper $pathSegmentHelper,
         protected readonly DateTimeUtility $dateTimeUtility,
         protected readonly ExtConf $extConf,
+        protected readonly ResourceFactory $resourceFactory,
+        protected readonly FlashMessageService $flashMessageService,
+        protected readonly ConnectionPool $connectionPool,
     ) {
         $this->today = new \DateTimeImmutable('now');
     }
@@ -180,7 +183,7 @@ class XmlImporter
                     throw new \Exception(sprintf(
                         'Can not delete event with import-ID %s, as it does not exist in our database.',
                         $importId,
-                    ));
+                    ), 8854085414);
                 }
 
                 break;
@@ -225,7 +228,7 @@ class XmlImporter
                     throw new \Exception(sprintf(
                         'Can not edit event with import-ID %s, as it does not exist in our database.',
                         $eventRecord['import_id'],
-                    ));
+                    ), 7331282421);
                 }
 
                 break;
@@ -286,18 +289,11 @@ class XmlImporter
 
         foreach ($allowedRootProperties as $property => $dataType) {
             if (isset($eventRecord[$property])) {
-                switch ($dataType) {
-                    case 'int':
-                        $this->setEventProperty($event, $property, (int)$eventRecord[$property]);
-                        break;
-                    case 'bool':
-                        $this->setEventProperty($event, $property, (bool)$eventRecord[$property]);
-                        break;
-                    case 'string':
-                    default:
-                        $this->setEventProperty($event, $property, (string)$eventRecord[$property]);
-                        break;
-                }
+                match ($dataType) {
+                    'int' => $this->setEventProperty($event, $property, (int)$eventRecord[$property]),
+                    'bool' => $this->setEventProperty($event, $property, (bool)$eventRecord[$property]),
+                    default => $this->setEventProperty($event, $property, (string)$eventRecord[$property]),
+                };
             }
         }
     }
@@ -494,7 +490,6 @@ class XmlImporter
             return;
         }
 
-        $resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);
         $images = new ObjectStorage();
         /** @var CharsetConverter $csConverter */
         $csConverter = GeneralUtility::makeInstance(CharsetConverter::class);
@@ -502,8 +497,7 @@ class XmlImporter
             // we try to keep the original structure from origin server to prevent duplicate filenames
             $filePath = parse_url($image['url'], PHP_URL_PATH);
             $fileParts = GeneralUtility::split_fileref($filePath);
-            $filename = $csConverter->specCharsToASCII(
-                'utf-8',
+            $filename = $csConverter->utf8_char_mapping(
                 rawurldecode($fileParts['file']),
             );
 
@@ -519,11 +513,11 @@ class XmlImporter
             $targetDirectoryPath = Environment::getPublicPath() . '/' . $rootFolder->getPublicUrl() . $relativeTargetDirectoryPath;
             GeneralUtility::mkdir_deep($targetDirectoryPath);
 
-            $targetFolder = $resourceFactory->getFolderObjectFromCombinedIdentifier(
+            $targetFolder = $this->resourceFactory->getFolderObjectFromCombinedIdentifier(
                 $rootFolder->getCombinedIdentifier() . $relativeTargetDirectoryPath,
             );
             if ($targetFolder->hasFile($filename)) {
-                $file = $resourceFactory->retrieveFileOrFolderObject(
+                $file = $this->resourceFactory->retrieveFileOrFolderObject(
                     $targetFolder->getCombinedIdentifier() . $filename,
                 );
             } else {
@@ -542,7 +536,7 @@ class XmlImporter
             // Create new FileReference
             $extbaseFileReference = GeneralUtility::makeInstance(FileReference::class);
             $extbaseFileReference->setPid($this->storagePid);
-            $extbaseFileReference->setOriginalResource($resourceFactory->createFileReferenceObject(
+            $extbaseFileReference->setOriginalResource($this->resourceFactory->createFileReferenceObject(
                 [
                     'uid_local' => $file->getUid(),
                     'uid_foreign' => uniqid('NEW_', true),
@@ -580,13 +574,7 @@ class XmlImporter
 
     protected function hasInvalidEvents(array $events): bool
     {
-        foreach ($events as $event) {
-            if (!$this->isValidEvent($event)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($events, fn(array $event): bool => !$this->isValidEvent($event));
     }
 
     protected function isValidEvent(array $event): bool
@@ -655,7 +643,7 @@ class XmlImporter
 
                 return false;
             }
-            if (!isset($image['url']) || empty(trim($image['url']))) {
+            if (!isset($image['url']) || in_array(trim($image['url']), ['', '0'], true)) {
                 $this->addMessage(
                     sprintf(
                         'Event: %s - Date: %s - Error: %s',
@@ -709,17 +697,8 @@ class XmlImporter
             return false;
         }
 
-        if (
-            array_key_exists('organizers', $event)
-            && is_array($event['organizers'])
-        ) {
-            foreach ($event['organizers'] as $organizer) {
-                if (empty($organizer)) {
-                    return false;
-                }
-            }
-
-            return true;
+        if (array_key_exists('organizers', $event) && is_array($event['organizers'])) {
+            return array_all($event['organizers'], fn($organizer): bool => !empty($organizer));
         }
 
         return false;
@@ -731,7 +710,7 @@ class XmlImporter
             return [];
         }
 
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_organizer');
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('tx_events2_domain_model_organizer');
         $organizer = $queryBuilder
             ->select('uid')
             ->from('tx_events2_domain_model_organizer')
@@ -766,7 +745,7 @@ class XmlImporter
             return [];
         }
 
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_location');
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('tx_events2_domain_model_location');
 
         // I don't have the TypoScript or Plugin storage PID. That's why I don't use the repository directly
         $location = $queryBuilder
@@ -790,7 +769,7 @@ class XmlImporter
             return [];
         }
 
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('sys_category');
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('sys_category');
         $category = $queryBuilder
             ->select('uid')
             ->from('sys_category')
@@ -831,8 +810,7 @@ class XmlImporter
 
         // show messages in TYPO3 BE when started manually
         $flashMessage = GeneralUtility::makeInstance(FlashMessage::class, $message, '', $severity);
-        $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
-        $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
+        $defaultFlashMessageQueue = $this->flashMessageService->getMessageQueueByIdentifier();
         $defaultFlashMessageQueue->enqueue($flashMessage);
     }
 
@@ -850,12 +828,12 @@ class XmlImporter
             if (!$folder->hasFile($this->logFileName)) {
                 $logFile = $folder->createFile($this->logFileName);
             } else {
-                $logFile = GeneralUtility::makeInstance(ResourceFactory::class)->retrieveFileOrFolderObject(
+                $logFile = $this->resourceFactory->retrieveFileOrFolderObject(
                     $folder->getCombinedIdentifier() . $this->logFileName,
                 );
             }
         } catch (\Exception $e) {
-            throw new \Exception('Error while retrieving the LogFile. FAL error: ' . $e->getMessage(), 1525416333);
+            throw new \Exception('Error while retrieving the LogFile. FAL error: ' . $e->getMessage(), 1525416333, $e);
         }
 
         return $logFile;
@@ -867,10 +845,5 @@ class XmlImporter
         if (method_exists($event, $setter)) {
             $event->{$setter}($value);
         }
-    }
-
-    protected function getConnectionPool(): ConnectionPool
-    {
-        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 }

@@ -13,6 +13,7 @@ namespace JWeiland\Events2\Service\Record;
 
 use Doctrine\DBAL\Exception;
 use JWeiland\Events2\Traits\RelationHandlerTrait;
+use TYPO3\CMS\Backend\Domain\Repository\Localization\LocalizationRepository;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Database\Connection;
@@ -32,6 +33,7 @@ readonly class DayRecordService
 
     public function __construct(
         private ConnectionPool $connectionPool,
+        private LocalizationRepository $localizationRepository,
         private TcaSchemaFactory $tcaSchemaFactory,
         private ReferenceIndex $referenceIndex,
     ) {}
@@ -124,8 +126,12 @@ readonly class DayRecordService
         $connection = $this->connectionPool->getConnectionForTable(self::TABLE);
 
         if ($languageUid > 0) {
-            $eventLocalizations = BackendUtility::getRecordLocalization('tx_events2_domain_model_event', $eventUid, $languageUid, 'AND t3ver_oid=0');
-            $eventRecord = reset($eventLocalizations);
+            $eventRecord = $this->localizationRepository->getRecordTranslation(
+                'tx_events2_domain_model_event',
+                $eventUid,
+                $languageUid,
+                $this->getWorkspaceUidFromBackendUser(),
+            )?->toArray();
         } else {
             $eventRecord = BackendUtility::getRecord('tx_events2_domain_model_event', $eventUid);
         }
@@ -174,7 +180,7 @@ readonly class DayRecordService
         // to mark the day record as DELETED.
         $existingLiveDayRecordsToBeMarkedAsDeleted = array_filter(
             $existingLiveDayRecords,
-            fn($dayRecordOfLive, $dayRecordKeyOfLive) => $dayRecordKeyOfLive > $lastDayRecordKey,
+            fn($dayRecordOfLive, $dayRecordKeyOfLive): bool => $dayRecordKeyOfLive > $lastDayRecordKey,
             ARRAY_FILTER_USE_BOTH,
         );
 

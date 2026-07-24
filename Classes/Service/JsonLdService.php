@@ -18,7 +18,9 @@ use JWeiland\Events2\Domain\Model\Link;
 use JWeiland\Events2\Domain\Model\Location;
 use JWeiland\Events2\Domain\Model\Organizer;
 use JWeiland\Events2\Domain\Model\Time;
+use JWeiland\Events2\Traits\Typo3RequestTrait;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Http\NormalizedParams;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
@@ -30,6 +32,8 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
  */
 class JsonLdService
 {
+    use Typo3RequestTrait;
+
     protected const DATE_FORMAT = 'Y-m-d';
 
     protected const DATE_TIME_FORMAT = 'Y-m-d\TH:i:s';
@@ -40,7 +44,7 @@ class JsonLdService
     ];
 
     public function __construct(
-        protected readonly TimeFactory $timeFactory,
+        protected readonly TimeFactory $timeFactory, private readonly PageRenderer $pageRenderer,
     ) {}
 
     /**
@@ -50,10 +54,9 @@ class JsonLdService
     {
         $this->collectData($day);
 
-        $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
         // as long as all JS methods will render a script-tag with the type "text/javascript", we have to
         // add our own script-Tag
-        $pageRenderer->addHeaderData(
+        $this->pageRenderer->addHeaderData(
             sprintf(
                 '<script type="application/ld+json">%s</script>',
                 json_encode($this->data, JSON_THROW_ON_ERROR),
@@ -213,7 +216,7 @@ class JsonLdService
      */
     protected function addUrlToData(): void
     {
-        $this->data['url'] = rawurldecode(GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL'));
+        $this->data['url'] = rawurldecode($this->getNormalizedParams()->getRequestUrl());
     }
 
     /**
@@ -298,7 +301,7 @@ class JsonLdService
      */
     protected function addImageToData(Event $event): void
     {
-        if (!empty($event->getImages())) {
+        if ($event->getImages() !== []) {
             $image = $event->getImages()[0];
             if (!$image instanceof FileReference) {
                 return;
@@ -309,7 +312,10 @@ class JsonLdService
                 return;
             }
 
-            $url = GeneralUtility::locationHeaderUrl(PathUtility::getAbsoluteWebPath(Environment::getPublicPath()));
+            $url = GeneralUtility::locationHeaderUrl(
+                PathUtility::getAbsoluteWebPath(Environment::getPublicPath()),
+                $this->getTypo3Request(),
+            );
             $url .= $resource->getPublicUrl();
 
             $this->data['image'] = [
@@ -317,7 +323,7 @@ class JsonLdService
                 'caption' => $resource->getTitle(),
                 'contentSize' => $resource->getSize(),
                 'contentUrl' => $url,
-                'url' => rawurldecode(GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL')),
+                'url' => rawurldecode($this->getNormalizedParams()->getRequestUrl()),
                 'description' => $resource->getDescription(),
             ];
         }
@@ -328,12 +334,16 @@ class JsonLdService
      */
     protected function getUrlFromParameter(string $parameter): string
     {
-        $contentObject = GeneralUtility::makeInstance(ContentObjectRenderer::class);
-        return $contentObject->typoLink_URL(
+        return GeneralUtility::makeInstance(ContentObjectRenderer::class)->typoLink_URL(
             [
                 'parameter' => $parameter,
                 'forceAbsoluteUrl' => true,
             ],
         );
+    }
+
+    private function getNormalizedParams(): NormalizedParams
+    {
+        return $this->getTypo3Request()->getAttribute('normalizedParams');
     }
 }

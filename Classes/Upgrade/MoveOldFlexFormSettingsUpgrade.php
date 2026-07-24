@@ -11,15 +11,15 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Upgrade;
 
+use TYPO3\CMS\Core\Attribute\UpgradeWizard;
+use TYPO3\CMS\Core\Upgrades\UpgradeWizardInterface;
+use TYPO3\CMS\Core\Upgrades\DatabaseUpdatedPrerequisite;
 use TYPO3\CMS\Core\Configuration\FlexForm\FlexFormTools;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\Exception\MissingArrayPathException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Install\Attribute\UpgradeWizard;
-use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
-use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 
 /**
  * With events2 8.0.0 we have moved some FlexForm Settings to another sheet.
@@ -28,6 +28,9 @@ use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 #[UpgradeWizard('events2_moveFlexFormFields')]
 class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
 {
+    public function __construct(private readonly ConnectionPool $connectionPool)
+    {
+    }
     public function getTitle(): string
     {
         return '[events2] Move old FlexForm fields to new FlexForm sheet';
@@ -51,7 +54,7 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
                 continue;
             }
 
-            if (empty($valueFromDatabase)) {
+            if ($valueFromDatabase === []) {
                 continue;
             }
 
@@ -76,7 +79,7 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
                     if (ArrayUtility::getValueByPath($valueFromDatabase, $checkSetting)) {
                         return true;
                     }
-                } catch (MissingArrayPathException $missingArrayPathException) {
+                } catch (MissingArrayPathException) {
                     // If value does not exist, check further requirements
                 }
             }
@@ -97,7 +100,7 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
                 continue;
             }
 
-            if (empty($valueFromDatabase)) {
+            if ($valueFromDatabase === []) {
                 continue;
             }
 
@@ -217,7 +220,7 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
 
             // Remove old reference
             unset($valueFromDatabase['data'][$oldSheet]['lDEF'][$field]);
-        } catch (MissingArrayPathException $missingArrayPathException) {
+        } catch (MissingArrayPathException) {
             // Path does not exist in Array. Do not update anything
         }
     }
@@ -228,12 +231,12 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
     protected function checkValue_flexArray2Xml(array $array): string
     {
         return GeneralUtility::makeInstance(FlexFormTools::class)
-            ->flexArray2Xml($array, true);
+            ->flexArray2Xml($array);
     }
 
     protected function getConnectionPool(): ConnectionPool
     {
-        return GeneralUtility::makeInstance(ConnectionPool::class);
+        return $this->connectionPool;
     }
 
     /**

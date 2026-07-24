@@ -21,6 +21,10 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 final class GetMergedEventTimesViewHelper extends AbstractViewHelper
 {
+    public function __construct(
+        private readonly TimeFactory $timeFactory,
+    ) {}
+
     public function initializeArguments(): void
     {
         $this->registerArgument(
@@ -43,9 +47,7 @@ final class GetMergedEventTimesViewHelper extends AbstractViewHelper
      */
     public function render(): \SplObjectStorage
     {
-        $timeFactory = GeneralUtility::makeInstance(TimeFactory::class);
-
-        return $timeFactory->getSortedTimesForDate(
+        return $this->timeFactory->getSortedTimesForDate(
             $this->arguments['event'],
             $this->arguments['date'],
         );

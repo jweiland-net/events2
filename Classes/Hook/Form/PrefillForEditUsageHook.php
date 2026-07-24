@@ -30,6 +30,8 @@ use TYPO3\CMS\Form\Domain\Model\Renderable\RenderableInterface;
 readonly class PrefillForEditUsageHook
 {
     public function __construct(
+        private ResourceFactory $resourceFactory,
+        private ConnectionPool $connectionPool,
         private PageRepository $pageRepository,
     ) {}
 
@@ -136,7 +138,7 @@ readonly class PrefillForEditUsageHook
             } elseif ($properties['dbMapping']['dataType'] === 'binary') {
                 $values = [];
                 foreach ([1, 2, 4, 8, 16, 32, 64] as $key => $value) {
-                    if ($defaultValue & 2 ** $key) {
+                    if (($defaultValue & 2 ** $key) !== 0) {
                         $values[] = $value;
                     }
                 }
@@ -286,7 +288,7 @@ readonly class PrefillForEditUsageHook
         }
 
         if (isset($coreReferences[$position])) {
-            $resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);
+            $resourceFactory = $this->resourceFactory;
             $coreReference = $resourceFactory->getFileReferenceObject((int)$coreReferences[$position]);
             if ($coreReference instanceof \TYPO3\CMS\Core\Resource\FileReference) {
                 $extbaseFileReference = GeneralUtility::makeInstance(FileReference::class);
@@ -322,7 +324,7 @@ readonly class PrefillForEditUsageHook
 
     protected function getQueryBuilderForTable(string $table): QueryBuilder
     {
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($table);
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable($table);
         $queryBuilder
             ->getRestrictions()
             ->removeAll()
@@ -333,10 +335,5 @@ readonly class PrefillForEditUsageHook
             ->from($table);
 
         return $queryBuilder;
-    }
-
-    protected function getConnectionPool(): ConnectionPool
-    {
-        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 }

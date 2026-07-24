@@ -29,6 +29,7 @@ readonly class DatabaseService
     public function __construct(
         protected ExtConf $extConf,
         protected DateTimeUtility $dateTimeUtility,
+        private ConnectionPool $connectionPool,
     ) {}
 
     /**
@@ -42,10 +43,10 @@ readonly class DatabaseService
     public function truncateTable(string $tableName, bool $really = false): void
     {
         if ($really) {
-            $connection = $this->getConnectionPool()->getConnectionForTable($tableName);
+            $connection = $this->connectionPool->getConnectionForTable($tableName);
             $connection->truncate($tableName);
         } else {
-            $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($tableName);
+            $queryBuilder = $this->connectionPool->getQueryBuilderForTable($tableName);
             $queryBuilder->getRestrictions()->removeAll();
             $queryBuilder
                 ->delete($tableName)
@@ -60,7 +61,7 @@ readonly class DatabaseService
      */
     public function getQueryBuilderForAllEvents(): QueryBuilder
     {
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_event');
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('tx_events2_domain_model_event');
 
         // Updating the day records is needed for frontend
         $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
@@ -81,7 +82,7 @@ readonly class DatabaseService
         $constraint = [];
 
         // Create a basic query with QueryBuilder. Where-clause will be added dynamically
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_day');
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('tx_events2_domain_model_day');
         $queryBuilder = $queryBuilder
             ->select('event.uid', 'event.title', 'day.day')
             ->from('tx_events2_domain_model_day', 'day')
@@ -96,7 +97,7 @@ readonly class DatabaseService
             );
 
         // Add relation to sys_category_record_mm only if categories were set
-        if (!empty($categories)) {
+        if ($categories !== []) {
             $queryBuilder = $queryBuilder
                 ->leftJoin(
                     'event',
@@ -129,7 +130,7 @@ readonly class DatabaseService
         }
 
         // Reduce ResultSet to configured StoragePids
-        if (!empty($storagePids)) {
+        if ($storagePids !== []) {
             $constraint[] = $queryBuilder->expr()->in(
                 'event.pid',
                 $queryBuilder->createNamedParameter($storagePids, ArrayParameterType::INTEGER),
@@ -168,7 +169,7 @@ readonly class DatabaseService
         ?QueryBuilder $parentQueryBuilder = null,
         string $alias = 'day',
     ): void {
-        if ($parentQueryBuilder === null) {
+        if (!$parentQueryBuilder instanceof QueryBuilder) {
             $parentQueryBuilder = $queryBuilder;
         }
 
@@ -205,7 +206,7 @@ readonly class DatabaseService
         ?QueryBuilder $parentQueryBuilder = null,
         string $postAlias = '',
     ): void {
-        if ($parentQueryBuilder === null) {
+        if (!$parentQueryBuilder instanceof QueryBuilder) {
             $parentQueryBuilder = $queryBuilder;
         }
 
@@ -235,7 +236,7 @@ readonly class DatabaseService
         ?QueryBuilder $parentQueryBuilder = null,
         string $alias = 'event',
     ): void {
-        if ($parentQueryBuilder === null) {
+        if (!$parentQueryBuilder instanceof QueryBuilder) {
             $parentQueryBuilder = $queryBuilder;
         }
 
@@ -280,7 +281,7 @@ readonly class DatabaseService
         ?QueryBuilder $parentQueryBuilder = null,
         string $alias = 'event',
     ): void {
-        if ($parentQueryBuilder === null) {
+        if (!$parentQueryBuilder instanceof QueryBuilder) {
             $parentQueryBuilder = $queryBuilder;
         }
 
@@ -311,7 +312,7 @@ readonly class DatabaseService
         ?QueryBuilder $parentQueryBuilder = null,
         string $alias = 'event',
     ): void {
-        if ($parentQueryBuilder === null) {
+        if (!$parentQueryBuilder instanceof QueryBuilder) {
             $parentQueryBuilder = $queryBuilder;
         }
 
@@ -337,7 +338,7 @@ readonly class DatabaseService
         ?QueryBuilder $parentQueryBuilder = null,
         string $alias = 'event',
     ): void {
-        if ($parentQueryBuilder === null) {
+        if (!$parentQueryBuilder instanceof QueryBuilder) {
             $parentQueryBuilder = $queryBuilder;
         }
 
@@ -350,10 +351,5 @@ readonly class DatabaseService
                 ),
             ),
         );
-    }
-
-    protected function getConnectionPool(): ConnectionPool
-    {
-        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 }

@@ -25,29 +25,13 @@ use TYPO3\CMS\Extbase\Mvc\RequestInterface;
  */
 class PostProcessControllerActionEvent implements ControllerActionEventInterface
 {
-    protected ActionController|DayController|ManagementController $controller;
-
-    protected ?Event $event;
-
-    protected ?Day $day;
-
-    protected array $settings;
-
-    protected RequestInterface $request;
-
     public function __construct(
-        ActionController $controller,
-        ?Event $event,
-        ?Day $day,
-        array $settings,
-        RequestInterface $request,
-    ) {
-        $this->controller = $controller;
-        $this->event = $event;
-        $this->day = $day;
-        $this->settings = $settings;
-        $this->request = $request;
-    }
+        protected ActionController|DayController|ManagementController $controller,
+        protected ?Event $event,
+        protected ?Day $day,
+        protected array $settings,
+        protected RequestInterface $request
+    ) {}
 
     public function getController(): ActionController
     {
@@ -64,7 +48,7 @@ class PostProcessControllerActionEvent implements ControllerActionEventInterface
         return $this->controller;
     }
 
-    public function getRequest(): Request
+    public function getRequest(): RequestInterface
     {
         return $this->request;
     }

@@ -25,6 +25,10 @@ readonly class CategoryRecordService
 {
     private const TABLE = 'sys_category';
 
+    public function __construct(private ConnectionPool $connectionPool)
+    {
+    }
+
     public function getCategoryRecordByTitle(string $title, int $language = 0): ?array
     {
         $queryBuilder = $this->getQueryBuilder();
@@ -52,14 +56,9 @@ readonly class CategoryRecordService
 
     protected function getQueryBuilder(): QueryBuilder
     {
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable(self::TABLE);
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable(self::TABLE);
         $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
 
         return $queryBuilder;
-    }
-
-    protected function getConnectionPool(): ConnectionPool
-    {
-        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 }

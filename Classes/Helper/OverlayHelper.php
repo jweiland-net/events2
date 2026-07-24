@@ -12,12 +12,13 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Helper;
 
 use Psr\Log\LoggerInterface;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
+use TYPO3\CMS\Core\Schema\Capability\TcaSchemaCapability;
+use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 
 /**
  * Helper to add where clause for translations and workspaces to QueryBuilder
@@ -28,6 +29,7 @@ readonly class OverlayHelper
         protected Context $context,
         protected PageRepository $pageRepository,
         protected LoggerInterface $logger,
+        protected TcaSchemaFactory $tcaSchemaFactory,
     ) {}
 
     public function addWhereForOverlay(
@@ -94,7 +96,10 @@ readonly class OverlayHelper
         bool $useLangStrict = false,
         int $overrideLanguageUid = -1,
     ): void {
-        if (!BackendUtility::isTableLocalizable($tableName)) {
+        if (
+            !$this->tcaSchemaFactory->has($tableName)
+            || !$this->tcaSchemaFactory->get($tableName)->hasCapability(TcaSchemaCapability::Language)
+        ) {
             return;
         }
 

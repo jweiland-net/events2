@@ -82,7 +82,7 @@ class ExportEventsCommand extends Command
 
         try {
             $status = \json_decode($body, true, 512, JSON_THROW_ON_ERROR);
-        } catch (\JsonException $e) {
+        } catch (\JsonException) {
             $this->logger->error('JSON string from importing server can not be decoded');
             $output->writeln('<error>JSON string from importing server can not be decoded</error>');
             return Command::FAILURE;

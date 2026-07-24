@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -21,6 +23,7 @@ ExtensionUtility::registerPlugin(
     'ext-events2-wizard-icon',
     'plugins',
     'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.list.description',
+    'FILE:EXT:events2/Configuration/FlexForms/Events.xml',
 );
 
 ExtensionUtility::registerPlugin(
@@ -30,6 +33,7 @@ ExtensionUtility::registerPlugin(
     'ext-events2-wizard-icon',
     'plugins',
     'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.show.description',
+    'FILE:EXT:events2/Configuration/FlexForms/Show.xml',
 );
 
 ExtensionUtility::registerPlugin(
@@ -39,6 +43,7 @@ ExtensionUtility::registerPlugin(
     'ext-events2-wizard-icon',
     'plugins',
     'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.management.description',
+    'FILE:EXT:events2/Configuration/FlexForms/Management.xml',
 );
 
 ExtensionUtility::registerPlugin(
@@ -48,6 +53,7 @@ ExtensionUtility::registerPlugin(
     'ext-events2-wizard-icon',
     'plugins',
     'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.calendar.description',
+    'FILE:EXT:events2/Configuration/FlexForms/Calendar.xml',
 );
 
 ExtensionUtility::registerPlugin(
@@ -57,6 +63,7 @@ ExtensionUtility::registerPlugin(
     'ext-events2-wizard-icon',
     'plugins',
     'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.searchForm.description',
+    'FILE:EXT:events2/Configuration/FlexForms/SearchForm.xml',
 );
 
 ExtensionUtility::registerPlugin(
@@ -66,76 +73,47 @@ ExtensionUtility::registerPlugin(
     'ext-events2-wizard-icon',
     'plugins',
     'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:plugin.searchResults.description',
-);
-
-ExtensionManagementUtility::addToAllTCAtypes(
-    'tt_content',
-    '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:plugin,pi_flexform,pages',
-    'events2_list',
-    'after:subheader',
-);
-ExtensionManagementUtility::addPiFlexFormValue(
-    '*',
-    'FILE:EXT:events2/Configuration/FlexForms/Events.xml',
-    'events2_list',
-);
-
-ExtensionManagementUtility::addToAllTCAtypes(
-    'tt_content',
-    '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:plugin,pi_flexform,pages',
-    'events2_show',
-    'after:subheader',
-);
-ExtensionManagementUtility::addPiFlexFormValue(
-    '*',
-    'FILE:EXT:events2/Configuration/FlexForms/Show.xml',
-    'events2_show',
-);
-
-ExtensionManagementUtility::addToAllTCAtypes(
-    'tt_content',
-    '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:plugin,pi_flexform,pages',
-    'events2_management',
-    'after:subheader',
-);
-ExtensionManagementUtility::addPiFlexFormValue(
-    '*',
-    'FILE:EXT:events2/Configuration/FlexForms/Management.xml',
-    'events2_management',
-);
-
-ExtensionManagementUtility::addToAllTCAtypes(
-    'tt_content',
-    '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:plugin,pi_flexform,pages',
-    'events2_calendar',
-    'after:subheader',
-);
-ExtensionManagementUtility::addPiFlexFormValue(
-    '*',
-    'FILE:EXT:events2/Configuration/FlexForms/Calendar.xml',
-    'events2_calendar',
-);
-
-ExtensionManagementUtility::addToAllTCAtypes(
-    'tt_content',
-    '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:plugin,pi_flexform,pages',
-    'events2_searchform',
-    'after:subheader',
-);
-ExtensionManagementUtility::addPiFlexFormValue(
-    '*',
-    'FILE:EXT:events2/Configuration/FlexForms/SearchForm.xml',
-    'events2_searchform',
-);
-
-ExtensionManagementUtility::addToAllTCAtypes(
-    'tt_content',
-    '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:plugin,pi_flexform,pages',
-    'events2_searchresults',
-    'after:subheader',
-);
-ExtensionManagementUtility::addPiFlexFormValue(
-    '*',
     'FILE:EXT:events2/Configuration/FlexForms/SearchResults.xml',
+);
+
+ExtensionManagementUtility::addToAllTCAtypes(
+    'tt_content',
+    '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:plugin,pi_flexform,pages',
+    'events2_list',
+    'after:subheader',
+);
+
+ExtensionManagementUtility::addToAllTCAtypes(
+    'tt_content',
+    '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:plugin,pi_flexform,pages',
+    'events2_show',
+    'after:subheader',
+);
+
+ExtensionManagementUtility::addToAllTCAtypes(
+    'tt_content',
+    '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:plugin,pi_flexform,pages',
+    'events2_management',
+    'after:subheader',
+);
+
+ExtensionManagementUtility::addToAllTCAtypes(
+    'tt_content',
+    '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:plugin,pi_flexform,pages',
+    'events2_calendar',
+    'after:subheader',
+);
+
+ExtensionManagementUtility::addToAllTCAtypes(
+    'tt_content',
+    '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:plugin,pi_flexform,pages',
+    'events2_searchform',
+    'after:subheader',
+);
+
+ExtensionManagementUtility::addToAllTCAtypes(
+    'tt_content',
+    '--div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:plugin,pi_flexform,pages',
     'events2_searchresults',
+    'after:subheader',
 );

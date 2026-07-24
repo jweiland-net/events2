@@ -57,11 +57,11 @@ class EventRecordService
             return [];
         }
 
-        if ($doVersioning === true) {
+        if ($doVersioning) {
             $this->pageRepository->versionOL(self::TABLE, $eventRecord);
         }
 
-        if ($doLanguageOverlay === true) {
+        if ($doLanguageOverlay) {
             $this->pageRepository->getLanguageOverlay(self::TABLE, $eventRecord);
         }
 

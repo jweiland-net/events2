@@ -37,6 +37,7 @@ readonly class EventService
         protected TimeFactory $timeFactory,
         protected DataMapper $dataMapper,
         protected DatabaseService $databaseService,
+        private ConnectionPool $connectionPool,
     ) {}
 
     public function getNextDayForEvent(int $eventUid): ?\DateTimeImmutable
@@ -132,7 +133,7 @@ readonly class EventService
             while ($event = $queryResult->fetchAssociative()) {
                 $events[$event['uid']] = current($this->dataMapper->map(Event::class, [$event]));
             }
-        } catch (Exception $e) {
+        } catch (Exception) {
         }
 
         return $events;
@@ -140,14 +141,9 @@ readonly class EventService
 
     protected function getQueryBuilder(): QueryBuilder
     {
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable(self::TABLE);
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable(self::TABLE);
         $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
 
         return $queryBuilder;
-    }
-
-    protected function getConnectionPool(): ConnectionPool
-    {
-        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 }

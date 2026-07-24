@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Event;
 
-use TYPO3\CMS\Extbase\Mvc\Request;
+use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 
 /**
  * Post process controller actions which assign fluid variables to view.
@@ -19,23 +19,13 @@ use TYPO3\CMS\Extbase\Mvc\Request;
  */
 class PostProcessFluidVariablesEvent implements ControllerActionEventInterface
 {
-    protected Request $request;
-
-    protected array $settings = [];
-
-    protected array $fluidVariables = [];
-
     public function __construct(
-        Request $request,
-        array $settings,
-        array $fluidVariables,
-    ) {
-        $this->request = $request;
-        $this->settings = $settings;
-        $this->fluidVariables = $fluidVariables;
-    }
+        protected RequestInterface $request,
+        protected array $settings,
+        protected array $fluidVariables
+    ) {}
 
-    public function getRequest(): Request
+    public function getRequest(): RequestInterface
     {
         return $this->request;
     }

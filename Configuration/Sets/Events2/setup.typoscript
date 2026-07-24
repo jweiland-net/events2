@@ -21,7 +21,7 @@ page.includeJSFooter {
   # This part will be moved back with "if.isTrue" until this patch was fixed: https://forge.typo3.org/issues/98200
   plugin.tx_events2.view.templateRootPaths.1 = EXT:events2/Resources/Private/FormFramework/Templates/
   plugin.tx_events2.view.partialRootPaths.1 = EXT:events2/Resources/Private/FormFramework/Partials/
-[GLOBAL]
+[end]
 
 # Search form should react on $_GET params of SearchResults plugin to show search values again in form.
 plugin.tx_events2_searchform.view.pluginNamespace = tx_events2_searchresults
@@ -35,12 +35,14 @@ plugin.tx_events2 {
       # Do not use "1", it may be overwritten by condition above.
       2 = {$events2.templateRootPath}
     }
+
     partialRootPaths {
       0 = EXT:events2/Resources/Private/Partials/
       # Do not use "1", it may be overwritten by condition above.
       2 = {$events2.partialRootPath}
       3 = EXT:maps2/Resources/Private/Partials/
     }
+
     layoutRootPaths {
       0 = EXT:events2/Resources/Private/Layouts/
       1 = {$events2.layoutRootPath}
@@ -53,6 +55,7 @@ plugin.tx_events2 {
       JWeiland\Events2\Domain\Model\Location {
         newRecordStoragePid =
       }
+
       JWeiland\Events2\Domain\Model\Organizer {
         newRecordStoragePid =
       }
@@ -62,6 +65,7 @@ plugin.tx_events2 {
   mvc {
     callDefaultActionIfActionCantBeResolved = 1
   }
+
   settings {
     rootCategory = {$events2.form.rootCategory}
     pidOfDetailPage = {$events2.pidOfDetailPage}
@@ -133,6 +137,7 @@ plugin.tx_events2 {
       }
     }
   }
+
   _LOCAL_LANG.de.rightsMessage = Hiermit räume ich ... ein einfaches, unbeschränktes Nutzungsrecht an dem hochgeladenen Werk ein. Mit der Nutzung werden keine Rechte von Dritten verletzt.
   _LOCAL_LANG.default.rightsMessage = I give all rights of this image to...
 }

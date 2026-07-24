@@ -17,7 +17,7 @@ use JWeiland\Events2\Domain\Traits\Typo3PropertiesTrait;
 use JWeiland\Events2\Domain\Validator\CategoryMandatoryValidator;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Annotation as Extbase;
+use TYPO3\CMS\Extbase\Attribute as Extbase;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
@@ -33,15 +33,15 @@ class Event extends AbstractEntity
 
     protected bool $topOfList = false;
 
-    #[Extbase\Validate(['validator' => 'NotEmpty'])]
+    #[Extbase\Validate(validator: 'NotEmpty')]
     protected string $title = '';
 
     protected string $pathSegment = '';
 
-    #[Extbase\Validate(['validator' => 'NotEmpty'])]
+    #[Extbase\Validate(validator: 'NotEmpty')]
     protected ?\DateTimeImmutable $eventBegin = null;
 
-    #[Extbase\ORM\Cascade(['value' => 'remove'])]
+    #[Extbase\ORM\Cascade('remove')]
     protected ?Time $eventTime = null;
 
     protected ?\DateTimeImmutable $eventEnd = null;
@@ -51,7 +51,7 @@ class Event extends AbstractEntity
     /**
      * @var ObjectStorage<Time>
      */
-    #[Extbase\ORM\Cascade(['value' => 'remove'])]
+    #[Extbase\ORM\Cascade('remove')]
     #[Extbase\ORM\Lazy]
     protected ObjectStorage $multipleTimes;
 
@@ -62,7 +62,7 @@ class Event extends AbstractEntity
     /**
      * @var ObjectStorage<Time>
      */
-    #[Extbase\ORM\Cascade(['value' => 'remove'])]
+    #[Extbase\ORM\Cascade('remove')]
     #[Extbase\ORM\Lazy]
     protected ObjectStorage $differentTimes;
 
@@ -75,7 +75,7 @@ class Event extends AbstractEntity
     /**
      * @var ObjectStorage<Exception>
      */
-    #[Extbase\ORM\Cascade(['value' => 'remove'])]
+    #[Extbase\ORM\Cascade('remove')]
     #[Extbase\ORM\Lazy]
     protected ObjectStorage $exceptions;
 
@@ -87,20 +87,20 @@ class Event extends AbstractEntity
 
     protected bool $freeEntry = false;
 
-    #[Extbase\ORM\Cascade(['value' => 'remove'])]
+    #[Extbase\ORM\Cascade('remove')]
     protected ?Link $ticketLink = null;
 
     /**
      * @var ObjectStorage<Category>
      */
-    #[Extbase\Validate(['value' => CategoryMandatoryValidator::class])]
+    #[Extbase\Validate(validator: CategoryMandatoryValidator::class)]
     #[Extbase\ORM\Lazy]
     protected ObjectStorage $categories;
 
     /**
      * @var ObjectStorage<Day>
      */
-    #[Extbase\ORM\Cascade(['value' => 'remove'])]
+    #[Extbase\ORM\Cascade('remove')]
     #[Extbase\ORM\Lazy]
     protected ObjectStorage $days;
 
@@ -115,17 +115,17 @@ class Event extends AbstractEntity
     /**
      * @var ObjectStorage<FileReference>
      */
-    #[Extbase\ORM\Cascade(['value' => 'remove'])]
+    #[Extbase\ORM\Cascade('remove')]
     #[Extbase\ORM\Lazy]
     protected ObjectStorage $images;
 
-    #[Extbase\ORM\Cascade(['value' => 'remove'])]
+    #[Extbase\ORM\Cascade('remove')]
     protected ?Link $videoLink = null;
 
     /**
      * @var ObjectStorage<Link>
      */
-    #[Extbase\ORM\Cascade(['value' => 'remove'])]
+    #[Extbase\ORM\Cascade('remove')]
     #[Extbase\ORM\Lazy]
     protected ObjectStorage $downloadLinks;
 
@@ -148,14 +148,14 @@ class Event extends AbstractEntity
      */
     public function initializeObject(): void
     {
-        $this->multipleTimes = $this->multipleTimes ?? new ObjectStorage();
-        $this->differentTimes = $this->differentTimes ?? new ObjectStorage();
-        $this->exceptions = $this->exceptions ?? new ObjectStorage();
-        $this->categories = $this->categories ?? new ObjectStorage();
-        $this->days = $this->days ?? new ObjectStorage();
-        $this->organizers = $this->organizers ?? new ObjectStorage();
-        $this->images = $this->images ?? new ObjectStorage();
-        $this->downloadLinks = $this->downloadLinks ?? new ObjectStorage();
+        $this->multipleTimes ??= new ObjectStorage();
+        $this->differentTimes ??= new ObjectStorage();
+        $this->exceptions ??= new ObjectStorage();
+        $this->categories ??= new ObjectStorage();
+        $this->days ??= new ObjectStorage();
+        $this->organizers ??= new ObjectStorage();
+        $this->images ??= new ObjectStorage();
+        $this->downloadLinks ??= new ObjectStorage();
     }
 
     public function getEventType(): string
@@ -238,7 +238,7 @@ class Event extends AbstractEntity
         if (
             $eventBegin !== null
             && $eventEnd !== null
-            && $eventEnd <> $eventBegin
+            && $eventEnd != $eventBegin
         ) {
             $diff = $eventBegin->diff($eventEnd);
 
@@ -414,7 +414,7 @@ class Event extends AbstractEntity
         $exceptions = new ObjectStorage();
         $exceptionTypes = GeneralUtility::trimExplode(',', strtolower($exceptionTypes), true);
 
-        if (empty($exceptionTypes)) {
+        if ($exceptionTypes === []) {
             $exceptions = $this->exceptions;
         } else {
             foreach ($this->exceptions as $exception) {
@@ -617,7 +617,7 @@ class Event extends AbstractEntity
                     $alternativeDay->getDay(),
                     true,
                 );
-                if ($times->count()) {
+                if ($times->count() !== 0) {
                     $alternativeDays[$alternativeDay->getDayAsTimestamp()] = [
                         'date' => $alternativeDay->getDay(),
                         'times' => $times,
@@ -679,7 +679,7 @@ class Event extends AbstractEntity
                     $exceptionDate,
                     true,
                 );
-                if ($times->count()) {
+                if ($times->count() !== 0) {
                     $alternativeTimes[$exceptionDate->format('U')] = [
                         'date' => $exceptionDate,
                         'times' => $times,
@@ -754,7 +754,7 @@ class Event extends AbstractEntity
     public function getFirstOrganizer(): ?Organizer
     {
         $this->organizers->rewind();
-        if ($this->organizers->count()) {
+        if ($this->organizers->count() !== 0) {
             return $this->organizers->current();
         }
 
@@ -800,7 +800,7 @@ class Event extends AbstractEntity
     public function getFirstImage(): ?FileReference
     {
         $this->images->rewind();
-        if ($this->images->count()) {
+        if ($this->images->count() !== 0) {
             return $this->images->current();
         }
 

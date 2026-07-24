@@ -77,9 +77,7 @@ readonly class EventsExporter
 
     protected function getMaxDateForEventsExport(): ?\DateTimeImmutable
     {
-        $endRange = $this->dateTimeUtility->convert('today');
-
-        return $endRange?->modify('+1 year');
+        return $this->dateTimeUtility->convert('today')?->modify('+1 year');
     }
 
     /**
@@ -109,7 +107,7 @@ readonly class EventsExporter
         $eventBegin = $event->getEventBegin();
 
         // Early return, if there is no event begin
-        if ($eventBegin === null) {
+        if (!$eventBegin instanceof \DateTimeImmutable) {
             $this->logger->warning('Event begin is empty. Skipping event record: ' . $event->getUid());
             return [];
         }
@@ -203,7 +201,7 @@ readonly class EventsExporter
 
     protected function addTicketLink(array &$eventRecord, Event $event): void
     {
-        if ($event->getTicketLink()) {
+        if ($event->getTicketLink() instanceof Link) {
             $eventRecord['ticket_link'] = $this->buildLink($event->getTicketLink());
         }
     }
@@ -269,7 +267,7 @@ readonly class EventsExporter
                 $publicLink = sprintf(
                     '%s%s',
                     rtrim($baseUrl, '/') . '/',
-                    ltrim($fileReference->getOriginalResource()->getOriginalFile()->getPublicUrl(), '/'),
+                    ltrim((string)$fileReference->getOriginalResource()->getOriginalFile()->getPublicUrl(), '/'),
                 );
                 $images[] = [
                     'url' => $publicLink,
@@ -291,7 +289,7 @@ readonly class EventsExporter
 
     protected function addVideoLink(array &$eventRecord, Event $event): void
     {
-        if ($event->getVideoLink()) {
+        if ($event->getVideoLink() instanceof Link) {
             $eventRecord['video_link'] = $this->buildLink($event->getVideoLink());
         }
     }
@@ -314,7 +312,7 @@ readonly class EventsExporter
      */
     protected function buildLink(?Link $link, array $storagePages = []): array
     {
-        if ($link === null) {
+        if (!$link instanceof Link) {
             return [];
         }
 
@@ -383,7 +381,7 @@ readonly class EventsExporter
 
     protected function formatDateToISO(?\DateTimeImmutable $date): string
     {
-        if ($date === null) {
+        if (!$date instanceof \DateTimeImmutable) {
             return '';
         }
 
@@ -392,7 +390,7 @@ readonly class EventsExporter
 
     protected function createTimeRecord(?Time $time): array
     {
-        if ($time === null) {
+        if (!$time instanceof Time) {
             return [];
         }
 

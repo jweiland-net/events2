@@ -33,6 +33,7 @@ class PrefillCategoriesHook
     public function __construct(
         protected readonly PageRepository $pageRepository,
         protected readonly ConfigurationManagerInterface $configurationManager,
+        private readonly ConnectionPool $connectionPool,
     ) {
         $this->settings = $configurationManager->getConfiguration(
             ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS,
@@ -132,14 +133,9 @@ class PrefillCategoriesHook
 
     protected function getQueryBuilderForTable(string $table): QueryBuilder
     {
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($table);
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable($table);
         $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
 
         return $queryBuilder;
-    }
-
-    protected function getConnectionPool(): ConnectionPool
-    {
-        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 }

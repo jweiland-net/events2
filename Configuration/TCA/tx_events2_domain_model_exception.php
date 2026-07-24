@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
-
 return [
     'ctrl' => [
         'title' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_exception',
@@ -35,35 +36,34 @@ return [
             'starttime' => 'starttime',
             'endtime' => 'endtime',
         ],
-        'searchFields' => 'exception_details',
         'iconfile' => 'EXT:events2/Resources/Public/Icons/exception_add.png',
     ],
     'types' => [
         'Add' => [
             'showitem' => '--palette--;;exception, sys_language_uid, l10n_parent, l10n_diffsource, exception_time, mark_as, exception_details,
-            --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access,
+            --div--;core.form.tabs:access,
             --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access',
         ],
         'Remove' => [
             'showitem' => '--palette--;;exception, sys_language_uid, l10n_parent, l10n_diffsource, show_anyway, exception_details,
-            --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access,
+            --div--;core.form.tabs:access,
             --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access',
         ],
         'Time' => [
             'showitem' => '--palette--;;exception, sys_language_uid, l10n_parent, l10n_diffsource, exception_time, exception_details,
-            --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access,
+            --div--;core.form.tabs:access,
             --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access',
         ],
         'Info' => [
             'showitem' => '--palette--;;exception, sys_language_uid, l10n_parent, l10n_diffsource, exception_details,
-            --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access,
+            --div--;core.form.tabs:access,
             --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access',
         ],
     ],
     'palettes' => [
         'exception' => ['showitem' => 'exception_type, exception_date, hidden'],
         'access' => [
-            'showitem' => 'starttime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:starttime_formlabel,endtime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:endtime_formlabel',
+            'showitem' => 'starttime;core.db.general:starttime,endtime;core.db.general:endtime',
         ],
     ],
     'columns' => [
@@ -100,7 +100,6 @@ return [
                 'items' => [
                     [
                         'label' => '',
-                        'value' => '',
                         'invertStateDisplay' => true,
                     ],
                 ],
@@ -131,6 +130,7 @@ return [
                 'type' => 'datetime',
                 'format' => 'datetime',
                 'default' => 0,
+                'searchable' => false,
             ],
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
@@ -142,6 +142,7 @@ return [
                 'type' => 'datetime',
                 'format' => 'datetime',
                 'default' => 0,
+                'searchable' => false,
             ],
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
@@ -186,6 +187,7 @@ return [
                 'format' => 'date',
                 'required' => true,
                 'default' => time(),
+                'searchable' => false,
             ],
         ],
         'exception_time' => [
@@ -228,12 +230,6 @@ return [
             'config' => [
                 'type' => 'check',
                 'renderType' => 'checkboxToggle',
-                'items' => [
-                    [
-                        'label' => '',
-                        'value' => '',
-                    ],
-                ],
                 'default' => 0,
             ],
         ],

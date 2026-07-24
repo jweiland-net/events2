@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\ViewHelpers;
 
+use JWeiland\Events2\Utility\YouTubeUrlUtility;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -19,8 +20,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 final class CreateYoutubeUriViewHelper extends AbstractViewHelper
 {
-    private const YOUTUBE_PATTERN = '~^(?:https?:)?//(?:www\.)?youtu(?:be\.com|\.be)/(?:watch\?v=|embed/|live/|v/|shorts/|)?([a-zA-Z0-9_-]{11})(?:[?&].*)?$~i';
-
     public function initializeArguments(): void
     {
         $this->registerArgument(
@@ -48,9 +47,8 @@ final class CreateYoutubeUriViewHelper extends AbstractViewHelper
 
         $link = trim((string)$link);
 
-        if (preg_match(self::YOUTUBE_PATTERN, $link, $matches)) {
-            // Since all preceding groups are non-capturing (?:), the ID is always at index 1.
-            return '//www.youtube.com/embed/' . $matches[1];
+        if (($videoId = YouTubeUrlUtility::extractVideoId($link)) !== null) {
+            return '//www.youtube.com/embed/' . $videoId;
         }
 
         // Fallback: Assume the input is a raw ID if regex doesn't match

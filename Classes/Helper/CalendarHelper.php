@@ -14,7 +14,7 @@ namespace JWeiland\Events2\Helper;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Session\UserSession;
 use JWeiland\Events2\Traits\Typo3RequestTrait;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Http\NormalizedParams;
 
 /**
  * Helper class containing various methods to help to build variables for LiteCalendar
@@ -80,6 +80,14 @@ readonly class CalendarHelper
 
     protected function getTypo3SiteUrl(): string
     {
-        return GeneralUtility::getIndpEnv('TYPO3_SITE_URL');
+        return $this->getNormalizedParams()->getSiteUrl();
+    }
+
+    protected function getNormalizedParams(): NormalizedParams
+    {
+        /** @var NormalizedParams $normalizedParams */
+        $normalizedParams = $this->getTypo3Request()->getAttribute('normalizedParams');
+
+        return $normalizedParams;
     }
 }

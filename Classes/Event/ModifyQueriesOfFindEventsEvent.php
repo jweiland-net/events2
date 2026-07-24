@@ -19,23 +19,13 @@ use TYPO3\CMS\Core\Database\Query\QueryBuilder;
  */
 class ModifyQueriesOfFindEventsEvent
 {
-    protected string $type = '';
-
-    protected Filter $filter;
-
-    protected array $settings = [];
-
     public function __construct(
         protected readonly QueryBuilder $queryBuilder,
         protected readonly QueryBuilder $subQueryBuilder,
-        string $type,
-        Filter $filter,
-        array $settings,
-    ) {
-        $this->type = $type;
-        $this->filter = $filter;
-        $this->settings = $settings;
-    }
+        protected string $type,
+        protected Filter $filter,
+        protected array $settings
+    ) {}
 
     public function getQueryBuilder(): QueryBuilder
     {

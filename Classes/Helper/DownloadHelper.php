@@ -29,7 +29,7 @@ readonly class DownloadHelper
         ?string $alternativeFilename = null,
         ?string $overrideMimeType = null,
     ): ResponseInterface {
-        if ($file === null && $body === '') {
+        if (!$file instanceof FileInterface && $body === '') {
             throw new \InvalidArgumentException('Please provide either a file object or a string to download', 1639401496);
         }
 
@@ -37,7 +37,7 @@ readonly class DownloadHelper
             return $file->getStorage()->streamFile($file, $asDownload, $alternativeFilename, $overrideMimeType);
         }
 
-        if (empty($alternativeFilename)) {
+        if (in_array($alternativeFilename, [null, '', '0'], true)) {
             throw new \InvalidArgumentException('You want start a string download. Please provide alternative filename argument, as we can not extract a filename from file content', 1639401906);
         }
 
