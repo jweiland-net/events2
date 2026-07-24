@@ -273,12 +273,36 @@ class SaveEventFinisher extends AbstractFinisher
             } elseif ($elementValue instanceof \DateTimeInterface) {
                 $format = $elementsConfiguration[$elementIdentifier]['dateFormat'] ?? 'U';
                 $elementValue = $elementValue->format($format);
+            } elseif ($elementsConfiguration[$elementIdentifier]['convertPlainTextToHtml'] ?? false) {
+                $elementValue = $this->convertPlainTextToHtml((string)$elementValue);
             }
 
             $databaseData[$elementsConfiguration[$elementIdentifier]['mapOnDatabaseColumn']] = $elementValue;
         }
 
         return $databaseData;
+    }
+
+    /**
+     * There is no RTE for this element in frontend. A single line break is meant as <br>,
+     * an empty line between two blocks of text is meant as a new paragraph. Any tag the
+     * visitor might have typed or pasted in is removed beforehand, so only our own <p> and
+     * <br> tags end up in the database.
+     */
+    protected function convertPlainTextToHtml(string $plainText): string
+    {
+        $plainText = strip_tags($plainText);
+        $plainText = str_replace(["\r\n", "\r"], "\n", $plainText);
+
+        $paragraphs = array_filter(
+            array_map('trim', preg_split('/\n{2,}/', trim($plainText)) ?: []),
+            static fn(string $paragraph): bool => $paragraph !== '',
+        );
+
+        return implode('', array_map(
+            static fn(string $paragraph): string => '<p>' . nl2br(htmlspecialchars($paragraph, ENT_QUOTES | ENT_HTML5)) . '</p>',
+            $paragraphs,
+        ));
     }
 
     protected function saveDataForCategories(array $databaseData, string $table, int $iterationCount): array

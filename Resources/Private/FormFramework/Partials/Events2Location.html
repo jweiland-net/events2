@@ -10,7 +10,7 @@
                class="{element.properties.elementClassAttribute} form-control"
                autocomplete="off"
                autocapitalize="off"
-               value="{f:if(condition: event.location, then: event.location.location, else: '')}"/>
+               value="{element.properties.resolvedLabel}"/>
 
         <div>
             <f:link.page pageUid="{element.properties.pidOfNewLocationPage}" title="Neuen Veranstaltungsort beantragen">

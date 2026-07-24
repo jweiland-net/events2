@@ -99,6 +99,10 @@ class ManagementControllerTest extends FunctionalTestCase
             'This page is restricted. Please log in to access the Events Management area.',
             $content,
         );
+        self::assertStringNotContainsString(
+            'An error occurred while trying to call',
+            $content,
+        );
     }
 
     #[Test]
@@ -115,6 +119,10 @@ class ManagementControllerTest extends FunctionalTestCase
             'You\'re not allowed to create event records',
             $content,
         );
+        self::assertStringNotContainsString(
+            'An error occurred while trying to call',
+            $content,
+        );
     }
 
     #[Test]
@@ -129,6 +137,10 @@ class ManagementControllerTest extends FunctionalTestCase
 
         self::assertStringContainsString(
             'You\'re allowed to create event records, but your user record has no relation to an organizer record.',
+            $content,
+        );
+        self::assertStringNotContainsString(
+            'An error occurred while trying to call',
             $content,
         );
     }

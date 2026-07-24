@@ -180,6 +180,13 @@ renderables:
         properties:
           dbMapping:
             column: location
+            relation:
+              table: tx_events2_domain_model_location
+              labelColumn: location
+              expressions:
+                - column: uid
+                  expression: eq
+                  value: '{event:location}'
           elementDescription: 'Event Location'
           pidOfNewLocationPage: 0
         validators:
@@ -700,8 +707,10 @@ finishers:
             mapOnDatabaseColumn: title
           short-description:
             mapOnDatabaseColumn: teaser
+            convertPlainTextToHtml: true
           detail-description:
             mapOnDatabaseColumn: detail_information
+            convertPlainTextToHtml: true
           event-begin:
             mapOnDatabaseColumn: event_begin
             dateFormat: U

@@ -42,6 +42,9 @@ services:
   JWeiland\Events2\Hook\Form\PrefillCategoriesHook:
     public: true
 
+  JWeiland\Events2\Hook\Form\PrefillForEditUsageHook:
+    public: true
+
   # Called by makeInstance from EXT:solr
   JWeiland\Events2\Hook\Solr\ResultsCommandHook:
     public: true

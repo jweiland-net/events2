@@ -1,3 +1,4 @@
+{namespace e2=JWeiland\Events2\ViewHelpers}
 <p>Hallo,</p>
 
 <p>
@@ -20,11 +21,11 @@
     </tr>
     <tr>
         <td><f:translate key="tx_events2_domain_model_event.teaser"/></td>
-        <td>{event.teaser}</td>
+        <td>{event.teaser -> e2:convertHtmlToPlainText() -> f:format.nl2br()}</td>
     </tr>
     <tr>
         <td><f:translate key="tx_events2_domain_model_event.detail_information"/></td>
-        <td>{event.detailInformation}</td>
+        <td>{event.detailInformation -> e2:convertHtmlToPlainText() -> f:format.nl2br()}</td>
     </tr>
     <tr>
         <td><f:translate key="tx_events2_domain_model_event.event_begin"/></td>
