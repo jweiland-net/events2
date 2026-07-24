@@ -163,6 +163,21 @@ class AbstractController extends ActionController implements LoggerAwareInterfac
         return $response->withStatus(400);
     }
 
+    /**
+     * RestrictAccessEventListener already adds a specific, localized flash message (e.g.
+     * "missing organizer", "unauthorized organizer") before forwarding to this action. The
+     * default Extbase message ("An error occurred while trying to call ...->errorAction()")
+     * would just add confusing, redundant noise on top of that.
+     */
+    protected function getErrorFlashMessage(): bool|string
+    {
+        if ($this->getFlashMessageQueue()->getAllMessages() !== []) {
+            return false;
+        }
+
+        return parent::getErrorFlashMessage();
+    }
+
     protected function postProcessAndAssignFluidVariables(array $variables = []): void
     {
         /** @var PostProcessFluidVariablesEvent $event */
