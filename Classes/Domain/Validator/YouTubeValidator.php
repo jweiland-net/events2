@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Domain\Validator;
 
+use JWeiland\Events2\Utility\YouTubeUrlUtility;
 use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
 
 /**
@@ -21,7 +22,7 @@ class YouTubeValidator extends AbstractValidator
 {
     public function isValid(mixed $value): void
     {
-        if (!preg_match('~^(|http:|https:)//(|www.)youtu(\.be|be)(.*?)(v=|embed/|)([a-zA-Z0-9_-]+)$~i', (string) $value)) {
+        if (!YouTubeUrlUtility::isValid((string)$value)) {
             $this->addError(
                 'The YouTube URL is invalid. Please insert full URL like https://www.youtube.com/watch?v=qzqEUgQu67Q or https://youtu.be/qzqEUgQu67Q',
                 1660809641,

@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Domain\Validator;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Model\Link;
 use JWeiland\Events2\Domain\Model\Time;
+use JWeiland\Events2\Utility\YouTubeUrlUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
@@ -68,10 +69,7 @@ class EventValidator extends AbstractValidator
             && $link instanceof Link
             && ($uri = $link->getLink())
             && $uri !== ''
-            && !preg_match(
-                '~^(|http:|https:)//(|www.)youtube(.*?)(v=|embed/)([a-zA-Z0-9_-]+)~i',
-                $uri,
-            )
+            && !YouTubeUrlUtility::isValid($uri)
         ) {
             $this->addError(
                 $this->translateErrorMessage(
