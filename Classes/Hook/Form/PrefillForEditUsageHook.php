@@ -16,6 +16,7 @@ use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
+use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -28,6 +29,10 @@ use TYPO3\CMS\Form\Domain\Model\Renderable\RenderableInterface;
  */
 readonly class PrefillForEditUsageHook
 {
+    public function __construct(
+        private PageRepository $pageRepository,
+    ) {}
+
     /**
      * This method will be called by Form Framework.
      * It was checked by method_exists() before
@@ -62,6 +67,31 @@ readonly class PrefillForEditUsageHook
             && $properties['dbMapping']['column'] !== ''
         ) {
             $defaultValue = $eventRecord[$properties['dbMapping']['column']] ?? null;
+
+            // The column value (e.g. a foreign key UID) is the value to be submitted and must stay untouched.
+            // If a relation with labelColumn is configured additionally, resolve it purely for display purposes
+            // and expose it as a generic "resolvedLabel" property instead of overwriting the default value.
+            if (
+                isset(
+                    $properties['dbMapping']['relation']['table'],
+                    $properties['dbMapping']['relation']['labelColumn'],
+                    $properties['dbMapping']['relation']['expressions'],
+                )
+                && $properties['dbMapping']['relation']['table'] !== ''
+                && $properties['dbMapping']['relation']['labelColumn'] !== ''
+                && is_array($properties['dbMapping']['relation']['expressions'])
+            ) {
+                $formElement->setProperty(
+                    'resolvedLabel',
+                    $this->getLabel(
+                        $formElement,
+                        $properties['dbMapping']['relation']['table'],
+                        $properties['dbMapping']['relation']['labelColumn'],
+                        $eventRecord,
+                        $properties['dbMapping']['relation']['expressions'],
+                    ),
+                );
+            }
         } elseif (
             isset(
                 $properties['dbMapping']['relation']['table'],
@@ -138,6 +168,12 @@ readonly class PrefillForEditUsageHook
         $record = $queryBuilder
             ->executeQuery()
             ->fetchAssociative();
+
+        if (!is_array($record)) {
+            return '';
+        }
+
+        $record = $this->pageRepository->getLanguageOverlay($table, $record);
 
         if (!is_array($record)) {
             return '';

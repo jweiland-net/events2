@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 10.2.9
+==============
+
+*   [BUGFIX] Resolve location label in event edit form
+
 Version 10.2.8
 ==============
 
