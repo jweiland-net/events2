@@ -71,10 +71,15 @@ class ICalendarHelper
 
     protected function addICalProdId(array &$iCal): void
     {
+        $iCal[] = 'PRODID:' . $this->getNormalizedParams()->getSiteUrl();
+    }
+
+    protected function getNormalizedParams(): NormalizedParams
+    {
         /** @var NormalizedParams $normalizedParams */
         $normalizedParams = $this->getTypo3Request()->getAttribute('normalizedParams');
 
-        $iCal[] = 'PRODID:' . $normalizedParams->getSiteUrl();
+        return $normalizedParams;
     }
 
     protected function addICalFooter(array &$iCal): void

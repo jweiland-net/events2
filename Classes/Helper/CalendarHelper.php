@@ -80,9 +80,14 @@ readonly class CalendarHelper
 
     protected function getTypo3SiteUrl(): string
     {
+        return $this->getNormalizedParams()->getSiteUrl();
+    }
+
+    protected function getNormalizedParams(): NormalizedParams
+    {
         /** @var NormalizedParams $normalizedParams */
         $normalizedParams = $this->getTypo3Request()->getAttribute('normalizedParams');
 
-        return $normalizedParams->getSiteUrl();
+        return $normalizedParams;
     }
 }
