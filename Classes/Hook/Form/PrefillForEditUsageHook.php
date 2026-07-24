@@ -28,9 +28,11 @@ use TYPO3\CMS\Form\Domain\Model\Renderable\RenderableInterface;
  */
 readonly class PrefillForEditUsageHook
 {
-    public function __construct(private ResourceFactory $resourceFactory, private ConnectionPool $connectionPool)
-    {
-    }
+    public function __construct(
+        private ResourceFactory $resourceFactory,
+        private ConnectionPool $connectionPool
+    ) {}
+    
     /**
      * This method will be called by Form Framework.
      * It was checked by method_exists() before
@@ -289,7 +291,7 @@ readonly class PrefillForEditUsageHook
 
     protected function getQueryBuilderForTable(string $table): QueryBuilder
     {
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($table);
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable($table);
         $queryBuilder
             ->getRestrictions()
             ->removeAll()
@@ -300,10 +302,5 @@ readonly class PrefillForEditUsageHook
             ->from($table);
 
         return $queryBuilder;
-    }
-
-    protected function getConnectionPool(): ConnectionPool
-    {
-        return $this->connectionPool;
     }
 }

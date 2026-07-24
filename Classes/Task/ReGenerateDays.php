@@ -32,10 +32,16 @@ use TYPO3\CMS\Scheduler\Task\AbstractTask;
  */
 class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
 {
-    public function __construct(private readonly FlashMessageService $flashMessageService, private readonly CacheManager $cacheManager, private readonly ConnectionPool $connectionPool, private readonly PersistenceManager $persistenceManager, private readonly Registry $registry)
-    {
+    public function __construct(
+        private readonly FlashMessageService $flashMessageService,
+        private readonly CacheManager $cacheManager,
+        private readonly ConnectionPool $connectionPool,
+        private readonly PersistenceManager $persistenceManager,
+        private readonly Registry $registry
+    ) {
         parent::__construct();
     }
+
     public function execute(): bool
     {
         // Do not move these lines of code into constructor.

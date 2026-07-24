@@ -70,7 +70,7 @@ class Import extends AbstractTask
     public function execute(): bool
     {
         try {
-            $file = $this->getResourceFactory()->retrieveFileOrFolderObject($this->path);
+            $file = $this->resourceFactory->retrieveFileOrFolderObject($this->path);
             if ($file instanceof File) {
                 if ($file->isMissing()) {
                     $this->addMessage('The defined file seems to be missing. Please check, if file is still at its place', ContextualFeedbackSeverity::ERROR);
@@ -123,8 +123,7 @@ class Import extends AbstractTask
     public function addMessage(string $message, ContextualFeedbackSeverity $severity = ContextualFeedbackSeverity::OK): void
     {
         $flashMessage = GeneralUtility::makeInstance(FlashMessage::class, $message, '', $severity);
-        $flashMessageService = $this->flashMessageService;
-        $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
+        $defaultFlashMessageQueue = $this->flashMessageService->getMessageQueueByIdentifier();
         $defaultFlashMessageQueue->enqueue($flashMessage);
     }
 
@@ -145,11 +144,6 @@ class Import extends AbstractTask
     protected function getXmlImporter(): XmlImporter
     {
         return GeneralUtility::makeInstance(XmlImporter::class);
-    }
-
-    protected function getResourceFactory(): ResourceFactory
-    {
-        return $this->resourceFactory;
     }
 
     protected function getFalIndexer(ResourceStorage $resourceStorage): Indexer

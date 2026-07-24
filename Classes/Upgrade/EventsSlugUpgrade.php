@@ -81,7 +81,7 @@ class EventsSlugUpgrade implements UpgradeWizardInterface
             ->select('uid', 'pid', $this->titleColumn)
             ->executeQuery();
 
-        $connection = $this->getConnectionPool()->getConnectionForTable($this->tableName);
+        $connection = $this->connectionPool->getConnectionForTable($this->tableName);
         while ($recordToUpdate = $queryResult->fetchAssociative()) {
             if ((string)$recordToUpdate[$this->titleColumn] !== '') {
                 $connection->update(
@@ -101,7 +101,7 @@ class EventsSlugUpgrade implements UpgradeWizardInterface
 
     protected function getQueryBuilder(): QueryBuilder
     {
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($this->tableName);
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable($this->tableName);
         $queryBuilder->getRestrictions()->removeAll();
         $queryBuilder->getRestrictions()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
 
@@ -143,7 +143,7 @@ class EventsSlugUpgrade implements UpgradeWizardInterface
 
     protected function getUniqueSlugQueryBuilder(int $uid, string $slug): QueryBuilder
     {
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($this->tableName);
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable($this->tableName);
         $queryBuilder->getRestrictions()->removeAll();
         $queryBuilder->getRestrictions()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
 
@@ -170,10 +170,5 @@ class EventsSlugUpgrade implements UpgradeWizardInterface
         return [
             DatabaseUpdatedPrerequisite::class,
         ];
-    }
-
-    protected function getConnectionPool(): ConnectionPool
-    {
-        return $this->connectionPool;
     }
 }

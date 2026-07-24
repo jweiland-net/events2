@@ -43,10 +43,10 @@ readonly class DatabaseService
     public function truncateTable(string $tableName, bool $really = false): void
     {
         if ($really) {
-            $connection = $this->getConnectionPool()->getConnectionForTable($tableName);
+            $connection = $this->connectionPool->getConnectionForTable($tableName);
             $connection->truncate($tableName);
         } else {
-            $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($tableName);
+            $queryBuilder = $this->connectionPool->getQueryBuilderForTable($tableName);
             $queryBuilder->getRestrictions()->removeAll();
             $queryBuilder
                 ->delete($tableName)
@@ -61,7 +61,7 @@ readonly class DatabaseService
      */
     public function getQueryBuilderForAllEvents(): QueryBuilder
     {
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_event');
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('tx_events2_domain_model_event');
 
         // Updating the day records is needed for frontend
         $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
@@ -82,7 +82,7 @@ readonly class DatabaseService
         $constraint = [];
 
         // Create a basic query with QueryBuilder. Where-clause will be added dynamically
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_day');
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('tx_events2_domain_model_day');
         $queryBuilder = $queryBuilder
             ->select('event.uid', 'event.title', 'day.day')
             ->from('tx_events2_domain_model_day', 'day')
@@ -351,10 +351,5 @@ readonly class DatabaseService
                 ),
             ),
         );
-    }
-
-    protected function getConnectionPool(): ConnectionPool
-    {
-        return $this->connectionPool;
     }
 }

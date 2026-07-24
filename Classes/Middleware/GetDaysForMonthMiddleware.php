@@ -97,7 +97,7 @@ final readonly class GetDaysForMonthMiddleware implements MiddlewareInterface
 
     protected function addHolidays(array &$days, int $month): void
     {
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_holiday');
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('tx_events2_domain_model_holiday');
         $queryResult = $queryBuilder
             ->select('day')
             ->from('tx_events2_domain_model_holiday')
@@ -164,10 +164,5 @@ final readonly class GetDaysForMonthMiddleware implements MiddlewareInterface
             $storagePages,
             $categories,
         );
-    }
-
-    protected function getConnectionPool(): ConnectionPool
-    {
-        return $this->connectionPool;
     }
 }

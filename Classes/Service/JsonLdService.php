@@ -54,10 +54,9 @@ class JsonLdService
     {
         $this->collectData($day);
 
-        $pageRenderer = $this->pageRenderer;
         // as long as all JS methods will render a script-tag with the type "text/javascript", we have to
         // add our own script-Tag
-        $pageRenderer->addHeaderData(
+        $this->pageRenderer->addHeaderData(
             sprintf(
                 '<script type="application/ld+json">%s</script>',
                 json_encode($this->data, JSON_THROW_ON_ERROR),
@@ -345,9 +344,6 @@ class JsonLdService
 
     private function getNormalizedParams(): NormalizedParams
     {
-        /** @var NormalizedParams $normalizedParams */
-        $normalizedParams = $this->getTypo3Request()->getAttribute('normalizedParams');
-
-        return $normalizedParams;
+        return $this->getTypo3Request()->getAttribute('normalizedParams');
     }
 }

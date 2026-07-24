@@ -73,9 +73,9 @@ class XmlImporter
         protected readonly PathSegmentHelper $pathSegmentHelper,
         protected readonly DateTimeUtility $dateTimeUtility,
         protected readonly ExtConf $extConf,
-        private readonly ResourceFactory $resourceFactory,
-        private readonly FlashMessageService $flashMessageService,
-        private readonly ConnectionPool $connectionPool,
+        protected readonly ResourceFactory $resourceFactory,
+        protected readonly FlashMessageService $flashMessageService,
+        protected readonly ConnectionPool $connectionPool,
     ) {
         $this->today = new \DateTimeImmutable('now');
     }
@@ -490,7 +490,6 @@ class XmlImporter
             return;
         }
 
-        $resourceFactory = $this->resourceFactory;
         $images = new ObjectStorage();
         /** @var CharsetConverter $csConverter */
         $csConverter = GeneralUtility::makeInstance(CharsetConverter::class);
@@ -514,11 +513,11 @@ class XmlImporter
             $targetDirectoryPath = Environment::getPublicPath() . '/' . $rootFolder->getPublicUrl() . $relativeTargetDirectoryPath;
             GeneralUtility::mkdir_deep($targetDirectoryPath);
 
-            $targetFolder = $resourceFactory->getFolderObjectFromCombinedIdentifier(
+            $targetFolder = $this->resourceFactory->getFolderObjectFromCombinedIdentifier(
                 $rootFolder->getCombinedIdentifier() . $relativeTargetDirectoryPath,
             );
             if ($targetFolder->hasFile($filename)) {
-                $file = $resourceFactory->retrieveFileOrFolderObject(
+                $file = $this->resourceFactory->retrieveFileOrFolderObject(
                     $targetFolder->getCombinedIdentifier() . $filename,
                 );
             } else {
@@ -537,7 +536,7 @@ class XmlImporter
             // Create new FileReference
             $extbaseFileReference = GeneralUtility::makeInstance(FileReference::class);
             $extbaseFileReference->setPid($this->storagePid);
-            $extbaseFileReference->setOriginalResource($resourceFactory->createFileReferenceObject(
+            $extbaseFileReference->setOriginalResource($this->resourceFactory->createFileReferenceObject(
                 [
                     'uid_local' => $file->getUid(),
                     'uid_foreign' => uniqid('NEW_', true),
@@ -698,8 +697,7 @@ class XmlImporter
             return false;
         }
 
-        if (array_key_exists('organizers', $event)
-        && is_array($event['organizers'])) {
+        if (array_key_exists('organizers', $event) && is_array($event['organizers'])) {
             return array_all($event['organizers'], fn($organizer): bool => !empty($organizer));
         }
 
@@ -712,7 +710,7 @@ class XmlImporter
             return [];
         }
 
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_organizer');
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('tx_events2_domain_model_organizer');
         $organizer = $queryBuilder
             ->select('uid')
             ->from('tx_events2_domain_model_organizer')
@@ -747,7 +745,7 @@ class XmlImporter
             return [];
         }
 
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_location');
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('tx_events2_domain_model_location');
 
         // I don't have the TypoScript or Plugin storage PID. That's why I don't use the repository directly
         $location = $queryBuilder
@@ -771,7 +769,7 @@ class XmlImporter
             return [];
         }
 
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('sys_category');
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('sys_category');
         $category = $queryBuilder
             ->select('uid')
             ->from('sys_category')
@@ -812,8 +810,7 @@ class XmlImporter
 
         // show messages in TYPO3 BE when started manually
         $flashMessage = GeneralUtility::makeInstance(FlashMessage::class, $message, '', $severity);
-        $flashMessageService = $this->flashMessageService;
-        $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
+        $defaultFlashMessageQueue = $this->flashMessageService->getMessageQueueByIdentifier();
         $defaultFlashMessageQueue->enqueue($flashMessage);
     }
 
@@ -848,10 +845,5 @@ class XmlImporter
         if (method_exists($event, $setter)) {
             $event->{$setter}($value);
         }
-    }
-
-    protected function getConnectionPool(): ConnectionPool
-    {
-        return $this->connectionPool;
     }
 }

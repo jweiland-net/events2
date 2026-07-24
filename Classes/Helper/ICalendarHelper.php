@@ -255,7 +255,7 @@ class ICalendarHelper
         // some chars have to be escaped. See link above
         $content = preg_replace('/([\\\\,;])/', '\\\$1', $content);
         // sanitize all enter chars (vertical white-spaces) to \n
-        $content = preg_replace('/\v+/', '\\n', (string) $content);
+        $content = preg_replace('/\v+/', '\\n', (string)$content);
 
         // Wrap too long content into new line after a limit of max 75 chars
         return $this->wrapTooLongICalContent($content);

@@ -267,7 +267,7 @@ readonly class EventsExporter
                 $publicLink = sprintf(
                     '%s%s',
                     rtrim($baseUrl, '/') . '/',
-                    ltrim((string) $fileReference->getOriginalResource()->getOriginalFile()->getPublicUrl(), '/'),
+                    ltrim((string)$fileReference->getOriginalResource()->getOriginalFile()->getPublicUrl(), '/'),
                 );
                 $images[] = [
                     'url' => $publicLink,
