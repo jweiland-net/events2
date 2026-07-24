@@ -296,11 +296,11 @@ class SaveEventFinisher extends AbstractFinisher
 
         $paragraphs = array_filter(
             array_map('trim', preg_split('/\n{2,}/', trim($plainText)) ?: []),
-            static fn (string $paragraph): bool => $paragraph !== '',
+            static fn(string $paragraph): bool => $paragraph !== '',
         );
 
         return implode('', array_map(
-            static fn (string $paragraph): string => '<p>' . nl2br(htmlspecialchars($paragraph, ENT_QUOTES | ENT_HTML5)) . '</p>',
+            static fn(string $paragraph): string => '<p>' . nl2br(htmlspecialchars($paragraph, ENT_QUOTES | ENT_HTML5)) . '</p>',
             $paragraphs,
         ));
     }
