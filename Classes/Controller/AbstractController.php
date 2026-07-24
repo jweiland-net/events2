@@ -22,6 +22,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3Fluid\Fluid\View\ViewInterface;
@@ -36,8 +37,11 @@ class AbstractController extends ActionController implements LoggerAwareInterfac
     use InjectTypoScriptServiceTrait;
     use LoggerAwareTrait;
 
+    #[\Override]
     protected function initializeAction(): void
     {
+        $this->applyTypoScriptFallbackSettings();
+
         // if this value was not set, then it will be filled with 0
         // but that is not good, because UriBuilder accepts 0 as pid, so it's better to set it to NULL
         if (empty($this->settings['pidOfListPage'])) {
@@ -59,6 +63,25 @@ class AbstractController extends ActionController implements LoggerAwareInterfac
         if (empty($this->settings['pidOfSearchResults'])) {
             $this->settings['pidOfSearchResults'] = null;
         }
+    }
+
+    private function applyTypoScriptFallbackSettings(): void
+    {
+        $typoScriptSettings = $this->configurationManager->getConfiguration(
+            ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK,
+            'events2',
+            'events2_invalid', // invalid plugin name, to get fresh unmerged settings
+        );
+        $rawTypoScriptSettings = $typoScriptSettings['settings'] ?? null;
+
+        if (!is_array($rawTypoScriptSettings) || $rawTypoScriptSettings === []) {
+            throw new \Exception('You have forgotten to add TS-Template of events2', 1580294227);
+        }
+
+        $this->getTypoScriptService()->override(
+            $this->settings,
+            $rawTypoScriptSettings,
+        );
     }
 
     protected function initializeView(ViewInterface $view): void
