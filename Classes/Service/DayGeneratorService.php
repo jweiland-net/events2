@@ -31,11 +31,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class DayGeneratorService
 {
-    private const string EVENT_TABLE = 'tx_events2_domain_model_event';
+    private const EVENT_TABLE = 'tx_events2_domain_model_event';
 
-    private const string EXCEPTION_TABLE = 'tx_events2_domain_model_exception';
+    private const EXCEPTION_TABLE = 'tx_events2_domain_model_exception';
 
-    private const array REQUIRED_EVENT_COLUMN = [
+    private const REQUIRED_EVENT_COLUMN = [
         'event_type',
         'event_begin',
         'event_end',

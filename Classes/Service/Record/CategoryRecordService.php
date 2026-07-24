@@ -23,7 +23,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 readonly class CategoryRecordService
 {
-    private const string TABLE = 'sys_category';
+    private const TABLE = 'sys_category';
     public function __construct(private ConnectionPool $connectionPool)
     {
     }

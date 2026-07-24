@@ -19,7 +19,7 @@ class ExceptionRecordService
 {
     use RelationHandlerTrait;
 
-    private const string TABLE = 'tx_events2_domain_model_exception';
+    private const TABLE = 'tx_events2_domain_model_exception';
 
     public function __construct(
         private readonly TcaSchemaFactory $tcaSchemaFactory,

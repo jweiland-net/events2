@@ -23,9 +23,9 @@ use TYPO3\CMS\Core\SingletonInterface;
 #[Autoconfigure(constructor: 'create')]
 readonly class ExtConf implements SingletonInterface
 {
-    private const string EXT_KEY = 'events2';
+    private const EXT_KEY = 'events2';
 
-    private const array DEFAULT_SETTINGS = [
+    private const DEFAULT_SETTINGS = [
         // general
         'poiCollectionPid' => 0,
         'rootUid' => 0,

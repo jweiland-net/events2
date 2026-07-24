@@ -27,8 +27,8 @@ use TYPO3\CMS\Core\Exception\SiteNotFoundException;
  */
 readonly class SlugPostModifierHook
 {
-    private const string TABLE = 'tx_events2_domain_model_event';
-    private const string FIELD = 'path_segment';
+    private const TABLE = 'tx_events2_domain_model_event';
+    private const FIELD = 'path_segment';
 
     public function __construct(
         protected EventDispatcherInterface $eventDispatcher,

@@ -23,7 +23,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 readonly class LocationService
 {
-    private const string TABLE = 'tx_events2_domain_model_location';
+    private const TABLE = 'tx_events2_domain_model_location';
     public function __construct(private ConnectionPool $connectionPool)
     {
     }

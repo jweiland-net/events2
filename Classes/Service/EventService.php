@@ -30,7 +30,7 @@ use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
  */
 readonly class EventService
 {
-    private const string TABLE = 'tx_events2_domain_model_event';
+    private const TABLE = 'tx_events2_domain_model_event';
 
     public function __construct(
         protected EventRepository $eventRepository,

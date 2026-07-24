@@ -40,7 +40,7 @@ final class RestrictAccessEventListener
 
     private Request $request;
 
-    protected const array ALLOWED_CONTROLLER_ACTIONS = [
+    protected const ALLOWED_CONTROLLER_ACTIONS = [
         'Management' => [
             'new',
             'create',

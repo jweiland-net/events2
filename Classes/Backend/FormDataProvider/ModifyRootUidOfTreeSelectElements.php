@@ -19,7 +19,7 @@ use TYPO3\CMS\Backend\Form\FormDataProviderInterface;
  */
 readonly class ModifyRootUidOfTreeSelectElements implements FormDataProviderInterface
 {
-    private const array CATEGORY_FIELDS = [
+    private const CATEGORY_FIELDS = [
         'settings.categories',
         'settings.mainCategories',
     ];

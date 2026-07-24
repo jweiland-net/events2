@@ -26,7 +26,7 @@ class XthBitMask extends BitSet
     public const FOURTH = 8;
     public const FIFTH = 16;
 
-    private const array XTH = [
+    private const XTH = [
         'first' => self::FIRST,
         'second' => self::SECOND,
         'third' => self::THIRD,

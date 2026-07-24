@@ -26,7 +26,7 @@ final readonly class AssignMediaTypeConverterEventListener
 {
     use IsValidEventListenerRequestTrait;
 
-    protected const array ALLOWED_CONTROLLER_ACTIONS = [
+    protected const ALLOWED_CONTROLLER_ACTIONS = [
         'Management' => [
             'create',
             'update',

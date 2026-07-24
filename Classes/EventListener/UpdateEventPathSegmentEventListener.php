@@ -32,7 +32,7 @@ final readonly class UpdateEventPathSegmentEventListener
      * It should never be possible for a FE user to generate slug while update request. This would also change the
      * link to the detail page. If it was needed to change the link, please update slug in TYPO3 backend.
      */
-    protected const array ALLOWED_CONTROLLER_ACTIONS = [
+    protected const ALLOWED_CONTROLLER_ACTIONS = [
         'Management' => [
             'create',
         ],

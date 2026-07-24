@@ -20,7 +20,7 @@ use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
  */
 readonly class InitializeNewEventRecord implements FormDataProviderInterface
 {
-    private const string TABLE = 'tx_events2_domain_model_event';
+    private const TABLE = 'tx_events2_domain_model_event';
 
     public function __construct(
         private Context $context,

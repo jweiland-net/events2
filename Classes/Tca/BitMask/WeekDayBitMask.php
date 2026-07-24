@@ -28,7 +28,7 @@ class WeekDayBitMask extends BitSet
     public const SATURDAY = 32;
     public const SUNDAY = 64;
 
-    private const array WEEKDAYS = [
+    private const WEEKDAYS = [
         'monday' => self::MONDAY,
         'tuesday' => self::TUESDAY,
         'wednesday' => self::WEDNESDAY,

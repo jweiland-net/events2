@@ -29,7 +29,7 @@ readonly class DayRecordService
 {
     use RelationHandlerTrait;
 
-    private const string TABLE = 'tx_events2_domain_model_day';
+    private const TABLE = 'tx_events2_domain_model_day';
 
     public function __construct(
         private ConnectionPool $connectionPool,

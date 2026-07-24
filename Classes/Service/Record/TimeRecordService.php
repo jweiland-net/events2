@@ -15,7 +15,7 @@ class TimeRecordService
 {
     use RecordServiceTrait;
 
-    private const string TABLE = 'tx_events2_domain_model_time';
+    private const TABLE = 'tx_events2_domain_model_time';
 
     /**
      * If you activate $includeExceptionTimes be sure to have exceptionRecords in $eventRecord['exceptions']

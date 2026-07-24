@@ -19,10 +19,10 @@ use JWeiland\Events2\Utility\DateTimeUtility;
 
 readonly class TimeService
 {
-    private const string TYPE_EXCEPTION_TIME = 'exception_time';
-    private const string TYPE_DIFFERENT_TIMES = 'different_times';
-    private const string TYPE_EVENT_TIME = 'event_time';
-    private const string TYPE_MULTIPLE_TIMES = 'multiple_times';
+    private const TYPE_EXCEPTION_TIME = 'exception_time';
+    private const TYPE_DIFFERENT_TIMES = 'different_times';
+    private const TYPE_EVENT_TIME = 'event_time';
+    private const TYPE_MULTIPLE_TIMES = 'multiple_times';
 
     public function __construct(
         private TimeRecordService $timeRecordService,

@@ -24,7 +24,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class EventRecordService
 {
-    private const string TABLE = 'tx_events2_domain_model_event';
+    private const TABLE = 'tx_events2_domain_model_event';
 
     public function __construct(
         private readonly PageRepository $pageRepository,

@@ -18,7 +18,7 @@ class LocationRecordService
 {
     use RecordServiceTrait;
 
-    private const string TABLE = 'tx_events2_domain_model_location';
+    private const TABLE = 'tx_events2_domain_model_location';
 
     public function __construct(
         protected readonly EventDispatcherInterface $eventDispatcher,

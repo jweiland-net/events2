@@ -28,8 +28,8 @@ class GeneratePathSegmentEvent
      * @return array{
      *     slug: string,
      *     workspaceId: int,
-     *     configuration: array<mixed>,
-     *     record: array<mixed>,
+     *     configuration: array,
+     *     record: array,
      *     pid: int,
      *     prefix: string,
      *     tableName: string,

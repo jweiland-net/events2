@@ -58,9 +58,7 @@ class DayRepository extends Repository
     protected EventDispatcherInterface $eventDispatcher;
 
     protected array $settings = [];
-    /**
-     * Constructs a new Repository
-     */
+
     public function __construct(private readonly ConnectionPool $connectionPool)
     {
         parent::__construct();
@@ -451,7 +449,7 @@ class DayRepository extends Repository
     ): QueryBuilder {
         $extbaseQuery = $this->createQuery();
 
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($table);
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable($table);
         $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
 
         $this->eventDispatcher->dispatch(
@@ -506,10 +504,5 @@ class DayRepository extends Repository
         );
 
         return $subQueryBuilder;
-    }
-
-    protected function getConnectionPool(): ConnectionPool
-    {
-        return $this->connectionPool;
     }
 }
