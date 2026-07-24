@@ -498,8 +498,7 @@ class XmlImporter
             // we try to keep the original structure from origin server to prevent duplicate filenames
             $filePath = parse_url($image['url'], PHP_URL_PATH);
             $fileParts = GeneralUtility::split_fileref($filePath);
-            $filename = $csConverter->specCharsToASCII(
-                'utf-8',
+            $filename = $csConverter->utf8_char_mapping(
                 rawurldecode($fileParts['file']),
             );
 
