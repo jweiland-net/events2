@@ -11,6 +11,8 @@ Version 10.2.9
 ==============
 
 *   [BUGFIX] Resolve location label in event edit form
+*   [BUGFIX] Render teaser/detailInformation as plain text
+*   [BUGFIX] Suppress redundant generic error flash message
 
 Version 10.2.8
 ==============
