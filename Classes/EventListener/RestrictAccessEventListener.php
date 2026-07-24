@@ -85,7 +85,7 @@ final class RestrictAccessEventListener
     private function isAccessAllowed(PreProcessControllerActionEvent $controllerActionEvent): bool
     {
         try {
-            if ($this->getContext()->getPropertyFromAspect('backend.user', 'isAdmin', false)) {
+            if ($this->context->getPropertyFromAspect('backend.user', 'isAdmin', false)) {
                 return true;
             }
         } catch (AspectNotFoundException) {
@@ -150,10 +150,5 @@ final class RestrictAccessEventListener
         }
 
         return $this->flashMessageService->getMessageQueueByIdentifier($identifier);
-    }
-
-    private function getContext(): Context
-    {
-        return $this->context;
     }
 }
