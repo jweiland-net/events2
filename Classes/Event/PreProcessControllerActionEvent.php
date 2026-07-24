@@ -12,20 +12,22 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Event;
 
 use TYPO3\CMS\Extbase\Mvc\Controller\Arguments;
-use TYPO3\CMS\Extbase\Mvc\Request;
+use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 
 class PreProcessControllerActionEvent implements ControllerActionEventInterface
 {
-    public function __construct(protected Request $request, protected Arguments $arguments, protected array $settings)
-    {
-    }
+    public function __construct(
+        protected RequestInterface $request,
+        protected Arguments $arguments,
+        protected array $settings
+    ) {}
 
-    public function getRequest(): Request
+    public function getRequest(): RequestInterface
     {
         return $this->request;
     }
 
-    public function setRequest(Request $request): void
+    public function setRequest(RequestInterface $request): void
     {
         $this->request = $request;
     }

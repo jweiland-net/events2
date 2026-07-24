@@ -25,7 +25,7 @@ use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\Arguments;
-use TYPO3\CMS\Extbase\Mvc\Request;
+use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 use TYPO3\CMS\Extbase\Service\ExtensionService;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
@@ -38,7 +38,7 @@ final class RestrictAccessEventListener
 {
     use IsValidEventListenerRequestTrait;
 
-    private Request $request;
+    private RequestInterface $request;
 
     protected const ALLOWED_CONTROLLER_ACTIONS = [
         'Management' => [
