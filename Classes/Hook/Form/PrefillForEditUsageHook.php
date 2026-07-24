@@ -144,6 +144,8 @@ readonly class PrefillForEditUsageHook
             } elseif ($properties['dbMapping']['dataType'] === 'file') {
                 $pos = (int)($properties['dbMapping']['position'] ?? 1);
                 $defaultValue = $this->getFileReference($eventRecord['uid'], $pos);
+            } elseif ($properties['dbMapping']['dataType'] === 'plainText') {
+                $defaultValue = $this->convertHtmlToPlainText((string)$defaultValue);
             }
         }
 
@@ -297,6 +299,28 @@ readonly class PrefillForEditUsageHook
         }
 
         return null;
+    }
+
+    /**
+     * There is no RTE for this element in frontend, so the value typed into the plain Textarea must
+     * match what is stored: either backend-RTE HTML, or SaveEventFinisher::convertPlainTextToHtml()'s
+     * own <p>/<br> markup. Turn both back into real line breaks and strip every other tag along with
+     * its markup, so an existing record with backend-added formatting can still be re-edited as plain
+     * text instead of showing raw HTML source in the textarea.
+     */
+    protected function convertHtmlToPlainText(string $value): string
+    {
+        if (trim($value) === '') {
+            return '';
+        }
+
+        $value = str_replace(["\r\n", "\r"], "\n", $value);
+        $value = (string)preg_replace('/<\/p\s*>/i', "\n\n", $value);
+        $value = (string)preg_replace('/<br\s*\/?>/i', "\n", $value);
+        $value = strip_tags($value);
+        $value = (string)preg_replace('/\n[ \t]*\n+/', "\n\n", $value);
+
+        return trim($value);
     }
 
     protected function getEventRecord(int $eventUid): array
