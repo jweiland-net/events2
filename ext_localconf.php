@@ -47,7 +47,6 @@ ExtensionUtility::configurePlugin(
         ICalController::class => 'download',
     ],
     [],
-    ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
 );
 
 ExtensionUtility::configurePlugin(
@@ -60,7 +59,6 @@ ExtensionUtility::configurePlugin(
         ICalController::class => 'download',
     ],
     [],
-    ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
 );
 
 ExtensionUtility::configurePlugin(
@@ -73,7 +71,6 @@ ExtensionUtility::configurePlugin(
     [
         ManagementController::class => 'listMyEvents, create, edit, update, perform, delete, activate',
     ],
-    ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
 );
 
 ExtensionUtility::configurePlugin(
@@ -83,7 +80,6 @@ ExtensionUtility::configurePlugin(
         CalendarController::class => 'show',
     ],
     [],
-    ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
 );
 
 ExtensionUtility::configurePlugin(
@@ -96,7 +92,6 @@ ExtensionUtility::configurePlugin(
     [
         SearchController::class => 'show',
     ],
-    ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
 );
 
 ExtensionUtility::configurePlugin(
@@ -109,7 +104,6 @@ ExtensionUtility::configurePlugin(
     [
         SearchController::class => 'listSearchResults',
     ],
-    ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
 );
 
 // register an eval function to check for time

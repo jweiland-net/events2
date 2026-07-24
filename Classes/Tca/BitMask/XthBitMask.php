@@ -36,6 +36,6 @@ class XthBitMask extends BitSet
 
     public function getSelectedWeeks(): array
     {
-        return array_filter(self::XTH, fn(int $value): bool => $this->get($value));
+        return array_filter(self::XTH, $this->get(...));
     }
 }

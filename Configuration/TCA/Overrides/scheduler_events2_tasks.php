@@ -6,7 +6,7 @@ use JWeiland\Events2\Task\Import;
 use JWeiland\Events2\Task\ReGenerateDays;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
-defined('TYPO3') or die();
+defined('TYPO3') || die();
 
 if (!isset($GLOBALS['TCA']['tx_scheduler_task'])) {
     return;

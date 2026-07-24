@@ -33,15 +33,15 @@ class Event extends AbstractEntity
 
     protected bool $topOfList = false;
 
-    #[Extbase\Validate(['validator' => 'NotEmpty'])]
+    #[Extbase\Validate(validator: 'NotEmpty')]
     protected string $title = '';
 
     protected string $pathSegment = '';
 
-    #[Extbase\Validate(['validator' => 'NotEmpty'])]
+    #[Extbase\Validate(validator: 'NotEmpty')]
     protected ?\DateTimeImmutable $eventBegin = null;
 
-    #[Extbase\ORM\Cascade(['value' => 'remove'])]
+    #[Extbase\ORM\Cascade('remove')]
     protected ?Time $eventTime = null;
 
     protected ?\DateTimeImmutable $eventEnd = null;
@@ -51,7 +51,7 @@ class Event extends AbstractEntity
     /**
      * @var ObjectStorage<Time>
      */
-    #[Extbase\ORM\Cascade(['value' => 'remove'])]
+    #[Extbase\ORM\Cascade('remove')]
     #[Extbase\ORM\Lazy]
     protected ObjectStorage $multipleTimes;
 
@@ -62,7 +62,7 @@ class Event extends AbstractEntity
     /**
      * @var ObjectStorage<Time>
      */
-    #[Extbase\ORM\Cascade(['value' => 'remove'])]
+    #[Extbase\ORM\Cascade('remove')]
     #[Extbase\ORM\Lazy]
     protected ObjectStorage $differentTimes;
 
@@ -75,7 +75,7 @@ class Event extends AbstractEntity
     /**
      * @var ObjectStorage<Exception>
      */
-    #[Extbase\ORM\Cascade(['value' => 'remove'])]
+    #[Extbase\ORM\Cascade('remove')]
     #[Extbase\ORM\Lazy]
     protected ObjectStorage $exceptions;
 
@@ -87,20 +87,20 @@ class Event extends AbstractEntity
 
     protected bool $freeEntry = false;
 
-    #[Extbase\ORM\Cascade(['value' => 'remove'])]
+    #[Extbase\ORM\Cascade('remove')]
     protected ?Link $ticketLink = null;
 
     /**
      * @var ObjectStorage<Category>
      */
-    #[Extbase\Validate(['value' => CategoryMandatoryValidator::class])]
+    #[Extbase\Validate(validator: CategoryMandatoryValidator::class)]
     #[Extbase\ORM\Lazy]
     protected ObjectStorage $categories;
 
     /**
      * @var ObjectStorage<Day>
      */
-    #[Extbase\ORM\Cascade(['value' => 'remove'])]
+    #[Extbase\ORM\Cascade('remove')]
     #[Extbase\ORM\Lazy]
     protected ObjectStorage $days;
 
@@ -115,17 +115,17 @@ class Event extends AbstractEntity
     /**
      * @var ObjectStorage<FileReference>
      */
-    #[Extbase\ORM\Cascade(['value' => 'remove'])]
+    #[Extbase\ORM\Cascade('remove')]
     #[Extbase\ORM\Lazy]
     protected ObjectStorage $images;
 
-    #[Extbase\ORM\Cascade(['value' => 'remove'])]
+    #[Extbase\ORM\Cascade('remove')]
     protected ?Link $videoLink = null;
 
     /**
      * @var ObjectStorage<Link>
      */
-    #[Extbase\ORM\Cascade(['value' => 'remove'])]
+    #[Extbase\ORM\Cascade('remove')]
     #[Extbase\ORM\Lazy]
     protected ObjectStorage $downloadLinks;
 
@@ -236,8 +236,8 @@ class Event extends AbstractEntity
         $eventBegin = $dateTimeUtility->standardizeDateTimeObject($this->getEventBegin());
         $eventEnd = $dateTimeUtility->standardizeDateTimeObject($this->getEventEnd());
         if (
-            $eventBegin instanceof \DateTimeImmutable
-            && $eventEnd instanceof \DateTimeImmutable
+            $eventBegin !== null
+            && $eventEnd !== null
             && $eventEnd != $eventBegin
         ) {
             $diff = $eventBegin->diff($eventEnd);

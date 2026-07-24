@@ -18,9 +18,7 @@ use JWeiland\Events2\Domain\Model\Day;
  */
 class PostProcessICalRowsForICalDownloadEvent
 {
-    public function __construct(protected array $event, protected Day $day)
-    {
-    }
+    public function __construct(protected array $event, protected Day $day) {}
 
     public function getEvent(): array
     {

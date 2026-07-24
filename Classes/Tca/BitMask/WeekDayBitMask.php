@@ -40,6 +40,6 @@ class WeekDayBitMask extends BitSet
 
     public function getSelectedWeekdays(): array
     {
-        return array_filter(self::WEEKDAYS, fn(int $value): bool => $this->get($value));
+        return array_filter(self::WEEKDAYS, $this->get(...));
     }
 }

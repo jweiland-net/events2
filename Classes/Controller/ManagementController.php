@@ -41,9 +41,7 @@ class ManagementController extends AbstractController
     use InjectMailMessageTrait;
     use InjectPersistenceManagerTrait;
     use InjectUserRepositoryTrait;
-    public function __construct(private readonly MailerInterface $mailer)
-    {
-    }
+    public function __construct(private readonly MailerInterface $mailer) {}
 
     public function initializeListMyEventsAction(): void
     {
@@ -94,26 +92,23 @@ class ManagementController extends AbstractController
         $this->preProcessControllerAction();
     }
 
-    #[Extbase\Validate(['param' => 'event', 'validator' => EventValidator::class])]
-    public function createAction(Event $event): ResponseInterface
+    public function createAction(
+        #[Extbase\Validate(validator: EventValidator::class)]
+        Event $event
+    ): ResponseInterface
     {
         $event->setHidden(true);
         $event->setEventType($event->getEventEnd() instanceof \DateTimeImmutable ? 'duration' : 'single');
         $this->eventRepository->add($event);
         $this->postProcessControllerAction($event);
-
         // persistAll must be called before createDayRelations as it creates its own queries based on the event UID
         $this->persistenceManager->persistAll();
         $this->dayRelationService->createDayRelations($event->getUid());
-
         $this->postProcessAndAssignFluidVariables([
             'event' => $event,
         ]);
-
         $this->sendMail('create');
-
         $this->addFlashMessage(LocalizationUtility::translate('eventCreated', 'events2'));
-
         return $this->redirect('list', 'Day');
     }
 
@@ -122,8 +117,10 @@ class ManagementController extends AbstractController
         $this->preProcessControllerAction();
     }
 
-    #[Extbase\IgnoreValidation(['value' => 'event'])]
-    public function editAction(Event $event): ResponseInterface
+    public function editAction(
+        #[Extbase\IgnoreValidation]
+        Event $event
+    ): ResponseInterface
     {
         if (isset($this->settings['selectableCategoriesForNewEvents'])) {
             trigger_error(
@@ -134,19 +131,15 @@ class ManagementController extends AbstractController
         } else {
             $selectableCategories = $this->settings['new']['selectableCategoriesForNewEvents'];
         }
-
         $categories = $this->categoryRepository->getCategories($selectableCategories);
-
         if ($categories->count() === 0) {
             $this->addFlashMessage('Dear Admin: You have forgotten to define some allowed categories in plugin configuration');
         }
-
         $this->postProcessAndAssignFluidVariables([
             'event' => $event,
             'locations' => $this->locationRepository->findAll(),
             'selectableCategories' => $categories,
         ]);
-
         return $this->htmlResponse();
     }
 
@@ -155,29 +148,26 @@ class ManagementController extends AbstractController
         $this->preProcessControllerAction();
     }
 
-    #[Extbase\Validate(['param' => 'event', 'validator' => EventValidator::class])]
-    public function updateAction(Event $event): ResponseInterface
+    public function updateAction(
+        #[Extbase\Validate(validator: EventValidator::class)]
+        Event $event
+    ): ResponseInterface
     {
         $isHidden = $event->getHidden();
         $event->setHidden(true);
         $this->postProcessControllerAction($event);
         $this->eventRepository->update($event);
-
         // persistAll must be called before createDayRelations as it creates its own queries based on the event UID
         $this->persistenceManager->persistAll();
         $this->dayRelationService->createDayRelations($event->getUid());
-
         $this->postProcessAndAssignFluidVariables([
             'event' => $event,
         ]);
-
         // If an editor edits this hidden record, mail should not be sent
         if (!$isHidden) {
             $this->sendMail('update');
         }
-
         $this->addFlashMessage(LocalizationUtility::translate('eventUpdated', 'events2'));
-
         return $this->redirect('listMyEvents', 'Management');
     }
 
@@ -260,7 +250,7 @@ class ManagementController extends AbstractController
         try {
             $this->mailer->send($this->mailMessage);
             return true;
-        } catch (\Throwable $exception) {
+        } catch (\Throwable) {
             return false;
         }
     }

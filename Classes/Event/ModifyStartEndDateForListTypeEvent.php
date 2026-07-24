@@ -16,9 +16,12 @@ namespace JWeiland\Events2\Event;
  */
 class ModifyStartEndDateForListTypeEvent
 {
-    public function __construct(protected string $listType, protected \DateTimeImmutable $startDateTime, protected ?\DateTimeImmutable $endDateTime = null, protected array $settings = [])
-    {
-    }
+    public function __construct(
+        protected string $listType,
+        protected \DateTimeImmutable $startDateTime,
+        protected ?\DateTimeImmutable $endDateTime = null,
+        protected array $settings = []
+    ) {}
 
     public function getListType(): string
     {

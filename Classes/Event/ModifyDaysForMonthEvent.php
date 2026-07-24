@@ -16,9 +16,7 @@ namespace JWeiland\Events2\Event;
  */
 class ModifyDaysForMonthEvent
 {
-    public function __construct(protected array $days)
-    {
-    }
+    public function __construct(protected array $days) {}
 
     /**
      * @return array[]

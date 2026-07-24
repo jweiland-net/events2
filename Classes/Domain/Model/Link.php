@@ -22,7 +22,7 @@ class Link extends AbstractEntity
 {
     use Typo3PropertiesTrait;
 
-    #[Extbase\Validate(['validator' => 'NotEmpty'])]
+    #[Extbase\Validate(validator: 'NotEmpty')]
     protected string $link = '';
 
     protected string $title = 'Video';

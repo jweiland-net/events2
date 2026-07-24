@@ -38,9 +38,7 @@ class PostCheckFileReferenceEvent
          * It contains one file out of $_FILES
          */
         protected array $uploadedFile
-    )
-    {
-    }
+    ) {}
 
     public function getSource(): array
     {

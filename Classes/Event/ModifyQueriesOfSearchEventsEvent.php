@@ -19,9 +19,12 @@ use TYPO3\CMS\Core\Database\Query\QueryBuilder;
  */
 class ModifyQueriesOfSearchEventsEvent
 {
-    public function __construct(protected readonly QueryBuilder $queryBuilder, protected readonly QueryBuilder $subQueryBuilder, protected Search $search, protected array $settings)
-    {
-    }
+    public function __construct(
+        protected readonly QueryBuilder $queryBuilder,
+        protected readonly QueryBuilder $subQueryBuilder,
+        protected Search $search,
+        protected array $settings
+    ) {}
 
     public function getQueryBuilder(): QueryBuilder
     {

@@ -82,7 +82,7 @@ class Import extends AbstractTask
                 $this->addMessage('The defined file is not a valid file. Maybe you have defined a folder. Please re-check file path', ContextualFeedbackSeverity::ERROR);
                 return false;
             }
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $this->addMessage('Currently no file for import found.', ContextualFeedbackSeverity::INFO);
             return true;
         }
