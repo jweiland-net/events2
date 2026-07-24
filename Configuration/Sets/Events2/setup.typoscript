@@ -1,26 +1,26 @@
 page.includeCSS {
-    # Only needed for management plugin. If you don't need that plugin you can remove this line.
-    eventsAutoComplete = EXT:events2/Resources/Public/Css/AutoComplete.min.css
-    # Only needed for management plugin. If you don't need that plugin you can remove this line.
-    eventsTooltip = EXT:events2/Resources/Public/Css/Tooltip.css
+  # Only needed for management plugin. If you don't need that plugin you can remove this line.
+  eventsAutoComplete = EXT:events2/Resources/Public/Css/AutoComplete.min.css
+  # Only needed for management plugin. If you don't need that plugin you can remove this line.
+  eventsTooltip = EXT:events2/Resources/Public/Css/Tooltip.css
 }
 
 page.includeJSFooter {
-    # AutoComplete is needed for search and management plugin. If you don't need these plugins you can remove this line.
-    events2AutoComplete = EXT:events2/Resources/Public/JavaScript/AutoComplete.min.js
-    # LitePicker is needed for search and calendar plugin. If you don't need these plugins you can remove this line.
-    events2Litepicker = EXT:events2/Resources/Public/JavaScript/LitePicker.js
-    # Only needed for search and management plugin. If you don't need that plugin you can remove this line.
-    events2 = EXT:events2/Resources/Public/JavaScript/Events2.js
-    # Only needed for calendar plugin. If you don't need that plugin you can remove this line.
-    events2Calendar = EXT:events2/Resources/Public/JavaScript/Calendar.js
+  # AutoComplete is needed for search and management plugin. If you don't need these plugins you can remove this line.
+  events2AutoComplete = EXT:events2/Resources/Public/JavaScript/AutoComplete.min.js
+  # LitePicker is needed for search and calendar plugin. If you don't need these plugins you can remove this line.
+  events2Litepicker = EXT:events2/Resources/Public/JavaScript/LitePicker.js
+  # Only needed for search and management plugin. If you don't need that plugin you can remove this line.
+  events2 = EXT:events2/Resources/Public/JavaScript/Events2.js
+  # Only needed for calendar plugin. If you don't need that plugin you can remove this line.
+  events2Calendar = EXT:events2/Resources/Public/JavaScript/Calendar.js
 }
 
 [{$events2.form.useExtForm} == true]
-    plugin.tx_form.settings.yamlConfigurations.1661247670 = EXT:events2/Configuration/Form/OverrideFormSettings.yaml
-    # This part will be moved back with "if.isTrue" until this patch was fixed: https://forge.typo3.org/issues/98200
-    plugin.tx_events2.view.templateRootPaths.1 = EXT:events2/Resources/Private/FormFramework/Templates/
-    plugin.tx_events2.view.partialRootPaths.1 = EXT:events2/Resources/Private/FormFramework/Partials/
+  plugin.tx_form.settings.yamlConfigurations.1661247670 = EXT:events2/Configuration/Form/OverrideFormSettings.yaml
+  # This part will be moved back with "if.isTrue" until this patch was fixed: https://forge.typo3.org/issues/98200
+  plugin.tx_events2.view.templateRootPaths.1 = EXT:events2/Resources/Private/FormFramework/Templates/
+  plugin.tx_events2.view.partialRootPaths.1 = EXT:events2/Resources/Private/FormFramework/Partials/
 [end]
 
 # Search form should react on $_GET params of SearchResults plugin to show search values again in form.
@@ -29,112 +29,117 @@ plugin.tx_events2_searchform.view.pluginNamespace = tx_events2_searchresults
 plugin.tx_events2_search.mvc.callDefaultActionIfActionCantBeResolved = 1
 
 plugin.tx_events2 {
-    view {
-        templateRootPaths {
-            0 = EXT:events2/Resources/Private/Templates/
-            # Do not use "1", it may be overwritten by condition above.
-            2 = {$events2.templateRootPath}
-        }
-        partialRootPaths {
-            0 = EXT:events2/Resources/Private/Partials/
-            # Do not use "1", it may be overwritten by condition above.
-            2 = {$events2.partialRootPath}
-            3 = EXT:maps2/Resources/Private/Partials/
-        }
-        layoutRootPaths {
-            0 = EXT:events2/Resources/Private/Layouts/
-            1 = {$events2.layoutRootPath}
-        }
+  view {
+    templateRootPaths {
+      0 = EXT:events2/Resources/Private/Templates/
+      # Do not use "1", it may be overwritten by condition above.
+      2 = {$events2.templateRootPath}
     }
 
-    persistence {
-        storagePid = {$events2.storagePid}
-        classes {
-            JWeiland\Events2\Domain\Model\Location {
-                newRecordStoragePid =
-            }
-            JWeiland\Events2\Domain\Model\Organizer {
-                newRecordStoragePid =
-            }
-        }
+    partialRootPaths {
+      0 = EXT:events2/Resources/Private/Partials/
+      # Do not use "1", it may be overwritten by condition above.
+      2 = {$events2.partialRootPath}
+      3 = EXT:maps2/Resources/Private/Partials/
     }
 
-    mvc {
-        callDefaultActionIfActionCantBeResolved = 1
+    layoutRootPaths {
+      0 = EXT:events2/Resources/Private/Layouts/
+      1 = {$events2.layoutRootPath}
     }
-    settings {
-        rootCategory = {$events2.form.rootCategory}
-        pidOfDetailPage = {$events2.pidOfDetailPage}
-        pidOfSearchResults = {$events2.pidOfSearchResults}
-        pidOfLocationPage = {$events2.pidOfLocationPage}
-        pidOfManagementPage = {$events2.pidOfManagementPage}
-        pidOfNewLocationPage = {$events2.pidOfNewLocationPage}
-        pidOfListPage = {$events2.pidOfListPage}
-        userGroup = {$events2.form.userGroup}
-        remainingLetters = {$events2.form.remainingLetters}
-        list {
-            image {
-                width = 50c
-                height = 50c
-                maxWidth = 50
-                minWidth = 50
-                maxHeight = 50
-                minHeight = 50
-            }
-        }
+  }
 
-        latest {
-            amountOfRecordsToShow = {$events2.latest.amountOfRecordsToShow}
-        }
+  persistence {
+    storagePid = {$events2.storagePid}
+    classes {
+      JWeiland\Events2\Domain\Model\Location {
+        newRecordStoragePid =
+      }
 
-        new {
-            selectableCategoriesForNewEvents = {$events2.form.selectableCategoriesForNewEvents}
-            uploadFolder = 1:user_upload/tx_events2/
-        }
-
-        # Special configuration for form based on EXT:form
-        # See EXT:events2/Configuration/Form/NewEvent.form.yaml which values are possible
-        overrideForm {
-            renderables.1.renderables.8.properties.pidOfNewLocationPage < plugin.tx_events2.settings.pidOfNewLocationPage
-            # Be careful: if you have assigned multiple PIDs to storagePid you have to replace following values with
-            # exact ONE page UID
-            finishers.1.options.1.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
-            finishers.1.options.2.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
-            finishers.1.options.3.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
-            finishers.1.options.4.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
-            finishers.1.options.9.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
-            finishers.1.options.10.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
-            finishers.1.options.11.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
-            finishers.1.options.12.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
-            finishers.1.options.13.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
-            finishers.1.options.14.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
-            finishers.1.options.15.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
-            finishers.1.options.16.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
-
-            finishers.2.options.subject = A new event record was created
-            finishers.2.options.variables.pidOfManagementPage = {$events2.pidOfManagementPage}
-
-            finishers.5.options.pageUid = {$events2.pidOfListPage}
-        }
-
-        pageBrowser {
-            class = JWeiland\Events2\Pagination\GetPostPagination
-            itemsPerPage = {$events2.pageBrowser.itemsPerPage}
-        }
-
-        show {
-            image {
-                width = 200c
-                height = 150c
-                maxWidth = 200
-                minWidth = 200
-                maxHeight = 150
-                minHeight = 150
-            }
-        }
+      JWeiland\Events2\Domain\Model\Organizer {
+        newRecordStoragePid =
+      }
     }
-    _LOCAL_LANG.de.rightsMessage = Hiermit räume ich ... ein einfaches, unbeschränktes Nutzungsrecht an dem hochgeladenen Werk ein. Mit der Nutzung werden keine Rechte von Dritten verletzt.
-    _LOCAL_LANG.default.rightsMessage = I give all rights of this image to...
+  }
+
+  mvc {
+    callDefaultActionIfActionCantBeResolved = 1
+  }
+
+  settings {
+    rootCategory = {$events2.form.rootCategory}
+    pidOfDetailPage = {$events2.pidOfDetailPage}
+    pidOfSearchResults = {$events2.pidOfSearchResults}
+    pidOfLocationPage = {$events2.pidOfLocationPage}
+    pidOfManagementPage = {$events2.pidOfManagementPage}
+    pidOfNewLocationPage = {$events2.pidOfNewLocationPage}
+    pidOfListPage = {$events2.pidOfListPage}
+    userGroup = {$events2.form.userGroup}
+    remainingLetters = {$events2.form.remainingLetters}
+    list {
+      image {
+        width = 50c
+        height = 50c
+        maxWidth = 50
+        minWidth = 50
+        maxHeight = 50
+        minHeight = 50
+      }
+    }
+
+    latest {
+      amountOfRecordsToShow = {$events2.latest.amountOfRecordsToShow}
+    }
+
+    new {
+      selectableCategoriesForNewEvents = {$events2.form.selectableCategoriesForNewEvents}
+      uploadFolder = 1:user_upload/tx_events2/
+    }
+
+    # Special configuration for form based on EXT:form
+    # See EXT:events2/Configuration/Form/NewEvent.form.yaml which values are possible
+    overrideForm {
+      renderables.1.renderables.8.properties.pidOfNewLocationPage < plugin.tx_events2.settings.pidOfNewLocationPage
+      # Be careful: if you have assigned multiple PIDs to storagePid you have to replace following values with
+      # exact ONE page UID
+      finishers.1.options.1.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
+      finishers.1.options.2.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
+      finishers.1.options.3.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
+      finishers.1.options.4.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
+      finishers.1.options.9.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
+      finishers.1.options.10.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
+      finishers.1.options.11.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
+      finishers.1.options.12.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
+      finishers.1.options.13.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
+      finishers.1.options.14.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
+      finishers.1.options.15.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
+      finishers.1.options.16.databaseColumnMappings.pid.value = {$events2.storagePidForFrontendCreatedEvents}
+
+      finishers.2.options.subject = A new event record was created
+      finishers.2.options.variables.pidOfManagementPage = {$events2.pidOfManagementPage}
+
+      finishers.5.options.pageUid = {$events2.pidOfListPage}
+    }
+
+    pageBrowser {
+      class = JWeiland\Events2\Pagination\GetPostPagination
+      itemsPerPage = {$events2.pageBrowser.itemsPerPage}
+    }
+
+    show {
+      image {
+        width = 200c
+        height = 150c
+        maxWidth = 200
+        minWidth = 200
+        maxHeight = 150
+        minHeight = 150
+      }
+    }
+  }
+
+  _LOCAL_LANG.de.rightsMessage = Hiermit räume ich ... ein einfaches, unbeschränktes Nutzungsrecht an dem hochgeladenen Werk ein. Mit der Nutzung werden keine Rechte von Dritten verletzt.
+  _LOCAL_LANG.default.rightsMessage = I give all rights of this image to...
 }
 
 plugin.tx_events2._CSS_DEFAULT_STYLE (
