@@ -21,7 +21,7 @@
             <f:render section="Title" arguments="{day: day}"/>
 
             <f:if condition="{day.event.teaser}">
-                <p>{day.event.teaser}</p>
+                <p>{day.event.teaser -> e2:convertHtmlToPlainText() -> f:format.nl2br()}</p>
             </f:if>
         </li>
     </f:for>

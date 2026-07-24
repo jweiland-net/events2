@@ -616,8 +616,10 @@ finishers:
             mapOnDatabaseColumn: title
           short-description:
             mapOnDatabaseColumn: teaser
+            convertPlainTextToHtml: true
           detail-description:
             mapOnDatabaseColumn: detail_information
+            convertPlainTextToHtml: true
           event-begin:
             mapOnDatabaseColumn: event_begin
             dateFormat: U

@@ -8,8 +8,8 @@
         <h1>{day.event.title}</h1>
         <f:render section="RenderImages" arguments="{event: day.event}"/>
         <f:render section="VideoLink" arguments="{event: day.event}"/>
-        <p class="lead">{day.event.teaser}</p>
-        <f:format.html>{day.event.detailInformation}</f:format.html>
+        <p class="lead">{day.event.teaser -> e2:convertHtmlToPlainText() -> f:format.nl2br()}</p>
+        <p>{day.event.detailInformation -> e2:convertHtmlToPlainText() -> f:format.nl2br()}</p>
         <f:render section="DownloadLinks" arguments="{event: day.event}"/>
     </div>
     <div class="col-md-3">
