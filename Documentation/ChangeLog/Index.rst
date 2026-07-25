@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 10.2.10
+===============
+
+*   [BUGFIX] Show plain text when editing teaser/description
+
 Version 10.2.9
 ==============
 

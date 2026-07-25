@@ -126,6 +126,7 @@ renderables:
         properties:
           dbMapping:
             column: teaser
+            dataType: plainText
           elementDescription: 'Short description'
       - label: 'Detail description'
         type: Textarea
@@ -134,6 +135,7 @@ renderables:
         properties:
           dbMapping:
             column: detail_information
+            dataType: plainText
           elementDescription: 'Detail description'
       - label: 'Ticket Link'
         type: Text
