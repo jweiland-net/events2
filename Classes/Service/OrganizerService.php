@@ -24,9 +24,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 readonly class OrganizerService
 {
     private const TABLE = 'tx_events2_domain_model_organizer';
-    public function __construct(private ConnectionPool $connectionPool)
-    {
-    }
+    public function __construct(private ConnectionPool $connectionPool) {}
 
     public function getOrganizerRecordByTitle(string $title, int $language = 0): ?array
     {

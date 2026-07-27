@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Controller;
 
-use TYPO3\CMS\Core\Mail\MailerInterface;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Validator\EventValidator;
 use JWeiland\Events2\Traits\InjectCacheServiceTrait;
@@ -23,6 +22,7 @@ use JWeiland\Events2\Traits\InjectMailMessageTrait;
 use JWeiland\Events2\Traits\InjectPersistenceManagerTrait;
 use JWeiland\Events2\Traits\InjectUserRepositoryTrait;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Mail\MailerInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Attribute as Extbase;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
@@ -94,9 +94,8 @@ class ManagementController extends AbstractController
 
     public function createAction(
         #[Extbase\Validate(validator: EventValidator::class)]
-        Event $event
-    ): ResponseInterface
-    {
+        Event $event,
+    ): ResponseInterface {
         $event->setHidden(true);
         $event->setEventType($event->getEventEnd() instanceof \DateTimeImmutable ? 'duration' : 'single');
         $this->eventRepository->add($event);
@@ -119,9 +118,8 @@ class ManagementController extends AbstractController
 
     public function editAction(
         #[Extbase\IgnoreValidation]
-        Event $event
-    ): ResponseInterface
-    {
+        Event $event,
+    ): ResponseInterface {
         if (isset($this->settings['selectableCategoriesForNewEvents'])) {
             trigger_error(
                 'settings.selectableCategoriesForNewEvents is deprecated. Please use settings.new.selectableCategoriesForNewEvents instead.',
@@ -150,9 +148,8 @@ class ManagementController extends AbstractController
 
     public function updateAction(
         #[Extbase\Validate(validator: EventValidator::class)]
-        Event $event
-    ): ResponseInterface
-    {
+        Event $event,
+    ): ResponseInterface {
         $isHidden = $event->getHidden();
         $event->setHidden(true);
         $this->postProcessControllerAction($event);

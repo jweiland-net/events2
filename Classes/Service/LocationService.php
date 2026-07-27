@@ -24,9 +24,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 readonly class LocationService
 {
     private const TABLE = 'tx_events2_domain_model_location';
-    public function __construct(private ConnectionPool $connectionPool)
-    {
-    }
+    public function __construct(private ConnectionPool $connectionPool) {}
 
     public function getLocationRecordByTitle(string $title, int $language = 0): ?array
     {
@@ -59,5 +57,5 @@ readonly class LocationService
         $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
 
         return $queryBuilder;
-}
+    }
 }

@@ -11,11 +11,11 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Helper;
 
-use JWeiland\Events2\Hook\SlugPostModifierHook;
 use Doctrine\DBAL\Exception;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Helper\Exception\NoUniquePathSegmentException;
+use JWeiland\Events2\Hook\SlugPostModifierHook;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;

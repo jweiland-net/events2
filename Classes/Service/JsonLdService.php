@@ -44,7 +44,8 @@ class JsonLdService
     ];
 
     public function __construct(
-        protected readonly TimeFactory $timeFactory, private readonly PageRenderer $pageRenderer,
+        protected readonly TimeFactory $timeFactory,
+        private readonly PageRenderer $pageRenderer,
     ) {}
 
     /**

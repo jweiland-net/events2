@@ -11,14 +11,14 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Upgrade;
 
-use TYPO3\CMS\Core\Attribute\UpgradeWizard;
-use TYPO3\CMS\Core\Upgrades\UpgradeWizardInterface;
-use TYPO3\CMS\Core\Upgrades\DatabaseUpdatedPrerequisite;
 use Doctrine\DBAL\Exception;
+use TYPO3\CMS\Core\Attribute\UpgradeWizard;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
+use TYPO3\CMS\Core\Upgrades\DatabaseUpdatedPrerequisite;
+use TYPO3\CMS\Core\Upgrades\UpgradeWizardInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -27,9 +27,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 #[UpgradeWizard('events2_migrateOrganizer')]
 class MigrateOrganizerToMMUpgrade implements UpgradeWizardInterface
 {
-    public function __construct(private readonly ConnectionPool $connectionPool)
-    {
-    }
+    public function __construct(private readonly ConnectionPool $connectionPool) {}
     public function getTitle(): string
     {
         return '[events2] Migrate organizer';

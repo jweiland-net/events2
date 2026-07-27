@@ -58,7 +58,7 @@ final class RestrictAccessEventListener
         private UserRepository $userRepository,
         private ExtensionService $extensionService,
         private FlashMessageService $flashMessageService,
-        private readonly Context $context
+        private readonly Context $context,
     ) {}
 
     public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void

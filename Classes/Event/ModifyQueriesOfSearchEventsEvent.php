@@ -23,7 +23,7 @@ class ModifyQueriesOfSearchEventsEvent
         protected readonly QueryBuilder $queryBuilder,
         protected readonly QueryBuilder $subQueryBuilder,
         protected Search $search,
-        protected array $settings
+        protected array $settings,
     ) {}
 
     public function getQueryBuilder(): QueryBuilder

@@ -29,4 +29,3 @@ final class YouTubeUrlUtility
         return $matches[1];
     }
 }
-

@@ -20,9 +20,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 readonly class EmStaticInfo
 {
-    public function __construct(private ConnectionPool $connectionPool)
-    {
-    }
+    public function __construct(private ConnectionPool $connectionPool) {}
     /**
      * Render our own custom field for static_info_tables
      */

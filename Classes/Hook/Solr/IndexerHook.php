@@ -8,6 +8,7 @@ declare(strict_types=1);
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
+
 namespace JWeiland\Events2\Hook\Solr;
 
 use ApacheSolrForTypo3\Solr\IndexQueue\Item;

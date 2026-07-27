@@ -25,9 +25,7 @@ readonly class CategoryRecordService
 {
     private const TABLE = 'sys_category';
 
-    public function __construct(private ConnectionPool $connectionPool)
-    {
-    }
+    public function __construct(private ConnectionPool $connectionPool) {}
 
     public function getCategoryRecordByTitle(string $title, int $language = 0): ?array
     {

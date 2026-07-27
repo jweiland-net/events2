@@ -37,7 +37,7 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
         private readonly CacheManager $cacheManager,
         private readonly ConnectionPool $connectionPool,
         private readonly PersistenceManager $persistenceManager,
-        private readonly Registry $registry
+        private readonly Registry $registry,
     ) {
         parent::__construct();
     }
@@ -135,7 +135,7 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
     {
         $progress = $this->getRegistry()->get('events2TaskCreateUpdate', 'progress');
         if ($progress) {
-            return (100 / $progress['records'] * $progress['counter']);
+            return 100 / $progress['records'] * $progress['counter'];
         }
 
         return 0.0;

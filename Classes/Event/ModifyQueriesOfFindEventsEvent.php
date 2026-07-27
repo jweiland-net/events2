@@ -24,7 +24,7 @@ class ModifyQueriesOfFindEventsEvent
         protected readonly QueryBuilder $subQueryBuilder,
         protected string $type,
         protected Filter $filter,
-        protected array $settings
+        protected array $settings,
     ) {}
 
     public function getQueryBuilder(): QueryBuilder

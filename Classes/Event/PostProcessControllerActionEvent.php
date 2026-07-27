@@ -16,7 +16,6 @@ use JWeiland\Events2\Controller\ManagementController;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
-use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 
 /**
@@ -30,7 +29,7 @@ class PostProcessControllerActionEvent implements ControllerActionEventInterface
         protected ?Event $event,
         protected ?Day $day,
         protected array $settings,
-        protected RequestInterface $request
+        protected RequestInterface $request,
     ) {}
 
     public function getController(): ActionController

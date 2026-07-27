@@ -20,7 +20,7 @@ class ModifyQueriesOfFindLocationsEvent
 {
     public function __construct(
         protected readonly QueryBuilder $queryBuilder,
-        protected string $search
+        protected string $search,
     ) {}
 
     public function getQueryBuilder(): QueryBuilder

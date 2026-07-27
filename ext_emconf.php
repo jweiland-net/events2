@@ -6,6 +6,7 @@
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
+
 $EM_CONF[$_EXTKEY] = [
     'title' => 'Events 2',
     'description' => 'Create single and recurring events',

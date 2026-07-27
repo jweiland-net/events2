@@ -12,11 +12,11 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Upgrade;
 
 use TYPO3\CMS\Core\Attribute\UpgradeWizard;
-use TYPO3\CMS\Core\Upgrades\UpgradeWizardInterface;
-use TYPO3\CMS\Core\Upgrades\DatabaseUpdatedPrerequisite;
 use TYPO3\CMS\Core\Configuration\FlexForm\FlexFormTools;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Upgrades\DatabaseUpdatedPrerequisite;
+use TYPO3\CMS\Core\Upgrades\UpgradeWizardInterface;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\Exception\MissingArrayPathException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -28,9 +28,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 #[UpgradeWizard('events2_moveFlexFormFields')]
 class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
 {
-    public function __construct(private readonly ConnectionPool $connectionPool)
-    {
-    }
+    public function __construct(private readonly ConnectionPool $connectionPool) {}
     public function getTitle(): string
     {
         return '[events2] Move old FlexForm fields to new FlexForm sheet';
