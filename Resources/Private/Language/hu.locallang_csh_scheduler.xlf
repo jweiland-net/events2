@@ -5,22 +5,22 @@
     <body>
       <trans-unit id="path.alttitle" xml:space="preserve">
 				<source>Path to file to import</source>
-			<target state="needs-translation">Path to file to import</target></trans-unit>
+			<target state="translated">Az importálandó fájl elérési útja</target></trans-unit>
       <trans-unit id="path.description" xml:space="preserve">
 				<source>Path to file to import. Please use following format: [UID to storage]:[path to file]. F.e. 1:event/Import.xml</source>
-			<target state="needs-translation">Path to file to import. Please use following format: [UID to storage]:[path to file]. F.e. 1:event/Import.xml</target></trans-unit>
+			<target state="translated">Az importálandó fájl elérési útja. Használja a következő formátumot: [tároló UID]:[fájl elérési útja]. Pl. 1:event/Import.xml</target></trans-unit>
       <trans-unit id="path.details" xml:space="preserve">
 				<source>Path to file to import. Please use following format: [UID to storage]:[path to file]. F.e. 1:event/Import.xml</source>
-			<target state="needs-translation">Path to file to import. Please use following format: [UID to storage]:[path to file]. F.e. 1:event/Import.xml</target></trans-unit>
+			<target state="translated">Az importálandó fájl elérési útja. Használja a következő formátumot: [tároló UID]:[fájl elérési útja]. Pl. 1:event/Import.xml</target></trans-unit>
       <trans-unit id="storagePid.alttitle" xml:space="preserve">
 				<source>Storage PID</source>
-			<target state="needs-translation">Storage PID</target></trans-unit>
+			<target state="translated">Tárolási PID</target></trans-unit>
       <trans-unit id="storagePid.description" xml:space="preserve">
 				<source>Storage PID where to save the imported recored</source>
-			<target state="needs-translation">Storage PID where to save the imported recored</target></trans-unit>
+			<target state="translated">Tárolási PID, ahová az importált rekord mentésre kerül</target></trans-unit>
       <trans-unit id="storagePid.details" xml:space="preserve">
 				<source>Storage PID where to save the imported recored</source>
-			<target state="needs-translation">Storage PID where to save the imported recored</target></trans-unit>
+			<target state="translated">Tárolási PID, ahová az importált rekord mentésre kerül</target></trans-unit>
     </body>
   </file>
 </xliff>
