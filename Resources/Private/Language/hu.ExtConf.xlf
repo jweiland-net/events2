@@ -5,55 +5,55 @@
     <body>
       <trans-unit id="poiCollectionPid">
         <source>PID for poiCollections: Define a storage pid where to store records of type Point of Interest.</source>
-        <target state="needs-translation">PID for poiCollections: Define a storage pid where to store records of type Point of Interest.</target>
+        <target state="translated">POI-gyűjtemények PID-je: adjon meg egy tárolási PID-et, ahová a Point of Interest típusú rekordok kerülnek.</target>
       </trans-unit>
       <trans-unit id="rootUid">
         <source>Category root UID: If you're working in an environments with a lot of categories defined, it may make sense to reduce the category tree within our Events2 Plugins to this root Category.</source>
-        <target state="needs-translation">Category root UID: If you're working in an environments with a lot of categories defined, it may make sense to reduce the category tree within our Events2 Plugins to this root Category.</target>
+        <target state="translated">Kategória-gyökér UID: ha sok kategória van definiálva, érdemes lehet a kategóriafát a Events2 beépülő modulokban erre a gyökérkategóriára korlátozni.</target>
       </trans-unit>
       <trans-unit id="recurringPast">
         <source>x months in past: When creating a new recurring event this extension can create related day records for the last x months.</source>
-        <target state="needs-translation">x months in past: When creating a new recurring event this extension can create related day records for the last x months.</target>
+        <target state="translated">x hónap a múltba: új ismétlődő esemény létrehozásakor a bővítmény létrehozhatja a kapcsolódó naprekordokat az elmúlt x hónapra.</target>
       </trans-unit>
       <trans-unit id="recurringFuture">
         <source>x months in future: When creating a new recurring event this extension can create related day records for the next x months.</source>
-        <target state="needs-translation">x months in future: When creating a new recurring event this extension can create related day records for the next x months.</target>
+        <target state="translated">x hónap a jövőbe: új ismétlődő esemény létrehozásakor a bővítmény létrehozhatja a kapcsolódó naprekordokat a következő x hónapra.</target>
       </trans-unit>
       <trans-unit id="defaultCountry">
         <source>Default country: If you're only working for one specified country while creating/editing POIs in backend it would be cool to set a country by default. So you only need to add street and city to find a POI. If you need POIs from all over the world, please keep this field empty</source>
-        <target state="needs-translation">Default country: If you're only working for one specified country while creating/editing POIs in backend it would be cool to set a country by default. So you only need to add street and city to find a POI. If you need POIs from all over the world, please keep this field empty</target>
+        <target state="translated">Alapértelmezett ország: ha a backendben csak egy meghatározott országgal dolgozik a POI-k létrehozása/szerkesztése során, hasznos lehet alapértelmezett országot beállítani. Így a POI megtalálásához csak az utcát és a várost kell megadnia. Ha világszerte használ POI-kat, hagyja üresen ezt a mezőt.</target>
       </trans-unit>
       <trans-unit id="xmlImportValidatorPath">
         <source>XML Import Validator Path (xsd): While Importing Events we will check the XML file against a XSD file. If you need some specials you can define your own file here.</source>
-        <target state="needs-translation">XML Import Validator Path (xsd): While Importing Events we will check the XML file against a XSD file. If you need some specials you can define your own file here.</target>
+        <target state="translated">XML-import érvényesítő útvonal (xsd): az események importálása során az XML-fájlt egy XSD-fájl alapján ellenőrizzük. Ha speciális igényei vannak, itt megadhatja saját fájlját.</target>
       </trans-unit>
       <trans-unit id="organizerIsRequired">
         <source>Is organizer required: By default it is not needed to explicit set an organizer. But, if you want, you can set organizers as a required property with activating this checkbox</source>
-        <target state="needs-translation">Is organizer required: By default it is not needed to explicit set an organizer. But, if you want, you can set organizers as a required property with activating this checkbox</target>
+        <target state="translated">Kötelező-e a szervező: alapértelmezés szerint nem szükséges szervezőt megadni. Ha azonban szeretné, a szervezőket kötelező tulajdonsággá teheti a jelölőnégyzet bejelölésével.</target>
       </trans-unit>
       <trans-unit id="locationIsRequired">
         <source>Is location required: By default it is not needed to explicit set a location. But, if you want, you can set location as a required property with activating this checkbox</source>
-        <target state="needs-translation">Is location required: By default it is not needed to explicit set a location. But, if you want, you can set location as a required property with activating this checkbox</target>
+        <target state="translated">Kötelező-e a helyszín: alapértelmezés szerint nem szükséges helyszínt megadni. Ha azonban szeretné, a helyszínt kötelező tulajdonsággá teheti a jelölőnégyzet bejelölésével.</target>
       </trans-unit>
       <trans-unit id="categoryIsRequired">
         <source>Is category required: By default it is not needed to explicit set a category. But, if you want, you can set catgeory as a required property with activating this checkbox</source>
-        <target state="needs-translation">Is category required: By default it is not needed to explicit set a category. But, if you want, you can set catgeory as a required property with activating this checkbox</target>
+        <target state="translated">Kötelező-e a kategória: alapértelmezés szerint nem szükséges kategóriát megadni. Ha azonban szeretné, a kategóriát kötelező tulajdonsággá teheti a jelölőnégyzet bejelölésével.</target>
       </trans-unit>
       <trans-unit id="pathSegmentType" xml:space="preserve">
 				<source>Path Segment type: Set path segment type for frontend created events and PathSegment UpdateWizard. Set to "Do nothing" to keep path_segment untouched. Set to "RealUrl" to add a counter on duplicates (swimm, swimm-1, swimm-2). Set to "UID" to build a path segment based on title and uid.</source>
-			<target state="needs-translation">Path Segment type: Set path segment type for frontend created events and PathSegment UpdateWizard. Set to "Do nothing" to keep path_segment untouched. Set to "RealUrl" to add a counter on duplicates (swimm, swimm-1, swimm-2). Set to "UID" to build a path segment based on title and uid.</target></trans-unit>
+			<target state="translated">Útvonalszegmens típusa: állítsa be az útvonalszegmens típusát a frontendben létrehozott eseményekhez és a PathSegment UpdateWizardhoz. Állítsa "Do nothing" értékre, ha a path_segmentet érintetlenül kívánja hagyni. Állítsa "RealUrl" értékre, hogy a duplikátumok sorszámot kapjanak (swimm, swimm-1, swimm-2). Állítsa "UID" értékre, hogy az útvonalszegmens a címből és az uid-ből épüljön fel.</target></trans-unit>
       <trans-unit id="emailFromAddress" xml:space="preserve">
 				<source>email from address: The senders email address. If not given the extension tries to get one from INSTALL_TOOL.</source>
-			<target state="needs-translation">email from address: The senders email address. If not given the extension tries to get one from INSTALL_TOOL.</target></trans-unit>
+			<target state="translated">e-mail feladói cím: a feladó e-mail címe. Ha nincs megadva, a bővítmény az INSTALL_TOOL-ból próbál egyet lekérni.</target></trans-unit>
       <trans-unit id="emailFromName" xml:space="preserve">
 				<source>email from name: The senders email name. If not given the extension tries to get one from INSTALL_TOOL.</source>
-			<target state="needs-translation">email from name: The senders email name. If not given the extension tries to get one from INSTALL_TOOL.</target></trans-unit>
+			<target state="translated">e-mail feladói név: a feladó e-mail neve. Ha nincs megadva, a bővítmény az INSTALL_TOOL-ból próbál egyet lekérni.</target></trans-unit>
       <trans-unit id="emailToAddress" xml:space="preserve">
 				<source>email to address: The recipients email address.</source>
-			<target state="needs-translation">email to address: The recipients email address.</target></trans-unit>
+			<target state="translated">e-mail címzett cím: a címzett e-mail címe.</target></trans-unit>
       <trans-unit id="emailToName" xml:space="preserve">
 				<source>email to name: The recipients email name.</source>
-			<target state="needs-translation">email to name: The recipients email name.</target></trans-unit>
+			<target state="translated">e-mail címzett név: a címzett e-mail neve.</target></trans-unit>
     </body>
   </file>
 </xliff>
