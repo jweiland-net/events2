@@ -49,7 +49,7 @@
       </trans-unit>
       <trans-unit id="element.title.properties.label">
         <source>Title</source>
-        <target state="needs-translation">Title</target>
+        <target state="translated">Cím</target>
       </trans-unit>
       <trans-unit id="element.title.properties.elementDescription">
         <source>The title is a mandatory field. It should identify the event as clearly as possible.</source>
@@ -57,7 +57,7 @@
       </trans-unit>
       <trans-unit id="element.event-begin.properties.label">
         <source>Event begin</source>
-        <target state="needs-translation">Event begin</target>
+        <target state="translated">Esemény kezdete</target>
       </trans-unit>
       <trans-unit id="element.event-begin.properties.elementDescription">
         <source>The start date is a mandatory field. Click on the calendar icon to open the Date Value Wizard.</source>
@@ -89,7 +89,7 @@
       </trans-unit>
       <trans-unit id="element.short-description.properties.label">
         <source>Teaser</source>
-        <target state="needs-translation">Teaser</target>
+        <target state="translated">Beharangozó</target>
       </trans-unit>
       <trans-unit id="element.short-description.properties.elementDescription">
         <source>Enter a short description here. This will be used as description text in event overviews.</source>
@@ -105,7 +105,7 @@
       </trans-unit>
       <trans-unit id="element.ticket-link.properties.label">
         <source>Ticket link</source>
-        <target state="needs-translation">Ticket link</target>
+        <target state="translated">Jegyhivatkozás</target>
       </trans-unit>
       <trans-unit id="element.ticket-link.properties.elementDescription">
         <source>Enter a link to the ticket sale here. Please transfer the complete link incl. https://</source>
@@ -137,7 +137,7 @@
       </trans-unit>
       <trans-unit id="element.categories.properties.label">
         <source>Categories</source>
-        <target state="needs-translation">Categories</target>
+        <target state="translated">Kategóriák</target>
       </trans-unit>
       <trans-unit id="element.categories.properties.elementDescription">
         <source>Categories are a required field. Select min. 1 but max. 3 categories.</source>
@@ -145,7 +145,7 @@
       </trans-unit>
       <trans-unit id="element.weekday.properties.label">
         <source>Weekday</source>
-        <target state="needs-translation">Weekday</target>
+        <target state="translated">Hét napja</target>
       </trans-unit>
       <trans-unit id="element.weekday.properties.elementDescription">
         <source>The days of the week are a required field. Select at least one day of the week. The event will then appear every week on the specified weekdays.</source>
@@ -153,31 +153,31 @@
       </trans-unit>
       <trans-unit id="element.weekday.properties.options.1">
         <source>Monday</source>
-        <target state="needs-translation">Monday</target>
+        <target state="translated">Hétfő</target>
       </trans-unit>
       <trans-unit id="element.weekday.properties.options.2">
         <source>Tuesday</source>
-        <target state="needs-translation">Tuesday</target>
+        <target state="translated">Kedd</target>
       </trans-unit>
       <trans-unit id="element.weekday.properties.options.4">
         <source>Wednesday</source>
-        <target state="needs-translation">Wednesday</target>
+        <target state="translated">Szerda</target>
       </trans-unit>
       <trans-unit id="element.weekday.properties.options.8">
         <source>Thursday</source>
-        <target state="needs-translation">Thursday</target>
+        <target state="translated">Csütörtök</target>
       </trans-unit>
       <trans-unit id="element.weekday.properties.options.16">
         <source>Friday</source>
-        <target state="needs-translation">Friday</target>
+        <target state="translated">Péntek</target>
       </trans-unit>
       <trans-unit id="element.weekday.properties.options.32">
         <source>Saturday</source>
-        <target state="needs-translation">Saturday</target>
+        <target state="translated">Szombat</target>
       </trans-unit>
       <trans-unit id="element.weekday.properties.options.64">
         <source>Sunday</source>
-        <target state="needs-translation">Sunday</target>
+        <target state="translated">Vasárnap</target>
       </trans-unit>
       <trans-unit id="element.image-1.properties.label">
         <source>1st image upload</source>
