@@ -145,23 +145,23 @@
       </trans-unit>
       <trans-unit id="tx_events2_domain_model_event.attendance_mode">
         <source>Attendance Mode</source>
-        <target state="needs-translation">Attendance Mode</target>
+        <target state="translated">Részvételi mód</target>
       </trans-unit>
       <trans-unit id="tx_events2_domain_model_event.attendance_mode.empty">
         <source>Not specified</source>
-        <target state="needs-translation">Not specified</target>
+        <target state="translated">Nincs megadva</target>
       </trans-unit>
       <trans-unit id="tx_events2_domain_model_event.attendance_mode.in_person">
         <source>In-person (on-site)</source>
-        <target state="needs-translation">In-person (on-site)</target>
+        <target state="translated">Személyesen (helyszínen)</target>
       </trans-unit>
       <trans-unit id="tx_events2_domain_model_event.attendance_mode.online">
         <source>Online (virtual)</source>
-        <target state="needs-translation">Online (virtual)</target>
+        <target state="translated">Online (virtuális)</target>
       </trans-unit>
       <trans-unit id="tx_events2_domain_model_event.attendance_mode.hybrid">
         <source>Hybrid</source>
-        <target state="needs-translation">Hybrid</target>
+        <target state="translated">Hibrid</target>
       </trans-unit>
       <trans-unit id="tx_events2_domain_model_event.days">
         <source>Days</source>
@@ -297,11 +297,11 @@
       </trans-unit>
       <trans-unit id="tx_events2_domain_model_exception.primer">
         <source>Primer</source>
-        <target state="needs-translation">Primer</target>
+        <target state="translated">Elsődleges</target>
       </trans-unit>
       <trans-unit id="tx_events2_domain_model_exception.resumption">
         <source>Resumption</source>
-        <target state="needs-translation">Resumption</target>
+        <target state="translated">Folytatás</target>
       </trans-unit>
       <trans-unit id="tx_events2_domain_model_location">
         <source>Location</source>
@@ -325,7 +325,7 @@
       </trans-unit>
       <trans-unit id="tx_events2_domain_model_location.city">
         <source>City</source>
-        <target state="needs-translation">City</target>
+        <target state="translated">Város</target>
       </trans-unit>
       <trans-unit id="tx_events2_domain_model_organizer">
         <source>Organizer</source>
@@ -337,11 +337,11 @@
       </trans-unit>
       <trans-unit id="tx_events2_domain_model_organizer.link">
         <source>Link</source>
-        <target state="needs-translation">Link</target>
+        <target state="translated">Hivatkozás</target>
       </trans-unit>
       <trans-unit id="tx_events2_domain_model_link">
         <source>Link</source>
-        <target state="needs-translation">Link</target>
+        <target state="translated">Hivatkozás</target>
       </trans-unit>
       <trans-unit id="tx_events2_domain_model_link.title">
         <source>Title</source>
@@ -349,19 +349,19 @@
       </trans-unit>
       <trans-unit id="tx_events2_domain_model_link.link">
         <source>Link</source>
-        <target state="needs-translation">Link</target>
+        <target state="translated">Hivatkozás</target>
       </trans-unit>
       <trans-unit id="tx_events2_domain_model_search.search">
         <source>Searchword</source>
-        <target state="needs-translation">Searchword</target>
+        <target state="translated">Keresőszó</target>
       </trans-unit>
       <trans-unit id="tx_events2_domain_model_search.mainCategory">
         <source>Main category</source>
-        <target state="needs-translation">Main category</target>
+        <target state="translated">Főkategória</target>
       </trans-unit>
       <trans-unit id="tx_events2_domain_model_search.subCategory">
         <source>Sub category</source>
-        <target state="needs-translation">Sub category</target>
+        <target state="translated">Alkategória</target>
       </trans-unit>
       <trans-unit id="tx_events2_domain_model_search.eventBegin">
         <source>Event begin</source>
@@ -369,7 +369,7 @@
       </trans-unit>
       <trans-unit id="tx_events2_domain_model_search.eventEnd">
         <source>Event end</source>
-        <target state="needs-translation">Event end</target>
+        <target state="translated">Esemény vége</target>
       </trans-unit>
       <trans-unit id="tx_events2_domain_model_search.location">
         <source>Location</source>
@@ -377,271 +377,271 @@
       </trans-unit>
       <trans-unit id="tx_events2_domain_model_search.attendance_mode">
         <source>Attendance Mode</source>
-        <target state="needs-translation">Attendance Mode</target>
+        <target state="translated">Részvételi mód</target>
       </trans-unit>
       <trans-unit id="tx_events2_domain_model_search.attendance_mode.in_person">
         <source>In-person (on-site)</source>
-        <target state="needs-translation">In-person (on-site)</target>
+        <target state="translated">Személyesen (helyszínen)</target>
       </trans-unit>
       <trans-unit id="tx_events2_domain_model_search.attendance_mode.online">
         <source>Online (virtual)</source>
-        <target state="needs-translation">Online (virtual)</target>
+        <target state="translated">Online (virtuális)</target>
       </trans-unit>
       <trans-unit id="tx_events2_domain_model_search.freeEntry">
         <source>Free entry</source>
-        <target state="needs-translation">Free entry</target>
+        <target state="translated">Ingyenes belépés</target>
       </trans-unit>
       <trans-unit id="pageBrowser.first">
         <source>First</source>
-        <target state="needs-translation">First</target>
+        <target state="translated">Első</target>
       </trans-unit>
       <trans-unit id="pageBrowser.previous">
         <source>Previous</source>
-        <target state="needs-translation">Previous</target>
+        <target state="translated">Előző</target>
       </trans-unit>
       <trans-unit id="pageBrowser.next">
         <source>Next</source>
-        <target state="needs-translation">Next</target>
+        <target state="translated">Következő</target>
       </trans-unit>
       <trans-unit id="pageBrowser.last">
         <source>Last</source>
-        <target state="needs-translation">Last</target>
+        <target state="translated">Utolsó</target>
       </trans-unit>
       <trans-unit id="newEntry">
         <source>Insert new Event</source>
-        <target state="needs-translation">Insert new Event</target>
+        <target state="translated">Új esemény beszúrása</target>
       </trans-unit>
       <trans-unit id="listMyEvents">
         <source>List my events</source>
-        <target state="needs-translation">List my events</target>
+        <target state="translated">Eseményeim listája</target>
       </trans-unit>
       <trans-unit id="eventCreated">
         <source>Your new Event was created.</source>
-        <target state="needs-translation">Your new Event was created.</target>
+        <target state="translated">Az új esemény létrehozva.</target>
       </trans-unit>
       <trans-unit id="eventUpdated">
         <source>Your Event has been updated.</source>
-        <target state="needs-translation">Your Event has been updated.</target>
+        <target state="translated">Az esemény frissítve.</target>
       </trans-unit>
       <trans-unit id="eventDeleted">
         <source>Your Event has been removed.</source>
-        <target state="needs-translation">Your Event has been removed.</target>
+        <target state="translated">Az esemény eltávolítva.</target>
       </trans-unit>
       <trans-unit id="showDetailview">
         <source>See Single View</source>
-        <target state="needs-translation">See Single View</target>
+        <target state="translated">Egyedi nézet megtekintése</target>
       </trans-unit>
       <trans-unit id="multipleTimesAssigned">
         <source>Multiple times assigned</source>
-        <target state="needs-translation">Multiple times assigned</target>
+        <target state="translated">Több időpont hozzárendelve</target>
       </trans-unit>
       <trans-unit id="routePlanner">
         <source>Routeplanner</source>
-        <target state="needs-translation">Routeplanner</target>
+        <target state="translated">Útvonaltervező</target>
       </trans-unit>
       <trans-unit id="alternativeEventDates">
         <source>Alternative event dates</source>
-        <target state="needs-translation">Alternative event dates</target>
+        <target state="translated">Alternatív eseménydátumok</target>
       </trans-unit>
       <trans-unit id="singleView">
         <source>Single View</source>
-        <target state="needs-translation">Single View</target>
+        <target state="translated">Egyedi nézet</target>
       </trans-unit>
       <trans-unit id="search">
         <source>Search</source>
-        <target state="needs-translation">Search</target>
+        <target state="translated">Keresés</target>
       </trans-unit>
       <trans-unit id="yes">
         <source>yes</source>
-        <target state="needs-translation">yes</target>
+        <target state="translated">igen</target>
       </trans-unit>
       <trans-unit id="no">
         <source>no</source>
-        <target state="needs-translation">no</target>
+        <target state="translated">nem</target>
       </trans-unit>
       <trans-unit id="noEventFound">
         <source>The requested event could not be found. It may have already been deleted.</source>
-        <target state="needs-translation">The requested event could not be found. It may have already been deleted.</target>
+        <target state="translated">A kért esemény nem található. Lehet, hogy már törölték.</target>
       </trans-unit>
       <trans-unit id="noResults">
         <source>Today there are no events</source>
-        <target state="needs-translation">Today there are no events</target>
+        <target state="translated">Ma nincsenek események</target>
       </trans-unit>
       <trans-unit id="export">
         <source>Export date</source>
-        <target state="needs-translation">Export date</target>
+        <target state="translated">Exportálás dátuma</target>
       </trans-unit>
       <trans-unit id="widget.pagination.previous">
         <source>previous</source>
-        <target state="needs-translation">previous</target>
+        <target state="translated">előző</target>
       </trans-unit>
       <trans-unit id="widget.pagination.next">
         <source>next</source>
-        <target state="needs-translation">next</target>
+        <target state="translated">következő</target>
       </trans-unit>
       <trans-unit id="event_schedule">
         <source>Event Schedule</source>
-        <target state="needs-translation">Event Schedule</target>
+        <target state="translated">Eseményütemezés</target>
       </trans-unit>
       <trans-unit id="event_topic">
         <source>Event List by Topics</source>
-        <target state="needs-translation">Event List by Topics</target>
+        <target state="translated">Eseménylista témák szerint</target>
       </trans-unit>
       <trans-unit id="no_events_found">
         <source>No events found</source>
-        <target state="needs-translation">No events found</target>
+        <target state="translated">Nem található esemény</target>
       </trans-unit>
       <trans-unit id="link.listEvents">
         <source>Show all events</source>
-        <target state="needs-translation">Show all events</target>
+        <target state="translated">Összes esemény megjelenítése</target>
       </trans-unit>
       <trans-unit id="required">
         <source>required</source>
-        <target state="needs-translation">required</target>
+        <target state="translated">kötelező</target>
       </trans-unit>
       <trans-unit id="hint">
         <source>Hint</source>
-        <target state="needs-translation">Hint</target>
+        <target state="translated">Tipp</target>
       </trans-unit>
       <trans-unit id="create">
         <source>Create</source>
-        <target state="needs-translation">Create</target>
+        <target state="translated">Létrehozás</target>
       </trans-unit>
       <trans-unit id="update">
         <source>Update</source>
-        <target state="needs-translation">Update</target>
+        <target state="translated">Frissítés</target>
       </trans-unit>
       <trans-unit id="save">
         <source>Save</source>
-        <target state="needs-translation">Save</target>
+        <target state="translated">Mentés</target>
       </trans-unit>
       <trans-unit id="remainingLetters">
         <source>Remaining letters</source>
-        <target state="needs-translation">Remaining letters</target>
+        <target state="translated">Hátralévő betűk</target>
       </trans-unit>
       <trans-unit id="userGroupNotConfigured">
         <source>Please assign a user group (userGroup property) in the site settings to restrict access to this page.</source>
-        <target state="needs-translation">Please assign a user group (userGroup property) in the site settings to restrict access to this page.</target>
+        <target state="translated">Kérjük, rendeljen hozzá egy felhasználói csoportot (userGroup tulajdonság) az oldalbeállításokban az oldal hozzáférésének korlátozásához.</target>
       </trans-unit>
       <trans-unit id="pluginNeedsLogin">
         <source>This page is restricted. Please log in to access the Events Management area.</source>
-        <target state="needs-translation">This page is restricted. Please log in to access the Events Management area.</target>
+        <target state="translated">Ez az oldal korlátozott. Az Eseménykezelő terület eléréséhez jelentkezzen be.</target>
       </trans-unit>
       <trans-unit id="notAllowedToCreate">
         <source>You're not allowed to create event records.</source>
-        <target state="needs-translation">You're not allowed to create event records.</target>
+        <target state="translated">Nincs engedélye eseményrekordok létrehozására.</target>
       </trans-unit>
       <trans-unit id="missingOrganizerForCreate">
         <source>You're allowed to create event records, but your user record has no relation to an organizer record.</source>
-        <target state="needs-translation">You're allowed to create event records, but your user record has no relation to an organizer record.</target>
+        <target state="translated">Létrehozhat eseményrekordokat, de a felhasználói rekordja nem kapcsolódik egyetlen szervezői rekordhoz sem.</target>
       </trans-unit>
       <trans-unit id="unauthorizedOrganizerForEdit">
         <source>You are not allowed to edit events that do not correspond to your assigned organizer.</source>
-        <target state="needs-translation">You are not allowed to edit events that do not correspond to your assigned organizer.</target>
+        <target state="translated">Nem szerkeszthet olyan eseményeket, amelyek nem a hozzárendelt szervezőjéhez tartoznak.</target>
       </trans-unit>
       <trans-unit id="pageBrowser.first">
         <source>First</source>
-        <target state="needs-translation">First</target>
+        <target state="translated">Első</target>
       </trans-unit>
       <trans-unit id="pageBrowser.previous">
         <source>Previous</source>
-        <target state="needs-translation">Previous</target>
+        <target state="translated">Előző</target>
       </trans-unit>
       <trans-unit id="pageBrowser.next">
         <source>Next</source>
-        <target state="needs-translation">Next</target>
+        <target state="translated">Következő</target>
       </trans-unit>
       <trans-unit id="pageBrowser.last">
         <source>Last</source>
-        <target state="needs-translation">Last</target>
+        <target state="translated">Utolsó</target>
       </trans-unit>
       <trans-unit id="email.subject.create">
         <source>A new record was created</source>
-        <target state="needs-translation">A new record was created</target>
+        <target state="translated">Új rekord létrehozva</target>
       </trans-unit>
       <trans-unit id="email.subject.update">
         <source>A record was updated</source>
-        <target state="needs-translation">A record was updated</target>
+        <target state="translated">A rekord frissítve</target>
       </trans-unit>
       <trans-unit id="email.subject.activate">
         <source>A record was activated</source>
-        <target state="needs-translation">A record was activated</target>
+        <target state="translated">A rekord aktiválva</target>
       </trans-unit>
       <trans-unit id="validator.event.videoLink.notYouTube">
         <source>The URI provided for the video link is not a YouTube link. This form currently only allows YouTube links.</source>
-        <target state="needs-translation">The URI provided for the video link is not a YouTube link. This form currently only allows YouTube links.</target>
+        <target state="translated">A videóhivatkozáshoz megadott URI nem YouTube-hivatkozás. Ez az űrlap jelenleg csak YouTube-hivatkozásokat engedélyez.</target>
       </trans-unit>
       <trans-unit id="validator.event.categories.isMandatory">
         <source>Property "categories" is defined to be mandatory. Please select at least one category.</source>
-        <target state="needs-translation">Property "categories" is defined to be mandatory. Please select at least one category.</target>
+        <target state="translated">A "categories" tulajdonság kötelezőként van megadva. Kérjük, válasszon ki legalább egy kategóriát.</target>
       </trans-unit>
       <trans-unit id="error.upload">
         <source>Something went wrong with your uploaded files. Please try again. Error: </source>
-        <target state="needs-translation">Something went wrong with your uploaded files. Please try again. Error: </target>
+        <target state="translated">Probléma adódott a feltöltött fájlokkal. Próbálja újra. Hiba: </target>
       </trans-unit>
       <trans-unit id="error.uploadRights">
         <source>You don\'t have checked the box for upload rights. So upload stops here</source>
-        <target state="needs-translation">You don\'t have checked the box for upload rights. So upload stops here</target>
+        <target state="translated">Nem jelölte be a feltöltési jogosultságok jelölőnégyzetét, így a feltöltés itt leáll.</target>
       </trans-unit>
       <trans-unit id="error.fileExtension">
         <source>You only can upload files with following file extensions: %1$s</source>
-        <target state="needs-translation">You only can upload files with following file extensions: %1$s</target>
+        <target state="translated">Csak a következő fájlkiterjesztésű fájlokat töltheti fel: %1$s</target>
       </trans-unit>
       <trans-unit id="error.locationFail">
         <source>The given location does not exist in our database. Please choose another one</source>
-        <target state="needs-translation">The given location does not exist in our database. Please choose another one</target>
+        <target state="translated">A megadott helyszín nem létezik az adatbázisunkban. Kérjük, válasszon másikat</target>
       </trans-unit>
       <trans-unit id="cshTitle">
         <source>The title is mandatory</source>
-        <target state="needs-translation">The title is mandatory</target>
+        <target state="translated">A cím kötelező</target>
       </trans-unit>
       <trans-unit id="cshTeaser">
         <source>The teaser is a short description and will be displayed on list views</source>
-        <target state="needs-translation">The teaser is a short description and will be displayed on list views</target>
+        <target state="translated">A beharangozó egy rövid leírás, amely a listanézetekben jelenik meg</target>
       </trans-unit>
       <trans-unit id="cshEventBegin">
         <source>This date must be filled in following format: dd.mm.yyyy</source>
-        <target state="needs-translation">This date must be filled in following format: dd.mm.yyyy</target>
+        <target state="translated">Ezt a dátumot a következő formátumban kell megadni: dd.mm.yyyy</target>
       </trans-unit>
       <trans-unit id="cshEventEnd">
         <source>This date must be filled in following format: dd.mm.yyyy</source>
-        <target state="needs-translation">This date must be filled in following format: dd.mm.yyyy</target>
+        <target state="translated">Ezt a dátumot a következő formátumban kell megadni: dd.mm.yyyy</target>
       </trans-unit>
       <trans-unit id="cshTimeBegin">
         <source>The time of the event has to be fill in following format: hh:mm</source>
-        <target state="needs-translation">The time of the event has to be fill in following format: hh:mm</target>
+        <target state="translated">Az esemény időpontját a következő formátumban kell megadni: hh:mm</target>
       </trans-unit>
       <trans-unit id="cshCategories">
         <source>The categories are mandatory. Please hold down STRG or CMD on your keyboard to select multiple categories.</source>
-        <target state="needs-translation">The categories are mandatory. Please hold down STRG or CMD on your keyboard to select multiple categories.</target>
+        <target state="translated">A kategóriák kötelezőek. A több kategória kiválasztásához tartsa lenyomva a STRG vagy a CMD billentyűt a billentyűzeten.</target>
       </trans-unit>
       <trans-unit id="cshLocation">
         <source>The location is mandatory</source>
-        <target state="needs-translation">The location is mandatory</target>
+        <target state="translated">A helyszín kötelező</target>
       </trans-unit>
       <trans-unit id="cshVideo">
         <source>Insert here the link to a video film</source>
-        <target state="needs-translation">Insert here the link to a video film</target>
+        <target state="translated">Ide illessze be a videófilm hivatkozását</target>
       </trans-unit>
       <trans-unit id="cshImages">
         <source>Upload max. 5 image files (jpg,gif,png). Please use the same image dimensions (i.e. 3:2, 3:4) if uploading more than one image.Be sure to set the image rights. Otherwise the image will not be uploaded.</source>
-        <target state="needs-translation">Upload max. 5 image files (jpg,gif,png). Please use the same image dimensions (i.e. 3:2, 3:4) if uploading more than one image.Be sure to set the image rights. Otherwise the image will not be uploaded.</target>
+        <target state="translated">Töltsön fel legfeljebb 5 képfájlt (jpg,gif,png). Ha egynél több képet tölt fel, használja ugyanazokat a képméreteket (pl. 3:2, 3:4). Ügyeljen a képjogosultságok beállítására, ellenkező esetben a kép nem lesz feltöltve.</target>
       </trans-unit>
       <trans-unit id="rightsMessage">
         <source>Dear Admin: Please override this label with help of TypoScript</source>
-        <target state="needs-translation">Dear Admin: Please override this label with help of TypoScript</target>
+        <target state="translated">Kedves Admin! Kérjük, írja felül ezt a feliratot TypoScript segítségével</target>
       </trans-unit>
       <trans-unit id="altTextMapImg">
         <source>Map</source>
-        <target state="needs-translation">Map</target>
+        <target state="translated">Térkép</target>
       </trans-unit>
       <trans-unit id="scheduler.path">
         <source>Path of file to import</source>
-        <target state="needs-translation">Path of file to import</target>
+        <target state="translated">Az importálandó fájl útvonala</target>
       </trans-unit>
       <trans-unit id="scheduler.storagePid">
         <source>Storage PID</source>
-        <target state="needs-translation">Storage PID</target>
+        <target state="translated">Tárolási PID</target>
       </trans-unit>
     </body>
   </file>
