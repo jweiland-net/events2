@@ -5,47 +5,47 @@
     <body>
       <trans-unit id="element.newEvent.renderingOptions.submitButtonLabel">
         <source>Submit</source>
-        <target state="needs-translation">Submit</target>
+        <target state="translated">Beküldés</target>
       </trans-unit>
       <trans-unit id="element.radio-choose-event-type.properties.label">
         <source>Event type</source>
-        <target state="needs-translation">Event type</target>
+        <target state="translated">Eseménytípus</target>
       </trans-unit>
       <trans-unit id="element.radio-choose-event-type.renderingOptions.nextButtonLabel">
         <source>Next page</source>
-        <target state="needs-translation">Next page</target>
+        <target state="translated">Következő oldal</target>
       </trans-unit>
       <trans-unit id="element.choose-event-type.properties.label">
         <source>Please choose an event type</source>
-        <target state="needs-translation">Please choose an event type</target>
+        <target state="translated">Kérjük, válasszon eseménytípust</target>
       </trans-unit>
       <trans-unit id="element.choose-event-type.properties.elementDescription">
         <source>You must first select an event type so that the corresponding input fields can be displayed on the following pages.</source>
-        <target state="needs-translation">You must first select an event type so that the corresponding input fields can be displayed on the following pages.</target>
+        <target state="translated">Először eseménytípust kell választania, hogy a megfelelő beviteli mezők megjelenhessenek a következő oldalakon.</target>
       </trans-unit>
       <trans-unit id="element.choose-event-type.properties.options.single">
         <source>Single event</source>
-        <target state="needs-translation">Single event</target>
+        <target state="translated">Egyedi esemény</target>
       </trans-unit>
       <trans-unit id="element.choose-event-type.properties.options.duration">
         <source>Multiday event</source>
-        <target state="needs-translation">Multiday event</target>
+        <target state="translated">Többnapos esemény</target>
       </trans-unit>
       <trans-unit id="element.choose-event-type.properties.options.recurring">
         <source>Recurring event</source>
-        <target state="needs-translation">Recurring event</target>
+        <target state="translated">Ismétlődő esemény</target>
       </trans-unit>
       <trans-unit id="element.collect-data.properties.label">
         <source>Event data</source>
-        <target state="needs-translation">Event data</target>
+        <target state="translated">Eseményadatok</target>
       </trans-unit>
       <trans-unit id="element.collect-data.renderingOptions.previousButtonLabel">
         <source>Previous page</source>
-        <target state="needs-translation">Previous page</target>
+        <target state="translated">Előző oldal</target>
       </trans-unit>
       <trans-unit id="element.collect-data.renderingOptions.nextButtonLabel">
         <source>Next page</source>
-        <target state="needs-translation">Next page</target>
+        <target state="translated">Következő oldal</target>
       </trans-unit>
       <trans-unit id="element.title.properties.label">
         <source>Title</source>
@@ -53,7 +53,7 @@
       </trans-unit>
       <trans-unit id="element.title.properties.elementDescription">
         <source>The title is a mandatory field. It should identify the event as clearly as possible.</source>
-        <target state="needs-translation">The title is a mandatory field. It should identify the event as clearly as possible.</target>
+        <target state="translated">A cím kötelező mező. Lehetőleg a lehető legpontosabban azonosítsa az eseményt.</target>
       </trans-unit>
       <trans-unit id="element.event-begin.properties.label">
         <source>Event begin</source>
@@ -61,31 +61,31 @@
       </trans-unit>
       <trans-unit id="element.event-begin.properties.elementDescription">
         <source>The start date is a mandatory field. Click on the calendar icon to open the Date Value Wizard.</source>
-        <target state="needs-translation">The start date is a mandatory field. Click on the calendar icon to open the Date Value Wizard.</target>
+        <target state="translated">A kezdő dátum kötelező mező. Kattintson a naptárikonra a dátumérték-varázsló megnyitásához.</target>
       </trans-unit>
       <trans-unit id="element.event-end.properties.label">
         <source>Event end</source>
-        <target state="needs-translation">Event end</target>
+        <target state="translated">Esemény vége</target>
       </trans-unit>
       <trans-unit id="element.event-end.properties.elementDescription">
         <source>For multiday events, the event end date is a mandatory field. Click on the calendar icon to open the Date Value Wizard.</source>
-        <target state="needs-translation">For multiday events, the event end date is a mandatory field. Click on the calendar icon to open the Date Value Wizard.</target>
+        <target state="translated">A többnapos eseményeknél az esemény befejezési dátuma kötelező mező. Kattintson a naptárikonra a dátumérték-varázsló megnyitásához.</target>
       </trans-unit>
       <trans-unit id="element.recurring-end.properties.label">
         <source>End of the series of events</source>
-        <target state="needs-translation">End of the series of events</target>
+        <target state="translated">Az eseménysorozat vége</target>
       </trans-unit>
       <trans-unit id="element.recurring-end.properties.elementDescription">
         <source>For recurring events we recommend setting an end date. However, this is not mandatory. Click on the calendar icon to open the Date Value Wizard.</source>
-        <target state="needs-translation">For recurring events we recommend setting an end date. However, this is not mandatory. Click on the calendar icon to open the Date Value Wizard.</target>
+        <target state="translated">Ismétlődő eseményeknél javasoljuk a befejezési dátum beállítását, azonban ez nem kötelező. Kattintson a naptárikonra a dátumérték-varázsló megnyitásához.</target>
       </trans-unit>
       <trans-unit id="element.time-begin.properties.label">
         <source>Event time</source>
-        <target state="needs-translation">Event time</target>
+        <target state="translated">Esemény időpontja</target>
       </trans-unit>
       <trans-unit id="element.time-begin.properties.elementDescription">
         <source>Here you can add a start time to the event. Use the format hh:mm. If it is a recurring event, this time will be valid for every day.</source>
-        <target state="needs-translation">Here you can add a start time to the event. Use the format hh:mm. If it is a recurring event, this time will be valid for every day.</target>
+        <target state="translated">Itt kezdési időpontot adhat az eseményhez. Használja a hh:mm formátumot. Ismétlődő esemény esetén ez az időpont minden napra érvényes lesz.</target>
       </trans-unit>
       <trans-unit id="element.short-description.properties.label">
         <source>Teaser</source>
@@ -93,15 +93,15 @@
       </trans-unit>
       <trans-unit id="element.short-description.properties.elementDescription">
         <source>Enter a short description here. This will be used as description text in event overviews.</source>
-        <target state="needs-translation">Enter a short description here. This will be used as description text in event overviews.</target>
+        <target state="translated">Itt rövid leírást adjon meg. Ez lesz a leírás szövege az eseményáttekintésekben.</target>
       </trans-unit>
       <trans-unit id="element.detail-description.properties.label">
         <source>Description</source>
-        <target state="needs-translation">Description</target>
+        <target state="translated">Leírás</target>
       </trans-unit>
       <trans-unit id="element.detail-description.properties.elementDescription">
         <source>Enter a detailed description here. This will be displayed as description text in the detail view.</source>
-        <target state="needs-translation">Enter a detailed description here. This will be displayed as description text in the detail view.</target>
+        <target state="translated">Itt részletes leírást adjon meg. Ez a leírás szövegeként jelenik meg a részletnézetben.</target>
       </trans-unit>
       <trans-unit id="element.ticket-link.properties.label">
         <source>Ticket link</source>
@@ -109,31 +109,31 @@
       </trans-unit>
       <trans-unit id="element.ticket-link.properties.elementDescription">
         <source>Enter a link to the ticket sale here. Please transfer the complete link incl. https://</source>
-        <target state="needs-translation">Enter a link to the ticket sale here. Please transfer the complete link incl. https://</target>
+        <target state="translated">Itt adja meg a jegyértékesítés hivatkozását. Kérjük, adja meg a teljes hivatkozást, beleértve a https://-t</target>
       </trans-unit>
       <trans-unit id="element.event-location.properties.label">
         <source>Event Location</source>
-        <target state="needs-translation">Event Location</target>
+        <target state="translated">Esemény helyszíne</target>
       </trans-unit>
       <trans-unit id="element.event-location.properties.elementDescription">
         <source>The venue is a required field. Please enter the first times of the location in the field and select the appropriate location from the list.</source>
-        <target state="needs-translation">The venue is a required field. Please enter the first times of the location in the field and select the appropriate location from the list.</target>
+        <target state="translated">A helyszín kötelező mező. Írja be a helyszín nevének első betűit a mezőbe, majd válassza ki a megfelelő helyszínt a listából.</target>
       </trans-unit>
       <trans-unit id="element.download-link.properties.label">
         <source>Download link</source>
-        <target state="needs-translation">Download link</target>
+        <target state="translated">Letöltési hivatkozás</target>
       </trans-unit>
       <trans-unit id="element.download-link.properties.elementDescription">
         <source>Here you can add a link to a program booklet, for example.</source>
-        <target state="needs-translation">Here you can add a link to a program booklet, for example.</target>
+        <target state="translated">Itt hivatkozást adhat meg például egy programfüzethez.</target>
       </trans-unit>
       <trans-unit id="element.youtube-link.properties.label">
         <source>YouTube link</source>
-        <target state="needs-translation">YouTube link</target>
+        <target state="translated">YouTube-hivatkozás</target>
       </trans-unit>
       <trans-unit id="element.youtube-link.properties.elementDescription">
         <source>Here you can add a link to a YouTube video.</source>
-        <target state="needs-translation">Here you can add a link to a YouTube video.</target>
+        <target state="translated">Itt hivatkozást adhat meg egy YouTube-videóhoz.</target>
       </trans-unit>
       <trans-unit id="element.categories.properties.label">
         <source>Categories</source>
@@ -141,7 +141,7 @@
       </trans-unit>
       <trans-unit id="element.categories.properties.elementDescription">
         <source>Categories are a required field. Select min. 1 but max. 3 categories.</source>
-        <target state="needs-translation">Categories are a required field. Select min. 1 but max. 3 categories.</target>
+        <target state="translated">A kategóriák kötelező mezőt jelentenek. Válasszon minimum 1, de maximum 3 kategóriát.</target>
       </trans-unit>
       <trans-unit id="element.weekday.properties.label">
         <source>Weekday</source>
@@ -149,7 +149,7 @@
       </trans-unit>
       <trans-unit id="element.weekday.properties.elementDescription">
         <source>The days of the week are a required field. Select at least one day of the week. The event will then appear every week on the specified weekdays.</source>
-        <target state="needs-translation">The days of the week are a required field. Select at least one day of the week. The event will then appear every week on the specified weekdays.</target>
+        <target state="translated">A hét napjai kötelező mezőt jelentenek. Válasszon ki legalább egy napot a héten. Az esemény ezután minden héten megjelenik a kiválasztott napokon.</target>
       </trans-unit>
       <trans-unit id="element.weekday.properties.options.1">
         <source>Monday</source>
@@ -181,107 +181,107 @@
       </trans-unit>
       <trans-unit id="element.image-1.properties.label">
         <source>1st image upload</source>
-        <target state="needs-translation">1st image upload</target>
+        <target state="translated">1. kép feltöltése</target>
       </trans-unit>
       <trans-unit id="element.image-1.properties.elementDescription">
         <source>You can add up to 2 images to the event.</source>
-        <target state="needs-translation">You can add up to 2 images to the event.</target>
+        <target state="translated">Legfeljebb 2 képet adhat az eseményhez.</target>
       </trans-unit>
       <trans-unit id="element.image-2.properties.label">
         <source>2nd image upload</source>
-        <target state="needs-translation">2nd image upload</target>
+        <target state="translated">2. kép feltöltése</target>
       </trans-unit>
       <trans-unit id="element.image-2.properties.elementDescription">
         <source>You can add up to 2 images to the event.</source>
-        <target state="needs-translation">You can add up to 2 images to the event.</target>
+        <target state="translated">Legfeljebb 2 képet adhat az eseményhez.</target>
       </trans-unit>
       <trans-unit id="element.define-event-times.properties.label">
         <source>Define further event times each weekday</source>
-        <target state="needs-translation">Define further event times each weekday</target>
+        <target state="translated">További eseményidőpontok megadása minden hét napjára</target>
       </trans-unit>
       <trans-unit id="element.define-event-times.renderingOptions.previousButtonLabel">
         <source>Previous page</source>
-        <target state="needs-translation">Previous page</target>
+        <target state="translated">Előző oldal</target>
       </trans-unit>
       <trans-unit id="element.time-begin-monday.properties.label">
         <source>Here you can specify a different start time for Monday.</source>
-        <target state="needs-translation">Here you can specify a different start time for Monday.</target>
+        <target state="translated">Itt eltérő kezdési időpontot adhat meg hétfőre.</target>
       </trans-unit>
       <trans-unit id="element.time-begin-monday.properties.elementDescription">
         <source>Enter the different start time in the format hh:mm.</source>
-        <target state="needs-translation">Enter the different start time in the format hh:mm.</target>
+        <target state="translated">Adja meg az eltérő kezdési időpontot hh:mm formátumban.</target>
       </trans-unit>
       <trans-unit id="element.time-begin-tuesday.properties.label">
         <source>Here you can specify a different start time for Tuesday.</source>
-        <target state="needs-translation">Here you can specify a different start time for Tuesday.</target>
+        <target state="translated">Itt eltérő kezdési időpontot adhat meg keddre.</target>
       </trans-unit>
       <trans-unit id="element.time-begin-tuesday.properties.elementDescription">
         <source>Enter the different start time in the format hh:mm.</source>
-        <target state="needs-translation">Enter the different start time in the format hh:mm.</target>
+        <target state="translated">Adja meg az eltérő kezdési időpontot hh:mm formátumban.</target>
       </trans-unit>
       <trans-unit id="element.time-begin-wednesday.properties.label">
         <source>Here you can specify a different start time for Wednesday.</source>
-        <target state="needs-translation">Here you can specify a different start time for Wednesday.</target>
+        <target state="translated">Itt eltérő kezdési időpontot adhat meg szerdára.</target>
       </trans-unit>
       <trans-unit id="element.time-begin-wednesday.properties.elementDescription">
         <source>Enter the different start time in the format hh:mm.</source>
-        <target state="needs-translation">Enter the different start time in the format hh:mm.</target>
+        <target state="translated">Adja meg az eltérő kezdési időpontot hh:mm formátumban.</target>
       </trans-unit>
       <trans-unit id="element.time-begin-thursday.properties.label">
         <source>Here you can specify a different start time for Thursday.</source>
-        <target state="needs-translation">Here you can specify a different start time for Thursday.</target>
+        <target state="translated">Itt eltérő kezdési időpontot adhat meg csütörtökre.</target>
       </trans-unit>
       <trans-unit id="element.time-begin-thursday.properties.elementDescription">
         <source>Enter the different start time in the format hh:mm.</source>
-        <target state="needs-translation">Enter the different start time in the format hh:mm.</target>
+        <target state="translated">Adja meg az eltérő kezdési időpontot hh:mm formátumban.</target>
       </trans-unit>
       <trans-unit id="element.time-begin-friday.properties.label">
         <source>Here you can specify a different start time for Friday.</source>
-        <target state="needs-translation">Here you can specify a different start time for Friday.</target>
+        <target state="translated">Itt eltérő kezdési időpontot adhat meg péntekre.</target>
       </trans-unit>
       <trans-unit id="element.time-begin-friday.properties.elementDescription">
         <source>Enter the different start time in the format hh:mm.</source>
-        <target state="needs-translation">Enter the different start time in the format hh:mm.</target>
+        <target state="translated">Adja meg az eltérő kezdési időpontot hh:mm formátumban.</target>
       </trans-unit>
       <trans-unit id="element.time-begin-saturday.properties.label">
         <source>Here you can specify a different start time for Saturday.</source>
-        <target state="needs-translation">Here you can specify a different start time for Saturday.</target>
+        <target state="translated">Itt eltérő kezdési időpontot adhat meg szombatra.</target>
       </trans-unit>
       <trans-unit id="element.time-begin-saturday.properties.elementDescription">
         <source>Enter the different start time in the format hh:mm.</source>
-        <target state="needs-translation">Enter the different start time in the format hh:mm.</target>
+        <target state="translated">Adja meg az eltérő kezdési időpontot hh:mm formátumban.</target>
       </trans-unit>
       <trans-unit id="element.time-begin-sunday.properties.label">
         <source>Here you can specify a different start time for Sunday.</source>
-        <target state="needs-translation">Here you can specify a different start time for Sunday.</target>
+        <target state="translated">Itt eltérő kezdési időpontot adhat meg vasárnapra.</target>
       </trans-unit>
       <trans-unit id="element.time-begin-sunday.properties.elementDescription">
         <source>Enter the different start time in the format hh:mm.</source>
-        <target state="needs-translation">Enter the different start time in the format hh:mm.</target>
+        <target state="translated">Adja meg az eltérő kezdési időpontot hh:mm formátumban.</target>
       </trans-unit>
       <trans-unit id="validation.error.1221560910">
         <source>This field is a mandatory field!</source>
-        <target state="needs-translation">This field is a mandatory field!</target>
+        <target state="translated">Ez a mező kötelező!</target>
       </trans-unit>
       <trans-unit id="validation.error.1221560718">
         <source>This field is a mandatory field!</source>
-        <target state="needs-translation">This field is a mandatory field!</target>
+        <target state="translated">Ez a mező kötelező!</target>
       </trans-unit>
       <trans-unit id="validation.error.1347992400">
         <source>This field is a mandatory field!</source>
-        <target state="needs-translation">This field is a mandatory field!</target>
+        <target state="translated">Ez a mező kötelező!</target>
       </trans-unit>
       <trans-unit id="validation.error.1347992453">
         <source>This field is a mandatory field!</source>
-        <target state="needs-translation">This field is a mandatory field!</target>
+        <target state="translated">Ez a mező kötelező!</target>
       </trans-unit>
       <trans-unit id="validation.error.1475002994">
         <source>You must select between %s to %s elements.</source>
-        <target state="needs-translation">You must select between %s to %s elements.</target>
+        <target state="translated">Választania kell %s és %s elem közül.</target>
       </trans-unit>
       <trans-unit id="finisher.FlashMessage.messageBody">
         <source>Your new Event was created.</source>
-        <target state="needs-translation">Your new Event was created.</target>
+        <target state="translated">Az új esemény létrehozva.</target>
       </trans-unit>
     </body>
   </file>
