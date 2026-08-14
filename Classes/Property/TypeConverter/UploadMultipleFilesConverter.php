@@ -14,7 +14,7 @@ namespace JWeiland\Events2\Property\TypeConverter;
 use JWeiland\Checkfaluploads\Service\FalUploadService;
 use JWeiland\Events2\Event\PostCheckFileReferenceEvent;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
-use TYPO3\CMS\Core\Resource\DuplicationBehavior;
+use TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior;
 use TYPO3\CMS\Core\Resource\Exception\ResourceDoesNotExistException;
 use TYPO3\CMS\Core\Resource\Folder;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
@@ -56,7 +56,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
      */
     protected ?FalUploadService $falUploadService = null;
 
-    public function __construct(protected readonly EventDispatcher $eventDispatcher) {}
+    public function __construct(protected readonly EventDispatcher $eventDispatcher, private readonly ResourceFactory $resourceFactory) {}
 
     public function canConvertFrom($source, string $targetType): bool
     {
@@ -171,7 +171,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
 
     protected function initialize(?PropertyMappingConfigurationInterface $configuration): void
     {
-        if ($configuration === null) {
+        if (!$configuration instanceof PropertyMappingConfigurationInterface) {
             throw new \Exception(
                 'Missing PropertyMapper configuration in UploadMultipleFilesConverter',
                 1604051720,
@@ -220,10 +220,10 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
             );
         }
 
-        $resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);
+        $resourceFactory = $this->resourceFactory;
         try {
             $uploadFolder = $resourceFactory->getObjectFromCombinedIdentifier($combinedUploadFolderIdentifier);
-        } catch (ResourceDoesNotExistException $resourceDoesNotExistException) {
+        } catch (ResourceDoesNotExistException) {
             [$storageUid] = GeneralUtility::trimExplode(':', $combinedUploadFolderIdentifier);
             $resourceStorage = $resourceFactory->getStorageObject((int)$storageUid);
             $uploadFolder = $resourceStorage->createFolder($combinedUploadFolderIdentifier);
@@ -256,13 +256,13 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
      */
     protected function deleteFile(?FileReference $fileReference): void
     {
-        if ($fileReference !== null) {
+        if ($fileReference instanceof FileReference) {
             $fileReference = $fileReference->getOriginalResource();
 
             if ($fileReference->getStorage()->isWithinFolder($this->uploadFolder, $fileReference)) {
                 try {
                     $fileReference->getOriginalFile()->delete();
-                } catch (\Exception $exception) {
+                } catch (\Exception) {
                     // Do nothing. File already deleted or not found
                 }
             }
@@ -285,7 +285,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
      */
     protected function getCoreFileReference(array $source): \TYPO3\CMS\Core\Resource\FileReference
     {
-        $resourceFactory = GeneralUtility::makeInstance(ResourceFactory::class);
+        $resourceFactory = $this->resourceFactory;
         $uploadedFile = $this->uploadFolder->addUploadedFile($source, DuplicationBehavior::RENAME);
 
         // create Core FileReference
@@ -300,7 +300,7 @@ class UploadMultipleFilesConverter extends AbstractTypeConverter
 
     protected function getFalUploadService(): FalUploadService
     {
-        if ($this->falUploadService === null) {
+        if (!$this->falUploadService instanceof FalUploadService) {
             $this->falUploadService = GeneralUtility::makeInstance(FalUploadService::class);
         }
 

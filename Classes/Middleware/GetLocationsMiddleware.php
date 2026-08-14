@@ -39,7 +39,7 @@ final readonly class GetLocationsMiddleware implements MiddlewareInterface
 
         // Hint: search may fail with "&" in $search
         $json = (string)$request->getBody();
-        if (json_validate($json) !== true) {
+        if (!json_validate($json)) {
             return new JsonResponse();
         }
 

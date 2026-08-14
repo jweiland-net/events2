@@ -111,7 +111,7 @@ readonly class DayRecordBuilderService
             // to ensure all days of the duration event have the same sort_day_time.
             // This allows grouping/merging of duration event days in listings.
             $firstDateTimeResult = $dayGeneratorResult->getFirstDateTimeResult();
-            if ($firstDateTimeResult !== null) {
+            if ($firstDateTimeResult instanceof DateTimeResult) {
                 $timeResult = $firstDateTimeResult->getFirstTimeResult() ?? $timeResult;
                 return $firstDateTimeResult->getDate()->modify(
                     sprintf(

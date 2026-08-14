@@ -15,27 +15,21 @@ use TYPO3\CMS\Core\DataHandling\SlugHelper;
 
 class GeneratePathSegmentEvent
 {
-    protected array $parameters = [];
-
     protected array $baseRecord = [];
 
     protected string $pathSegment = '';
 
-    protected SlugHelper $slugHelper;
-
-    public function __construct(array $parameters, SlugHelper $slugHelper)
+    public function __construct(protected array $parameters, protected SlugHelper $slugHelper)
     {
-        $this->parameters = $parameters;
-        $this->baseRecord = (array)($parameters['record'] ?? []);
-        $this->slugHelper = $slugHelper;
+        $this->baseRecord = (array)($this->parameters['record'] ?? []);
     }
 
     /**
      * @return array{
      *     slug: string,
      *     workspaceId: int,
-     *     configuration: array<mixed>,
-     *     record: array<mixed>,
+     *     configuration: array,
+     *     record: array,
      *     pid: int,
      *     prefix: string,
      *     tableName: string,
@@ -47,9 +41,7 @@ class GeneratePathSegmentEvent
         return $this->parameters;
     }
 
-    /**
-     * @deprecated Please use 'record' from getParameters
-     */
+    #[\Deprecated(message: "Please use 'record' from getParameters")]
     public function getBaseRecord(): array
     {
         return $this->baseRecord;

@@ -33,6 +33,7 @@ final class Events2PageTitleProvider extends AbstractPageTitleProvider
         protected DayRecordService $dayRecordService,
     ) {}
 
+    #[\Override]
     public function getTitle(): string
     {
         $pageTitle = '';

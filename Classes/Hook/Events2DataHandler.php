@@ -57,13 +57,13 @@ readonly class Events2DataHandler
         }
 
         if (array_key_exists('tx_events2_domain_model_day', $dataHandler->datamap)) {
-            foreach ($dataHandler->datamap['tx_events2_domain_model_day'] as $id => $incomingFieldArray) {
+            foreach (array_keys($dataHandler->datamap['tx_events2_domain_model_day']) as $id) {
                 $this->deleteDayRecord($this->getRecordUid($id, $dataHandler));
             }
         }
 
         if (array_key_exists('tx_events2_domain_model_event', $dataHandler->datamap)) {
-            foreach ($dataHandler->datamap['tx_events2_domain_model_event'] as $id => $incomingFieldArray) {
+            foreach (array_keys($dataHandler->datamap['tx_events2_domain_model_event']) as $id) {
                 $this->dayRelationService->createDayRelations($this->getRecordUid($id, $dataHandler));
             }
         }
@@ -117,16 +117,26 @@ readonly class Events2DataHandler
         $target = $value['target'] ?? $value;
         $ignoreLocalization = (bool)($value['ignoreLocalization'] ?? false);
 
-        $dataHandler->copyRecord(
-            $table,
-            $id,
-            $target,
-            true,
-            [],
-            'days',
-            0,
-            $ignoreLocalization,
-        );
+        $columns = &$GLOBALS['TCA'][$table]['columns'];
+        $daysColumnConfiguration = $columns['days'] ?? null;
+
+        try {
+            // Prevent DataHandler from copying generated inline day records.
+            unset($columns['days']);
+
+            $dataHandler->copyRecord(
+                $table,
+                $id,
+                $target,
+                true,
+            );
+        } finally {
+            // Restore days column configuration
+            if ($daysColumnConfiguration !== null) {
+                $columns['days'] = $daysColumnConfiguration;
+            }
+            unset($columns);
+        }
 
         if ($dataHandler->errorLog === [] && isset($dataHandler->copyMappingArray[$table][$id])) {
             $this->dayRelationService->createDayRelations($this->getRecordUid(

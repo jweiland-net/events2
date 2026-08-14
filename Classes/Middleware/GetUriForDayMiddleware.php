@@ -38,14 +38,14 @@ final readonly class GetUriForDayMiddleware implements MiddlewareInterface
         }
 
         $json = (string)$request->getBody();
-        if (json_validate($json) !== true) {
+        if (!json_validate($json)) {
             return new JsonResponse();
         }
 
         $postData = json_decode($json, true);
 
         $startDate = $this->getStartDateFromPostData($postData);
-        if ($startDate === null) {
+        if (!$startDate instanceof \DateTimeImmutable) {
             return new JsonResponse([
                 'error' => 'Date can not be generated. Missing day, month or year in request.',
             ], 400);

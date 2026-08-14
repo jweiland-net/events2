@@ -36,7 +36,7 @@ final readonly class GetSubCategoriesMiddleware implements MiddlewareInterface
         }
 
         $json = (string)$request->getBody();
-        if (json_validate($json) !== true) {
+        if (!json_validate($json)) {
             return new JsonResponse();
         }
 

@@ -12,7 +12,9 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Hook;
 
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
+use TYPO3\CMS\Core\Database\Query\Restriction\EndTimeRestriction;
+use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
+use TYPO3\CMS\Core\Database\Query\Restriction\StartTimeRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -20,6 +22,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 readonly class EmStaticInfo
 {
+    private ConnectionPool $connectionPool;
+
+    public function __construct(?ConnectionPool $connectionPool = null)
+    {
+        $this->connectionPool = $connectionPool ?? GeneralUtility::makeInstance(ConnectionPool::class);
+    }
+
     /**
      * Render our own custom field for static_info_tables
      */
@@ -54,9 +63,15 @@ readonly class EmStaticInfo
     protected function getCountries(): array
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('static_countries');
-        $queryBuilder->getRestrictions()->removeAll()->add(
-            GeneralUtility::makeInstance(DeletedRestriction::class),
-        );
+
+        $toRemoveRestrictions = [
+            HiddenRestriction::class,
+            StartTimeRestriction::class,
+            EndTimeRestriction::class,
+        ];
+        foreach ($toRemoveRestrictions as $restriction) {
+            $queryBuilder->getRestrictions()->removeByType($restriction);
+        }
 
         return $queryBuilder
             ->select('uid', 'cn_short_en')
@@ -78,6 +93,6 @@ readonly class EmStaticInfo
 
     protected function getConnectionPool(): ConnectionPool
     {
-        return GeneralUtility::makeInstance(ConnectionPool::class);
+        return $this->connectionPool;
     }
 }

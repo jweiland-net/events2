@@ -178,9 +178,7 @@ class Day extends AbstractEntity
 
     public function getTimes(): \SplObjectStorage
     {
-        $timeFactory = GeneralUtility::makeInstance(TimeFactory::class);
-
-        return $timeFactory->getSortedTimesForDate(
+        return GeneralUtility::makeInstance(TimeFactory::class)->getSortedTimesForDate(
             $this->getEvent(),
             $this->getDay(),
         );

@@ -18,22 +18,15 @@ use TYPO3\CMS\Reactions\Model\ReactionInstruction;
  */
 class ImportConfiguration
 {
-    private array $payload;
+    private readonly int $storagePid;
 
-    private int $storagePid;
+    private readonly string $storageFolder;
 
-    private string $storageFolder;
-
-    private int $parentCategory;
-
-    public function __construct(array $payload, ReactionInstruction $reactionInstruction, int $parentCategory)
+    public function __construct(private readonly array $payload, ReactionInstruction $reactionInstruction, private readonly int $parentCategory)
     {
         $reactionRecord = $reactionInstruction->toArray();
-
-        $this->payload = $payload;
         $this->storagePid = (int)($reactionRecord['storage_pid'] ?? 0);
         $this->storageFolder = $reactionRecord['storage_folder'] ?? '';
-        $this->parentCategory = $parentCategory;
     }
 
     public function getPayload(): array

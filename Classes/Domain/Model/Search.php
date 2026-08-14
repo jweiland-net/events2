@@ -74,14 +74,14 @@ class Search extends AbstractEntity
 
     public function getEventBegin(): ?\DateTimeImmutable
     {
-        if (empty($this->eventBegin)) {
+        if ($this->eventBegin === '' || $this->eventBegin === '0') {
             return null;
         }
 
         try {
             $date = new \DateTimeImmutable($this->eventBegin);
             $date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
-        } catch (\Exception $exception) {
+        } catch (\Exception) {
             $date = null;
         }
 
@@ -95,14 +95,14 @@ class Search extends AbstractEntity
 
     public function getEventEnd(): ?\DateTimeImmutable
     {
-        if (empty($this->eventEnd)) {
+        if ($this->eventEnd === '' || $this->eventEnd === '0') {
             return null;
         }
 
         try {
             $date = new \DateTimeImmutable($this->eventEnd);
             $date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
-        } catch (\Exception $exception) {
+        } catch (\Exception) {
             $date = null;
         }
 

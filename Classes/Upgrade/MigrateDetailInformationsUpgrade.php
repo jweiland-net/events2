@@ -12,13 +12,13 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Upgrade;
 
 use Doctrine\DBAL\Exception;
+use TYPO3\CMS\Core\Attribute\UpgradeWizard;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
+use TYPO3\CMS\Core\Upgrades\DatabaseUpdatedPrerequisite;
+use TYPO3\CMS\Core\Upgrades\UpgradeWizardInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Install\Attribute\UpgradeWizard;
-use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
-use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 
 /**
  * Updater to migrate column detail_informations to detail_information
@@ -26,6 +26,7 @@ use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 #[UpgradeWizard('events2_migrateDetailInformations')]
 class MigrateDetailInformationsUpgrade implements UpgradeWizardInterface
 {
+    public function __construct(private readonly ConnectionPool $connectionPool) {}
     public function getTitle(): string
     {
         return '[events2] Migrate column detail_informations';
@@ -42,7 +43,7 @@ class MigrateDetailInformationsUpgrade implements UpgradeWizardInterface
 
         try {
             $schemaManager = $queryBuilder->getConnection()->createSchemaManager();
-        } catch (Exception $e) {
+        } catch (Exception) {
             return false;
         }
 
@@ -117,6 +118,6 @@ class MigrateDetailInformationsUpgrade implements UpgradeWizardInterface
 
     protected function getConnectionPool(): ConnectionPool
     {
-        return GeneralUtility::makeInstance(ConnectionPool::class);
+        return $this->connectionPool;
     }
 }

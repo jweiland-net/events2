@@ -150,7 +150,7 @@ class AdditionalFieldsForImport extends AbstractAdditionalFieldProvider
         $errorExists = false;
         foreach (array_keys($this->createFieldsFor) as $fieldName) {
             $value = trim($submittedData[$fieldName]);
-            if (empty($value)) {
+            if ($value === '' || $value === '0') {
                 // Issue error message
                 $errorExists = true;
                 $this->addMessage('Field: ' . $fieldName . ' can not be empty', ContextualFeedbackSeverity::ERROR);

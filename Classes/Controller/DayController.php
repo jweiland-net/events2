@@ -34,6 +34,7 @@ class DayController extends AbstractController
         $this->dayRepository->setSettings($this->settings);
     }
 
+    #[\Override]
     protected function initializeView(ViewInterface $view): void
     {
         parent::initializeView($view);

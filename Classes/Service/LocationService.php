@@ -24,6 +24,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 readonly class LocationService
 {
     private const TABLE = 'tx_events2_domain_model_location';
+    public function __construct(private ConnectionPool $connectionPool) {}
 
     public function getLocationRecordByTitle(string $title, int $language = 0): ?array
     {
@@ -43,7 +44,7 @@ readonly class LocationService
                 )
                 ->executeQuery()
                 ->fetchAssociative();
-        } catch (Exception $e) {
+        } catch (Exception) {
             return null;
         }
 
@@ -52,14 +53,9 @@ readonly class LocationService
 
     protected function getQueryBuilder(): QueryBuilder
     {
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable(self::TABLE);
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable(self::TABLE);
         $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
 
         return $queryBuilder;
-    }
-
-    protected function getConnectionPool(): ConnectionPool
-    {
-        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 }

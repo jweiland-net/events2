@@ -15,6 +15,7 @@ use Doctrine\DBAL\Exception;
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Helper\Exception\NoUniquePathSegmentException;
+use JWeiland\Events2\Hook\SlugPostModifierHook;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
@@ -107,7 +108,7 @@ readonly class PathSegmentHelper
                 ->executeQuery();
 
             return $queryResult->fetchAssociative() ?: [];
-        } catch (Exception $e) {
+        } catch (Exception) {
         }
 
         return [];
@@ -128,7 +129,7 @@ readonly class PathSegmentHelper
         $config = $GLOBALS['TCA'][self::TABLE]['columns'][self::SLUG_COLUMN]['config'];
 
         $config['generatorOptions']['postModifiers']['events2-post-modifier']
-            = \JWeiland\Events2\Hook\SlugPostModifierHook::class . '->modify';
+            = SlugPostModifierHook::class . '->modify';
 
         // Make sure the column "uid" is appended in the list of generator fields if "uid" is set in extension settings
         if (
