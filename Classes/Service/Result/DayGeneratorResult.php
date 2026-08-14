@@ -84,11 +84,7 @@ final class DayGeneratorResult
     {
         $this->dateTimeResultStorage->ksort(SORT_NUMERIC);
 
-        foreach ($this->dateTimeResultStorage as $dateTimeResult) {
-            return $dateTimeResult;
-        }
-
-        return null;
+        return $this->dateTimeResultStorage->offsetGet(0) ?: null;
     }
 
     public function getDayRecords(): array

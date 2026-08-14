@@ -26,6 +26,7 @@ class GetPostPaginationTest extends FunctionalTestCase
 {
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
+        'form',
         'reactions',
     ];
 
@@ -386,8 +387,8 @@ class GetPostPaginationTest extends FunctionalTestCase
         $this->setRequest();
 
         $paginatorMock = $this->createMock(PaginatorInterface::class);
-        $paginatorMock->expects(self::atLeastOnce())->method('getCurrentPageNumber')->willReturn(5);
-        $paginatorMock->expects(self::atLeastOnce())->method('getNumberOfPages')->willReturn(3);
+        $paginatorMock->expects($this->atLeastOnce())->method('getCurrentPageNumber')->willReturn(5);
+        $paginatorMock->expects($this->atLeastOnce())->method('getNumberOfPages')->willReturn(3);
 
         $subject = new GetPostPagination($paginatorMock);
 
@@ -410,8 +411,8 @@ class GetPostPaginationTest extends FunctionalTestCase
         $this->setRequest();
 
         $paginatorMock = $this->createMock(PaginatorInterface::class);
-        $paginatorMock->expects(self::atLeastOnce())->method('getCurrentPageNumber')->willReturn(5);
-        $paginatorMock->expects(self::atLeastOnce())->method('getNumberOfPages')->willReturn(3);
+        $paginatorMock->expects($this->atLeastOnce())->method('getCurrentPageNumber')->willReturn(5);
+        $paginatorMock->expects($this->atLeastOnce())->method('getNumberOfPages')->willReturn(3);
 
         $subject = new GetPostPagination($paginatorMock);
 

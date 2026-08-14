@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Upgrade;
 
-use TYPO3\CMS\Install\Attribute\UpgradeWizard;
-use TYPO3\CMS\Install\Updates\AbstractListTypeToCTypeUpdate;
+use TYPO3\CMS\Core\Attribute\UpgradeWizard;
+use TYPO3\CMS\Core\Upgrades\AbstractListTypeToCTypeUpdate;
 
 /**
  * With TYPO3 13 all plugins have to be declared as content elements (CType) insteadof "list_type"
@@ -39,7 +39,7 @@ class MigratePluginToContentElementUpgrade extends AbstractListTypeToCTypeUpdate
 
     public function getDescription(): string
     {
-        return 'The modern way to register plugins for TYPO3 is to register them as content element types. ' .
-            'Running this wizard will migrate all events2 plugins to content element (CType)';
+        return 'The modern way to register plugins for TYPO3 is to register them as content element types. '
+            . 'Running this wizard will migrate all events2 plugins to content element (CType)';
     }
 }

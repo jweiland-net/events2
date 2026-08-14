@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -34,7 +36,6 @@ $tx_events2_domain_model_event = [
             'starttime' => 'starttime',
             'endtime' => 'endtime',
         ],
-        'searchFields' => 'location',
         'iconfile' => 'EXT:events2/Resources/Public/Icons/tx_events2_domain_model_location.png',
     ],
     'types' => [
@@ -43,7 +44,7 @@ $tx_events2_domain_model_event = [
             --palette--;;streetHouseNumber,
             --palette--;;zipCity,
             country, link,
-            --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.access,
+            --div--;core.form.tabs:access,
             --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.palettes.access;access',
         ],
     ],
@@ -52,7 +53,7 @@ $tx_events2_domain_model_event = [
         'streetHouseNumber' => ['showitem' => 'street, house_number'],
         'zipCity' => ['showitem' => 'zip, city'],
         'access' => [
-            'showitem' => 'starttime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:starttime_formlabel,endtime;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:endtime_formlabel',
+            'showitem' => 'starttime;core.db.general:starttime,endtime;core.db.general:endtime',
         ],
     ],
     'columns' => [
@@ -89,7 +90,6 @@ $tx_events2_domain_model_event = [
                 'items' => [
                     [
                         'label' => '',
-                        'value' => '',
                         'invertStateDisplay' => true,
                     ],
                 ],
@@ -120,6 +120,7 @@ $tx_events2_domain_model_event = [
                 'type' => 'datetime',
                 'format' => 'datetime',
                 'default' => 0,
+                'searchable' => false,
             ],
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
@@ -131,6 +132,7 @@ $tx_events2_domain_model_event = [
                 'type' => 'datetime',
                 'format' => 'datetime',
                 'default' => 0,
+                'searchable' => false,
             ],
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
@@ -151,6 +153,7 @@ $tx_events2_domain_model_event = [
                 'type' => 'input',
                 'size' => 30,
                 'eval' => 'trim',
+                'searchable' => false,
             ],
         ],
         'house_number' => [
@@ -160,6 +163,7 @@ $tx_events2_domain_model_event = [
                 'type' => 'input',
                 'size' => 10,
                 'eval' => 'trim',
+                'searchable' => false,
             ],
         ],
         'zip' => [
@@ -169,6 +173,7 @@ $tx_events2_domain_model_event = [
                 'type' => 'input',
                 'size' => 10,
                 'eval' => 'trim',
+                'searchable' => false,
             ],
         ],
         'city' => [
@@ -178,6 +183,7 @@ $tx_events2_domain_model_event = [
                 'type' => 'input',
                 'size' => 30,
                 'eval' => 'trim',
+                'searchable' => false,
             ],
         ],
         'country' => [

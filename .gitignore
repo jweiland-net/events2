@@ -18,34 +18,39 @@ docker-compose.yml
 .DS_Store
 
 # Ignore by common IDEs used directories/files
-nbproject
-*.idea
+.ddev/
+nbproject/
+*.idea/
 *.project
 .buildpath
-.settings
-.TemporaryItems
+.settings/
+.TemporaryItems/
 .webprj
-.fleet
+.fleet/
+.vscode/
 
 # Temporary files and folders
-/.cache
+/.cache/
+node_modules/
 .php_cs.cache
 .php-cs-fixer.cache
-.sass-cache
+.sass-cache/
 .session
 *.log
 
 # Ignore composer stuff
-bin/*
-vendor/*
-.build
-.php_cs.cache
-composer.lock
+/composer.lock
+/packages/
+/var/
 
 # Ignore testing stuff
-/.Build
+/.Build/
 /composer.json.orig
 /composer.json.testing
+
+# Ignore AI agent local files
+.antigravitycli/
+.antigravity-cli/
 
 # Ignore images downloaded by functional XmlImporter tests
 /Tests/Functional/Fixtures/XmlImport/Images/

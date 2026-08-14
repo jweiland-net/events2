@@ -44,12 +44,7 @@ class DateTimeUtilityTest extends UnitTestCase
 
     public static function emptyDatesDataProvider(): array
     {
-        $emptyDate = [];
-        $emptyDate['empty value: null'] = [null];
-        $emptyDate['empty value: 0000-00-00'] = ['0000-00-00'];
-        $emptyDate['empty value: 0000-00-00 00:00:00'] = ['0000-00-00 00:00:00'];
-
-        return $emptyDate;
+        return ['empty value: null' => [null], 'empty value: 0000-00-00' => ['0000-00-00'], 'empty value: 0000-00-00 00:00:00' => ['0000-00-00 00:00:00']];
     }
 
     #[Test]
@@ -66,19 +61,12 @@ class DateTimeUtilityTest extends UnitTestCase
      */
     public static function dataProviderWithInvalidValuesForDateTimeObjects(): array
     {
-        $invalidValues = [];
-        $invalidValues['string'] = ['Hello'];
-        $invalidValues['boolean'] = [true];
-        $invalidValues['object'] = [new \stdClass()];
-        $invalidValues['null'] = [null];
-        $invalidValues['array'] = [[123]];
-
-        return $invalidValues;
+        return ['string' => ['Hello'], 'boolean' => [true], 'object' => [new \stdClass()], 'null' => [null], 'array' => [[123]]];
     }
 
     #[Test]
     #[DataProvider('dataProviderWithInvalidValuesForDateTimeObjects')]
-    public function convertInvalidDates($invalidValue): void
+    public function convertInvalidDates(string|bool|\stdClass|array|null $invalidValue): void
     {
         self::assertNull(
             $this->subject->convert($invalidValue),
@@ -114,9 +102,6 @@ class DateTimeUtilityTest extends UnitTestCase
         );
     }
 
-    /**
-     * @return array
-     */
     public static function timestampDataProvider(): array
     {
         date_default_timezone_set(Events2Constants::PHP_TIMEZONE);

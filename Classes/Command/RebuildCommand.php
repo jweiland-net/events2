@@ -107,7 +107,7 @@ class RebuildCommand extends Command
                 ->count('*')
                 ->executeQuery()
                 ->fetchOne();
-        } catch (Exception $e) {
+        } catch (Exception) {
         }
 
         return 0;

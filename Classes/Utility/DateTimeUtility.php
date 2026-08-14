@@ -29,7 +29,7 @@ readonly class DateTimeUtility
         try {
             if (
                 (!is_string($value) && !is_int($value))
-                || empty($value)
+                || in_array($value, ['', '0', 0], true)
                 || $value === '0000-00-00'
                 || $value === '0000-00-00 00:00:00'
             ) {
@@ -44,7 +44,7 @@ readonly class DateTimeUtility
                 $date = $date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
                 $dateTimeObject = $this->standardizeDateTimeObject($date);
             }
-        } catch (\Exception $exception) {
+        } catch (\Exception) {
             $dateTimeObject = null;
         }
 
@@ -96,7 +96,7 @@ readonly class DateTimeUtility
 
         try {
             return $date->setTimezone(new \DateTimeZone($timeZone))->format($format);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return '';
         }
     }

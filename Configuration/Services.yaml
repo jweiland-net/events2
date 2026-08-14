@@ -9,17 +9,9 @@ services:
     exclude:
       - '../Classes/Domain/Model/*'
       - '../Classes/Exporter/ExporterConfiguration.php'
-      - '../Classes/Hook/Solr/{IndexerHook.php,IndexerHook104.php}'
+      - '../Classes/Hook/Solr/IndexerHook.php'
 
   # Called by makeInstance in eID middleware
-  JWeiland\Events2\Ajax\FindDaysForMonth:
-    public: true
-
-  # Called by makeInstance in eID middleware
-  JWeiland\Events2\Ajax\FindLocations:
-    public: true
-
-  # Called by makeInstance in FormDataGroup/OrderedProviderList
   JWeiland\Events2\Backend\FormDataProvider\InitializeNewEventRecord:
     public: true
 
@@ -45,13 +37,6 @@ services:
   JWeiland\Events2\Domain\Model\Event:
     public: true
     shared: false
-
-  # Must be public as this model was created by makeInstance in DayGenerationService
-  JWeiland\Events2\Domain\Model\DateTimeEntry:
-    public: true
-    shared: false
-    autowire: false
-    autoconfigure: false
 
   # Called by makeInstance from EXT:form
   JWeiland\Events2\Hook\Form\PrefillCategoriesHook:
@@ -95,10 +80,6 @@ services:
   JWeiland\Events2\Tca\Type\Time:
     public: true
 
-  # Must be public, because it was called by makeInstance in TYPO3s UpgradeWizardsService
-  JWeiland\Events2\Upgrade\EventsSlugUpgrade:
-    public: true
-
   # Called by makeInstance in event model where constructors are not loaded in some cases
   JWeiland\Events2\Utility\DateTimeUtility:
     public: true
@@ -113,13 +94,14 @@ services:
   # Register CLI commands
   JWeiland\Events2\Command\RebuildCommand:
     tags:
-    - name: 'console.command'
-      command: 'events2:rebuild'
-      description: 'This command will TRUNCATE (delete) all day records found in day table and will re-create all day records afterwards'
-      schedulable: true
+      - name: console.command
+        command: events2:rebuild
+        description: This command will TRUNCATE (delete) all day records found in day table and will re-create all day records afterwards
+        schedulable: true
+
   JWeiland\Events2\Command\ExportEventsCommand:
     tags:
-    - name: 'console.command'
-      command: 'events2:export'
-      description: 'This command will prepare events2 records for export to by imported via another TYPO3 instance with activated EXT:reactions'
-      schedulable: true
+      - name: console.command
+        command: events2:export
+        description: This command will prepare events2 records for export to be imported via another TYPO3 instance with activated EXT:reactions
+        schedulable: true

@@ -27,7 +27,7 @@ final readonly class DeleteUploadedFilesOnErrorEventListener
 {
     use IsValidEventListenerRequestTrait;
 
-    protected const ALLOWED_CONTROLLER_ACTIONS = [
+    private const ALLOWED_CONTROLLER_ACTIONS = [
         'Management' => [
             'new',
         ],

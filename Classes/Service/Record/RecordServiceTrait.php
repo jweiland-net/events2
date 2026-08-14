@@ -66,7 +66,7 @@ trait RecordServiceTrait
         }
 
         if ($doOverlay) {
-            $record = $this->overlayHelper->doOverlay($tableName, $record);
+            return $this->overlayHelper->doOverlay($tableName, $record);
         }
 
         return $record;

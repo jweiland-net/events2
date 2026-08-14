@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the package jweiland/events2.
  *
@@ -25,7 +27,6 @@ return [
             'starttime' => 'starttime',
             'endtime' => 'endtime',
         ],
-        'searchFields' => 'title',
         'iconfile' => 'EXT:events2/Resources/Public/Icons/tx_events2_domain_model_holiday.svg',
     ],
     'types' => [
@@ -72,7 +73,6 @@ return [
                 'items' => [
                     [
                         'label' => '',
-                        'value' => '',
                         'invertStateDisplay' => true,
                     ],
                 ],
@@ -103,6 +103,7 @@ return [
                 'type' => 'datetime',
                 'format' => 'datetime',
                 'default' => 0,
+                'searchable' => false,
             ],
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',
@@ -114,6 +115,7 @@ return [
                 'type' => 'datetime',
                 'format' => 'datetime',
                 'default' => 0,
+                'searchable' => false,
             ],
             'l10n_mode' => 'exclude',
             'l10n_display' => 'defaultAsReadonly',

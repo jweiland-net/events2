@@ -19,7 +19,7 @@ class DateTimeResult
     /**
      * @var \ArrayObject<TimeResult>
      */
-    private \ArrayObject $timeResultStorage;
+    private readonly \ArrayObject $timeResultStorage;
 
     public function __construct(
         private readonly \DateTimeImmutable $date,
@@ -57,7 +57,7 @@ class DateTimeResult
 
     public function addTimeResult(TimeResult $timeData): void
     {
-        if ($this->firstTimeResult === null) {
+        if (!$this->firstTimeResult instanceof TimeResult) {
             $this->firstTimeResult = $timeData;
         }
 

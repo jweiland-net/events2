@@ -1142,7 +1142,7 @@ class EventTest extends UnitTestCase
         /** @var UserRepository|MockObject $userRepositoryMock */
         $userRepositoryMock = $this->createMock(UserRepository::class);
         $userRepositoryMock
-            ->expects(self::atLeastOnce())
+            ->expects($this->atLeastOnce())
             ->method('getFieldFromUser')
             ->with('tx_events2_organizer')
             ->willReturn((string)$organizerUid);

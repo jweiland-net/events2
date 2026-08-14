@@ -81,7 +81,7 @@ class SaveEventFinisher extends AbstractFinisher
         foreach ($databaseColumnMappingsConfiguration as $databaseColumnName => $databaseColumnConfiguration) {
             $value = $this->parseOption('databaseColumnMappings.' . $databaseColumnName . '.value');
             if (
-                empty($value)
+                ($value === [] || $value === 0 || ($value === '' || $value === '0') || $value === null)
                 && ($databaseColumnConfiguration['skipIfValueIsEmpty'] ?? false) === true
             ) {
                 continue;
@@ -106,7 +106,7 @@ class SaveEventFinisher extends AbstractFinisher
         } elseif ($table === 'tx_events2_event_organizer_mm' && ($databaseData['uid_local'] ?? false)) {
             $databaseData = $this->saveDataForOrganizers($databaseData, $table, $iterationCount);
         } elseif ($table === 'sys_file_reference') {
-            foreach ($elementsConfiguration as $elementIdentifier => $elementConfiguration) {
+            foreach ($elementsConfiguration as $elementConfiguration) {
                 if ($elementConfiguration['mapOnDatabaseColumn'] !== 'uid_local') {
                     continue;
                 }
@@ -267,7 +267,7 @@ class SaveEventFinisher extends AbstractFinisher
             if ($elementValue instanceof FileReference) {
                 $elementValue = $elementValue->getOriginalResource()->getProperty('uid_local');
             } elseif ($elementsConfiguration[$elementIdentifier]['useBinary'] ?? false) {
-                $elementValue = (int)array_sum(array_map('intval', $elementValue));
+                $elementValue = array_sum(array_map(intval(...), $elementValue));
             } elseif (is_array($elementValue)) {
                 $elementValue = implode(',', $elementValue);
             } elseif ($elementValue instanceof \DateTimeInterface) {
@@ -295,7 +295,7 @@ class SaveEventFinisher extends AbstractFinisher
         $plainText = str_replace(["\r\n", "\r"], "\n", $plainText);
 
         $paragraphs = array_filter(
-            array_map('trim', preg_split('/\n{2,}/', trim($plainText)) ?: []),
+            array_map(trim(...), preg_split('/\n{2,}/', trim($plainText)) ?: []),
             static fn(string $paragraph): bool => $paragraph !== '',
         );
 
@@ -403,7 +403,7 @@ class SaveEventFinisher extends AbstractFinisher
             $databaseConnection->insert($table, $databaseData);
             try {
                 $lastInsertId = (int)$databaseConnection->lastInsertId();
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 // Newer doctrine/dbal packages are stricter and throw an exception,
                 // if a table does not have an AUTO_INCREMENT column like MM tables.
                 $lastInsertId = 0;
@@ -460,6 +460,7 @@ class SaveEventFinisher extends AbstractFinisher
      *
      * If $optionName was not found, the corresponding default option is returned (from $this->defaultOptions)
      */
+    #[\Override]
     protected function parseOption(string $optionName): string|array|int|null
     {
         $optionValue = parent::parseOption($optionName);

@@ -31,9 +31,6 @@ readonly class ResultsCommandHook implements SearchResultSetProcessor
     /**
      * Remove event records from result set, if they are not current anymore.
      * Modifies the given document and returns the modified document as result.
-     *
-     * @param SearchResultSet $resultSet
-     * @return SearchResultSet
      */
     public function process(SearchResultSet $resultSet): SearchResultSet
     {

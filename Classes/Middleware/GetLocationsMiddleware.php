@@ -28,7 +28,7 @@ final readonly class GetLocationsMiddleware implements MiddlewareInterface
      * Will be called by call_user_func_array, so don't add Extbase classes with inject methods as argument
      */
     public function __construct(
-        protected LocationRecordService $locationRecordService,
+        private LocationRecordService $locationRecordService,
     ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -39,7 +39,7 @@ final readonly class GetLocationsMiddleware implements MiddlewareInterface
 
         // Hint: search may fail with "&" in $search
         $json = (string)$request->getBody();
-        if (json_validate($json) !== true) {
+        if (!json_validate($json)) {
             return new JsonResponse();
         }
 

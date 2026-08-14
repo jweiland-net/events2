@@ -38,6 +38,7 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
 
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
+        'form',
         'reactions',
     ];
 
@@ -51,14 +52,6 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
             'phpTimeZone' => Events2Constants::PHP_TIMEZONE,
         ],
     ];
-
-    /**
-     * I have set the date of the import events to 2025. That should be enough for the next years ;-)
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
 
     protected function tearDown(): void
     {

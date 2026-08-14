@@ -131,7 +131,7 @@ readonly class SlugPostModifierHook
                 $originalSlug,
                 $recordState,
             );
-        } catch (SiteNotFoundException $e) {
+        } catch (SiteNotFoundException) {
         }
 
         return $uniqueSlug;

@@ -38,7 +38,7 @@ final readonly class AddPaginatorEventListener
 
     private const FALLBACK_CLASS = GetPostPagination::class;
 
-    protected const ALLOWED_CONTROLLER_ACTIONS = [
+    private const ALLOWED_CONTROLLER_ACTIONS = [
         'Day' => [
             'list',
         ],
@@ -76,17 +76,14 @@ final readonly class AddPaginatorEventListener
 
     private function getCurrentPage(PostProcessFluidVariablesEvent $controllerActionEvent): int
     {
-        $currentPage = 1;
         if ($controllerActionEvent->getRequest()->hasArgument('currentPage')) {
-            // $currentPage have to be positive and greater than 0
-            // See: AbstractPaginator::setCurrentPageNumber()
-            $currentPage = MathUtility::forceIntegerInRange(
+            return MathUtility::forceIntegerInRange(
                 (int)$controllerActionEvent->getRequest()->getArgument('currentPage'),
                 1,
             );
         }
 
-        return $currentPage;
+        return 1;
     }
 
     private function getItemsPerPage(PostProcessFluidVariablesEvent $event): int

@@ -29,10 +29,11 @@ final class Events2PageTitleProvider extends AbstractPageTitleProvider
     use Typo3RequestTrait;
 
     public function __construct(
-        protected EventRecordService $eventRecordService,
-        protected DayRecordService $dayRecordService,
+        private EventRecordService $eventRecordService,
+        private DayRecordService $dayRecordService,
     ) {}
 
+    #[\Override]
     public function getTitle(): string
     {
         $pageTitle = '';
@@ -60,7 +61,7 @@ final class Events2PageTitleProvider extends AbstractPageTitleProvider
         return $pageTitle;
     }
 
-    protected function getEventRecord(int $eventUid): array
+    private function getEventRecord(int $eventUid): array
     {
         return $this->eventRecordService->findByUid(
             $eventUid,
@@ -70,11 +71,11 @@ final class Events2PageTitleProvider extends AbstractPageTitleProvider
         );
     }
 
-    protected function getMergedRequestParameters(): array
+    private function getMergedRequestParameters(): array
     {
         $getMergedWithPost = $this->getMergedWithPostFromRequest('tx_events2_show', $this->request);
         if ($getMergedWithPost === []) {
-            $getMergedWithPost = $this->getMergedWithPostFromRequest('tx_events2_list', $this->request);
+            return $this->getMergedWithPostFromRequest('tx_events2_list', $this->request);
         }
 
         return $getMergedWithPost;
@@ -84,7 +85,7 @@ final class Events2PageTitleProvider extends AbstractPageTitleProvider
      * This PageTitleProvider will only work on the detail page of events2.
      * event and timestamp have to be given. Else: Page title will not be overwritten.
      */
-    protected function isValidRequest(array $gp): bool
+    private function isValidRequest(array $gp): bool
     {
         if (!isset($gp['event'], $gp['timestamp'])) {
             return false;

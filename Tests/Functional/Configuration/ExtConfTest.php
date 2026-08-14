@@ -24,6 +24,7 @@ class ExtConfTest extends FunctionalTestCase
 {
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
+        'form',
         'reactions',
     ];
 
@@ -69,7 +70,7 @@ class ExtConfTest extends FunctionalTestCase
     {
         $extensionConfigurationMock = $this->createMock(ExtensionConfiguration::class);
         $extensionConfigurationMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('get')
             ->with('events2')
             ->willReturn([
@@ -115,7 +116,7 @@ class ExtConfTest extends FunctionalTestCase
     {
         $extensionConfigurationMock = $this->createMock(ExtensionConfiguration::class);
         $extensionConfigurationMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('get')
             ->with('events2')
             ->willReturn([
@@ -161,7 +162,7 @@ class ExtConfTest extends FunctionalTestCase
     {
         $extensionConfigurationMock = $this->createMock(ExtensionConfiguration::class);
         $extensionConfigurationMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('get')
             ->with('events2')
             ->willReturn([
@@ -207,7 +208,7 @@ class ExtConfTest extends FunctionalTestCase
     {
         $extensionConfigurationMock = $this->createMock(ExtensionConfiguration::class);
         $extensionConfigurationMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('get')
             ->with('events2')
             ->willReturn([
@@ -239,7 +240,7 @@ class ExtConfTest extends FunctionalTestCase
     {
         $extensionConfigurationMock = $this->createMock(ExtensionConfiguration::class);
         $extensionConfigurationMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('get')
             ->with('events2')
             ->willReturn([
@@ -259,7 +260,7 @@ class ExtConfTest extends FunctionalTestCase
     {
         $extensionConfigurationMock = $this->createMock(ExtensionConfiguration::class);
         $extensionConfigurationMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('get')
             ->with('events2')
             ->willReturn([
@@ -291,7 +292,7 @@ class ExtConfTest extends FunctionalTestCase
     {
         $extensionConfigurationMock = $this->createMock(ExtensionConfiguration::class);
         $extensionConfigurationMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('get')
             ->with('events2')
             ->willReturn([
@@ -335,7 +336,7 @@ class ExtConfTest extends FunctionalTestCase
     {
         $extensionConfigurationMock = $this->createMock(ExtensionConfiguration::class);
         $extensionConfigurationMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('get')
             ->with('events2')
             ->willReturn([
@@ -376,7 +377,7 @@ class ExtConfTest extends FunctionalTestCase
     {
         $extensionConfigurationMock = $this->createMock(ExtensionConfiguration::class);
         $extensionConfigurationMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('get')
             ->with('events2')
             ->willReturn([

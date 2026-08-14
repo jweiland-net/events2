@@ -32,6 +32,7 @@ class PathSegmentHelperTest extends FunctionalTestCase
 
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
+        'form',
         'reactions',
     ];
 
@@ -68,7 +69,7 @@ class PathSegmentHelperTest extends FunctionalTestCase
     public function generatePathSegmentWithEmptyBaseRecordThrowsException(): void
     {
         $this->slugHelperMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('generate')
             ->with(
                 self::identicalTo([]),
@@ -97,7 +98,7 @@ class PathSegmentHelperTest extends FunctionalTestCase
         ];
 
         $this->slugHelperMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('generate')
             ->with(
                 self::identicalTo($baseRecord),
