@@ -28,6 +28,7 @@ class DatabaseServiceTest extends FunctionalTestCase
 
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
+        'form',
         'reactions',
     ];
 

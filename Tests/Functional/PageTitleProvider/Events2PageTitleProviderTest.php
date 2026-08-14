@@ -28,6 +28,7 @@ class Events2PageTitleProviderTest extends FunctionalTestCase
 
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
+        'form',
         'reactions',
     ];
 

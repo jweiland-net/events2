@@ -30,6 +30,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
 {
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
+        'form',
         'reactions',
     ];
 

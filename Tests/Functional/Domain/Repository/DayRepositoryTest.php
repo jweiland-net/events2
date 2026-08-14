@@ -35,6 +35,7 @@ class DayRepositoryTest extends FunctionalTestCase
 
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
+        'form',
         'reactions',
     ];
 

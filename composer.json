@@ -32,6 +32,7 @@
 		"ext-libxml": "*",
 		"sjbr/static-info-tables": "^14.0",
 		"typo3/cms-core": "^14.0",
+		"typo3/cms-form": "^14.0",
 		"typo3/cms-reactions": "^14.0"
 	},
 	"require-dev": {
@@ -40,7 +41,6 @@
 		"typo3/coding-standards": "^0.8",
 		"typo3/testing-framework": "^9.5.0",
 		"typo3/cms-fluid-styled-content": "^14.0",
-		"typo3/cms-form": "^14.0",
 		"typo3/cms-install": "^14.0",
 		"typo3/cms-workspaces": "^14.0"
 	},

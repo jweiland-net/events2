@@ -26,6 +26,7 @@ class GetPostPaginationTest extends FunctionalTestCase
 {
     protected array $coreExtensionsToLoad = [
         'extensionmanager',
+        'form',
         'reactions',
     ];
 
