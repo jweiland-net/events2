@@ -147,13 +147,14 @@ class DataHandlerTest extends FunctionalTestCase
             ->executeQuery()
             ->fetchAssociative();
 
+        $user['admin'] = 1;
+
         $GLOBALS['BE_USER'] = new BackendUserAuthentication();
         $GLOBALS['BE_USER']->user = $user;
         $GLOBALS['BE_USER']->workspace = 0;
         $GLOBALS['BE_USER']->fetchGroupData();
 
         $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
-        $dataHandler->BE_USER->isAdmin() = false;
         $dataHandler->start(
             [],
             [
