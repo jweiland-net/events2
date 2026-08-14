@@ -35,7 +35,7 @@ class UserSession
         );
 
         if (!is_array($monthAndYear)) {
-            $monthAndYear = [];
+            return [];
         }
 
         return $monthAndYear;

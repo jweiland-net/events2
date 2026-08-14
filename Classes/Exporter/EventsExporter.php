@@ -366,7 +366,7 @@ readonly class EventsExporter
             $baseUrl = (string)$site->getBase();
             $pos = strpos($baseUrl, '?');
             if ($pos !== false) {
-                $baseUrl = substr($baseUrl, 0, $pos);
+                return substr($baseUrl, 0, $pos);
             }
 
             return $baseUrl;

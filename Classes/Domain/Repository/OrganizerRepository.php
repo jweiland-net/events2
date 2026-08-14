@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Domain\Repository;
 
-use JWeiland\Events2\Domain\Model\Organizer;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -28,8 +27,6 @@ class OrganizerRepository extends Repository
 
     /**
      * Get allowed organizers for filter
-     *
-     * @return QueryResultInterface|Organizer[]
      */
     public function getOrganizersForFilter(): QueryResultInterface
     {

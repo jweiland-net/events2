@@ -34,7 +34,7 @@ final readonly class AttachOrganizerToEventMiddleware implements MiddlewareInter
     use Typo3RequestTrait;
 
     public function __construct(
-        protected UserRepository $userRepository,
+        private UserRepository $userRepository,
     ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface

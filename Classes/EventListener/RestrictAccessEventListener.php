@@ -38,9 +38,7 @@ final class RestrictAccessEventListener
 {
     use IsValidEventListenerRequestTrait;
 
-    private RequestInterface $request;
-
-    protected const ALLOWED_CONTROLLER_ACTIONS = [
+    private const ALLOWED_CONTROLLER_ACTIONS = [
         'Management' => [
             'new',
             'create',
@@ -52,6 +50,8 @@ final class RestrictAccessEventListener
             'listMyEvents',
         ],
     ];
+
+    private RequestInterface $request;
 
     public function __construct(
         private EventRepository $eventRepository,

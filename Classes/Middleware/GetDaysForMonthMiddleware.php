@@ -34,11 +34,11 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 final readonly class GetDaysForMonthMiddleware implements MiddlewareInterface
 {
     public function __construct(
-        protected ExtConf $extConf,
-        protected DateTimeUtility $dateTimeUtility,
-        protected UserSession $userSession,
-        protected DatabaseService $databaseService,
-        protected EventDispatcher $eventDispatcher,
+        private ExtConf $extConf,
+        private DateTimeUtility $dateTimeUtility,
+        private UserSession $userSession,
+        private DatabaseService $databaseService,
+        private EventDispatcher $eventDispatcher,
         private ConnectionPool $connectionPool,
     ) {}
 
@@ -95,7 +95,7 @@ final readonly class GetDaysForMonthMiddleware implements MiddlewareInterface
         return new JsonResponse($event->getDays());
     }
 
-    protected function addHolidays(array &$days, int $month): void
+    private function addHolidays(array &$days, int $month): void
     {
         $queryBuilder = $this->connectionPool->getQueryBuilderForTable('tx_events2_domain_model_holiday');
         $queryResult = $queryBuilder
@@ -121,7 +121,7 @@ final readonly class GetDaysForMonthMiddleware implements MiddlewareInterface
     /**
      * @return array[]
      */
-    protected function findAllDaysInMonth(int $month, int $year, array $categories, array $storagePages): array
+    private function findAllDaysInMonth(int $month, int $year, array $categories, array $storagePages): array
     {
         $earliestAllowedDate = new \DateTimeImmutable('now midnight');
         $earliestAllowedDate = $earliestAllowedDate->modify(sprintf('-%d months', $this->extConf->getRecurringPast()));
@@ -137,22 +137,22 @@ final readonly class GetDaysForMonthMiddleware implements MiddlewareInterface
         $lastDayOfMonth = $firstDayOfMonth->modify('last day of this month');
 
         if (
-            $earliestAllowedDate > $firstDayOfMonth &&
-            $earliestAllowedDate->format('mY') === $firstDayOfMonth->format('mY')
+            $earliestAllowedDate > $firstDayOfMonth
+            && $earliestAllowedDate->format('mY') === $firstDayOfMonth->format('mY')
         ) {
             // if $earliestAllowedDate 17.01.2008 is greater than $firstDayOfMonth (01.01.2008)
             // and both dates are in the same month, then set the date to $earliestAllowedDate 17.01.2008
             $firstDayOfMonth = $earliestAllowedDate;
         } elseif (
-            $latestAllowedDate < $lastDayOfMonth &&
-            $latestAllowedDate->format('mY') === $lastDayOfMonth->format('mY')
+            $latestAllowedDate < $lastDayOfMonth
+            && $latestAllowedDate->format('mY') === $lastDayOfMonth->format('mY')
         ) {
             // if $latestAllowedDate 23.09.2008 is lower than $lastDayOfMonth (30.09.2008)
             // and both dates are in the same month, then set the date to $latestAllowedDate 23.09.2008
             $lastDayOfMonth = $latestAllowedDate;
         } elseif (
-            $earliestAllowedDate > $firstDayOfMonth ||
-            $latestAllowedDate < $lastDayOfMonth
+            $earliestAllowedDate > $firstDayOfMonth
+            || $latestAllowedDate < $lastDayOfMonth
         ) {
             // if both values are out of range, do not return any date
             return [];

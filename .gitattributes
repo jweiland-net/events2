@@ -1,6 +1,7 @@
-/.github/ export-ignore
 /Build/ export-ignore
 /Tests/ export-ignore
+/.claude/ export-ignore
+/.github/ export-ignore
 /.gitattributes export-ignore
 /.gitignore export-ignore
 /.editorconfig export-ignore

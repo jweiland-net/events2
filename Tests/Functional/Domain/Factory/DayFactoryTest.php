@@ -34,6 +34,7 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 class DayFactoryTest extends FunctionalTestCase
 {
     use InsertEventTrait;
+    public $dayRepository;
 
     protected DayFactory $subject;
 
@@ -70,7 +71,6 @@ class DayFactoryTest extends FunctionalTestCase
 
         $queryFactory = $this->get(QueryFactory::class);
 
-        /** @var Query $query */
         $this->query = $queryFactory->create(Day::class);
         $this->query->setQuerySettings($querySettings);
 

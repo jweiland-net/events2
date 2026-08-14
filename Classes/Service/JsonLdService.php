@@ -309,9 +309,6 @@ class JsonLdService
             }
 
             $resource = $image->getOriginalResource();
-            if (!$resource instanceof \TYPO3\CMS\Core\Resource\FileReference) {
-                return;
-            }
 
             $url = GeneralUtility::locationHeaderUrl(
                 PathUtility::getAbsoluteWebPath(Environment::getPublicPath()),

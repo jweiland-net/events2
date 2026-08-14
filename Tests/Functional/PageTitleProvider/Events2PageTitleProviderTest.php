@@ -23,6 +23,7 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
  */
 class Events2PageTitleProviderTest extends FunctionalTestCase
 {
+    public $pageTitleProvider;
     protected Events2PageTitleProvider $subject;
 
     protected array $coreExtensionsToLoad = [

@@ -30,7 +30,7 @@ trait SiteBasedTestTrait
 {
     protected static function failIfArrayIsNotEmpty(array $items): void
     {
-        if (empty($items)) {
+        if ($items === []) {
             return;
         }
 
@@ -48,13 +48,13 @@ trait SiteBasedTestTrait
         array $dependencies = [],
     ): void {
         $configuration = $site;
-        if (!empty($languages)) {
+        if ($languages !== []) {
             $configuration['languages'] = $languages;
         }
-        if (!empty($errorHandling)) {
+        if ($errorHandling !== []) {
             $configuration['errorHandling'] = $errorHandling;
         }
-        if (!empty($dependencies)) {
+        if ($dependencies !== []) {
             $configuration['dependencies'] = $dependencies;
         }
         $siteWriter = $this->get(SiteWriter::class);
@@ -118,10 +118,10 @@ trait SiteBasedTestTrait
             'base' => $base,
             'locale' => $preset['locale'],
             'flag' => $preset['iso'] ?? '',
-            'fallbackType' => $fallbackType ?? (empty($fallbackIdentifiers) ? 'strict' : 'fallback'),
+            'fallbackType' => $fallbackType ?? ($fallbackIdentifiers === [] ? 'strict' : 'fallback'),
         ];
 
-        if (!empty($fallbackIdentifiers)) {
+        if ($fallbackIdentifiers !== []) {
             $fallbackIds = array_map(
                 function (string $fallbackIdentifier) {
                     $preset = $this->resolveLanguagePreset($fallbackIdentifier);
@@ -159,7 +159,7 @@ trait SiteBasedTestTrait
 
         foreach ($instructions as $instruction) {
             $identifier = $instruction->getIdentifier();
-            if (isset($modifiedInstructions[$identifier]) || $request->getInstruction($identifier) !== null) {
+            if (isset($modifiedInstructions[$identifier]) || $request->getInstruction($identifier) instanceof InstructionInterface) {
                 $modifiedInstructions[$identifier] = $this->mergeInstruction(
                     $modifiedInstructions[$identifier] ?? $request->getInstruction($identifier),
                     $instruction,
@@ -174,7 +174,7 @@ trait SiteBasedTestTrait
 
     protected function mergeInstruction(InstructionInterface $current, InstructionInterface $other): InstructionInterface
     {
-        if (get_class($current) !== get_class($other)) {
+        if ($current::class !== $other::class) {
             throw new \LogicException('Cannot merge different instruction types', 1565863174);
         }
 
@@ -192,7 +192,7 @@ trait SiteBasedTestTrait
                 $current = $current->withTypoScript($typoScript);
             }
             if ($constants !== []) {
-                $current = $current->withConstants($constants);
+                return $current->withConstants($constants);
             }
             return $current;
         }

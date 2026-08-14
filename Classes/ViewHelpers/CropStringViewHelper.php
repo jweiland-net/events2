@@ -42,11 +42,11 @@ final class CropStringViewHelper extends AbstractViewHelper
         $this->registerArgument(
             'limit',
             'int',
-            'If the limit is higher than the given content (array of categories) count it will just return the comma ' .
-            'seperated values. If the limit is set and positive, only the first few values are combined into a new ' .
-            'comma-separated string, for example "75, 44, 62,...". If the limit parameter is negative, ' .
-            'only the last few values are combined into a new comma-separated string, for example "..., 1, 56, 7". ' .
-            'If the limit parameter is zero, it is treated as 1, so only ONE element is shown, for example  "75".',
+            'If the limit is higher than the given content (array of categories) count it will just return the comma '
+            . 'seperated values. If the limit is set and positive, only the first few values are combined into a new '
+            . 'comma-separated string, for example "75, 44, 62,...". If the limit parameter is negative, '
+            . 'only the last few values are combined into a new comma-separated string, for example "..., 1, 56, 7". '
+            . 'If the limit parameter is zero, it is treated as 1, so only ONE element is shown, for example  "75".',
             false,
             10,
         );

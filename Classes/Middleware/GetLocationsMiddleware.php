@@ -28,7 +28,7 @@ final readonly class GetLocationsMiddleware implements MiddlewareInterface
      * Will be called by call_user_func_array, so don't add Extbase classes with inject methods as argument
      */
     public function __construct(
-        protected LocationRecordService $locationRecordService,
+        private LocationRecordService $locationRecordService,
     ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface

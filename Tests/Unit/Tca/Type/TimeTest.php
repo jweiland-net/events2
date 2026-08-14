@@ -50,18 +50,12 @@ class TimeTest extends UnitTestCase
      */
     public static function unmodifiedTimesDataProvider(): array
     {
-        $times = [];
-        $times['empty values'] = [''];
-        $times['earliest two digit time'] = ['00:00'];
-        $times['latest two digit time'] = ['23:59'];
-        $times['random two digit time'] = ['21:34'];
-
-        return $times;
+        return ['empty values' => [''], 'earliest two digit time' => ['00:00'], 'latest two digit time' => ['23:59'], 'random two digit time' => ['21:34']];
     }
 
     #[Test]
     #[DataProvider('unmodifiedTimesDataProvider')]
-    public function evaluateWithTimesWhichWillNotBeModified($unmodifiedTime): void
+    public function evaluateWithTimesWhichWillNotBeModified(string $unmodifiedTime): void
     {
         self::assertSame(
             $unmodifiedTime,
@@ -74,18 +68,12 @@ class TimeTest extends UnitTestCase
      */
     public static function unpaddedTimesDataProvider(): array
     {
-        $times = [];
-        $times['zero values'] = ['0:0', '00:00'];
-        $times['one digit hour'] = ['5:32', '05:32'];
-        $times['one digit minute'] = ['12:8', '12:08'];
-        $times['one digit for both'] = ['4:9', '04:09'];
-
-        return $times;
+        return ['zero values' => ['0:0', '00:00'], 'one digit hour' => ['5:32', '05:32'], 'one digit minute' => ['12:8', '12:08'], 'one digit for both' => ['4:9', '04:09']];
     }
 
     #[Test]
     #[DataProvider('unpaddedTimesDataProvider')]
-    public function evaluateWithTimesWhichWillAddPaddings($unpaddedTimes, $paddedTimes): void
+    public function evaluateWithTimesWhichWillAddPaddings(string $unpaddedTimes, string $paddedTimes): void
     {
         self::assertSame(
             $paddedTimes,
@@ -98,15 +86,7 @@ class TimeTest extends UnitTestCase
      */
     public static function tooHighTimesDataProvider(): array
     {
-        $times = [];
-        $times['edge case midnight'] = ['24:00', '24:00'];
-        $times['edge case one minute after midnight'] = ['24:01', '23:01'];
-        $times['edge case with 60 minutes'] = ['15:60', '15:59'];
-        $times['too high hour'] = ['67:43', '23:43'];
-        $times['too high minute'] = ['19:543', '19:59'];
-        $times['everything is too high'] = ['63:754', '23:59'];
-
-        return $times;
+        return ['edge case midnight' => ['24:00', '24:00'], 'edge case one minute after midnight' => ['24:01', '23:01'], 'edge case with 60 minutes' => ['15:60', '15:59'], 'too high hour' => ['67:43', '23:43'], 'too high minute' => ['19:543', '19:59'], 'everything is too high' => ['63:754', '23:59']];
     }
 
     #[Test]
@@ -124,16 +104,12 @@ class TimeTest extends UnitTestCase
      */
     public static function invalidTimesDataProvider(): array
     {
-        $times = [];
-        $times['invalid value: Stefan'] = ['Stefan', ''];
-        $times['invalid value: 123Test'] = ['123Test', ''];
-
-        return $times;
+        return ['invalid value: Stefan' => ['Stefan', ''], 'invalid value: 123Test' => ['123Test', '']];
     }
 
     #[Test]
     #[DataProvider('invalidTimesDataProvider')]
-    public function evaluateWithInvalidValues($invalidTime, $expectedTime): void
+    public function evaluateWithInvalidValues(string $invalidTime, string $expectedTime): void
     {
         self::assertSame(
             $expectedTime,
@@ -146,19 +122,7 @@ class TimeTest extends UnitTestCase
      */
     public static function dataProviderForVariousIntegerValues(): array
     {
-        $timestamps = [];
-        $timestamps['edge case with zero'] = [0, '00:00'];
-        $timestamps['integers smaller than 24 will be interpreted as hours'] = [3, '03:00'];
-        $timestamps['integers smaller than 60 will be corrected to 23 hours'] = [55, '23:00'];
-        $timestamps['60 will be interpreted as one minute'] = [60, '00:01'];
-        $timestamps['edge case with midnight'] = [60 * 60 * 24, '23:59'];
-        $timestamps['edge case with midnight - 1 second'] = [(60 * 60 * 24) - 1, '23:59'];
-        $timestamps['timestamp with padded zero in front'] = [60 * 60 * 7 + 60 * 3, '07:03'];
-        $timestamps['timestamp in the morning'] = [60 * 60 * 8 + 60 * 27, '08:27'];
-        $timestamps['timestamp at launch'] = [60 * 60 * 12 + 60 * 12, '12:12'];
-        $timestamps['timestamp in the afternoon'] = [60 * 60 * 19 + 60 * 13, '19:13'];
-
-        return $timestamps;
+        return ['edge case with zero' => [0, '00:00'], 'integers smaller than 24 will be interpreted as hours' => [3, '03:00'], 'integers smaller than 60 will be corrected to 23 hours' => [55, '23:00'], '60 will be interpreted as one minute' => [60, '00:01'], 'edge case with midnight' => [60 * 60 * 24, '23:59'], 'edge case with midnight - 1 second' => [(60 * 60 * 24) - 1, '23:59'], 'timestamp with padded zero in front' => [60 * 60 * 7 + 60 * 3, '07:03'], 'timestamp in the morning' => [60 * 60 * 8 + 60 * 27, '08:27'], 'timestamp at launch' => [60 * 60 * 12 + 60 * 12, '12:12'], 'timestamp in the afternoon' => [60 * 60 * 19 + 60 * 13, '19:13']];
     }
 
     #[Test]

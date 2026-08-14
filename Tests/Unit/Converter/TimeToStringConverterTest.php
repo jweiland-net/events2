@@ -49,12 +49,7 @@ class TimeToStringConverterTest extends UnitTestCase
      */
     public static function dataProviderForTooHighIntegerValues(): array
     {
-        $timestamps = [];
-        $timestamps['one second too high'] = [60 * 60 * 24];
-        $timestamps['some seconds too high'] = [60 * 60 * 24 * 7];
-        $timestamps['one year too high'] = [60 * 60 * 24 * 365];
-
-        return $timestamps;
+        return ['one second too high' => [60 * 60 * 24], 'some seconds too high' => [60 * 60 * 24 * 7], 'one year too high' => [60 * 60 * 24 * 365]];
     }
 
     #[Test]
@@ -74,12 +69,7 @@ class TimeToStringConverterTest extends UnitTestCase
      */
     public static function dataProviderForTooLowIntegerValues(): array
     {
-        $timestamps = [];
-        $timestamps['edge case with zero'] = [0];
-        $timestamps['edge case with -1'] = [-1];
-        $timestamps['higher negative value'] = [-123];
-
-        return $timestamps;
+        return ['edge case with zero' => [0], 'edge case with -1' => [-1], 'higher negative value' => [-123]];
     }
 
     #[Test]
@@ -99,18 +89,7 @@ class TimeToStringConverterTest extends UnitTestCase
      */
     public static function dataProviderForTimestampsInAllowedRange(): array
     {
-        $timestamps = [];
-        $timestamps['edge case with zero'] = [0, '00:00'];
-        $timestamps['edge case with one second'] = [1, '00:00'];
-        $timestamps['edge case with one minute'] = [60, '00:01'];
-        $timestamps['edge case with midnight'] = [60 * 60 * 24, '23:59'];
-        $timestamps['edge case with midnight - 1 second'] = [(60 * 60 * 24) - 1, '23:59'];
-        $timestamps['timestamp with padded zero in front'] = [60 * 60 * 5 + 60 * 7, '05:07'];
-        $timestamps['timestamp in the morning'] = [60 * 60 * 10 + 60 * 43, '10:43'];
-        $timestamps['timestamp at launch'] = [60 * 60 * 12, '12:00'];
-        $timestamps['timestamp in the afternoon'] = [60 * 60 * 17 + 60 * 52, '17:52'];
-
-        return $timestamps;
+        return ['edge case with zero' => [0, '00:00'], 'edge case with one second' => [1, '00:00'], 'edge case with one minute' => [60, '00:01'], 'edge case with midnight' => [60 * 60 * 24, '23:59'], 'edge case with midnight - 1 second' => [(60 * 60 * 24) - 1, '23:59'], 'timestamp with padded zero in front' => [60 * 60 * 5 + 60 * 7, '05:07'], 'timestamp in the morning' => [60 * 60 * 10 + 60 * 43, '10:43'], 'timestamp at launch' => [60 * 60 * 12, '12:00'], 'timestamp in the afternoon' => [60 * 60 * 17 + 60 * 52, '17:52']];
     }
 
     #[Test]

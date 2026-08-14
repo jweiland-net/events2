@@ -135,7 +135,7 @@ class SlugPostModifierHookTest extends FunctionalTestCase
 
         $slugHelperMock = $this->createMock(SlugHelper::class);
         $slugHelperMock
-            ->expects(self::never())
+            ->expects($this->never())
             ->method('buildSlugForUniqueInTable');
 
         self::assertSame(
@@ -161,7 +161,7 @@ class SlugPostModifierHookTest extends FunctionalTestCase
 
         $slugHelperMock = $this->createMock(SlugHelper::class);
         $slugHelperMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('buildSlugForUniqueInTable')
             ->with(
                 self::identicalTo($parameters['slug']),
@@ -193,7 +193,7 @@ class SlugPostModifierHookTest extends FunctionalTestCase
 
         $eventDispatcherMock = $this->createMock(EventDispatcher::class);
         $eventDispatcherMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('dispatch')
             ->with(
                 self::isInstanceOf(GeneratePathSegmentEvent::class),

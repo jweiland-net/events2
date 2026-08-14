@@ -97,13 +97,13 @@ class CacheServiceTest extends FunctionalTestCase
 
         $dataMapperMock = $this->createMock(DataMapper::class);
         $dataMapperMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('map')
             ->willReturn([]);
 
         $queryMock = $this->createMock(Query::class);
         $queryMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getType')
             ->willReturn(Event::class);
 

@@ -71,7 +71,7 @@ class DayRelationServiceTest extends FunctionalTestCase
     {
         $loggerMock = $this->createMock(LoggerInterface::class);
         $loggerMock
-            ->expects(self::atLeastOnce())
+            ->expects($this->atLeastOnce())
             ->method('warning')
             ->willReturnMap([
                 [self::stringContains('Event record could not be found'), null],
@@ -79,7 +79,7 @@ class DayRelationServiceTest extends FunctionalTestCase
 
         $dayRecordServiceMock = $this->createMock(DayRecordService::class);
         $dayRecordServiceMock
-            ->expects(self::never())
+            ->expects($this->never())
             ->method('removeAllByEventUid');
 
         $subject = new DayRelationService(
@@ -108,7 +108,7 @@ class DayRelationServiceTest extends FunctionalTestCase
 
         $dayRecordServiceMock = $this->createMock(DayRecordService::class);
         $dayRecordServiceMock
-            ->expects(self::never())
+            ->expects($this->never())
             ->method('removeAllByEventUid');
 
         $subject = new DayRelationService(
@@ -137,7 +137,7 @@ class DayRelationServiceTest extends FunctionalTestCase
 
         $dayRecordServiceMock = $this->createMock(DayRecordService::class);
         $dayRecordServiceMock
-            ->expects(self::never())
+            ->expects($this->never())
             ->method('removeAllByEventUid');
 
         $subject = new DayRelationService(
@@ -186,33 +186,33 @@ class DayRelationServiceTest extends FunctionalTestCase
 
         $dayGeneratorServiceMock = $this->createMock(DayGeneratorService::class);
         $dayGeneratorServiceMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getDayGeneratorResultForEventRecord')
             ->with(self::identicalTo($eventRecord))
             ->willReturn($dayGeneratorResult);
 
         $eventRecordServiceMock = $this->createMock(EventRecordService::class);
         $eventRecordServiceMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getLanguageUidsOfTranslatedEventRecords')
             ->with(self::identicalTo($eventRecord))
             ->willReturn([1, 2]);
 
         $exceptionRecordServiceMock = $this->createMock(ExceptionRecordService::class);
         $exceptionRecordServiceMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('findAllByEventUid')
             ->with(self::identicalTo(123))
             ->willReturn([]);
 
         $dayRecordServiceMock = $this->createMock(DayRecordService::class);
         $dayRecordServiceMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('removeAllByEventUid')
             ->with(self::identicalTo(123));
 
         $dayRecordServiceMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('bulkInsertAllDayRecords')
             ->with(
                 self::identicalTo($dayRecords),

@@ -52,14 +52,6 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
         ],
     ];
 
-    /**
-     * I have set the date of the import events to 2025. That should be enough for the next years ;-)
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
-
     protected function tearDown(): void
     {
         $messagesFile = GeneralUtility::getFileAbsFileName(

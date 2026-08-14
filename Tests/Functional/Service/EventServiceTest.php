@@ -86,7 +86,7 @@ class EventServiceTest extends FunctionalTestCase
     public function getNextDayForEventWithoutEventReturnsFalse(): void
     {
         $this->eventRepositoryMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('findByIdentifier')
             ->with(self::identicalTo(1))
             ->willReturn(null);
@@ -114,7 +114,7 @@ class EventServiceTest extends FunctionalTestCase
         $event->setDays($days);
 
         $this->eventRepositoryMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('findByIdentifier')
             ->with(self::identicalTo(1))
             ->willReturn($event);
@@ -142,7 +142,7 @@ class EventServiceTest extends FunctionalTestCase
         $event->setDays($days);
 
         $this->eventRepositoryMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('findByIdentifier')
             ->with(self::identicalTo(1))
             ->willReturn($event);
@@ -189,7 +189,7 @@ class EventServiceTest extends FunctionalTestCase
         $event->setDays($days);
 
         $this->eventRepositoryMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('findByIdentifier')
             ->with(self::identicalTo(1))
             ->willReturn($event);
@@ -218,7 +218,7 @@ class EventServiceTest extends FunctionalTestCase
         $event->setDays($days);
 
         $this->eventRepositoryMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('findByIdentifier')
             ->with(self::identicalTo(1))
             ->willReturn($event);
@@ -265,7 +265,7 @@ class EventServiceTest extends FunctionalTestCase
         $event->setDays($days);
 
         $this->eventRepositoryMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('findByIdentifier')
             ->with(self::identicalTo(1))
             ->willReturn($event);

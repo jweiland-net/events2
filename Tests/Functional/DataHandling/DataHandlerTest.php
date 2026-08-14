@@ -153,7 +153,7 @@ class DataHandlerTest extends FunctionalTestCase
         $GLOBALS['BE_USER']->fetchGroupData();
 
         $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
-        $dataHandler->admin = false;
+        $dataHandler->BE_USER->isAdmin() = false;
         $dataHandler->start(
             [],
             [

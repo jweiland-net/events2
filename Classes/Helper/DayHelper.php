@@ -39,7 +39,7 @@ readonly class DayHelper
             array_key_exists('day', $pluginParameters)
             && MathUtility::canBeInterpretedAsInteger($pluginParameters['day'])
         ) {
-            $day = $this->dayRepository->findByIdentifier((int)$pluginParameters['day']);
+            return $this->dayRepository->findByIdentifier((int)$pluginParameters['day']);
         }
 
         return $day;

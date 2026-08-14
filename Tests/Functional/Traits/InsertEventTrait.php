@@ -150,19 +150,17 @@ trait InsertEventTrait
             );
         }
 
-        if ($categories !== []) {
-            foreach ($categories as $category) {
-                $connection = $this->getConnectionPool()->getConnectionForTable('sys_category_record_mm');
-                $connection->insert(
-                    'sys_category_record_mm',
-                    [
-                        'uid_local' => $category,
-                        'uid_foreign' => $eventUid,
-                        'tablenames' => 'tx_events2_domain_model_event',
-                        'fieldname' => 'categories',
-                    ],
-                );
-            }
+        foreach ($categories as $category) {
+            $connection = $this->getConnectionPool()->getConnectionForTable('sys_category_record_mm');
+            $connection->insert(
+                'sys_category_record_mm',
+                [
+                    'uid_local' => $category,
+                    'uid_foreign' => $eventUid,
+                    'tablenames' => 'tx_events2_domain_model_event',
+                    'fieldname' => 'categories',
+                ],
+            );
         }
 
         return $eventUid;
@@ -194,7 +192,6 @@ trait InsertEventTrait
         } else {
             foreach ($eventUids as $eventUid) {
                 $dayRelationService->createDayRelations((int)$eventUid);
-
             }
         }
     }

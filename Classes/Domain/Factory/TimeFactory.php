@@ -64,8 +64,6 @@ class TimeFactory
     /**
      * Each event can have one or more times for one day
      * This method looks into all-time related records and fetches the times with the highest priority.
-     *
-     * @return \SplObjectStorage|Time[]
      */
     public function getTimesForDate(Event $event, \DateTimeImmutable $date, bool $removeCurrentDay = false): \SplObjectStorage
     {
@@ -228,9 +226,6 @@ class TimeFactory
 
     /**
      * Get Time object for a given day record, if exists
-     *
-     * @param Day $day
-     * @return Time|null
      */
     public function getTimeForDay(Day $day): ?Time
     {

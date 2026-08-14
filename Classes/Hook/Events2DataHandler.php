@@ -115,7 +115,6 @@ readonly class Events2DataHandler
         }
 
         $target = $value['target'] ?? $value;
-        $ignoreLocalization = (bool)($value['ignoreLocalization'] ?? false);
 
         $columns = &$GLOBALS['TCA'][$table]['columns'];
         $daysColumnConfiguration = $columns['days'] ?? null;

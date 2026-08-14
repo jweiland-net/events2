@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Middleware;
 
-use JWeiland\Events2\Utility\DateTimeUtility;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -27,10 +26,6 @@ use TYPO3\CMS\Core\Utility\MathUtility;
  */
 final readonly class GetUriForDayMiddleware implements MiddlewareInterface
 {
-    public function __construct(
-        protected DateTimeUtility $dateTimeUtility,
-    ) {}
-
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         if ($request->getHeader('ext-events2') !== ['getUriForDay']) {
@@ -72,7 +67,7 @@ final readonly class GetUriForDayMiddleware implements MiddlewareInterface
         return new JsonResponse(['uri' => $uri]);
     }
 
-    protected function getStartDateFromPostData(array $postData): ?\DateTimeImmutable
+    private function getStartDateFromPostData(array $postData): ?\DateTimeImmutable
     {
         if (!isset($postData['day'], $postData['month'], $postData['year'])) {
             return null;
@@ -90,7 +85,7 @@ final readonly class GetUriForDayMiddleware implements MiddlewareInterface
         );
     }
 
-    protected function getUriWithTimestamp(
+    private function getUriWithTimestamp(
         int $timestamp,
         array $postData,
         ServerRequestInterface $request,

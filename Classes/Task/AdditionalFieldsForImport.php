@@ -31,9 +31,6 @@ class AdditionalFieldsForImport extends AbstractAdditionalFieldProvider
 
     protected SchedulerModuleController $schedulerModule;
 
-    /**
-     * @var array
-     */
     protected array $defaultAttributes = [
         'type' => 'text',
         'size' => 30,

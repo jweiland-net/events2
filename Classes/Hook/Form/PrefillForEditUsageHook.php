@@ -292,12 +292,9 @@ readonly class PrefillForEditUsageHook
         if (isset($coreReferences[$position])) {
             $resourceFactory = $this->resourceFactory;
             $coreReference = $resourceFactory->getFileReferenceObject((int)$coreReferences[$position]);
-            if ($coreReference instanceof \TYPO3\CMS\Core\Resource\FileReference) {
-                $extbaseFileReference = GeneralUtility::makeInstance(FileReference::class);
-                $extbaseFileReference->setOriginalResource($coreReference);
-
-                return $extbaseFileReference;
-            }
+            $extbaseFileReference = GeneralUtility::makeInstance(FileReference::class);
+            $extbaseFileReference->setOriginalResource($coreReference);
+            return $extbaseFileReference;
         }
 
         return null;

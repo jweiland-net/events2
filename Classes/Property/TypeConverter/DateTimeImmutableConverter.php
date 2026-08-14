@@ -97,8 +97,6 @@ class DateTimeImmutableConverter extends AbstractTypeConverter
      * If conversion is possible.
      *
      * @param string|array|int $source
-     * @param string $targetType
-     * @return bool
      * @internal only to be used within Extbase, not part of TYPO3 Core API.
      */
     public function canConvertFrom($source, string $targetType): bool
@@ -125,7 +123,6 @@ class DateTimeImmutableConverter extends AbstractTypeConverter
      * @param string|int|array $source the string to be converted to a \DateTime object
      * @param string $targetType must be "DateTimeImmutable"
      * @param array $convertedChildProperties not used currently
-     * @param ?PropertyMappingConfigurationInterface $configuration
      * @throws TypeConverterException|InvalidPropertyMappingConfigurationException
      */
     public function convertFrom(
@@ -178,7 +175,7 @@ class DateTimeImmutableConverter extends AbstractTypeConverter
             return new \TYPO3\CMS\Extbase\Validation\Error('The date "%s" was not recognized (for format "%s").', 1307719788, [$dateAsString, $dateFormat]);
         }
         if (is_array($source)) {
-            $date = $this->overrideTimeIfSpecified($date, $source);
+            return $this->overrideTimeIfSpecified($date, $source);
         }
 
         return $date;

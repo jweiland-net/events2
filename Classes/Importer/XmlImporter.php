@@ -250,7 +250,7 @@ class XmlImporter
         $processAs = (string)($eventRecord['process_as'] ?? 'new');
         $processAs = strtolower($processAs);
         if (!in_array($processAs, ['new', 'edit', 'delete'], true)) {
-            $processAs = 'new';
+            return 'new';
         }
 
         return $processAs;

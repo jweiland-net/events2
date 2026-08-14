@@ -83,7 +83,7 @@ class HiddenObjectHelperTest extends FunctionalTestCase
         $event = new Event();
 
         $this->requestMock
-            ->expects(self::never())
+            ->expects($this->never())
             ->method('getArgument')
             ->with(self::identicalTo('event'));
 
@@ -106,7 +106,7 @@ class HiddenObjectHelperTest extends FunctionalTestCase
         $event->setTitle('Test Event');
 
         $this->requestMock
-            ->expects(self::atLeastOnce())
+            ->expects($this->atLeastOnce())
             ->method('getArgument')
             ->with(self::identicalTo('event'))
             ->willReturn([
@@ -115,7 +115,7 @@ class HiddenObjectHelperTest extends FunctionalTestCase
 
         $eventRepositoryMock = $this->createMock(EventRepository::class);
         $eventRepositoryMock
-            ->expects(self::atLeastOnce())
+            ->expects($this->atLeastOnce())
             ->method('findHiddenObject')
             ->with(self::identicalTo(12))
             ->willReturn($event);
@@ -143,14 +143,14 @@ class HiddenObjectHelperTest extends FunctionalTestCase
         $event->setTitle('Test Event');
 
         $this->requestMock
-            ->expects(self::atLeastOnce())
+            ->expects($this->atLeastOnce())
             ->method('getArgument')
             ->with(self::identicalTo('event'))
             ->willReturn('543');
 
         $eventRepositoryMock = $this->createMock(EventRepository::class);
         $eventRepositoryMock
-            ->expects(self::atLeastOnce())
+            ->expects($this->atLeastOnce())
             ->method('findHiddenObject')
             ->with(self::identicalTo(543))
             ->willReturn($event);

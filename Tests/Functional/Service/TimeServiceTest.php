@@ -57,7 +57,7 @@ class TimeServiceTest extends FunctionalTestCase
         $this->timeRecordServiceMock = $this->createMock(TimeRecordService::class);
         $this->dayRecordBuilderServiceMock = $this->createMock(DayRecordBuilderService::class);
         $this->dayRecordBuilderServiceMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('buildDayRecordsFor');
 
         $this->subject = new TimeService(
@@ -82,7 +82,7 @@ class TimeServiceTest extends FunctionalTestCase
     public function enrichWithNoTimeRecordsWillNotAddTimeResult(): void
     {
         $this->timeRecordServiceMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getAllByEventRecord')
             ->willReturn([]);
 
@@ -200,7 +200,7 @@ class TimeServiceTest extends FunctionalTestCase
         $dayGeneratorResult->addDateTimeResult($dateTimeResult);
 
         $this->timeRecordServiceMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getAllByEventRecord')
             ->with(
                 self::identicalTo($eventRecord),
@@ -253,7 +253,7 @@ class TimeServiceTest extends FunctionalTestCase
         $dayGeneratorResult->addDateTimeResult(new DateTimeResult($dateTime, false));
 
         $this->timeRecordServiceMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getAllByEventRecord')
             ->with(
                 self::identicalTo($eventRecord),
@@ -332,7 +332,7 @@ class TimeServiceTest extends FunctionalTestCase
         $dayGeneratorResult->addDateTimeResult(new DateTimeResult($dateTime, false));
 
         $this->timeRecordServiceMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getAllByEventRecord')
             ->with(
                 self::identicalTo($eventRecord),
@@ -410,7 +410,7 @@ class TimeServiceTest extends FunctionalTestCase
         $dayGeneratorResult->addDateTimeResult(new DateTimeResult($dateTime, false));
 
         $this->timeRecordServiceMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getAllByEventRecord')
             ->with(
                 self::identicalTo($eventRecord),
@@ -488,7 +488,7 @@ class TimeServiceTest extends FunctionalTestCase
         $dayGeneratorResult->addDateTimeResult(new DateTimeResult($dateTime, false));
 
         $this->timeRecordServiceMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getAllByEventRecord')
             ->with(
                 self::identicalTo($eventRecord),
@@ -538,7 +538,7 @@ class TimeServiceTest extends FunctionalTestCase
         $dayGeneratorResult->addDateTimeResult(new DateTimeResult($dateTime, false));
 
         $this->timeRecordServiceMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getAllByEventRecord')
             ->with(
                 self::identicalTo($eventRecord),
@@ -581,7 +581,7 @@ class TimeServiceTest extends FunctionalTestCase
         $dayGeneratorResult->addDateTimeResult(new DateTimeResult($dateTime, false));
 
         $this->timeRecordServiceMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getAllByEventRecord')
             ->with(
                 self::identicalTo($eventRecord),
@@ -630,7 +630,7 @@ class TimeServiceTest extends FunctionalTestCase
         $dayGeneratorResult->addDateTimeResult(new DateTimeResult($dateTime, false));
 
         $this->timeRecordServiceMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getAllByEventRecord')
             ->with(
                 self::identicalTo($eventRecord),
@@ -679,7 +679,7 @@ class TimeServiceTest extends FunctionalTestCase
         $dayGeneratorResult->addDateTimeResult(new DateTimeResult($dateTime, false));
 
         $this->timeRecordServiceMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getAllByEventRecord')
             ->with(
                 self::identicalTo($eventRecord),
@@ -738,7 +738,7 @@ class TimeServiceTest extends FunctionalTestCase
         $dayGeneratorResult->addDateTimeResult(new DateTimeResult($dateTime, false));
 
         $this->timeRecordServiceMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('getAllByEventRecord')
             ->with(
                 self::identicalTo($eventRecord),

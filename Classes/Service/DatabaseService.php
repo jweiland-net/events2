@@ -155,13 +155,6 @@ readonly class DatabaseService
             ->fetchAllAssociative();
     }
 
-    /**
-     * @param QueryBuilder $queryBuilder
-     * @param \DateTimeImmutable $startDateTime
-     * @param \DateTimeImmutable|null $endDateTime
-     * @param QueryBuilder|null $parentQueryBuilder
-     * @param string $alias
-     */
     public function addConstraintForDateRange(
         QueryBuilder $queryBuilder,
         \DateTimeImmutable $startDateTime,

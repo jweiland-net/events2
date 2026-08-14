@@ -116,7 +116,7 @@ class ReGenerateDays extends AbstractTask implements ProgressProviderInterface
         $content = '';
         $info = $this->getRegistry()->get('events2TaskCreateUpdate', 'info');
         if ($info) {
-            $content = sprintf(
+            return sprintf(
                 'Current event: uid: %d, pid: %d, memory: %d.',
                 $info['uid'],
                 $info['pid'],

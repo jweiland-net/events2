@@ -36,8 +36,8 @@ class MoveOldFlexFormSettingsUpgrade implements UpgradeWizardInterface
 
     public function getDescription(): string
     {
-        return 'It seems that some fields of FlexForm have not been updated yet. ' .
-            'Please start this wizard to re-arrange the fields to their new location.';
+        return 'It seems that some fields of FlexForm have not been updated yet. '
+            . 'Please start this wizard to re-arrange the fields to their new location.';
     }
 
     public function updateNecessary(): bool

@@ -26,7 +26,7 @@ final readonly class AllowSearchParameterEventListener
 {
     use IsValidEventListenerRequestTrait;
 
-    protected const ALLOWED_CONTROLLER_ACTIONS = [
+    private const ALLOWED_CONTROLLER_ACTIONS = [
         'Search' => [
             'listSearchResults',
             'show',

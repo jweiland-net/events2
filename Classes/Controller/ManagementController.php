@@ -93,8 +93,7 @@ class ManagementController extends AbstractController
     }
 
     public function createAction(
-        #[Extbase\Validate(validator: EventValidator::class)]
-        Event $event,
+        #[Extbase\Validate(validator: EventValidator::class)] Event $event,
     ): ResponseInterface {
         $event->setHidden(true);
         $event->setEventType($event->getEventEnd() instanceof \DateTimeImmutable ? 'duration' : 'single');
@@ -117,8 +116,7 @@ class ManagementController extends AbstractController
     }
 
     public function editAction(
-        #[Extbase\IgnoreValidation]
-        Event $event,
+        #[Extbase\IgnoreValidation] Event $event,
     ): ResponseInterface {
         if (isset($this->settings['selectableCategoriesForNewEvents'])) {
             trigger_error(
@@ -147,8 +145,7 @@ class ManagementController extends AbstractController
     }
 
     public function updateAction(
-        #[Extbase\Validate(validator: EventValidator::class)]
-        Event $event,
+        #[Extbase\Validate(validator: EventValidator::class)] Event $event,
     ): ResponseInterface {
         $isHidden = $event->getHidden();
         $event->setHidden(true);

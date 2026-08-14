@@ -26,7 +26,7 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 final readonly class GetSubCategoriesMiddleware implements MiddlewareInterface
 {
     public function __construct(
-        protected CategoryRepository $categoryRepository,
+        private CategoryRepository $categoryRepository,
     ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -54,7 +54,7 @@ final readonly class GetSubCategoriesMiddleware implements MiddlewareInterface
     /**
      * @return string[]
      */
-    protected function reduceCategoryData(QueryResultInterface $categories): array
+    private function reduceCategoryData(QueryResultInterface $categories): array
     {
         $response = [];
         foreach ($categories as $category) {

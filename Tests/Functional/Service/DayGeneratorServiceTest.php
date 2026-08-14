@@ -49,7 +49,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
     {
         $loggerMock = $this->createMock(Logger::class);
         $loggerMock
-            ->expects(self::atLeastOnce())
+            ->expects($this->atLeastOnce())
             ->method('error')
             ->willReturnMap([
                 [self::stringContains('Error occurred while building DateTime objects'), null],
@@ -82,7 +82,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
     {
         $loggerMock = $this->createMock(Logger::class);
         $loggerMock
-            ->expects(self::atLeastOnce())
+            ->expects($this->atLeastOnce())
             ->method('error')
             ->willReturnMap([
                 [self::stringContains('Error occurred while building DateTime objects'), null],
@@ -116,7 +116,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
     {
         $loggerMock = $this->createMock(Logger::class);
         $loggerMock
-            ->expects(self::atLeastOnce())
+            ->expects($this->atLeastOnce())
             ->method('error')
             ->willReturnMap([
                 [self::stringContains('Error occurred while building DateTime objects'), null],
@@ -158,7 +158,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
     {
         $loggerMock = $this->createMock(Logger::class);
         $loggerMock
-            ->expects(self::atLeastOnce())
+            ->expects($this->atLeastOnce())
             ->method('error')
             ->willReturnMap([
                 [self::stringContains('Error occurred while building DateTime objects'), null],
@@ -199,7 +199,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
     {
         $loggerMock = $this->createMock(Logger::class);
         $loggerMock
-            ->expects(self::atLeastOnce())
+            ->expects($this->atLeastOnce())
             ->method('error')
             ->willReturnMap([
                 [self::stringContains('Error occurred while building DateTime objects'), null],
@@ -1272,7 +1272,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
     {
         $loggerMock = $this->createMock(Logger::class);
         $loggerMock
-            ->expects(self::atLeastOnce())
+            ->expects($this->atLeastOnce())
             ->method('error')
             ->willReturnMap([
                 [self::stringContains('Error occurred while building DateTime objects'), null],

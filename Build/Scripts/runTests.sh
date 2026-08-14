@@ -60,8 +60,8 @@ handleDbmsOptions() {
                 echo "Use \".Build/Scripts/runTests.sh -h\" to display help and valid options" >&2
                 exit 1
             fi
-            [ -z "${DBMS_VERSION}" ] && DBMS_VERSION="10.11"
-            if ! [[ ${DBMS_VERSION} =~ ^(10.11|11.0|11.1|11.2|11.3|11.4|11.5|11.6)$ ]]; then
+            [ -z "${DBMS_VERSION}" ] && DBMS_VERSION="10.5"
+            if ! [[ ${DBMS_VERSION} =~ ^(10.4|10.5|10.6|10.7|10.8|10.9|10.10|10.11|11.0|11.1)$ ]]; then
                 echo "Invalid combination -d ${DBMS} -i ${DBMS_VERSION}" >&2
                 echo >&2
                 echo "Use \".Build/Scripts/runTests.sh -h\" to display help and valid options" >&2
@@ -139,9 +139,9 @@ Options:
             - composer: "composer" with all remaining arguments dispatched.
             - composerNormalize: "composer normalize"
             - composerUpdate: "composer update", handy if host has no PHP
-            - composerUpdateRector: "composer update", for rector subdirectory
             - composerValidate: "composer validate"
             - functional: PHP functional tests
+            - functionalUpdateBaseline: functional tests with UPDATE_BASELINE=1
             - lint: PHP linting
             - phpstan: PHPStan static analysis
             - phpstanBaseline: Generate PHPStan baseline
@@ -202,11 +202,11 @@ Options:
             - 15    maintained until 2027-11-11
             - 16    maintained until 2028-11-09
 
-    -p <8.2|8.3|8.4>
+    -p <8.1|8.2|8.3>
         Specifies the PHP minor version to be used
+            - 8.1: use PHP 8.1
             - 8.2: use PHP 8.2
             - 8.3: use PHP 8.3
-            - 8.4: use PHP 8.4
 
     -x
         Only with -s functional|unit
@@ -231,14 +231,14 @@ Options:
         Show this help.
 
 Examples:
-    # Run unit tests using PHP 8.3
-    ./Build/Scripts/runTests.sh -p 8.3 -s unit
+    # Run unit tests using PHP 8.2
+    ./Build/Scripts/runTests.sh -p 8.2 -s unit
 
-    # Run functional tests using PHP 8.4 and MariaDB 10.6 using pdo_mysql
-    ./Build/Scripts/runTests.sh -p 8.4 -s functional -d mariadb -i 10.6 -a pdo_mysql
+    # Run functional tests using PHP 8.3 and MariaDB 10.6 using pdo_mysql
+    ./Build/Scripts/runTests.sh -p 8.3 -s functional -d mariadb -i 10.6 -a pdo_mysql
 
-    # Run functional tests on postgres with xdebug, php 8.4 and execute a restricted set of tests
-    ./Build/Scripts/runTests.sh -x -p 8.4 -s functional -d postgres -- Tests/Functional/DummyTest.php
+    # Run functional tests on postgres with xdebug, php 8.3 and execute a restricted set of tests
+    ./Build/Scripts/runTests.sh -x -p 8.3 -s functional -d postgres -- Tests/Functional/DummyTest.php
 EOF
 }
 
@@ -257,7 +257,7 @@ DBMS_VERSION=""
 PHP_VERSION="8.2"
 PHP_XDEBUG_ON=0
 PHP_XDEBUG_PORT=9003
-CGLCHECK_DRY_RUN=0
+DRY_RUN=0
 CI_PARAMS="${CI_PARAMS:-}"
 DOCS_PARAMS="${DOCS_PARAMS:=--pull always}"
 CONTAINER_BIN=""
@@ -291,7 +291,7 @@ while getopts "a:b:d:i:s:p:xy:nhu" OPT; do
             ;;
         p)
             PHP_VERSION=${OPTARG}
-            if ! [[ ${PHP_VERSION} =~ ^(8.2|8.3|8.4)$ ]]; then
+            if ! [[ ${PHP_VERSION} =~ ^(8.1|8.2|8.3|8.4)$ ]]; then
                 INVALID_OPTIONS+=("p ${OPTARG}")
             fi
             ;;
@@ -302,7 +302,7 @@ while getopts "a:b:d:i:s:p:xy:nhu" OPT; do
             PHP_XDEBUG_PORT=${OPTARG}
             ;;
         n)
-            CGLCHECK_DRY_RUN=1
+            DRY_RUN=1
             ;;
         h)
             loadHelp
@@ -410,11 +410,11 @@ fi
 # Suite execution
 case ${TEST_SUITE} in
     cgl)
-        if [ "${CGLCHECK_DRY_RUN}" -eq 1 ]; then
-            COMMAND="php -dxdebug.mode=off .Build/bin/php-cs-fixer fix -v --dry-run --diff --config=Build/cgl/.php-cs-fixer.dist.php --using-cache=no ."
-        else
-            COMMAND="php -dxdebug.mode=off .Build/bin/php-cs-fixer fix -v --config=Build/cgl/.php-cs-fixer.dist.php --using-cache=no ."
+        DRY_RUN_OPTIONS=''
+        if [ "${DRY_RUN}" -eq 1 ]; then
+            DRY_RUN_OPTIONS='--dry-run --diff'
         fi
+        COMMAND="php -dxdebug.mode=off .Build/bin/php-cs-fixer fix -v ${DRY_RUN_OPTIONS} --config=Build/cgl/config.php --using-cache=no"
         ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name cgl-${SUFFIX} -e COMPOSER_CACHE_DIR=.Build/.cache/composer -e COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION} ${IMAGE_PHP} /bin/sh -c "${COMMAND}"
         SUITE_EXIT_CODE=$?
         ;;
@@ -434,7 +434,7 @@ case ${TEST_SUITE} in
         SUITE_EXIT_CODE=$?
         ;;
     composerNormalize)
-        if [ "${CGLCHECK_DRY_RUN}" -eq 1 ]; then
+        if [ "${DRY_RUN}" -eq 1 ]; then
             COMMAND=(composer normalize -n)
         else
             COMMAND=(composer normalize)
@@ -443,7 +443,7 @@ case ${TEST_SUITE} in
         SUITE_EXIT_CODE=$?
         ;;
     composerUpdate)
-        rm -rf .Build/bin/ .Build/typo3 .Build/vendor .Build/Web ./composer.lock
+        rm -rf .Build/bin .Build/typo3 .Build/vendor ./composer.lock
         cp ${ROOT_DIR}/composer.json ${ROOT_DIR}/composer.json.orig
         if [ -f "${ROOT_DIR}/composer.json.testing" ]; then
             cp ${ROOT_DIR}/composer.json ${ROOT_DIR}/composer.json.orig
@@ -453,18 +453,6 @@ case ${TEST_SUITE} in
         SUITE_EXIT_CODE=$?
         cp ${ROOT_DIR}/composer.json ${ROOT_DIR}/composer.json.testing
         mv ${ROOT_DIR}/composer.json.orig ${ROOT_DIR}/composer.json
-        ;;
-    composerUpdateRector)
-        rm -rf Build/rector/.Build/bin/ Build/rector/.Build/vendor Build/rector/composer.lock
-        cp ${ROOT_DIR}/Build/rector/composer.json ${ROOT_DIR}/Build/rector/composer.json.orig
-        if [ -f "${ROOT_DIR}/Build/rector/composer.json.testing" ]; then
-            cp ${ROOT_DIR}/Build/rector/composer.json ${ROOT_DIR}/Build/rector/composer.json.orig
-        fi
-        COMMAND=(composer require --working-dir=${ROOT_DIR}/Build/rector --no-ansi --no-interaction --no-progress)
-        ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name composer-install-${SUFFIX} -e COMPOSER_CACHE_DIR=.Build/.cache/composer -e COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION} ${IMAGE_PHP} "${COMMAND[@]}"
-        SUITE_EXIT_CODE=$?
-        cp ${ROOT_DIR}/Build/rector/composer.json ${ROOT_DIR}/Build/rector/composer.json.testing
-        mv ${ROOT_DIR}/Build/rector/composer.json.orig ${ROOT_DIR}/Build/rector/composer.json
         ;;
     composerValidate)
         COMMAND=(composer validate "$@")
@@ -523,12 +511,12 @@ case ${TEST_SUITE} in
         SUITE_EXIT_CODE=$?
         ;;
     rector)
-        if [ "${CGLCHECK_DRY_RUN}" -eq 1 ]; then
-            COMMAND=(php -dxdebug.mode=off Build/rector/.Build/bin/rector -n --config=Build/rector/rector.php --clear-cache "$@")
-        else
-            COMMAND=(php -dxdebug.mode=off Build/rector/.Build/bin/rector --config=Build/rector/rector.php --clear-cache "$@")
+        DRY_RUN_OPTIONS=''
+        if [ "${DRY_RUN}" -eq 1 ]; then
+            DRY_RUN_OPTIONS='--dry-run'
         fi
-        ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name rector-${SUFFIX} -e COMPOSER_CACHE_DIR=.Build/.cache/composer -e COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION} ${IMAGE_PHP} "${COMMAND[@]}"
+        COMMAND="php -dxdebug.mode=off .Build/bin/rector process ${DRY_RUN_OPTIONS} --config=Build/rector/rector.php --no-progress-bar --ansi"
+        ${CONTAINER_BIN} run ${CONTAINER_COMMON_PARAMS} --name rector-${SUFFIX} -e COMPOSER_CACHE_DIR=.Build/.cache/composer -e COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION} ${IMAGE_PHP} /bin/sh -c "${COMMAND}"
         SUITE_EXIT_CODE=$?
         ;;
     renderDocumentation)
