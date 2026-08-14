@@ -9,7 +9,7 @@
         <f:render section="RenderImages" arguments="{event: day.event}"/>
         <f:render section="VideoLink" arguments="{event: day.event}"/>
         <p class="lead">{day.event.teaser -> e2:convertHtmlToPlainText() -> f:format.nl2br()}</p>
-        <p>{day.event.detailInformation -> e2:convertHtmlToPlainText() -> f:format.nl2br()}</p>
+        <f:format.html parseFuncTSPath="lib.parseFunc">{day.event.detailInformation}</f:format.html>
         <f:render section="DownloadLinks" arguments="{event: day.event}"/>
     </div>
     <div class="col-md-3">
