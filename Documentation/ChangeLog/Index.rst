@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 10.2.11
+===============
+
+*   [BUGFIX] Restore RTE formatting and links in event detail view
+
 Version 10.2.10
 ===============
 
