@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 9.4.2
+=============
+
+*   [SECURITY] Sanitize action name and harden event UID resolution
+
 Version 9.4.1
 ==============
 
