@@ -7,7 +7,7 @@
 ChangeLog
 =========
 
-Version 8.6.2
+Version 8.6.3
 =============
 
 *   [SECURITY] Harden event UID resolution
