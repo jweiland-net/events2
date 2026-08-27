@@ -108,9 +108,18 @@ class RestrictAccessEventListener extends AbstractControllerEventListener
             return false;
         }
 
+        $request = $controllerActionEvent->getRequest();
+        if (!$request->hasArgument('event')) {
+            return true;
+        }
+
+        $eventArgument = $request->getArgument('event');
+        $eventUid = is_array($eventArgument)
+            ? (int)($eventArgument['__identity'] ?? 0)
+            : (int)$eventArgument;
+
         if (
-            $controllerActionEvent->getRequest()->hasArgument('event')
-            && ($eventUid = (int)$controllerActionEvent->getRequest()->getArgument('event'))
+            $eventUid > 0
             && ($event = $this->eventRepository->findHiddenObject($eventUid))
             && $event instanceof Event
             && $event->getIsCurrentUserAllowedOrganizer() === false
