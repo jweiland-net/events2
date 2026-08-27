@@ -9,6 +9,15 @@ Upgrade
 
 If you upgrade/update EXT:events2 to a newer version, please read this section carefully!
 
+Update to Version 8.6.2
+========================
+
+Prevent serialization issues while editing scheduler tasks.
+Backported ReGenerateDays scheduler task to prevent fatal crashes during
+serialization ("Serialization of 'ReflectionMethod' is not allowed").
+
+Note: Existing tasks in the database must be deleted and recreated to
+flush out old, corrupted serialization strings.
 
 Update to Version 8.3.10
 ========================

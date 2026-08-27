@@ -15,9 +15,7 @@ Version 8.6.3
 Version 8.6.2
 =============
 
-*   [TASK] Version 8.6.2 is intentionally skipped: a ReGenerateDays scheduler task
-    serialization fix released under this number caused unrelated problems and was
-    fully reverted before the next release
+*   [BUGFIX] Resolve serialization error in ReGenerateDays scheduler task
 
 Version 8.6.1
 =============
