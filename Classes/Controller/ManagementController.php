@@ -66,7 +66,7 @@ class ManagementController extends AbstractController
     {
         if (isset($this->settings['selectableCategoriesForNewEvents'])) {
             trigger_error(
-                'settings.selectableCategoriesForNewEvents is deprecated. Please of settings.new.selectableCategoriesForNewEvents instead.',
+                'settings.selectableCategoriesForNewEvents is deprecated. Please use settings.new.selectableCategoriesForNewEvents instead.',
                 E_USER_DEPRECATED,
             );
             $selectableCategories = $this->settings['new']['selectableCategoriesForNewEvents'] ?? $this->settings['selectableCategoriesForNewEvents'];
@@ -121,9 +121,17 @@ class ManagementController extends AbstractController
     #[Extbase\IgnoreValidation(['value' => 'event'])]
     public function editAction(Event $event): ResponseInterface
     {
-        $categories = $this->categoryRepository->getCategories(
-            $this->settings['selectableCategoriesForNewEvents'],
-        );
+        if (isset($this->settings['selectableCategoriesForNewEvents'])) {
+            trigger_error(
+                'settings.selectableCategoriesForNewEvents is deprecated. Please use settings.new.selectableCategoriesForNewEvents instead.',
+                E_USER_DEPRECATED,
+            );
+            $selectableCategories = $this->settings['new']['selectableCategoriesForNewEvents'] ?? $this->settings['selectableCategoriesForNewEvents'];
+        } else {
+            $selectableCategories = $this->settings['new']['selectableCategoriesForNewEvents'];
+        }
+
+        $categories = $this->categoryRepository->getCategories($selectableCategories);
 
         if ($categories->count() === 0) {
             $this->addFlashMessage('Dear Admin: You have forgotten to define some allowed categories in plugin configuration');

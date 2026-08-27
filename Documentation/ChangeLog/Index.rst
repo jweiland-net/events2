@@ -11,6 +11,9 @@ Version 9.4.2
 =============
 
 *   [SECURITY] Sanitize action name and harden event UID resolution
+*   [BUGFIX] Resolve selectable categories in editAction like newAction
+*   [TASK] Fix grammar in deprecation message for selectableCategoriesForNewEvents
+*   [TASK] Ignore images downloaded by functional XmlImporter tests
 
 Version 9.4.1
 ==============
