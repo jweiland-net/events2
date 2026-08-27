@@ -12,6 +12,13 @@ Version 8.6.3
 
 *   [SECURITY] Harden event UID resolution
 
+Version 8.6.2
+=============
+
+*   [TASK] Version 8.6.2 is intentionally skipped: a ReGenerateDays scheduler task
+    serialization fix released under this number caused unrelated problems and was
+    fully reverted before the next release
+
 Version 8.6.1
 =============
 
