@@ -11,6 +11,8 @@ Version 10.2.10
 ===============
 
 *   [BUGFIX] Show plain text when editing teaser/description
+*   [BUGFIX] Prefill `event_begin` with a DateTimeImmutable so that creating
+    a new event works on TYPO3 14
 
 Version 10.2.9
 ==============

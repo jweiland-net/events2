@@ -31,6 +31,7 @@ use JWeiland\Events2\Routing\Aspect\PersistedHiddenAliasMapper;
 use JWeiland\Events2\Routing\Aspect\TimestampMapper;
 use JWeiland\Events2\Tca\Type\Time;
 use Psr\Log\LogLevel;
+use TYPO3\CMS\Backend\Form\FormDataProvider\DatabaseRowDateTimeFields;
 use TYPO3\CMS\Backend\Form\FormDataProvider\DatabaseRowInitializeNew;
 use TYPO3\CMS\Backend\Form\FormDataProvider\TcaSelectItems;
 use TYPO3\CMS\Core\Log\Writer\FileWriter;
@@ -141,6 +142,9 @@ if (ExtensionManagementUtility::isLoaded('solr')) {
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['formDataGroup']['tcaDatabaseRecord'][InitializeNewEventRecord::class] = [
     'depends' => [
         DatabaseRowInitializeNew::class,
+        // Has to run after the core converted datetime columns, otherwise the
+        // prefilled value would be overwritten again.
+        DatabaseRowDateTimeFields::class,
     ],
 ];
 // Set rootUid of category trees in FlexForms to values of extension configuration
