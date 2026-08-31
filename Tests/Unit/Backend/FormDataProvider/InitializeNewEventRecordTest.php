@@ -80,18 +80,34 @@ class InitializeNewEventRecordTest extends UnitTestCase
     #[Test]
     public function addDataWithEventTableAndNewRecordWillModifyEventBegin(): void
     {
-        $expected = $result = [
+        $result = [
             'tableName' => 'tx_events2_domain_model_event',
             'command' => 'new',
         ];
 
-        $expected['databaseRow'] = [
-            'event_begin' => GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('date', 'timestamp'),
+        $expected = \DateTimeImmutable::createFromInterface(
+            GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('date', 'full'),
+        )->setTime(0, 0, 0);
+
+        self::assertEquals(
+            $expected,
+            $this->subject->addData($result)['databaseRow']['event_begin'],
+        );
+    }
+
+    #[Test]
+    public function addDataWillPrefillEventBeginWithDateTimeObject(): void
+    {
+        $result = [
+            'tableName' => 'tx_events2_domain_model_event',
+            'command' => 'new',
         ];
 
-        self::assertSame(
-            $expected,
-            $this->subject->addData($result),
+        // Since TYPO3 14 DatetimeElement requires a \DateTimeInterface here.
+        // An int timestamp lets the "new event" form fail with #1731132127.
+        self::assertInstanceOf(
+            \DateTimeInterface::class,
+            $this->subject->addData($result)['databaseRow']['event_begin'],
         );
     }
 }

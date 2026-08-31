@@ -40,10 +40,15 @@ readonly class InitializeNewEventRecord implements FormDataProviderInterface
         }
 
         try {
-            $result['databaseRow']['event_begin'] = $this->context->getPropertyFromAspect(
-                'date',
-                'timestamp',
-            );
+            // Since TYPO3 14 a "type => datetime" column has to carry a
+            // \DateTimeInterface. An integer timestamp makes DatetimeElement
+            // throw #1731132127 and the "new event" form ends in HTTP 500.
+            // The column is declared as "format => date", so normalize to midnight.
+            $now = $this->context->getPropertyFromAspect('date', 'full');
+            if ($now instanceof \DateTimeInterface) {
+                $result['databaseRow']['event_begin'] = \DateTimeImmutable::createFromInterface($now)
+                    ->setTime(0, 0, 0);
+            }
         } catch (AspectNotFoundException) {
         }
 
