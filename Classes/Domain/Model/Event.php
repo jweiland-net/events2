@@ -204,7 +204,7 @@ class Event extends AbstractEntity
             // Since PHP 7.4 we can not access timezone_type directly anymore.
             // If location is false, timezone_type is 1 or 2, but we need 3
             if ($this->eventBegin->getTimezone()->getLocation() === false) {
-                $this->eventBegin->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+                $this->eventBegin = $this->eventBegin->setTimezone(new \DateTimeZone(date_default_timezone_get()));
             }
 
             return $this->eventBegin;
@@ -255,7 +255,7 @@ class Event extends AbstractEntity
             // Since PHP 7.4 we can not access timezone_type directly anymore.
             // If location is false, timezone_type is 1 or 2, but we need 3
             if ($this->eventEnd->getTimezone()->getLocation() === false) {
-                $this->eventEnd->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+                $this->eventEnd = $this->eventEnd->setTimezone(new \DateTimeZone(date_default_timezone_get()));
             }
 
             return $this->eventEnd;
@@ -377,7 +377,7 @@ class Event extends AbstractEntity
             // Since PHP 7.4 we can not access timezone_type directly anymore.
             // If location is false, timezone_type is 1 or 2, but we need 3
             if ($this->recurringEnd->getTimezone()->getLocation() === false) {
-                $this->recurringEnd->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+                $this->recurringEnd = $this->recurringEnd->setTimezone(new \DateTimeZone(date_default_timezone_get()));
             }
 
             return clone $this->recurringEnd;
