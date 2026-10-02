@@ -151,6 +151,14 @@ class DayRepository extends Repository
                     $queryBuilder->createNamedParameter($filter->getTimestamp(), Connection::PARAM_INT),
                 ),
             );
+            // Restrict the sub-query to that day, too. Otherwise MIN(day_time) of a merged group
+            // (duration events, mergeRecurringEvents) points to the first day of the group only.
+            $subQueryBuilder->andWhere(
+                $queryBuilder->expr()->eq(
+                    'day_sub_query.day',
+                    $queryBuilder->createNamedParameter($filter->getTimestamp(), Connection::PARAM_INT),
+                ),
+            );
         } else {
             // Add constraint for date by given listType
             $this->addConstraintForDate(
