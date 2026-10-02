@@ -251,7 +251,7 @@ class DayGeneratorService
         );
 
         if (
-            $eventRecord['event_begin'] > $earliestDateOfTimeFrame
+            $eventRecord['event_begin'] >= $earliestDateOfTimeFrame
             && $eventRecord['event_begin'] < $latestDateOfTimeFrame
         ) {
             $this->addDateTimeToStorage($dayGeneratorResult, $eventRecord['event_begin']);

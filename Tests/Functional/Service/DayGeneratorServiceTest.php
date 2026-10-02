@@ -879,6 +879,48 @@ class DayGeneratorServiceTest extends FunctionalTestCase
     }
 
     #[Test]
+    public function getDateTimeStorageForEventWithEventBeginAtBeginOfTimeFrameAddsOneDayToStorage(): void
+    {
+        $eventBegin = new \DateTimeImmutable();
+        $eventBegin = $eventBegin->modify('midnight');
+
+        $eventRecord = [
+            'uid' => 123,
+            'event_type' => 'single',
+            'event_begin' => (int)$eventBegin->format('U'),
+            'event_end' => 0,
+            'recurring_end' => 0,
+            'xth' => 31,
+            'weekday' => 127,
+            'each_weeks' => 0,
+            'each_months' => 0,
+            'exceptions' => [],
+        ];
+
+        // With recurringPast 0 the time frame begins today at midnight, which equals event begin
+        $subject = new DayGeneratorService(
+            self::createStub(TimeService::class),
+            new ExtConf(
+                recurringPast: 0,
+                recurringFuture: 12,
+            ),
+            new DateTimeUtility(),
+            GeneralUtility::makeInstance(EventDispatcher::class),
+            self::createStub(Logger::class),
+        );
+
+        self::assertEquals(
+            [
+                $eventBegin->format('U') => new DateTimeResult($eventBegin, false),
+            ],
+            $subject
+                ->getDayGeneratorResultForEventRecord($eventRecord)
+                ->getDateTimeResultStorageSorted()
+                ->getArrayCopy(),
+        );
+    }
+
+    #[Test]
     public function getDateTimeStorageForEventWithAddExceptionAddsOneDayInStorage(): void
     {
         $eventBegin = new \DateTimeImmutable('midnight');

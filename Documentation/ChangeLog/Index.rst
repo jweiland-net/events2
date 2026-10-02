@@ -11,6 +11,7 @@ Version 10.2.13
 ===============
 
 *   [BUGFIX] Show duration events on every day selected in calendar
+*   [BUGFIX] Generate day record for events starting at begin of time frame
 *   [BUGFIX] Persist immutable timezone conversions in events2
 
 Version 10.2.12
