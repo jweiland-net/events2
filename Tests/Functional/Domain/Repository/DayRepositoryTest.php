@@ -20,6 +20,7 @@ use JWeiland\Events2\Domain\Model\Search;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Tests\Functional\Events2Constants;
 use JWeiland\Events2\Tests\Functional\Traits\InsertEventTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
@@ -418,8 +419,69 @@ class DayRepositoryTest extends FunctionalTestCase
         );
     }
 
+    public static function listTypeDataProvider(): array
+    {
+        return [
+            'list' => ['list'],
+            'listLatest' => ['listLatest'],
+            'listToday' => ['listToday'],
+            'listWeek' => ['listWeek'],
+            'listRange' => ['listRange'],
+        ];
+    }
+
     #[Test]
-    public function getDaysForListTypeWithStartedDurationEventWillNotReturnDays(): void
+    #[DataProvider('listTypeDataProvider')]
+    public function getDaysForListTypeWithStartedDurationEventWillNotReturnDays(string $listType): void
+    {
+        // Start before monday of this week, as listWeek begins on monday
+        $this->insertEvent(
+            title: 'Exhibition',
+            eventBegin: new \DateTimeImmutable('-10 days midnight'),
+            additionalFields: [
+                'event_type' => 'duration',
+                'event_end' => (int)(new \DateTimeImmutable('+10 days midnight'))->format('U'),
+            ],
+        );
+        $this->createDayRelations();
+
+        $days = $this->dayRepository->getDaysForListType($listType, new Filter())->toArray();
+
+        self::assertCount(
+            0,
+            $days,
+        );
+    }
+
+    #[Test]
+    public function getDaysForListTypeWithDurationEventStartingTodayWillReturnFirstDay(): void
+    {
+        $today = new \DateTimeImmutable('today midnight');
+
+        $this->insertEvent(
+            title: 'Exhibition',
+            eventBegin: $today,
+            additionalFields: [
+                'event_type' => 'duration',
+                'event_end' => (int)$today->modify('+4 days')->format('U'),
+            ],
+        );
+        $this->createDayRelations();
+
+        $days = $this->dayRepository->getDaysForListType('list', new Filter())->toArray();
+
+        self::assertCount(
+            1,
+            $days,
+        );
+        self::assertEquals(
+            $today,
+            $days[0]->getDay(),
+        );
+    }
+
+    #[Test]
+    public function getDaysForListTypeWithStartedDurationEventWillStillReturnOtherEvents(): void
     {
         $this->insertEvent(
             title: 'Exhibition',
@@ -429,9 +491,75 @@ class DayRepositoryTest extends FunctionalTestCase
                 'event_end' => (int)(new \DateTimeImmutable('+2 days midnight'))->format('U'),
             ],
         );
+        $this->insertEvent(
+            title: 'Event Tomorrow',
+            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
+        );
         $this->createDayRelations();
 
         $days = $this->dayRepository->getDaysForListType('list', new Filter())->toArray();
+
+        self::assertCount(
+            1,
+            $days,
+        );
+        self::assertSame(
+            'Event Tomorrow',
+            $days[0]->getEvent()->getTitle(),
+        );
+    }
+
+    #[Test]
+    public function getDaysForListTypeWithTimestampOfFirstDayWillReturnStartedDurationEvent(): void
+    {
+        $eventBegin = new \DateTimeImmutable('-2 days midnight');
+
+        $this->insertEvent(
+            title: 'Exhibition',
+            eventBegin: $eventBegin,
+            additionalFields: [
+                'event_type' => 'duration',
+                'event_end' => (int)$eventBegin->modify('+4 days')->format('U'),
+            ],
+        );
+        $this->createDayRelations();
+
+        // The calendar highlights the first day of duration events, so the list must show the event on that day
+        $filter = new Filter();
+        $filter->setTimestamp((int)$eventBegin->format('U'));
+
+        $days = $this->dayRepository->getDaysForListType('list', $filter)->toArray();
+
+        self::assertCount(
+            1,
+            $days,
+        );
+        self::assertEquals(
+            $eventBegin,
+            $days[0]->getDay(),
+        );
+    }
+
+    #[Test]
+    public function getDaysForListTypeWithTimestampOfFollowingDayWillNotReturnDurationEvent(): void
+    {
+        $eventBegin = new \DateTimeImmutable('-2 days midnight');
+
+        $this->insertEvent(
+            title: 'Exhibition',
+            eventBegin: $eventBegin,
+            additionalFields: [
+                'event_type' => 'duration',
+                'event_end' => (int)$eventBegin->modify('+4 days')->format('U'),
+            ],
+        );
+        $this->createDayRelations();
+
+        // The calendar does not highlight following days of duration events, so the list must be empty, too
+        $filter = new Filter();
+        $filter->setTimestamp((int)$eventBegin->modify('+1 day')->format('U'));
+
+        $days = $this->dayRepository->getDaysForListType('list', $filter)->toArray();
 
         self::assertCount(
             0,
