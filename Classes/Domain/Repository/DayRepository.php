@@ -394,6 +394,19 @@ class DayRepository extends Repository
             $parentQueryBuilder,
             $alias,
         );
+
+        // It is not possible to take part in a duration event after it has started. All days of a duration event
+        // contain the date of the first day in sort_day_time, so this removes duration events which have already
+        // started. For all other event types sort_day_time is equal to day_time.
+        $queryBuilder->andWhere(
+            $queryBuilder->expr()->gte(
+                $alias . '.sort_day_time',
+                ($parentQueryBuilder ?? $queryBuilder)->createNamedParameter(
+                    $event->getStartDateTime()->format('U'),
+                    Connection::PARAM_INT,
+                ),
+            ),
+        );
     }
 
     /**

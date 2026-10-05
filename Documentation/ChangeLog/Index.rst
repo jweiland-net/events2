@@ -7,6 +7,12 @@
 ChangeLog
 =========
 
+Version 10.2.13
+===============
+
+*   [BUGFIX] Do not list duration events which have already started
+*   [BUGFIX] Persist immutable timezone conversions in events2
+
 Version 10.2.12
 ===============
 

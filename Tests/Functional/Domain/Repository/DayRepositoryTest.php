@@ -419,6 +419,54 @@ class DayRepositoryTest extends FunctionalTestCase
     }
 
     #[Test]
+    public function getDaysForListTypeWithStartedDurationEventWillNotReturnDays(): void
+    {
+        $this->insertEvent(
+            title: 'Exhibition',
+            eventBegin: new \DateTimeImmutable('-2 days midnight'),
+            additionalFields: [
+                'event_type' => 'duration',
+                'event_end' => (int)(new \DateTimeImmutable('+2 days midnight'))->format('U'),
+            ],
+        );
+        $this->createDayRelations();
+
+        $days = $this->dayRepository->getDaysForListType('list', new Filter())->toArray();
+
+        self::assertCount(
+            0,
+            $days,
+        );
+    }
+
+    #[Test]
+    public function getDaysForListTypeWithUpcomingDurationEventWillReturnFirstDay(): void
+    {
+        $eventBegin = new \DateTimeImmutable('+2 days midnight');
+
+        $this->insertEvent(
+            title: 'Exhibition',
+            eventBegin: $eventBegin,
+            additionalFields: [
+                'event_type' => 'duration',
+                'event_end' => (int)$eventBegin->modify('+4 days')->format('U'),
+            ],
+        );
+        $this->createDayRelations();
+
+        $days = $this->dayRepository->getDaysForListType('list', new Filter())->toArray();
+
+        self::assertCount(
+            1,
+            $days,
+        );
+        self::assertEquals(
+            $eventBegin,
+            $days[0]->getDay(),
+        );
+    }
+
+    #[Test]
     public function getDaysForListTypeWithRecurringEventWillReturnDays(): void
     {
         $this->insertEvent(
