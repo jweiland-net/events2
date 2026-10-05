@@ -87,4 +87,48 @@ class DatabaseServiceTest extends FunctionalTestCase
             count($days),
         );
     }
+
+    #[Test]
+    public function getDaysInRangeWillFindFirstDayOfDurationEventOnly(): void
+    {
+        $firstDayOfMonth = new \DateTimeImmutable('first day of this month midnight');
+        $eventBegin = $firstDayOfMonth->modify('+1 day');
+
+        $this->insertEvent(
+            title: 'Exhibition',
+            eventBegin: $eventBegin,
+            additionalFields: [
+                'event_type' => 'duration',
+                'event_end' => (int)$eventBegin->modify('+4 days')->format('U'),
+            ],
+        );
+        $this->createDayRelations();
+
+        $databaseService = new DatabaseService(
+            new ExtConf(
+                recurringPast: 3,
+                recurringFuture: 6,
+            ),
+            new DateTimeUtility(),
+        );
+
+        $days = $databaseService->getDaysInRange(
+            $firstDayOfMonth,
+            new \DateTimeImmutable('last day of this month midnight'),
+            [Events2Constants::PAGE_STORAGE],
+        );
+        $daysOfExhibition = array_values(array_filter(
+            $days,
+            static fn(array $day): bool => $day['title'] === 'Exhibition',
+        ));
+
+        self::assertCount(
+            1,
+            $daysOfExhibition,
+        );
+        self::assertSame(
+            (int)$eventBegin->format('U'),
+            (int)$daysOfExhibition[0]['day'],
+        );
+    }
 }

@@ -11,6 +11,7 @@ Version 10.2.13
 ===============
 
 *   [BUGFIX] Do not list duration events which have already started
+*   [BUGFIX] Highlight first day of duration events only in calendar
 *   [BUGFIX] Persist immutable timezone conversions in events2
 
 Version 10.2.12
