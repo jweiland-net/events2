@@ -770,6 +770,92 @@ class DayRepositoryTest extends FunctionalTestCase
     }
 
     #[Test]
+    public function searchEventsWithStartedDurationEventWillNotReturnDays(): void
+    {
+        $this->insertEvent(
+            title: 'Exhibition',
+            eventBegin: new \DateTimeImmutable('-2 days midnight'),
+            additionalFields: [
+                'event_type' => 'duration',
+                'event_end' => (int)(new \DateTimeImmutable('+2 days midnight'))->format('U'),
+            ],
+        );
+        $this->createDayRelations();
+
+        $search = new Search();
+        $search->setSearch('Exhibition');
+
+        $days = $this->dayRepository->searchEvents($search)->toArray();
+
+        self::assertCount(
+            0,
+            $days,
+        );
+    }
+
+    #[Test]
+    public function searchEventsWithUpcomingDurationEventWillReturnFirstDay(): void
+    {
+        $eventBegin = new \DateTimeImmutable('+2 days midnight');
+
+        $this->insertEvent(
+            title: 'Exhibition',
+            eventBegin: $eventBegin,
+            additionalFields: [
+                'event_type' => 'duration',
+                'event_end' => (int)$eventBegin->modify('+4 days')->format('U'),
+            ],
+        );
+        $this->createDayRelations();
+
+        $search = new Search();
+        $search->setSearch('Exhibition');
+
+        $days = $this->dayRepository->searchEvents($search)->toArray();
+
+        self::assertCount(
+            1,
+            $days,
+        );
+        self::assertEquals(
+            $eventBegin,
+            $days[0]->getDay(),
+        );
+    }
+
+    #[Test]
+    public function searchEventsWithEventBeginBeforeStartOfDurationEventWillReturnFirstDay(): void
+    {
+        $eventBegin = new \DateTimeImmutable('-2 days midnight');
+
+        $this->insertEvent(
+            title: 'Exhibition',
+            eventBegin: $eventBegin,
+            additionalFields: [
+                'event_type' => 'duration',
+                'event_end' => (int)$eventBegin->modify('+4 days')->format('U'),
+            ],
+        );
+        $this->createDayRelations();
+
+        // Searching from a date before the event has started must still find the event
+        $search = new Search();
+        $search->setSearch('Exhibition');
+        $search->setEventBegin($eventBegin->modify('-1 day')->format('Y-m-d'));
+
+        $days = $this->dayRepository->searchEvents($search)->toArray();
+
+        self::assertCount(
+            1,
+            $days,
+        );
+        self::assertEquals(
+            $eventBegin,
+            $days[0]->getDay(),
+        );
+    }
+
+    #[Test]
     public function searchEventsWithCategoryWillReturnDays(): void
     {
         $this->insertEvent(

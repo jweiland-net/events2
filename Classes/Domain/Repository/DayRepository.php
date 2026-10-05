@@ -273,6 +273,12 @@ class DayRepository extends Repository
                 $queryBuilder,
                 'day_sub_query',
             );
+            $this->addConstraintForStartedDurationEvents(
+                $subQueryBuilder,
+                $startDateTime,
+                $queryBuilder,
+                'day_sub_query',
+            );
         }
 
         // add a query for the event location
@@ -395,14 +401,30 @@ class DayRepository extends Repository
             $alias,
         );
 
-        // It is not possible to take part in a duration event after it has started. All days of a duration event
-        // contain the date of the first day in sort_day_time, so this removes duration events which have already
-        // started. For all other event types sort_day_time is equal to day_time.
+        $this->addConstraintForStartedDurationEvents(
+            $queryBuilder,
+            $event->getStartDateTime(),
+            $parentQueryBuilder,
+            $alias,
+        );
+    }
+
+    /**
+     * It is not possible to take part in a duration event after it has started. All days of a duration event
+     * contain the date of the first day in sort_day_time, so this removes duration events which have started
+     * before the given start date. For all other event types sort_day_time is equal to day_time.
+     */
+    protected function addConstraintForStartedDurationEvents(
+        QueryBuilder $queryBuilder,
+        \DateTimeImmutable $startDateTime,
+        ?QueryBuilder $parentQueryBuilder = null,
+        string $alias = 'day',
+    ): void {
         $queryBuilder->andWhere(
             $queryBuilder->expr()->gte(
                 $alias . '.sort_day_time',
                 ($parentQueryBuilder ?? $queryBuilder)->createNamedParameter(
-                    $event->getStartDateTime()->format('U'),
+                    $startDateTime->format('U'),
                     Connection::PARAM_INT,
                 ),
             ),
