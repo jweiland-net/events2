@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Tests\Functional\Domain\Repository;
 
+use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Category;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Enums\AttendanceModeEnum;
@@ -476,6 +477,99 @@ class DayRepositoryTest extends FunctionalTestCase
         );
         self::assertEquals(
             $today,
+            $days[0]->getDay(),
+        );
+    }
+
+    #[Test]
+    public function getDaysForListTypeWithoutRecurringPastAndDurationEventStartingTodayWillReturnFirstDay(): void
+    {
+        // Without recurringPast the list begins at "now", which DateTimeUtility resets to today at midnight
+        $this->dayRepository->injectExtConf(new ExtConf(recurringPast: 0));
+
+        $today = new \DateTimeImmutable('today midnight');
+
+        $this->insertEvent(
+            title: 'Exhibition',
+            eventBegin: $today,
+            additionalFields: [
+                'event_type' => 'duration',
+                'event_end' => (int)$today->modify('+4 days')->format('U'),
+            ],
+        );
+        $this->createDayRelations();
+
+        $days = $this->dayRepository->getDaysForListType('list', new Filter())->toArray();
+
+        self::assertCount(
+            1,
+            $days,
+        );
+        self::assertEquals(
+            $today,
+            $days[0]->getDay(),
+        );
+    }
+
+    public static function mergeSettingsDataProvider(): array
+    {
+        return [
+            'no merge' => [[]],
+            'mergeRecurringEvents' => [['mergeRecurringEvents' => '1']],
+            'mergeEventsAtSameDay' => [['mergeEventsAtSameDay' => '1']],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('mergeSettingsDataProvider')]
+    public function getDaysForListTypeWithMergeSettingsWillNotReturnStartedDurationEvent(array $settings): void
+    {
+        $this->insertEvent(
+            title: 'Exhibition',
+            eventBegin: new \DateTimeImmutable('-2 days midnight'),
+            additionalFields: [
+                'event_type' => 'duration',
+                'event_end' => (int)(new \DateTimeImmutable('+2 days midnight'))->format('U'),
+            ],
+        );
+        $this->createDayRelations();
+
+        $this->dayRepository->setSettings($settings);
+
+        $days = $this->dayRepository->getDaysForListType('list', new Filter())->toArray();
+
+        self::assertCount(
+            0,
+            $days,
+        );
+    }
+
+    #[Test]
+    #[DataProvider('mergeSettingsDataProvider')]
+    public function getDaysForListTypeWithMergeSettingsWillReturnFirstDayOfUpcomingDurationEvent(array $settings): void
+    {
+        $eventBegin = new \DateTimeImmutable('+2 days midnight');
+
+        $this->insertEvent(
+            title: 'Exhibition',
+            eventBegin: $eventBegin,
+            additionalFields: [
+                'event_type' => 'duration',
+                'event_end' => (int)$eventBegin->modify('+4 days')->format('U'),
+            ],
+        );
+        $this->createDayRelations();
+
+        $this->dayRepository->setSettings($settings);
+
+        $days = $this->dayRepository->getDaysForListType('list', new Filter())->toArray();
+
+        self::assertCount(
+            1,
+            $days,
+        );
+        self::assertEquals(
+            $eventBegin,
             $days[0]->getDay(),
         );
     }
