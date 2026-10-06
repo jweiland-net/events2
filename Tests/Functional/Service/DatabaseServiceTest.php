@@ -87,4 +87,154 @@ class DatabaseServiceTest extends FunctionalTestCase
             count($days),
         );
     }
+
+    #[Test]
+    public function getDaysInRangeWillFindFirstDayOfDurationEventOnly(): void
+    {
+        $firstDayOfMonth = new \DateTimeImmutable('first day of this month midnight');
+        $eventBegin = $firstDayOfMonth->modify('+1 day');
+
+        $this->insertEvent(
+            title: 'Exhibition',
+            eventBegin: $eventBegin,
+            additionalFields: [
+                'event_type' => 'duration',
+                'event_end' => (int)$eventBegin->modify('+4 days')->format('U'),
+            ],
+        );
+        $this->createDayRelations();
+
+        $databaseService = new DatabaseService(
+            new ExtConf(
+                recurringPast: 3,
+                recurringFuture: 6,
+            ),
+            new DateTimeUtility(),
+        );
+
+        $daysOfExhibition = $this->getDaysOfEvent(
+            $databaseService->getDaysInRange(
+                $firstDayOfMonth,
+                new \DateTimeImmutable('last day of this month midnight'),
+                [Events2Constants::PAGE_STORAGE],
+            ),
+            'Exhibition',
+        );
+
+        self::assertCount(
+            1,
+            $daysOfExhibition,
+        );
+        self::assertSame(
+            (int)$eventBegin->format('U'),
+            (int)$daysOfExhibition[0]['day'],
+        );
+    }
+
+    #[Test]
+    public function getDaysInRangeWillNotFindDaysOfDurationEventStartedInPreviousMonth(): void
+    {
+        $firstDayOfMonth = new \DateTimeImmutable('first day of this month midnight');
+        $eventBegin = $firstDayOfMonth->modify('-3 days');
+
+        $this->insertEvent(
+            title: 'Exhibition',
+            eventBegin: $eventBegin,
+            additionalFields: [
+                'event_type' => 'duration',
+                'event_end' => (int)$firstDayOfMonth->modify('+3 days')->format('U'),
+            ],
+        );
+        $this->createDayRelations();
+
+        $databaseService = new DatabaseService(
+            new ExtConf(
+                recurringPast: 3,
+                recurringFuture: 6,
+            ),
+            new DateTimeUtility(),
+        );
+
+        $daysOfCurrentMonth = $this->getDaysOfEvent(
+            $databaseService->getDaysInRange(
+                $firstDayOfMonth,
+                new \DateTimeImmutable('last day of this month midnight'),
+                [Events2Constants::PAGE_STORAGE],
+            ),
+            'Exhibition',
+        );
+        $daysOfPreviousMonth = $this->getDaysOfEvent(
+            $databaseService->getDaysInRange(
+                $firstDayOfMonth->modify('-1 month'),
+                $firstDayOfMonth->modify('-1 day'),
+                [Events2Constants::PAGE_STORAGE],
+            ),
+            'Exhibition',
+        );
+
+        self::assertCount(
+            0,
+            $daysOfCurrentMonth,
+        );
+        self::assertCount(
+            1,
+            $daysOfPreviousMonth,
+        );
+        self::assertSame(
+            (int)$eventBegin->format('U'),
+            (int)$daysOfPreviousMonth[0]['day'],
+        );
+    }
+
+    #[Test]
+    public function getDaysInRangeWillFindFirstDayOfDurationEventWithTime(): void
+    {
+        $firstDayOfMonth = new \DateTimeImmutable('first day of this month midnight');
+        $eventBegin = $firstDayOfMonth->modify('+1 day');
+
+        $this->insertEvent(
+            title: 'Exhibition',
+            eventBegin: $eventBegin,
+            timeBegin: '10:00',
+            additionalFields: [
+                'event_type' => 'duration',
+                'event_end' => (int)$eventBegin->modify('+4 days')->format('U'),
+            ],
+        );
+        $this->createDayRelations();
+
+        $databaseService = new DatabaseService(
+            new ExtConf(
+                recurringPast: 3,
+                recurringFuture: 6,
+            ),
+            new DateTimeUtility(),
+        );
+
+        $daysOfExhibition = $this->getDaysOfEvent(
+            $databaseService->getDaysInRange(
+                $firstDayOfMonth,
+                new \DateTimeImmutable('last day of this month midnight'),
+                [Events2Constants::PAGE_STORAGE],
+            ),
+            'Exhibition',
+        );
+
+        self::assertCount(
+            1,
+            $daysOfExhibition,
+        );
+        self::assertSame(
+            (int)$eventBegin->format('U'),
+            (int)$daysOfExhibition[0]['day'],
+        );
+    }
+
+    protected function getDaysOfEvent(array $days, string $title): array
+    {
+        return array_values(array_filter(
+            $days,
+            static fn(array $day): bool => $day['title'] === $title,
+        ));
+    }
 }

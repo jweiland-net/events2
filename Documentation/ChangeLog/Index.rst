@@ -7,6 +7,14 @@
 ChangeLog
 =========
 
+Version 10.2.13
+===============
+
+*   [BUGFIX] Do not list duration events which have already started
+*   [BUGFIX] Highlight first day of duration events only in calendar
+*   [BUGFIX] Do not find duration events which have already started in search
+*   [BUGFIX] Persist immutable timezone conversions in events2
+
 Version 10.2.12
 ===============
 

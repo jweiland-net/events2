@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Tests\Functional\Domain\Repository;
 
+use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Domain\Model\Category;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Enums\AttendanceModeEnum;
@@ -20,6 +21,7 @@ use JWeiland\Events2\Domain\Model\Search;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Tests\Functional\Events2Constants;
 use JWeiland\Events2\Tests\Functional\Traits\InsertEventTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
@@ -418,6 +420,274 @@ class DayRepositoryTest extends FunctionalTestCase
         );
     }
 
+    public static function listTypeDataProvider(): array
+    {
+        return [
+            'list' => ['list'],
+            'listLatest' => ['listLatest'],
+            'listToday' => ['listToday'],
+            'listWeek' => ['listWeek'],
+            'listRange' => ['listRange'],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('listTypeDataProvider')]
+    public function getDaysForListTypeWithStartedDurationEventWillNotReturnDays(string $listType): void
+    {
+        // Start before monday of this week, as listWeek begins on monday
+        $this->insertEvent(
+            title: 'Exhibition',
+            eventBegin: new \DateTimeImmutable('-10 days midnight'),
+            additionalFields: [
+                'event_type' => 'duration',
+                'event_end' => (int)(new \DateTimeImmutable('+10 days midnight'))->format('U'),
+            ],
+        );
+        $this->createDayRelations();
+
+        $days = $this->dayRepository->getDaysForListType($listType, new Filter())->toArray();
+
+        self::assertCount(
+            0,
+            $days,
+        );
+    }
+
+    #[Test]
+    public function getDaysForListTypeWithDurationEventStartingTodayWillReturnFirstDay(): void
+    {
+        $today = new \DateTimeImmutable('today midnight');
+
+        $this->insertEvent(
+            title: 'Exhibition',
+            eventBegin: $today,
+            additionalFields: [
+                'event_type' => 'duration',
+                'event_end' => (int)$today->modify('+4 days')->format('U'),
+            ],
+        );
+        $this->createDayRelations();
+
+        $days = $this->dayRepository->getDaysForListType('list', new Filter())->toArray();
+
+        self::assertCount(
+            1,
+            $days,
+        );
+        self::assertEquals(
+            $today,
+            $days[0]->getDay(),
+        );
+    }
+
+    #[Test]
+    public function getDaysForListTypeWithoutRecurringPastAndDurationEventStartingTodayWillReturnFirstDay(): void
+    {
+        // Without recurringPast the list begins at "now", which DateTimeUtility resets to today at midnight
+        $this->dayRepository->injectExtConf(new ExtConf(recurringPast: 0));
+
+        $today = new \DateTimeImmutable('today midnight');
+
+        $this->insertEvent(
+            title: 'Exhibition',
+            eventBegin: $today,
+            additionalFields: [
+                'event_type' => 'duration',
+                'event_end' => (int)$today->modify('+4 days')->format('U'),
+            ],
+        );
+        $this->createDayRelations();
+
+        $days = $this->dayRepository->getDaysForListType('list', new Filter())->toArray();
+
+        self::assertCount(
+            1,
+            $days,
+        );
+        self::assertEquals(
+            $today,
+            $days[0]->getDay(),
+        );
+    }
+
+    public static function mergeSettingsDataProvider(): array
+    {
+        return [
+            'no merge' => [[]],
+            'mergeRecurringEvents' => [['mergeRecurringEvents' => '1']],
+            'mergeEventsAtSameDay' => [['mergeEventsAtSameDay' => '1']],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('mergeSettingsDataProvider')]
+    public function getDaysForListTypeWithMergeSettingsWillNotReturnStartedDurationEvent(array $settings): void
+    {
+        $this->insertEvent(
+            title: 'Exhibition',
+            eventBegin: new \DateTimeImmutable('-2 days midnight'),
+            additionalFields: [
+                'event_type' => 'duration',
+                'event_end' => (int)(new \DateTimeImmutable('+2 days midnight'))->format('U'),
+            ],
+        );
+        $this->createDayRelations();
+
+        $this->dayRepository->setSettings($settings);
+
+        $days = $this->dayRepository->getDaysForListType('list', new Filter())->toArray();
+
+        self::assertCount(
+            0,
+            $days,
+        );
+    }
+
+    #[Test]
+    #[DataProvider('mergeSettingsDataProvider')]
+    public function getDaysForListTypeWithMergeSettingsWillReturnFirstDayOfUpcomingDurationEvent(array $settings): void
+    {
+        $eventBegin = new \DateTimeImmutable('+2 days midnight');
+
+        $this->insertEvent(
+            title: 'Exhibition',
+            eventBegin: $eventBegin,
+            additionalFields: [
+                'event_type' => 'duration',
+                'event_end' => (int)$eventBegin->modify('+4 days')->format('U'),
+            ],
+        );
+        $this->createDayRelations();
+
+        $this->dayRepository->setSettings($settings);
+
+        $days = $this->dayRepository->getDaysForListType('list', new Filter())->toArray();
+
+        self::assertCount(
+            1,
+            $days,
+        );
+        self::assertEquals(
+            $eventBegin,
+            $days[0]->getDay(),
+        );
+    }
+
+    #[Test]
+    public function getDaysForListTypeWithStartedDurationEventWillStillReturnOtherEvents(): void
+    {
+        $this->insertEvent(
+            title: 'Exhibition',
+            eventBegin: new \DateTimeImmutable('-2 days midnight'),
+            additionalFields: [
+                'event_type' => 'duration',
+                'event_end' => (int)(new \DateTimeImmutable('+2 days midnight'))->format('U'),
+            ],
+        );
+        $this->insertEvent(
+            title: 'Event Tomorrow',
+            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
+        );
+        $this->createDayRelations();
+
+        $days = $this->dayRepository->getDaysForListType('list', new Filter())->toArray();
+
+        self::assertCount(
+            1,
+            $days,
+        );
+        self::assertSame(
+            'Event Tomorrow',
+            $days[0]->getEvent()->getTitle(),
+        );
+    }
+
+    #[Test]
+    public function getDaysForListTypeWithTimestampOfFirstDayWillReturnStartedDurationEvent(): void
+    {
+        $eventBegin = new \DateTimeImmutable('-2 days midnight');
+
+        $this->insertEvent(
+            title: 'Exhibition',
+            eventBegin: $eventBegin,
+            additionalFields: [
+                'event_type' => 'duration',
+                'event_end' => (int)$eventBegin->modify('+4 days')->format('U'),
+            ],
+        );
+        $this->createDayRelations();
+
+        // The calendar highlights the first day of duration events, so the list must show the event on that day
+        $filter = new Filter();
+        $filter->setTimestamp((int)$eventBegin->format('U'));
+
+        $days = $this->dayRepository->getDaysForListType('list', $filter)->toArray();
+
+        self::assertCount(
+            1,
+            $days,
+        );
+        self::assertEquals(
+            $eventBegin,
+            $days[0]->getDay(),
+        );
+    }
+
+    #[Test]
+    public function getDaysForListTypeWithTimestampOfFollowingDayWillNotReturnDurationEvent(): void
+    {
+        $eventBegin = new \DateTimeImmutable('-2 days midnight');
+
+        $this->insertEvent(
+            title: 'Exhibition',
+            eventBegin: $eventBegin,
+            additionalFields: [
+                'event_type' => 'duration',
+                'event_end' => (int)$eventBegin->modify('+4 days')->format('U'),
+            ],
+        );
+        $this->createDayRelations();
+
+        // The calendar does not highlight following days of duration events, so the list must be empty, too
+        $filter = new Filter();
+        $filter->setTimestamp((int)$eventBegin->modify('+1 day')->format('U'));
+
+        $days = $this->dayRepository->getDaysForListType('list', $filter)->toArray();
+
+        self::assertCount(
+            0,
+            $days,
+        );
+    }
+
+    #[Test]
+    public function getDaysForListTypeWithUpcomingDurationEventWillReturnFirstDay(): void
+    {
+        $eventBegin = new \DateTimeImmutable('+2 days midnight');
+
+        $this->insertEvent(
+            title: 'Exhibition',
+            eventBegin: $eventBegin,
+            additionalFields: [
+                'event_type' => 'duration',
+                'event_end' => (int)$eventBegin->modify('+4 days')->format('U'),
+            ],
+        );
+        $this->createDayRelations();
+
+        $days = $this->dayRepository->getDaysForListType('list', new Filter())->toArray();
+
+        self::assertCount(
+            1,
+            $days,
+        );
+        self::assertEquals(
+            $eventBegin,
+            $days[0]->getDay(),
+        );
+    }
+
     #[Test]
     public function getDaysForListTypeWithRecurringEventWillReturnDays(): void
     {
@@ -590,6 +860,92 @@ class DayRepositoryTest extends FunctionalTestCase
         self::assertSame(
             'Event Tomorrow',
             $days[0]->getEvent()->getTitle(),
+        );
+    }
+
+    #[Test]
+    public function searchEventsWithStartedDurationEventWillNotReturnDays(): void
+    {
+        $this->insertEvent(
+            title: 'Exhibition',
+            eventBegin: new \DateTimeImmutable('-2 days midnight'),
+            additionalFields: [
+                'event_type' => 'duration',
+                'event_end' => (int)(new \DateTimeImmutable('+2 days midnight'))->format('U'),
+            ],
+        );
+        $this->createDayRelations();
+
+        $search = new Search();
+        $search->setSearch('Exhibition');
+
+        $days = $this->dayRepository->searchEvents($search)->toArray();
+
+        self::assertCount(
+            0,
+            $days,
+        );
+    }
+
+    #[Test]
+    public function searchEventsWithUpcomingDurationEventWillReturnFirstDay(): void
+    {
+        $eventBegin = new \DateTimeImmutable('+2 days midnight');
+
+        $this->insertEvent(
+            title: 'Exhibition',
+            eventBegin: $eventBegin,
+            additionalFields: [
+                'event_type' => 'duration',
+                'event_end' => (int)$eventBegin->modify('+4 days')->format('U'),
+            ],
+        );
+        $this->createDayRelations();
+
+        $search = new Search();
+        $search->setSearch('Exhibition');
+
+        $days = $this->dayRepository->searchEvents($search)->toArray();
+
+        self::assertCount(
+            1,
+            $days,
+        );
+        self::assertEquals(
+            $eventBegin,
+            $days[0]->getDay(),
+        );
+    }
+
+    #[Test]
+    public function searchEventsWithEventBeginBeforeStartOfDurationEventWillReturnFirstDay(): void
+    {
+        $eventBegin = new \DateTimeImmutable('-2 days midnight');
+
+        $this->insertEvent(
+            title: 'Exhibition',
+            eventBegin: $eventBegin,
+            additionalFields: [
+                'event_type' => 'duration',
+                'event_end' => (int)$eventBegin->modify('+4 days')->format('U'),
+            ],
+        );
+        $this->createDayRelations();
+
+        // Searching from a date before the event has started must still find the event
+        $search = new Search();
+        $search->setSearch('Exhibition');
+        $search->setEventBegin($eventBegin->modify('-1 day')->format('Y-m-d'));
+
+        $days = $this->dayRepository->searchEvents($search)->toArray();
+
+        self::assertCount(
+            1,
+            $days,
+        );
+        self::assertEquals(
+            $eventBegin,
+            $days[0]->getDay(),
         );
     }
 

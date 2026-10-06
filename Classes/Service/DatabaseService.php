@@ -148,6 +148,19 @@ readonly class DatabaseService
             $queryBuilder->createNamedParameter($endDate->format('U'), Connection::PARAM_INT),
         );
 
+        // Duration events can only be attended on their first day. Only the day records of the first day
+        // contain the same value in day_time and sort_day_time.
+        $constraint[] = $queryBuilder->expr()->or(
+            $queryBuilder->expr()->neq(
+                'event.event_type',
+                $queryBuilder->createNamedParameter('duration'),
+            ),
+            $queryBuilder->expr()->eq(
+                'day.day_time',
+                $queryBuilder->quoteIdentifier('day.sort_day_time'),
+            ),
+        );
+
         return $queryBuilder
             ->where(...$constraint)
             ->executeQuery()
