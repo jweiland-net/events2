@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 10.2.13
+===============
+
+*   [BUGFIX] Prevent double-encoded entities in plain text VH
+
 Version 10.2.12
 ===============
 

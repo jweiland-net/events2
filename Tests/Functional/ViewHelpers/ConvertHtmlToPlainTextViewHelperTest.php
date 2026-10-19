@@ -70,6 +70,22 @@ class ConvertHtmlToPlainTextViewHelperTest extends FunctionalTestCase
                 '<p>Tom & Jerry "quoted"</p>',
                 'Tom &amp; Jerry &quot;quoted&quot;',
             ],
+            'Encoded ampersand from RTE is not double-encoded' => [
+                '<p>Jekyll &amp; Hyde</p>',
+                'Jekyll &amp; Hyde',
+            ],
+            'Named entities for umlauts are decoded to UTF-8' => [
+                '<p>B&ouml;se &auml;rger, Gro&szlig;es Haus</p>',
+                'Böse ärger, Großes Haus',
+            ],
+            'Non-breaking space entity is decoded to its UTF-8 character' => [
+                'Hello&nbsp;world',
+                "Hello\u{00A0}world",
+            ],
+            'Encoded script tag stays escaped after decoding' => [
+                '&lt;script&gt;alert(1)&lt;/script&gt;',
+                '&lt;script&gt;alert(1)&lt;/script&gt;',
+            ],
         ];
     }
 
