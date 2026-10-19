@@ -50,6 +50,10 @@ final class ConvertHtmlToPlainTextViewHelper extends AbstractViewHelper
         $value = (string)preg_replace('/<br\s*\/?>/i', "\n", $value);
         $value = strip_tags($value);
 
+        // strip_tags() keeps HTML entities like "&amp;" or "&ouml;" from the RTE. Decode them, else the
+        // htmlspecialchars() below double-encodes them and "&amp;" shows up as visible text.
+        $value = html_entity_decode($value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
         // RTE editors leave a raw newline between tags in the stored HTML. Collapse any run of
         // blank lines, whether it came from that raw whitespace or from a genuine paragraph break
         // above, into a single blank line.
