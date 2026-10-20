@@ -1,0 +1,648 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<xliff version="1.0">
+  <file source-language="en" datatype="plaintext" original="messages" date="2013-03-40T10:38:40Z" product-name="events2" target-language="t3">
+    <header/>
+    <body>
+      <trans-unit id="tx_events2_domain_model_event">
+        <source>Event</source>
+        <target>crwdns306278:0crwdne306278:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.top_of_list">
+        <source>Top of list</source>
+        <target>crwdns306280:0crwdne306280:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.title">
+        <source>Title</source>
+        <target>crwdns306282:0crwdne306282:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.teaser">
+        <source>Teaser</source>
+        <target>crwdns306284:0crwdne306284:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.event_begin">
+        <source>Event begin</source>
+        <target>crwdns306286:0crwdne306286:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.event_begin2">
+        <source>Date of Events</source>
+        <target>crwdns306288:0crwdne306288:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.event_time">
+        <source>Time</source>
+        <target>crwdns306290:0crwdne306290:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.event_end">
+        <source>Last event</source>
+        <target>crwdns306292:0crwdne306292:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.same_day">
+        <source>Same day</source>
+        <target>crwdns306294:0crwdne306294:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.multiple_times">
+        <source>Multiple times on same day</source>
+        <target>crwdns306296:0crwdne306296:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.xth">
+        <source>Recurring</source>
+        <target>crwdns306298:0crwdne306298:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.xth.first">
+        <source>1st</source>
+        <target>crwdns306300:0crwdne306300:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.xth.second">
+        <source>2nd</source>
+        <target>crwdns306302:0crwdne306302:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.xth.third">
+        <source>3rd</source>
+        <target>crwdns306304:0crwdne306304:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.xth.fourth">
+        <source>4th</source>
+        <target>crwdns306306:0crwdne306306:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.xth.fifth">
+        <source>5th</source>
+        <target>crwdns306308:0crwdne306308:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.weekday">
+        <source>Weekday</source>
+        <target>crwdns306310:0crwdne306310:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.weekday.monday">
+        <source>Mo</source>
+        <target>crwdns306312:0crwdne306312:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.weekday.tuesday">
+        <source>Tu</source>
+        <target>crwdns306314:0crwdne306314:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.weekday.wednesday">
+        <source>We</source>
+        <target>crwdns306316:0crwdne306316:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.weekday.thursday">
+        <source>Th</source>
+        <target>crwdns306318:0crwdne306318:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.weekday.friday">
+        <source>Fr</source>
+        <target>crwdns306320:0crwdne306320:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.weekday.saturday">
+        <source>Sa</source>
+        <target>crwdns306322:0crwdne306322:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.weekday.sunday">
+        <source>Su</source>
+        <target>crwdns306324:0crwdne306324:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.different_times">
+        <source>Different times for each weekday</source>
+        <target>crwdns306326:0crwdne306326:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.each_weeks">
+        <source>Recurring weeks</source>
+        <target>crwdns306328:0crwdne306328:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.each_weeks.0">
+        <source>Don't repeat in weeks. Use settings above.</source>
+        <target>crwdns306330:0crwdne306330:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.each_weeks.1">
+        <source>Each week</source>
+        <target>crwdns306332:0crwdne306332:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.each_weeks.2">
+        <source>Each 2 weeks</source>
+        <target>crwdns306334:0crwdne306334:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.each_weeks.3">
+        <source>Each 3 weeks</source>
+        <target>crwdns306336:0crwdne306336:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.each_weeks.4">
+        <source>Each 4 weeks</source>
+        <target>crwdns306338:0crwdne306338:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.exceptions">
+        <source>Exceptions</source>
+        <target>crwdns306340:0crwdne306340:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.detail_information">
+        <source>Detail information</source>
+        <target>crwdns306342:0crwdne306342:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.free_entry">
+        <source>free entry</source>
+        <target>crwdns306344:0crwdne306344:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.ticket_link">
+        <source>Ticket link</source>
+        <target>crwdns306346:0crwdne306346:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.attendance_mode">
+        <source>Attendance Mode</source>
+        <target>crwdns390258:0crwdne390258:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.attendance_mode.empty">
+        <source>Not specified</source>
+        <target>crwdns409549:0crwdne409549:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.attendance_mode.in_person">
+        <source>In-person (on-site)</source>
+        <target>crwdns390260:0crwdne390260:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.attendance_mode.online">
+        <source>Online (virtual)</source>
+        <target>crwdns390262:0crwdne390262:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.attendance_mode.hybrid">
+        <source>Hybrid</source>
+        <target>crwdns391242:0crwdne391242:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.days">
+        <source>Days</source>
+        <target>crwdns306348:0crwdne306348:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.location">
+        <source>Location</source>
+        <target>crwdns306350:0crwdne306350:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.organizer">
+        <source>Organizer</source>
+        <target>crwdns306352:0crwdne306352:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.organizers">
+        <source>Organizers</source>
+        <target>crwdns306354:0crwdne306354:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.images">
+        <source>Images</source>
+        <target>crwdns306356:0crwdne306356:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.video_link">
+        <source>Link to Youtube</source>
+        <target>crwdns306358:0crwdne306358:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.download_links">
+        <source>Download links</source>
+        <target>crwdns306360:0crwdne306360:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_event.categories">
+        <source>Categories</source>
+        <target>crwdns306362:0crwdne306362:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_day">
+        <source>Day</source>
+        <target>crwdns306364:0crwdne306364:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_day.day">
+        <source>Day</source>
+        <target>crwdns306366:0crwdne306366:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time">
+        <source>Time</source>
+        <target>crwdns306368:0crwdne306368:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.type">
+        <source>Type</source>
+        <target>crwdns306370:0crwdne306370:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.weekday">
+        <source>Weekday</source>
+        <target>crwdns306372:0crwdne306372:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.weekday.monday">
+        <source>Monday</source>
+        <target>crwdns306374:0crwdne306374:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.weekday.tuesday">
+        <source>Tuesday</source>
+        <target>crwdns306376:0crwdne306376:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.weekday.wednesday">
+        <source>Wednesday</source>
+        <target>crwdns306378:0crwdne306378:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.weekday.thursday">
+        <source>Thursday</source>
+        <target>crwdns306380:0crwdne306380:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.weekday.friday">
+        <source>Friday</source>
+        <target>crwdns306382:0crwdne306382:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.weekday.saturday">
+        <source>Saturday</source>
+        <target>crwdns306384:0crwdne306384:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.weekday.sunday">
+        <source>Sunday</source>
+        <target>crwdns306386:0crwdne306386:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.time_begin">
+        <source>Time Begin</source>
+        <target>crwdns306388:0crwdne306388:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.time_entry">
+        <source>Time Entry</source>
+        <target>crwdns306390:0crwdne306390:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.duration">
+        <source>Duration</source>
+        <target>crwdns306392:0crwdne306392:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_time.time_end">
+        <source>Time End</source>
+        <target>crwdns306394:0crwdne306394:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_exception">
+        <source>Exception</source>
+        <target>crwdns306396:0crwdne306396:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_exception.exception_type">
+        <source>Type</source>
+        <target>crwdns306398:0crwdne306398:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_exception.exception_type.Add">
+        <source>Add</source>
+        <target>crwdns306400:0crwdne306400:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_exception.exception_type.Remove">
+        <source>Remove</source>
+        <target>crwdns306402:0crwdne306402:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_exception.exception_type.Time">
+        <source>Time</source>
+        <target>crwdns306404:0crwdne306404:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_exception.exception_type.Info">
+        <source>Info</source>
+        <target>crwdns306406:0crwdne306406:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_exception.exception_date">
+        <source>Date</source>
+        <target>crwdns306408:0crwdne306408:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_exception.exception_time">
+        <source>Time</source>
+        <target>crwdns306410:0crwdne306410:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_exception.exception_details">
+        <source>Details</source>
+        <target>crwdns306412:0crwdne306412:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_exception.primer">
+        <source>Primer</source>
+        <target>crwdns340342:0crwdne340342:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_exception.resumption">
+        <source>Resumption</source>
+        <target>crwdns340346:0crwdne340346:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_location">
+        <source>Location</source>
+        <target>crwdns306414:0crwdne306414:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_location.location">
+        <source>Location</source>
+        <target>crwdns306416:0crwdne306416:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_location.street">
+        <source>Street</source>
+        <target>crwdns306418:0crwdne306418:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_location.house_number">
+        <source>Number</source>
+        <target>crwdns306420:0crwdne306420:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_location.zip">
+        <source>Zip</source>
+        <target>crwdns306422:0crwdne306422:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_location.city">
+        <source>City</source>
+        <target>crwdns306424:0crwdne306424:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_organizer">
+        <source>Organizer</source>
+        <target>crwdns306426:0crwdne306426:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_organizer.organizer">
+        <source>Organizer</source>
+        <target>crwdns306428:0crwdne306428:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_organizer.link">
+        <source>Link</source>
+        <target>crwdns306430:0crwdne306430:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_link">
+        <source>Link</source>
+        <target>crwdns306432:0crwdne306432:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_link.title">
+        <source>Title</source>
+        <target>crwdns306434:0crwdne306434:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_link.link">
+        <source>Link</source>
+        <target>crwdns306436:0crwdne306436:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_search.search">
+        <source>Searchword</source>
+        <target>crwdns306438:0crwdne306438:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_search.mainCategory">
+        <source>Main category</source>
+        <target>crwdns306440:0crwdne306440:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_search.subCategory">
+        <source>Sub category</source>
+        <target>crwdns306442:0crwdne306442:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_search.eventBegin">
+        <source>Event begin</source>
+        <target>crwdns306444:0crwdne306444:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_search.eventEnd">
+        <source>Event end</source>
+        <target>crwdns306446:0crwdne306446:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_search.location">
+        <source>Location</source>
+        <target>crwdns306448:0crwdne306448:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_search.attendance_mode">
+        <source>Attendance Mode</source>
+        <target>crwdns390264:0crwdne390264:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_search.attendance_mode.in_person">
+        <source>In-person (on-site)</source>
+        <target>crwdns390266:0crwdne390266:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_search.attendance_mode.online">
+        <source>Online (virtual)</source>
+        <target>crwdns390268:0crwdne390268:0</target>
+      </trans-unit>
+      <trans-unit id="tx_events2_domain_model_search.freeEntry">
+        <source>Free entry</source>
+        <target>crwdns306450:0crwdne306450:0</target>
+      </trans-unit>
+      <trans-unit id="pageBrowser.first">
+        <source>First</source>
+        <target>crwdns306452:0crwdne306452:0</target>
+      </trans-unit>
+      <trans-unit id="pageBrowser.previous">
+        <source>Previous</source>
+        <target>crwdns306454:0crwdne306454:0</target>
+      </trans-unit>
+      <trans-unit id="pageBrowser.next">
+        <source>Next</source>
+        <target>crwdns306456:0crwdne306456:0</target>
+      </trans-unit>
+      <trans-unit id="pageBrowser.last">
+        <source>Last</source>
+        <target>crwdns306458:0crwdne306458:0</target>
+      </trans-unit>
+      <trans-unit id="newEntry">
+        <source>Insert new Event</source>
+        <target>crwdns306460:0crwdne306460:0</target>
+      </trans-unit>
+      <trans-unit id="listMyEvents">
+        <source>List my events</source>
+        <target>crwdns306462:0crwdne306462:0</target>
+      </trans-unit>
+      <trans-unit id="eventCreated">
+        <source>Your new Event was created.</source>
+        <target>crwdns306464:0crwdne306464:0</target>
+      </trans-unit>
+      <trans-unit id="eventUpdated">
+        <source>Your Event has been updated.</source>
+        <target>crwdns306466:0crwdne306466:0</target>
+      </trans-unit>
+      <trans-unit id="eventDeleted">
+        <source>Your Event has been removed.</source>
+        <target>crwdns306468:0crwdne306468:0</target>
+      </trans-unit>
+      <trans-unit id="showDetailview">
+        <source>See Single View</source>
+        <target>crwdns306470:0crwdne306470:0</target>
+      </trans-unit>
+      <trans-unit id="multipleTimesAssigned">
+        <source>Multiple times assigned</source>
+        <target>crwdns306472:0crwdne306472:0</target>
+      </trans-unit>
+      <trans-unit id="routePlanner">
+        <source>Routeplanner</source>
+        <target>crwdns306474:0crwdne306474:0</target>
+      </trans-unit>
+      <trans-unit id="alternativeEventDates">
+        <source>Alternative event dates</source>
+        <target>crwdns306476:0crwdne306476:0</target>
+      </trans-unit>
+      <trans-unit id="singleView">
+        <source>Single View</source>
+        <target>crwdns306478:0crwdne306478:0</target>
+      </trans-unit>
+      <trans-unit id="search">
+        <source>Search</source>
+        <target>crwdns306480:0crwdne306480:0</target>
+      </trans-unit>
+      <trans-unit id="yes">
+        <source>yes</source>
+        <target>crwdns306482:0crwdne306482:0</target>
+      </trans-unit>
+      <trans-unit id="no">
+        <source>no</source>
+        <target>crwdns306484:0crwdne306484:0</target>
+      </trans-unit>
+      <trans-unit id="noEventFound">
+        <source>The requested event could not be found. It may have already been deleted.</source>
+        <target>crwdns306486:0crwdne306486:0</target>
+      </trans-unit>
+      <trans-unit id="noResults">
+        <source>Today there are no events</source>
+        <target>crwdns306488:0crwdne306488:0</target>
+      </trans-unit>
+      <trans-unit id="export">
+        <source>Export date</source>
+        <target>crwdns306490:0crwdne306490:0</target>
+      </trans-unit>
+      <trans-unit id="widget.pagination.previous">
+        <source>previous</source>
+        <target>crwdns306492:0crwdne306492:0</target>
+      </trans-unit>
+      <trans-unit id="widget.pagination.next">
+        <source>next</source>
+        <target>crwdns306494:0crwdne306494:0</target>
+      </trans-unit>
+      <trans-unit id="event_schedule">
+        <source>Event Schedule</source>
+        <target>crwdns306496:0crwdne306496:0</target>
+      </trans-unit>
+      <trans-unit id="event_topic">
+        <source>Event List by Topics</source>
+        <target>crwdns306498:0crwdne306498:0</target>
+      </trans-unit>
+      <trans-unit id="no_events_found">
+        <source>No events found</source>
+        <target>crwdns306500:0crwdne306500:0</target>
+      </trans-unit>
+      <trans-unit id="link.listEvents">
+        <source>Show all events</source>
+        <target>crwdns306502:0crwdne306502:0</target>
+      </trans-unit>
+      <trans-unit id="required">
+        <source>required</source>
+        <target>crwdns306504:0crwdne306504:0</target>
+      </trans-unit>
+      <trans-unit id="hint">
+        <source>Hint</source>
+        <target>crwdns306506:0crwdne306506:0</target>
+      </trans-unit>
+      <trans-unit id="create">
+        <source>Create</source>
+        <target>crwdns306508:0crwdne306508:0</target>
+      </trans-unit>
+      <trans-unit id="update">
+        <source>Update</source>
+        <target>crwdns306510:0crwdne306510:0</target>
+      </trans-unit>
+      <trans-unit id="save">
+        <source>Save</source>
+        <target>crwdns306512:0crwdne306512:0</target>
+      </trans-unit>
+      <trans-unit id="remainingLetters">
+        <source>Remaining letters</source>
+        <target>crwdns306514:0crwdne306514:0</target>
+      </trans-unit>
+      <trans-unit id="userGroupNotConfigured">
+        <source>Please assign a user group (userGroup property) in the site settings to restrict access to this page.</source>
+        <target>crwdns374302:0crwdne374302:0</target>
+      </trans-unit>
+      <trans-unit id="pluginNeedsLogin">
+        <source>This page is restricted. Please log in to access the Events Management area.</source>
+        <target>crwdns374304:0crwdne374304:0</target>
+      </trans-unit>
+      <trans-unit id="notAllowedToCreate">
+        <source>You're not allowed to create event records.</source>
+        <target>crwdns306516:0crwdne306516:0</target>
+      </trans-unit>
+      <trans-unit id="missingOrganizerForCreate">
+        <source>You're allowed to create event records, but your user record has no relation to an organizer record.</source>
+        <target>crwdns306518:0crwdne306518:0</target>
+      </trans-unit>
+      <trans-unit id="unauthorizedOrganizerForEdit">
+        <source>You are not allowed to edit events that do not correspond to your assigned organizer.</source>
+        <target>crwdns338168:0crwdne338168:0</target>
+      </trans-unit>
+      <trans-unit id="pageBrowser.first">
+        <source>First</source>
+        <target>crwdns306452:0crwdne306452:0</target>
+      </trans-unit>
+      <trans-unit id="pageBrowser.previous">
+        <source>Previous</source>
+        <target>crwdns306454:0crwdne306454:0</target>
+      </trans-unit>
+      <trans-unit id="pageBrowser.next">
+        <source>Next</source>
+        <target>crwdns306456:0crwdne306456:0</target>
+      </trans-unit>
+      <trans-unit id="pageBrowser.last">
+        <source>Last</source>
+        <target>crwdns306458:0crwdne306458:0</target>
+      </trans-unit>
+      <trans-unit id="email.subject.create">
+        <source>A new record was created</source>
+        <target>crwdns306528:0crwdne306528:0</target>
+      </trans-unit>
+      <trans-unit id="email.subject.update">
+        <source>A record was updated</source>
+        <target>crwdns306530:0crwdne306530:0</target>
+      </trans-unit>
+      <trans-unit id="email.subject.activate">
+        <source>A record was activated</source>
+        <target>crwdns306532:0crwdne306532:0</target>
+      </trans-unit>
+      <trans-unit id="validator.event.videoLink.notYouTube">
+        <source>The URI provided for the video link is not a YouTube link. This form currently only allows YouTube links.</source>
+        <target>crwdns306534:0crwdne306534:0</target>
+      </trans-unit>
+      <trans-unit id="validator.event.categories.isMandatory">
+        <source>Property "categories" is defined to be mandatory. Please select at least one category.</source>
+        <target>crwdns306536:0crwdne306536:0</target>
+      </trans-unit>
+      <trans-unit id="error.upload">
+        <source>Something went wrong with your uploaded files. Please try again. Error: </source>
+        <target>crwdns306538:0crwdne306538:0</target>
+      </trans-unit>
+      <trans-unit id="error.uploadRights">
+        <source>You don\'t have checked the box for upload rights. So upload stops here</source>
+        <target>crwdns306540:0crwdne306540:0</target>
+      </trans-unit>
+      <trans-unit id="error.fileExtension">
+        <source>You only can upload files with following file extensions: %1$s</source>
+        <target>crwdns306542:0%1$scrwdne306542:0</target>
+      </trans-unit>
+      <trans-unit id="error.locationFail">
+        <source>The given location does not exist in our database. Please choose another one</source>
+        <target>crwdns306544:0crwdne306544:0</target>
+      </trans-unit>
+      <trans-unit id="cshTitle">
+        <source>The title is mandatory</source>
+        <target>crwdns306546:0crwdne306546:0</target>
+      </trans-unit>
+      <trans-unit id="cshTeaser">
+        <source>The teaser is a short description and will be displayed on list views</source>
+        <target>crwdns306548:0crwdne306548:0</target>
+      </trans-unit>
+      <trans-unit id="cshEventBegin">
+        <source>This date must be filled in following format: dd.mm.yyyy</source>
+        <target>crwdns306550:0crwdne306550:0</target>
+      </trans-unit>
+      <trans-unit id="cshEventEnd">
+        <source>This date must be filled in following format: dd.mm.yyyy</source>
+        <target>crwdns306552:0crwdne306552:0</target>
+      </trans-unit>
+      <trans-unit id="cshTimeBegin">
+        <source>The time of the event has to be fill in following format: hh:mm</source>
+        <target>crwdns306554:0crwdne306554:0</target>
+      </trans-unit>
+      <trans-unit id="cshCategories">
+        <source>The categories are mandatory. Please hold down STRG or CMD on your keyboard to select multiple categories.</source>
+        <target>crwdns306556:0crwdne306556:0</target>
+      </trans-unit>
+      <trans-unit id="cshLocation">
+        <source>The location is mandatory</source>
+        <target>crwdns306558:0crwdne306558:0</target>
+      </trans-unit>
+      <trans-unit id="cshVideo">
+        <source>Insert here the link to a video film</source>
+        <target>crwdns306560:0crwdne306560:0</target>
+      </trans-unit>
+      <trans-unit id="cshImages">
+        <source>Upload max. 5 image files (jpg,gif,png). Please use the same image dimensions (i.e. 3:2, 3:4) if uploading more than one image.Be sure to set the image rights. Otherwise the image will not be uploaded.</source>
+        <target>crwdns306562:0crwdne306562:0</target>
+      </trans-unit>
+      <trans-unit id="rightsMessage">
+        <source>Dear Admin: Please override this label with help of TypoScript</source>
+        <target>crwdns306564:0crwdne306564:0</target>
+      </trans-unit>
+      <trans-unit id="altTextMapImg">
+        <source>Map</source>
+        <target>crwdns306566:0crwdne306566:0</target>
+      </trans-unit>
+      <trans-unit id="scheduler.path">
+        <source>Path of file to import</source>
+        <target>crwdns306568:0crwdne306568:0</target>
+      </trans-unit>
+      <trans-unit id="scheduler.storagePid">
+        <source>Storage PID</source>
+        <target>crwdns306570:0crwdne306570:0</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
