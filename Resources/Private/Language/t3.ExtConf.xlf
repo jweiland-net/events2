@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<xliff version="1.0">
+  <file source-language="en" datatype="plaintext" original="messages" date="2013-03-40T10:38:40Z" product-name="events2" target-language="t3">
+    <header/>
+    <body>
+      <trans-unit id="poiCollectionPid">
+        <source>PID for poiCollections: Define a storage pid where to store records of type Point of Interest.</source>
+        <target>crwdns306186:0crwdne306186:0</target>
+      </trans-unit>
+      <trans-unit id="rootUid">
+        <source>Category root UID: If you're working in an environments with a lot of categories defined, it may make sense to reduce the category tree within our Events2 Plugins to this root Category.</source>
+        <target>crwdns306188:0crwdne306188:0</target>
+      </trans-unit>
+      <trans-unit id="recurringPast">
+        <source>x months in past: When creating a new recurring event this extension can create related day records for the last x months.</source>
+        <target>crwdns306190:0crwdne306190:0</target>
+      </trans-unit>
+      <trans-unit id="recurringFuture">
+        <source>x months in future: When creating a new recurring event this extension can create related day records for the next x months.</source>
+        <target>crwdns306192:0crwdne306192:0</target>
+      </trans-unit>
+      <trans-unit id="defaultCountry">
+        <source>Default country: If you're only working for one specified country while creating/editing POIs in backend it would be cool to set a country by default. So you only need to add street and city to find a POI. If you need POIs from all over the world, please keep this field empty</source>
+        <target>crwdns306194:0crwdne306194:0</target>
+      </trans-unit>
+      <trans-unit id="xmlImportValidatorPath">
+        <source>XML Import Validator Path (xsd): While Importing Events we will check the XML file against a XSD file. If you need some specials you can define your own file here.</source>
+        <target>crwdns306196:0crwdne306196:0</target>
+      </trans-unit>
+      <trans-unit id="organizerIsRequired">
+        <source>Is organizer required: By default it is not needed to explicit set an organizer. But, if you want, you can set organizers as a required property with activating this checkbox</source>
+        <target>crwdns306198:0crwdne306198:0</target>
+      </trans-unit>
+      <trans-unit id="locationIsRequired">
+        <source>Is location required: By default it is not needed to explicit set a location. But, if you want, you can set location as a required property with activating this checkbox</source>
+        <target>crwdns306200:0crwdne306200:0</target>
+      </trans-unit>
+      <trans-unit id="categoryIsRequired">
+        <source>Is category required: By default it is not needed to explicit set a category. But, if you want, you can set catgeory as a required property with activating this checkbox</source>
+        <target>crwdns306202:0crwdne306202:0</target>
+      </trans-unit>
+      <trans-unit id="pathSegmentType" xml:space="preserve">
+				<source>Path Segment type: Set path segment type for frontend created events and PathSegment UpdateWizard. Set to "Do nothing" to keep path_segment untouched. Set to "RealUrl" to add a counter on duplicates (swimm, swimm-1, swimm-2). Set to "UID" to build a path segment based on title and uid.</source>
+			<target>crwdns306204:0crwdne306204:0</target></trans-unit>
+      <trans-unit id="emailFromAddress" xml:space="preserve">
+				<source>email from address: The senders email address. If not given the extension tries to get one from INSTALL_TOOL.</source>
+			<target>crwdns306206:0crwdne306206:0</target></trans-unit>
+      <trans-unit id="emailFromName" xml:space="preserve">
+				<source>email from name: The senders email name. If not given the extension tries to get one from INSTALL_TOOL.</source>
+			<target>crwdns306208:0crwdne306208:0</target></trans-unit>
+      <trans-unit id="emailToAddress" xml:space="preserve">
+				<source>email to address: The recipients email address.</source>
+			<target>crwdns306210:0crwdne306210:0</target></trans-unit>
+      <trans-unit id="emailToName" xml:space="preserve">
+				<source>email to name: The recipients email name.</source>
+			<target>crwdns306212:0crwdne306212:0</target></trans-unit>
+    </body>
+  </file>
+</xliff>
