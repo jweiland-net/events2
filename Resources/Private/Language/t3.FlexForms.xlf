@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<xliff version="1.0">
+  <file source-language="en" datatype="plaintext" original="messages" date="2013-03-40T10:38:40Z" product-name="events2" target-language="t3">
+    <header/>
+    <body>
+      <trans-unit id="sheetGeneral" xml:space="preserve">
+				<source>General</source>
+			<target>crwdns306214:0crwdne306214:0</target></trans-unit>
+      <trans-unit id="sheetList" xml:space="preserve">
+				<source>Listview general</source>
+			<target>crwdns306216:0crwdne306216:0</target></trans-unit>
+      <trans-unit id="sheetListLatest" xml:space="preserve">
+				<source>Listview for latest</source>
+			<target>crwdns306218:0crwdne306218:0</target></trans-unit>
+      <trans-unit id="sheetDetail" xml:space="preserve">
+				<source>Detailview</source>
+			<target>crwdns306220:0crwdne306220:0</target></trans-unit>
+      <trans-unit id="sheetNew" xml:space="preserve">
+				<source>New Events</source>
+			<target>crwdns306222:0crwdne306222:0</target></trans-unit>
+      <trans-unit id="listType" xml:space="preserve">
+				<source>List Type</source>
+			<target>crwdns306224:0crwdne306224:0</target></trans-unit>
+      <trans-unit id="listType.list">
+        <source>List events</source>
+        <target>crwdns306226:0crwdne306226:0</target>
+      </trans-unit>
+      <trans-unit id="listType.listLatest">
+        <source>List latest events</source>
+        <target>crwdns306228:0crwdne306228:0</target>
+      </trans-unit>
+      <trans-unit id="listType.listToday">
+        <source>List events of today</source>
+        <target>crwdns306230:0crwdne306230:0</target>
+      </trans-unit>
+      <trans-unit id="listType.listRange">
+        <source>List events for next 4 weeks</source>
+        <target>crwdns306232:0crwdne306232:0</target>
+      </trans-unit>
+      <trans-unit id="listType.listThisWeek">
+        <source>List events for this week</source>
+        <target>crwdns306234:0crwdne306234:0</target>
+      </trans-unit>
+      <trans-unit id="categories">
+        <source>Categories</source>
+        <target>crwdns306236:0crwdne306236:0</target>
+      </trans-unit>
+      <trans-unit id="mainCategories">
+        <source>Main Categories: You should only select categories of one level. The UID of their parent should be set in rootCategory of TS-Template.</source>
+        <target>crwdns306238:0crwdne306238:0</target>
+      </trans-unit>
+      <trans-unit id="pidOfDetailPage">
+        <source>Page UID of detail page</source>
+        <target>crwdns306240:0crwdne306240:0</target>
+      </trans-unit>
+      <trans-unit id="pidOfListPage">
+        <source>Page UID of list page</source>
+        <target>crwdns306242:0crwdne306242:0</target>
+      </trans-unit>
+      <trans-unit id="pidOfLocationPage">
+        <source>Page UID for the event location</source>
+        <target>crwdns306244:0crwdne306244:0</target>
+      </trans-unit>
+      <trans-unit id="pidOfManagementPage">
+        <source>Page UID with events2 plugin to manage event records</source>
+        <target>crwdns306246:0crwdne306246:0</target>
+      </trans-unit>
+      <trans-unit id="pidOfSearchResults">
+        <source>Page UID of the search results</source>
+        <target>crwdns306248:0crwdne306248:0</target>
+      </trans-unit>
+      <trans-unit id="amountOfRecordsToShow">
+        <source>List amount of records (only for view: latest events)</source>
+        <target>crwdns306250:0crwdne306250:0</target>
+      </trans-unit>
+      <trans-unit id="mergeEventsAtSameDay">
+        <source>Merge events with multiple times at same day to one entry</source>
+        <target>crwdns306252:0crwdne306252:0</target>
+      </trans-unit>
+      <trans-unit id="mergeEventsAtSameDay.description">
+        <source>Example: 17.07.2020 08:00 and 20:00 will be merged to just one entry without any time information, but with a hint, that there are multiple time entries available in detail view.</source>
+        <target>crwdns306254:0crwdne306254:0</target>
+      </trans-unit>
+      <trans-unit id="mergeRecurringEvents">
+        <source>Merge recurring events to one entry</source>
+        <target>crwdns306256:0crwdne306256:0</target>
+      </trans-unit>
+      <trans-unit id="mergeRecurringEvents.description">
+        <source>Example: 17.07., 18.07., 22.07. will be merged to 17.07.-22.07. with a hint to look into detail view for exact dates.</source>
+        <target>crwdns306258:0crwdne306258:0</target>
+      </trans-unit>
+      <trans-unit id="preFilterByOrganizer">
+        <source>Pre filter events by organizer</source>
+        <target>crwdns306260:0crwdne306260:0</target>
+      </trans-unit>
+      <trans-unit id="showFilterForOrganizerInFrontend">
+        <source>Show a filter selection for organizers in Frontend</source>
+        <target>crwdns306262:0crwdne306262:0</target>
+      </trans-unit>
+      <trans-unit id="showFilterForOrganizerInFrontend.description">
+        <source>Filter will only be displayed, if there are at least 2 Organizers available</source>
+        <target>crwdns306264:0crwdne306264:0</target>
+      </trans-unit>
+      <trans-unit id="display">
+        <source>Display</source>
+        <target>crwdns306266:0crwdne306266:0</target>
+      </trans-unit>
+      <trans-unit id="display.description">
+        <source>It's possible to cut the output into two peaces. That way you can display images on top of page, the event output at bottom and other content in between.</source>
+        <target>crwdns306268:0crwdne306268:0</target>
+      </trans-unit>
+      <trans-unit id="displayBoth">
+        <source>Show images and events</source>
+        <target>crwdns306270:0crwdne306270:0</target>
+      </trans-unit>
+      <trans-unit id="displayImages">
+        <source>Show images only</source>
+        <target>crwdns306272:0crwdne306272:0</target>
+      </trans-unit>
+      <trans-unit id="displayEvent">
+        <source>Show Event only</source>
+        <target>crwdns306274:0crwdne306274:0</target>
+      </trans-unit>
+      <trans-unit id="selectableCategoriesForNewEvents">
+        <source>Selectable categories for new events in Frontend</source>
+        <target>crwdns306276:0crwdne306276:0</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
