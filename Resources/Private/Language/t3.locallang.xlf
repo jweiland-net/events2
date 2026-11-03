@@ -575,18 +575,6 @@
         <source>Property "categories" is defined to be mandatory. Please select at least one category.</source>
         <target>crwdns306536:0crwdne306536:0</target>
       </trans-unit>
-      <trans-unit id="error.upload">
-        <source>Something went wrong with your uploaded files. Please try again. Error: </source>
-        <target>crwdns306538:0crwdne306538:0</target>
-      </trans-unit>
-      <trans-unit id="error.uploadRights">
-        <source>You don\'t have checked the box for upload rights. So upload stops here</source>
-        <target>crwdns306540:0crwdne306540:0</target>
-      </trans-unit>
-      <trans-unit id="error.fileExtension">
-        <source>You only can upload files with following file extensions: %1$s</source>
-        <target>crwdns306542:0%1$scrwdne306542:0</target>
-      </trans-unit>
       <trans-unit id="error.locationFail">
         <source>The given location does not exist in our database. Please choose another one</source>
         <target>crwdns306544:0crwdne306544:0</target>
@@ -624,12 +612,12 @@
         <target>crwdns306560:0crwdne306560:0</target>
       </trans-unit>
       <trans-unit id="cshImages">
-        <source>Upload max. 5 image files (jpg,gif,png). Please use the same image dimensions (i.e. 3:2, 3:4) if uploading more than one image.Be sure to set the image rights. Otherwise the image will not be uploaded.</source>
-        <target>crwdns306562:0crwdne306562:0</target>
+        <source>Upload max. 5 image files (jpg, gif, png, max. 4 MB each). Please use the same image dimensions (i.e. 3:2, 3:4) if uploading more than one image.</source>
+        <target>crwdns418779:0crwdne418779:0</target>
       </trans-unit>
-      <trans-unit id="rightsMessage">
-        <source>Dear Admin: Please override this label with help of TypoScript</source>
-        <target>crwdns306564:0crwdne306564:0</target>
+      <trans-unit id="deleteImage">
+        <source>Delete image</source>
+        <target>crwdns418781:0crwdne418781:0</target>
       </trans-unit>
       <trans-unit id="altTextMapImg">
         <source>Map</source>
