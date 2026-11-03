@@ -99,11 +99,35 @@
     <f:render section="RenderLabel" arguments="{property: 'images'}"/>
     <f:render section="RenderCsh" arguments="{property: 'images', transKey: 'cshImages'}"/>
     <div class="col-sm-8">
-        <f:render section="UploadImage" arguments="{image: event.images.0, index: '0', position: '1'}"/>
-        <f:render section="UploadImage" arguments="{image: event.images.1, index: '1', position: '2'}"/>
-        <f:render section="UploadImage" arguments="{image: event.images.2, index: '2', position: '3'}"/>
-        <f:render section="UploadImage" arguments="{image: event.images.3, index: '3', position: '4'}"/>
-        <f:render section="UploadImage" arguments="{image: event.images.4, index: '4', position: '5'}"/>
+        <f:for each="{event.images}" as="image" iteration="iterator">
+            <div class="media mb-3">
+                <f:image image="{image}"
+                         class="mr-3"
+                         alt="{event.title}"
+                         width="{settings.show.image.width}"
+                         height="{settings.show.image.height}"
+                         minWidth="{settings.show.image.minWidth}"
+                         maxWidth="{settings.show.image.maxWidth}"
+                         minHeight="{settings.show.image.minHeight}"
+                         maxHeight="{settings.show.image.maxHeight}"/>
+                <div class="media-body">
+                    <div class="form-check">
+                        <f:form.uploadDeleteCheckbox property="images"
+                                                     fileReference="{image}"
+                                                     id="imageDelete{iterator.index}"
+                                                     class="form-check-input"/>
+                        <label class="form-check-label" for="imageDelete{iterator.index}">
+                            {f:translate(key: 'deleteImage')}
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </f:for>
+        <f:form.upload property="images"
+                       id="images"
+                       class="form-control-file"
+                       multiple="1"
+                       accept="image/gif,image/jpeg,image/png"/>
     </div>
 </div>
 
@@ -125,13 +149,6 @@
             <f:form.textfield class="form-control" id="{property}" property="{property}"/>
         </div>
     </div>
-</f:section>
-
-<f:section name="UploadImage">
-    <f:if condition="{image}">
-        <f:image image="{image}" alt="Bild{position}" width="{settings.show.image.width}" height="{settings.show.image.height}" minWidth="{settings.show.image.minWidth}" maxWidth="{settings.show.image.maxWidth}" minHeight="{settings.show.image.minHeight}" maxHeight="{settings.show.image.maxHeight}"/>
-    </f:if>
-    <f:form.upload id="images_{index}" name="event[images][{index}]"/>
 </f:section>
 
 <f:section name="RenderLabel">

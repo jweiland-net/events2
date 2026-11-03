@@ -148,6 +148,29 @@ To prevent inserting a lot of text into various text fields like teaser in front
 you can reducr the amount of allowed letters here. With help of a little JavaScript events2 will show
 a little countdown how many remaining letters are allowed to enter.
 
+new
+---
+
+Special properties for the event form of the Management plugin:
+
+..  _typoscript-new-uploadfolder:
+
+uploadFolder
+~~~~~~~~~~~~
+
+..  versionadded:: 11.0.0
+
+    The value is set by the new site setting `events2.form.uploadFolder`.
+
+Default: `1:user_upload/tx_events2/`
+
+Example: `plugin.tx_events2.settings.new.uploadFolder = 1:user_upload/events/`
+
+Folder (combined identifier) for the images uploaded in the Extbase based
+event form of the Management plugin. Set it with the site setting
+`events2.form.uploadFolder` of the site set `jweiland/events2`. The folder
+is created, if it does not exist. See :ref:`management-image-upload`.
+
 latest
 ------
 

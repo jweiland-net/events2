@@ -576,18 +576,6 @@
 				<target>Die Eigenschaft "Kategorien" ist ein Pflichtfeld. Bitte wählen Sie mindestens eine Kategorie aus.</target>
 			</trans-unit>
 
-			<trans-unit id="error.upload">
-				<source>Something went wrong with your uploaded files. Please try again. Error: </source>
-				<target>Ein Fehler ist beim Upload der Dateien aufgetreten. Bitte versuchen Sie es zunächst erneut. Fehlermeldung: </target>
-			</trans-unit>
-			<trans-unit id="error.uploadRights">
-				<source>You don\'t have checked the box for upload rights. So upload stops here</source>
-				<target>Sie haben die Checkbox für die Uploadrechte nicht markiert. Der Upload wurde abgebrochen.</target>
-			</trans-unit>
-			<trans-unit id="error.fileExtension">
-				<source>You only can upload files with following file extensions: %1$s</source>
-				<target>Sie können nur Bilder mit folgenden Dateiendungen hochladen: %1$s</target>
-			</trans-unit>
 			<trans-unit id="error.locationFail">
 				<source>The given location does not exist in our database. Please choose another one</source>
 				<target>Dieser Veranstaltungsort existiert nicht. Bitte wählen Sie einen anderen Ort.</target>
@@ -626,12 +614,12 @@
 				<target>Geben Sie hier den Link zu einem Video ein</target>
 			</trans-unit>
 			<trans-unit id="cshImages">
-				<source>Upload max. 5 image files (jpg,gif,png). Please use the same image dimensions (i.e. 3:2, 3:4) if uploading more than one image.Be sure to set the image rights. Otherwise the image will not be uploaded.</source>
-				<target>Laden Sie max. 5 Bilddateien (jpg, gif, png) hoch. Bitte benutzen Sie bei mehreren Bildern immer das gleiche Bildformat (z.B. 3:2, 4:3) um eine ruckelfrei Ausgabe der Bildergalerie zu gewährleisten. Bestätigen Sie, dass Sie über die Bilderrechte verfügen. Ansonsten wird das Bild nicht hochgeladen werden.</target>
+				<source>Upload max. 5 image files (jpg, gif, png, max. 4 MB each). Please use the same image dimensions (i.e. 3:2, 3:4) if uploading more than one image.</source>
+				<target>Laden Sie max. 5 Bilddateien (jpg, gif, png, jeweils max. 4 MB) hoch. Bitte benutzen Sie bei mehreren Bildern immer das gleiche Bildformat (z.B. 3:2, 4:3) um eine ruckelfreie Ausgabe der Bildergalerie zu gewährleisten.</target>
 			</trans-unit>
-			<trans-unit id="rightsMessage">
-				<source>Dear Admin: Please override this label with help of TypoScript</source>
-				<target>Hallo Admin: Bitte ändere diesen Text mit Hilfe von TypoScript</target>
+			<trans-unit id="deleteImage">
+				<source>Delete image</source>
+				<target>Bild löschen</target>
 			</trans-unit>
 			<trans-unit id="altTextMapImg">
 				<source>Map</source>

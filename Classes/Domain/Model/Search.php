@@ -80,7 +80,7 @@ class Search extends AbstractEntity
 
         try {
             $date = new \DateTimeImmutable($this->eventBegin);
-            $date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+            $date = $date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
         } catch (\Exception $exception) {
             $date = null;
         }
@@ -101,7 +101,7 @@ class Search extends AbstractEntity
 
         try {
             $date = new \DateTimeImmutable($this->eventEnd);
-            $date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+            $date = $date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
         } catch (\Exception $exception) {
             $date = null;
         }

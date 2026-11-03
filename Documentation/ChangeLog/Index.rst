@@ -7,6 +7,19 @@
 ChangeLog
 =========
 
+..  _changelog-11-0-0:
+
+Version 11.0.0
+==============
+
+Please read :ref:`upgrade-11-0-0` before updating.
+
+*   [!!!][TASK] Use Extbase file upload handling for images
+*   [!!!][TASK] Use upload and delete fields for images in form
+*   [TASK] Add checkfaluploads validator to image uploads
+*   [FEATURE] Add site setting for the image upload folder
+*   [TASK] Add tests for the image upload event listeners
+
 Version 10.2.12
 ===============
 

@@ -26,6 +26,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -163,7 +164,7 @@ class EventTest extends UnitTestCase
     {
         $eventBegin = new \DateTimeImmutable('midnight');
         $eventEnd = new \DateTimeImmutable('midnight');
-        $eventEnd->modify('+20 seconds');
+        $eventEnd = $eventEnd->modify('+20 seconds');
         $this->subject->setEventBegin($eventBegin);
         $this->subject->setEventEnd($eventEnd);
 
@@ -1171,10 +1172,10 @@ class EventTest extends UnitTestCase
     }
 
     #[Test]
-    public function getImagesInitiallyReturnsArray(): void
+    public function getImagesInitiallyReturnsObjectStorage(): void
     {
         self::assertEquals(
-            [],
+            new ObjectStorage(),
             $this->subject->getImages(),
         );
     }
@@ -1182,7 +1183,7 @@ class EventTest extends UnitTestCase
     #[Test]
     public function setImagesSetsImages(): void
     {
-        $object = new Time();
+        $object = new FileReference();
 
         $objectStorage = new ObjectStorage();
         $objectStorage->attach($object);
@@ -1190,8 +1191,51 @@ class EventTest extends UnitTestCase
         $this->subject->setImages($objectStorage);
 
         self::assertSame(
-            [0 => $object],
+            $objectStorage,
             $this->subject->getImages(),
+        );
+    }
+
+    #[Test]
+    public function addImageAddsOneImage(): void
+    {
+        $object = new FileReference();
+        $this->subject->addImage($object);
+
+        self::assertTrue(
+            $this->subject->getImages()->contains($object),
+        );
+    }
+
+    #[Test]
+    public function removeImageRemovesOneImage(): void
+    {
+        $object = new FileReference();
+        $this->subject->addImage($object);
+        $this->subject->removeImage($object);
+
+        self::assertCount(
+            0,
+            $this->subject->getImages(),
+        );
+    }
+
+    #[Test]
+    public function getFirstImageInitiallyReturnsNull(): void
+    {
+        self::assertNull($this->subject->getFirstImage());
+    }
+
+    #[Test]
+    public function getFirstImageReturnsFirstImage(): void
+    {
+        $firstImage = new FileReference();
+        $this->subject->addImage($firstImage);
+        $this->subject->addImage(new FileReference());
+
+        self::assertSame(
+            $firstImage,
+            $this->subject->getFirstImage(),
         );
     }
 

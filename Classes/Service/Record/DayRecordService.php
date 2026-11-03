@@ -14,7 +14,7 @@ namespace JWeiland\Events2\Service\Record;
 use Doctrine\DBAL\Exception;
 use JWeiland\Events2\Traits\RelationHandlerTrait;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
@@ -34,6 +34,7 @@ readonly class DayRecordService
         private ConnectionPool $connectionPool,
         private TcaSchemaFactory $tcaSchemaFactory,
         private ReferenceIndex $referenceIndex,
+        private Context $context,
     ) {}
 
     public function getByEventAndTime(int $eventUid, int $timestamp): array
@@ -87,7 +88,7 @@ readonly class DayRecordService
                     ),
                     $queryBuilder->expr()->eq(
                         't3ver_wsid',
-                        $queryBuilder->createNamedParameter($this->getWorkspaceUidFromBackendUser(), Connection::PARAM_INT),
+                        $queryBuilder->createNamedParameter($this->getWorkspaceUid(), Connection::PARAM_INT),
                     ),
                 )
                 ->executeQuery();
@@ -99,7 +100,7 @@ readonly class DayRecordService
                     self::TABLE,
                     $dayRecordToDelete['uid'],
                     false,
-                    $this->getWorkspaceUidFromBackendUser(),
+                    $this->getWorkspaceUid(),
                 );
             }
         } catch (Exception) {
@@ -139,7 +140,7 @@ readonly class DayRecordService
                 self::TABLE,
                 [
                     'sys_language_uid' => 0,
-                    't3ver_wsid' => $this->getWorkspaceUidFromBackendUser(),
+                    't3ver_wsid' => $this->getWorkspaceUid(),
                     'def_lang_event_uid' => $eventUid,
                 ],
             )->fetchAllAssociative();
@@ -166,7 +167,7 @@ readonly class DayRecordService
 
             // Update the reference index to ensure that the Workspace module correctly reflects recent modifications
             foreach ($this->getExistingDayRecords((int)$eventRecord['uid']) as $newDayRecord) {
-                $this->referenceIndex->updateRefIndexTable(self::TABLE, $newDayRecord['uid'], false, $this->getWorkspaceUidFromBackendUser());
+                $this->referenceIndex->updateRefIndexTable(self::TABLE, $newDayRecord['uid'], false, $this->getWorkspaceUid());
             }
         }
 
@@ -181,7 +182,7 @@ readonly class DayRecordService
         foreach ($existingLiveDayRecordsToBeMarkedAsDeleted as $existingLiveDayRecord) {
             $existingLiveDayRecord['t3_origuid'] = (int)$existingLiveDayRecord['uid'];
             $existingLiveDayRecord['t3ver_oid'] = (int)$existingLiveDayRecord['uid'];
-            $existingLiveDayRecord['t3ver_wsid'] = $this->getWorkspaceUidFromBackendUser();
+            $existingLiveDayRecord['t3ver_wsid'] = $this->getWorkspaceUid();
             $existingLiveDayRecord['t3ver_state'] = VersionState::DELETE_PLACEHOLDER->value;
             unset($existingLiveDayRecord['uid']);
 
@@ -189,7 +190,7 @@ readonly class DayRecordService
                 self::TABLE,
                 $connection->insert(self::TABLE, $existingLiveDayRecord),
                 false,
-                $this->getWorkspaceUidFromBackendUser(),
+                $this->getWorkspaceUid(),
             );
         }
 
@@ -202,7 +203,7 @@ readonly class DayRecordService
                 'tx_events2_domain_model_event',
                 (int)($workspaceVersionOfEventRecord['_ORIG_uid'] ?? $workspaceVersionOfEventRecord['uid']),
                 false,
-                $this->getWorkspaceUidFromBackendUser(),
+                $this->getWorkspaceUid(),
             );
         }
     }
@@ -234,12 +235,12 @@ readonly class DayRecordService
             $newDayRecord['crdate'] = time();
             $newDayRecord['event'] = (int)$eventRecord['uid'];
             $newDayRecord['def_lang_event_uid'] = $eventUid;
-            $newDayRecord['t3ver_wsid'] = $this->getWorkspaceUidFromBackendUser();
+            $newDayRecord['t3ver_wsid'] = $this->getWorkspaceUid();
             $newDayRecord['t3ver_stage'] = VersionState::DEFAULT_STATE->value;
             $newDayRecord['sys_language_uid'] = $languageUid;
             $newDayRecord['l10n_parent'] = $l10nParent;
 
-            if ($this->getWorkspaceUidFromBackendUser() > 0) {
+            if ($this->getWorkspaceUid() > 0) {
                 // Verify whether an active LIVE record exists to which a new relation can be established
                 if (array_key_exists($newDayRecordKey, $existingLiveDayRecords)) {
                     $existingLiveDayRecord = $existingLiveDayRecords[$newDayRecordKey];
@@ -263,7 +264,7 @@ readonly class DayRecordService
     {
         $schema = $this->tcaSchemaFactory->get('tx_events2_domain_model_event');
 
-        $relationHandler = $this->createRelationHandlerInstance($workspace);
+        $relationHandler = $this->createRelationHandlerInstance($workspace ?? $this->getWorkspaceUid());
         $relationHandler->initializeForField(
             'tx_events2_domain_model_event',
             $schema->getField('days'),
@@ -287,17 +288,12 @@ readonly class DayRecordService
     }
 
     /**
-     * In CLI and scheduler context the BE_USER's workspace may be initialized with workspace -99.
-     * In this context we will only operate on LIVE workspace.
-     * We cannot use -99 as a valid workspace as 't3ver_wsid'-columns do not allow storing negative values.
+     * A workspace aspect may carry a negative ID (e.g. -99 in CLI context).
+     * Only the LIVE workspace is used in that case, as the 't3ver_wsid'
+     * columns do not allow storing negative values.
      */
-    private function getWorkspaceUidFromBackendUser(): int
+    private function getWorkspaceUid(): int
     {
-        return max($this->getBackendUser()->workspace, 0);
-    }
-
-    private function getBackendUser(): BackendUserAuthentication
-    {
-        return $GLOBALS['BE_USER'];
+        return max((int)$this->context->getPropertyFromAspect('workspace', 'id', 0), 0);
     }
 }

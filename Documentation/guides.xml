@@ -14,8 +14,8 @@
                typo3-core-preferred="stable"
     />
     <project title="Events2"
-             release="10.2"
-             version="10.2.12"
+             release="11.0"
+             version="11.0.0"
              copyright="by jweiland.net"
     />
     <inventory id="t3coreapi"

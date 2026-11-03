@@ -119,7 +119,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $event->setExceptions($exceptions);
 
         $expectedTimes = new \SplObjectStorage();
-        $expectedTimes->attach($time);
+        $expectedTimes->offsetSet($time);
 
         self::assertEquals(
             $expectedTimes,
@@ -154,8 +154,8 @@ class TimeFactoryTest extends FunctionalTestCase
         $event->setExceptions($exceptions);
 
         $expectedTimes = new \SplObjectStorage();
-        $expectedTimes->attach($time);
-        $expectedTimes->attach($time);
+        $expectedTimes->offsetSet($time);
+        $expectedTimes->offsetSet($time);
 
         self::assertEquals(
             $expectedTimes,
@@ -228,7 +228,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $event->setDifferentTimes($times);
 
         $expectedTimes = new \SplObjectStorage();
-        $expectedTimes->attach($time);
+        $expectedTimes->offsetSet($time);
 
         self::assertEquals(
             $expectedTimes,
@@ -253,7 +253,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $event->setEventTime($time);
 
         $expectedTimes = new \SplObjectStorage();
-        $expectedTimes->attach($time);
+        $expectedTimes->offsetSet($time);
 
         self::assertEquals(
             $expectedTimes,
@@ -274,7 +274,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $event->setEventTime($time);
 
         $expectedTimes = new \SplObjectStorage();
-        $expectedTimes->attach($time);
+        $expectedTimes->offsetSet($time);
 
         self::assertEquals(
             $expectedTimes,
@@ -308,7 +308,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $event->setEventTime($time);
 
         $expectedTimes = new \SplObjectStorage();
-        $expectedTimes->attach($time);
+        $expectedTimes->offsetSet($time);
 
         self::assertEquals(
             $expectedTimes,
@@ -343,7 +343,7 @@ class TimeFactoryTest extends FunctionalTestCase
         $event->setEventTime($time);
 
         $expectedTimes = new \SplObjectStorage();
-        $expectedTimes->attach($time);
+        $expectedTimes->offsetSet($time);
 
         self::assertEquals(
             $expectedTimes,
@@ -384,9 +384,9 @@ class TimeFactoryTest extends FunctionalTestCase
         $event->setDifferentTimes($times);
 
         $expectedTimes = new \SplObjectStorage();
-        $expectedTimes->attach($time3);
-        $expectedTimes->attach($time2);
-        $expectedTimes->attach($time1);
+        $expectedTimes->offsetSet($time3);
+        $expectedTimes->offsetSet($time2);
+        $expectedTimes->offsetSet($time1);
 
         self::assertEquals(
             $expectedTimes,
@@ -443,9 +443,9 @@ class TimeFactoryTest extends FunctionalTestCase
         $event->setExceptions($exceptions);
 
         $expectedTimes = new \SplObjectStorage();
-        $expectedTimes->attach($time3);
-        $expectedTimes->attach($time2);
-        $expectedTimes->attach($time1);
+        $expectedTimes->offsetSet($time3);
+        $expectedTimes->offsetSet($time2);
+        $expectedTimes->offsetSet($time1);
 
         self::assertEquals(
             $expectedTimes,
