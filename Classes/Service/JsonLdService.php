@@ -298,29 +298,27 @@ class JsonLdService
      */
     protected function addImageToData(Event $event): void
     {
-        if (!empty($event->getImages())) {
-            $image = $event->getImages()[0];
-            if (!$image instanceof FileReference) {
-                return;
-            }
-
-            $resource = $image->getOriginalResource();
-            if (!$resource instanceof \TYPO3\CMS\Core\Resource\FileReference) {
-                return;
-            }
-
-            $url = GeneralUtility::locationHeaderUrl(PathUtility::getAbsoluteWebPath(Environment::getPublicPath()));
-            $url .= $resource->getPublicUrl();
-
-            $this->data['image'] = [
-                '@type' => 'ImageObject',
-                'caption' => $resource->getTitle(),
-                'contentSize' => $resource->getSize(),
-                'contentUrl' => $url,
-                'url' => rawurldecode(GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL')),
-                'description' => $resource->getDescription(),
-            ];
+        $image = $event->getFirstImage();
+        if (!$image instanceof FileReference) {
+            return;
         }
+
+        $resource = $image->getOriginalResource();
+        if (!$resource instanceof \TYPO3\CMS\Core\Resource\FileReference) {
+            return;
+        }
+
+        $url = GeneralUtility::locationHeaderUrl(PathUtility::getAbsoluteWebPath(Environment::getPublicPath()));
+        $url .= $resource->getPublicUrl();
+
+        $this->data['image'] = [
+            '@type' => 'ImageObject',
+            'caption' => $resource->getTitle(),
+            'contentSize' => $resource->getSize(),
+            'contentUrl' => $url,
+            'url' => rawurldecode(GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL')),
+            'description' => $resource->getDescription(),
+        ];
     }
 
     /**
