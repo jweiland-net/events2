@@ -65,17 +65,7 @@ We prefer to not change that value.
 File Uploads
 ============
 
-If you need the image rights from the uploader for uploaded images you should install EXT:checkfaluploads and
-add following line into FormFields template:
-
-..  code-block:: html
-
-    <f:form.checkbox value="1" name="event[images][{index}][rights]" checked="" />
-
-In our TypeConverter we check for installed checkfaluploads and add an error message, if checkbox was not activated
-
-If you want to delete an image, you can add following line into FormFields template:
-
-..  code-block:: html
-
-    <f:form.checkbox value="1" name="event[images][{index}][delete]" checked="" />
+The images of the event form of the Management plugin are uploaded with
+the file upload handling of Extbase. If you need the image rights from
+the uploader, install EXT:checkfaluploads and add the rights checkbox to
+your template override, see :ref:`management-checkfaluploads`.

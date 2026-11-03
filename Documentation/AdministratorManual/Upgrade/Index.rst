@@ -10,6 +10,184 @@ Upgrade
 If you upgrade/update EXT:events2 to a newer version, please read this
 section carefully!
 
+..  _upgrade-11-0-0:
+
+Update to Version 11.0.0
+========================
+
+This version contains breaking changes. The images of the event form of
+the Management plugin are uploaded with the file upload handling of
+Extbase now. The own type converter for uploads has been removed. Please
+go through all steps below, if you use the Extbase based event form of
+the Management plugin or have extended the event model.
+
+The form based on EXT:form (site setting `events2.form.useExtForm` with
+:file:`NewEvent.form.yaml`) is not affected by this change.
+
+..  _upgrade-11-0-0-limits:
+
+New limits for uploaded images
+------------------------------
+
+The image upload of the event form accepts:
+
+*   up to 5 images per event,
+*   up to 4 MB per image,
+*   files with the extensions `gif`, `jpg`, `jpeg` and `png` only.
+
+Before, all file extensions of
+`$GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']` were allowed and
+there was no limit for the file size. Images violating these limits are
+rejected with a validation error of the form.
+
+The names of uploaded files get a random suffix. Deleting an image in
+the form deletes the file, too.
+
+..  _upgrade-11-0-0-upload-folder:
+
+New site setting for the upload folder
+--------------------------------------
+
+The folder of the uploaded images can be configured with the new site
+setting `events2.form.uploadFolder` now. It is mapped to the TypoScript
+setting :ref:`settings.new.uploadFolder <typoscript-new-uploadfolder>`.
+The default value `1:user_upload/tx_events2/` keeps the former folder.
+The folder is created, if it does not exist.
+
+..  _upgrade-11-0-0-templates:
+
+Template overrides of FormFields.html
+-------------------------------------
+
+If you have overridden :file:`Partials/Management/FormFields.html` in
+your site package, please compare it with the original file:
+
+*   The section `UploadImage` and its five indexed upload fields
+    `event[images][0]` to `event[images][4]` have been removed.
+
+*   Use one upload field for all images:
+
+    ..  code-block:: html
+
+        <f:form.upload property="images" multiple="1"/>
+
+*   Render a delete checkbox for each existing image:
+
+    ..  code-block:: html
+
+        <f:for each="{event.images}" as="image">
+            <f:form.uploadDeleteCheckbox property="images"
+                                         fileReference="{image}"/>
+        </f:for>
+
+*   The form needs the attribute `enctype="multipart/form-data"`. The
+    original templates :file:`Templates/Management/New.html` and
+    :file:`Templates/Management/Edit.html` already have it.
+
+..  _upgrade-11-0-0-model:
+
+Changed API of the event model
+------------------------------
+
+:php:`Event::getImages()` returns an
+:php:`ObjectStorage<FileReference>` instead of an array now. Index access
+like `{event.images.0}` in Fluid templates does not work anymore. Use
+`{event.firstImage}` or iterate over the images with :html:`<f:for>`.
+
+:php:`Event::getOriginalImages()` has been removed. Use
+:php:`Event::getImages()` instead. The new methods
+:php:`Event::addImage()` and :php:`Event::removeImage()` add or remove a
+single image.
+
+..  _upgrade-11-0-0-checkfaluploads:
+
+Rights checkbox of checkfaluploads
+----------------------------------
+
+The templates of events2 do not contain a rights checkbox for the
+uploaded images. If `jweiland/checkfaluploads` is installed, events2
+adds its validator to the image uploads of the actions `create` and
+`update` of the Management plugin. Version 6.x of checkfaluploads is
+suggested, as the validator needs its API for the file upload handling
+of Extbase.
+
+In this case add the rights checkbox and the rights message to your
+template override of :file:`Partials/Management/FormFields.html`:
+
+..  code-block:: html
+
+    <html xmlns:cfu="http://typo3.org/ns/JWeiland/Checkfaluploads/ViewHelpers"
+          data-namespace-typo3-fluid="true">
+
+    <f:form.checkbox property="images.rights" id="imageRights" value="1"/>
+    <label for="imageRights"><cfu:imageRightsMessage/></label>
+
+The checkbox has to be submitted with the name
+`tx_events2_management[event][images][rights]`. Without this field every
+image upload stops with exception `1788270392`. If the checkbox is not
+checked, the form shows a validation error. See the
+`developer manual of checkfaluploads
+<https://docs.typo3.org/p/jweiland/checkfaluploads/main/en-us/Developer/Index.html>`__
+for details.
+
+..  _upgrade-11-0-0-labels:
+
+Changed labels
+--------------
+
+The labels `error.upload`, `error.uploadRights`, `error.fileExtension`
+and `rightsMessage` have been removed from
+:file:`Resources/Private/Language/locallang.xlf`. For the rights message
+use the ViewHelper :html:`<cfu:imageRightsMessage/>` of checkfaluploads.
+If you have overridden these labels with `_LOCAL_LANG`, you can remove
+these overrides.
+
+The new label `deleteImage` is used for the delete checkbox of an image.
+The text of `cshImages` has been updated to the new limits.
+
+..  _upgrade-11-0-0-developer:
+
+Removed PHP classes and event listeners
+---------------------------------------
+
+*   The type converter
+    :php:`JWeiland\Events2\Property\TypeConverter\UploadMultipleFilesConverter`
+    has been removed.
+
+*   The PSR-14 event :php:`JWeiland\Events2\Event\PostCheckFileReferenceEvent`
+    has been removed without replacement. To change the upload
+    configuration of the images, register an event listener for
+    :php:`JWeiland\Events2\Event\PreProcessControllerActionEvent` and
+    modify the file upload configuration of the argument `event`.
+
+*   The event listeners `AssignMediaTypeConverterEventListener`
+    (identifier `events2/assignMediaTypeConverter`) and
+    `DeleteUploadedFilesOnErrorEventListener` (identifier
+    `events2/deleteUploadedFilesOnError`) have been removed. If you have
+    ordered your own event listeners with `before` or `after` relative to
+    these identifiers, please update them.
+
+*   Two new event listeners for :php:`PreProcessControllerActionEvent`
+    are registered for the actions `create` and `update` of the
+    Management plugin. Use their identifiers to order your own event
+    listeners:
+
+    `events2/apply-upload-folder`
+        Sets the upload folder of the images to the value of
+        `settings.new.uploadFolder`.
+
+    `events2/check-fal-uploads`
+        Adds the validator of checkfaluploads to the image uploads, if
+        checkfaluploads is installed.
+
+..  _upgrade-11-0-0-caches:
+
+Flush caches
+------------
+
+As PHP classes, templates and TypoScript have changed, please flush all
+caches in :guilabel:`Admin Tools > Maintenance` after the update.
+
 Update to Version 10.2.4
 ========================
 
