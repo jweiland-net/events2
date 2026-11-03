@@ -575,18 +575,6 @@
         <source>Property "categories" is defined to be mandatory. Please select at least one category.</source>
         <target state="final">Die Eigenschaft "Kategorien" ist als obligatorisch definiert. Bitte wählen Sie mindestens eine Kategorie.</target>
       </trans-unit>
-      <trans-unit id="error.upload" approved="yes">
-        <source>Something went wrong with your uploaded files. Please try again. Error: </source>
-        <target state="final">Etwas ist mit deinen hochgeladenen Dateien schief gelaufen. Bitte versuche es erneut. Fehler: </target>
-      </trans-unit>
-      <trans-unit id="error.uploadRights" approved="yes">
-        <source>You don\'t have checked the box for upload rights. So upload stops here</source>
-        <target state="final">Du hast das Feld für Upload-Rechte nicht ausgewählt. Der Upload wurde abgebrochen</target>
-      </trans-unit>
-      <trans-unit id="error.fileExtension" approved="yes">
-        <source>You only can upload files with following file extensions: %1$s</source>
-        <target state="final">Du kannst nur Dateien mit folgenden Dateiendungen hochladen: %1$s</target>
-      </trans-unit>
       <trans-unit id="error.locationFail" approved="yes">
         <source>The given location does not exist in our database. Please choose another one</source>
         <target state="final">Der angegebene Standort existiert nicht in unserer Datenbank. Bitte wähle einen anderen</target>
@@ -623,13 +611,13 @@
         <source>Insert here the link to a video film</source>
         <target state="final">Füge hier den Link zu einem Videofilm ein</target>
       </trans-unit>
-      <trans-unit id="cshImages" approved="yes">
-        <source>Upload max. 5 image files (jpg,gif,png). Please use the same image dimensions (i.e. 3:2, 3:4) if uploading more than one image.Be sure to set the image rights. Otherwise the image will not be uploaded.</source>
-        <target state="final">Lade max. 5 Bilddateien hoch (jpg,gif,png). Bitte verwende die gleiche Bildgröße (z.B. 3:2, 3:4), wenn mehr als ein Bild hochgeladen wird. Stelle sicher, dass du die Rechte des Bildes besitzen. Andernfalls wird das Bild nicht hochgeladen.</target>
+      <trans-unit id="cshImages">
+        <source>Upload max. 5 image files (jpg, gif, png, max. 4 MB each). Please use the same image dimensions (i.e. 3:2, 3:4) if uploading more than one image.</source>
+        <target state="needs-translation">Upload max. 5 image files (jpg, gif, png, max. 4 MB each). Please use the same image dimensions (i.e. 3:2, 3:4) if uploading more than one image.</target>
       </trans-unit>
-      <trans-unit id="rightsMessage" approved="yes">
-        <source>Dear Admin: Please override this label with help of TypoScript</source>
-        <target state="final">Lieber Admin: Bitte überschreibe dieses Label mit Hilfe von TypoScript</target>
+      <trans-unit id="deleteImage">
+        <source>Delete image</source>
+        <target state="needs-translation">Delete image</target>
       </trans-unit>
       <trans-unit id="altTextMapImg" approved="yes">
         <source>Map</source>
