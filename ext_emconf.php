@@ -25,7 +25,7 @@ $EM_CONF[$_EXTKEY] = [
         'conflicts' => [
         ],
         'suggests' => [
-            'checkfaluploads' => '',
+            'checkfaluploads' => '6.0.0-6.99.99',
             'form' => '',
             'maps2' => '12.0.0-0.0.0',
             'solr' => '13.0.1-0.0.0',
