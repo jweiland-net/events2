@@ -14,6 +14,8 @@ namespace JWeiland\Events2\Tests\Functional\Traits;
 use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Tests\Functional\Events2Constants;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Context\WorkspaceAspect;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -175,6 +177,7 @@ trait InsertEventTrait
         $GLOBALS['BE_USER']->user['admin'] = (int)$isAdmin;
         $GLOBALS['BE_USER']->user['uid'] = 1;
         $GLOBALS['BE_USER']->workspace = $workspace;
+        GeneralUtility::makeInstance(Context::class)->setAspect('workspace', new WorkspaceAspect($workspace));
 
         $dayRelationService = GeneralUtility::makeInstance(DayRelationService::class);
 

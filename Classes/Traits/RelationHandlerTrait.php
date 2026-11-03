@@ -18,12 +18,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 trait RelationHandlerTrait
 {
-    private function createRelationHandlerInstance(?int $workspace = null): RelationHandler
+    private function createRelationHandlerInstance(int $workspace): RelationHandler
     {
         $isWorkspacesLoaded = ExtensionManagementUtility::isLoaded('workspaces');
 
         $relationHandler = GeneralUtility::makeInstance(RelationHandler::class);
-        $relationHandler->setWorkspaceId($workspace ?? $GLOBALS['BE_USER']->workspace);
+        $relationHandler->setWorkspaceId($workspace);
         $relationHandler->setUseLiveReferenceIds($isWorkspacesLoaded);
         $relationHandler->setUseLiveParentIds($isWorkspacesLoaded);
         $relationHandler->setReferenceIndexUpdater(GeneralUtility::makeInstance(ReferenceIndexUpdater::class));

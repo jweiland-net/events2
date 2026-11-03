@@ -13,6 +13,7 @@ namespace JWeiland\Events2\Service\Record;
 
 use JWeiland\Events2\Traits\RelationHandlerTrait;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 
 class ExceptionRecordService
@@ -23,13 +24,16 @@ class ExceptionRecordService
 
     public function __construct(
         private readonly TcaSchemaFactory $tcaSchemaFactory,
+        private readonly Context $context,
     ) {}
 
     public function findAllByEventUid(int $eventUid): array
     {
         $schema = $this->tcaSchemaFactory->get('tx_events2_domain_model_event');
 
-        $relationHandler = $this->createRelationHandlerInstance();
+        $relationHandler = $this->createRelationHandlerInstance(
+            max((int)$this->context->getPropertyFromAspect('workspace', 'id', 0), 0),
+        );
         $relationHandler->initializeForField(
             'tx_events2_domain_model_event',
             $schema->getField('exceptions'),
