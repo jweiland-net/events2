@@ -397,21 +397,51 @@ class DayGeneratorServiceTest extends FunctionalTestCase
     }
 
     /**
-     * As the earliest date for summer- to wintertime switches is the 25. October,
-     * calculated for the next 30 years, I have chosen the 20.10. To be safe.
+     * Testing DST handling is tricky for three reasons:
+     *
+     * 1. DayGeneratorService works in the PHP default timezone. The test
+     *    containers run in UTC, which has no DST at all, so the test sets
+     *    Europe/Berlin explicitly and restores the original timezone after.
+     * 2. Expected dates must be created as local midnight in that timezone.
+     *    Calculating them from timestamps or with a fixed number of seconds
+     *    (14 * 86400) results in 23:00 or 01:00 on one side of the switch.
+     * 3. The service has no injectable clock. It only generates days inside
+     *    "now - recurringPast" and "now + recurringFuture". The event uses
+     *    the last Sunday of October of the previous year (DST ends at 03:00,
+     *    so midnight is still CEST, 14 days later is CET). These dates are
+     *    always between 2 and 24 months in the past, so they stay inside
+     *    the window of 24 months, no matter whether the test runs in summer
+     *    or winter time.
      */
     #[Test]
     public function getDateTimeStorageForEventWithRecurringWeeksWillKeepDaylightSavingTime(): void
     {
-        $timestampEventBeginSummerTime = mktime(0, 0, 0, 10, 27, 2024);
-        $timestampRecurringEndWinterTime = mktime(0, 0, 0, 11, 10, 2024);
+        $originalTimeZone = date_default_timezone_get();
+        date_default_timezone_set('Europe/Berlin');
+
+        try {
+            $this->assertRecurringWeeksKeepDaylightSavingTime();
+        } finally {
+            date_default_timezone_set($originalTimeZone);
+        }
+    }
+
+    private function assertRecurringWeeksKeepDaylightSavingTime(): void
+    {
+        $previousYear = (int)(new \DateTimeImmutable('now'))->format('Y') - 1;
+        $expectedBegin = new \DateTimeImmutable('last sunday of october ' . $previousYear . ' midnight');
+        $expectedEnd = $expectedBegin->modify('+14 days');
+
+        // Both dates must be on different sides of the DST switch
+        self::assertSame('CEST', $expectedBegin->format('T'));
+        self::assertSame('CET', $expectedEnd->format('T'));
 
         $eventRecord = [
             'uid' => 123,
             'event_type' => 'recurring',
-            'event_begin' => (int)$timestampEventBeginSummerTime,
+            'event_begin' => (int)$expectedBegin->format('U'),
             'event_end' => 0,
-            'recurring_end' => (int)$timestampRecurringEndWinterTime,
+            'recurring_end' => (int)$expectedEnd->format('U'),
             'xth' => 31,
             'weekday' => 127,
             'each_weeks' => 2,
@@ -419,11 +449,6 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             'exceptions' => [],
         ];
 
-        // Note: Either increase the "recurringPast" value to allow event generation for more months in the past
-        // or update the test's initial event dates (e.g., to a more recent year or to properly reflect daylight saving time changes).
-        // Reason: As time progresses, the current date moves forward and the gap between 'now' and the hardcoded start date widens.
-        // If (current year - event start year) * 12 exceeds the configured "recurringPast" limit (e.g., after 9 years = 108 months),
-        // the system will not generate daily records for past events, causing this test to fail due to insufficient history coverage.
         $subject = new DayGeneratorService(
             self::createStub(TimeService::class),
             new ExtConf(
@@ -435,20 +460,19 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             self::createStub(Logger::class),
         );
 
-        $expectedBegin = new \DateTimeImmutable(date('c', $timestampEventBeginSummerTime));
-        $expectedBegin = $expectedBegin->setTimezone(new \DateTimeZone(date_default_timezone_get()));
-        $expectedEnd = $expectedBegin->modify('+14 days');
+        $dateTimeResults = $subject
+            ->getDayGeneratorResultForEventRecord($eventRecord)
+            ->getDateTimeResultStorageSorted()
+            ->getArrayCopy();
 
         self::assertEquals(
             [
                 $expectedBegin->format('U') => new DateTimeResult($expectedBegin, false),
                 $expectedEnd->format('U') => new DateTimeResult($expectedEnd, false),
             ],
-            $subject
-                ->getDayGeneratorResultForEventRecord($eventRecord)
-                ->getDateTimeResultStorageSorted()
-                ->getArrayCopy(),
+            $dateTimeResults,
         );
+        self::assertSame('00:00 CET', end($dateTimeResults)->getDate()->format('H:i T'));
     }
 
     #[Test]
