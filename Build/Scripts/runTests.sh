@@ -453,7 +453,7 @@ case ${TEST_SUITE} in
         ;;
     composerNormalize)
         if [ "${CGLCHECK_DRY_RUN}" -eq 1 ]; then
-            COMMAND=(composer normalize -n)
+            COMMAND=(composer normalize --dry-run)
         else
             COMMAND=(composer normalize)
         fi
