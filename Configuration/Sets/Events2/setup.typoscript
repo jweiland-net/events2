@@ -89,7 +89,7 @@ plugin.tx_events2 {
 
     new {
       selectableCategoriesForNewEvents = {$events2.form.selectableCategoriesForNewEvents}
-      uploadFolder = 1:user_upload/tx_events2/
+      uploadFolder = {$events2.form.uploadFolder}
     }
 
     # Special configuration for form based on EXT:form
