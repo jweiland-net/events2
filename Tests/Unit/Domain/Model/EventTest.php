@@ -164,7 +164,7 @@ class EventTest extends UnitTestCase
     {
         $eventBegin = new \DateTimeImmutable('midnight');
         $eventEnd = new \DateTimeImmutable('midnight');
-        $eventEnd->modify('+20 seconds');
+        $eventEnd = $eventEnd->modify('+20 seconds');
         $this->subject->setEventBegin($eventBegin);
         $this->subject->setEventEnd($eventEnd);
 

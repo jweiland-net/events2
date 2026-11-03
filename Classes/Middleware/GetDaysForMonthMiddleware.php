@@ -73,7 +73,7 @@ final readonly class GetDaysForMonthMiddleware implements MiddlewareInterface
             // Convert int to DateTime like extbase does and set TimezoneType to something like Europe/Berlin
             $date = new \DateTimeImmutable(date('c', (int)$day['day']));
             if ($date->getTimezone()->getLocation() === false) {
-                $date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
+                $date = $date->setTimezone(new \DateTimeZone(date_default_timezone_get()));
             }
 
             $daysOfMonth[] = [
