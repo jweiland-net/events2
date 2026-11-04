@@ -182,6 +182,7 @@ class ManagementController extends AbstractController
         $this->preProcessControllerAction();
     }
 
+    #[Extbase\IgnoreValidation(['value' => 'event'])]
     public function performAction(?Event $event = null): ResponseInterface
     {
         return $this->htmlResponse();
