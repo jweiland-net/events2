@@ -7,6 +7,13 @@
 ChangeLog
 =========
 
+Version 11.0.2
+==============
+
+*   [BUGFIX] Do not validate the event in `ManagementController::performAction()`.
+    The action only renders the form. Validating the whole object graph
+    (e.g. an empty link of the related location) prevented editing an event.
+
 Version 11.0.1
 ==============
 
