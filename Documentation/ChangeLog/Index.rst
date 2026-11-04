@@ -7,6 +7,11 @@
 ChangeLog
 =========
 
+Version 11.0.1
+==============
+
+*   [TASK] Remove obsolete 0 to NULL conversion of page settings
+
 ..  _changelog-11-0-0:
 
 Version 11.0.0
