@@ -70,31 +70,6 @@ class AbstractController extends ActionController implements LoggerAwareInterfac
         $this->arguments = GeneralUtility::makeInstance(Arguments::class);
     }
 
-    protected function initializeAction(): void
-    {
-        // if this value was not set, then it will be filled with 0
-        // but that is not good, because UriBuilder accepts 0 as pid, so it's better to set it to NULL
-        if (empty($this->settings['pidOfListPage'])) {
-            $this->settings['pidOfListPage'] = null;
-        }
-
-        if (empty($this->settings['pidOfDetailPage'])) {
-            $this->settings['pidOfDetailPage'] = null;
-        }
-
-        if (empty($this->settings['pidOfLocationPage'])) {
-            $this->settings['pidOfLocationPage'] = null;
-        }
-
-        if (empty($this->settings['pidOfManagementPage'])) {
-            $this->settings['pidOfManagementPage'] = null;
-        }
-
-        if (empty($this->settings['pidOfSearchResults'])) {
-            $this->settings['pidOfSearchResults'] = null;
-        }
-    }
-
     protected function initializeView(ViewInterface $view): void
     {
         $this->view->assign('data', $this->request->getAttribute('currentContentObject')->data);
