@@ -15,6 +15,7 @@ use JWeiland\Events2\Converter\RteContentConverter;
 use JWeiland\Events2\Domain\Repository\UserRepository;
 use JWeiland\Events2\Helper\PathSegmentHelper;
 use JWeiland\Events2\Service\DayRelationService;
+use JWeiland\Events2\Service\RichTextService;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -41,6 +42,7 @@ class SaveEventFinisher extends AbstractFinisher
         protected readonly PathSegmentHelper $pathSegmentHelper,
         protected readonly DayRelationService $dayRelationService,
         protected readonly RteContentConverter $rteContentConverter = new RteContentConverter(),
+        protected readonly ?RichTextService $richTextService = null,
     ) {}
 
     /**
@@ -154,7 +156,7 @@ class SaveEventFinisher extends AbstractFinisher
 
     protected function processEventTable(int $iterationCount): void
     {
-        $uid = $_GET['tx_events2_management']['event'] ?? 0;
+        $uid = $this->getEventUidToUpdate();
 
         // I need event UID for EmailToReceiver. Options are not accessible anymore:
         // See: https://forge.typo3.org/issues/98241
@@ -279,6 +281,12 @@ class SaveEventFinisher extends AbstractFinisher
                 $elementValue = $this->convertPlainTextToHtml((string)$elementValue);
             } elseif ($elementsConfiguration[$elementIdentifier]['normalizePlainText'] ?? false) {
                 $elementValue = $this->rteContentConverter->normalizePlainText((string)$elementValue);
+            } elseif ($elementsConfiguration[$elementIdentifier]['sanitizeRichText'] ?? false) {
+                $elementValue = $this->getRichTextService()->prepareForPersistence(
+                    (string)$elementValue,
+                    $this->getEventUidToUpdate(),
+                    (int)($databaseData['pid'] ?? 0),
+                );
             }
 
             $databaseData[$elementsConfiguration[$elementIdentifier]['mapOnDatabaseColumn']] = $elementValue;
@@ -295,6 +303,19 @@ class SaveEventFinisher extends AbstractFinisher
     protected function convertPlainTextToHtml(string $plainText): string
     {
         return $this->rteContentConverter->convertPlainTextToHtml($plainText);
+    }
+
+    /**
+     * The UID of the event to edit is part of the URI of the form
+     */
+    protected function getEventUidToUpdate(): int
+    {
+        return (int)($_GET['tx_events2_management']['event'] ?? 0);
+    }
+
+    protected function getRichTextService(): RichTextService
+    {
+        return $this->richTextService ?? GeneralUtility::makeInstance(RichTextService::class);
     }
 
     protected function saveDataForCategories(array $databaseData, string $table, int $iterationCount): array

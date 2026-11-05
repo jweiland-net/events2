@@ -552,6 +552,10 @@
 				<source>Activate event</source>
 				<target>Veranstaltung freischalten</target>
 			</trans-unit>
+			<trans-unit id="richText.openInNewTab">
+				<source>Open in a new tab</source>
+				<target>In neuem Tab öffnen</target>
+			</trans-unit>
 
 			<trans-unit id="pageBrowser.first">
 				<source>First</source>

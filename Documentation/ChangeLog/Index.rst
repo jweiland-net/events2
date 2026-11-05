@@ -7,6 +7,15 @@
 ChangeLog
 =========
 
+Version 11.2.0
+==============
+
+*   [FEATURE] Add CKEditor to description of frontend form. Enable it with the
+    new site setting `events2.form.richTextDescription`. It uses the
+    CKEditor 5 modules of EXT:rte_ckeditor without a build step. The
+    submitted HTML is sanitized with an allowlist and stored like in backend.
+    See :ref:`rich-text-description`.
+
 Version 11.1.1
 ==============
 

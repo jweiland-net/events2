@@ -148,6 +148,9 @@ readonly class PrefillForEditUsageHook
                 $defaultValue = $this->getFileReference($eventRecord['uid'], $pos);
             } elseif ($properties['dbMapping']['dataType'] === 'plainText') {
                 $defaultValue = $this->convertHtmlToPlainText((string)$defaultValue);
+            } elseif ($properties['dbMapping']['dataType'] === 'richText') {
+                // The rich text editor gets the stored HTML. Fluid escapes it for the textarea.
+                $defaultValue = (string)$defaultValue;
             }
         }
 

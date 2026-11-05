@@ -325,6 +325,27 @@ class PrefillForEditUsageHookTest extends FunctionalTestCase
         );
     }
 
+    #[Test]
+    public function setFormDefaultValuesWithRichTextDataTypeReturnsStoredHtml(): void
+    {
+        $storedHtml = '<h2>Programm</h2>' . "\r\n" . '<p>10&nbsp;Uhr &amp; <a href="t3://page?uid=11">mehr</a></p>';
+        $eventUid = $this->insertEvent(
+            title: 'Event with rich text',
+            eventBegin: new \DateTimeImmutable('today midnight'),
+            additionalFields: ['detail_information' => $storedHtml],
+        );
+
+        $formElement = $this->buildFormElement('detail-description', [
+            'dbMapping' => [
+                'column' => 'detail_information',
+                'dataType' => 'richText',
+            ],
+        ]);
+        $this->callSetFormDefaultValues($formElement, $this->getEventRecord($eventUid));
+
+        self::assertSame($storedHtml, $formElement->getDefaultValue());
+    }
+
     private function buildFormElement(string $identifier, array $properties): GenericFormElement
     {
         $formDefinition = new FormDefinition('test-form');

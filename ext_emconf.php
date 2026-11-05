@@ -15,7 +15,7 @@ $EM_CONF[$_EXTKEY] = [
     'author_email' => 'projects@jweiland.net',
     'author_company' => 'jweiland.net',
     'state' => 'stable',
-    'version' => '11.1.1',
+    'version' => '11.2.0',
     'constraints' => [
         'depends' => [
             'typo3' => '13.4.3-13.4.99',
@@ -28,6 +28,7 @@ $EM_CONF[$_EXTKEY] = [
             'checkfaluploads' => '6.0.0-6.99.99',
             'form' => '',
             'maps2' => '12.0.0-0.0.0',
+            'rte_ckeditor' => '',
             'solr' => '13.0.1-0.0.0',
         ],
     ],
