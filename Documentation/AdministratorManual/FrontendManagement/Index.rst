@@ -82,7 +82,11 @@ Set up the frontend management
 #.  Set the storage folder of the new events in the site setting
     `events2.storagePidForFrontendCreatedEvents` and the selectable
     categories in the site setting
-    `events2.form.selectableCategoriesForNewEvents`.
+    `events2.form.selectableCategoriesForNewEvents`. Only direct
+    children of the category in the site setting
+    `events2.form.rootCategory` are offered. If no selectable categories
+    are set, all direct children of the root category are offered. If
+    neither is set, the form offers no categories.
 
 #.  Add the plugin :guilabel:`Manage events` to the page and restrict
     the page or the content element to logged-in frontend users.
