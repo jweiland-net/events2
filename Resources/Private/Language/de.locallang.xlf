@@ -555,6 +555,10 @@
         <source>Activate event</source>
         <target state="needs-translation">Activate event</target>
       </trans-unit>
+      <trans-unit id="richText.openInNewTab">
+        <source>Open in a new tab</source>
+        <target state="needs-translation">Open in a new tab</target>
+      </trans-unit>
       <trans-unit id="pageBrowser.first" approved="yes">
         <source>First</source>
         <target state="final">Erste</target>
