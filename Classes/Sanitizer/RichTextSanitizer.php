@@ -16,7 +16,6 @@ use TYPO3\HtmlSanitizer\Behavior;
 use TYPO3\HtmlSanitizer\Behavior\Attr;
 use TYPO3\HtmlSanitizer\Behavior\ClosureAttrValue;
 use TYPO3\HtmlSanitizer\Behavior\Tag;
-use TYPO3\HtmlSanitizer\Sanitizer;
 use TYPO3\HtmlSanitizer\Visitor\CommonVisitor;
 
 /**
@@ -31,7 +30,10 @@ use TYPO3\HtmlSanitizer\Visitor\CommonVisitor;
  * t3:// links can be injected.
  *
  * Everything else is removed. The text of unknown elements is kept, the
- * content of script, style, iframe and similar elements is removed.
+ * content of script, style, iframe and similar elements is removed. Unknown
+ * block elements like <div> or <td> become paragraphs and inline content
+ * outside of blocks is wrapped into <p>, as RteHtmlParser would strip its
+ * formatting otherwise.
  */
 readonly class RichTextSanitizer
 {
@@ -46,10 +48,9 @@ readonly class RichTextSanitizer
             ->withName('events2-rich-text')
             ->withTags(...$this->getAllowedTags($allowedT3Hrefs));
 
-        $sanitizer = new Sanitizer($behavior, new RichTextVisitor(), new CommonVisitor($behavior));
-        $html = $sanitizer->sanitize(mb_scrub($html, 'UTF-8'));
+        $sanitizer = new RichTextHtmlSanitizer($behavior, new RichTextVisitor(), new CommonVisitor($behavior));
 
-        return str_replace(['<' . RichTextVisitor::UNWRAP_TAG . '>', '</' . RichTextVisitor::UNWRAP_TAG . '>'], '', $html);
+        return $sanitizer->sanitize(mb_scrub($html, 'UTF-8'));
     }
 
     /**

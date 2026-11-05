@@ -92,6 +92,9 @@ All attributes like `class`, `style` or `on*` are removed. Links with other
 protocols like `javascript:` or `data:` are removed, their text is kept.
 `script`, `style`, `iframe`, images, forms and similar elements are removed
 including their content. The text of all other elements is kept.
+Other block elements like `div`, `blockquote` or table cells become
+paragraphs. Text and inline formatting outside of blocks is wrapped into a
+paragraph like the editor does, so `<strong>`, `<em>` and links are kept.
 
 Links to records (`t3://`)
 --------------------------
