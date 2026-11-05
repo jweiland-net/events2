@@ -54,18 +54,16 @@ class SaveEventFinisherTest extends FunctionalTestCase
         ],
     ];
 
+    /**
+     * UID of the edited event, which is part of the URI of the form
+     */
+    private int $eventUidToUpdate = 0;
+
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Events2PageTree.csv');
-    }
-
-    protected function tearDown(): void
-    {
-        unset($_GET['tx_events2_management']);
-
-        parent::tearDown();
     }
 
     #[Test]
@@ -89,7 +87,7 @@ class SaveEventFinisherTest extends FunctionalTestCase
     #[Test]
     public function prepareDataWithRichTextKeepsT3LinkOfEditedEvent(): void
     {
-        $_GET['tx_events2_management']['event'] = (string)$this->insertEvent(
+        $this->eventUidToUpdate = $this->insertEvent(
             title: 'Event with page link',
             eventBegin: new \DateTimeImmutable('tomorrow midnight'),
             additionalFields: ['detail_information' => '<p><a href="t3://page?uid=11">Seite</a></p>'],
@@ -105,7 +103,7 @@ class SaveEventFinisherTest extends FunctionalTestCase
     #[Test]
     public function prepareDataWithTwoRichTextElementsComparesT3LinksPerColumn(): void
     {
-        $_GET['tx_events2_management']['event'] = (string)$this->insertEvent(
+        $this->eventUidToUpdate = $this->insertEvent(
             title: 'Event with links in two columns',
             eventBegin: new \DateTimeImmutable('tomorrow midnight'),
             additionalFields: [
@@ -159,6 +157,13 @@ class SaveEventFinisherTest extends FunctionalTestCase
         ) extends SaveEventFinisher {
             public array $formValues = [];
 
+            public int $eventUidToUpdate = 0;
+
+            protected function getEventUidToUpdate(): int
+            {
+                return $this->eventUidToUpdate;
+            }
+
             public function setOptions(array $options): void
             {
                 $this->options = $options;
@@ -180,6 +185,7 @@ class SaveEventFinisherTest extends FunctionalTestCase
             }
         };
         $subject->formValues = $formValues;
+        $subject->eventUidToUpdate = $this->eventUidToUpdate;
         $subject->setOptions(['table' => 'tx_events2_domain_model_event', 'mode' => 'insert']);
 
         return (new \ReflectionMethod($subject, 'prepareData'))->invoke(

@@ -60,8 +60,11 @@ class ManagementController extends AbstractController
         $this->preProcessControllerAction();
     }
 
-    #[Extbase\IgnoreValidation(['value' => 'event'])]
-    public function performAction(?Event $event = null): ResponseInterface
+    /**
+     * The form of EXT:form reads the event to edit from the query on its
+     * own, see ManagementAccessService::getEventUid()
+     */
+    public function performAction(): ResponseInterface
     {
         return $this->htmlResponse();
     }
@@ -81,10 +84,8 @@ class ManagementController extends AbstractController
     {
         $this->postProcessAndAssignFluidVariables([
             'event' => $event,
-            'moderationToken' => $this->managementAccessService->getValidModerationToken(
-                $this->request,
-                (int)$event->getUid(),
-            ),
+            // RestrictAccessEventListener allows backend administrators without token, too
+            'moderationToken' => $this->managementAccessService->generateModerationToken((int)$event->getUid()),
         ]);
 
         return $this->htmlResponse();
@@ -108,7 +109,7 @@ class ManagementController extends AbstractController
         if ($this->request->getMethod() !== 'POST') {
             return $this->redirect('confirmActivation', null, null, [
                 'event' => $event,
-                'moderationToken' => $this->managementAccessService->getValidModerationToken($this->request, $event),
+                'moderationToken' => $this->managementAccessService->generateModerationToken($event),
             ]);
         }
 

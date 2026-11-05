@@ -21,8 +21,6 @@ use TYPO3\CMS\Core\Crypto\HashService;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\TypoScript\AST\Node\RootNode;
 use TYPO3\CMS\Core\TypoScript\FrontendTypoScript;
-use TYPO3\CMS\Extbase\Mvc\ExtbaseRequestParameters;
-use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
@@ -66,54 +64,94 @@ class ManagementAccessServiceTest extends FunctionalTestCase
     }
 
     #[Test]
-    public function getDenialReasonForCreateWithoutConfiguredUserGroupReturnsUserGroupNotConfigured(): void
+    public function getDenialReasonWithoutConfiguredUserGroupReturnsUserGroupNotConfigured(): void
     {
         $this->loginFrontendUser(1);
 
         self::assertSame(
             'userGroupNotConfigured',
-            $this->subject->getDenialReasonForCreate(0),
+            $this->subject->getDenialReason($this->buildRequest([])),
         );
     }
 
     #[Test]
-    public function getDenialReasonForCreateWithoutLoggedInUserReturnsPluginNeedsLogin(): void
+    public function getDenialReasonWithoutLoggedInUserReturnsPluginNeedsLogin(): void
     {
         self::assertSame(
             'pluginNeedsLogin',
-            $this->subject->getDenialReasonForCreate(1),
+            $this->subject->getDenialReason($this->buildRequest()),
         );
     }
 
     #[Test]
-    public function getDenialReasonForCreateWithUserOfOtherGroupReturnsNotAllowedToCreate(): void
+    public function getDenialReasonWithUserOfOtherGroupReturnsNotAllowedToCreate(): void
     {
         $this->loginFrontendUser(1, [2]);
 
         self::assertSame(
             'notAllowedToCreate',
-            $this->subject->getDenialReasonForCreate(1),
+            $this->subject->getDenialReason($this->buildRequest()),
         );
     }
 
     #[Test]
-    public function getDenialReasonForCreateWithUserWithoutOrganizerReturnsMissingOrganizer(): void
+    public function getDenialReasonWithUserWithoutOrganizerReturnsMissingOrganizer(): void
     {
         $this->loginFrontendUser(0);
 
         self::assertSame(
             'missingOrganizerForCreate',
-            $this->subject->getDenialReasonForCreate(1),
+            $this->subject->getDenialReason($this->buildRequest()),
         );
     }
 
     #[Test]
-    public function canCreateEventWithUserOfGroupWithOrganizerReturnsTrue(): void
+    public function getDenialReasonWithUserOfGroupWithOrganizerReturnsEmptyString(): void
     {
         $this->loginFrontendUser(1);
 
-        self::assertTrue(
-            $this->subject->canCreateEvent(1),
+        self::assertSame(
+            '',
+            $this->subject->getDenialReason($this->buildRequest()),
+        );
+    }
+
+    #[Test]
+    public function getDenialReasonReadsUserGroupOfPluginFirst(): void
+    {
+        $this->loginFrontendUser(1, [7]);
+
+        self::assertSame(
+            '',
+            $this->subject->getDenialReason($this->buildRequest([
+                'tx_events2.' => ['settings.' => ['userGroup' => '5']],
+                'tx_events2_management.' => ['settings.' => ['userGroup' => '7']],
+            ])),
+        );
+    }
+
+    #[Test]
+    public function getDenialReasonWithoutTypoScriptReturnsUserGroupNotConfigured(): void
+    {
+        $this->loginFrontendUser(1);
+
+        self::assertSame(
+            'userGroupNotConfigured',
+            $this->subject->getDenialReason(new ServerRequest('https://www.example.com/')),
+        );
+    }
+
+    #[Test]
+    public function getDenialReasonWithoutSetupArrayReturnsUserGroupNotConfigured(): void
+    {
+        $this->loginFrontendUser(1);
+
+        self::assertSame(
+            'userGroupNotConfigured',
+            $this->subject->getDenialReason(
+                (new ServerRequest('https://www.example.com/'))
+                    ->withAttribute('frontend.typoscript', new FrontendTypoScript(new RootNode(), [], [], [])),
+            ),
         );
     }
 
@@ -122,52 +160,68 @@ class ManagementAccessServiceTest extends FunctionalTestCase
      * stored without organizer.
      */
     #[Test]
-    public function canCreateEventWithBackendAdminReturnsFalse(): void
+    public function getDenialReasonForNewEventWithBackendAdminReturnsPluginNeedsLogin(): void
     {
         $this->loginBackendUser(true);
 
-        self::assertFalse(
-            $this->subject->canCreateEvent(1),
+        self::assertSame(
+            'pluginNeedsLogin',
+            $this->subject->getDenialReason($this->buildRequest()),
         );
     }
 
     #[Test]
-    public function canEditEventWithOwnHiddenEventReturnsTrue(): void
+    public function getDenialReasonWithOwnHiddenEventReturnsEmptyString(): void
     {
         $eventUid = $this->insertEventOfOrganizer(['hidden' => 1]);
         $this->loginFrontendUser(1);
 
-        self::assertTrue(
-            $this->subject->canEditEvent(1, $eventUid),
+        self::assertSame(
+            '',
+            $this->subject->getDenialReason($this->buildRequest(eventUid: $eventUid)),
         );
     }
 
     #[Test]
-    public function getDenialReasonForEditWithForeignEventReturnsUnauthorizedOrganizer(): void
+    public function getDenialReasonWithForeignEventReturnsUnauthorizedOrganizer(): void
     {
         $eventUid = $this->insertEventOfOrganizer();
         $this->loginFrontendUser(2);
 
         self::assertSame(
             'unauthorizedOrganizerForEdit',
-            $this->subject->getDenialReasonForEdit(1, $eventUid),
+            $this->subject->getDenialReason($this->buildRequest(eventUid: $eventUid)),
+        );
+    }
+
+    /**
+     * Not existing and foreign events must not be distinguishable
+     */
+    #[Test]
+    public function getDenialReasonWithNotExistingEventReturnsUnauthorizedOrganizer(): void
+    {
+        $this->loginFrontendUser(1);
+
+        self::assertSame(
+            'unauthorizedOrganizerForEdit',
+            $this->subject->getDenialReason($this->buildRequest(eventUid: 4711)),
         );
     }
 
     #[Test]
-    public function getDenialReasonForEditWithOwnEventButUserOfOtherGroupReturnsNotAllowedToCreate(): void
+    public function getDenialReasonWithOwnEventButUserOfOtherGroupReturnsNotAllowedToCreate(): void
     {
         $eventUid = $this->insertEventOfOrganizer();
         $this->loginFrontendUser(1, [2]);
 
         self::assertSame(
             'notAllowedToCreate',
-            $this->subject->getDenialReasonForEdit(1, $eventUid),
+            $this->subject->getDenialReason($this->buildRequest(eventUid: $eventUid)),
         );
     }
 
     #[Test]
-    public function canEditEventWithEventWithoutOrganizerReturnsFalse(): void
+    public function getDenialReasonWithEventWithoutOrganizerReturnsUnauthorizedOrganizer(): void
     {
         $eventUid = $this->insertEvent(
             title: 'Event without organizer',
@@ -175,71 +229,94 @@ class ManagementAccessServiceTest extends FunctionalTestCase
         );
         $this->loginFrontendUser(1);
 
-        self::assertFalse(
-            $this->subject->canEditEvent(1, $eventUid),
+        self::assertSame(
+            'unauthorizedOrganizerForEdit',
+            $this->subject->getDenialReason($this->buildRequest(eventUid: $eventUid)),
         );
     }
 
     #[Test]
-    public function canEditEventWithOwnDeletedEventReturnsFalse(): void
+    public function getDenialReasonWithOwnDeletedEventReturnsUnauthorizedOrganizer(): void
     {
         $eventUid = $this->insertEventOfOrganizer(['deleted' => 1]);
         $this->loginFrontendUser(1);
 
-        self::assertFalse(
-            $this->subject->canEditEvent(1, $eventUid),
+        self::assertSame(
+            'unauthorizedOrganizerForEdit',
+            $this->subject->getDenialReason($this->buildRequest(eventUid: $eventUid)),
         );
     }
 
     #[Test]
-    public function canEditEventWithBackendAdminReturnsTrue(): void
+    public function getDenialReasonWithExistingEventAndBackendAdminReturnsEmptyString(): void
     {
         $eventUid = $this->insertEventOfOrganizer(['hidden' => 1]);
         $this->loginBackendUser(true);
 
-        self::assertTrue(
-            $this->subject->canEditEvent(1, $eventUid),
+        self::assertSame(
+            '',
+            $this->subject->getDenialReason($this->buildRequest(eventUid: $eventUid)),
         );
     }
 
     #[Test]
-    public function canEditEventWithBackendAdminAndNotExistingEventReturnsFalse(): void
+    public function getDenialReasonWithNotExistingEventAndBackendAdminReturnsUnauthorizedOrganizer(): void
     {
         $this->loginBackendUser(true);
 
-        self::assertFalse(
-            $this->subject->canEditEvent(1, 4711),
+        self::assertSame(
+            'unauthorizedOrganizerForEdit',
+            $this->subject->getDenialReason($this->buildRequest(eventUid: 4711)),
         );
     }
 
     #[Test]
-    public function canEditEventWithBackendEditorReturnsFalse(): void
+    public function getDenialReasonWithEventAndBackendEditorReturnsPluginNeedsLogin(): void
     {
         $eventUid = $this->insertEventOfOrganizer();
         $this->loginBackendUser(false);
 
-        self::assertFalse(
-            $this->subject->canEditEvent(1, $eventUid),
-        );
-    }
-
-    #[Test]
-    public function getDenialReasonForListingWithBackendAdminReturnsEmptyString(): void
-    {
-        $this->loginBackendUser(true);
-
-        self::assertSame(
-            '',
-            $this->subject->getDenialReasonForListing(1),
-        );
-    }
-
-    #[Test]
-    public function getDenialReasonForListingWithoutLoggedInUserReturnsPluginNeedsLogin(): void
-    {
         self::assertSame(
             'pluginNeedsLogin',
-            $this->subject->getDenialReasonForListing(1),
+            $this->subject->getDenialReason($this->buildRequest(eventUid: $eventUid)),
+        );
+    }
+
+    /**
+     * Extbase maps POST over GET. The event to edit must come from the
+     * query only, so the checked event is the stored event.
+     */
+    #[Test]
+    public function getEventUidIgnoresEventInPostBody(): void
+    {
+        $request = $this->buildRequest(eventUid: 3)
+            ->withParsedBody(['tx_events2_management' => ['event' => 5]]);
+
+        self::assertSame(
+            3,
+            $this->subject->getEventUid($request),
+        );
+    }
+
+    public static function invalidEventArgumentDataProvider(): array
+    {
+        return [
+            'missing' => [null],
+            'array' => [['__identity' => 1]],
+            'string' => ['1abc'],
+            'negative' => ['-1'],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('invalidEventArgumentDataProvider')]
+    public function getEventUidWithInvalidEventArgumentReturnsZero(mixed $eventArgument): void
+    {
+        $queryParams = $eventArgument === null ? [] : ['tx_events2_management' => ['event' => $eventArgument]];
+
+        self::assertSame(
+            0,
+            $this->subject->getEventUid((new ServerRequest('https://www.example.com/'))->withQueryParams($queryParams)),
         );
     }
 
@@ -253,13 +330,17 @@ class ManagementAccessServiceTest extends FunctionalTestCase
         );
     }
 
+    /**
+     * The token protects the state changing request against CSRF.
+     * The confirmation page renders the token for administrators, too.
+     */
     #[Test]
-    public function canActivateEventWithBackendAdminWithoutTokenReturnsTrue(): void
+    public function canActivateEventWithBackendAdminWithoutTokenReturnsFalse(): void
     {
         $eventUid = $this->insertHiddenEvent();
         $this->loginBackendUser(true);
 
-        self::assertTrue(
+        self::assertFalse(
             $this->subject->canActivateEvent($eventUid, ''),
         );
     }
@@ -289,6 +370,88 @@ class ManagementAccessServiceTest extends FunctionalTestCase
         );
     }
 
+    #[Test]
+    public function canActivateEventWithInvalidTokenReturnsFalse(): void
+    {
+        $eventUid = $this->insertHiddenEvent();
+
+        self::assertFalse(
+            $this->subject->canActivateEvent($eventUid, 'invalid'),
+        );
+    }
+
+    #[Test]
+    public function canActivateEventForDeletedEventReturnsFalse(): void
+    {
+        $eventUid = $this->insertHiddenEvent();
+        $moderationToken = $this->subject->generateModerationToken($eventUid);
+
+        $this->getConnectionPool()
+            ->getConnectionForTable('tx_events2_domain_model_event')
+            ->update('tx_events2_domain_model_event', ['deleted' => 1], ['uid' => $eventUid]);
+
+        self::assertFalse(
+            $this->subject->canActivateEvent($eventUid, $moderationToken),
+        );
+    }
+
+    #[Test]
+    public function canActivateEventStaysValidAfterEventWasModified(): void
+    {
+        $eventUid = $this->insertHiddenEvent();
+        $moderationToken = $this->subject->generateModerationToken($eventUid);
+
+        $this->getConnectionPool()
+            ->getConnectionForTable('tx_events2_domain_model_event')
+            ->update('tx_events2_domain_model_event', ['tstamp' => time() + 60], ['uid' => $eventUid]);
+
+        self::assertTrue(
+            $this->subject->canActivateEvent($eventUid, $moderationToken),
+        );
+    }
+
+    #[Test]
+    public function canConfirmActivationWithValidTokenReturnsTrue(): void
+    {
+        $eventUid = $this->insertHiddenEvent();
+
+        self::assertTrue(
+            $this->subject->canConfirmActivation($eventUid, $this->subject->generateModerationToken($eventUid)),
+        );
+    }
+
+    #[Test]
+    public function canConfirmActivationWithBackendAdminWithoutTokenReturnsTrue(): void
+    {
+        $eventUid = $this->insertHiddenEvent();
+        $this->loginBackendUser(true);
+
+        self::assertTrue(
+            $this->subject->canConfirmActivation($eventUid, ''),
+        );
+    }
+
+    #[Test]
+    public function canConfirmActivationWithBackendAdminAndNotExistingEventReturnsFalse(): void
+    {
+        $this->loginBackendUser(true);
+
+        self::assertFalse(
+            $this->subject->canConfirmActivation(4711, ''),
+        );
+    }
+
+    #[Test]
+    public function canConfirmActivationWithBackendEditorWithoutTokenReturnsFalse(): void
+    {
+        $eventUid = $this->insertHiddenEvent();
+        $this->loginBackendUser(false);
+
+        self::assertFalse(
+            $this->subject->canConfirmActivation($eventUid, ''),
+        );
+    }
+
     /**
      * Activation links of already sent mails have to stay valid. So the
      * token format must not change.
@@ -308,17 +471,6 @@ class ManagementAccessServiceTest extends FunctionalTestCase
     public function generateModerationTokenReturnsTokenForExistingEvent(): void
     {
         $eventUid = $this->insertEvent('Event', new \DateTimeImmutable('tomorrow midnight'));
-
-        self::assertNotSame(
-            '',
-            $this->subject->generateModerationToken($eventUid),
-        );
-    }
-
-    #[Test]
-    public function generateModerationTokenReturnsTokenForHiddenEvent(): void
-    {
-        $eventUid = $this->insertHiddenEvent();
 
         self::assertNotSame(
             '',
@@ -372,139 +524,6 @@ class ManagementAccessServiceTest extends FunctionalTestCase
         );
     }
 
-    #[Test]
-    public function moderationTokenStaysValidAfterEventWasModified(): void
-    {
-        $eventUid = $this->insertHiddenEvent();
-        $moderationToken = $this->subject->generateModerationToken($eventUid);
-
-        $this->getConnectionPool()
-            ->getConnectionForTable('tx_events2_domain_model_event')
-            ->update('tx_events2_domain_model_event', ['tstamp' => time() + 60], ['uid' => $eventUid]);
-
-        self::assertSame(
-            $moderationToken,
-            $this->subject->getValidModerationToken($this->buildExtbaseRequest($moderationToken), $eventUid),
-        );
-    }
-
-    #[Test]
-    public function getValidModerationTokenReturnsValidToken(): void
-    {
-        $eventUid = $this->insertHiddenEvent();
-        $moderationToken = $this->subject->generateModerationToken($eventUid);
-
-        self::assertSame(
-            $moderationToken,
-            $this->subject->getValidModerationToken($this->buildExtbaseRequest($moderationToken), $eventUid),
-        );
-    }
-
-    #[Test]
-    public function getValidModerationTokenWithoutTokenArgumentReturnsEmptyString(): void
-    {
-        $eventUid = $this->insertHiddenEvent();
-
-        self::assertSame(
-            '',
-            $this->subject->getValidModerationToken($this->buildExtbaseRequest(null), $eventUid),
-        );
-    }
-
-    public static function invalidModerationTokenDataProvider(): array
-    {
-        return [
-            'empty token' => [''],
-            'invalid token' => ['invalid'],
-            'array token' => [['foo' => 'bar']],
-        ];
-    }
-
-    #[Test]
-    #[DataProvider('invalidModerationTokenDataProvider')]
-    public function getValidModerationTokenWithInvalidTokenReturnsEmptyString(mixed $moderationToken): void
-    {
-        $eventUid = $this->insertHiddenEvent();
-
-        self::assertSame(
-            '',
-            $this->subject->getValidModerationToken($this->buildExtbaseRequest($moderationToken), $eventUid),
-        );
-    }
-
-    #[Test]
-    public function getValidModerationTokenWithTokenOfForeignEventReturnsEmptyString(): void
-    {
-        $foreignEventUid = $this->insertHiddenEvent();
-        $eventUid = $this->insertHiddenEvent();
-        $moderationToken = $this->subject->generateModerationToken($foreignEventUid);
-
-        self::assertSame(
-            '',
-            $this->subject->getValidModerationToken($this->buildExtbaseRequest($moderationToken), $eventUid),
-        );
-    }
-
-    #[Test]
-    public function getValidModerationTokenForDeletedEventReturnsEmptyString(): void
-    {
-        $eventUid = $this->insertHiddenEvent();
-        $moderationToken = $this->subject->generateModerationToken($eventUid);
-
-        $this->getConnectionPool()
-            ->getConnectionForTable('tx_events2_domain_model_event')
-            ->update('tx_events2_domain_model_event', ['deleted' => 1], ['uid' => $eventUid]);
-
-        self::assertSame(
-            '',
-            $this->subject->getValidModerationToken($this->buildExtbaseRequest($moderationToken), $eventUid),
-        );
-    }
-
-    #[Test]
-    public function getUserGroupFromTypoScriptReadsSettingOfExtension(): void
-    {
-        self::assertSame(
-            5,
-            $this->subject->getUserGroupFromTypoScript($this->buildRequest([
-                'tx_events2.' => ['settings.' => ['userGroup' => '5']],
-            ])),
-        );
-    }
-
-    #[Test]
-    public function getUserGroupFromTypoScriptPrefersSettingOfPlugin(): void
-    {
-        self::assertSame(
-            7,
-            $this->subject->getUserGroupFromTypoScript($this->buildRequest([
-                'tx_events2.' => ['settings.' => ['userGroup' => '5']],
-                'tx_events2_management.' => ['settings.' => ['userGroup' => '7']],
-            ])),
-        );
-    }
-
-    #[Test]
-    public function getUserGroupFromTypoScriptWithoutTypoScriptReturnsZero(): void
-    {
-        self::assertSame(
-            0,
-            $this->subject->getUserGroupFromTypoScript(new ServerRequest('https://www.example.com/')),
-        );
-    }
-
-    #[Test]
-    public function getUserGroupFromTypoScriptWithoutSetupArrayReturnsZero(): void
-    {
-        self::assertSame(
-            0,
-            $this->subject->getUserGroupFromTypoScript(
-                (new ServerRequest('https://www.example.com/'))
-                    ->withAttribute('frontend.typoscript', new FrontendTypoScript(new RootNode(), [], [], [])),
-            ),
-        );
-    }
-
     /**
      * The first organizer gets UID 1, which is the organizer of the
      * frontend user logged in with loginFrontendUser(1)
@@ -530,32 +549,18 @@ class ManagementAccessServiceTest extends FunctionalTestCase
         );
     }
 
-    private function buildExtbaseRequest(mixed $moderationToken): Request
-    {
-        $extbaseRequestParameters = new ExtbaseRequestParameters();
-        $extbaseRequestParameters->setControllerExtensionName('Events2');
-        $extbaseRequestParameters->setPluginName('Management');
-        $extbaseRequestParameters->setControllerName('Management');
-        $extbaseRequestParameters->setControllerActionName('activate');
-        if ($moderationToken !== null) {
-            $extbaseRequestParameters->setArgument('moderationToken', $moderationToken);
-        }
-
-        return new Request(
-            (new ServerRequest('https://www.example.com/', 'POST'))
-                ->withAttribute('extbase', $extbaseRequestParameters),
-        );
-    }
-
     /**
      * @param array<string, mixed> $pluginSetup
      */
-    private function buildRequest(array $pluginSetup): ServerRequest
-    {
+    private function buildRequest(
+        array $pluginSetup = ['tx_events2.' => ['settings.' => ['userGroup' => '1']]],
+        int $eventUid = 0,
+    ): ServerRequest {
         $frontendTypoScript = new FrontendTypoScript(new RootNode(), [], [], []);
         $frontendTypoScript->setSetupArray(['plugin.' => $pluginSetup]);
 
         return (new ServerRequest('https://www.example.com/'))
+            ->withQueryParams($eventUid > 0 ? ['tx_events2_management' => ['event' => (string)$eventUid]] : [])
             ->withAttribute('frontend.typoscript', $frontendTypoScript);
     }
 }

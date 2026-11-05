@@ -54,7 +54,7 @@ class RegisterHiddenEventEventListenerTest extends FunctionalTestCase
     public static function actionDataProvider(): array
     {
         return [
-            'perform action' => ['perform', true],
+            'perform action' => ['perform', false],
             'confirmActivation action' => ['confirmActivation', true],
             'listMyEvents action' => ['listMyEvents', false],
         ];

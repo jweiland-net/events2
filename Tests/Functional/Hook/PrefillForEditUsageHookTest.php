@@ -14,10 +14,13 @@ namespace JWeiland\Events2\Tests\Functional\Hook;
 use JWeiland\Events2\Converter\RteContentConverter;
 use JWeiland\Events2\Hook\Form\PrefillForEditUsageHook;
 use JWeiland\Events2\Tests\Functional\Events2Constants;
+use JWeiland\Events2\Tests\Functional\Traits\FrontendUserTrait;
 use JWeiland\Events2\Tests\Functional\Traits\InsertEventTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
-use TYPO3\CMS\Core\Domain\Repository\PageRepository;
+use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\TypoScript\AST\Node\RootNode;
+use TYPO3\CMS\Core\TypoScript\FrontendTypoScript;
 use TYPO3\CMS\Form\Domain\Model\FormDefinition;
 use TYPO3\CMS\Form\Domain\Model\FormElements\GenericFormElement;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
@@ -27,6 +30,7 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
  */
 class PrefillForEditUsageHookTest extends FunctionalTestCase
 {
+    use FrontendUserTrait;
     use InsertEventTrait;
 
     protected array $coreExtensionsToLoad = [
@@ -54,9 +58,14 @@ class PrefillForEditUsageHookTest extends FunctionalTestCase
 
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/Events2PageTree.csv');
 
-        $this->subject = new PrefillForEditUsageHook(
-            $this->get(PageRepository::class),
-        );
+        $this->subject = $this->get(PrefillForEditUsageHook::class);
+    }
+
+    protected function tearDown(): void
+    {
+        unset($GLOBALS['TYPO3_REQUEST']);
+
+        parent::tearDown();
     }
 
     #[Test]
@@ -344,6 +353,75 @@ class PrefillForEditUsageHookTest extends FunctionalTestCase
         $this->callSetFormDefaultValues($formElement, $this->getEventRecord($eventUid));
 
         self::assertSame($storedHtml, $formElement->getDefaultValue());
+    }
+
+    #[Test]
+    public function afterBuildingFinishedWithOwnEventPrefillsElement(): void
+    {
+        $eventUid = $this->insertEventOfOrganizer();
+        $this->loginFrontendUser(1);
+        $this->setRequestWithEvent($eventUid);
+
+        $formElement = $this->buildFormElement('title', ['dbMapping' => ['column' => 'title']]);
+        $this->subject->afterBuildingFinished($formElement);
+
+        self::assertSame('Hidden event of organizer', $formElement->getDefaultValue());
+    }
+
+    /**
+     * The form could be used outside the management plugin. Nobody may
+     * read hidden events of other organizers via the query.
+     */
+    #[Test]
+    public function afterBuildingFinishedWithForeignEventDoesNotPrefillElement(): void
+    {
+        $eventUid = $this->insertEventOfOrganizer();
+        $this->loginFrontendUser(2);
+        $this->setRequestWithEvent($eventUid);
+
+        $formElement = $this->buildFormElement('title', ['dbMapping' => ['column' => 'title']]);
+        $this->subject->afterBuildingFinished($formElement);
+
+        self::assertNull($formElement->getDefaultValue());
+    }
+
+    #[Test]
+    public function afterBuildingFinishedWithoutLoggedInUserDoesNotPrefillElement(): void
+    {
+        $eventUid = $this->insertEventOfOrganizer();
+        $GLOBALS['TYPO3_REQUEST'] = new ServerRequest('https://www.example.com/');
+        $this->setRequestWithEvent($eventUid);
+
+        $formElement = $this->buildFormElement('title', ['dbMapping' => ['column' => 'title']]);
+        $this->subject->afterBuildingFinished($formElement);
+
+        self::assertNull($formElement->getDefaultValue());
+    }
+
+    private function insertEventOfOrganizer(): int
+    {
+        // The first organizer gets UID 1, which is the organizer of loginFrontendUser(1)
+        return $this->insertEvent(
+            title: 'Hidden event of organizer',
+            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
+            additionalFields: ['hidden' => 1],
+            organizer: 'jweiland.net',
+        );
+    }
+
+    /**
+     * Adds the event to edit and the user group to the global request of loginFrontendUser()
+     */
+    private function setRequestWithEvent(int $eventUid): void
+    {
+        $frontendTypoScript = new FrontendTypoScript(new RootNode(), [], [], []);
+        $frontendTypoScript->setSetupArray([
+            'plugin.' => ['tx_events2.' => ['settings.' => ['userGroup' => '1']]],
+        ]);
+
+        $GLOBALS['TYPO3_REQUEST'] = $GLOBALS['TYPO3_REQUEST']
+            ->withQueryParams(['tx_events2_management' => ['event' => (string)$eventUid]])
+            ->withAttribute('frontend.typoscript', $frontendTypoScript);
     }
 
     private function buildFormElement(string $identifier, array $properties): GenericFormElement
