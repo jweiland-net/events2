@@ -36,9 +36,13 @@ Actions of the Management plugin
     each event.
 
 `perform`
-    Renders the event form based on EXT:form. Without the argument
-    `event` a new event is created. With the argument `event` the given
-    event is edited.
+    Renders the event form based on EXT:form. Without an event in the
+    query parameter `tx_events2_management[event]` a new event is
+    created. With an event UID in this query parameter the given event is
+    edited. The action itself has no Extbase argument `event`; the event
+    is read from the query only, also by the finisher `SaveEventFinisher`
+    and while prefilling the edit form. Arrays, values which are no
+    integer and values lower than 1 are treated as "create a new event".
 
 `confirmActivation`
     Target of the activation link of the mail. Shows a summary of the
@@ -46,7 +50,8 @@ Actions of the Management plugin
 
 `activate`
     Activates the event. Accepts POST requests of the button of
-    `confirmActivation` only.
+    `confirmActivation` only. The request has to contain a valid
+    `moderationToken`.
 
 Requests for other actions, like the removed actions `new`, `create`,
 `edit`, `update` and `delete`, are handled by the default action
@@ -92,31 +97,45 @@ Access rules of the frontend management
     All rules are checked by one central service,
     :php:`JWeiland\Events2\Service\ManagementAccessService`. It replaces
     :php:`JWeiland\Events2\Service\EventModerationService`. Backend
-    administrators can no longer create new events in the frontend.
+    administrators can no longer create or list events in the frontend,
+    and they need the `moderationToken` to activate an event.
 
 Create an event
     Only logged-in frontend users which are members of the configured
     user group (:confval:`settings.userGroup
     <events2-typoscript-settings-usergroup>`) and have an organizer. There
-    is no exception for backend administrators, because a new event would
-    be stored without organizer. Without a configured user group nobody
-    can create events.
+    is no exception for backend administrators, as they have no
+    organizer. Without a configured user group nobody can create events.
+
+List own events
+    The same rule as for creating events. Backend administrators can not
+    list events, as they have no organizer.
 
 Edit an event
     The owner of the event: a frontend user of the configured user group,
     whose organizer is assigned to the event. Hidden events can be edited,
     too. A backend administrator, who is logged in into the backend, can
-    edit every existing event.
+    edit every existing event. The organizers of an edited event are kept,
+    so an administrator does not remove the owner of the event. Events
+    which do not exist and events of other organizers are denied with the
+    same message.
 
-List own events
-    Frontend users which are allowed to create events, and backend
-    administrators.
-
-Activate an event
+Open the confirmation page of an activation
     Everyone with the activation link of the mail. The link contains a
     signed `moderationToken` for this event. Backend administrators can
-    activate events without token. Owners of an event never get a token,
-    so they can not bypass the moderation.
+    open the confirmation page of every existing event without token.
+
+Activate an event
+    Only with a valid `moderationToken`, also for backend administrators.
+    The confirmation page always renders a fresh token into its form, so
+    the token protects the POST request against cross-site request
+    forgery (CSRF). Owners of an event never get a token, so they can not
+    bypass the moderation.
+
+The user group is read from the TypoScript setup only:
+:typoscript:`plugin.tx_events2_management.settings.userGroup` overrides
+:typoscript:`plugin.tx_events2.settings.userGroup`. Values of the
+FlexForm or of the settings of other plugins are not respected.
 
 If access is denied, the plugin shows a localized flash message, for
 example "You're not allowed to create event records.". The labels are
@@ -125,12 +144,15 @@ example "You're not allowed to create event records.". The labels are
 `invalidModerationToken` of
 :file:`EXT:events2/Resources/Private/Language/locallang.xlf`.
 
-The finisher `SaveEventFinisher` checks the same rules for creating and
-editing again before anything is stored, even if the form definition is
-used outside of the Management plugin, for example in a form content
-element. If access is denied, the finisher throws a
-:php:`TYPO3\CMS\Form\Domain\Finishers\Exception\FinisherException` and
-nothing is stored.
+The event form can be used outside of the Management plugin, for example
+in a form content element. The same rules are checked there, too:
+
+*   The edit form is only prefilled with the values of the event, if
+    the current user is allowed to edit it.
+*   The finisher `SaveEventFinisher` checks the rules before anything is
+    stored. If access is denied, it throws a
+    :php:`TYPO3\CMS\Form\Domain\Finishers\Exception\FinisherException`
+    and nothing is stored.
 
 ..  _frontend-management-images:
 
@@ -141,8 +163,37 @@ The form definition :file:`NewEvent.form.yaml` contains two elements of
 type `ImageUpload` for files of the MIME types `image/jpg`, `image/jpeg`
 and `image/png`. The files are stored in the folder
 `1:/Extensions/events2/` (option :yaml:`saveToFileMount`). To change these
-options or to add a mandatory checkbox for the image rights, use your own
-copy of the form definition.
+options, use your own copy of the form definition.
+
+To get the image rights from the uploader, install the suggested
+extension `jweiland/checkfaluploads` (version 6.0.0 or higher) and add a
+checkbox with :yaml:`checkboxType: uploadRights` and
+:yaml:`referenceUploadIdentifier` to your copy of the form definition. See
+the documentation of checkfaluploads for details.
+
+..  _frontend-management-form-definition:
+
+Own copy of the form definition
+===============================
+
+If you use an own copy of :file:`NewEvent.form.yaml`, the following
+applies to the prefilling of the edit form:
+
+*   Elements with :yaml:`properties.dbMapping.relation` read related
+    records with a list of :yaml:`expressions`. Only these methods of
+    the ExpressionBuilder are allowed as :yaml:`expression`: `eq`, `neq`,
+    `lt`, `lte`, `gt`, `gte`, `in`, `notIn` and `inSet`. Other
+    expressions are ignored.
+*   Values like `{event:download_links}` are replaced by the column of
+    the event record. With :yaml:`intExplodeValue: 1` (or
+    :yaml:`strExplodeValue: 1`) a comma-separated value is used as list
+    of integers (or strings), for example for the expression `in`.
+
+..  versionchanged:: 12.0.0
+
+    The element `download-link` uses the expression `in` with
+    :yaml:`intExplodeValue: 1` instead of `inSet`. See
+    :ref:`upgrade-12-0-0-form-definition`.
 
 ..  _frontend-management-templates:
 

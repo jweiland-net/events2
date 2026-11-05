@@ -170,16 +170,18 @@ userGroup
     create new events, also backend administrators can not. With the
     default value `0` nobody can create events in the frontend.
 
-    The same value is used by the finisher `SaveEventFinisher` of the
-    event form. A value in :typoscript:`plugin.tx_events2_management`
-    overrides the value of :typoscript:`plugin.tx_events2`. See
-    :ref:`frontend-management-access`.
+    The value is read from the TypoScript setup only, for the Management
+    plugin and for the event form of EXT:form. A value in
+    :typoscript:`plugin.tx_events2_management.settings.userGroup`
+    overrides the value of :typoscript:`plugin.tx_events2.settings.userGroup`.
+    Values of the FlexForm or of the settings of other plugins are not
+    respected. See :ref:`frontend-management-access`.
 
     ..  versionchanged:: 12.0.0
 
-        New events can only be created by members of this user group.
-        Before, backend administrators could create events without being
-        a member.
+        New events can only be created and listed by members of this user
+        group. Before, backend administrators could create events without
+        being a member. The value is read from the TypoScript setup only.
 
 ..  _typoscript-settings-removed:
 
