@@ -536,6 +536,10 @@
 				<source>Open in a new tab</source>
 				<target>In neuem Tab öffnen</target>
 			</trans-unit>
+			<trans-unit id="remainingLetters">
+				<source>%s characters left</source>
+				<target>Noch %s Zeichen</target>
+			</trans-unit>
 
 			<trans-unit id="pageBrowser.first">
 				<source>First</source>
