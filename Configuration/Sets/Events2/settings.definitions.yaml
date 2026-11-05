@@ -136,9 +136,15 @@ settings:
     description: 'Use TYPO3 extension "form" instead of Extbase forms to create new events in frontend'
     type: bool
     default: true
-  events2.form.richTextDescription:
-    label: 'Rich text editor for description'
+  events2.form.richText.enable:
+    label: 'Enable rich text editor'
     category: 'events2.form'
-    description: 'Use CKEditor 5 of EXT:rte_ckeditor for the description in the form based on EXT:form. Requires EXT:rte_ckeditor.'
+    description: 'Use CKEditor 5 of EXT:rte_ckeditor for the rich text elements of the form based on EXT:form. Requires EXT:rte_ckeditor.'
     type: bool
     default: false
+  events2.form.richText.elements:
+    label: 'Rich text elements'
+    category: 'events2.form'
+    description: 'Comma separated identifiers of form elements, which get the rich text editor. Elements with "dataType: richText" in the form definition get it, too.'
+    type: string
+    default: 'detail-description'

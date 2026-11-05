@@ -13,7 +13,6 @@ namespace JWeiland\Events2\Tests\Functional\Form;
 
 use JWeiland\Events2\Tests\Functional\Events2Constants;
 use JWeiland\Events2\Tests\Functional\Traits\CacheHashTrait;
-use JWeiland\Events2\Tests\Functional\Traits\InsertEventTrait;
 use JWeiland\Events2\Tests\Functional\Traits\SiteBasedTestTrait;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Cache\CacheManager;
@@ -22,15 +21,14 @@ use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequestCon
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
- * Renders the form based on EXT:form with and without the rich text editor.
- * The description is on a later page of the multistep form, so the options
- * of the textarea are tested in RichTextDescriptionConfiguratorTest. The
- * assets are loaded for all pages of the form.
+ * Renders the first page of the form based on EXT:form with and without the
+ * rich text editor. The description is on the second page of the multistep
+ * form. So the element "choose-event-type" of the first page is configured
+ * as rich text element to test the rendering of the assets.
  */
-class RichTextDescriptionTest extends FunctionalTestCase
+class RichTextEditorTest extends FunctionalTestCase
 {
     use CacheHashTrait;
-    use InsertEventTrait;
     use SiteBasedTestTrait;
 
     private const SITE_IDENTIFIER = 'events2-rich-text-test';
@@ -86,21 +84,33 @@ class RichTextDescriptionTest extends FunctionalTestCase
     }
 
     #[Test]
-    public function formWithoutRichTextDescriptionDoesNotLoadEditor(): void
+    public function formWithoutRichTextEditorDoesNotLoadEditor(): void
     {
-        $content = $this->renderForm(0);
+        $content = $this->renderForm(['elements' => 'choose-event-type']);
 
         self::assertStringContainsString('choose-event-type', $content);
+        self::assertStringNotContainsString('data-events2-rich-text', $content);
         self::assertStringNotContainsString('<script type="importmap"', $content);
-        self::assertStringNotContainsString('@ckeditor/ckeditor5-editor-classic', $content);
         self::assertStringNotContainsString('rich-text-editor.js', $content);
     }
 
     #[Test]
-    public function formWithRichTextDescriptionRendersImportMapAndAssets(): void
+    public function pageWithoutRichTextElementDoesNotLoadEditor(): void
     {
-        $content = $this->renderForm(0, true);
+        // Default element "detail-description" is on the second page
+        $content = $this->renderForm(['enable' => true]);
 
+        self::assertStringContainsString('choose-event-type', $content);
+        self::assertStringNotContainsString('data-events2-rich-text', $content);
+        self::assertStringNotContainsString('<script type="importmap"', $content);
+    }
+
+    #[Test]
+    public function pageWithRichTextElementRendersImportMapAndAssets(): void
+    {
+        $content = $this->renderForm(['enable' => true, 'elements' => 'choose-event-type']);
+
+        self::assertStringContainsString('data-events2-rich-text="{&quot;language&quot;:&quot;de&quot;', $content);
         self::assertStringContainsString('<script type="importmap"', $content);
         self::assertStringContainsString('"@ckeditor/ckeditor5-editor-classic":', $content);
         self::assertStringContainsString('"@jweiland/events2/rich-text-editor.js":', $content);
@@ -113,19 +123,21 @@ class RichTextDescriptionTest extends FunctionalTestCase
         self::assertStringContainsString('Css/RichTextEditor.css', $content);
     }
 
-    private function renderForm(int $eventUid, bool $richTextDescription = false): string
+    /**
+     * @param array<string, mixed> $richTextSettings Site settings "events2.form.richText.*"
+     */
+    private function renderForm(array $richTextSettings): string
     {
         // Write the site only once per test. Else the former site is still in runtime caches.
-        $this->writeSite($richTextDescription ? ['events2' => ['form' => ['richTextDescription' => true]]] : []);
+        $this->writeSite(['events2' => ['form' => ['richText' => $richTextSettings]]]);
         // The TypoScript of the site depends on the site settings
         $this->get(CacheManager::class)->flushCaches();
 
         $parameters = [
-            'tx_events2_management' => array_filter([
+            'tx_events2_management' => [
                 'controller' => 'Management',
                 'action' => 'perform',
-                'event' => $eventUid,
-            ]),
+            ],
         ];
         $parameters['cHash'] = $this->generateCacheHash($parameters, Events2Constants::PAGE_MANAGEMENT);
 

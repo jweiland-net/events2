@@ -282,9 +282,9 @@ class SaveEventFinisher extends AbstractFinisher
             } elseif ($elementsConfiguration[$elementIdentifier]['normalizePlainText'] ?? false) {
                 $elementValue = $this->rteContentConverter->normalizePlainText((string)$elementValue);
             } elseif ($elementsConfiguration[$elementIdentifier]['sanitizeRichText'] ?? false) {
-                $elementValue = $this->getRichTextService()->prepareForPersistence(
+                $elementValue = $this->prepareRichText(
                     (string)$elementValue,
-                    $this->getEventUidToUpdate(),
+                    (string)$elementsConfiguration[$elementIdentifier]['mapOnDatabaseColumn'],
                     (int)($databaseData['pid'] ?? 0),
                 );
             }
@@ -311,6 +311,40 @@ class SaveEventFinisher extends AbstractFinisher
     protected function getEventUidToUpdate(): int
     {
         return (int)($_GET['tx_events2_management']['event'] ?? 0);
+    }
+
+    /**
+     * Sanitizes the value of a rich text element for the column of the current table
+     */
+    protected function prepareRichText(string $value, string $column, int $pid): string
+    {
+        $table = $this->parseOption('table');
+        $table = is_string($table) ? $table : '';
+
+        return $this->getRichTextService()->prepareForPersistence(
+            $value,
+            $table,
+            $column,
+            $this->getRecordUidToUpdate($table),
+            $pid,
+        );
+    }
+
+    /**
+     * The event to edit is part of the URI of the form. Other tables are
+     * updated with the "uid" of their "whereClause".
+     */
+    protected function getRecordUidToUpdate(string $table): int
+    {
+        if ($table === 'tx_events2_domain_model_event') {
+            return $this->getEventUidToUpdate();
+        }
+
+        if (($this->options['mode'] ?? '') !== 'update' || !isset($this->options['whereClause']['uid'])) {
+            return 0;
+        }
+
+        return (int)$this->parseOption('whereClause.uid');
     }
 
     protected function getRichTextService(): RichTextService

@@ -6,7 +6,9 @@
  */
 
 /**
- * Small CKEditor 5 for the description of the frontend form.
+ * Small CKEditor 5 for the rich text elements of the frontend form.
+ * One editor is created for each textarea with the attribute
+ * data-events2-rich-text, which contains the options as JSON.
  * The ES modules of EXT:rte_ckeditor are used. No build step needed.
  * Without JavaScript the plain textarea is used.
  */

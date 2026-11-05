@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Domain\Factory;
 
 use JWeiland\Events2\Configuration\ExtConf;
-use JWeiland\Events2\Form\RichTextDescriptionConfigurator;
+use JWeiland\Events2\Form\RichTextFormElementConfigurator;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Form\Domain\Exception\RenderingException;
 use TYPO3\CMS\Form\Domain\Model\FormDefinition;
@@ -25,7 +25,7 @@ class ArrayFormFactory extends \TYPO3\CMS\Form\Domain\Factory\ArrayFormFactory
 {
     public function __construct(
         protected readonly ExtConf $extConf,
-        protected readonly RichTextDescriptionConfigurator $richTextDescriptionConfigurator,
+        protected readonly RichTextFormElementConfigurator $richTextFormElementConfigurator,
     ) {}
 
     /**
@@ -40,9 +40,7 @@ class ArrayFormFactory extends \TYPO3\CMS\Form\Domain\Factory\ArrayFormFactory
     ): FormDefinition {
         $this->addEventUidToFormAction($configuration);
         $this->modifyEmailFinisherConfiguration($configuration);
-        if ($request !== null && $this->richTextDescriptionConfigurator->isEnabled($request)) {
-            $configuration = $this->richTextDescriptionConfigurator->configure($configuration, $request);
-        }
+        $configuration = $this->richTextFormElementConfigurator->configure($configuration, $request);
 
         return parent::build($configuration, $prototypeName, $request);
     }
