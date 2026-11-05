@@ -7,6 +7,29 @@
 ChangeLog
 =========
 
+Version 12.0.0
+==============
+
+*   [!!!][TASK] Use the form based on EXT:form for the frontend management
+    only. The site setting `events2.form.useExtForm` is removed. The
+    templates :file:`Management/ListMyEvents.html`,
+    :file:`Management/Perform.html` and the partial
+    :file:`Management/UserEditLinks.html` moved from
+    :file:`Resources/Private/FormFramework/` to the regular
+    :file:`Templates/` and :file:`Partials/` folders.
+*   [!!!][TASK] Remove the Extbase form of the management plugin: actions
+    `new`, `create`, `edit`, `update` and `delete`, their templates and
+    partials, validators, type converter, event listeners, middleware,
+    traits, site settings `events2.form.uploadFolder` and
+    `events2.form.remainingLetters` and the labels used by the Extbase
+    form only.
+*   [!!!][TASK] Merge :php:`EventModerationService` into
+    :php:`ManagementAccessService`. The moderation token is unchanged, so
+    activation links of sent mails stay valid.
+*   [FEATURE] Render rich text elements in the mails of the event form
+    sanitized as HTML and as plain text.
+*   [TASK] Localize the hint icon of the event form.
+
 Version 11.2.1
 ==============
 
