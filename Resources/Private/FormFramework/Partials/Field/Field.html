@@ -15,8 +15,9 @@
 
         <div class="{element.properties.containerClassAttribute}">
             <f:if condition="{element.properties.elementDescription}">
-                <div role="tooltip" class="tooltip" title="Hinweis" data-property="{formvh:translateElementProperty(element: element, property: 'elementDescription')}">
-                    <f:image src="EXT:events2/Resources/Public/Icons/warning.svg" alt="Tipp" width="24px" height="24px"/>
+                <f:variable name="hintLabel">{f:translate(key: 'LLL:EXT:events2/Resources/Private/Language/locallang.xlf:hint')}</f:variable>
+                <div role="tooltip" class="tooltip" title="{hintLabel}" data-property="{formvh:translateElementProperty(element: element, property: 'elementDescription')}">
+                    <f:image src="EXT:events2/Resources/Public/Icons/warning.svg" alt="{hintLabel}" width="24px" height="24px"/>
                 </div>
             </f:if>
             <f:format.raw>
