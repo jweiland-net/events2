@@ -23,6 +23,8 @@ readonly class RteContentConverter
 {
     private const PARAGRAPH_SEPARATOR = "\r\n";
 
+    private const LINE_BREAK = "\r\n";
+
     private const NON_BREAKING_SPACE = "\u{00A0}";
 
     /**
@@ -82,6 +84,19 @@ readonly class RteContentConverter
 
         // Non-breaking spaces at the beginning and end of the text are kept, as they are content
         return $this->isBlank($value) ? '' : trim($value, " \t\n");
+    }
+
+    /**
+     * Normalizes plain text for plain text columns like "teaser" the way the
+     * backend stores the value of a textarea: tags are removed, line breaks
+     * are CRLF (as sent by browsers) and the value is trimmed. The value is
+     * NOT HTML encoded, as it is plain text. Templates have to escape it.
+     */
+    public function normalizePlainText(string $plainText): string
+    {
+        $plainText = str_replace(["\r\n", "\r"], "\n", strip_tags(mb_scrub($plainText, 'UTF-8')));
+
+        return str_replace("\n", self::LINE_BREAK, trim($plainText));
     }
 
     private function convertLinesToHtml(string $paragraph): string

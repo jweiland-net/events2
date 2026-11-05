@@ -289,6 +289,42 @@ class PrefillForEditUsageHookTest extends FunctionalTestCase
         );
     }
 
+    public static function storedTeaserDataProvider(): array
+    {
+        return [
+            'teaser stored as HTML by events2 < 11.1.1' => [
+                "<p>Kurz &amp; knapp<br />\nZweite Zeile</p>",
+            ],
+            'teaser stored as plain text' => [
+                "Kurz & knapp\r\nZweite Zeile",
+            ],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('storedTeaserDataProvider')]
+    public function setFormDefaultValuesWithStoredTeaserReturnsPlainText(string $teaser): void
+    {
+        $eventUid = $this->insertEvent(
+            title: 'Event with teaser',
+            eventBegin: new \DateTimeImmutable('today midnight'),
+            additionalFields: ['teaser' => $teaser],
+        );
+
+        $formElement = $this->buildFormElement('short-description', [
+            'dbMapping' => [
+                'column' => 'teaser',
+                'dataType' => 'plainText',
+            ],
+        ]);
+        $this->callSetFormDefaultValues($formElement, $this->getEventRecord($eventUid));
+
+        self::assertSame(
+            "Kurz & knapp\nZweite Zeile",
+            $formElement->getDefaultValue(),
+        );
+    }
+
     private function buildFormElement(string $identifier, array $properties): GenericFormElement
     {
         $formDefinition = new FormDefinition('test-form');
