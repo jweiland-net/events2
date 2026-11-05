@@ -11,11 +11,14 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Tests\Functional\Controller;
 
+use JWeiland\Events2\Service\EventModerationService;
 use JWeiland\Events2\Tests\Functional\Events2Constants;
 use JWeiland\Events2\Tests\Functional\Traits\CacheHashTrait;
+use JWeiland\Events2\Tests\Functional\Traits\CreatePostStreamBodyTrait;
 use JWeiland\Events2\Tests\Functional\Traits\InsertEventTrait;
 use JWeiland\Events2\Tests\Functional\Traits\SiteBasedTestTrait;
 use PHPUnit\Framework\Attributes\Test;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequestContext;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
@@ -26,6 +29,7 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 class ManagementControllerTest extends FunctionalTestCase
 {
     use CacheHashTrait;
+    use CreatePostStreamBodyTrait;
     use InsertEventTrait;
     use SiteBasedTestTrait;
 
@@ -59,6 +63,9 @@ class ManagementControllerTest extends FunctionalTestCase
                 'emailToAddress' => 'hosting@jweiland.net',
                 'emailToName' => 'Stefan Froemken',
             ],
+        ],
+        'MAIL' => [
+            'transport' => 'null',
         ],
         'SYS' => [
             'phpTimeZone' => Events2Constants::PHP_TIMEZONE,
@@ -217,5 +224,183 @@ class ManagementControllerTest extends FunctionalTestCase
             'Recurring event',
             $content,
         );
+    }
+
+    #[Test]
+    public function confirmActivationWithValidTokenShowsConfirmationForm(): void
+    {
+        $eventUid = $this->insertHiddenEventOfFrontendUser();
+        $moderationToken = $this->get(EventModerationService::class)->generateModerationToken($eventUid);
+
+        $content = (string)$this->executeGetRequest('confirmActivation', $eventUid, $moderationToken)->getBody();
+
+        self::assertStringContainsString('Activate event', $content);
+        self::assertStringContainsString('Hidden event of frontend user', $content);
+        self::assertStringContainsString('value="' . $moderationToken . '"', $content);
+        self::assertStringContainsString('method="post"', $content);
+    }
+
+    #[Test]
+    public function confirmActivationByOwnerWithoutTokenIsDenied(): void
+    {
+        $eventUid = $this->insertHiddenEventOfFrontendUser();
+
+        $content = (string)$this->executeGetRequest('confirmActivation', $eventUid, '', 1)->getBody();
+
+        self::assertStringContainsString(
+            'The activation link is invalid or the event does not exist anymore.',
+            $content,
+        );
+        self::assertStringNotContainsString('Hidden event of frontend user', $content);
+    }
+
+    /**
+     * Extbase sends the redirect to the confirmation page with header(),
+     * which is not part of the response of a frontend sub request.
+     */
+    #[Test]
+    public function activateViaGetWithValidTokenKeepsEventHidden(): void
+    {
+        $eventUid = $this->insertHiddenEventOfFrontendUser();
+        $moderationToken = $this->get(EventModerationService::class)->generateModerationToken($eventUid);
+
+        $content = (string)$this->executeGetRequest('activate', $eventUid, $moderationToken)->getBody();
+
+        self::assertStringNotContainsString('A record was activated', $content);
+        self::assertTrue($this->isEventHidden($eventUid));
+    }
+
+    #[Test]
+    public function activateViaGetByOwnerWithoutTokenKeepsEventHidden(): void
+    {
+        $eventUid = $this->insertHiddenEventOfFrontendUser();
+
+        $content = (string)$this->executeGetRequest('activate', $eventUid, '', 1)->getBody();
+
+        self::assertStringContainsString(
+            'The activation link is invalid or the event does not exist anymore.',
+            $content,
+        );
+        self::assertTrue($this->isEventHidden($eventUid));
+    }
+
+    #[Test]
+    public function activateViaPostByOwnerWithoutTokenKeepsEventHidden(): void
+    {
+        $eventUid = $this->insertHiddenEventOfFrontendUser();
+
+        $content = (string)$this->executePostRequest('activate', $eventUid, '', 1)->getBody();
+
+        self::assertStringContainsString(
+            'The activation link is invalid or the event does not exist anymore.',
+            $content,
+        );
+        self::assertTrue($this->isEventHidden($eventUid));
+    }
+
+    #[Test]
+    public function activateViaPostWithTokenOfForeignEventKeepsEventHidden(): void
+    {
+        $eventUid = $this->insertHiddenEventOfFrontendUser();
+        $foreignEventUid = $this->insertHiddenEventOfFrontendUser();
+        $moderationToken = $this->get(EventModerationService::class)->generateModerationToken($foreignEventUid);
+
+        $this->executePostRequest('activate', $eventUid, $moderationToken);
+
+        self::assertTrue($this->isEventHidden($eventUid));
+        self::assertTrue($this->isEventHidden($foreignEventUid));
+    }
+
+    #[Test]
+    public function activateViaPostWithValidTokenActivatesEvent(): void
+    {
+        $eventUid = $this->insertHiddenEventOfFrontendUser();
+        $moderationToken = $this->get(EventModerationService::class)->generateModerationToken($eventUid);
+
+        $this->executePostRequest('activate', $eventUid, $moderationToken);
+
+        self::assertFalse($this->isEventHidden($eventUid));
+    }
+
+    private function insertHiddenEventOfFrontendUser(): int
+    {
+        // The first organizer gets UID 1, which is assigned to frontend user 1
+        return $this->insertEvent(
+            title: 'Hidden event of frontend user',
+            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
+            additionalFields: ['hidden' => 1],
+            organizer: 'jweiland.net',
+        );
+    }
+
+    private function executeGetRequest(
+        string $actionName,
+        int $eventUid,
+        string $moderationToken,
+        int $frontendUserId = 0,
+    ): ResponseInterface {
+        $parameters = [
+            'tx_events2_management' => $this->getPluginArguments($actionName, $eventUid, $moderationToken),
+        ];
+        $parameters['cHash'] = $this->generateCacheHash($parameters, Events2Constants::PAGE_MANAGEMENT);
+
+        return $this->executeFrontendSubRequest(
+            (new InternalRequest())
+                ->withPageId(Events2Constants::PAGE_MANAGEMENT)
+                ->withQueryParams($parameters),
+            (new InternalRequestContext())
+                ->withFrontendUserId($frontendUserId),
+        );
+    }
+
+    private function executePostRequest(
+        string $actionName,
+        int $eventUid,
+        string $moderationToken,
+        int $frontendUserId = 0,
+    ): ResponseInterface {
+        $body = $this->createBodyFromArray([
+            'tx_events2_management' => $this->getPluginArguments($actionName, $eventUid, $moderationToken),
+        ]);
+
+        return $this->executeFrontendSubRequest(
+            (new InternalRequest())
+                ->withPageId(Events2Constants::PAGE_MANAGEMENT)
+                ->withMethod('POST')
+                ->withAddedHeader('Content-type', 'application/x-www-form-urlencoded')
+                ->withBody($body),
+            (new InternalRequestContext())
+                ->withFrontendUserId($frontendUserId),
+        );
+    }
+
+    /**
+     * @return array<string, string|int>
+     */
+    private function getPluginArguments(string $actionName, int $eventUid, string $moderationToken): array
+    {
+        $arguments = [
+            'controller' => 'Management',
+            'action' => $actionName,
+            'event' => $eventUid,
+        ];
+        if ($moderationToken !== '') {
+            $arguments['moderationToken'] = $moderationToken;
+        }
+
+        return $arguments;
+    }
+
+    private function isEventHidden(int $eventUid): bool
+    {
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_event');
+        $queryBuilder->getRestrictions()->removeAll();
+
+        return (int)$queryBuilder
+            ->select('hidden')
+            ->from('tx_events2_domain_model_event')
+            ->where($queryBuilder->expr()->eq('uid', $eventUid))
+            ->executeQuery()
+            ->fetchOne() === 1;
     }
 }

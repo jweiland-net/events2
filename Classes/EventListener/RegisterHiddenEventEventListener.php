@@ -26,6 +26,7 @@ final readonly class RegisterHiddenEventEventListener
         'Management' => [
             'edit',
             'update',
+            'confirmActivation',
         ],
     ];
 
@@ -36,7 +37,10 @@ final readonly class RegisterHiddenEventEventListener
 
     public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void
     {
-        if ($this->isValidRequest($controllerActionEvent)) {
+        if (
+            $this->isValidRequest($controllerActionEvent)
+            && $controllerActionEvent->getRequest()->hasArgument('event')
+        ) {
             $this->hiddenObjectHelper->registerHiddenObjectInExtbaseSession(
                 $this->eventRepository,
                 $controllerActionEvent->getRequest(),

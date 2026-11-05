@@ -7,6 +7,24 @@
 ChangeLog
 =========
 
+Version 11.1.0
+==============
+
+Please read :ref:`upgrade-11-1-0` before updating, if you have overridden
+the notification mail templates.
+
+*   [FEATURE] Secure activation of events with confirm page. The activation
+    link of the notification mails opens the new action `confirmActivation`
+    now. It shows a summary of the event and activates it via POST only, so
+    mail security scanners and link previews can not activate events
+    anymore. `activate` redirects GET requests to the confirm page.
+*   [SECURITY] `confirmActivation` and `activate` are allowed with a valid
+    `moderationToken` of the mail link or for backend administrators only.
+    Owners of an event can not activate their own events anymore.
+*   [FEATURE] Add `ModerationTokenViewHelper` to create the
+    `moderationToken` in templates without controller like the mail
+    template of the EXT:form finisher.
+
 Version 11.0.2
 ==============
 
