@@ -55,6 +55,7 @@ All ViewHelpers
 
     ConvertToJsonViewHelper
     CreateYoutubeUrlViewHelper
+    FormatRichTextViewHelper
     GetAllowedCategoriesViewHelper
     GetExceptionsFromEventForSpecificDateViewHelper
     GetMergedEventTimesViewHelper
