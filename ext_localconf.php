@@ -69,11 +69,11 @@ ExtensionUtility::configurePlugin(
     'Events2',
     'Management',
     [
-        ManagementController::class => 'listMyEvents, new, create, edit, update, perform, delete, confirmActivation, activate',
+        ManagementController::class => 'listMyEvents, perform, confirmActivation, activate',
     ],
     // non-cacheable actions
     [
-        ManagementController::class => 'listMyEvents, create, edit, update, perform, delete, confirmActivation, activate',
+        ManagementController::class => 'listMyEvents, perform, confirmActivation, activate',
     ],
     ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
 );
