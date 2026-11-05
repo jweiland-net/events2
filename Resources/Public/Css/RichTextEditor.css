@@ -1,0 +1,25 @@
+/*
+ * Minimal styles for the CKEditor 5 of the frontend form of EXT:events2.
+ * The UI styles of CKEditor are loaded from EXT:rte_ckeditor (editor.css).
+ */
+.ck.ck-editor {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.ck.ck-editor__editable_inline {
+  min-height: 12em;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.ck.ck-editor__editable h2,
+.ck.ck-editor__editable h3 {
+  margin: 0.75em 0 0.5em;
+}
+
+.ck.ck-editor__editable ul,
+.ck.ck-editor__editable ol {
+  padding-left: 1.5em;
+}

@@ -171,6 +171,22 @@ event form of the Management plugin. Set it with the site setting
 `events2.form.uploadFolder` of the site set `jweiland/events2`. The folder
 is created, if it does not exist. See :ref:`management-image-upload`.
 
+..  _typoscript-new-richtextdescription:
+
+richTextDescription
+~~~~~~~~~~~~~~~~~~~
+
+..  versionadded:: 11.2.0
+
+    The value is set by the new site setting `events2.form.richTextDescription`.
+
+Default: `0`
+
+Example: `plugin.tx_events2.settings.new.richTextDescription = 1`
+
+Use a small CKEditor 5 for the description in the form based on EXT:form.
+Requires EXT:rte_ckeditor. See :ref:`rich-text-description`.
+
 latest
 ------
 

@@ -426,6 +426,9 @@
 			<trans-unit id="confirmActivation.submit">
 				<source>Activate event</source>
 			</trans-unit>
+			<trans-unit id="richText.openInNewTab">
+				<source>Open in a new tab</source>
+			</trans-unit>
 
 			<trans-unit id="pageBrowser.first">
 				<source>First</source>
