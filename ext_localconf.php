@@ -23,6 +23,7 @@ use JWeiland\Events2\Controller\VideoController;
 use JWeiland\Events2\Hook\Events2DataHandler;
 use JWeiland\Events2\Hook\Form\PrefillCategoriesHook;
 use JWeiland\Events2\Hook\Form\PrefillForEditUsageHook;
+use JWeiland\Events2\Hook\Form\RichTextEditorHook;
 use JWeiland\Events2\Hook\Solr\IndexerHook;
 use JWeiland\Events2\Hook\Solr\ResultsCommandHook;
 use JWeiland\Events2\Routing\Aspect\PersistedHiddenAliasMapper;
@@ -129,6 +130,9 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/form']['initializeFormElement'][1
 // Set values from request as default values for edit usage
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/form']['afterBuildingFinished'][1662039121]
     = PrefillForEditUsageHook::class;
+// Add the CKEditor to rich text elements of the current page
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/form']['beforeRendering'][1762444800]
+    = RichTextEditorHook::class;
 
 // create scheduler to create/update days with recurrency
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][ReGenerateDays::class] = [

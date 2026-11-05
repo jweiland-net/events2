@@ -102,10 +102,54 @@ class SaveEventFinisherTest extends FunctionalTestCase
         );
     }
 
+    #[Test]
+    public function prepareDataWithTwoRichTextElementsComparesT3LinksPerColumn(): void
+    {
+        $_GET['tx_events2_management']['event'] = (string)$this->insertEvent(
+            title: 'Event with links in two columns',
+            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
+            additionalFields: [
+                'teaser' => '<p><a href="t3://page?uid=7">Teaser</a></p>',
+                'detail_information' => '<p><a href="t3://page?uid=11">Seite</a></p>',
+            ],
+        );
+        $value = '<p><b>Fett</b> <a href="t3://page?uid=7">Teaser</a> <a href="t3://page?uid=11">Seite</a></p>';
+
+        $databaseData = $this->prepareData(
+            [
+                'program' => ['mapOnDatabaseColumn' => 'teaser', 'sanitizeRichText' => true],
+                'detail-description' => ['mapOnDatabaseColumn' => 'detail_information', 'sanitizeRichText' => true],
+            ],
+            ['program' => $value, 'detail-description' => $value],
+        );
+
+        self::assertStringContainsString(
+            '<strong>Fett</strong> <a href="t3://page?uid=7">Teaser</a> Seite',
+            $databaseData['teaser'],
+        );
+        self::assertSame(
+            '<p><strong>Fett</strong> Teaser <a href="t3://page?uid=11">Seite</a></p>',
+            $databaseData['detail_information'],
+        );
+    }
+
     /**
      * @param array<string, mixed> $mapping Mapping of the description in the finisher
      */
     private function prepareDescription(array $mapping, string $value): string
+    {
+        return $this->prepareData(
+            ['detail-description' => ['mapOnDatabaseColumn' => 'detail_information'] + $mapping],
+            ['detail-description' => $value],
+        )['detail_information'];
+    }
+
+    /**
+     * @param array<string, array<string, mixed>> $elementsConfiguration
+     * @param array<string, string> $formValues
+     * @return array<string, mixed>
+     */
+    private function prepareData(array $elementsConfiguration, array $formValues): array
     {
         $subject = new class (
             $this->get(ConnectionPool::class),
@@ -114,6 +158,11 @@ class SaveEventFinisherTest extends FunctionalTestCase
             richTextService: $this->get(RichTextService::class),
         ) extends SaveEventFinisher {
             public array $formValues = [];
+
+            public function setOptions(array $options): void
+            {
+                $this->options = $options;
+            }
 
             protected function getFormValues(): array
             {
@@ -124,15 +173,19 @@ class SaveEventFinisherTest extends FunctionalTestCase
             {
                 return new GenericFormElement($elementIdentifier, 'Textarea');
             }
-        };
-        $subject->formValues = ['detail-description' => $value];
 
-        $databaseData = (new \ReflectionMethod($subject, 'prepareData'))->invoke(
+            protected function parseOption(string $optionName): string|array|int|null
+            {
+                return $this->options[$optionName] ?? null;
+            }
+        };
+        $subject->formValues = $formValues;
+        $subject->setOptions(['table' => 'tx_events2_domain_model_event', 'mode' => 'insert']);
+
+        return (new \ReflectionMethod($subject, 'prepareData'))->invoke(
             $subject,
-            ['detail-description' => ['mapOnDatabaseColumn' => 'detail_information'] + $mapping],
+            $elementsConfiguration,
             ['pid' => Events2Constants::PAGE_STORAGE],
         );
-
-        return $databaseData['detail_information'];
     }
 }

@@ -13,7 +13,7 @@ This chapter describes how to manage the extension from a superuser point of vie
     :maxdepth: 2
 
     Templates/Index
-    RichTextDescription/Index
+    FrontendRichTextEditor/Index
     Commands/Index
     Pagination/Index
     BestPractice/Index

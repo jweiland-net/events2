@@ -90,8 +90,12 @@ plugin.tx_events2 {
     new {
       selectableCategoriesForNewEvents = {$events2.form.selectableCategoriesForNewEvents}
       uploadFolder = {$events2.form.uploadFolder}
-      # Use CKEditor 5 of EXT:rte_ckeditor for the description in the form based on EXT:form
-      richTextDescription = {$events2.form.richTextDescription}
+      # CKEditor 5 of EXT:rte_ckeditor for rich text elements in the form based on EXT:form
+      richText {
+        enable = {$events2.form.richText.enable}
+        # Comma separated identifiers of form elements
+        elements = {$events2.form.richText.elements}
+      }
     }
 
     # Special configuration for form based on EXT:form

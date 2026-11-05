@@ -42,6 +42,8 @@ class RichTextServiceTest extends FunctionalTestCase
         ],
     ];
 
+    private const TABLE = 'tx_events2_domain_model_event';
+
     private RichTextService $subject;
 
     protected function setUp(): void
@@ -97,7 +99,7 @@ class RichTextServiceTest extends FunctionalTestCase
     {
         self::assertSame(
             $expected,
-            $this->subject->prepareForPersistence($html, 0, Events2Constants::PAGE_STORAGE),
+            $this->subject->prepareForPersistence($html, self::TABLE, 'detail_information', 0, Events2Constants::PAGE_STORAGE),
         );
     }
 
@@ -117,6 +119,8 @@ class RichTextServiceTest extends FunctionalTestCase
             '<p><a href="t3://page?uid=11">Programm</a> und neu</p>',
             $this->subject->prepareForPersistence(
                 '<p><a href="t3://page?uid=11">Programm</a> und <a href="t3://page?uid=2">neu</a></p>',
+                self::TABLE,
+                'detail_information',
                 $eventUid,
             ),
         );
@@ -127,7 +131,45 @@ class RichTextServiceTest extends FunctionalTestCase
     {
         self::assertSame(
             '<p>Programm</p>',
-            $this->subject->prepareForPersistence('<p><a href="t3://page?uid=11">Programm</a></p>', 0),
+            $this->subject->prepareForPersistence('<p><a href="t3://page?uid=11">Programm</a></p>', self::TABLE, 'detail_information', 0),
+        );
+    }
+
+    #[Test]
+    public function prepareForPersistenceComparesT3LinksWithStoredValueOfSameColumn(): void
+    {
+        $eventUid = $this->insertEvent(
+            title: 'Event with links in two columns',
+            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
+            additionalFields: [
+                'teaser' => '<p><a href="t3://page?uid=11">Teaser</a></p>',
+                'detail_information' => '<p><a href="t3://page?uid=7">Detail</a></p>',
+            ],
+        );
+        $html = '<p><a href="t3://page?uid=11">Teaser</a> <a href="t3://page?uid=7">Detail</a></p>';
+
+        self::assertStringContainsString(
+            '<a href="t3://page?uid=11">Teaser</a> Detail',
+            $this->subject->prepareForPersistence($html, self::TABLE, 'teaser', $eventUid),
+        );
+        self::assertStringContainsString(
+            'Teaser <a href="t3://page?uid=7">Detail</a>',
+            $this->subject->prepareForPersistence($html, self::TABLE, 'detail_information', $eventUid),
+        );
+    }
+
+    #[Test]
+    public function prepareForPersistenceWithUnknownColumnRemovesT3Links(): void
+    {
+        $eventUid = $this->insertEvent(
+            title: 'Event',
+            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
+            additionalFields: ['detail_information' => '<p><a href="t3://page?uid=11">Link</a></p>'],
+        );
+
+        self::assertStringContainsString(
+            '<p>Link</p>',
+            $this->subject->prepareForPersistence('<p><a href="t3://page?uid=11">Link</a></p>', self::TABLE, 'not_existing', $eventUid),
         );
     }
 }

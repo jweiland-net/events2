@@ -51,7 +51,7 @@
 	"suggest": {
 		"jweiland/checkfaluploads": "Adds a mandatory rights checkbox to the image upload field in the frontend forms of events2. Requires at least version 6.0.0.",
 		"jweiland/cms-reactions": "Allows importing events2 records from another TYPO3 systems or any other request",
-		"typo3/cms-rte-ckeditor": "Needed for the optional CKEditor of the description field in the frontend form (site setting events2.form.richTextDescription)."
+		"typo3/cms-rte-ckeditor": "Needed for the optional rich text editor (CKEditor 5) of the frontend form (site setting events2.form.richText.enable)."
 	},
 	"autoload": {
 		"psr-4": {

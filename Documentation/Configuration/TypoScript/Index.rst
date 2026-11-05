@@ -171,21 +171,38 @@ event form of the Management plugin. Set it with the site setting
 `events2.form.uploadFolder` of the site set `jweiland/events2`. The folder
 is created, if it does not exist. See :ref:`management-image-upload`.
 
-..  _typoscript-new-richtextdescription:
+..  _typoscript-new-richtext-enable:
 
-richTextDescription
-~~~~~~~~~~~~~~~~~~~
+richText.enable
+~~~~~~~~~~~~~~~
 
 ..  versionadded:: 11.2.0
 
-    The value is set by the new site setting `events2.form.richTextDescription`.
+    The value is set by the new site setting `events2.form.richText.enable`.
 
 Default: `0`
 
-Example: `plugin.tx_events2.settings.new.richTextDescription = 1`
+Example: `plugin.tx_events2.settings.new.richText.enable = 1`
 
-Use a small CKEditor 5 for the description in the form based on EXT:form.
-Requires EXT:rte_ckeditor. See :ref:`rich-text-description`.
+Use a small CKEditor 5 for the rich text elements of the form based on
+EXT:form. Requires EXT:rte_ckeditor. See :ref:`frontend-rich-text-editor`.
+
+..  _typoscript-new-richtext-elements:
+
+richText.elements
+~~~~~~~~~~~~~~~~~
+
+..  versionadded:: 11.2.0
+
+    The value is set by the new site setting `events2.form.richText.elements`.
+
+Default: `detail-description`
+
+Example: `plugin.tx_events2.settings.new.richText.elements = detail-description, program`
+
+Comma separated identifiers of the form elements, which get the rich text
+editor. Elements with `dataType: richText` in the form definition get the
+editor, too. See :ref:`frontend-rich-text-editor`.
 
 latest
 ------
