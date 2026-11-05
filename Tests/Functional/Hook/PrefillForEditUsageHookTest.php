@@ -440,7 +440,8 @@ class PrefillForEditUsageHookTest extends FunctionalTestCase
         );
         self::assertSame('https://youtu.be/abc', $formDefinition->getElementByIdentifier('youtube-link')->getDefaultValue());
         self::assertSame('Kino', $formDefinition->getElementByIdentifier('event-location')->getProperties()['resolvedLabel']);
-        self::assertEquals([3, 5], $formDefinition->getElementByIdentifier('categories')->getDefaultValue());
+        // The order of the categories depends on the database platform
+        self::assertEqualsCanonicalizing([3, 5], $formDefinition->getElementByIdentifier('categories')->getDefaultValue());
         self::assertSame(
             $eventUid,
             $formDefinition->getRenderingOptions()['additionalParams']['tx_events2_management']['event'],
