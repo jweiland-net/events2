@@ -181,8 +181,9 @@ renderables:
               table: tx_events2_domain_model_link
               expressions:
                 - column: uid
-                  expression: inSet
+                  expression: in
                   value: '{event:download_links}'
+                  intExplodeValue: 1
           elementDescription: 'Download Link'
         validators:
           - identifier: Url

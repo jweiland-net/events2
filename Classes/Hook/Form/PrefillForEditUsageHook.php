@@ -33,6 +33,11 @@ readonly class PrefillForEditUsageHook
 {
     use Typo3RequestTrait;
 
+    /**
+     * Allowed values for "expression" of "dbMapping.relation.expressions"
+     */
+    private const ALLOWED_EXPRESSIONS = ['eq', 'neq', 'lt', 'lte', 'gt', 'gte', 'in', 'notIn', 'inSet'];
+
     public function __construct(
         private PageRepository $pageRepository,
         private ManagementAccessService $managementAccessService,
@@ -222,6 +227,11 @@ readonly class PrefillForEditUsageHook
         return $values;
     }
 
+    /**
+     * Adds the "expressions" of the "dbMapping.relation" of a form element
+     * as constraints. A value like "{event:uid}" is replaced by the column
+     * of the event record.
+     */
     protected function resolveExpressions(
         QueryBuilder $queryBuilder,
         array $eventRecord,
@@ -230,37 +240,12 @@ readonly class PrefillForEditUsageHook
         $constraints = [];
         foreach ($expressions as $expression) {
             if (
-                isset(
-                    $expression['column'],
-                    $expression['expression'],
-                    $expression['value'],
-                )
-                && method_exists($queryBuilder->expr(), $expression['expression'])
+                isset($expression['column'], $expression['expression'], $expression['value'])
+                && in_array($expression['expression'], self::ALLOWED_EXPRESSIONS, true)
             ) {
-                $value = $expression['value'];
-                $stringExplodeValue = isset($expression['strExplodeValue']) && (int)$expression['strExplodeValue'] === 1;
-                $intExplodeValue = isset($expression['intExplodeValue']) && (int)$expression['intExplodeValue'] === 1;
-
-                if (str_contains($value, ':')) {
-                    [$type, $column] = GeneralUtility::trimExplode(':', trim($value, '{}'));
-                    if ($type === 'event') {
-                        $value = $eventRecord[$column] ?? '';
-                    }
-                }
-
-                $type = Connection::PARAM_STR;
-                if ($stringExplodeValue) {
-                    $value = GeneralUtility::trimExplode(',', $value, true);
-                    $type = ArrayParameterType::STRING;
-                } elseif ($intExplodeValue) {
-                    $value = GeneralUtility::intExplode(',', $value, true);
-                    $type = ArrayParameterType::INTEGER;
-                }
-
-                $constraints[] = call_user_func(
-                    [$queryBuilder->expr(), $expression['expression']],
+                $constraints[] = $queryBuilder->expr()->{$expression['expression']}(
                     $expression['column'],
-                    $queryBuilder->createNamedParameter($value, $type),
+                    $this->createValueForExpression($queryBuilder, $expression, $eventRecord),
                 );
             }
         }
@@ -268,6 +253,42 @@ readonly class PrefillForEditUsageHook
         if ($constraints !== []) {
             $queryBuilder->where(...$constraints);
         }
+    }
+
+    /**
+     * SQLite does not support placeholders for inSet(). So its value is
+     * added as quoted literal. All other values are added as placeholders.
+     */
+    protected function createValueForExpression(QueryBuilder $queryBuilder, array $expression, array $eventRecord): string
+    {
+        $value = $this->resolveValue((string)$expression['value'], $eventRecord);
+
+        if ($expression['expression'] === 'inSet') {
+            return $queryBuilder->quote($value);
+        }
+
+        if ((int)($expression['strExplodeValue'] ?? 0) === 1) {
+            $values = GeneralUtility::trimExplode(',', $value, true);
+
+            return $queryBuilder->createNamedParameter($values, ArrayParameterType::STRING);
+        }
+
+        if ((int)($expression['intExplodeValue'] ?? 0) === 1) {
+            $values = GeneralUtility::intExplode(',', $value, true);
+
+            return $queryBuilder->createNamedParameter($values, ArrayParameterType::INTEGER);
+        }
+
+        return $queryBuilder->createNamedParameter($value);
+    }
+
+    protected function resolveValue(string $value, array $eventRecord): string
+    {
+        if (!str_starts_with($value, '{event:')) {
+            return $value;
+        }
+
+        return (string)($eventRecord[substr($value, 7, -1)] ?? '');
     }
 
     protected function getFileReference(int $eventUid, int $position): ?FileReference
