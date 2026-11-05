@@ -1,6 +1,6 @@
+:navigation-title: Frontend rich text editor
+
 ..  include:: /Includes.rst.txt
-
-
 ..  _frontend-rich-text-editor:
 
 =====================================
@@ -9,94 +9,146 @@ Rich text editor in the frontend form
 
 ..  versionadded:: 11.2.0
 
-Textarea elements of the form based on EXT:form (site setting
-`events2.form.useExtForm`) can be edited with a small CKEditor 5. So
-frontend users can format the text and formatting added by editors in
-backend is kept, when the event is edited in frontend. By default the
-element `detail-description` (column `detail_information`) gets the editor.
+    Textarea elements of the event form based on EXT:form can be edited
+    with a CKEditor 5.
+
+Textarea elements of the event form based on EXT:form (site setting
+`events2.form.useExtForm`) can be edited with a small CKEditor 5. Frontend
+users can format the text, and formatting added by editors in the backend
+is kept when the event is edited in the frontend. By default, the element
+`detail-description` (column `detail_information`) gets the editor.
 Further elements can be added by configuration.
 
 The feature is disabled by default. Without it, all elements are plain
 textareas as before.
 
-Requirements
-============
+..  contents::
+    :caption: Table of contents
+    :local:
 
-*   The form based on EXT:form (site setting `events2.form.useExtForm`).
-*   The system extension `rte_ckeditor` (`typo3/cms-rte-ckeditor`). The
-    editor is not activated, if it is not installed.
+..  _frontend-rich-text-editor-requirements:
 
-No build step is needed. The CKEditor 5 ES modules, translations and styles
-shipped with EXT:rte_ckeditor are used.
+Requirements for the frontend rich text editor
+==============================================
 
-Enable the editor
-=================
+*   The event form based on EXT:form (site setting
+    `events2.form.useExtForm`).
+*   The system extension EXT:rte_ckeditor
+    (:composer:`typo3/cms-rte-ckeditor`). The editor is not activated if
+    it is not installed.
 
-Enable the site setting `events2.form.richText.enable` of the site set
-`jweiland/events2` (TypoScript
-:ref:`plugin.tx_events2.settings.new.richText.enable <typoscript-new-richtext-enable>`).
+No build step (npm, webpack) is needed. The CKEditor 5 ES modules,
+translations and styles shipped with EXT:rte_ckeditor are used.
+
+..  _frontend-rich-text-editor-site-settings:
+
+Site settings of the frontend rich text editor
+==============================================
+
+The following settings are provided by the site set `jweiland/events2`
+and are available in TypoScript as
+:typoscript:`plugin.tx_events2.settings.new.richText`, see
+:ref:`typoscript-new-richtext-enable`.
+
+..  confval-menu::
+    :name: events2-rich-text-settings
+    :display: table
+    :type:
+    :default:
+
+    ..  confval:: events2.form.richText.enable
+        :name: events2-form-richtext-enable
+        :type: bool
+        :default: `false`
+
+        Use CKEditor 5 of EXT:rte_ckeditor for the rich text elements of
+        the event form based on EXT:form.
+
+    ..  confval:: events2.form.richText.elements
+        :name: events2-form-richtext-elements
+        :type: string
+        :default: `detail-description`
+
+        Comma-separated identifiers of the form elements which get the rich
+        text editor. Elements with :yaml:`dataType: richText` in their
+        :yaml:`dbMapping` get the editor, too.
+
+..  _frontend-rich-text-editor-enable:
+
+Enable the frontend rich text editor
+====================================
+
+Enable the site setting
+:confval:`events2.form.richText.enable <events2-form-richtext-enable>`
+of the site set `jweiland/events2`.
 
 That is all for the description: the element `detail-description` is the
-default of the site setting `events2.form.richText.elements`. This works
-for overridden copies of :file:`NewEvent.form.yaml` as well, as long as
-they use this identifier.
+default of the site setting
+:confval:`events2.form.richText.elements <events2-form-richtext-elements>`.
+This works for overridden copies of :file:`NewEvent.form.yaml` as well, as
+long as they use this identifier.
 
-Rich text elements
-==================
+..  _frontend-rich-text-editor-example-description:
 
-An element of the form is a rich text element, if
-
-*   its identifier is listed in the site setting
-    `events2.form.richText.elements` (TypoScript
-    :ref:`settings.new.richText.elements <typoscript-new-richtext-elements>`,
-    comma separated) or
-*   it has `dataType: richText` in its `dbMapping`.
-
-If the editor is enabled, events2 configures each rich text element
-automatically:
-
-*   The `dataType` of the element is `richText`, so the edit form gets the
-    stored HTML instead of plain text.
-*   The mapping of the element in the `SaveEventFinisher` gets
-    `sanitizeRichText: true` (instead of `convertPlainTextToHtml` or
-    `normalizePlainText`).
-*   While rendering, the textarea gets the attribute `data-events2-rich-text`
-    with the options of the editor. The assets are loaded on the pages of
-    the form only, which contain a rich text element. Each textarea gets
-    its own editor.
-
-If the editor is disabled, rich text elements fall back to plain text:
-`dataType: plainText` and `convertPlainTextToHtml` instead of
-`sanitizeRichText`.
-
-..  important::
-
-    The database column of a rich text element should be a rich text field
-    in TCA (`'enableRichtext' => true`), like `detail_information`. Else the
-    backend shows the HTML source of the value. The `teaser` for example
-    is a plain text field with a maximum of 255 characters and is NOT a
-    suitable target, unless you change its TCA.
-
-Example: description (default)
-------------------------------
+Example: Enable the rich text editor for the description
+--------------------------------------------------------
 
 ..  code-block:: yaml
-    :caption: config/sites/<site>/settings.yaml
+    :caption: config/sites/<my-site>/settings.yaml
 
     events2:
       form:
         richText:
           enable: true
 
-Example: an additional element
-------------------------------
+..  _frontend-rich-text-editor-elements:
+
+Rich text elements of the event form
+====================================
+
+An element of the form is a rich text element if
+
+*   its identifier is listed in the site setting
+    :confval:`events2.form.richText.elements <events2-form-richtext-elements>`
+    or
+*   it has :yaml:`dataType: richText` in its :yaml:`dbMapping`.
+
+If the editor is enabled, events2 configures each rich text element
+automatically:
+
+*   The :yaml:`dataType` of the element is :yaml:`richText`, so the edit
+    form gets the stored HTML instead of plain text.
+*   The mapping of the element in the `SaveEventFinisher` gets
+    :yaml:`sanitizeRichText: true` (instead of
+    :yaml:`convertPlainTextToHtml` or :yaml:`normalizePlainText`).
+*   While rendering, the textarea gets the attribute
+    :html:`data-events2-rich-text` with the options of the editor. The
+    assets are only loaded on pages of the form which contain a rich text
+    element. Each textarea gets its own editor.
+
+If the editor is disabled, rich text elements fall back to plain text:
+:yaml:`dataType: plainText` and :yaml:`convertPlainTextToHtml` instead of
+:yaml:`sanitizeRichText`.
+
+..  important::
+
+    The database column of a rich text element should be a rich text field
+    in TCA (:php:`'enableRichtext' => true`), like `detail_information`.
+    Otherwise, the backend shows the HTML source of the value. The column
+    `teaser`, for example, is a plain text field with a maximum of 255
+    characters and is **not** a suitable target, unless you change its TCA.
+
+..  _frontend-rich-text-editor-example-additional-element:
+
+Example: Add a rich text editor to an additional form element
+-------------------------------------------------------------
 
 Add an own textarea to your copy of :file:`NewEvent.form.yaml` and map it
 to an own column of the event table, which you have configured with
-`'enableRichtext' => true` in TCA:
+:php:`'enableRichtext' => true` in TCA:
 
 ..  code-block:: yaml
-    :caption: Your copy of NewEvent.form.yaml
+    :caption: EXT:my_sitepackage/Configuration/Form/NewEvent.form.yaml (excerpt)
 
     - label: 'Program'
       type: Textarea
@@ -107,16 +159,27 @@ to an own column of the event table, which you have configured with
           # Optional: Instead of listing "program" in the site setting
           dataType: richText
 
-    # In the SaveEventFinisher mapping of tx_events2_domain_model_event
-    elements:
-      program:
-        mapOnDatabaseColumn: tx_myext_program
-
-Then either keep `dataType: richText` in the form definition or add the
-identifier to the site setting:
+Map the element in the `SaveEventFinisher` options of the table
+`tx_events2_domain_model_event`:
 
 ..  code-block:: yaml
-    :caption: config/sites/<site>/settings.yaml
+    :caption: EXT:my_sitepackage/Configuration/Form/NewEvent.form.yaml (excerpt)
+
+    finishers:
+      1:
+        identifier: SaveEventFinisher
+        options:
+          4:
+            table: tx_events2_domain_model_event
+            elements:
+              program:
+                mapOnDatabaseColumn: tx_myext_program
+
+Then either keep :yaml:`dataType: richText` in the form definition or add
+the identifier to the site setting:
+
+..  code-block:: yaml
+    :caption: config/sites/<my-site>/settings.yaml
 
     events2:
       form:
@@ -124,74 +187,90 @@ identifier to the site setting:
           enable: true
           elements: 'detail-description, program'
 
-Loaded files
-============
+..  _frontend-rich-text-editor-assets:
+
+Loaded files of the frontend rich text editor
+=============================================
 
 The import map of the CKEditor modules is defined in
-:file:`Configuration/JavaScriptModules.php` of events2 and rendered by the
-PageRenderer of TYPO3 (`<script type="importmap">`, respecting the
-Content Security Policy of the site). The ES module
+:file:`EXT:events2/Configuration/JavaScriptModules.php` and rendered by the
+:php:`PageRenderer` of TYPO3 (:html:`<script type="importmap">`,
+respecting the Content Security Policy of the site). The ES module
 :file:`EXT:events2/Resources/Public/JavaScript/rich-text-editor.js` creates
-an editor for each textarea with the attribute `data-events2-rich-text`. It
-loads the UI translation of the current site language. The styles
+an editor for each textarea with the attribute
+:html:`data-events2-rich-text`. It loads the UI translation of the current
+site language. The style sheets
 :file:`EXT:rte_ckeditor/Resources/Public/Css/editor.css` and
 :file:`EXT:events2/Resources/Public/Css/RichTextEditor.css` are added with
-the AssetCollector.
+the :php:`AssetCollector`.
 
 The files are about 1.6 MB uncompressed and about 400 KB compressed with
 gzip.
 
-Toolbar
-=======
+..  _frontend-rich-text-editor-toolbar:
 
-*   Heading: Paragraph, Heading 2, Heading 3 (Heading 1 is used for the title
-    of the event)
+Toolbar of the frontend rich text editor
+========================================
+
+*   Heading: Paragraph, Heading 2, Heading 3 (Heading 1 is used for the
+    title of the event)
 *   Bold, Italic
 *   Bulleted list, numbered list
-*   Link with protocols http, https, mailto and tel and the option "Open in a
-    new tab"
+*   Link with the protocols `http`, `https`, `mailto` and `tel` and the
+    option :guilabel:`Open in a new tab`
 *   Undo, Redo
 
-Toolbar items, which do not fit into the width of the form, are grouped
-into a dropdown. The toolbar can be focused with :kbd:`Alt` + :kbd:`F10`.
+Toolbar items which do not fit into the width of the form are grouped into
+a dropdown. The toolbar can be focused with :kbd:`Alt` + :kbd:`F10`.
 
-Allowed markup
-==============
+..  _frontend-rich-text-editor-allowed-markup:
 
-The submitted HTML is sanitized on the server, as a request can bypass
-the editor. Only these tags are allowed:
+Allowed markup of the frontend rich text editor
+===============================================
 
-*   `p`, `br`, `strong`, `em`, `h2`, `h3`, `ul`, `ol`, `li`
-*   `a` with `href` (http, https, mailto, tel) and `target="_blank"`, which
-    gets `rel="noopener noreferrer"`
+The submitted HTML is sanitized on the server with
+:composer:`typo3/html-sanitizer`, as a request can bypass the editor. Only
+these tags are allowed:
 
-`b` is converted to `strong`, `i` to `em` and `h1`, `h4`, `h5`, `h6` to `p`.
-All attributes like `class`, `style` or `on*` are removed. Links with other
-protocols like `javascript:` or `data:` are removed, their text is kept.
-`script`, `style`, `iframe`, images, forms and similar elements are removed
-including their content. The text of all other elements is kept.
-Other block elements like `div`, `blockquote` or table cells become
-paragraphs. Text and inline formatting outside of blocks is wrapped into a
-paragraph like the editor does, so `<strong>`, `<em>` and links are kept.
+*   :html:`<p>`, :html:`<br>`, :html:`<strong>`, :html:`<em>`,
+    :html:`<h2>`, :html:`<h3>`, :html:`<ul>`, :html:`<ol>`, :html:`<li>`
+*   :html:`<a>` with :html:`href` (`http`, `https`, `mailto`, `tel`) and
+    :html:`target="_blank"`, which gets :html:`rel="noopener noreferrer"`
 
-Links to records (`t3://`)
---------------------------
+:html:`<b>` is converted to :html:`<strong>`, :html:`<i>` to :html:`<em>`
+and :html:`<h1>`, :html:`<h4>`, :html:`<h5>`, :html:`<h6>` to
+:html:`<p>`. All attributes like :html:`class`, :html:`style` or
+:html:`on*` are removed. Links with other protocols like `javascript:` or
+`data:` are removed, their text is kept. :html:`<script>`,
+:html:`<style>`, :html:`<iframe>`, images, forms and similar elements are
+removed including their content. The text of all other elements is kept.
+Other block elements like :html:`<div>`, :html:`<blockquote>` or table
+cells become paragraphs. Text and inline formatting outside of blocks is
+wrapped into a paragraph like the editor does, so :html:`<strong>`,
+:html:`<em>` and links are kept.
+
+..  _frontend-rich-text-editor-t3-links:
+
+Links to records (t3://) in the frontend rich text editor
+---------------------------------------------------------
 
 Links like `t3://page?uid=12` or `t3://file?uid=1234` can only be added in
-backend. They are kept, if exactly the same link is already part of the
-value stored in the column of the record, which is updated. New or
-modified `t3://` links are removed, their text is kept. For records of the
-event table the event of the edit form is used. For other tables the
-`uid` of the `whereClause` of the finisher (mode `update`) is used.
+the backend. They are kept if exactly the same link is already part of the
+value stored in the column of the record which is updated. New or modified
+`t3://` links are removed, their text is kept. For records of the event
+table, the event of the edit form is used. For other tables, the `uid` of
+the :yaml:`whereClause` of the finisher (mode :yaml:`update`) is used.
 
-Afterwards the value is transformed with the RTE configuration of the
-backend (RteHtmlParser), so it is stored the same way as if it was saved in
-backend.
+Afterwards, the value is transformed with the RTE configuration of the
+backend (:php:`RteHtmlParser`), so it is stored the same way as if it was
+saved in the backend.
 
-Without JavaScript
-==================
+..  _frontend-rich-text-editor-no-javascript:
 
-Without JavaScript the plain textarea is shown. For new events, plain text
+Frontend form without JavaScript
+================================
+
+Without JavaScript, the plain textarea is shown. For new events, plain text
 can be entered as before. When editing an event, the textarea contains the
 stored HTML. Values without any tag are converted like the plain text
 description.
