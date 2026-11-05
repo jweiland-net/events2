@@ -21,6 +21,12 @@ Version 11.1.1
     to plain text in the edit form, in `ConvertHtmlToPlainTextViewHelper`
     and in the JSON-LD description. Words around `<br />` and between
     paragraphs are not glued together in the JSON-LD description anymore.
+*   [BUGFIX] Keep non-breaking spaces outside of JSON-LD. `&nbsp;` is kept
+    as non-breaking space in the edit form and in
+    `ConvertHtmlToPlainTextViewHelper` and stored as `&nbsp;` again like the
+    backend RTE does. The JSON-LD description gets normal spaces. Lines and
+    paragraphs containing nothing but (non-breaking) spaces like
+    `<p>&nbsp;</p>` are removed.
 
 Version 11.1.0
 ==============
