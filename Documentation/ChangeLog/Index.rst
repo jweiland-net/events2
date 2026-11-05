@@ -59,6 +59,14 @@ This version contains breaking changes, please read
 *   [BUGFIX] Prefill the download link of the edit form on all database
     platforms. :file:`NewEvent.form.yaml` uses the expression `in` with
     `intExplodeValue: 1` instead of `inSet`. Update copies of the form.
+*   [BUGFIX] Offer categories in the event form, if
+    `settings.new.selectableCategoriesForNewEvents` is missing or empty.
+    Before, a missing setting threw a :php:`TypeError`. Now all direct
+    children of :typoscript:`settings.rootCategory` are offered. Without
+    both settings, no categories are offered. The categories are labelled
+    in the current language. The deprecated fallback to
+    `settings.selectableCategoriesForNewEvents` (since 9.1.9) is removed,
+    see :ref:`upgrade-12-0-0-settings`.
 *   [BUGFIX] Separate list items in the plain text of descriptions.
 *   [BUGFIX] Build the absolute URL of the JSON-LD image correctly.
 *   [DOCS] Describe the frontend management and its access rules, see
