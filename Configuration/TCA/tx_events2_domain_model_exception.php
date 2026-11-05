@@ -19,6 +19,7 @@ return [
         'type' => 'exception_type',
         'typeicon_column' => 'exception_type',
         'typeicon_classes' => [
+            'default' => 'ext-events2-exception-add',
             'Add' => 'ext-events2-exception-add',
             'Remove' => 'ext-events2-exception-remove',
             'Info' => 'ext-events2-exception-info',
@@ -36,7 +37,6 @@ return [
             'endtime' => 'endtime',
         ],
         'searchFields' => 'exception_details',
-        'iconfile' => 'EXT:events2/Resources/Public/Icons/exception_add.png',
     ],
     'types' => [
         'Add' => [
