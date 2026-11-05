@@ -224,6 +224,10 @@ class ManagementControllerTest extends FunctionalTestCase
             'Recurring event',
             $content,
         );
+        self::assertStringContainsString(
+            'alt="Hint"',
+            $content,
+        );
     }
 
     #[Test]
