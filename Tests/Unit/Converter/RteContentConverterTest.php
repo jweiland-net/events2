@@ -256,6 +256,54 @@ class RteContentConverterTest extends UnitTestCase
         );
     }
 
+    public static function normalizePlainTextDataProvider(): array
+    {
+        return [
+            'empty string' => [
+                '',
+                '',
+            ],
+            'surrounding whitespace is trimmed' => [
+                "  \r\n Kurzbeschreibung \n ",
+                'Kurzbeschreibung',
+            ],
+            'LF becomes CRLF like a textarea submitted by the browser' => [
+                "Zeile 1\nZeile 2\n\nZeile 4",
+                "Zeile 1\r\nZeile 2\r\n\r\nZeile 4",
+            ],
+            'CRLF stays CRLF' => [
+                "Zeile 1\r\nZeile 2",
+                "Zeile 1\r\nZeile 2",
+            ],
+            'CR becomes CRLF' => [
+                "Zeile 1\rZeile 2",
+                "Zeile 1\r\nZeile 2",
+            ],
+            'tags are stripped' => [
+                '<p>Kurz <b>fett</b></p><script>alert(1)</script>',
+                'Kurz fettalert(1)',
+            ],
+            'special characters are not encoded' => [
+                'Tom & Jerry "quoted" a < b > c äöü ß',
+                'Tom & Jerry "quoted" a < b > c äöü ß',
+            ],
+            'non-breaking space stays raw' => [
+                "10\u{00A0}Uhr",
+                "10\u{00A0}Uhr",
+            ],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('normalizePlainTextDataProvider')]
+    public function normalizePlainTextReturnsPlainTextLikeBackendTextarea(string $plainText, string $expected): void
+    {
+        self::assertSame(
+            $expected,
+            $this->subject->normalizePlainText($plainText),
+        );
+    }
+
     #[Test]
     public function convertHtmlToPlainTextWithoutNonBreakingSpacesReturnsNormalSpaces(): void
     {

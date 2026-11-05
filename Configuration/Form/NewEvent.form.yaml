@@ -618,7 +618,8 @@ finishers:
             mapOnDatabaseColumn: title
           short-description:
             mapOnDatabaseColumn: teaser
-            convertPlainTextToHtml: true
+            # Teaser is a plain text column (no RTE). Store it like the backend textarea.
+            normalizePlainText: true
           detail-description:
             mapOnDatabaseColumn: detail_information
             convertPlainTextToHtml: true

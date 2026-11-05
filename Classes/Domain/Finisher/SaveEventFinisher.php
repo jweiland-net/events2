@@ -277,6 +277,8 @@ class SaveEventFinisher extends AbstractFinisher
                 $elementValue = $elementValue->format($format);
             } elseif ($elementsConfiguration[$elementIdentifier]['convertPlainTextToHtml'] ?? false) {
                 $elementValue = $this->convertPlainTextToHtml((string)$elementValue);
+            } elseif ($elementsConfiguration[$elementIdentifier]['normalizePlainText'] ?? false) {
+                $elementValue = $this->rteContentConverter->normalizePlainText((string)$elementValue);
             }
 
             $databaseData[$elementsConfiguration[$elementIdentifier]['mapOnDatabaseColumn']] = $elementValue;

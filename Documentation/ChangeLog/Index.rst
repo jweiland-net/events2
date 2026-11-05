@@ -21,6 +21,13 @@ Version 11.1.1
     to plain text in the edit form, in `ConvertHtmlToPlainTextViewHelper`
     and in the JSON-LD description. Words around `<br />` and between
     paragraphs are not glued together in the JSON-LD description anymore.
+*   [BUGFIX] Store teaser of frontend form as plain text. The teaser is a
+    plain text column without RTE. The form based on EXT:form stores it like
+    the backend textarea now: tags stripped, CRLF line breaks, trimmed and
+    not HTML encoded. If you have overridden :file:`NewEvent.form.yaml`,
+    replace `convertPlainTextToHtml: true` of `short-description` in the
+    SaveEventFinisher with `normalizePlainText: true`. Teasers stored as HTML
+    before are still shown and prefilled as plain text.
 *   [BUGFIX] Keep non-breaking spaces outside of JSON-LD. `&nbsp;` is kept
     as non-breaking space in the edit form and in
     `ConvertHtmlToPlainTextViewHelper` and stored as `&nbsp;` again like the

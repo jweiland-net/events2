@@ -78,6 +78,10 @@ class ConvertHtmlToPlainTextViewHelperTest extends FunctionalTestCase
                 "<p>First line<br />Second line</p>\r\n<p>New paragraph</p>",
                 "First line\nSecond line\n\nNew paragraph",
             ],
+            'Plain text teaser with CRLF and special characters is escaped once' => [
+                "Tom & Jerry\r\na < b > c \"quoted\"",
+                "Tom &amp; Jerry\na &lt; b &gt; c &quot;quoted&quot;",
+            ],
             'Inline non-breaking space is kept' => [
                 'Hello&nbsp;world',
                 "Hello\u{00A0}world",
