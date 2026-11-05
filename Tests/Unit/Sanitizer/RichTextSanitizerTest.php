@@ -78,13 +78,46 @@ class RichTextSanitizerTest extends UnitTestCase
                 '<h1>a</h1><h4>b</h4><h5>c</h5><h6>d</h6>',
                 '<p>a</p><p>b</p><p>c</p><p>d</p>',
             ],
-            'unknown tags are removed, text is kept' => [
-                '<p><u>a</u> <span style="color:red">b</span> <font>c</font></p><div>d</div><blockquote>e</blockquote>',
-                '<p>a b c</p>de',
+            'unknown inline tags are removed, text is kept' => [
+                '<p><u>a</u> <span style="color:red">b</span> <font>c</font></p>',
+                '<p>a b c</p>',
             ],
-            'tables are removed, text is kept' => [
+            'unknown block tags with inline content become paragraphs' => [
+                '<div>d</div><blockquote>e</blockquote><pre>f</pre>',
+                '<p>d</p><p>e</p><p>f</p>',
+            ],
+            'unknown block tags with blocks are unwrapped' => [
+                '<div class="x"><p>a</p><div><h2>b</h2><p>c</p></div></div>',
+                '<p>a</p><h2>b</h2><p>c</p>',
+            ],
+            'table cells become paragraphs' => [
                 '<table><tr><td>a</td><td>b</td></tr></table>',
-                'ab',
+                '<p>a</p><p>b</p>',
+            ],
+            'b and i inside paragraph are mapped' => [
+                '<p><b>a</b> <i>b</i></p>',
+                '<p><strong>a</strong> <em>b</em></p>',
+            ],
+            'loose b is mapped and wrapped into paragraph' => [
+                '<b>a</b>',
+                '<p><strong>a</strong></p>',
+            ],
+            'loose b and i with attributes are mapped and wrapped into paragraph' => [
+                '<b class="x" style="color:red">a</b> <i onclick="y()">b</i>',
+                '<p><strong>a</strong> <em>b</em></p>',
+            ],
+            'loose inline content between blocks is wrapped into paragraphs' => [
+                '<h2>a</h2>b <a href="https://example.com">c</a><br>d<ul><li>e</li></ul>f',
+                '<h2>a</h2><p>b <a href="https://example.com">c</a><br>d</p><ul><li>e</li></ul><p>f</p>',
+            ],
+            'whitespace and line breaks between blocks are removed' => [
+                "<p>a</p>\n <br> \n<p>b</p>",
+                '<p>a</p><p>b</p>',
+            ],
+            'raw POST bypassing the editor' => [
+                '<h1>H1</h1><h4>H4</h4><b>fett</b> <i>kursiv</i> <u>unter</u> <span style="font-size:40px">gross</span>'
+                . '<table><tr><td>Zelle</td></tr></table><!-- kommentar -->',
+                '<p>H1</p><p>H4</p><p><strong>fett</strong> <em>kursiv</em> unter gross</p><p>Zelle</p>',
             ],
             'script and style are removed with content' => [
                 '<p>a<script>alert(1)</script><style>p{color:red}</style></p><script src="x.js"></script>',

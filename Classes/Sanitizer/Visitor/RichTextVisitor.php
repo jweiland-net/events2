@@ -19,8 +19,10 @@ use TYPO3\HtmlSanitizer\Visitor\AbstractVisitor;
  *
  * - removes comments and elements with active or embedded content including their content
  * - maps <b> to <strong>, <i> to <em> and headings except h2/h3 to <p>
+ * - maps unknown block containers (div, td, blockquote, ...) without block
+ *   children to <p>, so their text is not glued to the text around them
  * - renames every other unknown element to UNWRAP_TAG, so its text is kept.
- *   RichTextSanitizer removes the UNWRAP_TAG tags after serialization.
+ *   RichTextHtmlSanitizer replaces the UNWRAP_TAG elements by their children.
  * - unwraps links without href and normalizes "target" and "rel" of links
  */
 final class RichTextVisitor extends AbstractVisitor
@@ -36,6 +38,16 @@ final class RichTextVisitor extends AbstractVisitor
         'h4' => 'p',
         'h5' => 'p',
         'h6' => 'p',
+    ];
+
+    /**
+     * Elements, which start a new block. Unknown ones become a paragraph, if
+     * they do not contain any of these elements, else they are unwrapped.
+     */
+    private const BLOCK_TAGS = [
+        'address', 'article', 'aside', 'blockquote', 'caption', 'dd', 'div', 'dl', 'dt', 'figcaption',
+        'figure', 'footer', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hr', 'li', 'main', 'nav', 'ol',
+        'p', 'pre', 'section', 'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr', 'ul',
     ];
 
     private const REMOVED_TAGS = [
@@ -61,9 +73,11 @@ final class RichTextVisitor extends AbstractVisitor
             return $this->renameElement($domNode, self::MAPPED_TAGS[$tagName]);
         }
 
-        return in_array($tagName, self::ALLOWED_TAGS, true)
-            ? $domNode
-            : $this->renameElement($domNode, self::UNWRAP_TAG);
+        if (in_array($tagName, self::ALLOWED_TAGS, true)) {
+            return $domNode;
+        }
+
+        return $this->renameElement($domNode, $this->isParagraphContainer($domNode) ? 'p' : self::UNWRAP_TAG);
     }
 
     public function leaveNode(\DOMNode $domNode): ?\DOMNode
@@ -86,6 +100,24 @@ final class RichTextVisitor extends AbstractVisitor
         }
 
         return $domNode;
+    }
+
+    /**
+     * An unknown block element like <div> or <td>, which contains inline content only
+     */
+    private function isParagraphContainer(\DOMElement $domElement): bool
+    {
+        if (!in_array(strtolower($domElement->nodeName), self::BLOCK_TAGS, true)) {
+            return false;
+        }
+
+        foreach ($domElement->getElementsByTagName('*') as $descendant) {
+            if (in_array(strtolower($descendant->nodeName), self::BLOCK_TAGS, true)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

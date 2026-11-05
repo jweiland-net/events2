@@ -75,6 +75,15 @@ class RichTextServiceTest extends FunctionalTestCase
                 '<p onclick="alert(1)" style="color:red">Text<script>alert(1)</script></p><img src="x.png">',
                 '<p>Text</p>',
             ],
+            'raw POST with loose inline content keeps formatting' => [
+                '<h1>H1</h1><h4>H4</h4><b>fett</b> <i>kursiv</i> <u>unter</u> <span style="font-size:40px">gross</span>'
+                . '<table><tr><td>Zelle</td></tr></table><!-- kommentar -->',
+                "<p>H1</p>\r\n<p>H4</p>\r\n<p><strong>fett</strong> <em>kursiv</em> unter gross</p>\r\n<p>Zelle</p>",
+            ],
+            'loose b and i are kept as strong and em' => [
+                '<b class="x">a</b> <i>b</i>',
+                '<p><strong>a</strong> <em>b</em></p>',
+            ],
             'plain text without JavaScript is converted like the plain textarea' => [
                 "Erste Zeile\r\nZweite Zeile & mehr\r\n\r\nAbsatz",
                 "<p>Erste Zeile<br />Zweite Zeile &amp; mehr</p>\r\n<p>Absatz</p>",
