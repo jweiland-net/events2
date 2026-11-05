@@ -57,6 +57,11 @@ it:
     :typoscript:`plugin.tx_events2._LOCAL_LANG.default.rightsMessage`
 *   :typoscript:`plugin.tx_events2._CSS_DEFAULT_STYLE` with the styles of
     the CSS class `f3-form-error`
+*   :typoscript:`plugin.tx_events2.settings.selectableCategoriesForNewEvents`:
+    Deprecated since version 9.1.9. Use
+    :typoscript:`plugin.tx_events2.settings.new.selectableCategoriesForNewEvents`
+    or the site setting `events2.form.selectableCategoriesForNewEvents`.
+    Old FlexForm values are moved by the upgrade wizard of events2.
 
 :typoscript:`plugin.tx_form.settings.yamlConfigurations.1661247670`
 (:file:`EXT:events2/Configuration/Form/OverrideFormSettings.yaml`) is
