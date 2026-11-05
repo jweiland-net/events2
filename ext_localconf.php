@@ -23,6 +23,7 @@ use JWeiland\Events2\Controller\VideoController;
 use JWeiland\Events2\Hook\Events2DataHandler;
 use JWeiland\Events2\Hook\Form\PrefillCategoriesHook;
 use JWeiland\Events2\Hook\Form\PrefillForEditUsageHook;
+use JWeiland\Events2\Hook\Form\RemainingLettersHook;
 use JWeiland\Events2\Hook\Form\RichTextEditorHook;
 use JWeiland\Events2\Hook\Solr\IndexerHook;
 use JWeiland\Events2\Hook\Solr\ResultsCommandHook;
@@ -133,6 +134,9 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/form']['afterBuildingFinished'][1
 // Add the CKEditor to rich text elements of the current page
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/form']['beforeRendering'][1762444800]
     = RichTextEditorHook::class;
+// Add the counter of remaining letters to textareas with a maxlength
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/form']['beforeRendering'][1762444801]
+    = RemainingLettersHook::class;
 
 // create scheduler to create/update days with recurrency
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][ReGenerateDays::class] = [

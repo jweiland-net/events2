@@ -67,6 +67,14 @@ This version contains breaking changes, please read
     in the current language. The deprecated fallback to
     `settings.selectableCategoriesForNewEvents` (since 9.1.9) is removed,
     see :ref:`upgrade-12-0-0-settings`.
+*   [BUGFIX] Limit the teaser of the event form to 255 characters, the
+    `max` of the column `teaser` in TCA. The element `short-description`
+    of :file:`NewEvent.form.yaml` gets the attribute `maxlength` and the
+    validator `StringLength`. Each textarea with a `maxlength` shows the
+    remaining characters (new label `remainingLetters`). Existing longer
+    teasers are kept, but have to be shortened when the event is edited
+    in the frontend. Update copies of the form, see
+    :ref:`upgrade-12-0-0-form-definition`.
 *   [BUGFIX] Separate list items in the plain text of descriptions.
 *   [BUGFIX] Build the absolute URL of the JSON-LD image correctly.
 *   [DOCS] Describe the frontend management and its access rules, see
