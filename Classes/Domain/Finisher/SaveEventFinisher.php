@@ -15,7 +15,9 @@ use JWeiland\Events2\Converter\RteContentConverter;
 use JWeiland\Events2\Domain\Repository\UserRepository;
 use JWeiland\Events2\Helper\PathSegmentHelper;
 use JWeiland\Events2\Service\DayRelationService;
+use JWeiland\Events2\Service\ManagementAccessService;
 use JWeiland\Events2\Service\RichTextService;
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -43,6 +45,7 @@ class SaveEventFinisher extends AbstractFinisher
         protected readonly DayRelationService $dayRelationService,
         protected readonly RteContentConverter $rteContentConverter = new RteContentConverter(),
         protected readonly ?RichTextService $richTextService = null,
+        protected readonly ?ManagementAccessService $managementAccessService = null,
     ) {}
 
     /**
@@ -53,6 +56,8 @@ class SaveEventFinisher extends AbstractFinisher
      */
     protected function executeInternal(): void
     {
+        $this->throwExceptionIfAccessIsDenied();
+
         $options = [];
         if (isset($this->options['table'])) {
             $options[] = $this->options;
@@ -64,6 +69,52 @@ class SaveEventFinisher extends AbstractFinisher
             $this->options = $option;
             $this->process($optionKey);
         }
+    }
+
+    /**
+     * The ManagementController already restricts the access to the form.
+     * As the form definition could be used in other places (e.g. a form
+     * content element), the same rules are checked again before anything
+     * is stored: New events for frontend users of the configured user group
+     * with an organizer only, existing events for their owners or backend
+     * administrators.
+     *
+     * @throws FinisherException
+     */
+    protected function throwExceptionIfAccessIsDenied(): void
+    {
+        if ($this->isAccessAllowed($this->finisherContext->getRequest())) {
+            return;
+        }
+
+        $this->finisherContext->cancel();
+
+        throw new FinisherException(
+            'The current user is not allowed to create or edit events in frontend.',
+            1762950001,
+        );
+    }
+
+    protected function isAccessAllowed(ServerRequestInterface $request): bool
+    {
+        $managementAccessService = $this->getManagementAccessService();
+        $eventUid = $this->getEventUidToUpdate();
+        if ($eventUid > 0 && $managementAccessService->isBackendAdmin()) {
+            return true;
+        }
+
+        if (!$managementAccessService->isFrontendUserAllowed(
+            $managementAccessService->getUserGroupFromTypoScript($request),
+        )) {
+            return false;
+        }
+
+        return $eventUid === 0 || $managementAccessService->isEventOfFrontendUser($eventUid);
+    }
+
+    protected function getManagementAccessService(): ManagementAccessService
+    {
+        return $this->managementAccessService ?? GeneralUtility::makeInstance(ManagementAccessService::class);
     }
 
     /**

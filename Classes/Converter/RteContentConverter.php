@@ -28,6 +28,30 @@ readonly class RteContentConverter
     private const NON_BREAKING_SPACE = "\u{00A0}";
 
     /**
+     * Characters of the private use area of unicode. They mark the borders of
+     * block elements until runs of them are converted into line breaks.
+     */
+    private const LINE_MARKER = "\u{E000}";
+
+    private const PARAGRAPH_MARKER = "\u{E001}";
+
+    /**
+     * Start and end of these elements are separated by an empty line
+     */
+    private const PARAGRAPH_TAGS = [
+        'address', 'article', 'aside', 'blockquote', 'div', 'dl', 'figcaption', 'figure', 'footer',
+        'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hr', 'main', 'nav', 'p', 'pre', 'section', 'table',
+    ];
+
+    /**
+     * Start and end of these elements are separated by a line break. So list
+     * items and nested lists are on their own line without empty lines.
+     */
+    private const LINE_TAGS = [
+        'caption', 'dd', 'dt', 'li', 'ol', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr', 'ul',
+    ];
+
+    /**
      * Matches a run of lines, which contain nothing but spaces, tabs and
      * non-breaking spaces, including the line break before them.
      */
@@ -59,9 +83,10 @@ readonly class RteContentConverter
     /**
      * Converts HTML of the backend RTE or of convertPlainTextToHtml() (also the
      * format of events2 < 11.1.1 with a raw newline after each <br />) into
-     * plain text. Paragraphs are separated by an empty line, <br /> becomes a
-     * line break and entities are decoded. Every other tag is stripped while
-     * its text content is kept. The result is NOT escaped.
+     * plain text. Paragraphs, headings and other blocks are separated by an
+     * empty line, list items (also of nested lists) by a line break, <br />
+     * becomes a line break and entities are decoded. Every other tag is
+     * stripped while its text content is kept. The result is NOT escaped.
      *
      * Lines containing nothing but whitespace or non-breaking spaces (e.g.
      * "<p>&nbsp;</p>") are removed. Other non-breaking spaces are kept as
@@ -70,10 +95,13 @@ readonly class RteContentConverter
      */
     public function convertHtmlToPlainText(string $html, bool $keepNonBreakingSpaces = true): string
     {
-        $value = str_replace(["\r\n", "\r"], "\n", mb_scrub($html, 'UTF-8'));
-        // Whitespace around these tags is markup only, so it is consumed together with the tag
-        $value = (string)preg_replace('/\s*<\/p\s*>\s*/i', "\n\n", $value);
+        $value = str_replace(
+            ["\r\n", "\r", self::LINE_MARKER, self::PARAGRAPH_MARKER],
+            ["\n", "\n", '', ''],
+            mb_scrub($html, 'UTF-8'),
+        );
         $value = (string)preg_replace('/[ \t]*<br\s*\/?>[ \t]*\n?/i', "\n", $value);
+        $value = $this->convertBlockTagsToLineBreaks($value);
         $value = html_entity_decode(strip_tags($value), ENT_QUOTES | ENT_HTML5, 'UTF-8');
         if (!$keepNonBreakingSpaces) {
             $value = str_replace(self::NON_BREAKING_SPACE, ' ', $value);
@@ -97,6 +125,33 @@ readonly class RteContentConverter
         $plainText = str_replace(["\r\n", "\r"], "\n", strip_tags(mb_scrub($plainText, 'UTF-8')));
 
         return str_replace("\n", self::LINE_BREAK, trim($plainText));
+    }
+
+    /**
+     * Whitespace around block tags is markup only, so it is consumed together
+     * with the tag. A run of markers between two texts becomes one line break,
+     * or one empty line, if a paragraph like element starts or ends there.
+     */
+    private function convertBlockTagsToLineBreaks(string $value): string
+    {
+        $value = (string)preg_replace($this->getBlockTagPattern(self::PARAGRAPH_TAGS), self::PARAGRAPH_MARKER, $value);
+        $value = (string)preg_replace($this->getBlockTagPattern(self::LINE_TAGS), self::LINE_MARKER, $value);
+
+        return (string)preg_replace_callback(
+            '/[' . self::LINE_MARKER . self::PARAGRAPH_MARKER . ']+/u',
+            static fn(array $markers): string => str_contains($markers[0], self::PARAGRAPH_MARKER) ? "\n\n" : "\n",
+            $value,
+        );
+    }
+
+    /**
+     * Matches start and end tags of the given elements incl. attributes
+     *
+     * @param string[] $tagNames
+     */
+    private function getBlockTagPattern(array $tagNames): string
+    {
+        return '/\s*<\/?(?:' . implode('|', $tagNames) . ')(?:\s[^>]*)?\/?>\s*/iu';
     }
 
     private function convertLinesToHtml(string $paragraph): string

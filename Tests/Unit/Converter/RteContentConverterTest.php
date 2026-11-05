@@ -243,6 +243,54 @@ class RteContentConverterTest extends UnitTestCase
                 "<p>First<br />\r\nline</p>\r\n\r\n<p>Second</p>\r\n",
                 "First\nline\n\nSecond",
             ],
+            'list items are separated by line breaks' => [
+                '<ul><li>Eins</li><li>Zwei</li></ul>',
+                "Eins\nZwei",
+            ],
+            'ordered list with attributes and formatted markup' => [
+                "<ol class=\"list\">\r\n    <li value=\"1\">Eins</li>\r\n    <li>Zwei</li>\r\n</ol>",
+                "Eins\nZwei",
+            ],
+            'nested list items are on their own line without empty lines' => [
+                '<ul><li>Eins<ul><li>Eins.a</li><li>Eins.b</li></ul></li><li>Zwei</li></ul>',
+                "Eins\nEins.a\nEins.b\nZwei",
+            ],
+            'list between paragraphs is separated by empty lines' => [
+                "<p>Programm:</p>\r\n<ul><li>Eins</li><li>Zwei</li></ul>\r\n<p>Ende</p>",
+                "Programm:\n\nEins\nZwei\n\nEnde",
+            ],
+            'list after text without paragraph starts on a new line' => [
+                'Programm:<ul><li>Eins</li></ul>Ende',
+                "Programm:\nEins\nEnde",
+            ],
+            'heading and paragraph are separated by an empty line' => [
+                '<h2>Programm</h2><p>Beginn 10 Uhr</p><h3>Eintritt</h3><p>frei</p>',
+                "Programm\n\nBeginn 10 Uhr\n\nEintritt\n\nfrei",
+            ],
+            'heading and list are separated by an empty line' => [
+                '<h2>Programm</h2><ul><li>Eins</li><li>Zwei</li></ul>',
+                "Programm\n\nEins\nZwei",
+            ],
+            'paragraphs in list items do not create more than one empty line' => [
+                '<ul><li><p>Eins</p></li><li><p>Zwei</p></li></ul>',
+                "Eins\n\nZwei",
+            ],
+            'empty list items do not create empty lines' => [
+                '<ul><li>Eins</li><li></li><li> </li><li>Zwei</li></ul>',
+                "Eins\nZwei",
+            ],
+            'inline tags in list items keep the text together' => [
+                '<ul><li><strong>Eins</strong> und <em>Zwei</em></li></ul>',
+                'Eins und Zwei',
+            ],
+            'pre is not mistaken for p' => [
+                '<pre>Code</pre><p>Text</p>',
+                "Code\n\nText",
+            ],
+            'private use characters of the input are removed' => [
+                "Eins\u{E000}Zwei\u{E001}",
+                'EinsZwei',
+            ],
         ];
     }
 
@@ -311,6 +359,18 @@ class RteContentConverterTest extends UnitTestCase
             "Beginn 10 Uhr\n\nZweiter Absatz",
             $this->subject->convertHtmlToPlainText(
                 "<p>Beginn 10&nbsp;Uhr</p>\r\n<p>&nbsp;</p>\r\n<p>Zweiter Absatz</p>",
+                false,
+            ),
+        );
+    }
+
+    #[Test]
+    public function convertHtmlToPlainTextWithoutNonBreakingSpacesSeparatesListItems(): void
+    {
+        self::assertSame(
+            "Programm\n\nBeginn 10 Uhr\nEinlass 9 Uhr\n\nEnde",
+            $this->subject->convertHtmlToPlainText(
+                '<h2>Programm</h2><ul><li>Beginn 10&nbsp;Uhr</li><li>Einlass 9&nbsp;Uhr</li></ul><p>Ende</p>',
                 false,
             ),
         );
