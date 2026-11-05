@@ -86,7 +86,9 @@ Update links in your own templates:
 *   Links to the action `new` link to the action `perform` without
     argument.
 *   Links to the action `edit` link to the action `perform` with the
-    argument `event`:
+    argument `event`. The event is read from the query parameter
+    `tx_events2_management[event]` only, so do not submit it in a POST
+    body:
 
     ..  code-block:: html
         :caption: EXT:my_sitepackage/Resources/Private/Templates/Day/Show.html (excerpt)
@@ -146,8 +148,9 @@ for `Management::perform` and remove the routes for `Management::create`,
             tableName: tx_events2_domain_model_event
             routeFieldName: path_segment
 
-Hidden events are resolved for the actions `perform` and
-`confirmActivation` now (before: `edit`, `update` and
+The action `perform` has no Extbase argument `event` anymore, the event
+form reads the UID from the query. Hidden events are mapped by Extbase for
+the action `confirmActivation` only (before: `edit`, `update` and
 `confirmActivation`).
 
 ..  _upgrade-12-0-0-templates:
@@ -210,20 +213,92 @@ sanitized now. If you use your own copy of
 Changed access rules
 --------------------
 
-New events can only be created by logged-in frontend users of the user
-group of :confval:`settings.userGroup
-<events2-typoscript-settings-usergroup>` with a related organizer. Backend
-administrators can no longer create events in the frontend, but can still
-edit existing events, list events and activate events.
+The rules of the frontend management have been simplified, see
+:ref:`frontend-management-access`:
 
-The finisher `SaveEventFinisher` checks the same rules before anything is
-stored, also if the form definition is used outside of the Management
-plugin. If access is denied, it throws a
-:php:`TYPO3\CMS\Form\Domain\Finishers\Exception\FinisherException`. See
-:ref:`frontend-management-access`.
+*   New events can only be created by logged-in frontend users of the
+    user group of :confval:`settings.userGroup
+    <events2-typoscript-settings-usergroup>` with a related organizer.
+    Backend administrators can no longer create events in the frontend.
+*   The list of own events (`listMyEvents`) follows the same rule.
+    Backend administrators can not list events anymore.
+*   Backend administrators can still edit every existing event. The
+    organizers of the event are kept now. Before, an administrator
+    removed the owner of the event.
+*   The action `activate` requires a valid `moderationToken`, also for
+    backend administrators. They can still open `confirmActivation`
+    without token; the confirmation page renders a fresh token into its
+    form.
+*   The user group is read from the TypoScript setup only
+    (:typoscript:`plugin.tx_events2_management.settings.userGroup`
+    before :typoscript:`plugin.tx_events2.settings.userGroup`). Values of
+    the FlexForm or of other plugin settings are not respected anymore.
+    Set the user group in the site setting `events2.form.userGroup` or
+    in TypoScript.
+*   The edit form is only prefilled, if the current user is allowed to
+    edit the event. The finisher `SaveEventFinisher` checks the same
+    rules before anything is stored, also if the form definition is used
+    outside of the Management plugin. If access is denied, it throws a
+    :php:`TYPO3\CMS\Form\Domain\Finishers\Exception\FinisherException`.
 
 The format of the `moderationToken` is unchanged. Activation links of
 already sent mails stay valid.
+
+..  _upgrade-12-0-0-activation-form:
+
+Send the moderationToken in own activation forms
+------------------------------------------------
+
+If you have overridden :file:`Templates/Management/ConfirmActivation.html`,
+make sure that the form of the action `activate` submits the
+`moderationToken`, which is assigned to the template:
+
+..  code-block:: html
+    :caption: EXT:my_sitepackage/Resources/Private/Templates/Management/ConfirmActivation.html (excerpt)
+
+    <f:form action="activate" controller="Management" method="post">
+        <f:form.hidden name="event" value="{event.uid}"/>
+        <f:form.hidden name="moderationToken" value="{moderationToken}"/>
+        <f:form.submit value="{f:translate(key: 'confirmActivation.submit')}"/>
+    </f:form>
+
+Without the token the activation is denied with the message of the label
+`invalidModerationToken`, also for backend administrators.
+
+..  _upgrade-12-0-0-form-definition:
+
+Update own copies of NewEvent.form.yaml
+---------------------------------------
+
+The element `download-link` of :file:`NewEvent.form.yaml` used the
+expression `inSet` with swapped arguments. The download link of an event
+was only found, if the event had exactly one download link, and SQLite
+threw an exception. If you use an own copy of the form definition,
+change the expression to `in` with :yaml:`intExplodeValue: 1`:
+
+..  code-block:: yaml
+    :caption: EXT:my_sitepackage/Configuration/Form/NewEvent.form.yaml (excerpt)
+
+    - label: 'Download Link'
+      type: Text
+      identifier: download-link
+      defaultValue: ''
+      properties:
+        dbMapping:
+          relation:
+            labelColumn: link
+            table: tx_events2_domain_model_link
+            expressions:
+              - column: uid
+                expression: in
+                value: '{event:download_links}'
+                intExplodeValue: 1
+
+The expression `inSet` is still supported for own form elements. Only
+the methods `eq`, `neq`, `lt`, `lte`, `gt`, `gte`, `in`, `notIn` and
+`inSet` of the ExpressionBuilder are allowed in
+:yaml:`dbMapping.relation.expressions` now, other expressions are
+ignored. See :ref:`frontend-management-form-definition`.
 
 ..  _upgrade-12-0-0-labels:
 
@@ -308,11 +383,66 @@ The following classes have been removed without replacement:
     constructor injection instead.
 
 :php:`JWeiland\Events2\Service\EventModerationService` has been merged
-into :php:`JWeiland\Events2\Service\ManagementAccessService`. If you use
-:php:`EventModerationService` in your own code, for example to create a
-`moderationToken`, inject :php:`ManagementAccessService` instead. The
-token for the activation link can be created with the
-:ref:`ModerationTokenViewHelper <moderationTokenViewHelper>` in templates.
+into :php:`JWeiland\Events2\Service\ManagementAccessService`. It
+contains all rules of the frontend management and provides this public
+API:
+
+:php:`getEventUid(ServerRequestInterface $request): int`
+    Returns the UID of the event to edit from the query parameter
+    `tx_events2_management[event]`. Arrays, values which are no integer
+    and values lower than 1 result in `0`, which means: create a new
+    event.
+
+:php:`getDenialReason(ServerRequestInterface $request): string`
+    Returns the label key of the reason, why the current user is not
+    allowed to create, list or edit events, or an empty string, if
+    access is allowed. Without event in the query the rule for creating
+    and listing events applies, else the rule for editing this event.
+    Events which do not exist and events of other organizers both result
+    in `unauthorizedOrganizerForEdit`. The user group is read from the
+    TypoScript setup.
+
+:php:`canConfirmActivation(int $eventUid, string $moderationToken): bool`
+    Backend administrators for existing events or everyone with a valid
+    token.
+
+:php:`canActivateEvent(int $eventUid, string $moderationToken): bool`
+    Everyone with a valid token only.
+
+:php:`generateModerationToken(int $eventUid): string`
+    Returns the token for the activation link, or an empty string, if
+    the event does not exist.
+
+Migrate your own code:
+
+..  list-table::
+    :header-rows: 1
+
+    *   -   Before
+        -   Now
+    *   -   :php:`EventModerationService::generateModerationToken()`
+        -   :php:`ManagementAccessService::generateModerationToken()`
+    *   -   :php:`EventModerationService::isValidModerationToken()`
+        -   :php:`ManagementAccessService::canActivateEvent()`
+    *   -   :php:`getDenialReasonForCreate()`, :php:`canCreateEvent()`,
+            :php:`getDenialReasonForEdit()`, :php:`canEditEvent()`,
+            :php:`getDenialReasonForListing()`
+        -   :php:`ManagementAccessService::getDenialReason()` with the
+            request. An empty string means: allowed.
+    *   -   :php:`EventModerationService::getValidModerationToken()`
+        -   :php:`ManagementAccessService::canActivateEvent()` or
+            :php:`canConfirmActivation()` with the token of the request
+    *   -   :php:`getUserGroupFromTypoScript()`
+        -   Removed without replacement. The user group is read
+            internally by :php:`getDenialReason()`.
+
+In templates, create the token for the activation link with the
+:ref:`ModerationTokenViewHelper <moderationTokenViewHelper>`.
+
+The action :php:`ManagementController::performAction()` has no argument
+`event` anymore. The event listener
+:php:`RegisterHiddenEventEventListener` registers hidden events for the
+action `confirmActivation` only.
 
 The event model :php:`JWeiland\Events2\Domain\Model\Event` has no
 :php:`#[FileUpload]` attribute at the property `$images` and no

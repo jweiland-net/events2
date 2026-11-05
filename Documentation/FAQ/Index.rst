@@ -70,5 +70,5 @@ File uploads
 The event form of the Management plugin is based on EXT:form. Images are
 uploaded with its `ImageUpload` elements into the folder
 `1:/Extensions/events2/`. If you need the image rights from the uploader,
-add a mandatory checkbox to your own copy of the form definition. See
-:ref:`frontend-management-images`.
+install `jweiland/checkfaluploads` and add its rights checkbox to your own
+copy of the form definition. See :ref:`frontend-management-images`.
