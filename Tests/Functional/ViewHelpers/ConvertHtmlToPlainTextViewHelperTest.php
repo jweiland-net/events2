@@ -78,6 +78,14 @@ class ConvertHtmlToPlainTextViewHelperTest extends FunctionalTestCase
                 "<p>First line<br />Second line</p>\r\n<p>New paragraph</p>",
                 "First line\nSecond line\n\nNew paragraph",
             ],
+            'Inline non-breaking space is kept' => [
+                'Hello&nbsp;world',
+                "Hello\u{00A0}world",
+            ],
+            'Paragraph with non-breaking space only is removed' => [
+                "<p>Beginn 10&nbsp;Uhr</p>\r\n<p>&nbsp;</p>\r\n<p>Zweiter Absatz</p>",
+                "Beginn 10\u{00A0}Uhr\n\nZweiter Absatz",
+            ],
             'Legacy frontend format with newline after br' => [
                 "<p>First line<br />\nSecond line</p><p>New paragraph</p>",
                 "First line\nSecond line\n\nNew paragraph",

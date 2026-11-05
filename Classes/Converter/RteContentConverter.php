@@ -23,19 +23,29 @@ readonly class RteContentConverter
 {
     private const PARAGRAPH_SEPARATOR = "\r\n";
 
+    private const NON_BREAKING_SPACE = "\u{00A0}";
+
+    /**
+     * Matches a run of lines, which contain nothing but spaces, tabs and
+     * non-breaking spaces, including the line break before them.
+     */
+    private const BLANK_LINES_PATTERN = '/\n(?:[ \t\x{00A0}]*\n)+/u';
+
     /**
      * A single line break is meant as <br />, an empty line between two blocks
      * of text is meant as a new paragraph. Any tag the visitor might have
      * typed or pasted in is removed beforehand, so only our own <p> and <br />
-     * tags end up in the database.
+     * tags end up in the database. Lines containing non-breaking spaces only
+     * count as empty lines. Other non-breaking spaces are stored as "&nbsp;"
+     * like the backend RTE does.
      */
     public function convertPlainTextToHtml(string $plainText): string
     {
-        $plainText = str_replace(["\r\n", "\r"], "\n", strip_tags($plainText));
-
+        // Invalid UTF-8 would let the unicode patterns below fail
+        $plainText = str_replace(["\r\n", "\r"], "\n", strip_tags(mb_scrub($plainText, 'UTF-8')));
         $paragraphs = array_filter(
-            array_map(trim(...), preg_split('/\n[ \t]*\n/', trim($plainText)) ?: []),
-            static fn(string $paragraph): bool => $paragraph !== '',
+            array_map(trim(...), preg_split(self::BLANK_LINES_PATTERN, $plainText) ?: []),
+            fn(string $paragraph): bool => !$this->isBlank($paragraph),
         );
 
         return implode(self::PARAGRAPH_SEPARATOR, array_map(
@@ -50,34 +60,49 @@ readonly class RteContentConverter
      * plain text. Paragraphs are separated by an empty line, <br /> becomes a
      * line break and entities are decoded. Every other tag is stripped while
      * its text content is kept. The result is NOT escaped.
+     *
+     * Lines containing nothing but whitespace or non-breaking spaces (e.g.
+     * "<p>&nbsp;</p>") are removed. Other non-breaking spaces are kept as
+     * U+00A0, so e.g. "10&nbsp;Uhr" does not wrap. Set $keepNonBreakingSpaces
+     * to false to get normal spaces instead, e.g. for structured data.
      */
-    public function convertHtmlToPlainText(string $html): string
+    public function convertHtmlToPlainText(string $html, bool $keepNonBreakingSpaces = true): string
     {
-        if (trim($html) === '') {
-            return '';
-        }
-
-        $value = str_replace(["\r\n", "\r"], "\n", $html);
+        $value = str_replace(["\r\n", "\r"], "\n", mb_scrub($html, 'UTF-8'));
         // Whitespace around these tags is markup only, so it is consumed together with the tag
         $value = (string)preg_replace('/\s*<\/p\s*>\s*/i', "\n\n", $value);
         $value = (string)preg_replace('/[ \t]*<br\s*\/?>[ \t]*\n?/i', "\n", $value);
         $value = html_entity_decode(strip_tags($value), ENT_QUOTES | ENT_HTML5, 'UTF-8');
-        // The RTE stores empty paragraphs as "<p>&nbsp;</p>"
-        $value = str_replace("\u{00A0}", ' ', $value);
+        if (!$keepNonBreakingSpaces) {
+            $value = str_replace(self::NON_BREAKING_SPACE, ' ', $value);
+        }
 
         // Collapse any run of blank lines into a single blank line
-        $value = (string)preg_replace('/\n[ \t]*(?:\n[ \t]*)+/', "\n\n", $value);
+        $value = (string)preg_replace(self::BLANK_LINES_PATTERN, "\n\n", "\n" . $value . "\n");
 
-        return trim($value);
+        // Non-breaking spaces at the beginning and end of the text are kept, as they are content
+        return $this->isBlank($value) ? '' : trim($value, " \t\n");
     }
 
     private function convertLinesToHtml(string $paragraph): string
     {
         $lines = array_map(
-            static fn(string $line): string => htmlspecialchars(trim($line), ENT_NOQUOTES, 'UTF-8'),
+            static fn(string $line): string => str_replace(
+                self::NON_BREAKING_SPACE,
+                '&nbsp;',
+                htmlspecialchars(trim($line), ENT_NOQUOTES | ENT_SUBSTITUTE, 'UTF-8'),
+            ),
             explode("\n", $paragraph),
         );
 
         return implode('<br />', $lines);
+    }
+
+    /**
+     * Returns true, if the value contains nothing but whitespace and non-breaking spaces
+     */
+    private function isBlank(string $value): bool
+    {
+        return preg_match('/^[\s\x{00A0}]*$/u', $value) === 1;
     }
 }

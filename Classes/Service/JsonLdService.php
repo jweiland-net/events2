@@ -205,9 +205,11 @@ class JsonLdService
      */
     protected function addDescriptionToData(Event $event): void
     {
-        // strip_tags() would glue the words of "<br />" and "</p><p>" together
+        // strip_tags() would glue the words of "<br />" and "</p><p>" together.
+        // Not all search engines treat U+00A0 like a space, so use normal spaces.
         $this->data['description'] = $this->rteContentConverter->convertHtmlToPlainText(
             $event->getDetailInformation(),
+            false,
         );
     }
 

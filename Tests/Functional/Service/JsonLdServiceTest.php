@@ -243,6 +243,21 @@ class JsonLdServiceTest extends FunctionalTestCase
     }
 
     #[Test]
+    public function addJsonLdAddsDescriptionWithNormalSpacesInsteadOfNonBreakingSpaces(): void
+    {
+        $event = new Event();
+        $event->setDetailInformation("<p>Beginn 10&nbsp;Uhr</p>\r\n<p>&nbsp;</p>\r\n<p>Zweiter Absatz</p>");
+
+        $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
+        (new \ReflectionMethod($jsonLdService, 'addDescriptionToData'))->invoke($jsonLdService, $event);
+
+        self::assertSame(
+            "Beginn 10 Uhr\n\nZweiter Absatz",
+            $jsonLdService->getCollectedJsonLdData()['description'],
+        );
+    }
+
+    #[Test]
     public function addJsonLdAddsEventUrl(): void
     {
         $this->createSingleEvent();

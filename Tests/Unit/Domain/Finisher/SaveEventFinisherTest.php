@@ -123,6 +123,15 @@ class SaveEventFinisherTest extends UnitTestCase
         );
     }
 
+    #[Test]
+    public function convertPlainTextToHtmlStoresNonBreakingSpaceAsEntity(): void
+    {
+        self::assertSame(
+            '<p>Beginn 10&nbsp;Uhr</p>',
+            $this->convertPlainTextToHtml("Beginn 10\u{00A0}Uhr"),
+        );
+    }
+
     private function convertPlainTextToHtml(string $plainText): string
     {
         $method = new \ReflectionMethod($this->subject, 'convertPlainTextToHtml');

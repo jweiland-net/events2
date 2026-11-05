@@ -238,6 +238,57 @@ class PrefillForEditUsageHookTest extends FunctionalTestCase
         );
     }
 
+    #[Test]
+    public function setFormDefaultValuesKeepsInlineNonBreakingSpaceAndRemovesEmptyParagraph(): void
+    {
+        $eventUid = $this->insertEvent(
+            title: 'Event with non-breaking spaces',
+            eventBegin: new \DateTimeImmutable('today midnight'),
+            additionalFields: [
+                'detail_information' => "<p>Beginn 10&nbsp;Uhr</p>\r\n<p>&nbsp;</p>\r\n<p>Zweiter Absatz</p>",
+            ],
+        );
+
+        $formElement = $this->buildFormElement('detail-description', [
+            'dbMapping' => [
+                'column' => 'detail_information',
+                'dataType' => 'plainText',
+            ],
+        ]);
+        $this->callSetFormDefaultValues($formElement, $this->getEventRecord($eventUid));
+
+        self::assertSame(
+            "Beginn 10\u{00A0}Uhr\n\nZweiter Absatz",
+            $formElement->getDefaultValue(),
+        );
+    }
+
+    #[Test]
+    public function nonBreakingSpaceSurvivesRoundTripThroughDatabaseAndEditForm(): void
+    {
+        $storedHtml = (new RteContentConverter())->convertPlainTextToHtml("Beginn 10\u{00A0}Uhr");
+        $eventUid = $this->insertEvent(
+            title: 'Event with non-breaking space',
+            eventBegin: new \DateTimeImmutable('today midnight'),
+            additionalFields: ['detail_information' => $storedHtml],
+        );
+
+        $formElement = $this->buildFormElement('detail-description', [
+            'dbMapping' => [
+                'column' => 'detail_information',
+                'dataType' => 'plainText',
+            ],
+        ]);
+        $this->callSetFormDefaultValues($formElement, $this->getEventRecord($eventUid));
+
+        self::assertSame('<p>Beginn 10&nbsp;Uhr</p>', $storedHtml);
+        self::assertSame("Beginn 10\u{00A0}Uhr", $formElement->getDefaultValue());
+        self::assertSame(
+            $storedHtml,
+            (new RteContentConverter())->convertPlainTextToHtml($formElement->getDefaultValue()),
+        );
+    }
+
     private function buildFormElement(string $identifier, array $properties): GenericFormElement
     {
         $formDefinition = new FormDefinition('test-form');

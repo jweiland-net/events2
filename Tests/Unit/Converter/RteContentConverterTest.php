@@ -127,6 +127,26 @@ class RteContentConverterTest extends UnitTestCase
                 'äöü ÄÖÜ ß €',
                 '<p>äöü ÄÖÜ ß €</p>',
             ],
+            'non-breaking space is stored as entity like the backend RTE' => [
+                "Beginn 10\u{00A0}Uhr",
+                '<p>Beginn 10&nbsp;Uhr</p>',
+            ],
+            'non-breaking space at end of line is kept' => [
+                "Ende.\u{00A0}\nNeue Zeile",
+                '<p>Ende.&nbsp;<br />Neue Zeile</p>',
+            ],
+            'line with non-breaking spaces only starts new paragraph' => [
+                "First paragraph\n\u{00A0} \u{00A0}\nSecond paragraph",
+                "<p>First paragraph</p>\r\n<p>Second paragraph</p>",
+            ],
+            'text with non-breaking spaces only returns empty string' => [
+                "\u{00A0}\n\u{00A0}",
+                '',
+            ],
+            'invalid UTF-8 is substituted instead of dropping the text' => [
+                "Hello \xFF world",
+                '<p>Hello ? world</p>',
+            ],
         ];
     }
 
@@ -195,6 +215,30 @@ class RteContentConverterTest extends UnitTestCase
                 "<p>First</p>\r\n<p>&nbsp;</p>\r\n<p></p>\r\n<p>Second</p>",
                 "First\n\nSecond",
             ],
+            'inline non-breaking space is kept as U+00A0' => [
+                '<p>Beginn 10&nbsp;Uhr</p>',
+                "Beginn 10\u{00A0}Uhr",
+            ],
+            'paragraph with non-breaking space only is removed' => [
+                "<p>Beginn 10&nbsp;Uhr</p>\r\n<p>&nbsp;</p>\r\n<p>Zweiter Absatz</p>",
+                "Beginn 10\u{00A0}Uhr\n\nZweiter Absatz",
+            ],
+            'leading and trailing paragraphs with non-breaking spaces only are removed' => [
+                "<p>&nbsp;</p>\r\n<p>Text</p>\r\n<p>&nbsp; &nbsp;</p>",
+                'Text',
+            ],
+            'line with non-breaking space only becomes a blank line' => [
+                '<p>a<br />&nbsp;<br />b</p>',
+                "a\n\nb",
+            ],
+            'leading whitespace of a line after a blank line is kept' => [
+                "<p>a</p>\r\n<p>&nbsp; b</p>",
+                "a\n\n\u{00A0} b",
+            ],
+            'content with non-breaking spaces only returns empty string' => [
+                '<p>&nbsp;</p>',
+                '',
+            ],
             'no stray carriage return' => [
                 "<p>First<br />\r\nline</p>\r\n\r\n<p>Second</p>\r\n",
                 "First\nline\n\nSecond",
@@ -209,6 +253,29 @@ class RteContentConverterTest extends UnitTestCase
         self::assertSame(
             $expectedPlainText,
             $this->subject->convertHtmlToPlainText($html),
+        );
+    }
+
+    #[Test]
+    public function convertHtmlToPlainTextWithoutNonBreakingSpacesReturnsNormalSpaces(): void
+    {
+        self::assertSame(
+            "Beginn 10 Uhr\n\nZweiter Absatz",
+            $this->subject->convertHtmlToPlainText(
+                "<p>Beginn 10&nbsp;Uhr</p>\r\n<p>&nbsp;</p>\r\n<p>Zweiter Absatz</p>",
+                false,
+            ),
+        );
+    }
+
+    #[Test]
+    public function roundTripKeepsNonBreakingSpaceOfBackendRte(): void
+    {
+        $html = "<p>Beginn 10&nbsp;Uhr<br />Einlass 9&nbsp;Uhr</p>\r\n<p>Zweiter Absatz.&nbsp;</p>";
+
+        self::assertSame(
+            $html,
+            $this->subject->convertPlainTextToHtml($this->subject->convertHtmlToPlainText($html)),
         );
     }
 
