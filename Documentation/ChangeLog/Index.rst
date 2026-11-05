@@ -7,6 +7,21 @@
 ChangeLog
 =========
 
+Version 11.1.1
+==============
+
+*   [BUGFIX] Store frontend description like backend RTE. Teaser and detail
+    information of the frontend form are stored in the format of the
+    backend RTE (CKEditor and RteHtmlParser) now: `<br />` without a
+    following newline, paragraphs separated by CRLF and only `&`, `<` and
+    `>` encoded. Before, `<f:format.html>` (lib.parseFunc_RTE) turned the
+    newline after each `<br />` into a new paragraph. Already stored
+    descriptions keep the old format until the event is saved again.
+*   [BUGFIX] Decode HTML entities when converting stored descriptions back
+    to plain text in the edit form, in `ConvertHtmlToPlainTextViewHelper`
+    and in the JSON-LD description. Words around `<br />` and between
+    paragraphs are not glued together in the JSON-LD description anymore.
+
 Version 11.1.0
 ==============
 

@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Hook\Form;
 
 use Doctrine\DBAL\ArrayParameterType;
+use JWeiland\Events2\Converter\RteContentConverter;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
@@ -31,6 +32,7 @@ readonly class PrefillForEditUsageHook
 {
     public function __construct(
         private PageRepository $pageRepository,
+        private RteContentConverter $rteContentConverter = new RteContentConverter(),
     ) {}
 
     /**
@@ -302,25 +304,14 @@ readonly class PrefillForEditUsageHook
     }
 
     /**
-     * There is no RTE for this element in frontend, so the value typed into the plain Textarea must
-     * match what is stored: either backend-RTE HTML, or SaveEventFinisher::convertPlainTextToHtml()'s
-     * own <p>/<br> markup. Turn both back into real line breaks and strip every other tag along with
-     * its markup, so an existing record with backend-added formatting can still be re-edited as plain
-     * text instead of showing raw HTML source in the textarea.
+     * There is no RTE for this element in frontend, so the plain textarea must
+     * show the HTML of the backend RTE or of SaveEventFinisher as plain text.
+     *
+     * @see RteContentConverter::convertHtmlToPlainText()
      */
     protected function convertHtmlToPlainText(string $value): string
     {
-        if (trim($value) === '') {
-            return '';
-        }
-
-        $value = str_replace(["\r\n", "\r"], "\n", $value);
-        $value = (string)preg_replace('/<\/p\s*>/i', "\n\n", $value);
-        $value = (string)preg_replace('/<br\s*\/?>/i', "\n", $value);
-        $value = strip_tags($value);
-        $value = (string)preg_replace('/\n[ \t]*\n+/', "\n\n", $value);
-
-        return trim($value);
+        return $this->rteContentConverter->convertHtmlToPlainText($value);
     }
 
     protected function getEventRecord(int $eventUid): array

@@ -65,7 +65,7 @@ class SaveEventFinisherTest extends UnitTestCase
     public function convertPlainTextToHtmlWithSingleLineBreakConvertsItToBrTag(): void
     {
         self::assertSame(
-            "<p>Hello<br />\nworld</p>",
+            '<p>Hello<br />world</p>',
             $this->convertPlainTextToHtml("Hello\nworld"),
         );
     }
@@ -74,7 +74,7 @@ class SaveEventFinisherTest extends UnitTestCase
     public function convertPlainTextToHtmlWithBlankLineStartsNewParagraph(): void
     {
         self::assertSame(
-            '<p>First paragraph</p><p>Second paragraph</p>',
+            "<p>First paragraph</p>\r\n<p>Second paragraph</p>",
             $this->convertPlainTextToHtml("First paragraph\n\nSecond paragraph"),
         );
     }
@@ -83,7 +83,7 @@ class SaveEventFinisherTest extends UnitTestCase
     public function convertPlainTextToHtmlWithWindowsLineEndingsIsTreatedLikeUnixLineEndings(): void
     {
         self::assertSame(
-            '<p>First paragraph</p><p>Second paragraph</p>',
+            "<p>First paragraph</p>\r\n<p>Second paragraph</p>",
             $this->convertPlainTextToHtml("First paragraph\r\n\r\nSecond paragraph"),
         );
     }
@@ -92,7 +92,7 @@ class SaveEventFinisherTest extends UnitTestCase
     public function convertPlainTextToHtmlStripsTagsTypedOrPastedByVisitor(): void
     {
         self::assertSame(
-            '<p>alert(&quot;xss&quot;)bold text</p>',
+            '<p>alert("xss")bold text</p>',
             $this->convertPlainTextToHtml('<script>alert("xss")</script><b>bold text</b>'),
         );
     }
@@ -101,8 +101,25 @@ class SaveEventFinisherTest extends UnitTestCase
     public function convertPlainTextToHtmlEscapesSpecialCharacters(): void
     {
         self::assertSame(
-            '<p>Tom &amp; Jerry &quot;quoted&quot;</p>',
+            '<p>Tom &amp; Jerry "quoted"</p>',
             $this->convertPlainTextToHtml('Tom & Jerry "quoted"'),
+        );
+    }
+
+    #[Test]
+    public function convertPlainTextToHtmlStoresDescriptionLikeBackendRte(): void
+    {
+        $plainText = "Erste Zeile der Beschreibung.\r\n"
+            . "Zweite Zeile direkt darunter.\r\n"
+            . "\r\n"
+            . "Neuer Absatz nach einer Leerzeile.\r\n"
+            . 'Letzte Zeile mit Umlauten: äöü ß & "Anführungszeichen".';
+
+        self::assertSame(
+            '<p>Erste Zeile der Beschreibung.<br />Zweite Zeile direkt darunter.</p>'
+            . "\r\n"
+            . '<p>Neuer Absatz nach einer Leerzeile.<br />Letzte Zeile mit Umlauten: äöü ß &amp; "Anführungszeichen".</p>',
+            $this->convertPlainTextToHtml($plainText),
         );
     }
 

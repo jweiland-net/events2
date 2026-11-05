@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Service;
 
+use JWeiland\Events2\Converter\RteContentConverter;
 use JWeiland\Events2\Domain\Factory\TimeFactory;
 use JWeiland\Events2\Domain\Model\Day;
 use JWeiland\Events2\Domain\Model\Event;
@@ -41,6 +42,7 @@ class JsonLdService
 
     public function __construct(
         protected readonly TimeFactory $timeFactory,
+        protected readonly RteContentConverter $rteContentConverter = new RteContentConverter(),
     ) {}
 
     /**
@@ -203,7 +205,10 @@ class JsonLdService
      */
     protected function addDescriptionToData(Event $event): void
     {
-        $this->data['description'] = strip_tags($event->getDetailInformation());
+        // strip_tags() would glue the words of "<br />" and "</p><p>" together
+        $this->data['description'] = $this->rteContentConverter->convertHtmlToPlainText(
+            $event->getDetailInformation(),
+        );
     }
 
     /**

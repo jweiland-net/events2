@@ -70,6 +70,18 @@ class ConvertHtmlToPlainTextViewHelperTest extends FunctionalTestCase
                 '<p>Tom & Jerry "quoted"</p>',
                 'Tom &amp; Jerry &quot;quoted&quot;',
             ],
+            'Entities are decoded before they get escaped once' => [
+                '<p>Tom &amp; Jerry &quot;quoted&quot; &lt;b&gt; &auml;</p>',
+                'Tom &amp; Jerry &quot;quoted&quot; &lt;b&gt; ä',
+            ],
+            'Backend RTE format' => [
+                "<p>First line<br />Second line</p>\r\n<p>New paragraph</p>",
+                "First line\nSecond line\n\nNew paragraph",
+            ],
+            'Legacy frontend format with newline after br' => [
+                "<p>First line<br />\nSecond line</p><p>New paragraph</p>",
+                "First line\nSecond line\n\nNew paragraph",
+            ],
         ];
     }
 
