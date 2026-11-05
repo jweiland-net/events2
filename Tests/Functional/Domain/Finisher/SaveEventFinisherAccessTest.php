@@ -73,7 +73,7 @@ class SaveEventFinisherAccessTest extends FunctionalTestCase
 
     protected function tearDown(): void
     {
-        unset($_GET['tx_events2_management'], $GLOBALS['TYPO3_REQUEST']);
+        unset($GLOBALS['TYPO3_REQUEST']);
 
         parent::tearDown();
     }
@@ -136,35 +136,102 @@ class SaveEventFinisherAccessTest extends FunctionalTestCase
     #[Test]
     public function isAccessAllowedForOwnEventReturnsTrue(): void
     {
-        $_GET['tx_events2_management']['event'] = (string)$this->insertEventOfOrganizer();
+        $eventUid = $this->insertEventOfOrganizer();
         $this->loginFrontendUser(1);
 
-        self::assertTrue($this->isAccessAllowed());
+        self::assertTrue($this->isAccessAllowed($eventUid));
     }
 
     #[Test]
     public function isAccessAllowedForForeignEventReturnsFalse(): void
     {
-        $_GET['tx_events2_management']['event'] = (string)$this->insertEventOfOrganizer();
+        $eventUid = $this->insertEventOfOrganizer();
         $this->loginFrontendUser(2);
 
-        self::assertFalse($this->isAccessAllowed());
+        self::assertFalse($this->isAccessAllowed($eventUid));
     }
 
     #[Test]
     public function isAccessAllowedForExistingEventWithBackendAdminReturnsTrue(): void
     {
-        $_GET['tx_events2_management']['event'] = (string)$this->insertEventOfOrganizer();
+        $eventUid = $this->insertEventOfOrganizer();
         $this->loginBackendUser(true);
 
-        self::assertTrue($this->isAccessAllowed());
+        self::assertTrue($this->isAccessAllowed($eventUid));
     }
 
-    private function isAccessAllowed(): bool
+    /**
+     * The finisher stores the event of the query, so the event of the
+     * query has to be checked. An own event in the POST body must not
+     * allow to edit a foreign event of the query.
+     */
+    #[Test]
+    public function isAccessAllowedForForeignEventInQueryAndOwnEventInBodyReturnsFalse(): void
     {
-        return (new \ReflectionMethod($this->subject, 'isAccessAllowed'))->invoke(
+        $ownEventUid = $this->insertEventOfOrganizer();
+        $foreignEventUid = $this->insertEvent(
+            title: 'Event of other organizer',
+            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
+            organizer: 'TYPO3',
+        );
+        $this->loginFrontendUser(1);
+
+        $this->setFinisherContext(
+            $this->buildRequest($foreignEventUid)
+                ->withParsedBody(['tx_events2_management' => ['event' => (string)$ownEventUid]]),
+        );
+
+        self::assertFalse($this->callThrowExceptionIfAccessIsDenied());
+    }
+
+    /**
+     * A backend administrator has no organizer. Editing an event must not
+     * remove the organizer (the owner) of the event.
+     */
+    #[Test]
+    public function saveDataForOrganizersKeepsOrganizersOfEditedEvent(): void
+    {
+        $eventUid = $this->insertEventOfOrganizer();
+        $this->setFinisherContext($this->buildRequest($eventUid));
+
+        (new \ReflectionMethod($this->subject, 'saveDataForOrganizers'))->invoke(
             $this->subject,
-            $this->buildRequest(),
+            ['uid_local' => $eventUid, 'organizers' => ''],
+            'tx_events2_event_organizer_mm',
+            6,
+        );
+
+        self::assertSame(
+            1,
+            $this->getConnectionPool()
+                ->getConnectionForTable('tx_events2_event_organizer_mm')
+                ->count('*', 'tx_events2_event_organizer_mm', ['uid_local' => $eventUid]),
+        );
+    }
+
+    private function isAccessAllowed(int $eventUid = 0): bool
+    {
+        $this->setFinisherContext($this->buildRequest($eventUid));
+
+        return $this->callThrowExceptionIfAccessIsDenied();
+    }
+
+    private function callThrowExceptionIfAccessIsDenied(): bool
+    {
+        try {
+            (new \ReflectionMethod($this->subject, 'throwExceptionIfAccessIsDenied'))->invoke($this->subject);
+        } catch (FinisherException) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function setFinisherContext(Request $request): void
+    {
+        (new \ReflectionProperty($this->subject, 'finisherContext'))->setValue(
+            $this->subject,
+            new FinisherContext(self::createStub(FormRuntime::class), $request),
         );
     }
 
@@ -179,7 +246,7 @@ class SaveEventFinisherAccessTest extends FunctionalTestCase
         );
     }
 
-    private function buildRequest(): Request
+    private function buildRequest(int $eventUid = 0): Request
     {
         $extbaseRequestParameters = new ExtbaseRequestParameters();
         $extbaseRequestParameters->setControllerExtensionName('Events2');
@@ -200,6 +267,7 @@ class SaveEventFinisherAccessTest extends FunctionalTestCase
 
         return new Request(
             (new ServerRequest('https://www.example.com/', 'POST'))
+                ->withQueryParams($eventUid > 0 ? ['tx_events2_management' => ['event' => (string)$eventUid]] : [])
                 ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE)
                 ->withAttribute('frontend.typoscript', $frontendTypoScript)
                 ->withAttribute('extbase', $extbaseRequestParameters),

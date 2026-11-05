@@ -49,6 +49,13 @@ This version contains breaking changes, please read
     with an organizer, also for backend administrators. The
     `SaveEventFinisher` of EXT:form checks the same rules before anything
     is stored.
+*   [!!!][TASK] Simplify the access rules of the frontend management.
+    :php:`ManagementAccessService` reads the user group from TypoScript
+    and the event to edit from the query parameter
+    `tx_events2_management[event]` only. Backend administrators can not
+    list own events anymore and need the `moderationToken` to activate
+    an event. Edit forms are prefilled for allowed users only. Editing
+    an event keeps its organizers.
 *   [BUGFIX] Separate list items in the plain text of descriptions.
 *   [BUGFIX] Build the absolute URL of the JSON-LD image correctly.
 *   [DOCS] Describe the frontend management and its access rules, see

@@ -13,6 +13,8 @@ namespace JWeiland\Events2\Hook\Form;
 
 use Doctrine\DBAL\ArrayParameterType;
 use JWeiland\Events2\Converter\RteContentConverter;
+use JWeiland\Events2\Service\ManagementAccessService;
+use JWeiland\Events2\Traits\Typo3RequestTrait;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
@@ -20,7 +22,6 @@ use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Form\Domain\Model\FormElements\AbstractFormElement;
 use TYPO3\CMS\Form\Domain\Model\Renderable\RenderableInterface;
@@ -30,31 +31,37 @@ use TYPO3\CMS\Form\Domain\Model\Renderable\RenderableInterface;
  */
 readonly class PrefillForEditUsageHook
 {
+    use Typo3RequestTrait;
+
     public function __construct(
         private PageRepository $pageRepository,
+        private ManagementAccessService $managementAccessService,
         private RteContentConverter $rteContentConverter = new RteContentConverter(),
     ) {}
 
     /**
      * This method will be called by Form Framework.
-     * It was checked by method_exists() before
+     * It was checked by method_exists() before.
+     *
+     * The form could be used outside the ManagementController (e.g. as form
+     * content element). So the access is checked here, too. Else everyone
+     * could read hidden events of other organizers.
      */
     public function afterBuildingFinished(RenderableInterface $formElement): void
     {
-        if (!$formElement instanceof AbstractFormElement) {
+        $request = $this->getTypo3Request();
+        $eventUid = $this->managementAccessService->getEventUid($request);
+        if (
+            !$formElement instanceof AbstractFormElement
+            || $eventUid === 0
+            || $this->managementAccessService->getDenialReason($request) !== ''
+        ) {
             return;
         }
 
-        if (
-            isset($_GET['tx_events2_management']['event'])
-            && MathUtility::canBeInterpretedAsInteger($_GET['tx_events2_management']['event'])
-            && ($eventRecord = $this->getEventRecord((int)$_GET['tx_events2_management']['event']))
-            && $eventRecord !== []
-        ) {
-            $formElement->getRootForm()->addElementDefaultValue(
-                'events2-event-uid',
-                (int)$_GET['tx_events2_management']['event'],
-            );
+        $eventRecord = $this->getEventRecord($eventUid);
+        if ($eventRecord !== []) {
+            $formElement->getRootForm()->addElementDefaultValue('events2-event-uid', $eventUid);
             $this->setFormDefaultValues($formElement, $eventRecord);
         }
     }
