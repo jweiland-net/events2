@@ -1,6 +1,6 @@
+:navigation-title: Upgrade
+
 ..  include:: /Includes.rst.txt
-
-
 ..  _upgrade:
 
 =======
@@ -10,10 +10,339 @@ Upgrade
 If you upgrade/update EXT:events2 to a newer version, please read this
 section carefully!
 
+..  contents::
+    :caption: Table of contents
+    :local:
+    :depth: 1
+
+..  _upgrade-12-0-0:
+
+Update to version 12.0.0
+========================
+
+This version contains breaking changes. The Extbase based event form of
+the Management plugin has been removed. New and edited events are
+submitted with the event form based on EXT:form
+(:file:`NewEvent.form.yaml` with the finisher `SaveEventFinisher`) only.
+All access rules of the frontend management are checked by the new
+:php:`JWeiland\Events2\Service\ManagementAccessService`, which replaces
+:php:`JWeiland\Events2\Service\EventModerationService`. See
+:ref:`frontend-management`.
+
+Please go through all steps below, if you use the Management plugin, have
+overridden its templates, mail templates or labels, or use PHP classes of
+events2 in your own code.
+
+..  _upgrade-12-0-0-settings:
+
+Remove obsolete settings
+------------------------
+
+The following site settings of the site set `jweiland/events2` have been
+removed. Remove them from the :file:`settings.yaml` of your sites:
+
+*   `events2.form.useExtForm`: The event form based on EXT:form is always
+    used now.
+*   `events2.form.uploadFolder`: The images of the event form based on
+    EXT:form are stored in the folder of the option
+    :yaml:`saveToFileMount` of the form definition.
+*   `events2.form.remainingLetters`
+
+The following TypoScript has been removed. Remove your own overrides of
+it:
+
+*   :typoscript:`plugin.tx_events2.settings.remainingLetters`
+*   :typoscript:`plugin.tx_events2.settings.new.uploadFolder`
+*   :typoscript:`plugin.tx_events2._LOCAL_LANG.de.rightsMessage` and
+    :typoscript:`plugin.tx_events2._LOCAL_LANG.default.rightsMessage`
+*   :typoscript:`plugin.tx_events2._CSS_DEFAULT_STYLE` with the styles of
+    the CSS class `f3-form-error`
+
+:typoscript:`plugin.tx_form.settings.yamlConfigurations.1661247670`
+(:file:`EXT:events2/Configuration/Form/OverrideFormSettings.yaml`) is
+always set now, not only if `events2.form.useExtForm` was enabled.
+
+events2 does not set
+:typoscript:`plugin.tx_events2.view.templateRootPaths.1` and
+:typoscript:`plugin.tx_events2.view.partialRootPaths.1` anymore. The keys
+`0` and `2` are unchanged. If you have used the key `1` for your own
+paths, it is not overwritten by events2 anymore.
+
+..  _upgrade-12-0-0-actions:
+
+Removed actions of the Management plugin
+----------------------------------------
+
+The actions `new`, `create`, `edit`, `update` and `delete` of the
+Management plugin have been removed. The plugin provides the actions
+`listMyEvents`, `perform`, `confirmActivation` and `activate` only.
+Requests for unknown actions are handled by the default action
+`listMyEvents`.
+
+Events can not be deleted in the frontend anymore.
+
+Update links in your own templates:
+
+*   Links to the action `new` link to the action `perform` without
+    argument.
+*   Links to the action `edit` link to the action `perform` with the
+    argument `event`:
+
+    ..  code-block:: html
+        :caption: EXT:my_sitepackage/Resources/Private/Templates/Day/Show.html (excerpt)
+
+        <f:link.action action="perform"
+                       controller="Management"
+                       pageUid="{settings.pidOfManagementPage}"
+                       arguments="{event: event, timestamp: '0'}">
+            {f:translate(key: 'update')}
+        </f:link.action>
+
+*   Remove links to the actions `create`, `update` and `delete`.
+
+The section `NewEdit` of :file:`Templates/Day/Show.html` links both
+entries to the action `perform` on the page of
+`settings.pidOfManagementPage` now. Before, the edit link pointed to the
+current page.
+
+..  _upgrade-12-0-0-routing:
+
+Update the route enhancer of the Management plugin
+--------------------------------------------------
+
+Replace routes for `Management::new` and `Management::edit` with routes
+for `Management::perform` and remove the routes for `Management::create`,
+`Management::update` and `Management::delete`:
+
+..  code-block:: yaml
+    :caption: config/sites/my-site/config.yaml (excerpt)
+
+    routeEnhancers:
+      Events2Management:
+        type: Extbase
+        extension: Events2
+        plugin: Management
+        routes:
+          - routePath: '/events/m/lme'
+            _controller: 'Management::listMyEvents'
+          - routePath: '/events/m/p'
+            _controller: 'Management::perform'
+          - routePath: '/event/m/p/{event_title}'
+            _controller: 'Management::perform'
+            _arguments:
+              event_title: event
+          - routePath: '/event/m/c/{event_title}'
+            _controller: 'Management::confirmActivation'
+            _arguments:
+              event_title: event
+          - routePath: '/event/m/a/{event_title}'
+            _controller: 'Management::activate'
+            _arguments:
+              event_title: event
+        defaultController: 'Management::listMyEvents'
+        aspects:
+          event_title:
+            type: PersistedHiddenAliasMapper
+            tableName: tx_events2_domain_model_event
+            routeFieldName: path_segment
+
+Hidden events are resolved for the actions `perform` and
+`confirmActivation` now (before: `edit`, `update` and
+`confirmActivation`).
+
+..  _upgrade-12-0-0-templates:
+
+Check your template overrides
+-----------------------------
+
+The following templates and partials have been removed. Delete your
+overrides of them:
+
+*   :file:`Resources/Private/Templates/Management/New.html`
+*   :file:`Resources/Private/Templates/Management/Edit.html`
+*   :file:`Resources/Private/Templates/Management/Create.html`
+*   :file:`Resources/Private/Templates/Management/Update.html`
+*   :file:`Resources/Private/Partials/Management/FormFields.html`
+*   :file:`Resources/Private/Partials/FormErrors.html`
+
+The templates of the Management plugin for EXT:form have been moved into
+the regular template folders. Their names relative to the template root
+path are unchanged, so your overrides still apply:
+
+..  list-table::
+    :header-rows: 1
+
+    *   -   Before (in :file:`Resources/Private/`)
+        -   Now (in :file:`Resources/Private/`)
+    *   -   :file:`FormFramework/Templates/Management/ListMyEvents.html`
+        -   :file:`Templates/Management/ListMyEvents.html`
+    *   -   :file:`FormFramework/Templates/Management/Perform.html`
+        -   :file:`Templates/Management/Perform.html`
+    *   -   :file:`FormFramework/Partials/Management/UserEditLinks.html`
+        -   :file:`Partials/Management/UserEditLinks.html`
+
+Please compare your overrides of :file:`ListMyEvents.html` and
+:file:`UserEditLinks.html` with the original files, especially if you have
+overridden the versions of the Extbase form, which had the same names.
+
+The templates of EXT:form stay in :file:`Resources/Private/FormFramework/`:
+:file:`Partials/Field/Field.html`, :file:`Partials/Form/Navigation.html`,
+:file:`Partials/Events2Location.html` and
+:file:`Templates/Finishers/Email/Default.html`. The new file
+:file:`Templates/Finishers/Email/Default.txt` is the text part of the
+mail.
+
+..  _upgrade-12-0-0-mail:
+
+Use the FormatRichTextViewHelper in own mail templates
+------------------------------------------------------
+
+The mail of the event form shows rich text elements formatted and
+sanitized now. If you use your own copy of
+:file:`Templates/Finishers/Email/Default.html` or
+:file:`Default.txt`, render values of elements with
+:yaml:`dataType: richText` with the new
+:ref:`FormatRichTextViewHelper <formatRichTextViewHelper>`. See
+:ref:`frontend-management-mail`.
+
+..  _upgrade-12-0-0-access:
+
+Changed access rules
+--------------------
+
+New events can only be created by logged-in frontend users of the user
+group of :confval:`settings.userGroup
+<events2-typoscript-settings-usergroup>` with a related organizer. Backend
+administrators can no longer create events in the frontend, but can still
+edit existing events, list events and activate events.
+
+The finisher `SaveEventFinisher` checks the same rules before anything is
+stored, also if the form definition is used outside of the Management
+plugin. If access is denied, it throws a
+:php:`TYPO3\CMS\Form\Domain\Finishers\Exception\FinisherException`. See
+:ref:`frontend-management-access`.
+
+The format of the `moderationToken` is unchanged. Activation links of
+already sent mails stay valid.
+
+..  _upgrade-12-0-0-labels:
+
+Removed labels
+--------------
+
+The following labels have been removed from
+:file:`Resources/Private/Language/locallang.xlf` and
+:file:`de.locallang.xlf`. Remove your overrides of them in
+`_LOCAL_LANG` or in own language files:
+
+`create`, `deleteImage`, `remainingLetters`, `cshTitle`, `cshTeaser`,
+`cshEventBegin`, `cshEventEnd`, `cshTimeBegin`, `cshCategories`,
+`cshLocation`, `cshVideo`, `cshImages`, `eventCreated`, `eventUpdated`,
+`eventDeleted`, `email.subject.create`, `email.subject.update`,
+`validator.event.categories.isMandatory` and
+`validator.event.videoLink.notYouTube`.
+
+..  _upgrade-12-0-0-icons:
+
+Replaced icons
+--------------
+
+All icons of events2 are SVG files now and are registered with the
+:php:`SvgIconProvider`. The TCA of the tables uses the icon identifiers in
+`typeicon_classes` instead of paths in `iconfile`.
+
+The following files have been removed. Files with the same name and the
+extension `.svg` replace the PNG files:
+
+*   :file:`calendar_single.png`, :file:`calendar_recurring.png`,
+    :file:`calendar_duration.png`
+*   :file:`exception_add.png`, :file:`exception_info.png`,
+    :file:`exception_remove.png`, :file:`exception_time.png`
+*   :file:`tx_events2_domain_model_link.png`,
+    :file:`tx_events2_domain_model_location.png`,
+    :file:`tx_events2_domain_model_organizer.png`,
+    :file:`tx_events2_domain_model_time.png`
+*   :file:`plugin_wizard.svg` (replaced by :file:`plugin.svg`, the
+    identifier `ext-events2-wizard-icon` is unchanged)
+*   :file:`tx_events2_domain_model_category.gif` (without replacement,
+    use a core icon like `mimetypes-x-sys_category`)
+
+New icon identifiers are `ext-events2-record-event`,
+`ext-events2-record-holiday`, `ext-events2-record-link`,
+`ext-events2-record-location`, `ext-events2-record-organizer` and
+`ext-events2-record-time`. The existing identifiers
+`ext-events2-calendar-*` and `ext-events2-exception-*` point to the SVG
+files now.
+
+If you use the paths of the removed files directly, for example in own
+templates or in TCA overrides with `iconfile`, use the icon identifiers
+or the new `.svg` files instead.
+
+..  _upgrade-12-0-0-developer:
+
+Removed PHP classes and changed API
+-----------------------------------
+
+The following classes have been removed without replacement:
+
+*   :php:`JWeiland\Events2\Domain\Validator\EventValidator`
+*   :php:`JWeiland\Events2\Domain\Validator\CategoryMandatoryValidator`
+*   :php:`JWeiland\Events2\Property\TypeConverter\DateTimeImmutableConverter`
+    incl. its global registration as Extbase type converter for
+    :php:`DateTimeImmutable`
+*   :php:`JWeiland\Events2\Middleware\AttachOrganizerToEventMiddleware`
+    (middleware identifier `jweiland/events2/attach-organizer`)
+*   The event listeners :php:`AddOrganizerToEventRecordEventListener`,
+    :php:`ApplyLocationAsMandatoryIfNeededEventListener`,
+    :php:`ApplyUploadFolderEventListener` (identifier
+    `events2/apply-upload-folder`),
+    :php:`CheckFalUploadsEventListener` (identifier
+    `events2/check-fal-uploads`),
+    :php:`SetDateFormatForPropertyMappingEventListener` and
+    :php:`UpdateEventPathSegmentEventListener`. If you have ordered your
+    own event listeners with `before` or `after` relative to them, please
+    update them.
+*   The traits :php:`InjectDayRelationServiceTrait`,
+    :php:`InjectLocationRepositoryTrait` and
+    :php:`InjectPersistenceManagerTrait`. Inject the services with
+    constructor injection instead.
+
+:php:`JWeiland\Events2\Service\EventModerationService` has been merged
+into :php:`JWeiland\Events2\Service\ManagementAccessService`. If you use
+:php:`EventModerationService` in your own code, for example to create a
+`moderationToken`, inject :php:`ManagementAccessService` instead. The
+token for the activation link can be created with the
+:ref:`ModerationTokenViewHelper <moderationTokenViewHelper>` in templates.
+
+The event model :php:`JWeiland\Events2\Domain\Model\Event` has no
+:php:`#[FileUpload]` attribute at the property `$images` and no
+:php:`CategoryMandatoryValidator` at the property `$categories` anymore.
+If you have extended the model or use it in an own Extbase form, add
+your own validation and upload configuration.
+
+The JavaScript variables of :php:`AbstractController::getJsVariables()`
+do not contain `localization.remainingText` anymore.
+:file:`Events2.js` does not initialize the counter of remaining letters
+and the date picker of the removed Extbase form anymore.
+
+..  _upgrade-12-0-0-caches:
+
+Flush caches after the update to 12.0.0
+---------------------------------------
+
+As PHP classes, templates, icons and TypoScript have changed, please flush
+all caches in :guilabel:`Admin Tools > Maintenance` after the update.
+
 ..  _upgrade-11-1-0:
 
 Update to Version 11.1.0
 ========================
+
+..  note::
+
+    The templates :file:`Create.html` and :file:`Update.html` of the
+    Extbase form mentioned below have been removed with events2 12.0.0,
+    see :ref:`upgrade-12-0-0-templates`.
 
 Mail security scanners and link previews (e.g. Microsoft Safe Links) open
 the links of a mail automatically. Before this version, the activation link
@@ -103,6 +432,13 @@ added as query parameter:
 Update to Version 11.0.0
 ========================
 
+..  note::
+
+    The Extbase based event form, its image upload, the site setting
+    `events2.form.uploadFolder` and the support of checkfaluploads have
+    been removed with events2 12.0.0. The steps below are only relevant,
+    if you stay on version 11. See :ref:`upgrade-12-0-0`.
+
 This version contains breaking changes. The images of the event form of
 the Management plugin are uploaded with the file upload handling of
 Extbase now. The own type converter for uploads has been removed. Please
@@ -138,7 +474,7 @@ New site setting for the upload folder
 
 The folder of the uploaded images can be configured with the new site
 setting `events2.form.uploadFolder` now. It is mapped to the TypoScript
-setting :ref:`settings.new.uploadFolder <typoscript-new-uploadfolder>`.
+setting `settings.new.uploadFolder`.
 The default value `1:user_upload/tx_events2/` keeps the former folder.
 The folder is created, if it does not exist.
 
