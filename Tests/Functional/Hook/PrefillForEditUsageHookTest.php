@@ -12,15 +12,19 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Functional\Hook;
 
 use JWeiland\Events2\Converter\RteContentConverter;
+use JWeiland\Events2\Domain\Factory\ArrayFormFactory;
 use JWeiland\Events2\Hook\Form\PrefillForEditUsageHook;
 use JWeiland\Events2\Tests\Functional\Events2Constants;
 use JWeiland\Events2\Tests\Functional\Traits\FrontendUserTrait;
 use JWeiland\Events2\Tests\Functional\Traits\InsertEventTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use Symfony\Component\Yaml\Yaml;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\TypoScript\AST\Node\RootNode;
 use TYPO3\CMS\Core\TypoScript\FrontendTypoScript;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Form\Domain\Model\FormDefinition;
 use TYPO3\CMS\Form\Domain\Model\FormElements\GenericFormElement;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
@@ -45,6 +49,14 @@ class PrefillForEditUsageHookTest extends FunctionalTestCase
     ];
 
     protected array $configurationToUseInTestInstance = [
+        'EXTENSIONS' => [
+            'events2' => [
+                'emailFromAddress' => 'projects@jweiland.net',
+                'emailFromName' => 'Stefan Froemken',
+                'emailToAddress' => 'hosting@jweiland.net',
+                'emailToName' => 'Stefan Froemken',
+            ],
+        ],
         'SYS' => [
             'phpTimeZone' => Events2Constants::PHP_TIMEZONE,
         ],
@@ -398,6 +410,67 @@ class PrefillForEditUsageHookTest extends FunctionalTestCase
         self::assertNull($formElement->getDefaultValue());
     }
 
+    /**
+     * Builds the complete form of the edit view. All relations are
+     * resolved by the expressions of NewEvent.form.yaml on every DBMS.
+     */
+    #[Test]
+    public function buildNewEventFormPrefillsOwnEventInclusiveRelations(): void
+    {
+        $eventUid = $this->insertEventWithRelations();
+        $this->loginFrontendUser(1);
+        $this->setRequestWithEvent($eventUid);
+
+        $this->get(ConfigurationManagerInterface::class)->setRequest($GLOBALS['TYPO3_REQUEST']);
+        $formDefinition = $this->get(ArrayFormFactory::class)->build(
+            Yaml::parseFile(GeneralUtility::getFileAbsFileName('EXT:events2/Configuration/Form/NewEvent.form.yaml')),
+            'standard',
+            $GLOBALS['TYPO3_REQUEST'],
+        );
+
+        self::assertSame('Event with relations', $formDefinition->getElementByIdentifier('title')->getDefaultValue());
+        self::assertSame('19:00', $formDefinition->getElementByIdentifier('time-begin')->getDefaultValue());
+        self::assertSame(
+            'https://tickets.example.com',
+            $formDefinition->getElementByIdentifier('ticket-link')->getDefaultValue(),
+        );
+        self::assertSame(
+            'https://download.example.com',
+            $formDefinition->getElementByIdentifier('download-link')->getDefaultValue(),
+        );
+        self::assertSame('https://youtu.be/abc', $formDefinition->getElementByIdentifier('youtube-link')->getDefaultValue());
+        self::assertSame('Kino', $formDefinition->getElementByIdentifier('event-location')->getProperties()['resolvedLabel']);
+        self::assertEquals([3, 5], $formDefinition->getElementByIdentifier('categories')->getDefaultValue());
+        self::assertSame(
+            $eventUid,
+            $formDefinition->getRenderingOptions()['additionalParams']['tx_events2_management']['event'],
+        );
+    }
+
+    private function insertEventWithRelations(): int
+    {
+        $connection = $this->getConnectionPool()->getConnectionForTable('tx_events2_domain_model_link');
+        $connection->insert('tx_events2_domain_model_link', [
+            'pid' => Events2Constants::PAGE_STORAGE,
+            'title' => 'Download',
+            'link' => 'https://download.example.com',
+        ]);
+        $downloadLinkUid = (int)$connection->lastInsertId();
+
+        // The first organizer gets UID 1, which is the organizer of loginFrontendUser(1)
+        return $this->insertEvent(
+            title: 'Event with relations',
+            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
+            timeBegin: '19:00',
+            ticketLink: 'https://tickets.example.com',
+            videoLink: 'https://youtu.be/abc',
+            additionalFields: ['hidden' => 1, 'download_links' => (string)$downloadLinkUid],
+            organizer: 'jweiland.net',
+            location: 'Kino',
+            categories: [3, 5],
+        );
+    }
+
     private function insertEventOfOrganizer(): int
     {
         // The first organizer gets UID 1, which is the organizer of loginFrontendUser(1)
@@ -416,7 +489,16 @@ class PrefillForEditUsageHookTest extends FunctionalTestCase
     {
         $frontendTypoScript = new FrontendTypoScript(new RootNode(), [], [], []);
         $frontendTypoScript->setSetupArray([
-            'plugin.' => ['tx_events2.' => ['settings.' => ['userGroup' => '1']]],
+            'plugin.' => [
+                'tx_events2.' => ['settings.' => [
+                    'userGroup' => '1',
+                    'new.' => ['selectableCategoriesForNewEvents' => '3,5'],
+                ]],
+                'tx_form.' => ['settings.' => ['yamlConfigurations.' => [
+                    '10' => 'EXT:form/Configuration/Yaml/FormSetup.yaml',
+                    '1661247670' => 'EXT:events2/Configuration/Form/OverrideFormSettings.yaml',
+                ]]],
+            ],
         ]);
 
         $GLOBALS['TYPO3_REQUEST'] = $GLOBALS['TYPO3_REQUEST']

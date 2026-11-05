@@ -56,6 +56,9 @@ This version contains breaking changes, please read
     list own events anymore and need the `moderationToken` to activate
     an event. Edit forms are prefilled for allowed users only. Editing
     an event keeps its organizers.
+*   [BUGFIX] Prefill the download link of the edit form on all database
+    platforms. :file:`NewEvent.form.yaml` uses the expression `in` with
+    `intExplodeValue: 1` instead of `inSet`. Update copies of the form.
 *   [BUGFIX] Separate list items in the plain text of descriptions.
 *   [BUGFIX] Build the absolute URL of the JSON-LD image correctly.
 *   [DOCS] Describe the frontend management and its access rules, see

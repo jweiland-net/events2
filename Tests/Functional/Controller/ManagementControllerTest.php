@@ -246,6 +246,31 @@ class ManagementControllerTest extends FunctionalTestCase
     }
 
     /**
+     * The edit view resolves all relations of the event. It has to work
+     * on every DBMS, see PrefillForEditUsageHookTest for the values.
+     */
+    #[Test]
+    public function performWithOwnEventRendersEditForm(): void
+    {
+        $eventUid = $this->insertEvent(
+            title: 'Own event with relations',
+            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
+            timeBegin: '19:00',
+            ticketLink: 'https://tickets.example.com',
+            videoLink: 'https://youtu.be/abc',
+            additionalFields: ['hidden' => 1, 'event_type' => 'duration'],
+            organizer: 'jweiland.net',
+            location: 'Kino',
+            categories: [1],
+        );
+
+        $content = (string)$this->executeGetRequest('perform', $eventUid, '', 1)->getBody();
+
+        self::assertStringContainsString('tx_events2_management%5Bevent%5D=' . $eventUid, $content);
+        self::assertMatchesRegularExpression('/value="duration"[^>]*checked/', $content);
+    }
+
+    /**
      * Not existing and foreign events result in the same message, so
      * nobody can find out, which hidden events exist.
      */
