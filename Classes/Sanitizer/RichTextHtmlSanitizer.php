@@ -12,21 +12,36 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Sanitizer;
 
 use JWeiland\Events2\Sanitizer\Visitor\RichTextVisitor;
+use TYPO3\HtmlSanitizer\Behavior;
 use TYPO3\HtmlSanitizer\InitiatorInterface;
 use TYPO3\HtmlSanitizer\Sanitizer;
+use TYPO3\HtmlSanitizer\Visitor\VisitorInterface;
 
 /**
  * Finishes the DOM after all visitors have sanitized it:
  *
  * - Elements renamed to RichTextVisitor::UNWRAP_TAG are replaced by their
  *   (already sanitized) children.
- * - Inline content outside of blocks is wrapped into <p>, like CKEditor does.
+ * - Inline content outside of the allowed top level blocks is wrapped into
+ *   <p>, like CKEditor does.
  *   RteHtmlParser would strip <strong>, <em> and <a> of content outside of
  *   blocks (only "allowTagsOutside" are kept) before wrapping it into <p>.
  */
 final class RichTextHtmlSanitizer extends Sanitizer
 {
-    private const BLOCK_TAGS = ['p', 'h2', 'h3', 'ul', 'ol'];
+    /**
+     * @var string[]
+     */
+    private readonly array $topLevelBlockTags;
+
+    public function __construct(
+        RichTextSanitizerConfiguration $configuration,
+        Behavior $behavior,
+        VisitorInterface ...$visitors,
+    ) {
+        parent::__construct($behavior, ...$visitors);
+        $this->topLevelBlockTags = $configuration->getTopLevelBlockTags();
+    }
 
     protected function handle(\DOMNode $domNode, ?InitiatorInterface $initiator = null): \DOMNode
     {
@@ -91,6 +106,6 @@ final class RichTextHtmlSanitizer extends Sanitizer
 
     private function isBlock(\DOMNode $domNode): bool
     {
-        return $domNode instanceof \DOMElement && in_array($domNode->nodeName, self::BLOCK_TAGS, true);
+        return $domNode instanceof \DOMElement && in_array($domNode->nodeName, $this->topLevelBlockTags, true);
     }
 }

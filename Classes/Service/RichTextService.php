@@ -57,6 +57,8 @@ readonly class RichTextService
         $html = $this->richTextSanitizer->sanitize(
             $value,
             $this->richTextSanitizer->getT3Hrefs((string)($storedRecord[$column] ?? '')),
+            $table,
+            $column,
         );
 
         return $this->transformForPersistence(

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Sanitizer\Visitor;
 
+use JWeiland\Events2\Sanitizer\RichTextSanitizerConfiguration;
 use TYPO3\HtmlSanitizer\Visitor\AbstractVisitor;
 
 /**
@@ -24,6 +25,9 @@ use TYPO3\HtmlSanitizer\Visitor\AbstractVisitor;
  * - renames every other unknown element to UNWRAP_TAG, so its text is kept.
  *   RichTextHtmlSanitizer replaces the UNWRAP_TAG elements by their children.
  * - unwraps links without href and normalizes "target" and "rel" of links
+ *
+ * The constants are the defaults of the tag configuration. They can be
+ * modified with ModifyRichTextSanitizerConfigurationEvent.
  */
 final class RichTextVisitor extends AbstractVisitor
 {
@@ -31,7 +35,7 @@ final class RichTextVisitor extends AbstractVisitor
 
     public const ALLOWED_TAGS = ['p', 'br', 'strong', 'em', 'h2', 'h3', 'ul', 'ol', 'li', 'a'];
 
-    private const MAPPED_TAGS = [
+    public const MAPPED_TAGS = [
         'b' => 'strong',
         'i' => 'em',
         'h1' => 'p',
@@ -44,18 +48,22 @@ final class RichTextVisitor extends AbstractVisitor
      * Elements, which start a new block. Unknown ones become a paragraph, if
      * they do not contain any of these elements, else they are unwrapped.
      */
-    private const BLOCK_TAGS = [
+    public const BLOCK_TAGS = [
         'address', 'article', 'aside', 'blockquote', 'caption', 'dd', 'div', 'dl', 'dt', 'figcaption',
         'figure', 'footer', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hr', 'li', 'main', 'nav', 'ol',
         'p', 'pre', 'section', 'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr', 'ul',
     ];
 
-    private const REMOVED_TAGS = [
+    public const REMOVED_TAGS = [
         'applet', 'area', 'audio', 'base', 'button', 'canvas', 'embed', 'form', 'frame', 'frameset',
         'head', 'iframe', 'img', 'input', 'link', 'map', 'math', 'meta', 'noscript', 'object', 'option',
         'picture', 'script', 'select', 'source', 'style', 'svg', 'template', 'textarea', 'title',
         'track', 'video',
     ];
+
+    public function __construct(
+        private readonly RichTextSanitizerConfiguration $configuration,
+    ) {}
 
     public function enterNode(\DOMNode $domNode): ?\DOMNode
     {
@@ -65,16 +73,16 @@ final class RichTextVisitor extends AbstractVisitor
         }
 
         $tagName = strtolower($domNode->nodeName);
-        if (in_array($tagName, self::REMOVED_TAGS, true)) {
+        if (in_array($tagName, $this->configuration->removedTags, true)) {
             return null;
         }
 
-        if (isset(self::MAPPED_TAGS[$tagName])) {
-            return $this->renameElement($domNode, self::MAPPED_TAGS[$tagName]);
+        if (in_array($tagName, $this->configuration->allowedTags, true)) {
+            return $domNode;
         }
 
-        if (in_array($tagName, self::ALLOWED_TAGS, true)) {
-            return $domNode;
+        if (isset($this->configuration->mappedTags[$tagName])) {
+            return $this->renameElement($domNode, $this->configuration->mappedTags[$tagName]);
         }
 
         return $this->renameElement($domNode, $this->isParagraphContainer($domNode) ? 'p' : self::UNWRAP_TAG);
@@ -107,12 +115,13 @@ final class RichTextVisitor extends AbstractVisitor
      */
     private function isParagraphContainer(\DOMElement $domElement): bool
     {
-        if (!in_array(strtolower($domElement->nodeName), self::BLOCK_TAGS, true)) {
+        $blockTags = $this->configuration->blockTags;
+        if (!in_array(strtolower($domElement->nodeName), $blockTags, true)) {
             return false;
         }
 
         foreach ($domElement->getElementsByTagName('*') as $descendant) {
-            if (in_array(strtolower($descendant->nodeName), self::BLOCK_TAGS, true)) {
+            if (in_array(strtolower($descendant->nodeName), $blockTags, true)) {
                 return false;
             }
         }
