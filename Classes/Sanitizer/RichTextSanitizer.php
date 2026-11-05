@@ -95,7 +95,11 @@ readonly class RichTextSanitizer
         )));
     }
 
-    private function getConfiguration(string $table, string $column): RichTextSanitizerConfiguration
+    /**
+     * The tag configuration for the given column. Also used to configure the
+     * editor in the frontend form.
+     */
+    public function getConfiguration(string $table = '', string $column = ''): RichTextSanitizerConfiguration
     {
         $event = $this->eventDispatcher->dispatch(new ModifyRichTextSanitizerConfigurationEvent(
             RichTextVisitor::ALLOWED_TAGS,

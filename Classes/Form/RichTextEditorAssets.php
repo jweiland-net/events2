@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Form;
 
+use JWeiland\Events2\Sanitizer\RichTextSanitizerConfiguration;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Page\AssetCollector;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
@@ -48,16 +49,18 @@ readonly class RichTextEditorAssets
     }
 
     /**
-     * Options for the JavaScript module, which are added as JSON to the textarea
+     * Options for the JavaScript module, which are added as JSON to the textarea.
+     * The headings and toolbar items of the editor are based on the allowed tags.
      *
      * @return array<string, mixed>
      */
-    public function getEditorOptions(ServerRequestInterface $request): array
+    public function getEditorOptions(ServerRequestInterface $request, RichTextSanitizerConfiguration $configuration): array
     {
         $languageCode = $this->getLanguageCode($request);
 
         return [
             'language' => $languageCode,
+            'allowedTags' => $configuration->allowedTags,
             'translationUrl' => $this->getTranslationUrl($languageCode),
             'labels' => [
                 'openInNewTab' => LocalizationUtility::translate('richText.openInNewTab', 'events2') ?? 'Open in a new tab',
