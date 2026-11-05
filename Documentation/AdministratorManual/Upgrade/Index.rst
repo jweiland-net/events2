@@ -413,28 +413,23 @@ API:
     Returns the token for the activation link, or an empty string, if
     the event does not exist.
 
-Migrate your own code:
+Migrate your own code, which uses :php:`EventModerationService` of
+events2 11.2.0:
 
 ..  list-table::
     :header-rows: 1
 
-    *   -   Before
-        -   Now
-    *   -   :php:`EventModerationService::generateModerationToken()`
-        -   :php:`ManagementAccessService::generateModerationToken()`
-    *   -   :php:`EventModerationService::isValidModerationToken()`
-        -   :php:`ManagementAccessService::canActivateEvent()`
-    *   -   :php:`getDenialReasonForCreate()`, :php:`canCreateEvent()`,
-            :php:`getDenialReasonForEdit()`, :php:`canEditEvent()`,
-            :php:`getDenialReasonForListing()`
-        -   :php:`ManagementAccessService::getDenialReason()` with the
-            request. An empty string means: allowed.
-    *   -   :php:`EventModerationService::getValidModerationToken()`
-        -   :php:`ManagementAccessService::canActivateEvent()` or
-            :php:`canConfirmActivation()` with the token of the request
-    *   -   :php:`getUserGroupFromTypoScript()`
-        -   Removed without replacement. The user group is read
-            internally by :php:`getDenialReason()`.
+    *   -   Before (:php:`EventModerationService`)
+        -   Now (:php:`ManagementAccessService`)
+    *   -   :php:`generateModerationToken(int $eventUid)`
+        -   :php:`generateModerationToken(int $eventUid)`
+    *   -   :php:`isValidModerationToken(string $moderationToken, int $eventUid)`
+        -   :php:`canActivateEvent(int $eventUid, string $moderationToken)`.
+            Mind the changed order of the arguments.
+    *   -   :php:`getValidModerationToken(RequestInterface $request, int $eventUid)`
+        -   :php:`canActivateEvent()` or :php:`canConfirmActivation()`
+            with the `moderationToken` of the request. To create a token
+            for a template, use :php:`generateModerationToken()`.
 
 In templates, create the token for the activation link with the
 :ref:`ModerationTokenViewHelper <moderationTokenViewHelper>`.
