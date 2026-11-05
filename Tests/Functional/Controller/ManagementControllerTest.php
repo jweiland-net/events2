@@ -227,6 +227,73 @@ class ManagementControllerTest extends FunctionalTestCase
     }
 
     #[Test]
+    public function newWithoutLoggedInUserWillNotShowForm(): void
+    {
+        $content = (string)$this->executeGetRequest('new', 0, '')->getBody();
+
+        self::assertStringContainsString(
+            'This page is restricted. Please log in to access the Events Management area.',
+            $content,
+        );
+        self::assertStringNotContainsString(
+            'tx_events2_management[event][title]',
+            $content,
+        );
+    }
+
+    #[Test]
+    public function newWithUserOfWrongGroupWillNotShowForm(): void
+    {
+        $content = (string)$this->executeGetRequest('new', 0, '', 3)->getBody();
+
+        self::assertStringContainsString(
+            'You\'re not allowed to create event records',
+            $content,
+        );
+        self::assertStringNotContainsString(
+            'tx_events2_management[event][title]',
+            $content,
+        );
+    }
+
+    #[Test]
+    public function performWithoutLoggedInUserWillNotShowExtForm(): void
+    {
+        $content = (string)$this->executeGetRequest('perform', 0, '')->getBody();
+
+        self::assertStringContainsString(
+            'This page is restricted. Please log in to access the Events Management area.',
+            $content,
+        );
+        self::assertStringNotContainsString(
+            'Recurring event',
+            $content,
+        );
+    }
+
+    #[Test]
+    public function createWithoutLoggedInUserWillNotStoreEvent(): void
+    {
+        $this->executeCreateRequest(0);
+
+        self::assertSame(
+            0,
+            $this->countEvents(),
+        );
+    }
+
+    #[Test]
+    public function createWithUserOfWrongGroupWillNotStoreEvent(): void
+    {
+        $this->executeCreateRequest(3);
+
+        self::assertSame(
+            0,
+            $this->countEvents(),
+        );
+    }
+
+    #[Test]
     public function confirmActivationWithValidTokenShowsConfirmationForm(): void
     {
         $eventUid = $this->insertHiddenEventOfFrontendUser();
@@ -374,6 +441,43 @@ class ManagementControllerTest extends FunctionalTestCase
         );
     }
 
+    private function executeCreateRequest(int $frontendUserId): ResponseInterface
+    {
+        $body = $this->createBodyFromArray([
+            'tx_events2_management' => [
+                'controller' => 'Management',
+                'action' => 'create',
+                'event' => [
+                    'title' => 'Event of anonymous visitor',
+                    'eventType' => 'single',
+                    'eventBegin' => (new \DateTimeImmutable('tomorrow midnight'))->format('d.m.Y'),
+                ],
+            ],
+        ]);
+
+        return $this->executeFrontendSubRequest(
+            (new InternalRequest())
+                ->withPageId(Events2Constants::PAGE_MANAGEMENT)
+                ->withMethod('POST')
+                ->withAddedHeader('Content-type', 'application/x-www-form-urlencoded')
+                ->withBody($body),
+            (new InternalRequestContext())
+                ->withFrontendUserId($frontendUserId),
+        );
+    }
+
+    private function countEvents(): int
+    {
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_event');
+        $queryBuilder->getRestrictions()->removeAll();
+
+        return (int)$queryBuilder
+            ->count('*')
+            ->from('tx_events2_domain_model_event')
+            ->executeQuery()
+            ->fetchOne();
+    }
+
     /**
      * @return array<string, string|int>
      */
@@ -382,8 +486,10 @@ class ManagementControllerTest extends FunctionalTestCase
         $arguments = [
             'controller' => 'Management',
             'action' => $actionName,
-            'event' => $eventUid,
         ];
+        if ($eventUid > 0) {
+            $arguments['event'] = $eventUid;
+        }
         if ($moderationToken !== '') {
             $arguments['moderationToken'] = $moderationToken;
         }
