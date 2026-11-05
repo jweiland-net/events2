@@ -122,9 +122,11 @@ automatically:
     :yaml:`sanitizeRichText: true` (instead of
     :yaml:`convertPlainTextToHtml` or :yaml:`normalizePlainText`).
 *   While rendering, the textarea gets the attribute
-    :html:`data-events2-rich-text` with the options of the editor. The
-    assets are only loaded on pages of the form which contain a rich text
-    element. Each textarea gets its own editor.
+    :html:`data-events2-rich-text` with the options of the editor,
+    including the allowed tags of its column (see
+    :ref:`frontend-rich-text-editor-toolbar`). The assets are only loaded
+    on pages of the form which contain a rich text element. Each textarea
+    gets its own editor.
 
 If the editor is disabled, rich text elements fall back to plain text:
 :yaml:`dataType: plainText` and :yaml:`convertPlainTextToHtml` instead of
@@ -137,6 +139,26 @@ If the editor is disabled, rich text elements fall back to plain text:
     Otherwise, the backend shows the HTML source of the value. The column
     `teaser`, for example, is a plain text field with a maximum of 255
     characters and is **not** a suitable target, unless you change its TCA.
+
+The editor of an element is configured for the column
+:yaml:`properties.dbMapping.column` of the table
+:yaml:`properties.dbMapping.table`. The table is optional and defaults to
+`tx_events2_domain_model_event`. Set it only for elements which are stored
+in another table, so the toolbar matches the allowed tags of that column.
+Use the same table as the mapping of the element in the
+`SaveEventFinisher`:
+
+..  code-block:: yaml
+    :caption: EXT:my_sitepackage/Configuration/Form/NewEvent.form.yaml (excerpt)
+
+    - label: 'Notes of the organizer'
+      type: Textarea
+      identifier: organizer-notes
+      properties:
+        dbMapping:
+          table: tx_events2_domain_model_organizer
+          column: tx_myext_notes
+          dataType: richText
 
 ..  _frontend-rich-text-editor-example-additional-element:
 
@@ -212,6 +234,10 @@ gzip.
 Toolbar of the frontend rich text editor
 ========================================
 
+The toolbar is built from the tags which are allowed for the column of
+the element (see :ref:`frontend-rich-text-editor-allowed-markup`). With
+the default configuration, it contains:
+
 *   Heading: Paragraph, Heading 2, Heading 3 (Heading 1 is used for the
     title of the event)
 *   Bold, Italic
@@ -219,6 +245,28 @@ Toolbar of the frontend rich text editor
 *   Link with the protocols `http`, `https`, `mailto` and `tel` and the
     option :guilabel:`Open in a new tab`
 *   Undo, Redo
+
+..  versionadded:: 11.2.0
+
+    The headings and toolbar items follow the allowed tags of the
+    :ref:`ModifyRichTextSanitizerConfigurationEvent
+    <frontend-rich-text-editor-sanitizer-event>`.
+
+The editor gets one heading option for each allowed element of
+:html:`<h1>` to :html:`<h6>`. The titles of the headings are translated
+by CKEditor. The heading dropdown is only shown if at least one heading is
+allowed. The toolbar items are only shown if their element is allowed:
+
+*   :guilabel:`Bold`: :html:`<strong>`
+*   :guilabel:`Italic`: :html:`<em>`
+*   :guilabel:`Bulleted list`: :html:`<ul>`
+*   :guilabel:`Numbered list`: :html:`<ol>`
+*   :guilabel:`Link`: :html:`<a>`
+
+:guilabel:`Undo` and :guilabel:`Redo` are always available. Allowed
+elements without a toolbar item, like :html:`<u>` or
+:html:`<blockquote>`, are kept when the value is saved, but can not be
+selected in the editor.
 
 Toolbar items which do not fit into the width of the form are grouped into
 a dropdown. The toolbar can be focused with :kbd:`Alt` + :kbd:`F10`.
@@ -277,23 +325,34 @@ Modify the allowed markup of the frontend rich text editor
 ..  versionadded:: 11.2.0
 
     The PSR-14 event :php:`ModifyRichTextSanitizerConfigurationEvent`
-    allows to modify the tags of the rich text sanitizer.
+    allows to modify the tags of the rich text sanitizer and of the
+    toolbar of the frontend editor.
 
-The sanitizer dispatches the PSR-14 event
+The PSR-14 event
 :php:`\JWeiland\Events2\Event\ModifyRichTextSanitizerConfigurationEvent`
-each time it sanitizes a submitted value which contains HTML. Values
-without any tag are converted like plain text and do not dispatch the
-event. The event receives the defaults, which are defined as constants in
-:php:`\JWeiland\Events2\Sanitizer\Visitor\RichTextVisitor`.
+is dispatched for each rich text element:
 
-..  important::
+*   While rendering the form element, to build the headings and toolbar
+    items of the editor (see :ref:`frontend-rich-text-editor-toolbar`).
+    Table and column are taken from :yaml:`properties.dbMapping.table`
+    (default: `tx_events2_domain_model_event`) and
+    :yaml:`properties.dbMapping.column` of the form element.
+*   Each time a submitted value which contains HTML is sanitized. Values
+    without any tag are converted like plain text and do not dispatch the
+    event.
 
-    The event only affects the sanitizing on the server. The toolbar of the
-    editor in the frontend (:ref:`frontend-rich-text-editor-toolbar`) is
-    not changed. If you allow :html:`<h4>`, for example, frontend users
-    can not select it in the editor. But :html:`<h4>` is kept if it is
-    already part of the value, for example because it was added by an
-    editor in the backend, or if it is submitted with a request.
+The event receives the defaults, which are defined as constants in
+:php:`\JWeiland\Events2\Sanitizer\Visitor\RichTextVisitor`. So one
+listener configures both the editor and the sanitizing on the server.
+
+..  note::
+
+    Only elements with a toolbar item can be selected in the editor:
+    headings :html:`<h1>` to :html:`<h6>`, :html:`<strong>`, :html:`<em>`,
+    :html:`<ul>`, :html:`<ol>` and :html:`<a>`. Other allowed elements, like
+    :html:`<u>` or :html:`<blockquote>`, are kept if they are already part
+    of the value, for example because they were added by an editor in the
+    backend, or if they are submitted with a request.
 
 ..  _frontend-rich-text-editor-sanitizer-event-methods:
 
@@ -355,7 +414,8 @@ After all listeners are called, the configuration is normalized:
 
 After sanitizing, the value is transformed with the RTE configuration of
 the backend (:php:`RteHtmlParser`). An element allowed by the event must
-be allowed by the RTE configuration of the column as well.
+be allowed by the RTE configuration of the column as well. The default RTE
+configuration keeps :html:`<h4>`, for example.
 
 ..  _frontend-rich-text-editor-sanitizer-event-example:
 
@@ -363,7 +423,9 @@ Example: Allow h4 in the description of events
 ----------------------------------------------
 
 The following event listener allows :html:`<h4>` for the column
-`detail_information` of the event table only. All other rich text elements
+`detail_information` of the event table only. The editor of the
+description gets the additional heading :guilabel:`Heading 4`, and the
+heading is kept when the event is saved. All other rich text elements
 keep the default configuration.
 
 ..  literalinclude:: _snippets/_AllowHeading4EventListener.php

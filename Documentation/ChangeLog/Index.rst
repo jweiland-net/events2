@@ -25,8 +25,14 @@ Version 11.2.0
     to modify the allowed, mapped, removed and block elements of the
     sanitizer, for example per table and column. Elements with active
     content like :html:`<script>` or :html:`<iframe>` can never be
-    allowed. The toolbar of the editor in the frontend is not changed. See
-    :ref:`frontend-rich-text-editor-sanitizer-event`.
+    allowed. See :ref:`frontend-rich-text-editor-sanitizer-event`.
+*   [FEATURE] Build the toolbar of the frontend rich text editor from the
+    allowed tags of the column. Each allowed heading :html:`<h1>` to
+    :html:`<h6>` gets a heading option, and the items for bold, italic,
+    lists and links are only shown if their elements are allowed. The new
+    optional :yaml:`dbMapping.table` of a form element defines the table
+    of the column, if it is not the event table. See
+    :ref:`frontend-rich-text-editor-toolbar`.
 
 Version 11.1.1
 ==============
