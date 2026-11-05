@@ -20,6 +20,13 @@ Version 11.2.0
     CKEditor 5 modules of EXT:rte_ckeditor without a build step. The
     submitted HTML is sanitized with an allowlist and stored like in the
     backend. See :ref:`frontend-rich-text-editor`.
+*   [FEATURE] Make tags of the rich text sanitizer configurable. The new
+    PSR-14 event :php:`ModifyRichTextSanitizerConfigurationEvent` allows
+    to modify the allowed, mapped, removed and block elements of the
+    sanitizer, for example per table and column. Elements with active
+    content like :html:`<script>` or :html:`<iframe>` can never be
+    allowed. The toolbar of the editor in the frontend is not changed. See
+    :ref:`frontend-rich-text-editor-sanitizer-event`.
 
 Version 11.1.1
 ==============
