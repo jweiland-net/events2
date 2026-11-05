@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Controller;
 
 use JWeiland\Events2\Domain\Model\Event;
-use JWeiland\Events2\Service\EventModerationService;
+use JWeiland\Events2\Service\ManagementAccessService;
 use JWeiland\Events2\Traits\InjectCacheServiceTrait;
 use JWeiland\Events2\Traits\InjectEventRepositoryTrait;
 use JWeiland\Events2\Traits\InjectMailMessageTrait;
@@ -35,7 +35,7 @@ class ManagementController extends AbstractController
     use InjectMailMessageTrait;
 
     public function __construct(
-        protected readonly EventModerationService $eventModerationService,
+        protected readonly ManagementAccessService $managementAccessService,
         protected readonly ErrorController $errorController,
     ) {}
 
@@ -81,7 +81,7 @@ class ManagementController extends AbstractController
     {
         $this->postProcessAndAssignFluidVariables([
             'event' => $event,
-            'moderationToken' => $this->eventModerationService->getValidModerationToken(
+            'moderationToken' => $this->managementAccessService->getValidModerationToken(
                 $this->request,
                 (int)$event->getUid(),
             ),
@@ -108,7 +108,7 @@ class ManagementController extends AbstractController
         if ($this->request->getMethod() !== 'POST') {
             return $this->redirect('confirmActivation', null, null, [
                 'event' => $event,
-                'moderationToken' => $this->eventModerationService->getValidModerationToken($this->request, $event),
+                'moderationToken' => $this->managementAccessService->getValidModerationToken($this->request, $event),
             ]);
         }
 

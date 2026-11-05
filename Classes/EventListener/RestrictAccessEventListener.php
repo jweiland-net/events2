@@ -11,10 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\EventListener;
 
-use JWeiland\Events2\Domain\Model\Event;
-use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Event\PreProcessControllerActionEvent;
-use JWeiland\Events2\Service\EventModerationService;
 use JWeiland\Events2\Service\ManagementAccessService;
 use JWeiland\Events2\Traits\IsValidEventListenerRequestTrait;
 use TYPO3\CMS\Core\Attribute\AsEventListener;
@@ -29,18 +26,18 @@ use TYPO3\CMS\Extbase\Service\ExtensionService;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
- * Restrict access to controller actions if the current logged-in user tries to access records of other users.
- * We will remove the event argument from the request, which will result in calling the errorAction of the ActionController.
+ * Restrict access to the actions of the ManagementController. The rules
+ * are defined in ManagementAccessService. If access is denied, a localized
+ * flash message is added and the request is forwarded to the errorAction
+ * without any Extbase argument.
  *
- * "confirmActivation" and "activate" are allowed for backend administrators
- * and with a valid "moderationToken" of the signed mail link only. Owners
- * of an event are not allowed to activate their own events, as that would
- * bypass the moderation.
- *
- * New events ("perform" without event) can be created
- * by frontend users of the configured user group with an organizer only.
- * A backend administrator has no organizer, so a new event would be stored
- * without organizer. Backend administrators keep access to existing events.
+ * - "confirmActivation" and "activate": Backend administrators or a valid
+ *   "moderationToken" of the signed mail link.
+ * - "listMyEvents": Frontend users of the user group with an organizer or
+ *   backend administrators.
+ * - "perform" with event: The owner of the event or backend administrators.
+ * - "perform" without event creates a new event: Frontend users of the user
+ *   group with an organizer only.
  */
 #[AsEventListener('events2/restrictAccess')]
 final readonly class RestrictAccessEventListener
@@ -57,27 +54,14 @@ final readonly class RestrictAccessEventListener
     ];
 
     /**
-     * These actions create a new event, if there is no "event" argument
-     */
-    private const CREATE_CONTROLLER_ACTIONS = [
-        'Management' => [
-            'perform',
-        ],
-    ];
-
-    /**
      * These actions are allowed with a valid moderation token or for backend administrators only
      */
-    private const MODERATION_TOKEN_CONTROLLER_ACTIONS = [
-        'Management' => [
-            'confirmActivation',
-            'activate',
-        ],
+    private const MODERATION_TOKEN_ACTIONS = [
+        'confirmActivation',
+        'activate',
     ];
 
     public function __construct(
-        private EventRepository $eventRepository,
-        private EventModerationService $eventModerationService,
         private ManagementAccessService $managementAccessService,
         private ExtensionService $extensionService,
         private FlashMessageService $flashMessageService,
@@ -85,9 +69,16 @@ final readonly class RestrictAccessEventListener
 
     public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void
     {
-        if (!$this->isValidRequest($controllerActionEvent) || $this->isAccessAllowed($controllerActionEvent)) {
+        if (!$this->isValidRequest($controllerActionEvent)) {
             return;
         }
+
+        $denialReason = $this->getDenialReason($controllerActionEvent);
+        if ($denialReason === '') {
+            return;
+        }
+
+        $this->addFlashMessage($controllerActionEvent->getRequest(), $denialReason);
 
         // Redirect request to errorAction
         $controllerActionEvent->setRequest(
@@ -98,86 +89,37 @@ final readonly class RestrictAccessEventListener
         $controllerActionEvent->setArguments(GeneralUtility::makeInstance(Arguments::class));
     }
 
-    private function isAccessAllowed(PreProcessControllerActionEvent $controllerActionEvent): bool
+    private function getDenialReason(PreProcessControllerActionEvent $controllerActionEvent): string
     {
-        if ($this->managementAccessService->isBackendAdmin() && !$this->isCreateRequest($controllerActionEvent)) {
-            return true;
-        }
+        $request = $controllerActionEvent->getRequest();
+        $actionName = $controllerActionEvent->getActionName();
+        $userGroup = (int)($controllerActionEvent->getSettings()['userGroup'] ?? 0);
 
-        if ($this->isModerationTokenAction($controllerActionEvent)) {
-            return $this->hasValidModerationToken($controllerActionEvent->getRequest());
-        }
-
-        return $this->isFrontendUserAllowed($controllerActionEvent)
-            && $this->isEventOfFrontendUser($controllerActionEvent->getRequest());
-    }
-
-    private function isCreateRequest(PreProcessControllerActionEvent $controllerActionEvent): bool
-    {
-        return in_array(
-            $controllerActionEvent->getActionName(),
-            self::CREATE_CONTROLLER_ACTIONS[$controllerActionEvent->getControllerName()] ?? [],
-            true,
-        ) && $this->getEventUid($controllerActionEvent->getRequest()) <= 0;
-    }
-
-    private function isModerationTokenAction(PreProcessControllerActionEvent $controllerActionEvent): bool
-    {
-        return in_array(
-            $controllerActionEvent->getActionName(),
-            self::MODERATION_TOKEN_CONTROLLER_ACTIONS[$controllerActionEvent->getControllerName()] ?? [],
-            true,
-        );
+        return match (true) {
+            in_array($actionName, self::MODERATION_TOKEN_ACTIONS, true) => $this->getDenialReasonForActivation($request),
+            $actionName === 'listMyEvents' => $this->managementAccessService->getDenialReasonForListing($userGroup),
+            $this->getEventUid($request) > 0 => $this->managementAccessService->getDenialReasonForEdit(
+                $userGroup,
+                $this->getEventUid($request),
+            ),
+            default => $this->managementAccessService->getDenialReasonForCreate($userGroup),
+        };
     }
 
     /**
      * Only scalar event UIDs are accepted here, so no property of the event
      * can be mapped by submitting an array with "__identity".
      */
-    private function hasValidModerationToken(Request $request): bool
+    private function getDenialReasonForActivation(Request $request): string
     {
         $eventArgument = $request->hasArgument('event') ? $request->getArgument('event') : null;
         $eventUid = is_scalar($eventArgument) && is_numeric($eventArgument) ? (int)$eventArgument : 0;
+        $moderationToken = $request->hasArgument('moderationToken') ? $request->getArgument('moderationToken') : '';
 
-        if ($this->eventModerationService->getValidModerationToken($request, $eventUid) !== '') {
-            return true;
-        }
-
-        $this->addFlashMessage($request, 'invalidModerationToken');
-
-        return false;
-    }
-
-    private function isFrontendUserAllowed(PreProcessControllerActionEvent $controllerActionEvent): bool
-    {
-        $labelKey = $this->managementAccessService->getDenialReasonForFrontendUser(
-            (int)($controllerActionEvent->getSettings()['userGroup'] ?? 0),
-        );
-
-        if ($labelKey === '') {
-            return true;
-        }
-
-        $this->addFlashMessage($controllerActionEvent->getRequest(), $labelKey);
-
-        return false;
-    }
-
-    private function isEventOfFrontendUser(Request $request): bool
-    {
-        $eventUid = $this->getEventUid($request);
-        if ($eventUid <= 0) {
-            return true;
-        }
-
-        $event = $this->eventRepository->findHiddenObject($eventUid);
-        if (!$event instanceof Event || $event->getIsCurrentUserAllowedOrganizer()) {
-            return true;
-        }
-
-        $this->addFlashMessage($request, 'unauthorizedOrganizerForEdit');
-
-        return false;
+        return $this->managementAccessService->canActivateEvent(
+            $eventUid,
+            is_string($moderationToken) ? $moderationToken : '',
+        ) ? '' : 'invalidModerationToken';
     }
 
     /**
