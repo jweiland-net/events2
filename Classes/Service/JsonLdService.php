@@ -19,10 +19,8 @@ use JWeiland\Events2\Domain\Model\Link;
 use JWeiland\Events2\Domain\Model\Location;
 use JWeiland\Events2\Domain\Model\Organizer;
 use JWeiland\Events2\Domain\Model\Time;
-use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
@@ -315,17 +313,40 @@ class JsonLdService
             return;
         }
 
-        $url = GeneralUtility::locationHeaderUrl(PathUtility::getAbsoluteWebPath(Environment::getPublicPath()));
-        $url .= $resource->getPublicUrl();
+        $contentUrl = $this->getAbsoluteUrl((string)$resource->getPublicUrl());
+        if ($contentUrl === '') {
+            return;
+        }
 
         $this->data['image'] = [
             '@type' => 'ImageObject',
             'caption' => $resource->getTitle(),
             'contentSize' => $resource->getSize(),
-            'contentUrl' => $url,
+            'contentUrl' => $contentUrl,
             'url' => rawurldecode(GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL')),
             'description' => $resource->getDescription(),
         ];
+    }
+
+    /**
+     * FAL returns the public URL of a file relative to the host (e.g.
+     * "/fileadmin/image.png", incl. the path of a subdirectory installation),
+     * or as full URL for storages with an absolute base URI like a CDN. So
+     * the host of the request is prepended to paths only. Prepending the
+     * base of the site would duplicate the path of the site.
+     */
+    protected function getAbsoluteUrl(string $publicUrl): string
+    {
+        if ($publicUrl === '') {
+            return '';
+        }
+
+        // locationHeaderUrl() keeps protocol relative URLs of a CDN without scheme
+        if (str_starts_with($publicUrl, '//')) {
+            return (GeneralUtility::getIndpEnv('TYPO3_SSL') ? 'https:' : 'http:') . $publicUrl;
+        }
+
+        return GeneralUtility::locationHeaderUrl($publicUrl);
     }
 
     /**
