@@ -112,24 +112,12 @@ settings:
     description: 'Define the selectable categories to be used in form of frontend management. Their parent category UID must match with root category defined above'
     type: string
     default: ''
-  events2.form.uploadFolder:
-    label: 'Upload Folder'
-    category: 'events2.form'
-    description: 'Folder (combined identifier, e.g. 1:user_upload/tx_events2/) for the images uploaded in the Extbase form of frontend management'
-    type: string
-    default: '1:user_upload/tx_events2/'
   events2.form.userGroup:
     label: 'User group UID'
     category: 'events2.form'
     description: 'UID of user group, which is allowed to edit/create events in frontend'
     type: int
     default: 0
-  events2.form.remainingLetters:
-    label: 'Remaining Letters'
-    category: 'events2.form'
-    description: 'Remaining letters for field "teaser" while editing/creating events in frontend'
-    type: int
-    default: 250
   events2.form.richText.enable:
     label: 'Enable rich text editor'
     category: 'events2.form'

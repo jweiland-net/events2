@@ -24,8 +24,7 @@ final readonly class RegisterHiddenEventEventListener
 
     protected const ALLOWED_CONTROLLER_ACTIONS = [
         'Management' => [
-            'edit',
-            'update',
+            'perform',
             'confirmActivation',
         ],
     ];

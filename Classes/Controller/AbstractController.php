@@ -96,7 +96,6 @@ class AbstractController extends ActionController implements LoggerAwareInterfac
             'data' => $data,
             'localization' => [
                 'locationFail' => LocalizationUtility::translate('error.locationFail', 'events2'),
-                'remainingText' => LocalizationUtility::translate('remainingLetters', 'events2'),
             ],
         ];
         ArrayUtility::mergeRecursiveWithOverrule($jsVariables, $override);

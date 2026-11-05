@@ -65,7 +65,6 @@ plugin.tx_events2 {
     pidOfNewLocationPage = {$events2.pidOfNewLocationPage}
     pidOfListPage = {$events2.pidOfListPage}
     userGroup = {$events2.form.userGroup}
-    remainingLetters = {$events2.form.remainingLetters}
     list {
       image {
         width = 50c
@@ -83,7 +82,6 @@ plugin.tx_events2 {
 
     new {
       selectableCategoriesForNewEvents = {$events2.form.selectableCategoriesForNewEvents}
-      uploadFolder = {$events2.form.uploadFolder}
       # CKEditor 5 of EXT:rte_ckeditor for rich text elements in the form based on EXT:form
       richText {
         enable = {$events2.form.richText.enable}
@@ -133,18 +131,4 @@ plugin.tx_events2 {
       }
     }
   }
-  _LOCAL_LANG.de.rightsMessage = Hiermit räume ich ... ein einfaches, unbeschränktes Nutzungsrecht an dem hochgeladenen Werk ein. Mit der Nutzung werden keine Rechte von Dritten verletzt.
-  _LOCAL_LANG.default.rightsMessage = I give all rights of this image to...
 }
-
-plugin.tx_events2._CSS_DEFAULT_STYLE (
-  textarea.f3-form-error {
-    background-color:#FF9F9F;
-    border: 1px #FF0000 solid;
-  }
-
-  input.f3-form-error {
-    background-color:#FF9F9F;
-    border: 1px #FF0000 solid;
-  }
-)

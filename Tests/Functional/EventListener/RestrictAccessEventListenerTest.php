@@ -235,7 +235,7 @@ class RestrictAccessEventListenerTest extends FunctionalTestCase
     public function otherActionWithValidTokenButWithoutLoginIsDenied(): void
     {
         $controllerActionEvent = $this->dispatch(
-            'edit',
+            'perform',
             $this->eventUid,
             $this->get(EventModerationService::class)->generateModerationToken($this->eventUid),
         );
@@ -251,10 +251,10 @@ class RestrictAccessEventListenerTest extends FunctionalTestCase
     {
         $this->setBackendUser(true);
 
-        $controllerActionEvent = $this->dispatch('edit', $this->eventUid, null);
+        $controllerActionEvent = $this->dispatch('listMyEvents', null, null);
 
         self::assertSame(
-            'edit',
+            'listMyEvents',
             $controllerActionEvent->getActionName(),
         );
     }
@@ -262,8 +262,6 @@ class RestrictAccessEventListenerTest extends FunctionalTestCase
     public static function createActionDataProvider(): array
     {
         return [
-            'new action' => ['new'],
-            'create action' => ['create'],
             'perform action without event' => ['perform'],
         ];
     }

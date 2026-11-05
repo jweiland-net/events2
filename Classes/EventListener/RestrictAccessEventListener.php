@@ -37,7 +37,7 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  * of an event are not allowed to activate their own events, as that would
  * bypass the moderation.
  *
- * New events ("new", "create" and "perform" without event) can be created
+ * New events ("perform" without event) can be created
  * by frontend users of the configured user group with an organizer only.
  * A backend administrator has no organizer, so a new event would be stored
  * without organizer. Backend administrators keep access to existing events.
@@ -49,11 +49,6 @@ final readonly class RestrictAccessEventListener
 
     private const ALLOWED_CONTROLLER_ACTIONS = [
         'Management' => [
-            'new',
-            'create',
-            'edit',
-            'update',
-            'delete',
             'confirmActivation',
             'activate',
             'perform',
@@ -66,8 +61,6 @@ final readonly class RestrictAccessEventListener
      */
     private const CREATE_CONTROLLER_ACTIONS = [
         'Management' => [
-            'new',
-            'create',
             'perform',
         ],
     ];
