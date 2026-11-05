@@ -1,7 +1,9 @@
+{namespace e2=JWeiland\Events2\ViewHelpers}
 <f:layout name="SystemEmail"/>
 <f:section name="Title">{title}</f:section>
 <f:section name="Main">
     <f:variable name="event">{finisherVariableProvider.SaveEvent.insertedUids.tx_events2_domain_model_event}</f:variable>
+    <f:variable name="moderationToken">{e2:moderationToken(event: event)}</f:variable>
 
     <p>Hallo,</p>
     <p>
@@ -10,7 +12,7 @@
         </f:link.action>
     </p>
     <p>
-        <f:link.action pageUid="{pidOfManagementPage}" action="activate" controller="Management" extensionName="Events2" pluginName="Management" absolute="1" arguments="{event: event, timestamp: '0'}">
+        <f:link.action pageUid="{pidOfManagementPage}" action="confirmActivation" controller="Management" extensionName="Events2" pluginName="Management" absolute="1" arguments="{event: event, moderationToken: moderationToken}">
             Datensatz freischalten
         </f:link.action>
     </p>

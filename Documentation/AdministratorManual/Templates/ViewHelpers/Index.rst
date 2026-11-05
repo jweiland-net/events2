@@ -59,3 +59,4 @@ All ViewHelpers
     GetExceptionsFromEventForSpecificDateViewHelper
     GetMergedEventTimesViewHelper
     IsDateMarkedAsCanceledViewHelper
+    ModerationTokenViewHelper

@@ -10,6 +10,94 @@ Upgrade
 If you upgrade/update EXT:events2 to a newer version, please read this
 section carefully!
 
+..  _upgrade-11-1-0:
+
+Update to Version 11.1.0
+========================
+
+Mail security scanners and link previews (e.g. Microsoft Safe Links) open
+the links of a mail automatically. Before this version, the activation link
+of the notification mail activated the event with a simple GET request.
+Further, every owner of an event was able to activate his own event and
+bypass the moderation.
+
+The activation link opens the new action `confirmActivation` of the
+Management plugin now. It shows a summary of the event and a button, which
+activates the event via POST. The links are signed with a
+`moderationToken`. `confirmActivation` and `activate` are allowed with a
+valid `moderationToken` or for backend administrators only. The token signs
+the event UID and stays valid until the event was deleted.
+
+Activation links of mails sent before this update do not contain a
+`moderationToken`. They are denied, unless they are opened by a backend
+administrator logged in into the backend.
+
+..  _upgrade-11-1-0-templates:
+
+Overridden mail templates
+-------------------------
+
+If you have overridden one of these templates, please change the
+activation link to the action `confirmActivation` and add the argument
+`moderationToken`:
+
+*   :file:`Resources/Private/Templates/Management/Create.html`
+*   :file:`Resources/Private/Templates/Management/Update.html`
+*   :file:`Resources/Private/FormFramework/Templates/Finishers/Email/Default.html`
+
+In :file:`Create.html` and :file:`Update.html` the controller assigns the
+variable `moderationToken`:
+
+..  code-block:: html
+
+    <f:link.action pageUid="{settings.pidOfManagementPage}"
+                   action="confirmActivation"
+                   controller="Management"
+                   absolute="1"
+                   arguments="{event: event, moderationToken: moderationToken}">
+        Datensatz freischalten
+    </f:link.action>
+
+The mail template of the EXT:form finisher has no controller. Create the
+token with the new :ref:`ModerationTokenViewHelper <moderationTokenViewHelper>`:
+
+..  code-block:: html
+
+    {namespace e2=JWeiland\Events2\ViewHelpers}
+
+    <f:variable name="event">{finisherVariableProvider.SaveEvent.insertedUids.tx_events2_domain_model_event}</f:variable>
+    <f:variable name="moderationToken">{e2:moderationToken(event: event)}</f:variable>
+
+    <f:link.action pageUid="{pidOfManagementPage}"
+                   action="confirmActivation"
+                   controller="Management"
+                   extensionName="Events2"
+                   pluginName="Management"
+                   absolute="1"
+                   arguments="{event: event, moderationToken: moderationToken}">
+        Datensatz freischalten
+    </f:link.action>
+
+If you have overridden the template paths of the Management plugin, please
+copy the new template :file:`Management/ConfirmActivation.html`, too.
+
+..  _upgrade-11-1-0-routing:
+
+Route enhancer
+--------------
+
+If you have configured a route for `Management::activate`, please add a
+route for `Management::confirmActivation`, too. The `moderationToken` is
+added as query parameter:
+
+..  code-block:: yaml
+
+    -
+      routePath: '/event/m/c/{event_title}'
+      _controller: 'Management::confirmActivation'
+      _arguments:
+        event_title: event
+
 ..  _upgrade-11-0-0:
 
 Update to Version 11.0.0

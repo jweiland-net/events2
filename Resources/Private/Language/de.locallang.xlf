@@ -536,6 +536,22 @@
 				<source>You are not allowed to edit events that do not correspond to your assigned organizer.</source>
 				<target>Es ist Ihnen nicht erlaubt Veranstaltungen zu bearbeiten, die nicht Ihrem zugewiesenen Veranstalter entsprechen.</target>
 			</trans-unit>
+			<trans-unit id="invalidModerationToken">
+				<source>The activation link is invalid or the event does not exist anymore.</source>
+				<target>Der Freischaltungslink ist ungültig oder die Veranstaltung existiert nicht mehr.</target>
+			</trans-unit>
+			<trans-unit id="confirmActivation.header">
+				<source>Activate event</source>
+				<target>Veranstaltung freischalten</target>
+			</trans-unit>
+			<trans-unit id="confirmActivation.description">
+				<source>Please check the event. It will be visible in frontend after the activation.</source>
+				<target>Bitte prüfen Sie die Veranstaltung. Nach der Freischaltung ist sie im Frontend sichtbar.</target>
+			</trans-unit>
+			<trans-unit id="confirmActivation.submit">
+				<source>Activate event</source>
+				<target>Veranstaltung freischalten</target>
+			</trans-unit>
 
 			<trans-unit id="pageBrowser.first">
 				<source>First</source>
