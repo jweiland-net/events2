@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Tests\Functional\Controller;
 
-use JWeiland\Events2\Service\EventModerationService;
+use JWeiland\Events2\Service\ManagementAccessService;
 use JWeiland\Events2\Tests\Functional\Events2Constants;
 use JWeiland\Events2\Tests\Functional\Traits\CacheHashTrait;
 use JWeiland\Events2\Tests\Functional\Traits\CreatePostStreamBodyTrait;
@@ -265,7 +265,7 @@ class ManagementControllerTest extends FunctionalTestCase
     public function confirmActivationWithValidTokenShowsConfirmationForm(): void
     {
         $eventUid = $this->insertHiddenEventOfFrontendUser();
-        $moderationToken = $this->get(EventModerationService::class)->generateModerationToken($eventUid);
+        $moderationToken = $this->get(ManagementAccessService::class)->generateModerationToken($eventUid);
 
         $content = (string)$this->executeGetRequest('confirmActivation', $eventUid, $moderationToken)->getBody();
 
@@ -297,7 +297,7 @@ class ManagementControllerTest extends FunctionalTestCase
     public function activateViaGetWithValidTokenKeepsEventHidden(): void
     {
         $eventUid = $this->insertHiddenEventOfFrontendUser();
-        $moderationToken = $this->get(EventModerationService::class)->generateModerationToken($eventUid);
+        $moderationToken = $this->get(ManagementAccessService::class)->generateModerationToken($eventUid);
 
         $content = (string)$this->executeGetRequest('activate', $eventUid, $moderationToken)->getBody();
 
@@ -338,7 +338,7 @@ class ManagementControllerTest extends FunctionalTestCase
     {
         $eventUid = $this->insertHiddenEventOfFrontendUser();
         $foreignEventUid = $this->insertHiddenEventOfFrontendUser();
-        $moderationToken = $this->get(EventModerationService::class)->generateModerationToken($foreignEventUid);
+        $moderationToken = $this->get(ManagementAccessService::class)->generateModerationToken($foreignEventUid);
 
         $this->executePostRequest('activate', $eventUid, $moderationToken);
 
@@ -350,7 +350,7 @@ class ManagementControllerTest extends FunctionalTestCase
     public function activateViaPostWithValidTokenActivatesEvent(): void
     {
         $eventUid = $this->insertHiddenEventOfFrontendUser();
-        $moderationToken = $this->get(EventModerationService::class)->generateModerationToken($eventUid);
+        $moderationToken = $this->get(ManagementAccessService::class)->generateModerationToken($eventUid);
 
         $this->executePostRequest('activate', $eventUid, $moderationToken);
 

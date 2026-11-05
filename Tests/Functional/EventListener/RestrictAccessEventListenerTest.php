@@ -13,7 +13,7 @@ namespace JWeiland\Events2\Tests\Functional\EventListener;
 
 use JWeiland\Events2\Event\PreProcessControllerActionEvent;
 use JWeiland\Events2\EventListener\RestrictAccessEventListener;
-use JWeiland\Events2\Service\EventModerationService;
+use JWeiland\Events2\Service\ManagementAccessService;
 use JWeiland\Events2\Tests\Functional\Events2Constants;
 use JWeiland\Events2\Tests\Functional\Traits\FrontendUserTrait;
 use JWeiland\Events2\Tests\Functional\Traits\InsertEventTrait;
@@ -112,7 +112,7 @@ class RestrictAccessEventListenerTest extends FunctionalTestCase
         $controllerActionEvent = $this->dispatch(
             $actionName,
             $this->eventUid,
-            $this->get(EventModerationService::class)->generateModerationToken($this->eventUid),
+            $this->get(ManagementAccessService::class)->generateModerationToken($this->eventUid),
         );
 
         self::assertSame(
@@ -146,7 +146,7 @@ class RestrictAccessEventListenerTest extends FunctionalTestCase
         $controllerActionEvent = $this->dispatch(
             $actionName,
             $this->eventUid,
-            $this->get(EventModerationService::class)->generateModerationToken($foreignEventUid),
+            $this->get(ManagementAccessService::class)->generateModerationToken($foreignEventUid),
         );
 
         self::assertSame(
@@ -162,7 +162,7 @@ class RestrictAccessEventListenerTest extends FunctionalTestCase
         $controllerActionEvent = $this->dispatch(
             $actionName,
             ['__identity' => $this->eventUid, 'title' => 'Manipulated'],
-            $this->get(EventModerationService::class)->generateModerationToken($this->eventUid),
+            $this->get(ManagementAccessService::class)->generateModerationToken($this->eventUid),
         );
 
         self::assertSame(
@@ -237,7 +237,7 @@ class RestrictAccessEventListenerTest extends FunctionalTestCase
         $controllerActionEvent = $this->dispatch(
             'perform',
             $this->eventUid,
-            $this->get(EventModerationService::class)->generateModerationToken($this->eventUid),
+            $this->get(ManagementAccessService::class)->generateModerationToken($this->eventUid),
         );
 
         self::assertSame(

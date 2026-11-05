@@ -98,18 +98,12 @@ class SaveEventFinisher extends AbstractFinisher
     protected function isAccessAllowed(ServerRequestInterface $request): bool
     {
         $managementAccessService = $this->getManagementAccessService();
+        $userGroup = $managementAccessService->getUserGroupFromTypoScript($request);
         $eventUid = $this->getEventUidToUpdate();
-        if ($eventUid > 0 && $managementAccessService->isBackendAdmin()) {
-            return true;
-        }
 
-        if (!$managementAccessService->isFrontendUserAllowed(
-            $managementAccessService->getUserGroupFromTypoScript($request),
-        )) {
-            return false;
-        }
-
-        return $eventUid === 0 || $managementAccessService->isEventOfFrontendUser($eventUid);
+        return $eventUid > 0
+            ? $managementAccessService->canEditEvent($userGroup, $eventUid)
+            : $managementAccessService->canCreateEvent($userGroup);
     }
 
     protected function getManagementAccessService(): ManagementAccessService
