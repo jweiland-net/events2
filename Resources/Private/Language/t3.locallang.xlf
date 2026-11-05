@@ -555,6 +555,10 @@
         <source>Activate event</source>
         <target>crwdns418995:0crwdne418995:0</target>
       </trans-unit>
+      <trans-unit id="richText.openInNewTab">
+        <source>Open in a new tab</source>
+        <target>crwdns418997:0crwdne418997:0</target>
+      </trans-unit>
       <trans-unit id="pageBrowser.first">
         <source>First</source>
         <target>crwdns306452:0crwdne306452:0</target>
