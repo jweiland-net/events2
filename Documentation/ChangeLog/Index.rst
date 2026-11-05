@@ -10,15 +10,16 @@ ChangeLog
 Version 11.2.0
 ==============
 
-*   [FEATURE] Add a rich text editor (CKEditor 5) for elements of the frontend
-    form based on EXT:form. Enable it with the new site setting
-    `events2.form.richText.enable`. By default the element
-    `detail-description` gets the editor. Further elements can be added with
-    the site setting `events2.form.richText.elements` or with
-    `dataType: richText` in the form definition. It uses the CKEditor 5
-    modules of EXT:rte_ckeditor without a build step. The submitted HTML is
-    sanitized with an allowlist and stored like in backend.
-    See :ref:`frontend-rich-text-editor`.
+*   [FEATURE] Add a rich text editor (CKEditor 5) for elements of the
+    event form based on EXT:form. Enable it with the new site setting
+    :confval:`events2.form.richText.enable <events2-form-richtext-enable>`.
+    By default, the element `detail-description` gets the editor. Further
+    elements can be added with the site setting
+    :confval:`events2.form.richText.elements <events2-form-richtext-elements>`
+    or with :yaml:`dataType: richText` in the form definition. It uses the
+    CKEditor 5 modules of EXT:rte_ckeditor without a build step. The
+    submitted HTML is sanitized with an allowlist and stored like in the
+    backend. See :ref:`frontend-rich-text-editor`.
 
 Version 11.1.1
 ==============

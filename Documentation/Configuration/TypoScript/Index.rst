@@ -178,14 +178,21 @@ richText.enable
 
 ..  versionadded:: 11.2.0
 
-    The value is set by the new site setting `events2.form.richText.enable`.
+    The value is set by the new site setting
+    :confval:`events2.form.richText.enable <events2-form-richtext-enable>`.
 
 Default: `0`
 
-Example: `plugin.tx_events2.settings.new.richText.enable = 1`
+Example:
 
-Use a small CKEditor 5 for the rich text elements of the form based on
-EXT:form. Requires EXT:rte_ckeditor. See :ref:`frontend-rich-text-editor`.
+..  code-block:: typoscript
+    :caption: EXT:my_sitepackage/Configuration/Sets/MySite/setup.typoscript
+
+    plugin.tx_events2.settings.new.richText.enable = 1
+
+Use a small CKEditor 5 for the rich text elements of the event form based
+on EXT:form. Requires EXT:rte_ckeditor. See
+:ref:`frontend-rich-text-editor`.
 
 ..  _typoscript-new-richtext-elements:
 
@@ -194,15 +201,21 @@ richText.elements
 
 ..  versionadded:: 11.2.0
 
-    The value is set by the new site setting `events2.form.richText.elements`.
+    The value is set by the new site setting
+    :confval:`events2.form.richText.elements <events2-form-richtext-elements>`.
 
 Default: `detail-description`
 
-Example: `plugin.tx_events2.settings.new.richText.elements = detail-description, program`
+Example:
 
-Comma separated identifiers of the form elements, which get the rich text
-editor. Elements with `dataType: richText` in the form definition get the
-editor, too. See :ref:`frontend-rich-text-editor`.
+..  code-block:: typoscript
+    :caption: EXT:my_sitepackage/Configuration/Sets/MySite/setup.typoscript
+
+    plugin.tx_events2.settings.new.richText.elements = detail-description, program
+
+Comma-separated identifiers of the form elements which get the rich text
+editor. Elements with :yaml:`dataType: richText` in the form definition get
+the editor, too. See :ref:`frontend-rich-text-editor-elements`.
 
 latest
 ------
