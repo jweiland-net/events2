@@ -43,6 +43,13 @@ This version contains breaking changes, please read
     sanitized as HTML and as plain text with the new
     :ref:`FormatRichTextViewHelper <formatRichTextViewHelper>`.
 *   [TASK] Localize the hint icon of the event form.
+*   [!!!][TASK] Simplify the access rules of the frontend management.
+    :php:`ManagementAccessService` reads the user group from TypoScript
+    and the event to edit from the query parameter
+    `tx_events2_management[event]` only. Backend administrators can not
+    list own events anymore and need the `moderationToken` to activate
+    an event. Edit forms are prefilled for allowed users only. Editing
+    an event keeps its organizers.
 *   [DOCS] Describe the frontend management and its access rules, see
     :ref:`frontend-management`.
 

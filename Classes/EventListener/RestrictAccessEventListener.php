@@ -20,6 +20,7 @@ use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\Arguments;
 use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Service\ExtensionService;
@@ -31,13 +32,9 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  * flash message is added and the request is forwarded to the errorAction
  * without any Extbase argument.
  *
- * - "confirmActivation" and "activate": Backend administrators or a valid
- *   "moderationToken" of the signed mail link.
- * - "listMyEvents": Frontend users of the user group with an organizer or
- *   backend administrators.
- * - "perform" with event: The owner of the event or backend administrators.
- * - "perform" without event creates a new event: Frontend users of the user
- *   group with an organizer only.
+ * - "confirmActivation": Backend administrators or a valid "moderationToken"
+ * - "activate": A valid "moderationToken" only
+ * - "listMyEvents" and "perform": See ManagementAccessService::getDenialReason()
  */
 #[AsEventListener('events2/restrictAccess')]
 final readonly class RestrictAccessEventListener
@@ -46,19 +43,11 @@ final readonly class RestrictAccessEventListener
 
     private const ALLOWED_CONTROLLER_ACTIONS = [
         'Management' => [
+            'listMyEvents',
+            'perform',
             'confirmActivation',
             'activate',
-            'perform',
-            'listMyEvents',
         ],
-    ];
-
-    /**
-     * These actions are allowed with a valid moderation token or for backend administrators only
-     */
-    private const MODERATION_TOKEN_ACTIONS = [
-        'confirmActivation',
-        'activate',
     ];
 
     public function __construct(
@@ -73,66 +62,47 @@ final readonly class RestrictAccessEventListener
             return;
         }
 
-        $denialReason = $this->getDenialReason($controllerActionEvent);
+        $request = $controllerActionEvent->getRequest();
+        $denialReason = $this->getDenialReason($request, $controllerActionEvent->getActionName());
         if ($denialReason === '') {
             return;
         }
 
-        $this->addFlashMessage($controllerActionEvent->getRequest(), $denialReason);
+        $this->addFlashMessage($request, $denialReason);
 
-        // Redirect request to errorAction
-        $controllerActionEvent->setRequest(
-            $controllerActionEvent->getRequest()->withControllerActionName('error'),
-        );
-
-        // Reset any Extbase Arguments to be NOT processed
+        // Forward to errorAction and reset all Extbase arguments to be NOT processed
+        $controllerActionEvent->setRequest($request->withControllerActionName('error'));
         $controllerActionEvent->setArguments(GeneralUtility::makeInstance(Arguments::class));
     }
 
-    private function getDenialReason(PreProcessControllerActionEvent $controllerActionEvent): string
+    private function getDenialReason(Request $request, string $actionName): string
     {
-        $request = $controllerActionEvent->getRequest();
-        $actionName = $controllerActionEvent->getActionName();
-        $userGroup = (int)($controllerActionEvent->getSettings()['userGroup'] ?? 0);
+        $eventArgument = $this->getScalarArgument($request, 'event');
+        $eventUid = MathUtility::canBeInterpretedAsInteger($eventArgument) ? (int)$eventArgument : 0;
+        $moderationToken = $this->getScalarArgument($request, 'moderationToken');
 
-        return match (true) {
-            in_array($actionName, self::MODERATION_TOKEN_ACTIONS, true) => $this->getDenialReasonForActivation($request),
-            $actionName === 'listMyEvents' => $this->managementAccessService->getDenialReasonForListing($userGroup),
-            $this->getEventUid($request) > 0 => $this->managementAccessService->getDenialReasonForEdit(
-                $userGroup,
-                $this->getEventUid($request),
-            ),
-            default => $this->managementAccessService->getDenialReasonForCreate($userGroup),
+        $isAllowed = match ($actionName) {
+            'confirmActivation' => $this->managementAccessService->canConfirmActivation($eventUid, $moderationToken),
+            'activate' => $this->managementAccessService->canActivateEvent($eventUid, $moderationToken),
+            default => null,
+        };
+
+        return match ($isAllowed) {
+            true => '',
+            false => 'invalidModerationToken',
+            null => $this->managementAccessService->getDenialReason($request),
         };
     }
 
     /**
-     * Only scalar event UIDs are accepted here, so no property of the event
-     * can be mapped by submitting an array with "__identity".
+     * Only scalar values are accepted, so no property of the event can be
+     * mapped by submitting an array with "__identity".
      */
-    private function getDenialReasonForActivation(Request $request): string
+    private function getScalarArgument(Request $request, string $argumentName): string
     {
-        $eventArgument = $request->hasArgument('event') ? $request->getArgument('event') : null;
-        $eventUid = is_scalar($eventArgument) && is_numeric($eventArgument) ? (int)$eventArgument : 0;
-        $moderationToken = $request->hasArgument('moderationToken') ? $request->getArgument('moderationToken') : '';
+        $value = $request->hasArgument($argumentName) ? $request->getArgument($argumentName) : '';
 
-        return $this->managementAccessService->canActivateEvent(
-            $eventUid,
-            is_string($moderationToken) ? $moderationToken : '',
-        ) ? '' : 'invalidModerationToken';
-    }
-
-    /**
-     * Extbase accepts an object identity as scalar value or as "__identity" of an array
-     */
-    private function getEventUid(Request $request): int
-    {
-        $eventArgument = $request->hasArgument('event') ? $request->getArgument('event') : 0;
-        if (is_array($eventArgument)) {
-            $eventArgument = $eventArgument['__identity'] ?? 0;
-        }
-
-        return is_scalar($eventArgument) ? (int)$eventArgument : 0;
+        return is_scalar($value) ? (string)$value : '';
     }
 
     private function addFlashMessage(Request $request, string $labelKey): void

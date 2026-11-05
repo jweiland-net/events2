@@ -246,6 +246,59 @@ class ManagementControllerTest extends FunctionalTestCase
     }
 
     /**
+     * Not existing and foreign events result in the same message, so
+     * nobody can find out, which hidden events exist.
+     */
+    #[Test]
+    public function performWithForeignEventDoesNotShowEventData(): void
+    {
+        // Creates the organizer with UID 1 of frontend user 1
+        $this->insertHiddenEventOfFrontendUser();
+        $eventUid = $this->insertEvent(
+            title: 'Hidden event of other organizer',
+            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
+            additionalFields: ['hidden' => 1],
+            organizer: 'TYPO3',
+        );
+
+        $content = (string)$this->executeGetRequest('perform', $eventUid, '', 1)->getBody();
+
+        self::assertStringContainsString(
+            'You are not allowed to edit events that do not correspond to your assigned organizer.',
+            $content,
+        );
+        self::assertStringNotContainsString('Hidden event of other organizer', $content);
+        self::assertStringNotContainsString('Recurring event', $content);
+    }
+
+    #[Test]
+    public function performWithUserOfWrongGroupWillNotShowExtForm(): void
+    {
+        $content = (string)$this->executeGetRequest('perform', 0, '', 3)->getBody();
+
+        self::assertStringContainsString('You\'re not allowed to create event records', $content);
+        self::assertStringNotContainsString('Recurring event', $content);
+    }
+
+    /**
+     * The token protects the state changing request against CSRF. Logged-in
+     * frontend users of the user group must not activate events without it.
+     */
+    #[Test]
+    public function activateViaPostWithInvalidTokenKeepsEventHidden(): void
+    {
+        $eventUid = $this->insertHiddenEventOfFrontendUser();
+
+        $content = (string)$this->executePostRequest('activate', $eventUid, 'invalid', 1)->getBody();
+
+        self::assertStringContainsString(
+            'The activation link is invalid or the event does not exist anymore.',
+            $content,
+        );
+        self::assertTrue($this->isEventHidden($eventUid));
+    }
+
+    /**
      * The Extbase form and its "create" action were removed. As the plugin
      * calls the default action for unknown actions, nothing is stored even
      * for allowed frontend users.
