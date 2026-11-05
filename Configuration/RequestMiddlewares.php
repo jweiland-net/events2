@@ -7,7 +7,6 @@
  * LICENSE file that was distributed with this source code.
  */
 
-use JWeiland\Events2\Middleware\AttachOrganizerToEventMiddleware;
 use JWeiland\Events2\Middleware\GetDaysForMonthMiddleware;
 use JWeiland\Events2\Middleware\GetLocationsMiddleware;
 use JWeiland\Events2\Middleware\GetSubCategoriesMiddleware;
@@ -35,12 +34,6 @@ return [
         ],
         'jweiland/events2/get-locations' => [
             'target' => GetLocationsMiddleware::class,
-            'after' => [
-                'typo3/cms-frontend/prepare-tsfe-rendering',
-            ],
-        ],
-        'jweiland/events2/attach-organizer' => [
-            'target' => AttachOrganizerToEventMiddleware::class,
             'after' => [
                 'typo3/cms-frontend/prepare-tsfe-rendering',
             ],

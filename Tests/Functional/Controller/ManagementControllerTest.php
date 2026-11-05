@@ -227,36 +227,6 @@ class ManagementControllerTest extends FunctionalTestCase
     }
 
     #[Test]
-    public function newWithoutLoggedInUserWillNotShowForm(): void
-    {
-        $content = (string)$this->executeGetRequest('new', 0, '')->getBody();
-
-        self::assertStringContainsString(
-            'This page is restricted. Please log in to access the Events Management area.',
-            $content,
-        );
-        self::assertStringNotContainsString(
-            'tx_events2_management[event][title]',
-            $content,
-        );
-    }
-
-    #[Test]
-    public function newWithUserOfWrongGroupWillNotShowForm(): void
-    {
-        $content = (string)$this->executeGetRequest('new', 0, '', 3)->getBody();
-
-        self::assertStringContainsString(
-            'You\'re not allowed to create event records',
-            $content,
-        );
-        self::assertStringNotContainsString(
-            'tx_events2_management[event][title]',
-            $content,
-        );
-    }
-
-    #[Test]
     public function performWithoutLoggedInUserWillNotShowExtForm(): void
     {
         $content = (string)$this->executeGetRequest('perform', 0, '')->getBody();
@@ -271,25 +241,23 @@ class ManagementControllerTest extends FunctionalTestCase
         );
     }
 
+    /**
+     * The Extbase form and its "create" action were removed. As the plugin
+     * calls the default action for unknown actions, nothing is stored even
+     * for allowed frontend users.
+     */
     #[Test]
-    public function createWithoutLoggedInUserWillNotStoreEvent(): void
+    public function removedCreateActionWillNotStoreEvent(): void
     {
-        $this->executeCreateRequest(0);
+        $content = (string)$this->executeCreateRequest(1)->getBody();
 
         self::assertSame(
             0,
             $this->countEvents(),
         );
-    }
-
-    #[Test]
-    public function createWithUserOfWrongGroupWillNotStoreEvent(): void
-    {
-        $this->executeCreateRequest(3);
-
-        self::assertSame(
-            0,
-            $this->countEvents(),
+        self::assertStringNotContainsString(
+            'tx_events2_management[event][title]',
+            $content,
         );
     }
 
