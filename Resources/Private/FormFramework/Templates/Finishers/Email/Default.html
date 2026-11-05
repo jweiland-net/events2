@@ -47,7 +47,14 @@
                                             <table cellspacing="0" border="0">
                                                 <tr>
                                                     <td>
-                                                        <f:format.nl2br>{formValue.processedValue}</f:format.nl2br>
+                                                        <f:if condition="{formValue.element.properties.dbMapping.dataType} == 'richText'">
+                                                            <f:then>
+                                                                <e2:formatRichText element="{formValue.element}" value="{formValue.processedValue}"/>
+                                                            </f:then>
+                                                            <f:else>
+                                                                <f:format.nl2br>{formValue.processedValue}</f:format.nl2br>
+                                                            </f:else>
+                                                        </f:if>
                                                     </td>
                                                 </tr>
                                             </table>
