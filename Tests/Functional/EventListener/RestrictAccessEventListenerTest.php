@@ -15,6 +15,7 @@ use JWeiland\Events2\Event\PreProcessControllerActionEvent;
 use JWeiland\Events2\EventListener\RestrictAccessEventListener;
 use JWeiland\Events2\Service\EventModerationService;
 use JWeiland\Events2\Tests\Functional\Events2Constants;
+use JWeiland\Events2\Tests\Functional\Traits\FrontendUserTrait;
 use JWeiland\Events2\Tests\Functional\Traits\InsertEventTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -41,6 +42,7 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
  */
 class RestrictAccessEventListenerTest extends FunctionalTestCase
 {
+    use FrontendUserTrait;
     use InsertEventTrait;
 
     protected array $coreExtensionsToLoad = [
@@ -70,6 +72,13 @@ class RestrictAccessEventListenerTest extends FunctionalTestCase
             new \DateTimeImmutable('tomorrow midnight'),
             additionalFields: ['hidden' => 1],
         );
+    }
+
+    protected function tearDown(): void
+    {
+        unset($GLOBALS['TYPO3_REQUEST']);
+
+        parent::tearDown();
     }
 
     public static function moderationTokenActionDataProvider(): array
@@ -246,6 +255,76 @@ class RestrictAccessEventListenerTest extends FunctionalTestCase
 
         self::assertSame(
             'edit',
+            $controllerActionEvent->getActionName(),
+        );
+    }
+
+    public static function createActionDataProvider(): array
+    {
+        return [
+            'new action' => ['new'],
+            'create action' => ['create'],
+            'perform action without event' => ['perform'],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('createActionDataProvider')]
+    public function createActionWithoutLoginIsDenied(string $actionName): void
+    {
+        $controllerActionEvent = $this->dispatch($actionName, null, null);
+
+        self::assertSame(
+            'error',
+            $controllerActionEvent->getActionName(),
+        );
+        self::assertSame(
+            0,
+            $controllerActionEvent->getArguments()->count(),
+        );
+    }
+
+    #[Test]
+    #[DataProvider('createActionDataProvider')]
+    public function createActionWithFrontendUserOfUserGroupIsAllowed(string $actionName): void
+    {
+        $this->loginFrontendUser(1);
+
+        $controllerActionEvent = $this->dispatch($actionName, null, null);
+
+        self::assertSame(
+            $actionName,
+            $controllerActionEvent->getActionName(),
+        );
+    }
+
+    /**
+     * A backend administrator has no organizer. The new event would be
+     * stored without organizer.
+     */
+    #[Test]
+    #[DataProvider('createActionDataProvider')]
+    public function createActionWithBackendAdminWithoutFrontendUserIsDenied(string $actionName): void
+    {
+        $this->setBackendUser(true);
+
+        $controllerActionEvent = $this->dispatch($actionName, null, null);
+
+        self::assertSame(
+            'error',
+            $controllerActionEvent->getActionName(),
+        );
+    }
+
+    #[Test]
+    public function performActionWithEventAndBackendAdminIsAllowed(): void
+    {
+        $this->setBackendUser(true);
+
+        $controllerActionEvent = $this->dispatch('perform', $this->eventUid, null);
+
+        self::assertSame(
+            'perform',
             $controllerActionEvent->getActionName(),
         );
     }

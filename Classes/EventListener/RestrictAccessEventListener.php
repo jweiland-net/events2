@@ -13,12 +13,11 @@ namespace JWeiland\Events2\EventListener;
 
 use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Repository\EventRepository;
-use JWeiland\Events2\Domain\Repository\UserRepository;
 use JWeiland\Events2\Event\PreProcessControllerActionEvent;
 use JWeiland\Events2\Service\EventModerationService;
+use JWeiland\Events2\Service\ManagementAccessService;
 use JWeiland\Events2\Traits\IsValidEventListenerRequestTrait;
 use TYPO3\CMS\Core\Attribute\AsEventListener;
-use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
@@ -37,6 +36,11 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  * and with a valid "moderationToken" of the signed mail link only. Owners
  * of an event are not allowed to activate their own events, as that would
  * bypass the moderation.
+ *
+ * New events ("new", "create" and "perform" without event) can be created
+ * by frontend users of the configured user group with an organizer only.
+ * A backend administrator has no organizer, so a new event would be stored
+ * without organizer. Backend administrators keep access to existing events.
  */
 #[AsEventListener('events2/restrictAccess')]
 final readonly class RestrictAccessEventListener
@@ -58,6 +62,17 @@ final readonly class RestrictAccessEventListener
     ];
 
     /**
+     * These actions create a new event, if there is no "event" argument
+     */
+    private const CREATE_CONTROLLER_ACTIONS = [
+        'Management' => [
+            'new',
+            'create',
+            'perform',
+        ],
+    ];
+
+    /**
      * These actions are allowed with a valid moderation token or for backend administrators only
      */
     private const MODERATION_TOKEN_CONTROLLER_ACTIONS = [
@@ -69,11 +84,10 @@ final readonly class RestrictAccessEventListener
 
     public function __construct(
         private EventRepository $eventRepository,
-        private UserRepository $userRepository,
         private EventModerationService $eventModerationService,
+        private ManagementAccessService $managementAccessService,
         private ExtensionService $extensionService,
         private FlashMessageService $flashMessageService,
-        private Context $context,
     ) {}
 
     public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void
@@ -93,7 +107,7 @@ final readonly class RestrictAccessEventListener
 
     private function isAccessAllowed(PreProcessControllerActionEvent $controllerActionEvent): bool
     {
-        if ($this->isBackendAdmin()) {
+        if ($this->managementAccessService->isBackendAdmin() && !$this->isCreateRequest($controllerActionEvent)) {
             return true;
         }
 
@@ -103,6 +117,15 @@ final readonly class RestrictAccessEventListener
 
         return $this->isFrontendUserAllowed($controllerActionEvent)
             && $this->isEventOfFrontendUser($controllerActionEvent->getRequest());
+    }
+
+    private function isCreateRequest(PreProcessControllerActionEvent $controllerActionEvent): bool
+    {
+        return in_array(
+            $controllerActionEvent->getActionName(),
+            self::CREATE_CONTROLLER_ACTIONS[$controllerActionEvent->getControllerName()] ?? [],
+            true,
+        ) && $this->getEventUid($controllerActionEvent->getRequest()) <= 0;
     }
 
     private function isModerationTokenAction(PreProcessControllerActionEvent $controllerActionEvent): bool
@@ -134,16 +157,9 @@ final readonly class RestrictAccessEventListener
 
     private function isFrontendUserAllowed(PreProcessControllerActionEvent $controllerActionEvent): bool
     {
-        $userGroup = (int)($controllerActionEvent->getSettings()['userGroup'] ?? 0);
-        $userAspect = $this->context->getAspect('frontend.user');
-
-        $labelKey = match (true) {
-            $userGroup === 0 => 'userGroupNotConfigured',
-            $userAspect->get('isLoggedIn') !== true => 'pluginNeedsLogin',
-            !in_array($userGroup, $userAspect->get('groupIds'), true) => 'notAllowedToCreate',
-            (int)$this->userRepository->getFieldFromUser('tx_events2_organizer') === 0 => 'missingOrganizerForCreate',
-            default => '',
-        };
+        $labelKey = $this->managementAccessService->getDenialReasonForFrontendUser(
+            (int)($controllerActionEvent->getSettings()['userGroup'] ?? 0),
+        );
 
         if ($labelKey === '') {
             return true;
@@ -182,11 +198,6 @@ final readonly class RestrictAccessEventListener
         }
 
         return is_scalar($eventArgument) ? (int)$eventArgument : 0;
-    }
-
-    private function isBackendAdmin(): bool
-    {
-        return $this->context->getAspect('backend.user')->get('isAdmin') === true;
     }
 
     private function addFlashMessage(Request $request, string $labelKey): void
