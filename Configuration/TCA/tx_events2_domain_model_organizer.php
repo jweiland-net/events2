@@ -26,7 +26,9 @@ return [
             'endtime' => 'endtime',
         ],
         'searchFields' => 'organizer',
-        'iconfile' => 'EXT:events2/Resources/Public/Icons/tx_events2_domain_model_organizer.png',
+        'typeicon_classes' => [
+            'default' => 'ext-events2-record-organizer',
+        ],
     ],
     'types' => [
         '1' => [

@@ -16,7 +16,7 @@ return [
         'type' => 'event_type',
         'typeicon_column' => 'event_type',
         'typeicon_classes' => [
-            'default' => 'ext-events2-calendar-single',
+            'default' => 'ext-events2-record-event',
             'single' => 'ext-events2-calendar-single',
             'recurring' => 'ext-events2-calendar-recurring',
             'duration' => 'ext-events2-calendar-duration',
