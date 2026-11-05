@@ -11,9 +11,11 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Tests\Functional\Hook;
 
+use JWeiland\Events2\Converter\RteContentConverter;
 use JWeiland\Events2\Hook\Form\PrefillForEditUsageHook;
 use JWeiland\Events2\Tests\Functional\Events2Constants;
 use JWeiland\Events2\Tests\Functional\Traits\InsertEventTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Form\Domain\Model\FormDefinition;
@@ -159,6 +161,80 @@ class PrefillForEditUsageHookTest extends FunctionalTestCase
         self::assertSame(
             '',
             $formElement->getProperties()['resolvedLabel'],
+        );
+    }
+
+    public static function storedDescriptionDataProvider(): array
+    {
+        return [
+            'saved by frontend form (backend RTE format)' => [
+                '<p>Erste Zeile der Beschreibung.<br />Zweite Zeile direkt darunter.</p>'
+                . "\r\n"
+                . '<p>Neuer Absatz nach einer Leerzeile.<br />Letzte Zeile mit Umlauten: äöü ß &amp; "Anführungszeichen".</p>',
+            ],
+            'saved by frontend form before 11.1.1' => [
+                "<p>Erste Zeile der Beschreibung.<br />\nZweite Zeile direkt darunter.</p>"
+                . "<p>Neuer Absatz nach einer Leerzeile.<br />\n"
+                . 'Letzte Zeile mit Umlauten: äöü ß &amp; &quot;Anführungszeichen&quot;.</p>',
+            ],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('storedDescriptionDataProvider')]
+    public function setFormDefaultValuesWithPlainTextDataTypeReturnsOriginalPlainText(string $detailInformation): void
+    {
+        $eventUid = $this->insertEvent(
+            title: 'Event with description',
+            eventBegin: new \DateTimeImmutable('today midnight'),
+            additionalFields: ['detail_information' => $detailInformation],
+        );
+
+        $formElement = $this->buildFormElement('detail-description', [
+            'dbMapping' => [
+                'column' => 'detail_information',
+                'dataType' => 'plainText',
+            ],
+        ]);
+
+        $this->callSetFormDefaultValues($formElement, $this->getEventRecord($eventUid));
+
+        self::assertSame(
+            "Erste Zeile der Beschreibung.\n"
+            . "Zweite Zeile direkt darunter.\n"
+            . "\n"
+            . "Neuer Absatz nach einer Leerzeile.\n"
+            . 'Letzte Zeile mit Umlauten: äöü ß & "Anführungszeichen".',
+            $formElement->getDefaultValue(),
+        );
+    }
+
+    #[Test]
+    public function frontendDescriptionSurvivesRoundTripThroughDatabaseAndEditForm(): void
+    {
+        $plainText = "Erste Zeile.\r\nZweite Zeile & \"Zitat\".\r\n\r\nNeuer Absatz mit äöü ß.";
+        $storedHtml = (new RteContentConverter())->convertPlainTextToHtml($plainText);
+        $eventUid = $this->insertEvent(
+            title: 'Event with description',
+            eventBegin: new \DateTimeImmutable('today midnight'),
+            additionalFields: ['detail_information' => $storedHtml],
+        );
+
+        $formElement = $this->buildFormElement('detail-description', [
+            'dbMapping' => [
+                'column' => 'detail_information',
+                'dataType' => 'plainText',
+            ],
+        ]);
+        $this->callSetFormDefaultValues($formElement, $this->getEventRecord($eventUid));
+
+        self::assertSame(
+            str_replace("\r\n", "\n", $plainText),
+            $formElement->getDefaultValue(),
+        );
+        self::assertSame(
+            $storedHtml,
+            (new RteContentConverter())->convertPlainTextToHtml($formElement->getDefaultValue()),
         );
     }
 

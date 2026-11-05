@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Functional\Service;
 
 use JWeiland\Events2\Domain\Factory\TimeFactory;
+use JWeiland\Events2\Domain\Model\Event;
 use JWeiland\Events2\Domain\Repository\DayRepository;
 use JWeiland\Events2\Service\JsonLdService;
 use JWeiland\Events2\Tests\Functional\Events2Constants;
@@ -218,6 +219,25 @@ class JsonLdServiceTest extends FunctionalTestCase
 
         self::assertSame(
             $day->getEvent()->getDetailInformation(),
+            $jsonLdService->getCollectedJsonLdData()['description'],
+        );
+    }
+
+    #[Test]
+    public function addJsonLdAddsDescriptionOfBackendRteAsPlainText(): void
+    {
+        $event = new Event();
+        $event->setDetailInformation(
+            '<p>First line.<br />Second line &amp; "quoted".</p>'
+            . "\r\n"
+            . '<p>New paragraph.</p>',
+        );
+
+        $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
+        (new \ReflectionMethod($jsonLdService, 'addDescriptionToData'))->invoke($jsonLdService, $event);
+
+        self::assertSame(
+            "First line.\nSecond line & \"quoted\".\n\nNew paragraph.",
             $jsonLdService->getCollectedJsonLdData()['description'],
         );
     }

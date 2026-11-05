@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Domain\Finisher;
 
+use JWeiland\Events2\Converter\RteContentConverter;
 use JWeiland\Events2\Domain\Repository\UserRepository;
 use JWeiland\Events2\Helper\PathSegmentHelper;
 use JWeiland\Events2\Service\DayRelationService;
@@ -39,6 +40,7 @@ class SaveEventFinisher extends AbstractFinisher
         protected readonly ConnectionPool $connectionPool,
         protected readonly PathSegmentHelper $pathSegmentHelper,
         protected readonly DayRelationService $dayRelationService,
+        protected readonly RteContentConverter $rteContentConverter = new RteContentConverter(),
     ) {}
 
     /**
@@ -284,25 +286,13 @@ class SaveEventFinisher extends AbstractFinisher
     }
 
     /**
-     * There is no RTE for this element in frontend. A single line break is meant as <br>,
-     * an empty line between two blocks of text is meant as a new paragraph. Any tag the
-     * visitor might have typed or pasted in is removed beforehand, so only our own <p> and
-     * <br> tags end up in the database.
+     * Stores the plain text of the frontend form like the backend RTE does
+     *
+     * @see RteContentConverter::convertPlainTextToHtml()
      */
     protected function convertPlainTextToHtml(string $plainText): string
     {
-        $plainText = strip_tags($plainText);
-        $plainText = str_replace(["\r\n", "\r"], "\n", $plainText);
-
-        $paragraphs = array_filter(
-            array_map('trim', preg_split('/\n{2,}/', trim($plainText)) ?: []),
-            static fn(string $paragraph): bool => $paragraph !== '',
-        );
-
-        return implode('', array_map(
-            static fn(string $paragraph): string => '<p>' . nl2br(htmlspecialchars($paragraph, ENT_QUOTES | ENT_HTML5)) . '</p>',
-            $paragraphs,
-        ));
+        return $this->rteContentConverter->convertPlainTextToHtml($plainText);
     }
 
     protected function saveDataForCategories(array $databaseData, string $table, int $iterationCount): array
