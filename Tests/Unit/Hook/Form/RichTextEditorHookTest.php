@@ -11,9 +11,12 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Tests\Unit\Hook\Form;
 
+use JWeiland\Events2\Event\ModifyRichTextSanitizerConfigurationEvent;
 use JWeiland\Events2\Form\RichTextEditorAssets;
 use JWeiland\Events2\Hook\Form\RichTextEditorHook;
+use JWeiland\Events2\Sanitizer\RichTextSanitizer;
 use PHPUnit\Framework\Attributes\Test;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Form\Domain\Model\FormDefinition;
 use TYPO3\CMS\Form\Domain\Model\FormElements\GenericFormElement;
@@ -31,6 +34,11 @@ class RichTextEditorHookTest extends UnitTestCase
 
     private RichTextEditorHook $subject;
 
+    /**
+     * @var ModifyRichTextSanitizerConfigurationEvent[]
+     */
+    private array $dispatchedEvents = [];
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -43,7 +51,48 @@ class RichTextEditorHookTest extends UnitTestCase
         $this->formRuntime = $this->createMock(FormRuntime::class);
         $this->formRuntime->method('getRequest')->willReturn($this->createMock(Request::class));
 
-        $this->subject = new RichTextEditorHook($this->richTextEditorAssets);
+        $this->subject = new RichTextEditorHook($this->richTextEditorAssets, new RichTextSanitizer($this->createEventDispatcher()));
+    }
+
+    private function createEventDispatcher(): EventDispatcherInterface
+    {
+        $dispatchedEvents = &$this->dispatchedEvents;
+
+        return new class ($dispatchedEvents) implements EventDispatcherInterface {
+            /**
+             * @param ModifyRichTextSanitizerConfigurationEvent[] $dispatchedEvents
+             */
+            public function __construct(private array &$dispatchedEvents) {}
+
+            public function dispatch(object $event): object
+            {
+                if ($event instanceof ModifyRichTextSanitizerConfigurationEvent) {
+                    $event->setAllowedTags([...$event->getAllowedTags(), 'h4']);
+                    $this->dispatchedEvents[] = $event;
+                }
+
+                return $event;
+            }
+        };
+    }
+
+    #[Test]
+    public function beforeRenderingPassesConfigurationOfColumnToEditorOptions(): void
+    {
+        $element = $this->buildElement('detail-description', 'richText');
+        $this->richTextEditorAssets
+            ->expects(self::once())
+            ->method('getEditorOptions')
+            ->with(
+                self::anything(),
+                self::callback(static fn($configuration): bool => in_array('h4', $configuration->allowedTags, true)),
+            );
+
+        $this->subject->beforeRendering($this->formRuntime, $element);
+
+        self::assertCount(1, $this->dispatchedEvents);
+        self::assertSame('tx_events2_domain_model_event', $this->dispatchedEvents[0]->getTable());
+        self::assertSame('detail_information', $this->dispatchedEvents[0]->getColumn());
     }
 
     #[Test]

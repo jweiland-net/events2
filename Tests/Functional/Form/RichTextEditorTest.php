@@ -111,6 +111,11 @@ class RichTextEditorTest extends FunctionalTestCase
         $content = $this->renderForm(['enable' => true, 'elements' => 'choose-event-type']);
 
         self::assertStringContainsString('data-events2-rich-text="{&quot;language&quot;:&quot;de&quot;', $content);
+        self::assertStringContainsString(
+            '&quot;allowedTags&quot;:[&quot;p&quot;,&quot;br&quot;,&quot;strong&quot;,&quot;em&quot;,&quot;h2&quot;,&quot;h3&quot;,'
+            . '&quot;ul&quot;,&quot;ol&quot;,&quot;li&quot;,&quot;a&quot;]',
+            $content,
+        );
         self::assertStringContainsString('<script type="importmap"', $content);
         self::assertStringContainsString('"@ckeditor/ckeditor5-editor-classic":', $content);
         self::assertStringContainsString('"@jweiland/events2/rich-text-editor.js":', $content);
