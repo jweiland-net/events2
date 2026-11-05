@@ -35,7 +35,9 @@ $tx_events2_domain_model_event = [
             'endtime' => 'endtime',
         ],
         'searchFields' => 'location',
-        'iconfile' => 'EXT:events2/Resources/Public/Icons/tx_events2_domain_model_location.png',
+        'typeicon_classes' => [
+            'default' => 'ext-events2-record-location',
+        ],
     ],
     'types' => [
         '1' => [

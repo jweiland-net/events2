@@ -26,7 +26,9 @@ return [
             'endtime' => 'endtime',
         ],
         'searchFields' => 'title',
-        'iconfile' => 'EXT:events2/Resources/Public/Icons/tx_events2_domain_model_holiday.svg',
+        'typeicon_classes' => [
+            'default' => 'ext-events2-record-holiday',
+        ],
     ],
     'types' => [
         '1' => ['showitem' => '--palette--;;languageHidden, l10n_diffsource,

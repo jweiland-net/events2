@@ -27,7 +27,9 @@ return [
             'endtime' => 'endtime',
         ],
         'searchFields' => 'title',
-        'iconfile' => 'EXT:events2/Resources/Public/Icons/tx_events2_domain_model_link.png',
+        'typeicon_classes' => [
+            'default' => 'ext-events2-record-link',
+        ],
     ],
     'types' => [
         '1' => [

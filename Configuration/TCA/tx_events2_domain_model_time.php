@@ -30,7 +30,9 @@ return [
             'starttime' => 'starttime',
             'endtime' => 'endtime',
         ],
-        'iconfile' => 'EXT:events2/Resources/Public/Icons/tx_events2_domain_model_time.png',
+        'typeicon_classes' => [
+            'default' => 'ext-events2-record-time',
+        ],
     ],
     'types' => [
         '1' => [
