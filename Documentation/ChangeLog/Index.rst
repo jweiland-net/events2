@@ -7,6 +7,27 @@
 ChangeLog
 =========
 
+Version 11.2.1
+==============
+
+*   [BUGFIX] Restrict creation of events to the user group. New events
+    (actions `new`, `create` and `perform` without event) can only be
+    created by logged-in frontend users of the user group of
+    `plugin.tx_events2.settings.userGroup` with an organizer. Before,
+    backend administrators were allowed to create events without
+    organizer. The `SaveEventFinisher` of EXT:form checks the same rules
+    and throws an exception before anything is stored, if the user is not
+    allowed to create the event or to edit the given event. The template
+    :file:`Management/New.html` shows the form for members of the user
+    group only.
+*   [BUGFIX] Separate list items in the plain text of descriptions. Items
+    of (nested) lists are separated by a line break and headings and other
+    blocks by an empty line in the JSON-LD description, the edit form and
+    `ConvertHtmlToPlainTextViewHelper`. Before, they were glued together.
+*   [BUGFIX] Build the absolute URL of the JSON-LD image correctly. The URL
+    does not contain a double slash anymore and absolute URLs of storages
+    like a CDN are kept.
+
 Version 11.2.0
 ==============
 
