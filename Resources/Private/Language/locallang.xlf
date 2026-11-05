@@ -414,6 +414,9 @@
 			<trans-unit id="richText.openInNewTab">
 				<source>Open in a new tab</source>
 			</trans-unit>
+			<trans-unit id="remainingLetters">
+				<source>%s characters left</source>
+			</trans-unit>
 
 			<trans-unit id="pageBrowser.first">
 				<source>First</source>

@@ -64,6 +64,10 @@ services:
   JWeiland\Events2\Hook\Form\RichTextEditorHook:
     public: true
 
+  # Called by makeInstance from EXT:form
+  JWeiland\Events2\Hook\Form\RemainingLettersHook:
+    public: true
+
   # Called by makeInstance from EXT:solr
   JWeiland\Events2\Hook\Solr\ResultsCommandHook:
     public: true

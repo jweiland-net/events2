@@ -305,6 +305,37 @@ the methods `eq`, `neq`, `lt`, `lte`, `gt`, `gte`, `in`, `notIn` and
 :yaml:`dbMapping.relation.expressions` now, other expressions are
 ignored. See :ref:`frontend-management-form-definition`.
 
+The teaser (element `short-description`, column `teaser`) is limited to
+255 characters now, the `max` of the column in TCA. Add the attribute
+`maxlength` and the validator `StringLength` to your own copy:
+
+..  code-block:: yaml
+    :caption: EXT:my_sitepackage/Configuration/Form/NewEvent.form.yaml (excerpt)
+
+    - label: 'Short description'
+      type: Textarea
+      identifier: short-description
+      defaultValue: ''
+      properties:
+        dbMapping:
+          column: teaser
+          dataType: plainText
+        elementDescription: 'Short description'
+        fluidAdditionalAttributes:
+          maxlength: 255
+      validators:
+        - identifier: StringLength
+          options:
+            maximum: 255
+
+Existing teasers with more than 255 characters are not changed. If such
+an event is edited in the frontend, the teaser has to be shortened before
+the event can be saved.
+
+Each textarea with a `maxlength` shows the remaining characters below the
+field. The text comes from the new label `remainingLetters` of
+:file:`locallang.xlf`, where `%s` is the number of remaining characters.
+
 ..  _upgrade-12-0-0-labels:
 
 Removed labels
@@ -453,7 +484,10 @@ your own validation and upload configuration.
 The JavaScript variables of :php:`AbstractController::getJsVariables()`
 do not contain `localization.remainingText` anymore.
 :file:`Events2.js` does not initialize the counter of remaining letters
-and the date picker of the removed Extbase form anymore.
+and the date picker of the removed Extbase form anymore. The form based
+on EXT:form loads the new ES module :file:`remaining-letters.js` for
+textareas with a `maxlength` instead, see
+:ref:`upgrade-12-0-0-form-definition`.
 
 ..  _upgrade-12-0-0-caches:
 
