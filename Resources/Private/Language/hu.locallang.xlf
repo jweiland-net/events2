@@ -539,6 +539,22 @@
         <source>You are not allowed to edit events that do not correspond to your assigned organizer.</source>
         <target state="translated">Nem szerkeszthet olyan eseményeket, amelyek nem a hozzárendelt szervezőjéhez tartoznak.</target>
       </trans-unit>
+      <trans-unit id="invalidModerationToken">
+        <source>The activation link is invalid or the event does not exist anymore.</source>
+        <target state="needs-translation">The activation link is invalid or the event does not exist anymore.</target>
+      </trans-unit>
+      <trans-unit id="confirmActivation.header">
+        <source>Activate event</source>
+        <target state="needs-translation">Activate event</target>
+      </trans-unit>
+      <trans-unit id="confirmActivation.description">
+        <source>Please check the event. It will be visible in frontend after the activation.</source>
+        <target state="needs-translation">Please check the event. It will be visible in frontend after the activation.</target>
+      </trans-unit>
+      <trans-unit id="confirmActivation.submit">
+        <source>Activate event</source>
+        <target state="needs-translation">Activate event</target>
+      </trans-unit>
       <trans-unit id="pageBrowser.first">
         <source>First</source>
         <target state="translated">Első</target>
