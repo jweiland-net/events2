@@ -16,12 +16,8 @@ page.includeJSFooter {
   events2Calendar = EXT:events2/Resources/Public/JavaScript/Calendar.js
 }
 
-[{$events2.form.useExtForm} == true]
-  plugin.tx_form.settings.yamlConfigurations.1661247670 = EXT:events2/Configuration/Form/OverrideFormSettings.yaml
-  # This part will be moved back with "if.isTrue" until this patch was fixed: https://forge.typo3.org/issues/98200
-  plugin.tx_events2.view.templateRootPaths.1 = EXT:events2/Resources/Private/FormFramework/Templates/
-  plugin.tx_events2.view.partialRootPaths.1 = EXT:events2/Resources/Private/FormFramework/Partials/
-[GLOBAL]
+# Register the finishers, validators and form elements of the event form based on EXT:form
+plugin.tx_form.settings.yamlConfigurations.1661247670 = EXT:events2/Configuration/Form/OverrideFormSettings.yaml
 
 # Search form should react on $_GET params of SearchResults plugin to show search values again in form.
 plugin.tx_events2_searchform.view.pluginNamespace = tx_events2_searchresults
@@ -32,12 +28,10 @@ plugin.tx_events2 {
   view {
     templateRootPaths {
       0 = EXT:events2/Resources/Private/Templates/
-      # Do not use "1", it may be overwritten by condition above.
       2 = {$events2.templateRootPath}
     }
     partialRootPaths {
       0 = EXT:events2/Resources/Private/Partials/
-      # Do not use "1", it may be overwritten by condition above.
       2 = {$events2.partialRootPath}
       3 = EXT:maps2/Resources/Private/Partials/
     }
