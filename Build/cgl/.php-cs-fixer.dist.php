@@ -29,6 +29,8 @@ return (new Config())
             ->in(__DIR__ . '/../../')
             ->exclude(__DIR__ . '/../../.Build')
             ->exclude(__DIR__ . '/../../var')
+            // Code snippets of the documentation belong to other packages
+            ->notPath('/^Documentation\//')
     )
     ->setRiskyAllowed(true)
     ->setRules([
