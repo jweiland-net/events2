@@ -11,9 +11,11 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Tests\Unit\Sanitizer;
 
+use JWeiland\Events2\Event\ModifyRichTextSanitizerConfigurationEvent;
 use JWeiland\Events2\Sanitizer\RichTextSanitizer;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -32,7 +34,26 @@ class RichTextSanitizerTest extends UnitTestCase
     {
         parent::setUp();
 
-        $this->subject = new RichTextSanitizer();
+        $this->subject = new RichTextSanitizer($this->createEventDispatcher(null));
+    }
+
+    /**
+     * @param ?\Closure(ModifyRichTextSanitizerConfigurationEvent): void $listener
+     */
+    private function createEventDispatcher(?\Closure $listener): EventDispatcherInterface
+    {
+        return new class ($listener) implements EventDispatcherInterface {
+            public function __construct(private readonly ?\Closure $listener) {}
+
+            public function dispatch(object $event): object
+            {
+                if ($this->listener !== null && $event instanceof ModifyRichTextSanitizerConfigurationEvent) {
+                    ($this->listener)($event);
+                }
+
+                return $event;
+            }
+        };
     }
 
     public static function allowedHtmlDataProvider(): array
@@ -219,5 +240,103 @@ class RichTextSanitizerTest extends UnitTestCase
             ['t3://page?uid=12&type=0', 't3://file?uid=1234'],
             $this->subject->getT3Hrefs($html),
         );
+    }
+
+    #[Test]
+    public function sanitizeDispatchesEventWithTableAndColumn(): void
+    {
+        $dispatchedEvent = null;
+        $subject = new RichTextSanitizer($this->createEventDispatcher(
+            static function (ModifyRichTextSanitizerConfigurationEvent $event) use (&$dispatchedEvent): void {
+                $dispatchedEvent = $event;
+            },
+        ));
+        $subject->sanitize('<p>a</p>', [], 'tx_events2_domain_model_event', 'detail_information');
+
+        self::assertInstanceOf(ModifyRichTextSanitizerConfigurationEvent::class, $dispatchedEvent);
+        self::assertSame('tx_events2_domain_model_event', $dispatchedEvent->getTable());
+        self::assertSame('detail_information', $dispatchedEvent->getColumn());
+        self::assertContains('h2', $dispatchedEvent->getAllowedTags());
+    }
+
+    public static function modifiedConfigurationDataProvider(): array
+    {
+        return [
+            'allowed h4 is kept instead of mapped' => [
+                static fn(ModifyRichTextSanitizerConfigurationEvent $event) => $event->setAllowedTags([...$event->getAllowedTags(), 'h4']),
+                '<h4>a</h4><p>b</p>',
+                '<h4>a</h4><p>b</p>',
+            ],
+            'allowed block element is a top level block' => [
+                static fn(ModifyRichTextSanitizerConfigurationEvent $event) => $event->setAllowedTags([...$event->getAllowedTags(), 'blockquote']),
+                'a<blockquote>b</blockquote>',
+                '<p>a</p><blockquote>b</blockquote>',
+            ],
+            'allowed elements get no attributes' => [
+                static fn(ModifyRichTextSanitizerConfigurationEvent $event) => $event->setAllowedTags([...$event->getAllowedTags(), 'u']),
+                '<p><u class="x" onclick="y()">a</u></p>',
+                '<p><u>a</u></p>',
+            ],
+            'disallowed link keeps its text' => [
+                static fn(ModifyRichTextSanitizerConfigurationEvent $event) => $event->setAllowedTags(array_diff($event->getAllowedTags(), ['a'])),
+                '<p><a href="https://example.com">a</a></p>',
+                '<p>a</p>',
+            ],
+            'disallowed heading becomes paragraph' => [
+                static fn(ModifyRichTextSanitizerConfigurationEvent $event) => $event->setAllowedTags(array_diff($event->getAllowedTags(), ['h3'])),
+                '<h3>a</h3>',
+                '<p>a</p>',
+            ],
+            'paragraph can not be disallowed' => [
+                static fn(ModifyRichTextSanitizerConfigurationEvent $event) => $event->setAllowedTags(array_diff($event->getAllowedTags(), ['p'])),
+                '<p>a</p>b',
+                '<p>a</p><p>b</p>',
+            ],
+            'mapping to disallowed element is ignored' => [
+                static fn(ModifyRichTextSanitizerConfigurationEvent $event) => $event->setMappedTags(['u' => 'mark']),
+                '<p><u>a</u></p>',
+                '<p>a</p>',
+            ],
+            'additional mapping' => [
+                static fn(ModifyRichTextSanitizerConfigurationEvent $event) => $event->setMappedTags([...$event->getMappedTags(), 'U' => 'EM']),
+                '<p><u>a</u></p>',
+                '<p><em>a</em></p>',
+            ],
+            'additional removed element is removed with content' => [
+                static fn(ModifyRichTextSanitizerConfigurationEvent $event) => $event->setRemovedTags([...$event->getRemovedTags(), 'del']),
+                '<p>a<del>b</del></p>',
+                '<p>a</p>',
+            ],
+            'removed tags take precedence over allowed tags' => [
+                static fn(ModifyRichTextSanitizerConfigurationEvent $event) => $event->setRemovedTags([...$event->getRemovedTags(), 'em']),
+                '<p>a<em>b</em></p>',
+                '<p>a</p>',
+            ],
+            'script can not be allowed' => [
+                static function (ModifyRichTextSanitizerConfigurationEvent $event): void {
+                    $event->setRemovedTags([]);
+                    $event->setAllowedTags([...$event->getAllowedTags(), 'script', 'iframe']);
+                },
+                '<p>a</p><script>alert(1)</script><iframe src="https://example.com">b</iframe>',
+                '<p>a</p>',
+            ],
+            'invalid tag names are ignored' => [
+                static fn(ModifyRichTextSanitizerConfigurationEvent $event) => $event->setAllowedTags([...$event->getAllowedTags(), 'events2-unwrap', '', 'x y']),
+                '<p>a</p>',
+                '<p>a</p>',
+            ],
+        ];
+    }
+
+    /**
+     * @param \Closure(ModifyRichTextSanitizerConfigurationEvent): void $listener
+     */
+    #[Test]
+    #[DataProvider('modifiedConfigurationDataProvider')]
+    public function sanitizeRespectsModifiedConfiguration(\Closure $listener, string $html, string $expected): void
+    {
+        $subject = new RichTextSanitizer($this->createEventDispatcher($listener));
+
+        self::assertSame($expected, $subject->sanitize($html, self::ALLOWED_T3_HREFS));
     }
 }
