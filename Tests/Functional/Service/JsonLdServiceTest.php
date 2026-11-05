@@ -258,6 +258,27 @@ class JsonLdServiceTest extends FunctionalTestCase
     }
 
     #[Test]
+    public function addJsonLdAddsDescriptionWithSeparatedListItems(): void
+    {
+        $event = new Event();
+        $event->setDetailInformation(
+            '<h2>Programm</h2>'
+            . "\r\n"
+            . '<p>Ablauf:</p>'
+            . "\r\n"
+            . '<ul><li>Eins<ul><li>Eins.a</li></ul></li><li>Zwei&nbsp;Uhr</li></ul>',
+        );
+
+        $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
+        (new \ReflectionMethod($jsonLdService, 'addDescriptionToData'))->invoke($jsonLdService, $event);
+
+        self::assertSame(
+            "Programm\n\nAblauf:\n\nEins\nEins.a\nZwei Uhr",
+            $jsonLdService->getCollectedJsonLdData()['description'],
+        );
+    }
+
+    #[Test]
     public function addJsonLdAddsEventUrl(): void
     {
         $this->createSingleEvent();
