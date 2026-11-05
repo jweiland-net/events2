@@ -10,32 +10,49 @@ ChangeLog
 Version 12.0.0
 ==============
 
+This version contains breaking changes, please read
+:ref:`upgrade-12-0-0`.
+
 *   [!!!][TASK] Use the form based on EXT:form for the frontend management
-    only. The site setting `events2.form.useExtForm` is removed. The
-    templates :file:`Management/ListMyEvents.html`,
-    :file:`Management/Perform.html` and the partial
-    :file:`Management/UserEditLinks.html` moved from
+    only. The site setting `events2.form.useExtForm` is removed and
+    :file:`OverrideFormSettings.yaml` of EXT:form is always registered.
+    events2 does not set the keys `1` of `templateRootPaths` and
+    `partialRootPaths` anymore. The templates
+    :file:`Management/ListMyEvents.html`, :file:`Management/Perform.html`
+    and the partial :file:`Management/UserEditLinks.html` moved from
     :file:`Resources/Private/FormFramework/` to the regular
     :file:`Templates/` and :file:`Partials/` folders.
 *   [!!!][TASK] Remove the Extbase form of the management plugin: actions
     `new`, `create`, `edit`, `update` and `delete`, their templates and
     partials, validators, type converter, event listeners, middleware,
     traits, site settings `events2.form.uploadFolder` and
-    `events2.form.remainingLetters` and the labels used by the Extbase
-    form only.
+    `events2.form.remainingLetters`, the TypoScript settings
+    `remainingLetters`, `new.uploadFolder`, `_LOCAL_LANG` of
+    `rightsMessage` and `_CSS_DEFAULT_STYLE` and the labels used by the
+    Extbase form only. Links to create or edit events point to the action
+    `perform` now. See :ref:`upgrade-12-0-0-actions`.
 *   [!!!][TASK] Merge :php:`EventModerationService` into
     :php:`ManagementAccessService`. The moderation token is unchanged, so
-    activation links of sent mails stay valid.
+    activation links of sent mails stay valid. See
+    :ref:`frontend-management-access`.
+*   [!!!][TASK] Replace all icons by SVG files registered with the
+    :php:`SvgIconProvider`. The TCA uses icon identifiers in
+    `typeicon_classes` instead of `iconfile`. See
+    :ref:`upgrade-12-0-0-icons`.
 *   [FEATURE] Render rich text elements in the mails of the event form
-    sanitized as HTML and as plain text.
+    sanitized as HTML and as plain text with the new
+    :ref:`FormatRichTextViewHelper <formatRichTextViewHelper>`.
 *   [TASK] Localize the hint icon of the event form.
 *   [BUGFIX] Restrict creation of events to the user group. New events
     can only be created by logged-in frontend users of the user group of
-    `plugin.tx_events2.settings.userGroup` with an organizer, also for
-    backend administrators. The `SaveEventFinisher` of EXT:form checks
-    the same rules before anything is stored.
+    :confval:`settings.userGroup <events2-typoscript-settings-usergroup>`
+    with an organizer, also for backend administrators. The
+    `SaveEventFinisher` of EXT:form checks the same rules before anything
+    is stored.
 *   [BUGFIX] Separate list items in the plain text of descriptions.
 *   [BUGFIX] Build the absolute URL of the JSON-LD image correctly.
+*   [DOCS] Describe the frontend management and its access rules, see
+    :ref:`frontend-management`.
 
 Version 11.2.0
 ==============

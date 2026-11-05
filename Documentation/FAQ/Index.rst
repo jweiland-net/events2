@@ -62,10 +62,13 @@ That's why we set the plugin namespace of search results plugin back to namespac
 We prefer to not change that value.
 
 
-File Uploads
+..  _faq-file-uploads:
+
+File uploads
 ============
 
-The images of the event form of the Management plugin are uploaded with
-the file upload handling of Extbase. If you need the image rights from
-the uploader, install EXT:checkfaluploads and add the rights checkbox to
-your template override, see :ref:`management-checkfaluploads`.
+The event form of the Management plugin is based on EXT:form. Images are
+uploaded with its `ImageUpload` elements into the folder
+`1:/Extensions/events2/`. If you need the image rights from the uploader,
+add a mandatory checkbox to your own copy of the form definition. See
+:ref:`frontend-management-images`.
