@@ -14,9 +14,7 @@ namespace JWeiland\Events2\Domain\Model;
 use JWeiland\Events2\Domain\Factory\TimeFactory;
 use JWeiland\Events2\Domain\Repository\UserRepository;
 use JWeiland\Events2\Domain\Traits\Typo3PropertiesTrait;
-use JWeiland\Events2\Domain\Validator\CategoryMandatoryValidator;
 use JWeiland\Events2\Utility\DateTimeUtility;
-use TYPO3\CMS\Core\Resource\Enum\DuplicationBehavior;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Annotation as Extbase;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
@@ -94,7 +92,6 @@ class Event extends AbstractEntity
     /**
      * @var ObjectStorage<Category>
      */
-    #[Extbase\Validate(['value' => CategoryMandatoryValidator::class])]
     #[Extbase\ORM\Lazy]
     protected ObjectStorage $categories;
 
@@ -114,41 +111,8 @@ class Event extends AbstractEntity
     protected ObjectStorage $organizers;
 
     /**
-     * The uploadFolder will be overridden by ApplyUploadFolderEventListener with
-     * the TypoScript setting "settings.new.uploadFolder".
-     * Modifying the FileUpload is described here:
-     * @link https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/13.3/Feature-103511-IntroduceExtbaseFileUploadHandling.html#modifying-existing-configuration
-     *
      * @var ObjectStorage<FileReference>
      */
-    #[Extbase\FileUpload([
-        'validation' => [
-            'required' => false,
-            'maxFiles' => 5,
-            'fileSize' => [
-                'minimum' => '0K',
-                'maximum' => '4M',
-            ],
-            'mimeType' => [
-                'allowedMimeTypes' => [
-                    'image/gif',
-                    'image/jpeg',
-                    'image/png',
-                ],
-            ],
-            'fileExtension' => [
-                'allowedFileExtensions' => [
-                    'gif',
-                    'jpg',
-                    'jpeg',
-                    'png',
-                ],
-            ],
-        ],
-        'uploadFolder' => '1:/user_upload/tx_events2/',
-        'duplicationBehavior' => DuplicationBehavior::RENAME,
-        'createUploadFolderIfNotExist' => true,
-    ])]
     #[Extbase\ORM\Cascade(['value' => 'remove'])]
     #[Extbase\ORM\Lazy]
     protected ObjectStorage $images;

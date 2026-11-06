@@ -13,7 +13,6 @@ let Events2 = function ($element) {
   me.selectorCreatePlugin = '.tx-events2-create';
   me.selectorSearchPlugin = '.tx-events2-search';
   me.selectorPluginVariables = '.events2DataElement';
-  me.selectorRemainingChars = '.remainingChars';
   me.selectorAutoCompleteLocation = '#autoCompleteLocation';
   me.selectorAutoCompleteLocationHelper = '.autoCompleteLocationHelper';
   me.selectorSearchMainCategory = '.searchMainCategory';
@@ -62,39 +61,12 @@ let Events2 = function ($element) {
   };
 
   /**
-   * Test, if there are some textareas in form with remaining chars feature
-   *
-   * @returns {boolean}
-   */
-  me.hasRemainingCharsContainer = function () {
-    return me.$remainingCharsContainer !== null;
-  };
-
-  /**
    * Test, if there is an AutoComplete for location available in template
    *
    * @returns {boolean}
    */
   me.hasAutoCompleteLocation = function () {
     return me.$autoCompleteLocation !== null;
-  };
-
-  /**
-   * Test, if localization of pluginVariables is initialized
-   *
-   * @returns {boolean}
-   */
-  me.isLocalizationInitialized = function () {
-    return me.pluginVariables.hasOwnProperty('localization');
-  };
-
-  /**
-   * Test, if settings of pluginVariables are initialized
-   *
-   * @returns {boolean}
-   */
-  me.isSettingsInitialized = function () {
-    return me.pluginVariables.hasOwnProperty('settings');
   };
 
   /**
@@ -138,33 +110,6 @@ let Events2 = function ($element) {
         resetButton: true
       });
     });
-  };
-
-  /**
-   * Initialize remaining letters for teaser in create form
-   */
-  me.initializeRemainingLetters = function () {
-    if (me.hasRemainingCharsContainer()) {
-      if (!me.isLocalizationInitialized()) {
-        console.log('Variable localization of pluginVariables is not available. Please check your templates');
-      } else if (!me.isSettingsInitialized()) {
-        console.log('Variable settings of pluginVariables is not available. Please check your templates');
-      } else {
-        me.$remainingCharsContainer.forEach($remainingCharsContainer => {
-          let $textarea = document.querySelector('#' + $remainingCharsContainer.getAttribute('data-id'));
-          $remainingCharsContainer.innerText = me.pluginVariables.localization.remainingText + ': ' + me.pluginVariables.settings.remainingLetters;
-
-          $textarea.addEventListener('keyup', () => {
-            let value = $textarea.value;
-            let len = value.length;
-            let maxLength = me.pluginVariables.settings.remainingLetters;
-
-            $textarea.value = value.substring(0, maxLength);
-            $remainingCharsContainer.innerText = me.pluginVariables.localization.remainingText + ': ' + (maxLength - len);
-          });
-        });
-      }
-    }
   };
 
   /**
@@ -326,11 +271,8 @@ let Events2 = function ($element) {
 
   me.initializeOrganizerFilters();
   if (me.isCreatePlugin($element)) {
-    me.$remainingCharsContainer = $element.querySelectorAll(me.selectorRemainingChars);
     me.$autoCompleteLocation = $element.querySelector(me.selectorAutoCompleteLocation);
     me.$autoCompleteLocationHelper = $element.querySelector(me.selectorAutoCompleteLocationHelper);
-    me.initializeRemainingLetters();
-    me.initializeDatePicker();
     me.initializeAutoCompleteForLocation();
   } else if (me.isSearchPlugin($element)) {
     me.$searchMainCategory = $element.querySelector(me.selectorSearchMainCategory);

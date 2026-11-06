@@ -20,8 +20,8 @@
 				<target>xMonate in der Zukunft: bei Veranstaltungen mit Wiederholungen werden Tagesdaten für die nächsten x Monate erzeugt</target>
 			</trans-unit>
 			<trans-unit id="defaultCountry">
-				<source>Default country: If you're only working for one specified country while creating/editing POIs in backend it would be cool to set a country by default. So you only need to add street and city to find a POI. If you need POIs from all over the world, please keep this field empty</source>
-				<target>Standard Land: Wenn es in Ihrem Projekt nur POIs aus einem ganz bestimmten Land gibt, dann können Sie dieses Land hier eintragen und brauchen beim Anlegen/Bearbeiten von POIS im Backend das Land nicht explizit anzugeben. Sollten Sie jedoch POIs auf der ganzen Welt benötigen, dann lassen Sie dieses Feld bitte leer.</target>
+				<source>Default country: ISO 3166-1 alpha-2 code (f.e. DE) of the country, which will be preselected for new locations in backend. Keep this field empty, if no country should be preselected.</source>
+				<target>Standard-Land: ISO 3166-1 alpha-2 Code (z. B. DE) des Landes, das bei neuen Orten im Backend vorausgewählt wird. Lassen Sie dieses Feld leer, wenn kein Land vorausgewählt werden soll.</target>
 			</trans-unit>
 			<trans-unit id="xmlImportValidatorPath">
 				<source>XML Import Validator Path (xsd): While Importing Events we will check the XML file against a XSD file. If you need some specials you can define your own file here.</source>

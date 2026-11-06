@@ -11,32 +11,30 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\EventListener;
 
-use JWeiland\Events2\Domain\Model\Event;
-use JWeiland\Events2\Domain\Repository\EventRepository;
-use JWeiland\Events2\Domain\Repository\UserRepository;
 use JWeiland\Events2\Event\PreProcessControllerActionEvent;
-use JWeiland\Events2\Service\EventModerationService;
+use JWeiland\Events2\Service\ManagementAccessService;
 use JWeiland\Events2\Traits\IsValidEventListenerRequestTrait;
 use TYPO3\CMS\Core\Attribute\AsEventListener;
-use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\Arguments;
 use TYPO3\CMS\Extbase\Mvc\Request;
 use TYPO3\CMS\Extbase\Service\ExtensionService;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
- * Restrict access to controller actions if the current logged-in user tries to access records of other users.
- * We will remove the event argument from the request, which will result in calling the errorAction of the ActionController.
+ * Restrict access to the actions of the ManagementController. The rules
+ * are defined in ManagementAccessService. If access is denied, a localized
+ * flash message is added and the request is forwarded to the errorAction
+ * without any Extbase argument.
  *
- * "confirmActivation" and "activate" are allowed for backend administrators
- * and with a valid "moderationToken" of the signed mail link only. Owners
- * of an event are not allowed to activate their own events, as that would
- * bypass the moderation.
+ * - "confirmActivation": Backend administrators or a valid "moderationToken"
+ * - "activate": A valid "moderationToken" only
+ * - "listMyEvents" and "perform": See ManagementAccessService::getDenialReason()
  */
 #[AsEventListener('events2/restrictAccess')]
 final readonly class RestrictAccessEventListener
@@ -45,148 +43,66 @@ final readonly class RestrictAccessEventListener
 
     private const ALLOWED_CONTROLLER_ACTIONS = [
         'Management' => [
-            'new',
-            'create',
-            'edit',
-            'update',
-            'delete',
-            'confirmActivation',
-            'activate',
-            'perform',
             'listMyEvents',
-        ],
-    ];
-
-    /**
-     * These actions are allowed with a valid moderation token or for backend administrators only
-     */
-    private const MODERATION_TOKEN_CONTROLLER_ACTIONS = [
-        'Management' => [
+            'perform',
             'confirmActivation',
             'activate',
         ],
     ];
 
     public function __construct(
-        private EventRepository $eventRepository,
-        private UserRepository $userRepository,
-        private EventModerationService $eventModerationService,
+        private ManagementAccessService $managementAccessService,
         private ExtensionService $extensionService,
         private FlashMessageService $flashMessageService,
-        private Context $context,
     ) {}
 
     public function __invoke(PreProcessControllerActionEvent $controllerActionEvent): void
     {
-        if (!$this->isValidRequest($controllerActionEvent) || $this->isAccessAllowed($controllerActionEvent)) {
+        if (!$this->isValidRequest($controllerActionEvent)) {
             return;
         }
 
-        // Redirect request to errorAction
-        $controllerActionEvent->setRequest(
-            $controllerActionEvent->getRequest()->withControllerActionName('error'),
-        );
+        $request = $controllerActionEvent->getRequest();
+        $denialReason = $this->getDenialReason($request, $controllerActionEvent->getActionName());
+        if ($denialReason === '') {
+            return;
+        }
 
-        // Reset any Extbase Arguments to be NOT processed
+        $this->addFlashMessage($request, $denialReason);
+
+        // Forward to errorAction and reset all Extbase arguments to be NOT processed
+        $controllerActionEvent->setRequest($request->withControllerActionName('error'));
         $controllerActionEvent->setArguments(GeneralUtility::makeInstance(Arguments::class));
     }
 
-    private function isAccessAllowed(PreProcessControllerActionEvent $controllerActionEvent): bool
+    private function getDenialReason(Request $request, string $actionName): string
     {
-        if ($this->isBackendAdmin()) {
-            return true;
-        }
+        $eventArgument = $this->getScalarArgument($request, 'event');
+        $eventUid = MathUtility::canBeInterpretedAsInteger($eventArgument) ? (int)$eventArgument : 0;
+        $moderationToken = $this->getScalarArgument($request, 'moderationToken');
 
-        if ($this->isModerationTokenAction($controllerActionEvent)) {
-            return $this->hasValidModerationToken($controllerActionEvent->getRequest());
-        }
-
-        return $this->isFrontendUserAllowed($controllerActionEvent)
-            && $this->isEventOfFrontendUser($controllerActionEvent->getRequest());
-    }
-
-    private function isModerationTokenAction(PreProcessControllerActionEvent $controllerActionEvent): bool
-    {
-        return in_array(
-            $controllerActionEvent->getActionName(),
-            self::MODERATION_TOKEN_CONTROLLER_ACTIONS[$controllerActionEvent->getControllerName()] ?? [],
-            true,
-        );
-    }
-
-    /**
-     * Only scalar event UIDs are accepted here, so no property of the event
-     * can be mapped by submitting an array with "__identity".
-     */
-    private function hasValidModerationToken(Request $request): bool
-    {
-        $eventArgument = $request->hasArgument('event') ? $request->getArgument('event') : null;
-        $eventUid = is_scalar($eventArgument) && is_numeric($eventArgument) ? (int)$eventArgument : 0;
-
-        if ($this->eventModerationService->getValidModerationToken($request, $eventUid) !== '') {
-            return true;
-        }
-
-        $this->addFlashMessage($request, 'invalidModerationToken');
-
-        return false;
-    }
-
-    private function isFrontendUserAllowed(PreProcessControllerActionEvent $controllerActionEvent): bool
-    {
-        $userGroup = (int)($controllerActionEvent->getSettings()['userGroup'] ?? 0);
-        $userAspect = $this->context->getAspect('frontend.user');
-
-        $labelKey = match (true) {
-            $userGroup === 0 => 'userGroupNotConfigured',
-            $userAspect->get('isLoggedIn') !== true => 'pluginNeedsLogin',
-            !in_array($userGroup, $userAspect->get('groupIds'), true) => 'notAllowedToCreate',
-            (int)$this->userRepository->getFieldFromUser('tx_events2_organizer') === 0 => 'missingOrganizerForCreate',
-            default => '',
+        $isAllowed = match ($actionName) {
+            'confirmActivation' => $this->managementAccessService->canConfirmActivation($eventUid, $moderationToken),
+            'activate' => $this->managementAccessService->canActivateEvent($eventUid, $moderationToken),
+            default => null,
         };
 
-        if ($labelKey === '') {
-            return true;
-        }
-
-        $this->addFlashMessage($controllerActionEvent->getRequest(), $labelKey);
-
-        return false;
-    }
-
-    private function isEventOfFrontendUser(Request $request): bool
-    {
-        $eventUid = $this->getEventUid($request);
-        if ($eventUid <= 0) {
-            return true;
-        }
-
-        $event = $this->eventRepository->findHiddenObject($eventUid);
-        if (!$event instanceof Event || $event->getIsCurrentUserAllowedOrganizer()) {
-            return true;
-        }
-
-        $this->addFlashMessage($request, 'unauthorizedOrganizerForEdit');
-
-        return false;
+        return match ($isAllowed) {
+            true => '',
+            false => 'invalidModerationToken',
+            null => $this->managementAccessService->getDenialReason($request),
+        };
     }
 
     /**
-     * Extbase accepts an object identity as scalar value or as "__identity" of an array
+     * Only scalar values are accepted, so no property of the event can be
+     * mapped by submitting an array with "__identity".
      */
-    private function getEventUid(Request $request): int
+    private function getScalarArgument(Request $request, string $argumentName): string
     {
-        $eventArgument = $request->hasArgument('event') ? $request->getArgument('event') : 0;
-        if (is_array($eventArgument)) {
-            $eventArgument = $eventArgument['__identity'] ?? 0;
-        }
+        $value = $request->hasArgument($argumentName) ? $request->getArgument($argumentName) : '';
 
-        return is_scalar($eventArgument) ? (int)$eventArgument : 0;
-    }
-
-    private function isBackendAdmin(): bool
-    {
-        return $this->context->getAspect('backend.user')->get('isAdmin') === true;
+        return is_scalar($value) ? (string)$value : '';
     }
 
     private function addFlashMessage(Request $request, string $labelKey): void

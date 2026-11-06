@@ -23,6 +23,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Log\Logger;
+use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 use TYPO3\CMS\Core\Versioning\VersionState;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -40,12 +41,10 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
     protected TimeService|MockObject $timeServiceMock;
 
     protected array $coreExtensionsToLoad = [
-        'extensionmanager',
         'reactions',
     ];
 
     protected array $testExtensionsToLoad = [
-        'sjbr/static-info-tables',
         'jweiland/events2',
     ];
 
@@ -70,6 +69,7 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
             new DateTimeUtility(),
             self::createStub(EventDispatcher::class),
             self::createStub(Logger::class),
+            $this->get(TcaSchemaFactory::class),
         );
 
         $this->subject = new DayRecordBuilderService();

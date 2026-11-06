@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\ViewHelpers;
 
-use JWeiland\Events2\Service\EventModerationService;
+use JWeiland\Events2\Service\ManagementAccessService;
 use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
@@ -26,7 +26,7 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 final class ModerationTokenViewHelper extends AbstractViewHelper
 {
     public function __construct(
-        private readonly EventModerationService $eventModerationService,
+        private readonly ManagementAccessService $managementAccessService,
     ) {}
 
     public function initializeArguments(): void
@@ -41,7 +41,7 @@ final class ModerationTokenViewHelper extends AbstractViewHelper
 
     public function render(): string
     {
-        return $this->eventModerationService->generateModerationToken(
+        return $this->managementAccessService->generateModerationToken(
             $this->getEventUid($this->arguments['event']),
         );
     }

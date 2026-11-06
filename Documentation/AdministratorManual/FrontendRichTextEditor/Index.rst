@@ -12,8 +12,8 @@ Rich text editor in the frontend form
     Textarea elements of the event form based on EXT:form can be edited
     with a CKEditor 5.
 
-Textarea elements of the event form based on EXT:form (site setting
-`events2.form.useExtForm`) can be edited with a small CKEditor 5. Frontend
+Textarea elements of the event form based on EXT:form (see
+:ref:`frontend-management`) can be edited with a small CKEditor 5. Frontend
 users can format the text, and formatting added by editors in the backend
 is kept when the event is edited in the frontend. By default, the element
 `detail-description` (column `detail_information`) gets the editor.
@@ -31,8 +31,8 @@ textareas as before.
 Requirements for the frontend rich text editor
 ==============================================
 
-*   The event form based on EXT:form (site setting
-    `events2.form.useExtForm`).
+*   The event form based on EXT:form of the Management plugin. Since
+    events2 12.0.0 it is the only event form in the frontend.
 *   The system extension EXT:rte_ckeditor
     (:composer:`typo3/cms-rte-ckeditor`). The editor is not activated if
     it is not installed.
@@ -444,3 +444,24 @@ Without JavaScript, the plain textarea is shown. For new events, plain text
 can be entered as before. When editing an event, the textarea contains the
 stored HTML. Values without any tag are converted like the plain text
 description.
+
+..  _frontend-rich-text-editor-mail:
+
+Rich text elements in the mail of the event form
+================================================
+
+..  versionadded:: 12.0.0
+
+    The mail of the event form shows rich text elements formatted and
+    sanitized.
+
+The mail templates of the finisher `EmailToReceiver` render rich text
+elements with the
+:ref:`FormatRichTextViewHelper <formatRichTextViewHelper>`. The HTML part
+contains the sanitized HTML, the text part plain text with line breaks.
+The same sanitizer configuration as on saving is used, including the
+PSR-14 event :php:`ModifyRichTextSanitizerConfigurationEvent`. Links with
+`t3://` are removed, as they can not be resolved in a mail.
+
+If you use your own mail templates, add the ViewHelper to them, see
+:ref:`frontend-management-mail`.

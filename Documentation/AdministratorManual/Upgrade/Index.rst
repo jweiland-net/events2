@@ -1,6 +1,6 @@
+:navigation-title: Upgrade
+
 ..  include:: /Includes.rst.txt
-
-
 ..  _upgrade:
 
 =======
@@ -10,10 +10,795 @@ Upgrade
 If you upgrade/update EXT:events2 to a newer version, please read this
 section carefully!
 
+..  contents::
+    :caption: Table of contents
+    :local:
+    :depth: 1
+
+..  _upgrade-12-0-0:
+
+Update to version 12.0.0
+========================
+
+This version contains breaking changes. The Extbase based event form of
+the Management plugin has been removed. New and edited events are
+submitted with the event form based on EXT:form
+(:file:`NewEvent.form.yaml` with the finisher `SaveEventFinisher`) only.
+All access rules of the frontend management are checked by the new
+:php:`JWeiland\Events2\Service\ManagementAccessService`, which replaces
+:php:`JWeiland\Events2\Service\EventModerationService`. See
+:ref:`frontend-management`.
+
+Further, events2 does not depend on EXT:static_info_tables anymore, the
+static TypoScript template and the scheduler tasks of events2 have been
+removed, and outdated upgrade wizards and ViewHelpers are gone.
+
+Please go through all steps below. Most of them are only relevant, if you
+use the Management plugin, have overridden templates, mail templates or
+labels, or use PHP classes of events2 in your own code. The steps
+:ref:`upgrade-12-0-0-before`, :ref:`upgrade-12-0-0-site-set`,
+:ref:`upgrade-12-0-0-country` and :ref:`upgrade-12-0-0-scheduler` are
+relevant for all installations.
+
+..  _upgrade-12-0-0-before:
+
+Run the upgrade wizards of events2 11.x first
+---------------------------------------------
+
+The following upgrade wizards have been removed. They were introduced for
+events2 versions which are no longer supported:
+
+*   `events2_migrateDetailInformations` ("[events2] Migrate column
+    detail_informations")
+*   `events2_migrateOrganizer` ("[events2] Migrate organizer")
+*   `events2_moveFlexFormFields` ("[events2] Move old FlexForm fields to
+    new FlexForm sheet")
+
+If one of them is still marked as necessary in
+:guilabel:`Admin Tools > Upgrade > Upgrade Wizard`, run it with an older
+version of events2 (for example 11.x) before you update to 12.0.0. The
+upgrade wizard `events2_updateSlug` is still available.
+
+..  _upgrade-12-0-0-site-set:
+
+Use the site set instead of the static TypoScript template
+----------------------------------------------------------
+
+The static TypoScript template :guilabel:`Events` has been removed. It
+pointed to the folder :file:`Configuration/TypoScript`, which did not
+exist anymore. The TypoScript of events2 is provided by the site set
+`jweiland/events2` only.
+
+Remove the static template :guilabel:`Events (events2)` from the
+:guilabel:`Includes` of your TypoScript records and add the site set
+`jweiland/events2` to your site, see :ref:`installation-site-set`. Set
+your former TypoScript constants of events2 with the site settings of
+the site set.
+
+Before, events2 threw the exception `1580294227` ("You have forgotten to
+add TS-Template of events2"), if no TypoScript of events2 was found. This
+exception has been removed.
+
+..  _upgrade-12-0-0-country:
+
+Migrate the countries of locations to ISO codes
+-----------------------------------------------
+
+EXT:static_info_tables is not required anymore. The country of a location
+is stored as ISO 3166-1 alpha-2 code (for example `DE`) in the column
+`country` now. The select box in the backend lists all countries of the
+country API of TYPO3 (:ref:`t3coreapi:country-api`) with their localized
+names.
+
+..  warning::
+
+    The upgrade wizard needs the table `static_countries` of
+    EXT:static_info_tables to migrate the countries. Do not delete this
+    table (or `zzz_deleted_static_countries`) before the upgrade wizard
+    has finished successfully. Otherwise the countries of your locations
+    can not be migrated anymore.
+
+Migrate the existing locations in exactly this order:
+
+#.  Update the database schema in
+    :guilabel:`Admin Tools > Maintenance > Analyze Database Structure`
+    or with `vendor/bin/typo3 extension:setup`. The column `country` of
+    the table `tx_events2_domain_model_location` is changed to
+    `varchar(3)`.
+
+#.  Run the upgrade wizard "[events2] Migrate country of locations to ISO
+    code" (`events2_migrateLocationCountry`) in
+    :guilabel:`Admin Tools > Upgrade > Upgrade Wizard` or on the command
+    line:
+
+    ..  code-block:: bash
+
+        vendor/bin/typo3 upgrade:run events2_migrateLocationCountry
+
+    The wizard reads the ISO codes from the table `static_countries`. If
+    the database analyzer has already renamed it to
+    `zzz_deleted_static_countries` after EXT:static_info_tables was
+    removed, the wizard reads the renamed table. EXT:static_info_tables
+    does not need to be installed anymore. If none of both tables
+    exists, the wizard stops with a message and can be executed again
+    after you have restored the table `static_countries`. Locations with
+    a country, which does not exist in the table, get an empty country.
+
+#.  Uninstall EXT:static_info_tables, if no other extension needs it.
+
+#.  Only after the upgrade wizard has finished successfully: Remove the
+    table `static_countries` respectively `zzz_deleted_static_countries`
+    with the database analyzer, if no other extension needs it.
+
+#.  Change the extension setting
+    :ref:`defaultCountry <extensionSettings>` manually to an ISO 3166-1
+    alpha-2 code like `DE`. It is not migrated, as it is part of the
+    deployed system configuration in most installations. The value is
+    checked against the countries of the country API of TYPO3. Former
+    UIDs of `static_countries` and unknown codes are ignored, so no
+    country is preselected for new locations until you have changed the
+    value.
+
+If you show the country of a location in your own templates, use the new
+property `countryObject`. The property `country` contains the ISO code
+only:
+
+..  code-block:: html
+    :caption: EXT:my_sitepackage/Resources/Private/Partials/Location.html (excerpt)
+
+    <f:if condition="{location.countryObject}">
+        <f:translate key="{location.countryObject.localizedNameLabel}"/>
+    </f:if>
+
+..  note::
+
+    With EXT:maps2 the ISO code (for example `DE`) instead of the name of
+    the country is part of the address, which is sent to the geocoding
+    service.
+
+..  _upgrade-12-0-0-scheduler:
+
+Replace the scheduler tasks with commands
+-----------------------------------------
+
+The scheduler tasks :guilabel:`Re-Create day records` and
+:guilabel:`Import events` have been removed together with their classes
+:php:`JWeiland\Events2\Task\ReGenerateDays`,
+:php:`JWeiland\Events2\Task\Import` and
+:php:`JWeiland\Events2\Task\AdditionalFieldsForImport`. Existing tasks
+are not migrated and can not be executed anymore.
+
+#.  Add a new task of the class :guilabel:`Execute console commands` in
+    :guilabel:`System > Scheduler` for each of your former tasks, with the
+    same frequency:
+
+    ..  list-table::
+        :header-rows: 1
+
+        *   -   Former task
+            -   Command of the new task
+        *   -   :guilabel:`Re-Create day records`
+            -   `events2:rebuild` without option
+        *   -   :guilabel:`Import events`
+            -   `events2:import` with the arguments `path` (combined
+                identifier of the XML file, for example
+                `1:/event_import/Import.xml`) and `storagePid`
+
+#.  Delete the former, now broken tasks.
+
+See :ref:`commands`. By default, `events2:rebuild` re-creates the day
+records event by event like the former task. Do not use its option
+`--truncate` for daily executions, as it deletes all day records first.
+If the day records of single events can not be created, the command
+processes all other events and ends with the exit code `1` (failure).
+
+..  important::
+
+    Before 12.0.0, `events2:rebuild` always truncated the day table first.
+    Now it re-creates the day records event by event by default. If you
+    call the command in own scripts or deployments to clean up the day
+    table completely, add the new option `--truncate`.
+
+..  _upgrade-12-0-0-flexform:
+
+Check the fallback of empty FlexForm values
+-------------------------------------------
+
+events2 used the TypoScript value for each empty FlexForm value (`""` or
+`"0"`) of its plugins on its own. This has been replaced by the Extbase
+option
+:confval:`ignoreFlexFormSettingsIfEmpty <events2-typoscript-ignoreflexformsettingsifempty>`.
+The site set `jweiland/events2` lists all settings of the FlexForms of
+events2, so the behaviour for these settings is unchanged. As a side
+effect, plugin-specific TypoScript like
+:typoscript:`plugin.tx_events2_list.settings` and the categories of the
+event form of the Management plugin fall back to TypoScript, too.
+
+If you have added own fields to the FlexForms of events2, their empty
+values do not fall back to TypoScript anymore. Add them to the list:
+
+..  code-block:: typoscript
+    :caption: EXT:my_sitepackage/Configuration/Sets/MySite/setup.typoscript
+
+    plugin.tx_events2.ignoreFlexFormSettingsIfEmpty := addToList(mySetting)
+
+..  _upgrade-12-0-0-viewhelpers:
+
+Replace removed ViewHelpers
+---------------------------
+
+The following ViewHelpers have been removed. Replace them in your own
+templates with the ViewHelpers of Fluid:
+
+`e2:convertToJson`
+    Use :ref:`f:format.json <t3viewhelper:typo3fluid-fluid-format-json>`:
+
+    ..  code-block:: html
+
+        <div data-environment="{environment -> f:format.json()}"></div>
+
+`e2:cropString`
+    Use :ref:`f:replace <t3viewhelper:typo3fluid-fluid-replace>` and
+    :ref:`f:format.crop <t3viewhelper:typo3-fluid-format-crop>`:
+
+    ..  code-block:: html
+
+        {categories -> f:replace(search: ',', replace: ', ') -> f:format.crop(maxCharacters: 50)}
+
+The argument `link` of
+:ref:`e2:createYoutubeUri <youTubeViewHelper>` is optional now. The link
+can be passed as tag content or in inline syntax:
+`{event.videoLink.link -> e2:createYoutubeUri()}`.
+
+..  _upgrade-12-0-0-translations:
+
+Check the system fields of translated records
+---------------------------------------------
+
+events2 does not define the system columns `sys_language_uid`,
+`l10n_parent`, `hidden`, `starttime`, `endtime`, `fe_group` and
+`editlock` in TCA anymore. They are created by TYPO3 from the `ctrl`
+section (:ref:`ext_core:feature-104311-1720176189`) with the default
+configuration of TYPO3:
+
+*   `starttime`, `endtime`, `fe_group` and `editlock` of translated
+    records are not synchronized with the record of the default language
+    anymore and can be edited in the translation. Existing values of
+    translations are kept. Check them, if you change these fields in the
+    default language.
+*   `l10n_parent` is rendered as select box instead of a group field.
+*   The unused passthrough columns `l10n_source` have been removed.
+
+..  _upgrade-12-0-0-settings:
+
+Remove obsolete settings
+------------------------
+
+The following site settings of the site set `jweiland/events2` have been
+removed. Remove them from the :file:`settings.yaml` of your sites:
+
+*   `events2.form.useExtForm`: The event form based on EXT:form is always
+    used now.
+*   `events2.form.uploadFolder`: The images of the event form based on
+    EXT:form are stored in the folder of the option
+    :yaml:`saveToFileMount` of the form definition.
+*   `events2.form.remainingLetters`
+
+The following TypoScript has been removed. Remove your own overrides of
+it:
+
+*   :typoscript:`plugin.tx_events2.settings.remainingLetters`
+*   :typoscript:`plugin.tx_events2.settings.new.uploadFolder`
+*   :typoscript:`plugin.tx_events2._LOCAL_LANG.de.rightsMessage` and
+    :typoscript:`plugin.tx_events2._LOCAL_LANG.default.rightsMessage`
+*   :typoscript:`plugin.tx_events2._CSS_DEFAULT_STYLE` with the styles of
+    the CSS class `f3-form-error`
+*   :typoscript:`plugin.tx_events2.settings.selectableCategoriesForNewEvents`:
+    Deprecated since version 9.1.9. Use
+    :typoscript:`plugin.tx_events2.settings.new.selectableCategoriesForNewEvents`
+    or the site setting `events2.form.selectableCategoriesForNewEvents`.
+    Old FlexForm values were moved by the upgrade wizard
+    `events2_moveFlexFormFields`, which has been removed now, see
+    :ref:`upgrade-12-0-0-before`.
+
+:typoscript:`plugin.tx_form.settings.yamlConfigurations.1661247670`
+(:file:`EXT:events2/Configuration/Form/OverrideFormSettings.yaml`) is
+always set now, not only if `events2.form.useExtForm` was enabled.
+
+events2 does not set
+:typoscript:`plugin.tx_events2.view.templateRootPaths.1` and
+:typoscript:`plugin.tx_events2.view.partialRootPaths.1` anymore. The keys
+`0` and `2` are unchanged. If you have used the key `1` for your own
+paths, it is not overwritten by events2 anymore.
+
+..  _upgrade-12-0-0-actions:
+
+Removed actions of the Management plugin
+----------------------------------------
+
+The actions `new`, `create`, `edit`, `update` and `delete` of the
+Management plugin have been removed. The plugin provides the actions
+`listMyEvents`, `perform`, `confirmActivation` and `activate` only.
+Requests for unknown actions are handled by the default action
+`listMyEvents`.
+
+Events can not be deleted in the frontend anymore.
+
+Update links in your own templates:
+
+*   Links to the action `new` link to the action `perform` without
+    argument.
+*   Links to the action `edit` link to the action `perform` with the
+    argument `event`. The event is read from the query parameter
+    `tx_events2_management[event]` only, so do not submit it in a POST
+    body:
+
+    ..  code-block:: html
+        :caption: EXT:my_sitepackage/Resources/Private/Templates/Day/Show.html (excerpt)
+
+        <f:link.action action="perform"
+                       controller="Management"
+                       pageUid="{settings.pidOfManagementPage}"
+                       arguments="{event: event, timestamp: '0'}">
+            {f:translate(key: 'update')}
+        </f:link.action>
+
+*   Remove links to the actions `create`, `update` and `delete`.
+
+The section `NewEdit` of :file:`Templates/Day/Show.html` links both
+entries to the action `perform` on the page of
+`settings.pidOfManagementPage` now. Before, the edit link pointed to the
+current page.
+
+..  _upgrade-12-0-0-routing:
+
+Update the route enhancer of the Management plugin
+--------------------------------------------------
+
+Replace routes for `Management::new` and `Management::edit` with routes
+for `Management::perform` and remove the routes for `Management::create`,
+`Management::update` and `Management::delete`:
+
+..  code-block:: yaml
+    :caption: config/sites/my-site/config.yaml (excerpt)
+
+    routeEnhancers:
+      Events2Management:
+        type: Extbase
+        extension: Events2
+        plugin: Management
+        routes:
+          - routePath: '/events/m/lme'
+            _controller: 'Management::listMyEvents'
+          - routePath: '/events/m/p'
+            _controller: 'Management::perform'
+          - routePath: '/event/m/p/{event_title}'
+            _controller: 'Management::perform'
+            _arguments:
+              event_title: event
+          - routePath: '/event/m/c/{event_title}'
+            _controller: 'Management::confirmActivation'
+            _arguments:
+              event_title: event
+          - routePath: '/event/m/a/{event_title}'
+            _controller: 'Management::activate'
+            _arguments:
+              event_title: event
+        defaultController: 'Management::listMyEvents'
+        aspects:
+          event_title:
+            type: PersistedHiddenAliasMapper
+            tableName: tx_events2_domain_model_event
+            routeFieldName: path_segment
+
+The action `perform` has no Extbase argument `event` anymore, the event
+form reads the UID from the query. Hidden events are mapped by Extbase for
+the action `confirmActivation` only (before: `edit`, `update` and
+`confirmActivation`).
+
+..  _upgrade-12-0-0-templates:
+
+Check your template overrides
+-----------------------------
+
+The following templates and partials have been removed. Delete your
+overrides of them:
+
+*   :file:`Resources/Private/Templates/Management/New.html`
+*   :file:`Resources/Private/Templates/Management/Edit.html`
+*   :file:`Resources/Private/Templates/Management/Create.html`
+*   :file:`Resources/Private/Templates/Management/Update.html`
+*   :file:`Resources/Private/Partials/Management/FormFields.html`
+*   :file:`Resources/Private/Partials/FormErrors.html`
+
+The templates of the Management plugin for EXT:form have been moved into
+the regular template folders. Their names relative to the template root
+path are unchanged, so your overrides still apply:
+
+..  list-table::
+    :header-rows: 1
+
+    *   -   Before (in :file:`Resources/Private/`)
+        -   Now (in :file:`Resources/Private/`)
+    *   -   :file:`FormFramework/Templates/Management/ListMyEvents.html`
+        -   :file:`Templates/Management/ListMyEvents.html`
+    *   -   :file:`FormFramework/Templates/Management/Perform.html`
+        -   :file:`Templates/Management/Perform.html`
+    *   -   :file:`FormFramework/Partials/Management/UserEditLinks.html`
+        -   :file:`Partials/Management/UserEditLinks.html`
+
+Please compare your overrides of :file:`ListMyEvents.html` and
+:file:`UserEditLinks.html` with the original files, especially if you have
+overridden the versions of the Extbase form, which had the same names.
+
+The templates of EXT:form stay in :file:`Resources/Private/FormFramework/`:
+:file:`Partials/Field/Field.html`, :file:`Partials/Form/Navigation.html`,
+:file:`Partials/Events2Location.html` and
+:file:`Templates/Finishers/Email/Default.html`. The new file
+:file:`Templates/Finishers/Email/Default.txt` is the text part of the
+mail.
+
+..  _upgrade-12-0-0-mail:
+
+Use the FormatRichTextViewHelper in own mail templates
+------------------------------------------------------
+
+The mail of the event form shows rich text elements formatted and
+sanitized now. If you use your own copy of
+:file:`Templates/Finishers/Email/Default.html` or
+:file:`Default.txt`, render values of elements with
+:yaml:`dataType: richText` with the new
+:ref:`FormatRichTextViewHelper <formatRichTextViewHelper>`. See
+:ref:`frontend-management-mail`.
+
+..  _upgrade-12-0-0-access:
+
+Changed access rules
+--------------------
+
+The rules of the frontend management have been simplified, see
+:ref:`frontend-management-access`:
+
+*   New events can only be created by logged-in frontend users of the
+    user group of :confval:`settings.userGroup
+    <events2-typoscript-settings-usergroup>` with a related organizer.
+    Backend administrators can no longer create events in the frontend.
+*   The list of own events (`listMyEvents`) follows the same rule.
+    Backend administrators can not list events anymore.
+*   Backend administrators can still edit every existing event. The
+    organizers of the event are kept now. Before, an administrator
+    removed the owner of the event.
+*   The action `activate` requires a valid `moderationToken`, also for
+    backend administrators. They can still open `confirmActivation`
+    without token; the confirmation page renders a fresh token into its
+    form.
+*   The user group is read from the TypoScript setup only
+    (:typoscript:`plugin.tx_events2_management.settings.userGroup`
+    before :typoscript:`plugin.tx_events2.settings.userGroup`). Values of
+    the FlexForm or of other plugin settings are not respected anymore.
+    Set the user group in the site setting `events2.form.userGroup` or
+    in TypoScript.
+*   The edit form is only prefilled, if the current user is allowed to
+    edit the event. The finisher `SaveEventFinisher` checks the same
+    rules before anything is stored, also if the form definition is used
+    outside of the Management plugin. If access is denied, it throws a
+    :php:`TYPO3\CMS\Form\Domain\Finishers\Exception\FinisherException`.
+
+The format of the `moderationToken` is unchanged. Activation links of
+already sent mails stay valid.
+
+..  _upgrade-12-0-0-activation-form:
+
+Send the moderationToken in own activation forms
+------------------------------------------------
+
+If you have overridden :file:`Templates/Management/ConfirmActivation.html`,
+make sure that the form of the action `activate` submits the
+`moderationToken`, which is assigned to the template:
+
+..  code-block:: html
+    :caption: EXT:my_sitepackage/Resources/Private/Templates/Management/ConfirmActivation.html (excerpt)
+
+    <f:form action="activate" controller="Management" method="post">
+        <f:form.hidden name="event" value="{event.uid}"/>
+        <f:form.hidden name="moderationToken" value="{moderationToken}"/>
+        <f:form.submit value="{f:translate(key: 'confirmActivation.submit')}"/>
+    </f:form>
+
+Without the token the activation is denied with the message of the label
+`invalidModerationToken`, also for backend administrators.
+
+..  _upgrade-12-0-0-form-definition:
+
+Update own copies of NewEvent.form.yaml
+---------------------------------------
+
+The element `download-link` of :file:`NewEvent.form.yaml` used the
+expression `inSet` with swapped arguments. The download link of an event
+was only found, if the event had exactly one download link, and SQLite
+threw an exception. If you use an own copy of the form definition,
+change the expression to `in` with :yaml:`intExplodeValue: 1`:
+
+..  code-block:: yaml
+    :caption: EXT:my_sitepackage/Configuration/Form/NewEvent.form.yaml (excerpt)
+
+    - label: 'Download Link'
+      type: Text
+      identifier: download-link
+      defaultValue: ''
+      properties:
+        dbMapping:
+          relation:
+            labelColumn: link
+            table: tx_events2_domain_model_link
+            expressions:
+              - column: uid
+                expression: in
+                value: '{event:download_links}'
+                intExplodeValue: 1
+
+The expression `inSet` is still supported for own form elements. Only
+the methods `eq`, `neq`, `lt`, `lte`, `gt`, `gte`, `in`, `notIn` and
+`inSet` of the ExpressionBuilder are allowed in
+:yaml:`dbMapping.relation.expressions` now, other expressions are
+ignored. See :ref:`frontend-management-form-definition`.
+
+The teaser (element `short-description`, column `teaser`) is limited to
+255 characters now, the `max` of the column in TCA. Add the attribute
+`maxlength` and the validator `StringLength` to your own copy:
+
+..  code-block:: yaml
+    :caption: EXT:my_sitepackage/Configuration/Form/NewEvent.form.yaml (excerpt)
+
+    - label: 'Short description'
+      type: Textarea
+      identifier: short-description
+      defaultValue: ''
+      properties:
+        dbMapping:
+          column: teaser
+          dataType: plainText
+        elementDescription: 'Short description'
+        fluidAdditionalAttributes:
+          maxlength: 255
+      validators:
+        - identifier: StringLength
+          options:
+            maximum: 255
+
+Existing teasers with more than 255 characters are not changed. If such
+an event is edited in the frontend, the teaser has to be shortened before
+the event can be saved.
+
+Each textarea with a `maxlength` shows the remaining characters below the
+field. The text comes from the new label `remainingLetters` of
+:file:`locallang.xlf`, where `%s` is the number of remaining characters.
+
+..  _upgrade-12-0-0-labels:
+
+Removed labels
+--------------
+
+The following labels have been removed from
+:file:`Resources/Private/Language/locallang.xlf` and
+:file:`de.locallang.xlf`. Remove your overrides of them in
+`_LOCAL_LANG` or in own language files:
+
+`create`, `deleteImage`, `remainingLetters`, `cshTitle`, `cshTeaser`,
+`cshEventBegin`, `cshEventEnd`, `cshTimeBegin`, `cshCategories`,
+`cshLocation`, `cshVideo`, `cshImages`, `eventCreated`, `eventUpdated`,
+`eventDeleted`, `email.subject.create`, `email.subject.update`,
+`validator.event.categories.isMandatory` and
+`validator.event.videoLink.notYouTube`.
+
+..  _upgrade-12-0-0-icons:
+
+Replaced icons
+--------------
+
+All icons of events2 are SVG files now and are registered with the
+:php:`SvgIconProvider`. The TCA of the tables uses the icon identifiers in
+`typeicon_classes` instead of paths in `iconfile`.
+
+The following files have been removed. Files with the same name and the
+extension `.svg` replace the PNG files:
+
+*   :file:`calendar_single.png`, :file:`calendar_recurring.png`,
+    :file:`calendar_duration.png`
+*   :file:`exception_add.png`, :file:`exception_info.png`,
+    :file:`exception_remove.png`, :file:`exception_time.png`
+*   :file:`tx_events2_domain_model_link.png`,
+    :file:`tx_events2_domain_model_location.png`,
+    :file:`tx_events2_domain_model_organizer.png`,
+    :file:`tx_events2_domain_model_time.png`
+*   :file:`plugin_wizard.svg` (replaced by :file:`plugin.svg`, the
+    identifier `ext-events2-wizard-icon` is unchanged)
+*   :file:`tx_events2_domain_model_category.gif` (without replacement,
+    use a core icon like `mimetypes-x-sys_category`)
+
+New icon identifiers are `ext-events2-record-event`,
+`ext-events2-record-holiday`, `ext-events2-record-link`,
+`ext-events2-record-location`, `ext-events2-record-organizer` and
+`ext-events2-record-time`. The existing identifiers
+`ext-events2-calendar-*` and `ext-events2-exception-*` point to the SVG
+files now.
+
+If you use the paths of the removed files directly, for example in own
+templates or in TCA overrides with `iconfile`, use the icon identifiers
+or the new `.svg` files instead.
+
+..  _upgrade-12-0-0-developer:
+
+Removed PHP classes and changed API
+-----------------------------------
+
+The following classes have been removed without replacement:
+
+*   :php:`JWeiland\Events2\Domain\Validator\EventValidator`
+*   :php:`JWeiland\Events2\Domain\Validator\CategoryMandatoryValidator`
+*   :php:`JWeiland\Events2\Property\TypeConverter\DateTimeImmutableConverter`
+    incl. its global registration as Extbase type converter for
+    :php:`DateTimeImmutable`
+*   :php:`JWeiland\Events2\Middleware\AttachOrganizerToEventMiddleware`
+    (middleware identifier `jweiland/events2/attach-organizer`)
+*   The event listeners :php:`AddOrganizerToEventRecordEventListener`,
+    :php:`ApplyLocationAsMandatoryIfNeededEventListener`,
+    :php:`ApplyUploadFolderEventListener` (identifier
+    `events2/apply-upload-folder`),
+    :php:`CheckFalUploadsEventListener` (identifier
+    `events2/check-fal-uploads`),
+    :php:`SetDateFormatForPropertyMappingEventListener` and
+    :php:`UpdateEventPathSegmentEventListener`. If you have ordered your
+    own event listeners with `before` or `after` relative to them, please
+    update them.
+*   The traits :php:`InjectDayRelationServiceTrait`,
+    :php:`InjectLocationRepositoryTrait` and
+    :php:`InjectPersistenceManagerTrait`. Inject the services with
+    constructor injection instead.
+*   :php:`JWeiland\Events2\Service\TypoScriptService` and the trait
+    :php:`JWeiland\Events2\Traits\InjectTypoScriptServiceTrait`. Empty
+    FlexForm values fall back to TypoScript with the Extbase option
+    `ignoreFlexFormSettingsIfEmpty`, see :ref:`upgrade-12-0-0-flexform`.
+*   :php:`JWeiland\Events2\Hook\EmStaticInfo`, which rendered the
+    extension setting `defaultCountry`
+*   The scheduler tasks :php:`JWeiland\Events2\Task\ReGenerateDays`,
+    :php:`JWeiland\Events2\Task\Import` and
+    :php:`JWeiland\Events2\Task\AdditionalFieldsForImport`, see
+    :ref:`upgrade-12-0-0-scheduler`
+*   The upgrade wizards :php:`MigrateDetailInformationsUpgrade`,
+    :php:`MigrateOrganizerToMMUpgrade` and
+    :php:`MoveOldFlexFormSettingsUpgrade`, see
+    :ref:`upgrade-12-0-0-before`
+*   The ViewHelpers :php:`ConvertToJsonViewHelper` and
+    :php:`CropStringViewHelper`, see :ref:`upgrade-12-0-0-viewhelpers`
+
+:php:`JWeiland\Events2\Service\EventModerationService` has been merged
+into :php:`JWeiland\Events2\Service\ManagementAccessService`. It
+contains all rules of the frontend management and provides this public
+API:
+
+:php:`getEventUid(ServerRequestInterface $request): int`
+    Returns the UID of the event to edit from the query parameter
+    `tx_events2_management[event]`. Arrays, values which are no integer
+    and values lower than 1 result in `0`, which means: create a new
+    event.
+
+:php:`getDenialReason(ServerRequestInterface $request): string`
+    Returns the label key of the reason, why the current user is not
+    allowed to create, list or edit events, or an empty string, if
+    access is allowed. Without event in the query the rule for creating
+    and listing events applies, else the rule for editing this event.
+    Events which do not exist and events of other organizers both result
+    in `unauthorizedOrganizerForEdit`. The user group is read from the
+    TypoScript setup.
+
+:php:`canConfirmActivation(int $eventUid, string $moderationToken): bool`
+    Backend administrators for existing events or everyone with a valid
+    token.
+
+:php:`canActivateEvent(int $eventUid, string $moderationToken): bool`
+    Everyone with a valid token only.
+
+:php:`generateModerationToken(int $eventUid): string`
+    Returns the token for the activation link, or an empty string, if
+    the event does not exist.
+
+Migrate your own code, which uses :php:`EventModerationService` of
+events2 11.2.0:
+
+..  list-table::
+    :header-rows: 1
+
+    *   -   Before (:php:`EventModerationService`)
+        -   Now (:php:`ManagementAccessService`)
+    *   -   :php:`generateModerationToken(int $eventUid)`
+        -   :php:`generateModerationToken(int $eventUid)`
+    *   -   :php:`isValidModerationToken(string $moderationToken, int $eventUid)`
+        -   :php:`canActivateEvent(int $eventUid, string $moderationToken)`.
+            Mind the changed order of the arguments.
+    *   -   :php:`getValidModerationToken(RequestInterface $request, int $eventUid)`
+        -   :php:`canActivateEvent()` or :php:`canConfirmActivation()`
+            with the `moderationToken` of the request. To create a token
+            for a template, use :php:`generateModerationToken()`.
+
+In templates, create the token for the activation link with the
+:ref:`ModerationTokenViewHelper <moderationTokenViewHelper>`.
+
+The action :php:`ManagementController::performAction()` has no argument
+`event` anymore. The event listener
+:php:`RegisterHiddenEventEventListener` registers hidden events for the
+action `confirmActivation` only.
+
+The event model :php:`JWeiland\Events2\Domain\Model\Event` has no
+:php:`#[FileUpload]` attribute at the property `$images` and no
+:php:`CategoryMandatoryValidator` at the property `$categories` anymore.
+If you have extended the model or use it in an own Extbase form, add
+your own validation and upload configuration.
+
+The JavaScript variables of :php:`AbstractController::getJsVariables()`
+do not contain `localization.remainingText` anymore.
+:file:`Events2.js` does not initialize the counter of remaining letters
+and the date picker of the removed Extbase form anymore. The form based
+on EXT:form loads the new ES module :file:`remaining-letters.js` for
+textareas with a `maxlength` instead, see
+:ref:`upgrade-12-0-0-form-definition`.
+
+The methods :php:`getDeleted()` and :php:`setDeleted()` have been
+removed from all domain models. Extbase does not fetch deleted records,
+so the value was always `false`. The JSON of the command `events2:export`
+does not contain the key `deleted` anymore.
+
+:php:`JWeiland\Events2\Domain\Model\Location::getCountry()` returns the
+ISO 3166-1 alpha-2 code as string instead of a :php:`Country` model of
+EXT:static_info_tables. :php:`setCountry()` expects this string. The new
+method :php:`getCountryObject(): ?\TYPO3\CMS\Core\Country\Country`
+returns the country object of TYPO3. :php:`ExtConf::getDefaultCountry()`
+returns the ISO code as string instead of an integer.
+
+The column `country` of the table `tx_events2_domain_model_location` is
+defined as `varchar(3)`, as the upgrade wizard has to read the former
+UIDs of `static_countries` after the database schema has been updated.
+It will be shortened to `varchar(2)` in a future major version of
+events2. Run the upgrade wizard `events2_migrateLocationCountry` soon,
+see :ref:`upgrade-12-0-0-country`.
+
+The following classes have got new constructor arguments. This is only
+relevant, if you create them on your own instead of using dependency
+injection:
+
+*   :php:`JWeiland\Events2\Helper\OverlayHelper`,
+    :php:`JWeiland\Events2\Service\RichTextService`,
+    :php:`JWeiland\Events2\Service\Record\EventRecordService`,
+    :php:`JWeiland\Events2\Helper\PathSegmentHelper`,
+    :php:`JWeiland\Events2\Service\DayGeneratorService` and
+    :php:`JWeiland\Events2\Hook\Form\PrefillCategoriesHook`: The
+    :php:`TcaSchemaFactory` of TYPO3 as last argument. These classes read
+    the TCA with the TCA Schema API instead of :php:`$GLOBALS['TCA']`.
+*   :php:`JWeiland\Events2\Command\RebuildCommand`: The runtime cache
+    as last argument.
+
+The commands `events2:rebuild` and `events2:export` are registered with
+the attribute :php:`#[AsCommand]` instead of tags in
+:file:`Services.yaml`.
+
+..  _upgrade-12-0-0-caches:
+
+Flush caches after the update to 12.0.0
+---------------------------------------
+
+As PHP classes, templates, icons and TypoScript have changed, please flush
+all caches in :guilabel:`Admin Tools > Maintenance` after the update.
+
 ..  _upgrade-11-1-0:
 
 Update to Version 11.1.0
 ========================
+
+..  note::
+
+    The templates :file:`Create.html` and :file:`Update.html` of the
+    Extbase form mentioned below have been removed with events2 12.0.0,
+    see :ref:`upgrade-12-0-0-templates`.
 
 Mail security scanners and link previews (e.g. Microsoft Safe Links) open
 the links of a mail automatically. Before this version, the activation link
@@ -103,6 +888,13 @@ added as query parameter:
 Update to Version 11.0.0
 ========================
 
+..  note::
+
+    The Extbase based event form, its image upload, the site setting
+    `events2.form.uploadFolder` and the support of checkfaluploads have
+    been removed with events2 12.0.0. The steps below are only relevant,
+    if you stay on version 11. See :ref:`upgrade-12-0-0`.
+
 This version contains breaking changes. The images of the event form of
 the Management plugin are uploaded with the file upload handling of
 Extbase now. The own type converter for uploads has been removed. Please
@@ -138,7 +930,7 @@ New site setting for the upload folder
 
 The folder of the uploaded images can be configured with the new site
 setting `events2.form.uploadFolder` now. It is mapped to the TypoScript
-setting :ref:`settings.new.uploadFolder <typoscript-new-uploadfolder>`.
+setting `settings.new.uploadFolder`.
 The default value `1:user_upload/tx_events2/` keeps the former folder.
 The folder is created, if it does not exist.
 
@@ -286,7 +1078,9 @@ table grows significantly with each execution of the `Re-Create day records`
 scheduler task.
 
 After updating to version 10.2.4, please run the
-TYPO3 command `events2:rebuild`.
+TYPO3 command `events2:rebuild`. Since version 12.0.0 use
+`events2:rebuild --truncate` for this, as the command does not truncate
+the day table by default anymore.
 
 If you are not familiar with the CLI, you can alternatively truncate
 the `tx_events2_domain_model_day` table and then run

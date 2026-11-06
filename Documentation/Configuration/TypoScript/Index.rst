@@ -1,6 +1,6 @@
+:navigation-title: TypoScript
+
 ..  include:: /Includes.rst.txt
-
-
 ..  _typoScript:
 
 ==========
@@ -20,6 +20,13 @@ Default: `EXT:events2/Resources/Private/Templates/`
 Example: `plugin.tx_events2.view.templateRootPaths.40 = EXT:site_package/Resources/Private/Templates/`
 
 You can override our Templates with your own SitePackage extension.
+
+..  versionchanged:: 12.0.0
+
+    events2 does not set the keys `1` of `templateRootPaths` and
+    `partialRootPaths` anymore. The templates of the Management plugin
+    are located in the regular template folders now, see
+    :ref:`frontend-management-templates`.
 
 partialRootPaths
 ----------------
@@ -65,6 +72,49 @@ Set this value to a Storage Folder where you have stored the event records.
 
         plugin.tx_events2.persistence.classes.JWeiland\Events2\Domain\Model\Event.newRecordStoragePid = 34
         plugin.tx_events2.persistence.classes.JWeiland\Events2\Domain\Model\Location.newRecordStoragePid = 543
+
+..  _typoscript-ignore-flexform-settings-if-empty:
+
+Fall back to TypoScript for empty FlexForm values
+=================================================
+
+..  confval:: ignoreFlexFormSettingsIfEmpty
+    :name: events2-typoscript-ignoreflexformsettingsifempty
+    :type: string (comma-separated list)
+    :default: all settings of the FlexForms of events2
+
+    Comma-separated list of settings (without the prefix `settings.`). If
+    the FlexForm value of a listed setting is empty (`""` or `"0"`), the
+    value of the TypoScript setup is used instead. This is the core
+    mechanism of Extbase, see :ref:`ext_core:feature-99976-1676660028`. It
+    applies to all places, which read the settings with the
+    `ConfigurationManager` of Extbase, also to plugin-specific TypoScript
+    like :typoscript:`plugin.tx_events2_list.settings` and to the
+    categories of the event form of the Management plugin.
+
+    The site set `jweiland/events2` lists all settings of the FlexForms
+    of events2: `categories`, `display`, `latest.amountOfRecordsToShow`,
+    `listType`, `mainCategories`, `mergeEventsAtSameDay`,
+    `mergeRecurringEvents`, `new.selectableCategoriesForNewEvents`,
+    `pidOfDetailPage`, `pidOfListPage`, `pidOfLocationPage`,
+    `pidOfManagementPage`, `pidOfSearchResults`, `preFilterByOrganizer`
+    and `showFilterForOrganizerInFrontend`.
+
+    Add the settings of your own FlexForm fields to the list, if they
+    should fall back to TypoScript, too. Remove a setting from the list,
+    if its empty FlexForm value should be used:
+
+    ..  code-block:: typoscript
+        :caption: EXT:my_sitepackage/Configuration/Sets/MySite/setup.typoscript
+
+        plugin.tx_events2.ignoreFlexFormSettingsIfEmpty := addToList(mySetting)
+        plugin.tx_events2.ignoreFlexFormSettingsIfEmpty := removeFromList(mergeEventsAtSameDay)
+
+    ..  versionchanged:: 12.0.0
+
+        Before, events2 used the TypoScript value for each empty FlexForm
+        value on its own. Now only the listed settings fall back to
+        TypoScript. See :ref:`upgrade-12-0-0-flexform`.
 
 settings
 ========
@@ -124,52 +174,75 @@ Example: `plugin.tx_events2.settings.pidOfListPage = 231`
 If you use one of the above settings, it would be useful to define the *pidOfListPage*, too, so that
 a link back to list works like expected.
 
-userGroup
----------
+pidOfManagementPage
+-------------------
 
 Default: 0
 
-Example: `plugin.tx_events2.settings.userGroup = 21`
+Example: `plugin.tx_events2.settings.pidOfManagementPage = 312`
 
-If you set this value to an UID of a frontend usergroup we will show a link in list view, where all
-users of this usergroup can edit and create events. This will only work, if a user record was assigned to
-an events2 organizer.
+Page UID with the Management plugin. Set it with the site setting
+`events2.pidOfManagementPage`. The links to create and edit events in the
+detail view and the links of the mails of the event form point to this
+page. See :ref:`frontend-management-setup`.
 
-remainingLetters
+..  _typoscript-settings-usergroup:
+
+userGroup
+---------
+
+..  confval:: settings.userGroup
+    :name: events2-typoscript-settings-usergroup
+    :type: int
+    :default: 0
+
+    Example:
+
+    ..  code-block:: typoscript
+        :caption: EXT:my_sitepackage/Configuration/Sets/MySite/setup.typoscript
+
+        plugin.tx_events2.settings.userGroup = 21
+
+    UID of the frontend user group, which is allowed to create and edit
+    events in the frontend. Set it with the site setting
+    `events2.form.userGroup` of the site set `jweiland/events2`.
+
+    Members of this group need a related organizer in their frontend user
+    record. They see a link to create a new event and, for their own
+    events, a link to edit the event in the detail view. Only they can
+    create new events, also backend administrators can not. With the
+    default value `0` nobody can create events in the frontend.
+
+    The value is read from the TypoScript setup only, for the Management
+    plugin and for the event form of EXT:form. A value in
+    :typoscript:`plugin.tx_events2_management.settings.userGroup`
+    overrides the value of :typoscript:`plugin.tx_events2.settings.userGroup`.
+    Values of the FlexForm or of the settings of other plugins are not
+    respected. See :ref:`frontend-management-access`.
+
+    ..  versionchanged:: 12.0.0
+
+        New events can only be created and listed by members of this user
+        group. Before, backend administrators could create events without
+        being a member. The value is read from the TypoScript setup only.
+
+..  _typoscript-settings-removed:
+
+Removed settings
 ----------------
 
-Default: 250
+..  versionchanged:: 12.0.0
 
-Example: `plugin.tx_events2.settings.remainingLetters = 120`
-
-Only valid wile creating new event record in frontend. Management plugin.
-
-To prevent inserting a lot of text into various text fields like teaser in frontend plugin,
-you can reducr the amount of allowed letters here. With help of a little JavaScript events2 will show
-a little countdown how many remaining letters are allowed to enter.
+    The settings `remainingLetters` and `new.uploadFolder` of the removed
+    Extbase based event form have been removed together with the site
+    settings `events2.form.remainingLetters` and
+    `events2.form.uploadFolder`. See :ref:`upgrade-12-0-0-settings`.
 
 new
 ---
 
-Special properties for the event form of the Management plugin:
-
-..  _typoscript-new-uploadfolder:
-
-uploadFolder
-~~~~~~~~~~~~
-
-..  versionadded:: 11.0.0
-
-    The value is set by the new site setting `events2.form.uploadFolder`.
-
-Default: `1:user_upload/tx_events2/`
-
-Example: `plugin.tx_events2.settings.new.uploadFolder = 1:user_upload/events/`
-
-Folder (combined identifier) for the images uploaded in the Extbase based
-event form of the Management plugin. Set it with the site setting
-`events2.form.uploadFolder` of the site set `jweiland/events2`. The folder
-is created, if it does not exist. See :ref:`management-image-upload`.
+Special properties for the event form of the Management plugin, see
+:ref:`frontend-management`:
 
 ..  _typoscript-new-richtext-enable:
 

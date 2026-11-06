@@ -26,13 +26,11 @@ class RichTextServiceTest extends FunctionalTestCase
     use InsertEventTrait;
 
     protected array $coreExtensionsToLoad = [
-        'extensionmanager',
         'reactions',
         'rte_ckeditor',
     ];
 
     protected array $testExtensionsToLoad = [
-        'sjbr/static-info-tables',
         'jweiland/events2',
     ];
 

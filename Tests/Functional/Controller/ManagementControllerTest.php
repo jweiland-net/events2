@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Tests\Functional\Controller;
 
-use JWeiland\Events2\Service\EventModerationService;
+use JWeiland\Events2\Service\ManagementAccessService;
 use JWeiland\Events2\Tests\Functional\Events2Constants;
 use JWeiland\Events2\Tests\Functional\Traits\CacheHashTrait;
 use JWeiland\Events2\Tests\Functional\Traits\CreatePostStreamBodyTrait;
@@ -43,14 +43,12 @@ class ManagementControllerTest extends FunctionalTestCase
     ];
 
     protected array $coreExtensionsToLoad = [
-        'extensionmanager',
         'fluid_styled_content',
         'form',
         'reactions',
     ];
 
     protected array $testExtensionsToLoad = [
-        'sjbr/static-info-tables',
         'jweiland/events2',
         __DIR__ . '/../Fixtures/Extensions/site_package',
     ];
@@ -224,13 +222,130 @@ class ManagementControllerTest extends FunctionalTestCase
             'Recurring event',
             $content,
         );
+        self::assertStringContainsString(
+            'alt="Hint"',
+            $content,
+        );
+    }
+
+    #[Test]
+    public function performWithoutLoggedInUserWillNotShowExtForm(): void
+    {
+        $content = (string)$this->executeGetRequest('perform', 0, '')->getBody();
+
+        self::assertStringContainsString(
+            'This page is restricted. Please log in to access the Events Management area.',
+            $content,
+        );
+        self::assertStringNotContainsString(
+            'Recurring event',
+            $content,
+        );
+    }
+
+    /**
+     * The edit view resolves all relations of the event. It has to work
+     * on every DBMS, see PrefillForEditUsageHookTest for the values.
+     */
+    #[Test]
+    public function performWithOwnEventRendersEditForm(): void
+    {
+        $eventUid = $this->insertEvent(
+            title: 'Own event with relations',
+            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
+            timeBegin: '19:00',
+            ticketLink: 'https://tickets.example.com',
+            videoLink: 'https://youtu.be/abc',
+            additionalFields: ['hidden' => 1, 'event_type' => 'duration'],
+            organizer: 'jweiland.net',
+            location: 'Kino',
+            categories: [1],
+        );
+
+        $content = (string)$this->executeGetRequest('perform', $eventUid, '', 1)->getBody();
+
+        self::assertStringContainsString('tx_events2_management%5Bevent%5D=' . $eventUid, $content);
+        self::assertMatchesRegularExpression('/value="duration"[^>]*checked/', $content);
+    }
+
+    /**
+     * Not existing and foreign events result in the same message, so
+     * nobody can find out, which hidden events exist.
+     */
+    #[Test]
+    public function performWithForeignEventDoesNotShowEventData(): void
+    {
+        // Creates the organizer with UID 1 of frontend user 1
+        $this->insertHiddenEventOfFrontendUser();
+        $eventUid = $this->insertEvent(
+            title: 'Hidden event of other organizer',
+            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
+            additionalFields: ['hidden' => 1],
+            organizer: 'TYPO3',
+        );
+
+        $content = (string)$this->executeGetRequest('perform', $eventUid, '', 1)->getBody();
+
+        self::assertStringContainsString(
+            'You are not allowed to edit events that do not correspond to your assigned organizer.',
+            $content,
+        );
+        self::assertStringNotContainsString('Hidden event of other organizer', $content);
+        self::assertStringNotContainsString('Recurring event', $content);
+    }
+
+    #[Test]
+    public function performWithUserOfWrongGroupWillNotShowExtForm(): void
+    {
+        $content = (string)$this->executeGetRequest('perform', 0, '', 3)->getBody();
+
+        self::assertStringContainsString('You\'re not allowed to create event records', $content);
+        self::assertStringNotContainsString('Recurring event', $content);
+    }
+
+    /**
+     * The token protects the state changing request against CSRF. Logged-in
+     * frontend users of the user group must not activate events without it.
+     */
+    #[Test]
+    public function activateViaPostWithInvalidTokenKeepsEventHidden(): void
+    {
+        $eventUid = $this->insertHiddenEventOfFrontendUser();
+
+        $content = (string)$this->executePostRequest('activate', $eventUid, 'invalid', 1)->getBody();
+
+        self::assertStringContainsString(
+            'The activation link is invalid or the event does not exist anymore.',
+            $content,
+        );
+        self::assertTrue($this->isEventHidden($eventUid));
+    }
+
+    /**
+     * The Extbase form and its "create" action were removed. As the plugin
+     * calls the default action for unknown actions, nothing is stored even
+     * for allowed frontend users.
+     */
+    #[Test]
+    public function removedCreateActionWillNotStoreEvent(): void
+    {
+        $content = (string)$this->executeCreateRequest(1)->getBody();
+
+        self::assertSame(
+            0,
+            $this->countEvents(),
+        );
+        self::assertStringNotContainsString(
+            'tx_events2_management[event][title]',
+            $content,
+        );
     }
 
     #[Test]
     public function confirmActivationWithValidTokenShowsConfirmationForm(): void
     {
         $eventUid = $this->insertHiddenEventOfFrontendUser();
-        $moderationToken = $this->get(EventModerationService::class)->generateModerationToken($eventUid);
+        $moderationToken = $this->get(ManagementAccessService::class)->generateModerationToken($eventUid);
 
         $content = (string)$this->executeGetRequest('confirmActivation', $eventUid, $moderationToken)->getBody();
 
@@ -262,7 +377,7 @@ class ManagementControllerTest extends FunctionalTestCase
     public function activateViaGetWithValidTokenKeepsEventHidden(): void
     {
         $eventUid = $this->insertHiddenEventOfFrontendUser();
-        $moderationToken = $this->get(EventModerationService::class)->generateModerationToken($eventUid);
+        $moderationToken = $this->get(ManagementAccessService::class)->generateModerationToken($eventUid);
 
         $content = (string)$this->executeGetRequest('activate', $eventUid, $moderationToken)->getBody();
 
@@ -303,7 +418,7 @@ class ManagementControllerTest extends FunctionalTestCase
     {
         $eventUid = $this->insertHiddenEventOfFrontendUser();
         $foreignEventUid = $this->insertHiddenEventOfFrontendUser();
-        $moderationToken = $this->get(EventModerationService::class)->generateModerationToken($foreignEventUid);
+        $moderationToken = $this->get(ManagementAccessService::class)->generateModerationToken($foreignEventUid);
 
         $this->executePostRequest('activate', $eventUid, $moderationToken);
 
@@ -315,7 +430,7 @@ class ManagementControllerTest extends FunctionalTestCase
     public function activateViaPostWithValidTokenActivatesEvent(): void
     {
         $eventUid = $this->insertHiddenEventOfFrontendUser();
-        $moderationToken = $this->get(EventModerationService::class)->generateModerationToken($eventUid);
+        $moderationToken = $this->get(ManagementAccessService::class)->generateModerationToken($eventUid);
 
         $this->executePostRequest('activate', $eventUid, $moderationToken);
 
@@ -374,6 +489,43 @@ class ManagementControllerTest extends FunctionalTestCase
         );
     }
 
+    private function executeCreateRequest(int $frontendUserId): ResponseInterface
+    {
+        $body = $this->createBodyFromArray([
+            'tx_events2_management' => [
+                'controller' => 'Management',
+                'action' => 'create',
+                'event' => [
+                    'title' => 'Event of anonymous visitor',
+                    'eventType' => 'single',
+                    'eventBegin' => (new \DateTimeImmutable('tomorrow midnight'))->format('d.m.Y'),
+                ],
+            ],
+        ]);
+
+        return $this->executeFrontendSubRequest(
+            (new InternalRequest())
+                ->withPageId(Events2Constants::PAGE_MANAGEMENT)
+                ->withMethod('POST')
+                ->withAddedHeader('Content-type', 'application/x-www-form-urlencoded')
+                ->withBody($body),
+            (new InternalRequestContext())
+                ->withFrontendUserId($frontendUserId),
+        );
+    }
+
+    private function countEvents(): int
+    {
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_event');
+        $queryBuilder->getRestrictions()->removeAll();
+
+        return (int)$queryBuilder
+            ->count('*')
+            ->from('tx_events2_domain_model_event')
+            ->executeQuery()
+            ->fetchOne();
+    }
+
     /**
      * @return array<string, string|int>
      */
@@ -382,8 +534,10 @@ class ManagementControllerTest extends FunctionalTestCase
         $arguments = [
             'controller' => 'Management',
             'action' => $actionName,
-            'event' => $eventUid,
         ];
+        if ($eventUid > 0) {
+            $arguments['event'] = $eventUid;
+        }
         if ($moderationToken !== '') {
             $arguments['moderationToken'] = $moderationToken;
         }

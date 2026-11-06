@@ -15,6 +15,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Country\CountryProvider;
 use TYPO3\CMS\Core\SingletonInterface;
 
 /**
@@ -31,7 +32,7 @@ readonly class ExtConf implements SingletonInterface
         'rootUid' => 0,
         'recurringPast' => 3,
         'recurringFuture' => 6,
-        'defaultCountry' => 0,
+        'defaultCountry' => '',
         'xmlImportValidatorPath' => 'EXT:events2/Resources/Public/XmlImportValidator.xsd',
         'organizerIsRequired' => false,
         'locationIsRequired' => false,
@@ -51,7 +52,7 @@ readonly class ExtConf implements SingletonInterface
         private int $rootUid = self::DEFAULT_SETTINGS['rootUid'],
         private int $recurringPast = self::DEFAULT_SETTINGS['recurringPast'],
         private int $recurringFuture = self::DEFAULT_SETTINGS['recurringFuture'],
-        private int $defaultCountry = self::DEFAULT_SETTINGS['defaultCountry'],
+        private string $defaultCountry = self::DEFAULT_SETTINGS['defaultCountry'],
         private string $xmlImportValidatorPath = self::DEFAULT_SETTINGS['xmlImportValidatorPath'],
         private bool $organizerIsRequired = self::DEFAULT_SETTINGS['organizerIsRequired'],
         private bool $locationIsRequired = self::DEFAULT_SETTINGS['locationIsRequired'],
@@ -65,8 +66,14 @@ readonly class ExtConf implements SingletonInterface
         private string $emailToName = self::DEFAULT_SETTINGS['emailToName'],
     ) {}
 
-    public static function create(ExtensionConfiguration $extensionConfiguration): self
-    {
+    /**
+     * Factory used by DI. The CountryProvider is injected here, as it is only available in DI context.
+     * In failsafe mode (install tool) ExtConf is instantiated with its default values.
+     */
+    public static function create(
+        ExtensionConfiguration $extensionConfiguration,
+        CountryProvider $countryProvider,
+    ): self {
         $extensionSettings = self::DEFAULT_SETTINGS;
 
         // Overwrite default extension settings with values from EXT_CONF
@@ -84,7 +91,7 @@ readonly class ExtConf implements SingletonInterface
             rootUid: (int)$extensionSettings['rootUid'],
             recurringPast: (int)$extensionSettings['recurringPast'],
             recurringFuture: (int)$extensionSettings['recurringFuture'],
-            defaultCountry: (int)$extensionSettings['defaultCountry'],
+            defaultCountry: self::sanitizeCountryCode((string)$extensionSettings['defaultCountry'], $countryProvider),
             xmlImportValidatorPath: (string)$extensionSettings['xmlImportValidatorPath'],
             organizerIsRequired: (bool)$extensionSettings['organizerIsRequired'],
             locationIsRequired: (bool)$extensionSettings['locationIsRequired'],
@@ -119,7 +126,10 @@ readonly class ExtConf implements SingletonInterface
         return $this->recurringFuture;
     }
 
-    public function getDefaultCountry(): int
+    /**
+     * ISO 3166-1 alpha-2 code of the default country or empty string
+     */
+    public function getDefaultCountry(): string
     {
         return $this->defaultCountry;
     }
@@ -191,5 +201,20 @@ readonly class ExtConf implements SingletonInterface
     public function getEmailToName(): string
     {
         return $this->emailToName;
+    }
+
+    /**
+     * Returns the ISO 3166-1 alpha-2 code, if it is a country known by TYPO3 core.
+     * Former versions of events2 stored the UID of a static_countries record.
+     * Such values and all other invalid values result in an empty string.
+     */
+    private static function sanitizeCountryCode(string $countryCode, CountryProvider $countryProvider): string
+    {
+        $countryCode = trim($countryCode);
+        if (strlen($countryCode) !== 2) {
+            return '';
+        }
+
+        return $countryProvider->getByAlpha2IsoCode(strtoupper($countryCode))?->getAlpha2IsoCode() ?? '';
     }
 }

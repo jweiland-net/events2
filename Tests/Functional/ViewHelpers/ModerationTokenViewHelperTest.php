@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Tests\Functional\ViewHelpers;
 
 use JWeiland\Events2\Domain\Model\Event;
-use JWeiland\Events2\Service\EventModerationService;
+use JWeiland\Events2\Service\ManagementAccessService;
 use JWeiland\Events2\Tests\Functional\Events2Constants;
 use JWeiland\Events2\Tests\Functional\Traits\InsertEventTrait;
 use PHPUnit\Framework\Attributes\Test;
@@ -28,12 +28,10 @@ class ModerationTokenViewHelperTest extends FunctionalTestCase
     use InsertEventTrait;
 
     protected array $coreExtensionsToLoad = [
-        'extensionmanager',
         'reactions',
     ];
 
     protected array $testExtensionsToLoad = [
-        'sjbr/static-info-tables',
         'jweiland/events2',
     ];
 
@@ -49,7 +47,7 @@ class ModerationTokenViewHelperTest extends FunctionalTestCase
         $eventUid = $this->insertHiddenEvent();
 
         self::assertSame(
-            $this->get(EventModerationService::class)->generateModerationToken($eventUid),
+            $this->get(ManagementAccessService::class)->generateModerationToken($eventUid),
             $this->renderModerationToken($eventUid),
         );
     }
@@ -60,7 +58,7 @@ class ModerationTokenViewHelperTest extends FunctionalTestCase
         $eventUid = $this->insertHiddenEvent();
 
         self::assertSame(
-            $this->get(EventModerationService::class)->generateModerationToken($eventUid),
+            $this->get(ManagementAccessService::class)->generateModerationToken($eventUid),
             $this->renderModerationToken((string)$eventUid),
         );
     }
@@ -73,7 +71,7 @@ class ModerationTokenViewHelperTest extends FunctionalTestCase
         $event->_setProperty('uid', $eventUid);
 
         self::assertSame(
-            $this->get(EventModerationService::class)->generateModerationToken($eventUid),
+            $this->get(ManagementAccessService::class)->generateModerationToken($eventUid),
             $this->renderModerationToken($event),
         );
     }

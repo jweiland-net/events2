@@ -9,40 +9,63 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-use TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider;
 use TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider;
 
 return [
     'ext-events2-wizard-icon' => [
         'provider' => SvgIconProvider::class,
-        'source' => 'EXT:events2/Resources/Public/Icons/plugin_wizard.svg',
+        'source' => 'EXT:events2/Resources/Public/Icons/plugin.svg',
+    ],
+    'ext-events2-record-event' => [
+        'provider' => SvgIconProvider::class,
+        'source' => 'EXT:events2/Resources/Public/Icons/tx_events2_domain_model_event.svg',
+    ],
+    'ext-events2-record-holiday' => [
+        'provider' => SvgIconProvider::class,
+        'source' => 'EXT:events2/Resources/Public/Icons/tx_events2_domain_model_holiday.svg',
+    ],
+    'ext-events2-record-link' => [
+        'provider' => SvgIconProvider::class,
+        'source' => 'EXT:events2/Resources/Public/Icons/tx_events2_domain_model_link.svg',
+    ],
+    'ext-events2-record-location' => [
+        'provider' => SvgIconProvider::class,
+        'source' => 'EXT:events2/Resources/Public/Icons/tx_events2_domain_model_location.svg',
+    ],
+    'ext-events2-record-organizer' => [
+        'provider' => SvgIconProvider::class,
+        'source' => 'EXT:events2/Resources/Public/Icons/tx_events2_domain_model_organizer.svg',
+    ],
+    'ext-events2-record-time' => [
+        'provider' => SvgIconProvider::class,
+        'source' => 'EXT:events2/Resources/Public/Icons/tx_events2_domain_model_time.svg',
     ],
     'ext-events2-calendar-single' => [
-        'provider' => BitmapIconProvider::class,
-        'source' => 'EXT:events2/Resources/Public/Icons/calendar_single.png',
+        'provider' => SvgIconProvider::class,
+        'source' => 'EXT:events2/Resources/Public/Icons/calendar_single.svg',
     ],
     'ext-events2-calendar-recurring' => [
-        'provider' => BitmapIconProvider::class,
-        'source' => 'EXT:events2/Resources/Public/Icons/calendar_recurring.png',
+        'provider' => SvgIconProvider::class,
+        'source' => 'EXT:events2/Resources/Public/Icons/calendar_recurring.svg',
     ],
     'ext-events2-calendar-duration' => [
-        'provider' => BitmapIconProvider::class,
-        'source' => 'EXT:events2/Resources/Public/Icons/calendar_duration.png',
+        'provider' => SvgIconProvider::class,
+        'source' => 'EXT:events2/Resources/Public/Icons/calendar_duration.svg',
     ],
     'ext-events2-exception-add' => [
-        'provider' => BitmapIconProvider::class,
-        'source' => 'EXT:events2/Resources/Public/Icons/exception_add.png',
+        'provider' => SvgIconProvider::class,
+        'source' => 'EXT:events2/Resources/Public/Icons/exception_add.svg',
     ],
     'ext-events2-exception-remove' => [
-        'provider' => BitmapIconProvider::class,
-        'source' => 'EXT:events2/Resources/Public/Icons/exception_remove.png',
+        'provider' => SvgIconProvider::class,
+        'source' => 'EXT:events2/Resources/Public/Icons/exception_remove.svg',
     ],
     'ext-events2-exception-info' => [
-        'provider' => BitmapIconProvider::class,
-        'source' => 'EXT:events2/Resources/Public/Icons/exception_info.png',
+        'provider' => SvgIconProvider::class,
+        'source' => 'EXT:events2/Resources/Public/Icons/exception_info.svg',
     ],
     'ext-events2-exception-time' => [
-        'provider' => BitmapIconProvider::class,
-        'source' => 'EXT:events2/Resources/Public/Icons/exception_time.png',
+        'provider' => SvgIconProvider::class,
+        'source' => 'EXT:events2/Resources/Public/Icons/exception_time.svg',
     ],
 ];

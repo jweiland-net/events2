@@ -1,11 +1,15 @@
+:navigation-title: Plugins
+
 ..  include:: /Includes.rst.txt
-
-
 ..  _plugins:
 
 ========
 Plugins
 ========
+
+If a setting of a plugin is empty (`""` or `"0"`), the value of the
+TypoScript setup is used instead. See
+:confval:`ignoreFlexFormSettingsIfEmpty <events2-typoscript-ignoreflexformsettingsifempty>`.
 
 List all events
 ===============
@@ -233,10 +237,15 @@ Search Results
 
 Add this plugin to show the search results, coming from search form plugin.
 
+..  _plugin-management:
+
 Manage Events
 =============
 
-With this plugin registered FE users can create and manage their own events in frontend.
+With this plugin registered frontend users can create and manage their own
+events in the frontend. Only members of the frontend user group of
+:confval:`settings.userGroup <events2-typoscript-settings-usergroup>` with a
+related organizer can create events. See :ref:`frontend-management`.
 
 Selectable categories for new Events
 ------------------------------------
@@ -253,48 +262,15 @@ will be selectable in Frontend form.
 
 ..  _management-image-upload:
 
-Image upload
-------------
+Event form and image upload
+---------------------------
 
-The Extbase based event form of this plugin uses the file upload handling
-of Extbase for the images of an event:
+..  versionchanged:: 12.0.0
 
-*   up to 5 images per event,
-*   up to 4 MB per image,
-*   files with the extensions `gif`, `jpg`, `jpeg` and `png` only.
+    The Extbase based event form with its image upload, the upload folder
+    setting and the rights checkbox of checkfaluploads have been removed.
 
-Uploaded files are stored in the folder of the site setting
-`events2.form.uploadFolder`, see
-:ref:`uploadFolder <typoscript-new-uploadfolder>`. The file names get a
-random suffix. A delete checkbox is shown for each existing image.
-Deleting an image deletes the file, too.
-
-..  _management-checkfaluploads:
-
-Image rights with checkfaluploads
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-..  versionchanged:: 11.0.0
-
-    The rights checkbox is not part of the events2 templates anymore. Add
-    it to your own template override.
-
-If `jweiland/checkfaluploads` (version 6.x) is installed, events2 adds its
-validator to the image uploads of the actions `create` and `update`. The
-uploader has to confirm the image rights with a checkbox. Add the checkbox
-and the rights message to your template override of
-:file:`Partials/Management/FormFields.html`:
-
-..  code-block:: html
-    :caption: EXT:site_package/Resources/Private/Partials/Management/FormFields.html
-
-    <html xmlns:cfu="http://typo3.org/ns/JWeiland/Checkfaluploads/ViewHelpers"
-          data-namespace-typo3-fluid="true">
-
-    <f:form.checkbox property="images.rights" id="imageRights" value="1"/>
-    <label for="imageRights"><cfu:imageRightsMessage/></label>
-
-The checkbox has to be submitted with the name
-`tx_events2_management[event][images][rights]`. Without this field every
-image upload stops with exception `1788270392`. If the checkbox is not
-checked, the form shows a validation error.
+The plugin renders the event form based on EXT:form
+(:file:`EXT:events2/Configuration/Form/NewEvent.form.yaml`). Its image
+upload elements, the access rules and the templates are described in
+:ref:`frontend-management`.

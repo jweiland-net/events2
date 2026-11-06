@@ -37,12 +37,10 @@ class JsonLdServiceTest extends FunctionalTestCase
     protected DayRepository $dayRepository;
 
     protected array $coreExtensionsToLoad = [
-        'extensionmanager',
         'reactions',
     ];
 
     protected array $testExtensionsToLoad = [
-        'sjbr/static-info-tables',
         'jweiland/events2',
     ];
 
@@ -253,6 +251,27 @@ class JsonLdServiceTest extends FunctionalTestCase
 
         self::assertSame(
             "Beginn 10 Uhr\n\nZweiter Absatz",
+            $jsonLdService->getCollectedJsonLdData()['description'],
+        );
+    }
+
+    #[Test]
+    public function addJsonLdAddsDescriptionWithSeparatedListItems(): void
+    {
+        $event = new Event();
+        $event->setDetailInformation(
+            '<h2>Programm</h2>'
+            . "\r\n"
+            . '<p>Ablauf:</p>'
+            . "\r\n"
+            . '<ul><li>Eins<ul><li>Eins.a</li></ul></li><li>Zwei&nbsp;Uhr</li></ul>',
+        );
+
+        $jsonLdService = new JsonLdService(new TimeFactory(new DateTimeUtility()));
+        (new \ReflectionMethod($jsonLdService, 'addDescriptionToData'))->invoke($jsonLdService, $event);
+
+        self::assertSame(
+            "Programm\n\nAblauf:\n\nEins\nEins.a\nZwei Uhr",
             $jsonLdService->getCollectedJsonLdData()['description'],
         );
     }

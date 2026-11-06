@@ -49,18 +49,25 @@ This can be a directory in ``fileadmin`` or a custom extension. Multiple fallbac
       }
     }
 
-Change the templates using TypoScript constants
-===============================================
+..  _changeTemplates-site-settings:
 
-You can use the following TypoScript in the **constants** to change
-the paths
+Change the templates using site settings
+========================================
 
-..  code-block:: typoscript
+..  versionchanged:: 12.0.0
 
-    plugin.tx_events2 {
-      view {
-        templateRootPath = fileadmin/templates/ext/events2/Templates/
-        partialRootPath = fileadmin/templates/ext/events2/Partials/
-        layoutRootPath = fileadmin/templates/ext/events2/Layouts/
-      }
-    }
+    The static TypoScript template :guilabel:`Events` and its constants
+    have been removed. Use the site settings of the site set
+    `jweiland/events2` instead.
+
+You can use the following site settings of the site set `jweiland/events2`
+to add your own paths. They are added with the key `2` (templates and
+partials) and `1` (layouts) to the paths of events2:
+
+..  code-block:: yaml
+    :caption: config/sites/<my-site>/settings.yaml
+
+    events2:
+      templateRootPath: 'EXT:my_sitepackage/Resources/Private/Events2/Templates/'
+      partialRootPath: 'EXT:my_sitepackage/Resources/Private/Events2/Partials/'
+      layoutRootPath: 'EXT:my_sitepackage/Resources/Private/Events2/Layouts/'

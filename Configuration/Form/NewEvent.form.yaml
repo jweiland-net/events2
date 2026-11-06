@@ -128,6 +128,14 @@ renderables:
             column: teaser
             dataType: plainText
           elementDescription: 'Short description'
+          # 255 is "max" of the column "teaser" in TCA. The maxlength activates
+          # the counter of remaining letters.
+          fluidAdditionalAttributes:
+            maxlength: 255
+        validators:
+          - identifier: StringLength
+            options:
+              maximum: 255
       - label: 'Detail description'
         type: Textarea
         identifier: detail-description
@@ -181,8 +189,9 @@ renderables:
               table: tx_events2_domain_model_link
               expressions:
                 - column: uid
-                  expression: inSet
+                  expression: in
                   value: '{event:download_links}'
+                  intExplodeValue: 1
           elementDescription: 'Download Link'
         validators:
           - identifier: Url

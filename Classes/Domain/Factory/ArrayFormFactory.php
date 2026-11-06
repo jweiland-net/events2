@@ -13,6 +13,7 @@ namespace JWeiland\Events2\Domain\Factory;
 
 use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Form\RichTextFormElementConfigurator;
+use JWeiland\Events2\Service\ManagementAccessService;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Form\Domain\Exception\RenderingException;
 use TYPO3\CMS\Form\Domain\Model\FormDefinition;
@@ -26,6 +27,7 @@ class ArrayFormFactory extends \TYPO3\CMS\Form\Domain\Factory\ArrayFormFactory
     public function __construct(
         protected readonly ExtConf $extConf,
         protected readonly RichTextFormElementConfigurator $richTextFormElementConfigurator,
+        protected readonly ManagementAccessService $managementAccessService,
     ) {}
 
     /**
@@ -38,7 +40,7 @@ class ArrayFormFactory extends \TYPO3\CMS\Form\Domain\Factory\ArrayFormFactory
         ?string $prototypeName = null,
         ?ServerRequestInterface $request = null,
     ): FormDefinition {
-        $this->addEventUidToFormAction($configuration);
+        $this->addEventUidToFormAction($configuration, $request);
         $this->modifyEmailFinisherConfiguration($configuration);
         $configuration = $this->richTextFormElementConfigurator->configure($configuration, $request);
 
@@ -46,16 +48,17 @@ class ArrayFormFactory extends \TYPO3\CMS\Form\Domain\Factory\ArrayFormFactory
     }
 
     /**
-     * I haven't found any solution to add a dynamic GET var into the YAML configuration
+     * The event to edit is part of the URI of the form. Keep it for the
+     * form action. It is the same UID, which is checked and stored.
      */
-    protected function addEventUidToFormAction(array &$configuration): void
+    protected function addEventUidToFormAction(array &$configuration, ?ServerRequestInterface $request): void
     {
+        $eventUid = $request instanceof ServerRequestInterface ? $this->managementAccessService->getEventUid($request) : 0;
         if (
-            isset($_GET['tx_events2_management']['event'])
-            && !isset($configuration['renderingOptions']['additionalParams']['tx_events2_events']['event'])
+            $eventUid > 0
+            && !isset($configuration['renderingOptions']['additionalParams']['tx_events2_management']['event'])
         ) {
-            $configuration['renderingOptions']['additionalParams']['tx_events2_management']['event']
-                = $_GET['tx_events2_management']['event'];
+            $configuration['renderingOptions']['additionalParams']['tx_events2_management']['event'] = $eventUid;
         }
     }
 

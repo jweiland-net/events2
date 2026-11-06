@@ -15,6 +15,7 @@ use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Tests\Functional\Events2Constants;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Country\CountryProvider;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
@@ -23,12 +24,10 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 class ExtConfTest extends FunctionalTestCase
 {
     protected array $coreExtensionsToLoad = [
-        'extensionmanager',
         'reactions',
     ];
 
     protected array $testExtensionsToLoad = [
-        'sjbr/static-info-tables',
         'jweiland/events2',
     ];
 
@@ -76,7 +75,7 @@ class ExtConfTest extends FunctionalTestCase
                 'poiCollectionPid' => '123Test',
             ]);
 
-        $subject = ExtConf::create($extensionConfigurationMock);
+        $subject = ExtConf::create($extensionConfigurationMock, $this->get(CountryProvider::class));
 
         self::assertSame(
             123,
@@ -122,7 +121,7 @@ class ExtConfTest extends FunctionalTestCase
                 'rootUid' => '123Test',
             ]);
 
-        $subject = ExtConf::create($extensionConfigurationMock);
+        $subject = ExtConf::create($extensionConfigurationMock, $this->get(CountryProvider::class));
 
         self::assertSame(
             123,
@@ -168,7 +167,7 @@ class ExtConfTest extends FunctionalTestCase
                 'recurringPast' => '6',
             ]);
 
-        $subject = ExtConf::create($extensionConfigurationMock);
+        $subject = ExtConf::create($extensionConfigurationMock, $this->get(CountryProvider::class));
 
         self::assertSame(
             6,
@@ -214,7 +213,7 @@ class ExtConfTest extends FunctionalTestCase
                 'recurringFuture' => '12',
             ]);
 
-        $subject = ExtConf::create($extensionConfigurationMock);
+        $subject = ExtConf::create($extensionConfigurationMock, $this->get(CountryProvider::class));
 
         self::assertSame(
             12,
@@ -223,19 +222,39 @@ class ExtConfTest extends FunctionalTestCase
     }
 
     #[Test]
-    public function getDefaultCountryInitiallyReturnsZero(): void
+    public function getDefaultCountryInitiallyReturnsEmptyString(): void
     {
         $config = [];
         $subject = new ExtConf(...$config);
 
         self::assertSame(
-            0,
+            '',
             $subject->getDefaultCountry(),
         );
     }
 
     #[Test]
-    public function setDefaultCountrySetsDefaultCountryAsInteger(): void
+    public function setDefaultCountrySetsDefaultCountryAsUppercaseIsoCode(): void
+    {
+        $extensionConfigurationMock = $this->createMock(ExtensionConfiguration::class);
+        $extensionConfigurationMock
+            ->expects(self::once())
+            ->method('get')
+            ->with('events2')
+            ->willReturn([
+                'defaultCountry' => ' de ',
+            ]);
+
+        $subject = ExtConf::create($extensionConfigurationMock, $this->get(CountryProvider::class));
+
+        self::assertSame(
+            'DE',
+            $subject->getDefaultCountry(),
+        );
+    }
+
+    #[Test]
+    public function setDefaultCountryWithFormerStaticCountryUidSetsDefaultCountryToEmptyString(): void
     {
         $extensionConfigurationMock = $this->createMock(ExtensionConfiguration::class);
         $extensionConfigurationMock
@@ -246,16 +265,44 @@ class ExtConfTest extends FunctionalTestCase
                 'defaultCountry' => '45',
             ]);
 
-        $subject = ExtConf::create($extensionConfigurationMock);
+        $subject = ExtConf::create($extensionConfigurationMock, $this->get(CountryProvider::class));
 
         self::assertSame(
-            45,
+            '',
             $subject->getDefaultCountry(),
         );
     }
 
     #[Test]
-    public function setDefaultCountryWithEmptyStringSetsDefaultCountryToZero(): void
+    public function setDefaultCountryWithUnknownIsoCodeSetsDefaultCountryToEmptyString(): void
+    {
+        $extensionConfigurationMock = $this->createMock(ExtensionConfiguration::class);
+        $extensionConfigurationMock
+            ->expects(self::once())
+            ->method('get')
+            ->with('events2')
+            ->willReturn([
+                'defaultCountry' => 'XX',
+            ]);
+
+        $subject = ExtConf::create($extensionConfigurationMock, $this->get(CountryProvider::class));
+
+        self::assertSame(
+            '',
+            $subject->getDefaultCountry(),
+        );
+    }
+
+    #[Test]
+    public function extConfFromContainerContainsValidatedDefaultCountry(): void
+    {
+        $this->get(ExtensionConfiguration::class)->set('events2', ['defaultCountry' => 'at']);
+
+        self::assertSame('AT', $this->get(ExtConf::class)->getDefaultCountry());
+    }
+
+    #[Test]
+    public function setDefaultCountryWithEmptyStringSetsDefaultCountryToEmptyString(): void
     {
         $extensionConfigurationMock = $this->createMock(ExtensionConfiguration::class);
         $extensionConfigurationMock
@@ -266,10 +313,10 @@ class ExtConfTest extends FunctionalTestCase
                 'defaultCountry' => '',
             ]);
 
-        $subject = ExtConf::create($extensionConfigurationMock);
+        $subject = ExtConf::create($extensionConfigurationMock, $this->get(CountryProvider::class));
 
         self::assertSame(
-            0,
+            '',
             $subject->getDefaultCountry(),
         );
     }
@@ -298,7 +345,7 @@ class ExtConfTest extends FunctionalTestCase
                 'xmlImportValidatorPath' => 'foo bar',
             ]);
 
-        $subject = ExtConf::create($extensionConfigurationMock);
+        $subject = ExtConf::create($extensionConfigurationMock, $this->get(CountryProvider::class));
 
         self::assertSame(
             'foo bar',
@@ -342,7 +389,7 @@ class ExtConfTest extends FunctionalTestCase
                 'organizerIsRequired' => 0,
             ]);
 
-        $subject = ExtConf::create($extensionConfigurationMock);
+        $subject = ExtConf::create($extensionConfigurationMock, $this->get(CountryProvider::class));
 
         self::assertFalse($subject->getOrganizerIsRequired());
     }
@@ -383,7 +430,7 @@ class ExtConfTest extends FunctionalTestCase
                 'locationIsRequired' => 0,
             ]);
 
-        $subject = ExtConf::create($extensionConfigurationMock);
+        $subject = ExtConf::create($extensionConfigurationMock, $this->get(CountryProvider::class));
 
         self::assertFalse($subject->getLocationIsRequired());
     }

@@ -193,21 +193,4 @@ trait TestTypo3PropertiesTrait
             $this->subject->getHidden(),
         );
     }
-
-    #[Test]
-    public function getDeletedInitiallyReturnsFalse(): void
-    {
-        self::assertFalse(
-            $this->subject->getDeleted(),
-        );
-    }
-
-    #[Test]
-    public function setDeletedSetsDeleted(): void
-    {
-        $this->subject->setDeleted(true);
-        self::assertTrue(
-            $this->subject->getDeleted(),
-        );
-    }
 }

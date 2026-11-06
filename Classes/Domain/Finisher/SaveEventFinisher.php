@@ -15,6 +15,7 @@ use JWeiland\Events2\Converter\RteContentConverter;
 use JWeiland\Events2\Domain\Repository\UserRepository;
 use JWeiland\Events2\Helper\PathSegmentHelper;
 use JWeiland\Events2\Service\DayRelationService;
+use JWeiland\Events2\Service\ManagementAccessService;
 use JWeiland\Events2\Service\RichTextService;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -43,6 +44,7 @@ class SaveEventFinisher extends AbstractFinisher
         protected readonly DayRelationService $dayRelationService,
         protected readonly RteContentConverter $rteContentConverter = new RteContentConverter(),
         protected readonly ?RichTextService $richTextService = null,
+        protected readonly ?ManagementAccessService $managementAccessService = null,
     ) {}
 
     /**
@@ -53,6 +55,8 @@ class SaveEventFinisher extends AbstractFinisher
      */
     protected function executeInternal(): void
     {
+        $this->throwExceptionIfAccessIsDenied();
+
         $options = [];
         if (isset($this->options['table'])) {
             $options[] = $this->options;
@@ -64,6 +68,33 @@ class SaveEventFinisher extends AbstractFinisher
             $this->options = $option;
             $this->process($optionKey);
         }
+    }
+
+    /**
+     * The ManagementController already restricts the access to the form.
+     * As the form definition could be used in other places (e.g. a form
+     * content element), the rules of ManagementAccessService are checked
+     * again before anything is stored.
+     *
+     * @throws FinisherException
+     */
+    protected function throwExceptionIfAccessIsDenied(): void
+    {
+        if ($this->getManagementAccessService()->getDenialReason($this->finisherContext->getRequest()) === '') {
+            return;
+        }
+
+        $this->finisherContext->cancel();
+
+        throw new FinisherException(
+            'The current user is not allowed to create or edit events in frontend.',
+            1762950001,
+        );
+    }
+
+    protected function getManagementAccessService(): ManagementAccessService
+    {
+        return $this->managementAccessService ?? GeneralUtility::makeInstance(ManagementAccessService::class);
     }
 
     /**
@@ -190,6 +221,7 @@ class SaveEventFinisher extends AbstractFinisher
             'sys_file_reference',
             [
                 'uid_local' => $sysFileUid,
+                'uid_foreign' => (int)($databaseData['uid_foreign'] ?? 0),
                 'tablenames' => 'tx_events2_domain_model_event',
                 'fieldname' => 'images',
             ],
@@ -306,11 +338,12 @@ class SaveEventFinisher extends AbstractFinisher
     }
 
     /**
-     * The UID of the event to edit is part of the URI of the form
+     * The UID of the event to edit is part of the URI of the form. It is
+     * the same UID, which was checked in throwExceptionIfAccessIsDenied().
      */
     protected function getEventUidToUpdate(): int
     {
-        return (int)($_GET['tx_events2_management']['event'] ?? 0);
+        return $this->getManagementAccessService()->getEventUid($this->finisherContext->getRequest());
     }
 
     /**
@@ -389,8 +422,16 @@ class SaveEventFinisher extends AbstractFinisher
         return [];
     }
 
+    /**
+     * The organizers of an edited event are kept. Else a backend
+     * administrator without organizer would remove the owner of the event.
+     */
     protected function saveDataForOrganizers(array $databaseData, string $table, int $iterationCount): array
     {
+        if ($this->getEventUidToUpdate() > 0) {
+            return [];
+        }
+
         // Delete previously stored organizers
         $this->getConnectionForTable($table)->delete(
             $table,

@@ -7,6 +7,129 @@
 ChangeLog
 =========
 
+Version 12.0.0
+==============
+
+This version contains breaking changes, please read
+:ref:`upgrade-12-0-0`.
+
+*   [!!!][TASK] Use the form based on EXT:form for the frontend management
+    only. The site setting `events2.form.useExtForm` is removed and
+    :file:`OverrideFormSettings.yaml` of EXT:form is always registered.
+    events2 does not set the keys `1` of `templateRootPaths` and
+    `partialRootPaths` anymore. The templates
+    :file:`Management/ListMyEvents.html`, :file:`Management/Perform.html`
+    and the partial :file:`Management/UserEditLinks.html` moved from
+    :file:`Resources/Private/FormFramework/` to the regular
+    :file:`Templates/` and :file:`Partials/` folders.
+*   [!!!][TASK] Remove the Extbase form of the management plugin: actions
+    `new`, `create`, `edit`, `update` and `delete`, their templates and
+    partials, validators, type converter, event listeners, middleware,
+    traits, site settings `events2.form.uploadFolder` and
+    `events2.form.remainingLetters`, the TypoScript settings
+    `remainingLetters`, `new.uploadFolder`, `_LOCAL_LANG` of
+    `rightsMessage` and `_CSS_DEFAULT_STYLE` and the labels used by the
+    Extbase form only. Links to create or edit events point to the action
+    `perform` now. See :ref:`upgrade-12-0-0-actions`.
+*   [!!!][TASK] Merge :php:`EventModerationService` into
+    :php:`ManagementAccessService`. The moderation token is unchanged, so
+    activation links of sent mails stay valid. See
+    :ref:`frontend-management-access`.
+*   [!!!][TASK] Replace all icons by SVG files registered with the
+    :php:`SvgIconProvider`. The TCA uses icon identifiers in
+    `typeicon_classes` instead of `iconfile`. See
+    :ref:`upgrade-12-0-0-icons`.
+*   [FEATURE] Render rich text elements in the mails of the event form
+    sanitized as HTML and as plain text with the new
+    :ref:`FormatRichTextViewHelper <formatRichTextViewHelper>`.
+*   [TASK] Localize the hint icon of the event form.
+*   [BUGFIX] Restrict creation of events to the user group. New events
+    can only be created by logged-in frontend users of the user group of
+    :confval:`settings.userGroup <events2-typoscript-settings-usergroup>`
+    with an organizer, also for backend administrators. The
+    `SaveEventFinisher` of EXT:form checks the same rules before anything
+    is stored.
+*   [!!!][TASK] Simplify the access rules of the frontend management.
+    :php:`ManagementAccessService` reads the user group from TypoScript
+    and the event to edit from the query parameter
+    `tx_events2_management[event]` only. Backend administrators can not
+    list own events anymore and need the `moderationToken` to activate
+    an event. Edit forms are prefilled for allowed users only. Editing
+    an event keeps its organizers.
+*   [BUGFIX] Prefill the download link of the edit form on all database
+    platforms. :file:`NewEvent.form.yaml` uses the expression `in` with
+    `intExplodeValue: 1` instead of `inSet`. Update copies of the form.
+*   [BUGFIX] Offer categories in the event form, if
+    `settings.new.selectableCategoriesForNewEvents` is missing or empty.
+    Before, a missing setting threw a :php:`TypeError`. Now all direct
+    children of :typoscript:`settings.rootCategory` are offered. Without
+    both settings, no categories are offered. The categories are labelled
+    in the current language. The deprecated fallback to
+    `settings.selectableCategoriesForNewEvents` (since 9.1.9) is removed,
+    see :ref:`upgrade-12-0-0-settings`.
+*   [BUGFIX] Limit the teaser of the event form to 255 characters, the
+    `max` of the column `teaser` in TCA. The element `short-description`
+    of :file:`NewEvent.form.yaml` gets the attribute `maxlength` and the
+    validator `StringLength`. Each textarea with a `maxlength` shows the
+    remaining characters (new label `remainingLetters`). Existing longer
+    teasers are kept, but have to be shortened when the event is edited
+    in the frontend. Update copies of the form, see
+    :ref:`upgrade-12-0-0-form-definition`.
+*   [BUGFIX] Separate list items in the plain text of descriptions.
+*   [BUGFIX] Build the absolute URL of the JSON-LD image correctly.
+*   [!!!][FEATURE] Replace EXT:static_info_tables with the country API of
+    TYPO3. The country of a location is stored as ISO 3166-1 alpha-2 code.
+    The new upgrade wizard `events2_migrateLocationCountry` migrates
+    existing locations. :php:`Location::getCountry()` returns the ISO
+    code, the new :php:`Location::getCountryObject()` the country object
+    of TYPO3. The extension setting `defaultCountry` expects an ISO code
+    of a country known by TYPO3 and has to be changed manually. With
+    EXT:maps2 the ISO code instead of the country name is part of the
+    geocoded address. The wizard also reads the table
+    `zzz_deleted_static_countries`. See :ref:`upgrade-12-0-0-country`.
+*   [!!!][FEATURE] Replace the scheduler tasks "Re-Create day records"
+    and "Import events" with the schedulable commands
+    `events2:rebuild` and `events2:import`. Existing tasks are not
+    migrated. See :ref:`upgrade-12-0-0-scheduler`.
+*   [!!!][TASK] Do not truncate the day table by default in
+    `events2:rebuild`. The day records are re-created event by event.
+    The new option `--truncate` deletes all day records first, like the
+    command did before. See :ref:`commands-rebuild`.
+*   [BUGFIX] Continue rebuilding the day records after failing events.
+    `events2:rebuild` lists all failed events at the end and returns a
+    failure exit code.
+*   [!!!][TASK] Remove the static TypoScript template "Events". Use the
+    site set `jweiland/events2`. The exception `1580294227` for a missing
+    TypoScript template is not thrown anymore. See
+    :ref:`upgrade-12-0-0-site-set`.
+*   [!!!][TASK] Use the Extbase option `ignoreFlexFormSettingsIfEmpty` for
+    the fallback of empty FlexForm values to TypoScript. Remove
+    :php:`TypoScriptService` and :php:`InjectTypoScriptServiceTrait`. See
+    :ref:`upgrade-12-0-0-flexform`.
+*   [!!!][TASK] Remove the ViewHelpers `e2:convertToJson` and
+    `e2:cropString`. The argument `link` of `e2:createYoutubeUri` is
+    optional and can be passed as tag content. See
+    :ref:`upgrade-12-0-0-viewhelpers`.
+*   [!!!][TASK] Remove the outdated upgrade wizards
+    `events2_migrateDetailInformations`, `events2_migrateOrganizer` and
+    `events2_moveFlexFormFields`. See :ref:`upgrade-12-0-0-before`.
+*   [!!!][TASK] Rely on the system TCA columns created by TYPO3.
+    `starttime`, `endtime`, `fe_group` and `editlock` of translations are
+    not synchronized with the default language anymore. Remove
+    :php:`getDeleted()` and :php:`setDeleted()` of all domain models and
+    the key `deleted` of the export. Day records map `crdate` and
+    `tstamp` for the iCal download. See
+    :ref:`upgrade-12-0-0-translations`.
+*   [!!!][TASK] Read the TCA with the TCA Schema API of TYPO3. Some
+    classes got the :php:`TcaSchemaFactory` as new constructor argument.
+    See :ref:`upgrade-12-0-0-developer`.
+*   [TASK] Register the commands with the attribute :php:`#[AsCommand]`
+    and remove obsolete entries from :file:`Services.yaml`.
+*   [DOCS] Describe the frontend management and its access rules, see
+    :ref:`frontend-management`.
+*   [DOCS] Describe the commands of events2 and the site set, see
+    :ref:`commands` and :ref:`installation-site-set`.
+
 Version 11.2.0
 ==============
 

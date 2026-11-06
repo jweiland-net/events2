@@ -9,15 +9,7 @@ services:
     exclude:
       - '../Classes/Domain/Model/*'
       - '../Classes/Exporter/ExporterConfiguration.php'
-      - '../Classes/Hook/Solr/{IndexerHook.php,IndexerHook104.php}'
-
-  # Called by makeInstance in eID middleware
-  JWeiland\Events2\Ajax\FindDaysForMonth:
-    public: true
-
-  # Called by makeInstance in eID middleware
-  JWeiland\Events2\Ajax\FindLocations:
-    public: true
+      - '../Classes/Hook/Solr/IndexerHook.php'
 
   # Called by makeInstance in FormDataGroup/OrderedProviderList
   JWeiland\Events2\Backend\FormDataProvider\InitializeNewEventRecord:
@@ -40,19 +32,6 @@ services:
   JWeiland\Events2\Domain\Factory\TimeFactory:
     public: true
 
-  # Must be public, because of ->initializeObject().
-  # Needed for Tests. In Extbase env the Container class will take care about calling ->initializeObject()
-  JWeiland\Events2\Domain\Model\Event:
-    public: true
-    shared: false
-
-  # Must be public as this model was created by makeInstance in DayGenerationService
-  JWeiland\Events2\Domain\Model\DateTimeEntry:
-    public: true
-    shared: false
-    autowire: false
-    autoconfigure: false
-
   # Called by makeInstance from EXT:form
   JWeiland\Events2\Hook\Form\PrefillCategoriesHook:
     public: true
@@ -62,6 +41,10 @@ services:
 
   # Called by makeInstance from EXT:form
   JWeiland\Events2\Hook\Form\RichTextEditorHook:
+    public: true
+
+  # Called by makeInstance from EXT:form
+  JWeiland\Events2\Hook\Form\RemainingLettersHook:
     public: true
 
   # Called by makeInstance from EXT:solr
@@ -76,7 +59,7 @@ services:
   JWeiland\Events2\Hook\SlugPostModifierHook:
     public: true
 
-  # XML importer class will be called by GU::makeInstance in Task\Import
+  # XML importer class may be called by GU::makeInstance in third-party code
   JWeiland\Events2\Importer\XmlImporter:
     public: true
 
@@ -91,39 +74,10 @@ services:
       - '../Classes/Service/Result/*'
     public: true
 
-  # Called by makeInstance in SchedulerModuleController
-  JWeiland\Events2\Task\ReGenerateDays:
-    public: true
-
   # Called by makeInstance in TCA validation "eval"
   JWeiland\Events2\Tca\Type\Time:
-    public: true
-
-  # Must be public, because it was called by makeInstance in TYPO3s UpgradeWizardsService
-  JWeiland\Events2\Upgrade\EventsSlugUpgrade:
     public: true
 
   # Called by makeInstance in event model where constructors are not loaded in some cases
   JWeiland\Events2\Utility\DateTimeUtility:
     public: true
-
-  JWeiland\Events2\Property\TypeConverter\DateTimeImmutableConverter:
-    tags:
-      - name: extbase.type_converter
-        priority: 1
-        target: DateTimeImmutable
-        sources: string,integer,array
-
-  # Register CLI commands
-  JWeiland\Events2\Command\RebuildCommand:
-    tags:
-    - name: 'console.command'
-      command: 'events2:rebuild'
-      description: 'This command will TRUNCATE (delete) all day records found in day table and will re-create all day records afterwards'
-      schedulable: true
-  JWeiland\Events2\Command\ExportEventsCommand:
-    tags:
-    - name: 'console.command'
-      command: 'events2:export'
-      description: 'This command will prepare events2 records for export to by imported via another TYPO3 instance with activated EXT:reactions'
-      schedulable: true
