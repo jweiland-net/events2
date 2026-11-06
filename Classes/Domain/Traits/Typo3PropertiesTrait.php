@@ -28,8 +28,6 @@ trait Typo3PropertiesTrait
 
     protected bool $hidden = false;
 
-    protected bool $deleted = false;
-
     public function getCrdate(): ?\DateTimeImmutable
     {
         return $this->crdate;
@@ -98,15 +96,5 @@ trait Typo3PropertiesTrait
     public function setHidden(bool $hidden): void
     {
         $this->hidden = $hidden;
-    }
-
-    public function getDeleted(): bool
-    {
-        return $this->deleted;
-    }
-
-    public function setDeleted(bool $deleted): void
-    {
-        $this->deleted = $deleted;
     }
 }
