@@ -35,12 +35,10 @@ class DayRelationServiceTest extends FunctionalTestCase
     protected ReferenceIndex|MockObject $referenceIndexMock;
 
     protected array $coreExtensionsToLoad = [
-        'extensionmanager',
         'reactions',
     ];
 
     protected array $testExtensionsToLoad = [
-        'sjbr/static-info-tables',
         'jweiland/events2',
     ];
 

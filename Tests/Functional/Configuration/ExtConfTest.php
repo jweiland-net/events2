@@ -23,12 +23,10 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 class ExtConfTest extends FunctionalTestCase
 {
     protected array $coreExtensionsToLoad = [
-        'extensionmanager',
         'reactions',
     ];
 
     protected array $testExtensionsToLoad = [
-        'sjbr/static-info-tables',
         'jweiland/events2',
     ];
 
@@ -223,19 +221,39 @@ class ExtConfTest extends FunctionalTestCase
     }
 
     #[Test]
-    public function getDefaultCountryInitiallyReturnsZero(): void
+    public function getDefaultCountryInitiallyReturnsEmptyString(): void
     {
         $config = [];
         $subject = new ExtConf(...$config);
 
         self::assertSame(
-            0,
+            '',
             $subject->getDefaultCountry(),
         );
     }
 
     #[Test]
-    public function setDefaultCountrySetsDefaultCountryAsInteger(): void
+    public function setDefaultCountrySetsDefaultCountryAsUppercaseIsoCode(): void
+    {
+        $extensionConfigurationMock = $this->createMock(ExtensionConfiguration::class);
+        $extensionConfigurationMock
+            ->expects(self::once())
+            ->method('get')
+            ->with('events2')
+            ->willReturn([
+                'defaultCountry' => ' de ',
+            ]);
+
+        $subject = ExtConf::create($extensionConfigurationMock);
+
+        self::assertSame(
+            'DE',
+            $subject->getDefaultCountry(),
+        );
+    }
+
+    #[Test]
+    public function setDefaultCountryWithFormerStaticCountryUidSetsDefaultCountryToEmptyString(): void
     {
         $extensionConfigurationMock = $this->createMock(ExtensionConfiguration::class);
         $extensionConfigurationMock
@@ -249,13 +267,13 @@ class ExtConfTest extends FunctionalTestCase
         $subject = ExtConf::create($extensionConfigurationMock);
 
         self::assertSame(
-            45,
+            '',
             $subject->getDefaultCountry(),
         );
     }
 
     #[Test]
-    public function setDefaultCountryWithEmptyStringSetsDefaultCountryToZero(): void
+    public function setDefaultCountryWithEmptyStringSetsDefaultCountryToEmptyString(): void
     {
         $extensionConfigurationMock = $this->createMock(ExtensionConfiguration::class);
         $extensionConfigurationMock
@@ -269,7 +287,7 @@ class ExtConfTest extends FunctionalTestCase
         $subject = ExtConf::create($extensionConfigurationMock);
 
         self::assertSame(
-            0,
+            '',
             $subject->getDefaultCountry(),
         );
     }

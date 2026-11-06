@@ -40,12 +40,10 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
     protected TimeService|MockObject $timeServiceMock;
 
     protected array $coreExtensionsToLoad = [
-        'extensionmanager',
         'reactions',
     ];
 
     protected array $testExtensionsToLoad = [
-        'sjbr/static-info-tables',
         'jweiland/events2',
     ];
 
