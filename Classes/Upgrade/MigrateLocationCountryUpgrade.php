@@ -24,13 +24,21 @@ use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
  * Former versions of events2 stored the UID of a static_countries record (EXT:static_info_tables)
  * in the country column of locations. This wizard migrates these UIDs into ISO 3166-1 alpha-2 codes.
  * EXT:static_info_tables does not need to be installed, but its table "static_countries" has to exist.
+ * If the database analyzer has already renamed the table to "zzz_deleted_static_countries"
+ * (after removing EXT:static_info_tables), the renamed table will be used as fallback.
  */
 #[UpgradeWizard('events2_migrateLocationCountry')]
 final class MigrateLocationCountryUpgrade implements UpgradeWizardInterface, ChattyInterface
 {
     private const LOCATION_TABLE = 'tx_events2_domain_model_location';
 
-    private const STATIC_COUNTRIES_TABLE = 'static_countries';
+    /**
+     * The table of EXT:static_info_tables and its name after renaming by the database analyzer
+     */
+    private const STATIC_COUNTRIES_TABLES = [
+        'static_countries',
+        'zzz_deleted_static_countries',
+    ];
 
     private OutputInterface $output;
 
@@ -54,7 +62,7 @@ final class MigrateLocationCountryUpgrade implements UpgradeWizardInterface, Cha
     {
         return 'Migrate the UIDs of static_countries in column "country" of events2 locations into '
             . 'ISO 3166-1 alpha-2 codes. EXT:static_info_tables does not need to be installed, but the table '
-            . '"static_countries" has to exist in the database.';
+            . '"static_countries" or "zzz_deleted_static_countries" has to exist in the database.';
     }
 
     public function updateNecessary(): bool
@@ -76,15 +84,19 @@ final class MigrateLocationCountryUpgrade implements UpgradeWizardInterface, Cha
     {
         $countryUids = $this->getStoredCountryUids();
         $uidsToResolve = array_values(array_filter($countryUids, static fn(int $uid): bool => $uid > 0));
-        if ($uidsToResolve !== [] && !$this->hasStaticCountriesTable()) {
+        $staticCountriesTable = $this->getStaticCountriesTable();
+        if ($uidsToResolve !== [] && $staticCountriesTable === '') {
             $this->output->writeln(
-                '<error>Table "static_countries" does not exist. Please import the table of '
-                . 'EXT:static_info_tables to migrate the country of events2 locations.</error>',
+                '<error>Neither table "static_countries" nor "zzz_deleted_static_countries" exists. Please import '
+                . 'the table "static_countries" of EXT:static_info_tables to migrate the country of events2 '
+                . 'locations.</error>',
             );
             return false;
         }
 
-        $isoCodes = $uidsToResolve === [] ? [] : $this->getIsoCodesOfStaticCountries($uidsToResolve);
+        $isoCodes = $uidsToResolve === []
+            ? []
+            : $this->getIsoCodesOfStaticCountries($uidsToResolve, $staticCountriesTable);
         foreach ($countryUids as $countryUid) {
             $this->updateCountryOfLocations($countryUid, $isoCodes[$countryUid] ?? '');
         }
@@ -117,26 +129,36 @@ final class MigrateLocationCountryUpgrade implements UpgradeWizardInterface, Cha
         return array_values(array_unique(array_map('intval', $numericCountryValues)));
     }
 
-    private function hasStaticCountriesTable(): bool
+    /**
+     * Returns the name of the first existing static countries table or an empty string
+     */
+    private function getStaticCountriesTable(): string
     {
-        return $this->connectionPool
-            ->getConnectionForTable(self::STATIC_COUNTRIES_TABLE)
-            ->createSchemaManager()
-            ->tablesExist([self::STATIC_COUNTRIES_TABLE]);
+        foreach (self::STATIC_COUNTRIES_TABLES as $tableName) {
+            $tableExists = $this->connectionPool
+                ->getConnectionForTable($tableName)
+                ->createSchemaManager()
+                ->tablesExist([$tableName]);
+            if ($tableExists) {
+                return $tableName;
+            }
+        }
+
+        return '';
     }
 
     /**
      * @param int[] $countryUids
      * @return array<int, string>
      */
-    private function getIsoCodesOfStaticCountries(array $countryUids): array
+    private function getIsoCodesOfStaticCountries(array $countryUids, string $staticCountriesTable): array
     {
-        $queryBuilder = $this->connectionPool->getQueryBuilderForTable(self::STATIC_COUNTRIES_TABLE);
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable($staticCountriesTable);
         $queryBuilder->getRestrictions()->removeAll();
 
         $staticCountries = $queryBuilder
             ->select('uid', 'cn_iso_2')
-            ->from(self::STATIC_COUNTRIES_TABLE)
+            ->from($staticCountriesTable)
             ->where($queryBuilder->expr()->in(
                 'uid',
                 $queryBuilder->createNamedParameter($countryUids, ArrayParameterType::INTEGER),
