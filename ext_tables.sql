@@ -15,6 +15,8 @@ CREATE TABLE tx_events2_domain_model_location
 (
 	# ISO 3166-1 alpha-2 code. 3 chars, as the upgrade wizard has to read
 	# the former UIDs of static_countries (up to 3 digits) after the schema update.
+	# TODO: Change to varchar(2) with next major version, when all installations
+	# have run the upgrade wizard events2_migrateLocationCountry
 	country varchar(3) DEFAULT '' NOT NULL
 );
 
