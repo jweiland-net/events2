@@ -20,6 +20,9 @@ use TYPO3\CMS\Core\Database\Query\Restriction\DefaultRestrictionContainer;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\QueryRestrictionContainerInterface;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
+use TYPO3\CMS\Core\Schema\Capability\LanguageAwareSchemaCapability;
+use TYPO3\CMS\Core\Schema\Capability\TcaSchemaCapability;
+use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class EventRecordService
@@ -29,6 +32,7 @@ class EventRecordService
     public function __construct(
         private readonly PageRepository $pageRepository,
         private readonly ConnectionPool $connectionPool,
+        private readonly TcaSchemaFactory $tcaSchemaFactory,
     ) {}
 
     public function findByUid(
@@ -73,6 +77,9 @@ class EventRecordService
      */
     public function getLanguageUidsOfTranslatedEventRecords(array $eventRecordInDefaultLanguage): array
     {
+        $languageCapability = $this->getLanguageCapability();
+        $languageField = $languageCapability->getLanguageField()->getName();
+
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder
             ->getRestrictions()
@@ -80,7 +87,7 @@ class EventRecordService
             ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
 
         $queryResult = $queryBuilder
-            ->select($GLOBALS['TCA'][self::TABLE]['ctrl']['languageField'])
+            ->select($languageField)
             ->from(self::TABLE)
             ->where(
                 $queryBuilder->expr()->eq(
@@ -88,11 +95,11 @@ class EventRecordService
                     $queryBuilder->createNamedParameter($eventRecordInDefaultLanguage['t3ver_wsid'] ?? 0, Connection::PARAM_INT),
                 ),
                 $queryBuilder->expr()->eq(
-                    $GLOBALS['TCA'][self::TABLE]['ctrl']['transOrigPointerField'],
+                    $languageCapability->getTranslationOriginPointerField()->getName(),
                     $queryBuilder->createNamedParameter($eventRecordInDefaultLanguage['uid'], Connection::PARAM_INT),
                 ),
                 $queryBuilder->expr()->neq(
-                    $GLOBALS['TCA'][self::TABLE]['ctrl']['languageField'],
+                    $languageField,
                     $queryBuilder->createNamedParameter(0, Connection::PARAM_INT),
                 ),
             )
@@ -100,10 +107,20 @@ class EventRecordService
 
         $sysLanguageUids = [];
         while ($eventRecord = $queryResult->fetchAssociative()) {
-            $sysLanguageUids[] = $eventRecord[$GLOBALS['TCA'][self::TABLE]['ctrl']['languageField']];
+            $sysLanguageUids[] = $eventRecord[$languageField];
         }
 
         return $sysLanguageUids;
+    }
+
+    private function getLanguageCapability(): LanguageAwareSchemaCapability
+    {
+        /** @var LanguageAwareSchemaCapability $languageCapability */
+        $languageCapability = $this->tcaSchemaFactory
+            ->get(self::TABLE)
+            ->getCapability(TcaSchemaCapability::Language);
+
+        return $languageCapability;
     }
 
     protected function getQueryBuilder(?QueryRestrictionContainerInterface $restrictionContainer = null): QueryBuilder

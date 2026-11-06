@@ -17,6 +17,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
+use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Form\Domain\Model\FormDefinition;
 use TYPO3\CMS\Form\Domain\Model\FormElements\GenericFormElement;
@@ -151,6 +152,7 @@ class PrefillCategoriesHookTest extends FunctionalTestCase
             $this->get(PageRepository::class),
             $configurationManagerMock,
             $this->get(ConnectionPool::class),
+            $this->get(TcaSchemaFactory::class),
         );
     }
 

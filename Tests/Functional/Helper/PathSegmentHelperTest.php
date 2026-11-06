@@ -19,6 +19,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\DataHandling\SlugHelper;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
+use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
@@ -122,6 +123,7 @@ class PathSegmentHelperTest extends FunctionalTestCase
             GeneralUtility::makeInstance(PersistenceManagerInterface::class),
             $this->getConnectionPool(),
             $extConf,
+            $this->get(TcaSchemaFactory::class),
         );
     }
 }
