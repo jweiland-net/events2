@@ -75,13 +75,21 @@ This version contains breaking changes, please read
     existing locations. :php:`Location::getCountry()` returns the ISO
     code, the new :php:`Location::getCountryObject()` the country object
     of TYPO3. The extension setting `defaultCountry` expects an ISO code
-    and has to be changed manually. With EXT:maps2 the ISO code instead
-    of the country name is part of the geocoded address. See
-    :ref:`upgrade-12-0-0-country`.
+    of a country known by TYPO3 and has to be changed manually. With
+    EXT:maps2 the ISO code instead of the country name is part of the
+    geocoded address. The wizard also reads the table
+    `zzz_deleted_static_countries`. See :ref:`upgrade-12-0-0-country`.
 *   [!!!][FEATURE] Replace the scheduler tasks "Re-Create day records"
     and "Import events" with the schedulable commands
-    `events2:rebuild --no-truncate` and `events2:import`. Existing tasks
-    are not migrated. See :ref:`upgrade-12-0-0-scheduler`.
+    `events2:rebuild` and `events2:import`. Existing tasks are not
+    migrated. See :ref:`upgrade-12-0-0-scheduler`.
+*   [!!!][TASK] Do not truncate the day table by default in
+    `events2:rebuild`. The day records are re-created event by event.
+    The new option `--truncate` deletes all day records first, like the
+    command did before. See :ref:`commands-rebuild`.
+*   [BUGFIX] Continue rebuilding the day records after failing events.
+    `events2:rebuild` lists all failed events at the end and returns a
+    failure exit code.
 *   [!!!][TASK] Remove the static TypoScript template "Events". Use the
     site set `jweiland/events2`. The exception `1580294227` for a missing
     TypoScript template is not thrown anymore. See

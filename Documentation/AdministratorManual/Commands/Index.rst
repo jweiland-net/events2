@@ -16,7 +16,7 @@ in its arguments and options.
 
     The scheduler tasks :guilabel:`Re-Create day records` and
     :guilabel:`Import events` have been removed. Use the commands
-    `events2:rebuild --no-truncate` and `events2:import` instead. See
+    `events2:rebuild` and `events2:import` instead. See
     :ref:`upgrade-12-0-0-scheduler`.
 
 ..  contents::
@@ -37,25 +37,40 @@ If your day table is very big, it may make sense to exclude this table
 from SQL export or migration. On the target server you just need to
 execute this command to re-build all missing day records again.
 
+By default, the command keeps the day table and re-creates the day
+records event by event. The events stay visible in the frontend while the
+command is running, so use it without option for recurring executions
+with the scheduler or a cron job.
+
 ..  code-block:: bash
 
     # Re-create the day records event by event
-    vendor/bin/typo3 events2:rebuild --no-truncate
-
-    # TRUNCATE the day table first and re-create all day records
     vendor/bin/typo3 events2:rebuild
 
-`--no-truncate`
-    Keeps the day table and re-creates the day records event by event. The
-    events stay visible in the frontend while the command is running. Use
-    this option for recurring executions with the scheduler or a cron
-    job.
+    # TRUNCATE the day table first and re-create all day records
+    vendor/bin/typo3 events2:rebuild --truncate
 
-..  important::
+`--truncate`
+    Deletes (TRUNCATE) all records of the day table before the day records
+    are re-created.
 
-    Without the option `--no-truncate` the command TRUNCATES the complete
-    day table first. Until it has finished, there are no or only some
-    events visible in the frontend.
+..  warning::
+
+    With the option `--truncate` there are no or only some events visible
+    in the frontend until the command has finished. Do not use this
+    option for recurring executions with the scheduler or a cron job.
+
+If the day records of an event can not be created, the command continues
+with the next event. At the end, it lists all failed events with their
+UID, PID and error message and ends with the exit code `1` (failure). If
+all events have been processed, it ends with the exit code `0`. So the
+scheduler and monitoring tools recognize failed events.
+
+..  versionchanged:: 12.0.0
+
+    The day table is not truncated by default anymore. Use the new option
+    `--truncate` to delete all day records first, like the command did
+    before. Before, the command also stopped at the first failing event.
 
 ..  _commands-import:
 

@@ -90,7 +90,15 @@ is stored as ISO 3166-1 alpha-2 code (for example `DE`) in the column
 country API of TYPO3 (:ref:`t3coreapi:country-api`) with their localized
 names.
 
-Migrate the existing locations in this order:
+..  warning::
+
+    The upgrade wizard needs the table `static_countries` of
+    EXT:static_info_tables to migrate the countries. Do not delete this
+    table (or `zzz_deleted_static_countries`) before the upgrade wizard
+    has finished successfully. Otherwise the countries of your locations
+    can not be migrated anymore.
+
+Migrate the existing locations in exactly this order:
 
 #.  Update the database schema in
     :guilabel:`Admin Tools > Maintenance > Analyze Database Structure`
@@ -107,23 +115,29 @@ Migrate the existing locations in this order:
 
         vendor/bin/typo3 upgrade:run events2_migrateLocationCountry
 
-    The wizard reads the ISO codes from the table `static_countries`.
-    EXT:static_info_tables does not need to be installed anymore, but the
-    table has to exist in the database. If the table does not exist, the
-    wizard stops with a message and can be executed again after you have
-    restored the table. Locations with a country, which does not exist in
-    `static_countries`, get an empty country.
+    The wizard reads the ISO codes from the table `static_countries`. If
+    the database analyzer has already renamed it to
+    `zzz_deleted_static_countries` after EXT:static_info_tables was
+    removed, the wizard reads the renamed table. EXT:static_info_tables
+    does not need to be installed anymore. If none of both tables
+    exists, the wizard stops with a message and can be executed again
+    after you have restored the table `static_countries`. Locations with
+    a country, which does not exist in the table, get an empty country.
 
 #.  Uninstall EXT:static_info_tables, if no other extension needs it.
-    Do not remove or rename the table `static_countries` with the database
-    analyzer before the upgrade wizard has finished.
 
-Change the extension setting
-:ref:`defaultCountry <extensionSettings>` manually to an ISO 3166-1
-alpha-2 code like `DE`. It is not migrated, as it is part of the deployed
-system configuration in most installations. Former UIDs of
-`static_countries` are ignored, so no country is preselected for new
-locations until you have changed the value.
+#.  Only after the upgrade wizard has finished successfully: Remove the
+    table `static_countries` respectively `zzz_deleted_static_countries`
+    with the database analyzer, if no other extension needs it.
+
+#.  Change the extension setting
+    :ref:`defaultCountry <extensionSettings>` manually to an ISO 3166-1
+    alpha-2 code like `DE`. It is not migrated, as it is part of the
+    deployed system configuration in most installations. The value is
+    checked against the countries of the country API of TYPO3. Former
+    UIDs of `static_countries` and unknown codes are ignored, so no
+    country is preselected for new locations until you have changed the
+    value.
 
 If you show the country of a location in your own templates, use the new
 property `countryObject`. The property `country` contains the ISO code
@@ -164,7 +178,7 @@ are not migrated and can not be executed anymore.
         *   -   Former task
             -   Command of the new task
         *   -   :guilabel:`Re-Create day records`
-            -   `events2:rebuild` with the option `--no-truncate`
+            -   `events2:rebuild` without option
         *   -   :guilabel:`Import events`
             -   `events2:import` with the arguments `path` (combined
                 identifier of the XML file, for example
@@ -172,9 +186,18 @@ are not migrated and can not be executed anymore.
 
 #.  Delete the former, now broken tasks.
 
-See :ref:`commands`. Without the option `--no-truncate` the command
-`events2:rebuild` truncates the day table first, so do not forget the
-option for daily executions.
+See :ref:`commands`. By default, `events2:rebuild` re-creates the day
+records event by event like the former task. Do not use its option
+`--truncate` for daily executions, as it deletes all day records first.
+If the day records of single events can not be created, the command
+processes all other events and ends with the exit code `1` (failure).
+
+..  important::
+
+    Before 12.0.0, `events2:rebuild` always truncated the day table first.
+    Now it re-creates the day records event by event by default. If you
+    call the command in own scripts or deployments to clean up the day
+    table completely, add the new option `--truncate`.
 
 ..  _upgrade-12-0-0-flexform:
 
@@ -732,6 +755,13 @@ method :php:`getCountryObject(): ?\TYPO3\CMS\Core\Country\Country`
 returns the country object of TYPO3. :php:`ExtConf::getDefaultCountry()`
 returns the ISO code as string instead of an integer.
 
+The column `country` of the table `tx_events2_domain_model_location` is
+defined as `varchar(3)`, as the upgrade wizard has to read the former
+UIDs of `static_countries` after the database schema has been updated.
+It will be shortened to `varchar(2)` in a future major version of
+events2. Run the upgrade wizard `events2_migrateLocationCountry` soon,
+see :ref:`upgrade-12-0-0-country`.
+
 The following classes have got new constructor arguments. This is only
 relevant, if you create them on your own instead of using dependency
 injection:
@@ -1048,7 +1078,9 @@ table grows significantly with each execution of the `Re-Create day records`
 scheduler task.
 
 After updating to version 10.2.4, please run the
-TYPO3 command `events2:rebuild`.
+TYPO3 command `events2:rebuild`. Since version 12.0.0 use
+`events2:rebuild --truncate` for this, as the command does not truncate
+the day table by default anymore.
 
 If you are not familiar with the CLI, you can alternatively truncate
 the `tx_events2_domain_model_day` table and then run
