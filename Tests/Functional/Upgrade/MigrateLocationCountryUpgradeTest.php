@@ -29,6 +29,8 @@ class MigrateLocationCountryUpgradeTest extends FunctionalTestCase
 
     private const STATIC_COUNTRIES_TABLE = 'static_countries';
 
+    private const RENAMED_STATIC_COUNTRIES_TABLE = 'zzz_deleted_static_countries';
+
     private MigrateLocationCountryUpgrade $subject;
 
     private BufferedOutput $output;
@@ -46,7 +48,7 @@ class MigrateLocationCountryUpgradeTest extends FunctionalTestCase
     {
         parent::setUp();
 
-        $this->dropStaticCountriesTable();
+        $this->dropStaticCountriesTables();
 
         $this->output = new BufferedOutput();
         $this->subject = new MigrateLocationCountryUpgrade($this->getConnectionPool());
@@ -55,7 +57,7 @@ class MigrateLocationCountryUpgradeTest extends FunctionalTestCase
 
     protected function tearDown(): void
     {
-        $this->dropStaticCountriesTable();
+        $this->dropStaticCountriesTables();
 
         unset($this->subject, $this->output);
 
@@ -111,7 +113,33 @@ class MigrateLocationCountryUpgradeTest extends FunctionalTestCase
         self::assertFalse($this->subject->executeUpdate());
 
         self::assertSame('54', $this->getCountryOfLocation($locationUid));
-        self::assertStringContainsString('Table "static_countries" does not exist', $this->output->fetch());
+        self::assertStringContainsString(
+            'Neither table "static_countries" nor "zzz_deleted_static_countries" exists',
+            $this->output->fetch(),
+        );
+    }
+
+    #[Test]
+    public function executeUpdateWithRenamedStaticCountriesTableMigratesStaticCountryUids(): void
+    {
+        $this->createStaticCountriesTable([54 => 'DE'], self::RENAMED_STATIC_COUNTRIES_TABLE);
+        $locationUid = $this->insertLocation('54');
+
+        self::assertTrue($this->subject->executeUpdate());
+
+        self::assertSame('DE', $this->getCountryOfLocation($locationUid));
+    }
+
+    #[Test]
+    public function executeUpdatePrefersStaticCountriesTableOverRenamedTable(): void
+    {
+        $this->createStaticCountriesTable([54 => 'DE']);
+        $this->createStaticCountriesTable([54 => 'AT'], self::RENAMED_STATIC_COUNTRIES_TABLE);
+        $locationUid = $this->insertLocation('54');
+
+        self::assertTrue($this->subject->executeUpdate());
+
+        self::assertSame('DE', $this->getCountryOfLocation($locationUid));
     }
 
     #[Test]
@@ -164,28 +192,32 @@ class MigrateLocationCountryUpgradeTest extends FunctionalTestCase
     /**
      * @param array<int, string> $isoCodes
      */
-    private function createStaticCountriesTable(array $isoCodes): void
-    {
-        $connection = $this->getConnectionPool()->getConnectionForTable(self::STATIC_COUNTRIES_TABLE);
+    private function createStaticCountriesTable(
+        array $isoCodes,
+        string $tableName = self::STATIC_COUNTRIES_TABLE,
+    ): void {
+        $connection = $this->getConnectionPool()->getConnectionForTable($tableName);
 
-        $table = new Table(self::STATIC_COUNTRIES_TABLE);
+        $table = new Table($tableName);
         $table->addColumn('uid', Types::INTEGER, ['notnull' => true, 'default' => 0]);
         $table->addColumn('cn_iso_2', Types::STRING, ['length' => 2, 'notnull' => true, 'default' => '']);
         $connection->createSchemaManager()->createTable($table);
 
         foreach ($isoCodes as $uid => $isoCode) {
-            $connection->insert(self::STATIC_COUNTRIES_TABLE, ['uid' => $uid, 'cn_iso_2' => $isoCode]);
+            $connection->insert($tableName, ['uid' => $uid, 'cn_iso_2' => $isoCode]);
         }
     }
 
-    private function dropStaticCountriesTable(): void
+    private function dropStaticCountriesTables(): void
     {
-        $schemaManager = $this->getConnectionPool()
-            ->getConnectionForTable(self::STATIC_COUNTRIES_TABLE)
-            ->createSchemaManager();
+        foreach ([self::STATIC_COUNTRIES_TABLE, self::RENAMED_STATIC_COUNTRIES_TABLE] as $tableName) {
+            $schemaManager = $this->getConnectionPool()
+                ->getConnectionForTable($tableName)
+                ->createSchemaManager();
 
-        if ($schemaManager->tablesExist([self::STATIC_COUNTRIES_TABLE])) {
-            $schemaManager->dropTable(self::STATIC_COUNTRIES_TABLE);
+            if ($schemaManager->tablesExist([$tableName])) {
+                $schemaManager->dropTable($tableName);
+            }
         }
     }
 }
