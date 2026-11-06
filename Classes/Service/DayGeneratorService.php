@@ -19,7 +19,9 @@ use JWeiland\Events2\Tca\BitMask\WeekDayBitMask;
 use JWeiland\Events2\Tca\BitMask\XthBitMask;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use Psr\Log\LoggerInterface;
+use TYPO3\CMS\Core\DataHandling\TableColumnType;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
+use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -54,6 +56,7 @@ class DayGeneratorService
         protected readonly DateTimeUtility $dateTimeUtility,
         protected readonly EventDispatcher $eventDispatcher,
         protected readonly LoggerInterface $logger,
+        protected readonly TcaSchemaFactory $tcaSchemaFactory,
     ) {}
 
     public function getDayGeneratorResultForEventRecord(array $eventRecordInDefaultLanguage): DayGeneratorResult
@@ -107,8 +110,9 @@ class DayGeneratorService
      */
     protected function addDateTimeObjectsToRecord(array &$record, string $table): void
     {
+        $schema = $this->tcaSchemaFactory->get($table);
         foreach ($record as $column => $value) {
-            if (($GLOBALS['TCA'][$table]['columns'][$column]['config']['type'] ?? '') === 'datetime') {
+            if ($schema->hasField((string)$column) && $schema->getField((string)$column)->isType(TableColumnType::DATETIME)) {
                 $record[$column] = $this->dateTimeUtility->convert($value);
             }
         }

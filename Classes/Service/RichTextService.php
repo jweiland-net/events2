@@ -18,6 +18,8 @@ use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Html\RteHtmlParser;
+use TYPO3\CMS\Core\Schema\Field\FieldTypeInterface;
+use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -41,6 +43,7 @@ readonly class RichTextService
         private RteContentConverter $rteContentConverter,
         private Richtext $richtext,
         private ConnectionPool $connectionPool,
+        private TcaSchemaFactory $tcaSchemaFactory,
     ) {}
 
     /**
@@ -80,7 +83,7 @@ readonly class RichTextService
             $column,
             $pid,
             $recordType,
-            $GLOBALS['TCA'][$table]['columns'][$column]['config'] ?? [],
+            $this->getField($table, $column)?->getConfiguration() ?? [],
         );
 
         // RteHtmlParser is stateful
@@ -95,16 +98,16 @@ readonly class RichTextService
      */
     private function getStoredRecord(string $table, string $column, int $uid): array
     {
-        if ($uid <= 0 || !isset($GLOBALS['TCA'][$table]['columns'][$column])) {
+        if ($uid <= 0 || $this->getField($table, $column) === null) {
             return [];
         }
 
         $queryBuilder = $this->connectionPool->getQueryBuilderForTable($table);
         $queryBuilder->getRestrictions()->removeAll()->add(new DeletedRestriction());
 
-        $typeField = (string)($GLOBALS['TCA'][$table]['ctrl']['type'] ?? '');
+        $typeField = $this->tcaSchemaFactory->get($table)->getSubSchemaDivisorField()?->getName() ?? '';
         $record = $queryBuilder
-            ->select(...array_filter(['pid', $column, isset($GLOBALS['TCA'][$table]['columns'][$typeField]) ? $typeField : '']))
+            ->select(...array_filter(['pid', $column, $typeField]))
             ->from($table)
             ->where($queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT)))
             ->executeQuery()
@@ -117,5 +120,16 @@ readonly class RichTextService
         $record['recordType'] = $record[$typeField] ?? '';
 
         return $record;
+    }
+
+    private function getField(string $table, string $column): ?FieldTypeInterface
+    {
+        if (!$this->tcaSchemaFactory->has($table)) {
+            return null;
+        }
+
+        $schema = $this->tcaSchemaFactory->get($table);
+
+        return $schema->hasField($column) ? $schema->getField($column) : null;
     }
 }

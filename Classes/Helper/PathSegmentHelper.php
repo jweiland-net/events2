@@ -21,6 +21,7 @@ use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\DataHandling\SlugHelper;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
+use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 
@@ -39,6 +40,7 @@ readonly class PathSegmentHelper
         protected PersistenceManagerInterface $persistenceManager,
         protected ConnectionPool $connectionPool,
         protected ExtConf $extConf,
+        protected TcaSchemaFactory $tcaSchemaFactory,
     ) {}
 
     /**
@@ -125,7 +127,7 @@ readonly class PathSegmentHelper
      */
     protected function getSlugHelper(): SlugHelper
     {
-        $config = $GLOBALS['TCA'][self::TABLE]['columns'][self::SLUG_COLUMN]['config'];
+        $config = $this->tcaSchemaFactory->get(self::TABLE)->getField(self::SLUG_COLUMN)->getConfiguration();
 
         $config['generatorOptions']['postModifiers']['events2-post-modifier']
             = \JWeiland\Events2\Hook\SlugPostModifierHook::class . '->modify';

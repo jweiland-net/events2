@@ -17,6 +17,9 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
+use TYPO3\CMS\Core\Schema\Capability\LanguageAwareSchemaCapability;
+use TYPO3\CMS\Core\Schema\Capability\TcaSchemaCapability;
+use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Form\Domain\Model\FormElements\AbstractFormElement;
@@ -39,6 +42,7 @@ readonly class PrefillCategoriesHook
         private PageRepository $pageRepository,
         private ConfigurationManagerInterface $configurationManager,
         private ConnectionPool $connectionPool,
+        private TcaSchemaFactory $tcaSchemaFactory,
     ) {}
 
     /**
@@ -99,7 +103,7 @@ readonly class PrefillCategoriesHook
                     $queryBuilder->createNamedParameter($rootCategory, Connection::PARAM_INT),
                 ),
                 $queryBuilder->expr()->eq(
-                    $GLOBALS['TCA']['sys_category']['ctrl']['languageField'],
+                    $this->getLanguageFieldOfSysCategory(),
                     $queryBuilder->createNamedParameter(0, Connection::PARAM_INT),
                 ),
             );
@@ -112,6 +116,16 @@ readonly class PrefillCategoriesHook
         }
 
         return $queryBuilder->executeQuery()->fetchAllAssociative();
+    }
+
+    private function getLanguageFieldOfSysCategory(): string
+    {
+        /** @var LanguageAwareSchemaCapability $languageCapability */
+        $languageCapability = $this->tcaSchemaFactory
+            ->get('sys_category')
+            ->getCapability(TcaSchemaCapability::Language);
+
+        return $languageCapability->getLanguageField()->getName();
     }
 
     /**

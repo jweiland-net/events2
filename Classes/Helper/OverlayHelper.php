@@ -12,12 +12,14 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Helper;
 
 use Psr\Log\LoggerInterface;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
+use TYPO3\CMS\Core\Schema\Capability\LanguageAwareSchemaCapability;
+use TYPO3\CMS\Core\Schema\Capability\TcaSchemaCapability;
+use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 
 /**
  * Helper to add where clause for translations and workspaces to QueryBuilder
@@ -28,6 +30,7 @@ readonly class OverlayHelper
         protected Context $context,
         protected PageRepository $pageRepository,
         protected LoggerInterface $logger,
+        protected TcaSchemaFactory $tcaSchemaFactory,
     ) {}
 
     public function addWhereForOverlay(
@@ -94,14 +97,15 @@ readonly class OverlayHelper
         bool $useLangStrict = false,
         int $overrideLanguageUid = -1,
     ): void {
-        if (!BackendUtility::isTableLocalizable($tableName)) {
+        $languageCapability = $this->getLanguageCapability($tableName);
+        if ($languageCapability === null) {
             return;
         }
 
         // Column: sys_language_uid
-        $languageField = $GLOBALS['TCA'][$tableName]['ctrl']['languageField'];
+        $languageField = $languageCapability->getLanguageField()->getName();
         // Column: l10n_parent
-        $transOrigPointerField = $GLOBALS['TCA'][$tableName]['ctrl']['transOrigPointerField'] ?? '';
+        $transOrigPointerField = $languageCapability->getTranslationOriginPointerField()->getName();
 
         if (!$useLangStrict && $this->getLanguageAspect()->doOverlays()) {
             // Get record in default language (0)
@@ -136,6 +140,26 @@ readonly class OverlayHelper
                 ),
             );
         }
+    }
+
+    /**
+     * Returns null, if the table is not localizable
+     */
+    protected function getLanguageCapability(string $tableName): ?LanguageAwareSchemaCapability
+    {
+        if (!$this->tcaSchemaFactory->has($tableName)) {
+            return null;
+        }
+
+        $schema = $this->tcaSchemaFactory->get($tableName);
+        if (!$schema->isLanguageAware()) {
+            return null;
+        }
+
+        /** @var LanguageAwareSchemaCapability $languageCapability */
+        $languageCapability = $schema->getCapability(TcaSchemaCapability::Language);
+
+        return $languageCapability;
     }
 
     /**
