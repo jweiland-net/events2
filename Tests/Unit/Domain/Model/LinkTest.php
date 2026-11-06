@@ -83,21 +83,4 @@ class LinkTest extends UnitTestCase
             $this->subject->getTitle(),
         );
     }
-
-    #[Test]
-    public function getDeletedInitiallyReturnsFalse(): void
-    {
-        self::assertFalse(
-            $this->subject->getDeleted(),
-        );
-    }
-
-    #[Test]
-    public function setDeletedSetsDeleted(): void
-    {
-        $this->subject->setDeleted(true);
-        self::assertTrue(
-            $this->subject->getDeleted(),
-        );
-    }
 }

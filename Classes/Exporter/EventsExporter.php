@@ -121,7 +121,6 @@ readonly class EventsExporter
             'starttime' => $this->formatDateToISO($event->getStarttime()),
             'endtime' => $this->formatDateToISO($event->getEndtime()),
             'hidden' => $event->getHidden(),
-            'deleted' => $event->getDeleted(),
             'sys_language_uid' => $event->getSysLanguageUid(),
             'l10n_parent' => $event->getL10nParent(),
             'event_type' => $event->getEventType(),
@@ -190,7 +189,6 @@ readonly class EventsExporter
                 'starttime' => $exception->getStarttime(),
                 'endtime' => $exception->getEndtime(),
                 'hidden' => $exception->getHidden(),
-                'deleted' => $exception->getDeleted(),
                 'exception_type' => $exception->getExceptionType(),
                 'exception_date' => $this->formatDateToISO($exception->getExceptionDate()),
                 'exception_time' => $this->createTimeRecord($exception->getExceptionTime()),
@@ -232,7 +230,6 @@ readonly class EventsExporter
                 'starttime' => $event->getLocation()->getStarttime(),
                 'endtime' => $event->getLocation()->getEndtime(),
                 'hidden' => $event->getLocation()->getHidden(),
-                'deleted' => $event->getLocation()->getDeleted(),
                 'location' => $event->getLocation()->getLocation(),
                 'street' => $event->getLocation()->getStreet(),
                 'houseNumber' => $event->getLocation()->getHouseNumber(),
@@ -252,7 +249,6 @@ readonly class EventsExporter
                 'starttime' => $organizer->getStarttime(),
                 'endtime' => $organizer->getEndtime(),
                 'hidden' => $organizer->getHidden(),
-                'deleted' => $organizer->getDeleted(),
                 'organizer' => $organizer->getOrganizer(),
                 'link' => $this->buildLink($organizer->getLink()),
             ];
@@ -325,7 +321,6 @@ readonly class EventsExporter
             'starttime' => $link->getStarttime(),
             'endtime' => $link->getEndtime(),
             'hidden' => $link->getHidden(),
-            'deleted' => $link->getDeleted(),
             'title' => $link->getTitle(),
         ];
 
@@ -403,7 +398,6 @@ readonly class EventsExporter
             'starttime' => $time->getStarttime(),
             'endtime' => $time->getEndtime(),
             'hidden' => $time->getHidden(),
-            'deleted' => $time->getDeleted(),
             'weekday' => $time->getWeekday(),
             'time_begin' => $time->getTimeBegin(),
             'time_entry' => $time->getTimeEntry(),
