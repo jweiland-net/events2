@@ -14,6 +14,7 @@ namespace JWeiland\Events2\Command;
 use JWeiland\Events2\Exporter\EventsExporter;
 use JWeiland\Events2\Exporter\ExporterConfiguration;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -24,6 +25,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Prepare events2 records for export and send them to another TYPO3 system with activated EXT:reactions
  */
+#[AsCommand(
+    name: 'events2:export',
+    description: 'This command will prepare events2 records for export to be imported via another TYPO3 instance with activated EXT:reactions',
+)]
 class ExportEventsCommand extends Command
 {
     protected OutputInterface $output;
