@@ -80,7 +80,7 @@ services:
   JWeiland\Events2\Hook\SlugPostModifierHook:
     public: true
 
-  # XML importer class will be called by GU::makeInstance in Task\Import
+  # XML importer class may be called by GU::makeInstance in third-party code
   JWeiland\Events2\Importer\XmlImporter:
     public: true
 
@@ -93,10 +93,6 @@ services:
     resource: '../Classes/Service/*'
     exclude:
       - '../Classes/Service/Result/*'
-    public: true
-
-  # Called by makeInstance in SchedulerModuleController
-  JWeiland\Events2\Task\ReGenerateDays:
     public: true
 
   # Called by makeInstance in TCA validation "eval"
