@@ -9,15 +9,7 @@ services:
     exclude:
       - '../Classes/Domain/Model/*'
       - '../Classes/Exporter/ExporterConfiguration.php'
-      - '../Classes/Hook/Solr/{IndexerHook.php,IndexerHook104.php}'
-
-  # Called by makeInstance in eID middleware
-  JWeiland\Events2\Ajax\FindDaysForMonth:
-    public: true
-
-  # Called by makeInstance in eID middleware
-  JWeiland\Events2\Ajax\FindLocations:
-    public: true
+      - '../Classes/Hook/Solr/IndexerHook.php'
 
   # Called by makeInstance in FormDataGroup/OrderedProviderList
   JWeiland\Events2\Backend\FormDataProvider\InitializeNewEventRecord:
@@ -39,19 +31,6 @@ services:
   # Called by makeInstance in static GetMergedEventTimesViewHelper
   JWeiland\Events2\Domain\Factory\TimeFactory:
     public: true
-
-  # Must be public, because of ->initializeObject().
-  # Needed for Tests. In Extbase env the Container class will take care about calling ->initializeObject()
-  JWeiland\Events2\Domain\Model\Event:
-    public: true
-    shared: false
-
-  # Must be public as this model was created by makeInstance in DayGenerationService
-  JWeiland\Events2\Domain\Model\DateTimeEntry:
-    public: true
-    shared: false
-    autowire: false
-    autoconfigure: false
 
   # Called by makeInstance from EXT:form
   JWeiland\Events2\Hook\Form\PrefillCategoriesHook:
@@ -97,10 +76,6 @@ services:
 
   # Called by makeInstance in TCA validation "eval"
   JWeiland\Events2\Tca\Type\Time:
-    public: true
-
-  # Must be public, because it was called by makeInstance in TYPO3s UpgradeWizardsService
-  JWeiland\Events2\Upgrade\EventsSlugUpgrade:
     public: true
 
   # Called by makeInstance in event model where constructors are not loaded in some cases
