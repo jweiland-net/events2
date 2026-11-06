@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Command;
 
 use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\Result;
 use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Service\DayRelationService;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -76,7 +77,13 @@ class RebuildCommand extends Command
             $this->truncateDayTable($io);
         }
 
-        $this->reGenerateDayRelations($io);
+        $errors = $this->reGenerateDayRelations($io);
+        if ($errors !== []) {
+            $io->error(sprintf('Day records of %d event(s) could not be created', count($errors)));
+            $io->listing($errors);
+
+            return Command::FAILURE;
+        }
 
         return Command::SUCCESS;
     }
@@ -88,7 +95,10 @@ class RebuildCommand extends Command
         $io->info('Day table truncated');
     }
 
-    protected function reGenerateDayRelations(SymfonyStyle $io): void
+    /**
+     * @return string[] Error messages of the events which could not be processed
+     */
+    protected function reGenerateDayRelations(SymfonyStyle $io): array
     {
         $this->setProgressBarFormatDefinitions();
 
@@ -97,29 +107,52 @@ class RebuildCommand extends Command
         $progressBar = $io->createProgressBar($this->getAmountOfEventRecordsToProcess());
         $progressBar->start();
 
-        $queryResult = $this->databaseService
-            ->getQueryBuilderForAllEvents()
-            ->select('uid', 'pid')
-            ->executeQuery();
-
+        $errors = [];
+        $queryResult = $this->getEventRecordsToProcess();
         while ($simpleEventRecord = $queryResult->fetchAssociative()) {
-            $this->dayRelationService->createDayRelations((int)$simpleEventRecord['uid']);
+            $eventUid = (int)$simpleEventRecord['uid'];
+            $eventPid = (int)$simpleEventRecord['pid'];
+            $error = $this->createDayRelationsOfEvent($eventUid, $eventPid);
+            if ($error !== '') {
+                $errors[] = $error;
+            }
 
-            // The runtime cache grows with each processed event (f.e. page TSconfig of each PID)
-            $this->runtimeCache->flush();
-
-            $progressBar->setMessage(sprintf(
-                'Process event UID: %09d, PID: %05d',
-                (int)$simpleEventRecord['uid'],
-                (int)$simpleEventRecord['pid'],
-            ));
-
+            $progressBar->setMessage(sprintf('Process event UID: %09d, PID: %05d', $eventUid, $eventPid));
             $progressBar->advance();
         }
 
         $progressBar->finish();
 
         $io->info('Day records created');
+
+        return $errors;
+    }
+
+    /**
+     * A failing event must not stop the rebuild of all other events.
+     * Throwable is caught, as also errors like TypeError may occur on broken event records.
+     *
+     * @return string Error message or empty string on success
+     */
+    protected function createDayRelationsOfEvent(int $eventUid, int $eventPid): string
+    {
+        try {
+            $this->dayRelationService->createDayRelations($eventUid);
+        } catch (\Throwable $exception) {
+            return sprintf(
+                'Event UID: %d, PID: %d, Error: %s, File: %s, Line: %d',
+                $eventUid,
+                $eventPid,
+                $exception->getMessage(),
+                $exception->getFile(),
+                $exception->getLine(),
+            );
+        } finally {
+            // The runtime cache grows with each processed event (f.e. page TSconfig of each PID)
+            $this->runtimeCache->flush();
+        }
+
+        return '';
     }
 
     /**
@@ -131,6 +164,14 @@ class RebuildCommand extends Command
         ProgressBar::setFormatDefinition(ProgressBar::FORMAT_VERBOSE, ' %current%/%max% [%bar%] %percent:3s%% %elapsed:6s% -- %message%');
         ProgressBar::setFormatDefinition(ProgressBar::FORMAT_VERY_VERBOSE, ' %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% -- %message%');
         ProgressBar::setFormatDefinition(ProgressBar::FORMAT_DEBUG, ' %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% %memory:6s% -- %message%');
+    }
+
+    protected function getEventRecordsToProcess(): Result
+    {
+        return $this->databaseService
+            ->getQueryBuilderForAllEvents()
+            ->select('uid', 'pid')
+            ->executeQuery();
     }
 
     protected function getAmountOfEventRecordsToProcess(): int
