@@ -18,12 +18,16 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 
 #[AsCommand(
     name: 'events2:rebuild',
-    description: 'This command will TRUNCATE (delete) all day records found in day table and will re-create all day records afterwards',
+    description: 'Re-creates the day records of all current and future events. '
+        . 'Truncates the day table first, unless option --no-truncate is set.',
 )]
 class RebuildCommand extends Command
 {
@@ -33,6 +37,8 @@ class RebuildCommand extends Command
     public function __construct(
         protected readonly DatabaseService $databaseService,
         protected readonly DayRelationService $dayRelationService,
+        #[Autowire(service: 'cache.runtime')]
+        protected readonly FrontendInterface $runtimeCache,
     ) {
         parent::__construct();
     }
@@ -44,7 +50,15 @@ class RebuildCommand extends Command
             . 'Afterwards, it searches for each current and future event and re-creates all day records again. '
             . 'If you have any problems with created day records, this command is the first place to start. '
             . 'Please be careful running this command as a CronJob each day, as for the time it runs, there '
-            . 'may no events visible in frontend. We prefer using the Scheduler Task instead.',
+            . 'may no events visible in frontend. For recurring executions (CronJob, Scheduler) please use '
+            . 'option --no-truncate. It keeps the day table and re-creates the day records event by event.',
+        );
+        $this->addOption(
+            'no-truncate',
+            null,
+            InputOption::VALUE_NONE,
+            'Do not truncate the day table. The day records will be re-created event by event, '
+            . 'so the events stay visible in frontend while the command is running.',
         );
     }
 
@@ -55,12 +69,16 @@ class RebuildCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $io->title('Recreating Day Records: Truncating and Rebuilding Day-Table');
+        if ($input->getOption('no-truncate')) {
+            $io->title('Recreating Day Records: Rebuilding day records event by event');
+        } else {
+            $io->title('Recreating Day Records: Truncating and Rebuilding Day-Table');
+            $this->truncateDayTable($io);
+        }
 
-        $this->truncateDayTable($io);
         $this->reGenerateDayRelations($io);
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     protected function truncateDayTable(SymfonyStyle $io): void
@@ -72,24 +90,23 @@ class RebuildCommand extends Command
 
     protected function reGenerateDayRelations(SymfonyStyle $io): void
     {
-        // Add Message to the ProgressBar. Formats copied from ProgressBar class.
-        ProgressBar::setFormatDefinition(ProgressBar::FORMAT_NORMAL, ' %current%/%max% [%bar%] %percent:3s%% -- %message%');
-        ProgressBar::setFormatDefinition(ProgressBar::FORMAT_VERBOSE, ' %current%/%max% [%bar%] %percent:3s%% %elapsed:6s% -- %message%');
-        ProgressBar::setFormatDefinition(ProgressBar::FORMAT_VERY_VERBOSE, ' %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% -- %message%');
-        ProgressBar::setFormatDefinition(ProgressBar::FORMAT_DEBUG, ' %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% %memory:6s% -- %message%');
+        $this->setProgressBarFormatDefinitions();
 
         $io->section('Creating day records');
 
         $progressBar = $io->createProgressBar($this->getAmountOfEventRecordsToProcess());
         $progressBar->start();
 
-        $queryBuilder = $this->databaseService->getQueryBuilderForAllEvents();
-        $queryResult = $queryBuilder
+        $queryResult = $this->databaseService
+            ->getQueryBuilderForAllEvents()
             ->select('uid', 'pid')
             ->executeQuery();
 
         while ($simpleEventRecord = $queryResult->fetchAssociative()) {
             $this->dayRelationService->createDayRelations((int)$simpleEventRecord['uid']);
+
+            // The runtime cache grows with each processed event (f.e. page TSconfig of each PID)
+            $this->runtimeCache->flush();
 
             $progressBar->setMessage(sprintf(
                 'Process event UID: %09d, PID: %05d',
@@ -103,6 +120,17 @@ class RebuildCommand extends Command
         $progressBar->finish();
 
         $io->info('Day records created');
+    }
+
+    /**
+     * Add message to the ProgressBar. Formats copied from ProgressBar class.
+     */
+    protected function setProgressBarFormatDefinitions(): void
+    {
+        ProgressBar::setFormatDefinition(ProgressBar::FORMAT_NORMAL, ' %current%/%max% [%bar%] %percent:3s%% -- %message%');
+        ProgressBar::setFormatDefinition(ProgressBar::FORMAT_VERBOSE, ' %current%/%max% [%bar%] %percent:3s%% %elapsed:6s% -- %message%');
+        ProgressBar::setFormatDefinition(ProgressBar::FORMAT_VERY_VERBOSE, ' %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% -- %message%');
+        ProgressBar::setFormatDefinition(ProgressBar::FORMAT_DEBUG, ' %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% %memory:6s% -- %message%');
     }
 
     protected function getAmountOfEventRecordsToProcess(): int

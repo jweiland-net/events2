@@ -563,7 +563,6 @@
 				<target>Veranstaltung - Ein Datensatz wurde aktiviert</target>
 			</trans-unit>
 
-
 			<trans-unit id="error.locationFail">
 				<source>The given location does not exist in our database. Please choose another one</source>
 				<target>Dieser Veranstaltungsort existiert nicht. Bitte wählen Sie einen anderen Ort.</target>
@@ -572,15 +571,6 @@
 			<trans-unit id="altTextMapImg">
 				<source>Map</source>
 				<target>Karte</target>
-			</trans-unit>
-
-			<trans-unit id="scheduler.path">
-				<source>Path of file to import</source>
-				<target>Pfad der zu importierenden Datei</target>
-			</trans-unit>
-			<trans-unit id="scheduler.storagePid">
-				<source>Storage PID</source>
-				<target>Speicherort/ Seiten UID</target>
 			</trans-unit>
 		</body>
 	</file>

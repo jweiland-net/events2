@@ -435,20 +435,12 @@
 				<source>A record was activated</source>
 			</trans-unit>
 
-
 			<trans-unit id="error.locationFail">
 				<source>The given location does not exist in our database. Please choose another one</source>
 			</trans-unit>
 
 			<trans-unit id="altTextMapImg">
 				<source>Map</source>
-			</trans-unit>
-
-			<trans-unit id="scheduler.path">
-				<source>Path of file to import</source>
-			</trans-unit>
-			<trans-unit id="scheduler.storagePid">
-				<source>Storage PID</source>
 			</trans-unit>
 		</body>
 	</file>
