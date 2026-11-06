@@ -69,8 +69,50 @@ This version contains breaking changes, please read
     teasers are kept, but have to be shortened when the event is edited
     in the frontend. Update copies of the form, see
     :ref:`upgrade-12-0-0-form-definition`.
+*   [!!!][FEATURE] Replace EXT:static_info_tables with the country API of
+    TYPO3. The country of a location is stored as ISO 3166-1 alpha-2 code.
+    The new upgrade wizard `events2_migrateLocationCountry` migrates
+    existing locations. :php:`Location::getCountry()` returns the ISO
+    code, the new :php:`Location::getCountryObject()` the country object
+    of TYPO3. The extension setting `defaultCountry` expects an ISO code
+    and has to be changed manually. With EXT:maps2 the ISO code instead
+    of the country name is part of the geocoded address. See
+    :ref:`upgrade-12-0-0-country`.
+*   [!!!][FEATURE] Replace the scheduler tasks "Re-Create day records"
+    and "Import events" with the schedulable commands
+    `events2:rebuild --no-truncate` and `events2:import`. Existing tasks
+    are not migrated. See :ref:`upgrade-12-0-0-scheduler`.
+*   [!!!][TASK] Remove the static TypoScript template "Events". Use the
+    site set `jweiland/events2`. The exception `1580294227` for a missing
+    TypoScript template is not thrown anymore. See
+    :ref:`upgrade-12-0-0-site-set`.
+*   [!!!][TASK] Use the Extbase option `ignoreFlexFormSettingsIfEmpty` for
+    the fallback of empty FlexForm values to TypoScript. Remove
+    :php:`TypoScriptService` and :php:`InjectTypoScriptServiceTrait`. See
+    :ref:`upgrade-12-0-0-flexform`.
+*   [!!!][TASK] Remove the ViewHelpers `e2:convertToJson` and
+    `e2:cropString`. The argument `link` of `e2:createYoutubeUri` is
+    optional and can be passed as tag content. See
+    :ref:`upgrade-12-0-0-viewhelpers`.
+*   [!!!][TASK] Remove the outdated upgrade wizards
+    `events2_migrateDetailInformations`, `events2_migrateOrganizer` and
+    `events2_moveFlexFormFields`. See :ref:`upgrade-12-0-0-before`.
+*   [!!!][TASK] Rely on the system TCA columns created by TYPO3.
+    `starttime`, `endtime`, `fe_group` and `editlock` of translations are
+    not synchronized with the default language anymore. Remove
+    :php:`getDeleted()` and :php:`setDeleted()` of all domain models and
+    the key `deleted` of the export. Day records map `crdate` and
+    `tstamp` for the iCal download. See
+    :ref:`upgrade-12-0-0-translations`.
+*   [!!!][TASK] Read the TCA with the TCA Schema API of TYPO3. Some
+    classes got the :php:`TcaSchemaFactory` as new constructor argument.
+    See :ref:`upgrade-12-0-0-developer`.
+*   [TASK] Register the commands with the attribute :php:`#[AsCommand]`
+    and remove obsolete entries from :file:`Services.yaml`.
 *   [DOCS] Describe the frontend management and its access rules, see
     :ref:`frontend-management`.
+*   [DOCS] Describe the commands of events2 and the site set, see
+    :ref:`commands` and :ref:`installation-site-set`.
 
 Version 11.2.1
 ==============

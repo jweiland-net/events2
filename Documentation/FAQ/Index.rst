@@ -23,26 +23,32 @@ You currently can't search for translated events in frontend search.
 Where are the day records build?
 ================================
 
-We build the day records while saving an event record in backend. Further we re-build them while executing
-the scheduler task `Re-Create day records` and while executing the command `events2:rebuild`.
+We build the day records while saving an event record in backend. Further
+we re-build them while executing the command `events2:rebuild`, see
+:ref:`commands-rebuild`.
 
 
 Can I export events?
 ====================
 
-No. Currently you have to create your own export mechanism. But as we have implemented such a solution already for one
-of our customers you can ask us at: projects@jweiland.net
+Yes. The command `events2:export` sends the events of the given storage
+folders to another TYPO3 instance with the system extension EXT:reactions,
+see :ref:`commands-export`.
 
 
 Can I import events?
 ====================
 
-Yes. But currently only XML files are allowed. Please add Scheduler Task `Import events` and set a filepath
-to import. Examples of XML files are available at https://github.com/jweiland-net/events2/tree/main/Tests/Functional/Fixtures/XmlImport.
+Yes. But currently only XML files are allowed. Execute the command
+`events2:import` with the combined identifier of the XML file and the UID
+of the storage folder, or add it as scheduler task
+:guilabel:`Execute console commands`. See :ref:`commands-import`.
 
-We will validate the imported file against configuration in `EXT:events2/Resources/Public/XmlImportValidator.xsd`.
+We will validate the imported file against
+:file:`EXT:events2/Resources/Public/XmlImportValidator.xsd`.
 
-All errors will be logged in a `Messages.txt` in same directory of imported XML file.
+All messages will be logged in a :file:`Messages.txt` in same directory of
+imported XML file.
 
 
 Namespace change of search plugin
