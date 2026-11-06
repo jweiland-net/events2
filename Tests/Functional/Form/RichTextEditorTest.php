@@ -43,7 +43,6 @@ class RichTextEditorTest extends FunctionalTestCase
     ];
 
     protected array $coreExtensionsToLoad = [
-        'extensionmanager',
         'fluid_styled_content',
         'form',
         'reactions',
@@ -51,7 +50,6 @@ class RichTextEditorTest extends FunctionalTestCase
     ];
 
     protected array $testExtensionsToLoad = [
-        'sjbr/static-info-tables',
         'jweiland/events2',
         __DIR__ . '/../Fixtures/Extensions/site_package',
     ];

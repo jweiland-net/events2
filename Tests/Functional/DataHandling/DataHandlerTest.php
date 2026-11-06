@@ -29,12 +29,10 @@ class DataHandlerTest extends FunctionalTestCase
     use InsertEventTrait;
 
     protected array $coreExtensionsToLoad = [
-        'extensionmanager',
         'reactions',
     ];
 
     protected array $testExtensionsToLoad = [
-        'sjbr/static-info-tables',
         'jweiland/events2',
     ];
 

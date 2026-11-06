@@ -8,13 +8,10 @@
  */
 
 use JWeiland\Events2\Configuration\ExtConf;
-use SJBR\StaticInfoTables\Hook\Backend\Form\FormDataProvider\TcaSelectItemsProcessor;
-use SJBR\StaticInfoTables\Hook\Backend\Form\Wizard\SuggestReceiver;
+use JWeiland\Events2\Tca\CountryItems;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 $extConf = GeneralUtility::makeInstance(ExtConf::class);
-$staticInfoItemProcessor = TcaSelectItemsProcessor::class . '->translateCountriesSelector';
-$staticInfoSuggestReceiver = SuggestReceiver::class;
 
 $tx_events2_domain_model_event = [
     'ctrl' => [
@@ -124,21 +121,14 @@ $tx_events2_domain_model_event = [
                 'items' => [
                     [
                         'label' => '',
-                        'value' => 0,
+                        'value' => '',
                     ],
                 ],
-                'foreign_table' => 'static_countries',
-                'foreign_table_where' => 'ORDER BY static_countries.cn_short_en',
-                'itemsProcFunc' => $staticInfoItemProcessor,
-                'size' => 1,
-                'minitems' => 0,
-                'maxitems' => 1,
+                'itemsProcFunc' => CountryItems::class . '->addCountries',
+                'sortItems' => [
+                    'label' => 'asc',
+                ],
                 'default' => $extConf->getDefaultCountry(),
-                'suggestOptions' => [
-                    'default' => [
-                        'receiverClass' => $staticInfoSuggestReceiver,
-                    ],
-                ],
             ],
         ],
         'link' => [
@@ -162,5 +152,5 @@ $tx_events2_domain_model_event = [
     ],
 ];
 
-unset($extConf, $staticInfoItemProcessor, $staticInfoSuggestReceiver);
+unset($extConf);
 return $tx_events2_domain_model_event;

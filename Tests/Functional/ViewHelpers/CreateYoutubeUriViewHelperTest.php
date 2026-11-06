@@ -23,12 +23,10 @@ use TYPO3Fluid\Fluid\View\TemplateView;
 class CreateYoutubeUriViewHelperTest extends FunctionalTestCase
 {
     protected array $coreExtensionsToLoad = [
-        'extensionmanager',
         'reactions',
     ];
 
     protected array $testExtensionsToLoad = [
-        'sjbr/static-info-tables',
         'jweiland/events2',
     ];
 

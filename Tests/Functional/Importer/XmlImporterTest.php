@@ -45,12 +45,10 @@ class XmlImporterTest extends FunctionalTestCase
     protected PathSegmentHelper $pathSegmentHelper;
 
     protected array $coreExtensionsToLoad = [
-        'extensionmanager',
         'reactions',
     ];
 
     protected array $testExtensionsToLoad = [
-        'sjbr/static-info-tables',
         'jweiland/events2',
     ];
 

@@ -39,12 +39,10 @@ class EventServiceTest extends FunctionalTestCase
     protected DatabaseService|MockObject $databaseServiceMock;
 
     protected array $coreExtensionsToLoad = [
-        'extensionmanager',
         'reactions',
     ];
 
     protected array $testExtensionsToLoad = [
-        'sjbr/static-info-tables',
         'jweiland/events2',
     ];
 

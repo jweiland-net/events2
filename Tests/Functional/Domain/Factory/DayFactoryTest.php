@@ -40,12 +40,10 @@ class DayFactoryTest extends FunctionalTestCase
     protected Query $query;
 
     protected array $coreExtensionsToLoad = [
-        'extensionmanager',
         'reactions',
     ];
 
     protected array $testExtensionsToLoad = [
-        'sjbr/static-info-tables',
         'jweiland/events2',
     ];
 

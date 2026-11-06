@@ -31,12 +31,10 @@ class PathSegmentHelperTest extends FunctionalTestCase
     protected SlugHelper|MockObject $slugHelperMock;
 
     protected array $coreExtensionsToLoad = [
-        'extensionmanager',
         'reactions',
     ];
 
     protected array $testExtensionsToLoad = [
-        'sjbr/static-info-tables',
         'jweiland/events2',
     ];
 

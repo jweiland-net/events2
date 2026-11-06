@@ -28,12 +28,10 @@ class LocationTest extends FunctionalTestCase
     protected Location $subject;
 
     protected array $coreExtensionsToLoad = [
-        'extensionmanager',
         'reactions',
     ];
 
     protected array $testExtensionsToLoad = [
-        'sjbr/static-info-tables',
         'jweiland/events2',
     ];
 
@@ -175,5 +173,33 @@ class LocationTest extends FunctionalTestCase
             $instance,
             $this->subject->getLink(),
         );
+    }
+
+    #[Test]
+    public function getCountryInitiallyReturnsEmptyString(): void
+    {
+        self::assertSame('', $this->subject->getCountry());
+    }
+
+    #[Test]
+    public function setCountrySetsCountry(): void
+    {
+        $this->subject->setCountry('DE');
+
+        self::assertSame('DE', $this->subject->getCountry());
+    }
+
+    #[Test]
+    public function getCountryObjectWithoutCountryReturnsNull(): void
+    {
+        self::assertNull($this->subject->getCountryObject());
+    }
+
+    #[Test]
+    public function getCountryObjectReturnsCountryOfCore(): void
+    {
+        $this->subject->setCountry('DE');
+
+        self::assertSame('DE', $this->subject->getCountryObject()?->getAlpha2IsoCode());
     }
 }

@@ -13,7 +13,9 @@ namespace JWeiland\Events2\Domain\Model;
 
 use JWeiland\Events2\Domain\Traits\Typo3PropertiesTrait;
 use JWeiland\Maps2\Domain\Model\PoiCollection;
-use SJBR\StaticInfoTables\Domain\Model\Country;
+use TYPO3\CMS\Core\Country\Country;
+use TYPO3\CMS\Core\Country\CountryProvider;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 /**
@@ -33,7 +35,10 @@ class Location extends AbstractEntity
 
     protected string $city = '';
 
-    protected ?Country $country = null;
+    /**
+     * ISO 3166-1 alpha-2 code of the country
+     */
+    protected string $country = '';
 
     protected ?Link $link = null;
 
@@ -92,14 +97,30 @@ class Location extends AbstractEntity
         $this->city = $city;
     }
 
-    public function getCountry(): ?Country
+    /**
+     * Returns the ISO 3166-1 alpha-2 code of the country
+     */
+    public function getCountry(): string
     {
         return $this->country;
     }
 
-    public function setCountry(?Country $country): void
+    public function setCountry(string $country): void
     {
         $this->country = $country;
+    }
+
+    /**
+     * Returns the country object of TYPO3 core. Use it in Fluid to get the
+     * localized name: <f:translate key="{location.countryObject.localizedNameLabel}"/>
+     */
+    public function getCountryObject(): ?Country
+    {
+        if ($this->country === '') {
+            return null;
+        }
+
+        return GeneralUtility::makeInstance(CountryProvider::class)->getByAlpha2IsoCode($this->country);
     }
 
     public function getLink(): ?Link

@@ -25,12 +25,10 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 class GetPostPaginationTest extends FunctionalTestCase
 {
     protected array $coreExtensionsToLoad = [
-        'extensionmanager',
         'reactions',
     ];
 
     protected array $testExtensionsToLoad = [
-        'sjbr/static-info-tables',
         'jweiland/events2',
     ];
 
