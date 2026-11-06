@@ -73,6 +73,49 @@ Set this value to a Storage Folder where you have stored the event records.
         plugin.tx_events2.persistence.classes.JWeiland\Events2\Domain\Model\Event.newRecordStoragePid = 34
         plugin.tx_events2.persistence.classes.JWeiland\Events2\Domain\Model\Location.newRecordStoragePid = 543
 
+..  _typoscript-ignore-flexform-settings-if-empty:
+
+Fall back to TypoScript for empty FlexForm values
+=================================================
+
+..  confval:: ignoreFlexFormSettingsIfEmpty
+    :name: events2-typoscript-ignoreflexformsettingsifempty
+    :type: string (comma-separated list)
+    :default: all settings of the FlexForms of events2
+
+    Comma-separated list of settings (without the prefix `settings.`). If
+    the FlexForm value of a listed setting is empty (`""` or `"0"`), the
+    value of the TypoScript setup is used instead. This is the core
+    mechanism of Extbase, see :ref:`ext_core:feature-99976-1676660028`. It
+    applies to all places, which read the settings with the
+    `ConfigurationManager` of Extbase, also to plugin-specific TypoScript
+    like :typoscript:`plugin.tx_events2_list.settings` and to the
+    categories of the event form of the Management plugin.
+
+    The site set `jweiland/events2` lists all settings of the FlexForms
+    of events2: `categories`, `display`, `latest.amountOfRecordsToShow`,
+    `listType`, `mainCategories`, `mergeEventsAtSameDay`,
+    `mergeRecurringEvents`, `new.selectableCategoriesForNewEvents`,
+    `pidOfDetailPage`, `pidOfListPage`, `pidOfLocationPage`,
+    `pidOfManagementPage`, `pidOfSearchResults`, `preFilterByOrganizer`
+    and `showFilterForOrganizerInFrontend`.
+
+    Add the settings of your own FlexForm fields to the list, if they
+    should fall back to TypoScript, too. Remove a setting from the list,
+    if its empty FlexForm value should be used:
+
+    ..  code-block:: typoscript
+        :caption: EXT:my_sitepackage/Configuration/Sets/MySite/setup.typoscript
+
+        plugin.tx_events2.ignoreFlexFormSettingsIfEmpty := addToList(mySetting)
+        plugin.tx_events2.ignoreFlexFormSettingsIfEmpty := removeFromList(mergeEventsAtSameDay)
+
+    ..  versionchanged:: 12.0.0
+
+        Before, events2 used the TypoScript value for each empty FlexForm
+        value on its own. Now only the listed settings fall back to
+        TypoScript. See :ref:`upgrade-12-0-0-flexform`.
+
 settings
 ========
 

@@ -29,9 +29,222 @@ All access rules of the frontend management are checked by the new
 :php:`JWeiland\Events2\Service\EventModerationService`. See
 :ref:`frontend-management`.
 
-Please go through all steps below, if you use the Management plugin, have
-overridden its templates, mail templates or labels, or use PHP classes of
-events2 in your own code.
+Further, events2 does not depend on EXT:static_info_tables anymore, the
+static TypoScript template and the scheduler tasks of events2 have been
+removed, and outdated upgrade wizards and ViewHelpers are gone.
+
+Please go through all steps below. Most of them are only relevant, if you
+use the Management plugin, have overridden templates, mail templates or
+labels, or use PHP classes of events2 in your own code. The steps
+:ref:`upgrade-12-0-0-before`, :ref:`upgrade-12-0-0-site-set`,
+:ref:`upgrade-12-0-0-country` and :ref:`upgrade-12-0-0-scheduler` are
+relevant for all installations.
+
+..  _upgrade-12-0-0-before:
+
+Run the upgrade wizards of events2 11.x first
+---------------------------------------------
+
+The following upgrade wizards have been removed. They were introduced for
+events2 versions which are no longer supported:
+
+*   `events2_migrateDetailInformations` ("[events2] Migrate column
+    detail_informations")
+*   `events2_migrateOrganizer` ("[events2] Migrate organizer")
+*   `events2_moveFlexFormFields` ("[events2] Move old FlexForm fields to
+    new FlexForm sheet")
+
+If one of them is still marked as necessary in
+:guilabel:`Admin Tools > Upgrade > Upgrade Wizard`, run it with an older
+version of events2 (for example 11.x) before you update to 12.0.0. The
+upgrade wizard `events2_updateSlug` is still available.
+
+..  _upgrade-12-0-0-site-set:
+
+Use the site set instead of the static TypoScript template
+----------------------------------------------------------
+
+The static TypoScript template :guilabel:`Events` has been removed. It
+pointed to the folder :file:`Configuration/TypoScript`, which did not
+exist anymore. The TypoScript of events2 is provided by the site set
+`jweiland/events2` only.
+
+Remove the static template :guilabel:`Events (events2)` from the
+:guilabel:`Includes` of your TypoScript records and add the site set
+`jweiland/events2` to your site, see :ref:`installation-site-set`. Set
+your former TypoScript constants of events2 with the site settings of
+the site set.
+
+Before, events2 threw the exception `1580294227` ("You have forgotten to
+add TS-Template of events2"), if no TypoScript of events2 was found. This
+exception has been removed.
+
+..  _upgrade-12-0-0-country:
+
+Migrate the countries of locations to ISO codes
+-----------------------------------------------
+
+EXT:static_info_tables is not required anymore. The country of a location
+is stored as ISO 3166-1 alpha-2 code (for example `DE`) in the column
+`country` now. The select box in the backend lists all countries of the
+country API of TYPO3 (:ref:`t3coreapi:country-api`) with their localized
+names.
+
+Migrate the existing locations in this order:
+
+#.  Update the database schema in
+    :guilabel:`Admin Tools > Maintenance > Analyze Database Structure`
+    or with `vendor/bin/typo3 extension:setup`. The column `country` of
+    the table `tx_events2_domain_model_location` is changed to
+    `varchar(3)`.
+
+#.  Run the upgrade wizard "[events2] Migrate country of locations to ISO
+    code" (`events2_migrateLocationCountry`) in
+    :guilabel:`Admin Tools > Upgrade > Upgrade Wizard` or on the command
+    line:
+
+    ..  code-block:: bash
+
+        vendor/bin/typo3 upgrade:run events2_migrateLocationCountry
+
+    The wizard reads the ISO codes from the table `static_countries`.
+    EXT:static_info_tables does not need to be installed anymore, but the
+    table has to exist in the database. If the table does not exist, the
+    wizard stops with a message and can be executed again after you have
+    restored the table. Locations with a country, which does not exist in
+    `static_countries`, get an empty country.
+
+#.  Uninstall EXT:static_info_tables, if no other extension needs it.
+    Do not remove or rename the table `static_countries` with the database
+    analyzer before the upgrade wizard has finished.
+
+Change the extension setting
+:ref:`defaultCountry <extensionSettings>` manually to an ISO 3166-1
+alpha-2 code like `DE`. It is not migrated, as it is part of the deployed
+system configuration in most installations. Former UIDs of
+`static_countries` are ignored, so no country is preselected for new
+locations until you have changed the value.
+
+If you show the country of a location in your own templates, use the new
+property `countryObject`. The property `country` contains the ISO code
+only:
+
+..  code-block:: html
+    :caption: EXT:my_sitepackage/Resources/Private/Partials/Location.html (excerpt)
+
+    <f:if condition="{location.countryObject}">
+        <f:translate key="{location.countryObject.localizedNameLabel}"/>
+    </f:if>
+
+..  note::
+
+    With EXT:maps2 the ISO code (for example `DE`) instead of the name of
+    the country is part of the address, which is sent to the geocoding
+    service.
+
+..  _upgrade-12-0-0-scheduler:
+
+Replace the scheduler tasks with commands
+-----------------------------------------
+
+The scheduler tasks :guilabel:`Re-Create day records` and
+:guilabel:`Import events` have been removed together with their classes
+:php:`JWeiland\Events2\Task\ReGenerateDays`,
+:php:`JWeiland\Events2\Task\Import` and
+:php:`JWeiland\Events2\Task\AdditionalFieldsForImport`. Existing tasks
+are not migrated and can not be executed anymore.
+
+#.  Add a new task of the class :guilabel:`Execute console commands` in
+    :guilabel:`System > Scheduler` for each of your former tasks, with the
+    same frequency:
+
+    ..  list-table::
+        :header-rows: 1
+
+        *   -   Former task
+            -   Command of the new task
+        *   -   :guilabel:`Re-Create day records`
+            -   `events2:rebuild` with the option `--no-truncate`
+        *   -   :guilabel:`Import events`
+            -   `events2:import` with the arguments `path` (combined
+                identifier of the XML file, for example
+                `1:/event_import/Import.xml`) and `storagePid`
+
+#.  Delete the former, now broken tasks.
+
+See :ref:`commands`. Without the option `--no-truncate` the command
+`events2:rebuild` truncates the day table first, so do not forget the
+option for daily executions.
+
+..  _upgrade-12-0-0-flexform:
+
+Check the fallback of empty FlexForm values
+-------------------------------------------
+
+events2 used the TypoScript value for each empty FlexForm value (`""` or
+`"0"`) of its plugins on its own. This has been replaced by the Extbase
+option
+:confval:`ignoreFlexFormSettingsIfEmpty <events2-typoscript-ignoreflexformsettingsifempty>`.
+The site set `jweiland/events2` lists all settings of the FlexForms of
+events2, so the behaviour for these settings is unchanged. As a side
+effect, plugin-specific TypoScript like
+:typoscript:`plugin.tx_events2_list.settings` and the categories of the
+event form of the Management plugin fall back to TypoScript, too.
+
+If you have added own fields to the FlexForms of events2, their empty
+values do not fall back to TypoScript anymore. Add them to the list:
+
+..  code-block:: typoscript
+    :caption: EXT:my_sitepackage/Configuration/Sets/MySite/setup.typoscript
+
+    plugin.tx_events2.ignoreFlexFormSettingsIfEmpty := addToList(mySetting)
+
+..  _upgrade-12-0-0-viewhelpers:
+
+Replace removed ViewHelpers
+---------------------------
+
+The following ViewHelpers have been removed. Replace them in your own
+templates with the ViewHelpers of Fluid:
+
+`e2:convertToJson`
+    Use :ref:`f:format.json <t3viewhelper:typo3fluid-fluid-format-json>`:
+
+    ..  code-block:: html
+
+        <div data-environment="{environment -> f:format.json()}"></div>
+
+`e2:cropString`
+    Use :ref:`f:replace <t3viewhelper:typo3fluid-fluid-replace>` and
+    :ref:`f:format.crop <t3viewhelper:typo3-fluid-format-crop>`:
+
+    ..  code-block:: html
+
+        {categories -> f:replace(search: ',', replace: ', ') -> f:format.crop(maxCharacters: 50)}
+
+The argument `link` of
+:ref:`e2:createYoutubeUri <youTubeViewHelper>` is optional now. The link
+can be passed as tag content or in inline syntax:
+`{event.videoLink.link -> e2:createYoutubeUri()}`.
+
+..  _upgrade-12-0-0-translations:
+
+Check the system fields of translated records
+---------------------------------------------
+
+events2 does not define the system columns `sys_language_uid`,
+`l10n_parent`, `hidden`, `starttime`, `endtime`, `fe_group` and
+`editlock` in TCA anymore. They are created by TYPO3 from the `ctrl`
+section (:ref:`ext_core:feature-104311-1720176189`) with the default
+configuration of TYPO3:
+
+*   `starttime`, `endtime`, `fe_group` and `editlock` of translated
+    records are not synchronized with the record of the default language
+    anymore and can be edited in the translation. Existing values of
+    translations are kept. Check them, if you change these fields in the
+    default language.
+*   `l10n_parent` is rendered as select box instead of a group field.
+*   The unused passthrough columns `l10n_source` have been removed.
 
 ..  _upgrade-12-0-0-settings:
 
@@ -61,7 +274,9 @@ it:
     Deprecated since version 9.1.9. Use
     :typoscript:`plugin.tx_events2.settings.new.selectableCategoriesForNewEvents`
     or the site setting `events2.form.selectableCategoriesForNewEvents`.
-    Old FlexForm values are moved by the upgrade wizard of events2.
+    Old FlexForm values were moved by the upgrade wizard
+    `events2_moveFlexFormFields`, which has been removed now, see
+    :ref:`upgrade-12-0-0-before`.
 
 :typoscript:`plugin.tx_form.settings.yamlConfigurations.1661247670`
 (:file:`EXT:events2/Configuration/Form/OverrideFormSettings.yaml`) is
@@ -417,6 +632,22 @@ The following classes have been removed without replacement:
     :php:`InjectLocationRepositoryTrait` and
     :php:`InjectPersistenceManagerTrait`. Inject the services with
     constructor injection instead.
+*   :php:`JWeiland\Events2\Service\TypoScriptService` and the trait
+    :php:`JWeiland\Events2\Traits\InjectTypoScriptServiceTrait`. Empty
+    FlexForm values fall back to TypoScript with the Extbase option
+    `ignoreFlexFormSettingsIfEmpty`, see :ref:`upgrade-12-0-0-flexform`.
+*   :php:`JWeiland\Events2\Hook\EmStaticInfo`, which rendered the
+    extension setting `defaultCountry`
+*   The scheduler tasks :php:`JWeiland\Events2\Task\ReGenerateDays`,
+    :php:`JWeiland\Events2\Task\Import` and
+    :php:`JWeiland\Events2\Task\AdditionalFieldsForImport`, see
+    :ref:`upgrade-12-0-0-scheduler`
+*   The upgrade wizards :php:`MigrateDetailInformationsUpgrade`,
+    :php:`MigrateOrganizerToMMUpgrade` and
+    :php:`MoveOldFlexFormSettingsUpgrade`, see
+    :ref:`upgrade-12-0-0-before`
+*   The ViewHelpers :php:`ConvertToJsonViewHelper` and
+    :php:`CropStringViewHelper`, see :ref:`upgrade-12-0-0-viewhelpers`
 
 :php:`JWeiland\Events2\Service\EventModerationService` has been merged
 into :php:`JWeiland\Events2\Service\ManagementAccessService`. It
@@ -488,6 +719,37 @@ and the date picker of the removed Extbase form anymore. The form based
 on EXT:form loads the new ES module :file:`remaining-letters.js` for
 textareas with a `maxlength` instead, see
 :ref:`upgrade-12-0-0-form-definition`.
+
+The methods :php:`getDeleted()` and :php:`setDeleted()` have been
+removed from all domain models. Extbase does not fetch deleted records,
+so the value was always `false`. The JSON of the command `events2:export`
+does not contain the key `deleted` anymore.
+
+:php:`JWeiland\Events2\Domain\Model\Location::getCountry()` returns the
+ISO 3166-1 alpha-2 code as string instead of a :php:`Country` model of
+EXT:static_info_tables. :php:`setCountry()` expects this string. The new
+method :php:`getCountryObject(): ?\TYPO3\CMS\Core\Country\Country`
+returns the country object of TYPO3. :php:`ExtConf::getDefaultCountry()`
+returns the ISO code as string instead of an integer.
+
+The following classes have got new constructor arguments. This is only
+relevant, if you create them on your own instead of using dependency
+injection:
+
+*   :php:`JWeiland\Events2\Helper\OverlayHelper`,
+    :php:`JWeiland\Events2\Service\RichTextService`,
+    :php:`JWeiland\Events2\Service\Record\EventRecordService`,
+    :php:`JWeiland\Events2\Helper\PathSegmentHelper`,
+    :php:`JWeiland\Events2\Service\DayGeneratorService` and
+    :php:`JWeiland\Events2\Hook\Form\PrefillCategoriesHook`: The
+    :php:`TcaSchemaFactory` of TYPO3 as last argument. These classes read
+    the TCA with the TCA Schema API instead of :php:`$GLOBALS['TCA']`.
+*   :php:`JWeiland\Events2\Command\RebuildCommand`: The runtime cache
+    as last argument.
+
+The commands `events2:rebuild` and `events2:export` are registered with
+the attribute :php:`#[AsCommand]` instead of tags in
+:file:`Services.yaml`.
 
 ..  _upgrade-12-0-0-caches:
 
