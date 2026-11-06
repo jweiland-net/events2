@@ -97,8 +97,7 @@ Re-create the day records each day
 ..  versionchanged:: 12.0.0
 
     The scheduler task :guilabel:`Re-Create day records` has been removed.
-    Use the command `events2:rebuild` with the option `--no-truncate`
-    instead.
+    Use the command `events2:rebuild` instead.
 
 events2 works within a timeframe (see `recurringPast` and
 `recurringFuture` in :ref:`extensionSettings`). Each day the oldest day
@@ -106,13 +105,12 @@ records have to be removed and the future day records have to be created.
 
 Add a task of the class :guilabel:`Execute console commands` in the
 module :guilabel:`System > Scheduler`, choose the command
-`events2:rebuild` and enable its option `--no-truncate`. Let the task run
-once a day, for example at night. As an alternative, run the command with
-a cron job:
+`events2:rebuild` without any option. Let the task run once a day, for
+example at night. As an alternative, run the command with a cron job:
 
 ..  code-block:: bash
 
-    vendor/bin/typo3 events2:rebuild --no-truncate
+    vendor/bin/typo3 events2:rebuild
 
 If the day records are not re-created regularly, it may happen that you
 will not see any event on your website after 6 months. See

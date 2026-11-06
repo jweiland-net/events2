@@ -64,8 +64,11 @@ Default: empty
 Example: `DE`
 
 ISO 3166-1 alpha-2 code of the country, which is preselected for new
-location records in the backend. The select box of the country lists all
-countries of the country API of TYPO3 with their localized names.
+location records in the backend. The value is a simple text field. It is
+checked against the countries of the country API of TYPO3
+(:ref:`t3coreapi:country-api`). Unknown codes are ignored, so no country
+is preselected. The select box of the country lists all countries of the
+country API with their localized names.
 
 While creating location records we also create a record for EXT:maps2.
 If you're only working for one specific country, the preselected country
@@ -76,8 +79,8 @@ POIs from all over the world, please keep this field empty.
 
     EXT:static_info_tables is not required anymore. The setting expects an
     ISO 3166-1 alpha-2 code instead of the UID of a `static_countries`
-    record. Former UIDs and all other invalid values are ignored, so no
-    country is preselected. Change the value manually, see
+    record. Former UIDs and unknown codes are ignored, so no country is
+    preselected. Change the value manually, see
     :ref:`upgrade-12-0-0-country`.
 
 xmlImportValidatorPath
