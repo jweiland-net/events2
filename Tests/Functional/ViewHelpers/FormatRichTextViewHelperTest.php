@@ -33,13 +33,11 @@ class FormatRichTextViewHelperTest extends FunctionalTestCase
         . '<p><a href="https://example.com" onclick="alert(1)">Tickets</a></p>';
 
     protected array $coreExtensionsToLoad = [
-        'extensionmanager',
         'form',
         'reactions',
     ];
 
     protected array $testExtensionsToLoad = [
-        'sjbr/static-info-tables',
         'jweiland/events2',
     ];
 

@@ -30,7 +30,6 @@
 	"require": {
 		"ext-dom": "*",
 		"ext-libxml": "*",
-		"sjbr/static-info-tables": "^13.4",
 		"typo3/cms-core": "^13.4.12",
 		"typo3/cms-reactions": "^13.4.12"
 	},

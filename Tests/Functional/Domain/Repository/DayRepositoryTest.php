@@ -34,12 +34,10 @@ class DayRepositoryTest extends FunctionalTestCase
     protected DayRepository $dayRepository;
 
     protected array $coreExtensionsToLoad = [
-        'extensionmanager',
         'reactions',
     ];
 
     protected array $testExtensionsToLoad = [
-        'sjbr/static-info-tables',
         'jweiland/events2',
     ];
 

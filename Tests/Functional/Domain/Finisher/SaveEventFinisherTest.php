@@ -37,14 +37,12 @@ class SaveEventFinisherTest extends FunctionalTestCase
         . '<script>alert(1)</script>';
 
     protected array $coreExtensionsToLoad = [
-        'extensionmanager',
         'form',
         'reactions',
         'rte_ckeditor',
     ];
 
     protected array $testExtensionsToLoad = [
-        'sjbr/static-info-tables',
         'jweiland/events2',
     ];
 

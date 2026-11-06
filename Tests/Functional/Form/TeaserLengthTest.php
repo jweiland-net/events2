@@ -37,13 +37,11 @@ class TeaserLengthTest extends FunctionalTestCase
     private const FORM_DEFINITION = 'EXT:events2/Configuration/Form/NewEvent.form.yaml';
 
     protected array $coreExtensionsToLoad = [
-        'extensionmanager',
         'form',
         'reactions',
     ];
 
     protected array $testExtensionsToLoad = [
-        'sjbr/static-info-tables',
         'jweiland/events2',
     ];
 

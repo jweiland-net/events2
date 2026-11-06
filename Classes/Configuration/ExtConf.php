@@ -31,7 +31,7 @@ readonly class ExtConf implements SingletonInterface
         'rootUid' => 0,
         'recurringPast' => 3,
         'recurringFuture' => 6,
-        'defaultCountry' => 0,
+        'defaultCountry' => '',
         'xmlImportValidatorPath' => 'EXT:events2/Resources/Public/XmlImportValidator.xsd',
         'organizerIsRequired' => false,
         'locationIsRequired' => false,
@@ -51,7 +51,7 @@ readonly class ExtConf implements SingletonInterface
         private int $rootUid = self::DEFAULT_SETTINGS['rootUid'],
         private int $recurringPast = self::DEFAULT_SETTINGS['recurringPast'],
         private int $recurringFuture = self::DEFAULT_SETTINGS['recurringFuture'],
-        private int $defaultCountry = self::DEFAULT_SETTINGS['defaultCountry'],
+        private string $defaultCountry = self::DEFAULT_SETTINGS['defaultCountry'],
         private string $xmlImportValidatorPath = self::DEFAULT_SETTINGS['xmlImportValidatorPath'],
         private bool $organizerIsRequired = self::DEFAULT_SETTINGS['organizerIsRequired'],
         private bool $locationIsRequired = self::DEFAULT_SETTINGS['locationIsRequired'],
@@ -84,7 +84,7 @@ readonly class ExtConf implements SingletonInterface
             rootUid: (int)$extensionSettings['rootUid'],
             recurringPast: (int)$extensionSettings['recurringPast'],
             recurringFuture: (int)$extensionSettings['recurringFuture'],
-            defaultCountry: (int)$extensionSettings['defaultCountry'],
+            defaultCountry: self::sanitizeCountryCode((string)$extensionSettings['defaultCountry']),
             xmlImportValidatorPath: (string)$extensionSettings['xmlImportValidatorPath'],
             organizerIsRequired: (bool)$extensionSettings['organizerIsRequired'],
             locationIsRequired: (bool)$extensionSettings['locationIsRequired'],
@@ -119,7 +119,10 @@ readonly class ExtConf implements SingletonInterface
         return $this->recurringFuture;
     }
 
-    public function getDefaultCountry(): int
+    /**
+     * ISO 3166-1 alpha-2 code of the default country or empty string
+     */
+    public function getDefaultCountry(): string
     {
         return $this->defaultCountry;
     }
@@ -191,5 +194,16 @@ readonly class ExtConf implements SingletonInterface
     public function getEmailToName(): string
     {
         return $this->emailToName;
+    }
+
+    /**
+     * Former versions of events2 stored the UID of a static_countries record.
+     * Such values and all other invalid values result in an empty string.
+     */
+    private static function sanitizeCountryCode(string $countryCode): string
+    {
+        $countryCode = strtoupper(trim($countryCode));
+
+        return preg_match('/^[A-Z]{2}$/', $countryCode) === 1 ? $countryCode : '';
     }
 }

@@ -9,6 +9,16 @@ CREATE TABLE tx_events2_domain_model_event
 );
 
 #
+# Table structure for table 'tx_events2_domain_model_location'
+#
+CREATE TABLE tx_events2_domain_model_location
+(
+	# ISO 3166-1 alpha-2 code. 3 chars, as the upgrade wizard has to read
+	# the former UIDs of static_countries (up to 3 digits) after the schema update.
+	country varchar(3) DEFAULT '' NOT NULL
+);
+
+#
 # Table structure for table 'tx_events2_domain_model_day'
 #
 CREATE TABLE tx_events2_domain_model_day

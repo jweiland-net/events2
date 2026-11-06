@@ -31,12 +31,10 @@ class RebuildCommandTest extends FunctionalTestCase
     private int $eventUid = 0;
 
     protected array $coreExtensionsToLoad = [
-        'extensionmanager',
         'reactions',
     ];
 
     protected array $testExtensionsToLoad = [
-        'sjbr/static-info-tables',
         'jweiland/events2',
     ];
 
