@@ -27,8 +27,8 @@ use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 
 #[AsCommand(
     name: 'events2:rebuild',
-    description: 'Re-creates the day records of all current and future events. '
-        . 'Truncates the day table first, unless option --no-truncate is set.',
+    description: 'Re-creates the day records of all current and future events event by event. '
+        . 'Use option --truncate to delete all day records first.',
 )]
 class RebuildCommand extends Command
 {
@@ -47,19 +47,21 @@ class RebuildCommand extends Command
     protected function configure(): void
     {
         $this->setHelp(
-            'Executing this command will TRUNCATE (delete) all records from day table. '
-            . 'Afterwards, it searches for each current and future event and re-creates all day records again. '
-            . 'If you have any problems with created day records, this command is the first place to start. '
-            . 'Please be careful running this command as a CronJob each day, as for the time it runs, there '
-            . 'may no events visible in frontend. For recurring executions (CronJob, Scheduler) please use '
-            . 'option --no-truncate. It keeps the day table and re-creates the day records event by event.',
+            'This command searches for each current and future event and re-creates its day records. '
+            . 'The events stay visible in frontend while the command is running, so it can be used for '
+            . 'recurring executions (CronJob, Scheduler). If you have any problems with created day records, '
+            . 'this command is the first place to start. With option --truncate all records of the day table '
+            . 'will be deleted (TRUNCATE) first. Please do not use this option for recurring executions, as '
+            . 'there may be no events visible in frontend while the command is running. If the day records of '
+            . 'an event can not be created, the command continues with the next event, lists all failed events '
+            . 'at the end and returns a failure exit code.',
         );
         $this->addOption(
-            'no-truncate',
+            'truncate',
             null,
             InputOption::VALUE_NONE,
-            'Do not truncate the day table. The day records will be re-created event by event, '
-            . 'so the events stay visible in frontend while the command is running.',
+            'Delete (TRUNCATE) all records of the day table before re-creating the day records. '
+            . 'Events will not be visible in frontend until their day records have been re-created.',
         );
     }
 
@@ -70,11 +72,11 @@ class RebuildCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        if ($input->getOption('no-truncate')) {
-            $io->title('Recreating Day Records: Rebuilding day records event by event');
-        } else {
+        if ($input->getOption('truncate')) {
             $io->title('Recreating Day Records: Truncating and Rebuilding Day-Table');
             $this->truncateDayTable($io);
+        } else {
+            $io->title('Recreating Day Records: Rebuilding day records event by event');
         }
 
         $errors = $this->reGenerateDayRelations($io);
