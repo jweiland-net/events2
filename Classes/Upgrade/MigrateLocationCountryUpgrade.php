@@ -26,6 +26,9 @@ use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
  * EXT:static_info_tables does not need to be installed, but its table "static_countries" has to exist.
  * If the database analyzer has already renamed the table to "zzz_deleted_static_countries"
  * (after removing EXT:static_info_tables), the renamed table will be used as fallback.
+ *
+ * TODO: Change column "country" to varchar(2) with next major version, when all installations
+ *       have run the upgrade wizard events2_migrateLocationCountry
  */
 #[UpgradeWizard('events2_migrateLocationCountry')]
 final class MigrateLocationCountryUpgrade implements UpgradeWizardInterface, ChattyInterface
