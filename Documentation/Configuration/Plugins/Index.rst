@@ -7,6 +7,10 @@
 Plugins
 ========
 
+If a setting of a plugin is empty (`""` or `"0"`), the value of the
+TypoScript setup is used instead. See
+:confval:`ignoreFlexFormSettingsIfEmpty <events2-typoscript-ignoreflexformsettingsifempty>`.
+
 List all events
 ===============
 
