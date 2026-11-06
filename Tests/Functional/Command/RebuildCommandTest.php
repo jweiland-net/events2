@@ -67,21 +67,21 @@ class RebuildCommandTest extends FunctionalTestCase
     }
 
     #[Test]
-    public function executeTruncatesDayTableAndCreatesDayRecords(): void
+    public function executeWithTruncateTruncatesDayTableAndCreatesDayRecords(): void
     {
         $commandTester = new CommandTester($this->get(RebuildCommand::class));
 
-        self::assertSame(Command::SUCCESS, $commandTester->execute([]));
+        self::assertSame(Command::SUCCESS, $commandTester->execute(['--truncate' => true]));
         self::assertSame(0, $this->countDayRecordsOfEvent(self::ORPHANED_EVENT_UID));
         self::assertSame(1, $this->countDayRecordsOfEvent($this->eventUid));
     }
 
     #[Test]
-    public function executeWithNoTruncateKeepsDayTableAndCreatesDayRecords(): void
+    public function executeKeepsDayTableAndCreatesDayRecords(): void
     {
         $commandTester = new CommandTester($this->get(RebuildCommand::class));
 
-        self::assertSame(Command::SUCCESS, $commandTester->execute(['--no-truncate' => true]));
+        self::assertSame(Command::SUCCESS, $commandTester->execute([]));
         self::assertSame(1, $this->countDayRecordsOfEvent(self::ORPHANED_EVENT_UID));
         self::assertSame(1, $this->countDayRecordsOfEvent($this->eventUid));
     }
@@ -99,8 +99,8 @@ class RebuildCommandTest extends FunctionalTestCase
     public static function inputDataProvider(): array
     {
         return [
-            'with truncate' => [[]],
-            'without truncate' => [['--no-truncate' => true]],
+            'without truncate' => [[]],
+            'with truncate' => [['--truncate' => true]],
         ];
     }
 
