@@ -86,4 +86,18 @@ class CreateYoutubeUriViewHelperTest extends FunctionalTestCase
 
         self::assertEquals($expectedEmbedUrl, $output);
     }
+
+    #[Test]
+    public function renderWithLinkArgumentReturnsEmbedUrl(): void
+    {
+        $context = $this->get(RenderingContextFactory::class)->create();
+        $context->getVariableProvider()->add('youtubeLink', 'https://www.youtube.com/watch?v=Sql0rc86rQ8');
+        $context->getTemplatePaths()->setTemplateSource('
+            {namespace e2=JWeiland\Events2\ViewHelpers}
+            {e2:createYoutubeUri(link: youtubeLink)}');
+
+        $view = new TemplateView($context);
+
+        self::assertSame('//www.youtube.com/embed/Sql0rc86rQ8', trim($view->render()));
+    }
 }
