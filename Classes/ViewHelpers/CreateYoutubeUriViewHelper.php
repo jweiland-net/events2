@@ -26,9 +26,13 @@ final class CreateYoutubeUriViewHelper extends AbstractViewHelper
         $this->registerArgument(
             'link',
             'string',
-            'Insert the YouTube-Link',
-            true,
+            'The YouTube link or ID. If not set, the tag content will be used',
         );
+    }
+
+    public function getContentArgumentName(): string
+    {
+        return 'link';
     }
 
     /**
@@ -38,9 +42,7 @@ final class CreateYoutubeUriViewHelper extends AbstractViewHelper
      */
     public function render(): string
     {
-        // If the 'link' argument is null,
-        // try to get value from tag content {link -> e2:createYoutubeUri()}
-        $link = $this->arguments['link'] ?? $this->renderChildren();
+        $link = $this->renderChildren();
 
         if ($link === null) {
             return '';
