@@ -20,6 +20,7 @@ use JWeiland\Events2\Utility\DateTimeUtility;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Log\Logger;
+use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -64,6 +65,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             new DateTimeUtility(),
             GeneralUtility::makeInstance(EventDispatcher::class),
             $loggerMock,
+            $this->get(TcaSchemaFactory::class),
         );
 
         self::assertSame(
@@ -98,6 +100,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             new DateTimeUtility(),
             GeneralUtility::makeInstance(EventDispatcher::class),
             $loggerMock,
+            $this->get(TcaSchemaFactory::class),
         );
 
         self::assertSame(
@@ -140,6 +143,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             new DateTimeUtility(),
             GeneralUtility::makeInstance(EventDispatcher::class),
             $loggerMock,
+            $this->get(TcaSchemaFactory::class),
         );
 
         self::assertSame(
@@ -182,6 +186,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             new DateTimeUtility(),
             GeneralUtility::makeInstance(EventDispatcher::class),
             $loggerMock,
+            $this->get(TcaSchemaFactory::class),
         );
 
         self::assertSame(
@@ -223,6 +228,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             new DateTimeUtility(),
             GeneralUtility::makeInstance(EventDispatcher::class),
             $loggerMock,
+            $this->get(TcaSchemaFactory::class),
         );
 
         self::assertSame(
@@ -258,6 +264,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             new DateTimeUtility(),
             GeneralUtility::makeInstance(EventDispatcher::class),
             self::createStub(Logger::class),
+            $this->get(TcaSchemaFactory::class),
         );
 
         $dateTimeEntries = $subject
@@ -299,6 +306,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             new DateTimeUtility(),
             GeneralUtility::makeInstance(EventDispatcher::class),
             self::createStub(Logger::class),
+            $this->get(TcaSchemaFactory::class),
         );
 
         $expectedDays = [];
@@ -342,6 +350,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             new DateTimeUtility(),
             GeneralUtility::makeInstance(EventDispatcher::class),
             self::createStub(Logger::class),
+            $this->get(TcaSchemaFactory::class),
         );
 
         $dateTimeEntries = $subject
@@ -379,6 +388,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             new DateTimeUtility(),
             GeneralUtility::makeInstance(EventDispatcher::class),
             self::createStub(Logger::class),
+            $this->get(TcaSchemaFactory::class),
         );
 
         $expectedDays = [];
@@ -456,6 +466,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             new DateTimeUtility(),
             GeneralUtility::makeInstance(EventDispatcher::class),
             self::createStub(Logger::class),
+            $this->get(TcaSchemaFactory::class),
         );
 
         $dateTimeResults = $subject
@@ -508,6 +519,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             new DateTimeUtility(),
             GeneralUtility::makeInstance(EventDispatcher::class),
             self::createStub(Logger::class),
+            $this->get(TcaSchemaFactory::class),
         );
 
         $dateTimeEntries = $subject
@@ -557,6 +569,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             new DateTimeUtility(),
             GeneralUtility::makeInstance(EventDispatcher::class),
             self::createStub(Logger::class),
+            $this->get(TcaSchemaFactory::class),
         );
 
         self::assertEquals(
@@ -602,6 +615,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             new DateTimeUtility(),
             GeneralUtility::makeInstance(EventDispatcher::class),
             self::createStub(Logger::class),
+            $this->get(TcaSchemaFactory::class),
         );
 
         self::assertEquals(
@@ -647,6 +661,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             new DateTimeUtility(),
             GeneralUtility::makeInstance(EventDispatcher::class),
             self::createStub(Logger::class),
+            $this->get(TcaSchemaFactory::class),
         );
 
         self::assertEquals(
@@ -684,6 +699,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             new DateTimeUtility(),
             GeneralUtility::makeInstance(EventDispatcher::class),
             self::createStub(Logger::class),
+            $this->get(TcaSchemaFactory::class),
         );
 
         self::assertEquals(
@@ -740,6 +756,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             new DateTimeUtility(),
             GeneralUtility::makeInstance(EventDispatcher::class),
             self::createStub(Logger::class),
+            $this->get(TcaSchemaFactory::class),
         );
 
         self::assertEquals(
@@ -801,6 +818,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             new DateTimeUtility(),
             GeneralUtility::makeInstance(EventDispatcher::class),
             self::createStub(Logger::class),
+            $this->get(TcaSchemaFactory::class),
         );
 
         self::assertEquals(
@@ -849,6 +867,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             new DateTimeUtility(),
             GeneralUtility::makeInstance(EventDispatcher::class),
             self::createStub(Logger::class),
+            $this->get(TcaSchemaFactory::class),
         );
 
         self::assertEquals(
@@ -887,6 +906,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             new DateTimeUtility(),
             GeneralUtility::makeInstance(EventDispatcher::class),
             self::createStub(Logger::class),
+            $this->get(TcaSchemaFactory::class),
         );
 
         self::assertEquals(
@@ -935,6 +955,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             new DateTimeUtility(),
             GeneralUtility::makeInstance(EventDispatcher::class),
             self::createStub(Logger::class),
+            $this->get(TcaSchemaFactory::class),
         );
 
         self::assertEquals(
@@ -985,6 +1006,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             new DateTimeUtility(),
             GeneralUtility::makeInstance(EventDispatcher::class),
             self::createStub(Logger::class),
+            $this->get(TcaSchemaFactory::class),
         );
 
         self::assertEquals(
@@ -1033,6 +1055,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             new DateTimeUtility(),
             GeneralUtility::makeInstance(EventDispatcher::class),
             self::createStub(Logger::class),
+            $this->get(TcaSchemaFactory::class),
         );
 
         $dateTimeEntries = $subject
@@ -1080,6 +1103,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             new DateTimeUtility(),
             GeneralUtility::makeInstance(EventDispatcher::class),
             self::createStub(Logger::class),
+            $this->get(TcaSchemaFactory::class),
         );
 
         self::assertEquals(
@@ -1128,6 +1152,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             new DateTimeUtility(),
             GeneralUtility::makeInstance(EventDispatcher::class),
             self::createStub(Logger::class),
+            $this->get(TcaSchemaFactory::class),
         );
 
         self::assertEquals(
@@ -1175,6 +1200,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             new DateTimeUtility(),
             GeneralUtility::makeInstance(EventDispatcher::class),
             self::createStub(Logger::class),
+            $this->get(TcaSchemaFactory::class),
         );
 
         self::assertEquals(
@@ -1228,6 +1254,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             new DateTimeUtility(),
             GeneralUtility::makeInstance(EventDispatcher::class),
             self::createStub(Logger::class),
+            $this->get(TcaSchemaFactory::class),
         );
 
         self::assertEquals(
@@ -1278,6 +1305,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             new DateTimeUtility(),
             GeneralUtility::makeInstance(EventDispatcher::class),
             self::createStub(Logger::class),
+            $this->get(TcaSchemaFactory::class),
         );
 
         self::assertEquals(
@@ -1333,6 +1361,7 @@ class DayGeneratorServiceTest extends FunctionalTestCase
             new DateTimeUtility(),
             GeneralUtility::makeInstance(EventDispatcher::class),
             $loggerMock,
+            $this->get(TcaSchemaFactory::class),
         );
 
         self::assertEquals(

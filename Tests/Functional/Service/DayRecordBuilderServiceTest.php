@@ -23,6 +23,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Log\Logger;
+use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 use TYPO3\CMS\Core\Versioning\VersionState;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -68,6 +69,7 @@ class DayRecordBuilderServiceTest extends FunctionalTestCase
             new DateTimeUtility(),
             self::createStub(EventDispatcher::class),
             self::createStub(Logger::class),
+            $this->get(TcaSchemaFactory::class),
         );
 
         $this->subject = new DayRecordBuilderService();
