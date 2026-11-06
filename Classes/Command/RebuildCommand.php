@@ -14,12 +14,17 @@ namespace JWeiland\Events2\Command;
 use Doctrine\DBAL\Exception;
 use JWeiland\Events2\Service\DatabaseService;
 use JWeiland\Events2\Service\DayRelationService;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand(
+    name: 'events2:rebuild',
+    description: 'This command will TRUNCATE (delete) all day records found in day table and will re-create all day records afterwards',
+)]
 class RebuildCommand extends Command
 {
     /**
@@ -34,7 +39,7 @@ class RebuildCommand extends Command
 
     protected function configure(): void
     {
-        $this->setDescription(
+        $this->setHelp(
             'Executing this command will TRUNCATE (delete) all records from day table. '
             . 'Afterwards, it searches for each current and future event and re-creates all day records again. '
             . 'If you have any problems with created day records, this command is the first place to start. '

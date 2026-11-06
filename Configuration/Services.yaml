@@ -110,17 +110,3 @@ services:
   # Called by makeInstance in event model where constructors are not loaded in some cases
   JWeiland\Events2\Utility\DateTimeUtility:
     public: true
-
-  # Register CLI commands
-  JWeiland\Events2\Command\RebuildCommand:
-    tags:
-    - name: 'console.command'
-      command: 'events2:rebuild'
-      description: 'This command will TRUNCATE (delete) all day records found in day table and will re-create all day records afterwards'
-      schedulable: true
-  JWeiland\Events2\Command\ExportEventsCommand:
-    tags:
-    - name: 'console.command'
-      command: 'events2:export'
-      description: 'This command will prepare events2 records for export to by imported via another TYPO3 instance with activated EXT:reactions'
-      schedulable: true
