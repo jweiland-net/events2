@@ -58,7 +58,7 @@ class DayController extends AbstractController
     {
         $filter ??= GeneralUtility::makeInstance(Filter::class);
         $amountOfRecordsToShow = 0;
-        if ($this->settings['listType'] === 'listLatest') {
+        if (($this->settings['listType'] ?? 'list') === 'listLatest') {
             $amountOfRecordsToShow = (int)$this->settings['latest']['amountOfRecordsToShow'];
         }
 

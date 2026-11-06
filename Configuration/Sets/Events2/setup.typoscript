@@ -25,6 +25,27 @@ plugin.tx_events2_searchform.view.pluginNamespace = tx_events2_searchresults
 plugin.tx_events2_search.mvc.callDefaultActionIfActionCantBeResolved = 1
 
 plugin.tx_events2 {
+  # Use the TypoScript value of these settings, if the related FlexForm value is empty ("" or "0").
+  # To add settings of your own FlexForm fields use:
+  # plugin.tx_events2.ignoreFlexFormSettingsIfEmpty := addToList(mySetting)
+  ignoreFlexFormSettingsIfEmpty (
+    categories,
+    display,
+    latest.amountOfRecordsToShow,
+    listType,
+    mainCategories,
+    mergeEventsAtSameDay,
+    mergeRecurringEvents,
+    new.selectableCategoriesForNewEvents,
+    pidOfDetailPage,
+    pidOfListPage,
+    pidOfLocationPage,
+    pidOfManagementPage,
+    pidOfSearchResults,
+    preFilterByOrganizer,
+    showFilterForOrganizerInFrontend
+  )
+
   view {
     templateRootPaths {
       0 = EXT:events2/Resources/Private/Templates/
