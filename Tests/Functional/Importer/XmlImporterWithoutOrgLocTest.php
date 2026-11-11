@@ -17,12 +17,15 @@ use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Domain\Repository\OrganizerRepository;
 use JWeiland\Events2\Helper\PathSegmentHelper;
+use JWeiland\Events2\Importer\EventRecordBuilder;
 use JWeiland\Events2\Importer\XmlImporter;
 use JWeiland\Events2\Tests\Functional\Events2Constants;
 use JWeiland\Events2\Utility\DateTimeUtility;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
+use TYPO3\CMS\Core\DataHandling\SlugHelper;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
@@ -94,6 +97,85 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
         );
     }
 
+    #[Test]
+    public function importUsesFieldsOfTcaGeneratorOptionsForPathSegment(): void
+    {
+        $this->overrideGeneratorOptions(['fields' => ['title', 'event_type']]);
+
+        self::assertTrue($this->importFile('SuccessMissingOrganizerLocation.xml'));
+
+        self::assertSame(
+            ['einfacher-termin-single', 'wiederkehrender-termin-recurring', 'durchgaengiger-termin-duration'],
+            $this->getPathSegmentsOrderedByUid(),
+        );
+        $this->assertPathSegmentsEqualSlugsOfStoredRecords();
+    }
+
+    #[Test]
+    public function importPassesCompleteEventRecordToPostModifiersOfTca(): void
+    {
+        $this->overrideGeneratorOptions([
+            'postModifiers' => [
+                static fn(array $parameters): string => $parameters['slug']
+                    . '-' . $parameters['record']['event_type']
+                    . '-' . date('Y-m-d', (int)$parameters['record']['event_begin']),
+            ],
+        ]);
+
+        self::assertTrue($this->importFile('SuccessMissingOrganizerLocation.xml'));
+
+        self::assertSame(
+            [
+                'einfacher-termin-single-2030-11-11',
+                'wiederkehrender-termin-recurring-2030-11-11',
+                'durchgaengiger-termin-duration-2030-11-18',
+            ],
+            $this->getPathSegmentsOrderedByUid(),
+        );
+        $this->assertPathSegmentsEqualSlugsOfStoredRecords();
+    }
+
+    /**
+     * @param array<string, mixed> $generatorOptions
+     */
+    private function overrideGeneratorOptions(array $generatorOptions): void
+    {
+        $slugConfiguration = &$GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['path_segment']['config'];
+        $slugConfiguration['generatorOptions'] = array_replace($slugConfiguration['generatorOptions'], $generatorOptions);
+        unset($slugConfiguration);
+        $this->get(TcaSchemaFactory::class)->rebuild($GLOBALS['TCA']);
+    }
+
+    /**
+     * The DataHandler generates the slug of a stored record from the
+     * database record. The XML import must result in the same slug.
+     */
+    private function assertPathSegmentsEqualSlugsOfStoredRecords(): void
+    {
+        $slugHelper = GeneralUtility::makeInstance(
+            SlugHelper::class,
+            'tx_events2_domain_model_event',
+            'path_segment',
+            $GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['path_segment']['config'],
+        );
+
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_event');
+        $queryBuilder->getRestrictions()->removeByType(HiddenRestriction::class);
+        $storedRecords = $queryBuilder
+            ->select('*')
+            ->from('tx_events2_domain_model_event')
+            ->executeQuery()
+            ->fetchAllAssociative();
+
+        self::assertNotEmpty($storedRecords);
+        foreach ($storedRecords as $storedRecord) {
+            self::assertSame(
+                $slugHelper->generate($storedRecord, (int)$storedRecord['pid']),
+                $storedRecord['path_segment'],
+            );
+        }
+    }
+
     private function importFile(string $fileName): bool
     {
         $fileObject = GeneralUtility::makeInstance(ResourceFactory::class)
@@ -112,6 +194,7 @@ class XmlImporterWithoutOrgLocTest extends FunctionalTestCase
                 organizerIsRequired: false,
                 locationIsRequired: false,
             ),
+            $this->get(EventRecordBuilder::class),
         );
 
         $xmlImporter->setFile($fileObject);

@@ -1,0 +1,6 @@
+"tx_events2_domain_model_location"
+,"uid","pid","location"
+,1,20,"Cinema"
+"tx_events2_domain_model_event"
+,"uid","pid","sys_language_uid","l10n_parent","hidden","starttime","endtime","event_type","top_of_list","title","path_segment","teaser","event_begin","event_end","recurring_end","same_day","xth","weekday","each_weeks","each_months","detail_information","attendance_mode","free_entry","import_id","location","organizers"
+,1,20,0,0,0,1714514400,0,"recurring",1,"Weekly market","weekly-market","Fresh vegetables",1715292000,0,1735599600,1,31,16,0,0,"Every friday",1,1,"market-1",1,0

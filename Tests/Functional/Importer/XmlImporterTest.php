@@ -17,6 +17,7 @@ use JWeiland\Events2\Domain\Repository\EventRepository;
 use JWeiland\Events2\Domain\Repository\LocationRepository;
 use JWeiland\Events2\Domain\Repository\OrganizerRepository;
 use JWeiland\Events2\Helper\PathSegmentHelper;
+use JWeiland\Events2\Importer\EventRecordBuilder;
 use JWeiland\Events2\Importer\XmlImporter;
 use JWeiland\Events2\Tests\Functional\Events2Constants;
 use JWeiland\Events2\Utility\DateTimeUtility;
@@ -25,6 +26,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
@@ -115,6 +117,7 @@ class XmlImporterTest extends FunctionalTestCase
             $this->get(PathSegmentHelper::class),
             new DateTimeUtility(),
             $this->extConf,
+            $this->get(EventRecordBuilder::class),
         );
     }
 
@@ -156,6 +159,42 @@ class XmlImporterTest extends FunctionalTestCase
     }
 
     #[Test]
+    public function importPassesRelationsOfEventToPostModifiersOfTca(): void
+    {
+        $slugConfiguration = &$GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['path_segment']['config'];
+        $slugConfiguration['generatorOptions']['postModifiers'][] = static fn(array $parameters): string
+            => $parameters['slug']
+            . '-location-' . $parameters['record']['location']
+            . '-organizers-' . str_replace(',', '-', $parameters['record']['organizers'])
+            . '-categories-' . $parameters['record']['categories'];
+        unset($slugConfiguration);
+        $this->get(TcaSchemaFactory::class)->rebuild($GLOBALS['TCA']);
+
+        $fileObject = GeneralUtility::makeInstance(ResourceFactory::class)
+            ->retrieveFileOrFolderObject('EXT:events2/Tests/Functional/Fixtures/XmlImport/Success.xml');
+        $this->subject->setFile($fileObject);
+        $this->subject->setStoragePid(Events2Constants::PAGE_STORAGE);
+
+        self::assertTrue($this->subject->import());
+
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_events2_domain_model_event');
+        $queryBuilder->getRestrictions()->removeByType(HiddenRestriction::class);
+        self::assertSame(
+            [
+                'einfacher-termin-location-1-organizers-1-2-categories-2',
+                'wiederkehrender-termin-location-1-organizers-1-categories-2',
+                'durchgaengiger-termin-location-1-organizers-2-categories-2',
+            ],
+            $queryBuilder
+                ->select('path_segment')
+                ->from('tx_events2_domain_model_event')
+                ->orderBy('uid', 'ASC')
+                ->executeQuery()
+                ->fetchFirstColumn(),
+        );
+    }
+
+    #[Test]
     public function importEventWithMissingCategoryEntryWillResultInErrorInMessagesTxt(): void
     {
         $fileObject = GeneralUtility::makeInstance(ResourceFactory::class)
@@ -193,6 +232,7 @@ class XmlImporterTest extends FunctionalTestCase
             $this->get(PathSegmentHelper::class),
             new DateTimeUtility(),
             $this->extConf,
+            $this->get(EventRecordBuilder::class),
         );
 
         $this->subject->setFile($fileObject);
@@ -245,6 +285,7 @@ class XmlImporterTest extends FunctionalTestCase
             $this->get(PathSegmentHelper::class),
             new DateTimeUtility(),
             $this->extConf,
+            $this->get(EventRecordBuilder::class),
         );
 
         $this->subject->setFile($fileObject);
@@ -280,6 +321,7 @@ class XmlImporterTest extends FunctionalTestCase
             $this->get(PathSegmentHelper::class),
             new DateTimeUtility(),
             $this->extConf,
+            $this->get(EventRecordBuilder::class),
         );
 
         $this->subject->setFile($fileObject);
@@ -328,6 +370,7 @@ class XmlImporterTest extends FunctionalTestCase
             $this->get(PathSegmentHelper::class),
             new DateTimeUtility(),
             $this->extConf,
+            $this->get(EventRecordBuilder::class),
         );
 
         $this->subject->setFile($fileObject);
@@ -396,6 +439,7 @@ class XmlImporterTest extends FunctionalTestCase
             $this->get(PathSegmentHelper::class),
             new DateTimeUtility(),
             $this->extConf,
+            $this->get(EventRecordBuilder::class),
         );
 
         $this->subject->setFile($fileObject);
