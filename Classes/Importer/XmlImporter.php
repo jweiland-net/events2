@@ -73,6 +73,7 @@ class XmlImporter
         protected readonly PathSegmentHelper $pathSegmentHelper,
         protected readonly DateTimeUtility $dateTimeUtility,
         protected readonly ExtConf $extConf,
+        protected readonly EventRecordBuilder $eventRecordBuilder,
     ) {
         $this->today = new \DateTimeImmutable('now');
     }
@@ -311,15 +312,14 @@ class XmlImporter
 
     /**
      * The path segment is generated before the event is stored. So, a new event
-     * is inserted with its path segment in one go.
+     * is inserted with its path segment in one go. The slug generation gets the
+     * complete event record like in DataHandler.
      */
     protected function addPathSegment(Event $event): void
     {
-        $event->setPathSegment($this->pathSegmentHelper->generatePathSegment([
-            'uid' => (int)$event->getUid(),
-            'pid' => (int)$event->getPid(),
-            'title' => $event->getTitle(),
-        ]));
+        $event->setPathSegment(
+            $this->pathSegmentHelper->generatePathSegment($this->eventRecordBuilder->buildRecord($event)),
+        );
     }
 
     protected function addDateProperties(Event $event, array $eventRecord): void
