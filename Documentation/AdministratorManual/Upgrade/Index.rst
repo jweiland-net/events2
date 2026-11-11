@@ -472,11 +472,27 @@ post modifier is called before the uniqueness check, so a suffix like
     :language: php
     :caption: EXT:my_sitepackage/Classes/Slug/EventSlugModifier.php
 
+The XML import also passes the complete event record to the slug
+generation, so `generatorOptions.fields` and `postModifiers` get the same
+data as in the backend and in the frontend form:
+
+*   the columns of the event incl. `pid`, `sys_language_uid`,
+    `l10n_parent` and `hidden`
+*   date columns as timestamp, or as formatted date for TCA `dbType`
+    `date` and `datetime`, like the DataHandler stores them
+*   `location` as UID, `organizers` and `categories` as comma-separated
+    UIDs
+*   `uid` only for events, which are already stored
+
+Inline and file relations (times, exceptions, links, images and days)
+are not part of the record.
+
 ..  note::
 
-    Depending on the context, `$parameters['record']` does not contain
-    all columns of the event. The XML import passes the columns `uid`,
-    `pid` and `title` only. Use a fallback for all other columns.
+    In the backend, the DataHandler generates the slug from the submitted
+    values. Date columns may still contain the date string of the form
+    instead of a timestamp there. Use a fallback like :php:`?? ''` and
+    prefer columns with the same value in all contexts like `event_type`.
 
 ..  _upgrade-12-0-0-templates:
 
@@ -768,6 +784,11 @@ before you store a new event instead. The method
 :php:`JWeiland\Events2\Configuration\ExtConf::getPathSegmentType()` has
 been removed, too.
 
+The new class :php:`JWeiland\Events2\Importer\EventRecordBuilder`
+builds the event record of an event model for the slug generation with
+:php:`buildRecord(Event $event): array`. It uses the values in memory
+only and does not query the database.
+
 :php:`JWeiland\Events2\Service\EventModerationService` has been merged
 into :php:`JWeiland\Events2\Service\ManagementAccessService`. It
 contains all rules of the frontend management and provides this public
@@ -873,6 +894,9 @@ injection:
     as last argument.
 *   :php:`JWeiland\Events2\Helper\PathSegmentHelper`: The
     :php:`TcaSchemaFactory` of TYPO3 as only argument.
+*   :php:`JWeiland\Events2\Importer\XmlImporter`: The new
+    :php:`JWeiland\Events2\Importer\EventRecordBuilder` as last
+    argument. Only relevant, if you instantiate or extend the importer.
 
 The commands `events2:rebuild` and `events2:export` are registered with
 the attribute :php:`#[AsCommand]` instead of tags in
