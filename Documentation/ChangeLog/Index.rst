@@ -115,6 +115,14 @@ This version contains breaking changes, please read
 *   [!!!][TASK] Read the TCA with the TCA Schema API of TYPO3. Some
     classes got the :php:`TcaSchemaFactory` as new constructor argument.
     See :ref:`upgrade-12-0-0-developer`.
+*   [!!!][TASK] Generate the path segment of events with the TCA
+    configuration of `path_segment` like the DataHandler. The extension
+    setting `pathSegmentType`, :php:`GeneratePathSegmentEvent`,
+    :php:`SlugPostModifierHook`, :php:`NoUniquePathSegmentException` and
+    :php:`PathSegmentHelper::updatePathSegmentForEvent()` are removed.
+    Existing path segments are kept, new ones follow the scheme `title`,
+    `title-1`. New events of the frontend form are stored in one
+    `INSERT`. See :ref:`upgrade-12-0-0-path-segment`.
 *   [TASK] Register the commands with the attribute :php:`#[AsCommand]`
     and remove obsolete entries from :file:`Services.yaml`.
 *   [DOCS] Describe the frontend management and its access rules, see

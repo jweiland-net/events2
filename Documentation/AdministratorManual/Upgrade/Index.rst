@@ -37,8 +37,8 @@ Please go through all steps below. Most of them are only relevant, if you
 use the Management plugin, have overridden templates, mail templates or
 labels, or use PHP classes of events2 in your own code. The steps
 :ref:`upgrade-12-0-0-before`, :ref:`upgrade-12-0-0-site-set`,
-:ref:`upgrade-12-0-0-country` and :ref:`upgrade-12-0-0-scheduler` are
-relevant for all installations.
+:ref:`upgrade-12-0-0-country`, :ref:`upgrade-12-0-0-scheduler` and
+:ref:`upgrade-12-0-0-path-segment` are relevant for all installations.
 
 ..  _upgrade-12-0-0-before:
 
@@ -57,7 +57,8 @@ events2 versions which are no longer supported:
 If one of them is still marked as necessary in
 :guilabel:`Admin Tools > Upgrade > Upgrade Wizard`, run it with an older
 version of events2 (for example 11.x) before you update to 12.0.0. The
-upgrade wizard `events2_updateSlug` is still available.
+upgrade wizard `events2_updateSlug` is still available, see
+:ref:`upgrade-12-0-0-path-segment`.
 
 ..  _upgrade-12-0-0-site-set:
 
@@ -396,6 +397,87 @@ form reads the UID from the query. Hidden events are mapped by Extbase for
 the action `confirmActivation` only (before: `edit`, `update` and
 `confirmActivation`).
 
+..  _upgrade-12-0-0-path-segment:
+
+Path segments of events follow the TCA configuration
+----------------------------------------------------
+
+The extension setting `pathSegmentType` (`empty`, `realurl`, `uid`) has
+been removed. The path segment (slug) of an event is generated with the
+TCA configuration of the column `path_segment` of the table
+`tx_events2_domain_model_event` only, see
+:ref:`TCA type slug <t3tca:columns-slug>`. This applies to the backend,
+the event form in the frontend, the XML and JSON import and the upgrade
+wizard `events2_updateSlug`. By default, the slug is built from the
+title and has to be unique in the table (`eval = unique`).
+
+*   Existing path segments are not changed. The URLs of existing events
+    stay the same, also if you used `realurl` or `uid` before.
+*   New path segments follow the scheme of TYPO3: `title`, `title-1`,
+    `title-2` and so on. A new event of the frontend form is stored with
+    its path segment in one `INSERT`.
+*   The upgrade wizard `events2_updateSlug` fills empty path segments
+    only. Like in TYPO3, events with an empty title get a path segment
+    like `default-` followed by a hash.
+
+Remove the setting `pathSegmentType` from your deployed configuration,
+for example in :file:`config/system/settings.php`, if you have set it
+there.
+
+..  _upgrade-12-0-0-path-segment-uid:
+
+Add the UID of an event to the URL
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Adding `uid` to the `generatorOptions.fields` of `path_segment` does not
+work for new events. The path segment is generated before the event is
+stored (also by the DataHandler in the backend), so there is no UID yet.
+
+If you need the UID in the URL, map the UID instead of the path segment
+in the aspect of your route enhancer, see
+:ref:`t3coreapi:routing-aspect-persistedaliasmapper` and
+:ref:`t3coreapi:routing-aspect-persistedpatternmapper`:
+
+..  code-block:: yaml
+    :caption: config/sites/my-site/config.yaml (excerpt)
+
+    aspects:
+      event_title:
+        type: PersistedPatternMapper
+        tableName: tx_events2_domain_model_event
+        routeFieldPattern: '^(?P<path_segment>.+)-(?P<uid>\d+)$'
+        routeFieldResult: '{path_segment}-{uid}'
+
+To show the UID only, set `routeFieldName: uid` in your existing aspect.
+The :php:`PersistedHiddenAliasMapper` of events2 for the routes of the
+Management plugin supports this, too.
+
+..  _upgrade-12-0-0-path-segment-modifier:
+
+Modify the generated path segment
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The PSR-14 event :php:`JWeiland\Events2\Event\GeneratePathSegmentEvent`
+has been removed. Register a post modifier of TYPO3 in the
+`generatorOptions` of `path_segment` instead, see
+:confval:`postModifiers <t3tca:slug-generatoroptions-postmodifiers>`. The
+post modifier is called before the uniqueness check, so a suffix like
+`-1` is appended to the modified path segment, if needed.
+
+..  literalinclude:: _snippets/_tx_events2_domain_model_event.php
+    :language: php
+    :caption: EXT:my_sitepackage/Configuration/TCA/Overrides/tx_events2_domain_model_event.php
+
+..  literalinclude:: _snippets/_EventSlugModifier.php
+    :language: php
+    :caption: EXT:my_sitepackage/Classes/Slug/EventSlugModifier.php
+
+..  note::
+
+    Depending on the context, `$parameters['record']` does not contain
+    all columns of the event. The XML import passes the columns `uid`,
+    `pid` and `title` only. Use a fallback for all other columns.
+
 ..  _upgrade-12-0-0-templates:
 
 Check your template overrides
@@ -671,6 +753,20 @@ The following classes have been removed without replacement:
     :ref:`upgrade-12-0-0-before`
 *   The ViewHelpers :php:`ConvertToJsonViewHelper` and
     :php:`CropStringViewHelper`, see :ref:`upgrade-12-0-0-viewhelpers`
+*   The PSR-14 event :php:`JWeiland\Events2\Event\GeneratePathSegmentEvent`,
+    the hook :php:`JWeiland\Events2\Hook\SlugPostModifierHook` and
+    :php:`JWeiland\Events2\Helper\Exception\NoUniquePathSegmentException`.
+    Use `postModifiers` in TCA, see
+    :ref:`upgrade-12-0-0-path-segment-modifier`.
+
+:php:`JWeiland\Events2\Helper\PathSegmentHelper` contains the method
+:php:`generatePathSegment(array $record): string` only. It generates the
+path segment like the DataHandler, also for records without `uid`, and
+does not throw :php:`NoUniquePathSegmentException` anymore. The method
+:php:`updatePathSegmentForEvent()` has been removed. Set the path segment
+before you store a new event instead. The method
+:php:`JWeiland\Events2\Configuration\ExtConf::getPathSegmentType()` has
+been removed, too.
 
 :php:`JWeiland\Events2\Service\EventModerationService` has been merged
 into :php:`JWeiland\Events2\Service\ManagementAccessService`. It
@@ -769,13 +865,14 @@ injection:
 *   :php:`JWeiland\Events2\Helper\OverlayHelper`,
     :php:`JWeiland\Events2\Service\RichTextService`,
     :php:`JWeiland\Events2\Service\Record\EventRecordService`,
-    :php:`JWeiland\Events2\Helper\PathSegmentHelper`,
     :php:`JWeiland\Events2\Service\DayGeneratorService` and
     :php:`JWeiland\Events2\Hook\Form\PrefillCategoriesHook`: The
     :php:`TcaSchemaFactory` of TYPO3 as last argument. These classes read
     the TCA with the TCA Schema API instead of :php:`$GLOBALS['TCA']`.
 *   :php:`JWeiland\Events2\Command\RebuildCommand`: The runtime cache
     as last argument.
+*   :php:`JWeiland\Events2\Helper\PathSegmentHelper`: The
+    :php:`TcaSchemaFactory` of TYPO3 as only argument.
 
 The commands `events2:rebuild` and `events2:export` are registered with
 the attribute :php:`#[AsCommand]` instead of tags in
@@ -1108,6 +1205,11 @@ event records we had to update the constructor arguments of
 GeneratePathSegmentEvent. First argument has be be array of
 parameters we get from SlugHelper->generate and second argument
 is the SlugHelper itself.
+
+..  note::
+
+    :php:`GeneratePathSegmentEvent` has been removed with events2 12.0.0,
+    see :ref:`upgrade-12-0-0-path-segment-modifier`.
 
 Update to Version 9.0.4
 =======================
