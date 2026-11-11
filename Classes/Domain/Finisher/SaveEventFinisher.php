@@ -19,6 +19,7 @@ use JWeiland\Events2\Service\ManagementAccessService;
 use JWeiland\Events2\Service\RichTextService;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Form\Domain\Finishers\AbstractFinisher;
@@ -136,6 +137,7 @@ class SaveEventFinisher extends AbstractFinisher
             }
         } elseif ($table === 'tx_events2_domain_model_event') {
             $this->processEventTable($iterationCount);
+            $databaseData = $this->addPathSegmentToEvent($databaseData);
         } elseif ($table === 'sys_category_record_mm') {
             $databaseData = $this->saveDataForCategories($databaseData, $table, $iterationCount);
         } elseif ($table === 'tx_events2_event_organizer_mm' && ($databaseData['uid_local'] ?? false)) {
@@ -209,6 +211,55 @@ class SaveEventFinisher extends AbstractFinisher
                 'uid' => $uid,
             ];
         }
+    }
+
+    /**
+     * Like the DataHandler: a new event gets its path segment before the
+     * INSERT. An edited event keeps its path segment, only an empty path
+     * segment will be filled.
+     */
+    protected function addPathSegmentToEvent(array $databaseData): array
+    {
+        $storedEventRecord = [];
+        if ($this->options['mode'] === 'update') {
+            $storedEventRecord = $this->getStoredEventRecord($this->getEventUidToUpdate());
+            if ($storedEventRecord === []) {
+                return $databaseData;
+            }
+        }
+
+        $eventRecord = array_replace($storedEventRecord, $databaseData);
+        if (trim((string)($eventRecord['path_segment'] ?? '')) !== '') {
+            return $databaseData;
+        }
+
+        $databaseData['path_segment'] = $this->pathSegmentHelper->generatePathSegment($eventRecord);
+
+        return $databaseData;
+    }
+
+    /**
+     * The edited event may be hidden. Only deleted events are ignored.
+     */
+    protected function getStoredEventRecord(int $eventUid): array
+    {
+        if ($eventUid === 0) {
+            return [];
+        }
+
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('tx_events2_domain_model_event');
+        $queryBuilder->getRestrictions()->removeAll()->add(new DeletedRestriction());
+
+        $eventRecord = $queryBuilder
+            ->select('*')
+            ->from('tx_events2_domain_model_event')
+            ->where(
+                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($eventUid, Connection::PARAM_INT)),
+            )
+            ->executeQuery()
+            ->fetchAssociative();
+
+        return is_array($eventRecord) ? $eventRecord : [];
     }
 
     protected function processSysFileReferenceTable(
@@ -509,24 +560,6 @@ class SaveEventFinisher extends AbstractFinisher
                     $this->shortFinisherIdentifier,
                     'insertedUids.tx_events2_domain_model_event',
                     $lastInsertId,
-                );
-            }
-
-            // Update slug for event record
-            if (
-                $table === 'tx_events2_domain_model_event'
-                && array_key_exists('title', $databaseData)
-                && $databaseData['title'] !== ''
-            ) {
-                $databaseData['uid'] = $lastInsertId;
-                $this->getConnectionForTable('tx_events2_domain_model_event')->update(
-                    'tx_events2_domain_model_event',
-                    [
-                        'path_segment' => $this->pathSegmentHelper->generatePathSegment($databaseData),
-                    ],
-                    [
-                        'uid' => $lastInsertId,
-                    ],
                 );
             }
         }

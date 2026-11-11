@@ -11,32 +11,27 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Upgrade;
 
-use JWeiland\Events2\Configuration\ExtConf;
 use JWeiland\Events2\Helper\PathSegmentHelper;
-use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Install\Attribute\UpgradeWizard;
 use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
 use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 
 /**
- * Updater to fill empty slug columns of event records
+ * Fills empty slug columns of event records. Existing slugs are kept.
  */
 #[UpgradeWizard('events2_updateSlug')]
-class EventsSlugUpgrade implements UpgradeWizardInterface
+final readonly class EventsSlugUpgrade implements UpgradeWizardInterface
 {
-    protected string $tableName = 'tx_events2_domain_model_event';
+    private const TABLE = 'tx_events2_domain_model_event';
 
-    protected string $slugColumn = 'path_segment';
-
-    protected string $titleColumn = 'title';
+    private const SLUG_COLUMN = 'path_segment';
 
     public function __construct(
-        protected readonly PathSegmentHelper $pathSegmentHelper,
-        protected readonly ExtConf $extConf,
+        private PathSegmentHelper $pathSegmentHelper,
+        private ConnectionPool $connectionPool,
     ) {}
 
     public function getTitle(): string
@@ -51,114 +46,33 @@ class EventsSlugUpgrade implements UpgradeWizardInterface
 
     public function updateNecessary(): bool
     {
-        if ($this->extConf->getPathSegmentType() === 'empty') {
-            return false;
-        }
-
-        $queryBuilder = $this->getQueryBuilder();
-        $amountOfRecordsWithEmptySlug = $queryBuilder
+        return (bool)$this->getQueryBuilderForEmptySlugs()
             ->count('*')
             ->executeQuery()
             ->fetchOne();
-
-        return (bool)$amountOfRecordsWithEmptySlug;
     }
 
     /**
-     * Performs the accordant updates.
-     *
-     * @return bool Whether everything went smoothly or not
+     * Records are processed by UID. So, the first record keeps the slug
+     * of its title and following records with the same title get a suffix.
      */
     public function executeUpdate(): bool
     {
-        if ($this->extConf->getPathSegmentType() === 'empty') {
-            return false;
-        }
-
-        $queryBuilder = $this->getQueryBuilder();
-        $queryResult = $queryBuilder
-            ->select('uid', 'pid', $this->titleColumn)
+        $queryResult = $this->getQueryBuilderForEmptySlugs()
+            ->select('*')
+            ->orderBy('uid', 'ASC')
             ->executeQuery();
 
-        $connection = $this->getConnectionPool()->getConnectionForTable($this->tableName);
-        while ($recordToUpdate = $queryResult->fetchAssociative()) {
-            if ((string)$recordToUpdate[$this->titleColumn] !== '') {
-                $connection->update(
-                    $this->tableName,
-                    [
-                        $this->slugColumn => $this->pathSegmentHelper->generatePathSegment($recordToUpdate),
-                    ],
-                    [
-                        'uid' => (int)$recordToUpdate['uid'],
-                    ],
-                );
-            }
+        $connection = $this->connectionPool->getConnectionForTable(self::TABLE);
+        while ($eventRecord = $queryResult->fetchAssociative()) {
+            $connection->update(
+                self::TABLE,
+                [self::SLUG_COLUMN => $this->pathSegmentHelper->generatePathSegment($eventRecord)],
+                ['uid' => (int)$eventRecord['uid']],
+            );
         }
 
         return true;
-    }
-
-    protected function getQueryBuilder(): QueryBuilder
-    {
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($this->tableName);
-        $queryBuilder->getRestrictions()->removeAll();
-        $queryBuilder->getRestrictions()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
-
-        return $queryBuilder
-            ->from($this->tableName)
-            ->where(
-                $queryBuilder->expr()->or(
-                    $queryBuilder->expr()->eq(
-                        $this->slugColumn,
-                        $queryBuilder->createNamedParameter(''),
-                    ),
-                    $queryBuilder->expr()->isNull(
-                        $this->slugColumn,
-                    ),
-                ),
-            );
-    }
-
-    protected function getUniqueValue(int $uid, string $slug): string
-    {
-        $queryBuilder = $this->getUniqueSlugQueryBuilder($uid, $slug);
-        $statement = $queryBuilder->prepare();
-        $queryResult = $statement->executeQuery();
-        if ($queryResult->fetchOne()) {
-            for ($counter = 1; $counter <= 100; $counter++) {
-                $queryResult->free();
-                $newSlug = $slug . '-' . $counter;
-                $statement->bindValue(1, $newSlug);
-                $queryResult = $statement->executeQuery();
-                if (!$queryResult->fetchOne()) {
-                    break;
-                }
-            }
-            $queryResult->free();
-        }
-
-        return $newSlug ?? $slug;
-    }
-
-    protected function getUniqueSlugQueryBuilder(int $uid, string $slug): QueryBuilder
-    {
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($this->tableName);
-        $queryBuilder->getRestrictions()->removeAll();
-        $queryBuilder->getRestrictions()->add(GeneralUtility::makeInstance(DeletedRestriction::class));
-
-        return $queryBuilder
-            ->select('uid')
-            ->from($this->tableName)
-            ->where(
-                $queryBuilder->expr()->eq(
-                    $this->slugColumn,
-                    $queryBuilder->createPositionalParameter($slug),
-                ),
-                $queryBuilder->expr()->neq(
-                    'uid',
-                    $queryBuilder->createPositionalParameter($uid, Connection::PARAM_INT),
-                ),
-            );
     }
 
     /**
@@ -171,8 +85,18 @@ class EventsSlugUpgrade implements UpgradeWizardInterface
         ];
     }
 
-    protected function getConnectionPool(): ConnectionPool
+    private function getQueryBuilderForEmptySlugs(): QueryBuilder
     {
-        return GeneralUtility::makeInstance(ConnectionPool::class);
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable(self::TABLE);
+        $queryBuilder->getRestrictions()->removeAll()->add(new DeletedRestriction());
+
+        return $queryBuilder
+            ->from(self::TABLE)
+            ->where(
+                $queryBuilder->expr()->or(
+                    $queryBuilder->expr()->eq(self::SLUG_COLUMN, $queryBuilder->createNamedParameter('')),
+                    $queryBuilder->expr()->isNull(self::SLUG_COLUMN),
+                ),
+            );
     }
 }

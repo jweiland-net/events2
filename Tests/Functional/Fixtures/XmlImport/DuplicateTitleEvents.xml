@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<events>
+    <event index="0">
+        <event_type>single</event_type>
+        <title>Weekly market</title>
+        <teaser>First weekly market</teaser>
+        <event_begin>2030-11-11</event_begin>
+        <event_time>
+            <time_begin>08:00</time_begin>
+        </event_time>
+        <detail_information/>
+        <images/>
+        <categories/>
+    </event>
+
+    <event index="1">
+        <event_type>single</event_type>
+        <title>Weekly market</title>
+        <teaser>Second weekly market</teaser>
+        <event_begin>2030-11-18</event_begin>
+        <event_time>
+            <time_begin>08:00</time_begin>
+        </event_time>
+        <detail_information/>
+        <images/>
+        <categories/>
+    </event>
+</events>

@@ -11,17 +11,10 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Tests\Functional\Helper;
 
-use JWeiland\Events2\Configuration\ExtConf;
-use JWeiland\Events2\Helper\Exception\NoUniquePathSegmentException;
 use JWeiland\Events2\Helper\PathSegmentHelper;
 use JWeiland\Events2\Tests\Functional\Events2Constants;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\MockObject\MockObject;
-use TYPO3\CMS\Core\DataHandling\SlugHelper;
-use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
@@ -29,8 +22,6 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
  */
 class PathSegmentHelperTest extends FunctionalTestCase
 {
-    protected SlugHelper|MockObject $slugHelperMock;
-
     protected array $coreExtensionsToLoad = [
         'reactions',
     ];
@@ -50,80 +41,73 @@ class PathSegmentHelperTest extends FunctionalTestCase
         parent::setUp();
 
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/PathSegmentHelper.csv');
-
-        $this->slugHelperMock = $this->createMock(SlugHelper::class);
-    }
-
-    protected function tearDown(): void
-    {
-        unset(
-            $this->slugHelperMock,
-        );
-
-        parent::tearDown();
     }
 
     #[Test]
-    public function generatePathSegmentWithEmptyBaseRecordThrowsException(): void
+    public function generatePathSegmentForNewRecordReturnsSlugOfTitle(): void
     {
-        $this->slugHelperMock
-            ->expects(self::once())
-            ->method('generate')
-            ->with(
-                self::identicalTo([]),
-                self::identicalTo(0),
-            )
-            ->willReturn('');
-
-        GeneralUtility::addInstance(SlugHelper::class, $this->slugHelperMock);
-
-        $this->expectException(NoUniquePathSegmentException::class);
-
-        $subject = $this->getSubject(
-            new ExtConf(pathSegmentType: 'uid'),
+        self::assertSame(
+            'weekly-market',
+            $this->get(PathSegmentHelper::class)->generatePathSegment([
+                'pid' => Events2Constants::PAGE_STORAGE,
+                'title' => 'Weekly market',
+            ]),
         );
-
-        $subject->generatePathSegment([]);
     }
 
     #[Test]
-    public function generatePathSegmentWillReturnSlug(): void
+    public function generatePathSegmentForNewRecordWithExistingSlugAppendsIncrement(): void
     {
-        $baseRecord = [
-            'uid' => 2,
-            'pid' => Events2Constants::PAGE_STORAGE,
-            'title' => 'Weekly market',
-        ];
-
-        $this->slugHelperMock
-            ->expects(self::once())
-            ->method('generate')
-            ->with(
-                self::identicalTo($baseRecord),
-                self::identicalTo(20),
-            )
-            ->willReturn('weekly-market-2');
-
-        GeneralUtility::addInstance(SlugHelper::class, $this->slugHelperMock);
-
-        $subject = $this->getSubject(
-            new ExtConf(pathSegmentType: 'uid'),
+        self::assertSame(
+            'weekmarket-1',
+            $this->get(PathSegmentHelper::class)->generatePathSegment([
+                'pid' => Events2Constants::PAGE_STORAGE,
+                'title' => 'Weekmarket',
+            ]),
         );
+    }
+
+    #[Test]
+    public function generatePathSegmentForStoredRecordIgnoresOwnSlug(): void
+    {
+        self::assertSame(
+            'weekmarket',
+            $this->get(PathSegmentHelper::class)->generatePathSegment([
+                'uid' => 1,
+                'pid' => Events2Constants::PAGE_STORAGE,
+                'title' => 'Weekmarket',
+            ]),
+        );
+    }
+
+    #[Test]
+    public function generatePathSegmentForRecordOfOtherLanguageIgnoresSlugOfDefaultLanguage(): void
+    {
+        self::assertSame(
+            'weekmarket',
+            $this->get(PathSegmentHelper::class)->generatePathSegment([
+                'pid' => Events2Constants::PAGE_STORAGE,
+                'sys_language_uid' => 1,
+                'title' => 'Weekmarket',
+            ]),
+        );
+    }
+
+    #[Test]
+    public function generatePathSegmentAppliesPostModifiersOfTca(): void
+    {
+        $slugConfiguration = &$GLOBALS['TCA']['tx_events2_domain_model_event']['columns']['path_segment']['config'];
+        $slugConfiguration['generatorOptions']['postModifiers'][] = static fn(array $parameters): string
+            => $parameters['slug'] . '-modified';
+        unset($slugConfiguration);
+        $this->get(TcaSchemaFactory::class)->rebuild($GLOBALS['TCA']);
 
         self::assertSame(
-            'weekly-market-2',
-            $subject->generatePathSegment($baseRecord),
-        );
-    }
-
-    protected function getSubject(ExtConf $extConf): PathSegmentHelper
-    {
-        return new PathSegmentHelper(
-            GeneralUtility::makeInstance(EventDispatcher::class),
-            GeneralUtility::makeInstance(PersistenceManagerInterface::class),
-            $this->getConnectionPool(),
-            $extConf,
-            $this->get(TcaSchemaFactory::class),
+            'weekly-market-modified',
+            $this->get(PathSegmentHelper::class)->generatePathSegment([
+                'pid' => Events2Constants::PAGE_STORAGE,
+                'title' => 'Weekly market',
+            ]),
         );
     }
 }

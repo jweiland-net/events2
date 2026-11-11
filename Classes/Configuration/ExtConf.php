@@ -37,7 +37,6 @@ readonly class ExtConf implements SingletonInterface
         'organizerIsRequired' => false,
         'locationIsRequired' => false,
         'categoryIsRequired' => false,
-        'pathSegmentType' => 'empty',
 
         // email
         'emailFromAddress' => '',
@@ -57,7 +56,6 @@ readonly class ExtConf implements SingletonInterface
         private bool $organizerIsRequired = self::DEFAULT_SETTINGS['organizerIsRequired'],
         private bool $locationIsRequired = self::DEFAULT_SETTINGS['locationIsRequired'],
         private bool $categoryIsRequired = self::DEFAULT_SETTINGS['categoryIsRequired'],
-        private string $pathSegmentType = self::DEFAULT_SETTINGS['pathSegmentType'],
 
         // email
         private string $emailFromAddress = self::DEFAULT_SETTINGS['emailFromAddress'],
@@ -96,7 +94,6 @@ readonly class ExtConf implements SingletonInterface
             organizerIsRequired: (bool)$extensionSettings['organizerIsRequired'],
             locationIsRequired: (bool)$extensionSettings['locationIsRequired'],
             categoryIsRequired: (bool)$extensionSettings['categoryIsRequired'],
-            pathSegmentType: (string)$extensionSettings['pathSegmentType'],
 
             // email
             emailFromAddress: (string)$extensionSettings['emailFromAddress'],
@@ -152,11 +149,6 @@ readonly class ExtConf implements SingletonInterface
     public function getCategoryIsRequired(): bool
     {
         return $this->categoryIsRequired;
-    }
-
-    public function getPathSegmentType(): string
-    {
-        return $this->pathSegmentType;
     }
 
     /**

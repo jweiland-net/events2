@@ -104,7 +104,6 @@ class XmlImporterTest extends FunctionalTestCase
         $this->extConf = new ExtConf(
             organizerIsRequired: true,
             locationIsRequired: true,
-            pathSegmentType: 'uid',
         );
 
         $this->subject = new XmlImporter(
@@ -183,7 +182,6 @@ class XmlImporterTest extends FunctionalTestCase
         $this->extConf = new ExtConf(
             organizerIsRequired: false,
             locationIsRequired: false,
-            pathSegmentType: 'uid',
         );
 
         $this->subject = new XmlImporter(
@@ -236,7 +234,6 @@ class XmlImporterTest extends FunctionalTestCase
         $this->extConf = new ExtConf(
             organizerIsRequired: false,
             locationIsRequired: true,
-            pathSegmentType: 'uid',
         );
 
         $this->subject = new XmlImporter(
@@ -272,7 +269,6 @@ class XmlImporterTest extends FunctionalTestCase
         $this->extConf = new ExtConf(
             organizerIsRequired: false,
             locationIsRequired: false,
-            pathSegmentType: 'uid',
         );
 
         $this->subject = new XmlImporter(
@@ -321,7 +317,6 @@ class XmlImporterTest extends FunctionalTestCase
         $this->extConf = new ExtConf(
             organizerIsRequired: false,
             locationIsRequired: false,
-            pathSegmentType: 'uid',
         );
 
         $this->subject = new XmlImporter(
@@ -373,6 +368,11 @@ class XmlImporterTest extends FunctionalTestCase
             1920668400, // Dienstag, 12. November 2030 00:00:00 GMT+01:00
             $events[0]['event_begin'],
         );
+        // Like the DataHandler: the path segment of an existing event is kept
+        self::assertSame(
+            'einfacher-termin',
+            $events[0]['path_segment'],
+        );
     }
 
     #[Test]
@@ -385,7 +385,6 @@ class XmlImporterTest extends FunctionalTestCase
         $this->extConf = new ExtConf(
             organizerIsRequired: false,
             locationIsRequired: false,
-            pathSegmentType: 'uid',
         );
 
         $this->subject = new XmlImporter(
