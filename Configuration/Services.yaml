@@ -55,10 +55,6 @@ services:
   JWeiland\Events2\Hook\Events2DataHandler:
     public: true
 
-  # Called by makeInstance in PathSegmentHelper
-  JWeiland\Events2\Hook\SlugPostModifierHook:
-    public: true
-
   # XML importer class may be called by GU::makeInstance in third-party code
   JWeiland\Events2\Importer\XmlImporter:
     public: true
