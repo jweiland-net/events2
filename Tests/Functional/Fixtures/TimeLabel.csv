@@ -1,0 +1,5 @@
+"tx_events2_domain_model_time"
+,"uid","pid","type","weekday","time_begin","time_end"
+,31,37,"event_time","monday","08:00","10:00"
+,32,37,"different_times","wednesday","14:00",""
+,33,37,"event_time","thursday","",""

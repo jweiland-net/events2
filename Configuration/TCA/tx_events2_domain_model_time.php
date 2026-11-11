@@ -14,6 +14,7 @@ return [
     'ctrl' => [
         'title' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:tx_events2_domain_model_time',
         'label' => 'time_begin',
+        'label_alt' => 'time_end,type,weekday',
         'label_userFunc' => TimeLabel::class . '->getTitle',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
