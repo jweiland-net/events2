@@ -222,10 +222,13 @@ class ManagementControllerTest extends FunctionalTestCase
             'Recurring event',
             $content,
         );
-        self::assertStringContainsString(
-            'alt="Hint"',
+        self::assertMatchesRegularExpression(
+            '#<small id="[^"]+-choose-event-type-desc" class="form-text text-muted">#',
             $content,
         );
+        self::assertStringContainsString('class="form-check-input"', $content);
+        self::assertStringNotContainsString('role="tooltip"', $content);
+        self::assertStringNotContainsString('<legend class="visually-hidden">', $content);
     }
 
     #[Test]
