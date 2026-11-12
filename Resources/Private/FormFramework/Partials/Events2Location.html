@@ -22,11 +22,14 @@
                    aria-invalid="{f:if(condition: validationResults.errors, then: 'true', else: 'false')}"
                    value="{element.properties.resolvedLabel}"/>
 
-            <div class="form-text">
-                <f:link.page pageUid="{element.properties.pidOfNewLocationPage}" title="Neuen Veranstaltungsort beantragen">
-                    Neuen Ort beantragen
-                </f:link.page>
-            </div>
+            <f:if condition="{element.properties.pidOfNewLocationPage}">
+                <div class="form-text">
+                    <f:link.page pageUid="{element.properties.pidOfNewLocationPage}"
+                                 title="{f:translate(key: 'LLL:EXT:events2/Resources/Private/Language/locallang.xlf:requestNewLocation.title')}">
+                        {f:translate(key: 'LLL:EXT:events2/Resources/Private/Language/locallang.xlf:requestNewLocation')}
+                    </f:link.page>
+                </div>
+            </f:if>
         </f:render>
     </f:form.validationResults>
 </formvh:renderRenderable>
