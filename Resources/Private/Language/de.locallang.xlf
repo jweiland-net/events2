@@ -496,10 +496,6 @@
 				<source>required</source>
 				<target>benötigt</target>
 			</trans-unit>
-			<trans-unit id="hint">
-				<source>Hint</source>
-				<target>Hinweis</target>
-			</trans-unit>
 			<trans-unit id="update">
 				<source>Update</source>
 				<target>Aktualisieren</target>
