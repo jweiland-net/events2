@@ -496,6 +496,14 @@
 				<source>required</source>
 				<target>benötigt</target>
 			</trans-unit>
+			<trans-unit id="requestNewLocation">
+				<source>Request a new location</source>
+				<target>Neuen Ort beantragen</target>
+			</trans-unit>
+			<trans-unit id="requestNewLocation.title">
+				<source>Request a new event location</source>
+				<target>Neuen Veranstaltungsort beantragen</target>
+			</trans-unit>
 			<trans-unit id="update">
 				<source>Update</source>
 				<target>Aktualisieren</target>

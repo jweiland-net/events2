@@ -378,6 +378,12 @@
 			<trans-unit id="required">
 				<source>required</source>
 			</trans-unit>
+			<trans-unit id="requestNewLocation">
+				<source>Request a new location</source>
+			</trans-unit>
+			<trans-unit id="requestNewLocation.title">
+				<source>Request a new event location</source>
+			</trans-unit>
 			<trans-unit id="update">
 				<source>Update</source>
 			</trans-unit>
