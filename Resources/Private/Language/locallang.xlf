@@ -302,6 +302,9 @@
 				<source>Free entry</source>
 			</trans-unit>
 
+			<trans-unit id="pageBrowser">
+				<source>Pagination</source>
+			</trans-unit>
 			<trans-unit id="pageBrowser.first">
 				<source>First</source>
 			</trans-unit>
@@ -320,15 +323,6 @@
 			</trans-unit>
 			<trans-unit id="listMyEvents">
 				<source>List my events</source>
-			</trans-unit>
-			<trans-unit id="eventCreated">
-				<source>Your new Event was created.</source>
-			</trans-unit>
-			<trans-unit id="eventUpdated">
-				<source>Your Event has been updated.</source>
-			</trans-unit>
-			<trans-unit id="eventDeleted">
-				<source>Your Event has been removed.</source>
 			</trans-unit>
 			<trans-unit id="showDetailview">
 				<source>See Single View</source>
@@ -384,20 +378,17 @@
 			<trans-unit id="required">
 				<source>required</source>
 			</trans-unit>
-			<trans-unit id="hint">
-				<source>Hint</source>
+			<trans-unit id="requestNewLocation">
+				<source>Request a new location</source>
 			</trans-unit>
-			<trans-unit id="create">
-				<source>Create</source>
+			<trans-unit id="requestNewLocation.title">
+				<source>Request a new event location</source>
 			</trans-unit>
 			<trans-unit id="update">
 				<source>Update</source>
 			</trans-unit>
 			<trans-unit id="save">
 				<source>Save</source>
-			</trans-unit>
-			<trans-unit id="remainingLetters">
-				<source>Remaining letters</source>
 			</trans-unit>
 			<trans-unit id="userGroupNotConfigured">
 				<source>Please assign a user group (userGroup property) in the site settings to restrict access to this page.</source>
@@ -429,6 +420,9 @@
 			<trans-unit id="richText.openInNewTab">
 				<source>Open in a new tab</source>
 			</trans-unit>
+			<trans-unit id="remainingLetters">
+				<source>%s characters left</source>
+			</trans-unit>
 
 			<trans-unit id="pageBrowser.first">
 				<source>First</source>
@@ -443,66 +437,16 @@
 				<source>Last</source>
 			</trans-unit>
 
-			<trans-unit id="email.subject.create">
-				<source>A new record was created</source>
-			</trans-unit>
-			<trans-unit id="email.subject.update">
-				<source>A record was updated</source>
-			</trans-unit>
 			<trans-unit id="email.subject.activate">
 				<source>A record was activated</source>
-			</trans-unit>
-
-			<trans-unit id="validator.event.videoLink.notYouTube">
-				<source>The URI provided for the video link is not a YouTube link. This form currently only allows YouTube links.</source>
-			</trans-unit>
-			<trans-unit id="validator.event.categories.isMandatory">
-				<source>Property "categories" is defined to be mandatory. Please select at least one category.</source>
 			</trans-unit>
 
 			<trans-unit id="error.locationFail">
 				<source>The given location does not exist in our database. Please choose another one</source>
 			</trans-unit>
 
-			<trans-unit id="cshTitle">
-				<source>The title is mandatory</source>
-			</trans-unit>
-			<trans-unit id="cshTeaser">
-				<source>The teaser is a short description and will be displayed on list views</source>
-			</trans-unit>
-			<trans-unit id="cshEventBegin">
-				<source>This date must be filled in following format: dd.mm.yyyy</source>
-			</trans-unit>
-			<trans-unit id="cshEventEnd">
-				<source>This date must be filled in following format: dd.mm.yyyy</source>
-			</trans-unit>
-			<trans-unit id="cshTimeBegin">
-				<source>The time of the event has to be fill in following format: hh:mm</source>
-			</trans-unit>
-			<trans-unit id="cshCategories">
-				<source>The categories are mandatory. Please hold down STRG or CMD on your keyboard to select multiple categories.</source>
-			</trans-unit>
-			<trans-unit id="cshLocation">
-				<source>The location is mandatory</source>
-			</trans-unit>
-			<trans-unit id="cshVideo">
-				<source>Insert here the link to a video film</source>
-			</trans-unit>
-			<trans-unit id="cshImages">
-				<source>Upload max. 5 image files (jpg, gif, png, max. 4 MB each). Please use the same image dimensions (i.e. 3:2, 3:4) if uploading more than one image.</source>
-			</trans-unit>
-			<trans-unit id="deleteImage">
-				<source>Delete image</source>
-			</trans-unit>
 			<trans-unit id="altTextMapImg">
 				<source>Map</source>
-			</trans-unit>
-
-			<trans-unit id="scheduler.path">
-				<source>Path of file to import</source>
-			</trans-unit>
-			<trans-unit id="scheduler.storagePid">
-				<source>Storage PID</source>
 			</trans-unit>
 		</body>
 	</file>

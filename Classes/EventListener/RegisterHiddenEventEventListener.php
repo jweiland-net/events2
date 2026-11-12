@@ -17,15 +17,16 @@ use JWeiland\Events2\Helper\HiddenObjectHelper;
 use JWeiland\Events2\Traits\IsValidEventListenerRequestTrait;
 use TYPO3\CMS\Core\Attribute\AsEventListener;
 
+/**
+ * Events to confirm are hidden. Allow Extbase to map them.
+ */
 #[AsEventListener('events2/registerHiddenEvent')]
 final readonly class RegisterHiddenEventEventListener
 {
     use IsValidEventListenerRequestTrait;
 
-    protected const ALLOWED_CONTROLLER_ACTIONS = [
+    private const ALLOWED_CONTROLLER_ACTIONS = [
         'Management' => [
-            'edit',
-            'update',
             'confirmActivation',
         ],
     ];

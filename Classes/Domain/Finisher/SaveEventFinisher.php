@@ -17,9 +17,9 @@ use JWeiland\Events2\Helper\PathSegmentHelper;
 use JWeiland\Events2\Service\DayRelationService;
 use JWeiland\Events2\Service\ManagementAccessService;
 use JWeiland\Events2\Service\RichTextService;
-use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 use TYPO3\CMS\Form\Domain\Finishers\AbstractFinisher;
@@ -74,16 +74,14 @@ class SaveEventFinisher extends AbstractFinisher
     /**
      * The ManagementController already restricts the access to the form.
      * As the form definition could be used in other places (e.g. a form
-     * content element), the same rules are checked again before anything
-     * is stored: New events for frontend users of the configured user group
-     * with an organizer only, existing events for their owners or backend
-     * administrators.
+     * content element), the rules of ManagementAccessService are checked
+     * again before anything is stored.
      *
      * @throws FinisherException
      */
     protected function throwExceptionIfAccessIsDenied(): void
     {
-        if ($this->isAccessAllowed($this->finisherContext->getRequest())) {
+        if ($this->getManagementAccessService()->getDenialReason($this->finisherContext->getRequest()) === '') {
             return;
         }
 
@@ -93,23 +91,6 @@ class SaveEventFinisher extends AbstractFinisher
             'The current user is not allowed to create or edit events in frontend.',
             1762950001,
         );
-    }
-
-    protected function isAccessAllowed(ServerRequestInterface $request): bool
-    {
-        $managementAccessService = $this->getManagementAccessService();
-        $eventUid = $this->getEventUidToUpdate();
-        if ($eventUid > 0 && $managementAccessService->isBackendAdmin()) {
-            return true;
-        }
-
-        if (!$managementAccessService->isFrontendUserAllowed(
-            $managementAccessService->getUserGroupFromTypoScript($request),
-        )) {
-            return false;
-        }
-
-        return $eventUid === 0 || $managementAccessService->isEventOfFrontendUser($eventUid);
     }
 
     protected function getManagementAccessService(): ManagementAccessService
@@ -156,6 +137,7 @@ class SaveEventFinisher extends AbstractFinisher
             }
         } elseif ($table === 'tx_events2_domain_model_event') {
             $this->processEventTable($iterationCount);
+            $databaseData = $this->addPathSegmentToEvent($databaseData);
         } elseif ($table === 'sys_category_record_mm') {
             $databaseData = $this->saveDataForCategories($databaseData, $table, $iterationCount);
         } elseif ($table === 'tx_events2_event_organizer_mm' && ($databaseData['uid_local'] ?? false)) {
@@ -231,6 +213,55 @@ class SaveEventFinisher extends AbstractFinisher
         }
     }
 
+    /**
+     * Like the DataHandler: a new event gets its path segment before the
+     * INSERT. An edited event keeps its path segment, only an empty path
+     * segment will be filled.
+     */
+    protected function addPathSegmentToEvent(array $databaseData): array
+    {
+        $storedEventRecord = [];
+        if ($this->options['mode'] === 'update') {
+            $storedEventRecord = $this->getStoredEventRecord($this->getEventUidToUpdate());
+            if ($storedEventRecord === []) {
+                return $databaseData;
+            }
+        }
+
+        $eventRecord = array_replace($storedEventRecord, $databaseData);
+        if (trim((string)($eventRecord['path_segment'] ?? '')) !== '') {
+            return $databaseData;
+        }
+
+        $databaseData['path_segment'] = $this->pathSegmentHelper->generatePathSegment($eventRecord);
+
+        return $databaseData;
+    }
+
+    /**
+     * The edited event may be hidden. Only deleted events are ignored.
+     */
+    protected function getStoredEventRecord(int $eventUid): array
+    {
+        if ($eventUid === 0) {
+            return [];
+        }
+
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('tx_events2_domain_model_event');
+        $queryBuilder->getRestrictions()->removeAll()->add(new DeletedRestriction());
+
+        $eventRecord = $queryBuilder
+            ->select('*')
+            ->from('tx_events2_domain_model_event')
+            ->where(
+                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($eventUid, Connection::PARAM_INT)),
+            )
+            ->executeQuery()
+            ->fetchAssociative();
+
+        return is_array($eventRecord) ? $eventRecord : [];
+    }
+
     protected function processSysFileReferenceTable(
         array $databaseData,
     ): array {
@@ -241,6 +272,7 @@ class SaveEventFinisher extends AbstractFinisher
             'sys_file_reference',
             [
                 'uid_local' => $sysFileUid,
+                'uid_foreign' => (int)($databaseData['uid_foreign'] ?? 0),
                 'tablenames' => 'tx_events2_domain_model_event',
                 'fieldname' => 'images',
             ],
@@ -357,11 +389,12 @@ class SaveEventFinisher extends AbstractFinisher
     }
 
     /**
-     * The UID of the event to edit is part of the URI of the form
+     * The UID of the event to edit is part of the URI of the form. It is
+     * the same UID, which was checked in throwExceptionIfAccessIsDenied().
      */
     protected function getEventUidToUpdate(): int
     {
-        return (int)($_GET['tx_events2_management']['event'] ?? 0);
+        return $this->getManagementAccessService()->getEventUid($this->finisherContext->getRequest());
     }
 
     /**
@@ -440,8 +473,16 @@ class SaveEventFinisher extends AbstractFinisher
         return [];
     }
 
+    /**
+     * The organizers of an edited event are kept. Else a backend
+     * administrator without organizer would remove the owner of the event.
+     */
     protected function saveDataForOrganizers(array $databaseData, string $table, int $iterationCount): array
     {
+        if ($this->getEventUidToUpdate() > 0) {
+            return [];
+        }
+
         // Delete previously stored organizers
         $this->getConnectionForTable($table)->delete(
             $table,
@@ -519,24 +560,6 @@ class SaveEventFinisher extends AbstractFinisher
                     $this->shortFinisherIdentifier,
                     'insertedUids.tx_events2_domain_model_event',
                     $lastInsertId,
-                );
-            }
-
-            // Update slug for event record
-            if (
-                $table === 'tx_events2_domain_model_event'
-                && array_key_exists('title', $databaseData)
-                && $databaseData['title'] !== ''
-            ) {
-                $databaseData['uid'] = $lastInsertId;
-                $this->getConnectionForTable('tx_events2_domain_model_event')->update(
-                    'tx_events2_domain_model_event',
-                    [
-                        'path_segment' => $this->pathSegmentHelper->generatePathSegment($databaseData),
-                    ],
-                    [
-                        'uid' => $lastInsertId,
-                    ],
                 );
             }
         }

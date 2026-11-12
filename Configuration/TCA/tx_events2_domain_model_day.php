@@ -35,7 +35,12 @@ return [
         '1' => ['showitem' => ''],
     ],
     'columns' => [
-        'hidden' => [
+        'crdate' => [
+            'config' => [
+                'type' => 'passthrough',
+            ],
+        ],
+        'tstamp' => [
             'config' => [
                 'type' => 'passthrough',
             ],

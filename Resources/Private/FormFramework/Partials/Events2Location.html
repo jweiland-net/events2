@@ -3,20 +3,34 @@
       xmlns:formvh="http://typo3.org/ns/TYPO3/CMS/Form/ViewHelpers" data-namespace-typo3-fluid="true">
 
 <formvh:renderRenderable renderable="{element}">
-    <f:render partial="Field/Field" arguments="{element: element}" contentAs="elementContent">
-        <f:form.hidden class="autoCompleteLocationHelper" property="{element.identifier}"/>
-        <input type="text"
-               id="autoCompleteLocation"
-               class="{element.properties.elementClassAttribute} form-control"
-               autocomplete="off"
-               autocapitalize="off"
-               value="{element.properties.resolvedLabel}"/>
+    <f:form.validationResults for="{element.rootForm.identifier}.{element.identifier}">
+        <f:variable name="inputClass">{element.properties.elementClassAttribute}</f:variable>
+        <f:variable name="describedBy">{f:if(condition: element.properties.elementDescription, then: '{element.uniqueIdentifier}-desc')}</f:variable>
+        <f:if condition="{validationResults.errors}">
+            <f:variable name="inputClass">{inputClass} {element.rootForm.renderingOptions.fieldProperties.errorClassAttribute}</f:variable>
+            <f:variable name="describedBy">{element.uniqueIdentifier}-errors</f:variable>
+        </f:if>
 
-        <div>
-            <f:link.page pageUid="{element.properties.pidOfNewLocationPage}" title="Neuen Veranstaltungsort beantragen">
-                Neuen Ort beantragen
-            </f:link.page>
-        </div>
-    </f:render>
+        <f:render partial="Field/Field" arguments="{element: element}" contentAs="elementContent">
+            <f:form.hidden class="autoCompleteLocationHelper" property="{element.identifier}"/>
+            <input type="text"
+                   id="autoCompleteLocation"
+                   class="{inputClass}"
+                   autocomplete="off"
+                   autocapitalize="off"
+                   aria-describedby="{describedBy}"
+                   aria-invalid="{f:if(condition: validationResults.errors, then: 'true', else: 'false')}"
+                   value="{element.properties.resolvedLabel}"/>
+
+            <f:if condition="{element.properties.pidOfNewLocationPage}">
+                <div class="form-text">
+                    <f:link.page pageUid="{element.properties.pidOfNewLocationPage}"
+                                 title="{f:translate(key: 'LLL:EXT:events2/Resources/Private/Language/locallang.xlf:requestNewLocation.title')}">
+                        {f:translate(key: 'LLL:EXT:events2/Resources/Private/Language/locallang.xlf:requestNewLocation')}
+                    </f:link.page>
+                </div>
+            </f:if>
+        </f:render>
+    </f:form.validationResults>
 </formvh:renderRenderable>
 </html>

@@ -1,0 +1,30 @@
+{namespace e2=JWeiland\Events2\ViewHelpers}
+<f:layout name="SystemEmail" />
+<f:section name="Title">{title}</f:section>
+<f:section name="Main">
+<f:variable name="event">{finisherVariableProvider.SaveEvent.insertedUids.tx_events2_domain_model_event}</f:variable>
+<f:variable name="moderationToken">{e2:moderationToken(event: event)}</f:variable>
+Hallo,
+
+Datensatz bearbeiten:
+<f:uri.action pageUid="{pidOfManagementPage}" action="perform" controller="Management" extensionName="Events2" pluginName="Management" absolute="1" arguments="{event: event, timestamp: '0'}" />
+
+Datensatz freischalten:
+<f:uri.action pageUid="{pidOfManagementPage}" action="confirmActivation" controller="Management" extensionName="Events2" pluginName="Management" absolute="1" arguments="{event: event, moderationToken: moderationToken}" />
+
+Hier die Daten des neu angelegten Datensatzes:
+
+<formvh:renderAllFormValues renderable="{form.formDefinition}" as="formValue"><f:spaceless>
+    <f:if condition="{formValue.isMultiValue}">
+        <f:then>
+            <f:if condition="{formValue.isSection}"><f:then>*** <formvh:translateElementProperty element="{formValue.element}" property="label" /> ***</f:then><f:else><formvh:translateElementProperty element="{formValue.element}" property="label" />: <f:for each="{formValue.processedValue}" as="singleValue">- {singleValue -> f:format.raw()}
+            </f:for></f:else></f:if>
+        </f:then>
+        <f:else>
+            <f:if condition="{formValue.isSection}"><f:then>*** <formvh:translateElementProperty element="{formValue.element}" property="label" /> ***</f:then><f:else><formvh:translateElementProperty element="{formValue.element}" property="label" />: <f:if condition="{formValue.processedValue}"><f:then><f:if condition="{formValue.element.properties.dbMapping.dataType} == 'richText'"><f:then>
+<e2:formatRichText element="{formValue.element}" value="{formValue.processedValue}" format="plaintext"/></f:then><f:else>{formValue.processedValue -> f:format.raw()}</f:else></f:if></f:then><f:else>-</f:else></f:if></f:else></f:if>
+        </f:else>
+    </f:if>
+</f:spaceless>
+</formvh:renderAllFormValues>
+</f:section>

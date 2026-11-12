@@ -48,12 +48,12 @@ class SearchController extends AbstractController
         // Because of the checkbox in search form we have to create a new empty domain model
         $search ??= GeneralUtility::makeInstance(Search::class);
 
-        if (!$this->settings['mainCategories']) {
+        if (empty($this->settings['mainCategories'])) {
             $this->addFlashMessage('Dear Admin: You have forgotten to define some allowed categories in plugin configuration');
         }
 
         $allowedMainCategories = $this->categoryRepository->getSelectedCategories(
-            (string)$this->settings['mainCategories'],
+            (string)($this->settings['mainCategories'] ?? ''),
             (int)$this->settings['rootCategory'],
         );
 

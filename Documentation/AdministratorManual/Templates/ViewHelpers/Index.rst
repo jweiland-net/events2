@@ -32,7 +32,9 @@ Now you can use a ViewHelper of events2 with a code like:
 
 
 If you want to know what a ViewHelper does, it is very easy to find the related PHP class by looking at the namespace and the name of the ViewHelper.
-Having e.g. ``JWeiland\Events2\ViewHelpers`` and ``convertToJson`` you will find the class at ``events2\\Classes\ViewHelpers\\ConvertToJsonViewHelper.php``.
+Having e.g. `JWeiland\Events2\ViewHelpers` and `formatRichText` you will
+find the class at
+:file:`EXT:events2/Classes/ViewHelpers/FormatRichTextViewHelper.php`.
 
 The most of awesome thing is that you can use ViewHelpers of any extension in any other template by just adding another namespace declaration like:
 
@@ -50,11 +52,18 @@ and call the ViewHelper like
 All ViewHelpers
 ---------------
 
+..  versionchanged:: 12.0.0
+
+    The ViewHelpers `e2:convertToJson` and `e2:cropString` have been
+    removed. Use :ref:`f:format.json <t3viewhelper:typo3fluid-fluid-format-json>`
+    and :ref:`f:format.crop <t3viewhelper:typo3-fluid-format-crop>` of
+    Fluid instead, see :ref:`upgrade-12-0-0-viewhelpers`.
+
 ..  toctree::
     :maxdepth: 2
 
-    ConvertToJsonViewHelper
     CreateYoutubeUrlViewHelper
+    FormatRichTextViewHelper
     GetAllowedCategoriesViewHelper
     GetExceptionsFromEventForSpecificDateViewHelper
     GetMergedEventTimesViewHelper

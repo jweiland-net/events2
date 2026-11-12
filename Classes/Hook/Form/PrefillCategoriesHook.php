@@ -12,34 +12,38 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Hook\Form;
 
 use Doctrine\DBAL\ArrayParameterType;
-use Doctrine\DBAL\Result;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
+use TYPO3\CMS\Core\Schema\Capability\LanguageAwareSchemaCapability;
+use TYPO3\CMS\Core\Schema\Capability\TcaSchemaCapability;
+use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Form\Domain\Model\FormElements\AbstractFormElement;
 use TYPO3\CMS\Form\Domain\Model\Renderable\RenderableInterface;
 
 /**
- * Prefill EXT:form element of type checkboxes with categories from database
+ * Prefill EXT:form element of type checkboxes with categories from database.
+ *
+ * Only direct children of "settings.rootCategory" are offered. If
+ * "settings.new.selectableCategoriesForNewEvents" is missing or empty, all
+ * direct children of "settings.rootCategory" are offered. Without both
+ * settings, no categories are offered at all, so the category tree of the
+ * whole installation will never be exposed in frontend.
  */
-class PrefillCategoriesHook
+readonly class PrefillCategoriesHook
 {
-    protected array $settings = [];
+    private const FORM_ELEMENT_IDENTIFIER = 'newEvent-categories';
 
     public function __construct(
-        protected readonly PageRepository $pageRepository,
-        protected readonly ConfigurationManagerInterface $configurationManager,
-    ) {
-        $this->settings = $configurationManager->getConfiguration(
-            ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS,
-            'Events2',
-            'Management',
-        );
-    }
+        private PageRepository $pageRepository,
+        private ConfigurationManagerInterface $configurationManager,
+        private ConnectionPool $connectionPool,
+        private TcaSchemaFactory $tcaSchemaFactory,
+    ) {}
 
     /**
      * This method will be called by Form Framework.
@@ -47,33 +51,35 @@ class PrefillCategoriesHook
      */
     public function initializeFormElement(RenderableInterface $formElement): void
     {
-        if (!$formElement instanceof AbstractFormElement) {
+        if (!$formElement instanceof AbstractFormElement
+            || $formElement->getUniqueIdentifier() !== self::FORM_ELEMENT_IDENTIFIER
+        ) {
             return;
         }
 
-        if ($formElement->getUniqueIdentifier() === 'newEvent-categories') {
-            $formElement->setProperty(
-                'options',
-                $this->getCategories(),
-            );
-        }
+        $formElement->setProperty('options', $this->getCategories());
     }
 
-    protected function getCategories(): array
+    /**
+     * @return array<int, string>
+     */
+    private function getCategories(): array
     {
-        $categories = [];
-        $queryResult = $this->getQueryResultForCategoriesInDefaultLanguage();
-        while ($sysCategoryInDefaultLanguage = $queryResult->fetchAssociative()) {
-            $sysCategoryTranslated = $this->pageRepository->getLanguageOverlay(
-                'sys_category',
-                $sysCategoryInDefaultLanguage,
-            );
+        $settings = $this->getSettings();
+        $rootCategory = $this->getRootCategory($settings);
+        $selectableCategories = $this->getSelectableCategoriesForNewEvents($settings);
+        if ($rootCategory === 0 && $selectableCategories === []) {
+            return [];
+        }
 
-            if ($sysCategoryTranslated === null) {
+        $categories = [];
+        foreach ($this->getCategoriesInDefaultLanguage($rootCategory, $selectableCategories) as $sysCategory) {
+            $translatedSysCategory = $this->pageRepository->getLanguageOverlay('sys_category', $sysCategory);
+            if ($translatedSysCategory === null) {
                 continue;
             }
 
-            $categories[$sysCategoryInDefaultLanguage['uid']] = $sysCategoryInDefaultLanguage['title'];
+            $categories[(int)$sysCategory['uid']] = (string)$translatedSysCategory['title'];
         }
 
         asort($categories, SORT_LOCALE_STRING);
@@ -81,65 +87,95 @@ class PrefillCategoriesHook
         return $categories;
     }
 
-    protected function getQueryResultForCategoriesInDefaultLanguage(): Result
+    /**
+     * @param int[] $selectableCategories
+     * @return array<int, array<string, mixed>>
+     */
+    private function getCategoriesInDefaultLanguage(int $rootCategory, array $selectableCategories): array
     {
-        $queryBuilder = $this->getQueryBuilderForTable('sys_category');
-
-        return $queryBuilder
+        $queryBuilder = $this->getQueryBuilderForSysCategory();
+        $queryBuilder
             ->select('*')
             ->from('sys_category')
             ->where(
                 $queryBuilder->expr()->eq(
                     'parent',
-                    $queryBuilder->createNamedParameter(
-                        $this->settings['rootCategory'] ?? 0,
-                        Connection::PARAM_INT,
-                    ),
-                ),
-                $queryBuilder->expr()->in(
-                    'uid',
-                    $queryBuilder->createNamedParameter(
-                        $this->getSelectableCategoriesForNewEvents(),
-                        ArrayParameterType::INTEGER,
-                    ),
+                    $queryBuilder->createNamedParameter($rootCategory, Connection::PARAM_INT),
                 ),
                 $queryBuilder->expr()->eq(
-                    $GLOBALS['TCA']['sys_category']['ctrl']['languageField'],
+                    $this->getLanguageFieldOfSysCategory(),
                     $queryBuilder->createNamedParameter(0, Connection::PARAM_INT),
                 ),
-            )
-            ->executeQuery();
-    }
-
-    protected function getSelectableCategoriesForNewEvents(): array
-    {
-        if (isset($this->settings['selectableCategoriesForNewEvents'])) {
-            trigger_error(
-                'settings.selectableCategoriesForNewEvents is deprecated. Please use settings.new.selectableCategoriesForNewEvents instead.',
-                E_USER_DEPRECATED,
             );
-            $selectableCategories = $this->settings['new']['selectableCategoriesForNewEvents'] ?? $this->settings['selectableCategoriesForNewEvents'];
-        } else {
-            $selectableCategories = $this->settings['new']['selectableCategoriesForNewEvents'];
+
+        if ($selectableCategories !== []) {
+            $queryBuilder->andWhere($queryBuilder->expr()->in(
+                'uid',
+                $queryBuilder->createNamedParameter($selectableCategories, ArrayParameterType::INTEGER),
+            ));
         }
 
-        $selectableCategoriesForNewEvents = $selectableCategories === ''
-            ? '0'
-            : $selectableCategories;
-
-        return GeneralUtility::intExplode(',', $selectableCategoriesForNewEvents, true);
+        return $queryBuilder->executeQuery()->fetchAllAssociative();
     }
 
-    protected function getQueryBuilderForTable(string $table): QueryBuilder
+    private function getLanguageFieldOfSysCategory(): string
     {
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable($table);
+        /** @var LanguageAwareSchemaCapability $languageCapability */
+        $languageCapability = $this->tcaSchemaFactory
+            ->get('sys_category')
+            ->getCapability(TcaSchemaCapability::Language);
+
+        return $languageCapability->getLanguageField()->getName();
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function getSettings(): array
+    {
+        return $this->configurationManager->getConfiguration(
+            ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS,
+            'Events2',
+            'Management',
+        );
+    }
+
+    /**
+     * @param array<string, mixed> $settings
+     */
+    private function getRootCategory(array $settings): int
+    {
+        $rootCategory = $settings['rootCategory'] ?? 0;
+
+        return is_numeric($rootCategory) ? max(0, (int)$rootCategory) : 0;
+    }
+
+    /**
+     * The value is a comma separated list of category UIDs (string) or a
+     * single category UID (int). A missing or empty value results in an
+     * empty array.
+     *
+     * @param array<string, mixed> $settings
+     * @return int[]
+     */
+    private function getSelectableCategoriesForNewEvents(array $settings): array
+    {
+        $selectableCategories = $settings['new']['selectableCategoriesForNewEvents'] ?? '';
+        if (!is_string($selectableCategories) && !is_int($selectableCategories)) {
+            return [];
+        }
+
+        return array_values(array_filter(
+            GeneralUtility::intExplode(',', (string)$selectableCategories, true),
+            static fn(int $categoryUid): bool => $categoryUid > 0,
+        ));
+    }
+
+    private function getQueryBuilderForSysCategory(): QueryBuilder
+    {
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('sys_category');
         $queryBuilder->setRestrictions(GeneralUtility::makeInstance(FrontendRestrictionContainer::class));
 
         return $queryBuilder;
-    }
-
-    protected function getConnectionPool(): ConnectionPool
-    {
-        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 }

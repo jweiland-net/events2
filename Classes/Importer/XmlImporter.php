@@ -73,6 +73,7 @@ class XmlImporter
         protected readonly PathSegmentHelper $pathSegmentHelper,
         protected readonly DateTimeUtility $dateTimeUtility,
         protected readonly ExtConf $extConf,
+        protected readonly EventRecordBuilder $eventRecordBuilder,
     ) {
         $this->today = new \DateTimeImmutable('now');
     }
@@ -220,6 +221,11 @@ class XmlImporter
 
                     $event->setDays(new ObjectStorage());
 
+                    // Like the DataHandler: keep an existing path segment, fill an empty one
+                    if ($event->getPathSegment() === '') {
+                        $this->addPathSegment($event);
+                    }
+
                     $this->persistenceManager->update($event);
                 } else {
                     throw new \Exception(sprintf(
@@ -237,6 +243,8 @@ class XmlImporter
                 $event->setPid($this->storagePid);
                 $this->addPathSegment($event);
                 $this->persistenceManager->add($event);
+                // Following events of this import have to see the path segment of this event
+                $this->persistenceManager->persistAll();
 
                 break;
         }
@@ -303,12 +311,15 @@ class XmlImporter
     }
 
     /**
-     * This method will store the event, if no UID was given (needed for URL like title-uid.html). So please keep
-     * this method at last position just before repo will add event, but just after event was set to hidden.
+     * The path segment is generated before the event is stored. So, a new event
+     * is inserted with its path segment in one go. The slug generation gets the
+     * complete event record like in DataHandler.
      */
     protected function addPathSegment(Event $event): void
     {
-        $this->pathSegmentHelper->updatePathSegmentForEvent($event);
+        $event->setPathSegment(
+            $this->pathSegmentHelper->generatePathSegment($this->eventRecordBuilder->buildRecord($event)),
+        );
     }
 
     protected function addDateProperties(Event $event, array $eventRecord): void

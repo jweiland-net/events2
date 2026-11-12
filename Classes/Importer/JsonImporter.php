@@ -12,12 +12,10 @@ declare(strict_types=1);
 namespace JWeiland\Events2\Importer;
 
 use JWeiland\Events2\Configuration\ImportConfiguration;
-use JWeiland\Events2\Helper\PathSegmentHelper;
 use JWeiland\Events2\Service\LocationService;
 use JWeiland\Events2\Service\OrganizerService;
 use JWeiland\Events2\Service\Record\CategoryRecordService;
 use Psr\Log\LoggerInterface;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
@@ -39,7 +37,6 @@ readonly class JsonImporter
     protected const TABLE = 'tx_events2_domain_model_event';
 
     public function __construct(
-        protected PathSegmentHelper $pathSegmentHelper,
         protected CategoryRecordService $categoryService,
         protected LocationService $locationService,
         protected OrganizerService $organizerService,
@@ -73,9 +70,6 @@ readonly class JsonImporter
                     }
                     return false;
                 }
-
-                // Can only be done after storing the records, as we need the UID
-                $this->updateSlugs($dataHandler);
             } catch (\Exception $e) {
                 $this->logger->error($e->getMessage());
                 return false;
@@ -462,37 +456,6 @@ readonly class JsonImporter
         }
 
         return is_array($eventRecord) ? $eventRecord : null;
-    }
-
-    /**
-     * If you found another solution how to retrieve the just stored records from DataHandler: Give me a note
-     */
-    protected function updateSlugs(DataHandler $dataHandler): void
-    {
-        // Collect all NEW[hash] values valid for the event table
-        $eventNEWidValues = array_filter($dataHandler->substNEWwithIDs_table, static function (string $table): bool {
-            return $table === self::TABLE;
-        });
-
-        // Get real event INSERT ID for NEW[hash] values
-        $eventUidValues = array_filter($dataHandler->substNEWwithIDs, static function (string $newId) use ($eventNEWidValues): bool {
-            return array_key_exists($newId, $eventNEWidValues);
-        }, ARRAY_FILTER_USE_KEY);
-
-        $connection = $this->connectionPool->getConnectionForTable(self::TABLE);
-        foreach ($eventUidValues as $eventUid) {
-            $eventRecord = BackendUtility::getRecord(self::TABLE, (int)$eventUid);
-            $uniqueSlug = $this->pathSegmentHelper->generatePathSegment($eventRecord);
-            $connection->update(
-                self::TABLE,
-                [
-                    'path_segment' => $uniqueSlug,
-                ],
-                [
-                    'uid' => (int)$eventUid,
-                ],
-            );
-        }
     }
 
     protected function getQueryBuilderForTable(string $table): QueryBuilder

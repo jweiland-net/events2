@@ -1,0 +1,7 @@
+"tx_events2_domain_model_event",,,,,,,,
+,"uid","pid","deleted","sys_language_uid","l10n_parent","title","path_segment","event_type"
+,1,20,0,0,0,"Weekmarket","weekmarket","single"
+,2,20,0,0,0,"Weekmarket","","single"
+,3,20,0,0,0,"Weekmarket","","single"
+,4,20,0,0,0,"Flea market","my-own-slug","single"
+,5,20,1,0,0,"Deleted market","","single"

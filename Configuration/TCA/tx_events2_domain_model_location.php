@@ -8,13 +8,10 @@
  */
 
 use JWeiland\Events2\Configuration\ExtConf;
-use SJBR\StaticInfoTables\Hook\Backend\Form\FormDataProvider\TcaSelectItemsProcessor;
-use SJBR\StaticInfoTables\Hook\Backend\Form\Wizard\SuggestReceiver;
+use JWeiland\Events2\Tca\CountryItems;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 $extConf = GeneralUtility::makeInstance(ExtConf::class);
-$staticInfoItemProcessor = TcaSelectItemsProcessor::class . '->translateCountriesSelector';
-$staticInfoSuggestReceiver = SuggestReceiver::class;
 
 $tx_events2_domain_model_event = [
     'ctrl' => [
@@ -35,7 +32,9 @@ $tx_events2_domain_model_event = [
             'endtime' => 'endtime',
         ],
         'searchFields' => 'location',
-        'iconfile' => 'EXT:events2/Resources/Public/Icons/tx_events2_domain_model_location.png',
+        'typeicon_classes' => [
+            'default' => 'ext-events2-record-location',
+        ],
     ],
     'types' => [
         '1' => [
@@ -56,51 +55,6 @@ $tx_events2_domain_model_event = [
         ],
     ],
     'columns' => [
-        'sys_language_uid' => [
-            'exclude' => true,
-            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.language',
-            'config' => [
-                'type' => 'language',
-            ],
-        ],
-        'l10n_parent' => [
-            'displayCond' => 'FIELD:sys_language_uid:>:0',
-            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.l18n_parent',
-            'config' => [
-                'type' => 'group',
-                'allowed' => 'tx_events2_domain_model_location',
-                'size' => 1,
-                'maxitems' => 1,
-                'minitems' => 0,
-                'default' => 0,
-            ],
-        ],
-        'l10n_source' => [
-            'config' => [
-                'type' => 'passthrough',
-            ],
-        ],
-        'hidden' => [
-            'exclude' => true,
-            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.visible',
-            'config' => [
-                'type' => 'check',
-                'renderType' => 'checkboxToggle',
-                'items' => [
-                    [
-                        'label' => '',
-                        'value' => '',
-                        'invertStateDisplay' => true,
-                    ],
-                ],
-            ],
-        ],
-        'pid' => [
-            'label' => 'pid',
-            'config' => [
-                'type' => 'passthrough',
-            ],
-        ],
         'crdate' => [
             'label' => 'crdate',
             'config' => [
@@ -112,28 +66,6 @@ $tx_events2_domain_model_event = [
             'config' => [
                 'type' => 'passthrough',
             ],
-        ],
-        'starttime' => [
-            'exclude' => true,
-            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.starttime',
-            'config' => [
-                'type' => 'datetime',
-                'format' => 'datetime',
-                'default' => 0,
-            ],
-            'l10n_mode' => 'exclude',
-            'l10n_display' => 'defaultAsReadonly',
-        ],
-        'endtime' => [
-            'exclude' => true,
-            'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.endtime',
-            'config' => [
-                'type' => 'datetime',
-                'format' => 'datetime',
-                'default' => 0,
-            ],
-            'l10n_mode' => 'exclude',
-            'l10n_display' => 'defaultAsReadonly',
         ],
         'location' => [
             'exclude' => true,
@@ -189,21 +121,14 @@ $tx_events2_domain_model_event = [
                 'items' => [
                     [
                         'label' => '',
-                        'value' => 0,
+                        'value' => '',
                     ],
                 ],
-                'foreign_table' => 'static_countries',
-                'foreign_table_where' => 'ORDER BY static_countries.cn_short_en',
-                'itemsProcFunc' => $staticInfoItemProcessor,
-                'size' => 1,
-                'minitems' => 0,
-                'maxitems' => 1,
+                'itemsProcFunc' => CountryItems::class . '->addCountries',
+                'sortItems' => [
+                    'label' => 'asc',
+                ],
                 'default' => $extConf->getDefaultCountry(),
-                'suggestOptions' => [
-                    'default' => [
-                        'receiverClass' => $staticInfoSuggestReceiver,
-                    ],
-                ],
             ],
         ],
         'link' => [
@@ -227,5 +152,5 @@ $tx_events2_domain_model_event = [
     ],
 ];
 
-unset($extConf, $staticInfoItemProcessor, $staticInfoSuggestReceiver);
+unset($extConf);
 return $tx_events2_domain_model_event;

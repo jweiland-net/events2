@@ -13,7 +13,7 @@ namespace JWeiland\Events2\Tests\Functional\EventListener;
 
 use JWeiland\Events2\Event\PreProcessControllerActionEvent;
 use JWeiland\Events2\EventListener\RestrictAccessEventListener;
-use JWeiland\Events2\Service\EventModerationService;
+use JWeiland\Events2\Service\ManagementAccessService;
 use JWeiland\Events2\Tests\Functional\Events2Constants;
 use JWeiland\Events2\Tests\Functional\Traits\FrontendUserTrait;
 use JWeiland\Events2\Tests\Functional\Traits\InsertEventTrait;
@@ -36,9 +36,9 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 /**
  * Functional test
  *
- * Owners of an event without moderation token are denied in
- * ManagementControllerTest, as the organizer check of the listener needs
- * a complete frontend request.
+ * Denials of logged-in frontend users need a frontend user session for
+ * the flash message. They are tested in ManagementControllerTest with a
+ * complete frontend request.
  */
 class RestrictAccessEventListenerTest extends FunctionalTestCase
 {
@@ -46,12 +46,10 @@ class RestrictAccessEventListenerTest extends FunctionalTestCase
     use InsertEventTrait;
 
     protected array $coreExtensionsToLoad = [
-        'extensionmanager',
         'reactions',
     ];
 
     protected array $testExtensionsToLoad = [
-        'sjbr/static-info-tables',
         'jweiland/events2',
     ];
 
@@ -112,7 +110,7 @@ class RestrictAccessEventListenerTest extends FunctionalTestCase
         $controllerActionEvent = $this->dispatch(
             $actionName,
             $this->eventUid,
-            $this->get(EventModerationService::class)->generateModerationToken($this->eventUid),
+            $this->get(ManagementAccessService::class)->generateModerationToken($this->eventUid),
         );
 
         self::assertSame(
@@ -146,7 +144,7 @@ class RestrictAccessEventListenerTest extends FunctionalTestCase
         $controllerActionEvent = $this->dispatch(
             $actionName,
             $this->eventUid,
-            $this->get(EventModerationService::class)->generateModerationToken($foreignEventUid),
+            $this->get(ManagementAccessService::class)->generateModerationToken($foreignEventUid),
         );
 
         self::assertSame(
@@ -162,7 +160,7 @@ class RestrictAccessEventListenerTest extends FunctionalTestCase
         $controllerActionEvent = $this->dispatch(
             $actionName,
             ['__identity' => $this->eventUid, 'title' => 'Manipulated'],
-            $this->get(EventModerationService::class)->generateModerationToken($this->eventUid),
+            $this->get(ManagementAccessService::class)->generateModerationToken($this->eventUid),
         );
 
         self::assertSame(
@@ -193,15 +191,31 @@ class RestrictAccessEventListenerTest extends FunctionalTestCase
     }
 
     #[Test]
-    #[DataProvider('moderationTokenActionDataProvider')]
-    public function moderationTokenActionWithBackendAdminIsAllowed(string $actionName): void
+    public function confirmActivationWithBackendAdminWithoutTokenIsAllowed(): void
     {
         $this->setBackendUser(true);
 
-        $controllerActionEvent = $this->dispatch($actionName, $this->eventUid, null);
+        $controllerActionEvent = $this->dispatch('confirmActivation', $this->eventUid, null);
 
         self::assertSame(
-            $actionName,
+            'confirmActivation',
+            $controllerActionEvent->getActionName(),
+        );
+    }
+
+    /**
+     * The token protects the state changing request against CSRF. The
+     * confirmation page renders the token for administrators, too.
+     */
+    #[Test]
+    public function activateWithBackendAdminWithoutTokenIsDenied(): void
+    {
+        $this->setBackendUser(true);
+
+        $controllerActionEvent = $this->dispatch('activate', $this->eventUid, null);
+
+        self::assertSame(
+            'error',
             $controllerActionEvent->getActionName(),
         );
     }
@@ -235,9 +249,9 @@ class RestrictAccessEventListenerTest extends FunctionalTestCase
     public function otherActionWithValidTokenButWithoutLoginIsDenied(): void
     {
         $controllerActionEvent = $this->dispatch(
-            'edit',
+            'perform',
             $this->eventUid,
-            $this->get(EventModerationService::class)->generateModerationToken($this->eventUid),
+            $this->get(ManagementAccessService::class)->generateModerationToken($this->eventUid),
         );
 
         self::assertSame(
@@ -246,15 +260,31 @@ class RestrictAccessEventListenerTest extends FunctionalTestCase
         );
     }
 
+    /**
+     * A backend administrator has no organizer and so no own events
+     */
     #[Test]
-    public function otherActionWithBackendAdminIsAllowed(): void
+    public function listMyEventsWithBackendAdminWithoutFrontendUserIsDenied(): void
     {
         $this->setBackendUser(true);
 
-        $controllerActionEvent = $this->dispatch('edit', $this->eventUid, null);
+        $controllerActionEvent = $this->dispatch('listMyEvents', null, null);
 
         self::assertSame(
-            'edit',
+            'error',
+            $controllerActionEvent->getActionName(),
+        );
+    }
+
+    #[Test]
+    public function listMyEventsWithFrontendUserOfUserGroupIsAllowed(): void
+    {
+        $this->loginFrontendUser(1);
+
+        $controllerActionEvent = $this->dispatch('listMyEvents', null, null);
+
+        self::assertSame(
+            'listMyEvents',
             $controllerActionEvent->getActionName(),
         );
     }
@@ -262,8 +292,6 @@ class RestrictAccessEventListenerTest extends FunctionalTestCase
     public static function createActionDataProvider(): array
     {
         return [
-            'new action' => ['new'],
-            'create action' => ['create'],
             'perform action without event' => ['perform'],
         ];
     }
@@ -317,6 +345,25 @@ class RestrictAccessEventListenerTest extends FunctionalTestCase
     }
 
     #[Test]
+    public function performActionWithOwnEventIsAllowed(): void
+    {
+        $eventUid = $this->insertEvent(
+            title: 'Event of organizer',
+            eventBegin: new \DateTimeImmutable('tomorrow midnight'),
+            additionalFields: ['hidden' => 1],
+            organizer: 'jweiland.net',
+        );
+        $this->loginFrontendUser(1);
+
+        $controllerActionEvent = $this->dispatch('perform', $eventUid, null);
+
+        self::assertSame(
+            'perform',
+            $controllerActionEvent->getActionName(),
+        );
+    }
+
+    #[Test]
     public function performActionWithEventAndBackendAdminIsAllowed(): void
     {
         $this->setBackendUser(true);
@@ -340,7 +387,7 @@ class RestrictAccessEventListenerTest extends FunctionalTestCase
         $controllerActionEvent = new PreProcessControllerActionEvent(
             $request,
             new Arguments(),
-            ['userGroup' => 1],
+            [],
         );
 
         $this->get(RestrictAccessEventListener::class)($controllerActionEvent);
@@ -362,12 +409,19 @@ class RestrictAccessEventListenerTest extends FunctionalTestCase
             $extbaseRequestParameters->setArgument('moderationToken', $moderationToken);
         }
 
-        // ExtensionService needs the TypoScript to resolve the plugin namespace for flash messages
+        // ManagementAccessService reads the user group and ExtensionService
+        // the plugin namespace for flash messages from TypoScript
         $frontendTypoScript = new FrontendTypoScript(new RootNode(), [], [], []);
-        $frontendTypoScript->setSetupArray([]);
+        $frontendTypoScript->setSetupArray([
+            'plugin.' => ['tx_events2.' => ['settings.' => ['userGroup' => '1']]],
+        ]);
+
+        // The event to edit is read from the query
+        $queryParams = is_int($event) ? ['tx_events2_management' => ['event' => (string)$event]] : [];
 
         return new Request(
             (new ServerRequest('https://www.example.com/', 'POST'))
+                ->withQueryParams($queryParams)
                 ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE)
                 ->withAttribute('frontend.typoscript', $frontendTypoScript)
                 ->withAttribute('extbase', $extbaseRequestParameters),

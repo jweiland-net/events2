@@ -23,14 +23,12 @@ use JWeiland\Events2\Controller\VideoController;
 use JWeiland\Events2\Hook\Events2DataHandler;
 use JWeiland\Events2\Hook\Form\PrefillCategoriesHook;
 use JWeiland\Events2\Hook\Form\PrefillForEditUsageHook;
+use JWeiland\Events2\Hook\Form\RemainingLettersHook;
 use JWeiland\Events2\Hook\Form\RichTextEditorHook;
 use JWeiland\Events2\Hook\Solr\IndexerHook;
 use JWeiland\Events2\Hook\Solr\ResultsCommandHook;
 use JWeiland\Events2\Routing\Aspect\PersistedHiddenAliasMapper;
 use JWeiland\Events2\Routing\Aspect\TimestampMapper;
-use JWeiland\Events2\Task\AdditionalFieldsForImport;
-use JWeiland\Events2\Task\Import;
-use JWeiland\Events2\Task\ReGenerateDays;
 use JWeiland\Events2\Tca\Type\Time;
 use Psr\Log\LogLevel;
 use TYPO3\CMS\Backend\Form\FormDataProvider\DatabaseRowInitializeNew;
@@ -69,11 +67,11 @@ ExtensionUtility::configurePlugin(
     'Events2',
     'Management',
     [
-        ManagementController::class => 'listMyEvents, new, create, edit, update, perform, delete, confirmActivation, activate',
+        ManagementController::class => 'listMyEvents, perform, confirmActivation, activate',
     ],
     // non-cacheable actions
     [
-        ManagementController::class => 'listMyEvents, create, edit, update, perform, delete, confirmActivation, activate',
+        ManagementController::class => 'listMyEvents, perform, confirmActivation, activate',
     ],
     ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT,
 );
@@ -133,22 +131,9 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/form']['afterBuildingFinished'][1
 // Add the CKEditor to rich text elements of the current page
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/form']['beforeRendering'][1762444800]
     = RichTextEditorHook::class;
-
-// create scheduler to create/update days with recurrency
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][ReGenerateDays::class] = [
-    'extension' => 'events2',
-    'title' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:task.reCreateDays.title',
-    'description' => 'LLL:EXT:events2/Resources/Private/Language/locallang_db.xlf:task.reCreateDays.description',
-    'additionalFields' => ReGenerateDays::class,
-];
-
-// create scheduler to import events from different sources
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][Import::class] = [
-    'extension' => 'events2',
-    'title' => 'Import events',
-    'description' => 'Import events over a XML interface or by mail into events2.',
-    'additionalFields' => AdditionalFieldsForImport::class,
-];
+// Add the counter of remaining letters to textareas with a maxlength
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/form']['beforeRendering'][1762444801]
+    = RemainingLettersHook::class;
 
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['aspects']['TimestampMapper'] = TimestampMapper::class;
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['aspects']['PersistedHiddenAliasMapper'] = PersistedHiddenAliasMapper::class;

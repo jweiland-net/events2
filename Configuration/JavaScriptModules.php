@@ -10,6 +10,7 @@
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 $imports = [
+    '@jweiland/events2/remaining-letters.js' => 'EXT:events2/Resources/Public/JavaScript/remaining-letters.js',
     '@jweiland/events2/rich-text-editor.js' => 'EXT:events2/Resources/Public/JavaScript/rich-text-editor.js',
 ];
 

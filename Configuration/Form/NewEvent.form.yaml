@@ -4,6 +4,9 @@ label: 'Create a new event'
 prototypeName: standard
 renderingOptions:
   submitButtonLabel: Submit
+  templateVariant: version2
+  partialRootPaths:
+    1661248033: 'EXT:events2/Resources/Private/FormFramework/Partials/'
 renderables:
   - renderingOptions:
       nextButtonLabel: 'next page'
@@ -27,6 +30,11 @@ renderables:
           elementDescription: 'Choose event type'
         validators:
           - identifier: NotEmpty
+        variants:
+          - identifier: show-legend
+            condition: 'getRootFormProperty("renderingOptions.templateVariant") == "version2"'
+            properties:
+              legendVisuallyHidden: 0
   - renderingOptions:
       previousButtonLabel: 'previous page'
       nextButtonLabel: 'next page'
@@ -128,6 +136,14 @@ renderables:
             column: teaser
             dataType: plainText
           elementDescription: 'Short description'
+          # 255 is "max" of the column "teaser" in TCA. The maxlength activates
+          # the counter of remaining letters.
+          fluidAdditionalAttributes:
+            maxlength: 255
+        validators:
+          - identifier: StringLength
+            options:
+              maximum: 255
       - label: 'Detail description'
         type: Textarea
         identifier: detail-description
@@ -181,8 +197,9 @@ renderables:
               table: tx_events2_domain_model_link
               expressions:
                 - column: uid
-                  expression: inSet
+                  expression: in
                   value: '{event:download_links}'
+                  intExplodeValue: 1
           elementDescription: 'Download Link'
         validators:
           - identifier: Url

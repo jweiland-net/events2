@@ -20,7 +20,7 @@ return static function (
     ContainerConfigurator $container,
     ContainerBuilder $containerBuilder,
 ) {
-    // As IndexerHook.php is incompatible with an interface of solr 11.2 we have to exclude both files
+    // As IndexerHook.php is incompatible with an interface of solr 11.2 we have to exclude this file
     // from "resource" in Services.yaml and load/configure the file individual here.
     // We can't use EMU::isLoaded() as PackageManager is not loaded until now. Using class_exists()
     if (interface_exists(PageIndexerDocumentsModifier::class)) {

@@ -43,9 +43,14 @@ final class ConvertHtmlToPlainTextViewHelper extends AbstractViewHelper
         $this->registerArgument('value', 'string', 'The HTML formatted value to convert to plain text', false, null);
     }
 
+    public function getContentArgumentName(): string
+    {
+        return 'value';
+    }
+
     public function render(): string
     {
-        $value = $this->arguments['value'] ?? $this->renderChildren();
+        $value = $this->renderChildren();
         if (!is_string($value)) {
             return '';
         }

@@ -11,6 +11,12 @@ Some general settings for events2 can be configured in `Admin Tools` -> `Setting
 
 The settings are divided into several tabs and described here in detail:
 
+..  versionchanged:: 12.0.0
+
+    The setting `pathSegmentType` has been removed. The path segment of
+    events follows the TCA configuration of the column `path_segment`
+    only, see :ref:`upgrade-12-0-0-path-segment`.
+
 Tab: Basic
 ==========
 
@@ -61,10 +67,27 @@ defaultCountry
 
 Default: empty
 
-While creating location records we also create a record for EXT:maps2 while saving.
-If you're only working for one specific country while creating/editing locations
-in backend, it may be helpful to set country property with this default country. So you only need
-to add street and city to find a POI. If you need POIs from all over the world, please keep this field empty.
+Example: `DE`
+
+ISO 3166-1 alpha-2 code of the country, which is preselected for new
+location records in the backend. The value is a simple text field. It is
+checked against the countries of the country API of TYPO3
+(:ref:`t3coreapi:country-api`). Unknown codes are ignored, so no country
+is preselected. The select box of the country lists all countries of the
+country API with their localized names.
+
+While creating location records we also create a record for EXT:maps2.
+If you're only working for one specific country, the preselected country
+helps, so you only need to add street and city to find a POI. If you need
+POIs from all over the world, please keep this field empty.
+
+..  versionchanged:: 12.0.0
+
+    EXT:static_info_tables is not required anymore. The setting expects an
+    ISO 3166-1 alpha-2 code instead of the UID of a `static_countries`
+    record. Former UIDs and unknown codes are ignored, so no country is
+    preselected. Change the value manually, see
+    :ref:`upgrade-12-0-0-country`.
 
 xmlImportValidatorPath
 ----------------------
@@ -79,6 +102,9 @@ location as non-mandatory in Extension Setting this has no effect to the importe
 our XSD file and add the modifications you need and set new file path into this variable.
 
 You can prefix the path with EXT:
+
+The file is used by the command `events2:import`, see
+:ref:`commands-import`.
 
 organizerIsRequired
 -------------------
@@ -100,28 +126,6 @@ categoryIsRequired
 Default: false
 
 If you want, you can set column *Categories* as required. That way an editor has to fill this column.
-
-pathSegmentType
----------------
-
-Default: Do nothing (Internal: empty)
-
-events2 works with path segments to help you building much more readable URLs with new RouteEnhancers. But what should
-happen, if there are duplicates while executing the PathSegmentUpdateWizard or a frontend user creates a new event?
-
-Info: This setting does not effect new events generated within TYPO3 Backend, as we do not have any UID while storing
-the event!
-
-**Do nothing (default)**
-The column `path_segment` will not be touched by events2. Use the SignalSlot in `createAction` and implement
-generation of `path_segment` on your own. But if you return an empty value events2 will throw an exception.
-
-**RealUrl**
-`path_segment` will be filled with an incremented value of event title. If there are 3 events called `swimming` it
-will result in `swimming`, `swimming-1`, `swimming-2`
-
-**Incl. UID**
-Column `path_segment` will be filled with a combination of event title and uid like: `star-wars-77`
 
 
 Tab: Email

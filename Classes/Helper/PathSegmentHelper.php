@@ -11,150 +11,78 @@ declare(strict_types=1);
 
 namespace JWeiland\Events2\Helper;
 
-use Doctrine\DBAL\Exception;
-use JWeiland\Events2\Configuration\ExtConf;
-use JWeiland\Events2\Domain\Model\Event;
-use JWeiland\Events2\Helper\Exception\NoUniquePathSegmentException;
-use TYPO3\CMS\Core\Database\Connection;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Query\QueryBuilder;
-use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
+use TYPO3\CMS\Core\DataHandling\Model\RecordState;
+use TYPO3\CMS\Core\DataHandling\Model\RecordStateFactory;
 use TYPO3\CMS\Core\DataHandling\SlugHelper;
-use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 
 /**
- * Helper class to generate a path segment (slug) for an event record.
- * Used while executing the UpgradeWizard and saving records in the frontend.
+ * Generates the path segment (slug) of an event record outside the
+ * DataHandler (frontend form, XML import, upgrade wizard) the same way the
+ * DataHandler does: the TCA configuration of "path_segment" is used for
+ * SlugHelper::generate(), followed by the uniqueness checks configured in
+ * "eval". Modify the generated slug with "postModifiers" in the TCA
+ * "generatorOptions".
+ *
+ * @see \TYPO3\CMS\Core\DataHandling\DataHandler::checkValueForSlug()
  */
 readonly class PathSegmentHelper
 {
-    protected const TABLE = 'tx_events2_domain_model_event';
+    private const TABLE = 'tx_events2_domain_model_event';
 
-    protected const SLUG_COLUMN = 'path_segment';
+    private const SLUG_COLUMN = 'path_segment';
+
+    /**
+     * Same order as in DataHandler::checkValueForSlug()
+     */
+    private const UNIQUE_EVALUATIONS = [
+        'unique' => 'buildSlugForUniqueInTable',
+        'uniqueInSite' => 'buildSlugForUniqueInSite',
+        'uniqueInPid' => 'buildSlugForUniqueInPid',
+    ];
 
     public function __construct(
-        protected EventDispatcher $eventDispatcher,
-        protected PersistenceManagerInterface $persistenceManager,
-        protected ConnectionPool $connectionPool,
-        protected ExtConf $extConf,
+        private TcaSchemaFactory $tcaSchemaFactory,
     ) {}
 
     /**
-     * @param array $baseRecord Please make sure that the given record is stored, so that contained UID column is not 0
-     * @throws NoUniquePathSegmentException
-     */
-    public function generatePathSegment(array $baseRecord): string
-    {
-        // We don't check for stored $baseRecord here. We do that in our modifier hook. It will be logged there
-        // and an empty path segment will be returned.
-
-        // Normally "generate" will not build unique slugs, but because of our registered modifier hook it will.
-        $uniquePathSegment = $this->getSlugHelper()->generate(
-            $baseRecord,
-            (int)($baseRecord['pid'] ?? 0),
-        );
-
-        if ($uniquePathSegment === '') {
-            throw new NoUniquePathSegmentException(
-                'Generated path segment is not unique, please have a look into logs for more details',
-                1726125713,
-            );
-        }
-
-        return $uniquePathSegment;
-    }
-
-    public function updatePathSegmentForEvent(Event $event): void
-    {
-        // We have to make sure we are working with stored records here. Column "uid" is not 0.
-        if (!$event->getUid()) {
-            if ($this->persistenceManager->isNewObject($event)) {
-                $this->persistenceManager->add($event);
-            }
-            $this->persistenceManager->persistAll();
-        }
-
-        $event->setPathSegment(
-            $this->generatePathSegment(
-                $this->getEventRecord($event->getUid()),
-            ),
-        );
-
-        // Persist the updated path segment
-        $this->persistenceManager->update($event);
-        $this->persistenceManager->persistAll();
-    }
-
-    /**
-     * For generating unique slugs, the SlugHelper needs specific TYPO3 internal (workspace/language) columns which we
-     * do not provide within our Event model. That's why we do an additional select here.
-     */
-    protected function getEventRecord(int $eventUid): array
-    {
-        try {
-            $queryBuilder = $this->getQueryBuilder();
-            $queryResult = $queryBuilder
-                ->select('*')
-                ->from(self::TABLE)
-                ->where(
-                    $queryBuilder->expr()->eq(
-                        'uid',
-                        $queryBuilder->createNamedParameter($eventUid, Connection::PARAM_INT),
-                    ),
-                )
-                ->executeQuery();
-
-            return $queryResult->fetchAssociative() ?: [];
-        } catch (Exception $e) {
-        }
-
-        return [];
-    }
-
-    /**
-     * Here you get a SlugHelper with a modified version of the generator options of TCA.
-     * For TCE forms there is already a check for uniqueness in path_segment while storing a record.
-     * But while importing or upgrading records with an UpgradeWizard there is no path_segment. We have to build
-     * one on our own. For this special case we provide you 3 options in extension settings:
+     * A record without "uid" is handled as a new, not yet stored record.
+     * A stored record (with "uid") will not collide with its own slug.
      *
-     * - empty (default): You, as a Dev. have to use an EventListener to build the path_segment on your own
-     * - uid: We use TYPO3 API to build the slug, and we append the record uid to this slug: [title]-[uid]
-     * - realurl: We use TYPO3 API to build the slug, and we append an inkrement to this slug: [title]-[1, 2, 3, 4, ...]
+     * @param array<string, mixed> $record
+     * @throws SiteNotFoundException
      */
-    protected function getSlugHelper(): SlugHelper
+    public function generatePathSegment(array $record): string
     {
-        $config = $GLOBALS['TCA'][self::TABLE]['columns'][self::SLUG_COLUMN]['config'];
+        $configuration = $this->tcaSchemaFactory
+            ->get(self::TABLE)
+            ->getField(self::SLUG_COLUMN)
+            ->getConfiguration();
+        $slugHelper = GeneralUtility::makeInstance(SlugHelper::class, self::TABLE, self::SLUG_COLUMN, $configuration);
+        $pid = (int)($record['pid'] ?? 0);
+        $slug = $slugHelper->generate($record, $pid);
+        $recordState = $this->getRecordState($record, $pid);
+        $evaluations = GeneralUtility::trimExplode(',', (string)($configuration['eval'] ?? ''), true);
 
-        $config['generatorOptions']['postModifiers']['events2-post-modifier']
-            = \JWeiland\Events2\Hook\SlugPostModifierHook::class . '->modify';
-
-        // Make sure the column "uid" is appended in the list of generator fields if "uid" is set in extension settings
-        if (
-            $this->extConf->getPathSegmentType() === 'uid'
-            && !in_array('uid', $config['generatorOptions']['fields'], true)
-        ) {
-            $config['generatorOptions']['fields'][] = 'uid';
+        foreach (self::UNIQUE_EVALUATIONS as $evaluation => $method) {
+            if (in_array($evaluation, $evaluations, true)) {
+                $slug = $slugHelper->{$method}($slug, $recordState);
+            }
         }
 
-        return GeneralUtility::makeInstance(
-            SlugHelper::class,
-            self::TABLE,
-            self::SLUG_COLUMN,
-            $config,
-        );
+        return $slug;
     }
 
-    protected function getQueryBuilder(): QueryBuilder
+    /**
+     * @param array<string, mixed> $record
+     */
+    private function getRecordState(array $record, int $pid): RecordState
     {
-        // Event is hidden while creation. Remove enableFields, except deleted
-        $queryBuilder = $this->connectionPool->getQueryBuilderForTable(self::TABLE);
-        $queryBuilder
-            ->getRestrictions()
-            ->removeAll()
-            ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
+        // Like DataHandler: a non-numeric identifier ("NEW...") excludes no record from the uniqueness check
+        $uid = (int)($record['uid'] ?? 0);
 
-        return $queryBuilder;
+        return RecordStateFactory::forName(self::TABLE)->fromArray($record, $pid, $uid > 0 ? $uid : 'NEW');
     }
 }

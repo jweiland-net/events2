@@ -6,7 +6,7 @@ rootUid = 0
 recurringPast = 3
 # cat=basic; type=int+; label=LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:recurringFuture
 recurringFuture = 6
-# cat=basic; type=user[JWeiland\Events2\Hook\EmStaticInfo->renderDefaultCountry]; label=LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:defaultCountry
+# cat=basic; type=string; label=LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:defaultCountry
 defaultCountry =
 # cat=basic; type=string; label=LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:xmlImportValidatorPath
 xmlImportValidatorPath = EXT:events2/Resources/Public/XmlImportValidator.xsd
@@ -16,8 +16,6 @@ organizerIsRequired =
 locationIsRequired =
 # cat=basic; type=boolean; label=LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:categoryIsRequired
 categoryIsRequired =
-# cat=basic; type=options[Do nothing=empty,RealUrl=realurl,Title incl. UID=uid]; label=LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:pathSegmentType
-pathSegmentType = empty
 
 # cat=email; type=string; label=LLL:EXT:events2/Resources/Private/Language/ExtConf.xlf:emailFromAddress
 emailFromAddress =
